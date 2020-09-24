@@ -1,6 +1,4 @@
-# stargazer-wallet-ext
-
-Stargazer Wallet for Browser extensions
+# Stargazer Wallet for Browser Extensions
 
 Started with
 [web-extension-starter](https://github.com/abhijithvijayan/web-extension-starter)
