@@ -1,2 +1,2 @@
-# stargazer-wallet-ext
-Stargazer Wallet for Browser extensions
+# Stargazer Wallet for Browser Extensions
+
