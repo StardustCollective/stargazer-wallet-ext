@@ -1,9 +1,13 @@
-import * as React from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import styles from './Container.scss';
 
-const Container = () => {
-  return <div className={styles.container}></div>;
+interface IContainer {
+  children: ReactNode;
+}
+
+const Container: FC<IContainer> = ({ children }) => {
+  return <div className={styles.container}>{children}</div>;
 };
 
 export default Container;

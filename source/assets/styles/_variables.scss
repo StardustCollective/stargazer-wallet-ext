@@ -1,23 +1,72 @@
-// colors
-$black: #0d0d0d;
-$greyWhite: #f3f3f3;
-$skyBlue: #8892b0;
+/**
+ * Colors
+ **/
+$black: #000;
+$white: #fff;
 
-// fonts
-$nunito: "Nunito", sans-serif;
+// purple series
+$purple-50: #ede7f6;
+$purple-100: #d1c4e9;
+$purple-200: #b39ddb;
+$purple-300: #9575cd;
+$purple-400: #7e57c2;
+$purple-500: #673ab7;
+$purple-600: #5e35b1;
+$purple-700: #512da8;
+$purple-800: #4527a0;
+$purple-900: #311b92;
 
-// font weights
-$thin: 100;
-$exlight: 200;
+$purple-a100: #b388ff;
+$purple-a200: #7c4dff;
+$purple-a300: #651fff;
+$purple-a400: #6200ea;
+
+// teal series
+$teal-50: #e0f2f1;
+$teal-100: #b2dfdb;
+$teal-200: #80cbc4;
+$teal-300: #4db6ac;
+$teal-400: #26a69a;
+$teal-500: #009688;
+$teal-600: #00897b;
+$teal-700: #00796b;
+$teal-800: #00695c;
+$teal-900: #004d40;
+
+$teal-a100: #a7ffeb;
+$teal-a200: #64ffda;
+$teal-a300: #1de9b6;
+$teal-a400: #00bfa5;
+
+// gray series
+$gray-50: #fafafa;
+$gray-100: #f5f5f5;
+$gray-200: #eee;
+$gray-300: #e0e0e0;
+$gray-400: #bdbdbd;
+$gray-500: #9e9e9e;
+$gray-600: #757575;
+$gray-700: #616161;
+$gray-800: #424242;
+$gray-900: #212121;
+
+/**
+ * Fonts
+ **/
+$quicksand: 'Quicksand', sans-serif;
+
+/**
+ * Font weights
+ **/
 $light: 300;
 $regular: 400;
 $medium: 500;
 $semibold: 600;
 $bold: 700;
-$exbold: 800;
-$exblack: 900;
 
-// other variables
+/**
+ * Other variables
+ **/
 .d-none {
   display: none !important;
 }
