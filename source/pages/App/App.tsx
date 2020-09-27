@@ -8,11 +8,7 @@ import styles from './App.scss';
 // }
 
 const App: FC = () => {
-  return (
-    <section id="app" className={styles.app}>
-      Stardust Collective
-    </section>
-  );
+  return <section id="app" className={styles.app}></section>;
 };
 
 export default App;
