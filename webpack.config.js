@@ -78,6 +78,11 @@ module.exports = {
       'webextension-polyfill-ts': path.resolve(
         path.join(__dirname, 'node_modules', 'webextension-polyfill-ts')
       ),
+      assets: path.resolve(__dirname, 'source/assets'),
+      components: path.resolve(__dirname, 'source/components'),
+      config: path.resolve(__dirname, 'source/config'),
+      containers: path.resolve(__dirname, 'source/containers'),
+      pages: path.resolve(__dirname, 'source/pages'),
     },
   },
 

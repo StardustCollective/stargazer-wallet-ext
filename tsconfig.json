@@ -12,7 +12,13 @@
     "noResolve": false,
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "assets/*": ["./source/assets/*"],
+      "components/*": ["./source/components/*"],
+      "config/*": ["./source/config/*"],
+      "containers/*": ["./source/containers/*"],
+      "pages/*": ["./source/pages/*"]
+    }
   },
   "include": ["source", "webpack.config.ts"]
 }
