@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 
 import Container from 'containers/common/Container';
 
+import './App.scss';
 // function openWebPage(url: string): Promise<Tabs.Tab> {
 //   return browser.tabs.create({ url });
 // }
