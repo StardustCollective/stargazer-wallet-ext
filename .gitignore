@@ -111,3 +111,4 @@ dist/
 !.yarn/releases
 !.yarn/plugins
 .pnp.*
+yarn.lock
