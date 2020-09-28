@@ -1,7 +1,9 @@
 import React, { FC } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 // import { browser, Tabs } from "webextension-polyfill-ts";
-
 import Container from 'containers/common/Container';
+// import AuthRouter from 'routers/Auth';
+import UnAuthRouter from 'routers/UnAuth';
 
 import './App.scss';
 // function openWebPage(url: string): Promise<Tabs.Tab> {
@@ -11,7 +13,11 @@ import './App.scss';
 const App: FC = () => {
   return (
     <section id="app">
-      <Container></Container>
+      <Container>
+        <Router>
+          <UnAuthRouter />
+        </Router>
+      </Container>
     </section>
   );
 };

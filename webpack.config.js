@@ -83,6 +83,7 @@ module.exports = {
       config: path.resolve(__dirname, 'source/config'),
       containers: path.resolve(__dirname, 'source/containers'),
       pages: path.resolve(__dirname, 'source/pages'),
+      routers: path.resolve(__dirname, 'source/routers'),
     },
   },
 

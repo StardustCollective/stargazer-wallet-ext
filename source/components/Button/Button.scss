@@ -1,0 +1,22 @@
+@import '../../assets/styles/variables';
+
+body {
+  .button {
+    padding: 8px 54px;
+    background: #00f1b7;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: $semibold;
+    font-size: 18px;
+    color: #6625ac;
+    letter-spacing: 0.03em;
+    text-transform: none;
+    border-radius: 6px;
+    line-height: 20px;
+    box-shadow: $shadow-btn;
+
+    &:hover {
+      background: #00f1b7;
+      color: #6625ac;
+    }
+  }
+}
