@@ -1,0 +1,59 @@
+import React, { FC, useState, MouseEvent } from 'react';
+import MUITextInput from '@material-ui/core/OutlinedInput';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+
+import styles from './TextInput.scss';
+
+interface ITextInput {
+  type?: 'text' | 'password' | 'number';
+  placeholder?: string;
+  fullWidth?: boolean;
+  visiblePassword?: boolean;
+}
+
+const TextInput: FC<ITextInput> = ({
+  type = 'text',
+  placeholder,
+  fullWidth,
+  visiblePassword = false,
+}) => {
+  const [showed, setShowed] = useState(false);
+  const inputType = showed && type === 'password' ? 'text' : type;
+
+  const handleClickShowPassword = () => {
+    setShowed(!showed);
+  };
+
+  const handleMouseDownPassword = (event: MouseEvent) => {
+    event.preventDefault();
+  };
+
+  return (
+    <MUITextInput
+      className={styles.textInput}
+      type={inputType}
+      placeholder={placeholder}
+      fullWidth={fullWidth}
+      endAdornment={
+        type === 'password' && visiblePassword ? (
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              className={styles.iconButton}
+              onMouseDown={handleMouseDownPassword}
+              onClick={handleClickShowPassword}
+              edge="end"
+            >
+              {showed ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        ) : null
+      }
+    />
+  );
+};
+
+export default TextInput;

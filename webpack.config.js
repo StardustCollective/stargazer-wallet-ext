@@ -83,6 +83,9 @@ module.exports = {
       config: path.resolve(__dirname, 'source/config'),
       containers: path.resolve(__dirname, 'source/containers'),
       pages: path.resolve(__dirname, 'source/pages'),
+      routers: path.resolve(__dirname, 'source/routers'),
+      reducers: path.resolve(__dirname, 'source/redux'),
+      sagas: path.resolve(__dirname, 'source/sagas'),
     },
   },
 
@@ -113,6 +116,7 @@ module.exports = {
           {
             loader: 'css-loader', // Takes the CSS files and returns the CSS with imports and url(...) for Webpack
             options: {
+              import: true,
               sourceMap: true,
               modules: {
                 localIdentName: '[name]__[local]___[hash:base64:5]',

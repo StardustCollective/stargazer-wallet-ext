@@ -17,7 +17,10 @@
       "components/*": ["./source/components/*"],
       "config/*": ["./source/config/*"],
       "containers/*": ["./source/containers/*"],
-      "pages/*": ["./source/pages/*"]
+      "pages/*": ["./source/pages/*"],
+      "routers/*": ["./source/routers/*"],
+      "reducers/*": ["./source/reducers/*"],
+      "sagas/*": ["./source/sagas/*"]
     }
   },
   "include": ["source", "webpack.config.ts"]

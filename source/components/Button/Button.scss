@@ -1,0 +1,41 @@
+@import '~assets/styles/variables';
+
+body {
+  .button {
+    padding: 8px 54px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: $semibold;
+    font-size: 18px;
+    letter-spacing: 0.03em;
+    text-transform: none;
+    border-radius: 6px;
+    line-height: 20px;
+    box-shadow: $shadow-btn;
+
+    &.primary {
+      background: #6625ac;
+      color: #fff;
+
+      &:hover {
+        background: #6625ac;
+        color: #fff;
+      }
+    }
+
+    &.secondary {
+      background: #00f1b7;
+      color: #6625ac;
+
+      &:hover {
+        background: #00f1b7;
+        color: #6625ac;
+      }
+    }
+
+    &.block {
+      font-size: 24px;
+      line-height: 24px;
+      font-weight: $medium;
+    }
+  }
+}
