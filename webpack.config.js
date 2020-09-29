@@ -114,6 +114,7 @@ module.exports = {
           {
             loader: 'css-loader', // Takes the CSS files and returns the CSS with imports and url(...) for Webpack
             options: {
+              import: true,
               sourceMap: true,
               modules: {
                 localIdentName: '[name]__[local]___[hash:base64:5]',

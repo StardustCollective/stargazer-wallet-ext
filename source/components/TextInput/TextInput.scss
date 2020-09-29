@@ -1,0 +1,27 @@
+@import '~assets/styles/variables';
+
+body {
+  .textInput {
+    background: $white;
+    line-height: 18px;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+}
+
+:global body {
+  .MuiInputBase-root.MuiInput-underline:before,
+  .MuiInputBase-root.MuiInput-underline:after {
+    border-bottom: none !important;
+  }
+
+  .MuiInputBase-root {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 12px;
+    font-weight: $medium;
+
+    & input {
+      padding: 0px;
+    }
+  }
+}
