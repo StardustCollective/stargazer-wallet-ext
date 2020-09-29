@@ -5,7 +5,11 @@ import styles from './Home.scss';
 const Home = () => {
   return (
     <div className={styles.home}>
-      <TextInput>Hello World</TextInput>
+      <TextInput
+        type="password"
+        visiblePassword
+        placeholder="Please enter your password"
+      ></TextInput>
     </div>
   );
 };

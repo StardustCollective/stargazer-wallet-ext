@@ -7,18 +7,31 @@ body {
     padding: 12px;
     box-sizing: border-box;
   }
+
+  .iconButton {
+    width: 30px;
+    height: 30px;
+    margin-right: -5px;
+
+    & svg {
+      font-size: 20px;
+    }
+  }
 }
 
 :global body {
-  .MuiInputBase-root.MuiInput-underline:before,
-  .MuiInputBase-root.MuiInput-underline:after {
-    border-bottom: none !important;
+  .MuiOutlinedInput-notchedOutline {
+    border-width: 0px !important;
+    outline: 0px !important;
   }
 
   .MuiInputBase-root {
     font-family: 'Quicksand', sans-serif;
     font-size: 12px;
     font-weight: $medium;
+    border: 1px solid #6625ac !important;
+    outline: 0px !important;
+    border-radius: 0px;
 
     & input {
       padding: 0px;
