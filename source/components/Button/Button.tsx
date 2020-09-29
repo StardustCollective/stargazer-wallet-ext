@@ -6,7 +6,7 @@ import styles from './Button.scss';
 interface IButton {
   theme?: 'primary' | 'secondary';
   fullWidth?: boolean;
-  blockHeight?: number; // block height if fullWidth = true
+  blockHeight?: number; // height of block button if fullWidth = true
   children: ReactNode;
 }
 

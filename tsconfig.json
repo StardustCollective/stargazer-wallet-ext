@@ -18,7 +18,9 @@
       "config/*": ["./source/config/*"],
       "containers/*": ["./source/containers/*"],
       "pages/*": ["./source/pages/*"],
-      "routers/*": ["./source/routers/*"]
+      "routers/*": ["./source/routers/*"],
+      "reducers/*": ["./source/reducers/*"],
+      "sagas/*": ["./source/sagas/*"]
     }
   },
   "include": ["source", "webpack.config.ts"]

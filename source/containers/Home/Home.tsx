@@ -9,7 +9,7 @@ const Home = () => {
         type="password"
         visiblePassword
         placeholder="Please enter your password"
-      ></TextInput>
+      />
     </div>
   );
 };

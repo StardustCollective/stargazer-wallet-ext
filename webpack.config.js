@@ -84,6 +84,8 @@ module.exports = {
       containers: path.resolve(__dirname, 'source/containers'),
       pages: path.resolve(__dirname, 'source/pages'),
       routers: path.resolve(__dirname, 'source/routers'),
+      reducers: path.resolve(__dirname, 'source/redux'),
+      sagas: path.resolve(__dirname, 'source/sagas'),
     },
   },
 
