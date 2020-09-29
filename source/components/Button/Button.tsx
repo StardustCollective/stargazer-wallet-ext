@@ -1,13 +1,33 @@
 import React, { ReactNode, FC } from 'react';
+import clsx from 'clsx';
 import MUIButton from '@material-ui/core/Button';
 import styles from './Button.scss';
 
 interface IButton {
+  theme?: 'primary' | 'secondary';
+  fullWidth?: boolean;
+  blockHeight?: number; // block height if fullWidth = true
   children: ReactNode;
 }
 
-const Button: FC<IButton> = ({ children }) => {
-  return <MUIButton className={styles.button}>{children}</MUIButton>;
+const Button: FC<IButton> = ({
+  theme = 'primary',
+  fullWidth = false,
+  blockHeight = 0,
+  children,
+}) => {
+  const classes = clsx(styles.button, styles[theme], {
+    [styles.block]: fullWidth,
+  });
+  const customStyle = {
+    height: fullWidth && blockHeight ? blockHeight : 'fit-content',
+  };
+
+  return (
+    <MUIButton className={classes} fullWidth={fullWidth} style={customStyle}>
+      {children}
+    </MUIButton>
+  );
 };
 
 export default Button;
