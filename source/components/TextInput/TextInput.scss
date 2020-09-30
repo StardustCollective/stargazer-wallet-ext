@@ -26,10 +26,10 @@ body {
   }
 
   .MuiInputBase-root {
-    font-family: 'Quicksand', sans-serif;
+    font-family: $quicksand;
     font-size: 12px;
     font-weight: $medium;
-    border: 1px solid #6625ac !important;
+    border: 1px solid $purple !important;
     outline: 0px !important;
     border-radius: 0px;
 
