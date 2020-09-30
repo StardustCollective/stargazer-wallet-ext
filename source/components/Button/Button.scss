@@ -2,8 +2,8 @@
 
 body {
   .button {
-    padding: 8px 54px;
-    font-family: 'Quicksand', sans-serif;
+    padding: 8px 40px;
+    font-family: $quicksand;
     font-weight: $semibold;
     font-size: 18px;
     letter-spacing: 0.03em;
@@ -13,22 +13,22 @@ body {
     box-shadow: $shadow-btn;
 
     &.primary {
-      background: #6625ac;
-      color: #fff;
+      background: $purple;
+      color: $white;
 
       &:hover {
-        background: #6625ac;
-        color: #fff;
+        background: $purple;
+        color: $white;
       }
     }
 
     &.secondary {
-      background: #00f1b7;
-      color: #6625ac;
+      background: $teal;
+      color: $purple;
 
       &:hover {
-        background: #00f1b7;
-        color: #6625ac;
+        background: $teal;
+        color: $purple;
       }
     }
 

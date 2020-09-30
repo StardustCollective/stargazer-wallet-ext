@@ -1,0 +1,29 @@
+@import '~assets/styles/variables';
+
+.home {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  min-height: 100%;
+  background: $purple;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 36px;
+  box-sizing: border-box;
+
+  .logo {
+    margin-top: 11px;
+    margin-bottom: 12px;
+  }
+
+  .password {
+    margin-bottom: 36px;
+  }
+
+  .unlock {
+    margin-bottom: 30px;
+  }
+}
