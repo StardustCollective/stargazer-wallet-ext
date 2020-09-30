@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 
@@ -105,6 +106,11 @@ module.exports = {
       {
         test: /\.(js|ts)x?$/,
         loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.(jpg|png)x?$/,
+        loader: 'file-loader',
         exclude: /node_modules/,
       },
       {

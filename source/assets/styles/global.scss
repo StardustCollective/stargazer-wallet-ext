@@ -1,0 +1,53 @@
+@import './variables';
+
+:global body {
+  margin: 0px;
+  padding: 0px;
+  font-family: $quicksand !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+
+  // Font styles
+  .heading-1 {
+    font-style: normal;
+    font-weight: $regular;
+    font-size: 30px;
+    line-height: 36px;
+    margin: 0px;
+  }
+
+  .body-caption {
+    font-weight: $regular;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.03em;
+  }
+
+  // Text styles
+  .t-white {
+    color: $white;
+  }
+  .t-purple {
+    color: $purple;
+  }
+  .t-teal {
+    color: $teal;
+  }
+
+  // Background styles
+  .b-white {
+    background: $white;
+  }
+  .b-purple {
+    background: $purple;
+  }
+  .b-teal {
+    background: $teal;
+  }
+
+  // Other styles
+  .full-width {
+    width: 100%;
+    display: block;
+  }
+}
