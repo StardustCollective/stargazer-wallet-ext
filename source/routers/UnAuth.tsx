@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Starter from 'containers/auth/Starter';
+import Starter from 'containers/unauth/Starter';
 
 const UnAuth = () => {
   return (
