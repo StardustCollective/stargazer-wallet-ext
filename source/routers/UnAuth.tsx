@@ -7,7 +7,7 @@ const UnAuth = () => {
   return (
     <Switch>
       <Route path="/app.html" component={Starter} exact />
-      <Route path="/wallet" component={WalletLoader} exact />
+      <Route path="/wallet" component={WalletLoader} />
     </Switch>
   );
 };
