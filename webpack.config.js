@@ -109,7 +109,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(jpg|png)x?$/,
+        test: /\.(jpg|png|svg)x?$/,
         loader: 'file-loader',
         exclude: /node_modules/,
       },

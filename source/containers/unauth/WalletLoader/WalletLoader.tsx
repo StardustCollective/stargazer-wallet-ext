@@ -1,11 +1,9 @@
 import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import Header from 'containers/common/Header';
 import FormWizard from 'components/FormWizard';
 
 import WelcomeWallet from '../Welcome';
-
-// import styles from './WalletLoader.scss';
 
 const WalletLoader = () => {
   const routes = ['/wallet/welcome'];
@@ -14,8 +12,9 @@ const WalletLoader = () => {
     <FormWizard routes={routes}>
       <Header />
       <Switch>
-        <Route path="/wallet/welcome" component={WelcomeWallet} />
-        <Redirect to="/wallet/welocme" />
+        <Route path="/wallet/welcome">
+          <WelcomeWallet />
+        </Route>
       </Switch>
     </FormWizard>
   );

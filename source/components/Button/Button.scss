@@ -1,45 +1,50 @@
 @import '~assets/styles/variables';
 
 body {
-  .wrapper {
-    text-decoration: none;
+  .button {
+    padding: 8px 40px;
+    font-family: $quicksand;
+    font-weight: $semibold;
+    font-size: 18px;
+    letter-spacing: 0.03em;
+    text-transform: none;
+    border-radius: 6px;
+    line-height: 20px;
+    box-shadow: $shadow-btn;
 
-    .button {
-      padding: 8px 40px;
-      font-family: $quicksand;
-      font-weight: $semibold;
-      font-size: 18px;
-      letter-spacing: 0.03em;
-      text-transform: none;
-      border-radius: 6px;
-      line-height: 20px;
-      box-shadow: $shadow-btn;
+    :global .MuiButton-label {
+      display: flex;
+      flex-direction: column;
 
-      &.primary {
+      & > img {
+        margin-bottom: 15px;
+      }
+    }
+
+    &.primary {
+      background: $purple;
+      color: $white;
+
+      &:hover {
         background: $purple;
         color: $white;
-
-        &:hover {
-          background: $purple;
-          color: $white;
-        }
       }
+    }
 
-      &.secondary {
+    &.secondary {
+      background: $teal;
+      color: $purple;
+
+      &:hover {
         background: $teal;
         color: $purple;
-
-        &:hover {
-          background: $teal;
-          color: $purple;
-        }
       }
+    }
 
-      &.block {
-        font-size: 24px;
-        line-height: 24px;
-        font-weight: $medium;
-      }
+    &.block {
+      font-size: 20px;
+      line-height: 24px;
+      font-weight: $medium;
     }
   }
 }
