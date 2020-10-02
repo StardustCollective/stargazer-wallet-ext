@@ -1,6 +1,7 @@
 import React from 'react';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
+import Link from 'components/Link';
 import LogoImage from 'assets/images/logo-m.png';
 
 import styles from './Starter.scss';
@@ -24,7 +25,9 @@ const Starter = () => {
       <Button type="submit" theme="secondary" variant={styles.unlock}>
         Unlock
       </Button>
-      <span className="body-caption t-teal">Restore account?</span>
+      <Link color="secondary" to="/app.html">
+        Restore account?
+      </Link>
       <span className="body-caption t-white">
         Import using account seed phrase
       </span>

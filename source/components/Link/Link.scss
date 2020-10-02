@@ -1,0 +1,21 @@
+@import '~assets/styles/variables';
+
+.link {
+  text-decoration: none;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &.primary {
+    color: $purple;
+  }
+
+  &.secondary {
+    color: $teal;
+  }
+}
