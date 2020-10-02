@@ -1,13 +1,15 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Starter from 'containers/unauth/Starter';
-import WelcomeWallet from 'containers/unauth/Welcome';
+import Start from 'containers/unauth/Start';
+import Welcome from 'containers/unauth/Welcome';
+import Remind from 'containers/unauth/Remind';
 
 const UnAuth = () => {
   return (
     <Switch>
-      <Route path="/app.html" component={Starter} exact />
-      <Route path="/unauth/welcome" component={WelcomeWallet} exact />
+      <Route path="/app.html" component={Start} exact />
+      <Route path="/unauth/welcome" component={Welcome} exact />
+      <Route path="/unauth/remind" component={Remind} exact />
     </Switch>
   );
 };

@@ -17,7 +17,7 @@
   }
 
   .body-caption {
-    font-weight: $regular;
+    font-weight: $medium;
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.03em;
@@ -32,6 +32,9 @@
   }
   .t-teal {
     color: $teal;
+  }
+  .t-gray-dark {
+    color: $gray-dark;
   }
 
   // Background styles

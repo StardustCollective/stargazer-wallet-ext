@@ -3,7 +3,7 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 import LogoImage from 'assets/images/logo-l.png';
 
-import styles from './Starter.scss';
+import styles from './Start.scss';
 
 const Starter = () => {
   return (

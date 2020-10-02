@@ -11,7 +11,13 @@ import styles from './Welcome.scss';
 const WelcomeWallet = () => {
   return (
     <Layout title={`Welcome to\nStargazer Wallet`}>
-      <Button type="button" fullWidth blockHeight={156} variant={styles.create}>
+      <Button
+        type="button"
+        fullWidth
+        blockHeight={156}
+        variant={styles.create}
+        linkTo="/unauth/remind"
+      >
         <img src={`/${CreateWalletIcon}`} alt="Create" />
         Create New Wallet
       </Button>
