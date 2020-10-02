@@ -12,6 +12,15 @@ body {
     line-height: 20px;
     box-shadow: $shadow-btn;
 
+    :global .MuiButton-label {
+      display: flex;
+      flex-direction: column;
+
+      & > img {
+        margin-bottom: 15px;
+      }
+    }
+
     &.primary {
       background: $purple;
       color: $white;
@@ -33,7 +42,7 @@ body {
     }
 
     &.block {
-      font-size: 24px;
+      font-size: 20px;
       line-height: 24px;
       font-weight: $medium;
     }

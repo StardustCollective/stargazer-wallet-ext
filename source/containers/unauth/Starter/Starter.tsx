@@ -1,8 +1,7 @@
 import React from 'react';
-import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 import Link from 'components/Link';
-import LogoImage from 'assets/images/logo-m.png';
+import LogoImage from 'assets/images/logo-l.png';
 
 import styles from './Starter.scss';
 
@@ -15,15 +14,13 @@ const Starter = () => {
         Stargazer Wallet
       </h1>
       <img src={LogoImage} className={styles.logo} alt="Stargazer" />
-      <TextInput
-        type="password"
-        visiblePassword
-        fullWidth
-        placeholder="Please enter your password"
-        variant={styles.password}
-      />
-      <Button type="submit" theme="secondary" variant={styles.unlock}>
-        Unlock
+      <Button
+        type="submit"
+        theme="secondary"
+        variant={styles.started}
+        linkTo="/wallet/welcome"
+      >
+        Get started
       </Button>
       <Link color="secondary" to="/app.html">
         Restore account?
