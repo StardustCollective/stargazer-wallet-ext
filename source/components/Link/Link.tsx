@@ -6,13 +6,23 @@ import styles from './Link.scss';
 
 interface ILink {
   children: ReactNode;
-  color: 'primary' | 'secondary';
+  color?: 'primary' | 'secondary';
+  noUnderline?: boolean;
   to: string;
 }
 
-const Link: FC<ILink> = ({ to, color = 'primary', children }) => {
+const Link: FC<ILink> = ({
+  to,
+  color = 'primary',
+  children,
+  noUnderline = false,
+}) => {
+  const classes = clsx(styles.link, styles[color], {
+    [styles.noUnderline]: noUnderline,
+  });
+
   return (
-    <RouterLink className={clsx(styles.link, styles[color])} to={to}>
+    <RouterLink className={classes} to={to}>
       {children}
     </RouterLink>
   );

@@ -14,7 +14,12 @@ const Starter = () => {
         Stargazer Wallet
       </h1>
       <img src={LogoImage} className={styles.logo} alt="Stargazer" />
-      <Button type="submit" theme="secondary" variant={styles.started}>
+      <Button
+        type="submit"
+        theme="secondary"
+        variant={styles.started}
+        linkTo="/wallet"
+      >
         Get started
       </Button>
       <Link color="secondary" to="/app.html">

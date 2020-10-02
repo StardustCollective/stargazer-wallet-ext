@@ -1,6 +1,7 @@
 import React, { ReactNode, FC } from 'react';
 import clsx from 'clsx';
 import MUIButton from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
 
 import styles from './Button.scss';
 
@@ -9,6 +10,7 @@ interface IButton {
   // height of block button if fullWidth = true
   children: ReactNode;
   fullWidth?: boolean;
+  linkTo?: string;
   theme?: 'primary' | 'secondary';
   type: 'button' | 'submit';
   variant?: string;
@@ -20,6 +22,7 @@ const Button: FC<IButton> = ({
   blockHeight = 0,
   children,
   variant = '',
+  linkTo = '#',
 }) => {
   const classes = clsx(
     styles.button,
@@ -34,9 +37,11 @@ const Button: FC<IButton> = ({
   };
 
   return (
-    <MUIButton className={classes} fullWidth={fullWidth} style={customStyle}>
-      {children}
-    </MUIButton>
+    <Link to={linkTo} className={styles.wrapper}>
+      <MUIButton className={classes} fullWidth={fullWidth} style={customStyle}>
+        {children}
+      </MUIButton>
+    </Link>
   );
 };
 

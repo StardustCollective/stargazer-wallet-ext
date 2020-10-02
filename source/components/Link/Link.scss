@@ -11,6 +11,12 @@
     text-decoration: underline;
   }
 
+  &.noUnderline {
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
   &.primary {
     color: $purple;
   }
