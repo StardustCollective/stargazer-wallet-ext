@@ -3,6 +3,7 @@
 .layout {
   margin-top: 72px;
   height: 528px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -11,10 +12,9 @@
   .heading {
     background: $gray-light;
     width: 100%;
-    height: 108px;
     display: flex;
     align-items: center;
-    padding: 20px 34px;
+    padding: 18px 34px;
     justify-content: flex-start;
     box-sizing: border-box;
 

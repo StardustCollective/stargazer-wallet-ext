@@ -15,6 +15,7 @@ const CreateWallet = () => {
         fullWidth
         blockHeight={156}
         variant={styles.keystore}
+        linkTo="/unauth/create/pass"
       >
         Keystore File
       </Button>
