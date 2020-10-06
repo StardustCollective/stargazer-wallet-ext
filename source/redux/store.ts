@@ -5,17 +5,17 @@ import {
 } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import { persistReducer, persistStore } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { localStorage } from 'redux-persist-webextension-storage';
 import logger from 'redux-logger';
+import rootSaga from 'sagas/index';
 
 import authReducer from './auth/reducer';
-import rootSaga from 'sagas/index';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const persistConfig = {
   key: 'root',
-  storage,
+  storage: localStorage,
   version: 1,
 };
 

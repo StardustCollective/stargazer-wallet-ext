@@ -11,6 +11,7 @@ interface IButton {
   children: ReactNode;
   fullWidth?: boolean;
   linkTo?: string;
+  onClick?: () => void;
   theme?: 'primary' | 'secondary';
   type: 'button' | 'submit';
   variant?: string;
@@ -23,6 +24,7 @@ const Button: FC<IButton> = ({
   children,
   variant = '',
   linkTo = '#',
+  ...otherProps
 }) => {
   const classes = clsx(
     styles.button,
@@ -46,6 +48,7 @@ const Button: FC<IButton> = ({
       fullWidth={fullWidth}
       style={customStyle}
       onClick={clickHandler}
+      {...otherProps}
     >
       {children}
     </MUIButton>

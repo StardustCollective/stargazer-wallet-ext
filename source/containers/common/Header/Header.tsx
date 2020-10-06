@@ -9,11 +9,20 @@ import LogoImage from 'assets/images/logo-s.png';
 import styles from './Header.scss';
 
 interface IHeader {
+  backLink?: string;
   showLogo?: boolean;
 }
 
-const Header: FC<IHeader> = ({ showLogo = false }) => {
+const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const history = useHistory();
+
+  const backHandler = () => {
+    if (backLink === '#') {
+      history.goBack();
+    } else {
+      history.push(backLink);
+    }
+  };
 
   return (
     <div className={styles.header}>
@@ -24,7 +33,7 @@ const Header: FC<IHeader> = ({ showLogo = false }) => {
       ) : (
         <IconButton
           className={`${styles.button} ${styles.back}`}
-          onClick={() => history.goBack()}
+          onClick={backHandler}
         >
           <ArrowBackIcon />
         </IconButton>
