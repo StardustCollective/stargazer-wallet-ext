@@ -3,7 +3,7 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 import LogoImage from 'assets/images/logo-l.png';
 
-import styles from './Starter.scss';
+import styles from './Start.scss';
 
 const Starter = () => {
   return (
@@ -13,12 +13,12 @@ const Starter = () => {
         <br />
         Stargazer Wallet
       </h1>
-      <img src={LogoImage} className={styles.logo} alt="Stargazer" />
+      <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
       <Button
         type="submit"
         theme="secondary"
         variant={styles.started}
-        linkTo="/wallet/welcome"
+        linkTo="/unauth/welcome"
       >
         Get started
       </Button>
