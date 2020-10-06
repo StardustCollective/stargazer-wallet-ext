@@ -18,7 +18,7 @@ const Starter = () => {
         type="submit"
         theme="secondary"
         variant={styles.started}
-        linkTo="/unauth/remind"
+        linkTo="/remind"
       >
         Get started
       </Button>

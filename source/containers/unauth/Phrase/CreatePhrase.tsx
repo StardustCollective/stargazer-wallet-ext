@@ -3,14 +3,10 @@ import Button from 'components/Button';
 
 import Layout from '../Layout';
 
-interface ICreatePhrase {
-  onCheck: () => void;
-}
-
-const CreatePhrase: FC<ICreatePhrase> = ({ onCheck }) => {
+const CreatePhrase: FC = () => {
   return (
-    <Layout title="Create Phrase">
-      <Button type="button" onClick={onCheck}>
+    <Layout title="Create Phrase" linkTo="/create/pass">
+      <Button type="button" linkTo="/create/phrase/checking">
         Next
       </Button>
     </Layout>

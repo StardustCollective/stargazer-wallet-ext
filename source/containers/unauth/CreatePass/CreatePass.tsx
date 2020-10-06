@@ -20,14 +20,14 @@ const CreatePass = () => {
 
   const nextHandler = () => {
     if (passed) {
-      history.push('/unauth/create/phrase');
+      history.push('/create/phrase/generated');
     } else {
       setPassed(true);
     }
   };
 
   return (
-    <Layout title={title}>
+    <Layout title={title} linkTo="/remind">
       {passed ? (
         <img src={`/${CheckIcon}`} className={styles.checked} alt="Success" />
       ) : (
