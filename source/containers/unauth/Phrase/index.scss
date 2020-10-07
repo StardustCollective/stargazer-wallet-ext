@@ -1,6 +1,37 @@
+@import '~assets/styles/variables';
+
 body {
   .start {
     margin-top: 36px;
     width: 156px;
+  }
+
+  ul.generated {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    column-count: 2;
+    width: 100%;
+
+    li {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 24px;
+      letter-spacing: 0.03em;
+      color: $gray-dark;
+      border-bottom: 0.25px solid $gray-medium;
+
+      span {
+        width: 25px;
+        display: inline-block;
+      }
+    }
+  }
+
+  .written {
+    margin-top: 30px;
+    padding: 8px;
+    min-width: 156px;
   }
 }

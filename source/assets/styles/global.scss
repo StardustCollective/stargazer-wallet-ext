@@ -52,6 +52,9 @@
   .t-gray-dark {
     color: $gray-dark;
   }
+  .t-gray-medium {
+    color: $gray-medium;
+  }
 
   // Background styles
   .b-white {
@@ -68,5 +71,17 @@
   .full-width {
     width: 100%;
     display: block;
+  }
+  .mt-30 {
+    margin-top: 30px;
+  }
+  .mb-30 {
+    margin-bottom: 30px;
+  }
+  .ml-30 {
+    margin-left: 30px;
+  }
+  .mr-30 {
+    margin-right: 30px;
   }
 }
