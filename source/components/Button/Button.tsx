@@ -9,6 +9,7 @@ interface IButton {
   blockHeight?: number;
   // height of block button if fullWidth = true
   children: ReactNode;
+  disabled?: boolean;
   fullWidth?: boolean;
   linkTo?: string;
   onClick?: () => void;
@@ -22,6 +23,7 @@ const Button: FC<IButton> = ({
   fullWidth = false,
   blockHeight = 0,
   children,
+  disabled = false,
   variant = '',
   linkTo = '#',
   ...otherProps
@@ -31,6 +33,7 @@ const Button: FC<IButton> = ({
     styles[theme],
     {
       [styles.block]: fullWidth,
+      [styles.disabled]: disabled,
     },
     variant
   );
@@ -48,6 +51,7 @@ const Button: FC<IButton> = ({
       fullWidth={fullWidth}
       style={customStyle}
       onClick={clickHandler}
+      disabled={disabled}
       {...otherProps}
     >
       {children}
