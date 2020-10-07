@@ -17,7 +17,7 @@ const UnAuth = () => {
       <Route path="/create/pass" component={CreatePass} exact />
       <Route path="/create/phrase/remind" component={RemindPhrase} exact />
       <Route path="/create/phrase/generated" component={CreatePhrase} exact />
-      <Route path="/create/phrase/checking" component={ConfirmPhrase} exact />
+      <Route path="/create/phrase/check" component={ConfirmPhrase} exact />
     </Switch>
   );
 };

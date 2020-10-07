@@ -4,6 +4,7 @@ import Button from 'components/Button';
 
 import Layout from '../Layout';
 
+import { TEST_PHRASES } from './consts';
 import styles from './index.scss';
 
 const CreatePhrase: FC = () => {
@@ -13,24 +14,10 @@ const CreatePhrase: FC = () => {
   const description = passed
     ? "Well done. To verify that you've written down your recovery phrase correctly, please enter it again in the next step."
     : 'Please make sure to write it down exactly as shown here.';
-  const TEST_PHRASES = [
-    'spirit',
-    'leg',
-    'rude',
-    'side',
-    'foot',
-    'library',
-    'pear',
-    'rubber',
-    'hollow',
-    'medal',
-    'fossil',
-    'guilt',
-  ];
 
   const nextHandler = () => {
     if (passed) {
-      history.push('/create/phrase/checking');
+      history.push('/create/phrase/check');
     } else {
       setPassed(true);
     }

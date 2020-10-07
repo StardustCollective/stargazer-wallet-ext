@@ -20,7 +20,7 @@ body {
       line-height: 24px;
       letter-spacing: 0.03em;
       color: $gray-dark;
-      border-bottom: 0.25px solid $gray-medium;
+      border-bottom: 1px solid $gray-medium;
 
       span {
         width: 25px;
@@ -33,5 +33,72 @@ body {
     margin-top: 30px;
     padding: 8px;
     min-width: 156px;
+  }
+
+  .topzone {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    width: 100%;
+    border-bottom: 1px solid $gray-medium;
+    min-height: 120px;
+    display: flex;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    transition: all 0.3s;
+  }
+
+  .bottomzone {
+    padding-top: 25px;
+    padding-bottom: 12px;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    min-height: 120px;
+    transition: all 0.3s;
+  }
+
+  .phrase {
+    width: 60px;
+    height: 30px !important;
+    padding: 0px;
+    font-weight: $bold;
+    font-size: 12px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.03em;
+    background: $gray-dark !important;
+    color: $white;
+    margin-bottom: 12px;
+    margin-right: 12px;
+    justify-content: center;
+    box-shadow: none;
+    border-radius: 3px;
+
+    &.selected {
+      background: $gray-light !important;
+      color: $gray-dark;
+
+      &:hover {
+        background: $gray-medium;
+        color: $gray-dark;
+      }
+    }
+
+    &:hover {
+      background: $gray-medium;
+    }
+
+    &:nth-child(4n) {
+      margin-right: 0px;
+    }
+  }
+
+  .validate {
+    position: absolute;
+    bottom: 23px;
+    width: 156px;
   }
 }
