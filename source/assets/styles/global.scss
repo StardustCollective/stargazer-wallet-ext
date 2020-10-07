@@ -23,6 +23,14 @@
     letter-spacing: 0.03em;
   }
 
+  .body-description {
+    font-weight: $medium;
+    font-size: 18px;
+    line-height: 24px;
+    letter-spacing: 0.03em;
+    color: $gray-dark;
+  }
+
   .body-comment {
     font-style: normal;
     font-weight: 500;

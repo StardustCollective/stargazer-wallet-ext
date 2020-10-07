@@ -20,7 +20,7 @@ const CreatePass = () => {
 
   const nextHandler = () => {
     if (passed) {
-      history.push('/create/phrase/generated');
+      history.push('/create/phrase/remind');
     } else {
       setPassed(true);
     }
