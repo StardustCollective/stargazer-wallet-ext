@@ -2,39 +2,34 @@ import {
   combineReducers,
   configureStore,
   getDefaultMiddleware,
+  Store,
 } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
 import logger from 'redux-logger';
-import rootSaga from 'sagas/index';
 import throttle from 'lodash/throttle';
 
-import authReducer from './auth/reducer';
+import authReducer from './auth';
 import { saveState, loadState } from './localStorage';
 
-const sagaMiddleware = createSagaMiddleware();
-
-const store = configureStore({
+const store: Store = configureStore({
   reducer: combineReducers({
     auth: authReducer,
   }),
   middleware: [
-    ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
-    sagaMiddleware,
+    ...getDefaultMiddleware({ thunk: true, serializableCheck: false }),
     logger,
   ],
+  devTools: process.env.NODE_ENV !== 'production',
   preloadedState: loadState(),
 });
 
 store.subscribe(
   throttle(() => {
-    const currentState = store.getState();
+    const state = store.getState();
     saveState({
-      auth: currentState.auth,
+      auth: state.auth,
     });
   }, 1000)
 );
-
-sagaMiddleware.run(rootSaga);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

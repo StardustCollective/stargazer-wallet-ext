@@ -5,6 +5,5 @@ import store from 'reducers/store';
 
 browser.runtime.onInstalled.addListener((): void => {
   console.emoji('🦄', 'extension installed');
+  wrapStore(store, { portName: 'STARGARZER' });
 });
-
-wrapStore(store, { portName: 'Stargazer' });

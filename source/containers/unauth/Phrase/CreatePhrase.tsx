@@ -1,20 +1,34 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 import { keyStore } from '@stardust-collective/dag-keystore';
+import { RootState } from 'reducers/store';
+import { setPhrases } from 'reducers/auth';
 
 import Layout from '../Layout';
 
+import * as consts from './consts';
 import styles from './index.scss';
 
 const CreatePhrase: FC = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const [passed, setPassed] = useState(false);
-  const title = passed ? `Let's double check` : `This is your recovery\nphrase`;
+  const title = passed
+    ? consts.CREATE_PHRASE_TITLE2
+    : consts.CREATE_PHRASE_TITLE1;
   const description = passed
-    ? "Well done. To verify that you've written down your recovery phrase correctly, please enter it again in the next step."
-    : 'Please make sure to write it down exactly as shown here.';
-  const phrases = keyStore.generateSeedPhrase().split(' ');
+    ? consts.CREATE_PHRASE_DESCRIPTION2
+    : consts.CREATE_PHRASE_DESCRIPTION1;
+
+  const phrases = useSelector((state: RootState) => state.auth.phrases || []);
+
+  useEffect(() => {
+    if (phrases === null) {
+      dispatch(setPhrases(keyStore.generateSeedPhrase().split(' ')));
+    }
+  }, [dispatch, phrases]);
 
   const nextHandler = () => {
     if (passed) {
