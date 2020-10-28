@@ -10,6 +10,10 @@ import {
 } from 'containers/unauth/Phrase';
 
 const UnAuth = () => {
+  /**
+   * --- Create Account Flow ---
+   * Start => Remind => CreatePass => RemindPhrase => CreatePhrase => ConfirmPhrase
+   */
   return (
     <Switch>
       <Route path="/app.html" component={Start} exact />

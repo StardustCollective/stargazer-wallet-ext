@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import Button from 'components/Button';
 import CheckIcon from 'assets/images/svg/check.svg';
+import { useSelector } from 'react-redux';
+import { RootState } from 'reducers/store';
+import shuffle from 'lodash/shuffle';
 
 import Layout from '../Layout';
 
-import { TEST_PHRASES } from './consts';
 import styles from './index.scss';
 
 const ConfirmPhrase = () => {
-  const [orgList, setOrgList] = useState<Array<string>>(TEST_PHRASES);
+  const { phrases } = useSelector((state: RootState) => state.auth);
+  const [orgList, setOrgList] = useState<Array<string>>(shuffle(phrases));
   const [newList, setNewList] = useState<Array<string>>([]);
   const [passed, setPassed] = useState(false);
   const title = passed

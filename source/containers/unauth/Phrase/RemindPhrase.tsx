@@ -1,11 +1,22 @@
 import React from 'react';
 import Button from 'components/Button';
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setPhrases } from 'reducers/auth';
+import { keyStore } from '@stardust-collective/dag-keystore';
 
 import Layout from '../Layout';
 
 import styles from './index.scss';
 
 const RemindPhrase = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const generatePhrases = () => {
+    dispatch(setPhrases(keyStore.generateSeedPhrase().split(' ')));
+    history.push('/create/phrase/generated');
+  };
+
   return (
     <Layout
       title={`First, let's create your\nrecovery phrase`}
@@ -17,11 +28,7 @@ const RemindPhrase = () => {
         ready so you can write it down.
       </span>
 
-      <Button
-        type="button"
-        variant={styles.start}
-        linkTo="/create/phrase/generated"
-      >
+      <Button type="button" variant={styles.start} onClick={generatePhrases}>
         Start
       </Button>
     </Layout>

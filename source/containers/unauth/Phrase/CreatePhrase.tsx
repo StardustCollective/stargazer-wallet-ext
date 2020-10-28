@@ -1,10 +1,8 @@
-import React, { FC, useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
-import { keyStore } from '@stardust-collective/dag-keystore';
 import { RootState } from 'reducers/store';
-import { setPhrases } from 'reducers/auth';
 
 import Layout from '../Layout';
 
@@ -13,7 +11,6 @@ import styles from './index.scss';
 
 const CreatePhrase: FC = () => {
   const history = useHistory();
-  const dispatch = useDispatch();
   const [passed, setPassed] = useState(false);
   const title = passed
     ? consts.CREATE_PHRASE_TITLE2
@@ -23,12 +20,6 @@ const CreatePhrase: FC = () => {
     : consts.CREATE_PHRASE_DESCRIPTION1;
 
   const phrases = useSelector((state: RootState) => state.auth.phrases || []);
-
-  useEffect(() => {
-    if (phrases === null) {
-      dispatch(setPhrases(keyStore.generateSeedPhrase().split(' ')));
-    }
-  }, [dispatch, phrases]);
 
   const nextHandler = () => {
     if (passed) {
