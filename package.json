@@ -26,6 +26,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@reduxjs/toolkit": "^1.4.0",
+    "@stardust-collective/dag-keystore": "^1.0.9",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/redux-logger": "^3.0.8",

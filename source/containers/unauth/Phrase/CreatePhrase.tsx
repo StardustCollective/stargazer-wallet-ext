@@ -1,10 +1,10 @@
 import React, { FC, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
+import { keyStore } from '@stardust-collective/dag-keystore';
 
 import Layout from '../Layout';
 
-import { TEST_PHRASES } from './consts';
 import styles from './index.scss';
 
 const CreatePhrase: FC = () => {
@@ -14,6 +14,7 @@ const CreatePhrase: FC = () => {
   const description = passed
     ? "Well done. To verify that you've written down your recovery phrase correctly, please enter it again in the next step."
     : 'Please make sure to write it down exactly as shown here.';
+  const phrases = keyStore.generateSeedPhrase().split(' ');
 
   const nextHandler = () => {
     if (passed) {
@@ -28,7 +29,7 @@ const CreatePhrase: FC = () => {
       <div className="body-description mb-30">{description}</div>
       {!passed && (
         <ul className={styles.generated}>
-          {TEST_PHRASES.map((phrase, index) => (
+          {phrases.map((phrase: string, index: number) => (
             <li key={phrase}>
               <span className="t-gray-medium">
                 {String(index + 1).padStart(2, '0')}.

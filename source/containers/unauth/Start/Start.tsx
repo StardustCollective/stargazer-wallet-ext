@@ -18,7 +18,7 @@ const Starter = () => {
         type="submit"
         theme="secondary"
         variant={styles.started}
-        linkTo="/create/phrase/check"
+        linkTo="/create/phrase/generated"
       >
         Get started
       </Button>
