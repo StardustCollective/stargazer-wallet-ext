@@ -1,17 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-
-import store, { persistor } from '../../redux/store';
+import { Store, applyMiddleware } from 'webext-redux';
+import createSagaMiddleware from 'redux-saga';
 
 import App from './App';
 
-ReactDOM.render(
-  <Provider store={store}>
-    <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+const app = document.getElementById('app-root');
+const sagaMiddleware = createSagaMiddleware();
+const middleware = [sagaMiddleware];
+const store = new Store({ portName: 'Stargazer' });
+applyMiddleware(store, ...middleware);
+
+store.ready().then(() => {
+  ReactDOM.render(
+    <Provider store={store}>
       <App />
-    </PersistGate>
-  </Provider>,
-  document.getElementById('popup-root')
-);
+    </Provider>,
+    app
+  );
+});

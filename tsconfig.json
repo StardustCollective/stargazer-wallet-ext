@@ -19,7 +19,7 @@
       "containers/*": ["./source/containers/*"],
       "pages/*": ["./source/pages/*"],
       "routers/*": ["./source/routers/*"],
-      "reducers/*": ["./source/reducers/*"],
+      "reducers/*": ["./source/redux/*"],
       "sagas/*": ["./source/sagas/*"]
     }
   },
