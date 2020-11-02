@@ -14,7 +14,7 @@ import { RootState } from 'reducers/store';
 const App: FC = () => {
   const { isAuth } = useSelector((state: RootState) => state.auth.isAuth);
   return (
-    <section id="app">
+    <section id="app" style={{ minHeight: '300px' }}>
       <Container>
         <Router>{isAuth ? <AuthRouter /> : <UnAuthRouter />}</Router>
       </Container>

@@ -2,11 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IAuthState {
   isAuth: boolean;
+  password: string | null;
   phrases: string[] | null;
 }
 
 const initialState: IAuthState = {
   phrases: null,
+  password: null,
   isAuth: false,
 };
 
@@ -15,17 +17,38 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    // initialize state
+    initState(state) {
+      state.phrases = null;
+      state.password = null;
+      state.isAuth = false;
+    },
     // authorization for new user
     authUser(state) {
       state.isAuth = true;
+    },
+    // unauthorization for new user
+    unauthUser(state) {
+      state.isAuth = false;
+      state.phrases = null;
     },
     // set phrases with generated one
     setPhrases(state, action: PayloadAction<string[]>) {
       state.phrases = action.payload;
     },
+    // set password
+    setPassword(state, action: PayloadAction<string>) {
+      state.password = action.payload;
+    },
   },
 });
 
-export const { authUser, setPhrases } = authSlice.actions;
+export const {
+  initState,
+  authUser,
+  unauthUser,
+  setPhrases,
+  setPassword,
+} = authSlice.actions;
 
 export default authSlice.reducer;
