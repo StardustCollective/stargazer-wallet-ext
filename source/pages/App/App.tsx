@@ -12,7 +12,7 @@ import { RootState } from 'reducers/store';
 // }
 
 const App: FC = () => {
-  const { isAuth } = useSelector((state: RootState) => state.auth.isAuth);
+  const { isAuth } = useSelector((state: RootState) => state.auth);
   return (
     <section id="app" style={{ minHeight: '300px' }}>
       <Container>

@@ -19,10 +19,11 @@ const CreatePhrase: FC = () => {
     ? consts.CREATE_PHRASE_DESCRIPTION2
     : consts.CREATE_PHRASE_DESCRIPTION1;
 
-  const phrases = useSelector((state: RootState) => state.auth.phrases || []);
+  const phrases = useSelector((state: RootState) => state.auth?.phrases || []);
+  const isAuth = useSelector((state: RootState) => state.auth.isAuth);
 
   const nextHandler = () => {
-    if (passed) {
+    if (isAuth || passed) {
       history.push('/create/phrase/check');
     } else {
       setPassed(true);
