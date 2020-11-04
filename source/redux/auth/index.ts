@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IAuthState {
   isAuth: boolean;
+  isLogged: boolean;
   password: string | null;
   phrases: string[] | null;
 }
@@ -10,6 +11,7 @@ const initialState: IAuthState = {
   phrases: null,
   password: null,
   isAuth: false,
+  isLogged: false,
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -22,6 +24,14 @@ const authSlice = createSlice({
       state.phrases = null;
       state.password = null;
       state.isAuth = false;
+    },
+    // log-in
+    loginUser(state) {
+      state.isLogged = true;
+    },
+    // log-out
+    logoutUser(state) {
+      state.isLogged = false;
     },
     // authorization for new user
     authUser(state) {
@@ -45,6 +55,8 @@ const authSlice = createSlice({
 
 export const {
   initState,
+  loginUser,
+  logoutUser,
   authUser,
   unauthUser,
   setPhrases,

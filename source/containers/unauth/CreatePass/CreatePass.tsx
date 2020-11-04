@@ -45,7 +45,7 @@ const CreatePass = () => {
           <>
             <TextInput
               type="password"
-              placeholder="Please enter at least 9 characters"
+              placeholder="Please enter at least 8 characters"
               fullWidth
               name="password"
               visiblePassword

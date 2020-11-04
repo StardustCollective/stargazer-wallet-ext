@@ -6,7 +6,7 @@ import { RootState } from 'reducers/store';
 import { useHistory } from 'react-router-dom';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
-import { authUser } from 'reducers/auth';
+import { authUser, loginUser } from 'reducers/auth';
 
 import Layout from '../Layout';
 
@@ -48,6 +48,7 @@ const ConfirmPhrase = () => {
       setPassed(true);
     } else {
       dispatch(authUser());
+      dispatch(loginUser());
       history.push('/app.html');
     }
   };
