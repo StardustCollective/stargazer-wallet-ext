@@ -3,7 +3,7 @@ import Button from 'components/Button';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setPhrases } from 'reducers/auth';
-import { keyStore } from '@stardust-collective/dag-keystore';
+import { dag } from '@stardust-collective/dag-wallet-sdk';
 
 import Layout from '../Layout';
 
@@ -13,7 +13,7 @@ const RemindPhrase = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const generatePhrases = () => {
-    dispatch(setPhrases(keyStore.generateSeedPhrase().split(' ')));
+    dispatch(setPhrases(dag.keyStore.generateSeedPhrase().split(' ')));
     history.push('/create/phrase/generated');
   };
 
