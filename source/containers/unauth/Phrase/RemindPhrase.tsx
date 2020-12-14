@@ -2,7 +2,7 @@ import React from 'react';
 import Button from 'components/Button';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setPhrases } from 'reducers/auth';
+import { setPhrases } from 'state/auth';
 import { dag } from '@stardust-collective/dag-wallet-sdk';
 
 import Layout from '../Layout';

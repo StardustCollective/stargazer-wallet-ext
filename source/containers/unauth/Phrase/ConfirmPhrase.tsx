@@ -2,11 +2,11 @@ import React, { useState, useCallback } from 'react';
 import Button from 'components/Button';
 import CheckIcon from 'assets/images/svg/check.svg';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from 'reducers/store';
+import { RootState } from 'state/store';
 import { useHistory } from 'react-router-dom';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
-import { authUser, loginUser } from 'reducers/auth';
+import { authUser, loginUser } from 'state/auth';
 
 import Layout from '../Layout';
 

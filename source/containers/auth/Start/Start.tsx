@@ -5,10 +5,10 @@ import Link from 'components/Link';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import LogoImage from 'assets/images/logo-m.png';
-import { RootState } from 'reducers/store';
+import { RootState } from 'state/store';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { loginUser } from 'reducers/auth';
+import { loginUser } from 'state/auth';
 
 import { schema } from './consts';
 import styles from './Start.scss';

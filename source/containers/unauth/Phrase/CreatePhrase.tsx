@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
-import { RootState } from 'reducers/store';
+import { RootState } from 'state/store';
 
 import Layout from '../Layout';
 

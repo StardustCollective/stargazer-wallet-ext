@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Start from 'containers/auth/Start';
-import { RootState } from 'reducers/store';
+import { RootState } from 'state/store';
 import Home from 'containers/auth/Home';
 
 const Auth = () => {

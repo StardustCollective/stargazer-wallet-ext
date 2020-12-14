@@ -6,7 +6,7 @@ import TextInput from 'components/TextInput';
 import CheckIcon from 'assets/images/svg/check.svg';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { setPassword } from 'reducers/auth';
+import { setPassword } from 'state/auth';
 
 import Layout from '../Layout';
 

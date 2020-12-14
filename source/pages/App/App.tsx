@@ -6,7 +6,7 @@ import Container from 'containers/common/Container';
 import AuthRouter from 'routers/Auth';
 import UnAuthRouter from 'routers/UnAuth';
 import 'assets/styles/global.scss';
-import { RootState } from 'reducers/store';
+import { RootState } from 'state/store';
 // function openWebPage(url: string): Promise<Tabs.Tab> {
 //   return browser.tabs.create({ url });
 // }
