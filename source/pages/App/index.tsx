@@ -4,19 +4,22 @@ import { Provider } from 'react-redux';
 import { Store, applyMiddleware } from 'webext-redux';
 import thunkMiddleware from 'redux-thunk';
 import { dag } from '@stardust-collective/dag-wallet-sdk';
+import {
+  DAG_CONFIG_ID,
+  STORE_PORT,
+  DAG_BE_URL,
+  DAG_LB_URL,
+} from 'source/constants';
 
 import { FetchRestService } from '../../services/fetch.http';
 
 import App from './App';
 
-const BE_URL = 'https://block-explorer.constellationnetwork.io';
-const LB_URL = 'http://lb.constellationnetwork.io:9000';
-
 dag.di.registerHttpClient(new FetchRestService());
 dag.network.config({
-  id: 'main',
-  beUrl: BE_URL,
-  lbUrl: LB_URL,
+  id: DAG_CONFIG_ID,
+  beUrl: DAG_BE_URL,
+  lbUrl: DAG_LB_URL,
 });
 
 // NOTE: API Examples
@@ -25,7 +28,7 @@ dag.network.config({
 
 const app = document.getElementById('app-root');
 const middleware = [thunkMiddleware];
-const store = new Store({ portName: 'STARGAZER' });
+const store = new Store({ portName: STORE_PORT });
 applyMiddleware(store, ...middleware);
 
 store.ready().then(() => {
