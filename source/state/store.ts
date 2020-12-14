@@ -15,7 +15,7 @@ const store: Store = configureStore({
     auth: authReducer,
   }),
   middleware: [
-    ...getDefaultMiddleware({ thunk: true, serializableCheck: false }),
+    ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
     logger,
   ],
   devTools: process.env.NODE_ENV !== 'production',

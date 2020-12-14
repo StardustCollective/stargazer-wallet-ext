@@ -20,7 +20,8 @@
       "pages/*": ["./source/pages/*"],
       "routers/*": ["./source/routers/*"],
       "state/*": ["source/state/*"],
-      "sagas/*": ["./source/sagas/*"]
+      "constants/*": ["source/constants/*"],
+      "services/*": ["source/services/*"]
     }
   },
   "include": ["source", "webpack.config.ts"]

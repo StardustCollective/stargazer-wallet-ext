@@ -86,7 +86,8 @@ module.exports = {
       pages: path.resolve(__dirname, 'source/pages'),
       routers: path.resolve(__dirname, 'source/routers'),
       state: path.resolve(__dirname, 'source/state'),
-      sagas: path.resolve(__dirname, 'source/sagas'),
+      constants: path.resolve(__dirname, 'source/constants'),
+      services: path.resolve(__dirname, 'source/services'),
     },
   },
 
