@@ -1,25 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Button from 'components/Button';
 import CheckIcon from 'assets/images/svg/check.svg';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from 'reducers/store';
+import { useHistory } from 'react-router-dom';
+import shuffle from 'lodash/shuffle';
+import isEqual from 'lodash/isEqual';
+import { authUser, loginUser } from 'reducers/auth';
 
 import Layout from '../Layout';
 
-import { TEST_PHRASES } from './consts';
 import styles from './index.scss';
 
 const ConfirmPhrase = () => {
-  const [orgList, setOrgList] = useState<Array<string>>(TEST_PHRASES);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { phrases, isAuth } = useSelector((state: RootState) => state.auth);
+  const [orgList, setOrgList] = useState<Array<string>>(shuffle(phrases));
   const [newList, setNewList] = useState<Array<string>>([]);
-  const [passed, setPassed] = useState(false);
+  const [passed, setPassed] = useState(isAuth);
   const title = passed
     ? `Your Wallet is ready`
     : `Verify your recovery\nphrase`;
+
+  const isNotEqualArrays = useCallback((): boolean => {
+    return !isEqual(phrases, newList);
+  }, [phrases, newList]);
 
   const handleOrgPhrase = (idx: number) => {
     const tempList = [...orgList];
     setNewList([...newList, orgList[idx]]);
     tempList.splice(idx, 1);
     setOrgList([...tempList]);
+    isNotEqualArrays();
   };
 
   const handleNewPhrase = (idx: number) => {
@@ -27,10 +40,17 @@ const ConfirmPhrase = () => {
     setOrgList([...orgList, newList[idx]]);
     tempList.splice(idx, 1);
     setNewList([...tempList]);
+    isNotEqualArrays();
   };
 
-  const nextHandler = () => {
-    setPassed(true);
+  const handleConfirm = () => {
+    if (!passed) {
+      setPassed(true);
+    } else {
+      dispatch(authUser());
+      dispatch(loginUser());
+      history.push('/app.html');
+    }
   };
 
   return (
@@ -74,8 +94,8 @@ const ConfirmPhrase = () => {
       <Button
         type="button"
         variant={passed ? styles.start : styles.validate}
-        disabled={newList.length !== 12}
-        onClick={nextHandler}
+        disabled={isNotEqualArrays()}
+        onClick={handleConfirm}
       >
         {passed ? 'Next' : 'Validate'}
       </Button>

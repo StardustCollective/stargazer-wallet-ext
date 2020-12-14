@@ -5,7 +5,7 @@ import LogoImage from 'assets/images/logo-l.png';
 
 import styles from './Start.scss';
 
-const Starter = () => {
+const Start = () => {
   return (
     <div className={styles.home}>
       <h1 className="heading-1 full-width t-white">
@@ -18,7 +18,7 @@ const Starter = () => {
         type="submit"
         theme="secondary"
         variant={styles.started}
-        linkTo="/create/phrase/check"
+        linkTo="/remind"
       >
         Get started
       </Button>
@@ -32,4 +32,4 @@ const Starter = () => {
   );
 };
 
-export default Starter;
+export default Start;

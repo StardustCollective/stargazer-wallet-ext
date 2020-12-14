@@ -1,22 +1,29 @@
 import React, { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
+import { RootState } from 'reducers/store';
 
 import Layout from '../Layout';
 
-import { TEST_PHRASES } from './consts';
+import * as consts from './consts';
 import styles from './index.scss';
 
 const CreatePhrase: FC = () => {
   const history = useHistory();
   const [passed, setPassed] = useState(false);
-  const title = passed ? `Let's double check` : `This is your recovery\nphrase`;
+  const title = passed
+    ? consts.CREATE_PHRASE_TITLE2
+    : consts.CREATE_PHRASE_TITLE1;
   const description = passed
-    ? "Well done. To verify that you've written down your recovery phrase correctly, please enter it again in the next step."
-    : 'Please make sure to write it down exactly as shown here.';
+    ? consts.CREATE_PHRASE_DESCRIPTION2
+    : consts.CREATE_PHRASE_DESCRIPTION1;
+
+  const phrases = useSelector((state: RootState) => state.auth?.phrases || []);
+  const isAuth = useSelector((state: RootState) => state.auth.isAuth);
 
   const nextHandler = () => {
-    if (passed) {
+    if (isAuth || passed) {
       history.push('/create/phrase/check');
     } else {
       setPassed(true);
@@ -28,7 +35,7 @@ const CreatePhrase: FC = () => {
       <div className="body-description mb-30">{description}</div>
       {!passed && (
         <ul className={styles.generated}>
-          {TEST_PHRASES.map((phrase, index) => (
+          {phrases.map((phrase: string, index: number) => (
             <li key={phrase}>
               <span className="t-gray-medium">
                 {String(index + 1).padStart(2, '0')}.

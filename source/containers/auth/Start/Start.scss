@@ -19,11 +19,19 @@
     margin-bottom: 12px;
   }
 
-  .password {
-    margin-bottom: 36px;
-  }
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 
-  .unlock {
-    margin-bottom: 30px;
+    .password {
+      margin-bottom: 36px;
+    }
+
+    .unlock {
+      margin-bottom: 30px;
+    }
   }
 }

@@ -7,6 +7,19 @@
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
 
+  section#app {
+    min-height: 300px;
+    display: flex;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    position: fixed;
+    align-items: center;
+    background: $white;
+    justify-content: center;
+  }
+
   // Font styles
   .heading-1 {
     font-style: normal;

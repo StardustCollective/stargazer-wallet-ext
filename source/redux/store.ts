@@ -2,39 +2,36 @@ import {
   combineReducers,
   configureStore,
   getDefaultMiddleware,
+  Store,
 } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
-import { persistReducer, persistStore } from 'redux-persist';
-import { localStorage } from 'redux-persist-webextension-storage';
 import logger from 'redux-logger';
-import rootSaga from 'sagas/index';
+import throttle from 'lodash/throttle';
 
-import authReducer from './auth/reducer';
+import authReducer from './auth';
+import { saveState, loadState } from './localStorage';
 
-const sagaMiddleware = createSagaMiddleware();
-
-const persistConfig = {
-  key: 'root',
-  storage: localStorage,
-  version: 1,
-};
-
-const store = configureStore({
-  reducer: persistReducer(
-    persistConfig,
-    combineReducers({
-      auth: authReducer,
-    })
-  ),
+const store: Store = configureStore({
+  reducer: combineReducers({
+    auth: authReducer,
+  }),
   middleware: [
-    ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
-    sagaMiddleware,
+    ...getDefaultMiddleware({ thunk: true, serializableCheck: false }),
     logger,
   ],
+  devTools: process.env.NODE_ENV !== 'production',
+  preloadedState: loadState(),
 });
 
-sagaMiddleware.run(rootSaga);
+store.subscribe(
+  throttle(() => {
+    const state = store.getState();
+    saveState({
+      auth: state.auth,
+    });
+  }, 1000)
+);
 
-export const persistor = persistStore(store);
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

@@ -1,4 +1,4 @@
-import React, { FC, useState, MouseEvent } from 'react';
+import React, { FC, useState, MouseEvent, Ref } from 'react';
 import clsx from 'clsx';
 import MUITextInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -10,6 +10,8 @@ import styles from './TextInput.scss';
 
 interface ITextInput {
   fullWidth?: boolean;
+  inputRef?: Ref<any>;
+  name?: string;
   placeholder?: string;
   type?: 'text' | 'password' | 'number';
   variant?: string;
@@ -22,6 +24,8 @@ const TextInput: FC<ITextInput> = ({
   fullWidth,
   visiblePassword = false,
   variant = '',
+  inputRef,
+  name = '',
 }) => {
   const [showed, setShowed] = useState(false);
   const inputType = showed && type === 'password' ? 'text' : type;
@@ -40,6 +44,8 @@ const TextInput: FC<ITextInput> = ({
       type={inputType}
       placeholder={placeholder}
       fullWidth={fullWidth}
+      inputRef={inputRef}
+      name={name}
       endAdornment={
         type === 'password' && visiblePassword ? (
           <InputAdornment position="end">
