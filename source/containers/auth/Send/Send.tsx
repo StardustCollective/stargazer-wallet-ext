@@ -1,21 +1,43 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 import CloseIcon from 'assets/images/svg/close.svg';
+import VerifiedIcon from 'assets/images/svg/check-green.svg';
 
 import styles from './Send.scss';
 
 const WalletSend = () => {
   const [address, setAddress] = useState('');
 
-  const handleAddress = () => {
+  const tempVerifyAddress = useMemo(() => {
+    if (address.length >= 3 && address.length <= 6) {
+      return true;
+    }
+    return false;
+  }, [address]);
+
+  const addressInputClass = clsx(styles.input, styles.address, {
+    [styles.verified]: tempVerifyAddress,
+  });
+  const statusIconClass = clsx(styles.statusIcon, {
+    [styles.hide]: !tempVerifyAddress,
+  });
+
+  const handleAddressOption = () => {
     if (address) {
       setAddress('');
     }
   };
+
+  const handleAddressChange = useCallback(
+    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setAddress(ev.target.value);
+    },
+    []
+  );
 
   return (
     <div className={styles.wrapper}>
@@ -24,19 +46,18 @@ const WalletSend = () => {
         <span className={styles.title}>Send DAG</span>
         <span className={styles.label}>Address:</span>
         <div className={styles.inputWrapper}>
+          <img src={VerifiedIcon} alt="checked" className={statusIconClass} />
           <TextInput
             placeholder="Enter a valid DAG address"
             fullWidth
             value={address}
-            onChange={(
-              ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-            ) => setAddress(ev.target.value)}
-            variant={clsx(styles.input, styles.address)}
+            onChange={handleAddressChange}
+            variant={addressInputClass}
           />
           <Button
             type="button"
             variant={styles.qrcode}
-            onClick={() => handleAddress()}
+            onClick={handleAddressOption}
           >
             {address ? (
               <img src={CloseIcon} alt="close" />
