@@ -1,0 +1,60 @@
+@import '~assets/styles/variables';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  width: 100%;
+  height: 100%;
+
+  .heading {
+    height: 144px;
+    width: 100%;
+    padding: 24px 36px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 72px;
+    background: $gray-light;
+    border-bottom: 1px solid $gray-medium;
+
+    .title {
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+      color: $gray-dark;
+    }
+  }
+
+  .input {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    height: 48px;
+
+    input {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  .label {
+    width: 100%;
+    display: block;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 16px;
+    margin-bottom: 12px;
+    color: $gray-dark;
+  }
+
+  .content {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 36px;
+    padding-bottom: 24px;
+  }
+}

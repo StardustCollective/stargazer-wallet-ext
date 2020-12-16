@@ -26,7 +26,12 @@ const Home = () => {
         <span>DAG Balance</span>
         <h3>1,000,000.00</h3>
         <small>$20,000.75 USD</small>
-        <Button type="button" theme="primary" variant={styles.send}>
+        <Button
+          type="button"
+          theme="primary"
+          variant={styles.send}
+          linkTo="/send"
+        >
           Send
         </Button>
       </section>

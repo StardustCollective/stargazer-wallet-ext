@@ -11,7 +11,7 @@ import styles from './index.scss';
 
 const CreatePhrase: FC = () => {
   const history = useHistory();
-  const [passed, setPassed] = useState(false);
+  const [passed, setPassed] = useState(true);
   const title = passed
     ? consts.CREATE_PHRASE_TITLE2
     : consts.CREATE_PHRASE_TITLE1;
