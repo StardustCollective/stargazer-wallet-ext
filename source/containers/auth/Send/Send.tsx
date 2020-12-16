@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import clsx from 'clsx';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
+import CloseIcon from 'assets/images/svg/close.svg';
 
 import styles from './Send.scss';
 
 const WalletSend = () => {
+  const [address, setAddress] = useState('');
+
+  const handleAddress = () => {
+    if (address) {
+      setAddress('');
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <Header backLink="/home" />
@@ -18,10 +27,22 @@ const WalletSend = () => {
           <TextInput
             placeholder="Enter a valid DAG address"
             fullWidth
+            value={address}
+            onChange={(
+              ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+            ) => setAddress(ev.target.value)}
             variant={clsx(styles.input, styles.address)}
           />
-          <Button type="button" variant={styles.qrcode}>
-            <img src={QRCodeIcon} alt="qr-code" />
+          <Button
+            type="button"
+            variant={styles.qrcode}
+            onClick={() => handleAddress()}
+          >
+            {address ? (
+              <img src={CloseIcon} alt="close" />
+            ) : (
+              <img src={QRCodeIcon} alt="qr-code" />
+            )}
           </Button>
         </div>
       </section>
@@ -32,6 +53,7 @@ const WalletSend = () => {
         </span>
         <div className={styles.inputWrapper}>
           <TextInput
+            type="number"
             placeholder="Enter amount to send"
             fullWidth
             variant={clsx(styles.input, styles.amount)}
@@ -42,6 +64,7 @@ const WalletSend = () => {
         </div>
         <span className={styles.label}>Transaction Fee:</span>
         <TextInput
+          type="number"
           placeholder="Enter $DAG transaction fee"
           fullWidth
           variant={styles.input}
