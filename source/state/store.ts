@@ -7,12 +7,12 @@ import {
 import logger from 'redux-logger';
 import throttle from 'lodash/throttle';
 
-import authReducer from './auth';
+import wallet from './wallet';
 import { saveState, loadState } from './localStorage';
 
 const store: Store = configureStore({
   reducer: combineReducers({
-    auth: authReducer,
+    wallet,
   }),
   middleware: [
     ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),

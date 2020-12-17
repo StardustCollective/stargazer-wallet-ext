@@ -10,7 +10,7 @@ import {
 import { browser } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
 import store from 'state/store';
-import { dag } from '@stardust-collective/dag-wallet-sdk';
+import { dag } from '@stardust-collective/dag4-wallet';
 import { FetchRestService } from 'services/fetch.http';
 
 import MasterController, { IMasterController } from './controllers';
