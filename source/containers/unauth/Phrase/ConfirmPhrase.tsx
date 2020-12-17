@@ -8,7 +8,7 @@ import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
 import { authUser, loginUser } from 'state/auth';
 
-import Layout from '../Layout';
+import Layout from '../../common/Layout';
 
 import styles from './index.scss';
 

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 // import { setPhrases } from 'state/auth';
 // import { dag } from '@stardust-collective/dag-wallet-sdk';
 
-import Layout from '../Layout';
+import Layout from '../../common/Layout';
 
 import styles from './index.scss';
 

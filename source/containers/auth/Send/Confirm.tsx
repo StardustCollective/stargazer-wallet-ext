@@ -1,13 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import Header from 'containers/common/Header';
+import Layout from 'containers/common/Layout';
 import Button from 'components/Button';
+import CheckIcon from 'assets/images/svg/check.svg';
 import RightArrowIcon from 'assets/images/svg/arrow-right.svg';
 
 import styles from './Confirm.scss';
 
 const SendConfirm = () => {
-  return (
+  const [confirmed, setConfirmed] = useState(false);
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+  };
+
+  return confirmed ? (
+    <Layout title="Your transaction is underway" linkTo="/remind" showLogo>
+      <img src={`/${CheckIcon}`} className={styles.checked} alt="Success" />
+      <div className="body-description">
+        You can follow your transaction under activity on your account screen.
+      </div>
+      <Button type="button" variant={styles.next} linkTo="/home">
+        Next
+      </Button>
+    </Layout>
+  ) : (
     <div className={styles.wrapper}>
       <Header backLink="/send" />
       <section className={styles.heading}>
@@ -63,8 +81,8 @@ const SendConfirm = () => {
           >
             Close
           </Button>
-          <Button type="submit" variant={styles.button}>
-            Send
+          <Button type="submit" variant={styles.button} onClick={handleConfirm}>
+            Confirm
           </Button>
         </div>
       </section>
