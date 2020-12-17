@@ -11,7 +11,6 @@ export interface IWalletController {
 const WalletController = (): IWalletController => {
   let password = '';
   let phrase = '';
-  let privateKey = '';
   // let masterKey = '';
 
   const generatedPhrase = () => {
@@ -23,23 +22,18 @@ const WalletController = (): IWalletController => {
   };
 
   const isLocked = () => {
-    return !password || !phrase || !privateKey;
+    return !password || !phrase;
   };
 
   const createWallet = async () => {
     const { keystore } = store.getState().wallet;
     if (keystore) return;
-    _generatePrivateKey();
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     store.dispatch(setKeystoreInfo(v3Keystore));
   };
 
   const setWalletPassword = (str: string) => {
     password = str;
-  };
-
-  const _generatePrivateKey = () => {
-    privateKey = dag.keyStore.getPrivateKeyFromMnemonic(phrase);
   };
 
   return {
