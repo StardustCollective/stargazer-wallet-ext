@@ -1,15 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import Start from 'containers/auth/Start';
-import { RootState } from 'state/store';
 import { useTransition, animated } from 'react-spring';
 import Home from 'containers/auth/Home';
 import Send, { SendConfirm } from 'containers/auth/Send';
 
 const Auth = () => {
   const location = useLocation();
-  const { isLogged } = useSelector((state: RootState) => state.auth);
+  const isUnlocked = false;
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -32,11 +30,13 @@ const Auth = () => {
         >
           <Switch location={item}>
             <Route path="/app.html" component={Start} exact>
-              {isLogged && <Redirect to="/home" />}
+              {isUnlocked && <Redirect to="/home" />}
             </Route>
-            <Route path="/home" component={Home} exact />
-            <Route path="/send/confirm" component={SendConfirm} exact />
-            <Route path="/send" component={Send} exact />
+            {isUnlocked && <Route path="/home" component={Home} exact />}
+            {isUnlocked && (
+              <Route path="/send/confirm" component={SendConfirm} exact />
+            )}
+            {isUnlocked && <Route path="/send" component={Send} exact />}
           </Switch>
         </animated.div>
       ))}

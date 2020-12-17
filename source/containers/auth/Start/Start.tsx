@@ -3,26 +3,28 @@ import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 import Link from 'components/Link';
 import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import LogoImage from 'assets/images/logo-m.png';
-import { RootState } from 'state/store';
+import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import LogoImage from 'assets/images/logo-m.png';
+import { RootState } from 'state/store';
+import IWalletState from 'state/wallet/types';
 // import { loginUser } from 'state/account';
 
 import { schema } from './consts';
 import styles from './Start.scss';
 
 const Starter = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
-  const { password } = useSelector((state: RootState) => state.auth);
+  const { keystore }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
   const { handleSubmit, register } = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = (data: any) => {
-    if (password === data.password) {
+    if (keystore) {
       //  dispatch(loginUser());
     }
     history.push('/home');

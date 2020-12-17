@@ -21,7 +21,8 @@
       "routers/*": ["./source/routers/*"],
       "state/*": ["source/state/*"],
       "constants/*": ["source/constants/*"],
-      "services/*": ["source/services/*"]
+      "services/*": ["source/services/*"],
+      "hooks/*": ["source/hooks/*"]
     }
   },
   "include": ["source", "webpack.config.ts"]

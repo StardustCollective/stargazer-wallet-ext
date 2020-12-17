@@ -88,6 +88,7 @@ module.exports = {
       state: path.resolve(__dirname, 'source/state'),
       constants: path.resolve(__dirname, 'source/constants'),
       services: path.resolve(__dirname, 'source/services'),
+      hooks: path.resolve(__dirname, 'source/hooks'),
     },
   },
 

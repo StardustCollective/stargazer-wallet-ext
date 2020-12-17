@@ -1,4 +1,4 @@
-import { DagTypes } from '@stardust-collective/dag-wallet-sdk';
+import { DagTypes } from '@stardust-collective/dag4-wallet';
 
 export class FetchRestService {
   invoke(options: DagTypes.RestApiOptionsRequest) {

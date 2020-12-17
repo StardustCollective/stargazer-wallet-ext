@@ -5,6 +5,7 @@ import TextInput from 'components/TextInput';
 import CheckIcon from 'assets/images/svg/check.svg';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useController } from 'hooks/index';
 
 import Layout from '../../common/Layout';
 
@@ -13,6 +14,7 @@ import styles from './CreatePass.scss';
 
 const CreatePass = () => {
   const history = useHistory();
+  const controller = useController();
   const [passed, setPassed] = useState(false);
   const { handleSubmit, register, errors } = useForm({
     resolver: yupResolver(consts.schema),
@@ -29,7 +31,7 @@ const CreatePass = () => {
   };
 
   const onSubmit = (data: any) => {
-    //
+    controller.wallet.setWalletPassword(data.password);
     setPassed(true);
   };
 

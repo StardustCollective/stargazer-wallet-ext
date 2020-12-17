@@ -26,7 +26,7 @@ store.subscribe(
   throttle(() => {
     const state = store.getState();
     saveState({
-      auth: state.auth,
+      wallet: state.wallet,
     });
   }, 1000)
 );
