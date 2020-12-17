@@ -5,6 +5,7 @@ export interface IWalletController {
   createWallet: () => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (str: string) => void;
+  isLocked: () => boolean;
 }
 
 const WalletController = (): IWalletController => {
@@ -19,6 +20,10 @@ const WalletController = (): IWalletController => {
       phrase = dag.keyStore.generateSeedPhrase();
     }
     return keystore ? null : phrase;
+  };
+
+  const isLocked = () => {
+    return !password || !phrase || !privateKey;
   };
 
   const createWallet = async () => {
@@ -41,6 +46,7 @@ const WalletController = (): IWalletController => {
     generatedPhrase,
     setWalletPassword,
     createWallet,
+    isLocked,
   };
 };
 

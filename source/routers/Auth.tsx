@@ -4,10 +4,12 @@ import Start from 'containers/auth/Start';
 import { useTransition, animated } from 'react-spring';
 import Home from 'containers/auth/Home';
 import Send, { SendConfirm } from 'containers/auth/Send';
+import { useController } from 'hooks/index';
 
 const Auth = () => {
   const location = useLocation();
-  const isUnlocked = false;
+  const controller = useController();
+  const isUnlocked = controller.wallet.isLocked();
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
