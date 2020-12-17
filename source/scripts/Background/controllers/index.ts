@@ -1,14 +1,14 @@
-import AccountsController, { IAccountsController } from './AccountsController';
+import WalletController, { IWalletController } from './WalletController';
 
 export interface IMasterController {
-  accounts: Readonly<IAccountsController>;
+  wallet: Readonly<IWalletController>;
 }
 
 const MasterController = (): IMasterController => {
-  const accounts = Object.freeze(AccountsController());
+  const wallet = Object.freeze(WalletController());
 
   return {
-    accounts,
+    wallet,
   };
 };
 

@@ -1,23 +1,8 @@
-export interface Keystore {
-  crypto: {
-    cipher: string;
-    cipherparams: {
-      iv: string;
-    };
-    ciphertext: string;
-    kdf: string;
-    kdfparams: {
-      dklen: number;
-      n: number;
-      p: number;
-      r: number;
-      salt: string;
-    };
-    mac: string;
-  };
-  id: string;
-  version: number;
-}
+import {
+  V3Keystore,
+  KDFParamsPhrase,
+} from '@stardust-collective/dag4-keystore/types/v3-keystore';
+export type Keystore = V3Keystore<KDFParamsPhrase>;
 
 export default interface IWalletState {
   keystore: Keystore | null;

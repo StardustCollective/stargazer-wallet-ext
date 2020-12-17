@@ -8,7 +8,7 @@ import LogoImage from 'assets/images/logo-m.png';
 import { RootState } from 'state/store';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { loginUser } from 'state/auth';
+// import { loginUser } from 'state/account';
 
 import { schema } from './consts';
 import styles from './Start.scss';
@@ -22,7 +22,9 @@ const Starter = () => {
   });
 
   const onSubmit = (data: any) => {
-    if (password === data.password) dispatch(loginUser());
+    if (password === data.password) {
+      //  dispatch(loginUser());
+    }
     history.push('/home');
   };
 

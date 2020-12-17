@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import IWalletState, { Keystore } from './types';
 
 const initialState: IWalletState = {

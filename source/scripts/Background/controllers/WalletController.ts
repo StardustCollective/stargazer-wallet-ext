@@ -1,13 +1,14 @@
 import { dag } from '@stardust-collective/dag4-wallet';
-// import store from 'state/store';
-export interface IAccountsController {
-  // createNewWallet: () => void;
+import store from 'state/store';
+import { setKeystoreInfo } from 'state/wallet';
+export interface IWalletController {
+  createNewWallet: () => void;
   generatePhrase: () => string;
   generatePrivateKey: () => void;
   setWalletPassword: (str: string) => void;
 }
 
-const AccountsController = (): IAccountsController => {
+const WalletController = (): IWalletController => {
   let password = '';
   let phrase = '';
   let privateKey = '';
@@ -22,9 +23,10 @@ const AccountsController = (): IAccountsController => {
     privateKey = dag.keyStore.getPrivateKeyFromMnemonic(phrase);
   };
 
-  // const createNewWallet = async () => {
-  //   const keystore = await dag.keyStore.encryptPhrase(password, privateKey);
-  // };
+  const createNewWallet = async () => {
+    const keystore = await dag.keyStore.encryptPhrase(password, privateKey);
+    store.dispatch(setKeystoreInfo(keystore));
+  };
 
   const setWalletPassword = (str: string) => {
     password = str;
@@ -34,8 +36,8 @@ const AccountsController = (): IAccountsController => {
     generatePhrase,
     setWalletPassword,
     generatePrivateKey,
-    // createNewWallet,
+    createNewWallet,
   };
 };
 
-export default AccountsController;
+export default WalletController;
