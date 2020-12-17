@@ -5,7 +5,7 @@ import Start from 'containers/auth/Start';
 import { RootState } from 'state/store';
 import { useTransition, animated } from 'react-spring';
 import Home from 'containers/auth/Home';
-import Send from 'containers/auth/Send';
+import Send, { SendConfirm } from 'containers/auth/Send';
 
 const Auth = () => {
   const location = useLocation();
@@ -35,6 +35,7 @@ const Auth = () => {
               {isLogged && <Redirect to="/home" />}
             </Route>
             <Route path="/home" component={Home} exact />
+            <Route path="/send/confirm" component={SendConfirm} exact />
             <Route path="/send" component={Send} exact />
           </Switch>
         </animated.div>

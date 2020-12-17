@@ -102,7 +102,7 @@ const WalletSend = () => {
           >
             Close
           </Button>
-          <Button type="submit" variant={styles.button}>
+          <Button type="submit" variant={styles.button} linkTo="/send/confirm">
             Send
           </Button>
         </div>
