@@ -4,14 +4,14 @@ import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 import { RootState } from 'state/store';
 
-import Layout from '../Layout';
+import Layout from '../../common/Layout';
 
 import * as consts from './consts';
 import styles from './index.scss';
 
 const CreatePhrase: FC = () => {
   const history = useHistory();
-  const [passed, setPassed] = useState(false);
+  const [passed, setPassed] = useState(true);
   const title = passed
     ? consts.CREATE_PHRASE_TITLE2
     : consts.CREATE_PHRASE_TITLE1;

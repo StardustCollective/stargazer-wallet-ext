@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { setPassword } from 'state/auth';
 
-import Layout from '../Layout';
+import Layout from '../../common/Layout';
 
 import * as consts from './consts';
 import styles from './CreatePass.scss';
