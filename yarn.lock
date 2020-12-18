@@ -1086,10 +1086,10 @@
   resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-0.0.3.tgz#debec647a670a673789f74818a735635ff913c3a"
   integrity sha512-3Liegh5ICsU+mLh8oqMjpvQtKSd2VCD4sqikxoQWhPBgcbh7pdKlQ2Dtfbyv94+gfgXlFWTEmfY3mQRAUXHWHg==
 
-"@stardust-collective/dag4-keystore@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keystore/-/dag4-keystore-0.0.2.tgz#ee08b0c47fd843f3a88a6cd896f5b2ac52d4c2ae"
-  integrity sha512-OBZK/z+y2f999z6b23UjWFvOk5a9rWepq0Rb6QlAV8VTlRaL7w5cvDXmqrrS8Z9ozw0HjpB/z94x2dUnqIsAMw==
+"@stardust-collective/dag4-keystore@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keystore/-/dag4-keystore-0.0.4.tgz#ff4b359d7543a22f73032991d0137badd13a5312"
+  integrity sha512-JCcXD6+n0ds7rpNJqibvHunFLcjRNgAAgh0RVoNgAXApB0gjmagYLwbehlsQCehbNL3RI3TZBVbPqgxrFefMdw==
   dependencies:
     bip39 "^3.0.2"
     blakejs "^1.1.0"
@@ -1117,13 +1117,13 @@
     "@stardust-collective/dag4-core" "0.0.2"
     rxjs "^6.6.3"
 
-"@stardust-collective/dag4-wallet@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-wallet/-/dag4-wallet-0.0.2.tgz#d40cb09319db9a1f549f692fc8e1c9ab9c10e20f"
-  integrity sha512-aJAMGi7PmyXCSvu8dRXXJBWu2VtmJaPoQdoid9dZrUb5RAuREZ3FWNyxRn938CDBvHycC23xq97I+TP+GHj6qA==
+"@stardust-collective/dag4-wallet@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-wallet/-/dag4-wallet-0.0.3.tgz#fb3b3f280750a4df861ec619c2580e6203a26afe"
+  integrity sha512-VLpqlkhg1HEQ9jcrnU/NO708cJlrzUL+5xy8jBJbXrk/bgoTiNixC+MtguknkRJis+G3de7mqyYh4ptY9PUI3g==
   dependencies:
     "@stardust-collective/dag4-core" "^0.0.3"
-    "@stardust-collective/dag4-keystore" "^0.0.2"
+    "@stardust-collective/dag4-keystore" "^0.0.4"
     "@stardust-collective/dag4-network" "^0.0.1"
 
 "@types/anymatch@*":
