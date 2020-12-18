@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import Button from 'components/Button';
 import Link from 'components/Link';
 
-import Layout from '../Layout';
+import Layout from '../../common/Layout';
 
 import styles from './Remind.scss';
 

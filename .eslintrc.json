@@ -3,7 +3,8 @@
     "plugin:react/recommended", // Uses the recommended rules from @eslint-plugin-react
     "plugin:@typescript-eslint/recommended",
     "@abhijithvijayan/eslint-config/typescript",
-    "@abhijithvijayan/eslint-config/react"
+    "@abhijithvijayan/eslint-config/react",
+    "tslint-divid"
   ],
   "plugins": ["@typescript-eslint"],
   "overrides": [
@@ -31,11 +32,9 @@
     "import/no-webpack-loader-syntax": "off",
     "import/prefer-default-export": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
-    "@typescript-eslint/interface-name-prefix": [
-      "error",
-      { "prefixWithI": "always" }
-    ],
+    "@typescript-eslint/interface-name-prefix": "off",
     "import/no-unresolved": "off",
+    "no-semicolon-interface": true,
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "prettier/prettier": ["error", { "singleQuote": true, "parser": "flow" }],
