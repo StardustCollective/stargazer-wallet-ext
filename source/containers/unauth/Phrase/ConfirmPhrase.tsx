@@ -24,7 +24,8 @@ const ConfirmPhrase = () => {
     : `Verify your recovery\nphrase`;
 
   const isNotEqualArrays = useCallback((): boolean => {
-    return !isEqual(phrases, newList);
+    if (!phrases) return true;
+    return !isEqual(phrases.split(' '), newList);
   }, [phrases, newList]);
 
   const handleOrgPhrase = (idx: number) => {
