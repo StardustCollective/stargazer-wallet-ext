@@ -93,7 +93,7 @@ const ConfirmPhrase = () => {
       <Button
         type="button"
         variant={passed ? styles.start : styles.validate}
-        // disabled={isNotEqualArrays()}
+        disabled={isNotEqualArrays()}
         onClick={handleConfirm}
       >
         {passed ? 'Next' : 'Validate'}
