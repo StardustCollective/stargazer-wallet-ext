@@ -1,6 +1,6 @@
 import { dag } from '@stardust-collective/dag4-wallet';
 import store from 'state/store';
-import { setKeystoreInfo } from 'state/wallet';
+import { setKeystoreInfo, updateStatus } from 'state/wallet';
 export interface IWalletController {
   createWallet: () => void;
   generatedPhrase: () => string | null;
@@ -32,6 +32,7 @@ const WalletController = (): IWalletController => {
     try {
       phrase = await dag.keyStore.decryptPhrase(keystore, pwd);
       password = pwd;
+      store.dispatch(updateStatus());
       return true;
     } catch (error) {
       console.log(error);
