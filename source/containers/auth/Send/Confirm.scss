@@ -1,0 +1,130 @@
+@import '~assets/styles/variables';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  width: 100%;
+  height: 100%;
+
+  .heading {
+    margin-top: 72px;
+    width: 100%;
+    box-sizing: border-box;
+    height: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid $gray-medium;
+
+    .title {
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 24px;
+      color: $gray-dark;
+    }
+
+    .path {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: right;
+      margin-top: 4px;
+      letter-spacing: 0.03em;
+      color: $gray;
+
+      .arrow {
+        margin: 0 12px;
+      }
+    }
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    color: $gray-dark;
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .transaction {
+    width: 100%;
+    height: 192px;
+    box-sizing: border-box;
+    padding: 24px 36px;
+    border-bottom: 1px solid $gray-medium;
+  }
+
+  .amount {
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 30px;
+    align-items: flex-end;
+
+    small {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 16px;
+      margin-left: 6px;
+    }
+
+    .cash {
+      margin-top: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: $gray;
+    }
+  }
+
+  .confirm {
+    width: 100%;
+    height: 264px;
+    background: $gray-light;
+    box-sizing: border-box;
+    padding: 24px 36px;
+
+    .actions {
+      display: flex;
+      position: absolute;
+      width: 300px;
+      bottom: 24px;
+      justify-content: space-between;
+
+      .close {
+        background: $gray-disabled;
+        color: $gray-dark;
+      }
+
+      .button {
+        width: 144px;
+      }
+    }
+  }
+}
+
+.checked {
+  margin-bottom: 36px;
+}
+
+.next {
+  position: absolute !important;
+  bottom: 24px;
+  width: 156px;
+}

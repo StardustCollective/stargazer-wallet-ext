@@ -2,28 +2,22 @@ import React from 'react';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 import Link from 'components/Link';
-import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import LogoImage from 'assets/images/logo-m.png';
-import { RootState } from 'reducers/store';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { loginUser } from 'reducers/auth';
+import { useController } from 'hooks/index';
+import LogoImage from 'assets/images/logo-m.png';
 
 import { schema } from './consts';
 import styles from './Start.scss';
 
 const Starter = () => {
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const { password } = useSelector((state: RootState) => state.auth);
+  const controller = useController();
   const { handleSubmit, register } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
-    if (password === data.password) dispatch(loginUser());
-    history.push('/home');
+  const onSubmit = async (data: { password: string }) => {
+    await controller.wallet.unLock(data.password);
   };
 
   return (

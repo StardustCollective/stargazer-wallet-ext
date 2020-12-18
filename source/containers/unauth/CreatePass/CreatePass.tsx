@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import CheckIcon from 'assets/images/svg/check.svg';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { setPassword } from 'reducers/auth';
+import { useController } from 'hooks/index';
 
-import Layout from '../Layout';
+import Layout from '../../common/Layout';
 
 import * as consts from './consts';
 import styles from './CreatePass.scss';
 
 const CreatePass = () => {
   const history = useHistory();
-  const dispatch = useDispatch();
+  const controller = useController();
   const [passed, setPassed] = useState(false);
   const { handleSubmit, register, errors } = useForm({
     resolver: yupResolver(consts.schema),
@@ -32,7 +31,7 @@ const CreatePass = () => {
   };
 
   const onSubmit = (data: any) => {
-    dispatch(setPassword(data.password));
+    controller.wallet.setWalletPassword(data.password);
     setPassed(true);
   };
 
