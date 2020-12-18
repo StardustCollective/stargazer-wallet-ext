@@ -1,7 +1,10 @@
 import { dag } from '@stardust-collective/dag4-wallet';
+import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
 import { setKeystoreInfo, updateStatus } from 'state/wallet';
+import AccountsController, { IAccountsController } from './AccountsController';
 export interface IWalletController {
+  accounts: Readonly<IAccountsController>;
   createWallet: () => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
@@ -12,7 +15,14 @@ export interface IWalletController {
 const WalletController = (): IWalletController => {
   let password = '';
   let phrase = '';
-  // let masterKey = '';
+  let masterKey: hdkey;
+  const accounts = Object.freeze(
+    AccountsController({
+      getMasterKey: () => {
+        return walletKeystore() ? masterKey : null;
+      },
+    })
+  );
 
   const generatedPhrase = () => {
     const { keystore } = store.getState().wallet;
@@ -29,9 +39,12 @@ const WalletController = (): IWalletController => {
   const unLock = async (pwd: string): Promise<boolean> => {
     const keystore = walletKeystore();
     if (!keystore) return false;
+
     try {
       phrase = await dag.keyStore.decryptPhrase(keystore, pwd);
       password = pwd;
+      masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
+      console.log('#', masterKey);
       store.dispatch(updateStatus());
       return true;
     } catch (error) {
@@ -56,6 +69,7 @@ const WalletController = (): IWalletController => {
   };
 
   return {
+    accounts,
     generatedPhrase,
     setWalletPassword,
     createWallet,

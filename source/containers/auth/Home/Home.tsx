@@ -6,17 +6,22 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import BulletIcon from '@material-ui/icons/FiberManualRecord';
 import RightAngleIcon from '@material-ui/icons/ChevronRightOutlined';
 import Button from 'components/Button';
+import { useController } from 'hooks/index';
 
 import styles from './Home.scss';
+import { ellipsis } from '../helpers';
 
 const Home = () => {
+  const controller = useController();
+  const [dagAddress] = controller.wallet.accounts.getPrimaryAccount();
+
   return (
     <div className={styles.wrapper}>
       <Header showLogo />
       <section className={styles.account}>
         Account 1
         <small>
-          DAG53v6…d5Ym
+          {ellipsis(dagAddress)}
           <IconButton className={styles.copy}>
             <FileCopyIcon className={styles.icon} />
           </IconButton>
