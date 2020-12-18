@@ -9,7 +9,7 @@ import { useController } from 'hooks/index';
 const Auth = () => {
   const location = useLocation();
   const controller = useController();
-  const isUnlocked = controller.wallet.isLocked();
+  const isUnlocked = !controller.wallet.isLocked();
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },

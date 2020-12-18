@@ -4,8 +4,9 @@ import { setKeystoreInfo } from 'state/wallet';
 export interface IWalletController {
   createWallet: () => void;
   generatedPhrase: () => string | null;
-  setWalletPassword: (str: string) => void;
+  setWalletPassword: (pwd: string) => void;
   isLocked: () => boolean;
+  unLock: (pwd: string) => Promise<boolean>;
 }
 
 const WalletController = (): IWalletController => {
@@ -25,15 +26,32 @@ const WalletController = (): IWalletController => {
     return !password || !phrase;
   };
 
+  const unLock = async (pwd: string): Promise<boolean> => {
+    const keystore = walletKeystore();
+    if (!keystore) return false;
+    try {
+      phrase = await dag.keyStore.decryptPhrase(keystore, pwd);
+      password = pwd;
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   const createWallet = async () => {
-    const { keystore } = store.getState().wallet;
-    if (keystore) return;
+    if (walletKeystore()) return;
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     store.dispatch(setKeystoreInfo(v3Keystore));
   };
 
-  const setWalletPassword = (str: string) => {
-    password = str;
+  const setWalletPassword = (pwd: string) => {
+    password = pwd;
+  };
+
+  const walletKeystore = () => {
+    const { keystore } = store.getState().wallet;
+    return keystore ? keystore : null;
   };
 
   return {
@@ -41,6 +59,7 @@ const WalletController = (): IWalletController => {
     setWalletPassword,
     createWallet,
     isLocked,
+    unLock,
   };
 };
 

@@ -9,6 +9,7 @@ import { RootState } from 'state/store';
 
 const App: FC = () => {
   const { keystore } = useSelector((state: RootState) => state.wallet);
+
   return (
     <section id="app" style={{ minHeight: '300px' }}>
       <Container>
