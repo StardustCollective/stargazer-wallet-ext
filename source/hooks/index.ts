@@ -1,26 +1,33 @@
-import { useCallback, useState } from 'react';
+import copy from 'copy-to-clipboard';
+import { useCallback, useEffect, useState } from 'react';
 import { browser } from 'webextension-polyfill-ts';
 
 export function useController() {
   return browser.extension.getBackgroundPage().controller;
 }
 
-export function useClipboard() {
-  const [copyTooltip, setCopyTooltip] = useState('Copy to clipboard');
-  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+export function useCopyClipboard(
+  timeout = 1000
+): [boolean, (toCopy: string) => void] {
+  const [isCopied, setIsCopied] = useState(false);
 
-  const handleCopy = useCallback(() => {
-    if (timer) {
-      clearTimeout(timer);
-      setTimer(null);
-    }
-    setCopyTooltip('Copied');
-    setTimer(
-      setTimeout(() => {
-        setCopyTooltip('Copy to clipboard');
-      }, 2000)
-    );
+  const staticCopy = useCallback((text) => {
+    const didCopy = copy(text);
+    setIsCopied(didCopy);
   }, []);
 
-  return { copyTooltip, handleCopy };
+  useEffect(() => {
+    if (isCopied) {
+      const hide = setTimeout(() => {
+        setIsCopied(false);
+      }, timeout);
+
+      return () => {
+        clearTimeout(hide);
+      };
+    }
+    return undefined;
+  }, [isCopied, setIsCopied, timeout]);
+
+  return [isCopied, staticCopy];
 }

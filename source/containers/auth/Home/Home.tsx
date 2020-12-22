@@ -9,13 +9,13 @@ import Button from 'components/Button';
 
 import styles from './Home.scss';
 import { ellipsis } from '../helpers';
-import { useClipboard } from 'hooks/index';
+import { useCopyClipboard } from 'hooks/index';
 import useAccount from 'hooks/useAccount';
 import Tooltip from 'components/Tooltip';
 
 const Home = () => {
   const accountInfo = useAccount();
-  const { copyTooltip, handleCopy } = useClipboard();
+  const [isCopied, copyText] = useCopyClipboard();
 
   return (
     <div className={styles.wrapper}>
@@ -24,8 +24,15 @@ const Home = () => {
         Account 1
         <small>
           {ellipsis(accountInfo?.address || '')}
-          <Tooltip title={copyTooltip} arrow placement="bottom">
-            <IconButton className={styles.copy} onClick={handleCopy}>
+          <Tooltip
+            title={isCopied ? 'Copied' : 'Copy to clipboard'}
+            arrow
+            placement="bottom"
+          >
+            <IconButton
+              className={styles.copy}
+              onClick={() => copyText(accountInfo?.address || '')}
+            >
               <FileCopyIcon className={styles.icon} />
             </IconButton>
           </Tooltip>
