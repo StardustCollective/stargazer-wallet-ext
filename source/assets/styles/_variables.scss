@@ -5,10 +5,12 @@ $black: #000;
 $white: #fff;
 
 $purple: #6625ac;
+$purple-light: #e0d3ee;
 $red: #f10000;
 $teal: #00f1b7;
 $gray: #808080;
 $gray-light: #ededed;
+$gray-light-100: #eeeeee;
 $gray-dark: #474747;
 $gray-medium: #979797;
 $gray-disabled: #dadada;
@@ -17,6 +19,7 @@ $gray-disabled: #dadada;
  * Shadows
  **/
 $shadow-btn: 0px 1px 5px rgba(0, 0, 0, 0.25);
+$shadow-tooltip: 0px 0px 5px rgba(0, 0, 0, 0.25);
 
 /**
  * Fonts
