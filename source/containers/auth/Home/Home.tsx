@@ -87,7 +87,7 @@ const Home = () => {
             </div>
           </li>
         </ul>
-        <Button type="button" theme="secondary" variant={styles.more}>
+        <Button type="button" theme="primary" variant={styles.more}>
           Load more
         </Button>
       </section>
