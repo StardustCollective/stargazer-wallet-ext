@@ -21,5 +21,10 @@
 
   .started {
     margin-bottom: 30px;
+
+    &,
+    &:hover {
+      background: $purple-light;
+    }
   }
 }
