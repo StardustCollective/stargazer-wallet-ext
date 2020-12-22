@@ -44,7 +44,7 @@ const WalletController = (): IWalletController => {
       phrase = await dag.keyStore.decryptPhrase(keystore, pwd);
       password = pwd;
       masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
-      store.dispatch(updateStatus());
+      accounts.getPrimaryAccount();
       return true;
     } catch (error) {
       console.log(error);

@@ -21,7 +21,7 @@ const Home = () => {
       <section className={styles.account}>
         Account 1
         <small>
-          {ellipsis(accountInfo.address)}
+          {ellipsis(accountInfo?.address || '')}
           <IconButton className={styles.copy}>
             <FileCopyIcon className={styles.icon} />
           </IconButton>
@@ -29,7 +29,7 @@ const Home = () => {
       </section>
       <section className={styles.center}>
         <span>DAG Balance</span>
-        <h3>{accountInfo.balance}</h3>
+        <h3>{accountInfo?.balance || 0}</h3>
         <small>$20,000.75 USD</small>
         <Button
           type="button"
