@@ -1,7 +1,7 @@
 import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
-import { setKeystoreInfo, updateStatus } from 'state/wallet';
+import { setKeystoreInfo } from 'state/wallet';
 import AccountsController, { IAccountsController } from './AccountsController';
 export interface IWalletController {
   accounts: Readonly<IAccountsController>;
@@ -56,6 +56,7 @@ const WalletController = (): IWalletController => {
     if (walletKeystore()) return;
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
+    accounts.getPrimaryAccount();
     store.dispatch(setKeystoreInfo(v3Keystore));
   };
 
