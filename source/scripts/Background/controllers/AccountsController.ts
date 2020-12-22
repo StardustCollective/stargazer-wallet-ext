@@ -25,8 +25,7 @@ const AccountsController = (actions: {
 
   const getAccountByIndex = async (index: number) => {
     const masterKey: hdkey | null = actions.getMasterKey();
-    console.log(masterKey);
-    if (!masterKey) return null; // temp case
+    if (!masterKey) return null;
     privateKey = dag.keyStore.deriveAccountFromMaster(masterKey, index);
     return await getAccountByPrivateKey(privateKey);
   };

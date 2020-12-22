@@ -56,8 +56,8 @@ const WalletController = (): IWalletController => {
     if (walletKeystore()) return;
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
-    accounts.getPrimaryAccount();
     store.dispatch(setKeystoreInfo(v3Keystore));
+    accounts.getPrimaryAccount();
   };
 
   const setWalletPassword = (pwd: string) => {
