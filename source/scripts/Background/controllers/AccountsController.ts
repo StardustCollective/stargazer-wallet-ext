@@ -1,8 +1,9 @@
 import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
 
+import { IAccountInfo } from '../../types';
 export interface IAccountsController {
-  getPrimaryAccount: () => string[];
+  getPrimaryAccount: () => Promise<IAccountInfo | null>;
 }
 
 const AccountsController = (actions: {
@@ -10,23 +11,36 @@ const AccountsController = (actions: {
 }): IAccountsController => {
   let privateKey;
 
-  const getAccountByPrivateKey = (privateKey: string) => {
-    const dagAddres = dag.keyStore.getDagAddressFromPrivateKey(privateKey);
-    const ethAddress = dag.keyStore.getEthAddressFromPrivateKey(privateKey);
+  const getAccountByPrivateKey = async (privateKey: string) => {
+    console.log('invoked');
+    dag.account.loginPrivateKey(privateKey);
+    console.log('login');
+    console.log(dag.account.address);
+    // const ethAddress = dag.keyStore.getEthAddressFromPrivateKey(privateKey);
+    // const balance = await dag.account.getBalance();
+    // console.log(balance);
+    dag.account.getBalance().then(
+      (res) => {
+        console.log(res);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
 
-    return [dagAddres, ethAddress];
+    return { address: dag.account.address, balance: 0 };
   };
 
-  const getAccountByIndex = (index: number) => {
+  const getAccountByIndex = async (index: number) => {
     const masterKey: hdkey | null = actions.getMasterKey();
     console.log(masterKey);
-    if (!masterKey) return ['', '']; // temp case
+    if (!masterKey) return null; // temp case
     privateKey = dag.keyStore.deriveAccountFromMaster(masterKey, index);
-    return getAccountByPrivateKey(privateKey);
+    return await getAccountByPrivateKey(privateKey);
   };
 
-  const getPrimaryAccount = () => {
-    return getAccountByIndex(0);
+  const getPrimaryAccount = async () => {
+    return await getAccountByIndex(0);
   };
 
   return {

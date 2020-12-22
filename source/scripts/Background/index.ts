@@ -32,7 +32,7 @@ browser.runtime.onInstalled.addListener((): void => {
     beUrl: DAG_BE_URL,
     lbUrl: DAG_LB_URL,
   });
-
+  console.log(dag.network.getNetwork());
   console.emoji('🤩', 'Stargazer extension installed');
 });
 
