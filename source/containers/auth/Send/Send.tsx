@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useState, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
+import { useForm } from 'react-hook-form';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
@@ -11,6 +12,7 @@ import styles from './Send.scss';
 import { useController } from 'hooks/index';
 
 const WalletSend = () => {
+  const { handleSubmit, register } = useForm();
   const controller = useController();
   const account = controller.wallet.accounts.currentAccount();
   const [address, setAddress] = useState('');
@@ -31,6 +33,10 @@ const WalletSend = () => {
     if (address) setAddress('');
   };
 
+  const onSubmit = (data: any) => {
+    alert(data);
+  };
+
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setAmount(ev.target.value);
@@ -48,77 +54,89 @@ const WalletSend = () => {
   return (
     <div className={styles.wrapper}>
       <Header backLink="/home" />
-      <section className={styles.heading}>
-        <span className={styles.title}>Send DAG</span>
-        <span className={styles.label}>Address:</span>
-        <div className={styles.inputWrapper}>
-          <img src={VerifiedIcon} alt="checked" className={statusIconClass} />
-          <TextInput
-            placeholder="Enter a valid DAG address"
-            fullWidth
-            value={address}
-            onChange={handleAddressChange}
-            variant={addressInputClass}
-          />
-          <Button
-            type="button"
-            variant={styles.qrcode}
-            onClick={handleAddressOption}
-          >
-            {address ? (
-              <img src={CloseIcon} alt="close" />
-            ) : (
-              <img src={QRCodeIcon} alt="qr-code" />
-            )}
-          </Button>
-        </div>
-      </section>
-      <section className={styles.content}>
-        <span className={clsx(styles.label, styles.balance)}>
-          Amount:
-          <small>Balance: {account?.balance || 0} DAG</small>
-        </span>
-        <div className={styles.inputWrapper}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <section className={styles.heading}>
+          <span className={styles.title}>Send DAG</span>
+          <span className={styles.label}>Address:</span>
+          <div className={styles.inputWrapper}>
+            <img src={VerifiedIcon} alt="checked" className={statusIconClass} />
+            <TextInput
+              placeholder="Enter a valid DAG address"
+              fullWidth
+              value={address}
+              name="address"
+              inputRef={register}
+              onChange={handleAddressChange}
+              variant={addressInputClass}
+            />
+            <Button
+              type="button"
+              variant={styles.qrcode}
+              onClick={handleAddressOption}
+            >
+              {address ? (
+                <img src={CloseIcon} alt="close" />
+              ) : (
+                <img src={QRCodeIcon} alt="qr-code" />
+              )}
+            </Button>
+          </div>
+        </section>
+        <section className={styles.content}>
+          <span className={clsx(styles.label, styles.balance)}>
+            Amount:
+            <small>Balance: {account?.balance || 0} DAG</small>
+          </span>
+          <div className={styles.inputWrapper}>
+            <TextInput
+              type="number"
+              placeholder="Enter amount to send"
+              fullWidth
+              inputRef={register}
+              name="amount"
+              value={amount}
+              onChange={handleAmountChange}
+              variant={clsx(styles.input, styles.amount)}
+            />
+            <Button
+              type="button"
+              variant={styles.max}
+              onClick={() => setAmount(String(account?.balance || 0))}
+            >
+              Max
+            </Button>
+          </div>
+          <span className={styles.label}>Transaction Fee:</span>
           <TextInput
             type="number"
-            placeholder="Enter amount to send"
+            placeholder="Enter $DAG transaction fee"
             fullWidth
-            value={amount}
-            onChange={handleAmountChange}
-            variant={clsx(styles.input, styles.amount)}
+            inputRef={register}
+            name="fee"
+            variant={styles.input}
           />
-          <Button
-            type="button"
-            variant={styles.max}
-            onClick={() => setAmount(String(account?.balance || 0))}
-          >
-            Max
-          </Button>
-        </div>
-        <span className={styles.label}>Transaction Fee:</span>
-        <TextInput
-          type="number"
-          placeholder="Enter $DAG transaction fee"
-          fullWidth
-          variant={styles.input}
-        />
-        <div className={styles.description}>
-          Due to current network conditions we recommend a fee of 0 DAG.
-        </div>
-        <div className={styles.actions}>
-          <Button
-            type="button"
-            theme="secondary"
-            variant={clsx(styles.button, styles.close)}
-            linkTo="/home"
-          >
-            Close
-          </Button>
-          <Button type="submit" variant={styles.button} linkTo="/send/confirm">
-            Send
-          </Button>
-        </div>
-      </section>
+          <div className={styles.description}>
+            Due to current network conditions we recommend a fee of 0 DAG.
+          </div>
+          <div className={styles.actions}>
+            <Button
+              type="button"
+              theme="secondary"
+              variant={clsx(styles.button, styles.close)}
+              linkTo="/home"
+            >
+              Close
+            </Button>
+            <Button
+              type="submit"
+              variant={styles.button}
+              // linkTo="/send/confirm"
+            >
+              Send
+            </Button>
+          </div>
+        </section>
+      </form>
     </div>
   );
 };

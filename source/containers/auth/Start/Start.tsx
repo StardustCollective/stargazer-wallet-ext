@@ -3,7 +3,6 @@ import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 import Link from 'components/Link';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useController } from 'hooks/index';
 import LogoImage from 'assets/images/logo-m.png';
 
@@ -13,10 +12,10 @@ import styles from './Start.scss';
 const Starter = () => {
   const controller = useController();
   const { handleSubmit, register } = useForm({
-    resolver: yupResolver(schema),
+    validationSchema: schema,
   });
 
-  const onSubmit = async (data: { password: string }) => {
+  const onSubmit = async (data: any) => {
     await controller.wallet.unLock(data.password);
   };
 
