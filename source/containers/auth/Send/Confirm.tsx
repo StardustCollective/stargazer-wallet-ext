@@ -3,12 +3,16 @@ import clsx from 'clsx';
 import Header from 'containers/common/Header';
 import Layout from 'containers/common/Layout';
 import Button from 'components/Button';
+import { useController } from 'hooks/index';
 import CheckIcon from 'assets/images/svg/check.svg';
 import RightArrowIcon from 'assets/images/svg/arrow-right.svg';
 
+import { ellipsis } from '../helpers';
 import styles from './Confirm.scss';
 
 const SendConfirm = () => {
+  const controller = useController();
+  const tempTx = controller.wallet.accounts.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = () => {
@@ -31,25 +35,25 @@ const SendConfirm = () => {
       <section className={styles.heading}>
         <span className={styles.title}>Confirm Transaction</span>
         <div className={styles.path}>
-          DAG53v6…d5Ym
+          {ellipsis(tempTx?.fromAddress || '')}
           <img
             src={`/${RightArrowIcon}`}
             alt="arrow"
             className={styles.arrow}
           />
-          DAG3yp6…vNHP
+          {ellipsis(tempTx?.toAddress || '')}
         </div>
       </section>
       <section className={styles.transaction}>
         <div className={styles.row}>
           Address:
-          <span>DAG3yp6…vNHP</span>
+          <span>{ellipsis(tempTx?.toAddress || '')}</span>
         </div>
         <div className={styles.row}>
           Amount:
           <div className={styles.amount}>
             <span>
-              100000
+              {tempTx?.amount || 0}
               <small>DAG</small>
             </span>
             <span className={styles.cash}>$2,000.75 USD</span>
@@ -57,7 +61,7 @@ const SendConfirm = () => {
         </div>
         <div className={styles.row}>
           Transaction Fee:
-          <span>1 DAG</span>
+          <span>{tempTx?.fee || 0} DAG</span>
         </div>
       </section>
       <section className={styles.confirm}>
@@ -65,7 +69,7 @@ const SendConfirm = () => {
           Total:
           <div className={styles.amount}>
             <span>
-              100000
+              {(tempTx?.amount || 0) + (tempTx?.fee || 0)}
               <small>DAG</small>
             </span>
             <span className={styles.cash}>$2,000.75 USD</span>

@@ -5,18 +5,18 @@ import { updateStatus } from 'state/wallet';
 
 import { IAccountInfo, ITransactionInfo } from '../../types';
 export interface IAccountsController {
-  tempTx: ITransactionInfo | null;
+  getTempTx: () => ITransactionInfo | null;
+  updateTempTx: (tx: ITransactionInfo) => void;
   currentAccount: () => IAccountInfo | null;
   getPrimaryAccount: () => void;
   isValidDAGAddress: (address: string) => boolean;
-  updateTempTx: (tx: ITransactionInfo) => void;
 }
 
 const AccountsController = (actions: {
   getMasterKey: () => hdkey | null;
 }): IAccountsController => {
   let privateKey;
-  let tempTx = null;
+  let tempTx: ITransactionInfo;
   let account: IAccountInfo | null;
 
   const getAccountByPrivateKey = async (privateKey: string) => {
@@ -43,7 +43,11 @@ const AccountsController = (actions: {
   };
 
   const updateTempTx = (tx: ITransactionInfo) => {
-    tempTx = tx;
+    tempTx = { ...tx };
+  };
+
+  const getTempTx = () => {
+    return account ? tempTx : null;
   };
 
   const currentAccount = () => {
@@ -51,11 +55,11 @@ const AccountsController = (actions: {
   };
 
   return {
-    tempTx,
+    getTempTx,
+    updateTempTx,
     currentAccount,
     getPrimaryAccount,
     isValidDAGAddress,
-    updateTempTx,
   };
 };
 

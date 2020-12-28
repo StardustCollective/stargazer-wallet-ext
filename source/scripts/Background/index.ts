@@ -14,6 +14,7 @@ import { dag } from '@stardust-collective/dag4-wallet';
 import { FetchRestService } from 'services/fetch.http';
 
 import MasterController, { IMasterController } from './controllers';
+import { Runtime } from 'webextension-polyfill-ts';
 
 declare global {
   interface Window {
@@ -26,13 +27,22 @@ declare global {
 // dag.network.blockExplorerApi.getTransactionsByAddress(ADDRESS)
 
 browser.runtime.onInstalled.addListener((): void => {
-  dag.di.registerHttpClient(new FetchRestService());
-  dag.network.config({
-    id: DAG_CONFIG_ID,
-    beUrl: DAG_BE_URL,
-    lbUrl: DAG_LB_URL,
-  });
   console.emoji('🤩', 'Stargazer extension installed');
+});
+
+browser.runtime.onConnect.addListener((port: Runtime.Port) => {
+  if (
+    port.sender &&
+    port.sender.url &&
+    port.sender.url?.includes(browser.runtime.getURL('/app.html'))
+  ) {
+    dag.di.registerHttpClient(new FetchRestService());
+    dag.network.config({
+      id: DAG_CONFIG_ID,
+      beUrl: DAG_BE_URL,
+      lbUrl: DAG_LB_URL,
+    });
+  }
 });
 
 window.controller = Object.freeze(MasterController());

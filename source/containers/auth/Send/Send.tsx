@@ -1,5 +1,7 @@
 import React, { ChangeEvent, useState, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
+import * as yup from 'yup';
+import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
@@ -12,9 +14,17 @@ import styles from './Send.scss';
 import { useController } from 'hooks/index';
 
 const WalletSend = () => {
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit, register } = useForm({
+    validationSchema: yup.object().shape({
+      address: yup.string().required(),
+      amount: yup.number().required(),
+      fee: yup.number().required(),
+    }),
+  });
+  const history = useHistory();
   const controller = useController();
   const account = controller.wallet.accounts.currentAccount();
+
   const [address, setAddress] = useState('');
   const [amount, setAmount] = useState('');
 
@@ -34,7 +44,13 @@ const WalletSend = () => {
   };
 
   const onSubmit = (data: any) => {
-    alert(data);
+    controller.wallet.accounts.updateTempTx({
+      fromAddress: account?.address || '',
+      toAddress: data.address,
+      amount: data.amount,
+      fee: data.fee,
+    });
+    history.push('/send/confirm');
   };
 
   const handleAmountChange = useCallback(
@@ -127,11 +143,7 @@ const WalletSend = () => {
             >
               Close
             </Button>
-            <Button
-              type="submit"
-              variant={styles.button}
-              // linkTo="/send/confirm"
-            >
+            <Button type="submit" variant={styles.button}>
               Send
             </Button>
           </div>
