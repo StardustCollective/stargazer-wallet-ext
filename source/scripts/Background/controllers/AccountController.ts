@@ -7,7 +7,7 @@ import { IAccountInfo, ITransactionInfo } from '../../types';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
-  confirmTempTx: () => void;
+  confirmTempTx: () => Promise<void>;
   currentAccount: () => IAccountInfo | null;
   getPrimaryAccount: () => void;
   isValidDAGAddress: (address: string) => boolean;
@@ -21,11 +21,14 @@ const AccountController = (actions: {
   let account: IAccountInfo | null;
 
   // Primary
-  const getAccountByPrivateKey = async (privateKey: string) => {
+  const getAccountByPrivateKey = async (
+    privateKey: string
+  ): Promise<IAccountInfo> => {
     dag.account.loginPrivateKey(privateKey);
     // const ethAddress = dag.keyStore.getEthAddressFromPrivateKey(privateKey);
     const balance = await dag.account.getBalance();
-    return { address: dag.account.address, balance };
+    const transactions = await dag.account.getTransactions(2);
+    return { address: dag.account.address, balance, transactions };
   };
 
   const getAccountByIndex = async (index: number) => {
@@ -55,11 +58,9 @@ const AccountController = (actions: {
     return dag.account.isActive() ? tempTx : null;
   };
 
-  const confirmTempTx = () => {
+  const confirmTempTx = async () => {
     if (dag.account.isActive()) {
-      dag.account.transferDag(tempTx.toAddress, tempTx.amount).then(() => {
-        store.dispatch(updateStatus());
-      });
+      await dag.account.transferDag(tempTx.toAddress, tempTx.amount);
     }
   };
 
