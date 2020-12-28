@@ -8,29 +8,35 @@ import CloseIcon from 'assets/images/svg/close.svg';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 
 import styles from './Send.scss';
+import { useController } from 'hooks/index';
 
 const WalletSend = () => {
+  const controller = useController();
+  const account = controller.wallet.accounts.currentAccount();
   const [address, setAddress] = useState('');
+  const [amount, setAmount] = useState('');
 
-  const tempVerifyAddress = useMemo(() => {
-    if (address.length >= 3 && address.length <= 6) {
-      return true;
-    }
-    return false;
+  const isValidAddress = useMemo(() => {
+    return controller.wallet.accounts.isValidDAGAddress(address);
   }, [address]);
 
   const addressInputClass = clsx(styles.input, styles.address, {
-    [styles.verified]: tempVerifyAddress,
+    [styles.verified]: isValidAddress,
   });
   const statusIconClass = clsx(styles.statusIcon, {
-    [styles.hide]: !tempVerifyAddress,
+    [styles.hide]: !isValidAddress,
   });
 
   const handleAddressOption = () => {
-    if (address) {
-      setAddress('');
-    }
+    if (address) setAddress('');
   };
+
+  const handleAmountChange = useCallback(
+    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setAmount(ev.target.value);
+    },
+    []
+  );
 
   const handleAddressChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -70,16 +76,22 @@ const WalletSend = () => {
       <section className={styles.content}>
         <span className={clsx(styles.label, styles.balance)}>
           Amount:
-          <small>Balance: 1,000,000 DAG</small>
+          <small>Balance: {account?.balance || 0} DAG</small>
         </span>
         <div className={styles.inputWrapper}>
           <TextInput
             type="number"
             placeholder="Enter amount to send"
             fullWidth
+            value={amount}
+            onChange={handleAmountChange}
             variant={clsx(styles.input, styles.amount)}
           />
-          <Button type="button" variant={styles.max}>
+          <Button
+            type="button"
+            variant={styles.max}
+            onClick={() => setAmount(String(account?.balance || 0))}
+          >
             Max
           </Button>
         </div>
