@@ -57,8 +57,8 @@ const AccountController = (actions: {
 
   const confirmTempTx = () => {
     if (dag.account.isActive()) {
-      dag.account.transferDag(tempTx.toAddress, tempTx.amount).then((val) => {
-        console.log('Success: ', val);
+      dag.account.transferDag(tempTx.toAddress, tempTx.amount).then(() => {
+        store.dispatch(updateStatus());
       });
     }
   };

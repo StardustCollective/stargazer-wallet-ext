@@ -1071,10 +1071,10 @@
     redux-thunk "^2.3.0"
     reselect "^4.0.0"
 
-"@stardust-collective/dag4-core@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-0.0.4.tgz#ec9b501fc6c0a99cdef6fa2298f2c4e52e0b4824"
-  integrity sha512-x6oH2uIFWnZUuSmqBj7svzwKiE2TpYdAS+Q4rZfjkZmWuW3QdPHy1rQuAaqioLxqD7qL2/RulwF5DZ374kPZdw==
+"@stardust-collective/dag4-core@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-0.0.5.tgz#d695fb7548dee5f2743b9f7a9bd485f9da031604"
+  integrity sha512-RIH6oEnR12YoESE4mVbIPtjqYUNcbS5gjuFMvlmhLN9+0eWiTsTZPsKx9Y3x7L+6QLrYkU0B/Limu3SObv3m1g==
 
 "@stardust-collective/dag4-keystore@^0.0.4":
   version "0.0.4"
@@ -1099,22 +1099,22 @@
     stream-browserify "^3.0.0"
     uuid "^3.4.0"
 
-"@stardust-collective/dag4-network@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-network/-/dag4-network-0.0.2.tgz#a05a8bd1d255be4e53e055ee608ce8e6e13149b5"
-  integrity sha512-ZsZTQwC5xmL84Y/nijgwYGOZScmoVd7qOac8IkgkXxvVqmjdQcjOLYFIX0yL/7Mh2svx34fT5q0uRCkIa3kXSw==
+"@stardust-collective/dag4-network@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-network/-/dag4-network-0.0.3.tgz#af69f0df46681dc272dbdf3b6682795a52b15880"
+  integrity sha512-uE9aU9q42+pB6m6GaT01Y8/lEA2YNuWgo+pidivzrpzgElk64kctcD3qctFK614+H4Wmk56jlSShr2NMsTrCHQ==
   dependencies:
-    "@stardust-collective/dag4-core" "^0.0.4"
+    "@stardust-collective/dag4-core" "^0.0.5"
     rxjs "^6.6.3"
 
-"@stardust-collective/dag4-wallet@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-wallet/-/dag4-wallet-0.0.4.tgz#3bda45c035dd117a83baa389af64a8dab9f738b9"
-  integrity sha512-dlZ37szJt+5IncVC5WuPNBOQpDf86DQWyY2q7ay3T5bCZIhK3uydJTR1gWBUMAI4OLpZw+KQtSaPExNF344RNQ==
+"@stardust-collective/dag4-wallet@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-wallet/-/dag4-wallet-0.0.5.tgz#db636b30c09c2f809d8d56d2828984944570364b"
+  integrity sha512-2f5+arcxdbtGPKHzLatA0AlGnOF+/Nab019ot/Z8whIg+BXxyK2zVFKUxnvluCccwkQdWuKv6t1KgYh4YLQIOA==
   dependencies:
-    "@stardust-collective/dag4-core" "^0.0.4"
+    "@stardust-collective/dag4-core" "^0.0.5"
     "@stardust-collective/dag4-keystore" "^0.0.4"
-    "@stardust-collective/dag4-network" "^0.0.2"
+    "@stardust-collective/dag4-network" "^0.0.3"
 
 "@types/anymatch@*":
   version "1.3.1"

@@ -11,7 +11,6 @@ import { browser } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
 import store from 'state/store';
 import { dag } from '@stardust-collective/dag4-wallet';
-import { FetchRestService } from 'services/fetch.http';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
@@ -36,7 +35,8 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     port.sender.url &&
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
-    dag.di.registerHttpClient(new FetchRestService());
+    dag.di.useFetchHttpClient(window.fetch.bind(window));
+    dag.di.useLocalStorageClient(localStorage);
     dag.network.config({
       id: DAG_CONFIG_ID,
       beUrl: DAG_BE_URL,
