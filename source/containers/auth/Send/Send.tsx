@@ -23,13 +23,13 @@ const WalletSend = () => {
   });
   const history = useHistory();
   const controller = useController();
-  const account = controller.wallet.accounts.currentAccount();
+  const account = controller.wallet.account.currentAccount();
 
   const [address, setAddress] = useState('');
   const [amount, setAmount] = useState('');
 
   const isValidAddress = useMemo(() => {
-    return controller.wallet.accounts.isValidDAGAddress(address);
+    return controller.wallet.account.isValidDAGAddress(address);
   }, [address]);
 
   const addressInputClass = clsx(styles.input, styles.address, {
@@ -44,7 +44,8 @@ const WalletSend = () => {
   };
 
   const onSubmit = (data: any) => {
-    controller.wallet.accounts.updateTempTx({
+    if (!isValidAddress) return;
+    controller.wallet.account.updateTempTx({
       fromAddress: account?.address || '',
       toAddress: data.address,
       amount: data.amount,

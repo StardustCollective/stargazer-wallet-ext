@@ -4,7 +4,7 @@ import store from 'state/store';
 import { updateStatus } from 'state/wallet';
 
 import { IAccountInfo, ITransactionInfo } from '../../types';
-export interface IAccountsController {
+export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
   currentAccount: () => IAccountInfo | null;
@@ -12,9 +12,9 @@ export interface IAccountsController {
   isValidDAGAddress: (address: string) => boolean;
 }
 
-const AccountsController = (actions: {
+const AccountController = (actions: {
   getMasterKey: () => hdkey | null;
-}): IAccountsController => {
+}): IAccountController => {
   let privateKey;
   let tempTx: ITransactionInfo;
   let account: IAccountInfo | null;
@@ -63,4 +63,4 @@ const AccountsController = (actions: {
   };
 };
 
-export default AccountsController;
+export default AccountController;

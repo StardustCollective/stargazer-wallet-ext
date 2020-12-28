@@ -12,7 +12,7 @@ import styles from './Confirm.scss';
 
 const SendConfirm = () => {
   const controller = useController();
-  const tempTx = controller.wallet.accounts.getTempTx();
+  const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = () => {
