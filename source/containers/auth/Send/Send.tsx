@@ -18,7 +18,7 @@ const WalletSend = () => {
     validationSchema: yup.object().shape({
       address: yup.string().required(),
       amount: yup.number().required(),
-      fee: yup.number().required(),
+      fee: yup.number(),
     }),
   });
   const history = useHistory();

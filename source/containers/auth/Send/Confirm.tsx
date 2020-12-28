@@ -16,6 +16,7 @@ const SendConfirm = () => {
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = () => {
+    controller.wallet.account.confirmTempTx();
     setConfirmed(true);
   };
 

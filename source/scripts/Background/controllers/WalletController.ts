@@ -2,7 +2,7 @@ import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
 import { setKeystoreInfo } from 'state/wallet';
-import AccountController, { IAccountController } from './AccountsController';
+import AccountController, { IAccountController } from './AccountController';
 export interface IWalletController {
   account: Readonly<IAccountController>;
   createWallet: () => void;

@@ -6,15 +6,15 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import BulletIcon from '@material-ui/icons/FiberManualRecord';
 import RightAngleIcon from '@material-ui/icons/ChevronRightOutlined';
 import Button from 'components/Button';
-
-import styles from './Home.scss';
-import { ellipsis } from '../helpers';
-import { useCopyClipboard } from 'hooks/index';
-import useAccount from 'hooks/useAccount';
 import Tooltip from 'components/Tooltip';
+import { useCopyClipboard, useController } from 'hooks/index';
+
+import { ellipsis } from '../helpers';
+import styles from './Home.scss';
 
 const Home = () => {
-  const accountInfo = useAccount();
+  const controller = useController();
+  const accountInfo = controller.wallet.account.currentAccount();
   const [isCopied, copyText] = useCopyClipboard();
 
   return (
