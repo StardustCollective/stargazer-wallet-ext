@@ -13,10 +13,10 @@ import {
 const UnAuth = () => {
   const location = useLocation();
   const transitions = useTransition(location, (locat) => locat.pathname, {
-    initial: { opacity: 1 },
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
+    initial: { opacity: 1, filter: 'blur(0)' },
+    from: { opacity: 0, filter: 'blur(2px)' },
+    enter: { opacity: 1, filter: 'blur(0)' },
+    leave: { opacity: 0, filter: 'blur(2px)' },
     config: { duration: 500 },
   });
 
