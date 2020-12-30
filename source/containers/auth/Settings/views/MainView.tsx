@@ -1,19 +1,24 @@
-import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import React, { useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import DAGIcon from 'assets/images/svg/dag.svg';
 import BTCIcon from 'assets/images/svg/btc.svg';
 import ETHIcon from 'assets/images/svg/eth.svg';
+import { ACCOUNT_VIEW } from '../consts';
 import styles from './View.scss';
 
 const MainView = () => {
+  const history = useHistory();
+  const handleAccount = useCallback(() => {
+    history.push(ACCOUNT_VIEW);
+  }, []);
+
   return (
     <div className={styles.main}>
       <ul className={styles.accounts}>
-        <li>
+        <li onClick={handleAccount}>
           <div className={styles.account}>
             <img src={DAGIcon} />
             <span className={styles.accInfo}>
