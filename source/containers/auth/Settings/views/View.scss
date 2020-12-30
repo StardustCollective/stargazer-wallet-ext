@@ -1,0 +1,100 @@
+@import '~assets/styles/variables';
+
+.main {
+  ul.accounts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      height: 60px;
+      transition: all 0.3s;
+      padding: 6px 36px;
+
+      &:hover {
+        background: $gray-hover;
+      }
+
+      .account {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+
+        .accInfo {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          font-weight: 600;
+          font-size: 18px;
+          margin-left: 12px;
+          line-height: 24px;
+          color: $gray-dark;
+
+          small {
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 18px;
+            color: $gray-semi;
+            margin-top: 4px;
+          }
+        }
+      }
+
+      .moreBtn {
+        color: $purple;
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+
+  .new {
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    color: $gray-dark;
+    display: flex;
+    height: 24px;
+    align-items: center;
+    height: 60px;
+    margin: 0 36px;
+    transition: all 0.3s;
+    border-bottom: 1px solid $gray-medium;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray-hover;
+    }
+  }
+
+  .general {
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    color: $gray-dark;
+    height: 24px;
+    display: flex;
+    margin: 0 36px;
+    height: 60px;
+    align-items: center;
+    transition: all 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray-hover;
+    }
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+    color: $purple;
+    margin-right: 12px;
+  }
+}
