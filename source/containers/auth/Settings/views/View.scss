@@ -5,14 +5,20 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    padding-top: 12px;
 
     li {
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      cursor: pointer;
+      height: 60px;
+      transition: all 0.3s;
+      padding: 6px 36px;
+
+      &:hover {
+        background: $gray-hover;
+      }
 
       .account {
         display: flex;
@@ -55,9 +61,16 @@
     color: $gray-dark;
     display: flex;
     height: 24px;
-    padding-bottom: 12px;
     align-items: center;
+    height: 60px;
+    margin: 0 36px;
+    transition: all 0.3s;
     border-bottom: 1px solid $gray-medium;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray-hover;
+    }
   }
 
   .general {
@@ -66,9 +79,16 @@
     line-height: 24px;
     color: $gray-dark;
     height: 24px;
-    margin: 12px 0;
     display: flex;
+    margin: 0 36px;
+    height: 60px;
     align-items: center;
+    transition: all 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray-hover;
+    }
   }
 
   .icon {
