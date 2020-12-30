@@ -20,9 +20,6 @@ const MainView = () => {
               Account 1<small>1,000,000 DAG</small>
             </span>
           </div>
-          <IconButton className={styles.moreBtn}>
-            <MoreHorizIcon />
-          </IconButton>
         </li>
         <li>
           <div className={styles.account}>
@@ -31,9 +28,6 @@ const MainView = () => {
               Account 2<small>1,000,000 DAG</small>
             </span>
           </div>
-          <IconButton className={styles.moreBtn}>
-            <MoreHorizIcon />
-          </IconButton>
         </li>
         <li>
           <div className={styles.account}>
@@ -42,9 +36,6 @@ const MainView = () => {
               Account 3<small>1,000,000 DAG</small>
             </span>
           </div>
-          <IconButton className={styles.moreBtn}>
-            <MoreHorizIcon />
-          </IconButton>
         </li>
       </ul>
       <section className={styles.new}>
