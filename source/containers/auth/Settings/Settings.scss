@@ -7,7 +7,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba($white, 0.3);
+  background: rgba($gray-light, 0.3);
   z-index: 1;
   padding: 0px;
   transition: all 0.5s;
@@ -18,7 +18,7 @@
   .modal {
     width: 100vw;
     height: 100vh;
-    background: $white;
+    background: $gray-light;
     transition: all 0.5s;
     padding: 0 36px;
     box-sizing: border-box;
