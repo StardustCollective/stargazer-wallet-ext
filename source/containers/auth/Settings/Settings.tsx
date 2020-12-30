@@ -37,8 +37,12 @@ const Settings: FC<ISettings> = ({ open }) => {
       <div className={clsx(styles.mask, { [styles.open]: open })}>
         <div className={styles.modal}>
           <section className={styles.heading}>
-            <IconButton className={styles.navBtn} onClick={handleBackNav}>
-              <ArrowBackIcon className={styles.icon} />
+            <IconButton
+              className={styles.navBtn}
+              onClick={handleBackNav}
+              disabled={!location.hash}
+            >
+              {location.hash && <ArrowBackIcon className={styles.icon} />}
             </IconButton>
             Settings
             <IconButton className={styles.navBtn}>
