@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
 import Portal from '@reach/portal';
+import { useTransition, animated } from 'react-spring';
 import { useLocation, useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
-import MainView, { AccountView, DetailsView } from './views';
-import { ACCOUNT_VIEW, DETAILS_VIEW } from './views/consts';
+import * as Views from './views';
+import * as routes from './views/routes';
 
 import styles from './Settings.scss';
 
@@ -18,15 +19,28 @@ interface ISettings {
 const Settings: FC<ISettings> = ({ open, onClose }) => {
   const location = useLocation();
   const history = useHistory();
+  const transitions = useTransition(location, (locat) => locat.hash, {
+    initial: { opacity: 1 },
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    config: { duration: 300 },
+  });
 
-  const renderView = () => {
-    switch (location.hash) {
-      case ACCOUNT_VIEW:
-        return <AccountView />;
-      case DETAILS_VIEW:
-        return <DetailsView />;
+  const renderView = (view: string) => {
+    switch (view) {
+      case routes.ACCOUNT_VIEW:
+        return <Views.AccountView />;
+      case routes.DETAILS_VIEW:
+        return <Views.DetailsView />;
+      case routes.GENERAL_VIEW:
+        return <Views.GeneralView />;
+      case routes.PHRASE_VIEW:
+        return <Views.PhraseView />;
+      case routes.DELETE_WALLET_VIEW:
+        return <Views.DeleteWalletView />;
       default:
-        return <MainView />;
+        return <Views.MainView />;
     }
   };
 
@@ -51,7 +65,20 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
               <CloseIcon className={styles.icon} />
             </IconButton>
           </section>
-          <section className={styles.content}>{renderView()}</section>
+          {transitions.map(({ item, props, key }) => (
+            <animated.section
+              className={styles.content}
+              style={{
+                ...props,
+                position: 'absolute',
+                height: '100%',
+                width: '100%',
+              }}
+              key={key}
+            >
+              {renderView(item.hash)}
+            </animated.section>
+          ))}
         </div>
       </div>
     </Portal>
