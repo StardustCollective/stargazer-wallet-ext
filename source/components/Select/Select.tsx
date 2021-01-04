@@ -1,7 +1,9 @@
 import React, { FC, ReactElement, ReactNode, ChangeEvent } from 'react';
 import MUISelect from '@material-ui/core/Select';
 import MUIMenuItem from '@material-ui/core/MenuItem';
+import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
+import styles from './Select.scss';
 interface IOption {
   // key => value of Option
   // value => label of Option
@@ -12,6 +14,7 @@ interface ISelect {
   options: Array<IOption>;
   value?: unknown;
   input?: ReactElement;
+  fullWidth?: boolean;
   onChange?: (
     event: ChangeEvent<{
       name?: string | undefined;
@@ -21,19 +24,40 @@ interface ISelect {
   ) => void;
 }
 
-const Select: FC<ISelect> = ({ options, value, input, onChange }) => {
+const Select: FC<ISelect> = ({
+  options,
+  value,
+  input,
+  fullWidth,
+  onChange,
+}) => {
   return (
-    <MUISelect value={value} input={input} onChange={onChange}>
-      {options.map((option: IOption) => {
-        const value = Object.keys(option)[0];
-        const label = option[value];
-        return (
-          <MUIMenuItem key={value} value={value}>
-            {label}
-          </MUIMenuItem>
-        );
-      })}
-    </MUISelect>
+    <div className={styles.select}>
+      <MUISelect
+        value={value}
+        input={input}
+        onChange={onChange}
+        fullWidth={fullWidth}
+        IconComponent={ArrowDownIcon}
+        MenuProps={{
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+          getContentAnchorEl: null,
+        }}
+      >
+        {options.map((option: IOption) => {
+          const value = Object.keys(option)[0];
+          const label = option[value];
+          return (
+            <MUIMenuItem key={value} value={value}>
+              {label}
+            </MUIMenuItem>
+          );
+        })}
+      </MUISelect>
+    </div>
   );
 };
 

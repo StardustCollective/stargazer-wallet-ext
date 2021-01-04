@@ -19,6 +19,7 @@ const AccountView = () => {
             DAG Network
             <Select
               value="mainnet"
+              fullWidth
               onChange={(ev) => {
                 console.log(ev);
               }}

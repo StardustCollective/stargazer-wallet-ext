@@ -1,0 +1,66 @@
+@import '~assets/styles/variables';
+
+.select {
+  :global(.MuiInputBase-root) {
+    background: $gray-hover;
+    border: 1px solid $gray-100 !important;
+    box-sizing: border-box;
+    border-radius: 6px;
+    height: 36px;
+    transition: all 0.3s;
+
+    &::before,
+    &::after {
+      border-bottom: none !important;
+    }
+  }
+
+  :global(.MuiSelect-select) {
+    box-sizing: border-box;
+    padding: 0 12px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s;
+    background: transparent !important;
+  }
+
+  :global .MuiSelect-icon {
+    transition: all 0.3s;
+    margin-right: 6px;
+  }
+
+  :global .MuiSelect-iconOpen {
+    transform: rotateX(180deg);
+  }
+}
+
+:global(.MuiMenu-paper) {
+  box-shadow: none !important;
+}
+
+:global(.MuiMenu-list) {
+  background: $gray-hover;
+  border: 1px solid $gray-100;
+  box-sizing: border-box;
+  border-radius: 6px;
+  border-top-width: 0;
+
+  :global(.MuiMenuItem-root) {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.03em;
+    color: $gray-dark;
+    font-family: $quicksand;
+    min-height: initial;
+    height: 24px;
+    transition: all 0.3s;
+
+    &:hover {
+      background: $gray-light;
+    }
+  }
+}
