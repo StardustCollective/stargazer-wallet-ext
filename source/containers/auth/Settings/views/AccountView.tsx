@@ -1,4 +1,5 @@
 import React from 'react';
+import Select from 'components/Select';
 import DAGIcon from 'assets/images/svg/dag.svg';
 import UserIcon from 'assets/images/svg/user.svg';
 import ExportIcon from 'assets/images/svg/export.svg';
@@ -16,10 +17,13 @@ const AccountView = () => {
           <img src={DAGIcon} alt="DAG" />
           <span>
             DAG Network
-            <select>
-              <option>Main</option>
-              <option>Testnet 1</option>
-            </select>
+            <Select
+              value="mainnet"
+              onChange={(ev) => {
+                console.log(ev);
+              }}
+              options={[{ mainnet: 'Mainnet' }, { testnet: 'Testnet 1' }]}
+            />
           </span>
         </li>
         <li>
