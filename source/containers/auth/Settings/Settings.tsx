@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
 import Portal from '@reach/portal';
+import { useTransition, animated } from 'react-spring';
 import { useLocation, useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -18,9 +19,16 @@ interface ISettings {
 const Settings: FC<ISettings> = ({ open, onClose }) => {
   const location = useLocation();
   const history = useHistory();
+  const transitions = useTransition(location, (locat) => locat.hash, {
+    initial: { opacity: 1 },
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    config: { duration: 300 },
+  });
 
-  const renderView = () => {
-    switch (location.hash) {
+  const renderView = (view: string) => {
+    switch (view) {
       case ACCOUNT_VIEW:
         return <AccountView />;
       case DETAILS_VIEW:
@@ -53,7 +61,20 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
               <CloseIcon className={styles.icon} />
             </IconButton>
           </section>
-          <section className={styles.content}>{renderView()}</section>
+          {transitions.map(({ item, props, key }) => (
+            <animated.div
+              className={styles.content}
+              style={{
+                ...props,
+                position: 'absolute',
+                height: '100%',
+                width: '100%',
+              }}
+              key={key}
+            >
+              {renderView(item.hash)}
+            </animated.div>
+          ))}
         </div>
       </div>
     </Portal>
