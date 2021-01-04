@@ -6,7 +6,7 @@ import { useSettingsView } from 'hooks/index';
 import DAGIcon from 'assets/images/svg/dag.svg';
 // import BTCIcon from 'assets/images/svg/btc.svg';
 // import ETHIcon from 'assets/images/svg/eth.svg';
-import { ACCOUNT_VIEW, GENERAL_VIEW } from '../consts';
+import { ACCOUNT_VIEW, GENERAL_VIEW } from '../routes';
 import styles from './index.scss';
 
 const MainView = () => {

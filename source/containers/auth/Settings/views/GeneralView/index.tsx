@@ -6,7 +6,7 @@ import styles from './index.scss';
 
 const GeneralView = () => {
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.general}>
       <ul>
         <li>
           <img src={ListIcon} alt="user" />

@@ -9,7 +9,7 @@ import RemoveIcon from 'assets/images/svg/trash.svg';
 import { useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
-import { DETAILS_VIEW } from '../consts';
+import { DETAILS_VIEW } from '../routes';
 
 const AccountView = () => {
   const showView = useSettingsView();

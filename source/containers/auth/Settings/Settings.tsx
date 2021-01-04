@@ -6,8 +6,8 @@ import { useLocation, useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
-import MainView, { AccountView, DetailsView, GeneralView } from './views';
-import { ACCOUNT_VIEW, DETAILS_VIEW, GENERAL_VIEW } from './views/consts';
+import * as Views from './views';
+import * as routes from './views/routes';
 
 import styles from './Settings.scss';
 
@@ -29,14 +29,16 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
 
   const renderView = (view: string) => {
     switch (view) {
-      case ACCOUNT_VIEW:
-        return <AccountView />;
-      case DETAILS_VIEW:
-        return <DetailsView />;
-      case GENERAL_VIEW:
-        return <GeneralView />;
+      case routes.ACCOUNT_VIEW:
+        return <Views.AccountView />;
+      case routes.DETAILS_VIEW:
+        return <Views.DetailsView />;
+      case routes.GENERAL_VIEW:
+        return <Views.GeneralView />;
+      case routes.PHRASE_VIEW:
+        return <Views.PhraseView />;
       default:
-        return <MainView />;
+        return <Views.MainView />;
     }
   };
 
@@ -62,7 +64,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
             </IconButton>
           </section>
           {transitions.map(({ item, props, key }) => (
-            <animated.div
+            <animated.section
               className={styles.content}
               style={{
                 ...props,
@@ -73,7 +75,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
               key={key}
             >
               {renderView(item.hash)}
-            </animated.div>
+            </animated.section>
           ))}
         </div>
       </div>
