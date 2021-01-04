@@ -29,7 +29,7 @@ const Settings: FC<ISettings> = ({ open }) => {
   };
 
   const handleBackNav = () => {
-    history.push(location.pathname);
+    history.goBack();
   };
 
   return (

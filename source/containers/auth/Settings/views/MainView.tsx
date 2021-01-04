@@ -4,10 +4,10 @@ import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import DAGIcon from 'assets/images/svg/dag.svg';
-import BTCIcon from 'assets/images/svg/btc.svg';
-import ETHIcon from 'assets/images/svg/eth.svg';
+// import BTCIcon from 'assets/images/svg/btc.svg';
+// import ETHIcon from 'assets/images/svg/eth.svg';
 import { ACCOUNT_VIEW } from '../consts';
-import styles from './View.scss';
+import styles from './MainView.scss';
 
 const MainView = () => {
   const history = useHistory();
@@ -23,22 +23,6 @@ const MainView = () => {
             <img src={DAGIcon} />
             <span className={styles.accInfo}>
               Account 1<small>1,000,000 DAG</small>
-            </span>
-          </div>
-        </li>
-        <li>
-          <div className={styles.account}>
-            <img src={ETHIcon} />
-            <span className={styles.accInfo}>
-              Account 2<small>1,000,000 DAG</small>
-            </span>
-          </div>
-        </li>
-        <li>
-          <div className={styles.account}>
-            <img src={BTCIcon} />
-            <span className={styles.accInfo}>
-              Account 3<small>1,000,000 DAG</small>
             </span>
           </div>
         </li>
