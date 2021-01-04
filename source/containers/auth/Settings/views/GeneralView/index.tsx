@@ -5,7 +5,7 @@ import DeleteIcon from 'assets/images/svg/trash.svg';
 import { useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
-import { PHRASE_VIEW } from '../routes';
+import { DELETE_WALLET_VIEW, PHRASE_VIEW } from '../routes';
 
 const GeneralView = () => {
   const showView = useSettingsView();
@@ -21,7 +21,7 @@ const GeneralView = () => {
           <img src={InfoIcon} alt="info" />
           About
         </li>
-        <li>
+        <li onClick={() => showView(DELETE_WALLET_VIEW)}>
           <img src={DeleteIcon} alt="delete" />
           Delete Wallet
         </li>
