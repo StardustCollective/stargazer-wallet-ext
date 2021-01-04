@@ -36,7 +36,16 @@ const DetailsView = () => {
             >
               {ellipsis(accountInfo.address)}
             </span>
-            <IconButton className={styles.iconBtn}>
+            <IconButton
+              className={styles.iconBtn}
+              onClick={() =>
+                window.open(
+                  'https://www.dagexplorer.io/search/?term=' +
+                    accountInfo.address,
+                  '_blank'
+                )
+              }
+            >
               <LinkIcon className={styles.icon} />
             </IconButton>
           </div>
