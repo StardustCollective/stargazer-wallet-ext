@@ -15,7 +15,7 @@ interface ISettings {
   onClose?: () => void;
 }
 
-const Settings: FC<ISettings> = ({ open }) => {
+const Settings: FC<ISettings> = ({ open, onClose }) => {
   const location = useLocation();
   const history = useHistory();
 
@@ -45,7 +45,7 @@ const Settings: FC<ISettings> = ({ open }) => {
               {location.hash && <ArrowBackIcon className={styles.icon} />}
             </IconButton>
             Settings
-            <IconButton className={styles.navBtn}>
+            <IconButton className={styles.navBtn} onClick={onClose}>
               <CloseIcon className={styles.icon} />
             </IconButton>
           </section>

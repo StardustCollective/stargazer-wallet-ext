@@ -21,7 +21,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const isUnlocked = !controller.wallet.isLocked();
   const [showed, showSettings] = useState(false);
 
-  const backHandler = () => {
+  const handleBack = () => {
     showSettings(false);
     if (backLink === '#') {
       history.goBack();
@@ -30,16 +30,20 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
     }
   };
 
+  const handleCloseSettings = () => {
+    showSettings(false);
+  };
+
   return (
     <div className={styles.header}>
       {showLogo ? (
-        <Link to="/app.html" onClick={() => showSettings(false)}>
+        <Link to="/app.html" onClick={handleCloseSettings}>
           <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
         </Link>
       ) : (
         <IconButton
           className={`${styles.button} ${styles.back}`}
-          onClick={backHandler}
+          onClick={handleBack}
         >
           <ArrowBackIcon />
         </IconButton>
@@ -51,7 +55,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
       >
         <MoreVertIcon />
       </IconButton>
-      <Settings open={showed && isUnlocked} />
+      <Settings open={showed && isUnlocked} onClose={handleCloseSettings} />
     </div>
   );
 };
