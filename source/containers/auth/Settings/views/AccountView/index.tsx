@@ -6,10 +6,14 @@ import ExportIcon from 'assets/images/svg/export.svg';
 import LinkIcon from 'assets/images/svg/link.svg';
 import ConnectedIcon from 'assets/images/svg/connected.svg';
 import RemoveIcon from 'assets/images/svg/trash.svg';
+import { useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
+import { DETAILS_VIEW } from '../consts';
 
 const AccountView = () => {
+  const showView = useSettingsView();
+
   return (
     <div className={styles.account}>
       <ul>
@@ -27,7 +31,7 @@ const AccountView = () => {
             />
           </span>
         </li>
-        <li>
+        <li onClick={() => showView(DETAILS_VIEW)}>
           <img src={UserIcon} alt="user" />
           Account Details
         </li>

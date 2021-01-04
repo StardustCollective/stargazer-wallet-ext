@@ -1,9 +1,18 @@
 import copy from 'copy-to-clipboard';
+import { useHistory } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { browser } from 'webextension-polyfill-ts';
 
 export function useController() {
   return browser.extension.getBackgroundPage().controller;
+}
+
+export function useSettingsView() {
+  const history = useHistory();
+
+  return useCallback((view) => {
+    history.push(view);
+  }, []);
 }
 
 export function useCopyClipboard(
