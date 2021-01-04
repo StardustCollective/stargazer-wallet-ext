@@ -33,6 +33,13 @@
       color: $gray-dark;
       user-select: none;
       margin: 0 12px;
+      transition: all 0.3s;
+
+      &.copied {
+        background: $purple-medium;
+        color: $purple;
+        border: 1px solid $purple;
+      }
     }
 
     .iconBtn {
