@@ -6,8 +6,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import DAGIcon from 'assets/images/svg/dag.svg';
 // import BTCIcon from 'assets/images/svg/btc.svg';
 // import ETHIcon from 'assets/images/svg/eth.svg';
-import { ACCOUNT_VIEW } from '../consts';
-import styles from './MainView.scss';
+import { ACCOUNT_VIEW } from '../../consts';
+import styles from './index.scss';
 
 const MainView = () => {
   const history = useHistory();

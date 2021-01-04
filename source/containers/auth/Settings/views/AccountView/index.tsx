@@ -7,7 +7,7 @@ import LinkIcon from 'assets/images/svg/link.svg';
 import ConnectedIcon from 'assets/images/svg/connected.svg';
 import RemoveIcon from 'assets/images/svg/trash.svg';
 
-import styles from './AccountView.scss';
+import styles from './index.scss';
 
 const AccountView = () => {
   return (
