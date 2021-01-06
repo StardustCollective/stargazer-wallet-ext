@@ -9,7 +9,7 @@ import RemoveIcon from 'assets/images/svg/trash.svg';
 import { useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
-import { DETAILS_VIEW } from '../routes';
+import { DETAILS_VIEW, PRIV_KEY_VIEW } from '../routes';
 
 const AccountView = () => {
   const showView = useSettingsView();
@@ -35,7 +35,7 @@ const AccountView = () => {
           <img src={UserIcon} alt="user" />
           Account Details
         </li>
-        <li>
+        <li onClick={() => showView(PRIV_KEY_VIEW)}>
           <img src={ExportIcon} alt="export" />
           Export private key
         </li>

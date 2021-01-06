@@ -39,6 +39,8 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return <Views.PhraseView />;
       case routes.DELETE_WALLET_VIEW:
         return <Views.DeleteWalletView />;
+      case routes.PRIV_KEY_VIEW:
+        return <Views.PrivateKeyView />;
       default:
         return <Views.MainView />;
     }
