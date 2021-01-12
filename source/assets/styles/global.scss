@@ -22,6 +22,7 @@
 
   // Font styles
   .heading-1 {
+    font-family: $quicksand;
     font-style: normal;
     font-weight: $regular;
     font-size: 30px;
@@ -30,6 +31,7 @@
   }
 
   .body-caption {
+    font-family: $inter;
     font-weight: $medium;
     font-size: 16px;
     line-height: 24px;
@@ -37,6 +39,7 @@
   }
 
   .body-description {
+    font-family: $inter;
     font-weight: $medium;
     font-size: 18px;
     line-height: 24px;
@@ -45,6 +48,7 @@
   }
 
   .body-comment {
+    font-family: $inter;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
