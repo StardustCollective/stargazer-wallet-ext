@@ -12,7 +12,7 @@
     height: 60px;
     width: 100%;
     margin-top: 72px;
-    border-bottom: 1px solid rgba($black, 0.3);
+    border-bottom: 1px solid $gray-100;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,7 +26,7 @@
     text-align: center;
     color: $gray-dark;
 
-    small {
+    & > small {
       font-weight: 600;
       font-size: 12px;
       line-height: 18px;
@@ -68,24 +68,37 @@
     }
 
     & > h3 {
-      font-weight: 600;
-      font-size: 36px;
+      font-weight: 500;
+      font-size: 33px;
       line-height: 48px;
       margin: 0px;
-      color: $black;
+      color: $gray-dark;
+
+      small {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 24px;
+      }
     }
 
     & > small {
-      font-weight: 600;
+      font-weight: 500;
       font-size: 16px;
       line-height: 24px;
-      color: $gray;
+      color: $gray-100;
       margin-top: 8px;
     }
 
-    .send {
-      margin-top: 18px;
-      width: 155px;
+    .actions {
+      display: flex;
+      width: 300px;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .button {
+        margin-top: 18px;
+        width: 144px;
+      }
     }
   }
 
