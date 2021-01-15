@@ -16,6 +16,7 @@ const WalletController = (): IWalletController => {
   let password = '';
   let phrase = '';
   let masterKey: hdkey;
+
   const account = Object.freeze(
     AccountController({
       getMasterKey: () => {
@@ -33,6 +34,7 @@ const WalletController = (): IWalletController => {
   };
 
   const isLocked = () => {
+    console.log(password, phrase);
     return !password || !phrase;
   };
 

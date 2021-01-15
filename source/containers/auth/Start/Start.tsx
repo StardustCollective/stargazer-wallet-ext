@@ -21,7 +21,7 @@ const Starter = () => {
 
   return (
     <div className={styles.home}>
-      <h1 className="heading-1 full-width t-white">
+      <h1 className="heading-1 full-width t-white t-quicksand tw-medium">
         Welcome to
         <br />
         Stargazer Wallet

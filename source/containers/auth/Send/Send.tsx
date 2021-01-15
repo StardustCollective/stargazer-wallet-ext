@@ -7,14 +7,13 @@ import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
-import CloseIcon from 'assets/images/svg/close.svg';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 
 import styles from './Send.scss';
 import { useController } from 'hooks/index';
 
 const WalletSend = () => {
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required(),
       amount: yup.number().required(),
@@ -27,6 +26,7 @@ const WalletSend = () => {
 
   const [address, setAddress] = useState('');
   const [amount, setAmount] = useState('');
+  const [fee, setFee] = useState('0');
 
   const isValidAddress = useMemo(() => {
     return controller.wallet.account.isValidDAGAddress(address);
@@ -41,6 +41,11 @@ const WalletSend = () => {
 
   const handleAddressOption = () => {
     if (address) setAddress('');
+  };
+
+  const handlePaste = async () => {
+    let text = await navigator.clipboard.readText();
+    console.log(text);
   };
 
   const onSubmit = (data: any) => {
@@ -61,6 +66,13 @@ const WalletSend = () => {
     []
   );
 
+  const handleFeeChange = useCallback(
+    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFee(ev.target.value);
+    },
+    []
+  );
+
   const handleAddressChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setAddress(ev.target.value);
@@ -72,68 +84,92 @@ const WalletSend = () => {
     <div className={styles.wrapper}>
       <Header backLink="/home" />
       <form onSubmit={handleSubmit(onSubmit)}>
-        <section className={styles.heading}>
-          <span className={styles.title}>Send DAG</span>
-          <span className={styles.label}>Address:</span>
-          <div className={styles.inputWrapper}>
-            <img src={VerifiedIcon} alt="checked" className={statusIconClass} />
-            <TextInput
-              placeholder="Enter a valid DAG address"
-              fullWidth
-              value={address}
-              name="address"
-              inputRef={register}
-              onChange={handleAddressChange}
-              variant={addressInputClass}
-            />
-            <Button
-              type="button"
-              variant={styles.qrcode}
-              onClick={handleAddressOption}
-            >
-              {address ? (
-                <img src={CloseIcon} alt="close" />
-              ) : (
-                <img src={QRCodeIcon} alt="qr-code" />
-              )}
-            </Button>
+        <section className={styles.subheading}>Send DAG</section>
+        <section className={styles.balance}>
+          <div>
+            Balance: <span>{account!.balance}</span> DAG
           </div>
         </section>
         <section className={styles.content}>
-          <span className={clsx(styles.label, styles.balance)}>
-            Amount:
-            <small>Balance: {account?.balance || 0} DAG</small>
-          </span>
-          <div className={styles.inputWrapper}>
-            <TextInput
-              type="number"
-              placeholder="Enter amount to send"
-              fullWidth
-              inputRef={register}
-              name="amount"
-              value={amount}
-              onChange={handleAmountChange}
-              variant={clsx(styles.input, styles.amount)}
-            />
-            <Button
-              type="button"
-              variant={styles.max}
-              onClick={() => setAmount(String(account?.balance || 0))}
-            >
-              Max
-            </Button>
+          <ul className={styles.form}>
+            <li>
+              <label>Recipient Address</label>
+              <img
+                src={VerifiedIcon}
+                alt="checked"
+                className={statusIconClass}
+              />
+              <TextInput
+                placeholder="Enter a valid DAG address"
+                fullWidth
+                value={address}
+                name="address"
+                inputRef={register}
+                onChange={handleAddressChange}
+                variant={addressInputClass}
+              />
+              <Button
+                type="button"
+                variant={styles.textBtn}
+                onClick={handlePaste}
+              >
+                Paste
+              </Button>
+              <Button
+                type="button"
+                variant={styles.qrcode}
+                onClick={handleAddressOption}
+              >
+                <img src={QRCodeIcon} alt="qr-code" />
+              </Button>
+            </li>
+            <li>
+              <label>Dag Amount</label>
+              <TextInput
+                type="number"
+                placeholder="Enter amount to send"
+                fullWidth
+                inputRef={register}
+                name="amount"
+                value={amount}
+                onChange={handleAmountChange}
+                variant={styles.input}
+              />
+              <Button
+                type="button"
+                variant={styles.textBtn}
+                onClick={() => setAmount(String(account?.balance || 0))}
+              >
+                Max
+              </Button>
+            </li>
+            <li>
+              <label>Transaction Fee</label>
+              <TextInput
+                type="number"
+                placeholder="Enter transaction fee"
+                fullWidth
+                inputRef={register}
+                name="fee"
+                onChange={handleFeeChange}
+                value={fee}
+                variant={clsx(styles.input, styles.fee)}
+              />
+              <Button
+                type="button"
+                variant={styles.textBtn}
+                onClick={() => setFee('0')}
+              >
+                Recommend
+              </Button>
+            </li>
+          </ul>
+          <div className={styles.status}>
+            <span className={styles.equalAmount}>≈ $0,00</span>
+            <span className={styles.error}>Error: Invalid DAG address</span>
           </div>
-          <span className={styles.label}>Transaction Fee:</span>
-          <TextInput
-            type="number"
-            placeholder="Enter $DAG transaction fee"
-            fullWidth
-            inputRef={register}
-            name="fee"
-            variant={styles.input}
-          />
           <div className={styles.description}>
-            Due to current network conditions we recommend a fee of 0 DAG.
+            With current network conditions we recommend a fee of 0 DAG.
           </div>
           <div className={styles.actions}>
             <Button
@@ -144,7 +180,11 @@ const WalletSend = () => {
             >
               Close
             </Button>
-            <Button type="submit" variant={styles.button}>
+            <Button
+              type="submit"
+              variant={styles.button}
+              disabled={!amount || !fee || !address}
+            >
               Send
             </Button>
           </div>

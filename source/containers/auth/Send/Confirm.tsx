@@ -6,7 +6,7 @@ import Button from 'components/Button';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import CheckIcon from 'assets/images/svg/check.svg';
-import RightArrowIcon from 'assets/images/svg/arrow-right.svg';
+import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 
 import { ellipsis } from '../helpers';
 import styles from './Confirm.scss';
@@ -36,52 +36,36 @@ const SendConfirm = () => {
   ) : (
     <div className={styles.wrapper}>
       <Header backLink="/send" />
-      <section className={styles.heading}>
-        <span className={styles.title}>Confirm Transaction</span>
-        <div className={styles.path}>
-          {ellipsis(tempTx?.fromAddress || '')}
-          <img
-            src={`/${RightArrowIcon}`}
-            alt="arrow"
-            className={styles.arrow}
-          />
-          {ellipsis(tempTx?.toAddress || '')}
+      <section className={styles.subheading}>Confirm</section>
+      <section className={styles.txAmount}>
+        <div className={styles.iconWrapper}>
+          <UpArrowIcon />
         </div>
+        {tempTx!.amount} DAG
+        <small>(≈ $800.10)</small>
       </section>
       <section className={styles.transaction}>
         <div className={styles.row}>
-          Address:
-          <span>{ellipsis(tempTx?.toAddress || '')}</span>
+          From
+          <span>Main Wallet ({ellipsis(tempTx!.fromAddress)})</span>
         </div>
         <div className={styles.row}>
-          Amount:
-          <div className={styles.amount}>
-            <span>
-              {tempTx?.amount || 0}
-              <small>DAG</small>
-            </span>
-            <span className={styles.cash}>
-              {getFiatAmount(tempTx?.amount || 0, 8)}
-            </span>
-          </div>
+          To
+          <span>{tempTx!.toAddress}</span>
         </div>
         <div className={styles.row}>
-          Transaction Fee:
-          <span>{tempTx?.fee || 0} DAG</span>
+          Transaction Fee
+          <span>
+            {tempTx!.fee} DAG (≈ {getFiatAmount(tempTx?.amount || 0, 8)})
+          </span>
         </div>
       </section>
       <section className={styles.confirm}>
         <div className={styles.row}>
-          Total:
-          <div className={styles.amount}>
-            <span>
-              {(tempTx?.amount || 0) + (tempTx?.fee || 0)}
-              <small>DAG</small>
-            </span>
-            <span className={styles.cash}>
-              {getFiatAmount((tempTx?.amount || 0) + (tempTx?.fee || 0), 8)}
-            </span>
-          </div>
+          Max Total
+          <span>
+            {getFiatAmount((tempTx?.amount || 0) + (tempTx?.fee || 0), 8)}
+          </span>
         </div>
 
         <div className={styles.actions}>

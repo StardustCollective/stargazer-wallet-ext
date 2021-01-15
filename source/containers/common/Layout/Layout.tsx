@@ -21,7 +21,7 @@ const Layout: FC<ILayout> = ({
       <Header backLink={linkTo} showLogo={showLogo} />
       <div className={styles.layout}>
         <section className={styles.heading}>
-          <span className="heading-1 t-purple">{title}</span>
+          <span className="heading-1">{title}</span>
         </section>
         <section className={styles.content}>{children}</section>
       </div>

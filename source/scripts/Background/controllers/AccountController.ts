@@ -27,7 +27,7 @@ const AccountController = (actions: {
     dag.account.loginPrivateKey(privateKey);
     // const ethAddress = dag.keyStore.getEthAddressFromPrivateKey(privateKey);
     const balance = await dag.account.getBalance();
-    const transactions = await dag.account.getTransactions(2);
+    const transactions = await dag.account.getTransactions(10);
     return { address: dag.account.address, balance, transactions };
   };
 
