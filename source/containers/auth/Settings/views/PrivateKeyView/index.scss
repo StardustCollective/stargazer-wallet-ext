@@ -1,0 +1,105 @@
+@import '~assets/styles/variables';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .heading {
+    display: flex;
+    flex-direction: row;
+    margin-top: 24px;
+    align-items: center;
+
+    .address {
+      width: 180px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: $gray-hover;
+      border: 1px solid $gray-100;
+      box-sizing: border-box;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 24px;
+      letter-spacing: 0.03em;
+      color: $gray-dark;
+      user-select: none;
+      margin: 0 12px;
+      transition: all 0.3s;
+
+      &.copied {
+        background: $purple-medium;
+        color: $purple;
+        border: 1px solid $purple;
+      }
+    }
+
+    .iconBtn {
+      width: 24px;
+      height: 24px;
+
+      .icon {
+        height: 18px;
+        width: auto;
+      }
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 36px;
+    box-sizing: border-box;
+    width: 100%;
+
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: $gray-dark;
+
+    & > span {
+      margin: 24px 0;
+    }
+
+    .privKey {
+      background: $gray-hover;
+      border: 1px solid $gray-100;
+      box-sizing: border-box;
+      border-radius: 6px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 72px;
+      word-break: break-all;
+      padding: 0 20px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 24px;
+      letter-spacing: 0.03em;
+      transition: all 0.3s;
+      cursor: pointer;
+      user-select: none;
+
+      &.notAllowed {
+        cursor: no-drop;
+      }
+
+      &.copied {
+        cursor: initial;
+        background: $purple-medium;
+        color: $purple;
+        border: 1px solid $purple;
+      }
+    }
+
+    .input {
+      border: 1px solid $gray-100 !important;
+    }
+  }
+}

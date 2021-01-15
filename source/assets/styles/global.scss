@@ -3,7 +3,7 @@
 :global body {
   margin: 0px;
   padding: 0px;
-  font-family: $quicksand !important;
+  font-family: $inter !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
 
@@ -22,14 +22,15 @@
 
   // Font styles
   .heading-1 {
-    font-style: normal;
-    font-weight: $regular;
+    font-family: $inter;
+    font-weight: normal;
     font-size: 30px;
     line-height: 36px;
     margin: 0px;
   }
 
   .body-caption {
+    font-family: $inter;
     font-weight: $medium;
     font-size: 16px;
     line-height: 24px;
@@ -37,19 +38,36 @@
   }
 
   .body-description {
-    font-weight: $medium;
-    font-size: 18px;
+    font-family: $inter;
+    font-weight: 500;
+    font-size: 16px;
     line-height: 24px;
-    letter-spacing: 0.03em;
     color: $gray-dark;
   }
 
   .body-comment {
+    font-family: $inter;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
     color: $gray-dark;
+  }
+
+  // Font families
+  .t-quicksand {
+    font-family: $quicksand;
+  }
+  .t-inter {
+    font-family: $inter;
+  }
+
+  // Font Weights
+  .tw-medium {
+    font-weight: $medium;
+  }
+  .tw-regular {
+    font-weight: $regular;
   }
 
   // Text styles

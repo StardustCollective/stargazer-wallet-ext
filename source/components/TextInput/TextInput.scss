@@ -26,12 +26,14 @@ body {
   }
 
   .MuiInputBase-root {
-    font-family: $quicksand;
+    font-family: $inter;
     font-size: 12px;
+    height: 40px;
+    padding: 0 20px;
     font-weight: $medium;
     border: 1px solid $purple !important;
     outline: 0px !important;
-    border-radius: 0px;
+    border-radius: 20px;
 
     & input {
       padding: 0px;

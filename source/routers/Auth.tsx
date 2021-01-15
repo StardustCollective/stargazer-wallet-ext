@@ -4,6 +4,7 @@ import Start from 'containers/auth/Start';
 import { useTransition, animated } from 'react-spring';
 import Home from 'containers/auth/Home';
 import Send, { SendConfirm } from 'containers/auth/Send';
+import Receive from 'containers/auth/Receive';
 import { useController } from 'hooks/index';
 
 const Auth = () => {
@@ -39,6 +40,7 @@ const Auth = () => {
               <Route path="/send/confirm" component={SendConfirm} exact />
             )}
             {isUnlocked && <Route path="/send" component={Send} exact />}
+            {isUnlocked && <Route path="/receive" component={Receive} exact />}
           </Switch>
         </animated.div>
       ))}

@@ -1,10 +1,10 @@
 import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
-import { setKeystoreInfo, updateStatus } from 'state/wallet';
-import AccountsController, { IAccountsController } from './AccountsController';
+import { setKeystoreInfo } from 'state/wallet';
+import AccountController, { IAccountController } from './AccountController';
 export interface IWalletController {
-  accounts: Readonly<IAccountsController>;
+  account: Readonly<IAccountController>;
   createWallet: () => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
@@ -16,8 +16,9 @@ const WalletController = (): IWalletController => {
   let password = '';
   let phrase = '';
   let masterKey: hdkey;
-  const accounts = Object.freeze(
-    AccountsController({
+
+  const account = Object.freeze(
+    AccountController({
       getMasterKey: () => {
         return walletKeystore() ? masterKey : null;
       },
@@ -33,6 +34,7 @@ const WalletController = (): IWalletController => {
   };
 
   const isLocked = () => {
+    console.log(password, phrase);
     return !password || !phrase;
   };
 
@@ -44,7 +46,7 @@ const WalletController = (): IWalletController => {
       phrase = await dag.keyStore.decryptPhrase(keystore, pwd);
       password = pwd;
       masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
-      store.dispatch(updateStatus());
+      account.getPrimaryAccount();
       return true;
     } catch (error) {
       console.log(error);
@@ -57,6 +59,7 @@ const WalletController = (): IWalletController => {
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));
+    account.getPrimaryAccount();
   };
 
   const setWalletPassword = (pwd: string) => {
@@ -69,7 +72,7 @@ const WalletController = (): IWalletController => {
   };
 
   return {
-    accounts,
+    account,
     generatedPhrase,
     setWalletPassword,
     createWallet,

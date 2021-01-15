@@ -4,7 +4,6 @@ import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import CheckIcon from 'assets/images/svg/check.svg';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useController } from 'hooks/index';
 
 import Layout from '../../common/Layout';
@@ -17,7 +16,7 @@ const CreatePass = () => {
   const controller = useController();
   const [passed, setPassed] = useState(false);
   const { handleSubmit, register, errors } = useForm({
-    resolver: yupResolver(consts.schema),
+    validationSchema: consts.schema,
   });
   const title = passed ? consts.CREATE_PASS_TITLE2 : consts.CREATE_PASS_TITLE1;
   const comment = passed

@@ -8,89 +8,95 @@
   width: 100%;
   height: 100%;
 
-  .heading {
-    margin-top: 72px;
+  section.subheading {
+    height: 60px;
     width: 100%;
-    box-sizing: border-box;
-    height: 72px;
+    margin-top: 72px;
+    border-bottom: 1px solid $gray-100;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid $gray-medium;
 
-    .title {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 24px;
-      color: $gray-dark;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: $gray-dark;
+  }
+
+  section.txAmount {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    width: 100%;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: $gray-dark;
+
+    small {
+      font-size: 10px;
+      line-height: 10px;
+      margin-top: 2px;
+      margin-left: 4px;
     }
 
-    .path {
+    .iconWrapper {
+      width: 24px;
+      height: 24px;
+      background: $purple;
+      border-radius: 50%;
+      color: $white;
       display: flex;
-      flex-direction: row;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      font-size: 12px;
-      line-height: 18px;
-      text-align: right;
-      margin-top: 4px;
-      letter-spacing: 0.03em;
-      color: $gray;
+      box-sizing: border-box;
+      margin-right: 12px;
 
-      .arrow {
-        margin: 0 12px;
+      svg {
+        font-size: 16px;
       }
     }
   }
 
   .row {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: flex-start;
-    justify-content: space-between;
-    font-weight: 600;
+    justify-content: center;
+    font-weight: 500;
     font-size: 16px;
-    line-height: 16px;
+    line-height: 24px;
+    box-sizing: border-box;
+    padding: 0 36px;
     color: $gray-dark;
-    margin-bottom: 24px;
+    height: 60px;
+    width: 100%;
+    border-top: 1px solid $gray-light;
 
-    &:last-child {
-      margin-bottom: 0;
+    span {
+      font-size: 12px;
+      line-height: 18px;
+      color: $gray-100;
+    }
+
+    &:nth-last-child(1) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 
-  .transaction {
+  section.transaction {
     width: 100%;
     height: 192px;
     box-sizing: border-box;
-    padding: 24px 36px;
-    border-bottom: 1px solid $gray-medium;
-  }
-
-  .amount {
-    display: flex;
-    flex-direction: column;
-    font-weight: 600;
-    font-size: 30px;
-    line-height: 30px;
-    align-items: flex-end;
-
-    small {
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 16px;
-      margin-left: 6px;
-    }
-
-    .cash {
-      margin-top: 10px;
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 24px;
-      color: $gray;
-    }
+    padding: 0;
   }
 
   .confirm {
@@ -98,17 +104,29 @@
     height: 264px;
     background: $gray-light;
     box-sizing: border-box;
-    padding: 24px 36px;
+    padding: 0;
+
+    & > .row {
+      border-bottom: 1px solid $white;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      span {
+        font-size: 16px;
+      }
+    }
 
     .actions {
       display: flex;
       position: absolute;
       width: 300px;
       bottom: 24px;
+      padding: 0 36px;
       justify-content: space-between;
 
       .close {
-        background: $gray-disabled;
+        background: $gray-light;
         color: $gray-dark;
       }
 
