@@ -5,7 +5,7 @@ body {
     padding: 8px 40px;
     font-family: $inter;
     font-weight: $medium;
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 0.03em;
     text-transform: none;
     border-radius: 20px;
@@ -48,7 +48,8 @@ body {
     }
 
     &.disabled {
-      background: $gray-disabled;
+      color: $gray-100;
+      background: $gray-light;
     }
   }
 }

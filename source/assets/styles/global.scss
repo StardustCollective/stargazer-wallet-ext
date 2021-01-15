@@ -22,9 +22,8 @@
 
   // Font styles
   .heading-1 {
-    font-family: $quicksand;
-    font-style: normal;
-    font-weight: $regular;
+    font-family: $inter;
+    font-weight: normal;
     font-size: 30px;
     line-height: 36px;
     margin: 0px;
@@ -40,10 +39,9 @@
 
   .body-description {
     font-family: $inter;
-    font-weight: $medium;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 16px;
     line-height: 24px;
-    letter-spacing: 0.03em;
     color: $gray-dark;
   }
 
@@ -54,6 +52,22 @@
     font-size: 16px;
     line-height: 24px;
     color: $gray-dark;
+  }
+
+  // Font families
+  .t-quicksand {
+    font-family: $quicksand;
+  }
+  .t-inter {
+    font-family: $inter;
+  }
+
+  // Font Weights
+  .tw-medium {
+    font-weight: $medium;
+  }
+  .tw-regular {
+    font-weight: $regular;
   }
 
   // Text styles

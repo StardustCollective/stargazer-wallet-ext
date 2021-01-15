@@ -8,79 +8,39 @@
   width: 100%;
   height: 100%;
 
-  .heading {
-    height: 144px;
+  section.subheading {
+    height: 60px;
     width: 100%;
-    padding: 24px 36px;
-    box-sizing: border-box;
+    margin-top: 72px;
+    border-bottom: 1px solid $gray-100;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 72px;
-    background: $gray-light;
-    border-bottom: 1px solid $gray-medium;
+    justify-content: center;
 
-    .title {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 22px;
-      color: $gray-dark;
-    }
-
-    .qrcode,
-    .qrcode:hover {
-      background: transparent;
-      min-width: initial;
-      position: absolute;
-      box-shadow: none;
-      top: 0;
-      right: 0;
-      width: 48px;
-      height: 48px !important;
-      padding: 0;
-
-      img {
-        margin: 0;
-      }
-    }
-
-    .statusIcon {
-      position: absolute;
-      opacity: 1;
-      top: 18px;
-      left: 12px;
-      z-index: 1;
-      transform: scale(1);
-      transition: all 0.3s;
-
-      &.hide {
-        opacity: 0;
-        transform: scale(0);
-      }
-    }
-
-    .address {
-      transition: all 0.3s;
-
-      input {
-        transition: all 0.3s;
-        padding-right: 36px;
-      }
-
-      &.verified {
-        color: $purple;
-
-        input {
-          padding-left: 24px;
-        }
-      }
-    }
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: $gray-dark;
   }
 
-  .inputWrapper {
-    position: relative;
+  section.balance {
     width: 100%;
-    display: block;
+    font-weight: 500;
+    font-size: 12px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 18px;
+    color: $gray-dark;
+
+    span {
+      font-size: 16px;
+    }
   }
 
   .input {
@@ -88,68 +48,152 @@
     font-size: 16px;
     line-height: 24px;
     height: 48px;
+    width: 168px;
+    border: none !important;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    transition: all 0.3s;
+
+    &.fee {
+      width: 132px;
+    }
 
     input {
       text-overflow: ellipsis;
       overflow: hidden;
-    }
-  }
-
-  .label {
-    width: 100%;
-    display: block;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 16px;
-    margin-bottom: 12px;
-    color: $gray-dark;
-  }
-
-  .content {
-    width: 100%;
-    height: 386px;
-    box-sizing: border-box;
-    padding: 36px;
-    padding-bottom: 24px;
-    position: relative;
-
-    .balance {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-
-      small {
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 18px;
-        letter-spacing: 0.03em;
-      }
-    }
-
-    .amount {
-      padding-right: 72px;
-      margin-bottom: 24px;
-    }
-
-    .max {
-      position: absolute;
-      box-shadow: none;
-      min-width: initial;
-      top: 12px;
-      right: 12px;
-      width: 48px;
-      height: 24px !important;
-      padding: 0;
       font-weight: 500;
       font-size: 12px;
       line-height: 18px;
+      transition: all 0.3s;
+    }
+  }
+
+  section.content {
+    width: 100%;
+    height: 408px;
+    box-sizing: border-box;
+    padding: 0 36px;
+    padding-bottom: 24px;
+    position: relative;
+
+    ul.form {
+      list-style: none;
+      margin: 0;
+      padding: 0 12px;
+      background: $gray-light;
+      border-radius: 10px;
+
+      li {
+        height: 60px;
+        border-bottom: 1px solid $white;
+        position: relative;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        label {
+          font-weight: 500;
+          font-size: 10px;
+          line-height: 12px;
+          margin-top: 12px;
+          text-transform: uppercase;
+          color: $gray-100;
+        }
+
+        .textBtn {
+          background: transparent;
+          min-width: initial;
+          position: absolute;
+          box-shadow: none;
+          top: 14px;
+          right: 48px;
+          height: 32px !important;
+          font-weight: 500;
+          font-size: 10px;
+          color: $purple;
+          padding: 12px;
+          width: fit-content;
+          text-transform: uppercase;
+        }
+
+        .address {
+          &.verified {
+            color: $purple;
+
+            input {
+              padding-left: 24px;
+            }
+          }
+        }
+
+        .qrcode,
+        .qrcode:hover {
+          background: transparent;
+          min-width: initial;
+          position: absolute;
+          box-shadow: none;
+          top: 0;
+          right: 0;
+          width: 60px;
+          height: 60px !important;
+          padding: 0;
+
+          img {
+            margin: 0;
+          }
+        }
+
+        .statusIcon {
+          position: absolute;
+          opacity: 1;
+          top: 36px;
+          left: 6px;
+          z-index: 1;
+          transform: scale(1);
+          transition: all 0.3s;
+
+          &.hide {
+            opacity: 0;
+            transform: scale(0);
+          }
+        }
+      }
+    }
+
+    .status {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding-top: 12px;
+      justify-content: space-between;
+
+      .equalAmount {
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 12px;
+        color: $gray-100;
+      }
+
+      .error {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 12px;
+        color: $red;
+      }
     }
 
     .description {
-      margin-top: 24px;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
+      font-size: 12px;
+      line-height: 18px;
+      color: $gray-dark;
+      margin-top: 24px;
     }
 
     .actions {
@@ -160,7 +204,7 @@
       justify-content: space-between;
 
       .close {
-        background: $gray-light-100;
+        background: $gray-light;
         color: $gray-dark;
       }
 

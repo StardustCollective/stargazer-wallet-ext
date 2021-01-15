@@ -32,7 +32,12 @@ const Home = () => {
           >
             Send
           </Button>
-          <Button type="button" theme="primary" variant={styles.button}>
+          <Button
+            type="button"
+            theme="primary"
+            variant={styles.button}
+            linkTo="/receive"
+          >
             Receive
           </Button>
         </div>
