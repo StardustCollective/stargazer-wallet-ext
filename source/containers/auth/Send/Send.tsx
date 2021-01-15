@@ -13,7 +13,7 @@ import styles from './Send.scss';
 import { useController } from 'hooks/index';
 
 const WalletSend = () => {
-  const { handleSubmit, register, errors } = useForm({
+  const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required(),
       amount: yup.number().required(),

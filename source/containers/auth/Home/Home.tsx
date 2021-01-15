@@ -2,8 +2,7 @@ import React from 'react';
 import Header from 'containers/common/Header';
 
 import Button from 'components/Button';
-import Tooltip from 'components/Tooltip';
-import { useCopyClipboard, useController } from 'hooks/index';
+import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 
 import styles from './Home.scss';
