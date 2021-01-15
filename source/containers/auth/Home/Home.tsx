@@ -6,6 +6,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 import { useCopyClipboard, useController } from 'hooks/index';
+import { useFiat } from 'hooks/usePrice';
 
 import { ellipsis } from '../helpers';
 import styles from './Home.scss';
@@ -13,6 +14,7 @@ import TxsPanel from './TxsPanel';
 
 const Home = () => {
   const controller = useController();
+  const getFiatAmount = useFiat();
   const accountInfo = controller.wallet.account.currentAccount();
   const [isCopied, copyText] = useCopyClipboard();
 
@@ -40,7 +42,7 @@ const Home = () => {
       <section className={styles.center}>
         <span>DAG Balance</span>
         <h3>{accountInfo?.balance || 0}</h3>
-        <small>$20,000.75 USD</small>
+        <small>{getFiatAmount(accountInfo?.balance || 0)}</small>
         <Button
           type="button"
           theme="primary"

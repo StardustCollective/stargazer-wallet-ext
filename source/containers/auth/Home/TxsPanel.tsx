@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
 import formatDistanceToNow from 'date-fns/esm/formatDistanceToNow';
-import Button from 'components/Button';
 import { Transaction } from '@stardust-collective/dag4-network';
 import BulletIcon from '@material-ui/icons/FiberManualRecord';
 import RightAngleIcon from '@material-ui/icons/ChevronRightOutlined';
+import { useFiat } from 'hooks/usePrice';
 
 import styles from './Home.scss';
 
@@ -14,6 +14,8 @@ interface ITxsPanel {
 }
 
 const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
+  const getFiatAmount = useFiat();
+
   return (
     <section className={styles.activity}>
       <div className={styles.heading}>Activity</div>
@@ -35,7 +37,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
               <div>
                 <span>
                   {tx.amount / 1e8} DAG
-                  <small>$20.00</small>
+                  <small>{getFiatAmount(tx.amount / 1e8, 8)}</small>
                 </span>
                 <RightAngleIcon className={styles.angle} />
               </div>
@@ -43,9 +45,6 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
           );
         })}
       </ul>
-      <Button type="button" theme="primary" variant={styles.more}>
-        Load more
-      </Button>
     </section>
   );
 };

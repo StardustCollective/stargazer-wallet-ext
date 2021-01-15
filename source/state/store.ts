@@ -8,11 +8,13 @@ import logger from 'redux-logger';
 import throttle from 'lodash/throttle';
 
 import wallet from './wallet';
+import price from './price';
 import { saveState, loadState } from './localStorage';
 
 const store: Store = configureStore({
   reducer: combineReducers({
     wallet,
+    price,
   }),
   middleware: [
     ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
@@ -27,6 +29,7 @@ store.subscribe(
     const state = store.getState();
     saveState({
       wallet: state.wallet,
+      price: state.price,
     });
   }, 1000)
 );

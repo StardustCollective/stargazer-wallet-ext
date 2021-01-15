@@ -36,7 +36,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
     dag.di.useFetchHttpClient(window.fetch.bind(window));
-    dag.di.useLocalStorageClient(localStorage);
+    dag.di.useLocalStorageClient(window.localStorage);
     dag.network.config({
       id: DAG_CONFIG_ID,
       beUrl: DAG_BE_URL,
@@ -46,5 +46,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 });
 
 window.controller = Object.freeze(MasterController());
+
+setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
 
 wrapStore(store, { portName: STORE_PORT });

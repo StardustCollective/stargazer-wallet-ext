@@ -93,7 +93,7 @@
     height: 264px;
     background: $gray-light;
     width: 100%;
-    padding: 0px 36px;
+    padding: 0px 0px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -127,6 +127,7 @@
         display: flex;
         box-sizing: border-box;
         flex-direction: row;
+        padding: 0 36px;
         align-items: center;
         justify-content: space-between;
         border-bottom: 1px solid rgba($black, 0.3);

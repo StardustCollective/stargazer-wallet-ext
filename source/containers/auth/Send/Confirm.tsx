@@ -4,6 +4,7 @@ import Header from 'containers/common/Header';
 import Layout from 'containers/common/Layout';
 import Button from 'components/Button';
 import { useController } from 'hooks/index';
+import { useFiat } from 'hooks/usePrice';
 import CheckIcon from 'assets/images/svg/check.svg';
 import RightArrowIcon from 'assets/images/svg/arrow-right.svg';
 
@@ -12,6 +13,7 @@ import styles from './Confirm.scss';
 
 const SendConfirm = () => {
   const controller = useController();
+  const getFiatAmount = useFiat();
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
 
@@ -58,7 +60,9 @@ const SendConfirm = () => {
               {tempTx?.amount || 0}
               <small>DAG</small>
             </span>
-            <span className={styles.cash}>$2,000.75 USD</span>
+            <span className={styles.cash}>
+              {getFiatAmount(tempTx?.amount || 0, 8)}
+            </span>
           </div>
         </div>
         <div className={styles.row}>
@@ -74,7 +78,9 @@ const SendConfirm = () => {
               {(tempTx?.amount || 0) + (tempTx?.fee || 0)}
               <small>DAG</small>
             </span>
-            <span className={styles.cash}>$2,000.75 USD</span>
+            <span className={styles.cash}>
+              {getFiatAmount((tempTx?.amount || 0) + (tempTx?.fee || 0), 8)}
+            </span>
           </div>
         </div>
 

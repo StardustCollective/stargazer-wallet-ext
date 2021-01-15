@@ -41,6 +41,7 @@ const AccountController = (actions: {
   const getPrimaryAccount = async () => {
     account = await getAccountByIndex(0);
     store.dispatch(updateStatus());
+    dag.monitor.startMonitor();
   };
 
   const currentAccount = () => {
@@ -60,7 +61,11 @@ const AccountController = (actions: {
 
   const confirmTempTx = async () => {
     if (dag.account.isActive()) {
-      await dag.account.transferDag(tempTx.toAddress, tempTx.amount);
+      const pendingTx = await dag.account.transferDag(
+        tempTx.toAddress,
+        tempTx.amount
+      );
+      dag.monitor.addToMemPoolMonitor(pendingTx);
     }
   };
 
