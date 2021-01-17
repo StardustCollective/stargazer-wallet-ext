@@ -28,13 +28,17 @@
 
         .accInfo {
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           align-items: flex-start;
-          font-weight: 600;
-          font-size: 18px;
-          margin-left: 12px;
+          font-weight: 500;
+          font-size: 16px;
           line-height: 24px;
           color: $gray-dark;
+
+          div {
+            display: flex;
+            flex-direction: column;
+          }
 
           small {
             font-weight: 600;
@@ -55,17 +59,16 @@
   }
 
   .new {
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 16px;
     line-height: 24px;
     color: $gray-dark;
     display: flex;
     height: 24px;
     align-items: center;
     height: 60px;
-    margin: 0 36px;
+    padding: 0 36px;
     transition: all 0.3s;
-    border-bottom: 1px solid $gray-medium;
     cursor: pointer;
 
     &:hover {
@@ -74,13 +77,13 @@
   }
 
   .general {
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 16px;
     line-height: 24px;
     color: $gray-dark;
     height: 24px;
     display: flex;
-    margin: 0 36px;
+    padding: 0 36px;
     height: 60px;
     align-items: center;
     transition: all 0.3s;
@@ -89,12 +92,5 @@
     &:hover {
       background: $gray-hover;
     }
-  }
-
-  .icon {
-    width: 24px;
-    height: 24px;
-    color: $purple;
-    margin-right: 12px;
   }
 }

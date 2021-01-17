@@ -1,11 +1,10 @@
 import React from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
+import UserIcon from '@material-ui/icons/AccountCircleRounded';
 
+import Icon from 'components/Icon';
 import { useSettingsView } from 'hooks/index';
-import DAGIcon from 'assets/images/svg/dag.svg';
-// import BTCIcon from 'assets/images/svg/btc.svg';
-// import ETHIcon from 'assets/images/svg/eth.svg';
 import { ACCOUNT_VIEW, GENERAL_VIEW } from '../routes';
 import styles from './index.scss';
 
@@ -17,22 +16,24 @@ const MainView = () => {
       <ul className={styles.accounts}>
         <li onClick={() => showView(ACCOUNT_VIEW)}>
           <div className={styles.account}>
-            <img src={DAGIcon} />
             <span className={styles.accInfo}>
-              Account 1<small>1,000,000 DAG</small>
+              <Icon Component={UserIcon} />
+              <div>
+                Account 1<small>1,000,000 DAG</small>
+              </div>
             </span>
           </div>
         </li>
       </ul>
       <section className={styles.new}>
-        <AddIcon className={styles.icon} />
+        <Icon Component={AddIcon} />
         Create New Account
       </section>
       <section
         className={styles.general}
         onClick={() => showView(GENERAL_VIEW)}
       >
-        <SettingsIcon className={styles.icon} />
+        <Icon Component={SettingsIcon} />
         General Settings
       </section>
     </div>

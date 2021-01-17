@@ -1,14 +1,14 @@
 import React from 'react';
 import Select from 'components/Select';
-import DAGIcon from 'assets/images/svg/dag.svg';
-import ExportIcon from 'assets/images/svg/export.svg';
-import LinkIcon from 'assets/images/svg/link.svg';
-import ConnectedIcon from 'assets/images/svg/connected.svg';
-import RemoveIcon from 'assets/images/svg/trash.svg';
+import NetworkIcon from '@material-ui/icons/Timeline';
+import ExportIcon from '@material-ui/icons/ImportExport';
+import LinkIcon from '@material-ui/icons/CallMissedOutgoing';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
 import { PRIV_KEY_VIEW } from '../routes';
+import Icon from 'components/Icon';
 
 const AccountView = () => {
   const showView = useSettingsView();
@@ -17,7 +17,7 @@ const AccountView = () => {
     <div className={styles.account}>
       <ul>
         <li className={styles.network}>
-          <img src={DAGIcon} alt="DAG" />
+          <Icon Component={NetworkIcon} />
           <span>
             DAG Network
             <Select
@@ -31,15 +31,15 @@ const AccountView = () => {
           </span>
         </li>
         <li onClick={() => showView(PRIV_KEY_VIEW)}>
-          <img src={ExportIcon} alt="export" />
+          <Icon Component={ExportIcon} />
           Export private key
         </li>
         <li>
-          <img src={LinkIcon} alt="view" />
+          <Icon Component={LinkIcon} />
           View on explorer
         </li>
         <li>
-          <img src={RemoveIcon} alt="remove" />
+          <Icon Component={DeleteIcon} />
           Remove Account
         </li>
       </ul>

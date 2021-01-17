@@ -1,7 +1,8 @@
 import React from 'react';
-import ListIcon from 'assets/images/svg/list.svg';
-import InfoIcon from 'assets/images/svg/info.svg';
-import DeleteIcon from 'assets/images/svg/trash.svg';
+import ListIcon from '@material-ui/icons/ListAltRounded';
+import InfoIcon from '@material-ui/icons/InfoRounded';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Icon from 'components/Icon';
 import { useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
@@ -14,15 +15,15 @@ const GeneralView = () => {
     <div className={styles.general}>
       <ul>
         <li onClick={() => showView(PHRASE_VIEW)}>
-          <img src={ListIcon} alt="user" />
+          <Icon Component={ListIcon} />
           Wallet seed phrase
         </li>
         <li>
-          <img src={InfoIcon} alt="info" />
+          <Icon Component={InfoIcon} />
           About
         </li>
         <li onClick={() => showView(DELETE_WALLET_VIEW)}>
-          <img src={DeleteIcon} alt="delete" />
+          <Icon Component={DeleteIcon} />
           Delete Wallet
         </li>
       </ul>
