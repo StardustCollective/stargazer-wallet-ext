@@ -3,5 +3,4 @@ export { default as AccountView } from './AccountView';
 export { default as GeneralView } from './GeneralView';
 export { default as PhraseView } from './PhraseView';
 export { default as DeleteWalletView } from './DeleteWalletView';
-export { default as DetailsView } from './DetailsView';
 export { default as PrivateKeyView } from './PrivateKeyView';

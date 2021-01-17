@@ -1,7 +1,6 @@
 import React from 'react';
 import Select from 'components/Select';
 import DAGIcon from 'assets/images/svg/dag.svg';
-import UserIcon from 'assets/images/svg/user.svg';
 import ExportIcon from 'assets/images/svg/export.svg';
 import LinkIcon from 'assets/images/svg/link.svg';
 import ConnectedIcon from 'assets/images/svg/connected.svg';
@@ -9,7 +8,7 @@ import RemoveIcon from 'assets/images/svg/trash.svg';
 import { useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
-import { DETAILS_VIEW, PRIV_KEY_VIEW } from '../routes';
+import { PRIV_KEY_VIEW } from '../routes';
 
 const AccountView = () => {
   const showView = useSettingsView();
@@ -31,10 +30,6 @@ const AccountView = () => {
             />
           </span>
         </li>
-        <li onClick={() => showView(DETAILS_VIEW)}>
-          <img src={UserIcon} alt="user" />
-          Account Details
-        </li>
         <li onClick={() => showView(PRIV_KEY_VIEW)}>
           <img src={ExportIcon} alt="export" />
           Export private key
@@ -42,10 +37,6 @@ const AccountView = () => {
         <li>
           <img src={LinkIcon} alt="view" />
           View on explorer
-        </li>
-        <li>
-          <img src={ConnectedIcon} alt="connected" />
-          Connected sites
         </li>
         <li>
           <img src={RemoveIcon} alt="remove" />

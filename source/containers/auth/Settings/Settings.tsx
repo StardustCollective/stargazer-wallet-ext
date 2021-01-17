@@ -31,8 +31,6 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     switch (view) {
       case routes.ACCOUNT_VIEW:
         return <Views.AccountView />;
-      case routes.DETAILS_VIEW:
-        return <Views.DetailsView />;
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
