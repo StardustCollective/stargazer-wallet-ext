@@ -27,7 +27,7 @@ const PhraseView = () => {
   });
 
   const onSubmit = (data: any) => {
-    const res = controller.wallet.checkPassword(data.password);
+    const res = controller.wallet.getPhrase(data.password);
     if (res) {
       setPhrase(res);
       setChecked(true);

@@ -9,13 +9,13 @@
 
     li {
       display: flex;
-      height: 36px;
+      height: 48px;
       width: 100%;
       align-items: center;
       flex-direction: row;
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 36px;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 48px;
       padding: 0 36px;
       color: $gray-dark;
       transition: all 0.3s;
@@ -36,7 +36,7 @@
       }
 
       &:hover {
-        background: $gray-hover;
+        background: $gray-light-100;
         cursor: pointer;
       }
 

@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import IconButton from '@material-ui/core/IconButton';
-import CopyIcon from '@material-ui/icons/FileCopy';
 import TextInput from 'components/TextInput';
 import { useController, useCopyClipboard } from 'hooks/index';
 import { ellipsis } from 'containers/auth/helpers';
@@ -22,6 +20,10 @@ const PrivateKeyView = () => {
   const [isCopied, copyText] = useCopyClipboard();
   const [checked, setChecked] = useState(false);
   const [isCopiedAddress, copyAddress] = useState(false);
+  const [privKey, setPrivKey] = useState<string>(
+    '*************************************************************'
+  );
+
   const addressClass = clsx(styles.address, {
     [styles.copied]: isCopied && isCopiedAddress,
   });
@@ -31,14 +33,17 @@ const PrivateKeyView = () => {
   });
 
   const onSubmit = (data: any) => {
-    console.log(data.password);
-    setChecked(true);
+    const res = controller.wallet.account.getPrivKey(data.password);
+    if (res) {
+      setPrivKey(res);
+      setChecked(true);
+    }
   };
 
   const handleCopyPrivKey = () => {
     if (!checked) return;
     copyAddress(false);
-    copyText('Priv Key');
+    copyText(privKey);
   };
 
   return (
@@ -46,16 +51,14 @@ const PrivateKeyView = () => {
       {accountInfo && (
         <>
           <div className={styles.heading}>
-            <IconButton
-              className={styles.iconBtn}
+            <div>Click to copy your public key:</div>
+            <span
+              className={addressClass}
               onClick={() => {
                 copyText(accountInfo.address);
                 copyAddress(true);
               }}
             >
-              <CopyIcon className={styles.icon} />
-            </IconButton>
-            <span className={addressClass}>
               {ellipsis(accountInfo.address)}
             </span>
           </div>
@@ -73,7 +76,7 @@ const PrivateKeyView = () => {
             </form>
             <span>Click to copy your private key:</span>
             <div className={privKeyClass} onClick={handleCopyPrivKey}>
-              ***********************************************************************************************
+              {privKey}
             </div>
             <span>
               Warning: Keep your keys secret! Anyone with your private keys can

@@ -19,7 +19,7 @@ const AccountView = () => {
         <li className={styles.network}>
           <Icon Component={NetworkIcon} />
           <span>
-            DAG Network
+            Network
             <Select
               value="mainnet"
               fullWidth

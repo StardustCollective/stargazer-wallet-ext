@@ -9,14 +9,16 @@ export interface IAccountController {
   updateTempTx: (tx: ITransactionInfo) => void;
   confirmTempTx: () => Promise<void>;
   currentAccount: () => IAccountInfo | null;
+  getPrivKey: (pwd: string) => string | null;
   getPrimaryAccount: () => void;
   isValidDAGAddress: (address: string) => boolean;
 }
 
 const AccountController = (actions: {
   getMasterKey: () => hdkey | null;
+  checkPassword: (pwd: string) => boolean;
 }): IAccountController => {
-  let privateKey;
+  let privateKey: string;
   let tempTx: ITransactionInfo;
   let account: IAccountInfo | null;
 
@@ -46,6 +48,10 @@ const AccountController = (actions: {
 
   const currentAccount = () => {
     return account;
+  };
+
+  const getPrivKey = (pwd: string) => {
+    return actions.checkPassword(pwd) ? privateKey : null;
   };
 
   // Tx-Related
@@ -79,6 +85,7 @@ const AccountController = (actions: {
     updateTempTx,
     confirmTempTx,
     currentAccount,
+    getPrivKey,
     getPrimaryAccount,
     isValidDAGAddress,
   };

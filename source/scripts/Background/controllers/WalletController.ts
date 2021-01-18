@@ -10,7 +10,8 @@ export interface IWalletController {
   setWalletPassword: (pwd: string) => void;
   isLocked: () => boolean;
   unLock: (pwd: string) => Promise<boolean>;
-  checkPassword: (pwd: string) => string | null;
+  checkPassword: (pwd: string) => boolean;
+  getPhrase: (pwd: string) => string | null;
 }
 
 const WalletController = (): IWalletController => {
@@ -18,11 +19,16 @@ const WalletController = (): IWalletController => {
   let phrase = '';
   let masterKey: hdkey;
 
+  const checkPassword = (pwd: string) => {
+    return password === pwd;
+  };
+
   const account = Object.freeze(
     AccountController({
       getMasterKey: () => {
         return walletKeystore() ? masterKey : null;
       },
+      checkPassword,
     })
   );
 
@@ -39,8 +45,8 @@ const WalletController = (): IWalletController => {
     return !password || !phrase;
   };
 
-  const checkPassword = (pwd: string) => {
-    return password === pwd ? phrase : null;
+  const getPhrase = (pwd: string) => {
+    return checkPassword(pwd) ? phrase : null;
   };
 
   const unLock = async (pwd: string): Promise<boolean> => {
@@ -84,6 +90,7 @@ const WalletController = (): IWalletController => {
     isLocked,
     unLock,
     checkPassword,
+    getPhrase,
   };
 };
 
