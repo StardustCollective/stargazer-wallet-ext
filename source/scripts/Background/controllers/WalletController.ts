@@ -10,6 +10,7 @@ export interface IWalletController {
   setWalletPassword: (pwd: string) => void;
   isLocked: () => boolean;
   unLock: (pwd: string) => Promise<boolean>;
+  checkPassword: (pwd: string) => string | null;
 }
 
 const WalletController = (): IWalletController => {
@@ -36,6 +37,10 @@ const WalletController = (): IWalletController => {
   const isLocked = () => {
     console.log(password, phrase);
     return !password || !phrase;
+  };
+
+  const checkPassword = (pwd: string) => {
+    return password === pwd ? phrase : null;
   };
 
   const unLock = async (pwd: string): Promise<boolean> => {
@@ -78,6 +83,7 @@ const WalletController = (): IWalletController => {
     createWallet,
     isLocked,
     unLock,
+    checkPassword,
   };
 };
 

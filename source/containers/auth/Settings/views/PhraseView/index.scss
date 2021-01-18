@@ -9,8 +9,8 @@
   height: 100%;
 
   font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 12px;
+  line-height: 18px;
   color: $gray-dark;
 
   & > span {
@@ -18,8 +18,8 @@
   }
 
   .seed {
-    background: $gray-hover;
-    border: 1px solid $gray-100;
+    background: $white;
+    border: 1px solid $gray-200;
     box-sizing: border-box;
     border-radius: 6px;
     width: 100%;
@@ -31,9 +31,8 @@
     padding: 0 20px;
     text-align: center;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 24px;
-    letter-spacing: 0.03em;
     transition: all 0.3s;
     cursor: pointer;
     user-select: none;
@@ -51,6 +50,6 @@
   }
 
   .input {
-    border: 1px solid $gray-100 !important;
+    border: 1px solid $gray-200 !important;
   }
 }

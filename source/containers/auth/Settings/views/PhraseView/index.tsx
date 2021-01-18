@@ -3,12 +3,17 @@ import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import TextInput from 'components/TextInput';
-import { useCopyClipboard } from 'hooks/index';
+import { useCopyClipboard, useController } from 'hooks/index';
 
 import styles from './index.scss';
 
 const PhraseView = () => {
   const [checked, setChecked] = useState(false);
+  const [phrase, setPhrase] = useState<string>(
+    '**** ******* ****** ****** ****** ******** *** ***** ****** ***** *****'
+  );
+
+  const controller = useController();
   const [isCopied, copyText] = useCopyClipboard();
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -22,13 +27,16 @@ const PhraseView = () => {
   });
 
   const onSubmit = (data: any) => {
-    console.log(data.password);
-    setChecked(true);
+    const res = controller.wallet.checkPassword(data.password);
+    if (res) {
+      setPhrase(res);
+      setChecked(true);
+    }
   };
 
   const handleCopySeed = () => {
     if (!checked) return;
-    copyText('Seed phrase');
+    copyText(phrase);
   };
 
   return (
@@ -46,8 +54,7 @@ const PhraseView = () => {
       </form>
       <span>Click to copy your seed phrase:</span>
       <div className={seedClass} onClick={handleCopySeed}>
-        **** ******* ****** ****** ****** ******** *** ***** ****** ***** *****
-        ****** ******* ****** *****
+        {phrase}
       </div>
       <span>
         Warning: Keep your seed phrase secret! Anyone with your seed phrase can
