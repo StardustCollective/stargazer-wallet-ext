@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import Portal from '@reach/portal';
 import { useTransition, animated } from 'react-spring';
@@ -27,6 +27,25 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     config: { duration: 300 },
   });
 
+  const renderTitle = (view: string) => {
+    switch (view) {
+      case routes.ACCOUNT_VIEW:
+        return 'Account';
+      case routes.GENERAL_VIEW:
+        return 'General settings';
+      case routes.PHRASE_VIEW:
+        return 'Wallet seed phrase';
+      case routes.DELETE_WALLET_VIEW:
+        return 'Delete wallet';
+      case routes.REMOVE_ACCOUNT_VIEW:
+        return 'Remove account';
+      case routes.PRIV_KEY_VIEW:
+        return 'Export private key';
+      default:
+        return 'Settings';
+    }
+  };
+
   const renderView = (view: string) => {
     switch (view) {
       case routes.ACCOUNT_VIEW:
@@ -37,6 +56,8 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return <Views.PhraseView />;
       case routes.DELETE_WALLET_VIEW:
         return <Views.DeleteWalletView />;
+      case routes.REMOVE_ACCOUNT_VIEW:
+        return <Views.RemoveAccountView />;
       case routes.PRIV_KEY_VIEW:
         return <Views.PrivateKeyView />;
       default:
@@ -60,7 +81,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
             >
               {location.hash && <ArrowBackIcon className={styles.icon} />}
             </IconButton>
-            Settings
+            {renderTitle(location.hash)}
             <IconButton className={styles.navBtn} onClick={onClose}>
               <CloseIcon className={styles.icon} />
             </IconButton>

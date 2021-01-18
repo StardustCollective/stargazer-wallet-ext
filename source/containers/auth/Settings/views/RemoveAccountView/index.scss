@@ -1,7 +1,7 @@
 @import '~assets/styles/variables';
 
 body {
-  .deleteWallet {
+  .removeAccount {
     display: flex;
     flex-direction: column;
     padding: 0 36px;
@@ -38,7 +38,7 @@ body {
 
       .close,
       .close:hover {
-        background: $gray-light-100;
+        background: $gray-light;
         color: $gray-dark;
       }
 

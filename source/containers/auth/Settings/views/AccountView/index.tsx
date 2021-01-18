@@ -1,23 +1,31 @@
 import React from 'react';
 import Select from 'components/Select';
+import Icon from 'components/Icon';
 import NetworkIcon from '@material-ui/icons/Timeline';
 import ExportIcon from '@material-ui/icons/ImportExport';
 import LinkIcon from '@material-ui/icons/CallMissedOutgoing';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { useSettingsView } from 'hooks/index';
+import { useController, useSettingsView } from 'hooks/index';
+
+import { PRIV_KEY_VIEW, REMOVE_ACCOUNT_VIEW } from '../routes';
+import { DAG_EXPLORER_SEARCH } from 'constants/index';
 
 import styles from './index.scss';
-import { PRIV_KEY_VIEW } from '../routes';
-import Icon from 'components/Icon';
 
 const AccountView = () => {
   const showView = useSettingsView();
+  const controller = useController();
+  const account = controller.wallet.account.currentAccount();
+
+  const handleOpenExplorer = () => {
+    window.open(`${DAG_EXPLORER_SEARCH}${account!.address}`, '_blank');
+  };
 
   return (
     <div className={styles.account}>
       <ul>
         <li className={styles.network}>
-          <Icon Component={NetworkIcon} />
+          <Icon Component={NetworkIcon} variant={styles.icon} />
           <span>
             Network
             <Select
@@ -34,11 +42,11 @@ const AccountView = () => {
           <Icon Component={ExportIcon} />
           Export private key
         </li>
-        <li>
+        <li onClick={handleOpenExplorer}>
           <Icon Component={LinkIcon} />
           View on explorer
         </li>
-        <li>
+        <li onClick={() => showView(REMOVE_ACCOUNT_VIEW)}>
           <Icon Component={DeleteIcon} />
           Remove Account
         </li>

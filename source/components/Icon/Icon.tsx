@@ -8,11 +8,12 @@ import styles from './Icon.scss';
 interface IIcon {
   Component: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
   spaced?: boolean;
+  variant?: string;
 }
 
-const Icon: FC<IIcon> = ({ Component, spaced = true }) => {
+const Icon: FC<IIcon> = ({ Component, spaced = true, variant }) => {
   return (
-    <div className={clsx(styles.icon, { [styles.spaced]: spaced })}>
+    <div className={clsx(styles.icon, { [styles.spaced]: spaced }, variant)}>
       <Component />
     </div>
   );

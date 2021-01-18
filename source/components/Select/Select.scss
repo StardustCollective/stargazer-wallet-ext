@@ -2,8 +2,8 @@
 
 .select {
   :global(.MuiInputBase-root) {
-    background: $gray-hover;
-    border: 1px solid $gray-100 !important;
+    background: $white;
+    border: 1px solid $gray-200 !important;
     box-sizing: border-box;
     border-radius: 6px;
     height: 36px;
@@ -17,7 +17,6 @@
 
   :global(.MuiSelect-select) {
     box-sizing: border-box;
-    padding: 0 12px;
     height: 36px;
     display: flex;
     align-items: center;
@@ -31,7 +30,7 @@
   }
 
   :global .MuiSelect-iconOpen {
-    transform: rotateX(180deg);
+    transform: rotateZ(180deg);
   }
 }
 
@@ -40,8 +39,8 @@
 }
 
 :global(.MuiMenu-list) {
-  background: $gray-hover;
-  border: 1px solid $gray-100;
+  background: $white;
+  border: 1px solid $gray-200;
   box-sizing: border-box;
   border-radius: 6px;
   border-top-width: 0;
@@ -54,13 +53,13 @@
     align-items: center;
     letter-spacing: 0.03em;
     color: $gray-dark;
-    font-family: $quicksand;
+    font-family: $inter;
     min-height: initial;
     height: 24px;
     transition: all 0.3s;
 
     &:hover {
-      background: $gray-light;
+      background: $gray-light-100;
     }
   }
 }

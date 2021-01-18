@@ -23,6 +23,10 @@
       &.network {
         height: auto;
 
+        .icon {
+          margin-bottom: 48px;
+        }
+
         span {
           display: flex;
           width: calc(100% - 144px);
