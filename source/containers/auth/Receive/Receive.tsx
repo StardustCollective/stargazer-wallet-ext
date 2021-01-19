@@ -1,17 +1,20 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import QRCode from 'qrcode.react';
 import IconButton from '@material-ui/core/IconButton';
 import CopyIcon from '@material-ui/icons/FileCopy';
 import Header from 'containers/common/Header';
-import { useController, useCopyClipboard } from 'hooks/index';
+import { useCopyClipboard } from 'hooks/index';
+import { RootState } from 'state/store';
 
 import styles from './Receive.scss';
 
 const WalletReceive = () => {
-  const controller = useController();
   const [isCopied, copyText] = useCopyClipboard();
-  const account = controller.wallet.account.currentAccount();
+  const { accounts, activeIndex } = useSelector(
+    (state: RootState) => state.wallet
+  );
 
   return (
     <div className={styles.wrapper}>
@@ -20,17 +23,17 @@ const WalletReceive = () => {
       <section className={styles.content}>
         <div className={styles.address}>
           <QRCode
-            value={account!.address}
+            value={accounts[activeIndex]!.address}
             bgColor="#fff"
             fgColor="#000"
             className={styles.qrcode}
             size={180}
           />
-          {account!.address}
+          {accounts[activeIndex]!.address}
         </div>
         <IconButton
           className={clsx(styles.iconBtn, { [styles.active]: isCopied })}
-          onClick={() => copyText(account!.address)}
+          onClick={() => copyText(accounts[activeIndex]!.address)}
         >
           <CopyIcon className={styles.icon} />
         </IconButton>

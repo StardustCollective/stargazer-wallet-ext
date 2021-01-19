@@ -5,3 +5,4 @@ export { default as PhraseView } from './PhraseView';
 export { default as DeleteWalletView } from './DeleteWalletView';
 export { default as RemoveAccountView } from './RemoveAccountView';
 export { default as PrivateKeyView } from './PrivateKeyView';
+export { default as NewAccountView } from './NewAccountView';

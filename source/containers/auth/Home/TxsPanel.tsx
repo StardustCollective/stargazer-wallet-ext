@@ -61,11 +61,11 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
           return (
             <>
               {isShowedGroupBar(tx, idx) && (
-                <li className={styles.groupbar}>
+                <li className={styles.groupbar} key={tx.hash + tx.timestamp}>
                   {formatDistanceDate(tx.timestamp)}
                 </li>
               )}
-              <li key={tx.hash}>
+              <li key={tx.timestamp}>
                 <div>
                   <div className={styles.iconWrapper}>
                     {isRecived ? <DownArrowIcon /> : <UpArrowIcon />}

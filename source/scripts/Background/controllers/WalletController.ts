@@ -70,7 +70,7 @@ const WalletController = (): IWalletController => {
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));
-    account.getPrimaryAccount();
+    account.subscribeAccount(0);
   };
 
   const setWalletPassword = (pwd: string) => {

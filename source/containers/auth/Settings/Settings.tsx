@@ -28,15 +28,19 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   });
 
   const renderTitle = (view: string) => {
+    if (view.startsWith(routes.ACCOUNT_VIEW)) {
+      return view.replace(routes.ACCOUNT_VIEW, '');
+    }
+
     switch (view) {
-      case routes.ACCOUNT_VIEW:
-        return 'Account';
       case routes.GENERAL_VIEW:
         return 'General settings';
       case routes.PHRASE_VIEW:
         return 'Wallet seed phrase';
       case routes.DELETE_WALLET_VIEW:
         return 'Delete wallet';
+      case routes.NEW_ACCOUNT_VIEW:
+        return 'Create new account';
       case routes.REMOVE_ACCOUNT_VIEW:
         return 'Remove account';
       case routes.PRIV_KEY_VIEW:
@@ -47,15 +51,19 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   };
 
   const renderView = (view: string) => {
+    if (view.startsWith(routes.ACCOUNT_VIEW)) {
+      return <Views.AccountView />;
+    }
+
     switch (view) {
-      case routes.ACCOUNT_VIEW:
-        return <Views.AccountView />;
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
         return <Views.PhraseView />;
       case routes.DELETE_WALLET_VIEW:
         return <Views.DeleteWalletView />;
+      case routes.NEW_ACCOUNT_VIEW:
+        return <Views.NewAccountView />;
       case routes.REMOVE_ACCOUNT_VIEW:
         return <Views.RemoveAccountView />;
       case routes.PRIV_KEY_VIEW:

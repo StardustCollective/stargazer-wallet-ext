@@ -1,7 +1,9 @@
 import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
+
 import store from 'state/store';
-import { updateStatus } from 'state/wallet';
+import { createAccount, updateStatus } from 'state/wallet';
+import IWalletState, { IAccountState } from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo } from '../../types';
 export interface IAccountController {
@@ -12,6 +14,8 @@ export interface IAccountController {
   getPrivKey: (pwd: string) => string | null;
   getPrimaryAccount: () => void;
   isValidDAGAddress: (address: string) => boolean;
+  subscribeAccount: (index: number) => Promise<string | null>;
+  addNewAccount: (label: string) => Promise<string | null>;
 }
 
 const AccountController = (actions: {
@@ -20,7 +24,7 @@ const AccountController = (actions: {
 }): IAccountController => {
   let privateKey: string;
   let tempTx: ITransactionInfo;
-  let account: IAccountInfo | null;
+  let account: IAccountState | null;
 
   // Primary
   const getAccountByPrivateKey = async (
@@ -40,10 +44,44 @@ const AccountController = (actions: {
     return await getAccountByPrivateKey(privateKey);
   };
 
-  const getPrimaryAccount = async () => {
-    account = await getAccountByIndex(0);
-    store.dispatch(updateStatus());
-    dag.monitor.startMonitor();
+  const subscribeAccount = async (index: number, label?: string) => {
+    const { accounts }: IWalletState = store.getState().wallet;
+    if (accounts && Object.keys(accounts).includes(String(index))) return null;
+    const res: IAccountInfo | null = await getAccountByIndex(index);
+
+    account = {
+      index,
+      label: label || `Account ${index + 1}`,
+      address: res!.address,
+      balance: res!.balance,
+      transactions: res!.transactions,
+    };
+
+    store.dispatch(createAccount(account));
+    return account!.address;
+  };
+
+  const addNewAccount = async (label: string) => {
+    const { accounts }: IWalletState = store.getState().wallet;
+    let idx = -1;
+    Object.keys(accounts).forEach((index, i) => {
+      if (index !== String(i)) {
+        idx = i;
+        return;
+      }
+    });
+    if (idx === -1) {
+      idx = Object.keys(accounts).length;
+    }
+    return await subscribeAccount(idx, label);
+  };
+
+  const getPrimaryAccount = () => {
+    const { accounts, activeIndex }: IWalletState = store.getState().wallet;
+    if (!account && accounts && Object.keys(accounts).length) {
+      account = accounts[activeIndex];
+      store.dispatch(updateStatus());
+    }
   };
 
   const currentAccount = () => {
@@ -88,6 +126,8 @@ const AccountController = (actions: {
     getPrivKey,
     getPrimaryAccount,
     isValidDAGAddress,
+    subscribeAccount,
+    addNewAccount,
   };
 };
 
