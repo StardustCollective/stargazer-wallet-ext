@@ -7,8 +7,10 @@ import DownArrowIcon from '@material-ui/icons/ArrowDownward';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
 import IconButton from '@material-ui/core/IconButton';
 
-import styles from './Home.scss';
 import { formatDistanceDate } from '../helpers';
+import StargazerIcon from 'assets/images/svg/stargazer.svg';
+
+import styles from './Home.scss';
 
 interface ITxsPanel {
   address: string;
@@ -54,49 +56,64 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
           </IconButton>
         )}
       </div>
-      <ul>
-        {transactions.map((tx: Transaction, idx: number) => {
-          const isRecived = tx.receiver === address;
+      {transactions.length ? (
+        <ul>
+          {transactions.map((tx: Transaction, idx: number) => {
+            const isRecived = tx.receiver === address;
 
-          return (
-            <>
-              {isShowedGroupBar(tx, idx) && (
-                <li className={styles.groupbar} key={tx.hash + tx.timestamp}>
-                  {formatDistanceDate(tx.timestamp)}
-                </li>
-              )}
-              <li key={tx.timestamp}>
-                <div>
-                  <div className={styles.iconWrapper}>
-                    {isRecived ? <DownArrowIcon /> : <UpArrowIcon />}
-                  </div>
-                  <span>
-                    {isRecived ? 'Received' : 'Sent'}
-                    <small>
-                      {isRecived ? `From: ${tx.sender}` : `To: ${tx.receiver}`}
-                    </small>
-                  </span>
-                </div>
-                <div>
-                  <span>
+            return (
+              <>
+                {isShowedGroupBar(tx, idx) && (
+                  <li className={styles.groupbar} key={tx.hash + tx.timestamp}>
+                    {formatDistanceDate(tx.timestamp)}
+                  </li>
+                )}
+                <li key={tx.timestamp}>
+                  <div>
+                    <div className={styles.iconWrapper}>
+                      {isRecived ? <DownArrowIcon /> : <UpArrowIcon />}
+                    </div>
                     <span>
-                      {tx.amount / 1e8} <b>DAG</b>
+                      {isRecived ? 'Received' : 'Sent'}
+                      <small>
+                        {isRecived
+                          ? `From: ${tx.sender}`
+                          : `To: ${tx.receiver}`}
+                      </small>
                     </span>
-                    <small>{getFiatAmount(tx.amount / 1e8, 8)}</small>
-                  </span>
-                  <div
-                    className={clsx(styles.linkIcon, {
-                      [styles.received]: isRecived,
-                    })}
-                  >
-                    <UpArrowIcon />
                   </div>
-                </div>
-              </li>
-            </>
-          );
-        })}
-      </ul>
+                  <div>
+                    <span>
+                      <span>
+                        {tx.amount / 1e8} <b>DAG</b>
+                      </span>
+                      <small>{getFiatAmount(tx.amount / 1e8, 8)}</small>
+                    </span>
+                    <div
+                      className={clsx(styles.linkIcon, {
+                        [styles.received]: isRecived,
+                      })}
+                    >
+                      <UpArrowIcon />
+                    </div>
+                  </div>
+                </li>
+              </>
+            );
+          })}
+          <div className={styles.stargazer}>
+            <img src={StargazerIcon} alt="stargazer" />
+          </div>
+        </ul>
+      ) : (
+        <>
+          <span className={styles.noTxComment}>
+            You have no transaction history, send or receive $DAG to register
+            your first transaction.
+          </span>
+          <img src={StargazerIcon} className={styles.stargazer} />
+        </>
+      )}
     </section>
   );
 };
