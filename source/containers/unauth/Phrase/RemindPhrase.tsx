@@ -7,10 +7,7 @@ import styles from './index.scss';
 
 const RemindPhrase = () => {
   return (
-    <Layout
-      title={`First, let's create your\nrecovery phrase`}
-      linkTo="/create/pass"
-    >
+    <Layout title={`Let's create your\nrecovery phrase`} linkTo="/create/pass">
       <span className="body-description">
         A recovery phrase is a series of 12 words in a specific order. This word
         combination is unique to your wallet. Make sure to have pen and paper

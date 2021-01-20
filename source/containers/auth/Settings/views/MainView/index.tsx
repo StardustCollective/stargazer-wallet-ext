@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -12,17 +12,26 @@ import { ACCOUNT_VIEW, GENERAL_VIEW, NEW_ACCOUNT_VIEW } from '../routes';
 
 import styles from './index.scss';
 
-const MainView = () => {
+interface IMainView {
+  onChange: (index: number) => void;
+}
+
+const MainView: FC<IMainView> = ({ onChange }) => {
   const showView = useSettingsView();
   const { accounts, activeIndex }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
 
+  const handleSelectAccount = (index: number) => {
+    onChange(index);
+    showView(ACCOUNT_VIEW);
+  };
+
   return (
     <div className={styles.main}>
       <ul className={styles.accounts}>
         {Object.values(accounts).map((account: IAccountState) => (
-          <li onClick={() => showView(ACCOUNT_VIEW + account.label)}>
+          <li onClick={() => handleSelectAccount(account.index)}>
             <div className={styles.account}>
               <span className={styles.accInfo}>
                 <Icon Component={UserIcon} />

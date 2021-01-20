@@ -1,24 +1,26 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Select from 'components/Select';
 import Icon from 'components/Icon';
 import NetworkIcon from '@material-ui/icons/Timeline';
 import ExportIcon from '@material-ui/icons/ImportExport';
 import LinkIcon from '@material-ui/icons/CallMissedOutgoing';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { useController, useSettingsView } from 'hooks/index';
+import { useSettingsView } from 'hooks/index';
 
 import { PRIV_KEY_VIEW, REMOVE_ACCOUNT_VIEW } from '../routes';
 import { DAG_EXPLORER_SEARCH } from 'constants/index';
 
 import styles from './index.scss';
 
-const AccountView = () => {
+interface IAccountView {
+  address: string;
+}
+
+const AccountView: FC<IAccountView> = ({ address }) => {
   const showView = useSettingsView();
-  const controller = useController();
-  const account = controller.wallet.account.currentAccount();
 
   const handleOpenExplorer = () => {
-    window.open(`${DAG_EXPLORER_SEARCH}${account!.address}`, '_blank');
+    window.open(`${DAG_EXPLORER_SEARCH}${address}`, '_blank');
   };
 
   return (

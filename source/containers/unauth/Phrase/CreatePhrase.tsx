@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react';
+import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 
@@ -44,7 +45,11 @@ const CreatePhrase: FC = () => {
           ))}
         </ul>
       )}
-      <Button type="button" onClick={nextHandler} variant={styles.written}>
+      <Button
+        type="button"
+        onClick={nextHandler}
+        variant={clsx(styles.written, { [styles.passed]: passed })}
+      >
         {passed ? "Let's do it" : "I've written it down"}
       </Button>
     </Layout>
