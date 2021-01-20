@@ -1,11 +1,15 @@
 import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import Portal from '@reach/portal';
+import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 import { useLocation, useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
+
+import { RootState } from 'state/store';
+import IWalletState from 'state/wallet/types';
 import * as Views from './views';
 import * as routes from './views/routes';
 
@@ -27,12 +31,15 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     config: { duration: 300 },
   });
 
-  const renderTitle = (view: string) => {
-    if (view.startsWith(routes.ACCOUNT_VIEW)) {
-      return view.replace(routes.ACCOUNT_VIEW, '');
-    }
+  const { accounts }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+  const [showedIndex, setShowedIndex] = useState<number>(0);
 
+  const renderTitle = (view: string) => {
     switch (view) {
+      case routes.ACCOUNT_VIEW:
+        return accounts[showedIndex].label;
       case routes.GENERAL_VIEW:
         return 'General settings';
       case routes.PHRASE_VIEW:
@@ -51,11 +58,9 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   };
 
   const renderView = (view: string) => {
-    if (view.startsWith(routes.ACCOUNT_VIEW)) {
-      return <Views.AccountView />;
-    }
-
     switch (view) {
+      case routes.ACCOUNT_VIEW:
+        return <Views.AccountView address={accounts[showedIndex].address} />;
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
@@ -65,11 +70,13 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.NEW_ACCOUNT_VIEW:
         return <Views.NewAccountView />;
       case routes.REMOVE_ACCOUNT_VIEW:
-        return <Views.RemoveAccountView />;
+        return <Views.RemoveAccountView index={showedIndex} />;
       case routes.PRIV_KEY_VIEW:
-        return <Views.PrivateKeyView />;
+        return <Views.PrivateKeyView index={showedIndex} />;
       default:
-        return <Views.MainView />;
+        return (
+          <Views.MainView onChange={(index: number) => setShowedIndex(index)} />
+        );
     }
   };
 

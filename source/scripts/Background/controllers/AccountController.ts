@@ -2,7 +2,7 @@ import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
 
 import store from 'state/store';
-import { createAccount, updateStatus } from 'state/wallet';
+import { createAccount, updateStatus, removeAccount } from 'state/wallet';
 import IWalletState, { IAccountState } from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo } from '../../types';
@@ -11,10 +11,11 @@ export interface IAccountController {
   updateTempTx: (tx: ITransactionInfo) => void;
   confirmTempTx: () => Promise<void>;
   currentAccount: () => IAccountInfo | null;
-  getPrivKey: (pwd: string) => string | null;
+  getPrivKey: (index: number, pwd: string) => string | null;
   getPrimaryAccount: () => void;
   isValidDAGAddress: (address: string) => boolean;
   subscribeAccount: (index: number) => Promise<string | null>;
+  unsubscribeAccount: (index: number, pwd: string) => boolean;
   addNewAccount: (label: string) => Promise<string | null>;
 }
 
@@ -76,6 +77,15 @@ const AccountController = (actions: {
     return await subscribeAccount(idx, label);
   };
 
+  const unsubscribeAccount = (index: number, pwd: string) => {
+    if (actions.checkPassword(pwd)) {
+      store.dispatch(removeAccount(index));
+      store.dispatch(updateStatus());
+      return true;
+    }
+    return false;
+  };
+
   const getPrimaryAccount = () => {
     const { accounts, activeIndex }: IWalletState = store.getState().wallet;
     if (!account && accounts && Object.keys(accounts).length) {
@@ -88,8 +98,12 @@ const AccountController = (actions: {
     return account;
   };
 
-  const getPrivKey = (pwd: string) => {
-    return actions.checkPassword(pwd) ? privateKey : null;
+  const getPrivKey = (index: number, pwd: string) => {
+    const masterKey: hdkey | null = actions.getMasterKey();
+    if (!masterKey) return null;
+    return actions.checkPassword(pwd)
+      ? dag.keyStore.deriveAccountFromMaster(masterKey, index)
+      : null;
   };
 
   // Tx-Related
@@ -127,6 +141,7 @@ const AccountController = (actions: {
     getPrimaryAccount,
     isValidDAGAddress,
     subscribeAccount,
+    unsubscribeAccount,
     addNewAccount,
   };
 };

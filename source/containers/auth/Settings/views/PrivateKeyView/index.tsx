@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+
 import TextInput from 'components/TextInput';
 import { useController, useCopyClipboard } from 'hooks/index';
 import { ellipsis } from 'containers/auth/helpers';
+import IWalletState from 'state/wallet/types';
+import { RootState } from 'state/store';
 
 import styles from './index.scss';
 
-const PrivateKeyView = () => {
+interface IPrivateKeyView {
+  index: number;
+}
+
+const PrivateKeyView: FC<IPrivateKeyView> = ({ index }) => {
   const controller = useController();
-  const accountInfo = controller.wallet.account.currentAccount();
+  const { accounts }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       password: yup.string().required(),
@@ -33,7 +43,7 @@ const PrivateKeyView = () => {
   });
 
   const onSubmit = (data: any) => {
-    const res = controller.wallet.account.getPrivKey(data.password);
+    const res = controller.wallet.account.getPrivKey(index, data.password);
     if (res) {
       setPrivKey(res);
       setChecked(true);
@@ -48,18 +58,18 @@ const PrivateKeyView = () => {
 
   return (
     <div className={styles.wrapper}>
-      {accountInfo && (
+      {accounts[index] && (
         <>
           <div className={styles.heading}>
             <div>Click to copy your public key:</div>
             <span
               className={addressClass}
               onClick={() => {
-                copyText(accountInfo.address);
+                copyText(accounts[index].address);
                 copyAddress(true);
               }}
             >
-              {ellipsis(accountInfo.address)}
+              {ellipsis(accounts[index].address)}
             </span>
           </div>
           <div className={styles.content}>

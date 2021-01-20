@@ -30,6 +30,21 @@ const WalletState = createSlice({
         activeIndex: action.payload.index,
       };
     },
+    removeAccount(state: IWalletState, action: PayloadAction<number>) {
+      if (Object.keys(state.accounts).length <= 1) return;
+      if (state.activeIndex === action.payload) {
+        state.activeIndex = Object.values(state.accounts)[0].index;
+      }
+      delete state.accounts[action.payload];
+    },
+    deleteWallet(state: IWalletState) {
+      state.keystore = null;
+      state.accounts = {};
+      state.activeIndex = 0;
+    },
+    changeActiveIndex(state: IWalletState, action: PayloadAction<number>) {
+      state.activeIndex = action.payload;
+    },
   },
 });
 
@@ -37,6 +52,9 @@ export const {
   setKeystoreInfo,
   updateStatus,
   createAccount,
+  removeAccount,
+  deleteWallet,
+  changeActiveIndex,
 } = WalletState.actions;
 
 export default WalletState.reducer;

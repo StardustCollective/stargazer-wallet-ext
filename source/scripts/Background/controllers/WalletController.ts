@@ -1,11 +1,18 @@
 import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
-import { setKeystoreInfo } from 'state/wallet';
+import {
+  setKeystoreInfo,
+  deleteWallet as deleteWalletState,
+  updateStatus,
+  changeActiveIndex,
+} from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
 export interface IWalletController {
   account: Readonly<IAccountController>;
   createWallet: () => void;
+  deleteWallet: (pwd: string) => void;
+  switchWallet: (index: number) => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
   isLocked: () => boolean;
@@ -73,6 +80,19 @@ const WalletController = (): IWalletController => {
     account.subscribeAccount(0);
   };
 
+  const deleteWallet = (pwd: string) => {
+    if (checkPassword(pwd)) {
+      password = '';
+      phrase = '';
+      store.dispatch(deleteWalletState());
+      store.dispatch(updateStatus());
+    }
+  };
+
+  const switchWallet = (index: number) => {
+    store.dispatch(changeActiveIndex(index));
+  };
+
   const setWalletPassword = (pwd: string) => {
     password = pwd;
   };
@@ -91,6 +111,8 @@ const WalletController = (): IWalletController => {
     unLock,
     checkPassword,
     getPhrase,
+    deleteWallet,
+    switchWallet,
   };
 };
 

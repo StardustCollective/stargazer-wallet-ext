@@ -14,8 +14,9 @@ body {
     line-height: 18px;
     color: $gray-dark;
 
-    & > span {
+    & > form > span {
       margin: 24px 0;
+      display: inline-block;
 
       b {
         font-weight: 500;

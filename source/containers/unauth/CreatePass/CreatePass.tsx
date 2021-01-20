@@ -35,7 +35,7 @@ const CreatePass = () => {
   };
 
   return (
-    <Layout title={title} linkTo="/remind">
+    <Layout title={title} linkTo="/app.html">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {passed ? (
           <img src={`/${CheckIcon}`} className={styles.checked} alt="Success" />
@@ -59,14 +59,12 @@ const CreatePass = () => {
               visiblePassword
               variant={styles.repass}
             />
-            {errors.password ? (
-              <span className={styles.warning}>{errors.password.message}</span>
-            ) : (
-              errors.repassword && (
-                <span className={styles.error}>
-                  {errors.repassword.message}
-                </span>
-              )
+            <span className={styles.warning}>
+              At least 8 charachters, 1 lower-case, 1 capital, 1 numeral and 1
+              special charachter.
+            </span>
+            {!errors.password && errors.repassword && (
+              <span className={styles.error}>{errors.repassword.message}</span>
             )}
           </>
         )}
