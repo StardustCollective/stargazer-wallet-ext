@@ -20,6 +20,25 @@
       color: $gray-dark;
       transition: all 0.3s;
 
+      &.network {
+        height: auto;
+
+        .icon {
+          margin-bottom: 48px;
+        }
+
+        span {
+          display: flex;
+          width: calc(100% - 144px);
+          flex-direction: column;
+        }
+
+        &:hover {
+          background: initial;
+          cursor: initial;
+        }
+      }
+
       &:hover {
         background: $gray-light-100;
         cursor: pointer;

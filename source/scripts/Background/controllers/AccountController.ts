@@ -2,7 +2,12 @@ import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
 
 import store from 'state/store';
-import { createAccount, updateStatus, removeAccount } from 'state/wallet';
+import {
+  createAccount,
+  updateStatus,
+  removeAccount,
+  updateAccount,
+} from 'state/wallet';
 import IWalletState, { IAccountState } from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo } from '../../types';
@@ -17,6 +22,7 @@ export interface IAccountController {
   subscribeAccount: (index: number) => Promise<string | null>;
   unsubscribeAccount: (index: number, pwd: string) => boolean;
   addNewAccount: (label: string) => Promise<string | null>;
+  getLatestUpdate: () => void;
 }
 
 const AccountController = (actions: {
@@ -88,9 +94,24 @@ const AccountController = (actions: {
 
   const getPrimaryAccount = () => {
     const { accounts, activeIndex }: IWalletState = store.getState().wallet;
+    getLatestUpdate();
     if (!account && accounts && Object.keys(accounts).length) {
       account = accounts[activeIndex];
       store.dispatch(updateStatus());
+    }
+  };
+
+  const getLatestUpdate = async () => {
+    const { activeIndex }: IWalletState = store.getState().wallet;
+    const res: IAccountInfo | null = await getAccountByIndex(activeIndex);
+    if (res) {
+      store.dispatch(
+        updateAccount({
+          index: activeIndex,
+          balance: res.balance,
+          transactions: res.transactions,
+        })
+      );
     }
   };
 
@@ -143,6 +164,7 @@ const AccountController = (actions: {
     subscribeAccount,
     unsubscribeAccount,
     addNewAccount,
+    getLatestUpdate,
   };
 };
 

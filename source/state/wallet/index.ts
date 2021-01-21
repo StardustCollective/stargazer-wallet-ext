@@ -1,12 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import IWalletState, { IAccountState, Keystore } from './types';
+import { DAG_NETWORK } from 'constants/index';
+import IWalletState, {
+  IAccountState,
+  IAccountUpdateState,
+  Keystore,
+} from './types';
 
 const initialState: IWalletState = {
   keystore: null,
   status: 0,
   accounts: {},
   activeIndex: 0,
+  activeNetwork: DAG_NETWORK.main.id,
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -37,6 +43,15 @@ const WalletState = createSlice({
       }
       delete state.accounts[action.payload];
     },
+    updateAccount(
+      state: IWalletState,
+      action: PayloadAction<IAccountUpdateState>
+    ) {
+      state.accounts[action.payload.index] = {
+        ...state.accounts[action.payload.index],
+        ...action.payload,
+      };
+    },
     deleteWallet(state: IWalletState) {
       state.keystore = null;
       state.accounts = {};
@@ -44,6 +59,9 @@ const WalletState = createSlice({
     },
     changeActiveIndex(state: IWalletState, action: PayloadAction<number>) {
       state.activeIndex = action.payload;
+    },
+    changeActiveNetwork(state: IWalletState, action: PayloadAction<string>) {
+      state.activeNetwork = action.payload;
     },
   },
 });
@@ -55,6 +73,8 @@ export const {
   removeAccount,
   deleteWallet,
   changeActiveIndex,
+  changeActiveNetwork,
+  updateAccount,
 } = WalletState.actions;
 
 export default WalletState.reducer;

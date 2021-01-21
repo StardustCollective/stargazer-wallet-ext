@@ -6,6 +6,7 @@
     border: 1px solid $gray-200 !important;
     box-sizing: border-box;
     border-radius: 6px;
+    padding: 0;
     height: 36px;
     transition: all 0.3s;
 
@@ -19,6 +20,7 @@
     box-sizing: border-box;
     height: 36px;
     display: flex;
+    padding-left: 16px;
     align-items: center;
     transition: all 0.3s;
     background: transparent !important;
@@ -41,7 +43,7 @@
 :global(.MuiMenu-list) {
   background: $white;
   border: 1px solid $gray-200;
-  box-sizing: border-box;
+  // box-sizing: border-box;
   border-radius: 6px;
   border-top-width: 0;
 

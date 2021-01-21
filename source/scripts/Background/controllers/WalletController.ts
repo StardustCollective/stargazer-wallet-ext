@@ -6,13 +6,17 @@ import {
   deleteWallet as deleteWalletState,
   updateStatus,
   changeActiveIndex,
+  changeActiveNetwork,
 } from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
+import { DAG_NETWORK } from 'constants/index';
+
 export interface IWalletController {
   account: Readonly<IAccountController>;
   createWallet: () => void;
   deleteWallet: (pwd: string) => void;
   switchWallet: (index: number) => void;
+  switchNetwork: (networkId: string) => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
   isLocked: () => boolean;
@@ -64,7 +68,7 @@ const WalletController = (): IWalletController => {
       phrase = await dag.keyStore.decryptPhrase(keystore, pwd);
       password = pwd;
       masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
-      account.getPrimaryAccount();
+      await account.getPrimaryAccount();
       return true;
     } catch (error) {
       console.log(error);
@@ -91,6 +95,19 @@ const WalletController = (): IWalletController => {
 
   const switchWallet = (index: number) => {
     store.dispatch(changeActiveIndex(index));
+    account.getLatestUpdate();
+  };
+
+  const switchNetwork = (networkId: string) => {
+    if (DAG_NETWORK[networkId]!.id) {
+      dag.network.setNetwork({
+        id: DAG_NETWORK[networkId].id,
+        beUrl: DAG_NETWORK[networkId].beUrl,
+        lbUrl: DAG_NETWORK[networkId].lbUrl,
+      });
+      store.dispatch(changeActiveNetwork(DAG_NETWORK[networkId]!.id));
+      account.getLatestUpdate();
+    }
   };
 
   const setWalletPassword = (pwd: string) => {
@@ -113,6 +130,7 @@ const WalletController = (): IWalletController => {
     getPhrase,
     deleteWallet,
     switchWallet,
+    switchNetwork,
   };
 };
 

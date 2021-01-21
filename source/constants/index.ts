@@ -1,8 +1,26 @@
 export const STORE_PORT = 'STARGAZER';
 
-export const DAG_CONFIG_ID = 'main';
-export const DAG_BE_URL = 'https://block-explorer.constellationnetwork.io';
-export const DAG_LB_URL = 'http://lb.constellationnetwork.io:9000';
+export const DAG_NETWORK: {
+  [networkId: string]: {
+    id: string;
+    label: string;
+    beUrl: string;
+    lbUrl: string;
+  };
+} = {
+  main: {
+    id: 'main',
+    label: 'Main Constellation Network',
+    beUrl: 'https://block-explorer.constellationnetwork.io',
+    lbUrl: 'http://lb.constellationnetwork.io:9000',
+  },
+  ceres: {
+    id: 'ceres',
+    label: 'Ceres Test Network',
+    beUrl: 'https://api-be.exchanges.constellationnetwork.io',
+    lbUrl: 'http://lb.exchanges.constellationnetwork.io:9000',
+  },
+};
 
 export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';

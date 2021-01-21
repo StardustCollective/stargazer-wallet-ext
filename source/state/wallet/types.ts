@@ -12,6 +12,13 @@ export interface IAccountState {
   balance: number;
   transactions: Transaction[];
 }
+
+export interface IAccountUpdateState {
+  index: number;
+  balance: number;
+  transactions: Transaction[];
+}
+
 export default interface IWalletState {
   keystore: Keystore | null;
   status: number;
@@ -19,4 +26,5 @@ export default interface IWalletState {
     [index: number]: IAccountState;
   };
   activeIndex: number;
+  activeNetwork: string;
 }
