@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Transaction } from '@stardust-collective/dag4-network';
 
 import { DAG_NETWORK } from 'constants/index';
 import IWalletState, {
@@ -63,6 +64,12 @@ const WalletState = createSlice({
     changeActiveNetwork(state: IWalletState, action: PayloadAction<string>) {
       state.activeNetwork = action.payload;
     },
+    updateTransactions(
+      state: IWalletState,
+      action: PayloadAction<{ index: number; txs: Transaction[] }>
+    ) {
+      state.accounts[action.payload.index].transactions = action.payload.txs;
+    },
   },
 });
 
@@ -75,6 +82,7 @@ export const {
   changeActiveIndex,
   changeActiveNetwork,
   updateAccount,
+  updateTransactions,
 } = WalletState.actions;
 
 export default WalletState.reducer;

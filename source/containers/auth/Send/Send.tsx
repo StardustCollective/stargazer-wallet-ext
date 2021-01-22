@@ -8,21 +8,27 @@ import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
+import { useController } from 'hooks/index';
+import { useFiat } from 'hooks/usePrice';
 
 import styles from './Send.scss';
-import { useController } from 'hooks/index';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
 
 const WalletSend = () => {
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
-      address: yup.string().required(),
-      amount: yup.number().required(),
-      fee: yup.number(),
+      address: yup.string().required('Error: Invalid DAG address'),
+      amount: yup.string().required('Error: Invalid DAG Amount'),
+      fee: yup.string().required('Error: Invalid transaction fee'),
     }),
   });
   const history = useHistory();
+  const getFiatAmount = useFiat();
   const controller = useController();
-  const account = controller.wallet.account.currentAccount();
+  const { accounts, activeIndex } = useSelector(
+    (state: RootState) => state.wallet
+  );
 
   const [address, setAddress] = useState('');
   const [amount, setAmount] = useState('');
@@ -51,7 +57,7 @@ const WalletSend = () => {
   const onSubmit = (data: any) => {
     if (!isValidAddress) return;
     controller.wallet.account.updateTempTx({
-      fromAddress: account?.address || '',
+      fromAddress: accounts[activeIndex].address,
       toAddress: data.address,
       amount: data.amount,
       fee: data.fee,
@@ -87,7 +93,7 @@ const WalletSend = () => {
         <section className={styles.subheading}>Send DAG</section>
         <section className={styles.balance}>
           <div>
-            Balance: <span>{account!.balance}</span> DAG
+            Balance: <span>{accounts[activeIndex].balance}</span> DAG
           </div>
         </section>
         <section className={styles.content}>
@@ -138,10 +144,11 @@ const WalletSend = () => {
               <Button
                 type="button"
                 variant={styles.textBtn}
-                onClick={() => setAmount(String(account?.balance || 0))}
+                onClick={() => setAmount(String(accounts[activeIndex].balance))}
               >
                 Max
               </Button>
+              <span>DAG</span>
             </li>
             <li>
               <label>Transaction Fee</label>
@@ -162,11 +169,18 @@ const WalletSend = () => {
               >
                 Recommend
               </Button>
+              <span>DAG</span>
             </li>
           </ul>
           <div className={styles.status}>
-            <span className={styles.equalAmount}>≈ $0,00</span>
-            <span className={styles.error}>Error: Invalid DAG address</span>
+            <span className={styles.equalAmount}>
+              ≈ {getFiatAmount(Number(amount) + Number(fee))}
+            </span>
+            {!!Object.values(errors).length && (
+              <span className={styles.error}>
+                {Object.values(errors)[0].message}
+              </span>
+            )}
           </div>
           <div className={styles.description}>
             With current network conditions we recommend a fee of 0 DAG.

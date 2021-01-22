@@ -117,6 +117,12 @@
     align-items: center;
     transition: all 0.3s;
 
+    .spinner {
+      svg {
+        color: $white;
+      }
+    }
+
     &.expanded {
       height: 528px;
     }
@@ -180,6 +186,13 @@
         padding: 0 36px;
         align-items: center;
         justify-content: space-between;
+        border-bottom: 1px solid $white;
+        transition: all 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          background: $gray-light-100;
+        }
 
         &.groupbar {
           height: 24px;

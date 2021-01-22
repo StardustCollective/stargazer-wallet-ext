@@ -33,7 +33,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     const networkId =
       store.getState().wallet!.activeNetwork || DAG_NETWORK.main.id;
     dag.di.useFetchHttpClient(window.fetch.bind(window));
-    dag.di.useLocalStorageClient(window.localStorage);
+    dag.di.useLocalStorageClient(localStorage);
     dag.network.config({
       id: DAG_NETWORK[networkId].id,
       beUrl: DAG_NETWORK[networkId].beUrl,

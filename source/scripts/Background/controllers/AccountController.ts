@@ -1,4 +1,5 @@
 import { dag } from '@stardust-collective/dag4-wallet';
+import { Transaction, PendingTx } from '@stardust-collective/dag4-network';
 import { hdkey } from 'ethereumjs-wallet';
 
 import store from 'state/store';
@@ -7,6 +8,7 @@ import {
   updateStatus,
   removeAccount,
   updateAccount,
+  updateTransactions,
 } from 'state/wallet';
 import IWalletState, { IAccountState } from 'state/wallet/types';
 
@@ -15,13 +17,13 @@ export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
   confirmTempTx: () => Promise<void>;
-  currentAccount: () => IAccountInfo | null;
   getPrivKey: (index: number, pwd: string) => string | null;
   getPrimaryAccount: () => void;
   isValidDAGAddress: (address: string) => boolean;
   subscribeAccount: (index: number) => Promise<string | null>;
   unsubscribeAccount: (index: number, pwd: string) => boolean;
   addNewAccount: (label: string) => Promise<string | null>;
+  watchMemPool: () => void;
   getLatestUpdate: () => void;
 }
 
@@ -32,6 +34,7 @@ const AccountController = (actions: {
   let privateKey: string;
   let tempTx: ITransactionInfo;
   let account: IAccountState | null;
+  let intervalId: any;
 
   // Primary
   const getAccountByPrivateKey = async (
@@ -115,10 +118,6 @@ const AccountController = (actions: {
     }
   };
 
-  const currentAccount = () => {
-    return account;
-  };
-
   const getPrivKey = (index: number, pwd: string) => {
     const masterKey: hdkey | null = actions.getMasterKey();
     if (!masterKey) return null;
@@ -138,13 +137,65 @@ const AccountController = (actions: {
     return dag.account.isActive() ? tempTx : null;
   };
 
+  const _coventPendingType = (pending: PendingTx) => {
+    return {
+      hash: pending.hash,
+      amount: pending.amount,
+      receiver: pending.receiver,
+      sender: pending.sender,
+      fee: -1,
+      isDummy: true,
+      timestamp: new Date(pending.timestamp).toISOString(),
+      lastTransactionRef: {},
+      snapshotHash: '',
+      checkpointBlock: '',
+    } as Transaction;
+  };
+
+  const watchMemPool = () => {
+    intervalId = setInterval(() => {
+      const memPool = window.localStorage.getItem('dag4-network-main-mempool');
+      if (memPool) {
+        const pendingTxs = JSON.parse(memPool);
+        console.log(pendingTxs);
+        if (!pendingTxs.length) {
+          clearInterval(intervalId);
+          getLatestUpdate();
+          return;
+        }
+        pendingTxs.forEach((pTx: PendingTx) => {
+          if (
+            !account ||
+            account.transactions.filter(
+              (tx: Transaction) => tx.hash === pTx.hash
+            ).length > 0
+          )
+            return;
+          store.dispatch(
+            updateTransactions({
+              index: account.index,
+              txs: [_coventPendingType(pTx), ...account.transactions],
+            })
+          );
+        });
+      }
+    }, 30 * 1000);
+  };
+
   const confirmTempTx = async () => {
-    if (dag.account.isActive()) {
+    if (dag.account.isActive() && account) {
       const pendingTx = await dag.account.transferDag(
         tempTx.toAddress,
         tempTx.amount
       );
       dag.monitor.addToMemPoolMonitor(pendingTx);
+      store.dispatch(
+        updateTransactions({
+          index: account.index,
+          txs: [_coventPendingType(pendingTx), ...account.transactions],
+        })
+      );
+      watchMemPool();
     }
   };
 
@@ -157,7 +208,6 @@ const AccountController = (actions: {
     getTempTx,
     updateTempTx,
     confirmTempTx,
-    currentAccount,
     getPrivKey,
     getPrimaryAccount,
     isValidDAGAddress,
@@ -165,6 +215,7 @@ const AccountController = (actions: {
     unsubscribeAccount,
     addNewAccount,
     getLatestUpdate,
+    watchMemPool,
   };
 };
 

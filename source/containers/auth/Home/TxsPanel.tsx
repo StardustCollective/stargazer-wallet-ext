@@ -6,9 +6,11 @@ import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import DownArrowIcon from '@material-ui/icons/ArrowDownward';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
 import IconButton from '@material-ui/core/IconButton';
+import Spinner from '@material-ui/core/CircularProgress';
 
 import { formatDistanceDate } from '../helpers';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
+import { DAG_EXPLORER_SEARCH } from 'constants/index';
 
 import styles from './Home.scss';
 
@@ -39,6 +41,10 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     setScrollArea(ev.target);
   }, []);
 
+  const handleOpenExplorer = (tx: string) => {
+    window.open(`${DAG_EXPLORER_SEARCH}${tx}`, '_blank');
+  };
+
   const handleGoTop = () => {
     scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -68,10 +74,21 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                     {formatDistanceDate(tx.timestamp)}
                   </li>
                 )}
-                <li key={tx.timestamp}>
+                <li
+                  key={tx.timestamp}
+                  onClick={() => handleOpenExplorer(tx.hash)}
+                >
                   <div>
                     <div className={styles.iconWrapper}>
-                      {isRecived ? <DownArrowIcon /> : <UpArrowIcon />}
+                      {tx.checkpointBlock ? (
+                        isRecived ? (
+                          <DownArrowIcon />
+                        ) : (
+                          <UpArrowIcon />
+                        )
+                      ) : (
+                        <Spinner size={16} className={styles.spinner} />
+                      )}
                     </div>
                     <span>
                       {isRecived ? 'Received' : 'Sent'}
