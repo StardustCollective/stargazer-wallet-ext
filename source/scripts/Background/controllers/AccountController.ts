@@ -23,6 +23,7 @@ export interface IAccountController {
   subscribeAccount: (index: number) => Promise<string | null>;
   unsubscribeAccount: (index: number, pwd: string) => boolean;
   addNewAccount: (label: string) => Promise<string | null>;
+  updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   watchMemPool: () => void;
   getLatestUpdate: () => void;
 }
@@ -137,6 +138,17 @@ const AccountController = (actions: {
     return dag.account.isActive() ? tempTx : null;
   };
 
+  const updateTxs = async (limit = 10, searchAfter?: string) => {
+    if (!account) return;
+    const newTxs = await dag.account.getTransactions(limit, searchAfter);
+    store.dispatch(
+      updateTransactions({
+        index: account.index,
+        txs: [...account.transactions, ...newTxs],
+      })
+    );
+  };
+
   const _coventPendingType = (pending: PendingTx) => {
     return {
       hash: pending.hash,
@@ -216,6 +228,7 @@ const AccountController = (actions: {
     addNewAccount,
     getLatestUpdate,
     watchMemPool,
+    updateTxs,
   };
 };
 
