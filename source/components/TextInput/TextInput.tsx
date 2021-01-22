@@ -18,6 +18,7 @@ import styles from './TextInput.scss';
 interface ITextInput {
   endAdornment?: ReactNode;
   fullWidth?: boolean;
+  multiline?: boolean;
   inputRef?: Ref<any>;
   name?: string;
   onChange?: (ev: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
@@ -38,6 +39,7 @@ const TextInput: FC<ITextInput> = ({
   name = '',
   endAdornment,
   value,
+  multiline,
   onChange,
 }) => {
   const [showed, setShowed] = useState(false);
@@ -60,6 +62,7 @@ const TextInput: FC<ITextInput> = ({
       inputRef={inputRef}
       value={value}
       onChange={onChange}
+      multiline={multiline}
       name={name}
       endAdornment={
         endAdornment ||

@@ -41,7 +41,7 @@ const Starter = () => {
           Unlock
         </Button>
       </form>
-      <Link color="secondary" to="/app.html">
+      <Link color="secondary" to="/restore">
         Restore account?
       </Link>
       <span className="body-caption t-white">

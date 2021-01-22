@@ -1,0 +1,35 @@
+@import '~assets/styles/variables';
+
+.restoreForm {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: -12px 0;
+
+  & > span {
+    margin: 24px 0;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: $gray-dark;
+    display: block;
+
+    &.password {
+      margin-top: 0;
+    }
+  }
+
+  .actions {
+    position: absolute;
+    bottom: -24px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .button {
+      width: 144px;
+    }
+  }
+}
