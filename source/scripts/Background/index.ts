@@ -1,11 +1,6 @@
 /* eslint-disable prettier/prettier */
 import 'emoji-log';
-import {
-  STORE_PORT,
-  DAG_CONFIG_ID,
-  DAG_BE_URL,
-  DAG_LB_URL,
-} from 'constants/index';
+import { STORE_PORT, DAG_NETWORK } from 'constants/index';
 
 import { browser } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
@@ -35,12 +30,14 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     port.sender.url &&
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
+    const networkId =
+      store.getState().wallet!.activeNetwork || DAG_NETWORK.main.id;
     dag.di.useFetchHttpClient(window.fetch.bind(window));
-    dag.di.useLocalStorageClient(window.localStorage);
+    dag.di.useLocalStorageClient(localStorage);
     dag.network.config({
-      id: DAG_CONFIG_ID,
-      beUrl: DAG_BE_URL,
-      lbUrl: DAG_LB_URL,
+      id: DAG_NETWORK[networkId].id,
+      beUrl: DAG_NETWORK[networkId].beUrl,
+      lbUrl: DAG_NETWORK[networkId].lbUrl,
     });
   }
 });

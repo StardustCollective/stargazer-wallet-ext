@@ -1,15 +1,28 @@
 import { dag } from '@stardust-collective/dag4-wallet';
 import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
-import { setKeystoreInfo } from 'state/wallet';
+import {
+  setKeystoreInfo,
+  deleteWallet as deleteWalletState,
+  updateStatus,
+  changeActiveIndex,
+  changeActiveNetwork,
+} from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
+import { DAG_NETWORK } from 'constants/index';
+
 export interface IWalletController {
   account: Readonly<IAccountController>;
   createWallet: () => void;
+  deleteWallet: (pwd: string) => void;
+  switchWallet: (index: number) => void;
+  switchNetwork: (networkId: string) => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
   isLocked: () => boolean;
   unLock: (pwd: string) => Promise<boolean>;
+  checkPassword: (pwd: string) => boolean;
+  getPhrase: (pwd: string) => string | null;
 }
 
 const WalletController = (): IWalletController => {
@@ -17,11 +30,16 @@ const WalletController = (): IWalletController => {
   let phrase = '';
   let masterKey: hdkey;
 
+  const checkPassword = (pwd: string) => {
+    return password === pwd;
+  };
+
   const account = Object.freeze(
     AccountController({
       getMasterKey: () => {
         return walletKeystore() ? masterKey : null;
       },
+      checkPassword,
     })
   );
 
@@ -38,6 +56,10 @@ const WalletController = (): IWalletController => {
     return !password || !phrase;
   };
 
+  const getPhrase = (pwd: string) => {
+    return checkPassword(pwd) ? phrase : null;
+  };
+
   const unLock = async (pwd: string): Promise<boolean> => {
     const keystore = walletKeystore();
     if (!keystore) return false;
@@ -46,7 +68,8 @@ const WalletController = (): IWalletController => {
       phrase = await dag.keyStore.decryptPhrase(keystore, pwd);
       password = pwd;
       masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
-      account.getPrimaryAccount();
+      await account.getPrimaryAccount();
+      account.watchMemPool();
       return true;
     } catch (error) {
       console.log(error);
@@ -59,7 +82,33 @@ const WalletController = (): IWalletController => {
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));
-    account.getPrimaryAccount();
+    account.subscribeAccount(0);
+  };
+
+  const deleteWallet = (pwd: string) => {
+    if (checkPassword(pwd)) {
+      password = '';
+      phrase = '';
+      store.dispatch(deleteWalletState());
+      store.dispatch(updateStatus());
+    }
+  };
+
+  const switchWallet = (index: number) => {
+    store.dispatch(changeActiveIndex(index));
+    account.getLatestUpdate();
+  };
+
+  const switchNetwork = (networkId: string) => {
+    if (DAG_NETWORK[networkId]!.id) {
+      dag.network.setNetwork({
+        id: DAG_NETWORK[networkId].id,
+        beUrl: DAG_NETWORK[networkId].beUrl,
+        lbUrl: DAG_NETWORK[networkId].lbUrl,
+      });
+      store.dispatch(changeActiveNetwork(DAG_NETWORK[networkId]!.id));
+      account.getLatestUpdate();
+    }
   };
 
   const setWalletPassword = (pwd: string) => {
@@ -78,6 +127,11 @@ const WalletController = (): IWalletController => {
     createWallet,
     isLocked,
     unLock,
+    checkPassword,
+    getPhrase,
+    deleteWallet,
+    switchWallet,
+    switchNetwork,
   };
 };
 

@@ -1,11 +1,15 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import Portal from '@reach/portal';
+import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 import { useLocation, useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
+
+import { RootState } from 'state/store';
+import IWalletState from 'state/wallet/types';
 import * as Views from './views';
 import * as routes from './views/routes';
 
@@ -27,22 +31,52 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     config: { duration: 300 },
   });
 
+  const { accounts }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+  const [showedIndex, setShowedIndex] = useState<number>(0);
+
+  const renderTitle = (view: string) => {
+    switch (view) {
+      case routes.ACCOUNT_VIEW:
+        return accounts[showedIndex].label;
+      case routes.GENERAL_VIEW:
+        return 'General settings';
+      case routes.PHRASE_VIEW:
+        return 'Wallet seed phrase';
+      case routes.DELETE_WALLET_VIEW:
+        return 'Delete wallet';
+      case routes.NEW_ACCOUNT_VIEW:
+        return 'Create new account';
+      case routes.REMOVE_ACCOUNT_VIEW:
+        return 'Remove account';
+      case routes.PRIV_KEY_VIEW:
+        return 'Export private key';
+      default:
+        return 'Settings';
+    }
+  };
+
   const renderView = (view: string) => {
     switch (view) {
       case routes.ACCOUNT_VIEW:
-        return <Views.AccountView />;
-      case routes.DETAILS_VIEW:
-        return <Views.DetailsView />;
+        return <Views.AccountView address={accounts[showedIndex].address} />;
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
         return <Views.PhraseView />;
       case routes.DELETE_WALLET_VIEW:
         return <Views.DeleteWalletView />;
+      case routes.NEW_ACCOUNT_VIEW:
+        return <Views.NewAccountView />;
+      case routes.REMOVE_ACCOUNT_VIEW:
+        return <Views.RemoveAccountView index={showedIndex} />;
       case routes.PRIV_KEY_VIEW:
-        return <Views.PrivateKeyView />;
+        return <Views.PrivateKeyView index={showedIndex} />;
       default:
-        return <Views.MainView />;
+        return (
+          <Views.MainView onChange={(index: number) => setShowedIndex(index)} />
+        );
     }
   };
 
@@ -62,7 +96,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
             >
               {location.hash && <ArrowBackIcon className={styles.icon} />}
             </IconButton>
-            Settings
+            {renderTitle(location.hash)}
             <IconButton className={styles.navBtn} onClick={onClose}>
               <CloseIcon className={styles.icon} />
             </IconButton>

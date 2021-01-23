@@ -28,7 +28,7 @@
     "@n8tb1t/use-scroll-position": "^2.0.3",
     "@reach/portal": "^0.12.1",
     "@reduxjs/toolkit": "^1.4.0",
-    "@stardust-collective/dag4-wallet": "^0.0.5",
+    "@stardust-collective/dag4-wallet": "^0.1.0",
     "@types/lodash": "^4.14.162",
     "@types/qrcode.react": "^1.0.1",
     "@types/react-redux": "^7.1.9",

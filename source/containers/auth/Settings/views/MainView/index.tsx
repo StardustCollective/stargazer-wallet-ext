@@ -1,38 +1,59 @@
-import React from 'react';
+import React, { FC } from 'react';
+import { useSelector } from 'react-redux';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
+import UserIcon from '@material-ui/icons/AccountCircleRounded';
 
+import Icon from 'components/Icon';
 import { useSettingsView } from 'hooks/index';
-import DAGIcon from 'assets/images/svg/dag.svg';
-// import BTCIcon from 'assets/images/svg/btc.svg';
-// import ETHIcon from 'assets/images/svg/eth.svg';
-import { ACCOUNT_VIEW, GENERAL_VIEW } from '../routes';
+import { RootState } from 'state/store';
+import IWalletState, { IAccountState } from 'state/wallet/types';
+import { ACCOUNT_VIEW, GENERAL_VIEW, NEW_ACCOUNT_VIEW } from '../routes';
+
 import styles from './index.scss';
 
-const MainView = () => {
+interface IMainView {
+  onChange: (index: number) => void;
+}
+
+const MainView: FC<IMainView> = ({ onChange }) => {
   const showView = useSettingsView();
+  const { accounts, activeIndex }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+
+  const handleSelectAccount = (index: number) => {
+    onChange(index);
+    showView(ACCOUNT_VIEW);
+  };
 
   return (
     <div className={styles.main}>
       <ul className={styles.accounts}>
-        <li onClick={() => showView(ACCOUNT_VIEW)}>
-          <div className={styles.account}>
-            <img src={DAGIcon} />
-            <span className={styles.accInfo}>
-              Account 1<small>1,000,000 DAG</small>
-            </span>
-          </div>
-        </li>
+        {Object.values(accounts).map((account: IAccountState) => (
+          <li onClick={() => handleSelectAccount(account.index)}>
+            <div className={styles.account}>
+              <span className={styles.accInfo}>
+                <Icon Component={UserIcon} />
+                <div>{account.label}</div>
+                {account!.index === activeIndex && <small> (active)</small>}
+              </span>
+            </div>
+          </li>
+        ))}
       </ul>
-      <section className={styles.new}>
-        <AddIcon className={styles.icon} />
+      <section
+        className={styles.new}
+        onClick={() => showView(NEW_ACCOUNT_VIEW)}
+      >
+        <Icon Component={AddIcon} />
         Create New Account
       </section>
       <section
         className={styles.general}
         onClick={() => showView(GENERAL_VIEW)}
       >
-        <SettingsIcon className={styles.icon} />
+        <Icon Component={SettingsIcon} />
         General Settings
       </section>
     </div>

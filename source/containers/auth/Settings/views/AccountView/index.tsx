@@ -1,54 +1,39 @@
-import React from 'react';
-import Select from 'components/Select';
-import DAGIcon from 'assets/images/svg/dag.svg';
-import UserIcon from 'assets/images/svg/user.svg';
-import ExportIcon from 'assets/images/svg/export.svg';
-import LinkIcon from 'assets/images/svg/link.svg';
-import ConnectedIcon from 'assets/images/svg/connected.svg';
-import RemoveIcon from 'assets/images/svg/trash.svg';
+import React, { FC } from 'react';
+import Icon from 'components/Icon';
+import ExportIcon from '@material-ui/icons/ImportExport';
+import LinkIcon from '@material-ui/icons/CallMissedOutgoing';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { useSettingsView } from 'hooks/index';
 
-import styles from './index.scss';
-import { DETAILS_VIEW, PRIV_KEY_VIEW } from '../routes';
+import { PRIV_KEY_VIEW, REMOVE_ACCOUNT_VIEW } from '../routes';
+import { DAG_EXPLORER_SEARCH } from 'constants/index';
 
-const AccountView = () => {
+import styles from './index.scss';
+
+interface IAccountView {
+  address: string;
+}
+
+const AccountView: FC<IAccountView> = ({ address }) => {
   const showView = useSettingsView();
+
+  const handleOpenExplorer = () => {
+    window.open(`${DAG_EXPLORER_SEARCH}${address}`, '_blank');
+  };
 
   return (
     <div className={styles.account}>
       <ul>
-        <li className={styles.network}>
-          <img src={DAGIcon} alt="DAG" />
-          <span>
-            DAG Network
-            <Select
-              value="mainnet"
-              fullWidth
-              onChange={(ev) => {
-                console.log(ev);
-              }}
-              options={[{ mainnet: 'Mainnet' }, { testnet: 'Testnet 1' }]}
-            />
-          </span>
-        </li>
-        <li onClick={() => showView(DETAILS_VIEW)}>
-          <img src={UserIcon} alt="user" />
-          Account Details
-        </li>
         <li onClick={() => showView(PRIV_KEY_VIEW)}>
-          <img src={ExportIcon} alt="export" />
+          <Icon Component={ExportIcon} />
           Export private key
         </li>
-        <li>
-          <img src={LinkIcon} alt="view" />
+        <li onClick={handleOpenExplorer}>
+          <Icon Component={LinkIcon} />
           View on explorer
         </li>
-        <li>
-          <img src={ConnectedIcon} alt="connected" />
-          Connected sites
-        </li>
-        <li>
-          <img src={RemoveIcon} alt="remove" />
+        <li onClick={() => showView(REMOVE_ACCOUNT_VIEW)}>
+          <Icon Component={DeleteIcon} />
           Remove Account
         </li>
       </ul>

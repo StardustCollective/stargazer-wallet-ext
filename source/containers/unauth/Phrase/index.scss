@@ -18,10 +18,10 @@ body {
       font-style: normal;
       font-weight: 500;
       font-size: 13px;
-      line-height: 24px;
+      line-height: 36px;
       letter-spacing: 0.03em;
       color: $gray-dark;
-      border-bottom: 1px solid $gray-medium;
+      border-bottom: 1px solid $gray-light;
 
       span {
         width: 25px;
@@ -32,16 +32,20 @@ body {
 
   .written {
     padding: 8px;
-    min-width: 156px;
+    width: 228px;
     position: absolute;
     bottom: 24px;
+
+    &.passed {
+      width: 144px;
+    }
   }
 
   .topzone {
     padding-top: 12px;
     padding-bottom: 12px;
     width: 100%;
-    border-bottom: 1px solid $gray-medium;
+    border-bottom: 1px solid $gray-light;
     min-height: 120px;
     display: flex;
     box-sizing: border-box;
@@ -64,7 +68,7 @@ body {
     width: 60px;
     height: 30px !important;
     padding: 0px;
-    font-weight: $bold;
+    font-weight: 500;
     font-size: 12px;
     line-height: 18px;
     display: flex;

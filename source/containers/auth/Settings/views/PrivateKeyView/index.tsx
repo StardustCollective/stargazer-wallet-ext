@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import IconButton from '@material-ui/core/IconButton';
-import CopyIcon from '@material-ui/icons/FileCopy';
+
 import TextInput from 'components/TextInput';
 import { useController, useCopyClipboard } from 'hooks/index';
 import { ellipsis } from 'containers/auth/helpers';
+import IWalletState from 'state/wallet/types';
+import { RootState } from 'state/store';
 
 import styles from './index.scss';
 
-const PrivateKeyView = () => {
+interface IPrivateKeyView {
+  index: number;
+}
+
+const PrivateKeyView: FC<IPrivateKeyView> = ({ index }) => {
   const controller = useController();
-  const accountInfo = controller.wallet.account.currentAccount();
+  const { accounts }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       password: yup.string().required(),
@@ -22,6 +30,10 @@ const PrivateKeyView = () => {
   const [isCopied, copyText] = useCopyClipboard();
   const [checked, setChecked] = useState(false);
   const [isCopiedAddress, copyAddress] = useState(false);
+  const [privKey, setPrivKey] = useState<string>(
+    '*************************************************************'
+  );
+
   const addressClass = clsx(styles.address, {
     [styles.copied]: isCopied && isCopiedAddress,
   });
@@ -31,32 +43,33 @@ const PrivateKeyView = () => {
   });
 
   const onSubmit = (data: any) => {
-    console.log(data.password);
-    setChecked(true);
+    const res = controller.wallet.account.getPrivKey(index, data.password);
+    if (res) {
+      setPrivKey(res);
+      setChecked(true);
+    }
   };
 
   const handleCopyPrivKey = () => {
     if (!checked) return;
     copyAddress(false);
-    copyText('Priv Key');
+    copyText(privKey);
   };
 
   return (
     <div className={styles.wrapper}>
-      {accountInfo && (
+      {accounts[index] && (
         <>
           <div className={styles.heading}>
-            <IconButton
-              className={styles.iconBtn}
+            <div>Click to copy your public key:</div>
+            <span
+              className={addressClass}
               onClick={() => {
-                copyText(accountInfo.address);
+                copyText(accounts[index].address);
                 copyAddress(true);
               }}
             >
-              <CopyIcon className={styles.icon} />
-            </IconButton>
-            <span className={addressClass}>
-              {ellipsis(accountInfo.address)}
+              {ellipsis(accounts[index].address)}
             </span>
           </div>
           <div className={styles.content}>
@@ -73,7 +86,7 @@ const PrivateKeyView = () => {
             </form>
             <span>Click to copy your private key:</span>
             <div className={privKeyClass} onClick={handleCopyPrivKey}>
-              ***********************************************************************************************
+              {privKey}
             </div>
             <span>
               Warning: Keep your keys secret! Anyone with your private keys can
