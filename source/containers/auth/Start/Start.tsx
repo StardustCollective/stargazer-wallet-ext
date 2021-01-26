@@ -41,12 +41,9 @@ const Starter = () => {
           Unlock
         </Button>
       </form>
-      <Link color="secondary" to="/app.html">
-        Restore account?
+      <Link color="secondary" to="/import">
+        Import using wallet seed phrase
       </Link>
-      <span className="body-caption t-white">
-        Import using account seed phrase
-      </span>
     </div>
   );
 };
