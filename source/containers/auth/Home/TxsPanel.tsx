@@ -8,6 +8,7 @@ import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
 import IconButton from '@material-ui/core/IconButton';
 import Spinner from '@material-ui/core/CircularProgress';
 
+import { useController } from 'hooks/index';
 import { formatDistanceDate } from '../helpers';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { DAG_EXPLORER_SEARCH } from 'constants/index';
@@ -21,6 +22,7 @@ interface ITxsPanel {
 
 const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const getFiatAmount = useFiat();
+  const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
 
@@ -35,10 +37,21 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     [transactions]
   );
 
+  const handleFetchMoreTxs = () => {
+    if (transactions.length) {
+      const lastTx = [...transactions].pop();
+      controller.wallet.account.updateTxs(10, lastTx?.timestamp);
+    }
+  };
+
   const handleScroll = useCallback((ev) => {
     ev.persist();
     setShowed(ev.target.scrollTop);
     setScrollArea(ev.target);
+    const scrollOffset = ev.target.scrollHeight - ev.target.scrollTop;
+    if (scrollOffset === ev.target.clientHeight) {
+      handleFetchMoreTxs();
+    }
   }, []);
 
   const handleOpenExplorer = (tx: string) => {

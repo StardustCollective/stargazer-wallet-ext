@@ -39,12 +39,15 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ index }) => {
   return (
     <div className={styles.removeAccount}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.subheading}>
-          <div>{accounts[index].label}:</div>
-          <span className={styles.address}>
-            {ellipsis(accounts[index].address)}
-          </span>
-        </div>
+        {accounts[index] && (
+          <div className={styles.subheading}>
+            <div>{accounts[index].label}:</div>
+            <span className={styles.address}>
+              {ellipsis(accounts[index].address)}
+            </span>
+          </div>
+        )}
+
         <span>Please enter your wallet password:</span>
         <TextInput
           type="password"
