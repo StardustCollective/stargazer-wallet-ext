@@ -52,7 +52,6 @@ const WalletController = (): IWalletController => {
   };
 
   const isLocked = () => {
-    console.log(password, phrase);
     return !password || !phrase;
   };
 
@@ -82,7 +81,7 @@ const WalletController = (): IWalletController => {
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));
-    account.subscribeAccount(0);
+    await account.subscribeAccount(0);
   };
 
   const deleteWallet = (pwd: string) => {

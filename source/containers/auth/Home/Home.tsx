@@ -1,5 +1,7 @@
 import React from 'react';
+import clsx from 'clsx';
 import { useSelector } from 'react-redux';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
@@ -20,44 +22,60 @@ const Home = () => {
 
   return (
     <div className={styles.wrapper}>
-      <Header showLogo />
-      <section className={styles.account}>
-        <FullSelect
-          value={String(activeIndex)}
-          options={accounts}
-          onChange={(val: string) =>
-            controller.wallet.switchWallet(Number(val))
-          }
-        />
-      </section>
-      <section className={styles.center}>
-        <h3>
-          {accounts[activeIndex].balance || 0} <small>DAG</small>
-        </h3>
-        <small>≈ {getFiatAmount(accounts[activeIndex].balance || 0)}</small>
-        <div className={styles.actions}>
-          <Button
-            type="button"
-            theme="primary"
-            variant={styles.button}
-            linkTo="/send"
-          >
-            Send
-          </Button>
-          <Button
-            type="button"
-            theme="primary"
-            variant={styles.button}
-            linkTo="/receive"
-          >
-            Receive
-          </Button>
-        </div>
-      </section>
-      <TxsPanel
-        address={accounts[activeIndex].address}
-        transactions={accounts[activeIndex].transactions}
-      />
+      {accounts[activeIndex] ? (
+        <>
+          <Header showLogo />
+          <section className={styles.account}>
+            {Object.keys(accounts).length > 1 ? (
+              <FullSelect
+                value={String(activeIndex)}
+                options={accounts}
+                onChange={(val: string) =>
+                  controller.wallet.switchWallet(Number(val))
+                }
+              />
+            ) : (
+              accounts[activeIndex].label
+            )}
+          </section>
+          <section className={styles.center}>
+            <h3>
+              {accounts[activeIndex].balance} <small>DAG</small>
+            </h3>
+            <small>≈ {getFiatAmount(accounts[activeIndex].balance)}</small>
+            <div className={styles.actions}>
+              <Button
+                type="button"
+                theme="primary"
+                variant={styles.button}
+                linkTo="/send"
+              >
+                Send
+              </Button>
+              <Button
+                type="button"
+                theme="primary"
+                variant={styles.button}
+                linkTo="/receive"
+              >
+                Receive
+              </Button>
+            </div>
+          </section>
+          <TxsPanel
+            address={accounts[activeIndex].address}
+            transactions={accounts[activeIndex].transactions}
+          />
+        </>
+      ) : (
+        <section
+          className={clsx(styles.mask, {
+            [styles.hide]: accounts[activeIndex],
+          })}
+        >
+          <CircularProgress className={styles.loader} />
+        </section>
+      )}
     </div>
   );
 };
