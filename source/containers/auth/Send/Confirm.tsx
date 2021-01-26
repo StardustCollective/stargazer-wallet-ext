@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 import Header from 'containers/common/Header';
 import Layout from 'containers/common/Layout';
 import Button from 'components/Button';
@@ -7,13 +8,16 @@ import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import CheckIcon from 'assets/images/svg/check.svg';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
-
+import { RootState } from 'state/store';
 import { ellipsis } from '../helpers';
 import styles from './Confirm.scss';
 
 const SendConfirm = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
+  const { accounts, activeIndex } = useSelector(
+    (state: RootState) => state.wallet
+  );
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
 
@@ -41,13 +45,18 @@ const SendConfirm = () => {
         <div className={styles.iconWrapper}>
           <UpArrowIcon />
         </div>
-        {tempTx!.amount} DAG
-        <small>(≈ $800.10)</small>
+        {(tempTx?.amount || 0) + (tempTx?.fee || 0)} DAG
+        <small>
+          (≈ {getFiatAmount((tempTx?.amount || 0) + (tempTx?.fee || 0), 8)})
+        </small>
       </section>
       <section className={styles.transaction}>
         <div className={styles.row}>
           From
-          <span>Main Wallet ({ellipsis(tempTx!.fromAddress)})</span>
+          <span>
+            {accounts[activeIndex]?.label || ''} (
+            {ellipsis(tempTx!.fromAddress)})
+          </span>
         </div>
         <div className={styles.row}>
           To
@@ -56,7 +65,7 @@ const SendConfirm = () => {
         <div className={styles.row}>
           Transaction Fee
           <span>
-            {tempTx!.fee} DAG (≈ {getFiatAmount(tempTx?.amount || 0, 8)})
+            {tempTx!.fee} DAG (≈ {getFiatAmount(tempTx?.fee || 0, 8)})
           </span>
         </div>
       </section>

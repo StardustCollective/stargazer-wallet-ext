@@ -25,6 +25,21 @@ body {
     outline: 0px !important;
   }
 
+  .MuiOutlinedInput-multiline {
+    height: 72px !important;
+    border-radius: 6px !important;
+    padding: 0 !important;
+  }
+
+  .MuiInputBase-inputMultiline {
+    overflow: auto !important;
+    height: 70px !important;
+    padding: 11px !important;
+    margin: 1px 0;
+    box-sizing: border-box;
+    color: $gray-dark;
+  }
+
   .MuiInputBase-root {
     font-family: $inter;
     font-size: 12px;

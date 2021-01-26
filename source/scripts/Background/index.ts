@@ -22,6 +22,7 @@ declare global {
 
 browser.runtime.onInstalled.addListener((): void => {
   console.emoji('🤩', 'Stargazer extension installed');
+  window.controller.stateUpdater();
 });
 
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {

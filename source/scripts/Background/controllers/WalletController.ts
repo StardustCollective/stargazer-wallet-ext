@@ -19,6 +19,7 @@ export interface IWalletController {
   switchNetwork: (networkId: string) => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
+  importPhrase: (phr: string) => boolean;
   isLocked: () => boolean;
   unLock: (pwd: string) => Promise<boolean>;
   checkPassword: (pwd: string) => boolean;
@@ -51,8 +52,19 @@ const WalletController = (): IWalletController => {
     return keystore ? null : phrase;
   };
 
+  const importPhrase = (phr: string) => {
+    try {
+      if (dag.keyStore.getMasterKeyFromMnemonic(phr)) {
+        phrase = phr;
+        return true;
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const isLocked = () => {
-    console.log(password, phrase);
     return !password || !phrase;
   };
 
@@ -82,7 +94,7 @@ const WalletController = (): IWalletController => {
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));
-    account.subscribeAccount(0);
+    await account.subscribeAccount(0);
   };
 
   const deleteWallet = (pwd: string) => {
@@ -122,6 +134,7 @@ const WalletController = (): IWalletController => {
 
   return {
     account,
+    importPhrase,
     generatedPhrase,
     setWalletPassword,
     createWallet,
