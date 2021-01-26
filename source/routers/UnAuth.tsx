@@ -9,6 +9,7 @@ import {
   ConfirmPhrase,
   RemindPhrase,
 } from 'containers/unauth/Phrase';
+import Import from 'containers/common/Import';
 
 const UnAuth = () => {
   const location = useLocation();
@@ -38,6 +39,7 @@ const UnAuth = () => {
         >
           <Switch location={item}>
             <Route path="/app.html" component={Start} exact />
+            <Route path="/import" component={Import} exact />
             <Route path="/remind" component={Remind} exact />
             <Route path="/create/pass" component={CreatePass} exact />
             <Route

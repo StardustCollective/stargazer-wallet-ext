@@ -34,9 +34,10 @@ body {
   .MuiInputBase-inputMultiline {
     overflow: auto !important;
     height: 70px !important;
-    padding: 12px !important;
+    padding: 11px !important;
     margin: 1px 0;
     box-sizing: border-box;
+    color: $gray-dark;
   }
 
   .MuiInputBase-root {

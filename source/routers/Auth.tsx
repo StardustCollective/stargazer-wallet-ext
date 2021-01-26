@@ -6,7 +6,7 @@ import Home from 'containers/auth/Home';
 import Send, { SendConfirm } from 'containers/auth/Send';
 import Receive from 'containers/auth/Receive';
 import { useController } from 'hooks/index';
-import Import from 'containers/auth/Import';
+import Import from 'containers/common/Import';
 
 const Auth = () => {
   const location = useLocation();
