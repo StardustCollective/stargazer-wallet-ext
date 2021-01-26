@@ -6,7 +6,7 @@ import Home from 'containers/auth/Home';
 import Send, { SendConfirm } from 'containers/auth/Send';
 import Receive from 'containers/auth/Receive';
 import { useController } from 'hooks/index';
-import Restore from 'containers/auth/Restore';
+import Import from 'containers/auth/Import';
 
 const Auth = () => {
   const location = useLocation();
@@ -36,7 +36,7 @@ const Auth = () => {
             <Route path="/app.html" component={Start} exact>
               {isUnlocked && <Redirect to="/home" />}
             </Route>
-            {!isUnlocked && <Route path="/restore" component={Restore} exact />}
+            {!isUnlocked && <Route path="/restore" component={Import} exact />}
             {isUnlocked && <Route path="/home" component={Home} exact />}
             {isUnlocked && (
               <Route path="/send/confirm" component={SendConfirm} exact />

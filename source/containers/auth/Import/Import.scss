@@ -1,6 +1,6 @@
 @import '~assets/styles/variables';
 
-.restoreForm {
+.importForm {
   display: flex;
   flex-direction: column;
   position: relative;
@@ -16,6 +16,13 @@
 
     &.password {
       margin-top: 0;
+    }
+  }
+
+  .input {
+    textarea {
+      text-align: center;
+      word-wrap: break-word;
     }
   }
 
