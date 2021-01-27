@@ -42,6 +42,9 @@
     background: rgba($white, 0.8);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid $gray-dark;
+    overflow: auto;
+    height: 150px;
+    z-index: 1;
 
     li {
       width: 100%;

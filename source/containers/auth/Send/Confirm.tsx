@@ -45,9 +45,14 @@ const SendConfirm = () => {
         <div className={styles.iconWrapper}>
           <UpArrowIcon />
         </div>
-        {(tempTx?.amount || 0) + (tempTx?.fee || 0)} DAG
+        {Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0)} DAG
         <small>
-          (≈ {getFiatAmount((tempTx?.amount || 0) + (tempTx?.fee || 0), 8)})
+          (≈
+          {getFiatAmount(
+            Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0),
+            8
+          )}
+          )
         </small>
       </section>
       <section className={styles.transaction}>
@@ -73,7 +78,10 @@ const SendConfirm = () => {
         <div className={styles.row}>
           Max Total
           <span>
-            {getFiatAmount((tempTx?.amount || 0) + (tempTx?.fee || 0), 8)}
+            {getFiatAmount(
+              Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0),
+              8
+            )}
           </span>
         </div>
 

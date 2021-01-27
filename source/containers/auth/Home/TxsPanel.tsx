@@ -119,11 +119,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                       </span>
                       <small>{getFiatAmount(tx.amount / 1e8, 8)}</small>
                     </span>
-                    <div
-                      className={clsx(styles.linkIcon, {
-                        [styles.received]: isRecived,
-                      })}
-                    >
+                    <div className={styles.linkIcon}>
                       <UpArrowIcon />
                     </div>
                   </div>

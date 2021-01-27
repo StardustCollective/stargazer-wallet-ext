@@ -36,7 +36,7 @@ const Auth = () => {
             <Route path="/app.html" component={Start} exact>
               {isUnlocked && <Redirect to="/home" />}
             </Route>
-            {!isUnlocked && <Route path="/restore" component={Import} exact />}
+            {!isUnlocked && <Route path="/import" component={Import} exact />}
             {isUnlocked && <Route path="/home" component={Home} exact />}
             {isUnlocked && (
               <Route path="/send/confirm" component={SendConfirm} exact />

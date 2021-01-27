@@ -5,10 +5,11 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Link from 'components/Link';
 import Settings from 'containers/auth/Settings';
-import { useController } from 'hooks/index';
+import { useController, useSettingsView } from 'hooks/index';
 import LogoImage from 'assets/images/logo-s.png';
 
 import styles from './Header.scss';
+import { MAIN_VIEW } from 'containers/auth/Settings/views/routes';
 
 interface IHeader {
   backLink?: string;
@@ -18,6 +19,7 @@ interface IHeader {
 const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const history = useHistory();
   const controller = useController();
+  const showView = useSettingsView();
   const isUnlocked = !controller.wallet.isLocked();
   const [showed, showSettings] = useState(false);
 
@@ -32,6 +34,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
 
   const handleCloseSettings = () => {
     showSettings(false);
+    showView(MAIN_VIEW);
   };
 
   return (
@@ -51,7 +54,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
       <span className={styles.title}>Stargazer Wallet</span>
       <IconButton
         className={`${styles.button} ${styles.more}`}
-        onClick={() => showSettings(!showed)}
+        onClick={() => (showed ? handleCloseSettings() : showSettings(!showed))}
       >
         <MoreVertIcon />
       </IconButton>
