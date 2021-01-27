@@ -128,7 +128,12 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
             );
           })}
           <div className={styles.stargazer}>
-            <img src={StargazerIcon} alt="stargazer" />
+            <img
+              src={StargazerIcon}
+              alt="stargazer"
+              height="167"
+              width="auto"
+            />
           </div>
         </ul>
       ) : (
