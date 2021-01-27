@@ -93,6 +93,15 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    position: relative;
+
+    .refresh {
+      position: absolute;
+      width: 32px;
+      right: 30px;
+      height: 32px;
+      color: $gray-100;
+    }
 
     & > span {
       font-weight: 600;
