@@ -4,7 +4,7 @@ import Button from 'components/Button';
 import Link from 'components/Link';
 import { useForm } from 'react-hook-form';
 import { useController } from 'hooks/index';
-import LogoImage from 'assets/images/logo-m.png';
+import LogoImage from 'assets/images/logo.svg';
 
 import { schema } from './consts';
 import styles from './Start.scss';

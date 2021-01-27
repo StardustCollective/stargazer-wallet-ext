@@ -6,7 +6,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Link from 'components/Link';
 import Settings from 'containers/auth/Settings';
 import { useController, useSettingsView } from 'hooks/index';
-import LogoImage from 'assets/images/logo-s.png';
+import LogoImage from 'assets/images/logo-s.svg';
 
 import styles from './Header.scss';
 import { MAIN_VIEW } from 'containers/auth/Settings/views/routes';

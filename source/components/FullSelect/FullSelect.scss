@@ -43,7 +43,7 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid $gray-dark;
     overflow: auto;
-    height: 150px;
+    max-height: 150px;
     z-index: 1;
 
     li {

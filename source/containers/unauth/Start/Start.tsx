@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'components/Button';
 import Link from 'components/Link';
-import LogoImage from 'assets/images/logo-l.png';
+import LogoImage from 'assets/images/logo.svg';
 
 import styles from './Start.scss';
 
