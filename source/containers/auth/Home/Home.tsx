@@ -2,6 +2,8 @@ import React from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import IconButton from '@material-ui/core/IconButton';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
@@ -19,6 +21,11 @@ const Home = () => {
   const { accounts, activeIndex } = useSelector(
     (state: RootState) => state.wallet
   );
+
+  const handleRefresh = () => {
+    controller.wallet.account.getLatestUpdate();
+    controller.stateUpdater();
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -43,6 +50,9 @@ const Home = () => {
               {accounts[activeIndex].balance} <small>DAG</small>
             </h3>
             <small>≈ {getFiatAmount(accounts[activeIndex].balance)}</small>
+            <IconButton className={styles.refresh} onClick={handleRefresh}>
+              <RefreshIcon />
+            </IconButton>
             <div className={styles.actions}>
               <Button
                 type="button"
