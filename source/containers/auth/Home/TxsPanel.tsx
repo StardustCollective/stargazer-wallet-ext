@@ -46,7 +46,8 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
 
   const handleScroll = useCallback((ev) => {
     ev.persist();
-    setShowed(ev.target.scrollTop);
+    // setShowed(ev.target.scrollTop);
+    if (ev.target.scrollTop) setShowed(true);
     setScrollArea(ev.target);
     const scrollOffset = ev.target.scrollHeight - ev.target.scrollTop;
     if (scrollOffset === ev.target.clientHeight) {
@@ -60,6 +61,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
 
   const handleGoTop = () => {
     scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
+    setShowed(false);
   };
 
   return (
@@ -76,57 +78,62 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         )}
       </div>
       {transactions.length ? (
-        <ul>
-          {transactions.map((tx: Transaction, idx: number) => {
-            const isRecived = tx.receiver === address;
+        <>
+          <ul>
+            {transactions.map((tx: Transaction, idx: number) => {
+              const isRecived = tx.receiver === address;
 
-            return (
-              <>
-                {isShowedGroupBar(tx, idx) && (
-                  <li className={styles.groupbar} key={tx.hash + tx.timestamp}>
-                    {formatDistanceDate(tx.timestamp)}
-                  </li>
-                )}
-                <li
-                  key={tx.timestamp}
-                  onClick={() => handleOpenExplorer(tx.hash)}
-                >
-                  <div>
-                    <div className={styles.iconWrapper}>
-                      {tx.checkpointBlock ? (
-                        isRecived ? (
-                          <DownArrowIcon />
+              return (
+                <>
+                  {isShowedGroupBar(tx, idx) && (
+                    <li
+                      className={styles.groupbar}
+                      key={tx.hash + tx.timestamp}
+                    >
+                      {formatDistanceDate(tx.timestamp)}
+                    </li>
+                  )}
+                  <li
+                    key={tx.timestamp}
+                    onClick={() => handleOpenExplorer(tx.hash)}
+                  >
+                    <div>
+                      <div className={styles.iconWrapper}>
+                        {tx.checkpointBlock ? (
+                          isRecived ? (
+                            <DownArrowIcon />
+                          ) : (
+                            <UpArrowIcon />
+                          )
                         ) : (
-                          <UpArrowIcon />
-                        )
-                      ) : (
-                        <Spinner size={16} className={styles.spinner} />
-                      )}
-                    </div>
-                    <span>
-                      {isRecived ? 'Received' : 'Sent'}
-                      <small>
-                        {isRecived
-                          ? `From: ${tx.sender}`
-                          : `To: ${tx.receiver}`}
-                      </small>
-                    </span>
-                  </div>
-                  <div>
-                    <span>
+                          <Spinner size={16} className={styles.spinner} />
+                        )}
+                      </div>
                       <span>
-                        {tx.amount / 1e8} <b>DAG</b>
+                        {isRecived ? 'Received' : 'Sent'}
+                        <small>
+                          {isRecived
+                            ? `From: ${tx.sender}`
+                            : `To: ${tx.receiver}`}
+                        </small>
                       </span>
-                      <small>{getFiatAmount(tx.amount / 1e8, 8)}</small>
-                    </span>
-                    <div className={styles.linkIcon}>
-                      <UpArrowIcon />
                     </div>
-                  </div>
-                </li>
-              </>
-            );
-          })}
+                    <div>
+                      <span>
+                        <span>
+                          {tx.amount / 1e8} <b>DAG</b>
+                        </span>
+                        <small>{getFiatAmount(tx.amount / 1e8, 8)}</small>
+                      </span>
+                      <div className={styles.linkIcon}>
+                        <UpArrowIcon />
+                      </div>
+                    </div>
+                  </li>
+                </>
+              );
+            })}
+          </ul>
           <div className={styles.stargazer}>
             <img
               src={StargazerIcon}
@@ -135,14 +142,20 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
               width="auto"
             />
           </div>
-        </ul>
+        </>
       ) : (
         <>
           <span className={styles.noTxComment}>
             You have no transaction history, send or receive $DAG to register
             your first transaction.
           </span>
-          <img src={StargazerIcon} className={styles.stargazer} />
+          <img
+            src={StargazerIcon}
+            className={styles.stargazer}
+            alt="stargazer"
+            height="167"
+            width="auto"
+          />
         </>
       )}
     </section>

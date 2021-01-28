@@ -177,6 +177,8 @@
       align-items: center;
       justify-content: center;
       width: 100%;
+      opacity: 0.2;
+      position: absolute;
     }
 
     .noTxComment {
@@ -219,6 +221,7 @@
       width: 100%;
       list-style: none;
       position: relative;
+      z-index: 1;
 
       li {
         width: 100%;
