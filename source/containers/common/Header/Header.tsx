@@ -1,12 +1,15 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Link from 'components/Link';
-import LogoImage from 'assets/images/logo-s.png';
+import Settings from 'containers/auth/Settings';
+import { useController, useSettingsView } from 'hooks/index';
+import LogoImage from 'assets/images/logo-s.svg';
 
 import styles from './Header.scss';
+import { MAIN_VIEW } from 'containers/auth/Settings/views/routes';
 
 interface IHeader {
   backLink?: string;
@@ -15,8 +18,13 @@ interface IHeader {
 
 const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const history = useHistory();
+  const controller = useController();
+  const showView = useSettingsView();
+  const isUnlocked = !controller.wallet.isLocked();
+  const [showed, showSettings] = useState(false);
 
-  const backHandler = () => {
+  const handleBack = () => {
+    showSettings(false);
     if (backLink === '#') {
       history.goBack();
     } else {
@@ -24,24 +32,33 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
     }
   };
 
+  const handleCloseSettings = () => {
+    showSettings(false);
+    showView(MAIN_VIEW);
+  };
+
   return (
     <div className={styles.header}>
       {showLogo ? (
-        <Link to="/app.html">
+        <Link to="/app.html" onClick={handleCloseSettings}>
           <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
         </Link>
       ) : (
         <IconButton
           className={`${styles.button} ${styles.back}`}
-          onClick={backHandler}
+          onClick={handleBack}
         >
           <ArrowBackIcon />
         </IconButton>
       )}
       <span className={styles.title}>Stargazer Wallet</span>
-      <IconButton className={`${styles.button} ${styles.more}`}>
+      <IconButton
+        className={`${styles.button} ${styles.more}`}
+        onClick={() => (showed ? handleCloseSettings() : showSettings(!showed))}
+      >
         <MoreVertIcon />
       </IconButton>
+      <Settings open={showed && isUnlocked} onClose={handleCloseSettings} />
     </div>
   );
 };

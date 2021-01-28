@@ -8,6 +8,7 @@ interface ILink {
   children: ReactNode;
   color?: 'primary' | 'secondary';
   noUnderline?: boolean;
+  onClick?: () => void;
   to: string;
 }
 
@@ -16,13 +17,14 @@ const Link: FC<ILink> = ({
   color = 'primary',
   children,
   noUnderline = false,
+  onClick,
 }) => {
   const classes = clsx(styles.link, styles[color], {
     [styles.noUnderline]: noUnderline,
   });
 
   return (
-    <RouterLink className={classes} to={to}>
+    <RouterLink className={classes} to={to} onClick={onClick}>
       {children}
     </RouterLink>
   );

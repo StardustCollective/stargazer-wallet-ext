@@ -15,12 +15,14 @@
     "paths": {
       "assets/*": ["./source/assets/*"],
       "components/*": ["./source/components/*"],
-      "config/*": ["./source/config/*"],
+      "scripts/*": ["source/scripts/*"],
       "containers/*": ["./source/containers/*"],
       "pages/*": ["./source/pages/*"],
       "routers/*": ["./source/routers/*"],
-      "reducers/*": ["./source/redux/*"],
-      "sagas/*": ["./source/sagas/*"]
+      "state/*": ["source/state/*"],
+      "constants/*": ["source/constants/*"],
+      "services/*": ["source/services/*"],
+      "hooks/*": ["source/hooks/*"]
     }
   },
   "include": ["source", "webpack.config.ts"]

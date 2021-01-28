@@ -1,30 +1,31 @@
 import React, { useState, useCallback } from 'react';
 import Button from 'components/Button';
 import CheckIcon from 'assets/images/svg/check.svg';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from 'reducers/store';
 import { useHistory } from 'react-router-dom';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
-import { authUser, loginUser } from 'reducers/auth';
+import { useController } from 'hooks/index';
 
-import Layout from '../Layout';
+import Layout from '../../common/Layout';
 
 import styles from './index.scss';
 
 const ConfirmPhrase = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
-  const { phrases, isAuth } = useSelector((state: RootState) => state.auth);
-  const [orgList, setOrgList] = useState<Array<string>>(shuffle(phrases));
+  const controller = useController();
+  const phrases = controller.wallet.generatedPhrase();
+  const [orgList, setOrgList] = useState<Array<string>>(
+    shuffle((phrases || '').split(' '))
+  );
   const [newList, setNewList] = useState<Array<string>>([]);
-  const [passed, setPassed] = useState(isAuth);
+  const [passed, setPassed] = useState(false);
   const title = passed
     ? `Your Wallet is ready`
     : `Verify your recovery\nphrase`;
 
   const isNotEqualArrays = useCallback((): boolean => {
-    return !isEqual(phrases, newList);
+    if (!phrases) return true;
+    return !isEqual(phrases.split(' '), newList);
   }, [phrases, newList]);
 
   const handleOrgPhrase = (idx: number) => {
@@ -47,8 +48,7 @@ const ConfirmPhrase = () => {
     if (!passed) {
       setPassed(true);
     } else {
-      dispatch(authUser());
-      dispatch(loginUser());
+      controller.wallet.createWallet();
       history.push('/app.html');
     }
   };

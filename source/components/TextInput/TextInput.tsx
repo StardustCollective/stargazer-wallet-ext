@@ -1,4 +1,11 @@
-import React, { FC, useState, MouseEvent, Ref } from 'react';
+import React, {
+  FC,
+  useState,
+  MouseEvent,
+  Ref,
+  ReactNode,
+  ChangeEvent,
+} from 'react';
 import clsx from 'clsx';
 import MUITextInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -9,11 +16,15 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import styles from './TextInput.scss';
 
 interface ITextInput {
+  endAdornment?: ReactNode;
   fullWidth?: boolean;
+  multiline?: boolean;
   inputRef?: Ref<any>;
   name?: string;
+  onChange?: (ev: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
   placeholder?: string;
   type?: 'text' | 'password' | 'number';
+  value?: string;
   variant?: string;
   visiblePassword?: boolean;
 }
@@ -26,6 +37,10 @@ const TextInput: FC<ITextInput> = ({
   variant = '',
   inputRef,
   name = '',
+  endAdornment,
+  value,
+  multiline,
+  onChange,
 }) => {
   const [showed, setShowed] = useState(false);
   const inputType = showed && type === 'password' ? 'text' : type;
@@ -45,9 +60,13 @@ const TextInput: FC<ITextInput> = ({
       placeholder={placeholder}
       fullWidth={fullWidth}
       inputRef={inputRef}
+      value={value}
+      onChange={onChange}
+      multiline={multiline}
       name={name}
       endAdornment={
-        type === 'password' && visiblePassword ? (
+        endAdornment ||
+        (type === 'password' && visiblePassword ? (
           <InputAdornment position="end">
             <IconButton
               aria-label="toggle password visibility"
@@ -59,7 +78,7 @@ const TextInput: FC<ITextInput> = ({
               {showed ? <VisibilityOff /> : <Visibility />}
             </IconButton>
           </InputAdornment>
-        ) : null
+        ) : null)
       }
     />
   );

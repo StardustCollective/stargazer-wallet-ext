@@ -14,7 +14,8 @@
 
   .title {
     font-style: normal;
-    font-weight: normal;
+    font-weight: $medium;
+    font-family: $quicksand;
     font-size: 24px;
     line-height: 24px;
     color: $white;
@@ -22,7 +23,8 @@
   }
 
   .logo {
-    margin-right: -20px;
+    width: 50px;
+    margin: 0 16px;
   }
 
   .button {
