@@ -41,7 +41,7 @@ const PhraseView = () => {
 
   return (
     <div className={styles.phrase}>
-      <span>Please enter your wallet password:</span>
+      <span>Please input your wallet password and press enter:</span>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
           type="password"
