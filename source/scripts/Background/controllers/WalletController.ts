@@ -4,9 +4,9 @@ import store from 'state/store';
 import {
   setKeystoreInfo,
   deleteWallet as deleteWalletState,
-  updateStatus,
   changeActiveIndex,
   changeActiveNetwork,
+  updateStatus,
 } from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
