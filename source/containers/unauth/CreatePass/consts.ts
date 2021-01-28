@@ -8,9 +8,16 @@ export const CREATE_PASS_COMMENT2 = `You can now see your balance and transactio
 
 export const schema = Yup.object().shape({
   password: Yup.string()
-    .required()
-    .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/),
+    .required('Password is a required field!')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      'Please check the above requirements!'
+    ),
   repassword: Yup.string()
+    .required('Confirm password is a required field!')
     .oneOf([Yup.ref('password'), ''], 'Incorrect please re-enter password!')
-    .required('Incorrect please re-enter password!'),
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      'Please check the above requirements!'
+    ),
 });
