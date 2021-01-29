@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserIcon from '@material-ui/icons/AccountCircleRounded';
+import LogOutIcon from '@material-ui/icons/ExitToApp';
 
 import Icon from 'components/Icon';
-import { useSettingsView } from 'hooks/index';
+import { useController, useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
 import IWalletState, { IAccountState } from 'state/wallet/types';
 import { ACCOUNT_VIEW, GENERAL_VIEW, NEW_ACCOUNT_VIEW } from '../routes';
@@ -18,6 +20,8 @@ interface IMainView {
 
 const MainView: FC<IMainView> = ({ onChange }) => {
   const showView = useSettingsView();
+  const history = useHistory();
+  const controller = useController();
   const { accounts, activeIndex }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -25,6 +29,11 @@ const MainView: FC<IMainView> = ({ onChange }) => {
   const handleSelectAccount = (index: number) => {
     onChange(index);
     showView(ACCOUNT_VIEW);
+  };
+
+  const handleLogout = () => {
+    controller.wallet.logOut();
+    history.push('./app.html');
   };
 
   return (
@@ -55,6 +64,10 @@ const MainView: FC<IMainView> = ({ onChange }) => {
       >
         <Icon Component={SettingsIcon} />
         General Settings
+      </section>
+      <section className={styles.general} onClick={handleLogout}>
+        <Icon Component={LogOutIcon} />
+        Log out
       </section>
     </div>
   );
