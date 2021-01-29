@@ -9,6 +9,7 @@ import {
   removeAccount,
   updateAccount,
   updateTransactions,
+  updateLabel,
 } from 'state/wallet';
 import IWalletState, { IAccountState } from 'state/wallet/types';
 
@@ -24,6 +25,7 @@ export interface IAccountController {
   unsubscribeAccount: (index: number, pwd: string) => boolean;
   addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
+  updateAccountLabel: (index: number, label: string) => void;
   watchMemPool: () => void;
   getLatestUpdate: () => void;
 }
@@ -125,6 +127,10 @@ const AccountController = (actions: {
     return actions.checkPassword(pwd)
       ? dag.keyStore.deriveAccountFromMaster(masterKey, index)
       : null;
+  };
+
+  const updateAccountLabel = (index: number, label: string) => {
+    store.dispatch(updateLabel({ index, label }));
   };
 
   // Tx-Related
@@ -229,6 +235,7 @@ const AccountController = (actions: {
     getLatestUpdate,
     watchMemPool,
     updateTxs,
+    updateAccountLabel,
   };
 };
 

@@ -24,6 +24,7 @@ export interface IWalletController {
   unLock: (pwd: string) => Promise<boolean>;
   checkPassword: (pwd: string) => boolean;
   getPhrase: (pwd: string) => string | null;
+  logOut: () => void;
 }
 
 const WalletController = (): IWalletController => {
@@ -132,6 +133,12 @@ const WalletController = (): IWalletController => {
     return keystore ? keystore : null;
   };
 
+  const logOut = () => {
+    password = '';
+    phrase = '';
+    store.dispatch(updateStatus());
+  };
+
   return {
     account,
     importPhrase,
@@ -145,6 +152,7 @@ const WalletController = (): IWalletController => {
     deleteWallet,
     switchWallet,
     switchNetwork,
+    logOut,
   };
 };
 

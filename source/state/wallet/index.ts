@@ -70,6 +70,12 @@ const WalletState = createSlice({
     ) {
       state.accounts[action.payload.index].transactions = action.payload.txs;
     },
+    updateLabel(
+      state: IWalletState,
+      action: PayloadAction<{ index: number; label: string }>
+    ) {
+      state.accounts[action.payload.index].label = action.payload.label;
+    },
   },
 });
 
@@ -83,6 +89,7 @@ export const {
   changeActiveNetwork,
   updateAccount,
   updateTransactions,
+  updateLabel,
 } = WalletState.actions;
 
 export default WalletState.reducer;
