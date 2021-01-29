@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -11,6 +12,7 @@ import styles from './index.scss';
 
 const DeleteWalletView = () => {
   const controller = useController();
+  const history = useHistory();
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       password: yup.string().required(),
@@ -18,7 +20,10 @@ const DeleteWalletView = () => {
   });
 
   const onSubmit = (data: any) => {
-    controller.wallet.deleteWallet(data.password);
+    if (controller.wallet.checkPassword(data.password)) {
+      controller.wallet.deleteWallet(data.password);
+      history.push('/app.html');
+    }
   };
 
   return (

@@ -49,10 +49,10 @@ const WalletSend = () => {
     if (address) setAddress('');
   };
 
-  const handlePaste = async () => {
-    let text = await navigator.clipboard.readText();
-    console.log(text);
-  };
+  // const handlePaste = async () => {
+  //   let text = await navigator.clipboard.readText();
+  //   console.log(text);
+  // };
 
   const onSubmit = (data: any) => {
     if (!isValidAddress) return;
@@ -114,13 +114,13 @@ const WalletSend = () => {
                 onChange={handleAddressChange}
                 variant={addressInputClass}
               />
-              <Button
+              {/* <Button
                 type="button"
                 variant={styles.textBtn}
                 onClick={handlePaste}
               >
                 Paste
-              </Button>
+              </Button> */}
               <Button
                 type="button"
                 variant={styles.qrcode}
