@@ -5,6 +5,7 @@ import React, {
   Ref,
   ReactNode,
   ChangeEvent,
+  KeyboardEvent,
 } from 'react';
 import clsx from 'clsx';
 import MUITextInput from '@material-ui/core/OutlinedInput';
@@ -26,6 +27,8 @@ interface ITextInput {
   type?: 'text' | 'password' | 'number';
   value?: string;
   variant?: string;
+  defaultValue?: string;
+  onKeydown?: (ev: KeyboardEvent<HTMLInputElement>) => void;
   visiblePassword?: boolean;
 }
 
@@ -40,7 +43,9 @@ const TextInput: FC<ITextInput> = ({
   endAdornment,
   value,
   multiline,
+  defaultValue,
   onChange,
+  onKeydown,
 }) => {
   const [showed, setShowed] = useState(false);
   const inputType = showed && type === 'password' ? 'text' : type;
@@ -64,6 +69,8 @@ const TextInput: FC<ITextInput> = ({
       onChange={onChange}
       multiline={multiline}
       name={name}
+      defaultValue={defaultValue}
+      onKeyDown={onKeydown}
       endAdornment={
         endAdornment ||
         (type === 'password' && visiblePassword ? (
