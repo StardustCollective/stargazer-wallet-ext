@@ -52,7 +52,7 @@
     align-items: center;
     justify-content: center;
 
-    font-weight: 600;
+    font-weight: bold;
     font-size: 18px;
     line-height: 24px;
     display: flex;
@@ -177,6 +177,8 @@
       align-items: center;
       justify-content: center;
       width: 100%;
+      opacity: 0.2;
+      position: absolute;
     }
 
     .noTxComment {
@@ -202,7 +204,7 @@
       line-height: 60px;
       width: 100%;
       color: $gray-dark;
-      z-index: 1;
+      z-index: 2;
 
       .goTop {
         width: 26px;
@@ -219,6 +221,7 @@
       width: 100%;
       list-style: none;
       position: relative;
+      z-index: 1;
 
       li {
         width: 100%;

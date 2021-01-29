@@ -4,16 +4,16 @@ import store from 'state/store';
 import {
   setKeystoreInfo,
   deleteWallet as deleteWalletState,
-  updateStatus,
   changeActiveIndex,
   changeActiveNetwork,
+  updateStatus,
 } from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;
-  createWallet: () => void;
+  createWallet: (isUpdated?: boolean) => void;
   deleteWallet: (pwd: string) => void;
   switchWallet: (index: number) => void;
   switchNetwork: (networkId: string) => void;
@@ -89,8 +89,8 @@ const WalletController = (): IWalletController => {
     }
   };
 
-  const createWallet = async () => {
-    if (walletKeystore()) return;
+  const createWallet = async (isUpdated = false) => {
+    if (!isUpdated && walletKeystore()) return;
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));

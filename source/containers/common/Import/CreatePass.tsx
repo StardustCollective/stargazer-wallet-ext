@@ -25,8 +25,9 @@ const CreatePass = () => {
 
   const nextHandler = () => {
     if (passed) {
+      controller.wallet.createWallet(true);
+      controller.wallet.account.getLatestUpdate();
       history.push('/home');
-      controller.wallet.createWallet();
     }
   };
 
@@ -61,11 +62,15 @@ const CreatePass = () => {
               variant={styles.repass}
             />
             <span className={styles.warning}>
-              At least 8 charachters, 1 lower-case, 1 capital, 1 numeral and 1
-              special charachter.
+              At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1
+              special character.
             </span>
-            {!errors.password && errors.repassword && (
-              <span className={styles.error}>{errors.repassword.message}</span>
+            {(errors.password || errors.repassword) && (
+              <span className={styles.error}>
+                {errors.password
+                  ? errors.password.message
+                  : errors.repassword.message}
+              </span>
             )}
           </>
         )}
