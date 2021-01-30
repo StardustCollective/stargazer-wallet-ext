@@ -20,6 +20,14 @@
     width: 212px;
   }
 
+  .error {
+    color: white;
+    font-size: 12px;
+    position: absolute;
+    width: calc(100% - 112px);
+    bottom: 132px;
+  }
+
   form {
     display: flex;
     flex-direction: column;
