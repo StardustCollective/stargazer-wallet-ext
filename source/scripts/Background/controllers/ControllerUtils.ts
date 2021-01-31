@@ -7,10 +7,20 @@ import {
 } from 'constants/index';
 
 export interface IControllerUtils {
+  appRoute: (newRoute?: string) => string;
   updateFiat: (currency?: string, assetId?: string) => Promise<void>;
 }
 
 const ControllerUtils = (): IControllerUtils => {
+  let route = '/app.html';
+
+  const appRoute = (newRoute?: string) => {
+    if (newRoute) {
+      route = newRoute;
+    }
+    return route;
+  };
+
   const updateFiat = async (
     currency = DEFAULT_CURRENCY.id,
     assetId = PRICE_DAG_ID
@@ -32,6 +42,7 @@ const ControllerUtils = (): IControllerUtils => {
   };
 
   return {
+    appRoute,
     updateFiat,
   };
 };
