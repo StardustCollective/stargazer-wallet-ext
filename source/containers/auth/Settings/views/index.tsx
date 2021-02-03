@@ -6,3 +6,4 @@ export { default as DeleteWalletView } from './DeleteWalletView';
 export { default as RemoveAccountView } from './RemoveAccountView';
 export { default as PrivateKeyView } from './PrivateKeyView';
 export { default as NewAccountView } from './NewAccountView';
+export { default as AboutView } from './AboutView';
