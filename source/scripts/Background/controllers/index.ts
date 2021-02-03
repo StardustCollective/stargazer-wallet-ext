@@ -3,6 +3,7 @@ import ControllerUtils from './ControllerUtils';
 export interface IMasterController {
   wallet: Readonly<IWalletController>;
   stateUpdater: () => void;
+  appRoute: (newRoute?: string) => string;
 }
 
 const MasterController = (): IMasterController => {
@@ -15,6 +16,7 @@ const MasterController = (): IMasterController => {
 
   return {
     wallet,
+    appRoute: utils.appRoute,
     stateUpdater,
   };
 };

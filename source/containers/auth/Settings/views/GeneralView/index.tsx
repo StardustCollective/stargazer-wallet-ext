@@ -8,7 +8,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Select from 'components/Select';
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
-import { DELETE_WALLET_VIEW, PHRASE_VIEW } from '../routes';
+import { ABOUT_VIEW, DELETE_WALLET_VIEW, PHRASE_VIEW } from '../routes';
 import { DAG_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
 
@@ -52,7 +52,7 @@ const GeneralView = () => {
           <Icon Component={ListIcon} />
           Wallet seed phrase
         </li>
-        <li>
+        <li onClick={() => showView(ABOUT_VIEW)}>
           <Icon Component={InfoIcon} />
           About
         </li>

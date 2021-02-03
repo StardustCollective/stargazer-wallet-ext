@@ -76,6 +76,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
           accounts[showedIndex].label
         );
       case routes.GENERAL_VIEW:
+        return 'General Settings';
       case routes.PHRASE_VIEW:
         return 'Wallet seed phrase';
       case routes.DELETE_WALLET_VIEW:
@@ -86,6 +87,8 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return 'Remove account';
       case routes.PRIV_KEY_VIEW:
         return 'Export private key';
+      case routes.ABOUT_VIEW:
+        return 'About';
       default:
         return 'Settings';
     }
@@ -107,6 +110,8 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return <Views.RemoveAccountView index={showedIndex} />;
       case routes.PRIV_KEY_VIEW:
         return <Views.PrivateKeyView index={showedIndex} />;
+      case routes.ABOUT_VIEW:
+        return <Views.AboutView />;
       default:
         return (
           <Views.MainView onChange={(index: number) => setShowedIndex(index)} />

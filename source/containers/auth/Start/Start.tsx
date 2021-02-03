@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 import Link from 'components/Link';
@@ -11,12 +11,16 @@ import styles from './Start.scss';
 
 const Starter = () => {
   const controller = useController();
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, errors } = useForm({
     validationSchema: schema,
   });
+  const [isInvalid, setInvalid] = useState(false);
 
-  const onSubmit = async (data: any) => {
-    await controller.wallet.unLock(data.password);
+  const onSubmit = (data: any) => {
+    controller.wallet.unLock(data.password).then((res) => {
+      console.log(res);
+      setInvalid(!res);
+    });
   };
 
   return (
@@ -37,6 +41,13 @@ const Starter = () => {
           placeholder="Please enter your password"
           variant={styles.password}
         />
+        {errors.password ? (
+          <span className={styles.error}>{errors.password.message}</span>
+        ) : (
+          isInvalid && (
+            <span className={styles.error}>Error: Invalid password</span>
+          )
+        )}
         <Button type="submit" theme="secondary" variant={styles.unlock}>
           Unlock
         </Button>

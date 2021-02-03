@@ -1,5 +1,5 @@
-import React from 'react';
-import { Switch, Route, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import Start from 'containers/unauth/Start';
 import Remind from 'containers/unauth/Remind';
 import CreatePass from 'containers/unauth/CreatePass';
@@ -10,9 +10,12 @@ import {
   RemindPhrase,
 } from 'containers/unauth/Phrase';
 import Import from 'containers/common/Import';
+import { useController } from 'hooks/index';
 
 const UnAuth = () => {
   const location = useLocation();
+  const history = useHistory();
+  const controller = useController();
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -20,6 +23,15 @@ const UnAuth = () => {
     leave: { opacity: 0 },
     config: { duration: 500 },
   });
+
+  useEffect(() => {
+    const redirectRoute = controller.appRoute();
+    history.push(redirectRoute);
+  }, []);
+
+  useEffect(() => {
+    controller.appRoute(location.pathname);
+  }, [location]);
 
   /**
    * --- Create Account Flow ---
