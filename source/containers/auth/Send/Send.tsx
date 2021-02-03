@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
-import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
@@ -44,10 +43,6 @@ const WalletSend = () => {
   const statusIconClass = clsx(styles.statusIcon, {
     [styles.hide]: !isValidAddress,
   });
-
-  const handleAddressOption = () => {
-    if (address) setAddress('');
-  };
 
   // const handlePaste = async () => {
   //   let text = await navigator.clipboard.readText();
@@ -114,20 +109,6 @@ const WalletSend = () => {
                 onChange={handleAddressChange}
                 variant={addressInputClass}
               />
-              {/* <Button
-                type="button"
-                variant={styles.textBtn}
-                onClick={handlePaste}
-              >
-                Paste
-              </Button> */}
-              <Button
-                type="button"
-                variant={styles.qrcode}
-                onClick={handleAddressOption}
-              >
-                <img src={QRCodeIcon} alt="qr-code" />
-              </Button>
             </li>
             <li>
               <label>Dag Amount</label>
@@ -148,7 +129,6 @@ const WalletSend = () => {
               >
                 Max
               </Button>
-              <span>DAG</span>
             </li>
             <li>
               <label>Transaction Fee</label>
@@ -160,7 +140,7 @@ const WalletSend = () => {
                 name="fee"
                 onChange={handleFeeChange}
                 value={fee}
-                variant={clsx(styles.input, styles.fee)}
+                variant={styles.input}
               />
               <Button
                 type="button"
@@ -169,7 +149,6 @@ const WalletSend = () => {
               >
                 Recommend
               </Button>
-              <span>DAG</span>
             </li>
           </ul>
           <div className={styles.status}>

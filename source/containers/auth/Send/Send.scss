@@ -48,16 +48,9 @@
     font-size: 16px;
     line-height: 24px;
     height: 48px;
-    width: 168px;
-    border: none !important;
+    padding: 0 16px;
     background: transparent;
-    border-radius: 0;
-    padding: 0;
     transition: all 0.3s;
-
-    &.fee {
-      width: 132px;
-    }
 
     input {
       text-overflow: ellipsis;
@@ -80,17 +73,16 @@
     ul.form {
       list-style: none;
       margin: 0;
-      padding: 0 12px;
-      background: $gray-light;
+      padding: 0;
       border-radius: 10px;
 
       li {
-        height: 60px;
-        border-bottom: 1px solid $white;
+        height: 56px;
         position: relative;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
+        margin-bottom: 12px;
         align-items: flex-start;
 
         &:last-child {
@@ -101,9 +93,10 @@
           font-weight: 500;
           font-size: 10px;
           line-height: 12px;
-          margin-top: 12px;
+          margin-bottom: 8px;
+          margin-left: 16px;
           text-transform: uppercase;
-          color: $gray-100;
+          color: $gray-dark;
         }
 
         .textBtn {
@@ -111,64 +104,32 @@
           min-width: initial;
           position: absolute;
           box-shadow: none;
-          top: 14px;
-          right: 48px;
-          height: 32px !important;
+          top: -7px;
+          right: 3px;
+          height: 22px !important;
           font-weight: 500;
           font-size: 10px;
-          color: $purple;
+          color: #521e8a;
           padding: 12px;
           width: fit-content;
           text-transform: uppercase;
         }
 
-        & > span {
-          height: 60px;
-          font-weight: 500;
-          width: 60px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 16px;
-          line-height: 24px;
-          position: absolute;
-          color: $gray-dark;
-          right: 0;
-        }
-
         .address {
-          width: 216px;
           &.verified {
             color: $purple;
 
             input {
-              padding-left: 24px;
+              padding-left: 15px;
             }
-          }
-        }
-
-        .qrcode,
-        .qrcode:hover {
-          background: transparent;
-          min-width: initial;
-          position: absolute;
-          box-shadow: none;
-          top: 0;
-          right: 0;
-          width: 60px;
-          height: 60px !important;
-          padding: 0;
-
-          img {
-            margin: 0;
           }
         }
 
         .statusIcon {
           position: absolute;
           opacity: 1;
-          top: 36px;
-          left: 6px;
+          top: 32px;
+          left: 12px;
           z-index: 1;
           transform: scale(1);
           transition: all 0.3s;

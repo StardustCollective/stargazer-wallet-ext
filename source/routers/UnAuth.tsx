@@ -1,11 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Switch,
-  Route,
-  useLocation,
-  Redirect,
-  useHistory,
-} from 'react-router-dom';
+import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import Start from 'containers/unauth/Start';
 import Remind from 'containers/unauth/Remind';
 import CreatePass from 'containers/unauth/CreatePass';

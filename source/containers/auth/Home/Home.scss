@@ -177,8 +177,9 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      opacity: 0.2;
-      position: absolute;
+      opacity: 0.6;
+      position: sticky;
+      bottom: 0;
     }
 
     .noTxComment {
@@ -222,6 +223,7 @@
       list-style: none;
       position: relative;
       z-index: 1;
+      flex-grow: 4;
 
       li {
         width: 100%;
@@ -237,7 +239,12 @@
         cursor: pointer;
 
         &:hover {
-          background: $gray-light-100;
+          background: rgab($gray-light-100, 0.9);
+          backdrop-filter: blur(10px);
+
+          .linkIcon {
+            background: $gray-200;
+          }
         }
 
         &.groupbar {
@@ -343,10 +350,7 @@
           justify-content: center;
           box-sizing: border-box;
           margin-left: 12px;
-
-          &.received {
-            background: $gray-200;
-          }
+          transition: all 0.3s;
 
           svg {
             transform: rotateZ(45deg);

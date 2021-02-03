@@ -76,6 +76,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
           accounts[showedIndex].label
         );
       case routes.GENERAL_VIEW:
+        return 'General Settings';
       case routes.PHRASE_VIEW:
         return 'Wallet seed phrase';
       case routes.DELETE_WALLET_VIEW:
