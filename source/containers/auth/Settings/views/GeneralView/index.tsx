@@ -58,7 +58,7 @@ const GeneralView = () => {
         </li>
         <li onClick={() => showView(DELETE_WALLET_VIEW)}>
           <Icon Component={DeleteIcon} />
-          Delete Wallet
+          Delete wallet
         </li>
       </ul>
     </div>

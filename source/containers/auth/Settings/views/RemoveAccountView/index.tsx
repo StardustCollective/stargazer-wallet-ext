@@ -74,9 +74,8 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ index }) => {
           </Button>
         </div>
         <span>
-          This account will be removed from your wallet. Please make sure you
-          have the private key for this account before continuing. You can
-          restore this account with the ‘Create new account option’.
+          This account will be hidden from your wallet. You can show this
+          account again by clicking "Create account" from Settings.
         </span>
       </form>
     </div>
