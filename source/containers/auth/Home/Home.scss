@@ -51,6 +51,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 
     font-weight: bold;
     font-size: 18px;
@@ -145,7 +146,7 @@
     }
   }
 
-  section.activity {
+  .activity {
     height: 288px;
     background: $gray-light;
     width: 100%;
@@ -159,6 +160,7 @@
     width: 100%;
     align-items: center;
     transition: all 0.3s;
+    z-index: 2;
 
     .spinner {
       svg {
@@ -360,4 +362,8 @@
       }
     }
   }
+}
+
+:global([data-scrollbar='true']) {
+  width: 100%;
 }

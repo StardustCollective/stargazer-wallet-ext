@@ -82,7 +82,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.DELETE_WALLET_VIEW:
         return 'Delete wallet';
       case routes.NEW_ACCOUNT_VIEW:
-        return 'Create new account';
+        return 'Create account';
       case routes.REMOVE_ACCOUNT_VIEW:
         return 'Remove account';
       case routes.PRIV_KEY_VIEW:

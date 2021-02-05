@@ -56,14 +56,14 @@ const MainView: FC<IMainView> = ({ onChange }) => {
         onClick={() => showView(NEW_ACCOUNT_VIEW)}
       >
         <Icon Component={AddIcon} />
-        Create New Account
+        Create account
       </section>
       <section
         className={styles.general}
         onClick={() => showView(GENERAL_VIEW)}
       >
         <Icon Component={SettingsIcon} />
-        General Settings
+        General settings
       </section>
       <section className={styles.general} onClick={handleLogout}>
         <Icon Component={LogOutIcon} />

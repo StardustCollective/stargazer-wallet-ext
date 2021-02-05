@@ -34,7 +34,7 @@ const AccountView: FC<IAccountView> = ({ address }) => {
         </li>
         <li onClick={() => showView(REMOVE_ACCOUNT_VIEW)}>
           <Icon Component={DeleteIcon} />
-          Remove Account
+          Remove account
         </li>
       </ul>
     </div>
