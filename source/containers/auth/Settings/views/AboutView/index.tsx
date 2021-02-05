@@ -6,10 +6,18 @@ const AboutView: FC = () => {
   return (
     <div className={styles.about}>
       <span>Stargazer Wallet Chrome Extension v1.0</span>
-      <span>About: </span>
-      <span>Release date: 2021/02/01</span>
-      <span>Team: </span>
-      <span>Contact: </span>
+      <span>Version: 1.0</span>
+      <span>
+        Support:{' '}
+        <a
+          className={styles.link}
+          href="https://t.me/StardustSupport"
+          target="_blank"
+        >
+          https://t.me/StardustSupport
+        </a>
+      </span>
+      <span>Terms of use: </span>
     </div>
   );
 };

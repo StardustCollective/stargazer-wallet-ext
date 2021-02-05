@@ -146,7 +146,7 @@
     }
   }
 
-  section.activity {
+  .activity {
     height: 288px;
     background: $gray-light;
     width: 100%;
@@ -362,4 +362,8 @@
       }
     }
   }
+}
+
+:global([data-scrollbar='true']) {
+  width: 100%;
 }

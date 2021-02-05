@@ -40,6 +40,8 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
       beUrl: DAG_NETWORK[networkId].beUrl,
       lbUrl: DAG_NETWORK[networkId].lbUrl,
     });
+    dag.monitor.startMonitor();
+    window.controller.wallet.account.watchMemPool();
   }
 });
 
