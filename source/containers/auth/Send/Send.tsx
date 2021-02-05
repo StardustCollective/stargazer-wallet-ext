@@ -13,6 +13,7 @@ import { useFiat } from 'hooks/usePrice';
 import styles from './Send.scss';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
+import { formatNumber } from '../helpers';
 
 const WalletSend = () => {
   const { handleSubmit, register, errors } = useForm({
@@ -88,7 +89,8 @@ const WalletSend = () => {
         <section className={styles.subheading}>Send DAG</section>
         <section className={styles.balance}>
           <div>
-            Balance: <span>{accounts[activeIndex].balance}</span> DAG
+            Balance: <span>{formatNumber(accounts[activeIndex].balance)}</span>{' '}
+            DAG
           </div>
         </section>
         <section className={styles.content}>
