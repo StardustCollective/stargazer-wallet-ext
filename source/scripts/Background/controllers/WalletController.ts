@@ -92,10 +92,16 @@ const WalletController = (): IWalletController => {
 
   const createWallet = async (isUpdated = false) => {
     if (!isUpdated && walletKeystore()) return;
+    if (isUpdated) {
+      store.dispatch(deleteWalletState());
+    }
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));
     await account.subscribeAccount(0);
+    if (isUpdated) {
+      account.getLatestUpdate();
+    }
   };
 
   const deleteWallet = (pwd: string) => {
