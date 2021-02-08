@@ -5,6 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserIcon from '@material-ui/icons/AccountCircleRounded';
 import LogOutIcon from '@material-ui/icons/ExitToApp';
+import ContactsIcon from '@material-ui/icons/Group';
 
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
@@ -57,6 +58,10 @@ const MainView: FC<IMainView> = ({ onChange }) => {
       >
         <Icon Component={AddIcon} />
         Create account
+      </section>
+      <section className={styles.general}>
+        <Icon Component={ContactsIcon} />
+        Contacts
       </section>
       <section
         className={styles.general}
