@@ -14,6 +14,7 @@ import { RootState } from 'state/store';
 import TxsPanel from './TxsPanel';
 
 import styles from './Home.scss';
+import { formatNumber } from '../helpers';
 
 const Home = () => {
   const controller = useController();
@@ -47,7 +48,7 @@ const Home = () => {
           </section>
           <section className={styles.center}>
             <h3>
-              {accounts[activeIndex].balance} <small>DAG</small>
+              {formatNumber(accounts[activeIndex].balance)} <small>DAG</small>
             </h3>
             <small>≈ {getFiatAmount(accounts[activeIndex].balance)}</small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>

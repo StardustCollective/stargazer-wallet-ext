@@ -24,3 +24,11 @@ export const formatDistanceDate = (timestamp: string) => {
   if (formatedDate === format(yesterday, formatStyle)) return 'Yesterday';
   return formatedDate;
 };
+
+export const formatNumber = (num: number, min = 4, max = 4, maxSig = 12) => {
+  return num.toLocaleString(navigator.language, {
+    minimumFractionDigits: min,
+    maximumFractionDigits: max,
+    maximumSignificantDigits: maxSig,
+  });
+};

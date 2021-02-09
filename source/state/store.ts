@@ -11,15 +11,20 @@ import wallet from './wallet';
 import price from './price';
 import { saveState, loadState } from './localStorage';
 
+const middleware = [
+  ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
+];
+
+if (process.env.NODE_ENV !== 'production') {
+  middleware.push(logger);
+}
+
 const store: Store = configureStore({
   reducer: combineReducers({
     wallet,
     price,
   }),
-  middleware: [
-    ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
-    logger,
-  ],
+  middleware,
   devTools: process.env.NODE_ENV !== 'production',
   preloadedState: loadState(),
 });
