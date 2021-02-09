@@ -89,6 +89,8 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return 'Export private key';
       case routes.ABOUT_VIEW:
         return 'About';
+      case routes.CONTACTS_VIEW:
+        return 'Contacts';
       default:
         return 'Settings';
     }
@@ -112,6 +114,8 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return <Views.PrivateKeyView index={showedIndex} />;
       case routes.ABOUT_VIEW:
         return <Views.AboutView />;
+      case routes.CONTACTS_VIEW:
+        return <Views.ContactsView />;
       default:
         return (
           <Views.MainView onChange={(index: number) => setShowedIndex(index)} />
