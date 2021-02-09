@@ -4,7 +4,7 @@ import UserIcon from '@material-ui/icons/AccountCircleRounded';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { useSettingsView } from 'hooks/index';
-import { ADD_CONTACT_VIEW, EDIT_CONTACT_VIEW } from '../routes';
+import { ADD_CONTACT_VIEW, CONTACT_VIEW } from '../routes';
 import styles from './index.scss';
 
 const ContactsView = () => {
@@ -20,7 +20,7 @@ const ContactsView = () => {
         Add contact
       </Button>
       <ul className={styles.list}>
-        <li onClick={() => showView(EDIT_CONTACT_VIEW)}>
+        <li onClick={() => showView(CONTACT_VIEW)}>
           <div className={styles.contact}>
             <span className={styles.info}>
               <Icon Component={UserIcon} />

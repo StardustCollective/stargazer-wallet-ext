@@ -1,6 +1,6 @@
+import React, { FC } from 'react';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
-import React, { FC } from 'react';
 
 import styles from './index.scss';
 
