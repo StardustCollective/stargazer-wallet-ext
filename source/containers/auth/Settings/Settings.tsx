@@ -91,6 +91,10 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return 'About';
       case routes.CONTACTS_VIEW:
         return 'Contacts';
+      case routes.ADD_CONTACT_VIEW:
+        return 'Add Contact';
+      case routes.EDIT_CONTACT_VIEW:
+        return 'Edit Contact';
       default:
         return 'Settings';
     }
@@ -116,6 +120,10 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return <Views.AboutView />;
       case routes.CONTACTS_VIEW:
         return <Views.ContactsView />;
+      case routes.ADD_CONTACT_VIEW:
+        return <Views.ModifyContactView type="add" />;
+      case routes.EDIT_CONTACT_VIEW:
+        return <Views.ModifyContactView type="edit" />;
       default:
         return (
           <Views.MainView onChange={(index: number) => setShowedIndex(index)} />

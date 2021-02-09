@@ -8,3 +8,4 @@ export { default as PrivateKeyView } from './PrivateKeyView';
 export { default as NewAccountView } from './NewAccountView';
 export { default as AboutView } from './AboutView';
 export { default as ContactsView } from './ContactsView';
+export { default as ModifyContactView } from './ModifyContactView';

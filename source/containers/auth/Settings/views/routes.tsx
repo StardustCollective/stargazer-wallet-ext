@@ -8,3 +8,5 @@ export const REMOVE_ACCOUNT_VIEW = '#remove_account';
 export const PRIV_KEY_VIEW = '#private_key';
 export const ABOUT_VIEW = '#about';
 export const CONTACTS_VIEW = '#contacts';
+export const ADD_CONTACT_VIEW = '#add_contact';
+export const EDIT_CONTACT_VIEW = '#edit_contact';
