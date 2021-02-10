@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import IContactBookState from './types';
@@ -13,19 +14,63 @@ const ContactBookState = createSlice({
       state: IContactBookState,
       action: PayloadAction<{ name: string; address: string; memo: string }>
     ) {
-      state = {
+      if (
+        Object.values(state).filter(
+          (option) => option.address === action.payload.address
+        ).length
+      )
+        return;
+      const id = uuid();
+      return {
         ...state,
-        [action.payload.address]: {
-          id: action.payload.address,
+        [id]: {
+          id,
           name: action.payload.name,
           address: action.payload.address,
           memo: action.payload.memo,
         },
       };
     },
+    updateContactAddress(
+      state: IContactBookState,
+      action: PayloadAction<{
+        id: string;
+        name: string;
+        address: string;
+        memo: string;
+      }>
+    ) {
+      const res = Object.values(state).filter(
+        (option) => option.address === action.payload.address
+      );
+      if (
+        !state[action.payload.id] ||
+        (res.length && res[0].id !== action.payload.id)
+      )
+        return;
+      return {
+        ...state,
+        [action.payload.id]: {
+          id: action.payload.id,
+          name: action.payload.name,
+          address: action.payload.address,
+          memo: action.payload.memo,
+        },
+      };
+    },
+    deleteContactAddress(
+      state: IContactBookState,
+      action: PayloadAction<{ id: string }>
+    ) {
+      delete state[action.payload.id];
+    },
   },
 });
 
-export const { addContactAddress } = ContactBookState.actions;
+export const {
+  addContactAddress,
+  updateContactAddress,
+  deleteContactAddress,
+} = ContactBookState.actions;
 
 export default ContactBookState.reducer;

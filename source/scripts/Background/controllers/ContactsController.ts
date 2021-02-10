@@ -1,20 +1,47 @@
 import store from 'state/store';
-import { addContactAddress } from 'state/contacts';
+import {
+  addContactAddress,
+  deleteContactAddress,
+  updateContactAddress,
+} from 'state/contacts';
 
 export interface IContactsController {
-  addContact: (name: string, address: string, memo: string) => void;
+  modifyContact: (
+    type: 'add' | 'edit',
+    name: string,
+    address: string,
+    memo: string,
+    id?: string
+  ) => void;
+  deleteContact: (id: string) => void;
 }
 
 const ContactsController = (actions: {
   isLocked: () => boolean;
 }): IContactsController => {
-  const addContact = (name: string, address: string, memo: string) => {
+  const modifyContact = (
+    type: 'add' | 'edit',
+    name: string,
+    address: string,
+    memo: string,
+    id?: string
+  ) => {
     if (actions.isLocked()) return;
-    store.dispatch(addContactAddress({ name, address, memo }));
+    if (type === 'add') {
+      store.dispatch(addContactAddress({ name, address, memo }));
+    } else if (id) {
+      store.dispatch(updateContactAddress({ id, name, address, memo }));
+    }
+  };
+
+  const deleteContact = (id: string) => {
+    if (actions.isLocked()) return;
+    store.dispatch(deleteContactAddress({ id }));
   };
 
   return {
-    addContact,
+    modifyContact,
+    deleteContact,
   };
 };
 

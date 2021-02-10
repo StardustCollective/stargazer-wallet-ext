@@ -1,14 +1,29 @@
-import React from 'react';
+import React, { FC } from 'react';
 import UserIcon from '@material-ui/icons/AccountCircleRounded';
+import { useSelector } from 'react-redux';
 
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { useSettingsView } from 'hooks/index';
+import { ellipsis } from 'containers/auth/helpers';
+import { RootState } from 'state/store';
+import IContactBookState, { IContactState } from 'state/contacts/types';
 import { ADD_CONTACT_VIEW, CONTACT_VIEW } from '../routes';
 import styles from './index.scss';
 
-const ContactsView = () => {
+interface IContactsView {
+  onSelect: (id: string) => void;
+}
+
+const ContactsView: FC<IContactsView> = ({ onSelect }) => {
+  const contacts: IContactBookState = useSelector(
+    (state: RootState) => state.contacts
+  );
   const showView = useSettingsView();
+  const handleSelect = (id: string) => {
+    onSelect(id);
+    showView(CONTACT_VIEW);
+  };
 
   return (
     <div className={styles.contacts}>
@@ -20,16 +35,19 @@ const ContactsView = () => {
         Add contact
       </Button>
       <ul className={styles.list}>
-        <li onClick={() => showView(CONTACT_VIEW)}>
-          <div className={styles.contact}>
-            <span className={styles.info}>
-              <Icon Component={UserIcon} />
-              <div>
-                Account 1<small>DAG18LR...72F7</small>
-              </div>
-            </span>
-          </div>
-        </li>
+        {Object.values(contacts).map((contact: IContactState) => (
+          <li onClick={() => handleSelect(contact.id)} key={contact.id}>
+            <div className={styles.contact}>
+              <span className={styles.info}>
+                <Icon Component={UserIcon} />
+                <div>
+                  {contact.name}
+                  <small>{ellipsis(contact.address)}</small>
+                </div>
+              </span>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );

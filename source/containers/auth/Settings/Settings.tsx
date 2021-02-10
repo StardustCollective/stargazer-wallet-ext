@@ -46,6 +46,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     (state: RootState) => state.wallet
   );
   const [showedIndex, setShowedIndex] = useState<number>(0);
+  const [selectedContact, setSelectedContact] = useState<string>('');
   const [editable, setEditable] = useState(false);
   const [showedLabel, setShowedLabel] = useState('');
 
@@ -121,13 +122,19 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.ABOUT_VIEW:
         return <Views.AboutView />;
       case routes.CONTACTS_VIEW:
-        return <Views.ContactsView />;
+        return (
+          <Views.ContactsView
+            onSelect={(id: string) => setSelectedContact(id)}
+          />
+        );
       case routes.ADD_CONTACT_VIEW:
         return <Views.ModifyContactView type="add" />;
       case routes.EDIT_CONTACT_VIEW:
-        return <Views.ModifyContactView type="edit" />;
+        return (
+          <Views.ModifyContactView type="edit" selected={selectedContact} />
+        );
       case routes.CONTACT_VIEW:
-        return <Views.ContactView />;
+        return <Views.ContactView selected={selectedContact} />;
       default:
         return (
           <Views.MainView onChange={(index: number) => setShowedIndex(index)} />
