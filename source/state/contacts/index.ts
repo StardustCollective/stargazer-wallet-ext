@@ -9,7 +9,7 @@ const ContactBookState = createSlice({
   name: 'price',
   initialState,
   reducers: {
-    addContact(
+    addContactAddress(
       state: IContactBookState,
       action: PayloadAction<{ name: string; address: string; memo: string }>
     ) {
@@ -26,6 +26,6 @@ const ContactBookState = createSlice({
   },
 });
 
-export const { addContact } = ContactBookState.actions;
+export const { addContactAddress } = ContactBookState.actions;
 
 export default ContactBookState.reducer;
