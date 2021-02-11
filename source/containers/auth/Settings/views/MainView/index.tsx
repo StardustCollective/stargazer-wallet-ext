@@ -46,7 +46,10 @@ const MainView: FC<IMainView> = ({ onChange }) => {
     <div className={styles.main}>
       <ul className={styles.accounts}>
         {Object.values(accounts).map((account: IAccountState) => (
-          <li onClick={() => handleSelectAccount(account.index)}>
+          <li
+            onClick={() => handleSelectAccount(account.index)}
+            key={account.index}
+          >
             <div className={styles.account}>
               <span className={styles.accInfo}>
                 <Icon Component={UserIcon} />
