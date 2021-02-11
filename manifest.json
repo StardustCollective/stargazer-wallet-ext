@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "0.1.0",
+  "version": "1.1.0",
 
   "icons": {
     "16": "assets/icons/favicon-16.png",
@@ -9,7 +9,7 @@
     "48": "assets/icons/favicon-48.png",
     "128": "assets/icons/favicon-128.png"
   },
-  "description": "Extension Wallet for Stardust Collective",
+  "description": "Extension wallet for $DAG tokens.",
   "homepage_url": "https://constellationnetwork.io/",
   "short_name": "stargazer-wallet-ext",
 

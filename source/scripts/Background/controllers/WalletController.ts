@@ -15,7 +15,7 @@ export interface IWalletController {
   account: Readonly<IAccountController>;
   createWallet: (isUpdated?: boolean) => void;
   deleteWallet: (pwd: string) => void;
-  switchWallet: (index: number) => void;
+  switchWallet: (index: number) => Promise<void>;
   switchNetwork: (networkId: string) => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
@@ -113,9 +113,9 @@ const WalletController = (): IWalletController => {
     }
   };
 
-  const switchWallet = (index: number) => {
+  const switchWallet = async (index: number) => {
     store.dispatch(changeActiveIndex(index));
-    account.getLatestUpdate();
+    await account.getLatestUpdate();
   };
 
   const switchNetwork = (networkId: string) => {

@@ -154,6 +154,11 @@
         font-size: 10px;
         line-height: 12px;
         color: $gray-100;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 300px;
+        display: block;
       }
 
       .error {

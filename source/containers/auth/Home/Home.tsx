@@ -23,8 +23,9 @@ const Home = () => {
     (state: RootState) => state.wallet
   );
 
-  const handleRefresh = () => {
-    controller.wallet.account.getLatestUpdate();
+  const handleRefresh = async () => {
+    await controller.wallet.account.getLatestUpdate();
+    controller.wallet.account.watchMemPool();
     controller.stateUpdater();
   };
 
@@ -38,9 +39,10 @@ const Home = () => {
               <FullSelect
                 value={String(activeIndex)}
                 options={accounts}
-                onChange={(val: string) =>
-                  controller.wallet.switchWallet(Number(val))
-                }
+                onChange={async (val: string) => {
+                  await controller.wallet.switchWallet(Number(val));
+                  controller.wallet.account.watchMemPool();
+                }}
               />
             ) : (
               accounts[activeIndex].label
