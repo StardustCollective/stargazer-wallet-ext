@@ -122,7 +122,7 @@ const WalletSend = () => {
                 name="amount"
                 value={amount}
                 onChange={handleAmountChange}
-                variant={styles.input}
+                variant={clsx(styles.input, styles.amount)}
               />
               <Button
                 type="button"
@@ -142,7 +142,7 @@ const WalletSend = () => {
                 name="fee"
                 onChange={handleFeeChange}
                 value={fee}
-                variant={styles.input}
+                variant={clsx(styles.input, styles.fee)}
               />
               <Button
                 type="button"
