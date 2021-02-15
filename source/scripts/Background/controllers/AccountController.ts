@@ -27,7 +27,7 @@ export interface IAccountController {
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   updateAccountLabel: (index: number, label: string) => void;
   watchMemPool: () => void;
-  getLatestUpdate: () => void;
+  getLatestUpdate: () => Promise<void>;
 }
 
 const AccountController = (actions: {
@@ -38,6 +38,21 @@ const AccountController = (actions: {
   let tempTx: ITransactionInfo;
   let account: IAccountState | null;
   let intervalId: any;
+
+  const _coventPendingType = (pending: PendingTx) => {
+    return {
+      hash: pending.hash,
+      amount: pending.amount,
+      receiver: pending.receiver,
+      sender: pending.sender,
+      fee: -1,
+      isDummy: true,
+      timestamp: new Date(pending.timestamp).toISOString(),
+      lastTransactionRef: {},
+      snapshotHash: '',
+      checkpointBlock: '',
+    } as Transaction;
+  };
 
   // Primary
   const getAccountByPrivateKey = async (
@@ -108,9 +123,28 @@ const AccountController = (actions: {
   };
 
   const getLatestUpdate = async () => {
-    const { activeIndex }: IWalletState = store.getState().wallet;
+    const { activeIndex, accounts }: IWalletState = store.getState().wallet;
     const res: IAccountInfo | null = await getAccountByIndex(activeIndex);
     if (res) {
+      account = accounts[activeIndex];
+      // check pending txs
+      const memPool = window.localStorage.getItem('dag4-network-main-mempool');
+      if (memPool) {
+        const pendingTxs = JSON.parse(memPool);
+        console.log(pendingTxs);
+        pendingTxs.forEach((pTx: PendingTx) => {
+          if (
+            !account ||
+            (account.address !== pTx.sender &&
+              account.address !== pTx.receiver) ||
+            res.transactions.filter((tx: Transaction) => tx.hash === pTx.hash)
+              .length > 0
+          )
+            return;
+          res.transactions.unshift(_coventPendingType(pTx));
+        });
+      }
+
       store.dispatch(
         updateAccount({
           index: activeIndex,
@@ -155,47 +189,17 @@ const AccountController = (actions: {
     );
   };
 
-  const _coventPendingType = (pending: PendingTx) => {
-    return {
-      hash: pending.hash,
-      amount: pending.amount,
-      receiver: pending.receiver,
-      sender: pending.sender,
-      fee: -1,
-      isDummy: true,
-      timestamp: new Date(pending.timestamp).toISOString(),
-      lastTransactionRef: {},
-      snapshotHash: '',
-      checkpointBlock: '',
-    } as Transaction;
-  };
-
   const watchMemPool = () => {
-    intervalId = setInterval(() => {
-      const memPool = window.localStorage.getItem('dag4-network-main-mempool');
-      if (memPool) {
-        const pendingTxs = JSON.parse(memPool);
-        console.log(pendingTxs);
-        if (!pendingTxs.length) {
-          clearInterval(intervalId);
-          getLatestUpdate();
-          return;
-        }
-        pendingTxs.forEach((pTx: PendingTx) => {
-          if (
-            !account ||
-            account.transactions.filter(
-              (tx: Transaction) => tx.hash === pTx.hash
-            ).length > 0
-          )
-            return;
-          store.dispatch(
-            updateTransactions({
-              index: account.index,
-              txs: [_coventPendingType(pTx), ...account.transactions],
-            })
-          );
-        });
+    if (intervalId) return;
+    intervalId = setInterval(async () => {
+      await getLatestUpdate();
+      const { activeIndex, accounts }: IWalletState = store.getState().wallet;
+      if (
+        !accounts[activeIndex].transactions.filter(
+          (tx: Transaction) => tx.fee === -1
+        ).length
+      ) {
+        clearInterval(intervalId);
       }
     }, 30 * 1000);
   };

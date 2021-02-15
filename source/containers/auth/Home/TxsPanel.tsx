@@ -1,5 +1,6 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, Fragment, useCallback, useState } from 'react';
 import clsx from 'clsx';
+import { v4 as uuid } from 'uuid';
 import { useFiat } from 'hooks/usePrice';
 import { Transaction } from '@stardust-collective/dag4-network';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
@@ -84,19 +85,13 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
               const isRecived = tx.receiver === address;
 
               return (
-                <>
+                <Fragment key={uuid()}>
                   {isShowedGroupBar(tx, idx) && (
-                    <li
-                      className={styles.groupbar}
-                      key={tx.hash + tx.timestamp}
-                    >
+                    <li className={styles.groupbar}>
                       {formatDistanceDate(tx.timestamp)}
                     </li>
                   )}
-                  <li
-                    key={tx.timestamp}
-                    onClick={() => handleOpenExplorer(tx.hash)}
-                  >
+                  <li onClick={() => handleOpenExplorer(tx.hash)}>
                     <div>
                       <div className={styles.iconWrapper}>
                         {tx.checkpointBlock ? (
@@ -130,7 +125,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                       </div>
                     </div>
                   </li>
-                </>
+                </Fragment>
               );
             })}
           </ul>
