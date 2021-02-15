@@ -26,6 +26,7 @@ export interface IAccountController {
   addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   updateAccountLabel: (index: number, label: string) => void;
+  getRecommendFee: () => Promise<number>;
   watchMemPool: () => void;
   getLatestUpdate: () => Promise<void>;
 }
@@ -226,6 +227,10 @@ const AccountController = (actions: {
     return dag.account.validateDagAddress(address);
   };
 
+  const getRecommendFee = async () => {
+    return await dag.account.getFeeRecommendation();
+  };
+
   return {
     getTempTx,
     updateTempTx,
@@ -240,6 +245,7 @@ const AccountController = (actions: {
     watchMemPool,
     updateTxs,
     updateAccountLabel,
+    getRecommendFee,
   };
 };
 
