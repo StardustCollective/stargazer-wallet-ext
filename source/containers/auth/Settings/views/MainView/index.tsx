@@ -5,7 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserIcon from '@material-ui/icons/AccountCircleRounded';
 import LogOutIcon from '@material-ui/icons/ExitToApp';
-import ContactsIcon from '@material-ui/icons/Group';
+// import ContactsIcon from '@material-ui/icons/Group';
 
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
@@ -13,7 +13,7 @@ import { RootState } from 'state/store';
 import IWalletState, { IAccountState } from 'state/wallet/types';
 import {
   ACCOUNT_VIEW,
-  CONTACTS_VIEW,
+  // CONTACTS_VIEW,
   GENERAL_VIEW,
   NEW_ACCOUNT_VIEW,
 } from '../routes';
@@ -67,13 +67,13 @@ const MainView: FC<IMainView> = ({ onChange }) => {
         <Icon Component={AddIcon} />
         Create account
       </section>
-      <section
+      {/* <section
         className={styles.general}
         onClick={() => showView(CONTACTS_VIEW)}
       >
         <Icon Component={ContactsIcon} />
         Contacts
-      </section>
+      </section> */}
       <section
         className={styles.general}
         onClick={() => showView(GENERAL_VIEW)}
