@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { dag } from '@stardust-collective/dag4-wallet';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
