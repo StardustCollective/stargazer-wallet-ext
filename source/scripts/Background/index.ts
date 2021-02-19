@@ -45,8 +45,13 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
   }
 });
 
-window.controller = Object.freeze(MasterController());
-
-setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
+if (!window.controller) {
+  window.controller = Object.freeze(MasterController());
+  setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
+}
 
 wrapStore(store, { portName: STORE_PORT });
+
+setInterval(() => {
+  console.log(window.controller.wallet.isLocked());
+}, 3000);
