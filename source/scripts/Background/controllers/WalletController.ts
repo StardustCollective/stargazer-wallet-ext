@@ -4,18 +4,21 @@ import store from 'state/store';
 import {
   setKeystoreInfo,
   deleteWallet as deleteWalletState,
-  changeActiveIndex,
+  changeAccountActiveId,
   changeActiveNetwork,
   updateStatus,
+  updateSeedKeystoreId,
+  removeSeedAccounts,
 } from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
+import IWalletState, { SeedKeystore } from 'state/wallet/types';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;
   createWallet: (isUpdated?: boolean) => void;
   deleteWallet: (pwd: string) => void;
-  switchWallet: (index: number) => Promise<void>;
+  switchWallet: (id: string) => Promise<void>;
   switchNetwork: (networkId: string) => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
@@ -32,6 +35,23 @@ const WalletController = (): IWalletController => {
   let phrase = '';
   let masterKey: hdkey;
 
+  const importPrivKey = async (privKey: string) => {
+    // const { keystores }: IWalletState = store.getState();
+    if (isLocked() || !privKey) return null;
+    const v3Keystore = await dag.keyStore.generateEncryptedPrivateKey(
+      password,
+      privKey
+    );
+    // if (
+    //   Object.values(keystores).filter(
+    //     (keystore) => (keystore as any).address === (v3Keystore as any).address
+    //   ).length
+    // )
+    //   return null;
+    store.dispatch(setKeystoreInfo(v3Keystore));
+    return v3Keystore;
+  };
+
   const checkPassword = (pwd: string) => {
     return password === pwd;
   };
@@ -39,18 +59,17 @@ const WalletController = (): IWalletController => {
   const account = Object.freeze(
     AccountController({
       getMasterKey: () => {
-        return walletKeystore() ? masterKey : null;
+        return seedWalletKeystore() ? masterKey : null;
       },
       checkPassword,
+      importPrivKey,
     })
   );
 
   const generatedPhrase = () => {
-    const { keystore } = store.getState().wallet;
-    if (!keystore && !phrase) {
-      phrase = dag.keyStore.generateSeedPhrase();
-    }
-    return keystore ? null : phrase;
+    if (seedWalletKeystore()) return null;
+    phrase = dag.keyStore.generateSeedPhrase();
+    return phrase;
   };
 
   const importPhrase = (phr: string) => {
@@ -74,14 +93,14 @@ const WalletController = (): IWalletController => {
   };
 
   const unLock = async (pwd: string): Promise<boolean> => {
-    const keystore = walletKeystore();
+    const keystore = seedWalletKeystore();
     if (!keystore) return false;
 
     try {
-      phrase = await dag.keyStore.decryptPhrase(keystore, pwd);
+      phrase = await dag.keyStore.decryptPhrase(keystore as SeedKeystore, pwd);
       password = pwd;
       masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
-      await account.getPrimaryAccount();
+      await account.getPrimaryAccount(password);
       account.watchMemPool();
       return true;
     } catch (error) {
@@ -91,13 +110,17 @@ const WalletController = (): IWalletController => {
   };
 
   const createWallet = async (isUpdated = false) => {
-    if (!isUpdated && walletKeystore()) return;
+    if (!isUpdated && seedWalletKeystore()) return;
     if (isUpdated) {
-      store.dispatch(deleteWalletState());
+      const { seedKeystoreId, keystores } = store.getState().wallet;
+      if (seedKeystoreId && keystores[seedKeystoreId]) {
+        store.dispatch(removeSeedAccounts());
+      }
     }
     const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
     masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));
+    store.dispatch(updateSeedKeystoreId(v3Keystore.id));
     await account.subscribeAccount(0);
     if (isUpdated) {
       account.getLatestUpdate();
@@ -113,8 +136,8 @@ const WalletController = (): IWalletController => {
     }
   };
 
-  const switchWallet = async (index: number) => {
-    store.dispatch(changeActiveIndex(index));
+  const switchWallet = async (id: string) => {
+    store.dispatch(changeAccountActiveId(id));
     await account.getLatestUpdate();
   };
 
@@ -134,9 +157,11 @@ const WalletController = (): IWalletController => {
     password = pwd;
   };
 
-  const walletKeystore = () => {
-    const { keystore } = store.getState().wallet;
-    return keystore ? keystore : null;
+  const seedWalletKeystore = () => {
+    const { keystores, seedKeystoreId }: IWalletState = store.getState().wallet;
+    return keystores && seedKeystoreId && keystores[seedKeystoreId]
+      ? keystores[seedKeystoreId]
+      : null;
   };
 
   const logOut = () => {

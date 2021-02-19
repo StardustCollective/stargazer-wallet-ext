@@ -3,16 +3,18 @@ import { Transaction } from '@stardust-collective/dag4-network';
 
 import { DAG_NETWORK } from 'constants/index';
 import IWalletState, {
-  IAccountState,
   IAccountUpdateState,
+  IAccountState,
   Keystore,
+  AccountType,
 } from './types';
 
 const initialState: IWalletState = {
-  keystore: null,
+  keystores: {},
   status: 0,
   accounts: {},
-  activeIndex: 0,
+  activeAccountId: '0',
+  seedKeystoreId: '',
   activeNetwork: DAG_NETWORK.main.id,
 };
 
@@ -22,7 +24,20 @@ const WalletState = createSlice({
   initialState,
   reducers: {
     setKeystoreInfo(state: IWalletState, action: PayloadAction<Keystore>) {
-      state.keystore = action.payload;
+      state.keystores = {
+        ...state.keystores,
+        [action.payload.id]: action.payload,
+      };
+    },
+    removeKeystoreInfo(state: IWalletState, action: PayloadAction<string>) {
+      if (state.keystores[action.payload])
+        delete state.keystores[action.payload];
+    },
+    updateSeedKeystoreId(state: IWalletState, action: PayloadAction<string>) {
+      if (state.keystores && state.keystores[state.seedKeystoreId]) {
+        delete state.keystores[state.seedKeystoreId];
+      }
+      state.seedKeystoreId = action.payload;
     },
     updateStatus(state: IWalletState) {
       state.status = Date.now();
@@ -32,60 +47,70 @@ const WalletState = createSlice({
         ...state,
         accounts: {
           ...state.accounts,
-          [action.payload.index]: action.payload,
+          [action.payload.id]: action.payload,
         },
-        activeIndex: action.payload.index,
+        activeAccountId: action.payload.id,
       };
     },
-    removeAccount(state: IWalletState, action: PayloadAction<number>) {
+    removeAccount(state: IWalletState, action: PayloadAction<string>) {
       if (Object.keys(state.accounts).length <= 1) return;
-      if (state.activeIndex === action.payload) {
-        state.activeIndex = Object.values(state.accounts)[0].index;
+      if (state.activeAccountId === action.payload) {
+        state.activeAccountId = Object.values(state.accounts)[0].id;
       }
       delete state.accounts[action.payload];
+    },
+    removeSeedAccounts(state: IWalletState) {
+      Object.values(state.accounts).forEach((account) => {
+        if (account.type === AccountType.Seed)
+          delete state.accounts[account.id];
+      });
+      state.activeAccountId = '0';
     },
     updateAccount(
       state: IWalletState,
       action: PayloadAction<IAccountUpdateState>
     ) {
-      state.accounts[action.payload.index] = {
-        ...state.accounts[action.payload.index],
+      state.accounts[action.payload.id] = {
+        ...state.accounts[action.payload.id],
         ...action.payload,
       };
     },
     deleteWallet(state: IWalletState) {
-      state.keystore = null;
+      state.keystores = {};
       state.accounts = {};
-      state.activeIndex = 0;
+      state.activeAccountId = '0';
     },
-    changeActiveIndex(state: IWalletState, action: PayloadAction<number>) {
-      state.activeIndex = action.payload;
+    changeAccountActiveId(state: IWalletState, action: PayloadAction<string>) {
+      state.activeAccountId = action.payload;
     },
     changeActiveNetwork(state: IWalletState, action: PayloadAction<string>) {
       state.activeNetwork = action.payload;
     },
     updateTransactions(
       state: IWalletState,
-      action: PayloadAction<{ index: number; txs: Transaction[] }>
+      action: PayloadAction<{ id: string; txs: Transaction[] }>
     ) {
-      state.accounts[action.payload.index].transactions = action.payload.txs;
+      state.accounts[action.payload.id].transactions = action.payload.txs;
     },
     updateLabel(
       state: IWalletState,
-      action: PayloadAction<{ index: number; label: string }>
+      action: PayloadAction<{ id: string; label: string }>
     ) {
-      state.accounts[action.payload.index].label = action.payload.label;
+      state.accounts[action.payload.id].label = action.payload.label;
     },
   },
 });
 
 export const {
   setKeystoreInfo,
+  removeKeystoreInfo,
   updateStatus,
   createAccount,
   removeAccount,
+  removeSeedAccounts,
   deleteWallet,
-  changeActiveIndex,
+  updateSeedKeystoreId,
+  changeAccountActiveId,
   changeActiveNetwork,
   updateAccount,
   updateTransactions,

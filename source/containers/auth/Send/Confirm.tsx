@@ -10,12 +10,14 @@ import CheckIcon from 'assets/images/svg/check.svg';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { RootState } from 'state/store';
 import { ellipsis } from '../helpers';
+import IWalletState from 'state/wallet/types';
+
 import styles from './Confirm.scss';
 
 const SendConfirm = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { accounts, activeIndex } = useSelector(
+  const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
   const tempTx = controller.wallet.account.getTempTx();
@@ -59,7 +61,7 @@ const SendConfirm = () => {
         <div className={styles.row}>
           From
           <span>
-            {accounts[activeIndex]?.label || ''} (
+            {accounts[activeAccountId]?.label || ''} (
             {ellipsis(tempTx!.fromAddress)})
           </span>
         </div>
