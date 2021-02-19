@@ -9,6 +9,7 @@ import TextInput from 'components/TextInput';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
+import IWalletState from 'state/wallet/types';
 
 import styles from './Send.scss';
 import { useSelector } from 'react-redux';
@@ -26,7 +27,7 @@ const WalletSend = () => {
   const history = useHistory();
   const getFiatAmount = useFiat();
   const controller = useController();
-  const { accounts, activeIndex } = useSelector(
+  const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
 
@@ -53,7 +54,7 @@ const WalletSend = () => {
   const onSubmit = (data: any) => {
     if (!isValidAddress) return;
     controller.wallet.account.updateTempTx({
-      fromAddress: accounts[activeIndex].address,
+      fromAddress: accounts[activeAccountId].address.constellation,
       toAddress: data.address,
       amount: data.amount,
       fee: data.fee,
@@ -95,8 +96,8 @@ const WalletSend = () => {
         <section className={styles.subheading}>Send DAG</section>
         <section className={styles.balance}>
           <div>
-            Balance: <span>{formatNumber(accounts[activeIndex].balance)}</span>{' '}
-            DAG
+            Balance:{' '}
+            <span>{formatNumber(accounts[activeAccountId].balance)}</span> DAG
           </div>
         </section>
         <section className={styles.content}>
@@ -133,7 +134,9 @@ const WalletSend = () => {
               <Button
                 type="button"
                 variant={styles.textBtn}
-                onClick={() => setAmount(String(accounts[activeIndex].balance))}
+                onClick={() =>
+                  setAmount(String(accounts[activeAccountId].balance))
+                }
               >
                 Max
               </Button>

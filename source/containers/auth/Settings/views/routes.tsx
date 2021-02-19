@@ -11,3 +11,4 @@ export const CONTACTS_VIEW = '#contacts';
 export const CONTACT_VIEW = '#contact';
 export const ADD_CONTACT_VIEW = '#add_contact';
 export const EDIT_CONTACT_VIEW = '#edit_contact';
+export const IMPORT_ACCOUNT_VIEW = '#import_account';

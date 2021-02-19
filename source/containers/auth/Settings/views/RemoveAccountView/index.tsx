@@ -8,17 +8,17 @@ import { ellipsis } from 'containers/auth/helpers';
 import { useController, useSettingsView } from 'hooks/index';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AccountType } from 'state/wallet/types';
 import { RootState } from 'state/store';
 
 import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
 
 interface IRemoveAccountView {
-  index: number;
+  id: string;
 }
 
-const RemoveAccountView: FC<IRemoveAccountView> = ({ index }) => {
+const RemoveAccountView: FC<IRemoveAccountView> = ({ id }) => {
   const controller = useController();
   const showView = useSettingsView();
 
@@ -32,18 +32,29 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ index }) => {
   });
 
   const onSubmit = (data: any) => {
-    if (controller.wallet.account.unsubscribeAccount(index, data.password))
-      showView(MAIN_VIEW);
+    let isChecked;
+    if (accounts[id].type === AccountType.Seed) {
+      isChecked = controller.wallet.account.unsubscribeAccount(
+        Number(id),
+        data.password
+      );
+    } else {
+      isChecked = controller.wallet.account.removePrivKeyAccount(
+        id,
+        data.password
+      );
+    }
+    if (isChecked) showView(MAIN_VIEW);
   };
 
   return (
     <div className={styles.removeAccount}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {accounts[index] && (
+        {accounts[id] && (
           <div className={styles.subheading}>
-            <div>{accounts[index].label}:</div>
+            <div>{accounts[id].label}:</div>
             <span className={styles.address}>
-              {ellipsis(accounts[index].address)}
+              {ellipsis(accounts[id].address.constellation)}
             </span>
           </div>
         )}
