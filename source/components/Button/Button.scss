@@ -21,6 +21,28 @@ body {
       }
     }
 
+    .spinner {
+      width: 20px !important;
+      height: 20px !important;
+      margin-right: 10px;
+      color: $purple;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    &.loading {
+      color: $gray-100;
+      background: $purple;
+
+      :global .MuiButton-label {
+        display: flex;
+        flex-direction: row;
+      }
+    }
+
     &.primary {
       background: $purple;
       color: $white;

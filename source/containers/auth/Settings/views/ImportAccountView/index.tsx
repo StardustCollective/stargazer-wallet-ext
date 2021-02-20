@@ -18,6 +18,7 @@ const ImportAccountView = () => {
   const showView = useSettingsView();
   const [isCopied, copyText] = useCopyClipboard();
   const [importType, setImportType] = useState('priv');
+  const [loading, setLoading] = useState(false);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
   const [address, setAddress] = useState<{ [assetId: string]: string }>();
 
@@ -33,6 +34,7 @@ const ImportAccountView = () => {
       privKey,
       label
     );
+    setLoading(false);
     if (addr) {
       setAddress(addr);
     }
@@ -40,12 +42,14 @@ const ImportAccountView = () => {
 
   const onSubmit = async (data: any) => {
     if (importType === 'priv') {
+      setLoading(true);
       handleImportPrivKey(data.privKey, data.label);
     } else if (jsonFile) {
       const fileReader = new FileReader();
       fileReader.readAsText(jsonFile, 'UTF-8');
       fileReader.onload = (ev: ProgressEvent<FileReader>) => {
         if (ev.target) {
+          setLoading(true);
           handleImportPrivKey(ev.target.result as string, data.label);
         }
       };
@@ -122,7 +126,7 @@ const ImportAccountView = () => {
             >
               Cancel
             </Button>
-            <Button type="submit" variant={styles.button}>
+            <Button type="submit" variant={styles.button} loading={loading}>
               Import
             </Button>
           </section>

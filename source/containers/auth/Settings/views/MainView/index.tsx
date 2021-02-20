@@ -11,7 +11,7 @@ import UserIcon from '@material-ui/icons/AccountCircleRounded';
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
-import IWalletState, { IAccountState } from 'state/wallet/types';
+import IWalletState from 'state/wallet/types';
 import AccountSelect from 'components/AccountSelect';
 import {
   ACCOUNT_VIEW,
@@ -61,20 +61,6 @@ const MainView: FC<IMainView> = ({ onChange }) => {
             handleSelectAccount(val);
           }}
         />
-        {/* {Object.values(accounts).map((account: IAccountState) => (
-          <li
-            onClick={() => handleSelectAccount(account.index)}
-            key={account.index}
-          >
-            <div className={styles.account}>
-              <span className={styles.accInfo}>
-                <Icon Component={UserIcon} />
-                <div>{account.label}</div>
-                {account!.index === activeIndex && <small> (active)</small>}
-              </span>
-            </div>
-          </li>
-        ))} */}
       </ul>
       <section
         className={styles.new}

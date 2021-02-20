@@ -51,7 +51,3 @@ if (!window.controller) {
 }
 
 wrapStore(store, { portName: STORE_PORT });
-
-setInterval(() => {
-  console.log(window.controller.wallet.isLocked());
-}, 3000);

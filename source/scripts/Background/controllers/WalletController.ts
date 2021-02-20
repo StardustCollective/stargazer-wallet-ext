@@ -36,18 +36,18 @@ const WalletController = (): IWalletController => {
   let masterKey: hdkey;
 
   const importPrivKey = async (privKey: string) => {
-    // const { keystores }: IWalletState = store.getState();
+    const { keystores }: IWalletState = store.getState().wallet;
     if (isLocked() || !privKey) return null;
     const v3Keystore = await dag.keyStore.generateEncryptedPrivateKey(
       password,
       privKey
     );
-    // if (
-    //   Object.values(keystores).filter(
-    //     (keystore) => (keystore as any).address === (v3Keystore as any).address
-    //   ).length
-    // )
-    //   return null;
+    if (
+      Object.values(keystores).filter(
+        (keystore) => (keystore as any).address === (v3Keystore as any).address
+      ).length
+    )
+      return null;
     store.dispatch(setKeystoreInfo(v3Keystore));
     return v3Keystore;
   };
