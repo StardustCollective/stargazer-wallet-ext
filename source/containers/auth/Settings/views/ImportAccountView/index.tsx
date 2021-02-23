@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { dag } from '@stardust-collective/dag4-wallet';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
@@ -25,19 +26,23 @@ const ImportAccountView = () => {
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       privKey: importType === 'priv' ? yup.string().required() : yup.string(),
+      password: importType === 'priv' ? yup.string() : yup.string().required(),
       label: yup.string().required(),
     }),
   });
 
   const handleImportPrivKey = async (privKey: string, label: string) => {
-    const addr = await controller.wallet.account.importPrivKeyAccount(
-      privKey,
-      label
-    );
-    setLoading(false);
-    if (addr) {
-      setAddress(addr);
-    }
+    controller.wallet.account
+      .importPrivKeyAccount(privKey, label)
+      .then((addr) => {
+        setLoading(false);
+        if (addr) {
+          setAddress(addr);
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const onSubmit = async (data: any) => {
@@ -50,7 +55,17 @@ const ImportAccountView = () => {
       fileReader.onload = (ev: ProgressEvent<FileReader>) => {
         if (ev.target) {
           setLoading(true);
-          handleImportPrivKey(ev.target.result as string, data.label);
+          dag.keyStore
+            .decryptPrivateKey(
+              JSON.parse(ev.target.result as string),
+              data.password
+            )
+            .then((privKey: string) => {
+              handleImportPrivKey(privKey, data.label);
+            })
+            .catch(() => {
+              setLoading(false);
+            });
         }
       };
     }
@@ -113,7 +128,17 @@ const ImportAccountView = () => {
                 />
               </>
             ) : (
-              <FileSelect onChange={(val) => setJsonFile(val)} />
+              <>
+                <FileSelect onChange={(val) => setJsonFile(val)} />
+                <span>Please enter your JSON file password:</span>
+                <TextInput
+                  fullWidth
+                  inputRef={register}
+                  name="password"
+                  type="password"
+                  visiblePassword
+                />
+              </>
             )}
             <span>Please name your new account:</span>
             <TextInput fullWidth inputRef={register} name="label" />
@@ -123,6 +148,7 @@ const ImportAccountView = () => {
               type="button"
               theme="secondary"
               variant={clsx(styles.button, styles.cancel)}
+              onClick={() => showView(MAIN_VIEW)}
             >
               Cancel
             </Button>
