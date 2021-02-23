@@ -209,14 +209,6 @@
       color: $gray-dark;
       z-index: 2;
 
-      .addAssets {
-        width: 26px;
-        font-size: 16px;
-        height: 26px;
-        position: absolute;
-        left: 41px;
-      }
-
       .goTop {
         width: 26px;
         font-size: 16px;
@@ -249,8 +241,21 @@
         cursor: pointer;
 
         &:hover {
-          background: $gray-light-100;
+          background: rgab($gray-light-100, 0.9);
           backdrop-filter: blur(10px);
+
+          .linkIcon {
+            background: $gray-200;
+          }
+        }
+
+        &.groupbar {
+          height: 24px;
+          background: $gray-100;
+          font-weight: 500;
+          font-size: 12px;
+          line-height: 18px;
+          color: $white;
         }
 
         & > div {
@@ -285,28 +290,18 @@
               }
             }
 
-            & > p {
-              margin: 0;
-              padding: 0;
-              & > small {
-                font-weight: 500;
-                font-size: 12px;
-                line-height: 18px;
-                color: $gray-100;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: auto;
-                text-align: left;
-                display: inline-block;
-                overflow: hidden;
-                margin-right: 5px;
-                &.red {
-                  color: $red-100;
-                }
-                &.green {
-                  color: $green-100;
-                }
-              }
+            & > small {
+              font-weight: 500;
+              font-size: 12px;
+              line-height: 18px;
+              color: $gray;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: auto;
+              width: 96px;
+              text-align: right;
+              display: inline-block;
+              overflow: hidden;
             }
           }
 
@@ -330,16 +325,38 @@
         }
 
         .iconWrapper {
-          width: 36px;
-          height: 36px;
+          width: 24px;
+          height: 24px;
+          background: $purple;
+          border-radius: 50%;
+          color: $white;
           display: flex;
           align-items: center;
           justify-content: center;
           box-sizing: border-box;
           margin-right: 12px;
 
-          img {
-            width: 100%;
+          svg {
+            font-size: 16px;
+          }
+        }
+
+        .linkIcon {
+          width: 24px;
+          height: 24px;
+          background: $gray-100;
+          border-radius: 50%;
+          color: $white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          margin-left: 12px;
+          transition: all 0.3s;
+
+          svg {
+            transform: rotateZ(45deg);
+            font-size: 16px;
           }
         }
       }

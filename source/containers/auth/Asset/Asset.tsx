@@ -12,12 +12,12 @@ import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
-import AssetsPanel from './AssetsPanel';
+import TxsPanel from './TxsPanel';
 
-import styles from './Home.scss';
+import styles from './Asset.scss';
 import { formatNumber } from '../helpers';
 
-const Home = () => {
+const Asset = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
   const { accounts, activeAccountId }: IWalletState = useSelector(
@@ -38,7 +38,7 @@ const Home = () => {
           <section className={styles.account}>
             {Object.keys(accounts).length > 1 ? (
               <FullSelect
-                value={activeAccountId}
+                value={String(activeAccountId)}
                 options={accounts}
                 onChange={async (val: string) => {
                   await controller.wallet.switchWallet(val);
@@ -77,7 +77,10 @@ const Home = () => {
               </Button>
             </div>
           </section>
-          <AssetsPanel />
+          <TxsPanel
+            address={accounts[activeAccountId].address.constellation}
+            transactions={accounts[activeAccountId].transactions}
+          />
         </>
       ) : (
         <section
@@ -92,4 +95,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Asset;
