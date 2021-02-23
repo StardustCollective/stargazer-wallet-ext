@@ -1,6 +1,9 @@
 @import '~assets/styles/variables';
 
 .main {
+  max-height: 468px;
+  overflow: auto;
+
   ul.accounts {
     list-style: none;
     margin: 0;
