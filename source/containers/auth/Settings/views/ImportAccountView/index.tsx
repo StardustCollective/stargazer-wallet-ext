@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
+import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { dag } from '@stardust-collective/dag4-wallet';
@@ -15,6 +16,7 @@ import { MAIN_VIEW } from '../routes';
 import { ellipsis } from 'containers/auth/helpers';
 
 const ImportAccountView = () => {
+  const alert = useAlert();
   const controller = useController();
   const showView = useSettingsView();
   const [isCopied, copyText] = useCopyClipboard();
@@ -41,6 +43,8 @@ const ImportAccountView = () => {
         }
       })
       .catch(() => {
+        alert.removeAll();
+        alert.error('Error: Invalid private key');
         setLoading(false);
       });
   };
@@ -64,10 +68,15 @@ const ImportAccountView = () => {
               handleImportPrivKey(privKey, data.label);
             })
             .catch(() => {
+              alert.removeAll();
+              alert.error('Error: Invalid password or private key json file');
               setLoading(false);
             });
         }
       };
+    } else {
+      alert.removeAll();
+      alert.error('Error: A private key json file is not chosen');
     }
   };
 

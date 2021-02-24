@@ -78,7 +78,9 @@ const WalletState = createSlice({
     deleteWallet(state: IWalletState) {
       state.keystores = {};
       state.accounts = {};
+      state.seedKeystoreId = '';
       state.activeAccountId = '0';
+      state.activeNetwork = DAG_NETWORK.main.id;
     },
     changeAccountActiveId(state: IWalletState, action: PayloadAction<string>) {
       state.activeAccountId = action.payload;

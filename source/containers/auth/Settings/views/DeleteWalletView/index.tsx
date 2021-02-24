@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import { useAlert } from 'react-alert';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -13,6 +14,7 @@ import styles from './index.scss';
 const DeleteWalletView = () => {
   const controller = useController();
   const history = useHistory();
+  const alert = useAlert();
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       password: yup.string().required(),
@@ -23,6 +25,9 @@ const DeleteWalletView = () => {
     if (controller.wallet.checkPassword(data.password)) {
       controller.wallet.deleteWallet(data.password);
       history.push('/app.html');
+    } else {
+      alert.removeAll();
+      alert.error('Error: Invalid password');
     }
   };
 
@@ -49,6 +54,7 @@ const DeleteWalletView = () => {
             type="button"
             theme="secondary"
             variant={clsx(styles.button, styles.close)}
+            onClick={() => history.goBack()}
           >
             Close
           </Button>

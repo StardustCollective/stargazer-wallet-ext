@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useAlert } from 'react-alert';
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import Start from 'containers/auth/Start';
 import { useTransition, animated } from 'react-spring';
@@ -10,6 +11,7 @@ import Import from 'containers/common/Import';
 
 const Auth = () => {
   const location = useLocation();
+  const alert = useAlert();
   const controller = useController();
   const isUnlocked = !controller.wallet.isLocked();
   const transitions = useTransition(location, (locat) => locat.pathname, {
@@ -19,6 +21,10 @@ const Auth = () => {
     leave: { opacity: 0 },
     config: { duration: 500 },
   });
+
+  useEffect(() => {
+    alert.removeAll();
+  }, [location]);
 
   return (
     <>

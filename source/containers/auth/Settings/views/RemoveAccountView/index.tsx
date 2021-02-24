@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
+import { useAlert } from 'react-alert';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -12,7 +14,7 @@ import IWalletState, { AccountType } from 'state/wallet/types';
 import { RootState } from 'state/store';
 
 import styles from './index.scss';
-import { MAIN_VIEW } from '../routes';
+import { ACCOUNT_VIEW, MAIN_VIEW } from '../routes';
 
 interface IRemoveAccountView {
   id: string;
@@ -21,6 +23,8 @@ interface IRemoveAccountView {
 const RemoveAccountView: FC<IRemoveAccountView> = ({ id }) => {
   const controller = useController();
   const showView = useSettingsView();
+  const alert = useAlert();
+  const history = useHistory();
 
   const { accounts }: IWalletState = useSelector(
     (state: RootState) => state.wallet
@@ -44,7 +48,12 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ id }) => {
         data.password
       );
     }
-    if (isChecked) showView(MAIN_VIEW);
+    if (isChecked) {
+      showView(MAIN_VIEW);
+    } else {
+      alert.removeAll();
+      alert.error('Error: Invalid password');
+    }
   };
 
   return (
@@ -73,6 +82,7 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ id }) => {
             type="button"
             theme="secondary"
             variant={clsx(styles.button, styles.close)}
+            onClick={() => history.goBack()}
           >
             Close
           </Button>
