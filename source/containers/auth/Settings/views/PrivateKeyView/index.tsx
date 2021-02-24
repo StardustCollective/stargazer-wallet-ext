@@ -1,5 +1,6 @@
 import React, { useState, FC } from 'react';
 import clsx from 'clsx';
+import { useAlert } from 'react-alert';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -18,6 +19,7 @@ interface IPrivateKeyView {
 
 const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
   const controller = useController();
+  const alert = useAlert();
   const { accounts }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -47,6 +49,9 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
     if (res) {
       setPrivKey(res);
       setChecked(true);
+    } else {
+      alert.removeAll();
+      alert.error('Error: Invalid password');
     }
   };
 

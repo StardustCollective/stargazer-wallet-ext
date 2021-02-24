@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
+import { useAlert } from 'react-alert';
+
 import Header from 'containers/common/Header';
 import Layout from 'containers/common/Layout';
 import Button from 'components/Button';
@@ -17,6 +19,8 @@ import styles from './Confirm.scss';
 const SendConfirm = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
+  const alert = useAlert();
+
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -24,9 +28,17 @@ const SendConfirm = () => {
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = () => {
-    controller.wallet.account.confirmTempTx().then(() => {
-      setConfirmed(true);
-    });
+    controller.wallet.account
+      .confirmTempTx()
+      .then(() => {
+        setConfirmed(true);
+      })
+      .catch(() => {
+        if (tempTx?.fromAddress === tempTx?.toAddress) {
+          alert.removeAll();
+          alert.error('Error: An address cannot send a transaction to itself');
+        }
+      });
   };
 
   return confirmed ? (
