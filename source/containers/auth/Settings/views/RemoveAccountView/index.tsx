@@ -14,7 +14,7 @@ import IWalletState, { AccountType } from 'state/wallet/types';
 import { RootState } from 'state/store';
 
 import styles from './index.scss';
-import { ACCOUNT_VIEW, MAIN_VIEW } from '../routes';
+import { MAIN_VIEW } from '../routes';
 
 interface IRemoveAccountView {
   id: string;
