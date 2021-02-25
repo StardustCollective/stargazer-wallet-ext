@@ -68,7 +68,7 @@ const WalletController = (): IWalletController => {
 
   const generatedPhrase = () => {
     if (seedWalletKeystore()) return null;
-    phrase = dag.keyStore.generateSeedPhrase();
+    if (!phrase) phrase = dag.keyStore.generateSeedPhrase();
     return phrase;
   };
 
