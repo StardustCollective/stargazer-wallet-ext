@@ -36,7 +36,7 @@ const Button: FC<IButton> = ({
     styles[theme],
     {
       [styles.block]: fullWidth,
-      [styles.disabled]: loading ?? disabled,
+      [styles.disabled]: loading || disabled,
       [styles.loading]: loading,
     },
     variant
@@ -55,7 +55,7 @@ const Button: FC<IButton> = ({
       fullWidth={fullWidth}
       style={customStyle}
       onClick={clickHandler}
-      disabled={loading ?? disabled}
+      disabled={loading || disabled}
       {...otherProps}
     >
       {loading && <Spinner classes={{ root: styles.spinner }} />}
