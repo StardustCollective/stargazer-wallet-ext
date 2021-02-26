@@ -96,7 +96,7 @@ const AccountController = (actions: {
   };
 
   const getAccountByPrivKeystore = async (keystoreId: string) => {
-    const { keystores }: IWalletState = store.getState();
+    const { keystores }: IWalletState = store.getState().wallet;
     if (!password || !keystores[keystoreId]) return null;
     privateKey = await dag.keyStore.decryptPrivateKey(
       keystores[keystoreId] as PrivKeystore,
@@ -199,6 +199,8 @@ const AccountController = (actions: {
       accounts[activeAccountId].type === AccountType.Seed
         ? await getAccountByIndex(Number(activeAccountId))
         : await getAccountByPrivKeystore(activeAccountId);
+
+    console.log('latest info', accLatestInfo);
 
     if (!accLatestInfo) return;
 

@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
 import { useAlert } from 'react-alert';
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
+import {
+  Switch,
+  Route,
+  Redirect,
+  useLocation,
+  useHistory,
+} from 'react-router-dom';
 import Start from 'containers/auth/Start';
 import { useTransition, animated } from 'react-spring';
 import Home from 'containers/auth/Home';
@@ -12,6 +18,7 @@ import Import from 'containers/common/Import';
 const Auth = () => {
   const location = useLocation();
   const alert = useAlert();
+  const history = useHistory();
   const controller = useController();
   const isUnlocked = !controller.wallet.isLocked();
   const transitions = useTransition(location, (locat) => locat.pathname, {
@@ -23,7 +30,13 @@ const Auth = () => {
   });
 
   useEffect(() => {
+    const redirectRoute = controller.appRoute();
+    history.push(redirectRoute);
+  }, []);
+
+  useEffect(() => {
     alert.removeAll();
+    controller.appRoute(location.pathname);
   }, [location]);
 
   return (
