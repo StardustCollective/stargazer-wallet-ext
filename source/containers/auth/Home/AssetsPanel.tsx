@@ -13,9 +13,11 @@ import mockAssets from './mockData';
 import { Asset } from './types';
 import styles from './Home.scss';
 
-interface IAssetsPanel {}
+interface IAssetsPanel {
+  setShowAddAsset: () => void;
+}
 
-const AssetsPanel: FC<IAssetsPanel> = ({}) => {
+const AssetsPanel: FC<IAssetsPanel> = ({ setShowAddAsset }: IAssetsPanel) => {
   const history = useHistory();
   const [isShowed, setShowed] = useState<boolean>(false);
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
@@ -38,7 +40,7 @@ const AssetsPanel: FC<IAssetsPanel> = ({}) => {
       onScroll={handleScroll}
     >
       <div className={styles.heading}>
-        <AddCircle className={styles.addAssets} />
+        <AddCircle className={styles.addAssets} onClick={setShowAddAsset} />
         Your Assets
         {!!isShowed && (
           <IconButton className={styles.goTop} onClick={handleGoTop}>

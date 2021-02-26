@@ -1,0 +1,18 @@
+@import '~assets/styles/variables';
+
+.addAsset {
+  height: 469px;
+  background: $gray-light;
+  width: 100%;
+  padding: 25px 46px 0 37px;
+  box-sizing: border-box;
+  display: flex;
+  position: absolute;
+  bottom: -2px;
+  overflow: auto;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  transition: all 0.3s;
+  z-index: 2;
+}
