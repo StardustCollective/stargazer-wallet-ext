@@ -38,7 +38,7 @@ const Home = () => {
           <section className={styles.account}>
             {Object.keys(accounts).length > 1 ? (
               <FullSelect
-                value={String(activeAccountId)}
+                value={activeAccountId}
                 options={accounts}
                 onChange={async (val: string) => {
                   await controller.wallet.switchWallet(val);
