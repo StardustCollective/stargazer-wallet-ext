@@ -92,6 +92,19 @@
         svg {
           color: $gray-100;
         }
+        .iconWrapper {
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          margin-right: 12px;
+
+          img {
+            width: 100%;
+          }
+        }
       }
     }
   }
