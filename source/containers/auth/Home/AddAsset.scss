@@ -80,43 +80,7 @@
             font-size: 18px;
             line-height: 24px;
             color: $gray-dark;
-
-            & > span {
-              display: flex;
-              flex-direction: row;
-              align-items: flex-end;
-
-              & > b {
-                font-weight: 500;
-                font-size: 12px;
-                line-height: 18px;
-                margin-left: 4px;
-              }
-            }
-
-            & > p {
-              margin: 0;
-              padding: 0;
-              & > small {
-                font-weight: 500;
-                font-size: 12px;
-                line-height: 18px;
-                color: $gray-100;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: auto;
-                text-align: left;
-                display: inline-block;
-                overflow: hidden;
-                margin-right: 5px;
-                &.red {
-                  color: $red-100;
-                }
-                &.green {
-                  color: $green-100;
-                }
-              }
-            }
+            margin-left: 12px;
           }
 
           &:last-child > span {
@@ -125,31 +89,8 @@
           }
         }
 
-        .bullet {
-          height: 16px;
-          width: auto;
-          margin-right: 12px;
-          color: $purple;
-        }
-
-        .angle {
-          height: 25px;
-          margin-left: 12px;
-          color: $gray-medium;
-        }
-
-        .iconWrapper {
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-sizing: border-box;
-          margin-right: 12px;
-
-          img {
-            width: 100%;
-          }
+        svg {
+          color: $gray-100;
         }
       }
     }

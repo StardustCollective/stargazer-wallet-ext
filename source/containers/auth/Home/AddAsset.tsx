@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import AddCircle from '@material-ui/icons/AddCircle';
 
 import TextInput from 'components/TextInput';
 import styles from './AddAsset.scss';
@@ -48,14 +49,13 @@ const AddAsset = () => {
                       </div>
                       <span>{asset.name}</span>
                     </div>
-                    <div>
-                      <span>
-                        <span>
-                          {asset.balance}
-                          <b>{asset.shortName}</b>
-                        </span>
-                      </span>
-                    </div>
+                    <AddCircle
+                      // className={styles.addAssets}
+                      onClick={() => {
+                        // TODO
+                        console.log('Add Token');
+                      }}
+                    />
                   </li>
                 </Fragment>
               );
