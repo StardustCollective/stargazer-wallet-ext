@@ -299,7 +299,8 @@ const AccountController = (actions: {
       try {
         const pendingTx = await dag.account.transferDag(
           tempTx.toAddress,
-          tempTx.amount
+          tempTx.amount,
+          tempTx.fee
         );
         dag.monitor.addToMemPoolMonitor(pendingTx);
         store.dispatch(
