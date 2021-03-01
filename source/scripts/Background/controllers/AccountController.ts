@@ -19,6 +19,7 @@ import IWalletState, {
 } from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo } from '../../types';
+import { assert } from 'console';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
@@ -196,7 +197,11 @@ const AccountController = (actions: {
 
   const getLatestUpdate = async () => {
     const { activeAccountId, accounts }: IWalletState = store.getState().wallet;
-    if (!accounts[activeAccountId] || !accounts[activeAccountId].type) return;
+    if (
+      !accounts[activeAccountId] ||
+      accounts[activeAccountId].type === undefined
+    )
+      return;
 
     const accLatestInfo =
       accounts[activeAccountId].type === AccountType.Seed
