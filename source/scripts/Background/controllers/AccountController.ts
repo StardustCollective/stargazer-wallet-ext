@@ -22,7 +22,7 @@ import { IAccountInfo, ITransactionInfo } from '../../types';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
-  confirmTempTx: () => Promise<void>;
+  confirmTempTx: () => Promise<boolean>;
   getPrivKey: (id: string, pwd: string) => Promise<string | null>;
   getPrimaryAccount: (pwd: string) => void;
   isValidDAGAddress: (address: string) => boolean;
@@ -296,19 +296,25 @@ const AccountController = (actions: {
 
   const confirmTempTx = async () => {
     if (dag.account.isActive() && account) {
-      const pendingTx = await dag.account.transferDag(
-        tempTx.toAddress,
-        tempTx.amount
-      );
-      dag.monitor.addToMemPoolMonitor(pendingTx);
-      store.dispatch(
-        updateTransactions({
-          id: account.id,
-          txs: [_coventPendingType(pendingTx), ...account.transactions],
-        })
-      );
-      watchMemPool();
+      try {
+        const pendingTx = await dag.account.transferDag(
+          tempTx.toAddress,
+          tempTx.amount
+        );
+        dag.monitor.addToMemPoolMonitor(pendingTx);
+        store.dispatch(
+          updateTransactions({
+            id: account.id,
+            txs: [_coventPendingType(pendingTx), ...account.transactions],
+          })
+        );
+        watchMemPool();
+        return true;
+      } catch (error) {
+        return false;
+      }
     }
+    return false;
   };
 
   // Other

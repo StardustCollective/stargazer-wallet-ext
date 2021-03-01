@@ -30,8 +30,13 @@ const SendConfirm = () => {
   const handleConfirm = () => {
     controller.wallet.account
       .confirmTempTx()
-      .then(() => {
-        setConfirmed(true);
+      .then((status) => {
+        if (status) {
+          setConfirmed(true);
+        } else {
+          alert.removeAll();
+          alert.error('Error: Invalid transaction');
+        }
       })
       .catch(() => {
         if (tempTx?.fromAddress === tempTx?.toAddress) {
