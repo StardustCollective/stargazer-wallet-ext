@@ -25,6 +25,7 @@ import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
 
 import styles from './Send.scss';
+import value from 'assets/images/svg/check-green.svg';
 interface IWalletSend {
   initAddress?: string;
 }
@@ -48,6 +49,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const [address, setAddress] = useState(initAddress);
   const [amount, setAmount] = useState('');
   const [fee, setFee] = useState('0');
+  const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
 
   const isValidAddress = useMemo(() => {
@@ -99,6 +101,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleGetFee = () => {
     controller.wallet.account.getRecommendFee().then((val) => {
+      setRecommend(val);
       setFee(val.toString());
     });
   };
@@ -206,7 +209,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             )}
           </div>
           <div className={styles.description}>
-            With current network conditions we recommend a fee of 0 DAG.
+            {`With current network conditions we recommend a fee of ${recommend} DAG.`}
           </div>
           <div className={styles.actions}>
             <Button
