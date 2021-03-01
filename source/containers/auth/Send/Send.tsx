@@ -11,6 +11,7 @@ import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { useAlert } from 'react-alert';
 
 import Header from 'containers/common/Header';
 import Contacts from '../Contacts';
@@ -39,6 +40,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const history = useHistory();
   const getFiatAmount = useFiat();
   const controller = useController();
+  const alert = useAlert();
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -60,7 +62,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   });
 
   const onSubmit = (data: any) => {
-    if (!isValidAddress) return;
+    if (!isValidAddress) {
+      alert.removeAll();
+      alert.error('Error: Invalid recipient address');
+      return;
+    }
     controller.wallet.account.updateTempTx({
       fromAddress: accounts[activeAccountId].address.constellation,
       toAddress: data.address,
