@@ -19,7 +19,6 @@ import IWalletState, {
 } from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo } from '../../types';
-import { assert } from 'console';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
