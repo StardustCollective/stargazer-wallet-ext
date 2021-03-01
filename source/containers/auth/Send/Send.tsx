@@ -1,8 +1,17 @@
-import React, { ChangeEvent, useState, useCallback, useMemo, FC } from 'react';
+import React, {
+  ChangeEvent,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  FC,
+} from 'react';
 import clsx from 'clsx';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+
 import Header from 'containers/common/Header';
 import Contacts from '../Contacts';
 import Button from 'components/Button';
@@ -11,8 +20,6 @@ import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import IWalletState from 'state/wallet/types';
-
-import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
 
@@ -94,6 +101,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     setAddress(val);
     setModalOpen(false);
   };
+
+  useEffect(handleGetFee, []);
 
   return (
     <div className={styles.wrapper}>
@@ -182,7 +191,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
           </ul>
           <div className={styles.status}>
             <span className={styles.equalAmount}>
-              ≈ {getFiatAmount(Number(amount) + Number(fee))}
+              ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
             </span>
             {!!Object.values(errors).length && (
               <span className={styles.error}>
