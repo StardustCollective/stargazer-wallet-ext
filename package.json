@@ -1,7 +1,7 @@
 {
   "name": "stargazer-wallet-ext",
-  "version": "1.0.0",
-  "description": "Chorme Extension Wallet for Stardust Collective",
+  "version": "1.2.0",
+  "description": "Extension wallet for $DAG tokens.",
   "private": true,
   "repository": "https://github.com/StardustCollective/stargazer-wallet-ext.git",
   "license": "MIT",

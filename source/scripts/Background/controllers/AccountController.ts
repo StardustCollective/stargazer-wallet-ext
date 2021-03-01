@@ -196,6 +196,8 @@ const AccountController = (actions: {
 
   const getLatestUpdate = async () => {
     const { activeAccountId, accounts }: IWalletState = store.getState().wallet;
+    if (!accounts[activeAccountId] || !accounts[activeAccountId].type) return;
+
     const accLatestInfo =
       accounts[activeAccountId].type === AccountType.Seed
         ? await getAccountByIndex(Number(activeAccountId))
@@ -285,6 +287,7 @@ const AccountController = (actions: {
         accounts,
       }: IWalletState = store.getState().wallet;
       if (
+        !accounts[activeAccountId].transactions ||
         !accounts[activeAccountId].transactions.filter(
           (tx: Transaction) => tx.fee === -1
         ).length
