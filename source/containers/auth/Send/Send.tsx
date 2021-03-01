@@ -1,9 +1,10 @@
-import React, { ChangeEvent, useState, useCallback, useMemo } from 'react';
+import React, { ChangeEvent, useState, useCallback, useMemo, FC } from 'react';
 import clsx from 'clsx';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Header from 'containers/common/Header';
+import Contacts from '../Contacts';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
@@ -11,12 +12,16 @@ import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import IWalletState from 'state/wallet/types';
 
-import styles from './Send.scss';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
 
-const WalletSend = () => {
+import styles from './Send.scss';
+interface IWalletSend {
+  initAddress?: string;
+}
+
+const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
@@ -31,9 +36,10 @@ const WalletSend = () => {
     (state: RootState) => state.wallet
   );
 
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(initAddress);
   const [amount, setAmount] = useState('');
   const [fee, setFee] = useState('0');
+  const [modalOpened, setModalOpen] = useState(false);
 
   const isValidAddress = useMemo(() => {
     return controller.wallet.account.isValidDAGAddress(address);
@@ -45,11 +51,6 @@ const WalletSend = () => {
   const statusIconClass = clsx(styles.statusIcon, {
     [styles.hide]: !isValidAddress,
   });
-
-  // const handlePaste = async () => {
-  //   let text = await navigator.clipboard.readText();
-  //   console.log(text);
-  // };
 
   const onSubmit = (data: any) => {
     if (!isValidAddress) return;
@@ -89,9 +90,19 @@ const WalletSend = () => {
     });
   };
 
+  const handleSelectContact = (val: string) => {
+    setAddress(val);
+    setModalOpen(false);
+  };
+
   return (
     <div className={styles.wrapper}>
       <Header backLink="/home" />
+      <Contacts
+        open={modalOpened}
+        onClose={() => setModalOpen(false)}
+        onChange={handleSelectContact}
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <section className={styles.subheading}>Send DAG</section>
         <section className={styles.balance}>
@@ -105,7 +116,7 @@ const WalletSend = () => {
             <li>
               <label>Recipient Address</label>
               <img
-                src={VerifiedIcon}
+                src={`/${VerifiedIcon}`}
                 alt="checked"
                 className={statusIconClass}
               />
@@ -118,6 +129,13 @@ const WalletSend = () => {
                 onChange={handleAddressChange}
                 variant={addressInputClass}
               />
+              <Button
+                type="button"
+                variant={styles.textBtn}
+                onClick={() => setModalOpen(true)}
+              >
+                Contacts
+              </Button>
             </li>
             <li>
               <label>Dag Amount</label>

@@ -7,13 +7,14 @@ import {
   useLocation,
   useHistory,
 } from 'react-router-dom';
-import Start from 'containers/auth/Start';
 import { useTransition, animated } from 'react-spring';
+import Start from 'containers/auth/Start';
 import Home from 'containers/auth/Home';
 import Send, { SendConfirm } from 'containers/auth/Send';
 import Receive from 'containers/auth/Receive';
-import { useController } from 'hooks/index';
 import Import from 'containers/common/Import';
+import { useController } from 'hooks/index';
+import { SendMatchProps } from './types';
 
 const Auth = () => {
   const location = useLocation();
@@ -61,6 +62,15 @@ const Auth = () => {
               <Route path="/send/confirm" component={SendConfirm} exact />
             )}
             {isUnlocked && <Route path="/send" component={Send} exact />}
+            {isUnlocked && (
+              <Route
+                path="/send/:address"
+                render={({ match }: SendMatchProps) => (
+                  <Send initAddress={match.params.address} />
+                )}
+                exact
+              />
+            )}
             {isUnlocked && <Route path="/receive" component={Receive} exact />}
           </Switch>
         </animated.div>

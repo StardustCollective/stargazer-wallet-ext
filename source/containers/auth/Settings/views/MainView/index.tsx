@@ -5,7 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import ImportIcon from '@material-ui/icons/ImportExport';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LogOutIcon from '@material-ui/icons/ExitToApp';
-// import ContactsIcon from '@material-ui/icons/Group';
+import ContactsIcon from '@material-ui/icons/Group';
 import UserIcon from '@material-ui/icons/AccountCircleRounded';
 
 import Icon from 'components/Icon';
@@ -15,7 +15,7 @@ import IWalletState from 'state/wallet/types';
 import AccountSelect from 'components/AccountSelect';
 import {
   ACCOUNT_VIEW,
-  // CONTACTS_VIEW,
+  CONTACTS_VIEW,
   GENERAL_VIEW,
   IMPORT_ACCOUNT_VIEW,
   NEW_ACCOUNT_VIEW,
@@ -42,7 +42,7 @@ const MainView: FC<IMainView> = ({ onChange }) => {
 
   const handleLogout = () => {
     controller.wallet.logOut();
-    history.push('./app.html');
+    history.push('/app.html');
   };
 
   return (
@@ -76,13 +76,13 @@ const MainView: FC<IMainView> = ({ onChange }) => {
         <Icon Component={ImportIcon} />
         Import private key
       </section>
-      {/* <section
+      <section
         className={styles.general}
         onClick={() => showView(CONTACTS_VIEW)}
       >
         <Icon Component={ContactsIcon} />
         Contacts
-      </section> */}
+      </section>
       <section
         className={styles.general}
         onClick={() => showView(GENERAL_VIEW)}

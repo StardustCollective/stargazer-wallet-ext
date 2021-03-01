@@ -106,7 +106,7 @@ const SendConfirm = () => {
             variant={clsx(styles.button, styles.close)}
             linkTo="/send"
           >
-            Close
+            Cancel
           </Button>
           <Button type="submit" variant={styles.button} onClick={handleConfirm}>
             Confirm

@@ -46,7 +46,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     (state: RootState) => state.wallet
   );
   const [showedId, setShowedId] = useState<string>('0');
-  // const [selectedContact, setSelectedContact] = useState<string>('');
+  const [selectedContact, setSelectedContact] = useState<string>('');
   const [editable, setEditable] = useState(false);
   const [showedLabel, setShowedLabel] = useState('');
 
@@ -90,14 +90,14 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return 'Export private key';
       case routes.ABOUT_VIEW:
         return 'About';
-      // case routes.CONTACTS_VIEW:
-      //   return 'Contacts';
-      // case routes.CONTACT_VIEW:
-      //   return 'Contact';
-      // case routes.ADD_CONTACT_VIEW:
-      //   return 'Add Contact';
-      // case routes.EDIT_CONTACT_VIEW:
-      //   return 'Edit Contact';
+      case routes.CONTACTS_VIEW:
+        return 'Contacts';
+      case routes.CONTACT_VIEW:
+        return 'Contact';
+      case routes.ADD_CONTACT_VIEW:
+        return 'Add Contact';
+      case routes.EDIT_CONTACT_VIEW:
+        return 'Edit Contact';
       case routes.IMPORT_ACCOUNT_VIEW:
         return 'Import private key';
       default:
@@ -123,20 +123,20 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return <Views.PrivateKeyView id={showedId} />;
       case routes.ABOUT_VIEW:
         return <Views.AboutView />;
-      // case routes.CONTACTS_VIEW:
-      //   return (
-      //     <Views.ContactsView
-      //       onSelect={(id: string) => setSelectedContact(id)}
-      //     />
-      //   );
-      // case routes.ADD_CONTACT_VIEW:
-      //   return <Views.ModifyContactView type="add" />;
-      // case routes.EDIT_CONTACT_VIEW:
-      //   return (
-      //     <Views.ModifyContactView type="edit" selected={selectedContact} />
-      //   );
-      // case routes.CONTACT_VIEW:
-      //   return <Views.ContactView selected={selectedContact} />;
+      case routes.CONTACTS_VIEW:
+        return (
+          <Views.ContactsView
+            onSelect={(id: string) => setSelectedContact(id)}
+          />
+        );
+      case routes.ADD_CONTACT_VIEW:
+        return <Views.ModifyContactView type="add" />;
+      case routes.EDIT_CONTACT_VIEW:
+        return (
+          <Views.ModifyContactView type="edit" selected={selectedContact} />
+        );
+      case routes.CONTACT_VIEW:
+        return <Views.ContactView selected={selectedContact} />;
       case routes.IMPORT_ACCOUNT_VIEW:
         return <Views.ImportAccountView />;
       default:
