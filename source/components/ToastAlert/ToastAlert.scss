@@ -5,8 +5,7 @@
   width: 365px;
   box-sizing: border-box;
   padding: 12px;
-  border-radius: 7px;
-  box-shadow: $shadow-tooltip;
+  border-radius: 6px;
   color: $white;
   font-family: $inter;
   font-weight: 500;
@@ -20,7 +19,13 @@
   letter-spacing: 0.35px;
 
   &.error {
-    background-color: $red;
+    background-color: $red-100;
+  }
+
+  .icon {
+    margin-right: 12px;
+    width: 18px;
+    height: 18px;
   }
 }
 
