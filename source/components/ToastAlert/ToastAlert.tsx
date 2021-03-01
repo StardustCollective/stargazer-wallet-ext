@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import clsx from 'clsx';
 // import InfoIcon from '@material-ui/icons/InfoOutlined';
 import CancelIcon from '@material-ui/icons/Cancel';
-import WarningIcon from '@material-ui/icons/Warning';
 
 import styles from './ToastAlert.scss';
 

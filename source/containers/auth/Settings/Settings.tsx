@@ -66,7 +66,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
             onChange={(
               ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
             ) => setShowedLabel(ev.target.value)}
-            onKeydown={(ev: KeyboardEvent<HTMLInputElement>) => {
+            onKeyDown={(ev: KeyboardEvent<HTMLInputElement>) => {
               if (ev.key === 'Enter') {
                 setShowedLabel(ev.currentTarget.value);
                 handleChangeLabel();

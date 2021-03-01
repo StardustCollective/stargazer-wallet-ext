@@ -25,7 +25,6 @@ import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
 
 import styles from './Send.scss';
-import value from 'assets/images/svg/check-green.svg';
 interface IWalletSend {
   initAddress?: string;
 }
