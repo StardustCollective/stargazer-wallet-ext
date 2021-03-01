@@ -6,11 +6,13 @@ import styles from './FileSelect.scss';
 interface IFileSelect {
   accept?: string;
   onChange: (val: File | null) => void;
+  disabled?: boolean;
 }
 
 const FileSelect: FC<IFileSelect> = ({
   accept = 'application/JSON',
   onChange,
+  disabled = false,
 }) => {
   const [status, setStatus] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -43,7 +45,12 @@ const FileSelect: FC<IFileSelect> = ({
         accept={accept}
         onChange={(ev) => handleFileChoose(ev)}
       />
-      <Button type="button" variant={styles.button} onClick={handleClick}>
+      <Button
+        type="button"
+        variant={styles.button}
+        onClick={handleClick}
+        disabled={disabled}
+      >
         Choose File
       </Button>
       <span className={styles.chosen}>{status ?? 'No file choosen'}</span>

@@ -97,6 +97,7 @@ const AccountController = (actions: {
 
   const getAccountByPrivKeystore = async (keystoreId: string) => {
     const { keystores }: IWalletState = store.getState().wallet;
+    console.log(keystores[keystoreId]);
     if (!password || !keystores[keystoreId]) return null;
     privateKey = await dag.keyStore.decryptPrivateKey(
       keystores[keystoreId] as PrivKeystore,

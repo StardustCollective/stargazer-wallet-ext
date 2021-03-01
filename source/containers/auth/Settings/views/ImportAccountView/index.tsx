@@ -122,6 +122,7 @@ const ImportAccountView = () => {
                   options={[{ priv: 'Private key' }, { json: 'JSON file' }]}
                   onChange={(ev) => setImportType(ev.target.value as string)}
                   fullWidth
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -134,11 +135,15 @@ const ImportAccountView = () => {
                   variant={styles.textarea}
                   inputRef={register}
                   name="privKey"
+                  disabled={loading}
                 />
               </>
             ) : (
               <>
-                <FileSelect onChange={(val) => setJsonFile(val)} />
+                <FileSelect
+                  onChange={(val) => setJsonFile(val)}
+                  disabled={loading}
+                />
                 <span>Please enter your JSON file password:</span>
                 <TextInput
                   fullWidth
@@ -146,11 +151,17 @@ const ImportAccountView = () => {
                   name="password"
                   type="password"
                   visiblePassword
+                  disabled={loading}
                 />
               </>
             )}
             <span>Please name your new account:</span>
-            <TextInput fullWidth inputRef={register} name="label" />
+            <TextInput
+              fullWidth
+              inputRef={register}
+              name="label"
+              disabled={loading}
+            />
           </section>
           <section className={styles.actions}>
             <Button
