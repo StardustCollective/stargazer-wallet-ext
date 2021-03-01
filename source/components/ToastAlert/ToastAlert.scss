@@ -1,0 +1,31 @@
+@import '~assets/styles/variables';
+
+.toast {
+  background-color: $purple;
+  width: 365px;
+  box-sizing: border-box;
+  padding: 12px;
+  border-radius: 7px;
+  box-shadow: $shadow-tooltip;
+  color: $white;
+  font-family: $inter;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  flex-direction: row;
+  justify-content: flex-start;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.35px;
+
+  &.error {
+    background-color: $red;
+  }
+}
+
+:global(div#__react-alert__) {
+  & > div {
+    z-index: 9999 !important;
+  }
+}

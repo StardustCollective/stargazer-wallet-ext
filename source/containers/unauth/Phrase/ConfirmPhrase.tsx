@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from 'components/Button';
 import CheckIcon from 'assets/images/svg/check.svg';
 import { useHistory } from 'react-router-dom';
@@ -23,7 +23,7 @@ const ConfirmPhrase = () => {
     ? `Your Wallet is ready`
     : `Verify your recovery\nphrase`;
 
-  const isNotEqualArrays = useCallback((): boolean => {
+  const isNotEqualArrays = useMemo((): boolean => {
     if (!phrases) return true;
     return !isEqual(phrases.split(' '), newList);
   }, [phrases, newList]);
@@ -33,7 +33,6 @@ const ConfirmPhrase = () => {
     setNewList([...newList, orgList[idx]]);
     tempList.splice(idx, 1);
     setOrgList([...tempList]);
-    isNotEqualArrays();
   };
 
   const handleNewPhrase = (idx: number) => {
@@ -41,7 +40,6 @@ const ConfirmPhrase = () => {
     setOrgList([...orgList, newList[idx]]);
     tempList.splice(idx, 1);
     setNewList([...tempList]);
-    isNotEqualArrays();
   };
 
   const handleConfirm = () => {
@@ -94,7 +92,7 @@ const ConfirmPhrase = () => {
       <Button
         type="button"
         variant={passed ? styles.start : styles.validate}
-        disabled={isNotEqualArrays()}
+        disabled={isNotEqualArrays}
         onClick={handleConfirm}
       >
         {passed ? 'Next' : 'Validate'}

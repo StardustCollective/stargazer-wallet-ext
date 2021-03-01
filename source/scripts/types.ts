@@ -1,6 +1,8 @@
 import { Transaction } from '@stardust-collective/dag4-network';
 export interface IAccountInfo {
-  address: string;
+  address: {
+    [assetId: string]: string;
+  };
   balance: number;
   transactions: Transaction[];
 }

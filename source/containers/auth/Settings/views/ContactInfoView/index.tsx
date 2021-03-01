@@ -73,7 +73,7 @@ const ContactInfoView: FC<IContactInfoView> = ({ selected }) => {
               className={styles.iconBtn}
               onClick={() => setCodeOpened(!codeOpened)}
             >
-              <img src={QRCodeIcon} alt="qrcode" />
+              <img src={`/${QRCodeIcon}`} alt="qrcode" />
             </IconButton>
           </div>
         </div>

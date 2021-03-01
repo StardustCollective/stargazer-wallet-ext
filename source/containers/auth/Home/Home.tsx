@@ -11,6 +11,7 @@ import FullSelect from 'components/FullSelect';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
+import IWalletState from 'state/wallet/types';
 import TxsPanel from './TxsPanel';
 
 import styles from './Home.scss';
@@ -19,7 +20,7 @@ import { formatNumber } from '../helpers';
 const Home = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { accounts, activeIndex } = useSelector(
+  const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
 
@@ -31,28 +32,29 @@ const Home = () => {
 
   return (
     <div className={styles.wrapper}>
-      {accounts[activeIndex] ? (
+      {accounts[activeAccountId] ? (
         <>
           <Header showLogo />
           <section className={styles.account}>
             {Object.keys(accounts).length > 1 ? (
               <FullSelect
-                value={String(activeIndex)}
+                value={activeAccountId}
                 options={accounts}
                 onChange={async (val: string) => {
-                  await controller.wallet.switchWallet(Number(val));
+                  await controller.wallet.switchWallet(val);
                   controller.wallet.account.watchMemPool();
                 }}
               />
             ) : (
-              accounts[activeIndex].label
+              accounts[activeAccountId].label
             )}
           </section>
           <section className={styles.center}>
             <h3>
-              {formatNumber(accounts[activeIndex].balance)} <small>DAG</small>
+              {formatNumber(accounts[activeAccountId].balance)}{' '}
+              <small>DAG</small>
             </h3>
-            <small>≈ {getFiatAmount(accounts[activeIndex].balance)}</small>
+            <small>≈ {getFiatAmount(accounts[activeAccountId].balance)}</small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />
             </IconButton>
@@ -76,14 +78,14 @@ const Home = () => {
             </div>
           </section>
           <TxsPanel
-            address={accounts[activeIndex].address}
-            transactions={accounts[activeIndex].transactions}
+            address={accounts[activeAccountId].address.constellation}
+            transactions={accounts[activeAccountId].transactions}
           />
         </>
       ) : (
         <section
           className={clsx(styles.mask, {
-            [styles.hide]: accounts[activeIndex],
+            [styles.hide]: accounts[activeAccountId],
           })}
         >
           <CircularProgress className={styles.loader} />

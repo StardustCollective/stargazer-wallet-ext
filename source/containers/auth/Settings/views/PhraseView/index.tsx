@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
+import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import TextInput from 'components/TextInput';
@@ -13,6 +14,7 @@ const PhraseView = () => {
     '**** ******* ****** ****** ****** ******** *** ***** ****** ***** *****'
   );
 
+  const alert = useAlert();
   const controller = useController();
   const [isCopied, copyText] = useCopyClipboard();
   const { handleSubmit, register } = useForm({
@@ -31,6 +33,9 @@ const PhraseView = () => {
     if (res) {
       setPhrase(res);
       setChecked(true);
+    } else {
+      alert.removeAll();
+      alert.error('Error: Invalid password');
     }
   };
 

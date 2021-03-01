@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
+import { useAlert } from 'react-alert';
+
 import Header from 'containers/common/Header';
 import Layout from 'containers/common/Layout';
 import Button from 'components/Button';
@@ -10,21 +12,33 @@ import CheckIcon from 'assets/images/svg/check.svg';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { RootState } from 'state/store';
 import { ellipsis } from '../helpers';
+import IWalletState from 'state/wallet/types';
+
 import styles from './Confirm.scss';
 
 const SendConfirm = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { accounts, activeIndex } = useSelector(
+  const alert = useAlert();
+
+  const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = () => {
-    controller.wallet.account.confirmTempTx().then(() => {
-      setConfirmed(true);
-    });
+    controller.wallet.account
+      .confirmTempTx()
+      .then(() => {
+        setConfirmed(true);
+      })
+      .catch(() => {
+        if (tempTx?.fromAddress === tempTx?.toAddress) {
+          alert.removeAll();
+          alert.error('Error: An address cannot send a transaction to itself');
+        }
+      });
   };
 
   return confirmed ? (
@@ -59,7 +73,7 @@ const SendConfirm = () => {
         <div className={styles.row}>
           From
           <span>
-            {accounts[activeIndex]?.label || ''} (
+            {accounts[activeAccountId]?.label || ''} (
             {ellipsis(tempTx!.fromAddress)})
           </span>
         </div>
@@ -92,7 +106,7 @@ const SendConfirm = () => {
             variant={clsx(styles.button, styles.close)}
             linkTo="/send"
           >
-            Close
+            Cancel
           </Button>
           <Button type="submit" variant={styles.button} onClick={handleConfirm}>
             Confirm

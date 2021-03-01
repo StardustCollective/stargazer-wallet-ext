@@ -26,7 +26,6 @@ const CreatePass = () => {
   const nextHandler = () => {
     if (passed) {
       controller.wallet.createWallet(true);
-      controller.wallet.account.getLatestUpdate();
       history.push('/home');
     }
   };

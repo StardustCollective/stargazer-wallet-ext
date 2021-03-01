@@ -1,5 +1,6 @@
 import React, { useState, FC } from 'react';
 import clsx from 'clsx';
+import { useAlert } from 'react-alert';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -13,11 +14,12 @@ import { RootState } from 'state/store';
 import styles from './index.scss';
 
 interface IPrivateKeyView {
-  index: number;
+  id: string;
 }
 
-const PrivateKeyView: FC<IPrivateKeyView> = ({ index }) => {
+const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
   const controller = useController();
+  const alert = useAlert();
   const { accounts }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -42,11 +44,14 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ index }) => {
     [styles.notAllowed]: !checked,
   });
 
-  const onSubmit = (data: any) => {
-    const res = controller.wallet.account.getPrivKey(index, data.password);
+  const onSubmit = async (data: any) => {
+    const res = await controller.wallet.account.getPrivKey(id, data.password);
     if (res) {
       setPrivKey(res);
       setChecked(true);
+    } else {
+      alert.removeAll();
+      alert.error('Error: Invalid password');
     }
   };
 
@@ -58,18 +63,18 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ index }) => {
 
   return (
     <div className={styles.wrapper}>
-      {accounts[index] && (
+      {accounts[id] && (
         <>
           <div className={styles.heading}>
             <div>Click to copy your public key:</div>
             <span
               className={addressClass}
               onClick={() => {
-                copyText(accounts[index].address);
+                copyText(accounts[id].address.constellation);
                 copyAddress(true);
               }}
             >
-              {ellipsis(accounts[index].address)}
+              {ellipsis(accounts[id].address.constellation)}
             </span>
           </div>
           <div className={styles.content}>
