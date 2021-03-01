@@ -8,12 +8,12 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import FullSelect from 'components/FullSelect';
+import AddAsset from 'components/AddAsset';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
 import AssetsPanel from './AssetsPanel';
-import AddAsset from './AddAsset';
 import styles from './Home.scss';
 import { formatNumber } from '../helpers';
 
@@ -40,7 +40,7 @@ const Home = () => {
           {showAddAsset ? (
             <>
               <section className={styles.account}>Add Asset</section>
-              <AddAsset></AddAsset>
+              <AddAsset />
             </>
           ) : (
             <>

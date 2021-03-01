@@ -1,4 +1,4 @@
-import { Asset } from './types';
+import { Asset } from 'types/asset';
 
 const mockAssets: Array<Asset> = [
   {

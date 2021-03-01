@@ -7,17 +7,19 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
-import FullSelect from 'components/FullSelect';
+import AssetSelect from 'components/AssetSelect';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
+import mockAssets from 'containers/auth/Home/mockData';
+import { Asset } from 'types/asset';
 import TxsPanel from './TxsPanel';
 
 import styles from './Asset.scss';
 import { formatNumber } from '../helpers';
 
-const Asset = () => {
+const AssetDetail = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
   const { accounts, activeAccountId }: IWalletState = useSelector(
@@ -36,18 +38,10 @@ const Asset = () => {
         <>
           <Header showLogo />
           <section className={styles.account}>
-            {Object.keys(accounts).length > 1 ? (
-              <FullSelect
-                value={String(activeAccountId)}
-                options={accounts}
-                onChange={async (val: string) => {
-                  await controller.wallet.switchWallet(val);
-                  controller.wallet.account.watchMemPool();
-                }}
-              />
-            ) : (
-              accounts[activeAccountId].label
-            )}
+            <AssetSelect
+              assetList={mockAssets}
+              onChange={(asset: Asset) => console.log('item clicked', asset)}
+            />
           </section>
           <section className={styles.center}>
             <h3>
@@ -95,4 +89,4 @@ const Asset = () => {
   );
 };
 
-export default Asset;
+export default AssetDetail;

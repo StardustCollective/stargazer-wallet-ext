@@ -51,7 +51,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 3;
 
     font-weight: bold;
     font-size: 18px;
@@ -170,6 +170,7 @@
 
     &.expanded {
       height: 528px;
+      z-index: 3;
     }
 
     .stargazer {

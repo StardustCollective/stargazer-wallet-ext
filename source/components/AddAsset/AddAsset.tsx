@@ -6,8 +6,8 @@ import TextInput from 'components/TextInput';
 import styles from './AddAsset.scss';
 import SearchIcon from 'assets/images/svg/search.svg';
 
-import mockAssets from './mockData';
-import { Asset } from './types';
+import mockAssets from 'containers/auth/Home/mockData';
+import { Asset } from 'types/asset';
 
 const AddAsset = () => {
   const [filteredAssets, setFilteredAssets] = useState<Array<Asset>>();
