@@ -32,7 +32,7 @@ const Auth = () => {
 
   useEffect(() => {
     const redirectRoute = controller.appRoute();
-    history.push(redirectRoute);
+    if (redirectRoute !== '/app.html') history.push(redirectRoute);
   }, []);
 
   useEffect(() => {

@@ -222,7 +222,7 @@ const AccountController = (actions: {
           !account ||
           (account.address.constellation !== pTx.sender &&
             account.address.constellation !== pTx.receiver) ||
-          accLatestInfo!.transactions.filter(
+          accLatestInfo?.transactions.filter(
             (tx: Transaction) => tx.hash === pTx.hash
           ).length > 0
         )
@@ -293,6 +293,7 @@ const AccountController = (actions: {
         accounts,
       }: IWalletState = store.getState().wallet;
       if (
+        !accounts[activeAccountId] ||
         !accounts[activeAccountId].transactions ||
         !accounts[activeAccountId].transactions.filter(
           (tx: Transaction) => tx.fee === -1

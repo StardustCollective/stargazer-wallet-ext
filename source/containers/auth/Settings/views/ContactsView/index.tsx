@@ -45,9 +45,6 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
         >
           Add contact
         </Button>
-        <Button type="button" variant={styles.export}>
-          Export list
-        </Button>
       </div>
       <ul className={styles.list}>
         {Object.values(contacts).map((contact: IContactState) => (
