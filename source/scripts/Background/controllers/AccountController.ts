@@ -264,6 +264,8 @@ const AccountController = (actions: {
   const updateTempTx = (tx: ITransactionInfo) => {
     if (dag.account.isActive()) {
       tempTx = { ...tx };
+      tempTx.fromAddress = tempTx.fromAddress.trim();
+      tempTx.toAddress = tempTx.toAddress.trim();
     }
   };
 
