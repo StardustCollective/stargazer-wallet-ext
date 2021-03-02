@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import Button from 'components/Button';
-import CheckIcon from 'assets/images/svg/check.svg';
+import CheckIcon from '@material-ui/icons/CheckCircle';
 import { useHistory } from 'react-router-dom';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
@@ -53,9 +53,7 @@ const ConfirmPhrase = () => {
 
   return (
     <Layout title={title} linkTo="/create/phrase/generated">
-      {passed && (
-        <img src={`/${CheckIcon}`} className={styles.checked} alt="Success" />
-      )}
+      {passed && <CheckIcon className={styles.checked} />}
       <div className="body-description">
         {passed
           ? 'You should now have your recovery phrase and your wallet password written down for future reference.'

@@ -51,7 +51,7 @@ const AccountController = (actions: {
   importPrivKey: (privKey: string) => Promise<PrivKeystore | null>;
 }): IAccountController => {
   let privateKey: string;
-  let tempTx: ITransactionInfo;
+  let tempTx: ITransactionInfo | null;
   let account: IAccountState | null;
   let intervalId: any;
   let password: string;
@@ -305,7 +305,7 @@ const AccountController = (actions: {
   };
 
   const confirmTempTx = async () => {
-    if (dag.account.isActive() && account) {
+    if (dag.account.isActive() && account && tempTx) {
       try {
         const pendingTx = await dag.account.transferDag(
           tempTx.toAddress,
@@ -319,9 +319,11 @@ const AccountController = (actions: {
             txs: [_coventPendingType(pendingTx), ...account.transactions],
           })
         );
+        tempTx = null;
         watchMemPool();
         return true;
       } catch (error) {
+        tempTx = null;
         return false;
       }
     }

@@ -32,6 +32,13 @@ const Auth = () => {
 
   useEffect(() => {
     const redirectRoute = controller.appRoute();
+    if (
+      redirectRoute === '/send/confirm' &&
+      !controller.wallet.account.getTempTx()
+    ) {
+      history.push('/home');
+      return;
+    }
     if (redirectRoute !== '/app.html') history.push(redirectRoute);
   }, []);
 
