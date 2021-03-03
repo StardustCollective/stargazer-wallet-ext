@@ -14,7 +14,7 @@ interface IAssetItem {
 const AssetItem: FC<IAssetItem> = ({ asset, itemClicked }: IAssetItem) => {
   return (
     <Fragment key={uuid()}>
-      <li onClick={() => itemClicked()}>
+      <li className={styles.assetItem} onClick={() => itemClicked()}>
         <div>
           <div className={styles.iconWrapper}>
             <img src={asset.logo}></img>
