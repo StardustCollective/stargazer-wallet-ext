@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import Button from 'components/Button';
@@ -19,6 +20,7 @@ interface IModifyContactView {
 const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   const controller = useController();
   const showView = useSettingsView();
+  const history = useHistory();
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
@@ -31,11 +33,13 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   });
 
   const onSubmit = (data: any) => {
-    if (!controller.wallet.account.isValidDAGAddress(data.address)) return;
+    console.log(data.address.trim());
+    if (!controller.wallet.account.isValidDAGAddress(data.address.trim()))
+      return;
     controller.contacts.modifyContact(
       type,
       data.name,
-      data.address,
+      data.address.trim(),
       data.memo,
       selected
     );
@@ -70,7 +74,11 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
         inputRef={register}
       />
       <div className={styles.actions}>
-        <Button type="button" variant={styles.cancel}>
+        <Button
+          type="button"
+          variant={styles.cancel}
+          onClick={() => history.goBack()}
+        >
           Cancel
         </Button>
         <Button type="submit" variant={styles.save}>
