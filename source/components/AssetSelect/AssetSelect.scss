@@ -34,6 +34,26 @@
       transition: all 0.3s;
       transform: rotateZ(0deg);
     }
+    span {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
+      width: 100%;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 24px;
+      color: $gray-dark;
+
+      small {
+        font-size: 10px;
+        line-height: 10px;
+        margin-top: 2px;
+        margin-left: 4px;
+        color: $gray-100;
+      }
+    }
   }
 
   ul.options {
