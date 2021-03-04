@@ -13,7 +13,6 @@ import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
 import mockAssets from 'containers/auth/Home/mockData';
-import { ellipsis } from 'containers/auth/helpers';
 
 import { Asset } from 'types/asset';
 import TxsPanel from './TxsPanel';
@@ -44,9 +43,7 @@ const AssetDetail = () => {
               assetList={mockAssets}
               onChange={(asset: Asset) => console.log('item clicked', asset)}
               tokenName={'DAG'}
-              tokenAddress={ellipsis(
-                accounts[activeAccountId]!.address['constellation']
-              )}
+              tokenAddress={accounts[activeAccountId]!.address['constellation']}
             />
           </section>
           <section className={styles.center}>

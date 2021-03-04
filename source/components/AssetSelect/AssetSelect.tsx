@@ -2,8 +2,12 @@ import React, { useState, FC } from 'react';
 import clsx from 'clsx';
 import DownArrowIcon from '@material-ui/icons/ExpandMore';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import IconButton from '@material-ui/core/IconButton';
+
 import AssetItem from 'components/AssetItem';
+import Tooltip from 'components/Tooltip';
 import { ellipsis } from 'containers/auth/helpers';
+import { useCopyClipboard } from 'hooks/index';
 
 import { Asset } from 'types/asset';
 import styles from './AssetSelect.scss';
@@ -22,6 +26,8 @@ const AssetSelect: FC<IAssetSelect> = ({
   onChange,
 }: IAssetSelect) => {
   const [expanded, setExpanded] = useState(false);
+  const [isCopied, copyText] = useCopyClipboard();
+
   console.log('asset list', assetList);
   return (
     <div
@@ -29,11 +35,24 @@ const AssetSelect: FC<IAssetSelect> = ({
       onClick={() => setExpanded(!expanded)}
     >
       <span className={styles.selected}>
-        <FileCopyIcon className={styles.file_copy} />
-        {/* // TODO: Changed in the future, using dummy data for now */}
+        <Tooltip
+          title={isCopied ? 'Copied' : 'Copy Address '}
+          placement="bottom"
+          arrow
+        >
+          <IconButton
+            className={styles.icon_wrapper}
+            onClick={(e) => {
+              e.stopPropagation();
+              copyText(tokenAddress);
+            }}
+          >
+            <FileCopyIcon />
+          </IconButton>
+        </Tooltip>
         <span>
           {tokenName}
-          <small>{tokenAddress}</small>
+          <small>{ellipsis(tokenAddress)}</small>
         </span>
         <DownArrowIcon className={styles.arrow} />
       </span>

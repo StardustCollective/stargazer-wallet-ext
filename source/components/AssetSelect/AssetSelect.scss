@@ -27,14 +27,24 @@
       transition: all 0.3s;
       transform: rotateZ(0deg);
     }
-    .file_copy {
+    .icon_wrapper {
+      display: flex;
+      align-items: center;
       position: absolute;
-      left: 40px;
-      width: 16px;
-      transition: all 0.3s;
-      transform: rotateZ(0deg);
+      left: 30px;
+      padding: 0;
+      width: 36px;
+      height: 36px;
+      &:active {
+        svg {
+          color: $purple;
+        }
+      }
+      svg {
+        width: 16px;
+      }
     }
-    span {
+    & > span {
       display: flex;
       flex-direction: column;
       align-items: center;
