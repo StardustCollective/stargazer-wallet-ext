@@ -1,4 +1,3 @@
-import copy from 'copy-to-clipboard';
 import { useHistory } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { browser } from 'webextension-polyfill-ts';
@@ -20,9 +19,9 @@ export function useCopyClipboard(
 ): [boolean, (toCopy: string) => void] {
   const [isCopied, setIsCopied] = useState(false);
 
-  const staticCopy = useCallback((text) => {
-    const didCopy = copy(text);
-    setIsCopied(didCopy);
+  const staticCopy = useCallback(async (text) => {
+    await navigator.clipboard.writeText(text);
+    setIsCopied(true);
   }, []);
 
   useEffect(() => {

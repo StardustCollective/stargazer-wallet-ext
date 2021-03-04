@@ -22,7 +22,7 @@ import { IAccountInfo, ITransactionInfo } from '../../types';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
-  confirmTempTx: () => Promise<boolean>;
+  confirmTempTx: () => Promise<void>;
   getPrivKey: (id: string, pwd: string) => Promise<string | null>;
   getPrimaryAccount: (pwd: string) => void;
   isValidDAGAddress: (address: string) => boolean;
@@ -97,7 +97,6 @@ const AccountController = (actions: {
 
   const getAccountByPrivKeystore = async (keystoreId: string) => {
     const { keystores }: IWalletState = store.getState().wallet;
-    console.log(keystores[keystoreId]);
     if (!password || !keystores[keystoreId]) return null;
     privateKey = await dag.keyStore.decryptPrivateKey(
       keystores[keystoreId] as PrivKeystore,
@@ -207,8 +206,6 @@ const AccountController = (actions: {
         ? await getAccountByIndex(Number(activeAccountId))
         : await getAccountByPrivKeystore(activeAccountId);
 
-    console.log('latest info', accLatestInfo);
-
     if (!accLatestInfo) return;
 
     account = accounts[activeAccountId];
@@ -305,29 +302,34 @@ const AccountController = (actions: {
   };
 
   const confirmTempTx = async () => {
-    if (dag.account.isActive() && account && tempTx) {
-      try {
-        const pendingTx = await dag.account.transferDag(
-          tempTx.toAddress,
-          tempTx.amount,
-          tempTx.fee
-        );
-        dag.monitor.addToMemPoolMonitor(pendingTx);
-        store.dispatch(
-          updateTransactions({
-            id: account.id,
-            txs: [_coventPendingType(pendingTx), ...account.transactions],
-          })
-        );
-        tempTx = null;
-        watchMemPool();
-        return true;
-      } catch (error) {
-        tempTx = null;
-        return false;
-      }
+    if (!dag.account.isActive) {
+      throw new Error('Error: No signed account exists');
     }
-    return false;
+    if (!account) {
+      throw new Error("Error: Can't find active account info");
+    }
+    if (!tempTx) {
+      throw new Error("Error: Can't find transaction info");
+    }
+    try {
+      console.log('from address:', dag.account.address);
+      const pendingTx = await dag.account.transferDag(
+        tempTx.toAddress,
+        tempTx.amount,
+        tempTx.fee
+      );
+      dag.monitor.addToMemPoolMonitor(pendingTx);
+      store.dispatch(
+        updateTransactions({
+          id: account.id,
+          txs: [_coventPendingType(pendingTx), ...account.transactions],
+        })
+      );
+      tempTx = null;
+      watchMemPool();
+    } catch (error) {
+      throw new Error(error);
+    }
   };
 
   // Other

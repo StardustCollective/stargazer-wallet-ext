@@ -30,19 +30,12 @@ const SendConfirm = () => {
   const handleConfirm = () => {
     controller.wallet.account
       .confirmTempTx()
-      .then((status) => {
-        if (status) {
-          setConfirmed(true);
-        } else {
-          alert.removeAll();
-          alert.error('Error: Invalid transaction');
-        }
+      .then(() => {
+        setConfirmed(true);
       })
-      .catch(() => {
-        if (tempTx?.fromAddress === tempTx?.toAddress) {
-          alert.removeAll();
-          alert.error('Error: An address cannot send a transaction to itself');
-        }
+      .catch((error: Error) => {
+        alert.removeAll();
+        alert.error(error.message);
       });
   };
 
