@@ -122,6 +122,7 @@ const WalletController = (): IWalletController => {
     store.dispatch(setKeystoreInfo(v3Keystore));
     store.dispatch(updateSeedKeystoreId(v3Keystore.id));
     await account.subscribeAccount(0);
+    await account.getPrimaryAccount(password);
     if (isUpdated) {
       account.getLatestUpdate();
     }
