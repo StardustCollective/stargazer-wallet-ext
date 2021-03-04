@@ -164,11 +164,24 @@ const AccountController = (actions: {
 
   const importPrivKeyAccount = async (privKey: string, label: string) => {
     if (!label) return null;
+
     const keystore = await actions.importPrivKey(privKey);
     if (!keystore) return null;
-    privateKey = privKey;
+
+    const { accounts }: IWalletState = store.getState().wallet;
     const res = await getAccountByPrivateKey(privKey);
 
+    // check if the same account exists
+    const isExisting =
+      Object.values(accounts).filter(
+        (acc) => acc.address.constellation === res.address.constellation
+      ).length > 0;
+    if (isExisting) {
+      store.dispatch(removeKeystoreInfo(keystore.id));
+      return null;
+    }
+
+    privateKey = privKey;
     account = {
       id: keystore.id,
       label: label,
