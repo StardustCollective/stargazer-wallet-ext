@@ -93,7 +93,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleAddressChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setAddress(ev.target.value);
+      setAddress(ev.target.value.trim());
     },
     []
   );
