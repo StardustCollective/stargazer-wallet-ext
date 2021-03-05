@@ -9,7 +9,6 @@ import UserIcon from '@material-ui/icons/AccountCircleRounded';
 import Icon from 'components/Icon';
 import { RootState } from 'state/store';
 import IContactBookState, { IContactState } from 'state/contacts/types';
-import { ellipsis } from '../helpers';
 
 import styles from './Contacts.scss';
 
@@ -46,7 +45,7 @@ const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
                       <Icon Component={UserIcon} />
                       <div>
                         {contact.name}
-                        <small>{ellipsis(contact.address)}</small>
+                        <small>{contact.address}</small>
                       </div>
                     </span>
                   </div>

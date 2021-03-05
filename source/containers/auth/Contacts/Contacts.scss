@@ -107,6 +107,9 @@
                   line-height: 18px;
                   color: $gray-100;
                   margin-top: 4px;
+                  width: 264px;
+                  text-overflow: ellipsis;
+                  overflow: hidden;
                 }
               }
             }
