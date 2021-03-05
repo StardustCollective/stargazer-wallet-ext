@@ -325,7 +325,7 @@ const AccountController = (actions: {
       throw new Error("Error: Can't find transaction info");
     }
     try {
-      console.log('from address:', dag.account.address);
+      console.log('from address:', dag.account.address, tempTx.fee);
       const pendingTx = await dag.account.transferDag(
         tempTx.toAddress,
         tempTx.amount,
