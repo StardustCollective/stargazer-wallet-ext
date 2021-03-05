@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import { ellipsis } from 'containers/auth/helpers';
 import { useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
 import IContactBookState, { IContactState } from 'state/contacts/types';
@@ -54,7 +53,7 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
                 <Icon Component={UserIcon} />
                 <div>
                   {contact.name}
-                  <small>{ellipsis(contact.address)}</small>
+                  <small>{contact.address}</small>
                 </div>
               </span>
               <IconButton
