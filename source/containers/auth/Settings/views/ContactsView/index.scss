@@ -75,6 +75,9 @@
               line-height: 18px;
               color: $gray-100;
               margin-top: 4px;
+              width: 228px;
+              text-overflow: ellipsis;
+              overflow: hidden;
             }
           }
         }
