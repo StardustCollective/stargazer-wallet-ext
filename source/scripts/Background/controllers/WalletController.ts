@@ -1,4 +1,4 @@
-import { dag } from '@stardust-collective/dag4-wallet';
+import { dag } from '@stardust-collective/dag4';
 import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
 import {

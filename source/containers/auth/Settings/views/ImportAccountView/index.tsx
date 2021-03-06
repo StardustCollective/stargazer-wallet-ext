@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { dag } from '@stardust-collective/dag4-wallet';
+import { dag } from '@stardust-collective/dag4';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
