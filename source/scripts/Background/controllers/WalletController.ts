@@ -140,6 +140,7 @@ const WalletController = (): IWalletController => {
   const switchWallet = async (id: string) => {
     store.dispatch(changeAccountActiveId(id));
     await account.getLatestUpdate();
+    dag.monitor.startMonitor();
   };
 
   const switchNetwork = (networkId: string) => {
