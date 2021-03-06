@@ -5,7 +5,7 @@ import { STORE_PORT, DAG_NETWORK } from 'constants/index';
 import { browser } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
 import store from 'state/store';
-import { dag } from '@stardust-collective/dag4-wallet';
+import { dag } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';

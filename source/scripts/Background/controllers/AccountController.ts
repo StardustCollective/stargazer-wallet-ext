@@ -1,4 +1,4 @@
-import { dag } from '@stardust-collective/dag4-wallet';
+import { dag } from '@stardust-collective/dag4';
 import { Transaction, PendingTx } from '@stardust-collective/dag4-network';
 import { hdkey } from 'ethereumjs-wallet';
 
