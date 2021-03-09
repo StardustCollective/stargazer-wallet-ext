@@ -13,6 +13,7 @@ import { DAG_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
 
 import styles from './index.scss';
+import { AssetType } from 'state/wallet/types';
 
 const GeneralView = () => {
   const controller = useController();
@@ -27,7 +28,10 @@ const GeneralView = () => {
       value: unknown;
     }>
   ) => {
-    controller.wallet.switchNetwork(ev.target.value as string);
+    controller.wallet.switchNetwork(
+      AssetType.Constellation,
+      ev.target.value as string
+    );
   };
 
   return (

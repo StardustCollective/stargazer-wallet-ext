@@ -22,6 +22,25 @@ export const DAG_NETWORK: {
   },
 };
 
+export const ETH_NETWORK: {
+  [networkId: string]: {
+    id: string;
+    label: string;
+    chainId: number;
+  };
+} = {
+  main: {
+    id: 'main',
+    label: 'Ethereum Mainnet',
+    chainId: 1,
+  },
+  ropsten: {
+    id: 'ropsten',
+    label: 'Ethereum Testnet',
+    chainId: 3,
+  },
+};
+
 export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 

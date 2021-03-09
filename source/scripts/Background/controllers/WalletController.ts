@@ -12,14 +12,14 @@ import {
 } from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
-import IWalletState, { SeedKeystore } from 'state/wallet/types';
+import IWalletState, { AssetType, SeedKeystore } from 'state/wallet/types';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;
   createWallet: (isUpdated?: boolean) => void;
   deleteWallet: (pwd: string) => void;
   switchWallet: (id: string) => Promise<void>;
-  switchNetwork: (networkId: string) => void;
+  switchNetwork: (assetId: string, networkId: string) => void;
   generatedPhrase: () => string | null;
   setWalletPassword: (pwd: string) => void;
   importPhrase: (phr: string) => boolean;
@@ -143,14 +143,19 @@ const WalletController = (): IWalletController => {
     dag.monitor.startMonitor();
   };
 
-  const switchNetwork = (networkId: string) => {
-    if (DAG_NETWORK[networkId]!.id) {
+  const switchNetwork = (assetId: string, networkId: string) => {
+    if (assetId === AssetType.Constellation && DAG_NETWORK[networkId]!.id) {
       dag.network.setNetwork({
         id: DAG_NETWORK[networkId].id,
         beUrl: DAG_NETWORK[networkId].beUrl,
         lbUrl: DAG_NETWORK[networkId].lbUrl,
       });
-      store.dispatch(changeActiveNetwork(DAG_NETWORK[networkId]!.id));
+      store.dispatch(
+        changeActiveNetwork({
+          asset: assetId,
+          network: DAG_NETWORK[networkId]!.id,
+        })
+      );
       account.getLatestUpdate();
     }
   };

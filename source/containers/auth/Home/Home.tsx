@@ -11,7 +11,7 @@ import FullSelect from 'components/FullSelect';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AssetType } from 'state/wallet/types';
 import TxsPanel from './TxsPanel';
 
 import styles from './Home.scss';
@@ -79,7 +79,9 @@ const Home = () => {
           </section>
           <TxsPanel
             address={accounts[activeAccountId].address.constellation}
-            transactions={accounts[activeAccountId].transactions}
+            transactions={
+              accounts[activeAccountId].transactions[AssetType.Constellation]
+            }
           />
         </>
       ) : (

@@ -9,6 +9,7 @@ import { dag } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
+import { AssetType } from 'state/wallet/types';
 
 declare global {
   interface Window {
@@ -32,7 +33,8 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
     const networkId =
-      store.getState().wallet!.activeNetwork || DAG_NETWORK.main.id;
+      store.getState().wallet!.activeNetwork[AssetType.Constellation] ||
+      DAG_NETWORK.main.id;
     dag.di.useFetchHttpClient(window.fetch.bind(window));
     dag.di.useLocalStorageClient(localStorage);
     dag.network.config({

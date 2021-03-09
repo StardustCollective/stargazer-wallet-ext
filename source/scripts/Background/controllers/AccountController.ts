@@ -14,6 +14,7 @@ import {
 } from 'state/wallet';
 import IWalletState, {
   AccountType,
+  AssetType,
   IAccountState,
   PrivKeystore,
 } from 'state/wallet/types';
@@ -84,7 +85,11 @@ const AccountController = (actions: {
         constellation: dag.account.address,
       },
       balance,
-      transactions,
+      transactions: {
+        [AssetType.Constellation]: transactions,
+        [AssetType.Ethereum]: [],
+        [AssetType.ERC20]: [],
+      },
     };
   };
 
@@ -232,12 +237,14 @@ const AccountController = (actions: {
           !account ||
           (account.address.constellation !== pTx.sender &&
             account.address.constellation !== pTx.receiver) ||
-          accLatestInfo?.transactions.filter(
+          accLatestInfo?.transactions[AssetType.Constellation].filter(
             (tx: Transaction) => tx.hash === pTx.hash
           ).length > 0
         )
           return;
-        accLatestInfo!.transactions.unshift(_coventPendingType(pTx));
+        accLatestInfo!.transactions[AssetType.Constellation].unshift(
+          _coventPendingType(pTx)
+        );
       });
     }
 
@@ -289,7 +296,8 @@ const AccountController = (actions: {
     store.dispatch(
       updateTransactions({
         id: account.id,
-        txs: [...account.transactions, ...newTxs],
+        asset: AssetType.Constellation,
+        txs: [...account.transactions[AssetType.Constellation], ...newTxs],
       })
     );
   };
@@ -304,8 +312,8 @@ const AccountController = (actions: {
       }: IWalletState = store.getState().wallet;
       if (
         !accounts[activeAccountId] ||
-        !accounts[activeAccountId].transactions ||
-        !accounts[activeAccountId].transactions.filter(
+        !accounts[activeAccountId].transactions[AssetType.Constellation] ||
+        !accounts[activeAccountId].transactions[AssetType.Constellation].filter(
           (tx: Transaction) => tx.fee === -1
         ).length
       ) {
@@ -335,7 +343,11 @@ const AccountController = (actions: {
       store.dispatch(
         updateTransactions({
           id: account.id,
-          txs: [_coventPendingType(pendingTx), ...account.transactions],
+          asset: AssetType.Constellation,
+          txs: [
+            _coventPendingType(pendingTx),
+            ...account.transactions[AssetType.Constellation],
+          ],
         })
       );
       tempTx = null;

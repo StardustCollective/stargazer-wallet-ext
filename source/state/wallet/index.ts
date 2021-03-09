@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
-import { DAG_NETWORK } from 'constants/index';
+import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import IWalletState, {
   IAccountUpdateState,
   IAccountState,
   Keystore,
   AccountType,
+  AssetType,
 } from './types';
 
 const initialState: IWalletState = {
@@ -15,7 +16,10 @@ const initialState: IWalletState = {
   accounts: {},
   activeAccountId: '0',
   seedKeystoreId: '',
-  activeNetwork: DAG_NETWORK.main.id,
+  activeNetwork: {
+    [AssetType.Constellation]: DAG_NETWORK.main.id,
+    [AssetType.Ethereum]: ETH_NETWORK.main.id,
+  },
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -80,19 +84,34 @@ const WalletState = createSlice({
       state.accounts = {};
       state.seedKeystoreId = '';
       state.activeAccountId = '0';
-      state.activeNetwork = DAG_NETWORK.main.id;
+      state.activeNetwork = {
+        [AssetType.Constellation]: DAG_NETWORK.main.id,
+        [AssetType.Ethereum]: ETH_NETWORK.main.id,
+      };
     },
     changeAccountActiveId(state: IWalletState, action: PayloadAction<string>) {
       state.activeAccountId = action.payload;
     },
-    changeActiveNetwork(state: IWalletState, action: PayloadAction<string>) {
-      state.activeNetwork = action.payload;
+    changeActiveNetwork(
+      state: IWalletState,
+      action: PayloadAction<{ asset: string; network: string }>
+    ) {
+      state.activeNetwork = {
+        ...state.activeNetwork,
+        [action.payload.asset]: action.payload.network,
+      };
     },
     updateTransactions(
       state: IWalletState,
-      action: PayloadAction<{ id: string; txs: Transaction[] }>
+      action: PayloadAction<{
+        id: string;
+        asset: string;
+        txs: Transaction[] | any;
+      }>
     ) {
-      state.accounts[action.payload.id].transactions = action.payload.txs;
+      state.accounts[action.payload.id].transactions[
+        action.payload.asset as AssetType
+      ] = action.payload.txs;
     },
     updateLabel(
       state: IWalletState,

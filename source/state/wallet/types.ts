@@ -15,6 +15,12 @@ export enum AccountType {
   PrivKey,
 }
 
+export enum AssetType {
+  Constellation = 'constellation',
+  Ethereum = 'ethereum',
+  ERC20 = 'erc20',
+}
+
 export interface IAccountState {
   id: string;
   label: string;
@@ -23,13 +29,21 @@ export interface IAccountState {
   };
   balance: number;
   type: AccountType;
-  transactions: Transaction[];
+  transactions: {
+    [AssetType.Constellation]: Transaction[];
+    [AssetType.Ethereum]: any[];
+    [AssetType.ERC20]: any[];
+  };
 }
 
 export interface IAccountUpdateState {
   id: string;
   balance: number;
-  transactions: Transaction[];
+  transactions: {
+    [AssetType.Constellation]: Transaction[];
+    [AssetType.Ethereum]: any[];
+    [AssetType.ERC20]: any[];
+  };
 }
 
 interface IKeyStoreState {
@@ -44,5 +58,7 @@ export default interface IWalletState {
   };
   activeAccountId: string;
   seedKeystoreId: string;
-  activeNetwork: string;
+  activeNetwork: {
+    [assetId: string]: string;
+  };
 }
