@@ -10,6 +10,7 @@ import {
 import { useTransition, animated } from 'react-spring';
 import Start from 'containers/auth/Start';
 import Home from 'containers/auth/Home';
+import Asset from 'containers/auth/Asset';
 import Send, { SendConfirm } from 'containers/auth/Send';
 import Receive from 'containers/auth/Receive';
 import Import from 'containers/common/Import';
@@ -65,6 +66,7 @@ const Auth = () => {
             </Route>
             {!isUnlocked && <Route path="/import" component={Import} exact />}
             {isUnlocked && <Route path="/home" component={Home} exact />}
+            {isUnlocked && <Route path="/asset" component={Asset} exact />}
             {isUnlocked && (
               <Route path="/send/confirm" component={SendConfirm} exact />
             )}

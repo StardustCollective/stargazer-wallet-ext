@@ -14,7 +14,7 @@ import { formatDistanceDate } from '../helpers';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { DAG_EXPLORER_SEARCH } from 'constants/index';
 
-import styles from './Home.scss';
+import styles from './Asset.scss';
 
 interface ITxsPanel {
   address: string;
