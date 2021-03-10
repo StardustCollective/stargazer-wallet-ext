@@ -8,6 +8,9 @@
   width: 100%;
   height: 100%;
 
+  form.bodywrapper {
+    width: 372px;
+  }
   section.subheading {
     height: 60px;
     width: 100%;
@@ -77,10 +80,9 @@
 
   section.content {
     width: 100%;
-    height: 408px;
     box-sizing: border-box;
     padding: 0 36px;
-    padding-bottom: 24px;
+    padding-bottom: 20px;
     position: relative;
 
     ul.form {
@@ -193,6 +195,88 @@
       color: $gray-dark;
       margin-top: 24px;
     }
+  }
+  section.transactionFee {
+    border-top: 1px solid $gray-light;
+    padding: 17px 24px 0 24px;
+
+    .heading {
+      display: flex;
+      justify-content: space-between;
+      .title {
+        font-style: 500;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      .advancedSetting {
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 24px;
+
+        text-transform: uppercase;
+
+        color: $purple;
+      }
+    }
+    .status {
+      margin-top: 8px;
+      .equalAmount {
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 24px;
+        color: $gray-100;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 300px;
+        display: block;
+      }
+    }
+
+    .sliderRail {
+      height: 12px;
+      background: $purple-light;
+      border-radius: 6px;
+    }
+    .sliderTrack {
+      background: transparent;
+    }
+    .mark {
+      background: transparent;
+    }
+    .thumb {
+      height: 24px;
+      width: 24px;
+      background: $purple;
+      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+      margin-top: -6px;
+      margin-left: -12px;
+    }
+    .markLabel {
+      top: 34px;
+      font-weight: 500;
+      font-size: 10px;
+      line-height: 24px;
+      font-family: Inter;
+      color: $gray-100;
+
+      &[data-index='0'] {
+        transform: none;
+      }
+      &[data-index='2'] {
+        transform: translateX(-100%);
+      }
+    }
+  }
+
+  section.actionGroup {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 36px;
+    padding-bottom: 24px;
 
     .actions {
       display: flex;

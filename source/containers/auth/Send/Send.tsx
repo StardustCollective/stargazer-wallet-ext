@@ -12,6 +12,7 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
+import Slider from '@material-ui/core/Slider';
 
 import Header from 'containers/common/Header';
 import Contacts from '../Contacts';
@@ -20,7 +21,7 @@ import TextInput from 'components/TextInput';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AssetType } from 'state/wallet/types';
 import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
 
@@ -30,11 +31,16 @@ interface IWalletSend {
 }
 
 const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
+  const selectedAsset = AssetType.Ethereum;
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
       amount: yup.number().moreThan(0).required('Error: Invalid DAG Amount'),
-      fee: yup.string().required('Error: Invalid transaction fee'),
+      fee:
+        // @ts-expect-error
+        selectedAsset === AssetType.Constellation
+          ? yup.string().required('Error: Invalid transaction fee')
+          : yup.string(),
     }),
   });
   const history = useHistory();
@@ -52,7 +58,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const [modalOpened, setModalOpen] = useState(false);
 
   const isValidAddress = useMemo(() => {
-    return controller.wallet.account.isValidDAGAddress(address);
+    // @ts-expect-error
+    if (selectedAsset === AssetType.Constellation)
+      return controller.wallet.account.isValidDAGAddress(address);
+    return controller.wallet.account.isValidERC20Address(address);
   }, [address]);
 
   const addressInputClass = clsx(styles.input, styles.address, {
@@ -68,13 +77,19 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       alert.error('Error: Invalid recipient address');
       return;
     }
-    controller.wallet.account.updateTempTx({
-      fromAddress: accounts[activeAccountId].address.constellation,
-      toAddress: data.address,
-      amount: data.amount,
-      fee: data.fee,
-    });
-    history.push('/send/confirm');
+    // @ts-expect-error
+    if (selectedAsset === AssetType.Constellation) {
+      controller.wallet.account.updateTempTx({
+        fromAddress: accounts[activeAccountId].address.constellation,
+        toAddress: data.address,
+        amount: data.amount,
+        fee: data.fee,
+      });
+      history.push('/send/confirm');
+    } else {
+      // TODO: Do the ETH temp tx stuff here.
+      console.log('ETH send');
+    }
   };
 
   const handleAmountChange = useCallback(
@@ -110,6 +125,18 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     setModalOpen(false);
   };
 
+  const getAssetName = (val: string) => {
+    if (val === AssetType.Ethereum) return 'ETH';
+    else if (val === AssetType.Constellation) return 'DAG';
+    return 'ERC20';
+  };
+
+  const marks = [
+    { value: 0, label: 'LOW' },
+    { value: 1, label: 'AVERAGE' },
+    { value: 2, label: 'HIGH' },
+  ];
+
   useEffect(handleGetFee, []);
 
   return (
@@ -120,12 +147,15 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
         onClose={() => setModalOpen(false)}
         onChange={handleSelectContact}
       />
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <section className={styles.subheading}>Send DAG</section>
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.bodywrapper}>
+        <section className={styles.subheading}>
+          {`Send ${getAssetName(selectedAsset)}`}
+        </section>
         <section className={styles.balance}>
           <div>
             Balance:{' '}
-            <span>{formatNumber(accounts[activeAccountId].balance)}</span> DAG
+            <span>{formatNumber(accounts[activeAccountId].balance)}</span>{' '}
+            {getAssetName(selectedAsset)}
           </div>
         </section>
         <section className={styles.content}>
@@ -138,7 +168,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 className={statusIconClass}
               />
               <TextInput
-                placeholder="Enter a valid DAG address"
+                placeholder={`Enter a valid ${getAssetName(
+                  selectedAsset
+                )} address`}
                 fullWidth
                 value={address}
                 name="address"
@@ -155,7 +187,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               </Button>
             </li>
             <li>
-              <label>Dag Amount</label>
+              <label>{`${getAssetName(selectedAsset)} Amount`} </label>
               <TextInput
                 type="number"
                 placeholder="Enter amount to send"
@@ -176,26 +208,32 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 Max
               </Button>
             </li>
-            <li>
-              <label>Transaction Fee</label>
-              <TextInput
-                type="number"
-                placeholder="Enter transaction fee"
-                fullWidth
-                inputRef={register}
-                name="fee"
-                onChange={handleFeeChange}
-                value={fee}
-                variant={clsx(styles.input, styles.fee)}
-              />
-              <Button
-                type="button"
-                variant={styles.textBtn}
-                onClick={handleGetFee}
-              >
-                Recommend
-              </Button>
-            </li>
+
+            {
+              // @ts-expect-error
+              selectedAsset === AssetType.Constellation && (
+                <li>
+                  <label>Transaction Fee</label>
+                  <TextInput
+                    type="number"
+                    placeholder="Enter transaction fee"
+                    fullWidth
+                    inputRef={register}
+                    name="fee"
+                    onChange={handleFeeChange}
+                    value={fee}
+                    variant={clsx(styles.input, styles.fee)}
+                  />
+                  <Button
+                    type="button"
+                    variant={styles.textBtn}
+                    onClick={handleGetFee}
+                  >
+                    Recommend
+                  </Button>
+                </li>
+              )
+            }
           </ul>
           <div className={styles.status}>
             <span className={styles.equalAmount}>
@@ -207,9 +245,50 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               </span>
             )}
           </div>
-          <div className={styles.description}>
-            {`With current network conditions we recommend a fee of ${recommend} DAG.`}
-          </div>
+          {
+            // @ts-expect-error
+            selectedAsset === AssetType.Constellation && (
+              <div className={styles.description}>
+                {`With current network conditions we recommend a fee of ${recommend} DAG.`}
+              </div>
+            )
+          }
+        </section>
+        {
+          // @ts-expect-error
+          selectedAsset !== AssetType.Constellation && (
+            <section className={styles.transactionFee}>
+              <div className={styles.heading}>
+                <span className={styles.title}>Transaction Fee</span>
+                <span className={styles.advancedSetting}>
+                  ADVANCED gas settings
+                </span>
+              </div>
+              {/* <div>Gas fee settings go here</div> */}
+              <Slider
+                classes={{
+                  rail: styles.sliderRail,
+                  track: styles.sliderTrack,
+                  mark: styles.mark,
+                  markActive: styles.mark,
+                  thumb: styles.thumb,
+                  markLabel: styles.markLabel,
+                }}
+                defaultValue={1}
+                min={0}
+                max={2}
+                scale={(x) => x * 2}
+                aria-labelledby="discrete-slider-restrict"
+                step={1}
+                marks={marks}
+              />
+              <div className={styles.status}>
+                <span className={styles.equalAmount}>0.0021 ETH (≈ $1.20)</span>
+              </div>
+            </section>
+          )
+        }
+        <section className={styles.actionGroup}>
           <div className={styles.actions}>
             <Button
               type="button"
