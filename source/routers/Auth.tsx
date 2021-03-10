@@ -12,6 +12,7 @@ import Start from 'containers/auth/Start';
 import Home from 'containers/auth/Home';
 import Asset from 'containers/auth/Asset';
 import Send, { SendConfirm } from 'containers/auth/Send';
+import GasSettings from 'containers/auth/Send/GasSettings';
 import Receive from 'containers/auth/Receive';
 import Import from 'containers/common/Import';
 import { useController } from 'hooks/index';
@@ -71,6 +72,9 @@ const Auth = () => {
               <Route path="/send/confirm" component={SendConfirm} exact />
             )}
             {isUnlocked && <Route path="/send" component={Send} exact />}
+            {isUnlocked && (
+              <Route path="/gas-settings" component={GasSettings} exact />
+            )}
             {isUnlocked && (
               <Route
                 path="/send/:address"

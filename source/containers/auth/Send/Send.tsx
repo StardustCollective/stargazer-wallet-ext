@@ -260,7 +260,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             <section className={styles.transactionFee}>
               <div className={styles.heading}>
                 <span className={styles.title}>Transaction Fee</span>
-                <span className={styles.advancedSetting}>
+                <span
+                  className={styles.advancedSetting}
+                  onClick={() => history.push('/gas-settings')}
+                >
                   ADVANCED gas settings
                 </span>
               </div>
