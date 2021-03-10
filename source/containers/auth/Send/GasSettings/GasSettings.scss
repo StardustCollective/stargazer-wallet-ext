@@ -29,69 +29,18 @@
     text-align: center;
     color: $gray-dark;
   }
-
-  section.balance {
-    width: 100%;
-    font-weight: 500;
-    font-size: 12px;
-    margin-bottom: 12px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 18px;
-    color: $gray-dark;
-
-    span {
-      font-size: 16px;
-    }
-  }
-
-  .input {
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 24px;
-    height: 48px;
-    padding: 0 16px;
-    background: $white;
-    transition: all 0.3s;
-
-    input {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 18px;
-      transition: all 0.3s;
-    }
-
-    &.amount {
-      input {
-        padding-right: 48px;
-      }
-    }
-
-    &.fee {
-      input {
-        padding-right: 92px;
-      }
-    }
-  }
-
   section.content {
     width: 100%;
     box-sizing: border-box;
-    padding: 0 36px;
-    padding-bottom: 20px;
+    padding: 24px 36px 20px 36px;
     position: relative;
 
     ul.form {
       list-style: none;
-      margin: -12px;
       padding: 12px;
       border-radius: 10px;
       background: $gray-light;
-
+      margin: 0;
       li {
         height: 56px;
         position: relative;
@@ -194,81 +143,6 @@
       line-height: 18px;
       color: $gray-dark;
       margin-top: 24px;
-    }
-  }
-  section.transactionFee {
-    border-top: 1px solid $gray-light;
-    padding: 17px 24px 0 24px;
-
-    .heading {
-      display: flex;
-      justify-content: space-between;
-      .title {
-        font-style: 500;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
-      }
-      .advancedSetting {
-        font-family: Inter;
-        font-style: normal;
-        font-weight: 500;
-        font-size: 10px;
-        line-height: 24px;
-
-        text-transform: uppercase;
-        color: $purple;
-        cursor: pointer;
-      }
-    }
-    .status {
-      margin-top: 8px;
-      .equalAmount {
-        font-weight: 500;
-        font-size: 10px;
-        line-height: 24px;
-        color: $gray-100;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 300px;
-        display: block;
-      }
-    }
-
-    .sliderRail {
-      height: 12px;
-      background: $purple-light;
-      border-radius: 6px;
-    }
-    .sliderTrack {
-      background: transparent;
-    }
-    .mark {
-      background: transparent;
-    }
-    .thumb {
-      height: 24px;
-      width: 24px;
-      background: $purple;
-      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-      margin-top: -6px;
-      margin-left: -12px;
-    }
-    .markLabel {
-      top: 34px;
-      font-weight: 500;
-      font-size: 10px;
-      line-height: 24px;
-      font-family: Inter;
-      color: $gray-100;
-
-      &[data-index='0'] {
-        transform: none;
-      }
-      &[data-index='2'] {
-        transform: translateX(-100%);
-      }
     }
   }
 
