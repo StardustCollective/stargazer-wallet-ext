@@ -27,6 +27,7 @@ export interface IAccountController {
   getPrivKey: (id: string, pwd: string) => Promise<string | null>;
   getPrimaryAccount: (pwd: string) => void;
   isValidDAGAddress: (address: string) => boolean;
+  isValidERC20Address: (address: string) => boolean;
   subscribeAccount: (
     index: number
   ) => Promise<{ [assetId: string]: string } | null>;
@@ -362,6 +363,11 @@ const AccountController = (actions: {
     return dag.account.validateDagAddress(address);
   };
 
+  const isValidERC20Address = (address: string) => {
+    // TODO
+    return address.length === 42;
+  };
+
   const getRecommendFee = async () => {
     return await dag.account.getFeeRecommendation();
   };
@@ -374,6 +380,7 @@ const AccountController = (actions: {
     importPrivKeyAccount,
     getPrimaryAccount,
     isValidDAGAddress,
+    isValidERC20Address,
     subscribeAccount,
     unsubscribeAccount,
     removePrivKeyAccount,
