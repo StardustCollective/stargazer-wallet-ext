@@ -47,7 +47,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const getFiatAmount = useFiat();
   const controller = useController();
   const alert = useAlert();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
+  const { accounts, activeAccountId, activeAsset }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
 
@@ -154,7 +154,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
         <section className={styles.balance}>
           <div>
             Balance:{' '}
-            <span>{formatNumber(accounts[activeAccountId].balance)}</span>{' '}
+            <span>
+              {formatNumber(accounts[activeAccountId].balance[activeAsset.id])}
+            </span>{' '}
             {getAssetName(selectedAsset)}
           </div>
         </section>

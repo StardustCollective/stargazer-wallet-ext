@@ -27,22 +27,26 @@ export interface IAccountState {
   address: {
     [assetId: string]: string;
   };
-  balance: number;
+  balance: {
+    [assetId: string]: number;
+  };
   type: AccountType;
   transactions: {
     [AssetType.Constellation]: Transaction[];
     [AssetType.Ethereum]: any[];
-    [AssetType.ERC20]: any[];
+    [assetId: string]: any[]; // other erc20 assets
   };
 }
 
 export interface IAccountUpdateState {
   id: string;
-  balance: number;
+  balance: {
+    [assetId: string]: number;
+  };
   transactions: {
     [AssetType.Constellation]: Transaction[];
     [AssetType.Ethereum]: any[];
-    [AssetType.ERC20]: any[];
+    [assetId: string]: any[]; // other erc20 assets
   };
 }
 
@@ -55,6 +59,10 @@ export default interface IWalletState {
   status: number;
   accounts: {
     [accountId: string]: IAccountState;
+  };
+  activeAsset: {
+    id: string;
+    type: AssetType;
   };
   activeAccountId: string;
   seedKeystoreId: string;

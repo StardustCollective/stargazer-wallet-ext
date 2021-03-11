@@ -26,18 +26,15 @@ export const ETH_NETWORK: {
   [networkId: string]: {
     id: string;
     label: string;
-    chainId: number;
   };
 } = {
-  main: {
-    id: 'main',
+  mainnet: {
+    id: 'mainnet',
     label: 'Ethereum Mainnet',
-    chainId: 1,
   },
-  ropsten: {
-    id: 'ropsten',
+  testnet: {
+    id: 'testnet',
     label: 'Ethereum Testnet',
-    chainId: 3,
   },
 };
 

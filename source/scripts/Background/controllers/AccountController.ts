@@ -1,8 +1,10 @@
 import { dag } from '@stardust-collective/dag4';
-import { Transaction, PendingTx } from '@stardust-collective/dag4-network';
+import { ethers } from 'ethers';
 import { hdkey } from 'ethereumjs-wallet';
+import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
+import { Transaction, PendingTx } from '@stardust-collective/dag4-network';
 
-import store from 'state/store';
+import store, { RootState } from 'state/store';
 import {
   createAccount,
   updateStatus,
@@ -19,7 +21,7 @@ import IWalletState, {
   PrivKeystore,
 } from 'state/wallet/types';
 
-import { IAccountInfo, ITransactionInfo } from '../../types';
+import { IAccountInfo, ITransactionInfo, ETHNetwork } from '../../types';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
@@ -57,6 +59,10 @@ const AccountController = (actions: {
   let account: IAccountState | null;
   let intervalId: any;
   let password: string;
+  let ethClient: XChainEthClient;
+
+  // limit number of txs
+  const TXS_LIMIT = 10;
 
   const _coventPendingType = (pending: PendingTx) => {
     return {
@@ -77,18 +83,40 @@ const AccountController = (actions: {
   const getAccountByPrivateKey = async (
     privateKey: string
   ): Promise<IAccountInfo> => {
+    const { activeNetwork }: IWalletState = store.getState().wallet;
     dag.account.loginPrivateKey(privateKey);
-    // const ethAddress = dag.keyStore.getEthAddressFromPrivateKey(privateKey);
-    const balance = await dag.account.getBalance();
-    const transactions = await dag.account.getTransactions(10);
+    ethClient = new XChainEthClient({
+      network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+      privateKey,
+    });
+
+    // fetch dag info
+    const dagBalance = await dag.account.getBalance();
+    const dagTxs = await dag.account.getTransactions(TXS_LIMIT);
+
+    // fetch eth info
+    const ethAddress = ethClient.getAddress();
+    const balances = await ethClient.getBalance();
+    const ethBalance = ethers.utils.formatEther(
+      balances[0].amount.amount().toString()
+    );
+    const ethTxs = await ethClient.getTransactions({
+      address: ethAddress,
+      limit: TXS_LIMIT,
+    });
+
     return {
       address: {
-        constellation: dag.account.address,
+        [AssetType.Constellation]: dag.account.address,
+        [AssetType.Ethereum]: ethClient.getAddress(),
       },
-      balance,
+      balance: {
+        [AssetType.Constellation]: dagBalance,
+        [AssetType.Ethereum]: Number(ethBalance),
+      },
       transactions: {
-        [AssetType.Constellation]: transactions,
-        [AssetType.Ethereum]: [],
+        [AssetType.Constellation]: dagTxs,
+        [AssetType.Ethereum]: ethTxs.txs,
         [AssetType.ERC20]: [],
       },
     };

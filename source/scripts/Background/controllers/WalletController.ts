@@ -150,14 +150,14 @@ const WalletController = (): IWalletController => {
         beUrl: DAG_NETWORK[networkId].beUrl,
         lbUrl: DAG_NETWORK[networkId].lbUrl,
       });
-      store.dispatch(
-        changeActiveNetwork({
-          asset: assetId,
-          network: DAG_NETWORK[networkId]!.id,
-        })
-      );
-      account.getLatestUpdate();
     }
+    store.dispatch(
+      changeActiveNetwork({
+        asset: assetId,
+        network: networkId,
+      })
+    );
+    account.getLatestUpdate();
   };
 
   const setWalletPassword = (pwd: string) => {

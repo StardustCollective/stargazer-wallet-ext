@@ -15,10 +15,14 @@ const initialState: IWalletState = {
   status: 0,
   accounts: {},
   activeAccountId: '0',
+  activeAsset: {
+    id: AssetType.Constellation,
+    type: AssetType.Constellation,
+  },
   seedKeystoreId: '',
   activeNetwork: {
     [AssetType.Constellation]: DAG_NETWORK.main.id,
-    [AssetType.Ethereum]: ETH_NETWORK.main.id,
+    [AssetType.Ethereum]: ETH_NETWORK.mainnet.id,
   },
 };
 
@@ -84,6 +88,10 @@ const WalletState = createSlice({
       state.accounts = {};
       state.seedKeystoreId = '';
       state.activeAccountId = '0';
+      state.activeAsset = {
+        id: AssetType.Constellation,
+        type: AssetType.Constellation,
+      };
       state.activeNetwork = {
         [AssetType.Constellation]: DAG_NETWORK.main.id,
         [AssetType.Ethereum]: ETH_NETWORK.main.id,
@@ -100,6 +108,14 @@ const WalletState = createSlice({
         ...state.activeNetwork,
         [action.payload.asset]: action.payload.network,
       };
+    },
+    changeActiveAsset(
+      state: IWalletState,
+      action: PayloadAction<{
+        assetId: string;
+      }>
+    ) {
+      state.activeAsset.id = action.payload.assetId;
     },
     updateTransactions(
       state: IWalletState,
@@ -133,6 +149,7 @@ export const {
   updateSeedKeystoreId,
   changeAccountActiveId,
   changeActiveNetwork,
+  changeActiveAsset,
   updateAccount,
   updateTransactions,
   updateLabel,
