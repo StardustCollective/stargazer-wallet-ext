@@ -4,6 +4,11 @@ import IPriceState from './types';
 
 const initialState: IPriceState = {
   fiat: {},
+  currency: {
+    id: 'usd',
+    symbol: '$',
+    name: 'USD',
+  },
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update

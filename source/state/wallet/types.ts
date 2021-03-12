@@ -3,7 +3,7 @@ import {
   KDFParamsPhrase,
   KDFParamsPrivateKey,
 } from '@stardust-collective/dag4-keystore/types/v3-keystore';
-import { Transaction } from '@stardust-collective/dag4-network';
+import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -21,32 +21,28 @@ export enum AssetType {
   ERC20 = 'erc20',
 }
 
+export type Transaction = DAGTransaction | any;
+export interface IAssetState {
+  id: string;
+  balance: number;
+  address: string;
+  transactions: Transaction[];
+}
+
 export interface IAccountState {
   id: string;
   label: string;
-  address: {
-    [assetId: string]: string;
+  assets: {
+    [assetId: string]: IAssetState;
   };
-  balance: {
-    [assetId: string]: number;
-  };
+  activeAssetId: string;
   type: AccountType;
-  transactions: {
-    [AssetType.Constellation]: Transaction[];
-    [AssetType.Ethereum]: any[];
-    [assetId: string]: any[]; // other erc20 assets
-  };
 }
 
 export interface IAccountUpdateState {
   id: string;
-  balance: {
-    [assetId: string]: number;
-  };
-  transactions: {
-    [AssetType.Constellation]: Transaction[];
-    [AssetType.Ethereum]: any[];
-    [assetId: string]: any[]; // other erc20 assets
+  assets: {
+    [assetId: string]: IAssetState;
   };
 }
 
@@ -59,10 +55,6 @@ export default interface IWalletState {
   status: number;
   accounts: {
     [accountId: string]: IAccountState;
-  };
-  activeAsset: {
-    id: string;
-    type: AssetType;
   };
   activeAccountId: string;
   seedKeystoreId: string;

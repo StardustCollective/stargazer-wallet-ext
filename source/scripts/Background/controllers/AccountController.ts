@@ -4,7 +4,7 @@ import { hdkey } from 'ethereumjs-wallet';
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import { Transaction, PendingTx } from '@stardust-collective/dag4-network';
 
-import store, { RootState } from 'state/store';
+import store from 'state/store';
 import {
   createAccount,
   updateStatus,
@@ -30,19 +30,15 @@ export interface IAccountController {
   getPrimaryAccount: (pwd: string) => void;
   isValidDAGAddress: (address: string) => boolean;
   isValidERC20Address: (address: string) => boolean;
-  subscribeAccount: (
-    index: number
-  ) => Promise<{ [assetId: string]: string } | null>;
+  subscribeAccount: (index: number) => Promise<string | null>;
   unsubscribeAccount: (index: number, pwd: string) => boolean;
-  addNewAccount: (
-    label: string
-  ) => Promise<{ [assetId: string]: string } | null>;
+  addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   updateAccountLabel: (id: string, label: string) => void;
   importPrivKeyAccount: (
     privKey: string,
     label: string
-  ) => Promise<{ [assetId: string]: string } | null>;
+  ) => Promise<string | null>;
   removePrivKeyAccount: (id: string, password: string) => boolean;
   getRecommendFee: () => Promise<number>;
   watchMemPool: () => void;
@@ -64,7 +60,7 @@ const AccountController = (actions: {
   // limit number of txs
   const TXS_LIMIT = 10;
 
-  const _coventPendingType = (pending: PendingTx) => {
+  const _coventDAGPendingTx = (pending: PendingTx) => {
     return {
       hash: pending.hash,
       amount: pending.amount,
@@ -106,18 +102,19 @@ const AccountController = (actions: {
     });
 
     return {
-      address: {
-        [AssetType.Constellation]: dag.account.address,
-        [AssetType.Ethereum]: ethClient.getAddress(),
-      },
-      balance: {
-        [AssetType.Constellation]: dagBalance,
-        [AssetType.Ethereum]: Number(ethBalance),
-      },
-      transactions: {
-        [AssetType.Constellation]: dagTxs,
-        [AssetType.Ethereum]: ethTxs.txs,
-        [AssetType.ERC20]: [],
+      assets: {
+        [AssetType.Constellation]: {
+          id: AssetType.Constellation,
+          balance: dagBalance,
+          address: dag.account.address,
+          transactions: dagTxs,
+        },
+        [AssetType.Ethereum]: {
+          id: AssetType.Ethereum,
+          balance: Number(ethBalance),
+          address: ethAddress,
+          transactions: ethTxs.txs,
+        },
       },
     };
   };
@@ -144,21 +141,22 @@ const AccountController = (actions: {
     const seedAccounts = Object.values(accounts).filter(
       (account) => account.type === AccountType.Seed
     );
+
     if (seedAccounts && Object.keys(seedAccounts).includes(String(index)))
       return null;
-    const res: IAccountInfo | null = await getAccountByIndex(index);
+    const accountInfo: IAccountInfo | null = await getAccountByIndex(index);
 
+    if (!accountInfo) return null;
     account = {
       id: String(index),
       label: label || `Account ${index + 1}`,
-      address: res!.address,
-      balance: res!.balance,
-      transactions: res!.transactions,
+      ...accountInfo,
+      activeAssetId: AssetType.Constellation,
       type: AccountType.Seed,
     };
 
     store.dispatch(createAccount(account));
-    return account!.address;
+    return account.assets[AssetType.Constellation].address;
   };
 
   const removePrivKeyAccount = (id: string, pwd: string) => {
@@ -203,12 +201,14 @@ const AccountController = (actions: {
     if (!keystore) return null;
 
     const { accounts }: IWalletState = store.getState().wallet;
-    const res = await getAccountByPrivateKey(privKey);
+    const accountInfo = await getAccountByPrivateKey(privKey);
 
     // check if the same account exists
     const isExisting =
       Object.values(accounts).filter(
-        (acc) => acc.address.constellation === res.address.constellation
+        (acc) =>
+          acc.assets[AssetType.Constellation].address ===
+          accountInfo.assets[AssetType.Constellation].address
       ).length > 0;
     if (isExisting) {
       store.dispatch(removeKeystoreInfo(keystore.id));
@@ -219,14 +219,13 @@ const AccountController = (actions: {
     account = {
       id: keystore.id,
       label: label,
-      address: res!.address,
-      balance: res!.balance,
-      transactions: res!.transactions,
+      ...accountInfo,
+      activeAssetId: AssetType.Constellation,
       type: AccountType.PrivKey,
     };
 
     store.dispatch(createAccount(account));
-    return account!.address;
+    return account.assets[AssetType.Constellation].address;
   };
 
   const getPrimaryAccount = (pwd: string) => {
@@ -256,23 +255,23 @@ const AccountController = (actions: {
     if (!accLatestInfo) return;
 
     account = accounts[activeAccountId];
-    // check pending txs
+
+    // check pending DAG txs
     const memPool = window.localStorage.getItem('dag4-network-main-mempool');
     if (memPool) {
       const pendingTxs = JSON.parse(memPool);
-      console.log(pendingTxs);
       pendingTxs.forEach((pTx: PendingTx) => {
         if (
           !account ||
-          (account.address.constellation !== pTx.sender &&
-            account.address.constellation !== pTx.receiver) ||
-          accLatestInfo?.transactions[AssetType.Constellation].filter(
+          (account.assets[AssetType.Constellation].address !== pTx.sender &&
+            account.assets[AssetType.Constellation].address !== pTx.receiver) ||
+          accLatestInfo.assets[AssetType.Constellation].transactions.filter(
             (tx: Transaction) => tx.hash === pTx.hash
           ).length > 0
         )
           return;
-        accLatestInfo!.transactions[AssetType.Constellation].unshift(
-          _coventPendingType(pTx)
+        accLatestInfo.assets[AssetType.Constellation].transactions.unshift(
+          _coventDAGPendingTx(pTx)
         );
       });
     }
@@ -280,8 +279,7 @@ const AccountController = (actions: {
     store.dispatch(
       updateAccount({
         id: activeAccountId,
-        balance: accLatestInfo.balance,
-        transactions: accLatestInfo.transactions,
+        ...accLatestInfo,
       })
     );
   };
@@ -325,8 +323,11 @@ const AccountController = (actions: {
     store.dispatch(
       updateTransactions({
         id: account.id,
-        asset: AssetType.Constellation,
-        txs: [...account.transactions[AssetType.Constellation], ...newTxs],
+        assetId: AssetType.Constellation,
+        txs: [
+          ...account.assets[AssetType.Constellation].transactions,
+          ...newTxs,
+        ],
       })
     );
   };
@@ -341,10 +342,11 @@ const AccountController = (actions: {
       }: IWalletState = store.getState().wallet;
       if (
         !accounts[activeAccountId] ||
-        !accounts[activeAccountId].transactions[AssetType.Constellation] ||
-        !accounts[activeAccountId].transactions[AssetType.Constellation].filter(
-          (tx: Transaction) => tx.fee === -1
-        ).length
+        !accounts[activeAccountId].assets[AssetType.Constellation]
+          .transactions ||
+        !accounts[activeAccountId].assets[
+          AssetType.Constellation
+        ].transactions.filter((tx: Transaction) => tx.fee === -1).length
       ) {
         clearInterval(intervalId);
       }
@@ -372,10 +374,10 @@ const AccountController = (actions: {
       store.dispatch(
         updateTransactions({
           id: account.id,
-          asset: AssetType.Constellation,
+          assetId: AssetType.Constellation,
           txs: [
-            _coventPendingType(pendingTx),
-            ...account.transactions[AssetType.Constellation],
+            _coventDAGPendingTx(pendingTx),
+            ...account.assets[AssetType.Constellation].transactions,
           ],
         })
       );

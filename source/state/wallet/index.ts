@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
+
 import IWalletState, {
   IAccountUpdateState,
   IAccountState,
@@ -15,10 +16,6 @@ const initialState: IWalletState = {
   status: 0,
   accounts: {},
   activeAccountId: '0',
-  activeAsset: {
-    id: AssetType.Constellation,
-    type: AssetType.Constellation,
-  },
   seedKeystoreId: '',
   activeNetwork: {
     [AssetType.Constellation]: DAG_NETWORK.main.id,
@@ -88,10 +85,6 @@ const WalletState = createSlice({
       state.accounts = {};
       state.seedKeystoreId = '';
       state.activeAccountId = '0';
-      state.activeAsset = {
-        id: AssetType.Constellation,
-        type: AssetType.Constellation,
-      };
       state.activeNetwork = {
         [AssetType.Constellation]: DAG_NETWORK.main.id,
         [AssetType.Ethereum]: ETH_NETWORK.main.id,
@@ -112,22 +105,23 @@ const WalletState = createSlice({
     changeActiveAsset(
       state: IWalletState,
       action: PayloadAction<{
+        id: string;
         assetId: string;
       }>
     ) {
-      state.activeAsset.id = action.payload.assetId;
+      state.accounts[action.payload.id].activeAssetId = action.payload.assetId;
     },
     updateTransactions(
       state: IWalletState,
       action: PayloadAction<{
         id: string;
-        asset: string;
+        assetId: string;
         txs: Transaction[] | any;
       }>
     ) {
-      state.accounts[action.payload.id].transactions[
-        action.payload.asset as AssetType
-      ] = action.payload.txs;
+      state.accounts[action.payload.id].assets[
+        action.payload.assetId
+      ].transactions = action.payload.txs;
     },
     updateLabel(
       state: IWalletState,
