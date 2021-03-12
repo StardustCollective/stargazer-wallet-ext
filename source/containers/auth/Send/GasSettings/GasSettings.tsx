@@ -8,7 +8,7 @@ import styles from './GasSettings.scss';
 const GasSettings = () => {
   return (
     <div className={styles.wrapper}>
-      <Header backLink="/home" />
+      <Header backLink="/send" />
       <form className={styles.bodywrapper}>
         <section className={styles.subheading}>Advanced Gas Settings</section>
         <section className={styles.content}>

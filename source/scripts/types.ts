@@ -4,7 +4,9 @@ export interface IAccountInfo {
   address: {
     [assetId: string]: string;
   };
-  balance: number;
+  balance: {
+    [assetId: string]: number;
+  };
   transactions: {
     [AssetType.Constellation]: Transaction[];
     [AssetType.Ethereum]: any[];
@@ -18,3 +20,5 @@ export interface ITransactionInfo {
   amount: number;
   fee: number | undefined;
 }
+
+export type ETHNetwork = 'testnet' | 'mainnet';

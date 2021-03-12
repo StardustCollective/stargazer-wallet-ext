@@ -39,6 +39,7 @@ const AssetsPanel: FC<IAssetsPanel> = ({ setShowAddAsset }: IAssetsPanel) => {
         {mockAssets.map((asset: Asset) => {
           return (
             <AssetItem
+              key={asset.name}
               asset={asset}
               itemClicked={() => {
                 console.log('Asset Item Clicked');

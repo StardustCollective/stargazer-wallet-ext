@@ -23,7 +23,7 @@ import { formatNumber } from '../helpers';
 const AssetDetail = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
+  const { accounts, activeAccountId, activeAsset }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
 
@@ -37,21 +37,24 @@ const AssetDetail = () => {
     <div className={styles.wrapper}>
       {accounts[activeAccountId] ? (
         <>
-          <Header showLogo />
+          <Header />
           <section className={styles.account}>
             <AssetSelect
               assetList={mockAssets}
               onChange={(asset: Asset) => console.log('item clicked', asset)}
               tokenName={'DAG'}
-              tokenAddress={accounts[activeAccountId]!.address['constellation']}
+              tokenAddress={accounts[activeAccountId]!.address[activeAsset.id]}
             />
           </section>
           <section className={styles.center}>
             <h3>
-              {formatNumber(accounts[activeAccountId].balance)}{' '}
+              {formatNumber(accounts[activeAccountId].balance[activeAsset.id])}{' '}
               <small>DAG</small>
             </h3>
-            <small>≈ {getFiatAmount(accounts[activeAccountId].balance)}</small>
+            <small>
+              ≈{' '}
+              {getFiatAmount(accounts[activeAccountId].balance[activeAsset.id])}
+            </small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />
             </IconButton>

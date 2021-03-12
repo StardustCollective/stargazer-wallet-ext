@@ -6,7 +6,6 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Header from 'containers/common/Header';
-import Button from 'components/Button';
 import FullSelect from 'components/FullSelect';
 import AddAsset from 'components/AddAsset';
 import { useController } from 'hooks/index';
@@ -20,7 +19,7 @@ import { formatNumber } from '../helpers';
 const Home = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
+  const { accounts, activeAccountId, activeAsset }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
 
@@ -60,33 +59,20 @@ const Home = () => {
               </section>
               <section className={styles.center}>
                 <h3>
-                  {formatNumber(accounts[activeAccountId].balance)}{' '}
+                  {formatNumber(
+                    accounts[activeAccountId].balance[activeAsset.id]
+                  )}{' '}
                   <small>DAG</small>
                 </h3>
                 <small>
-                  ≈ {getFiatAmount(accounts[activeAccountId].balance)}
+                  ≈{' '}
+                  {getFiatAmount(
+                    accounts[activeAccountId].balance[activeAsset.id]
+                  )}
                 </small>
                 <IconButton className={styles.refresh} onClick={handleRefresh}>
                   <RefreshIcon />
                 </IconButton>
-                <div className={styles.actions}>
-                  <Button
-                    type="button"
-                    theme="primary"
-                    variant={styles.button}
-                    linkTo="/send"
-                  >
-                    Send
-                  </Button>
-                  <Button
-                    type="button"
-                    theme="primary"
-                    variant={styles.button}
-                    linkTo="/receive"
-                  >
-                    Receive
-                  </Button>
-                </div>
               </section>
               <AssetsPanel setShowAddAsset={() => setShowAddAsset(true)} />
             </>
