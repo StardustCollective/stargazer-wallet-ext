@@ -5,48 +5,33 @@ import * as yup from 'yup';
 
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
-import { useController, useCopyClipboard, useSettingsView } from 'hooks/index';
+import { useController, useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
-import { ellipsis } from 'containers/auth/helpers';
 import { MAIN_VIEW } from '../routes';
 
 const NewAccountView = () => {
-  const [address, setAddress] = useState<string | undefined>();
+  const [accountName, setAccountName] = useState<string>();
   const controller = useController();
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       name: yup.string().required(),
     }),
   });
-  const [isCopied, copyText] = useCopyClipboard();
   const showView = useSettingsView();
-
-  const addressClass = clsx(styles.address, {
-    [styles.copied]: isCopied && address,
-  });
 
   const onSubmit = async (data: any) => {
     const res = await controller.wallet.account.addNewAccount(data.name);
     if (res) {
-      setAddress(res.constellation);
+      setAccountName(data.name);
     }
   };
 
   return (
     <div className={styles.newAccount}>
-      {address ? (
+      {accountName ? (
         <>
-          <span>Your new account has been created</span>
-          <span>Click to copy your public address:</span>
-          <span
-            className={addressClass}
-            onClick={() => {
-              copyText(address);
-            }}
-          >
-            {ellipsis(address)}
-          </span>
+          <span>{`Your new account ${accountName} has been created`}</span>
           <div className={clsx(styles.actions, styles.centered)}>
             <Button
               type="button"

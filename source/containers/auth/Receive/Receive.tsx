@@ -1,25 +1,25 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import clsx from 'clsx';
-import QRCode from 'qrcode.react';
-import IconButton from '@material-ui/core/IconButton';
-import CopyIcon from '@material-ui/icons/FileCopy';
-import Header from 'containers/common/Header';
-import { useCopyClipboard } from 'hooks/index';
-import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
+// import { useSelector } from 'react-redux';
+// import clsx from 'clsx';
+// import QRCode from 'qrcode.react';
+// import IconButton from '@material-ui/core/IconButton';
+// import CopyIcon from '@material-ui/icons/FileCopy';
+// import Header from 'containers/common/Header';
+// import { useCopyClipboard } from 'hooks/index';
+// import { RootState } from 'state/store';
+// import IWalletState from 'state/wallet/types';
 
 import styles from './Receive.scss';
 
 const WalletReceive = () => {
-  const [isCopied, copyText] = useCopyClipboard();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
+  // const [isCopied, copyText] = useCopyClipboard();
+  // const { accounts, activeAccountId }: IWalletState = useSelector(
+  //   (state: RootState) => state.wallet
+  // );
 
   return (
     <div className={styles.wrapper}>
-      <Header backLink="/home" />
+      {/* <Header backLink="/home" />
       <section className={styles.subheading}>Receive DAG</section>
       <section className={styles.content}>
         <div className={styles.address}>
@@ -43,7 +43,7 @@ const WalletReceive = () => {
         <span className={clsx({ [styles.active]: isCopied })}>
           {isCopied ? 'Copied Address' : 'Copy'}
         </span>
-      </section>
+      </section> */}
     </div>
   );
 };

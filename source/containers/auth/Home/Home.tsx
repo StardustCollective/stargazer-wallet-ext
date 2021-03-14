@@ -19,9 +19,10 @@ import { formatNumber } from '../helpers';
 const Home = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { accounts, activeAccountId, activeAsset }: IWalletState = useSelector(
+  const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
+  const account = accounts[activeAccountId];
 
   const handleRefresh = async () => {
     await controller.wallet.account.getLatestUpdate();
@@ -33,7 +34,7 @@ const Home = () => {
 
   return (
     <div className={styles.wrapper}>
-      {accounts[activeAccountId] ? (
+      {account ? (
         <>
           <Header showLogo />
           {showAddAsset ? (
@@ -54,21 +55,17 @@ const Home = () => {
                     }}
                   />
                 ) : (
-                  accounts[activeAccountId].label
+                  account.label
                 )}
               </section>
               <section className={styles.center}>
                 <h3>
-                  {formatNumber(
-                    accounts[activeAccountId].balance[activeAsset.id]
-                  )}{' '}
+                  {formatNumber(account.assets[account.activeAssetId].balance)}{' '}
                   <small>DAG</small>
                 </h3>
                 <small>
                   ≈{' '}
-                  {getFiatAmount(
-                    accounts[activeAccountId].balance[activeAsset.id]
-                  )}
+                  {getFiatAmount(account.assets[account.activeAssetId].balance)}
                 </small>
                 <IconButton className={styles.refresh} onClick={handleRefresh}>
                   <RefreshIcon />
@@ -81,7 +78,7 @@ const Home = () => {
       ) : (
         <section
           className={clsx(styles.mask, {
-            [styles.hide]: accounts[activeAccountId],
+            [styles.hide]: account,
           })}
         >
           <CircularProgress className={styles.loader} />

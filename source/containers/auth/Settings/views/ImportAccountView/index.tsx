@@ -9,21 +9,19 @@ import Button from 'components/Button';
 import Select from 'components/Select';
 import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
-import { useController, useCopyClipboard, useSettingsView } from 'hooks/index';
+import { useController, useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
-import { ellipsis } from 'containers/auth/helpers';
 
 const ImportAccountView = () => {
   const alert = useAlert();
   const controller = useController();
   const showView = useSettingsView();
-  const [isCopied, copyText] = useCopyClipboard();
   const [importType, setImportType] = useState('priv');
   const [loading, setLoading] = useState(false);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
-  const [address, setAddress] = useState<{ [assetId: string]: string }>();
+  const [accountName, setAccountName] = useState<string>();
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -39,17 +37,19 @@ const ImportAccountView = () => {
       .then((addr) => {
         setLoading(false);
         if (addr) {
-          setAddress(addr);
+          setAccountName(label);
         }
       })
       .catch(() => {
         alert.removeAll();
         alert.error('Error: Invalid private key');
         setLoading(false);
+        setAccountName(undefined);
       });
   };
 
   const onSubmit = async (data: any) => {
+    setAccountName(undefined);
     if (importType === 'priv') {
       setLoading(true);
       handleImportPrivKey(data.privKey, data.label);
@@ -82,20 +82,14 @@ const ImportAccountView = () => {
 
   return (
     <form className={styles.import} onSubmit={handleSubmit(onSubmit)}>
-      {address ? (
+      {accountName ? (
         <div className={styles.generated}>
-          <span>Your new account has been created</span>
-          <span>Click to copy your public address:</span>
-          <span
-            className={clsx(styles.address, {
-              [styles.copied]: isCopied && address,
-            })}
-            onClick={() => {
-              copyText(address.constellation);
-            }}
-          >
-            {ellipsis(address.constellation)}
+          <span>{`Your new private key account ${accountName} has been imported.`}</span>
+          <span>
+            You can select and share your public key by selecting an asset and
+            copying the public key address.
           </span>
+
           <div className={clsx(styles.actions, styles.centered)}>
             <Button
               type="button"

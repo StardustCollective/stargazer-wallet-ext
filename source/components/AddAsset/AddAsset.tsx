@@ -6,18 +6,32 @@ import TextInput from 'components/TextInput';
 import styles from './AddAsset.scss';
 import SearchIcon from 'assets/images/svg/search.svg';
 
-import mockAssets from 'containers/auth/Home/mockData';
-import { Asset } from 'types/asset';
+import IWalletState from 'state/wallet/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 
 const AddAsset = () => {
-  const [filteredAssets, setFilteredAssets] = useState<Array<Asset>>();
+  const [filteredAssets, setFilteredAssets] = useState<
+    Array<IAssetInfoState>
+  >();
   const [keyword, setKeyword] = useState('');
+  const { accounts, activeAccountId }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
+  const account = accounts[activeAccountId];
 
   useEffect(() => {
     setFilteredAssets(
-      mockAssets.filter((asset: Asset) => asset.name.includes(keyword))
+      Object.values(account.assets)
+        .filter((asset) => assets[asset.id].name.includes(keyword))
+        .map((asset) => assets[asset.id])
     );
-  }, [keyword]);
+  }, []);
+
   return (
     <section className={styles.addAsset}>
       <div className={styles.searchInput}>
@@ -35,7 +49,7 @@ const AddAsset = () => {
       <div className={styles.assets}>
         <ul>
           {filteredAssets &&
-            filteredAssets.map((asset: Asset) => {
+            filteredAssets.map((asset) => {
               return (
                 <Fragment key={uuid()}>
                   <li
