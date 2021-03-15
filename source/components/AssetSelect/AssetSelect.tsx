@@ -8,15 +8,15 @@ import AssetItem from 'components/AssetItem';
 import Tooltip from 'components/Tooltip';
 import { ellipsis } from 'containers/auth/helpers';
 import { useCopyClipboard } from 'hooks/index';
+import { IAssetInfoState } from 'state/assets/types';
 
-import { Asset } from 'types/asset';
 import styles from './AssetSelect.scss';
 
 interface IAssetSelect {
-  assetList: Array<Asset>;
+  assetList: Array<IAssetInfoState>;
   tokenName: string;
   tokenAddress: string;
-  onChange: (value: Asset) => void;
+  onChange: (value: IAssetInfoState) => void;
 }
 
 const AssetSelect: FC<IAssetSelect> = ({
@@ -28,7 +28,6 @@ const AssetSelect: FC<IAssetSelect> = ({
   const [expanded, setExpanded] = useState(false);
   const [isCopied, copyText] = useCopyClipboard();
 
-  console.log('asset list', assetList);
   return (
     <div
       className={clsx(styles.fullselect, { [styles.expanded]: expanded })}
@@ -41,7 +40,7 @@ const AssetSelect: FC<IAssetSelect> = ({
           arrow
         >
           <IconButton
-            className={styles.icon_wrapper}
+            className={styles.iconWrapper}
             onClick={(e) => {
               e.stopPropagation();
               copyText(tokenAddress);
@@ -58,7 +57,7 @@ const AssetSelect: FC<IAssetSelect> = ({
       </span>
       <ul className={styles.options}>
         {assetList.length > 0 &&
-          assetList.map((asset: Asset) => {
+          assetList.map((asset: IAssetInfoState) => {
             return (
               <AssetItem asset={asset} itemClicked={() => onChange(asset)} />
             );

@@ -10,6 +10,8 @@ import throttle from 'lodash/throttle';
 import wallet from './wallet';
 import price from './price';
 import contacts from './contacts';
+import assets from './assets';
+
 import { saveState, loadState } from './localStorage';
 
 const middleware = [
@@ -25,6 +27,7 @@ const store: Store = configureStore({
     wallet,
     price,
     contacts,
+    assets,
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
@@ -38,6 +41,7 @@ store.subscribe(
       wallet: state.wallet,
       price: state.price,
       contacts: state.contacts,
+      assets: state.assets,
     });
   }, 1000)
 );

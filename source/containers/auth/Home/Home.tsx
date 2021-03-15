@@ -14,14 +14,15 @@ import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
 import AssetsPanel from './AssetsPanel';
 import styles from './Home.scss';
-import { formatNumber } from '../helpers';
+// import { formatNumber } from '../helpers';
 
 const Home = () => {
   const controller = useController();
-  const getFiatAmount = useFiat();
-  const { accounts, activeAccountId, activeAsset }: IWalletState = useSelector(
+  const getFiatAmount = useFiat(false);
+  const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
+  const account = accounts[activeAccountId];
 
   const handleRefresh = async () => {
     await controller.wallet.account.getLatestUpdate();
@@ -33,7 +34,7 @@ const Home = () => {
 
   return (
     <div className={styles.wrapper}>
-      {accounts[activeAccountId] ? (
+      {account ? (
         <>
           <Header showLogo />
           {showAddAsset ? (
@@ -54,22 +55,14 @@ const Home = () => {
                     }}
                   />
                 ) : (
-                  accounts[activeAccountId].label
+                  account.label
                 )}
               </section>
               <section className={styles.center}>
                 <h3>
-                  {formatNumber(
-                    accounts[activeAccountId].balance[activeAsset.id]
-                  )}{' '}
-                  <small>DAG</small>
+                  {getFiatAmount(account.assets[account.activeAssetId].balance)}
                 </h3>
-                <small>
-                  ≈{' '}
-                  {getFiatAmount(
-                    accounts[activeAccountId].balance[activeAsset.id]
-                  )}
-                </small>
+                <small>≈ ₿1,523896128</small>
                 <IconButton className={styles.refresh} onClick={handleRefresh}>
                   <RefreshIcon />
                 </IconButton>
@@ -81,7 +74,7 @@ const Home = () => {
       ) : (
         <section
           className={clsx(styles.mask, {
-            [styles.hide]: accounts[activeAccountId],
+            [styles.hide]: account,
           })}
         >
           <CircularProgress className={styles.loader} />
