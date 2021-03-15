@@ -3,7 +3,7 @@ import IPriceState from 'state/price/types';
 import { RootState } from 'state/store';
 import { PRICE_DAG_ID, DEFAULT_CURRENCY } from 'constants/index';
 
-export function useFiat() {
+export function useFiat(currencyName = true) {
   const price: IPriceState = useSelector((state: RootState) => state.price);
 
   return (amount: number, fraction = 4) => {
@@ -14,6 +14,6 @@ export function useFiat() {
         minimumFractionDigits: fraction,
         maximumFractionDigits: fraction,
       }
-    )} ${DEFAULT_CURRENCY.name}`;
+    )}${currencyName ? ` ${DEFAULT_CURRENCY.name}` : ''}`;
   };
 }

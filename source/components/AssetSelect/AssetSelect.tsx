@@ -40,7 +40,7 @@ const AssetSelect: FC<IAssetSelect> = ({
           arrow
         >
           <IconButton
-            className={styles.icon_wrapper}
+            className={styles.iconWrapper}
             onClick={(e) => {
               e.stopPropagation();
               copyText(tokenAddress);

@@ -102,6 +102,7 @@ const AccountController = (actions: {
       address: ethAddress,
       limit: TXS_LIMIT,
     });
+    console.log(ethTxs);
 
     return {
       assets: {
@@ -115,7 +116,14 @@ const AccountController = (actions: {
           id: AssetType.Ethereum,
           balance: Number(ethBalance),
           address: ethAddress,
-          transactions: ethTxs.txs,
+          transactions: ethTxs.txs.map((tx) => {
+            return {
+              ...tx,
+              balance: ethers.utils.formatEther(
+                tx.from[0].amount.amount().toString()
+              ),
+            };
+          }),
         },
       },
     };

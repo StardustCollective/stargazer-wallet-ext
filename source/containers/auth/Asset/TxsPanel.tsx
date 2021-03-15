@@ -2,7 +2,7 @@ import React, { FC, Fragment, useCallback, useState } from 'react';
 import clsx from 'clsx';
 import { v4 as uuid } from 'uuid';
 import { useFiat } from 'hooks/usePrice';
-import { Transaction } from '@stardust-collective/dag4-network';
+import { useSelector } from 'react-redux';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import DownArrowIcon from '@material-ui/icons/ArrowDownward';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
@@ -12,9 +12,13 @@ import Spinner from '@material-ui/core/CircularProgress';
 import { useController } from 'hooks/index';
 import { formatDistanceDate } from '../helpers';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
-import { DAG_EXPLORER_SEARCH } from 'constants/index';
+import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
+import { RootState } from 'state/store';
+import IWalletState, { Transaction } from 'state/wallet/types';
+import IAssetListState from 'state/assets/types';
 
 import styles from './Asset.scss';
+import { ethers } from 'ethers';
 
 interface ITxsPanel {
   address: string;
@@ -25,14 +29,28 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const getFiatAmount = useFiat();
   const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
+  const isETHTx = !controller.wallet.account.isValidDAGAddress(address);
+  const {
+    activeNetwork,
+    accounts,
+    activeAccountId,
+  }: IWalletState = useSelector((state: RootState) => state.wallet);
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
+  const account = accounts[activeAccountId];
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
 
   const isShowedGroupBar = useCallback(
     (tx: Transaction, idx: number) => {
       return (
         idx === 0 ||
-        new Date(tx.timestamp).toDateString() !==
-          new Date(transactions[idx - 1].timestamp).toDateString()
+        new Date(isETHTx ? tx.date : tx.timestamp).toDateString() !==
+          new Date(
+            isETHTx
+              ? transactions[idx - 1].date
+              : transactions[idx - 1].timestamp
+          ).toDateString()
       );
     },
     [transactions]
@@ -57,7 +75,11 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   }, []);
 
   const handleOpenExplorer = (tx: string) => {
-    window.open(`${DAG_EXPLORER_SEARCH}${tx}`, '_blank');
+    const ethUrl = ETH_NETWORK[activeNetwork[account.activeAssetId]].etherscan;
+    window.open(
+      isETHTx ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
+      '_blank'
+    );
   };
 
   const handleGoTop = () => {
@@ -82,19 +104,21 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         <>
           <ul>
             {transactions.map((tx: Transaction, idx: number) => {
-              const isRecived = tx.receiver === address;
+              const isRecived =
+                (isETHTx && tx.to[0].to === address) ||
+                (!isETHTx && tx.receiver === address);
 
               return (
                 <Fragment key={uuid()}>
                   {isShowedGroupBar(tx, idx) && (
                     <li className={styles.groupbar}>
-                      {formatDistanceDate(tx.timestamp)}
+                      {formatDistanceDate(isETHTx ? tx.date : tx.timestamp)}
                     </li>
                   )}
                   <li onClick={() => handleOpenExplorer(tx.hash)}>
                     <div>
                       <div className={styles.iconWrapper}>
-                        {tx.checkpointBlock ? (
+                        {tx.checkpointBloc || isETHTx ? (
                           isRecived ? (
                             <DownArrowIcon />
                           ) : (
@@ -108,17 +132,20 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                         {isRecived ? 'Received' : 'Sent'}
                         <small>
                           {isRecived
-                            ? `From: ${tx.sender}`
-                            : `To: ${tx.receiver}`}
+                            ? `From: ${isETHTx ? tx.from[0].from : tx.sender}`
+                            : `To: ${isETHTx ? tx.to[0].to : tx.receiver}`}
                         </small>
                       </span>
                     </div>
                     <div>
                       <span>
                         <span>
-                          {tx.amount / 1e8} <b>DAG</b>
+                          {isETHTx ? tx.balance : tx.amount / 1e8}{' '}
+                          <b>{assets[account.activeAssetId].symbol}</b>
                         </span>
-                        <small>{getFiatAmount(tx.amount / 1e8, 8)}</small>
+                        <small>
+                          {isETHTx ? 0 : getFiatAmount(tx.amount / 1e8, 8)}
+                        </small>
                       </span>
                       <div className={styles.linkIcon}>
                         <UpArrowIcon />

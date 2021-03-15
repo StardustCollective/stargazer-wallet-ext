@@ -14,11 +14,11 @@ import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
 import AssetsPanel from './AssetsPanel';
 import styles from './Home.scss';
-import { formatNumber } from '../helpers';
+// import { formatNumber } from '../helpers';
 
 const Home = () => {
   const controller = useController();
-  const getFiatAmount = useFiat();
+  const getFiatAmount = useFiat(false);
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -60,13 +60,9 @@ const Home = () => {
               </section>
               <section className={styles.center}>
                 <h3>
-                  {formatNumber(account.assets[account.activeAssetId].balance)}{' '}
-                  <small>DAG</small>
-                </h3>
-                <small>
-                  ≈{' '}
                   {getFiatAmount(account.assets[account.activeAssetId].balance)}
-                </small>
+                </h3>
+                <small>≈ ₿1,523896128</small>
                 <IconButton className={styles.refresh} onClick={handleRefresh}>
                   <RefreshIcon />
                 </IconButton>

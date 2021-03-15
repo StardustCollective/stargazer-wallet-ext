@@ -47,7 +47,7 @@ const AssetDetail = () => {
     <div className={styles.wrapper}>
       {account ? (
         <>
-          <Header />
+          <Header backLink="/home" />
           <section className={styles.account}>
             <AssetSelect
               assetList={Object.values(account.assets).map(

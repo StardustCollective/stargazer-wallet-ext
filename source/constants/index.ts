@@ -26,15 +26,18 @@ export const ETH_NETWORK: {
   [networkId: string]: {
     id: string;
     label: string;
+    etherscan: string;
   };
 } = {
   mainnet: {
     id: 'mainnet',
     label: 'Ethereum Mainnet',
+    etherscan: 'https://etherscan.io/',
   },
   testnet: {
     id: 'testnet',
     label: 'Ethereum Testnet',
+    etherscan: 'https://ropsten.etherscan.io/',
   },
 };
 

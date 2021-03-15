@@ -27,7 +27,7 @@
       transition: all 0.3s;
       transform: rotateZ(0deg);
     }
-    .icon_wrapper {
+    .iconWrapper {
       display: flex;
       align-items: center;
       position: absolute;
@@ -41,9 +41,10 @@
         }
       }
       svg {
-        width: 16px;
+        width: 20px;
       }
     }
+
     & > span {
       display: flex;
       flex-direction: column;
@@ -52,13 +53,14 @@
       height: 60px;
       width: 100%;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
       line-height: 24px;
       color: $gray-dark;
 
       small {
-        font-size: 10px;
+        font-size: 12px;
         line-height: 10px;
+        font-weight: 500;
         margin-top: 2px;
         margin-left: 4px;
         color: $gray-100;
