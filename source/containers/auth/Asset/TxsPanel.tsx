@@ -18,7 +18,6 @@ import IWalletState, { Transaction } from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
 
 import styles from './Asset.scss';
-import { ethers } from 'ethers';
 
 interface ITxsPanel {
   address: string;
