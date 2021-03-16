@@ -13,6 +13,7 @@ import {
   updateTransactions,
   updateLabel,
   removeKeystoreInfo,
+  changeActiveAsset,
 } from 'state/wallet';
 import IWalletState, {
   AccountType,
@@ -35,6 +36,7 @@ export interface IAccountController {
   addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   updateAccountLabel: (id: string, label: string) => void;
+  updateAccountActiveAsset: (id: string, assetId: string) => void;
   importPrivKeyAccount: (
     privKey: string,
     label: string
@@ -100,6 +102,7 @@ const AccountController = (actions: {
       address: ethAddress,
       limit: TXS_LIMIT,
     });
+    console.log(ethTxs);
 
     return {
       assets: {
@@ -113,7 +116,14 @@ const AccountController = (actions: {
           id: AssetType.Ethereum,
           balance: Number(ethBalance),
           address: ethAddress,
-          transactions: ethTxs.txs,
+          transactions: ethTxs.txs.map((tx) => {
+            return {
+              ...tx,
+              balance: ethers.utils.formatEther(
+                tx.from[0].amount.amount().toString()
+              ),
+            };
+          }),
         },
       },
     };
@@ -304,6 +314,10 @@ const AccountController = (actions: {
     store.dispatch(updateLabel({ id, label }));
   };
 
+  const updateAccountActiveAsset = (id: string, assetId: string) => {
+    store.dispatch(changeActiveAsset({ id, assetId }));
+  };
+
   // Tx-Related
   const updateTempTx = (tx: ITransactionInfo) => {
     if (dag.account.isActive()) {
@@ -419,6 +433,7 @@ const AccountController = (actions: {
     watchMemPool,
     updateTxs,
     updateAccountLabel,
+    updateAccountActiveAsset,
     getRecommendFee,
   };
 };

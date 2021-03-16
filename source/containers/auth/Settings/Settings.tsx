@@ -17,7 +17,7 @@ import EditIcon from '@material-ui/icons/Create';
 import CheckIcon from '@material-ui/icons/Check';
 
 import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AssetType } from 'state/wallet/types';
 import * as Views from './views';
 import * as routes from './views/routes';
 
@@ -108,7 +108,9 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   const renderView = (view: string) => {
     switch (view) {
       case routes.ACCOUNT_VIEW:
-        return <Views.AccountView address={accounts[showedId].address} />;
+        return (
+          <Views.AccountView address={{ [AssetType.Constellation]: '0x000' }} />
+        );
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:

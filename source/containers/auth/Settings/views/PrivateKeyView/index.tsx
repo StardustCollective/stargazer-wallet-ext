@@ -7,7 +7,6 @@ import * as yup from 'yup';
 
 import TextInput from 'components/TextInput';
 import { useController, useCopyClipboard } from 'hooks/index';
-import { ellipsis } from 'containers/auth/helpers';
 import IWalletState from 'state/wallet/types';
 import { RootState } from 'state/store';
 
@@ -31,16 +30,12 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
 
   const [isCopied, copyText] = useCopyClipboard();
   const [checked, setChecked] = useState(false);
-  const [isCopiedAddress, copyAddress] = useState(false);
   const [privKey, setPrivKey] = useState<string>(
     '*************************************************************'
   );
 
-  const addressClass = clsx(styles.address, {
-    [styles.copied]: isCopied && isCopiedAddress,
-  });
   const privKeyClass = clsx(styles.privKey, {
-    [styles.copied]: isCopied && !isCopiedAddress,
+    [styles.copied]: isCopied,
     [styles.notAllowed]: !checked,
   });
 
@@ -57,7 +52,6 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
 
   const handleCopyPrivKey = () => {
     if (!checked) return;
-    copyAddress(false);
     copyText(privKey);
   };
 
@@ -66,16 +60,8 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
       {accounts[id] && (
         <>
           <div className={styles.heading}>
-            <div>Click to copy your public key:</div>
-            <span
-              className={addressClass}
-              onClick={() => {
-                copyText(accounts[id].address.constellation);
-                copyAddress(true);
-              }}
-            >
-              {ellipsis(accounts[id].address.constellation)}
-            </span>
+            <div>Account name:</div>
+            <span className={styles.accountName}>{accounts[id].label}</span>
           </div>
           <div className={styles.content}>
             <span>Please input your wallet password and press enter:</span>

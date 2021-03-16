@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
 import AddCircle from '@material-ui/icons/AddCircle';
@@ -7,9 +8,11 @@ import IconButton from '@material-ui/core/IconButton';
 
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
-import { Asset } from 'types/asset';
+import { RootState } from 'state/store';
+import IWalletState from 'state/wallet/types';
+import IAssetListState from 'state/assets/types';
+import { useController } from 'hooks/index';
 
-import mockAssets from './mockData';
 import styles from './Home.scss';
 
 interface IAssetsPanel {
@@ -18,12 +21,19 @@ interface IAssetsPanel {
 
 const AssetsPanel: FC<IAssetsPanel> = ({ setShowAddAsset }: IAssetsPanel) => {
   const history = useHistory();
+  const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
+  const { accounts, activeAccountId }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
+  const account = accounts[activeAccountId];
 
   const handleScroll = useCallback((ev) => {
     ev.persist();
-    // setShowed(ev.target.scrollTop);
     if (ev.target.scrollTop) setShowed(true);
     setScrollArea(ev.target);
   }, []);
@@ -33,18 +43,23 @@ const AssetsPanel: FC<IAssetsPanel> = ({ setShowAddAsset }: IAssetsPanel) => {
     setShowed(false);
   };
 
+  const handleSelectAsset = (assetId: string) => {
+    controller.wallet.account.updateAccountActiveAsset(
+      activeAccountId,
+      assetId
+    );
+    history.push('/asset');
+  };
+
   const renderAssetList = () => {
     return (
       <ul>
-        {mockAssets.map((asset: Asset) => {
+        {Object.values(account.assets).map((asset) => {
           return (
             <AssetItem
-              key={asset.name}
-              asset={asset}
-              itemClicked={() => {
-                console.log('Asset Item Clicked');
-                history.push('/asset');
-              }}
+              key={asset.id}
+              asset={assets[asset.id]}
+              itemClicked={() => handleSelectAsset(asset.id)}
             />
           );
         })}
@@ -66,7 +81,7 @@ const AssetsPanel: FC<IAssetsPanel> = ({ setShowAddAsset }: IAssetsPanel) => {
           </IconButton>
         )}
       </div>
-      {mockAssets.length ? (
+      {Object.keys(account.assets).length ? (
         <>
           {renderAssetList()}
           <div className={styles.stargazer}>

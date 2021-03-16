@@ -13,7 +13,7 @@ import Home from 'containers/auth/Home';
 import Asset from 'containers/auth/Asset';
 import Send, { SendConfirm } from 'containers/auth/Send';
 import GasSettings from 'containers/auth/Send/GasSettings';
-import Receive from 'containers/auth/Receive';
+// import Receive from 'containers/auth/Receive';
 import Import from 'containers/common/Import';
 import { useController } from 'hooks/index';
 import { SendMatchProps } from './types';
@@ -84,7 +84,7 @@ const Auth = () => {
                 exact
               />
             )}
-            {isUnlocked && <Route path="/receive" component={Receive} exact />}
+            {/* {isUnlocked && <Route path="/receive" component={Receive} exact />} */}
           </Switch>
         </animated.div>
       ))}

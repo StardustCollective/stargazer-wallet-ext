@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { ellipsis } from 'containers/auth/helpers';
 import { useController, useSettingsView } from 'hooks/index';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
@@ -61,10 +60,8 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ id }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         {accounts[id] && (
           <div className={styles.subheading}>
-            <div>{accounts[id].label}:</div>
-            <span className={styles.address}>
-              {ellipsis(accounts[id].address.constellation)}
-            </span>
+            <div>Account name:</div>
+            <span className={styles.accountName}>{accounts[id].label}</span>
           </div>
         )}
 

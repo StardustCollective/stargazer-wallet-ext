@@ -11,10 +11,9 @@ import AssetSelect from 'components/AssetSelect';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
-import IWalletState, { AssetType } from 'state/wallet/types';
-import mockAssets from 'containers/auth/Home/mockData';
+import IWalletState from 'state/wallet/types';
+import IAssetListState from 'state/assets/types';
 
-import { Asset } from 'types/asset';
 import TxsPanel from './TxsPanel';
 
 import styles from './Asset.scss';
@@ -23,9 +22,13 @@ import { formatNumber } from '../helpers';
 const AssetDetail = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { accounts, activeAccountId, activeAsset }: IWalletState = useSelector(
+  const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
+  const account = accounts[activeAccountId];
 
   const handleRefresh = async () => {
     await controller.wallet.account.getLatestUpdate();
@@ -33,28 +36,34 @@ const AssetDetail = () => {
     controller.stateUpdater();
   };
 
+  const handleSelectAsset = (assetId: string) => {
+    controller.wallet.account.updateAccountActiveAsset(
+      activeAccountId,
+      assetId
+    );
+  };
+
   return (
     <div className={styles.wrapper}>
-      {accounts[activeAccountId] ? (
+      {account ? (
         <>
-          <Header />
+          <Header backLink="/home" />
           <section className={styles.account}>
             <AssetSelect
-              assetList={mockAssets}
-              onChange={(asset: Asset) => console.log('item clicked', asset)}
-              tokenName={'DAG'}
-              tokenAddress={accounts[activeAccountId]!.address[activeAsset.id]}
+              assetList={Object.values(account.assets).map(
+                (asset) => assets[asset.id]
+              )}
+              onChange={(asset) => handleSelectAsset(asset.id)}
+              tokenName={assets[account.activeAssetId].name}
+              tokenAddress={account.assets[account.activeAssetId].address}
             />
           </section>
           <section className={styles.center}>
             <h3>
-              {formatNumber(accounts[activeAccountId].balance[activeAsset.id])}{' '}
-              <small>DAG</small>
+              {formatNumber(account.assets[account.activeAssetId].balance)}{' '}
+              <small>{assets[account.activeAssetId].symbol}</small>
             </h3>
-            <small>
-              ≈{' '}
-              {getFiatAmount(accounts[activeAccountId].balance[activeAsset.id])}
-            </small>
+            <small>≈ {getFiatAmount(0)}</small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />
             </IconButton>
@@ -67,21 +76,11 @@ const AssetDetail = () => {
               >
                 Send
               </Button>
-              <Button
-                type="button"
-                theme="primary"
-                variant={styles.button}
-                linkTo="/receive"
-              >
-                Receive
-              </Button>
             </div>
           </section>
           <TxsPanel
-            address={accounts[activeAccountId].address.constellation}
-            transactions={
-              accounts[activeAccountId].transactions[AssetType.Constellation]
-            }
+            address={account.assets[account.activeAssetId].address}
+            transactions={account.assets[account.activeAssetId].transactions}
           />
         </>
       ) : (
