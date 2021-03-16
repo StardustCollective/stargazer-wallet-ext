@@ -1,4 +1,6 @@
+import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import format from 'date-fns/format';
+import { AssetType } from 'state/wallet/types';
 
 export const ellipsis = (str: string, start = 7, end = 4) => {
   return (
@@ -31,4 +33,15 @@ export const formatNumber = (num: number, min = 4, max = 4, maxSig = 12) => {
     maximumFractionDigits: max,
     maximumSignificantDigits: maxSig,
   });
+};
+
+export const getAddressURL = (
+  address: string,
+  type: AssetType,
+  networkId: string
+) => {
+  if (type === AssetType.Constellation) {
+    return `${DAG_EXPLORER_SEARCH}${address}`;
+  }
+  return `${ETH_NETWORK[networkId].etherscan}address/${address}`;
 };

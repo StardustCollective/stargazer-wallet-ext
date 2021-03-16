@@ -27,11 +27,12 @@
       transition: all 0.3s;
       transform: rotateZ(0deg);
     }
-    .iconWrapper {
+
+    .copyIcon {
       display: flex;
       align-items: center;
       position: absolute;
-      left: 30px;
+      left: 16px;
       padding: 0;
       width: 36px;
       height: 36px;
@@ -42,6 +43,26 @@
       }
       svg {
         width: 20px;
+        color: $gray-100;
+      }
+    }
+
+    .linkIcon {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      left: 48px;
+      padding: 0;
+      width: 36px;
+      height: 36px;
+      &:active {
+        svg {
+          color: $purple;
+        }
+      }
+      svg {
+        width: 20px;
+        color: $gray-100;
       }
     }
 
