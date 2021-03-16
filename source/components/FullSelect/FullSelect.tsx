@@ -1,7 +1,6 @@
 import React, { useState, FC } from 'react';
 import clsx from 'clsx';
 import DownArrowIcon from '@material-ui/icons/ExpandMore';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import styles from './FullSelect.scss';
 
