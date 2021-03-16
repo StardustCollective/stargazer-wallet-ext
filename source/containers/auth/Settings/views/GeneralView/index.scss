@@ -22,15 +22,19 @@
 
       &.network {
         height: auto;
-
-        .icon {
-          margin-bottom: 48px;
-        }
+        align-items: flex-start;
+        margin: 12px 0;
 
         span {
           display: flex;
           width: calc(100% - 144px);
           flex-direction: column;
+          line-height: initial;
+
+          small {
+            margin-top: 20px;
+            margin-bottom: 12px;
+          }
         }
 
         &:hover {

@@ -2,6 +2,7 @@ import React, { useState, FC } from 'react';
 import clsx from 'clsx';
 import DownArrowIcon from '@material-ui/icons/ExpandMore';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import LinkIcon from '@material-ui/icons/CallMissedOutgoing';
 import IconButton from '@material-ui/core/IconButton';
 
 import AssetItem from 'components/AssetItem';
@@ -16,6 +17,7 @@ interface IAssetSelect {
   assetList: Array<IAssetInfoState>;
   tokenName: string;
   tokenAddress: string;
+  addressUrl: string;
   onChange: (value: IAssetInfoState) => void;
 }
 
@@ -23,6 +25,7 @@ const AssetSelect: FC<IAssetSelect> = ({
   assetList,
   tokenName,
   tokenAddress,
+  addressUrl,
   onChange,
 }: IAssetSelect) => {
   const [expanded, setExpanded] = useState(false);
@@ -40,7 +43,7 @@ const AssetSelect: FC<IAssetSelect> = ({
           arrow
         >
           <IconButton
-            className={styles.iconWrapper}
+            className={styles.copyIcon}
             onClick={(e) => {
               e.stopPropagation();
               copyText(tokenAddress);
@@ -49,6 +52,15 @@ const AssetSelect: FC<IAssetSelect> = ({
             <FileCopyIcon />
           </IconButton>
         </Tooltip>
+        <IconButton
+          className={styles.linkIcon}
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(addressUrl, '_blank');
+          }}
+        >
+          <LinkIcon />
+        </IconButton>
         <span>
           {tokenName}
           <small>{ellipsis(tokenAddress)}</small>

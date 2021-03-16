@@ -37,7 +37,10 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   const [address, setAddress] = useState('');
 
   const isValidAddress = useMemo(() => {
-    return controller.wallet.account.isValidDAGAddress(address);
+    return (
+      controller.wallet.account.isValidDAGAddress(address) ||
+      controller.wallet.account.isValidERC20Address(address)
+    );
   }, [address]);
 
   const statusIconClass = clsx(styles.statusIcon, {

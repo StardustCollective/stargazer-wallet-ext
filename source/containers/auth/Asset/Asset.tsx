@@ -8,23 +8,24 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import AssetSelect from 'components/AssetSelect';
+import TxsPanel from './TxsPanel';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
-
-import TxsPanel from './TxsPanel';
+import { formatNumber, getAddressURL } from '../helpers';
 
 import styles from './Asset.scss';
-import { formatNumber } from '../helpers';
 
 const AssetDetail = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
+  const {
+    accounts,
+    activeAccountId,
+    activeNetwork,
+  }: IWalletState = useSelector((state: RootState) => state.wallet);
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
@@ -56,6 +57,11 @@ const AssetDetail = () => {
               onChange={(asset) => handleSelectAsset(asset.id)}
               tokenName={assets[account.activeAssetId].name}
               tokenAddress={account.assets[account.activeAssetId].address}
+              addressUrl={getAddressURL(
+                account.assets[account.activeAssetId].address,
+                assets[account.activeAssetId].type,
+                activeNetwork[account.activeAssetId]
+              )}
             />
           </section>
           <section className={styles.center}>
