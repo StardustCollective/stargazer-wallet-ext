@@ -32,7 +32,8 @@ const GeneralView = () => {
         <li className={styles.network}>
           <Icon Component={NetworkIcon} variant={styles.icon} />
           <span>
-            Network
+            Networks
+            <small>Constellation Network</small>
             <Select
               value={
                 activeNetwork[AssetType.Constellation] || DAG_NETWORK.main.id
@@ -54,6 +55,7 @@ const GeneralView = () => {
                 { [DAG_NETWORK.ceres.id]: DAG_NETWORK.ceres.label },
               ]}
             />
+            <small>Ethereum Network</small>
             <Select
               value={
                 activeNetwork[AssetType.Ethereum] || ETH_NETWORK.mainnet.id
