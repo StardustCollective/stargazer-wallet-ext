@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
+import { useAlert } from 'react-alert';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -8,19 +10,21 @@ import { ellipsis } from 'containers/auth/helpers';
 import { useController, useSettingsView } from 'hooks/index';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AccountType } from 'state/wallet/types';
 import { RootState } from 'state/store';
 
 import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
 
 interface IRemoveAccountView {
-  index: number;
+  id: string;
 }
 
-const RemoveAccountView: FC<IRemoveAccountView> = ({ index }) => {
+const RemoveAccountView: FC<IRemoveAccountView> = ({ id }) => {
   const controller = useController();
   const showView = useSettingsView();
+  const alert = useAlert();
+  const history = useHistory();
 
   const { accounts }: IWalletState = useSelector(
     (state: RootState) => state.wallet
@@ -32,18 +36,34 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ index }) => {
   });
 
   const onSubmit = (data: any) => {
-    if (controller.wallet.account.unsubscribeAccount(index, data.password))
+    let isChecked;
+    if (accounts[id].type === AccountType.Seed) {
+      isChecked = controller.wallet.account.unsubscribeAccount(
+        Number(id),
+        data.password
+      );
+    } else {
+      isChecked = controller.wallet.account.removePrivKeyAccount(
+        id,
+        data.password
+      );
+    }
+    if (isChecked) {
       showView(MAIN_VIEW);
+    } else {
+      alert.removeAll();
+      alert.error('Error: Invalid password');
+    }
   };
 
   return (
     <div className={styles.removeAccount}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {accounts[index] && (
+        {accounts[id] && (
           <div className={styles.subheading}>
-            <div>{accounts[index].label}:</div>
+            <div>{accounts[id].label}:</div>
             <span className={styles.address}>
-              {ellipsis(accounts[index].address)}
+              {ellipsis(accounts[id].address.constellation)}
             </span>
           </div>
         )}
@@ -62,6 +82,7 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ index }) => {
             type="button"
             theme="secondary"
             variant={clsx(styles.button, styles.close)}
+            onClick={() => history.goBack()}
           >
             Close
           </Button>

@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -10,6 +11,8 @@ import LogoImage from 'assets/images/logo-s.svg';
 
 import styles from './Header.scss';
 import { MAIN_VIEW } from 'containers/auth/Settings/views/routes';
+import IWalletState from 'state/wallet/types';
+import { RootState } from 'state/store';
 
 interface IHeader {
   backLink?: string;
@@ -22,6 +25,9 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const showView = useSettingsView();
   const isUnlocked = !controller.wallet.isLocked();
   const [showed, showSettings] = useState(false);
+  const { keystores, seedKeystoreId }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
 
   const handleBack = () => {
     showSettings(false);
@@ -52,12 +58,18 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
         </IconButton>
       )}
       <span className={styles.title}>Stargazer Wallet</span>
-      <IconButton
-        className={`${styles.button} ${styles.more}`}
-        onClick={() => (showed ? handleCloseSettings() : showSettings(!showed))}
-      >
-        <MoreVertIcon />
-      </IconButton>
+      {keystores && seedKeystoreId && keystores[seedKeystoreId] ? (
+        <IconButton
+          className={`${styles.button} ${styles.more}`}
+          onClick={() =>
+            showed ? handleCloseSettings() : showSettings(!showed)
+          }
+        >
+          <MoreVertIcon />
+        </IconButton>
+      ) : (
+        <i style={{ width: '70px' }} />
+      )}
       <Settings open={showed && isUnlocked} onClose={handleCloseSettings} />
     </div>
   );

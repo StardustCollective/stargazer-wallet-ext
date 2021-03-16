@@ -5,7 +5,7 @@ import { STORE_PORT, DAG_NETWORK } from 'constants/index';
 import { browser } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
 import store from 'state/store';
-import { dag } from '@stardust-collective/dag4-wallet';
+import { dag } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
@@ -45,8 +45,9 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
   }
 });
 
-window.controller = Object.freeze(MasterController());
-
-setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
+if (!window.controller) {
+  window.controller = Object.freeze(MasterController());
+  setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
+}
 
 wrapStore(store, { portName: STORE_PORT });

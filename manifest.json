@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "1.1.0",
+  "version": "1.2.1",
 
   "icons": {
     "16": "assets/icons/favicon-16.png",
@@ -13,7 +13,7 @@
   "homepage_url": "https://constellationnetwork.io/",
   "short_name": "stargazer-wallet-ext",
 
-  "permissions": ["activeTab", "storage", "http://*/*", "https://*/*"],
+  "permissions": ["http://*/*", "https://*/*"],
 
   "content_security_policy": "script-src 'self'; object-src 'self'",
 

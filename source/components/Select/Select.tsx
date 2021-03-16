@@ -22,6 +22,7 @@ interface ISelect {
     }>,
     child: ReactNode
   ) => void;
+  disabled?: boolean;
 }
 
 const Select: FC<ISelect> = ({
@@ -30,12 +31,14 @@ const Select: FC<ISelect> = ({
   input,
   fullWidth,
   onChange,
+  disabled = false,
 }) => {
   return (
     <div className={styles.select}>
       <MUISelect
         value={value}
         input={input}
+        disabled={disabled}
         onChange={onChange}
         fullWidth={fullWidth}
         IconComponent={ArrowDownIcon}

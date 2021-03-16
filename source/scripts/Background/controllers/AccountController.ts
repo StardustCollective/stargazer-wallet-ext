@@ -1,4 +1,4 @@
-import { dag } from '@stardust-collective/dag4-wallet';
+import { dag } from '@stardust-collective/dag4';
 import { Transaction, PendingTx } from '@stardust-collective/dag4-network';
 import { hdkey } from 'ethereumjs-wallet';
 
@@ -10,22 +10,36 @@ import {
   updateAccount,
   updateTransactions,
   updateLabel,
+  removeKeystoreInfo,
 } from 'state/wallet';
-import IWalletState, { IAccountState } from 'state/wallet/types';
+import IWalletState, {
+  AccountType,
+  IAccountState,
+  PrivKeystore,
+} from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo } from '../../types';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
   confirmTempTx: () => Promise<void>;
-  getPrivKey: (index: number, pwd: string) => string | null;
-  getPrimaryAccount: () => void;
+  getPrivKey: (id: string, pwd: string) => Promise<string | null>;
+  getPrimaryAccount: (pwd: string) => void;
   isValidDAGAddress: (address: string) => boolean;
-  subscribeAccount: (index: number) => Promise<string | null>;
+  subscribeAccount: (
+    index: number
+  ) => Promise<{ [assetId: string]: string } | null>;
   unsubscribeAccount: (index: number, pwd: string) => boolean;
-  addNewAccount: (label: string) => Promise<string | null>;
+  addNewAccount: (
+    label: string
+  ) => Promise<{ [assetId: string]: string } | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
-  updateAccountLabel: (index: number, label: string) => void;
+  updateAccountLabel: (id: string, label: string) => void;
+  importPrivKeyAccount: (
+    privKey: string,
+    label: string
+  ) => Promise<{ [assetId: string]: string } | null>;
+  removePrivKeyAccount: (id: string, password: string) => boolean;
   getRecommendFee: () => Promise<number>;
   watchMemPool: () => void;
   getLatestUpdate: () => Promise<void>;
@@ -34,11 +48,13 @@ export interface IAccountController {
 const AccountController = (actions: {
   getMasterKey: () => hdkey | null;
   checkPassword: (pwd: string) => boolean;
+  importPrivKey: (privKey: string) => Promise<PrivKeystore | null>;
 }): IAccountController => {
   let privateKey: string;
-  let tempTx: ITransactionInfo;
+  let tempTx: ITransactionInfo | null;
   let account: IAccountState | null;
   let intervalId: any;
+  let password: string;
 
   const _coventPendingType = (pending: PendingTx) => {
     return {
@@ -63,7 +79,13 @@ const AccountController = (actions: {
     // const ethAddress = dag.keyStore.getEthAddressFromPrivateKey(privateKey);
     const balance = await dag.account.getBalance();
     const transactions = await dag.account.getTransactions(10);
-    return { address: dag.account.address, balance, transactions };
+    return {
+      address: {
+        constellation: dag.account.address,
+      },
+      balance,
+      transactions,
+    };
   };
 
   const getAccountByIndex = async (index: number) => {
@@ -73,105 +95,187 @@ const AccountController = (actions: {
     return await getAccountByPrivateKey(privateKey);
   };
 
+  const getAccountByPrivKeystore = async (keystoreId: string) => {
+    const { keystores }: IWalletState = store.getState().wallet;
+    if (!password || !keystores[keystoreId]) return null;
+    privateKey = await dag.keyStore.decryptPrivateKey(
+      keystores[keystoreId] as PrivKeystore,
+      password
+    );
+    return await getAccountByPrivateKey(privateKey);
+  };
+
   const subscribeAccount = async (index: number, label?: string) => {
     const { accounts }: IWalletState = store.getState().wallet;
-    if (accounts && Object.keys(accounts).includes(String(index))) return null;
+    const seedAccounts = Object.values(accounts).filter(
+      (account) => account.type === AccountType.Seed
+    );
+    if (seedAccounts && Object.keys(seedAccounts).includes(String(index)))
+      return null;
     const res: IAccountInfo | null = await getAccountByIndex(index);
 
     account = {
-      index,
+      id: String(index),
       label: label || `Account ${index + 1}`,
       address: res!.address,
       balance: res!.balance,
       transactions: res!.transactions,
+      type: AccountType.Seed,
     };
 
     store.dispatch(createAccount(account));
     return account!.address;
   };
 
+  const removePrivKeyAccount = (id: string, pwd: string) => {
+    if (!actions.checkPassword(pwd)) return false;
+    store.dispatch(removeKeystoreInfo(id));
+    store.dispatch(removeAccount(id));
+    store.dispatch(updateStatus());
+    return true;
+  };
+
   const addNewAccount = async (label: string) => {
     const { accounts }: IWalletState = store.getState().wallet;
+    const seedAccounts = Object.values(accounts).filter(
+      (account) => account.type === AccountType.Seed
+    );
     let idx = -1;
-    Object.keys(accounts).forEach((index, i) => {
+    Object.keys(seedAccounts).forEach((index, i) => {
       if (index !== String(i)) {
         idx = i;
         return;
       }
     });
     if (idx === -1) {
-      idx = Object.keys(accounts).length;
+      idx = Object.keys(seedAccounts).length;
     }
     return await subscribeAccount(idx, label);
   };
 
   const unsubscribeAccount = (index: number, pwd: string) => {
     if (actions.checkPassword(pwd)) {
-      store.dispatch(removeAccount(index));
+      store.dispatch(removeAccount(String(index)));
       store.dispatch(updateStatus());
       return true;
     }
     return false;
   };
 
-  const getPrimaryAccount = () => {
-    const { accounts, activeIndex }: IWalletState = store.getState().wallet;
+  const importPrivKeyAccount = async (privKey: string, label: string) => {
+    if (!label) return null;
+
+    const keystore = await actions.importPrivKey(privKey);
+    if (!keystore) return null;
+
+    const { accounts }: IWalletState = store.getState().wallet;
+    const res = await getAccountByPrivateKey(privKey);
+
+    // check if the same account exists
+    const isExisting =
+      Object.values(accounts).filter(
+        (acc) => acc.address.constellation === res.address.constellation
+      ).length > 0;
+    if (isExisting) {
+      store.dispatch(removeKeystoreInfo(keystore.id));
+      return null;
+    }
+
+    privateKey = privKey;
+    account = {
+      id: keystore.id,
+      label: label,
+      address: res!.address,
+      balance: res!.balance,
+      transactions: res!.transactions,
+      type: AccountType.PrivKey,
+    };
+
+    store.dispatch(createAccount(account));
+    return account!.address;
+  };
+
+  const getPrimaryAccount = (pwd: string) => {
+    const { accounts, activeAccountId }: IWalletState = store.getState().wallet;
+    if (!actions.checkPassword(pwd)) return;
+    password = pwd;
     getLatestUpdate();
     if (!account && accounts && Object.keys(accounts).length) {
-      account = accounts[activeIndex];
+      account = accounts[activeAccountId];
       store.dispatch(updateStatus());
     }
   };
 
   const getLatestUpdate = async () => {
-    const { activeIndex, accounts }: IWalletState = store.getState().wallet;
-    const res: IAccountInfo | null = await getAccountByIndex(activeIndex);
-    if (res) {
-      account = accounts[activeIndex];
-      // check pending txs
-      const memPool = window.localStorage.getItem('dag4-network-main-mempool');
-      if (memPool) {
-        const pendingTxs = JSON.parse(memPool);
-        console.log(pendingTxs);
-        pendingTxs.forEach((pTx: PendingTx) => {
-          if (
-            !account ||
-            (account.address !== pTx.sender &&
-              account.address !== pTx.receiver) ||
-            res.transactions.filter((tx: Transaction) => tx.hash === pTx.hash)
-              .length > 0
-          )
-            return;
-          res.transactions.unshift(_coventPendingType(pTx));
-        });
-      }
+    const { activeAccountId, accounts }: IWalletState = store.getState().wallet;
+    if (
+      !accounts[activeAccountId] ||
+      accounts[activeAccountId].type === undefined
+    )
+      return;
 
-      store.dispatch(
-        updateAccount({
-          index: activeIndex,
-          balance: res.balance,
-          transactions: res.transactions,
-        })
+    const accLatestInfo =
+      accounts[activeAccountId].type === AccountType.Seed
+        ? await getAccountByIndex(Number(activeAccountId))
+        : await getAccountByPrivKeystore(activeAccountId);
+
+    if (!accLatestInfo) return;
+
+    account = accounts[activeAccountId];
+    // check pending txs
+    const memPool = window.localStorage.getItem('dag4-network-main-mempool');
+    if (memPool) {
+      const pendingTxs = JSON.parse(memPool);
+      console.log(pendingTxs);
+      pendingTxs.forEach((pTx: PendingTx) => {
+        if (
+          !account ||
+          (account.address.constellation !== pTx.sender &&
+            account.address.constellation !== pTx.receiver) ||
+          accLatestInfo?.transactions.filter(
+            (tx: Transaction) => tx.hash === pTx.hash
+          ).length > 0
+        )
+          return;
+        accLatestInfo!.transactions.unshift(_coventPendingType(pTx));
+      });
+    }
+
+    store.dispatch(
+      updateAccount({
+        id: activeAccountId,
+        balance: accLatestInfo.balance,
+        transactions: accLatestInfo.transactions,
+      })
+    );
+  };
+
+  const getPrivKey = async (id: string, pwd: string) => {
+    const { keystores, accounts }: IWalletState = store.getState().wallet;
+    if (!account || !actions.checkPassword(pwd)) return null;
+    if (accounts[id].type === AccountType.Seed) {
+      const masterKey: hdkey | null = actions.getMasterKey();
+      if (!masterKey) return null;
+      return dag.keyStore.deriveAccountFromMaster(masterKey, Number(id));
+    } else {
+      const privkey = await dag.keyStore.decryptPrivateKey(
+        keystores[id] as PrivKeystore,
+        pwd
       );
+      return privkey;
     }
   };
 
-  const getPrivKey = (index: number, pwd: string) => {
-    const masterKey: hdkey | null = actions.getMasterKey();
-    if (!masterKey) return null;
-    return actions.checkPassword(pwd)
-      ? dag.keyStore.deriveAccountFromMaster(masterKey, index)
-      : null;
-  };
-
-  const updateAccountLabel = (index: number, label: string) => {
-    store.dispatch(updateLabel({ index, label }));
+  const updateAccountLabel = (id: string, label: string) => {
+    store.dispatch(updateLabel({ id, label }));
   };
 
   // Tx-Related
   const updateTempTx = (tx: ITransactionInfo) => {
     if (dag.account.isActive()) {
       tempTx = { ...tx };
+      tempTx.fromAddress = tempTx.fromAddress.trim();
+      tempTx.toAddress = tempTx.toAddress.trim();
     }
   };
 
@@ -184,7 +288,7 @@ const AccountController = (actions: {
     const newTxs = await dag.account.getTransactions(limit, searchAfter);
     store.dispatch(
       updateTransactions({
-        index: account.index,
+        id: account.id,
         txs: [...account.transactions, ...newTxs],
       })
     );
@@ -194,9 +298,14 @@ const AccountController = (actions: {
     if (intervalId) return;
     intervalId = setInterval(async () => {
       await getLatestUpdate();
-      const { activeIndex, accounts }: IWalletState = store.getState().wallet;
+      const {
+        activeAccountId,
+        accounts,
+      }: IWalletState = store.getState().wallet;
       if (
-        !accounts[activeIndex].transactions.filter(
+        !accounts[activeAccountId] ||
+        !accounts[activeAccountId].transactions ||
+        !accounts[activeAccountId].transactions.filter(
           (tx: Transaction) => tx.fee === -1
         ).length
       ) {
@@ -206,19 +315,33 @@ const AccountController = (actions: {
   };
 
   const confirmTempTx = async () => {
-    if (dag.account.isActive() && account) {
+    if (!dag.account.isActive) {
+      throw new Error('Error: No signed account exists');
+    }
+    if (!account) {
+      throw new Error("Error: Can't find active account info");
+    }
+    if (!tempTx) {
+      throw new Error("Error: Can't find transaction info");
+    }
+    try {
+      console.log('from address:', dag.account.address, tempTx.fee);
       const pendingTx = await dag.account.transferDag(
         tempTx.toAddress,
-        tempTx.amount
+        tempTx.amount,
+        tempTx.fee
       );
       dag.monitor.addToMemPoolMonitor(pendingTx);
       store.dispatch(
         updateTransactions({
-          index: account.index,
+          id: account.id,
           txs: [_coventPendingType(pendingTx), ...account.transactions],
         })
       );
+      tempTx = null;
       watchMemPool();
+    } catch (error) {
+      throw new Error(error);
     }
   };
 
@@ -236,10 +359,12 @@ const AccountController = (actions: {
     updateTempTx,
     confirmTempTx,
     getPrivKey,
+    importPrivKeyAccount,
     getPrimaryAccount,
     isValidDAGAddress,
     subscribeAccount,
     unsubscribeAccount,
+    removePrivKeyAccount,
     addNewAccount,
     getLatestUpdate,
     watchMemPool,

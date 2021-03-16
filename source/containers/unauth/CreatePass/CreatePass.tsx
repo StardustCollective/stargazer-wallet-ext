@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
-import CheckIcon from 'assets/images/svg/check.svg';
+import CheckIcon from '@material-ui/icons/CheckCircle';
 import { useForm } from 'react-hook-form';
 import { useController } from 'hooks/index';
 
@@ -38,7 +38,7 @@ const CreatePass = () => {
     <Layout title={title} linkTo="/app.html">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {passed ? (
-          <img src={`/${CheckIcon}`} className={styles.checked} alt="Success" />
+          <CheckIcon className={styles.checked} />
         ) : (
           <>
             <TextInput

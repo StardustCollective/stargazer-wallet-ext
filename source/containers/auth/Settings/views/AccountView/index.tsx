@@ -11,14 +11,16 @@ import { DAG_EXPLORER_SEARCH } from 'constants/index';
 import styles from './index.scss';
 
 interface IAccountView {
-  address: string;
+  address: {
+    [assetId: string]: string;
+  };
 }
 
 const AccountView: FC<IAccountView> = ({ address }) => {
   const showView = useSettingsView();
 
   const handleOpenExplorer = () => {
-    window.open(`${DAG_EXPLORER_SEARCH}${address}`, '_blank');
+    window.open(`${DAG_EXPLORER_SEARCH}${address.constellation}`, '_blank');
   };
 
   return (

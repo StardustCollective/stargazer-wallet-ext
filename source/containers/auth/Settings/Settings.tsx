@@ -45,8 +45,8 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   const { accounts }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
-  const [showedIndex, setShowedIndex] = useState<number>(0);
-  // const [selectedContact, setSelectedContact] = useState<string>('');
+  const [showedId, setShowedId] = useState<string>('0');
+  const [selectedContact, setSelectedContact] = useState<string>('');
   const [editable, setEditable] = useState(false);
   const [showedLabel, setShowedLabel] = useState('');
 
@@ -66,7 +66,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
             onChange={(
               ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
             ) => setShowedLabel(ev.target.value)}
-            onKeydown={(ev: KeyboardEvent<HTMLInputElement>) => {
+            onKeyDown={(ev: KeyboardEvent<HTMLInputElement>) => {
               if (ev.key === 'Enter') {
                 setShowedLabel(ev.currentTarget.value);
                 handleChangeLabel();
@@ -74,7 +74,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
             }}
           />
         ) : (
-          accounts[showedIndex].label
+          accounts[showedId].label
         );
       case routes.GENERAL_VIEW:
         return 'General Settings';
@@ -90,14 +90,16 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return 'Export private key';
       case routes.ABOUT_VIEW:
         return 'About';
-      // case routes.CONTACTS_VIEW:
-      //   return 'Contacts';
-      // case routes.CONTACT_VIEW:
-      //   return 'Contact';
-      // case routes.ADD_CONTACT_VIEW:
-      //   return 'Add Contact';
-      // case routes.EDIT_CONTACT_VIEW:
-      //   return 'Edit Contact';
+      case routes.CONTACTS_VIEW:
+        return 'Contacts';
+      case routes.CONTACT_VIEW:
+        return 'Contact';
+      case routes.ADD_CONTACT_VIEW:
+        return 'Add Contact';
+      case routes.EDIT_CONTACT_VIEW:
+        return 'Edit Contact';
+      case routes.IMPORT_ACCOUNT_VIEW:
+        return 'Import private key';
       default:
         return 'Settings';
     }
@@ -106,7 +108,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   const renderView = (view: string) => {
     switch (view) {
       case routes.ACCOUNT_VIEW:
-        return <Views.AccountView address={accounts[showedIndex].address} />;
+        return <Views.AccountView address={accounts[showedId].address} />;
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
@@ -116,29 +118,29 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.NEW_ACCOUNT_VIEW:
         return <Views.NewAccountView />;
       case routes.REMOVE_ACCOUNT_VIEW:
-        return <Views.RemoveAccountView index={showedIndex} />;
+        return <Views.RemoveAccountView id={showedId} />;
       case routes.PRIV_KEY_VIEW:
-        return <Views.PrivateKeyView index={showedIndex} />;
+        return <Views.PrivateKeyView id={showedId} />;
       case routes.ABOUT_VIEW:
         return <Views.AboutView />;
-      // case routes.CONTACTS_VIEW:
-      //   return (
-      //     <Views.ContactsView
-      //       onSelect={(id: string) => setSelectedContact(id)}
-      //     />
-      //   );
-      // case routes.ADD_CONTACT_VIEW:
-      //   return <Views.ModifyContactView type="add" />;
-      // case routes.EDIT_CONTACT_VIEW:
-      //   return (
-      //     <Views.ModifyContactView type="edit" selected={selectedContact} />
-      //   );
-      // case routes.CONTACT_VIEW:
-      //   return <Views.ContactView selected={selectedContact} />;
-      default:
+      case routes.CONTACTS_VIEW:
         return (
-          <Views.MainView onChange={(index: number) => setShowedIndex(index)} />
+          <Views.ContactsView
+            onSelect={(id: string) => setSelectedContact(id)}
+          />
         );
+      case routes.ADD_CONTACT_VIEW:
+        return <Views.ModifyContactView type="add" />;
+      case routes.EDIT_CONTACT_VIEW:
+        return (
+          <Views.ModifyContactView type="edit" selected={selectedContact} />
+        );
+      case routes.CONTACT_VIEW:
+        return <Views.ContactView selected={selectedContact} />;
+      case routes.IMPORT_ACCOUNT_VIEW:
+        return <Views.ImportAccountView />;
+      default:
+        return <Views.MainView onChange={(id: string) => setShowedId(id)} />;
     }
   };
 
@@ -148,9 +150,9 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
 
   const handleChangeLabel = () => {
     if (!editable) {
-      setShowedLabel(accounts[showedIndex].label);
+      setShowedLabel(accounts[showedId].label);
     } else {
-      controller.wallet.account.updateAccountLabel(showedIndex, showedLabel);
+      controller.wallet.account.updateAccountLabel(showedId, showedLabel);
     }
     setEditable(!editable);
   };

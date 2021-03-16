@@ -8,9 +8,23 @@
   width: 100%;
   box-sizing: border-box;
 
-  .add {
-    padding: 8px;
-    width: 144px;
+  .actions {
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    .add {
+      padding: 8px;
+      width: 144px;
+    }
+
+    .export {
+      background: $gray-light !important;
+      color: $gray-dark !important;
+      width: 144px;
+      padding: 8px;
+    }
   }
 
   ul.list {
@@ -39,7 +53,8 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between;
+        width: 100%;
 
         .info {
           display: flex;
@@ -60,7 +75,24 @@
               line-height: 18px;
               color: $gray-100;
               margin-top: 4px;
+              width: 228px;
+              text-overflow: ellipsis;
+              overflow: hidden;
             }
+          }
+        }
+
+        .send {
+          width: 24px;
+          height: 24px;
+          font-size: 14px;
+          color: $white;
+          background: $gray-100;
+
+          svg {
+            width: 14px;
+            height: 14px;
+            margin-left: 2px;
           }
         }
       }

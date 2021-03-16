@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from 'components/Button';
-import CheckIcon from 'assets/images/svg/check.svg';
+import CheckIcon from '@material-ui/icons/CheckCircle';
 import { useHistory } from 'react-router-dom';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
@@ -23,7 +23,7 @@ const ConfirmPhrase = () => {
     ? `Your Wallet is ready`
     : `Verify your recovery\nphrase`;
 
-  const isNotEqualArrays = useCallback((): boolean => {
+  const isNotEqualArrays = useMemo((): boolean => {
     if (!phrases) return true;
     return !isEqual(phrases.split(' '), newList);
   }, [phrases, newList]);
@@ -33,7 +33,6 @@ const ConfirmPhrase = () => {
     setNewList([...newList, orgList[idx]]);
     tempList.splice(idx, 1);
     setOrgList([...tempList]);
-    isNotEqualArrays();
   };
 
   const handleNewPhrase = (idx: number) => {
@@ -41,7 +40,6 @@ const ConfirmPhrase = () => {
     setOrgList([...orgList, newList[idx]]);
     tempList.splice(idx, 1);
     setNewList([...tempList]);
-    isNotEqualArrays();
   };
 
   const handleConfirm = () => {
@@ -55,9 +53,7 @@ const ConfirmPhrase = () => {
 
   return (
     <Layout title={title} linkTo="/create/phrase/generated">
-      {passed && (
-        <img src={`/${CheckIcon}`} className={styles.checked} alt="Success" />
-      )}
+      {passed && <CheckIcon className={styles.checked} />}
       <div className="body-description">
         {passed
           ? 'You should now have your recovery phrase and your wallet password written down for future reference.'
@@ -94,7 +90,7 @@ const ConfirmPhrase = () => {
       <Button
         type="button"
         variant={passed ? styles.start : styles.validate}
-        disabled={isNotEqualArrays()}
+        disabled={isNotEqualArrays}
         onClick={handleConfirm}
       >
         {passed ? 'Next' : 'Validate'}
