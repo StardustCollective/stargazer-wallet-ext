@@ -26,7 +26,6 @@ const FullSelect: FC<IFullSelect> = ({ options, value, onChange }) => {
       onClick={() => setExpanded(!expanded)}
     >
       <span className={styles.selected}>
-        <FileCopyIcon className={styles.file_copy} />
         {options[value]!.label}
         <DownArrowIcon className={styles.arrow} />
       </span>

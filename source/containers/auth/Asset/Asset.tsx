@@ -63,7 +63,9 @@ const AssetDetail = () => {
               {formatNumber(account.assets[account.activeAssetId].balance)}{' '}
               <small>{assets[account.activeAssetId].symbol}</small>
             </h3>
-            <small>≈ {getFiatAmount(0)}</small>
+            <small>
+              ≈ {getFiatAmount(account.assets[account.activeAssetId].balance)}
+            </small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />
             </IconButton>

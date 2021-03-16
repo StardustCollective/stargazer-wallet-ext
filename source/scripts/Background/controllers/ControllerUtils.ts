@@ -1,11 +1,7 @@
 import store from 'state/store';
 import { updateFiatPrice } from 'state/price';
-import {
-  ASSET_PRICE_API,
-  DEFAULT_CURRENCY,
-  PRICE_DAG_ID,
-  PRICE_ETH_ID,
-} from 'constants/index';
+import { ASSET_PRICE_API, DEFAULT_CURRENCY } from 'constants/index';
+import IAssetListState from 'state/assets/types';
 
 export interface IControllerUtils {
   appRoute: (newRoute?: string) => string;
@@ -24,14 +20,22 @@ const ControllerUtils = (): IControllerUtils => {
 
   const updateFiat = async (currency = DEFAULT_CURRENCY.id) => {
     try {
+      const assets: IAssetListState = store.getState().assets;
+      const assetIds = Object.values(assets)
+        .map((asset) => asset.priceId)
+        .join(',');
       const data = await (
         await fetch(
-          `${ASSET_PRICE_API}?ids=${PRICE_DAG_ID},${PRICE_ETH_ID}&vs_currencies=${currency}`
+          `${ASSET_PRICE_API}?ids=${assetIds}&vs_currencies=${currency}&include_24hr_change=true`
         )
       ).json();
       Object.keys(data).map((assetId) => {
         store.dispatch(
-          updateFiatPrice({ assetId, price: data[assetId][currency] })
+          updateFiatPrice({
+            assetId,
+            price: data[assetId][currency],
+            priceChange: data[assetId][`${currency}_24h_change`],
+          })
         );
       });
     } catch (error) {

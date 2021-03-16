@@ -117,7 +117,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   <li onClick={() => handleOpenExplorer(tx.hash)}>
                     <div>
                       <div className={styles.iconWrapper}>
-                        {tx.checkpointBloc || isETHTx ? (
+                        {isETHTx || tx.checkpointBlock ? (
                           isRecived ? (
                             <DownArrowIcon />
                           ) : (
@@ -143,7 +143,9 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                           <b>{assets[account.activeAssetId].symbol}</b>
                         </span>
                         <small>
-                          {isETHTx ? 0 : getFiatAmount(tx.amount / 1e8, 8)}
+                          {isETHTx
+                            ? getFiatAmount(Number(tx.balance), 2)
+                            : getFiatAmount(tx.amount / 1e8, 8)}
                         </small>
                       </span>
                       <div className={styles.linkIcon}>
