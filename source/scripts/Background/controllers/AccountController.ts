@@ -450,7 +450,6 @@ const AccountController = (actions: {
     const gasPrices = await ethClient.estimateGasPrices();
     const gasLimit = 21000;
 
-    console.log(txHistory, nonce, gasPrices, gasLimit);
     return {
       nonce,
       gas: Number(

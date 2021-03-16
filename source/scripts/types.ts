@@ -15,11 +15,19 @@ export interface IAccountInfo {
   };
 }
 
+export interface IETHTxConfig {
+  nonce: number;
+  txData: string;
+  gasPrice: number;
+  gasLimit: number;
+}
+
 export interface ITransactionInfo {
   fromAddress: string;
   toAddress: string;
   amount: number;
   fee: number | undefined;
+  ethConfig?: IETHTxConfig;
 }
 
 export type ETHNetwork = 'testnet' | 'mainnet';

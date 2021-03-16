@@ -15,6 +15,7 @@ const GasSettings = () => {
     gasLimit: number;
     txData: string;
   }>();
+
   useEffect(() => {
     controller.wallet.account.getRecommendETHTxConfig().then((val) => {
       console.log(val);
@@ -35,7 +36,7 @@ const GasSettings = () => {
                 type="number"
                 placeholder="Gas Price"
                 fullWidth
-                defaultValue={config?.gas || 0}
+                value={config?.gas || 0}
                 name="gasPrice"
               />
             </li>
@@ -45,7 +46,7 @@ const GasSettings = () => {
                 type="number"
                 placeholder="Gas Limit"
                 fullWidth
-                defaultValue={config?.gasLimit || 0}
+                value={config?.gasLimit || 0}
                 name="gasLimit"
               />
             </li>
@@ -54,7 +55,7 @@ const GasSettings = () => {
               <TextInput
                 placeholder="Transaction data"
                 fullWidth
-                defaultValue={config?.txData || ''}
+                value={config?.txData || ''}
                 name="transactionData"
               />
             </li>
@@ -64,7 +65,7 @@ const GasSettings = () => {
                 type="number"
                 placeholder="Nonce"
                 fullWidth
-                defaultValue={config?.nonce || ''}
+                value={config?.nonce || ''}
                 name="nonce"
               />
             </li>
