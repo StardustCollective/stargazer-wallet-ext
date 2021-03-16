@@ -327,6 +327,7 @@ const AccountController = (actions: {
 
   const updateAccountActiveAsset = (id: string, assetId: string) => {
     store.dispatch(changeActiveAsset({ id, assetId }));
+    getLatestUpdate();
   };
 
   // Tx-Related

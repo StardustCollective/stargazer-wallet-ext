@@ -11,8 +11,9 @@ import { useFiat } from 'hooks/usePrice';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { RootState } from 'state/store';
-import { ellipsis } from '../helpers';
 import IWalletState from 'state/wallet/types';
+import IAssetListState from 'state/assets/types';
+import { ellipsis } from '../helpers';
 
 import styles from './Confirm.scss';
 
@@ -24,6 +25,11 @@ const SendConfirm = () => {
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
+  const account = accounts[activeAccountId];
+
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
 
@@ -57,7 +63,8 @@ const SendConfirm = () => {
         <div className={styles.iconWrapper}>
           <UpArrowIcon />
         </div>
-        {Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0)} DAG
+        {Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0)}{' '}
+        {assets[account.activeAssetId].symbol}
         <small>
           (≈
           {getFiatAmount(
@@ -71,8 +78,7 @@ const SendConfirm = () => {
         <div className={styles.row}>
           From
           <span>
-            {accounts[activeAccountId]?.label || ''} (
-            {ellipsis(tempTx!.fromAddress)})
+            {account?.label || ''} ({ellipsis(tempTx!.fromAddress)})
           </span>
         </div>
         <div className={styles.row}>
@@ -82,7 +88,8 @@ const SendConfirm = () => {
         <div className={styles.row}>
           Transaction Fee
           <span>
-            {tempTx!.fee} DAG (≈ {getFiatAmount(tempTx?.fee || 0, 8)})
+            {tempTx!.fee} {assets[account.activeAssetId].symbol} (≈{' '}
+            {getFiatAmount(tempTx?.fee || 0, 8)})
           </span>
         </div>
       </section>

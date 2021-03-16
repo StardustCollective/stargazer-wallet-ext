@@ -117,7 +117,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   <li onClick={() => handleOpenExplorer(tx.hash)}>
                     <div>
                       <div className={styles.iconWrapper}>
-                        {tx.checkpointBloc || isETHTx ? (
+                        {isETHTx || tx.checkpointBlock ? (
                           isRecived ? (
                             <DownArrowIcon />
                           ) : (
