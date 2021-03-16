@@ -1,11 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
+import { useController } from 'hooks/index';
 
 import styles from './GasSettings.scss';
+
 const GasSettings = () => {
+  const controller = useController();
+  const [config, setConfig] = useState<{
+    nonce: number;
+    gas: number;
+    gasLimit: number;
+    txData: string;
+  }>();
+  useEffect(() => {
+    controller.wallet.account.getRecommendETHTxConfig().then((val) => {
+      console.log(val);
+      setConfig(val);
+    });
+  }, []);
+
   return (
     <div className={styles.wrapper}>
       <Header backLink="/send" />
@@ -16,18 +32,20 @@ const GasSettings = () => {
             <li>
               <label>GAS PRICE (Gwei)</label>
               <TextInput
+                type="number"
                 placeholder="Gas Price"
                 fullWidth
-                value="150,7000000000"
+                defaultValue={config?.gas || 0}
                 name="gasPrice"
               />
             </li>
             <li>
               <label>GAS LIMIT</label>
               <TextInput
+                type="number"
                 placeholder="Gas Limit"
                 fullWidth
-                value="21000"
+                defaultValue={config?.gasLimit || 0}
                 name="gasLimit"
               />
             </li>
@@ -36,16 +54,17 @@ const GasSettings = () => {
               <TextInput
                 placeholder="Transaction data"
                 fullWidth
-                value="0x"
+                defaultValue={config?.txData || ''}
                 name="transactionData"
               />
             </li>
             <li>
               <label>Nonce</label>
               <TextInput
+                type="number"
                 placeholder="Nonce"
                 fullWidth
-                value="315"
+                defaultValue={config?.nonce || ''}
                 name="nonce"
               />
             </li>
@@ -70,4 +89,5 @@ const GasSettings = () => {
     </div>
   );
 };
+
 export default GasSettings;

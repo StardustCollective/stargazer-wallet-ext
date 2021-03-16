@@ -81,18 +81,13 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       alert.error('Error: Invalid recipient address');
       return;
     }
-    if (asset.type === AssetType.Constellation) {
-      controller.wallet.account.updateTempTx({
-        fromAddress: account.assets[account.activeAssetId].address,
-        toAddress: data.address,
-        amount: data.amount,
-        fee: data.fee,
-      });
-      history.push('/send/confirm');
-    } else {
-      // TODO: Do the ETH temp tx stuff here.
-      console.log('ETH send');
-    }
+    controller.wallet.account.updateTempTx({
+      fromAddress: account.assets[account.activeAssetId].address,
+      toAddress: data.address,
+      amount: data.amount,
+      fee: data.fee,
+    });
+    history.push('/send/confirm');
   };
 
   const handleAmountChange = useCallback(

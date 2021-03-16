@@ -1,19 +1,27 @@
 import { useSelector } from 'react-redux';
 import IPriceState from 'state/price/types';
+import IWalletState from 'state/wallet/types';
+import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
-import { PRICE_DAG_ID, DEFAULT_CURRENCY } from 'constants/index';
 
-export function useFiat(currencyName = true) {
-  const price: IPriceState = useSelector((state: RootState) => state.price);
+export function useFiat(currencyName = true, assetId?: string) {
+  const { fiat, currency }: IPriceState = useSelector(
+    (state: RootState) => state.price
+  );
+  const { accounts, activeAccountId }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
+  const account = accounts[activeAccountId];
+  const priceId = assets[assetId ?? account.activeAssetId].priceId;
 
   return (amount: number, fraction = 4) => {
-    const value = amount * price.fiat[PRICE_DAG_ID];
-    return `${DEFAULT_CURRENCY.symbol}${value.toLocaleString(
-      navigator.language,
-      {
-        minimumFractionDigits: fraction,
-        maximumFractionDigits: fraction,
-      }
-    )}${currencyName ? ` ${DEFAULT_CURRENCY.name}` : ''}`;
+    const value = amount * (priceId ? fiat[priceId].price : 0);
+    return `${currency.symbol}${value.toLocaleString(navigator.language, {
+      minimumFractionDigits: fraction,
+      maximumFractionDigits: fraction,
+    })}${currencyName ? ` ${currency.name}` : ''}`;
   };
 }

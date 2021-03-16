@@ -1,5 +1,9 @@
+export interface IFiatAssetState {
+  price: number;
+  priceChange: number;
+}
 export interface IFiatState {
-  [assetId: string]: number;
+  [assetId: string]: IFiatAssetState;
 }
 
 export interface ICurrency {

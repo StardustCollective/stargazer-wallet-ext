@@ -22,7 +22,12 @@ import IWalletState, {
   PrivKeystore,
 } from 'state/wallet/types';
 
-import { IAccountInfo, ITransactionInfo, ETHNetwork } from '../../types';
+import {
+  IAccountInfo,
+  ITransactionInfo,
+  ETHNetwork,
+  baseAmount,
+} from '../../types';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
@@ -43,6 +48,12 @@ export interface IAccountController {
   ) => Promise<string | null>;
   removePrivKeyAccount: (id: string, password: string) => boolean;
   getRecommendFee: () => Promise<number>;
+  getRecommendETHTxConfig: () => Promise<{
+    nonce: number;
+    gas: number;
+    gasLimit: number;
+    txData: string;
+  }>;
   watchMemPool: () => void;
   getLatestUpdate: () => Promise<void>;
 }
@@ -378,25 +389,41 @@ const AccountController = (actions: {
       throw new Error("Error: Can't find transaction info");
     }
     try {
-      console.log('from address:', dag.account.address, tempTx.fee);
-      const pendingTx = await dag.account.transferDag(
-        tempTx.toAddress,
-        tempTx.amount,
-        tempTx.fee
-      );
-      dag.monitor.addToMemPoolMonitor(pendingTx);
-      store.dispatch(
-        updateTransactions({
-          id: account.id,
-          assetId: AssetType.Constellation,
-          txs: [
-            _coventDAGPendingTx(pendingTx),
-            ...account.assets[AssetType.Constellation].transactions,
-          ],
-        })
-      );
+      // console.log('from address:', dag.account.address, tempTx.fee);
+      const {
+        accounts,
+        activeAccountId,
+      }: IWalletState = store.getState().wallet;
+      const assetId = accounts[activeAccountId].activeAssetId;
+
+      if (assetId === AssetType.Constellation) {
+        const pendingTx = await dag.account.transferDag(
+          tempTx.toAddress,
+          tempTx.amount,
+          tempTx.fee
+        );
+        dag.monitor.addToMemPoolMonitor(pendingTx);
+        store.dispatch(
+          updateTransactions({
+            id: account.id,
+            assetId: AssetType.Constellation,
+            txs: [
+              _coventDAGPendingTx(pendingTx),
+              ...account.assets[AssetType.Constellation].transactions,
+            ],
+          })
+        );
+        watchMemPool();
+      } else {
+        ethClient.transfer({
+          recipient: tempTx.toAddress,
+          amount: baseAmount(
+            ethers.utils.parseEther(tempTx.amount.toString()).toString(),
+            18
+          ),
+        });
+      }
       tempTx = null;
-      watchMemPool();
     } catch (error) {
       throw new Error(error);
     }
@@ -414,6 +441,25 @@ const AccountController = (actions: {
 
   const getRecommendFee = async () => {
     return await dag.account.getFeeRecommendation();
+  };
+
+  const getRecommendETHTxConfig = async () => {
+    const txHistory = await ethClient.getTransactions();
+    const nonce = txHistory.txs.length;
+    const gasPrices = await ethClient.estimateGasPrices();
+    const gasLimit = 21000;
+
+    console.log(txHistory, nonce, gasPrices, gasLimit);
+    return {
+      nonce,
+      gas: Number(
+        ethers.utils
+          .formatUnits(gasPrices.average.amount().toString(), 'gwei')
+          .toString()
+      ),
+      gasLimit,
+      txData: '',
+    };
   };
 
   return {
@@ -435,6 +481,7 @@ const AccountController = (actions: {
     updateAccountLabel,
     updateAccountActiveAsset,
     getRecommendFee,
+    getRecommendETHTxConfig,
   };
 };
 

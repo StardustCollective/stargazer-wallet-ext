@@ -18,11 +18,18 @@ const PriceState = createSlice({
   reducers: {
     updateFiatPrice(
       state: IPriceState,
-      action: PayloadAction<{ assetId: string; price: number }>
+      action: PayloadAction<{
+        assetId: string;
+        price: number;
+        priceChange: number;
+      }>
     ) {
       state.fiat = {
         ...state.fiat,
-        [action.payload.assetId]: action.payload.price,
+        [action.payload.assetId]: {
+          price: action.payload.price,
+          priceChange: action.payload.priceChange,
+        },
       };
     },
   },
