@@ -73,6 +73,12 @@ const AccountController = (actions: {
   // limit number of txs
   const TXS_LIMIT = 10;
 
+  /**
+   * Convert pending DAG Tx type to standard Tx type
+   *
+   * @param pending {PendingTx}
+   * @returns {Transaction}
+   */
   const _coventDAGPendingTx = (pending: PendingTx) => {
     return {
       hash: pending.hash,
@@ -88,7 +94,12 @@ const AccountController = (actions: {
     } as Transaction;
   };
 
-  // Primary
+  /**
+   * Get latest update info of a account by private key
+   *
+   * @param privateKey {string}
+   * @returns {IAccountInfo}
+   */
   const getAccountByPrivateKey = async (
     privateKey: string
   ): Promise<IAccountInfo> => {
@@ -97,6 +108,8 @@ const AccountController = (actions: {
     ethClient = new XChainEthClient({
       network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
       privateKey,
+      etherscanApiKey: process.env.ETHERSCAN_API_KEY,
+      infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
     });
 
     // fetch dag info
@@ -113,7 +126,6 @@ const AccountController = (actions: {
       address: ethAddress,
       limit: TXS_LIMIT,
     });
-    console.log(ethTxs);
 
     return {
       assets: {
@@ -140,6 +152,12 @@ const AccountController = (actions: {
     };
   };
 
+  /**
+   * Get latest update info of a account by account index
+   *
+   * @param index {number} account index of seed-phrase wallet
+   * @returns {AccountInfo | null}
+   */
   const getAccountByIndex = async (index: number) => {
     const masterKey: hdkey | null = actions.getMasterKey();
     if (!masterKey) return null;
@@ -147,6 +165,13 @@ const AccountController = (actions: {
     return await getAccountByPrivateKey(privateKey);
   };
 
+  /**
+   * Get latest update info of a account
+   * by `id` of the keystore generated with a private key
+   *
+   * @param keystoreId {string} keystore id of imported keystores
+   * @returns {AccountInfo | null}
+   */
   const getAccountByPrivKeystore = async (keystoreId: string) => {
     const { keystores }: IWalletState = store.getState().wallet;
     if (!password || !keystores[keystoreId]) return null;
