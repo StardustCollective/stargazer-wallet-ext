@@ -11,11 +11,12 @@ li.assetItem {
   justify-content: space-between;
   border-bottom: 1px solid $white;
   transition: all 0.3s;
+  backdrop-filter: blur(10px);
+  background: rgba($white, 0.5);
   cursor: pointer;
 
   &:hover {
-    background: $gray-light-100;
-    backdrop-filter: blur(10px);
+    background: $gray-light;
   }
 
   & > div {
