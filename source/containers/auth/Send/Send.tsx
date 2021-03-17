@@ -31,6 +31,12 @@ interface IWalletSend {
   initAddress?: string;
 }
 
+const marks = [
+  { value: 0, label: 'LOW' },
+  { value: 1, label: 'AVERAGE' },
+  { value: 2, label: 'HIGH' },
+];
+
 const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const history = useHistory();
   const getFiatAmount = useFiat();
@@ -61,6 +67,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
+  const [gasPrices, setGasPrices] = useState<number[]>();
 
   const isValidAddress = useMemo(() => {
     if (asset.type === AssetType.Constellation)
@@ -111,10 +118,17 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     []
   );
 
-  const handleGetFee = () => {
+  const handleGetDAGTxFee = () => {
     controller.wallet.account.getRecommendFee().then((val) => {
       setRecommend(val);
       setFee(val.toString());
+    });
+  };
+
+  const handleGetTxFee = () => {
+    handleGetDAGTxFee();
+    controller.wallet.account.getLatestGasPrices().then((vals) => {
+      setGasPrices(vals);
     });
   };
 
@@ -123,13 +137,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     setModalOpen(false);
   };
 
-  const marks = [
-    { value: 0, label: 'LOW' },
-    { value: 1, label: 'AVERAGE' },
-    { value: 2, label: 'HIGH' },
-  ];
-
-  useEffect(handleGetFee, []);
+  useEffect(handleGetTxFee, []);
 
   return (
     <div className={styles.wrapper}>
@@ -217,7 +225,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 <Button
                   type="button"
                   variant={styles.textBtn}
-                  onClick={handleGetFee}
+                  onClick={handleGetDAGTxFee}
                 >
                   Recommend
                 </Button>
@@ -251,7 +259,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 ADVANCED gas settings
               </span>
             </div>
-            {/* <div>Gas fee settings go here</div> */}
             <Slider
               classes={{
                 rail: styles.sliderRail,
@@ -268,6 +275,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               aria-labelledby="discrete-slider-restrict"
               step={1}
               marks={marks}
+              onChange={(_, val) => {
+                console.log(val);
+              }}
             />
             <div className={styles.status}>
               <span className={styles.equalAmount}>0.0021 ETH (≈ $1.20)</span>

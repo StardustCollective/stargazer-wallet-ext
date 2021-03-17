@@ -54,6 +54,7 @@ export interface IAccountController {
     gasLimit: number;
     txData: string;
   }>;
+  getLatestGasPrices: () => Promise<number[]>;
   watchMemPool: () => void;
   getLatestUpdate: () => Promise<void>;
 }
@@ -469,6 +470,15 @@ const AccountController = (actions: {
     return await dag.account.getFeeRecommendation();
   };
 
+  const getLatestGasPrices = async () => {
+    const gasPrices = await ethClient.estimateGasPrices();
+    return Object.values(gasPrices).map((gas) => {
+      return Number(
+        ethers.utils.formatUnits(gas.amount().toString(), 'gwei').toString()
+      );
+    });
+  };
+
   const getRecommendETHTxConfig = async () => {
     const txHistory = await ethClient.getTransactions();
     const nonce = txHistory.txs.length;
@@ -507,6 +517,7 @@ const AccountController = (actions: {
     updateAccountActiveAsset,
     getRecommendFee,
     getRecommendETHTxConfig,
+    getLatestGasPrices,
   };
 };
 
