@@ -3,6 +3,7 @@
 const path = require('path');
 
 const webpack = require('webpack');
+const DotEnv = require('dotenv-webpack');
 const ZipPlugin = require('zip-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -178,6 +179,7 @@ module.exports = {
       chunks: ['options'],
       filename: 'options.html',
     }),
+    new DotEnv(),
     // write css file(s) to build folder
     new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
     // copy static assets

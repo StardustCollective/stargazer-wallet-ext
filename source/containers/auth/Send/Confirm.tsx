@@ -51,7 +51,7 @@ const SendConfirm = () => {
       <div className="body-description">
         You can follow your transaction under activity on your account screen.
       </div>
-      <Button type="button" variant={styles.next} linkTo="/home">
+      <Button type="button" variant={styles.next} linkTo="/asset">
         Next
       </Button>
     </Layout>
@@ -87,9 +87,9 @@ const SendConfirm = () => {
         </div>
         <div className={styles.row}>
           Transaction Fee
-          <span>
+          <span className={styles.fee}>
             {tempTx!.fee} {assets[account.activeAssetId].symbol} (≈{' '}
-            {getFiatAmount(tempTx?.fee || 0, 8)})
+            {getFiatAmount(tempTx?.fee || 0, 2)})
           </span>
         </div>
       </section>

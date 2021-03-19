@@ -6,8 +6,8 @@ import styles from './index.scss';
 const AboutView: FC = () => {
   return (
     <div className={styles.about}>
-      <span>Stargazer Wallet Chrome Extension v1.2</span>
-      <span>Version: 1.2.1</span>
+      <span>Stargazer Wallet Chrome Extension v2</span>
+      <span>Version: 2.0.0</span>
       <span>
         Support:{' '}
         <a
