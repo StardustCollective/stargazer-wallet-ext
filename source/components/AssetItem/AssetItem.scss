@@ -14,8 +14,8 @@ li.assetItem {
   cursor: pointer;
 
   &:hover {
-    background: $gray-light-100;
     backdrop-filter: blur(10px);
+    background-color: $gray-light;
   }
 
   & > div {

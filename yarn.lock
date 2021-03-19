@@ -1476,10 +1476,10 @@
     "@stardust-collective/dag4-network" "^1.0.1"
     bignumber.js "^9.0.1"
 
-"@stardust-collective/dag4-xchain-ethereum@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-xchain-ethereum/-/dag4-xchain-ethereum-0.1.2.tgz#a91bdc332fc67173fb9d1edbdc61a0e3c5466841"
-  integrity sha512-aCZVEYhVud/WZ3yyy0KxkjiJPL+F5NUPfp77e5yTokE5m6XLWnRgUg6FMw6c0MVX0zgwAJAsV91LQVihWLizAw==
+"@stardust-collective/dag4-xchain-ethereum@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-xchain-ethereum/-/dag4-xchain-ethereum-0.1.3.tgz#7050bdc11bd9584d854f055e684cb59eaff092e2"
+  integrity sha512-pFF9VKu8eVc9GFsHHrpA6AaMZDC9AMSOkRvHyRHajF7B8L97/KIDupswpAx9C4GOO24Yl9BWA2YZcd4wFZrkMw==
   dependencies:
     "@xchainjs/xchain-client" "^0.7.0"
     "@xchainjs/xchain-crypto" "^0.2.3"
@@ -1942,9 +1942,9 @@
   integrity sha512-n26E2OQKq/+WBYq3UrugLfA7s5/5xf3xbEFmS/ZRpF+MochOW/rqSTRTOLryHkH/ViuAtarEJcj2LaiuhfciVA==
 
 "@xchainjs/xchain-util@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-util/-/xchain-util-0.2.5.tgz#cf7c2c99db209da86ad7fafc4a81317d39d803b5"
-  integrity sha512-6aMXV5/4b390mHDkq5Dj4CT9GzZ7Luh4ZfNMbQj0eK2jnR1Ou4jhU0zG9i9wNG2wBTjW28S+hiVxdgQBxYSLGg==
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-util/-/xchain-util-0.2.6.tgz#f5f74e849ee7fcc9be671b74ffc03917a6743711"
+  integrity sha512-h/6AoCVaqJDgmwDEQb13JqzYEneBHjagVIqvWqSsAoGb/biacCv1IHgJ0uaHBzMHY0w6VyTQuHwZXhud/PIxxA==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -3786,6 +3786,25 @@ dot-prop@^5.2.0:
   integrity sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==
   dependencies:
     is-obj "^2.0.0"
+
+dotenv-defaults@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/dotenv-defaults/-/dotenv-defaults-2.0.1.tgz#ea6f9632b3b5cc55e48b736760def5561f1cb7c0"
+  integrity sha512-ugFCyBF7ILuwpmznduHPQZBMucHHJ8T4OBManTEVjemxCm2+nqifSuW2lD2SNKdiKSH1E324kZSdJ8M04b4I/A==
+  dependencies:
+    dotenv "^8.2.0"
+
+dotenv-webpack@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/dotenv-webpack/-/dotenv-webpack-7.0.2.tgz#1bf2e407e92c10fbb08d815b12c991028f10f81c"
+  integrity sha512-RY+/5uM/XY4bGtih9f9ic8hlrUDxVcZZBPWlnX/aHhaKxcVVX9SH/5VH7CSmvVo9GL6PKvQOA0X1bc552rnatQ==
+  dependencies:
+    dotenv-defaults "^2.0.1"
+
+dotenv@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
+  integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
 
 duplexify@^3.4.2, duplexify@^3.6.0:
   version "3.7.1"

@@ -9,19 +9,32 @@ import styles from './GasSettings.scss';
 
 const GasSettings = () => {
   const controller = useController();
-  const [config, setConfig] = useState<{
-    nonce: number;
-    gas: number;
-    gasLimit: number;
-    txData: string;
-  }>();
+  const [config, setConfig] = useState<
+    | {
+        nonce?: number;
+        gas: number;
+        gasLimit: number;
+        txData?: string;
+      }
+    | undefined
+  >(controller.wallet.account.getTempTx()?.ethConfig);
 
   useEffect(() => {
-    controller.wallet.account.getRecommendETHTxConfig().then((val) => {
-      console.log(val);
-      setConfig(val);
-    });
+    if (!config) {
+      controller.wallet.account.getRecommendETHTxConfig().then((val) => {
+        setConfig(val);
+      });
+    }
   }, []);
+
+  const handleUpdate = (key: string, val: any) => {
+    if (!config) return;
+    setConfig({
+      ...config,
+      [key]: val,
+    });
+    controller.wallet.account.updateETHTxConfig({ [key]: val });
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -38,6 +51,7 @@ const GasSettings = () => {
                 fullWidth
                 value={config?.gas || 0}
                 name="gasPrice"
+                onChange={(ev) => handleUpdate('gas', ev.target.value)}
               />
             </li>
             <li>
@@ -48,6 +62,7 @@ const GasSettings = () => {
                 fullWidth
                 value={config?.gasLimit || 0}
                 name="gasLimit"
+                onChange={(ev) => handleUpdate('gasLimit', ev.target.value)}
               />
             </li>
             <li>
@@ -57,6 +72,7 @@ const GasSettings = () => {
                 fullWidth
                 value={config?.txData || ''}
                 name="transactionData"
+                onChange={(ev) => handleUpdate('txData', ev.target.value)}
               />
             </li>
             <li>
@@ -67,6 +83,7 @@ const GasSettings = () => {
                 fullWidth
                 value={config?.nonce || ''}
                 name="nonce"
+                onChange={(ev) => handleUpdate('nonce', ev.target.value)}
               />
             </li>
           </ul>

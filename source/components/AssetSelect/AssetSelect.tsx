@@ -71,7 +71,11 @@ const AssetSelect: FC<IAssetSelect> = ({
         {assetList.length > 0 &&
           assetList.map((asset: IAssetInfoState) => {
             return (
-              <AssetItem asset={asset} itemClicked={() => onChange(asset)} />
+              <AssetItem
+                asset={asset}
+                key={asset.id}
+                itemClicked={() => onChange(asset)}
+              />
             );
           })}
       </ul>

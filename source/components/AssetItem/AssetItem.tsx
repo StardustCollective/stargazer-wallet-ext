@@ -35,16 +35,20 @@ const AssetItem: FC<IAssetItem> = ({ asset, itemClicked }: IAssetItem) => {
               <small>
                 {asset.priceId ? formatNumber(fiat[asset.priceId].price) : '-'}
               </small>
-              <small className={1 ? styles.green : styles.red}>
-                {asset.priceId ? (
-                  <>
-                    {fiat[asset.priceId].priceChange > 0 ? '+' : ''}
-                    {formatNumber(fiat[asset.priceId].priceChange, 2, 2, 3)}%
-                  </>
-                ) : (
-                  '-'
-                )}
-              </small>
+              {asset.priceId ? (
+                <small
+                  className={
+                    fiat[asset.priceId].priceChange > 0
+                      ? styles.green
+                      : styles.red
+                  }
+                >
+                  {fiat[asset.priceId].priceChange > 0 ? '+' : ''}
+                  {formatNumber(fiat[asset.priceId].priceChange, 2, 2, 3)}%
+                </small>
+              ) : (
+                '-'
+              )}
             </p>
           </span>
         </div>
