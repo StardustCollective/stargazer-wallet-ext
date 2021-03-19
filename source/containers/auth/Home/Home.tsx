@@ -34,7 +34,7 @@ const Home = () => {
 
   return (
     <div className={styles.wrapper}>
-      {account ? (
+      {account && account.activeAssetId ? (
         <>
           <Header showLogo />
           {showAddAsset ? (
