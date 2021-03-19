@@ -1,7 +1,10 @@
 import { dag } from '@stardust-collective/dag4';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { hdkey } from 'ethereumjs-wallet';
-import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
+import {
+  XChainEthClient,
+  utils,
+} from '@stardust-collective/dag4-xchain-ethereum';
 import { Transaction, PendingTx } from '@stardust-collective/dag4-network';
 
 import store from 'state/store';
@@ -22,12 +25,7 @@ import IWalletState, {
   PrivKeystore,
 } from 'state/wallet/types';
 
-import {
-  IAccountInfo,
-  ITransactionInfo,
-  ETHNetwork,
-  baseAmount,
-} from '../../types';
+import { IAccountInfo, ITransactionInfo, ETHNetwork } from '../../types';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
@@ -54,7 +52,19 @@ export interface IAccountController {
     gasLimit: number;
     txData: string;
   }>;
+  updateETHTxConfig: ({
+    nonce,
+    gas,
+    gasLimit,
+    txData,
+  }: {
+    gas?: number;
+    gasLimit?: number;
+    nonce?: number;
+    txData?: string;
+  }) => void;
   getLatestGasPrices: () => Promise<number[]>;
+  estimateGasFee: () => Promise<number | null>;
   watchMemPool: () => void;
   getLatestUpdate: () => Promise<void>;
 }
@@ -359,7 +369,7 @@ const AccountController = (actions: {
   // Tx-Related
   const updateTempTx = (tx: ITransactionInfo) => {
     if (dag.account.isActive()) {
-      tempTx = { ...tx };
+      tempTx = { ...tempTx, ...tx };
       tempTx.fromAddress = tempTx.fromAddress.trim();
       tempTx.toAddress = tempTx.toAddress.trim();
     }
@@ -416,7 +426,6 @@ const AccountController = (actions: {
       throw new Error("Error: Can't find transaction info");
     }
     try {
-      // console.log('from address:', dag.account.address, tempTx.fee);
       const {
         accounts,
         activeAccountId,
@@ -442,13 +451,23 @@ const AccountController = (actions: {
         );
         watchMemPool();
       } else {
-        ethClient.transfer({
+        if (!tempTx.ethConfig) return;
+        const { gas, gasLimit } = tempTx.ethConfig;
+        const txOptions = {
           recipient: tempTx.toAddress,
-          amount: baseAmount(
+          amount: utils.baseAmount(
             ethers.utils.parseEther(tempTx.amount.toString()).toString(),
             18
           ),
-        });
+          gasPrice: gas
+            ? utils.baseAmount(
+                ethers.utils.parseUnits(gas.toString(), 'gwei').toString(),
+                9
+              )
+            : undefined,
+          gasLimit: gasLimit ? BigNumber.from(gasLimit) : undefined,
+        };
+        ethClient.transfer(txOptions);
       }
       tempTx = null;
     } catch (error) {
@@ -485,7 +504,7 @@ const AccountController = (actions: {
     const gasPrices = await ethClient.estimateGasPrices();
     const gasLimit = 21000;
 
-    return {
+    const recommendConfig = {
       nonce,
       gas: Number(
         ethers.utils
@@ -495,6 +514,48 @@ const AccountController = (actions: {
       gasLimit,
       txData: '',
     };
+
+    if (!tempTx) {
+      tempTx = { fromAddress: '', toAddress: '', amount: 0 };
+      tempTx.ethConfig = recommendConfig;
+    }
+
+    return recommendConfig;
+  };
+
+  const updateETHTxConfig = ({
+    nonce,
+    gas,
+    gasLimit,
+    txData,
+  }: {
+    gas?: number;
+    gasLimit?: number;
+    nonce?: number;
+    txData?: string;
+  }) => {
+    if (!tempTx || !tempTx.ethConfig) return;
+    tempTx.ethConfig = {
+      ...tempTx.ethConfig,
+      nonce: nonce || tempTx.ethConfig.nonce,
+      gas: gas || tempTx.ethConfig.gas,
+      gasLimit: gasLimit || tempTx.ethConfig.gasLimit,
+      txData: txData || tempTx.ethConfig.txData,
+    };
+  };
+
+  const estimateGasFee = async () => {
+    if (!tempTx) return null;
+    if (!tempTx.ethConfig) {
+      tempTx.ethConfig = await getRecommendETHTxConfig();
+    }
+    const { gas, gasLimit } = tempTx.ethConfig;
+
+    const fee = ethers.utils
+      .parseUnits(gas.toString(), 9)
+      .mul(BigNumber.from(gasLimit));
+
+    return Number(ethers.utils.formatEther(fee).toString());
   };
 
   return {
@@ -517,7 +578,9 @@ const AccountController = (actions: {
     updateAccountActiveAsset,
     getRecommendFee,
     getRecommendETHTxConfig,
+    updateETHTxConfig,
     getLatestGasPrices,
+    estimateGasFee,
   };
 };
 

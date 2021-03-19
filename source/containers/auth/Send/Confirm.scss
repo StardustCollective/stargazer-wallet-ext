@@ -83,6 +83,13 @@
       font-size: 12px;
       line-height: 18px;
       color: $gray-100;
+
+      &.fee {
+        white-space: nowrap;
+        width: 168px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
     }
 
     &:nth-last-child(1) {

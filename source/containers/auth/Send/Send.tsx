@@ -67,7 +67,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
-  const [gasPrices, setGasPrices] = useState<number[]>();
+  const [gasPrices, setGasPrices] = useState<number[]>([]);
+  const [gasFee, setGasFee] = useState<number>(0);
 
   const isValidAddress = useMemo(() => {
     if (asset.type === AssetType.Constellation)
@@ -92,7 +93,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       fromAddress: account.assets[account.activeAssetId].address,
       toAddress: data.address,
       amount: data.amount,
-      fee: data.fee,
+      fee: data.fee || gasFee,
     });
     history.push('/send/confirm');
   };
@@ -103,7 +104,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     },
     []
   );
-
   const handleFeeChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setFee(ev.target.value);
@@ -118,6 +118,21 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     []
   );
 
+  const estimateGasFee = (val: number | number[]) => {
+    if (!gasPrices) return;
+    controller.wallet.account.updateETHTxConfig({
+      gas: gasPrices[val as number],
+    });
+    controller.wallet.account.estimateGasFee().then((fee) => {
+      if (!fee) return;
+      setGasFee(fee);
+    });
+  };
+
+  const handleGasPriceChange = (_: any, val: number | number[]) => {
+    estimateGasFee(val);
+  };
+
   const handleGetDAGTxFee = () => {
     controller.wallet.account.getRecommendFee().then((val) => {
       setRecommend(val);
@@ -127,8 +142,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleGetTxFee = () => {
     handleGetDAGTxFee();
-    controller.wallet.account.getLatestGasPrices().then((vals) => {
-      setGasPrices(vals);
+    controller.wallet.account.getRecommendETHTxConfig().then(() => {
+      controller.wallet.account.getLatestGasPrices().then((vals) => {
+        setGasPrices(vals);
+        estimateGasFee(1);
+      });
     });
   };
 
@@ -275,12 +293,12 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               aria-labelledby="discrete-slider-restrict"
               step={1}
               marks={marks}
-              onChange={(_, val) => {
-                console.log(val);
-              }}
+              onChange={handleGasPriceChange}
             />
             <div className={styles.status}>
-              <span className={styles.equalAmount}>0.0021 ETH (≈ $1.20)</span>
+              <span
+                className={styles.equalAmount}
+              >{`${gasFee} ETH (≈ ${getFiatAmount(gasFee, 2)})`}</span>
             </div>
           </section>
         )}
