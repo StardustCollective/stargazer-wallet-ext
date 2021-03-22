@@ -1,9 +1,11 @@
 import WalletController, { IWalletController } from './WalletController';
 import ControllerUtils from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
+import AssetsController, { IAssetsController } from './AssetsController';
 export interface IMasterController {
   wallet: Readonly<IWalletController>;
   contacts: Readonly<IContactsController>;
+  assets: Readonly<IAssetsController>;
   stateUpdater: () => void;
   appRoute: (newRoute?: string) => string;
 }
@@ -14,6 +16,7 @@ const MasterController = (): IMasterController => {
   const contacts = Object.freeze(
     ContactsController({ isLocked: wallet.isLocked })
   );
+  const assets = Object.freeze(AssetsController());
 
   const stateUpdater = () => {
     utils.updateFiat();
@@ -22,6 +25,7 @@ const MasterController = (): IMasterController => {
   return {
     wallet,
     contacts,
+    assets,
     appRoute: utils.appRoute,
     stateUpdater,
   };

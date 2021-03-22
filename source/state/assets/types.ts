@@ -7,11 +7,11 @@ export interface IAssetInfoState {
   symbol: string;
   native?: boolean;
   // if `native` is "true", `network` should be "both"
-  network?: 'both' | 'main' | 'test';
+  network?: 'both' | 'mainnet' | 'testnet';
   logo?: string;
   priceId?: string;
   decimals?: number;
-  contractAddress?: string;
+  address?: string;
 }
 
 export default interface IAssetListState {

@@ -9,6 +9,7 @@ import IWalletState, {
   Keystore,
   AccountType,
   AssetType,
+  IAssetState,
 } from './types';
 
 const initialState: IWalletState = {
@@ -129,6 +130,16 @@ const WalletState = createSlice({
     ) {
       state.accounts[action.payload.id].label = action.payload.label;
     },
+    addAsset(
+      state: IWalletState,
+      action: PayloadAction<{ id: string; asset: IAssetState }>
+    ) {
+      state.accounts[action.payload.id].assets = {
+        ...state.accounts[action.payload.id].assets,
+        [action.payload.asset.id]: action.payload.asset,
+      };
+      state.accounts[action.payload.id].activeAssetId = action.payload.asset.id;
+    },
   },
 });
 
@@ -147,6 +158,7 @@ export const {
   updateAccount,
   updateTransactions,
   updateLabel,
+  addAsset,
 } = WalletState.actions;
 
 export default WalletState.reducer;

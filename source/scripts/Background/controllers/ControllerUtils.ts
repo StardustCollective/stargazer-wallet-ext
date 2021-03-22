@@ -1,5 +1,5 @@
 import store from 'state/store';
-import { updateFiatPrice } from 'state/price';
+import { updateFiatPrices } from 'state/price';
 import { ASSET_PRICE_API, DEFAULT_CURRENCY } from 'constants/index';
 import IAssetListState from 'state/assets/types';
 
@@ -29,15 +29,17 @@ const ControllerUtils = (): IControllerUtils => {
           `${ASSET_PRICE_API}?ids=${assetIds}&vs_currencies=${currency}&include_24hr_change=true`
         )
       ).json();
-      Object.keys(data).map((assetId) => {
-        store.dispatch(
-          updateFiatPrice({
-            assetId,
-            price: data[assetId][currency],
-            priceChange: data[assetId][`${currency}_24h_change`],
+      store.dispatch(
+        updateFiatPrices(
+          Object.keys(data).map((assetId) => {
+            return {
+              id: assetId,
+              price: data[assetId][currency],
+              priceChange: data[assetId][`${currency}_24h_change`],
+            };
           })
-        );
-      });
+        )
+      );
     } catch (error) {
       console.log('<!> Fetching asset price error: ', error);
     }

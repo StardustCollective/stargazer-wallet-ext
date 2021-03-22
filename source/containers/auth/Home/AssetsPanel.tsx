@@ -9,24 +9,22 @@ import IconButton from '@material-ui/core/IconButton';
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AssetType } from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
 import { useController } from 'hooks/index';
 
 import styles from './Home.scss';
 
-interface IAssetsPanel {
-  setShowAddAsset: () => void;
-}
-
-const AssetsPanel: FC<IAssetsPanel> = ({ setShowAddAsset }: IAssetsPanel) => {
+const AssetsPanel: FC = () => {
   const history = useHistory();
   const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
+  const {
+    accounts,
+    activeAccountId,
+    activeNetwork,
+  }: IWalletState = useSelector((state: RootState) => state.wallet);
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
@@ -51,18 +49,33 @@ const AssetsPanel: FC<IAssetsPanel> = ({ setShowAddAsset }: IAssetsPanel) => {
     history.push('/asset');
   };
 
+  const handleAddAsset = () => {
+    history.push('/asset/add');
+  };
+
   const renderAssetList = () => {
     return (
       <ul>
-        {Object.values(account.assets).map((asset) => {
-          return (
-            <AssetItem
-              key={asset.id}
-              asset={assets[asset.id]}
-              itemClicked={() => handleSelectAsset(asset.id)}
-            />
-          );
-        })}
+        {Object.values(account.assets)
+          .filter(
+            (asset) =>
+              assets[asset.id].network === 'both' ||
+              assets[asset.id].network ===
+                activeNetwork[
+                  asset.id === AssetType.Constellation
+                    ? AssetType.Constellation
+                    : AssetType.Ethereum
+                ]
+          )
+          .map((asset) => {
+            return (
+              <AssetItem
+                key={asset.id}
+                asset={assets[asset.id]}
+                itemClicked={() => handleSelectAsset(asset.id)}
+              />
+            );
+          })}
       </ul>
     );
   };
@@ -73,7 +86,9 @@ const AssetsPanel: FC<IAssetsPanel> = ({ setShowAddAsset }: IAssetsPanel) => {
       onScroll={handleScroll}
     >
       <div className={styles.heading}>
-        <AddCircle className={styles.addAssets} onClick={setShowAddAsset} />
+        <IconButton onClick={handleAddAsset} className={styles.addAssets}>
+          <AddCircle />
+        </IconButton>
         Your Assets
         {!!isShowed && (
           <IconButton className={styles.goTop} onClick={handleGoTop}>

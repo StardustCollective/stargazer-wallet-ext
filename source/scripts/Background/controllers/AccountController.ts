@@ -17,15 +17,18 @@ import {
   updateLabel,
   removeKeystoreInfo,
   changeActiveAsset,
+  addAsset,
 } from 'state/wallet';
 import IWalletState, {
   AccountType,
   AssetType,
   IAccountState,
+  IAssetState,
   PrivKeystore,
 } from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo, ETHNetwork } from '../../types';
+import IAssetListState from 'state/assets/types';
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
@@ -40,6 +43,7 @@ export interface IAccountController {
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   updateAccountLabel: (id: string, label: string) => void;
   updateAccountActiveAsset: (id: string, assetId: string) => void;
+  addNewAsset: (id: string, address: string) => Promise<void>;
   importPrivKeyAccount: (
     privKey: string,
     label: string
@@ -105,6 +109,84 @@ const AccountController = (actions: {
     } as Transaction;
   };
 
+  const _fetchSingleERC20Asset = async (asset: IAssetState) => {
+    const ethAddress = ethClient.getAddress();
+    const assetList: IAssetListState = store.getState().assets;
+    const { activeNetwork }: IWalletState = store.getState().wallet;
+    const isTestnet = activeNetwork[AssetType.Ethereum] === 'testnet';
+    let address = assetList[asset.id].address;
+
+    ethClient.setNetwork(activeNetwork[AssetType.Ethereum] as ETHNetwork);
+    if (isTestnet && address) {
+      address = address.substring(2);
+    }
+    const balances = await ethClient.getKnownTokenBalances(ethAddress, [
+      {
+        address: address || '',
+        symbol: assetList[asset.id].symbol,
+        decimals: assetList[asset.id].decimals || 18,
+      },
+    ]);
+    const transactions = await ethClient.getTransactions({
+      address: ethAddress,
+      limit: TXS_LIMIT,
+      asset: address,
+    });
+
+    return {
+      id: asset.id,
+      balance: balances[0].balance || 0,
+      address: ethAddress,
+      transactions: transactions.txs.map((tx) => {
+        return {
+          ...tx,
+          balance: ethers.utils.formatUnits(
+            tx.from[0].amount.amount().toString(),
+            assetList[asset.id].decimals || 18
+          ),
+        };
+      }),
+    };
+  };
+
+  const _fetchERC20Assets = async () => {
+    if (!ethClient) return {};
+    const { accounts, activeAccountId }: IWalletState = store.getState().wallet;
+    const LATTICE_ASSET = '0xa393473d64d2F9F026B60b6Df7859A689715d092';
+    const assets = accounts[activeAccountId]?.assets || {};
+    const erc20Assets: {
+      [assetId: string]: IAssetState;
+    } = Object.values(assets)
+      .filter(
+        (asset) =>
+          asset.id !== AssetType.Ethereum &&
+          asset.id !== AssetType.Constellation
+      )
+      .reduce(
+        (assets, asset) => {
+          return {
+            ...assets,
+            [asset.id]: asset,
+          };
+        },
+        {
+          [LATTICE_ASSET]: {
+            id: LATTICE_ASSET,
+            balance: 0,
+            address: '',
+            transactions: [],
+          },
+        }
+      );
+
+    for (let i = 0; i < Object.values(erc20Assets).length; i++) {
+      erc20Assets[
+        Object.values(erc20Assets)[i].id
+      ] = await _fetchSingleERC20Asset(Object.values(erc20Assets)[i]);
+    }
+    return erc20Assets;
+  };
+
   /**
    * Get latest update info of a account by private key
    *
@@ -138,6 +220,9 @@ const AccountController = (actions: {
       limit: TXS_LIMIT,
     });
 
+    // fetch other erc20 assets info
+    const erc20Assets = await _fetchERC20Assets();
+
     return {
       assets: {
         [AssetType.Constellation]: {
@@ -159,6 +244,7 @@ const AccountController = (actions: {
             };
           }),
         },
+        ...erc20Assets,
       },
     };
   };
@@ -366,6 +452,16 @@ const AccountController = (actions: {
     getLatestUpdate();
   };
 
+  const addNewAsset = async (id: string, address: string) => {
+    const asset = await _fetchSingleERC20Asset({
+      id: address,
+      balance: 0,
+      address,
+      transactions: [],
+    });
+    store.dispatch(addAsset({ id, asset }));
+  };
+
   // Tx-Related
   const updateTempTx = (tx: ITransactionInfo) => {
     if (dag.account.isActive()) {
@@ -481,8 +577,7 @@ const AccountController = (actions: {
   };
 
   const isValidERC20Address = (address: string) => {
-    // TODO
-    return address.length === 42;
+    return ethClient.validateAddress(address);
   };
 
   const getRecommendFee = async () => {
@@ -576,6 +671,7 @@ const AccountController = (actions: {
     updateTxs,
     updateAccountLabel,
     updateAccountActiveAsset,
+    addNewAsset,
     getRecommendFee,
     getRecommendETHTxConfig,
     updateETHTxConfig,

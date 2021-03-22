@@ -210,11 +210,12 @@
       z-index: 2;
 
       .addAssets {
-        width: 26px;
+        width: 40px;
         font-size: 16px;
-        height: 26px;
+        height: 40px;
         position: absolute;
-        left: 41px;
+        left: 34px;
+        color: $gray-100;
       }
 
       .goTop {
