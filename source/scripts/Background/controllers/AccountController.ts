@@ -113,29 +113,21 @@ const AccountController = (actions: {
     const ethAddress = ethClient.getAddress();
     const assetList: IAssetListState = store.getState().assets;
     const { activeNetwork }: IWalletState = store.getState().wallet;
-    const isTestnet = activeNetwork[AssetType.Ethereum] === 'testnet';
     let address = assetList[asset.id].address;
 
     ethClient.setNetwork(activeNetwork[AssetType.Ethereum] as ETHNetwork);
-    if (isTestnet && address) {
-      address = address.substring(2);
-    }
-    const balances = await ethClient.getKnownTokenBalances(ethAddress, [
-      {
-        address: address || '',
-        symbol: assetList[asset.id].symbol,
-        decimals: assetList[asset.id].decimals || 18,
-      },
-    ]);
+    console.log('==== fetch single erc20 asset ====');
+    const balance = 0;
     const transactions = await ethClient.getTransactions({
       address: ethAddress,
       limit: TXS_LIMIT,
       asset: address,
     });
+    console.log('res: ', balance, address, transactions);
 
     return {
       id: asset.id,
-      balance: balances[0].balance || 0,
+      balance,
       address: ethAddress,
       transactions: transactions.txs.map((tx) => {
         return {

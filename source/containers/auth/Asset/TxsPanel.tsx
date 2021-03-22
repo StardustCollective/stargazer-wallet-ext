@@ -14,7 +14,7 @@ import { formatDistanceDate } from '../helpers';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
-import IWalletState, { Transaction } from 'state/wallet/types';
+import IWalletState, { AssetType, Transaction } from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
 
 import styles from './Asset.scss';
@@ -74,7 +74,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   }, []);
 
   const handleOpenExplorer = (tx: string) => {
-    const ethUrl = ETH_NETWORK[activeNetwork[account.activeAssetId]].etherscan;
+    const ethUrl = ETH_NETWORK[activeNetwork[AssetType.Ethereum]].etherscan;
     window.open(
       isETHTx ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
       '_blank'
@@ -139,7 +139,9 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                     <div>
                       <span>
                         <span>
-                          {isETHTx ? tx.balance : tx.amount / 1e8}{' '}
+                          {isETHTx
+                            ? Number(tx.balance).toFixed(4)
+                            : tx.amount / 1e8}{' '}
                           <b>{assets[account.activeAssetId].symbol}</b>
                         </span>
                         <small>

@@ -11,7 +11,7 @@ import {
   removeSeedAccounts,
 } from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
-import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
+import { DAG_NETWORK } from 'constants/index';
 import IWalletState, { AssetType, SeedKeystore } from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
 

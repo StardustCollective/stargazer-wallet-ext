@@ -61,8 +61,6 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
       return;
     }
 
-    if (!controller.wallet.account.isValidDAGAddress(data.address.trim()))
-      return;
     controller.contacts.modifyContact(
       type,
       data.name,
