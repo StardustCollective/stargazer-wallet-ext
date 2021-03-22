@@ -365,6 +365,125 @@
   }
 }
 
+.addAsset {
+  height: 469px;
+  background: $gray-light;
+  width: 100%;
+  padding-top: 25px;
+  box-sizing: border-box;
+  display: flex;
+  position: absolute;
+  bottom: -2px;
+  overflow: auto;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  transition: all 0.3s;
+  z-index: 2;
+
+  .searchInput {
+    position: sticky;
+    top: 0px;
+    z-index: 99;
+    display: flex;
+    width: calc(100% - 73px);
+    margin-left: 36px;
+    margin-right: 37px;
+
+    img {
+      position: absolute;
+      z-index: 1;
+      top: 13px;
+      left: 13px;
+    }
+    input {
+      padding-left: 10px;
+      box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  .assets {
+    width: 100%;
+    ul {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      list-style: none;
+      position: relative;
+      z-index: 1;
+      flex-grow: 4;
+
+      li {
+        width: 100%;
+        height: 84px;
+        display: flex;
+        box-sizing: border-box;
+        flex-direction: row;
+        padding: 0 36px 0 37px;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid $white;
+        transition: all 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          background: $gray-light-100;
+          backdrop-filter: blur(10px);
+        }
+
+        .addButton {
+          width: 40px;
+          height: 40px;
+        }
+
+        & > div {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          &:first-child > span {
+            font-size: 16px;
+          }
+
+          & > span {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: start;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 24px;
+            color: $gray-dark;
+            margin-left: 12px;
+          }
+
+          &:last-child > span {
+            align-items: flex-end;
+            justify-content: end;
+          }
+        }
+
+        svg {
+          color: $gray-100;
+        }
+        .iconWrapper {
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          margin-right: 12px;
+
+          img {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
 :global([data-scrollbar='true']) {
   width: 100%;
 }

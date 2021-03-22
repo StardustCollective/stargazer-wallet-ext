@@ -14,6 +14,7 @@ import Asset from 'containers/auth/Asset';
 import Send, { SendConfirm } from 'containers/auth/Send';
 import GasSettings from 'containers/auth/Send/GasSettings';
 // import Receive from 'containers/auth/Receive';
+import AddAsset from 'containers/auth/Asset/AddAsset';
 import Import from 'containers/common/Import';
 import { useController } from 'hooks/index';
 import { SendMatchProps } from './types';
@@ -67,6 +68,9 @@ const Auth = () => {
             </Route>
             {!isUnlocked && <Route path="/import" component={Import} exact />}
             {isUnlocked && <Route path="/home" component={Home} exact />}
+            {isUnlocked && (
+              <Route path="/asset/add" component={AddAsset} exact />
+            )}
             {isUnlocked && <Route path="/asset" component={Asset} exact />}
             {isUnlocked && (
               <Route path="/send/confirm" component={SendConfirm} exact />

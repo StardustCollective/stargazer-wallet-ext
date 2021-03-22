@@ -32,9 +32,30 @@ const PriceState = createSlice({
         },
       };
     },
+    updateFiatPrices(
+      state: IPriceState,
+      action: PayloadAction<
+        {
+          id: string;
+          price: number;
+          priceChange: number;
+        }[]
+      >
+    ) {
+      action.payload.forEach(({ id, price, priceChange }) => {
+        if (!id) return;
+        state.fiat = {
+          ...state.fiat,
+          [id]: {
+            price,
+            priceChange,
+          },
+        };
+      });
+    },
   },
 });
 
-export const { updateFiatPrice } = PriceState.actions;
+export const { updateFiatPrice, updateFiatPrices } = PriceState.actions;
 
 export default PriceState.reducer;

@@ -7,7 +7,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Header from 'containers/common/Header';
 import FullSelect from 'components/FullSelect';
-import AddAsset from 'components/AddAsset';
+import AddAsset from 'containers/auth/Asset/AddAsset';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
@@ -30,19 +30,12 @@ const Home = () => {
     controller.stateUpdater();
   };
 
-  const [showAddAsset, setShowAddAsset] = useState(false);
-
   return (
     <div className={styles.wrapper}>
       {account && account.activeAssetId ? (
         <>
           <Header showLogo />
-          {showAddAsset ? (
-            <>
-              <section className={styles.account}>Add Asset</section>
-              <AddAsset />
-            </>
-          ) : (
+          {
             <>
               <section className={styles.account}>
                 {Object.keys(accounts).length > 1 ? (
@@ -67,9 +60,9 @@ const Home = () => {
                   <RefreshIcon />
                 </IconButton>
               </section>
-              <AssetsPanel setShowAddAsset={() => setShowAddAsset(true)} />
+              <AssetsPanel />
             </>
-          )}
+          }
         </>
       ) : (
         <section

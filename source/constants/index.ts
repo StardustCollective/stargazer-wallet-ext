@@ -45,6 +45,8 @@ export const ETH_NETWORK: {
 };
 
 export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
+export const TOKEN_INFO_API =
+  'https://api.coingecko.com/api/v3/coins/ethereum/contract/';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 
 export const PRICE_DAG_ID = 'constellation-labs';
