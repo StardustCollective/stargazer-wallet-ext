@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AssetType } from 'state/wallet/types';
+import ERC20_TOKEN_LIST from './tokens';
 
-import IAssetListState from './types';
+import IAssetListState, { IAssetInfoState } from './types';
 
 const initialState: IAssetListState = {
   [AssetType.Constellation]: {
@@ -28,15 +29,25 @@ const initialState: IAssetListState = {
     priceId: 'ethereum',
     decimals: 18,
   },
+  ...ERC20_TOKEN_LIST,
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
 const AssetListState = createSlice({
   name: 'assets',
   initialState,
-  reducers: {},
+  reducers: {
+    addERC20Asset(
+      state: IAssetListState,
+      action: PayloadAction<IAssetInfoState>
+    ) {
+      if (action.payload.address) {
+        state[action.payload.address] = action.payload;
+      }
+    },
+  },
 });
 
-export const {} = AssetListState.actions;
+export const { addERC20Asset } = AssetListState.actions;
 
 export default AssetListState.reducer;

@@ -27,21 +27,26 @@ export const ETH_NETWORK: {
     id: string;
     label: string;
     etherscan: string;
+    chainId: number;
   };
 } = {
   mainnet: {
     id: 'mainnet',
     label: 'Ethereum Mainnet',
     etherscan: 'https://etherscan.io/',
+    chainId: 1,
   },
   testnet: {
     id: 'testnet',
     label: 'Ethereum Testnet',
     etherscan: 'https://ropsten.etherscan.io/',
+    chainId: 3,
   },
 };
 
 export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
+export const TOKEN_INFO_API =
+  'https://api.coingecko.com/api/v3/coins/ethereum/contract/';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 
 export const PRICE_DAG_ID = 'constellation-labs';

@@ -12,7 +12,7 @@ import TxsPanel from './TxsPanel';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AssetType } from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
 import { formatNumber, getAddressURL } from '../helpers';
 
@@ -60,7 +60,11 @@ const AssetDetail = () => {
               addressUrl={getAddressURL(
                 account.assets[account.activeAssetId].address,
                 assets[account.activeAssetId].type,
-                activeNetwork[account.activeAssetId]
+                activeNetwork[
+                  account.activeAssetId === AssetType.Constellation
+                    ? AssetType.Constellation
+                    : AssetType.Ethereum
+                ]
               )}
             />
           </section>
