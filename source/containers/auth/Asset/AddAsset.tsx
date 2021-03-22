@@ -31,11 +31,13 @@ const AddAsset = () => {
   const [keyword, setKeyword] = useState('');
   const account = accounts[activeAccountId];
 
-  const handleAddAsset = (address?: string) => {
+  const handleAddAsset = (id: string, address?: string) => {
     if (!address) return;
-    controller.wallet.account.addNewAsset(activeAccountId, address).then(() => {
-      history.push('/home');
-    });
+    controller.wallet.account
+      .addNewAsset(activeAccountId, id, address)
+      .then(() => {
+        history.push('/home');
+      });
   };
 
   useEffect(() => {
@@ -85,7 +87,7 @@ const AddAsset = () => {
                       </div>
                       <IconButton
                         className={styles.addButton}
-                        onClick={() => handleAddAsset(asset.address)}
+                        onClick={() => handleAddAsset(asset.id, asset.address)}
                       >
                         <AddCircle />
                       </IconButton>

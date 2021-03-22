@@ -509,7 +509,7 @@ const TOKEN_LIST: IAssetListState = {
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xE41d2489571d322189246DaFA5ebDe1F4699F498/logo.png',
   },
   'T-0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
-    id: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+    id: 'T-0xaD6D458402F60fD3Bd25163575031ACDce07538D',
     name: 'Dai Stablecoin',
     address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
     symbol: 'DAI',
@@ -521,7 +521,7 @@ const TOKEN_LIST: IAssetListState = {
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
   },
   'T-0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984': {
-    id: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+    id: 'T-0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
     name: 'Uniswap',
     address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
     symbol: 'UNI',
@@ -533,7 +533,7 @@ const TOKEN_LIST: IAssetListState = {
       'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604',
   },
   'T-0xc778417E063141139Fce010982780140Aa0cD5Ab': {
-    id: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+    id: 'T-0xc778417E063141139Fce010982780140Aa0cD5Ab',
     name: 'Wrapped Ether',
     address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
     symbol: 'WETH',

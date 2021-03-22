@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -7,7 +7,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Header from 'containers/common/Header';
 import FullSelect from 'components/FullSelect';
-import AddAsset from 'containers/auth/Asset/AddAsset';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';

@@ -43,7 +43,7 @@ export interface IAccountController {
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   updateAccountLabel: (id: string, label: string) => void;
   updateAccountActiveAsset: (id: string, assetId: string) => void;
-  addNewAsset: (id: string, address: string) => Promise<void>;
+  addNewAsset: (id: string, assetId: string, address: string) => Promise<void>;
   importPrivKeyAccount: (
     privKey: string,
     label: string
@@ -452,9 +452,9 @@ const AccountController = (actions: {
     getLatestUpdate();
   };
 
-  const addNewAsset = async (id: string, address: string) => {
+  const addNewAsset = async (id: string, assetId: string, address: string) => {
     const asset = await _fetchSingleERC20Asset({
-      id: address,
+      id: assetId,
       balance: 0,
       address,
       transactions: [],
