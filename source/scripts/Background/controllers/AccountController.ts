@@ -56,18 +56,15 @@ export interface IAccountController {
     nonce: number;
     gas: number;
     gasLimit: number;
-    txData: string;
   }>;
   updateETHTxConfig: ({
     nonce,
     gas,
     gasLimit,
-    txData,
   }: {
     gas?: number;
     gasLimit?: number;
     nonce?: number;
-    txData?: string;
   }) => void;
   getLatestGasPrices: () => Promise<number[]>;
   estimateGasFee: () => Promise<number | null>;
@@ -528,6 +525,7 @@ const AccountController = (actions: {
         accounts,
         activeAccountId,
       }: IWalletState = store.getState().wallet;
+      const assets: IAssetListState = store.getState().assets;
       const assetId = accounts[activeAccountId].activeAssetId;
 
       if (assetId === AssetType.Constellation) {
@@ -550,8 +548,8 @@ const AccountController = (actions: {
         watchMemPool();
       } else {
         if (!tempTx.ethConfig) return;
-        const { gas, gasLimit } = tempTx.ethConfig;
-        const txOptions = {
+        const { gas, gasLimit, nonce } = tempTx.ethConfig;
+        const txOptions: any = {
           recipient: tempTx.toAddress,
           amount: utils.baseAmount(
             ethers.utils.parseEther(tempTx.amount.toString()).toString(),
@@ -563,8 +561,19 @@ const AccountController = (actions: {
                 9
               )
             : undefined,
-          gasLimit: gasLimit ? BigNumber.from(gasLimit) : undefined,
+          gasLimit:
+            gasLimit && account.activeAssetId === AssetType.Ethereum
+              ? BigNumber.from(gasLimit)
+              : undefined,
+          nonce: nonce,
         };
+        if (account.activeAssetId !== AssetType.Ethereum) {
+          txOptions.asset = utils.assetFromString(
+            `${utils.ETHChain}.${assets[account.activeAssetId].symbol}-${
+              assets[account.activeAssetId].address
+            }`
+          );
+        }
         ethClient.transfer(txOptions);
       }
       tempTx = null;
@@ -609,7 +618,6 @@ const AccountController = (actions: {
           .toString()
       ),
       gasLimit,
-      txData: '',
     };
 
     if (!tempTx) {
@@ -624,7 +632,6 @@ const AccountController = (actions: {
     nonce,
     gas,
     gasLimit,
-    txData,
   }: {
     gas?: number;
     gasLimit?: number;
@@ -637,7 +644,6 @@ const AccountController = (actions: {
       nonce: nonce || tempTx.ethConfig.nonce,
       gas: gas || tempTx.ethConfig.gas,
       gasLimit: gasLimit || tempTx.ethConfig.gasLimit,
-      txData: txData || tempTx.ethConfig.txData,
     };
   };
 
