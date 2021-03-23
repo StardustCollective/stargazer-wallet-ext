@@ -26,7 +26,7 @@ const ControllerUtils = (): IControllerUtils => {
         .join(',');
       const data = await (
         await fetch(
-          `${ASSET_PRICE_API}?ids=${assetIds}&vs_currencies=${currency}&include_24hr_change=true`
+          `${ASSET_PRICE_API}?ids=${assetIds},bitcoin&vs_currencies=${currency}&include_24hr_change=true`
         )
       ).json();
       store.dispatch(

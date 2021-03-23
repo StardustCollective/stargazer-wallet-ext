@@ -53,6 +53,8 @@ export const PRICE_DAG_ID = 'constellation-labs';
 export const PRICE_BTC_ID = 'bitcoin';
 export const PRICE_ETH_ID = 'ethereum';
 
+export const LATTICE_ASSET = '0xa393473d64d2F9F026B60b6Df7859A689715d092';
+
 export const DEFAULT_CURRENCY = {
   id: 'usd',
   symbol: '$',

@@ -12,7 +12,7 @@ export interface IAssetsController {
   fetchTokenInfo: (address: string) => void;
 }
 
-const AssetsController = (): IAssetsController => {
+const AssetsController = (updateFiat: () => void): IAssetsController => {
   const { activeNetwork }: IWalletState = store.getState().wallet;
   const ethClient: XChainEthClient = new XChainEthClient({
     network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
@@ -58,6 +58,8 @@ const AssetsController = (): IAssetsController => {
           network,
         })
       );
+
+      updateFiat();
     }
   };
 

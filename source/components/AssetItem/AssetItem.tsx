@@ -31,31 +31,31 @@ const AssetItem: FC<IAssetItem> = ({ asset, itemClicked }: IAssetItem) => {
           </div>
           <span>
             {asset.name}
-            <p>
-              <small>
-                {asset.priceId ? formatNumber(fiat[asset.priceId].price) : '-'}
-              </small>
-              {asset.priceId ? (
-                <small
-                  className={
-                    fiat[asset.priceId].priceChange > 0
-                      ? styles.green
-                      : styles.red
+            {asset.priceId &&
+              fiat[asset.priceId]?.price &&
+              fiat[asset.priceId]?.priceChange && (
+                <p>
+                  <small>{formatNumber(fiat[asset.priceId].price)}</small>
+                  {
+                    <small
+                      className={
+                        fiat[asset.priceId].priceChange > 0
+                          ? styles.green
+                          : styles.red
+                      }
+                    >
+                      {fiat[asset.priceId].priceChange > 0 ? '+' : ''}
+                      {formatNumber(fiat[asset.priceId].priceChange, 2, 2, 3)}%
+                    </small>
                   }
-                >
-                  {fiat[asset.priceId].priceChange > 0 ? '+' : ''}
-                  {formatNumber(fiat[asset.priceId].priceChange, 2, 2, 3)}%
-                </small>
-              ) : (
-                '-'
+                </p>
               )}
-            </p>
           </span>
         </div>
         <div>
           <span>
             <span>
-              {account.assets[asset.id]?.balance || 0}
+              {account.assets[asset.id]?.balance.toFixed(2) || 0}
               <b>{asset.symbol}</b>
             </span>
           </span>

@@ -53,6 +53,7 @@ interface IKeyStoreState {
 export default interface IWalletState {
   keystores: IKeyStoreState;
   status: number;
+  version: string;
   accounts: {
     [accountId: string]: IAccountState;
   };

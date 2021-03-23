@@ -8,7 +8,9 @@ import UserIcon from '@material-ui/icons/AccountCircleRounded';
 
 import Icon from 'components/Icon';
 import { RootState } from 'state/store';
+import { useController } from 'hooks/index';
 import IContactBookState, { IContactState } from 'state/contacts/types';
+import IWalletState, { AssetType } from 'state/wallet/types';
 
 import styles from './Contacts.scss';
 
@@ -19,9 +21,27 @@ interface IWalletContacts {
 }
 
 const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
+  const controller = useController();
+  const { accounts, activeAccountId }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
+  const account = accounts[activeAccountId];
+
+  const isDAGAddress = (address: string) => {
+    return controller.wallet.account.isValidDAGAddress(address);
+  };
+
+  const isValidContact = (contact: IContactState) => {
+    return (
+      (account.activeAssetId === AssetType.Constellation &&
+        isDAGAddress(contact.address)) ||
+      (account.activeAssetId !== AssetType.Constellation &&
+        !isDAGAddress(contact.address))
+    );
+  };
 
   return (
     <Portal>
@@ -38,19 +58,24 @@ const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
           </section>
           <section className={styles.container}>
             <ul className={styles.list}>
-              {Object.values(contacts).map((contact: IContactState) => (
-                <li key={contact.id} onClick={() => onChange(contact.address)}>
-                  <div className={styles.contact}>
-                    <span className={styles.info}>
-                      <Icon Component={UserIcon} />
-                      <div>
-                        {contact.name}
-                        <small>{contact.address}</small>
-                      </div>
-                    </span>
-                  </div>
-                </li>
-              ))}
+              {Object.values(contacts)
+                .filter(isValidContact)
+                .map((contact: IContactState) => (
+                  <li
+                    key={contact.id}
+                    onClick={() => onChange(contact.address)}
+                  >
+                    <div className={styles.contact}>
+                      <span className={styles.info}>
+                        <Icon Component={UserIcon} />
+                        <div>
+                          {contact.name}
+                          <small>{contact.address}</small>
+                        </div>
+                      </span>
+                    </div>
+                  </li>
+                ))}
             </ul>
           </section>
         </div>

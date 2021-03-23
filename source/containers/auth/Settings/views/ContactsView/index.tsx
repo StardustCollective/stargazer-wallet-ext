@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import { useSettingsView } from 'hooks/index';
+import { useController, useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
 import IContactBookState, { IContactState } from 'state/contacts/types';
 import UserIcon from '@material-ui/icons/AccountCircleRounded';
@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { ADD_CONTACT_VIEW, CONTACT_VIEW } from '../routes';
 import styles from './index.scss';
+import IWalletState, { AssetType } from 'state/wallet/types';
 
 interface IContactsView {
   onSelect: (id: string) => void;
@@ -22,6 +23,10 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
+  const { activeAccountId }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+  const controller = useController();
   const showView = useSettingsView();
   const history = useHistory();
 
@@ -31,6 +36,17 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
   };
   const handleSelectedContact = (ev: any, address: string) => {
     ev.stopPropagation();
+    if (controller.wallet.account.isValidDAGAddress(address)) {
+      controller.wallet.account.updateAccountActiveAsset(
+        activeAccountId,
+        AssetType.Constellation
+      );
+    } else if (controller.wallet.account.isValidERC20Address(address)) {
+      controller.wallet.account.updateAccountActiveAsset(
+        activeAccountId,
+        AssetType.Ethereum
+      );
+    }
     history.push(`/send/${address}`);
   };
 

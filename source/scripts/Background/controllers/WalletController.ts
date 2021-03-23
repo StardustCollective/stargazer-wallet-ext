@@ -13,6 +13,7 @@ import {
 import AccountController, { IAccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
 import IWalletState, { AssetType, SeedKeystore } from 'state/wallet/types';
+import IAssetListState from 'state/assets/types';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;
@@ -144,6 +145,10 @@ const WalletController = (): IWalletController => {
   };
 
   const switchNetwork = (assetId: string, networkId: string) => {
+    const { accounts, activeAccountId }: IWalletState = store.getState().wallet;
+    const assets: IAssetListState = store.getState().assets;
+    const activeAccount = accounts[activeAccountId];
+
     if (assetId === AssetType.Constellation && DAG_NETWORK[networkId]!.id) {
       dag.network.setNetwork({
         id: DAG_NETWORK[networkId].id,
@@ -151,6 +156,14 @@ const WalletController = (): IWalletController => {
         lbUrl: DAG_NETWORK[networkId].lbUrl,
       });
     }
+
+    if (assets[activeAccount.activeAssetId].network !== networkId) {
+      account.updateAccountActiveAsset(
+        activeAccountId,
+        AssetType.Constellation
+      );
+    }
+
     store.dispatch(
       changeActiveNetwork({
         asset: assetId,

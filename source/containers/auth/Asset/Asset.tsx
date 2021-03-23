@@ -51,9 +51,18 @@ const AssetDetail = () => {
           <Header backLink="/home" />
           <section className={styles.account}>
             <AssetSelect
-              assetList={Object.values(account.assets).map(
-                (asset) => assets[asset.id]
-              )}
+              assetList={Object.values(account.assets)
+                .filter(
+                  (asset) =>
+                    assets[asset.id].network === 'both' ||
+                    assets[asset.id].network ===
+                      activeNetwork[
+                        asset.id === AssetType.Constellation
+                          ? AssetType.Constellation
+                          : AssetType.Ethereum
+                      ]
+                )
+                .map((asset) => assets[asset.id])}
               onChange={(asset) => handleSelectAsset(asset.id)}
               tokenName={assets[account.activeAssetId].name}
               tokenAddress={account.assets[account.activeAssetId].address}

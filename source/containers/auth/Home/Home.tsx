@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -7,9 +7,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Header from 'containers/common/Header';
 import FullSelect from 'components/FullSelect';
-import AddAsset from 'containers/auth/Asset/AddAsset';
 import { useController } from 'hooks/index';
-import { useFiat } from 'hooks/usePrice';
+import { useFiat, useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
 import AssetsPanel from './AssetsPanel';
@@ -19,6 +18,7 @@ import styles from './Home.scss';
 const Home = () => {
   const controller = useController();
   const getFiatAmount = useFiat(false);
+  const totalBalance = useTotalBalance();
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -52,10 +52,8 @@ const Home = () => {
                 )}
               </section>
               <section className={styles.center}>
-                <h3>
-                  {getFiatAmount(account.assets[account.activeAssetId].balance)}
-                </h3>
-                <small>≈ ₿1,523896128</small>
+                <h3>{totalBalance[0]}</h3>
+                <small>{`≈ ₿${totalBalance[1]}`}</small>
                 <IconButton className={styles.refresh} onClick={handleRefresh}>
                   <RefreshIcon />
                 </IconButton>
