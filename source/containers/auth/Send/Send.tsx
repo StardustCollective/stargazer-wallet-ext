@@ -298,7 +298,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             <div className={styles.status}>
               <span
                 className={styles.equalAmount}
-              >{`${gasFee} ETH (≈ ${getFiatAmount(gasFee, 2)})`}</span>
+              >{`${gasFee} ETH (≈ ${getFiatAmount(
+                gasFee,
+                2,
+                'ethereum'
+              )})`}</span>
             </div>
           </section>
         )}

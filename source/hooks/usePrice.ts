@@ -19,11 +19,16 @@ export function useFiat(currencyName = true, assetId?: string) {
     assets[assetId || account?.activeAssetId || AssetType.Constellation]
       .priceId;
 
-  return (amount: number, fraction = 4) => {
-    const value = amount * (priceId ? fiat[priceId]?.price || 0 : 0);
-    return `${currency.symbol}${value.toLocaleString(navigator.language, {
-      minimumFractionDigits: fraction,
-      maximumFractionDigits: fraction,
-    })}${currencyName ? ` ${currency.name}` : ''}`;
+  return (amount: number, fraction = 4, basePriceId = priceId) => {
+    const value =
+      amount * (priceId ? fiat[basePriceId || priceId]?.price || 0 : 0);
+    return `${currencyName ? currency.symbol : ''}${
+      currencyName
+        ? value.toLocaleString(navigator.language, {
+            minimumFractionDigits: fraction,
+            maximumFractionDigits: fraction,
+          })
+        : value
+    }${currencyName ? ` ${currency.name}` : ''}`;
   };
 }

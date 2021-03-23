@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
@@ -11,7 +11,7 @@ import { useFiat } from 'hooks/usePrice';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AssetType } from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
 import { ellipsis } from '../helpers';
 
@@ -19,7 +19,7 @@ import styles from './Confirm.scss';
 
 const SendConfirm = () => {
   const controller = useController();
-  const getFiatAmount = useFiat();
+  const getFiatAmount = useFiat(false);
   const alert = useAlert();
 
   const { accounts, activeAccountId }: IWalletState = useSelector(
@@ -32,6 +32,16 @@ const SendConfirm = () => {
 
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
+
+  const getTotalAmount = () => {
+    return (
+      Number(getFiatAmount(Number(tempTx?.amount || 0), 8)) +
+      Number(getFiatAmount(Number(tempTx?.fee || 0), 8, 'ethereum'))
+    ).toLocaleString(navigator.language, {
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
+    });
+  };
 
   const handleConfirm = () => {
     controller.wallet.account
@@ -63,15 +73,14 @@ const SendConfirm = () => {
         <div className={styles.iconWrapper}>
           <UpArrowIcon />
         </div>
-        {Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0)}{' '}
+        {Number(tempTx?.amount || 0) +
+          (account.activeAssetId === AssetType.Ethereum
+            ? Number(tempTx?.fee || 0)
+            : 0)}{' '}
         {assets[account.activeAssetId].symbol}
         <small>
           (≈
-          {getFiatAmount(
-            Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0),
-            8
-          )}
-          )
+          {getTotalAmount()})
         </small>
       </section>
       <section className={styles.transaction}>
@@ -88,20 +97,15 @@ const SendConfirm = () => {
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {tempTx!.fee} {assets[account.activeAssetId].symbol} (≈{' '}
-            {getFiatAmount(tempTx?.fee || 0, 2)})
+            {tempTx!.fee} ETH (≈{' '}
+            {getFiatAmount(tempTx?.fee || 0, 2, 'ethereum')})
           </span>
         </div>
       </section>
       <section className={styles.confirm}>
         <div className={styles.row}>
           Max Total
-          <span>
-            {getFiatAmount(
-              Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0),
-              8
-            )}
-          </span>
+          <span>{getTotalAmount()}</span>
         </div>
 
         <div className={styles.actions}>
