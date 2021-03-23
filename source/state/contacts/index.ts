@@ -16,7 +16,9 @@ const ContactBookState = createSlice({
     ) {
       if (
         Object.values(state).filter(
-          (option) => option.address === action.payload.address
+          (option) =>
+            option.address === action.payload.address ||
+            option.name === action.payload.name
         ).length
       )
         return;
@@ -41,7 +43,9 @@ const ContactBookState = createSlice({
       }>
     ) {
       const res = Object.values(state).filter(
-        (option) => option.address === action.payload.address
+        (option) =>
+          option.address === action.payload.address ||
+          option.name === action.payload.name
       );
       if (
         !state[action.payload.id] ||

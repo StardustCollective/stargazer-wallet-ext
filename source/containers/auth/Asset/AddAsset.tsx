@@ -41,9 +41,13 @@ const AddAsset = () => {
   };
 
   useEffect(() => {
-    if (keyword.startsWith('0x')) {
+    if (
+      activeNetwork[AssetType.Ethereum] === 'mainnet' &&
+      keyword.startsWith('0x')
+    ) {
       controller.assets.fetchTokenInfo(keyword);
     }
+
     setFilteredAssets(
       Object.values(assets).filter(
         (asset) =>

@@ -20,7 +20,7 @@ export function useFiat(currencyName = true, assetId?: string) {
       .priceId;
 
   return (amount: number, fraction = 4) => {
-    const value = amount * (priceId ? fiat[priceId].price : 0);
+    const value = amount * (priceId ? fiat[priceId]?.price || 0 : 0);
     return `${currency.symbol}${value.toLocaleString(navigator.language, {
       minimumFractionDigits: fraction,
       maximumFractionDigits: fraction,

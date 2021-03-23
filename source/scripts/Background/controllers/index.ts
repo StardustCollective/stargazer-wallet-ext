@@ -16,7 +16,7 @@ const MasterController = (): IMasterController => {
   const contacts = Object.freeze(
     ContactsController({ isLocked: wallet.isLocked })
   );
-  const assets = Object.freeze(AssetsController());
+  const assets = Object.freeze(AssetsController(() => utils.updateFiat()));
 
   const stateUpdater = () => {
     utils.updateFiat();

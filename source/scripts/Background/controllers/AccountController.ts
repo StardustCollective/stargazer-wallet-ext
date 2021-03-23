@@ -112,12 +112,20 @@ const AccountController = (actions: {
   const _fetchSingleERC20Asset = async (asset: IAssetState) => {
     const ethAddress = ethClient.getAddress();
     const assetList: IAssetListState = store.getState().assets;
-    const { activeNetwork }: IWalletState = store.getState().wallet;
-    let address = assetList[asset.id].address;
+    const { address, decimals, symbol, network } = assetList[asset.id];
 
-    ethClient.setNetwork(activeNetwork[AssetType.Ethereum] as ETHNetwork);
+    if (!address || !decimals) return null;
     console.log('==== fetch single erc20 asset ====');
-    const balance = 0;
+    console.log(ethAddress, address, decimals, symbol);
+    const balance = await ethClient.getTokenBalance(
+      ethAddress,
+      {
+        address,
+        decimals,
+        symbol,
+      },
+      network === 'mainnet' ? 1 : 3
+    );
     const transactions = await ethClient.getTransactions({
       address: ethAddress,
       limit: TXS_LIMIT,
@@ -141,11 +149,11 @@ const AccountController = (actions: {
     };
   };
 
-  const _fetchERC20Assets = async () => {
+  const _fetchERC20Assets = async (accountId?: string) => {
     if (!ethClient) return {};
     const { accounts, activeAccountId }: IWalletState = store.getState().wallet;
     const LATTICE_ASSET = '0xa393473d64d2F9F026B60b6Df7859A689715d092';
-    const assets = accounts[activeAccountId]?.assets || {};
+    const assets = accounts[accountId || activeAccountId]?.assets || {};
     const erc20Assets: {
       [assetId: string]: IAssetState;
     } = Object.values(assets)
@@ -172,9 +180,10 @@ const AccountController = (actions: {
       );
 
     for (let i = 0; i < Object.values(erc20Assets).length; i++) {
-      erc20Assets[
-        Object.values(erc20Assets)[i].id
-      ] = await _fetchSingleERC20Asset(Object.values(erc20Assets)[i]);
+      const asset = await _fetchSingleERC20Asset(Object.values(erc20Assets)[i]);
+      if (asset) {
+        erc20Assets[Object.values(erc20Assets)[i].id] = asset;
+      }
     }
     return erc20Assets;
   };
@@ -186,7 +195,8 @@ const AccountController = (actions: {
    * @returns {IAccountInfo}
    */
   const getAccountByPrivateKey = async (
-    privateKey: string
+    privateKey: string,
+    accountId?: string
   ): Promise<IAccountInfo> => {
     const { activeNetwork }: IWalletState = store.getState().wallet;
     dag.account.loginPrivateKey(privateKey);
@@ -213,7 +223,7 @@ const AccountController = (actions: {
     });
 
     // fetch other erc20 assets info
-    const erc20Assets = await _fetchERC20Assets();
+    const erc20Assets = await _fetchERC20Assets(accountId);
 
     return {
       assets: {
@@ -251,7 +261,7 @@ const AccountController = (actions: {
     const masterKey: hdkey | null = actions.getMasterKey();
     if (!masterKey) return null;
     privateKey = dag.keyStore.deriveAccountFromMaster(masterKey, index);
-    return await getAccountByPrivateKey(privateKey);
+    return await getAccountByPrivateKey(privateKey, index.toString());
   };
 
   /**
@@ -451,7 +461,9 @@ const AccountController = (actions: {
       address,
       transactions: [],
     });
-    store.dispatch(addAsset({ id, asset }));
+    if (asset) {
+      store.dispatch(addAsset({ id, asset }));
+    }
   };
 
   // Tx-Related
