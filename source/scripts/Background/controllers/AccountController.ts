@@ -28,7 +28,9 @@ import IWalletState, {
 } from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo, ETHNetwork } from '../../types';
+import { LATTICE_ASSET } from 'constants/index';
 import IAssetListState from 'state/assets/types';
+
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
@@ -149,7 +151,6 @@ const AccountController = (actions: {
   const _fetchERC20Assets = async (accountId?: string) => {
     if (!ethClient) return {};
     const { accounts, activeAccountId }: IWalletState = store.getState().wallet;
-    const LATTICE_ASSET = '0xa393473d64d2F9F026B60b6Df7859A689715d092';
     const assets = accounts[accountId || activeAccountId]?.assets || {};
     const erc20Assets: {
       [assetId: string]: IAssetState;
