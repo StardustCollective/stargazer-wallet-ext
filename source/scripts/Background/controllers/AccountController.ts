@@ -115,8 +115,6 @@ const AccountController = (actions: {
     const { address, decimals, symbol, network } = assetList[asset.id];
 
     if (!address || !decimals) return null;
-    console.log('==== fetch single erc20 asset ====');
-    console.log(ethAddress, address, decimals, symbol);
     const balance = await ethClient.getTokenBalance(
       ethAddress,
       {
@@ -131,7 +129,6 @@ const AccountController = (actions: {
       limit: TXS_LIMIT,
       asset: address,
     });
-    console.log('res: ', balance, address, transactions);
 
     return {
       id: asset.id,
