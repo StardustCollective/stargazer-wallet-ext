@@ -8,7 +8,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import Header from 'containers/common/Header';
 import FullSelect from 'components/FullSelect';
 import { useController } from 'hooks/index';
-import { useFiat, useTotalBalance } from 'hooks/usePrice';
+import { useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
 import AssetsPanel from './AssetsPanel';
@@ -17,7 +17,6 @@ import styles from './Home.scss';
 
 const Home = () => {
   const controller = useController();
-  const getFiatAmount = useFiat(false);
   const totalBalance = useTotalBalance();
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet

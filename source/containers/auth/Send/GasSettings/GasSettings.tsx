@@ -14,7 +14,6 @@ const GasSettings = () => {
         nonce?: number;
         gas: number;
         gasLimit: number;
-        txData?: string;
       }
     | undefined
   >(controller.wallet.account.getTempTx()?.ethConfig);
@@ -63,16 +62,6 @@ const GasSettings = () => {
                 value={config?.gasLimit || 0}
                 name="gasLimit"
                 onChange={(ev) => handleUpdate('gasLimit', ev.target.value)}
-              />
-            </li>
-            <li>
-              <label>Transaction data (optional) 0 bytes</label>
-              <TextInput
-                placeholder="Transaction data"
-                fullWidth
-                value={config?.txData || ''}
-                name="transactionData"
-                onChange={(ev) => handleUpdate('txData', ev.target.value)}
               />
             </li>
             <li>
