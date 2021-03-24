@@ -46,6 +46,7 @@ export function useTotalBalance(currencyName = true) {
     (state: RootState) => state.assets
   );
   const account = accounts[activeAccountId];
+  if (!account?.assets) return ['0', '0'];
   const assetIds = Object.values(account.assets)
     .filter(
       (asset) =>
@@ -65,9 +66,9 @@ export function useTotalBalance(currencyName = true) {
       account.assets[assetIds[i]].balance * (fiat[priceIds[i]]?.price || 0);
   }
   return [
-    `${currencyName ? currency.symbol : ''}${balance.toFixed(4)}${
+    `${currencyName ? currency.symbol : ''}${balance.toFixed(2)}${
       currencyName ? ` ${currency.name}` : ''
     }`,
-    (balance / fiat.bitcoin.price).toFixed(4),
+    (balance / fiat.bitcoin.price).toFixed(2),
   ];
 }
