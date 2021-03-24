@@ -544,6 +544,18 @@ const TOKEN_LIST: IAssetListState = {
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
   },
+  'T-0xB404c51BBC10dcBE948077F18a4B8E553D160084': {
+    id: 'T-0xB404c51BBC10dcBE948077F18a4B8E553D160084',
+    name: 'Tether USD',
+    address: '0xB404c51BBC10dcBE948077F18a4B8E553D160084',
+    symbol: 'USDT',
+    decimals: 6,
+    network: 'testnet',
+    native: false,
+    type: AssetType.ERC20,
+    logo:
+      'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
+  },
 };
 
 export default TOKEN_LIST;
