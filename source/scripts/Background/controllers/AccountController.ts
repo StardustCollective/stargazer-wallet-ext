@@ -597,11 +597,15 @@ const AccountController = (actions: {
 
   const getLatestGasPrices = async () => {
     const gasPrices = await ethClient.estimateGasPrices();
-    return Object.values(gasPrices).map((gas) => {
+    const results = Object.values(gasPrices).map((gas) => {
       return Number(
         ethers.utils.formatUnits(gas.amount().toString(), 'gwei').toString()
       );
     });
+    if (results[0] === results[1]) {
+      results[1] = Math.round((results[0] + results[2]) / 2);
+    }
+    return results;
   };
 
   const getRecommendETHTxConfig = async () => {

@@ -199,6 +199,16 @@
   section.transactionFee {
     border-top: 1px solid $gray-light;
     padding: 17px 24px 0 24px;
+    opacity: 1;
+    transition: all 0.3s;
+    transform: translateX(0);
+    filter: blur(0);
+
+    &.hide {
+      opacity: 0;
+      transform: translateX(-30px);
+      filter: blur(10px);
+    }
 
     .heading {
       display: flex;
@@ -236,6 +246,33 @@
       }
     }
 
+    .sliderCustom {
+      transition: all 0.3s;
+      position: relative;
+
+      &.disabled {
+        &::before {
+          position: absolute;
+          content: 'Please click here if you are going to set latest gas prices.';
+          color: $gray-dark;
+          font-size: 12px;
+          font-weight: bold;
+          display: flex;
+          text-align: center;
+          text-shadow: 2px 2px 19px rgba($black, 0.3);
+          align-items: center;
+          padding: 0 65px;
+          justify-content: center;
+          top: 0;
+          left: -24px;
+          right: -24px;
+          bottom: -30px;
+          background: rgba($white, 0.8);
+          backdrop-filter: blur(2px);
+          z-index: 99;
+        }
+      }
+    }
     .sliderRail {
       height: 12px;
       background: $purple-light;

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
+
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
@@ -9,6 +11,7 @@ import styles from './GasSettings.scss';
 
 const GasSettings = () => {
   const controller = useController();
+  const history = useHistory();
   const [config, setConfig] = useState<
     | {
         nonce?: number;
@@ -81,13 +84,9 @@ const GasSettings = () => {
           <div className={styles.actions}>
             <Button
               type="button"
-              theme="secondary"
-              variant={clsx(styles.button, styles.close)}
-              linkTo="/home"
+              variant={styles.button}
+              onClick={() => history.goBack()}
             >
-              Cancel
-            </Button>
-            <Button type="submit" variant={styles.button}>
               Next
             </Button>
           </div>
