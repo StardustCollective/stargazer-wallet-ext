@@ -157,12 +157,7 @@
       position: absolute;
       width: 300px;
       bottom: 24px;
-      justify-content: space-between;
-
-      .close {
-        background: $gray-light;
-        color: $gray-dark;
-      }
+      justify-content: center;
 
       .button {
         width: 144px;
