@@ -12,6 +12,7 @@ import { MAIN_VIEW } from '../routes';
 
 const NewAccountView = () => {
   const [accountName, setAccountName] = useState<string>();
+  const [loading, setLoading] = useState(false);
   const controller = useController();
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -21,7 +22,9 @@ const NewAccountView = () => {
   const showView = useSettingsView();
 
   const onSubmit = async (data: any) => {
+    setLoading(true);
     const res = await controller.wallet.account.addNewAccount(data.name);
+    setLoading(false);
     if (res) {
       setAccountName(data.name);
     }
@@ -61,7 +64,7 @@ const NewAccountView = () => {
             >
               Close
             </Button>
-            <Button type="submit" variant={styles.button}>
+            <Button type="submit" variant={styles.button} loading={loading}>
               Next
             </Button>
           </div>
