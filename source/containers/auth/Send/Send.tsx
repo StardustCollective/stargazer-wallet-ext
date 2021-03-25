@@ -50,6 +50,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   );
   const account = accounts[activeAccountId];
   const asset = assets[account.activeAssetId];
+  const tempTx = controller.wallet.account.getTempTx();
 
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
@@ -67,6 +68,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
+  const [currentGas, setCurrentGas] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
 
@@ -130,6 +132,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   };
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
+    setCurrentGas(gasPrices[val as number]);
     estimateGasFee(val);
   };
 
@@ -145,6 +148,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     controller.wallet.account.getRecommendETHTxConfig().then(() => {
       controller.wallet.account.getLatestGasPrices().then((vals) => {
         setGasPrices(vals);
+        setCurrentGas(tempTx?.ethConfig?.gas || vals[1]);
         estimateGasFee(1);
       });
     });
@@ -267,7 +271,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
           )}
         </section>
         {asset.type !== AssetType.Constellation && (
-          <section className={styles.transactionFee}>
+          <section
+            className={clsx(styles.transactionFee, {
+              [styles.hide]: !gasPrices.length,
+            })}
+          >
             <div className={styles.heading}>
               <span className={styles.title}>Transaction Fee</span>
               <span
@@ -279,6 +287,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             </div>
             <Slider
               classes={{
+                root: clsx(styles.sliderCustom, {
+                  [styles.disabled]: gasPrices.indexOf(currentGas) === -1,
+                }),
                 rail: styles.sliderRail,
                 track: styles.sliderTrack,
                 mark: styles.mark,
@@ -286,7 +297,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 thumb: styles.thumb,
                 markLabel: styles.markLabel,
               }}
-              defaultValue={1}
+              value={gasPrices.indexOf(currentGas)}
               min={0}
               max={2}
               scale={(x) => x * 2}
@@ -298,7 +309,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             <div className={styles.status}>
               <span
                 className={styles.equalAmount}
-              >{`${gasFee} ETH (≈ ${getFiatAmount(
+              >{`${currentGas} GWei, ${gasFee} ETH (≈ ${getFiatAmount(
                 gasFee,
                 2,
                 'ethereum'
