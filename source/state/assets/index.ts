@@ -3,20 +3,9 @@ import { AssetType } from 'state/wallet/types';
 import ERC20_TOKEN_LIST from './tokens';
 
 import IAssetListState, { IAssetInfoState } from './types';
+import ConstellationLogo from 'assets/images/svg/constellation.svg';
 
 const initialState: IAssetListState = {
-  [AssetType.Constellation]: {
-    id: AssetType.Constellation,
-    name: 'Constellation',
-    type: AssetType.Constellation,
-    symbol: 'DAG',
-    native: true,
-    network: 'both',
-    logo:
-      'https://assets.coingecko.com/coins/images/4645/small/Constellation.jpg?1613976385',
-    priceId: 'constellation-labs',
-    decimals: 8,
-  },
   [AssetType.Ethereum]: {
     id: AssetType.Ethereum,
     name: 'Ethereum',
@@ -28,6 +17,17 @@ const initialState: IAssetListState = {
       'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
     priceId: 'ethereum',
     decimals: 18,
+  },
+  [AssetType.Constellation]: {
+    id: AssetType.Constellation,
+    name: 'Constellation',
+    type: AssetType.Constellation,
+    symbol: 'DAG',
+    native: true,
+    network: 'both',
+    logo: ConstellationLogo,
+    priceId: 'constellation-labs',
+    decimals: 8,
   },
   ...ERC20_TOKEN_LIST,
 };
