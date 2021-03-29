@@ -1,12 +1,11 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
+import Avatar from '@devneser/gradient-avatar';
 import Portal from '@reach/portal';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import UserIcon from '@material-ui/icons/AccountCircleRounded';
 
-import Icon from 'components/Icon';
 import { RootState } from 'state/store';
 import { useController } from 'hooks/index';
 import IContactBookState, { IContactState } from 'state/contacts/types';
@@ -67,7 +66,8 @@ const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
                   >
                     <div className={styles.contact}>
                       <span className={styles.info}>
-                        <Icon Component={UserIcon} />
+                        {/* <Icon Component={UserIcon} /> */}
+                        <Avatar address={contact.address} size={20} />
                         <div>
                           {contact.name}
                           <small>{contact.address}</small>

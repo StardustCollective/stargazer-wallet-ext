@@ -52,13 +52,27 @@
     line-height: 24px;
     color: $gray-dark-100;
 
-    & > span {
+    & > span,
+    & > .name > span {
       width: 100%;
       display: block;
       font-size: 12px;
       line-height: 18px;
       color: $gray-dark;
       margin-bottom: 14px;
+    }
+
+    &.main {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      & > .name {
+        max-width: 204px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-break: initial;
+      }
     }
 
     .address {

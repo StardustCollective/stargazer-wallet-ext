@@ -4,6 +4,7 @@ import DownArrowIcon from '@material-ui/icons/ExpandMore';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import LinkIcon from '@material-ui/icons/CallMissedOutgoing';
 import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@devneser/gradient-avatar';
 
 import AssetItem from 'components/AssetItem';
 import Tooltip from 'components/Tooltip';
@@ -62,8 +63,11 @@ const AssetSelect: FC<IAssetSelect> = ({
           <LinkIcon />
         </IconButton>
         <span>
-          {tokenName}
-          <small>{ellipsis(tokenAddress)}</small>
+          <Avatar address={tokenAddress} />
+          <div className={styles.address}>
+            {tokenName}
+            <small>{ellipsis(tokenAddress)}</small>
+          </div>
         </span>
         <DownArrowIcon className={styles.arrow} />
       </span>
