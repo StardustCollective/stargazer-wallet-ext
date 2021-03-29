@@ -57,8 +57,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     }),
   });
 
-  const [address, setAddress] = useState(initAddress);
-  const [amount, setAmount] = useState('');
+  const [address, setAddress] = useState(
+    initAddress || tempTx?.toAddress || ''
+  );
+  const [amount, setAmount] = useState(String(tempTx?.amount) || '');
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
@@ -151,6 +153,16 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const handleSelectContact = (val: string) => {
     setAddress(val);
     setModalOpen(false);
+  };
+
+  const handleGasSettings = () => {
+    controller.wallet.account.updateTempTx({
+      ...tempTx,
+      fromAddress: '',
+      toAddress: address || '',
+      amount: Number(amount),
+    });
+    history.push('/gas-settings');
   };
 
   useEffect(handleGetTxFee, []);
@@ -274,7 +286,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               <span className={styles.title}>Transaction Fee</span>
               <span
                 className={styles.advancedSetting}
-                onClick={() => history.push('/gas-settings')}
+                onClick={handleGasSettings}
               >
                 ADVANCED gas settings
               </span>
