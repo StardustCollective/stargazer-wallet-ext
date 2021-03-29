@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import Avatar from '@devneser/gradient-avatar';
 
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -66,7 +67,8 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
           <li onClick={() => handleSelect(contact.id)} key={contact.id}>
             <div className={styles.contact}>
               <span className={styles.info}>
-                <Icon Component={UserIcon} />
+                {/* <Icon Component={UserIcon} /> */}
+                <Avatar address={contact.address} size={20} />
                 <div>
                   {contact.name}
                   <small>{contact.address}</small>

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import CopyIcon from '@material-ui/icons/FileCopy';
 import QRCode from 'qrcode.react';
+import Avatar from '@devneser/gradient-avatar';
 
 import Button from 'components/Button';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
@@ -48,9 +49,12 @@ const ContactInfoView: FC<IContactInfoView> = ({ selected }) => {
           {contacts[selected].address}
         </div>
       )}
-      <div className={styles.item}>
-        <span>Contact Name</span>
-        {contacts[selected]?.name}
+      <div className={clsx(styles.item, styles.main)}>
+        <div className={styles.name}>
+          <span>Contact Name</span>
+          {contacts[selected]?.name}
+        </div>
+        <Avatar address={contacts[selected]?.address || ''} />
       </div>
       <div className={styles.item}>
         <span>Address</span>

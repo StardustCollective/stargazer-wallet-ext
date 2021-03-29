@@ -102,6 +102,7 @@
               div {
                 display: flex;
                 flex-direction: column;
+                margin-left: 12px;
 
                 small {
                   font-weight: 500;
@@ -109,7 +110,7 @@
                   line-height: 18px;
                   color: $gray-100;
                   margin-top: 4px;
-                  width: 264px;
+                  width: 232px;
                   text-overflow: ellipsis;
                   overflow: hidden;
                 }

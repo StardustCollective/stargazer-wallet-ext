@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 
 import Header from 'containers/common/Header';
