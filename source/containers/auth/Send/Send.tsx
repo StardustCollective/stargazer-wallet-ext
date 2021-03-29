@@ -31,12 +31,6 @@ interface IWalletSend {
   initAddress?: string;
 }
 
-const marks = [
-  { value: 0, label: 'LOW' },
-  { value: 1, label: 'AVERAGE' },
-  { value: 2, label: 'HIGH' },
-];
-
 const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const history = useHistory();
   const getFiatAmount = useFiat();
@@ -120,10 +114,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     []
   );
 
-  const estimateGasFee = (val: number | number[]) => {
+  const estimateGasFee = (val: number) => {
     if (!gasPrices) return;
     controller.wallet.account.updateETHTxConfig({
-      gas: gasPrices[val as number],
+      gas: val,
     });
     controller.wallet.account.estimateGasFee().then((fee) => {
       if (!fee) return;
@@ -132,8 +126,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   };
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
-    setCurrentGas(gasPrices[val as number]);
-    estimateGasFee(val);
+    setCurrentGas(val as number);
+    estimateGasFee(val as number);
   };
 
   const handleGetDAGTxFee = () => {
@@ -149,7 +143,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       controller.wallet.account.getLatestGasPrices().then((vals) => {
         setGasPrices(vals);
         setCurrentGas(tempTx?.ethConfig?.gas || vals[1]);
-        estimateGasFee(1);
+        estimateGasFee(vals[1]);
       });
     });
   };
@@ -288,7 +282,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             <Slider
               classes={{
                 root: clsx(styles.sliderCustom, {
-                  [styles.disabled]: gasPrices.indexOf(currentGas) === -1,
+                  [styles.disabled]:
+                    currentGas < gasPrices[0] || currentGas > gasPrices[2],
                 }),
                 rail: styles.sliderRail,
                 track: styles.sliderTrack,
@@ -297,13 +292,17 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 thumb: styles.thumb,
                 markLabel: styles.markLabel,
               }}
-              value={gasPrices.indexOf(currentGas)}
-              min={0}
-              max={2}
+              value={currentGas}
+              min={gasPrices[0]}
+              max={gasPrices[2]}
               scale={(x) => x * 2}
               aria-labelledby="discrete-slider-restrict"
               step={1}
-              marks={marks}
+              marks={[
+                { value: gasPrices[0], label: 'LOW' },
+                { value: gasPrices[1], label: 'AVERAGE' },
+                { value: gasPrices[2], label: 'HIGH' },
+              ]}
               onChange={handleGasPriceChange}
             />
             <div className={styles.status}>

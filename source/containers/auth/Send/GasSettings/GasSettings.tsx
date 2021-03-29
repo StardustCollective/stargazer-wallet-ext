@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 
 import Header from 'containers/common/Header';
@@ -35,7 +34,12 @@ const GasSettings = () => {
       ...config,
       [key]: val,
     });
-    controller.wallet.account.updateETHTxConfig({ [key]: val });
+  };
+
+  const handleSave = () => {
+    if (!config) return;
+    controller.wallet.account.updateETHTxConfig(config);
+    history.push('/send');
   };
 
   return (
@@ -82,12 +86,8 @@ const GasSettings = () => {
         </section>
         <section className={styles.actionGroup}>
           <div className={styles.actions}>
-            <Button
-              type="button"
-              variant={styles.button}
-              onClick={() => history.goBack()}
-            >
-              Next
+            <Button type="button" variant={styles.button} onClick={handleSave}>
+              Save
             </Button>
           </div>
         </section>

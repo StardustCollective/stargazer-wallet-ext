@@ -24,7 +24,7 @@ export const formatDistanceDate = (timestamp: string) => {
 
   if (formatedDate === format(today, formatStyle)) return 'Today';
   if (formatedDate === format(yesterday, formatStyle)) return 'Yesterday';
-  return formatedDate;
+  return new Date(timestamp).toLocaleDateString();
 };
 
 export const formatNumber = (num: number, min = 4, max = 4, maxSig = 12) => {
