@@ -4,11 +4,9 @@ import { useHistory } from 'react-router-dom';
 import Avatar from '@devneser/gradient-avatar';
 
 import Button from 'components/Button';
-import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
 import IContactBookState, { IContactState } from 'state/contacts/types';
-import UserIcon from '@material-ui/icons/AccountCircleRounded';
 import SendIcon from '@material-ui/icons/Send';
 import IconButton from '@material-ui/core/IconButton';
 
