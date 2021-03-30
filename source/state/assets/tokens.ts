@@ -1,5 +1,6 @@
 import { AssetType } from 'state/wallet/types';
 import IAssetListState from './types';
+import LatticeLogo from 'assets/images/svg/lattice.svg';
 
 const TOKEN_LIST: IAssetListState = {
   '0xa393473d64d2F9F026B60b6Df7859A689715d092': {
@@ -11,8 +12,7 @@ const TOKEN_LIST: IAssetListState = {
     native: false,
     priceId: 'lattice-token',
     network: 'mainnet',
-    logo:
-      'https://assets.coingecko.com/coins/images/13050/small/Lattice.jpg?1613976295',
+    logo: LatticeLogo,
     decimals: 8,
   },
   '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9': {

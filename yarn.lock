@@ -974,10 +974,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@devneser/gradient-avatar@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@devneser/gradient-avatar/-/gradient-avatar-1.0.0.tgz#b5289dda82fcb36eb3283a9833f49d0216d2411f"
-  integrity sha512-6vhim38JBf4oSDrx8HUWpdwga2vCA3KwKpe/F2/K7DGoT73Tsm+icdCXIGJP33STJ4q5yF2OgDK7/8zF95Y7/g==
+"@devneser/gradient-avatar@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@devneser/gradient-avatar/-/gradient-avatar-1.1.1.tgz#53e11e36cf474b243b6426f5697b1006ffc6a422"
+  integrity sha512-Flbw96k85mfHf9vgKRy3sZYV9Mm5yvcVcxEKsRzsF1KGA2U36QDh2kW7QndFNCW+srtA3poVFhuwLIwEaBocDw==
   dependencies:
     "@types/uuid" "^8.3.0"
     react-inlinesvg "^2.2.2"
