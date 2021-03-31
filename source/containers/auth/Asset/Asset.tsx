@@ -44,6 +44,12 @@ const AssetDetail = () => {
     );
   };
 
+  const fetchTxs = () => {
+    if (account.activeAssetId === AssetType.Constellation)
+      return account.assets[account.activeAssetId].transactions;
+    return controller.wallet.account.getFullETHTxs();
+  };
+
   return (
     <div className={styles.wrapper}>
       {account ? (
@@ -101,7 +107,7 @@ const AssetDetail = () => {
           </section>
           <TxsPanel
             address={account.assets[account.activeAssetId].address}
-            transactions={account.assets[account.activeAssetId].transactions}
+            transactions={fetchTxs()}
           />
         </>
       ) : (

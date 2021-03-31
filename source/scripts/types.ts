@@ -13,6 +13,16 @@ export interface IETHTxConfig {
   gasLimit: number;
 }
 
+export interface IETHPendingTx {
+  txHash: string;
+  amount: number;
+  fromAddress: string;
+  toAddress: string;
+  timestamp: number;
+  network: ETHNetwork;
+  assetId: string;
+}
+
 export interface ITransactionInfo {
   fromAddress: string;
   toAddress: string;
