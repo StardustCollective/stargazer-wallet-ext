@@ -118,13 +118,12 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const estimateGasFee = (val: number) => {
     if (!gasPrices) return;
-    controller.wallet.account.updateETHTxConfig({
-      gas: val,
-    });
-    controller.wallet.account.estimateGasFee().then((fee) => {
-      if (!fee) return;
-      setGasFee(fee);
-    });
+    controller.wallet.account
+      .estimateGasFee(val, tempTx?.ethConfig?.gasLimit)
+      .then((fee) => {
+        if (!fee) return;
+        setGasFee(fee);
+      });
   };
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {

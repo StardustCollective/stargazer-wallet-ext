@@ -18,13 +18,16 @@ const GasSettings = () => {
         gasLimit: number;
       }
     | undefined
-  >(controller.wallet.account.getTempTx()?.ethConfig);
+  >();
 
   useEffect(() => {
-    if (!config) {
+    const ethConfig = controller.wallet.account.getTempTx()?.ethConfig;
+    if (!ethConfig) {
       controller.wallet.account.getRecommendETHTxConfig().then((val) => {
         setConfig(val);
       });
+    } else {
+      setConfig(ethConfig);
     }
   }, []);
 
