@@ -40,6 +40,8 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const account = accounts[activeAccountId];
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
 
+  console.log(transactions);
+
   const isShowedGroupBar = useCallback(
     (tx: Transaction, idx: number) => {
       return (
@@ -142,9 +144,9 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
               const isETHPending =
                 isETHTx && tx.assetId === account.activeAssetId;
               const isRecived =
-                (isETHTx && !tx.assetId && tx.to[0].to === address) ||
-                (isETHPending && tx.toAddress === address) ||
-                (!isETHTx && tx.receiver === address);
+                (!isETHTx && tx.receiver === address) ||
+                (isETHTx && !tx.assetId && tx.to && tx.to[0].to === address) ||
+                (isETHPending && tx.toAddress === address);
 
               return (
                 <Fragment key={uuid()}>
@@ -172,14 +174,14 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                                 isETHPending
                                   ? tx.fromAddress
                                   : isETHTx
-                                  ? tx.from[0].from
+                                  ? tx.from && tx.from[0].from
                                   : tx.sender
                               }`
                             : `To: ${
                                 isETHPending
                                   ? tx.toAddress
                                   : isETHTx
-                                  ? tx.to[0].to
+                                  ? tx.to && tx.to[0].to
                                   : tx.receiver
                               }`}
                         </small>
