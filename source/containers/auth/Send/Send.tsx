@@ -182,6 +182,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     history.push('/gas-settings');
   };
 
+  const handleSetMax = () => {
+    const txFee =
+      account.activeAssetId === AssetType.Constellation ? Number(fee) : gasFee;
+    setAmount(
+      String(Math.max(account.assets[account.activeAssetId].balance - txFee, 0))
+    );
+  };
+
   useEffect(handleGetTxFee, []);
 
   return (
@@ -244,13 +252,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               <Button
                 type="button"
                 variant={styles.textBtn}
-                onClick={() =>
-                  setAmount(
-                    String(
-                      account.assets[account.activeAssetId].balance - gasFee
-                    )
-                  )
-                }
+                onClick={handleSetMax}
               >
                 Max
               </Button>
