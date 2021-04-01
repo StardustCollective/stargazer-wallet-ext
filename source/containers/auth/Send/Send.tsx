@@ -96,6 +96,18 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     history.push('/send/confirm');
   };
 
+  const isDisabled = useMemo(() => {
+    const { balance } = account.assets[account.activeAssetId];
+    return (
+      !isValidAddress ||
+      !amount ||
+      !fee ||
+      !address ||
+      Number(amount) <= 0 ||
+      Number(amount) + gasFee > balance
+    );
+  }, [amount, address, gasFee]);
+
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setAmount(ev.target.value);
@@ -228,7 +240,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 variant={styles.textBtn}
                 onClick={() =>
                   setAmount(
-                    String(account.assets[account.activeAssetId].balance)
+                    String(
+                      account.assets[account.activeAssetId].balance - gasFee
+                    )
                   )
                 }
               >
@@ -340,17 +354,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             >
               Close
             </Button>
-            <Button
-              type="submit"
-              variant={styles.button}
-              disabled={
-                !isValidAddress ||
-                !amount ||
-                !fee ||
-                !address ||
-                Number(amount) <= 0
-              }
-            >
+            <Button type="submit" variant={styles.button} disabled={isDisabled}>
               Send
             </Button>
           </div>
