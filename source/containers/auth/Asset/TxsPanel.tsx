@@ -44,11 +44,16 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     (tx: Transaction, idx: number) => {
       return (
         idx === 0 ||
-        new Date(isETHTx ? tx.date : tx.timestamp).toDateString() !==
+        new Date(
+          !isETHTx || (isETHTx && tx.assetId === account.activeAssetId)
+            ? tx.timestamp
+            : tx.date
+        ).toDateString() !==
           new Date(
-            isETHTx
-              ? transactions[idx - 1].date
-              : transactions[idx - 1].timestamp
+            !isETHTx ||
+            (isETHTx && transactions[idx - 1].assetId === account.activeAssetId)
+              ? transactions[idx - 1].timestamp
+              : transactions[idx - 1].date
           ).toDateString()
       );
     },
@@ -86,6 +91,37 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     setShowed(false);
   };
 
+  const renderIcon = (isETHTx: boolean, isRecived: boolean, tx: any) => {
+    if (!isETHTx) {
+      return (
+        <>
+          {tx.checkpointBlock ? (
+            isRecived ? (
+              <DownArrowIcon />
+            ) : (
+              <UpArrowIcon />
+            )
+          ) : (
+            <Spinner size={16} className={styles.spinner} />
+          )}
+        </>
+      );
+    }
+    return (
+      <>
+        {!tx.assetId ? (
+          isRecived ? (
+            <DownArrowIcon />
+          ) : (
+            <UpArrowIcon />
+          )
+        ) : (
+          <Spinner size={16} className={styles.spinner} />
+        )}
+      </>
+    );
+  };
+
   return (
     <section
       className={clsx(styles.activity, { [styles.expanded]: isShowed })}
@@ -103,36 +139,49 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         <>
           <ul>
             {transactions.map((tx: Transaction, idx: number) => {
+              const isETHPending =
+                isETHTx && tx.assetId === account.activeAssetId;
               const isRecived =
-                (isETHTx && tx.to[0].to === address) ||
+                (isETHTx && !tx.assetId && tx.to[0].to === address) ||
+                (isETHPending && tx.toAddress === address) ||
                 (!isETHTx && tx.receiver === address);
 
               return (
                 <Fragment key={uuid()}>
                   {isShowedGroupBar(tx, idx) && (
                     <li className={styles.groupbar}>
-                      {formatDistanceDate(isETHTx ? tx.date : tx.timestamp)}
+                      {formatDistanceDate(
+                        !isETHTx || isETHPending ? tx.timestamp : tx.date
+                      )}
                     </li>
                   )}
-                  <li onClick={() => handleOpenExplorer(tx.hash)}>
+                  <li
+                    onClick={() =>
+                      handleOpenExplorer(isETHPending ? tx.txHash : tx.hash)
+                    }
+                  >
                     <div>
                       <div className={styles.iconWrapper}>
-                        {isETHTx || tx.checkpointBlock ? (
-                          isRecived ? (
-                            <DownArrowIcon />
-                          ) : (
-                            <UpArrowIcon />
-                          )
-                        ) : (
-                          <Spinner size={16} className={styles.spinner} />
-                        )}
+                        {renderIcon(isETHTx, isRecived, tx)}
                       </div>
                       <span>
                         {isRecived ? 'Received' : 'Sent'}
                         <small>
                           {isRecived
-                            ? `From: ${isETHTx ? tx.from[0].from : tx.sender}`
-                            : `To: ${isETHTx ? tx.to[0].to : tx.receiver}`}
+                            ? `From: ${
+                                isETHPending
+                                  ? tx.fromAddress
+                                  : isETHTx
+                                  ? tx.from[0].from
+                                  : tx.sender
+                              }`
+                            : `To: ${
+                                isETHPending
+                                  ? tx.toAddress
+                                  : isETHTx
+                                  ? tx.to[0].to
+                                  : tx.receiver
+                              }`}
                         </small>
                       </span>
                     </div>
@@ -140,13 +189,18 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                       <span>
                         <span>
                           {isETHTx
-                            ? Number(tx.balance).toFixed(4)
+                            ? Number(
+                                isETHPending ? tx.amount : tx.balance
+                              ).toFixed(4)
                             : tx.amount / 1e8}{' '}
                           <b>{assets[account.activeAssetId].symbol}</b>
                         </span>
                         <small>
                           {isETHTx
-                            ? getFiatAmount(Number(tx.balance), 2)
+                            ? getFiatAmount(
+                                Number(isETHPending ? tx.amount : tx.balance),
+                                2
+                              )
                             : getFiatAmount(tx.amount / 1e8, 8)}
                         </small>
                       </span>

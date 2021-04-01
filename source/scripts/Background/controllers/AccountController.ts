@@ -30,6 +30,9 @@ import IWalletState, {
 import { IAccountInfo, ITransactionInfo, ETHNetwork } from '../../types';
 import { LATTICE_ASSET } from 'constants/index';
 import IAssetListState from 'state/assets/types';
+import TransactionController, {
+  ITransactionController,
+} from './TransactionController';
 
 export interface IAccountController {
   getTempTx: () => ITransactionInfo | null;
@@ -43,6 +46,7 @@ export interface IAccountController {
   unsubscribeAccount: (index: number, pwd: string) => boolean;
   addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
+  getFullETHTxs: () => any[];
   updateAccountLabel: (id: string, label: string) => void;
   updateAccountActiveAsset: (id: string, assetId: string) => void;
   addNewAsset: (id: string, assetId: string, address: string) => Promise<void>;
@@ -416,6 +420,9 @@ const AccountController = (actions: {
       });
     }
 
+    // monitor ETH Txs
+    txController.startMonitor();
+
     store.dispatch(
       updateAccount({
         id: activeAccountId,
@@ -549,6 +556,7 @@ const AccountController = (actions: {
       } else {
         if (!tempTx.ethConfig) return;
         const { gas, gasLimit, nonce } = tempTx.ethConfig;
+        const { activeNetwork }: IWalletState = store.getState().wallet;
         const txOptions: any = {
           recipient: tempTx.toAddress,
           amount: utils.baseAmount(
@@ -573,8 +581,26 @@ const AccountController = (actions: {
               assets[account.activeAssetId].address
             }`
           );
+          txOptions.amount = utils.baseAmount(
+            ethers.utils
+              .parseUnits(
+                tempTx.amount.toString(),
+                assets[account.activeAssetId].decimals
+              )
+              .toString(),
+            assets[account.activeAssetId].decimals
+          );
         }
-        ethClient.transfer(txOptions);
+        const txHash = await ethClient.transfer(txOptions);
+        txController.addPendingTx({
+          txHash,
+          fromAddress: tempTx.fromAddress,
+          toAddress: tempTx.toAddress,
+          amount: tempTx.amount,
+          network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+          assetId: account.activeAssetId,
+          timestamp: new Date().getTime(),
+        });
       }
       tempTx = null;
     } catch (error) {
@@ -665,6 +691,10 @@ const AccountController = (actions: {
     return Number(ethers.utils.formatEther(fee).toString());
   };
 
+  const txController: ITransactionController = Object.freeze(
+    TransactionController({ getLatestUpdate })
+  );
+
   return {
     getTempTx,
     updateTempTx,
@@ -681,6 +711,7 @@ const AccountController = (actions: {
     getLatestUpdate,
     watchMemPool,
     updateTxs,
+    getFullETHTxs: txController.getFullTxs,
     updateAccountLabel,
     updateAccountActiveAsset,
     addNewAsset,

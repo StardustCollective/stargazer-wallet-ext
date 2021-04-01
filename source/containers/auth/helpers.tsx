@@ -16,7 +16,7 @@ const getYesterday = () => {
   return d;
 };
 
-export const formatDistanceDate = (timestamp: string) => {
+export const formatDistanceDate = (timestamp: string | number) => {
   const formatStyle = 'M-d-yyyy';
   const today = new Date();
   const yesterday = getYesterday();
