@@ -81,18 +81,24 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     [styles.hide]: !isValidAddress,
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     if (!isValidAddress) {
       alert.removeAll();
       alert.error('Error: Invalid recipient address');
       return;
     }
-    controller.wallet.account.updateTempTx({
+    const ethConfig = controller.wallet.account.getTempTx()?.ethConfig;
+    const txConfig: any = {
       fromAddress: account.assets[account.activeAssetId].address,
       toAddress: data.address,
       amount: data.amount,
       fee: data.fee || gasFee,
-    });
+    };
+    if (!ethConfig) {
+      txConfig.ethConfig = await controller.wallet.account.getRecommendETHTxConfig();
+    }
+
+    controller.wallet.account.updateTempTx(txConfig);
     history.push('/send/confirm');
   };
 

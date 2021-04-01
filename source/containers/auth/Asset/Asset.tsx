@@ -31,8 +31,6 @@ const AssetDetail = () => {
   );
   const account = accounts[activeAccountId];
 
-  console.log(account.activeAssetId);
-
   useEffect(() => {
     controller.wallet.account.updateTempTx({
       fromAddress: '',

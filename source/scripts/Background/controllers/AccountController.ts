@@ -527,6 +527,7 @@ const AccountController = (actions: {
     if (!tempTx) {
       throw new Error("Error: Can't find transaction info");
     }
+
     try {
       const {
         accounts,

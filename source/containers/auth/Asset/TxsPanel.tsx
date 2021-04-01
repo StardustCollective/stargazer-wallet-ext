@@ -40,8 +40,6 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const account = accounts[activeAccountId];
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
 
-  console.log(transactions);
-
   const isShowedGroupBar = useCallback(
     (tx: Transaction, idx: number) => {
       return (
