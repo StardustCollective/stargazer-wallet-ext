@@ -312,7 +312,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               step={1}
               marks={[
                 { value: gasPrices[0], label: 'LOW' },
-                { value: gasPrices[1], label: 'AVERAGE' },
+                {
+                  value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
+                  label: 'AVERAGE',
+                },
                 { value: gasPrices[2], label: 'HIGH' },
               ]}
               onChange={handleGasPriceChange}
