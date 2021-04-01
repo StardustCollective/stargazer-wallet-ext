@@ -20,11 +20,15 @@ export const formatDistanceDate = (timestamp: string | number) => {
   const formatStyle = 'M-d-yyyy';
   const today = new Date();
   const yesterday = getYesterday();
-  const formatedDate = format(new Date(timestamp), formatStyle);
 
-  if (formatedDate === format(today, formatStyle)) return 'Today';
-  if (formatedDate === format(yesterday, formatStyle)) return 'Yesterday';
-  return new Date(timestamp).toLocaleDateString();
+  try {
+    const formatedDate = format(new Date(timestamp), formatStyle);
+    if (formatedDate === format(today, formatStyle)) return 'Today';
+    if (formatedDate === format(yesterday, formatStyle)) return 'Yesterday';
+    return new Date(timestamp).toLocaleDateString();
+  } catch (error) {
+    return null;
+  }
 };
 
 export const formatNumber = (num: number, min = 4, max = 4, maxSig = 12) => {

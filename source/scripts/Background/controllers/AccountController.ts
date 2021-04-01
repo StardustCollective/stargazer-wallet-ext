@@ -71,7 +71,7 @@ export interface IAccountController {
     nonce?: number;
   }) => void;
   getLatestGasPrices: () => Promise<number[]>;
-  estimateGasFee: () => Promise<number | null>;
+  estimateGasFee: (gas: number, gasLimit?: number) => Promise<number | null>;
   watchMemPool: () => void;
   getLatestUpdate: () => Promise<void>;
 }
@@ -527,6 +527,7 @@ const AccountController = (actions: {
     if (!tempTx) {
       throw new Error("Error: Can't find transaction info");
     }
+
     try {
       const {
         accounts,
@@ -677,13 +678,7 @@ const AccountController = (actions: {
     };
   };
 
-  const estimateGasFee = async () => {
-    if (!tempTx) return null;
-    if (!tempTx.ethConfig) {
-      tempTx.ethConfig = await getRecommendETHTxConfig();
-    }
-    const { gas, gasLimit } = tempTx.ethConfig;
-
+  const estimateGasFee = async (gas: number, gasLimit = 21000) => {
     const fee = ethers.utils
       .parseUnits(gas.toString(), 9)
       .mul(BigNumber.from(gasLimit));

@@ -81,20 +81,38 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     [styles.hide]: !isValidAddress,
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     if (!isValidAddress) {
       alert.removeAll();
       alert.error('Error: Invalid recipient address');
       return;
     }
-    controller.wallet.account.updateTempTx({
+    const ethConfig = controller.wallet.account.getTempTx()?.ethConfig;
+    const txConfig: any = {
       fromAddress: account.assets[account.activeAssetId].address,
       toAddress: data.address,
       amount: data.amount,
       fee: data.fee || gasFee,
-    });
+    };
+    if (!ethConfig) {
+      txConfig.ethConfig = await controller.wallet.account.getRecommendETHTxConfig();
+    }
+
+    controller.wallet.account.updateTempTx(txConfig);
     history.push('/send/confirm');
   };
+
+  const isDisabled = useMemo(() => {
+    const { balance } = account.assets[account.activeAssetId];
+    return (
+      !isValidAddress ||
+      !amount ||
+      !fee ||
+      !address ||
+      Number(amount) <= 0 ||
+      Number(amount) + gasFee > balance
+    );
+  }, [amount, address, gasFee]);
 
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -118,13 +136,12 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const estimateGasFee = (val: number) => {
     if (!gasPrices) return;
-    controller.wallet.account.updateETHTxConfig({
-      gas: val,
-    });
-    controller.wallet.account.estimateGasFee().then((fee) => {
-      if (!fee) return;
-      setGasFee(fee);
-    });
+    controller.wallet.account
+      .estimateGasFee(val, tempTx?.ethConfig?.gasLimit)
+      .then((fee) => {
+        if (!fee) return;
+        setGasFee(fee);
+      });
   };
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
@@ -229,7 +246,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 variant={styles.textBtn}
                 onClick={() =>
                   setAmount(
-                    String(account.assets[account.activeAssetId].balance)
+                    String(
+                      account.assets[account.activeAssetId].balance - gasFee
+                    )
                   )
                 }
               >
@@ -312,7 +331,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               step={1}
               marks={[
                 { value: gasPrices[0], label: 'LOW' },
-                { value: gasPrices[1], label: 'AVERAGE' },
+                {
+                  value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
+                  label: 'AVERAGE',
+                },
                 { value: gasPrices[2], label: 'HIGH' },
               ]}
               onChange={handleGasPriceChange}
@@ -338,17 +360,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             >
               Close
             </Button>
-            <Button
-              type="submit"
-              variant={styles.button}
-              disabled={
-                !isValidAddress ||
-                !amount ||
-                !fee ||
-                !address ||
-                Number(amount) <= 0
-              }
-            >
+            <Button type="submit" variant={styles.button} disabled={isDisabled}>
               Send
             </Button>
           </div>

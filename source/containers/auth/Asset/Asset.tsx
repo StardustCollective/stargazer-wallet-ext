@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -30,6 +30,14 @@ const AssetDetail = () => {
     (state: RootState) => state.assets
   );
   const account = accounts[activeAccountId];
+
+  useEffect(() => {
+    controller.wallet.account.updateTempTx({
+      fromAddress: '',
+      toAddress: '',
+      amount: 0,
+    });
+  }, []);
 
   const handleRefresh = async () => {
     await controller.wallet.account.getLatestUpdate();
