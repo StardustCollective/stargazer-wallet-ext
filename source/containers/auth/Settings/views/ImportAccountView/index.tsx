@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { dag } from '@stardust-collective/dag4';
+import { dag4 } from '@stardust-collective/dag4';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
@@ -58,18 +58,24 @@ const ImportAccountView = () => {
       fileReader.readAsText(jsonFile, 'UTF-8');
       fileReader.onload = (ev: ProgressEvent<FileReader>) => {
         if (ev.target) {
+          const json = JSON.parse(ev.target.result as string);
+          if (!dag4.keyStore.isValidJsonPrivateKey(json)) {
+            alert.removeAll();
+            alert.error('Error: Invalid private key json file');
+            return;
+          }
+
           setLoading(true);
-          dag.keyStore
-            .decryptPrivateKey(
-              JSON.parse(ev.target.result as string),
-              data.password
-            )
+          dag4.keyStore
+            .decryptPrivateKey(json, data.password)
             .then((privKey: string) => {
               handleImportPrivKey(privKey, data.label);
             })
             .catch(() => {
               alert.removeAll();
-              alert.error('Error: Invalid password or private key json file');
+              alert.error(
+                'Error: Invalid password to decrypt private key json file'
+              );
               setLoading(false);
             });
         }

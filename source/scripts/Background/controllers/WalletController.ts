@@ -1,4 +1,4 @@
-import { dag } from '@stardust-collective/dag4';
+import { dag4 } from '@stardust-collective/dag4';
 import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
 import {
@@ -39,7 +39,7 @@ const WalletController = (): IWalletController => {
   const importPrivKey = async (privKey: string) => {
     const { keystores }: IWalletState = store.getState().wallet;
     if (isLocked() || !privKey) return null;
-    const v3Keystore = await dag.keyStore.generateEncryptedPrivateKey(
+    const v3Keystore = await dag4.keyStore.generateEncryptedPrivateKey(
       password,
       privKey
     );
@@ -69,13 +69,13 @@ const WalletController = (): IWalletController => {
 
   const generatedPhrase = () => {
     if (seedWalletKeystore()) return null;
-    if (!phrase) phrase = dag.keyStore.generateSeedPhrase();
+    if (!phrase) phrase = dag4.keyStore.generateSeedPhrase();
     return phrase;
   };
 
   const importPhrase = (phr: string) => {
     try {
-      if (dag.keyStore.getMasterKeyFromMnemonic(phr)) {
+      if (dag4.keyStore.getMasterKeyFromMnemonic(phr)) {
         phrase = phr;
         return true;
       }
@@ -98,9 +98,9 @@ const WalletController = (): IWalletController => {
     if (!keystore) return false;
 
     try {
-      phrase = await dag.keyStore.decryptPhrase(keystore as SeedKeystore, pwd);
+      phrase = await dag4.keyStore.decryptPhrase(keystore as SeedKeystore, pwd);
       password = pwd;
-      masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
+      masterKey = dag4.keyStore.getMasterKeyFromMnemonic(phrase);
       await account.getPrimaryAccount(password);
       account.watchMemPool();
       return true;
@@ -118,8 +118,8 @@ const WalletController = (): IWalletController => {
         store.dispatch(removeSeedAccounts());
       }
     }
-    const v3Keystore = await dag.keyStore.encryptPhrase(phrase, password);
-    masterKey = dag.keyStore.getMasterKeyFromMnemonic(phrase);
+    const v3Keystore = await dag4.keyStore.encryptPhrase(phrase, password);
+    masterKey = dag4.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(setKeystoreInfo(v3Keystore));
     store.dispatch(updateSeedKeystoreId(v3Keystore.id));
     await account.subscribeAccount(0);
@@ -141,7 +141,7 @@ const WalletController = (): IWalletController => {
   const switchWallet = async (id: string) => {
     store.dispatch(changeAccountActiveId(id));
     await account.getLatestUpdate();
-    dag.monitor.startMonitor();
+    dag4.monitor.startMonitor();
   };
 
   const switchNetwork = (assetId: string, networkId: string) => {
@@ -150,7 +150,7 @@ const WalletController = (): IWalletController => {
     const activeAccount = accounts[activeAccountId];
 
     if (assetId === AssetType.Constellation && DAG_NETWORK[networkId]!.id) {
-      dag.network.setNetwork({
+      dag4.network.setNetwork({
         id: DAG_NETWORK[networkId].id,
         beUrl: DAG_NETWORK[networkId].beUrl,
         lbUrl: DAG_NETWORK[networkId].lbUrl,

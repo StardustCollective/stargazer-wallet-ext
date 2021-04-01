@@ -5,7 +5,7 @@ import { STORE_PORT, DAG_NETWORK } from 'constants/index';
 import { browser } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
 import store from 'state/store';
-import { dag } from '@stardust-collective/dag4';
+import { dag4 } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
@@ -35,14 +35,14 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     const networkId =
       store.getState().wallet!.activeNetwork[AssetType.Constellation] ||
       DAG_NETWORK.main.id;
-    dag.di.useFetchHttpClient(window.fetch.bind(window));
-    dag.di.useLocalStorageClient(localStorage);
-    dag.network.config({
+    dag4.di.useFetchHttpClient(window.fetch.bind(window));
+    dag4.di.useLocalStorageClient(localStorage);
+    dag4.network.config({
       id: DAG_NETWORK[networkId].id,
       beUrl: DAG_NETWORK[networkId].beUrl,
       lbUrl: DAG_NETWORK[networkId].lbUrl,
     });
-    dag.monitor.startMonitor();
+    dag4.monitor.startMonitor();
     window.controller.wallet.account.getLatestUpdate();
     window.controller.wallet.account.watchMemPool();
   }
