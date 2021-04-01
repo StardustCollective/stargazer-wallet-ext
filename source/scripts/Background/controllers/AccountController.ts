@@ -1,4 +1,4 @@
-import { dag } from '@stardust-collective/dag4';
+import { dag4 } from '@stardust-collective/dag4';
 import { BigNumber, ethers } from 'ethers';
 import { hdkey } from 'ethereumjs-wallet';
 import {
@@ -198,7 +198,7 @@ const AccountController = (actions: {
     accountId?: string
   ): Promise<IAccountInfo> => {
     const { activeNetwork }: IWalletState = store.getState().wallet;
-    dag.account.loginPrivateKey(privateKey);
+    dag4.account.loginPrivateKey(privateKey);
     ethClient = new XChainEthClient({
       network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
       privateKey,
@@ -207,8 +207,8 @@ const AccountController = (actions: {
     });
 
     // fetch dag info
-    const dagBalance = await dag.account.getBalance();
-    const dagTxs = await dag.account.getTransactions(TXS_LIMIT);
+    const dagBalance = await dag4.account.getBalance();
+    const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
 
     // fetch eth info
     const ethAddress = ethClient.getAddress();
@@ -229,7 +229,7 @@ const AccountController = (actions: {
         [AssetType.Constellation]: {
           id: AssetType.Constellation,
           balance: dagBalance,
-          address: dag.account.address,
+          address: dag4.account.address,
           transactions: dagTxs,
         },
         [AssetType.Ethereum]: {
@@ -259,7 +259,7 @@ const AccountController = (actions: {
   const getAccountByIndex = async (index: number) => {
     const masterKey: hdkey | null = actions.getMasterKey();
     if (!masterKey) return null;
-    privateKey = dag.keyStore.deriveAccountFromMaster(masterKey, index);
+    privateKey = dag4.keyStore.deriveAccountFromMaster(masterKey, index);
     return await getAccountByPrivateKey(privateKey, index.toString());
   };
 
@@ -273,7 +273,7 @@ const AccountController = (actions: {
   const getAccountByPrivKeystore = async (keystoreId: string) => {
     const { keystores }: IWalletState = store.getState().wallet;
     if (!password || !keystores[keystoreId]) return null;
-    privateKey = await dag.keyStore.decryptPrivateKey(
+    privateKey = await dag4.keyStore.decryptPrivateKey(
       keystores[keystoreId] as PrivKeystore,
       password
     );
@@ -437,9 +437,9 @@ const AccountController = (actions: {
     if (accounts[id].type === AccountType.Seed) {
       const masterKey: hdkey | null = actions.getMasterKey();
       if (!masterKey) return null;
-      return dag.keyStore.deriveAccountFromMaster(masterKey, Number(id));
+      return dag4.keyStore.deriveAccountFromMaster(masterKey, Number(id));
     } else {
-      const privkey = await dag.keyStore.decryptPrivateKey(
+      const privkey = await dag4.keyStore.decryptPrivateKey(
         keystores[id] as PrivKeystore,
         pwd
       );
@@ -470,7 +470,7 @@ const AccountController = (actions: {
 
   // Tx-Related
   const updateTempTx = (tx: ITransactionInfo) => {
-    if (dag.account.isActive()) {
+    if (dag4.account.isActive()) {
       tempTx = { ...tempTx, ...tx };
       tempTx.fromAddress = tempTx.fromAddress.trim();
       tempTx.toAddress = tempTx.toAddress.trim();
@@ -478,12 +478,12 @@ const AccountController = (actions: {
   };
 
   const getTempTx = () => {
-    return dag.account.isActive() ? tempTx : null;
+    return dag4.account.isActive() ? tempTx : null;
   };
 
   const updateTxs = async (limit = 10, searchAfter?: string) => {
     if (!account) return;
-    const newTxs = await dag.account.getTransactions(limit, searchAfter);
+    const newTxs = await dag4.account.getTransactions(limit, searchAfter);
     store.dispatch(
       updateTransactions({
         id: account.id,
@@ -518,7 +518,7 @@ const AccountController = (actions: {
   };
 
   const confirmTempTx = async () => {
-    if (!dag.account.isActive) {
+    if (!dag4.account.isActive) {
       throw new Error('Error: No signed account exists');
     }
     if (!account) {
@@ -537,12 +537,12 @@ const AccountController = (actions: {
       const assetId = accounts[activeAccountId].activeAssetId;
 
       if (assetId === AssetType.Constellation) {
-        const pendingTx = await dag.account.transferDag(
+        const pendingTx = await dag4.account.transferDag(
           tempTx.toAddress,
           tempTx.amount,
           tempTx.fee
         );
-        dag.monitor.addToMemPoolMonitor(pendingTx);
+        dag4.monitor.addToMemPoolMonitor(pendingTx);
         store.dispatch(
           updateTransactions({
             id: account.id,
@@ -611,7 +611,7 @@ const AccountController = (actions: {
 
   // Other
   const isValidDAGAddress = (address: string) => {
-    return dag.account.validateDagAddress(address);
+    return dag4.account.validateDagAddress(address);
   };
 
   const isValidERC20Address = (address: string) => {
@@ -619,7 +619,7 @@ const AccountController = (actions: {
   };
 
   const getRecommendFee = async () => {
-    return await dag.account.getFeeRecommendation();
+    return await dag4.account.getFeeRecommendation();
   };
 
   const getLatestGasPrices = async () => {
