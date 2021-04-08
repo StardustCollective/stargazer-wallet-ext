@@ -81,9 +81,13 @@
         }
       }
 
-      .closeBtn {
+      .addBtn {
         right: 36px;
         position: absolute;
+
+        .icon {
+          color: $gray;
+        }
       }
     }
   }

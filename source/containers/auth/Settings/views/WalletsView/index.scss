@@ -1,0 +1,78 @@
+@import '~assets/styles/variables';
+
+.wallets {
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 10px;
+    font-weight: 500;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  .group {
+    .wallet {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: $gray-dark;
+      height: 24px;
+      display: flex;
+      padding: 0 12px;
+      height: 60px;
+      align-items: center;
+      transition: all 0.3s;
+      background-color: $white;
+      cursor: pointer;
+      border-bottom: 1px solid $gray-light;
+      position: relative;
+
+      & > span {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        line-height: 20px;
+
+        small {
+          font-size: 12px;
+          font-weight: 500;
+          color: $gray;
+        }
+      }
+
+      & > svg {
+        font-size: 24px;
+        color: $gray;
+
+        &.check {
+          position: absolute;
+          left: 34px;
+          top: 10px;
+          font-size: 16px;
+          color: $purple;
+        }
+      }
+
+      &:first-child {
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        border-bottom: 0;
+      }
+
+      &:hover {
+        background: $gray-light-100;
+      }
+    }
+  }
+}

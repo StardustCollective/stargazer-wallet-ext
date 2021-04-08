@@ -1,44 +1,47 @@
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import AddIcon from '@material-ui/icons/Add';
-import ImportIcon from '@material-ui/icons/ImportExport';
+// import AddIcon from '@material-ui/icons/Add';
+// import ImportIcon from '@material-ui/icons/ImportExport';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LogOutIcon from '@material-ui/icons/ExitToApp';
 import ContactsIcon from '@material-ui/icons/Group';
-import UserIcon from '@material-ui/icons/AccountCircleRounded';
+import NetworkIcon from '@material-ui/icons/Timeline';
+import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
+// import UserIcon from '@material-ui/icons/AccountCircleRounded';
 
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
-import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
-import AccountSelect from 'components/AccountSelect';
+
+import StargazerIcon from 'assets/images/logo-s.svg';
+// import { RootState } from 'state/store';
+// import IWalletState from 'state/wallet/types';
+// import AccountSelect from 'components/AccountSelect';
 import {
-  ACCOUNT_VIEW,
+  ABOUT_VIEW,
+  // ACCOUNT_VIEW,
   CONTACTS_VIEW,
-  GENERAL_VIEW,
-  IMPORT_ACCOUNT_VIEW,
-  NEW_ACCOUNT_VIEW,
+  NETWORKS_VIEW,
+  WALLETS_VIEW,
+  // GENERAL_VIEW,
+  // IMPORT_ACCOUNT_VIEW,
+  // NEW_ACCOUNT_VIEW,
 } from '../routes';
 
 import styles from './index.scss';
 
-interface IMainView {
-  onChange: (id: string) => void;
-}
-
-const MainView: FC<IMainView> = ({ onChange }) => {
+const MainView: FC = () => {
   const showView = useSettingsView();
   const history = useHistory();
   const controller = useController();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
+  // const { accounts, activeAccountId }: IWalletState = useSelector(
+  //   (state: RootState) => state.wallet
+  // );
 
-  const handleSelectAccount = (id: string) => {
-    onChange(id);
-    showView(ACCOUNT_VIEW);
-  };
+  // const handleSelectAccount = (id: string) => {
+  //   onChange(id);
+  //   showView(ACCOUNT_VIEW);
+  // };
 
   const handleLogout = () => {
     controller.wallet.logOut();
@@ -47,7 +50,7 @@ const MainView: FC<IMainView> = ({ onChange }) => {
 
   return (
     <div className={styles.main}>
-      <ul className={styles.accounts}>
+      {/* <ul className={styles.accounts}>
         <AccountSelect
           label={
             <>
@@ -68,31 +71,54 @@ const MainView: FC<IMainView> = ({ onChange }) => {
       >
         <Icon Component={AddIcon} />
         Create seed account
-      </section>
-      <section
+      </section> */}
+      {/* <section
         className={styles.general}
         onClick={() => showView(IMPORT_ACCOUNT_VIEW)}
       >
         <Icon Component={ImportIcon} />
         Import private key
+      </section> */}
+      <section
+        className={styles.general}
+        onClick={() => showView(WALLETS_VIEW)}
+      >
+        <Icon Component={StargazerIcon} />
+        <span>Wallets</span>
+        <ArrowIcon />
       </section>
       <section
         className={styles.general}
         onClick={() => showView(CONTACTS_VIEW)}
       >
         <Icon Component={ContactsIcon} />
-        Contacts
+        <span>Contacts</span>
+        <ArrowIcon />
       </section>
       <section
+        className={styles.general}
+        onClick={() => showView(NETWORKS_VIEW)}
+      >
+        <Icon Component={NetworkIcon} />
+        <span>Networks</span>
+        <ArrowIcon />
+      </section>
+      {/* <section
         className={styles.general}
         onClick={() => showView(GENERAL_VIEW)}
       >
         <Icon Component={SettingsIcon} />
         General settings
-      </section>
+      </section> */}
       <section className={styles.general} onClick={handleLogout}>
         <Icon Component={LogOutIcon} />
-        Log out
+        <span>Log out</span>
+        <ArrowIcon />
+      </section>
+      <section className={styles.general} onClick={() => showView(ABOUT_VIEW)}>
+        <Icon Component={SettingsIcon} />
+        <span>About</span>
+        <ArrowIcon />
       </section>
     </div>
   );

@@ -6,7 +6,7 @@ import { SvgIconTypeMap } from '@material-ui/core/SvgIcon';
 import styles from './Icon.scss';
 
 interface IIcon {
-  Component: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
+  Component: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> | string;
   spaced?: boolean;
   variant?: string;
 }
@@ -14,7 +14,11 @@ interface IIcon {
 const Icon: FC<IIcon> = ({ Component, spaced = true, variant }) => {
   return (
     <div className={clsx(styles.icon, { [styles.spaced]: spaced }, variant)}>
-      <Component />
+      {typeof Component === 'string' ? (
+        <img src={`/${Component}`} width="24" />
+      ) : (
+        <Component />
+      )}
     </div>
   );
 };
