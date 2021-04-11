@@ -1,28 +1,16 @@
-import React, {
-  FC,
-  useState,
-  useEffect,
-  KeyboardEvent,
-  ChangeEvent,
-} from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import Portal from '@reach/portal';
-import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 import { useLocation, useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/AddCircleRounded';
-import EditIcon from '@material-ui/icons/Create';
-import CheckIcon from '@material-ui/icons/Check';
 
-import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
 import * as Views from './views';
 import * as routes from './views/routes';
 
-import TextInput from 'components/TextInput';
-import { useController, useSettingsView } from 'hooks/index';
+import { useSettingsView } from 'hooks/index';
 import styles from './Settings.scss';
 
 interface ISettings {
@@ -34,7 +22,6 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   const location = useLocation();
   const history = useHistory();
   const showView = useSettingsView();
-  const controller = useController();
   const transitions = useTransition(location, (locat) => locat.hash, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -43,40 +30,11 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     config: { duration: 300 },
   });
 
-  const { accounts }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
   const [showedId, setShowedId] = useState<string>('0');
   const [selectedContact, setSelectedContact] = useState<string>('');
-  const [editable, setEditable] = useState(false);
-  const [showedLabel, setShowedLabel] = useState('');
-
-  useEffect(() => {
-    if (location.hash !== routes.ACCOUNT_VIEW && editable) {
-      setEditable(false);
-    }
-  }, [location.hash]);
 
   const renderTitle = (view: string) => {
     switch (view) {
-      case routes.ACCOUNT_VIEW:
-        return editable ? (
-          <TextInput
-            value={showedLabel}
-            variant={styles.accLabel}
-            onChange={(
-              ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-            ) => setShowedLabel(ev.target.value)}
-            onKeyDown={(ev: KeyboardEvent<HTMLInputElement>) => {
-              if (ev.key === 'Enter') {
-                setShowedLabel(ev.currentTarget.value);
-                handleChangeLabel();
-              }
-            }}
-          />
-        ) : (
-          accounts[showedId].label
-        );
       case routes.WALLETS_VIEW:
       case routes.ADD_WALLET_VIEW:
         return 'Wallets';
@@ -118,7 +76,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   const renderView = (view: string) => {
     switch (view) {
       case routes.WALLETS_VIEW:
-        return <Views.WalletsView />;
+        return <Views.WalletsView onChange={(id) => setShowedId(id)} />;
       case routes.ADD_WALLET_VIEW:
         return <Views.AddWalletView />;
       case routes.IMPORT_WALLET_VIEW:
@@ -126,9 +84,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.NETWORKS_VIEW:
         return <Views.NetworksView />;
       case routes.MANAGE_WALLET_VIEW:
-        return <Views.ManageWalletView />;
-      case routes.ACCOUNT_VIEW:
-        return <Views.AccountView />;
+        return <Views.ManageWalletView id={showedId} />;
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
@@ -172,15 +128,6 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     }
   };
 
-  const handleChangeLabel = () => {
-    if (!editable) {
-      setShowedLabel(accounts[showedId].label);
-    } else {
-      controller.wallet.account.updateAccountLabel(showedId, showedLabel);
-    }
-    setEditable(!editable);
-  };
-
   return (
     <Portal>
       <div className={clsx(styles.mask, { [styles.open]: open })}>
@@ -189,25 +136,9 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
             <IconButton className={styles.navBtn} onClick={handleBackNav}>
               <ArrowBackIcon className={styles.icon} />
             </IconButton>
-            <span
-              className={clsx(styles.title, {
-                [styles.account]: location.hash !== routes.ACCOUNT_VIEW,
-              })}
-            >
+            <span className={clsx(styles.title)}>
               {renderTitle(location.hash)}
             </span>
-            {location.hash === routes.ACCOUNT_VIEW && (
-              <IconButton
-                className={styles.editBtn}
-                onClick={handleChangeLabel}
-              >
-                {editable ? (
-                  <CheckIcon className={styles.icon} />
-                ) : (
-                  <EditIcon className={styles.icon} />
-                )}
-              </IconButton>
-            )}
             {location.hash === routes.WALLETS_VIEW && (
               <IconButton
                 className={clsx(styles.navBtn, styles.addBtn)}

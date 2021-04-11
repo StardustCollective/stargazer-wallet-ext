@@ -44,11 +44,11 @@ body {
     font-family: $inter;
     font-size: 12px;
     height: 40px;
-    padding: 0 20px;
+    padding: 0 12px;
     font-weight: $medium;
     border: 1px solid $gray-200 !important;
     outline: 0px !important;
-    border-radius: 20px;
+    border-radius: 6px;
 
     & input {
       padding: 0px;

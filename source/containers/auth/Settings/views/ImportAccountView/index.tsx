@@ -114,11 +114,6 @@ const ImportAccountView = () => {
         </div>
       ) : (
         <>
-          <section className={styles.warning}>
-            <small>Warning:</small> Imported accounts will not be associated
-            with your Stargazer account seedphrase. Please keep your private
-            keys stored in a safe place.
-          </section>
           <section className={styles.content}>
             <div className={styles.select}>
               Select Type:

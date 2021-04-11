@@ -52,7 +52,7 @@ const Starter = () => {
         </Button>
       </form>
       <Link color="secondary" to="/import">
-        Import using wallet seed phrase
+        Import from seed phrase
       </Link>
     </div>
   );

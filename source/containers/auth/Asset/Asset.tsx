@@ -7,7 +7,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
-import AssetSelect from 'components/AssetSelect';
+import AssetHeader from './AssetHeader';
 import TxsPanel from './TxsPanel';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
@@ -45,13 +45,6 @@ const AssetDetail = () => {
     controller.stateUpdater();
   };
 
-  const handleSelectAsset = (assetId: string) => {
-    controller.wallet.account.updateAccountActiveAsset(
-      activeAccountId,
-      assetId
-    );
-  };
-
   const fetchTxs = () => {
     if (account.activeAssetId === AssetType.Constellation)
       return account.assets[account.activeAssetId].transactions;
@@ -64,22 +57,9 @@ const AssetDetail = () => {
         <>
           <Header backLink="/home" />
           <section className={styles.account}>
-            <AssetSelect
-              assetList={Object.values(account.assets)
-                .filter(
-                  (asset) =>
-                    assets[asset.id].network === 'both' ||
-                    assets[asset.id].network ===
-                      activeNetwork[
-                        asset.id === AssetType.Constellation
-                          ? AssetType.Constellation
-                          : AssetType.Ethereum
-                      ]
-                )
-                .map((asset) => assets[asset.id])}
-              onChange={(asset) => handleSelectAsset(asset.id)}
-              tokenName={assets[account.activeAssetId].name}
-              tokenAddress={account.assets[account.activeAssetId].address}
+            <AssetHeader
+              asset={assets[account.activeAssetId]}
+              address={account.assets[account.activeAssetId].address}
               addressUrl={getAddressURL(
                 account.assets[account.activeAssetId].address,
                 assets[account.activeAssetId].type,

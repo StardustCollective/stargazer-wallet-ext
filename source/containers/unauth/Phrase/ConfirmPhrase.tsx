@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import clsx from 'clsx';
 import Button from 'components/Button';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { useHistory } from 'react-router-dom';
@@ -14,8 +15,11 @@ const ConfirmPhrase = () => {
   const history = useHistory();
   const controller = useController();
   const phrases = controller.wallet.generatedPhrase();
-  const [orgList, setOrgList] = useState<Array<string>>(
+  const [orgList] = useState<Array<string>>(
     shuffle((phrases || '').split(' '))
+  );
+  const [checkList, setCheckList] = useState<Array<boolean>>(
+    new Array(12).fill(true)
   );
   const [newList, setNewList] = useState<Array<string>>([]);
   const [passed, setPassed] = useState(false);
@@ -28,18 +32,27 @@ const ConfirmPhrase = () => {
     return !isEqual(phrases.split(' '), newList);
   }, [phrases, newList]);
 
+  const handleSetPhrase = (idx: number) => {
+    const checkNewList = [...checkList];
+    if (checkNewList[idx]) {
+      setNewList([...newList, orgList[idx]]);
+    } else {
+      const newIdx = newList.indexOf(orgList[idx]);
+      const tempList = [...newList];
+      tempList.splice(newIdx, 1);
+      setNewList([...tempList]);
+    }
+    checkNewList[idx] = !checkNewList[idx];
+    setCheckList([...checkNewList]);
+  };
+
   const handleOrgPhrase = (idx: number) => {
-    const tempList = [...orgList];
-    setNewList([...newList, orgList[idx]]);
-    tempList.splice(idx, 1);
-    setOrgList([...tempList]);
+    handleSetPhrase(idx);
   };
 
   const handleNewPhrase = (idx: number) => {
-    const tempList = [...newList];
-    setOrgList([...orgList, newList[idx]]);
-    tempList.splice(idx, 1);
-    setNewList([...tempList]);
+    const orgIdx = orgList.indexOf(newList[idx]);
+    handleSetPhrase(orgIdx);
   };
 
   const handleConfirm = () => {
@@ -78,7 +91,9 @@ const ConfirmPhrase = () => {
               <Button
                 key={phrase}
                 type="button"
-                variant={styles.phrase}
+                variant={clsx(styles.phrase, {
+                  [styles.active]: !checkList[idx],
+                })}
                 onClick={() => handleOrgPhrase(idx)}
               >
                 {phrase}
