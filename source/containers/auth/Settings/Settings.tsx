@@ -10,7 +10,13 @@ import AddIcon from '@material-ui/icons/AddCircleRounded';
 import * as Views from './views';
 import * as routes from './views/routes';
 
+import Icon from 'components/Icon';
 import { useSettingsView } from 'hooks/index';
+import { AssetType, NetworkType } from 'state/wallet/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
+import IAssetListState from 'state/assets/types';
+import StargazerIcon from 'assets/images/logo-s.svg';
 import styles from './Settings.scss';
 
 interface ISettings {
@@ -22,6 +28,9 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   const location = useLocation();
   const history = useHistory();
   const showView = useSettingsView();
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
   const transitions = useTransition(location, (locat) => locat.hash, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -31,6 +40,9 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   });
 
   const [showedId, setShowedId] = useState<string>('0');
+  const [importNetwork, setImportNetwork] = useState<NetworkType>(
+    NetworkType.MultiChain
+  );
   const [selectedContact, setSelectedContact] = useState<string>('');
 
   const renderTitle = (view: string) => {
@@ -44,6 +56,8 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return 'Networks';
       case routes.MANAGE_WALLET_VIEW:
         return 'Manage';
+      case routes.IMPORT_PHRASE_VIEW:
+        return 'Multi Chain Wallet';
       case routes.GENERAL_VIEW:
         return 'General Settings';
       case routes.PHRASE_VIEW:
@@ -67,7 +81,29 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.EDIT_CONTACT_VIEW:
         return 'Edit Contact';
       case routes.IMPORT_ACCOUNT_VIEW:
-        return 'Import private key';
+        return (
+          <div className={styles.privKeyTitle}>
+            <Icon
+              variant={styles.icon}
+              Component={
+                assets[
+                  importNetwork === NetworkType.Ethereum
+                    ? AssetType.Ethereum
+                    : AssetType.Constellation
+                ].logo || StargazerIcon
+              }
+            />
+            <span>
+              {
+                assets[
+                  importNetwork === NetworkType.Ethereum
+                    ? AssetType.Ethereum
+                    : AssetType.Constellation
+                ].name
+              }
+            </span>
+          </div>
+        );
       default:
         return 'Settings';
     }
@@ -80,11 +116,17 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.ADD_WALLET_VIEW:
         return <Views.AddWalletView />;
       case routes.IMPORT_WALLET_VIEW:
-        return <Views.ImportWalletView />;
+        return (
+          <Views.ImportWalletView
+            onChange={(network) => setImportNetwork(network)}
+          />
+        );
       case routes.NETWORKS_VIEW:
         return <Views.NetworksView />;
       case routes.MANAGE_WALLET_VIEW:
         return <Views.ManageWalletView id={showedId} />;
+      case routes.IMPORT_PHRASE_VIEW:
+        return <Views.ImportPhraseView />;
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
@@ -114,7 +156,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.CONTACT_VIEW:
         return <Views.ContactView selected={selectedContact} />;
       case routes.IMPORT_ACCOUNT_VIEW:
-        return <Views.ImportAccountView />;
+        return <Views.ImportAccountView network={importNetwork} />;
       default:
         return <Views.MainView />;
     }

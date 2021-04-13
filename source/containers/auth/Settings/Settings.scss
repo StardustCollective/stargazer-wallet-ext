@@ -47,13 +47,23 @@
 
       span.title {
         display: inline-block;
-        width: calc(100% - 90px);
+        width: calc(100% - 72px);
         white-space: nowrap;
         margin-left: 3px;
         text-align: center;
         overflow: hidden;
         transition: all 0.3s;
         text-overflow: ellipsis;
+
+        .privKeyTitle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .icon {
+            background: $white;
+          }
+        }
 
         &.account {
           width: 228px;

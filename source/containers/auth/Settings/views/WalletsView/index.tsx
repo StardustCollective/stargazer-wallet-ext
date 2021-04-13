@@ -6,12 +6,14 @@ import CheckIcon from '@material-ui/icons/CheckCircleRounded';
 
 import Icon from 'components/Icon';
 import { RootState } from 'state/store';
-import IWalletState, { AccountType } from 'state/wallet/types';
+import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
 import { useController, useSettingsView } from 'hooks/index';
 
 import StargazerIcon from 'assets/images/logo-s.svg';
-import styles from './index.scss';
 import { MANAGE_WALLET_VIEW } from '../routes';
+import { ETH_PREFIX } from 'constants/index';
+import styles from './index.scss';
+import IAssetListState from 'state/assets/types';
 
 interface IWalletsView {
   onChange: (id: string) => void;
@@ -23,6 +25,10 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
+
   const privKeyAccounts = Object.values(accounts).filter(
     (account) => account.type === AccountType.PrivKey
   );
@@ -83,10 +89,26 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
                 {account.id === activeAccountId && (
                   <CheckIcon className={styles.check} />
                 )}
-                <Icon Component={StargazerIcon} />
+                <Icon
+                  Component={
+                    assets[
+                      account.id.startsWith(ETH_PREFIX)
+                        ? AssetType.Ethereum
+                        : AssetType.Constellation
+                    ].logo || StargazerIcon
+                  }
+                />
                 <span>
                   {account.label}
-                  <small>Private Key Wallet</small>
+                  <small>
+                    {
+                      account.assets[
+                        account.id.startsWith(ETH_PREFIX)
+                          ? AssetType.Ethereum
+                          : AssetType.Constellation
+                      ].address
+                    }
+                  </small>
                 </span>
                 <IconButton
                   className={styles.details}

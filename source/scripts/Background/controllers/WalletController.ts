@@ -11,13 +11,18 @@ import {
   removeSeedAccounts,
 } from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
-import { DAG_NETWORK } from 'constants/index';
-import IWalletState, { AssetType, SeedKeystore } from 'state/wallet/types';
+import { DAG_NETWORK, ETH_PREFIX } from 'constants/index';
+import IWalletState, {
+  AssetType,
+  NetworkType,
+  SeedKeystore,
+} from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
+import { browser } from 'webextension-polyfill-ts';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;
-  createWallet: (isUpdated?: boolean) => void;
+  createWallet: (isUpdated?: boolean, primary?: string) => void;
   deleteWallet: (pwd: string) => void;
   switchWallet: (id: string) => Promise<void>;
   switchNetwork: (assetId: string, networkId: string) => void;
@@ -36,7 +41,7 @@ const WalletController = (): IWalletController => {
   let phrase = '';
   let masterKey: hdkey;
 
-  const importPrivKey = async (privKey: string) => {
+  const importPrivKey = async (privKey: string, networkType: NetworkType) => {
     const { keystores }: IWalletState = store.getState().wallet;
     if (isLocked() || !privKey) return null;
     const v3Keystore = await dag4.keyStore.generateEncryptedPrivateKey(
@@ -44,12 +49,18 @@ const WalletController = (): IWalletController => {
       privKey
     );
     if (
-      Object.values(keystores).filter(
-        (keystore) => (keystore as any).address === (v3Keystore as any).address
+      Object.keys(keystores).filter(
+        (id) =>
+          (keystores[id] as any).address === (v3Keystore as any).address &&
+          ((id.startsWith(ETH_PREFIX) &&
+            networkType === NetworkType.Ethereum) ||
+            (!id.startsWith(ETH_PREFIX) &&
+              networkType === NetworkType.Constellation))
       ).length
-    )
+    ) {
       return null;
-    store.dispatch(setKeystoreInfo(v3Keystore));
+    }
+    store.dispatch(setKeystoreInfo({ keystore: v3Keystore, networkType }));
     return v3Keystore;
   };
 
@@ -110,7 +121,10 @@ const WalletController = (): IWalletController => {
     }
   };
 
-  const createWallet = async (isUpdated = false) => {
+  const createWallet = async (
+    isUpdated = false,
+    primaryAccLabel = 'Account 1'
+  ) => {
     if (!isUpdated && seedWalletKeystore()) return;
     if (isUpdated) {
       const { seedKeystoreId, keystores } = store.getState().wallet;
@@ -120,9 +134,14 @@ const WalletController = (): IWalletController => {
     }
     const v3Keystore = await dag4.keyStore.encryptPhrase(phrase, password);
     masterKey = dag4.keyStore.getMasterKeyFromMnemonic(phrase);
-    store.dispatch(setKeystoreInfo(v3Keystore));
+    store.dispatch(
+      setKeystoreInfo({
+        keystore: v3Keystore,
+        networkType: NetworkType.MultiChain,
+      })
+    );
     store.dispatch(updateSeedKeystoreId(v3Keystore.id));
-    await account.subscribeAccount(0);
+    await account.subscribeAccount(0, primaryAccLabel);
     await account.getPrimaryAccount(password);
     if (isUpdated) {
       account.getLatestUpdate();
@@ -184,10 +203,11 @@ const WalletController = (): IWalletController => {
       : null;
   };
 
-  const logOut = () => {
+  const logOut = async () => {
     password = '';
     phrase = '';
     store.dispatch(updateStatus());
+    browser.runtime.reload();
   };
 
   return {
