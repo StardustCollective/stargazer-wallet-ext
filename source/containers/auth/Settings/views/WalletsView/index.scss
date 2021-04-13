@@ -43,6 +43,9 @@
           font-size: 12px;
           font-weight: 500;
           color: $gray;
+          width: 204px;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
 

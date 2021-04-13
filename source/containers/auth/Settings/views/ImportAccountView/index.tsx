@@ -11,9 +11,9 @@ import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
 import { useController, useSettingsView } from 'hooks/index';
 
-import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
 import { NetworkType } from 'state/wallet/types';
+import styles from './index.scss';
 
 interface IImportAccountView {
   network: NetworkType;

@@ -10,9 +10,14 @@ import AddIcon from '@material-ui/icons/AddCircleRounded';
 import * as Views from './views';
 import * as routes from './views/routes';
 
+import Icon from 'components/Icon';
 import { useSettingsView } from 'hooks/index';
+import { AssetType, NetworkType } from 'state/wallet/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
+import IAssetListState from 'state/assets/types';
+import StargazerIcon from 'assets/images/logo-s.svg';
 import styles from './Settings.scss';
-import { NetworkType } from 'state/wallet/types';
 
 interface ISettings {
   open: boolean;
@@ -23,6 +28,9 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   const location = useLocation();
   const history = useHistory();
   const showView = useSettingsView();
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
   const transitions = useTransition(location, (locat) => locat.hash, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -73,7 +81,29 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.EDIT_CONTACT_VIEW:
         return 'Edit Contact';
       case routes.IMPORT_ACCOUNT_VIEW:
-        return 'Import private key';
+        return (
+          <div className={styles.privKeyTitle}>
+            <Icon
+              variant={styles.icon}
+              Component={
+                assets[
+                  importNetwork === NetworkType.Ethereum
+                    ? AssetType.Ethereum
+                    : AssetType.Constellation
+                ].logo || StargazerIcon
+              }
+            />
+            <span>
+              {
+                assets[
+                  importNetwork === NetworkType.Ethereum
+                    ? AssetType.Ethereum
+                    : AssetType.Constellation
+                ].name
+              }
+            </span>
+          </div>
+        );
       default:
         return 'Settings';
     }
