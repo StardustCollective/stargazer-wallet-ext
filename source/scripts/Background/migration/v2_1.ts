@@ -2,7 +2,7 @@ import { browser } from 'webextension-polyfill-ts';
 import IAssetListState from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
 
 interface INewState {
   wallet: IWalletState;
@@ -30,29 +30,23 @@ const MigrateRunner = () => {
       const { accounts } = oldState.wallet;
 
       for (let i = 0; i < Object.values(accounts).length; i += 1) {
-        const {
-          id,
-          label,
-          address,
-          balance,
-          transactions,
-          type,
-        } = Object.values(accounts)[i] as any;
+        const { id, label, assets, type } = Object.values(accounts)[i] as any;
 
-        newState.wallet.accounts[id] = {
-          id,
-          label,
-          type,
-          assets: {
-            [AssetType.Constellation]: {
-              id: AssetType.Constellation,
-              balance,
-              address: address[AssetType.Constellation],
-              transactions,
+        if (type === AccountType.Seed) {
+          newState.wallet.accounts[id] = Object.values(accounts)[i] as any;
+        } else {
+          newState.wallet.accounts[id] = {
+            id,
+            label,
+            activeAssetId: AssetType.Constellation,
+            assets: {
+              [AssetType.Constellation]: {
+                ...assets[AssetType.Constellation],
+              },
             },
-          },
-          activeAssetId: AssetType.Constellation,
-        };
+            type: AccountType.PrivKey,
+          };
+        }
       }
 
       newState.wallet.version = '2.1.0';
