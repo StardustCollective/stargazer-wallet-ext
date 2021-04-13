@@ -29,6 +29,10 @@ const SendConfirm = () => {
     (state: RootState) => state.assets
   );
   const account = accounts[activeAccountId];
+  const assetType =
+    account.activeAssetId === AssetType.Constellation
+      ? AssetType.Constellation
+      : AssetType.Ethereum;
 
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
@@ -36,7 +40,7 @@ const SendConfirm = () => {
   const getTotalAmount = () => {
     return (
       Number(getFiatAmount(Number(tempTx?.amount || 0), 8)) +
-      Number(getFiatAmount(Number(tempTx?.fee || 0), 8, 'ethereum'))
+      Number(getFiatAmount(Number(tempTx?.fee || 0), 8, assetType))
     ).toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
@@ -97,15 +101,18 @@ const SendConfirm = () => {
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {tempTx!.fee} ETH (≈{' '}
-            {getFiatAmount(tempTx?.fee || 0, 2, 'ethereum')})
+            {`${tempTx!.fee} ${assets[assetType].symbol} (≈ $${getFiatAmount(
+              tempTx?.fee || 0,
+              2,
+              assetType
+            )})`}
           </span>
         </div>
       </section>
       <section className={styles.confirm}>
         <div className={styles.row}>
           Max Total
-          <span>{getTotalAmount()}</span>
+          <span>{`$${getTotalAmount()}`}</span>
         </div>
 
         <div className={styles.actions}>
