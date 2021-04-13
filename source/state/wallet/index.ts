@@ -23,7 +23,7 @@ const initialState: IWalletState = {
     [AssetType.Constellation]: DAG_NETWORK.main.id,
     [AssetType.Ethereum]: ETH_NETWORK.mainnet.id,
   },
-  version: '2.0.0',
+  version: '2.1.0',
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
