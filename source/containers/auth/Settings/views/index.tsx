@@ -4,6 +4,7 @@ export { default as AddWalletView } from './AddWalletView';
 export { default as ImportWalletView } from './ImportWalletView';
 export { default as NetworksView } from './NetworksView';
 export { default as ManageWalletView } from './ManageWalletView';
+export { default as ImportPhraseView } from './ImportPhraseView';
 export { default as AccountView } from './AccountView';
 export { default as GeneralView } from './GeneralView';
 export { default as PhraseView } from './PhraseView';

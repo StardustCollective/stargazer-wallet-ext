@@ -21,6 +21,12 @@ export enum AssetType {
   ERC20 = 'erc20',
 }
 
+export enum NetworkType {
+  Ethereum,
+  Constellation,
+  MultiChain,
+}
+
 export type Transaction = DAGTransaction | any;
 export interface IAssetState {
   id: string;

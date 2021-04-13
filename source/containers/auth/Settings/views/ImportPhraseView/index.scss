@@ -1,0 +1,59 @@
+@import '~assets/styles/variables';
+
+.wrapper {
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 132px);
+  position: relative;
+
+  label {
+    font-size: 10px;
+    font-weight: 500;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  .input {
+    textarea {
+      text-align: center;
+      word-wrap: break-word;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 24px;
+    }
+  }
+
+  section > span {
+    font-size: 12px;
+    font-weight: 500;
+    display: block;
+    margin-top: 24px;
+  }
+
+  .actions {
+    position: absolute;
+    bottom: 24px;
+    padding: 0 12px;
+    width: calc(100% - 48px);
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+
+    .cancel,
+    .cancel:hover {
+      background: $gray-light;
+      color: $gray-dark;
+    }
+
+    .button {
+      width: 144px;
+    }
+  }
+}

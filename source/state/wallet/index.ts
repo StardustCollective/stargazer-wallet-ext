@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
-import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
+import { DAG_NETWORK, ETH_NETWORK, ETH_PREFIX } from 'constants/index';
 
 import IWalletState, {
   IAccountUpdateState,
@@ -10,6 +10,7 @@ import IWalletState, {
   AccountType,
   AssetType,
   IAssetState,
+  NetworkType,
 } from './types';
 
 const initialState: IWalletState = {
@@ -30,10 +31,17 @@ const WalletState = createSlice({
   name: 'wallet',
   initialState,
   reducers: {
-    setKeystoreInfo(state: IWalletState, action: PayloadAction<Keystore>) {
+    setKeystoreInfo(
+      state: IWalletState,
+      action: PayloadAction<{ keystore: Keystore; networkType: NetworkType }>
+    ) {
+      const id = `${
+        action.payload.networkType === NetworkType.Ethereum ? ETH_PREFIX : ''
+      }${action.payload.keystore.id}`;
+
       state.keystores = {
         ...state.keystores,
-        [action.payload.id]: action.payload,
+        [id]: action.payload.keystore,
       };
     },
     removeKeystoreInfo(state: IWalletState, action: PayloadAction<string>) {

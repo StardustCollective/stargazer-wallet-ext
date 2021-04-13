@@ -24,11 +24,12 @@ import IWalletState, {
   AssetType,
   IAccountState,
   IAssetState,
+  NetworkType,
   PrivKeystore,
 } from 'state/wallet/types';
 
 import { IAccountInfo, ITransactionInfo, ETHNetwork } from '../../types';
-import { LATTICE_ASSET } from 'constants/index';
+import { ETH_PREFIX, LATTICE_ASSET } from 'constants/index';
 import IAssetListState from 'state/assets/types';
 import TransactionController, {
   ITransactionController,
@@ -42,7 +43,7 @@ export interface IAccountController {
   getPrimaryAccount: (pwd: string) => void;
   isValidDAGAddress: (address: string) => boolean;
   isValidERC20Address: (address: string) => boolean;
-  subscribeAccount: (index: number) => Promise<string | null>;
+  subscribeAccount: (index: number, label?: string) => Promise<string | null>;
   unsubscribeAccount: (index: number, pwd: string) => boolean;
   addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
@@ -52,7 +53,8 @@ export interface IAccountController {
   addNewAsset: (id: string, assetId: string, address: string) => Promise<void>;
   importPrivKeyAccount: (
     privKey: string,
-    label: string
+    label: string,
+    networkType: NetworkType
   ) => Promise<string | null>;
   removePrivKeyAccount: (id: string, password: string) => boolean;
   getRecommendFee: () => Promise<number>;
@@ -79,7 +81,10 @@ export interface IAccountController {
 const AccountController = (actions: {
   getMasterKey: () => hdkey | null;
   checkPassword: (pwd: string) => boolean;
-  importPrivKey: (privKey: string) => Promise<PrivKeystore | null>;
+  importPrivKey: (
+    privKey: string,
+    networkType: NetworkType
+  ) => Promise<PrivKeystore | null>;
 }): IAccountController => {
   let privateKey: string;
   let tempTx: ITransactionInfo | null;
@@ -195,43 +200,56 @@ const AccountController = (actions: {
    */
   const getAccountByPrivateKey = async (
     privateKey: string,
+    networkType: NetworkType,
     accountId?: string
   ): Promise<IAccountInfo> => {
     const { activeNetwork }: IWalletState = store.getState().wallet;
-    dag4.account.loginPrivateKey(privateKey);
-    ethClient = new XChainEthClient({
-      network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
-      privateKey,
-      etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-      infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
-    });
+    let assets: any = {};
 
-    // fetch dag info
-    const dagBalance = await dag4.account.getBalance();
-    const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
+    if (
+      networkType === NetworkType.MultiChain ||
+      networkType === NetworkType.Constellation
+    ) {
+      dag4.account.loginPrivateKey(privateKey);
 
-    // fetch eth info
-    const ethAddress = ethClient.getAddress();
-    const balances = await ethClient.getBalance();
-    const ethBalance = ethers.utils.formatEther(
-      balances[0].amount.amount().toString()
-    );
-    const ethTxs = await ethClient.getTransactions({
-      address: ethAddress,
-      limit: TXS_LIMIT,
-    });
+      // fetch dag info
+      const dagBalance = await dag4.account.getBalance();
+      const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
 
-    // fetch other erc20 assets info
-    const erc20Assets = await _fetchERC20Assets(accountId);
+      assets[AssetType.Constellation] = {
+        id: AssetType.Constellation,
+        balance: dagBalance,
+        address: dag4.account.address,
+        transactions: dagTxs,
+      };
+    }
 
-    return {
-      assets: {
-        [AssetType.Constellation]: {
-          id: AssetType.Constellation,
-          balance: dagBalance,
-          address: dag4.account.address,
-          transactions: dagTxs,
-        },
+    if (
+      networkType === NetworkType.MultiChain ||
+      networkType === NetworkType.Ethereum
+    ) {
+      ethClient = new XChainEthClient({
+        network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+        privateKey,
+        etherscanApiKey: process.env.ETHERSCAN_API_KEY,
+        infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
+      });
+      // fetch eth info
+      const ethAddress = ethClient.getAddress();
+      const balances = await ethClient.getBalance();
+      const ethBalance = ethers.utils.formatEther(
+        balances[0].amount.amount().toString()
+      );
+      const ethTxs = await ethClient.getTransactions({
+        address: ethAddress,
+        limit: TXS_LIMIT,
+      });
+
+      // fetch other erc20 assets info
+      const erc20Assets = await _fetchERC20Assets(accountId);
+
+      assets = {
+        ...assets,
         [AssetType.Ethereum]: {
           id: AssetType.Ethereum,
           balance: Number(ethBalance),
@@ -246,7 +264,11 @@ const AccountController = (actions: {
           }),
         },
         ...erc20Assets,
-      },
+      };
+    }
+
+    return {
+      assets,
     };
   };
 
@@ -260,7 +282,11 @@ const AccountController = (actions: {
     const masterKey: hdkey | null = actions.getMasterKey();
     if (!masterKey) return null;
     privateKey = dag4.keyStore.deriveAccountFromMaster(masterKey, index);
-    return await getAccountByPrivateKey(privateKey, index.toString());
+    return await getAccountByPrivateKey(
+      privateKey,
+      NetworkType.MultiChain,
+      index.toString()
+    );
   };
 
   /**
@@ -277,7 +303,12 @@ const AccountController = (actions: {
       keystores[keystoreId] as PrivKeystore,
       password
     );
-    return await getAccountByPrivateKey(privateKey);
+    return await getAccountByPrivateKey(
+      privateKey,
+      keystoreId.startsWith(ETH_PREFIX)
+        ? NetworkType.Ethereum
+        : NetworkType.Constellation
+    );
   };
 
   const subscribeAccount = async (index: number, label?: string) => {
@@ -338,38 +369,53 @@ const AccountController = (actions: {
     return false;
   };
 
-  const importPrivKeyAccount = async (privKey: string, label: string) => {
+  const importPrivKeyAccount = async (
+    privKey: string,
+    label: string,
+    networkType: NetworkType
+  ) => {
     if (!label) return null;
 
-    const keystore = await actions.importPrivKey(privKey);
+    const keystore = await actions.importPrivKey(privKey, networkType);
     if (!keystore) return null;
 
     const { accounts }: IWalletState = store.getState().wallet;
-    const accountInfo = await getAccountByPrivateKey(privKey);
+    const accountInfo = await getAccountByPrivateKey(privKey, networkType);
+
+    const activeAssetId =
+      networkType === NetworkType.Ethereum
+        ? AssetType.Ethereum
+        : AssetType.Constellation;
+
+    const id = `${networkType === NetworkType.Ethereum ? ETH_PREFIX : ''}${
+      keystore.id
+    }`;
 
     // check if the same account exists
     const isExisting =
       Object.values(accounts).filter(
         (acc) =>
-          acc.assets[AssetType.Constellation].address ===
-          accountInfo.assets[AssetType.Constellation].address
+          acc.assets[activeAssetId] &&
+          acc.assets[activeAssetId].address ===
+            accountInfo.assets[activeAssetId].address
       ).length > 0;
+
     if (isExisting) {
-      store.dispatch(removeKeystoreInfo(keystore.id));
+      store.dispatch(removeKeystoreInfo(id));
       return null;
     }
 
     privateKey = privKey;
     account = {
-      id: keystore.id,
+      id: id,
       label: label,
       ...accountInfo,
-      activeAssetId: AssetType.Constellation,
+      activeAssetId,
       type: AccountType.PrivKey,
     };
 
     store.dispatch(createAccount(account));
-    return account.assets[AssetType.Constellation].address;
+    return account.assets[activeAssetId].address;
   };
 
   const getPrimaryAccount = (pwd: string) => {

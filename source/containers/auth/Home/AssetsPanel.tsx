@@ -9,11 +9,12 @@ import IconButton from '@material-ui/core/IconButton';
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { RootState } from 'state/store';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
 import IAssetListState from 'state/assets/types';
 import { useController } from 'hooks/index';
 
 import styles from './Home.scss';
+import { ETH_PREFIX } from 'constants/index';
 
 const AssetsPanel: FC = () => {
   const history = useHistory();
@@ -86,9 +87,12 @@ const AssetsPanel: FC = () => {
       onScroll={handleScroll}
     >
       <div className={styles.heading}>
-        <IconButton onClick={handleAddAsset} className={styles.addAssets}>
-          <AddCircle />
-        </IconButton>
+        {(account.type === AccountType.Seed ||
+          account.id.startsWith(ETH_PREFIX)) && (
+          <IconButton onClick={handleAddAsset} className={styles.addAssets}>
+            <AddCircle />
+          </IconButton>
+        )}
         Your Assets
         {!!isShowed && (
           <IconButton className={styles.goTop} onClick={handleGoTop}>

@@ -9,10 +9,11 @@ import TextInput from 'components/TextInput';
 import Header from 'containers/common/Header';
 import { useController } from 'hooks/index';
 import { RootState } from 'state/store';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import SearchIcon from 'assets/images/svg/search.svg';
 import styles from './Asset.scss';
+import { ETH_PREFIX } from 'constants/index';
 
 const AddAsset = () => {
   const controller = useController();
@@ -55,7 +56,10 @@ const AddAsset = () => {
             asset.network === activeNetwork[AssetType.Ethereum]) &&
           !account.assets[asset.id] &&
           (asset.name.toLowerCase().includes(keyword.toLowerCase()) ||
-            (asset?.address || '').includes(keyword))
+            (asset?.address || '').includes(keyword)) &&
+          (account.type === AccountType.Seed ||
+            (account.id.startsWith(ETH_PREFIX) &&
+              asset.id !== AssetType.Constellation))
       )
     );
   }, [keyword, assets]);

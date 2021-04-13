@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
@@ -13,8 +13,13 @@ import { useController, useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
+import { NetworkType } from 'state/wallet/types';
 
-const ImportAccountView = () => {
+interface IImportAccountView {
+  network: NetworkType;
+}
+
+const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
   const alert = useAlert();
   const controller = useController();
   const showView = useSettingsView();
@@ -33,7 +38,7 @@ const ImportAccountView = () => {
 
   const handleImportPrivKey = async (privKey: string, label: string) => {
     controller.wallet.account
-      .importPrivKeyAccount(privKey, label)
+      .importPrivKeyAccount(privKey, label, network)
       .then((addr) => {
         setLoading(false);
         if (addr) {
