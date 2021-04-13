@@ -104,13 +104,15 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const isDisabled = useMemo(() => {
     const { balance } = account.assets[account.activeAssetId];
+    const txFee =
+      account.activeAssetId === AssetType.Constellation ? Number(fee) : gasFee;
     return (
       !isValidAddress ||
       !amount ||
       !fee ||
       !address ||
       Number(amount) <= 0 ||
-      Number(amount) + gasFee > balance
+      Number(amount) + txFee > balance
     );
   }, [amount, address, gasFee]);
 
