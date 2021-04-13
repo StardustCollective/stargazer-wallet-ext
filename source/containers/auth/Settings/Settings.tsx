@@ -1,39 +1,27 @@
-import React, {
-  FC,
-  useState,
-  useEffect,
-  KeyboardEvent,
-  ChangeEvent,
-} from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import Portal from '@reach/portal';
-import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 import { useLocation, useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import CloseIcon from '@material-ui/icons/Close';
-import EditIcon from '@material-ui/icons/Create';
-import CheckIcon from '@material-ui/icons/Check';
+import AddIcon from '@material-ui/icons/AddCircleRounded';
 
-import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
 import * as Views from './views';
 import * as routes from './views/routes';
 
-import TextInput from 'components/TextInput';
-import { useController } from 'hooks/index';
+import { useSettingsView } from 'hooks/index';
 import styles from './Settings.scss';
 
 interface ISettings {
   open: boolean;
-  onClose?: () => void;
+  onClose: () => void;
 }
 
 const Settings: FC<ISettings> = ({ open, onClose }) => {
   const location = useLocation();
   const history = useHistory();
-  const controller = useController();
+  const showView = useSettingsView();
   const transitions = useTransition(location, (locat) => locat.hash, {
     initial: { opacity: 1 },
     from: { opacity: 0 },
@@ -42,40 +30,20 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     config: { duration: 300 },
   });
 
-  const { accounts }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
   const [showedId, setShowedId] = useState<string>('0');
   const [selectedContact, setSelectedContact] = useState<string>('');
-  const [editable, setEditable] = useState(false);
-  const [showedLabel, setShowedLabel] = useState('');
-
-  useEffect(() => {
-    if (location.hash !== routes.ACCOUNT_VIEW && editable) {
-      setEditable(false);
-    }
-  }, [location.hash]);
 
   const renderTitle = (view: string) => {
     switch (view) {
-      case routes.ACCOUNT_VIEW:
-        return editable ? (
-          <TextInput
-            value={showedLabel}
-            variant={styles.accLabel}
-            onChange={(
-              ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-            ) => setShowedLabel(ev.target.value)}
-            onKeyDown={(ev: KeyboardEvent<HTMLInputElement>) => {
-              if (ev.key === 'Enter') {
-                setShowedLabel(ev.currentTarget.value);
-                handleChangeLabel();
-              }
-            }}
-          />
-        ) : (
-          accounts[showedId].label
-        );
+      case routes.WALLETS_VIEW:
+      case routes.ADD_WALLET_VIEW:
+        return 'Wallets';
+      case routes.IMPORT_WALLET_VIEW:
+        return 'Import';
+      case routes.NETWORKS_VIEW:
+        return 'Networks';
+      case routes.MANAGE_WALLET_VIEW:
+        return 'Manage';
       case routes.GENERAL_VIEW:
         return 'General Settings';
       case routes.PHRASE_VIEW:
@@ -107,8 +75,16 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
 
   const renderView = (view: string) => {
     switch (view) {
-      case routes.ACCOUNT_VIEW:
-        return <Views.AccountView />;
+      case routes.WALLETS_VIEW:
+        return <Views.WalletsView onChange={(id) => setShowedId(id)} />;
+      case routes.ADD_WALLET_VIEW:
+        return <Views.AddWalletView />;
+      case routes.IMPORT_WALLET_VIEW:
+        return <Views.ImportWalletView />;
+      case routes.NETWORKS_VIEW:
+        return <Views.NetworksView />;
+      case routes.MANAGE_WALLET_VIEW:
+        return <Views.ManageWalletView id={showedId} />;
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
@@ -140,21 +116,16 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.IMPORT_ACCOUNT_VIEW:
         return <Views.ImportAccountView />;
       default:
-        return <Views.MainView onChange={(id: string) => setShowedId(id)} />;
+        return <Views.MainView />;
     }
   };
 
   const handleBackNav = () => {
-    history.goBack();
-  };
-
-  const handleChangeLabel = () => {
-    if (!editable) {
-      setShowedLabel(accounts[showedId].label);
+    if (location.hash) {
+      history.goBack();
     } else {
-      controller.wallet.account.updateAccountLabel(showedId, showedLabel);
+      onClose();
     }
-    setEditable(!editable);
   };
 
   return (
@@ -162,38 +133,20 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       <div className={clsx(styles.mask, { [styles.open]: open })}>
         <div className={styles.modal}>
           <section className={styles.heading}>
-            <IconButton
-              className={styles.navBtn}
-              onClick={handleBackNav}
-              disabled={!location.hash}
-            >
-              {location.hash && <ArrowBackIcon className={styles.icon} />}
+            <IconButton className={styles.navBtn} onClick={handleBackNav}>
+              <ArrowBackIcon className={styles.icon} />
             </IconButton>
-            <span
-              className={clsx(styles.title, {
-                [styles.account]: location.hash !== routes.ACCOUNT_VIEW,
-              })}
-            >
+            <span className={clsx(styles.title)}>
               {renderTitle(location.hash)}
             </span>
-            {location.hash === routes.ACCOUNT_VIEW && (
+            {location.hash === routes.WALLETS_VIEW && (
               <IconButton
-                className={styles.editBtn}
-                onClick={handleChangeLabel}
+                className={clsx(styles.navBtn, styles.addBtn)}
+                onClick={() => showView(routes.ADD_WALLET_VIEW)}
               >
-                {editable ? (
-                  <CheckIcon className={styles.icon} />
-                ) : (
-                  <EditIcon className={styles.icon} />
-                )}
+                <AddIcon className={styles.icon} />
               </IconButton>
             )}
-            <IconButton
-              className={clsx(styles.navBtn, styles.closeBtn)}
-              onClick={onClose}
-            >
-              <CloseIcon className={styles.icon} />
-            </IconButton>
           </section>
           {transitions.map(({ item, props, key }) => (
             <animated.section

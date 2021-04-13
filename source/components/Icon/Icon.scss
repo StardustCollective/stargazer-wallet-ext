@@ -1,10 +1,10 @@
 @import '~assets/styles/variables';
 
 .icon {
-  width: 24px;
-  height: 24px;
-  background: $purple;
-  color: $white;
+  width: 36px;
+  height: 36px;
+  background: $gray-light;
+  color: $purple;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -15,6 +15,6 @@
   }
 
   svg {
-    font-size: 16px;
+    font-size: 22px;
   }
 }

@@ -13,7 +13,14 @@
   "homepage_url": "https://constellationnetwork.io/",
   "short_name": "stargazer-wallet-ext",
 
-  "permissions": ["http://*/*", "https://*/*"],
+  "permissions": [
+    "https://api.coingecko.com/api/v3/",
+    "https://block-explorer.constellationnetwork.io/",
+    "http://lb.constellationnetwork.io:9000/",
+    "https://api-be.exchanges.constellationnetwork.io/",
+    "http://lb.exchanges.constellationnetwork.io:9000/",
+    "https://*.infura.io/"
+  ],
 
   "content_security_policy": "script-src 'self'; object-src 'self'",
 

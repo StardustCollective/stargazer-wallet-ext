@@ -1,0 +1,22 @@
+@import '~assets/styles/variables';
+
+.wrapper {
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: $gray-dark;
+  }
+
+  &:hover {
+    background: initial;
+    cursor: initial;
+  }
+}

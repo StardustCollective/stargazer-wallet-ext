@@ -6,7 +6,6 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Header from 'containers/common/Header';
-import FullSelect from 'components/FullSelect';
 import { useController } from 'hooks/index';
 import { useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
@@ -36,20 +35,7 @@ const Home = () => {
           <Header showLogo />
           {
             <>
-              <section className={styles.account}>
-                {Object.keys(accounts).length > 1 ? (
-                  <FullSelect
-                    value={String(activeAccountId)}
-                    options={accounts}
-                    onChange={async (val: string) => {
-                      await controller.wallet.switchWallet(val);
-                      controller.wallet.account.watchMemPool();
-                    }}
-                  />
-                ) : (
-                  account.label
-                )}
-              </section>
+              <section className={styles.account}>{account.label}</section>
               <section className={styles.center}>
                 <h3>{totalBalance[0]}</h3>
                 <small>{`≈ ₿${totalBalance[1]}`}</small>

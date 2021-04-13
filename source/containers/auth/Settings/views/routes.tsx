@@ -1,4 +1,9 @@
 export const MAIN_VIEW = '#';
+export const WALLETS_VIEW = '#wallets';
+export const ADD_WALLET_VIEW = '#add_wallet';
+export const IMPORT_WALLET_VIEW = '#import_wallet';
+export const NETWORKS_VIEW = '#networks';
+export const MANAGE_WALLET_VIEW = '#manage_wallet';
 export const ACCOUNT_VIEW = '#account';
 export const GENERAL_VIEW = '#general';
 export const PHRASE_VIEW = '#phrase';

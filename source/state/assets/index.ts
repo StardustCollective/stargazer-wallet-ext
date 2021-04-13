@@ -4,6 +4,7 @@ import ERC20_TOKEN_LIST from './tokens';
 
 import IAssetListState, { IAssetInfoState } from './types';
 import ConstellationLogo from 'assets/images/svg/constellation.svg';
+import EthereumLogo from 'assets/images/svg/ethereum.svg';
 
 const initialState: IAssetListState = {
   [AssetType.Ethereum]: {
@@ -13,8 +14,7 @@ const initialState: IAssetListState = {
     symbol: 'ETH',
     native: true,
     network: 'both',
-    logo:
-      'https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880',
+    logo: EthereumLogo,
     priceId: 'ethereum',
     decimals: 18,
   },

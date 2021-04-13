@@ -58,26 +58,32 @@ const ImportAccountView = () => {
       fileReader.readAsText(jsonFile, 'UTF-8');
       fileReader.onload = (ev: ProgressEvent<FileReader>) => {
         if (ev.target) {
-          const json = JSON.parse(ev.target.result as string);
-          if (!dag4.keyStore.isValidJsonPrivateKey(json)) {
+          try {
+            const json = JSON.parse(ev.target.result as string);
+            if (!dag4.keyStore.isValidJsonPrivateKey(json)) {
+              alert.removeAll();
+              alert.error('Error: Invalid private key json file');
+              return;
+            }
+
+            setLoading(true);
+            dag4.keyStore
+              .decryptPrivateKey(json, data.password)
+              .then((privKey: string) => {
+                handleImportPrivKey(privKey, data.label);
+              })
+              .catch(() => {
+                alert.removeAll();
+                alert.error(
+                  'Error: Invalid password to decrypt private key json file'
+                );
+                setLoading(false);
+              });
+          } catch (error) {
             alert.removeAll();
             alert.error('Error: Invalid private key json file');
-            return;
+            setLoading(false);
           }
-
-          setLoading(true);
-          dag4.keyStore
-            .decryptPrivateKey(json, data.password)
-            .then((privKey: string) => {
-              handleImportPrivKey(privKey, data.label);
-            })
-            .catch(() => {
-              alert.removeAll();
-              alert.error(
-                'Error: Invalid password to decrypt private key json file'
-              );
-              setLoading(false);
-            });
         }
       };
     } else {
@@ -108,11 +114,6 @@ const ImportAccountView = () => {
         </div>
       ) : (
         <>
-          <section className={styles.warning}>
-            <small>Warning:</small> Imported accounts will not be associated
-            with your Stargazer account seedphrase. Please keep your private
-            keys stored in a safe place.
-          </section>
           <section className={styles.content}>
             <div className={styles.select}>
               Select Type:

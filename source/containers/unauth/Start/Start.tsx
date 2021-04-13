@@ -8,7 +8,7 @@ import styles from './Start.scss';
 const Start = () => {
   return (
     <div className={styles.home}>
-      <h1 className="heading-1 full-width t-quicksand t-white">
+      <h1 className="heading-1 full-width t-quicksand t-white tw-medium">
         Welcome to
         <br />
         Stargazer Wallet
@@ -23,7 +23,7 @@ const Start = () => {
         Get started
       </Button>
       <Link color="secondary" to="/import">
-        Import using wallet seed phrase
+        Import from seed phrase
       </Link>
     </div>
   );
