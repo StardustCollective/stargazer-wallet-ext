@@ -14,6 +14,8 @@ import { RootState } from 'state/store';
 import { CONTACTS_VIEW } from '../routes';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import styles from './index.scss';
+import IWalletState, { AccountType } from 'state/wallet/types';
+import { ETH_PREFIX } from 'constants/index';
 interface IModifyContactView {
   type: 'add' | 'edit';
   selected?: string;
@@ -24,6 +26,10 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   const showView = useSettingsView();
   const history = useHistory();
   const alert = useAlert();
+  const { accounts, activeAccountId }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+  const account = accounts[activeAccountId];
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
@@ -38,8 +44,12 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
 
   const isValidAddress = useMemo(() => {
     return (
-      controller.wallet.account.isValidDAGAddress(address) ||
-      controller.wallet.account.isValidERC20Address(address)
+      ((account.type === AccountType.Seed ||
+        !account.id.startsWith(ETH_PREFIX)) &&
+        controller.wallet.account.isValidDAGAddress(address)) ||
+      ((account.type === AccountType.Seed ||
+        account.id.startsWith(ETH_PREFIX)) &&
+        controller.wallet.account.isValidERC20Address(address))
     );
   }, [address]);
 

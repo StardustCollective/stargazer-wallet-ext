@@ -27,6 +27,7 @@ import { formatNumber } from '../helpers';
 
 import styles from './Send.scss';
 import IAssetListState from 'state/assets/types';
+import Icon from 'components/Icon';
 interface IWalletSend {
   initAddress?: string;
 }
@@ -203,7 +204,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
         onChange={handleSelectContact}
       />
       <form onSubmit={handleSubmit(onSubmit)} className={styles.bodywrapper}>
-        <section className={styles.subheading}>{`Send ${asset.name}`}</section>
+        <section className={styles.subheading}>
+          {asset.logo && <Icon Component={asset.logo} />}
+          {`Send ${asset.symbol}`}
+        </section>
         <section className={styles.balance}>
           <div>
             Balance:{' '}
