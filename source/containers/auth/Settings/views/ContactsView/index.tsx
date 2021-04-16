@@ -12,7 +12,8 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { ADD_CONTACT_VIEW, CONTACT_VIEW } from '../routes';
 import styles from './index.scss';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
+import { ETH_PREFIX } from 'constants/index';
 
 interface IContactsView {
   onSelect: (id: string) => void;
@@ -22,9 +23,10 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
-  const { activeAccountId }: IWalletState = useSelector(
+  const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
+  const account = accounts[activeAccountId];
   const controller = useController();
   const showView = useSettingsView();
   const history = useHistory();
@@ -61,26 +63,35 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
         </Button>
       </div>
       <ul className={styles.list}>
-        {Object.values(contacts).map((contact: IContactState) => (
-          <li onClick={() => handleSelect(contact.id)} key={contact.id}>
-            <div className={styles.contact}>
-              <span className={styles.info}>
-                {/* <Icon Component={UserIcon} /> */}
-                <Avatar address={contact.address} size={20} />
-                <div>
-                  {contact.name}
-                  <small>{contact.address}</small>
-                </div>
-              </span>
-              <IconButton
-                className={styles.send}
-                onClick={(ev) => handleSelectedContact(ev, contact.address)}
-              >
-                <SendIcon />
-              </IconButton>
-            </div>
-          </li>
-        ))}
+        {Object.values(contacts)
+          .filter(
+            (contact: IContactState) =>
+              account.type === AccountType.Seed ||
+              (account.id.startsWith(ETH_PREFIX) &&
+                contact.address.toLowerCase().startsWith('0x')) ||
+              (!account.id.startsWith(ETH_PREFIX) &&
+                !contact.address.toLowerCase().startsWith('0x'))
+          )
+          .map((contact: IContactState) => (
+            <li onClick={() => handleSelect(contact.id)} key={contact.id}>
+              <div className={styles.contact}>
+                <span className={styles.info}>
+                  {/* <Icon Component={UserIcon} /> */}
+                  <Avatar address={contact.address} size={20} />
+                  <div>
+                    {contact.name}
+                    <small>{contact.address}</small>
+                  </div>
+                </span>
+                <IconButton
+                  className={styles.send}
+                  onClick={(ev) => handleSelectedContact(ev, contact.address)}
+                >
+                  <SendIcon />
+                </IconButton>
+              </div>
+            </li>
+          ))}
       </ul>
     </div>
   );

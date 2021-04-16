@@ -67,7 +67,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.NEW_ACCOUNT_VIEW:
         return 'Create account';
       case routes.REMOVE_ACCOUNT_VIEW:
-        return 'Remove account';
+        return 'Delete wallet';
       case routes.PRIV_KEY_VIEW:
         return 'Export private key';
       case routes.ABOUT_VIEW:
@@ -164,7 +164,13 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
 
   const handleBackNav = () => {
     if (location.hash) {
-      history.goBack();
+      switch (location.hash) {
+        case routes.CONTACTS_VIEW:
+          showView(routes.MAIN_VIEW);
+          break;
+        default:
+          history.goBack();
+      }
     } else {
       onClose();
     }

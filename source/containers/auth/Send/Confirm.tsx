@@ -16,6 +16,7 @@ import IAssetListState from 'state/assets/types';
 import { ellipsis } from '../helpers';
 
 import styles from './Confirm.scss';
+import Icon from 'components/Icon';
 
 const SendConfirm = () => {
   const controller = useController();
@@ -29,6 +30,7 @@ const SendConfirm = () => {
     (state: RootState) => state.assets
   );
   const account = accounts[activeAccountId];
+  const asset = assets[account.activeAssetId];
   const assetType =
     account.activeAssetId === AssetType.Constellation
       ? AssetType.Constellation
@@ -72,7 +74,10 @@ const SendConfirm = () => {
   ) : (
     <div className={styles.wrapper}>
       <Header backLink="/send" />
-      <section className={styles.subheading}>Confirm</section>
+      <section className={styles.subheading}>
+        {asset.logo && <Icon Component={asset.logo} />}
+        Confirm
+      </section>
       <section className={styles.txAmount}>
         <div className={styles.iconWrapper}>
           <UpArrowIcon />
@@ -81,7 +86,7 @@ const SendConfirm = () => {
           (account.activeAssetId === AssetType.Ethereum
             ? Number(tempTx?.fee || 0)
             : 0)}{' '}
-        {assets[account.activeAssetId].symbol}
+        {asset.symbol}
         <small>
           (≈
           {getTotalAmount()})
