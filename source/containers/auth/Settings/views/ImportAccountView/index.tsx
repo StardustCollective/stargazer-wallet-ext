@@ -4,6 +4,7 @@ import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { dag4 } from '@stardust-collective/dag4';
+import CachedIcon from '@material-ui/icons/Cached';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
@@ -13,10 +14,16 @@ import { useController, useSettingsView } from 'hooks/index';
 
 import { MAIN_VIEW } from '../routes';
 import { NetworkType } from 'state/wallet/types';
+import LedgerIcon from 'assets/images/svg/ledger.svg';
 import styles from './index.scss';
 
 interface IImportAccountView {
   network: NetworkType;
+}
+
+interface HardwareWallet {
+  address: string;
+  balance: number;
 }
 
 const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
@@ -27,11 +34,14 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
   const [loading, setLoading] = useState(false);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
   const [accountName, setAccountName] = useState<string>();
+  const [hardwareStep, setHardwareStep] = useState(1);
+  const [loadingWalletList, setLoadingWalletList] = useState(false);
+  const [hardwareWalletList, setHardwareWalletList] = useState(false);
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       privKey: importType === 'priv' ? yup.string().required() : yup.string(),
-      password: importType === 'priv' ? yup.string() : yup.string().required(),
+      password: importType === 'json' ? yup.string().required() : yup.string(),
       label: yup.string().required(),
     }),
   });
@@ -53,12 +63,19 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
       });
   };
 
+  const loadHardwareList = () => {
+    // TODO: Load actual ledger wallet list
+    // setTimeout(() => {
+    //   setLoadingWalletList(false);
+    // }, 5000);
+  };
+
   const onSubmit = async (data: any) => {
-    setAccountName(undefined);
+    // setAccountName(undefined);
     if (importType === 'priv') {
       setLoading(true);
       handleImportPrivKey(data.privKey, data.label);
-    } else if (jsonFile) {
+    } else if (importType === 'json' && jsonFile) {
       const fileReader = new FileReader();
       fileReader.readAsText(jsonFile, 'UTF-8');
       fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -91,6 +108,11 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
           }
         }
       };
+    } else if (importType === 'hardware') {
+      // console.log('hardware wallet import');
+      setHardwareStep(2);
+      setLoadingWalletList(true);
+      loadHardwareList();
     } else {
       alert.removeAll();
       alert.error('Error: A private key json file is not chosen');
@@ -125,7 +147,11 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
               <div className={styles.inner}>
                 <Select
                   value={importType}
-                  options={[{ priv: 'Private key' }, { json: 'JSON file' }]}
+                  options={[
+                    { priv: 'Private key' },
+                    { json: 'JSON file' },
+                    { hardware: 'Hardware Wallet' },
+                  ]}
                   onChange={(ev) => setImportType(ev.target.value as string)}
                   fullWidth
                   disabled={loading}
@@ -144,7 +170,7 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
                   disabled={loading}
                 />
               </>
-            ) : (
+            ) : importType === 'json' ? (
               <>
                 <FileSelect
                   onChange={(val) => setJsonFile(val)}
@@ -160,14 +186,46 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
                   disabled={loading}
                 />
               </>
+            ) : (
+              <>
+                {hardwareStep === 1 && (
+                  <>
+                    <span>Please select your Hardware device:</span>
+                    <div className={styles.hardwareList}>
+                      <div className={styles.wallet}>
+                        <img src={LedgerIcon} alt="ledger_icon" />
+                      </div>
+                    </div>
+                  </>
+                )}
+                {hardwareStep === 2 && (
+                  <>
+                    <span>Please select an account:</span>
+                    <div className={styles.walletList}>
+                      {loadingWalletList ? (
+                        <>
+                          <CachedIcon />
+                          <span>Loading your Hardware Wallet</span>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  </>
+                )}
+              </>
             )}
-            <span>Please name your new account:</span>
-            <TextInput
-              fullWidth
-              inputRef={register}
-              name="label"
-              disabled={loading}
-            />
+            {hardwareStep === 1 && (
+              <>
+                <span>Please name your new account:</span>
+                <TextInput
+                  fullWidth
+                  inputRef={register}
+                  name="label"
+                  disabled={loading}
+                />
+              </>
+            )}
           </section>
           <section className={styles.actions}>
             <Button

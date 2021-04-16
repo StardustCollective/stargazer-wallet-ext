@@ -84,7 +84,7 @@
       margin-bottom: 24px;
 
       .inner {
-        width: 132px;
+        width: 156px;
         margin-left: 12px;
       }
 
@@ -101,12 +101,66 @@
       }
     }
 
+    // for hardware import step1
+    .hardwareList {
+      display: flex;
+      .wallet {
+        background-color: $white;
+        padding: 28px 16px;
+        border: 1px solid $gray-200;
+        box-sizing: border-box;
+        border-radius: 6px;
+      }
+    }
+    // for hardware import step2
+    .walletList {
+      display: flex;
+      position: relative;
+      height: 180px;
+      background: $white;
+      border-radius: 6px;
+      justify-content: center;
+      align-items: center;
+      svg {
+        color: $purple;
+        width: 24px;
+        -webkit-animation: spin 4s linear infinite;
+        -moz-animation: spin 4s linear infinite;
+        animation: spin 2s linear infinite;
+      }
+      span {
+        position: absolute;
+        top: 127px;
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 18px;
+      }
+    }
+
     & > span {
       margin: 18px 0px;
       font-size: 12px;
       font-weight: 500;
       color: $gray-dark;
       display: block;
+    }
+  }
+  @-moz-keyframes spin {
+    100% {
+      -moz-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
     }
   }
 
