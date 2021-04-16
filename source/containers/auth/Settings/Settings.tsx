@@ -164,7 +164,13 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
 
   const handleBackNav = () => {
     if (location.hash) {
-      history.goBack();
+      switch (location.hash) {
+        case routes.CONTACTS_VIEW:
+          showView(routes.MAIN_VIEW);
+          break;
+        default:
+          history.goBack();
+      }
     } else {
       onClose();
     }
