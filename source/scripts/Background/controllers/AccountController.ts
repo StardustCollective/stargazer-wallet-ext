@@ -603,6 +603,7 @@ const AccountController = (actions: {
       } else {
         if (!tempTx.ethConfig) return;
         const { gas, gasLimit, nonce } = tempTx.ethConfig;
+        console.log('gas gasLimit', gas, gasLimit);
         const { activeNetwork }: IWalletState = store.getState().wallet;
         const txOptions: any = {
           recipient: tempTx.toAddress,
