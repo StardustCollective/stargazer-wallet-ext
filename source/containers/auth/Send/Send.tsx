@@ -88,17 +88,17 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       alert.error('Error: Invalid recipient address');
       return;
     }
-    const ethConfig = controller.wallet.account.getTempTx()?.ethConfig;
     const txConfig: any = {
       fromAddress: account.assets[account.activeAssetId].address,
       toAddress: data.address,
       amount: data.amount,
       fee: data.fee || gasFee,
     };
-    if (!ethConfig) {
-      txConfig.ethConfig = await controller.wallet.account.getRecommendETHTxConfig();
+    if (account.activeAssetId !== AssetType.Constellation) {
+      txConfig.ethConfig = {
+        gas: currentGas,
+      };
     }
-
     controller.wallet.account.updateTempTx(txConfig);
     history.push('/send/confirm');
   };
@@ -159,14 +159,19 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     });
   };
 
-  const handleGetTxFee = () => {
+  const handleGetTxFee = async () => {
     handleGetDAGTxFee();
-    controller.wallet.account.getRecommendETHTxConfig().then(() => {
-      controller.wallet.account.getLatestGasPrices().then((vals) => {
-        setGasPrices(vals);
-        setCurrentGas(tempTx?.ethConfig?.gas || vals[1]);
-        estimateGasFee(vals[1]);
-      });
+    const txConfig = await controller.wallet.account.getTempTx();
+    if (txConfig) {
+      if (!txConfig?.ethConfig) {
+        txConfig.ethConfig = await controller.wallet.account.getRecommendETHTxConfig();
+      }
+      controller.wallet.account.updateTempTx(txConfig);
+    }
+    controller.wallet.account.getLatestGasPrices().then((vals) => {
+      setGasPrices(vals);
+      setCurrentGas(tempTx?.ethConfig?.gas || vals[1]);
+      estimateGasFee(vals[1]);
     });
   };
 
@@ -193,7 +198,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     );
   };
 
-  useEffect(handleGetTxFee, []);
+  useEffect(() => {
+    handleGetTxFee();
+  }, []);
 
   return (
     <div className={styles.wrapper}>
