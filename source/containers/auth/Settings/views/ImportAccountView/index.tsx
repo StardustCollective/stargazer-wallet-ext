@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { dag4 } from '@stardust-collective/dag4';
 import CachedIcon from '@material-ui/icons/Cached';
+import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Checkbox } from '@material-ui/core';
 
 import Button from 'components/Button';
@@ -37,7 +38,9 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
   const [accountName, setAccountName] = useState<string>();
   const [hardwareStep, setHardwareStep] = useState(1);
   const [loadingWalletList, setLoadingWalletList] = useState(false);
-  const [hardwareWalletList, setHardwareWalletList] = useState(false);
+  const [hardwareWalletList, setHardwareWalletList] = useState<
+    Array<HardwareWallet>
+  >([]);
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -68,6 +71,13 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
     // TODO: Load actual ledger wallet list
     setTimeout(() => {
       setLoadingWalletList(false);
+      setHardwareWalletList([
+        { address: '0xb2...a49D', balance: 0.02237 },
+        { address: '0xBb...0Bf9', balance: 0.0 },
+        { address: '0x83...Cba7', balance: 0.0 },
+        { address: '0x9F...B786', balance: 0.0 },
+        { address: '0xa3...3d03', balance: 0.0 },
+      ]);
     }, 2000);
   };
 
@@ -120,6 +130,21 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
     }
   };
 
+  const renderWallet = (hwItem: HardwareWallet, index: number) => {
+    return (
+      <tr key={`wallet-${index}`}>
+        <td>
+          <Checkbox color="primary" />
+        </td>
+        <td>{index + 1}</td>
+        <td>{hwItem.address}</td>
+        <td>{hwItem.balance.toFixed(5)} ETH</td>
+        <td>
+          <CallMadeIcon />
+        </td>
+      </tr>
+    );
+  };
   return (
     <form className={styles.import} onSubmit={handleSubmit(onSubmit)}>
       {accountName ? (
@@ -215,7 +240,14 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
                       ) : (
                         <>
                           <div className={styles.wallet}>
-                            <Checkbox color="primary" />
+                            <table>
+                              <tbody>
+                                {hardwareWalletList.map(
+                                  (hwItem: HardwareWallet, index: number) =>
+                                    renderWallet(hwItem, index)
+                                )}
+                              </tbody>
+                            </table>
                           </div>
                         </>
                       )}

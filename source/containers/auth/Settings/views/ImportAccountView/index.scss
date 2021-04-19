@@ -141,8 +141,22 @@
       }
 
       .wallet {
+        width: 100%;
+        padding: 2px 12px 0px 11px;
+        table {
+          width: 100%;
+          tr {
+            height: 33px;
+          }
+        }
+        :global(.MuiCheckbox-colorPrimary) {
+          padding: 0 !important;
+        }
         :global(.MuiCheckbox-colorPrimary.Mui-checked) {
           color: $purple !important;
+        }
+        svg {
+          width: 16px !important;
         }
       }
     }
