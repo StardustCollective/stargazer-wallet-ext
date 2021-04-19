@@ -104,7 +104,7 @@
     // for hardware import step1
     .hardwareList {
       display: flex;
-      .wallet {
+      .walletModel {
         background-color: $white;
         padding: 28px 16px;
         border: 1px solid $gray-200;
@@ -119,23 +119,49 @@
       height: 180px;
       background: $white;
       border-radius: 6px;
-      justify-content: center;
-      align-items: center;
-      svg {
-        color: $purple;
-        width: 24px;
-        -webkit-animation: spin 4s linear infinite;
-        -moz-animation: spin 4s linear infinite;
-        animation: spin 2s linear infinite;
+      &.loading {
+        justify-content: center;
+        align-items: center;
+        svg {
+          color: $purple;
+          width: 24px;
+          -webkit-animation: spin 4s linear infinite;
+          -moz-animation: spin 4s linear infinite;
+          animation: spin 2s linear infinite;
+        }
+        span {
+          position: absolute;
+          top: 127px;
+          font-family: Inter;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 12px;
+          line-height: 18px;
+        }
       }
+
+      .wallet {
+        :global(.MuiCheckbox-colorPrimary.Mui-checked) {
+          color: $purple !important;
+        }
+      }
+    }
+
+    .pagination {
+      padding: 12px;
+      display: flex;
+      justify-content: flex-end;
       span {
-        position: absolute;
-        top: 127px;
         font-family: Inter;
         font-style: normal;
         font-weight: 500;
-        font-size: 12px;
-        line-height: 18px;
+        font-size: 10px;
+        line-height: 24px;
+
+        color: $purple;
+      }
+      .previous {
+        margin-right: 12px;
       }
     }
 

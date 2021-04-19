@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { dag4 } from '@stardust-collective/dag4';
 import CachedIcon from '@material-ui/icons/Cached';
+import { Checkbox } from '@material-ui/core';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
@@ -65,9 +66,9 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
 
   const loadHardwareList = () => {
     // TODO: Load actual ledger wallet list
-    // setTimeout(() => {
-    //   setLoadingWalletList(false);
-    // }, 5000);
+    setTimeout(() => {
+      setLoadingWalletList(false);
+    }, 2000);
   };
 
   const onSubmit = async (data: any) => {
@@ -192,7 +193,7 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
                   <>
                     <span>Please select your Hardware device:</span>
                     <div className={styles.hardwareList}>
-                      <div className={styles.wallet}>
+                      <div className={styles.walletModel}>
                         <img src={LedgerIcon} alt="ledger_icon" />
                       </div>
                     </div>
@@ -201,16 +202,30 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
                 {hardwareStep === 2 && (
                   <>
                     <span>Please select an account:</span>
-                    <div className={styles.walletList}>
+                    <div
+                      className={clsx(styles.walletList, {
+                        [styles.loading]: loadingWalletList,
+                      })}
+                    >
                       {loadingWalletList ? (
                         <>
                           <CachedIcon />
                           <span>Loading your Hardware Wallet</span>
                         </>
                       ) : (
-                        <></>
+                        <>
+                          <div className={styles.wallet}>
+                            <Checkbox color="primary" />
+                          </div>
+                        </>
                       )}
                     </div>
+                    {!loadingWalletList && (
+                      <div className={styles.pagination}>
+                        <span className={styles.previous}>Previous</span>
+                        <span>Next</span>
+                      </div>
+                    )}
                   </>
                 )}
               </>
