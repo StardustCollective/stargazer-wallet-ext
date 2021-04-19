@@ -147,6 +147,13 @@
           width: 100%;
           tr {
             height: 33px;
+            td {
+              .expand {
+                svg {
+                  color: $gray-100;
+                }
+              }
+            }
           }
         }
         :global(.MuiCheckbox-colorPrimary) {

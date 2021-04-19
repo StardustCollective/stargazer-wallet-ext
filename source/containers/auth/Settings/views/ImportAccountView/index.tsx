@@ -139,7 +139,7 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
         <td>{index + 1}</td>
         <td>{hwItem.address}</td>
         <td>{hwItem.balance.toFixed(5)} ETH</td>
-        <td>
+        <td className={styles.expand}>
           <CallMadeIcon />
         </td>
       </tr>
