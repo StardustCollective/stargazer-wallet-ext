@@ -130,7 +130,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.GENERAL_VIEW:
         return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
-        return <Views.PhraseView />;
+        return <Views.PhraseView id={showedId} />;
       case routes.DELETE_WALLET_VIEW:
         return <Views.DeleteWalletView />;
       case routes.NEW_ACCOUNT_VIEW:

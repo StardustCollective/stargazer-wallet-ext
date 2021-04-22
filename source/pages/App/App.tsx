@@ -11,7 +11,7 @@ import IWalletState from 'state/wallet/types';
 import 'assets/styles/global.scss';
 
 const App: FC = () => {
-  const { keystores, seedKeystoreId }: IWalletState = useSelector(
+  const { keystores }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
 
@@ -19,7 +19,7 @@ const App: FC = () => {
     <section id="app" style={{ minHeight: '300px' }}>
       <Container>
         <Router>
-          {keystores && seedKeystoreId && keystores[seedKeystoreId] ? (
+          {keystores && Object.values(keystores).length > 0 ? (
             <AuthRouter />
           ) : (
             <UnAuthRouter />
