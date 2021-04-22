@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import SeedIcon from '@material-ui/icons/Description';
+import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
 import TextInput from 'components/TextInput';
+import Icon from 'components/Icon';
 import Button from 'components/Button';
 import { useController, useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
-import { MAIN_VIEW } from '../routes';
+import { MAIN_VIEW, PHRASE_VIEW } from '../routes';
 
-const NewAccountView = () => {
+interface INewAccountView {
+  onChange: (id: string) => void;
+}
+
+const NewAccountView: FC<INewAccountView> = ({ onChange }) => {
   const [accountName, setAccountName] = useState<string>();
   const [loading, setLoading] = useState(false);
   const controller = useController();
@@ -24,7 +31,8 @@ const NewAccountView = () => {
   const onSubmit = async (data: any) => {
     setLoading(true);
     controller.wallet.generatedPhrase(true);
-    await controller.wallet.createWallet(false, data.name);
+    const id = await controller.wallet.createWallet(false, data.name);
+    onChange(id);
     setLoading(false);
     setAccountName(data.name);
   };
@@ -34,6 +42,19 @@ const NewAccountView = () => {
       {accountName ? (
         <>
           <span>{`Your new account ${accountName} has been created`}</span>
+          <label>Backup Options</label>
+          <section
+            className={styles.menu}
+            onClick={() => showView(PHRASE_VIEW)}
+          >
+            <Icon Component={SeedIcon} />
+            <span>Show Recovery Phrase</span>
+            <ArrowIcon />
+          </section>
+          <span>
+            If you lose access to this wallet, your funds will be lost, unless
+            you back up!
+          </span>
           <div className={clsx(styles.actions, styles.centered)}>
             <Button
               type="button"

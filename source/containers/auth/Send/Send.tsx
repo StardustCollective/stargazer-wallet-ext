@@ -19,6 +19,7 @@ import Contacts from '../Contacts';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
+import ErrorIcon from 'assets/images/svg/error.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import IWalletState, { AssetType } from 'state/wallet/types';
@@ -81,6 +82,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const statusIconClass = clsx(styles.statusIcon, {
     [styles.hide]: !isValidAddress,
   });
+  const errorIconClass = clsx(styles.statusIcon, {
+    [styles.hide]: isValidAddress,
+  });
 
   const onSubmit = async (data: any) => {
     if (!isValidAddress) {
@@ -106,7 +110,12 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const isDisabled = useMemo(() => {
     const { balance } = account.assets[account.activeAssetId];
     const txFee =
-      account.activeAssetId === AssetType.Constellation ? Number(fee) : gasFee;
+      account.activeAssetId === AssetType.Constellation
+        ? Number(fee)
+        : account.activeAssetId === AssetType.Ethereum
+        ? gasFee
+        : 0;
+    console.log(Number(amount) + txFee > balance);
     return (
       !isValidAddress ||
       !amount ||
@@ -192,7 +201,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleSetMax = () => {
     const txFee =
-      account.activeAssetId === AssetType.Constellation ? Number(fee) : gasFee;
+      account.activeAssetId === AssetType.Constellation
+        ? Number(fee)
+        : account.activeAssetId === AssetType.Ethereum
+        ? gasFee
+        : 0;
     setAmount(
       String(Math.max(account.assets[account.activeAssetId].balance - txFee, 0))
     );
@@ -232,6 +245,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 src={`/${VerifiedIcon}`}
                 alt="checked"
                 className={statusIconClass}
+              />
+              <img
+                src={`/${ErrorIcon}`}
+                alt="error"
+                className={errorIconClass}
               />
               <TextInput
                 placeholder={`Enter a valid ${asset.symbol} address`}

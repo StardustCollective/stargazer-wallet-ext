@@ -65,7 +65,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.DELETE_WALLET_VIEW:
         return 'Delete wallet';
       case routes.NEW_ACCOUNT_VIEW:
-        return 'Create account';
+        return 'Create Multi Chain Wallet';
       case routes.REMOVE_ACCOUNT_VIEW:
         return 'Delete wallet';
       case routes.PRIV_KEY_VIEW:
@@ -134,7 +134,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.DELETE_WALLET_VIEW:
         return <Views.DeleteWalletView />;
       case routes.NEW_ACCOUNT_VIEW:
-        return <Views.NewAccountView />;
+        return <Views.NewAccountView onChange={(id) => setShowedId(id)} />;
       case routes.REMOVE_ACCOUNT_VIEW:
         return <Views.RemoveAccountView id={showedId} />;
       case routes.PRIV_KEY_VIEW:
@@ -166,6 +166,15 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
     if (location.hash) {
       switch (location.hash) {
         case routes.CONTACTS_VIEW:
+          showView(routes.MAIN_VIEW);
+          break;
+        case routes.PHRASE_VIEW:
+          showView(routes.MANAGE_WALLET_VIEW);
+          break;
+        case routes.MANAGE_WALLET_VIEW:
+          showView(routes.WALLETS_VIEW);
+          break;
+        case routes.WALLETS_VIEW:
           showView(routes.MAIN_VIEW);
           break;
         default:
