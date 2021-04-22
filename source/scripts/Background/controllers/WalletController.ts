@@ -21,7 +21,7 @@ import { browser } from 'webextension-polyfill-ts';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;
-  createWallet: (isUpdated?: boolean, primary?: string) => void;
+  createWallet: (isUpdated?: boolean, primary?: string) => Promise<string>;
   deleteWallet: (pwd: string) => void;
   switchWallet: (id: string) => Promise<void>;
   switchNetwork: (assetId: string, networkId: string) => void;
@@ -155,6 +155,7 @@ const WalletController = (): IWalletController => {
     if (isUpdated) {
       account.getLatestUpdate();
     }
+    return v3Keystore.id;
   };
 
   const deleteWallet = (pwd: string) => {

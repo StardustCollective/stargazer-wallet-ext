@@ -22,15 +22,6 @@ const AssetHeader: FC<IAssetHeader> = ({ asset, address, addressUrl }) => {
   return (
     <div className={styles.fullselect}>
       <span className={styles.selected}>
-        <IconButton
-          className={styles.linkIcon}
-          onClick={(e) => {
-            e.stopPropagation();
-            window.open(addressUrl, '_blank');
-          }}
-        >
-          <LinkIcon />
-        </IconButton>
         <span
           className={styles.main}
           onClick={(e) => {
@@ -54,6 +45,15 @@ const AssetHeader: FC<IAssetHeader> = ({ asset, address, addressUrl }) => {
             </div>
           </Tooltip>
         </span>
+        <IconButton
+          className={styles.linkIcon}
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(addressUrl, '_blank');
+          }}
+        >
+          <LinkIcon />
+        </IconButton>
       </span>
     </div>
   );

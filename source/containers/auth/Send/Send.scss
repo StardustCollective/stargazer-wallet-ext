@@ -135,12 +135,12 @@
         .address {
           padding-right: 94px;
 
+          input {
+            padding-left: 15px;
+          }
+
           &.verified {
             color: $purple;
-
-            input {
-              padding-left: 15px;
-            }
           }
         }
 
