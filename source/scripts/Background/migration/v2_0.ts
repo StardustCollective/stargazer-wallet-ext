@@ -3,11 +3,25 @@ import IAssetListState from 'state/assets/types';
 import ERC20_TOKENS_LIST from 'state/assets/tokens';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import { AssetType, IAccountState, IKeyStoreState } from 'state/wallet/types';
 import { DAG_NETWORK, ETH_NETWORK, LATTICE_ASSET } from 'constants/index';
 
+interface IV2WalletState {
+  keystores: IKeyStoreState;
+  status: number;
+  version: string;
+  accounts: {
+    [accountId: string]: IAccountState;
+  };
+  activeAccountId: string;
+  seedKeystoreId: string;
+  activeNetwork: {
+    [assetId: string]: string;
+  };
+}
+
 interface INewState {
-  wallet: IWalletState;
+  wallet: IV2WalletState;
   price: IPriceState;
   contacts: IContactBookState;
   assets: IAssetListState;

@@ -23,11 +23,10 @@ const NewAccountView = () => {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    const res = await controller.wallet.account.addNewAccount(data.name);
+    controller.wallet.generatedPhrase(true);
+    await controller.wallet.createWallet(false, data.name);
     setLoading(false);
-    if (res) {
-      setAccountName(data.name);
-    }
+    setAccountName(data.name);
   };
 
   return (

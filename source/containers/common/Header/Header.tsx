@@ -11,7 +11,7 @@ import LogoImage from 'assets/images/logo-s.svg';
 
 import styles from './Header.scss';
 import { MAIN_VIEW } from 'containers/auth/Settings/views/routes';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AccountType } from 'state/wallet/types';
 import { RootState } from 'state/store';
 
 interface IHeader {
@@ -25,7 +25,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const showView = useSettingsView();
   const isUnlocked = !controller.wallet.isLocked();
   const [showed, showSettings] = useState(false);
-  const { keystores, seedKeystoreId }: IWalletState = useSelector(
+  const { accounts }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
 
@@ -58,7 +58,10 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
         </IconButton>
       )}
       <span className={styles.title}>Stargazer Wallet</span>
-      {keystores && seedKeystoreId && keystores[seedKeystoreId] ? (
+      {accounts &&
+      Object.values(accounts).filter(
+        (account) => account.type === AccountType.Seed
+      ).length > 0 ? (
         <IconButton
           className={`${styles.button} ${styles.more}`}
           onClick={() =>

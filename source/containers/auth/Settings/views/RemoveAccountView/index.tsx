@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import { useController, useSettingsView } from 'hooks/index';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
-import IWalletState, { AccountType } from 'state/wallet/types';
+import IWalletState from 'state/wallet/types';
 import { RootState } from 'state/store';
 
 import styles from './index.scss';
@@ -36,17 +36,10 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ id }) => {
 
   const onSubmit = (data: any) => {
     let isChecked;
-    if (accounts[id].type === AccountType.Seed) {
-      isChecked = controller.wallet.account.unsubscribeAccount(
-        Number(id),
-        data.password
-      );
-    } else {
-      isChecked = controller.wallet.account.removePrivKeyAccount(
-        id,
-        data.password
-      );
-    }
+    isChecked = controller.wallet.account.removePrivKeyAccount(
+      id,
+      data.password
+    );
     if (isChecked) {
       showView(MAIN_VIEW);
     } else {
