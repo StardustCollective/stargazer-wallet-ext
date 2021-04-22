@@ -28,7 +28,6 @@ const extensionReloaderPlugin =
         reloadPage: true,
         entries: {
           // TODO: reload manifest on update
-          contentScript: 'contentScript',
           background: 'background',
           extensionPage: ['popup', 'options'],
         },
@@ -64,7 +63,6 @@ module.exports = {
   entry: {
     manifest: path.join(__dirname, 'manifest.json'),
     background: path.join(sourcePath, 'scripts/Background', 'index.ts'),
-    contentScript: path.join(sourcePath, 'scripts/ContentScript', 'index.ts'),
     app: path.join(sourcePath, 'pages/App', 'index.tsx'),
     options: path.join(sourcePath, 'pages/Options', 'index.tsx'),
   },
