@@ -1,31 +1,20 @@
 import React, { FC } from 'react';
-// import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-// import AddIcon from '@material-ui/icons/Add';
-// import ImportIcon from '@material-ui/icons/ImportExport';
-import SettingsIcon from '@material-ui/icons/Settings';
 import LogOutIcon from '@material-ui/icons/ExitToApp';
 import ContactsIcon from '@material-ui/icons/Group';
 import NetworkIcon from '@material-ui/icons/Timeline';
 import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
-// import UserIcon from '@material-ui/icons/AccountCircleRounded';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
-
 import StargazerIcon from 'assets/images/logo-s.svg';
-// import { RootState } from 'state/store';
-// import IWalletState from 'state/wallet/types';
-// import AccountSelect from 'components/AccountSelect';
+
 import {
   ABOUT_VIEW,
-  // ACCOUNT_VIEW,
   CONTACTS_VIEW,
   NETWORKS_VIEW,
   WALLETS_VIEW,
-  // GENERAL_VIEW,
-  // IMPORT_ACCOUNT_VIEW,
-  // NEW_ACCOUNT_VIEW,
 } from '../routes';
 
 import styles from './index.scss';
@@ -34,14 +23,6 @@ const MainView: FC = () => {
   const showView = useSettingsView();
   const history = useHistory();
   const controller = useController();
-  // const { accounts, activeAccountId }: IWalletState = useSelector(
-  //   (state: RootState) => state.wallet
-  // );
-
-  // const handleSelectAccount = (id: string) => {
-  //   onChange(id);
-  //   showView(ACCOUNT_VIEW);
-  // };
 
   const handleLogout = () => {
     controller.wallet.logOut();
@@ -50,35 +31,6 @@ const MainView: FC = () => {
 
   return (
     <div className={styles.main}>
-      {/* <ul className={styles.accounts}>
-        <AccountSelect
-          label={
-            <>
-              <Icon Component={UserIcon} />
-              Accounts
-            </>
-          }
-          value={String(activeAccountId)}
-          options={accounts}
-          onChange={async (val: string) => {
-            handleSelectAccount(val);
-          }}
-        />
-      </ul>
-      <section
-        className={styles.new}
-        onClick={() => showView(NEW_ACCOUNT_VIEW)}
-      >
-        <Icon Component={AddIcon} />
-        Create seed account
-      </section> */}
-      {/* <section
-        className={styles.general}
-        onClick={() => showView(IMPORT_ACCOUNT_VIEW)}
-      >
-        <Icon Component={ImportIcon} />
-        Import private key
-      </section> */}
       <section
         className={styles.general}
         onClick={() => showView(WALLETS_VIEW)}
@@ -103,20 +55,13 @@ const MainView: FC = () => {
         <span>Networks</span>
         <ArrowIcon />
       </section>
-      {/* <section
-        className={styles.general}
-        onClick={() => showView(GENERAL_VIEW)}
-      >
-        <Icon Component={SettingsIcon} />
-        General settings
-      </section> */}
       <section className={styles.general} onClick={handleLogout}>
         <Icon Component={LogOutIcon} />
         <span>Log out</span>
         <ArrowIcon />
       </section>
       <section className={styles.general} onClick={() => showView(ABOUT_VIEW)}>
-        <Icon Component={SettingsIcon} />
+        <Icon Component={InfoIcon} />
         <span>About</span>
         <ArrowIcon />
       </section>
