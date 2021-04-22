@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
@@ -8,7 +8,11 @@ import { useCopyClipboard, useController } from 'hooks/index';
 
 import styles from './index.scss';
 
-const PhraseView = () => {
+interface IPhraseView {
+  id: string;
+}
+
+const PhraseView: FC<IPhraseView> = ({ id }) => {
   const [checked, setChecked] = useState(false);
   const [phrase, setPhrase] = useState<string>(
     '**** ******* ****** ****** ****** ******** *** ***** ****** ***** *****'
@@ -28,8 +32,8 @@ const PhraseView = () => {
     [styles.notAllowed]: !checked,
   });
 
-  const onSubmit = (data: any) => {
-    const res = controller.wallet.getPhrase(data.password);
+  const onSubmit = async (data: any) => {
+    const res = await controller.wallet.getPhrase(id, data.password);
     if (res) {
       setPhrase(res);
       setChecked(true);

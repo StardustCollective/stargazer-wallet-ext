@@ -1,5 +1,4 @@
 import { dag4 } from '@stardust-collective/dag4';
-import { hdkey } from 'ethereumjs-wallet';
 import store from 'state/store';
 import {
   setKeystoreInfo,
@@ -7,12 +6,12 @@ import {
   changeAccountActiveId,
   changeActiveNetwork,
   updateStatus,
-  updateSeedKeystoreId,
   removeSeedAccounts,
 } from 'state/wallet';
 import AccountController, { IAccountController } from './AccountController';
 import { DAG_NETWORK, ETH_PREFIX } from 'constants/index';
 import IWalletState, {
+  AccountType,
   AssetType,
   NetworkType,
   SeedKeystore,
@@ -26,20 +25,19 @@ export interface IWalletController {
   deleteWallet: (pwd: string) => void;
   switchWallet: (id: string) => Promise<void>;
   switchNetwork: (assetId: string, networkId: string) => void;
-  generatedPhrase: () => string | null;
+  generatedPhrase: (update?: boolean) => string | null;
   setWalletPassword: (pwd: string) => void;
   importPhrase: (phr: string) => boolean;
   isLocked: () => boolean;
   unLock: (pwd: string) => Promise<boolean>;
   checkPassword: (pwd: string) => boolean;
-  getPhrase: (pwd: string) => string | null;
+  getPhrase: (id: string, pwd: string) => Promise<string | null>;
   logOut: () => void;
 }
 
 const WalletController = (): IWalletController => {
   let password = '';
   let phrase = '';
-  let masterKey: hdkey;
 
   const importPrivKey = async (privKey: string, networkType: NetworkType) => {
     const { keystores }: IWalletState = store.getState().wallet;
@@ -70,15 +68,24 @@ const WalletController = (): IWalletController => {
 
   const account = Object.freeze(
     AccountController({
-      getMasterKey: () => {
-        return seedWalletKeystore() ? masterKey : null;
+      getMasterKey: async (id: string) => {
+        const { keystores }: IWalletState = store.getState().wallet;
+        const phrase = await dag4.keyStore.decryptPhrase(
+          keystores[id] as SeedKeystore,
+          password
+        );
+        return dag4.keyStore.getMasterKeyFromMnemonic(phrase);
       },
       checkPassword,
       importPrivKey,
     })
   );
 
-  const generatedPhrase = () => {
+  const generatedPhrase = (update = false) => {
+    if (update) {
+      phrase = dag4.keyStore.generateSeedPhrase();
+      return phrase;
+    }
     if (seedWalletKeystore()) return null;
     if (!phrase) phrase = dag4.keyStore.generateSeedPhrase();
     return phrase;
@@ -100,8 +107,15 @@ const WalletController = (): IWalletController => {
     return !password || !phrase;
   };
 
-  const getPhrase = (pwd: string) => {
-    return checkPassword(pwd) ? phrase : null;
+  const getPhrase = async (id: string, pwd: string) => {
+    if (!checkPassword(pwd)) return null;
+    if (!seedWalletKeystore()) return null;
+    const { keystores }: IWalletState = store.getState().wallet;
+    const phrase = await dag4.keyStore.decryptPhrase(
+      keystores[id] as SeedKeystore,
+      pwd
+    );
+    return phrase;
   };
 
   const unLock = async (pwd: string): Promise<boolean> => {
@@ -111,7 +125,6 @@ const WalletController = (): IWalletController => {
     try {
       phrase = await dag4.keyStore.decryptPhrase(keystore as SeedKeystore, pwd);
       password = pwd;
-      masterKey = dag4.keyStore.getMasterKeyFromMnemonic(phrase);
       await account.getPrimaryAccount(password);
       account.watchMemPool();
       return true;
@@ -125,23 +138,19 @@ const WalletController = (): IWalletController => {
     isUpdated = false,
     primaryAccLabel = 'Account 1'
   ) => {
-    if (!isUpdated && seedWalletKeystore()) return;
     if (isUpdated) {
-      const { seedKeystoreId, keystores } = store.getState().wallet;
-      if (seedKeystoreId && keystores[seedKeystoreId]) {
+      if (seedWalletKeystore()) {
         store.dispatch(removeSeedAccounts());
       }
     }
     const v3Keystore = await dag4.keyStore.encryptPhrase(phrase, password);
-    masterKey = dag4.keyStore.getMasterKeyFromMnemonic(phrase);
     store.dispatch(
       setKeystoreInfo({
         keystore: v3Keystore,
         networkType: NetworkType.MultiChain,
       })
     );
-    store.dispatch(updateSeedKeystoreId(v3Keystore.id));
-    await account.subscribeAccount(0, primaryAccLabel);
+    await account.subscribeAccount(v3Keystore.id, primaryAccLabel);
     await account.getPrimaryAccount(password);
     if (isUpdated) {
       account.getLatestUpdate();
@@ -197,10 +206,14 @@ const WalletController = (): IWalletController => {
   };
 
   const seedWalletKeystore = () => {
-    const { keystores, seedKeystoreId }: IWalletState = store.getState().wallet;
-    return keystores && seedKeystoreId && keystores[seedKeystoreId]
-      ? keystores[seedKeystoreId]
-      : null;
+    const { accounts, keystores }: IWalletState = store.getState().wallet;
+
+    if (!accounts) return null;
+    const seedAccounts = Object.values(accounts).filter(
+      (account) => account.type === AccountType.Seed
+    );
+
+    return seedAccounts.length ? keystores[seedAccounts[0].id] : null;
   };
 
   const logOut = async () => {

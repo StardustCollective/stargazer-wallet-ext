@@ -43,9 +43,9 @@ export interface IAccountController {
   getPrimaryAccount: (pwd: string) => void;
   isValidDAGAddress: (address: string) => boolean;
   isValidERC20Address: (address: string) => boolean;
-  subscribeAccount: (index: number, label?: string) => Promise<string | null>;
+  subscribeAccount: (id: string, label?: string) => Promise<string | null>;
   unsubscribeAccount: (index: number, pwd: string) => boolean;
-  addNewAccount: (label: string) => Promise<string | null>;
+  // addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   getFullETHTxs: () => any[];
   updateAccountLabel: (id: string, label: string) => void;
@@ -79,7 +79,7 @@ export interface IAccountController {
 }
 
 const AccountController = (actions: {
-  getMasterKey: () => hdkey | null;
+  getMasterKey: (id: string) => Promise<hdkey | null>;
   checkPassword: (pwd: string) => boolean;
   importPrivKey: (
     privKey: string,
@@ -278,15 +278,11 @@ const AccountController = (actions: {
    * @param index {number} account index of seed-phrase wallet
    * @returns {AccountInfo | null}
    */
-  const getAccountByIndex = async (index: number) => {
-    const masterKey: hdkey | null = actions.getMasterKey();
+  const getAccountByIndex = async (id: string) => {
+    const masterKey: hdkey | null = await actions.getMasterKey(id);
     if (!masterKey) return null;
-    privateKey = dag4.keyStore.deriveAccountFromMaster(masterKey, index);
-    return await getAccountByPrivateKey(
-      privateKey,
-      NetworkType.MultiChain,
-      index.toString()
-    );
+    privateKey = dag4.keyStore.deriveAccountFromMaster(masterKey, 0);
+    return await getAccountByPrivateKey(privateKey, NetworkType.MultiChain, id);
   };
 
   /**
@@ -311,20 +307,16 @@ const AccountController = (actions: {
     );
   };
 
-  const subscribeAccount = async (index: number, label?: string) => {
+  const subscribeAccount = async (id: string, label?: string) => {
     const { accounts }: IWalletState = store.getState().wallet;
-    const seedAccounts = Object.values(accounts).filter(
-      (account) => account.type === AccountType.Seed
-    );
+    const accountInfo: IAccountInfo | null = await getAccountByIndex(id);
 
-    if (seedAccounts && Object.keys(seedAccounts).includes(String(index)))
-      return null;
-    const accountInfo: IAccountInfo | null = await getAccountByIndex(index);
+    console.log('warning ===> ', accountInfo);
 
     if (!accountInfo) return null;
     account = {
-      id: String(index),
-      label: label || `Account ${index + 1}`,
+      id,
+      label: label || `Account ${Object.keys(accounts).length + 1}`,
       ...accountInfo,
       activeAssetId: AssetType.Constellation,
       type: AccountType.Seed,
@@ -342,23 +334,23 @@ const AccountController = (actions: {
     return true;
   };
 
-  const addNewAccount = async (label: string) => {
-    const { accounts }: IWalletState = store.getState().wallet;
-    const seedAccounts = Object.values(accounts).filter(
-      (account) => account.type === AccountType.Seed
-    );
-    let idx = -1;
-    Object.keys(seedAccounts).forEach((index, i) => {
-      if (index !== String(i)) {
-        idx = i;
-        return;
-      }
-    });
-    if (idx === -1) {
-      idx = Object.keys(seedAccounts).length;
-    }
-    return await subscribeAccount(idx, label);
-  };
+  // const addNewAccount = async (label: string) => {
+  //   const { accounts }: IWalletState = store.getState().wallet;
+  //   const seedAccounts = Object.values(accounts).filter(
+  //     (account) => account.type === AccountType.Seed
+  //   );
+  //   let idx = -1;
+  //   Object.keys(seedAccounts).forEach((index, i) => {
+  //     if (index !== String(i)) {
+  //       idx = i;
+  //       return;
+  //     }
+  //   });
+  //   if (idx === -1) {
+  //     idx = Object.keys(seedAccounts).length;
+  //   }
+  //   return await subscribeAccount(idx, label);
+  // };
 
   const unsubscribeAccount = (index: number, pwd: string) => {
     if (actions.checkPassword(pwd)) {
@@ -439,7 +431,7 @@ const AccountController = (actions: {
 
     const accLatestInfo =
       accounts[activeAccountId].type === AccountType.Seed
-        ? await getAccountByIndex(Number(activeAccountId))
+        ? await getAccountByIndex(activeAccountId)
         : await getAccountByPrivKeystore(activeAccountId);
 
     if (!accLatestInfo) return;
@@ -481,9 +473,9 @@ const AccountController = (actions: {
     const { keystores, accounts }: IWalletState = store.getState().wallet;
     if (!account || !actions.checkPassword(pwd)) return null;
     if (accounts[id].type === AccountType.Seed) {
-      const masterKey: hdkey | null = actions.getMasterKey();
+      const masterKey: hdkey | null = await actions.getMasterKey(id);
       if (!masterKey) return null;
-      return dag4.keyStore.deriveAccountFromMaster(masterKey, Number(id));
+      return dag4.keyStore.deriveAccountFromMaster(masterKey, 0);
     } else {
       const privkey = await dag4.keyStore.decryptPrivateKey(
         keystores[id] as PrivKeystore,
@@ -749,7 +741,6 @@ const AccountController = (actions: {
     subscribeAccount,
     unsubscribeAccount,
     removePrivKeyAccount,
-    addNewAccount,
     getLatestUpdate,
     watchMemPool,
     updateTxs,

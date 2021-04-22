@@ -24,7 +24,7 @@ const ImportPhraseView = () => {
     setLoading(true);
     try {
       await controller.wallet.importPhrase(data.phrase);
-      await controller.wallet.createWallet(true, data.label);
+      await controller.wallet.createWallet(false, data.label);
       showView(WALLETS_VIEW);
     } catch (error) {
       setLoading(false);

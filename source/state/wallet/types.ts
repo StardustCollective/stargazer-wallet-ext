@@ -52,7 +52,7 @@ export interface IAccountUpdateState {
   };
 }
 
-interface IKeyStoreState {
+export interface IKeyStoreState {
   [keystoreId: string]: Keystore;
 }
 
@@ -64,7 +64,6 @@ export default interface IWalletState {
     [accountId: string]: IAccountState;
   };
   activeAccountId: string;
-  seedKeystoreId: string;
   activeNetwork: {
     [assetId: string]: string;
   };

@@ -17,8 +17,7 @@ const initialState: IWalletState = {
   keystores: {},
   status: 0,
   accounts: {},
-  activeAccountId: '0',
-  seedKeystoreId: '',
+  activeAccountId: '',
   activeNetwork: {
     [AssetType.Constellation]: DAG_NETWORK.main.id,
     [AssetType.Ethereum]: ETH_NETWORK.mainnet.id,
@@ -48,12 +47,6 @@ const WalletState = createSlice({
       if (state.keystores[action.payload])
         delete state.keystores[action.payload];
     },
-    updateSeedKeystoreId(state: IWalletState, action: PayloadAction<string>) {
-      if (state.keystores && state.keystores[state.seedKeystoreId]) {
-        delete state.keystores[state.seedKeystoreId];
-      }
-      state.seedKeystoreId = action.payload;
-    },
     updateStatus(state: IWalletState) {
       state.status = Date.now();
     },
@@ -70,7 +63,7 @@ const WalletState = createSlice({
     removeAccount(state: IWalletState, action: PayloadAction<string>) {
       if (Object.keys(state.accounts).length <= 1) return;
       if (state.activeAccountId === action.payload) {
-        state.activeAccountId = Object.values(state.accounts)[0].id;
+        state.activeAccountId = Object.keys(state.accounts)[0];
       }
       delete state.accounts[action.payload];
     },
@@ -79,7 +72,7 @@ const WalletState = createSlice({
         if (account.type === AccountType.Seed)
           delete state.accounts[account.id];
       });
-      state.activeAccountId = '0';
+      state.activeAccountId = '';
     },
     updateAccount(
       state: IWalletState,
@@ -93,7 +86,6 @@ const WalletState = createSlice({
     deleteWallet(state: IWalletState) {
       state.keystores = {};
       state.accounts = {};
-      state.seedKeystoreId = '';
       state.activeAccountId = '0';
       state.activeNetwork = {
         [AssetType.Constellation]: DAG_NETWORK.main.id,
@@ -160,7 +152,6 @@ export const {
   removeAccount,
   removeSeedAccounts,
   deleteWallet,
-  updateSeedKeystoreId,
   changeAccountActiveId,
   changeActiveNetwork,
   changeActiveAsset,
