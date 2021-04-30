@@ -61,7 +61,12 @@ const WalletState = createSlice({
       };
     },
     removeAccount(state: IWalletState, action: PayloadAction<string>) {
-      if (Object.keys(state.accounts).length <= 1) return;
+      if (
+        Object.values(state.accounts).filter(
+          (account) => account.type === AccountType.Seed
+        ).length <= 1
+      )
+        return;
       if (state.activeAccountId === action.payload) {
         state.activeAccountId = Object.keys(state.accounts)[0];
       }

@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import { useController, useSettingsView } from 'hooks/index';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AccountType } from 'state/wallet/types';
 import { RootState } from 'state/store';
 
 import styles from './index.scss';
@@ -79,7 +79,11 @@ const RemoveAccountView: FC<IRemoveAccountView> = ({ id }) => {
           <Button
             type="submit"
             variant={styles.button}
-            disabled={Object.keys(accounts).length <= 1}
+            disabled={
+              Object.values(accounts).filter(
+                (account) => account.type === AccountType.Seed
+              ).length <= 1
+            }
           >
             Done
           </Button>
