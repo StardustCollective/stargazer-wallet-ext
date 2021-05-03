@@ -4,7 +4,7 @@ import { ETHNetwork } from 'scripts/types';
 import IAssetListState from 'state/assets/types';
 import store from 'state/store';
 import { addERC20Asset } from 'state/assets';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import { TOKEN_INFO_API } from 'constants/index';
 
 export interface IAssetsController {
@@ -13,7 +13,7 @@ export interface IAssetsController {
 }
 
 const AssetsController = (updateFiat: () => void): IAssetsController => {
-  const { activeNetwork }: IWalletState = store.getState().wallet;
+  const { activeNetwork }: IVaultState = store.getState().vault;
   const ethClient: XChainEthClient = new XChainEthClient({
     network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
     privateKey: process.env.TEST_PRIVATE_KEY,
@@ -33,7 +33,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   // };
 
   const fetchTokenInfo = async (address: string) => {
-    const { activeNetwork }: IWalletState = store.getState().wallet;
+    const { activeNetwork }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;
     const network = activeNetwork[AssetType.Ethereum] as ETHNetwork;
     ethClient.setNetwork(network);
@@ -51,7 +51,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
           type: AssetType.ERC20,
           name: info.name,
           symbol: info.symbol,
-          address: info.address,
+          contract: info.address,
           native: false,
           priceId: data.id,
           logo: data.image.small,

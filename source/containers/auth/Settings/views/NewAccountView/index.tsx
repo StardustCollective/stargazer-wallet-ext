@@ -30,8 +30,7 @@ const NewAccountView: FC<INewAccountView> = ({ onChange }) => {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    controller.wallet.generatedPhrase(true);
-    const id = await controller.wallet.createWallet(false, data.name);
+    const id = await controller.wallet.createWallet(data.name);
     onChange(id);
     setLoading(false);
     setAccountName(data.name);

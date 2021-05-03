@@ -1,16 +1,16 @@
 import React, { useState, FC } from 'react';
 import clsx from 'clsx';
 import { useAlert } from 'react-alert';
-import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import TextInput from 'components/TextInput';
 import { useController, useCopyClipboard } from 'hooks/index';
-import IWalletState from 'state/wallet/types';
-import { RootState } from 'state/store';
 
 import styles from './index.scss';
+import IVaultState from '../../../../../state/vault/types';
+import { RootState } from '../../../../../state/store';
+import { useSelector } from 'react-redux';
 
 interface IPrivateKeyView {
   id: string;
@@ -19,9 +19,10 @@ interface IPrivateKeyView {
 const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
   const controller = useController();
   const alert = useAlert();
-  const { accounts }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { wallets }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
+  const wallet = wallets.find(w => w.id === id);
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       password: yup.string().required(),
@@ -40,7 +41,7 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const res = await controller.wallet.account.getPrivKey(id, data.password);
+    const res = await controller.wallet.getPrivateKey(id, data);
     if (res) {
       setPrivKey(res);
       setChecked(true);
@@ -57,11 +58,11 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
 
   return (
     <div className={styles.wrapper}>
-      {accounts[id] && (
+      {wallet && (
         <>
           <div className={styles.heading}>
             <div>Account name:</div>
-            <span className={styles.accountName}>{accounts[id].label}</span>
+            <span className={styles.accountName}>{wallet.label}</span>
           </div>
           <div className={styles.content}>
             <span>Please input your wallet password and press enter:</span>

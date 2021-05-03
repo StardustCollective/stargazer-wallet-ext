@@ -23,8 +23,8 @@ const ImportPhraseView = () => {
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      await controller.wallet.importPhrase(data.phrase);
-      await controller.wallet.createWallet(false, data.label);
+      //await controller.wallet.importPhrase(data.phrase);
+      await controller.wallet.createWallet(data.label, data.phrase);
       showView(WALLETS_VIEW);
     } catch (error) {
       setLoading(false);

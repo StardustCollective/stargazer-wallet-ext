@@ -1,19 +1,14 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import Avatar from '@devneser/gradient-avatar';
 
 import Button from 'components/Button';
-import { useController, useSettingsView } from 'hooks/index';
+import { useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
 import IContactBookState, { IContactState } from 'state/contacts/types';
-import SendIcon from '@material-ui/icons/Send';
-import IconButton from '@material-ui/core/IconButton';
 
 import { ADD_CONTACT_VIEW, CONTACT_VIEW } from '../routes';
 import styles from './index.scss';
-import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
-import { ETH_PREFIX } from 'constants/index';
 
 interface IContactsView {
   onSelect: (id: string) => void;
@@ -23,33 +18,33 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
-  const account = accounts[activeAccountId];
-  const controller = useController();
+  // const { wallet, asset }: IVaultState = useSelector(
+  //   (state: RootState) => state.vault
+  // );
+  // const controller = useController();
   const showView = useSettingsView();
-  const history = useHistory();
+  // const history = useHistory();
 
   const handleSelect = (id: string) => {
     onSelect(id);
     showView(CONTACT_VIEW);
   };
-  const handleSelectedContact = (ev: any, address: string) => {
-    ev.stopPropagation();
-    if (controller.wallet.account.isValidDAGAddress(address)) {
-      controller.wallet.account.updateAccountActiveAsset(
-        activeAccountId,
-        AssetType.Constellation
-      );
-    } else if (controller.wallet.account.isValidERC20Address(address)) {
-      controller.wallet.account.updateAccountActiveAsset(
-        activeAccountId,
-        AssetType.Ethereum
-      );
-    }
-    history.push(`/send/${address}`);
-  };
+
+  // const handleSelectedContact = (ev: any, address: string) => {
+  //   ev.stopPropagation();
+  //   if (controller.wallet.account.isValidDAGAddress(address)) {
+  //     controller.wallet.account.updateAccountActiveAsset(
+  //       activeAccountId,
+  //       AssetType.Constellation
+  //     );
+  //   } else if (controller.wallet.account.isValidERC20Address(address)) {
+  //     controller.wallet.account.updateAccountActiveAsset(
+  //       activeAccountId,
+  //       AssetType.Ethereum
+  //     );
+  //   }
+  //   history.push(`/send/${address}`);
+  // };
 
   return (
     <div className={styles.contacts}>
@@ -64,14 +59,14 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
       </div>
       <ul className={styles.list}>
         {Object.values(contacts)
-          .filter(
-            (contact: IContactState) =>
-              account.type === AccountType.Seed ||
-              (account.id.startsWith(ETH_PREFIX) &&
-                contact.address.toLowerCase().startsWith('0x')) ||
-              (!account.id.startsWith(ETH_PREFIX) &&
-                !contact.address.toLowerCase().startsWith('0x'))
-          )
+          // .filter(
+          //   (contact: IContactState) =>
+          //     wallet.supportedAssets ||
+          //     (wallet.id &&
+          //       contact.address.toLowerCase().startsWith('0x')) ||
+          //     (!wallet.id.startsWith(ETH_PREFIX) &&
+          //       !contact.address.toLowerCase().startsWith('0x'))
+          // )
           .map((contact: IContactState) => (
             <li onClick={() => handleSelect(contact.id)} key={contact.id}>
               <div className={styles.contact}>
@@ -83,12 +78,12 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
                     <small>{contact.address}</small>
                   </div>
                 </span>
-                <IconButton
-                  className={styles.send}
-                  onClick={(ev) => handleSelectedContact(ev, contact.address)}
-                >
-                  <SendIcon />
-                </IconButton>
+                {/*<IconButton*/}
+                {/*  className={styles.send}*/}
+                {/*  onClick={(ev) => handleSelectedContact(ev, contact.address)}*/}
+                {/*>*/}
+                {/*  <SendIcon />*/}
+                {/*</IconButton>*/}
               </div>
             </li>
           ))}

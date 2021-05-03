@@ -14,7 +14,7 @@ import { formatDistanceDate } from '../helpers';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
-import IWalletState, { AssetType, Transaction } from 'state/wallet/types';
+import IVaultState, { AssetType, Transaction } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 
 import styles from './Asset.scss';
@@ -29,15 +29,13 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
   const isETHTx = !controller.wallet.account.isValidDAGAddress(address);
-  const {
-    activeNetwork,
-    accounts,
-    activeAccountId,
-  }: IWalletState = useSelector((state: RootState) => state.wallet);
+  const { activeNetwork, asset }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const account = accounts[activeAccountId];
+  // const account = accounts[activeAccountId];
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
 
   const isShowedGroupBar = useCallback(
@@ -45,13 +43,13 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
       return (
         idx === 0 ||
         new Date(
-          !isETHTx || (isETHTx && tx.assetId === account.activeAssetId)
+          !isETHTx || (isETHTx && tx.assetId === asset.id)
             ? tx.timestamp
             : tx.date
         ).toDateString() !==
           new Date(
             !isETHTx ||
-            (isETHTx && transactions[idx - 1].assetId === account.activeAssetId)
+            (isETHTx && transactions[idx - 1].assetId === asset.id)
               ? transactions[idx - 1].timestamp
               : transactions[idx - 1].date
           ).toDateString()
@@ -140,7 +138,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
           <ul>
             {transactions.map((tx: Transaction, idx: number) => {
               const isETHPending =
-                isETHTx && tx.assetId === account.activeAssetId;
+                isETHTx && tx.assetId === asset.id;
               const isRecived =
                 (!isETHTx && tx.receiver === address) ||
                 (isETHTx && !tx.assetId && tx.to && tx.to[0].to === address) ||
@@ -193,7 +191,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                                 isETHPending ? tx.amount : tx.balance
                               ).toFixed(4)
                             : tx.amount / 1e8}{' '}
-                          <b>{assets[account.activeAssetId].symbol}</b>
+                          <b>{assets[asset.id].symbol}</b>
                         </span>
                         <small>
                           {isETHTx
@@ -226,7 +224,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         <>
           <span className={styles.noTxComment}>
             {`You have no transaction history, send or receive $${
-              assets[account.activeAssetId].symbol
+              assets[asset.id].symbol
             } to register
             your first transaction.`}
           </span>

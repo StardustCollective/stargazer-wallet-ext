@@ -11,8 +11,9 @@ import LogoImage from 'assets/images/logo-s.svg';
 
 import styles from './Header.scss';
 import { MAIN_VIEW } from 'containers/auth/Settings/views/routes';
-import IWalletState, { AccountType } from 'state/wallet/types';
+import IVaultState  from 'state/vault/types';
 import { RootState } from 'state/store';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IHeader {
   backLink?: string;
@@ -25,9 +26,10 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const showView = useSettingsView();
   const isUnlocked = !controller.wallet.isLocked();
   const [showed, showSettings] = useState(false);
-  const { accounts }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { wallets }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
+  const hasMainAccount = wallets.some(w => w.type === KeyringWalletType.MultiChainWallet)
 
   const handleBack = () => {
     showSettings(false);
@@ -57,11 +59,8 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
           <ArrowBackIcon />
         </IconButton>
       )}
-      <span className={styles.title}>Stargazer Wallet</span>
-      {accounts &&
-      Object.values(accounts).filter(
-        (account) => account.type === AccountType.Seed
-      ).length > 0 ? (
+      <span className={styles.title}>Stargazer</span>
+      {hasMainAccount ? (
         <IconButton
           className={`${styles.button} ${styles.more}`}
           onClick={() =>

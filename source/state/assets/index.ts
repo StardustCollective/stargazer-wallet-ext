@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AssetType } from 'state/wallet/types';
+import { AssetType } from 'state/vault/types';
 import ERC20_TOKEN_LIST from './tokens';
 
 import IAssetListState, { IAssetInfoState } from './types';
@@ -12,6 +12,7 @@ const initialState: IAssetListState = {
     name: 'Ethereum',
     type: AssetType.Ethereum,
     symbol: 'ETH',
+    contract: '',
     native: true,
     network: 'both',
     logo: EthereumLogo,
@@ -23,6 +24,7 @@ const initialState: IAssetListState = {
     name: 'Constellation',
     type: AssetType.Constellation,
     symbol: 'DAG',
+    contract: '',
     native: true,
     network: 'both',
     logo: ConstellationLogo,
@@ -41,8 +43,8 @@ const AssetListState = createSlice({
       state: IAssetListState,
       action: PayloadAction<IAssetInfoState>
     ) {
-      if (action.payload.address) {
-        state[action.payload.address] = action.payload;
+      if (action.payload.contract) {
+        state[action.payload.contract] = action.payload;
       }
     },
   },

@@ -1,11 +1,11 @@
-import { AssetType } from 'state/wallet/types';
+import { AssetType } from 'state/vault/types';
 import IAssetListState from './types';
 import LatticeLogo from 'assets/images/svg/lattice.svg';
 
 const TOKEN_LIST: IAssetListState = {
   '0xa393473d64d2F9F026B60b6Df7859A689715d092': {
     id: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
-    address: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
+    contract: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
     name: 'Lattice Token',
     symbol: 'LTX',
     type: AssetType.ERC20,
@@ -18,7 +18,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9': {
     id: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
     network: 'mainnet',
-    address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
+    contract: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
     name: 'Aave',
     symbol: 'AAVE',
     native: false,
@@ -31,7 +31,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xfF20817765cB7f73d4bde2e66e067E58D11095C2': {
     id: '0xfF20817765cB7f73d4bde2e66e067E58D11095C2',
     network: 'mainnet',
-    address: '0xfF20817765cB7f73d4bde2e66e067E58D11095C2',
+    contract: '0xfF20817765cB7f73d4bde2e66e067E58D11095C2',
     name: 'Amp',
     symbol: 'AMP',
     native: false,
@@ -44,7 +44,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x960b236A07cf122663c4303350609A66A7B288C0': {
     id: '0x960b236A07cf122663c4303350609A66A7B288C0',
     name: 'Aragon Network Token',
-    address: '0x960b236A07cf122663c4303350609A66A7B288C0',
+    contract: '0x960b236A07cf122663c4303350609A66A7B288C0',
     symbol: 'ANT',
     decimals: 18,
     native: false,
@@ -58,7 +58,7 @@ const TOKEN_LIST: IAssetListState = {
     id: '0xba100000625a3754423978a60c9317c58a424e3D',
     type: AssetType.ERC20,
     name: 'Balancer',
-    address: '0xba100000625a3754423978a60c9317c58a424e3D',
+    contract: '0xba100000625a3754423978a60c9317c58a424e3D',
     symbol: 'BAL',
     decimals: 18,
     native: false,
@@ -70,7 +70,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xBA11D00c5f74255f56a5E366F4F77f5A186d7f55': {
     id: '0xBA11D00c5f74255f56a5E366F4F77f5A186d7f55',
     network: 'mainnet',
-    address: '0xBA11D00c5f74255f56a5E366F4F77f5A186d7f55',
+    contract: '0xBA11D00c5f74255f56a5E366F4F77f5A186d7f55',
     name: 'Band Protocol',
     symbol: 'BAND',
     decimals: 18,
@@ -83,7 +83,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C': {
     id: '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C',
     name: 'Bancor Network Token',
-    address: '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C',
+    contract: '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C',
     symbol: 'BNT',
     decimals: 18,
     network: 'mainnet',
@@ -96,7 +96,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xc00e94Cb662C3520282E6f5717214004A7f26888': {
     id: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
     name: 'Compound',
-    address: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
+    contract: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
     symbol: 'COMP',
     decimals: 18,
     network: 'mainnet',
@@ -109,7 +109,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xD533a949740bb3306d119CC777fa900bA034cd52': {
     id: '0xD533a949740bb3306d119CC777fa900bA034cd52',
     name: 'Curve DAO Token',
-    address: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+    contract: '0xD533a949740bb3306d119CC777fa900bA034cd52',
     symbol: 'CRV',
     decimals: 18,
     native: false,
@@ -122,7 +122,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x41e5560054824eA6B0732E656E3Ad64E20e94E45': {
     id: '0x41e5560054824eA6B0732E656E3Ad64E20e94E45',
     network: 'mainnet',
-    address: '0x41e5560054824eA6B0732E656E3Ad64E20e94E45',
+    contract: '0x41e5560054824eA6B0732E656E3Ad64E20e94E45',
     name: 'Civic',
     symbol: 'CVC',
     native: false,
@@ -135,7 +135,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x6B175474E89094C44Da98b954EedeAC495271d0F': {
     id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     name: 'Dai Stablecoin',
-    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    contract: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     symbol: 'DAI',
     decimals: 18,
     native: false,
@@ -148,7 +148,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x0AbdAce70D3790235af448C88547603b945604ea': {
     id: '0x0AbdAce70D3790235af448C88547603b945604ea',
     network: 'mainnet',
-    address: '0x0AbdAce70D3790235af448C88547603b945604ea',
+    contract: '0x0AbdAce70D3790235af448C88547603b945604ea',
     name: 'district0x',
     symbol: 'DNT',
     native: false,
@@ -161,7 +161,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x6810e776880C02933D47DB1b9fc05908e5386b96': {
     id: '0x6810e776880C02933D47DB1b9fc05908e5386b96',
     name: 'Gnosis Token',
-    address: '0x6810e776880C02933D47DB1b9fc05908e5386b96',
+    contract: '0x6810e776880C02933D47DB1b9fc05908e5386b96',
     symbol: 'GNO',
     decimals: 18,
     native: false,
@@ -175,7 +175,7 @@ const TOKEN_LIST: IAssetListState = {
     id: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7',
     network: 'mainnet',
     type: AssetType.ERC20,
-    address: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7',
+    contract: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7',
     name: 'The Graph',
     symbol: 'GRT',
     native: false,
@@ -188,7 +188,7 @@ const TOKEN_LIST: IAssetListState = {
     id: '0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC',
     network: 'mainnet',
     type: AssetType.ERC20,
-    address: '0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC',
+    contract: '0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC',
     name: 'Keep Network',
     native: false,
     priceId: 'keep-network',
@@ -200,7 +200,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xdd974D5C2e2928deA5F71b9825b8b646686BD200': {
     id: '0xdd974D5C2e2928deA5F71b9825b8b646686BD200',
     name: 'Kyber Network Crystal',
-    address: '0xdd974D5C2e2928deA5F71b9825b8b646686BD200',
+    contract: '0xdd974D5C2e2928deA5F71b9825b8b646686BD200',
     symbol: 'KNC',
     decimals: 18,
     native: false,
@@ -213,7 +213,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x514910771AF9Ca656af840dff83E8264EcF986CA': {
     id: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
     name: 'ChainLink Token',
-    address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+    contract: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
     symbol: 'LINK',
     decimals: 18,
     network: 'mainnet',
@@ -226,7 +226,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xA4e8C3Ec456107eA67d3075bF9e3DF3A75823DB0': {
     id: '0xA4e8C3Ec456107eA67d3075bF9e3DF3A75823DB0',
     name: 'Loom Network',
-    address: '0xA4e8C3Ec456107eA67d3075bF9e3DF3A75823DB0',
+    contract: '0xA4e8C3Ec456107eA67d3075bF9e3DF3A75823DB0',
     symbol: 'LOOM',
     decimals: 18,
     native: false,
@@ -239,7 +239,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD': {
     id: '0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD',
     name: 'LoopringCoin V2',
-    address: '0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD',
+    contract: '0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD',
     symbol: 'LRC',
     decimals: 18,
     native: false,
@@ -253,7 +253,7 @@ const TOKEN_LIST: IAssetListState = {
     id: '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942',
     network: 'mainnet',
     type: AssetType.ERC20,
-    address: '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942',
+    contract: '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942',
     name: 'Decentraland',
     native: false,
     priceId: 'decentraland',
@@ -265,7 +265,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2': {
     id: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
     name: 'Maker',
-    address: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
+    contract: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
     symbol: 'MKR',
     native: false,
     priceId: 'maker',
@@ -279,7 +279,7 @@ const TOKEN_LIST: IAssetListState = {
     id: '0xec67005c4E498Ec7f55E092bd1d35cbC47C91892',
     network: 'mainnet',
     type: AssetType.ERC20,
-    address: '0xec67005c4E498Ec7f55E092bd1d35cbC47C91892',
+    contract: '0xec67005c4E498Ec7f55E092bd1d35cbC47C91892',
     name: 'Melon',
     symbol: 'MLN',
     native: false,
@@ -291,7 +291,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671': {
     id: '0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671',
     name: 'Numeraire',
-    address: '0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671',
+    contract: '0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671',
     symbol: 'NMR',
     decimals: 18,
     native: false,
@@ -305,7 +305,7 @@ const TOKEN_LIST: IAssetListState = {
     id: '0x4fE83213D56308330EC302a8BD641f1d0113A4Cc',
     network: 'mainnet',
     type: AssetType.ERC20,
-    address: '0x4fE83213D56308330EC302a8BD641f1d0113A4Cc',
+    contract: '0x4fE83213D56308330EC302a8BD641f1d0113A4Cc',
     name: 'NuCypher',
     symbol: 'NU',
     native: false,
@@ -317,7 +317,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x4575f41308EC1483f3d399aa9a2826d74Da13Deb': {
     id: '0x4575f41308EC1483f3d399aa9a2826d74Da13Deb',
     name: 'Orchid',
-    address: '0x4575f41308EC1483f3d399aa9a2826d74Da13Deb',
+    contract: '0x4575f41308EC1483f3d399aa9a2826d74Da13Deb',
     symbol: 'OXT',
     decimals: 18,
     network: 'mainnet',
@@ -330,7 +330,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x408e41876cCCDC0F92210600ef50372656052a38': {
     id: '0x408e41876cCCDC0F92210600ef50372656052a38',
     name: 'Republic Token',
-    address: '0x408e41876cCCDC0F92210600ef50372656052a38',
+    contract: '0x408e41876cCCDC0F92210600ef50372656052a38',
     symbol: 'REN',
     decimals: 18,
     network: 'mainnet',
@@ -343,7 +343,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x1985365e9f78359a9B6AD760e32412f4a445E862': {
     id: '0x1985365e9f78359a9B6AD760e32412f4a445E862',
     name: 'Reputation Augur v1',
-    address: '0x1985365e9f78359a9B6AD760e32412f4a445E862',
+    contract: '0x1985365e9f78359a9B6AD760e32412f4a445E862',
     symbol: 'REP',
     decimals: 18,
     native: false,
@@ -356,7 +356,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x221657776846890989a759BA2973e427DfF5C9bB': {
     id: '0x221657776846890989a759BA2973e427DfF5C9bB',
     name: 'Reputation Augur v2',
-    address: '0x221657776846890989a759BA2973e427DfF5C9bB',
+    contract: '0x221657776846890989a759BA2973e427DfF5C9bB',
     symbol: 'REPv2',
     decimals: 18,
     native: false,
@@ -368,7 +368,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F': {
     id: '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F',
     name: 'Synthetix Network Token',
-    address: '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F',
+    contract: '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F',
     symbol: 'SNX',
     decimals: 18,
     native: false,
@@ -381,7 +381,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xB64ef51C888972c908CFacf59B47C1AfBC0Ab8aC': {
     id: '0xB64ef51C888972c908CFacf59B47C1AfBC0Ab8aC',
     name: 'Storj Token',
-    address: '0xB64ef51C888972c908CFacf59B47C1AfBC0Ab8aC',
+    contract: '0xB64ef51C888972c908CFacf59B47C1AfBC0Ab8aC',
     symbol: 'STORJ',
     decimals: 8,
     native: false,
@@ -395,7 +395,7 @@ const TOKEN_LIST: IAssetListState = {
     id: '0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa',
     network: 'mainnet',
     type: AssetType.ERC20,
-    address: '0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa',
+    contract: '0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa',
     name: 'tBTC',
     native: false,
     priceId: 'tbtc',
@@ -407,7 +407,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828': {
     id: '0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828',
     name: 'UMA Voting Token v1',
-    address: '0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828',
+    contract: '0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828',
     symbol: 'UMA',
     decimals: 18,
     native: false,
@@ -420,7 +420,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984': {
     id: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
     name: 'Uniswap',
-    address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+    contract: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
     symbol: 'UNI',
     decimals: 18,
     network: 'mainnet',
@@ -433,7 +433,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
     id: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     name: 'USDCoin',
-    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    contract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     symbol: 'USDC',
     decimals: 6,
     native: false,
@@ -446,7 +446,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xdAC17F958D2ee523a2206206994597C13D831ec7': {
     id: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     name: 'Tether USD',
-    address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     symbol: 'USDT',
     decimals: 6,
     network: 'mainnet',
@@ -459,7 +459,7 @@ const TOKEN_LIST: IAssetListState = {
   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599': {
     id: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
     name: 'Wrapped BTC',
-    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+    contract: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
     symbol: 'WBTC',
     decimals: 8,
     network: 'mainnet',
@@ -472,7 +472,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2': {
     id: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     name: 'Wrapped Ether',
-    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    contract: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     symbol: 'WETH',
     decimals: 18,
     native: false,
@@ -486,7 +486,7 @@ const TOKEN_LIST: IAssetListState = {
     id: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
     network: 'mainnet',
     type: AssetType.ERC20,
-    address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+    contract: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
     name: 'yearn finance',
     symbol: 'YFI',
     native: false,
@@ -498,7 +498,7 @@ const TOKEN_LIST: IAssetListState = {
   '0xE41d2489571d322189246DaFA5ebDe1F4699F498': {
     id: '0xE41d2489571d322189246DaFA5ebDe1F4699F498',
     name: '0x Protocol Token',
-    address: '0xE41d2489571d322189246DaFA5ebDe1F4699F498',
+    contract: '0xE41d2489571d322189246DaFA5ebDe1F4699F498',
     symbol: 'ZRX',
     decimals: 18,
     native: false,
@@ -511,7 +511,7 @@ const TOKEN_LIST: IAssetListState = {
   'T-0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
     id: 'T-0xaD6D458402F60fD3Bd25163575031ACDce07538D',
     name: 'Dai Stablecoin',
-    address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+    contract: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
     symbol: 'DAI',
     decimals: 18,
     native: false,
@@ -523,7 +523,7 @@ const TOKEN_LIST: IAssetListState = {
   'T-0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984': {
     id: 'T-0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
     name: 'Uniswap',
-    address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+    contract: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
     symbol: 'UNI',
     decimals: 18,
     native: false,
@@ -535,7 +535,7 @@ const TOKEN_LIST: IAssetListState = {
   'T-0xc778417E063141139Fce010982780140Aa0cD5Ab': {
     id: 'T-0xc778417E063141139Fce010982780140Aa0cD5Ab',
     name: 'Wrapped Ether',
-    address: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+    contract: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
     symbol: 'WETH',
     decimals: 18,
     network: 'testnet',
@@ -547,7 +547,7 @@ const TOKEN_LIST: IAssetListState = {
   'T-0xB404c51BBC10dcBE948077F18a4B8E553D160084': {
     id: 'T-0xB404c51BBC10dcBE948077F18a4B8E553D160084',
     name: 'Tether USD',
-    address: '0xB404c51BBC10dcBE948077F18a4B8E553D160084',
+    contract: '0xB404c51BBC10dcBE948077F18a4B8E553D160084',
     symbol: 'USDT',
     decimals: 6,
     network: 'testnet',

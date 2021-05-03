@@ -22,7 +22,7 @@ import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import ErrorIcon from 'assets/images/svg/error.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
 
@@ -38,14 +38,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const getFiatAmount = useFiat();
   const controller = useController();
   const alert = useAlert();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { asset }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const account = accounts[activeAccountId];
-  const asset = assets[account.activeAssetId];
+  // const account = accounts[activeAccountId];
+  const assetInfo = assets[asset.id];
   const tempTx = controller.wallet.account.getTempTx();
 
   const { handleSubmit, register, errors } = useForm({
@@ -53,7 +53,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       address: yup.string().required('Error: Invalid DAG address'),
       amount: yup.number().moreThan(0).required('Error: Invalid DAG Amount'),
       fee:
-        account.activeAssetId === AssetType.Constellation
+        asset.type === AssetType.Constellation
           ? yup.string().required('Error: Invalid transaction fee')
           : yup.string(),
     }),
@@ -93,12 +93,12 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       return;
     }
     const txConfig: any = {
-      fromAddress: account.assets[account.activeAssetId].address,
+      fromAddress: asset.address,
       toAddress: data.address,
       amount: data.amount,
       fee: data.fee || gasFee,
     };
-    if (account.activeAssetId !== AssetType.Constellation) {
+    if (asset.type !== AssetType.Constellation) {
       txConfig.ethConfig = {
         gas: currentGas,
       };
@@ -108,11 +108,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   };
 
   const isDisabled = useMemo(() => {
-    const { balance } = account.assets[account.activeAssetId];
+    const { balance } = asset;
     const txFee =
-      account.activeAssetId === AssetType.Constellation
+      asset.type === AssetType.Constellation
         ? Number(fee)
-        : account.activeAssetId === AssetType.Ethereum
+        : asset.type === AssetType.Ethereum
         ? gasFee
         : 0;
     console.log(Number(amount) + txFee > balance);
@@ -177,10 +177,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       }
       controller.wallet.account.updateTempTx(txConfig);
     }
-    controller.wallet.account.getLatestGasPrices().then((vals) => {
-      setGasPrices(vals);
-      setCurrentGas(tempTx?.ethConfig?.gas || vals[1]);
-      estimateGasFee(vals[1]);
+    controller.wallet.account.getLatestGasPrices().then((gas) => {
+      setGasPrices(gas);
+      setCurrentGas(tempTx?.ethConfig?.gas || gas[1]);
+      estimateGasFee(gas[1]);
     });
   };
 
@@ -201,13 +201,13 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleSetMax = () => {
     const txFee =
-      account.activeAssetId === AssetType.Constellation
+      asset.id === AssetType.Constellation
         ? Number(fee)
-        : account.activeAssetId === AssetType.Ethereum
+        : asset.id === AssetType.Ethereum
         ? gasFee
         : 0;
     setAmount(
-      String(Math.max(account.assets[account.activeAssetId].balance - txFee, 0))
+      String(Math.max(asset.balance - txFee, 0))
     );
   };
 
@@ -225,16 +225,16 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       />
       <form onSubmit={handleSubmit(onSubmit)} className={styles.bodywrapper}>
         <section className={styles.subheading}>
-          {asset.logo && <Icon Component={asset.logo} />}
-          {`Send ${asset.symbol}`}
+          {assetInfo.logo && <Icon Component={assetInfo.logo} />}
+          {`Send ${assetInfo.symbol}`}
         </section>
         <section className={styles.balance}>
           <div>
             Balance:{' '}
             <span>
-              {formatNumber(account.assets[account.activeAssetId].balance)}
+              {formatNumber(asset.balance)}
             </span>{' '}
-            {asset.symbol}
+            {assetInfo.symbol}
           </div>
         </section>
         <section className={styles.content}>
@@ -252,7 +252,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 className={errorIconClass}
               />
               <TextInput
-                placeholder={`Enter a valid ${asset.symbol} address`}
+                placeholder={`Enter a valid ${assetInfo.symbol} address`}
                 fullWidth
                 value={address}
                 name="address"
@@ -269,7 +269,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               </Button>
             </li>
             <li>
-              <label>{`${asset.symbol} Amount`} </label>
+              <label>{`${assetInfo.symbol} Amount`} </label>
               <TextInput
                 type="number"
                 placeholder="Enter amount to send"
@@ -365,7 +365,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               marks={[
                 { value: gasPrices[0], label: 'LOW' },
                 {
-                  value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
+                  //value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
+                  value: gasPrices[1],
                   label: 'AVERAGE',
                 },
                 { value: gasPrices[2], label: 'HIGH' },

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import Select from 'components/Select';
 import { RootState } from 'state/store';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType, NetworkType } from 'state/vault/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { useController } from 'hooks/index';
 
@@ -11,12 +11,12 @@ import styles from './index.scss';
 
 const NetworksView = () => {
   const controller = useController();
-  const { activeNetwork }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { activeNetwork }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
 
-  const handleChangeNetwork = (network: string, asset: string) => {
-    controller.wallet.switchNetwork(asset, network);
+  const handleChangeNetwork = (networkType: NetworkType, networkId: string) => {
+    controller.wallet.switchNetwork(networkType, networkId);
   };
 
   return (
@@ -32,8 +32,8 @@ const NetworksView = () => {
           }>
         ) => {
           handleChangeNetwork(
-            ev.target.value as string,
-            AssetType.Constellation
+            NetworkType.Constellation,
+            ev.target.value as string
           );
         }}
         options={[
@@ -51,7 +51,10 @@ const NetworksView = () => {
             value: unknown;
           }>
         ) => {
-          handleChangeNetwork(ev.target.value as string, AssetType.Ethereum);
+          handleChangeNetwork(
+            NetworkType.Ethereum,
+            ev.target.value as string
+          );
         }}
         options={[
           { [ETH_NETWORK.mainnet.id]: ETH_NETWORK.mainnet.label },

@@ -1,6 +1,6 @@
 import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import format from 'date-fns/format';
-import { AssetType } from 'state/wallet/types';
+import { AssetType } from 'state/vault/types';
 
 export const ellipsis = (str: string, start = 7, end = 4) => {
   return (

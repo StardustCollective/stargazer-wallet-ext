@@ -20,8 +20,9 @@ const ContactBookState = createSlice({
             option.address === action.payload.address ||
             option.name === action.payload.name
         ).length
-      )
-        return;
+      ) {
+        return undefined;
+      }
       const id = uuid();
       return {
         ...state,
@@ -50,8 +51,9 @@ const ContactBookState = createSlice({
       if (
         !state[action.payload.id] ||
         (res.length && res[0].id !== action.payload.id)
-      )
-        return;
+      ) {
+        return undefined;
+      }
       return {
         ...state,
         [action.payload.id]: {

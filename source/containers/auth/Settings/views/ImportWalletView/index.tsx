@@ -9,16 +9,22 @@ import ConstellationIcon from 'assets/images/svg/constellation.svg';
 import styles from './index.scss';
 import { useSettingsView } from 'hooks/index';
 import { IMPORT_ACCOUNT_VIEW, IMPORT_PHRASE_VIEW } from '../routes';
-import { NetworkType } from 'state/wallet/types';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+
+// export enum ImportWalletType {
+//   Ethereum,
+//   Constellation,
+//   MultiChain
+// }
 
 interface IImportWalletView {
-  onChange: (network: NetworkType) => void;
+  onChange: (network: KeyringNetwork) => void;
 }
 
 const ImportWalletView: FC<IImportWalletView> = ({ onChange }) => {
   const showView = useSettingsView();
 
-  const handleImport = (network: NetworkType) => {
+  const handleImport = (network: KeyringNetwork) => {
     onChange(network);
     showView(IMPORT_ACCOUNT_VIEW);
   };
@@ -35,7 +41,7 @@ const ImportWalletView: FC<IImportWalletView> = ({ onChange }) => {
       </section>
       <section
         className={styles.menu}
-        onClick={() => handleImport(NetworkType.Ethereum)}
+        onClick={() => handleImport(KeyringNetwork.Ethereum)}
       >
         <Icon Component={EthereumIcon} />
         <span>Ethereum</span>
@@ -43,7 +49,7 @@ const ImportWalletView: FC<IImportWalletView> = ({ onChange }) => {
       </section>
       <section
         className={styles.menu}
-        onClick={() => handleImport(NetworkType.Constellation)}
+        onClick={() => handleImport(KeyringNetwork.Constellation)}
       >
         <Icon Component={ConstellationIcon} />
         <span>Constellation</span>

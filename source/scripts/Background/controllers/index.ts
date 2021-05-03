@@ -1,8 +1,10 @@
-import WalletController, { IWalletController } from './WalletController';
+import {WalletController}  from './WalletController';
+import { IWalletController } from './IWalletController';
 import ControllerUtils from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
 import AssetsController, { IAssetsController } from './AssetsController';
 import MigrationController from './MigrationController';
+
 export interface IMasterController {
   wallet: Readonly<IWalletController>;
   contacts: Readonly<IContactsController>;
@@ -12,7 +14,7 @@ export interface IMasterController {
 }
 
 const MasterController = (): IMasterController => {
-  const wallet = Object.freeze(WalletController());
+  const wallet = Object.freeze(new WalletController());
   const utils = Object.freeze(ControllerUtils());
   const contacts = Object.freeze(
     ContactsController({ isLocked: wallet.isLocked })

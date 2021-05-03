@@ -14,8 +14,9 @@ import { RootState } from 'state/store';
 import { CONTACTS_VIEW } from '../routes';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import styles from './index.scss';
-import IWalletState, { AccountType } from 'state/wallet/types';
-import { ETH_PREFIX } from 'constants/index';
+import IVaultState, { AssetType } from 'state/vault/types';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+
 interface IModifyContactView {
   type: 'add' | 'edit';
   selected?: string;
@@ -26,10 +27,9 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   const showView = useSettingsView();
   const history = useHistory();
   const alert = useAlert();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { wallet }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
-  const account = accounts[activeAccountId];
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
@@ -43,14 +43,19 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   const [address, setAddress] = useState('');
 
   const isValidAddress = useMemo(() => {
-    return (
-      ((account.type === AccountType.Seed ||
-        !account.id.startsWith(ETH_PREFIX)) &&
-        controller.wallet.account.isValidDAGAddress(address)) ||
-      ((account.type === AccountType.Seed ||
-        account.id.startsWith(ETH_PREFIX)) &&
-        controller.wallet.account.isValidERC20Address(address))
-    );
+    if (wallet.type === KeyringWalletType.MultiChainWallet) {
+      return controller.wallet.account.isValidDAGAddress(address) ||
+        controller.wallet.account.isValidERC20Address(address);
+    }
+    else {
+      const asset = wallet.assets[0];
+      if (asset.type === AssetType.Constellation) {
+        return controller.wallet.account.isValidDAGAddress(address);
+      }
+      else {
+        return controller.wallet.account.isValidERC20Address(address);
+      }
+    }
   }, [address]);
 
   const statusIconClass = clsx(styles.statusIcon, {

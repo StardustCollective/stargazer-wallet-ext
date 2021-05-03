@@ -9,27 +9,23 @@ import IconButton from '@material-ui/core/IconButton';
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { RootState } from 'state/store';
-import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
-import IAssetListState from 'state/assets/types';
+import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { useController } from 'hooks/index';
 
 import styles from './Home.scss';
-import { ETH_PREFIX } from 'constants/index';
+import IAssetListState from '../../../state/assets/types';
 
 const AssetsPanel: FC = () => {
   const history = useHistory();
   const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
-  const {
-    accounts,
-    activeAccountId,
-    activeNetwork,
-  }: IWalletState = useSelector((state: RootState) => state.wallet);
+  const { wallet, activeNetwork }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const account = accounts[activeAccountId];
 
   const handleScroll = useCallback((ev) => {
     ev.persist();
@@ -42,11 +38,8 @@ const AssetsPanel: FC = () => {
     setShowed(false);
   };
 
-  const handleSelectAsset = (assetId: string) => {
-    controller.wallet.account.updateAccountActiveAsset(
-      activeAccountId,
-      assetId
-    );
+  const handleSelectAsset = (asset: IAssetState) => {
+    controller.wallet.account.updateAccountActiveAsset(asset);
     history.push('/asset');
   };
 
@@ -57,13 +50,13 @@ const AssetsPanel: FC = () => {
   const renderAssetList = () => {
     return (
       <ul>
-        {Object.values(account.assets)
+        {Object.values(wallet.assets)
           .filter(
             (asset) =>
               assets[asset.id].network === 'both' ||
               assets[asset.id].network ===
                 activeNetwork[
-                  asset.id === AssetType.Constellation
+                  asset.type === AssetType.Constellation
                     ? AssetType.Constellation
                     : AssetType.Ethereum
                 ]
@@ -71,9 +64,9 @@ const AssetsPanel: FC = () => {
           .map((asset) => {
             return (
               <AssetItem
-                key={asset.id}
-                asset={assets[asset.id]}
-                itemClicked={() => handleSelectAsset(asset.id)}
+                asset={asset}
+                assetInfo={assets[asset.id]}
+                itemClicked={() => handleSelectAsset(asset)}
               />
             );
           })}
@@ -87,8 +80,7 @@ const AssetsPanel: FC = () => {
       onScroll={handleScroll}
     >
       <div className={styles.heading}>
-        {(account.type === AccountType.Seed ||
-          account.id.startsWith(ETH_PREFIX)) && (
+        {(wallet.supportedAssets) && (
           <IconButton onClick={handleAddAsset} className={styles.addAssets}>
             <AddCircle />
           </IconButton>
@@ -100,7 +92,7 @@ const AssetsPanel: FC = () => {
           </IconButton>
         )}
       </div>
-      {Object.keys(account.assets).length ? (
+      {Object.keys(wallet.assets).length ? (
         <>
           {renderAssetList()}
           <div className={styles.stargazer}>

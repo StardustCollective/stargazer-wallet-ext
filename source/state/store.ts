@@ -7,7 +7,7 @@ import {
 import logger from 'redux-logger';
 import throttle from 'lodash/throttle';
 
-import wallet from './wallet';
+import vault from './vault';
 import price from './price';
 import contacts from './contacts';
 import assets from './assets';
@@ -24,7 +24,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store: Store = configureStore({
   reducer: combineReducers({
-    wallet,
+    vault,
     price,
     contacts,
     assets,
@@ -38,7 +38,7 @@ store.subscribe(
   throttle(() => {
     const state = store.getState();
     saveState({
-      wallet: state.wallet,
+      vault: state.vault,
       price: state.price,
       contacts: state.contacts,
       assets: state.assets,

@@ -6,14 +6,14 @@ import CheckIcon from '@material-ui/icons/CheckCircleRounded';
 
 import Icon from 'components/Icon';
 import { RootState } from 'state/store';
-import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType, IWalletState } from 'state/vault/types';
 import { useController, useSettingsView } from 'hooks/index';
 
 import StargazerIcon from 'assets/images/logo-s.svg';
 import { MANAGE_WALLET_VIEW } from '../routes';
-import { ETH_PREFIX } from 'constants/index';
 import styles from './index.scss';
 import IAssetListState from 'state/assets/types';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IWalletsView {
   onChange: (id: string) => void;
@@ -22,28 +22,29 @@ interface IWalletsView {
 const WalletsView: FC<IWalletsView> = ({ onChange }) => {
   const controller = useController();
   const showView = useSettingsView();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { wallets, wallet:activeWallet }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
 
-  const privKeyAccounts = Object.values(accounts).filter(
-    (account) => account.type === AccountType.PrivKey
+  const privKeyAccounts = wallets.filter(
+    (w) => w.type === KeyringWalletType.SimpleChainWallet
   );
 
-  const handleSwitchWallet = async (id: string) => {
-    await controller.wallet.switchWallet(id);
-    controller.wallet.account.watchMemPool();
+  const handleSwitchWallet = async (wallet: IWalletState) => {
+    await controller.wallet.switchWallet(wallet);
+    //controller.wallet.account.watchMemPool();
   };
 
   const handleManageWallet = (
     ev: MouseEvent<HTMLButtonElement>,
-    id: string
+    wallet: IWalletState
   ) => {
     ev.stopPropagation();
-    onChange(id);
+    controller.wallet.switchWallet(wallet);
+    onChange(wallet.id);
     showView(MANAGE_WALLET_VIEW);
   };
 
@@ -51,25 +52,25 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
     <div className={styles.wallets}>
       <label>Multi chain wallets</label>
       <div className={styles.group}>
-        {Object.values(accounts)
-          .filter((account) => account.type === AccountType.Seed)
-          .map((account) => (
+        {wallets
+          .filter((w) => w.type === KeyringWalletType.MultiChainWallet)
+          .map((wallet) => (
             <section
               className={styles.wallet}
-              key={account.id}
-              onClick={() => handleSwitchWallet(account.id)}
+              key={wallet.id}
+              onClick={() => handleSwitchWallet(wallet)}
             >
-              {account.id === activeAccountId && (
+              {wallet === activeWallet && (
                 <CheckIcon className={styles.check} />
               )}
               <Icon Component={StargazerIcon} />
               <span>
-                {account.label}
+                {wallet.label}
                 <small>Multi Chain Wallet</small>
               </span>
               <IconButton
                 className={styles.details}
-                onClick={(ev) => handleManageWallet(ev, account.id)}
+                onClick={(ev) => handleManageWallet(ev, wallet)}
               >
                 <InfoIcon />
               </IconButton>
@@ -80,39 +81,33 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
         <>
           <label>Private key wallets</label>
           <div className={styles.group}>
-            {privKeyAccounts.map((account) => (
+            {privKeyAccounts.map((wallet) => (
               <section
                 className={styles.wallet}
-                key={account.id}
-                onClick={() => handleSwitchWallet(account.id)}
+                key={wallet.id}
+                onClick={() => handleSwitchWallet(wallet)}
               >
-                {account.id === activeAccountId && (
+                {wallet === activeWallet && (
                   <CheckIcon className={styles.check} />
                 )}
                 <Icon
                   Component={
                     assets[
-                      account.id.startsWith(ETH_PREFIX)
+                      wallet.supportedAssets.includes(AssetType.Ethereum)
                         ? AssetType.Ethereum
                         : AssetType.Constellation
                     ].logo || StargazerIcon
                   }
                 />
                 <span>
-                  {account.label}
+                  {wallet.label}
                   <small>
-                    {
-                      account.assets[
-                        account.id.startsWith(ETH_PREFIX)
-                          ? AssetType.Ethereum
-                          : AssetType.Constellation
-                      ].address
-                    }
+                    { activeWallet.assets[0].address }
                   </small>
                 </span>
                 <IconButton
                   className={styles.details}
-                  onClick={(ev) => handleManageWallet(ev, account.id)}
+                  onClick={(ev) => handleManageWallet(ev, wallet)}
                 >
                   <InfoIcon />
                 </IconButton>

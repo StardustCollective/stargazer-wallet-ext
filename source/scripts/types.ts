@@ -1,4 +1,4 @@
-import { IAssetState } from 'state/wallet/types';
+import { IAssetState } from 'state/vault/types';
 
 export interface IAccountInfo {
   assets: {

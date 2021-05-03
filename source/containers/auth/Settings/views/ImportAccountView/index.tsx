@@ -12,11 +12,11 @@ import FileSelect from 'components/FileSelect';
 import { useController, useSettingsView } from 'hooks/index';
 
 import { MAIN_VIEW } from '../routes';
-import { NetworkType } from 'state/wallet/types';
 import styles from './index.scss';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 interface IImportAccountView {
-  network: NetworkType;
+  network: KeyringNetwork;
 }
 
 const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
@@ -37,8 +37,9 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
   });
 
   const handleImportPrivKey = async (privKey: string, label: string) => {
-    controller.wallet.account
-      .importPrivKeyAccount(privKey, label, network)
+    // controller.wallet.account
+    //   .importPrivKeyAccount(privKey, label, network)
+    controller.wallet.importSingleAccount(label, network, privKey)
       .then((addr) => {
         setLoading(false);
         if (addr) {

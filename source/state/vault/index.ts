@@ -1,0 +1,149 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Transaction } from '@stardust-collective/dag4-network';
+
+import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
+
+import IVaultState, { AssetType, IActiveAssetState, IAssetState, IWalletState, NetworkType } from './types';
+
+const initialState: IVaultState = {
+  // keystores: {},
+  status: 0,
+  wallets: undefined,
+  wallet: undefined,
+  asset: undefined,
+  // activeAccountId: '',
+  activeNetwork: {
+    [AssetType.Constellation]: DAG_NETWORK.main.id,
+    [AssetType.Ethereum]: ETH_NETWORK.mainnet.id,
+  },
+  version: '2.1.0',
+};
+
+// createSlice comes with immer produce so we don't need to take care of immutational update
+const VaultState = createSlice({
+  name: 'vault',
+  initialState,
+  reducers: {
+    // setVaultInfo(
+    //   state: IVaultState,
+    //   action: PayloadAction<KeyringVaultState>
+    // ) {
+    //   state.wallets = action.payload.wallets
+    // },
+    // setKeystoreInfo(
+    //   state: IVaultState,
+    //   action: PayloadAction<{ keystore: Keystore; networkType: NetworkType }>
+    // ) {
+    //   const id = `${
+    //     action.payload.networkType === NetworkType.Ethereum ? ETH_PREFIX : ''
+    //   }${action.payload.keystore.id}`;
+    //
+    //   state.keystores = {
+    //     ...state.keystores,
+    //     [id]: action.payload.keystore,
+    //   };
+    // },
+    // removeKeystoreInfo(state: IVaultState, action: PayloadAction<string>) {
+    //   if (state.keystores[action.payload])
+    //     delete state.keystores[action.payload];
+    // },
+    updateStatus(state: IVaultState) {
+      state.status = Date.now();
+    },
+    // createAccount(state: IVaultState, action: PayloadAction<IWalletState>) {
+    //   return {
+    //     ...state,
+    //     accounts: {
+    //       ...state.accounts,
+    //       [action.payload.id]: action.payload,
+    //     },
+    //     activeAccountId: action.payload.id,
+    //   };
+    // },
+    // removeAccount(state: IVaultState, action: PayloadAction<string>) {
+    //   if (Object.keys(state.accounts).length <= 1) return;
+    //   if (state.activeAccountId === action.payload) {
+    //     state.activeAccountId = Object.keys(state.accounts)[0];
+    //   }
+    //   delete state.accounts[action.payload];
+    // },
+    // removeAllAccounts(state: IVaultState) {
+    //   state.accounts = {};
+    //   state.activeAccountId = '';
+    // },
+    // updateAccount(
+    //   state: IVaultState,
+    //   action: PayloadAction<IAccountUpdateState>
+    // ) {
+    //   state.accounts[action.payload.id] = {
+    //     ...state.accounts[action.payload.id],
+    //     ...action.payload,
+    //   };
+    // },
+    // deleteWallet(state: IVaultState) {
+    //   state.keystores = {};
+    //   state.accounts = {};
+    //   state.activeAccountId = '0';
+    //   state.activeNetwork = {
+    //     [AssetType.Constellation]: DAG_NETWORK.main.id,
+    //     [AssetType.Ethereum]: ETH_NETWORK.main.id,
+    //   };
+    // },
+    changeActiveWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
+      state.wallet = { assets:[], ...action.payload };
+    },
+    changeActiveNetwork(
+      state: IVaultState,
+      action: PayloadAction<{ network: NetworkType; chainId: string }>
+    ) {
+      state.activeNetwork = {
+        ...state.activeNetwork,
+        [action.payload.network]: action.payload.chainId,
+      };
+    },
+    changeActiveAsset(
+      state: IVaultState,
+      action: PayloadAction<{asset: IAssetState}>
+    ) {
+      state.asset = { transactions: [], ...action.payload.asset };
+    },
+    updateTransactions(
+      state: IVaultState,
+      action: PayloadAction<{txs: Transaction[]}>
+    ) {
+      state.asset.transactions = action.payload.txs;
+    },
+    updateLabel(
+      _state: IVaultState,
+      action: PayloadAction<{ wallet: IWalletState; label: string }>
+    ) {
+      action.payload.wallet.label = action.payload.label;
+    },
+    addAsset(
+      state: IVaultState,
+      action: PayloadAction<{asset: IActiveAssetState}>
+    ) {
+      state.asset = action.payload.asset;
+    },
+  },
+});
+
+export const {
+  // setVaultInfo,
+  // setKeystoreInfo,
+  // removeKeystoreInfo,
+  updateStatus,
+  // createAccount,
+  // removeAccount,
+  // removeAllAccounts,
+  // deleteWallet,
+  changeActiveWallet,
+  changeActiveNetwork,
+  changeActiveAsset,
+  // updateAccount,
+  updateTransactions,
+  updateLabel,
+  addAsset
+} = VaultState.actions;
+
+export default VaultState.reducer;

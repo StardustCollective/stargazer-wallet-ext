@@ -7,14 +7,14 @@ import React from 'react';
 // import Header from 'containers/common/Header';
 // import { useCopyClipboard } from 'hooks/index';
 // import { RootState } from 'state/store';
-// import IWalletState from 'state/wallet/types';
+// import IVaultState from 'state/wallet/types';
 
 import styles from './Receive.scss';
 
 const WalletReceive = () => {
   // const [isCopied, copyText] = useCopyClipboard();
-  // const { accounts, activeAccountId }: IWalletState = useSelector(
-  //   (state: RootState) => state.wallet
+  // const { accounts, activeAccountId }: IVaultState = useSelector(
+  //   (state: RootState) => state.vault
   // );
 
   return (

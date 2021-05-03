@@ -9,36 +9,35 @@ import Header from 'containers/common/Header';
 import { useController } from 'hooks/index';
 import { useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
+import IVaultState from 'state/vault/types';
 import AssetsPanel from './AssetsPanel';
 import styles from './Home.scss';
-// import { formatNumber } from '../helpers';
 
 const Home = () => {
   const controller = useController();
   const totalBalance = useTotalBalance();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { wallet }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
-  const account = accounts[activeAccountId];
 
   const handleRefresh = async () => {
     await controller.wallet.account.getLatestUpdate();
-    controller.wallet.account.watchMemPool();
+    // controller.wallet.account.watchMemPool();
     controller.stateUpdater();
   };
 
   return (
     <div className={styles.wrapper}>
-      {account && account.activeAssetId ? (
+      {wallet ? (
         <>
           <Header showLogo />
           {
             <>
-              <section className={styles.account}>{account.label}</section>
+              {/*<section className={styles.wallet}>{wallet.label}</section>*/}
               <section className={styles.center}>
-                <h3>{totalBalance[0]}</h3>
-                <small>{`≈ ₿${totalBalance[1]}`}</small>
+                <h3 style={{paddingBottom: '4px'}}>{totalBalance[0]}</h3>
+                <small>{wallet.label}</small>
+                {/*<small>{`≈ ₿${totalBalance[1]}`}</small>*/}
                 <IconButton className={styles.refresh} onClick={handleRefresh}>
                   <RefreshIcon />
                 </IconButton>
@@ -50,7 +49,7 @@ const Home = () => {
       ) : (
         <section
           className={clsx(styles.mask, {
-            [styles.hide]: account,
+            [styles.hide]: wallet,
           })}
         >
           <CircularProgress className={styles.loader} />

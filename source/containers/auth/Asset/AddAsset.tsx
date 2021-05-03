@@ -9,20 +9,17 @@ import TextInput from 'components/TextInput';
 import Header from 'containers/common/Header';
 import { useController } from 'hooks/index';
 import { RootState } from 'state/store';
-import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import SearchIcon from 'assets/images/svg/search.svg';
 import styles from './Asset.scss';
-import { ETH_PREFIX } from 'constants/index';
 
 const AddAsset = () => {
   const controller = useController();
   const history = useHistory();
-  const {
-    accounts,
-    activeAccountId,
-    activeNetwork,
-  }: IWalletState = useSelector((state: RootState) => state.wallet);
+  const { wallet, activeNetwork }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
@@ -30,15 +27,17 @@ const AddAsset = () => {
     Array<IAssetInfoState>
   >();
   const [keyword, setKeyword] = useState('');
-  const account = accounts[activeAccountId];
+  // const account = accounts[activeAccountId];
 
-  const handleAddAsset = (id: string, address?: string) => {
-    if (!address) return;
-    controller.wallet.account
-      .addNewAsset(activeAccountId, id, address)
-      .then(() => {
-        history.push('/home');
-      });
+  const alreadyInWallet = wallet.assets.reduce<{[key: string]: boolean}>(
+    (_res, a) => ({ [a.id]: true }), {}
+  );
+
+  const handleAddAsset = (asset: IAssetInfoState) => {
+    if (!asset.contract) return;
+    controller.wallet.account.addNewAsset(asset).then(() => {
+      history.push('/home');
+    });
   };
 
   useEffect(() => {
@@ -54,12 +53,10 @@ const AddAsset = () => {
         (asset) =>
           (asset.network === 'both' ||
             asset.network === activeNetwork[AssetType.Ethereum]) &&
-          !account.assets[asset.id] &&
+          !alreadyInWallet[asset.id] &&
           (asset.name.toLowerCase().includes(keyword.toLowerCase()) ||
-            (asset?.address || '').includes(keyword)) &&
-          (account.type === AccountType.Seed ||
-            (account.id.startsWith(ETH_PREFIX) &&
-              asset.id !== AssetType.Constellation))
+            (asset?.contract || '').includes(keyword)) &&
+          (wallet.supportedAssets || asset.id !== AssetType.Constellation)
       )
     );
   }, [keyword, assets]);
@@ -95,7 +92,7 @@ const AddAsset = () => {
                       </div>
                       <IconButton
                         className={styles.addButton}
-                        onClick={() => handleAddAsset(asset.id, asset.address)}
+                        onClick={() => handleAddAsset(asset)}
                       >
                         <AddCircle />
                       </IconButton>

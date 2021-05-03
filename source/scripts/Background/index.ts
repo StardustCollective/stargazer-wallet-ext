@@ -9,17 +9,13 @@ import { dag4 } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
-import { AssetType } from 'state/wallet/types';
+import { AssetType } from 'state/vault/types';
 
 declare global {
   interface Window {
     controller: Readonly<IMasterController>;
   }
 }
-
-// NOTE: API Examples
-// dag.network.loadBalancerApi.getAddressBalance(ADDRESS)
-// dag.network.blockExplorerApi.getTransactionsByAddress(ADDRESS)
 
 browser.runtime.onInstalled.addListener((): void => {
   console.emoji('🤩', 'Stargazer extension installed');
@@ -33,7 +29,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
     const networkId =
-      store.getState().wallet!.activeNetwork[AssetType.Constellation] ||
+      store.getState().vault!.activeNetwork[AssetType.Constellation] ||
       DAG_NETWORK.main.id;
     dag4.di.useFetchHttpClient(window.fetch.bind(window));
     dag4.di.useLocalStorageClient(localStorage);
@@ -42,9 +38,12 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
       beUrl: DAG_NETWORK[networkId].beUrl,
       lbUrl: DAG_NETWORK[networkId].lbUrl,
     });
+    //TODO - startMonitor doesn't help if there is no account logged in to
     dag4.monitor.startMonitor();
     window.controller.wallet.account.getLatestUpdate();
-    window.controller.wallet.account.watchMemPool();
+
+    //TODO - Instead of this, Use AccountWatcher and on wallet init, watch the account for txs and balance changes
+    // window.controller.wallet.account.watchMemPool();
   }
 });
 
