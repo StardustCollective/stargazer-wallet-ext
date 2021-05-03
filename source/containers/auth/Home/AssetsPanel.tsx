@@ -20,7 +20,7 @@ const AssetsPanel: FC = () => {
   const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
-  const { wallet, activeNetwork }: IVaultState = useSelector(
+  const { activeWallet, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -50,7 +50,7 @@ const AssetsPanel: FC = () => {
   const renderAssetList = () => {
     return (
       <ul>
-        {Object.values(wallet.assets)
+        {Object.values(activeWallet.assets)
           .filter(
             (asset) =>
               assets[asset.id].network === 'both' ||
@@ -80,7 +80,7 @@ const AssetsPanel: FC = () => {
       onScroll={handleScroll}
     >
       <div className={styles.heading}>
-        {(wallet.supportedAssets) && (
+        {(activeWallet.supportedAssets && activeWallet.supportedAssets.length > 1) && (
           <IconButton onClick={handleAddAsset} className={styles.addAssets}>
             <AddCircle />
           </IconButton>
@@ -92,7 +92,7 @@ const AssetsPanel: FC = () => {
           </IconButton>
         )}
       </div>
-      {Object.keys(wallet.assets).length ? (
+      {Object.keys(activeWallet.assets).length ? (
         <>
           {renderAssetList()}
           <div className={styles.stargazer}>

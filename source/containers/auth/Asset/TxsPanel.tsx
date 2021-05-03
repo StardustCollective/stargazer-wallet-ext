@@ -29,7 +29,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
   const isETHTx = !controller.wallet.account.isValidDAGAddress(address);
-  const { activeNetwork, asset }: IVaultState = useSelector(
+  const { activeNetwork, activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -43,13 +43,13 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
       return (
         idx === 0 ||
         new Date(
-          !isETHTx || (isETHTx && tx.assetId === asset.id)
+          !isETHTx || (isETHTx && tx.assetId === activeAsset.id)
             ? tx.timestamp
             : tx.date
         ).toDateString() !==
           new Date(
             !isETHTx ||
-            (isETHTx && transactions[idx - 1].assetId === asset.id)
+            (isETHTx && transactions[idx - 1].assetId === activeAsset.id)
               ? transactions[idx - 1].timestamp
               : transactions[idx - 1].date
           ).toDateString()
@@ -138,7 +138,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
           <ul>
             {transactions.map((tx: Transaction, idx: number) => {
               const isETHPending =
-                isETHTx && tx.assetId === asset.id;
+                isETHTx && tx.assetId === activeAsset.id;
               const isRecived =
                 (!isETHTx && tx.receiver === address) ||
                 (isETHTx && !tx.assetId && tx.to && tx.to[0].to === address) ||
@@ -191,7 +191,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                                 isETHPending ? tx.amount : tx.balance
                               ).toFixed(4)
                             : tx.amount / 1e8}{' '}
-                          <b>{assets[asset.id].symbol}</b>
+                          <b>{assets[activeAsset.id].symbol}</b>
                         </span>
                         <small>
                           {isETHTx
@@ -224,7 +224,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         <>
           <span className={styles.noTxComment}>
             {`You have no transaction history, send or receive $${
-              assets[asset.id].symbol
+              assets[activeAsset.id].symbol
             } to register
             your first transaction.`}
           </span>

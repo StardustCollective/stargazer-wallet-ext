@@ -13,7 +13,7 @@ import StargazerIcon from 'assets/images/logo-s.svg';
 import { MANAGE_WALLET_VIEW } from '../routes';
 import styles from './index.scss';
 import IAssetListState from 'state/assets/types';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IWalletsView {
   onChange: (id: string) => void;
@@ -22,7 +22,7 @@ interface IWalletsView {
 const WalletsView: FC<IWalletsView> = ({ onChange }) => {
   const controller = useController();
   const showView = useSettingsView();
-  const { wallets, wallet:activeWallet }: IVaultState = useSelector(
+  const { wallets, activeWallet:activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -30,7 +30,7 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
   );
 
   const privKeyAccounts = wallets.filter(
-    (w) => w.type === KeyringWalletType.SimpleChainWallet
+    (w) => w.type === KeyringWalletType.SimpleAccountWallet
   );
 
   const handleSwitchWallet = async (wallet: IWalletState) => {
@@ -93,7 +93,7 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
                 <Icon
                   Component={
                     assets[
-                      wallet.supportedAssets.includes(AssetType.Ethereum)
+                      wallet.supportedAssets.includes(KeyringAssetType.ETH)
                         ? AssetType.Ethereum
                         : AssetType.Constellation
                     ].logo || StargazerIcon

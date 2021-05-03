@@ -17,7 +17,7 @@ import styles from './Asset.scss';
 const AddAsset = () => {
   const controller = useController();
   const history = useHistory();
-  const { wallet, activeNetwork }: IVaultState = useSelector(
+  const { activeWallet, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -29,7 +29,7 @@ const AddAsset = () => {
   const [keyword, setKeyword] = useState('');
   // const account = accounts[activeAccountId];
 
-  const alreadyInWallet = wallet.assets.reduce<{[key: string]: boolean}>(
+  const alreadyInWallet = activeWallet.assets.reduce<{[key: string]: boolean}>(
     (_res, a) => ({ [a.id]: true }), {}
   );
 
@@ -56,7 +56,7 @@ const AddAsset = () => {
           !alreadyInWallet[asset.id] &&
           (asset.name.toLowerCase().includes(keyword.toLowerCase()) ||
             (asset?.contract || '').includes(keyword)) &&
-          (wallet.supportedAssets || asset.id !== AssetType.Constellation)
+          (asset.id !== AssetType.Constellation)
       )
     );
   }, [keyword, assets]);

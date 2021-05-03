@@ -16,7 +16,7 @@ import styles from './Home.scss';
 const Home = () => {
   const controller = useController();
   const totalBalance = useTotalBalance();
-  const { wallet }: IVaultState = useSelector(
+  const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
 
@@ -28,7 +28,7 @@ const Home = () => {
 
   return (
     <div className={styles.wrapper}>
-      {wallet ? (
+      {activeWallet ? (
         <>
           <Header showLogo />
           {
@@ -36,7 +36,7 @@ const Home = () => {
               {/*<section className={styles.wallet}>{wallet.label}</section>*/}
               <section className={styles.center}>
                 <h3 style={{paddingBottom: '4px'}}>{totalBalance[0]}</h3>
-                <small>{wallet.label}</small>
+                <small>{activeWallet.label}</small>
                 {/*<small>{`≈ ₿${totalBalance[1]}`}</small>*/}
                 <IconButton className={styles.refresh} onClick={handleRefresh}>
                   <RefreshIcon />
@@ -49,7 +49,7 @@ const Home = () => {
       ) : (
         <section
           className={clsx(styles.mask, {
-            [styles.hide]: wallet,
+            [styles.hide]: activeWallet,
           })}
         >
           <CircularProgress className={styles.loader} />

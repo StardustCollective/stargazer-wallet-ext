@@ -27,7 +27,7 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   const showView = useSettingsView();
   const history = useHistory();
   const alert = useAlert();
-  const { wallet }: IVaultState = useSelector(
+  const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const contacts: IContactBookState = useSelector(
@@ -43,12 +43,12 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   const [address, setAddress] = useState('');
 
   const isValidAddress = useMemo(() => {
-    if (wallet.type === KeyringWalletType.MultiChainWallet) {
+    if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
       return controller.wallet.account.isValidDAGAddress(address) ||
         controller.wallet.account.isValidERC20Address(address);
     }
     else {
-      const asset = wallet.assets[0];
+      const asset = activeWallet.assets[0];
       if (asset.type === AssetType.Constellation) {
         return controller.wallet.account.isValidDAGAddress(address);
       }

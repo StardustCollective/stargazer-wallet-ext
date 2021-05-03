@@ -4,7 +4,7 @@ import {
   KDFParamsPrivateKey,
 } from '@stardust-collective/dag4-keystore/types/v3-keystore';
 import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -42,7 +42,7 @@ export interface IWalletState {
   id: string;
   type: KeyringWalletType;
   label: string;
-  supportedAssets: string; //eth,dag,erc20
+  supportedAssets: KeyringAssetType[]; //eth,dag,erc20
   //activeAssetId: string;
   // type: AccountType;
 }
@@ -86,8 +86,8 @@ export default interface IVaultState {
   status: number;
   version: string;
   wallets: IWalletState[];
-  wallet: IActiveWalletState;
-  asset: IActiveAssetState;
+  activeWallet: IActiveWalletState;
+  activeAsset: IActiveAssetState;
   activeNetwork: { //Network:ChainId
     [network: string]: string;
   };

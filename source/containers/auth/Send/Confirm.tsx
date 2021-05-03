@@ -23,13 +23,13 @@ const SendConfirm = () => {
   const getFiatAmount = useFiat(false);
   const alert = useAlert();
 
-  const { wallet, asset }: IVaultState = useSelector(
+  const { activeWallet, activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const assetInfo = assets[asset.id];
+  const assetInfo = assets[activeAsset.id];
 
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
@@ -37,7 +37,7 @@ const SendConfirm = () => {
   const getTotalAmount = () => {
     return (
       Number(getFiatAmount(Number(tempTx?.amount || 0), 8)) +
-      Number(getFiatAmount(Number(tempTx?.fee || 0), 8, asset.type))
+      Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type))
     ).toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
@@ -78,7 +78,7 @@ const SendConfirm = () => {
           <UpArrowIcon />
         </div>
         {Number(tempTx?.amount || 0) +
-          (asset.type === AssetType.Ethereum
+          (activeAsset.type === AssetType.Ethereum
             ? Number(tempTx?.fee || 0)
             : 0)}{' '}
         {assetInfo.symbol}
@@ -91,7 +91,7 @@ const SendConfirm = () => {
         <div className={styles.row}>
           From
           <span>
-            {wallet?.label || ''} ({ellipsis(tempTx!.fromAddress)})
+            {activeWallet?.label || ''} ({ellipsis(tempTx!.fromAddress)})
           </span>
         </div>
         <div className={styles.row}>
@@ -101,10 +101,10 @@ const SendConfirm = () => {
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {`${tempTx!.fee} ${assets[asset.id].symbol} (≈ $${getFiatAmount(
+            {`${tempTx!.fee} ${assets[activeAsset.id].symbol} (≈ $${getFiatAmount(
               tempTx?.fee || 0,
               2,
-              asset.type
+              activeAsset.type
             )})`}
           </span>
         </div>

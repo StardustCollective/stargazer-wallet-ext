@@ -21,7 +21,7 @@ interface IWalletContacts {
 
 const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
   const controller = useController();
-  const { asset }: IVaultState = useSelector(
+  const { activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const contacts: IContactBookState = useSelector(
@@ -35,9 +35,9 @@ const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
 
   const isValidContact = (contact: IContactState) => {
     return (
-      (asset.type === AssetType.Constellation &&
+      (activeAsset.type === AssetType.Constellation &&
         isDAGAddress(contact.address)) ||
-      (asset.type !== AssetType.Constellation &&
+      (activeAsset.type !== AssetType.Constellation &&
         !isDAGAddress(contact.address))
     );
   };

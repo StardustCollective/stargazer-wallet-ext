@@ -38,14 +38,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const getFiatAmount = useFiat();
   const controller = useController();
   const alert = useAlert();
-  const { asset }: IVaultState = useSelector(
+  const { activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
   // const account = accounts[activeAccountId];
-  const assetInfo = assets[asset.id];
+  const assetInfo = assets[activeAsset.id];
   const tempTx = controller.wallet.account.getTempTx();
 
   const { handleSubmit, register, errors } = useForm({
@@ -53,7 +53,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       address: yup.string().required('Error: Invalid DAG address'),
       amount: yup.number().moreThan(0).required('Error: Invalid DAG Amount'),
       fee:
-        asset.type === AssetType.Constellation
+        activeAsset.type === AssetType.Constellation
           ? yup.string().required('Error: Invalid transaction fee')
           : yup.string(),
     }),
@@ -71,7 +71,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const [gasFee, setGasFee] = useState<number>(0);
 
   const isValidAddress = useMemo(() => {
-    if (asset.type === AssetType.Constellation)
+    if (activeAsset.type === AssetType.Constellation)
       return controller.wallet.account.isValidDAGAddress(address);
     return controller.wallet.account.isValidERC20Address(address);
   }, [address]);
@@ -93,12 +93,12 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       return;
     }
     const txConfig: any = {
-      fromAddress: asset.address,
+      fromAddress: activeAsset.address,
       toAddress: data.address,
       amount: data.amount,
       fee: data.fee || gasFee,
     };
-    if (asset.type !== AssetType.Constellation) {
+    if (activeAsset.type !== AssetType.Constellation) {
       txConfig.ethConfig = {
         gas: currentGas,
       };
@@ -108,11 +108,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   };
 
   const isDisabled = useMemo(() => {
-    const { balance } = asset;
+    const { balance } = activeAsset;
     const txFee =
-      asset.type === AssetType.Constellation
+      activeAsset.type === AssetType.Constellation
         ? Number(fee)
-        : asset.type === AssetType.Ethereum
+        : activeAsset.type === AssetType.Ethereum
         ? gasFee
         : 0;
     console.log(Number(amount) + txFee > balance);
@@ -201,13 +201,13 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleSetMax = () => {
     const txFee =
-      asset.id === AssetType.Constellation
+      activeAsset.id === AssetType.Constellation
         ? Number(fee)
-        : asset.id === AssetType.Ethereum
+        : activeAsset.id === AssetType.Ethereum
         ? gasFee
         : 0;
     setAmount(
-      String(Math.max(asset.balance - txFee, 0))
+      String(Math.max(activeAsset.balance - txFee, 0))
     );
   };
 
@@ -232,7 +232,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
           <div>
             Balance:{' '}
             <span>
-              {formatNumber(asset.balance)}
+              {formatNumber(activeAsset.balance)}
             </span>{' '}
             {assetInfo.symbol}
           </div>
@@ -289,7 +289,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               </Button>
             </li>
 
-            {asset.type === AssetType.Constellation && (
+            {activeAsset.type === AssetType.Constellation && (
               <li>
                 <label>Transaction Fee</label>
                 <TextInput
@@ -322,13 +322,13 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               </span>
             )}
           </div>
-          {asset.type === AssetType.Constellation && (
+          {activeAsset.type === AssetType.Constellation && (
             <div className={styles.description}>
               {`With current network conditions we recommend a fee of ${recommend} DAG.`}
             </div>
           )}
         </section>
-        {asset.type !== AssetType.Constellation && (
+        {activeAsset.type !== AssetType.Constellation && (
           <section
             className={clsx(styles.transactionFee, {
               [styles.hide]: !gasPrices.length,

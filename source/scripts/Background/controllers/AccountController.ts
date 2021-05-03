@@ -372,9 +372,9 @@ export class AccountController implements IAccountController {
   // }
 
   async getLatestUpdate () {
-    const { wallet }: IVaultState = store.getState().vault;
+    const { activeWallet }: IVaultState = store.getState().vault;
 
-    if ( !wallet || wallet.type === undefined) return;
+    if ( !activeWallet || activeWallet.type === undefined) return;
 
     // const accLatestInfo =
     //   wallet.type === KeyringWalletType.MultiChainWallet
@@ -461,13 +461,13 @@ export class AccountController implements IAccountController {
   }
 
   async updateTxs (limit = 10, searchAfter?: string) {
-    const { asset }: IVaultState = store.getState().vault;
-    if (!asset) return;
+    const { activeAsset }: IVaultState = store.getState().vault;
+    if (!activeAsset) return;
     const newTxs = await dag4.account.getTransactions(limit, searchAfter);
     store.dispatch(
       updateTransactions({
         txs: [
-          ...asset.transactions,
+          ...activeAsset.transactions,
           ...newTxs,
         ],
       })
@@ -504,10 +504,10 @@ export class AccountController implements IAccountController {
     }
 
     try {
-      const { asset }: IVaultState = store.getState().vault;
+      const { activeAsset }: IVaultState = store.getState().vault;
       const assets: IAssetListState = store.getState().assets;
 
-      if (asset.type === AssetType.Constellation) {
+      if (activeAsset.type === AssetType.Constellation) {
         const pendingTx = await dag4.account.transferDag(
           this.tempTx.toAddress,
           this.tempTx.amount,
@@ -518,7 +518,7 @@ export class AccountController implements IAccountController {
           updateTransactions({
             txs: [
               this._coventDAGPendingTx(pendingTx),
-              ...asset.transactions,
+              ...activeAsset.transactions,
             ],
           })
         );
@@ -541,25 +541,25 @@ export class AccountController implements IAccountController {
               )
             : undefined,
           gasLimit:
-            gasLimit && asset.type === AssetType.Ethereum
+            gasLimit && activeAsset.type === AssetType.Ethereum
               ? BigNumber.from(gasLimit)
               : undefined,
           nonce: nonce,
         };
-        if (asset.type !== AssetType.Ethereum) {
+        if (activeAsset.type !== AssetType.Ethereum) {
           txOptions.asset = utils.assetFromString(
-            `${utils.ETHChain}.${assets[asset.id].symbol}-${
-              assets[asset.id].contract
+            `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
+              assets[activeAsset.id].contract
             }`
           );
           txOptions.amount = utils.baseAmount(
             ethers.utils
               .parseUnits(
                 this.tempTx.amount.toString(),
-                assets[asset.id].decimals
+                assets[activeAsset.id].decimals
               )
               .toString(),
-            assets[asset.id].decimals
+            assets[activeAsset.id].decimals
           );
         }
         const txHash = await this.ethClient.transfer(txOptions);
@@ -569,7 +569,7 @@ export class AccountController implements IAccountController {
           toAddress: this.tempTx.toAddress,
           amount: this.tempTx.amount,
           network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
-          assetId: asset.id,
+          assetId: activeAsset.id,
           timestamp: new Date().getTime(),
         });
       }

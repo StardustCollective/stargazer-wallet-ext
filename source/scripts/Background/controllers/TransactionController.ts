@@ -57,17 +57,17 @@ const TransactionController = ({
 
   const getFullTxs = () => {
     const pendingData = _getPendingData();
-    const { asset, activeNetwork }: IVaultState = store.getState().vault;
+    const { activeAsset, activeNetwork }: IVaultState = store.getState().vault;
 
     const filteredData = Object.values(pendingData).filter(
       (pendingTx: IETHPendingTx) =>
         pendingTx.network === activeNetwork[AssetType.Ethereum] &&
-        pendingTx.assetId === asset.id
+        pendingTx.assetId === activeAsset.id
     );
 
     return [
       ...filteredData,
-      ...asset.transactions,
+      ...activeAsset.transactions,
     ];
   };
 

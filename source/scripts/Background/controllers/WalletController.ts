@@ -110,7 +110,7 @@ export class WalletController implements IWalletController {
   }
 
   switchNetwork (network: NetworkType, chainId: string) {
-    const { asset }: IVaultState = store.getState().vault;
+    const { activeAsset }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;
 
     if (network === NetworkType.Constellation && DAG_NETWORK[chainId]!.id) {
@@ -121,8 +121,8 @@ export class WalletController implements IWalletController {
       });
     }
 
-    if (assets[asset.id].network !== chainId) {
-      this.account.updateAccountActiveAsset(asset);
+    if (assets[activeAsset.id].network !== chainId) {
+      this.account.updateAccountActiveAsset(activeAsset);
     }
 
     store.dispatch(

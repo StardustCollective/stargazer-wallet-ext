@@ -21,7 +21,7 @@ import styles from './Asset.scss';
 const AssetDetail = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { wallet, asset, activeNetwork }: IVaultState = useSelector(
+  const { activeWallet, activeAsset, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -44,31 +44,31 @@ const AssetDetail = () => {
   };
 
   const fetchTxs = () => {
-    if (asset.type === AssetType.Constellation) {
-      return asset.transactions;
+    if (activeAsset.type === AssetType.Constellation) {
+      return activeAsset.transactions;
     }
     return controller.wallet.account.getFullETHTxs();
   };
 
   return (
     <div className={styles.wrapper}>
-      {wallet ? (
+      {activeWallet ? (
         <>
           <Header backLink="/home" />
           <section className={styles.account}>
             <AssetHeader
-              asset={assets[asset.id]}
-              address={asset.address}
-              addressUrl={getAddressURL(asset.address, asset.type, activeNetwork[asset.type])}
+              asset={assets[activeAsset.id]}
+              address={activeAsset.address}
+              addressUrl={getAddressURL(activeAsset.address, activeAsset.type, activeNetwork[activeAsset.type])}
             />
           </section>
           <section className={styles.center}>
             <h3>
-              {formatNumber(asset.balance)}{' '}
-              <small>{assets[asset.id].symbol}</small>
+              {formatNumber(activeAsset.balance)}{' '}
+              <small>{assets[activeAsset.id].symbol}</small>
             </h3>
             <small>
-              ≈ {getFiatAmount(asset.balance)}
+              ≈ {getFiatAmount(activeAsset.balance)}
             </small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />
@@ -85,14 +85,14 @@ const AssetDetail = () => {
             </div>
           </section>
           <TxsPanel
-            address={asset.address}
+            address={activeAsset.address}
             transactions={fetchTxs()}
           />
         </>
       ) : (
         <section
           className={clsx(styles.mask, {
-            [styles.hide]: asset,
+            [styles.hide]: activeAsset,
           })}
         >
           <CircularProgress className={styles.loader} />

@@ -9,8 +9,8 @@ const initialState: IVaultState = {
   // keystores: {},
   status: 0,
   wallets: undefined,
-  wallet: undefined,
-  asset: undefined,
+  activeWallet: undefined,
+  activeAsset: undefined,
   // activeAccountId: '',
   activeNetwork: {
     [AssetType.Constellation]: DAG_NETWORK.main.id,
@@ -90,7 +90,7 @@ const VaultState = createSlice({
     //   };
     // },
     changeActiveWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
-      state.wallet = { assets:[], ...action.payload };
+      state.activeWallet = { assets:[], ...action.payload };
     },
     changeActiveNetwork(
       state: IVaultState,
@@ -105,13 +105,13 @@ const VaultState = createSlice({
       state: IVaultState,
       action: PayloadAction<{asset: IAssetState}>
     ) {
-      state.asset = { transactions: [], ...action.payload.asset };
+      state.activeAsset = { transactions: [], ...action.payload.asset };
     },
     updateTransactions(
       state: IVaultState,
       action: PayloadAction<{txs: Transaction[]}>
     ) {
-      state.asset.transactions = action.payload.txs;
+      state.activeAsset.transactions = action.payload.txs;
     },
     updateLabel(
       _state: IVaultState,
@@ -123,7 +123,7 @@ const VaultState = createSlice({
       state: IVaultState,
       action: PayloadAction<{asset: IActiveAssetState}>
     ) {
-      state.asset = action.payload.asset;
+      state.activeAsset = action.payload.asset;
     },
   },
 });
