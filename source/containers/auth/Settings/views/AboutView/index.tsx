@@ -7,7 +7,7 @@ const AboutView: FC = () => {
   return (
     <div className={styles.about}>
       <span>Stargazer Wallet Chrome Extension v2</span>
-      <span>Version: 2.1.0</span>
+      <span>Version: 2.1.1</span>
       <span>
         Support:{' '}
         <a

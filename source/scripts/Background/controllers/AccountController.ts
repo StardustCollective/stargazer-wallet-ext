@@ -11,13 +11,12 @@ import {
   // removeAccount,
   // removeKeystoreInfo,
   // updateAccount,
-  updateLabel,
+  // updateLabel,
   updateStatus,
   updateTransactions
 } from 'state/vault';
 import IVaultState, {
   AssetType,
-  IActiveWalletState,
   IAssetState,
   IWalletState,
 } from 'state/vault/types';
@@ -33,11 +32,9 @@ import { KeyringManager } from '@stardust-collective/dag4-keyring';
 // const TXS_LIMIT = 10;
 
 export class AccountController implements IAccountController {
-  privateKey = '';
-  intervalId: any;
-  password = '';
+  // intervalId: any;
   tempTx: ITransactionInfo | null;
-  wallet: IActiveWalletState | null;
+  // wallet: IActiveWalletState | null;
   ethClient: XChainEthClient;
   txController: ITransactionController;
   
@@ -431,7 +428,7 @@ export class AccountController implements IAccountController {
   // }
 
   updateWalletLabel (wallet: IWalletState, label: string) {
-    store.dispatch(updateLabel({ wallet, label }));
+    this.keyringManager.setWalletLabel(wallet.id, label);
   }
 
   updateAccountActiveAsset (asset: IAssetState) {

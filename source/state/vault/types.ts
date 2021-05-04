@@ -68,20 +68,6 @@ export interface IAccountUpdateState {
 //    Account - id, label
 //      Assets
 
-/*
-  "wallets": [
-    {
-      "id": "MCW1",
-      "type": "MCW",
-      "label": "Wallet #1",
-      "accounts": [
-        {
-          "label": "Constellation #1",
-          "address": "DAG6C2vbjLkH3wzxVJaEu1fCwLSobRCTQnARZxyo"
-        },
-
- */
-
 export default interface IVaultState {
   status: number;
   version: string;

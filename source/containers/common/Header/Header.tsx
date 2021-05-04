@@ -29,7 +29,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-  const hasMainAccount = wallets.some(w => w.type === KeyringWalletType.MultiChainWallet)
+  const hasMainAccount = wallets.length && wallets.some(w => w.type === KeyringWalletType.MultiChainWallet)
 
   const handleBack = () => {
     showSettings(false);

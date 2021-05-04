@@ -64,6 +64,7 @@ const AssetsPanel: FC = () => {
           .map((asset) => {
             return (
               <AssetItem
+                key={asset.id}
                 asset={asset}
                 assetInfo={assets[asset.id]}
                 itemClicked={() => handleSelectAsset(asset)}

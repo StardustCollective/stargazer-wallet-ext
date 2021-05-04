@@ -3,7 +3,7 @@ import store from 'state/store';
 import {
   changeActiveWallet,
   changeActiveNetwork,
-  // setVaultInfo,
+  setVaultInfo,
   updateStatus
 } from 'state/vault';
 import { AccountController } from './AccountController';
@@ -11,22 +11,20 @@ import { DAG_NETWORK } from 'constants/index';
 import IVaultState, { IWalletState, NetworkType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
-import { IKeyringWallet, KeyringManager, KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 
 export class WalletController implements IWalletController {
   account: Readonly<AccountController>;
   keyringManager: Readonly<KeyringManager>;
 
-  private tempSeed: string;
+  tempSeed = '';
 
   constructor () {
-    this.keyringManager = Object.freeze(new KeyringManager());
-    // this.keyringManager.on('update', (state: KeyringVaultState) => {
-    //   store.dispatch(
-    //     setVaultInfo(state)
-    //   );
-    // })
+    this.keyringManager = new KeyringManager();
+    this.keyringManager.on('update', (state: KeyringVaultState) => {
+      store.dispatch(setVaultInfo(state));
+    })
 
     this.account = Object.freeze(
       new AccountController(this.keyringManager)
@@ -71,7 +69,7 @@ export class WalletController implements IWalletController {
   }
 
   async importSingleAccount (label: string, network: KeyringNetwork, privateKey: string) {
-    const wallet = await this.keyringManager.createNewPrivateKeyWallet(label, network, privateKey);
+    const wallet = await this.keyringManager.createSingleAccountWallet(label, network, privateKey);
 
     return wallet.id;
   }
@@ -82,7 +80,7 @@ export class WalletController implements IWalletController {
       wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
     }
     else {
-      wallet = this.keyringManager.createMultiChainHdWallet(label, phrase);
+      wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
     }
 
     if (resetAll) {

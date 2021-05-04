@@ -28,6 +28,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     port.sender.url &&
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
+    //TODO: implement fallback URLs
     const networkId =
       store.getState().vault!.activeNetwork[AssetType.Constellation] ||
       DAG_NETWORK.main.id;

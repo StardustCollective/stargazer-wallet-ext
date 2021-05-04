@@ -4,11 +4,11 @@ import { Transaction } from '@stardust-collective/dag4-network';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
 import IVaultState, { AssetType, IActiveAssetState, IAssetState, IWalletState, NetworkType } from './types';
+import { KeyringVaultState } from '@stardust-collective/dag4-keyring';
 
 const initialState: IVaultState = {
-  // keystores: {},
   status: 0,
-  wallets: undefined,
+  wallets: [],
   activeWallet: undefined,
   activeAsset: undefined,
   // activeAccountId: '',
@@ -16,7 +16,7 @@ const initialState: IVaultState = {
     [AssetType.Constellation]: DAG_NETWORK.main.id,
     [AssetType.Ethereum]: ETH_NETWORK.mainnet.id,
   },
-  version: '2.1.0',
+  version: '2.1.1',
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -24,12 +24,12 @@ const VaultState = createSlice({
   name: 'vault',
   initialState,
   reducers: {
-    // setVaultInfo(
-    //   state: IVaultState,
-    //   action: PayloadAction<KeyringVaultState>
-    // ) {
-    //   state.wallets = action.payload.wallets
-    // },
+    setVaultInfo(
+      state: IVaultState,
+      action: PayloadAction<KeyringVaultState>
+    ) {
+      state.wallets = action.payload.wallets
+    },
     // setKeystoreInfo(
     //   state: IVaultState,
     //   action: PayloadAction<{ keystore: Keystore; networkType: NetworkType }>
@@ -113,12 +113,12 @@ const VaultState = createSlice({
     ) {
       state.activeAsset.transactions = action.payload.txs;
     },
-    updateLabel(
-      _state: IVaultState,
-      action: PayloadAction<{ wallet: IWalletState; label: string }>
-    ) {
-      action.payload.wallet.label = action.payload.label;
-    },
+    // updateLabel(
+    //   state: IVaultState,
+    //   action: PayloadAction<{ wallet: IWalletState; label: string }>
+    // ) {
+    //   state.activeWallet.label = action.payload.label;
+    // },
     addAsset(
       state: IVaultState,
       action: PayloadAction<{asset: IActiveAssetState}>
@@ -129,7 +129,7 @@ const VaultState = createSlice({
 });
 
 export const {
-  // setVaultInfo,
+  setVaultInfo,
   // setKeystoreInfo,
   // removeKeystoreInfo,
   updateStatus,
@@ -142,7 +142,7 @@ export const {
   changeActiveAsset,
   // updateAccount,
   updateTransactions,
-  updateLabel,
+  // updateLabel,
   addAsset
 } = VaultState.actions;
 
