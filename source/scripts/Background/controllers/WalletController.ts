@@ -13,6 +13,8 @@ import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
+// @ts-ignore
+import { HdKeyring } from '@stardust-collective/dag4-keyring/esm/rings';
 
 export class WalletController implements IWalletController {
   account: Readonly<AccountController>;
@@ -44,8 +46,13 @@ export class WalletController implements IWalletController {
     return this.tempSeed;
   }
 
-  async importPhrase (phrase: string) {
-    await this.createWallet('Main Wallet', phrase, true);
+  importPhrase (phrase: string) {
+    if(HdKeyring.validateMnemonic(phrase)) {
+      this.tempSeed = phrase;
+      return true;
+    }
+    return false;
+    //await this.createWallet('Main Wallet', phrase, true);
   }
 
   isUnlocked () {
@@ -76,12 +83,15 @@ export class WalletController implements IWalletController {
 
   async createWallet ( label: string, phrase?: string, resetAll = false) {
     let wallet: IKeyringWallet;
+    phrase = phrase || this.tempSeed;
     if (resetAll) {
       wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
     }
     else {
       wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
     }
+
+    this.tempSeed = null;
 
     if (resetAll) {
       await this.account.getLatestUpdate();
