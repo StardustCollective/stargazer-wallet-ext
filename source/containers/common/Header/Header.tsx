@@ -11,7 +11,7 @@ import LogoImage from 'assets/images/logo-s.svg';
 
 import styles from './Header.scss';
 import { MAIN_VIEW } from 'containers/auth/Settings/views/routes';
-import IVaultState  from 'state/vault/types';
+import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
@@ -24,12 +24,14 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const history = useHistory();
   const controller = useController();
   const showView = useSettingsView();
-  const isUnlocked = !controller.wallet.isLocked();
+  const isUnlocked = controller.wallet.isUnlocked();
   const [showed, showSettings] = useState(false);
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-  const hasMainAccount = wallets.length && wallets.some(w => w.type === KeyringWalletType.MultiChainWallet)
+  const hasMainAccount =
+    wallets.length &&
+    wallets.some((w) => w.type === KeyringWalletType.MultiChainWallet);
 
   const handleBack = () => {
     showSettings(false);

@@ -1,4 +1,4 @@
-import {WalletController}  from './WalletController';
+import { WalletController } from './WalletController';
 import { IWalletController } from './IWalletController';
 import ControllerUtils from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
@@ -17,7 +17,7 @@ const MasterController = (): IMasterController => {
   const wallet = new WalletController();
   const utils = Object.freeze(ControllerUtils());
   const contacts = Object.freeze(
-    ContactsController({ isLocked: wallet.isLocked })
+    ContactsController({ isUnlocked: wallet.isUnlocked })
   );
   const assets = Object.freeze(AssetsController(() => utils.updateFiat()));
 
