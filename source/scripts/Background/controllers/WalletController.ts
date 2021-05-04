@@ -48,8 +48,8 @@ export class WalletController implements IWalletController {
     await this.createWallet('Main Wallet', phrase, true);
   }
 
-  isLocked () {
-    return !this.keyringManager.isUnlocked();
+  isUnlocked () {
+    return this.keyringManager.isUnlocked();
   }
 
   getPhrase (walletId: string, password: string) {

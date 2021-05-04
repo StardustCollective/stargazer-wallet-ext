@@ -14,7 +14,7 @@ export interface IWalletController {
   getGeneratedSeedPhrase: () => string;
   setWalletPassword: (password: string) => void;
   importPhrase: (phrase: string) => Promise<void>;
-  isLocked: () => boolean;
+  isUnlocked: () => boolean;
   unLock: (password: string) => Promise<boolean>;
   checkPassword: (password: string) => boolean;
   getPhrase: (walletId: string, password: string) => string;
