@@ -9,11 +9,12 @@ import * as yup from 'yup';
 import { useController, useSettingsView } from 'hooks/index';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
-import IVaultState  from 'state/vault/types';
+import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
 
 import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IRemoveWalletView {
   id: string;
@@ -29,6 +30,8 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
     (state: RootState) => state.vault
   );
   const wallet = wallets.find(w => w.id === id);
+  const disabled = wallet.type === KeyringWalletType.MultiChainWallet &&
+    wallets.filter(w => w.type === KeyringWalletType.MultiChainWallet).length < 2;
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -78,7 +81,7 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
           <Button
             type="submit"
             variant={styles.button}
-            disabled={wallets.length <= 1}
+            disabled={disabled}
           >
             Done
           </Button>

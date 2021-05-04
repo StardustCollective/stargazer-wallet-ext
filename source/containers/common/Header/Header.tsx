@@ -47,7 +47,9 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
 
   return (
     <div className={styles.header}>
-      {showLogo ? (
+      {showed ? (
+        <i style={{ width: '83px' }}></i>
+      ) : showLogo ? (
         <Link to="/app.html" onClick={handleCloseSettings}>
           <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
         </Link>

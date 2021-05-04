@@ -6,6 +6,9 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  height: 468px;
+  padding-bottom: 24px;
+  overflow: auto;
 
   label {
     font-size: 10px;
