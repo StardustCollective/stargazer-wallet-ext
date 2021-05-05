@@ -20,7 +20,7 @@ const CreatePhrase: FC = () => {
     ? consts.CREATE_PHRASE_DESCRIPTION2
     : consts.CREATE_PHRASE_DESCRIPTION1;
 
-  const phrases = controller.wallet.generateSeedPhrase();
+  const phrases = controller.wallet.onboardHelper.getSeedPhrase();
 
   const nextHandler = () => {
     if (passed && phrases) {

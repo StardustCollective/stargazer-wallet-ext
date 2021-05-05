@@ -15,6 +15,7 @@ interface IImportPhrase {
 
 const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
   const controller = useController();
+
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       phrase: yup.string().required(),
@@ -22,7 +23,7 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
   });
 
   const onSubmit = (data: any) => {
-    if (controller.wallet.importPhrase(data.phrase)) {
+    if (controller.wallet.onboardHelper.importAndValidateSeedPhrase(data.phrase)) {
       onRegister();
     }
   };

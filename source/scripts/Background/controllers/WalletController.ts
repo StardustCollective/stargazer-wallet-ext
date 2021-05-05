@@ -13,16 +13,15 @@ import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
-// @ts-ignore
-import { HdKeyring } from '@stardust-collective/dag4-keyring/esm/rings';
+import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 
 export class WalletController implements IWalletController {
   account: Readonly<AccountController>;
   keyringManager: Readonly<KeyringManager>;
-
-  tempSeed = '';
+  onboardHelper: Readonly<OnboardWalletHelper>;
 
   constructor () {
+    this.onboardHelper = new OnboardWalletHelper();
     this.keyringManager = new KeyringManager();
     this.keyringManager.on('update', (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
@@ -37,23 +36,23 @@ export class WalletController implements IWalletController {
     return this.keyringManager.checkPassword(password)
   }
 
-  generateSeedPhrase () {
-    this.tempSeed = this.keyringManager.generateSeedPhrase();
-    return this.tempSeed;
-  }
-
-  getGeneratedSeedPhrase () {
-    return this.tempSeed;
-  }
-
-  importPhrase (phrase: string) {
-    if(HdKeyring.validateMnemonic(phrase)) {
-      this.tempSeed = phrase;
-      return true;
-    }
-    return false;
-    //await this.createWallet('Main Wallet', phrase, true);
-  }
+  // generateSeedPhrase () {
+  //   this.tempSeed = this.keyringManager.generateSeedPhrase();
+  //   return this.tempSeed;
+  // }
+  //
+  // getGeneratedSeedPhrase () {
+  //   return this.tempSeed;
+  // }
+  //
+  // importPhrase (phrase: string) {
+  //   if(HdKeyring.validateMnemonic(phrase)) {
+  //     this.tempSeed = phrase;
+  //     return true;
+  //   }
+  //   return false;
+  //   //await this.createWallet('Main Wallet', phrase, true);
+  // }
 
   isUnlocked () {
     return this.keyringManager.isUnlocked();
@@ -83,15 +82,13 @@ export class WalletController implements IWalletController {
 
   async createWallet ( label: string, phrase?: string, resetAll = false) {
     let wallet: IKeyringWallet;
-    phrase = phrase || this.tempSeed;
+    ;
     if (resetAll) {
       wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
     }
     else {
       wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
     }
-
-    this.tempSeed = null;
 
     if (resetAll) {
       await this.account.getLatestUpdate();

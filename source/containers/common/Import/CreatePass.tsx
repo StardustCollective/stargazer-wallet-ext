@@ -25,7 +25,8 @@ const CreatePass = () => {
 
   const nextHandler = () => {
     if (passed) {
-      controller.wallet.createWallet('Main Wallet',null, true);
+      const phrase = controller.wallet.onboardHelper.getSeedPhrase();
+      controller.wallet.createWallet('Main Wallet', phrase, true);
       history.push('/home');
     }
   };
