@@ -14,7 +14,7 @@ export interface IMasterController {
 }
 
 const MasterController = (): IMasterController => {
-  const wallet = new WalletController();
+  const wallet = Object.freeze(new WalletController());
   const utils = Object.freeze(ControllerUtils());
   const contacts = Object.freeze(
     ContactsController({ isUnlocked: wallet.isUnlocked })

@@ -28,7 +28,10 @@ const VaultState = createSlice({
       state: IVaultState,
       action: PayloadAction<KeyringVaultState>
     ) {
-      state.wallets = action.payload.wallets
+      state.wallets = action.payload.wallets;
+      if (!state.activeWallet) {
+        state.activeWallet = { assets:[], ...state.wallets[0] };
+      }
     },
     // setKeystoreInfo(
     //   state: IVaultState,

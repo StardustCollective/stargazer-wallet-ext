@@ -1,5 +1,4 @@
-// @ts-ignore
-import { HdKeyring } from '@stardust-collective/dag4-keyring/esm/rings';
+import { Bip39Helper } from '@stardust-collective/dag4-keyring';
 
 export class OnboardWalletHelper {
   private phrase: string;
@@ -13,12 +12,12 @@ export class OnboardWalletHelper {
   }
 
   generateSeedPhrase () {
-    this.phrase = HdKeyring.generateMnemonic();
+    this.phrase = Bip39Helper.generateMnemonic();
     return this.phrase;
   }
 
   importAndValidateSeedPhrase (phrase: string) {
-    if(HdKeyring.validateMnemonic(phrase)) {
+    if(Bip39Helper.validateMnemonic(phrase)) {
       this.phrase = phrase;
       return true;
     }
