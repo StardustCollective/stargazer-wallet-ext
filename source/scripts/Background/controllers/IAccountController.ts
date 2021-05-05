@@ -1,5 +1,5 @@
 import { ITransactionInfo } from '../../types';
-import { IAssetState, IWalletState } from '../../../state/vault/types';
+import { IAssetState } from '../../../state/vault/types';
 import { IAssetInfoState } from '../../../state/assets/types';
 
 
@@ -16,7 +16,7 @@ export interface IAccountController {
   // addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   getFullETHTxs: () => any[];
-  updateWalletLabel: (wallet: IWalletState, label: string) => void;
+  updateWalletLabel: (walletId: string, label: string) => void;
   updateAccountActiveAsset: (asset: IAssetState) => void;
   addNewAsset: (asset: IAssetInfoState) => Promise<void>;
   // importPrivKeyAccount: (

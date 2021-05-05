@@ -33,11 +33,10 @@ const Home = () => {
           <Header showLogo />
           {
             <>
-              {/*<section className={styles.wallet}>{wallet.label}</section>*/}
+              <section className={styles.account}>{activeWallet.label}</section>
               <section className={styles.center}>
-                <h3 style={{paddingBottom: '4px'}}>{totalBalance[0]}</h3>
-                <small>{activeWallet.label}</small>
-                {/*<small>{`≈ ₿${totalBalance[1]}`}</small>*/}
+                <h3>{totalBalance[0]}</h3>
+                <small>{`≈ ₿${totalBalance[1]}`}</small>
                 <IconButton className={styles.refresh} onClick={handleRefresh}>
                   <RefreshIcon />
                 </IconButton>

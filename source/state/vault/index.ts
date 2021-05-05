@@ -3,12 +3,17 @@ import { Transaction } from '@stardust-collective/dag4-network';
 
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
-import IVaultState, { AssetType, IActiveAssetState, IAssetState, IWalletState, NetworkType } from './types';
+import IVaultState, {
+  AssetType,
+  IAssetState, IWalletState,
+  NetworkType
+} from './types';
 import { KeyringVaultState } from '@stardust-collective/dag4-keyring';
 
 const initialState: IVaultState = {
   status: 0,
   wallets: [],
+  // activeWalletId: undefined,
   activeWallet: undefined,
   activeAsset: undefined,
   // activeAccountId: '',
@@ -29,9 +34,9 @@ const VaultState = createSlice({
       action: PayloadAction<KeyringVaultState>
     ) {
       state.wallets = action.payload.wallets;
-      if (!state.activeWallet) {
-        state.activeWallet = { assets:[], ...state.wallets[0] };
-      }
+      // if (!state.activeWallet) {
+      //   state.activeWallet = { assets:[], ...state.wallets[0] };
+      // }
     },
     // setKeystoreInfo(
     //   state: IVaultState,
@@ -93,7 +98,10 @@ const VaultState = createSlice({
     //   };
     // },
     changeActiveWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
-      state.activeWallet = { assets:[], ...action.payload };
+      state.activeWallet = action.payload;
+      if (state.activeAsset) {
+        state.activeAsset = state.activeWallet.assets[0];
+      }
     },
     changeActiveNetwork(
       state: IVaultState,
@@ -124,7 +132,7 @@ const VaultState = createSlice({
     // },
     addAsset(
       state: IVaultState,
-      action: PayloadAction<{asset: IActiveAssetState}>
+      action: PayloadAction<{asset: IAssetState}>
     ) {
       state.activeAsset = action.payload.asset;
     },

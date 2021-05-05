@@ -4,7 +4,7 @@ import {
   KDFParamsPrivateKey,
 } from '@stardust-collective/dag4-keystore/types/v3-keystore';
 import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
-import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringAssetType, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -27,29 +27,35 @@ export type Transaction = DAGTransaction | any;
 
 export interface IAssetState {
   id: string;
-  type: AssetType;
+  type?: AssetType;
   label: string;
-  balance: number;
-  address: string;
+  balance?: number;
+  address?: string;
   contract?: string;
-}
-
-export interface IActiveAssetState extends IAssetState {
   transactions: Transaction[];
 }
+
+// export interface IActiveAssetState extends IAssetState {
+//   transactions: Transaction[];
+// }
 
 export interface IWalletState {
   id: string;
   type: KeyringWalletType;
   label: string;
   supportedAssets: KeyringAssetType[]; //eth,dag,erc20
+  assets: IAssetState[];
+  // accounts: {
+  //   address: string,
+  //   assets: IAssetState[]
+  // }[]
   //activeAssetId: string;
   // type: AccountType;
 }
 
-export interface IActiveWalletState extends IWalletState {
-  assets: IAssetState[];
-}
+// export interface IActiveWalletState extends IWalletState {
+//   assets: IAssetState[];
+// }
 
 export interface IAccountUpdateState {
   id: string;
@@ -68,12 +74,16 @@ export interface IAccountUpdateState {
 //    Account - id, label
 //      Assets
 
+//separate descriptors and instances
+//walletInfoMap[id]: WalletInfo
+//activeWallet: WalletState
 export default interface IVaultState {
   status: number;
   version: string;
-  wallets: IWalletState[];
-  activeWallet: IActiveWalletState;
-  activeAsset: IActiveAssetState;
+  //activeWalletId: string; //Can be used to rebuild activeWallet
+  wallets: KeyringWalletState[];
+  activeWallet: IWalletState;
+  activeAsset: IAssetState;
   activeNetwork: { //Network:ChainId
     [network: string]: string;
   };

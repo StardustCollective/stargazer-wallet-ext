@@ -6,7 +6,7 @@ import CheckIcon from '@material-ui/icons/CheckCircleRounded';
 
 import Icon from 'components/Icon';
 import { RootState } from 'state/store';
-import IVaultState, { AssetType, IWalletState } from 'state/vault/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import { useController, useSettingsView } from 'hooks/index';
 
 import StargazerIcon from 'assets/images/logo-s.svg';
@@ -33,18 +33,18 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
     (w) => w.type === KeyringWalletType.SimpleAccountWallet
   );
 
-  const handleSwitchWallet = async (wallet: IWalletState) => {
-    await controller.wallet.switchWallet(wallet);
+  const handleSwitchWallet = async (walletId: string) => {
+    await controller.wallet.switchWallet(walletId);
     //controller.wallet.account.watchMemPool();
   };
 
   const handleManageWallet = (
     ev: MouseEvent<HTMLButtonElement>,
-    wallet: IWalletState
+    walletId: string
   ) => {
     ev.stopPropagation();
-    controller.wallet.switchWallet(wallet);
-    onChange(wallet.id);
+    controller.wallet.switchWallet(walletId);
+    onChange(walletId);
     showView(MANAGE_WALLET_VIEW);
   };
 
@@ -58,9 +58,9 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
             <section
               className={styles.wallet}
               key={wallet.id}
-              onClick={() => handleSwitchWallet(wallet)}
+              onClick={() => handleSwitchWallet(wallet.id)}
             >
-              {wallet === activeWallet && (
+              {wallet.id === activeWallet.id && (
                 <CheckIcon className={styles.check} />
               )}
               <Icon Component={StargazerIcon} />
@@ -70,7 +70,7 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
               </span>
               <IconButton
                 className={styles.details}
-                onClick={(ev) => handleManageWallet(ev, wallet)}
+                onClick={(ev) => handleManageWallet(ev, wallet.id)}
               >
                 <InfoIcon />
               </IconButton>
@@ -85,9 +85,9 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
               <section
                 className={styles.wallet}
                 key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet)}
+                onClick={() => handleSwitchWallet(wallet.id)}
               >
-                {wallet === activeWallet && (
+                {wallet.id === activeWallet.id && (
                   <CheckIcon className={styles.check} />
                 )}
                 <Icon
@@ -107,7 +107,7 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
                 </span>
                 <IconButton
                   className={styles.details}
-                  onClick={(ev) => handleManageWallet(ev, wallet)}
+                  onClick={(ev) => handleManageWallet(ev, wallet.id)}
                 >
                   <InfoIcon />
                 </IconButton>

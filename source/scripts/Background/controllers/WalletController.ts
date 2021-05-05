@@ -1,14 +1,14 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
 import {
-  changeActiveWallet,
+  // changeActiveWallet,
   changeActiveNetwork,
   setVaultInfo,
   updateStatus
 } from 'state/vault';
 import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
-import IVaultState, { IWalletState, NetworkType } from 'state/vault/types';
+import IVaultState, { NetworkType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
@@ -25,34 +25,18 @@ export class WalletController implements IWalletController {
     this.keyringManager = new KeyringManager();
     this.keyringManager.on('update', (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
+      const vault: IVaultState = store.getState().vault;
+      if (vault && !vault.activeWallet) {
+        this.switchWallet(state.wallets[0].id);
+      }
     })
 
-    this.account = Object.freeze(
-      new AccountController(this.keyringManager)
-    );
+    this.account = new AccountController(this.keyringManager);
   }
 
   checkPassword (password: string) {
     return this.keyringManager.checkPassword(password)
   }
-
-  // generateSeedPhrase () {
-  //   this.tempSeed = this.keyringManager.generateSeedPhrase();
-  //   return this.tempSeed;
-  // }
-  //
-  // getGeneratedSeedPhrase () {
-  //   return this.tempSeed;
-  // }
-  //
-  // importPhrase (phrase: string) {
-  //   if(HdKeyring.validateMnemonic(phrase)) {
-  //     this.tempSeed = phrase;
-  //     return true;
-  //   }
-  //   return false;
-  //   //await this.createWallet('Main Wallet', phrase, true);
-  // }
 
   isUnlocked () {
     return this.keyringManager.isUnlocked();
@@ -90,9 +74,10 @@ export class WalletController implements IWalletController {
       wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
     }
 
-    if (resetAll) {
-      await this.account.getLatestUpdate();
-    }
+    // if (resetAll) {
+    //   await this.account.getLatestUpdate();
+    // }
+    await this.switchWallet(wallet.id);
 
     return wallet.id;
   }
@@ -108,9 +93,11 @@ export class WalletController implements IWalletController {
     return false;
   }
 
-  async switchWallet (wallet: IWalletState) {
-    store.dispatch(changeActiveWallet(wallet));
+  async switchWallet (id: string) {
+    //store.dispatch(changeActiveWallet(wallet));
+    await this.account.buildAccountAssetInfo(id);
     await this.account.getLatestUpdate();
+    // store.dispatch(updateStatus());
     dag4.monitor.startMonitor();
   }
 

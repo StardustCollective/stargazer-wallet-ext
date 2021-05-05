@@ -5,12 +5,14 @@ import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
 
 export function useFiat(currencyName = true) {
-  const { fiat, currency }: IPriceState = useSelector(
-    (state: RootState) => state.price
-  );
   const { activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+
+  const { fiat, currency }: IPriceState = useSelector(
+    (state: RootState) => state.price
+  );
+
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );

@@ -4,21 +4,11 @@ import { utils, XChainEthClient } from '@stardust-collective/dag4-xchain-ethereu
 import { PendingTx, Transaction } from '@stardust-collective/dag4-network';
 
 import store from 'state/store';
-import {
-  // addAsset,
-  changeActiveAsset,
-  // createAccount,
-  // removeAccount,
-  // removeKeystoreInfo,
-  // updateAccount,
-  // updateLabel,
-  updateStatus,
-  updateTransactions
-} from 'state/vault';
+import { changeActiveAsset, changeActiveWallet, updateStatus, updateTransactions } from 'state/vault';
 import IVaultState, {
   AssetType,
   IAssetState,
-  IWalletState,
+  IWalletState
 } from 'state/vault/types';
 
 import { ETHNetwork, ITransactionInfo } from '../../types';
@@ -26,10 +16,13 @@ import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import TransactionController, { ITransactionController } from './TransactionController';
 
 import { IAccountController } from './IAccountController';
-import { KeyringManager } from '@stardust-collective/dag4-keyring';
+import {
+  KeyringAssetInfo,
+  KeyringManager, KeyringNetwork, KeyringWalletState
+} from '@stardust-collective/dag4-keyring';
 
 // limit number of txs
-// const TXS_LIMIT = 10;
+const TXS_LIMIT = 10;
 
 export class AccountController implements IAccountController {
   // intervalId: any;
@@ -37,6 +30,8 @@ export class AccountController implements IAccountController {
   // wallet: IActiveWalletState | null;
   ethClient: XChainEthClient;
   txController: ITransactionController;
+
+  // private activeWallet: IActiveWalletState;
   
   constructor(private keyringManager: Readonly<KeyringManager>) {
     this.txController = Object.freeze(
@@ -65,83 +60,62 @@ export class AccountController implements IAccountController {
     } as Transaction;
   }
 
-  // private async _fetchSingleERC20Asset (asset: IAssetInfoState): Promise<IActiveAssetState> {
-  //   const ethAddress = this.ethClient.getAddress();
-  //   // const assetList: IAssetListState = store.getState().assets;
-  //   const { contract, decimals, symbol, network } = asset;
+  private async _fetchSingleERC20Asset (asset: KeyringAssetInfo): Promise<IAssetState> {
+    const ethAddress = this.ethClient.getAddress();
+    // const assetList: IAssetListState = store.getState().assets;
+    const { address, decimals, symbol, network } = asset;
+
+    if (!address || !decimals) return null;
+    const balance = await this.ethClient.getTokenBalance(
+      ethAddress,
+      {
+        address: address,
+        decimals,
+        symbol,
+      },
+      network === 'mainnet' ? 1 : 3
+    );
+
+    const transactions = await this.ethClient.getTransactions({
+      address: ethAddress,
+      limit: TXS_LIMIT,
+      asset: address,
+    });
+
+    return {
+      id: asset.id,
+      type: AssetType.ERC20,
+      label: '',
+      balance,
+      address: ethAddress,
+      transactions: transactions.txs.map((tx) => {
+        return {
+          ...tx,
+          balance: ethers.utils.formatUnits(
+            tx.from[0].amount.amount().toString(),
+            asset.decimals || 18
+          ),
+        };
+      }),
+    };
+  }
   //
-  //   if (!contract || !decimals) return null;
-  //   const balance = await this.ethClient.getTokenBalance(
-  //     ethAddress,
-  //     {
-  //       address: contract,
-  //       decimals,
-  //       symbol,
-  //     },
-  //     network === 'mainnet' ? 1 : 3
-  //   );
-  //   const transactions = await this.ethClient.getTransactions({
-  //     address: ethAddress,
-  //     limit: TXS_LIMIT,
-  //     asset: contract,
-  //   });
-  //
-  //   return {
-  //     id: asset.id,
-  //     type: asset.type,
-  //     balance,
-  //     address: ethAddress,
-  //     transactions: transactions.txs.map((tx) => {
-  //       return {
-  //         ...tx,
-  //         balance: ethers.utils.formatUnits(
-  //           tx.from[0].amount.amount().toString(),
-  //           asset.decimals || 18
-  //         ),
-  //       };
-  //     }),
-  //   };
-  // }
-  //
-  // private async _fetchERC20Assets (accountAddress?: string) {
-  //   if (!this.ethClient) return {};
-  //   //const { accounts, activeAccountId }: IVaultState = store.getState().vault;
-  //   const assets = this.keyringMa
-  //   const assets = accounts[accountId || activeAccountId]?.assets || {};
-  //   const erc20Assets: {
-  //     [assetId: string]: IAssetState;
-  //   } = Object.values(assets)
-  //     .filter(
-  //       (asset) =>
-  //         asset.type !== AssetType.Ethereum &&
-  //         asset.type !== AssetType.Constellation
-  //     )
-  //     .reduce(
-  //       (assets, asset) => {
-  //         return {
-  //           ...assets,
-  //           [asset.type]: asset,
-  //         };
-  //       },
-  //       {
-  //         [LATTICE_ASSET]: {
-  //           type: AssetType.Ethereum,
-  //           contract: LATTICE_ASSET,
-  //           balance: 0,
-  //           address: '',
-  //           transactions: [],
-  //         },
-  //       }
-  //     );
-  //
-  //   for (let i = 0; i < Object.values(erc20Assets).length; i++) {
-  //     const asset = await this._fetchSingleERC20Asset(Object.values(erc20Assets)[i]);
-  //     if (asset) {
-  //       erc20Assets[Object.values(erc20Assets)[i].type] = asset;
-  //     }
-  //   }
-  //   return erc20Assets;
-  // }
+  private async _fetchERC20Assets (erc20Assets: KeyringAssetInfo[]) {
+    if (!this.ethClient) return [];
+    //const { accounts, activeAccountId }: IVaultState = store.getState().vault;
+    // const assets = this.keyringMa
+    // const assets = accounts[accountId || activeAccountId]?.assets || {};
+
+    const results: IAssetState[] = [];
+
+    for (let i = 0; i < erc20Assets.length; i++) {
+      const asset = await this._fetchSingleERC20Asset(erc20Assets[i]);
+      if (asset) {
+        results.push(asset);
+      }
+    }
+    return results;
+  }
 
   /**
    * Get latest update info of a wallet by private key
@@ -368,10 +342,112 @@ export class AccountController implements IAccountController {
   //   }
   // }
 
-  async getLatestUpdate () {
-    const { activeWallet }: IVaultState = store.getState().vault;
+  async buildAccountAssetInfo (walletId: string) {
 
-    if ( !activeWallet || activeWallet.type === undefined) return;
+    const state = store.getState();
+    const vault: IVaultState = state.vault;
+    const activeNetwork = vault.activeNetwork;
+    // const assetInfoMap: IAssetListState = state.assets;
+    const wallets: KeyringWalletState[] = vault.wallets;
+
+    let buildAssetList: IAssetState[] = [];
+
+    const walletInfo = wallets.find(w => w.id === walletId);
+
+    for (let i = 0; i < walletInfo.accounts.length; i++) {
+      const account = walletInfo.accounts[i];
+      // const assetInfo = assetInfoMap[asset.id];
+      const privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
+
+      if (account.network === KeyringNetwork.Constellation) {
+
+        dag4.account.loginPrivateKey(privateKey);
+        //NOTE: need address in order to use getBalance, getTransactions
+        //dag4.account.setKeysAndAddress(null, null, asset.address);
+
+        // fetch dag info
+        const dagBalance = await dag4.account.getBalance();
+        const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
+
+        buildAssetList.push({
+          id: AssetType.Constellation,
+          type: AssetType.Constellation,
+          label: 'Constellation',
+          balance: dagBalance || 0,
+          address: account.address,
+          transactions: dagTxs
+        });
+      }
+      else if (account.network === KeyringNetwork.Ethereum) {
+
+        this.ethClient = new XChainEthClient({
+          network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+          privateKey,
+          etherscanApiKey: process.env.ETHERSCAN_API_KEY,
+          infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }
+        });
+
+        const balances = await this.ethClient.getBalance();
+        const ethBalance = ethers.utils.formatEther(
+          balances[0].amount.amount().toString()
+        );
+        const ethTxs = await this.ethClient.getTransactions({
+          address: account.address,
+          limit: TXS_LIMIT
+        });
+
+        buildAssetList.push({
+          id: AssetType.Ethereum,
+          type: AssetType.Ethereum,
+          label: 'Ethereum',
+          balance: Number(ethBalance),
+          address: account.address,
+          transactions: ethTxs.txs.map((tx) => {
+            return {
+              ...tx,
+              balance: ethers.utils.formatEther(
+                tx.from[0].amount.amount().toString()
+              )
+            };
+          })
+        });
+
+        if (account.assets && account.assets.length) {
+          const erc20AssetsWithBalances = await this._fetchERC20Assets(account.assets);
+
+          buildAssetList = buildAssetList.concat(erc20AssetsWithBalances);
+        }
+
+      }
+
+    }
+
+    // fetch other erc20 assets info
+
+
+    const activeWallet: IWalletState = {
+      id: walletInfo.id,
+      type: walletInfo.type,
+      label: walletInfo.label,
+      supportedAssets: walletInfo.supportedAssets,
+      assets: buildAssetList
+    }
+
+    store.dispatch(changeActiveWallet(activeWallet));
+
+  }
+
+  // getActiveWallet (): IActiveWalletState {
+  //   if (this.activeWallet) {
+  //     return this.activeWallet;
+  //   }
+  //   const { wallets, activeWalletId }: IVaultState = store.getState().vault;
+  //   this.activeWallet = wallets.find(w => w.id === activeWalletId);
+  //   return this.activeWallet;
+  // }
+
+  async getLatestUpdate () {
+    // const activeWallet = this.getActiveWallet();
 
     // const accLatestInfo =
     //   wallet.type === KeyringWalletType.MultiChainWallet
@@ -427,8 +503,8 @@ export class AccountController implements IAccountController {
   //   }
   // }
 
-  updateWalletLabel (wallet: IWalletState, label: string) {
-    this.keyringManager.setWalletLabel(wallet.id, label);
+  updateWalletLabel (id: string, label: string) {
+    this.keyringManager.setWalletLabel(id, label);
   }
 
   updateAccountActiveAsset (asset: IAssetState) {

@@ -53,7 +53,7 @@ const AssetItem: FC<IAssetItem> = ({ asset, assetInfo, itemClicked }: IAssetItem
         <div>
           <span>
             <span>
-              {asset.balance.toFixed(2) || 0}
+              {asset.balance?.toFixed(2) || 0}
               <b>{assetInfo.symbol}</b>
             </span>
           </span>
