@@ -4,7 +4,11 @@ import {
   KDFParamsPrivateKey,
 } from '@stardust-collective/dag4-keystore/types/v3-keystore';
 import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
-import { KeyringAssetType, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import {
+  KeyringAssetType,
+  KeyringWalletState,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -15,12 +19,6 @@ export enum AssetType {
   Constellation = 'constellation',
   Ethereum = 'ethereum',
   ERC20 = 'erc20',
-}
-
-export enum NetworkType {
-  Ethereum,
-  Constellation,
-  //MultiChain,
 }
 
 export type Transaction = DAGTransaction | any;
@@ -84,7 +82,8 @@ export default interface IVaultState {
   wallets: KeyringWalletState[];
   activeWallet: IWalletState;
   activeAsset: IAssetState;
-  activeNetwork: { //Network:ChainId
+  activeNetwork: {
+    //Network:ChainId
     [network: string]: string;
   };
 }

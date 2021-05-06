@@ -4,14 +4,19 @@ import {
   // changeActiveWallet,
   changeActiveNetwork,
   setVaultInfo,
-  updateStatus
+  updateStatus,
 } from 'state/vault';
 import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
-import IVaultState, { NetworkType } from 'state/vault/types';
+import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
-import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
+import {
+  IKeyringWallet,
+  KeyringManager,
+  KeyringNetwork,
+  KeyringVaultState,
+} from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 
@@ -20,7 +25,7 @@ export class WalletController implements IWalletController {
   keyringManager: Readonly<KeyringManager>;
   onboardHelper: Readonly<OnboardWalletHelper>;
 
-  constructor () {
+  constructor() {
     this.onboardHelper = new OnboardWalletHelper();
     this.keyringManager = new KeyringManager();
     this.keyringManager.on('update', (state: KeyringVaultState) => {
@@ -29,49 +34,58 @@ export class WalletController implements IWalletController {
       if (vault && !vault.activeWallet) {
         this.switchWallet(state.wallets[0].id);
       }
-    })
+    });
 
     this.account = new AccountController(this.keyringManager);
   }
 
-  checkPassword (password: string) {
-    return this.keyringManager.checkPassword(password)
+  checkPassword(password: string) {
+    return this.keyringManager.checkPassword(password);
   }
 
-  isUnlocked () {
+  isUnlocked() {
     return this.keyringManager.isUnlocked();
   }
 
-  getPhrase (walletId: string, password: string) {
+  getPhrase(walletId: string, password: string) {
     if (!this.checkPassword(password)) return null;
     return this.keyringManager.exportWalletSecretKeyOrPhrase(walletId);
   }
 
-  getPrivateKey (walletId: string, password: string) {
+  getPrivateKey(walletId: string, password: string) {
     if (!this.checkPassword(password)) return null;
     return this.keyringManager.exportWalletSecretKeyOrPhrase(walletId);
   }
 
-  async unLock (password: string): Promise<boolean> {
+  async unLock(password: string): Promise<boolean> {
     await this.keyringManager.login(password);
 
     return true;
   }
 
-  async importSingleAccount (label: string, network: KeyringNetwork, privateKey: string) {
-    const wallet = await this.keyringManager.createSingleAccountWallet(label, network, privateKey);
+  async importSingleAccount(
+    label: string,
+    network: KeyringNetwork,
+    privateKey: string
+  ) {
+    const wallet = await this.keyringManager.createSingleAccountWallet(
+      label,
+      network,
+      privateKey
+    );
 
     return wallet.id;
   }
 
-  async createWallet ( label: string, phrase?: string, resetAll = false) {
+  async createWallet(label: string, phrase?: string, resetAll = false) {
     let wallet: IKeyringWallet;
-    ;
     if (resetAll) {
       wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
-    }
-    else {
-      wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
+    } else {
+      wallet = await this.keyringManager.createMultiChainHdWallet(
+        label,
+        phrase
+      );
     }
 
     // if (resetAll) {
@@ -82,7 +96,7 @@ export class WalletController implements IWalletController {
     return wallet.id;
   }
 
-  async deleteWallet (walletId: string, password: string) {
+  async deleteWallet(walletId: string, password: string) {
     if (this.checkPassword(password)) {
       // const { wallet }: IVaultState = store.getState().vault;
       await this.keyringManager.removeWalletById(walletId);
@@ -93,7 +107,7 @@ export class WalletController implements IWalletController {
     return false;
   }
 
-  async switchWallet (id: string) {
+  async switchWallet(id: string) {
     //store.dispatch(changeActiveWallet(wallet));
     await this.account.buildAccountAssetInfo(id);
     await this.account.getLatestUpdate();
@@ -101,11 +115,12 @@ export class WalletController implements IWalletController {
     dag4.monitor.startMonitor();
   }
 
-  switchNetwork (network: NetworkType, chainId: string) {
+  switchNetwork(network: KeyringNetwork, chainId: string) {
     const { activeAsset }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;
+    console.log(network, chainId);
 
-    if (network === NetworkType.Constellation && DAG_NETWORK[chainId]!.id) {
+    if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
       dag4.network.setNetwork({
         id: DAG_NETWORK[chainId].id,
         beUrl: DAG_NETWORK[chainId].beUrl,
@@ -117,22 +132,18 @@ export class WalletController implements IWalletController {
       this.account.updateAccountActiveAsset(activeAsset);
     }
 
-    store.dispatch(
-      changeActiveNetwork({ network, chainId })
-    );
+    store.dispatch(changeActiveNetwork({ network, chainId }));
 
     this.account.getLatestUpdate();
   }
 
-  setWalletPassword (password: string) {
+  setWalletPassword(password: string) {
     this.keyringManager.setPassword(password);
   }
 
-  async logOut () {
+  async logOut() {
     this.keyringManager.logout();
     store.dispatch(updateStatus());
     browser.runtime.reload();
   }
-
 }
-

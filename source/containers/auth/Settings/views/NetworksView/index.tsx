@@ -3,11 +3,12 @@ import { useSelector } from 'react-redux';
 
 import Select from 'components/Select';
 import { RootState } from 'state/store';
-import IVaultState, { AssetType, NetworkType } from 'state/vault/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { useController } from 'hooks/index';
 
 import styles from './index.scss';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const NetworksView = () => {
   const controller = useController();
@@ -15,7 +16,10 @@ const NetworksView = () => {
     (state: RootState) => state.vault
   );
 
-  const handleChangeNetwork = (networkType: NetworkType, networkId: string) => {
+  const handleChangeNetwork = (
+    networkType: KeyringNetwork,
+    networkId: string
+  ) => {
     controller.wallet.switchNetwork(networkType, networkId);
   };
 
@@ -23,7 +27,7 @@ const NetworksView = () => {
     <div className={styles.wrapper}>
       <label>Constellation Network</label>
       <Select
-        value={activeNetwork[AssetType.Constellation] || DAG_NETWORK.main.id}
+        value={activeNetwork[KeyringNetwork.Constellation]}
         fullWidth
         onChange={(
           ev: ChangeEvent<{
@@ -32,7 +36,7 @@ const NetworksView = () => {
           }>
         ) => {
           handleChangeNetwork(
-            NetworkType.Constellation,
+            KeyringNetwork.Constellation,
             ev.target.value as string
           );
         }}
@@ -43,7 +47,7 @@ const NetworksView = () => {
       />
       <label>Ethereum Network</label>
       <Select
-        value={activeNetwork[AssetType.Ethereum] || ETH_NETWORK.mainnet.id}
+        value={activeNetwork[KeyringNetwork.Ethereum]}
         fullWidth
         onChange={(
           ev: ChangeEvent<{
@@ -52,7 +56,7 @@ const NetworksView = () => {
           }>
         ) => {
           handleChangeNetwork(
-            NetworkType.Ethereum,
+            KeyringNetwork.Ethereum,
             ev.target.value as string
           );
         }}

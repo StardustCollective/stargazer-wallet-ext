@@ -9,9 +9,9 @@ export function useFiat(currencyName = true) {
     (state: RootState) => state.vault
   );
 
-  const { fiat, currency }: IPriceState = useSelector(
-    (state: RootState) => state.price
-  );
+  // const { fiat, currency }: IPriceState = useSelector(
+  //   (state: RootState) => state.price
+  // );
 
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
@@ -19,17 +19,20 @@ export function useFiat(currencyName = true) {
 
   const priceId = assets[activeAsset.id].priceId;
 
+  // return (amount: number, fraction = 4, basePriceId = priceId) => {
+  //   const value =
+  //     amount * (priceId ? fiat[basePriceId || priceId]?.price || 0 : 0);
+  //   return `${currencyName ? currency.symbol : ''}${
+  //     currencyName
+  //       ? value.toLocaleString(navigator.language, {
+  //           minimumFractionDigits: fraction,
+  //           maximumFractionDigits: fraction,
+  //         })
+  //       : value
+  //   }${currencyName ? ` ${currency.name}` : ''}`;
+  // };
   return (amount: number, fraction = 4, basePriceId = priceId) => {
-    const value =
-      amount * (priceId ? fiat[basePriceId || priceId]?.price || 0 : 0);
-    return `${currencyName ? currency.symbol : ''}${
-      currencyName
-        ? value.toLocaleString(navigator.language, {
-            minimumFractionDigits: fraction,
-            maximumFractionDigits: fraction,
-          })
-        : value
-    }${currencyName ? ` ${currency.name}` : ''}`;
+    return '0';
   };
 }
 
@@ -37,7 +40,7 @@ export function useTotalBalance(currencyName = true) {
   const { fiat, currency }: IPriceState = useSelector(
     (state: RootState) => state.price
   );
-  const { activeWallet, activeNetwork}: IVaultState = useSelector(
+  const { activeWallet, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assetList: IAssetListState = useSelector(
