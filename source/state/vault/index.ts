@@ -6,8 +6,7 @@ import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import IVaultState, {
   AssetBalances,
   AssetType,
-  IAssetState, IWalletState,
-  NetworkType
+  IAssetState, IWalletState
 } from './types';
 
 import {

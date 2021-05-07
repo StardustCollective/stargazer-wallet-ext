@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import Select from 'components/Select';
 import { RootState } from 'state/store';
-import IVaultState, { AssetType } from 'state/vault/types';
+import IVaultState  from 'state/vault/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { useController } from 'hooks/index';
 
