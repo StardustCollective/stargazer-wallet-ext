@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,6 +12,7 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import SearchIcon from 'assets/images/svg/search.svg';
 import styles from './Asset.scss';
+import { v4 as uuid } from 'uuid';
 
 const AddAsset = () => {
   const controller = useController();
@@ -34,8 +34,8 @@ const AddAsset = () => {
   );
 
   const handleAddAsset = (asset: IAssetInfoState) => {
-    if (!asset.contract) return;
-    controller.wallet.account.addNewAsset(asset).then(() => {
+    if (!asset.address) return;
+    controller.wallet.account.addNewToken(asset.address).then(() => {
       history.push('/home');
     });
   };
@@ -54,8 +54,8 @@ const AddAsset = () => {
           (asset.network === 'both' ||
             asset.network === activeNetwork[AssetType.Ethereum]) &&
           !alreadyInWallet[asset.id] &&
-          (asset.name.toLowerCase().includes(keyword.toLowerCase()) ||
-            (asset?.contract || '').includes(keyword)) &&
+          (asset.label.toLowerCase().includes(keyword.toLowerCase()) ||
+            (asset?.address || '').includes(keyword)) &&
           (asset.id !== AssetType.Constellation)
       )
     );
@@ -88,7 +88,7 @@ const AddAsset = () => {
                         <div className={styles.iconWrapper}>
                           <img src={asset.logo}></img>
                         </div>
-                        <span>{asset.name}</span>
+                        <span>{asset.label}</span>
                       </div>
                       <IconButton
                         className={styles.addButton}

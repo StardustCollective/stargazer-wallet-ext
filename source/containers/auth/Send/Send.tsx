@@ -38,7 +38,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const getFiatAmount = useFiat();
   const controller = useController();
   const alert = useAlert();
-  const { activeAsset }: IVaultState = useSelector(
+  const { activeAsset, balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -108,7 +108,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   };
 
   const isDisabled = useMemo(() => {
-    const { balance } = activeAsset;
+    const balance = balances[activeAsset.id] || 0;
     const txFee =
       activeAsset.type === AssetType.Constellation
         ? Number(fee)
@@ -200,6 +200,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   };
 
   const handleSetMax = () => {
+    const balance = balances[activeAsset.id] || 0;
     const txFee =
       activeAsset.id === AssetType.Constellation
         ? Number(fee)
@@ -207,7 +208,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
         ? gasFee
         : 0;
     setAmount(
-      String(Math.max(activeAsset.balance - txFee, 0))
+      String(Math.max(balance - txFee, 0))
     );
   };
 
@@ -232,7 +233,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
           <div>
             Balance:{' '}
             <span>
-              {formatNumber(activeAsset.balance)}
+              {formatNumber(balances[activeAsset.id] || 0)}
             </span>{' '}
             {assetInfo.symbol}
           </div>
@@ -365,8 +366,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               marks={[
                 { value: gasPrices[0], label: 'LOW' },
                 {
-                  //value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
-                  value: gasPrices[1],
+                  value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
+                  //value: gasPrices[1],
                   label: 'AVERAGE',
                 },
                 { value: gasPrices[2], label: 'HIGH' },

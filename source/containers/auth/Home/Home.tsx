@@ -21,7 +21,7 @@ const Home = () => {
   );
 
   const handleRefresh = async () => {
-    await controller.wallet.account.getLatestUpdate();
+    //await controller.wallet.account.getLatestUpdate();
     // controller.wallet.account.watchMemPool();
     controller.stateUpdater();
   };

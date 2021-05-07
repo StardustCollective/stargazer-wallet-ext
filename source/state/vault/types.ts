@@ -23,19 +23,23 @@ export enum AssetType {
 
 export type Transaction = DAGTransaction | any;
 
-export interface IAssetState {
+export interface IAssetState   {
   id: string;
-  type?: AssetType;
+  type: AssetType;
   label: string;
-  balance?: number;
-  address?: string;
-  contract?: string;
+  address: string;
+  // balance?: number;
+}
+
+export interface IActiveAssetState extends IAssetState {
   transactions: Transaction[];
 }
 
-// export interface IActiveAssetState extends IAssetState {
-//   transactions: Transaction[];
-// }
+export type AssetBalances = {
+  [AssetType.Ethereum]?: number;
+  [AssetType.Constellation]?: number;
+  [tokenAddress: string]: number;
+}
 
 export interface IWalletState {
   id: string;
@@ -43,60 +47,23 @@ export interface IWalletState {
   label: string;
   supportedAssets: KeyringAssetType[]; //eth,dag,erc20
   assets: IAssetState[];
-  // accounts: {
-  //   address: string,
-  //   assets: IAssetState[]
-  // }[]
-  //activeAssetId: string;
-  // type: AccountType;
 }
-
-// export interface IActiveWalletState extends IWalletState {
-//   assets: IAssetState[];
-// }
 
 export interface IAccountUpdateState {
   id: string;
   assets: {
-    [address: string]: IAssetState;
+    [address: string]: IActiveAssetState;
   };
 }
 
-// export interface IKeyStoreState {
-//   [keystoreId: string]: Keystore;
-// }
-
-//Wallet
-//  Keystore[id] - JSON-phrase, JSON-key
-//  accounts[keystore-id]
-//    Account - id, label
-//      Assets
-
-//separate descriptors and instances
-//walletInfoMap[id]: WalletInfo
-//activeWallet: WalletState
 export default interface IVaultState {
+  balances: AssetBalances;
   status: number;
   version: string;
-  //activeWalletId: string; //Can be used to rebuild activeWallet
   wallets: KeyringWalletState[];
   activeWallet: IWalletState;
-  activeAsset: IAssetState;
+  activeAsset: IActiveAssetState;
   activeNetwork: {
-    //Network:ChainId
     [network: string]: string;
   };
 }
-
-// export default interface IVaultState {
-//   keystores: IKeyStoreState;
-//   status: number;
-//   version: string;
-//   accounts: {
-//     [accountId: string]: IWalletState;
-//   };
-//   activeAccountId: string;
-//   activeNetwork: {
-//     [assetId: string]: string;
-//   };
-// }

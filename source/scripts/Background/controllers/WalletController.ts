@@ -59,7 +59,10 @@ export class WalletController implements IWalletController {
 
   async unLock(password: string): Promise<boolean> {
     await this.keyringManager.login(password);
-
+    const vault: IVaultState = store.getState().vault;
+    if (vault && vault.activeWallet) {
+      await this.switchWallet(vault.activeWallet.id);
+    }
     return true;
   }
 
@@ -110,7 +113,7 @@ export class WalletController implements IWalletController {
   async switchWallet(id: string) {
     //store.dispatch(changeActiveWallet(wallet));
     await this.account.buildAccountAssetInfo(id);
-    await this.account.getLatestUpdate();
+    //await this.account.getLatestUpdate();
     // store.dispatch(updateStatus());
     dag4.monitor.startMonitor();
   }
@@ -128,13 +131,18 @@ export class WalletController implements IWalletController {
       });
     }
 
-    if (assets[activeAsset.id].network !== chainId) {
-      this.account.updateAccountActiveAsset(activeAsset);
+    if (activeAsset) {
+
+      if (assets[activeAsset.id].network !== chainId) {
+        this.account.updateAccountActiveAsset(activeAsset);
+      }
+
+      this.account.getLatestTxUpdate();
     }
 
-    store.dispatch(changeActiveNetwork({ network, chainId }));
-
-    this.account.getLatestUpdate();
+    store.dispatch(
+      changeActiveNetwork({ network, chainId })
+    );
   }
 
   setWalletPassword(password: string) {

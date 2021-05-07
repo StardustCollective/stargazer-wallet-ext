@@ -9,10 +9,10 @@ import EthereumLogo from 'assets/images/svg/ethereum.svg';
 const initialState: IAssetListState = {
   [AssetType.Ethereum]: {
     id: AssetType.Ethereum,
-    name: 'Ethereum',
+    label: 'Ethereum',
     type: AssetType.Ethereum,
     symbol: 'ETH',
-    contract: '',
+    address: '',
     native: true,
     network: 'both',
     logo: EthereumLogo,
@@ -21,10 +21,10 @@ const initialState: IAssetListState = {
   },
   [AssetType.Constellation]: {
     id: AssetType.Constellation,
-    name: 'Constellation',
+    label: 'Constellation',
     type: AssetType.Constellation,
     symbol: 'DAG',
-    contract: '',
+    address: '',
     native: true,
     network: 'both',
     logo: ConstellationLogo,
@@ -43,8 +43,8 @@ const AssetListState = createSlice({
       state: IAssetListState,
       action: PayloadAction<IAssetInfoState>
     ) {
-      if (action.payload.contract) {
-        state[action.payload.contract] = action.payload;
+      if (action.payload.address) {
+        state[action.payload.address] = action.payload;
       }
     },
   },

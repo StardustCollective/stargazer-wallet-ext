@@ -98,7 +98,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
                   importNetwork === KeyringNetwork.Ethereum
                     ? AssetType.Ethereum
                     : AssetType.Constellation
-                ].name
+                ].label
               }
             </span>
           </div>

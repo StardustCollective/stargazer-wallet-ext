@@ -30,7 +30,7 @@ const AssetHeader: FC<IAssetHeader> = ({ asset, address, addressUrl }) => {
           }}
         >
           <div className={styles.logoWrapper}>
-            <img src={asset.logo} alt={asset.name} height="36" />
+            <img src={asset.logo} alt={asset.label} height="36" />
           </div>
           <Tooltip
             title={isCopied ? 'Copied' : 'Copy Address '}
@@ -40,7 +40,7 @@ const AssetHeader: FC<IAssetHeader> = ({ asset, address, addressUrl }) => {
             <div
               className={clsx(styles.address, { [styles.active]: isCopied })}
             >
-              {asset.name}
+              {asset.label}
               <small>{ellipsis(address)}</small>
             </div>
           </Tooltip>

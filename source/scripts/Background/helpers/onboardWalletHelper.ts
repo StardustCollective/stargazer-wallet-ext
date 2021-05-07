@@ -24,5 +24,3 @@ export class OnboardWalletHelper {
     return false;
   }
 }
-
-export const onboardWalletHelper = new OnboardWalletHelper();

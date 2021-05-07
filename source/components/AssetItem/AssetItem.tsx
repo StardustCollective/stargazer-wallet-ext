@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { formatNumber } from 'containers/auth/helpers';
 import { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
-import { IAssetState } from 'state/vault/types';
+import IVaultState, { IAssetState } from 'state/vault/types';
 import IPriceState from 'state/price/types';
 
 import styles from './AssetItem.scss';
@@ -15,9 +15,9 @@ interface IAssetItem {
 }
 
 const AssetItem: FC<IAssetItem> = ({ asset, assetInfo, itemClicked }: IAssetItem) => {
-  // const { asset }: IVaultState = useSelector(
-  //   (state: RootState) => state.vault
-  // );
+  const { balances }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
 
   return (
@@ -28,7 +28,7 @@ const AssetItem: FC<IAssetItem> = ({ asset, assetInfo, itemClicked }: IAssetItem
             <img src={assetInfo.logo}></img>
           </div>
           <span>
-            {assetInfo.name}
+            {assetInfo.label}
             {assetInfo.priceId &&
               fiat[assetInfo.priceId]?.price &&
               fiat[assetInfo.priceId]?.priceChange && (
@@ -53,7 +53,7 @@ const AssetItem: FC<IAssetItem> = ({ asset, assetInfo, itemClicked }: IAssetItem
         <div>
           <span>
             <span>
-              {asset.balance?.toFixed(2) || 0}
+              {balances[asset.id]?.toFixed(2) || 0}
               <b>{assetInfo.symbol}</b>
             </span>
           </span>
