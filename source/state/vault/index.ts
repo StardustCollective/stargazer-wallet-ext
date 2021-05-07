@@ -9,7 +9,12 @@ import IVaultState, {
   IAssetState, IWalletState,
   NetworkType
 } from './types';
-import { KeyringVaultState } from '@stardust-collective/dag4-keyring';
+
+import {
+  KeyringNetwork,
+  KeyringVaultState,
+} from '@stardust-collective/dag4-keyring';
+
 
 const initialState: IVaultState = {
   status: 0,
@@ -102,7 +107,10 @@ const VaultState = createSlice({
     //     [AssetType.Ethereum]: ETH_NETWORK.main.id,
     //   };
     // },
-    changeActiveWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
+    changeActiveWallet(
+      state: IVaultState,
+      action: PayloadAction<IWalletState>
+    ) {
       state.activeWallet = action.payload;
       if (state.activeAsset) {
         state.activeAsset = { transactions:[], ...state.activeWallet.assets[0] };
@@ -110,7 +118,7 @@ const VaultState = createSlice({
     },
     changeActiveNetwork(
       state: IVaultState,
-      action: PayloadAction<{ network: NetworkType; chainId: string }>
+      action: PayloadAction<{ network: KeyringNetwork; chainId: string }>
     ) {
       state.activeNetwork = {
         ...state.activeNetwork,
@@ -174,7 +182,7 @@ export const {
   updateTransactions,
   updateBalances,
   // updateLabel,
-  addAsset
+  addAsset,
 } = VaultState.actions;
 
 export default VaultState.reducer;

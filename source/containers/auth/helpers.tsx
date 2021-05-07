@@ -44,6 +44,7 @@ export const getAddressURL = (
   type: AssetType,
   networkId: string
 ) => {
+  console.log(address, type, networkId);
   if (type === AssetType.Constellation) {
     return `${DAG_EXPLORER_SEARCH}${address}`;
   }
