@@ -21,13 +21,12 @@ import styles from './Asset.scss';
 const AssetDetail = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const { activeWallet, activeAsset, activeNetwork }: IVaultState = useSelector(
+  const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  // const account = accounts[activeAccountId];
 
   useEffect(() => {
     controller.wallet.account.updateTempTx({
@@ -38,7 +37,7 @@ const AssetDetail = () => {
   }, []);
 
   const handleRefresh = async () => {
-    await controller.wallet.account.getLatestUpdate();
+    await controller.wallet.account.getLatestTxUpdate();
     // controller.wallet.account.watchMemPool();
     controller.stateUpdater();
   };
@@ -50,25 +49,27 @@ const AssetDetail = () => {
     return controller.wallet.account.getFullETHTxs();
   };
 
+  const networkId = activeAsset?.type === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
+
   return (
     <div className={styles.wrapper}>
-      {activeWallet ? (
+      {activeWallet && activeAsset? (
         <>
           <Header backLink="/home" />
           <section className={styles.account}>
             <AssetHeader
               asset={assets[activeAsset.id]}
               address={activeAsset.address}
-              addressUrl={getAddressURL(activeAsset.address, activeAsset.type, activeNetwork[activeAsset.type])}
+              addressUrl={getAddressURL(activeAsset.address, activeAsset.type, activeNetwork[networkId])}
             />
           </section>
           <section className={styles.center}>
             <h3>
-              {formatNumber(activeAsset.balance)}{' '}
+              {formatNumber(balances[activeAsset.id] || 0)}{' '}
               <small>{assets[activeAsset.id].symbol}</small>
             </h3>
             <small>
-              ≈ {getFiatAmount(activeAsset.balance)}
+              ≈ {getFiatAmount(balances[activeAsset.id] || 0)}
             </small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />

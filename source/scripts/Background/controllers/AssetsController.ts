@@ -1,5 +1,4 @@
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
-// import { ETH_NETWORK } from 'constants/index';
 import { ETHNetwork } from 'scripts/types';
 import IAssetListState from 'state/assets/types';
 import store from 'state/store';
@@ -8,7 +7,6 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import { TOKEN_INFO_API } from 'constants/index';
 
 export interface IAssetsController {
-  // getInitialERC20Tokens: () => void;
   fetchTokenInfo: (address: string) => void;
 }
 
@@ -49,10 +47,9 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
           id: assetId,
           decimals: info.decimals,
           type: AssetType.ERC20,
-          name: info.name,
+          label: info.name,
           symbol: info.symbol,
-          contract: info.address,
-          native: false,
+          address: info.address,
           priceId: data.id,
           logo: data.image.small,
           network,

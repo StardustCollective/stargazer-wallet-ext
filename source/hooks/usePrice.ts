@@ -17,9 +17,8 @@ export function useFiat(currencyName = true) {
     (state: RootState) => state.assets
   );
 
-  const priceId = assets[activeAsset.id].priceId;
-
-  return (amount: number, fraction = 4, basePriceId = priceId) => {
+  return (amount: number, fraction = 4, basePriceId?: string) => {
+    const priceId = basePriceId || assets[activeAsset.id].priceId;
     const value =
       amount * (priceId ? fiat[basePriceId || priceId]?.price || 0 : 0);
     return `${currencyName ? currency.symbol : ''}${
@@ -37,13 +36,15 @@ export function useTotalBalance(currencyName = true) {
   const { fiat, currency }: IPriceState = useSelector(
     (state: RootState) => state.price
   );
-  const { activeWallet, activeNetwork}: IVaultState = useSelector(
+  const { activeWallet, activeNetwork, balances}: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assetList: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
+
   if (!activeWallet?.assets) return ['0', '0'];
+
   const assetIds = activeWallet.assets
     .filter(
       (asset) =>
@@ -59,7 +60,7 @@ export function useTotalBalance(currencyName = true) {
   const priceIds = assetIds.map((assetId) => assetList[assetId].priceId || '');
   let balance = 0;
   for (let i = 0; i < assetIds.length; i += 1) {
-    balance += activeWallet.assets[i].balance * (fiat[priceIds[i]]?.price || 0);
+    balance += (balances[assetIds[i]] || 0) * (fiat[priceIds[i]]?.price || 0);
   }
   return [
     `${currencyName ? currency.symbol : ''}${balance.toFixed(2)}${

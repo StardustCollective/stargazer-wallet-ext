@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
 import AddCircle from '@material-ui/icons/AddCircle';
 import IconButton from '@material-ui/core/IconButton';
+import { v4 as uuid } from 'uuid';
 
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
@@ -64,7 +65,7 @@ const AssetsPanel: FC = () => {
           .map((asset) => {
             return (
               <AssetItem
-                key={asset.id}
+                key={uuid()}
                 asset={asset}
                 assetInfo={assets[asset.id]}
                 itemClicked={() => handleSelectAsset(asset)}

@@ -34,7 +34,7 @@ const ManageWalletView: FC<IManageWalletView> = ({id}) => {
   const wallet = wallets.find(w => w.id === id);
 
   const onSubmit = (data: any) => {
-    controller.wallet.account.updateWalletLabel(wallet.id, data.name);
+    controller.wallet.account.updateWalletLabel(id, data.name);
     showView(WALLETS_VIEW);
   };
 

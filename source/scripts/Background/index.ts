@@ -41,7 +41,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     });
     //TODO - startMonitor doesn't help if there is no account logged in to
     dag4.monitor.startMonitor();
-    window.controller.wallet.account.getLatestUpdate();
+    //window.controller.wallet.account.getLatestUpdate();
 
     //TODO - Instead of this, Use AccountWatcher and on wallet init, watch the account for txs and balance changes
     // window.controller.wallet.account.watchMemPool();
@@ -49,7 +49,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 });
 
 if (!window.controller) {
-  window.controller = Object.freeze(MasterController());
+  window.controller = MasterController();
   setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
 }
 

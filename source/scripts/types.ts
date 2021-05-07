@@ -1,8 +1,8 @@
-import { IAssetState } from 'state/vault/types';
+import { IActiveAssetState } from 'state/vault/types';
 
 export interface IAccountInfo {
   assets: {
-    [assetId: string]: IAssetState;
+    [assetId: string]: IActiveAssetState;
   };
 }
 
