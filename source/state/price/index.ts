@@ -42,16 +42,11 @@ const PriceState = createSlice({
         }[]
       >
     ) {
+      const fiat: any = {};
       action.payload.forEach(({ id, price, priceChange }) => {
-        if (!id) return;
-        state.fiat = {
-          ...state.fiat,
-          [id]: {
-            price,
-            priceChange,
-          },
-        };
+        if (id) fiat[id] = { price, priceChange }
       });
+      state.fiat = fiat;
     },
   },
 });

@@ -30,7 +30,7 @@ const AddAsset = () => {
   // const account = accounts[activeAccountId];
 
   const alreadyInWallet = activeWallet.assets.reduce<{[key: string]: boolean}>(
-    (_res, a) => ({ [a.id]: true }), {}
+    (res, a) => (res[a.address] = true, res ), {}
   );
 
   const handleAddAsset = (asset: IAssetInfoState) => {
@@ -48,15 +48,19 @@ const AddAsset = () => {
       controller.assets.fetchTokenInfo(keyword);
     }
 
+    const currentNetwork = activeNetwork[AssetType.Ethereum];
+    const lcKeyword = keyword.toLowerCase()
+
     setFilteredAssets(
-      Object.values(assets).filter(
-        (asset) =>
-          (asset.network === 'both' ||
-            asset.network === activeNetwork[AssetType.Ethereum]) &&
-          !alreadyInWallet[asset.id] &&
-          (asset.label.toLowerCase().includes(keyword.toLowerCase()) ||
-            (asset?.address || '').includes(keyword)) &&
-          (asset.id !== AssetType.Constellation)
+      Object.values(assets).filter(asset => {
+          if(asset.network === 'both' || asset.network === currentNetwork) {
+            if(asset.type === AssetType.ERC20 && asset.address && !alreadyInWallet[asset.id]) {
+              const label = asset.label.toLowerCase();
+              return label.includes(lcKeyword) || asset.address.includes(lcKeyword);
+            }
+          }
+          return false;
+        }
       )
     );
   }, [keyword, assets]);

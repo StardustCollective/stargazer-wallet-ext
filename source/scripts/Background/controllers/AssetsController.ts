@@ -36,27 +36,28 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     const network = activeNetwork[AssetType.Ethereum] as ETHNetwork;
     ethClient.setNetwork(network);
     const info = await ethClient.getTokenInfo(address);
-    const assetId = `${network === 'testnet' ? 'T-' : ''}${info.address}`;
-    if (!assets[assetId]) {
-      const data = await (
-        await fetch(`${TOKEN_INFO_API}${info.address}`)
-      ).json();
+    const assetId = `${network === 'testnet' ? 'T-' : ''}${address}`;
+    if (info && !assets[assetId]) {
+      try {
+        const data = await (await fetch(`${TOKEN_INFO_API}${address}`)).json();
 
-      store.dispatch(
-        addERC20Asset({
-          id: assetId,
-          decimals: info.decimals,
-          type: AssetType.ERC20,
-          label: info.name,
-          symbol: info.symbol,
-          address: info.address,
-          priceId: data.id,
-          logo: data.image.small,
-          network,
-        })
-      );
+        store.dispatch(
+          addERC20Asset({
+            id: assetId,
+            decimals: info.decimals,
+            type: AssetType.ERC20,
+            label: info.name,
+            symbol: info.symbol,
+            address: info.address,
+            priceId: data.id,
+            logo: data.image.small,
+            network,
+          })
+        );
 
-      updateFiat();
+        updateFiat();
+      }
+      catch(e) {}
     }
   };
 

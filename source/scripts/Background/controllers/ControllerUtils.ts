@@ -2,6 +2,7 @@ import store from 'state/store';
 import { updateFiatPrices } from 'state/price';
 import { ASSET_PRICE_API, DEFAULT_CURRENCY } from 'constants/index';
 import IAssetListState from 'state/assets/types';
+import IVaultState  from '../../../state/vault/types';
 
 export interface IControllerUtils {
   appRoute: (newRoute?: string) => string;
@@ -20,9 +21,11 @@ const ControllerUtils = (): IControllerUtils => {
 
   const updateFiat = async (currency = DEFAULT_CURRENCY.id) => {
     try {
+      const { activeWallet }: IVaultState = store.getState().vault;
       const assets: IAssetListState = store.getState().assets;
-      const assetIds = Object.values(assets)
-        .map((asset) => asset.priceId)
+      const assetIds = activeWallet.assets
+        .filter(a => !!assets[a.id].priceId)
+        .map(a => assets[a.id].priceId)
         .join(',');
       const data = await (
         await fetch(

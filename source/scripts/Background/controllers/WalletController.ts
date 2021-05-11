@@ -21,9 +21,9 @@ import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 
 export class WalletController implements IWalletController {
-  account: Readonly<AccountController>;
-  keyringManager: Readonly<KeyringManager>;
-  onboardHelper: Readonly<OnboardWalletHelper>;
+  account: AccountController;
+  keyringManager: KeyringManager;
+  onboardHelper: OnboardWalletHelper;
 
   constructor() {
     this.onboardHelper = new OnboardWalletHelper();
@@ -151,6 +151,7 @@ export class WalletController implements IWalletController {
 
   async logOut() {
     this.keyringManager.logout();
+    this.account.ethClient = null;
     store.dispatch(updateStatus());
     browser.runtime.reload();
   }

@@ -19,7 +19,6 @@ declare global {
 
 browser.runtime.onInstalled.addListener((): void => {
   console.emoji('🤩', 'Stargazer extension installed');
-  window.controller.stateUpdater();
 });
 
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {
@@ -37,7 +36,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     dag4.network.config({
       id: DAG_NETWORK[networkId].id,
       beUrl: DAG_NETWORK[networkId].beUrl,
-      lbUrl: DAG_NETWORK[networkId].lbUrl,
+      lbUrl: DAG_NETWORK[networkId].lbUrl
     });
     //TODO - startMonitor doesn't help if there is no account logged in to
     dag4.monitor.startMonitor();
@@ -45,12 +44,19 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 
     //TODO - Instead of this, Use AccountWatcher and on wallet init, watch the account for txs and balance changes
     // window.controller.wallet.account.watchMemPool();
+
+    port.onDisconnect.addListener(() => {
+      console.log('onDisconnect');
+      window.controller.wallet.account.monitor.stop();
+    });
+
+    console.log('onConnect');
+    window.controller.wallet.account.monitor.start();
   }
 });
 
 if (!window.controller) {
   window.controller = MasterController();
-  setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
 }
 
 wrapStore(store, { portName: STORE_PORT });

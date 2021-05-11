@@ -1,7 +1,9 @@
 import { ITransactionInfo } from '../../types';
 import { IAssetState } from '../../../state/vault/types';
+import { AccountMonitor } from '../helpers/accountMonitor';
 
 export interface IAccountController {
+  monitor: Readonly<AccountMonitor>;
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
   confirmTempTx: () => Promise<void>;

@@ -1,6 +1,6 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { BigNumber, ethers } from 'ethers';
-import { AccountTracker, utils, XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
+import { utils, XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import { PendingTx, Transaction } from '@stardust-collective/dag4-network';
 
 import store from 'state/store';
@@ -20,6 +20,7 @@ import TransactionController, { ITransactionController } from './TransactionCont
 
 import { IAccountController } from './IAccountController';
 import { KeyringManager, KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring';
+import { AccountMonitor } from '../helpers/accountMonitor';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -30,14 +31,13 @@ export class AccountController implements IAccountController {
   // wallet: IActiveWalletState | null;
   ethClient: XChainEthClient;
   txController: ITransactionController;
-
-  // private activeWallet: IActiveWalletState;
-  ethAccountTracker = new AccountTracker({infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }});
+  monitor: Readonly<AccountMonitor>;
   
   constructor(private keyringManager: Readonly<KeyringManager>) {
     this.txController = Object.freeze(
       TransactionController({ getLatestUpdate: () => this.getLatestTxUpdate() })
     );
+    this.monitor = new AccountMonitor();
   }
 
   /**
@@ -203,15 +203,13 @@ export class AccountController implements IAccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
+
+    this.monitor.start();
   }
 
   buildAndMonitorEthAccount (accountTokens: string[]) {
-    const state = store.getState();
-    const vault: IVaultState = state.vault;
-    const activeNetwork = vault.activeNetwork;
-    const assetInfoMap: IAssetListState = state.assets;
+    const assetInfoMap: IAssetListState = store.getState();
 
-    const chainId = activeNetwork[AssetType.Ethereum] === 'mainnet' ? 1 : 3
     const tokens = accountTokens.map(t => assetInfoMap[t])
 
     let assetList: IAssetState[] = [];
@@ -231,11 +229,6 @@ export class AccountController implements IAccountController {
         address: t.address
       }
     }));
-
-    this.ethAccountTracker.config(this.ethClient.getAddress(), tokens, chainId, (ethBalance, tokenBals) => {
-      const { balances } = store.getState().vault;
-      store.dispatch(updateBalances({ ...balances, [AssetType.Ethereum]: ethBalance, ...tokenBals }));
-    }, 5);
 
     return assetList;
   }
@@ -289,12 +282,11 @@ export class AccountController implements IAccountController {
   async addNewToken (address: string) {
     const { activeWallet }: IVaultState = store.getState().vault;
     const account = this.keyringManager.addTokenToAccount(activeWallet.id, this.ethClient.getAddress(), address);
-    const assets = this.buildAndMonitorEthAccount(account.getTokens());
-    store.dispatch(updateWalletAssets({...activeWallet.assets, ...assets}));
-    // const assets: IAssetListState = store.getState().assets;
-    // const tokenInfo = assets[address];
-    // const asset: IAssetState = { ...tokenInfo }
-    // store.dispatch(addAsset(asset));
+    const tokenAssets = this.buildAndMonitorEthAccount(account.getTokens());
+    const newToken = tokenAssets.find(t => t.address === address);
+    store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
+
+    this.monitor.start();
   }
 
   // Tx-RelatedupdateAccountLabel
