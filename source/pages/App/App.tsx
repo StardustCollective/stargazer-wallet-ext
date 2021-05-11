@@ -11,13 +11,13 @@ import IVaultState from 'state/vault/types';
 import 'assets/styles/global.scss';
 
 const App: FC = () => {
-  const vault: IVaultState = useSelector( (state: RootState) => state.vault );
+  const { wallets }: IVaultState = useSelector( (state: RootState) => state.vault );
 
   return (
     <section id="app" style={{ minHeight: '300px' }}>
       <Container>
         <Router>
-          {!!vault ? (
+          {wallets && Object.values(wallets).length > 0 ? (
             <AuthRouter />
           ) : (
             <UnAuthRouter />

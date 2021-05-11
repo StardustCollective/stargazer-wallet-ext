@@ -208,7 +208,7 @@ export class AccountController implements IAccountController {
   }
 
   buildAndMonitorEthAccount (accountTokens: string[]) {
-    const assetInfoMap: IAssetListState = store.getState();
+    const assetInfoMap: IAssetListState = store.getState().assets;
 
     const tokens = accountTokens.map(t => assetInfoMap[t])
 

@@ -66,6 +66,6 @@ export function useTotalBalance(currencyName = true) {
     `${currencyName ? currency.symbol : ''}${balance.toFixed(2)}${
       currencyName ? ` ${currency.name}` : ''
     }`,
-    (balance / fiat.bitcoin.price).toFixed(2),
+    (balance / (fiat.bitcoin?.price || 0)).toFixed(2),
   ];
 }
