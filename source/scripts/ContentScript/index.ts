@@ -1,7 +1,6 @@
 
 import { providerManager, stargazerProvider } from './inject'
 
-import { inject } from 'scripts/Provider/utils';
 import { Script } from 'scripts/Provider/Script';
 
 (new Script()).start()
@@ -22,4 +21,13 @@ inject(stargazerProvider())
 // }
 //
 // injectEthereum('ETH', 'eth')
+
+function inject (content: string) {
+  const container = document.head || document.documentElement
+  const scriptTag = document.createElement('script')
+  scriptTag.setAttribute('async', 'false')
+  scriptTag.textContent = `(() => {${content}})()`
+  container.insertBefore(scriptTag, container.children[0])
+}
+
 

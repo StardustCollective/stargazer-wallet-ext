@@ -1,21 +1,21 @@
-import { browser } from 'webextension-polyfill-ts';
-let isBgScr: any;
-
-export const BG_PREFIX = '##BACKGROUND##'
-
-export const isBackgroundScript = (context: Window) => {
-  if (isBgScr !== undefined) return isBgScr
-
-  try {
-    isBgScr = context === browser.extension.getBackgroundPage()
-  } catch (e) {
-    isBgScr = false
-  }
-
-  return isBgScr
-}
-
-export const getAppId = () => browser.runtime.id
+// import { browser } from 'webextension-polyfill-ts';
+// let isBgScr: any;
+//
+// export const BG_PREFIX = '##BACKGROUND##'
+//
+// export const isBackgroundScript = (context: Window) => {
+//   if (isBgScr !== undefined) return isBgScr
+//
+//   try {
+//     isBgScr = context === browser.extension.getBackgroundPage()
+//   } catch (e) {
+//     isBgScr = false
+//   }
+//
+//   return isBgScr
+// }
+//
+// export const getAppId = () => browser.runtime.id
 
 // export const getRootURL = () => browser.runtime.getURL('/')
 
@@ -35,7 +35,7 @@ export const getAppId = () => browser.runtime.id
 //   browser.windows.create(options)
 // }
 
-export const connectToBackground = () => browser.runtime.connect()
+// export const connectToBackground = (name: string | undefined) => browser.runtime.connect(name);
 
 // export const handleConnection = callback => browser.runtime.onConnect.addListener(callback)
 

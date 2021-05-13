@@ -1,18 +1,17 @@
 
 
 import { EventEmitter } from 'events';
-import { connectToBackground } from './utils'
-import { Runtime } from 'webextension-polyfill-ts';
+import { browser, Runtime } from 'webextension-polyfill-ts';
 
 export class Script {
 
   private emitter = new EventEmitter();
-  private background: Runtime.Port;
+  private backgroundPort: Runtime.Port;
 
   constructor () {
-    this.emitter = new EventEmitter()
-    this.background = connectToBackground()
-    this.background.onMessage.addListener(message => this.onMessage(message))
+    this.emitter = new EventEmitter();
+    this.backgroundPort = browser.runtime.connect(undefined, {name: 'stargazer'});
+    this.backgroundPort.onMessage.addListener(message => this.onMessage(message));
   }
 
   start () {
@@ -23,9 +22,13 @@ export class Script {
       const { id, type, data } = event.data
       if (!id || !type) return
 
-      this.emitter.once(id, result => window.dispatchEvent(new CustomEvent(id, { detail: JSON.stringify(result) })))
+      this.emitter.once(id, result => {
+        console.log('Script - emitter.once', id, result);
+        window.dispatchEvent(new CustomEvent(id, { detail: JSON.stringify(result) }))
+      })
 
-      this.background.postMessage({
+      console.log('Script - ', id, type, data);
+      this.backgroundPort.postMessage({
         id,
         type,
         data
@@ -34,6 +37,7 @@ export class Script {
   }
 
   onMessage ({ id, data }: { id: string, data: string}) {
+    console.log('Script - onMessage', id, data);
     this.emitter.emit(id, data)
   }
 }

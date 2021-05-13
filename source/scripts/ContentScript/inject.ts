@@ -156,9 +156,9 @@ ${overrideEthereum
 const stargazerProvider = () => `
 const REQUEST_MAP = {
   getNetwork: 'wallet.getNetwork',
-  wallet_getAddresses: 'wallet.getAddresses',
-  wallet_signMessage: 'wallet.signMessage',
-  wallet_sendTransaction: 'wallet.sendTransaction',
+  getAddress: 'wallet.getAddress',
+  signMessage: 'wallet.signMessage',
+  sendTransaction: 'wallet.sendTransaction',
 }
 
 async function handleRequest (req) {
