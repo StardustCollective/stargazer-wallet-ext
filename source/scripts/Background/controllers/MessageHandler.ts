@@ -1,5 +1,6 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMasterController } from '.';
+import { v4 as uuid } from 'uuid';
 
 export const messagesHandler = (masterController: IMasterController) => {
   const fromApp = (url: string) => {
@@ -28,6 +29,7 @@ export const messagesHandler = (masterController: IMasterController) => {
         if (walletIsLocked) {
           return sendErrors(['Wallet is Locked']);
         }
+        masterController.createPopup(uuid());
         return Promise.resolve({ response: '🚀 Connection Request!' });
       }
       return Promise.resolve({ response: 'Hi from content script' });
