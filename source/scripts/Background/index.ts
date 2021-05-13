@@ -9,6 +9,7 @@ import { dag } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
+import { messagesHandler } from './controllers/MessageHandler';
 
 declare global {
   interface Window {
@@ -47,6 +48,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 
 if (!window.controller) {
   window.controller = Object.freeze(MasterController());
+  messagesHandler(window.controller);
   setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
 }
 
