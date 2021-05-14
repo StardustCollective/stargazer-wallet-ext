@@ -10,8 +10,7 @@
   right: 0;
   bottom: 0;
   z-index: 0;
-  // background: $gray-light;
-  background: $white;
+  background: $gray-light;
 
   .frame {
     width: 372px;
@@ -36,6 +35,7 @@
         margin-bottom: 12px;
         width: 42px;
         height: 42px;
+        border-radius: 50%;
         display: block;
       }
     }
