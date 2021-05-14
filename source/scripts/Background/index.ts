@@ -27,7 +27,10 @@ browser.runtime.onInstalled.addListener((): void => {
 });
 
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {
-  if (
+  if (port.name === 'stargazer') {
+    messagesHandler(port, window.controller);
+  }
+  else if (
     port.sender &&
     port.sender.url &&
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))

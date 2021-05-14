@@ -18,7 +18,6 @@ const Starter = () => {
 
   const onSubmit = (data: any) => {
     controller.wallet.unLock(data.password).then((res) => {
-      console.log(res);
       setInvalid(!res);
     });
   };

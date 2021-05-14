@@ -2,7 +2,9 @@ import WalletController, { IWalletController } from './WalletController';
 import ControllerUtils from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
 import { browser } from 'webextension-polyfill-ts';
+import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
 export interface IMasterController {
+  stargazerProvider: Readonly<StargazerProvider>;
   wallet: Readonly<IWalletController>;
   contacts: Readonly<IContactsController>;
   stateUpdater: () => void;
@@ -11,6 +13,7 @@ export interface IMasterController {
 }
 
 const MasterController = (): IMasterController => {
+  const stargazerProvider = Object.freeze(new StargazerProvider());
   const wallet = Object.freeze(WalletController());
   const utils = Object.freeze(ControllerUtils());
   const contacts = Object.freeze(
@@ -36,6 +39,7 @@ const MasterController = (): IMasterController => {
     appRoute: utils.appRoute,
     stateUpdater,
     createPopup,
+    stargazerProvider,
   };
 };
 

@@ -1,51 +1,30 @@
-import { browser } from 'webextension-polyfill-ts';
+import { providerManager, stargazerProvider } from './inject';
 
-//For security only messages in JSON string messages will be passed to the application
-const isJSON = (json: any) => {
-  if (Object.prototype.toString.call(json) !== '[object String]') return false;
-  try {
-    return JSON.parse(json);
-  } catch (e) {
-    return false;
-  }
-};
+import { Script } from 'scripts/Provider/Script';
 
-const getWalletInfo = () => {
-  browser.runtime.sendMessage({ type: 'getWalletInfo' }, (response: any) => {
-    if (!browser.runtime.lastError || response !== 'ok') {
-      document.dispatchEvent(
-        new CustomEvent('stargazerWalletInfo', { detail: response })
-      );
-    }
-  });
-};
+new Script().start();
 
-document.addEventListener('stargazerWalletInfo', () => getWalletInfo());
+inject(providerManager());
+inject(stargazerProvider());
 
-const stargazerWalletConnect = (detail: any) => {
-  browser.runtime
-    .sendMessage({ type: 'stargazerWalletConnect', data: detail })
-    .then((response: any) => {
-      console.log(response);
-      if (!browser.runtime.lastError && response !== 'ok') {
-        // document.dispatchEvent(
-        //   new CustomEvent('stargazerWalletInfo', { detail: response })
-        // );
-      }
-    });
-};
+// function injectEthereum (asset: string, name: string) {
+//
+//   inject(ethereumProvider({
+//     name,
+//     asset,
+//     network: {
+//       networkId: 1, chainId: 1
+//     },
+//     overrideEthereum: true
+//   }))
+// }
+//
+// injectEthereum('ETH', 'eth')
 
-document.addEventListener('stargazerWalletConnect', (event: any) => {
-  const detail = event.detail;
-  // //If a detail value was passed validate it is a JSON string.  If not then pass back an error to the webpage
-  if (isJSON(detail)) stargazerWalletConnect(detail);
-  else {
-    const errors = ['Expected event detail to be JSON string'];
-    document.dispatchEvent(
-      new CustomEvent('stargazerWalletInfo', { detail: { errors } })
-    );
-    return;
-  }
-});
-
-export {};
+function inject(content: string) {
+  const container = document.head || document.documentElement;
+  const scriptTag = document.createElement('script');
+  scriptTag.setAttribute('async', 'false');
+  scriptTag.textContent = `(() => {${content}})()`;
+  container.insertBefore(scriptTag, container.children[0]);
+}
