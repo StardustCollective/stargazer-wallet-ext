@@ -51,7 +51,21 @@ export const messagesHandler = (port: Runtime.Port, masterController: IMasterCon
         return sendError('Wallet is Locked');
       }
       masterController.createPopup(uuid());
-      return Promise.resolve({ id: message.id, result: '🚀 Connection Request!' });
+      return Promise.resolve({ id: message.id, result: true });
+    }
+    else if (message.type === 'CAL_REQUEST') {
+      const { method, args } = message.data;
+      let result: any;
+      if (method === 'wallet.getAddress') {
+        result = masterController.stargazerProvider.getAddress();
+      }
+      else if (method === 'wallet.signMessage') {
+        result = masterController.stargazerProvider.signMessage(args[0]);
+      }
+
+      if (result) {
+        return Promise.resolve({ id: message.id, result: result });
+      }
     }
     return Promise.resolve({ id: message.id, result: 'Hi from content script' });
   }
