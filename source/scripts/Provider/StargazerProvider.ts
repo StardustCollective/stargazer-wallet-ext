@@ -28,7 +28,7 @@ export class StargazerProvider {
 
     this.verifyMessage(msg, sig, address)
 
-    return address + ':' + sig;
+    return sig;
   }
 
   verifyMessage(msg: string, signature: string, saysAddress: string) {

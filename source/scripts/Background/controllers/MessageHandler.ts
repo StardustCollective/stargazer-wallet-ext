@@ -56,7 +56,10 @@ export const messagesHandler = (port: Runtime.Port, masterController: IMasterCon
     else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
       let result: any;
-      if (method === 'wallet.getAddress') {
+      if (method === 'wallet.isUnlocked') {
+        result = !masterController.wallet.isLocked();
+      }
+      else if (method === 'wallet.getAddress') {
         result = masterController.stargazerProvider.getAddress();
       }
       else if (method === 'wallet.signMessage') {
