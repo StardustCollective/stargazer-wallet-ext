@@ -1,0 +1,97 @@
+@import '~assets/styles/variables';
+
+.wrapper {
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  // background: $gray-light;
+  background: $white;
+
+  .frame {
+    width: 372px;
+    height: 600px;
+    display: flex;
+    background: $gray-light;
+    flex-direction: column;
+    padding: 24px;
+    box-sizing: border-box;
+
+    section.heading {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 500;
+      margin: 24px 0;
+      height: 96px;
+
+      .logo {
+        margin-bottom: 12px;
+        width: 42px;
+        height: 42px;
+        display: block;
+      }
+    }
+
+    .title {
+      font-weight: 400;
+      font-size: 30px;
+      line-height: 36px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-weight: 500;
+      margin: 16px 0;
+      font-size: 12px;
+    }
+
+    section.accounts {
+      background: $white;
+      padding: 12px 0;
+      width: 100%;
+      height: 180px;
+      box-sizing: border-box;
+      border-radius: 6px;
+      color: $gray-100;
+      font-size: 12px;
+      font-weight: 500;
+      overflow: auto;
+
+      table {
+        width: 100%;
+
+        td {
+          height: 36px;
+        }
+      }
+    }
+
+    section.actions {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      margin-top: 14px;
+      box-sizing: border-box;
+
+      .close,
+      .close:hover {
+        background: $gray-light;
+        color: $gray-dark;
+      }
+
+      .button {
+        width: 144px;
+      }
+    }
+  }
+}

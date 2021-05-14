@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import Container from 'containers/common/Container';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
+import WalletConnect from 'containers/confirm/WalletConnect';
 
 import 'assets/styles/global.scss';
 
@@ -16,7 +17,7 @@ const ConfirmPage: FC = () => {
     <section id="confirm-page" style={{ minHeight: '300px' }}>
       <Container>
         {keystores && seedKeystoreId && keystores[seedKeystoreId] ? (
-          <span>Logged in</span>
+          <WalletConnect />
         ) : (
           <span>Locked</span>
         )}
