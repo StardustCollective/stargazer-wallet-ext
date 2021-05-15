@@ -20,6 +20,7 @@
     flex-direction: column;
     padding: 24px;
     box-sizing: border-box;
+    position: relative;
 
     section.heading {
       display: flex;
@@ -45,12 +46,15 @@
       font-size: 30px;
       line-height: 36px;
       margin-bottom: 12px;
+      text-align: center;
+      white-space: pre-line;
     }
 
     label {
       font-weight: 500;
       margin: 16px 0;
       font-size: 12px;
+      text-align: center;
     }
 
     section.confirm {
@@ -59,7 +63,7 @@
       font-size: 12px;
       font-weight: 500;
       align-items: center;
-      margin-bottom: 178px;
+      margin-bottom: 142px;
     }
 
     section.accounts {
@@ -84,13 +88,16 @@
     }
 
     section.actions {
-      width: 100%;
+      width: calc(100% - 48px);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 12px;
       margin-top: 14px;
+      position: absolute;
       box-sizing: border-box;
+      bottom: 12px;
+      left: 24px;
 
       .close,
       .close:hover {

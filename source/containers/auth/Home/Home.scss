@@ -60,6 +60,21 @@
     align-items: center;
     text-align: center;
     color: $gray-dark;
+    position: relative;
+
+    & > .connected {
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      left: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      align-items: center;
+
+      svg {
+        color: $purple;
+      }
+    }
 
     & > small {
       font-weight: 600;

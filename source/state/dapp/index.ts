@@ -13,7 +13,7 @@ const DAppState = createSlice({
       state: IDAppState,
       action: PayloadAction<{ id: string; dapp: IDAppInfo }>
     ) {
-      state = {
+      return {
         ...state,
         [action.payload.id]: action.payload.dapp,
       };

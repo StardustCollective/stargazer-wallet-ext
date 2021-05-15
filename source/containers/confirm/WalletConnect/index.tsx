@@ -1,35 +1,23 @@
 import clsx from 'clsx';
 import Button from 'components/Button';
-import React, { useState } from 'react';
-
-import IconButton from '@material-ui/core/IconButton';
-import LinkIcon from '@material-ui/icons/CallMade';
-import Checkbox from '@material-ui/core/Checkbox';
+import React from 'react';
 
 import styles from './index.module.scss';
-import { useController } from 'hooks';
-
-enum ConnectWallet {
-  Choose,
-  Confirm,
-}
+import { useController } from 'hooks/index';
 
 const WalletConnect = () => {
   // @ts-ignore
-  const [step, setStep] = useState(ConnectWallet.Choose);
   const controller = useController();
   const current = controller.dapp.getCurrent();
+  const origin = current.uri && new URL(current.uri as string).origin;
 
   const handleClose = () => {
     window.close();
   };
 
   const handleSubmit = () => {
-    if (step === ConnectWallet.Choose) {
-      setStep(ConnectWallet.Confirm);
-    } else {
-      window.close();
-    }
+    controller.dapp.connectDApp(origin, current);
+    window.close();
   };
 
   return (
@@ -40,39 +28,8 @@ const WalletConnect = () => {
           <span>{current.title}</span>
         </section>
         <div className={styles.title}>
-          {step === ConnectWallet.Choose
-            ? `Connect With Stargazer Wallet`
-            : `Connect to Main Wallet (DAG...1v04)`}
+          {`Allow this site to\n connect to\n Stargazer Wallet`}
         </div>
-        <label>
-          {step === ConnectWallet.Choose
-            ? `Please select an amount:`
-            : `Allows this site to:`}
-        </label>
-        {step === ConnectWallet.Confirm ? (
-          <section className={styles.confirm}>
-            <Checkbox color="primary" size="small" checked />
-            View the addresses of your permitted accounts (required)
-          </section>
-        ) : (
-          <section className={styles.accounts}>
-            <table>
-              <tr>
-                <td>
-                  <Checkbox color="primary" size="small" />
-                </td>
-                <td>1</td>
-                <td>0xb2...a49D</td>
-                <td>0.003020 ETH</td>
-                <td>
-                  <IconButton size="small">
-                    <LinkIcon fontSize="small" />
-                  </IconButton>
-                </td>
-              </tr>
-            </table>
-          </section>
-        )}
         <label>Only connect to sites you trust</label>
         <section className={styles.actions}>
           <Button
@@ -81,10 +38,10 @@ const WalletConnect = () => {
             variant={clsx(styles.button, styles.close)}
             onClick={handleClose}
           >
-            Close
+            Cancel
           </Button>
           <Button type="submit" variant={styles.button} onClick={handleSubmit}>
-            Next
+            Connect
           </Button>
         </section>
       </div>
