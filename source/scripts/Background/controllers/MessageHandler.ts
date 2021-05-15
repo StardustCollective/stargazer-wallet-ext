@@ -2,11 +2,17 @@ import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMasterController } from '.';
 import { v4 as uuid } from 'uuid';
 
+type Message = {
+  id: string;
+  type: string;
+  data: { asset: string; method: string; args: any[] };
+}
+
 export const messagesHandler = (
   port: Runtime.Port,
   masterController: IMasterController
 ) => {
-  console.log('messagesHandler.HELLO');
+  const externalConnectionApprovalMap: {[origin: string]: true} = {};
 
   const fromApp = (url: string = '') => {
     return url.startsWith(`${window.location.origin}/app.html`);
@@ -15,9 +21,9 @@ export const messagesHandler = (
     return url.startsWith(`${window.location.origin}/confirm.html`);
   };
 
-  const listener = async (message: any) => {
+  const listener = async (message: Message, connection: Runtime.Port) => {
     try {
-      const { id, result } = await listenerHandler(message);
+      const { id, result } = await listenerHandler(message, connection);
       console.log('messagesHandler.RESPONSE');
       console.log(JSON.stringify(result, null, 2));
       port.postMessage({ id, data: { result } });
@@ -28,14 +34,8 @@ export const messagesHandler = (
     }
   };
 
-  const listenerHandler = async (message: {
-    id: string;
-    type: string;
-    data: { asset: string; method: string; args: any[] };
-  }) => {
+  const listenerHandler = async (message: Message, connection: Runtime.Port) => {
     if (browser.runtime.lastError) return Promise.reject('Runtime Last Error');
-
-    console.log('messagesHandler.onMessage: ' + port.sender?.url);
 
     const sendError = (error: string) =>
       Promise.reject(new CustomEvent(message.id, { detail: error }));
@@ -57,26 +57,49 @@ export const messagesHandler = (
     );
     console.log(JSON.stringify(message, null, 2));
 
+    const url = connection.sender?.url;
+    const origin = url && new URL(url as string).origin;
+
+    const allowed = origin && externalConnectionApprovalMap[origin];
+
+    console.log('messagesHandler.onMessage: ' + origin, allowed);
+
+    //NOTE
+    //1. wallet is locked and needs password unlocked
+    //2. wallet is unlocked but this origin needs approval
+    //3, wallet is not detected. could be that it is not installed or there's an outdated version.
     if (message.type === 'ENABLE_REQUEST') {
+
       if (walletIsLocked) {
         return sendError('Wallet is Locked');
       }
+
       masterController.createPopup(uuid());
+
+      //TODO - we need popup above to resolve this promise and set approval flag
+
+      if (origin) {
+        externalConnectionApprovalMap[origin] = true;
+      }
+
       return Promise.resolve({ id: message.id, result: true });
+
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
-      let result: any;
-      if (method === 'wallet.isUnlocked') {
-        result = !masterController.wallet.isLocked();
+      let result: any = undefined;
+      if (method === 'wallet.isConnected') {
+        result = !!allowed && !walletIsLocked;
       } else if (method === 'wallet.getAddress') {
         result = masterController.stargazerProvider.getAddress();
       } else if (method === 'wallet.signMessage') {
         result = masterController.stargazerProvider.signMessage(args[0]);
       }
 
-      if (result) {
+      if (result !== undefined) {
         return Promise.resolve({ id: message.id, result: result });
       }
+
+      return sendError('Unknown request');
     }
     return Promise.resolve({
       id: message.id,
