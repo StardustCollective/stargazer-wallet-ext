@@ -7,6 +7,7 @@ import LinkIcon from '@material-ui/icons/CallMade';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import styles from './index.module.scss';
+import { useController } from 'hooks';
 
 enum ConnectWallet {
   Choose,
@@ -15,14 +16,28 @@ enum ConnectWallet {
 
 const WalletConnect = () => {
   // @ts-ignore
-  const [step, setStep] = useState(ConnectWallet.Confirm);
+  const [step, setStep] = useState(ConnectWallet.Choose);
+  const controller = useController();
+  const current = controller.dapp.getCurrent();
+
+  const handleClose = () => {
+    window.close();
+  };
+
+  const handleSubmit = () => {
+    if (step === ConnectWallet.Choose) {
+      setStep(ConnectWallet.Confirm);
+    } else {
+      window.close();
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.frame}>
         <section className={styles.heading}>
-          <img src={styles.logo} />
-          <span>https://dag.chad</span>
+          <img className={styles.logo} src={current.logo} />
+          <span>{current.title}</span>
         </section>
         <div className={styles.title}>
           {step === ConnectWallet.Choose
@@ -64,10 +79,11 @@ const WalletConnect = () => {
             type="button"
             theme="secondary"
             variant={clsx(styles.button, styles.close)}
+            onClick={handleClose}
           >
             Close
           </Button>
-          <Button type="submit" variant={styles.button}>
+          <Button type="submit" variant={styles.button} onClick={handleSubmit}>
             Next
           </Button>
         </section>

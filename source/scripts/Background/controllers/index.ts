@@ -3,9 +3,11 @@ import ControllerUtils from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
 import { browser } from 'webextension-polyfill-ts';
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
+import DAppController, { IDAppController } from './DAppController';
 export interface IMasterController {
   stargazerProvider: Readonly<StargazerProvider>;
   wallet: Readonly<IWalletController>;
+  dapp: Readonly<IDAppController>;
   contacts: Readonly<IContactsController>;
   stateUpdater: () => void;
   appRoute: (newRoute?: string) => string;
@@ -16,6 +18,7 @@ const MasterController = (): IMasterController => {
   const stargazerProvider = Object.freeze(new StargazerProvider());
   const wallet = Object.freeze(WalletController());
   const utils = Object.freeze(ControllerUtils());
+  const dapp = Object.freeze(DAppController());
   const contacts = Object.freeze(
     ContactsController({ isLocked: wallet.isLocked })
   );
@@ -36,6 +39,7 @@ const MasterController = (): IMasterController => {
   return {
     wallet,
     contacts,
+    dapp,
     appRoute: utils.appRoute,
     stateUpdater,
     createPopup,

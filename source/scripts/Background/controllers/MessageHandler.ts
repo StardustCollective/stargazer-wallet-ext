@@ -6,13 +6,13 @@ type Message = {
   id: string;
   type: string;
   data: { asset: string; method: string; args: any[] };
-}
+};
 
 export const messagesHandler = (
   port: Runtime.Port,
   masterController: IMasterController
 ) => {
-  const externalConnectionApprovalMap: {[origin: string]: true} = {};
+  // const externalConnectionApprovalMap: { [origin: string]: true } = {};
 
   const fromApp = (url: string = '') => {
     return url.startsWith(`${window.location.origin}/app.html`);
@@ -34,7 +34,10 @@ export const messagesHandler = (
     }
   };
 
-  const listenerHandler = async (message: Message, connection: Runtime.Port) => {
+  const listenerHandler = async (
+    message: Message,
+    connection: Runtime.Port
+  ) => {
     if (browser.runtime.lastError) return Promise.reject('Runtime Last Error');
 
     const sendError = (error: string) =>
@@ -60,7 +63,7 @@ export const messagesHandler = (
     const url = connection.sender?.url;
     const origin = url && new URL(url as string).origin;
 
-    const allowed = origin && externalConnectionApprovalMap[origin];
+    const allowed = origin && masterController.dapp.fetchInfo(origin, true);
 
     console.log('messagesHandler.onMessage: ' + origin, allowed);
 
@@ -69,21 +72,19 @@ export const messagesHandler = (
     //2. wallet is unlocked but this origin needs approval
     //3, wallet is not detected. could be that it is not installed or there's an outdated version.
     if (message.type === 'ENABLE_REQUEST') {
-
       if (walletIsLocked) {
         return sendError('Wallet is Locked');
       }
 
-      masterController.createPopup(uuid());
-
       //TODO - we need popup above to resolve this promise and set approval flag
 
       if (origin) {
-        externalConnectionApprovalMap[origin] = true;
+        if (!allowed) {
+          masterController.createPopup(uuid());
+        }
       }
 
       return Promise.resolve({ id: message.id, result: true });
-
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
       let result: any = undefined;
