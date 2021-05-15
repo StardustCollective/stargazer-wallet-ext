@@ -64,9 +64,9 @@ export const messagesHandler = (
 
     console.log('messagesHandler.onMessage: ' + origin, allowed);
 
-    //TODO
+    //NOTE
     //1. wallet is locked and needs password unlocked
-    //2. wallet is unlocked but this web site needs
+    //2. wallet is unlocked but this origin needs approval
     //3, wallet is not detected. could be that it is not installed or there's an outdated version.
     if (message.type === 'ENABLE_REQUEST') {
 
