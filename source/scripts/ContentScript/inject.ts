@@ -156,7 +156,7 @@ ${overrideEthereum
 const stargazerProvider = () => `
 
 const REQUEST_MAP = {
-  isUnlocked: 'wallet.isUnlocked',
+  isConnected: 'wallet.isConnected',
   getNetwork: 'wallet.getNetwork',
   getAddress: 'wallet.getAddress',
   signMessage: 'wallet.signMessage',
@@ -175,9 +175,9 @@ async function handleRequest (req) {
 }
 
 window.stargazer = {
-  isUnlocked: async () => {
+  isConnected: async () => {
     const dag = window.providerManager.getProviderFor('DAG')
-    return dag.getMethod('wallet.isUnlocked')()
+    return dag.getMethod('wallet.isConnected')()
   },
   enable: async () => {
     const accepted = await window.providerManager.enable()

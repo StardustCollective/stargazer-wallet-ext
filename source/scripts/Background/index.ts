@@ -51,7 +51,6 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 
 if (!window.controller) {
   window.controller = Object.freeze(MasterController());
-  messagesHandler(window.controller);
   setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
 }
 

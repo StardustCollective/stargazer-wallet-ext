@@ -14,6 +14,7 @@ enum ConnectWallet {
 }
 
 const WalletConnect = () => {
+  // @ts-ignore
   const [step, setStep] = useState(ConnectWallet.Confirm);
 
   return (
