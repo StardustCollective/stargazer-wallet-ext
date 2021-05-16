@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import CircleIcon from '@material-ui/icons/FiberManualRecord';
-
+import CircleIcon from '@material-ui/icons/RadioButtonChecked';
+import BlankCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import FullSelect from 'components/FullSelect';
@@ -52,12 +52,16 @@ const Home = () => {
         <>
           <Header showLogo />
           <section className={styles.account}>
-            {connected && (
-              <div className={styles.connected}>
+            <div
+              className={clsx(styles.status, { [styles.connected]: connected })}
+            >
+              {connected ? (
                 <CircleIcon fontSize="small" />
-                Connected
-              </div>
-            )}
+              ) : (
+                <BlankCircleIcon fontSize="small" />
+              )}
+              {connected ? 'Connected' : 'Not connected'}
+            </div>
             {Object.keys(accounts).length > 1 ? (
               <FullSelect
                 value={activeAccountId}

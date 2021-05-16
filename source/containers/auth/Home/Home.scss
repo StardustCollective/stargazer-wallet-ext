@@ -62,7 +62,7 @@
     color: $gray-dark;
     position: relative;
 
-    & > .connected {
+    & > .status {
       position: absolute;
       display: flex;
       flex-direction: row;
@@ -70,9 +70,17 @@
       font-size: 12px;
       font-weight: 500;
       align-items: center;
+      color: $gray-100;
 
       svg {
-        color: $purple;
+        color: $gray-100;
+        margin-right: 6px;
+      }
+
+      &.connected {
+        svg {
+          color: $purple;
+        }
       }
     }
 
