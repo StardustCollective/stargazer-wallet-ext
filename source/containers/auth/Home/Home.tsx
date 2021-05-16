@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
-
+import CircleIcon from '@material-ui/icons/RadioButtonChecked';
+import BlankCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import FullSelect from 'components/FullSelect';
@@ -16,10 +17,14 @@ import TxsPanel from './TxsPanel';
 
 import styles from './Home.scss';
 import { formatNumber } from '../helpers';
+import { IDAppState } from 'state/dapp/types';
+import { browser } from 'webextension-polyfill-ts';
 
 const Home = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
+  const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
+  const [connected, setConneted] = useState(false);
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -30,12 +35,33 @@ const Home = () => {
     controller.stateUpdater();
   };
 
+  useEffect(() => {
+    browser.tabs.query({ active: true }).then((tabs) => {
+      if (!tabs.length) return;
+      const { url } = tabs[0];
+      const origin = url && new URL(url as string).origin;
+      if (tabs.length && origin && dapp[origin]) {
+        setConneted(true);
+      }
+    });
+  }, []);
+
   return (
     <div className={styles.wrapper}>
       {accounts[activeAccountId] ? (
         <>
           <Header showLogo />
           <section className={styles.account}>
+            <div
+              className={clsx(styles.status, { [styles.connected]: connected })}
+            >
+              {connected ? (
+                <CircleIcon fontSize="small" />
+              ) : (
+                <BlankCircleIcon fontSize="small" />
+              )}
+              {connected ? 'Connected' : 'Not connected'}
+            </div>
             {Object.keys(accounts).length > 1 ? (
               <FullSelect
                 value={activeAccountId}

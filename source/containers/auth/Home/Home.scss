@@ -60,6 +60,29 @@
     align-items: center;
     text-align: center;
     color: $gray-dark;
+    position: relative;
+
+    & > .status {
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      left: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      align-items: center;
+      color: $gray-100;
+
+      svg {
+        color: $gray-100;
+        margin-right: 6px;
+      }
+
+      &.connected {
+        svg {
+          color: $purple;
+        }
+      }
+    }
 
     & > small {
       font-weight: 600;

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "1.2.1",
+  "version": "1.3.0",
 
   "icons": {
     "16": "assets/icons/favicon-16.png",
@@ -13,9 +13,9 @@
   "homepage_url": "https://constellationnetwork.io/",
   "short_name": "stargazer-wallet-ext",
 
-  "permissions": ["http://*/*", "https://*/*"],
+  "permissions": ["http://*/*", "https://*/*", "chrome://favicon/"],
 
-  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon;",
 
   "__chrome|firefox__author": "Stardust Collective",
   "__opera__developer": {
@@ -58,8 +58,10 @@
 
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["js/contentScript.bundle.js"]
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["js/contentScript.bundle.js"],
+      "run_at": "document_start",
+      "all_frames": false
     }
   ]
 }
