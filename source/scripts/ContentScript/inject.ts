@@ -187,6 +187,7 @@ async function handleRequest (req) {
 }
 
 window.stargazer = {
+  evtRegMap: {},
   isConnected: async () => {
     const dag = window.providerManager.getProviderFor('DAG')
     return dag.getMethod('wallet.isConnected')()
@@ -202,6 +203,20 @@ window.stargazer = {
     return handleRequest({
       method: req.method, params
     })
+  },
+  on: (method, callback) => {
+    const id = Date.now() + '.' + Math.random();
+    
+    window.stargazer.evtRegMap[id] = callback;
+
+    window.addEventListener(id, ({detail}) => {
+      const rCallback = window.stargazer.evtRegMap[id];
+      if (rCallback) {
+        rCallback(JSON.parse(detail));
+      }
+    })
+
+    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: { method } }, '*')
   }
 }
 `;

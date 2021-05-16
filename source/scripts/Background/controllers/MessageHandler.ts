@@ -76,7 +76,17 @@ export const messagesHandler = (
     //1. wallet is locked and needs password unlocked
     //2. wallet is unlocked but this origin needs approval
     //3, wallet is not detected. could be that it is not installed or there's an outdated version.
-    if (message.type === 'ENABLE_REQUEST') {
+    if (message.type === 'STARGAZER_EVENT_REG') {
+      if (message.data && message.data.method) {
+        setTimeout(() => {
+          port.postMessage({ id: message.id, data: 'HELLO1' });
+          setTimeout(() => {
+            port.postMessage({ id: message.id, data: 'HELLO2' });
+          }, 5000);
+        }, 5000);
+      }
+    }
+    else if (message.type === 'ENABLE_REQUEST') {
       if (walletIsLocked) {
         return sendError('Wallet is Locked');
       }
@@ -118,7 +128,7 @@ export const messagesHandler = (
         const windowId = `signMessage${uuid()}`;
         const popup = await masterController.createPopup(windowId);
         masterController.dapp.setSigRequest({
-          origin,
+          origin: origin as string,
           address: args[1],
           message: args[0],
         });
@@ -152,10 +162,14 @@ export const messagesHandler = (
 
       return sendError('Unknown request');
     }
-    return Promise.resolve({
-      id: message.id,
-      result: 'Hi from content script',
-    });
+    else {
+      return Promise.resolve({
+        id: message.id,
+        result: 'Hi from content script',
+      });
+    }
+
+    return Promise.resolve(null);
   };
 
   port.onMessage.addListener(listener);

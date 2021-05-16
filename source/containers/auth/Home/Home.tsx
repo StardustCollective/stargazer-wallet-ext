@@ -40,7 +40,7 @@ const Home = () => {
       if (!tabs.length) return;
       const { url } = tabs[0];
       const origin = url && new URL(url as string).origin;
-      if (tabs.length && dapp[origin]) {
+      if (tabs.length && origin && dapp[origin]) {
         setConneted(true);
       }
     });

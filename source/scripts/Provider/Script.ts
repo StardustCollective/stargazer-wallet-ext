@@ -22,10 +22,18 @@ export class Script {
       const { id, type, data } = event.data
       if (!id || !type) return
 
-      this.emitter.once(id, result => {
-        console.log('Script - emitter.once', id, result);
-        window.dispatchEvent(new CustomEvent(id, { detail: JSON.stringify(result) }))
-      })
+      if (type === 'STARGAZER_EVENT_REG') {
+        this.emitter.on(id, result => {
+          console.log('Script - emitter', id, result);
+          window.dispatchEvent(new CustomEvent(id, { detail: JSON.stringify(result) }))
+        })
+      }
+      else {
+        this.emitter.once(id, result => {
+          console.log('Script - emitter.once', id, result);
+          window.dispatchEvent(new CustomEvent(id, { detail: JSON.stringify(result) }))
+        })
+      }
 
       console.log('Script - ', id, type, data);
       this.backgroundPort.postMessage({

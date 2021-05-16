@@ -26,9 +26,9 @@ const DAppController = (): IDAppController => {
     if (upToDate) {
       browser.tabs.query({ active: true }).then((tabs) => {
         current = {
-          uri: tabs[0].url,
+          uri: tabs[0].url as string,
           logo: `chrome://favicon/size/64@1x/${tabs[0].url}`,
-          title: tabs[0].title,
+          title: tabs[0].title as string,
         };
       });
     }
