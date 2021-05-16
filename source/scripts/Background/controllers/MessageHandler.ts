@@ -117,6 +117,11 @@ export const messagesHandler = (
       } else if (method === 'wallet.signMessage') {
         const windowId = `signMessage${uuid()}`;
         const popup = await masterController.createPopup(windowId);
+        masterController.dapp.setSigRequest({
+          origin,
+          address: args[1],
+          message: args[0],
+        });
         window.addEventListener(
           'sign',
           (ev: any) => {

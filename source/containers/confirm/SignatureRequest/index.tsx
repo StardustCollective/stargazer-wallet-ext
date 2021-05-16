@@ -1,13 +1,28 @@
 import styles from './index.module.scss';
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import Button from 'components/Button';
 import { browser } from 'webextension-polyfill-ts';
+import { useController } from 'hooks';
+import IWalletState from 'state/wallet/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
 
 const SignatureRequest = () => {
+  const controller = useController();
+  const params = controller.dapp.getSigRequest();
+  const { accounts }: IWalletState = useSelector(
+    (state: RootState) => state.wallet
+  );
+  const account = Object.values(accounts).filter(
+    (account) => account.address.constellation === params.address
+  )[0];
+
   const handleCancel = () => {
     window.close();
   };
+
+  useEffect(() => {}, []);
 
   const handleSign = async () => {
     const background = await browser.runtime.getBackgroundPage();
@@ -27,17 +42,18 @@ const SignatureRequest = () => {
             <span>Balance:</span>
           </div>
           <div className={styles.row}>
-            <span>Main Wallet</span>
-            <span>555.55 DAG</span>
+            <span>{account.label}</span>
+            <span>{account.balance} DAG</span>
           </div>
         </section>
         <div className={styles.row}>
           <span>Origin:</span>
-          <span>https://dag.chad</span>
+          <span>{params.origin}</span>
         </div>
         <label>You are signing:</label>
         <section className={styles.message}>
-          <span>Message:</span>I am buying 27,000 DAG for 3,000 USD
+          <span>Message:</span>
+          {params.message}
         </section>
         <section className={styles.actions}>
           <Button
