@@ -55,10 +55,20 @@ class ProviderManager {
 }
 
 window.providerManager = new ProviderManager()
-`
+`;
 
 // @ts-ignore
-const ethereumProvider = ({ name, asset, network, overrideEthereum = false }) => `
+const ethereumProvider = ({
+  name,
+  asset,
+  network,
+  overrideEthereum = false,
+}: {
+  name: any;
+  asset: any;
+  network: any;
+  overrideEthereum: boolean;
+}) => `
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
@@ -129,8 +139,9 @@ window.${name} = {
   autoRefreshOnNetworkChange: false
 }
 
-${overrideEthereum
-  ? `function override() {
+${
+  overrideEthereum
+    ? `function override() {
     window.ethereum = window.${name}
   }
 
@@ -149,9 +160,9 @@ ${overrideEthereum
   } else {
     override()
   }`
-  : ''
+    : ''
 }
-`
+`;
 
 const stargazerProvider = () => `
 
@@ -159,6 +170,7 @@ const REQUEST_MAP = {
   isConnected: 'wallet.isConnected',
   getNetwork: 'wallet.getNetwork',
   getAddress: 'wallet.getAddress',
+  getBalance: 'wallet.getBalance',
   signMessage: 'wallet.signMessage',
   sendTransaction: 'wallet.sendTransaction',
 }
@@ -192,6 +204,6 @@ window.stargazer = {
     })
   }
 }
-`
+`;
 
-export { providerManager, ethereumProvider, stargazerProvider }
+export { providerManager, ethereumProvider, stargazerProvider };

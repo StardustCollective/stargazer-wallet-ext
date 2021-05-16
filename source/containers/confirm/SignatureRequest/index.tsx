@@ -2,8 +2,21 @@ import styles from './index.module.scss';
 import React from 'react';
 import clsx from 'clsx';
 import Button from 'components/Button';
+import { browser } from 'webextension-polyfill-ts';
 
 const SignatureRequest = () => {
+  const handleCancel = () => {
+    window.close();
+  };
+
+  const handleSign = async () => {
+    const background = await browser.runtime.getBackgroundPage();
+    background.dispatchEvent(
+      new CustomEvent('sign', { detail: window.location.hash })
+    );
+    window.close();
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.frame}>
@@ -31,11 +44,12 @@ const SignatureRequest = () => {
             type="button"
             theme="secondary"
             variant={clsx(styles.button, styles.close)}
+            onClick={handleCancel}
           >
-            Close
+            Cancel
           </Button>
-          <Button type="submit" variant={styles.button}>
-            Next
+          <Button type="submit" variant={styles.button} onClick={handleSign}>
+            Sign
           </Button>
         </section>
       </div>

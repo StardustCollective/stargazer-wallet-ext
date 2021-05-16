@@ -1,6 +1,8 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMasterController } from '.';
 import { v4 as uuid } from 'uuid';
+import store from 'state/store';
+import watch from 'redux-watch';
 
 type Message = {
   id: string;
@@ -23,10 +25,13 @@ export const messagesHandler = (
 
   const listener = async (message: Message, connection: Runtime.Port) => {
     try {
-      const { id, result } = await listenerHandler(message, connection);
-      console.log('messagesHandler.RESPONSE');
-      console.log(JSON.stringify(result, null, 2));
-      port.postMessage({ id, data: { result } });
+      const response = await listenerHandler(message, connection);
+      if (response) {
+        const { id, result } = response;
+        console.log('messagesHandler.RESPONSE');
+        console.log(JSON.stringify(result, null, 2));
+        port.postMessage({ id, data: { result } });
+      }
     } catch (e) {
       console.log('messagesHandler.ERROR', e.type, e.message, e.detail);
       console.log(JSON.stringify(e, null, 2));
@@ -78,26 +83,66 @@ export const messagesHandler = (
 
       //TODO - we need popup above to resolve this promise and set approval flag
 
-      if (origin) {
-        if (!allowed) {
-          masterController.createPopup(uuid());
-        }
-      }
+      if (origin && !allowed) {
+        const popup = await masterController.createPopup(uuid());
+        const w = watch(store.getState, 'dapp');
+        store.subscribe(
+          w((newState) => {
+            port.postMessage({
+              id: message.id,
+              data: { result: !!newState[origin] },
+            });
+          })
+        );
 
-      return Promise.resolve({ id: message.id, result: true });
+        browser.windows.onRemoved.addListener((id) => {
+          if (id === popup.id) {
+            port.postMessage({ id: message.id, data: { result: false } });
+            console.log('Connect window is closed');
+          }
+        });
+
+        return Promise.resolve(null);
+      }
+      return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
-        result = !!allowed && !walletIsLocked;
+        result = { connected: !!allowed && !walletIsLocked };
       } else if (method === 'wallet.getAddress') {
         result = masterController.stargazerProvider.getAddress();
+      } else if (method === 'wallet.getBalance') {
+        result = masterController.stargazerProvider.getBalance();
       } else if (method === 'wallet.signMessage') {
-        result = masterController.stargazerProvider.signMessage(args[0]);
+        const windowId = `signMessage${uuid()}`;
+        const popup = await masterController.createPopup(windowId);
+        window.addEventListener(
+          'sign',
+          (ev: any) => {
+            if (ev.detail.substring(1) === windowId) {
+              result = masterController.stargazerProvider.signMessage(args[0]);
+              port.postMessage({ id: message.id, data: { result } });
+            }
+          },
+          {
+            once: true,
+            passive: true,
+          }
+        );
+
+        browser.windows.onRemoved.addListener((id) => {
+          if (id === popup.id) {
+            port.postMessage({ id: message.id, data: { result: false } });
+            console.log('SignMessage window is closed');
+          }
+        });
+
+        return Promise.resolve(null);
       }
 
       if (result !== undefined) {
-        return Promise.resolve({ id: message.id, result: result });
+        return Promise.resolve({ id: message.id, result });
       }
 
       return sendError('Unknown request');

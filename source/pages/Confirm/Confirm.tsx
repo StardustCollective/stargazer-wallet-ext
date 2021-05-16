@@ -5,7 +5,7 @@ import Container from 'containers/common/Container';
 import { RootState } from 'state/store';
 import IWalletState from 'state/wallet/types';
 import WalletConnect from 'containers/confirm/WalletConnect';
-// import SignatureRequest from 'containers/confirm/SignatureRequest';
+import SignatureRequest from 'containers/confirm/SignatureRequest';
 
 import 'assets/styles/global.scss';
 
@@ -18,7 +18,11 @@ const ConfirmPage: FC = () => {
     <section id="confirm-page" style={{ minHeight: '300px' }}>
       <Container>
         {keystores && seedKeystoreId && keystores[seedKeystoreId] ? (
-          <WalletConnect />
+          window.location.hash.startsWith('#signMessage') ? (
+            <SignatureRequest />
+          ) : (
+            <WalletConnect />
+          )
         ) : (
           <span>Locked</span>
         )}

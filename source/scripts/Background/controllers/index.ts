@@ -1,7 +1,7 @@
 import WalletController, { IWalletController } from './WalletController';
 import ControllerUtils from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
-import { browser } from 'webextension-polyfill-ts';
+import { browser, Windows } from 'webextension-polyfill-ts';
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
 import DAppController, { IDAppController } from './DAppController';
 export interface IMasterController {
@@ -11,7 +11,7 @@ export interface IMasterController {
   contacts: Readonly<IContactsController>;
   stateUpdater: () => void;
   appRoute: (newRoute?: string) => string;
-  createPopup: (windowId: any) => void;
+  createPopup: (windowId: any) => Promise<Windows.Window>;
 }
 
 const MasterController = (): IMasterController => {
@@ -27,8 +27,8 @@ const MasterController = (): IMasterController => {
     utils.updateFiat();
   };
 
-  const createPopup = (windowId: any) => {
-    browser.windows.create({
+  const createPopup = async (windowId: any) => {
+    return await browser.windows.create({
       url: `/confirm.html#${windowId}`,
       width: 372,
       height: 650,
