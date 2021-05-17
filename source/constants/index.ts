@@ -11,6 +11,12 @@ export const DAG_NETWORK: {
   main: {
     id: 'main',
     label: 'Main Constellation Network',
+    beUrl: 'https://www.stargazer.network/api/scan',
+    lbUrl: 'https://www.stargazer.network/api/node',
+  },
+  main2: {
+    id: 'main2',
+    label: 'Main Constellation Network',
     beUrl: 'https://block-explorer.constellationnetwork.io',
     lbUrl: 'http://lb.constellationnetwork.io:9000',
   },

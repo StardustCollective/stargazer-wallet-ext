@@ -72,10 +72,6 @@ export const messagesHandler = (
 
     console.log('messagesHandler.onMessage: ' + origin, allowed);
 
-    //NOTE
-    //1. wallet is locked and needs password unlocked
-    //2. wallet is unlocked but this origin needs approval
-    //3, wallet is not detected. could be that it is not installed or there's an outdated version.
     if (message.type === 'STARGAZER_EVENT_REG') {
       if (message.data && message.data.method) {
         setTimeout(() => {
@@ -90,8 +86,6 @@ export const messagesHandler = (
       if (walletIsLocked) {
         return sendError('Wallet is Locked');
       }
-
-      //TODO - we need popup above to resolve this promise and set approval flag
 
       if (origin && !allowed) {
         const popup = await masterController.createPopup(uuid());
