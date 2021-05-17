@@ -23,6 +23,8 @@ export const messagesHandler = (
     return url.startsWith(`${window.location.origin}/confirm.html`);
   };
 
+  let pendingWindow = false;
+
   const listener = async (message: Message, connection: Runtime.Port) => {
     try {
       const response = await listenerHandler(message, connection);
@@ -84,10 +86,16 @@ export const messagesHandler = (
       //TODO - we need popup above to resolve this promise and set approval flag
 
       if (origin && !allowed) {
+        if (pendingWindow) {
+          return Promise.resolve(null);
+        }
+
         const popup = await masterController.createPopup(uuid());
+        pendingWindow = true;
         const w = watch(store.getState, 'dapp');
         store.subscribe(
           w((newState) => {
+            pendingWindow = false;
             port.postMessage({
               id: message.id,
               data: { result: !!newState[origin] },
@@ -98,6 +106,7 @@ export const messagesHandler = (
         browser.windows.onRemoved.addListener((id) => {
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
+            pendingWindow = false;
             console.log('Connect window is closed');
           }
         });
@@ -115,8 +124,13 @@ export const messagesHandler = (
       } else if (method === 'wallet.getBalance') {
         result = masterController.stargazerProvider.getBalance();
       } else if (method === 'wallet.signMessage') {
+        if (pendingWindow) {
+          return Promise.resolve(null);
+        }
+
         const windowId = `signMessage${uuid()}`;
         const popup = await masterController.createPopup(windowId);
+        pendingWindow = true;
         masterController.dapp.setSigRequest({
           origin,
           address: args[1],
@@ -128,6 +142,7 @@ export const messagesHandler = (
             if (ev.detail.substring(1) === windowId) {
               result = masterController.stargazerProvider.signMessage(args[0]);
               port.postMessage({ id: message.id, data: { result } });
+              pendingWindow = false;
             }
           },
           {
@@ -140,6 +155,7 @@ export const messagesHandler = (
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
             console.log('SignMessage window is closed');
+            pendingWindow = false;
           }
         });
 
