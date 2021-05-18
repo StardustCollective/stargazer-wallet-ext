@@ -24,7 +24,7 @@ const Home = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
   const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
-  const [connected, setConneted] = useState(false);
+  const [connected, setConnected] = useState(false);
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -36,12 +36,13 @@ const Home = () => {
   };
 
   useEffect(() => {
-    browser.tabs.query({ active: true }).then((tabs) => {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       if (!tabs.length) return;
       const { url } = tabs[0];
+      //console.log('tab: ' + id, url, favIconUrl);
       const origin = url && new URL(url as string).origin;
-      if (tabs.length && dapp[origin]) {
-        setConneted(true);
+      if (tabs.length && origin && dapp[origin]) {
+        setConnected(true);
       }
     });
   }, []);
