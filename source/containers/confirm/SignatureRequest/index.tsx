@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import Button from 'components/Button';
 import { browser } from 'webextension-polyfill-ts';
-import { useController } from 'hooks';
+import { useController } from 'hooks/index';
 import IWalletState from 'state/wallet/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';

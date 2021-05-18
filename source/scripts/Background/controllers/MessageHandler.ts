@@ -3,6 +3,7 @@ import { IMasterController } from '.';
 import { v4 as uuid } from 'uuid';
 import store from 'state/store';
 import watch from 'redux-watch';
+import IWalletState from 'state/wallet/types';
 
 type Message = {
   id: string;
@@ -80,7 +81,42 @@ export const messagesHandler = (
     //3, wallet is not detected. could be that it is not installed or there's an outdated version.
     if (message.type === 'ENABLE_REQUEST') {
       if (walletIsLocked) {
-        return sendError('Wallet is Locked');
+        const { seedKeystoreId }: IWalletState = store.getState().wallet;
+        if (!seedKeystoreId) {
+          return sendError('Need to set up Wallet');
+        }
+
+        if (pendingWindow) {
+          return Promise.resolve(null);
+        }
+        const windowId = uuid();
+        const popup = await masterController.createPopup(windowId);
+        pendingWindow = true;
+
+        window.addEventListener(
+          'loginWallet',
+          (ev: any) => {
+            if (ev.detail.substring(1) === windowId) {
+              port.postMessage({
+                id: message.id,
+                data: { result: true },
+              });
+              pendingWindow = false;
+            }
+          },
+          {
+            once: true,
+            passive: true,
+          }
+        );
+
+        browser.windows.onRemoved.addListener((id) => {
+          if (id === popup.id) {
+            port.postMessage({ id: message.id, data: { result: false } });
+            pendingWindow = false;
+          }
+        });
+        return Promise.resolve(null);
       }
 
       //TODO - we need popup above to resolve this promise and set approval flag
