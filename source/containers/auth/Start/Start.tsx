@@ -22,7 +22,7 @@ const Starter = () => {
   });
   const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
   const current = controller.dapp.getCurrent();
-  const { origin } = new URL(current.uri);
+  const origin = current.uri && new URL(current.uri as string).origin;
   const location = useLocation();
   const [isInvalid, setInvalid] = useState(false);
   const errorClass = clsx(styles.error, {
