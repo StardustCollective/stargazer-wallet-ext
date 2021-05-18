@@ -7,6 +7,12 @@ import { ecrecover, fromRpcSig } from 'ethereumjs-util/dist/signature';
 export class StargazerProvider {
   constructor() {}
 
+  getNetwork () {
+    const { activeNetwork }: IWalletState = store.getState().wallet;
+
+    return activeNetwork;
+  }
+
   getAddress() {
     const { accounts, activeAccountId }: IWalletState = store.getState().wallet;
 
