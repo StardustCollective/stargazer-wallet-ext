@@ -32,7 +32,7 @@ export interface IAccountUpdateState {
   transactions: Transaction[];
 }
 
-interface IKeyStoreState {
+export interface IKeyStoreState {
   [keystoreId: string]: Keystore;
 }
 

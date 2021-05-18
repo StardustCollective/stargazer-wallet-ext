@@ -26,6 +26,10 @@
     position: absolute;
     width: calc(100% - 112px);
     bottom: 132px;
+
+    &.confirm {
+      bottom: 125px;
+    }
   }
 
   form {

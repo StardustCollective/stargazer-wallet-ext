@@ -3,6 +3,7 @@ import { IMasterController } from '.';
 import { v4 as uuid } from 'uuid';
 import store from 'state/store';
 import watch from 'redux-watch';
+import IWalletState from 'state/wallet/types';
 
 type Message = {
   id: string;
@@ -22,6 +23,8 @@ export const messagesHandler = (
   const fromConfirm = (url: string = '') => {
     return url.startsWith(`${window.location.origin}/confirm.html`);
   };
+
+  let pendingWindow = false;
 
   const listener = async (message: Message, connection: Runtime.Port) => {
     try {
@@ -84,14 +87,55 @@ export const messagesHandler = (
     }
     else if (message.type === 'ENABLE_REQUEST') {
       if (walletIsLocked) {
-        return sendError('Wallet is Locked');
+        const { seedKeystoreId }: IWalletState = store.getState().wallet;
+        if (!seedKeystoreId) {
+          return sendError('Need to set up Wallet');
+        }
+
+        if (pendingWindow) {
+          return Promise.resolve(null);
+        }
+        const windowId = uuid();
+        const popup = await masterController.createPopup(windowId);
+        pendingWindow = true;
+
+        window.addEventListener(
+          'loginWallet',
+          (ev: any) => {
+            if (ev.detail.substring(1) === windowId) {
+              port.postMessage({
+                id: message.id,
+                data: { result: true },
+              });
+              pendingWindow = false;
+            }
+          },
+          {
+            once: true,
+            passive: true,
+          }
+        );
+
+        browser.windows.onRemoved.addListener((id) => {
+          if (id === popup.id) {
+            port.postMessage({ id: message.id, data: { result: false } });
+            pendingWindow = false;
+          }
+        });
+        return Promise.resolve(null);
       }
 
       if (origin && !allowed) {
+        if (pendingWindow) {
+          return Promise.resolve(null);
+        }
+
         const popup = await masterController.createPopup(uuid());
+        pendingWindow = true;
         const w = watch(store.getState, 'dapp');
         store.subscribe(
           w((newState) => {
+            pendingWindow = false;
             port.postMessage({
               id: message.id,
               data: { result: !!newState[origin] },
@@ -102,6 +146,7 @@ export const messagesHandler = (
         browser.windows.onRemoved.addListener((id) => {
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
+            pendingWindow = false;
             console.log('Connect window is closed');
           }
         });
@@ -121,8 +166,13 @@ export const messagesHandler = (
       } else if (method === 'wallet.getBalance') {
         result = masterController.stargazerProvider.getBalance();
       } else if (method === 'wallet.signMessage') {
+        if (pendingWindow) {
+          return Promise.resolve(null);
+        }
+
         const windowId = `signMessage${uuid()}`;
         const popup = await masterController.createPopup(windowId);
+        pendingWindow = true;
         masterController.dapp.setSigRequest({
           origin: origin as string,
           address: args[1],
@@ -134,6 +184,7 @@ export const messagesHandler = (
             if (ev.detail.substring(1) === windowId) {
               result = masterController.stargazerProvider.signMessage(args[0]);
               port.postMessage({ id: message.id, data: { result } });
+              pendingWindow = false;
             }
           },
           {
@@ -146,6 +197,7 @@ export const messagesHandler = (
           if (id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
             console.log('SignMessage window is closed');
+            pendingWindow = false;
           }
         });
 
