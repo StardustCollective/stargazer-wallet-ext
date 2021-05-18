@@ -10,7 +10,6 @@ import SignatureRequest from 'containers/confirm/SignatureRequest';
 import 'assets/styles/global.scss';
 import { useController } from 'hooks/index';
 import Starter from 'containers/auth/Start';
-import Import from 'containers/common/Import';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 const ConfirmPage: FC = () => {
