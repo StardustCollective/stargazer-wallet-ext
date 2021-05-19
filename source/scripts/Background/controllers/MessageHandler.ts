@@ -84,8 +84,7 @@ export const messagesHandler = (
           }, 5000);
         }, 5000);
       }
-    }
-    else if (message.type === 'ENABLE_REQUEST') {
+    } else if (message.type === 'ENABLE_REQUEST') {
       if (walletIsLocked) {
         const { seedKeystoreId }: IWalletState = store.getState().wallet;
         if (!seedKeystoreId) {
@@ -117,7 +116,7 @@ export const messagesHandler = (
         );
 
         browser.windows.onRemoved.addListener((id) => {
-          if (id === popup.id) {
+          if (popup && id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
             pendingWindow = false;
           }
@@ -144,7 +143,7 @@ export const messagesHandler = (
         );
 
         browser.windows.onRemoved.addListener((id) => {
-          if (id === popup.id) {
+          if (popup && id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
             pendingWindow = false;
             console.log('Connect window is closed');
@@ -194,7 +193,7 @@ export const messagesHandler = (
         );
 
         browser.windows.onRemoved.addListener((id) => {
-          if (id === popup.id) {
+          if (popup && id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
             console.log('SignMessage window is closed');
             pendingWindow = false;
@@ -209,8 +208,7 @@ export const messagesHandler = (
       }
 
       return sendError('Unknown request');
-    }
-    else {
+    } else {
       return Promise.resolve({
         id: message.id,
         result: 'Hi from content script',

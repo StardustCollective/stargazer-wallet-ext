@@ -11,7 +11,7 @@ export interface IMasterController {
   contacts: Readonly<IContactsController>;
   stateUpdater: () => void;
   appRoute: (newRoute?: string) => string;
-  createPopup: (windowId: any) => Promise<Windows.Window>;
+  createPopup: (windowId: any) => Promise<Windows.Window | null>;
 }
 
 const MasterController = (): IMasterController => {
@@ -28,11 +28,15 @@ const MasterController = (): IMasterController => {
   };
 
   const createPopup = async (windowId: any) => {
+    const _window = await browser.windows.getCurrent();
+    if (!_window || !_window.width) return null;
     return await browser.windows.create({
       url: `/confirm.html#${windowId}`,
       width: 372,
-      height: 650,
+      height: 600,
       type: 'popup',
+      top: 0,
+      left: _window.width - 372,
     });
   };
 
