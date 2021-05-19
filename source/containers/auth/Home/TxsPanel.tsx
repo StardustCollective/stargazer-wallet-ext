@@ -60,6 +60,10 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     window.open(`${DAG_EXPLORER_SEARCH}${tx}`, '_blank');
   };
 
+  const handleOpenBuyDag = () => {
+    window.open('https://portal.stargazer.network/buy-dag', '_blank');
+  };
+
   const handleGoTop = () => {
     scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
     setShowed(false);
@@ -71,6 +75,14 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
       onScroll={handleScroll}
     >
       <div className={styles.heading}>
+        <IconButton
+          className={styles.buydag}
+          size="small"
+          disableRipple
+          onClick={handleOpenBuyDag}
+        >
+          <i className={styles.buydagIcon} />
+        </IconButton>
         Activity
         {!!isShowed && (
           <IconButton className={styles.goTop} onClick={handleGoTop}>

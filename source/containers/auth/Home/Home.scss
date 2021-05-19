@@ -232,6 +232,23 @@
       color: $gray-dark;
       z-index: 2;
 
+      .buydag {
+        position: absolute;
+        left: 20px;
+        box-shadow: none !important;
+
+        .buydagIcon {
+          width: 48px;
+          height: 48px;
+          background: url('../../../assets/images/svg/buy-dag-purple.svg');
+          transition: all 0.3s;
+
+          &:hover {
+            background: url('../../../assets/images/svg/buy-dag-green.svg');
+          }
+        }
+      }
+
       .goTop {
         width: 26px;
         font-size: 16px;
