@@ -35,6 +35,10 @@ const Home = () => {
     controller.stateUpdater();
   };
 
+  const handleOpenBuyDag = () => {
+    window.open('https://portal.stargazer.network/buy-dag', '_blank');
+  };
+
   useEffect(() => {
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       if (!tabs.length) return;
@@ -101,6 +105,14 @@ const Home = () => {
                 linkTo="/receive"
               >
                 Receive
+              </Button>
+              <Button
+                type="button"
+                theme="primary"
+                variant={styles.buyDag}
+                onClick={handleOpenBuyDag}
+              >
+                Buy DAG
               </Button>
             </div>
           </section>

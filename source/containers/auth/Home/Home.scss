@@ -123,6 +123,7 @@
       position: absolute;
       width: 32px;
       right: 30px;
+      bottom: 86px;
       height: 32px;
       color: $gray-100;
     }
@@ -161,10 +162,30 @@
       width: 300px;
       flex-direction: row;
       justify-content: space-between;
+      position: relative;
 
       .button {
-        margin-top: 18px;
+        margin-bottom: 36px;
         width: 144px;
+        margin-top: 9px;
+      }
+
+      .buyDag {
+        position: absolute;
+        bottom: 0px;
+        left: 102px;
+        height: 26px !important;
+        font-size: 12px;
+        padding: 0px 20px;
+        border: 1px solid $purple;
+        background: $white;
+        color: $purple;
+
+        &:hover {
+          border-color: $green;
+          background: $green;
+          color: $white;
+        }
       }
     }
   }
