@@ -9,6 +9,7 @@ import { dag } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
+import { messagesHandler } from './controllers/MessageHandler';
 
 declare global {
   interface Window {
@@ -26,7 +27,10 @@ browser.runtime.onInstalled.addListener((): void => {
 });
 
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {
-  if (
+  if (port.name === 'stargazer') {
+    messagesHandler(port, window.controller);
+  }
+  else if (
     port.sender &&
     port.sender.url &&
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))

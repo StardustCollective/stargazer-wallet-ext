@@ -8,17 +8,38 @@ import LogoImage from 'assets/images/logo.svg';
 
 import { schema } from './consts';
 import styles from './Start.scss';
+import { useLocation } from 'react-router';
+import { IDAppState } from 'state/dapp/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
+import { browser } from 'webextension-polyfill-ts';
+import clsx from 'clsx';
 
 const Starter = () => {
   const controller = useController();
   const { handleSubmit, register, errors } = useForm({
     validationSchema: schema,
   });
+  const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
+  const current = controller.dapp.getCurrent();
+  const origin =
+    current && current.uri && new URL(current.uri as string).origin;
+  const location = useLocation();
   const [isInvalid, setInvalid] = useState(false);
+  const errorClass = clsx(styles.error, {
+    [styles.confirm]: location.pathname.includes('confirm.html'),
+  });
 
   const onSubmit = (data: any) => {
-    controller.wallet.unLock(data.password).then((res) => {
-      console.log(res);
+    controller.wallet.unLock(data.password).then(async (res) => {
+      console.log(dapp, origin, dapp[origin], res, location.pathname);
+      if (res && location.pathname.includes('confirm.html') && dapp[origin]) {
+        const background = await browser.runtime.getBackgroundPage();
+        background.dispatchEvent(
+          new CustomEvent('loginWallet', { detail: window.location.hash })
+        );
+        window.close();
+      }
       setInvalid(!res);
     });
   };
@@ -42,19 +63,21 @@ const Starter = () => {
           variant={styles.password}
         />
         {errors.password ? (
-          <span className={styles.error}>{errors.password.message}</span>
+          <span className={errorClass}>{errors.password.message}</span>
         ) : (
           isInvalid && (
-            <span className={styles.error}>Error: Invalid password</span>
+            <span className={errorClass}>Error: Invalid password</span>
           )
         )}
         <Button type="submit" theme="secondary" variant={styles.unlock}>
           Unlock
         </Button>
       </form>
-      <Link color="secondary" to="/import">
-        Import using wallet seed phrase
-      </Link>
+      {!location.pathname.includes('confirm.html') && (
+        <Link color="secondary" to="/import">
+          Import using wallet seed phrase
+        </Link>
+      )}
     </div>
   );
 };
