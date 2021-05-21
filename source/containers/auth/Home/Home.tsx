@@ -112,7 +112,7 @@ const Home = () => {
                 variant={styles.buyDag}
                 onClick={handleOpenBuyDag}
               >
-                Buy DAG
+                Get $DAG
               </Button>
             </div>
           </section>

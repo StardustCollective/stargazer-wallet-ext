@@ -30,7 +30,7 @@ export class StargazerProvider {
   }
 
   signMessage(msg: string) {
-    const address = dag.account.keyTrio.address;
+    //const address = dag.account.keyTrio.address;
     const privateKeyHex = dag.account.keyTrio.privateKey;
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = hashPersonalMessage(Buffer.from(msg));
@@ -38,7 +38,7 @@ export class StargazerProvider {
     const { v, r, s } = ecsign(msgHash, privateKey);
     const sig = this.remove0x(toRpcSig(v, r, s));
 
-    this.verifyMessage(msg, sig, address);
+    //this.verifyMessage(msg, sig, address);
 
     return sig;
   }
@@ -55,12 +55,12 @@ export class StargazerProvider {
     const publicKey = '04' + publicKeyBuffer.toString('hex');
     const actualAddress = dag.keyStore.getDagAddressFromPublicKey(publicKey);
 
-    console.log('publicKey:', publicKey);
-    console.log(
-      'verifyMessage:',
-      saysAddress + ' === ' + actualAddress,
-      saysAddress === actualAddress
-    );
+    // console.log('publicKey:', publicKey);
+    // console.log(
+    //   'verifyMessage:',
+    //   saysAddress + ' === ' + actualAddress,
+    //   saysAddress === actualAddress
+    // );
 
     return saysAddress === actualAddress;
   }

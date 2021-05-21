@@ -17,12 +17,12 @@ export const messagesHandler = (
 ) => {
   // const externalConnectionApprovalMap: { [origin: string]: true } = {};
 
-  const fromApp = (url: string = '') => {
-    return url.startsWith(`${window.location.origin}/app.html`);
-  };
-  const fromConfirm = (url: string = '') => {
-    return url.startsWith(`${window.location.origin}/confirm.html`);
-  };
+  // const fromApp = (url: string = '') => {
+  //   return url.startsWith(`${window.location.origin}/app.html`);
+  // };
+  // const fromConfirm = (url: string = '') => {
+  //   return url.startsWith(`${window.location.origin}/confirm.html`);
+  // };
 
   let pendingWindow = false;
 
@@ -31,8 +31,8 @@ export const messagesHandler = (
       const response = await listenerHandler(message, connection);
       if (response) {
         const { id, result } = response;
-        console.log('messagesHandler.RESPONSE');
-        console.log(JSON.stringify(result, null, 2));
+        //console.log('messagesHandler.RESPONSE');
+        //console.log(JSON.stringify(result, null, 2));
         port.postMessage({ id, data: { result } });
       }
     } catch (e) {
@@ -56,33 +56,28 @@ export const messagesHandler = (
     // const dappInfo = isFromAuthorizedDapp
     //   ? masterController.dapps.getDappInfoByURL(sender.origin)
     //   : undefined;
-    const isFromApp = fromApp(port.sender?.url);
-    const isFromConfirm = fromConfirm(port.sender?.url);
+    // const isFromApp = fromApp(port.sender?.url);
+    // const isFromConfirm = fromConfirm(port.sender?.url);
     const walletIsLocked = masterController.wallet.isLocked();
 
-    console.log(
-      'messagesHandler.onMessage: ',
-      isFromApp,
-      isFromConfirm,
-      walletIsLocked
-    );
-    console.log(JSON.stringify(message, null, 2));
+    // console.log(
+    //   'messagesHandler.onMessage: ',
+    //   isFromApp,
+    //   isFromConfirm,
+    //   walletIsLocked
+    // );
+    // console.log(JSON.stringify(message, null, 2));
 
     const url = connection.sender?.url;
     const origin = url && new URL(url as string).origin;
 
     const allowed = origin && masterController.dapp.fetchInfo(origin, true);
 
-    console.log('messagesHandler.onMessage: ' + origin, allowed);
+    //console.log('messagesHandler.onMessage: ' + origin, allowed);
 
     if (message.type === 'STARGAZER_EVENT_REG') {
       if (message.data && message.data.method) {
-        setTimeout(() => {
-          port.postMessage({ id: message.id, data: 'HELLO1' });
-          setTimeout(() => {
-            port.postMessage({ id: message.id, data: 'HELLO2' });
-          }, 5000);
-        }, 5000);
+
       }
     } else if (message.type === 'ENABLE_REQUEST') {
       if (walletIsLocked) {
@@ -146,7 +141,7 @@ export const messagesHandler = (
           if (popup && id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
             pendingWindow = false;
-            console.log('Connect window is closed');
+            //console.log('Connect window is closed');
           }
         });
 
@@ -195,7 +190,7 @@ export const messagesHandler = (
         browser.windows.onRemoved.addListener((id) => {
           if (popup && id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
-            console.log('SignMessage window is closed');
+            //console.log('SignMessage window is closed');
             pendingWindow = false;
           }
         });
