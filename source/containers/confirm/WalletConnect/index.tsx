@@ -7,21 +7,23 @@ import { useController } from 'hooks/index';
 import { browser } from 'webextension-polyfill-ts';
 
 const WalletConnect = () => {
-  // @ts-ignore
+
   const controller = useController();
   const current = controller.dapp.getCurrent();
-  const origin = current.uri && new URL(current.uri as string).origin;
+  const origin = current && current.origin;
 
   const handleClose = () => {
     window.close();
   };
 
   const handleSubmit = async () => {
-    controller.dapp.connectDApp(origin, current);
+    controller.dapp.fromUserConnectDApp(origin, current);
     const background = await browser.runtime.getBackgroundPage();
+
     background.dispatchEvent(
-      new CustomEvent('loginWallet', { detail: window.location.hash })
+      new CustomEvent('connectWallet', { detail: window.location.hash })
     );
+
     window.close();
   };
 

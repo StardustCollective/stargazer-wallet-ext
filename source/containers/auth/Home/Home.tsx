@@ -18,7 +18,6 @@ import TxsPanel from './TxsPanel';
 import styles from './Home.scss';
 import { formatNumber } from '../helpers';
 import { IDAppState } from 'state/dapp/types';
-import { browser } from 'webextension-polyfill-ts';
 
 const Home = () => {
   const controller = useController();
@@ -40,15 +39,12 @@ const Home = () => {
   };
 
   useEffect(() => {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      if (!tabs.length) return;
-      const { url } = tabs[0];
-      //console.log('tab: ' + id, url, favIconUrl);
-      const origin = url && new URL(url as string).origin;
-      if (tabs.length && origin && dapp[origin]) {
-        setConnected(true);
-      }
-    });
+    const { origin } = controller.dapp.getCurrent();
+    //console.log('tab: ' + origin, logo, title);
+    if (origin && dapp[origin]) {
+      setConnected(true);
+    }
+
   }, []);
 
   return (

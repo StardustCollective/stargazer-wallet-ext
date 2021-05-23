@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "1.3.0",
+  "version": "1.3.1",
 
   "icons": {
     "16": "assets/icons/favicon-16.png",
@@ -14,8 +14,6 @@
   "short_name": "stargazer-wallet-ext",
 
   "permissions": [
-    "tabs",
-    "clipboardWrite",
     "https://www.stargazer.network/",
     "https://*.coingecko.com/",
     "https://*.constellationnetwork.io/",

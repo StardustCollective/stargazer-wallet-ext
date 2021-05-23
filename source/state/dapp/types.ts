@@ -1,5 +1,5 @@
 export interface IDAppInfo {
-  uri: string;
+  origin: string;
   logo: string;
   title: string;
 }

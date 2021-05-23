@@ -2,7 +2,6 @@ import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMasterController } from '.';
 import { v4 as uuid } from 'uuid';
 import store from 'state/store';
-import watch from 'redux-watch';
 import IWalletState from 'state/wallet/types';
 
 type Message = {
@@ -15,20 +14,15 @@ export const messagesHandler = (
   port: Runtime.Port,
   masterController: IMasterController
 ) => {
-  // const externalConnectionApprovalMap: { [origin: string]: true } = {};
-
-  // const fromApp = (url: string = '') => {
-  //   return url.startsWith(`${window.location.origin}/app.html`);
-  // };
-  // const fromConfirm = (url: string = '') => {
-  //   return url.startsWith(`${window.location.origin}/confirm.html`);
-  // };
 
   let pendingWindow = false;
 
   const listener = async (message: Message, connection: Runtime.Port) => {
     try {
       const response = await listenerHandler(message, connection);
+
+      //console.log('listenerHandler.RESPONSE', response);
+
       if (response) {
         const { id, result } = response;
         //console.log('messagesHandler.RESPONSE');
@@ -48,39 +42,28 @@ export const messagesHandler = (
   ) => {
     if (browser.runtime.lastError) return Promise.reject('Runtime Last Error');
 
-    const sendError = (error: string) =>
-      Promise.reject(new CustomEvent(message.id, { detail: error }));
-    // const isFromAuthorizedDapp = masterController.fromAuthorizedDapp(
-    //   sender.origin
-    // );
-    // const dappInfo = isFromAuthorizedDapp
-    //   ? masterController.dapps.getDappInfoByURL(sender.origin)
-    //   : undefined;
-    // const isFromApp = fromApp(port.sender?.url);
-    // const isFromConfirm = fromConfirm(port.sender?.url);
+    const sendError = (error: string) => {
+      return Promise.reject(new CustomEvent(message.id, { detail: error }));
+    }
+
     const walletIsLocked = masterController.wallet.isLocked();
 
-    // console.log(
-    //   'messagesHandler.onMessage: ',
-    //   isFromApp,
-    //   isFromConfirm,
-    //   walletIsLocked
-    // );
-    // console.log(JSON.stringify(message, null, 2));
-
-    const url = connection.sender?.url;
+    const url = connection.sender?.url as string;
+    const title = connection.sender?.tab?.title as string;
     const origin = url && new URL(url as string).origin;
 
-    const allowed = origin && masterController.dapp.fetchInfo(origin, true);
+    const allowed = masterController.dapp.fromPageConnectDApp(origin, title);
 
-    //console.log('messagesHandler.onMessage: ' + origin, allowed);
+    //console.log('messagesHandler.onMessage: ' + message.type, walletIsLocked, origin, allowed, url, title, pendingWindow);
 
     if (message.type === 'STARGAZER_EVENT_REG') {
       if (message.data && message.data.method) {
 
       }
     } else if (message.type === 'ENABLE_REQUEST') {
+
       if (walletIsLocked) {
+
         const { seedKeystoreId }: IWalletState = store.getState().wallet;
         if (!seedKeystoreId) {
           return sendError('Need to set up Wallet');
@@ -94,7 +77,7 @@ export const messagesHandler = (
         pendingWindow = true;
 
         window.addEventListener(
-          'loginWallet',
+          'connectWallet',
           (ev: any) => {
             if (ev.detail.substring(1) === windowId) {
               port.postMessage({
@@ -116,6 +99,7 @@ export const messagesHandler = (
             pendingWindow = false;
           }
         });
+
         return Promise.resolve(null);
       }
 
@@ -124,32 +108,38 @@ export const messagesHandler = (
           return Promise.resolve(null);
         }
 
-        const popup = await masterController.createPopup(uuid());
+        const windowId = uuid();
+        const popup = await masterController.createPopup(windowId);
         pendingWindow = true;
-        const w = watch(store.getState, 'dapp');
-        store.subscribe(
-          w((newState) => {
-            pendingWindow = false;
-            port.postMessage({
-              id: message.id,
-              data: { result: !!newState[origin] },
-            });
-          })
+
+        window.addEventListener(
+          'connectWallet',
+          (ev: any) => {
+            console.log('Connect window addEventListener', ev.detail);
+            if (ev.detail.substring(1) === windowId) {
+              port.postMessage({ id: message.id, data: { result: true } });
+              pendingWindow = false;
+            }
+          },
+          { once: true, passive: true }
         );
 
         browser.windows.onRemoved.addListener((id) => {
           if (popup && id === popup.id) {
             port.postMessage({ id: message.id, data: { result: false } });
             pendingWindow = false;
-            //console.log('Connect window is closed');
+            console.log('Connect window is closed');
           }
         });
 
         return Promise.resolve(null);
       }
+
       return Promise.resolve({ id: message.id, result: origin && allowed });
+
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
+      //console.log('CAL_REQUEST.method', method, args);
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed && !walletIsLocked };
