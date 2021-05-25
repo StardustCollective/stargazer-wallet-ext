@@ -22,8 +22,7 @@ const Starter = () => {
   });
   const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
   const current = controller.dapp.getCurrent();
-  const origin =
-    current && current.uri && new URL(current.uri as string).origin;
+  const origin = current && current.origin;
   const location = useLocation();
   const [isInvalid, setInvalid] = useState(false);
   const errorClass = clsx(styles.error, {
@@ -32,11 +31,11 @@ const Starter = () => {
 
   const onSubmit = (data: any) => {
     controller.wallet.unLock(data.password).then(async (res) => {
-      console.log(dapp, origin, dapp[origin], res, location.pathname);
+      //console.log(dapp, origin, dapp[origin], res, location.pathname);
       if (res && location.pathname.includes('confirm.html') && dapp[origin]) {
         const background = await browser.runtime.getBackgroundPage();
         background.dispatchEvent(
-          new CustomEvent('loginWallet', { detail: window.location.hash })
+          new CustomEvent('connectWallet', { detail: window.location.hash })
         );
         window.close();
       }

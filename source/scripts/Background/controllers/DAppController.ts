@@ -1,12 +1,12 @@
 import { listNewDapp } from 'state/dapp';
 import { IDAppInfo, IDAppState } from 'state/dapp/types';
 import store from 'state/store';
-import { browser } from 'webextension-polyfill-ts';
+
 
 export interface IDAppController {
   getCurrent: () => IDAppInfo;
-  connectDApp: (origin: string, dapp: IDAppInfo) => void;
-  fetchInfo: (origin: string, upToDate?: boolean) => IDAppInfo | undefined;
+  fromUserConnectDApp: (origin: string, dapp: IDAppInfo) => void;
+  fromPageConnectDApp: (origin: string, title: string) => boolean;
   setSigRequest: (req: ISigRequest) => void;
   getSigRequest: () => ISigRequest;
 }
@@ -18,22 +18,23 @@ interface ISigRequest {
 }
 
 const DAppController = (): IDAppController => {
-  let current: IDAppInfo;
+  let current: IDAppInfo = { origin: '', logo: '', title: '' };
   let request: ISigRequest;
 
-  const fetchInfo = (origin: string, upToDate = false) => {
+  const fromPageConnectDApp = (origin: string, title: string) => {
     const dapp: IDAppState = store.getState().dapp;
-    if (upToDate) {
-      browser.tabs.query({ active: true }).then((tabs) => {
-        current = {
-          uri: tabs[0].url as string,
-          logo: `chrome://favicon/size/64@1x/${tabs[0].url}`,
-          title: tabs[0].title as string,
-        };
-      });
+
+    current = {
+      origin,
+      logo: `chrome://favicon/size/64@1x/${origin}`,
+      title
     }
 
-    return dapp[origin];
+    return !!dapp[origin];
+  }
+
+  const fromUserConnectDApp = (origin: string, dapp: IDAppInfo) => {
+    store.dispatch(listNewDapp({ id: origin, dapp }));
   };
 
   const getCurrent = () => {
@@ -48,11 +49,8 @@ const DAppController = (): IDAppController => {
     return request;
   };
 
-  const connectDApp = (origin: string, dapp: IDAppInfo) => {
-    store.dispatch(listNewDapp({ id: origin, dapp }));
-  };
 
-  return { getCurrent, fetchInfo, connectDApp, setSigRequest, getSigRequest };
+  return { getCurrent, fromPageConnectDApp, fromUserConnectDApp, setSigRequest, getSigRequest };
 };
 
 export default DAppController;
