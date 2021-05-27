@@ -84,7 +84,7 @@
       margin-bottom: 24px;
 
       .inner {
-        width: 132px;
+        width: 156px;
         margin-left: 12px;
       }
 
@@ -101,12 +101,113 @@
       }
     }
 
+    // for hardware import step1
+    .hardwareList {
+      display: flex;
+      .walletModel {
+        background-color: $white;
+        padding: 28px 16px;
+        border: 1px solid $gray-200;
+        box-sizing: border-box;
+        border-radius: 6px;
+      }
+    }
+    // for hardware import step2
+    .walletList {
+      display: flex;
+      position: relative;
+      height: 180px;
+      background: $white;
+      border-radius: 6px;
+      &.loading {
+        justify-content: center;
+        align-items: center;
+        svg {
+          color: $purple;
+          width: 24px;
+          -webkit-animation: spin 4s linear infinite;
+          -moz-animation: spin 4s linear infinite;
+          animation: spin 2s linear infinite;
+        }
+        span {
+          position: absolute;
+          top: 127px;
+          font-family: Inter;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 12px;
+          line-height: 18px;
+        }
+      }
+
+      .wallet {
+        width: 100%;
+        padding: 2px 12px 0px 11px;
+        table {
+          width: 100%;
+          tr {
+            height: 33px;
+            td {
+              .expand {
+                svg {
+                  color: $gray-100;
+                }
+              }
+            }
+          }
+        }
+        :global(.MuiCheckbox-colorPrimary) {
+          padding: 0 !important;
+        }
+        :global(.MuiCheckbox-colorPrimary.Mui-checked) {
+          color: $purple !important;
+        }
+        svg {
+          width: 16px !important;
+        }
+      }
+    }
+
+    .pagination {
+      padding: 12px;
+      display: flex;
+      justify-content: flex-end;
+      span {
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 24px;
+
+        color: $purple;
+      }
+      .previous {
+        margin-right: 12px;
+      }
+    }
+
     & > span {
       margin: 18px 0px;
       font-size: 12px;
       font-weight: 500;
       color: $gray-dark;
       display: block;
+    }
+  }
+  @-moz-keyframes spin {
+    100% {
+      -moz-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
     }
   }
 
