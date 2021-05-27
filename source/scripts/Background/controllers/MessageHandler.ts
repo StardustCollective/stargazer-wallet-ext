@@ -1,8 +1,9 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMasterController } from '.';
 import { v4 as uuid } from 'uuid';
-import store from 'state/store';
-import IWalletState from 'state/wallet/types';
+import { RootState } from 'state/store';
+import IVaultState from '../../../state/vault/types';
+import { useSelector } from 'react-redux';
 
 type Message = {
   id: string;
@@ -46,7 +47,7 @@ export const messagesHandler = (
       return Promise.reject(new CustomEvent(message.id, { detail: error }));
     }
 
-    const walletIsLocked = masterController.wallet.isLocked();
+    const walletIsLocked = !masterController.wallet.isUnlocked();
 
     const url = connection.sender?.url as string;
     const title = connection.sender?.tab?.title as string;
@@ -64,8 +65,8 @@ export const messagesHandler = (
 
       if (walletIsLocked) {
 
-        const { seedKeystoreId }: IWalletState = store.getState().wallet;
-        if (!seedKeystoreId) {
+        const { wallets }: IVaultState = useSelector( (state: RootState) => state.vault );
+        if (!wallets || wallets.length === 0) {
           return sendError('Need to set up Wallet');
         }
 

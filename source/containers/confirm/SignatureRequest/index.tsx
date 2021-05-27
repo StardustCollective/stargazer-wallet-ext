@@ -3,20 +3,15 @@ import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import Button from 'components/Button';
 import { browser } from 'webextension-polyfill-ts';
-import IWalletState from 'state/wallet/types';
-import { useSelector } from 'react-redux';
-import { RootState } from 'state/store';
 import { useController } from 'hooks/index';
+import { AssetType } from '../../../state/vault/types';
 
 const SignatureRequest = () => {
   const controller = useController();
   const params = controller.dapp.getSigRequest();
-  const { accounts }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
-  const account = Object.values(accounts).filter(
-    (account) => account.address.constellation === params.address
-  )[0];
+  const account = controller.stargazerProvider.getAssetByType(AssetType.Constellation);
+  const balance = controller.stargazerProvider.getBalance();
+
 
   const handleCancel = () => {
     window.close();
@@ -43,7 +38,7 @@ const SignatureRequest = () => {
           </div>
           <div className={styles.row}>
             <span>{account.label}</span>
-            <span>{account.balance} DAG</span>
+            <span>{balance} DAG</span>
           </div>
         </section>
         <div className={styles.row}>
