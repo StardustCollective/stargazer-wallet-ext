@@ -64,6 +64,7 @@ module.exports = {
     manifest: path.join(__dirname, 'manifest.json'),
     background: path.join(sourcePath, 'scripts/Background', 'index.ts'),
     app: path.join(sourcePath, 'pages/App', 'index.tsx'),
+    confirm: path.join(sourcePath, 'pages/Confirm', 'index.tsx'),
     options: path.join(sourcePath, 'pages/Options', 'index.tsx'),
   },
 
@@ -170,6 +171,12 @@ module.exports = {
       inject: 'body',
       chunks: ['app'],
       filename: 'app.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(viewsPath, 'confirm.html'),
+      inject: 'body',
+      chunks: ['confirm'],
+      filename: 'confirm.html',
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'options.html'),
