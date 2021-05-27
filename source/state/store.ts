@@ -12,6 +12,7 @@ import price from './price';
 import contacts from './contacts';
 import assets from './assets';
 
+import dapp from './dapp';
 import { saveState, loadState } from './localStorage';
 
 const middleware = [
@@ -28,6 +29,7 @@ const store: Store = configureStore({
     price,
     contacts,
     assets,
+    dapp,
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
@@ -42,6 +44,7 @@ store.subscribe(
       price: state.price,
       contacts: state.contacts,
       assets: state.assets,
+      dapp: state.dapp,
     });
   }, 1000)
 );

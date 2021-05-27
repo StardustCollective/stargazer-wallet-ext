@@ -60,6 +60,29 @@
     align-items: center;
     text-align: center;
     color: $gray-dark;
+    position: relative;
+
+    & > .status {
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      left: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      align-items: center;
+      color: $gray-100;
+
+      svg {
+        color: $gray-100;
+        margin-right: 6px;
+      }
+
+      &.connected {
+        svg {
+          color: $purple;
+        }
+      }
+    }
 
     & > small {
       font-weight: 600;
@@ -139,10 +162,30 @@
       width: 300px;
       flex-direction: row;
       justify-content: space-between;
+      position: relative;
 
       .button {
-        margin-top: 18px;
+        margin-bottom: 36px;
         width: 144px;
+        margin-top: 9px;
+      }
+
+      .buyDag {
+        position: absolute;
+        bottom: 0px;
+        left: 102px;
+        height: 26px !important;
+        font-size: 12px;
+        padding: 0px 20px;
+        border: 1px solid $purple;
+        background: $white;
+        color: $purple;
+
+        &:hover {
+          border-color: $green;
+          background: $green;
+          color: $white;
+        }
       }
     }
   }
@@ -218,6 +261,23 @@
         position: absolute;
         left: 34px;
         color: $gray-100;
+      }
+
+      .buydag {
+        position: absolute;
+        left: 20px;
+        box-shadow: none !important;
+
+        .buydagIcon {
+          width: 48px;
+          height: 48px;
+          background: url('../../../assets/images/svg/buy-dag-purple.svg');
+          transition: all 0.3s;
+
+          &:hover {
+            background: url('../../../assets/images/svg/buy-dag-green.svg');
+          }
+        }
       }
 
       .goTop {

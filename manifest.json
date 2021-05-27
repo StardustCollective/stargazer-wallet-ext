@@ -14,15 +14,15 @@
   "short_name": "stargazer-wallet-ext",
 
   "permissions": [
-    "clipboardWrite",
     "https://www.stargazer.network/",
     "https://*.coingecko.com/",
     "https://*.constellationnetwork.io/",
     "http://*.constellationnetwork.io:9000/",
-    "https://*.infura.io/"
+    "https://*.infura.io/",
+    "chrome://favicon/"
   ],
 
-  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon;",
 
   "__chrome|firefox__author": "Stardust Collective",
 
@@ -58,5 +58,14 @@
   "background": {
     "scripts": ["js/background.bundle.js"],
     "__chrome__persistent": true
-  }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["js/contentScript.bundle.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ]
 }
