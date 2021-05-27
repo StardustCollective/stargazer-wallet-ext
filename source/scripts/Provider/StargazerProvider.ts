@@ -2,7 +2,6 @@ import IWalletState from 'state/wallet/types';
 import store from 'state/store';
 import { dag } from '@stardust-collective/dag4';
 import { hashPersonalMessage, ecsign, toRpcSig } from 'ethereumjs-util';
-import { ecrecover, fromRpcSig } from 'ethereumjs-util/dist/signature';
 
 export class StargazerProvider {
   constructor() {}
@@ -38,31 +37,7 @@ export class StargazerProvider {
     const { v, r, s } = ecsign(msgHash, privateKey);
     const sig = this.remove0x(toRpcSig(v, r, s));
 
-    //this.verifyMessage(msg, sig, address);
-
     return sig;
-  }
-
-  verifyMessage(msg: string, signature: string, saysAddress: string) {
-    const msgHash = hashPersonalMessage(Buffer.from(msg));
-    const signatureParams = fromRpcSig('0x' + signature);
-    const publicKeyBuffer = ecrecover(
-      msgHash,
-      signatureParams.v,
-      signatureParams.r,
-      signatureParams.s
-    );
-    const publicKey = '04' + publicKeyBuffer.toString('hex');
-    const actualAddress = dag.keyStore.getDagAddressFromPublicKey(publicKey);
-
-    // console.log('publicKey:', publicKey);
-    // console.log(
-    //   'verifyMessage:',
-    //   saysAddress + ' === ' + actualAddress,
-    //   saysAddress === actualAddress
-    // );
-
-    return saysAddress === actualAddress;
   }
 
   private remove0x(hash: string) {
