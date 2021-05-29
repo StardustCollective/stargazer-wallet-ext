@@ -14,7 +14,7 @@ import styles from './index.scss';
 const ConfirmPhrase = () => {
   const history = useHistory();
   const controller = useController();
-  const phrases = controller.wallet.generatedPhrase();
+  const phrases = controller.wallet.onboardHelper.getSeedPhrase();
   const [orgList] = useState<Array<string>>(
     shuffle((phrases || '').split(' '))
   );
@@ -55,11 +55,12 @@ const ConfirmPhrase = () => {
     handleSetPhrase(orgIdx);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!passed) {
       setPassed(true);
     } else {
-      controller.wallet.createWallet();
+      await controller.wallet.createWallet('Main Wallet', phrases, true);
+      controller.wallet.onboardHelper.reset();
       history.push('/app.html');
     }
   };

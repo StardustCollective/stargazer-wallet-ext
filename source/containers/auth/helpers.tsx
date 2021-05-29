@@ -1,6 +1,6 @@
 import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import format from 'date-fns/format';
-import { AssetType } from 'state/wallet/types';
+import { AssetType } from 'state/vault/types';
 
 export const ellipsis = (str: string, start = 7, end = 4) => {
   return (
@@ -44,6 +44,7 @@ export const getAddressURL = (
   type: AssetType,
   networkId: string
 ) => {
+  console.log(address, type, networkId);
   if (type === AssetType.Constellation) {
     return `${DAG_EXPLORER_SEARCH}${address}`;
   }

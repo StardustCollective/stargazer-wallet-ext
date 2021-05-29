@@ -3,27 +3,31 @@ import { useSelector } from 'react-redux';
 
 import Select from 'components/Select';
 import { RootState } from 'state/store';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IVaultState  from 'state/vault/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { useController } from 'hooks/index';
 
 import styles from './index.scss';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const NetworksView = () => {
   const controller = useController();
-  const { activeNetwork }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { activeNetwork }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
 
-  const handleChangeNetwork = (network: string, asset: string) => {
-    controller.wallet.switchNetwork(asset, network);
+  const handleChangeNetwork = (
+    networkType: KeyringNetwork,
+    networkId: string
+  ) => {
+    controller.wallet.switchNetwork(networkType, networkId);
   };
 
   return (
     <div className={styles.wrapper}>
       <label>Constellation Network</label>
       <Select
-        value={activeNetwork[AssetType.Constellation] || DAG_NETWORK.main.id}
+        value={activeNetwork[KeyringNetwork.Constellation]}
         fullWidth
         onChange={(
           ev: ChangeEvent<{
@@ -32,8 +36,8 @@ const NetworksView = () => {
           }>
         ) => {
           handleChangeNetwork(
-            ev.target.value as string,
-            AssetType.Constellation
+            KeyringNetwork.Constellation,
+            ev.target.value as string
           );
         }}
         options={[
@@ -43,7 +47,7 @@ const NetworksView = () => {
       />
       <label>Ethereum Network</label>
       <Select
-        value={activeNetwork[AssetType.Ethereum] || ETH_NETWORK.mainnet.id}
+        value={activeNetwork[KeyringNetwork.Ethereum]}
         fullWidth
         onChange={(
           ev: ChangeEvent<{
@@ -51,7 +55,10 @@ const NetworksView = () => {
             value: unknown;
           }>
         ) => {
-          handleChangeNetwork(ev.target.value as string, AssetType.Ethereum);
+          handleChangeNetwork(
+            KeyringNetwork.Ethereum,
+            ev.target.value as string
+          );
         }}
         options={[
           { [ETH_NETWORK.mainnet.id]: ETH_NETWORK.mainnet.label },

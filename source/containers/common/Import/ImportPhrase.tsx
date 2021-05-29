@@ -15,6 +15,7 @@ interface IImportPhrase {
 
 const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
   const controller = useController();
+
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       phrase: yup.string().required(),
@@ -22,13 +23,13 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
   });
 
   const onSubmit = (data: any) => {
-    if (controller.wallet.importPhrase(data.phrase)) {
+    if (controller.wallet.onboardHelper.importAndValidateSeedPhrase(data.phrase)) {
       onRegister();
     }
   };
 
   return (
-    <Layout title="Let's import your wallet" linkTo="/app.html">
+    <Layout title="Let's import your wallet">
       <form className={styles.importForm} onSubmit={handleSubmit(onSubmit)}>
         <span>Paste your wallet seed phrase below:</span>
         <TextInput

@@ -11,7 +11,7 @@ import { useFiat } from 'hooks/usePrice';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { RootState } from 'state/store';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { ellipsis } from '../helpers';
 
@@ -23,18 +23,13 @@ const SendConfirm = () => {
   const getFiatAmount = useFiat(false);
   const alert = useAlert();
 
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { activeWallet, activeAsset }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const account = accounts[activeAccountId];
-  const asset = assets[account.activeAssetId];
-  const assetType =
-    account.activeAssetId === AssetType.Constellation
-      ? AssetType.Constellation
-      : AssetType.Ethereum;
+  const assetInfo = assets[activeAsset.id];
 
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
@@ -42,7 +37,7 @@ const SendConfirm = () => {
   const getTotalAmount = () => {
     return (
       Number(getFiatAmount(Number(tempTx?.amount || 0), 8)) +
-      Number(getFiatAmount(Number(tempTx?.fee || 0), 8, assetType))
+      Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type))
     ).toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
@@ -75,7 +70,7 @@ const SendConfirm = () => {
     <div className={styles.wrapper}>
       <Header backLink="/send" />
       <section className={styles.subheading}>
-        {asset.logo && <Icon Component={asset.logo} />}
+        {assetInfo.logo && <Icon Component={assetInfo.logo} />}
         Confirm
       </section>
       <section className={styles.txAmount}>
@@ -83,10 +78,10 @@ const SendConfirm = () => {
           <UpArrowIcon />
         </div>
         {Number(tempTx?.amount || 0) +
-          (account.activeAssetId === AssetType.Ethereum
+          (activeAsset.type === AssetType.Ethereum
             ? Number(tempTx?.fee || 0)
             : 0)}{' '}
-        {asset.symbol}
+        {assetInfo.symbol}
         <small>
           (≈
           {getTotalAmount()})
@@ -96,7 +91,7 @@ const SendConfirm = () => {
         <div className={styles.row}>
           From
           <span>
-            {account?.label || ''} ({ellipsis(tempTx!.fromAddress)})
+            {activeWallet?.label || ''} ({ellipsis(tempTx!.fromAddress)})
           </span>
         </div>
         <div className={styles.row}>
@@ -106,10 +101,10 @@ const SendConfirm = () => {
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {`${tempTx!.fee} ${assets[assetType].symbol} (≈ $${getFiatAmount(
+            {`${tempTx!.fee} ${assets[activeAsset.id].symbol} (≈ $${getFiatAmount(
               tempTx?.fee || 0,
               2,
-              assetType
+              activeAsset.type
             )})`}
           </span>
         </div>

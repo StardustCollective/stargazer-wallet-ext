@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
 import SeedIcon from '@material-ui/icons/Description';
@@ -11,33 +10,31 @@ import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
-import IWalletState, { AccountType } from 'state/wallet/types';
-import { RootState } from 'state/store';
+import IVaultState  from 'state/vault/types';
 import { useController, useSettingsView } from 'hooks/index';
 
 import styles from './index.scss';
-import {
-  PHRASE_VIEW,
-  PRIV_KEY_VIEW,
-  REMOVE_ACCOUNT_VIEW,
-  WALLETS_VIEW,
-} from '../routes';
+import { PHRASE_VIEW, PRIV_KEY_VIEW, REMOVE_WALLET_VIEW, WALLETS_VIEW } from '../routes';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../state/store';
 
 interface IManageWalletView {
-  id: string;
+  id: string
 }
 
-const ManageWalletView: FC<IManageWalletView> = ({ id }) => {
+const ManageWalletView: FC<IManageWalletView> = ({id}) => {
   const showView = useSettingsView();
   const controller = useController();
   const { handleSubmit, register } = useForm();
-  const { accounts }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { wallets }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
-  const account = accounts[id];
+
+  const wallet = wallets.find(w => w.id === id);
 
   const onSubmit = (data: any) => {
-    controller.wallet.account.updateAccountLabel(id, data.name);
+    controller.wallet.account.updateWalletLabel(id, data.name);
     showView(WALLETS_VIEW);
   };
 
@@ -49,11 +46,11 @@ const ManageWalletView: FC<IManageWalletView> = ({ id }) => {
         visiblePassword
         fullWidth
         variant={styles.input}
-        defaultValue={account.label}
+        defaultValue={wallet.label}
         inputRef={register({ required: true })}
       />
       <label>Backup Options</label>
-      {account.type === AccountType.Seed ? (
+      {wallet.type === KeyringWalletType.MultiChainWallet ? (
         <section className={styles.menu} onClick={() => showView(PHRASE_VIEW)}>
           <Icon Component={SeedIcon} />
           <span>Show Recovery Phrase</span>
@@ -76,7 +73,7 @@ const ManageWalletView: FC<IManageWalletView> = ({ id }) => {
       </span>
       <section
         className={styles.menu}
-        onClick={() => showView(REMOVE_ACCOUNT_VIEW)}
+        onClick={() => showView(REMOVE_WALLET_VIEW)}
       >
         <Icon Component={DeleteIcon} />
         <span>Delete Wallet</span>

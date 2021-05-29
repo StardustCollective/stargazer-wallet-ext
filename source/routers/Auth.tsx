@@ -24,7 +24,7 @@ const Auth = () => {
   const alert = useAlert();
   const history = useHistory();
   const controller = useController();
-  const isUnlocked = !controller.wallet.isLocked();
+  const isUnlocked = controller.wallet.isUnlocked();
   const transitions = useTransition(location, (locat) => locat.pathname, {
     initial: { opacity: 1 },
     from: { opacity: 0 },

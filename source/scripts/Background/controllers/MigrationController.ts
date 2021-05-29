@@ -1,9 +1,9 @@
 import store from 'state/store';
-import IWalletState from 'state/wallet/types';
+import IVaultState from 'state/vault/types';
 
 const MigrationController = () => {
   // check current version of wallet
-  const { version }: IWalletState = store.getState().wallet;
+  const { version }: IVaultState = store.getState().vault;
 
   /**
    * version < 2.0

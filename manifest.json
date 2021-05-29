@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "2.1.0",
+  "version": "2.1.1",
 
   "icons": {
     "16": "assets/icons/favicon-16.png",
@@ -14,20 +14,17 @@
   "short_name": "stargazer-wallet-ext",
 
   "permissions": [
-    "https://api.coingecko.com/api/v3/",
-    "https://block-explorer.constellationnetwork.io/",
-    "http://lb.constellationnetwork.io:9000/",
-    "https://api-be.exchanges.constellationnetwork.io/",
-    "http://lb.exchanges.constellationnetwork.io:9000/",
-    "https://*.infura.io/"
+    "https://www.stargazer.network/",
+    "https://*.coingecko.com/",
+    "https://*.constellationnetwork.io/",
+    "http://*.constellationnetwork.io:9000/",
+    "https://*.infura.io/",
+    "chrome://favicon/"
   ],
 
-  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon;",
 
   "__chrome|firefox__author": "Stardust Collective",
-  "__opera__developer": {
-    "name": "devneser"
-  },
 
   "__firefox__applications": {
     "gecko": {
@@ -35,8 +32,8 @@
     }
   },
 
-  "__chrome__minimum_chrome_version": "49",
-  "__opera__minimum_opera_version": "36",
+  "__firefox__minimum_firefox_version": "68",
+  "__chrome__minimum_chrome_version": "63",
 
   "browser_action": {
     "default_popup": "app.html",
@@ -47,11 +44,11 @@
       "128": "assets/icons/favicon-128.png"
     },
     "default_title": "Stargazer",
-    "__chrome|opera__chrome_style": false,
+    "__chrome__chrome_style": false,
     "__firefox__browser_style": false
   },
 
-  "__chrome|opera__options_page": "options.html",
+  "__chrome__options_page": "options.html",
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true,
@@ -60,6 +57,15 @@
 
   "background": {
     "scripts": ["js/background.bundle.js"],
-    "__chrome|opera__persistent": true
-  }
+    "__chrome__persistent": true
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["js/contentScript.bundle.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ]
 }

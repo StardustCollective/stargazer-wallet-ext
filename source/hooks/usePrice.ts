@@ -1,25 +1,24 @@
 import { useSelector } from 'react-redux';
 import IPriceState from 'state/price/types';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
 
-export function useFiat(currencyName = true, assetId?: string) {
+export function useFiat(currencyName = true) {
+  const { activeAsset }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
+
   const { fiat, currency }: IPriceState = useSelector(
     (state: RootState) => state.price
   );
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
+
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const account = accounts[activeAccountId];
-  const priceId =
-    assets[assetId || account?.activeAssetId || AssetType.Constellation]
-      .priceId;
 
-  return (amount: number, fraction = 4, basePriceId = priceId) => {
+  return (amount: number, fraction = 4, basePriceId?: string) => {
+    const priceId = basePriceId || assets[activeAsset.id].priceId;
     const value =
       amount * (priceId ? fiat[basePriceId || priceId]?.price || 0 : 0);
     return `${currencyName ? currency.symbol : ''}${
@@ -37,23 +36,22 @@ export function useTotalBalance(currencyName = true) {
   const { fiat, currency }: IPriceState = useSelector(
     (state: RootState) => state.price
   );
-  const {
-    accounts,
-    activeAccountId,
-    activeNetwork,
-  }: IWalletState = useSelector((state: RootState) => state.wallet);
+  const { activeWallet, activeNetwork, balances}: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const assetList: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const account = accounts[activeAccountId];
-  if (!account?.assets) return ['0', '0'];
-  const assetIds = Object.values(account.assets)
+
+  if (!activeWallet?.assets) return ['0', '0'];
+
+  const assetIds = activeWallet.assets
     .filter(
       (asset) =>
         assetList[asset.id].network === 'both' ||
         assetList[asset.id].network ===
           activeNetwork[
-            asset.id === AssetType.Constellation
+            asset.type === AssetType.Constellation
               ? AssetType.Constellation
               : AssetType.Ethereum
           ]
@@ -62,13 +60,12 @@ export function useTotalBalance(currencyName = true) {
   const priceIds = assetIds.map((assetId) => assetList[assetId].priceId || '');
   let balance = 0;
   for (let i = 0; i < assetIds.length; i += 1) {
-    balance +=
-      account.assets[assetIds[i]].balance * (fiat[priceIds[i]]?.price || 0);
+    balance += (balances[assetIds[i]] || 0) * (fiat[priceIds[i]]?.price || 0);
   }
   return [
     `${currencyName ? currency.symbol : ''}${balance.toFixed(2)}${
       currencyName ? ` ${currency.name}` : ''
     }`,
-    (balance / fiat.bitcoin.price).toFixed(2),
+    (balance / (fiat.bitcoin?.price || 0)).toFixed(2),
   ];
 }

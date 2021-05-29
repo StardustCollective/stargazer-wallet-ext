@@ -1,100 +1,44 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { BigNumber, ethers } from 'ethers';
-import { hdkey } from 'ethereumjs-wallet';
-import {
-  XChainEthClient,
-  utils,
-} from '@stardust-collective/dag4-xchain-ethereum';
-import { Transaction, PendingTx } from '@stardust-collective/dag4-network';
+import { utils, XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
+import { PendingTx, Transaction } from '@stardust-collective/dag4-network';
 
 import store from 'state/store';
 import {
-  createAccount,
-  updateStatus,
-  removeAccount,
-  updateAccount,
-  updateTransactions,
-  updateLabel,
-  removeKeystoreInfo,
   changeActiveAsset,
-  addAsset,
-} from 'state/wallet';
-import IWalletState, {
-  AccountType,
-  AssetType,
-  IAccountState,
-  IAssetState,
-  NetworkType,
-  PrivKeystore,
-} from 'state/wallet/types';
+  changeActiveWallet,
+  updateBalances,
+  updateStatus,
+  updateTransactions,
+  updateWalletAssets
+} from 'state/vault';
+import IVaultState, { AssetType, IAssetState, IWalletState } from 'state/vault/types';
 
-import { IAccountInfo, ITransactionInfo, ETHNetwork } from '../../types';
-import { ETH_PREFIX, LATTICE_ASSET } from 'constants/index';
+import { ETHNetwork, ITransactionInfo } from '../../types';
 import IAssetListState from 'state/assets/types';
-import TransactionController, {
-  ITransactionController,
-} from './TransactionController';
+import TransactionController, { ITransactionController } from './TransactionController';
 
-export interface IAccountController {
-  getTempTx: () => ITransactionInfo | null;
-  updateTempTx: (tx: ITransactionInfo) => void;
-  confirmTempTx: () => Promise<void>;
-  getPrivKey: (id: string, pwd: string) => Promise<string | null>;
-  getPrimaryAccount: (pwd: string) => void;
-  isValidDAGAddress: (address: string) => boolean;
-  isValidERC20Address: (address: string) => boolean;
-  subscribeAccount: (id: string, label?: string) => Promise<string | null>;
-  unsubscribeAccount: (index: number, pwd: string) => boolean;
-  // addNewAccount: (label: string) => Promise<string | null>;
-  updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
-  getFullETHTxs: () => any[];
-  updateAccountLabel: (id: string, label: string) => void;
-  updateAccountActiveAsset: (id: string, assetId: string) => void;
-  addNewAsset: (id: string, assetId: string, address: string) => Promise<void>;
-  importPrivKeyAccount: (
-    privKey: string,
-    label: string,
-    networkType: NetworkType
-  ) => Promise<string | null>;
-  removePrivKeyAccount: (id: string, password: string) => boolean;
-  getRecommendFee: () => Promise<number>;
-  getRecommendETHTxConfig: () => Promise<{
-    nonce: number;
-    gas: number;
-    gasLimit: number;
-  }>;
-  updateETHTxConfig: ({
-    nonce,
-    gas,
-    gasLimit,
-  }: {
-    gas?: number;
-    gasLimit?: number;
-    nonce?: number;
-  }) => void;
-  getLatestGasPrices: () => Promise<number[]>;
-  estimateGasFee: (gas: number, gasLimit?: number) => Promise<number | null>;
-  watchMemPool: () => void;
-  getLatestUpdate: () => Promise<void>;
-}
+import { IAccountController } from './IAccountController';
+import { KeyringManager, KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring';
+import { AccountMonitor } from '../helpers/accountMonitor';
 
-const AccountController = (actions: {
-  getMasterKey: (id: string) => Promise<hdkey | null>;
-  checkPassword: (pwd: string) => boolean;
-  importPrivKey: (
-    privKey: string,
-    networkType: NetworkType
-  ) => Promise<PrivKeystore | null>;
-}): IAccountController => {
-  let privateKey: string;
-  let tempTx: ITransactionInfo | null;
-  let account: IAccountState | null;
-  let intervalId: any;
-  let password: string;
-  let ethClient: XChainEthClient;
+// limit number of txs
+const TXS_LIMIT = 10;
 
-  // limit number of txs
-  const TXS_LIMIT = 10;
+export class AccountController implements IAccountController {
+  // intervalId: any;
+  tempTx: ITransactionInfo | null;
+  // wallet: IActiveWalletState | null;
+  ethClient: XChainEthClient;
+  txController: ITransactionController;
+  monitor: Readonly<AccountMonitor>;
+  
+  constructor(private keyringManager: Readonly<KeyringManager>) {
+    this.txController = Object.freeze(
+      TransactionController({ getLatestUpdate: () => this.getLatestTxUpdate() })
+    );
+    this.monitor = new AccountMonitor();
+  }
 
   /**
    * Convert pending DAG Tx type to standard Tx type
@@ -102,7 +46,7 @@ const AccountController = (actions: {
    * @param pending {PendingTx}
    * @returns {Transaction}
    */
-  const _coventDAGPendingTx = (pending: PendingTx) => {
+  private _coventDAGPendingTx (pending: PendingTx) {
     return {
       hash: pending.hash,
       amount: pending.amount,
@@ -115,492 +59,321 @@ const AccountController = (actions: {
       snapshotHash: '',
       checkpointBlock: '',
     } as Transaction;
-  };
-
-  const _fetchSingleERC20Asset = async (asset: IAssetState) => {
-    const ethAddress = ethClient.getAddress();
-    const assetList: IAssetListState = store.getState().assets;
-    const { address, decimals, symbol, network } = assetList[asset.id];
-
-    if (!address || !decimals) return null;
-    const balance = await ethClient.getTokenBalance(
-      ethAddress,
-      {
-        address,
-        decimals,
-        symbol,
-      },
-      network === 'mainnet' ? 1 : 3
-    );
-    const transactions = await ethClient.getTransactions({
-      address: ethAddress,
-      limit: TXS_LIMIT,
-      asset: address,
-    });
-
-    return {
-      id: asset.id,
-      balance,
-      address: ethAddress,
-      transactions: transactions.txs.map((tx) => {
-        return {
-          ...tx,
-          balance: ethers.utils.formatUnits(
-            tx.from[0].amount.amount().toString(),
-            assetList[asset.id].decimals || 18
-          ),
-        };
-      }),
-    };
-  };
-
-  const _fetchERC20Assets = async (accountId?: string) => {
-    if (!ethClient) return {};
-    const { accounts, activeAccountId }: IWalletState = store.getState().wallet;
-    const assets = accounts[accountId || activeAccountId]?.assets || {};
-    const erc20Assets: {
-      [assetId: string]: IAssetState;
-    } = Object.values(assets)
-      .filter(
-        (asset) =>
-          asset.id !== AssetType.Ethereum &&
-          asset.id !== AssetType.Constellation
-      )
-      .reduce(
-        (assets, asset) => {
-          return {
-            ...assets,
-            [asset.id]: asset,
-          };
-        },
-        {
-          [LATTICE_ASSET]: {
-            id: LATTICE_ASSET,
-            balance: 0,
-            address: '',
-            transactions: [],
-          },
-        }
-      );
-
-    for (let i = 0; i < Object.values(erc20Assets).length; i++) {
-      const asset = await _fetchSingleERC20Asset(Object.values(erc20Assets)[i]);
-      if (asset) {
-        erc20Assets[Object.values(erc20Assets)[i].id] = asset;
-      }
-    }
-    return erc20Assets;
-  };
+  }
 
   /**
-   * Get latest update info of a account by private key
+   * Get latest update info of a wallet by private key
    *
    * @param privateKey {string}
    * @returns {IAccountInfo}
    */
-  const getAccountByPrivateKey = async (
-    privateKey: string,
-    networkType: NetworkType,
-    accountId?: string
-  ): Promise<IAccountInfo> => {
-    const { activeNetwork }: IWalletState = store.getState().wallet;
-    let assets: any = {};
+  // async getAccountByPrivateKey ( privateKey: string, chainId: KeyringChainId, accountAddress?: string ): Promise<IAccountInfo> {
+  //   const { activeNetwork }: IVaultState = store.getState().vault;
+  //   let assets: any = {};
+  //
+  //   if (
+  //     chainId === KeyringChainId.Constellation
+  //   ) {
+  //     dag4.account.loginPrivateKey(privateKey);
+  //
+  //     // fetch dag info
+  //     const dagBalance = await dag4.account.getBalance();
+  //     const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
+  //
+  //     assets[AssetType.Constellation] = {
+  //       id: AssetType.Constellation,
+  //       balance: dagBalance,
+  //       address: dag4.account.address,
+  //       transactions: dagTxs,
+  //     };
+  //   }
+  //
+  //   if (
+  //     chainId === KeyringChainId.Ethereum
+  //   ) {
+  //     this.ethClient = new XChainEthClient({
+  //       network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+  //       privateKey,
+  //       etherscanApiKey: process.env.ETHERSCAN_API_KEY,
+  //       infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
+  //     });
+  //     // fetch eth info
+  //     const ethAddress = this.ethClient.getAddress();
+  //     const balances = await this.ethClient.getBalance();
+  //     const ethBalance = ethers.utils.formatEther(
+  //       balances[0].amount.amount().toString()
+  //     );
+  //     const ethTxs = await this.ethClient.getTransactions({
+  //       address: ethAddress,
+  //       limit: TXS_LIMIT,
+  //     });
+  //
+  //     // fetch other erc20 assets info
+  //     const erc20Assets = await this._fetchERC20Assets(accountAddress);
+  //
+  //     assets = {
+  //       ...assets,
+  //       [AssetType.Ethereum]: {
+  //         id: AssetType.Ethereum,
+  //         balance: Number(ethBalance),
+  //         address: ethAddress,
+  //         transactions: ethTxs.txs.map((tx) => {
+  //           return {
+  //             ...tx,
+  //             balance: ethers.utils.formatEther(
+  //               tx.from[0].amount.amount().toString()
+  //             ),
+  //           };
+  //         }),
+  //       },
+  //       ...erc20Assets,
+  //     };
+  //   }
+  //
+  //   return {
+  //     assets,
+  //   };
+  // }
 
-    if (
-      networkType === NetworkType.MultiChain ||
-      networkType === NetworkType.Constellation
-    ) {
-      dag4.account.loginPrivateKey(privateKey);
-
-      // fetch dag info
-      const dagBalance = await dag4.account.getBalance();
-      const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
-
-      assets[AssetType.Constellation] = {
-        id: AssetType.Constellation,
-        balance: dagBalance,
-        address: dag4.account.address,
-        transactions: dagTxs,
-      };
-    }
-
-    if (
-      networkType === NetworkType.MultiChain ||
-      networkType === NetworkType.Ethereum
-    ) {
-      ethClient = new XChainEthClient({
-        network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
-        privateKey,
-        etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-        infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
-      });
-      // fetch eth info
-      const ethAddress = ethClient.getAddress();
-      const balances = await ethClient.getBalance();
-      const ethBalance = ethers.utils.formatEther(
-        balances[0].amount.amount().toString()
-      );
-      const ethTxs = await ethClient.getTransactions({
-        address: ethAddress,
-        limit: TXS_LIMIT,
-      });
-
-      // fetch other erc20 assets info
-      const erc20Assets = await _fetchERC20Assets(accountId);
-
-      assets = {
-        ...assets,
-        [AssetType.Ethereum]: {
-          id: AssetType.Ethereum,
-          balance: Number(ethBalance),
-          address: ethAddress,
-          transactions: ethTxs.txs.map((tx) => {
-            return {
-              ...tx,
-              balance: ethers.utils.formatEther(
-                tx.from[0].amount.amount().toString()
-              ),
-            };
-          }),
-        },
-        ...erc20Assets,
-      };
-    }
-
-    return {
-      assets,
-    };
-  };
-
-  /**
-   * Get latest update info of a account by account index
-   *
-   * @param index {number} account index of seed-phrase wallet
-   * @returns {AccountInfo | null}
-   */
-  const getAccountByIndex = async (id: string) => {
-    const masterKey: hdkey | null = await actions.getMasterKey(id);
-    if (!masterKey) return null;
-    privateKey = dag4.keyStore.deriveAccountFromMaster(masterKey, 0);
-    return await getAccountByPrivateKey(privateKey, NetworkType.MultiChain, id);
-  };
-
-  /**
-   * Get latest update info of a account
-   * by `id` of the keystore generated with a private key
-   *
-   * @param keystoreId {string} keystore id of imported keystores
-   * @returns {AccountInfo | null}
-   */
-  const getAccountByPrivKeystore = async (keystoreId: string) => {
-    const { keystores }: IWalletState = store.getState().wallet;
-    if (!password || !keystores[keystoreId]) return null;
-    privateKey = await dag4.keyStore.decryptPrivateKey(
-      keystores[keystoreId] as PrivKeystore,
-      password
-    );
-    return await getAccountByPrivateKey(
-      privateKey,
-      keystoreId.startsWith(ETH_PREFIX)
-        ? NetworkType.Ethereum
-        : NetworkType.Constellation
-    );
-  };
-
-  const subscribeAccount = async (id: string, label?: string) => {
-    const { accounts }: IWalletState = store.getState().wallet;
-    const accountInfo: IAccountInfo | null = await getAccountByIndex(id);
-
-    console.log('warning ===> ', accountInfo);
-
-    if (!accountInfo) return null;
-    account = {
-      id,
-      label: label || `Account ${Object.keys(accounts).length + 1}`,
-      ...accountInfo,
-      activeAssetId: AssetType.Constellation,
-      type: AccountType.Seed,
-    };
-
-    store.dispatch(createAccount(account));
-    return account.assets[AssetType.Constellation].address;
-  };
-
-  const removePrivKeyAccount = (id: string, pwd: string) => {
-    if (!actions.checkPassword(pwd)) return false;
-    store.dispatch(removeKeystoreInfo(id));
-    store.dispatch(removeAccount(id));
+  async removeWallet (id: string, pwd: string) {
+    if (!this.keyringManager.checkPassword(pwd)) return false;
+    await this.keyringManager.removeWalletById(id)
     store.dispatch(updateStatus());
     return true;
-  };
+  }
 
-  // const addNewAccount = async (label: string) => {
-  //   const { accounts }: IWalletState = store.getState().wallet;
-  //   const seedAccounts = Object.values(accounts).filter(
-  //     (account) => account.type === AccountType.Seed
-  //   );
-  //   let idx = -1;
-  //   Object.keys(seedAccounts).forEach((index, i) => {
-  //     if (index !== String(i)) {
-  //       idx = i;
-  //       return;
-  //     }
-  //   });
-  //   if (idx === -1) {
-  //     idx = Object.keys(seedAccounts).length;
-  //   }
-  //   return await subscribeAccount(idx, label);
-  // };
+  async buildAccountAssetInfo (walletId: string) {
 
-  const unsubscribeAccount = (index: number, pwd: string) => {
-    if (actions.checkPassword(pwd)) {
-      store.dispatch(removeAccount(String(index)));
-      store.dispatch(updateStatus());
-      return true;
-    }
-    return false;
-  };
+    const state = store.getState();
+    const vault: IVaultState = state.vault;
+    const activeNetwork = vault.activeNetwork;
+    // const assetInfoMap: IAssetListState = state.assets;
+    const wallets: KeyringWalletState[] = vault.wallets;
 
-  const importPrivKeyAccount = async (
-    privKey: string,
-    label: string,
-    networkType: NetworkType
-  ) => {
-    if (!label) return null;
+    let buildAssetList: IAssetState[] = [];
 
-    const keystore = await actions.importPrivKey(privKey, networkType);
-    if (!keystore) return null;
+    const walletInfo = wallets.find(w => w.id === walletId);
 
-    const { accounts }: IWalletState = store.getState().wallet;
-    const accountInfo = await getAccountByPrivateKey(privKey, networkType);
+    for (let i = 0; i < walletInfo.accounts.length; i++) {
+      const account = walletInfo.accounts[i];
+      const privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
 
-    const activeAssetId =
-      networkType === NetworkType.Ethereum
-        ? AssetType.Ethereum
-        : AssetType.Constellation;
+      if (account.network === KeyringNetwork.Constellation) {
 
-    const id = `${networkType === NetworkType.Ethereum ? ETH_PREFIX : ''}${
-      keystore.id
-    }`;
+        dag4.account.loginPrivateKey(privateKey);
+        //NOTE: need address in order to use getBalance, getTransactions
+        //dag4.account.setKeysAndAddress(null, null, asset.address);
 
-    // check if the same account exists
-    const isExisting =
-      Object.values(accounts).filter(
-        (acc) =>
-          acc.assets[activeAssetId] &&
-          acc.assets[activeAssetId].address ===
-            accountInfo.assets[activeAssetId].address
-      ).length > 0;
+        // fetch dag info
+        const dagBalance = await dag4.account.getBalance();
+        //const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
 
-    if (isExisting) {
-      store.dispatch(removeKeystoreInfo(id));
-      return null;
+        buildAssetList.push({
+          id: AssetType.Constellation,
+          type: AssetType.Constellation,
+          label: 'Constellation',
+          // balance: dagBalance || 0,
+          address: account.address,
+          //transactions: dagTxs
+        });
+
+        store.dispatch(updateBalances({ [AssetType.Constellation]: dagBalance }));
+      }
+      else if (account.network === KeyringNetwork.Ethereum) {
+
+        this.ethClient = new XChainEthClient({
+          network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+          privateKey,
+          etherscanApiKey: process.env.ETHERSCAN_API_KEY,
+          infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }
+        });
+
+        buildAssetList = buildAssetList.concat(this.buildAndMonitorEthAccount(account.tokens));
+
+      }
+
     }
 
-    privateKey = privKey;
-    account = {
-      id: id,
-      label: label,
-      ...accountInfo,
-      activeAssetId,
-      type: AccountType.PrivKey,
-    };
-
-    store.dispatch(createAccount(account));
-    return account.assets[activeAssetId].address;
-  };
-
-  const getPrimaryAccount = (pwd: string) => {
-    const { accounts, activeAccountId }: IWalletState = store.getState().wallet;
-    if (!actions.checkPassword(pwd)) return;
-    password = pwd;
-    getLatestUpdate();
-    if (!account && accounts && Object.keys(accounts).length) {
-      account = accounts[activeAccountId];
-      store.dispatch(updateStatus());
+    const activeWallet: IWalletState = {
+      id: walletInfo.id,
+      type: walletInfo.type,
+      label: walletInfo.label,
+      supportedAssets: walletInfo.supportedAssets,
+      assets: buildAssetList
     }
-  };
 
-  const getLatestUpdate = async () => {
-    const { activeAccountId, accounts }: IWalletState = store.getState().wallet;
-    if (
-      !accounts[activeAccountId] ||
-      accounts[activeAccountId].type === undefined
-    )
-      return;
+    store.dispatch(changeActiveWallet(activeWallet));
 
-    const accLatestInfo =
-      accounts[activeAccountId].type === AccountType.Seed
-        ? await getAccountByIndex(activeAccountId)
-        : await getAccountByPrivKeystore(activeAccountId);
+    this.monitor.start();
+  }
 
-    if (!accLatestInfo) return;
+  buildAndMonitorEthAccount (accountTokens: string[]) {
+    const assetInfoMap: IAssetListState = store.getState().assets;
 
-    account = accounts[activeAccountId];
+    const tokens = accountTokens.map(t => assetInfoMap[t])
+
+    let assetList: IAssetState[] = [];
+
+    assetList.push({
+      id: AssetType.Ethereum,
+      type: AssetType.Ethereum,
+      label: 'Ethereum',
+      address: this.ethClient.getAddress()
+    });
+
+    assetList = assetList.concat(tokens.map(t => {
+      return {
+        id: t.address,
+        type: AssetType.ERC20,
+        label: t.label,
+        address: t.address
+      }
+    }));
+
+    return assetList;
+  }
+
+  async getLatestTxUpdate () {
+    const { activeAsset }: IVaultState = store.getState().vault;
+
+    if (!activeAsset) return;
+
+    if (activeAsset.type === AssetType.Constellation) {
+      // fetch dag info
+      const txs = await dag4.account.getTransactions(TXS_LIMIT);
+
+      store.dispatch(updateTransactions({txs}));
+    }
+    else  if (activeAsset.type === AssetType.Ethereum) {
+      this.txController.startMonitor();
+    }
 
     // check pending DAG txs
-    const memPool = window.localStorage.getItem('dag4-network-main-mempool');
-    if (memPool) {
-      const pendingTxs = JSON.parse(memPool);
-      pendingTxs.forEach((pTx: PendingTx) => {
-        if (
-          !account ||
-          (account.assets[AssetType.Constellation].address !== pTx.sender &&
-            account.assets[AssetType.Constellation].address !== pTx.receiver) ||
-          accLatestInfo.assets[AssetType.Constellation].transactions.filter(
-            (tx: Transaction) => tx.hash === pTx.hash
-          ).length > 0
-        )
-          return;
-        accLatestInfo.assets[AssetType.Constellation].transactions.unshift(
-          _coventDAGPendingTx(pTx)
-        );
-      });
-    }
+    // const memPool = window.localStorage.getItem('dag4-network-main-mempool');
+    // if (memPool) {
+    //   const pendingTxs = JSON.parse(memPool);
+    //   pendingTxs.forEach((pTx: PendingTx) => {
+    //     if (
+    //       !this.wallet ||
+    //       (this.wallet.assets[AssetType.Constellation].address !== pTx.sender &&
+    //         this.wallet.assets[AssetType.Constellation].address !== pTx.receiver) ||
+    //       accLatestInfo.assets[AssetType.Constellation].transactions.filter(
+    //         (tx: Transaction) => tx.hash === pTx.hash
+    //       ).length > 0
+    //     )
+    //       return;
+    //     accLatestInfo.assets[AssetType.Constellation].transactions.unshift(
+    //       this._coventDAGPendingTx(pTx)
+    //     );
+    //   });
+    // }
 
-    // monitor ETH Txs
-    txController.startMonitor();
+  }
 
-    store.dispatch(
-      updateAccount({
-        id: activeAccountId,
-        ...accLatestInfo,
-      })
-    );
-  };
+  updateWalletLabel (id: string, label: string) {
+    this.keyringManager.setWalletLabel(id, label);
+  }
 
-  const getPrivKey = async (id: string, pwd: string) => {
-    const { keystores, accounts }: IWalletState = store.getState().wallet;
-    if (!account || !actions.checkPassword(pwd)) return null;
-    if (accounts[id].type === AccountType.Seed) {
-      const masterKey: hdkey | null = await actions.getMasterKey(id);
-      if (!masterKey) return null;
-      return dag4.keyStore.deriveAccountFromMaster(masterKey, 0);
-    } else {
-      const privkey = await dag4.keyStore.decryptPrivateKey(
-        keystores[id] as PrivKeystore,
-        pwd
-      );
-      return privkey;
-    }
-  };
+  updateAccountActiveAsset (asset: IAssetState) {
+    store.dispatch(changeActiveAsset(asset));
+    this.getLatestTxUpdate();
+  }
 
-  const updateAccountLabel = (id: string, label: string) => {
-    store.dispatch(updateLabel({ id, label }));
-  };
+  async addNewToken (address: string) {
+    const { activeWallet }: IVaultState = store.getState().vault;
+    const account = this.keyringManager.addTokenToAccount(activeWallet.id, this.ethClient.getAddress(), address);
+    const tokenAssets = this.buildAndMonitorEthAccount(account.getTokens());
+    const newToken = tokenAssets.find(t => t.address === address);
+    store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
 
-  const updateAccountActiveAsset = (id: string, assetId: string) => {
-    store.dispatch(changeActiveAsset({ id, assetId }));
-    getLatestUpdate();
-  };
+    this.monitor.start();
+  }
 
-  const addNewAsset = async (id: string, assetId: string, address: string) => {
-    const asset = await _fetchSingleERC20Asset({
-      id: assetId,
-      balance: 0,
-      address,
-      transactions: [],
-    });
-    if (asset) {
-      store.dispatch(addAsset({ id, asset }));
-    }
-  };
-
-  // Tx-Related
-  const updateTempTx = (tx: ITransactionInfo) => {
+  // Tx-RelatedupdateAccountLabel
+  updateTempTx (tx: ITransactionInfo) {
     if (dag4.account.isActive()) {
-      tempTx = { ...tempTx, ...tx };
-      tempTx.fromAddress = tempTx.fromAddress.trim();
-      tempTx.toAddress = tempTx.toAddress.trim();
+      this.tempTx = { ...this.tempTx, ...tx };
+      this.tempTx.fromAddress = this.tempTx.fromAddress.trim();
+      this.tempTx.toAddress = this.tempTx.toAddress.trim();
     }
-  };
+  }
 
-  const getTempTx = () => {
-    return dag4.account.isActive() ? tempTx : null;
-  };
+  getTempTx () {
+    return dag4.account.isActive() ? this.tempTx : null;
+  }
 
-  const updateTxs = async (limit = 10, searchAfter?: string) => {
-    if (!account) return;
+  async updateTxs (limit = 10, searchAfter?: string) {
+    const { activeAsset }: IVaultState = store.getState().vault;
+    if (!activeAsset) return;
     const newTxs = await dag4.account.getTransactions(limit, searchAfter);
     store.dispatch(
       updateTransactions({
-        id: account.id,
-        assetId: AssetType.Constellation,
         txs: [
-          ...account.assets[AssetType.Constellation].transactions,
+          ...activeAsset.transactions,
           ...newTxs,
         ],
       })
     );
-  };
+  }
 
-  const watchMemPool = () => {
-    if (intervalId) return;
-    intervalId = setInterval(async () => {
-      await getLatestUpdate();
-      const {
-        activeAccountId,
-        accounts,
-      }: IWalletState = store.getState().wallet;
-      if (
-        !accounts[activeAccountId] ||
-        !accounts[activeAccountId].assets[AssetType.Constellation]
-          .transactions ||
-        !accounts[activeAccountId].assets[
-          AssetType.Constellation
-        ].transactions.filter((tx: Transaction) => tx.fee === -1).length
-      ) {
-        clearInterval(intervalId);
-      }
-    }, 30 * 1000);
-  };
+  // watchMemPool () {
+  //   if (this.intervalId) return;
+  //   this.intervalId = setInterval(async () => {
+  //     await this.getLatestUpdate();
+  //     const {
+  //       activeAccountId,
+  //       accounts,
+  //     }: IVaultState = store.getState().vault;
+  //     if (
+  //       !accounts[activeAccountId] ||
+  //       !accounts[activeAccountId].assets[AssetType.Constellation]
+  //         .transactions ||
+  //       !accounts[activeAccountId].assets[
+  //         AssetType.Constellation
+  //       ].transactions.filter((tx: Transaction) => tx.fee === -1).length
+  //     ) {
+  //       clearInterval(this.intervalId);
+  //     }
+  //   }, 30 * 1000);
+  // }
 
-  const confirmTempTx = async () => {
+  async confirmTempTx () {
     if (!dag4.account.isActive) {
       throw new Error('Error: No signed account exists');
     }
-    if (!account) {
-      throw new Error("Error: Can't find active account info");
-    }
-    if (!tempTx) {
+    if (!this.tempTx) {
       throw new Error("Error: Can't find transaction info");
     }
 
     try {
-      const {
-        accounts,
-        activeAccountId,
-      }: IWalletState = store.getState().wallet;
+      const { activeAsset }: IVaultState = store.getState().vault;
       const assets: IAssetListState = store.getState().assets;
-      const assetId = accounts[activeAccountId].activeAssetId;
 
-      if (assetId === AssetType.Constellation) {
+      if (activeAsset.type === AssetType.Constellation) {
         const pendingTx = await dag4.account.transferDag(
-          tempTx.toAddress,
-          tempTx.amount,
-          tempTx.fee
+          this.tempTx.toAddress,
+          this.tempTx.amount,
+          this.tempTx.fee
         );
         dag4.monitor.addToMemPoolMonitor(pendingTx);
         store.dispatch(
           updateTransactions({
-            id: account.id,
-            assetId: AssetType.Constellation,
             txs: [
-              _coventDAGPendingTx(pendingTx),
-              ...account.assets[AssetType.Constellation].transactions,
+              this._coventDAGPendingTx(pendingTx),
+              ...activeAsset.transactions,
             ],
           })
         );
-        watchMemPool();
+        //this.watchMemPool();
       } else {
-        if (!tempTx.ethConfig) return;
-        const { gas, gasLimit, nonce } = tempTx.ethConfig;
+        if (!this.tempTx.ethConfig) return;
+        const { gas, gasLimit, nonce } = this.tempTx.ethConfig;
         console.log('gas gasLimit', gas, gasLimit);
-        const { activeNetwork }: IWalletState = store.getState().wallet;
+        const { activeNetwork }: IVaultState = store.getState().vault;
         const txOptions: any = {
-          recipient: tempTx.toAddress,
+          recipient: this.tempTx.toAddress,
           amount: utils.baseAmount(
-            ethers.utils.parseEther(tempTx.amount.toString()).toString(),
+            ethers.utils.parseEther(this.tempTx.amount.toString()).toString(),
             18
           ),
           gasPrice: gas
@@ -610,59 +383,59 @@ const AccountController = (actions: {
               )
             : undefined,
           gasLimit:
-            gasLimit && account.activeAssetId === AssetType.Ethereum
+            gasLimit && activeAsset.type === AssetType.Ethereum
               ? BigNumber.from(gasLimit)
               : undefined,
           nonce: nonce,
         };
-        if (account.activeAssetId !== AssetType.Ethereum) {
+        if (activeAsset.type !== AssetType.Ethereum) {
           txOptions.asset = utils.assetFromString(
-            `${utils.ETHChain}.${assets[account.activeAssetId].symbol}-${
-              assets[account.activeAssetId].address
+            `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
+              assets[activeAsset.id].address
             }`
           );
           txOptions.amount = utils.baseAmount(
             ethers.utils
               .parseUnits(
-                tempTx.amount.toString(),
-                assets[account.activeAssetId].decimals
+                this.tempTx.amount.toString(),
+                assets[activeAsset.id].decimals
               )
               .toString(),
-            assets[account.activeAssetId].decimals
+            assets[activeAsset.id].decimals
           );
         }
-        const txHash = await ethClient.transfer(txOptions);
-        txController.addPendingTx({
+        const txHash = await this.ethClient.transfer(txOptions);
+        this.txController.addPendingTx({
           txHash,
-          fromAddress: tempTx.fromAddress,
-          toAddress: tempTx.toAddress,
-          amount: tempTx.amount,
+          fromAddress: this.tempTx.fromAddress,
+          toAddress: this.tempTx.toAddress,
+          amount: this.tempTx.amount,
           network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
-          assetId: account.activeAssetId,
+          assetId: activeAsset.id,
           timestamp: new Date().getTime(),
         });
       }
-      tempTx = null;
+      this.tempTx = null;
     } catch (error) {
       throw new Error(error);
     }
-  };
+  }
 
   // Other
-  const isValidDAGAddress = (address: string) => {
+  isValidDAGAddress (address: string) {
     return dag4.account.validateDagAddress(address);
-  };
+  }
 
-  const isValidERC20Address = (address: string) => {
-    return ethClient.validateAddress(address);
-  };
+  isValidERC20Address (address: string) {
+    return this.ethClient.validateAddress(address);
+  }
 
-  const getRecommendFee = async () => {
+  async getRecommendFee () {
     return await dag4.account.getFeeRecommendation();
-  };
+  }
 
-  const getLatestGasPrices = async () => {
-    const gasPrices = await ethClient.estimateGasPrices();
+  async getLatestGasPrices () {
+    const gasPrices = await this.ethClient.estimateGasPrices();
     const results = Object.values(gasPrices).map((gas) => {
       return Number(
         ethers.utils.formatUnits(gas.amount().toString(), 'gwei').toString()
@@ -672,12 +445,12 @@ const AccountController = (actions: {
       results[1] = Math.round((results[0] + results[2]) / 2);
     }
     return results;
-  };
+  }
 
-  const getRecommendETHTxConfig = async () => {
-    const txHistory = await ethClient.getTransactions();
+  async getRecommendETHTxConfig () {
+    const txHistory = await this.ethClient.getTransactions();
     const nonce = txHistory.txs.length;
-    const gasPrices = await ethClient.estimateGasPrices();
+    const gasPrices = await this.ethClient.estimateGasPrices();
     const gasLimit = 21000;
 
     const recommendConfig = {
@@ -690,70 +463,107 @@ const AccountController = (actions: {
       gasLimit,
     };
 
+    if (!this.tempTx) {
+      this.tempTx = { fromAddress: '', toAddress: '', amount: 0 }
+      this.tempTx.ethConfig = recommendConfig;
+    }
+
+    return recommendConfig;
+  }
+/*
+  const getLatestGasPrices = async () => {
+    const { activeNetwork }: IVaultState = store.getState().vault;
+    const network = activeNetwork[AssetType.Ethereum] as ETHNetwork;
+
+    let gasPrices: any;
+
+    if (network === 'testnet') {
+      gasPrices = {
+        low: { amount: () => 1e-18 },
+        average: { amount: () => 2e-18 },
+        high: { amount: () => 2e-18 }
+      };
+    }
+    else {
+      gasPrices = await this.ethClient.estimateGasPrices();
+    }
+
+    const results = ['low','average','high'].map((gas) => {
+      return Number(
+        ethers.utils.formatUnits(gasPrices[gas].amount().toString(), 'gwei').toString()
+      );
+    });
+    if (results[0] === results[1]) {
+      results[1] = Math.round((results[0] + results[2]) / 2);
+    }
+
+    console.log('gasPrices: ' + gasPrices);
+    return results;
+  }
+
+  const getRecommendETHTxConfig = async () => {
+    const { activeNetwork }: IVaultState = store.getState().vault;
+    const network = activeNetwork[AssetType.Ethereum] as ETHNetwork;
+
+    let nonce: number;
+    let gasPrices: any;
+
+    if (network === 'testnet') {
+      nonce = await this.ethClient.getTransactionCount(this.ethClient.getAddress(), 3);
+      gasPrices = { average: { amount: () => 1e-18 } };
+    }
+    else {
+      nonce = await this.ethClient.getTransactionCount(this.ethClient.getAddress());
+      gasPrices = await this.ethClient.estimateGasPrices();
+    }
+
+    const gasLimit = 21000;
+
+    const recommendConfig = {
+      nonce,
+      gas: Number(
+        ethers.utils
+          .formatUnits(gasPrices.average.amount().toString(), 'gwei')
+          .toString()
+      ) + 0.1,
+      gasLimit,
+    };
+
     if (!tempTx) {
-      tempTx = { fromAddress: '', toAddress: '', amount: 0 };
+      tempTx = { fromAddress: '', toAddress: '', amount: 0 }
       tempTx.ethConfig = recommendConfig;
     }
 
     return recommendConfig;
-  };
+  }
+*/
 
-  const updateETHTxConfig = ({
-    nonce,
-    gas,
-    gasLimit,
-  }: {
+  updateETHTxConfig ({ nonce, gas, gasLimit}: {
     gas?: number;
     gasLimit?: number;
     nonce?: number;
     txData?: string;
-  }) => {
-    if (!tempTx || !tempTx.ethConfig) return;
-    tempTx.ethConfig = {
-      ...tempTx.ethConfig,
-      nonce: nonce || tempTx.ethConfig.nonce,
-      gas: gas || tempTx.ethConfig.gas,
-      gasLimit: gasLimit || tempTx.ethConfig.gasLimit,
+  }) {
+    if (!this.tempTx || !this.tempTx.ethConfig) return;
+    this.tempTx.ethConfig = {
+      ...this.tempTx.ethConfig,
+      nonce: nonce || this.tempTx.ethConfig.nonce,
+      gas: gas || this.tempTx.ethConfig.gas,
+      gasLimit: gasLimit || this.tempTx.ethConfig.gasLimit,
     };
-  };
+  }
 
-  const estimateGasFee = async (gas: number, gasLimit = 21000) => {
+  async estimateGasFee (gas: number, gasLimit = 21000) {
     const fee = ethers.utils
       .parseUnits(gas.toString(), 9)
       .mul(BigNumber.from(gasLimit));
 
     return Number(ethers.utils.formatEther(fee).toString());
-  };
+  }
 
-  const txController: ITransactionController = Object.freeze(
-    TransactionController({ getLatestUpdate })
-  );
+  getFullETHTxs() {
+    return this.txController.getFullTxs();
+  }
 
-  return {
-    getTempTx,
-    updateTempTx,
-    confirmTempTx,
-    getPrivKey,
-    importPrivKeyAccount,
-    getPrimaryAccount,
-    isValidDAGAddress,
-    isValidERC20Address,
-    subscribeAccount,
-    unsubscribeAccount,
-    removePrivKeyAccount,
-    getLatestUpdate,
-    watchMemPool,
-    updateTxs,
-    getFullETHTxs: txController.getFullTxs,
-    updateAccountLabel,
-    updateAccountActiveAsset,
-    addNewAsset,
-    getRecommendFee,
-    getRecommendETHTxConfig,
-    updateETHTxConfig,
-    getLatestGasPrices,
-    estimateGasFee,
-  };
-};
+}
 
-export default AccountController;

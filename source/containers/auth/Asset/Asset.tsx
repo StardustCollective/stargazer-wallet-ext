@@ -12,7 +12,7 @@ import TxsPanel from './TxsPanel';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { formatNumber, getAddressURL } from '../helpers';
 
@@ -21,15 +21,12 @@ import styles from './Asset.scss';
 const AssetDetail = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const {
-    accounts,
-    activeAccountId,
-    activeNetwork,
-  }: IWalletState = useSelector((state: RootState) => state.wallet);
+  const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const account = accounts[activeAccountId];
 
   useEffect(() => {
     controller.wallet.account.updateTempTx({
@@ -40,44 +37,39 @@ const AssetDetail = () => {
   }, []);
 
   const handleRefresh = async () => {
-    await controller.wallet.account.getLatestUpdate();
-    controller.wallet.account.watchMemPool();
+    await controller.wallet.account.getLatestTxUpdate();
+    // controller.wallet.account.watchMemPool();
     controller.stateUpdater();
   };
 
   const fetchTxs = () => {
-    if (account.activeAssetId === AssetType.Constellation)
-      return account.assets[account.activeAssetId].transactions;
+    if (activeAsset.type === AssetType.Constellation) {
+      return activeAsset.transactions;
+    }
     return controller.wallet.account.getFullETHTxs();
   };
 
+  const networkId = activeAsset?.type === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
+
   return (
     <div className={styles.wrapper}>
-      {account ? (
+      {activeWallet && activeAsset? (
         <>
           <Header backLink="/home" />
           <section className={styles.account}>
             <AssetHeader
-              asset={assets[account.activeAssetId]}
-              address={account.assets[account.activeAssetId].address}
-              addressUrl={getAddressURL(
-                account.assets[account.activeAssetId].address,
-                assets[account.activeAssetId].type,
-                activeNetwork[
-                  account.activeAssetId === AssetType.Constellation
-                    ? AssetType.Constellation
-                    : AssetType.Ethereum
-                ]
-              )}
+              asset={assets[activeAsset.id]}
+              address={activeAsset.address}
+              addressUrl={getAddressURL(activeAsset.address, activeAsset.type, activeNetwork[networkId])}
             />
           </section>
           <section className={styles.center}>
             <h3>
-              {formatNumber(account.assets[account.activeAssetId].balance)}{' '}
-              <small>{assets[account.activeAssetId].symbol}</small>
+              {formatNumber(balances[activeAsset.id] || 0)}{' '}
+              <small>{assets[activeAsset.id].symbol}</small>
             </h3>
             <small>
-              ≈ {getFiatAmount(account.assets[account.activeAssetId].balance)}
+              ≈ {getFiatAmount(balances[activeAsset.id] || 0)}
             </small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />
@@ -94,14 +86,14 @@ const AssetDetail = () => {
             </div>
           </section>
           <TxsPanel
-            address={account.assets[account.activeAssetId].address}
+            address={activeAsset.address}
             transactions={fetchTxs()}
           />
         </>
       ) : (
         <section
           className={clsx(styles.mask, {
-            [styles.hide]: accounts[activeAccountId],
+            [styles.hide]: activeAsset,
           })}
         >
           <CircularProgress className={styles.loader} />

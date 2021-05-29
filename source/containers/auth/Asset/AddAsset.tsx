@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
@@ -9,20 +8,18 @@ import TextInput from 'components/TextInput';
 import Header from 'containers/common/Header';
 import { useController } from 'hooks/index';
 import { RootState } from 'state/store';
-import IWalletState, { AccountType, AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import SearchIcon from 'assets/images/svg/search.svg';
 import styles from './Asset.scss';
-import { ETH_PREFIX } from 'constants/index';
+import { v4 as uuid } from 'uuid';
 
 const AddAsset = () => {
   const controller = useController();
   const history = useHistory();
-  const {
-    accounts,
-    activeAccountId,
-    activeNetwork,
-  }: IWalletState = useSelector((state: RootState) => state.wallet);
+  const { activeWallet, activeNetwork }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
@@ -30,15 +27,17 @@ const AddAsset = () => {
     Array<IAssetInfoState>
   >();
   const [keyword, setKeyword] = useState('');
-  const account = accounts[activeAccountId];
+  // const account = accounts[activeAccountId];
 
-  const handleAddAsset = (id: string, address?: string) => {
-    if (!address) return;
-    controller.wallet.account
-      .addNewAsset(activeAccountId, id, address)
-      .then(() => {
-        history.push('/home');
-      });
+  const alreadyInWallet = activeWallet.assets.reduce<{[key: string]: boolean}>(
+    (res, a) => (res[a.address] = true, res ), {}
+  );
+
+  const handleAddAsset = (asset: IAssetInfoState) => {
+    if (!asset.address) return;
+    controller.wallet.account.addNewToken(asset.address).then(() => {
+      history.push('/home');
+    });
   };
 
   useEffect(() => {
@@ -49,17 +48,19 @@ const AddAsset = () => {
       controller.assets.fetchTokenInfo(keyword);
     }
 
+    const currentNetwork = activeNetwork[AssetType.Ethereum];
+    const lcKeyword = keyword.toLowerCase()
+
     setFilteredAssets(
-      Object.values(assets).filter(
-        (asset) =>
-          (asset.network === 'both' ||
-            asset.network === activeNetwork[AssetType.Ethereum]) &&
-          !account.assets[asset.id] &&
-          (asset.name.toLowerCase().includes(keyword.toLowerCase()) ||
-            (asset?.address || '').includes(keyword)) &&
-          (account.type === AccountType.Seed ||
-            (account.id.startsWith(ETH_PREFIX) &&
-              asset.id !== AssetType.Constellation))
+      Object.values(assets).filter(asset => {
+          if(asset.network === 'both' || asset.network === currentNetwork) {
+            if(asset.type === AssetType.ERC20 && asset.address && !alreadyInWallet[asset.id]) {
+              const label = asset.label.toLowerCase();
+              return label.includes(lcKeyword) || asset.address.includes(lcKeyword);
+            }
+          }
+          return false;
+        }
       )
     );
   }, [keyword, assets]);
@@ -91,11 +92,11 @@ const AddAsset = () => {
                         <div className={styles.iconWrapper}>
                           <img src={asset.logo}></img>
                         </div>
-                        <span>{asset.name}</span>
+                        <span>{asset.label}</span>
                       </div>
                       <IconButton
                         className={styles.addButton}
-                        onClick={() => handleAddAsset(asset.id, asset.address)}
+                        onClick={() => handleAddAsset(asset)}
                       >
                         <AddCircle />
                       </IconButton>

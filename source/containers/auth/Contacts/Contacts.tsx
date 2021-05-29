@@ -9,7 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { RootState } from 'state/store';
 import { useController } from 'hooks/index';
 import IContactBookState, { IContactState } from 'state/contacts/types';
-import IWalletState, { AssetType } from 'state/wallet/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 
 import styles from './Contacts.scss';
 
@@ -21,13 +21,13 @@ interface IWalletContacts {
 
 const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
   const controller = useController();
-  const { accounts, activeAccountId }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
+  const { activeAsset }: IVaultState = useSelector(
+    (state: RootState) => state.vault
   );
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
-  const account = accounts[activeAccountId];
+  // const account = accounts[activeAccountId];
 
   const isDAGAddress = (address: string) => {
     return controller.wallet.account.isValidDAGAddress(address);
@@ -35,9 +35,9 @@ const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
 
   const isValidContact = (contact: IContactState) => {
     return (
-      (account.activeAssetId === AssetType.Constellation &&
+      (activeAsset.type === AssetType.Constellation &&
         isDAGAddress(contact.address)) ||
-      (account.activeAssetId !== AssetType.Constellation &&
+      (activeAsset.type !== AssetType.Constellation &&
         !isDAGAddress(contact.address))
     );
   };

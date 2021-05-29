@@ -9,7 +9,8 @@ import { dag4 } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
-import { AssetType } from 'state/wallet/types';
+import { AssetType } from 'state/vault/types';
+import { messagesHandler } from './controllers/MessageHandler';
 
 declare global {
   interface Window {
@@ -17,40 +18,49 @@ declare global {
   }
 }
 
-// NOTE: API Examples
-// dag.network.loadBalancerApi.getAddressBalance(ADDRESS)
-// dag.network.blockExplorerApi.getTransactionsByAddress(ADDRESS)
-
 browser.runtime.onInstalled.addListener((): void => {
   console.emoji('🤩', 'Stargazer extension installed');
-  window.controller.stateUpdater();
 });
 
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {
-  if (
+  if (port.name === 'stargazer') {
+    messagesHandler(port, window.controller);
+  }
+  else if (
     port.sender &&
     port.sender.url &&
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
+    //TODO: implement fallback URLs
     const networkId =
-      store.getState().wallet!.activeNetwork[AssetType.Constellation] ||
+      store.getState().vault!.activeNetwork[AssetType.Constellation] ||
       DAG_NETWORK.main.id;
     dag4.di.useFetchHttpClient(window.fetch.bind(window));
     dag4.di.useLocalStorageClient(localStorage);
     dag4.network.config({
       id: DAG_NETWORK[networkId].id,
       beUrl: DAG_NETWORK[networkId].beUrl,
-      lbUrl: DAG_NETWORK[networkId].lbUrl,
+      lbUrl: DAG_NETWORK[networkId].lbUrl
     });
+    //TODO - startMonitor doesn't help if there is no account logged in to
     dag4.monitor.startMonitor();
-    window.controller.wallet.account.getLatestUpdate();
-    window.controller.wallet.account.watchMemPool();
+    //window.controller.wallet.account.getLatestUpdate();
+
+    //TODO - Instead of this, Use AccountWatcher and on wallet init, watch the account for txs and balance changes
+    // window.controller.wallet.account.watchMemPool();
+
+    port.onDisconnect.addListener(() => {
+      console.log('onDisconnect');
+      window.controller.wallet.account.monitor.stop();
+    });
+
+    console.log('onConnect');
+    window.controller.wallet.account.monitor.start();
   }
 });
 
 if (!window.controller) {
-  window.controller = Object.freeze(MasterController());
-  setInterval(window.controller.stateUpdater, 3 * 60 * 1000);
+  window.controller = MasterController();
 }
 
 wrapStore(store, { portName: STORE_PORT });

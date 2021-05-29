@@ -1,56 +1,25 @@
 {
   "extends": "@abhijithvijayan/tsconfig",
   "compilerOptions": {
-    "target": "es5", // ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'.
-    "module": "esnext", // Module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'.
+    "target": "ESNEXT", // ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'.
+    "module": "ESNEXT", // Module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'.
+    "jsx": "react",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "allowJs": true,
     "declaration": false,
     "isolatedModules": true,
     /* Additional Checks */
     "useDefineForClassFields": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
     "skipLibCheck": true,
     "noResolve": false,
     "resolveJsonModule": true,
-    "baseUrl": ".",
-    "paths": {
-      "assets/*": [
-        "./source/assets/*"
-      ],
-      "components/*": [
-        "./source/components/*"
-      ],
-      "scripts/*": [
-        "source/scripts/*"
-      ],
-      "containers/*": [
-        "./source/containers/*"
-      ],
-      "pages/*": [
-        "./source/pages/*"
-      ],
-      "routers/*": [
-        "./source/routers/*"
-      ],
-      "state/*": [
-        "source/state/*"
-      ],
-      "constants/*": [
-        "source/constants/*"
-      ],
-      "services/*": [
-        "source/services/*"
-      ],
-      "hooks/*": [
-        "source/hooks/*"
-      ],
-      "types/*": [
-        "source/types/*"
-      ],
-    }
+    "baseUrl": "source"
   },
   "include": [
     "source",

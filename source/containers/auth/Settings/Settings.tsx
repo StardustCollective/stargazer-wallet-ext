@@ -12,12 +12,13 @@ import * as routes from './views/routes';
 
 import Icon from 'components/Icon';
 import { useSettingsView } from 'hooks/index';
-import { AssetType, NetworkType } from 'state/wallet/types';
+import { AssetType } from 'state/vault/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 import IAssetListState from 'state/assets/types';
 import StargazerIcon from 'assets/images/logo-s.svg';
 import styles from './Settings.scss';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 interface ISettings {
   open: boolean;
@@ -40,9 +41,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
   });
 
   const [showedId, setShowedId] = useState<string>('0');
-  const [importNetwork, setImportNetwork] = useState<NetworkType>(
-    NetworkType.MultiChain
-  );
+  const [importNetwork, setImportNetwork] = useState<KeyringNetwork>();
   const [selectedContact, setSelectedContact] = useState<string>('');
 
   const renderTitle = (view: string) => {
@@ -58,15 +57,15 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return 'Manage';
       case routes.IMPORT_PHRASE_VIEW:
         return 'Multi Chain Wallet';
-      case routes.GENERAL_VIEW:
-        return 'General Settings';
+      // case routes.GENERAL_VIEW:
+      //   return 'General Settings';
       case routes.PHRASE_VIEW:
         return 'Wallet seed phrase';
-      case routes.DELETE_WALLET_VIEW:
-        return 'Delete wallet';
+      // case routes.DELETE_WALLET_VIEW:
+      //   return 'Delete wallet';
       case routes.NEW_ACCOUNT_VIEW:
         return 'Create Multi Chain Wallet';
-      case routes.REMOVE_ACCOUNT_VIEW:
+      case routes.REMOVE_WALLET_VIEW:
         return 'Delete wallet';
       case routes.PRIV_KEY_VIEW:
         return 'Export private key';
@@ -87,7 +86,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
               variant={styles.icon}
               Component={
                 assets[
-                  importNetwork === NetworkType.Ethereum
+                  importNetwork === KeyringNetwork.Ethereum
                     ? AssetType.Ethereum
                     : AssetType.Constellation
                 ].logo || StargazerIcon
@@ -96,10 +95,10 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
             <span>
               {
                 assets[
-                  importNetwork === NetworkType.Ethereum
+                  importNetwork === KeyringNetwork.Ethereum
                     ? AssetType.Ethereum
                     : AssetType.Constellation
-                ].name
+                ].label
               }
             </span>
           </div>
@@ -127,16 +126,16 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
         return <Views.ManageWalletView id={showedId} />;
       case routes.IMPORT_PHRASE_VIEW:
         return <Views.ImportPhraseView />;
-      case routes.GENERAL_VIEW:
-        return <Views.GeneralView />;
+      // case routes.GENERAL_VIEW:
+      //   return <Views.GeneralView />;
       case routes.PHRASE_VIEW:
         return <Views.PhraseView id={showedId} />;
-      case routes.DELETE_WALLET_VIEW:
-        return <Views.DeleteWalletView />;
+      // case routes.DELETE_WALLET_VIEW:
+      //   return <Views.DeleteWalletView />;
       case routes.NEW_ACCOUNT_VIEW:
         return <Views.NewAccountView onChange={(id) => setShowedId(id)} />;
-      case routes.REMOVE_ACCOUNT_VIEW:
-        return <Views.RemoveAccountView id={showedId} />;
+      case routes.REMOVE_WALLET_VIEW:
+        return <Views.RemoveWalletView id={showedId} />;
       case routes.PRIV_KEY_VIEW:
         return <Views.PrivateKeyView id={showedId} />;
       case routes.ABOUT_VIEW:

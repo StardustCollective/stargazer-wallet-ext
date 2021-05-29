@@ -4,7 +4,7 @@ import ExportIcon from '@material-ui/icons/ImportExport';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useSettingsView } from 'hooks/index';
 
-import { PRIV_KEY_VIEW, REMOVE_ACCOUNT_VIEW } from '../routes';
+import { PRIV_KEY_VIEW, REMOVE_WALLET_VIEW } from '../routes';
 
 import styles from './index.scss';
 
@@ -18,7 +18,7 @@ const AccountView: FC = () => {
           <Icon Component={ExportIcon} />
           Export private key
         </li>
-        <li onClick={() => showView(REMOVE_ACCOUNT_VIEW)}>
+        <li onClick={() => showView(REMOVE_WALLET_VIEW)}>
           <Icon Component={DeleteIcon} />
           Remove account
         </li>

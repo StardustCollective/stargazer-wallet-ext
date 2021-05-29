@@ -6,20 +6,18 @@ import Container from 'containers/common/Container';
 import AuthRouter from 'routers/Auth';
 import UnAuthRouter from 'routers/UnAuth';
 import { RootState } from 'state/store';
-import IWalletState from 'state/wallet/types';
+import IVaultState from 'state/vault/types';
 
 import 'assets/styles/global.scss';
 
 const App: FC = () => {
-  const { keystores }: IWalletState = useSelector(
-    (state: RootState) => state.wallet
-  );
+  const { wallets }: IVaultState = useSelector( (state: RootState) => state.vault );
 
   return (
     <section id="app" style={{ minHeight: '300px' }}>
       <Container>
         <Router>
-          {keystores && Object.values(keystores).length > 0 ? (
+          {wallets && Object.values(wallets).length > 0 ? (
             <AuthRouter />
           ) : (
             <UnAuthRouter />

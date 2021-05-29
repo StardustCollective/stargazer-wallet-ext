@@ -17,7 +17,7 @@ export interface IContactsController {
 }
 
 const ContactsController = (actions: {
-  isLocked: () => boolean;
+  isUnlocked: () => boolean;
 }): IContactsController => {
   const modifyContact = (
     type: 'add' | 'edit',
@@ -26,7 +26,7 @@ const ContactsController = (actions: {
     memo: string,
     id?: string
   ) => {
-    if (actions.isLocked()) return;
+    if (!actions.isUnlocked()) return;
     if (type === 'add') {
       store.dispatch(addContactAddress({ name, address, memo }));
     } else if (id) {
@@ -35,7 +35,7 @@ const ContactsController = (actions: {
   };
 
   const deleteContact = (id: string) => {
-    if (actions.isLocked()) return;
+    if (!actions.isUnlocked()) return;
     store.dispatch(deleteContactAddress({ id }));
   };
 
