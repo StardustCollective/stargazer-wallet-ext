@@ -29,9 +29,12 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-  const wallet = wallets.find(w => w.id === id);
-  const disabled = wallet.type === KeyringWalletType.MultiChainWallet &&
-    wallets.filter(w => w.type === KeyringWalletType.MultiChainWallet).length < 2;
+  const wallet = wallets.find((w) => w.id === id);
+  const disabled =
+    wallet &&
+    wallet.type === KeyringWalletType.MultiChainWallet &&
+    wallets.filter((w) => w.type === KeyringWalletType.MultiChainWallet)
+      .length < 2;
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -78,11 +81,7 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
           >
             Close
           </Button>
-          <Button
-            type="submit"
-            variant={styles.button}
-            disabled={disabled}
-          >
+          <Button type="submit" variant={styles.button} disabled={disabled}>
             Done
           </Button>
         </div>

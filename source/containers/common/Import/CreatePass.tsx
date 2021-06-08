@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
@@ -35,6 +35,20 @@ const CreatePass = () => {
     controller.wallet.setWalletPassword(data.password);
     setPassed(true);
   };
+
+  const handleKeydown = (ev: KeyboardEvent) => {
+    if (ev.code === 'Enter') {
+      nextHandler();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
+  }, [passed]);
 
   return (
     <Layout title={title} linkTo="/app.html">

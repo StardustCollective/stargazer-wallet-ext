@@ -104,6 +104,11 @@ export class WalletController implements IWalletController {
       // const { wallet }: IVaultState = store.getState().vault;
       await this.keyringManager.removeWalletById(walletId);
       // store.dispatch(deleteWalletState());
+      const vault: IVaultState = store.getState().vault;
+      if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
+        const wallets = this.keyringManager.getWallets();
+        this.switchWallet(wallets[0].id);
+      }
       store.dispatch(updateStatus());
       return true;
     }
@@ -132,7 +137,6 @@ export class WalletController implements IWalletController {
     }
 
     if (activeAsset) {
-
       if (assets[activeAsset.id].network !== chainId) {
         this.account.updateAccountActiveAsset(activeAsset);
       }
@@ -140,9 +144,7 @@ export class WalletController implements IWalletController {
       this.account.getLatestTxUpdate();
     }
 
-    store.dispatch(
-      changeActiveNetwork({ network, chainId })
-    );
+    store.dispatch(changeActiveNetwork({ network, chainId }));
   }
 
   setWalletPassword(password: string) {

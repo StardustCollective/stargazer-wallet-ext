@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import clsx from 'clsx';
 import Button from 'components/Button';
 import CheckIcon from '@material-ui/icons/CheckCircle';
@@ -64,6 +64,18 @@ const ConfirmPhrase = () => {
       history.push('/app.html');
     }
   };
+
+  const handleKeydown = (ev: KeyboardEvent) => {
+    console.log(ev);
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
+  }, []);
 
   return (
     <Layout title={title} linkTo="/create/phrase/generated">
