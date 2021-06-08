@@ -66,7 +66,9 @@ const ConfirmPhrase = () => {
   };
 
   const handleKeydown = (ev: KeyboardEvent) => {
-    console.log(ev);
+    if (ev.code === 'Enter') {
+      handleConfirm();
+    }
   };
 
   useEffect(() => {
@@ -75,7 +77,7 @@ const ConfirmPhrase = () => {
     return () => {
       window.removeEventListener('keydown', handleKeydown);
     };
-  }, []);
+  }, [passed]);
 
   return (
     <Layout title={title} linkTo="/create/phrase/generated">
