@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -16,17 +16,27 @@ interface IImportPhrase {
 const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
   const controller = useController();
 
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, watch } = useForm({
     validationSchema: yup.object().shape({
       phrase: yup.string().required(),
     }),
   });
 
   const onSubmit = (data: any) => {
-    if (controller.wallet.onboardHelper.importAndValidateSeedPhrase(data.phrase)) {
+    if (
+      controller.wallet.onboardHelper.importAndValidateSeedPhrase(
+        data.phrase.trim()
+      )
+    ) {
       onRegister();
     }
   };
+
+  const isDisabled = useMemo(() => {
+    const phrase: string = watch('phrase');
+    if (!phrase) return true;
+    return phrase.trim().split(' ').length !== 12;
+  }, [watch('phrase')]);
 
   return (
     <Layout title="Let's import your wallet">
@@ -44,9 +54,11 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
         <span>
           Importing your wallet seed will automatically import a wallet
           associated with this seed phrase.
+          <br />
+          <b>The seed phrase should include space between words.</b>
         </span>
         <div className={styles.actions}>
-          <Button type="submit" variant={styles.button}>
+          <Button type="submit" variant={styles.button} disabled={isDisabled}>
             Import
           </Button>
         </div>

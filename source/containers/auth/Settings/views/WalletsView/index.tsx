@@ -13,7 +13,10 @@ import StargazerIcon from 'assets/images/logo-s.svg';
 import { MANAGE_WALLET_VIEW } from '../routes';
 import styles from './index.scss';
 import IAssetListState from 'state/assets/types';
-import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import {
+  KeyringAssetType,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
 
 interface IWalletsView {
   onChange: (id: string) => void;
@@ -22,7 +25,7 @@ interface IWalletsView {
 const WalletsView: FC<IWalletsView> = ({ onChange }) => {
   const controller = useController();
   const showView = useSettingsView();
-  const { wallets, activeWallet:activeWallet }: IVaultState = useSelector(
+  const { wallets, activeWallet: activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -101,9 +104,7 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
                 />
                 <span>
                   {wallet.label}
-                  <small>
-                    { activeWallet.assets[0].address }
-                  </small>
+                  <small>{wallet.accounts[0].address}</small>
                 </span>
                 <IconButton
                   className={styles.details}
