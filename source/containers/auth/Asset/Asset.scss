@@ -252,17 +252,17 @@
 
         &.groupbar {
           height: 24px;
-          background: $gray-100;
+          background: $purple-medium;
           font-weight: 500;
           font-size: 12px;
           line-height: 18px;
-          color: $white;
+          color: $purple;
         }
 
         & > div {
           display: flex;
           flex-direction: row;
-          align-items: center;
+          align-items: flex-start;
 
           &:first-child > span {
             font-size: 16px;
@@ -292,6 +292,7 @@
             }
 
             & > small {
+              margin-top: 4px;
               font-weight: 500;
               font-size: 12px;
               line-height: 18px;
@@ -328,9 +329,9 @@
         .iconWrapper {
           width: 24px;
           height: 24px;
-          background: $purple;
+          background: transparent;
           border-radius: 50%;
-          color: $white;
+          color: $gray-100;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -340,14 +341,18 @@
           svg {
             font-size: 16px;
           }
+
+          svg.recvIcon {
+            transform: rotate(180deg);
+          }
         }
 
         .linkIcon {
           width: 24px;
           height: 24px;
-          background: $gray-100;
+          background: transparent;
           border-radius: 50%;
-          color: $white;
+          color: $gray-dark;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -356,7 +361,6 @@
           transition: all 0.3s;
 
           svg {
-            transform: rotateZ(45deg);
             font-size: 16px;
           }
         }
