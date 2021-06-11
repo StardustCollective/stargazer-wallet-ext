@@ -1,7 +1,7 @@
 import React, { FC, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 
-import { formatNumber } from 'containers/auth/helpers';
+import { formatNumber, formatPrice } from 'containers/auth/helpers';
 import { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
 import IVaultState, { IAssetState } from 'state/vault/types';
@@ -9,12 +9,16 @@ import IPriceState from 'state/price/types';
 
 import styles from './AssetItem.scss';
 interface IAssetItem {
-  asset: IAssetState,
+  asset: IAssetState;
   assetInfo: IAssetInfoState;
   itemClicked: () => void;
 }
 
-const AssetItem: FC<IAssetItem> = ({ asset, assetInfo, itemClicked }: IAssetItem) => {
+const AssetItem: FC<IAssetItem> = ({
+  asset,
+  assetInfo,
+  itemClicked,
+}: IAssetItem) => {
   const { balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -33,7 +37,7 @@ const AssetItem: FC<IAssetItem> = ({ asset, assetInfo, itemClicked }: IAssetItem
               fiat[assetInfo.priceId]?.price &&
               fiat[assetInfo.priceId]?.priceChange && (
                 <p>
-                  <small>{formatNumber(fiat[assetInfo.priceId].price)}</small>
+                  <small>{formatPrice(fiat[assetInfo.priceId].price)}</small>
                   {
                     <small
                       className={
@@ -43,7 +47,13 @@ const AssetItem: FC<IAssetItem> = ({ asset, assetInfo, itemClicked }: IAssetItem
                       }
                     >
                       {fiat[assetInfo.priceId].priceChange > 0 ? '+' : ''}
-                      {formatNumber(fiat[assetInfo.priceId].priceChange, 2, 2, 3)}%
+                      {formatNumber(
+                        fiat[assetInfo.priceId].priceChange,
+                        2,
+                        2,
+                        3
+                      )}
+                      %
                     </small>
                   }
                 </p>
