@@ -256,11 +256,17 @@
 
       .addAssets {
         width: 40px;
-        font-size: 16px;
+        font-size: 24px;
         height: 40px;
         position: absolute;
         left: 34px;
-        color: $gray-100;
+        background: $gray-light-100;
+        color: $gray-dark;
+
+        svg {
+          width: 26px;
+          height: 26px;
+        }
       }
 
       .buydag {

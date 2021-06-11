@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
-import AddCircle from '@material-ui/icons/AddCircle';
+import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import { v4 as uuid } from 'uuid';
 
@@ -82,11 +82,12 @@ const AssetsPanel: FC = () => {
       onScroll={handleScroll}
     >
       <div className={styles.heading}>
-        {(activeWallet.supportedAssets && activeWallet.supportedAssets.length > 1) && (
-          <IconButton onClick={handleAddAsset} className={styles.addAssets}>
-            <AddCircle />
-          </IconButton>
-        )}
+        {activeWallet.supportedAssets &&
+          activeWallet.supportedAssets.length > 1 && (
+            <IconButton onClick={handleAddAsset} className={styles.addAssets}>
+              <AddIcon />
+            </IconButton>
+          )}
         Your Assets
         {!!isShowed && (
           <IconButton className={styles.goTop} onClick={handleGoTop}>
@@ -95,17 +96,7 @@ const AssetsPanel: FC = () => {
         )}
       </div>
       {Object.keys(activeWallet.assets).length ? (
-        <>
-          {renderAssetList()}
-          <div className={styles.stargazer}>
-            <img
-              src={StargazerIcon}
-              alt="stargazer"
-              height="167"
-              width="auto"
-            />
-          </div>
-        </>
+        <>{renderAssetList()}</>
       ) : (
         <>
           <span className={styles.noTxComment}>
