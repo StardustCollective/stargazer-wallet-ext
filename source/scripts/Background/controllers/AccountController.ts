@@ -32,7 +32,7 @@ export class AccountController implements IAccountController {
   ethClient: XChainEthClient;
   txController: ITransactionController;
   monitor: Readonly<AccountMonitor>;
-  
+
   constructor(private keyringManager: Readonly<KeyringManager>) {
     this.txController = Object.freeze(
       TransactionController({ getLatestUpdate: () => this.getLatestTxUpdate() })
@@ -60,80 +60,6 @@ export class AccountController implements IAccountController {
       checkpointBlock: '',
     } as Transaction;
   }
-
-  /**
-   * Get latest update info of a wallet by private key
-   *
-   * @param privateKey {string}
-   * @returns {IAccountInfo}
-   */
-  // async getAccountByPrivateKey ( privateKey: string, chainId: KeyringChainId, accountAddress?: string ): Promise<IAccountInfo> {
-  //   const { activeNetwork }: IVaultState = store.getState().vault;
-  //   let assets: any = {};
-  //
-  //   if (
-  //     chainId === KeyringChainId.Constellation
-  //   ) {
-  //     dag4.account.loginPrivateKey(privateKey);
-  //
-  //     // fetch dag info
-  //     const dagBalance = await dag4.account.getBalance();
-  //     const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
-  //
-  //     assets[AssetType.Constellation] = {
-  //       id: AssetType.Constellation,
-  //       balance: dagBalance,
-  //       address: dag4.account.address,
-  //       transactions: dagTxs,
-  //     };
-  //   }
-  //
-  //   if (
-  //     chainId === KeyringChainId.Ethereum
-  //   ) {
-  //     this.ethClient = new XChainEthClient({
-  //       network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
-  //       privateKey,
-  //       etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-  //       infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
-  //     });
-  //     // fetch eth info
-  //     const ethAddress = this.ethClient.getAddress();
-  //     const balances = await this.ethClient.getBalance();
-  //     const ethBalance = ethers.utils.formatEther(
-  //       balances[0].amount.amount().toString()
-  //     );
-  //     const ethTxs = await this.ethClient.getTransactions({
-  //       address: ethAddress,
-  //       limit: TXS_LIMIT,
-  //     });
-  //
-  //     // fetch other erc20 assets info
-  //     const erc20Assets = await this._fetchERC20Assets(accountAddress);
-  //
-  //     assets = {
-  //       ...assets,
-  //       [AssetType.Ethereum]: {
-  //         id: AssetType.Ethereum,
-  //         balance: Number(ethBalance),
-  //         address: ethAddress,
-  //         transactions: ethTxs.txs.map((tx) => {
-  //           return {
-  //             ...tx,
-  //             balance: ethers.utils.formatEther(
-  //               tx.from[0].amount.amount().toString()
-  //             ),
-  //           };
-  //         }),
-  //       },
-  //       ...erc20Assets,
-  //     };
-  //   }
-  //
-  //   return {
-  //     assets,
-  //   };
-  // }
 
   async removeWallet (id: string, pwd: string) {
     if (!this.keyringManager.checkPassword(pwd)) return false;
