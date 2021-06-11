@@ -41,7 +41,9 @@ export const formatNumber = (num: number, min = 4, max = 4, maxSig = 12) => {
 
 export const formatPrice = (num: number, round = 2) => {
   const decimal = num - Math.floor(num);
-  return `$${num.toFixed(Math.floor(Math.abs(Math.log10(decimal))) + round)}`;
+  return `$${Number(
+    num.toFixed(Math.floor(Math.abs(Math.log10(decimal))) + round)
+  )}`;
 };
 
 export const getAddressURL = (

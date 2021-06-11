@@ -3,9 +3,9 @@ import clsx from 'clsx';
 import { v4 as uuid } from 'uuid';
 import { useFiat } from 'hooks/usePrice';
 import { useSelector } from 'react-redux';
-import UpArrowIcon from '@material-ui/icons/ArrowUpward';
-import DownArrowIcon from '@material-ui/icons/ArrowDownward';
+import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
+import LinkIcon from '@material-ui/icons/OpenInNewOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import Spinner from '@material-ui/core/CircularProgress';
 
@@ -95,9 +95,9 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         <>
           {tx.checkpointBlock ? (
             isRecived ? (
-              <DownArrowIcon />
+              <DoubleArrowIcon className={styles.recvIcon} />
             ) : (
-              <UpArrowIcon />
+              <DoubleArrowIcon />
             )
           ) : (
             <Spinner size={16} className={styles.spinner} />
@@ -109,9 +109,9 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
       <>
         {!tx.assetId ? (
           isRecived ? (
-            <DownArrowIcon />
+            <DoubleArrowIcon className={styles.recvIcon} />
           ) : (
-            <UpArrowIcon />
+            <DoubleArrowIcon />
           )
         ) : (
           <Spinner size={16} className={styles.spinner} />
@@ -137,8 +137,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         <>
           <ul>
             {transactions.map((tx: Transaction, idx: number) => {
-              const isETHPending =
-                isETHTx && tx.assetId === activeAsset.id;
+              const isETHPending = isETHTx && tx.assetId === activeAsset.id;
               const isRecived =
                 (!isETHTx && tx.receiver === address) ||
                 (isETHTx && !tx.assetId && tx.to && tx.to[0].to === address) ||
@@ -203,7 +202,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                         </small>
                       </span>
                       <div className={styles.linkIcon}>
-                        <UpArrowIcon />
+                        <LinkIcon />
                       </div>
                     </div>
                   </li>
@@ -211,14 +210,6 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
               );
             })}
           </ul>
-          <div className={styles.stargazer}>
-            <img
-              src={StargazerIcon}
-              alt="stargazer"
-              height="167"
-              width="auto"
-            />
-          </div>
         </>
       ) : (
         <>
