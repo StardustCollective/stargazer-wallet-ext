@@ -207,9 +207,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
         : activeAsset.id === AssetType.Ethereum
         ? gasFee
         : 0;
-    setAmount(
-      String(Math.max(balance - txFee, 0))
-    );
+    setAmount(String(Math.max(balance - txFee, 0)));
   };
 
   useEffect(() => {
@@ -231,10 +229,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
         </section>
         <section className={styles.balance}>
           <div>
-            Balance:{' '}
-            <span>
-              {formatNumber(balances[activeAsset.id] || 0)}
-            </span>{' '}
+            Balance: <span>{formatNumber(balances[activeAsset.id] || 0)}</span>{' '}
             {assetInfo.symbol}
           </div>
         </section>
@@ -335,45 +330,48 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               [styles.hide]: !gasPrices.length,
             })}
           >
-            <div className={styles.heading}>
-              <span className={styles.title}>Transaction Fee</span>
-              <span
-                className={styles.advancedSetting}
-                onClick={handleGasSettings}
-              >
-                ADVANCED gas settings
-              </span>
+            <div className={styles.gasRow}>
+              <span>Gas Price (In Gwei)</span>
+              <Slider
+                classes={{
+                  root: clsx(styles.sliderCustom, {
+                    [styles.disabled]:
+                      currentGas < gasPrices[0] || currentGas > gasPrices[2],
+                  }),
+                  thumb: styles.thumb,
+                  mark: styles.mark,
+                  track: styles.sliderTrack,
+                  rail: styles.sliderRail,
+                }}
+                value={currentGas}
+                min={gasPrices[0]}
+                max={gasPrices[2]}
+                scale={(x) => x * 2}
+                aria-labelledby="discrete-slider-restrict"
+                step={1}
+                marks={[
+                  { value: gasPrices[0] },
+                  {
+                    value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
+                  },
+                  { value: gasPrices[2] },
+                ]}
+                onChange={handleGasPriceChange}
+              />
+              <TextInput
+                type="number"
+                value={currentGas}
+                variant={styles.gasInput}
+                onChange={(ev) => setCurrentGas(Number(ev.target.value))}
+              />
+              <div className={styles.gasLevel}>
+                {currentGas >= gasPrices[2]
+                  ? 'Fast'
+                  : currentGas >= Math.round((gasPrices[0] + gasPrices[2]) / 2)
+                  ? 'Normal'
+                  : 'Slow'}
+              </div>
             </div>
-            <Slider
-              classes={{
-                root: clsx(styles.sliderCustom, {
-                  [styles.disabled]:
-                    currentGas < gasPrices[0] || currentGas > gasPrices[2],
-                }),
-                rail: styles.sliderRail,
-                track: styles.sliderTrack,
-                mark: styles.mark,
-                markActive: styles.mark,
-                thumb: styles.thumb,
-                markLabel: styles.markLabel,
-              }}
-              value={currentGas}
-              min={gasPrices[0]}
-              max={gasPrices[2]}
-              scale={(x) => x * 2}
-              aria-labelledby="discrete-slider-restrict"
-              step={1}
-              marks={[
-                { value: gasPrices[0], label: 'LOW' },
-                {
-                  value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
-                  //value: gasPrices[1],
-                  label: 'AVERAGE',
-                },
-                { value: gasPrices[2], label: 'HIGH' },
-              ]}
-              onChange={handleGasPriceChange}
-            />
             <div className={styles.status}>
               <span
                 className={styles.equalAmount}
