@@ -197,8 +197,7 @@
     }
   }
   section.transactionFee {
-    border-top: 1px solid $gray-light;
-    padding: 17px 24px 0 24px;
+    padding: 0 24px 0 24px;
     opacity: 1;
     transition: all 0.3s;
     transform: translateX(0);
@@ -208,6 +207,36 @@
       opacity: 0;
       transform: translateX(-30px);
       filter: blur(10px);
+    }
+
+    .gasRow {
+      display: flex;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: $gray-dark;
+      align-items: center;
+      padding: 12px;
+      background: $gray-light;
+      border-radius: 10px;
+      position: relative;
+
+      & > span:first-child {
+        margin-right: 30px;
+      }
+
+      .gasInput {
+        width: 84px;
+        height: 24px;
+        margin-left: 12px;
+        border: 1px solid $purple !important;
+      }
+
+      .gasLevel {
+        position: absolute;
+        right: 24px;
+        top: 20px;
+        text-transform: none;
+      }
     }
 
     .heading {
@@ -233,6 +262,7 @@
     }
     .status {
       margin-top: 8px;
+      margin-left: 12px;
       .equalAmount {
         font-weight: 500;
         font-size: 10px;
@@ -242,6 +272,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 300px;
+        text-transform: uppercase;
         display: block;
       }
     }
@@ -249,48 +280,22 @@
     .sliderCustom {
       transition: all 0.3s;
       position: relative;
+      width: 70px;
 
       &.disabled {
-        &::before {
-          position: absolute;
-          content: 'Please click here if you are going to set latest gas prices.';
-          color: $gray-dark;
-          font-size: 12px;
-          font-weight: bold;
-          display: flex;
-          text-align: center;
-          text-shadow: 2px 2px 19px rgba($black, 0.3);
-          align-items: center;
-          padding: 0 65px;
-          justify-content: center;
-          top: 0;
-          left: -24px;
-          right: -24px;
-          bottom: -30px;
-          background: rgba($white, 0.8);
-          backdrop-filter: blur(2px);
-          z-index: 99;
-        }
       }
     }
     .sliderRail {
-      height: 12px;
       background: $purple-light;
-      border-radius: 6px;
     }
     .sliderTrack {
-      background: transparent;
+      background: $purple;
     }
     .mark {
       background: transparent;
     }
     .thumb {
-      height: 24px;
-      width: 24px;
       background: $purple;
-      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-      margin-top: -6px;
-      margin-left: -12px;
       transition: all 0.3s;
     }
     .markLabel {
