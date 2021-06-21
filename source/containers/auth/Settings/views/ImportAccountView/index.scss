@@ -110,6 +110,14 @@
         border: 1px solid $gray-200;
         box-sizing: border-box;
         border-radius: 6px;
+        transition: all 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          box-shadow: $shadow-btn;
+          border: 1px solid $purple;
+          background: $purple-light;
+        }
       }
     }
     // for hardware import step2

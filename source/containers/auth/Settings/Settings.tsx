@@ -99,7 +99,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
       case routes.EDIT_CONTACT_VIEW:
         return 'Edit Contact';
       case routes.IMPORT_ACCOUNT_VIEW:
-        return 'Import private key';
+        return 'Import account';
       default:
         return 'Settings';
     }
