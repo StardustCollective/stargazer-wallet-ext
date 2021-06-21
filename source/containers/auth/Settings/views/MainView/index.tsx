@@ -74,7 +74,7 @@ const MainView: FC<IMainView> = ({ onChange }) => {
         onClick={() => showView(IMPORT_ACCOUNT_VIEW)}
       >
         <Icon Component={ImportIcon} />
-        Import private key
+        Import account
       </section>
       <section
         className={styles.general}

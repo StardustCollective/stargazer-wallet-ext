@@ -18,12 +18,17 @@ import { MAIN_VIEW } from '../routes';
 import LedgerIcon from 'assets/images/svg/ledger.svg';
 import styles from './index.scss';
 
+function isValidJsonPrivateKey(jKey: any) {
+  const params = jKey && jKey.crypto && jKey.crypto.kdfparams;
 
-function isValidJsonPrivateKey (jKey: any) {
-
-  const params = (jKey && jKey.crypto && jKey.crypto.kdfparams);
-
-  if (params && params.salt && params.n !== undefined && params.r !== undefined && params.p !== undefined  && params.dklen !== undefined) {
+  if (
+    params &&
+    params.salt &&
+    params.n !== undefined &&
+    params.r !== undefined &&
+    params.p !== undefined &&
+    params.dklen !== undefined
+  ) {
     return true;
   }
 
@@ -183,7 +188,7 @@ const ImportAccountView: FC = () => {
                   options={[
                     { priv: 'Private key' },
                     { json: 'JSON file' },
-                    { hardware: 'Hardware Wallet' },
+                    { hardware: 'Hardware wallet' },
                   ]}
                   onChange={(ev) => setImportType(ev.target.value as string)}
                   fullWidth
@@ -271,13 +276,19 @@ const ImportAccountView: FC = () => {
             )}
             {hardwareStep === 1 && (
               <>
-                <span>Please name your new account:</span>
-                <TextInput
-                  fullWidth
-                  inputRef={register}
-                  name="label"
-                  disabled={loading}
-                />
+                <span>
+                  {importType === 'hardware'
+                    ? 'Connect to your ledger hardware wallet to import accounts'
+                    : 'Please name your new account:'}
+                </span>
+                {importType !== 'hardware' && (
+                  <TextInput
+                    fullWidth
+                    inputRef={register}
+                    name="label"
+                    disabled={loading}
+                  />
+                )}
               </>
             )}
           </section>
@@ -291,7 +302,7 @@ const ImportAccountView: FC = () => {
               Cancel
             </Button>
             <Button type="submit" variant={styles.button} loading={loading}>
-              Import
+              {importType === 'hardware' ? 'Connect' : 'Import'}
             </Button>
           </section>
         </>
