@@ -66,6 +66,7 @@ module.exports = {
     contentScript: path.join(sourcePath, 'scripts/ContentScript', 'index.ts'),
     app: path.join(sourcePath, 'pages/App', 'index.tsx'),
     confirm: path.join(sourcePath, 'pages/Confirm', 'index.tsx'),
+    ledger: path.join(sourcePath, 'pages/Ledger', 'index.tsx'),
     options: path.join(sourcePath, 'pages/Options', 'index.tsx'),
   },
 
@@ -178,6 +179,12 @@ module.exports = {
       inject: 'body',
       chunks: ['confirm'],
       filename: 'confirm.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(viewsPath, 'ledger.html'),
+      inject: 'body',
+      chunks: ['ledger'],
+      filename: 'ledger.html',
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'options.html'),
