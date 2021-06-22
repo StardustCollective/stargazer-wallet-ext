@@ -65,6 +65,8 @@ enum ALERT_SEVERITY_STATE {
   INFO = 'info',
 }
 
+const NUMBER_OF_ACCOUNTS: number = 5;
+
 /////////////////////////
 // ENUMS
 /////////////////////////
@@ -147,7 +149,7 @@ const LedgerPage: FC = () => {
       // Set the transport
       const ledgerBridge = new LedgerBridge(webHidTransport);
       // Get account data for ledger
-      const publicKeys = await ledgerBridge.getPublicKeys(10, onProgressUpdate);
+      const publicKeys = await ledgerBridge.getPublicKeys(NUMBER_OF_ACCOUNTS, onProgressUpdate);
       const accountData = await ledgerBridge.getAccountInfoForPublicKeys(publicKeys);
       setAccountData(accountData.map(d => ({ ...d, balance: d.balance.toFixed(2) })));
       setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
