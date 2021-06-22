@@ -180,23 +180,23 @@ async function handleRequest (req) {
   if (req.method === 'wallet_sendTransaction') {
     const to = req.params[0].to
     const value = req.params[0].value.toString(16)
-    return dag.getMethod('wallet.sendTransaction')({ to, value })
+    return dag4.getMethod('wallet.sendTransaction')({ to, value })
   }
   const method = REQUEST_MAP[req.method] || req.method
-  return dag.getMethod(method)(...req.params)
+  return dag4.getMethod(method)(...req.params)
 }
 
 window.stargazer = {
   evtRegMap: {},
   isConnected: async () => {
     const dag = window.providerManager.getProviderFor('DAG')
-    return dag.getMethod('wallet.isConnected')()
+    return dag4.getMethod('wallet.isConnected')()
   },
   enable: async () => {
     const accepted = await window.providerManager.enable()
     if (!accepted) throw new Error('User rejected')
     const dag = window.providerManager.getProviderFor('DAG')
-    return dag.getMethod('wallet.getAddress')()
+    return dag4.getMethod('wallet.getAddress')()
   },
   request: async (req) => {
     const params = req.params || []

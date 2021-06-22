@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useAlert } from 'react-alert';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { dag } from '@stardust-collective/dag4';
+import { dag4 } from '@stardust-collective/dag4';
 import CachedIcon from '@material-ui/icons/Cached';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Checkbox } from '@material-ui/core';
@@ -112,7 +112,7 @@ const ImportAccountView: FC = () => {
             }
 
             setLoading(true);
-            dag.keyStore
+            dag4.keyStore
               .decryptPrivateKey(json, data.password)
               .then((privKey: string) => {
                 handleImportPrivKey(privKey, data.label);

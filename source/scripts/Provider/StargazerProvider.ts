@@ -1,6 +1,6 @@
 import IWalletState from 'state/wallet/types';
 import store from 'state/store';
-import { dag } from '@stardust-collective/dag4';
+import { dag4 } from '@stardust-collective/dag4';
 import { hashPersonalMessage, ecsign, toRpcSig } from 'ethereumjs-util';
 
 export class StargazerProvider {
@@ -29,8 +29,8 @@ export class StargazerProvider {
   }
 
   signMessage(msg: string) {
-    //const address = dag.account.keyTrio.address;
-    const privateKeyHex = dag.account.keyTrio.privateKey;
+    //const address = dag4.account.keyTrio.address;
+    const privateKeyHex = dag4.account.keyTrio.privateKey;
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = hashPersonalMessage(Buffer.from(msg));
 
