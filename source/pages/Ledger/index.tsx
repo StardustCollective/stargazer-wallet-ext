@@ -12,7 +12,7 @@ import appStore from 'state/store';
 
 import LedgerPage from './Ledger';
 
-const app = document.getElementById('confirm-root');
+const app = document.getElementById('ledger-root');
 const store = new Store({ portName: STORE_PORT });
 
 const w = watch(appStore.getState, 'wallet.status');
