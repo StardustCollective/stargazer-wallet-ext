@@ -7,8 +7,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import CachedIcon from '@material-ui/icons/Cached';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Checkbox } from '@material-ui/core';
-import webHidTransport from '@ledgerhq/hw-transport-webhid';
-import { LedgerBridge, LedgerAccount } from '@stardust-collective/dag4-ledger';
+import { browser } from 'webextension-polyfill-ts';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
@@ -81,28 +80,8 @@ const ImportAccountView: FC = () => {
       });
   };
 
-  const loadHardwareList =  async() => {
-    let transport = await webHidTransport.request();
-    // Close any existing connections
-    transport.close()
-    // Set the transport
-    const ledgerBridge = new LedgerBridge(webHidTransport);
-    // Get account data for ledger
-    const publicKeys = await ledgerBridge.getPublicKeys(2, (update) => { console.log(console)});
-    const accountData = await ledgerBridge.getAccountInfoForPublicKeys(publicKeys);
-    setHardwareWalletList(accountData);
-    setLoadingWalletList(false);
-    // TODO: Load actual ledger wallet list
-    // setTimeout(() => {
-    //   setLoadingWalletList(false);
-    //   setHardwareWalletList([
-    //     { address: '0xb2...a49D', balance: 0.02237 },
-    //     { address: '0xBb...0Bf9', balance: 0.0 },
-    //     { address: '0x83...Cba7', balance: 0.0 },
-    //     { address: '0x9F...B786', balance: 0.0 },
-    //     { address: '0xa3...3d03', balance: 0.0 },
-    //   ]);
-    // }, 2000);
+  const loadHardwareList = async () => {
+    window.open('/ledger.html','_newtab');
   };
 
   const onSubmit = async (data: any) => {
