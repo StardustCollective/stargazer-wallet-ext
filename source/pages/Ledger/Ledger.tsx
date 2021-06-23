@@ -215,20 +215,20 @@ const LedgerPage: FC = () => {
   }
 
   return (
-    <div id="confirm-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+    <div id="confirm-page">
       {/* <Container> */}
-        <header>
-          <Card className={classes.root}>
-            <Header />
-            <RenderByWalletState />
-          </Card>
-        </header>
-        <AlertBar
-          openAlert={openAlert}
-          message={alertMessage}
-          severity={alertSeverity}
-          onClose={onAlertBarClose}
-        />
+      <header>
+        <Card className={classes.root}>
+          <Header />
+          <RenderByWalletState />
+        </Card>
+      </header>
+      <AlertBar
+        openAlert={openAlert}
+        message={alertMessage}
+        severity={alertSeverity}
+        onClose={onAlertBarClose}
+      />
       {/* </Container> */}
     </div>
   );
