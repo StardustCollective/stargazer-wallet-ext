@@ -30,6 +30,7 @@
     "@reach/portal": "^0.12.1",
     "@reduxjs/toolkit": "^1.4.0",
     "@stardust-collective/dag4": "^1.1.9",
+    "@stardust-collective/dag4-ledger": "0.0.5",
     "@types/lodash": "^4.14.162",
     "@types/qrcode.react": "^1.0.1",
     "@types/react-redux": "^7.1.9",
