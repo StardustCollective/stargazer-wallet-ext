@@ -86,20 +86,9 @@ enum WALLET_STATE_ENUM {
 const useStyles = makeStyles({
   root: {
     minWidth: 400,
+    backgroundColor: '#f1f1f1',
   },
 });
-
-/////////////////////////
-// Dag4 Config
-/////////////////////////
-
-dag4.di.useFetchHttpClient();
-dag4.network.config({
-  id: 'main',
-  beUrl: 'https://www.stargazer.network/api/scan',
-  lbUrl: 'https://www.stargazer.network/api/node',
-}
-);
 
 /////////////////////////
 // Page
@@ -121,6 +110,17 @@ const LedgerPage: FC = () => {
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
 
   useEffect(() => {
+
+    /////////////////////////
+    // Dag4 Config
+    /////////////////////////
+
+    dag4.di.useFetchHttpClient();
+    dag4.network.config({
+      id: 'main',
+      beUrl: 'https://www.stargazer.network/api/scan',
+      lbUrl: 'https://www.stargazer.network/api/node',
+    });
 
   }, []);
 
