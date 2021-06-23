@@ -5,7 +5,7 @@
 import React, { FC, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import webHidTransport from '@ledgerhq/hw-transport-webhid';
-import { dag } from '@stardust-collective/dag4';
+import { dag4 } from '@stardust-collective/dag4';
 import { LedgerBridge, LedgerAccount } from '@stardust-collective/dag4-ledger';
 
 // import { useSelector } from 'react-redux';
@@ -93,8 +93,8 @@ const useStyles = makeStyles({
 // Dag4 Config
 /////////////////////////
 
-dag.di.useFetchHttpClient();
-dag.network.config({
+dag4.di.useFetchHttpClient();
+dag4.network.config({
   id: 'main',
   beUrl: 'https://www.stargazer.network/api/scan',
   lbUrl: 'https://www.stargazer.network/api/node',
