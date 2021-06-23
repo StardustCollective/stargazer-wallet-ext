@@ -17,7 +17,7 @@ import Button from '@material-ui/core/Button';
 // Icons Imports
 /////////////////////////
 
-import LockOpen from '@material-ui/icons/LockOpen';
+import UsbIcon from '@material-ui/icons/Usb';
 
 /////////////////////////
 // Styles Imports
@@ -34,6 +34,8 @@ const BUTTON_SIZE_PROP = 'large';
 const BUTTON_VARIANT_PROP = 'contained';
 const BUTTON_COLOR_PROP = 'primary';
 const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
+// Strings
+const CONNECT_TO_LEDGER_STRING = 'connect to Ledger';
 
 /////////////////////////
 // Interface
@@ -85,7 +87,7 @@ function Connect(props: IConnectProps) {
           size={BUTTON_SIZE_PROP} 
           variant={BUTTON_VARIANT_PROP} 
           color={BUTTON_COLOR_PROP}>
-          <LockOpen />&nbsp;Unlock with Ledger
+          <UsbIcon />&nbsp;{CONNECT_TO_LEDGER_STRING}
         </BlueButton>
       </CardActions>
     </CardContent>

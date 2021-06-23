@@ -1,0 +1,77 @@
+@import "~assets/styles/variables";
+
+
+.tableContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+//   font-weight: bold;
+//   .MuiTableCell-sizeSmall{
+//     padding: 0px;
+//     margin: 0px;
+//   }
+}
+
+// .accounts {
+
+//   .walletList {
+//     display: flex;
+//     position: relative;
+//     height: 180px;
+//     background: $white;
+//     border-radius: 6px;
+//     .wallet {
+//       width: 100%;
+//       padding: 2px 12px 0px 11px;
+//       table {
+//         width: 100%;
+//         tr {
+//           height: 33px;
+//           td {
+//             .expand {
+//               svg {
+//                 color: $gray-100;
+//               }
+//             }
+//           }
+//         }
+//       }
+//       :global(.MuiCheckbox-colorPrimary) {
+//         padding: 0 !important;
+//       }
+//       :global(.MuiCheckbox-colorPrimary.Mui-checked) {
+//         color: $purple !important;
+//       }
+//       svg {
+//         width: 16px !important;
+//       }
+//     }
+//   }
+
+//   .pagination {
+//     padding: 12px;
+//     display: flex;
+//     justify-content: flex-end;
+//     span {
+//       font-family: Inter;
+//       font-style: normal;
+//       font-weight: 500;
+//       font-size: 10px;
+//       line-height: 24px;
+
+//       color: $purple;
+//     }
+//     .previous {
+//       margin-right: 12px;
+//     }
+//   }
+//   span {
+//     margin: 18px 0px;
+//     font-size: 12px;
+//     font-weight: 500;
+//     color: $gray-dark;
+//     display: block;
+//   }
+// }

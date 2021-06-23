@@ -2,7 +2,7 @@
 // Module Imports
 /////////////////////////
 
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 
 /////////////////////////
 // Components Imports
@@ -10,23 +10,35 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
+import MUITableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { Checkbox } from '@material-ui/core';
 import React from 'react';
-import {LedgerAccount} from '@stardust-collective/dag4-ledger';
+import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 
 /////////////////////////
 // Styles
 /////////////////////////
 
+import styles from './styles.module.scss';
+
 const useStyles = makeStyles({
   table: {
-    minWidth: 650,
+    backgroundColor: '#fffff',
+    width: 350,
+    fontWeight: 'bold',
+    // minWidth: 150,
   },
 });
+
+const TableCell = withStyles({
+  root: {
+    borderBottom: "none"
+  }
+})(MUITableCell);
 
 /////////////////////////
 // Interfaces
@@ -60,7 +72,7 @@ let Accounts = (props: IAccountsProps) => {
 
   const onGenerateClick = (index: number) => {
 
-    if(props.onTxClick){
+    if (props.onTxClick) {
       props.onTxClick(index);
     }
 
@@ -76,31 +88,68 @@ let Accounts = (props: IAccountsProps) => {
   // Render
   /////////////////////////
 
+  // const renderAccounts = (accountItem, index: number) => {
+  //   return (
+  //     <tr key={`wallet-${index}`}>
+  //       <td>
+  //         <Checkbox color="primary" />
+  //       </td>
+  //       <td>{index + 1}</td>
+  //       <td>{accountItem.address}</td>
+  //       <td>{accountItem.balance} DAG</td>
+  //       {/* <td className={styles.expand}>
+  //         <CallMadeIcon />
+  //       </td> */}
+  //     </tr>
+  //   );
+  // };
+
+  // return (
+  //   <div className="accounts">
+  //     <span>Please select an account:</span>
+  //     <div className={styles.wallet}>
+  //       <table>
+  //         <tbody>
+  //           {accountData.map(
+  //             (accountItem , index: number) =>
+  //             renderAccounts(accountItem, index)
+  //           )}
+  //         </tbody>
+  //       </table>
+  //     </div>
+  //     <div className={styles.pagination}>
+  //       <span className={styles.previous}>Previous</span>
+  //       <span>Next</span>
+  //     </div>
+  //   </div>
+  // );
+
+  function ellipsesString(str) {
+    return str.substr(0, 4) + '...' + str.substr(str.length - 4, str.length);
+
+  }
+
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>{TABLE_HEADER_STRINGS.ACCOUNT}</TableCell>
-            <TableCell align='left'>{TABLE_HEADER_STRINGS.ADDRESS}</TableCell>
-            <TableCell align="left">{TABLE_HEADER_STRINGS.BALANCE}</TableCell>
-            <TableCell align="left"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {accountData.map((item, itemKey) => (
-            <TableRow key={itemKey}>
-              <TableCell component="th" scope="row">
-                {itemKey + 1}
-              </TableCell>
-              <TableCell align="left">{item.address}</TableCell>
-              <TableCell align="left">{item.balance}</TableCell>
-              <TableCell align="left"><button onClick={() => onGenerateClick(itemKey)} >{GENERATE_TRANSACTION_LINK_STRING}</button></TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div className={styles.tableContainer}>
+      <TableContainer elevation={0} className={classes.table}  component={Paper}>
+        <Table aria-label="simple table">
+          <TableBody>
+            {accountData.map((item, itemKey) => (
+              <TableRow key={itemKey}>
+                <TableCell padding='none' size='small' align="center">
+                  <Checkbox padding='none' color="primary" />
+                </TableCell>
+                <TableCell padding='none' size='small' align="center">
+                  {itemKey + 1}
+                </TableCell>
+                <TableCell padding='none' size='small' align="center">{ellipsesString(item.address)}</TableCell>
+                <TableCell padding='none' size='small' align="center">{item.balance} DAG</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 }
 
