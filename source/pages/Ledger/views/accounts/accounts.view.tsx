@@ -53,12 +53,9 @@ interface IAccountsProps {
 /////////////////////////
 
 // Strings
-const TABLE_HEADER_STRINGS = {
-  ACCOUNT: 'Account',
-  ADDRESS: 'Address',
-  BALANCE: 'Balance',
-};
-const GENERATE_TRANSACTION_LINK_STRING = 'Generate Transaction'
+const DAG_STRING: string = 'DAG';
+// Props
+const TABLE_ELEVATION_PROP = 0;
 
 /////////////////////////
 // View
@@ -88,42 +85,6 @@ let Accounts = (props: IAccountsProps) => {
   // Render
   /////////////////////////
 
-  // const renderAccounts = (accountItem, index: number) => {
-  //   return (
-  //     <tr key={`wallet-${index}`}>
-  //       <td>
-  //         <Checkbox color="primary" />
-  //       </td>
-  //       <td>{index + 1}</td>
-  //       <td>{accountItem.address}</td>
-  //       <td>{accountItem.balance} DAG</td>
-  //       {/* <td className={styles.expand}>
-  //         <CallMadeIcon />
-  //       </td> */}
-  //     </tr>
-  //   );
-  // };
-
-  // return (
-  //   <div className="accounts">
-  //     <span>Please select an account:</span>
-  //     <div className={styles.wallet}>
-  //       <table>
-  //         <tbody>
-  //           {accountData.map(
-  //             (accountItem , index: number) =>
-  //             renderAccounts(accountItem, index)
-  //           )}
-  //         </tbody>
-  //       </table>
-  //     </div>
-  //     <div className={styles.pagination}>
-  //       <span className={styles.previous}>Previous</span>
-  //       <span>Next</span>
-  //     </div>
-  //   </div>
-  // );
-
   function ellipsesString(str) {
     return str.substr(0, 4) + '...' + str.substr(str.length - 4, str.length);
 
@@ -131,19 +92,19 @@ let Accounts = (props: IAccountsProps) => {
 
   return (
     <div className={styles.tableContainer}>
-      <TableContainer elevation={0} className={classes.table}  component={Paper}>
+      <TableContainer elevation={TABLE_ELEVATION_PROP} className={classes.table}  component={Paper}>
         <Table aria-label="simple table">
           <TableBody>
             {accountData.map((item, itemKey) => (
               <TableRow key={itemKey}>
                 <TableCell padding='none' size='small' align="center">
-                  <Checkbox padding='none' color="primary" />
+                  <Checkbox color="primary" />
                 </TableCell>
                 <TableCell padding='none' size='small' align="center">
                   {itemKey + 1}
                 </TableCell>
                 <TableCell padding='none' size='small' align="center">{ellipsesString(item.address)}</TableCell>
-                <TableCell padding='none' size='small' align="center">{item.balance} DAG</TableCell>
+                <TableCell padding='none' size='small' align="center">{item.balance} {DAG_STRING}</TableCell>
               </TableRow>
             ))}
           </TableBody>
