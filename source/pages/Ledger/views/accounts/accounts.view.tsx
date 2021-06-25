@@ -35,7 +35,7 @@ import styles from './styles.module.scss';
 const useStyles = makeStyles({
   table: {
     backgroundColor: '#fffff',
-    width: 350,
+    width: "100%",
   },
 });
 
