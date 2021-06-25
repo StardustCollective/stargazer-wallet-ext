@@ -7,6 +7,12 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import clsx from 'clsx';
 
 /////////////////////////
+// Helpers
+/////////////////////////
+
+import { ellipsis } from '../../../../containers/auth/helpers';
+
+/////////////////////////
 // Components Imports
 /////////////////////////
 
@@ -62,6 +68,8 @@ const PREV_BUTTON_LABEL_STRING: string = 'Previous';
 const NEXT_BUTTON_LABEL_STRING: string = 'Next';
 const CANCEL_BUTTON_LABEL_STRING: string = 'Cancel';
 const IMPORT_BUTTON_LABEL_STRING: string = 'Import';
+// Numbers
+const PREVIEW_CHARACTERS_NUMBER: number = 4;
 // Props
 const TABLE_ELEVATION_PROP = 0;
 const CHECKBOX_COLOR_PROP = 'primary';
@@ -84,14 +92,6 @@ let Accounts = ({ accountData }: IAccountsProps) => {
   /////////////////////////
 
   const classes = useStyles();
-
-  /////////////////////////
-  // Helpers
-  /////////////////////////
-
-  function ellipsesString(str: string) {
-    return str.substr(0, 4) + '...' + str.substr(str.length - 4, str.length);
-  }
 
   /////////////////////////
   // Render
@@ -122,7 +122,7 @@ let Accounts = ({ accountData }: IAccountsProps) => {
                 <UITableCell>
                   {itemKey + 1}
                 </UITableCell>
-                <UITableCell>{ellipsesString(item.address)}</UITableCell>
+                <UITableCell>{ellipsis(item.address, PREVIEW_CHARACTERS_NUMBER, PREVIEW_CHARACTERS_NUMBER)}</UITableCell>
                 <UITableCell>{item.balance} {DAG_STRING}</UITableCell>
               </TableRow>
             ))}
