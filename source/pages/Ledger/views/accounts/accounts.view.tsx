@@ -2,7 +2,7 @@
 // Module Imports
 /////////////////////////
 
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import clsx from 'clsx';
 
@@ -52,11 +52,11 @@ const TableCell = withStyles({
 /////////////////////////
 interface IAccountsProps {
   accountData: LedgerAccount[];
-  onCancelClick: () => {};
-  onImportClick: () => {};
-  onCheckboxChange: () => {};
-  onNextClick: () => {};
-  onPreviousClick: () => {};
+  onCancelClick: () => void;
+  onImportClick: () => void;
+  onCheckboxChange: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void
+  onNextClick: () => void;
+  onPreviousClick: () => void;
 }
 interface IUiTableCell {
   children: React.ReactNode;
