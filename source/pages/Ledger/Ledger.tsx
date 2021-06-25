@@ -149,7 +149,7 @@ const LedgerPage: FC = () => {
       // Set the transport
       const ledgerBridge = new LedgerBridge(webHidTransport);
       // Get account data for ledger
-      const publicKeys = await ledgerBridge.getPublicKeys(NUMBER_OF_ACCOUNTS, onProgressUpdate);
+      const publicKeys = await ledgerBridge.getPublicKeys(0, NUMBER_OF_ACCOUNTS, onProgressUpdate);
       const accountData = await ledgerBridge.getAccountInfoForPublicKeys(publicKeys);
       setAccountData(accountData.map(d => ({ ...d, balance: d.balance.toFixed(2) })));
       setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
@@ -186,6 +186,26 @@ const LedgerPage: FC = () => {
     setOpenAlert(false);
   }
 
+  const onPreviousClick = () => {
+    console.log('Previous Press');
+  }
+
+  const onNextClick = () => {
+    console.log('Next Click');
+  }
+
+  const onCheckboxChange = (event) => {
+    console.log('Check box changed');
+    console.log(event.target.checked);
+  }
+
+  const onImportClick = () => {
+    console.log('Import Click');
+  }
+
+  const onCancelClick = () => {
+    console.log('Cancel Click');
+  }
 
   /////////////////////////
   // Renders
@@ -207,7 +227,14 @@ const LedgerPage: FC = () => {
     } else if (walletState === WALLET_STATE_ENUM.VIEW_ACCOUNTS) {
       return (
         <>
-          <AccountsView onTxClick={onTxClick} accountData={accountData} />
+          <AccountsView
+          onCancelClick={onCancelClick}
+          onImportClick={onImportClick}
+          onNextClick={onNextClick}
+          onPreviousClick={onPreviousClick}
+          onCheckboxChange={onCheckboxChange}
+          accountData={accountData} 
+        />
         </>
       );
     }

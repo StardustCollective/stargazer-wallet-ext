@@ -22,7 +22,7 @@ import MUITableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Checkbox } from '@material-ui/core';
+import { Checkbox, Link } from '@material-ui/core';
 import Button from 'components/Button';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 
@@ -51,8 +51,12 @@ const TableCell = withStyles({
 // Interfaces
 /////////////////////////
 interface IAccountsProps {
-  onTxClick: (index: number) => void;
   accountData: LedgerAccount[];
+  onCancelClick: () => {};
+  onImportClick: () => {};
+  onCheckboxChange: () => {};
+  onNextClick: () => {};
+  onPreviousClick: () => {};
 }
 interface IUiTableCell {
   children: React.ReactNode;
@@ -85,7 +89,14 @@ const TABLE_CELL_ALIGN_PROP = 'center';
 // View
 /////////////////////////
 
-let Accounts = ({ accountData }: IAccountsProps) => {
+let Accounts = ({ 
+  accountData, 
+  onCancelClick,
+  onImportClick,
+  onNextClick,
+  onPreviousClick,
+  onCheckboxChange,
+}: IAccountsProps) => {
 
   /////////////////////////
   // Hooks
@@ -117,7 +128,7 @@ let Accounts = ({ accountData }: IAccountsProps) => {
             {accountData.map((item, itemKey) => (
               <TableRow key={itemKey}>
                 <UITableCell>
-                  <Checkbox color={CHECKBOX_COLOR_PROP} />
+                  <Checkbox onChange={onCheckboxChange} color={CHECKBOX_COLOR_PROP} />
                 </UITableCell>
                 <UITableCell>
                   {itemKey + 1}
@@ -130,8 +141,14 @@ let Accounts = ({ accountData }: IAccountsProps) => {
         </Table>
       </TableContainer>
       <div className={styles.pagination}>
-        <span className={styles.previous}>{PREV_BUTTON_LABEL_STRING}</span>
-        <span>{NEXT_BUTTON_LABEL_STRING}</span>
+        <Link onClick={onPreviousClick}>
+          <span className={styles.previous}>
+            {PREV_BUTTON_LABEL_STRING}
+          </span>
+        </Link>
+        <Link onClick={onNextClick}>
+          <span>{NEXT_BUTTON_LABEL_STRING}</span>
+        </Link>
       </div>
       <section className={styles.actions}>
         <div className={styles.buttonWrapper}>
@@ -139,12 +156,17 @@ let Accounts = ({ accountData }: IAccountsProps) => {
             type={CANCEL_BUTTON_TYPE_PROP}
             theme={CANCEL_BUTTON_THEME_PROP}
             variant={clsx(styles.button, styles.cancel)}
+            onClick={onCancelClick}
           >
             {CANCEL_BUTTON_LABEL_STRING}
           </Button>
         </div>
         <div className={styles.buttonWrapper}>
-          <Button type={IMPORT_BUTTON_TYPE_PROP} variant={styles.button}>
+          <Button 
+            type={IMPORT_BUTTON_TYPE_PROP} 
+            variant={styles.button}
+            onClick={onImportClick}
+          >
             {IMPORT_BUTTON_LABEL_STRING}
           </Button>
         </div>
