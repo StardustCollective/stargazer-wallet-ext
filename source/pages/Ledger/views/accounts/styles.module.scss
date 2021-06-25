@@ -1,6 +1,47 @@
-.tableContainer{
+@import "~assets/styles/variables";
+
+.tableContainer {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   padding: 20px;
+  .selectAccount {
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+  .pagination {
+    padding: 12px;
+    display: flex;
+    justify-content: flex-end;
+    span {
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 24px;
+      color: $purple;
+    }
+    .previous {
+      margin-right: 12px;
+    }
+  }
+  .actions {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    .buttonWrapper {  
+      display: flex;
+      flex-grow: 1;
+      justify-content: center;
+      .button {
+        width: 144px;
+      }
+      .cancel,
+      .cancel:hover {
+        background: $gray-light-100;
+        color: $gray-dark;
+      }
+    }
+  }
+
 }
