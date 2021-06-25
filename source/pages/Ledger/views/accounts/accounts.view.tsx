@@ -63,18 +63,21 @@ const NEXT_BUTTON_LABEL_STRING: string = 'Next';
 const CANCEL_BUTTON_LABEL_STRING: string = 'Cancel';
 const IMPORT_BUTTON_LABEL_STRING: string = 'Import';
 // Props
-const TABLE_ELEVATION_PROP: number = 0;
+const TABLE_ELEVATION_PROP = 0;
 const CHECKBOX_COLOR_PROP = 'primary';
 const CANCEL_BUTTON_TYPE_PROP = 'button';
 const CANCEL_BUTTON_THEME_PROP = 'secondary';
 const IMPORT_BUTTON_TYPE_PROP = 'submit';
 const TABLE_ARIA_LABEL_PROP = 'simple table'
+const TABLE_CELL_PADDING_PROP = 'none';
+const TABLE_CELL_SIZE_PROP = 'small';
+const TABLE_CELL_ALIGN_PROP = 'center';
 
 /////////////////////////
 // View
 /////////////////////////
 
-let Accounts = ({accountData}: IAccountsProps) => {
+let Accounts = ({ accountData }: IAccountsProps) => {
 
   /////////////////////////
   // Hooks
@@ -90,19 +93,20 @@ let Accounts = ({accountData}: IAccountsProps) => {
     return str.substr(0, 4) + '...' + str.substr(str.length - 4, str.length);
   }
 
-
-  // This sub component was created to reduce duplication 
-  const UITableCell = ({ children }: IUiTableCell): JSX.Element => 
-    <>
-      <TableCell padding='none' size='small' align="center">
-        {children}
-      </TableCell>
-    </>
-  ;
-
   /////////////////////////
   // Render
   /////////////////////////
+
+  const UITableCell = ({ children }: IUiTableCell): JSX.Element =>
+    <>
+      <TableCell 
+        padding={TABLE_CELL_PADDING_PROP} 
+        size={TABLE_CELL_SIZE_PROP} 
+        align={TABLE_CELL_ALIGN_PROP}>
+        {children}
+      </TableCell>
+    </>
+    ;
 
   return (
     <div className={styles.tableContainer}>
