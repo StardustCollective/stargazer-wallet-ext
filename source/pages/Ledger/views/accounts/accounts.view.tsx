@@ -2,9 +2,10 @@
 // Module Imports
 /////////////////////////
 
-import React, { ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import clsx from 'clsx';
+import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 
 /////////////////////////
 // Helpers
@@ -24,7 +25,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Checkbox, Link } from '@material-ui/core';
 import Button from 'components/Button';
-import { LedgerAccount } from '@stardust-collective/dag4-ledger';
+
 
 /////////////////////////
 // Styles
@@ -54,9 +55,10 @@ interface IAccountsProps {
   accountData: LedgerAccount[];
   onCancelClick: () => void;
   onImportClick: () => void;
-  onCheckboxChange: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void
+  onCheckboxChange: (account: LedgerAccount, checked: boolean, key: number) => void
   onNextClick: () => void;
   onPreviousClick: () => void;
+  checkBoxesState: boolean[];
 }
 interface IUiTableCell {
   children: React.ReactNode;
@@ -89,13 +91,14 @@ const TABLE_CELL_ALIGN_PROP = 'center';
 // View
 /////////////////////////
 
-let Accounts = ({ 
-  accountData, 
+let Accounts = ({
+  accountData,
   onCancelClick,
   onImportClick,
   onNextClick,
   onPreviousClick,
   onCheckboxChange,
+  checkBoxesState,
 }: IAccountsProps) => {
 
   /////////////////////////
@@ -105,14 +108,24 @@ let Accounts = ({
   const classes = useStyles();
 
   /////////////////////////
+  // Callback
+  /////////////////////////
+
+  const _onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
+    if (onCheckboxChange) {
+      onCheckboxChange(account, checked, key);
+    }
+  };
+
+  /////////////////////////
   // Render
   /////////////////////////
 
   const UITableCell = ({ children }: IUiTableCell): JSX.Element =>
     <>
-      <TableCell 
-        padding={TABLE_CELL_PADDING_PROP} 
-        size={TABLE_CELL_SIZE_PROP} 
+      <TableCell
+        padding={TABLE_CELL_PADDING_PROP}
+        size={TABLE_CELL_SIZE_PROP}
         align={TABLE_CELL_ALIGN_PROP}>
         {children}
       </TableCell>
@@ -128,7 +141,7 @@ let Accounts = ({
             {accountData.map((item, itemKey) => (
               <TableRow key={itemKey}>
                 <UITableCell>
-                  <Checkbox onChange={onCheckboxChange} color={CHECKBOX_COLOR_PROP} />
+                  <Checkbox checked={(checkBoxesState[itemKey])} onChange={(event, checked) => { _onCheckboxChange(item, checked, itemKey) }} color={CHECKBOX_COLOR_PROP} />
                 </UITableCell>
                 <UITableCell>
                   {itemKey + 1}
@@ -162,8 +175,8 @@ let Accounts = ({
           </Button>
         </div>
         <div className={styles.buttonWrapper}>
-          <Button 
-            type={IMPORT_BUTTON_TYPE_PROP} 
+          <Button
+            type={IMPORT_BUTTON_TYPE_PROP}
             variant={styles.button}
             onClick={onImportClick}
           >

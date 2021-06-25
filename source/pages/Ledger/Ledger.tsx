@@ -2,11 +2,12 @@
 // Module Imports
 /////////////////////////
 
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, ErrorInfo, ChangeEvent } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import webHidTransport from '@ledgerhq/hw-transport-webhid';
 import { dag4 } from '@stardust-collective/dag4';
 import { LedgerBridge, LedgerAccount } from '@stardust-collective/dag4-ledger';
+import _ from 'lodash';
 
 // import { useSelector } from 'react-redux';
 
@@ -17,7 +18,6 @@ import Container from 'containers/common/Container';
 // import SignatureRequest from 'containers/confirm/SignatureRequest';
 
 import 'assets/styles/global.scss';
-import { useController } from 'hooks/index';
 // import Starter from 'containers/auth/Start';
 // import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -75,7 +75,6 @@ enum WALLET_STATE_ENUM {
   LOCKED = 1,
   FETCHING,
   VIEW_ACCOUNTS,
-  VIEW_ACCOUNT_ACTIVITY,
   SENDING,
 }
 
@@ -101,13 +100,14 @@ const LedgerPage: FC = () => {
   /////////////////////////
 
   const classes = useStyles();
-  const controller = useController();
-  const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(WALLET_STATE_ENUM.LOCKED);
-  const [accountData, setAccountData] = useState<LedgerAccount[]>([]);
+  const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
+  const [accountData, setAccountData] = useState<LedgerAccount[]>(DEV_ACCOUNT_DATA);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const [selectedAccounts, setSelectedAccounts] = useState<LedgerAccount[]>([]);
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [alertSeverity, setAlertSeverity] = useState<Color>('success');
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
+  const [checkBoxesState, setCheckBoxesState] = useState<boolean[]>([]);
 
   useEffect(() => {
 
@@ -154,7 +154,7 @@ const LedgerPage: FC = () => {
       setAccountData(accountData.map(d => ({ ...d, balance: d.balance.toFixed(2) })));
       setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
 
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
       let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
@@ -171,16 +171,6 @@ const LedgerPage: FC = () => {
 
   }
 
-  const onTxClick = (index: number = 0) => {
-    console.log('clicked', index);
-
-    const ledgerBridge = new LedgerBridge(webHidTransport);
-    const lastAccount = accountData[accountData.length - 1];
-    // const { address, publicKey } = accountData[index];
-
-    // dag.buildTx(publicKey, address, lastAccount.address);
-  }
-
   // Updates the alert bar state
   const onAlertBarClose = () => {
     setOpenAlert(false);
@@ -194,9 +184,22 @@ const LedgerPage: FC = () => {
     console.log('Next Click');
   }
 
-  const onCheckboxChange = (event) => {
-    console.log('Check box changed');
-    console.log(event.target.checked);
+  const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
+    if(checked){
+      setSelectedAccounts((state) => {
+        return [...state, account];
+      })
+    }else{
+      console.log('Removing Account!')
+      setSelectedAccounts((state) => {
+        _.remove(state, {address: account.address})
+        return [...state];
+      })
+    }
+    setCheckBoxesState((state: boolean[]) => {
+      state[key] = checked;
+      return [...state];
+    })
   }
 
   const onImportClick = () => {
@@ -205,6 +208,7 @@ const LedgerPage: FC = () => {
 
   const onCancelClick = () => {
     console.log('Cancel Click');
+    setWalletState(WALLET_STATE_ENUM.LOCKED);
   }
 
   /////////////////////////
@@ -234,6 +238,7 @@ const LedgerPage: FC = () => {
           onPreviousClick={onPreviousClick}
           onCheckboxChange={onCheckboxChange}
           accountData={accountData} 
+          checkBoxesState={checkBoxesState}
         />
         </>
       );
