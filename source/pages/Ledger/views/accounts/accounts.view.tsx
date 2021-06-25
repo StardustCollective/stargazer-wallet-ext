@@ -2,7 +2,9 @@
 // Module Imports
 /////////////////////////
 
+import React from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles'
+import clsx from 'clsx';
 
 /////////////////////////
 // Components Imports
@@ -12,11 +14,10 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import MUITableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Checkbox } from '@material-ui/core';
-import React from 'react';
+import Button from 'components/Button';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 
 /////////////////////////
@@ -29,14 +30,14 @@ const useStyles = makeStyles({
   table: {
     backgroundColor: '#fffff',
     width: 350,
-    fontWeight: 'bold',
-    // minWidth: 150,
   },
 });
 
 const TableCell = withStyles({
   root: {
-    borderBottom: "none"
+    borderBottom: "none",
+    fontWeight: 600,
+    fontFamily: 'Inter',
   }
 })(MUITableCell);
 
@@ -47,6 +48,9 @@ interface IAccountsProps {
   onTxClick: (index: number) => void;
   accountData: LedgerAccount[];
 }
+interface IUiTableCell {
+  children: React.ReactNode;
+};
 
 /////////////////////////
 // Constants
@@ -54,26 +58,23 @@ interface IAccountsProps {
 
 // Strings
 const DAG_STRING: string = 'DAG';
+const PREV_BUTTON_LABEL_STRING: string = 'Previous';
+const NEXT_BUTTON_LABEL_STRING: string = 'Next';
+const CANCEL_BUTTON_LABEL_STRING: string = 'Cancel';
+const IMPORT_BUTTON_LABEL_STRING: string = 'Import';
 // Props
-const TABLE_ELEVATION_PROP = 0;
+const TABLE_ELEVATION_PROP: number = 0;
+const CHECKBOX_COLOR_PROP = 'primary';
+const CANCEL_BUTTON_TYPE_PROP = 'button';
+const CANCEL_BUTTON_THEME_PROP = 'secondary';
+const IMPORT_BUTTON_TYPE_PROP = 'submit';
+const TABLE_ARIA_LABEL_PROP = 'simple table'
 
 /////////////////////////
 // View
 /////////////////////////
 
-let Accounts = (props: IAccountsProps) => {
-
-  let {
-    accountData
-  } = props;
-
-  const onGenerateClick = (index: number) => {
-
-    if (props.onTxClick) {
-      props.onTxClick(index);
-    }
-
-  };
+let Accounts = ({accountData}: IAccountsProps) => {
 
   /////////////////////////
   // Hooks
@@ -82,34 +83,68 @@ let Accounts = (props: IAccountsProps) => {
   const classes = useStyles();
 
   /////////////////////////
+  // Helpers
+  /////////////////////////
+
+  function ellipsesString(str: string) {
+    return str.substr(0, 4) + '...' + str.substr(str.length - 4, str.length);
+  }
+
+
+  // This sub component was created to reduce duplication 
+  const UITableCell = ({ children }: IUiTableCell): JSX.Element => 
+    <>
+      <TableCell padding='none' size='small' align="center">
+        {children}
+      </TableCell>
+    </>
+  ;
+
+  /////////////////////////
   // Render
   /////////////////////////
 
-  function ellipsesString(str) {
-    return str.substr(0, 4) + '...' + str.substr(str.length - 4, str.length);
-
-  }
-
   return (
     <div className={styles.tableContainer}>
-      <TableContainer elevation={TABLE_ELEVATION_PROP} className={classes.table}  component={Paper}>
-        <Table aria-label="simple table">
+      <span className={styles.selectAccount}>Please select an account:</span>
+      <TableContainer elevation={TABLE_ELEVATION_PROP} className={classes.table} component={Paper}>
+        <Table aria-label={TABLE_ARIA_LABEL_PROP}>
           <TableBody>
             {accountData.map((item, itemKey) => (
               <TableRow key={itemKey}>
-                <TableCell padding='none' size='small' align="center">
-                  <Checkbox color="primary" />
-                </TableCell>
-                <TableCell padding='none' size='small' align="center">
+                <UITableCell>
+                  <Checkbox color={CHECKBOX_COLOR_PROP} />
+                </UITableCell>
+                <UITableCell>
                   {itemKey + 1}
-                </TableCell>
-                <TableCell padding='none' size='small' align="center">{ellipsesString(item.address)}</TableCell>
-                <TableCell padding='none' size='small' align="center">{item.balance} {DAG_STRING}</TableCell>
+                </UITableCell>
+                <UITableCell>{ellipsesString(item.address)}</UITableCell>
+                <UITableCell>{item.balance} {DAG_STRING}</UITableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className={styles.pagination}>
+        <span className={styles.previous}>{PREV_BUTTON_LABEL_STRING}</span>
+        <span>{NEXT_BUTTON_LABEL_STRING}</span>
+      </div>
+      <section className={styles.actions}>
+        <div className={styles.buttonWrapper}>
+          <Button
+            type={CANCEL_BUTTON_TYPE_PROP}
+            theme={CANCEL_BUTTON_THEME_PROP}
+            variant={clsx(styles.button, styles.cancel)}
+          >
+            {CANCEL_BUTTON_LABEL_STRING}
+          </Button>
+        </div>
+        <div className={styles.buttonWrapper}>
+          <Button type={IMPORT_BUTTON_TYPE_PROP} variant={styles.button}>
+            {IMPORT_BUTTON_LABEL_STRING}
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }
