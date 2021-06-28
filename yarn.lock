@@ -1162,10 +1162,10 @@
     stream-browserify "^3.0.0"
     uuid "^3.4.0"
 
-"@stardust-collective/dag4-ledger@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.0.6.tgz#9a158fc4757a173ebb229435baec356c4b633ce4"
-  integrity sha512-/4oUDXL5chEhi70f1HzmAjSdu4NuDWJ2ZQ1pujenC8MjCUjPRCruGRW5Ny2xu2gAiIz+zzhvvylFC1mcOxD5mA==
+"@stardust-collective/dag4-ledger@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.0.9.tgz#b55bad5a9e142c49b508051670a68a4fdc08ae17"
+  integrity sha512-7qlItMDc7ZV4NaLOxEyleL+7e8qQfd3KGQ58Hhepnk58YIk00Q1rXwL1+rzw3BfNMZcbTBIKyi1DqU55PIgsPg==
   dependencies:
     "@stardust-collective/dag4" "1.1.9"
     bignumber.js "^9.0.1"
