@@ -2,24 +2,11 @@
 // Module Imports
 /////////////////////////
 
-import React, { FC, useState, useEffect, ErrorInfo, ChangeEvent } from 'react';
+import React, { FC, useState, useEffect } from 'react';
+import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { makeStyles } from '@material-ui/core/styles'
-import webHidTransport from '@ledgerhq/hw-transport-webhid';
-import { dag4 } from '@stardust-collective/dag4';
-import { LedgerBridge, LedgerAccount } from '@stardust-collective/dag4-ledger';
+import { LedgerBridgeUtil } from './utils/ledgerBridge';
 import _ from 'lodash';
-
-// import { useSelector } from 'react-redux';
-
-import Container from 'containers/common/Container';
-// import { RootState } from 'state/store';
-// import IWalletState from 'state/wallet/types';
-// import WalletConnect from 'containers/confirm/WalletConnect';
-// import SignatureRequest from 'containers/confirm/SignatureRequest';
-
-import 'assets/styles/global.scss';
-// import Starter from 'containers/auth/Start';
-// import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 /////////////////////////
 // Component Imports
@@ -40,8 +27,10 @@ import AccountsView from './views/accounts';
 // Styles
 /////////////////////////
 
-import { Color } from '@material-ui/lab/Alert';
+
 // import './styles';
+import 'assets/styles/global.scss';
+import { Color } from '@material-ui/lab/Alert';
 
 /////////////////////////
 // Constants
@@ -57,6 +46,7 @@ const ALERT_MESSAGES_STRINGS = {
   CONNECTION_CANCELED: 'Connection Canceled: Please connect to unlock wallet with Ledger.',
   OPEN_CONSTELLATION_APP: 'Open App: Please open the Constellation App on your Ledger',
 }
+
 // States
 enum ALERT_SEVERITY_STATE {
   SUCCESS = 'success',
@@ -64,8 +54,6 @@ enum ALERT_SEVERITY_STATE {
   WARNING = 'warning',
   INFO = 'info',
 }
-
-const NUMBER_OF_ACCOUNTS: number = 5;
 
 /////////////////////////
 // ENUMS
@@ -76,6 +64,12 @@ enum WALLET_STATE_ENUM {
   FETCHING,
   VIEW_ACCOUNTS,
   SENDING,
+}
+
+enum PAGING_ACTIONS_ENUM {
+  INITIAL = 0,
+  NEXT,
+  PREVIOUS,
 }
 
 /////////////////////////
@@ -100,8 +94,8 @@ const LedgerPage: FC = () => {
   /////////////////////////
 
   const classes = useStyles();
-  const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
-  const [accountData, setAccountData] = useState<LedgerAccount[]>(DEV_ACCOUNT_DATA);
+  const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(WALLET_STATE_ENUM.LOCKED);
+  const [accountData, setAccountData] = useState<LedgerAccount[]>([]);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [selectedAccounts, setSelectedAccounts] = useState<LedgerAccount[]>([]);
   const [alertMessage, setAlertMessage] = useState<string>('');
@@ -109,20 +103,33 @@ const LedgerPage: FC = () => {
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
   const [checkBoxesState, setCheckBoxesState] = useState<boolean[]>([]);
 
+
   useEffect(() => {
+    console.log(selectedAccounts);
+  }, [selectedAccounts])
 
-    /////////////////////////
-    // Dag4 Config
-    /////////////////////////
-
-    dag4.di.useFetchHttpClient();
-    dag4.network.config({
-      id: 'main',
-      beUrl: 'https://www.stargazer.network/api/scan',
-      lbUrl: 'https://www.stargazer.network/api/node',
-    });
-
+  useEffect(() => {
+    LedgerBridgeUtil.setOnProgressUpdate(onProgressUpdate);
   }, []);
+
+  /////////////////////////
+  // Helper
+  /////////////////////////
+
+  const getAccountData = async (pagingAction: PAGING_ACTIONS_ENUM) => {
+    let accountData: LedgerAccount[];
+    // Get Ledger account data
+    if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
+      accountData = await LedgerBridgeUtil.getInitialPage();
+      setAccountData(accountData);
+    } else if (pagingAction === PAGING_ACTIONS_ENUM.NEXT) {
+      accountData = await LedgerBridgeUtil.getNextPage();
+      setAccountData(accountData);
+    } else if (pagingAction === PAGING_ACTIONS_ENUM.PREVIOUS) {
+      accountData = await LedgerBridgeUtil.getPreviousPage();
+      setAccountData(accountData);
+    }
+  }
 
   /////////////////////////
   // Callbacks
@@ -136,22 +143,20 @@ const LedgerPage: FC = () => {
 
   // Handles the click to the Connect with Ledger Button
   const onConnectClick = async () => {
-    let transport;
     try {
       // Close any open alerts
       setOpenAlert(false);
-      // Update the wallet state
+
+      // Request permission to access the ledger device.
+      await LedgerBridgeUtil.requestPermissions();
+
+      // Update the view state to fetching accounts
       setWalletState(WALLET_STATE_ENUM.FETCHING);
-      // Prompt for USB permissions
-      transport = await webHidTransport.request();
-      // Close any existing connections
-      transport.close()
-      // Set the transport
-      const ledgerBridge = new LedgerBridge(webHidTransport);
-      // Get account data for ledger
-      const publicKeys = await ledgerBridge.getPublicKeys(0, NUMBER_OF_ACCOUNTS, onProgressUpdate);
-      const accountData = await ledgerBridge.getAccountInfoForPublicKeys(publicKeys);
-      setAccountData(accountData.map(d => ({ ...d, balance: d.balance.toFixed(2) })));
+
+      // Get the initial page of the account data
+      await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
+
+      // Update view state to view accounts
       setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
 
     } catch (error: any) {
@@ -177,22 +182,21 @@ const LedgerPage: FC = () => {
   }
 
   const onPreviousClick = () => {
-    console.log('Previous Press');
+    getAccountData(PAGING_ACTIONS_ENUM.PREVIOUS);
   }
 
   const onNextClick = () => {
-    console.log('Next Click');
+    getAccountData(PAGING_ACTIONS_ENUM.NEXT);
   }
 
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
-    if(checked){
+    if (checked) {
       setSelectedAccounts((state) => {
         return [...state, account];
       })
-    }else{
-      console.log('Removing Account!')
+    } else {
       setSelectedAccounts((state) => {
-        _.remove(state, {address: account.address})
+        _.remove(state, { address: account.address })
         return [...state];
       })
     }
@@ -232,14 +236,14 @@ const LedgerPage: FC = () => {
       return (
         <>
           <AccountsView
-          onCancelClick={onCancelClick}
-          onImportClick={onImportClick}
-          onNextClick={onNextClick}
-          onPreviousClick={onPreviousClick}
-          onCheckboxChange={onCheckboxChange}
-          accountData={accountData} 
-          checkBoxesState={checkBoxesState}
-        />
+            onCancelClick={onCancelClick}
+            onImportClick={onImportClick}
+            onNextClick={onNextClick}
+            onPreviousClick={onPreviousClick}
+            onCheckboxChange={onCheckboxChange}
+            accountData={accountData}
+            checkBoxesState={checkBoxesState}
+          />
         </>
       );
     }
