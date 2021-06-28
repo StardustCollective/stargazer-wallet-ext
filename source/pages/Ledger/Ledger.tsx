@@ -132,7 +132,6 @@ const LedgerPage: FC = () => {
         accountData = await LedgerBridgeUtil.getInitialPage();
         setAccountData(accountData);
         setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
-        setAccountsLoadProgress(0);
       } else if (pagingAction === PAGING_ACTIONS_ENUM.NEXT) {
         accountData = await LedgerBridgeUtil.getNextPage();
         setAccountData(accountData);
@@ -151,6 +150,7 @@ const LedgerPage: FC = () => {
       showAlert(error);
     }
     setFetchingPage(false);
+    setAccountsLoadProgress(0);
   }
 
   const showAlert = (error: any): void => {
