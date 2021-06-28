@@ -168,11 +168,14 @@ let Accounts = ({
       <div className={styles.pagination}>
         {!fetchingPage ? (
           <>
-            <Link onClick={onPreviousClick}>
-              <span className={styles.previous}>
-                {PREV_BUTTON_LABEL_STRING}
-              </span>
-            </Link>
+            {startIndex !== 0 && (
+              <Link onClick={onPreviousClick}>
+                <span className={styles.previous}>
+                  {PREV_BUTTON_LABEL_STRING}
+                </span>
+              </Link>
+            )
+            }
             <Link onClick={onNextClick}>
               <span>{NEXT_BUTTON_LABEL_STRING}</span>
             </Link>
