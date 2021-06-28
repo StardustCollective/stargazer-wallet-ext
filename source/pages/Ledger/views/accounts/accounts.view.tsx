@@ -61,6 +61,7 @@ interface IAccountsProps {
   onPreviousClick: () => void;
   checkBoxesState: boolean[];
   fetchingPage: boolean;
+  startIndex: number;
 }
 interface IUiTableCell {
   children: React.ReactNode;
@@ -102,6 +103,7 @@ let Accounts = ({
   onCheckboxChange,
   checkBoxesState,
   fetchingPage,
+  startIndex,
 }: IAccountsProps) => {
 
   /////////////////////////
@@ -154,7 +156,7 @@ let Accounts = ({
                   <Checkbox checked={(checkBoxesState[itemKey])} onChange={(event, checked) => { _onCheckboxChange(item, checked, itemKey) }} color={CHECKBOX_COLOR_PROP} />
                 </UITableCell>
                 <UITableCell>
-                  {itemKey + 1}
+                  {itemKey + startIndex + 1}
                 </UITableCell>
                 <UITableCell>{ellipsis(item.address, PREVIEW_CHARACTERS_NUMBER, PREVIEW_CHARACTERS_NUMBER)}</UITableCell>
                 <UITableCell>{item.balance} {DAG_STRING}</UITableCell>

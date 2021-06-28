@@ -106,6 +106,7 @@ const LedgerPage: FC = () => {
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
   const [checkBoxesState, setCheckBoxesState] = useState<boolean[]>([]);
   const [fetchingPage, setFetchingPage] = useState<boolean>(false);
+  const [startIndex, setStartIndex] = useState<number>(0);
 
 
   useEffect(() => {
@@ -138,6 +139,7 @@ const LedgerPage: FC = () => {
         accountData = await LedgerBridgeUtil.getPreviousPage();
         setAccountData(accountData);
       }
+      setStartIndex(LedgerBridgeUtil.startIndex);
     } catch (error: any) {
       console.log(error);
       if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL){
@@ -258,6 +260,7 @@ const LedgerPage: FC = () => {
             accountData={accountData}
             checkBoxesState={checkBoxesState}
             fetchingPage={fetchingPage}
+            startIndex={startIndex}
           />
         </>
       );
@@ -267,7 +270,6 @@ const LedgerPage: FC = () => {
 
   return (
     <div id="confirm-page">
-      {/* <Container> */}
       <header>
         <Card className={classes.root}>
           <Header />
@@ -280,7 +282,6 @@ const LedgerPage: FC = () => {
         severity={alertSeverity}
         onClose={onAlertBarClose}
       />
-      {/* </Container> */}
     </div>
   );
 };

@@ -35,7 +35,7 @@ class LedgerBridgeUtil {
    * The starting index to look up accounts.
    */
 
-  private startIndex: number = 0;
+  public startIndex: number = 0;
 
   /**
    * onProgressUpdate
