@@ -230,6 +230,8 @@ const LedgerPage: FC = () => {
   const onCancelClick = () => {
     // Close any existing connections
     LedgerBridgeUtil.closeConnection();
+    // Reset the progress
+    setAccountsLoadProgress(0);
     // Transition to the locked state
     setWalletState(WALLET_STATE_ENUM.LOCKED);
   }
