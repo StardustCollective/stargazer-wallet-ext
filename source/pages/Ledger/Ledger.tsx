@@ -39,12 +39,14 @@ import { Color } from '@material-ui/lab/Alert';
 // Strings
 const LEDGER_ERROR_STRINGS = {
   CONNECTION_CANCELED: 'Cannot read property',
-  APP_CLOSED: '6E01'
+  APP_CLOSED: '6E01',
+  PIN_OR_NOT_CONNECTED: 'No USB device found',
 }
 const ALERT_MESSAGES_STRINGS = {
   DEFAULT: 'Error: Please contact support',
   CONNECTION_CANCELED: 'Connection Canceled: Please connect to unlock wallet with Ledger.',
   OPEN_CONSTELLATION_APP: 'Open App: Please open the Constellation App on your Ledger',
+  PIN_OR_CONNECTION: 'Connection or Pin: Ledger device USB is disconnected or is awaiting pin input',
 }
 
 // States
@@ -121,10 +123,14 @@ const LedgerPage: FC = () => {
   const getAccountData = async (pagingAction: PAGING_ACTIONS_ENUM) => {
     let accountData: LedgerAccount[];
     // Get Ledger account data
-      setFetchingPage(true);
+
+    setFetchingPage(true);
+
+    try {
       if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
         accountData = await LedgerBridgeUtil.getInitialPage();
         setAccountData(accountData);
+        setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
       } else if (pagingAction === PAGING_ACTIONS_ENUM.NEXT) {
         accountData = await LedgerBridgeUtil.getNextPage();
         setAccountData(accountData);
@@ -132,8 +138,31 @@ const LedgerPage: FC = () => {
         accountData = await LedgerBridgeUtil.getPreviousPage();
         setAccountData(accountData);
       }
-      setFetchingPage(false);
+    } catch (error: any) {
+      console.log(error);
+      if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL){
+        setWalletState(WALLET_STATE_ENUM.LOCKED);
+      } else {
+        setFetchingPage(false);
+      }
+      showAlert(error);
+    }
+    setFetchingPage(false);
+  }
 
+  const showAlert = (error: any): void => {
+    let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
+    let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
+    if (error.message.includes(LEDGER_ERROR_STRINGS.CONNECTION_CANCELED)) {
+      errorMessage = ALERT_MESSAGES_STRINGS.CONNECTION_CANCELED
+    } else if (error.message.includes(LEDGER_ERROR_STRINGS.APP_CLOSED)) {
+      errorMessage = ALERT_MESSAGES_STRINGS.OPEN_CONSTELLATION_APP
+    } else if (error.message.includes(LEDGER_ERROR_STRINGS.PIN_OR_NOT_CONNECTED)) {
+      errorMessage = ALERT_MESSAGES_STRINGS.PIN_OR_CONNECTION
+    }
+    setAlertSeverity(errorSeverity);
+    setAlertMessage(errorMessage);
+    setOpenAlert(true);
   }
 
   /////////////////////////
@@ -148,37 +177,17 @@ const LedgerPage: FC = () => {
 
   // Handles the click to the Connect with Ledger Button
   const onConnectClick = async () => {
-    try {
-      // Close any open alerts
-      setOpenAlert(false);
+    // Close any open alerts
+    setOpenAlert(false);
 
-      // Request permission to access the ledger device.
-      await LedgerBridgeUtil.requestPermissions();
+    // Request permission to access the ledger device.
+    await LedgerBridgeUtil.requestPermissions();
 
-      // Update the view state to fetching accounts
-      setWalletState(WALLET_STATE_ENUM.FETCHING);
+    // Update the view state to fetching accounts
+    setWalletState(WALLET_STATE_ENUM.FETCHING);
 
-      // Get the initial page of the account data
-      await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
-
-      // Update view state to view accounts
-      setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
-
-    } catch (error: any) {
-      console.log(error);
-      let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
-      let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
-      if (error.message.includes(LEDGER_ERROR_STRINGS.CONNECTION_CANCELED)) {
-        errorMessage = ALERT_MESSAGES_STRINGS.CONNECTION_CANCELED
-      } else if (error.message.includes(LEDGER_ERROR_STRINGS.APP_CLOSED)) {
-        errorMessage = ALERT_MESSAGES_STRINGS.OPEN_CONSTELLATION_APP
-      }
-      setAlertSeverity(errorSeverity);
-      setAlertMessage(errorMessage);
-      setOpenAlert(true);
-      setWalletState(WALLET_STATE_ENUM.LOCKED);
-    }
-
+    // Get the initial page of the account data
+    await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
   }
 
   // Updates the alert bar state
