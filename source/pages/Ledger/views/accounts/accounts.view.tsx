@@ -25,6 +25,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Checkbox, Link } from '@material-ui/core';
 import Button from 'components/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 /////////////////////////
@@ -59,6 +60,7 @@ interface IAccountsProps {
   onNextClick: () => void;
   onPreviousClick: () => void;
   checkBoxesState: boolean[];
+  fetchingPage: boolean;
 }
 interface IUiTableCell {
   children: React.ReactNode;
@@ -99,6 +101,7 @@ let Accounts = ({
   onPreviousClick,
   onCheckboxChange,
   checkBoxesState,
+  fetchingPage,
 }: IAccountsProps) => {
 
   /////////////////////////
@@ -135,7 +138,14 @@ let Accounts = ({
   return (
     <div className={styles.tableContainer}>
       <span className={styles.selectAccount}>Please select an account:</span>
-      <TableContainer elevation={TABLE_ELEVATION_PROP} className={classes.table} component={Paper}>
+      <TableContainer elevation={TABLE_ELEVATION_PROP} className={styles.table} component={Paper}>
+        {fetchingPage && (
+        <div className={styles.progressWrapper}>
+          <div className={styles.progress}>
+            <CircularProgress />
+          </div>
+        </div>
+        )}
         <Table aria-label={TABLE_ARIA_LABEL_PROP}>
           <TableBody>
             {accountData.map((item, itemKey) => (

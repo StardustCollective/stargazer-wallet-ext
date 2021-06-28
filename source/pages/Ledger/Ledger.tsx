@@ -62,6 +62,7 @@ enum ALERT_SEVERITY_STATE {
 enum WALLET_STATE_ENUM {
   LOCKED = 1,
   FETCHING,
+  FETCHING_PAGE,
   VIEW_ACCOUNTS,
   SENDING,
 }
@@ -102,6 +103,7 @@ const LedgerPage: FC = () => {
   const [alertSeverity, setAlertSeverity] = useState<Color>('success');
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
   const [checkBoxesState, setCheckBoxesState] = useState<boolean[]>([]);
+  const [fetchingPage, setFetchingPage] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -119,16 +121,19 @@ const LedgerPage: FC = () => {
   const getAccountData = async (pagingAction: PAGING_ACTIONS_ENUM) => {
     let accountData: LedgerAccount[];
     // Get Ledger account data
-    if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
-      accountData = await LedgerBridgeUtil.getInitialPage();
-      setAccountData(accountData);
-    } else if (pagingAction === PAGING_ACTIONS_ENUM.NEXT) {
-      accountData = await LedgerBridgeUtil.getNextPage();
-      setAccountData(accountData);
-    } else if (pagingAction === PAGING_ACTIONS_ENUM.PREVIOUS) {
-      accountData = await LedgerBridgeUtil.getPreviousPage();
-      setAccountData(accountData);
-    }
+      setFetchingPage(true);
+      if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
+        accountData = await LedgerBridgeUtil.getInitialPage();
+        setAccountData(accountData);
+      } else if (pagingAction === PAGING_ACTIONS_ENUM.NEXT) {
+        accountData = await LedgerBridgeUtil.getNextPage();
+        setAccountData(accountData);
+      } else if (pagingAction === PAGING_ACTIONS_ENUM.PREVIOUS) {
+        accountData = await LedgerBridgeUtil.getPreviousPage();
+        setAccountData(accountData);
+      }
+      setFetchingPage(false);
+
   }
 
   /////////////////////////
@@ -181,12 +186,12 @@ const LedgerPage: FC = () => {
     setOpenAlert(false);
   }
 
-  const onPreviousClick = () => {
-    getAccountData(PAGING_ACTIONS_ENUM.PREVIOUS);
+  const onPreviousClick = async () => {
+    await getAccountData(PAGING_ACTIONS_ENUM.PREVIOUS);
   }
 
-  const onNextClick = () => {
-    getAccountData(PAGING_ACTIONS_ENUM.NEXT);
+  const onNextClick = async () => {
+    await getAccountData(PAGING_ACTIONS_ENUM.NEXT);
   }
 
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
@@ -243,6 +248,7 @@ const LedgerPage: FC = () => {
             onCheckboxChange={onCheckboxChange}
             accountData={accountData}
             checkBoxesState={checkBoxesState}
+            fetchingPage={fetchingPage}
           />
         </>
       );

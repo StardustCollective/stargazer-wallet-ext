@@ -4,6 +4,24 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
+  position: relative;
+  .table {
+    position: relative;
+  }
+  .progressWrapper{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    .progress {
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+  }
   .selectAccount {
     font-size: 15px;
     margin-bottom: 20px;
