@@ -150,18 +150,21 @@ let Accounts = ({
         )}
         <Table aria-label={TABLE_ARIA_LABEL_PROP}>
           <TableBody>
-            {accountData.map((item, itemKey) => (
-              <TableRow key={itemKey}>
-                <UITableCell>
-                  <Checkbox checked={(checkBoxesState[itemKey])} onChange={(event, checked) => { _onCheckboxChange(item, checked, itemKey) }} color={CHECKBOX_COLOR_PROP} />
-                </UITableCell>
-                <UITableCell>
-                  {itemKey + startIndex + 1}
-                </UITableCell>
-                <UITableCell>{ellipsis(item.address, PREVIEW_CHARACTERS_NUMBER, PREVIEW_CHARACTERS_NUMBER)}</UITableCell>
-                <UITableCell>{item.balance} {DAG_STRING}</UITableCell>
-              </TableRow>
-            ))}
+            {accountData.map((item, itemKey) => {
+              let key = itemKey + startIndex + 1;
+              return (
+                <TableRow key={itemKey}>
+                  <UITableCell>
+                    <Checkbox checked={(checkBoxesState[key])} onChange={(event, checked) => { _onCheckboxChange(item, checked, key) }} color={CHECKBOX_COLOR_PROP} />
+                  </UITableCell>
+                  <UITableCell>
+                    {key}
+                  </UITableCell>
+                  <UITableCell>{ellipsis(item.address, PREVIEW_CHARACTERS_NUMBER, PREVIEW_CHARACTERS_NUMBER)}</UITableCell>
+                  <UITableCell>{item.balance} {DAG_STRING}</UITableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </TableContainer>
