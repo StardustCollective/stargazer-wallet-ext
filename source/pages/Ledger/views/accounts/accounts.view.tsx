@@ -140,11 +140,11 @@ let Accounts = ({
       <span className={styles.selectAccount}>Please select an account:</span>
       <TableContainer elevation={TABLE_ELEVATION_PROP} className={styles.table} component={Paper}>
         {fetchingPage && (
-        <div className={styles.progressWrapper}>
-          <div className={styles.progress}>
-            <CircularProgress />
+          <div className={styles.progressWrapper}>
+            <div className={styles.progress}>
+              <CircularProgress />
+            </div>
           </div>
-        </div>
         )}
         <Table aria-label={TABLE_ARIA_LABEL_PROP}>
           <TableBody>
@@ -164,14 +164,25 @@ let Accounts = ({
         </Table>
       </TableContainer>
       <div className={styles.pagination}>
-        <Link onClick={onPreviousClick}>
-          <span className={styles.previous}>
-            {PREV_BUTTON_LABEL_STRING}
-          </span>
-        </Link>
-        <Link onClick={onNextClick}>
-          <span>{NEXT_BUTTON_LABEL_STRING}</span>
-        </Link>
+        {!fetchingPage ? (
+          <>
+            <Link onClick={onPreviousClick}>
+              <span className={styles.previous}>
+                {PREV_BUTTON_LABEL_STRING}
+              </span>
+            </Link>
+            <Link onClick={onNextClick}>
+              <span>{NEXT_BUTTON_LABEL_STRING}</span>
+            </Link>
+          </>
+        ) : (
+          <>
+            <span className={styles.previous}>
+              {PREV_BUTTON_LABEL_STRING}
+            </span>
+            <span>{NEXT_BUTTON_LABEL_STRING}</span>
+          </>
+        )}
       </div>
       <section className={styles.actions}>
         <div className={styles.buttonWrapper}>
