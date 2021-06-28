@@ -110,15 +110,23 @@ class LedgerBridgeUtil {
   /////////////////////////////
 
   /**
+   * Closes any existing transport connections
+   */
+  public closeConnection = () => {
+    // Close any existing connection before creating a new one.
+    this.transport.close();
+  };
+
+  /**
    * Requests permission to access the Ledger device via USB.
    * And sets the transport to the Ledger Bridge.
    */
   public requestPermissions = async () => {
     // Instantiate the ledger transport
     this.transport = await webHidTransport.request();
-    // Instantiate the ledger bridge  
+    // Instantiate the ledger bridge
     this.ledgerBridge = new LedgerBridge(webHidTransport);
-  }
+  };
 
   /**
    * Sets the onProgressUpdate callback which is called with the progress signature.
