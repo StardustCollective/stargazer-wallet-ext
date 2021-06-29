@@ -42,11 +42,11 @@ export class StargazerProvider {
     return sig;
   }
 
-  async importLedgerAccounts (publicKeys: string[]) {
+  async importLedgerAccounts (addresses: string[]) {
 
-    for (let i = 0; i < publicKeys.length; i++) {
+    for (let i = 0; i < addresses.length; i++) {
 
-      const res = await this.getAccountByPublicKey(publicKeys[i]);
+      const res = await this.getAccountByAddress(addresses[i]);
 
       const account = {
         id: 'L' + i,
@@ -61,8 +61,8 @@ export class StargazerProvider {
     }
   }
 
-  private async getAccountByPublicKey (pKey: string): Promise<IAccountInfo> {
-    dag4.account.loginPublicKey(pKey);
+  private async getAccountByAddress (address: string): Promise<IAccountInfo> {
+    dag4.account.setKeysAndAddress('','', address);
     const balance = await dag4.account.getBalance();
     const transactions = await dag4.account.getTransactions(10);
     return {

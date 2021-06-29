@@ -92,7 +92,6 @@ const AccountController = (actions: {
     address: string
   ): Promise<IAccountInfo> => {
     dag4.account.setKeysAndAddress('','', address);
-    // const ethAddress = dag4.keyStore.getEthAddressFromPrivateKey(privateKey);
     const balance = (await dag4.account.getBalance() || 0);
     const transactions = await dag4.account.getTransactions(10);
     return {
