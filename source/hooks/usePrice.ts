@@ -6,7 +6,7 @@ import { PRICE_DAG_ID, DEFAULT_CURRENCY } from 'constants/index';
 export function useFiat() {
   const price: IPriceState = useSelector((state: RootState) => state.price);
 
-  return (amount: number, fraction = 4) => {
+  return (amount = 0, fraction = 4) => {
     const value = amount * price.fiat[PRICE_DAG_ID];
     return `${DEFAULT_CURRENCY.symbol}${value.toLocaleString(
       navigator.language,
