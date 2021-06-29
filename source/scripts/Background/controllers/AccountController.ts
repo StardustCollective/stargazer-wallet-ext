@@ -88,6 +88,21 @@ const AccountController = (actions: {
     };
   };
 
+  const getAccountByAddress = async (
+    address: string
+  ): Promise<IAccountInfo> => {
+    dag4.account.setKeysAndAddress('','', address);
+    const balance = (await dag4.account.getBalance() || 0);
+    const transactions = await dag4.account.getTransactions(10);
+    return {
+      address: {
+        constellation: dag4.account.address,
+      },
+      balance,
+      transactions,
+    };
+  };
+
   const getAccountByIndex = async (index: number) => {
     const masterKey: hdkey | null = actions.getMasterKey();
     if (!masterKey) return null;
@@ -214,10 +229,17 @@ const AccountController = (actions: {
     )
       return;
 
-    const accLatestInfo =
-      accounts[activeAccountId].type === AccountType.Seed
-        ? await getAccountByIndex(Number(activeAccountId))
-        : await getAccountByPrivKeystore(activeAccountId);
+    let accLatestInfo: IAccountInfo | null = null;
+
+    if(accounts[activeAccountId].type === AccountType.Seed) {
+      accLatestInfo = await getAccountByIndex(Number(activeAccountId));
+    }
+    else if(accounts[activeAccountId].type === AccountType.PrivKey) {
+      accLatestInfo = await getAccountByPrivKeystore(activeAccountId);
+    }
+    else {
+      accLatestInfo = await getAccountByAddress(accounts[activeAccountId].address.constellation);
+    }
 
     if (!accLatestInfo) return;
 
@@ -232,7 +254,7 @@ const AccountController = (actions: {
           !account ||
           (account.address.constellation !== pTx.sender &&
             account.address.constellation !== pTx.receiver) ||
-          accLatestInfo?.transactions.filter(
+          (accLatestInfo as IAccountInfo).transactions.filter(
             (tx: Transaction) => tx.hash === pTx.hash
           ).length > 0
         )

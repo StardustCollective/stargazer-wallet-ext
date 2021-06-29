@@ -13,6 +13,7 @@ export type Keystore = SeedKeystore | PrivKeystore;
 export enum AccountType {
   Seed,
   PrivKey,
+  Ledger
 }
 
 export interface IAccountState {

@@ -1,7 +1,9 @@
-import IWalletState from 'state/wallet/types';
+import IWalletState, { AccountType } from 'state/wallet/types';
 import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
 import { hashPersonalMessage, ecsign, toRpcSig } from 'ethereumjs-util';
+import { IAccountInfo } from 'scripts/types';
+import { createAccount } from 'state/wallet';
 
 export class StargazerProvider {
   constructor() {}
@@ -39,6 +41,38 @@ export class StargazerProvider {
 
     return sig;
   }
+
+  async importLedgerAccounts (addresses: string[]) {
+
+    for (let i = 0; i < addresses.length; i++) {
+
+      const res = await this.getAccountByAddress(addresses[i]);
+
+      const account = {
+        id: 'L' + i,
+        label: 'Ledger ' + (i + 1),
+        address: res!.address,
+        balance: res!.balance,
+        transactions: res!.transactions,
+        type: AccountType.Ledger,
+      };
+
+      store.dispatch(createAccount(account));
+    }
+  }
+
+  private async getAccountByAddress (address: string): Promise<IAccountInfo> {
+    dag4.account.setKeysAndAddress('','', address);
+    const balance = await dag4.account.getBalance();
+    const transactions = await dag4.account.getTransactions(10);
+    return {
+      address: {
+        constellation: dag4.account.address,
+      },
+      balance,
+      transactions,
+    };
+  };
 
   private remove0x(hash: string) {
     return hash.startsWith('0x') ? hash.slice(2) : hash;
