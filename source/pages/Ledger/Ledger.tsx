@@ -224,7 +224,14 @@ const LedgerPage: FC = () => {
   }
 
   const onImportClick = () => {
-    console.log('Import Click');
+    let port = chrome.runtime.connect({ name: 'stargazer' });
+    port.postMessage({
+      type: 'CAL_REQUEST',
+      data: {
+        method: 'wallet.setLedgerAccounts',
+        args: [selectedAccounts],
+      }
+    });
   }
 
   const onCancelClick = () => {
