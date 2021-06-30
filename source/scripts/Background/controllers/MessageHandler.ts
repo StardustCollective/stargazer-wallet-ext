@@ -149,6 +149,8 @@ export const messagesHandler = (
         result = masterController.stargazerProvider.getNetwork();
       } else if (method === 'wallet.getBalance') {
         result = masterController.stargazerProvider.getBalance();
+      } else if (method === 'wallet.setLedgerAccounts') {
+          window.controller.stargazerProvider.importLedgerAccounts(args[0]);
       } else if (method === 'wallet.signMessage') {
         if (pendingWindow) {
           return Promise.resolve(null);
