@@ -8,7 +8,7 @@ import { createAccount } from 'state/wallet';
 export class StargazerProvider {
   constructor() {}
 
-  getNetwork () {
+  getNetwork() {
     const { activeNetwork }: IWalletState = store.getState().wallet;
 
     return activeNetwork;
@@ -42,14 +42,14 @@ export class StargazerProvider {
     return sig;
   }
 
-  async importLedgerAccounts (addresses: string[]) {
-
+  async importLedgerAccounts(addresses: AccountItem[]) {
     for (let i = 0; i < addresses.length; i++) {
+      let accountItem = addresses[i];
 
-      const res = await this.getAccountByAddress(addresses[i]);
+      const res = await this.getAccountByAddress(accountItem.address);
 
       const account = {
-        id: 'L' + i,
+        id: 'L' + accountItem.id,
         label: 'Ledger ' + (i + 1),
         address: res!.address,
         balance: res!.balance,
@@ -61,8 +61,8 @@ export class StargazerProvider {
     }
   }
 
-  private async getAccountByAddress (address: string): Promise<IAccountInfo> {
-    dag4.account.setKeysAndAddress('','', address);
+  private async getAccountByAddress(address: string): Promise<IAccountInfo> {
+    dag4.account.setKeysAndAddress('', '', address);
     const balance = await dag4.account.getBalance();
     const transactions = await dag4.account.getTransactions(10);
     return {
@@ -72,9 +72,14 @@ export class StargazerProvider {
       balance,
       transactions,
     };
-  };
+  }
 
   private remove0x(hash: string) {
     return hash.startsWith('0x') ? hash.slice(2) : hash;
   }
 }
+
+type AccountItem = {
+  id: number;
+  address: string;
+};
