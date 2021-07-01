@@ -57,7 +57,7 @@ export class StargazerProvider {
         type: AccountType.Ledger,
       };
 
-      store.dispatch(createAccount(account));
+      await store.dispatch(createAccount(account));
     }
   }
 
