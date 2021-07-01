@@ -199,6 +199,7 @@ let Accounts = ({
             theme={CANCEL_BUTTON_THEME_PROP}
             variant={clsx(styles.button, styles.cancel)}
             onClick={onCancelClick}
+            disabled={fetchingPage}
           >
             {CANCEL_BUTTON_LABEL_STRING}
           </Button>
@@ -208,6 +209,7 @@ let Accounts = ({
             type={IMPORT_BUTTON_TYPE_PROP}
             variant={styles.button}
             onClick={onImportClick}
+            disabled={fetchingPage}
           >
             {IMPORT_BUTTON_LABEL_STRING}
           </Button>
