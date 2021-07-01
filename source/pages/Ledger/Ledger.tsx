@@ -28,7 +28,7 @@ import AccountsView from './views/accounts';
 /////////////////////////
 
 
-// import './styles';
+import styles from './styles.module.scss';
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
 
@@ -67,6 +67,7 @@ enum WALLET_STATE_ENUM {
   FETCHING_PAGE,
   VIEW_ACCOUNTS,
   SENDING,
+  SUCCESS,
 }
 
 enum PAGING_ACTIONS_ENUM {
@@ -209,7 +210,7 @@ const LedgerPage: FC = () => {
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
       setSelectedAccounts((state) => {
-        return [...state, account];
+        return [...state, { address: account.address, id: key - 1}];
       })
     } else {
       setSelectedAccounts((state) => {
@@ -224,6 +225,7 @@ const LedgerPage: FC = () => {
   }
 
   const onImportClick = () => {
+    setFetchingPage(true);
     let port = chrome.runtime.connect({ name: 'stargazer' });
     port.postMessage({
       type: 'CAL_REQUEST',
@@ -231,6 +233,12 @@ const LedgerPage: FC = () => {
         method: 'wallet.setLedgerAccounts',
         args: [selectedAccounts],
       }
+    });
+    port.onMessage.addListener((res: any) => {
+      if(res.data.result === 'success'){
+        setWalletState(WALLET_STATE_ENUM.SUCCESS);
+        setFetchingPage(false);
+      };
     });
   }
 
@@ -276,7 +284,14 @@ const LedgerPage: FC = () => {
           />
         </>
       );
+    } else if (walletState === WALLET_STATE_ENUM.SUCCESS) {
+      return (
+        <div className={styles.success}>
+            <span>Success! You may now close this window<br/> and continue in the wallet.</span>
+        </div>
+      );
     }
+
     return null;
   }
 
