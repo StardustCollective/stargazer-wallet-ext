@@ -287,7 +287,7 @@ const LedgerPage: FC = () => {
     } else if (walletState === WALLET_STATE_ENUM.SUCCESS) {
       return (
         <div className={styles.success}>
-            <span>Success! You may now close this window<br/> and continue in the wallet.</span>
+            <span>Success! You can now close this tab<br/> and continue in the wallet.</span>
         </div>
       );
     }
