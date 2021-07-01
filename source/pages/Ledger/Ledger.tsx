@@ -5,7 +5,7 @@
 import React, { FC, useState, useEffect } from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { makeStyles } from '@material-ui/core/styles'
-import { LedgerBridgeUtil } from './utils/ledgerBridge';
+import { LedgerBridgeUtil } from '../../utils/ledgerBridge';
 import _ from 'lodash';
 
 /////////////////////////
