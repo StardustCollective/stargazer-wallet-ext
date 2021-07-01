@@ -150,7 +150,8 @@ export const messagesHandler = (
       } else if (method === 'wallet.getBalance') {
         result = masterController.stargazerProvider.getBalance();
       } else if (method === 'wallet.setLedgerAccounts') {
-          window.controller.stargazerProvider.importLedgerAccounts(args[0]);
+          await window.controller.stargazerProvider.importLedgerAccounts(args[0]);
+          port.postMessage({ id: message.id, data: { result: "success" } });
       } else if (method === 'wallet.signMessage') {
         if (pendingWindow) {
           return Promise.resolve(null);
