@@ -50,7 +50,7 @@ export class StargazerProvider {
 
       const account = {
         id: 'L' + accountItem.id,
-        label: 'Ledger ' + (i + 1),
+        label: 'Ledger ' + (accountItem.id + 1),
         address: res!.address,
         balance: res!.balance,
         transactions: res!.transactions,
