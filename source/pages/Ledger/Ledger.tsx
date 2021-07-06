@@ -210,7 +210,7 @@ const LedgerPage: FC = () => {
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
       setSelectedAccounts((state) => {
-        return [...state, { address: account.address, id: key - 1}];
+        return [...state, { publicKey: account.publicKey, address: account.address, id: key - 1}];
       })
     } else {
       setSelectedAccounts((state) => {

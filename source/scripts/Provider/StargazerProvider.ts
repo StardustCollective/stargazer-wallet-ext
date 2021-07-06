@@ -52,6 +52,7 @@ export class StargazerProvider {
         id: 'L' + accountItem.id,
         label: 'Ledger ' + (accountItem.id + 1),
         address: res!.address,
+        publicKey: accountItem!.publicKey,
         balance: res!.balance,
         transactions: res!.transactions,
         type: AccountType.Ledger,
@@ -82,4 +83,5 @@ export class StargazerProvider {
 type AccountItem = {
   id: number;
   address: string;
+  publicKey: string;
 };

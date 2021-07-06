@@ -109,6 +109,10 @@ class LedgerBridgeUtil {
   // Public Methods
   /////////////////////////////
 
+  public buildTransaction = (publicKey: string, bip44Index: number, fromAddress: string, toAddress: string) => {
+    return this.ledgerBridge.buildTx(publicKey, bip44Index, fromAddress, toAddress);
+  };
+
   /**
    * Closes any existing transport connections
    */
