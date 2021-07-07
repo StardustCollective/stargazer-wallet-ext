@@ -119,7 +119,7 @@ class LedgerBridgeUtil {
   public closeConnection = () => {
     // Close any existing connection before creating a new one.
     this.transport.close();
-  };
+  };     
 
   /**
    * Requests permission to access the Ledger device via USB.
@@ -127,7 +127,9 @@ class LedgerBridgeUtil {
    */
   public requestPermissions = async () => {
     // Instantiate the ledger transport
-    this.transport = await webHidTransport.request();
+    this.transport = await webHidTransport.openConnected();
+    // Close any existing connections;
+    this.transport.close();
     // Instantiate the ledger bridge
     this.ledgerBridge = new LedgerBridge(webHidTransport);
   };
