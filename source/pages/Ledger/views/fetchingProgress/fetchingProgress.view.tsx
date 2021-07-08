@@ -14,7 +14,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import styles from './styles.module.scss';
 
-const ProgressStyles = props => ({
+const ProgressStyles = () => ({
   root:{
     marginBottom: '20px',
   },
