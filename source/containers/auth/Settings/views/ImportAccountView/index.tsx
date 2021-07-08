@@ -48,8 +48,8 @@ const ImportAccountView: FC = () => {
   const [loading, setLoading] = useState(false);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
   const [accountName, setAccountName] = useState<string>();
-  const [hardwareStep, setHardwareStep] = useState(1);
-  const [loadingWalletList, setLoadingWalletList] = useState(false);
+  const [hardwareStep] = useState(1);
+  const [loadingWalletList] = useState(false);
   // @ts-ignore
   const [hardwareWalletList, setHardwareWalletList] = useState<
     Array<HardwareWallet>
