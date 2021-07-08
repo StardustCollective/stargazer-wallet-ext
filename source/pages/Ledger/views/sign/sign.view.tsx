@@ -106,7 +106,7 @@ const SignView = ({
             Max Total
             <span>
               {getFiatAmount(
-                Number(amount) || 0 + Number(fee) || 0,
+                Number(amount || 0) + Number(fee || 0),
                 8
               )}
             </span>
