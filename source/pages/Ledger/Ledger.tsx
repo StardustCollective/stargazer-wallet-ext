@@ -32,6 +32,7 @@ import ImportSuccess from './views/importSuccess'
 
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
+import { browser } from 'webextension-polyfill-ts';
 
 /////////////////////////
 // Constants
@@ -162,7 +163,7 @@ const LedgerPage: FC = () => {
         setAccountData(accountData);
       }
       setStartIndex(LedgerBridgeUtil.startIndex);
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
         setWalletState(WALLET_STATE_ENUM.LOCKED);
@@ -231,7 +232,7 @@ const LedgerPage: FC = () => {
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
       setSelectedAccounts((state) => {
-        return [...state, { publicKey: account.publicKey, address: account.address, id: key - 1 }];
+        return [...state, { publicKey: account.publicKey, address: account.address, id: key - 1, balance: '' }];
       })
     } else {
       setSelectedAccounts((state) => {
@@ -247,7 +248,7 @@ const LedgerPage: FC = () => {
 
   const onImportClick = () => {
     setFetchingPage(true);
-    let port = chrome.runtime.connect({ name: 'stargazer' }); // eslint-disable-line no-eval
+    let port = browser.runtime.connect(undefined, { name: 'stargazer' });
     port.postMessage({
       type: 'CAL_REQUEST',
       data: {
@@ -280,12 +281,13 @@ const LedgerPage: FC = () => {
       id,
       from,
       to,
-    } = queryString.parse(location.search);
+    } = queryString.parse(location.search) as any;
 
     try{
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
       const signedTX = await LedgerBridgeUtil.buildTransaction(publicKey, Number(id.replace('L','')), from, to);
+      console.log('signedTX', signedTX);
       setWaitingForLedger(false);
       setTransactionSigned(true);
       LedgerBridgeUtil.closeConnection();
@@ -341,7 +343,7 @@ const LedgerPage: FC = () => {
         fee,
         from,
         to,
-      } = queryString.parse(location.search);
+      } = queryString.parse(location.search) as any;
 
       return (
         <>
