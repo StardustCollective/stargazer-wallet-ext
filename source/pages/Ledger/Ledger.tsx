@@ -30,8 +30,6 @@ import ImportSuccess from './views/importSuccess'
 // Styles
 /////////////////////////
 
-
-import styles from './styles.module.scss';
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
 
