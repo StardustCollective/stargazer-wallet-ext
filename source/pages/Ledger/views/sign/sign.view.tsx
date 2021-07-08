@@ -111,7 +111,8 @@ const SignView = ({
               )}
             </span>
           </div>
-          <section className={styles.instruction}>
+        </section>
+        <section className={styles.instruction}>
             <span>
               Please connect your Ledger device and open the Constellation app to sign the transaction.
             </span>
@@ -121,7 +122,6 @@ const SignView = ({
               Sign
             </Button>
           </div>
-        </section>
         {waiting &&
           <div className={styles.progressWrapper}>
             <div className={styles.progress}>
