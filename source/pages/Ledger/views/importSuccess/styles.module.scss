@@ -8,11 +8,6 @@
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-    .button {
-      width: 100%;
-      background-color: #521E8A;
-      flex: 0 1 auto;
-    }
     .instructions{
       display: flex;
       flex: 1 1 auto;
@@ -21,7 +16,7 @@
       align-items: center;
       span {
         padding: 30px 20px 0px 20px;
-        font-size: 12px;
+        font-size: 15px;
         text-align: center;
       }
     }

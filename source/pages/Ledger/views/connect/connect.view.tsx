@@ -9,15 +9,14 @@ import { withStyles } from '@material-ui/core/styles'
 // Components Imports
 /////////////////////////
 
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 
 /////////////////////////
-// Icons Imports
+// Image Imports
 /////////////////////////
 
-import UsbIcon from '@material-ui/icons/Usb';
+import LedgerIcon from 'assets/images/svg/ledger.svg';
+
 
 /////////////////////////
 // Styles Imports
@@ -35,7 +34,7 @@ const BUTTON_VARIANT_PROP = 'contained';
 const BUTTON_COLOR_PROP = 'primary';
 const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
 // Strings
-const CONNECT_TO_LEDGER_STRING = 'connect to Ledger';
+const CONNECT_TO_LEDGER_STRING = 'Connect to Ledger';
 
 /////////////////////////
 // Interface
@@ -58,7 +57,7 @@ function Connect(props: IConnectProps) {
 
   const onClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 
-    if(props.onConnectClick){
+    if (props.onConnectClick) {
       props.onConnectClick(event);
     }
 
@@ -79,18 +78,26 @@ function Connect(props: IConnectProps) {
   }))(Button);
 
   return (
-    <CardContent>
-      <CardActions>
-        <BlueButton 
-          onClick={onClick} 
-          className={styles.button} 
-          size={BUTTON_SIZE_PROP} 
-          variant={BUTTON_VARIANT_PROP} 
-          color={BUTTON_COLOR_PROP}>
-          <UsbIcon />&nbsp;{CONNECT_TO_LEDGER_STRING}
-        </BlueButton>
-      </CardActions>
-    </CardContent>
+    <div className={styles.content}>
+      <div className={styles.wrapper}>
+        <div className={styles.instructions}>
+          <img src={LedgerIcon} alt="ledger_icon" width={183} height={45} />
+          <span>
+            Select your device from the browser <br/>drop-down and press connect
+          </span>
+        </div>
+        <div>
+          <BlueButton
+            onClick={onClick}
+            className={styles.button}
+            size={BUTTON_SIZE_PROP}
+            variant={BUTTON_VARIANT_PROP}
+            color={BUTTON_COLOR_PROP}>
+            {CONNECT_TO_LEDGER_STRING}
+          </BlueButton>
+        </div>
+      </div>
+    </div>
   );
 }
 

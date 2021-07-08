@@ -17,7 +17,7 @@ import { ellipsis } from '../../../../containers/auth/helpers';
 // Components Imports
 /////////////////////////
 
-import Table from '@material-ui/core/Table';
+import MUITable from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import MUITableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -41,6 +41,13 @@ const TableCell = withStyles({
     fontFamily: 'Inter',
   }
 })(MUITableCell);
+
+const Table = withStyles({
+  root: {
+    backgroundColor: "#F5F5F5",
+  }
+})(MUITable);
+
 
 /////////////////////////
 // Interfaces
@@ -66,8 +73,8 @@ interface IUiTableCell {
 
 // Strings
 const DAG_STRING: string = 'DAG';
-const PREV_BUTTON_LABEL_STRING: string = 'Previous';
-const NEXT_BUTTON_LABEL_STRING: string = 'Next';
+const PREV_BUTTON_LABEL_STRING: string = 'PREVIOUS';
+const NEXT_BUTTON_LABEL_STRING: string = 'NEXT';
 const CANCEL_BUTTON_LABEL_STRING: string = 'Cancel';
 const IMPORT_BUTTON_LABEL_STRING: string = 'Import';
 // Numbers

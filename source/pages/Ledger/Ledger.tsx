@@ -24,6 +24,7 @@ import ConnectView from './views/connect';
 import FetchingProgressView from './views/fetchingProgress';
 import AccountsView from './views/accounts';
 import SignView from './views/sign';
+import ImportSuccess from './views/importSuccess'
 
 /////////////////////////
 // Styles
@@ -85,9 +86,11 @@ enum PAGING_ACTIONS_ENUM {
 
 const useStyles = makeStyles({
   root: {
+    display: 'flex',
+    flexDirection: 'column',
     width: 380,
     height: 570,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: "#ffffff",
     borderRadius: 6,
   },
 });
@@ -329,9 +332,9 @@ const LedgerPage: FC = () => {
       );
     } else if (walletState === WALLET_STATE_ENUM.SUCCESS) {
       return (
-        <div className={styles.success}>
-          <span>Success! You can now close this tab<br /> and continue in the wallet.</span>
-        </div>
+        <>
+          <ImportSuccess />
+        </>
       );
     } else if (walletState === WALLET_STATE_ENUM.SIGN) {
 
