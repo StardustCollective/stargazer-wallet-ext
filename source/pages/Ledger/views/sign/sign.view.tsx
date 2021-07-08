@@ -28,10 +28,10 @@ import styles from './styles.module.scss';
 /////////////////////////
 
 interface ISignViewProps {
-  amount: number,
-  fee: number,
-  fromAddress: string,
-  toAddress: string,
+  amount: string | string[] | null,
+  fee: string | string[] | null,
+  fromAddress: string | string[] | null,
+  toAddress: string | string[] | null,
   onSignPress: () => {},
 }
 

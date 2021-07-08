@@ -244,7 +244,7 @@ const LedgerPage: FC = () => {
 
   const onImportClick = () => {
     setFetchingPage(true);
-    let port = chrome.runtime.connect({ name: 'stargazer' });
+    let port = chrome.runtime.connect({ name: 'stargazer' }); // eslint-disable-line no-eval
     port.postMessage({
       type: 'CAL_REQUEST',
       data: {
@@ -275,8 +275,6 @@ const LedgerPage: FC = () => {
     const {
       publicKey,
       id,
-      amount,
-      fee,
       from,
       to,
     } = queryString.parse(location.search);
@@ -334,9 +332,6 @@ const LedgerPage: FC = () => {
     } else if (walletState === WALLET_STATE_ENUM.SIGN) {
 
       const {
-        walletState,
-        publicKey,
-        id,
         amount,
         fee,
         from,

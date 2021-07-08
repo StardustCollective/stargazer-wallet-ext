@@ -2,8 +2,8 @@
 // Module Imports
 /////////////////////////
 
-import React, { useState } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles'
+import React from 'react';
+import { withStyles } from '@material-ui/core/styles'
 import clsx from 'clsx';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 
@@ -33,13 +33,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 /////////////////////////
 
 import styles from './styles.module.scss';
-
-const useStyles = makeStyles({
-  table: {
-    backgroundColor: '#fffff',
-    width: "100%",
-  },
-});
 
 const TableCell = withStyles({
   root: {
@@ -105,12 +98,6 @@ let Accounts = ({
   fetchingPage,
   startIndex,
 }: IAccountsProps) => {
-
-  /////////////////////////
-  // Hooks
-  /////////////////////////
-
-  const classes = useStyles();
 
   /////////////////////////
   // Callback
