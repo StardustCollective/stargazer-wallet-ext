@@ -118,14 +118,6 @@ const SignView = ({
             </span>
           </section>
           <div className={styles.actions}>
-            <Button
-              type="button"
-              theme="secondary"
-              variant={clsx(styles.button, styles.close)}
-              linkTo="/send"
-            >
-              Cancel
-            </Button>
             <Button type="submit" variant={styles.button} onClick={onSignPress}>
               Sign
             </Button>
