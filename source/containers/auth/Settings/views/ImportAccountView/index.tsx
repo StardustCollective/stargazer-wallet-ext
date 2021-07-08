@@ -59,7 +59,7 @@ const ImportAccountView: FC = () => {
     validationSchema: yup.object().shape({
       privKey: importType === 'priv' ? yup.string().required() : yup.string(),
       password: importType === 'json' ? yup.string().required() : yup.string(),
-      label: yup.string().required(),
+      // label: yup.string().required(),
     }),
   });
 
@@ -78,10 +78,6 @@ const ImportAccountView: FC = () => {
         setLoading(false);
         setAccountName(undefined);
       });
-  };
-
-  const loadHardwareList = async () => {
-    window.open('/ledger.html','_newtab');
   };
 
   const onSubmit = async (data: any) => {
@@ -123,10 +119,7 @@ const ImportAccountView: FC = () => {
         }
       };
     } else if (importType === 'hardware') {
-      // console.log('hardware wallet import');
-      setHardwareStep(2);
-      setLoadingWalletList(true);
-      loadHardwareList();
+      window.open('/ledger.html', '_newtab');
     } else {
       alert.removeAll();
       alert.error('Error: A private key json file is not chosen');
@@ -293,7 +286,7 @@ const ImportAccountView: FC = () => {
               Cancel
             </Button>
             <Button type="submit" variant={styles.button} loading={loading}>
-              {importType === 'hardware' ? 'Connect' : 'Import'}
+              {importType === 'hardware' ? 'Next' : 'Import'}
             </Button>
           </section>
         </>
