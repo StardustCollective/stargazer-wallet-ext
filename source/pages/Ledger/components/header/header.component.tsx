@@ -22,9 +22,6 @@ import styles from './styles.module.scss';
 // Constants
 /////////////////////////
 
-// Numbers
-const LOGO_IMAGE_WIDTH_NUMBER = 150;
-const LOGO_IMAGE_HEIGHT_NUMBER = 38;
 // Strings
 const WALLET_RIGHT_HEADER_STRING = 'Stargazer Wallet';
 
