@@ -6,6 +6,7 @@ import React, { FC, useState, useEffect } from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { makeStyles } from '@material-ui/core/styles'
 import { LedgerBridgeUtil } from '../../utils/ledgerBridge';
+import queryString from 'query-string';
 import _ from 'lodash';
 
 /////////////////////////
@@ -22,6 +23,7 @@ import { Header, AlertBar } from './components';
 import ConnectView from './views/connect';
 import FetchingProgressView from './views/fetchingProgress';
 import AccountsView from './views/accounts';
+import SignView from './views/sign';
 
 /////////////////////////
 // Styles
@@ -68,6 +70,7 @@ enum WALLET_STATE_ENUM {
   VIEW_ACCOUNTS,
   SENDING,
   SUCCESS,
+  SIGN,
 }
 
 enum PAGING_ACTIONS_ENUM {
@@ -82,8 +85,10 @@ enum PAGING_ACTIONS_ENUM {
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 400,
+    width: 380,
+    height: 577,
     backgroundColor: '#f1f1f1',
+    borderRadius: 6,
   },
 });
 
@@ -118,6 +123,19 @@ const LedgerPage: FC = () => {
     LedgerBridgeUtil.setOnProgressUpdate(onProgressUpdate);
   }, []);
 
+  useEffect(() => {
+
+    const {
+      walletState,
+    } = queryString.parse(location.search);
+
+    if (walletState === 'sign') {
+      setWalletState(WALLET_STATE_ENUM.SIGN);
+    }
+
+  }, []);
+
+
   /////////////////////////
   // Helper
   /////////////////////////
@@ -143,7 +161,7 @@ const LedgerPage: FC = () => {
       setStartIndex(LedgerBridgeUtil.startIndex);
     } catch (error: any) {
       console.log(error);
-      if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL){
+      if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
         setWalletState(WALLET_STATE_ENUM.LOCKED);
       } else {
         setFetchingPage(false);
@@ -210,7 +228,7 @@ const LedgerPage: FC = () => {
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
       setSelectedAccounts((state) => {
-        return [...state, { publicKey: account.publicKey, address: account.address, id: key - 1}];
+        return [...state, { publicKey: account.publicKey, address: account.address, id: key - 1 }];
       })
     } else {
       setSelectedAccounts((state) => {
@@ -235,9 +253,10 @@ const LedgerPage: FC = () => {
       }
     });
     port.onMessage.addListener((res: any) => {
-      if(res.data.result === 'success'){
+      if (res.data.result === 'success') {
         setWalletState(WALLET_STATE_ENUM.SUCCESS);
         setFetchingPage(false);
+        LedgerBridgeUtil.closeConnection();
       };
     });
   }
@@ -249,6 +268,28 @@ const LedgerPage: FC = () => {
     setAccountsLoadProgress(0);
     // Transition to the locked state
     setWalletState(WALLET_STATE_ENUM.LOCKED);
+  }
+
+  const onSignPress = async () => {
+
+    const {
+      publicKey,
+      id,
+      amount,
+      fee,
+      from,
+      to,
+    } = queryString.parse(location.search);
+
+    try{
+      await LedgerBridgeUtil.requestPermissions();
+      const signedTX = await LedgerBridgeUtil.buildTransaction(publicKey, Number(id.replace('L','')), from, to);
+      console.log('Signed Transaction');
+      console.log(signedTX);
+    } catch(e) {
+      console.log("Error Signing The Transaction");
+      console.log(e);
+    }
   }
 
   /////////////////////////
@@ -287,8 +328,31 @@ const LedgerPage: FC = () => {
     } else if (walletState === WALLET_STATE_ENUM.SUCCESS) {
       return (
         <div className={styles.success}>
-            <span>Success! You can now close this tab<br/> and continue in the wallet.</span>
+          <span>Success! You can now close this tab<br /> and continue in the wallet.</span>
         </div>
+      );
+    } else if (walletState === WALLET_STATE_ENUM.SIGN) {
+
+      const {
+        walletState,
+        publicKey,
+        id,
+        amount,
+        fee,
+        from,
+        to,
+      } = queryString.parse(location.search);
+
+      return (
+        <>
+         <SignView
+         amount={amount}
+         fee={fee}
+         fromAddress={from}
+         toAddress={to}
+         onSignPress={onSignPress}
+         />
+        </>
       );
     }
 
@@ -296,13 +360,11 @@ const LedgerPage: FC = () => {
   }
 
   return (
-    <div id="confirm-page">
-      <header>
-        <Card className={classes.root}>
-          <Header />
-          <RenderByWalletState />
-        </Card>
-      </header>
+    <div>
+      <Card className={classes.root}>
+        <Header />
+        <RenderByWalletState />
+      </Card>
       <AlertBar
         openAlert={openAlert}
         message={alertMessage}
