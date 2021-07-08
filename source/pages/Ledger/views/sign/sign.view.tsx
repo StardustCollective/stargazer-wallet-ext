@@ -4,7 +4,6 @@
 
 import React from 'react';
 import { useFiat } from 'hooks/usePrice';
-import clsx from 'clsx';
 
 /////////////////////////
 // Component Import
@@ -27,10 +26,10 @@ import 'assets/styles/global.scss';
 /////////////////////////
 
 interface ISignViewProps {
-  amount: string | string[] | null,
-  fee: string | string[] | null,
-  fromAddress: string | string[] | null,
-  toAddress: string | string[] | null,
+  amount: string,
+  fee: string,
+  fromAddress: string,
+  toAddress: string,
   waiting: boolean,
   transactionSigned: boolean
   onSignPress: () => {},
@@ -98,7 +97,7 @@ const SignView = ({
           <div className={styles.row}>
             Transaction Fee
             <span>
-              {fee} DAG (≈ {getFiatAmount(fee || 0, 8)})
+              {fee} DAG (≈ {getFiatAmount(Number(fee) || 0, 8)})
             </span>
           </div>
         </section>
@@ -107,7 +106,7 @@ const SignView = ({
             Max Total
             <span>
               {getFiatAmount(
-                Number(amount || 0) + Number(fee || 0),
+                Number(amount) || 0 + Number(fee) || 0,
                 8
               )}
             </span>

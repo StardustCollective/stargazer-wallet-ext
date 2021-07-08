@@ -142,7 +142,7 @@ let Accounts = ({
               return (
                 <TableRow key={itemKey}>
                   <UITableCell>
-                    <Checkbox checked={(checkBoxesState[key])} onChange={(event, checked) => { _onCheckboxChange(item, checked, key) }} color={CHECKBOX_COLOR_PROP} />
+                    <Checkbox checked={(checkBoxesState[key])} onChange={(_, checked) => { _onCheckboxChange(item, checked, key) }} color={CHECKBOX_COLOR_PROP} />
                   </UITableCell>
                   <UITableCell>
                     {key}

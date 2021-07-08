@@ -7,7 +7,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import CachedIcon from '@material-ui/icons/Cached';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Checkbox } from '@material-ui/core';
-import { browser } from 'webextension-polyfill-ts';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
@@ -51,6 +50,7 @@ const ImportAccountView: FC = () => {
   const [accountName, setAccountName] = useState<string>();
   const [hardwareStep, setHardwareStep] = useState(1);
   const [loadingWalletList, setLoadingWalletList] = useState(false);
+  // @ts-ignore
   const [hardwareWalletList, setHardwareWalletList] = useState<
     Array<HardwareWallet>
   >([]);
