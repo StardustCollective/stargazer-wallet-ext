@@ -2,7 +2,7 @@
 // Module Imports
 /////////////////////////
 
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect} from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { makeStyles } from '@material-ui/core/styles'
 import { LedgerBridgeUtil } from '../../utils/ledgerBridge';
@@ -86,7 +86,7 @@ enum PAGING_ACTIONS_ENUM {
 const useStyles = makeStyles({
   root: {
     width: 380,
-    height: 577,
+    height: 570,
     backgroundColor: '#f1f1f1',
     borderRadius: 6,
   },
@@ -113,6 +113,8 @@ const LedgerPage: FC = () => {
   const [checkBoxesState, setCheckBoxesState] = useState<boolean[]>([]);
   const [fetchingPage, setFetchingPage] = useState<boolean>(false);
   const [startIndex, setStartIndex] = useState<number>(0);
+  const [waitingForLedger, setWaitingForLedger] = useState<boolean>(false);
+  const [transactionSigned, setTransactionSigned] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -280,13 +282,15 @@ const LedgerPage: FC = () => {
     } = queryString.parse(location.search);
 
     try{
+      setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
       const signedTX = await LedgerBridgeUtil.buildTransaction(publicKey, Number(id.replace('L','')), from, to);
-      console.log('Signed Transaction');
-      console.log(signedTX);
+      setWaitingForLedger(false);
+      setTransactionSigned(true);
+      LedgerBridgeUtil.closeConnection();
     } catch(e) {
-      console.log("Error Signing The Transaction");
-      console.log(e);
+      setWaitingForLedger(false);
+      LedgerBridgeUtil.closeConnection();
     }
   }
 
@@ -345,7 +349,9 @@ const LedgerPage: FC = () => {
          fee={fee}
          fromAddress={from}
          toAddress={to}
+         waiting={waitingForLedger}
          onSignPress={onSignPress}
+         transactionSigned={transactionSigned}
          />
         </>
       );
