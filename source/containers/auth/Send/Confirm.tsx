@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
+import { useHistory } from 'react-router-dom';
 
 import { AccountType } from 'state/wallet/types';
 import Header from 'containers/common/Header';
@@ -18,6 +19,7 @@ import IWalletState from 'state/wallet/types';
 import styles from './Confirm.scss';
 
 const SendConfirm = () => {
+  const history = useHistory();
   const controller = useController();
   const getFiatAmount = useFiat();
   const alert = useAlert();
@@ -38,6 +40,7 @@ const SendConfirm = () => {
 
     if (accounts[activeAccountId].type === AccountType.Ledger) {
       window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
+      history.push('/home');
     } else {
       controller.wallet.account
         .confirmTempTx()
