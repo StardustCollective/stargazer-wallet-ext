@@ -212,7 +212,6 @@ const ImportAccountView: FC = () => {
               <>
                 {hardwareStep === 1 && (
                   <>
-                    <span>Please select your Hardware device:</span>
                     <div className={styles.hardwareList}>
                       <div className={styles.walletModel}>
                         <img src={LedgerIcon} alt="ledger_icon" />
