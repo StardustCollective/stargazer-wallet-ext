@@ -88,6 +88,7 @@ function Connect(props: IConnectProps) {
         </div>
         <div>
           <BlueButton
+            style={{textTransform: 'none'}}
             onClick={onClick}
             className={styles.button}
             size={BUTTON_SIZE_PROP}
