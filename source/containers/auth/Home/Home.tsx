@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import CircleIcon from '@material-ui/icons/RadioButtonChecked';
-import BlankCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
+// import CircleIcon from '@material-ui/icons/RadioButtonChecked';
+// import BlankCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
 import Header from 'containers/common/Header';
 import Button from 'components/Button';
 import FullSelect from 'components/FullSelect';
@@ -17,13 +17,13 @@ import TxsPanel from './TxsPanel';
 
 import styles from './Home.scss';
 import { formatNumber } from '../helpers';
-import { IDAppState } from 'state/dapp/types';
+// import { IDAppState } from 'state/dapp/types';
 
 const Home = () => {
   const controller = useController();
   const getFiatAmount = useFiat();
-  const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
-  const [connected, setConnected] = useState(false);
+  // const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
+  // const [connected, setConnected] = useState(false);
   const { accounts, activeAccountId }: IWalletState = useSelector(
     (state: RootState) => state.wallet
   );
@@ -34,18 +34,18 @@ const Home = () => {
     controller.stateUpdater();
   };
 
-  const handleOpenBuyDag = () => {
-    window.open('https://portal.stargazer.network/buy-dag', '_blank');
-  };
+  // const handleOpenBuyDag = () => {
+  //   window.open('https://portal.stargazer.network/buy-dag', '_blank');
+  // };
 
-  useEffect(() => {
-    const { origin } = controller.dapp.getCurrent();
-    //console.log('tab: ' + origin, logo, title);
-    if (origin && dapp[origin]) {
-      setConnected(true);
-    }
-
-  }, []);
+  // useEffect(() => {
+  //   const { origin } = controller.dapp.getCurrent();
+  //   //console.log('tab: ' + origin, logo, title);
+  //   if (origin && dapp[origin]) {
+  //     setConnected(true);
+  //   }
+  //
+  // }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -53,16 +53,16 @@ const Home = () => {
         <>
           <Header showLogo />
           <section className={styles.account}>
-            <div
-              className={clsx(styles.status, { [styles.connected]: connected })}
-            >
-              {connected ? (
-                <CircleIcon fontSize="small" />
-              ) : (
-                <BlankCircleIcon fontSize="small" />
-              )}
-              {connected ? 'Connected' : 'Not connected'}
-            </div>
+            {/*<div*/}
+            {/*  className={clsx(styles.status, { [styles.connected]: connected })}*/}
+            {/*>*/}
+            {/*  {connected ? (*/}
+            {/*    <CircleIcon fontSize="small" />*/}
+            {/*  ) : (*/}
+            {/*    <BlankCircleIcon fontSize="small" />*/}
+            {/*  )}*/}
+            {/*  {connected ? 'Connected' : 'Not connected'}*/}
+            {/*</div>*/}
             {Object.keys(accounts).length > 1 ? (
               <FullSelect
                 value={activeAccountId}
@@ -102,14 +102,14 @@ const Home = () => {
               >
                 Receive
               </Button>
-              <Button
-                type="button"
-                theme="primary"
-                variant={styles.buyDag}
-                onClick={handleOpenBuyDag}
-              >
-                Get $DAG
-              </Button>
+              {/*<Button*/}
+              {/*  type="button"*/}
+              {/*  theme="primary"*/}
+              {/*  variant={styles.buyDag}*/}
+              {/*  onClick={handleOpenBuyDag}*/}
+              {/*>*/}
+              {/*  Get $DAG*/}
+              {/*</Button>*/}
             </div>
           </section>
           <TxsPanel

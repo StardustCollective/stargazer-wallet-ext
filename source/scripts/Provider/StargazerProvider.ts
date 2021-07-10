@@ -62,6 +62,30 @@ export class StargazerProvider {
     }
   }
 
+  async postTransactionResult (hash: string) {
+    console.log('postTransactionResult.addToMemPoolMonitor', hash);
+    // const cbTx = await dag4.network.loadBalancerApi.getTransaction(hash);
+    // const edge = cbTx.transaction.edge;
+    // const pendingTx = {
+    //   hash,
+    //   status: 'POSTED',
+    //   timestamp: cbTx.rxTime,
+    //   sender: edge.observationEdge.parents[0].hashReference,
+    //   receiver: edge.observationEdge.parents[1].hashReference,
+    //   amount: edge.data.amount,
+    //   fee: edge.data.fee,
+    //   ordinal: cbTx.transaction.lastTxRef.ordinal
+    // } as any;
+    // window.controller.wallet.account.addPendingTxToMemPool(pendingTx);
+
+    dag4.monitor.addToMemPoolMonitor(hash);
+
+    setTimeout(() => {
+      console.log('postTransactionResult.watchMemPool');
+      window.controller.wallet.account.watchMemPool();
+    }, 1000)
+  }
+
   private async getAccountByAddress(address: string): Promise<IAccountInfo> {
     dag4.account.setKeysAndAddress('', '', address);
     const balance = await dag4.account.getBalance();

@@ -33,6 +33,7 @@ import ImportSuccess from './views/importSuccess'
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
 import { browser } from 'webextension-polyfill-ts';
+import { dag4 } from '@stardust-collective/dag4';
 
 /////////////////////////
 // Constants
@@ -119,9 +120,7 @@ const LedgerPage: FC = () => {
   const [transactionSigned, setTransactionSigned] = useState<boolean>(false);
 
 
-  useEffect(() => {
-    console.log(selectedAccounts);
-  }, [selectedAccounts])
+  useEffect(() => {}, [selectedAccounts])
 
   useEffect(() => {
     LedgerBridgeUtil.setOnProgressUpdate(onProgressUpdate);
@@ -164,7 +163,7 @@ const LedgerPage: FC = () => {
       }
       setStartIndex(LedgerBridgeUtil.startIndex);
     } catch (error) {
-      console.log(error);
+      console.log('error', error);
       if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
         setWalletState(WALLET_STATE_ENUM.LOCKED);
       } else {
@@ -265,6 +264,20 @@ const LedgerPage: FC = () => {
     });
   }
 
+  const postTransactionResult = (hash: string) => {
+    let port = browser.runtime.connect(undefined, { name: 'stargazer' });
+    port.postMessage({
+      type: 'CAL_REQUEST',
+      data: {
+        method: 'wallet.postTransactionResult',
+        args: [hash],
+      }
+    });
+    port.onMessage.addListener((res: any) => {
+      console.log('postTransactionResult.result', res.data.result === 'success');
+    });
+  }
+
   const onCancelClick = () => {
     // Close any existing connections
     LedgerBridgeUtil.closeConnection();
@@ -277,6 +290,7 @@ const LedgerPage: FC = () => {
   const onSignPress = async () => {
 
     const {
+      amount,
       publicKey,
       id,
       from,
@@ -286,12 +300,17 @@ const LedgerPage: FC = () => {
     try{
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
-      const signedTX = await LedgerBridgeUtil.buildTransaction(publicKey, Number(id.replace('L','')), from, to);
-      console.log('signedTX', signedTX);
+      const signedTX = await LedgerBridgeUtil.buildTransaction(amount, publicKey, Number(id.replace('L','')), from, to);
+      //console.log('signedTX', JSON.stringify(signedTX,null,2));
+      const hash = await dag4.network.loadBalancerApi.postTransaction(signedTX);
+      if (hash) {
+        postTransactionResult(hash);
+      }
       setWaitingForLedger(false);
       setTransactionSigned(true);
       LedgerBridgeUtil.closeConnection();
     } catch(e) {
+      console.log('error', JSON.stringify(e,null,2));
       setWaitingForLedger(false);
       LedgerBridgeUtil.closeConnection();
     }
