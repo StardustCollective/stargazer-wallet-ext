@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
+import { useHistory } from 'react-router-dom';
 
+import { AccountType } from 'state/wallet/types';
 import Header from 'containers/common/Header';
 import Layout from 'containers/common/Layout';
 import Button from 'components/Button';
@@ -17,6 +19,7 @@ import IWalletState from 'state/wallet/types';
 import styles from './Confirm.scss';
 
 const SendConfirm = () => {
+  const history = useHistory();
   const controller = useController();
   const getFiatAmount = useFiat();
   const alert = useAlert();
@@ -27,16 +30,28 @@ const SendConfirm = () => {
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
 
-  const handleConfirm = () => {
-    controller.wallet.account
-      .confirmTempTx()
-      .then(() => {
-        setConfirmed(true);
-      })
-      .catch((error: Error) => {
-        alert.removeAll();
-        alert.error(error.message);
-      });
+  const handleConfirm = async () => {
+    console.log(accounts[activeAccountId]);
+
+    const {
+      publicKey,
+      id,
+    } = accounts[activeAccountId];
+
+    if (accounts[activeAccountId].type === AccountType.Ledger) {
+      window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
+      history.push('/home');
+    } else {
+      controller.wallet.account
+        .confirmTempTx()
+        .then(() => {
+          setConfirmed(true);
+        })
+        .catch((error: Error) => {
+          alert.removeAll();
+          alert.error(error.message);
+        });
+    }
   };
 
   return confirmed ? (
@@ -107,7 +122,7 @@ const SendConfirm = () => {
             Cancel
           </Button>
           <Button type="submit" variant={styles.button} onClick={handleConfirm}>
-            Confirm
+            {accounts[activeAccountId].type === AccountType.Ledger ? 'Next' : 'Confirm'}
           </Button>
         </div>
       </section>

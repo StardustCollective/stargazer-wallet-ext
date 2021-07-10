@@ -22,6 +22,7 @@ export interface IAccountState {
   address: {
     [assetId: string]: string;
   };
+  publicKey?: string;
   balance: number;
   type: AccountType;
   transactions: Transaction[];

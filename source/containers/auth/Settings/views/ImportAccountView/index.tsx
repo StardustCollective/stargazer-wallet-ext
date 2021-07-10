@@ -48,8 +48,9 @@ const ImportAccountView: FC = () => {
   const [loading, setLoading] = useState(false);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
   const [accountName, setAccountName] = useState<string>();
-  const [hardwareStep, setHardwareStep] = useState(1);
-  const [loadingWalletList, setLoadingWalletList] = useState(false);
+  const [hardwareStep] = useState(1);
+  const [loadingWalletList] = useState(false);
+  // @ts-ignore
   const [hardwareWalletList, setHardwareWalletList] = useState<
     Array<HardwareWallet>
   >([]);
@@ -58,7 +59,7 @@ const ImportAccountView: FC = () => {
     validationSchema: yup.object().shape({
       privKey: importType === 'priv' ? yup.string().required() : yup.string(),
       password: importType === 'json' ? yup.string().required() : yup.string(),
-      label: yup.string().required(),
+      // label: yup.string().required(),
     }),
   });
 
@@ -77,20 +78,6 @@ const ImportAccountView: FC = () => {
         setLoading(false);
         setAccountName(undefined);
       });
-  };
-
-  const loadHardwareList = () => {
-    // TODO: Load actual ledger wallet list
-    setTimeout(() => {
-      setLoadingWalletList(false);
-      setHardwareWalletList([
-        { address: '0xb2...a49D', balance: 0.02237 },
-        { address: '0xBb...0Bf9', balance: 0.0 },
-        { address: '0x83...Cba7', balance: 0.0 },
-        { address: '0x9F...B786', balance: 0.0 },
-        { address: '0xa3...3d03', balance: 0.0 },
-      ]);
-    }, 2000);
   };
 
   const onSubmit = async (data: any) => {
@@ -132,10 +119,7 @@ const ImportAccountView: FC = () => {
         }
       };
     } else if (importType === 'hardware') {
-      // console.log('hardware wallet import');
-      setHardwareStep(2);
-      setLoadingWalletList(true);
-      loadHardwareList();
+      window.open('/ledger.html', '_newtab');
     } else {
       alert.removeAll();
       alert.error('Error: A private key json file is not chosen');
@@ -228,7 +212,6 @@ const ImportAccountView: FC = () => {
               <>
                 {hardwareStep === 1 && (
                   <>
-                    <span>Please select your Hardware device:</span>
                     <div className={styles.hardwareList}>
                       <div className={styles.walletModel}>
                         <img src={LedgerIcon} alt="ledger_icon" />
@@ -302,7 +285,7 @@ const ImportAccountView: FC = () => {
               Cancel
             </Button>
             <Button type="submit" variant={styles.button} loading={loading}>
-              {importType === 'hardware' ? 'Connect' : 'Import'}
+              {importType === 'hardware' ? 'Next' : 'Import'}
             </Button>
           </section>
         </>
