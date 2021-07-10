@@ -57,14 +57,15 @@ const AccountController = (actions: {
   let password: string;
 
   const _coventPendingType = (pending: PendingTx) => {
+    const { hash, amount, receiver, sender, timestamp } =  pending;
     return {
-      hash: pending.hash,
-      amount: pending.amount,
-      receiver: pending.receiver,
-      sender: pending.sender,
+      hash,
+      amount,
+      receiver,
+      sender,
       fee: -1,
-      isDummy: true,
-      timestamp: new Date(pending.timestamp).toISOString(),
+      isDummy: false,
+      timestamp: new Date(timestamp).toISOString(),
       lastTransactionRef: {},
       snapshotHash: '',
       checkpointBlock: '',
@@ -245,7 +246,7 @@ const AccountController = (actions: {
 
     account = accounts[activeAccountId];
     // check pending txs
-    const memPool = window.localStorage.getItem('dag4-network-main-mempool');
+    const memPool = window.localStorage.getItem('stargazer-network-main-mempool');
     if (memPool) {
       const pendingTxs = JSON.parse(memPool);
       console.log(pendingTxs);
@@ -317,8 +318,19 @@ const AccountController = (actions: {
   };
 
   const watchMemPool = () => {
-    if (intervalId) return;
-    intervalId = setInterval(async () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+
+    checkMemPool();
+
+    intervalId = setInterval( () => {
+      checkMemPool();
+    }, 30 * 1000);
+  }
+
+  const checkMemPool = async () => {
+
       await getLatestUpdate();
       const {
         activeAccountId,
@@ -332,8 +344,9 @@ const AccountController = (actions: {
         ).length
       ) {
         clearInterval(intervalId);
+        intervalId = null;
       }
-    }, 30 * 1000);
+
   };
 
   const confirmTempTx = async () => {

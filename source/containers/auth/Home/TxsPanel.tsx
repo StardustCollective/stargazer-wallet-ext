@@ -82,7 +82,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         <>
           <ul>
             {transactions.map((tx: Transaction, idx: number) => {
-              const isRecived = tx.receiver === address;
+              const isReceiver = tx.receiver === address;
 
               return (
                 <Fragment key={uuid()}>
@@ -95,7 +95,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                     <div>
                       <div className={styles.iconWrapper}>
                         {tx.checkpointBlock ? (
-                          isRecived ? (
+                          isReceiver ? (
                             <DownArrowIcon />
                           ) : (
                             <UpArrowIcon />
@@ -105,9 +105,9 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                         )}
                       </div>
                       <span>
-                        {isRecived ? 'Received' : 'Sent'}
+                        {isReceiver ? 'Received' : 'Sent'}
                         <small>
-                          {isRecived
+                          {isReceiver
                             ? `From: ${tx.sender}`
                             : `To: ${tx.receiver}`}
                         </small>

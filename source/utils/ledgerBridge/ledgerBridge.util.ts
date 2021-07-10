@@ -12,12 +12,6 @@ class LedgerBridgeUtil {
   /////////////////////////////
 
   /**
-   * Stores a singleton instance of the LedgerBridgeUtil object
-   */
-
-  static instance: LedgerBridgeUtil;
-
-  /**
    * transport
    * Stores an instance of the web HID object
    */
@@ -28,7 +22,7 @@ class LedgerBridgeUtil {
    * ledgerBridge
    * Stores an instance of the LedgerBridge object
    */
-  private ledgerBridge: any;
+  private ledgerBridge: LedgerBridge;
 
   /**
    * startIndex
@@ -59,13 +53,6 @@ class LedgerBridgeUtil {
   /////////////////////////////
 
   constructor() {
-    // Returns an existing instance
-    if (LedgerBridgeUtil.instance) {
-      return LedgerBridgeUtil.instance;
-    }
-
-    // Set singleton instance
-    LedgerBridgeUtil.instance = this;
 
     // Initialize required dependencies
     this.initialize();
@@ -109,8 +96,8 @@ class LedgerBridgeUtil {
   // Public Methods
   /////////////////////////////
 
-  public buildTransaction = (publicKey: string, bip44Index: number, fromAddress: string, toAddress: string) => {
-    return this.ledgerBridge.buildTx(publicKey, bip44Index, fromAddress, toAddress);
+  public buildTransaction = (amount: number, publicKey: string, bip44Index: number, fromAddress: string, toAddress: string) => {
+    return this.ledgerBridge.buildTx(amount, publicKey, bip44Index, fromAddress, toAddress);
   };
 
   /**
