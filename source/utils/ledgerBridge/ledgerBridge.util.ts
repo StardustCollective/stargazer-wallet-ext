@@ -114,9 +114,11 @@ class LedgerBridgeUtil {
    */
   public requestPermissions = async () => {
     // Instantiate the ledger transport
-    this.transport = await webHidTransport.openConnected();
+    this.transport = await webHidTransport.create();
     // Close any existing connections;
-    this.transport.close();
+    if(this.transport.device){
+      this.transport.close();
+    }
     // Instantiate the ledger bridge
     this.ledgerBridge = new LedgerBridge(webHidTransport);
   };
