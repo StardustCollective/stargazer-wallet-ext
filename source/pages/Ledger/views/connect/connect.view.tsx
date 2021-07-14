@@ -83,7 +83,7 @@ function Connect(props: IConnectProps) {
         <div className={styles.instructions}>
           <img src={LedgerIcon} alt="ledger_icon" width={183} height={45} />
           <span>
-            Select your device from the browser <br/>drop-down and press connect
+            Connect your hardware device and click the <br/>"Connect to Ledger" button below.
           </span>
         </div>
         <div>
