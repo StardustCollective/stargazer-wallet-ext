@@ -18,24 +18,6 @@ import { MAIN_VIEW } from '../routes';
 import styles from './index.scss';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import LedgerIcon from 'assets/images/svg/ledger.svg';
-import styles from './index.scss';
-
-function isValidJsonPrivateKey(jKey: any) {
-  const params = jKey && jKey.crypto && jKey.crypto.kdfparams;
-
-  if (
-    params &&
-    params.salt &&
-    params.n !== undefined &&
-    params.r !== undefined &&
-    params.p !== undefined &&
-    params.dklen !== undefined
-  ) {
-    return true;
-  }
-
-  return false;
-}
 
 interface IImportAccountView {
   network: KeyringNetwork;

@@ -3,8 +3,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { IAccountInfo } from 'scripts/types';
-import { createAccount } from 'state/wallet';
 
 export class StargazerProvider {
   constructor() {}
@@ -53,9 +51,12 @@ export class StargazerProvider {
     return stargazerAsset
   }
 
+  /*
   async importLedgerAccounts(addresses: AccountItem[]) {
     for (let i = 0; i < addresses.length; i++) {
       let accountItem = addresses[i];
+
+      window.controller.wallet.keyringManager.findAccount(accountItem.address);
 
       const res = await this.getAccountByAddress(accountItem.address);
 
@@ -71,52 +72,39 @@ export class StargazerProvider {
 
       await store.dispatch(createAccount(account));
     }
-  }
+  }*/
 
-  async postTransactionResult (hash: string) {
-    console.log('postTransactionResult.addToMemPoolMonitor', hash);
-    // const cbTx = await dag4.network.loadBalancerApi.getTransaction(hash);
-    // const edge = cbTx.transaction.edge;
-    // const pendingTx = {
-    //   hash,
-    //   status: 'POSTED',
-    //   timestamp: cbTx.rxTime,
-    //   sender: edge.observationEdge.parents[0].hashReference,
-    //   receiver: edge.observationEdge.parents[1].hashReference,
-    //   amount: edge.data.amount,
-    //   fee: edge.data.fee,
-    //   ordinal: cbTx.transaction.lastTxRef.ordinal
-    // } as any;
-    // window.controller.wallet.account.addPendingTxToMemPool(pendingTx);
+  // async postTransactionResult (hash: string) {
+  //   console.log('postTransactionResult.addToMemPoolMonitor', hash);
+  //
+  //   dag4.monitor.addToMemPoolMonitor(hash);
+  //
+  //   setTimeout(() => {
+  //     console.log('postTransactionResult.watchMemPool');
+  //     window.controller.wallet.account.watchMemPool();
+  //   }, 1000)
+  // }
 
-    dag4.monitor.addToMemPoolMonitor(hash);
-
-    setTimeout(() => {
-      console.log('postTransactionResult.watchMemPool');
-      window.controller.wallet.account.watchMemPool();
-    }, 1000)
-  }
-
-  private async getAccountByAddress(address: string): Promise<IAccountInfo> {
-    dag4.account.setKeysAndAddress('', '', address);
-    const balance = await dag4.account.getBalance();
-    const transactions = await dag4.account.getTransactions(10);
-    return {
-      address: {
-        constellation: dag4.account.address,
-      },
-      balance,
-      transactions,
-    };
-  }
+  // private async getAccountByAddress(address: string): Promise<IAccountInfo> {
+  //   dag4.account.setKeysAndAddress('', '', address);
+  //   const balance = await dag4.account.getBalance();
+  //   const transactions = await dag4.account.getTransactions(10);
+  //   return {
+  //     address: {
+  //       constellation: dag4.account.address,
+  //     },
+  //     balance,
+  //     transactions,
+  //   };
+  // }
 
   private remove0x(hash: string) {
     return hash.startsWith('0x') ? hash.slice(2) : hash;
   }
 }
 
-type AccountItem = {
-  id: number;
-  address: string;
-  publicKey: string;
-};
+// type AccountItem = {
+//   id: number;
+//   address: string;
+//   publicKey: string;
+// };

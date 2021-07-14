@@ -55,7 +55,7 @@ export class AccountController implements IAccountController {
       sender,
       fee: -1,
       isDummy: false,
-      timestamp: new Date(pending.timestamp).toISOString(),
+      timestamp: new Date(timestamp).toISOString(),
       lastTransactionRef: {},
       snapshotHash: '',
       checkpointBlock: '',
@@ -160,56 +160,55 @@ export class AccountController implements IAccountController {
     return assetList;
   }
 
-  async getLatestUpdate () {
-    const { activeAccountId, accounts }: IWalletState = store.getState().wallet;
-    if (
-      !accounts[activeAccountId] ||
-      accounts[activeAccountId].type === undefined
-    )
-      return;
-
-    let accLatestInfo: IAccountInfo | null = null;
-
-    if(accounts[activeAccountId].type === AccountType.Seed) {
-      accLatestInfo = await getAccountByIndex(Number(activeAccountId));
-    }
-    else if(accounts[activeAccountId].type === AccountType.PrivKey) {
-      accLatestInfo = await getAccountByPrivKeystore(activeAccountId);
-    }
-    else {
-      accLatestInfo = await getAccountByAddress(accounts[activeAccountId].address.constellation);
-    }
-
-    if (!accLatestInfo) return;
-
-    account = accounts[activeAccountId];
-    // check pending txs
-    const memPool = window.localStorage.getItem('stargazer-network-main-mempool');
-    if (memPool) {
-      const pendingTxs = JSON.parse(memPool);
-      console.log(pendingTxs);
-      pendingTxs.forEach((pTx: PendingTx) => {
-        if (
-          !account ||
-          (account.address.constellation !== pTx.sender &&
-            account.address.constellation !== pTx.receiver) ||
-          (accLatestInfo as IAccountInfo).transactions.filter(
-            (tx: Transaction) => tx.hash === pTx.hash
-          ).length > 0
-        )
-          return;
-        accLatestInfo!.transactions.unshift(_coventPendingType(pTx));
-      });
-    }
-
-    store.dispatch(
-      updateAccount({
-        id: activeAccountId,
-        balance: accLatestInfo.balance,
-        transactions: accLatestInfo.transactions,
-      })
-    );
-  };
+  // async getLatestUpdate () {
+  //   // const { activeAccountId, accounts }: IWalletState = store.getState().wallet;
+  //   const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
+  //   if (!activeAsset) {
+  //     return;
+  //   }
+  //
+  //   let accLatestInfo: IAccountInfo | null = null;
+  //
+  //   if(accounts[activeAccountId].type === AccountType.Seed) {
+  //     accLatestInfo = await getAccountByIndex(Number(activeAccountId));
+  //   }
+  //   else if(accounts[activeAccountId].type === AccountType.PrivKey) {
+  //     accLatestInfo = await getAccountByPrivKeystore(activeAccountId);
+  //   }
+  //   else {
+  //     accLatestInfo = await getAccountByAddress(accounts[activeAccountId].address.constellation);
+  //   }
+  //
+  //   if (!accLatestInfo) return;
+  //
+  //   account = accounts[activeAccountId];
+  //   // check pending txs
+  //   const memPool = window.localStorage.getItem('stargazer-network-main-mempool');
+  //   if (memPool) {
+  //     const pendingTxs = JSON.parse(memPool);
+  //     console.log(pendingTxs);
+  //     pendingTxs.forEach((pTx: PendingTx) => {
+  //       if (
+  //         !account ||
+  //         (account.address.constellation !== pTx.sender &&
+  //           account.address.constellation !== pTx.receiver) ||
+  //         (accLatestInfo as IAccountInfo).transactions.filter(
+  //           (tx: Transaction) => tx.hash === pTx.hash
+  //         ).length > 0
+  //       )
+  //         return;
+  //       accLatestInfo!.transactions.unshift(_coventPendingType(pTx));
+  //     });
+  //   }
+  //
+  //   store.dispatch(
+  //     updateAccount({
+  //       id: activeAccountId,
+  //       balance: accLatestInfo.balance,
+  //       transactions: accLatestInfo.transactions,
+  //     })
+  //   );
+  // };
 
   async getLatestTxUpdate () {
     const { activeAsset }: IVaultState = store.getState().vault;
@@ -294,37 +293,37 @@ export class AccountController implements IAccountController {
     );
   };
 
-   watchMemPool() {
-    if (intervalId) {
-      clearInterval(intervalId);
-    }
-
-    checkMemPool();
-
-    intervalId = setInterval( () => {
-      checkMemPool();
-    }, 30 * 1000);
-  }
-
-  async checkMemPool() {
-
-      await getLatestUpdate();
-      const {
-        activeAccountId,
-        accounts,
-      }: IWalletState = store.getState().wallet;
-      if (
-        !accounts[activeAccountId] ||
-        !accounts[activeAccountId].transactions ||
-        !accounts[activeAccountId].transactions.filter(
-          (tx: Transaction) => tx.fee === -1
-        ).length
-      ) {
-        clearInterval(intervalId);
-        intervalId = null;
-      }
-
-  };
+  //  watchMemPool() {
+  //   if (intervalId) {
+  //     clearInterval(intervalId);
+  //   }
+  //
+  //   this.checkMemPool();
+  //
+  //   intervalId = setInterval( () => {
+  //     this.checkMemPool();
+  //   }, 30 * 1000);
+  // }
+  //
+  // async checkMemPool() {
+  //
+  //     await getLatestUpdate();
+  //     const {
+  //       activeAccountId,
+  //       accounts,
+  //     }: IWalletState = store.getState().wallet;
+  //     if (
+  //       !accounts[activeAccountId] ||
+  //       !accounts[activeAccountId].transactions ||
+  //       !accounts[activeAccountId].transactions.filter(
+  //         (tx: Transaction) => tx.fee === -1
+  //       ).length
+  //     ) {
+  //       clearInterval(intervalId);
+  //       intervalId = null;
+  //     }
+  //
+  // };
 
   // watchMemPool () {
   //   if (this.intervalId) return;
@@ -351,16 +350,20 @@ export class AccountController implements IAccountController {
     if (!dag4.account.isActive) {
       throw new Error('Error: No signed account exists');
     }
-    if (!account) {
+
+    const { activeAsset }: IVaultState = store.getState().vault;
+    const assets: IAssetListState = store.getState().assets;
+
+    if (!activeAsset) {
       throw new Error("Error: Can't find active account info");
     }
-    if (!tempTx) {
+
+    if (!this.tempTx) {
       throw new Error("Error: Can't find transaction info");
     }
 
     try {
-      const { activeAsset }: IVaultState = store.getState().vault;
-      const assets: IAssetListState = store.getState().assets;
+
 
       if (activeAsset.type === AssetType.Constellation) {
         const pendingTx = await dag4.account.transferDag(

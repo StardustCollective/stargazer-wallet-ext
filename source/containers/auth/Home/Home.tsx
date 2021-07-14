@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -13,13 +13,12 @@ import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import AssetsPanel from './AssetsPanel';
 import styles from './Home.scss';
-import { IDAppState } from 'state/dapp/types';
 
 const Home = () => {
   const controller = useController();
   // const getFiatAmount = useFiat();
-  const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
-  const [connected, setConnected] = useState(false);
+  // const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
+  // const [connected, setConnected] = useState(false);
   // const { accounts, activeAccountId }: IWalletState = useSelector(
   //   (state: RootState) => state.wallet
   const totalBalance = useTotalBalance();
