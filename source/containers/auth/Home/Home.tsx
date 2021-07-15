@@ -53,16 +53,6 @@ const Home = () => {
         <>
           <Header showLogo />
           <section className={styles.account}>
-            <div
-              className={clsx(styles.status, { [styles.connected]: connected })}
-            >
-              {connected ? (
-                <CircleIcon fontSize="small" />
-              ) : (
-                <BlankCircleIcon fontSize="small" />
-              )}
-              {connected ? 'Connected' : 'Not connected'}
-            </div>
             {Object.keys(accounts).length > 1 ? (
               <FullSelect
                 value={activeAccountId}
@@ -101,14 +91,6 @@ const Home = () => {
                 linkTo="/receive"
               >
                 Receive
-              </Button>
-              <Button
-                type="button"
-                theme="primary"
-                variant={styles.buyDag}
-                onClick={handleOpenBuyDag}
-              >
-                Get $DAG
               </Button>
             </div>
           </section>
