@@ -111,8 +111,14 @@ const VaultState = createSlice({
       action: PayloadAction<IWalletState>
     ) {
       state.activeWallet = action.payload;
-      if (state.activeAsset) {
-        state.activeAsset = { transactions:[], ...state.activeWallet.assets[0] };
+      if (state.activeWallet) {
+        if (state.activeAsset) {
+          state.activeAsset = { transactions: [], ...state.activeWallet.assets[0] };
+        }
+      }
+      else {
+        delete state.activeWallet;
+        delete state.activeAsset;
       }
     },
     changeActiveNetwork(

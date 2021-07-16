@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
-import AddIcon from '@material-ui/icons/Add';
+// import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import { v4 as uuid } from 'uuid';
 
@@ -44,9 +44,9 @@ const AssetsPanel: FC = () => {
     history.push('/asset');
   };
 
-  const handleAddAsset = () => {
-    history.push('/asset/add');
-  };
+  // const handleAddAsset = () => {
+  //   history.push('/asset/add');
+  // };
 
   const renderAssetList = () => {
     return (
@@ -82,12 +82,12 @@ const AssetsPanel: FC = () => {
       onScroll={handleScroll}
     >
       <div className={styles.heading}>
-        {activeWallet.supportedAssets &&
-          activeWallet.supportedAssets.length > 1 && (
-            <IconButton onClick={handleAddAsset} className={styles.addAssets}>
-              <AddIcon />
-            </IconButton>
-          )}
+        {/*{activeWallet.supportedAssets &&*/}
+        {/*  activeWallet.supportedAssets.length > 1 && (*/}
+        {/*    <IconButton onClick={handleAddAsset} className={styles.addAssets}>*/}
+        {/*      <AddIcon />*/}
+        {/*    </IconButton>*/}
+        {/*  )}*/}
         Your Assets
         {!!isShowed && (
           <IconButton className={styles.goTop} onClick={handleGoTop}>

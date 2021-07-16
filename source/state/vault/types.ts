@@ -28,6 +28,7 @@ export interface IAssetState   {
   type: AssetType;
   label: string;
   address: string;
+  contractAddress?: string;
   // balance?: number;
 }
 
@@ -38,7 +39,7 @@ export interface IActiveAssetState extends IAssetState {
 export type AssetBalances = {
   [AssetType.Ethereum]?: number;
   [AssetType.Constellation]?: number;
-  [tokenAddress: string]: number;
+  [contractAddress: string]: number;
 }
 
 export interface IWalletState {

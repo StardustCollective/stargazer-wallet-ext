@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import CircleIcon from '@material-ui/icons/RadioButtonChecked';
-import BlankCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
+// import CircleIcon from '@material-ui/icons/RadioButtonChecked';
+// import BlankCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
 import Header from 'containers/common/Header';
 import { useController } from 'hooks/index';
 import { useTotalBalance } from 'hooks/usePrice';
@@ -13,13 +13,12 @@ import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import AssetsPanel from './AssetsPanel';
 import styles from './Home.scss';
-import { IDAppState } from 'state/dapp/types';
 
 const Home = () => {
   const controller = useController();
   // const getFiatAmount = useFiat();
-  const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
-  const [connected, setConnected] = useState(false);
+  // const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
+  // const [connected, setConnected] = useState(false);
   // const { accounts, activeAccountId }: IWalletState = useSelector(
   //   (state: RootState) => state.wallet
   const totalBalance = useTotalBalance();
@@ -37,14 +36,14 @@ const Home = () => {
   //   window.open('https://portal.stargazer.network/buy-dag', '_blank');
   // };
 
-  useEffect(() => {
-    const { origin } = controller.dapp.getCurrent();
-    //console.log('tab: ' + origin, logo, title);
-    if (origin && dapp[origin]) {
-      setConnected(true);
-    }
-
-  }, []);
+  // useEffect(() => {
+  //   const { origin } = controller.dapp.getCurrent();
+  //   //console.log('tab: ' + origin, logo, title);
+  //   if (origin && dapp[origin]) {
+  //     setConnected(true);
+  //   }
+  //
+  // }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -54,16 +53,16 @@ const Home = () => {
           {
             <>
               <section className={styles.account}>
-                <div
-                  className={clsx(styles.status, { [styles.connected]: connected })}
-                >
-                  {connected ? (
-                    <CircleIcon fontSize="small" />
-                  ) : (
-                    <BlankCircleIcon fontSize="small" />
-                  )}
-                  {connected ? 'Connected' : 'Not connected'}
-                </div>
+                {/*<div*/}
+                {/*  className={clsx(styles.status, { [styles.connected]: connected })}*/}
+                {/*>*/}
+                {/*  {connected ? (*/}
+                {/*    <CircleIcon fontSize="small" />*/}
+                {/*  ) : (*/}
+                {/*    <BlankCircleIcon fontSize="small" />*/}
+                {/*  )}*/}
+                {/*  {connected ? 'Connected' : 'Not connected'}*/}
+                {/*</div>*/}
                 {activeWallet.label}
               </section>
               <section className={styles.center}>

@@ -41,7 +41,10 @@ export class AccountMonitor {
   private startEthMonitor(activeWallet: IWalletState, activeNetwork: { [p: string]: string }) {
     const assets: IAssetListState = store.getState().assets;
     const chainId = activeNetwork[AssetType.Ethereum] === 'mainnet' ? 1 : 3;
-    const tokens = activeWallet.assets.filter(a => a.type === AssetType.ERC20).map(a => assets[a.id]);
+    const tokens = activeWallet.assets.filter(a => a.type === AssetType.ERC20).map(a => {
+      const { address, decimals } = assets[a.id];
+      return { contractAddress: address, decimals };
+    });
     const ethAsset = activeWallet.assets.find(a => a.type === AssetType.Ethereum);
 
     this.ethAccountTracker.config(ethAsset.address, tokens, chainId, (ethBalance, tokenBals) => {

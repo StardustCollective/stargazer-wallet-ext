@@ -12,6 +12,7 @@ export interface IAssetInfoState {
   priceId?: string;
   decimals: number;
   address: string;
+  contractAddress?: string;
 }
 
 export default interface IAssetListState {

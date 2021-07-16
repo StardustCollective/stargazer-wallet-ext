@@ -48,12 +48,17 @@ export const formatPrice = (num: number, round = 2) => {
 
 export const getAddressURL = (
   address: string,
+  contractAddress: string,
   type: AssetType,
   networkId: string
 ) => {
   console.log(address, type, networkId);
   if (type === AssetType.Constellation) {
     return `${DAG_EXPLORER_SEARCH}${address}`;
+  }
+  if(type === AssetType.ERC20) {
+    //token/0xdac17f958d2ee523a2206206994597c13d831ec7?a=
+    return `${ETH_NETWORK[networkId].etherscan}token/${contractAddress}?a=${address}`
   }
   return `${ETH_NETWORK[networkId].etherscan}address/${address}`;
 };
