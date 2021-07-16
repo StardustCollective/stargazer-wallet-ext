@@ -60,7 +60,7 @@ const AssetDetail = () => {
             <AssetHeader
               asset={assets[activeAsset.id]}
               address={activeAsset.address}
-              addressUrl={getAddressURL(activeAsset.address, activeAsset.type, activeNetwork[networkId])}
+              addressUrl={getAddressURL(activeAsset.address, activeAsset.contractAddress, activeAsset.type, activeNetwork[networkId])}
             />
           </section>
           <section className={styles.center}>

@@ -55,7 +55,9 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     });
 
     console.log('onConnect');
-    window.controller.wallet.account.monitor.start();
+    if (window.controller.wallet.isUnlocked()) {
+      window.controller.wallet.account.monitor.start();
+    }
   }
 });
 

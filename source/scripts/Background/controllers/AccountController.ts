@@ -153,7 +153,8 @@ export class AccountController implements IAccountController {
         id: t.address,
         type: AssetType.ERC20,
         label: t.label,
-        address: t.address
+        contractAddress: t.address,
+        address: this.ethClient.getAddress()
       }
     }));
 

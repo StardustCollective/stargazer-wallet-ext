@@ -14,7 +14,6 @@ import { RootState } from 'state/store';
 
 import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IRemoveWalletView {
   id: string;
@@ -30,11 +29,11 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
     (state: RootState) => state.vault
   );
   const wallet = wallets.find((w) => w.id === id);
-  const disabled =
-    wallet &&
-    wallet.type === KeyringWalletType.MultiChainWallet &&
-    wallets.filter((w) => w.type === KeyringWalletType.MultiChainWallet)
-      .length < 2;
+  // const disabled =
+  //   wallet &&
+  //   wallet.type === KeyringWalletType.MultiChainWallet &&
+  //   wallets.filter((w) => w.type === KeyringWalletType.MultiChainWallet)
+  //     .length < 2;
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -42,11 +41,16 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
     }),
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     let isChecked;
-    isChecked = controller.wallet.deleteWallet(id, data.password);
+    isChecked = await controller.wallet.deleteWallet(id, data.password);
     if (isChecked) {
-      showView(MAIN_VIEW);
+      if (wallets.length === 1) {
+        controller.wallet.logOut();
+      }
+      else {
+        showView(MAIN_VIEW);
+      }
     } else {
       alert.removeAll();
       alert.error('Error: Invalid password');
@@ -81,7 +85,7 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
           >
             Close
           </Button>
-          <Button type="submit" variant={styles.button} disabled={disabled}>
+          <Button type="submit" variant={styles.button}>
             Done
           </Button>
         </div>

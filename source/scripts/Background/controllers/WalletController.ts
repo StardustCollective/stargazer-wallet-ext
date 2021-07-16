@@ -2,9 +2,9 @@ import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
 import {
   // changeActiveWallet,
-  changeActiveNetwork,
+  changeActiveNetwork, changeActiveWallet,
   setVaultInfo,
-  updateStatus,
+  updateStatus
 } from 'state/vault';
 import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
@@ -107,7 +107,9 @@ export class WalletController implements IWalletController {
       const vault: IVaultState = store.getState().vault;
       if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
         const wallets = this.keyringManager.getWallets();
-        this.switchWallet(wallets[0].id);
+        if (wallets.length) {
+          this.switchWallet(wallets[0].id);
+        }
       }
       store.dispatch(updateStatus());
       return true;
@@ -153,7 +155,8 @@ export class WalletController implements IWalletController {
 
   async logOut() {
     this.keyringManager.logout();
-    this.account.ethClient = null;
+    this.account.ethClient = undefined;
+    store.dispatch(changeActiveWallet(undefined));
     store.dispatch(updateStatus());
     browser.runtime.reload();
   }
