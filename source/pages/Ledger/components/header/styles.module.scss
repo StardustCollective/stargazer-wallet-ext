@@ -1,0 +1,23 @@
+@import '~assets/styles/variables';
+
+.logo {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  padding: 20px 25px 20px 25px;
+  background-color: $purple;
+}
+.leftHeader {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  color: white;
+  font-style: normal;
+  font-weight: $medium;
+  font-family: $quicksand;
+}

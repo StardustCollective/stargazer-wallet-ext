@@ -1,0 +1,18 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  .progress {
+    color: #521E8A;
+  }
+  span {
+    color: #521E8A;
+    font-size: 80px;
+    .percentage{
+      font-size: 40px;
+    }
+  }
+}

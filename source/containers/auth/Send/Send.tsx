@@ -189,15 +189,15 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     setModalOpen(false);
   };
 
-  const handleGasSettings = () => {
-    controller.wallet.account.updateTempTx({
-      ...tempTx,
-      fromAddress: '',
-      toAddress: address || '',
-      amount: Number(amount),
-    });
-    history.push('/gas-settings');
-  };
+  // const handleGasSettings = () => {
+  //   controller.wallet.account.updateTempTx({
+  //     ...tempTx,
+  //     fromAddress: '',
+  //     toAddress: address || '',
+  //     amount: Number(amount),
+  //   });
+  //   history.push('/gas-settings');
+  // };
 
   const handleSetMax = () => {
     const balance = balances[activeAsset.id] || 0;

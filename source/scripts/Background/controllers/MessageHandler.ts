@@ -140,7 +140,7 @@ export const messagesHandler = (
 
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
-      //console.log('CAL_REQUEST.method', method, args);
+      console.log('CAL_REQUEST.method', method, args);
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed && !walletIsLocked };
@@ -150,6 +150,13 @@ export const messagesHandler = (
         result = masterController.stargazerProvider.getNetwork();
       } else if (method === 'wallet.getBalance') {
         result = masterController.stargazerProvider.getBalance();
+      // } else if (method === 'wallet.setLedgerAccounts') {
+      //     await window.controller.stargazerProvider.importLedgerAccounts(args[0]);
+      //     // port.postMessage({ id: message.id, data: { result: "success" } });
+      //   return Promise.resolve({ id: message.id, result: "success" });
+      // } else if (method === 'wallet.postTransactionResult') {
+      //   await window.controller.stargazerProvider.postTransactionResult(args[0]);
+      //   return Promise.resolve({ id: message.id, result: "success" });
       } else if (method === 'wallet.signMessage') {
         if (pendingWindow) {
           return Promise.resolve(null);
