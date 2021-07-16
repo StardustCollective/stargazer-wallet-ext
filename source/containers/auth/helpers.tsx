@@ -32,7 +32,7 @@ export const formatDistanceDate = (timestamp: string | number) => {
 };
 
 export const formatNumber = (num: number, min = 4, max = 4, maxSig = 12) => {
-  return num.toLocaleString(navigator.language, {
+  return (num || 0).toLocaleString(navigator.language, {
     minimumFractionDigits: min,
     maximumFractionDigits: max,
     maximumSignificantDigits: maxSig,

@@ -67,6 +67,16 @@ const VaultState = createSlice({
     updateStatus(state: IVaultState) {
       state.status = Date.now();
     },
+    // createAccount(state: IWalletState, action: PayloadAction<IAccountState>) {
+    //   return {
+    //     ...state,
+    //     accounts: {
+    //       ...state.accounts,
+    //       [action.payload.id]: action.payload,
+    //     },
+    //     activeAccountId: action.payload.id,
+    //   };
+    // },
     // createAccount(state: IVaultState, action: PayloadAction<IWalletState>) {
     //   return {
     //     ...state,
