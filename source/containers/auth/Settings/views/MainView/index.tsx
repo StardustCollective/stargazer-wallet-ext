@@ -5,10 +5,12 @@ import ContactsIcon from '@material-ui/icons/Group';
 import NetworkIcon from '@material-ui/icons/Timeline';
 import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
+import WalletIcon from 'assets/images/svg/wallet.svg';
+import { version } from "./../../../../../../package.json"
 
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
-import StargazerIcon from 'assets/images/logo-s.svg';
+
 
 import {
   ABOUT_VIEW,
@@ -18,6 +20,8 @@ import {
 } from '../routes';
 
 import styles from './index.scss';
+
+const ICON_WIDTH_NUMBER = 14;
 
 const MainView: FC = () => {
   const showView = useSettingsView();
@@ -31,40 +35,47 @@ const MainView: FC = () => {
 
   return (
     <div className={styles.main}>
-      <section
-        className={styles.general}
-        onClick={() => showView(WALLETS_VIEW)}
-      >
-        <Icon Component={StargazerIcon} />
-        <span>Wallets</span>
-        <ArrowIcon />
-      </section>
-      <section
-        className={styles.general}
-        onClick={() => showView(CONTACTS_VIEW)}
-      >
-        <Icon Component={ContactsIcon} />
-        <span>Contacts</span>
-        <ArrowIcon />
-      </section>
-      <section
-        className={styles.general}
-        onClick={() => showView(NETWORKS_VIEW)}
-      >
-        <Icon Component={NetworkIcon} />
-        <span>Networks</span>
-        <ArrowIcon />
-      </section>
-      <section className={styles.general} onClick={handleLogout}>
-        <Icon Component={LogOutIcon} />
-        <span>Log out</span>
-        <ArrowIcon />
-      </section>
-      <section className={styles.general} onClick={() => showView(ABOUT_VIEW)}>
-        <Icon Component={InfoIcon} />
-        <span>About</span>
-        <ArrowIcon />
-      </section>
+      <div>
+        <section
+          className={styles.general}
+          onClick={() => showView(WALLETS_VIEW)}
+        >
+          <Icon Component={WalletIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
+          <span>Wallets</span>
+          <ArrowIcon className={styles.arrow} />
+        </section>
+        <section
+          className={styles.general}
+          onClick={() => showView(CONTACTS_VIEW)}
+        >
+          <Icon Component={ContactsIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
+          <span>Contacts</span>
+          <ArrowIcon className={styles.arrow} />
+        </section>
+        <section
+          className={styles.general}
+          onClick={() => showView(NETWORKS_VIEW)}
+        >
+          <Icon Component={NetworkIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
+          <span>Networks</span>
+          <ArrowIcon className={styles.arrow} />
+        </section>
+        <section className={styles.general} onClick={handleLogout}>
+          <Icon Component={LogOutIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
+          <span>Log out</span>
+          <ArrowIcon className={styles.arrow} />
+        </section>
+        <section className={styles.general} onClick={() => showView(ABOUT_VIEW)}>
+          <Icon Component={InfoIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
+          <span>About</span>
+          <ArrowIcon className={styles.arrow} />
+        </section>
+      </div>
+      <div className={styles.footer}>
+        <div >
+          <span>{version}</span>
+        </div>
+      </div>
     </div>
   );
 };
