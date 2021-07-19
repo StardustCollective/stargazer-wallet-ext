@@ -36,9 +36,11 @@ const AssetDetail = () => {
     });
   }, []);
 
-  const handleRefresh = async () => {
-    await controller.wallet.account.getLatestTxUpdate();
-    // controller.wallet.account.watchMemPool();
+  const handleRefresh = () => {
+    controller.wallet.account.getLatestTxUpdate();
+    if (activeAsset.type === AssetType.Constellation) {
+      controller.wallet.account.monitor.refreshDagBalance();
+    }
     controller.stateUpdater();
   };
 

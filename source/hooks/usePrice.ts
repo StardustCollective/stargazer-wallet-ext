@@ -57,15 +57,22 @@ export function useTotalBalance(currencyName = true) {
           ]
     )
     .map((asset) => asset.id);
+
   const priceIds = assetIds.map((assetId) => assetList[assetId].priceId || '');
+
   let balance = 0;
+
   for (let i = 0; i < assetIds.length; i += 1) {
     balance += (balances[assetIds[i]] || 0) * (fiat[priceIds[i]]?.price || 0);
   }
-  return [
-    `${currencyName ? currency.symbol : ''}${balance.toFixed(2)}${
-      currencyName ? ` ${currency.name}` : ''
-    }`,
-    (balance / (fiat.bitcoin?.price || 0)).toFixed(2),
-  ];
+
+  const label = `${currencyName ? currency.symbol : ''}${balance.toFixed(2)}${
+    currencyName ? ` ${currency.name}` : ''
+  }`;
+
+  balance = (balance / (fiat.bitcoin?.price || 0))
+
+  const balanceStr = balance.toFixed((balance >= 0.01) ? 2 : 4);
+
+  return [label, balanceStr];
 }

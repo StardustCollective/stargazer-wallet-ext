@@ -7,7 +7,6 @@ import store from 'state/store';
 import {
   changeActiveAsset,
   changeActiveWallet,
-  updateBalances,
   updateStatus,
   updateTransactions,
   updateWalletAssets
@@ -88,12 +87,6 @@ export class AccountController implements IAccountController {
       if (account.network === KeyringNetwork.Constellation) {
 
         dag4.account.loginPrivateKey(privateKey);
-        //NOTE: need address in order to use getBalance, getTransactions
-        //dag4.account.setKeysAndAddress(null, null, asset.address);
-
-        // fetch dag info
-        const dagBalance = await dag4.account.getBalance();
-        //const dagTxs = await dag4.account.getTransactions(TXS_LIMIT);
 
         buildAssetList.push({
           id: AssetType.Constellation,
@@ -103,8 +96,6 @@ export class AccountController implements IAccountController {
           address: account.address,
           //transactions: dagTxs
         });
-
-        store.dispatch(updateBalances({ [AssetType.Constellation]: dagBalance }));
       }
       else if (account.network === KeyringNetwork.Ethereum) {
 
