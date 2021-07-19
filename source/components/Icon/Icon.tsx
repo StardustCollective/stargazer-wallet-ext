@@ -9,15 +9,17 @@ interface IIcon {
   Component: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> | string;
   spaced?: boolean;
   variant?: string;
+  iconStyles?: string;
+  width?: number;
 }
 
-const Icon: FC<IIcon> = ({ Component, spaced = true, variant }) => {
+const Icon: FC<IIcon> = ({ Component, spaced = true, variant, width }) => {
   return (
     <div className={clsx(styles.icon, { [styles.spaced]: spaced }, variant)}>
       {typeof Component === 'string' ? (
-        <img src={Component} width="24" />
+        <img src={Component} width={width} />
       ) : (
-        <Component />
+        <Component style={{ width }}/>
       )}
     </div>
   );
