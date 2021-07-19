@@ -26,9 +26,8 @@ const Home = () => {
     (state: RootState) => state.vault
   );
 
-  const handleRefresh = async () => {
-    //await controller.wallet.account.getLatestUpdate();
-    // controller.wallet.account.watchMemPool();
+  const handleRefresh = () => {
+    controller.wallet.account.monitor.refreshDagBalance();
     controller.stateUpdater();
   };
 
