@@ -3,21 +3,21 @@ import React, { FC } from 'react';
 import clsx from 'clsx';
 import styles from './index.scss';
 
-import PACKAGE from '../../../../../../manifest.json';
-
-function majorMinor (version: string) {
-  const v = version.split('.');
-  if (v.length > 2) {
-    v.pop();
-  }
-  return v.join('.');
-}
+// import PACKAGE from '../../../../../../manifest.json';
+//
+// function majorMinor (version: string) {
+//   const v = version.split('.');
+//   if (v.length > 2) {
+//     v.pop();
+//   }
+//   return v.join('.');
+// }
 
 const AboutView: FC = () => {
   return (
     <div className={styles.about}>
-      <span>Stargazer Wallet Chrome Extension v{majorMinor(PACKAGE.version)}</span>
-      <span>Version: {PACKAGE.version}</span>
+      <span>Stargazer Wallet Chrome Extension v2.1</span>
+      <span>Version: 2.1.1</span>
       <span>
         Support:{' '}
         <a
