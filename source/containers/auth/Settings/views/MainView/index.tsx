@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import LogOutIcon from '@material-ui/icons/ExitToApp';
 import ContactsIcon from '@material-ui/icons/Group';
@@ -6,10 +6,9 @@ import NetworkIcon from '@material-ui/icons/Timeline';
 import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import WalletIcon from 'assets/images/svg/wallet.svg';
-import { version } from "./../../../../../../package.json"
-
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
+import { browser } from 'webextension-polyfill-ts';
 
 
 import {
@@ -27,6 +26,7 @@ const MainView: FC = () => {
   const showView = useSettingsView();
   const history = useHistory();
   const controller = useController();
+  const [ version ] = useState(browser.runtime.getManifest().version)
 
   const handleLogout = () => {
     controller.wallet.logOut();
@@ -73,7 +73,7 @@ const MainView: FC = () => {
       </div>
       <div className={styles.footer}>
         <div >
-          <span>{version}</span>
+          <span>Version {version}</span>
         </div>
       </div>
     </div>
