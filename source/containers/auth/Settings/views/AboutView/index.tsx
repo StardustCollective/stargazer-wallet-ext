@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import React, { FC, useState} from 'react';
+import { browser } from 'webextension-polyfill-ts';
 
 import clsx from 'clsx';
 import styles from './index.scss';
@@ -14,10 +15,12 @@ import styles from './index.scss';
 // }
 
 const AboutView: FC = () => {
+  const [ version ] = useState(browser.runtime.getManifest().version)
+
   return (
     <div className={styles.about}>
       <span>Stargazer Wallet Chrome Extension v2.1</span>
-      <span>Version: 2.1.1</span>
+      <span>Version: {version}</span>
       <span>
         Support:{' '}
         <a
