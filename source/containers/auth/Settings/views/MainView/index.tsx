@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 import LogOutIcon from '@material-ui/icons/ExitToApp';
 import ContactsIcon from '@material-ui/icons/Group';
@@ -8,7 +8,7 @@ import InfoIcon from '@material-ui/icons/InfoOutlined';
 import WalletIcon from 'assets/images/svg/wallet.svg';
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
-import { browser } from 'webextension-polyfill-ts';
+import useVersion from 'hooks/useVersion';
 
 
 import {
@@ -26,7 +26,7 @@ const MainView: FC = () => {
   const showView = useSettingsView();
   const history = useHistory();
   const controller = useController();
-  const [ version ] = useState(browser.runtime.getManifest().version)
+  const version = useVersion(3);
 
   const handleLogout = () => {
     controller.wallet.logOut();

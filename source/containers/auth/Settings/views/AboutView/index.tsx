@@ -1,8 +1,9 @@
-import React, { FC, useState} from 'react';
-import { browser } from 'webextension-polyfill-ts';
+import React, { FC } from 'react';
+import useVersion from 'hooks/useVersion';
 
 import clsx from 'clsx';
 import styles from './index.scss';
+
 
 // import PACKAGE from '../../../../../../manifest.json';
 //
@@ -15,11 +16,13 @@ import styles from './index.scss';
 // }
 
 const AboutView: FC = () => {
-  const [ version ] = useState(browser.runtime.getManifest().version)
+
+  const versionMajorMinor =  useVersion(2);
+  const version = useVersion(3);
 
   return (
     <div className={styles.about}>
-      <span>Stargazer Wallet Chrome Extension v2.1</span>
+      <span>Stargazer Wallet Chrome Extension v{versionMajorMinor}</span>
       <span>Version: {version}</span>
       <span>
         Support:{' '}
