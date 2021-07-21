@@ -14,10 +14,12 @@ import {
   KeyringVaultState,
 } from '@stardust-collective/dag4-keyring';
 
+const hasEncryptedVault = !!localStorage.getItem('stargazer-vault');
 
 const initialState: IVaultState = {
   status: 0,
   wallets: [],
+  hasEncryptedVault,
   balances: {
     [AssetType.Constellation]: 0,
     [AssetType.Ethereum]: 0,
@@ -27,8 +29,8 @@ const initialState: IVaultState = {
   activeAsset: undefined,
   // activeAccountId: '',
   activeNetwork: {
-    [AssetType.Constellation]: DAG_NETWORK.main.id,
-    [AssetType.Ethereum]: ETH_NETWORK.mainnet.id,
+    [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
+    [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
   },
   version: '2.1.1',
 };

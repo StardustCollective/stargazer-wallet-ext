@@ -54,7 +54,11 @@ export const getAddressURL = (
 ) => {
   console.log(address, type, networkId);
   if (type === AssetType.Constellation) {
-    return `${DAG_EXPLORER_SEARCH}${address}`;
+    let url = `${DAG_EXPLORER_SEARCH}${address}`;
+    if (networkId === 'ceres') {
+      url += `&network=${networkId}`
+    }
+    return url;
   }
   if(type === AssetType.ERC20) {
     //token/0xdac17f958d2ee523a2206206994597c13d831ec7?a=

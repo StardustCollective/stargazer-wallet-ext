@@ -14,10 +14,11 @@ import { formatDistanceDate } from '../helpers';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
-import IVaultState, { AssetType, Transaction } from 'state/vault/types';
+import IVaultState, { Transaction } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 
 import styles from './Asset.scss';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 interface ITxsPanel {
   address: string;
@@ -77,7 +78,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   }, []);
 
   const handleOpenExplorer = (tx: string) => {
-    const ethUrl = ETH_NETWORK[activeNetwork[AssetType.Ethereum]].etherscan;
+    const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
     window.open(
       isETHTx ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
       '_blank'

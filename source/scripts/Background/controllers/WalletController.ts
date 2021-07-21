@@ -138,6 +138,8 @@ export class WalletController implements IWalletController {
       });
     }
 
+    store.dispatch(changeActiveNetwork({ network, chainId }));
+
     if (activeAsset) {
       if (assets[activeAsset.id].network !== chainId) {
         this.account.updateAccountActiveAsset(activeAsset);
@@ -146,7 +148,8 @@ export class WalletController implements IWalletController {
       this.account.getLatestTxUpdate();
     }
 
-    store.dispatch(changeActiveNetwork({ network, chainId }));
+    this.account.monitor.stop();
+    this.account.monitor.start();
   }
 
   setWalletPassword(password: string) {
