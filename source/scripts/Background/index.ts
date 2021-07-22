@@ -51,12 +51,12 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 
     port.onDisconnect.addListener(() => {
       console.log('onDisconnect');
-      window.controller.wallet.account.monitor.stop();
+      window.controller.wallet.account.assetsBalanceMonitor.stop();
     });
 
     console.log('onConnect');
     if (window.controller.wallet.isUnlocked()) {
-      window.controller.wallet.account.monitor.start();
+      window.controller.wallet.account.assetsBalanceMonitor.start();
     }
   }
 });

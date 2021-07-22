@@ -2,6 +2,8 @@ import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import store from 'state/store';
 import { IETHPendingTx } from 'scripts/types';
 import IVaultState, { AssetType } from 'state/vault/types';
+import { ethers } from 'ethers';
+import { IAssetInfoState } from '../../../state/assets/types';
 
 export interface ITransactionController {
   addPendingTx: (tx: IETHPendingTx) => boolean;
@@ -13,50 +15,47 @@ interface IPendingData {
   [txHash: string]: IETHPendingTx;
 }
 
-const TransactionController = ({
-  getLatestUpdate,
-}: {
-  getLatestUpdate: () => void;
-}): ITransactionController => {
-  const TX_STORE = 'ETH_PENDING';
+const TX_STORE = 'ETH_PENDING';
 
-  const ethClient: XChainEthClient = new XChainEthClient({
+export class TransactionController implements ITransactionController {
+
+  private ethClient: XChainEthClient = new XChainEthClient({
     network: 'mainnet',
     privateKey: process.env.TEST_PRIVATE_KEY,
     etherscanApiKey: process.env.ETHERSCAN_API_KEY,
     infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
   });
 
-  const _getPendingData = () => {
+  private _getPendingData () {
     const state = localStorage.getItem(TX_STORE) || '{}';
     const pendingData = JSON.parse(state);
     return pendingData as IPendingData;
   };
 
-  const addPendingTx = (pendingTx: IETHPendingTx) => {
-    const pendingData = _getPendingData();
+  addPendingTx (pendingTx: IETHPendingTx) {
+    const pendingData = this._getPendingData();
 
     if (Object.keys(pendingData).includes(pendingTx.txHash)) {
       return false;
     }
     pendingData[pendingTx.txHash] = pendingTx;
     localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
-    startMonitor();
+    this.startMonitor();
     return true;
   };
 
-  const removePendingTxHash = (txHash: string) => {
-    const pendingData = _getPendingData();
+  removePendingTxHash(txHash: string) {
+    const pendingData = this._getPendingData();
 
     if (pendingData[txHash]) {
       delete pendingData[txHash];
       localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
-      getLatestUpdate();
+      // this.getLatestUpdate();
     }
   };
 
-  const getFullTxs = () => {
-    const pendingData = _getPendingData();
+  getFullTxs() {
+    const pendingData = this._getPendingData();
     const { activeAsset, activeNetwork }: IVaultState = store.getState().vault;
 
     const filteredData = Object.values(pendingData).filter(
@@ -71,26 +70,59 @@ const TransactionController = ({
     ];
   };
 
-  const startMonitor = () => {
-    const pendingData = _getPendingData();
+  startMonitor() {
+    const pendingData = this._getPendingData();
 
     Object.values(pendingData).forEach((pendingTx: IETHPendingTx) => {
-      ethClient
+      this.ethClient
         .waitForTransaction(
           pendingTx.txHash,
           pendingTx.network === 'mainnet' ? 1 : 3
         )
         .then(() => {
-          removePendingTxHash(pendingTx.txHash);
+          this.removePendingTxHash(pendingTx.txHash);
         });
     });
   };
 
-  return {
-    startMonitor,
-    addPendingTx,
-    getFullTxs,
-  };
-};
+  async getTransactionHistory(ethAddress: string, limit: number) {
+    const ethTxs = await this.ethClient.getTransactions({
+      address: ethAddress,
+      limit: limit,
+    });
 
-export default TransactionController;
+    return {
+      transactions: ethTxs.txs.map((tx) => {
+        return {
+          ...tx,
+          balance: ethers.utils.formatEther(
+            tx.from[0].amount.amount().toString()
+          ),
+        };
+      })
+    };
+  }
+
+  async getTokenTransactionHistory(ethAddress: string, asset: IAssetInfoState, limit: number) {
+
+    const transactions = await this.ethClient.getTransactions({
+      address: ethAddress,
+      limit: limit,
+      asset: asset.contractAddress,
+    });
+
+    return {
+      transactions: transactions.txs.map((tx) => {
+        return {
+          ...tx,
+          balance: ethers.utils.formatUnits(
+            tx.from[0].amount.amount().toString(),
+            asset.decimals || 18
+          ),
+        };
+      })
+    }
+  }
+
+}
+

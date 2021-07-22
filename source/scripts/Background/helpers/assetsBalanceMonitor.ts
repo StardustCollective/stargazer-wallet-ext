@@ -8,7 +8,7 @@ import { dag4 } from '@stardust-collective/dag4';
 const FIFTEEN_SECONDS = 15 * 1000;
 const ONE_MINUTE = 60 * 1000;
 
-export class AccountMonitor {
+export class AssetsBalanceMonitor {
 
   private priceIntervalId: any;
   private dagBalIntervalId: any;
@@ -17,9 +17,7 @@ export class AccountMonitor {
 
   private ethAccountTracker = new AccountTracker({infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }});
 
-  constructor () {
-
-  }
+  constructor () {}
 
   start () {
 

@@ -123,6 +123,7 @@ export class WalletController implements IWalletController {
     //await this.account.getLatestUpdate();
     // store.dispatch(updateStatus());
     dag4.monitor.startMonitor();
+    this.account.txController.startMonitor();
   }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
