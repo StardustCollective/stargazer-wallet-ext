@@ -17,6 +17,7 @@ import IAssetListState from 'state/assets/types';
 import { formatNumber, getAddressURL } from '../helpers';
 
 import styles from './Asset.scss';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const AssetDetail = () => {
   const controller = useController();
@@ -51,7 +52,7 @@ const AssetDetail = () => {
     return controller.wallet.account.getFullETHTxs();
   };
 
-  const networkId = activeAsset?.type === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
+  const networkId = activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
 
   return (
     <div className={styles.wrapper}>

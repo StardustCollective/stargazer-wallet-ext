@@ -3,6 +3,7 @@ import IPriceState from 'state/price/types';
 import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 export function useFiat(currencyName = true) {
   const { activeAsset }: IVaultState = useSelector(
@@ -52,8 +53,8 @@ export function useTotalBalance(currencyName = true) {
         assetList[asset.id].network ===
           activeNetwork[
             asset.type === AssetType.Constellation
-              ? AssetType.Constellation
-              : AssetType.Ethereum
+              ? KeyringNetwork.Constellation
+              : KeyringNetwork.Ethereum
           ]
     )
     .map((asset) => asset.id);

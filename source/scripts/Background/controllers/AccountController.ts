@@ -90,7 +90,7 @@ export class AccountController implements IAccountController {
       else if (account.network === KeyringNetwork.Ethereum) {
 
         this.ethClient = new XChainEthClient({
-          network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+          network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
           privateKey,
           etherscanApiKey: process.env.ETHERSCAN_API_KEY,
           infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }
@@ -315,7 +315,7 @@ export class AccountController implements IAccountController {
           fromAddress: this.tempTx.fromAddress,
           toAddress: this.tempTx.toAddress,
           amount: this.tempTx.amount,
-          network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+          network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
           assetId: activeAsset.id,
           timestamp: new Date().getTime(),
         });

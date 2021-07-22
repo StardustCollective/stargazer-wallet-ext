@@ -7,7 +7,7 @@ import {
 import logger from 'redux-logger';
 import throttle from 'lodash/throttle';
 
-import vault from './vault';
+import vault  from './vault';
 import price from './price';
 import contacts from './contacts';
 import assets from './assets';
@@ -38,16 +38,20 @@ const store: Store = configureStore({
 
 store.subscribe(
   throttle(() => {
-    const state = store.getState();
-    saveState({
-      vault: state.vault,
-      price: state.price,
-      contacts: state.contacts,
-      assets: state.assets,
-      dapp: state.dapp,
-    });
+    updateState();
   }, 1000)
 );
+
+function updateState() {
+  const state = store.getState();
+  saveState({
+    vault: state.vault,
+    price: state.price,
+    contacts: state.contacts,
+    assets: state.assets,
+    dapp: state.dapp,
+  });
+}
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

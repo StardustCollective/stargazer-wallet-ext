@@ -1,9 +1,10 @@
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import store from 'state/store';
 import { IETHPendingTx } from 'scripts/types';
-import IVaultState, { AssetType } from 'state/vault/types';
 import { ethers } from 'ethers';
 import { IAssetInfoState } from '../../../state/assets/types';
+import IVaultState  from 'state/vault/types';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 export interface ITransactionController {
   addPendingTx: (tx: IETHPendingTx) => boolean;
@@ -60,7 +61,7 @@ export class TransactionController implements ITransactionController {
 
     const filteredData = Object.values(pendingData).filter(
       (pendingTx: IETHPendingTx) =>
-        pendingTx.network === activeNetwork[AssetType.Ethereum] &&
+        pendingTx.network === activeNetwork[KeyringNetwork.Ethereum] &&
         pendingTx.assetId === activeAsset.id
     );
 

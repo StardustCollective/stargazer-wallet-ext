@@ -9,8 +9,8 @@ import { dag4 } from '@stardust-collective/dag4';
 
 import MasterController, { IMasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
-import { AssetType } from 'state/vault/types';
 import { messagesHandler } from './controllers/MessageHandler';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 declare global {
   interface Window {
@@ -32,8 +32,8 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
     //TODO: implement fallback URLs
-    const networkId =
-      store.getState().vault!.activeNetwork[AssetType.Constellation] ||
+    const vault = store.getState().vault;
+    const networkId = (vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation]) ||
       DAG_NETWORK.main.id;
     dag4.di.useFetchHttpClient(window.fetch.bind(window));
     dag4.di.useLocalStorageClient(localStorage);

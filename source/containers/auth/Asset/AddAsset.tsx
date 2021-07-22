@@ -13,6 +13,7 @@ import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import SearchIcon from 'assets/images/svg/search.svg';
 import styles from './Asset.scss';
 import { v4 as uuid } from 'uuid';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const AddAsset = () => {
   const controller = useController();
@@ -42,13 +43,13 @@ const AddAsset = () => {
 
   useEffect(() => {
     if (
-      activeNetwork[AssetType.Ethereum] === 'mainnet' &&
+      activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' &&
       keyword.startsWith('0x')
     ) {
       controller.assets.fetchTokenInfo(keyword);
     }
 
-    const currentNetwork = activeNetwork[AssetType.Ethereum];
+    const currentNetwork = activeNetwork[KeyringNetwork.Ethereum];
     const lcKeyword = keyword.toLowerCase()
 
     setFilteredAssets(
