@@ -17,7 +17,7 @@ const Icon: FC<IIcon> = ({ Component, spaced = true, variant, width }) => {
   return (
     <div className={clsx(styles.icon, { [styles.spaced]: spaced }, variant)}>
       {typeof Component === 'string' ? (
-        <img src={Component} width={width} />
+        <img src={'../'+Component} width={width} />
       ) : (
         <Component style={{ width }}/>
       )}
