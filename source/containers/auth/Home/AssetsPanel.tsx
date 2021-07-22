@@ -15,6 +15,7 @@ import { useController } from 'hooks/index';
 
 import styles from './Home.scss';
 import IAssetListState from '../../../state/assets/types';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const AssetsPanel: FC = () => {
   const history = useHistory();
@@ -58,8 +59,8 @@ const AssetsPanel: FC = () => {
               assets[asset.id].network ===
                 activeNetwork[
                   asset.type === AssetType.Constellation
-                    ? AssetType.Constellation
-                    : AssetType.Ethereum
+                    ? KeyringNetwork.Constellation
+                    : KeyringNetwork.Ethereum
                 ]
           )
           .map((asset) => {

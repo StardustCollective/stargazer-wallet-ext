@@ -5,9 +5,9 @@ import {
 } from '@stardust-collective/dag4-keystore/types/v3-keystore';
 import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
 import {
-  KeyringAssetType,
+  KeyringAssetType, KeyringNetwork,
   KeyringWalletState,
-  KeyringWalletType,
+  KeyringWalletType
 } from '@stardust-collective/dag4-keyring';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
@@ -23,6 +23,11 @@ export enum AssetType {
 }
 
 export type Transaction = DAGTransaction | any;
+
+export type ActiveNetwork = {
+  [KeyringNetwork.Constellation]: string,
+  [KeyringNetwork.Ethereum]: string,
+}
 
 export interface IAssetState   {
   id: string;
@@ -59,13 +64,12 @@ export interface IAccountUpdateState {
 }
 
 export default interface IVaultState {
+  hasEncryptedVault: boolean;
   balances: AssetBalances;
   status: number;
   version: string;
   wallets: KeyringWalletState[];
   activeWallet: IWalletState;
   activeAsset: IActiveAssetState;
-  activeNetwork: {
-    [network: string]: string;
-  };
+  activeNetwork: ActiveNetwork;
 }

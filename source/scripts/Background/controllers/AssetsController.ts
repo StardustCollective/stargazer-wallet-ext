@@ -5,6 +5,7 @@ import store from 'state/store';
 import { addERC20Asset } from 'state/assets';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { TOKEN_INFO_API } from 'constants/index';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 export interface IAssetsController {
   fetchTokenInfo: (address: string) => void;
@@ -12,12 +13,16 @@ export interface IAssetsController {
 
 const AssetsController = (updateFiat: () => void): IAssetsController => {
   const { activeNetwork }: IVaultState = store.getState().vault;
+
+  if (!activeNetwork) return undefined;
+
   const ethClient: XChainEthClient = new XChainEthClient({
-    network: activeNetwork[AssetType.Ethereum] as ETHNetwork,
+    network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
     privateKey: process.env.TEST_PRIVATE_KEY,
     etherscanApiKey: process.env.ETHERSCAN_API_KEY,
     infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
   });
+
 
   // const getInitialERC20Tokens = () => {
   //   const assets: IAssetListState = store.getState().assets;
@@ -33,7 +38,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   const fetchTokenInfo = async (address: string) => {
     const { activeNetwork }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;
-    const network = activeNetwork[AssetType.Ethereum] as ETHNetwork;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
     ethClient.setNetwork(network);
     const info = await ethClient.getTokenInfo(address);
     const assetId = `${network === 'testnet' ? 'T-' : ''}${address}`;
