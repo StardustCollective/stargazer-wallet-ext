@@ -55,7 +55,7 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
   const handleImportPrivKey = async (privKey: string, label: string) => {
 
     controller.wallet.importSingleAccount(label, network, privKey)
-      .then((addr) => {
+      .then((addr: string) => {
         setLoading(false);
         if (addr) {
           setAccountName(label);
