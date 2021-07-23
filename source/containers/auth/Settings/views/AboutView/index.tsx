@@ -44,6 +44,16 @@ const AboutView: FC = () => {
           https://www.stargazer.network/.../terms.html
         </a>
       </span>
+      <span>
+        Privacy:
+        <a
+          className={clsx(styles.link, styles.terms)}
+          href="https://www.stargazer.network/assets/static/privacy.html"
+          target="_blank"
+        >
+          https://www.stargazer.network/assets/static/privacy.html
+        </a>
+      </span>
     </div>
   );
 };
