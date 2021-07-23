@@ -41,7 +41,7 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const res = await controller.wallet.getPrivateKey(id, data);
+    const res = await controller.wallet.getPrivateKey(id, data.password);
     if (res) {
       setPrivKey(res);
       setChecked(true);

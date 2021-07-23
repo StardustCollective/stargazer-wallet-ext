@@ -1577,7 +1577,7 @@
     stream-browserify "^3.0.0"
     uuid "^3.4.0"
 
-"@stardust-collective/dag4-ledger@0.0.12":
+"@stardust-collective/dag4-ledger@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.0.12.tgz#245b9b24332fc4c2a22d1c2c6848e90a5ce65fc5"
   integrity sha512-eSDSeR604X9MbLLSt6ik9ZSkHDWkJsa5ZNRbdYKIdhSmP8eDGaSrCgEuW/DF2Az3imVoW7E04vWo9YsAfca23g==
@@ -8128,7 +8128,7 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rxjs@6, rxjs@^6.6.3:
+rxjs@6, rxjs@^6.6.3, rxjs@^6.6.7:
   version "6.6.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==

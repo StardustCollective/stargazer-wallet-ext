@@ -2,7 +2,15 @@ import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import format from 'date-fns/format';
 import { AssetType } from 'state/vault/types';
 
-export const ellipsis = (str: string, start = 7, end = 4) => {
+export const ellipsis = (str: string, start?: number, end?: number) => {
+  if (str.substring(0,3) === 'DAG') {
+    start = start || 5;
+    end = end || 5;
+  }
+  else if (str.substring(0,2) === '0x') {
+    start = start || 6;
+    end = end || 4;
+  }
   return (
     str.substring(0, start) +
     '...' +

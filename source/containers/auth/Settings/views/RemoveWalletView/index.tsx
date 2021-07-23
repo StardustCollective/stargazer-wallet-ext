@@ -14,6 +14,7 @@ import { RootState } from 'state/store';
 
 import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IRemoveWalletView {
   id: string;
@@ -29,11 +30,7 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
     (state: RootState) => state.vault
   );
   const wallet = wallets.find((w) => w.id === id);
-  // const disabled =
-  //   wallet &&
-  //   wallet.type === KeyringWalletType.MultiChainWallet &&
-  //   wallets.filter((w) => w.type === KeyringWalletType.MultiChainWallet)
-  //     .length < 2;
+  const isSeedWallet = wallet && (wallet.type === KeyringWalletType.MultiChainWallet);
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -83,15 +80,23 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
             variant={clsx(styles.button, styles.close)}
             onClick={() => history.goBack()}
           >
-            Close
+            Cancel
           </Button>
           <Button type="submit" variant={styles.button}>
-            Done
+            Confirm
           </Button>
         </div>
         <span>
-          This account will be hidden from your wallet. You can show this
-          account again by clicking "Create account" from Settings.
+          {isSeedWallet && (
+          <span>
+            This wallet will be removed from Stargazer. You will need to provide the
+            recovery seed phrase in order to restore it.
+          </span>)}
+          {!isSeedWallet && (
+            <span>
+            This account will be removed from Stargazer. You will need to provide the
+            private key in order to restore it.
+          </span>)}
         </span>
       </form>
     </div>

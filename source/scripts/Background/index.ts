@@ -31,23 +31,17 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     port.sender.url &&
     port.sender.url?.includes(browser.runtime.getURL('/app.html'))
   ) {
-    //TODO: implement fallback URLs
     const vault = store.getState().vault;
-    const networkId = (vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation]) ||
-      DAG_NETWORK.main.id;
+    const networkId = (vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation]);
+    const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
+    dag4.di.getStateStorageDb().setPrefix('stargazer-');
     dag4.di.useFetchHttpClient(window.fetch.bind(window));
     dag4.di.useLocalStorageClient(localStorage);
     dag4.network.config({
-      id: DAG_NETWORK[networkId].id,
-      beUrl: DAG_NETWORK[networkId].beUrl,
-      lbUrl: DAG_NETWORK[networkId].lbUrl
+      id: networkInfo.id,
+      beUrl: networkInfo.beUrl,
+      lbUrl: networkInfo.lbUrl
     });
-    //TODO - startMonitor doesn't help if there is no account logged in to
-    dag4.monitor.startMonitor();
-    //window.controller.wallet.account.getLatestUpdate();
-
-    //TODO - Instead of this, Use AccountWatcher and on wallet init, watch the account for txs and balance changes
-    // window.controller.wallet.account.watchMemPool();
 
     port.onDisconnect.addListener(() => {
       console.log('onDisconnect');

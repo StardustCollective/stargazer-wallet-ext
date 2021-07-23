@@ -5,6 +5,8 @@ import IVaultState, { ActiveNetwork, AssetType, IWalletState } from '../../../st
 import IAssetListState from '../../../state/assets/types';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
+import { Subscription } from 'rxjs';
 
 const FIFTEEN_SECONDS = 15 * 1000;
 const ONE_MINUTE = 60 * 1000;
@@ -17,6 +19,7 @@ export class AssetsBalanceMonitor {
   private firstRunEthBalance: (obj: object) => void;
 
   private ethAccountTracker = new AccountTracker({infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }});
+  private subscription: Subscription;
 
   constructor () {}
 
@@ -26,11 +29,27 @@ export class AssetsBalanceMonitor {
 
     if (activeWallet) {
 
-      const p1 = new Promise<object>(resolve => this.firstRunDagBalance = resolve);
-      const p2 = new Promise<object>(resolve => this.firstRunEthBalance = resolve);
+      let hasDAG = false, hasETH = false;
+
+      activeWallet.assets.forEach(a => {
+        hasDAG = hasDAG || a.type === AssetType.Constellation;
+        hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
+      });
+
+      const promises = [];
+
+      if (hasDAG) {
+        const p = new Promise<object>(resolve => this.firstRunDagBalance = resolve);
+        promises.push(p);
+      }
+
+      if (hasETH) {
+        const p = new Promise<object>(resolve => this.firstRunEthBalance = resolve);
+        promises.push(p);
+      }
 
       //On startup, update all balances at the same time
-      Promise.all([p1,p2]).then(results => {
+      Promise.all(promises).then(results => {
 
         const [dBal, eBal] = results;
 
@@ -41,9 +60,21 @@ export class AssetsBalanceMonitor {
         this.firstRunDagBalance = null;
       })
 
-      dag4.monitor.startMonitor();
+      if (hasDAG) {
+        dag4.monitor.startMonitor();
+        this.subscription = dag4.monitor.observeMemPoolChange().subscribe((up) => this.pollPendingTxs(up));
 
-      this.startEthMonitor(activeWallet, activeNetwork);
+        if (this.dagBalIntervalId) {
+          clearInterval(this.dagBalIntervalId);
+        }
+
+        this.refreshDagBalance();
+        this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIFTEEN_SECONDS);
+      }
+
+      if (hasETH) {
+        this.startEthMonitor(activeWallet, activeNetwork);
+      }
 
       if (this.priceIntervalId) {
         clearInterval(this.priceIntervalId);
@@ -51,23 +82,28 @@ export class AssetsBalanceMonitor {
 
       window.controller.stateUpdater();
       this.priceIntervalId = setInterval(window.controller.stateUpdater, 3 * ONE_MINUTE);
-
-      if (this.dagBalIntervalId) {
-        clearInterval(this.dagBalIntervalId);
-      }
-
-      this.refreshDagBalance();
-      this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIFTEEN_SECONDS);
     }
   }
 
   stop () {
     clearInterval(this.priceIntervalId);
     clearInterval(this.dagBalIntervalId);
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
     this.priceIntervalId = null;
     this.dagBalIntervalId = null;
     this.ethAccountTracker.config(null, null, null, null);
   }
+
+  private async pollPendingTxs (update: DagWalletMonitorUpdate) {
+
+    if (update.pendingHasConfirmed) {
+      window.controller.wallet.account.getLatestTxUpdate();
+    }
+  }
+
 
   async refreshDagBalance () {
     const bal = await dag4.account.getBalance();

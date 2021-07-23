@@ -77,6 +77,8 @@ export class WalletController implements IWalletController {
       privateKey
     );
 
+    await this.switchWallet(wallet.id);
+
     return wallet.id;
   }
 
@@ -91,9 +93,6 @@ export class WalletController implements IWalletController {
       );
     }
 
-    // if (resetAll) {
-    //   await this.account.getLatestUpdate();
-    // }
     await this.switchWallet(wallet.id);
 
     return wallet.id;
@@ -149,8 +148,8 @@ export class WalletController implements IWalletController {
       this.account.getLatestTxUpdate();
     }
 
-    this.account.monitor.stop();
-    this.account.monitor.start();
+    this.account.assetsBalanceMonitor.stop();
+    this.account.assetsBalanceMonitor.start();
   }
 
   setWalletPassword(password: string) {

@@ -51,7 +51,7 @@ export class TransactionController implements ITransactionController {
     if (pendingData[txHash]) {
       delete pendingData[txHash];
       localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
-      // this.getLatestUpdate();
+      window.controller.wallet.account.getLatestTxUpdate();
     }
   };
 
@@ -109,7 +109,7 @@ export class TransactionController implements ITransactionController {
     const transactions = await this.ethClient.getTransactions({
       address: ethAddress,
       limit: limit,
-      asset: asset.contractAddress,
+      asset: asset.address,
     });
 
     return {

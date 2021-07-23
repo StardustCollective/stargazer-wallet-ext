@@ -96,10 +96,8 @@ export class AccountController implements IAccountController {
           infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }
         });
 
-        buildAssetList = buildAssetList.concat(this.buildAndMonitorEthAccount(account.tokens));
-
+        buildAssetList = buildAssetList.concat(this.buildAccountEthTokens(account.tokens));
       }
-
     }
 
     const activeWallet: IWalletState = {
@@ -115,7 +113,7 @@ export class AccountController implements IAccountController {
     this.assetsBalanceMonitor.start();
   }
 
-  buildAndMonitorEthAccount (accountTokens: string[]) {
+  buildAccountEthTokens (accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
     const tokens = accountTokens.map(t => assetInfoMap[t])
@@ -202,7 +200,7 @@ export class AccountController implements IAccountController {
   async addNewToken (address: string) {
     const { activeWallet }: IVaultState = store.getState().vault;
     const account = this.keyringManager.addTokenToAccount(activeWallet.id, this.ethClient.getAddress(), address);
-    const tokenAssets = this.buildAndMonitorEthAccount(account.getTokens());
+    const tokenAssets = this.buildAccountEthTokens(account.getTokens());
     const newToken = tokenAssets.find(t => t.address === address);
     store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
 
