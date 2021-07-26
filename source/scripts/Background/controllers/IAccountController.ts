@@ -1,9 +1,9 @@
 import { ITransactionInfo } from '../../types';
 import { IAssetState } from '../../../state/vault/types';
-import { AccountMonitor } from '../helpers/accountMonitor';
+import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 
 export interface IAccountController {
-  monitor: Readonly<AccountMonitor>;
+  assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
   confirmTempTx: () => Promise<void>;
@@ -13,7 +13,7 @@ export interface IAccountController {
   // unsubscribeAccount: (index: number, pwd: string) => boolean;
   // addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
-  getFullETHTxs: () => any[];
+  getFullETHTxs: () => ITransactionInfo[];
   updateWalletLabel: (walletId: string, label: string) => void;
   updateAccountActiveAsset: (asset: IAssetState) => void;
   addNewToken: (address: string) => Promise<void>;

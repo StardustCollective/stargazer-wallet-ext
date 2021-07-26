@@ -77,6 +77,8 @@ export class WalletController implements IWalletController {
       privateKey
     );
 
+    await this.switchWallet(wallet.id);
+
     return wallet.id;
   }
 
@@ -91,9 +93,6 @@ export class WalletController implements IWalletController {
       );
     }
 
-    // if (resetAll) {
-    //   await this.account.getLatestUpdate();
-    // }
     await this.switchWallet(wallet.id);
 
     return wallet.id;
@@ -122,7 +121,8 @@ export class WalletController implements IWalletController {
     await this.account.buildAccountAssetInfo(id);
     //await this.account.getLatestUpdate();
     // store.dispatch(updateStatus());
-    dag4.monitor.startMonitor();
+    this.account.assetsBalanceMonitor.start();
+    this.account.txController.startMonitor();
   }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
@@ -148,8 +148,8 @@ export class WalletController implements IWalletController {
       this.account.getLatestTxUpdate();
     }
 
-    this.account.monitor.stop();
-    this.account.monitor.start();
+    this.account.assetsBalanceMonitor.stop();
+    this.account.assetsBalanceMonitor.start();
   }
 
   setWalletPassword(password: string) {

@@ -33,7 +33,7 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
   );
 
   const privKeyAccounts = wallets.filter(
-    (w) => w.type === KeyringWalletType.SimpleAccountWallet
+    (w) => w.type === KeyringWalletType.SingleAccountWallet
   );
 
   const handleSwitchWallet = async (walletId: string) => {

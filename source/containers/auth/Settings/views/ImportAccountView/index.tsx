@@ -53,10 +53,9 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
   });
 
   const handleImportPrivKey = async (privKey: string, label: string) => {
-    // controller.wallet.account
-    //   .importPrivKeyAccount(privKey, label, network)
+
     controller.wallet.importSingleAccount(label, network, privKey)
-      .then((addr) => {
+      .then((addr: string) => {
         setLoading(false);
         if (addr) {
           setAccountName(label);
@@ -135,10 +134,9 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
     <form className={styles.import} onSubmit={handleSubmit(onSubmit)}>
       {accountName ? (
         <div className={styles.generated}>
-          <span>{`Your new private key account ${accountName} has been imported.`}</span>
+          <span>Your new private key account has been imported.</span>
           <span>
-            You can select and share your public key by selecting an asset and
-            copying the public key address.
+            You can view the public address in the asset view.
           </span>
 
           <div className={clsx(styles.actions, styles.centered)}>

@@ -25,9 +25,7 @@ const MasterController = (): IMasterController => {
   const wallet = new WalletController();
   const utils = Object.freeze(ControllerUtils());
   const dapp = Object.freeze(DAppController());
-  const contacts = Object.freeze(
-    ContactsController({ isUnlocked: wallet.isUnlocked })
-  );
+  const contacts = Object.freeze(ContactsController());
   const assets = Object.freeze(AssetsController(() => utils.updateFiat()));
 
   // Migration process

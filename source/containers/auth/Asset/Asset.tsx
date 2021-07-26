@@ -40,7 +40,7 @@ const AssetDetail = () => {
   const handleRefresh = () => {
     controller.wallet.account.getLatestTxUpdate();
     if (activeAsset.type === AssetType.Constellation) {
-      controller.wallet.account.monitor.refreshDagBalance();
+      controller.wallet.account.assetsBalanceMonitor.refreshDagBalance();
     }
     controller.stateUpdater();
   };

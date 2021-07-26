@@ -27,7 +27,7 @@ const Home = () => {
   );
 
   const handleRefresh = () => {
-    controller.wallet.account.monitor.refreshDagBalance();
+    controller.wallet.account.assetsBalanceMonitor.refreshDagBalance();
     controller.stateUpdater();
   };
 

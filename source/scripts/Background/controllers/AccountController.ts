@@ -15,36 +15,26 @@ import IVaultState, { AssetType, IAssetState, IWalletState } from 'state/vault/t
 
 import { ETHNetwork, ITransactionInfo } from '../../types';
 import IAssetListState from 'state/assets/types';
-import TransactionController, { ITransactionController } from './TransactionController';
+import { TransactionController } from './TransactionController';
 
 import { IAccountController } from './IAccountController';
 import { KeyringManager, KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring';
-import { AccountMonitor } from '../helpers/accountMonitor';
+import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 
 // limit number of txs
 const TXS_LIMIT = 10;
 
 export class AccountController implements IAccountController {
-  // intervalId: any;
   tempTx: ITransactionInfo | null;
-  // wallet: IActiveWalletState | null;
   ethClient: XChainEthClient;
-  txController: ITransactionController;
-  monitor: Readonly<AccountMonitor>;
+  txController: TransactionController;
+  assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
 
   constructor(private keyringManager: Readonly<KeyringManager>) {
-    this.txController = Object.freeze(
-      TransactionController({ getLatestUpdate: () => this.getLatestTxUpdate() })
-    );
-    this.monitor = new AccountMonitor();
+    this.txController = new TransactionController();
+    this.assetsBalanceMonitor = new AssetsBalanceMonitor();
   }
 
-  /**
-   * Convert pending DAG Tx type to standard Tx type
-   *
-   * @param pending {PendingTx}
-   * @returns {Transaction}
-   */
   private _coventDAGPendingTx (pending: PendingTx) {
     const { hash, amount, receiver, sender, timestamp } =  pending;
     return {
@@ -106,10 +96,8 @@ export class AccountController implements IAccountController {
           infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }
         });
 
-        buildAssetList = buildAssetList.concat(this.buildAndMonitorEthAccount(account.tokens));
-
+        buildAssetList = buildAssetList.concat(this.buildAccountEthTokens(account.address, account.tokens));
       }
-
     }
 
     const activeWallet: IWalletState = {
@@ -121,11 +109,9 @@ export class AccountController implements IAccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
-
-    this.monitor.start();
   }
 
-  buildAndMonitorEthAccount (accountTokens: string[]) {
+  buildAccountEthTokens (address: string, accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
     const tokens = accountTokens.map(t => assetInfoMap[t])
@@ -136,7 +122,7 @@ export class AccountController implements IAccountController {
       id: AssetType.Ethereum,
       type: AssetType.Ethereum,
       label: 'Ethereum',
-      address: this.ethClient.getAddress()
+      address
     });
 
     assetList = assetList.concat(tokens.map(t => {
@@ -145,65 +131,17 @@ export class AccountController implements IAccountController {
         type: AssetType.ERC20,
         label: t.label,
         contractAddress: t.address,
-        address: this.ethClient.getAddress()
+        address
       }
     }));
 
     return assetList;
   }
 
-  // async getLatestUpdate () {
-  //   // const { activeAccountId, accounts }: IWalletState = store.getState().wallet;
-  //   const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
-  //   if (!activeAsset) {
-  //     return;
-  //   }
-  //
-  //   let accLatestInfo: IAccountInfo | null = null;
-  //
-  //   if(accounts[activeAccountId].type === AccountType.Seed) {
-  //     accLatestInfo = await getAccountByIndex(Number(activeAccountId));
-  //   }
-  //   else if(accounts[activeAccountId].type === AccountType.PrivKey) {
-  //     accLatestInfo = await getAccountByPrivKeystore(activeAccountId);
-  //   }
-  //   else {
-  //     accLatestInfo = await getAccountByAddress(accounts[activeAccountId].address.constellation);
-  //   }
-  //
-  //   if (!accLatestInfo) return;
-  //
-  //   account = accounts[activeAccountId];
-  //   // check pending txs
-  //   const memPool = window.localStorage.getItem('stargazer-network-main-mempool');
-  //   if (memPool) {
-  //     const pendingTxs = JSON.parse(memPool);
-  //     console.log(pendingTxs);
-  //     pendingTxs.forEach((pTx: PendingTx) => {
-  //       if (
-  //         !account ||
-  //         (account.address.constellation !== pTx.sender &&
-  //           account.address.constellation !== pTx.receiver) ||
-  //         (accLatestInfo as IAccountInfo).transactions.filter(
-  //           (tx: Transaction) => tx.hash === pTx.hash
-  //         ).length > 0
-  //       )
-  //         return;
-  //       accLatestInfo!.transactions.unshift(_coventPendingType(pTx));
-  //     });
-  //   }
-  //
-  //   store.dispatch(
-  //     updateAccount({
-  //       id: activeAccountId,
-  //       balance: accLatestInfo.balance,
-  //       transactions: accLatestInfo.transactions,
-  //     })
-  //   );
-  // };
-
   async getLatestTxUpdate () {
-    const { activeAsset }: IVaultState = store.getState().vault;
+    const state = store.getState();
+    const { activeAsset }: IVaultState = state.vault;
+    const assets: IAssetListState = state.assets;
 
     if (!activeAsset) return;
 
@@ -214,7 +152,16 @@ export class AccountController implements IAccountController {
       store.dispatch(updateTransactions({txs}));
     }
     else if (activeAsset.type === AssetType.Ethereum) {
-      this.txController.startMonitor();
+
+      const txs: any = await this.txController.getTransactionHistory(activeAsset.address, TXS_LIMIT);
+
+      store.dispatch(updateTransactions({txs: txs.transactions}));
+    }
+    else if (activeAsset.type === AssetType.ERC20) {
+
+      const txs: any = await this.txController.getTokenTransactionHistory(activeAsset.address, assets[activeAsset.id], TXS_LIMIT);
+
+      store.dispatch(updateTransactions({txs: txs.transactions}));
     }
 
     // check pending DAG txs
@@ -251,11 +198,11 @@ export class AccountController implements IAccountController {
   async addNewToken (address: string) {
     const { activeWallet }: IVaultState = store.getState().vault;
     const account = this.keyringManager.addTokenToAccount(activeWallet.id, this.ethClient.getAddress(), address);
-    const tokenAssets = this.buildAndMonitorEthAccount(account.getTokens());
+    const tokenAssets = this.buildAccountEthTokens(address, account.getTokens());
     const newToken = tokenAssets.find(t => t.address === address);
     store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
 
-    this.monitor.start();
+    this.assetsBalanceMonitor.start();
   }
 
   // Tx-RelatedupdateAccountLabel
@@ -285,58 +232,6 @@ export class AccountController implements IAccountController {
     );
   };
 
-  //  watchMemPool() {
-  //   if (intervalId) {
-  //     clearInterval(intervalId);
-  //   }
-  //
-  //   this.checkMemPool();
-  //
-  //   intervalId = setInterval( () => {
-  //     this.checkMemPool();
-  //   }, 30 * 1000);
-  // }
-  //
-  // async checkMemPool() {
-  //
-  //     await getLatestUpdate();
-  //     const {
-  //       activeAccountId,
-  //       accounts,
-  //     }: IWalletState = store.getState().wallet;
-  //     if (
-  //       !accounts[activeAccountId] ||
-  //       !accounts[activeAccountId].transactions ||
-  //       !accounts[activeAccountId].transactions.filter(
-  //         (tx: Transaction) => tx.fee === -1
-  //       ).length
-  //     ) {
-  //       clearInterval(intervalId);
-  //       intervalId = null;
-  //     }
-  //
-  // };
-
-  // watchMemPool () {
-  //   if (this.intervalId) return;
-  //   this.intervalId = setInterval(async () => {
-  //     await this.getLatestUpdate();
-  //     const {
-  //       activeAccountId,
-  //       accounts,
-  //     }: IVaultState = store.getState().vault;
-  //     if (
-  //       !accounts[activeAccountId] ||
-  //       !accounts[activeAccountId].assets[AssetType.Constellation]
-  //         .transactions ||
-  //       !accounts[activeAccountId].assets[
-  //         AssetType.Constellation
-  //       ].transactions.filter((tx: Transaction) => tx.fee === -1).length
-  //     ) {
-  //       clearInterval(this.intervalId);
-  //     }
-  //   }, 30 * 1000);
-  // }
 
   async confirmTempTx () {
     if (!dag4.account.isActive) {
@@ -355,8 +250,6 @@ export class AccountController implements IAccountController {
     }
 
     try {
-
-
       if (activeAsset.type === AssetType.Constellation) {
         const pendingTx = await dag4.account.transferDag(
           this.tempTx.toAddress,
