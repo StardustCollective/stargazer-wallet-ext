@@ -51,7 +51,7 @@ const AboutView: FC = () => {
           href="https://www.stargazer.network/assets/static/privacy.html"
           target="_blank"
         >
-          https://www.stargazer.network/assets/static/privacy.html
+          https://www.stargazer.network/.../privacy.html
         </a>
       </span>
     </div>
