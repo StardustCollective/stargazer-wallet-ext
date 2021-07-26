@@ -121,7 +121,7 @@ export class WalletController implements IWalletController {
     await this.account.buildAccountAssetInfo(id);
     //await this.account.getLatestUpdate();
     // store.dispatch(updateStatus());
-    dag4.monitor.startMonitor();
+    this.account.assetsBalanceMonitor.start();
     this.account.txController.startMonitor();
   }
 

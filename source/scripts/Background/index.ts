@@ -51,6 +51,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     console.log('onConnect');
     if (window.controller.wallet.isUnlocked()) {
       window.controller.wallet.account.assetsBalanceMonitor.start();
+      window.controller.wallet.account.getLatestTxUpdate()
     }
   }
 });

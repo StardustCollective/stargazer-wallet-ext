@@ -96,7 +96,7 @@ export class AccountController implements IAccountController {
           infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }
         });
 
-        buildAssetList = buildAssetList.concat(this.buildAccountEthTokens(account.tokens));
+        buildAssetList = buildAssetList.concat(this.buildAccountEthTokens(account.address, account.tokens));
       }
     }
 
@@ -109,11 +109,9 @@ export class AccountController implements IAccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
-
-    this.assetsBalanceMonitor.start();
   }
 
-  buildAccountEthTokens (accountTokens: string[]) {
+  buildAccountEthTokens (address: string, accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
     const tokens = accountTokens.map(t => assetInfoMap[t])
@@ -124,7 +122,7 @@ export class AccountController implements IAccountController {
       id: AssetType.Ethereum,
       type: AssetType.Ethereum,
       label: 'Ethereum',
-      address: this.ethClient.getAddress()
+      address
     });
 
     assetList = assetList.concat(tokens.map(t => {
@@ -133,7 +131,7 @@ export class AccountController implements IAccountController {
         type: AssetType.ERC20,
         label: t.label,
         contractAddress: t.address,
-        address: this.ethClient.getAddress()
+        address
       }
     }));
 
@@ -200,7 +198,7 @@ export class AccountController implements IAccountController {
   async addNewToken (address: string) {
     const { activeWallet }: IVaultState = store.getState().vault;
     const account = this.keyringManager.addTokenToAccount(activeWallet.id, this.ethClient.getAddress(), address);
-    const tokenAssets = this.buildAccountEthTokens(account.getTokens());
+    const tokenAssets = this.buildAccountEthTokens(address, account.getTokens());
     const newToken = tokenAssets.find(t => t.address === address);
     store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
 

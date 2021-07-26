@@ -32,7 +32,7 @@
     "@stardust-collective/dag4-keyring": "^0.0.11",
     "@stardust-collective/dag4-ledger": "^0.0.12",
     "@stardust-collective/dag4-wallet": "^1.0.19",
-    "@stardust-collective/dag4-xchain-ethereum": "^0.1.10",
+    "@stardust-collective/dag4-xchain-ethereum": "^0.1.11",
     "@types/lodash": "^4.14.162",
     "@types/qrcode.react": "^1.0.1",
     "@types/react-redux": "^7.1.9",
