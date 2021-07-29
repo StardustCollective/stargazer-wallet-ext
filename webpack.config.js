@@ -92,6 +92,7 @@ module.exports = {
       constants: path.resolve(__dirname, 'source/constants'),
       services: path.resolve(__dirname, 'source/services'),
       hooks: path.resolve(__dirname, 'source/hooks'),
+      'react-native$': 'react-native-web',
     },
   },
 
@@ -116,7 +117,6 @@ module.exports = {
       {
         test: /\.(jpg|png|svg)x?$/,
         loader: 'file-loader',
-        exclude: /node_modules/,
       },
       {
         test: /\.(sa|sc|c)ss$/,
