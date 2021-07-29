@@ -63,7 +63,7 @@ const AssetItem: FC<IAssetItem> = ({
         <div>
           <span>
             <span>
-              {balances[asset.id]?.toFixed(2) || 0}
+              {formatNumber(Number(balances[asset.id]), 2, 2)}
               <b>{assetInfo.symbol}</b>
             </span>
           </span>

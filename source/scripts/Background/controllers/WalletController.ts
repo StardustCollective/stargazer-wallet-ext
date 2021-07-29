@@ -1,24 +1,15 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
-import {
-  // changeActiveWallet,
-  changeActiveNetwork, changeActiveWallet,
-  setVaultInfo,
-  updateStatus
-} from 'state/vault';
+import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateStatus } from 'state/vault';
 import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
-import {
-  IKeyringWallet,
-  KeyringManager,
-  KeyringNetwork,
-  KeyringVaultState,
-} from '@stardust-collective/dag4-keyring';
+import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
+import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 
 export class WalletController implements IWalletController {
   account: AccountController;
@@ -59,26 +50,25 @@ export class WalletController implements IWalletController {
 
   async unLock(password: string): Promise<boolean> {
     await this.keyringManager.login(password);
-    const vault: IVaultState = store.getState().vault;
+    const state = store.getState();
+    const vault: IVaultState = state.vault;
+    //Check for v1.4 migration
+    if (state.migrateWallet) {
+      await KeystoreToKeyringHelper.migrate(state.migrateWallet, password);
+    }
+
     if (vault && vault.activeWallet) {
       await this.switchWallet(vault.activeWallet.id);
     }
     return true;
   }
 
-  async importSingleAccount(
-    label: string,
-    network: KeyringNetwork,
-    privateKey: string
-  ) {
-    const wallet = await this.keyringManager.createSingleAccountWallet(
-      label,
-      network,
-      privateKey
-    );
+  async importSingleAccount(label: string, network: KeyringNetwork, privateKey: string, silent?: boolean) {
+    const wallet = await this.keyringManager.createSingleAccountWallet(label, network, privateKey);
 
-    await this.switchWallet(wallet.id);
-
+    if (!silent) {
+      await this.switchWallet(wallet.id);
+    }
     return wallet.id;
   }
 
@@ -87,10 +77,7 @@ export class WalletController implements IWalletController {
     if (resetAll) {
       wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
     } else {
-      wallet = await this.keyringManager.createMultiChainHdWallet(
-        label,
-        phrase
-      );
+      wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
     }
 
     await this.switchWallet(wallet.id);
@@ -136,6 +123,10 @@ export class WalletController implements IWalletController {
         beUrl: DAG_NETWORK[chainId].beUrl,
         lbUrl: DAG_NETWORK[chainId].lbUrl,
       });
+    }
+
+    if (network === KeyringNetwork.Ethereum) {
+      this.account.txController.setNetwork(chainId as any);
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));

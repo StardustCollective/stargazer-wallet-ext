@@ -7,18 +7,12 @@ import TextInput from 'components/TextInput';
 import { useController } from 'hooks/index';
 
 import styles from './GasSettings.scss';
+import { IETHTxConfig } from '../../../../scripts/types';
 
 const GasSettings = () => {
   const controller = useController();
   const history = useHistory();
-  const [config, setConfig] = useState<
-    | {
-        nonce?: number;
-        gas: number;
-        gasLimit: number;
-      }
-    | undefined
-  >();
+  const [config, setConfig] = useState<IETHTxConfig>();
 
   useEffect(() => {
     const ethConfig = controller.wallet.account.getTempTx()?.ethConfig;
@@ -58,9 +52,9 @@ const GasSettings = () => {
                 type="number"
                 placeholder="Gas Price"
                 fullWidth
-                value={config?.gas || 0}
+                value={config?.gasPrice || 0}
                 name="gasPrice"
-                onChange={(ev) => handleUpdate('gas', ev.target.value)}
+                onChange={(ev) => handleUpdate('gasPrice', ev.target.value)}
               />
             </li>
             <li>

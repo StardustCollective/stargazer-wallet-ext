@@ -33,7 +33,7 @@ const AssetDetail = () => {
     controller.wallet.account.updateTempTx({
       fromAddress: '',
       toAddress: '',
-      amount: 0,
+      amount: '0',
     });
   }, []);
 
@@ -68,11 +68,11 @@ const AssetDetail = () => {
           </section>
           <section className={styles.center}>
             <h3>
-              {formatNumber(balances[activeAsset.id] || 0)}{' '}
+              {formatNumber(Number(balances[activeAsset.id]), 4, 4)}{' '}
               <small>{assets[activeAsset.id].symbol}</small>
             </h3>
             <small>
-              ≈ {getFiatAmount(balances[activeAsset.id] || 0)}
+              ≈ {getFiatAmount(Number(balances[activeAsset.id] || 0))}
             </small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />

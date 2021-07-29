@@ -64,7 +64,7 @@ export function useTotalBalance(currencyName = true) {
   let balance = 0;
 
   for (let i = 0; i < assetIds.length; i += 1) {
-    balance += (balances[assetIds[i]] || 0) * (fiat[priceIds[i]]?.price || 0);
+    balance += (Number(balances[assetIds[i]]) || 0) * (fiat[priceIds[i]]?.price || 0);
   }
 
   const label = `${currencyName ? currency.symbol : ''}${balance.toFixed(2)}${

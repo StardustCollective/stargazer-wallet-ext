@@ -11,15 +11,20 @@ import IVaultState from 'state/vault/types';
 import 'assets/styles/global.scss';
 
 const App: FC = () => {
+
   const { wallets, hasEncryptedVault }: IVaultState = useSelector(
     (state: RootState) => state.vault
+  );
+
+  const migrateWallet = useSelector(
+    (state: RootState) => state.migrateWallet
   );
 
   return (
     <section id="app" style={{ minHeight: '300px' }}>
       <Container>
         <Router>
-          {(wallets && Object.values(wallets).length > 0) || hasEncryptedVault ? (
+          {migrateWallet || (wallets && Object.values(wallets).length > 0) || hasEncryptedVault ? (
             <AuthRouter />
           ) : (
             <UnAuthRouter />

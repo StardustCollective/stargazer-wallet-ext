@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
 // import { useHistory } from 'react-router-dom';
-
 import Header from 'containers/common/Header';
 import Layout from 'containers/common/Layout';
 import Button from 'components/Button';
@@ -18,6 +17,7 @@ import { ellipsis } from '../helpers';
 
 import styles from './Confirm.scss';
 import Icon from 'components/Icon';
+import { BigNumber, ethers } from 'ethers';
 
 const SendConfirm = () => {
   // const history = useHistory();
@@ -32,15 +32,30 @@ const SendConfirm = () => {
     (state: RootState) => state.assets
   );
   const assetInfo = assets[activeAsset.id];
+  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
 
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
 
+  const getTotalUnits = () => {
+    const balance = ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals);
+    const txFee =
+      activeAsset.id === AssetType.Constellation
+        ? BigNumber.from(tempTx?.fee || 0)
+        : ethers.utils.parseEther(String(tempTx?.fee || 0));
+
+    if (assetInfo.type === AssetType.ERC20) {
+      return ethers.utils.formatUnits(balance, assetInfo.decimals);
+    }
+    return ethers.utils.formatUnits(balance.add(txFee), assetInfo.decimals);
+  }
+
   const getTotalAmount = () => {
-    return (
-      Number(getFiatAmount(Number(tempTx?.amount || 0), 8)) +
-      Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type))
-    ).toLocaleString(navigator.language, {
+    let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
+    //if (assetInfo.type !== AssetType.ERC20) {
+      amount += Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type));
+    //}
+    return (amount).toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
     });
@@ -87,10 +102,7 @@ const SendConfirm = () => {
         <div className={styles.iconWrapper}>
           <UpArrowIcon />
         </div>
-        {Number(tempTx?.amount || 0) +
-          (activeAsset.type === AssetType.Ethereum
-            ? Number(tempTx?.fee || 0)
-            : 0)}{' '}
+        {getTotalUnits()}{' '}
         {assetInfo.symbol}
         <small>
           (≈
@@ -111,7 +123,7 @@ const SendConfirm = () => {
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {`${tempTx!.fee} ${assets[activeAsset.id].symbol} (≈ $${getFiatAmount(
+            {`${tempTx!.fee} ${feeUnit} (≈ $${getFiatAmount(
               tempTx?.fee || 0,
               2,
               activeAsset.type

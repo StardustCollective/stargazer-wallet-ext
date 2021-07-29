@@ -12,7 +12,8 @@ export interface IWalletController {
   importSingleAccount: (
     label: string,
     network: KeyringNetwork,
-    privateKey: string
+    privateKey: string,
+    silent?: boolean
   ) => Promise<string>;
   createWallet: (
     label: string,
