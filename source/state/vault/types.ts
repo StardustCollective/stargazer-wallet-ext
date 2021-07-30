@@ -2,7 +2,7 @@ import {
   V3Keystore,
   KDFParamsPhrase,
   KDFParamsPrivateKey,
-} from '@stardust-collective/dag4-keystore/types/v3-keystore';
+} from '@stardust-collective/dag4-keystore';
 import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
 import {
   KeyringAssetType, KeyringNetwork,
@@ -29,6 +29,7 @@ export type ActiveNetwork = {
   [KeyringNetwork.Ethereum]: string,
 }
 
+
 export interface IAssetState   {
   id: string;
   type: AssetType;
@@ -42,10 +43,19 @@ export interface IActiveAssetState extends IAssetState {
   transactions: Transaction[];
 }
 
+// export class BalanceValue {
+//   valueNum: number;
+//   valueStr: string;
+//   valueBn: BigNumber;
+//   static createDefault(): BalanceValue {
+//     return { valueNum: 0, valueStr: '0', valueBn: BigNumber.from(0) }
+//   }
+// }
+
 export type AssetBalances = {
-  [AssetType.Ethereum]?: number;
-  [AssetType.Constellation]?: number;
-  [contractAddress: string]: number;
+  [AssetType.Ethereum]?: string;
+  [AssetType.Constellation]?: string;
+  [contractAddress: string]: string;
 }
 
 export interface IWalletState {

@@ -1,11 +1,4 @@
-import React, {
-  ChangeEvent,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  FC,
-} from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
@@ -29,6 +22,9 @@ import { formatNumber } from '../helpers';
 import styles from './Send.scss';
 import IAssetListState from 'state/assets/types';
 import Icon from 'components/Icon';
+import { BigNumber, ethers } from 'ethers';
+import { ITransactionInfo } from '../../../scripts/types';
+
 interface IWalletSend {
   initAddress?: string;
 }
@@ -63,12 +59,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     initAddress || tempTx?.toAddress || ''
   );
   const [amount, setAmount] = useState(String(tempTx?.amount) || '');
+  const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
-  const [currentGas, setCurrentGas] = useState<number>(0);
+  const [gasPrice, setGasPrice] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
+  // const [useMax, setUseMax] = useState<boolean>(false);
 
   const isValidAddress = useMemo(() => {
     if (activeAsset.type === AssetType.Constellation)
@@ -92,43 +90,66 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       alert.error('Error: Invalid recipient address');
       return;
     }
-    const txConfig: any = {
+    const txConfig: ITransactionInfo = {
       fromAddress: activeAsset.address,
       toAddress: data.address,
-      amount: data.amount,
+      amount: amount,
       fee: data.fee || gasFee,
     };
-    if (activeAsset.type !== AssetType.Constellation) {
+    if (activeAsset.type === AssetType.Ethereum) {
       txConfig.ethConfig = {
-        gas: currentGas,
+        gasPrice,
+        gasLimit: 21000
+      };
+    }
+    else if (activeAsset.type === AssetType.ERC20) {
+      txConfig.ethConfig = {
+        gasPrice
       };
     }
     controller.wallet.account.updateTempTx(txConfig);
     history.push('/send/confirm');
   };
 
-  const isDisabled = useMemo(() => {
-    const balance = balances[activeAsset.id] || 0;
+  const getBalanceAndFees = () => {
+    const balance = ethers.utils.parseUnits(String(balances[activeAsset.id] || 0), assetInfo.decimals);
+    console.log('getBalanceAndFees', gasFee.toString())
     const txFee =
-      activeAsset.type === AssetType.Constellation
-        ? Number(fee)
-        : activeAsset.type === AssetType.Ethereum
-        ? gasFee
-        : 0;
-    console.log(Number(amount) + txFee > balance);
+      activeAsset.id === AssetType.Constellation
+        ? BigNumber.from(fee)
+        : ethers.utils.parseEther(gasFee.toString());
+
+    return {balance, txFee};
+  }
+
+  const isDisabled = useMemo(() => {
+
+    const { balance, txFee } = getBalanceAndFees();
+
+    let computedAmount: BigNumber;
+
+    if (assetInfo.type === AssetType.ERC20) {
+      computedAmount = amountBN;
+    }
+    else {
+      computedAmount = amountBN.add(txFee);
+    }
+
     return (
       !isValidAddress ||
       !amount ||
       !fee ||
       !address ||
-      Number(amount) <= 0 ||
-      Number(amount) + txFee > balance
+      balance.lt(0) ||
+      computedAmount.gt(balance)
     );
-  }, [amount, address, gasFee]);
+  }, [amountBN, address, gasFee]);
 
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setAmount(ev.target.value);
+      setAmountBN(ethers.utils.parseUnits(ev.target.value, assetInfo.decimals));
+     // setUseMax(false);
     },
     []
   );
@@ -149,15 +170,20 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const estimateGasFee = (val: number) => {
     if (!gasPrices) return;
     controller.wallet.account
-      .estimateGasFee(val, tempTx?.ethConfig?.gasLimit)
+      .estimateTotalGasFee(val, tempTx?.ethConfig?.gasLimit)
       .then((fee) => {
         if (!fee) return;
+        // console.log('setGasFee', fee)
         setGasFee(fee);
+        // if (useMax) {
+        //   handleSetMax();
+        // }
       });
   };
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
-    setCurrentGas(val as number);
+    val = Number(val) || 1;
+    setGasPrice(val as number);
     estimateGasFee(val as number);
   };
 
@@ -179,7 +205,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     }
     controller.wallet.account.getLatestGasPrices().then((gas) => {
       setGasPrices(gas);
-      setCurrentGas(tempTx?.ethConfig?.gas || gas[1]);
+      setGasPrice(tempTx?.ethConfig?.gasPrice || gas[1]);
       estimateGasFee(gas[1]);
     });
   };
@@ -200,14 +226,25 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   // };
 
   const handleSetMax = () => {
-    const balance = balances[activeAsset.id] || 0;
-    const txFee =
-      activeAsset.id === AssetType.Constellation
-        ? Number(fee)
-        : activeAsset.id === AssetType.Ethereum
-        ? gasFee
-        : 0;
-    setAmount(String(Math.max(balance - txFee, 0)));
+
+    const { balance, txFee } = getBalanceAndFees();
+
+    let computedAmount;
+
+    if (assetInfo.type === AssetType.ERC20) {
+      computedAmount = balance;
+    }
+    else {
+      computedAmount = balance.sub(txFee);
+    }
+
+    if (computedAmount.lt(0)) {
+      computedAmount = BigNumber.from(0);
+    }
+
+    setAmount(ethers.utils.formatUnits(computedAmount, assetInfo.decimals));
+    setAmountBN(computedAmount);
+    //setUseMax(true);
   };
 
   useEffect(() => {
@@ -229,7 +266,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
         </section>
         <section className={styles.balance}>
           <div>
-            Balance: <span>{formatNumber(balances[activeAsset.id] || 0)}</span>{' '}
+            Balance: <span>{formatNumber(Number(balances[activeAsset.id]), 4, 4)}</span>{' '}
             {assetInfo.symbol}
           </div>
         </section>
@@ -336,14 +373,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 classes={{
                   root: clsx(styles.sliderCustom, {
                     [styles.disabled]:
-                      currentGas < gasPrices[0] || currentGas > gasPrices[2],
+                      gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
                   }),
                   thumb: styles.thumb,
                   mark: styles.mark,
                   track: styles.sliderTrack,
                   rail: styles.sliderRail,
                 }}
-                value={currentGas}
+                value={gasPrice}
                 min={gasPrices[0]}
                 max={gasPrices[2]}
                 scale={(x) => x * 2}
@@ -360,14 +397,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
               />
               <TextInput
                 type="number"
-                value={currentGas}
+                value={gasPrice}
                 variant={styles.gasInput}
-                onChange={(ev) => setCurrentGas(Number(ev.target.value))}
+                onChange={(ev) => handleGasPriceChange(null, Number(ev.target.value))}
               />
               <div className={styles.gasLevel}>
-                {currentGas >= gasPrices[2]
+                {gasPrice >= gasPrices[2]
                   ? 'Fast'
-                  : currentGas >= Math.round((gasPrices[0] + gasPrices[2]) / 2)
+                  : gasPrice >= Math.round((gasPrices[0] + gasPrices[2]) / 2)
                   ? 'Normal'
                   : 'Slow'}
               </div>
@@ -375,7 +412,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
             <div className={styles.status}>
               <span
                 className={styles.equalAmount}
-              >{`${currentGas} GWei, ${gasFee} ETH (≈ ${getFiatAmount(
+              >{`${gasPrice} GWei, ${gasFee} ETH (≈ ${getFiatAmount(
                 gasFee,
                 2,
                 'ethereum'

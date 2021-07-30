@@ -21,8 +21,8 @@ const initialState: IVaultState = {
   wallets: [],
   hasEncryptedVault,
   balances: {
-    [AssetType.Constellation]: 0,
-    [AssetType.Ethereum]: 0,
+    [AssetType.Constellation]: '0',
+    [AssetType.Ethereum]: '0',
   },
   // activeWalletId: undefined,
   activeWallet: undefined,

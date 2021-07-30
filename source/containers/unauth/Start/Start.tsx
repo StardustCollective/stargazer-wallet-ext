@@ -23,7 +23,7 @@ const Start = () => {
         Get started
       </Button>
       <Link color="secondary" to="/import">
-        Import from seed phrase
+        Import from recovery seed phrase
       </Link>
     </div>
   );

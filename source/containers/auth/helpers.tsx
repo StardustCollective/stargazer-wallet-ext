@@ -39,19 +39,26 @@ export const formatDistanceDate = (timestamp: string | number) => {
   }
 };
 
-export const formatNumber = (num: number, min = 4, max = 4, maxSig = 12) => {
-  return (num || 0).toLocaleString(navigator.language, {
+export const formatNumber = (num: number, min: number, max: number, maxSig?: number) => {
+  const options: Intl.NumberFormatOptions = {
     minimumFractionDigits: min,
-    maximumFractionDigits: max,
-    maximumSignificantDigits: maxSig,
-  });
+    maximumFractionDigits: max
+  };
+
+  if (maxSig) {
+    options.maximumSignificantDigits = maxSig;
+  }
+  return (num || 0).toLocaleString(navigator.language, options);
 };
 
 export const formatPrice = (num: number, round = 2) => {
+  num = Number(num || 0);
   const decimal = num - Math.floor(num);
-  return `$${Number(
-    num.toFixed(Math.floor(Math.abs(Math.log10(decimal))) + round)
-  )}`;
+  if (decimal === 0) {
+    return `$${num.toFixed(round)}`;
+  }
+  let count = Math.floor(Math.abs(Math.log10(decimal)) + round);
+  return `$${num.toFixed(count)}`;
 };
 
 export const getAddressURL = (

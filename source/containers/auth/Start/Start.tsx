@@ -40,7 +40,10 @@ const Starter = () => {
         window.close();
       }
       setInvalid(!res);
-    });
+    })
+      .catch(() => {
+        setInvalid(true);
+      });
   };
 
   return (
@@ -74,7 +77,7 @@ const Starter = () => {
       </form>
       {!location.pathname.includes('confirm.html') && (
         <Link color="secondary" to="/import">
-          Import from seed phrase
+          Import from recovery seed phrase
         </Link>
       )}
     </div>

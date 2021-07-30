@@ -33,6 +33,15 @@ export class TransactionController implements ITransactionController {
     return pendingData as IPendingData;
   };
 
+  setNetwork(value: 'mainnet' | 'testnet') {
+    this.ethClient = new XChainEthClient({
+      network: value,
+      privateKey: process.env.TEST_PRIVATE_KEY,
+      etherscanApiKey: process.env.ETHERSCAN_API_KEY,
+      infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
+    });
+  }
+
   addPendingTx (pendingTx: IETHPendingTx) {
     const pendingData = this._getPendingData();
 

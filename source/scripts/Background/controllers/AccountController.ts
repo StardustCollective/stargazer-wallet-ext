@@ -253,7 +253,7 @@ export class AccountController implements IAccountController {
       if (activeAsset.type === AssetType.Constellation) {
         const pendingTx = await dag4.account.transferDag(
           this.tempTx.toAddress,
-          this.tempTx.amount,
+          Number(this.tempTx.amount),
           this.tempTx.fee
         );
         dag4.monitor.addToMemPoolMonitor(pendingTx);
@@ -268,25 +268,25 @@ export class AccountController implements IAccountController {
         //this.watchMemPool();
       } else {
         if (!this.tempTx.ethConfig) return;
-        const { gas, gasLimit, nonce } = this.tempTx.ethConfig;
-        console.log('gas gasLimit', gas, gasLimit);
+        const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
+        // console.log('gas gasLimit', gas, gasLimit);
         const { activeNetwork }: IVaultState = store.getState().vault;
         const txOptions: any = {
           recipient: this.tempTx.toAddress,
           amount: utils.baseAmount(
-            ethers.utils.parseEther(this.tempTx.amount.toString()).toString(),
-            18
+              ethers.utils.parseUnits(
+                this.tempTx.amount.toString(),
+                assets[activeAsset.id].decimals
+              ).toString(),
+            assets[activeAsset.id].decimals
           ),
-          gasPrice: gas
+          gasPrice: gasPrice
             ? utils.baseAmount(
-                ethers.utils.parseUnits(gas.toString(), 'gwei').toString(),
+                ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
                 9
               )
             : undefined,
-          gasLimit:
-            gasLimit && activeAsset.type === AssetType.Ethereum
-              ? BigNumber.from(gasLimit)
-              : undefined,
+          gasLimit: gasLimit && BigNumber.from(gasLimit),
           nonce: nonce,
         };
         if (activeAsset.type !== AssetType.Ethereum) {
@@ -294,15 +294,6 @@ export class AccountController implements IAccountController {
             `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
               assets[activeAsset.id].address
             }`
-          );
-          txOptions.amount = utils.baseAmount(
-            ethers.utils
-              .parseUnits(
-                this.tempTx.amount.toString(),
-                assets[activeAsset.id].decimals
-              )
-              .toString(),
-            assets[activeAsset.id].decimals
           );
         }
         const txHash = await this.ethClient.transfer(txOptions);
@@ -356,7 +347,7 @@ export class AccountController implements IAccountController {
 
     const recommendConfig = {
       nonce,
-      gas: Number(
+      gasPrice: Number(
         ethers.utils
           .formatUnits(gasPrices.average.amount().toString(), 'gwei')
           .toString()
@@ -365,79 +356,12 @@ export class AccountController implements IAccountController {
     };
 
     if (!this.tempTx) {
-      this.tempTx = { fromAddress: '', toAddress: '', amount: 0 }
+      this.tempTx = { fromAddress: '', toAddress: '', amount: '0' }
       this.tempTx.ethConfig = recommendConfig;
     }
 
     return recommendConfig;
   }
-/*
-  const getLatestGasPrices = async () => {
-    const { activeNetwork }: IVaultState = store.getState().vault;
-    const network = activeNetwork[AssetType.Ethereum] as ETHNetwork;
-
-    let gasPrices: any;
-
-    if (network === 'testnet') {
-      gasPrices = {
-        low: { amount: () => 1e-18 },
-        average: { amount: () => 2e-18 },
-        high: { amount: () => 2e-18 }
-      };
-    }
-    else {
-      gasPrices = await this.ethClient.estimateGasPrices();
-    }
-
-    const results = ['low','average','high'].map((gas) => {
-      return Number(
-        ethers.utils.formatUnits(gasPrices[gas].amount().toString(), 'gwei').toString()
-      );
-    });
-    if (results[0] === results[1]) {
-      results[1] = Math.round((results[0] + results[2]) / 2);
-    }
-
-    console.log('gasPrices: ' + gasPrices);
-    return results;
-  }
-
-  const getRecommendETHTxConfig = async () => {
-    const { activeNetwork }: IVaultState = store.getState().vault;
-    const network = activeNetwork[AssetType.Ethereum] as ETHNetwork;
-
-    let nonce: number;
-    let gasPrices: any;
-
-    if (network === 'testnet') {
-      nonce = await this.ethClient.getTransactionCount(this.ethClient.getAddress(), 3);
-      gasPrices = { average: { amount: () => 1e-18 } };
-    }
-    else {
-      nonce = await this.ethClient.getTransactionCount(this.ethClient.getAddress());
-      gasPrices = await this.ethClient.estimateGasPrices();
-    }
-
-    const gasLimit = 21000;
-
-    const recommendConfig = {
-      nonce,
-      gas: Number(
-        ethers.utils
-          .formatUnits(gasPrices.average.amount().toString(), 'gwei')
-          .toString()
-      ) + 0.1,
-      gasLimit,
-    };
-
-    if (!tempTx) {
-      tempTx = { fromAddress: '', toAddress: '', amount: 0 }
-      tempTx.ethConfig = recommendConfig;
-    }
-
-    return recommendConfig;
-  }
-*/
 
   updateETHTxConfig ({ nonce, gas, gasLimit}: {
     gas?: number;
@@ -449,14 +373,14 @@ export class AccountController implements IAccountController {
     this.tempTx.ethConfig = {
       ...this.tempTx.ethConfig,
       nonce: nonce || this.tempTx.ethConfig.nonce,
-      gas: gas || this.tempTx.ethConfig.gas,
+      gasPrice: gas || this.tempTx.ethConfig.gasPrice,
       gasLimit: gasLimit || this.tempTx.ethConfig.gasLimit,
     };
   }
 
-  async estimateGasFee (gas: number, gasLimit = 21000) {
+  async estimateTotalGasFee (gas: number, gasLimit = 21000) {
     const fee = ethers.utils
-      .parseUnits(gas.toString(), 9)
+      .parseUnits(gas.toString(), 'gwei')
       .mul(BigNumber.from(gasLimit));
 
     return Number(ethers.utils.formatEther(fee).toString());

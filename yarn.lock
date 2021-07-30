@@ -1553,6 +1553,30 @@
     ethereumjs-wallet "^1.0.1"
     js-sha256 "^0.9.0"
 
+"@stardust-collective/dag4-keystore@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keystore/-/dag4-keystore-1.0.11.tgz#6a2977e8cfd43995ce4aac64a837356329b762de"
+  integrity sha512-JCJ7eTeW5DnM/IaGE6UV6xcbewAx1tpbRdzEMeVTc3Hsl4DEjKMsvcj3emUwFiP/CZy4LtWFEGQPMkXySu6rPA==
+  dependencies:
+    bignumber.js "^9.0.1"
+    bip39 "^3.0.2"
+    blakejs "^1.1.0"
+    bn.js "^5.1.3"
+    bs58 "^4.0.1"
+    buffer "^5.6.0"
+    create-hash "^1.2.0"
+    create-hmac "^1.1.7"
+    elliptic "^6.5.3"
+    eth-lib "^0.1.29"
+    ethereum-cryptography "^0.1.3"
+    ethereumjs-wallet "^1.0.1"
+    js-sha256 "^0.9.0"
+    js-sha512 "^0.8.0"
+    pbkdf2 "^3.0.9"
+    randombytes "^2.0.1"
+    stream-browserify "^3.0.0"
+    uuid "^3.4.0"
+
 "@stardust-collective/dag4-keystore@^1.0.8":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keystore/-/dag4-keystore-1.0.8.tgz#38a2fe054f6dc94e84a20ca350ee3bcd74b2cff3"

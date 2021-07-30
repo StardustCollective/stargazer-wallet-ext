@@ -9,13 +9,13 @@ export interface IAccountInfo {
 export interface IETHTxConfig {
   nonce?: number;
   txData?: string;
-  gas: number;
-  gasLimit: number;
+  gasPrice: number;
+  gasLimit?: number;
 }
 
 export interface IETHPendingTx {
   txHash: string;
-  amount: number;
+  amount: string;
   fromAddress: string;
   toAddress: string;
   timestamp: number;
@@ -26,7 +26,7 @@ export interface IETHPendingTx {
 export interface ITransactionInfo {
   fromAddress: string;
   toAddress: string;
-  amount: number;
+  amount: string;
   fee?: number;
   ethConfig?: IETHTxConfig;
 }

@@ -20,7 +20,7 @@ export interface IAccountController {
   getRecommendFee: () => Promise<number>;
   getRecommendETHTxConfig: () => Promise<{
     nonce: number;
-    gas: number;
+    gasPrice: number;
     gasLimit: number;
   }>;
   updateETHTxConfig: ({
@@ -33,7 +33,7 @@ export interface IAccountController {
     nonce?: number;
   }) => void;
   getLatestGasPrices: () => Promise<number[]>;
-  estimateGasFee: (gas: number, gasLimit?: number) => Promise<number>;
+  estimateTotalGasFee: (gas: number, gasLimit?: number) => Promise<number>;
   // watchMemPool: () => void;
   getLatestTxUpdate: () => Promise<void>;
 }
