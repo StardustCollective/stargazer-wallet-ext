@@ -87,7 +87,7 @@ module.exports = {
       scripts: path.resolve(__dirname, 'source/scripts'),
       containers: path.resolve(__dirname, 'source/containers'),
       pages: path.resolve(__dirname, 'source/pages'),
-      routers: path.resolve(__dirname, 'source/routers'),
+      navigation: path.resolve(__dirname, 'source/navigation'),
       state: path.resolve(__dirname, 'source/state'),
       constants: path.resolve(__dirname, 'source/constants'),
       services: path.resolve(__dirname, 'source/services'),
