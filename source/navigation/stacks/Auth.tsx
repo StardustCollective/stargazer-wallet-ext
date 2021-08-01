@@ -48,6 +48,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 
 const Auth = () => {
+
   const controller = useController();
   const isUnlocked = controller.wallet.isUnlocked();
   // const location = useLocation();
@@ -82,18 +83,19 @@ const Auth = () => {
   // TODO: Migration Notes
   // - If the App is unlocked (Authorized) it should navigate to the home screen
 
+
   return (
-    <Stack.Navigator screenOptions={{animationEnabled: true, headerShown: false}} initialRouteName={screens.authorized.home}>
-         <Stack.Screen  options={{ headerShown: false }} name={screens.authorized.start} component={Start} />
-         {!isUnlocked &&  <Stack.Screen name={screens.authorized.start} component={Start} />}
-         {isUnlocked &&  <Stack.Screen name={screens.common.import} component={Import} />}
-         {isUnlocked &&  <Stack.Screen name={screens.authorized.home} component={Home} />}
-         {isUnlocked &&  <Stack.Screen name={screens.authorized.addAsset} component={AddAsset} />}
-         {isUnlocked &&  <Stack.Screen name={screens.authorized.asset} component={Asset} />}
-         {isUnlocked &&  <Stack.Screen name={screens.authorized.sendConfirm} component={SendConfirm} />}
-         {isUnlocked &&  <Stack.Screen name={screens.authorized.send} component={Send} />}
-         {isUnlocked &&  <Stack.Screen name={screens.authorized.gasSettings} component={GasSettings} />}
-            {/* <Route path="/app.html" component={Start} exact>
+    <Stack.Navigator screenOptions={{ animationEnabled: true, headerShown: false }} initialRouteName={isUnlocked ? screens.authorized.home : screens.authorized.start}>
+      <Stack.Screen options={{ headerShown: false }} name={screens.authorized.start} component={Start} />
+      {!isUnlocked && <Stack.Screen name={screens.authorized.start} component={Start} />}
+      {isUnlocked && <Stack.Screen name={screens.common.import} component={Import} />}
+      {isUnlocked && <Stack.Screen name={screens.authorized.home} component={Home} />}
+      {isUnlocked && <Stack.Screen name={screens.authorized.addAsset} component={AddAsset} />}
+      {isUnlocked && <Stack.Screen name={screens.authorized.asset} component={Asset} />}
+      {isUnlocked && <Stack.Screen name={screens.authorized.sendConfirm} component={SendConfirm} />}
+      {isUnlocked && <Stack.Screen name={screens.authorized.send} component={Send} />}
+      {isUnlocked && <Stack.Screen name={screens.authorized.gasSettings} component={GasSettings} />}
+      {/* <Route path="/app.html" component={Start} exact>
               {isUnlocked && <Redirect to="/home" />}
             </Route>
             {!isUnlocked && <Route path="/import" component={Import} exact />}
@@ -118,7 +120,7 @@ const Auth = () => {
                 exact
               />
             )} */}
-            {/* {isUnlocked && <Route path="/receive" component={Receive} exact />} */}
+      {/* {isUnlocked && <Route path="/receive" component={Receive} exact />} */}
     </Stack.Navigator>
   );
 };
