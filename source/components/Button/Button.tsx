@@ -29,6 +29,7 @@ const Button: FC<IButton> = ({
   variant = '',
   linkTo = '#',
   loading = false,
+  onClick,
   ...otherProps
 }) => {
   const classes = clsx(
@@ -45,16 +46,13 @@ const Button: FC<IButton> = ({
     height: fullWidth && blockHeight ? blockHeight : 'fit-content',
   };
   const history = useHistory();
-  const clickHandler = () => {
-    if (linkTo !== '#') history.push(linkTo);
-  };
 
   return (
     <MUIButton
       className={classes}
       fullWidth={fullWidth}
       style={customStyle}
-      onClick={clickHandler}
+      onClick={onClick}
       disabled={loading || disabled}
       {...otherProps}
     >
