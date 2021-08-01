@@ -25,15 +25,13 @@ export default {
     sendConfirm: 'auth-sendConfirm',
     send: 'auth-send',
     gasSettings: 'auth-gasSettings',
-
   },
-  
 
   ////////////////////////////
   // common
   ////////////////////////////
 
   common: {
-    import: 'common-import'
-  }
+    import: 'common-import',
+  },
 };
