@@ -5,12 +5,12 @@ export default {
 
   unAuthorized: {
     home: 'unauth-home',
-    import: 'unauth-himport',
-    remind: 'unauth-hremind',
-    createPass: 'unauth-hcreatePass',
-    createPhraseRemind: 'unauth-hcreatePhraseRemind',
-    createPhraseGenerated: 'unauth-hcreatePhraseGenerated',
-    createPhraseCheck: 'unauth-hcreatePhraseCheck',
+    import: 'unauth-import',
+    remind: 'unauth-remind',
+    createPass: 'unauth-createPass',
+    createPhraseRemind: 'unauth-createPhraseRemind',
+    createPhraseGenerated: 'unauth-createPhraseGenerated',
+    createPhraseCheck: 'unauth-createPhraseCheck',
   },
 
   ////////////////////////////
