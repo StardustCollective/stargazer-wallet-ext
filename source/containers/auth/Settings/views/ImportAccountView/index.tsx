@@ -160,7 +160,7 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
                   options={[
                     { priv: 'Private key' },
                     { json: 'JSON file' },
-                    { hardware: 'Hardware wallet' },
+                    // { hardware: 'Hardware wallet' },
                   ]}
                   onChange={(ev) => setImportType(ev.target.value as string)}
                   fullWidth

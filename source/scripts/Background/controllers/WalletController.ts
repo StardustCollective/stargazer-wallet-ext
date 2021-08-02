@@ -139,7 +139,7 @@ export class WalletController implements IWalletController {
       this.account.getLatestTxUpdate();
     }
 
-    this.account.assetsBalanceMonitor.stop();
+    //restart monitor with different network
     this.account.assetsBalanceMonitor.start();
   }
 

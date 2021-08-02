@@ -15,7 +15,7 @@ import IVaultState, { AssetType, IAssetState, IWalletState } from 'state/vault/t
 
 import { ETHNetwork, ITransactionInfo } from '../../types';
 import IAssetListState from 'state/assets/types';
-import { TransactionController } from './TransactionController';
+import { EthTransactionController } from './EthTransactionController';
 
 import { IAccountController } from './IAccountController';
 import { KeyringManager, KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring';
@@ -27,11 +27,11 @@ const TXS_LIMIT = 10;
 export class AccountController implements IAccountController {
   tempTx: ITransactionInfo | null;
   ethClient: XChainEthClient;
-  txController: TransactionController;
+  txController: EthTransactionController;
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
 
   constructor(private keyringManager: Readonly<KeyringManager>) {
-    this.txController = new TransactionController();
+    this.txController = new EthTransactionController();
     this.assetsBalanceMonitor = new AssetsBalanceMonitor();
   }
 
@@ -202,20 +202,8 @@ export class AccountController implements IAccountController {
     const newToken = tokenAssets.find(t => t.address === address);
     store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
 
+    //restart monitor to include new token
     this.assetsBalanceMonitor.start();
-  }
-
-  // Tx-RelatedupdateAccountLabel
-  updateTempTx (tx: ITransactionInfo) {
-    if (dag4.account.isActive()) {
-      this.tempTx = { ...this.tempTx, ...tx };
-      this.tempTx.fromAddress = this.tempTx.fromAddress.trim();
-      this.tempTx.toAddress = this.tempTx.toAddress.trim();
-    }
-  }
-
-  getTempTx () {
-    return dag4.account.isActive() ? this.tempTx : null;
   }
 
   async updateTxs (limit = 10, searchAfter?: string) {
@@ -232,6 +220,17 @@ export class AccountController implements IAccountController {
     );
   };
 
+  getTempTx () {
+    return dag4.account.isActive() ? this.tempTx : null;
+  }
+
+  updateTempTx (tx: ITransactionInfo) {
+    if (dag4.account.isActive()) {
+      this.tempTx = { ...this.tempTx, ...tx };
+      this.tempTx.fromAddress = this.tempTx.fromAddress.trim();
+      this.tempTx.toAddress = this.tempTx.toAddress.trim();
+    }
+  }
 
   async confirmTempTx () {
     if (!dag4.account.isActive) {
@@ -330,29 +329,25 @@ export class AccountController implements IAccountController {
     const gasPrices = await this.ethClient.estimateGasPrices();
     const results = Object.values(gasPrices).map((gas) => {
       return Number(
-        ethers.utils.formatUnits(gas.amount().toString(), 'gwei').toString()
+        ethers.utils.formatUnits(gas.amount().toString(), 'gwei')
       );
     });
-    if (results[0] === results[1]) {
-      results[1] = Math.round((results[0] + results[2]) / 2);
-    }
+    // if (results[0] === results[1]) {
+    //   results[1] = Math.round((results[0] + results[2]) / 2);
+    // }
     return results;
   }
 
   async getRecommendETHTxConfig () {
     const txHistory = await this.ethClient.getTransactions();
     const nonce = txHistory.txs.length;
-    const gasPrices = await this.ethClient.estimateGasPrices();
+    const gasPrices = await this.getLatestGasPrices()
     const gasLimit = 21000;
 
     const recommendConfig = {
       nonce,
-      gasPrice: Number(
-        ethers.utils
-          .formatUnits(gasPrices.average.amount().toString(), 'gwei')
-          .toString()
-      ),
-      gasLimit,
+      gasPrice: Math.floor((gasPrices[1] + gasPrices[2]) / 2),
+      gasLimit
     };
 
     if (!this.tempTx) {

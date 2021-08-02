@@ -4,6 +4,7 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { formatNumber } from '../containers/auth/helpers';
 
 export function useFiat(currencyName = true) {
   const { activeAsset }: IVaultState = useSelector(
@@ -34,6 +35,7 @@ export function useFiat(currencyName = true) {
 }
 
 export function useTotalBalance(currencyName = true) {
+
   const { fiat, currency }: IPriceState = useSelector(
     (state: RootState) => state.price
   );
@@ -67,13 +69,15 @@ export function useTotalBalance(currencyName = true) {
     balance += (Number(balances[assetIds[i]]) || 0) * (fiat[priceIds[i]]?.price || 0);
   }
 
-  const label = `${currencyName ? currency.symbol : ''}${balance.toFixed(2)}${
+  let balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
+
+  const label = `${currencyName ? currency.symbol : ''}${balanceStr}${
     currencyName ? ` ${currency.name}` : ''
   }`;
 
   balance = (balance / (fiat.bitcoin?.price || 0))
 
-  const balanceStr = balance.toFixed((balance >= 0.01) ? 2 : 4);
+  balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
 
   return [label, balanceStr];
 }

@@ -6,7 +6,7 @@ import { IAssetInfoState } from '../../../state/assets/types';
 import IVaultState  from 'state/vault/types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-export interface ITransactionController {
+export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => boolean;
   startMonitor: () => void;
   getFullTxs: () => any[];
@@ -18,7 +18,7 @@ interface IPendingData {
 
 const TX_STORE = 'ETH_PENDING';
 
-export class TransactionController implements ITransactionController {
+export class EthTransactionController implements IEthTransactionController {
 
   private ethClient: XChainEthClient = new XChainEthClient({
     network: 'mainnet',

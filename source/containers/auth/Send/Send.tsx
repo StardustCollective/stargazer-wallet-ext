@@ -122,6 +122,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     return {balance, txFee};
   }
 
+  const gasSpeedLabel = useMemo(() => {
+     if (gasPrice >= gasPrices[2]) return 'Fastest';
+     if(gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
+     if(gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
+     if(gasPrice > gasPrices[0]) return 'Slow';
+     return 'Turtle';
+  }, [gasPrice, gasPrices])
+
   const isDisabled = useMemo(() => {
 
     const { balance, txFee } = getBalanceAndFees();
@@ -204,9 +212,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       controller.wallet.account.updateTempTx(txConfig);
     }
     controller.wallet.account.getLatestGasPrices().then((gas) => {
+      const gasPrice = tempTx?.ethConfig?.gasPrice || gas[1];
       setGasPrices(gas);
-      setGasPrice(tempTx?.ethConfig?.gasPrice || gas[1]);
-      estimateGasFee(gas[1]);
+      setGasPrice(gasPrice);
+      estimateGasFee(gasPrice);
     });
   };
 
@@ -402,11 +411,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
                 onChange={(ev) => handleGasPriceChange(null, Number(ev.target.value))}
               />
               <div className={styles.gasLevel}>
-                {gasPrice >= gasPrices[2]
-                  ? 'Fast'
-                  : gasPrice >= Math.round((gasPrices[0] + gasPrices[2]) / 2)
-                  ? 'Normal'
-                  : 'Slow'}
+                {gasSpeedLabel}
               </div>
             </div>
             <div className={styles.status}>
