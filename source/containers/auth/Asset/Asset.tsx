@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -28,6 +28,10 @@ const AssetDetail = () => {
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
+
+  const balance = useMemo(() => {
+    return Number(balances[activeAsset.id] || 0)
+  }, [balances]);
 
   useEffect(() => {
     controller.wallet.account.updateTempTx({
@@ -68,11 +72,11 @@ const AssetDetail = () => {
           </section>
           <section className={styles.center}>
             <h3>
-              {formatNumber(Number(balances[activeAsset.id]), 4, 4)}{' '}
+              {formatNumber(balance, 2, 4)}{' '}
               <small>{assets[activeAsset.id].symbol}</small>
             </h3>
             <small>
-              ≈ {getFiatAmount(Number(balances[activeAsset.id] || 0))}
+              ≈ {getFiatAmount(balance, (balance >= 0.01) ? 2 : 4)}
             </small>
             <IconButton className={styles.refresh} onClick={handleRefresh}>
               <RefreshIcon />
