@@ -1,8 +1,9 @@
 import React, { ReactNode, FC } from 'react';
 import clsx from 'clsx';
 import MUIButton from '@material-ui/core/Button';
-import { useHistory } from 'react-router-dom';
 import Spinner from '@material-ui/core/CircularProgress';
+import { useLinkTo } from '@react-navigation/native';
+
 
 import styles from './Button.scss';
 
@@ -29,7 +30,6 @@ const Button: FC<IButton> = ({
   variant = '',
   linkTo = '#',
   loading = false,
-  onClick,
   ...otherProps
 }) => {
   const classes = clsx(
@@ -45,14 +45,19 @@ const Button: FC<IButton> = ({
   const customStyle = {
     height: fullWidth && blockHeight ? blockHeight : 'fit-content',
   };
-  const history = useHistory();
+
+  const rnLinkTo = useLinkTo();
+
+  const clickHandler = () => {
+    if (linkTo !== '#') rnLinkTo(linkTo);
+  };
 
   return (
     <MUIButton
       className={classes}
       fullWidth={fullWidth}
       style={customStyle}
-      onClick={onClick}
+      onClick={clickHandler}
       disabled={loading || disabled}
       {...otherProps}
     >
