@@ -1,5 +1,7 @@
 import React, { ReactNode, FC } from 'react';
 import clsx from 'clsx';
+import { Link as RouterLink } from 'react-router-dom';
+
 import styles from './Link.scss';
 
 interface ILink {
@@ -11,6 +13,7 @@ interface ILink {
 }
 
 const Link: FC<ILink> = ({
+  to,
   color = 'primary',
   children,
   noUnderline = false,
@@ -21,9 +24,9 @@ const Link: FC<ILink> = ({
   });
 
   return (
-    <span className={classes} onClick={onClick}>
+    <RouterLink className={classes} to={to} onClick={onClick}>
       {children}
-    </span>
+    </RouterLink>
   );
 };
 
