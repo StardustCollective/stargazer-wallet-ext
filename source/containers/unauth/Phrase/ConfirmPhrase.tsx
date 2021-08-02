@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
 import { useController } from 'hooks/index';
+import { useLinkTo } from '@react-navigation/native';
 
 import Layout from '../../common/Layout';
 
@@ -14,6 +15,7 @@ import styles from './index.scss';
 const ConfirmPhrase = () => {
   const history = useHistory();
   const controller = useController();
+  const linkTo = useLinkTo();
   const phrases = controller.wallet.onboardHelper.getSeedPhrase();
   const [orgList] = useState<Array<string>>(
     shuffle((phrases || '').split(' '))
@@ -61,7 +63,7 @@ const ConfirmPhrase = () => {
     } else {
       await controller.wallet.createWallet('Main Wallet', phrases, true);
       controller.wallet.onboardHelper.reset();
-      history.push('/app.html');
+      linkTo('/app.html');
     }
   };
 

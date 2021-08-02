@@ -2,6 +2,7 @@ import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
+import { useLinkTo } from '@react-navigation/native';
 
 import Layout from '../../common/Layout';
 
@@ -12,6 +13,7 @@ import { useController } from 'hooks/index';
 const CreatePhrase: FC = () => {
   const history = useHistory();
   const controller = useController();
+  const linkTo = useLinkTo();
   const [passed, setPassed] = useState(false);
   const title = passed
     ? consts.CREATE_PHRASE_TITLE2
@@ -22,9 +24,10 @@ const CreatePhrase: FC = () => {
 
   const phrases = controller.wallet.onboardHelper.getSeedPhrase();
 
+
   const nextHandler = () => {
     if (passed && phrases) {
-      history.push('/create/phrase/check');
+      linkTo('/create/phrase/check');
     } else {
       setPassed(true);
     }

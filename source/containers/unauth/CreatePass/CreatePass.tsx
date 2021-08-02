@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { useForm } from 'react-hook-form';
 import { useController } from 'hooks/index';
+import { useLinkTo } from '@react-navigation/native';
 
 import Layout from '../../common/Layout';
 
@@ -12,8 +12,8 @@ import * as consts from './consts';
 import styles from './CreatePass.scss';
 
 const CreatePass = () => {
-  const history = useHistory();
   const controller = useController();
+  const linkTo = useLinkTo();
   const [passed, setPassed] = useState(false);
   const { handleSubmit, register, errors } = useForm({
     validationSchema: consts.schema,
@@ -25,7 +25,7 @@ const CreatePass = () => {
 
   const nextHandler = () => {
     if (passed) {
-      history.push('/create/phrase/remind');
+      linkTo('/create/phrase/remind');
     }
   };
 
