@@ -2,8 +2,8 @@
 // Modules
 ///////////////////////////
 
-import React from 'react';
-// import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
 // Screens
@@ -43,25 +43,17 @@ const Stack = createStackNavigator();
 ///////////////////////////
 
 const UnAuth = () => {
-  // const location = useLocation();
-  // const history = useHistory();
-  // const controller = useController();
-  // const transitions = useTransition(location, (locat) => locat.pathname, {
-  //   initial: { opacity: 1 },
-  //   from: { opacity: 0 },
-  //   enter: { opacity: 1 },
-  //   leave: { opacity: 0 },
-  //   config: { duration: 500 },
-  // });
+  const linkTo = useLinkTo();
+  const controller = useController();
 
-  // useEffect(() => {
-  //   const redirectRoute = controller.appRoute();
-  //   history.push(redirectRoute);
-  // }, []);
+  useEffect(() => {
+    const redirectRoute = controller.appRoute();
+    linkTo(redirectRoute);
+  }, []);
 
-  // useEffect(() => {
-  //   controller.appRoute(location.pathname);
-  // }, [location]);
+  useEffect(() => {
+    controller.appRoute(window.location.pathname);
+  }, [location]);
 
   /**
    * --- Create Account Flow ---
@@ -69,14 +61,17 @@ const UnAuth = () => {
    */
 
   return (
-    <Stack.Navigator screenOptions={{ animationEnabled: true, headerShown: false }} initialRouteName={screens.unAuthorized.home}>
+    <Stack.Navigator
+      screenOptions={{ animationEnabled: true, headerShown: false }} 
+      initialRouteName={screens.unAuthorized.home}
+    >
       <Stack.Screen options={{ headerShown: false }} name={screens.unAuthorized.home} component={Start} />
       <Stack.Screen name={screens.common.import} component={Import} />
       <Stack.Screen name={screens.unAuthorized.remind} component={Remind} />
       <Stack.Screen name={screens.unAuthorized.createPass} component={CreatePass} />
       <Stack.Screen name={screens.unAuthorized.createPhraseRemind} component={RemindPhrase} />
       <Stack.Screen name={screens.unAuthorized.createPhraseGenerated} component={CreatePhrase} />
-      <Stack.Screen  name={screens.unAuthorized.createPhraseCheck} component={ConfirmPhrase} />
+      <Stack.Screen name={screens.unAuthorized.createPhraseCheck} component={ConfirmPhrase} />
       {/* <Route path="/import" component={Import} exact />
       <Route path="/remind" component={Remind} exact />
       <Route path="/create/pass" component={CreatePass} exact />
