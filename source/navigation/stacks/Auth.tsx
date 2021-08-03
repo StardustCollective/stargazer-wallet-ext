@@ -1,20 +1,10 @@
-import React, { useEffect } from 'react';
-import { useAlert } from 'react-alert';
-// import {
-//   Switch,
-//   Route,
-//   Redirect,
-//   useLocation,
-//   useHistory,
-// } from 'react-router-dom';
-import { useTransition, animated } from 'react-spring';
+import React from 'react';
 
-
-// import Receive from 'containers/auth/Receive';
+///////////////////////////
+// Hooks
+///////////////////////////
 
 import { useController } from 'hooks/index';
-import { SendMatchProps } from '../types';
-
 
 ///////////////////////////
 // Screens
@@ -39,7 +29,6 @@ import screens from '../screens';
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
-// import { useController } from 'hooks/index';
 
 ///////////////////////////
 // Constants
@@ -58,7 +47,7 @@ const Auth = () => {
 
   // If there is a pending confirmation for a send
   // the user will be returned to the confirm screen
-  // if they leave and return to the app.
+  // if they exit and return to the app.
    if (
     redirectRoute === screens.authorized.sendConfirm &&
     controller.wallet.account.getTempTx()
