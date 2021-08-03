@@ -18,6 +18,7 @@ import { useFiat } from 'hooks/usePrice';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
+import { useLinkTo } from '@react-navigation/native';
 
 import styles from './Send.scss';
 import IAssetListState from 'state/assets/types';
@@ -33,6 +34,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   const history = useHistory();
   const getFiatAmount = useFiat();
   const controller = useController();
+  const linkTo = useLinkTo();
   const alert = useAlert();
   const { activeAsset, balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -109,7 +111,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
       };
     }
     controller.wallet.account.updateTempTx(txConfig);
-    history.push('/send/confirm');
+    linkTo('/send/confirm');
   };
 
   const getBalanceAndFees = () => {
