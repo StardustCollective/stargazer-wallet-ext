@@ -35,7 +35,7 @@ const CreatePass = () => {
   };
 
   return (
-    <Layout title={title} linkTo="/app.html">
+    <Layout title={title} linkTo="/homeUnauth">
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {passed ? (
           <CheckIcon className={styles.checked} />
