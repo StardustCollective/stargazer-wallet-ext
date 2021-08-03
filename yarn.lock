@@ -1500,10 +1500,10 @@
   resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-1.0.5.tgz#af167dd7997105eec93a1ce30641f1b341e33b1f"
   integrity sha512-fjtHmVQXnATH6R136yasGbrKJPDRfuAw8Uh8mHJVyU0kIAfBHudYDb6W23n+eorP86aycBMQXEsOk/kSX5PdAg==
 
-"@stardust-collective/dag4-keyring@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keyring/-/dag4-keyring-0.0.12.tgz#b1d393260152148958c13056cae645461ee95a52"
-  integrity sha512-8sUq0CnZjFPdJm6kGY+/eu4OWuRM4MV7H+Jekmlhir2Sn1PfsyUoz305lS2U3o08GrNYbPAzI3ohc/WvUsbpmQ==
+"@stardust-collective/dag4-keyring@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keyring/-/dag4-keyring-0.0.13.tgz#584fc9005d80492896dc07566e5e32bbe59176ee"
+  integrity sha512-cPF7hm0K7Oh20zu/M3u3I0BAiR0ID6LeR17kkCbxJ8IE4/ZcUj4C1EcS2BpKbvf2UrgQqWPGa3WRsMjfHr3+UQ==
   dependencies:
     "@metamask/obs-store" "^6.0.2"
     "@stardust-collective/dag4-core" "^1.0.5"
