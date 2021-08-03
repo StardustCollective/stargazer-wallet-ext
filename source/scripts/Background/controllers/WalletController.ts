@@ -106,7 +106,7 @@ export class WalletController implements IWalletController {
   async switchWallet(id: string) {
     //store.dispatch(changeActiveWallet(wallet));
     await this.account.buildAccountAssetInfo(id);
-    //await this.account.getLatestUpdate();
+    await this.account.getLatestTxUpdate();
     // store.dispatch(updateStatus());
     this.account.assetsBalanceMonitor.start();
     this.account.txController.startMonitor();

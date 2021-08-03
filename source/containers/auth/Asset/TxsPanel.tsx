@@ -14,7 +14,7 @@ import { formatDistanceDate } from '../helpers';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
-import IVaultState, { Transaction } from 'state/vault/types';
+import IVaultState, { AssetType, Transaction } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 
 import styles from './Asset.scss';
@@ -29,7 +29,6 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const getFiatAmount = useFiat();
   const controller = useController();
   const [isShowed, setShowed] = useState<boolean>(false);
-  const isETHTx = !controller.wallet.account.isValidDAGAddress(address);
   const { activeNetwork, activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -39,18 +38,23 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   // const account = accounts[activeAccountId];
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
 
+  const isETH = activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
+
+  // idx === 0 ||
+  // new Date(tx.timestamp || tx.date).toDateString() !==
+  // new Date(transactions[idx - 1].timestamp || transactions[idx - 1].date).toDateString()
   const isShowedGroupBar = useCallback(
     (tx: Transaction, idx: number) => {
       return (
         idx === 0 ||
         new Date(
-          !isETHTx || (isETHTx && tx.assetId === activeAsset.id)
+          !isETH || (isETH && tx.assetId === activeAsset.id)
             ? tx.timestamp
             : tx.date
         ).toDateString() !==
           new Date(
-            !isETHTx ||
-            (isETHTx && transactions[idx - 1].assetId === activeAsset.id)
+            !isETH ||
+            (isETH && transactions[idx - 1].assetId === activeAsset.id)
               ? transactions[idx - 1].timestamp
               : transactions[idx - 1].date
           ).toDateString()
@@ -60,9 +64,9 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   );
 
   const handleFetchMoreTxs = () => {
-    if (transactions.length) {
+    if (transactions.length && !isETH) {
       const lastTx = [...transactions].pop();
-      controller.wallet.account.updateTxs(10, lastTx?.timestamp);
+      controller.wallet.account.updateTxs(10, lastTx.timestamp);
     }
   };
 
@@ -80,7 +84,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const handleOpenExplorer = (tx: string) => {
     const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
     window.open(
-      isETHTx ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
+      isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
       '_blank'
     );
   };
@@ -90,12 +94,12 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     setShowed(false);
   };
 
-  const renderIcon = (isETHTx: boolean, isRecived: boolean, tx: any) => {
-    if (!isETHTx) {
+  const renderIcon = (isReceived: boolean, tx: any) => {
+    if (!isETH) {
       return (
         <>
           {tx.checkpointBlock ? (
-            isRecived ? (
+            isReceived ? (
               <DoubleArrowIcon className={styles.recvIcon} />
             ) : (
               <DoubleArrowIcon />
@@ -109,7 +113,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     return (
       <>
         {!tx.assetId ? (
-          isRecived ? (
+          isReceived ? (
             <DoubleArrowIcon className={styles.recvIcon} />
           ) : (
             <DoubleArrowIcon />
@@ -138,18 +142,18 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         <>
           <ul>
             {transactions.map((tx: Transaction, idx: number) => {
-              const isETHPending = isETHTx && tx.assetId === activeAsset.id;
-              const isRecived =
-                (!isETHTx && tx.receiver === address) ||
-                (isETHTx && !tx.assetId && tx.to && tx.to[0].to === address) ||
-                (isETHPending && tx.toAddress === address);
+              const isETHPending = isETH && tx.assetId === activeAsset.id;
+              const isReceived =
+                (!isETH && tx.receiver === address) ||
+                (isETH && !tx.assetId && tx.to && tx.to[0].to.toLowerCase() === address.toLowerCase()) ||
+                (isETHPending && tx.toAddress.toLowerCase() === address.toLowerCase());
 
               return (
                 <Fragment key={uuid()}>
                   {isShowedGroupBar(tx, idx) && (
                     <li className={styles.groupbar}>
                       {formatDistanceDate(
-                        !isETHTx || isETHPending ? tx.timestamp : tx.date
+                        !isETH || isETHPending ? tx.timestamp : tx.date
                       )}
                     </li>
                   )}
@@ -160,23 +164,23 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   >
                     <div>
                       <div className={styles.iconWrapper}>
-                        {renderIcon(isETHTx, isRecived, tx)}
+                        {renderIcon(isReceived, tx)}
                       </div>
                       <span>
-                        {isRecived ? 'Received' : 'Sent'}
+                        {isReceived ? 'Received' : 'Sent'}
                         <small>
-                          {isRecived
+                          {isReceived
                             ? `From: ${
                                 isETHPending
                                   ? tx.fromAddress
-                                  : isETHTx
+                                  : isETH
                                   ? tx.from && tx.from[0].from
                                   : tx.sender
                               }`
                             : `To: ${
                                 isETHPending
                                   ? tx.toAddress
-                                  : isETHTx
+                                  : isETH
                                   ? tx.to && tx.to[0].to
                                   : tx.receiver
                               }`}
@@ -186,7 +190,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                     <div>
                       <span>
                         <span>
-                          {isETHTx
+                          {isETH
                             ? Number(
                                 isETHPending ? tx.amount : tx.balance
                               ).toFixed(4)
@@ -194,7 +198,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                           <b>{assets[activeAsset.id].symbol}</b>
                         </span>
                         <small>
-                          {isETHTx
+                          {isETH
                             ? getFiatAmount(
                                 Number(isETHPending ? tx.amount : tx.balance),
                                 2
