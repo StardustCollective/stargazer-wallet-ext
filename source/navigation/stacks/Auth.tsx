@@ -51,76 +51,35 @@ const Auth = () => {
 
   const controller = useController();
   const isUnlocked = controller.wallet.isUnlocked();
-  // const location = useLocation();
-  // const alert = useAlert();
-  // const history = useHistory();
+  const redirectRoute = controller.appRoute();
+  const lockedRoute =  screens.authorized.start;
 
-  // const transitions = useTransition(location, (locat) => locat.pathname, {
-  //   initial: { opacity: 1 },
-  //   from: { opacity: 0 },
-  //   enter: { opacity: 1 },
-  //   leave: { opacity: 0 },
-  //   config: { duration: 500 },
-  // });
+  let unlockedRoute = screens.authorized.home;
 
-  // useEffect(() => {
-  //   const redirectRoute = controller.appRoute();
-  //   if (
-  //     redirectRoute === '/send/confirm' &&
-  //     !controller.wallet.account.getTempTx()
-  //   ) {
-  //     history.push('/home');
-  //     return;
-  //   }
-  //   if (redirectRoute !== '/app.html') history.push(redirectRoute);
-  // }, []);
+  // If there is a pending confirmation for a send
+  // the user will be returned to the confirm screen
+  // if they leave and return to the app.
+   if (
+    redirectRoute === screens.authorized.sendConfirm &&
+    controller.wallet.account.getTempTx()
+  ) {
+    unlockedRoute = screens.authorized.sendConfirm;
+  }
 
-  // useEffect(() => {
-  //   alert.removeAll();
-  //   controller.appRoute(location.pathname);
-  // }, [location]);
-
-  // TODO: Migration Notes
-  // - If the App is unlocked (Authorized) it should navigate to the home screen
-
+  let initialRoute = isUnlocked ? unlockedRoute : lockedRoute;
 
   return (
-    <Stack.Navigator screenOptions={{ animationEnabled: true, headerShown: false }} initialRouteName={isUnlocked ? screens.authorized.home : screens.authorized.start}>
-      <Stack.Screen options={{ headerShown: false }} name={screens.authorized.start} component={Start} />
+    <Stack.Navigator
+      screenOptions={{ animationEnabled: true, headerShown: false }}
+      initialRouteName={initialRoute}>
       {!isUnlocked && <Stack.Screen name={screens.authorized.start} component={Start} />}
-      {isUnlocked && <Stack.Screen name={screens.common.import} component={Import} />}
       {isUnlocked && <Stack.Screen name={screens.authorized.home} component={Home} />}
+      {isUnlocked && <Stack.Screen name={screens.common.import} component={Import} />}
       {isUnlocked && <Stack.Screen name={screens.authorized.addAsset} component={AddAsset} />}
       {isUnlocked && <Stack.Screen name={screens.authorized.asset} component={Asset} />}
       {isUnlocked && <Stack.Screen name={screens.authorized.sendConfirm} component={SendConfirm} />}
       {isUnlocked && <Stack.Screen name={screens.authorized.send} component={Send} />}
       {isUnlocked && <Stack.Screen name={screens.authorized.gasSettings} component={GasSettings} />}
-      {/* <Route path="/app.html" component={Start} exact>
-              {isUnlocked && <Redirect to="/home" />}
-            </Route>
-            {!isUnlocked && <Route path="/import" component={Import} exact />}
-            {isUnlocked && <Route path="/home" component={Home} exact />}
-            {isUnlocked && (
-              <Route path="/asset/add" component={AddAsset} exact />
-            )}
-            {isUnlocked && <Route path="/asset" component={Asset} exact />}
-            {isUnlocked && (
-              <Route path="/send/confirm" component={SendConfirm} exact />
-            )}
-            {isUnlocked && <Route path="/send" component={Send} exact />}
-            {isUnlocked && (
-              <Route path="/gas-settings" component={GasSettings} exact />
-            )}
-            {isUnlocked && (
-              <Route
-                path="/send/:address"
-                render={({ match }: SendMatchProps) => (
-                  <Send initAddress={match.params.address} />
-                )}
-                exact
-              />
-            )} */}
-      {/* {isUnlocked && <Route path="/receive" component={Receive} exact />} */}
     </Stack.Navigator>
   );
 };
