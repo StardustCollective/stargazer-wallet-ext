@@ -2,8 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { useEffect } from 'react';
-import { useLinkTo } from '@react-navigation/native';
+import React from 'react';
 
 ///////////////////////////
 // Screens
@@ -43,17 +42,9 @@ const Stack = createStackNavigator();
 ///////////////////////////
 
 const UnAuth = () => {
-  const linkTo = useLinkTo();
+
   const controller = useController();
-
-  useEffect(() => {
-    const redirectRoute = controller.appRoute();
-    linkTo(redirectRoute);
-  }, []);
-
-  useEffect(() => {
-    controller.appRoute(window.location.pathname);
-  }, [location]);
+  let initialRoute = controller.appRoute() || screens.unAuthorized.home;
 
   /**
    * --- Create Account Flow ---
@@ -63,33 +54,15 @@ const UnAuth = () => {
   return (
     <Stack.Navigator
       screenOptions={{ animationEnabled: true, headerShown: false }} 
-      initialRouteName={screens.unAuthorized.home}
+      initialRouteName={initialRoute}
     >
-      <Stack.Screen options={{ headerShown: false }} name={screens.unAuthorized.home} component={Start} />
+      <Stack.Screen name={screens.unAuthorized.home} component={Start} />
       <Stack.Screen name={screens.common.import} component={Import} />
       <Stack.Screen name={screens.unAuthorized.remind} component={Remind} />
       <Stack.Screen name={screens.unAuthorized.createPass} component={CreatePass} />
-      <Stack.Screen name={screens.unAuthorized.createPhraseRemind} component={RemindPhrase} />
       <Stack.Screen name={screens.unAuthorized.createPhraseGenerated} component={CreatePhrase} />
+      <Stack.Screen name={screens.unAuthorized.createPhraseRemind} component={RemindPhrase} />
       <Stack.Screen name={screens.unAuthorized.createPhraseCheck} component={ConfirmPhrase} />
-      {/* <Route path="/import" component={Import} exact />
-      <Route path="/remind" component={Remind} exact />
-      <Route path="/create/pass" component={CreatePass} exact />
-      <Route
-        path="/create/phrase/remind"
-        component={RemindPhrase}
-        exact
-      />
-      <Route
-        path="/create/phrase/generated"
-        component={CreatePhrase}
-        exact
-      />
-      <Route
-        path="/create/phrase/check"
-        component={ConfirmPhrase}
-        exact
-      /> */}
     </Stack.Navigator>
   );
 };
