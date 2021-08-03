@@ -36,6 +36,7 @@ const SendConfirm = () => {
 
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const getTotalUnits = () => {
     const balance = ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals);
@@ -62,6 +63,8 @@ const SendConfirm = () => {
   };
 
   const handleConfirm = () => {
+
+    setDisabled(true);
 
     // const { publicKey, type, id } = assetInfo;//accounts[activeAccountId];
     //
@@ -146,7 +149,7 @@ const SendConfirm = () => {
           >
             Cancel
           </Button>
-          <Button type="submit" variant={styles.button} onClick={handleConfirm}>
+          <Button type="submit" variant={styles.button} onClick={handleConfirm} disabled={disabled}>
             {assetInfo.type === AssetType.Ledger ? 'Next' : 'Confirm'}
           </Button>
         </div>

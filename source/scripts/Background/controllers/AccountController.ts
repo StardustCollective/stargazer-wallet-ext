@@ -1,7 +1,6 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { BigNumber, ethers } from 'ethers';
 import { utils, XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
-import { PendingTx, Transaction } from '@stardust-collective/dag4-network';
 
 import store from 'state/store';
 import {
@@ -33,22 +32,6 @@ export class AccountController implements IAccountController {
   constructor(private keyringManager: Readonly<KeyringManager>) {
     this.txController = new EthTransactionController();
     this.assetsBalanceMonitor = new AssetsBalanceMonitor();
-  }
-
-  private _coventDAGPendingTx (pending: PendingTx) {
-    const { hash, amount, receiver, sender, timestamp } =  pending;
-    return {
-      hash,
-      amount,
-      receiver,
-      sender,
-      fee: -1,
-      isDummy: false,
-      timestamp: new Date(timestamp).toISOString(),
-      lastTransactionRef: {},
-      snapshotHash: '',
-      checkpointBlock: '',
-    } as Transaction;
   }
 
   async removeWallet (id: string, pwd: string) {
@@ -146,8 +129,7 @@ export class AccountController implements IAccountController {
     if (!activeAsset) return;
 
     if (activeAsset.type === AssetType.Constellation) {
-      // fetch dag info
-      const txs = await dag4.account.getTransactions(TXS_LIMIT);
+      const txs = await dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT);
 
       store.dispatch(updateTransactions({txs}));
     }
@@ -163,27 +145,6 @@ export class AccountController implements IAccountController {
 
       store.dispatch(updateTransactions({txs: txs.transactions}));
     }
-
-    // check pending DAG txs
-    // const memPool = window.localStorage.getItem('dag4-network-main-mempool');
-    // if (memPool) {
-    //   const pendingTxs = JSON.parse(memPool);
-    //   pendingTxs.forEach((pTx: PendingTx) => {
-    //     if (
-    //       !this.wallet ||
-    //       (this.wallet.assets[AssetType.Constellation].address !== pTx.sender &&
-    //         this.wallet.assets[AssetType.Constellation].address !== pTx.receiver) ||
-    //       accLatestInfo.assets[AssetType.Constellation].transactions.filter(
-    //         (tx: Transaction) => tx.hash === pTx.hash
-    //       ).length > 0
-    //     )
-    //       return;
-    //     accLatestInfo.assets[AssetType.Constellation].transactions.unshift(
-    //       this._coventDAGPendingTx(pTx)
-    //     );
-    //   });
-    // }
-
   }
 
   updateWalletLabel (id: string, label: string) {
@@ -255,13 +216,10 @@ export class AccountController implements IAccountController {
           Number(this.tempTx.amount),
           this.tempTx.fee
         );
-        dag4.monitor.addToMemPoolMonitor(pendingTx);
+        const tx = dag4.monitor.addToMemPoolMonitor(pendingTx);
         store.dispatch(
           updateTransactions({
-            txs: [
-              this._coventDAGPendingTx(pendingTx),
-              ...activeAsset.transactions,
-            ],
+            txs: [tx, ...activeAsset.transactions],
           })
         );
         //this.watchMemPool();
