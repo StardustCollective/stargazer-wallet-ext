@@ -82,4 +82,5 @@ export default interface IVaultState {
   activeWallet: IWalletState;
   activeAsset: IActiveAssetState;
   activeNetwork: ActiveNetwork;
+  migrateWallet?: any
 }

@@ -34,7 +34,7 @@ const ImportPhraseView = () => {
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
       <section>
-        <label>Seed Phrase</label>
+        <label>Recovery Seed Phrase</label>
         <TextInput
           type="text"
           name="phrase"

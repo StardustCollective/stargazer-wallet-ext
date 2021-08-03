@@ -23,6 +23,13 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(logger);
 }
 
+const preloadedState = loadState();
+
+//v1.0 wallet state
+if (preloadedState && preloadedState.wallet) {
+  delete preloadedState.wallet;
+}
+
 const store: Store = configureStore({
   reducer: combineReducers({
     vault,
@@ -33,7 +40,7 @@ const store: Store = configureStore({
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
-  preloadedState: loadState(),
+  preloadedState,
 });
 
 store.subscribe(
@@ -41,6 +48,8 @@ store.subscribe(
     updateState();
   }, 1000)
 );
+
+// updateState();
 
 function updateState() {
   const state = store.getState();

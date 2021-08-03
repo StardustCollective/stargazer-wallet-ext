@@ -40,8 +40,8 @@ const AssetsPanel: FC = () => {
     setShowed(false);
   };
 
-  const handleSelectAsset = (asset: IAssetState) => {
-    controller.wallet.account.updateAccountActiveAsset(asset);
+  const handleSelectAsset = async (asset: IAssetState) => {
+    await controller.wallet.account.updateAccountActiveAsset(asset);
     history.push('/asset');
   };
 

@@ -22,7 +22,7 @@ export class WalletController implements IWalletController {
     this.keyringManager.on('update', (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
       const vault: IVaultState = store.getState().vault;
-      if (vault && !vault.activeWallet) {
+      if (vault && !vault.activeWallet && state.wallets.length) {
         this.switchWallet(state.wallets[0].id);
       }
     });
@@ -50,15 +50,20 @@ export class WalletController implements IWalletController {
 
   async unLock(password: string): Promise<boolean> {
     await this.keyringManager.login(password);
+
     const state = store.getState();
     const vault: IVaultState = state.vault;
-    //Check for v1.4 migration
-    if (state.migrateWallet) {
-      await KeystoreToKeyringHelper.migrate(state.migrateWallet, password);
-    }
 
-    if (vault && vault.activeWallet) {
-      await this.switchWallet(vault.activeWallet.id);
+    if(vault) {
+
+      //Check for v1.4 migration
+      if (vault.migrateWallet) {
+        await KeystoreToKeyringHelper.migrate(vault.migrateWallet, password);
+      }
+
+      if (vault.activeWallet) {
+        await this.switchWallet(vault.activeWallet.id);
+      }
     }
     return true;
   }

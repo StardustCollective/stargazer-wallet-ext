@@ -1,17 +1,22 @@
-import store from 'state/store';
-import IVaultState from 'state/vault/types';
 
 const MigrationController = () => {
   // check current version of wallet
-  const { version }: IVaultState = store.getState().vault;
-  //
-  // /**
-  //  * version < 2.1
-  //  */
-  if (!version) {
-    const v2_1 = require('../migration/v2_1');
-    v2_1.default();
+  const stateStr = localStorage.getItem('state');
+  const state = JSON.parse(stateStr);
+
+  if (!state) {
+    return;
   }
+
+  /**
+   * version < 2.1
+   */
+  if (state.wallet) {
+    const v2_1 = require('../migration/v2_1');
+    v2_1.default(state);
+  }
+
+
   // /**
   //  * version = 2.2.0
   //  */
