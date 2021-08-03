@@ -2,6 +2,8 @@ import { dag4 } from '@stardust-collective/dag4';
 import { Transaction } from '@stardust-collective/dag4-network';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { KDFParamsPhrase, KDFParamsPrivateKey, V3Keystore } from '@stardust-collective/dag4-keystore';
+import store from '../../../state/store';
+import { migrateWalletComplete } from '../../../state/vault';
 
 export class KeystoreToKeyringHelper {
 
@@ -10,12 +12,10 @@ export class KeystoreToKeyringHelper {
     const { keystores, accounts, seedKeystoreId } = migrateWallet;
 
     const seedPhrase = await V3Keystore.decryptPhrase(keystores[seedKeystoreId] as V3Keystore<KDFParamsPhrase>, password);
-    const seedAccount = accounts[seedKeystoreId];
     const rootKey = dag4.keyStore.getMasterKeyFromMnemonic(seedPhrase);
+    const seedAccount = accounts['0'];
 
     await window.controller.wallet.createWallet(seedAccount.label, seedPhrase, true);
-
-    delete accounts[seedKeystoreId];
 
     const accountList = Object.values(accounts);
 
@@ -28,7 +28,8 @@ export class KeystoreToKeyringHelper {
         if (isNaN(index)) {
           console.log('ERROR - Unable to migrate seed account - ', id, label, address);
         }
-        else {
+        //Skip the first account as it will already be available in multi-asset
+        else if (index > 0) {
           try {
             const pKey = dag4.keyStore.deriveAccountFromMaster(rootKey, index);
 
@@ -59,6 +60,8 @@ export class KeystoreToKeyringHelper {
       }
 
     }
+
+    store.dispatch(migrateWalletComplete());
   }
 }
 

@@ -179,6 +179,11 @@ const VaultState = createSlice({
       state.activeWallet.assets = state.activeWallet.assets.concat([action.payload]);
       //state.activeAsset = action.payload.asset;
     },
+    migrateWalletComplete(
+      state: IVaultState,
+    ) {
+      delete state.migrateWallet;
+    },
   },
 });
 
@@ -200,6 +205,7 @@ export const {
   updateBalances,
   // updateLabel,
   addAsset,
+  migrateWalletComplete,
 } = VaultState.actions;
 
 export default VaultState.reducer;

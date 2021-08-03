@@ -151,9 +151,9 @@ export class AccountController implements IAccountController {
     this.keyringManager.setWalletLabel(id, label);
   }
 
-  updateAccountActiveAsset (asset: IAssetState) {
+  async updateAccountActiveAsset (asset: IAssetState) {
     store.dispatch(changeActiveAsset(asset));
-    this.getLatestTxUpdate();
+    await this.getLatestTxUpdate();
   }
 
   async addNewToken (address: string) {

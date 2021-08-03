@@ -12,12 +12,8 @@ import 'assets/styles/global.scss';
 
 const App: FC = () => {
 
-  const { wallets, hasEncryptedVault }: IVaultState = useSelector(
+  const { wallets, hasEncryptedVault, migrateWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
-  );
-
-  const migrateWallet = useSelector(
-    (state: RootState) => state.migrateWallet
   );
 
   return (

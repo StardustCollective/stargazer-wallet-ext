@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -16,6 +16,8 @@ interface IImportPhrase {
 const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
   const controller = useController();
 
+  const [isInvalid, setInvalid] = useState(false);
+
   const { handleSubmit, register, watch } = useForm({
     validationSchema: yup.object().shape({
       phrase: yup.string().required(),
@@ -23,25 +25,28 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
   });
 
   const onSubmit = (data: any) => {
-    if (
-      controller.wallet.onboardHelper.importAndValidateSeedPhrase(
-        data.phrase.trim()
-      )
+    const phrase = data.phrase.trim();
+    if (controller.wallet.onboardHelper.importAndValidateSeedPhrase(phrase)
     ) {
       onRegister();
+    }
+    else {
+      setInvalid(true)
     }
   };
 
   const isDisabled = useMemo(() => {
     const phrase: string = watch('phrase');
     if (!phrase) return true;
-    return phrase.trim().split(' ').length !== 12;
+    const len = phrase.trim().split(' ').length;
+    // console.log(len, (len % 3), (len < 12 || len > 24 || (len % 3 > 0)))
+    return len < 12 || len > 24 || (len % 3 > 0);
   }, [watch('phrase')]);
 
   return (
     <Layout title="Let's import your wallet">
       <form className={styles.importForm} onSubmit={handleSubmit(onSubmit)}>
-        <span>Paste your wallet seed phrase below:</span>
+        <span>Paste your recovery seed phrase below:</span>
         <TextInput
           type="text"
           name="phrase"
@@ -52,10 +57,14 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
           variant={styles.input}
         />
         <span>
-          Importing your wallet seed will automatically import a wallet
-          associated with this seed phrase.
+          {/*Importing a recovery seed phrase will recover the associated accounts.*/}
           <br />
-          <b>The seed phrase should include space between words.</b>
+          <br />
+          <b>The phrase can be 12, 15, 18, 21 or 24 words with a single space between.</b>
+          <br/>
+          {isInvalid && (
+            <span className={styles.error}>Invalid recovery seed phrase</span>
+            )}
         </span>
         <div className={styles.actions}>
           <Button type="submit" variant={styles.button} disabled={isDisabled}>

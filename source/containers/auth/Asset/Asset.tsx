@@ -30,8 +30,8 @@ const AssetDetail = () => {
   );
 
   const balance = useMemo(() => {
-    return Number(balances[activeAsset.id] || 0)
-  }, [balances]);
+    return Number((activeAsset && balances[activeAsset.id]) || 0)
+  }, [activeAsset, balances]);
 
   useEffect(() => {
     controller.wallet.account.updateTempTx({
