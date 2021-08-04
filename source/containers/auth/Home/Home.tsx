@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -6,15 +6,17 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 // import CircleIcon from '@material-ui/icons/RadioButtonChecked';
 // import BlankCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
-import Header from 'containers/common/Header';
 import { useController } from 'hooks/index';
 import { useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import AssetsPanel from './AssetsPanel';
+
+import homeHeader from 'navigation/headers/home';
+
 import styles from './Home.scss';
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const controller = useController();
   // const getFiatAmount = useFiat();
   // const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
@@ -25,6 +27,14 @@ const Home = () => {
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+  useLayoutEffect(() => {
+
+    const onMenuButtonClicked = () => {
+      alert("Menu Button Clicked");
+    }
+
+    navigation.setOptions(homeHeader(onMenuButtonClicked));
+  }, []);
 
   const handleRefresh = () => {
     controller.wallet.account.assetsBalanceMonitor.refreshDagBalance();
@@ -48,7 +58,6 @@ const Home = () => {
     <div className={styles.wrapper}>
       {activeWallet ? (
         <>
-          <Header showLogo />
           {
             <>
               <section className={styles.account}>
