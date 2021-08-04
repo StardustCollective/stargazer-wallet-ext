@@ -59,9 +59,9 @@ const Auth = () => {
 
   return (
     <Stack.Navigator
-      screenOptions={{ animationEnabled: true, headerShown: false }}
+      screenOptions={{ animationEnabled: true }}
       initialRouteName={initialRoute}>
-      {!isUnlocked && <Stack.Screen name={screens.authorized.start} component={Start} />}
+      {!isUnlocked && <Stack.Screen options={{headerShown: false}} name={screens.authorized.start} component={Start} />}
       {isUnlocked && <Stack.Screen name={screens.authorized.home} component={Home} />}
       {isUnlocked && <Stack.Screen name={screens.common.import} component={Import} />}
       {isUnlocked && <Stack.Screen name={screens.authorized.addAsset} component={AddAsset} />}
