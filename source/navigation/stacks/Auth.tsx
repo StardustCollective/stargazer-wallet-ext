@@ -29,7 +29,7 @@ import screens from '../screens';
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
-
+import defaultHeader from 'navigation/headers/default'
 ///////////////////////////
 // Constants
 ///////////////////////////
@@ -68,7 +68,10 @@ const Auth = () => {
 
   return (
     <Stack.Navigator
-      screenOptions={{ animationEnabled: true }}
+      screenOptions={(navigation) => ({ 
+        ...defaultHeader(navigation),
+        animationEnabled: true 
+      })}
       initialRouteName={initialRoute}>
       {!isUnlocked && <Stack.Screen options={{ headerShown: false }} name={screens.authorized.start} component={Start} />}
       { isUnlocked && (
