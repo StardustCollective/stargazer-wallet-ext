@@ -25,17 +25,6 @@
       transition: all 0.3s;
       align-items: center;
 
-      .logoWrapper {
-        height: 30px;
-        width: 39px;
-        border-radius: 50%;
-        border: 2px solid $gray-light;
-        background-color: $white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
       .address {
         display: flex;
         flex-direction: column;

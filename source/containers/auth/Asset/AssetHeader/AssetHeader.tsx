@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import Tooltip from 'components/Tooltip';
 import { ellipsis } from 'containers/auth/helpers';
 import { useCopyClipboard } from 'hooks/index';
+import CircleIcon from 'components/CircleIcon';
 
 import styles from './AssetHeader.scss';
 import { IAssetInfoState } from 'state/assets/types';
@@ -26,9 +27,7 @@ const AssetHeader: FC<IAssetHeader> = ({ asset, address }) => {
             copyText(address);
           }}
         >
-          <div className={styles.logoWrapper}>
-            <img src={asset.logo} alt={asset.label} height="17" />
-          </div>
+          <CircleIcon logo={asset.logo} label={asset.label} />
           <Tooltip
             title={isCopied ? 'Copied' : 'Copy Address '}
             placement="bottom"
