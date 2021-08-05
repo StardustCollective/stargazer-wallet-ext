@@ -19,30 +19,6 @@
     justify-content: center;
     position: relative;
 
-    .linkIcon {
-      display: flex;
-      align-items: center;
-      position: absolute;
-      right: 24px;
-      padding: 0;
-      width: 24px;
-      height: 24px;
-      background: $gray-100;
-      transition: all 0.3s;
-
-      &:active {
-        background: $gray-light;
-
-        svg {
-          color: $gray;
-        }
-      }
-      svg {
-        width: 16px;
-        color: $white;
-      }
-    }
-
     span.main {
       display: flex;
       flex-direction: row;
