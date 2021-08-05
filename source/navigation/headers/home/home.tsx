@@ -21,6 +21,16 @@ import styles from './styles.scss';
 import commonStyles from './../styles.scss';
 
 ///////////////////////////
+// Interfaces
+///////////////////////////
+
+interface IHomeHeader{
+  navigation: any;
+  route: any;
+  hasMainAccount: boolean;
+}
+
+///////////////////////////
 // Header
 ///////////////////////////
 
@@ -28,7 +38,7 @@ const homeHeader = ({
   navigation, 
   route,
   hasMainAccount
-}) => {
+}: IHomeHeader) => {
 
   const onMenuButtonClicked = () => {
     // Navigate to the Setting screen
