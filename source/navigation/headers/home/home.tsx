@@ -3,7 +3,7 @@
 ///////////////////////////
 
 import React from 'react';
-import configs from '../configs';
+import config from '../config';
 
 ///////////////////////////
 // Styles
@@ -53,7 +53,7 @@ const homeHeader = ({
   }
 
   return {
-    ...configs,
+    ...config,
     headerLeft: () => (
       <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
     ),

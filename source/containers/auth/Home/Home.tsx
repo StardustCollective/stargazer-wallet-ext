@@ -4,8 +4,6 @@ import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
-// import CircleIcon from '@material-ui/icons/RadioButtonChecked';
-// import BlankCircleIcon from '@material-ui/icons/RadioButtonUnchecked';
 import { useController } from 'hooks/index';
 import { useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
