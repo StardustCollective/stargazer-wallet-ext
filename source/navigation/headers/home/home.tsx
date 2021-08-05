@@ -3,6 +3,7 @@
 ///////////////////////////
 
 import React from 'react';
+import configs from '../configs';
 
 ///////////////////////////
 // Styles
@@ -16,35 +17,47 @@ import MenuIcon from '@material-ui/icons/Menu';
 // Styles
 ///////////////////////////
 
-import styles from './home.scss';
-import commonStyles from '../commonStyles';
-
-///////////////////////////
-// Constants
-///////////////////////////
-
-const HEADER_TITLE_STRING = 'Wallet';
+import styles from './styles.scss';
+import commonStyles from './../styles.scss';
 
 ///////////////////////////
 // Header
 ///////////////////////////
 
-const homeHeader = (onMenuButtonClicked: () => void) => {
-  
-  return {
-    ...commonStyles,
-    title: HEADER_TITLE_STRING,
-    headerLeft: () => (
-      <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
-    ),
-    headerRight: () => (
+const homeHeader = ({
+  navigation, 
+  route,
+  hasMainAccount
+}) => {
+
+  const onMenuButtonClicked = () => {
+    // Navigate to the Setting screen
+  }
+
+  const renderHeaderRight = () => {
+
+    if (hasMainAccount) {
+      return (
       <IconButton
         className={`${styles.buttonRight} ${styles.more}`}
         onClick={onMenuButtonClicked}
       >
         <MenuIcon className={styles.buttonRight} />
-      </IconButton>
+      </IconButton>)
+    }
+    // Hack: The header title will not center unless there is 
+    // both a headerLeft and headerRight. So we insert an 
+    // empty div to meet the requirement.
+    return (<div className={commonStyles.emptyDiv}></div>);
+
+  }
+
+  return {
+    ...configs,
+    headerLeft: () => (
+      <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
     ),
+    headerRight: () => renderHeaderRight(),
   }
 };
 
