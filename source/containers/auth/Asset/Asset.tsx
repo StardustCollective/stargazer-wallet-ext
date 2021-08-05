@@ -18,7 +18,11 @@ import assetHeader from 'navigation/headers/asset';
 import styles from './Asset.scss';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-const AssetDetail = ({ navigation }) => {
+interface IAssetDetail {
+  navigation: any;
+}
+
+const AssetDetail = ({ navigation }: IAssetDetail) => {
   const controller = useController();
   const getFiatAmount = useFiat();
   const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
