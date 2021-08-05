@@ -14,7 +14,12 @@ import homeHeader from 'navigation/headers/home';
 
 import styles from './Home.scss';
 
-const Home = ({ navigation, route }) => {
+interface IHome {
+  navigation: any,
+  route: any,
+}
+
+const Home = ({ navigation, route }: IHome) => {
   const controller = useController();
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
