@@ -20,12 +20,19 @@ import styles from './styles.scss';
 import commonStyles from './../styles.scss';
 
 ///////////////////////////
+// Interfaces
+///////////////////////////
+interface IDefaultHeader {
+  navigation: any
+}
+
+///////////////////////////
 // Header
 ///////////////////////////
 
 const defaultHeader = ({
   navigation,
-}) => {
+}: IDefaultHeader) => {
 
   const index = navigation.dangerouslyGetState().index
 
