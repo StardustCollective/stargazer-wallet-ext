@@ -8,6 +8,6 @@ export default {
     fontWeight: 500,
     fontFamily: 'Quicksand',
     color: '#fff',
-    alignSelf: 'center',
+    textAlign: 'center'
   },
 };
