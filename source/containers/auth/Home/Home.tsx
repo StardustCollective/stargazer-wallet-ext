@@ -11,13 +11,21 @@ import { useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import AssetsPanel from './AssetsPanel';
-
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import homeHeader from 'navigation/headers/home';
 
 import styles from './Home.scss';
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
   const controller = useController();
+  const { wallets }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
+
+  const hasMainAccount =
+    wallets.length &&
+    wallets.some((w) => w.type === KeyringWalletType.MultiChainWallet);
+
   // const getFiatAmount = useFiat();
   // const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
   // const [connected, setConnected] = useState(false);
@@ -27,13 +35,10 @@ const Home = ({ navigation }) => {
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+  
+  // Sets the header for the home screen.
   useLayoutEffect(() => {
-
-    const onMenuButtonClicked = () => {
-      alert("Menu Button Clicked");
-    }
-
-    navigation.setOptions(homeHeader(onMenuButtonClicked));
+    navigation.setOptions(homeHeader({navigation, route, hasMainAccount}));
   }, []);
 
   const handleRefresh = () => {
