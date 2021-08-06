@@ -10,12 +10,12 @@ import { useController } from 'hooks/index';
 // Screens
 ///////////////////////////
 
-import Start from 'scenes/auth/Start';
-import Home from 'scenes/auth/Home';
-import Asset from 'scenes/auth/Asset';
-import Send, { SendConfirm } from 'scenes/auth/Send';
-import GasSettings from 'scenes/auth/Send/GasSettings';
-import AddAsset from 'scenes/auth/Asset/AddAsset';
+import Start from 'scenes/home/Start';
+import Home from 'scenes/home/Home';
+import Asset from 'scenes/home/Asset';
+import Send, { SendConfirm } from 'scenes/home/Send';
+import GasSettings from 'scenes/home/Send/GasSettings';
+import AddAsset from 'scenes/home/Asset/AddAsset';
 import Import from 'scenes/common/Import';
 
 ///////////////////////////
