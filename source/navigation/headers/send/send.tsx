@@ -4,7 +4,6 @@
 
 import React from 'react';
 import defaultHeader from '../default';
-import AssetHeader from 'containers/auth/Asset/AssetHeader';
 import { IAssetInfoState } from 'state/assets/types';
 import CircleIcon from 'components/CircleIcon';
 
