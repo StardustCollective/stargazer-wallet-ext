@@ -40,24 +40,13 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
 
   const isETH = activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
 
-  // idx === 0 ||
-  // new Date(tx.timestamp || tx.date).toDateString() !==
-  // new Date(transactions[idx - 1].timestamp || transactions[idx - 1].date).toDateString()
+
   const isShowedGroupBar = useCallback(
     (tx: Transaction, idx: number) => {
       return (
         idx === 0 ||
-        new Date(
-          !isETH || (isETH && tx.assetId === activeAsset.id)
-            ? tx.timestamp
-            : tx.date
-        ).toDateString() !==
-          new Date(
-            !isETH ||
-            (isETH && transactions[idx - 1].assetId === activeAsset.id)
-              ? transactions[idx - 1].timestamp
-              : transactions[idx - 1].date
-          ).toDateString()
+        new Date(tx.timestamp).toDateString() !==
+        new Date(transactions[idx - 1].timestamp).toDateString()
       );
     },
     [transactions]
@@ -147,14 +136,17 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                 (!isETH && tx.receiver === address) ||
                 (isETH && !tx.assetId && tx.to && tx.to[0].to.toLowerCase() === address.toLowerCase()) ||
                 (isETHPending && tx.toAddress.toLowerCase() === address.toLowerCase());
+              const isSent =
+                (!isETH && tx.sender === address) ||
+                (isETH && !tx.assetId && tx.from && tx.from[0].from.toLowerCase() === address.toLowerCase()) ||
+                (isETHPending && tx.fromAddress.toLowerCase() === address.toLowerCase());
+              const isSelf = isSent && isReceived;
 
               return (
                 <Fragment key={uuid()}>
                   {isShowedGroupBar(tx, idx) && (
                     <li className={styles.groupbar}>
-                      {formatDistanceDate(
-                        !isETH || isETHPending ? tx.timestamp : tx.date
-                      )}
+                      {formatDistanceDate(tx.timestamp)}
                     </li>
                   )}
                   <li
@@ -164,27 +156,29 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   >
                     <div>
                       <div className={styles.iconWrapper}>
-                        {renderIcon(isReceived, tx)}
+                        {renderIcon(isReceived && !isSelf, tx)}
                       </div>
                       <span>
-                        {isReceived ? 'Received' : 'Sent'}
-                        <small>
-                          {isReceived
-                            ? `From: ${
+                        {isSelf ? 'Self' : (isReceived ? 'Received' : 'Sent')}
+                        {!isSelf && (
+                          <small>
+                            {isReceived
+                              ? `From: ${
                                 isETHPending
                                   ? tx.fromAddress
                                   : isETH
-                                  ? tx.from && tx.from[0].from
-                                  : tx.sender
+                                    ? tx.from && tx.from[0].from
+                                    : tx.sender
                               }`
-                            : `To: ${
+                              : `To: ${
                                 isETHPending
                                   ? tx.toAddress
                                   : isETH
-                                  ? tx.to && tx.to[0].to
-                                  : tx.receiver
+                                    ? tx.to && tx.to[0].to
+                                    : tx.receiver
                               }`}
-                        </small>
+                          </small>
+                        )}
                       </span>
                     </div>
                     <div>

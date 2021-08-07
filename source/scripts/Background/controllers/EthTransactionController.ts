@@ -105,6 +105,7 @@ export class EthTransactionController implements IEthTransactionController {
       transactions: ethTxs.txs.map((tx) => {
         return {
           ...tx,
+          timestamp: tx.date.valueOf(),
           balance: ethers.utils.formatEther(
             tx.from[0].amount.amount().toString()
           ),
@@ -125,6 +126,7 @@ export class EthTransactionController implements IEthTransactionController {
       transactions: transactions.txs.map((tx) => {
         return {
           ...tx,
+          timestamp: tx.date.valueOf(),
           balance: ethers.utils.formatUnits(
             tx.from[0].amount.amount().toString(),
             asset.decimals || 18

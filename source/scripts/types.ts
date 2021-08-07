@@ -27,6 +27,7 @@ export interface ITransactionInfo {
   fromAddress: string;
   toAddress: string;
   amount: string;
+  timestamp: number;
   fee?: number;
   ethConfig?: IETHTxConfig;
 }

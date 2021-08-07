@@ -35,6 +35,7 @@ const AssetDetail = () => {
 
   useEffect(() => {
     controller.wallet.account.updateTempTx({
+      timestamp: Date.now(),
       fromAddress: '',
       toAddress: '',
       amount: '0',
@@ -53,7 +54,7 @@ const AssetDetail = () => {
     if (activeAsset.type === AssetType.Constellation) {
       return activeAsset.transactions;
     }
-    return controller.wallet.account.getFullETHTxs();
+    return controller.wallet.account.getFullETHTxs().sort((a, b) => b.timestamp - a.timestamp);
   };
 
   const networkId = activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;

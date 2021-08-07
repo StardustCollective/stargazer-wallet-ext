@@ -308,8 +308,10 @@ export class AccountController implements IAccountController {
       gasLimit
     };
 
+    //console.log('getRecommendETHTxConfig', gasPrices, recommendConfig.gasPrice);
+
     if (!this.tempTx) {
-      this.tempTx = { fromAddress: '', toAddress: '', amount: '0' }
+      this.tempTx = { fromAddress: '', toAddress: '', amount: '0', timestamp: Date.now() }
       this.tempTx.ethConfig = recommendConfig;
     }
 

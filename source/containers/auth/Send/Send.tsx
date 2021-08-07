@@ -93,6 +93,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
     const txConfig: ITransactionInfo = {
       fromAddress: activeAsset.address,
       toAddress: data.address,
+      timestamp: Date.now(),
       amount: amount,
       fee: data.fee || gasFee,
     };
@@ -203,7 +204,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   };
 
   const handleGetTxFee = async () => {
-    handleGetDAGTxFee();
+    if (activeAsset.type === AssetType.Constellation) {
+      handleGetDAGTxFee();
+    }
     const txConfig = await controller.wallet.account.getTempTx();
     if (txConfig) {
       if (!txConfig?.ethConfig) {
