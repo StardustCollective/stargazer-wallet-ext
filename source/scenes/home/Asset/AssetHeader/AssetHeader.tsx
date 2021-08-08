@@ -27,7 +27,9 @@ const AssetHeader: FC<IAssetHeader> = ({ asset, address }) => {
             copyText(address);
           }}
         >
-          <CircleIcon logo={asset.logo} label={asset.label} />
+          <div className={styles.assetLogo}>
+            <CircleIcon logo={asset.logo} label={asset.label} />
+          </div>
           <Tooltip
             title={isCopied ? 'Copied' : 'Copy Address '}
             placement="bottom"

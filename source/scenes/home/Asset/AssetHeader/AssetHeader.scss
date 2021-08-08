@@ -25,6 +25,10 @@
       transition: all 0.3s;
       align-items: center;
 
+      .assetLogo {
+        margin-right: 8px;
+      }
+      
       .address {
         display: flex;
         flex-direction: column;
