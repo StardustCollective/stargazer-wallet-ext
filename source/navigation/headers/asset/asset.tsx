@@ -4,7 +4,7 @@
 
 import React from 'react';
 import defaultHeader from '../default';
-import AssetHeader from 'scenes/auth/Asset/AssetHeader';
+import AssetHeader from 'scenes/home/Asset/AssetHeader';
 import IconButton from '@material-ui/core/IconButton';
 import addressLinkImage from 'assets/images/svg/addressLink.svg'
 import { IAssetInfoState } from 'state/assets/types';

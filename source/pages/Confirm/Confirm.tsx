@@ -8,7 +8,7 @@ import SignatureRequest from 'scenes/confirm/SignatureRequest';
 
 import 'assets/styles/global.scss';
 import { useController } from 'hooks/index';
-import Starter from 'scenes/auth/Start';
+import Starter from 'scenes/home/Start';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import IVaultState from '../../state/vault/types';
 
