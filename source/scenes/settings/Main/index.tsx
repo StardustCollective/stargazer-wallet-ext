@@ -13,18 +13,18 @@ import { useController, useSettingsView } from 'hooks/index';
 import useVersion from 'hooks/useVersion';
 
 
-import {
-  ABOUT_VIEW,
-  CONTACTS_VIEW,
-  NETWORKS_VIEW,
-  WALLETS_VIEW,
-} from '../routes';
+// import {
+//   ABOUT_VIEW,
+//   CONTACTS_VIEW,
+//   NETWORKS_VIEW,
+//   WALLETS_VIEW,
+// } from '../routes';
 
 import styles from './index.scss';
 
 const ICON_WIDTH_NUMBER = 25;
 
-const MainView: FC = () => {
+const Main: FC = () => {
   const showView = useSettingsView();
   const history = useHistory();
   const controller = useController();
@@ -40,7 +40,7 @@ const MainView: FC = () => {
       <div>
         <section
           className={styles.general}
-          onClick={() => showView(WALLETS_VIEW)}
+          // onClick={() => showView(WALLETS_VIEW)}
         >
           <Icon Component={WalletIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
           <span>Wallets</span>
@@ -48,7 +48,7 @@ const MainView: FC = () => {
         </section>
         <section
           className={styles.general}
-          onClick={() => showView(CONTACTS_VIEW)}
+          // onClick={() => showView(CONTACTS_VIEW)}
         >
           <Icon Component={ContactsIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
           <span>Contacts</span>
@@ -56,7 +56,7 @@ const MainView: FC = () => {
         </section>
         <section
           className={styles.general}
-          onClick={() => showView(NETWORKS_VIEW)}
+          // onClick={() => showView(NETWORKS_VIEW)}
         >
           <Icon Component={NetworkIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
           <span>Networks</span>
@@ -67,7 +67,9 @@ const MainView: FC = () => {
           <span>Log out</span>
           <ArrowIcon className={styles.arrow} />
         </section>
-        <section className={styles.general} onClick={() => showView(ABOUT_VIEW)}>
+        <section className={styles.general} 
+        // onClick={() => showView(ABOUT_VIEW)}
+        >
           <Icon Component={AboutIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
           <span>About</span>
           <ArrowIcon className={styles.arrow} />
@@ -82,4 +84,4 @@ const MainView: FC = () => {
   );
 };
 
-export default MainView;
+export default Main;
