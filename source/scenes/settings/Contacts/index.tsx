@@ -6,8 +6,8 @@ import Button from 'components/Button';
 import { useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
 import IContactBookState, { IContactState } from 'state/contacts/types';
+import { useLinkTo } from '@react-navigation/native';
 
-import { ADD_CONTACT_VIEW, CONTACT_VIEW } from '../routes';
 import styles from './index.scss';
 
 interface IContactsView {
@@ -18,6 +18,7 @@ const Contacts: FC<IContactsView> = ({ onSelect }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
+  const linkTo = useLinkTo();
   // const { wallet, asset }: IVaultState = useSelector(
   //   (state: RootState) => state.vault
   // );
@@ -27,7 +28,7 @@ const Contacts: FC<IContactsView> = ({ onSelect }) => {
 
   const handleSelect = (id: string) => {
     onSelect(id);
-    showView(CONTACT_VIEW);
+    // showView(CONTACT_VIEW);
   };
 
   // const handleSelectedContact = (ev: any, address: string) => {
@@ -46,13 +47,17 @@ const Contacts: FC<IContactsView> = ({ onSelect }) => {
   //   history.push(`/send/${address}`);
   // };
 
+  const onAddContactClick = () => {
+    linkTo('/setting/contacts/modify');
+  }
+
   return (
     <div className={styles.contacts}>
       <div className={styles.actions}>
         <Button
           type="button"
           variant={styles.add}
-          onClick={() => showView(ADD_CONTACT_VIEW)}
+          onClick={onAddContactClick}
         >
           Add contact
         </Button>
