@@ -10,7 +10,6 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import { useController, useSettingsView } from 'hooks/index';
 
 import StargazerIcon from 'assets/images/logo-s.svg';
-import { MANAGE_WALLET_VIEW } from '../routes';
 import styles from './index.scss';
 import IAssetListState from 'state/assets/types';
 import {
@@ -48,7 +47,7 @@ const Wallets: FC<IWalletsView> = ({ onChange }) => {
     ev.stopPropagation();
     controller.wallet.switchWallet(walletId);
     onChange(walletId);
-    showView(MANAGE_WALLET_VIEW);
+    // showView(MANAGE_WALLET_VIEW);
   };
 
   return (
