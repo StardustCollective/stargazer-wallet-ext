@@ -40,7 +40,14 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
     if (!phrase) return true;
     const len = phrase.trim().split(' ').length;
     // console.log(len, (len % 3), (len < 12 || len > 24 || (len % 3 > 0)))
-    return len < 12 || len > 24 || (len % 3 > 0);
+    const result = len < 12 || len > 24 || (len % 3 > 0);
+
+    //Reset invalid if phrase has changed and no longer disabled.
+    if (isInvalid && !result) {
+      setInvalid(false);
+    }
+
+    return result;
   }, [watch('phrase')]);
 
   return (
