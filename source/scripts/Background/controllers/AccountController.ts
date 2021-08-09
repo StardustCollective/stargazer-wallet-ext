@@ -8,7 +8,7 @@ import {
   changeActiveWallet,
   updateStatus,
   updateTransactions,
-  updateWalletAssets
+  updateWalletAssets, updateWalletLabel
 } from 'state/vault';
 import IVaultState, { AssetType, IAssetState, IWalletState } from 'state/vault/types';
 
@@ -149,6 +149,12 @@ export class AccountController implements IAccountController {
 
   updateWalletLabel (id: string, label: string) {
     this.keyringManager.setWalletLabel(id, label);
+
+    const { activeWallet }: IVaultState = store.getState().vault;
+
+    if (activeWallet.id === id) {
+      store.dispatch(updateWalletLabel(label));
+    }
   }
 
   async updateAccountActiveAsset (asset: IAssetState) {
