@@ -10,7 +10,7 @@ import { useController } from 'hooks/index';
 import styles from './index.scss';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-const NetworksView = () => {
+const Networks = () => {
   const controller = useController();
   const { activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -69,4 +69,4 @@ const NetworksView = () => {
   );
 };
 
-export default NetworksView;
+export default Networks;
