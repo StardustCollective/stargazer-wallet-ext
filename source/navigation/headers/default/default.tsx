@@ -42,19 +42,14 @@ const defaultHeader = ({
 
   const renderHeaderLeft = () => {
 
-    if (index > 0) {
-      return (
+    return (
       <IconButton
         className={`${styles.buttonLeft} ${styles.more}`}
         onClick={onBackButtonClicked}
       >
         <ArrowBackIcon className={styles.buttonLeft} />
-      </IconButton>)
-    }
-    // Hack: The header title will not center unless there is 
-    // both a headerLeft and headerRight. So we insert an 
-    // empty div to meet the requirement.
-    return (<div className={commonStyles.emptyDiv}></div>);
+      </IconButton>
+    )
 
   }
 
