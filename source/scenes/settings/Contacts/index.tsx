@@ -14,7 +14,7 @@ interface IContactsView {
   onSelect: (id: string) => void;
 }
 
-const ContactsView: FC<IContactsView> = ({ onSelect }) => {
+const Contacts: FC<IContactsView> = ({ onSelect }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
@@ -92,4 +92,4 @@ const ContactsView: FC<IContactsView> = ({ onSelect }) => {
   );
 };
 
-export default ContactsView;
+export default Contacts;
