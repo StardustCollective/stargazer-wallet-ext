@@ -25,6 +25,16 @@ export default {
     sendConfirm: 'auth-sendConfirm',
     send: 'auth-send',
     gasSettings: 'auth-gasSettings',
+    settings: 'auth-setting'
+  },
+
+  ////////////////////////////
+  // Settings
+  ////////////////////////////
+
+  settings: {
+    main: 'settings-main',
+    about: 'setting-about'
   },
 
   ////////////////////////////

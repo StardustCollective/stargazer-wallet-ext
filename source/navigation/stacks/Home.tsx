@@ -19,6 +19,12 @@ import AddAsset from 'scenes/home/Asset/AddAsset';
 import Import from 'scenes/common/Import';
 
 ///////////////////////////
+// Stacks
+///////////////////////////
+
+import SettingStack from './Settings';
+
+///////////////////////////
 // Screens Names
 ///////////////////////////
 
@@ -42,7 +48,8 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   asset: 'Asset',
   confirm: 'Confirm',
   send: 'Send',
-  gasSettings: 'Gas Settings'
+  gasSettings: 'Gas Settings',
+  settings: 'Settings'
 }
 
 const Auth = () => {
@@ -83,6 +90,7 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={SendConfirm} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.gasSettings }} name={screens.authorized.gasSettings} component={GasSettings} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerShown: false }} name={screens.authorized.settings} component={SettingStack} />
         </>)
       }
     </Stack.Navigator>
