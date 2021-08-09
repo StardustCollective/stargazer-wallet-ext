@@ -22,7 +22,7 @@ interface IWalletsView {
   onChange: (id: string) => void;
 }
 
-const WalletsView: FC<IWalletsView> = ({ onChange }) => {
+const Wallets: FC<IWalletsView> = ({ onChange }) => {
   const controller = useController();
   const showView = useSettingsView();
   const { wallets, activeWallet: activeWallet }: IVaultState = useSelector(
@@ -121,4 +121,4 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
   );
 };
 
-export default WalletsView;
+export default Wallets;
