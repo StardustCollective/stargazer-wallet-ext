@@ -15,7 +15,7 @@ import styles from './index.scss';
 //   return v.join('.');
 // }
 
-const AboutView: FC = () => {
+const About: FC = () => {
 
   const versionMajorMinor =  useVersion(2);
   const version = useVersion(3);
@@ -58,4 +58,4 @@ const AboutView: FC = () => {
   );
 };
 
-export default AboutView;
+export default About;
