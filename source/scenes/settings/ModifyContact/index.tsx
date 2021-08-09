@@ -11,7 +11,6 @@ import TextInput from 'components/TextInput';
 import { useController, useSettingsView } from 'hooks/index';
 import IContactBookState from 'state/contacts/types';
 import { RootState } from 'state/store';
-import { CONTACTS_VIEW } from '../routes';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import styles from './index.scss';
 import IVaultState, { AssetType } from 'state/vault/types';
@@ -20,9 +19,10 @@ import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 interface IModifyContactView {
   type: 'add' | 'edit';
   selected?: string;
+  navigation: any;
 }
 
-const ModifyContact: FC<IModifyContactView> = ({ type, selected }) => {
+const ModifyContact: FC<IModifyContactView> = ({ type, selected, navigation }) => {
   const controller = useController();
   const showView = useSettingsView();
   const history = useHistory();
@@ -83,7 +83,7 @@ const ModifyContact: FC<IModifyContactView> = ({ type, selected }) => {
       data.memo,
       selected
     );
-    showView(CONTACTS_VIEW);
+    navigation.goBack();
   };
 
   return (
