@@ -22,7 +22,7 @@ interface IModifyContactView {
   selected?: string;
 }
 
-const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
+const ModifyContact: FC<IModifyContactView> = ({ type, selected }) => {
   const controller = useController();
   const showView = useSettingsView();
   const history = useHistory();
@@ -142,4 +142,4 @@ const ModifyContactView: FC<IModifyContactView> = ({ type, selected }) => {
   );
 };
 
-export default ModifyContactView;
+export default ModifyContact;
