@@ -17,7 +17,7 @@ import { ellipsis } from '../helpers';
 
 import styles from './Confirm.scss';
 import Icon from 'components/Icon';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 
 const SendConfirm = () => {
   // const history = useHistory();
@@ -42,7 +42,7 @@ const SendConfirm = () => {
     const balance = ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals);
     const txFee =
       activeAsset.id === AssetType.Constellation
-        ? BigNumber.from(tempTx?.fee || 0)
+        ? ethers.utils.parseUnits(Number(tempTx?.fee || 0).toFixed(8), 8)
         : ethers.utils.parseEther(String(tempTx?.fee || 0));
 
     if (assetInfo.type === AssetType.ERC20) {

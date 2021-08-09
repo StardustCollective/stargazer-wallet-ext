@@ -188,7 +188,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                             ? Number(
                                 isETHPending ? tx.amount : tx.balance
                               ).toFixed(4)
-                            : tx.amount / 1e8}{' '}
+                            : (tx.amount / 1e8).toFixed(4)}{' '}
                           <b>{assets[activeAsset.id].symbol}</b>
                         </span>
                         <small>
