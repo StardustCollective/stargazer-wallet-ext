@@ -6,12 +6,18 @@ import React from 'react';
 import config from '../config';
 
 ///////////////////////////
-// Styles
+// Images
 ///////////////////////////
 
 import IconButton from '@material-ui/core/IconButton';
 import LogoImage from 'assets/images/logo-s.svg';
 import MenuIcon from '@material-ui/icons/Menu';
+
+///////////////////////////
+// Screens
+///////////////////////////
+
+import screens from 'navigation/screens';
 
 ///////////////////////////
 // Styles
@@ -35,13 +41,12 @@ interface IHomeHeader{
 ///////////////////////////
 
 const homeHeader = ({
-  navigation, 
-  route,
+  navigation,
   hasMainAccount
 }: IHomeHeader) => {
 
   const onMenuButtonClicked = () => {
-    // Navigate to the Setting screen
+    navigation.navigate(screens.authorized.settings)
   }
 
   const renderHeaderRight = () => {
