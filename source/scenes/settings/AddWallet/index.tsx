@@ -7,7 +7,7 @@ import styles from './index.scss';
 import { useSettingsView } from 'hooks/index';
 import { IMPORT_WALLET_VIEW, NEW_ACCOUNT_VIEW } from '../routes';
 
-const AddWalletView = () => {
+const AddWallet = () => {
   const showView = useSettingsView();
 
   return (
@@ -32,4 +32,4 @@ const AddWalletView = () => {
   );
 };
 
-export default AddWalletView;
+export default AddWallet;
