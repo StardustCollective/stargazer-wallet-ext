@@ -17,16 +17,17 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IModifyContactView {
-  type: 'add' | 'edit';
   selected?: string;
   navigation: any;
+  route: any
 }
 
-const ModifyContact: FC<IModifyContactView> = ({ type, selected, navigation }) => {
+const ModifyContact: FC<IModifyContactView> = ({ route , selected, navigation }) => {
   const controller = useController();
   const showView = useSettingsView();
   const history = useHistory();
   const alert = useAlert();
+  const type = route.params.type;
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );

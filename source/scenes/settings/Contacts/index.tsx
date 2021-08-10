@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Avatar from '@devneser/gradient-avatar';
 
@@ -7,14 +7,16 @@ import { useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
 import IContactBookState, { IContactState } from 'state/contacts/types';
 import { useLinkTo } from '@react-navigation/native';
+import addHeader from 'navigation/headers/add';
 
 import styles from './index.scss';
 
 interface IContactsView {
   onSelect: (id: string) => void;
+  navigation: any;
 }
 
-const Contacts: FC<IContactsView> = ({ onSelect }) => {
+const Contacts: FC<IContactsView> = ({ onSelect, navigation }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
@@ -30,6 +32,13 @@ const Contacts: FC<IContactsView> = ({ onSelect }) => {
     onSelect(id);
     // showView(CONTACT_VIEW);
   };
+
+  useLayoutEffect(() => {
+    const onRightIconClick = () => {
+      linkTo('/setting/contacts/modify?type=add');
+    }
+    navigation.setOptions(addHeader({ navigation, onRightIconClick }));
+  }, []);
 
   // const handleSelectedContact = (ev: any, address: string) => {
   //   ev.stopPropagation();
@@ -47,21 +56,13 @@ const Contacts: FC<IContactsView> = ({ onSelect }) => {
   //   history.push(`/send/${address}`);
   // };
 
-  const onAddContactClick = () => {
-    linkTo('/setting/contacts/modify');
-  }
-
   return (
     <div className={styles.contacts}>
-      <div className={styles.actions}>
-        <Button
-          type="button"
-          variant={styles.add}
-          onClick={onAddContactClick}
-        >
-          Add contact
-        </Button>
-      </div>
+      {Object.keys(contacts).length === 0 &&
+        <div className={styles.actions}>
+          <span> Please click the "+" to add a contact.</span>
+        </div>
+      }
       <ul className={styles.list}>
         {Object.values(contacts)
           // .filter(
