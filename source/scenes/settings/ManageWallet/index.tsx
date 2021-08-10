@@ -23,7 +23,7 @@ interface IManageWalletView {
   id: string
 }
 
-const ManageWalletView: FC<IManageWalletView> = ({id}) => {
+const ManageWallet: FC<IManageWalletView> = ({id}) => {
   const showView = useSettingsView();
   const controller = useController();
   const { handleSubmit, register } = useForm();
@@ -95,4 +95,4 @@ const ManageWalletView: FC<IManageWalletView> = ({id}) => {
   );
 };
 
-export default ManageWalletView;
+export default ManageWallet;
