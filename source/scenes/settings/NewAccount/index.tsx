@@ -17,7 +17,7 @@ interface INewAccountView {
   onChange: (id: string) => void;
 }
 
-const NewAccountView: FC<INewAccountView> = ({ onChange }) => {
+const NewAccount: FC<INewAccountView> = ({ onChange }) => {
   const [accountName, setAccountName] = useState<string>();
   const [loading, setLoading] = useState(false);
   const controller = useController();
@@ -93,4 +93,4 @@ const NewAccountView: FC<INewAccountView> = ({ onChange }) => {
   );
 };
 
-export default NewAccountView;
+export default NewAccount;
