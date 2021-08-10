@@ -13,28 +13,18 @@ import { useController, useSettingsView } from 'hooks/index';
 import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 
-
-// import {
-//   ABOUT_VIEW,
-//   CONTACTS_VIEW,
-//   NETWORKS_VIEW,
-//   WALLETS_VIEW,
-// } from '../routes';
-
 import styles from './index.scss';
 
 const ICON_WIDTH_NUMBER = 25;
 
 const Main: FC = () => {
-  const showView = useSettingsView();
-  const history = useHistory();
   const controller = useController();
   const version = useVersion(3);
   const linkTo = useLinkTo();
 
   const handleLogout = () => {
     controller.wallet.logOut();
-    history.push('/app.html');
+    linkTo('/app.html');
   };
 
   const onWalletLinkClick = () => {
