@@ -10,14 +10,15 @@ import styles from './index.scss';
 
 interface IPhraseView {
   id: string;
+  route: any;
 }
 
-const Phrase: FC<IPhraseView> = ({ id }) => {
+const Phrase: FC<IPhraseView> = ({ route }) => {
   const [checked, setChecked] = useState(false);
   const [phrase, setPhrase] = useState<string>(
     '**** ******* ****** ****** ****** ******** *** ***** ****** ***** *****'
   );
-
+  const id = route.params.id;
   const alert = useAlert();
   const controller = useController();
   const [isCopied, copyText] = useCopyClipboard();

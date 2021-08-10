@@ -5,16 +5,20 @@ import Icon from 'components/Icon';
 import StargazerIcon from 'assets/images/logo-s.svg';
 import styles from './index.scss';
 import { useSettingsView } from 'hooks/index';
-import { IMPORT_WALLET_VIEW, NEW_ACCOUNT_VIEW } from '../routes';
+import { useLinkTo } from '@react-navigation/native';
 
 const AddWallet = () => {
-  const showView = useSettingsView();
+  const linkTo = useLinkTo();
+
+  const onCreateNewWalletClicked = () => {
+    linkTo('/settings/wallets/create');
+  };
 
   return (
     <div className={styles.wrapper}>
       <section
         className={styles.menu}
-        onClick={() => showView(NEW_ACCOUNT_VIEW)}
+        onClick={onCreateNewWalletClicked}
       >
         <Icon Component={StargazerIcon} />
         <span>Create New Wallet</span>
@@ -22,7 +26,7 @@ const AddWallet = () => {
       </section>
       <section
         className={styles.menu}
-        onClick={() => showView(IMPORT_WALLET_VIEW)}
+        // onClick={() => showView(IMPORT_WALLET_VIEW)}
       >
         <Icon Component={StargazerIcon} />
         <span>Import Wallet</span>

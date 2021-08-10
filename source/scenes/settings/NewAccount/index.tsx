@@ -9,32 +9,45 @@ import TextInput from 'components/TextInput';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
 import { useController, useSettingsView } from 'hooks/index';
+import NavigationUtil from 'navigation/util';
+import { useLinkTo } from '@react-navigation/native';
 
 import styles from './index.scss';
-import { MAIN_VIEW, PHRASE_VIEW } from '../routes';
+// import { MAIN_VIEW, PHRASE_VIEW } from '../routes';
 
 interface INewAccountView {
-  onChange: (id: string) => void;
+  // onChange: (id: string) => void;
+  navigation: any
 }
 
-const NewAccount: FC<INewAccountView> = ({ onChange }) => {
+const NewAccount: FC<INewAccountView> = ({ navigation }) => {
   const [accountName, setAccountName] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const [walletId, setWalletId] = useState<string>('');
   const controller = useController();
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
       name: yup.string().required(),
     }),
-  });
-  const showView = useSettingsView();
+  });;
+  const linkTo = useLinkTo();
 
   const onSubmit = async (data: any) => {
     setLoading(true);
     const id = await controller.wallet.createWallet(data.name);
-    onChange(id);
+    setWalletId(id);
+    // onChange(id);
     setLoading(false);
     setAccountName(data.name);
   };
+
+  const onClickResetStack = () => {
+    NavigationUtil.popToTop(navigation);
+  }
+
+  const onShowPhraseClick = () => {
+    linkTo(`/settings/wallets/phrase?id=${walletId}`);
+  }
 
   return (
     <div className={styles.newAccount}>
@@ -44,7 +57,7 @@ const NewAccount: FC<INewAccountView> = ({ onChange }) => {
           <label>Backup Options</label>
           <section
             className={styles.menu}
-            onClick={() => showView(PHRASE_VIEW)}
+            onClick={onShowPhraseClick}
           >
             <Icon Component={SeedIcon} />
             <span>Show Recovery Phrase</span>
@@ -58,7 +71,7 @@ const NewAccount: FC<INewAccountView> = ({ onChange }) => {
             <Button
               type="button"
               variant={styles.button}
-              onClick={() => showView(MAIN_VIEW)}
+              onClick={onClickResetStack}
             >
               Finish
             </Button>
@@ -79,7 +92,7 @@ const NewAccount: FC<INewAccountView> = ({ onChange }) => {
               type="button"
               theme="secondary"
               variant={clsx(styles.button, styles.close)}
-              onClick={() => showView(MAIN_VIEW)}
+              onClick={onClickResetStack}
             >
               Close
             </Button>

@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent } from 'react';
+import React, { FC, MouseEvent, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
@@ -16,20 +16,31 @@ import {
   KeyringAssetType,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
+import addHeader from 'navigation/headers/add';
+import { useLinkTo } from '@react-navigation/native'
 
 interface IWalletsView {
   onChange: (id: string) => void;
+  navigation: any;
 }
 
-const Wallets: FC<IWalletsView> = ({ onChange }) => {
+const Wallets: FC<IWalletsView> = ({ onChange, navigation }) => {
   const controller = useController();
   const showView = useSettingsView();
+  const linkTo =  useLinkTo();
   const { wallets, activeWallet: activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
+
+  useLayoutEffect(() => {
+    const onRightIconClick = () => {
+      linkTo('/settings/wallets/add');
+    }
+    navigation.setOptions(addHeader({ navigation, onRightIconClick }));
+  }, []);
 
   const privKeyAccounts = wallets.filter(
     (w) => w.type === KeyringWalletType.SingleAccountWallet
