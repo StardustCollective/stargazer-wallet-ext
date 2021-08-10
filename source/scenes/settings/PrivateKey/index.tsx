@@ -16,7 +16,7 @@ interface IPrivateKeyView {
   id: string;
 }
 
-const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
+const PrivateKey: FC<IPrivateKeyView> = ({ id }) => {
   const controller = useController();
   const alert = useAlert();
   const { wallets }: IVaultState = useSelector(
@@ -91,4 +91,4 @@ const PrivateKeyView: FC<IPrivateKeyView> = ({ id }) => {
   );
 };
 
-export default PrivateKeyView;
+export default PrivateKey;
