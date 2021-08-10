@@ -7,7 +7,7 @@ import CheckIcon from '@material-ui/icons/CheckCircleRounded';
 import Icon from 'components/Icon';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
-import { useController, useSettingsView } from 'hooks/index';
+import { useController } from 'hooks/index';
 
 import StargazerIcon from 'assets/images/logo-s.svg';
 import styles from './index.scss';
@@ -24,9 +24,8 @@ interface IWalletsView {
   navigation: any;
 }
 
-const Wallets: FC<IWalletsView> = ({ onChange, navigation }) => {
+const Wallets: FC<IWalletsView> = ({ navigation }) => {
   const controller = useController();
-  const showView = useSettingsView();
   const linkTo =  useLinkTo();
   const { wallets, activeWallet: activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -57,8 +56,7 @@ const Wallets: FC<IWalletsView> = ({ onChange, navigation }) => {
   ) => {
     ev.stopPropagation();
     controller.wallet.switchWallet(walletId);
-    onChange(walletId);
-    // showView(MANAGE_WALLET_VIEW);
+    linkTo(`/settings/wallets/manage?id=${walletId}`);
   };
 
   return (

@@ -11,20 +11,23 @@ import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
+import navigationUtil from 'navigation/util';
 
 import styles from './index.scss';
 import { MAIN_VIEW } from '../routes';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IRemoveWalletView {
-  id: string;
+  route: any;
+  navigation: any;
 }
 
-const RemoveWallet: FC<IRemoveWalletView> = ({ id }) => {
+const RemoveWallet: FC<IRemoveWalletView> = ({ route, navigation }) => {
   const controller = useController();
   const showView = useSettingsView();
   const alert = useAlert();
   const history = useHistory();
+  const id = route.params.id;
 
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -46,7 +49,7 @@ const RemoveWallet: FC<IRemoveWalletView> = ({ id }) => {
         controller.wallet.logOut();
       }
       else {
-        showView(MAIN_VIEW);
+        navigationUtil.popToTop(navigation);
       }
     } else {
       alert.removeAll();

@@ -8,17 +8,18 @@ import TextInput from 'components/TextInput';
 import { useController, useCopyClipboard } from 'hooks/index';
 
 import styles from './index.scss';
-import IVaultState from '../../../../../state/vault/types';
-import { RootState } from '../../../../../state/store';
+import IVaultState from 'state/vault/types';
+import { RootState } from 'state/store';
 import { useSelector } from 'react-redux';
 
 interface IPrivateKeyView {
-  id: string;
+  route: any;
 }
 
-const PrivateKey: FC<IPrivateKeyView> = ({ id }) => {
+const PrivateKey: FC<IPrivateKeyView> = ({ route }) => {
   const controller = useController();
   const alert = useAlert();
+  const id = route.params.id;
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );

@@ -11,21 +11,23 @@ import Icon from 'components/Icon';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import IVaultState  from 'state/vault/types';
-import { useController, useSettingsView } from 'hooks/index';
+import { useController } from 'hooks/index';
 
-import styles from './index.scss';
-import { PHRASE_VIEW, PRIV_KEY_VIEW, REMOVE_WALLET_VIEW, WALLETS_VIEW } from '../routes';
+import styles from './index.scss';;
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../../../state/store';
+import { RootState } from 'state/store';
+import { useLinkTo } from '@react-navigation/native';
 
 interface IManageWalletView {
-  id: string
+  route: any;
+  navigation: any;
 }
 
-const ManageWallet: FC<IManageWalletView> = ({id}) => {
-  const showView = useSettingsView();
+const ManageWallet: FC<IManageWalletView> = ({route, navigation}) => {
   const controller = useController();
+  const linkTo = useLinkTo();
+  const id = route.params.id;
   const { handleSubmit, register } = useForm();
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -35,8 +37,24 @@ const ManageWallet: FC<IManageWalletView> = ({id}) => {
 
   const onSubmit = (data: any) => {
     controller.wallet.account.updateWalletLabel(id, data.name);
-    showView(WALLETS_VIEW);
+    navigation.goBack();
   };
+
+  const onCancelClicked = () => {
+    navigation.goBack()
+  }
+
+  const onShowRecoveryPhraseClicked = () => {
+    linkTo(`/settings/wallets/phrase?id=${id}`);
+  }
+
+  const onDeleteWalletClicked = () => {
+    linkTo(`/settings/wallets/remove?id=${id}`)
+  }
+
+  const onShowPrivateKeyClicked = () => {
+    linkTo(`/settings/wallets/privateKey?id=${id}`)
+  }
 
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
@@ -51,7 +69,9 @@ const ManageWallet: FC<IManageWalletView> = ({id}) => {
       />
       <label>Backup Options</label>
       {wallet.type === KeyringWalletType.MultiChainWallet ? (
-        <section className={styles.menu} onClick={() => showView(PHRASE_VIEW)}>
+        <section className={styles.menu} 
+        onClick={onShowRecoveryPhraseClicked}
+        >
           <Icon Component={SeedIcon} />
           <span>Show Recovery Phrase</span>
           <ArrowIcon />
@@ -59,7 +79,7 @@ const ManageWallet: FC<IManageWalletView> = ({id}) => {
       ) : (
         <section
           className={styles.menu}
-          onClick={() => showView(PRIV_KEY_VIEW)}
+          onClick={onShowPrivateKeyClicked}
         >
           <Icon Component={PrivKeyIcon} />
           <span>Export private key</span>
@@ -73,7 +93,7 @@ const ManageWallet: FC<IManageWalletView> = ({id}) => {
       </span>
       <section
         className={styles.menu}
-        onClick={() => showView(REMOVE_WALLET_VIEW)}
+        onClick={onDeleteWalletClicked}
       >
         <Icon Component={DeleteIcon} />
         <span>Delete Wallet</span>
@@ -83,7 +103,7 @@ const ManageWallet: FC<IManageWalletView> = ({id}) => {
         <Button
           type="button"
           variant={clsx(styles.button, styles.cancel)}
-          onClick={() => showView(WALLETS_VIEW)}
+          onClick={onCancelClicked}
         >
           Cancel
         </Button>
