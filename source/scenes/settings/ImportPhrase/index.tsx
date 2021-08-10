@@ -8,7 +8,7 @@ import { useController, useSettingsView } from 'hooks/index';
 import styles from './index.scss';
 import { WALLETS_VIEW } from '../routes';
 
-const ImportPhraseView = () => {
+const ImportPhrase = () => {
   const showView = useSettingsView();
   const controller = useController();
   const [loading, setLoading] = useState(false);
@@ -72,4 +72,4 @@ const ImportPhraseView = () => {
   );
 };
 
-export default ImportPhraseView;
+export default ImportPhrase;
