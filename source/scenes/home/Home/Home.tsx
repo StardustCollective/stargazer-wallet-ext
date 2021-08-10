@@ -38,11 +38,14 @@ const Home = ({ navigation, route }: IHome) => {
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-  
+
   // Sets the header for the home screen.
   useLayoutEffect(() => {
-    navigation.setOptions(homeHeader({navigation, route, hasMainAccount}));
-  }, []);
+    navigation.setOptions({
+      ...homeHeader({ navigation, route, hasMainAccount }),
+      title: activeWallet.label,
+    });
+  }, [activeWallet]);
 
   const handleRefresh = () => {
     controller.wallet.account.assetsBalanceMonitor.refreshDagBalance();
@@ -68,19 +71,6 @@ const Home = ({ navigation, route }: IHome) => {
         <>
           {
             <>
-              <section className={styles.account}>
-                {/*<div*/}
-                {/*  className={clsx(styles.status, { [styles.connected]: connected })}*/}
-                {/*>*/}
-                {/*  {connected ? (*/}
-                {/*    <CircleIcon fontSize="small" />*/}
-                {/*  ) : (*/}
-                {/*    <BlankCircleIcon fontSize="small" />*/}
-                {/*  )}*/}
-                {/*  {connected ? 'Connected' : 'Not connected'}*/}
-                {/*</div>*/}
-                {activeWallet.label}
-              </section>
               <section className={styles.center}>
                 <h3>{totalBalance[0]}</h3>
                 <small>{`≈ ₿${totalBalance[1]}`}</small>
