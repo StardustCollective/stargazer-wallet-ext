@@ -20,7 +20,7 @@ interface IRemoveWalletView {
   id: string;
 }
 
-const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
+const RemoveWallet: FC<IRemoveWalletView> = ({ id }) => {
   const controller = useController();
   const showView = useSettingsView();
   const alert = useAlert();
@@ -103,4 +103,4 @@ const RemoveWalletView: FC<IRemoveWalletView> = ({ id }) => {
   );
 };
 
-export default RemoveWalletView;
+export default RemoveWallet;
