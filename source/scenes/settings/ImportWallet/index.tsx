@@ -21,7 +21,7 @@ interface IImportWalletView {
   onChange: (network: KeyringNetwork) => void;
 }
 
-const ImportWalletView: FC<IImportWalletView> = ({ onChange }) => {
+const ImportWallet: FC<IImportWalletView> = ({ onChange }) => {
   const showView = useSettingsView();
 
   const handleImport = (network: KeyringNetwork) => {
@@ -59,4 +59,4 @@ const ImportWalletView: FC<IImportWalletView> = ({ onChange }) => {
   );
 };
 
-export default ImportWalletView;
+export default ImportWallet;
