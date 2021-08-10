@@ -34,7 +34,21 @@ export default {
 
   settings: {
     main: 'settings-main',
-    about: 'setting-about'
+    about: 'settings-about',
+    networks: 'settings-networks',
+    contacts: 'settings-contacts',
+    contactInfo: 'setting-contact-info',
+    modifyContact: 'settings-modify-contact',
+    wallets: 'settings-wallets',
+    addWallet: 'settings-add-wallet',
+    createWallet: 'settings-create-wallet',
+    walletPhrase: 'settings-wallet-phrase',
+    manageWallet: 'settings-wallet-manage',
+    removeWallet: 'settings-wallet-remove',
+    privateKey: 'settings-wallet-private-key',
+    importWallet: 'settings-wallet-import',
+    importAccount: 'settings-wallet-import-account',
+    importPhrase: 'settings-wallet-import-phrase',
   },
 
   ////////////////////////////
