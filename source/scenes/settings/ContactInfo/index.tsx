@@ -13,15 +13,16 @@ import { CONTACTS_VIEW, EDIT_CONTACT_VIEW } from '../routes';
 import Tooltip from 'components/Tooltip';
 import { RootState } from 'state/store';
 import IContactBookState from 'state/contacts/types';
-import { ellipsis } from 'containers/auth/helpers';
+import { ellipsis } from 'scenes/home/helpers';
 
 import styles from './index.scss';
 
 interface IContactInfoView {
-  selected: string;
+  route: any;
+  navigation: any;
 }
 
-const ContactInfo: FC<IContactInfoView> = ({ selected }) => {
+const ContactInfo: FC<IContactInfoView> = ({ route, navigation }) => {
   const controller = useController();
   const showView = useSettingsView();
   const [codeOpened, setCodeOpened] = useState(false);
@@ -29,10 +30,11 @@ const ContactInfo: FC<IContactInfoView> = ({ selected }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
+  const selected = route.params.selected;
 
   const handleDelete = () => {
     controller.contacts.deleteContact(selected);
-    showView(CONTACTS_VIEW);
+    navigation.goBack();
   };
 
   return (
@@ -93,7 +95,7 @@ const ContactInfo: FC<IContactInfoView> = ({ selected }) => {
         <Button
           type="button"
           variant={styles.edit}
-          onClick={() => showView(EDIT_CONTACT_VIEW)}
+          // onClick={() => showView(EDIT_CONTACT_VIEW)}
         >
           Edit
         </Button>

@@ -11,6 +11,7 @@ import WalletIcon from 'assets/images/svg/wallet.svg';
 import Icon from 'components/Icon';
 import { useController, useSettingsView } from 'hooks/index';
 import useVersion from 'hooks/useVersion';
+import { useLinkTo } from '@react-navigation/native';
 
 
 // import {
@@ -29,18 +30,35 @@ const Main: FC = () => {
   const history = useHistory();
   const controller = useController();
   const version = useVersion(3);
+  const linkTo = useLinkTo();
 
   const handleLogout = () => {
     controller.wallet.logOut();
     history.push('/app.html');
   };
 
+  const onWalletLinkClick = () => {
+    linkTo('/settings/wallets');
+  }
+
+  const onNetworkLinkClicked = () => {
+    linkTo('/settings/networks');
+  };
+
+  const onAboutLinkClicked = () => {
+    linkTo('/settings/about');
+  }
+
+  const onContactsLinkClicked = () => {
+    linkTo('/settings/contacts');
+  }
+
   return (
     <div className={styles.main}>
       <div>
         <section
           className={styles.general}
-          // onClick={() => showView(WALLETS_VIEW)}
+          onClick={onWalletLinkClick}
         >
           <Icon Component={WalletIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
           <span>Wallets</span>
@@ -48,7 +66,7 @@ const Main: FC = () => {
         </section>
         <section
           className={styles.general}
-          // onClick={() => showView(CONTACTS_VIEW)}
+          onClick={onContactsLinkClicked}
         >
           <Icon Component={ContactsIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
           <span>Contacts</span>
@@ -56,7 +74,7 @@ const Main: FC = () => {
         </section>
         <section
           className={styles.general}
-          // onClick={() => showView(NETWORKS_VIEW)}
+          onClick={onNetworkLinkClicked}
         >
           <Icon Component={NetworkIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
           <span>Networks</span>
@@ -68,7 +86,7 @@ const Main: FC = () => {
           <ArrowIcon className={styles.arrow} />
         </section>
         <section className={styles.general} 
-        // onClick={() => showView(ABOUT_VIEW)}
+        onClick={onAboutLinkClicked}
         >
           <Icon Component={AboutIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
           <span>About</span>

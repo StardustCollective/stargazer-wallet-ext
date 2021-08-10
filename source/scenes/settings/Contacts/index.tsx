@@ -29,8 +29,7 @@ const Contacts: FC<IContactsView> = ({ onSelect, navigation }) => {
   // const history = useHistory();
 
   const handleSelect = (id: string) => {
-    onSelect(id);
-    // showView(CONTACT_VIEW);
+    linkTo(`/settings/contacts/info?selected=${id}`);
   };
 
   useLayoutEffect(() => {
