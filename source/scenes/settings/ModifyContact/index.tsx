@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
+import React, { useEffect, ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
@@ -43,6 +43,12 @@ const ModifyContact: FC<IModifyContactView> = ({ route, navigation }) => {
     }),
   });
   const [address, setAddress] = useState('');
+
+  useEffect(() => {
+    if(selected && contacts[selected].address){
+      setAddress(contacts[selected].address);
+    }
+  }, [])
 
   const isValidAddress = useMemo(() => {
     if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
@@ -110,7 +116,7 @@ const ModifyContact: FC<IModifyContactView> = ({ route, navigation }) => {
           fullWidth
           value={address}
           variant={clsx(styles.input, { [styles.verfied]: isValidAddress })}
-          defaultValue={selected && contacts[selected].address}
+          defaultValue={address}
           onChange={handleAddressChange}
           inputRef={register}
         />
