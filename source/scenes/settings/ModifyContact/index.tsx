@@ -134,7 +134,7 @@ const ModifyContact: FC<IModifyContactView> = ({ route, navigation }) => {
         <Button
           type="button"
           variant={styles.cancel}
-          onClick={() => history.goBack()}
+          onClick={() => navigation.goBack()}
         >
           Cancel
         </Button>
