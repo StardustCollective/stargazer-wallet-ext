@@ -6,12 +6,18 @@ import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import { useController, useSettingsView } from 'hooks/index';
 import styles from './index.scss';
-import { WALLETS_VIEW } from '../routes';
+import navigationUtil from 'navigation/util';
+import { useLinkTo } from '@react-navigation/native';
 
-const ImportPhrase = () => {
+interface IImportPhrase {
+  navigation: any;
+}
+
+const ImportPhrase = ({ navigation }: IImportPhrase) => {
   const showView = useSettingsView();
   const controller = useController();
   const [loading, setLoading] = useState(false);
+  const linkTo = useLinkTo();
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -25,8 +31,10 @@ const ImportPhrase = () => {
     try {
       //await controller.wallet.importPhrase(data.phrase);
       await controller.wallet.createWallet(data.label, data.phrase);
-      showView(WALLETS_VIEW);
+      navigationUtil.popToTop(navigation);
+      linkTo('/settings/wallets');
     } catch (error) {
+      console.log(error);
       setLoading(false);
     }
   };

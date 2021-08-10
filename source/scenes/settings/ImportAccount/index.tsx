@@ -14,13 +14,14 @@ import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
 import { useController, useSettingsView } from 'hooks/index';
 
-import { MAIN_VIEW } from '../routes';
 import styles from './index.scss';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import LedgerIcon from 'assets/images/svg/ledger.svg';
+import navigationUtil from 'navigation/util';
 
 interface IImportAccountView {
-  network: KeyringNetwork;
+  route: any;
+  navigation: any;
 }
 
 interface HardwareWallet {
@@ -28,7 +29,7 @@ interface HardwareWallet {
   balance: number;
 }
 
-const ImportAccount: FC<IImportAccountView> = ({ network }) => {
+const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
 
   const alert = useAlert();
   const controller = useController();
@@ -43,6 +44,7 @@ const ImportAccount: FC<IImportAccountView> = ({ network }) => {
   const [hardwareWalletList, setHardwareWalletList] = useState<
     Array<HardwareWallet>
   >([]);
+  const network = route.params.network;
 
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
@@ -68,6 +70,10 @@ const ImportAccount: FC<IImportAccountView> = ({ network }) => {
         setAccountName(undefined);
       });
   };
+
+  const onFinishButtonPressed = () => {
+    navigationUtil.popToTop(navigation);
+  }
 
   const onSubmit = async (data: any) => {
     // setAccountName(undefined);
@@ -143,7 +149,7 @@ const ImportAccount: FC<IImportAccountView> = ({ network }) => {
             <Button
               type="button"
               variant={styles.button}
-              onClick={() => showView(MAIN_VIEW)}
+              onClick={onFinishButtonPressed}
             >
               Finish
             </Button>

@@ -7,9 +7,8 @@ import EthereumIcon from 'assets/images/svg/ethereum.svg';
 import ConstellationIcon from 'assets/images/svg/constellation.svg';
 
 import styles from './index.scss';
-import { useSettingsView } from 'hooks/index';
-import { IMPORT_ACCOUNT_VIEW, IMPORT_PHRASE_VIEW } from '../routes';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { useLinkTo } from '@react-navigation/native';
 
 // export enum ImportWalletType {
 //   Ethereum,
@@ -18,22 +17,24 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 // }
 
 interface IImportWalletView {
-  onChange: (network: KeyringNetwork) => void;
 }
 
-const ImportWallet: FC<IImportWalletView> = ({ onChange }) => {
-  const showView = useSettingsView();
+const ImportWallet: FC<IImportWalletView> = () => {
+  const linkTo = useLinkTo();
 
   const handleImport = (network: KeyringNetwork) => {
-    onChange(network);
-    showView(IMPORT_ACCOUNT_VIEW);
+    linkTo(`/settings/wallets/import/account?network=${network}`);
   };
+
+  const onImportPhraseView = () => {
+    linkTo('/settings/wallets/import/phrase');
+  }
 
   return (
     <div className={styles.wrapper}>
       <section
         className={styles.menu}
-        onClick={() => showView(IMPORT_PHRASE_VIEW)}
+        onClick={onImportPhraseView}
       >
         <Icon Component={StargazerIcon} />
         <span>Multi Chain Wallet</span>

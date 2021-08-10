@@ -14,6 +14,10 @@ const AddWallet = () => {
     linkTo('/settings/wallets/create');
   };
 
+  const onImportWalletClicked = () => {
+    linkTo('/settings/wallets/import');
+  }
+
   return (
     <div className={styles.wrapper}>
       <section
@@ -26,7 +30,7 @@ const AddWallet = () => {
       </section>
       <section
         className={styles.menu}
-        // onClick={() => showView(IMPORT_WALLET_VIEW)}
+        onClick={onImportWalletClicked}
       >
         <Icon Component={StargazerIcon} />
         <span>Import Wallet</span>
