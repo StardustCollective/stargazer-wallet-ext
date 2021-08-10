@@ -12,7 +12,7 @@ interface IPhraseView {
   id: string;
 }
 
-const PhraseView: FC<IPhraseView> = ({ id }) => {
+const Phrase: FC<IPhraseView> = ({ id }) => {
   const [checked, setChecked] = useState(false);
   const [phrase, setPhrase] = useState<string>(
     '**** ******* ****** ****** ****** ******** *** ***** ****** ***** *****'
@@ -73,4 +73,4 @@ const PhraseView: FC<IPhraseView> = ({ id }) => {
   );
 };
 
-export default PhraseView;
+export default Phrase;
