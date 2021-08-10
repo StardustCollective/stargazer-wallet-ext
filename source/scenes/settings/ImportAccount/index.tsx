@@ -28,7 +28,7 @@ interface HardwareWallet {
   balance: number;
 }
 
-const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
+const ImportAccount: FC<IImportAccountView> = ({ network }) => {
 
   const alert = useAlert();
   const controller = useController();
@@ -282,4 +282,4 @@ const ImportAccountView: FC<IImportAccountView> = ({ network }) => {
   );
 };
 
-export default ImportAccountView;
+export default ImportAccount;
