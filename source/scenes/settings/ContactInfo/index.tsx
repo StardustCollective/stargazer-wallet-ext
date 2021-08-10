@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CopyIcon from '@material-ui/icons/FileCopy';
 import QRCode from 'qrcode.react';
 import Avatar from '@devneser/gradient-avatar';
+import { useLinkTo } from '@react-navigation/native';
 
 import Button from 'components/Button';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
@@ -30,12 +31,17 @@ const ContactInfo: FC<IContactInfoView> = ({ route, navigation }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
+  const linkTo = useLinkTo();
   const selected = route.params.selected;
 
   const handleDelete = () => {
     controller.contacts.deleteContact(selected);
     navigation.goBack();
   };
+
+  const handleEdit = () => {
+    linkTo(`/setting/contacts/modify?selected=${selected}&type=edit`);
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -95,7 +101,7 @@ const ContactInfo: FC<IContactInfoView> = ({ route, navigation }) => {
         <Button
           type="button"
           variant={styles.edit}
-          // onClick={() => showView(EDIT_CONTACT_VIEW)}
+          onClick={handleEdit}
         >
           Edit
         </Button>

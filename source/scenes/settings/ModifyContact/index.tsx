@@ -22,12 +22,13 @@ interface IModifyContactView {
   route: any
 }
 
-const ModifyContact: FC<IModifyContactView> = ({ route , selected, navigation }) => {
+const ModifyContact: FC<IModifyContactView> = ({ route, navigation }) => {
   const controller = useController();
   const showView = useSettingsView();
   const history = useHistory();
   const alert = useAlert();
   const type = route.params.type;
+  const selected = route.params.selected;
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
