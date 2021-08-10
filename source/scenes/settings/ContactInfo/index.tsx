@@ -21,7 +21,7 @@ interface IContactInfoView {
   selected: string;
 }
 
-const ContactInfoView: FC<IContactInfoView> = ({ selected }) => {
+const ContactInfo: FC<IContactInfoView> = ({ selected }) => {
   const controller = useController();
   const showView = useSettingsView();
   const [codeOpened, setCodeOpened] = useState(false);
@@ -102,4 +102,4 @@ const ContactInfoView: FC<IContactInfoView> = ({ selected }) => {
   );
 };
 
-export default ContactInfoView;
+export default ContactInfo;
