@@ -39,6 +39,10 @@ const ImportPhrase = ({ navigation }: IImportPhrase) => {
     }
   };
 
+  const onCancelClick = () => {
+    navigation.goBack();
+  };
+
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
       <section>
@@ -68,7 +72,7 @@ const ImportPhrase = ({ navigation }: IImportPhrase) => {
           type="button"
           theme="secondary"
           variant={styles.cancel}
-          onClick={() => showView(WALLETS_VIEW)}
+          onClick={onCancelClick}
         >
           Cancel
         </Button>
