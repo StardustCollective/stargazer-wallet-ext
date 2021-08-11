@@ -4,7 +4,7 @@ import * as yup from 'yup';
 
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
-import { useController, useSettingsView } from 'hooks/index';
+import { useController } from 'hooks/index';
 import styles from './index.scss';
 import navigationUtil from 'navigation/util';
 import { useLinkTo } from '@react-navigation/native';
@@ -14,7 +14,6 @@ interface IImportPhrase {
 }
 
 const ImportPhrase = ({ navigation }: IImportPhrase) => {
-  const showView = useSettingsView();
   const controller = useController();
   const [loading, setLoading] = useState(false);
   const linkTo = useLinkTo();
