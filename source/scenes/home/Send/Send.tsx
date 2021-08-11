@@ -28,7 +28,6 @@ import { useLinkTo } from '@react-navigation/native';
 
 import styles from './Send.scss';
 import IAssetListState from 'state/assets/types';
-import Icon from 'components/Icon';
 import { BigNumber, ethers } from 'ethers';
 import { ITransactionInfo } from '../../../scripts/types';
 

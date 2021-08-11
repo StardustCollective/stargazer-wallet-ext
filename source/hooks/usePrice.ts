@@ -4,7 +4,7 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { formatNumber } from '../containers/auth/helpers';
+import { formatNumber } from 'scenes/home/helpers';
 
 export function useFiat(currencyName = true) {
   const { activeAsset }: IVaultState = useSelector(
