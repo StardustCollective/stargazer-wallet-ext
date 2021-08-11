@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { useController, useSettingsView } from 'hooks/index';
+import { useController } from 'hooks/index';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 import IVaultState from 'state/vault/types';
@@ -14,7 +14,6 @@ import { RootState } from 'state/store';
 import navigationUtil from 'navigation/util';
 
 import styles from './index.scss';
-import { MAIN_VIEW } from '../routes';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IRemoveWalletView {
@@ -24,7 +23,6 @@ interface IRemoveWalletView {
 
 const RemoveWallet: FC<IRemoveWalletView> = ({ route, navigation }) => {
   const controller = useController();
-  const showView = useSettingsView();
   const alert = useAlert();
   const history = useHistory();
   const id = route.params.id;

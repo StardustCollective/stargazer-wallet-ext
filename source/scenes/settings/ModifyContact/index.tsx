@@ -2,13 +2,11 @@ import React, { useEffect, ChangeEvent, FC, useCallback, useMemo, useState } fro
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import clsx from 'clsx';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
-
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
-import { useController, useSettingsView } from 'hooks/index';
+import { useController } from 'hooks/index';
 import IContactBookState from 'state/contacts/types';
 import { RootState } from 'state/store';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
@@ -24,8 +22,6 @@ interface IModifyContactView {
 
 const ModifyContact: FC<IModifyContactView> = ({ route, navigation }) => {
   const controller = useController();
-  const showView = useSettingsView();
-  const history = useHistory();
   const alert = useAlert();
   const type = route.params.type;
   const selected = route.params.selected;

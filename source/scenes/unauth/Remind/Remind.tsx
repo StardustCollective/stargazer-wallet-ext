@@ -21,7 +21,7 @@ const WelcomeWallet = () => {
       <Button type="button" variant={styles.ready} linkTo="/create/pass">
         I'm ready
       </Button>
-      <Link to="#">Already have a wallet? Click here</Link>
+      <Link>Already have a wallet? Click here</Link>
     </Layout>
   );
 };

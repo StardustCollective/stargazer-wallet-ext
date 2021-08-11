@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { useHistory } from 'react-router-dom';
 import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
 import AboutIcon from 'assets/images/svg/about.svg';
@@ -9,7 +8,7 @@ import LogOutIcon from 'assets/images/svg/logout.svg';
 import WalletIcon from 'assets/images/svg/wallet.svg';
 
 import Icon from 'components/Icon';
-import { useController, useSettingsView } from 'hooks/index';
+import { useController } from 'hooks/index';
 import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 

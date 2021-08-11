@@ -8,7 +8,7 @@ import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import TextInput from 'components/TextInput';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
-import { useController, useSettingsView } from 'hooks/index';
+import { useController } from 'hooks/index';
 import NavigationUtil from 'navigation/util';
 import { useLinkTo } from '@react-navigation/native';
 

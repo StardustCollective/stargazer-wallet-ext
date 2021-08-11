@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import clsx from 'clsx';
 import Button from 'components/Button';
 import CheckIcon from '@material-ui/icons/CheckCircle';
-import { useHistory } from 'react-router-dom';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
 import { useController } from 'hooks/index';
@@ -13,7 +12,6 @@ import Layout from '../../common/Layout';
 import styles from './index.scss';
 
 const ConfirmPhrase = () => {
-  const history = useHistory();
   const controller = useController();
   const linkTo = useLinkTo();
   const phrases = controller.wallet.onboardHelper.getSeedPhrase();

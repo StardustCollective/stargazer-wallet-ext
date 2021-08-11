@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import clsx from 'clsx';
-import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -11,7 +10,6 @@ import styles from './index.scss';
 import { useController } from 'hooks/index';
 
 const CreatePhrase: FC = () => {
-  const history = useHistory();
   const controller = useController();
   const linkTo = useLinkTo();
   const [passed, setPassed] = useState(false);
