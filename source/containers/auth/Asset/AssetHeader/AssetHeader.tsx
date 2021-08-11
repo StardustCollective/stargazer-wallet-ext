@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
-import LinkIcon from '@material-ui/icons/CallMade';
-import IconButton from '@material-ui/core/IconButton';
 
 import Tooltip from 'components/Tooltip';
 import { ellipsis } from 'containers/auth/helpers';
@@ -13,10 +11,9 @@ import { IAssetInfoState } from 'state/assets/types';
 interface IAssetHeader {
   asset: IAssetInfoState;
   address: string;
-  addressUrl: string;
 }
 
-const AssetHeader: FC<IAssetHeader> = ({ asset, address, addressUrl }) => {
+const AssetHeader: FC<IAssetHeader> = ({ asset, address }) => {
   const [isCopied, copyText] = useCopyClipboard();
 
   return (
@@ -30,7 +27,7 @@ const AssetHeader: FC<IAssetHeader> = ({ asset, address, addressUrl }) => {
           }}
         >
           <div className={styles.logoWrapper}>
-            <img src={asset.logo} alt={asset.label} height="36" />
+            <img src={asset.logo} alt={asset.label} height="17" />
           </div>
           <Tooltip
             title={isCopied ? 'Copied' : 'Copy Address '}
@@ -45,15 +42,6 @@ const AssetHeader: FC<IAssetHeader> = ({ asset, address, addressUrl }) => {
             </div>
           </Tooltip>
         </span>
-        <IconButton
-          className={styles.linkIcon}
-          onClick={(e) => {
-            e.stopPropagation();
-            window.open(addressUrl, '_blank');
-          }}
-        >
-          <LinkIcon />
-        </IconButton>
       </span>
     </div>
   );
