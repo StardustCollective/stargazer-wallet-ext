@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
-import AuthStack from 'navigation/stacks/Auth';
+import HomeStack from 'navigation/stacks/Home';
 import UnAuthStack from 'navigation/stacks/UnAuth';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
@@ -30,7 +30,7 @@ const App: FC = () => {
   return (
     <NavigationContainer linking={linking} onStateChange={onNavigationStateChange}>
           {migrateWallet || (wallets && Object.values(wallets).length > 0) || hasEncryptedVault ? (
-            <AuthStack />
+            <HomeStack />
           ) : (
             <UnAuthStack />
           )}
