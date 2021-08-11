@@ -8,15 +8,15 @@ import React from 'react';
 // Screens
 ///////////////////////////
 
-import Start from 'containers/unauth/Start';
-import Remind from 'containers/unauth/Remind';
-import CreatePass from 'containers/unauth/CreatePass';
+import Start from 'scenes/unauth/Start';
+import Remind from 'scenes/unauth/Remind';
+import CreatePass from 'scenes/unauth/CreatePass';
 import {
   CreatePhrase,
   ConfirmPhrase,
   RemindPhrase,
-} from 'containers/unauth/Phrase';
-import Import from 'containers/common/Import';
+} from 'scenes/unauth/Phrase';
+import Import from 'scenes/common/Import';
 
 ///////////////////////////
 // Screens Names

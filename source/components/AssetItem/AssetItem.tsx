@@ -1,7 +1,7 @@
 import React, { FC, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 
-import { formatNumber, formatPrice } from 'containers/auth/helpers';
+import { formatNumber, formatPrice } from 'scenes/auth/helpers';
 import { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
 import IVaultState, { IAssetState } from 'state/vault/types';

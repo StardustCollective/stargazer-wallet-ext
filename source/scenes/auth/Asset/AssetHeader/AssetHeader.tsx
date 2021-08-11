@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import clsx from 'clsx';
 
 import Tooltip from 'components/Tooltip';
-import { ellipsis } from 'containers/auth/helpers';
+import { ellipsis } from 'scenes/auth/helpers';
 import { useCopyClipboard } from 'hooks/index';
 import CircleIcon from 'components/CircleIcon';
 

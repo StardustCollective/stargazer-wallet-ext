@@ -2,7 +2,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import Layout from 'containers/common/Layout';
+import Layout from 'scenes/common/Layout';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 

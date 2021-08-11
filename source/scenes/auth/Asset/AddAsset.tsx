@@ -5,7 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddCircle from '@material-ui/icons/AddCircle';
 
 import TextInput from 'components/TextInput';
-import Header from 'containers/common/Header';
+import Header from 'scenes/common/Header';
 import { useController } from 'hooks/index';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';

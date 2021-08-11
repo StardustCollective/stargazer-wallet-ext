@@ -11,7 +11,7 @@ import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 // Helpers
 /////////////////////////
 
-import { ellipsis } from '../../../../containers/auth/helpers';
+import { ellipsis } from '../../../../scenes/auth/helpers';
 
 /////////////////////////
 // Components Imports

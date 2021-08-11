@@ -3,8 +3,9 @@ import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
 // import { useHistory } from 'react-router-dom';
-import Header from 'containers/common/Header';
-import Layout from 'containers/common/Layout';
+
+import Header from 'scenes/common/Header';
+import Layout from 'scenes/common/Layout';
 import Button from 'components/Button';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';

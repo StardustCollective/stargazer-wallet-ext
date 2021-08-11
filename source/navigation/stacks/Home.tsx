@@ -10,13 +10,13 @@ import { useController } from 'hooks/index';
 // Screens
 ///////////////////////////
 
-import Start from 'containers/auth/Start';
-import Home from 'containers/auth/Home';
-import Asset from 'containers/auth/Asset';
-import Send, { SendConfirm } from 'containers/auth/Send';
-import GasSettings from 'containers/auth/Send/GasSettings';
-import AddAsset from 'containers/auth/Asset/AddAsset';
-import Import from 'containers/common/Import';
+import Start from 'scenes/auth/Start';
+import Home from 'scenes/auth/Home';
+import Asset from 'scenes/auth/Asset';
+import Send, { SendConfirm } from 'scenes/auth/Send';
+import GasSettings from 'scenes/auth/Send/GasSettings';
+import AddAsset from 'scenes/auth/Asset/AddAsset';
+import Import from 'scenes/common/Import';
 
 ///////////////////////////
 // Screens Names

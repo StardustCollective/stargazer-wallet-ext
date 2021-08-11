@@ -26,19 +26,19 @@ interface ISettings {
 }
 
 const Settings: FC<ISettings> = ({ open, onClose }) => {
-  const location = useLocation();
-  const history = useHistory();
+  // const location = useLocation();
+  // const history = useHistory();
   const showView = useSettingsView();
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const transitions = useTransition(location, (locat) => locat.hash, {
-    initial: { opacity: 1 },
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    config: { duration: 300 },
-  });
+  // const transitions = useTransition(location, (locat) => locat.hash, {
+  //   initial: { opacity: 1 },
+  //   from: { opacity: 0 },
+  //   enter: { opacity: 1 },
+  //   leave: { opacity: 0 },
+  //   config: { duration: 300 },
+  // });
 
   const [showedId, setShowedId] = useState<string>('0');
   const [importNetwork, setImportNetwork] = useState<KeyringNetwork>();
@@ -177,7 +177,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
           showView(routes.MAIN_VIEW);
           break;
         default:
-          history.goBack();
+          // history.goBack();
       }
     } else {
       onClose();
@@ -204,7 +204,7 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
               </IconButton>
             )}
           </section>
-          {transitions.map(({ item, props, key }) => (
+          {/* {transitions.map(({ item, props, key }) => (
             <animated.section
               className={styles.content}
               style={{
@@ -214,10 +214,10 @@ const Settings: FC<ISettings> = ({ open, onClose }) => {
                 width: '100%',
               }}
               key={key}
-            >
-              {renderView(item.hash)}
-            </animated.section>
-          ))}
+            > */}
+              {renderView('none')}
+            {/* </animated.section> */}
+          {/* ))} */}
         </div>
       </div>
     </Portal>

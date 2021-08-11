@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import Header from 'containers/common/Header';
+import Header from 'scenes/common/Header';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import { useController } from 'hooks/index';

@@ -85,7 +85,7 @@ module.exports = {
       assets: path.resolve(__dirname, 'source/assets'),
       components: path.resolve(__dirname, 'source/components'),
       scripts: path.resolve(__dirname, 'source/scripts'),
-      containers: path.resolve(__dirname, 'source/containers'),
+      scenes: path.resolve(__dirname, 'source/scenes'),
       pages: path.resolve(__dirname, 'source/pages'),
       navigation: path.resolve(__dirname, 'source/navigation'),
       state: path.resolve(__dirname, 'source/state'),

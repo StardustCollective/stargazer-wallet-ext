@@ -1,16 +1,15 @@
 import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Link from 'components/Link';
-import Settings from 'containers/auth/Settings';
 import { useController, useSettingsView } from 'hooks/index';
 import LogoImage from 'assets/images/logo-s.svg';
+import { useLinkTo } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import styles from './Header.scss';
-import { MAIN_VIEW } from 'containers/auth/Settings/views/routes';
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
@@ -21,7 +20,8 @@ interface IHeader {
 }
 
 const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
-  const history = useHistory();
+  const toLink = useLinkTo();
+  const navigation = useNavigation();
   const controller = useController();
   const showView = useSettingsView();
   const isUnlocked = controller.wallet.isUnlocked();
@@ -36,15 +36,14 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const handleBack = () => {
     showSettings(false);
     if (backLink === '#') {
-      history.goBack();
+      navigation.goBack();
     } else {
-      history.push(backLink);
+      toLink(backLink);
     }
   };
 
   const handleCloseSettings = () => {
     showSettings(false);
-    showView(MAIN_VIEW);
   };
 
   return (
@@ -76,7 +75,6 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
       ) : (
         <i style={{ width: '70px' }} />
       )}
-      <Settings open={showed && isUnlocked} onClose={handleCloseSettings} />
     </div>
   );
 };

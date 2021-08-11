@@ -12,7 +12,7 @@ export { default as PhraseView } from './PhraseView';
 export { default as RemoveWalletView } from './RemoveWalletView';
 export { default as PrivateKeyView } from './PrivateKeyView';
 export { default as NewAccountView } from './NewAccountView';
-export { default as AboutView } from './AboutView';
+export { default as AboutView } from '../AboutView';
 export { default as ContactsView } from './ContactsView';
 export { default as ContactView } from './ContactInfoView';
 export { default as ModifyContactView } from './ModifyContactView';

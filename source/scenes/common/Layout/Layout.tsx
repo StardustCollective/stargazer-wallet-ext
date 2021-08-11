@@ -1,5 +1,5 @@
 import React, { ReactNode, FC } from 'react';
-import Header from 'containers/common/Header';
+import Header from 'scenes/common/Header';
 
 import styles from './Layout.scss';
 

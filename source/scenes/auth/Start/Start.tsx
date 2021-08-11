@@ -8,7 +8,6 @@ import LogoImage from 'assets/images/logo.svg';
 
 import { schema } from './consts';
 import styles from './Start.scss';
-import { useLocation } from 'react-router';
 import { IDAppState } from 'state/dapp/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
@@ -23,7 +22,6 @@ const Starter = () => {
   const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
   const current = controller.dapp.getCurrent();
   const origin = current && current.origin;
-  const location = useLocation();
   const [isInvalid, setInvalid] = useState(false);
   const errorClass = clsx(styles.error, {
     [styles.confirm]: location.pathname.includes('confirm.html'),
@@ -75,11 +73,11 @@ const Starter = () => {
           Unlock
         </Button>
       </form>
-      {!location.pathname.includes('confirm.html') && (
+      {/* {!location.pathname.includes('confirm.html') && (
         <Link color="secondary" to="/import">
           Import from recovery seed phrase
         </Link>
-      )}
+      )} */}
     </div>
   );
 };
