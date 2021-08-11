@@ -2,8 +2,6 @@ import React, { FC, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Avatar from '@devneser/gradient-avatar';
 
-import Button from 'components/Button';
-import { useSettingsView } from 'hooks/index';
 import { RootState } from 'state/store';
 import IContactBookState, { IContactState } from 'state/contacts/types';
 import { useLinkTo } from '@react-navigation/native';
@@ -12,11 +10,10 @@ import addHeader from 'navigation/headers/add';
 import styles from './index.scss';
 
 interface IContactsView {
-  onSelect: (id: string) => void;
   navigation: any;
 }
 
-const Contacts: FC<IContactsView> = ({ onSelect, navigation }) => {
+const Contacts: FC<IContactsView> = ({ navigation }) => {
   const contacts: IContactBookState = useSelector(
     (state: RootState) => state.contacts
   );
@@ -25,7 +22,6 @@ const Contacts: FC<IContactsView> = ({ onSelect, navigation }) => {
   //   (state: RootState) => state.vault
   // );
   // const controller = useController();
-  const showView = useSettingsView();
   // const history = useHistory();
 
   const handleSelect = (id: string) => {

@@ -9,13 +9,11 @@ import React, {
 } from 'react';
 import clsx from 'clsx';
 import * as yup from 'yup';
-import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
 import Slider from '@material-ui/core/Slider';
 
-import Header from 'containers/common/Header';
 import Contacts from '../Contacts';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
@@ -41,7 +39,6 @@ interface IWalletSend {
 }
 
 const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
-  const history = useHistory();
   const getFiatAmount = useFiat();
   const controller = useController();
   const linkTo = useLinkTo();

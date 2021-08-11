@@ -12,10 +12,9 @@ import Button from 'components/Button';
 import Select from 'components/Select';
 import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
-import { useController, useSettingsView } from 'hooks/index';
+import { useController } from 'hooks/index';
 
 import styles from './index.scss';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import LedgerIcon from 'assets/images/svg/ledger.svg';
 import navigationUtil from 'navigation/util';
 
@@ -33,7 +32,6 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
 
   const alert = useAlert();
   const controller = useController();
-  const showView = useSettingsView();
   const [importType, setImportType] = useState('priv');
   const [loading, setLoading] = useState(false);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
@@ -274,7 +272,7 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
               type="button"
               theme="secondary"
               variant={clsx(styles.button, styles.cancel)}
-              onClick={() => showView(MAIN_VIEW)}
+              onClick={onFinishButtonPressed}
             >
               Cancel
             </Button>

@@ -4,7 +4,6 @@ import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Link from 'components/Link';
-import { useController, useSettingsView } from 'hooks/index';
 import LogoImage from 'assets/images/logo-s.svg';
 import { useLinkTo } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -22,9 +21,6 @@ interface IHeader {
 const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const toLink = useLinkTo();
   const navigation = useNavigation();
-  const controller = useController();
-  const showView = useSettingsView();
-  const isUnlocked = controller.wallet.isUnlocked();
   const [showed, showSettings] = useState(false);
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -51,7 +47,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
       {showed ? (
         <i style={{ width: '83px' }}></i>
       ) : showLogo ? (
-        <Link to="/app.html" onClick={handleCloseSettings}>
+        <Link onClick={handleCloseSettings}>
           <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
         </Link>
       ) : (

@@ -9,8 +9,7 @@ import { useLinkTo } from '@react-navigation/native';
 
 import Button from 'components/Button';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
-import { useController, useCopyClipboard, useSettingsView } from 'hooks/index';
-import { CONTACTS_VIEW, EDIT_CONTACT_VIEW } from '../routes';
+import { useController, useCopyClipboard } from 'hooks/index';
 import Tooltip from 'components/Tooltip';
 import { RootState } from 'state/store';
 import IContactBookState from 'state/contacts/types';
@@ -25,7 +24,6 @@ interface IContactInfoView {
 
 const ContactInfo: FC<IContactInfoView> = ({ route, navigation }) => {
   const controller = useController();
-  const showView = useSettingsView();
   const [codeOpened, setCodeOpened] = useState(false);
   const [isCopied, copyText] = useCopyClipboard();
   const contacts: IContactBookState = useSelector(

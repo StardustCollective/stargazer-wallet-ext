@@ -34,8 +34,6 @@ const defaultHeader = ({
   navigation,
 }: IDefaultHeader) => {
 
-  const index = navigation.dangerouslyGetState().index
-
   const onBackButtonClicked = () => {
     navigation.goBack();
   }

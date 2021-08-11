@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
-import Link from 'components/Link';
 import { useForm } from 'react-hook-form';
 import { useController } from 'hooks/index';
 import LogoImage from 'assets/images/logo.svg';

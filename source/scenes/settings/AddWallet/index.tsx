@@ -4,7 +4,6 @@ import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import Icon from 'components/Icon';
 import StargazerIcon from 'assets/images/logo-s.svg';
 import styles from './index.scss';
-import { useSettingsView } from 'hooks/index';
 import { useLinkTo } from '@react-navigation/native';
 
 const AddWallet = () => {

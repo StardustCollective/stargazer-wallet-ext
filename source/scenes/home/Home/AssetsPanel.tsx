@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
@@ -19,7 +18,6 @@ import IAssetListState from '../../../state/assets/types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const AssetsPanel: FC = () => {
-  const history = useHistory();
   const controller = useController();
   const linkTo = useLinkTo();
   const [isShowed, setShowed] = useState<boolean>(false);
