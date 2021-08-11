@@ -6,6 +6,7 @@ import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
 // import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import { v4 as uuid } from 'uuid';
+import { useLinkTo } from '@react-navigation/native';
 
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
@@ -20,6 +21,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 const AssetsPanel: FC = () => {
   const history = useHistory();
   const controller = useController();
+  const linkTo = useLinkTo();
   const [isShowed, setShowed] = useState<boolean>(false);
   const [scrollArea, setScrollArea] = useState<HTMLElement>();
   const { activeWallet, activeNetwork }: IVaultState = useSelector(
@@ -42,7 +44,7 @@ const AssetsPanel: FC = () => {
 
   const handleSelectAsset = async (asset: IAssetState) => {
     await controller.wallet.account.updateAccountActiveAsset(asset);
-    history.push('/asset');
+    linkTo('/asset');
   };
 
   // const handleAddAsset = () => {
