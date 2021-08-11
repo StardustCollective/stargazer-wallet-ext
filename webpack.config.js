@@ -85,13 +85,14 @@ module.exports = {
       assets: path.resolve(__dirname, 'source/assets'),
       components: path.resolve(__dirname, 'source/components'),
       scripts: path.resolve(__dirname, 'source/scripts'),
-      containers: path.resolve(__dirname, 'source/containers'),
+      scenes: path.resolve(__dirname, 'source/scenes'),
       pages: path.resolve(__dirname, 'source/pages'),
-      routers: path.resolve(__dirname, 'source/routers'),
+      navigation: path.resolve(__dirname, 'source/navigation'),
       state: path.resolve(__dirname, 'source/state'),
       constants: path.resolve(__dirname, 'source/constants'),
       services: path.resolve(__dirname, 'source/services'),
       hooks: path.resolve(__dirname, 'source/hooks'),
+      'react-native$': 'react-native-web',
     },
   },
 
@@ -116,7 +117,6 @@ module.exports = {
       {
         test: /\.(jpg|png|svg)x?$/,
         loader: 'file-loader',
-        exclude: /node_modules/,
       },
       {
         test: /\.(sa|sc|c)ss$/,

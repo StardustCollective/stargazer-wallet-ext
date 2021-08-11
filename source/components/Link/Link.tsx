@@ -1,6 +1,8 @@
 import React, { ReactNode, FC } from 'react';
 import clsx from 'clsx';
-import { Link as RouterLink } from 'react-router-dom';
+// import { Link as RouterLink } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+import  MULink from '@material-ui/core/Link';
 
 import styles from './Link.scss';
 
@@ -9,11 +11,9 @@ interface ILink {
   color?: 'primary' | 'secondary';
   noUnderline?: boolean;
   onClick?: () => void;
-  to: string;
 }
 
 const Link: FC<ILink> = ({
-  to,
   color = 'primary',
   children,
   noUnderline = false,
@@ -24,9 +24,11 @@ const Link: FC<ILink> = ({
   });
 
   return (
-    <RouterLink className={classes} to={to} onClick={onClick}>
-      {children}
-    </RouterLink>
+    <Typography className={classes}>
+      <MULink onClick={onClick}>
+        {children}
+      </MULink>
+    </Typography>
   );
 };
 

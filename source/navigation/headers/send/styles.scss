@@ -1,0 +1,16 @@
+@import '~assets/styles/variables';
+
+.headerTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    font-family: $quicksand;
+    color: $white;
+    font-weight: $medium;
+    font-size: 24px;
+    margin-right: 8px;
+  }
+}

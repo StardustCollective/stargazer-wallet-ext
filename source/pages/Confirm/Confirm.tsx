@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 
-import Container from 'containers/common/Container';
+import Container from 'scenes/common/Container';
 import { RootState } from 'state/store';
-import WalletConnect from 'containers/confirm/WalletConnect';
-import SignatureRequest from 'containers/confirm/SignatureRequest';
+import WalletConnect from 'scenes/confirm/WalletConnect';
+import SignatureRequest from 'scenes/confirm/SignatureRequest';
 
 import 'assets/styles/global.scss';
 import { useController } from 'hooks/index';
-import Starter from 'containers/auth/Start';
+import Starter from 'scenes/home/Start';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import IVaultState from '../../state/vault/types';
 

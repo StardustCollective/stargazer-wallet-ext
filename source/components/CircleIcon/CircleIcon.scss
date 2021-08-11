@@ -1,0 +1,12 @@
+@import '~assets/styles/variables';
+
+.logoWrapper {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  border: 2px solid $gray-light;
+  background-color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

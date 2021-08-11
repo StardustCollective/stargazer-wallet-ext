@@ -1,0 +1,21 @@
+///////////////////////////
+// Imports
+///////////////////////////
+
+import { StackActions } from '@react-navigation/native';
+
+///////////////////////////
+// Utils Functions
+///////////////////////////
+
+const popToTop = (navigation: any) => {
+  navigation.dispatch(StackActions.popToTop());
+};
+
+///////////////////////////
+// Exports
+///////////////////////////
+
+export default { 
+  popToTop
+};

@@ -1,0 +1,311 @@
+@import '~assets/styles/variables';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  width: 100%;
+  height: 100%;
+
+  .mask {
+    transition: all 0.3s;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background: $purple;
+    opacity: 1;
+    backdrop-filter: blur(0px);
+
+    .loader {
+      width: 60px;
+      height: 60px;
+      transition: all 300ms;
+      opacity: 1;
+
+      svg {
+        color: $white;
+      }
+    }
+
+    &.hide {
+      opacity: 0;
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+
+      & .loader {
+        opacity: 0;
+      }
+    }
+  }
+
+  section.account {
+    height: 60px;
+    width: 100%;
+    border-bottom: 1px solid $gray-100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: $gray-dark;
+    position: relative;
+
+    & > .status {
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      left: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      align-items: center;
+      color: $gray-100;
+
+      svg {
+        color: $gray-100;
+        margin-right: 6px;
+      }
+
+      &.connected {
+        svg {
+          color: $purple;
+        }
+      }
+    }
+
+    & > small {
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+      letter-spacing: 0.03em;
+      line-height: 24px;
+      color: $gray;
+      position: relative;
+
+      .copy {
+        position: absolute;
+        right: -38px;
+        bottom: 1px;
+        width: 24px;
+        height: 24px;
+
+        .icon {
+          height: 18px;
+          width: auto;
+        }
+      }
+    }
+  }
+
+  section.center {
+    width: 100%;
+    height: 132px;
+    border-bottom: 1px solid $gray-100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+
+    .refresh {
+      position: absolute;
+      width: 32px;
+      right: 30px;
+      bottom: 20px;
+      height: 32px;
+      color: $gray-100;
+    }
+
+    & > span {
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 36px;
+      color: $gray-dark;
+    }
+
+    & > h3 {
+      font-weight: 500;
+      font-size: 33px;
+      line-height: 48px;
+      margin: 0px;
+      color: $gray-dark;
+
+      small {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 24px;
+      }
+    }
+
+    & > small {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: $gray-100;
+      margin-top: 8px;
+    }
+
+    .actions {
+      display: flex;
+      width: 300px;
+      flex-direction: row;
+      justify-content: space-between;
+      position: relative;
+
+      .button {
+        margin-bottom: 36px;
+        width: 144px;
+        margin-top: 24px;
+      }
+
+      .buyDag {
+        position: absolute;
+        bottom: 0px;
+        left: 102px;
+        height: 26px !important;
+        font-size: 12px;
+        padding: 0px 20px;
+        border: 1px solid $purple;
+        background: $white;
+        color: $purple;
+
+        &:hover {
+          border-color: $green;
+          background: $green;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  .activity {
+    height: 336px;
+    background: $gray-light;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    position: absolute;
+    bottom: -2px;
+    overflow: auto;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    transition: all 0.3s;
+    z-index: 2;
+
+    .spinner {
+      svg {
+        color: $white;
+      }
+    }
+
+    &.expanded {
+      height: 528px;
+      z-index: 3;
+    }
+
+    .stargazer {
+      user-select: none;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      opacity: 0.6;
+      position: sticky;
+      bottom: 0;
+    }
+
+    .noTxComment {
+      padding: 12px 36px;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 18px;
+      color: $gray-dark;
+    }
+
+    .heading {
+      box-sizing: border-box;
+      display: flex;
+      background: $gray-light;
+      border-bottom: 1px solid $gray-100;
+      position: sticky;
+      top: 0;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 60px;
+      width: 100%;
+      color: $gray-dark;
+      z-index: 2;
+
+      .addAssets {
+        width: 40px;
+        font-size: 24px;
+        height: 40px;
+        position: absolute;
+        left: 34px;
+        background: $gray-light-100;
+        color: $gray-dark;
+
+        svg {
+          width: 26px;
+          height: 26px;
+        }
+      }
+
+      .buydag {
+        position: absolute;
+        left: 20px;
+        box-shadow: none !important;
+
+        .buydagIcon {
+          width: 48px;
+          height: 48px;
+          background: url('../../../assets/images/svg/buy-dag-purple.svg');
+          transition: all 0.3s;
+
+          &:hover {
+            background: url('../../../assets/images/svg/buy-dag-green.svg');
+          }
+        }
+      }
+
+      .goTop {
+        width: 26px;
+        font-size: 16px;
+        height: 26px;
+        position: absolute;
+        right: 36px;
+      }
+    }
+
+    ul {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      list-style: none;
+      position: relative;
+      z-index: 1;
+      flex-grow: 4;
+    }
+  }
+}
+
+:global([data-scrollbar='true']) {
+  width: 100%;
+}
