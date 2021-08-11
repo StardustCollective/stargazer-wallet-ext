@@ -1,4 +1,12 @@
-import React, { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  ChangeEvent,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  FC,
+} from 'react';
 import clsx from 'clsx';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
@@ -26,11 +34,13 @@ import Icon from 'components/Icon';
 import { BigNumber, ethers } from 'ethers';
 import { ITransactionInfo } from '../../../scripts/types';
 
+import sendHeader from 'navigation/headers/send';
 interface IWalletSend {
   initAddress?: string;
+  navigation: any
 }
 
-const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
+const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const history = useHistory();
   const getFiatAmount = useFiat();
   const controller = useController();
@@ -45,6 +55,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   // const account = accounts[activeAccountId];
   const assetInfo = assets[activeAsset.id];
   const tempTx = controller.wallet.account.getTempTx();
+
+  // Sets the header for the home screen.
+  useLayoutEffect(() => {
+    navigation.setOptions(sendHeader({ navigation, asset: assetInfo }));
+  }, []);
 
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
@@ -267,17 +282,12 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   return (
     <div className={styles.wrapper}>
-      <Header backLink="/asset" />
       <Contacts
         open={modalOpened}
         onClose={() => setModalOpen(false)}
         onChange={handleSelectContact}
       />
       <form onSubmit={handleSubmit(onSubmit)} className={styles.bodywrapper}>
-        <section className={styles.subheading}>
-          {assetInfo.logo && <Icon Component={assetInfo.logo} />}
-          {`Send ${assetInfo.symbol}`}
-        </section>
         <section className={styles.balance}>
           <div>
             Balance: <span>{formatNumber(Number(balances[activeAsset.id]), 4, 4)}</span>{' '}

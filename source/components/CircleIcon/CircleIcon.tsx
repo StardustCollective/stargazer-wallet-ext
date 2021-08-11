@@ -11,7 +11,7 @@ const CircleIcon: FC<ICircleIcon> = ({ logo, label }) => {
 
   return (
     <div className={styles.logoWrapper}>
-      <img src={logo} alt={label} height="17" />
+      <img src={logo} alt={label} height="23" />
     </div>
   );
 
