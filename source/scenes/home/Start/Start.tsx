@@ -11,6 +11,7 @@ import { IDAppState } from 'state/dapp/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 import { browser } from 'webextension-polyfill-ts';
+import Link from 'components/Link';
 import clsx from 'clsx';
 
 const Starter = () => {
@@ -72,11 +73,11 @@ const Starter = () => {
           Unlock
         </Button>
       </form>
-      {/* {!location.pathname.includes('confirm.html') && (
-        <Link color="secondary" to="/import">
+      {!location.pathname.includes('confirm.html') && (
+        <Link color="secondary">
           Import from recovery seed phrase
         </Link>
-      )} */}
+      )}
     </div>
   );
 };
