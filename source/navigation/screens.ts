@@ -4,6 +4,7 @@ export default {
   ////////////////////////////
 
   unAuthorized: {
+    root: 'unauth-root',
     home: 'unauth-home',
     import: 'unauth-import',
     remind: 'unauth-remind',
@@ -18,6 +19,7 @@ export default {
   ////////////////////////////
 
   authorized: {
+    root: 'auth-root',
     start: 'auth-start',
     home: 'auth-home',
     addAsset: 'auth-addAsset',

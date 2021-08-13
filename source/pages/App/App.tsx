@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
-import HomeStack from 'navigation/stacks/Home';
-import UnAuthStack from 'navigation/stacks/UnAuth';
+import RootStack from 'navigation/stacks/Root';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import linking from 'navigation/linking';
@@ -13,10 +12,6 @@ import 'assets/styles/global.scss';
 const App: FC = () => {
 
   const controller = useController();
-
-  const { wallets, hasEncryptedVault, migrateWallet }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
 
   const onNavigationStateChange = (state: any) => {
     const routes = state.routes;
@@ -29,11 +24,7 @@ const App: FC = () => {
 
   return (
     <NavigationContainer linking={linking} onStateChange={onNavigationStateChange}>
-          {migrateWallet || (wallets && Object.values(wallets).length > 0) || hasEncryptedVault ? (
-            <HomeStack />
-          ) : (
-            <UnAuthStack />
-          )}
+      <RootStack />
     </NavigationContainer>
   );
 };
