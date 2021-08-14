@@ -1,12 +1,12 @@
 @import '~assets/styles/variables';
 
 .wrapper {
-  width: 100%;
+  display:flex;
+  flex: 1;
+  flex-direction: column;
   overflow: auto;
   padding: 0 24px;
-  height: calc(100% - 132px);
   box-sizing: border-box;
-  position: relative;
 
   label {
     font-size: 10px;
@@ -60,15 +60,9 @@
   }
 
   .actions {
-    position: absolute;
-    bottom: 24px;
-    padding: 0 12px;
-    width: calc(100% - 48px);
     display: flex;
-    flex-direction: row;
-    box-sizing: border-box;
-    align-items: center;
-    justify-content: space-between;
+    flex: 1;
+    align-items: flex-end;
 
     .cancel,
     .cancel:hover {
@@ -76,7 +70,16 @@
       color: $gray-dark;
     }
 
+    .buttons{
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      flex-direction: row;
+    }
+
     .button {
+      margin-right: 10px;
+      margin-bottom: 20px;
       width: 144px;
     }
   }

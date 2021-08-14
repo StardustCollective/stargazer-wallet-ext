@@ -29,7 +29,7 @@ const AssetItem: FC<IAssetItem> = ({
       <li className={styles.assetItem} onClick={() => itemClicked()}>
         <div>
           <div className={styles.iconWrapper}>
-            <img src={assetInfo.logo}></img>
+            <img src={'/'+assetInfo.logo}></img>
           </div>
           <span>
             {assetInfo.label}

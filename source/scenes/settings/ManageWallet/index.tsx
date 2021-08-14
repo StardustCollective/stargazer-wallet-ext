@@ -100,6 +100,7 @@ const ManageWallet: FC<IManageWalletView> = ({route, navigation}) => {
         <ArrowIcon />
       </section>
       <section className={styles.actions}>
+        <div className={styles.buttons}>
         <Button
           type="button"
           variant={clsx(styles.button, styles.cancel)}
@@ -110,6 +111,8 @@ const ManageWallet: FC<IManageWalletView> = ({route, navigation}) => {
         <Button type="submit" variant={clsx(styles.button, styles.save)}>
           Save
         </Button>
+        </div>
+
       </section>
     </form>
   );

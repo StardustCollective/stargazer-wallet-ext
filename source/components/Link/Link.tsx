@@ -24,8 +24,8 @@ const Link: FC<ILink> = ({
   });
 
   return (
-    <Typography className={classes}>
-      <MULink onClick={onClick}>
+    <Typography>
+      <MULink className={classes} onClick={onClick}>
         {children}
       </MULink>
     </Typography>

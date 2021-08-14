@@ -1,5 +1,4 @@
 import React, { ReactNode, FC } from 'react';
-import Header from 'scenes/common/Header';
 
 import styles from './Layout.scss';
 
@@ -12,13 +11,10 @@ interface ILayout {
 
 const Layout: FC<ILayout> = ({
   title,
-  linkTo = '#',
-  showLogo = false,
   children,
 }) => {
   return (
     <>
-      <Header backLink={linkTo} showLogo={showLogo} />
       <div className={styles.layout}>
         <section className={styles.heading}>
           <span className="heading-1">{title}</span>

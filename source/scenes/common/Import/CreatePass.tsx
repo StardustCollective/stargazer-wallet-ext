@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import { useForm } from 'react-hook-form';
 import { useController } from 'hooks/index';
-
+import { useNavigation } from '@react-navigation/native';
+import navigationUtil from 'navigation/util';
+import screens from 'navigation/screens';
 import Layout from '../../common/Layout';
-
 import * as consts from './consts';
 import styles from './CreatePass.scss';
 
 const CreatePass = () => {
-  const history = useHistory();
+  const navigation = useNavigation();
   const controller = useController();
   const [passed, setPassed] = useState(false);
   const { handleSubmit, register, errors } = useForm({
@@ -27,7 +27,7 @@ const CreatePass = () => {
     if (passed) {
       const phrase = controller.wallet.onboardHelper.getSeedPhrase();
       controller.wallet.createWallet('Main Wallet', phrase, true);
-      history.push('/home');
+      navigationUtil.replace( navigation, screens.authorized.root);
     }
   };
 

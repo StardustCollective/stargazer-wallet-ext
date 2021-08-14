@@ -5,15 +5,17 @@ import CheckIcon from '@material-ui/icons/CheckCircle';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
 import { useController } from 'hooks/index';
-import { useLinkTo } from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
+import navigationUtil from 'navigation/util';
+import screens from 'navigation/screens';
 
 import Layout from '../../common/Layout';
 
 import styles from './index.scss';
 
 const ConfirmPhrase = () => {
+  const navigation = useNavigation();
   const controller = useController();
-  const linkTo = useLinkTo();
   const phrases = controller.wallet.onboardHelper.getSeedPhrase();
   const [orgList] = useState<Array<string>>(
     shuffle((phrases || '').split(' '))
@@ -61,7 +63,7 @@ const ConfirmPhrase = () => {
     } else {
       await controller.wallet.createWallet('Main Wallet', phrases, true);
       controller.wallet.onboardHelper.reset();
-      linkTo('/app.html');
+      navigationUtil.replace( navigation, screens.authorized.root);
     }
   };
 

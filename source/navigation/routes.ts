@@ -13,6 +13,7 @@ export default {
   //Common
   [screens.common.import]: '/import',
   // UnAuth Stack
+  [screens.unAuthorized.root]: '/unAuthRoot',
   [screens.unAuthorized.home]: '/homeUnauth',
   [screens.unAuthorized.remind]: '/remind',
   [screens.unAuthorized.createPass]: '/create/pass',
@@ -20,6 +21,7 @@ export default {
   [screens.unAuthorized.createPhraseRemind]: '/create/phrase/remind',
   [screens.unAuthorized.createPhraseCheck]: '/create/phrase/check',
   // Auth Stack
+  [screens.authorized.root]: '/authRoot',
   [screens.authorized.home]: '/home',
   [screens.authorized.addAsset]: '/asset/add',
   [screens.authorized.asset]: '/asset',

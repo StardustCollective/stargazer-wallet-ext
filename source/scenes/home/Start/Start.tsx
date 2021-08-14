@@ -11,9 +11,15 @@ import { IDAppState } from 'state/dapp/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 import { browser } from 'webextension-polyfill-ts';
+import { useLinkTo, useNavigation } from '@react-navigation/native';
+import navigationUtil from 'navigation/util';
+import screens from 'navigation/screens';
+import Link from 'components/Link';
 import clsx from 'clsx';
 
 const Starter = () => {
+  const linkTo = useLinkTo();
+  const navigation = useNavigation();
   const controller = useController();
   const { handleSubmit, register, errors } = useForm({
     validationSchema: schema,
@@ -36,12 +42,18 @@ const Starter = () => {
         );
         window.close();
       }
+      navigationUtil.replace( navigation, screens.authorized.root);
       setInvalid(!res);
+
     })
       .catch(() => {
         setInvalid(true);
       });
   };
+
+  const onImportClicked = () => {
+    linkTo('/import')
+  }
 
   return (
     <div className={styles.home}>
@@ -72,11 +84,11 @@ const Starter = () => {
           Unlock
         </Button>
       </form>
-      {/* {!location.pathname.includes('confirm.html') && (
-        <Link color="secondary" to="/import">
+      {!location.pathname.includes('confirm.html') && (
+        <Link color="secondary" onClick={onImportClicked}>
           Import from recovery seed phrase
         </Link>
-      )} */}
+      )}
     </div>
   );
 };
