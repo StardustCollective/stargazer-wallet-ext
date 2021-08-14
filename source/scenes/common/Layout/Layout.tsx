@@ -1,5 +1,4 @@
 import React, { ReactNode, FC } from 'react';
-import Header from 'scenes/common/Header';
 
 import styles from './Layout.scss';
 
@@ -12,8 +11,6 @@ interface ILayout {
 
 const Layout: FC<ILayout> = ({
   title,
-  linkTo = '#',
-  showLogo = false,
   children,
 }) => {
   return (

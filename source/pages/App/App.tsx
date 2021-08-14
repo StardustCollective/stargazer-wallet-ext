@@ -1,9 +1,6 @@
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import RootStack from 'navigation/stacks/Root';
-import { RootState } from 'state/store';
-import IVaultState from 'state/vault/types';
 import linking from 'navigation/linking';
 import { useController } from 'hooks/index';
 
