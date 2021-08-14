@@ -30,12 +30,14 @@ import screens from '../screens';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { useController } from 'hooks/index';
+import defaultHeader from 'navigation/headers/default'
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
 const Stack = createStackNavigator();
+const DEFAULT_TITLE = 'Stargazer';
 
 ///////////////////////////
 // Stack Component
@@ -53,16 +55,19 @@ const UnAuth = () => {
 
   return (
     <Stack.Navigator
-      screenOptions={{ animationEnabled: true, headerShown: false }} 
+    screenOptions={(navigation) => ({ 
+      ...defaultHeader(navigation),
+      animationEnabled: true 
+    })}
       initialRouteName={initialRoute}
     >
-      <Stack.Screen name={screens.unAuthorized.home} component={Start} />
-      <Stack.Screen name={screens.common.import} component={Import} />
-      <Stack.Screen name={screens.unAuthorized.remind} component={Remind} />
-      <Stack.Screen name={screens.unAuthorized.createPass} component={CreatePass} />
-      <Stack.Screen name={screens.unAuthorized.createPhraseGenerated} component={CreatePhrase} />
-      <Stack.Screen name={screens.unAuthorized.createPhraseRemind} component={RemindPhrase} />
-      <Stack.Screen name={screens.unAuthorized.createPhraseCheck} component={ConfirmPhrase} />
+      <Stack.Screen options={{ headerShown: false, title: DEFAULT_TITLE }} name={screens.unAuthorized.home} component={Start} />
+      <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.common.import} component={Import} />
+      <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.unAuthorized.remind} component={Remind} />
+      <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.unAuthorized.createPass} component={CreatePass} />
+      <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.unAuthorized.createPhraseGenerated} component={CreatePhrase} />
+      <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.unAuthorized.createPhraseRemind} component={RemindPhrase} />
+      <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.unAuthorized.createPhraseCheck} component={ConfirmPhrase} />
     </Stack.Navigator>
   );
 };
