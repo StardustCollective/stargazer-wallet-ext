@@ -43,7 +43,7 @@ const Home = ({ navigation, route }: IHome) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       ...homeHeader({ navigation, route, hasMainAccount }),
-      title: activeWallet.label,
+      title: activeWallet ? activeWallet.label : "",
     });
   }, [activeWallet]);
 
