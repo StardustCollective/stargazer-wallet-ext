@@ -108,13 +108,12 @@
 
   .confirm {
     display:flex;
+    flex: 1;
     width: 100%;
-    height: 200px;
     background: $gray-light;
     box-sizing: border-box;
     flex-direction: column;
     padding: 0;
-
     & > .row {
       border-bottom: 1px solid $white;
       flex-direction: row;
@@ -136,6 +135,7 @@
       }
       .button {
         margin: 5px;
+        margin-bottom: 20px;
         width: 144px;
       }
     }
