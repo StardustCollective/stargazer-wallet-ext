@@ -172,7 +172,7 @@ module.exports = {
     // delete previous build files
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [
-        path.join(process.cwd(), `extension/${targetBrowser}`),
+        path.join(process.cwd(), `../../extension/${targetBrowser}`),
         path.join(
           process.cwd(),
           `../../extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`
@@ -180,6 +180,7 @@ module.exports = {
       ],
       cleanStaleWebpackAssets: false,
       verbose: true,
+      dangerouslyAllowCleanPatternsOutsideProject: true,
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'app.html'),
