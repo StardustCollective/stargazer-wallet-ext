@@ -1,0 +1,5 @@
+#import <Foundation/Foundation.h>
+@interface PodsDummy_Pods_stargazerWalletMobile_stargazerWalletMobileTests : NSObject
+@end
+@implementation PodsDummy_Pods_stargazerWalletMobile_stargazerWalletMobileTests
+@end
