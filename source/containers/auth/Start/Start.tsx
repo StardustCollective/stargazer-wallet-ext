@@ -77,7 +77,7 @@ const Starter = () => {
       </form>
       {!location.pathname.includes('confirm.html') && (
         <Link color="secondary" to="/import">
-          Import from recovery seed phrase
+          <div className={styles.textCenter}>Reset and restore from recovery seed phrase</div>
         </Link>
       )}
     </div>
