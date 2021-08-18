@@ -17,11 +17,7 @@ import { ellipsis } from '../helpers';
 import confirmHeader from 'navigation/headers/confirm';
 
 import styles from './Confirm.scss';
-import Icon from 'components/Icon';
 import { ethers } from 'ethers';
-
-
-
 interface ISendConfirm {
   navigation: any
 }
@@ -146,7 +142,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
           Max Total
           <span>{`$${getTotalAmount()}`}</span>
         </div>
-
         <div className={styles.actions}>
           <Button
             type="button"
