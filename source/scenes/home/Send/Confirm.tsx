@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
 // import { useHistory } from 'react-router-dom';
 
-import Header from 'scenes/common/Header';
 import Layout from 'scenes/common/Layout';
 import Button from 'components/Button';
 import { useController } from 'hooks/index';
@@ -15,12 +14,19 @@ import { RootState } from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { ellipsis } from '../helpers';
+import confirmHeader from 'navigation/headers/confirm';
 
 import styles from './Confirm.scss';
 import Icon from 'components/Icon';
 import { ethers } from 'ethers';
 
-const SendConfirm = () => {
+
+
+interface ISendConfirm {
+  navigation: any
+}
+
+const SendConfirm = ({ navigation }: ISendConfirm) => {
   // const history = useHistory();
   const controller = useController();
   const getFiatAmount = useFiat(false);
@@ -38,6 +44,11 @@ const SendConfirm = () => {
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
   const [disabled, setDisabled] = useState(false);
+
+    // Sets the header for the home screen.
+  useLayoutEffect(() => {
+    navigation.setOptions(confirmHeader({ navigation, asset: assetInfo }));
+  }, []);
 
   const getTotalUnits = () => {
     const balance = ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals);
@@ -97,11 +108,6 @@ const SendConfirm = () => {
     </Layout>
   ) : (
     <div className={styles.wrapper}>
-      <Header backLink="/send" />
-      <section className={styles.subheading}>
-        {assetInfo.logo && <Icon Component={assetInfo.logo} />}
-        Confirm
-      </section>
       <section className={styles.txAmount}>
         <div className={styles.iconWrapper}>
           <UpArrowIcon />
