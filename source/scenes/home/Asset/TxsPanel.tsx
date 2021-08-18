@@ -219,7 +219,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
             your first transaction.`}
           </span>
           <img
-            src={StargazerIcon}
+            src={'/'+StargazerIcon}
             className={styles.stargazer}
             alt="stargazer"
             height="167"
