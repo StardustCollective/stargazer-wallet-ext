@@ -24,7 +24,7 @@ const sharedPath = path.join(__dirname, '../');
 const typeScriptPath = path.join(__dirname, '../../node_modules/typescript');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
-console.log(typeScriptPath);
+
 const extensionReloaderPlugin =
   nodeEnv === 'development'
     ? new ExtensionReloader({
