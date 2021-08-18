@@ -165,8 +165,7 @@ module.exports = {
     // Generate sourcemaps
     new webpack.SourceMapDevToolPlugin({ filename: false }),
     new ForkTsCheckerWebpackPlugin({
-      context: path.dirname(rootPath),
-      tsconfig: path.dirname(rootPath),
+      tsconfig: path.resolve(rootPath+'tsconfig.json'),
     }),
     // environmental variables
     new webpack.EnvironmentPlugin(['NODE_ENV', 'TARGET_BROWSER']),
