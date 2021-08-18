@@ -41,7 +41,6 @@ const Stack = createStackNavigator();
 const Root = () => {
 
   let initialRoute = screens.unAuthorized.root;
-  console.log('User is UnAuthorized');
 
   const { wallets, hasEncryptedVault, migrateWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -49,7 +48,6 @@ const Root = () => {
 
   if(migrateWallet || (wallets && Object.values(wallets).length > 0) || hasEncryptedVault ){
     initialRoute = screens.authorized.root;
-    console.log("User is authorized");
   }
 
   return (
