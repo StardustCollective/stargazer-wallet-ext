@@ -23,6 +23,9 @@
   },
   "include": [
     "source",
-    "webpack.config.ts"
+  ],
+  "exclude":[
+    "source/native",
+    "source/web/webpack.config.js"
   ]
 }
