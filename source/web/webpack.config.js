@@ -82,7 +82,7 @@ module.exports = {
 
   resolve: {
     modules: [
-      path.resolve(__dirname, '../../node_modules'),
+      path.resolve(rootPath, 'node_modules'),
       path.resolve(__dirname, './'),
     ],
     extensions: ['.ts', '.tsx', '.js', '.json'],
@@ -114,7 +114,7 @@ module.exports = {
             usePackageJSONVersion: true, // set to false to not use package.json version for manifest
           },
         },
-        exclude: /node_modules/,
+        exclude: [/node_modules/,  /native/],
       },
       {
         test: /\.(js|ts)x?$/,
