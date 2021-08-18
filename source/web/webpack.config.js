@@ -206,7 +206,9 @@ module.exports = {
       chunks: ['options'],
       filename: 'options.html',
     }),
-    new DotEnv(),
+    new DotEnv({
+      path: './.env'
+    }),
     // write css file(s) to build folder
     new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
     // copy static assets
