@@ -13,6 +13,7 @@
     "declaration": false,
     "isolatedModules": true,
     /* Additional Checks */
+    "moduleResolution": "node",
     "useDefineForClassFields": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
