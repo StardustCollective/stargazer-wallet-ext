@@ -30,7 +30,6 @@ import { Transaction } from 'state/vault/types';
 ///////////////////////
 
 interface ITxItem {
-  key: number;
   tx: Transaction;
   isSelf: boolean;
   isReceived: boolean;
@@ -49,7 +48,6 @@ interface ITxItem {
 ///////////////////////
 
 const TxItem: FC<ITxItem> = ({
-  key,
   tx,
   isETH,
   isSelf,
