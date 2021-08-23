@@ -1,0 +1,47 @@
+@import "~assets/styles/variables";
+
+.gasSettings {
+  display: flex;
+  flex-direction: column;
+
+  .options {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    & > div:nth-child(2),
+    & > div:nth-child(3)
+    {
+      margin-left: 8px;
+    }
+
+  }
+}
+
+.outlineButton {
+  display: flex;
+  height: 36px;
+  width: 111px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid $purple;
+  border-radius: 20px;
+
+  & > span {
+    font-family: $quicksand;
+    font-size: 14px;
+    font-weight: $bold;
+    line-height: 20px;
+    color: $purple;
+  }
+}
+
+.circleIconButton {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid $purple;
+  border-radius: 20px;
+}

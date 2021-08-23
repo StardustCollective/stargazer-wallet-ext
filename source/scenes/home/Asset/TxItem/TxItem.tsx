@@ -12,6 +12,7 @@ import { formatDistanceDate } from '../../helpers';
 import Spinner from '@material-ui/core/CircularProgress';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import LinkIcon from '@material-ui/icons/OpenInNewOutlined';
+import GasSettings from '../GasSettings';
 
 ///////////////////////
 // Styles
@@ -102,7 +103,7 @@ const TxItem: FC<ITxItem> = ({
   
 
   return (
-    <div key={key} className={styles.content}>
+    <div className={styles.content}>
       {showGroupBar && (
         <div className={styles.groupBar}>
           <span>{formatDistanceDate(tx.timestamp)}</span>
@@ -133,6 +134,9 @@ const TxItem: FC<ITxItem> = ({
             <LinkIcon />
           </div>
         </div>
+      </div>
+      <div className={styles.gasSettings}>
+        <GasSettings />
       </div>
     </div>
   );
