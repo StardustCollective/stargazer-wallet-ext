@@ -57,7 +57,6 @@ const UnAuth = () => {
     <Stack.Navigator
     screenOptions={(navigation) => ({ 
       ...defaultHeader(navigation),
-      animationEnabled: true 
     })}
       initialRouteName={initialRoute}
     >

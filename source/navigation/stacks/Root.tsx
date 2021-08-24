@@ -54,7 +54,6 @@ const Root = () => {
     <Stack.Navigator
       screenOptions={(navigation) => ({
         ...defaultHeader(navigation),
-        animationEnabled: true
       })}
       initialRouteName={initialRoute}>
       <Stack.Screen options={{ headerShown: false }} name={screens.unAuthorized.root} component={UnAuthStack} />

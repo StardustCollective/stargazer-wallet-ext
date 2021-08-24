@@ -4,6 +4,7 @@
 
 import React from 'react';
 import config from '../config';
+import { fade } from 'navigation/animations';
 
 ///////////////////////////
 // Styles
@@ -57,6 +58,8 @@ const defaultHeader = ({
     headerRight: () => (
       <div className={commonStyles.emptyDiv}></div>
     ),
+    animationEnabled: true,
+    cardStyleInterpolator: fade
   }
 };
 
