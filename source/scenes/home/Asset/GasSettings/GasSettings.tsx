@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////
 
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, ChangeEvent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 ///////////////////////
@@ -27,8 +27,7 @@ const PurpleSlider = withStyles({
   thumb: {
     height: 24,
     width: 24,
-    backgroundColor: '#fff',
-    border: '2px solid currentColor',
+    border: '2px solid #fff',
     marginTop: -8,
     marginLeft: -12,
     '&:focus, &:hover, &$active': {
@@ -54,7 +53,10 @@ const PurpleSlider = withStyles({
 // Constants
 ///////////////////////
 
-const SPEED_UP_STRING = 'Speed Up';
+const CANCEL_BUTTON_STRING = 'Cancel';
+const SPEED_UP_BUTTON_STRING = 'Speed Up';
+const FEE_STRING = 'Fee ~= $'
+const SPEED_STRING = 'Speed:'
 
 ///////////////////////
 // Enums
@@ -68,6 +70,11 @@ enum GAS_SETTINGS_STATE_ENUM {
   UPDATED,
 }
 
+enum BUTTON_TYPE_ENUM {
+  SOLID = 1,
+  OUTLINE,
+}
+
 ///////////////////////
 // Interfaces
 ///////////////////////
@@ -75,6 +82,7 @@ enum GAS_SETTINGS_STATE_ENUM {
 interface IOutlineButtonProps {
   label: string;
   onClick: () => void;
+  type?: BUTTON_TYPE_ENUM;
 }
 
 interface ICircleIconButtonProps {
@@ -84,27 +92,27 @@ interface ICircleIconButtonProps {
 }
 
 interface IGasSettingsProps {
-  isVisible: boolean
+  values: {
+    min: number;
+    max: number;
+    current: number;
+  }
 }
 
 ///////////////////////
 // Component
 ///////////////////////
 
-const GasSettings: FC<IGasSettingsProps> = ({isVisible}) => {
-  
+const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
+
   ///////////////////////
   // Hooks
   ///////////////////////
 
-  const [viewState, setViewState] = useState(GAS_SETTINGS_STATE_ENUM.NONE);
-  const [gasValue, setGasValue] = useState(33);
-
-  useEffect(() => {
-    if(isVisible){
-      setViewState(GAS_SETTINGS_STATE_ENUM.SETTINGS)
-    }
-  }, [])
+  const [viewState, setViewState] = useState<GAS_SETTINGS_STATE_ENUM>(GAS_SETTINGS_STATE_ENUM.OPTIONS);
+  const [gasValue, setGasValue] = useState<number>(values.current);
+  const [fee, setFee] = useState<number>(1.44);
+  const [speed, setSpeed] = useState<string>('Slow');
 
   ///////////////////////
   // Callbacks
@@ -122,25 +130,37 @@ const GasSettings: FC<IGasSettingsProps> = ({isVisible}) => {
     setViewState(GAS_SETTINGS_STATE_ENUM.SETTINGS)
   }
 
-  const handleChange = (event, newValue) => {
-    setGasValue(newValue);
+  const onSettingCancelButtonClick = () => {
+    setViewState(GAS_SETTINGS_STATE_ENUM.OPTIONS)
+  }
+
+  const handleChange = (_event: ChangeEvent<{}>, value: number) => {
+    setGasValue(value);
+    setFee(value*1.22);
+    setSpeed(value < 500 ? 'Slow' : 'Fast')
   };
 
   ///////////////////////
   // Renders
   ///////////////////////
 
-  const OutlineButton: FC<IOutlineButtonProps> = ({ label, onClick }) => {
+  const OutlineButton: FC<IOutlineButtonProps> = ({ label, type, onClick }) => {
+
+    let cssStyle = styles.solidButton;
+
+    if (type === BUTTON_TYPE_ENUM.OUTLINE) {
+      cssStyle = styles.outlineButton;
+    }
 
     return (
-      <div onClick={onClick} className={styles.outlineButton}>
+      <div onClick={onClick} className={cssStyle}>
         <span>{label}</span>
       </div>
     )
   }
 
-  const CircleIconButton: FC<ICircleIconButtonProps> = ({ 
-    iconPath, 
+  const CircleIconButton: FC<ICircleIconButtonProps> = ({
+    iconPath,
     iconSize = 16,
     onClick
   }) => {
@@ -156,7 +176,7 @@ const GasSettings: FC<IGasSettingsProps> = ({isVisible}) => {
       {viewState === GAS_SETTINGS_STATE_ENUM.OPTIONS &&
         <div className={styles.options}>
           <OutlineButton
-            label={SPEED_UP_STRING}
+            label={SPEED_UP_BUTTON_STRING}
             onClick={onSpeedUpButtonClick}
           />
           <CircleIconButton
@@ -179,20 +199,48 @@ const GasSettings: FC<IGasSettingsProps> = ({isVisible}) => {
                 </div>
                 <div className={styles.headerRight}>
                   <div>
-                    <input pattern='[0-9]{0,3}' maxLength={4} value={gasValue} defaultValue={gasValue} />
+                    <span>
+                      {gasValue}
+                    </span>
                     <span>
                       GWEI
                     </span>
                   </div>
                 </div>
               </div>
-              <div>
-                <PurpleSlider 
-                  onChange={handleChange}
-                  valueLabelDisplay="off" 
-                  aria-label="pretto slider" 
-                  defaultValue={gasValue} 
-                />
+              <div className={styles.body}>
+                <div className={styles.body__slider}>
+                  <PurpleSlider
+                    onChange={handleChange}
+                    min={values.min}
+                    max={values.max}
+                    step={1}
+                    valueLabelDisplay="off"
+                  />
+                </div>
+                <div className={styles.body__sliderLabels}>
+                  <div>
+                    <span>{FEE_STRING}{fee}</span>
+                  </div>
+                  <div>
+                    <span>{SPEED_STRING} {speed}</span>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.footer}>
+                <div className={styles.footer__cancelButton}>
+                  <OutlineButton
+                    label={CANCEL_BUTTON_STRING}  
+                    type={BUTTON_TYPE_ENUM.OUTLINE}
+                    onClick={onSettingCancelButtonClick}
+                  />
+                </div>
+                <div className={styles.footer__speedUpButton}>
+                  <OutlineButton
+                    label={SPEED_UP_BUTTON_STRING}
+                    onClick={() => {}}
+                  />
+                </div>
               </div>
             </div>
           </div>

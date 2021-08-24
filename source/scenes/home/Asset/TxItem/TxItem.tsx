@@ -36,6 +36,12 @@ interface ITxItem {
   isReceived: boolean;
   isETH: boolean;
   isETHPending: boolean;
+  isGasSettingsVisible: boolean;
+  gasSettingsDefaults: {
+    min: number;
+    max: number;
+    current: number;
+  }
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
@@ -54,6 +60,8 @@ const TxItem: FC<ITxItem> = ({
   isSelf,
   isReceived,
   isETHPending,
+  isGasSettingsVisible,
+  gasSettingsDefaults,
   showGroupBar,
   txTypeLabel,
   currencySymbol,
@@ -64,10 +72,10 @@ const TxItem: FC<ITxItem> = ({
 
   const handleOpenExplorer = () => {
 
-    if(onItemClick) {
+    if (onItemClick) {
       onItemClick(isETHPending ? tx.txHash : tx.hash);
     }
-  
+
   }
 
   const RenderIcon: FC = () => {
@@ -100,7 +108,7 @@ const TxItem: FC<ITxItem> = ({
       </>
     );
   };
-  
+
 
   return (
     <div className={styles.content}>
@@ -135,9 +143,11 @@ const TxItem: FC<ITxItem> = ({
           </div>
         </div>
       </div>
-      <div className={styles.gasSettings}>
-        <GasSettings />
-      </div>
+      {isGasSettingsVisible &&
+        <div className={styles.gasSettings}>
+          <GasSettings values={gasSettingsDefaults} />
+        </div>
+      }
     </div>
   );
 

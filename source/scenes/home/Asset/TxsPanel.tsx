@@ -36,7 +36,6 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
 
   const isETH = activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
 
-
   const isShowedGroupBar = useCallback(
     (tx: Transaction, idx: number) => {
       return (
@@ -94,7 +93,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
         )}
       </div>
       {transactions.length ? (
-        <div>
+        <div className={styles.transactionList}>
           {transactions.map((tx: Transaction, idx: number) => {
             const isETHPending = isETH && tx.assetId === activeAsset.id;
             const isReceived =
@@ -129,6 +128,12 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   isSelf={isSelf}
                   isReceived={isReceived}
                   isETHPending={isETHPending}
+                  isGasSettingsVisible={true}
+                  gasSettingsDefaults={{
+                    min: 50,
+                    max: 1000,
+                    current: 40,
+                  }}
                   showGroupBar={isShowedGroupBar(tx, idx)}
                   txTypeLabel={txTypeLabel}
                   currencySymbol={assets[activeAsset.id].symbol}

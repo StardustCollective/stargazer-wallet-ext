@@ -3,6 +3,7 @@
 .gasSettings {
   display: flex;
   flex-direction: column;
+  margin-bottom: 5px;
 
   .options {
     display: flex;
@@ -22,7 +23,7 @@
       align-items: center;
     .box {
       display: flex;
-      width: 304px;
+      width: 304px;;
       height: 168px;
       background: $gray-light-200;
       border-radius: 16px;
@@ -42,7 +43,7 @@
             display: flex;
             flex: 1;
           }
-          & > .headerLeft {
+          .headerLeft {
             // background-color: blue;
             & > span {
               font-family: $inter;
@@ -50,7 +51,7 @@
               font-size: 18px;
             }
           }
-          & > .headerRight {
+          .headerRight {
             display: flex;
             justify-content: flex-end;
             align-items: center;
@@ -59,24 +60,21 @@
               justify-content: flex-end;
               align-items:center;
               background-color: $white;
-              padding: 8px;
+              padding: 8px 16px 8px 16px;
               border-radius: 24px;
               border: 1px solid #CCCCCC;
-              & > input {
+              & > span:first-child {
                 min-width: 2ch;
                 max-width: 4ch;
-                margin-right: 5px;
-                text-align: center;
+                margin-right: 8px;
                 border: none;
                 font-family: $quicksand;
                 font-weight: bold;
                 font-size: 14px;
                 color: $purple;
-                &:focus {
-                  outline:none!important;
-                }
+
               }
-              & > span {
+              & > span:last-child{
                 font-size: 14px;
                 font-family: $quicksand;
                 font-weight: $medium;
@@ -85,6 +83,31 @@
        
           }
 
+        }
+        .body {
+          .body__sliderLabels {
+            display:flex;
+            flex-direction: row;
+            & > div{
+              flex: 1;
+              font-family: $inter;
+              font-size: 12px;
+              font-weight: $medium;
+              &:last-child{
+                display: flex;
+                justify-content: flex-end;
+              }
+            }
+          }
+        }
+        .footer {
+          display: flex;
+          flex: 1;
+          justify-content: flex-end;
+          align-items: flex-end;
+          .footer__cancelButton {
+            margin-right: 8px;
+          }
         }
       }
     }
@@ -100,6 +123,7 @@
   justify-content: center;
   border: 2px solid $purple;
   border-radius: 20px;
+  box-sizing: border-box;
 
   & > span {
     font-family: $quicksand;
@@ -107,6 +131,24 @@
     font-weight: $bold;
     line-height: 20px;
     color: $purple;
+  }
+}
+
+.solidButton {
+  display: flex;
+  height: 36px;
+  width: 111px;
+  background-color: $purple;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+
+  & > span {
+    font-family: $quicksand;
+    font-size: 14px;
+    font-weight: $bold;
+    line-height: 20px;
+    color: $white;
   }
 }
 
