@@ -49,6 +49,7 @@
     "emoji-log": "^1.0.2",
     "ethers": "^5.0.32",
     "extensionizer": "^1.0.1",
+    "framer-motion": "^4.1.17",
     "lodash": "^4.17.20",
     "qrcode.react": "^1.0.1",
     "query-string": "^7.0.1",

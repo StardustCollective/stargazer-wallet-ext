@@ -1,0 +1,138 @@
+@import "~assets/styles/variables";
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+
+  .groupBar {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    background: $purple-medium;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: $purple;
+
+    span {
+      margin-left: 33px;
+    }
+  }
+
+  .txItem {
+    display: flex;
+    width: 100%;
+    height: 83px;
+    flex-direction: row;
+
+    & > div {
+      margin-top: 24px;
+    }
+
+    .txIcon {
+      display: flex;
+      width: 60px;
+      color: $gray-100;
+      justify-content: flex-end;
+      margin-right: 13px;
+
+      svg {
+        font-size: 16px;
+      }
+
+      svg.recvIcon {
+        transform: rotate(180deg);
+      }
+    }
+
+    .txInfo {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      & > div {
+        margin-bottom: 6px;
+      }
+      & > div > span {
+        font-size: 16px;
+      }
+      small {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 18px;
+        color: $gray;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: auto;
+        width: 96px;
+        text-align: right;
+        display: inline-block;
+        overflow: hidden;
+      }
+    }
+
+    .txAmount {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      text-align: right;
+      align-items: flex-end;
+      margin-right: 12px;
+
+      span {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 24px;
+        color: $gray-dark;
+        margin-bottom: 3px;
+      }
+      b {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 18px;
+        margin-left: 4px;
+      }
+      small {
+        font-weight: 500;
+        font-size: 12px;
+        text-align: right;
+        line-height: 18px;
+        color: $gray;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: auto;
+        width: 96px;
+        display: inline-block;
+        overflow: hidden;
+      }
+    }
+
+    .txExplorerIcon {
+      width: 60px;
+      display: flex;
+      color: $gray-dark;
+      box-sizing: border-box;
+      transition: all 0.3s;
+
+      .circle {
+        display: flex;
+        width: 24px;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: transparent;
+      }
+
+      svg {
+        font-size: 16px;
+      }
+    }
+
+    &:hover > .txExplorerIcon > .circle {
+      background-color: $gray-200;
+      transition: all 0.3s;
+    }
+  }
+}
