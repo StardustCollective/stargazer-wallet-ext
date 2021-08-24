@@ -44,11 +44,11 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     });
 
     port.onDisconnect.addListener(() => {
-      // console.log('onDisconnect');
+      console.log('onDisconnect');
       window.controller.wallet.account.assetsBalanceMonitor.stop();
     });
 
-    // console.log('onConnect');
+    console.log('onConnect');
     if (window.controller.wallet.isUnlocked()) {
       window.controller.wallet.account.assetsBalanceMonitor.start();
       window.controller.wallet.account.getLatestTxUpdate()

@@ -37,7 +37,7 @@ const MigrateRunner = (oldState: V1WalletState) => {
         [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
         [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
       },
-      version: '2.1.1',
+      version: '2.1',
     };
 
     const newState = {

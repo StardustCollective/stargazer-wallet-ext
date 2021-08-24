@@ -58,7 +58,12 @@ export class WalletController implements IWalletController {
 
       //Check for v1.4 migration
       if (vault.migrateWallet) {
-        await KeystoreToKeyringHelper.migrate(vault.migrateWallet, password);
+        try {
+          await KeystoreToKeyringHelper.migrate(vault.migrateWallet, password);
+        }
+        catch(e) {
+          return false;
+        }
       }
 
       if (vault.activeWallet) {

@@ -114,10 +114,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const getBalanceAndFees = () => {
     const balance = ethers.utils.parseUnits(String(balances[activeAsset.id] || 0), assetInfo.decimals);
-    console.log('getBalanceAndFees', gasFee.toString())
+    // console.log('getBalanceAndFees', fee, balance, gasFee.toString())
     const txFee =
       activeAsset.id === AssetType.Constellation
-        ? BigNumber.from(fee)
+        ? ethers.utils.parseUnits(String(Number(fee) * 1e8), 8)
         : ethers.utils.parseEther(gasFee.toString());
 
     return {balance, txFee};
