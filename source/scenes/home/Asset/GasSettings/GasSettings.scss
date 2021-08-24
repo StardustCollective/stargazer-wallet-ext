@@ -11,19 +11,18 @@
     align-items: center;
     margin-left: 73px;
 
-    & > div:nth-child(n + 2)
-    {
+    & > div:nth-child(n + 2) {
       margin-left: 8px;
     }
   }
 
   .settings {
-      display:flex;
-      justify-content: center;
-      align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .box {
       display: flex;
-      width: 304px;;
+      width: 304px;
       height: 168px;
       background: $gray-light-200;
       border-radius: 16px;
@@ -58,11 +57,11 @@
             & > div {
               display: flex;
               justify-content: flex-end;
-              align-items:center;
+              align-items: center;
               background-color: $white;
               padding: 8px 16px 8px 16px;
               border-radius: 24px;
-              border: 1px solid #CCCCCC;
+              border: 1px solid #cccccc;
               & > span:first-child {
                 min-width: 2ch;
                 max-width: 4ch;
@@ -72,28 +71,25 @@
                 font-weight: bold;
                 font-size: 14px;
                 color: $purple;
-
               }
-              & > span:last-child{
+              & > span:last-child {
                 font-size: 14px;
                 font-family: $quicksand;
                 font-weight: $medium;
               }
             }
-       
           }
-
         }
         .body {
           .body__sliderLabels {
-            display:flex;
+            display: flex;
             flex-direction: row;
-            & > div{
+            & > div {
               flex: 1;
               font-family: $inter;
               font-size: 12px;
               font-weight: $medium;
-              &:last-child{
+              &:last-child {
                 display: flex;
                 justify-content: flex-end;
               }
@@ -112,13 +108,72 @@
       }
     }
   }
+  .updated {
+    display: flex;
+    justify-content: center;
+    .box {
+      display: flex;
+      width: 304px;
+      height: 36px;
+      align-items: center;
+      background-color: $green-light;
+      border-radius: 16px;
+      img {
+        margin: 0px 10px 0px 18px;
+        width: 10px;
+        height: 10px;
+      }
+      span {
+        color: $green-dark;
+        font-family: $quicksand;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+      }
+    }
+  }
+  .cancel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .box {
+      display: flex;
+      width: 304px;
+      height: 148px;
+      background: $gray-light-200;
+      border-radius: 16px;
+      .content {
+        display: flex;
+        flex: 1;
+        margin: 16px;
+        flex-direction: column;
+        font-family: $quicksand;
 
+        .header {
+          font-size: 18px;
+          font-weight: $bold;
+          margin-bottom: 8px;
+        }
+        .body {
+          font-size: 14px;
+          font-weight: $medium;
+        }
+        .footer {
+          margin-top: 8px;
+          display: flex;
+          justify-content: flex-end;
+          & > div:first-child{
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
 }
 
 .outlineButton {
   display: flex;
   height: 36px;
-  width: 111px;
   align-items: center;
   justify-content: center;
   border: 2px solid $purple;
@@ -126,6 +181,7 @@
   box-sizing: border-box;
 
   & > span {
+    margin: 0px 24px 0px 24px;
     font-family: $quicksand;
     font-size: 14px;
     font-weight: $bold;
@@ -137,17 +193,16 @@
 .solidButton {
   display: flex;
   height: 36px;
-  width: 111px;
   background-color: $purple;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
 
   & > span {
+    margin: 0px 24px 0px 24px;
     font-family: $quicksand;
     font-size: 14px;
     font-weight: $bold;
-    line-height: 20px;
     color: $white;
   }
 }
