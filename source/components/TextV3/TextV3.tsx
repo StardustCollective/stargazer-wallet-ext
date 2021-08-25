@@ -37,7 +37,7 @@ interface ITextProps {
 // Components
 ///////////////////// 
 
-const Text = {
+const TextV3 = {
   base: ({ 
       children, 
       color = COLORS_ENUMS.WHITE, 
@@ -78,37 +78,48 @@ const Text = {
   },
   HeaderDisplay: ({ children, color, align }: ITextProps) => {
     return (
-      <Text.base
+      <TextV3.base
         color={color}
         textStyle={styles.headerDisplay}
         align={align}
       >
         {children}
-      </Text.base>
+      </TextV3.base>
     )
   },
   HeaderLarge: ({ children, color, align }: ITextProps) => {
     return (
-      <Text.base
+      <TextV3.base
         color={color}
         textStyle={styles.headerLarge}
         align={align}
       >
         {children}
-      </Text.base>
+      </TextV3.base>
     )
   },
   BodyStrong: ({ children, color, align }: ITextProps) => {
     return (
-      <Text.base
+      <TextV3.base
         color={color}
         textStyle={styles.bodyStrong}
         align={align}
       >
         {children}
-      </Text.base>
+      </TextV3.base>
+    )
+  },
+  CaptionStrong: ({ children, color, align }: ITextProps) => {
+    return (
+      <TextV3.base
+        color={color}
+        textStyle={styles.captionStrong}
+        align={align}
+      >
+        {children}
+      </TextV3.base>
     )
   }
 }
 
-export default Text;
+export default TextV3;
