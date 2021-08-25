@@ -18,9 +18,6 @@ interface ITextProps {
   align?: TEXT_ALIGN_ENUM;
 }
 
-console.log('Global Styles');
-console.log(globalStyles);
-
 const Text = {
   base: ({ 
       children, 
