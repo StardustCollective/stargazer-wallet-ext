@@ -148,8 +148,17 @@
     text-align: right;
   }
   
-
  /*
   * Background Styles
   */
+
+  .b-primary {
+    background-color: $primary;
+  }
+
+  .b-accentOne {
+    background-color: $accent_1;
+  }
+
+
 }
