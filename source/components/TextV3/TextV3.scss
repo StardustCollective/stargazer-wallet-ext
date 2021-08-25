@@ -1,0 +1,44 @@
+@import '~assets/styles/variables';
+
+/*
+* Text Types
+*/
+
+.base {
+  font-family: $rubik;
+}
+
+.headerDisplay {
+  font-weight: $bold;
+  font-size: 49px;
+  line-height: 64px;
+}
+
+.headerLarge {
+  font-weight: $medium;
+  font-size: 32px;
+  line-height: 48px;
+}
+
+.bodyStrong {
+  font-weight: $medium;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+/*
+* Text Alignment
+*/
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+
