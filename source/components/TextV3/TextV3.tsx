@@ -1,22 +1,41 @@
+
+//////////////////////
+// Modules
+///////////////////// 
+
 import React from 'react';
 import clsx from 'clsx';
 
+//////////////////////
+// Styles
+///////////////////// 
+
 import styles from './TextV3.scss';
-import globalStyles from 'assets/styles/global.scss'
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
-enum TEXT_ALIGN_ENUM {
+//////////////////////
+// Enums
+///////////////////// 
+
+export enum TEXT_ALIGN_ENUM {
   LEFT = 0,
   CENTER,
   RIGHT,
 }
 
+//////////////////////
+// Interface
+///////////////////// 
 interface ITextProps {
   children?: React.ReactNode;
   textStyle?: string;
   color?: COLORS_ENUMS;
   align?: TEXT_ALIGN_ENUM;
 }
+
+//////////////////////
+// Components
+///////////////////// 
 
 const Text = {
   base: ({ 
