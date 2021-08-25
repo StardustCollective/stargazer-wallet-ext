@@ -46,6 +46,8 @@ interface IButtonV3Props {
   type?: BUTTON_TYPES_ENUM;
   size?: BUTTON_SIZES_ENUM;
   label: string;
+  extraStyle?: string;
+  onClick?: () => {}
 }
 
 //////////////////////
@@ -56,6 +58,8 @@ const ButtonV3: FC<IButtonV3Props> = ({
   type = BUTTON_TYPES_ENUM.PRIMARY_SOLID,
   size = BUTTON_SIZES_ENUM.SMALL,
   label = "",
+  extraStyle = "",
+  onClick = () => {},
 }) => {
 
   let buttonSizeStyle   = '';
@@ -76,17 +80,21 @@ const ButtonV3: FC<IButtonV3Props> = ({
     buttonColorStyle = 'b-primary';
     buttonTextColor  = COLORS_ENUMS.WHITE;
   }else if(type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID){
-    buttonColorStyle = '.b-accentOne';
+    buttonColorStyle = 'b-accentOne';
     buttonTextColor  = COLORS_ENUMS.WHITE;
   }
 
   return (
     <div className={clsx([
+      styles.base,
       buttonColorStyle,
       buttonTextColor,
       buttonSizeStyle,
-      buttonBorderStyle
-    ])}>
+      buttonBorderStyle,
+      extraStyle
+    ])}
+    onClick={onClick}
+    >
       <TextComponent>
         {label}
       </TextComponent>
