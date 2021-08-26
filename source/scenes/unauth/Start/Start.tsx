@@ -11,7 +11,11 @@ const Start = () => {
   const linkTo = useLinkTo();
 
   const onImportClicked = () => {
-    linkTo('/import')
+    linkTo('/import');
+  }
+
+  const onGetStartedClicked = () => {
+    linkTo('/create/pass');
   }
 
   return (
@@ -22,20 +26,12 @@ const Start = () => {
         Welcome to Stargazer Wallet
       </TextV3.HeaderLarge>
       <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
-      {/* <Button
-        type="submit"
-        theme="secondary"
-        variant={styles.started}
-        linkTo="/create/pass"
-      >
-        Get started
-      </Button> */}
-
       <ButtonV3
         type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
         label={'Get Started'}
         extraStyle={styles.started}
+        onClick={onGetStartedClicked}
       />
       <Link color="monotoneOne" onClick={onImportClicked}>
         Import from recovery seed phrase
