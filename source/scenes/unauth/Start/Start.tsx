@@ -1,10 +1,11 @@
 import React from 'react';
 import Button from 'components/Button';
 import Link from 'components/Link';
-import LogoImage from 'assets/images/logo.svg';
+import LogoImage from 'assets/images/svg/stargazerLogoV3.svg';
 import { useLinkTo } from '@react-navigation/native';
-
 import styles from './Start.scss';
+import TextV3, { TEXT_ALIGN_ENUM }  from 'components/TextV3';
+import ButtonV3, {BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM} from 'components/ButtonV3';
 
 const Start = () => {
   const linkTo = useLinkTo();
@@ -15,21 +16,28 @@ const Start = () => {
 
   return (
     <div className={styles.home}>
-      <h1 className="heading-1 full-width t-quicksand t-white tw-medium">
-        Welcome to
-        <br />
-        Stargazer Wallet
-      </h1>
+      <TextV3.HeaderLarge
+        align={TEXT_ALIGN_ENUM.CENTER}
+      >
+        Welcome to Stargazer Wallet
+      </TextV3.HeaderLarge>
       <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
-      <Button
+      {/* <Button
         type="submit"
         theme="secondary"
         variant={styles.started}
         linkTo="/create/pass"
       >
         Get started
-      </Button>
-      <Link color="secondary" onClick={onImportClicked}>
+      </Button> */}
+
+      <ButtonV3
+        type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
+        size={BUTTON_SIZES_ENUM.LARGE}
+        label={'Get Started'}
+        extraStyle={styles.started}
+      />
+      <Link color="monotoneOne" onClick={onImportClicked}>
         Import from recovery seed phrase
       </Link>
     </div>
