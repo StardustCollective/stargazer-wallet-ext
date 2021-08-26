@@ -6,11 +6,16 @@
 .base {
   display: flex;
   align-items: center;
+  transition: 0.5s;
   span{
     margin: 0px 24px 0px 24px;
   }
   &:hover {
     cursor: pointer;
+    box-shadow: 0 0 10px #dedede;
+  }
+  &:active {
+    box-shadow: 0 0 0;
   }
 }
 
