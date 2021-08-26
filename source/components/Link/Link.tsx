@@ -8,7 +8,7 @@ import styles from './Link.scss';
 
 interface ILink {
   children: ReactNode;
-  color?: 'primary' | 'secondary';
+  color?: 'primary' | 'secondary' | 'monotoneOne';
   noUnderline?: boolean;
   onClick?: () => void;
 }
