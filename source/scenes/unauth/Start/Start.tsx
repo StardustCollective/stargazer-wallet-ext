@@ -1,7 +1,6 @@
 import React from 'react';
-import Button from 'components/Button';
 import Link from 'components/Link';
-import LogoImage from 'assets/images/svg/stargazerLogoV3.svg';
+import LogoImage from 'assets/images/logo.svg';
 import { useLinkTo } from '@react-navigation/native';
 import styles from './Start.scss';
 import TextV3, { TEXT_ALIGN_ENUM }  from 'components/TextV3';
