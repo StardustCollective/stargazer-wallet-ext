@@ -47,7 +47,7 @@ interface IButtonV3Props {
   size?: BUTTON_SIZES_ENUM;
   label: string;
   extraStyle?: string;
-  onClick?: () => {}
+  onClick?: () => void;
 }
 
 //////////////////////
