@@ -62,7 +62,6 @@ const AssetItem: FC<IAssetItem> = ({
   );
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
 
-
   ///////////////////////
   // Render
   ///////////////////////
