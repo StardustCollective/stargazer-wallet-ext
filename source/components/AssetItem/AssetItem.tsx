@@ -54,7 +54,7 @@ const AssetItem: FC<IAssetItem> = ({
 }: IAssetItem) => {
 
   ///////////////////////
-  // Selectors
+  // Hooks
   ///////////////////////
 
   const { balances }: IVaultState = useSelector(
