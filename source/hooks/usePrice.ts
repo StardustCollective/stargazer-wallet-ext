@@ -71,13 +71,15 @@ export function useTotalBalance(currencyName = true) {
 
   let balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
 
-  const label = `${currencyName ? currency.symbol : ''}${balanceStr}${
-    currencyName ? ` ${currency.name}` : ''
-  }`;
+  const priceObject = {
+    symbol: currency.symbol || '',
+    balance: balanceStr,
+    name: currency.name || '',
+  }
 
   balance = (balance / (fiat.bitcoin?.price || 0))
 
   balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
 
-  return [label, balanceStr];
+  return [priceObject, balanceStr];
 }
