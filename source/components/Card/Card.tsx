@@ -13,7 +13,6 @@ import styles from './Card.scss';
 ///////////////////////
 // Interface
 ///////////////////////
-
 interface ICardProps {
   children: React.ReactNode;
 }
@@ -24,11 +23,11 @@ interface ICardProps {
 
 const Card = ({ children }: ICardProps) => {
 
-    return (
-      <div className={styles.card}>
-        {children}
-      </div>
-    );
+  return (
+    <div className={styles.card}>
+      {children}
+    </div>
+  );
 
 }
 
