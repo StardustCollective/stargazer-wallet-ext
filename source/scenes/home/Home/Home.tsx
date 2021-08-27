@@ -2,8 +2,6 @@ import React, { useLayoutEffect } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import { useController } from 'hooks/index';
 import { useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
@@ -11,6 +9,7 @@ import IVaultState from 'state/vault/types';
 import AssetsPanel from './AssetsPanel';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import homeHeader from 'navigation/headers/home';
+import TextV3 from 'components/TextV3';
 
 import styles from './Home.scss';
 
@@ -34,7 +33,7 @@ const Home = ({ navigation, route }: IHome) => {
   // const [connected, setConnected] = useState(false);
   // const { accounts, activeAccountId }: IWalletState = useSelector(
   //   (state: RootState) => state.wallet
-  const totalBalance = useTotalBalance();
+  const [priceObject, balance] = useTotalBalance();
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -46,11 +45,6 @@ const Home = ({ navigation, route }: IHome) => {
       title: activeWallet ? activeWallet.label : "",
     });
   }, [activeWallet]);
-
-  const handleRefresh = () => {
-    controller.wallet.account.assetsBalanceMonitor.refreshDagBalance();
-    controller.stateUpdater();
-  };
 
   // const handleOpenBuyDag = () => {
   //   window.open('https://portal.stargazer.network/buy-dag', '_blank');
@@ -72,11 +66,22 @@ const Home = ({ navigation, route }: IHome) => {
           {
             <>
               <section className={styles.center}>
-                <h3>{totalBalance[0]}</h3>
-                <small>{`≈ ₿${totalBalance[1]}`}</small>
-                <IconButton className={styles.refresh} onClick={handleRefresh}>
-                  <RefreshIcon />
-                </IconButton>
+                <div className={styles.price}>
+                  <TextV3.Body>
+                    {priceObject.symbol}
+                  </TextV3.Body>
+                  <TextV3.HeaderDisplay>
+                    {priceObject.balance}
+                  </TextV3.HeaderDisplay>
+                  <TextV3.Body>
+                    {priceObject.name}
+                  </TextV3.Body>
+                </div>
+                <div className={styles.bitcoinBalance}>
+                  <TextV3.Body>
+                    {`≈ ₿${balance}`}
+                  </TextV3.Body>
+                </div>
               </section>
               <AssetsPanel />
             </>

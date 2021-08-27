@@ -5,6 +5,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: start;
+  background-color: $primary;
   width: 100%;
   height: 100%;
 
@@ -109,83 +110,24 @@
   }
 
   section.center {
-    width: 100%;
-    height: 132px;
-    border-bottom: 1px solid $gray-100;
     display: flex;
+    width: 100%;
+    height: 160px;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    position: relative;
-
-    .refresh {
-      position: absolute;
-      width: 32px;
-      right: 30px;
-      bottom: 20px;
-      height: 32px;
-      color: $gray-100;
-    }
-
-    & > span {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 36px;
-      color: $gray-dark;
-    }
-
-    & > h3 {
-      font-weight: 500;
-      font-size: 33px;
-      line-height: 48px;
-      margin: 0px;
-      color: $gray-dark;
-
-      small {
-        font-weight: 500;
-        font-size: 18px;
-        line-height: 24px;
-      }
-    }
-
-    & > small {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
-      color: $gray-100;
-      margin-top: 8px;
-    }
-
-    .actions {
+    .price {
       display: flex;
-      width: 300px;
-      flex-direction: row;
-      justify-content: space-between;
-      position: relative;
-
-      .button {
-        margin-bottom: 36px;
-        width: 144px;
-        margin-top: 24px;
+      align-items: center;
+      & > span:first-child {
+        margin-right: 8px;
       }
-
-      .buyDag {
-        position: absolute;
-        bottom: 0px;
-        left: 102px;
-        height: 26px !important;
-        font-size: 12px;
-        padding: 0px 20px;
-        border: 1px solid $purple;
-        background: $white;
-        color: $purple;
-
-        &:hover {
-          border-color: $green;
-          background: $green;
-          color: $white;
-        }
+      & > span:last-child {
+        margin-left: 8px;
       }
+    }
+    .bitcoinBalance{
+      opacity: 0.5;
     }
   }
 
