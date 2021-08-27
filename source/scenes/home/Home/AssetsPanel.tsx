@@ -51,7 +51,7 @@ const AssetsPanel: FC = () => {
 
   const renderAssetList = () => {
     return (
-      <ul>
+      <>
         {Object.values(activeWallet.assets)
           .filter(
             (asset) =>
@@ -73,7 +73,7 @@ const AssetsPanel: FC = () => {
               />
             );
           })}
-      </ul>
+      </>
     );
   };
 
@@ -82,20 +82,6 @@ const AssetsPanel: FC = () => {
       className={clsx(styles.activity, { [styles.expanded]: isShowed })}
       onScroll={handleScroll}
     >
-      <div className={styles.heading}>
-        {/*{activeWallet.supportedAssets &&*/}
-        {/*  activeWallet.supportedAssets.length > 1 && (*/}
-        {/*    <IconButton onClick={handleAddAsset} className={styles.addAssets}>*/}
-        {/*      <AddIcon />*/}
-        {/*    </IconButton>*/}
-        {/*  )}*/}
-        Your Assets
-        {!!isShowed && (
-          <IconButton className={styles.goTop} onClick={handleGoTop}>
-            <GoTopIcon />
-          </IconButton>
-        )}
-      </div>
       {Object.keys(activeWallet.assets).length ? (
         <>{renderAssetList()}</>
       ) : (
