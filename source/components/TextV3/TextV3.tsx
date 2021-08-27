@@ -98,6 +98,17 @@ const TextV3 = {
       </TextV3.base>
     )
   },
+  Body: ({ children, color, align }: ITextProps) => {
+    return (
+      <TextV3.base
+        color={color}
+        textStyle={styles.body}
+        align={align}
+      >
+        {children}
+      </TextV3.base>
+    )
+  },
   BodyStrong: ({ children, color, align }: ITextProps) => {
     return (
       <TextV3.base
