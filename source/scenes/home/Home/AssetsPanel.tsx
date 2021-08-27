@@ -1,9 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
-import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
-// import AddIcon from '@material-ui/icons/Add';
-import IconButton from '@material-ui/core/IconButton';
 import { v4 as uuid } from 'uuid';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -34,11 +31,6 @@ const AssetsPanel: FC = () => {
     if (ev.target.scrollTop) setShowed(true);
     setScrollArea(ev.target);
   }, []);
-
-  const handleGoTop = () => {
-    scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
-    setShowed(false);
-  };
 
   const handleSelectAsset = async (asset: IAssetState) => {
     await controller.wallet.account.updateAccountActiveAsset(asset);
