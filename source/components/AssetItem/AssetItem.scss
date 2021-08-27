@@ -95,8 +95,10 @@ li.assetItem {
   }
 
   .iconWrapper {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    border: 1px solid $grey-100;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -104,7 +106,7 @@ li.assetItem {
     margin-right: 12px;
 
     img {
-      width: 100%;
+      width: 32px;
     }
   }
 }
