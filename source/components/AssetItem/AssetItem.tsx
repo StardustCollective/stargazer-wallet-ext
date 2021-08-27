@@ -1,31 +1,75 @@
+///////////////////////
+// Modules
+///////////////////////
+
 import React, { FC, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 
-import { formatNumber, formatPrice } from 'scenes/home/helpers';
-import { IAssetInfoState } from 'state/assets/types';
+///////////////////////
+// Components
+///////////////////////
+
+import Card from 'components/Card';
+
+///////////////////////
+// State
+///////////////////////
+
 import { RootState } from 'state/store';
+
+///////////////////////
+// Helpers
+///////////////////////
+
+import { formatNumber, formatPrice } from 'scenes/home/helpers';
+
+///////////////////////
+// Styles
+///////////////////////
+
+import styles from './AssetItem.scss';
+
+///////////////////////
+// Types
+///////////////////////
+
+import { IAssetInfoState } from 'state/assets/types';
 import IVaultState, { IAssetState } from 'state/vault/types';
 import IPriceState from 'state/price/types';
 
-import styles from './AssetItem.scss';
-interface IAssetItem {
+type IAssetItem = {
   asset: IAssetState;
   assetInfo: IAssetInfoState;
   itemClicked: () => void;
 }
+
+///////////////////////
+// Component
+///////////////////////
 
 const AssetItem: FC<IAssetItem> = ({
   asset,
   assetInfo,
   itemClicked,
 }: IAssetItem) => {
+
+  ///////////////////////
+  // Selectors
+  ///////////////////////
+
   const { balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
 
+
+  ///////////////////////
+  // Render
+  ///////////////////////
+
   return (
     <Fragment key={asset.id}>
+      <Card>
       <li className={styles.assetItem} onClick={() => itemClicked()}>
         <div>
           <div className={styles.iconWrapper}>
@@ -69,6 +113,7 @@ const AssetItem: FC<IAssetItem> = ({
           </span>
         </div>
       </li>
+      </Card>
     </Fragment>
   );
 };
