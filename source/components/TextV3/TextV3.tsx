@@ -29,6 +29,7 @@ export enum TEXT_ALIGN_ENUM {
 interface ITextProps {
   children?: React.ReactNode;
   textStyle?: string;
+  extraStyles?: string;
   color?: COLORS_ENUMS;
   align?: TEXT_ALIGN_ENUM;
 }
@@ -42,7 +43,8 @@ const TextV3 = {
       children, 
       color = COLORS_ENUMS.WHITE, 
       align = TEXT_ALIGN_ENUM.LEFT,
-      textStyle = '' 
+      textStyle = '' ,
+      extraStyles = ''
   }: ITextProps) => {
 
     let colorStyle = ''; 
@@ -70,62 +72,80 @@ const TextV3 = {
         colorStyle, 
         alignStyle,
         textStyle, 
+        extraStyles,
         ])}
       >
         {children}
       </span>
     )
   },
-  HeaderDisplay: ({ children, color, align }: ITextProps) => {
+  HeaderDisplay: ({ children, color, align, extraStyles }: ITextProps) => {
     return (
       <TextV3.base
         color={color}
         textStyle={styles.headerDisplay}
         align={align}
+        extraStyles={extraStyles}
       >
         {children}
       </TextV3.base>
     )
   },
-  HeaderLarge: ({ children, color, align }: ITextProps) => {
+  HeaderLarge: ({ children, color, align, extraStyles }: ITextProps) => {
     return (
       <TextV3.base
         color={color}
         textStyle={styles.headerLarge}
         align={align}
+        extraStyles={extraStyles}
       >
         {children}
       </TextV3.base>
     )
   },
-  Body: ({ children, color, align }: ITextProps) => {
+  Body: ({ children, color, align, extraStyles }: ITextProps) => {
     return (
       <TextV3.base
         color={color}
         textStyle={styles.body}
         align={align}
+        extraStyles={extraStyles}
       >
         {children}
       </TextV3.base>
     )
   },
-  BodyStrong: ({ children, color, align }: ITextProps) => {
+  BodyStrong: ({ children, color, align, extraStyles }: ITextProps) => {
     return (
       <TextV3.base
         color={color}
         textStyle={styles.bodyStrong}
         align={align}
+        extraStyles={extraStyles}
       >
         {children}
       </TextV3.base>
     )
   },
-  CaptionStrong: ({ children, color, align }: ITextProps) => {
+  Caption: ({ children, color, align, extraStyles }: ITextProps) => {
+    return (
+      <TextV3.base
+        color={color}
+        textStyle={styles.caption}
+        align={align}
+        extraStyles={extraStyles}
+      >
+        {children}
+      </TextV3.base>
+    )
+  },
+  CaptionStrong: ({ children, color, align, extraStyles }: ITextProps) => {
     return (
       <TextV3.base
         color={color}
         textStyle={styles.captionStrong}
         align={align}
+        extraStyles={extraStyles}
       >
         {children}
       </TextV3.base>
