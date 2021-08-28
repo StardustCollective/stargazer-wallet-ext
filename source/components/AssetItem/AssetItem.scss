@@ -1,14 +1,12 @@
 @import '~assets/styles/variables';
 
-li.assetItem {
+div.assetItem {
   width: 352px;
   height: 80px;
   display: flex;
   box-sizing: border-box;
   flex-direction: row;
-  padding: 0 36px;
   align-items: center;
-  justify-content: space-between;
   transition: all 0.3s;
   cursor: pointer;
 
@@ -17,96 +15,52 @@ li.assetItem {
     background-color: $gray-light;
   }
 
-  & > div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    &:first-child > span {
-      font-size: 16px;
-    }
-
-    & > span {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: start;
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 24px;
-      color: $gray-dark;
-
-      & > span {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-end;
-
-        & > b {
-          font-weight: 500;
-          font-size: 12px;
-          line-height: 18px;
-          margin-left: 4px;
-        }
-      }
-
-      & > p {
-        margin: 0;
-        padding: 0;
-        margin-top: 4px;
-        & > small {
-          font-weight: 500;
-          font-size: 12px;
-          line-height: 18px;
-          color: $gray-100;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: auto;
-          text-align: left;
-          display: inline-block;
-          overflow: hidden;
-          margin-right: 5px;
-          &.red {
-            color: $red-100;
-          }
-          &.green {
-            color: $green-100;
-          }
-        }
-      }
-    }
-
-    &:last-child > span {
-      align-items: flex-end;
-      justify-content: end;
-    }
-  }
-
-  .bullet {
-    height: 16px;
-    width: auto;
-    margin-right: 12px;
-    color: $purple;
-  }
-
-  .angle {
-    height: 25px;
-    margin-left: 12px;
-    color: $gray-medium;
-  }
-
-  .iconWrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 24px;
-    border: 1px solid $grey-100;
+  .assetIcon {
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    margin-right: 12px;
-
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    border: 1px solid $grey-100;
+    margin-left: 24px;
     img {
       width: 32px;
     }
   }
+
+  .assetName {
+    margin-left: 16px;
+
+    span:first-child {
+      margin-bottom: 8px;
+    }
+
+    span:last-child {
+      margin-left: 8px;
+    }
+
+    .red {
+      color: $red-100;
+    }
+    .green {
+      color: $green-100;
+    }
+  }
+
+  .assetBalance {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 24px;
+    span:first-child {
+      margin-right: 8px;
+    }
+
+  }
+
+
+
 }

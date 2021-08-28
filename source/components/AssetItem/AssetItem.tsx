@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 ///////////////////////
 
 import Card from 'components/Card';
+import TextV3 from 'components/TextV3';
 
 ///////////////////////
 // State
@@ -28,6 +29,12 @@ import { formatNumber, formatPrice } from 'scenes/home/helpers';
 ///////////////////////
 
 import styles from './AssetItem.scss';
+
+///////////////////////
+// Enums
+///////////////////////
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////
 // Types
@@ -65,25 +72,34 @@ const AssetItem: FC<IAssetItem> = ({
   ///////////////////////
   // Render
   ///////////////////////
-
+  
   return (
+
     <Fragment key={asset.id}>
       <Card>
-      <li className={styles.assetItem} onClick={() => itemClicked()}>
-        <div>
-          <div className={styles.iconWrapper}>
-            <img src={'/'+assetInfo.logo}></img>
+        <div className={styles.assetItem} onClick={() => itemClicked()}>
+          <div className={styles.assetIcon}>
+            <img src={'/' + assetInfo.logo}></img>
           </div>
-          <span>
-            {assetInfo.label}
+          <div className={styles.assetName}>
+            <TextV3.BodyStrong
+              color={COLORS_ENUMS.BLACK}
+            >
+              {assetInfo.label}
+            </TextV3.BodyStrong>
             {assetInfo.priceId &&
               fiat[assetInfo.priceId]?.price &&
               fiat[assetInfo.priceId]?.priceChange && (
-                <p>
-                  <small>{formatPrice(fiat[assetInfo.priceId].price)}</small>
+                <div>
+                  <TextV3.Caption
+                    color={COLORS_ENUMS.BLACK}
+                  >
+                    {formatPrice(fiat[assetInfo.priceId].price)}
+                  </TextV3.Caption>
                   {
-                    <small
-                      className={
+                    <TextV3.Caption
+                      color={COLORS_ENUMS.BLACK}
+                      extraStyles={
                         fiat[assetInfo.priceId].priceChange > 0
                           ? styles.green
                           : styles.red
@@ -97,21 +113,24 @@ const AssetItem: FC<IAssetItem> = ({
                         3
                       )}
                       %
-                    </small>
+                    </TextV3.Caption>
                   }
-                </p>
+                </div>
               )}
-          </span>
-        </div>
-        <div>
-          <span>
-            <span>
+          </div>
+          <div className={styles.assetBalance}>
+            <TextV3.Header
+             color={COLORS_ENUMS.BLACK}
+            >
               {formatNumber(Number(balances[asset.id]), 2, 2)}
-              <b>{assetInfo.symbol}</b>
-            </span>
-          </span>
+            </TextV3.Header>
+            <TextV3.Caption
+             color={COLORS_ENUMS.BLACK}
+            >
+              {assetInfo.symbol}
+            </TextV3.Caption>
+          </div>
         </div>
-      </li>
       </Card>
     </Fragment>
   );
