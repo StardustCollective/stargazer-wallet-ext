@@ -1,23 +1,71 @@
+//////////////////////
+// Modules Imports
+///////////////////// 
+
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { browser } from 'webextension-polyfill-ts';
+import clsx from 'clsx';
+
+
+//////////////////////
+// Component Imports
+///////////////////// 
+
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
+import Link from 'components/Link';
+
+//////////////////////
+// Hooks Imports
+///////////////////// 
+
 import { useForm } from 'react-hook-form';
 import { useController } from 'hooks/index';
+
+//////////////////////
+// Images Imports
+///////////////////// 
+
 import LogoImage from 'assets/images/logo.svg';
 
-import { schema } from './consts';
-import styles from './Start.scss';
-import { IDAppState } from 'state/dapp/types';
-import { useSelector } from 'react-redux';
-import { RootState } from 'state/store';
-import { browser } from 'webextension-polyfill-ts';
+//////////////////////
+// Navigation
+///////////////////// 
+
 import { useLinkTo, useNavigation } from '@react-navigation/native';
 import navigationUtil from 'navigation/util';
 import screens from 'navigation/screens';
-import Link from 'components/Link';
-import clsx from 'clsx';
+
+//////////////////////
+// State Imports
+///////////////////// 
+
+import { IDAppState } from 'state/dapp/types';
+import { RootState } from 'state/store';
+
+//////////////////////
+// Styles Imports
+///////////////////// 
+
+import styles from './Start.scss';
+
+//////////////////////
+// Constants
+///////////////////// 
+
+import { schema } from './consts';
+
+//////////////////////
+// Component
+///////////////////// 
 
 const Starter = () => {
+
+  //////////////////////
+  // Hooks
+  ///////////////////// 
+
   const linkTo = useLinkTo();
   const navigation = useNavigation();
   const controller = useController();
@@ -31,6 +79,10 @@ const Starter = () => {
   const errorClass = clsx(styles.error, {
     [styles.confirm]: location.pathname.includes('confirm.html'),
   });
+
+  //////////////////////
+  // Callbacks
+  ///////////////////// 
 
   const onSubmit = (data: any) => {
     controller.wallet.unLock(data.password).then(async (res) => {
@@ -54,6 +106,10 @@ const Starter = () => {
   const onImportClicked = () => {
     linkTo('/import')
   }
+
+  //////////////////////
+  // Renders
+  ///////////////////// 
 
   return (
     <div className={styles.home}>
