@@ -1,28 +1,71 @@
-import React, { useEffect, useMemo , useLayoutEffect} from 'react';
+///////////////////////
+// Modules
+///////////////////////
+
+import React, { useEffect, useMemo, useLayoutEffect } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
+import { formatNumber, getAddressURL } from '../helpers';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+
+///////////////////////
+// Components
+///////////////////////
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
-
 import Button from 'components/Button';
 import TxsPanel from './TxsPanel';
+import Card from 'components/Card';
+
+///////////////////////
+// Hooks
+///////////////////////
+
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
+
+///////////////////////
+// State
+///////////////////////
+
 import { RootState } from 'state/store';
-import IVaultState, { AssetType } from 'state/vault/types';
-import IAssetListState from 'state/assets/types';
-import { formatNumber, getAddressURL } from '../helpers';
+
+///////////////////////
+// Navigation
+///////////////////////
+
 import assetHeader from 'navigation/headers/asset';
 
-import styles from './Asset.scss';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+///////////////////////
+// Styles
+///////////////////////
 
-interface IAssetDetail {
+import styles from './Asset.scss';
+
+///////////////////////
+// Types
+///////////////////////
+
+import IVaultState, { AssetType } from 'state/vault/types';
+import IAssetListState from 'state/assets/types';
+
+type IAssetDetail = {
   navigation: any;
 }
 
+///////////////////////
+// Component
+///////////////////////
+
 const AssetDetail = ({ navigation }: IAssetDetail) => {
+
+
+  ///////////////////////
+  // Hooks
+  ///////////////////////
+
   const controller = useController();
   const getFiatAmount = useFiat();
   const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
@@ -56,6 +99,11 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
     });
   }, []);
 
+
+  ///////////////////////
+  // Callbacks
+  ///////////////////////
+
   const handleRefresh = () => {
     controller.wallet.account.getLatestTxUpdate();
     if (activeAsset.type === AssetType.Constellation) {
@@ -72,6 +120,11 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
   };
 
   const networkId = activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
+
+
+  ///////////////////////
+  // Renders
+  ///////////////////////
 
   return (
     <div className={styles.wrapper}>
