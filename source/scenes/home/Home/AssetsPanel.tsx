@@ -49,11 +49,11 @@ const AssetsPanel: FC = () => {
             (asset) =>
               assets[asset.id].network === 'both' ||
               assets[asset.id].network ===
-                activeNetwork[
-                  asset.type === AssetType.Constellation
-                    ? KeyringNetwork.Constellation
-                    : KeyringNetwork.Ethereum
-                ]
+              activeNetwork[
+              asset.type === AssetType.Constellation
+                ? KeyringNetwork.Constellation
+                : KeyringNetwork.Ethereum
+              ]
           )
           .map((asset) => {
             return (
@@ -74,22 +74,24 @@ const AssetsPanel: FC = () => {
       className={clsx(styles.activity, { [styles.expanded]: isShowed })}
       onScroll={handleScroll}
     >
-      {Object.keys(activeWallet.assets).length ? (
-        <>{renderAssetList()}</>
-      ) : (
-        <>
-          <span className={styles.noTxComment}>
-            You have no assets. Please add new Asset by Click + icon.
-          </span>
-          <img
-            src={StargazerIcon}
-            className={styles.stargazer}
-            alt="stargazer"
-            height="167"
-            width="auto"
-          />
-        </>
-      )}
+      <div className={styles.content}>
+        {Object.keys(activeWallet.assets).length ? (
+          <>{renderAssetList()}</>
+        ) : (
+          <>
+            <span className={styles.noTxComment}>
+              You have no assets. Please add new Asset by Click + icon.
+            </span>
+            <img
+              src={StargazerIcon}
+              className={styles.stargazer}
+              alt="stargazer"
+              height="167"
+              width="auto"
+            />
+          </>
+        )}
+      </div>
     </section>
   );
 };
