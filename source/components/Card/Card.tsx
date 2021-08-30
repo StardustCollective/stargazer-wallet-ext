@@ -14,8 +14,8 @@ import styles from './Card.scss';
 // Interface
 ///////////////////////
 interface ICardProps {
-  children: React.ReactNode;
-  onClick: () => void;
+  children?: React.ReactNode;
+  onClick?: () => void;
 }
 
 ///////////////////////
