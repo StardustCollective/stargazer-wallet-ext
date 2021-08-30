@@ -10,8 +10,7 @@ import clsx from 'clsx';
 // Components
 /////////////////////
 
-import TextV3 from 'components/TextV3';
-
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 
 //////////////////////
 // Styles
@@ -95,7 +94,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
     ])}
     onClick={onClick}
     >
-      <TextComponent>
+      <TextComponent align={TEXT_ALIGN_ENUM.CENTER}>
         {label}
       </TextComponent>
     </div>
