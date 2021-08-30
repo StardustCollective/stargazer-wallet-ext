@@ -15,16 +15,17 @@ import styles from './Card.scss';
 ///////////////////////
 interface ICardProps {
   children: React.ReactNode;
+  onClick: () => void;
 }
 
 ///////////////////////
 // Component
 ///////////////////////
 
-const Card = ({ children }: ICardProps) => {
+const Card = ({ children, onClick }: ICardProps) => {
 
   return (
-    <div className={styles.card}>
+    <div onClick={onClick} className={styles.card}>
       {children}
     </div>
   );
