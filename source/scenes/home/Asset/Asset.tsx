@@ -17,7 +17,6 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Button from 'components/Button';
 import TxsPanel from './TxsPanel';
-import Card from 'components/Card';
 
 ///////////////////////
 // Hooks
