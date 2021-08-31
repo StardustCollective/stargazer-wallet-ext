@@ -7,6 +7,7 @@
   justify-content: start;
   width: 100%;
   height: 100%;
+  background-color: $primary;
 
   .mask {
     transition: all 0.3s;
@@ -46,7 +47,6 @@
     height: 60px;
     width: 100%;
     margin-top: 72px;
-    border-bottom: 1px solid $gray-100;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -88,49 +88,25 @@
 
   section.center {
     width: 100%;
-    height: 180px;
-    border-bottom: 1px solid $gray-100;
+    height: 216px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     position: relative;
 
-    .refresh {
-      position: absolute;
-      width: 32px;
-      right: 30px;
-      height: 32px;
-      color: $gray-100;
-    }
-
-    & > span {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 36px;
-      color: $gray-dark;
-    }
-
-    & > h3 {
-      font-weight: 500;
-      font-size: 33px;
-      line-height: 48px;
-      margin: 0px;
-      color: $gray-dark;
-
-      small {
-        font-weight: 500;
-        font-size: 18px;
-        line-height: 24px;
+    .balance {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      span:first-child{
+        margin-right: 8px;
       }
     }
 
-    & > small {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
-      color: $gray-100;
-      margin-top: 8px;
+    .fiatBalance {
+      opacity: 0.5;
+      margin-bottom: 16px;
     }
 
     .actions {

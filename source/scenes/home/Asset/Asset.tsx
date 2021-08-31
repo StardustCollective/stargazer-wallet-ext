@@ -13,9 +13,8 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 ///////////////////////
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import IconButton from '@material-ui/core/IconButton';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import Button from 'components/Button';
+import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import TextV3 from 'components/TextV3';
 import TxsPanel from './TxsPanel';
 
 ///////////////////////
@@ -36,6 +35,7 @@ import { RootState } from 'state/store';
 ///////////////////////
 
 import assetHeader from 'navigation/headers/asset';
+import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////
 // Styles
@@ -65,6 +65,7 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
   // Hooks
   ///////////////////////
 
+  const linkTo = useLinkTo();
   const controller = useController();
   const getFiatAmount = useFiat();
   const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
@@ -120,6 +121,9 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
 
   const networkId = activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
 
+  const onSendClick = () => {
+    linkTo('/send');
+  }
 
   ///////////////////////
   // Renders
@@ -130,25 +134,26 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
       {activeWallet && activeAsset ? (
         <>
           <section className={styles.center}>
-            <h3>
-              {formatNumber(balance, 2, 4)}{' '}
-              <small>{assets[activeAsset.id].symbol}</small>
-            </h3>
-            <small>
-              ≈ {getFiatAmount(balance, (balance >= 0.01) ? 2 : 4)}
-            </small>
-            <IconButton className={styles.refresh} onClick={handleRefresh}>
-              <RefreshIcon />
-            </IconButton>
+            <div className={styles.balance}>
+              <TextV3.HeaderDisplay>
+                {formatNumber(balance, 2, 4)}{' '}
+              </TextV3.HeaderDisplay>
+              <TextV3.Body>
+                {assets[activeAsset.id].symbol}
+              </TextV3.Body>
+            </div>
+            <div className={styles.fiatBalance}>
+              <TextV3.Body>
+                ≈ {getFiatAmount(balance, (balance >= 0.01) ? 2 : 4)}
+              </TextV3.Body>
+            </div>
             <div className={styles.actions}>
-              <Button
-                type="button"
-                theme="primary"
-                variant={styles.button}
-                linkTo="/send"
-              >
-                Send
-              </Button>
+              <ButtonV3
+                label={'Send'}
+                size={BUTTON_SIZES_ENUM.LARGE}
+                type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
+                onClick={onSendClick}
+              />
             </div>
           </section>
           <TxsPanel
