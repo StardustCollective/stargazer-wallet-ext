@@ -57,12 +57,21 @@
     .footer__left {
       display: flex;
       flex: 1;
+      align-items: center;
+      cursor: pointer;
+      img {
+        margin-right: 10px;
+      }
     }
     .footer__right {
       display: flex;
       flex: 1;
+      align-items: center;
       justify-content: flex-end;
       cursor: pointer;
+      img {
+        margin-left: 8px;
+      }
     }
   }
 }

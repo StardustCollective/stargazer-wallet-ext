@@ -18,6 +18,8 @@ import TextV3 from 'components/TextV3';
 import walletIcon from 'assets/images/svg/wallet.svg'
 import contactsIcon from 'assets/images/svg/contacts.svg'
 import networksIcon from 'assets/images/svg/networks.svg'
+import infoIcon from 'assets/images/svg/info.svg'
+import exitIcon from 'assets/images/svg/exit.svg'
 
 ///////////////////////
 // Hooks
@@ -52,7 +54,6 @@ type IRenderSettingsItemProps = {
 // Constants
 ///////////////////////
 
-const ICON_WIDTH_NUMBER = 25;
 
 ///////////////////////
 // Scene
@@ -126,7 +127,8 @@ const Main: FC = () => {
         </div>
       </div>
       <div className={styles.footer}>
-        <div className={styles.footer__left}>
+        <div onClick={onAboutLinkClicked} className={styles.footer__left}>
+          <img src={'/'+ infoIcon} />
           <TextV3.Caption>
             Stargazer Wallet {version}
           </TextV3.Caption>
@@ -135,6 +137,7 @@ const Main: FC = () => {
           <TextV3.Caption>
             Logout
           </TextV3.Caption>
+          <img src={'/'+ exitIcon} />
         </div>
       </div>
     </div>
