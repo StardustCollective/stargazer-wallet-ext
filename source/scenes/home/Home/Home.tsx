@@ -67,15 +67,21 @@ const Home = ({ navigation, route }: IHome) => {
             <>
               <section className={styles.center}>
                 <div className={styles.price}>
-                  <TextV3.Body>
-                    {priceObject.symbol}
-                  </TextV3.Body>
-                  <TextV3.HeaderDisplay>
-                    {priceObject.balance}
-                  </TextV3.HeaderDisplay>
+                  <div className={styles.symbol}>
+                    <TextV3.Body>
+                      {priceObject.symbol}
+                    </TextV3.Body>
+                  </div>
+                  <div className={styles.balance}>
+                    <TextV3.HeaderDisplay dynamic>
+                      {priceObject.balance}
+                    </TextV3.HeaderDisplay>
+                  </div>
+                  <div className={styles.name}>
                   <TextV3.Body>
                     {priceObject.name}
                   </TextV3.Body>
+                  </div>
                 </div>
                 <div className={styles.bitcoinBalance}>
                   <TextV3.Body>

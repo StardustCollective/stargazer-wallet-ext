@@ -52,15 +52,19 @@ div.assetItem {
   .assetBalance {
     display: flex;
     flex: 1;
+    overflow: hidden;
     align-items: center;
     justify-content: flex-end;
-    margin-right: 24px;
+    padding-left: 20px;
     span:first-child {
       margin-right: 8px;
     }
-
   }
 
-
+  .assetSymbol {
+    display: flex;
+    align-items: center;
+    margin-right: 24px;
+  }
 
 }

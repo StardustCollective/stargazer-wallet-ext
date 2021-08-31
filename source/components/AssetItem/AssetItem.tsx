@@ -120,12 +120,15 @@ const AssetItem: FC<IAssetItem> = ({
           </div>
           <div className={styles.assetBalance}>
             <TextV3.Header
-             color={COLORS_ENUMS.BLACK}
+              dynamic
+              color={COLORS_ENUMS.BLACK}
             >
               {formatNumber(Number(balances[asset.id]), 2, 2)}
             </TextV3.Header>
-            <TextV3.Caption
-             color={COLORS_ENUMS.BLACK}
+          </div>
+          <div className={styles.assetSymbol}>
+          <TextV3.Caption
+              color={COLORS_ENUMS.BLACK}
             >
               {assetInfo.symbol}
             </TextV3.Caption>
