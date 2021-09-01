@@ -104,14 +104,6 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
   // Callbacks
   ///////////////////////
 
-  const handleRefresh = () => {
-    controller.wallet.account.getLatestTxUpdate();
-    if (activeAsset.type === AssetType.Constellation) {
-      controller.wallet.account.assetsBalanceMonitor.refreshDagBalance();
-    }
-    controller.stateUpdater();
-  };
-
   const fetchTxs = () => {
     if (activeAsset.type === AssetType.Constellation) {
       return activeAsset.transactions;
