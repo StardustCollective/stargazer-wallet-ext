@@ -10,8 +10,7 @@ import { formatDistanceDate } from '../../helpers';
 ///////////////////////
 
 import Spinner from '@material-ui/core/CircularProgress';
-import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
-import GasSettings from '../GasSettings';
+// import GasSettings from '../GasSettings';
 import TextV3 from 'components/TextV3';
 
 ///////////////////////
