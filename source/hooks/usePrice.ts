@@ -34,7 +34,7 @@ export function useFiat(currencyName = true) {
   };
 }
 
-export function useTotalBalance(currencyName = true) {
+export function useTotalBalance() {
 
   const { fiat, currency }: IPriceState = useSelector(
     (state: RootState) => state.price
