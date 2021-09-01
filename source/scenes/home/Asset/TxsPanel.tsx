@@ -29,7 +29,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     (state: RootState) => state.assets
   );
   // const account = accounts[activeAccountId];
-  const [scrollArea, setScrollArea] = useState<HTMLElement>();
+  // const [scrollArea, setScrollArea] = useState<HTMLElement>();
 
   const isETH = activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
 
@@ -71,10 +71,10 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     
   };
 
-  const handleGoTop = () => {
-    scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
-    setShowed(false);
-  };
+  // const handleGoTop = () => {
+  //   scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
+  //   setShowed(false);
+  // };
 
   return (
     <div
