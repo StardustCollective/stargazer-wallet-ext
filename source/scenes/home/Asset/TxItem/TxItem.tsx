@@ -77,14 +77,6 @@ const TxItem: FC<ITxItem> = ({
   onItemClick,
 }) => {
 
-  const handleOpenExplorer = () => {
-
-    if (onItemClick) {
-      onItemClick(isETHPending ? tx.txHash : tx.hash);
-    }
-
-  }
-
   const RenderIcon: FC = () => {
     if (!isETH) {
       return (
