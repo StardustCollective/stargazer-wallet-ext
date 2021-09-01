@@ -126,13 +126,6 @@ const AssetItem: FC<IAssetItem> = ({
               {formatNumber(Number(balances[asset.id]), 2, 2)}
             </TextV3.Header>
           </div>
-          <div className={styles.assetSymbol}>
-          <TextV3.Caption
-              color={COLORS_ENUMS.BLACK}
-            >
-              {assetInfo.symbol}
-            </TextV3.Caption>
-          </div>
         </div>
       </Card>
     </Fragment>
