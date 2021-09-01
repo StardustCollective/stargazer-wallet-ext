@@ -17,8 +17,6 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 const AssetsPanel: FC = () => {
   const controller = useController();
   const linkTo = useLinkTo();
-  const [isShowed, setShowed] = useState<boolean>(false);
-  const [scrollArea, setScrollArea] = useState<HTMLElement>();
   const { activeWallet, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -26,20 +24,10 @@ const AssetsPanel: FC = () => {
     (state: RootState) => state.assets
   );
 
-  const handleScroll = useCallback((ev) => {
-    ev.persist();
-    if (ev.target.scrollTop) setShowed(true);
-    setScrollArea(ev.target);
-  }, []);
-
   const handleSelectAsset = async (asset: IAssetState) => {
     await controller.wallet.account.updateAccountActiveAsset(asset);
     linkTo('/asset');
   };
-
-  // const handleAddAsset = () => {
-  //   history.push('/asset/add');
-  // };
 
   const renderAssetList = () => {
     return (
@@ -71,8 +59,7 @@ const AssetsPanel: FC = () => {
 
   return (
     <section
-      className={clsx(styles.activity, { [styles.expanded]: isShowed })}
-      onScroll={handleScroll}
+      className={styles.activity}
     >
       <div className={styles.content}>
         {Object.keys(activeWallet.assets).length ? (
