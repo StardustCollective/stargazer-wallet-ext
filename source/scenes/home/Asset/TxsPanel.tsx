@@ -1,9 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
-import clsx from 'clsx';
 import { useFiat } from 'hooks/usePrice';
 import { useSelector } from 'react-redux';
-import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
-import IconButton from '@material-ui/core/IconButton';
 
 import { useController } from 'hooks/index';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
@@ -54,16 +51,16 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     }
   };
 
-  const handleScroll = useCallback((ev) => {
-    ev.persist();
-    // setShowed(ev.target.scrollTop);
-    if (ev.target.scrollTop) setShowed(true);
-    setScrollArea(ev.target);
-    const scrollOffset = ev.target.scrollHeight - ev.target.scrollTop;
-    if (scrollOffset === ev.target.clientHeight) {
-      handleFetchMoreTxs();
-    }
-  }, []);
+  // const handleScroll = useCallback((ev) => {
+  //   ev.persist();
+  //   // setShowed(ev.target.scrollTop);
+  //   if (ev.target.scrollTop) setShowed(true);
+  //   setScrollArea(ev.target);
+  //   const scrollOffset = ev.target.scrollHeight - ev.target.scrollTop;
+  //   if (scrollOffset === ev.target.clientHeight) {
+  //     handleFetchMoreTxs();
+  //   }
+  // }, []);
 
   const handleOpenExplorer = (tx: string) => {
     const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
@@ -80,20 +77,11 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   };
 
   return (
-    <section
-      className={clsx(styles.activity, { [styles.expanded]: isShowed })}
-      onScroll={handleScroll}
+    <div
+      className={styles.activity}
     >
-      <div className={styles.heading}>
-        Activity
-        {!!isShowed && (
-          <IconButton className={styles.goTop} onClick={handleGoTop}>
-            <GoTopIcon />
-          </IconButton>
-        )}
-      </div>
       {transactions.length ? (
-        <div className={styles.transactionList}>
+        <div>
           {transactions.map((tx: Transaction, idx: number) => {
             const isETHPending = isETH && tx.assetId === activeAsset.id;
             const isReceived =
@@ -105,12 +93,12 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
               (isETH && !tx.assetId && tx.from && tx.from[0].from.toLowerCase() === address.toLowerCase()) ||
               (isETHPending && tx.fromAddress.toLowerCase() === address.toLowerCase());
             const isSelf = isSent && isReceived;
-            const txTypeLabel = isReceived ? `From: ${isETHPending ? tx.fromAddress
+            const txTypeLabel = isReceived ? `${isETHPending ? tx.fromAddress
               : isETH
                 ? tx.from && tx.from[0].from
                 : tx.sender
               }`
-              : `To: ${isETHPending
+              : `${isETHPending
                 ? tx.toAddress
                 : isETH
                   ? tx.to && tx.to[0].to
@@ -128,12 +116,12 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   isSelf={isSelf}
                   isReceived={isReceived}
                   isETHPending={isETHPending}
-                  isGasSettingsVisible={true}
-                  gasSettingsDefaults={{
-                    min: 50,
-                    max: 1000,
-                    current: 40,
-                  }}
+                  // isGasSettingsVisible={true}
+                  // gasSettingsDefaults={{
+                  //   min: 50,
+                  //   max: 1000,
+                  //   current: 40,
+                  // }}
                   showGroupBar={isShowedGroupBar(tx, idx)}
                   txTypeLabel={txTypeLabel}
                   currencySymbol={assets[activeAsset.id].symbol}
@@ -161,7 +149,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     </>
   )
 }
-    </section >
+    </div >
   );
 };
 
