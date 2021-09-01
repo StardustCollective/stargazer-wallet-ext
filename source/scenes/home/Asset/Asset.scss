@@ -1,14 +1,13 @@
-@import '~assets/styles/variables';
+@import "~assets/styles/variables";
 
 .wrapper {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: start;
-  overflow: scroll;
   width: 100%;
+  overflow: auto;
+  max-height: 520px;
   background-color: $primary;
-  
+
   .mask {
     transition: all 0.3s;
     display: flex;
@@ -99,7 +98,7 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      span:first-child{
+      span:first-child {
         margin-right: 8px;
       }
     }
@@ -112,6 +111,7 @@
     .actions {
       display: flex;
       width: 300px;
+      margin-bottom: 32px;
       flex-direction: row;
       justify-content: center;
     }
@@ -121,7 +121,6 @@
     background: $gray-light;
     width: 100%;
     height: 2000px;
-    overflow: scroll;
     border-radius: 8px 8px 0px 0px;
     box-sizing: border-box;
     display: flex;
@@ -447,6 +446,6 @@
   }
 }
 
-:global([data-scrollbar='true']) {
+:global([data-scrollbar="true"]) {
   width: 100%;
 }
