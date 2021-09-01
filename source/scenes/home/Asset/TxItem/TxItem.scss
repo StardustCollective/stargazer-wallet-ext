@@ -36,15 +36,12 @@
         background-color: $primary;
         align-items: center;
         justify-content: center;
+
+        img.recvIcon {
+          transform: scaleX(-1);
+        }
       }
 
-      svg {
-        font-size: 16px;
-      }
-
-      svg.recvIcon {
-        transform: scaleX(-1);
-      }
     }
 
     .txInfo {

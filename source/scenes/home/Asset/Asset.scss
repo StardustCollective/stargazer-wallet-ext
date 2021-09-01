@@ -128,7 +128,7 @@
 
     .spinner {
       svg {
-        color: $black;
+        color: $primary;
       }
     }
 
@@ -300,8 +300,8 @@
             font-size: 16px;
           }
 
-          svg.recvIcon {
-            transform: rotate(180deg);
+          img.recvIcon {
+            transform: scaleX(-1);
           }
         }
 

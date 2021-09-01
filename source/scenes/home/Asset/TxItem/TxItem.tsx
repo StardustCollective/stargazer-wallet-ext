@@ -97,7 +97,7 @@ const TxItem: FC<ITxItem> = ({
               <img src={'/' + TxIcon} />
             )
           ) : (
-            <Spinner size={16} className={styles.spinner} />
+            <Spinner size={24} className={styles.spinner} />
           )}
         </>
       );
@@ -111,7 +111,7 @@ const TxItem: FC<ITxItem> = ({
             <img src={'/' + TxIcon} />
           )
         ) : (
-          <Spinner size={16} className={styles.spinner} />
+          <Spinner size={24} className={styles.spinner} />
         )}
       </>
     );
