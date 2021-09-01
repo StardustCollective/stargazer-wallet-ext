@@ -44,12 +44,12 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
     [transactions]
   );
 
-  const handleFetchMoreTxs = () => {
-    if (transactions.length && !isETH) {
-      const lastTx = [...transactions].pop();
-      controller.wallet.account.updateTxs(10, lastTx.timestamp);
-    }
-  };
+  // const handleFetchMoreTxs = () => {
+  //   if (transactions.length && !isETH) {
+  //     const lastTx = [...transactions].pop();
+  //     controller.wallet.account.updateTxs(10, lastTx.timestamp);
+  //   }
+  // };
 
   // const handleScroll = useCallback((ev) => {
   //   ev.persist();
