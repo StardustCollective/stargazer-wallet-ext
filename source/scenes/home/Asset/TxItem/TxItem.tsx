@@ -42,7 +42,6 @@ type ITxItem = {
   isSelf: boolean;
   isReceived: boolean;
   isETH: boolean;
-  isETHPending: boolean;
   // isGasSettingsVisible: boolean;
   // gasSettingsDefaults: {
   //   min: number;
@@ -54,7 +53,6 @@ type ITxItem = {
   currencySymbol: string;
   amount: string;
   fiatAmount: string;
-  onItemClick?: (hash: string) => void;
 }
 
 ///////////////////////
@@ -66,7 +64,6 @@ const TxItem: FC<ITxItem> = ({
   isETH,
   isSelf,
   isReceived,
-  isETHPending,
   // isGasSettingsVisible,
   // gasSettingsDefaults,
   showGroupBar,
@@ -74,7 +71,6 @@ const TxItem: FC<ITxItem> = ({
   currencySymbol,
   amount,
   fiatAmount,
-  onItemClick,
 }) => {
 
   const RenderIcon: FC = () => {

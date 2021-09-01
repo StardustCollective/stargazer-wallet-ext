@@ -1,17 +1,16 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useFiat } from 'hooks/usePrice';
 import { useSelector } from 'react-redux';
 
-import { useController } from 'hooks/index';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
-import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
+// import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType, Transaction } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import TxItem from './TxItem';
 
 import styles from './Asset.scss';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+// import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 interface ITxsPanel {
   address: string;
@@ -20,9 +19,7 @@ interface ITxsPanel {
 
 const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const getFiatAmount = useFiat();
-  const controller = useController();
-  const [isShowed, setShowed] = useState<boolean>(false);
-  const { activeNetwork, activeAsset }: IVaultState = useSelector(
+  const { activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -62,14 +59,14 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   //   }
   // }, []);
 
-  const handleOpenExplorer = (tx: string) => {
-    const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
-    window.open(
-      isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
-      '_blank'
-    );
+  // const handleOpenExplorer = (tx: string) => {
+  //   const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
+  //   window.open(
+  //     isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
+  //     '_blank'
+  //   );
     
-  };
+  // };
 
   // const handleGoTop = () => {
   //   scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
@@ -115,7 +112,6 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   isETH={isETH}
                   isSelf={isSelf}
                   isReceived={isReceived}
-                  isETHPending={isETHPending}
                   // isGasSettingsVisible={true}
                   // gasSettingsDefaults={{
                   //   min: 50,
@@ -127,7 +123,6 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   currencySymbol={assets[activeAsset.id].symbol}
                   amount={amount}
                   fiatAmount={fiatAmount}
-                  onItemClick={handleOpenExplorer}
                 />
             );
           })}

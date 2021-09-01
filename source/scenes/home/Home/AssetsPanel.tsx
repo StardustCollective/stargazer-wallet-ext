@@ -1,6 +1,5 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import clsx from 'clsx';
 import { v4 as uuid } from 'uuid';
 import { useLinkTo } from '@react-navigation/native';
 

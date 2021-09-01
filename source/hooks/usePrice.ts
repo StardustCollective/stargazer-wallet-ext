@@ -71,7 +71,11 @@ export function useTotalBalance() {
 
   let balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
 
-  const priceObject = {
+  const balanceObject: {
+    symbol: string;
+    balance: string;
+    name: string;
+  } = {
     symbol: currency.symbol || '',
     balance: balanceStr,
     name: currency.name || '',
@@ -81,5 +85,5 @@ export function useTotalBalance() {
 
   balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
 
-  return [priceObject, balanceStr];
+  return [balanceObject, balanceStr];
 }

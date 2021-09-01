@@ -1,8 +1,7 @@
 import React, { useLayoutEffect } from 'react';
-import clsx from 'clsx';
 import { useSelector } from 'react-redux';
+import clsx from 'clsx';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useController } from 'hooks/index';
 import { useTotalBalance } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
@@ -19,7 +18,7 @@ interface IHome {
 }
 
 const Home = ({ navigation, route }: IHome) => {
-  const controller = useController();
+  // const controller = useController();
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -33,7 +32,7 @@ const Home = ({ navigation, route }: IHome) => {
   // const [connected, setConnected] = useState(false);
   // const { accounts, activeAccountId }: IWalletState = useSelector(
   //   (state: RootState) => state.wallet
-  const [priceObject, balance] = useTotalBalance();
+  const [balanceObject, balance] = useTotalBalance();
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -69,17 +68,17 @@ const Home = ({ navigation, route }: IHome) => {
                 <div className={styles.price}>
                   <div className={styles.symbol}>
                     <TextV3.Body>
-                      {priceObject.symbol}
+                      {balanceObject.symbol}
                     </TextV3.Body>
                   </div>
                   <div className={styles.balance}>
                     <TextV3.HeaderDisplay dynamic>
-                      {priceObject.balance}
+                      {balanceObject.balance}
                     </TextV3.HeaderDisplay>
                   </div>
                   <div className={styles.name}>
                   <TextV3.Body>
-                    {priceObject.name}
+                    {balanceObject.name}
                   </TextV3.Body>
                   </div>
                 </div>
