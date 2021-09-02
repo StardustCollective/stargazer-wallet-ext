@@ -122,6 +122,7 @@ const AssetItem: FC<IAssetItem> = ({
             <TextV3.Header
               dynamic
               color={COLORS_ENUMS.BLACK}
+              extraStyles={styles.balanceText}
             >
               {formatNumber(Number(balances[asset.id]), 2, 2)}
             </TextV3.Header>

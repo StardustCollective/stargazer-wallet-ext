@@ -57,5 +57,10 @@ div.assetItem {
     justify-content: flex-end;
     padding-left: 20px;
     margin-right: 24px;
+
+    .balanceText {
+      max-width: 100px;
+      overflow: hidden;
+    }
   }
 }
