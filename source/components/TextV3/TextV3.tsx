@@ -40,11 +40,13 @@ type ITextProps = {
 //////////////////////
 // Components
 ///////////////////// 
+
 /*
  * Dynamic Font Resizing 
- *
+ * Note: For the Dynamic font sized to work properly a `max-width`,
+ * and `overflow: hidden` must be assigned to the Text via 
+ * the extraStyles prop.
  */
-
 
 const TextV3 = {
   base: ({
@@ -74,9 +76,8 @@ const TextV3 = {
     } else if (align === TEXT_ALIGN_ENUM.RIGHT) {
       alignStyle = 't-alignRight';
     }
-
     return (
-      <span className={clsx([
+      <div className={clsx([
         styles.base,
         colorStyle,
         alignStyle,
@@ -87,9 +88,9 @@ const TextV3 = {
         {dynamic ?
           (<DynamicFont content={children as string} />)
           :
-          ([children])
+          (<span>{[children]}</span>)
         }
-      </span>
+      </div>
     )
   },
   HeaderDisplay: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {

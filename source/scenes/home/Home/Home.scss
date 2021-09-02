@@ -112,20 +112,21 @@
   section.center {
     display: flex;
     width: 100%;
-    overflow: hidden;
     height: 160px;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     .price {
       display: flex;
-      overflow: hidden;
       justify-content: center;
       align-items: center;
       .balance {
-        overflow: hidden;
-        margin-left: 10px;
-        margin-right: 10px;
+        margin-left: 8px;
+        margin-right: 8px;
+        .balanceText{
+          overflow: hidden;
+          max-width: 250px;
+        }
       }
     }
     .bitcoinBalance{

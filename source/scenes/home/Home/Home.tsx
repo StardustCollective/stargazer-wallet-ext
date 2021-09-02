@@ -72,14 +72,14 @@ const Home = ({ navigation, route }: IHome) => {
                     </TextV3.Body>
                   </div>
                   <div className={styles.balance}>
-                    <TextV3.HeaderDisplay dynamic>
+                    <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
                       {balanceObject.balance}
                     </TextV3.HeaderDisplay>
                   </div>
                   <div className={styles.name}>
-                  <TextV3.Body>
-                    {balanceObject.name}
-                  </TextV3.Body>
+                    <TextV3.Body>
+                      {balanceObject.name}
+                    </TextV3.Body>
                   </div>
                 </div>
                 <div className={styles.bitcoinBalance}>
