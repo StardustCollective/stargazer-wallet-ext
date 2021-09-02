@@ -144,12 +144,10 @@
       bottom: 0;
     }
 
-    .noTxComment {
-      padding: 12px 36px;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 18px;
-      color: $gray-dark;
+    .noTx {
+      display: flex;
+      flex: 1;
+      margin: 20px;
     }
 
     .heading {

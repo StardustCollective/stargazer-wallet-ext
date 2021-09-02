@@ -2,12 +2,13 @@ import React, { FC, useCallback } from 'react';
 import { useFiat } from 'hooks/usePrice';
 import { useSelector } from 'react-redux';
 
-import StargazerIcon from 'assets/images/svg/stargazer.svg';
 // import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType, Transaction } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import TxItem from './TxItem';
+import TextV3 from 'components/TextV3';
+import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import styles from './Asset.scss';
 // import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
@@ -128,20 +129,13 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
           })}
         </div>
   ) : (
-    <>
-      <span className={styles.noTxComment}>
+    <div className={styles.noTx}>
+      <TextV3.Caption color={COLORS_ENUMS.BLACK}>
         {`You have no transaction history, send or receive $${assets[activeAsset.id].symbol
           } to register
             your first transaction.`}
-      </span>
-      <img
-        src={'/' + StargazerIcon}
-        className={styles.stargazer}
-        alt="stargazer"
-        height="167"
-        width="auto"
-      />
-    </>
+      </TextV3.Caption>
+    </div>
   )
 }
     </div >
