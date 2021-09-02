@@ -76,8 +76,11 @@ const TextV3 = {
     } else if (align === TEXT_ALIGN_ENUM.RIGHT) {
       alignStyle = 't-alignRight';
     }
+
+    const ParentComponent  = dynamic ? 'div' : 'span';
+
     return (
-      <div className={clsx([
+      <ParentComponent className={clsx([
         styles.base,
         colorStyle,
         alignStyle,
@@ -88,9 +91,9 @@ const TextV3 = {
         {dynamic ?
           (<DynamicFont content={children as string} />)
           :
-          (<span>{[children]}</span>)
+          ([children])
         }
-      </div>
+      </ParentComponent>
     )
   },
   HeaderDisplay: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
