@@ -36,7 +36,7 @@ const ImportWallet: FC<IImportWalletView> = () => {
         className={styles.menu}
         onClick={onImportPhraseView}
       >
-        <Icon Component={StargazerIcon} />
+        <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
         <span>Multi Chain Wallet</span>
         <ArrowIcon />
       </section>

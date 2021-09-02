@@ -2,7 +2,6 @@ import React, { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import Layout from 'scenes/common/Layout';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
 
@@ -51,7 +50,6 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
   }, [watch('phrase')]);
 
   return (
-    <Layout title="Let's import your wallet">
       <form className={styles.importForm} onSubmit={handleSubmit(onSubmit)}>
         <span>Paste your recovery seed phrase below:</span>
         <TextInput
@@ -79,7 +77,6 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
           </Button>
         </div>
       </form>
-    </Layout>
   );
 };
 

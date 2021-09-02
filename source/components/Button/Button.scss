@@ -3,7 +3,7 @@
 body {
   .button {
     padding: 8px 40px;
-    font-family: $inter;
+    font-family: $rubik;
     font-weight: $medium;
     font-size: 16px;
     letter-spacing: 0.03em;
@@ -25,7 +25,7 @@ body {
       width: 20px !important;
       height: 20px !important;
       margin-right: 10px;
-      color: $purple;
+      color: $primary;
 
       svg {
         width: 20px;
@@ -35,7 +35,7 @@ body {
 
     &.loading {
       color: $gray-100;
-      background: $purple;
+      background: $primary;
 
       :global .MuiButton-label {
         display: flex;
@@ -44,21 +44,21 @@ body {
     }
 
     &.primary {
-      background: $purple;
+      background: $primary;
       color: $white;
 
       &:hover {
-        background: $purple;
+        background: $primary;
         color: $white;
       }
     }
 
     &.secondary {
-      background: $purple-light;
+      background: $primary_lighter_2;
       color: $purple;
 
       &:hover {
-        background: $purple-light;
+        background: $primary_lighter_2;
         color: $purple;
       }
     }

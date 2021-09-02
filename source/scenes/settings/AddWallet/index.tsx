@@ -23,7 +23,7 @@ const AddWallet = () => {
         className={styles.menu}
         onClick={onCreateNewWalletClicked}
       >
-        <Icon Component={StargazerIcon} />
+        <Icon width={24} Component={StargazerIcon} iconStyles={styles.icon} />
         <span>Create New Wallet</span>
         <ArrowIcon />
       </section>
@@ -31,7 +31,7 @@ const AddWallet = () => {
         className={styles.menu}
         onClick={onImportWalletClicked}
       >
-        <Icon Component={StargazerIcon} />
+        <Icon width={24} Component={StargazerIcon} iconStyles={styles.icon} />
         <span>Import Wallet</span>
         <ArrowIcon />
       </section>

@@ -19,26 +19,28 @@
     margin-bottom: 48px;
     width: 212px;
   }
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 20px;
-  .inputWrapper {
+  
+  form {
     display: flex;
-    width: 100%;
     flex-direction: column;
-    margin-bottom: 10px;
-    .password {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+    .inputWrapper {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
       margin-bottom: 10px;
-    }
-    .errorWrapper span {
-      color: white;
-      font-size: 12px;
+      .password {
+        margin-bottom: 10px;
+      }
+      .errorWrapper span {
+        color: white;
+        font-size: 12px;
+      }
     }
   }
+  
 }
+
