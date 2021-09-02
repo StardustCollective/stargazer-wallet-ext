@@ -98,8 +98,10 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      span:first-child {
-        margin-right: 8px;
+      .balanceText{
+        max-width: 200px;
+        overflow: hidden;
+        margin-right: 8px
       }
     }
 

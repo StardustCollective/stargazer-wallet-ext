@@ -127,7 +127,7 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
         <>
           <section className={styles.center}>
             <div className={styles.balance}>
-              <TextV3.HeaderDisplay>
+              <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
                 {formatNumber(balance, 2, 4)}{' '}
               </TextV3.HeaderDisplay>
               <TextV3.Body>
