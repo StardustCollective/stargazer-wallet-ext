@@ -133,10 +133,10 @@ const TxItem: FC<ITxItem> = ({
           </div>
         </div>
         <div className={styles.txAmount}>
-          <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+          <TextV3.BodyStrong dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountText}>
             {amount}
           </TextV3.BodyStrong>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText}>
             ≈ {fiatAmount}
           </TextV3.Caption>
         </div>

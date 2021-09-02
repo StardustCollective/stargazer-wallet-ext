@@ -71,11 +71,11 @@
       flex-direction: column;
       text-align: right;
       align-items: flex-end;
-
-      span:last-child {
-        font-weight: 500;
-        font-size: 12px;
-        text-align: right;
+      .txAmountText{
+        overflow: hidden;
+        max-width: 100px;
+      }
+      .txAmountFiatText {
         line-height: 18px;
         color: $gray;
         white-space: nowrap;
