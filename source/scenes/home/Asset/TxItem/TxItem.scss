@@ -51,10 +51,6 @@
       justify-content: center;
 
       div:last-child span{
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 18px;
-        color: $gray;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: auto;
@@ -76,8 +72,6 @@
         max-width: 100px;
       }
       .txAmountFiatText {
-        line-height: 18px;
-        color: $gray;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: auto;
