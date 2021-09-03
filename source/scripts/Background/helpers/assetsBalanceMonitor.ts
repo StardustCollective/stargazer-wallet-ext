@@ -11,8 +11,6 @@ import { Subscription } from 'rxjs';
 const FIFTEEN_SECONDS = 15 * 1000;
 const ONE_MINUTE = 60 * 1000;
 
-type FirstRunCallback = (obj: object) => void;
-
 export class AssetsBalanceMonitor {
 
   private priceIntervalId: any;
@@ -20,6 +18,9 @@ export class AssetsBalanceMonitor {
 
   private ethAccountTracker = new AccountTracker({infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }});
   private subscription: Subscription;
+
+  private hasDAGPending = false;
+  private hasETHPending = false;
 
   constructor () {}
 
@@ -36,28 +37,28 @@ export class AssetsBalanceMonitor {
         hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
       });
 
-      const promises = [];
-      let firstRunDagBalance: FirstRunCallback;
-      let firstRunEthBalance: FirstRunCallback;
-
-      if (hasDAG) {
-        const p = new Promise<object>(resolve => firstRunDagBalance = resolve);
-        promises.push(p);
-      }
-
-      if (hasETH) {
-        const p = new Promise<object>(resolve => firstRunEthBalance = resolve);
-        promises.push(p);
-      }
-
-      //On startup, update all balances at the same time
-      Promise.all(promises).then(results => {
-
-        const [dBal, eBal] = results;
-
-        const { balances } = store.getState().vault;
-        store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
-      })
+      // const promises = [];
+      // let firstRunDagBalance: FirstRunCallback;
+      // let firstRunEthBalance: FirstRunCallback;
+      //
+      // if (this.hasDAG) {
+      //   const p = new Promise<object>(resolve => firstRunDagBalance = resolve);
+      //   promises.push(p);
+      // }
+      //
+      // if (this.hasETH) {
+      //   const p = new Promise<object>(resolve => firstRunEthBalance = resolve);
+      //   promises.push(p);
+      // }
+      //
+      // //On startup, update all balances at the same time
+      // Promise.all(promises).then(results => {
+      //
+      //   const [dBal, eBal] = results;
+      //
+      //   const { balances } = store.getState().vault;
+      //   store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
+      // })
 
       if (hasDAG) {
         this.subscription = dag4.monitor.observeMemPoolChange().subscribe((up) => this.pollPendingTxs(up));
@@ -67,12 +68,15 @@ export class AssetsBalanceMonitor {
           clearInterval(this.dagBalIntervalId);
         }
 
-        this.refreshDagBalance(firstRunDagBalance);
+        this.hasDAGPending = true;
+
+        this.refreshDagBalance();
         this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIFTEEN_SECONDS);
       }
 
       if (hasETH) {
-        this.startEthMonitor(activeWallet, activeNetwork, firstRunEthBalance);
+        this.hasETHPending = true;
+        this.startEthMonitor(activeWallet, activeNetwork);
       }
 
       if (this.priceIntervalId) {
@@ -104,19 +108,17 @@ export class AssetsBalanceMonitor {
   }
 
 
-  async refreshDagBalance (firstRunCallback?: FirstRunCallback) {
+  async refreshDagBalance () {
     const bal = await dag4.account.getBalance();
 
-    if (firstRunCallback) {
-      firstRunCallback({ [AssetType.Constellation]: bal });
-    }
-    else {
-      const { balances } = store.getState().vault;
-      store.dispatch(updateBalances({ ...balances, [AssetType.Constellation]: bal }));
-    }
+    this.hasDAGPending = false;
+
+    const { balances } = store.getState().vault;
+    const pending = this.hasETHPending ? 'true' : undefined
+    store.dispatch(updateBalances({ ...balances, [AssetType.Constellation]: bal, pending }));
   }
 
-  private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork, firstRunCallback: FirstRunCallback) {
+  private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
     const assets: IAssetListState = store.getState().assets;
     const chainId = activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' ? 1 : 3;
     const tokens = activeWallet.assets.filter(a => a.type === AssetType.ERC20).map(a => {
@@ -127,13 +129,9 @@ export class AssetsBalanceMonitor {
 
     this.ethAccountTracker.config(ethAsset.address, tokens, chainId, (ethBalance, tokenBals) => {
       const { balances } = store.getState().vault;
-      if (firstRunCallback) {
-        firstRunCallback({ [AssetType.Ethereum]: ethBalance, ...tokenBals });
-        firstRunCallback = null;
-      }
-      else {
-        store.dispatch(updateBalances({ ...balances, [AssetType.Ethereum]: ethBalance, ...tokenBals }));
-      }
+      const pending = this.hasDAGPending ? 'true' : undefined
+      this.hasETHPending = false;
+      store.dispatch(updateBalances({ ...balances, [AssetType.Ethereum]: ethBalance, ...tokenBals, pending }));
     }, 10);
   }
 

@@ -213,7 +213,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
       ) : (
         <>
           <span className={styles.noTxComment}>
-            {`You have no transaction history, send or receive $${
+            {`You have no transaction history, send or receive ${
               assets[activeAsset.id].symbol
             } to register
             your first transaction.`}
