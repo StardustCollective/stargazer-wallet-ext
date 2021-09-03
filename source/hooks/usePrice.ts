@@ -34,7 +34,13 @@ export function useFiat(currencyName = true) {
   };
 }
 
-export function useTotalBalance(currencyName = true) {
+type IBalanceObject = {
+  symbol?: string;
+  balance: string;
+  name?: string;
+}
+
+export function useTotalBalance():[IBalanceObject, string] {
 
   const { fiat, currency }: IPriceState = useSelector(
     (state: RootState) => state.price
@@ -46,7 +52,7 @@ export function useTotalBalance(currencyName = true) {
     (state: RootState) => state.assets
   );
 
-  if (!activeWallet?.assets) return ['0', '0'];
+  if (!activeWallet?.assets) return [{symbol:'', balance: '0', name: ''}, '0'];
 
   const assetIds = activeWallet.assets
     .filter(
@@ -71,13 +77,15 @@ export function useTotalBalance(currencyName = true) {
 
   let balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
 
-  const label = `${currencyName ? currency.symbol : ''}${balanceStr}${
-    currencyName ? ` ${currency.name}` : ''
-  }`;
+  const balanceObject = {
+    symbol: currency.symbol || '',
+    balance: balanceStr,
+    name: currency.name || '',
+  }
 
   balance = (balance / (fiat.bitcoin?.price || 0))
 
   balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
 
-  return [label, balanceStr];
+  return [balanceObject, balanceStr];
 }

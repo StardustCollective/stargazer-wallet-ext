@@ -1,9 +1,5 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import clsx from 'clsx';
-import GoTopIcon from '@material-ui/icons/VerticalAlignTop';
-// import AddIcon from '@material-ui/icons/Add';
-import IconButton from '@material-ui/core/IconButton';
 import { v4 as uuid } from 'uuid';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -20,8 +16,6 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 const AssetsPanel: FC = () => {
   const controller = useController();
   const linkTo = useLinkTo();
-  const [isShowed, setShowed] = useState<boolean>(false);
-  const [scrollArea, setScrollArea] = useState<HTMLElement>();
   const { activeWallet, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -29,39 +23,24 @@ const AssetsPanel: FC = () => {
     (state: RootState) => state.assets
   );
 
-  const handleScroll = useCallback((ev) => {
-    ev.persist();
-    if (ev.target.scrollTop) setShowed(true);
-    setScrollArea(ev.target);
-  }, []);
-
-  const handleGoTop = () => {
-    scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
-    setShowed(false);
-  };
-
   const handleSelectAsset = async (asset: IAssetState) => {
     await controller.wallet.account.updateAccountActiveAsset(asset);
     linkTo('/asset');
   };
 
-  // const handleAddAsset = () => {
-  //   history.push('/asset/add');
-  // };
-
   const renderAssetList = () => {
     return (
-      <ul>
+      <>
         {Object.values(activeWallet.assets)
           .filter(
             (asset) =>
               assets[asset.id].network === 'both' ||
               assets[asset.id].network ===
-                activeNetwork[
-                  asset.type === AssetType.Constellation
-                    ? KeyringNetwork.Constellation
-                    : KeyringNetwork.Ethereum
-                ]
+              activeNetwork[
+              asset.type === AssetType.Constellation
+                ? KeyringNetwork.Constellation
+                : KeyringNetwork.Ethereum
+              ]
           )
           .map((asset) => {
             return (
@@ -73,45 +52,32 @@ const AssetsPanel: FC = () => {
               />
             );
           })}
-      </ul>
+      </>
     );
   };
 
   return (
     <section
-      className={clsx(styles.activity, { [styles.expanded]: isShowed })}
-      onScroll={handleScroll}
+      className={styles.activity}
     >
-      <div className={styles.heading}>
-        {/*{activeWallet.supportedAssets &&*/}
-        {/*  activeWallet.supportedAssets.length > 1 && (*/}
-        {/*    <IconButton onClick={handleAddAsset} className={styles.addAssets}>*/}
-        {/*      <AddIcon />*/}
-        {/*    </IconButton>*/}
-        {/*  )}*/}
-        Your Assets
-        {!!isShowed && (
-          <IconButton className={styles.goTop} onClick={handleGoTop}>
-            <GoTopIcon />
-          </IconButton>
+      <div className={styles.content}>
+        {Object.keys(activeWallet.assets).length ? (
+          <>{renderAssetList()}</>
+        ) : (
+          <>
+            <span className={styles.noTxComment}>
+              You have no assets. Please add new Asset by Click + icon.
+            </span>
+            <img
+              src={StargazerIcon}
+              className={styles.stargazer}
+              alt="stargazer"
+              height="167"
+              width="auto"
+            />
+          </>
         )}
       </div>
-      {Object.keys(activeWallet.assets).length ? (
-        <>{renderAssetList()}</>
-      ) : (
-        <>
-          <span className={styles.noTxComment}>
-            You have no assets. Please add new Asset by Click + icon.
-          </span>
-          <img
-            src={StargazerIcon}
-            className={styles.stargazer}
-            alt="stargazer"
-            height="167"
-            width="auto"
-          />
-        </>
-      )}
     </section>
   );
 };

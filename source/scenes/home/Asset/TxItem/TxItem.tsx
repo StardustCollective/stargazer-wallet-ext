@@ -10,9 +10,15 @@ import { formatDistanceDate } from '../../helpers';
 ///////////////////////
 
 import Spinner from '@material-ui/core/CircularProgress';
-import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
-import LinkIcon from '@material-ui/icons/OpenInNewOutlined';
-import GasSettings from '../GasSettings';
+// import GasSettings from '../GasSettings';
+import TextV3 from 'components/TextV3';
+
+///////////////////////
+// Images
+///////////////////////
+
+import TxIcon from 'assets/images/svg/txIcon.svg';
+
 
 ///////////////////////
 // Styles
@@ -21,33 +27,32 @@ import GasSettings from '../GasSettings';
 import styles from './TxItem.scss'
 
 ///////////////////////
+// Enums
+///////////////////////
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
+
+///////////////////////
 // Types
 ///////////////////////
-
 import { Transaction } from 'state/vault/types';
 
-///////////////////////
-// Interfaces
-///////////////////////
-
-interface ITxItem {
+type ITxItem = {
   tx: Transaction;
   isSelf: boolean;
   isReceived: boolean;
   isETH: boolean;
-  isETHPending: boolean;
-  isGasSettingsVisible: boolean;
-  gasSettingsDefaults: {
-    min: number;
-    max: number;
-    current: number;
-  }
+  // isGasSettingsVisible: boolean;
+  // gasSettingsDefaults: {
+  //   min: number;
+  //   max: number;
+  //   current: number;
+  // }
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
   amount: string;
   fiatAmount: string;
-  onItemClick?: (hash: string) => void;
 }
 
 ///////////////////////
@@ -59,24 +64,14 @@ const TxItem: FC<ITxItem> = ({
   isETH,
   isSelf,
   isReceived,
-  isETHPending,
-  isGasSettingsVisible,
-  gasSettingsDefaults,
+  // isGasSettingsVisible,
+  // gasSettingsDefaults,
   showGroupBar,
   txTypeLabel,
   currencySymbol,
   amount,
   fiatAmount,
-  onItemClick,
 }) => {
-
-  const handleOpenExplorer = () => {
-
-    if (onItemClick) {
-      onItemClick(isETHPending ? tx.txHash : tx.hash);
-    }
-
-  }
 
   const RenderIcon: FC = () => {
     if (!isETH) {
@@ -84,12 +79,12 @@ const TxItem: FC<ITxItem> = ({
         <>
           {tx.checkpointBlock ? (
             isReceived ? (
-              <DoubleArrowIcon className={styles.recvIcon} />
+              <img src={'/' + TxIcon} className={styles.recvIcon} />
             ) : (
-              <DoubleArrowIcon />
+              <img src={'/' + TxIcon} />
             )
           ) : (
-            <Spinner size={16} className={styles.spinner} />
+            <Spinner size={24} className={styles.spinner} />
           )}
         </>
       );
@@ -98,12 +93,12 @@ const TxItem: FC<ITxItem> = ({
       <>
         {!tx.assetId ? (
           isReceived ? (
-            <DoubleArrowIcon className={styles.recvIcon} />
+            <img src={'/' + TxIcon} className={styles.recvIcon} />
           ) : (
-            <DoubleArrowIcon />
+            <img src={'/' + TxIcon} />
           )
         ) : (
-          <Spinner size={16} className={styles.spinner} />
+          <Spinner size={24} className={styles.spinner} />
         )}
       </>
     );
@@ -111,43 +106,46 @@ const TxItem: FC<ITxItem> = ({
 
 
   return (
-    <div className={styles.content}>
+    <div className={styles.txItem}>
       {showGroupBar && (
         <div className={styles.groupBar}>
-          <span>{formatDistanceDate(tx.timestamp)}</span>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} >
+            {formatDistanceDate(tx.timestamp)}
+          </TextV3.CaptionStrong>
         </div>
       )}
-      <div className={styles.txItem} onClick={handleOpenExplorer}>
+      <div className={styles.content}>
         <div className={styles.txIcon}>
-          <RenderIcon />
+          <div className={styles.iconCircle}>
+            <RenderIcon />
+          </div>
         </div>
         <div className={styles.txInfo}>
           <div>
-            <span>
-              {isSelf ? 'Self' : (isReceived ? 'Received' : 'Sent')}
-            </span>
+            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+              {isSelf ? 'Self' : (isReceived ? 'Received' : 'Sent')} {currencySymbol}
+            </TextV3.BodyStrong>
           </div>
           <div>
-            <small>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
               {txTypeLabel}
-            </small>
+            </TextV3.Caption>
           </div>
         </div>
         <div className={styles.txAmount}>
-          <span>{amount}<b>{currencySymbol}</b></span>
-          <small>{fiatAmount}</small>
-        </div>
-        <div className={styles.txExplorerIcon}>
-          <div className={styles.circle}>
-            <LinkIcon />
-          </div>
+          <TextV3.BodyStrong dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountText}>
+            {amount}
+          </TextV3.BodyStrong>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText}>
+            ≈ {fiatAmount}
+          </TextV3.Caption>
         </div>
       </div>
-      {isGasSettingsVisible &&
+      {/* {isGasSettingsVisible &&
         <div className={styles.gasSettings}>
           <GasSettings values={gasSettingsDefaults} />
         </div>
-      }
+      } */}
     </div>
   );
 

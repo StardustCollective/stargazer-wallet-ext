@@ -1,12 +1,12 @@
-@import '~assets/styles/variables';
+@import "~assets/styles/variables";
 
 .wrapper {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: start;
   width: 100%;
-  height: 100%;
+  overflow: auto;
+  max-height: 520px;
+  background-color: $primary;
 
   .mask {
     transition: all 0.3s;
@@ -46,7 +46,6 @@
     height: 60px;
     width: 100%;
     margin-top: 72px;
-    border-bottom: 1px solid $gray-100;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -88,88 +87,51 @@
 
   section.center {
     width: 100%;
-    height: 180px;
-    border-bottom: 1px solid $gray-100;
+    height: 216px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     position: relative;
 
-    .refresh {
-      position: absolute;
-      width: 32px;
-      right: 30px;
-      height: 32px;
-      color: $gray-100;
-    }
-
-    & > span {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 36px;
-      color: $gray-dark;
-    }
-
-    & > h3 {
-      font-weight: 500;
-      font-size: 33px;
-      line-height: 48px;
-      margin: 0px;
-      color: $gray-dark;
-
-      small {
-        font-weight: 500;
-        font-size: 18px;
-        line-height: 24px;
+    .balance {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .balanceText{
+        max-width: 200px;
+        overflow: hidden;
+        margin-right: 8px
       }
     }
 
-    & > small {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
-      color: $gray-100;
-      margin-top: 8px;
+    .fiatBalance {
+      opacity: 0.5;
+      margin-bottom: 16px;
     }
 
     .actions {
       display: flex;
       width: 300px;
+      margin-bottom: 32px;
       flex-direction: row;
       justify-content: center;
-
-      .button {
-        margin-top: 18px;
-        width: 144px;
-      }
     }
   }
 
   .activity {
-    height: 288px;
     background: $gray-light;
     width: 100%;
-    padding: 0;
+    height: 2000px;
+    border-radius: 8px 8px 0px 0px;
     box-sizing: border-box;
     display: flex;
-    position: absolute;
-    bottom: -2px;
-    overflow: auto;
     flex-direction: column;
-    width: 100%;
-    transition: all 0.3s;
-    z-index: 2;
 
     .spinner {
       svg {
-        color: $black;
+        color: $primary;
       }
-    }
-
-    &.expanded {
-      height: 528px;
-      z-index: 3;
     }
 
     .stargazer {
@@ -184,12 +146,10 @@
       bottom: 0;
     }
 
-    .noTxComment {
-      padding: 12px 36px;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 18px;
-      color: $gray-dark;
+    .noTx {
+      display: flex;
+      flex: 1;
+      margin: 20px;
     }
 
     .heading {
@@ -340,8 +300,8 @@
             font-size: 16px;
           }
 
-          svg.recvIcon {
-            transform: rotate(180deg);
+          img.recvIcon {
+            transform: scaleX(-1);
           }
         }
 
@@ -486,6 +446,6 @@
   }
 }
 
-:global([data-scrollbar='true']) {
+:global([data-scrollbar="true"]) {
   width: 100%;
 }

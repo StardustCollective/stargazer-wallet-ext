@@ -6,21 +6,19 @@
   left: 0px;
   right: 0px;
   min-height: 100%;
-  background: $purple;
+  background: $primary;
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
-  padding: 24px;
+  padding: 32px;
   box-sizing: border-box;
-
   .logo {
-    margin-top: 80px;
-    margin-bottom: 80px;
-    width: 212px;
+    margin-top: 56px;
+    margin-bottom: 56px;
+    width: 192px;
+    height: 192px;
   }
-
   .started {
-    margin-bottom: 30px;
+    margin-bottom: 56px;
   }
 }

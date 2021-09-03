@@ -21,8 +21,13 @@
     border-bottom: 1px solid $gray-light;
     border-radius: 6px;
 
+    .icon {
+      background-color: $primary;
+    }
+
     & > span {
       flex-grow: 1;
+      font-family: $rubik;
     }
 
     & > svg {

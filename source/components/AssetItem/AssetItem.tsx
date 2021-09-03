@@ -1,46 +1,105 @@
+///////////////////////
+// Modules
+///////////////////////
+
 import React, { FC, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 
-import { formatNumber, formatPrice } from 'scenes/home/helpers';
-import { IAssetInfoState } from 'state/assets/types';
+///////////////////////
+// Components
+///////////////////////
+
+import Card from 'components/Card';
+import TextV3 from 'components/TextV3';
+
+///////////////////////
+// State
+///////////////////////
+
 import { RootState } from 'state/store';
+
+///////////////////////
+// Helpers
+///////////////////////
+
+import { formatNumber, formatPrice } from 'scenes/home/helpers';
+
+///////////////////////
+// Styles
+///////////////////////
+
+import styles from './AssetItem.scss';
+
+///////////////////////
+// Enums
+///////////////////////
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
+
+///////////////////////
+// Types
+///////////////////////
+
+import { IAssetInfoState } from 'state/assets/types';
 import IVaultState, { IAssetState } from 'state/vault/types';
 import IPriceState from 'state/price/types';
 
-import styles from './AssetItem.scss';
-interface IAssetItem {
+type IAssetItem = {
   asset: IAssetState;
   assetInfo: IAssetInfoState;
   itemClicked: () => void;
 }
+
+///////////////////////
+// Component
+///////////////////////
 
 const AssetItem: FC<IAssetItem> = ({
   asset,
   assetInfo,
   itemClicked,
 }: IAssetItem) => {
+
+  ///////////////////////
+  // Hooks
+  ///////////////////////
+
   const { balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
 
+  ///////////////////////
+  // Render
+  ///////////////////////
+  
   return (
+
     <Fragment key={asset.id}>
-      <li className={styles.assetItem} onClick={() => itemClicked()}>
-        <div>
-          <div className={styles.iconWrapper}>
-            <img src={'/'+assetInfo.logo}></img>
+      <Card>
+        <div className={styles.assetItem} onClick={() => itemClicked()}>
+          <div className={styles.assetIcon}>
+            <img src={'/' + assetInfo.logo}></img>
           </div>
-          <span>
-            {assetInfo.label}
+          <div className={styles.assetName}>
+            <TextV3.BodyStrong
+              color={COLORS_ENUMS.BLACK}
+            >
+              {assetInfo.label}
+            </TextV3.BodyStrong>
             {assetInfo.priceId &&
               fiat[assetInfo.priceId]?.price &&
               fiat[assetInfo.priceId]?.priceChange && (
-                <p>
-                  <small>{formatPrice(fiat[assetInfo.priceId].price)}</small>
+                <div>
+                  <TextV3.Caption
+                    color={COLORS_ENUMS.BLACK}
+                  >
+                    {formatPrice(fiat[assetInfo.priceId].price)}
+                  </TextV3.Caption>
                   {
-                    <small
-                      className={
+                    <TextV3.Caption
+                      color={COLORS_ENUMS.BLACK}
+                      extraStyles={
                         fiat[assetInfo.priceId].priceChange > 0
                           ? styles.green
                           : styles.red
@@ -54,21 +113,22 @@ const AssetItem: FC<IAssetItem> = ({
                         3
                       )}
                       %
-                    </small>
+                    </TextV3.Caption>
                   }
-                </p>
+                </div>
               )}
-          </span>
-        </div>
-        <div>
-          <span>
-            <span>
+          </div>
+          <div className={styles.assetBalance}>
+            <TextV3.Header
+              dynamic
+              color={COLORS_ENUMS.BLACK}
+              extraStyles={styles.balanceText}
+            >
               {formatNumber(Number(balances[asset.id]), 2, 2)}
-              <b>{assetInfo.symbol}</b>
-            </span>
-          </span>
+            </TextV3.Header>
+          </div>
         </div>
-      </li>
+      </Card>
     </Fragment>
   );
 };

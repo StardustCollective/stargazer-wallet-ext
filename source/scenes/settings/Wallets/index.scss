@@ -2,7 +2,7 @@
 
 .wallets {
   width: 100%;
-  padding: 0 24px;
+  padding: 24px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -17,6 +17,7 @@
     margin-bottom: 12px;
     display: block;
     text-transform: uppercase;
+    font-family: $rubik;
   }
 
   .group {
@@ -24,6 +25,7 @@
       font-weight: 500;
       font-size: 16px;
       line-height: 24px;
+      font-family: $rubik;
       color: $gray-dark;
       height: 24px;
       display: flex;
@@ -41,6 +43,7 @@
         display: flex;
         flex-direction: column;
         line-height: 20px;
+        font-family: $rubik;
 
         small {
           font-size: 12px;
@@ -49,19 +52,26 @@
           width: 204px;
           overflow: hidden;
           text-overflow: ellipsis;
+          font-family: $rubik;
         }
+      }
+
+      .icon {
+        background-color: $primary;
       }
 
       & > svg {
         font-size: 24px;
-        color: $gray;
+        color: $primary;
 
         &.check {
           position: absolute;
           left: 34px;
           top: 10px;
           font-size: 16px;
-          color: $purple;
+          color: $accent_1;
+          background-color: $white;
+          border-radius: 8px;
         }
       }
 

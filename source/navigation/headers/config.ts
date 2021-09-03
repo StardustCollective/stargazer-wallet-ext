@@ -1,12 +1,13 @@
 export default {
   headerStyle: {
     height: '80px',
-    backgroundColor: '#521e8a',
+    backgroundColor: '#2B1D52',
+    borderBottomColor: 'transparent'
   },
   headerTitleStyle: {
     fontSize: '24px',
     fontWeight: 500,
-    fontFamily: 'Quicksand',
+    fontFamily: 'Rubik',
     color: '#fff',
     textAlign: 'center'
   },

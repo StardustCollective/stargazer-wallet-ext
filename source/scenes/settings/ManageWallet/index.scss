@@ -9,6 +9,7 @@
   box-sizing: border-box;
 
   label {
+    font-family: rubik;
     font-size: 10px;
     font-weight: 500;
     margin-top: 24px;
@@ -27,11 +28,13 @@
     font-size: 12px;
     font-weight: 500;
     display: block;
+    font-family: $rubik;
   }
 
   .menu {
     font-weight: 500;
     font-size: 16px;
+    font-family: $rubik;
     line-height: 24px;
     color: $gray-dark;
     height: 24px;
@@ -47,6 +50,7 @@
 
     & > span {
       flex-grow: 1;
+      font-family: $rubik;
     }
 
     & > svg {

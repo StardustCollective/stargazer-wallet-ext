@@ -1,9 +1,10 @@
 @import './variables';
 
 :global body {
+
   margin: 0px;
   padding: 0px;
-  font-family: $inter !important;
+  font-family: $rubik !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
   user-select: none !important;
@@ -23,7 +24,7 @@
 
   // Font styles
   .heading-1 {
-    font-family: $inter;
+    font-family: $rubik;
     font-weight: normal;
     font-size: 30px;
     line-height: 36px;
@@ -31,7 +32,7 @@
   }
 
   .body-caption {
-    font-family: $inter;
+    font-family: $rubik;
     font-weight: $medium;
     font-size: 16px;
     line-height: 24px;
@@ -39,7 +40,7 @@
   }
 
   .body-description {
-    font-family: $inter;
+    font-family: $rubik;
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
@@ -48,7 +49,7 @@
   }
 
   .body-comment {
-    font-family: $inter;
+    font-family: $rubik;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
@@ -58,10 +59,10 @@
 
   // Font families
   .t-quicksand {
-    font-family: $quicksand;
+    font-family: $rubik;
   }
   .t-inter {
-    font-family: $inter;
+    font-family: $rubik;
   }
 
   // Font Weights
@@ -73,9 +74,6 @@
   }
 
   // Text styles
-  .t-white {
-    color: $white;
-  }
   .t-purple {
     color: $purple;
   }
@@ -117,4 +115,51 @@
   .mr-30 {
     margin-right: 30px;
   }
+
+
+  /*************************************
+  * V3.0 Global Styles
+  **************************************/
+
+
+  /*
+  * Text Color Styles
+  */
+  
+  .t-white {
+    color: $white;
+  }
+  .t-black {
+    color: $black;
+  }
+
+ /*
+  * Text Alignment Styles
+  */
+
+  .t-alignLeft {
+    text-align: left;
+  }
+  
+  .t-alignCenter {
+    text-align: center;
+  }
+  
+  .t-alignRight {
+    text-align: right;
+  }
+  
+ /*
+  * Background Styles
+  */
+
+  .b-primary {
+    background-color: $primary;
+  }
+
+  .b-accentOne {
+    background-color: $accent_1;
+  }
+
+
 }

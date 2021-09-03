@@ -1,0 +1,36 @@
+
+/* 
+* Base Styles
+*/
+
+.base {
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  transition: 0.5s;
+  span{
+    flex: 1;
+    margin: 0px 24px 0px 24px;
+  }
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px #dedede;
+  }
+  &:active {
+    box-shadow: 0 0 0;
+  }
+}
+
+/* 
+* Button Sizes Style
+*/
+
+.buttonSmall {
+  height: 32px;
+  border-radius: 20px
+}
+
+.buttonLarge {
+  height: 48px;
+  border-radius: 24px
+}

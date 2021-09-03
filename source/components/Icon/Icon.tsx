@@ -13,9 +13,9 @@ interface IIcon {
   width?: number;
 }
 
-const Icon: FC<IIcon> = ({ Component, spaced = true, variant, width }) => {
+const Icon: FC<IIcon> = ({ Component, spaced = true, variant, width, iconStyles }) => {
   return (
-    <div className={clsx(styles.icon, { [styles.spaced]: spaced }, variant)}>
+    <div className={clsx(styles.icon, iconStyles, { [styles.spaced]: spaced }, variant)}>
       {typeof Component === 'string' ? (
         <img src={'/'+Component} width={width} />
       ) : (

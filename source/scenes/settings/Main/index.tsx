@@ -1,20 +1,63 @@
+///////////////////////
+// Modules
+///////////////////////
+
 import React, { FC } from 'react';
-import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
-import AboutIcon from 'assets/images/svg/about.svg';
-import NetworkIcon from 'assets/images/svg/network.svg';
-import ContactsIcon from 'assets/images/svg/contacts.svg';
-import LogOutIcon from 'assets/images/svg/logout.svg';
-import WalletIcon from 'assets/images/svg/wallet.svg';
+///////////////////////
+// Components
+///////////////////////
 
-import Icon from 'components/Icon';
+import Card from 'components/Card';
+import TextV3 from 'components/TextV3';
+
+///////////////////////
+// Images
+///////////////////////
+
+import walletIcon from 'assets/images/svg/wallet.svg'
+import contactsIcon from 'assets/images/svg/contacts.svg'
+import networksIcon from 'assets/images/svg/networks.svg'
+import infoIcon from 'assets/images/svg/info.svg'
+import exitIcon from 'assets/images/svg/exit.svg'
+
+///////////////////////
+// Hooks
+///////////////////////
 import { useController } from 'hooks/index';
 import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 
+///////////////////////
+// Styles
+///////////////////////
+
 import styles from './index.scss';
 
-const ICON_WIDTH_NUMBER = 25;
+///////////////////////
+// Enums
+///////////////////////
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
+
+///////////////////////
+// Types
+///////////////////////
+
+type IRenderSettingsItemProps = {
+  label: string;
+  iconImage: string;
+  onClick: () => void;
+}
+
+///////////////////////
+// Constants
+///////////////////////
+
+
+///////////////////////
+// Scene
+///////////////////////
 
 const Main: FC = () => {
   const controller = useController();
@@ -42,49 +85,59 @@ const Main: FC = () => {
     linkTo('/settings/contacts');
   }
 
+
+  const RenderSettingsItem = ({ label, iconImage, onClick }: IRenderSettingsItemProps) => {
+
+    return (
+      <Card onClick={onClick}>
+        <div className={styles.settingsItemIconWrapper}>
+          <div className={styles.iconCircle}>
+            <img src={'/' + iconImage} />
+          </div>
+        </div>
+        <div className={styles.settingsItemLabelWrapper}>
+          <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+            {label}
+          </TextV3.BodyStrong>
+        </div>
+      </Card>
+    );
+
+  }
+
   return (
     <div className={styles.main}>
-      <div>
-        <section
-          className={styles.general}
-          onClick={onWalletLinkClick}
-        >
-          <Icon Component={WalletIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
-          <span>Wallets</span>
-          <ArrowIcon className={styles.arrow} />
-        </section>
-        <section
-          className={styles.general}
-          onClick={onContactsLinkClicked}
-        >
-          <Icon Component={ContactsIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
-          <span>Contacts</span>
-          <ArrowIcon className={styles.arrow} />
-        </section>
-        <section
-          className={styles.general}
-          onClick={onNetworkLinkClicked}
-        >
-          <Icon Component={NetworkIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
-          <span>Networks</span>
-          <ArrowIcon className={styles.arrow} />
-        </section>
-        <section className={styles.general} onClick={handleLogout}>
-          <Icon Component={LogOutIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
-          <span>Log out</span>
-          <ArrowIcon className={styles.arrow} />
-        </section>
-        <section className={styles.general} 
-        onClick={onAboutLinkClicked}
-        >
-          <Icon Component={AboutIcon} width={ICON_WIDTH_NUMBER} variant={styles.icon} />
-          <span>About</span>
-          <ArrowIcon className={styles.arrow} />
-        </section>
+      <div className={styles.box}>
+        <div className={styles.content}>
+          <RenderSettingsItem
+            label={"Wallets"}
+            iconImage={walletIcon}
+            onClick={onWalletLinkClick}
+          />
+          <RenderSettingsItem
+            label={"Contacts"}
+            iconImage={contactsIcon}
+            onClick={onContactsLinkClicked}
+          />
+          <RenderSettingsItem
+            label={"Networks"}
+            iconImage={networksIcon}
+            onClick={onNetworkLinkClicked}
+          />
+        </div>
       </div>
       <div className={styles.footer}>
-        <div >
-          <span>Version {version}</span>
+        <div onClick={onAboutLinkClicked} className={styles.footer__left}>
+          <img src={'/'+ infoIcon} />
+          <TextV3.Caption>
+            Stargazer Wallet {version}
+          </TextV3.Caption>
+        </div>
+        <div onClick={handleLogout} className={styles.footer__right}>
+          <TextV3.Caption>
+            Logout
+          </TextV3.Caption>
+          <img src={'/'+ exitIcon} />
         </div>
       </div>
     </div>

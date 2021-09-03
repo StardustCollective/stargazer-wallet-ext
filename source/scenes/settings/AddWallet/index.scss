@@ -22,7 +22,12 @@
     border-radius: 6px;
     margin-bottom: 12px;
 
+    .icon{
+      background-color: $primary;
+    } 
+
     & > span {
+      font-family: rubik;
       flex-grow: 1;
     }
 

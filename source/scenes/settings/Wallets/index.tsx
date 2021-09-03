@@ -61,7 +61,9 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
 
   return (
     <div className={styles.wallets}>
-      <label>Multi chain wallets</label>
+      <label>
+        Multi chain wallets
+      </label>
       <div className={styles.group}>
         {wallets
           .filter((w) => w.type === KeyringWalletType.MultiChainWallet)
@@ -74,7 +76,7 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
               {wallet.id === activeWallet.id && (
                 <CheckIcon className={styles.check} />
               )}
-              <Icon Component={StargazerIcon} />
+              <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
               <span>
                 {wallet.label}
                 <small>Multi Chain Wallet</small>
@@ -102,6 +104,7 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
                   <CheckIcon className={styles.check} />
                 )}
                 <Icon
+                  width={24}
                   Component={
                     assets[
                       wallet.supportedAssets.includes(KeyringAssetType.ETH)

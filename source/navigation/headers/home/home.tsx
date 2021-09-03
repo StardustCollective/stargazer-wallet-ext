@@ -10,7 +10,7 @@ import config from '../config';
 ///////////////////////////
 
 import IconButton from '@material-ui/core/IconButton';
-import LogoImage from 'assets/images/logo-s.svg';
+import LogoImage from 'assets/images/logo.svg';
 import MenuIcon from '@material-ui/icons/Menu';
 
 ///////////////////////////

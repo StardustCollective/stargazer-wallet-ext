@@ -1,0 +1,69 @@
+@import '~assets/styles/variables';
+
+/*
+* Text Types
+*/
+
+.base {
+  font-family: $rubik;
+  overflow: hidden;
+}
+
+.headerDisplay {
+  font-weight: $bold;
+  font-size: 49px;
+  line-height: 64px;
+}
+
+.headerLarge {
+  font-weight: $medium;
+  font-size: 32px;
+  line-height: 48px;
+}
+
+.header {
+  font-weight: $medium;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.body {
+  font-weight: $regular;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.bodyStrong {
+  font-weight: $medium;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.caption {
+  font-weight: $regular;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.captionStrong {
+  font-weight: $medium;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/*
+* Text Alignment
+*/
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+

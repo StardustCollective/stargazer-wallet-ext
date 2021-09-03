@@ -10593,6 +10593,11 @@ react-dom@^16.13.1:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
+react-dynamic-font@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-dynamic-font/-/react-dynamic-font-2.0.1.tgz#db4762c4f754ed1e1dde8a9d0c51707398b521eb"
+  integrity sha512-2tk22X7e8ig3d0fZSouPBjv4VeaEdeYuwVwp5LvmA7Q2zIBM6eK/lol3W5/L3j5FtQlUL2e3NYgrspPkb9jhdg==
+
 react-from-dom@^0.6.0:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/react-from-dom/-/react-from-dom-0.6.1.tgz#6740f5a3d79e0c354703e5c096b8fdfe0db71b0f"
