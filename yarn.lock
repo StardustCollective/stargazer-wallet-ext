@@ -1575,10 +1575,10 @@
     "@stardust-collective/dag4-network" "^1.0.9"
     bignumber.js "^9.0.1"
 
-"@stardust-collective/dag4-xchain-ethereum@^0.1.13":
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-xchain-ethereum/-/dag4-xchain-ethereum-0.1.13.tgz#2cd548129162c003be205130f48ca1509f0a683f"
-  integrity sha512-YFtGoSUFmY6CKqEPRflF2dClvY+SlydN7yNdSpXFvHCAN3R6Oyv3Qx1E1SnzoIEDtOKTcWUGbW6HBLBT4axe0A==
+"@stardust-collective/dag4-xchain-ethereum@^0.1.14":
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-xchain-ethereum/-/dag4-xchain-ethereum-0.1.14.tgz#3ab133fa8524a53c82d4f4a43a904a6719100dc0"
+  integrity sha512-Q2COouCACA042I2HMNiazs2B82rtW1m2gwohcbKKPE13mAIqynTsKd4Sk6YSwjoPGmTdLD6niSosszXOQHMsoA==
   dependencies:
     "@xchainjs/xchain-client" "^0.7.0"
     "@xchainjs/xchain-crypto" "^0.2.3"

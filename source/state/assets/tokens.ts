@@ -14,6 +14,17 @@ const TOKEN_LIST: IAssetListState = {
     logo: LatticeLogo,
     decimals: 8,
   },
+  '0x3106a0a076BeDAE847652F42ef07FD58589E001f': {
+    id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
+    address: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
+    label: 'Alkimi Exchange',
+    symbol: 'ADS',
+    type: AssetType.ERC20,
+    priceId: 'alkimi',
+    network: 'mainnet',
+    logo: 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG',
+    decimals: 18,
+  },
   '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9': {
     id: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
     network: 'mainnet',

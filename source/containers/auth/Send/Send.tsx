@@ -177,9 +177,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '' }) => {
   );
 
   const estimateGasFee = (val: number) => {
-    if (!gasPrices) return;
+    if (!gasPrices || !address) return;
     controller.wallet.account
-      .estimateTotalGasFee(val, tempTx?.ethConfig?.gasLimit)
+      .estimateTotalGasFee(address, amount, val, tempTx?.ethConfig?.gasLimit)
       .then((fee) => {
         if (!fee) return;
         // console.log('setGasFee', fee)

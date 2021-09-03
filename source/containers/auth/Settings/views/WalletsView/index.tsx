@@ -41,12 +41,12 @@ const WalletsView: FC<IWalletsView> = ({ onChange }) => {
     //controller.wallet.account.watchMemPool();
   };
 
-  const handleManageWallet = (
+  const handleManageWallet = async (
     ev: MouseEvent<HTMLButtonElement>,
     walletId: string
   ) => {
     ev.stopPropagation();
-    controller.wallet.switchWallet(walletId);
+    await controller.wallet.switchWallet(walletId);
     onChange(walletId);
     showView(MANAGE_WALLET_VIEW);
   };
