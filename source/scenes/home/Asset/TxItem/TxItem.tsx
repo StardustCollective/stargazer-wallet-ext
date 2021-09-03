@@ -12,7 +12,7 @@ import { formatDistanceDate } from '../../helpers';
 import Spinner from '@material-ui/core/CircularProgress';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import LinkIcon from '@material-ui/icons/OpenInNewOutlined';
-import GasSettings from '../GasSettings';
+// import GasSettings from '../GasSettings';
 
 ///////////////////////
 // Styles
@@ -36,12 +36,12 @@ interface ITxItem {
   isReceived: boolean;
   isETH: boolean;
   isETHPending: boolean;
-  isGasSettingsVisible: boolean;
-  gasSettingsDefaults: {
-    min: number;
-    max: number;
-    current: number;
-  }
+  // isGasSettingsVisible: boolean;
+  // gasSettingsDefaults: {
+  //   min: number;
+  //   max: number;
+  //   current: number;
+  // }
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
@@ -60,8 +60,8 @@ const TxItem: FC<ITxItem> = ({
   isSelf,
   isReceived,
   isETHPending,
-  isGasSettingsVisible,
-  gasSettingsDefaults,
+  // isGasSettingsVisible,
+  // gasSettingsDefaults,
   showGroupBar,
   txTypeLabel,
   currencySymbol,
@@ -143,11 +143,11 @@ const TxItem: FC<ITxItem> = ({
           </div>
         </div>
       </div>
-      {isGasSettingsVisible &&
+      {/* {isGasSettingsVisible &&
         <div className={styles.gasSettings}>
           <GasSettings values={gasSettingsDefaults} />
         </div>
-      }
+      } */}
     </div>
   );
 
