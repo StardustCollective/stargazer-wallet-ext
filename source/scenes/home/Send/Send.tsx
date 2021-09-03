@@ -127,21 +127,21 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const getBalanceAndFees = () => {
     const balance = ethers.utils.parseUnits(String(balances[activeAsset.id] || 0), assetInfo.decimals);
-    console.log('getBalanceAndFees', gasFee.toString())
+    // console.log('getBalanceAndFees', fee, balance, gasFee.toString())
     const txFee =
       activeAsset.id === AssetType.Constellation
-        ? BigNumber.from(fee)
+        ? ethers.utils.parseUnits(String(Number(fee) * 1e8), 8)
         : ethers.utils.parseEther(gasFee.toString());
 
     return {balance, txFee};
   }
 
   const gasSpeedLabel = useMemo(() => {
-     if (gasPrice >= gasPrices[2]) return 'Fastest';
-     if(gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
-     if(gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
-     if(gasPrice > gasPrices[0]) return 'Slow';
-     return 'Turtle';
+    if (gasPrice >= gasPrices[2]) return 'Fastest';
+    if(gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
+    if(gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
+    if(gasPrice > gasPrices[0]) return 'Slow';
+    return 'Turtle';
   }, [gasPrice, gasPrices])
 
   const isDisabled = useMemo(() => {
@@ -190,9 +190,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   );
 
   const estimateGasFee = (val: number) => {
-    if (!gasPrices) return;
+    if (!gasPrices || !address) return;
     controller.wallet.account
-      .estimateTotalGasFee(val, tempTx?.ethConfig?.gasLimit)
+      .estimateTotalGasFee(address, amount, val, tempTx?.ethConfig?.gasLimit)
       .then((fee) => {
         if (!fee) return;
         // console.log('setGasFee', fee)
@@ -393,7 +393,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 classes={{
                   root: clsx(styles.sliderCustom, {
                     [styles.disabled]:
-                      gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
+                    gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
                   }),
                   thumb: styles.thumb,
                   mark: styles.mark,

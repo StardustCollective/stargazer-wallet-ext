@@ -67,8 +67,8 @@ class LedgerBridgeUtil {
     dag4.di.useFetchHttpClient();
     dag4.network.config({
       id: 'main',
-      beUrl: 'https://www.stargazer.network/api/scan',
-      lbUrl: 'https://www.stargazer.network/api/node',
+      beUrl: 'https://www.dagexplorer.io/api/scan',
+      lbUrl: 'https://www.dagexplorer.io/api/node',
     });
   };
 

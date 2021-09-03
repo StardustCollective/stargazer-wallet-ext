@@ -50,12 +50,12 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
     //controller.wallet.account.watchMemPool();
   };
 
-  const handleManageWallet = (
+  const handleManageWallet = async (
     ev: MouseEvent<HTMLButtonElement>,
     walletId: string
   ) => {
     ev.stopPropagation();
-    controller.wallet.switchWallet(walletId);
+    await controller.wallet.switchWallet(walletId);
     linkTo(`/settings/wallets/manage?id=${walletId}`);
   };
 

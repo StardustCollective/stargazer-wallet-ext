@@ -1,6 +1,6 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
-import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateStatus } from 'state/vault';
+import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
 import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
@@ -58,7 +58,12 @@ export class WalletController implements IWalletController {
 
       //Check for v1.4 migration
       if (vault.migrateWallet) {
-        await KeystoreToKeyringHelper.migrate(vault.migrateWallet, password);
+        try {
+          await KeystoreToKeyringHelper.migrate(vault.migrateWallet, password);
+        }
+        catch(e) {
+          return false;
+        }
       }
 
       if (vault.activeWallet) {
@@ -109,15 +114,19 @@ export class WalletController implements IWalletController {
   }
 
   async switchWallet(id: string) {
-    //store.dispatch(changeActiveWallet(wallet));
+
+    store.dispatch(updateBalances({  pending: 'true' }));
+
     await this.account.buildAccountAssetInfo(id);
     await this.account.getLatestTxUpdate();
-    // store.dispatch(updateStatus());
     this.account.assetsBalanceMonitor.start();
     this.account.txController.startMonitor();
   }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
+
+    store.dispatch(updateBalances({  pending: 'true' }));
+
     const { activeAsset }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;
     console.log(network, chainId);
