@@ -29,7 +29,12 @@ const AssetItem: FC<IAssetItem> = ({
       <li className={styles.assetItem} onClick={() => itemClicked()}>
         <div>
           <div className={styles.iconWrapper}>
-            <img src={'/'+assetInfo.logo}></img>
+            {assetInfo.logo.startsWith('http') && (
+              <img src={assetInfo.logo}></img>
+            )}
+            {!assetInfo.logo.startsWith('http') && (
+              <img src={'/'+assetInfo.logo}></img>
+            )}
           </div>
           <span>
             {assetInfo.label}

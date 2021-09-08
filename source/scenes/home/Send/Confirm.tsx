@@ -1,9 +1,8 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
 // import { useHistory } from 'react-router-dom';
-
 import Layout from 'scenes/common/Layout';
 import Button from 'components/Button';
 import { useController } from 'hooks/index';
@@ -18,6 +17,7 @@ import confirmHeader from 'navigation/headers/confirm';
 
 import styles from './Confirm.scss';
 import { ethers } from 'ethers';
+
 interface ISendConfirm {
   navigation: any
 }
@@ -40,6 +40,8 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   const tempTx = controller.wallet.account.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
   const [disabled, setDisabled] = useState(false);
+
+  const gasFeeBaseId = activeAsset.type === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
 
     // Sets the header for the home screen.
   useLayoutEffect(() => {
@@ -132,7 +134,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
             {`${tempTx!.fee} ${feeUnit} (≈ $${getFiatAmount(
               tempTx?.fee || 0,
               2,
-              activeAsset.type
+              gasFeeBaseId
             )})`}
           </span>
         </div>
