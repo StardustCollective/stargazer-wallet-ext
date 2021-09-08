@@ -8,12 +8,13 @@ import {
   changeActiveWallet,
   updateStatus,
   updateTransactions,
-  updateWalletAssets, updateWalletLabel
+  updateWalletAssets,
+  updateWalletLabel
 } from 'state/vault';
 import IVaultState, { AssetType, IAssetState, IWalletState } from 'state/vault/types';
 
 import { ETHNetwork, ITransactionInfo } from '../../types';
-import IAssetListState from 'state/assets/types';
+import IAssetListState  from 'state/assets/types';
 import { EthTransactionController } from './EthTransactionController';
 
 import { IAccountController } from './IAccountController';
@@ -22,6 +23,7 @@ import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 
 // limit number of txs
 const TXS_LIMIT = 10;
+const ETH_TOKENS = ['0xa393473d64d2F9F026B60b6Df7859A689715d092','0x3106a0a076BeDAE847652F42ef07FD58589E001f']; //LTX, ADS
 
 export class AccountController implements IAccountController {
   tempTx: ITransactionInfo | null;
@@ -46,7 +48,6 @@ export class AccountController implements IAccountController {
     const state = store.getState();
     const vault: IVaultState = state.vault;
     const activeNetwork = vault.activeNetwork;
-    // const assetInfoMap: IAssetListState = state.assets;
     const wallets: KeyringWalletState[] = vault.wallets;
 
     let buildAssetList: IAssetState[] = [];
@@ -79,7 +80,9 @@ export class AccountController implements IAccountController {
           infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }
         });
 
-        buildAssetList = buildAssetList.concat(this.buildAccountEthTokens(account.address, account.tokens));
+        const assets = await this.buildAccountEthTokens(account.address, ETH_TOKENS);
+
+        buildAssetList = buildAssetList.concat(assets);
       }
     }
 
@@ -94,10 +97,17 @@ export class AccountController implements IAccountController {
     store.dispatch(changeActiveWallet(activeWallet));
   }
 
-  buildAccountEthTokens (address: string, accountTokens: string[]) {
+  async buildAccountEthTokens (address: string, accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
-    const tokens = accountTokens.map(t => assetInfoMap[t])
+    const resolveTokens = accountTokens.map(async t => {
+      if (!assetInfoMap[t]) {
+        await window.controller.assets.fetchTokenInfo(t);
+      }
+      return assetInfoMap[t];
+    })
+
+    const tokens = await Promise.all(resolveTokens);
 
     let assetList: IAssetState[] = [];
 
@@ -165,7 +175,7 @@ export class AccountController implements IAccountController {
   async addNewToken (address: string) {
     const { activeWallet }: IVaultState = store.getState().vault;
     const account = this.keyringManager.addTokenToAccount(activeWallet.id, this.ethClient.getAddress(), address);
-    const tokenAssets = this.buildAccountEthTokens(address, account.getTokens());
+    const tokenAssets = await this.buildAccountEthTokens(address, account.getTokens());
     const newToken = tokenAssets.find(t => t.address === address);
     store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
 
@@ -306,12 +316,10 @@ export class AccountController implements IAccountController {
     const txHistory = await this.ethClient.getTransactions();
     const nonce = txHistory.txs.length;
     const gasPrices = await this.getLatestGasPrices()
-    const gasLimit = 21000;
 
     const recommendConfig = {
       nonce,
-      gasPrice: Math.floor((gasPrices[1] + gasPrices[2]) / 2),
-      gasLimit
+      gasPrice: Math.floor((gasPrices[1] + gasPrices[2]) / 2)
     };
 
     //console.log('getRecommendETHTxConfig', gasPrices, recommendConfig.gasPrice);
@@ -339,10 +347,27 @@ export class AccountController implements IAccountController {
     };
   }
 
-  async estimateTotalGasFee (gas: number, gasLimit = 21000) {
+  async estimateTotalGasFee (recipient: string, amount: string, gas: number, gasLimit: number) {
+    console.log('ethClient.estimateGasLimit', arguments);
+    if (!gasLimit || true) {
+      const state = store.getState();
+      const { activeAsset }: IVaultState = state.vault;
+      const assetInfo = (state.assets as IAssetListState)[activeAsset.id];
+      // const contractAddress = assetInfo.contractAddress;
+      // const ticker = assetInfo.symbol;
+      // const symbol = ticker + ':' + contractAddress;
+      // const asset: any = { chain: 'ETH', symbol, ticker: symbol }
+      // // const recipient = '0x0000000000000000000000000000000000000000';
+      // const amount: any  = { amount: () => ({ toFixed: () => this.tempTx.amount }) };
+      // const gasLimit0 = (await this.ethClient.estimateGasLimit({asset, recipient, amount})).toNumber();
+      gasLimit = (await this.ethClient.estimateTokenTransferGasLimit(recipient, assetInfo.address, ethers.utils.parseUnits(amount, assetInfo.decimals)))
+      console.log('ethClient.estimateGasLimit2', gasLimit);
+    }
     const fee = ethers.utils
       .parseUnits(gas.toString(), 'gwei')
       .mul(BigNumber.from(gasLimit));
+
+    console.log('estimateTotalGasFee3', gas, gasLimit);
 
     return Number(ethers.utils.formatEther(fee).toString());
   }
