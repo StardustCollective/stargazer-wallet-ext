@@ -10,7 +10,7 @@ import { formatDistanceDate } from '../../helpers';
 ///////////////////////
 
 import Spinner from '@material-ui/core/CircularProgress';
-// import GasSettings from '../GasSettings';
+import GasSettings from '../GasSettings';
 import TextV3 from 'components/TextV3';
 
 ///////////////////////
@@ -42,13 +42,12 @@ type ITxItem = {
   isSelf: boolean;
   isReceived: boolean;
   isETH: boolean;
-  isETHPending: boolean;
-  // isGasSettingsVisible: boolean;
-  // gasSettingsDefaults: {
-  //   min: number;
-  //   max: number;
-  //   current: number;
-  // }
+  isGasSettingsVisible: boolean;
+  gasSettingsDefaults: {
+    min: number;
+    max: number;
+    current: number;
+  }
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
@@ -65,9 +64,8 @@ const TxItem: FC<ITxItem> = ({
   isETH,
   isSelf,
   isReceived,
-  // isETHPending,
-  // isGasSettingsVisible,
-  // gasSettingsDefaults,
+  isGasSettingsVisible,
+  gasSettingsDefaults,
   showGroupBar,
   txTypeLabel,
   currencySymbol,
@@ -143,11 +141,11 @@ const TxItem: FC<ITxItem> = ({
           </TextV3.Caption>
         </div>
       </div>
-      {/* {isGasSettingsVisible &&
+      {isGasSettingsVisible &&
         <div className={styles.gasSettings}>
           <GasSettings values={gasSettingsDefaults} />
         </div>
-      } */}
+      }
     </div>
   );
 
