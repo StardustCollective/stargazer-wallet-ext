@@ -74,10 +74,12 @@ const AssetItem: FC<IAssetItem> = ({
   ///////////////////////
   
   return (
-      <Card onClick={() => itemClicked()}>
-        <div>
-          <div className={styles.iconWrapper}>
-            {assetInfo.logo.startsWith('http') && (
+
+    <Fragment key={asset.id}>
+      <Card>
+        <div className={styles.assetItem} onClick={() => itemClicked()}>
+          <div className={styles.assetIcon}>
+           {assetInfo.logo.startsWith('http') && (
               <img src={assetInfo.logo}></img>
             )}
             {!assetInfo.logo.startsWith('http') && (
@@ -132,6 +134,7 @@ const AssetItem: FC<IAssetItem> = ({
           </div>
         </div>
       </Card>
+    </Fragment>
   );
 };
 

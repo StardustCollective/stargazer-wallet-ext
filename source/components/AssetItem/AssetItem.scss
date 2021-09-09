@@ -64,3 +64,11 @@ div.assetItem {
     }
   }
 }
+
+
+              /* {assetInfo.logo.startsWith('http') && (
+              <img src={assetInfo.logo}></img>
+            )}
+            {!assetInfo.logo.startsWith('http') && (
+              <img src={'/'+assetInfo.logo}></img>
+            )} */
