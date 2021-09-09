@@ -22,7 +22,7 @@ import styles from './GasSettings.scss'
 
 const PurpleSlider = withStyles({
   root: {
-    color: '#521E8A',
+    color: '#2B1D52',
     height: 4,
   },
   thumb: {

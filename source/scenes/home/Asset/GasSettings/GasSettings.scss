@@ -176,7 +176,7 @@
   height: 36px;
   align-items: center;
   justify-content: center;
-  border: 2px solid $purple;
+  border: 2px solid $primary;
   border-radius: 20px;
   box-sizing: border-box;
 
@@ -186,14 +186,14 @@
     font-size: 14px;
     font-weight: $bold;
     line-height: 20px;
-    color: $purple;
+    color: $primary;
   }
 }
 
 .solidButton {
   display: flex;
   height: 36px;
-  background-color: $purple;
+  background-color: $primary;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
@@ -213,6 +213,6 @@
   height: 32px;
   justify-content: center;
   align-items: center;
-  border: 2px solid $purple;
+  border: 2px solid $primary;
   border-radius: 20px;
 }
