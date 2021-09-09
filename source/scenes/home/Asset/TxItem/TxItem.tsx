@@ -42,6 +42,7 @@ type ITxItem = {
   isSelf: boolean;
   isReceived: boolean;
   isETH: boolean;
+  isETHPending: boolean;
   // isGasSettingsVisible: boolean;
   // gasSettingsDefaults: {
   //   min: number;
@@ -64,6 +65,7 @@ const TxItem: FC<ITxItem> = ({
   isETH,
   isSelf,
   isReceived,
+  isETHPending,
   // isGasSettingsVisible,
   // gasSettingsDefaults,
   showGroupBar,

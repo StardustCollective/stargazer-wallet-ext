@@ -51,6 +51,9 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
 
   return (
       <form className={styles.importForm} onSubmit={handleSubmit(onSubmit)}>
+
+        <span className={styles.important}>IMPORTANT: Importing a recovery seed phrase will replace any existing accounts.</span>
+
         <span>Paste your recovery seed phrase below:</span>
         <TextInput
           type="text"
@@ -62,14 +65,12 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
           variant={styles.input}
         />
         <span>
-          {/*Importing a recovery seed phrase will recover the associated accounts.*/}
-          <br />
-          <br />
+
           <b>The phrase can be 12, 15, 18, 21 or 24 words with a single space between.</b>
           <br/>
           {isInvalid && (
             <span className={styles.error}>Invalid recovery seed phrase</span>
-            )}
+          )}
         </span>
         <div className={styles.actions}>
           <Button type="submit" variant={styles.button} disabled={isDisabled}>

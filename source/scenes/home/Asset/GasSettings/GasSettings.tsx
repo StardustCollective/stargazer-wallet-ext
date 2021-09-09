@@ -159,8 +159,8 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
 
   const handleChange = (_event: ChangeEvent<{}>, value: number | number[]) => {
     setGasValue(value as number);
-    setFee(value as number * 1.22);
-    setSpeed(value < 500 ? 'Slow' : 'Fast')
+    setFee(value as number *1.22);
+    setSpeed(value < 500 ? 'Slow' : 'Fast');
   };
 
   ///////////////////////

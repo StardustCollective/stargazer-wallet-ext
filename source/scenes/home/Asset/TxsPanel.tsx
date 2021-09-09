@@ -113,6 +113,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   isETH={isETH}
                   isSelf={isSelf}
                   isReceived={isReceived}
+                  isETHPending={isETHPending}
                   // isGasSettingsVisible={true}
                   // gasSettingsDefaults={{
                   //   min: 50,

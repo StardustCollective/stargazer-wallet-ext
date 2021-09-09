@@ -155,7 +155,7 @@ const Starter = () => {
       </form>
       {!location.pathname.includes('confirm.html') && (
         <Link color="monotoneOne" onClick={onImportClicked}>
-          Import from recovery seed phrase
+          Reset and restore from recovery seed phrase
         </Link>
       )}
     </div>

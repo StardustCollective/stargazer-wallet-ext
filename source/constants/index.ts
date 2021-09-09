@@ -12,8 +12,8 @@ export const DAG_NETWORK: {
   main: {
     id: 'main',
     label: 'Main Constellation Network',
-    beUrl: 'https://www.stargazer.network/api/scan',
-    lbUrl: 'https://www.stargazer.network/api/node',
+    beUrl: 'https://www.dagexplorer.io/api/scan',
+    lbUrl: 'https://www.dagexplorer.io/api/node',
   },
   main2: {
     id: 'main2',

@@ -1,6 +1,6 @@
 {
   "name": "extension",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Extension wallet for $DAG tokens.",
   "private": true,
   "repository": "https://github.com/StardustCollective/stargazer-wallet-ext.git",
@@ -34,7 +34,7 @@
     "@stardust-collective/dag4": "^1.1.12",
     "@stardust-collective/dag4-keyring": "^0.0.13",
     "@stardust-collective/dag4-ledger": "^0.0.12",
-    "@stardust-collective/dag4-xchain-ethereum": "^0.1.12",
+    "@stardust-collective/dag4-xchain-ethereum": "^0.1.14",
     "@types/lodash": "^4.14.162",
     "@types/qrcode.react": "^1.0.1",
     "@types/react-redux": "^7.1.9",
