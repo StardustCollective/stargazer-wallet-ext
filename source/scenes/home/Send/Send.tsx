@@ -192,11 +192,18 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
       pVal = isNaN(pVal) ? 0 : pVal;
 
-      setAmount(String(pVal));
+      // console.log('handleAmountChange', ev.target.value, pVal, amount, (pVal !== Number(amount)))
 
-      setAmountBN(ethers.utils.parseUnits(amount, assetInfo.decimals));
+      if (pVal !== Number(amount)) {
+        setAmount(String(pVal));
 
-      estimateGasFee(gasPrice);
+        setAmountBN(ethers.utils.parseUnits(amount, assetInfo.decimals));
+
+        estimateGasFee(gasPrice);
+      }
+      else {
+        setAmount(ev.target.value);
+      }
     },
     [address, gasLimit]
   );
