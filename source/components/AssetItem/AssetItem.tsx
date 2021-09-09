@@ -76,10 +76,15 @@ const AssetItem: FC<IAssetItem> = ({
   return (
 
     <Fragment key={asset.id}>
-      <Card>
-        <div className={styles.assetItem} onClick={() => itemClicked()}>
-          <div className={styles.assetIcon}>
-            <img src={'/' + assetInfo.logo}></img>
+      <li className={styles.assetItem} onClick={() => itemClicked()}>
+        <div>
+          <div className={styles.iconWrapper}>
+            {assetInfo.logo.startsWith('http') && (
+              <img src={assetInfo.logo}></img>
+            )}
+            {!assetInfo.logo.startsWith('http') && (
+              <img src={'/'+assetInfo.logo}></img>
+            )}
           </div>
           <div className={styles.assetName}>
             <TextV3.BodyStrong

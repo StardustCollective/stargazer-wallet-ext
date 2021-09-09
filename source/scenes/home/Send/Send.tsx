@@ -32,6 +32,7 @@ import { BigNumber, ethers } from 'ethers';
 import { ITransactionInfo } from '../../../scripts/types';
 
 import sendHeader from 'navigation/headers/send';
+
 interface IWalletSend {
   initAddress?: string;
   navigation: any
@@ -71,13 +72,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const [address, setAddress] = useState(
     initAddress || tempTx?.toAddress || ''
   );
-  const [amount, setAmount] = useState(String(tempTx?.amount) || '');
+  const [amount, setAmount] = useState(String(tempTx?.amount) || '0');
   const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
   const [gasPrice, setGasPrice] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
+  const [gasLimit, setGasLimit] = useState<number>(0);
   const [gasFee, setGasFee] = useState<number>(0);
   // const [useMax, setUseMax] = useState<boolean>(false);
 
@@ -97,6 +99,26 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     [styles.hide]: isValidAddress,
   });
 
+  useEffect(() => {
+
+    let gasLimit = activeAsset.type === AssetType.Ethereum ? 21000 : 0
+
+    if (gasLimit) {
+      setGasLimit(gasLimit);
+    }
+    else {
+
+      const assetInfo = assets[activeAsset.id];
+
+      controller.wallet.account.ethClient.estimateTokenTransferGasLimit(address, assetInfo.address, ethers.utils.parseUnits(amount, assetInfo.decimals))
+        .then(gasLimit => {
+          //console.log('ethClient.estimateGasLimit2', gasLimit);
+          setGasLimit(gasLimit);
+        })
+    }
+
+  }, [amount, address]);
+
   const onSubmit = async (data: any) => {
     if (!isValidAddress) {
       alert.removeAll();
@@ -110,15 +132,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       amount: amount,
       fee: data.fee || gasFee,
     };
-    if (activeAsset.type === AssetType.Ethereum) {
+    if (activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20) {
       txConfig.ethConfig = {
         gasPrice,
-        gasLimit: 21000
-      };
-    }
-    else if (activeAsset.type === AssetType.ERC20) {
-      txConfig.ethConfig = {
-        gasPrice
+        gasLimit
       };
     }
     controller.wallet.account.updateTempTx(txConfig);
@@ -126,14 +143,16 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   };
 
   const getBalanceAndFees = () => {
-    const balance = ethers.utils.parseUnits(String(balances[activeAsset.id] || 0), assetInfo.decimals);
-    // console.log('getBalanceAndFees', fee, balance, gasFee.toString())
+    const balance = balances[activeAsset.id] || '0';
+    const balanceBN = ethers.utils.parseUnits(balance, assetInfo.decimals);
     const txFee =
       activeAsset.id === AssetType.Constellation
         ? ethers.utils.parseUnits(String(Number(fee) * 1e8), 8)
         : ethers.utils.parseEther(gasFee.toString());
 
-    return {balance, txFee};
+    //console.log('getBalanceAndFees', fee, balance, gasFee, txFee.toString());
+
+    return {balance: balanceBN, txFee};
   }
 
   const gasSpeedLabel = useMemo(() => {
@@ -169,15 +188,24 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setAmount(ev.target.value);
-      setAmountBN(ethers.utils.parseUnits(ev.target.value, assetInfo.decimals));
-     // setUseMax(false);
+      let pVal = parseFloat(ev.target.value);
+
+      pVal = isNaN(pVal) ? 0 : pVal;
+
+      setAmount(String(pVal));
+
+      setAmountBN(ethers.utils.parseUnits(amount, assetInfo.decimals));
+
+      estimateGasFee(gasPrice);
     },
-    []
+    [address, gasLimit]
   );
   const handleFeeChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFee(ev.target.value);
+      if (!isNaN(parseFloat(ev.target.value))) {
+        setFee(ev.target.value);
+        estimateGasFee(gasPrice);
+      }
     },
     []
   );
@@ -185,22 +213,24 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const handleAddressChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setAddress(ev.target.value.trim());
+      estimateGasFee(gasPrice);
     },
     []
   );
 
-  const estimateGasFee = (val: number) => {
-    if (!gasPrices || !address) return;
-    controller.wallet.account
-      .estimateTotalGasFee(address, amount, val, tempTx?.ethConfig?.gasLimit)
-      .then((fee) => {
-        if (!fee) return;
-        // console.log('setGasFee', fee)
-        setGasFee(fee);
-        // if (useMax) {
-        //   handleSetMax();
-        // }
-      });
+  const estimateGasFee = (gas: number) => {
+    //console.log('estimateGasFee', !!gasPrices, !!address, !!gasLimit);
+    if (!gasPrices || !address || !gasLimit) return;
+
+    const feeBN = ethers.utils
+      .parseUnits(gas.toString(), 'gwei')
+      .mul(BigNumber.from(gasLimit));
+
+    const fee = Number(ethers.utils.formatEther(feeBN).toString());
+
+    //console.log('estimateTotalGasFee3', gas, gasLimit, fee);
+
+    setGasFee(fee);
   };
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
