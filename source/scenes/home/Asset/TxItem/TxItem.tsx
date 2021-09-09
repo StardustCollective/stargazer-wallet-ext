@@ -65,7 +65,7 @@ const TxItem: FC<ITxItem> = ({
   isETH,
   isSelf,
   isReceived,
-  isETHPending,
+  // isETHPending,
   // isGasSettingsVisible,
   // gasSettingsDefaults,
   showGroupBar,
