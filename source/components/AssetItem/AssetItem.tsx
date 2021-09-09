@@ -74,9 +74,7 @@ const AssetItem: FC<IAssetItem> = ({
   ///////////////////////
   
   return (
-
-    <Fragment key={asset.id}>
-      <li className={styles.assetItem} onClick={() => itemClicked()}>
+      <Card onClick={() => itemClicked()}>
         <div>
           <div className={styles.iconWrapper}>
             {assetInfo.logo.startsWith('http') && (
@@ -134,7 +132,6 @@ const AssetItem: FC<IAssetItem> = ({
           </div>
         </div>
       </Card>
-    </Fragment>
   );
 };
 
