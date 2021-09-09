@@ -1,8 +1,10 @@
 import { ITransactionInfo } from '../../types';
 import { IAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
+import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 
 export interface IAccountController {
+  ethClient: XChainEthClient;
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
