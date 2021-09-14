@@ -21,6 +21,7 @@ export interface IETHPendingTx {
   timestamp: number;
   network: ETHNetwork;
   assetId: string;
+  nonce: number;
 }
 
 export interface ITransactionInfo {

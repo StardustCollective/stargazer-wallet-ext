@@ -1,6 +1,7 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { BigNumber, ethers } from 'ethers';
 import { utils, XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
+import { ETHTransactionInfo } from '@stardust-collective/dag4-xchain-ethereum/types';
 
 import store from 'state/store';
 import {
@@ -269,15 +270,16 @@ export class AccountController implements IAccountController {
             }`
           );
         }
-        const txHash = await this.ethClient.transfer(txOptions);
+        const txData: ETHTransactionInfo = await this.ethClient.transfer(txOptions);
         this.txController.addPendingTx({
-          txHash,
+          txHash: txData.hash,
           fromAddress: this.tempTx.fromAddress,
           toAddress: this.tempTx.toAddress,
           amount: this.tempTx.amount,
           network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
           assetId: activeAsset.id,
           timestamp: new Date().getTime(),
+          nonce: txData.nonce,
         });
       }
       this.tempTx = null;
