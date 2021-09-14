@@ -12,7 +12,7 @@ index 6b3df22..6f82803 100644
          gasPrice?: {
              type: import("../../xchain-util/lib").Denomination.BASE;
 diff --git a/node_modules/@xchainjs/xchain-ethereum/lib/index.esm.js b/node_modules/@xchainjs/xchain-ethereum/lib/index.esm.js
-index fb2da87..ae8c717 100644
+index fb2da87..87761f9 100644
 --- a/node_modules/@xchainjs/xchain-ethereum/lib/index.esm.js
 +++ b/node_modules/@xchainjs/xchain-ethereum/lib/index.esm.js
 @@ -1151,7 +1151,7 @@ var Client = /** @class */ (function () {
@@ -39,3 +39,15 @@ index fb2da87..ae8c717 100644
                          case 8:
                              error_6 = _b.sent();
                              return [2 /*return*/, Promise.reject(error_6)];
+diff --git a/node_modules/@xchainjs/xchain-ethereum/lib/types/etherscan-api-types.d.ts b/node_modules/@xchainjs/xchain-ethereum/lib/types/etherscan-api-types.d.ts
+index be02f6a..27b7d80 100644
+--- a/node_modules/@xchainjs/xchain-ethereum/lib/types/etherscan-api-types.d.ts
++++ b/node_modules/@xchainjs/xchain-ethereum/lib/types/etherscan-api-types.d.ts
+@@ -41,6 +41,7 @@ export declare type ETHTransactionInfo = {
+     blockNumber: string;
+     timeStamp: string;
+     hash: string;
++    nonce: string;
+     from: string;
+     to: string;
+     value: string;
