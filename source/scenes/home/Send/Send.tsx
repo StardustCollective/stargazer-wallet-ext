@@ -144,7 +144,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const getBalanceAndFees = () => {
     const balance = balances[activeAsset.id] || '0';
-    const balanceBN = ethers.utils.parseUnits(balance, assetInfo.decimals);
+    const balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
     const txFee =
       activeAsset.id === AssetType.Constellation
         ? ethers.utils.parseUnits(String(Number(fee) * 1e8), 8)
