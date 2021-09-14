@@ -190,14 +190,12 @@
   }
 
   .activity {
-    height: 336px;
+    height: 100%;
     background: $gray-light;
     width: 100%;
     padding: 0;
     box-sizing: border-box;
     display: flex;
-    position: absolute;
-    bottom: -2px;
     overflow: auto;
     flex-direction: column;
     width: 100%;
