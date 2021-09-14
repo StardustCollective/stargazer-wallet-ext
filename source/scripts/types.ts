@@ -22,6 +22,7 @@ export interface IETHPendingTx {
   network: ETHNetwork;
   assetId: string;
   nonce: number;
+  gasPrice: number;
 }
 
 export interface ITransactionInfo {

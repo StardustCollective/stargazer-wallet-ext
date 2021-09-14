@@ -242,7 +242,6 @@ export class AccountController implements IAccountController {
       } else {
         if (!this.tempTx.ethConfig) return;
         const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
-        // console.log('gas gasLimit', gas, gasLimit);
         const { activeNetwork }: IVaultState = store.getState().vault;
         const txOptions: any = {
           recipient: this.tempTx.toAddress,
@@ -270,6 +269,7 @@ export class AccountController implements IAccountController {
           );
         }
         const txData: any = await this.ethClient.transfer(txOptions);
+
         this.txController.addPendingTx({
           txHash: txData.hash,
           fromAddress: this.tempTx.fromAddress,
@@ -279,6 +279,7 @@ export class AccountController implements IAccountController {
           assetId: activeAsset.id,
           timestamp: new Date().getTime(),
           nonce: txData.nonce,
+          gasPrice: gasPrice,
         });
       }
       this.tempTx = null;
