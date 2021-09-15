@@ -32,6 +32,7 @@ export interface ITransactionInfo {
   timestamp: number;
   fee?: number;
   ethConfig?: IETHTxConfig;
+  nonce?: number;
 }
 
 export type ETHNetwork = 'testnet' | 'mainnet';

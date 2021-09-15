@@ -9,10 +9,13 @@ import { withStyles } from '@material-ui/core/styles';
 // Images
 ///////////////////////
 
-import EditIcon from 'assets/images/svg/edit.svg';
-import CancelIcon from 'assets/images/svg/cancel.svg';
+// import EditIcon from 'assets/images/svg/edit.svg';
+// import CancelIcon from 'assets/images/svg/cancel.svg';
 import Slider from '@material-ui/core/Slider';
 import darkGreenCheck from 'assets/images/svg/dark-green-check.svg'
+import { useFiat } from 'hooks/usePrice';
+
+
 
 ///////////////////////
 // Styles
@@ -58,7 +61,7 @@ const PurpleSlider = withStyles({
 const GWEI_STRING = 'GWEI';
 const CANCEL_BUTTON_STRING = 'Cancel';
 const SPEED_UP_BUTTON_STRING = 'Speed Up';
-const FEE_STRING = 'Fee ~= $';
+const FEE_STRING = 'Fee ~= ';
 const SPEED_STRING = 'Speed:';
 const TRANSACTION_UPDATED_STRING = 'Transaction updated';
 const KEEP_STRING = 'Keep';
@@ -96,11 +99,11 @@ interface IOutlineButtonProps {
   type?: BUTTON_TYPE_ENUM;
 }
 
-interface ICircleIconButtonProps {
-  iconPath: string;
-  iconSize?: number;
-  onClick?: () => void;
-}
+// interface ICircleIconButtonProps {
+//   iconPath: string;
+//   iconSize?: number;
+//   onClick?: () => void;
+// }
 
 interface IGasSettingsProps {
   values: {
@@ -108,22 +111,32 @@ interface IGasSettingsProps {
     max: number;
     current: number;
   }
+  speedLabel: string;
+  gasFeeLabel: number;
+  gasPrice: number;
+  onSliderChange: (_event: ChangeEvent<{}>, value: number | number[]) => void;
+  onSpeedUpClick: ( gas: number) => void;
 }
 
 ///////////////////////
 // Component
 ///////////////////////
 
-const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
+const GasSettings: FC<IGasSettingsProps> = ({ 
+  values, 
+  speedLabel, 
+  gasFeeLabel, 
+  gasPrice, 
+  onSliderChange,
+  onSpeedUpClick
+}) => {
 
   ///////////////////////
   // Hooks
   ///////////////////////
 
   const [viewState, setViewState] = useState<GAS_SETTINGS_STATE_ENUM>(GAS_SETTINGS_STATE_ENUM.OPTIONS);
-  const [gasValue, setGasValue] = useState<number>(values.current);
-  const [fee, setFee] = useState<number>(1.44);
-  const [speed, setSpeed] = useState<string>('Slow');
+  const getFiatAmount = useFiat();
 
   ///////////////////////
   // Callbacks
@@ -133,20 +146,13 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
     setViewState(GAS_SETTINGS_STATE_ENUM.SETTINGS);
   }
 
-  const onCancelButtonClick = () => {
-    setViewState(GAS_SETTINGS_STATE_ENUM.CANCEL);
-  }
-
-  const onEditButtonClick = () => {
-    setViewState(GAS_SETTINGS_STATE_ENUM.SETTINGS);
-  }
-
   const onSettingCancelButtonClick = () => {
     setViewState(GAS_SETTINGS_STATE_ENUM.OPTIONS);
   }
 
   const onSpeedUpConfirmButtonClicked = () => {
     setViewState(GAS_SETTINGS_STATE_ENUM.UPDATED);
+    onSpeedUpClick(gasPrice);
   }
 
   const onKeepButtonClicked = () => {
@@ -156,12 +162,6 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
   const onCancelTransactionButtonClicked = () => {
     setViewState(GAS_SETTINGS_STATE_ENUM.NONE);
   }
-
-  const handleChange = (_event: ChangeEvent<{}>, value: number | number[]) => {
-    setGasValue(value as number);
-    setFee(value as number *1.22);
-    setSpeed(value < 500 ? 'Slow' : 'Fast');
-  };
 
   ///////////////////////
   // Renders
@@ -182,17 +182,17 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
     )
   }
 
-  const CircleIconButton: FC<ICircleIconButtonProps> = ({
-    iconPath,
-    iconSize = 16,
-    onClick
-  }) => {
-    return (
-      <div onClick={onClick} className={styles.circleIconButton}>
-        <img src={'/' + iconPath} width={iconSize} height={iconSize} />
-      </div>
-    );
-  };
+  // const CircleIconButton: FC<ICircleIconButtonProps> = ({
+  //   iconPath,
+  //   iconSize = 16,
+  //   onClick
+  // }) => {
+  //   return (
+  //     <div onClick={onClick} className={styles.circleIconButton}>
+  //       <img src={'/' + iconPath} width={iconSize} height={iconSize} />
+  //     </div>
+  //   );
+  // };
 
   return (
     <div className={styles.gasSettings}>
@@ -201,14 +201,6 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
           <OutlineButton
             label={SPEED_UP_BUTTON_STRING}
             onClick={onSpeedUpButtonClick}
-          />
-          <CircleIconButton
-            iconPath={EditIcon}
-            onClick={onEditButtonClick}
-          />
-          <CircleIconButton
-            iconPath={CancelIcon}
-            onClick={onCancelButtonClick}
           />
         </div>
       }
@@ -223,7 +215,7 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
                 <div className={styles.headerRight}>
                   <div>
                     <span>
-                      {gasValue}
+                      {gasPrice}
                     </span>
                     <span>
                       {GWEI_STRING}
@@ -234,7 +226,7 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
               <div className={styles.body}>
                 <div className={styles.body__slider}>
                   <PurpleSlider
-                    onChange={handleChange}
+                    onChange={onSliderChange}
                     min={values.min}
                     max={values.max}
                     step={SLIDER_STEP_PROP}
@@ -243,17 +235,21 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
                 </div>
                 <div className={styles.body__sliderLabels}>
                   <div>
-                    <span>{FEE_STRING}{fee}</span>
+                    <span>{FEE_STRING} {getFiatAmount(
+                      gasFeeLabel,
+                      2,
+                      'ethereum'
+                    )}</span>
                   </div>
                   <div>
-                    <span>{SPEED_STRING} {speed}</span>
+                    <span>{SPEED_STRING} {speedLabel}</span>
                   </div>
                 </div>
               </div>
               <div className={styles.footer}>
                 <div className={styles.footer__cancelButton}>
                   <OutlineButton
-                    label={CANCEL_BUTTON_STRING}  
+                    label={CANCEL_BUTTON_STRING}
                     type={BUTTON_TYPE_ENUM.OUTLINE}
                     onClick={onSettingCancelButtonClick}
                   />
@@ -272,7 +268,7 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
       {viewState === GAS_SETTINGS_STATE_ENUM.UPDATED &&
         <div className={styles.updated}>
           <div className={styles.box}>
-            <img src={'/'+darkGreenCheck} />
+            <img src={'/' + darkGreenCheck} />
             <span>{TRANSACTION_UPDATED_STRING}</span>
           </div>
         </div>
@@ -292,7 +288,7 @@ const GasSettings: FC<IGasSettingsProps> = ({ values }) => {
               <div className={styles.footer}>
                 <div>
                   <OutlineButton
-                    label={KEEP_STRING}  
+                    label={KEEP_STRING}
                     type={BUTTON_TYPE_ENUM.OUTLINE}
                     onClick={onKeepButtonClicked}
                   />
