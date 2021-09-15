@@ -13,12 +13,7 @@ function useGasEstimate(initialGasPrice?: number) {
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
-  // const [asset, setAsset] = useState<string>('');
 
-
-  // const assets: IAssetListState = useSelector(
-  //   (state: RootState) => state.assets
-  // );
   const { activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -77,7 +72,6 @@ function useGasEstimate(initialGasPrice?: number) {
     gasFee,
     gasPrice,
     setGasPrice,
-    // setAsset,
   };
 
 }
