@@ -74,7 +74,7 @@
               }
               & > span:last-child {
                 font-size: 14px;
-                font-family: $quicksand;
+                font-family: $rubik;
                 font-weight: $medium;
               }
             }
@@ -125,7 +125,7 @@
       }
       span {
         color: $green-dark;
-        font-family: $quicksand;
+        font-family: $rubik;
         font-style: normal;
         font-weight: bold;
         font-size: 14px;
@@ -147,7 +147,7 @@
         flex: 1;
         margin: 16px;
         flex-direction: column;
-        font-family: $quicksand;
+        font-family: $rubik;
 
         .header {
           font-size: 18px;
@@ -176,32 +176,32 @@
   height: 36px;
   align-items: center;
   justify-content: center;
-  border: 2px solid $purple;
+  border: 2px solid $primary;
   border-radius: 20px;
   box-sizing: border-box;
 
   & > span {
     margin: 0px 24px 0px 24px;
-    font-family: $quicksand;
+    font-family: $rubik;
     font-size: 14px;
     font-weight: $bold;
     line-height: 20px;
-    color: $purple;
+    color: $primary;
   }
 }
 
 .solidButton {
   display: flex;
   height: 36px;
-  background-color: $purple;
+  background-color: $primary;
   align-items: center;
   justify-content: center;
   border-radius: 20px;
 
   & > span {
     margin: 0px 24px 0px 24px;
-    font-family: $quicksand;
-    font-size: 14px;
+    font-family: $rubik;
+    font-size: 13px;
     font-weight: $bold;
     color: $white;
   }
@@ -213,6 +213,6 @@
   height: 32px;
   justify-content: center;
   align-items: center;
-  border: 2px solid $purple;
+  border: 2px solid $primary;
   border-radius: 20px;
 }

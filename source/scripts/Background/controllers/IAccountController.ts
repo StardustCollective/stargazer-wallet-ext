@@ -36,4 +36,5 @@ export interface IAccountController {
   getLatestGasPrices: () => Promise<number[]>;
   estimateTotalGasFee: (recipient: string, amount: string, gas: number, gasLimit?: number) => Promise<number>;
   getLatestTxUpdate: () => Promise<void>;
+  updatePendingTx: (tx: ITransactionInfo, gasPrice: number) => {};
 }

@@ -21,6 +21,8 @@ export interface IETHPendingTx {
   timestamp: number;
   network: ETHNetwork;
   assetId: string;
+  nonce: number;
+  gasPrice: number;
 }
 
 export interface ITransactionInfo {
@@ -30,6 +32,7 @@ export interface ITransactionInfo {
   timestamp: number;
   fee?: number;
   ethConfig?: IETHTxConfig;
+  nonce?: number;
 }
 
 export type ETHNetwork = 'testnet' | 'mainnet';

@@ -1,0 +1,53 @@
+diff --git a/node_modules/@xchainjs/xchain-ethereum/lib/client.d.ts b/node_modules/@xchainjs/xchain-ethereum/lib/client.d.ts
+index 6b3df22..6f82803 100644
+--- a/node_modules/@xchainjs/xchain-ethereum/lib/client.d.ts
++++ b/node_modules/@xchainjs/xchain-ethereum/lib/client.d.ts
+@@ -244,7 +244,7 @@ export default class Client implements XChainClient, EthereumClient {
+      * @throws {"Invalid asset address"}
+      * Thrown if the given asset is invalid.
+      */
+-    transfer: ({ asset, memo, amount, recipient, feeOptionKey, gasPrice, gasLimit, }: TxParams & {
++    transfer: ({ asset, memo, amount, recipient, feeOptionKey, gasPrice, gasLimit, nonce}: TxParams & {
+         feeOptionKey?: "average" | "fast" | "fastest" | undefined;
+         gasPrice?: {
+             type: import("../../xchain-util/lib").Denomination.BASE;
+diff --git a/node_modules/@xchainjs/xchain-ethereum/lib/index.esm.js b/node_modules/@xchainjs/xchain-ethereum/lib/index.esm.js
+index fb2da87..87761f9 100644
+--- a/node_modules/@xchainjs/xchain-ethereum/lib/index.esm.js
++++ b/node_modules/@xchainjs/xchain-ethereum/lib/index.esm.js
+@@ -1151,7 +1151,7 @@ var Client = /** @class */ (function () {
+          * Thrown if the given asset is invalid.
+          */
+         this.transfer = function (_a) {
+-            var asset = _a.asset, memo = _a.memo, amount = _a.amount, recipient = _a.recipient, feeOptionKey = _a.feeOptionKey, gasPrice = _a.gasPrice, gasLimit = _a.gasLimit;
++            var asset = _a.asset, memo = _a.memo, amount = _a.amount, recipient = _a.recipient, feeOptionKey = _a.feeOptionKey, gasPrice = _a.gasPrice, gasLimit = _a.gasLimit, nonce = _a.nonce;
+             return __awaiter(_this, void 0, void 0, function () {
+                 var txAmount, assetAddress, isETHAddress, defaultGasLimit_1, overrides, gasPrice_1, gasLimit_1, txResult, transactionRequest, error_6;
+                 return __generator(this, function (_b) {
+@@ -1196,12 +1196,12 @@ var Client = /** @class */ (function () {
+                             txResult = _b.sent();
+                             return [3 /*break*/, 7];
+                         case 5:
+-                            transactionRequest = Object.assign({ to: recipient, value: txAmount }, __assign(__assign({}, overrides), { data: memo ? toUtf8Bytes(memo) : undefined }));
++                            transactionRequest = Object.assign({ to: recipient, value: txAmount, nonce }, __assign(__assign({}, overrides), { data: memo ? toUtf8Bytes(memo) : undefined }));
+                             return [4 /*yield*/, this.getWallet().sendTransaction(transactionRequest)];
+                         case 6:
+                             txResult = _b.sent();
+                             _b.label = 7;
+-                        case 7: return [2 /*return*/, txResult.hash];
++                        case 7: return [2 /*return*/, txResult];
+                         case 8:
+                             error_6 = _b.sent();
+                             return [2 /*return*/, Promise.reject(error_6)];
+diff --git a/node_modules/@xchainjs/xchain-ethereum/lib/types/etherscan-api-types.d.ts b/node_modules/@xchainjs/xchain-ethereum/lib/types/etherscan-api-types.d.ts
+index be02f6a..27b7d80 100644
+--- a/node_modules/@xchainjs/xchain-ethereum/lib/types/etherscan-api-types.d.ts
++++ b/node_modules/@xchainjs/xchain-ethereum/lib/types/etherscan-api-types.d.ts
+@@ -41,6 +41,7 @@ export declare type ETHTransactionInfo = {
+     blockNumber: string;
+     timeStamp: string;
+     hash: string;
++    nonce: string;
+     from: string;
+     to: string;
+     value: string;

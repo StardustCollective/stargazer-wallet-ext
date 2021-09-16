@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, ChangeEvent} from 'react';
 import { formatDistanceDate } from '../../helpers';
 
 ///////////////////////
@@ -10,8 +10,15 @@ import { formatDistanceDate } from '../../helpers';
 ///////////////////////
 
 import Spinner from '@material-ui/core/CircularProgress';
-// import GasSettings from '../GasSettings';
+import GasSettings from '../GasSettings';
 import TextV3 from 'components/TextV3';
+
+///////////////////////
+// Hooks
+///////////////////////
+
+import useGasEstimate from 'hooks/useGasEstimate';
+import { useController } from 'hooks/index';
 
 ///////////////////////
 // Images
@@ -42,19 +49,16 @@ type ITxItem = {
   isSelf: boolean;
   isReceived: boolean;
   isETH: boolean;
-  isETHPending: boolean;
-  // isGasSettingsVisible: boolean;
-  // gasSettingsDefaults: {
-  //   min: number;
-  //   max: number;
-  //   current: number;
-  // }
+  isGasSettingsVisible: boolean;
+
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
   amount: string;
   fiatAmount: string;
 }
+
+const MAX_GAS_NUMBER = 200;
 
 ///////////////////////
 // Component
@@ -65,15 +69,48 @@ const TxItem: FC<ITxItem> = ({
   isETH,
   isSelf,
   isReceived,
-  // isETHPending,
-  // isGasSettingsVisible,
-  // gasSettingsDefaults,
+  isGasSettingsVisible,
   showGroupBar,
   txTypeLabel,
   currencySymbol,
   amount,
   fiatAmount,
 }) => {
+
+  const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.10 : 0;
+
+  /////////////////////////
+  // Hooks
+  ////////////////////////
+
+
+  let {
+    estimateGasFee,
+    gasSpeedLabel,
+    gasFee,
+    setGasPrice,
+    gasPrice } = useGasEstimate(tx.gasPrice);
+  const controller = useController();
+
+  /////////////////////////
+  // Callbacks
+  ////////////////////////
+
+  const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
+    setGasPrice(value as number);
+    estimateGasFee(value as number);
+  }
+
+  const onSpeedUpClick = (gas: number) => {
+    controller.wallet.account
+    .updatePendingTx(tx, gas)
+    console.log('Speed Up Clicked');
+  }
+
+  /////////////////////////
+  // Renders
+  ////////////////////////
+
 
   const RenderIcon: FC = () => {
     if (!isETH) {
@@ -143,11 +180,22 @@ const TxItem: FC<ITxItem> = ({
           </TextV3.Caption>
         </div>
       </div>
-      {/* {isGasSettingsVisible &&
+      {isGasSettingsVisible &&
         <div className={styles.gasSettings}>
-          <GasSettings values={gasSettingsDefaults} />
+          <GasSettings
+            values={{
+              min: minGasPrice,
+              max: MAX_GAS_NUMBER,
+              current: gasPrice,
+            }}
+            speedLabel={gasSpeedLabel}
+            gasFeeLabel={gasFee}
+            onSliderChange={onGasPriceChanged}
+            onSpeedUpClick={onSpeedUpClick}
+            gasPrice={gasPrice}
+          />
         </div>
-      } */}
+      }
     </div>
   );
 

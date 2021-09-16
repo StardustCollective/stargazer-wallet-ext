@@ -16,8 +16,10 @@
     "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack",
     "build": "yarn run build:chrome && yarn run build:firefox",
     "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix"
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "postinstall": "npx patch-package"
   },
+
   "dependencies": {
     "@babel/runtime": "^7.10.2",
     "@devneser/gradient-avatar": "^1.1.1",

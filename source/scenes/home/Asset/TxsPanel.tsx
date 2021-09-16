@@ -74,6 +74,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   //   setShowed(false);
   // };
 
+
   return (
     <div
       className={styles.activity}
@@ -113,13 +114,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   isETH={isETH}
                   isSelf={isSelf}
                   isReceived={isReceived}
-                  isETHPending={isETHPending}
-                  // isGasSettingsVisible={true}
-                  // gasSettingsDefaults={{
-                  //   min: 50,
-                  //   max: 1000,
-                  //   current: 40,
-                  // }}
+                  isGasSettingsVisible={isETHPending && !isReceived}
                   showGroupBar={isShowedGroupBar(tx, idx)}
                   txTypeLabel={txTypeLabel}
                   currencySymbol={assets[activeAsset.id].symbol}
