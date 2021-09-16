@@ -47,6 +47,7 @@ interface IButtonV3Props {
   label: string;
   extraStyle?: string;
   onClick?: () => void;
+  submit?: boolean;
 }
 
 //////////////////////
@@ -59,6 +60,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   label = "",
   extraStyle = "",
   onClick = () => {},
+  submit = false,
 }) => {
 
   let buttonSizeStyle   = '';
@@ -84,7 +86,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   }
 
   return (
-    <div className={clsx([
+    <button type={submit ? 'submit' : 'button'} className={clsx([
       styles.base,
       buttonColorStyle,
       buttonTextColor,
@@ -97,7 +99,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
       <TextComponent align={TEXT_ALIGN_ENUM.CENTER}>
         {label}
       </TextComponent>
-    </div>
+    </button>
   );
 
 }
