@@ -28,8 +28,8 @@ const ImportPhrase = ({ navigation }: IImportPhrase) => {
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      //await controller.wallet.importPhrase(data.phrase);
-      await controller.wallet.createWallet(data.label, data.phrase);
+      
+      await controller.wallet.createWallet(data.label, data.phrase.trim());
       navigationUtil.popToTop(navigation);
       linkTo('/settings/wallets');
     } catch (error) {
@@ -56,7 +56,7 @@ const ImportPhrase = ({ navigation }: IImportPhrase) => {
           variant={styles.input}
         />
         <span>
-          Typically 12 (sometimes 24) words seperated by single spaces
+          Typically 12 (sometimes 24) words separated by single spaces
         </span>
         <label>Name</label>
         <TextInput
