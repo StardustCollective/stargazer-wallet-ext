@@ -11,6 +11,7 @@ interface ILink {
   color?: 'primary' | 'secondary' | 'monotoneOne';
   noUnderline?: boolean;
   onClick?: () => void;
+  extraStyles?: string;
 }
 
 const Link: FC<ILink> = ({
@@ -18,8 +19,9 @@ const Link: FC<ILink> = ({
   children,
   noUnderline = false,
   onClick,
+  extraStyles,
 }) => {
-  const classes = clsx(styles.link, styles[color], {
+  const classes = clsx(styles.link, extraStyles, styles[color], {
     [styles.noUnderline]: noUnderline,
   });
 
