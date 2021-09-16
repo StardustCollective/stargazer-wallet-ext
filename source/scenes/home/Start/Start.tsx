@@ -124,7 +124,7 @@ const Starter = () => {
         Welcome to Stargazer Wallet
       </TextV3.HeaderLarge>
       <img src={LogoImage} className={styles.logo} alt="Stargazer" />
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.inputWrapper}>
           <TextInput
             type="password"
@@ -150,7 +150,7 @@ const Starter = () => {
           size={BUTTON_SIZES_ENUM.LARGE}
           label={UNLOCK_STRING}
           extraStyle={styles.started}
-          onClick={handleSubmit(onSubmit)}
+          submit
         />
       </form>
       {!location.pathname.includes('confirm.html') && (
