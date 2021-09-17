@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////
 
-import React, { FC, ChangeEvent} from 'react';
+import React, { FC, ChangeEvent } from 'react';
 import { formatDistanceDate } from '../../helpers';
 
 ///////////////////////
@@ -89,7 +89,10 @@ const TxItem: FC<ITxItem> = ({
     gasSpeedLabel,
     gasFee,
     setGasPrice,
-    gasPrice } = useGasEstimate(tx.gasPrice);
+    gasPrice } = useGasEstimate({
+      toAddress: tx.toAddress,
+      amount: tx.amount
+    });
   const controller = useController();
 
   /////////////////////////
@@ -103,7 +106,7 @@ const TxItem: FC<ITxItem> = ({
 
   const onSpeedUpClick = (gas: number) => {
     controller.wallet.account
-    .updatePendingTx(tx, gas)
+      .updatePendingTx(tx, gas)
     console.log('Speed Up Clicked');
   }
 
@@ -142,7 +145,6 @@ const TxItem: FC<ITxItem> = ({
       </>
     );
   };
-
 
   return (
     <div className={styles.txItem}>
