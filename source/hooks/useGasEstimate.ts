@@ -89,6 +89,7 @@ function useGasEstimate({ toAddress, amount }: IUseGasEstimate) {
     gasFee,
     gasPrice,
     setGasPrice,
+    gasLimit,
   };
 }
 

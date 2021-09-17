@@ -236,7 +236,7 @@ export class AccountController implements IAccountController {
     }
   }
 
-  async updatePendingTx(tx: ITransactionInfo, gasPrice: number) {
+  async updatePendingTx(tx: ITransactionInfo, gasPrice: number, gasLimit: number) {
     const { activeAsset }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;
 
@@ -254,7 +254,7 @@ export class AccountController implements IAccountController {
             9
           )
         : undefined,
-      gasLimit: BigNumber.from(21000),
+      gasLimit: BigNumber.from(gasLimit),
       nonce: tx.nonce,
     };
     if (activeAsset.type !== AssetType.Ethereum) {

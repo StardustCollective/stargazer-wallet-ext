@@ -89,6 +89,7 @@ const TxItem: FC<ITxItem> = ({
     gasSpeedLabel,
     gasFee,
     setGasPrice,
+    gasLimit,
     gasPrice } = useGasEstimate({
       toAddress: tx.toAddress,
       amount: tx.amount
@@ -106,8 +107,7 @@ const TxItem: FC<ITxItem> = ({
 
   const onSpeedUpClick = (gas: number) => {
     controller.wallet.account
-      .updatePendingTx(tx, gas)
-    console.log('Speed Up Clicked');
+      .updatePendingTx(tx, gas, gasLimit)
   }
 
   /////////////////////////
