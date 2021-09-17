@@ -56,9 +56,10 @@
     margin: 16px;
     .footer__left {
       display: flex;
-      flex: 1;
+      flex: 2;
       align-items: center;
       cursor: pointer;
+      margin-bottom: 7px;
       img {
         margin-right: 10px;
       }
