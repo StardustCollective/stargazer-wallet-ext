@@ -264,7 +264,6 @@ export class AccountController implements IAccountController {
         }`
       );
     }
-    console.log(txOptions);
     await this.ethClient.transfer(txOptions);
     tx = null;
   }
