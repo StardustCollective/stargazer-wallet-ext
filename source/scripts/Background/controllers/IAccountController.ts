@@ -1,4 +1,4 @@
-import { ITransactionInfo } from '../../types';
+import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { IAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
@@ -36,5 +36,5 @@ export interface IAccountController {
   getLatestGasPrices: () => Promise<number[]>;
   estimateTotalGasFee: (recipient: string, amount: string, gas: number, gasLimit?: number) => Promise<number>;
   getLatestTxUpdate: () => Promise<void>;
-  updatePendingTx: (tx: ITransactionInfo, gasPrice: number) => {};
+  updatePendingTx: (tx: IETHPendingTx, gasPrice: number, gasLimit: number) => {};
 }

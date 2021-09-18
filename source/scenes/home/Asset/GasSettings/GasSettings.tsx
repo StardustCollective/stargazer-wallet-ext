@@ -99,12 +99,6 @@ interface IOutlineButtonProps {
   type?: BUTTON_TYPE_ENUM;
 }
 
-// interface ICircleIconButtonProps {
-//   iconPath: string;
-//   iconSize?: number;
-//   onClick?: () => void;
-// }
-
 interface IGasSettingsProps {
   values: {
     min: number;
@@ -229,6 +223,7 @@ const GasSettings: FC<IGasSettingsProps> = ({
                     onChange={onSliderChange}
                     min={values.min}
                     max={values.max}
+                    defaultValue={values.current}
                     step={SLIDER_STEP_PROP}
                     valueLabelDisplay={SLIDER_LABEL_DISPLAY_PROP}
                   />
