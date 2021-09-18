@@ -20,7 +20,7 @@ import IVaultState, {
   IWalletState,
 } from 'state/vault/types';
 
-import { ETHNetwork, ITransactionInfo } from '../../types';
+import { ETHNetwork, ITransactionInfo, IETHPendingTx } from '../../types';
 import IAssetListState from 'state/assets/types';
 import { EthTransactionController } from './EthTransactionController';
 
@@ -236,7 +236,7 @@ export class AccountController implements IAccountController {
     }
   }
 
-  async updatePendingTx(tx: ITransactionInfo, gasPrice: number, gasLimit: number) {
+  async updatePendingTx(tx: IETHPendingTx, gasPrice: number, gasLimit: number) {
     const { activeAsset }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;
 
@@ -264,7 +264,20 @@ export class AccountController implements IAccountController {
         }`
       );
     }
-    await this.ethClient.transfer(txOptions);
+    let newTx: any = await this.ethClient.transfer(txOptions);
+    this.txController.removePendingTxHash(tx.txHash);
+    this.txController.addPendingTx({
+      txHash: newTx.hash,
+      fromAddress: tx.fromAddress,
+      toAddress: tx.toAddress,
+      amount: tx.amount,
+      network: tx.network,
+      assetId: tx.assetId,
+      timestamp: new Date().getTime(),
+      nonce: newTx.nonce,
+      gasPrice: gasPrice,
+    });
+
     tx = null;
   }
 
