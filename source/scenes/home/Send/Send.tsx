@@ -38,7 +38,7 @@ interface IWalletSend {
   navigation: any
 }
 
-// One billion is the max amount a user is allows to send.
+// One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
 
 const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
