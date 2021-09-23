@@ -38,6 +38,9 @@ interface IWalletSend {
   navigation: any
 }
 
+// One billion is the max amount a user is allows to send.
+const MAX_AMOUNT_NUMBER = 1000000000;
+
 const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const getFiatAmount = useFiat();
   const controller = useController();
@@ -72,7 +75,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const [address, setAddress] = useState(
     initAddress || tempTx?.toAddress || ''
   );
-  const [amount, setAmount] = useState(String(tempTx?.amount) || '0');
+  const [amount, setAmount] = useState(Number(tempTx?.amount) || '0');
   const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
@@ -110,7 +113,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
       const assetInfo = assets[activeAsset.id];
 
-      controller.wallet.account.ethClient.estimateTokenTransferGasLimit(address, assetInfo.address, ethers.utils.parseUnits(amount, assetInfo.decimals))
+      controller.wallet.account.ethClient.estimateTokenTransferGasLimit(address, assetInfo.address, ethers.utils.parseUnits(String(amount), assetInfo.decimals))
         .then(gasLimit => {
           //console.log('ethClient.estimateGasLimit2', gasLimit);
           setGasLimit(gasLimit);
@@ -129,7 +132,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       fromAddress: activeAsset.address,
       toAddress: data.address,
       timestamp: Date.now(),
-      amount: amount,
+      amount: String(amount),
       fee: data.fee || gasFee,
     };
     if (activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20) {
@@ -188,21 +191,21 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      let pVal = parseFloat(ev.target.value);
+      let valString = ev.target.value;
+      const pVal = parseFloat(ev.target.value);
+      const isValNaN = isNaN(pVal);
+      valString = isValNaN ? '0' : valString;
 
-      pVal = isNaN(pVal) ? 0 : pVal;
+      const decimalPlaces = valString.includes('.') ? valString.toString().split(".")[1].length || 0 : 0;
+      if (pVal > MAX_AMOUNT_NUMBER || decimalPlaces && decimalPlaces > assetInfo.decimals) return;
 
-      // console.log('handleAmountChange', ev.target.value, pVal, amount, (pVal !== Number(amount)))
-
-      if (pVal !== Number(amount)) {
-        setAmount(String(pVal));
-
-        setAmountBN(ethers.utils.parseUnits(amount, assetInfo.decimals));
-
+      if (valString !== amount) {
+        setAmount(valString);
+        setAmountBN(ethers.utils.parseUnits(valString, assetInfo.decimals));
         estimateGasFee(gasPrice);
       }
       else {
-        setAmount(ev.target.value);
+        setAmount(valString);
       }
     },
     [address, gasLimit]
@@ -366,7 +369,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 fullWidth
                 inputRef={register}
                 name="amount"
-                value={amount}
+                value={amount === '0' ? '' : amount}
                 onChange={handleAmountChange}
                 variant={clsx(styles.input, styles.amount)}
               />
