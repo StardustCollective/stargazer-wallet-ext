@@ -9,7 +9,7 @@
       }
     ],
     "@babel/typescript",
-    "@babel/preset-react",
+    "@babel/preset-react"
   ],
   "plugins": [
     "@babel/plugin-transform-runtime",
