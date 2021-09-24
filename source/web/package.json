@@ -17,6 +17,7 @@
     "build": "yarn run build:chrome && yarn run build:firefox",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "test": "jest",
     "postinstall": "npx patch-package"
   },
   "dependencies": {
