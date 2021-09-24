@@ -30,6 +30,7 @@ import styles from './Send.scss';
 import IAssetListState from 'state/assets/types';
 import { BigNumber, ethers } from 'ethers';
 import { ITransactionInfo } from '../../../scripts/types';
+import { getChangeAmount } from 'utils/sendUtil';
 
 import sendHeader from 'navigation/headers/send';
 
@@ -155,14 +156,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
     //console.log('getBalanceAndFees', fee, balance, gasFee, txFee.toString());
 
-    return {balance: balanceBN, txFee};
+    return { balance: balanceBN, txFee };
   }
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
-    if(gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
-    if(gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
-    if(gasPrice > gasPrices[0]) return 'Slow';
+    if (gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
+    if (gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
+    if (gasPrice > gasPrices[0]) return 'Slow';
     return 'Turtle';
   }, [gasPrice, gasPrices])
 
@@ -191,25 +192,22 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      let valString = ev.target.value;
-      const pVal = parseFloat(ev.target.value);
-      const isValNaN = isNaN(pVal);
-      valString = isValNaN ? '0' : valString;
 
-      const decimalPlaces = valString.includes('.') ? valString.toString().split(".")[1].length || 0 : 0;
-      if (pVal > MAX_AMOUNT_NUMBER || decimalPlaces && decimalPlaces > assetInfo.decimals) return;
+      const changeAmount = getChangeAmount(ev.target.value, MAX_AMOUNT_NUMBER, assetInfo.decimals);
+      console.log('Change Amount: ');
+      console.log(changeAmount);
+      if (changeAmount === null) return;
 
-      if (valString !== amount) {
-        setAmount(valString);
-        setAmountBN(ethers.utils.parseUnits(valString, assetInfo.decimals));
+      setAmount(changeAmount);
+
+      if (changeAmount !== amount) {
+        setAmountBN(ethers.utils.parseUnits(changeAmount, assetInfo.decimals));
         estimateGasFee(gasPrice);
-      }
-      else {
-        setAmount(valString);
       }
     },
     [address, gasLimit]
   );
+
   const handleFeeChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (!isNaN(parseFloat(ev.target.value))) {
@@ -433,7 +431,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 classes={{
                   root: clsx(styles.sliderCustom, {
                     [styles.disabled]:
-                    gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
+                      gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
                   }),
                   thumb: styles.thumb,
                   mark: styles.mark,
