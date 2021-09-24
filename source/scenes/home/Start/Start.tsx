@@ -90,8 +90,8 @@ const Starter = () => {
   ///////////////////// 
 
   const onSubmit = (data: any) => {
+    // An unlock response of false means migration attempt failed but user is logged in
     controller.wallet.unLock(data.password).then(async (res) => {
-      //console.log(dapp, origin, dapp[origin], res, location.pathname);
       if (res && location.pathname.includes('confirm.html') && dapp[origin]) {
         const background = await browser.runtime.getBackgroundPage();
         background.dispatchEvent(
@@ -99,9 +99,9 @@ const Starter = () => {
         );
         window.close();
       }
-      navigationUtil.replace(navigation, screens.authorized.root);
-      setInvalid(!res);
 
+      setInvalid(false);
+      navigationUtil.replace(navigation, screens.authorized.root);
     })
       .catch(() => {
         setInvalid(true);
