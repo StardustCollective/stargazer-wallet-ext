@@ -128,7 +128,7 @@ export class EthTransactionController implements IEthTransactionController {
           ...tx,
           timestamp: tx.date.valueOf(),
           balance: ethers.utils.formatUnits(
-            tx.from[0].amount.amount().toString(),
+            tx.from[0].amount.amount().toFixed(),
             asset.decimals || 18
           ),
         };
