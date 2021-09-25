@@ -99,6 +99,7 @@ module.exports = {
       state: path.resolve(sharedPath, 'state'),
       constants: path.resolve(sharedPath, 'constants'),
       hooks: path.resolve(sharedPath, 'hooks'),
+      utils: path.resolve(sharedPath, 'utils'),
       'react-native$': 'react-native-web',
     },
   },

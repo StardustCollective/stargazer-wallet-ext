@@ -2,7 +2,7 @@ import React, { FC, useCallback } from 'react';
 import { useFiat } from 'hooks/usePrice';
 import { useSelector } from 'react-redux';
 
-// import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
+import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType, Transaction } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
@@ -11,7 +11,7 @@ import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import styles from './Asset.scss';
-// import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 interface ITxsPanel {
   address: string;
@@ -20,7 +20,7 @@ interface ITxsPanel {
 
 const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   const getFiatAmount = useFiat();
-  const { activeAsset }: IVaultState = useSelector(
+  const { activeNetwork, activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
@@ -60,14 +60,14 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   //   }
   // }, []);
 
-  // const handleOpenExplorer = (tx: string) => {
-  //   const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
-  //   window.open(
-  //     isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
-  //     '_blank'
-  //   );
+  const handleOpenExplorer = (tx: string) => {
+    const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
+    window.open(
+      isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
+      '_blank'
+    );
     
-  // };
+  };
 
   // const handleGoTop = () => {
   //   scrollArea!.scrollTo({ top: 0, behavior: 'smooth' });
@@ -110,6 +110,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
 
             return (
                 <TxItem
+                  onItemClick={handleOpenExplorer}
                   tx={tx}
                   isETH={isETH}
                   isSelf={isSelf}

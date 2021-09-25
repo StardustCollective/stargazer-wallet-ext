@@ -50,7 +50,7 @@ type ITxItem = {
   isReceived: boolean;
   isETH: boolean;
   isGasSettingsVisible: boolean;
-
+  onItemClick: (hash: string) => void;
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
@@ -75,6 +75,7 @@ const TxItem: FC<ITxItem> = ({
   currencySymbol,
   amount,
   fiatAmount,
+  onItemClick,
 }) => {
 
   const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.10 : 0;
@@ -147,7 +148,7 @@ const TxItem: FC<ITxItem> = ({
   };
 
   return (
-    <div className={styles.txItem}>
+    <div onClick={() => { onItemClick(tx.hash)}} className={styles.txItem}>
       {showGroupBar && (
         <div className={styles.groupBar}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} >

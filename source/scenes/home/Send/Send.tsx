@@ -30,6 +30,7 @@ import styles from './Send.scss';
 import IAssetListState from 'state/assets/types';
 import { BigNumber, ethers } from 'ethers';
 import { ITransactionInfo } from '../../../scripts/types';
+import { getChangeAmount } from 'utils/sendUtil';
 
 import sendHeader from 'navigation/headers/send';
 
@@ -37,6 +38,9 @@ interface IWalletSend {
   initAddress?: string;
   navigation: any
 }
+
+// One billion is the max amount a user is allowed to send.
+const MAX_AMOUNT_NUMBER = 1000000000;
 
 const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const getFiatAmount = useFiat();
@@ -72,7 +76,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const [address, setAddress] = useState(
     initAddress || tempTx?.toAddress || ''
   );
-  const [amount, setAmount] = useState(String(tempTx?.amount) || '0');
+  const [amount, setAmount] = useState(Number(tempTx?.amount) || '0');
   const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
@@ -110,7 +114,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
       const assetInfo = assets[activeAsset.id];
 
-      controller.wallet.account.ethClient.estimateTokenTransferGasLimit(address, assetInfo.address, ethers.utils.parseUnits(amount, assetInfo.decimals))
+      controller.wallet.account.ethClient.estimateTokenTransferGasLimit(address, assetInfo.address, ethers.utils.parseUnits(String(amount), assetInfo.decimals))
         .then(gasLimit => {
           //console.log('ethClient.estimateGasLimit2', gasLimit);
           setGasLimit(gasLimit);
@@ -129,7 +133,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       fromAddress: activeAsset.address,
       toAddress: data.address,
       timestamp: Date.now(),
-      amount: amount,
+      amount: String(amount),
       fee: data.fee || gasFee,
     };
     if (activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20) {
@@ -152,14 +156,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
     //console.log('getBalanceAndFees', fee, balance, gasFee, txFee.toString());
 
-    return {balance: balanceBN, txFee};
+    return { balance: balanceBN, txFee };
   }
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
-    if(gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
-    if(gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
-    if(gasPrice > gasPrices[0]) return 'Slow';
+    if (gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
+    if (gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
+    if (gasPrice > gasPrices[0]) return 'Slow';
     return 'Turtle';
   }, [gasPrice, gasPrices])
 
@@ -188,25 +192,22 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      let pVal = parseFloat(ev.target.value);
 
-      pVal = isNaN(pVal) ? 0 : pVal;
+      const changeAmount = getChangeAmount(ev.target.value, MAX_AMOUNT_NUMBER, assetInfo.decimals);
+      console.log('Change Amount: ');
+      console.log(changeAmount);
+      if (changeAmount === null) return;
 
-      // console.log('handleAmountChange', ev.target.value, pVal, amount, (pVal !== Number(amount)))
+      setAmount(changeAmount);
 
-      if (pVal !== Number(amount)) {
-        setAmount(String(pVal));
-
-        setAmountBN(ethers.utils.parseUnits(amount, assetInfo.decimals));
-
+      if (changeAmount !== amount) {
+        setAmountBN(ethers.utils.parseUnits(changeAmount, assetInfo.decimals));
         estimateGasFee(gasPrice);
-      }
-      else {
-        setAmount(ev.target.value);
       }
     },
     [address, gasLimit]
   );
+
   const handleFeeChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (!isNaN(parseFloat(ev.target.value))) {
@@ -366,7 +367,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 fullWidth
                 inputRef={register}
                 name="amount"
-                value={amount}
+                value={amount === '0' ? '' : amount}
                 onChange={handleAmountChange}
                 variant={clsx(styles.input, styles.amount)}
               />
@@ -430,7 +431,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 classes={{
                   root: clsx(styles.sliderCustom, {
                     [styles.disabled]:
-                    gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
+                      gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
                   }),
                   thumb: styles.thumb,
                   mark: styles.mark,

@@ -17,9 +17,9 @@
     "build": "yarn run build:chrome && yarn run build:firefox",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "test": "jest",
     "postinstall": "npx patch-package"
   },
-
   "dependencies": {
     "@babel/runtime": "^7.10.2",
     "@devneser/gradient-avatar": "^1.1.1",
@@ -90,7 +90,8 @@
     "@babel/plugin-transform-runtime": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
     "@babel/preset-react": "^7.10.1",
-    "@babel/preset-typescript": "^7.10.1",
+    "@babel/preset-typescript": "^7.15.0",
+    "@types/jest": "^27.0.2",
     "@types/node": "^15.0.3",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
@@ -99,6 +100,7 @@
     "@typescript-eslint/parser": "^2.34.0",
     "autoprefixer": "^9.8.0",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^27.2.1",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.1.1",
@@ -117,6 +119,7 @@
     "file-loader": "^6.1.0",
     "fork-ts-checker-webpack-plugin": "^4.1.6",
     "html-webpack-plugin": "^3.2.0",
+    "jest": "^27.2.1",
     "mini-css-extract-plugin": "^0.9.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
@@ -125,6 +128,7 @@
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^2.3.7",
+    "ts-jest": "^27.0.5",
     "tslint-divid": "^1.3.0",
     "typescript": "^3.9.5",
     "webpack": "^4.43.0",
@@ -133,5 +137,20 @@
     "wext-manifest-loader": "^2.2.0",
     "wext-manifest-webpack-plugin": "^1.2.1",
     "zip-webpack-plugin": "^3.0.0"
+  },
+  "jest": {
+    "verbose": true,
+    "testMatch": [
+      "**/__tests__/**/*.[jt]s?(x)",
+      "**/?(*.)+(spec|test).[tj]s?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/native/"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)?$": "ts-jest",
+      "^.+\\.(js|jsx)$": "babel-jest"
+    }
   }
 }
