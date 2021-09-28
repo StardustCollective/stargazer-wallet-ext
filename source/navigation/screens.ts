@@ -51,6 +51,7 @@ export default {
     importWallet: 'settings-wallet-import',
     importAccount: 'settings-wallet-import-account',
     importPhrase: 'settings-wallet-import-phrase',
+    connectedSites: 'settings-connected-sites',
   },
 
   ////////////////////////////

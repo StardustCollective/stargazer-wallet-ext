@@ -85,6 +85,10 @@ const Main: FC = () => {
     linkTo('/settings/contacts');
   }
 
+  const onConnectedSitesClicked = () => {
+    linkTo('/settings/connectedSites')
+  }
+
 
   const RenderSettingsItem = ({ label, iconImage, onClick }: IRenderSettingsItemProps) => {
 
@@ -123,6 +127,11 @@ const Main: FC = () => {
             label={"Networks"}
             iconImage={networksIcon}
             onClick={onNetworkLinkClicked}
+          />
+          <RenderSettingsItem
+            label={"Connected Sites"}
+            iconImage={networksIcon}
+            onClick={onConnectedSitesClicked}
           />
         </div>
       </div>
