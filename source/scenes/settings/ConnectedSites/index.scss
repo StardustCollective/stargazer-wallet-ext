@@ -37,12 +37,6 @@
       border-bottom: 1px solid $gray-light;
       position: relative;
 
-      .originLabel {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
       .iconContainer {
         display: flex;
         background-color: 'orange';
