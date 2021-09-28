@@ -1,4 +1,4 @@
-@import '~assets/styles/variables';
+@import "~assets/styles/variables";
 
 .wallets {
   width: 100%;
@@ -34,26 +34,26 @@
       align-items: center;
       transition: all 0.3s;
       background-color: $white;
-      cursor: pointer;
       border-bottom: 1px solid $gray-light;
       position: relative;
+
+      .originLabel {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .iconContainer {
+        display: flex;
+        background-color: 'orange';
+        border-left: 1px solid $gray-light;
+        padding-left: 10px;
+      }
 
       & > span {
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        line-height: 20px;
-        font-family: $rubik;
-
-        small {
-          font-size: 12px;
-          font-weight: 500;
-          color: $gray;
-          width: 204px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-family: $rubik;
-        }
       }
 
       .icon {
