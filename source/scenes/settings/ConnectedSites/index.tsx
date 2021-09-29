@@ -1,4 +1,4 @@
-import React, { FC, MouseEvent, useLayoutEffect } from 'react';
+import React, { FC, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteForever from '@material-ui/icons/DeleteForever';
