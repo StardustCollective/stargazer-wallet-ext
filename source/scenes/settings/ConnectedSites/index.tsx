@@ -8,6 +8,7 @@ import styles from './index.scss';
 import defaultHeader from 'navigation/headers/default';
 import { useLinkTo } from '@react-navigation/native'
 import TextV3 from 'components/TextV3';
+import Card from 'components/Card';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 interface IWalletsView {
@@ -17,7 +18,6 @@ interface IWalletsView {
 
 const ConnectedSites: FC<IWalletsView> = ({ navigation }) => {
   const controller = useController();
-  const linkTo = useLinkTo();
   const connectedSites = useSelector(
     (state: RootState) => state.dapp
   );
@@ -32,11 +32,13 @@ const ConnectedSites: FC<IWalletsView> = ({ navigation }) => {
 
   return (
     <div className={styles.wallets}>
-      <TextV3.CaptionStrong
-        color={COLORS_ENUMS.BLACK}
-      >
-        Sites
-      </TextV3.CaptionStrong>
+      {Object.values(connectedSites).length > 0 &&
+        <TextV3.CaptionStrong
+          color={COLORS_ENUMS.BLACK}
+        >
+          Sites
+        </TextV3.CaptionStrong>
+      }
       <div className={styles.group}>
         {Object.values(connectedSites).map((site: any) => (
           <section
@@ -59,6 +61,18 @@ const ConnectedSites: FC<IWalletsView> = ({ navigation }) => {
             </div>
           </section>
         ))}
+        {Object.values(connectedSites).length <= 0 &&
+          (
+            <div className={styles.noSitesConnected}>
+              <TextV3.Caption
+                color={COLORS_ENUMS.BLACK}
+              >
+                This account is not connected to any sites.
+              </TextV3.Caption>
+            </div>
+          )
+        }
+
       </div>
     </div>
   );

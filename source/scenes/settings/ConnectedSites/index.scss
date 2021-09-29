@@ -74,4 +74,13 @@
     height: 32px;
     color: $gray-100;
   }
+
+  .noSitesConnected {
+    background-color: $white;
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+  }
 }
