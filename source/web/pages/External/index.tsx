@@ -12,7 +12,7 @@ import appStore from 'state/store';
 
 import ConfirmPage from './Confirm';
 
-const app = document.getElementById('confirm-root');
+const app = document.getElementById('external-root');
 const store = new Store({ portName: STORE_PORT });
 
 const w = watch(appStore.getState, 'wallet.status');

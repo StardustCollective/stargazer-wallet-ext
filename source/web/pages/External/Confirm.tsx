@@ -29,7 +29,7 @@ const ConfirmPage: FC = () => {
         ) : (
           <Router>
             <Switch>
-              <Route path="/confirm.html" component={Starter} exact />
+              <Route path="/external.html" component={Starter} exact />
             </Switch>
           </Router>
         )}
