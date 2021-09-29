@@ -44,6 +44,22 @@ import StargazerIcon from 'assets/images/logo-s.svg';
 import { useController } from 'hooks/index';
 
 ///////////////////////////
+// Types
+///////////////////////////
+
+type ICheckedPayload = {
+  name: string;
+  address: string;
+}
+
+type IAccountItem = {
+  accountName: string;
+  accountAddress: string;
+  accountBalance: string;
+  onCheckboxClicked: (checked: boolean, payload: ICheckedPayload) => void;
+}
+
+///////////////////////////
 // View
 ///////////////////////////
 
@@ -76,14 +92,46 @@ const SelectAccounts = () => {
     window.close();
   };
 
+  const onCheckboxClicked = (checked: boolean, payload: ICheckedPayload) => {
+    // Add the account address to the white list.
+    if (checked) {
+      console.log(payload);
+    } else {
+      // Remove the account address from the white list.
+    }
+  }
+
   ///////////////////////////
   // Renders
   ///////////////////////////
 
-  const RenderWallets = () => {
+  const RenderAccountItem = ({
+    accountName,
+    accountAddress,
+    accountBalance,
+    onCheckboxClicked
+  }: IAccountItem) => {
+
+    const shortAddress = accountAddress.substring(accountAddress.length - 8)
 
     return (
-      <div>
+      <div className={styles.walletItem}>
+        <div className={styles.walletItemCheckBox}>
+          <PurpleCheckbox
+            onChange={(event) => onCheckboxClicked(event.target.checked, { name: accountName, address: accountAddress })}
+          />
+        </div>
+        <div className={styles.walletItemIcon}>
+          <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
+        </div>
+        <div className={styles.walletItemDetails}>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+            {accountName} (...{shortAddress})
+          </TextV3.CaptionStrong>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+            {accountBalance} DAG
+          </TextV3.Caption>
+        </div>
       </div>
     );
 
@@ -118,22 +166,12 @@ const SelectAccounts = () => {
               </TextV3.Caption>
             </div>
             <div className={styles.cardBody}>
-              <div className={styles.walletItem}>
-                <div className={styles.walletItemCheckBox}>
-                  <PurpleCheckbox />
-                </div>
-                <div className={styles.walletItemIcon}>
-                  <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
-                </div>
-                <div className={styles.walletItemDetails}>
-                  <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-                    Account 1 (...fehu34h)
-                  </TextV3.CaptionStrong>
-                  <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                    4763 DAG
-                  </TextV3.Caption>
-                </div>
-              </div>
+              <RenderAccountItem
+                accountName="Account 1"
+                accountAddress="1239812h1298h12983e1h893e1983e13319h8"
+                accountBalance="1523"
+                onCheckboxClicked={onCheckboxClicked}
+              />
             </div>
             <div className={styles.cardFooter}>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>
