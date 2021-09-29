@@ -70,7 +70,7 @@ module.exports = {
     background: path.join(sharedPath, 'scripts/Background', 'index.ts'),
     contentScript: path.join(sharedPath, 'scripts/ContentScript', 'index.ts'),
     app: path.join(__dirname, 'pages/App', 'index.tsx'),
-    confirm: path.join(__dirname, 'pages/Confirm', 'index.tsx'),
+    external: path.join(__dirname, 'pages/External', 'index.tsx'),
     ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
     options: path.join(__dirname, 'pages/Options', 'index.tsx'),
   },
@@ -190,10 +190,10 @@ module.exports = {
       filename: 'app.html',
     }),
     new HtmlWebpackPlugin({
-      template: path.join(viewsPath, 'confirm.html'),
+      template: path.join(viewsPath, 'external.html'),
       inject: 'body',
-      chunks: ['confirm'],
-      filename: 'confirm.html',
+      chunks: ['external'],
+      filename: 'external.html',
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'ledger.html'),

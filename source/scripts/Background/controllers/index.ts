@@ -39,7 +39,7 @@ const MasterController = (): IMasterController => {
     const _window = await browser.windows.getCurrent();
     if (!_window || !_window.width) return null;
     return await browser.windows.create({
-      url: `/confirm.html#${windowId}`,
+      url: `/external.html#${windowId}`,
       width: 372,
       height: 600,
       type: 'popup',
