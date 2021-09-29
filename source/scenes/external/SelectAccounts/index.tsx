@@ -56,7 +56,7 @@ type IAccountItem = {
   accountName: string;
   accountAddress: string;
   accountBalance: string;
-  onCheckboxClicked: (checked: boolean, payload: ICheckedPayload) => void;
+  onCheckboxChange: (checked: boolean, payload: ICheckedPayload) => void;
 }
 
 ///////////////////////////
@@ -92,7 +92,7 @@ const SelectAccounts = () => {
     window.close();
   };
 
-  const onCheckboxClicked = (checked: boolean, payload: ICheckedPayload) => {
+  const onCheckboxChange = (checked: boolean, payload: ICheckedPayload) => {
     // Add the account address to the white list.
     if (checked) {
       console.log(payload);
@@ -109,7 +109,7 @@ const SelectAccounts = () => {
     accountName,
     accountAddress,
     accountBalance,
-    onCheckboxClicked
+    onCheckboxChange
   }: IAccountItem) => {
 
     const shortAddress = accountAddress.substring(accountAddress.length - 8)
@@ -118,7 +118,7 @@ const SelectAccounts = () => {
       <div className={styles.walletItem}>
         <div className={styles.walletItemCheckBox}>
           <PurpleCheckbox
-            onChange={(event) => onCheckboxClicked(event.target.checked, { name: accountName, address: accountAddress })}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => onCheckboxChange(event.target.checked, { name: accountName, address: accountAddress })}
           />
         </div>
         <div className={styles.walletItemIcon}>
@@ -145,13 +145,13 @@ const SelectAccounts = () => {
           <TextV3.Caption>1 out 2</TextV3.Caption>
         </div>
         <div className={styles.heading}>
-          <img className={styles.logo} src={'chrome://favicon/size/64@1x/https://www.pinterest.com'} />
+          <img className={styles.logo} src={current.logo} />
           <div className={styles.originLabel}>
             <TextV3.BodyStrong color={COLORS_ENUMS.WHITE}>
               Connect to:
             </TextV3.BodyStrong>
             <TextV3.Body color={COLORS_ENUMS.WHITE}>
-              www.pinterest.com
+              {origin}
             </TextV3.Body>
           </div>
         </div>
@@ -170,7 +170,7 @@ const SelectAccounts = () => {
                 accountName="Account 1"
                 accountAddress="1239812h1298h12983e1h893e1983e13319h8"
                 accountBalance="1523"
-                onCheckboxClicked={onCheckboxClicked}
+                onCheckboxChange={onCheckboxChange}
               />
             </div>
             <div className={styles.cardFooter}>
