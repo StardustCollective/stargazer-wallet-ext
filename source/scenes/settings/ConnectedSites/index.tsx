@@ -6,9 +6,7 @@ import { RootState } from 'state/store';
 import { useController } from 'hooks/index';
 import styles from './index.scss';
 import defaultHeader from 'navigation/headers/default';
-import { useLinkTo } from '@react-navigation/native'
 import TextV3 from 'components/TextV3';
-import Card from 'components/Card';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 interface IWalletsView {
