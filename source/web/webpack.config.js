@@ -100,6 +100,7 @@ module.exports = {
       constants: path.resolve(sharedPath, 'constants'),
       hooks: path.resolve(sharedPath, 'hooks'),
       utils: path.resolve(sharedPath, 'utils'),
+      selectors: path.resolve(sharedPath, 'selectors'),
       'react-native$': 'react-native-web',
     },
   },
