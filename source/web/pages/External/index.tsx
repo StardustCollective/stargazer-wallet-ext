@@ -10,7 +10,7 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import ToastAlert from 'components/ToastAlert';
 import appStore from 'state/store';
 
-import ConfirmPage from './Confirm';
+import App from './App';
 
 const app = document.getElementById('external-root');
 const store = new Store({ portName: STORE_PORT });
@@ -35,7 +35,7 @@ store.ready().then(() => {
   ReactDOM.render(
     <Provider store={store}>
       <AlertProvider template={ToastAlert} {...options}>
-        <ConfirmPage />
+        <App />
       </AlertProvider>
     </Provider>,
     app

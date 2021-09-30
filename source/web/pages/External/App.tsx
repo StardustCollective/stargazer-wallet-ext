@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import Container from 'scenes/common/Container';
 import { RootState } from 'state/store';
-import WalletConnect from 'scenes/external/WalletConnect';
+import SelectAccounts from 'scenes/external/SelectAccounts';
 import SignatureRequest from 'scenes/external/SignatureRequest';
 
 import 'assets/styles/global.scss';
@@ -24,7 +24,7 @@ const ConfirmPage: FC = () => {
           window.location.hash.startsWith('#signMessage') ? (
             <SignatureRequest />
           ) : (
-            <WalletConnect />
+            <SelectAccounts />
           )
         ) : (
           <Router>
