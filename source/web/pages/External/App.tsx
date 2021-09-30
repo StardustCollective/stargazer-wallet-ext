@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 
 import Container from 'scenes/common/Container';
 import { RootState } from 'state/store';
-import SelectAccounts from 'scenes/external/SelectAccounts';
+import WalletConnect from 'scenes/external/WalletConnect';
 import SignatureRequest from 'scenes/external/SignatureRequest';
+import SelectAccounts from 'scenes/external/SelectAccounts';
 
 import 'assets/styles/global.scss';
 import { useController } from 'hooks/index';
@@ -29,7 +30,7 @@ const ConfirmPage: FC = () => {
         ) : (
           <Router>
             <Switch>
-              <Route path="/external.html" component={Starter} exact />
+              <Route path="/confirm.html" component={Starter} exact />
             </Switch>
           </Router>
         )}
