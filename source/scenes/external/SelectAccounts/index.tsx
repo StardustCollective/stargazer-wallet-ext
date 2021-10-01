@@ -76,7 +76,7 @@ type IAccountItem = {
 
 enum SCENE_STATE {
   SELECT_ACCOUNTS = 1,
-  PERMISSIONS,
+  CONNECT,
 }
 
 ///////////////////////////
@@ -131,7 +131,9 @@ const SelectAccounts = () => {
   };
 
   const onButtonPressed = () => {
-
+    if(sceneState === SCENE_STATE.SELECT_ACCOUNTS){
+      setSceneState(SCENE_STATE.CONNECT);
+    }
   }
 
   const onCheckboxChange = (checked: boolean, payload: ICheckedPayload) => {
@@ -190,9 +192,9 @@ const SelectAccounts = () => {
 
   }
 
-  const RenderContentByState = () => {
+  const RenderContentByState = ({ state }) => {
 
-    if (sceneState === SCENE_STATE.SELECT_ACCOUNTS) {
+    if (state === SCENE_STATE.SELECT_ACCOUNTS) {
       return (
         <>
           {accounts.length > 0 && accounts.map((account: IAccountDerived) => (
@@ -205,6 +207,23 @@ const SelectAccounts = () => {
           ))}
         </>
       );
+    } else if (state === SCENE_STATE.CONNECT) {
+      return (
+        <div className={styles.connectPermissionsPrompt}>
+          <TextV3.Header color={COLORS_ENUMS.BLACK}>
+            Connect To
+          </TextV3.Header>
+          <TextV3.Body color={COLORS_ENUMS.BLACK}>
+            {selectedAccounts.length} Account(s)
+          </TextV3.Body>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.allowSitesText}>
+            Allow this site to:
+          </TextV3.CaptionStrong>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.permissionText}>
+            View the addresses of your permitted accounts.
+          </TextV3.Caption>
+        </div>
+      )
     }
 
   }
@@ -215,7 +234,7 @@ const SelectAccounts = () => {
       <div className={styles.topCircle} />
       <div className={styles.content}>
         <div className={styles.stepsLabel}>
-          <TextV3.Caption>1 out 2</TextV3.Caption>
+          <TextV3.Caption>{sceneState === SCENE_STATE.SELECT_ACCOUNTS ? '1' : '2'} out 2</TextV3.Caption>
         </div>
         <div className={styles.heading}>
           <img className={styles.logo} src={current.logo} />
@@ -235,11 +254,11 @@ const SelectAccounts = () => {
                 Connect with Stargazer
               </TextV3.Header>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                Select Account(s)
+                {sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Select Account(s)' : 'Grant Permissions'}
               </TextV3.Caption>
             </div>
             <div className={styles.cardBody}>
-              <RenderContentByState />
+              <RenderContentByState state={sceneState}/>
             </div>
             <div className={styles.cardFooter}>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>
@@ -254,7 +273,7 @@ const SelectAccounts = () => {
             size={BUTTON_SIZES_ENUM.LARGE}
             label={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Next' : 'Connect'}
             extraStyle={styles.nextButton}
-            onClick={() => { }}
+            onClick={onButtonPressed}
           />
         </div>
       </div>
