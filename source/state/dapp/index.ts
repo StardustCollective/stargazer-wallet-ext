@@ -15,7 +15,7 @@ const DAppState = createSlice({
         id: string;
         dapp: IDAppInfo;
         network: string;
-        accounts: IDappAccounts[];
+        accounts: string[];
       }>
     ) {
       return {

@@ -62,17 +62,16 @@ import { useController } from 'hooks/index';
 
 import { IAccountDerived } from 'state/vault/types';
 
-type ICheckedPayload = {
-  name: string;
-  address: string;
-}
-
 type IAccountItem = {
   accountName: string;
   accountAddress: string;
   accountBalance: string;
   onCheckboxChange: (checked: boolean, payload: ICheckedPayload) => void;
 }
+
+///////////////////////////
+// Enums
+///////////////////////////
 
 enum SCENE_STATE {
   SELECT_ACCOUNTS = 1,
@@ -138,13 +137,13 @@ const SelectAccounts = () => {
     }
   }
 
-  const onCheckboxChange = (checked: boolean, payload: ICheckedPayload) => {
+  const onCheckboxChange = (checked: boolean, address: string) => {
     // Add the account address to the white list.
     if (checked) {
-      let accounts = [...selectedAccounts, payload];
+      let accounts = [...selectedAccounts, address];
       setSelectedAccounts(accounts);
     } else {
-      let accounts = selectedAccounts.filter((account) => account.address !== payload.address);
+      let accounts = selectedAccounts.filter((account) => account !== address);
       setSelectedAccounts(accounts);
     }
   }
@@ -174,8 +173,8 @@ const SelectAccounts = () => {
       <div key={accountAddress} className={styles.walletItem}>
         <div className={styles.walletItemCheckBox}>
           <PurpleCheckbox
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => onCheckboxChange(event.target.checked, { name: accountName, address: accountAddress })}
-            checked={(selectedAccounts.filter((account) => account.address === accountAddress).length > 0)}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => onCheckboxChange(event.target.checked, accountAddress )}
+            checked={(selectedAccounts.filter((account) => account === accountAddress).length > 0)}
           />
         </div>
         <div className={styles.walletItemIcon}>
