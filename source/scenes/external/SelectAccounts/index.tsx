@@ -92,7 +92,7 @@ const SelectAccounts = () => {
   const allEthAccounts = useSelector(walletsSelectors.selectAllEthAccounts);
   const [accounts, setAccounts] = useState<IAccountDerived[]>([]);
   const [network, setNetwork] = useState<string>("");
-  const [selectedAccounts, setSelectedAccounts] = useState<ICheckedPayload[]>([])
+  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([])
   const [sceneState, setSceneState] = useState<SCENE_STATE>(SCENE_STATE.SELECT_ACCOUNTS);
   const controller = useController();
   const current = controller.dapp.getCurrent();
