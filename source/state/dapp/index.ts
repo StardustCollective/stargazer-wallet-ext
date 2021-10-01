@@ -11,11 +11,21 @@ const DAppState = createSlice({
   reducers: {
     listNewDapp(
       state: IDAppState,
-      action: PayloadAction<{ id: string; dapp: IDAppInfo, network: string, accounts: IDappAccounts[] }>
+      action: PayloadAction<{
+        id: string;
+        dapp: IDAppInfo;
+        network: string;
+        accounts: IDappAccounts[];
+      }>
     ) {
       return {
         ...state,
-        [action.payload.id]: {...action.payload.dapp, accounts: {[action.payload.network]: action.payload.accounts}},
+        [action.payload.id]: {
+          ...action.payload.dapp,
+          accounts: {
+            [action.payload.network]: action.payload.accounts,
+          },
+        },
       };
     },
     unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
