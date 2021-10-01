@@ -2,8 +2,14 @@
 // Modules
 ///////////////////////////
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { browser } from 'webextension-polyfill-ts';
+import { useSelector } from 'react-redux';
+import queryString from 'query-string';
+import {
+  KeyringNetwork
+} from '@stardust-collective/dag4-keyring';
+
 
 ///////////////////////////
 // Components
@@ -13,6 +19,12 @@ import TextV3 from 'components/TextV3';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import Icon from 'components/Icon';
+
+///////////////////////////
+// Selectors
+///////////////////////////
+
+import walletsSelectors from 'selectors/walletsSelectors'
 
 ///////////////////////////
 // Styles
@@ -35,7 +47,8 @@ const PurpleCheckbox = withStyles({
 // Images
 ///////////////////////////
 
-import StargazerIcon from 'assets/images/logo-s.svg';
+import ConstellationIcon from 'assets/images/svg/constellation.svg';
+import EthereumIcon from 'assets/images/svg/ethereum.svg';
 
 ///////////////////////////
 // Hooks Imports
@@ -46,6 +59,8 @@ import { useController } from 'hooks/index';
 ///////////////////////////
 // Types
 ///////////////////////////
+
+import { IAccountDerived } from 'state/vault/types';
 
 type ICheckedPayload = {
   name: string;
@@ -59,6 +74,11 @@ type IAccountItem = {
   onCheckboxChange: (checked: boolean, payload: ICheckedPayload) => void;
 }
 
+enum SCENE_STATE {
+  SELECT_ACCOUNTS = 1,
+  PERMISSIONS,
+}
+
 ///////////////////////////
 // View
 ///////////////////////////
@@ -69,9 +89,27 @@ const SelectAccounts = () => {
   // Hooks
   ///////////////////////////
 
+  const allDagAccounts = useSelector(walletsSelectors.selectAllDagAccounts);
+  const allEthAccounts = useSelector(walletsSelectors.selectAllEthAccounts);
+  const [accounts, setAccounts] = useState<IAccountDerived[]>([]);
+  const [network, setNetwork] = useState<string>("");
+  const [selectedAccounts, setSelectedAccounts] = useState<ICheckedPayload[]>([])
+  const [sceneState, setSceneState] = useState<SCENE_STATE>(SCENE_STATE.SELECT_ACCOUNTS);
   const controller = useController();
   const current = controller.dapp.getCurrent();
   const origin = current && current.origin;
+
+  // Set the account data based on the type of network
+  // that is retrieved from the query parameter.
+  useEffect(() => {
+    const { network } = queryString.parse(location.search);
+    setNetwork(network as string);
+    if (network === KeyringNetwork.Constellation) {
+      setAccounts(allDagAccounts)
+    } else if (network === KeyringNetwork.Ethereum) {
+      setAccounts(allEthAccounts)
+    }
+  }, []);
 
   ///////////////////////////
   // Callbacks
@@ -92,12 +130,18 @@ const SelectAccounts = () => {
     window.close();
   };
 
+  const onButtonPressed = () => {
+
+  }
+
   const onCheckboxChange = (checked: boolean, payload: ICheckedPayload) => {
     // Add the account address to the white list.
     if (checked) {
-      console.log(payload);
+      let accounts = [...selectedAccounts, payload];
+      setSelectedAccounts(accounts);
     } else {
-      // Remove the account address from the white list.
+      let accounts = selectedAccounts.filter((account) => account.address !== payload.address);
+      setSelectedAccounts(accounts);
     }
   }
 
@@ -112,30 +156,59 @@ const SelectAccounts = () => {
     onCheckboxChange
   }: IAccountItem) => {
 
-    const shortAddress = accountAddress.substring(accountAddress.length - 8)
+    const shortAddress = accountAddress.substring(accountAddress.length - 4)
+    const symbol = network === KeyringNetwork.Constellation ? 'DAG' : 'ETH';
+    let icon = '';
+
+    if (network === KeyringNetwork.Constellation) {
+      icon = ConstellationIcon
+    } else if (network === KeyringNetwork.Ethereum) {
+      icon = EthereumIcon;
+    }
 
     return (
-      <div className={styles.walletItem}>
+      <div key={accountAddress} className={styles.walletItem}>
         <div className={styles.walletItemCheckBox}>
           <PurpleCheckbox
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => onCheckboxChange(event.target.checked, { name: accountName, address: accountAddress })}
+            checked={(selectedAccounts.filter((account) => account.address === accountAddress).length > 0)}
           />
         </div>
         <div className={styles.walletItemIcon}>
-          <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
+          <Icon width={25} Component={icon} iconStyles={styles.icon} />
         </div>
         <div className={styles.walletItemDetails}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
             {accountName} (...{shortAddress})
           </TextV3.CaptionStrong>
           <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-            {accountBalance} DAG
+            {accountBalance} {symbol}
           </TextV3.Caption>
         </div>
       </div>
     );
 
   }
+
+  const RenderContentByState = () => {
+
+    if (sceneState === SCENE_STATE.SELECT_ACCOUNTS) {
+      return (
+        <>
+          {accounts.length > 0 && accounts.map((account: IAccountDerived) => (
+            <RenderAccountItem
+              accountName={account.label}
+              accountAddress={account.address}
+              accountBalance=""
+              onCheckboxChange={onCheckboxChange}
+            />
+          ))}
+        </>
+      );
+    }
+
+  }
+
 
   return (
     <div className={styles.wrapper}>
@@ -166,12 +239,7 @@ const SelectAccounts = () => {
               </TextV3.Caption>
             </div>
             <div className={styles.cardBody}>
-              <RenderAccountItem
-                accountName="Account 1"
-                accountAddress="1239812h1298h12983e1h893e1983e13319h8"
-                accountBalance="1523"
-                onCheckboxChange={onCheckboxChange}
-              />
+              <RenderContentByState />
             </div>
             <div className={styles.cardFooter}>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>
@@ -184,7 +252,7 @@ const SelectAccounts = () => {
           <ButtonV3
             type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
-            label={'Next'}
+            label={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Next' : 'Connect'}
             extraStyle={styles.nextButton}
             onClick={() => { }}
           />
