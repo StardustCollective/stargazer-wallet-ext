@@ -1,11 +1,11 @@
 import { listNewDapp, unlistDapp } from 'state/dapp';
-import { IDAppInfo, IDAppState } from 'state/dapp/types';
+import { IDAppInfo, IDAppState, IDappAccounts } from 'state/dapp/types';
 import store from 'state/store';
 
 
 export interface IDAppController {
   getCurrent: () => IDAppInfo;
-  fromUserConnectDApp: (origin: string, dapp: IDAppInfo) => void;
+  fromUserConnectDApp: (origin: string, dapp: IDAppInfo, network: string, accounts: IDappAccounts[]) => void;
   fromUseDisconnectDApp: (origin: string) => void;
   fromPageConnectDApp: (origin: string, title: string) => boolean;
   setSigRequest: (req: ISigRequest) => void;
@@ -34,8 +34,12 @@ const DAppController = (): IDAppController => {
     return !!dapp[origin];
   }
 
-  const fromUserConnectDApp = (origin: string, dapp: IDAppInfo) => {
-    store.dispatch(listNewDapp({ id: origin, dapp }));
+  const fromUserConnectDApp = (
+    origin: string, 
+    dapp: IDAppInfo, 
+    network: string, 
+    accounts: IDappAccounts[]) => {
+    store.dispatch(listNewDapp({ id: origin, dapp, network, accounts }));
   };
 
   const fromUseDisconnectDApp = (origin: string) => {

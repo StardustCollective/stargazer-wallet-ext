@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { IDAppState, IDAppInfo } from './types';
+import { IDAppState, IDAppInfo, IDappAccounts } from './types';
 
 const initialState: IDAppState = {};
 
@@ -11,11 +11,11 @@ const DAppState = createSlice({
   reducers: {
     listNewDapp(
       state: IDAppState,
-      action: PayloadAction<{ id: string; dapp: IDAppInfo }>
+      action: PayloadAction<{ id: string; dapp: IDAppInfo, network: string, accounts: IDappAccounts[] }>
     ) {
       return {
         ...state,
-        [action.payload.id]: action.payload.dapp,
+        [action.payload.id]: {...action.payload.dapp, accounts: {[action.payload.network]: action.payload.accounts}},
       };
     },
     unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {

@@ -120,19 +120,21 @@ const SelectAccounts = () => {
   };
 
   const handleSubmit = async () => {
-    controller.dapp.fromUserConnectDApp(origin, current);
-    const background = await browser.runtime.getBackgroundPage();
 
-    background.dispatchEvent(
-      new CustomEvent('connectWallet', { detail: window.location.hash })
-    );
-
-    window.close();
   };
 
-  const onButtonPressed = () => {
+  const onButtonPressed = async () => {
     if(sceneState === SCENE_STATE.SELECT_ACCOUNTS){
       setSceneState(SCENE_STATE.CONNECT);
+    }else if(sceneState === SCENE_STATE.CONNECT){
+      controller.dapp.fromUserConnectDApp(origin, current, network, selectedAccounts);
+      const background = await browser.runtime.getBackgroundPage();
+  
+      background.dispatchEvent(
+        new CustomEvent('connectWallet', { detail: {hash: window.location.hash, accounts: selectedAccounts }})
+      );
+  
+      window.close();
     }
   }
 

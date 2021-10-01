@@ -43,7 +43,6 @@ const MasterController = (): IMasterController => {
       url += `network=${network}`;
     }
     url += `#${windowId}`;
-    console.log(`URL: ${url}`);
     return await browser.windows.create({
       url,
       width: 372,
