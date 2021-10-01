@@ -93,7 +93,8 @@
       padding: 10px;
       border-bottom: 1px solid $gray-200;
       .icon {
-        background-color: $primary;
+        background-color: $white;
+        border: 1px solid $gray-200;
       }
       .walletItemDetails {
         display: flex;
