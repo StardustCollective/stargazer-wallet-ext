@@ -27,7 +27,7 @@ class ProviderManager {
       window.addEventListener(id, ({ detail }) => {
         const response = JSON.parse(detail)
         if (response.error) reject(new Error(response.error))
-        else resolve(response.result)
+        else resolve(response)
       }, {
         once: true,
         passive: true
@@ -49,8 +49,8 @@ class ProviderManager {
     return this.cache[asset]
   }
 
-  enable () {
-    return this.proxy('ENABLE_REQUEST')
+  enable (network) {
+    return this.proxy('ENABLE_REQUEST', {network})
   }
 }
 
@@ -181,6 +181,14 @@ async function handleRequest (req) {
     const to = req.params[0].to
     const value = req.params[0].value.toString(16)
     return dag.getMethod('wallet.sendTransaction')({ to, value })
+  }else if(req.method === 'dag_requestAccounts'){
+    const {result, data} = await window.providerManager.enable('Constellation')
+    if (!result) throw new Error('User rejected')
+    return data.accounts;
+  }else if(req.method === 'eth_requestAccounts'){
+    const {result, data} = await window.providerManager.enable('Ethereum')
+    if (!result) throw new Error('User rejected')
+    return data.accounts;
   }
   const method = REQUEST_MAP[req.method] || req.method
   return dag.getMethod(method)(...req.params)
@@ -193,10 +201,9 @@ window.stargazer = {
     return dag.getMethod('wallet.isConnected')()
   },
   enable: async () => {
-    const accepted = await window.providerManager.enable()
-    if (!accepted) throw new Error('User rejected')
-    const dag = window.providerManager.getProviderFor('DAG')
-    return dag.getMethod('wallet.getAddress')()
+    const {result, data} = await window.providerManager.enable()
+    if (!result) throw new Error('User rejected')
+    return data.accounts;
   },
   request: async (req) => {
     const params = req.params || []

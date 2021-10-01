@@ -9,7 +9,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 type Message = {
   id: string;
   type: string;
-  data: { asset: string; method: string; args: any[] };
+  data: { asset: string; method: string; args: any[], network: string };
 };
 
 export const messagesHandler = (
@@ -111,15 +111,15 @@ export const messagesHandler = (
         }
 
         const windowId = uuid();
-        const popup = await masterController.createPopup(windowId, KeyringNetwork.Constellation);
+        const popup = await masterController.createPopup(windowId, message.data.network);
         pendingWindow = true;
 
         window.addEventListener(
           'connectWallet',
           (ev: any) => {
             console.log('Connect window addEventListener', ev.detail);
-            if (ev.detail.substring(1) === windowId) {
-              port.postMessage({ id: message.id, data: { result: true } });
+            if (ev.detail.hash.substring(1) === windowId) {
+              port.postMessage({ id: message.id, data: { result: true, data: {accounts: ev.detail.accounts} } });
               pendingWindow = false;
             }
           },
