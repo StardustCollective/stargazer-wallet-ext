@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { RootState } from 'state/store';
 import IVaultState from '../../../state/vault/types';
 import { useSelector } from 'react-redux';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 type Message = {
   id: string;
@@ -110,7 +111,7 @@ export const messagesHandler = (
         }
 
         const windowId = uuid();
-        const popup = await masterController.createPopup(windowId);
+        const popup = await masterController.createPopup(windowId, KeyringNetwork.Constellation);
         pendingWindow = true;
 
         window.addEventListener(
