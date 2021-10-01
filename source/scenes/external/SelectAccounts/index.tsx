@@ -114,14 +114,6 @@ const SelectAccounts = () => {
   // Callbacks
   ///////////////////////////
 
-  const handleClose = () => {
-    window.close();
-  };
-
-  const handleSubmit = async () => {
-
-  };
-
   const onButtonPressed = async () => {
     if(sceneState === SCENE_STATE.SELECT_ACCOUNTS){
       setSceneState(SCENE_STATE.CONNECT);
