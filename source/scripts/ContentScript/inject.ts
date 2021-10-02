@@ -212,18 +212,23 @@ window.stargazer = {
     })
   },
   on: (method, callback) => {
+
     const id = Date.now() + '.' + Math.random();
-    
-    window.stargazer.evtRegMap[id] = callback;
 
-    window.addEventListener(id, ({detail}) => {
-      const rCallback = window.stargazer.evtRegMap[id];
-      if (rCallback) {
-        rCallback(JSON.parse(detail));
-      }
-    })
+    window.addEventListener(
+      method,
+      (ev) => {
+        if(method === 'accountsChanged'){
+          if(ev.detail && ev.detail.accounts){
+            callback(ev.detail.accounts);
+          }
+        }
+      },
+      { once: true, passive: true }
+    );
 
-    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: { method } }, '*')
+    // Register the origin of the listening site.
+    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {origin: window.location.hostname}}, '*')
   }
 }
 `;

@@ -1,5 +1,5 @@
-import { listNewDapp, unlistDapp } from 'state/dapp';
-import { IDAppInfo, IDAppState, IDappAccounts } from 'state/dapp/types';
+import { listNewDapp, unlistDapp, registerListeningSite } from 'state/dapp';
+import { IDAppInfo, IDAppState } from 'state/dapp/types';
 import store from 'state/store';
 
 
@@ -10,6 +10,7 @@ export interface IDAppController {
   fromPageConnectDApp: (origin: string, title: string) => boolean;
   setSigRequest: (req: ISigRequest) => void;
   getSigRequest: () => ISigRequest;
+  registerSite: (origin: string) => void;
 }
 
 interface ISigRequest {
@@ -38,12 +39,16 @@ const DAppController = (): IDAppController => {
     origin: string, 
     dapp: IDAppInfo, 
     network: string, 
-    accounts: IDappAccounts[]) => {
+    accounts: string[]) => {
     store.dispatch(listNewDapp({ id: origin, dapp, network, accounts }));
   };
 
   const fromUseDisconnectDApp = (origin: string) => {
     store.dispatch(unlistDapp({ id: origin }));
+  }
+
+  const registerSite = (origin: string) => {
+    store.dispatch(registerListeningSite({ origin: origin }));
   }
 
   const getCurrent = () => {
@@ -65,7 +70,8 @@ const DAppController = (): IDAppController => {
     fromUserConnectDApp, 
     setSigRequest, 
     getSigRequest,
-    fromUseDisconnectDApp
+    fromUseDisconnectDApp,
+    registerSite
   };
 };
 

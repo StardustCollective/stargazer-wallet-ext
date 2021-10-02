@@ -4,5 +4,16 @@ export interface IDAppInfo {
   title: string;
 }
 export interface IDAppState {
-  [dappId: string]: IDAppInfo; // array of connected account ids
+  /**
+   * Dapps that are currently listening for updates
+   */
+  listening: string[];
+
+  /**
+   * Sites that have bee granted permissions
+   */
+  sites: {
+    [dappId: string]: IDAppInfo; // array of connected account ids
+  }
+
 }

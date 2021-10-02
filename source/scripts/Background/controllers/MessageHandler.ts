@@ -9,7 +9,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 type Message = {
   id: string;
   type: string;
-  data: { asset: string; method: string; args: any[], network: string };
+  data: { asset: string; method: string; args: any[], network: string, origin?: string };
 };
 
 export const messagesHandler = (
@@ -58,10 +58,11 @@ export const messagesHandler = (
 
     //console.log('messagesHandler.onMessage: ' + message.type, walletIsLocked, origin, allowed, url, title, pendingWindow);
 
-    if (message.type === 'STARGAZER_EVENT_REG') {
-      if (message.data && message.data.method) {
 
-      }
+    if (message.type === 'STARGAZER_EVENT_REG') {
+      // Register the origin of the site that is listening.
+      let dataOrigin = message.data.origin;
+      masterController.dapp.registerSite(dataOrigin);
     } else if (message.type === 'ENABLE_REQUEST') {
 
       if (walletIsLocked) {
