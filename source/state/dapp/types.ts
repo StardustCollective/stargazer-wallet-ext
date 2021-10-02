@@ -5,14 +5,14 @@ export interface IDAppInfo {
   accounts: {[assetType: string]: string[]};
 }
 export interface IDAppState {
-  
+
   /**
    * Dapps that are currently listening for updates
    */
   listening: string[];
 
   /**
-   * A list of sites that have been granted permissions to access a users
+   * A list of sites that have been granted permissions to access a user's
    * account information.
    */
    whitelist: {
