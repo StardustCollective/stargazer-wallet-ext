@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+import union from 'lodash/union';
 import { IDAppState, IDAppInfo } from './types';
 
 const initialState: IDAppState = {
@@ -18,9 +18,7 @@ const DAppState = createSlice({
     ) {
       return {
         ...state,
-        listening: [
-          ...state.listening, 
-          action.payload.origin],
+        listening: union(state.listening, [action.payload.origin])
       };
     },
     listNewDapp(
