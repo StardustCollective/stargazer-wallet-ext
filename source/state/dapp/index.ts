@@ -4,7 +4,7 @@ import { IDAppState, IDAppInfo } from './types';
 
 const initialState: IDAppState = {
   listening: [],
-  sites: {}
+  whitelist: {}
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -34,19 +34,21 @@ const DAppState = createSlice({
     ) {
       return {
         ...state,
-        sites: {
-          ...state.sites,
+        whitelist: {
+          ...state.whitelist,
           [action.payload.id]: {
             ...action.payload.dapp,
             accounts: {
-              [action.payload.network]: action.payload.accounts,
-            },
+              [action.payload.network]:[
+                ...action.payload.accounts
+              ]
+            }
           },
         },
       };
     },
     unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
-      delete state.sites[action.payload.id];
+      delete state.whitelist[action.payload.id];
     },
 
   },
