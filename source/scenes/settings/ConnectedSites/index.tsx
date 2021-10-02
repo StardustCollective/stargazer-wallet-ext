@@ -17,7 +17,7 @@ interface IWalletsView {
 const ConnectedSites: FC<IWalletsView> = ({ navigation }) => {
   const controller = useController();
   const connectedSites = useSelector(
-    (state: RootState) => state.dapp.sites
+    (state: RootState) => state.dapp.whitelist
   );
 
   useLayoutEffect(() => {
