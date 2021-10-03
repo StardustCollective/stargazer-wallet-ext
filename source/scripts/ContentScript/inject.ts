@@ -77,17 +77,20 @@ async function getAddresses () {
 }
 
 async function handleRequest (req) {
+  console.log('handleRequest: ', req);
   const eth = window.providerManager.getProviderFor('${asset}')
-  if(req.method.startsWith('metamask_')) return null
+  if (req.method.startsWith('metamask_')) return null
 
-  if(req.method === 'eth_requestAccounts') {
+  if (req.method === 'eth_requestAccounts') {
     return await window.${name}.enable()
   }
-  if(req.method === 'personal_sign') { 
+
+  if (req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
     return '0x' + sig
   }
-  if(req.method === 'eth_sendTransaction') {
+
+  if (req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
     const value = req.params[0].value
     const data = req.params[0].data
@@ -95,9 +98,15 @@ async function handleRequest (req) {
     const result = await eth.getMethod('chain.sendTransaction')({ to, value, data, gas })
     return '0x' + result.hash
   }
-  if(req.method === 'eth_accounts') {
+
+  if (req.method === 'eth_accounts') {
     return getAddresses()
   }
+
+  if (req.method === 'eth_chainId') {
+    return eth.getMethod('wallet.getChainId')()
+  }
+
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
 
@@ -173,6 +182,7 @@ const REQUEST_MAP = {
   getBalance: 'wallet.getBalance',
   signMessage: 'wallet.signMessage',
   sendTransaction: 'wallet.sendTransaction',
+  eth_chainId: 'wallet.getChainId',
 }
 
 async function handleRequest (req) {
@@ -181,15 +191,16 @@ async function handleRequest (req) {
     const to = req.params[0].to
     const value = req.params[0].value.toString(16)
     return dag.getMethod('wallet.sendTransaction')({ to, value })
-  }else if(req.method === 'dag_requestAccounts'){
+  } else if (req.method === 'dag_requestAccounts') {
     const {result, data} = await window.providerManager.enable('Constellation')
     if (!result) throw new Error('User rejected')
     return data.accounts;
-  }else if(req.method === 'eth_requestAccounts'){
+  } else if (req.method === 'eth_requestAccounts') {
     const {result, data} = await window.providerManager.enable('Ethereum')
     if (!result) throw new Error('User rejected')
     return data.accounts;
   }
+
   const method = REQUEST_MAP[req.method] || req.method
   return dag.getMethod(method)(...req.params)
 }

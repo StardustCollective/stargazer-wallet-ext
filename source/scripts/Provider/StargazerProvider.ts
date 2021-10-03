@@ -13,6 +13,12 @@ export class StargazerProvider {
     return activeNetwork[KeyringNetwork.Constellation];
   }
 
+  getChainId () {
+    const networkName = this.getNetwork();
+
+    return networkName === 'main' ? 1 : 3;
+  }
+
   getAddress() {
     let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 

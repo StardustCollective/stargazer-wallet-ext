@@ -177,6 +177,8 @@ export const messagesHandler = (
         result = { connected: !!allowed && !walletIsLocked };
       } else if (method === 'wallet.getAddress') {
         result = masterController.stargazerProvider.getAddress();
+      } else if (method === 'wallet.getChainId') {
+        result = masterController.stargazerProvider.getChainId();
       } else if (method === 'wallet.getNetwork') {
         result = masterController.stargazerProvider.getNetwork();
       } else if (method === 'wallet.getBalance') {
