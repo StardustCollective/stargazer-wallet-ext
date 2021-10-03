@@ -7,10 +7,12 @@ import MigrationController from './MigrationController';
 
 import { browser, Windows } from 'webextension-polyfill-ts';
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
+import { EthereumProvider } from 'scripts/Provider/EthereumProvider';
 import DAppController, { IDAppController } from './DAppController';
 
 export interface IMasterController {
   stargazerProvider: Readonly<StargazerProvider>;
+  ethereumProvider: Readonly<EthereumProvider>;
   wallet: Readonly<IWalletController>;
   dapp: Readonly<IDAppController>;
   contacts: Readonly<IContactsController>;
@@ -22,6 +24,7 @@ export interface IMasterController {
 
 const MasterController = (): IMasterController => {
   const stargazerProvider = Object.freeze(new StargazerProvider());
+  const ethereumProvider = Object.freeze(new EthereumProvider());
   const wallet = new WalletController();
   const utils = Object.freeze(ControllerUtils());
   const dapp = Object.freeze(DAppController());
@@ -62,6 +65,7 @@ const MasterController = (): IMasterController => {
     stateUpdater,
     createPopup,
     stargazerProvider,
+    ethereumProvider,
   };
 };
 
