@@ -4,7 +4,6 @@ import { v4 as uuid } from 'uuid';
 import { RootState } from 'state/store';
 import IVaultState from '../../../state/vault/types';
 import { useSelector } from 'react-redux';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 type Message = {
   id: string;
