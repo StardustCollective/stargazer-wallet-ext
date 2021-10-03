@@ -24,8 +24,8 @@ const ConnectedSites: FC<IWalletsView> = ({ navigation }) => {
     navigation.setOptions(defaultHeader({ navigation }));
   }, []);
 
-  const onDeleteSiteClicked = (origin: string) => {
-    controller.dapp.fromUseDisconnectDApp(origin);
+  const onDeleteSiteClicked = (id: string) => {
+    controller.dapp.fromUseDisconnectDApp(id);
   }
 
   return (
@@ -52,7 +52,7 @@ const ConnectedSites: FC<IWalletsView> = ({ navigation }) => {
             <div className={styles.iconContainer}>
               <IconButton
                 className={styles.details}
-                onClick={() => onDeleteSiteClicked(site.origin)}
+                onClick={() => onDeleteSiteClicked(site.id)}
               >
                 <DeleteForever />
               </IconButton>

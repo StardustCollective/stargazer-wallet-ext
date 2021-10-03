@@ -9,14 +9,19 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 type Message = {
   id: string;
   type: string;
-  data: { asset: string; method: string; args: any[], network: string, origin?: string };
+  data: {
+    asset: string;
+    method: string;
+    args: any[];
+    network: string;
+    origin?: string;
+  };
 };
 
 export const messagesHandler = (
   port: Runtime.Port,
   masterController: IMasterController
 ) => {
-
   let pendingWindow = false;
 
   const listener = async (message: Message, connection: Runtime.Port) => {
@@ -46,7 +51,7 @@ export const messagesHandler = (
 
     const sendError = (error: string) => {
       return Promise.reject(new CustomEvent(message.id, { detail: error }));
-    }
+    };
 
     const walletIsLocked = !masterController.wallet.isUnlocked();
 
@@ -56,18 +61,37 @@ export const messagesHandler = (
 
     const allowed = masterController.dapp.fromPageConnectDApp(origin, title);
 
-    //console.log('messagesHandler.onMessage: ' + message.type, walletIsLocked, origin, allowed, url, title, pendingWindow);
-
-
     if (message.type === 'STARGAZER_EVENT_REG') {
-      // Register the origin of the site that is listening.
-      let dataOrigin = message.data.origin;
-      masterController.dapp.registerSite(dataOrigin);
+
+      const listenerOrigin = message.data.origin;
+      const method         = message.data.method;
+
+      if (method === 'accountsChanged') {
+
+        // Register the origin of the site that is listening for 
+        // account changed.
+        masterController.dapp.registerSite(listenerOrigin);
+
+        window.addEventListener(
+          'accountsChanged',
+          (event: any) => {
+            let { accounts, origin } = event.detail;
+            // The event origin is checked to prevent sites that have not been
+            // granted permissions to the user's account information from
+            // receiving updates.
+            if (origin === listenerOrigin) {
+              port.postMessage({ id: message.id, data: accounts });
+            }
+          },
+          { passive: true }
+        );
+      }
+
     } else if (message.type === 'ENABLE_REQUEST') {
-
       if (walletIsLocked) {
-
-        const { wallets }: IVaultState = useSelector( (state: RootState) => state.vault );
+        const { wallets }: IVaultState = useSelector(
+          (state: RootState) => state.vault
+        );
         if (!wallets || wallets.length === 0) {
           return sendError('Need to set up Wallet');
         }
@@ -112,7 +136,10 @@ export const messagesHandler = (
         }
 
         const windowId = uuid();
-        const popup = await masterController.createPopup(windowId, message.data.network);
+        const popup = await masterController.createPopup(
+          windowId,
+          message.data.network
+        );
         pendingWindow = true;
 
         window.addEventListener(
@@ -120,7 +147,10 @@ export const messagesHandler = (
           (ev: any) => {
             console.log('Connect window addEventListener', ev.detail);
             if (ev.detail.hash.substring(1) === windowId) {
-              port.postMessage({ id: message.id, data: { result: true, data: {accounts: ev.detail.accounts} } });
+              port.postMessage({
+                id: message.id,
+                data: { result: true, data: { accounts: ev.detail.accounts } },
+              });
               pendingWindow = false;
             }
           },
@@ -139,7 +169,6 @@ export const messagesHandler = (
       }
 
       return Promise.resolve({ id: message.id, result: origin && allowed });
-
     } else if (message.type === 'CAL_REQUEST') {
       const { method, args } = message.data;
       console.log('CAL_REQUEST.method', method, args);
@@ -152,13 +181,13 @@ export const messagesHandler = (
         result = masterController.stargazerProvider.getNetwork();
       } else if (method === 'wallet.getBalance') {
         result = masterController.stargazerProvider.getBalance();
-      // } else if (method === 'wallet.setLedgerAccounts') {
-      //     await window.controller.stargazerProvider.importLedgerAccounts(args[0]);
-      //     // port.postMessage({ id: message.id, data: { result: "success" } });
-      //   return Promise.resolve({ id: message.id, result: "success" });
-      // } else if (method === 'wallet.postTransactionResult') {
-      //   await window.controller.stargazerProvider.postTransactionResult(args[0]);
-      //   return Promise.resolve({ id: message.id, result: "success" });
+        // } else if (method === 'wallet.setLedgerAccounts') {
+        //     await window.controller.stargazerProvider.importLedgerAccounts(args[0]);
+        //     // port.postMessage({ id: message.id, data: { result: "success" } });
+        //   return Promise.resolve({ id: message.id, result: "success" });
+        // } else if (method === 'wallet.postTransactionResult') {
+        //   await window.controller.stargazerProvider.postTransactionResult(args[0]);
+        //   return Promise.resolve({ id: message.id, result: "success" });
       } else if (method === 'wallet.signMessage') {
         if (pendingWindow) {
           return Promise.resolve(null);

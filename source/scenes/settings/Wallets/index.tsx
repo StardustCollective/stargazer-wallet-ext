@@ -12,6 +12,7 @@ import { useController } from 'hooks/index';
 import StargazerIcon from 'assets/images/logo-s.svg';
 import styles from './index.scss';
 import IAssetListState from 'state/assets/types';
+import { IAccountDerived } from 'state/vault/types';
 import {
   KeyringAssetType,
   KeyringWalletType,
@@ -26,13 +27,15 @@ interface IWalletsView {
 
 const Wallets: FC<IWalletsView> = ({ navigation }) => {
   const controller = useController();
-  const linkTo =  useLinkTo();
+  const linkTo = useLinkTo();
   const { wallets, activeWallet: activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
+
+  // const dapp = useSelector(dappSelectors.dapp());
 
   useLayoutEffect(() => {
     const onRightIconClick = () => {
@@ -45,9 +48,10 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
     (w) => w.type === KeyringWalletType.SingleAccountWallet
   );
 
-  const handleSwitchWallet = async (walletId: string) => {
+  const handleSwitchWallet = async (walletId: string, walletAccounts: IAccountDerived[]) => {
     await controller.wallet.switchWallet(walletId);
-    //controller.wallet.account.watchMemPool();
+    let accounts = walletAccounts.map((account) =>  account.address);
+    controller.wallet.notifyWalletChange(accounts);
   };
 
   const handleManageWallet = async (
@@ -71,7 +75,7 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
             <section
               className={styles.wallet}
               key={wallet.id}
-              onClick={() => handleSwitchWallet(wallet.id)}
+              onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as IAccountDerived[])}
             >
               {wallet.id === activeWallet.id && (
                 <CheckIcon className={styles.check} />
@@ -98,7 +102,7 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
               <section
                 className={styles.wallet}
                 key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet.id)}
+                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as IAccountDerived[])}
               >
                 {wallet.id === activeWallet.id && (
                   <CheckIcon className={styles.check} />

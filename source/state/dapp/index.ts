@@ -34,8 +34,9 @@ const DAppState = createSlice({
         ...state,
         whitelist: {
           ...state.whitelist,
-          [action.payload.id]: {
+          [action.payload.id.replace(/(^\w+:|^)\/\//, '')]: {
             ...action.payload.dapp,
+            id: action.payload.id.replace(/(^\w+:|^)\/\//, ''),
             accounts: {
               [action.payload.network]:[
                 ...action.payload.accounts
@@ -46,6 +47,7 @@ const DAppState = createSlice({
       };
     },
     unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
+      console.log('Unlise App ID: ' + action.payload.id);
       delete state.whitelist[action.payload.id];
     },
 

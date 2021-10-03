@@ -216,19 +216,17 @@ window.stargazer = {
     const id = Date.now() + '.' + Math.random();
 
     window.addEventListener(
-      method,
-      (ev) => {
-        if(method === 'accountsChanged'){
-          if(ev.detail && ev.detail.accounts){
-            callback(ev.detail.accounts);
-          }
+      id,
+      ({ detail }) => {
+        if(detail){
+          callback(detail);
         }
       },
-      { once: true, passive: true }
+      { passive: true }
     );
 
     // Register the origin of the listening site.
-    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {origin: window.location.hostname}}, '*')
+    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {method, origin: window.location.hostname}}, '*')
   }
 }
 `;

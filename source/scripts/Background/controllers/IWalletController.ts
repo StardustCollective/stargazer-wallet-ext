@@ -4,6 +4,7 @@ import {
   KeyringNetwork,
 } from '@stardust-collective/dag4-keyring';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
+import { IAccountDerived } from 'state/vault/types';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;
@@ -32,5 +33,6 @@ export interface IWalletController {
   checkPassword: (password: string) => boolean;
   getPhrase: (walletId: string, password: string) => string;
   getPrivateKey: (walletId: string, password: string) => string;
+  notifyWalletChange: (walletAccounts: string[]) => void;
   logOut: () => void;
 }

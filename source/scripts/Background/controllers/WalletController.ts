@@ -3,14 +3,16 @@ import store from 'state/store';
 import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
 import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
-import IVaultState from 'state/vault/types';
+import IVaultState, { IAccountDerived } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
+import includes from 'lodash/includes';
+import filter from 'lodash/filter';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
-
+import { IDAppInfo } from 'state/dapp/types';
 export class WalletController implements IWalletController {
   account: AccountController;
   keyringManager: KeyringManager;
@@ -121,6 +123,34 @@ export class WalletController implements IWalletController {
     await this.account.getLatestTxUpdate();
     this.account.assetsBalanceMonitor.start();
     this.account.txController.startMonitor();
+
+  }
+
+  async notifyWalletChange(accounts: string[]){
+
+    const state = store.getState();
+    const whiteList: {[dappId: string]: IDAppInfo}[] = state.dapp.whitelist;
+    const listening: string[] = state.dapp.listening;
+
+    // Will only notify whitelisted dapps that are listening for a wallet change.
+    for(let origin of listening){
+
+      const site = whiteList[origin as any];
+
+      if(!!site){
+        const siteAccounts = site.accounts;
+        const allAccountsWithDuplicates = accounts.concat(siteAccounts.Constellation, siteAccounts.Ethereum);
+        const matchingAccounts = filter(allAccountsWithDuplicates, (value, index, iteratee) => includes(iteratee, value as string, index + 1))
+
+        if(!!matchingAccounts.length){
+          const background = await browser.runtime.getBackgroundPage();
+          background.dispatchEvent(
+            new CustomEvent('accountsChanged', { detail: { accounts: matchingAccounts,  origin } })
+          );
+        }
+      }
+    }
+
   }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
