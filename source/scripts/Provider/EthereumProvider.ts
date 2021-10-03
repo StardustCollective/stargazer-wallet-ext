@@ -13,6 +13,12 @@ export class EthereumProvider {
     return activeNetwork[KeyringNetwork.Ethereum];
   }
 
+  getChainId () {
+    const networkName = this.getNetwork();
+
+    return networkName === 'mainnet' ? 1 : 3;
+  }
+
   getAddress() {
     let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 

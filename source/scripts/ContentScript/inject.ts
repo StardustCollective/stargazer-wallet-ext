@@ -186,23 +186,32 @@ const REQUEST_MAP = {
 }
 
 async function handleRequest (req) {
-  const dag = window.providerManager.getProviderFor('DAG')
+  const dag = window.providerManager.getProviderFor('DAG');
+  const eth = window.providerManager.getProviderFor('ETH');
+  
   if (req.method === 'wallet_sendTransaction') {
-    const to = req.params[0].to
-    const value = req.params[0].value.toString(16)
-    return dag.getMethod('wallet.sendTransaction')({ to, value })
+    const to = req.params[0].to;
+    const value = req.params[0].value.toString(16);
+    return dag.getMethod('wallet.sendTransaction')({ to, value });
   } else if (req.method === 'dag_requestAccounts') {
-    const {result, data} = await window.providerManager.enable('Constellation')
+    const {result, data} = await window.providerManager.enable('Constellation');
+    
     if (!result) throw new Error('User rejected')
+    
     return data.accounts;
   } else if (req.method === 'eth_requestAccounts') {
     const {result, data} = await window.providerManager.enable('Ethereum')
+    
     if (!result) throw new Error('User rejected')
+    
     return data.accounts;
+  } else if (req.method.startsWith('eth_')) {
+    const method = REQUEST_MAP[req.method] || req.method;
+    return eth.getMethod(method)(...req.params);
   }
 
-  const method = REQUEST_MAP[req.method] || req.method
-  return dag.getMethod(method)(...req.params)
+  const method = REQUEST_MAP[req.method] || req.method;
+  return dag.getMethod(method)(...req.params);
 }
 
 window.stargazer = {

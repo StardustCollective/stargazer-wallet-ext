@@ -170,19 +170,23 @@ export const messagesHandler = (
 
       return Promise.resolve({ id: message.id, result: origin && allowed });
     } else if (message.type === 'CAL_REQUEST') {
-      const { method, args } = message.data;
+      const { method, args, asset } = message.data;
+
       console.log('CAL_REQUEST.method', method, args);
+
+      const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
+      
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed && !walletIsLocked };
       } else if (method === 'wallet.getAddress') {
-        result = masterController.stargazerProvider.getAddress();
+        result = provider.getAddress();
       } else if (method === 'wallet.getChainId') {
-        result = masterController.stargazerProvider.getChainId();
+        result =provider.getChainId();
       } else if (method === 'wallet.getNetwork') {
-        result = masterController.stargazerProvider.getNetwork();
+        result = provider.getNetwork();
       } else if (method === 'wallet.getBalance') {
-        result = masterController.stargazerProvider.getBalance();
+        result = provider.getBalance();
         // } else if (method === 'wallet.setLedgerAccounts') {
         //     await window.controller.stargazerProvider.importLedgerAccounts(args[0]);
         //     // port.postMessage({ id: message.id, data: { result: "success" } });
