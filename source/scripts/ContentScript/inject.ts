@@ -235,6 +235,11 @@ window.stargazer = {
 
     const id = Date.now() + '.' + Math.random();
 
+    let origin = window.location.hostname;
+    if(window.location.port){
+      origin += ":"+window.location.port;
+    }
+
     window.addEventListener(
       id,
       ({ detail }) => {
@@ -246,7 +251,7 @@ window.stargazer = {
     );
 
     // Register the origin of the listening site.
-    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {method, origin: window.location.hostname}}, '*')
+    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {method, origin}}, '*')
   }
 }
 `;
