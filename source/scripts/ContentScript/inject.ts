@@ -243,8 +243,8 @@ window.stargazer = {
     window.addEventListener(
       id,
       ({ detail }) => {
-        if(detail){
-          callback(detail);
+        if(detail){       
+          callback(JSON.parse(detail));
         }
       },
       { passive: true }
