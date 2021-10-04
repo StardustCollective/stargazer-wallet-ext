@@ -40,7 +40,7 @@ const PurpleCheckbox = withStyles({
       color: '#2B1D52',
     },
   },
-})((props) => <Checkbox color="default" {...props} />);
+})(({onChange, checked} : {onChange: (e: any) => void, checked: boolean}) => <Checkbox color="default" onChange={onChange} checked={checked}/>);
 
 ///////////////////////////
 // Images
