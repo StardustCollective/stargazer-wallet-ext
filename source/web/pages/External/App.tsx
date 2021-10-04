@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import Container from 'scenes/common/Container';
 import { RootState } from 'state/store';
-import WalletConnect from 'scenes/external/WalletConnect';
 import SignatureRequest from 'scenes/external/SignatureRequest';
 import SelectAccounts from 'scenes/external/SelectAccounts';
 

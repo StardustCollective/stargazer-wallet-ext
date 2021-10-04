@@ -3,7 +3,7 @@ import store from 'state/store';
 import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
 import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
-import IVaultState, { IAccountDerived } from 'state/vault/types';
+import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
 import includes from 'lodash/includes';
@@ -12,7 +12,7 @@ import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } fro
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
-import { IDAppInfo } from 'state/dapp/types';
+import { IDAppInfo, IDappAccounts } from 'state/dapp/types';
 export class WalletController implements IWalletController {
   account: AccountController;
   keyringManager: KeyringManager;
@@ -138,8 +138,8 @@ export class WalletController implements IWalletController {
       const site = whiteList[origin as any];
 
       if(!!site){
-        const siteAccounts = site.accounts;
-        const allAccountsWithDuplicates = accounts.concat(siteAccounts.Constellation, siteAccounts.Ethereum);
+        const siteAccounts = site.accounts as IDappAccounts;
+        const allAccountsWithDuplicates = accounts.concat(siteAccounts.Constellation , siteAccounts.Ethereum);
         const matchingAccounts = filter(allAccountsWithDuplicates, (value, index, iteratee) => includes(iteratee, value as string, index + 1))
 
         if(!!matchingAccounts.length){

@@ -5,7 +5,7 @@ import store from 'state/store';
 
 export interface IDAppController {
   getCurrent: () => IDAppInfo;
-  fromUserConnectDApp: (origin: string, dapp: IDAppInfo, network: string, accounts: IDappAccounts[]) => void;
+  fromUserConnectDApp: (origin: string, dapp: IDAppInfo, network: string, accounts: string[]) => void;
   fromUseDisconnectDApp: (origin: string) => void;
   fromPageConnectDApp: (origin: string, title: string) => boolean;
   setSigRequest: (req: ISigRequest) => void;
@@ -32,7 +32,7 @@ const DAppController = (): IDAppController => {
       title
     }
 
-    return !!dapp[origin];
+    return !!dapp[origin as keyof IDAppState];
   }
 
   const fromUserConnectDApp = (

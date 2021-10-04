@@ -4,7 +4,6 @@ import {
   KeyringNetwork,
 } from '@stardust-collective/dag4-keyring';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
-import { IAccountDerived } from 'state/vault/types';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;

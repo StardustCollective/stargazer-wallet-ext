@@ -40,7 +40,6 @@ const PurpleCheckbox = withStyles({
       color: '#2B1D52',
     },
   },
-  checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
 ///////////////////////////
@@ -66,7 +65,7 @@ type IAccountItem = {
   accountName: string;
   accountAddress: string;
   accountBalance: string;
-  onCheckboxChange: (checked: boolean, payload: ICheckedPayload) => void;
+  onCheckboxChange: (checked: boolean, address: string) => void;
 }
 
 ///////////////////////////
@@ -165,7 +164,7 @@ const SelectAccounts = () => {
       <div key={accountAddress} className={styles.walletItem}>
         <div className={styles.walletItemCheckBox}>
           <PurpleCheckbox
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => onCheckboxChange(event.target.checked, accountAddress )}
+            onChange={(e: any) => onCheckboxChange(e.target.checked, accountAddress )}
             checked={(selectedAccounts.filter((account) => account === accountAddress).length > 0)}
           />
         </div>
@@ -185,8 +184,8 @@ const SelectAccounts = () => {
 
   }
 
-  const RenderContentByState = ({ state }) => {
-
+  const RenderContentByState = ({ state }: {state: SCENE_STATE}) => {
+    
     if (state === SCENE_STATE.SELECT_ACCOUNTS) {
       return (
         <>
@@ -219,6 +218,7 @@ const SelectAccounts = () => {
       )
     }
 
+    return null;
   }
 
 

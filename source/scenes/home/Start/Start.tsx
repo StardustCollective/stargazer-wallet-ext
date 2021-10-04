@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { browser } from 'webextension-polyfill-ts';
 import clsx from 'clsx';
 
-
 //////////////////////
 // Component Imports
 ///////////////////// 
@@ -92,7 +91,7 @@ const Starter = () => {
   const onSubmit = (data: any) => {
     // An unlock response of false means migration attempt failed but user is logged in
     controller.wallet.unLock(data.password).then(async (res) => {
-      if (res && location.pathname.includes('confirm.html') && dapp[origin]) {
+      if (res && location.pathname.includes('confirm.html') && dapp[origin as keyof IDAppState ]) {
         const background = await browser.runtime.getBackgroundPage();
         background.dispatchEvent(
           new CustomEvent('connectWallet', { detail: window.location.hash })
