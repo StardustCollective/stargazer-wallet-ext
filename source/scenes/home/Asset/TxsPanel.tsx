@@ -60,13 +60,19 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
   //   }
   // }, []);
 
-  const handleOpenExplorer = (tx: string) => {
+  const handleOpenExplorer = (tx?: string): boolean => {
+    // If we don't have a tx ID then we can't link block explorer
+    if (!tx) {
+      return true;
+    }
+
     const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
     window.open(
       isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`,
       '_blank'
     );
     
+    return true;
   };
 
   // const handleGoTop = () => {
