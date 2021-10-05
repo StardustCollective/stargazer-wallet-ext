@@ -50,7 +50,7 @@ import styles from './Login.scss';
 type ILoginProps = {
   onLoginSuccess: (res: boolean) => void;
   onLoginError?: () => void;
-  onImportClicked: () => void;
+  onImportClicked?: () => void;
 }
 
 //////////////////////
@@ -73,21 +73,22 @@ const Login = ({
   });
 
   const onSubmit = (data: any) => {
-
-    // An unlock response of false means migration attempt failed but user is logged in
+    // An unlock response of  false means migration attempt failed but user is logged in
     controller.wallet.unLock(data.password).then(async (res: boolean) => {
+      console.log('Res: ', res);
         if (onLoginSuccess) {
           onLoginSuccess(res)
         }
         setInvalid(false);
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log('Error: ');
+        console.log(e);
         if (onLoginSuccess) {
           onLoginError()
         }
         setInvalid(true);
       });
-
   };
 
   const importClicked = () => {
@@ -133,7 +134,7 @@ const Login = ({
           submit
         />
       </form>
-      {!location.pathname.includes('authenticate') && (
+      {!location.pathname.includes('login') && (
         <Link extraStyles={styles.restoreFromSeedLink} color="monotoneOne" onClick={importClicked}>
           Reset and restore from recovery seed phrase
         </Link>

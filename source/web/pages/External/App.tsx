@@ -1,41 +1,42 @@
-import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import React, { FC, useEffect } from 'react';
+import queryString from 'query-string';
 
 import Container from 'scenes/common/Container';
-import { RootState } from 'state/store';
-import SignatureRequest from 'scenes/external/SignatureRequest';
+import Login from 'scenes/common/Login';
 import SelectAccounts from 'scenes/external/SelectAccounts';
 
 import 'assets/styles/global.scss';
 import { useController } from 'hooks/index';
-import Starter from 'scenes/home/Start';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import IVaultState from 'state/vault/types';
-
-const ConfirmPage: FC = () => {
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+const App: FC = () => {
   const controller = useController();
-  const { wallets }: IVaultState = useSelector( (state: RootState) => state.vault );
+
+  // const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
   const isUnlocked = controller.wallet.isUnlocked();
+  const { route } = queryString.parse(location.search);
+
+  useEffect(() => {
+    console.log('External App Loaded...');
+  });
 
   return (
-    <section id="confirm-page" style={{ minHeight: '300px' }}>
+    <section id="App" style={{ minHeight: '300px' }}>
       <Container>
-        {wallets && isUnlocked ? (
-          window.location.hash.startsWith('#signMessage') ? (
-            <SignatureRequest />
-          ) : (
-            <SelectAccounts />
-          )
-        ) : (
-          <Router>
-            <Switch>
-              <Route path="/confirm.html" component={Starter} exact />
-            </Switch>
-          </Router>
-        )}
+        <Router>
+          <Switch>
+            <Route path="/login" component={Login} />
+            <Route path="/selectAccounts" component={SelectAccounts} />
+            <Route path="/">
+              {!isUnlocked ?
+                <Redirect to={`/login?nextRoute=${route}`} /> :
+                <Redirect to={`/${route}?${location.search}`} />
+              }
+            </Route>
+          </Switch>
+        </Router>
       </Container>
     </section>
   );
 };
 
-export default ConfirmPage;
+export default App;
