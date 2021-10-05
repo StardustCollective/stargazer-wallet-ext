@@ -1,9 +1,6 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMasterController } from '.';
 import { v4 as uuid } from 'uuid';
-import { RootState } from 'state/store';
-import IVaultState from '../../../state/vault/types';
-import { useSelector } from 'react-redux';
 
 type Message = {
   id: string;
@@ -87,48 +84,6 @@ export const messagesHandler = (
       }
 
     } else if (message.type === 'ENABLE_REQUEST') {
-      if (walletIsLocked) {
-        const { wallets }: IVaultState = useSelector(
-          (state: RootState) => state.vault
-        );
-        if (!wallets || wallets.length === 0) {
-          return sendError('Need to set up Wallet');
-        }
-
-        if (pendingWindow) {
-          return Promise.resolve(null);
-        }
-        const windowId = uuid();
-        const popup = await masterController.createPopup(windowId);
-        pendingWindow = true;
-
-        window.addEventListener(
-          'connectWallet',
-          (ev: any) => {
-            if (ev.detail.substring(1) === windowId) {
-              port.postMessage({
-                id: message.id,
-                data: { result: true },
-              });
-              pendingWindow = false;
-            }
-          },
-          {
-            once: true,
-            passive: true,
-          }
-        );
-
-        browser.windows.onRemoved.addListener((id) => {
-          if (popup && id === popup.id) {
-            port.postMessage({ id: message.id, data: { result: false } });
-            pendingWindow = false;
-          }
-        });
-
-        return Promise.resolve(null);
-      }
-
       if (origin && !allowed) {
         if (pendingWindow) {
           return Promise.resolve(null);
@@ -137,7 +92,8 @@ export const messagesHandler = (
         const windowId = uuid();
         const popup = await masterController.createPopup(
           windowId,
-          message.data.network
+          message.data.network,
+          'selectAccounts'
         );
         pendingWindow = true;
 

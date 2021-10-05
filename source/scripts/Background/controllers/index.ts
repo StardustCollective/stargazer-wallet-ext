@@ -19,7 +19,7 @@ export interface IMasterController {
   assets: Readonly<IAssetsController>;
   stateUpdater: () => void;
   appRoute: (newRoute?: string) => string;
-  createPopup: (windowId: any, network?: string) => Promise<Windows.Window | null>;
+  createPopup: (windowId: any, network?: string, route?: string) => Promise<Windows.Window | null>;
 }
 
 const MasterController = (): IMasterController => {
@@ -38,12 +38,15 @@ const MasterController = (): IMasterController => {
     utils.updateFiat();
   };
 
-  const createPopup = async (windowId: any, network: string) => {
+  const createPopup = async (windowId: any, network: string, route: string) => {
     const _window = await browser.windows.getCurrent();
     if (!_window || !_window.width) return null;
     let url = `/external.html?`;
+    if(route){
+      url += `&route=${route}`;
+    }
     if(network){
-      url += `network=${network}`;
+      url += `&network=${network}`; 
     }
     url += `#${windowId}`;
     return await browser.windows.create({
