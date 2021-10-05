@@ -15,10 +15,6 @@ const App: FC = () => {
   const isUnlocked = controller.wallet.isUnlocked();
   const { route } = queryString.parse(location.search);
 
-  useEffect(() => {
-    console.log('External App Loaded...');
-  });
-
   return (
     <section id="App" style={{ minHeight: '300px' }}>
       <Container>
