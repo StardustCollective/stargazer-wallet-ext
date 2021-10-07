@@ -17,8 +17,13 @@ import {
 
 import TextV3 from 'components/TextV3';
 import Checkbox from '@material-ui/core/Checkbox';
-import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import Icon from 'components/Icon';
+
+///////////////////////////
+// Layouts
+///////////////////////////
+
+import CardLayout from 'scenes/external/Layouts/CardLayout';
 
 ///////////////////////////
 // Selectors
@@ -40,7 +45,7 @@ const PurpleCheckbox = withStyles({
       color: '#2B1D52',
     },
   },
-})(({onChange, checked} : {onChange: (e: any) => void, checked: boolean}) => <Checkbox color="default" onChange={onChange} checked={checked}/>);
+})(({ onChange, checked }: { onChange: (e: any) => void, checked: boolean }) => <Checkbox color="default" onChange={onChange} checked={checked} />);
 
 ///////////////////////////
 // Images
@@ -113,18 +118,26 @@ const SelectAccounts = () => {
   // Callbacks
   ///////////////////////////
 
-  const onButtonPressed = async () => {
-    if(sceneState === SCENE_STATE.SELECT_ACCOUNTS){
+  const onPositiveButtonPressed = async () => {
+    if (sceneState === SCENE_STATE.SELECT_ACCOUNTS) {
       setSceneState(SCENE_STATE.CONNECT);
-    }else if(sceneState === SCENE_STATE.CONNECT){
+    } else if (sceneState === SCENE_STATE.CONNECT) {
       controller.dapp.fromUserConnectDApp(origin, current, network, selectedAccounts);
       const background = await browser.runtime.getBackgroundPage();
-  
+
       background.dispatchEvent(
-        new CustomEvent('connectWallet', { detail: {hash: window.location.hash, accounts: selectedAccounts }})
+        new CustomEvent('connectWallet', { detail: { hash: window.location.hash, accounts: selectedAccounts } })
       );
-  
+
       window.close();
+    }
+  }
+
+  const onNegativeButtonPressed = () => {
+    if(sceneState === SCENE_STATE.SELECT_ACCOUNTS){
+      window.close();
+    }else if(sceneState === SCENE_STATE.CONNECT){
+      setSceneState(SCENE_STATE.SELECT_ACCOUNTS);
     }
   }
 
@@ -164,7 +177,7 @@ const SelectAccounts = () => {
       <div key={accountAddress} className={styles.walletItem}>
         <div className={styles.walletItemCheckBox}>
           <PurpleCheckbox
-            onChange={(e: any) => onCheckboxChange(e.target.checked, accountAddress )}
+            onChange={(e: any) => onCheckboxChange(e.target.checked, accountAddress)}
             checked={(selectedAccounts.filter((account) => account === accountAddress).length > 0)}
           />
         </div>
@@ -184,8 +197,8 @@ const SelectAccounts = () => {
 
   }
 
-  const RenderContentByState = ({ state }: {state: SCENE_STATE}) => {
-    
+  const RenderContentByState = ({ state }: { state: SCENE_STATE }) => {
+
     if (state === SCENE_STATE.SELECT_ACCOUNTS) {
       return (
         <>
@@ -221,86 +234,20 @@ const SelectAccounts = () => {
     return null;
   }
 
-
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.topCircle} />
-      <div className={styles.content}>
-        <div className={styles.stepsLabel}>
-          <TextV3.Caption>{sceneState === SCENE_STATE.SELECT_ACCOUNTS ? '1' : '2'} out 2</TextV3.Caption>
-        </div>
-        <div className={styles.heading}>
-          <img className={styles.logo} src={current.logo} />
-          <div className={styles.originLabel}>
-            <TextV3.BodyStrong color={COLORS_ENUMS.WHITE}>
-              Connect to:
-            </TextV3.BodyStrong>
-            <TextV3.Body color={COLORS_ENUMS.WHITE}>
-              {origin}
-            </TextV3.Body>
-          </div>
-        </div>
-        <div className={styles.card}>
-          <div className={styles.cardContent}>
-            <div className={styles.cardHeader}>
-              <TextV3.Header color={COLORS_ENUMS.BLACK}>
-                Connect with Stargazer
-              </TextV3.Header>
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                {sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Select Account(s)' : 'Grant Permissions'}
-              </TextV3.Caption>
-            </div>
-            <div className={styles.cardBody}>
-              <RenderContentByState state={sceneState}/>
-            </div>
-            <div className={styles.cardFooter}>
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                Only connect with sites you trust.
-              </TextV3.Caption>
-            </div>
-          </div>
-        </div>
-        <div className={styles.actions}>
-          <ButtonV3
-            type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
-            size={BUTTON_SIZES_ENUM.LARGE}
-            label={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Next' : 'Connect'}
-            extraStyle={styles.nextButton}
-            onClick={onButtonPressed}
-          />
-        </div>
-      </div>
-
-    </div >
+    <CardLayout
+      stepLabel={`${sceneState === SCENE_STATE.SELECT_ACCOUNTS ? '1' : '2'} out 2`}
+      originDescriptionLabel={'Connect to:'}
+      headerLabel={'Connect with Stargazer'}
+      captionLabel={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Select Account(s)' : 'Grant Permissions'}
+      negativeButtonLabel={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Cancel' : 'Back'}
+      onNegativeButtonClick={onNegativeButtonPressed}
+      positiveButtonLabel={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Next' : 'Connect'}
+      onPositiveButtonClick={onPositiveButtonPressed}
+    >
+      <RenderContentByState state={sceneState} />
+    </CardLayout>
   );
-
-  // return (
-  //   <div className={styles.wrapper}>
-  //     <div className={styles.frame}>
-  //       <section className={styles.heading}>
-  //         <img className={styles.logo} src={current.logo} />
-  //         <span>{current.title}</span>
-  //       </section>
-  //       <div className={styles.title}>
-  //         {`Allow this site to\n connect to\n Stargazer Wallet`}
-  //       </div>
-  //       <label>Only connect to sites you trust</label>
-  //       <section className={styles.actions}>
-  //         <Button
-  //           type="button"
-  //           theme="secondary"
-  //           variant={clsx(styles.button, styles.close)}
-  //           onClick={handleClose}
-  //         >
-  //           Cancel
-  //         </Button>
-  //         <Button type="submit" variant={styles.button} onClick={handleSubmit}>
-  //           Connect
-  //         </Button>
-  //       </section>
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default SelectAccounts;
