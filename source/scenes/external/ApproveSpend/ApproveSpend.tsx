@@ -71,7 +71,7 @@ const ApproveSpend = () => {
     >
       <div className={styles.content}>
         <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-          Do you trust this site? By granting permissions you're allowing this site to withdraw your LTX and automate transaction for you.
+          Do you trust this site? By granting permissions you're allowing this site to withdraw your LTX and automate transactions for you.
         </TextV3.Caption>
         <div className={styles.transactionFee}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>

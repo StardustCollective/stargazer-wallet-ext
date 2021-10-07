@@ -215,9 +215,7 @@ export const messagesHandler = (
             console.log('Connect window addEventListener', ev.detail);
             if (ev.detail.hash.substring(1) === windowId) {
 
-
-              console.log("Spend has been approve post transaction");
-
+              // Post transaction here.
 
               port.postMessage({
                 id: message.id,
