@@ -6,52 +6,26 @@ import React, { FC, useState, ChangeEvent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 ///////////////////////
+// Components
+///////////////////////
+
+import PurpleSlider from 'components/PurpleSlider'
+
+///////////////////////
 // Images
 ///////////////////////
 
 // import EditIcon from 'assets/images/svg/edit.svg';
 // import CancelIcon from 'assets/images/svg/cancel.svg';
-import Slider from '@material-ui/core/Slider';
+
 import darkGreenCheck from 'assets/images/svg/dark-green-check.svg'
 import { useFiat } from 'hooks/usePrice';
-
-
 
 ///////////////////////
 // Styles
 ///////////////////////
 
 import styles from './GasSettings.scss'
-
-const PurpleSlider = withStyles({
-  root: {
-    color: '#2B1D52',
-    height: 4,
-  },
-  thumb: {
-    height: 24,
-    width: 24,
-    border: '2px solid #fff',
-    marginTop: -8,
-    marginLeft: -12,
-    '&:focus, &:hover, &$active': {
-      boxShadow: 'inherit',
-    },
-  },
-  active: {},
-  valueLabel: {
-    left: 'calc(-50% + 4px)',
-  },
-  track: {
-    height: 4,
-    borderRadius: 4,
-  },
-  rail: {
-    height: 4,
-    backgroundColor: '#fff',
-    borderRadius: 4,
-  },
-})(Slider);
 
 ///////////////////////
 // Constants
@@ -70,7 +44,7 @@ const CANCEL_TRANSACTION_PROMPT_STRING = `Transaction will still process,
 but its value will be set at zero “0”.`
 // Props
 const SLIDER_STEP_PROP = 1;
-const SLIDER_LABEL_DISPLAY_PROP = 'off';
+// const SLIDER_LABEL_DISPLAY_PROP = 'off';
 
 ///////////////////////
 // Enums
@@ -225,7 +199,6 @@ const GasSettings: FC<IGasSettingsProps> = ({
                     max={values.max}
                     defaultValue={values.current}
                     step={SLIDER_STEP_PROP}
-                    valueLabelDisplay={SLIDER_LABEL_DISPLAY_PROP}
                   />
                 </div>
                 <div className={styles.body__sliderLabels}>
