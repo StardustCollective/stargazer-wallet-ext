@@ -3,7 +3,6 @@
 ///////////////////////
 
 import React, { FC, useState, ChangeEvent } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 
 ///////////////////////
 // Components
