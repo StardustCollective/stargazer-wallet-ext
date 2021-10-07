@@ -23,7 +23,7 @@ const Starter = () => {
   ///////////////////// 
 
   const history = useHistory();
-  const { nextRoute } = queryString.parse(location.search);
+  const { route } = queryString.parse(location.search);
 
   //////////////////////
   // Callbacks
@@ -32,7 +32,8 @@ const Starter = () => {
   const onLoginSuccess = (res: boolean) => {
     console.log('onLoginSuccess Calledd');
     if(res){
-      history.push(`/${nextRoute}`)
+      let nextRoute = `/${route}?${location.search}`;
+      history.push(nextRoute);
     }
   };
 

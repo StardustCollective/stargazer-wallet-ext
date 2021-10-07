@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import queryString from 'query-string';
 
 import Container from 'scenes/common/Container';
-import Login from 'scenes/common/Login';
+import Login from 'scenes/external/Login';
 import SelectAccounts from 'scenes/external/SelectAccounts';
 
 import 'assets/styles/global.scss';
@@ -24,7 +24,7 @@ const App: FC = () => {
             <Route path="/selectAccounts" component={SelectAccounts} />
             <Route path="/">
               {!isUnlocked ?
-                <Redirect to={`/login?nextRoute=${route}`} /> :
+                <Redirect to={`/login?${location.search}`} /> :
                 <Redirect to={`/${route}?${location.search}`} />
               }
             </Route>

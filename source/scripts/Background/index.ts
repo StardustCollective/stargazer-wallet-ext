@@ -29,7 +29,8 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
   else if (
     port.sender &&
     port.sender.url &&
-    port.sender.url?.includes(browser.runtime.getURL('/app.html'))
+    (port.sender.url?.includes(browser.runtime.getURL('/app.html')) ||
+    port.sender.url?.includes(browser.runtime.getURL('/external.html')))
   ) {
     const vault = store.getState().vault;
     const networkId = (vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation]);
