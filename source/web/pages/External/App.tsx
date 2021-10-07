@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import queryString from 'query-string';
 
 import Container from 'scenes/common/Container';
