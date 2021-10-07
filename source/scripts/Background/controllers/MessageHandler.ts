@@ -11,6 +11,11 @@ type Message = {
     args: any[];
     network: string;
     origin?: string;
+    to?: string;
+    from?: string;
+    value?: string;
+    gas?: string;
+    data: string;
   };
 };
 
@@ -186,6 +191,45 @@ export const messagesHandler = (
         });
 
         return Promise.resolve(null);
+      } else if(method === 'wallet.sendTransaction'){
+
+        const to = message.data.to;
+        const from = message.data.from;
+        const value = message.data.value;
+        const gas = message.data.gas;
+        const data = message.data.data;
+
+
+        const windowId = uuid();
+        const popup = await masterController.createPopup(
+          windowId,
+          message.data.network,
+          'approveSpend'
+        );
+
+        pendingWindow = true;
+
+        window.addEventListener(
+          'spendApproved',
+          (ev: any) => {
+            console.log('Connect window addEventListener', ev.detail);
+            if (ev.detail.hash.substring(1) === windowId) {
+
+
+              console.log("Spend has been approve post transaction");
+
+
+              port.postMessage({
+                id: message.id,
+                data: { result: true, data: { accounts: ev.detail.accounts } },
+              });
+              pendingWindow = false;
+            }
+          },
+          { once: true, passive: true }
+        );
+
+
       }
 
       if (result !== undefined) {

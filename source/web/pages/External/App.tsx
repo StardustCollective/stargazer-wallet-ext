@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import Container from 'scenes/common/Container';
 import Login from 'scenes/external/Login';
 import SelectAccounts from 'scenes/external/SelectAccounts';
+import ApproveSpend from 'scenes/external/ApproveSpend';
 
 import 'assets/styles/global.scss';
 import { useController } from 'hooks/index';
@@ -22,6 +23,7 @@ const App: FC = () => {
           <Switch>
             <Route path="/login" component={Login} />
             <Route path="/selectAccounts" component={SelectAccounts} />
+            <Route path="/approveSpend" component={ApproveSpend} />
             <Route path="/">
               {!isUnlocked ?
                 <Redirect to={`/login?${location.search}`} /> :

@@ -1,0 +1,18 @@
+@import "~assets/styles/variables";
+
+.content {
+  margin: 10px;
+  text-align: center;
+  .transactionFee {
+    display: flex;
+    flex: 1;
+    height: 100px;
+    flex-direction: column;
+    border-top: 1px solid $black;
+    margin-top: 10px;
+    padding-top: 10px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+}
