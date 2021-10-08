@@ -16,6 +16,9 @@ const App: FC = () => {
   const isUnlocked = controller.wallet.isUnlocked();
   const { route } = queryString.parse(location.search);
 
+  console.log('route: ', route);
+  console.log('location: ', location);
+
   return (
     <section id="App" style={{ minHeight: '300px' }}>
       <Container>
@@ -26,8 +29,8 @@ const App: FC = () => {
             <Route path="/approveSpend" component={ApproveSpend} />
             <Route path="/">
               {!isUnlocked ?
-                <Redirect to={`/login?${location.search}`} /> :
-                <Redirect to={`/${route}?${location.search}`} />
+                <Redirect to={`/login${location.search}`} /> :
+                <Redirect to={`/${route}${location.search}`} />
               }
             </Route>
           </Switch>

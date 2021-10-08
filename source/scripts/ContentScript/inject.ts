@@ -185,6 +185,14 @@ const REQUEST_MAP = {
   eth_chainId: 'wallet.getChainId',
 }
 
+const ERRORS = {
+  USER_REJECTED: (message = 'User rejected') => {
+    const err = new Error(message);
+    err.code = 4001;
+    return err;
+  }
+}
+
 async function handleRequest (req) {
   const dag = window.providerManager.getProviderFor('DAG');
   const eth = window.providerManager.getProviderFor('ETH');
@@ -194,13 +202,16 @@ async function handleRequest (req) {
   } else if (req.method === 'dag_requestAccounts') {
     const {result, data} = await window.providerManager.enable('Constellation');
     
-    if (!result) throw new Error('User rejected')
+    if (!result) throw ERRORS.USER_REJECTED()
     
     return data.accounts;
   } else if (req.method === 'eth_requestAccounts') {
     const {result, data} = await window.providerManager.enable('Ethereum')
+
+    console.log('stgzr eth_requestAccounts result: ', result);
+    console.log('stgzr eth_requestAccounts data: ', data);
     
-    if (!result) throw new Error('User rejected')
+    if (!result) throw ERRORS.USER_REJECTED()
     
     return data.accounts;
   } else if (req.method.startsWith('eth_')) {
@@ -221,7 +232,9 @@ window.stargazer = {
   },
   enable: async () => {
     const {result, data} = await window.providerManager.enable()
-    if (!result) throw new Error('User rejected')
+
+    if (!result) throw ERRORS.USER_REJECTED()
+
     return data.accounts;
   },
   request: async (req) => {
@@ -231,7 +244,6 @@ window.stargazer = {
     })
   },
   on: (method, callback) => {
-
     const id = Date.now() + '.' + Math.random();
 
     let origin = window.location.hostname;

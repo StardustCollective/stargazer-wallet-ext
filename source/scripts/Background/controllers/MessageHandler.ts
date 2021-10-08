@@ -106,7 +106,7 @@ export const messagesHandler = (
           'connectWallet',
           (ev: any) => {
             console.log('Connect window addEventListener', ev.detail);
-            if (ev.detail.hash.substring(1) === windowId) {
+            if (ev.detail.windowId === windowId) {
               port.postMessage({
                 id: message.id,
                 data: { result: true, data: { accounts: ev.detail.accounts } },
@@ -119,9 +119,8 @@ export const messagesHandler = (
 
         browser.windows.onRemoved.addListener((id) => {
           if (popup && id === popup.id) {
-            port.postMessage({ id: message.id, data: { result: false } });
+            port.postMessage({ id: message.id, data: { result: origin && allowed } });
             pendingWindow = false;
-            console.log('Connect window is closed');
           }
         });
 
