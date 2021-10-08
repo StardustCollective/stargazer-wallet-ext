@@ -190,18 +190,7 @@ async function handleRequest (req) {
   const eth = window.providerManager.getProviderFor('ETH');
   
   if (req.method === 'eth_sendTransaction') {
-    const to = req.params[0].to;
-    const from = req.params[0].from;
-    const value = req.params[0].value;
-    const gas = req.params[0].gas;
-    const data = req.params[0].data;
-    return dag.getMethod('wallet.sendTransaction')({ 
-      to, 
-      from, 
-      value,
-      gas,
-      data
-    });
+    return eth.getMethod('wallet.sendTransaction')({...req.params[0]});
   } else if (req.method === 'dag_requestAccounts') {
     const {result, data} = await window.providerManager.enable('Constellation');
     

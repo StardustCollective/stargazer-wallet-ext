@@ -192,19 +192,14 @@ export const messagesHandler = (
 
         return Promise.resolve(null);
       } else if(method === 'wallet.sendTransaction'){
-
-        const to = message.data.to;
-        const from = message.data.from;
-        const value = message.data.value;
-        const gas = message.data.gas;
-        const data = message.data.data;
-
+        const data = message.data.args[0];
 
         const windowId = uuid();
         const popup = await masterController.createPopup(
           windowId,
           message.data.network,
-          'approveSpend'
+          'approveSpend',
+          {...data},
         );
 
         pendingWindow = true;

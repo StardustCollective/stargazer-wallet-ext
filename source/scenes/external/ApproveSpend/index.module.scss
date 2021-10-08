@@ -3,10 +3,10 @@
 .content {
   margin: 10px;
   text-align: center;
-  .transactionFee {
+  .gasFees {
     display: flex;
     flex: 1;
-    height: 100px;
+    height: 100%;
     flex-direction: column;
     border-top: 1px solid $black;
     margin-top: 10px;
@@ -14,5 +14,82 @@
     text-align: center;
     align-items: center;
     justify-content: center;
+    .box {
+      display: flex;
+      width: 300px;
+      background-color: $gray-light-200;
+      border-radius: 10px;
+      justify-content: center;
+      align-items: center;
+      .content {
+        width: 100%;
+        margin: 10px;
+        .header {
+          display: flex;
+          width: 100%;
+          height: 36px;
+          // background-color: orange;
+          align-items: center;
+          & > div {
+            display: flex;
+            flex: 1;
+          }
+          .headerLeft {
+            // background-color: blue;
+            & > span {
+              font-family: $inter;
+              font-weight: $semibold;
+              font-size: 18px;
+            }
+          }
+          .headerRight {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            & > div {
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              background-color: $white;
+              padding: 8px 16px 8px 16px;
+              border-radius: 24px;
+              border: 1px solid #cccccc;
+              & > span:first-child {
+                min-width: 2ch;
+                max-width: 4ch;
+                margin-right: 8px;
+                border: none;
+                font-family: $quicksand;
+                font-weight: bold;
+                font-size: 14px;
+                color: $purple;
+              }
+              & > span:last-child {
+                font-size: 14px;
+                font-family: $rubik;
+                font-weight: $medium;
+              }
+            }
+          }
+        }
+        .slider {
+          width: 100%;
+        }
+        .sliderLabel {
+          display: flex;
+          flex-direction: row;
+          & > div {
+            flex: 1;
+            font-family: $inter;
+            font-size: 12px;
+            font-weight: $medium;
+            &:last-child {
+              display: flex;
+              justify-content: flex-end;
+            }
+          }
+        }
+      }
+    }
   }
 }

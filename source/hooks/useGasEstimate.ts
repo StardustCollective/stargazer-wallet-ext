@@ -1,30 +1,21 @@
 import { useState, useMemo, useEffect } from 'react';
-import IVaultState, { AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { BigNumber, ethers } from 'ethers';
-import { useSelector } from 'react-redux';
-import IAssetListState from 'state/assets/types';
-import { RootState } from 'state/store';
+import { IAssetInfoState } from 'state/assets/types';
 
 type IUseGasEstimate = {
   toAddress?: string;
-  amount?: string
+  amount?: string;
+  asset?: IAssetInfoState;
 };
 
-function useGasEstimate({ toAddress, amount }: IUseGasEstimate) {
+function useGasEstimate({ toAddress, amount, asset }: IUseGasEstimate) {
   const controller = useController();
   const [gasPrice, setGasPrice] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
-
-  const { activeAsset }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
@@ -58,17 +49,16 @@ function useGasEstimate({ toAddress, amount }: IUseGasEstimate) {
 
   useEffect(() => {
     const getGasLimit = async () => {
-      let gasLimit = activeAsset.type === AssetType.Ethereum ? 21000 : 0;
+      let gasLimit = asset.type === AssetType.Ethereum ? 21000 : 0;
 
       if (gasLimit) {
         setGasLimit(gasLimit);
         handleGetTxFee();
       } else {
-        const assetInfo = assets[activeAsset.id];
         controller.wallet.account.ethClient.estimateTokenTransferGasLimit(            
           toAddress,
-          assetInfo.address, 
-          ethers.utils.parseUnits(amount, assetInfo.decimals))
+          asset.address, 
+          ethers.utils.parseUnits(amount, asset.decimals))
         .then(gasLimit => {
           setGasLimit(gasLimit);
         })
