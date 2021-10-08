@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+ggit import React, { useLayoutEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
@@ -48,8 +48,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     const {
       to
     } = queryString.parse(location.search);
-    console.log('To: ')
-    console.log(to);
+
     activeAsset = useSelector(
       (state: RootState) => find(state.assets, { address: to })
     ) as IAssetInfoState;
