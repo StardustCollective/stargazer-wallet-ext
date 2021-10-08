@@ -16,9 +16,6 @@ const App: FC = () => {
   const isUnlocked = controller.wallet.isUnlocked();
   const { route } = queryString.parse(location.search);
 
-  console.log('route: ', route);
-  console.log('location: ', location);
-
   return (
     <section id="App" style={{ minHeight: '300px' }}>
       <Container>

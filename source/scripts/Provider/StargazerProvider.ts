@@ -26,6 +26,11 @@ export class StargazerProvider {
     return stargazerAsset && stargazerAsset.address;
   }
 
+  getAccounts(): Array<string> {
+    // TODO
+    return [];
+  }
+
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 

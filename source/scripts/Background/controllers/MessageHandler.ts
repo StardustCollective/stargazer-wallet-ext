@@ -140,6 +140,8 @@ export const messagesHandler = (
         result = { connected: !!allowed && !walletIsLocked };
       } else if (method === 'wallet.getAddress') {
         result = provider.getAddress();
+      } else if (method === 'wallet.getAccounts') {
+        result = provider.getAccounts();
       } else if (method === 'wallet.getChainId') {
         result =provider.getChainId();
       } else if (method === 'wallet.getNetwork') {
