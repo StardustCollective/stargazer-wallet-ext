@@ -214,6 +214,7 @@ async function handleRequest (req) {
 
 window.stargazer = {
   evtRegMap: {},
+  version: 1,
   isConnected: async () => {
     const dag = window.providerManager.getProviderFor('DAG')
     return dag.getMethod('wallet.isConnected')()
