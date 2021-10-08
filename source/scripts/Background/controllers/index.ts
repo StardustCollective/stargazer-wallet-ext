@@ -51,7 +51,10 @@ const MasterController = (): IMasterController => {
     if(data){
       url += `&data=${JSON.stringify(data)}`; 
     }
+    // This was being passed only in hash value but it gets dropped somethings in routing
+    url += `&windowId=${windowId}`;
     url += `#${windowId}`;
+
     return await browser.windows.create({
       url,
       width: 372,

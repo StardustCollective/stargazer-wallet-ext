@@ -125,10 +125,12 @@ const SelectAccounts = () => {
       controller.dapp.fromUserConnectDApp(origin, current, network, selectedAccounts);
       const background = await browser.runtime.getBackgroundPage();
 
-      background.dispatchEvent(
-        new CustomEvent('connectWallet', { detail: { hash: window.location.hash, accounts: selectedAccounts } })
-      );
+      const {windowId} = queryString.parse(window.location.search);
 
+      background.dispatchEvent(
+        new CustomEvent('connectWallet', { detail: { windowId, accounts: selectedAccounts } })
+      );
+      
       window.close();
     }
   }
