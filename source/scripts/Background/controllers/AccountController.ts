@@ -313,7 +313,7 @@ export class AccountController implements IAccountController {
         //this.watchMemPool();
       } else {
         if (!this.tempTx.ethConfig) return;
-        const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
+        const { gasPrice, gasLimit, nonce , txData: data} = this.tempTx.ethConfig;
         const { activeNetwork }: IVaultState = store.getState().vault;
         const txOptions: any = {
           recipient: this.tempTx.toAddress,

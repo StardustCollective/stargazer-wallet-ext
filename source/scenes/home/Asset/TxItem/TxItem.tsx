@@ -4,6 +4,10 @@
 
 import React, { FC, ChangeEvent } from 'react';
 import { formatDistanceDate } from '../../helpers';
+import IVaultState from 'state/vault/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
+import IAssetListState from 'state/assets/types';
 
 ///////////////////////
 // Components
@@ -83,6 +87,13 @@ const TxItem: FC<ITxItem> = ({
   /////////////////////////
   // Hooks
   ////////////////////////
+  const { activeAsset }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
+
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
 
 
   let {
@@ -93,13 +104,15 @@ const TxItem: FC<ITxItem> = ({
     gasLimit,
     gasPrice } = useGasEstimate({
       toAddress: tx.toAddress,
-      amount: tx.amount
+      amount: tx.amount,
+      asset: assets[activeAsset.id],
     });
+
   const controller = useController();
 
   /////////////////////////
   // Callbacks
-  ////////////////////////
+  //////////////////////////
 
   const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
     setGasPrice(value as number);

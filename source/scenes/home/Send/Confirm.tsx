@@ -88,8 +88,13 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
           setConfirmed(true);
         })
         .catch((error: Error) => {
+          let message = error.message;
+          if (error.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
+            message = 'Insufficient ETH to cover gas fee.';
+          }
+
           alert.removeAll();
-          alert.error(error.message);
+          alert.error(message);
         });
    // }
   };
