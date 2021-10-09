@@ -104,7 +104,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     });
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
 
     setDisabled(true);
 
@@ -114,21 +114,26 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     //   window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
     //   history.push('/home');
     // } else {
-    controller.wallet.account
-      .confirmTempTx(activeAsset)
-      .then(() => {
-        setConfirmed(true);
-      })
-      .catch((error: Error) => {
-        let message = error.message;
-        if (error.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
-          message = 'Insufficient ETH to cover gas fee.';
-        }
 
-        alert.removeAll();
-        alert.error(message);
-      });
-    // }
+    try {
+      if (isExternalRequest) {
+        await controller.wallet.account.confirmContractTempTx(activeAsset)
+        window.close();
+      } else {
+        await controller.wallet.account.confirmTempTx()
+        setConfirmed(true);
+      }
+    } catch (error: any) {
+      let message = error.message;
+      if (error.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
+        message = 'Insufficient ETH to cover gas fee.';
+      }
+      alert.removeAll();
+      alert.error(message);
+    }
+
+
+
   };
 
   return confirmed ? (

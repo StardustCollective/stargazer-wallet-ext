@@ -9,7 +9,8 @@ export interface IAccountController {
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
-  confirmTempTx: (activeAsset: IAssetInfoState | IActiveAssetState ) => Promise<void>;
+  confirmContractTempTx: (activeAsset: IAssetInfoState | IActiveAssetState ) => Promise<void>;
+  confirmTempTx: () => Promise<void>;
   isValidDAGAddress: (address: string) => boolean;
   isValidERC20Address: (address: string) => boolean;
   // subscribeAccount: (id: string, label?: string) => Promise<string | null>;
