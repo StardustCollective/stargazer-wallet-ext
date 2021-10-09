@@ -50,6 +50,8 @@ const MAX_AMOUNT_NUMBER = 1000000000;
 
 const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
+  const isExternalRequest = location.pathname.includes('sendTransaction');
+
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let balances: AssetBalances;
   let to: string,
@@ -59,11 +61,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     memo: string;
   let history;
 
-  /****************************************/
-  /* Start - Set up for external request
-  /****************************************/
-
-  if (location.pathname.includes('sendTransaction')) {
+  if (isExternalRequest) {
 
     const {
       data: dataJsonString,
@@ -95,10 +93,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     ) as IAssetInfoState;
   } else {
 
-    /***************************
-     * If NOT external
-     ***************************/
-
     const vault: IVaultState = useSelector(
       (state: RootState) => state.vault
     )
@@ -111,10 +105,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     }, []);
 
   }
-
-  /****************************************/
-  /* End - Set up for external request
-  /****************************************/
 
   const getFiatAmount = useFiat();
   const controller = useController();
@@ -209,15 +199,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       };
     }
 
-    console.log('TX CONFIG');
-    console.log(txConfig);
     controller.wallet.account.updateTempTx(txConfig);
 
-    /*******************************************************************/
-    /* For external -  Navigate with useHistory.
-    /*******************************************************************/
-
-    if (location.pathname.includes('sendTransaction')) {
+    if (isExternalRequest) {
       history.push(`/confirmTransaction?to=${txConfig.toAddress}`);
     } else {
       linkTo('/send/confirm');
@@ -263,12 +247,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       computedAmount = amountBN.add(txFee);
     }
 
-    /*******************************************************************/
-    /* For external -  Balance will not be taken into consideration for
-    /* external request.
-    /*******************************************************************/
-
-    if (location.pathname.includes('sendTransaction')) {
+    if (isExternalRequest) {
       return (
         !isValidAddress ||
         !amount ||
@@ -418,12 +397,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         onChange={handleSelectContact}
       />
       <form onSubmit={handleSubmit(onSubmit)} className={styles.bodywrapper}>
-        {
-          /*******************************************************************/
-          /* For external - Hide the balance
-          /*******************************************************************/
-        }
-        {!location.pathname.includes('sendTransaction') &&
+        {!isExternalRequest &&
           <section className={styles.balance}>
             <div>
               Balance: <span>{formatNumber(Number(balances[activeAsset.id]), 4, 4)}</span>{' '}
