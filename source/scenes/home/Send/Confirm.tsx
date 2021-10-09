@@ -33,7 +33,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
 
   // const history = useHistory();
   const controller = useController();
-  const getFiatAmount = useFiat(false);
   const alert = useAlert();
   const vault: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -63,6 +62,8 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     }, []);
 
   }
+
+  const getFiatAmount = useFiat(false, activeAsset as IAssetInfoState);
 
   /****************************************/
   /* Start - Set up for external request
