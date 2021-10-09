@@ -1,6 +1,7 @@
 import { ITransactionInfo, IETHPendingTx } from '../../types';
-import { IAssetState, IActiveAssetState, IAssetInfoState } from '../../../state/vault/types';
+import { IAssetState, IActiveAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
+import { IAssetInfoState } from 'state/assets/types';
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 
 export interface IAccountController {
