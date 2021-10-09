@@ -29,21 +29,18 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
 
+  const isExternalRequest = location.pathname.includes('confirmTransaction');
+
   // const history = useHistory();
   const controller = useController();
   const getFiatAmount = useFiat(false);
   const alert = useAlert();
-
-  /****************************************/
-  /* Start - Set up for external request
-  /****************************************/
-
   const vault: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
 
 
-  if (location.pathname.includes('confirmTransaction')) {
+  if (isExternalRequest) {
 
     const {
       to
@@ -56,10 +53,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     activeWallet = vault.activeWallet;
 
   } else {
-
-    /***************************
-     * If NOT external
-     ***************************/
 
     activeAsset = vault.activeAsset;
     activeWallet = vault.activeWallet;
