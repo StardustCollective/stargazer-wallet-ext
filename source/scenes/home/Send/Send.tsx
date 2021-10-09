@@ -106,7 +106,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   }
 
-  const getFiatAmount = useFiat();
+  const getFiatAmount = useFiat(true, activeAsset as IAssetInfoState);
   const controller = useController();
   const linkTo = useLinkTo();
   const alert = useAlert();
