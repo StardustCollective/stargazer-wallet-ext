@@ -247,15 +247,17 @@ window.stargazer = {
       origin += ":"+window.location.port;
     }
 
-    const id = method + "." + "origin";
+    const id = origin + "." + method;
+
+    window.stargazer._listeners[id] = ({ detail }) => {
+      if(detail){       
+        callback(JSON.parse(detail));
+      }
+    };
 
     window.addEventListener(
       id,
-      ({ detail }) => {
-        if(detail){       
-          callback(JSON.parse(detail));
-        }
-      },
+      window.stargazer._listeners[id],
       { passive: true }
     );
 
@@ -268,12 +270,17 @@ window.stargazer = {
       origin += ":"+window.location.port;
     }
 
-    const id = method + "." + "origin";
+    const id = origin + "." + method;
 
-    window.removeEventListener(id);
+    if (window.stargazer._listeners[id]) {
+      window.removeEventListener(id, window.stargazer._listeners[id]);
+
+      delete window.stargazer._listeners[id];
+    }
 
     window.postMessage({ id, type: 'STARGAZER_EVENT_DEREG', data: {method, origin}}, '*');
-  }
+  },
+  _listeners: {}
 }
 `;
 

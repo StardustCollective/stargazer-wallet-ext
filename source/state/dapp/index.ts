@@ -17,12 +17,14 @@ const DAppState = createSlice({
     ) {
       const { origin, eventName } = action.payload;
 
+      const originState = state.listening.hasOwnProperty(origin) ? state.listening[origin].filter((val: string) => val !== eventName) : [];
+
       return {
         ...state,
         listening: {
           ...state.listening,
           [origin]: [
-            ...(state.listening.hasOwnProperty(origin) ? state.listening[origin as any] : []),
+            ...originState,
             eventName
           ]
         }

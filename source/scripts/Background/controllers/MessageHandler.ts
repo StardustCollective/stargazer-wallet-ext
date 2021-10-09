@@ -21,7 +21,7 @@ type Message = {
 
 enum SUPPORTED_EVENT_TYPES {
   accountChanged = 'accountsChanged',
-  chainChanged = 'chainChanged'
+  chainChanged = 'chainChanged' // TODO: implement
 }
 
 export const messagesHandler = (
@@ -36,6 +36,7 @@ export const messagesHandler = (
       method,
       (event: any) => {
         let { data, origin } = event.detail;
+
         // The event origin is checked to prevent sites that have not been
         // granted permissions to the user's account information from
         // receiving updates.
@@ -90,7 +91,7 @@ export const messagesHandler = (
       const listenerOrigin = message.data.origin;
       const method = message.data.method;
 
-      if (!allowed || !Object.values(SUPPORTED_EVENT_TYPES).includes(method as SUPPORTED_EVENT_TYPES)) {
+      if (!Object.values(SUPPORTED_EVENT_TYPES).includes(method as SUPPORTED_EVENT_TYPES)) {
         return;
       }
 
@@ -219,7 +220,7 @@ export const messagesHandler = (
         const data = message.data.args[0];
 
         const windowId = uuid();
-        const popup = await masterController.createPopup(
+        await masterController.createPopup(
           windowId,
           message.data.network,
           'approveSpend',
@@ -233,9 +234,6 @@ export const messagesHandler = (
           (ev: any) => {
             console.log('Connect window addEventListener', ev.detail);
             if (ev.detail.hash.substring(1) === windowId) {
-
-              // Post transaction here.
-
               port.postMessage({
                 id: message.id,
                 data: { result: true, data: { accounts: ev.detail.accounts } },

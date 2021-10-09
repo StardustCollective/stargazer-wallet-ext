@@ -56,14 +56,14 @@ export class WalletController implements IWalletController {
     const state = store.getState();
     const vault: IVaultState = state.vault;
 
-    if(vault) {
+    if (vault) {
 
       //Check for v1.4 migration
       if (vault.migrateWallet) {
         try {
           await KeystoreToKeyringHelper.migrate(vault.migrateWallet, password);
         }
-        catch(e) {
+        catch (e) {
           return false;
         }
       }
@@ -117,7 +117,7 @@ export class WalletController implements IWalletController {
 
   async switchWallet(id: string) {
 
-    store.dispatch(updateBalances({  pending: 'true' }));
+    store.dispatch(updateBalances({ pending: 'true' }));
 
     await this.account.buildAccountAssetInfo(id);
     await this.account.getLatestTxUpdate();
@@ -126,26 +126,30 @@ export class WalletController implements IWalletController {
 
   }
 
-  async notifyWalletChange(accounts: string[]){
-
+  async notifyWalletChange(accounts: string[]) {
     const state = store.getState();
-    const whiteList: {[dappId: string]: IDAppInfo}[] = state.dapp.whitelist;
-    const listening: string[] = state.dapp.listening;
+    const whiteList: { [dappId: string]: IDAppInfo }[] = state.dapp.whitelist;
+    const listening: { [origin: string]: Array<string> } = state.dapp.listening;
 
     // Will only notify whitelisted dapps that are listening for a wallet change.
-    for(let origin of listening){
-
+    for (const origin of Object.keys(listening)) {
       const site = whiteList[origin as any];
+      const listeningEvents = listening[origin];
 
-      if(!!site){
+      if (!listeningEvents.includes('accountsChanged')) {
+        continue;
+      }
+
+      if (site) {
         const siteAccounts = site.accounts as IDappAccounts;
-        const allAccountsWithDuplicates = accounts.concat(siteAccounts.Constellation , siteAccounts.Ethereum);
+        const allAccountsWithDuplicates = accounts.concat(siteAccounts.Constellation, siteAccounts.Ethereum);
         const matchingAccounts = filter(allAccountsWithDuplicates, (value, index, iteratee) => includes(iteratee, value as string, index + 1))
 
-        if(!!matchingAccounts.length){
+        if (matchingAccounts.length) {
           const background = await browser.runtime.getBackgroundPage();
+
           background.dispatchEvent(
-            new CustomEvent('accountsChanged', { detail: { data: matchingAccounts,  origin } })
+            new CustomEvent('accountsChanged', { detail: { data: matchingAccounts, origin } })
           );
         }
       }
@@ -155,7 +159,7 @@ export class WalletController implements IWalletController {
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
 
-    store.dispatch(updateBalances({  pending: 'true' }));
+    store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;
