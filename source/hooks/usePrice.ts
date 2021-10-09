@@ -7,7 +7,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { formatNumber } from 'scenes/home/helpers';
 import { IAssetInfoState } from 'state/assets/types';
 
-export function useFiat(currencyName = true, asset: IAssetInfoState ) {
+export function useFiat(currencyName = true, asset?: IAssetInfoState ) {
   const { activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -19,7 +19,7 @@ export function useFiat(currencyName = true, asset: IAssetInfoState ) {
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  
+
   return (amount: number, fraction = 4, basePriceId?: string) => {
     const priceId = basePriceId ||  asset ? asset.priceId : assets[activeAsset.id].priceId
     const value =
