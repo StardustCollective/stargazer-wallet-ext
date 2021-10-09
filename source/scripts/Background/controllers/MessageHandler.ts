@@ -19,11 +19,39 @@ type Message = {
   };
 };
 
+enum SUPPORTED_EVENT_TYPES {
+  accountChanged = 'accountsChanged',
+  chainChanged = 'chainChanged' // TODO: implement
+}
+
 export const messagesHandler = (
   port: Runtime.Port,
   masterController: IMasterController
 ) => {
   let pendingWindow = false;
+
+  // Set up listeners once, then check origin/method based on registration in state
+  Object.values(SUPPORTED_EVENT_TYPES).map((method) => {
+    window.addEventListener(
+      method,
+      (event: any) => {
+        let { data, origin } = event.detail;
+
+        // Event listeners can be attached before connection but DApp must be connected to receive events
+        const allowed = masterController.dapp.isDAppConnected(origin);
+
+        // The event origin is checked to prevent sites that have not been
+        // granted permissions to the user's account information from
+        // receiving updates.
+        if (allowed && masterController.dapp.isSiteListening(origin, method)) {
+          const id = `${origin}.${method}`; // mirrored in inject.ts
+          port.postMessage({ id, data });
+        }
+      },
+      { passive: true }
+    );
+  })
+
 
   const listener = async (message: Message, connection: Runtime.Port) => {
     try {
@@ -63,31 +91,24 @@ export const messagesHandler = (
     const allowed = masterController.dapp.fromPageConnectDApp(origin, title);
 
     if (message.type === 'STARGAZER_EVENT_REG') {
-
       const listenerOrigin = message.data.origin;
       const method = message.data.method;
 
-      if (method === 'accountsChanged') {
-
-        // Register the origin of the site that is listening for 
-        // account changed.
-        masterController.dapp.registerSite(listenerOrigin);
-
-        window.addEventListener(
-          'accountsChanged',
-          (event: any) => {
-            let { accounts, origin } = event.detail;
-            // The event origin is checked to prevent sites that have not been
-            // granted permissions to the user's account information from
-            // receiving updates.
-            if (origin === listenerOrigin) {
-              port.postMessage({ id: message.id, data: accounts });
-            }
-          },
-          { passive: true }
-        );
+      if (!Object.values(SUPPORTED_EVENT_TYPES).includes(method as SUPPORTED_EVENT_TYPES)) {
+        return;
       }
 
+      // Register the origin of the site that is listening for an event
+      masterController.dapp.registerListeningSite(listenerOrigin, method);
+    } else if (message.type === 'STAGAZER_EVENT_DEREG') {
+      const listenerOrigin = message.data.origin;
+      const method = message.data.method;
+
+      if (!Object.values(SUPPORTED_EVENT_TYPES).includes(method as SUPPORTED_EVENT_TYPES)) {
+        return;
+      }
+
+      masterController.dapp.deregisterListeningSite(listenerOrigin, method);
     } else if (message.type === 'ENABLE_REQUEST') {
       const { asset } = message.data;
       const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
@@ -202,11 +223,11 @@ export const messagesHandler = (
         const data = message.data.args[0];
 
         const windowId = uuid();
-        const popup = await masterController.createPopup(
+        await masterController.createPopup(
           windowId,
           message.data.network,
           'sendTransaction',
-          {...data},
+          {...data}
         );
 
         pendingWindow = true;
@@ -216,9 +237,6 @@ export const messagesHandler = (
           (ev: any) => {
             console.log('Connect window addEventListener', ev.detail);
             if (ev.detail.hash.substring(1) === windowId) {
-
-              // Post transaction here.
-
               port.postMessage({
                 id: message.id,
                 data: { result: true, data: { accounts: ev.detail.accounts } },
