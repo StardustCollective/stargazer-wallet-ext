@@ -149,17 +149,19 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     </Layout>
   ) : (
     <div className={styles.wrapper}>
-      <section className={styles.txAmount}>
-        <div className={styles.iconWrapper}>
-          <UpArrowIcon />
-        </div>
-        {getTotalUnits()}{' '}
-        {assetInfo.symbol}
-        <small>
-          (≈
-          {getTotalAmount()})
-        </small>
-      </section>
+      {!isExternalRequest &&
+        < section className={styles.txAmount}>
+          <div className={styles.iconWrapper}>
+            <UpArrowIcon />
+          </div>
+          {getTotalUnits()}{' '}
+          {assetInfo.symbol}
+          <small>
+            (≈
+            {getTotalAmount()})
+          </small>
+        </section>
+      }
       <section className={styles.transaction}>
         <div className={styles.row}>
           From
@@ -201,7 +203,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
           </Button>
         </div>
       </section>
-    </div>
+    </div >
   );
 };
 
