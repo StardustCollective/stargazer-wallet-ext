@@ -4,9 +4,10 @@
     "plugin:@typescript-eslint/recommended",
     "@abhijithvijayan/eslint-config/typescript",
     "@abhijithvijayan/eslint-config/react",
-    "tslint-divid"
+    "tslint-divid",
+    "prettier"
   ],
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "overrides": [
     {
       "files": ["*.{ts,tsx}"],
