@@ -183,6 +183,7 @@ const REQUEST_MAP = {
   signMessage: 'wallet.signMessage',
   sendTransaction: 'wallet.sendTransaction',
   eth_chainId: 'wallet.getChainId',
+  eth_accounts: 'wallet.getAccounts'
 }
 
 const ERRORS = {
@@ -207,9 +208,6 @@ async function handleRequest (req) {
     return data.accounts;
   } else if (req.method === 'eth_requestAccounts') {
     const {result, data} = await window.providerManager.enable('Ethereum')
-
-    console.log('stgzr eth_requestAccounts result: ', result);
-    console.log('stgzr eth_requestAccounts data: ', data);
     
     if (!result) throw ERRORS.USER_REJECTED()
     

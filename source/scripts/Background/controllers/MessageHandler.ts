@@ -65,7 +65,7 @@ export const messagesHandler = (
     if (message.type === 'STARGAZER_EVENT_REG') {
 
       const listenerOrigin = message.data.origin;
-      const method         = message.data.method;
+      const method = message.data.method;
 
       if (method === 'accountsChanged') {
 
@@ -89,6 +89,9 @@ export const messagesHandler = (
       }
 
     } else if (message.type === 'ENABLE_REQUEST') {
+      const { asset } = message.data;
+      const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
+
       if (origin && !allowed) {
         if (pendingWindow) {
           return Promise.resolve(null);
@@ -109,7 +112,10 @@ export const messagesHandler = (
             if (ev.detail.windowId === windowId) {
               port.postMessage({
                 id: message.id,
-                data: { result: true, data: { accounts: ev.detail.accounts } },
+                data: {
+                  result: true,
+                  data: { accounts: provider.getAccounts() }
+                },
               });
               pendingWindow = false;
             }
@@ -134,14 +140,16 @@ export const messagesHandler = (
       console.log('CAL_REQUEST.method', method, args);
 
       const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
-      
+
       let result: any = undefined;
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed && !walletIsLocked };
       } else if (method === 'wallet.getAddress') {
         result = provider.getAddress();
+      } else if (method === 'wallet.getAccounts') {
+        result = provider.getAccounts();
       } else if (method === 'wallet.getChainId') {
-        result =provider.getChainId();
+        result = provider.getChainId();
       } else if (method === 'wallet.getNetwork') {
         result = provider.getNetwork();
       } else if (method === 'wallet.getBalance') {
@@ -190,7 +198,7 @@ export const messagesHandler = (
         });
 
         return Promise.resolve(null);
-      } else if(method === 'wallet.sendTransaction'){
+      } else if (method === 'wallet.sendTransaction') {
         const data = message.data.args[0];
 
         const windowId = uuid();
