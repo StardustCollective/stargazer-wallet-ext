@@ -10,9 +10,11 @@ import { useFiat } from 'hooks/usePrice';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { RootState } from 'state/store';
-import IVaultState, { AssetType } from 'state/vault/types';
-import IAssetListState from 'state/assets/types';
+import IVaultState, { AssetType, IWalletState, IActiveAssetState } from 'state/vault/types';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { ellipsis } from '../helpers';
+import queryString from 'query-string';
+import find from 'lodash/find';
 import confirmHeader from 'navigation/headers/confirm';
 
 import styles from './Confirm.scss';
@@ -23,14 +25,49 @@ interface ISendConfirm {
 }
 
 const SendConfirm = ({ navigation }: ISendConfirm) => {
+
+  let activeAsset: IAssetInfoState | IActiveAssetState;
+  let activeWallet: IWalletState;
+
+  const isExternalRequest = location.pathname.includes('confirmTransaction');
+
   // const history = useHistory();
   const controller = useController();
   const getFiatAmount = useFiat(false);
   const alert = useAlert();
-
-  const { activeWallet, activeAsset }: IVaultState = useSelector(
+  const vault: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+
+
+  if (isExternalRequest) {
+
+    const {
+      to
+    } = queryString.parse(location.search);
+
+    activeAsset = useSelector(
+      (state: RootState) => find(state.assets, { address: to })
+    ) as IAssetInfoState;
+
+    activeWallet = vault.activeWallet;
+
+  } else {
+
+    activeAsset = vault.activeAsset;
+    activeWallet = vault.activeWallet;
+
+    // Sets the header for the confirm screen.
+    useLayoutEffect(() => {
+      navigation.setOptions(confirmHeader({ navigation, asset: assetInfo }));
+    }, []);
+
+  }
+
+  /****************************************/
+  /* Start - Set up for external request
+  /****************************************/
+
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
@@ -42,11 +79,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   const [disabled, setDisabled] = useState(false);
 
   const gasFeeBaseId = activeAsset.type === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
-
-    // Sets the header for the home screen.
-  useLayoutEffect(() => {
-    navigation.setOptions(confirmHeader({ navigation, asset: assetInfo }));
-  }, []);
 
   const getTotalUnits = () => {
     const balance = ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals);
@@ -64,7 +96,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   const getTotalAmount = () => {
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
     //if (assetInfo.type !== AssetType.ERC20) {
-      amount += Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type));
+    amount += Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type));
     //}
     return (amount).toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
@@ -72,7 +104,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     });
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
 
     setDisabled(true);
 
@@ -82,21 +114,26 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     //   window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
     //   history.push('/home');
     // } else {
-      controller.wallet.account
-        .confirmTempTx()
-        .then(() => {
-          setConfirmed(true);
-        })
-        .catch((error: Error) => {
-          let message = error.message;
-          if (error.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
-            message = 'Insufficient ETH to cover gas fee.';
-          }
 
-          alert.removeAll();
-          alert.error(message);
-        });
-   // }
+    try {
+      if (isExternalRequest) {
+        await controller.wallet.account.confirmContractTempTx(activeAsset)
+        window.close();
+      } else {
+        await controller.wallet.account.confirmTempTx()
+        setConfirmed(true);
+      }
+    } catch (error: any) {
+      let message = error.message;
+      if (error.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
+        message = 'Insufficient ETH to cover gas fee.';
+      }
+      alert.removeAll();
+      alert.error(message);
+    }
+
+
+
   };
 
   return confirmed ? (

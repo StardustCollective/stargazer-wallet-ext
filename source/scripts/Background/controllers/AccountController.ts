@@ -6,6 +6,7 @@ import {
 } from '@stardust-collective/dag4-xchain-ethereum';
 
 import store from 'state/store';
+import { IAssetInfoState } from 'state/assets/types';
 import {
   changeActiveAsset,
   changeActiveWallet,
@@ -14,10 +15,12 @@ import {
   updateWalletAssets,
   updateWalletLabel,
 } from 'state/vault';
+
 import IVaultState, {
   AssetType,
   IAssetState,
   IWalletState,
+  IActiveAssetState,
 } from 'state/vault/types';
 
 import { ETHNetwork, ITransactionInfo, IETHPendingTx } from '../../types';
@@ -280,7 +283,6 @@ export class AccountController implements IAccountController {
 
     tx = null;
   }
-
   async confirmTempTx() {
     if (!dag4.account.isActive) {
       throw new Error('Error: No signed account exists');
@@ -313,7 +315,7 @@ export class AccountController implements IAccountController {
         //this.watchMemPool();
       } else {
         if (!this.tempTx.ethConfig) return;
-        const { gasPrice, gasLimit, nonce , txData: data} = this.tempTx.ethConfig;
+        const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
         const { activeNetwork }: IVaultState = store.getState().vault;
         const txOptions: any = {
           recipient: this.tempTx.toAddress,
@@ -356,6 +358,57 @@ export class AccountController implements IAccountController {
           gasPrice: gasPrice,
         });
       }
+      this.tempTx = null;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async confirmContractTempTx(
+    activeAsset: IAssetInfoState | IActiveAssetState
+  ) {
+    if (!dag4.account.isActive) {
+      throw new Error('Error: No signed account exists');
+    }
+
+    if (!activeAsset) {
+      throw new Error("Error: Can't find active account info");
+    }
+
+    if (!this.tempTx) {
+      throw new Error("Error: Can't find transaction info");
+    }
+
+    try {
+      if (!this.tempTx.ethConfig) return;
+      const { gasPrice, gasLimit, nonce, memo } = this.tempTx.ethConfig;
+      const { activeNetwork }: IVaultState = store.getState().vault;
+
+      const txOptions: any = {
+        to: this.tempTx.toAddress,
+        value: ethers.utils.parseEther(this.tempTx.amount),
+        gasPrice: gasPrice,
+        gasLimit: ethers.utils.hexlify(gasLimit),
+        data: memo,
+        chainId: activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' ? 1 : 3,
+        nonce: nonce,
+      };
+
+      const txData: any = await this.ethClient
+        .getWallet()
+        .sendTransaction(txOptions);
+
+      this.txController.addPendingTx({
+        txHash: txData.hash,
+        fromAddress: this.tempTx.fromAddress,
+        toAddress: this.tempTx.toAddress,
+        amount: this.tempTx.amount,
+        network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
+        assetId: activeAsset.id,
+        timestamp: new Date().getTime(),
+        nonce: txData.nonce,
+        gasPrice: gasPrice,
+      });
       this.tempTx = null;
     } catch (error: any) {
       throw new Error(error);
