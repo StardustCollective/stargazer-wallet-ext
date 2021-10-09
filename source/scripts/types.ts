@@ -11,6 +11,7 @@ export interface IETHTxConfig {
   txData?: string;
   gasPrice: number;
   gasLimit?: number;
+  memo?: string;
 }
 
 export interface IETHPendingTx {

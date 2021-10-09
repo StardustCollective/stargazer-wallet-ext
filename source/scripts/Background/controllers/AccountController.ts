@@ -6,6 +6,7 @@ import {
 } from '@stardust-collective/dag4-xchain-ethereum';
 
 import store from 'state/store';
+import { IAssetInfoState } from 'state/assets/types';
 import {
   changeActiveAsset,
   changeActiveWallet,
@@ -18,6 +19,7 @@ import IVaultState, {
   AssetType,
   IAssetState,
   IWalletState,
+  IActiveAssetState
 } from 'state/vault/types';
 
 import { ETHNetwork, ITransactionInfo, IETHPendingTx } from '../../types';
@@ -281,13 +283,10 @@ export class AccountController implements IAccountController {
     tx = null;
   }
 
-  async confirmTempTx() {
+  async confirmTempTx(activeAsset: IAssetInfoState | IActiveAssetState ) {
     if (!dag4.account.isActive) {
       throw new Error('Error: No signed account exists');
     }
-
-    const { activeAsset }: IVaultState = store.getState().vault;
-    const assets: IAssetListState = store.getState().assets;
 
     if (!activeAsset) {
       throw new Error("Error: Can't find active account info");
@@ -313,36 +312,19 @@ export class AccountController implements IAccountController {
         //this.watchMemPool();
       } else {
         if (!this.tempTx.ethConfig) return;
-        const { gasPrice, gasLimit, nonce , txData: data} = this.tempTx.ethConfig;
+        const { gasPrice, gasLimit, nonce , memo} = this.tempTx.ethConfig;
         const { activeNetwork }: IVaultState = store.getState().vault;
+    
         const txOptions: any = {
-          recipient: this.tempTx.toAddress,
-          amount: utils.baseAmount(
-            ethers.utils
-              .parseUnits(
-                this.tempTx.amount.toString(),
-                assets[activeAsset.id].decimals
-              )
-              .toString(),
-            assets[activeAsset.id].decimals
-          ),
-          gasPrice: gasPrice
-            ? utils.baseAmount(
-                ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-                9
-              )
-            : undefined,
-          gasLimit: gasLimit && BigNumber.from(gasLimit),
-          nonce: nonce,
+          to: this.tempTx.toAddress,
+          value: ethers.utils.parseEther(this.tempTx.amount),
+          gasPrice: gasPrice,
+          gasLimit: ethers.utils.hexlify(gasLimit),
+          data: memo,
+          chainId: activeNetwork[KeyringNetwork.Ethereum] === 'mainnet'? 1 : 3,
         };
-        if (activeAsset.type !== AssetType.Ethereum) {
-          txOptions.asset = utils.assetFromString(
-            `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-              assets[activeAsset.id].address
-            }`
-          );
-        }
-        const txData: any = await this.ethClient.transfer(txOptions);
+
+        const txData: any = await this.ethClient.getWallet().sendTransaction(txOptions);
 
         this.txController.addPendingTx({
           txHash: txData.hash,

@@ -205,8 +205,8 @@ export const messagesHandler = (
         const popup = await masterController.createPopup(
           windowId,
           message.data.network,
-          'approveSpend',
-          { ...data },
+          'sendTransaction',
+          {...data},
         );
 
         pendingWindow = true;
