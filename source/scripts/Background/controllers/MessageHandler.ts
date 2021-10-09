@@ -37,18 +37,21 @@ export const messagesHandler = (
       (event: any) => {
         let { data, origin } = event.detail;
 
+        // Event listeners can be attached before connection but DApp must be connected to receive events
+        const allowed = masterController.dapp.isDAppConnected(origin);
+
         // The event origin is checked to prevent sites that have not been
         // granted permissions to the user's account information from
         // receiving updates.
-        if (masterController.dapp.siteIsListening(origin, method)) {
+        if (allowed && masterController.dapp.isSiteListening(origin, method)) {
           const id = `${origin}.${method}`; // mirrored in inject.ts
           port.postMessage({ id, data });
         }
       },
       { passive: true }
     );
-  } )
-  
+  })
+
 
   const listener = async (message: Message, connection: Runtime.Port) => {
     try {

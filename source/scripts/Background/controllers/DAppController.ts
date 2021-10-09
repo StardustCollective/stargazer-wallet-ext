@@ -12,7 +12,8 @@ export interface IDAppController {
   getSigRequest: () => ISigRequest;
   registerListeningSite: (origin: string, eventName: string) => void;
   deregisterListeningSite: (origin: string, eventName: string) => void;
-  siteIsListening: (origin: string, eventName: string) => boolean;
+  isSiteListening: (origin: string, eventName: string) => boolean;
+  isDAppConnected: (origin: string) => boolean
 }
 
 interface ISigRequest {
@@ -25,16 +26,20 @@ const DAppController = (): IDAppController => {
   let current: IDAppInfo = { origin: '', logo: '', title: '' };
   let request: ISigRequest;
 
-  const fromPageConnectDApp = (origin: string, title: string) => {
+  const isDAppConnected = (origin: string) => {
     const dapp: IDAppState = store.getState().dapp;
 
+    return !!dapp.whitelist[origin as keyof IDAppState];
+  }
+
+  const fromPageConnectDApp = (origin: string, title: string) => {
     current = {
       origin,
       logo: `chrome://favicon/size/64@1x/${origin}`,
       title
     }
 
-    return !!dapp[origin as keyof IDAppState];
+    return isDAppConnected(origin);
   }
 
   const fromUserConnectDApp = (
@@ -57,7 +62,7 @@ const DAppController = (): IDAppController => {
     store.dispatch(deregisterListeningSiteAction({ origin, eventName }));
   }
 
-  const siteIsListening = (origin: string, eventName: string) => {
+  const isSiteListening = (origin: string, eventName: string) => {
     const dapp: IDAppState = store.getState().dapp;
 
     return dapp.listening[origin] && dapp.listening[origin].includes(eventName);
@@ -85,7 +90,8 @@ const DAppController = (): IDAppController => {
     fromUseDisconnectDApp,
     registerListeningSite,
     deregisterListeningSite,
-    siteIsListening
+    isSiteListening,
+    isDAppConnected
   };
 };
 
