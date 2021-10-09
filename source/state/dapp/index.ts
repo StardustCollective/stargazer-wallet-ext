@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import union from 'lodash/union';
 import { IDAppState, IDAppInfo } from './types';
 
 const initialState: IDAppState = {
-  listening: [],
+  listening: {},
   whitelist: {}
 };
 
@@ -14,12 +13,48 @@ const DAppState = createSlice({
   reducers: {
     registerListeningSite(
       state: IDAppState,
-      action: PayloadAction<{ origin: string }>
+      action: PayloadAction<{ origin: string, eventName: string }>
     ) {
+      const { origin, eventName } = action.payload;
+
+      const originState = state.listening.hasOwnProperty(origin) ? state.listening[origin].filter((val: string) => val !== eventName) : [];
+
       return {
         ...state,
-        listening: union(state.listening, [action.payload.origin])
+        listening: {
+          ...state.listening,
+          [origin]: [
+            ...originState,
+            eventName
+          ]
+        }
       };
+    },
+    deregisterListeningSite(
+      state: IDAppState,
+      action: PayloadAction<{ origin: string, eventName: string }>
+    ) {
+      const { origin, eventName } = action.payload;
+
+      if (!state.listening.hasOwnProperty(origin)) {
+        return state;
+      }
+
+      const originState = state.listening[origin].filter((val: string) => val !== eventName);
+
+      const retState = {
+        ...state,
+        listening: {
+          ...state.listening,
+          [origin]: originState
+        }
+      };
+
+      if (originState.length === 0) {
+        delete retState.listening[origin];
+      }
+
+      return retState;
     },
     listNewDapp(
       state: IDAppState,
@@ -38,7 +73,7 @@ const DAppState = createSlice({
             ...action.payload.dapp,
             id: action.payload.id.replace(/(^\w+:|^)\/\//, ''),
             accounts: {
-              [action.payload.network]:[
+              [action.payload.network]: [
                 ...action.payload.accounts
               ]
             }
@@ -54,6 +89,6 @@ const DAppState = createSlice({
   },
 });
 
-export const { listNewDapp, unlistDapp, registerListeningSite } = DAppState.actions;
+export const { listNewDapp, unlistDapp, registerListeningSite, deregisterListeningSite } = DAppState.actions;
 
 export default DAppState.reducer;

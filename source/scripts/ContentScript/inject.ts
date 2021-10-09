@@ -242,26 +242,45 @@ window.stargazer = {
     })
   },
   on: (method, callback) => {
-    const id = Date.now() + '.' + Math.random();
-
     let origin = window.location.hostname;
     if(window.location.port){
       origin += ":"+window.location.port;
     }
 
+    const id = origin + "." + method;
+
+    window.stargazer._listeners[id] = ({ detail }) => {
+      if(detail){       
+        callback(JSON.parse(detail));
+      }
+    };
+
     window.addEventListener(
       id,
-      ({ detail }) => {
-        if(detail){       
-          callback(JSON.parse(detail));
-        }
-      },
+      window.stargazer._listeners[id],
       { passive: true }
     );
 
     // Register the origin of the listening site.
-    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {method, origin}}, '*')
-  }
+    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {method, origin}}, '*');
+  },
+  removeListener: (method) => {
+    let origin = window.location.hostname;
+    if(window.location.port){
+      origin += ":"+window.location.port;
+    }
+
+    const id = origin + "." + method;
+
+    if (window.stargazer._listeners[id]) {
+      window.removeEventListener(id, window.stargazer._listeners[id]);
+
+      delete window.stargazer._listeners[id];
+    }
+
+    window.postMessage({ id, type: 'STARGAZER_EVENT_DEREG', data: {method, origin}}, '*');
+  },
+  _listeners: {}
 }
 `;
 
