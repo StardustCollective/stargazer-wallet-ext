@@ -1,4 +1,4 @@
-import { listNewDapp, unlistDapp, registerListeningSite } from 'state/dapp';
+import { listNewDapp, unlistDapp, registerListeningSite as registerListeningSiteAction, deregisterListeningSite as deregisterListeningSiteAction } from 'state/dapp';
 import { IDAppInfo, IDAppState } from 'state/dapp/types';
 import store from 'state/store';
 
@@ -10,7 +10,9 @@ export interface IDAppController {
   fromPageConnectDApp: (origin: string, title: string) => boolean;
   setSigRequest: (req: ISigRequest) => void;
   getSigRequest: () => ISigRequest;
-  registerSite: (origin: string) => void;
+  registerListeningSite: (origin: string, eventName: string) => void;
+  deregisterListeningSite: (origin: string, eventName: string) => void;
+  siteIsListening: (origin: string, eventName: string) => boolean;
 }
 
 interface ISigRequest {
@@ -36,9 +38,9 @@ const DAppController = (): IDAppController => {
   }
 
   const fromUserConnectDApp = (
-    origin: string, 
-    dapp: IDAppInfo, 
-    network: string, 
+    origin: string,
+    dapp: IDAppInfo,
+    network: string,
     accounts: string[]) => {
     store.dispatch(listNewDapp({ id: origin, dapp, network, accounts }));
   };
@@ -47,8 +49,18 @@ const DAppController = (): IDAppController => {
     store.dispatch(unlistDapp({ id: origin }));
   }
 
-  const registerSite = (origin: string) => {
-    store.dispatch(registerListeningSite({ origin: origin }));
+  const registerListeningSite = (origin: string, eventName: string) => {
+    store.dispatch(registerListeningSiteAction({ origin, eventName }));
+  }
+
+  const deregisterListeningSite = (origin: string, eventName: string) => {
+    store.dispatch(deregisterListeningSiteAction({ origin, eventName }));
+  }
+
+  const siteIsListening = (origin: string, eventName: string) => {
+    const dapp: IDAppState = store.getState().dapp;
+
+    return dapp.listening[origin] && dapp.listening[origin].includes(eventName);
   }
 
   const getCurrent = () => {
@@ -64,14 +76,16 @@ const DAppController = (): IDAppController => {
   };
 
 
-  return { 
-    getCurrent, 
-    fromPageConnectDApp, 
-    fromUserConnectDApp, 
-    setSigRequest, 
+  return {
+    getCurrent,
+    fromPageConnectDApp,
+    fromUserConnectDApp,
+    setSigRequest,
     getSigRequest,
     fromUseDisconnectDApp,
-    registerSite
+    registerListeningSite,
+    deregisterListeningSite,
+    siteIsListening
   };
 };
 

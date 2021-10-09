@@ -145,7 +145,7 @@ export class WalletController implements IWalletController {
         if(!!matchingAccounts.length){
           const background = await browser.runtime.getBackgroundPage();
           background.dispatchEvent(
-            new CustomEvent('accountsChanged', { detail: { accounts: matchingAccounts,  origin } })
+            new CustomEvent('accountsChanged', { detail: { data: matchingAccounts,  origin } })
           );
         }
       }

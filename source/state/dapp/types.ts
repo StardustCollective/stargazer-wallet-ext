@@ -8,12 +8,15 @@ export interface IDAppInfo {
   title: string;
   accounts?: IDappAccounts;
 }
+
 export interface IDAppState {
 
   /**
    * Dapps that are currently listening for updates
    */
-  listening: string[];
+  listening: {
+    [dappId: string]: Array<string>
+  }
 
   /**
    * A list of sites that have been granted permissions to access a user's

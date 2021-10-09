@@ -244,12 +244,12 @@ window.stargazer = {
     })
   },
   on: (method, callback) => {
-    const id = Date.now() + '.' + Math.random();
-
     let origin = window.location.hostname;
     if(window.location.port){
       origin += ":"+window.location.port;
     }
+
+    const id = method + "." + "origin";
 
     window.addEventListener(
       id,
@@ -262,7 +262,19 @@ window.stargazer = {
     );
 
     // Register the origin of the listening site.
-    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {method, origin}}, '*')
+    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {method, origin}}, '*');
+  },
+  removeListener: (method) => {
+    let origin = window.location.hostname;
+    if(window.location.port){
+      origin += ":"+window.location.port;
+    }
+
+    const id = method + "." + "origin";
+
+    window.removeEventListener(id);
+
+    window.postMessage({ id, type: 'STARGAZER_EVENT_DEREG', data: {method, origin}}, '*');
   }
 }
 `;
