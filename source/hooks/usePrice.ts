@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux';
 import IPriceState from 'state/price/types';
-import IVaultState, { AssetType } from 'state/vault/types';
+import IVaultState, { AssetType, IActiveAssetState } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { formatNumber } from 'scenes/home/helpers';
+import { IAssetInfoState } from 'state/assets/types';
 
-export function useFiat(currencyName = true) {
+export function useFiat(currencyName = true, asset?: IAssetInfoState ) {
   const { activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -20,7 +21,7 @@ export function useFiat(currencyName = true) {
   );
 
   return (amount: number, fraction = 4, basePriceId?: string) => {
-    const priceId = basePriceId || assets[activeAsset.id].priceId;
+    const priceId = basePriceId ||  asset ? asset.priceId : assets[activeAsset.id].priceId
     const value =
       amount * (priceId ? fiat[basePriceId || priceId]?.price || 0 : 0);
     return `${currencyName ? currency.symbol : ''}${

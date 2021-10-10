@@ -106,7 +106,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   }
 
-  const getFiatAmount = useFiat();
+  const getFiatAmount = useFiat(true, activeAsset as IAssetInfoState);
   const controller = useController();
   const linkTo = useLinkTo();
   const alert = useAlert();
@@ -120,7 +120,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
-      // amount: yup.number().moreThan(0).required('Error: Invalid DAG Amount'),
+      amount: !isExternalRequest ? yup.number().moreThan(0).required('Error: Invalid DAG Amount') : null,
       fee:
         activeAsset.type === AssetType.Constellation
           ? yup.string().required('Error: Invalid transaction fee')
@@ -209,6 +209,16 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   };
 
+  const handleClose = () => {
+    
+    if(isExternalRequest){
+      window.close();
+    }else{
+      linkTo('/asset');
+    }
+
+  }
+
   const getBalanceAndFees = () => {
     let balance, balanceBN;
     if (balances) {
@@ -250,7 +260,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     if (isExternalRequest) {
       return (
         !isValidAddress ||
-        !amount ||
         !fee ||
         !address
       );
@@ -426,6 +435,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 name="address"
                 inputRef={register}
                 onChange={handleAddressChange}
+                disabled={isExternalRequest}
                 variant={addressInputClass}
               />
               <Button
@@ -446,6 +456,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 name="amount"
                 value={amount === '0' ? '' : amount}
                 onChange={handleAmountChange}
+                disabled={isExternalRequest}
                 variant={clsx(styles.input, styles.amount)}
               />
               <Button
@@ -557,7 +568,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
               type="button"
               theme="secondary"
               variant={clsx(styles.button, styles.close)}
-              linkTo="/asset"
+              onClick={handleClose}
             >
               Close
             </Button>
