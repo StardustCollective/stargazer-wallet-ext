@@ -120,7 +120,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
-      // amount: yup.number().moreThan(0).required('Error: Invalid DAG Amount'),
+      amount: !isExternalRequest ? yup.number().moreThan(0).required('Error: Invalid DAG Amount') : null,
       fee:
         activeAsset.type === AssetType.Constellation
           ? yup.string().required('Error: Invalid transaction fee')
