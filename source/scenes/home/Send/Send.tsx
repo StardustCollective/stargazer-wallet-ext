@@ -250,7 +250,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     if (isExternalRequest) {
       return (
         !isValidAddress ||
-        !amount ||
         !fee ||
         !address
       );
