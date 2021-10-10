@@ -16,6 +16,8 @@ import { ellipsis } from '../helpers';
 import queryString from 'query-string';
 import find from 'lodash/find';
 import confirmHeader from 'navigation/headers/confirm';
+import { useHistory } from "react-router-dom";
+import { useLinkTo } from '@react-navigation/native';
 
 import styles from './Confirm.scss';
 import { ethers } from 'ethers';
@@ -28,16 +30,21 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
+  let history: any;
 
   const isExternalRequest = location.pathname.includes('confirmTransaction');
 
-  // const history = useHistory();
   const controller = useController();
   const alert = useAlert();
+  const linkTo = useLinkTo();
   const vault: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
+  let assetInfo: IAssetInfoState;
+   
 
   if (isExternalRequest) {
 
@@ -50,12 +57,16 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     ) as IAssetInfoState;
 
     activeWallet = vault.activeWallet;
+    assetInfo = assets[activeAsset.id];
+
+    history = useHistory();
 
   } else {
 
     activeAsset = vault.activeAsset;
     activeWallet = vault.activeWallet;
 
+    assetInfo = assets[activeAsset.id];
     // Sets the header for the confirm screen.
     useLayoutEffect(() => {
       navigation.setOptions(confirmHeader({ navigation, asset: assetInfo }));
@@ -64,15 +75,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   }
 
   const getFiatAmount = useFiat(false, activeAsset as IAssetInfoState);
-
-  /****************************************/
-  /* Start - Set up for external request
-  /****************************************/
-
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
-  const assetInfo = assets[activeAsset.id];
+ 
   const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
 
   const tempTx = controller.wallet.account.getTempTx();
@@ -104,6 +107,14 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
       maximumFractionDigits: 4,
     });
   };
+
+  const handleCancel = () => {
+    if(isExternalRequest){
+      history.goBack();
+    }else{
+      linkTo('/send');
+    }
+  }
 
   const handleConfirm = async () => {
 
@@ -194,7 +205,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
             type="button"
             theme="secondary"
             variant={clsx(styles.button, styles.close)}
-            linkTo="/send"
+            onClick={handleCancel}
           >
             Cancel
           </Button>
