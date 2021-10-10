@@ -49,6 +49,7 @@
     "clsx": "^1.1.1",
     "date-fns": "^2.16.1",
     "emoji-log": "^1.0.2",
+    "ethereum-input-data-decoder": "^0.3.5",
     "ethers": "^5.0.32",
     "extensionizer": "^1.0.1",
     "framer-motion": "^4.1.17",
