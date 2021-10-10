@@ -209,6 +209,16 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   };
 
+  const handleClose = () => {
+    
+    if(isExternalRequest){
+      window.close();
+    }else{
+      linkTo('/asset');
+    }
+
+  }
+
   const getBalanceAndFees = () => {
     let balance, balanceBN;
     if (balances) {
@@ -558,7 +568,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
               type="button"
               theme="secondary"
               variant={clsx(styles.button, styles.close)}
-              linkTo="/asset"
+              onClick={handleClose}
             >
               Close
             </Button>
