@@ -426,6 +426,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 name="address"
                 inputRef={register}
                 onChange={handleAddressChange}
+                disabled={isExternalRequest}
                 variant={addressInputClass}
               />
               <Button
@@ -446,6 +447,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 name="amount"
                 value={amount === '0' ? '' : amount}
                 onChange={handleAmountChange}
+                disabled={isExternalRequest}
                 variant={clsx(styles.input, styles.amount)}
               />
               <Button
