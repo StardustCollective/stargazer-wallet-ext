@@ -49,6 +49,7 @@ type IPurpleSliderProps = {
   onChange: (_event: ChangeEvent<{}>, value: number | number[]) => void,
   min: number,
   max: number,
+  value: number,
   defaultValue: number,
   step: number,
 }
@@ -68,6 +69,7 @@ const PurpleSlider: FC<IPurpleSliderProps> = ({
   onChange,
   min,
   max,
+  value,
   defaultValue,
   step,
 }) => {
@@ -77,6 +79,7 @@ const PurpleSlider: FC<IPurpleSliderProps> = ({
     onChange={onChange}
     min={min}
     max={max}
+    value={value}
     defaultValue={defaultValue}
     step={step}
     valueLabelDisplay={SLIDER_LABEL_DISPLAY_PROP}

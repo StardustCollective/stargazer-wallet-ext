@@ -40,10 +40,15 @@ function useGasEstimate({ toAddress, amount, asset }: IUseGasEstimate) {
 
   const handleGetTxFee = async () => {
     controller.wallet.account.getLatestGasPrices().then((gas) => {
-      const gasPrice = gas[1];
-      setGasPrices(gas);
-      setGasPrice(gasPrice);
-      estimateGasFee(gasPrice);
+      let gasPrices: number[] = [...gas];
+      let uniquePrices = [...new Set(gas)].length;
+      if(uniquePrices === 1){
+        let gp = gas[0];
+        gasPrices = [gp-1, gp, gp+1];
+      }
+      setGasPrices(gasPrices);
+      setGasPrice(gasPrices[2]);
+      estimateGasFee(gasPrices[2]);
     })
   };
 
@@ -78,6 +83,7 @@ function useGasEstimate({ toAddress, amount, asset }: IUseGasEstimate) {
     gasSpeedLabel,
     gasFee,
     gasPrice,
+    gasPrices,
     setGasPrice,
     gasLimit,
   };

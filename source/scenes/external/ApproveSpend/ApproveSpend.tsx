@@ -68,9 +68,9 @@ const ApproveSpend = () => {
   const {
     data: stringData,
   } = queryString.parse(location.search);
-  
+
   const asset: IAssetInfoState = useSelector(
-    (state: RootState) => find(state.assets, {symbol: 'LTX'})
+    (state: RootState) => find(state.assets, { symbol: 'LTX' })
   );
 
   const {
@@ -87,20 +87,23 @@ const ApproveSpend = () => {
     gasFee,
     gasLimit,
     setGasPrice,
-    gasPrice 
+    gasPrice,
+    gasPrices,
   } = useGasEstimate({
-      toAddress: to as string,
-      amount: '0',
-      asset: asset,
-    });
+    toAddress: to as string,
+    amount: '0',
+    asset: asset,
+  });
 
   const getFiatAmount = useFiat(true, asset);
 
   useEffect(() => {
-    if(gas){
+    if (gas) {
       let initialGas = parseInt(gas, 16);
+
       setGasPrice(initialGas);
       estimateGasFee(initialGas);
+
     }
   }, []);
 
@@ -125,10 +128,10 @@ const ApproveSpend = () => {
       ethConfig: {
         gasPrice,
         gasLimit,
-        txData:data,
+        txData: data,
       }
     };
-    
+
     controller.wallet.account.updateTempTx(txConfig);
     await controller.wallet.account.confirmContractTempTx(asset)
 
@@ -184,9 +187,10 @@ const ApproveSpend = () => {
               <div className={styles.slider}>
                 <PurpleSlider
                   onChange={onGasPriceChanged}
-                  min={MIN_GAS_PRICE}
-                  max={MAX_GAS_PRICE}
-                  defaultValue={parseInt(gas as string, 16)}
+                  min={gasPrices[0]}
+                  max={gasPrices[gasPrices.length - 1]}
+                  defaultValue={gasPrice}
+                  value={gasPrice}
                   step={SLIDER_STEP_PROP}
                 />
               </div>

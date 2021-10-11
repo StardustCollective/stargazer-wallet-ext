@@ -95,13 +95,13 @@ const TxItem: FC<ITxItem> = ({
     (state: RootState) => state.assets
   );
 
-
   let {
     estimateGasFee,
     gasSpeedLabel,
     gasFee,
     setGasPrice,
     gasLimit,
+    gasPrices,
     gasPrice } = useGasEstimate({
       toAddress: tx.toAddress,
       amount: tx.amount,
@@ -204,6 +204,7 @@ const TxItem: FC<ITxItem> = ({
               max: MAX_GAS_NUMBER,
               current: gasPrice,
             }}
+            gasPrices={gasPrices}
             speedLabel={gasSpeedLabel}
             gasFeeLabel={gasFee}
             onSliderChange={onGasPriceChanged}
