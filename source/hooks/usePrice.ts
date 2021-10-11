@@ -21,7 +21,7 @@ export function useFiat(currencyName = true, asset?: IAssetInfoState ) {
   );
 
   return (amount: number, fraction = 4, basePriceId?: string) => {
-    const priceId = basePriceId ||  asset ? asset.priceId : assets[activeAsset.id].priceId
+    const priceId = basePriceId ||  !!asset ? asset?.priceId : assets[activeAsset.id].priceId
     const value =
       amount * (priceId ? fiat[basePriceId || priceId]?.price || 0 : 0);
     return `${currencyName ? currency.symbol : ''}${
