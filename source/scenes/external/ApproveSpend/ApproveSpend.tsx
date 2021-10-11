@@ -94,7 +94,7 @@ const ApproveSpend = () => {
       asset: asset,
     });
 
-  const getFiatAmount = useFiat();
+  const getFiatAmount = useFiat(true, asset);
 
   useEffect(() => {
     if(gas){
@@ -130,7 +130,7 @@ const ApproveSpend = () => {
     };
     
     controller.wallet.account.updateTempTx(txConfig);
-    controller.wallet.account.confirmTempTx()
+    await controller.wallet.account.confirmContractTempTx(asset)
 
     background.dispatchEvent(
       new CustomEvent('spendApproved', { detail: { hash: window.location.hash, approved: true } })
