@@ -523,18 +523,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
-  },
-  '0x5140179824139684c431204f20843b5cb7bc4ae9': {
-    id: '0x5140179824139684c431204f20843b5cb7bc4ae9',
-    address: '0x5140179824139684c431204f20843b5cb7bc4ae9',
-    label: 'Lattice Token',
-    symbol: 'LTX',
-    type: AssetType.ERC20,
-    priceId: 'lattice-token',
-    network: 'both',
-    logo: LatticeLogo,
-    decimals: 8,
-  },
+  }
 };
 
 export default TOKEN_LIST;
