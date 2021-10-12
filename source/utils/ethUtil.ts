@@ -1,5 +1,4 @@
 import { useController } from 'hooks/index';
-import { ethers } from 'ethers';
 import InputDataDecoder from 'ethereum-input-data-decoder';
 import erc20ABI from './erc20.json'
 
