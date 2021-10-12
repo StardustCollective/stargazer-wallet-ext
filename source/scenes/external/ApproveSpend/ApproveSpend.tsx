@@ -48,8 +48,6 @@ import styles from './index.module.scss';
 const FEE_STRING = 'Fee ~= ';
 const SPEED_STRING = 'Speed:';
 const GWEI_STRING = 'GWEI';
-const MIN_GAS_PRICE = 0;
-const MAX_GAS_PRICE = 200;
 const SLIDER_STEP_PROP = 1;
 
 //////////////////////
@@ -77,7 +75,6 @@ const ApproveSpend = () => {
     to,
     from,
     gas,
-    value,
     data,
   } = JSON.parse(stringData as string);
 
@@ -123,7 +120,7 @@ const ApproveSpend = () => {
       fromAddress: from,
       toAddress: to,
       timestamp: Date.now(),
-      amount: String(parseInt(value, 16)),
+      amount: '0',
       fee: gasFee,
       ethConfig: {
         gasPrice,
