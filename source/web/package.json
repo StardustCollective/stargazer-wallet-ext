@@ -23,7 +23,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "test": "jest",
-    "postinstall": "npx patch-package"
+    "postinstall": "cd ../../ && npx patch-package"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.2",
