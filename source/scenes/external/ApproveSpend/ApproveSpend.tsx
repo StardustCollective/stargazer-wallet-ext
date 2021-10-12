@@ -125,7 +125,7 @@ const ApproveSpend = () => {
       ethConfig: {
         gasPrice,
         gasLimit,
-        txData: data,
+        memo: data,
       }
     };
 
