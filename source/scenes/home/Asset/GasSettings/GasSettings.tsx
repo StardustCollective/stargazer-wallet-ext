@@ -81,6 +81,7 @@ interface IGasSettingsProps {
   speedLabel: string;
   gasFeeLabel: number;
   gasPrice: number;
+  gasPrices: number[];
   onSliderChange: (_event: ChangeEvent<{}>, value: number | number[]) => void;
   onSpeedUpClick: ( gas: number) => void;
 }
@@ -93,7 +94,8 @@ const GasSettings: FC<IGasSettingsProps> = ({
   values, 
   speedLabel, 
   gasFeeLabel, 
-  gasPrice, 
+  gasPrice,
+  gasPrices,
   onSliderChange,
   onSpeedUpClick
 }) => {
@@ -194,8 +196,9 @@ const GasSettings: FC<IGasSettingsProps> = ({
                 <div className={styles.body__slider}>
                   <PurpleSlider
                     onChange={onSliderChange}
-                    min={values.min}
-                    max={values.max}
+                    min={gasPrices[0]}
+                    max={gasPrices[gasPrices.length - 1]}
+                    value={values.current}
                     defaultValue={values.current}
                     step={SLIDER_STEP_PROP}
                   />
