@@ -384,10 +384,16 @@ export class AccountController implements IAccountController {
       const { gasPrice, gasLimit, nonce, memo } = this.tempTx.ethConfig;
       const { activeNetwork }: IVaultState = store.getState().vault;
 
+      let baseAmountGasPrice = utils.baseAmount(
+        ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+        9
+      );
+      let bigNumberGasPrice = BigNumber.from(baseAmountGasPrice.amount().toFixed())
+      
       const txOptions: any = {
         to: this.tempTx.toAddress,
         value: ethers.utils.parseEther(this.tempTx.amount),
-        gasPrice: gasPrice,
+        gasPrice: bigNumberGasPrice,
         gasLimit: ethers.utils.hexlify(gasLimit),
         data: memo,
         chainId: activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' ? 1 : 3,
