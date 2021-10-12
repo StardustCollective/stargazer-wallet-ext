@@ -81,6 +81,7 @@
     "sass": "^1.35.1",
     "url-loader": "^4.1.1",
     "uuid": "^8.3.2",
+    "web3": "^1.6.0",
     "webext-base-css": "^1.1.0",
     "webext-redux": "^2.1.7",
     "webextension-polyfill-ts": "^0.16.0",

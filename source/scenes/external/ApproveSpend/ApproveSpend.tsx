@@ -5,7 +5,6 @@
 import React, { ChangeEvent, useEffect } from 'react';
 import queryString from 'query-string';
 import TextV3 from 'components/TextV3';
-import { useAlert } from 'react-alert';
 import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
 import find from 'lodash/find';
@@ -61,7 +60,6 @@ const ApproveSpend = () => {
   ///////////////////// 
 
   const controller = useController();
-  const alert = useAlert();
 
   const {
     data: stringData,
@@ -88,8 +86,8 @@ const ApproveSpend = () => {
     gasPrices,
   } = useGasEstimate({
     toAddress: to as string,
-    amount: '0',
-    asset: asset,
+    asset,
+    data
   });
 
   const getFiatAmount = useFiat(true, asset);
@@ -113,7 +111,6 @@ const ApproveSpend = () => {
   }
 
   const onPositiveButtonClick = async () => {
-
     const background = await browser.runtime.getBackgroundPage();
 
     const txConfig: ITransactionInfo = {

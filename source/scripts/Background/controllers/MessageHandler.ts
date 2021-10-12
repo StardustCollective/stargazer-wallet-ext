@@ -175,7 +175,7 @@ export const messagesHandler = (
       } else if (method === 'wallet.getBlockNumber') {
         result = provider.getBlockNumber();
       } else if (method === 'wallet.estimateGas') {
-        result = await provider.getGasEstimate(args[0]);
+        result = await provider.getGasEstimate();
       } else if (method === 'wallet.getNetwork') {
         result = provider.getNetwork();
       } else if (method === 'wallet.getBalance') {

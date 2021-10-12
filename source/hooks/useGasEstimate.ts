@@ -3,14 +3,16 @@ import { AssetType } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { BigNumber, ethers } from 'ethers';
 import { IAssetInfoState } from 'state/assets/types';
+import { estimateGasLimit } from 'utils/ethUtil';
 
 type IUseGasEstimate = {
   toAddress?: string;
-  amount?: string;
   asset?: IAssetInfoState;
+  data?: string;
+  amount?: number
 };
 
-function useGasEstimate({ toAddress, amount, asset }: IUseGasEstimate) {
+function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
   const controller = useController();
   const [gasPrice, setGasPrice] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
@@ -60,13 +62,14 @@ function useGasEstimate({ toAddress, amount, asset }: IUseGasEstimate) {
         setGasLimit(gasLimit);
         handleGetTxFee();
       } else {
-        controller.wallet.account.ethClient.estimateTokenTransferGasLimit(            
-          toAddress,
-          asset.address, 
-          ethers.utils.parseUnits(amount, asset.decimals))
-        .then(gasLimit => {
-          setGasLimit(gasLimit);
-        })
+        let gasLimit;
+        if (asset.type === AssetType.ERC20) {
+          gasLimit = await estimateGasLimit({to: asset.address, data})
+        } else {
+          gasLimit = await estimateGasLimit({to: toAddress, data})
+        }
+
+        setGasLimit(gasLimit);
       }
     }
     getGasLimit();

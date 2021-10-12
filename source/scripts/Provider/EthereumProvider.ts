@@ -6,7 +6,7 @@ import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { estimateGas } from 'utils/ethUtil';
+import { estimateGasPrice } from 'utils/ethUtil';
 
 export class EthereumProvider {
   constructor() { }
@@ -68,8 +68,8 @@ export class EthereumProvider {
     return 1;
   }
 
-  async getGasEstimate({to, data}: {to: string, data?: string}) {
-    return estimateGas({to, data});
+  async getGasEstimate() {
+    return estimateGasPrice();
   }
 
   getBalance() {
