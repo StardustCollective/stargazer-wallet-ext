@@ -31,6 +31,16 @@ export class StargazerProvider {
     return [];
   }
 
+  getBlockNumber() {
+    // TODO
+    return 1;
+  }
+
+  getGasEstimate() {
+    // TODO
+    return 0;
+  }
+
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 
