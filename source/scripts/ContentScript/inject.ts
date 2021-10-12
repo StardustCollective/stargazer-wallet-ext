@@ -77,7 +77,6 @@ async function getAddresses () {
 }
 
 async function handleRequest (req) {
-  console.log('handleRequest: ', req);
   const eth = window.providerManager.getProviderFor('${asset}')
   if (req.method.startsWith('metamask_')) return null
 
@@ -183,7 +182,9 @@ const REQUEST_MAP = {
   signMessage: 'wallet.signMessage',
   sendTransaction: 'wallet.sendTransaction',
   eth_chainId: 'wallet.getChainId',
-  eth_accounts: 'wallet.getAccounts'
+  eth_accounts: 'wallet.getAccounts',
+  eth_blockNumber: 'wallet.getBlockNumber',
+  eth_estimateGas: 'wallet.estimateGas'
 }
 
 const ERRORS = {
@@ -237,9 +238,11 @@ window.stargazer = {
   },
   request: async (req) => {
     const params = req.params || []
-    return handleRequest({
+    const response = await handleRequest({
       method: req.method, params
     })
+
+    return response;
   },
   on: (method, callback) => {
     let origin = window.location.hostname;

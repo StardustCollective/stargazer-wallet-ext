@@ -64,7 +64,7 @@ export const messagesHandler = (
         const { id, result } = response;
         //console.log('messagesHandler.RESPONSE');
         //console.log(JSON.stringify(result, null, 2));
-        port.postMessage({ id, data: { result } });
+        port.postMessage({ id, data: result });
       }
     } catch (e) {
       console.log('messagesHandler.ERROR', e.type, e.message, e.detail);
@@ -172,6 +172,10 @@ export const messagesHandler = (
         result = provider.getAccounts();
       } else if (method === 'wallet.getChainId') {
         result = provider.getChainId();
+      } else if (method === 'wallet.getBlockNumber') {
+        result = provider.getBlockNumber();
+      } else if (method === 'wallet.estimateGas') {
+        result = await provider.getGasEstimate(args[0]);
       } else if (method === 'wallet.getNetwork') {
         result = provider.getNetwork();
       } else if (method === 'wallet.getBalance') {

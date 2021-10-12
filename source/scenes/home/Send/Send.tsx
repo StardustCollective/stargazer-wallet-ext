@@ -71,7 +71,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       let params = JSON.parse(dataJsonString as string);
       to = params.to;
       from = params.from;
-      value = params.value;
+      value = params.value || 0;
       gas = params.gas;
       memo = params.data;
     }
@@ -131,7 +131,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const [address, setAddress] = useState(
     initAddress || tempTx?.toAddress || to || ''
   );
-  const [amount, setAmount] = useState(Number(tempTx?.amount) || '0');
+
+  const [amount, setAmount] = useState<number | string>(tempTx?.amount ? Number(tempTx?.amount) : 0);
   const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
@@ -159,14 +160,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   });
 
   useEffect(() => {
-
     let gasLimit = activeAsset.type === AssetType.Ethereum ? 21000 : 0
 
     if (gasLimit) {
       setGasLimit(gasLimit);
-    }
-    else {
-
+    } else {
       const assetInfo = assets[activeAsset.id];
 
       controller.wallet.account.ethClient.estimateTokenTransferGasLimit(address, assetInfo.address, ethers.utils.parseUnits(String(amount), assetInfo.decimals))
@@ -206,17 +204,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     } else {
       linkTo('/send/confirm');
     }
-
   };
 
   const handleClose = () => {
-    
     if(isExternalRequest){
       window.close();
     }else{
       linkTo('/asset');
     }
-
   }
 
   const getBalanceAndFees = () => {
@@ -245,7 +240,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   }, [gasPrice, gasPrices])
 
   const isDisabled = useMemo(() => {
-
     const { balance, txFee } = getBalanceAndFees();
 
     let computedAmount: BigNumber;
