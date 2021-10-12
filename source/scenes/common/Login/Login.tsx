@@ -82,9 +82,7 @@ const Login = ({
         setInvalid(false);
       })
       .catch((e) => {
-        console.log('Error: ');
-        console.log(e);
-        if (onLoginSuccess) {
+        if (onLoginError) {
           onLoginError()
         }
         setInvalid(true);
