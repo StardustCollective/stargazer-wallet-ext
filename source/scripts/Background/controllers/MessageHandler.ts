@@ -1,5 +1,6 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { IMasterController } from '.';
+import { getERC20DataDecoder } from 'utils/ethUtil';
 import { v4 as uuid } from 'uuid';
 
 type Message = {
@@ -221,32 +222,68 @@ export const messagesHandler = (
         return Promise.resolve(null);
       } else if (method === 'wallet.sendTransaction') {
         const data = message.data.args[0];
-
+        const decoder = getERC20DataDecoder();
+        const decodedTxData = data?.data ? decoder.decodeData(data?.data): null;
         const windowId = uuid();
-        await masterController.createPopup(
-          windowId,
-          message.data.network,
-          'sendTransaction',
-          {...data}
-        );
 
-        pendingWindow = true;
+        const sendTransaction = async () => {
+          await masterController.createPopup(
+            windowId,
+            message.data.network,
+            'sendTransaction',
+            {...data}
+          );
 
-        window.addEventListener(
-          'spendApproved',
-          (ev: any) => {
-            console.log('Connect window addEventListener', ev.detail);
-            if (ev.detail.hash.substring(1) === windowId) {
-              port.postMessage({
-                id: message.id,
-                data: { result: true, data: { accounts: ev.detail.accounts } },
-              });
-              pendingWindow = false;
-            }
-          },
-          { once: true, passive: true }
-        );
+          pendingWindow = true;
 
+          window.addEventListener(
+            'transactionSent',
+            (ev: any) => {
+              console.log('Connect window addEventListener', ev.detail);
+              if (ev.detail.hash.substring(1) === windowId) {
+                port.postMessage({
+                  id: message.id,
+                  data: { result: true, data: { accounts: ev.detail.accounts } },
+                });
+                pendingWindow = false;
+              }
+            },
+            { once: true, passive: true }
+          );
+        }
+
+        const approveSpend = async () => {
+
+          await masterController.createPopup(
+            windowId,
+            message.data.network,
+            'approveSpend',
+            {...data}
+          );
+
+          pendingWindow = true;
+
+          window.addEventListener(
+            'spendApproved',
+            (ev: any) => {
+              console.log('Connect window addEventListener', ev.detail);
+              if (ev.detail.hash.substring(1) === windowId) {
+                port.postMessage({
+                  id: message.id,
+                  data: { result: true, data: { accounts: ev.detail.accounts } },
+                });
+                pendingWindow = false;
+              }
+            },
+            { once: true, passive: true }
+          );
+        }
+
+        if(decodedTxData?.method === 'approve'){
+          approveSpend();
+        }else{
+          sendTransaction();
+        }
 
       }
 
