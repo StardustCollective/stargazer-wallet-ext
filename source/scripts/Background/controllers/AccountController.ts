@@ -239,50 +239,6 @@ export class AccountController implements IAccountController {
     }
   }
 
-  async updatePendingTx(tx: IETHPendingTx, gasPrice: number, gasLimit: number) {
-    const { activeAsset }: IVaultState = store.getState().vault;
-    const assets: IAssetListState = store.getState().assets;
-
-    const txOptions: any = {
-      recipient: tx.toAddress,
-      amount: utils.baseAmount(
-        ethers.utils
-          .parseUnits(tx.amount, assets[activeAsset.id].decimals)
-          .toString(),
-        assets[activeAsset.id].decimals
-      ),
-      gasPrice: gasPrice
-        ? utils.baseAmount(
-            ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-            9
-          )
-        : undefined,
-      gasLimit: BigNumber.from(gasLimit),
-      nonce: tx.nonce,
-    };
-    if (activeAsset.type !== AssetType.Ethereum) {
-      txOptions.asset = utils.assetFromString(
-        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-          assets[activeAsset.id].address
-        }`
-      );
-    }
-    let newTx: any = await this.ethClient.transfer(txOptions);
-    this.txController.removePendingTxHash(tx.txHash);
-    this.txController.addPendingTx({
-      txHash: newTx.hash,
-      fromAddress: tx.fromAddress,
-      toAddress: tx.toAddress,
-      amount: tx.amount,
-      network: tx.network,
-      assetId: tx.assetId,
-      timestamp: new Date().getTime(),
-      nonce: newTx.nonce,
-      gasPrice: gasPrice,
-    });
-
-    tx = null;
-  }
   async confirmTempTx() {
     if (!dag4.account.isActive) {
       throw new Error('Error: No signed account exists');
@@ -345,17 +301,20 @@ export class AccountController implements IAccountController {
           );
         }
         const txData: any = await this.ethClient.transfer(txOptions);
+        const to: string = activeAsset.type !== AssetType.Ethereum ? assets[activeAsset.id].address : this.tempTx.toAddress;
+        const amount: string = activeAsset.type !== AssetType.Ethereum ? '0' : this.tempTx.amount;
 
         this.txController.addPendingTx({
           txHash: txData.hash,
           fromAddress: this.tempTx.fromAddress,
-          toAddress: this.tempTx.toAddress,
-          amount: this.tempTx.amount,
+          toAddress: to,
+          amount: amount,
           network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
           assetId: activeAsset.id,
           timestamp: new Date().getTime(),
           nonce: txData.nonce,
           gasPrice: gasPrice,
+          data: txData.data,
         });
       }
       this.tempTx = null;
@@ -414,6 +373,7 @@ export class AccountController implements IAccountController {
         timestamp: new Date().getTime(),
         nonce: txData.nonce,
         gasPrice: gasPrice,
+        data: memo,
       });
       this.tempTx = null;
     } catch (error: any) {
