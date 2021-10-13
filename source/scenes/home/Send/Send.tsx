@@ -70,7 +70,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     if (dataJsonString) {
       let params = JSON.parse(dataJsonString as string);
       to = params.to;
-      from = params.from;
       value = params.value || 0;
       gas = params.gas;
       memo = params.data;
@@ -97,6 +96,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
       ) as IAssetInfoState;
     }
+
+    from = activeAsset.address;
   } else {
     const vault: IVaultState = useSelector(
       (state: RootState) => state.vault
