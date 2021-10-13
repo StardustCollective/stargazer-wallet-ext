@@ -59,9 +59,9 @@ export class EthereumProvider {
     const activeAddress = find(activeWallet.assets, { id: 'ethereum' });
   
     return [
-      activeAddress.address,
-      ...ethAddresses.filter( address => address !== activeAddress.address)
-    ];
+      activeAddress?.address,
+      ...ethAddresses.filter( address => address !== activeAddress?.address)
+    ].filter(Boolean);  // if no active address, remove
   }
 
   getBlockNumber() {
