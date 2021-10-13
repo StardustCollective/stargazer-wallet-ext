@@ -47,7 +47,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
    
 
   if (isExternalRequest) {
-
     const {
       to
     } = queryString.parse(location.search);
@@ -55,6 +54,12 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     activeAsset = useSelector(
       (state: RootState) => find(state.assets, { address: to })
     ) as IAssetInfoState;
+
+    if (!activeAsset) {
+      activeAsset = useSelector(
+        (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
+      ) as IAssetInfoState;
+    }
 
     activeWallet = vault.activeWallet;
     assetInfo = assets[activeAsset.id];

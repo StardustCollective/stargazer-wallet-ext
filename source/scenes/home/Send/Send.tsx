@@ -62,7 +62,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   let history;
 
   if (isExternalRequest) {
-
     const {
       data: dataJsonString,
     } = queryString.parse(location.search);
@@ -91,8 +90,13 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     activeAsset = useSelector(
       (state: RootState) => find(state.assets, { address: to })
     ) as IAssetInfoState;
-  } else {
 
+    if (!activeAsset) {
+      activeAsset = useSelector(
+        (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
+      ) as IAssetInfoState;
+    }
+  } else {
     const vault: IVaultState = useSelector(
       (state: RootState) => state.vault
     )
@@ -113,6 +117,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
+
   // const account = accounts[activeAccountId];
   const assetInfo = assets[activeAsset.id];
   const tempTx = controller.wallet.account.getTempTx();
