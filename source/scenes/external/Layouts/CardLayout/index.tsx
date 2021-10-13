@@ -3,6 +3,7 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
+import clsx from 'clsx';
 
 ///////////////////////////
 // Components
@@ -10,6 +11,7 @@ import React, { FC } from 'react';
 
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import Button from 'components/Button';
 
 ///////////////////////////
 // Styles
@@ -37,6 +39,7 @@ type ICardLayoutProps = {
   onNegativeButtonClick: () => void,
   positiveButtonLabel: string,
   onPositiveButtonClick: () => void,
+  isPositiveButtonDisabled?: boolean,
   children: | React.ReactChild
   | React.ReactChild[],
 }
@@ -55,6 +58,7 @@ const CardLayout: FC<ICardLayoutProps> = ({
   onNegativeButtonClick,
   positiveButtonLabel,
   onPositiveButtonClick,
+  isPositiveButtonDisabled,
   children,
 }) => {
 
@@ -109,24 +113,20 @@ const CardLayout: FC<ICardLayoutProps> = ({
           </div>
         </div>
         <div className={styles.actions}>
-          <div className={styles.negativeAction}>
-            <ButtonV3
-              type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE}
-              size={BUTTON_SIZES_ENUM.LARGE}
-              label={negativeButtonLabel}
-              extraStyle={styles.negativeButton}
-              onClick={onNegativeButtonClick}
-            />
-          </div>
-          <div className={styles.positiveAction}>
-            <ButtonV3
-              type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
-              size={BUTTON_SIZES_ENUM.LARGE}
-              label={positiveButtonLabel}
-              extraStyle={styles.nextButton}
-              onClick={onPositiveButtonClick}
-            />
-          </div>
+          <Button
+            type="button"
+            theme="secondary"
+            variant={clsx(styles.action, styles.negativeAction)}
+            onClick={onNegativeButtonClick}
+          >
+            {negativeButtonLabel}
+          </Button>
+          <Button type="button"
+            onClick={onPositiveButtonClick}
+            variant={styles.action}
+            disabled={isPositiveButtonDisabled}>
+            {positiveButtonLabel}
+          </Button>
         </div>
       </div>
 
