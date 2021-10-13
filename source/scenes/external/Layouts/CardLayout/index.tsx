@@ -10,7 +10,6 @@ import clsx from 'clsx';
 ///////////////////////////
 
 import TextV3 from 'components/TextV3';
-import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import Button from 'components/Button';
 
 ///////////////////////////
