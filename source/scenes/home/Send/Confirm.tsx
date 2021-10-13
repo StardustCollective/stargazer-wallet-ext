@@ -148,9 +148,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
       alert.removeAll();
       alert.error(message);
     }
-
-
-
   };
 
   return confirmed ? (

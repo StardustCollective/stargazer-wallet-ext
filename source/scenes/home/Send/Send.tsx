@@ -23,6 +23,7 @@ import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import ErrorIcon from 'assets/images/svg/error.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
+import {estimateGasLimit} from 'utils/ethUtil';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
@@ -165,20 +166,16 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   });
 
   useEffect(() => {
-    let gasLimit = activeAsset.type === AssetType.Ethereum ? 21000 : 0
+    const assetInfo = assets[activeAsset.id];
 
-    if (gasLimit) {
-      setGasLimit(gasLimit);
-    } else {
-      const assetInfo = assets[activeAsset.id];
+    let gasLimitPromise;
+        if (assetInfo.type === AssetType.ERC20) {
+          gasLimitPromise = estimateGasLimit({to: assetInfo.address, data: memo})
+        } else {
+          gasLimitPromise = estimateGasLimit({to, data: memo})
+        }
 
-      controller.wallet.account.ethClient.estimateTokenTransferGasLimit(address, assetInfo.address, ethers.utils.parseUnits(String(amount), assetInfo.decimals))
-        .then(gasLimit => {
-          //console.log('ethClient.estimateGasLimit2', gasLimit);
-          setGasLimit(gasLimit);
-        })
-    }
-
+        gasLimitPromise.then((gasLimit) => setGasLimit(gasLimit))
   }, [amount, address]);
 
   const onSubmit = async (data: any) => {

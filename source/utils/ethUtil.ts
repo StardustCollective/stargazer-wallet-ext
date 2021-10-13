@@ -4,7 +4,9 @@ import Web3 from 'web3';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring'
 import store from 'state/store';
 import { ETHNetwork } from 'scripts/types';
+import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import erc20ABI from './erc20.json'
+import { getContractDetails } from './etherscan';
 
 export const getERC20DataDecoder = () => {
     return new InputDataDecoder(erc20ABI as any);
@@ -20,30 +22,56 @@ export const estimateGasPrice = async (): Promise<number> => {
     return fast.amount().toNumber();
 }
 
+const _getWeb3 = (network: 'testnet' | 'mainnet') => {
+    const infuraUrl = network === 'testnet' ? 'https://ropsten.infura.io/v3/' : 'https://mainnet.infura.io/v3/';
+
+    return new Web3(
+        new Web3.providers.HttpProvider(`${infuraUrl}${process.env.INFURA_CREDENTIAL}`)
+    );
+}
+
 export const estimateGasLimit = async ({ to, data }: { to: string, data: string }): Promise<number> => {
-    const { activeNetwork, activeWallet }: any = store.getState().vault;
+    const { activeNetwork, activeWallet }: IVaultState = store.getState().vault;
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
 
-    const ethAsset = activeWallet.assets.find((asset: any) => asset.type === 'ethereum');
+    const ethAsset = activeWallet.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
 
     if (!ethAsset) {
-        return 0;
+        return 0; // DAG? 
     }
 
     const from = ethAsset.address;
 
-    const infuraUrl = network === 'testnet' ? 'https://ropsten.infura.io/v3/' : 'https://mainnet.infura.io/v3/';
+    const knownERC20Asset = activeWallet.assets.find((asset: IAssetState) => asset.contractAddress === to && asset.type === AssetType.ERC20);
 
-    const web3 = new Web3(
-        new Web3.providers.HttpProvider(`${infuraUrl}${process.env.INFURA_CREDENTIAL}`)
-    );
+    let abi: Array<any> | false;
+    if (knownERC20Asset) {
+        abi = erc20ABI;
+    } else {
+        abi = await getContractDetails(to, network);
+    }
 
-    const gasLimit = await web3.eth.estimateGas({
-        to,
-        from,
-        data
-    });
+    // Not a contract -> 21,000 standard gasLimit
+    if (!abi) {
+        return 21000;
+    }
 
-    // Gas limit tends to be ~2x too low - increase so we have enough
-    return gasLimit * 4;
+    const web3 = _getWeb3(network);
+
+    const decoder = new InputDataDecoder(abi);
+    const { method, inputs, types } = decoder.decodeData(data);
+
+    // The decoder package strips 0x from addresses which breaks web3
+    for (let i = 0; i < inputs.length; i++) {
+        if (types[i] === 'address') {
+            inputs[i] = '0x' + inputs[i];
+        }
+    }
+
+    const contract = new web3.eth.Contract(abi, to);
+
+    const gasLimit = await contract.methods[method](...inputs).estimateGas({ from });
+
+    // Increase to be sure we have enough
+    return gasLimit * 2;
 }

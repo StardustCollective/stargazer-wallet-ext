@@ -9,8 +9,10 @@ import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
 import find from 'lodash/find';
 import { useSelector } from 'react-redux';
+import { ethers } from 'ethers';
 import { RootState } from 'state/store';
 import { IAssetInfoState } from 'state/assets/types';
+import { AssetType } from 'state/vault/types';
 import { ITransactionInfo } from '../../../scripts/types';
 
 ///////////////////////
@@ -65,16 +67,27 @@ const ApproveSpend = () => {
     data: stringData,
   } = queryString.parse(location.search);
 
-  const asset: IAssetInfoState = useSelector(
-    (state: RootState) => find(state.assets, { symbol: 'LTX' })
-  );
-
   const {
     to,
     from,
     gas,
     data,
   } = JSON.parse(stringData as string);
+
+  console.log('ApproveSpend to: ', to);
+  console.log('ApproveSpend from: ', from);
+  console.log('ApproveSpend gas: ', gas);
+  console.log('ApproveSpend data: ', data);
+
+  let asset = useSelector(
+    (state: RootState) => find(state.assets, { address: to })
+  ) as IAssetInfoState;
+
+  if (!asset) {
+    asset = useSelector(
+      (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
+    ) as IAssetInfoState;
+  }
 
   let {
     estimateGasFee,
@@ -94,7 +107,8 @@ const ApproveSpend = () => {
 
   useEffect(() => {
     if (gas) {
-      let initialGas = parseInt(gas, 16);
+      // Gas sent in wei, convert to gwei
+      let initialGas = parseInt(parseFloat(ethers.utils.formatEther(gas)) * 10e8 as any);
 
       setGasPrice(initialGas);
       estimateGasFee(initialGas);
