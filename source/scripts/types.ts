@@ -24,6 +24,7 @@ export interface IETHPendingTx {
   assetId: string;
   nonce: number;
   gasPrice: number;
+  data?: string;
 }
 
 export interface ITransactionInfo {
