@@ -246,6 +246,7 @@ const SelectAccounts = () => {
       onNegativeButtonClick={onNegativeButtonPressed}
       positiveButtonLabel={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Next' : 'Connect'}
       onPositiveButtonClick={onPositiveButtonPressed}
+      isPositiveButtonDisabled={selectedAccounts.length === 0}
     >
       <RenderContentByState state={sceneState} />
     </CardLayout>
