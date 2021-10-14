@@ -17,6 +17,10 @@ export const estimateGasPrice = async (): Promise<number> => {
 
     const client = controller.wallet.account.ethClient;
 
+    if (!client) {
+        return 0;
+    }
+
     // Returns average, fast, or fastest
     const { fast } = await client.estimateGasPrices();
     return fast.amount().toNumber();

@@ -74,11 +74,6 @@ const ApproveSpend = () => {
     data,
   } = JSON.parse(stringData as string);
 
-  console.log('ApproveSpend to: ', to);
-  console.log('ApproveSpend from: ', from);
-  console.log('ApproveSpend gas: ', gas);
-  console.log('ApproveSpend data: ', data);
-
   let asset = useSelector(
     (state: RootState) => find(state.assets, { address: to })
   ) as IAssetInfoState;
@@ -127,6 +122,10 @@ const ApproveSpend = () => {
   const onPositiveButtonClick = async () => {
     const background = await browser.runtime.getBackgroundPage();
 
+    const {windowId} = queryString.parse(window.location.search);
+
+    const confirmEvent = new CustomEvent('spendApproved', { detail: { windowId, approved: true } });
+
     const txConfig: ITransactionInfo = {
       fromAddress: from,
       toAddress: to,
@@ -137,15 +136,14 @@ const ApproveSpend = () => {
         gasPrice,
         gasLimit,
         memo: data,
+      },
+      onConfirmed: () => {
+        background.dispatchEvent(confirmEvent);
       }
     };
 
     controller.wallet.account.updateTempTx(txConfig);
     await controller.wallet.account.confirmContractTempTx(asset)
-
-    background.dispatchEvent(
-      new CustomEvent('spendApproved', { detail: { hash: window.location.hash, approved: true } })
-    );
 
     window.close();
   }

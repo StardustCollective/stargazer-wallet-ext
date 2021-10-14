@@ -61,11 +61,15 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     gas: string,
     memo: string;
   let history;
+  let windowId: string;
 
   if (isExternalRequest) {
     const {
       data: dataJsonString,
+      windowId: _windowId
     } = queryString.parse(location.search);
+
+    windowId = _windowId as string;
 
     if (dataJsonString) {
       let params = JSON.parse(dataJsonString as string);
@@ -203,7 +207,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     controller.wallet.account.updateTempTx(txConfig);
 
     if (isExternalRequest) {
-      history.push(`/confirmTransaction?to=${txConfig.toAddress}`);
+      history.push(`/confirmTransaction?to=${txConfig.toAddress}&windowId=${windowId}`);
     } else {
       linkTo('/send/confirm');
     }

@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
+import { browser } from 'webextension-polyfill-ts';
 // import { useHistory } from 'react-router-dom';
 import Layout from 'scenes/common/Layout';
 import Button from 'components/Button';
@@ -12,6 +13,7 @@ import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType, IWalletState, IActiveAssetState } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
+import { ITransactionInfo } from 'scripts/types';
 import { ellipsis } from '../helpers';
 import queryString from 'query-string';
 import find from 'lodash/find';
@@ -122,7 +124,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   }
 
   const handleConfirm = async () => {
-
     setDisabled(true);
 
     // const { publicKey, type, id } = assetInfo;//accounts[activeAccountId];
@@ -135,6 +136,26 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     try {
       if (isExternalRequest) {
         await controller.wallet.account.confirmContractTempTx(activeAsset)
+
+        const background = await browser.runtime.getBackgroundPage();
+
+        const {windowId} = queryString.parse(window.location.search);
+        const confirmEvent = new CustomEvent('transactionSent', { detail: { windowId, approved: true } })
+
+        const txConfig: ITransactionInfo = {
+            fromAddress: tempTx.fromAddress,
+            toAddress: tempTx.toAddress,
+            timestamp: Date.now(),
+            amount: tempTx.amount,
+            ethConfig: tempTx.ethConfig,
+            onConfirmed: () => {
+              background.dispatchEvent(confirmEvent);
+            }
+          };
+
+        controller.wallet.account.updateTempTx(txConfig);
+        await controller.wallet.account.confirmContractTempTx(activeAsset);
+
         window.close();
       } else {
         await controller.wallet.account.confirmTempTx()

@@ -244,10 +244,10 @@ export const messagesHandler = (
             'transactionSent',
             (ev: any) => {
               console.log('Connect window addEventListener', ev.detail);
-              if (ev.detail.hash.substring(1) === windowId) {
+              if (ev.detail.windowId === windowId) {
                 port.postMessage({
                   id: message.id,
-                  data: { result: true, data: { accounts: ev.detail.accounts } },
+                  data: { result: true, data: {} },
                 });
                 pendingWindow = false;
               }
@@ -257,7 +257,6 @@ export const messagesHandler = (
         }
 
         const approveSpend = async () => {
-
           await masterController.createPopup(
             windowId,
             message.data.network,
@@ -271,10 +270,10 @@ export const messagesHandler = (
             'spendApproved',
             (ev: any) => {
               console.log('Connect window addEventListener', ev.detail);
-              if (ev.detail.hash.substring(1) === windowId) {
+              if (ev.detail.windowId === windowId) {
                 port.postMessage({
                   id: message.id,
-                  data: { result: true, data: { accounts: ev.detail.accounts } },
+                  data: { result: true, data: {} },
                 });
                 pendingWindow = false;
               }
@@ -284,11 +283,10 @@ export const messagesHandler = (
         }
 
         if(decodedTxData?.method === 'approve'){
-          approveSpend();
+          return approveSpend();
         }else{
-          sendTransaction();
+          return sendTransaction();
         }
-
       }
 
       if (result !== undefined) {

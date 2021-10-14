@@ -34,7 +34,7 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
     const feeBN = ethers.utils
       .parseUnits(gas.toString(), 'gwei')
       .mul(BigNumber.from(gasLimit));
-  
+
     const fee = Number(ethers.utils.formatEther(feeBN).toString());
 
     setGasFee(fee);
@@ -44,9 +44,9 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
     controller.wallet.account.getLatestGasPrices().then((gas) => {
       let gasPrices: number[] = [...gas];
       let uniquePrices = [...new Set(gas)].length;
-      if(uniquePrices === 1){
+      if (uniquePrices === 1) {
         let gp = gas[0];
-        gasPrices = [gp-1, gp, gp+1];
+        gasPrices = [gp - 5, gp, gp + 5];
       }
       setGasPrices(gasPrices);
       setGasPrice(gasPrices[2]);
@@ -56,27 +56,20 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
 
   useEffect(() => {
     const getGasLimit = async () => {
-      let gasLimit = asset.type === AssetType.Ethereum ? 21000 : 0;
-
-      if (gasLimit) {
-        setGasLimit(gasLimit);
-        handleGetTxFee();
+      let gasLimit;
+      if (asset.type === AssetType.ERC20) {
+        gasLimit = await estimateGasLimit({ to: asset.address, data })
       } else {
-        let gasLimit;
-        if (asset.type === AssetType.ERC20) {
-          gasLimit = await estimateGasLimit({to: asset.address, data})
-        } else {
-          gasLimit = await estimateGasLimit({to: toAddress, data})
-        }
-
-        setGasLimit(gasLimit);
+        gasLimit = await estimateGasLimit({ to: toAddress, data })
       }
+
+      setGasLimit(gasLimit);
     }
     getGasLimit();
   }, []);
 
   useEffect(() => {
-    if(gasLimit > 0){
+    if (gasLimit > 0) {
       handleGetTxFee();
     }
   }, [gasLimit])

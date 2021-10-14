@@ -260,6 +260,7 @@ export class AccountController implements IAccountController {
       gasLimit: BigNumber.from(gasLimit),
       nonce: tx.nonce,
     };
+    
     if (activeAsset.type !== AssetType.Ethereum) {
       txOptions.asset = utils.assetFromString(
         `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
@@ -414,6 +415,7 @@ export class AccountController implements IAccountController {
         timestamp: new Date().getTime(),
         nonce: txData.nonce,
         gasPrice: gasPrice,
+        onConfirmed: this.tempTx.onConfirmed
       });
       this.tempTx = null;
     } catch (error: any) {
