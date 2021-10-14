@@ -121,7 +121,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   isETH={isETH}
                   isSelf={isSelf}
                   isReceived={isReceived}
-                  isGasSettingsVisible={isETHPending && !isReceived}
+                  isGasSettingsVisible={isETHPending && (!isReceived || isSelf)}
                   showGroupBar={isShowedGroupBar(tx, idx)}
                   txTypeLabel={txTypeLabel}
                   currencySymbol={assets[activeAsset.id].symbol}

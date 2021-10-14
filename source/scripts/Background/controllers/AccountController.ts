@@ -284,6 +284,7 @@ export class AccountController implements IAccountController {
 
     tx = null;
   }
+
   async confirmTempTx() {
     if (!dag4.account.isActive) {
       throw new Error('Error: No signed account exists');
@@ -346,17 +347,20 @@ export class AccountController implements IAccountController {
           );
         }
         const txData: any = await this.ethClient.transfer(txOptions);
+        const to: string = activeAsset.type !== AssetType.Ethereum ? assets[activeAsset.id].address : this.tempTx.toAddress;
+        const amount: string = activeAsset.type !== AssetType.Ethereum ? '0' : this.tempTx.amount;
 
         this.txController.addPendingTx({
           txHash: txData.hash,
           fromAddress: this.tempTx.fromAddress,
-          toAddress: this.tempTx.toAddress,
-          amount: this.tempTx.amount,
+          toAddress: to,
+          amount: amount,
           network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
           assetId: activeAsset.id,
           timestamp: new Date().getTime(),
           nonce: txData.nonce,
           gasPrice: gasPrice,
+          data: txData.data,
         });
       }
       this.tempTx = null;
@@ -415,6 +419,7 @@ export class AccountController implements IAccountController {
         timestamp: new Date().getTime(),
         nonce: txData.nonce,
         gasPrice: gasPrice,
+        data: memo,
         onConfirmed: this.tempTx.onConfirmed
       });
       this.tempTx = null;

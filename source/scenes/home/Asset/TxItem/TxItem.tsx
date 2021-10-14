@@ -8,6 +8,7 @@ import IVaultState from 'state/vault/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 import IAssetListState from 'state/assets/types';
+import { ITransactionInfo } from 'scripts/types';
 
 ///////////////////////
 // Components
@@ -106,6 +107,7 @@ const TxItem: FC<ITxItem> = ({
       toAddress: tx.toAddress,
       amount: tx.amount,
       asset: assets[activeAsset.id],
+      data: tx.data,
     });
 
   const controller = useController();
@@ -120,8 +122,23 @@ const TxItem: FC<ITxItem> = ({
   }
 
   const onSpeedUpClick = (gas: number) => {
-    controller.wallet.account
-      .updatePendingTx(tx, gas, gasLimit)
+
+    const txConfig: ITransactionInfo = {
+      fromAddress: tx.fromAddress,
+      toAddress: tx.toAddress,
+      amount: tx.amount,
+      timestamp: new Date().getTime(),
+      ethConfig: {
+        gasPrice: gas,
+        gasLimit,
+        memo: tx.data,
+        nonce: tx.nonce,
+      }
+    };
+
+    controller.wallet.account.updateTempTx(txConfig);
+    controller.wallet.account.confirmContractTempTx(activeAsset);
+    controller.wallet.account.txController.removePendingTxHash(tx.txHash);
   }
 
   /////////////////////////
@@ -161,7 +178,7 @@ const TxItem: FC<ITxItem> = ({
   };
 
   return (
-    <div onClick={() => { onItemClick(tx.hash)}} className={styles.txItem}>
+    <div onClick={() => { onItemClick(tx.hash) }} className={styles.txItem}>
       {showGroupBar && (
         <div className={styles.groupBar}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} >
