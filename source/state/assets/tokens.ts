@@ -523,7 +523,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
-  },
+  }
 };
 
 export default TOKEN_LIST;

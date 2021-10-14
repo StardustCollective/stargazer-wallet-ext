@@ -1,22 +1,75 @@
 import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
+import find from 'lodash/find';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
+import { IDAppState } from '../../state/dapp/types';
+import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { estimateGasPrice } from 'utils/ethUtil';
 
 export class EthereumProvider {
-  constructor() {}
+  constructor() { }
 
-  getNetwork () {
+  getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
 
     return activeNetwork[KeyringNetwork.Ethereum];
+  }
+
+  getChainId() {
+    const networkName = this.getNetwork();
+
+    return networkName === 'mainnet' ? 1 : 3;
   }
 
   getAddress() {
     let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
     return stargazerAsset && stargazerAsset.address;
+  }
+
+  getAccounts(): Array<string> {
+    const { dapp, vault } = store.getState();
+    const { whitelist }: IDAppState = dapp;
+
+    const controller = useController();
+    const current = controller.dapp.getCurrent();
+    const origin = current && current.origin;
+
+    if (!origin) {
+      return [];
+    }
+
+    const _origin = origin.replace(/https?:\/\//, '');
+
+    const dappData = whitelist[_origin];
+
+    if (!dappData?.accounts?.Ethereum) {
+      return [];
+    }
+
+    const { activeWallet }: IVaultState = vault;
+
+    if (!activeWallet) {
+      return dappData.accounts.Ethereum;
+    }
+
+    const ethAddresses = dappData.accounts.Ethereum;
+    const activeAddress = find(activeWallet.assets, { id: 'ethereum' });
+  
+    return [
+      activeAddress?.address,
+      ...ethAddresses.filter( address => address !== activeAddress?.address)
+    ].filter(Boolean);  // if no active address, remove
+  }
+
+  getBlockNumber() {
+    return 1;
+  }
+
+  async getGasEstimate() {
+    return estimateGasPrice();
   }
 
   getBalance() {
@@ -39,7 +92,6 @@ export class EthereumProvider {
   }
 
   getAssetByType(type: AssetType) {
-
     const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
 
     let stargazerAsset: IAssetState = activeAsset as IAssetState;

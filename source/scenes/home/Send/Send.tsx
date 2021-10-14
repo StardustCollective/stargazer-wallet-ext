@@ -13,6 +13,8 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
 import Slider from '@material-ui/core/Slider';
+import queryString from 'query-string';
+import { useHistory } from "react-router-dom";
 
 import Contacts from '../Contacts';
 import Button from 'components/Button';
@@ -21,10 +23,15 @@ import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import ErrorIcon from 'assets/images/svg/error.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
+import {estimateGasLimit} from 'utils/ethUtil';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
 import { useLinkTo } from '@react-navigation/native';
+import { IAssetInfoState } from 'state/assets/types';
+import find from 'lodash/find';
+import { IActiveAssetState, AssetBalances } from 'state/vault/types';
+
 
 import styles from './Send.scss';
 import IAssetListState from 'state/assets/types';
@@ -43,29 +50,88 @@ interface IWalletSend {
 const MAX_AMOUNT_NUMBER = 1000000000;
 
 const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
-  const getFiatAmount = useFiat();
+
+  const isExternalRequest = location.pathname.includes('sendTransaction');
+
+  let activeAsset: IAssetInfoState | IActiveAssetState;
+  let balances: AssetBalances;
+  let to: string,
+    from: string,
+    value: string,
+    gas: string,
+    memo: string;
+  let history;
+  let windowId: string;
+
+  if (isExternalRequest) {
+    const {
+      data: dataJsonString,
+      windowId: _windowId
+    } = queryString.parse(location.search);
+
+    windowId = _windowId as string;
+
+    if (dataJsonString) {
+      let params = JSON.parse(dataJsonString as string);
+      to = params.to;
+      value = params.value || 0;
+      gas = params.gas;
+      memo = params.data;
+    }
+
+    useEffect(() => {
+      // Set initial gas
+      let amount = parseInt(value, 16);
+      setAmount(amount);
+
+      let initialGas = parseInt(gas, 16);
+      setGasPrice(initialGas);
+      estimateGasFee(initialGas);
+    }, []);
+
+    history = useHistory();
+
+    activeAsset = useSelector(
+      (state: RootState) => find(state.assets, { address: to })
+    ) as IAssetInfoState;
+
+    if (!activeAsset) {
+      activeAsset = useSelector(
+        (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
+      ) as IAssetInfoState;
+    }
+
+    from = activeAsset.address;
+  } else {
+    const vault: IVaultState = useSelector(
+      (state: RootState) => state.vault
+    )
+    activeAsset = vault.activeAsset;
+    balances = vault.balances;
+
+    // Sets the header for the send screen
+    useLayoutEffect(() => {
+      navigation.setOptions(sendHeader({ navigation, asset: assetInfo }));
+    }, []);
+
+  }
+
+  const getFiatAmount = useFiat(true, activeAsset as IAssetInfoState);
   const controller = useController();
   const linkTo = useLinkTo();
   const alert = useAlert();
-  const { activeAsset, balances }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
+
   // const account = accounts[activeAccountId];
   const assetInfo = assets[activeAsset.id];
   const tempTx = controller.wallet.account.getTempTx();
 
-  // Sets the header for the home screen.
-  useLayoutEffect(() => {
-    navigation.setOptions(sendHeader({ navigation, asset: assetInfo }));
-  }, []);
-
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
-      amount: yup.number().moreThan(0).required('Error: Invalid DAG Amount'),
+      amount: !isExternalRequest ? yup.number().moreThan(0).required('Error: Invalid DAG Amount') : null,
       fee:
         activeAsset.type === AssetType.Constellation
           ? yup.string().required('Error: Invalid transaction fee')
@@ -74,9 +140,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   });
 
   const [address, setAddress] = useState(
-    initAddress || tempTx?.toAddress || ''
+    initAddress || tempTx?.toAddress || to || ''
   );
-  const [amount, setAmount] = useState(Number(tempTx?.amount) || '0');
+
+  const [amount, setAmount] = useState<number | string>(tempTx?.amount ? Number(tempTx?.amount) : 0);
   const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
@@ -104,23 +171,16 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   });
 
   useEffect(() => {
+    const assetInfo = assets[activeAsset.id];
 
-    let gasLimit = activeAsset.type === AssetType.Ethereum ? 21000 : 0
+    let gasLimitPromise;
+        if (assetInfo.type === AssetType.ERC20) {
+          gasLimitPromise = estimateGasLimit({to: assetInfo.address, data: memo})
+        } else {
+          gasLimitPromise = estimateGasLimit({to, data: memo})
+        }
 
-    if (gasLimit) {
-      setGasLimit(gasLimit);
-    }
-    else {
-
-      const assetInfo = assets[activeAsset.id];
-
-      controller.wallet.account.ethClient.estimateTokenTransferGasLimit(address, assetInfo.address, ethers.utils.parseUnits(String(amount), assetInfo.decimals))
-        .then(gasLimit => {
-          //console.log('ethClient.estimateGasLimit2', gasLimit);
-          setGasLimit(gasLimit);
-        })
-    }
-
+        gasLimitPromise.then((gasLimit) => setGasLimit(gasLimit))
   }, [amount, address]);
 
   const onSubmit = async (data: any) => {
@@ -130,25 +190,44 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       return;
     }
     const txConfig: ITransactionInfo = {
-      fromAddress: activeAsset.address,
-      toAddress: data.address,
+      fromAddress: activeAsset.address || from,
+      toAddress: data.address || to,
       timestamp: Date.now(),
-      amount: String(amount),
+      amount: String(amount) || '0',
       fee: data.fee || gasFee,
     };
     if (activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20) {
       txConfig.ethConfig = {
         gasPrice,
-        gasLimit
+        gasLimit,
+        memo,
       };
     }
+
     controller.wallet.account.updateTempTx(txConfig);
-    linkTo('/send/confirm');
+
+    if (isExternalRequest) {
+      history.push(`/confirmTransaction?to=${txConfig.toAddress}&windowId=${windowId}`);
+    } else {
+      linkTo('/send/confirm');
+    }
   };
 
+  const handleClose = () => {
+    if(isExternalRequest){
+      window.close();
+    }else{
+      linkTo('/asset');
+    }
+  }
+
   const getBalanceAndFees = () => {
-    const balance = balances[activeAsset.id] || '0';
-    const balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
+    let balance, balanceBN;
+    if (balances) {
+      balance = balances[activeAsset.id] || '0';
+      balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
+    }
+
     const txFee =
       activeAsset.id === AssetType.Constellation
         ? ethers.utils.parseUnits(String(Number(fee) * 1e8), 8)
@@ -168,7 +247,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   }, [gasPrice, gasPrices])
 
   const isDisabled = useMemo(() => {
-
     const { balance, txFee } = getBalanceAndFees();
 
     let computedAmount: BigNumber;
@@ -180,22 +258,29 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       computedAmount = amountBN.add(txFee);
     }
 
-    return (
-      !isValidAddress ||
-      !amount ||
-      !fee ||
-      !address ||
-      balance.lt(0) ||
-      computedAmount.gt(balance)
-    );
+    if (isExternalRequest) {
+      return (
+        !isValidAddress ||
+        !fee ||
+        !address
+      );
+    } else {
+      return (
+        !isValidAddress ||
+        !amount ||
+        !fee ||
+        !address ||
+        balance.lt(0) ||
+        computedAmount.gt(balance)
+      );
+    }
+
   }, [amountBN, address, gasFee]);
 
   const handleAmountChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
       const changeAmount = getChangeAmount(ev.target.value, MAX_AMOUNT_NUMBER, assetInfo.decimals);
-      console.log('Change Amount: ');
-      console.log(changeAmount);
       if (changeAmount === null) return;
 
       setAmount(changeAmount);
@@ -322,12 +407,14 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         onChange={handleSelectContact}
       />
       <form onSubmit={handleSubmit(onSubmit)} className={styles.bodywrapper}>
-        <section className={styles.balance}>
-          <div>
-            Balance: <span>{formatNumber(Number(balances[activeAsset.id]), 4, 4)}</span>{' '}
-            {assetInfo.symbol}
-          </div>
-        </section>
+        {!isExternalRequest &&
+          <section className={styles.balance}>
+            <div>
+              Balance: <span>{formatNumber(Number(balances[activeAsset.id]), 4, 4)}</span>{' '}
+              {assetInfo.symbol}
+            </div>
+          </section>
+        }
         <section className={styles.content}>
           <ul className={styles.form}>
             <li>
@@ -349,6 +436,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 name="address"
                 inputRef={register}
                 onChange={handleAddressChange}
+                disabled={isExternalRequest}
                 variant={addressInputClass}
               />
               <Button
@@ -369,6 +457,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 name="amount"
                 value={amount === '0' ? '' : amount}
                 onChange={handleAmountChange}
+                disabled={isExternalRequest}
                 variant={clsx(styles.input, styles.amount)}
               />
               <Button
@@ -480,7 +569,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
               type="button"
               theme="secondary"
               variant={clsx(styles.button, styles.close)}
-              linkTo="/asset"
+              onClick={handleClose}
             >
               Close
             </Button>

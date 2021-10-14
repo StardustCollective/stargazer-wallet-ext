@@ -20,6 +20,7 @@ import contactsIcon from 'assets/images/svg/contacts.svg'
 import networksIcon from 'assets/images/svg/networks.svg'
 import infoIcon from 'assets/images/svg/info.svg'
 import exitIcon from 'assets/images/svg/exit.svg'
+import linkedApps from 'assets/images/svg/linkedApps.svg'
 
 ///////////////////////
 // Hooks
@@ -48,6 +49,7 @@ type IRenderSettingsItemProps = {
   label: string;
   iconImage: string;
   onClick: () => void;
+  imageStyles?: string;
 }
 
 ///////////////////////
@@ -85,14 +87,18 @@ const Main: FC = () => {
     linkTo('/settings/contacts');
   }
 
+  const onConnectedSitesClicked = () => {
+    linkTo('/settings/connectedSites')
+  }
 
-  const RenderSettingsItem = ({ label, iconImage, onClick }: IRenderSettingsItemProps) => {
+
+  const RenderSettingsItem = ({ label, iconImage, imageStyles, onClick }: IRenderSettingsItemProps) => {
 
     return (
       <Card onClick={onClick}>
         <div className={styles.settingsItemIconWrapper}>
           <div className={styles.iconCircle}>
-            <img src={'/' + iconImage} />
+            <img src={'/' + iconImage} className={imageStyles} />
           </div>
         </div>
         <div className={styles.settingsItemLabelWrapper}>
@@ -123,6 +129,12 @@ const Main: FC = () => {
             label={"Networks"}
             iconImage={networksIcon}
             onClick={onNetworkLinkClicked}
+          />
+          <RenderSettingsItem
+            label={"Connected Sites"}
+            iconImage={linkedApps}
+            onClick={onConnectedSitesClicked}
+            imageStyles={styles.linkedIconImage}
           />
         </div>
       </div>

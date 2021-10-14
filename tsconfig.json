@@ -23,7 +23,7 @@
     "baseUrl": "source"
   },
   "include": [
-    "source",
+    "source", "test.ts",
   ],
   "exclude":[
     "source/native",

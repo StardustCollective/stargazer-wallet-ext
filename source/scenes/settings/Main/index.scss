@@ -10,7 +10,6 @@
 
   .box {
     width: 100%;
-    height: 288px;
     background: $grey-50;
     border-radius: 8px;
 
@@ -37,6 +36,11 @@
           img {
             width: 32px;
             height: 32px;
+          }
+
+          .linkedIconImage {
+            width: 25px;
+            height: 25px;
           }
         }
       }

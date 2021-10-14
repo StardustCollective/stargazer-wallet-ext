@@ -11,6 +11,7 @@ export interface IETHTxConfig {
   txData?: string;
   gasPrice: number;
   gasLimit?: number;
+  memo?: string;
 }
 
 export interface IETHPendingTx {
@@ -23,6 +24,8 @@ export interface IETHPendingTx {
   assetId: string;
   nonce: number;
   gasPrice: number;
+  data?: string;
+  onConfirmed?: () => void
 }
 
 export interface ITransactionInfo {
@@ -33,6 +36,7 @@ export interface ITransactionInfo {
   fee?: number;
   ethConfig?: IETHTxConfig;
   nonce?: number;
+  onConfirmed?: () => void
 }
 
 export type ETHNetwork = 'testnet' | 'mainnet';

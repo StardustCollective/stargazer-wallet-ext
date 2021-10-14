@@ -1,29 +1,94 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import { IDAppState, IDAppInfo } from './types';
 
-const initialState: IDAppState = {};
+const initialState: IDAppState = {
+  listening: {},
+  whitelist: {}
+};
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
 const DAppState = createSlice({
   name: 'dapp',
   initialState,
   reducers: {
+    registerListeningSite(
+      state: IDAppState,
+      action: PayloadAction<{ origin: string, eventName: string }>
+    ) {
+      const { origin, eventName } = action.payload;
+
+      const originState = state.listening.hasOwnProperty(origin) ? state.listening[origin].filter((val: string) => val !== eventName) : [];
+
+      return {
+        ...state,
+        listening: {
+          ...state.listening,
+          [origin]: [
+            ...originState,
+            eventName
+          ]
+        }
+      };
+    },
+    deregisterListeningSite(
+      state: IDAppState,
+      action: PayloadAction<{ origin: string, eventName: string }>
+    ) {
+      const { origin, eventName } = action.payload;
+
+      if (!state.listening.hasOwnProperty(origin)) {
+        return state;
+      }
+
+      const originState = state.listening[origin].filter((val: string) => val !== eventName);
+
+      const retState = {
+        ...state,
+        listening: {
+          ...state.listening,
+          [origin]: originState
+        }
+      };
+
+      if (originState.length === 0) {
+        delete retState.listening[origin];
+      }
+
+      return retState;
+    },
     listNewDapp(
       state: IDAppState,
-      action: PayloadAction<{ id: string; dapp: IDAppInfo }>
+      action: PayloadAction<{
+        id: string;
+        dapp: IDAppInfo;
+        network: string;
+        accounts: string[];
+      }>
     ) {
       return {
         ...state,
-        [action.payload.id]: action.payload.dapp,
+        whitelist: {
+          ...state.whitelist,
+          [action.payload.id.replace(/(^\w+:|^)\/\//, '')]: {
+            ...action.payload.dapp,
+            id: action.payload.id.replace(/(^\w+:|^)\/\//, ''),
+            accounts: {
+              [action.payload.network]: [
+                ...action.payload.accounts
+              ]
+            }
+          },
+        },
       };
     },
     unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
-      delete state[action.payload.id];
+      console.log('Unlise App ID: ' + action.payload.id);
+      delete state.whitelist[action.payload.id];
     },
+
   },
 });
 
-export const { listNewDapp, unlistDapp } = DAppState.actions;
+export const { listNewDapp, unlistDapp, registerListeningSite, deregisterListeningSite } = DAppState.actions;
 
 export default DAppState.reducer;

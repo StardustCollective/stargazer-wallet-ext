@@ -13,10 +13,32 @@ export class StargazerProvider {
     return activeNetwork[KeyringNetwork.Constellation];
   }
 
+  // TODO: how to handle chain IDs for DAG? Currently mapped to Eth mainnet + Ropsten
+  getChainId () {
+    const networkName = this.getNetwork();
+
+    return networkName === 'main' ? 1 : 3;
+  }
+
   getAddress() {
     let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && stargazerAsset.address;
+  }
+
+  getAccounts(): Array<string> {
+    // TODO
+    return [];
+  }
+
+  getBlockNumber() {
+    // TODO
+    return 1;
+  }
+
+  getGasEstimate() {
+    // TODO
+    return 0;
   }
 
   getBalance() {

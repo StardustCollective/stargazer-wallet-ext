@@ -45,5 +45,6 @@ export default {
   [screens.settings.importWallet]: '/settings/wallets/import',
   [screens.settings.importAccount]: '/settings/wallets/import/account',
   [screens.settings.importPhrase]: '/settings/wallets/import/phrase',
+  [screens.settings.connectedSites]: '/settings/connectedSites',
 
 };

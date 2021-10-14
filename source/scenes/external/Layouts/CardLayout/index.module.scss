@@ -1,0 +1,134 @@
+@import "~assets/styles/variables";
+.wrapper {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background: $gray-light;
+  .topCircle {
+    position: absolute;
+    top: -800px;
+    left: -300px;
+    height: 1000px;
+    width: 1000px;
+    border-radius: 500px;
+    background: $primary;
+    z-index: -1;
+  }
+
+  .content {
+    display: flex;
+    flex: 1;
+    margin: 8px;
+    flex-direction: column;
+
+    .stepsLabel {
+      display: flex;
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    .heading {
+      display: flex;
+      width: 100%;
+      .logo {
+        margin-bottom: 12px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: block;
+        border: 2px solid $white;
+      }
+      .originLabel {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+      }
+    }
+
+    .card {
+      display: flex;
+      width: 100%;
+      margin-top: 20px;
+      border-radius: 8px;
+      background: $white;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.08);
+      margin-bottom: 10px;
+      .cardContent {
+        display: flex;
+        width: 100%;
+        margin: 16px;
+        flex-direction: column;
+        .cardHeader {
+          display: flex;
+          width: 100%;
+          flex-direction: column;
+          align-items: center;
+        }
+        .cardBody {
+          border: 1px solid $gray-200;
+          width: 100%;
+          height: 250px;
+          border-radius: 8px;
+          margin-top: 16px;
+          overflow: auto;
+        }
+        .cardFooter {
+          display: flex;
+          width: 100%;
+          margin-top: 10px;
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    }
+
+  }
+  .actions {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: flex-end;
+
+    button:first-child{
+      margin-right: 5px;
+    }
+    button:last-child{
+      margin-left: 5px;
+    }
+
+    .action {
+      margin-bottom: 10px;
+      display: flex;
+      width: 144px;
+      justify-content: space-between;
+    }
+
+    .negativeAction {
+      background: $gray-light;
+      color: $gray-dark;
+    }
+  
+
+  }
+
+  .connectPermissionsPrompt{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .allowSitesText{
+      margin-top: 15px;
+    }
+    .permissionText {
+      text-align: center;
+    }
+  }
+
+}

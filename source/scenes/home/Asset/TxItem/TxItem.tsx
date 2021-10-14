@@ -4,6 +4,11 @@
 
 import React, { FC, ChangeEvent } from 'react';
 import { formatDistanceDate } from '../../helpers';
+import IVaultState from 'state/vault/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
+import IAssetListState from 'state/assets/types';
+import { ITransactionInfo } from 'scripts/types';
 
 ///////////////////////
 // Components
@@ -83,7 +88,13 @@ const TxItem: FC<ITxItem> = ({
   /////////////////////////
   // Hooks
   ////////////////////////
+  const { activeAsset }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
 
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
 
   let {
     estimateGasFee,
@@ -91,15 +102,19 @@ const TxItem: FC<ITxItem> = ({
     gasFee,
     setGasPrice,
     gasLimit,
+    gasPrices,
     gasPrice } = useGasEstimate({
       toAddress: tx.toAddress,
-      amount: tx.amount
+      amount: tx.amount,
+      asset: assets[activeAsset.id],
+      data: tx.data,
     });
+
   const controller = useController();
 
   /////////////////////////
   // Callbacks
-  ////////////////////////
+  //////////////////////////
 
   const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
     setGasPrice(value as number);
@@ -107,8 +122,23 @@ const TxItem: FC<ITxItem> = ({
   }
 
   const onSpeedUpClick = (gas: number) => {
-    controller.wallet.account
-      .updatePendingTx(tx, gas, gasLimit)
+
+    const txConfig: ITransactionInfo = {
+      fromAddress: tx.fromAddress,
+      toAddress: tx.toAddress,
+      amount: tx.amount,
+      timestamp: new Date().getTime(),
+      ethConfig: {
+        gasPrice: gas,
+        gasLimit,
+        memo: tx.data,
+        nonce: tx.nonce,
+      }
+    };
+
+    controller.wallet.account.updateTempTx(txConfig);
+    controller.wallet.account.confirmContractTempTx(activeAsset);
+    controller.wallet.account.txController.removePendingTxHash(tx.txHash);
   }
 
   /////////////////////////
@@ -148,7 +178,7 @@ const TxItem: FC<ITxItem> = ({
   };
 
   return (
-    <div onClick={() => { onItemClick(tx.hash)}} className={styles.txItem}>
+    <div onClick={() => { onItemClick(tx.hash) }} className={styles.txItem}>
       {showGroupBar && (
         <div className={styles.groupBar}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} >
@@ -191,6 +221,7 @@ const TxItem: FC<ITxItem> = ({
               max: MAX_GAS_NUMBER,
               current: gasPrice,
             }}
+            gasPrices={gasPrices}
             speedLabel={gasSpeedLabel}
             gasFeeLabel={gasFee}
             onSliderChange={onGasPriceChanged}

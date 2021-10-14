@@ -1,30 +1,23 @@
 import { useState, useMemo, useEffect } from 'react';
-import IVaultState, { AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { BigNumber, ethers } from 'ethers';
-import { useSelector } from 'react-redux';
-import IAssetListState from 'state/assets/types';
-import { RootState } from 'state/store';
+import { IAssetInfoState } from 'state/assets/types';
+import { estimateGasLimit } from 'utils/ethUtil';
 
 type IUseGasEstimate = {
   toAddress?: string;
-  amount?: string
+  asset?: IAssetInfoState;
+  data?: string;
+  amount?: number
 };
 
-function useGasEstimate({ toAddress, amount }: IUseGasEstimate) {
+function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
   const controller = useController();
   const [gasPrice, setGasPrice] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
-
-  const { activeAsset }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
@@ -41,7 +34,7 @@ function useGasEstimate({ toAddress, amount }: IUseGasEstimate) {
     const feeBN = ethers.utils
       .parseUnits(gas.toString(), 'gwei')
       .mul(BigNumber.from(gasLimit));
-  
+
     const fee = Number(ethers.utils.formatEther(feeBN).toString());
 
     setGasFee(fee);
@@ -49,36 +42,34 @@ function useGasEstimate({ toAddress, amount }: IUseGasEstimate) {
 
   const handleGetTxFee = async () => {
     controller.wallet.account.getLatestGasPrices().then((gas) => {
-      const gasPrice = gas[1];
-      setGasPrices(gas);
-      setGasPrice(gasPrice);
-      estimateGasFee(gasPrice);
+      let gasPrices: number[] = [...gas];
+      let uniquePrices = [...new Set(gas)].length;
+      if (uniquePrices === 1) {
+        let gp = gas[0];
+        gasPrices = [gp - 5, gp, gp + 5];
+      }
+      setGasPrices(gasPrices);
+      setGasPrice(gasPrices[2]);
+      estimateGasFee(gasPrices[2]);
     })
   };
 
   useEffect(() => {
     const getGasLimit = async () => {
-      let gasLimit = activeAsset.type === AssetType.Ethereum ? 21000 : 0;
-
-      if (gasLimit) {
-        setGasLimit(gasLimit);
-        handleGetTxFee();
+      let gasLimit;
+      if (asset.type === AssetType.ERC20) {
+        gasLimit = await estimateGasLimit({ to: asset.address, data })
       } else {
-        const assetInfo = assets[activeAsset.id];
-        controller.wallet.account.ethClient.estimateTokenTransferGasLimit(            
-          toAddress,
-          assetInfo.address, 
-          ethers.utils.parseUnits(amount, assetInfo.decimals))
-        .then(gasLimit => {
-          setGasLimit(gasLimit);
-        })
+        gasLimit = await estimateGasLimit({ to: toAddress, data })
       }
+
+      setGasLimit(gasLimit);
     }
     getGasLimit();
   }, []);
 
   useEffect(() => {
-    if(gasLimit > 0){
+    if (gasLimit > 0) {
       handleGetTxFee();
     }
   }, [gasLimit])
@@ -88,6 +79,7 @@ function useGasEstimate({ toAddress, amount }: IUseGasEstimate) {
     gasSpeedLabel,
     gasFee,
     gasPrice,
+    gasPrices,
     setGasPrice,
     gasLimit,
   };

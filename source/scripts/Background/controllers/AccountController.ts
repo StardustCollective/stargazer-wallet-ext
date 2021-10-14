@@ -6,6 +6,7 @@ import {
 } from '@stardust-collective/dag4-xchain-ethereum';
 
 import store from 'state/store';
+import { IAssetInfoState } from 'state/assets/types';
 import {
   changeActiveAsset,
   changeActiveWallet,
@@ -14,10 +15,12 @@ import {
   updateWalletAssets,
   updateWalletLabel,
 } from 'state/vault';
+
 import IVaultState, {
   AssetType,
   IAssetState,
   IWalletState,
+  IActiveAssetState,
 } from 'state/vault/types';
 
 import { ETHNetwork, ITransactionInfo, IETHPendingTx } from '../../types';
@@ -257,6 +260,7 @@ export class AccountController implements IAccountController {
       gasLimit: BigNumber.from(gasLimit),
       nonce: tx.nonce,
     };
+    
     if (activeAsset.type !== AssetType.Ethereum) {
       txOptions.asset = utils.assetFromString(
         `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
@@ -343,19 +347,81 @@ export class AccountController implements IAccountController {
           );
         }
         const txData: any = await this.ethClient.transfer(txOptions);
+        const to: string = activeAsset.type !== AssetType.Ethereum ? assets[activeAsset.id].address : this.tempTx.toAddress;
+        const amount: string = activeAsset.type !== AssetType.Ethereum ? '0' : this.tempTx.amount;
 
         this.txController.addPendingTx({
           txHash: txData.hash,
           fromAddress: this.tempTx.fromAddress,
-          toAddress: this.tempTx.toAddress,
-          amount: this.tempTx.amount,
+          toAddress: to,
+          amount: amount,
           network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
           assetId: activeAsset.id,
           timestamp: new Date().getTime(),
           nonce: txData.nonce,
           gasPrice: gasPrice,
+          data: txData.data,
         });
       }
+      this.tempTx = null;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async confirmContractTempTx(
+    activeAsset: IAssetInfoState | IActiveAssetState
+  ) {
+    if (!dag4.account.isActive) {
+      throw new Error('Error: No signed account exists');
+    }
+
+    if (!activeAsset) {
+      throw new Error("Error: Can't find active account info");
+    }
+
+    if (!this.tempTx) {
+      throw new Error("Error: Can't find transaction info");
+    }
+
+    try {
+      if (!this.tempTx.ethConfig) return;
+      const { gasPrice, gasLimit, nonce, memo } = this.tempTx.ethConfig;
+      const { activeNetwork }: IVaultState = store.getState().vault;
+
+      let baseAmountGasPrice = utils.baseAmount(
+        ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+        9
+      );
+      let bigNumberGasPrice = BigNumber.from(baseAmountGasPrice.amount().toFixed())
+      
+      const txOptions: any = {
+        to: this.tempTx.toAddress,
+        value: ethers.utils.parseEther(this.tempTx.amount),
+        gasPrice: bigNumberGasPrice,
+        gasLimit: ethers.utils.hexlify(gasLimit),
+        data: memo,
+        chainId: activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' ? 1 : 3,
+        nonce: nonce,
+      };
+
+      const txData: any = await this.ethClient
+        .getWallet()
+        .sendTransaction(txOptions);
+
+      this.txController.addPendingTx({
+        txHash: txData.hash,
+        fromAddress: this.tempTx.fromAddress,
+        toAddress: this.tempTx.toAddress,
+        amount: this.tempTx.amount,
+        network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
+        assetId: activeAsset.id,
+        timestamp: new Date().getTime(),
+        nonce: txData.nonce,
+        gasPrice: gasPrice,
+        data: memo,
+        onConfirmed: this.tempTx.onConfirmed
+      });
       this.tempTx = null;
     } catch (error: any) {
       throw new Error(error);

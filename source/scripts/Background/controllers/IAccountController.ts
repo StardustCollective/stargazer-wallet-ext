@@ -1,13 +1,17 @@
 import { ITransactionInfo, IETHPendingTx } from '../../types';
-import { IAssetState } from '../../../state/vault/types';
+import { IAssetState, IActiveAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
+import { IAssetInfoState } from 'state/assets/types';
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
+import { EthTransactionController } from './EthTransactionController';
 
 export interface IAccountController {
   ethClient: XChainEthClient;
+  txController: EthTransactionController;
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
+  confirmContractTempTx: (activeAsset: IAssetInfoState | IActiveAssetState ) => Promise<void>;
   confirmTempTx: () => Promise<void>;
   isValidDAGAddress: (address: string) => boolean;
   isValidERC20Address: (address: string) => boolean;

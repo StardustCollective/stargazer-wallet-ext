@@ -73,6 +73,13 @@ export interface IAccountUpdateState {
   };
 }
 
+export interface IAccountDerived {
+  label: string;
+  address: string;
+  network: string;
+  tokens?: string[];
+}
+
 export default interface IVaultState {
   hasEncryptedVault: boolean;
   balances: AssetBalances;

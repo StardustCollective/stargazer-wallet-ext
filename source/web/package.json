@@ -9,6 +9,11 @@
     "node": ">=10.0.0",
     "yarn": ">= 1.0.0"
   },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
   "scripts": {
     "dev:chrome": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=chrome webpack --watch",
     "dev:firefox": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=firefox webpack --watch",
@@ -18,7 +23,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "test": "jest",
-    "postinstall": "npx patch-package"
+    "postinstall": "cd ../../ && npx patch-package"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.2",
@@ -49,10 +54,14 @@
     "clsx": "^1.1.1",
     "date-fns": "^2.16.1",
     "emoji-log": "^1.0.2",
+    "eth-data-decoder": "^0.0.2",
+    "ethereum-input-data-decoder": "^0.3.5",
     "ethers": "^5.0.32",
+    "etherscan-api": "^10.0.5",
     "extensionizer": "^1.0.1",
     "framer-motion": "^4.1.17",
     "lodash": "^4.17.20",
+    "net": "^1.0.2",
     "qrcode.react": "^1.0.1",
     "query-string": "^7.0.1",
     "react": "^16.13.1",
@@ -60,6 +69,7 @@
     "react-dom": "^16.13.1",
     "react-dynamic-font": "^2.0.1",
     "react-hook-form": "5.7.2",
+    "react-modal": "^3.14.3",
     "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.4.0",
@@ -72,8 +82,10 @@
     "redux-watch": "^1.2.0",
     "rxjs": "^6.6.7",
     "sass": "^1.35.1",
+    "tls": "^0.0.1",
     "url-loader": "^4.1.1",
     "uuid": "^8.3.2",
+    "web3": "^1.6.0",
     "webext-base-css": "^1.1.0",
     "webext-redux": "^2.1.7",
     "webextension-polyfill-ts": "^0.16.0",
@@ -93,6 +105,7 @@
     "@babel/preset-typescript": "^7.15.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^15.0.3",
+    "@types/query-string": "^6.3.0",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/webpack": "^4.41.17",

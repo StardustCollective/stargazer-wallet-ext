@@ -16,6 +16,12 @@ interface IPendingData {
   [txHash: string]: IETHPendingTx;
 }
 
+type ITransactionListeners = {
+  [txHash: string]: {
+    onConfirmed?: () => void
+  }
+}
+
 const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
@@ -32,6 +38,8 @@ export class EthTransactionController implements IEthTransactionController {
     const pendingData = JSON.parse(state);
     return pendingData as IPendingData;
   };
+
+  private _transactionListeners : ITransactionListeners = {};
 
   setNetwork(value: 'mainnet' | 'testnet') {
     this.ethClient = new XChainEthClient({
@@ -50,6 +58,13 @@ export class EthTransactionController implements IEthTransactionController {
     }
     pendingData[pendingTx.txHash] = pendingTx;
     localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
+    
+    if (pendingTx.onConfirmed) {
+      this._transactionListeners[pendingTx.txHash] = {
+        onConfirmed: pendingTx.onConfirmed
+      };
+    }
+
     this.startMonitor();
     return true;
   };
@@ -90,6 +105,11 @@ export class EthTransactionController implements IEthTransactionController {
           pendingTx.network === 'mainnet' ? 1 : 3
         )
         .then(() => {
+          console.log('removing pending tx');
+          if (this._transactionListeners[pendingTx.txHash] && this._transactionListeners[pendingTx.txHash].onConfirmed) {
+            this._transactionListeners[pendingTx.txHash].onConfirmed();
+          }
+
           this.removePendingTxHash(pendingTx.txHash);
         });
     });

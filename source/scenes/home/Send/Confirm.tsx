@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
+import { browser } from 'webextension-polyfill-ts';
 // import { useHistory } from 'react-router-dom';
 import Layout from 'scenes/common/Layout';
 import Button from 'components/Button';
@@ -10,10 +11,15 @@ import { useFiat } from 'hooks/usePrice';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { RootState } from 'state/store';
-import IVaultState, { AssetType } from 'state/vault/types';
-import IAssetListState from 'state/assets/types';
+import IVaultState, { AssetType, IWalletState, IActiveAssetState } from 'state/vault/types';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
+import { ITransactionInfo } from 'scripts/types';
 import { ellipsis } from '../helpers';
+import queryString from 'query-string';
+import find from 'lodash/find';
 import confirmHeader from 'navigation/headers/confirm';
+import { useHistory } from "react-router-dom";
+import { useLinkTo } from '@react-navigation/native';
 
 import styles from './Confirm.scss';
 import { ethers } from 'ethers';
@@ -23,18 +29,60 @@ interface ISendConfirm {
 }
 
 const SendConfirm = ({ navigation }: ISendConfirm) => {
-  // const history = useHistory();
-  const controller = useController();
-  const getFiatAmount = useFiat(false);
-  const alert = useAlert();
 
-  const { activeWallet, activeAsset }: IVaultState = useSelector(
+  let activeAsset: IAssetInfoState | IActiveAssetState;
+  let activeWallet: IWalletState;
+  let history: any;
+
+  const isExternalRequest = location.pathname.includes('confirmTransaction');
+
+  const controller = useController();
+  const alert = useAlert();
+  const linkTo = useLinkTo();
+  const vault: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assets: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
-  const assetInfo = assets[activeAsset.id];
+  let assetInfo: IAssetInfoState;
+   
+
+  if (isExternalRequest) {
+    const {
+      to
+    } = queryString.parse(location.search);
+
+    activeAsset = useSelector(
+      (state: RootState) => find(state.assets, { address: to })
+    ) as IAssetInfoState;
+
+    if (!activeAsset) {
+      activeAsset = useSelector(
+        (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
+      ) as IAssetInfoState;
+    }
+
+    activeWallet = vault.activeWallet;
+    assetInfo = assets[activeAsset.id];
+
+    history = useHistory();
+
+  } else {
+
+    activeAsset = vault.activeAsset;
+    activeWallet = vault.activeWallet;
+
+    assetInfo = assets[activeAsset.id];
+    // Sets the header for the confirm screen.
+    useLayoutEffect(() => {
+      navigation.setOptions(confirmHeader({ navigation, asset: assetInfo }));
+    }, []);
+
+  }
+
+  const getFiatAmount = useFiat(false, activeAsset as IAssetInfoState);
+ 
   const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
 
   const tempTx = controller.wallet.account.getTempTx();
@@ -42,11 +90,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   const [disabled, setDisabled] = useState(false);
 
   const gasFeeBaseId = activeAsset.type === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
-
-    // Sets the header for the home screen.
-  useLayoutEffect(() => {
-    navigation.setOptions(confirmHeader({ navigation, asset: assetInfo }));
-  }, []);
 
   const getTotalUnits = () => {
     const balance = ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals);
@@ -64,7 +107,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   const getTotalAmount = () => {
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
     //if (assetInfo.type !== AssetType.ERC20) {
-      amount += Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type));
+    amount += Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type));
     //}
     return (amount).toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
@@ -72,8 +115,15 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     });
   };
 
-  const handleConfirm = () => {
+  const handleCancel = () => {
+    if(isExternalRequest){
+      history.goBack();
+    }else{
+      linkTo('/send');
+    }
+  }
 
+  const handleConfirm = async () => {
     setDisabled(true);
 
     // const { publicKey, type, id } = assetInfo;//accounts[activeAccountId];
@@ -82,21 +132,43 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     //   window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
     //   history.push('/home');
     // } else {
-      controller.wallet.account
-        .confirmTempTx()
-        .then(() => {
-          setConfirmed(true);
-        })
-        .catch((error: Error) => {
-          let message = error.message;
-          if (error.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
-            message = 'Insufficient ETH to cover gas fee.';
-          }
 
-          alert.removeAll();
-          alert.error(message);
-        });
-   // }
+    try {
+      if (isExternalRequest) {
+        await controller.wallet.account.confirmContractTempTx(activeAsset)
+
+        const background = await browser.runtime.getBackgroundPage();
+
+        const {windowId} = queryString.parse(window.location.search);
+        const confirmEvent = new CustomEvent('transactionSent', { detail: { windowId, approved: true } })
+
+        const txConfig: ITransactionInfo = {
+            fromAddress: tempTx.fromAddress,
+            toAddress: tempTx.toAddress,
+            timestamp: Date.now(),
+            amount: tempTx.amount,
+            ethConfig: tempTx.ethConfig,
+            onConfirmed: () => {
+              background.dispatchEvent(confirmEvent);
+            }
+          };
+
+        controller.wallet.account.updateTempTx(txConfig);
+        await controller.wallet.account.confirmContractTempTx(activeAsset);
+
+        window.close();
+      } else {
+        await controller.wallet.account.confirmTempTx()
+        setConfirmed(true);
+      }
+    } catch (error: any) {
+      let message = error.message;
+      if (error.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
+        message = 'Insufficient ETH to cover gas fee.';
+      }
+      alert.removeAll();
+      alert.error(message);
+    }
   };
 
   return confirmed ? (
@@ -111,17 +183,19 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
     </Layout>
   ) : (
     <div className={styles.wrapper}>
-      <section className={styles.txAmount}>
-        <div className={styles.iconWrapper}>
-          <UpArrowIcon />
-        </div>
-        {getTotalUnits()}{' '}
-        {assetInfo.symbol}
-        <small>
-          (≈
-          {getTotalAmount()})
-        </small>
-      </section>
+      {!isExternalRequest &&
+        < section className={styles.txAmount}>
+          <div className={styles.iconWrapper}>
+            <UpArrowIcon />
+          </div>
+          {getTotalUnits()}{' '}
+          {assetInfo.symbol}
+          <small>
+            (≈
+            {getTotalAmount()})
+          </small>
+        </section>
+      }
       <section className={styles.transaction}>
         <div className={styles.row}>
           From
@@ -154,7 +228,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
             type="button"
             theme="secondary"
             variant={clsx(styles.button, styles.close)}
-            linkTo="/send"
+            onClick={handleCancel}
           >
             Cancel
           </Button>
@@ -163,7 +237,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
           </Button>
         </div>
       </section>
-    </div>
+    </div >
   );
 };
 

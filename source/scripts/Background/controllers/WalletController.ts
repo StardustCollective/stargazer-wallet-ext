@@ -6,11 +6,13 @@ import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
+import includes from 'lodash/includes';
+import filter from 'lodash/filter';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
-
+import { IDAppInfo, IDappAccounts } from 'state/dapp/types';
 export class WalletController implements IWalletController {
   account: AccountController;
   keyringManager: KeyringManager;
@@ -54,14 +56,14 @@ export class WalletController implements IWalletController {
     const state = store.getState();
     const vault: IVaultState = state.vault;
 
-    if(vault) {
+    if (vault) {
 
       //Check for v1.4 migration
       if (vault.migrateWallet) {
         try {
           await KeystoreToKeyringHelper.migrate(vault.migrateWallet, password);
         }
-        catch(e) {
+        catch (e) {
           return false;
         }
       }
@@ -115,17 +117,49 @@ export class WalletController implements IWalletController {
 
   async switchWallet(id: string) {
 
-    store.dispatch(updateBalances({  pending: 'true' }));
+    store.dispatch(updateBalances({ pending: 'true' }));
 
     await this.account.buildAccountAssetInfo(id);
     await this.account.getLatestTxUpdate();
     this.account.assetsBalanceMonitor.start();
     this.account.txController.startMonitor();
+
+  }
+
+  async notifyWalletChange(accounts: string[]) {
+    const state = store.getState();
+    const whiteList: { [dappId: string]: IDAppInfo }[] = state.dapp.whitelist;
+    const listening: { [origin: string]: Array<string> } = state.dapp.listening;
+
+    // Will only notify whitelisted dapps that are listening for a wallet change.
+    for (const origin of Object.keys(listening)) {
+      const site = whiteList[origin as any];
+      const listeningEvents = listening[origin];
+
+      if (!listeningEvents.includes('accountsChanged')) {
+        continue;
+      }
+
+      if (site) {
+        const siteAccounts = site.accounts as IDappAccounts;
+        const allAccountsWithDuplicates = accounts.concat(siteAccounts.Constellation, siteAccounts.Ethereum);
+        const matchingAccounts = filter(allAccountsWithDuplicates, (value, index, iteratee) => includes(iteratee, value as string, index + 1))
+
+        if (matchingAccounts.length) {
+          const background = await browser.runtime.getBackgroundPage();
+
+          background.dispatchEvent(
+            new CustomEvent('accountsChanged', { detail: { data: matchingAccounts, origin } })
+          );
+        }
+      }
+    }
+
   }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
 
-    store.dispatch(updateBalances({  pending: 'true' }));
+    store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
     const assets: IAssetListState = store.getState().assets;

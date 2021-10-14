@@ -1,9 +1,29 @@
+export interface IDappAccounts {
+  Ethereum?: string[];
+  Constellation?: string[];
+}
 export interface IDAppInfo {
   origin: string;
   logo: string;
   title: string;
+  accounts?: IDappAccounts;
 }
 
 export interface IDAppState {
-  [dappId: string]: IDAppInfo; // array of connected account ids
+
+  /**
+   * Dapps that are currently listening for updates
+   */
+  listening: {
+    [dappId: string]: Array<string>
+  }
+
+  /**
+   * A list of sites that have been granted permissions to access a user's
+   * account information.
+   */
+   whitelist: {
+    [dappId: string]: IDAppInfo;
+  }
+
 }

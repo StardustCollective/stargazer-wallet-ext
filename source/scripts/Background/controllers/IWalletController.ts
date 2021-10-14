@@ -32,5 +32,6 @@ export interface IWalletController {
   checkPassword: (password: string) => boolean;
   getPhrase: (walletId: string, password: string) => string;
   getPrivateKey: (walletId: string, password: string) => string;
+  notifyWalletChange: (walletAccounts: string[]) => void;
   logOut: () => void;
 }

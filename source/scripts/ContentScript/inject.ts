@@ -27,7 +27,7 @@ class ProviderManager {
       window.addEventListener(id, ({ detail }) => {
         const response = JSON.parse(detail)
         if (response.error) reject(new Error(response.error))
-        else resolve(response.result)
+        else resolve(response)
       }, {
         once: true,
         passive: true
@@ -49,8 +49,8 @@ class ProviderManager {
     return this.cache[asset]
   }
 
-  enable () {
-    return this.proxy('ENABLE_REQUEST')
+  enable (network) {
+    return this.proxy('ENABLE_REQUEST', {network})
   }
 }
 
@@ -78,16 +78,18 @@ async function getAddresses () {
 
 async function handleRequest (req) {
   const eth = window.providerManager.getProviderFor('${asset}')
-  if(req.method.startsWith('metamask_')) return null
+  if (req.method.startsWith('metamask_')) return null
 
-  if(req.method === 'eth_requestAccounts') {
+  if (req.method === 'eth_requestAccounts') {
     return await window.${name}.enable()
   }
-  if(req.method === 'personal_sign') { 
+
+  if (req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
     return '0x' + sig
   }
-  if(req.method === 'eth_sendTransaction') {
+
+  if (req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
     const value = req.params[0].value
     const data = req.params[0].data
@@ -95,9 +97,15 @@ async function handleRequest (req) {
     const result = await eth.getMethod('chain.sendTransaction')({ to, value, data, gas })
     return '0x' + result.hash
   }
-  if(req.method === 'eth_accounts') {
+
+  if (req.method === 'eth_accounts') {
     return getAddresses()
   }
+
+  if (req.method === 'eth_chainId') {
+    return eth.getMethod('wallet.getChainId')()
+  }
+
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
 
@@ -173,51 +181,109 @@ const REQUEST_MAP = {
   getBalance: 'wallet.getBalance',
   signMessage: 'wallet.signMessage',
   sendTransaction: 'wallet.sendTransaction',
+  eth_chainId: 'wallet.getChainId',
+  eth_accounts: 'wallet.getAccounts',
+  eth_blockNumber: 'wallet.getBlockNumber',
+  eth_estimateGas: 'wallet.estimateGas'
+}
+
+const ERRORS = {
+  USER_REJECTED: (message = 'User rejected') => {
+    const err = new Error(message);
+    err.code = 4001;
+    return err;
+  }
 }
 
 async function handleRequest (req) {
-  const dag = window.providerManager.getProviderFor('DAG')
-  if (req.method === 'wallet_sendTransaction') {
-    const to = req.params[0].to
-    const value = req.params[0].value.toString(16)
-    return dag.getMethod('wallet.sendTransaction')({ to, value })
+  const dag = window.providerManager.getProviderFor('DAG');
+  const eth = window.providerManager.getProviderFor('ETH');
+  
+  if (req.method === 'eth_sendTransaction') {
+    return eth.getMethod('wallet.sendTransaction')({...req.params[0]});
+  } else if (req.method === 'dag_requestAccounts') {
+    const {result, data} = await window.providerManager.enable('Constellation');
+    
+    if (!result) throw ERRORS.USER_REJECTED()
+    
+    return data.accounts;
+  } else if (req.method === 'eth_requestAccounts') {
+    const {result, data} = await window.providerManager.enable('Ethereum')
+    
+    if (!result) throw ERRORS.USER_REJECTED()
+    
+    return data.accounts;
+  } else if (req.method.startsWith('eth_')) {
+    const method = REQUEST_MAP[req.method] || req.method;
+    return eth.getMethod(method)(...req.params);
   }
-  const method = REQUEST_MAP[req.method] || req.method
-  return dag.getMethod(method)(...req.params)
+
+  const method = REQUEST_MAP[req.method] || req.method;
+  return dag.getMethod(method)(...req.params);
 }
 
 window.stargazer = {
   evtRegMap: {},
+  version: 1,
   isConnected: async () => {
     const dag = window.providerManager.getProviderFor('DAG')
     return dag.getMethod('wallet.isConnected')()
   },
   enable: async () => {
-    const accepted = await window.providerManager.enable()
-    if (!accepted) throw new Error('User rejected')
-    const dag = window.providerManager.getProviderFor('DAG')
-    return dag.getMethod('wallet.getAddress')()
+    const {result, data} = await window.providerManager.enable()
+
+    if (!result) throw ERRORS.USER_REJECTED()
+
+    return data.accounts;
   },
   request: async (req) => {
     const params = req.params || []
-    return handleRequest({
+    const response = await handleRequest({
       method: req.method, params
     })
+
+    return response;
   },
   on: (method, callback) => {
-    const id = Date.now() + '.' + Math.random();
-    
-    window.stargazer.evtRegMap[id] = callback;
+    let origin = window.location.hostname;
+    if(window.location.port){
+      origin += ":"+window.location.port;
+    }
 
-    window.addEventListener(id, ({detail}) => {
-      const rCallback = window.stargazer.evtRegMap[id];
-      if (rCallback) {
-        rCallback(JSON.parse(detail));
+    const id = origin + "." + method;
+
+    window.stargazer._listeners[id] = ({ detail }) => {
+      if(detail){       
+        callback(JSON.parse(detail));
       }
-    })
+    };
 
-    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: { method } }, '*')
-  }
+    window.addEventListener(
+      id,
+      window.stargazer._listeners[id],
+      { passive: true }
+    );
+
+    // Register the origin of the listening site.
+    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: {method, origin}}, '*');
+  },
+  removeListener: (method) => {
+    let origin = window.location.hostname;
+    if(window.location.port){
+      origin += ":"+window.location.port;
+    }
+
+    const id = origin + "." + method;
+
+    if (window.stargazer._listeners[id]) {
+      window.removeEventListener(id, window.stargazer._listeners[id]);
+
+      delete window.stargazer._listeners[id];
+    }
+
+    window.postMessage({ id, type: 'STARGAZER_EVENT_DEREG', data: {method, origin}}, '*');
+  },
+  _listeners: {}
 }
 `;
 

@@ -30,6 +30,7 @@ import PrivateKey from 'scenes/settings/PrivateKey';
 import ImportWallet from 'scenes/settings/ImportWallet';
 import ImportAccount from 'scenes/settings/ImportAccount';
 import ImportPhrase from 'scenes/settings/ImportPhrase';
+import ConnectedSites from 'scenes/settings/ConnectedSites';
 
 ///////////////////////////
 // Screens Names
@@ -66,6 +67,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   importWallet: 'Import Wallet',
   importAccount: 'Import Account',
   importPhrase: 'Import Phrase',
+  connectedSites: 'Connected Sites',
 }
 
 const Settings = () => {
@@ -97,6 +99,7 @@ const Settings = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importWallet }} name={screens.settings.importWallet} component={ImportWallet} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importAccount }} name={screens.settings.importAccount} component={ImportAccount} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importPhrase }} name={screens.settings.importPhrase} component={ImportPhrase} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.connectedSites }} name={screens.settings.connectedSites} component={ConnectedSites} />
         </>)
       }
     </Stack.Navigator>
