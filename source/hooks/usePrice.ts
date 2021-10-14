@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import IPriceState from 'state/price/types';
-import IVaultState, { AssetType, IActiveAssetState } from 'state/vault/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';

@@ -81,7 +81,7 @@ const Login = ({
         }
         setInvalid(false);
       })
-      .catch((e) => {
+      .catch(() => {
         if (onLoginError) {
           onLoginError()
         }
