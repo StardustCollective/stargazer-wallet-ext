@@ -1,6 +1,6 @@
 {
   "name": "extension",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Extension wallet for $DAG tokens.",
   "private": true,
   "repository": "https://github.com/StardustCollective/stargazer-wallet-ext.git",
