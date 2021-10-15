@@ -53,6 +53,7 @@ const PurpleCheckbox = withStyles({
 
 import ConstellationIcon from 'assets/images/svg/constellation.svg';
 import EthereumIcon from 'assets/images/svg/ethereum.svg';
+import StargazerIcon from 'assets/images/svg/stargazerLogoV3.svg';
 
 ///////////////////////////
 // Hooks Imports
@@ -69,7 +70,6 @@ import { IAccountDerived } from 'state/vault/types';
 type IAccountItem = {
   accountName: string;
   accountAddress: string;
-  accountBalance: string;
   onCheckboxChange: (checked: boolean, address: string) => void;
 }
 
@@ -94,6 +94,7 @@ const SelectAccounts = () => {
 
   const allDagAccounts = useSelector(walletsSelectors.selectAllDagAccounts);
   const allEthAccounts = useSelector(walletsSelectors.selectAllEthAccounts);
+  const allAccounts = useSelector(walletsSelectors.selectAllAccounts);
   const [accounts, setAccounts] = useState<IAccountDerived[]>([]);
   const [network, setNetwork] = useState<string>("");
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([])
@@ -108,9 +109,11 @@ const SelectAccounts = () => {
     const { network } = queryString.parse(location.search);
     setNetwork(network as string);
     if (network === KeyringNetwork.Constellation) {
-      setAccounts(allDagAccounts)
+      setAccounts(allDagAccounts);
     } else if (network === KeyringNetwork.Ethereum) {
-      setAccounts(allEthAccounts)
+      setAccounts(allEthAccounts);
+    } else {
+      setAccounts(allAccounts);
     }
   }, []);
 
@@ -161,18 +164,22 @@ const SelectAccounts = () => {
   const RenderAccountItem = ({
     accountName,
     accountAddress,
-    accountBalance,
     onCheckboxChange
   }: IAccountItem) => {
 
     const shortAddress = accountAddress.substring(accountAddress.length - 4)
-    const symbol = network === KeyringNetwork.Constellation ? 'DAG' : 'ETH';
-    let icon = '';
-
+    
+    let icon = '',
+      symbolText = '';
     if (network === KeyringNetwork.Constellation) {
       icon = ConstellationIcon
+      symbolText = 'DAG';
     } else if (network === KeyringNetwork.Ethereum) {
       icon = EthereumIcon;
+      symbolText = 'ETH';
+    } else {
+      icon = StargazerIcon;
+      symbolText = 'Multi Chain Wallet'
     }
 
     return (
@@ -191,16 +198,14 @@ const SelectAccounts = () => {
             {accountName} (...{shortAddress})
           </TextV3.CaptionStrong>
           <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-            {accountBalance} {symbol}
+            {symbolText}
           </TextV3.Caption>
         </div>
       </div>
     );
-
   }
 
   const RenderContentByState = ({ state }: { state: SCENE_STATE }) => {
-
     if (state === SCENE_STATE.SELECT_ACCOUNTS) {
       return (
         <>
@@ -208,7 +213,6 @@ const SelectAccounts = () => {
             <RenderAccountItem
               accountName={account.label}
               accountAddress={account.address}
-              accountBalance=""
               onCheckboxChange={onCheckboxChange}
             />
           ))}
