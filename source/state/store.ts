@@ -30,6 +30,13 @@ if (preloadedState && preloadedState.wallet) {
   delete preloadedState.wallet;
 }
 
+if (preloadedState && preloadedState.dapp && !preloadedState.dapp.whitelist) {
+  preloadedState.dapp = {
+    whitelist: {},
+    listening: {}
+  };
+}
+
 const store: Store = configureStore({
   reducer: combineReducers({
     vault,
