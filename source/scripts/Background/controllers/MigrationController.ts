@@ -16,14 +16,15 @@ const MigrationController = () => {
     v2_1.default(state);
   }
 
+  /**
+   * version < 3.1.1
+   */
+   if(state.dapp && !state.dapp.whitelist && !state.dapp.listening){
+    const v3_1_1 = require('../migration/v3_1_1');
+    v3_1_1.default(state);
+   }
 
-  // /**
-  //  * version = 2.2.0
-  //  */
-  // if (version === '2.1.0') {
-  //   const v2_2 = require('../migration/v2_2');
-  //   v2_2.default();
-  // }
+
 };
 
 export default MigrationController;
