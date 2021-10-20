@@ -18,7 +18,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const viewsPath = path.join(__dirname, '../../views');
 const sourcePath = path.join(__dirname, '../');
-const destPath = path.join(__dirname, '../../extension');
+const destPath = path.join(__dirname, 'extension');
 const rootPath = path.join(__dirname, '../../');
 const sharedPath = path.join(__dirname, '../');
 const typeScriptPath = path.join(__dirname, '../../node_modules/typescript');
@@ -174,10 +174,10 @@ module.exports = {
     // delete previous build files
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [
-        path.join(process.cwd(), `../../extension/${targetBrowser}`),
+        path.join(process.cwd(), `extension/${targetBrowser}`),
         path.join(
           process.cwd(),
-          `../../extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`
+          `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`
         ),
       ],
       cleanStaleWebpackAssets: false,

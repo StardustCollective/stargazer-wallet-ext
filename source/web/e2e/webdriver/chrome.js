@@ -7,8 +7,7 @@ const chrome = require('selenium-webdriver/chrome');
 class ChromeDriver {
   static async build({ responsive, port }) {
     const root = process.cwd();
-    const extDir = `load-extension=/Users/cesar/constellation/stargazer-wallet-ext/extension/chrome`;
-    // console.log('EXT DIR!!!!!: ' + extDir);
+    const extDir = `load-extension=${root}/extension/chrome`;
     const args = [extDir];
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
