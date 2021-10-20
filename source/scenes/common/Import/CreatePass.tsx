@@ -58,6 +58,7 @@ const CreatePass = () => {
         ) : (
           <>
             <TextInput
+              id={'passwordField'}
               type="password"
               placeholder="Please enter at least 8 characters"
               fullWidth
@@ -67,6 +68,7 @@ const CreatePass = () => {
               variant={styles.pass}
             />
             <TextInput
+              id={'confirmPasswordField'}
               type="password"
               placeholder="Please enter your password again"
               fullWidth
@@ -90,6 +92,7 @@ const CreatePass = () => {
         )}
         <span className={`body-comment ${styles.comment}`}>{comment}</span>
         <Button
+          id={'nextButton'}
           type={passed ? 'button' : 'submit'}
           variant={styles.next}
           onClick={nextHandler}

@@ -58,6 +58,7 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
 
         <span>Paste your recovery seed phrase below:</span>
         <TextInput
+          id={'recoveryPhraseInput'}
           type="text"
           name="phrase"
           visiblePassword
@@ -75,7 +76,7 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
           )}
         </span>
         <div className={styles.actions}>
-          <Button type="submit" variant={styles.button} disabled={isDisabled}>
+          <Button id={'recoveryPhraseSubmit'} type="submit" variant={styles.button} disabled={isDisabled}>
             Import
           </Button>
         </div>
