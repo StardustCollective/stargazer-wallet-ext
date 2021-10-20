@@ -29,13 +29,12 @@ async function main() {
   const { browser, retries } = argv;
 
   const testDir = path.join(__dirname, 'tests');
-  const metamaskUiTest = path.join(__dirname, 'metamask-ui.spec.js');
 
   const testFilenames = await fs.readdir(testDir);
   const testPaths = testFilenames.map((filename) =>
     path.join(testDir, filename),
   );
-  const allE2eTestPaths = [...testPaths, metamaskUiTest];
+  const allE2eTestPaths = [...testPaths];
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
 
