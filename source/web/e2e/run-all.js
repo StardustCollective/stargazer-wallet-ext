@@ -2,8 +2,8 @@ const path = require('path');
 const { promises: fs } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { runInShell } = require('./development/lib/run-command');
-const { exitWithError } = require('./development/lib/exit-with-error');
+const { runInShell } = require('./lib/run-command');
+const { exitWithError } = require('./lib/exit-with-error');
 
 async function main() {
   const { argv } = yargs(hideBin(process.argv))

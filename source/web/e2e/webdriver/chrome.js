@@ -1,9 +1,5 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-
-/**
- * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
- */
 class ChromeDriver {
   static async build({ responsive, port }) {
     const root = process.cwd();
@@ -19,9 +15,6 @@ class ChromeDriver {
       .setChromeOptions(options);
     const service = new chrome.ServiceBuilder();
 
-    // Enables Chrome logging. Default: enabled
-    // Especially useful for discovering why Chrome has crashed, but can also
-    // be useful for revealing console errors (from the page or background).
     if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
       service.setStdio('inherit').enableChromeLogging();
     }
@@ -39,19 +32,10 @@ class ChromeDriver {
     };
   }
 
-  /**
-   * @constructor
-   * @param {!ThenableWebDriver} driver - a {@code WebDriver} instance
-   */
   constructor(driver) {
     this._driver = driver;
   }
 
-  /**
-   * Returns the extension ID for the given extension name
-   * @param {string} extensionName - the extension name
-   * @returns {Promise<string|undefined>} the extension ID
-   */
   async getExtensionIdByName(extensionName) {
     await this._driver.get('chrome://extensions');
     return await this._driver.executeScript(`
