@@ -12,6 +12,7 @@ class ChromeDriver {
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
+    args.push('--window-size=100,720')
     const options = new chrome.Options().addArguments(args);
     const builder = new Builder()
       .forBrowser('chrome')
