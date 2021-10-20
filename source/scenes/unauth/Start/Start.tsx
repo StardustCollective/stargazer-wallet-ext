@@ -32,7 +32,7 @@ const Start = () => {
         extraStyle={styles.started}
         onClick={onGetStartedClicked}
       />
-      <Link color="monotoneOne" onClick={onImportClicked}>
+      <Link id="link" color="monotoneOne" onClick={onImportClicked}>
         Import from recovery seed phrase
       </Link>
     </div>

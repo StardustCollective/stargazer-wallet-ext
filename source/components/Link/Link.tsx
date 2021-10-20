@@ -7,6 +7,7 @@ import  MULink from '@material-ui/core/Link';
 import styles from './Link.scss';
 
 interface ILink {
+  id?: string;
   children: ReactNode;
   color?: 'primary' | 'secondary' | 'monotoneOne';
   noUnderline?: boolean;
@@ -15,11 +16,13 @@ interface ILink {
 }
 
 const Link: FC<ILink> = ({
+  id,
   color = 'primary',
   children,
   noUnderline = false,
   onClick,
   extraStyles,
+
 }) => {
   const classes = clsx(styles.link, extraStyles, styles[color], {
     [styles.noUnderline]: noUnderline,
@@ -27,7 +30,7 @@ const Link: FC<ILink> = ({
 
   return (
     <Typography>
-      <MULink className={classes} onClick={onClick}>
+      <MULink id={id} className={classes} onClick={onClick}>
         {children}
       </MULink>
     </Typography>

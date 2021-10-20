@@ -8,6 +8,7 @@ import { useLinkTo } from '@react-navigation/native';
 import styles from './Button.scss';
 
 interface IButton {
+  id?: string;
   blockHeight?: number;
   // height of block button if fullWidth = true
   children: ReactNode;
@@ -22,6 +23,7 @@ interface IButton {
 }
 
 const Button: FC<IButton> = ({
+  id,
   theme = 'primary',
   fullWidth = false,
   blockHeight = 0,
@@ -54,6 +56,7 @@ const Button: FC<IButton> = ({
 
   return (
     <MUIButton
+      id={id}
       className={classes}
       fullWidth={fullWidth}
       style={customStyle}

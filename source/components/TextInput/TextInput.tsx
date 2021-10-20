@@ -11,6 +11,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import styles from './TextInput.scss';
 
 interface ITextInput extends Partial<OutlinedInputProps> {
+  id?: string;
   endAdornment?: ReactNode;
   type?: 'text' | 'password' | 'number';
   variant?: string;
@@ -18,6 +19,7 @@ interface ITextInput extends Partial<OutlinedInputProps> {
 }
 
 const TextInput: FC<ITextInput> = ({
+  id,
   type = 'text',
   visiblePassword = false,
   variant = '',
@@ -37,6 +39,7 @@ const TextInput: FC<ITextInput> = ({
 
   return (
     <MUITextInput
+      id={id}
       className={clsx(styles.textInput, variant)}
       type={inputType}
       {...otherProps}
