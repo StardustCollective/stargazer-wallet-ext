@@ -57,3 +57,10 @@ Then run the following:
 - `yarn run build` builds the extension for all the browsers to `extension/BROWSER` directory respectively.
 
 Note: By default the `manifest.json` is set with version `0.0.0`. The webpack loader will update the version in the build with that of the `package.json` version. In order to release a new version, update version in `package.json` and run script.
+
+### Running E2E Test
+
+The chrome e2e test can be ran with `yarn test:e2e:chrome`. But are only compatible if you have 
+Chrome v79 installed. Update the chrome driver page to match your chrome install to run the e2e test
+on a newer version of Chrome.
+

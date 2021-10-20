@@ -117,3 +117,6 @@ yarn.lock
 
 # Desktop Services Store,
 .DS_Store
+
+# E2E Test Environment
+source/web/test-artifacts
