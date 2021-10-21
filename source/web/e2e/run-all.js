@@ -30,12 +30,7 @@ async function main() {
 
   const testDir = path.join(__dirname, 'tests');
 
-  const testFilenames = await fs.readdir(testDir);
-  const testPaths = testFilenames.map((filename) =>
-    path.join(testDir, filename),
-  );
-  const allE2eTestPaths = [...testPaths];
-
+  const allE2eTestPath = path.join(__dirname, '/tests');
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
 
   const args = [runE2eTestPath];
@@ -45,10 +40,9 @@ async function main() {
   if (retries) {
     args.push('--retries', retries);
   }
-``
-  for (const testPath of allE2eTestPaths) {
-    await runInShell('node', [...args, testPath]);
-  }
+
+  await runInShell('node', [...args, allE2eTestPath]);
+
 }
 
 main().catch((error) => {

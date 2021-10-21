@@ -52,8 +52,8 @@ async function main() {
 
   try {
     const stat = await fs.stat(e2eTestPath);
-    if (!stat.isFile()) {
-      exitWithError('Test path must be a file');
+    if (!stat.isDirectory()) {
+      exitWithError('Test path must be a directory');
       return;
     }
   } catch (error) {
