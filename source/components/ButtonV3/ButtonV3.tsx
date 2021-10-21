@@ -42,6 +42,7 @@ export enum  BUTTON_SIZES_ENUM {
 ///////////////////// 
 
 interface IButtonV3Props {
+  id?: string;
   type?: BUTTON_TYPES_ENUM;
   size?: BUTTON_SIZES_ENUM;
   label: string;
@@ -55,6 +56,7 @@ interface IButtonV3Props {
 ///////////////////// 
 
 const ButtonV3: FC<IButtonV3Props> = ({ 
+  id,
   type = BUTTON_TYPES_ENUM.PRIMARY_SOLID,
   size = BUTTON_SIZES_ENUM.SMALL,
   label = "",
@@ -86,7 +88,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   }
 
   return (
-    <button type={submit ? 'submit' : 'button'} className={clsx([
+    <button id={id} type={submit ? 'submit' : 'button'} className={clsx([
       styles.base,
       buttonColorStyle,
       buttonTextColor,
