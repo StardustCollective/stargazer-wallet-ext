@@ -26,7 +26,7 @@ const Start = () => {
       </TextV3.HeaderLarge>
       <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
       <ButtonV3
-        id={'getStartedButton'}
+        id={'start-getStartedButton'}
         type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
         label={'Get Started'}
