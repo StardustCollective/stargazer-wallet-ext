@@ -3,7 +3,7 @@ const { withFixtures } = require('../helpers');
 
 const seedPhrase = "tape acoustic spy autumn ribbon badge exhibit point victory very auto stereo";
 const password = 'Asdqwe123!';
-const invalidSeed = 'asdaedasdasda dasdas asda da asdda asd asd asdadasd asda. asdasdasd as as'
+const invalidSeed = 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor'
     
 
 describe('New install import account', function () {
@@ -36,7 +36,7 @@ describe('New install import account', function () {
     );
   });
 
-  it('should display an error message when entering a blank seed phrase ', async function () {
+  it('should display an error message when entering an invalid seed phrase ', async function () {
     
     await withFixtures(
       {
@@ -56,6 +56,43 @@ describe('New install import account', function () {
         });
         
         assert.equal(await message.getText(), 'Invalid recovery seed phrase');
+ 
+      },
+    );
+  });
+
+  it('should test that the import button is disabled when the seed phrase input is blank ', async function () {
+    
+    await withFixtures(
+      {
+        title: this.test.title,
+        leaveRunning: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await driver.clickElement('#link');
+        let element = await driver.findElement('#recoveryPhraseSubmit')
+        assert.equal(await element.isEnabled(), false);
+ 
+      },
+    );
+  });
+
+  it('should test that the import button is enabled when 12 word seed phrase is entered', async function () {
+    
+    await withFixtures(
+      {
+        title: this.test.title,
+        leaveRunning: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await driver.clickElement('#link');
+        await driver.fill('#recoveryPhraseInput', seedPhrase);
+        let element = await driver.findElement('#recoveryPhraseSubmit')
+        assert.equal(await element.isEnabled(), true);
  
       },
     );
