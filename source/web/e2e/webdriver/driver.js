@@ -146,6 +146,11 @@ class Driver {
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
+  async findAllElementsWithId(id){
+    let elements = await this.driver.findElements(By.id(id));
+    return elements.map((element) => wrapElementWithAPI(element, this));
+  }
+
   async findClickableElements(rawLocator) {
     const locator = this.buildLocator(rawLocator);
     const elements = await this.findElements(locator);
