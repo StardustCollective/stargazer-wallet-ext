@@ -14,7 +14,8 @@ const REQUEST_MAP = {
   DAG: {
     chainId: SUPPORTED_WALLET_METHODS.getChainId,
     accounts: SUPPORTED_WALLET_METHODS.getAccounts,
-    chainId: SUPPORTED_WALLET_METHODS.sendTransaction
+    chainId: SUPPORTED_WALLET_METHODS.sendTransaction,
+    getBalance: SUPPORTED_WALLET_METHODS.getBalance,
   },
   isConnected: SUPPORTED_WALLET_METHODS.isConnected,
   getNetwork: SUPPORTED_WALLET_METHODS.getNetwork,
@@ -84,7 +85,7 @@ async function handleRequest(chain, req) {
   throw ERRORS.INVALID_METHOD();
 }
 
-const privider = (chain) => {
+const provider = (chain) => {
   chain = chain.toLowerCase();
   
   if (!Object.keys(SUPPORTED_CHAINS).includes(chain)) {
@@ -141,12 +142,12 @@ const privider = (chain) => {
   }
 }
 
-const allPrivider = privider('ethereum');
+const allPrivider = provider('ethereum');
 
 window.stargazer = {
   evtRegMap: {},
   version: 1,
-  getPrivider: (chain) => privider(chain),
+  getProvider: (chain) => provider(chain),
   isConnected: async () => {
     const provider = window.providerManager.getProviderFor('main');
     return provider.getMethod('wallet.isConnected')()
