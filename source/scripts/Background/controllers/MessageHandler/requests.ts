@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { Message } from './types';
 import { IMasterController } from '../';
 import { getERC20DataDecoder } from 'utils/ethUtil';
+import { SUPPORTED_WALLET_METHODS } from './types';
 
 export const handleRequest = async (
     port: Runtime.Port,

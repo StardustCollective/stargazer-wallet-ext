@@ -22,6 +22,17 @@ const REQUEST_MAP = {
   getBalance: SUPPORTED_WALLET_METHODS.getBalance,
 }
 
+const SUPPORTED_CHAINS = {
+  constellation: {
+    prefix: 'dag',
+    asset: 'DAG'
+  },
+  ethereum: {
+    prefix: 'eth',
+    asset: 'ETH'
+  }
+};
+
 const ERRORS = {
   USER_REJECTED: (message = 'User Rejected Request') => {
     const err = new Error(message);
@@ -35,10 +46,16 @@ const ERRORS = {
   }
 }
 
-async function handleRequest(req) {
-  const provider = window.providerManager.getProviderFor('main');
+async function handleRequest(chain, req) {
+  const asset = SUPPORTED_CHAINS[chain].asset;
+
+  const provider = window.providerManager.getProviderFor(asset);
 
   let [prefix, method] = req.method.split('_');
+
+  if (prefix && prefix.toLowerCase() !== SUPPORTED_CHAINS[chain].prefix) {
+    throw ERRORS.INVALID_METHOD()
+  }
 
   if (!method) {
     prefix = null;
@@ -67,9 +84,69 @@ async function handleRequest(req) {
   throw ERRORS.INVALID_METHOD();
 }
 
+const privider = (chain) => {
+  chain = chain.toLowerCase();
+  
+  if (!Object.keys(SUPPORTED_CHAINS).includes(chain)) {
+    console.error('Unsupported chain: ' + chain);
+  }
+
+  return {
+    request: async (req) => {
+      const params = req.params || []
+      return await handleRequest(chain, {
+        method: req.method,
+        params
+      });
+    },
+    on: (method, callback) => {
+      let origin = window.location.hostname;
+      if (window.location.port) {
+        origin += ":" + window.location.port;
+      }
+  
+      const id = chain + "." + origin + "." + method;
+  
+      window.stargazer._listeners[id] = ({ detail }) => {
+        if (detail) {
+          callback(JSON.parse(detail));
+        }
+      };
+  
+      window.addEventListener(
+        id,
+        window.stargazer._listeners[id],
+        { passive: true }
+      );
+  
+      // Register the origin of the listening site.
+      window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: { method, origin, chain } }, '*');
+    },
+    removeListener: (method) => {
+      let origin = window.location.hostname;
+      if (window.location.port) {
+        origin += ":" + window.location.port;
+      }
+  
+      const id = chain + "." + origin + "." + method;
+  
+      if (window.stargazer._listeners[id]) {
+        window.removeEventListener(id, window.stargazer._listeners[id]);
+  
+        delete window.stargazer._listeners[id];
+      }
+  
+      window.postMessage({ id, type: 'STARGAZER_EVENT_DEREG', data: { method, origin, chain } }, '*');
+    }
+  }
+}
+
+const allPrivider = privider('ethereum');
+
 window.stargazer = {
   evtRegMap: {},
   version: 1,
+  getPrivider: (chain) => privider(chain),
   isConnected: async () => {
     const provider = window.providerManager.getProviderFor('main');
     return provider.getMethod('wallet.isConnected')()
@@ -82,50 +159,13 @@ window.stargazer = {
     return data.accounts;
   },
   request: async (req) => {
-    const params = req.params || []
-    return await handleRequest({
-      method: req.method,
-      params
-    });
+    return allPrivider.request(req);
   },
   on: (method, callback) => {
-    let origin = window.location.hostname;
-    if (window.location.port) {
-      origin += ":" + window.location.port;
-    }
-
-    const id = origin + "." + method;
-
-    window.stargazer._listeners[id] = ({ detail }) => {
-      if (detail) {
-        callback(JSON.parse(detail));
-      }
-    };
-
-    window.addEventListener(
-      id,
-      window.stargazer._listeners[id],
-      { passive: true }
-    );
-
-    // Register the origin of the listening site.
-    window.postMessage({ id, type: 'STARGAZER_EVENT_REG', data: { method, origin } }, '*');
+    return allPrivider.on(method, callback);
   },
   removeListener: (method) => {
-    let origin = window.location.hostname;
-    if (window.location.port) {
-      origin += ":" + window.location.port;
-    }
-
-    const id = origin + "." + method;
-
-    if (window.stargazer._listeners[id]) {
-      window.removeEventListener(id, window.stargazer._listeners[id]);
-
-      delete window.stargazer._listeners[id];
-    }
-
-    window.postMessage({ id, type: 'STARGAZER_EVENT_DEREG', data: { method, origin } }, '*');
+    return allPrivider.removeListener(method);
   },
   _listeners: {}
 }

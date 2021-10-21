@@ -25,7 +25,7 @@ const ConnectedSites: FC<IWalletsView> = ({ navigation }) => {
   }, []);
 
   const onDeleteSiteClicked = (id: string) => {
-    controller.dapp.fromUseDisconnectDApp(id);
+    controller.dapp.fromUserDisconnectDApp(id);
   }
 
   return (

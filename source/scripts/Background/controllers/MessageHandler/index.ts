@@ -48,7 +48,11 @@ export const messagesHandler = (
         }
 
         const url = connection.sender?.url as string;
+        const title = connection.sender?.tab?.title as string;
         const origin = url && new URL(url as string).origin;
+
+        // Set current page
+        masterController.dapp.fromPageConnectDApp(origin, title);
 
         switch (message.type) {
             case 'STARGAZER_EVENT_REG':

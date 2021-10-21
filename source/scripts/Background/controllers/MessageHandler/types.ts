@@ -17,7 +17,8 @@ export type Message = {
 
 export enum SUPPORTED_EVENT_TYPES {
     accountChanged = 'accountsChanged',
-    chainChanged = 'chainChanged' // TODO: implement
+    chainChanged = 'chainChanged', // TODO: implement
+    close = 'close'
 }
 
 export enum SUPPORTED_WALLET_METHODS {
@@ -32,3 +33,8 @@ export enum SUPPORTED_WALLET_METHODS {
     getAddress,
     getBalance
 }
+
+export const SUPPORTED_CHAINS = [
+    'constellation',
+    'ethereum'
+];
