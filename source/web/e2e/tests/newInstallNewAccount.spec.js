@@ -4,7 +4,7 @@ const { withFixtures } = require('../helpers');
 const password        = 'Asdqwe123!';
 const invalidPassword = '12345'
 
-describe.only('New install new account', function () {
+describe('New install new account', function () {
 
   it('should create a new account successfully', async function () {
     await withFixtures(
