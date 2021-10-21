@@ -72,7 +72,7 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
           <b>The phrase can be 12, 15, 18, 21 or 24 words with a single space between.</b>
           <br/>
           {isInvalid && (
-            <span className={styles.error}>Invalid recovery seed phrase</span>
+            <span id='seedPhraseError' className={styles.error}>Invalid recovery seed phrase</span>
           )}
         </span>
         <div className={styles.actions}>
