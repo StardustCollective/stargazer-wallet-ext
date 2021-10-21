@@ -82,7 +82,7 @@ const CreatePass = () => {
               special character.
             </span>
             {(errors.password || errors.repassword) && (
-              <span className={styles.error}>
+              <span id='passwordError' className={styles.error}>
                 {errors.password
                   ? errors.password.message
                   : errors.repassword.message}
