@@ -1,10 +1,10 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 
-const seedPhrase = "tape acoustic spy autumn ribbon badge exhibit point victory very auto stereo";
-const password = 'Asdqwe123!';
-const invalidSeed = 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor'
-    
+const seedPhrase      = "tape acoustic spy autumn ribbon badge exhibit point victory very auto stereo";
+const invalidSeed     = 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor'
+const password        = 'Asdqwe123!';
+const invalidPassword = '12345'
 
 describe('New install import account', function () {
 
@@ -111,8 +111,8 @@ describe('New install import account', function () {
         await driver.fill('#recoveryPhraseInput', seedPhrase);
         await driver.clickElement('#recoveryPhraseSubmit');
 
-        await driver.fill('#passwordField', '12345');
-        await driver.fill('#confirmPasswordField', '12345');
+        await driver.fill('#passwordField', invalidPassword);
+        await driver.fill('#confirmPasswordField', invalidPassword);
         await driver.clickElement('#nextButton');
 
         const message = await driver.waitForSelector({
