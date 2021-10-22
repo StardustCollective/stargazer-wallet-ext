@@ -1,26 +1,13 @@
-
+import { SUPPORTED_WALLET_METHODS } from 'scripts/Background/controllers/MessageHandler/types';
 import { providerManager, stargazerProvider } from './inject';
 
 import { Script } from 'scripts/Provider/Script';
 
 new Script().start();
 
-inject(providerManager());
-inject(stargazerProvider());
-
-// function injectEthereum (asset: string, name: string) {
-//
-//   inject(ethereumProvider({
-//     name,
-//     asset,
-//     network: {
-//       networkId: 1, chainId: 1
-//     },
-//     overrideEthereum: true
-//   }))
-// }
-//
-// injectEthereum('ETH', 'eth')
+inject(`window.SUPPORTED_WALLET_METHODS = ${JSON.stringify(SUPPORTED_WALLET_METHODS)}`);
+inject(providerManager);
+inject(stargazerProvider);
 
 function inject(content: string) {
   const container = document.head || document.documentElement;

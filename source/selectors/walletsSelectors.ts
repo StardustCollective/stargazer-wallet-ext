@@ -32,19 +32,20 @@ const wallets = (state: RootState) => state.vault.wallets;
  * Returns all accounts from all wallets.
  */
 
-const selectAllAccounts = createSelector
-(wallets, (wallets: KeyringWalletState[]) => {
-  let allAccounts = [];
-  for (let i = 0; i < wallets.length; i++) {
-    let accounts  = wallets[i].accounts
-    for (let j = 0; j < wallets[i].accounts.length; j++) {
-      let account = accounts[j] as IAccountDerived;
-      account.label = wallets[i].label;
-      allAccounts.push(account);
+const selectAllAccounts = createSelector(
+  wallets, 
+  (wallets: KeyringWalletState[]) => {
+    let allAccounts = [];
+    for (let i = 0; i < wallets.length; i++) {
+      let accounts = wallets[i].accounts
+      for (let j = 0; j < wallets[i].accounts.length; j++) {
+        let account = accounts[j] as IAccountDerived;
+        account.label = wallets[i].label;
+        allAccounts.push(account);
+      }
     }
-  }
-  return allAccounts;
-});
+    return allAccounts;
+  });
 
 /**
  * Returns all DAG accounts from all wallets.
@@ -70,8 +71,16 @@ const selectAllEthAccounts = createSelector(
   }
 );
 
+const selectAllWallets = createSelector(
+  wallets,
+  (wallets: KeyringWalletState[]) => {
+    return [...wallets];
+  }
+);
+
 export default {
   selectAllAccounts,
   selectAllDagAccounts,
   selectAllEthAccounts,
+  selectAllWallets
 };

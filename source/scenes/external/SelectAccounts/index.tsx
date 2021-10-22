@@ -1,20 +1,20 @@
 ///////////////////////////
 // Modules
 ///////////////////////////
-
 import React, { useEffect, useState } from 'react';
 import { browser } from 'webextension-polyfill-ts';
 import { useSelector } from 'react-redux';
 import queryString from 'query-string';
 import {
-  KeyringNetwork
+  KeyringNetwork,
+  KeyringWalletState,
+  KeyringWalletType
 } from '@stardust-collective/dag4-keyring';
 
 
 ///////////////////////////
 // Components
 ///////////////////////////
-
 import TextV3 from 'components/TextV3';
 import Checkbox from '@material-ui/core/Checkbox';
 import Icon from 'components/Icon';
@@ -22,19 +22,16 @@ import Icon from 'components/Icon';
 ///////////////////////////
 // Layouts
 ///////////////////////////
-
 import CardLayout from 'scenes/external/Layouts/CardLayout';
 
 ///////////////////////////
 // Selectors
 ///////////////////////////
-
 import walletsSelectors from 'selectors/walletsSelectors'
 
 ///////////////////////////
 // Styles
 ///////////////////////////
-
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './index.module.scss';
@@ -50,33 +47,26 @@ const PurpleCheckbox = withStyles({
 ///////////////////////////
 // Images
 ///////////////////////////
-
 import ConstellationIcon from 'assets/images/svg/constellation.svg';
 import EthereumIcon from 'assets/images/svg/ethereum.svg';
+import StargazerIcon from 'assets/images/svg/stargazerLogoV3.svg';
 
 ///////////////////////////
 // Hooks Imports
 ///////////////////////////
-
 import { useController } from 'hooks/index';
 
 ///////////////////////////
 // Types
 ///////////////////////////
-
-import { IAccountDerived } from 'state/vault/types';
-
-type IAccountItem = {
-  accountName: string;
-  accountAddress: string;
-  accountBalance: string;
-  onCheckboxChange: (checked: boolean, address: string) => void;
+type IWalletItem = {
+  wallet: KeyringWalletState;
+  onCheckboxChange: (checked: boolean, wallet: KeyringWalletState) => void;
 }
 
 ///////////////////////////
 // Enums
 ///////////////////////////
-
 enum SCENE_STATE {
   SELECT_ACCOUNTS = 1,
   CONNECT,
@@ -85,33 +75,27 @@ enum SCENE_STATE {
 ///////////////////////////
 // View
 ///////////////////////////
-
 const SelectAccounts = () => {
 
   ///////////////////////////
   // Hooks
   ///////////////////////////
-
-  const allDagAccounts = useSelector(walletsSelectors.selectAllDagAccounts);
-  const allEthAccounts = useSelector(walletsSelectors.selectAllEthAccounts);
-  const [accounts, setAccounts] = useState<IAccountDerived[]>([]);
+  const allWallets = useSelector(walletsSelectors.selectAllWallets);
+  const [wallets, setWallets] = useState<KeyringWalletState[]>([]);
   const [network, setNetwork] = useState<string>("");
-  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([])
+  const [selectedWallets, setSelectedWallets] = useState<KeyringWalletState[]>([])
   const [sceneState, setSceneState] = useState<SCENE_STATE>(SCENE_STATE.SELECT_ACCOUNTS);
   const controller = useController();
   const current = controller.dapp.getCurrent();
   const origin = current && current.origin;
 
-  // Set the account data based on the type of network
-  // that is retrieved from the query parameter.
+  // Set the network based on query string to determine 
+  // which accounts to return after selecting wallets
   useEffect(() => {
     const { network } = queryString.parse(location.search);
+    
     setNetwork(network as string);
-    if (network === KeyringNetwork.Constellation) {
-      setAccounts(allDagAccounts)
-    } else if (network === KeyringNetwork.Ethereum) {
-      setAccounts(allEthAccounts)
-    }
+    setWallets(allWallets);
   }, []);
 
   ///////////////////////////
@@ -122,13 +106,33 @@ const SelectAccounts = () => {
     if (sceneState === SCENE_STATE.SELECT_ACCOUNTS) {
       setSceneState(SCENE_STATE.CONNECT);
     } else if (sceneState === SCENE_STATE.CONNECT) {
-      controller.dapp.fromUserConnectDApp(origin, current, network, selectedAccounts);
+      const accounts = selectedWallets.reduce((carry, wallet)=> {
+        carry = carry.concat(wallet.accounts);
+        return carry;
+      }, []);
+
+      const ethAccounts = accounts
+        .filter(({ network }) => network === KeyringNetwork.Ethereum)
+        .map(({address}) => address);
+
+      const dagAccounts = accounts
+        .filter(({ network }) => network === KeyringNetwork.Constellation)
+        .map(({address}) => address);
+
+      // No specific network selected, connect both
+      if (!network) {
+        controller.dapp.fromUserConnectDApp(origin, current, KeyringNetwork.Ethereum, ethAccounts);
+        controller.dapp.fromUserConnectDApp(origin, current, KeyringNetwork.Constellation, dagAccounts);
+      } else {
+        controller.dapp.fromUserConnectDApp(origin, current, network, accounts);
+      }
+      
       const background = await browser.runtime.getBackgroundPage();
 
       const {windowId} = queryString.parse(window.location.search);
 
       background.dispatchEvent(
-        new CustomEvent('connectWallet', { detail: { windowId, accounts: selectedAccounts } })
+        new CustomEvent('connectWallet', { detail: { windowId, accounts: accounts } })
       );
       
       window.close();
@@ -143,14 +147,13 @@ const SelectAccounts = () => {
     }
   }
 
-  const onCheckboxChange = (checked: boolean, address: string) => {
+  const onCheckboxChange = (checked: boolean, wallet: KeyringWalletState) => {
     // Add the account address to the white list.
     if (checked) {
-      let accounts = [...selectedAccounts, address];
-      setSelectedAccounts(accounts);
+      setSelectedWallets([...selectedWallets, wallet]);
     } else {
-      let accounts = selectedAccounts.filter((account) => account !== address);
-      setSelectedAccounts(accounts);
+      const wallets = selectedWallets.filter((selectedWallet: any) => wallet.id !== selectedWallet.id);
+      setSelectedWallets(wallets);
     }
   }
 
@@ -158,29 +161,29 @@ const SelectAccounts = () => {
   // Renders
   ///////////////////////////
 
-  const RenderAccountItem = ({
-    accountName,
-    accountAddress,
-    accountBalance,
+  const RenderWalletItem = ({
+    wallet,
     onCheckboxChange
-  }: IAccountItem) => {
-
-    const shortAddress = accountAddress.substring(accountAddress.length - 4)
-    const symbol = network === KeyringNetwork.Constellation ? 'DAG' : 'ETH';
-    let icon = '';
-
-    if (network === KeyringNetwork.Constellation) {
+  }: IWalletItem) => {
+    let icon = '',
+      symbolText = '';
+    if (wallet.type === KeyringWalletType.SingleAccountWallet && wallet.supportedAssets[0] === 'DAG') {
       icon = ConstellationIcon
-    } else if (network === KeyringNetwork.Ethereum) {
+      symbolText = 'DAG';
+    } else if (wallet.type === KeyringWalletType.SingleAccountWallet && wallet.supportedAssets[0] === 'ETH') {
       icon = EthereumIcon;
+      symbolText = 'ETH';
+    } else {
+      icon = StargazerIcon;
+      symbolText = 'Multi Chain Wallet'
     }
 
     return (
-      <div key={accountAddress} className={styles.walletItem}>
+      <div key={wallet.id} className={styles.walletItem}>
         <div className={styles.walletItemCheckBox}>
           <PurpleCheckbox
-            onChange={(e: any) => onCheckboxChange(e.target.checked, accountAddress)}
-            checked={(selectedAccounts.filter((account) => account === accountAddress).length > 0)}
+            onChange={(e: any) => onCheckboxChange(e.target.checked, wallet)}
+            checked={(selectedWallets.filter((selectedWallet) => wallet.id === selectedWallet.id).length > 0)}
           />
         </div>
         <div className={styles.walletItemIcon}>
@@ -188,27 +191,24 @@ const SelectAccounts = () => {
         </div>
         <div className={styles.walletItemDetails}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-            {accountName} (...{shortAddress})
+            {wallet.label}
           </TextV3.CaptionStrong>
           <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-            {accountBalance} {symbol}
+            {symbolText}
           </TextV3.Caption>
         </div>
       </div>
     );
-
   }
 
   const RenderContentByState = ({ state }: { state: SCENE_STATE }) => {
-
     if (state === SCENE_STATE.SELECT_ACCOUNTS) {
       return (
         <>
-          {accounts.length > 0 && accounts.map((account: IAccountDerived) => (
-            <RenderAccountItem
-              accountName={account.label}
-              accountAddress={account.address}
-              accountBalance=""
+          {wallets.length > 0 && wallets.map((wallet: KeyringWalletState) => (
+            <RenderWalletItem
+              key={wallet.id}
+              wallet={wallet}
               onCheckboxChange={onCheckboxChange}
             />
           ))}
@@ -221,13 +221,13 @@ const SelectAccounts = () => {
             Connect To
           </TextV3.Header>
           <TextV3.Body color={COLORS_ENUMS.BLACK}>
-            {selectedAccounts.length} Account(s)
+            {selectedWallets.length} Wallet(s)
           </TextV3.Body>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.allowSitesText}>
             Allow this site to:
           </TextV3.CaptionStrong>
           <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.permissionText}>
-            View the addresses of your permitted accounts.
+            View the addresses of your permitted wallets.
           </TextV3.Caption>
         </div>
       )
@@ -246,7 +246,7 @@ const SelectAccounts = () => {
       onNegativeButtonClick={onNegativeButtonPressed}
       positiveButtonLabel={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Next' : 'Connect'}
       onPositiveButtonClick={onPositiveButtonPressed}
-      isPositiveButtonDisabled={selectedAccounts.length === 0}
+      isPositiveButtonDisabled={selectedWallets.length === 0}
     >
       <RenderContentByState state={sceneState} />
     </CardLayout>

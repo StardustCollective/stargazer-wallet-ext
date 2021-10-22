@@ -131,6 +131,10 @@ module.exports = {
         loader: 'file-loader',
       },
       {
+        test: /\.txt\.ts$/,
+        loader: 'raw-loader',
+      },
+      {
         test: /\.(sa|sc|c)ss$/,
         use: [
           {

@@ -1,8 +1,11 @@
 import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import find from 'lodash/find';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { IDAppState } from '../../state/dapp/types';
+import { useController } from 'hooks/index';
 
 export class StargazerProvider {
   constructor() {}
@@ -27,8 +30,38 @@ export class StargazerProvider {
   }
 
   getAccounts(): Array<string> {
-    // TODO
-    return [];
+    const { dapp, vault } = store.getState();
+    const { whitelist }: IDAppState = dapp;
+
+    const controller = useController();
+    const current = controller.dapp.getCurrent();
+    const origin = current && current.origin;
+
+    if (!origin) {
+      return [];
+    }
+
+    const _origin = origin.replace(/https?:\/\//, '');
+
+    const dappData = whitelist[_origin];
+
+    if (!dappData?.accounts?.Constellation) {
+      return [];
+    }
+
+    const { activeWallet }: IVaultState = vault;
+
+    if (!activeWallet) {
+      return dappData.accounts.Constellation;
+    }
+
+    const dagAddresses = dappData.accounts.Constellation;
+    const activeAddress = find(activeWallet.assets, { id: 'constellation' });
+  
+    return [
+      activeAddress?.address,
+      ...dagAddresses.filter( address => address !== activeAddress?.address)
+    ].filter(Boolean);  // if no active address, remove
   }
 
   getBlockNumber() {

@@ -6,13 +6,12 @@ import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
-import includes from 'lodash/includes';
-import filter from 'lodash/filter';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
-import { IDAppInfo, IDappAccounts } from 'state/dapp/types';
+import DappController from 'scripts/Background/controllers/DAppController';
+
 export class WalletController implements IWalletController {
   account: AccountController;
   keyringManager: KeyringManager;
@@ -127,34 +126,7 @@ export class WalletController implements IWalletController {
   }
 
   async notifyWalletChange(accounts: string[]) {
-    const state = store.getState();
-    const whiteList: { [dappId: string]: IDAppInfo }[] = state.dapp.whitelist;
-    const listening: { [origin: string]: Array<string> } = state.dapp.listening;
-
-    // Will only notify whitelisted dapps that are listening for a wallet change.
-    for (const origin of Object.keys(listening)) {
-      const site = whiteList[origin as any];
-      const listeningEvents = listening[origin];
-
-      if (!listeningEvents.includes('accountsChanged')) {
-        continue;
-      }
-
-      if (site) {
-        const siteAccounts = site.accounts as IDappAccounts;
-        const allAccountsWithDuplicates = accounts.concat(siteAccounts.Constellation, siteAccounts.Ethereum);
-        const matchingAccounts = filter(allAccountsWithDuplicates, (value, index, iteratee) => includes(iteratee, value as string, index + 1))
-
-        if (matchingAccounts.length) {
-          const background = await browser.runtime.getBackgroundPage();
-
-          background.dispatchEvent(
-            new CustomEvent('accountsChanged', { detail: { data: matchingAccounts, origin } })
-          );
-        }
-      }
-    }
-
+    return DappController().notifyAccountsChanged(accounts)
   }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
