@@ -166,7 +166,8 @@ const SelectAccounts = () => {
     onCheckboxChange
   }: IWalletItem) => {
     let icon = '',
-      symbolText = '';
+      symbolText = '',
+      iconStyle = styles.icon;
     if (wallet.type === KeyringWalletType.SingleAccountWallet && wallet.supportedAssets[0] === 'DAG') {
       icon = ConstellationIcon
       symbolText = 'DAG';
@@ -176,6 +177,7 @@ const SelectAccounts = () => {
     } else {
       icon = StargazerIcon;
       symbolText = 'Multi Chain Wallet'
+      iconStyle = styles.iconPurple;
     }
 
     return (
@@ -187,7 +189,7 @@ const SelectAccounts = () => {
           />
         </div>
         <div className={styles.walletItemIcon}>
-          <Icon width={25} Component={icon} iconStyles={styles.icon} />
+          <Icon width={25} Component={icon} iconStyles={iconStyle} />
         </div>
         <div className={styles.walletItemDetails}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>

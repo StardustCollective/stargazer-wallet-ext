@@ -6,10 +6,16 @@
   justify-items: center;
   padding: 10px;
   border-bottom: 1px solid $gray-200;
+  
   .icon {
     background-color: $white;
     border: 1px solid $gray-200;
   }
+
+  .iconPurple {
+    background-color: $primary;
+  }
+  
   .walletItemDetails {
     display: flex;
     flex-direction: column;
@@ -23,9 +29,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  
   .allowSitesText{
     margin-top: 15px;
   }
+  
   .permissionText {
     text-align: center;
   }
