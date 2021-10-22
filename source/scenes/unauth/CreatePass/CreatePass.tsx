@@ -42,6 +42,7 @@ const CreatePass = () => {
         ) : (
           <>
             <TextInput
+              id="createPass-password"
               type="password"
               placeholder="Please enter at least 8 characters"
               fullWidth
@@ -51,6 +52,7 @@ const CreatePass = () => {
               variant={styles.pass}
             />
             <TextInput
+              id="createPass-confirmPassword"
               type="password"
               placeholder="Please enter your password again"
               fullWidth
@@ -64,7 +66,7 @@ const CreatePass = () => {
               special character.
             </span>
             {(errors.password || errors.repassword) && (
-              <span className={styles.error}>
+              <span id="createPass-passwordError" className={styles.error}>
                 {errors.password
                   ? errors.password.message
                   : errors.repassword.message}
@@ -74,6 +76,7 @@ const CreatePass = () => {
         )}
         <span className={`body-comment ${styles.comment}`}>{comment}</span>
         <Button
+          id="createPass-nextButton"
           type={passed ? 'button' : 'submit'}
           variant={styles.next}
           onClick={nextHandler}

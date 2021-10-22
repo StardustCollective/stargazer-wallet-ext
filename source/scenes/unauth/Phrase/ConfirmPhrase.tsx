@@ -94,6 +94,7 @@ const ConfirmPhrase = () => {
           <section className={styles.topzone}>
             {newList.map((phrase, idx) => (
               <Button
+                id={phrase}
                 key={phrase}
                 type="button"
                 variant={`${styles.phrase} ${styles.selected}`}
@@ -106,6 +107,7 @@ const ConfirmPhrase = () => {
           <section className={styles.bottomzone}>
             {orgList.map((phrase, idx) => (
               <Button
+                id={phrase}
                 key={phrase}
                 type="button"
                 variant={clsx(styles.phrase, {
@@ -120,6 +122,7 @@ const ConfirmPhrase = () => {
         </>
       )}
       <Button
+        id="confirmPhrase-confirmButton"
         type="button"
         variant={passed ? styles.start : styles.validate}
         disabled={isNotEqualArrays}

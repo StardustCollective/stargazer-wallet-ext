@@ -41,12 +41,15 @@ const CreatePhrase: FC = () => {
               <span className="t-gray-medium">
                 {String(index + 1).padStart(2, '0')}.
               </span>
-              {phrase}
+              <span id="createPhrase-phrase" >
+                {phrase}
+              </span>
             </li>
           ))}
         </ul>
       )}
       <Button
+        id="createPhrase-confirmButton"
         type="button"
         onClick={nextHandler}
         variant={clsx(styles.written, { [styles.passed]: passed })}

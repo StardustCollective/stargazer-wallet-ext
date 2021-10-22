@@ -14,6 +14,7 @@ async function withFixtures(options, testSuite) {
     title,
     failOnConsoleError = true,
     dappPath = undefined,
+    leaveRunning = false,
   } = options;
 
   let webDriver;
@@ -51,7 +52,7 @@ async function withFixtures(options, testSuite) {
     }
     throw error;
   } finally {
-    if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
+    if (!failed && !leaveRunning) {
       if (webDriver) {
         await webDriver.quit();
       }

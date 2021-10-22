@@ -15,6 +15,7 @@ const RemindPhrase = () => {
       </span>
 
       <Button
+        id="remindPhrase-startButton"
         type="button"
         variant={styles.start}
         linkTo="/create/phrase/generated"
