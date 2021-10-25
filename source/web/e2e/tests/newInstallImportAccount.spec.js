@@ -1,10 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
-
-const seedPhrase      = "tape acoustic spy autumn ribbon badge exhibit point victory very auto stereo";
-const invalidSeed     = 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor'
-const password        = 'Asdqwe123!';
-const invalidPassword = '12345'
+const CONSTANTS = require('../constants'); 
 
 describe('New install import account', function () {
 
@@ -18,11 +14,11 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', seedPhrase);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
-        await driver.fill('#passwordField', password);
-        await driver.fill('#confirmPasswordField', password);
+        await driver.fill('#passwordField', CONSTANTS.PASSWORD);
+        await driver.fill('#confirmPasswordField', CONSTANTS.PASSWORD);
         await driver.clickElement('#nextButton');
 
         const message = await driver.waitForSelector({
@@ -47,7 +43,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', invalidSeed);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.INVALID_SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         const message = await driver.waitForSelector({
@@ -90,7 +86,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', seedPhrase);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
         let element = await driver.findElement('#recoveryPhraseSubmit')
         assert.equal(await element.isEnabled(), true);
  
@@ -108,11 +104,11 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', seedPhrase);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
-        await driver.fill('#passwordField', invalidPassword);
-        await driver.fill('#confirmPasswordField', invalidPassword);
+        await driver.fill('#passwordField', CONSTANTS.INVALID_PASSWORD);
+        await driver.fill('#confirmPasswordField', CONSTANTS.INVALID_PASSWORD);
         await driver.clickElement('#nextButton');
 
         const message = await driver.waitForSelector({
@@ -136,7 +132,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', seedPhrase);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         await driver.fill('#passwordField', 'Asdqwe123!!');
@@ -164,7 +160,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', seedPhrase);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         await driver.clickElement('#nextButton');
@@ -190,7 +186,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', seedPhrase);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         await driver.fill('#passwordField', 'Asdqwe123!!');
