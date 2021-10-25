@@ -1,8 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
-
-const password        = 'Asdqwe123!';
-const invalidPassword = '12345'
+const CONSTANTS = require('../constants'); 
 
 describe('New install new account', function () {
 
@@ -18,8 +16,8 @@ describe('New install new account', function () {
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');
-        await driver.fill('#createPass-password', password);
-        await driver.fill('#createPass-confirmPassword', password);
+        await driver.fill('#createPass-password', CONSTANTS.PASSWORD);
+        await driver.fill('#createPass-confirmPassword', CONSTANTS.PASSWORD);
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');
@@ -58,8 +56,8 @@ describe('New install new account', function () {
 
         await driver.clickElement('#start-getStartedButton');
 
-        await driver.fill('#createPass-password', invalidPassword);
-        await driver.fill('#createPass-confirmPassword', invalidPassword);
+        await driver.fill('#createPass-password', CONSTANTS.INVALID_PASSWORD);
+        await driver.fill('#createPass-confirmPassword', CONSTANTS.INVALID_PASSWORD);
         await driver.clickElement('#createPass-nextButton');
 
         const message = await driver.waitForSelector({
@@ -138,7 +136,7 @@ describe('New install new account', function () {
 
         await driver.clickElement('#start-getStartedButton');
 
-        await driver.fill('#createPass-password', password);
+        await driver.fill('#createPass-password', CONSTANTS.PASSWORD);
         await driver.clickElement('#createPass-nextButton');
 
         const message = await driver.waitForSelector({
@@ -162,8 +160,8 @@ describe('New install new account', function () {
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');
-        await driver.fill('#createPass-password', password);
-        await driver.fill('#createPass-confirmPassword', password);
+        await driver.fill('#createPass-password', CONSTANTS.PASSWORD);
+        await driver.fill('#createPass-confirmPassword', CONSTANTS.PASSWORD);
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');
@@ -189,8 +187,8 @@ describe('New install new account', function () {
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');
-        await driver.fill('#createPass-password', password);
-        await driver.fill('#createPass-confirmPassword', password);
+        await driver.fill('#createPass-password', CONSTANTS.PASSWORD);
+        await driver.fill('#createPass-confirmPassword', CONSTANTS.PASSWORD);
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');
@@ -228,8 +226,8 @@ describe('New install new account', function () {
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');
-        await driver.fill('#createPass-password', password);
-        await driver.fill('#createPass-confirmPassword', password);
+        await driver.fill('#createPass-password', CONSTANTS.PASSWORD);
+        await driver.fill('#createPass-confirmPassword', CONSTANTS.PASSWORD);
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');
@@ -267,8 +265,8 @@ describe('New install new account', function () {
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');
-        await driver.fill('#createPass-password', password);
-        await driver.fill('#createPass-confirmPassword', password);
+        await driver.fill('#createPass-password', CONSTANTS.PASSWORD);
+        await driver.fill('#createPass-confirmPassword', CONSTANTS.PASSWORD);
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');

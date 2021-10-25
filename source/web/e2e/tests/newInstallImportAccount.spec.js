@@ -14,7 +14,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         await driver.fill('#passwordField', CONSTANTS.PASSWORD);
@@ -86,7 +86,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
         let element = await driver.findElement('#recoveryPhraseSubmit')
         assert.equal(await element.isEnabled(), true);
  
@@ -104,7 +104,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         await driver.fill('#passwordField', CONSTANTS.INVALID_PASSWORD);
@@ -132,7 +132,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         await driver.fill('#passwordField', 'Asdqwe123!!');
@@ -160,7 +160,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         await driver.clickElement('#nextButton');
@@ -186,7 +186,7 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        await driver.fill('#recoveryPhraseInput', CONSTANTS.SEED_PHRASE);
+        await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
         await driver.clickElement('#recoveryPhraseSubmit');
 
         await driver.fill('#passwordField', 'Asdqwe123!!');
