@@ -14,6 +14,7 @@ import styles from './Card.scss';
 // Interface
 ///////////////////////
 interface ICardProps {
+  id?: string;
   children?: React.ReactNode;
   onClick?: () => void;
 }
@@ -22,10 +23,10 @@ interface ICardProps {
 // Component
 ///////////////////////
 
-const Card = ({ children, onClick }: ICardProps) => {
+const Card = ({ id, children, onClick }: ICardProps) => {
 
   return (
-    <div onClick={onClick} className={styles.card}>
+    <div id={id} onClick={onClick} className={styles.card}>
       {children}
     </div>
   );

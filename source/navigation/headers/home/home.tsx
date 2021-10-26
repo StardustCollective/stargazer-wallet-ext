@@ -54,6 +54,7 @@ const homeHeader = ({
     if (hasMainAccount) {
       return (
       <IconButton
+        id="header-moreButton"
         className={`${styles.buttonRight} ${styles.more}`}
         onClick={onMenuButtonClicked}
       >

@@ -33,6 +33,7 @@ const ImportWallet: FC<IImportWalletView> = () => {
   return (
     <div className={styles.wrapper}>
       <section
+        id="importWallet-multiChainWallet"
         className={styles.menu}
         onClick={onImportPhraseView}
       >

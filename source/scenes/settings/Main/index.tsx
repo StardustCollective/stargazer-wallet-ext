@@ -95,7 +95,7 @@ const Main: FC = () => {
   const RenderSettingsItem = ({ label, iconImage, imageStyles, onClick }: IRenderSettingsItemProps) => {
 
     return (
-      <Card onClick={onClick}>
+      <Card id={'settings-'+label.toLowerCase()} onClick={onClick}>
         <div className={styles.settingsItemIconWrapper}>
           <div className={styles.iconCircle}>
             <img src={'/' + iconImage} className={imageStyles} />

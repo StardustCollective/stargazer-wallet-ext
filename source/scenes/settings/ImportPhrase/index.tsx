@@ -47,6 +47,7 @@ const ImportPhrase = ({ navigation }: IImportPhrase) => {
       <section>
         <label>Recovery Seed Phrase</label>
         <TextInput
+          id="importPhrase-phraseInput"
           type="text"
           name="phrase"
           visiblePassword
@@ -60,6 +61,7 @@ const ImportPhrase = ({ navigation }: IImportPhrase) => {
         </span>
         <label>Name</label>
         <TextInput
+          id="importPhrase-nameInput"
           fullWidth
           inputRef={register}
           name="label"
@@ -68,6 +70,7 @@ const ImportPhrase = ({ navigation }: IImportPhrase) => {
       </section>
       <section className={styles.actions}>
         <Button
+          id="importPhrase-cancelButton"
           type="button"
           theme="secondary"
           variant={styles.cancel}
@@ -75,7 +78,12 @@ const ImportPhrase = ({ navigation }: IImportPhrase) => {
         >
           Cancel
         </Button>
-        <Button type="submit" variant={styles.button} loading={loading}>
+        <Button 
+          id="importPhrase-importButton"
+          type="submit" 
+          variant={styles.button} 
+          loading={loading}
+        >
           Import
         </Button>
       </section>
