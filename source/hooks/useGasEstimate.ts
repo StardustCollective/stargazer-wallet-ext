@@ -18,6 +18,7 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
+  const [toEthAddress, setToEthAddress] = useState<string>(toAddress);
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
@@ -54,19 +55,24 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
     })
   };
 
-  useEffect(() => {
-    const getGasLimit = async () => {
-      let gasLimit;
-      if (asset.type === AssetType.ERC20) {
-        gasLimit = await estimateGasLimit({ to: asset.address, data })
-      } else {
-        gasLimit = await estimateGasLimit({ to: toAddress, data })
-      }
-
-      setGasLimit(gasLimit);
+  const getGasLimit = async () => {
+    let gasLimit;
+    if (asset.type === AssetType.ERC20) {
+      gasLimit = await estimateGasLimit({ to: asset.address, data })
+    } else {
+      gasLimit = await estimateGasLimit({ to: toEthAddress, data })
     }
+
+    setGasLimit(gasLimit);
+  }
+
+  useEffect(() => {
     getGasLimit();
   }, []);
+
+  useEffect(() => {
+    getGasLimit();
+  }, [toEthAddress]);
 
   useEffect(() => {
     if (gasLimit > 0) {
@@ -75,12 +81,13 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
   }, [gasLimit])
 
   return {
+    setGasPrice,
+    setToEthAddress,
     estimateGasFee,
     gasSpeedLabel,
     gasFee,
     gasPrice,
     gasPrices,
-    setGasPrice,
     gasLimit,
   };
 }
