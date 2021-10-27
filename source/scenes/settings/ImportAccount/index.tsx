@@ -145,6 +145,7 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
 
           <div className={clsx(styles.actions, styles.centered)}>
             <Button
+              id='importAccount-finishButton'
               type="button"
               variant={styles.button}
               onClick={onFinishButtonPressed}
@@ -160,6 +161,7 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
               Select Type:
               <div className={styles.inner}>
                 <Select
+                  id={'importAccount-importTypeSelect'}
                   value={importType}
                   options={[
                     { priv: 'Private key' },
@@ -176,6 +178,7 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
               <>
                 <span>Paste your private key string here:</span>
                 <TextInput
+                  id="importAccount-privateKeyInput"
                   multiline
                   fullWidth
                   variant={styles.textarea}
@@ -187,11 +190,13 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
             ) : importType === 'json' ? (
               <>
                 <FileSelect
+                  id="importAccount-fileInput"
                   onChange={(val) => setJsonFile(val)}
                   disabled={loading}
                 />
                 <span>Please enter your JSON file password:</span>
                 <TextInput
+                  id="importAccount-jsonPasswordInput"
                   fullWidth
                   inputRef={register}
                   name="password"
@@ -258,6 +263,7 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
                 </span>
                 {importType !== 'hardware' && (
                   <TextInput
+                    id="importAccount-accountNameInput"
                     fullWidth
                     inputRef={register}
                     name="label"
@@ -276,7 +282,7 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
             >
               Cancel
             </Button>
-            <Button type="submit" variant={styles.button} loading={loading}>
+            <Button id="importAccount-confirmNextButton" type="submit" variant={styles.button} loading={loading}>
               {importType === 'hardware' ? 'Next' : 'Import'}
             </Button>
           </section>

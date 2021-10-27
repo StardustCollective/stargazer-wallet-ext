@@ -11,6 +11,7 @@ interface IOption {
 }
 
 interface ISelect {
+  id?: string;
   options: Array<IOption>;
   value?: unknown;
   input?: ReactElement;
@@ -26,6 +27,7 @@ interface ISelect {
 }
 
 const Select: FC<ISelect> = ({
+  id,
   options,
   value,
   input,
@@ -36,6 +38,7 @@ const Select: FC<ISelect> = ({
   return (
     <div className={styles.select}>
       <MUISelect
+        id={id}
         value={value}
         input={input}
         disabled={disabled}

@@ -45,6 +45,7 @@ const AssetsPanel: FC = () => {
           .map((asset) => {
             return (
               <AssetItem
+                id={asset.id}
                 key={uuid()}
                 asset={asset}
                 assetInfo={assets[asset.id]}

@@ -35,6 +35,7 @@ const addHeader = ({
     ...defaultHeader({ navigation }),
     headerRight: () => (
       <IconButton
+        id={'header-addButton'}
         className={styles.linkIcon}
         onClick={onRightIconClick}
       >

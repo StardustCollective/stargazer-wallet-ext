@@ -28,6 +28,7 @@ const AddWallet = () => {
         <ArrowIcon />
       </section>
       <section
+        id='addWallet-importWallet'
         className={styles.menu}
         onClick={onImportWalletClicked}
       >
