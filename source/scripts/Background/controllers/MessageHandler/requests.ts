@@ -22,6 +22,8 @@ export const handleRequest = async (
 
     const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
 
+    const windowId = uuid();
+    
     let result: any = undefined;
     switch (+method) {
         case SUPPORTED_WALLET_METHODS.isConnected:
@@ -53,7 +55,6 @@ export const handleRequest = async (
                 return Promise.resolve(null);
             }
 
-            const windowId = `signMessage${uuid()}`;
             const popup = await masterController.createPopup(windowId);
             setPendingWindow(true);
 
@@ -86,9 +87,10 @@ export const handleRequest = async (
 
             return Promise.resolve(null);
         case SUPPORTED_WALLET_METHODS.sendTransaction:
-            const data = args[0] ? args[0][0] : {};
+            const data = args[0] ? args[0] : {};
             const decoder = getERC20DataDecoder();
             const decodedTxData = data?.data ? decoder.decodeData(data?.data) : null;
+
 
             const sendTransaction = async () => {
                 await masterController.createPopup(
