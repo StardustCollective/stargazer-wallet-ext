@@ -1,7 +1,11 @@
 const { strict: assert } = require('assert');
 const { buildWebDriver } = require('./../webdriver');
 const CONSTANTS = require('../constants');
-const { Key, Select } = require('selenium-webdriver');
+const { Key, By } = require('selenium-webdriver');
+
+////////////////////////////
+// Helper Functions
+////////////////////////////
 
 /**
  * Helper method used to verify if an account address generated
@@ -25,8 +29,19 @@ const verifyAccountAddress = async (address, driver) => {
   return ellipsesAddress.includes(prefix) && ellipsesAddress.includes(suffix);
 }
 
-describe.only('Existing user import account', async () => {
+const getPathForFile = (fileName) => {
+  const root = process.cwd()
+  return`${root}/e2e/data/${fileName}`
+}
+
+////////////////////////////
+// Test
+////////////////////////////
+
+
+describe('Existing user import account', async () => {
   let driver;
+
   beforeEach(async () => {
     const { driver: webDriver } = await buildWebDriver();
     driver = webDriver;
@@ -36,7 +51,6 @@ describe.only('Existing user import account', async () => {
     await driver.clickElement('#link');
     await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
     await driver.clickElement('#recoveryPhraseSubmit');
-
     await driver.fill('#passwordField', CONSTANTS.PASSWORD);
     await driver.fill('#confirmPasswordField', CONSTANTS.PASSWORD);
     await driver.clickElement('#nextButton');
@@ -48,7 +62,7 @@ describe.only('Existing user import account', async () => {
   });
 
   afterEach(async () => {
-    // driver.quit();
+    driver.quit();
   });
 
   describe('Multi-chain wallet', async () => {
@@ -60,10 +74,10 @@ describe.only('Existing user import account', async () => {
       );
       await driver.fill('#importPhrase-nameInput', CONSTANTS.WALLET_TWO_NAME);
       await driver.clickElement('#importPhrase-importButton');
-      let backButtonWallets = await driver.findElement('#header-backButton');
-      let actions = await driver.actions();
+      const backButtonWallets = await driver.findElement('#header-backButton');
+      const actions = await driver.actions();
       actions.move({ origin: backButtonWallets }).click().perform();
-      let backButtonMainSettings = await driver.findElement('#header-backButton');
+      const backButtonMainSettings = await driver.findElement('#header-backButton');
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
     });
@@ -88,42 +102,79 @@ describe.only('Existing user import account', async () => {
     });
 
     it('should import an ethereum wallet by private key', async () => {
-      await driver.fill('#importAccount-privateKeyInput', CONSTANTS.WALLET_THREE_PRIVATE_KEY);
+      await driver.fill('#importAccount-privateKeyInput', CONSTANTS.WALLET_THREE_ETHEREUM_PRIVATE_KEY);
       await driver.fill('#importAccount-accountNameInput', CONSTANTS.WALLET_THREE_NAME);
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.clickElement('#importAccount-finishButton');
-      let backButtonMainSettings = await driver.findElement('#header-backButton');
-      let actions = await driver.actions();
+      const backButtonMainSettings = await driver.findElement('#header-backButton');
+      const actions = await driver.actions();
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
       await driver.clickElement('#assetItem-ethereum')
-      let result = await verifyAccountAddress(CONSTANTS.WALLET_THREE_ETHEREUM_ADDRESS, driver);
+      const result = await verifyAccountAddress(CONSTANTS.WALLET_THREE_ETHEREUM_ADDRESS, driver);
       assert.equal(result, true);
     });
 
-    // it('should import an ethereum wallet by JSON file', async () => {
-    //   let importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
-    //   importTypeSelectElement.sendKeys(Key.ENTER);
-    //   importTypeSelectElement.sendKeys(Key.ARROW_DOWN);
-    //   importTypeSelectElement.sendKeys(Key.ENTER);
-
-    // });
+    it('should import an ethereum wallet by JSON file', async () => {
+      const importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
+      importTypeSelectElement.click();
+      const jsonFileElement = importTypeSelectElement.findElement(By.xpath("//*[.=\"JSON file\"]"));
+      jsonFileElement.click();
+      const fileInputElement = await driver.findElement('#importAccount-fileInput');
+      fileInputElement.sendKeys(getPathForFile(CONSTANTS.WALLET_THREE_ETHEREUM_JSON_FILE));
+      await driver.fill('#importAccount-jsonPasswordInput', CONSTANTS.PASSWORD);
+      await driver.fill('#importAccount-accountNameInput', CONSTANTS.WALLET_THREE_NAME);
+      await driver.clickElement('#importAccount-confirmNextButton');
+      await driver.clickElement('#importAccount-finishButton');
+      const backButtonMainSettings = await driver.findElement('#header-backButton');
+      const actions = await driver.actions();
+      actions.move({ origin: backButtonMainSettings }).click().perform();
+      await driver.delay(500);
+      await driver.clickElement('#assetItem-ethereum')
+      const result = await verifyAccountAddress(CONSTANTS.WALLET_THREE_ETHEREUM_ADDRESS, driver);
+      assert.equal(result, true);
+    });
 
   })
 
-  // describe('Constellation Only Wallet', async () => {
+  describe('Constellation Only Wallet', async () => {
     
-  //   beforeEach(async () => {
-  //     await driver.clickElement('#importWallet-constellation');
-  //   });
+    beforeEach(async () => {
+      await driver.clickElement('#importWallet-constellation');
+    });
 
-  //   it('should import an constellation wallet by private key', async () => {
-      
-  //   });
+    it('should import a Constellation wallet by private key', async () => {
+      await driver.fill('#importAccount-privateKeyInput', CONSTANTS.WALLET_FOUR_CONSTELLATION_PRIVATE_KEY);
+      await driver.fill('#importAccount-accountNameInput', CONSTANTS.WALLET_FOUR_NAME);
+      await driver.clickElement('#importAccount-confirmNextButton');
+      await driver.clickElement('#importAccount-finishButton');
+      const backButtonMainSettings = await driver.findElement('#header-backButton');
+      const actions = await driver.actions();
+      actions.move({ origin: backButtonMainSettings }).click().perform();
+      await driver.delay(500);
+      await driver.clickElement('#assetItem-constellation')
+      const result = await verifyAccountAddress(CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS, driver);
+      assert.equal(result, true);
+    });
 
-  //   it('should import an constellation wallet by JSON file', async () => {
-      
-  //   });
-
-  // })
+    it('should import a Constellation wallet by JSON file', async () => {
+      const importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
+      importTypeSelectElement.click();
+      const jsonFileElement = importTypeSelectElement.findElement(By.xpath("//*[.=\"JSON file\"]"));
+      jsonFileElement.click();
+      const fileInputElement = await driver.findElement('#importAccount-fileInput');
+      fileInputElement.sendKeys(getPathForFile(CONSTANTS.WALLET_FOUR_CONSTELLATION_JSON_FILE));
+      await driver.fill('#importAccount-jsonPasswordInput', CONSTANTS.PASSWORD);
+      await driver.fill('#importAccount-accountNameInput', CONSTANTS.WALLET_FOUR_NAME);
+      await driver.clickElement('#importAccount-confirmNextButton');
+      await driver.clickElement('#importAccount-finishButton');
+      const backButtonMainSettings = await driver.findElement('#header-backButton');
+      const actions = await driver.actions();
+      actions.move({ origin: backButtonMainSettings }).click().perform();
+      await driver.delay(500);
+      await driver.clickElement('#assetItem-constellation')
+      const result = await verifyAccountAddress(CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS, driver);
+      assert.equal(result, true);
+    });
+  })
 });
