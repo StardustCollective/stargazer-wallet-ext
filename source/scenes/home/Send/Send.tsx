@@ -15,6 +15,7 @@ import { useAlert } from 'react-alert';
 import Slider from '@material-ui/core/Slider';
 import queryString from 'query-string';
 import { useHistory } from "react-router-dom";
+import useGasEstimate from 'hooks/useGasEstimate';
 
 import Contacts from '../Contacts';
 import Button from 'components/Button';
@@ -23,7 +24,6 @@ import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import ErrorIcon from 'assets/images/svg/error.svg';
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
-import {estimateGasLimit} from 'utils/ethUtil';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { RootState } from 'state/store';
 import { formatNumber } from '../helpers';
@@ -128,6 +128,20 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const assetInfo = assets[activeAsset.id];
   const tempTx = controller.wallet.account.getTempTx();
 
+  let {
+    setToEthAddress,
+    estimateGasFee,
+    gasSpeedLabel,
+    gasFee,
+    gasLimit,
+    setGasPrice,
+    gasPrice,
+    gasPrices,
+  } = useGasEstimate({
+    toAddress: tempTx?.toAddress|| to,
+    asset: activeAsset as IAssetInfoState
+  });
+
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
@@ -148,11 +162,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
-  const [gasPrice, setGasPrice] = useState<number>(0);
-  const [gasPrices, setGasPrices] = useState<number[]>([]);
-  const [gasLimit, setGasLimit] = useState<number>(0);
-  const [gasFee, setGasFee] = useState<number>(0);
-  // const [useMax, setUseMax] = useState<boolean>(false);
 
   const isValidAddress = useMemo(() => {
     if (activeAsset.type === AssetType.Constellation)
@@ -169,19 +178,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const errorIconClass = clsx(styles.statusIcon, {
     [styles.hide]: isValidAddress,
   });
-
-  useEffect(() => {
-    const assetInfo = assets[activeAsset.id];
-
-    let gasLimitPromise;
-        if (assetInfo.type === AssetType.ERC20) {
-          gasLimitPromise = estimateGasLimit({to: assetInfo.address, data: memo})
-        } else {
-          gasLimitPromise = estimateGasLimit({to, data: memo})
-        }
-
-        gasLimitPromise.then((gasLimit) => setGasLimit(gasLimit))
-  }, [amount, address]);
 
   const onSubmit = async (data: any) => {
     if (!isValidAddress) {
@@ -238,14 +234,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     return { balance: balanceBN, txFee };
   }
 
-  const gasSpeedLabel = useMemo(() => {
-    if (gasPrice >= gasPrices[2]) return 'Fastest';
-    if (gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
-    if (gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
-    if (gasPrice > gasPrices[0]) return 'Slow';
-    return 'Turtle';
-  }, [gasPrice, gasPrices])
-
   const isDisabled = useMemo(() => {
     const { balance, txFee } = getBalanceAndFees();
 
@@ -287,7 +275,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
       if (changeAmount !== amount) {
         setAmountBN(ethers.utils.parseUnits(changeAmount, assetInfo.decimals));
-        estimateGasFee(gasPrice);
       }
     },
     [address, gasLimit]
@@ -305,26 +292,13 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleAddressChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setAddress(ev.target.value.trim());
+      let toAddress = ev.target.value.trim();
+      setAddress(toAddress);
+      setToEthAddress(toAddress)
       estimateGasFee(gasPrice);
     },
     []
   );
-
-  const estimateGasFee = (gas: number) => {
-    //console.log('estimateGasFee', !!gasPrices, !!address, !!gasLimit);
-    if (!gasPrices || !address || !gasLimit) return;
-
-    const feeBN = ethers.utils
-      .parseUnits(gas.toString(), 'gwei')
-      .mul(BigNumber.from(gasLimit));
-
-    const fee = Number(ethers.utils.formatEther(feeBN).toString());
-
-    //console.log('estimateTotalGasFee3', gas, gasLimit, fee);
-
-    setGasFee(fee);
-  };
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
     val = Number(val) || 1;
@@ -339,39 +313,10 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     });
   };
 
-  const handleGetTxFee = async () => {
-    if (activeAsset.type === AssetType.Constellation) {
-      handleGetDAGTxFee();
-    }
-    const txConfig = await controller.wallet.account.getTempTx();
-    if (txConfig) {
-      if (!txConfig?.ethConfig) {
-        txConfig.ethConfig = await controller.wallet.account.getRecommendETHTxConfig();
-      }
-      controller.wallet.account.updateTempTx(txConfig);
-    }
-    controller.wallet.account.getLatestGasPrices().then((gas) => {
-      const gasPrice = tempTx?.ethConfig?.gasPrice || gas[1];
-      setGasPrices(gas);
-      setGasPrice(gasPrice);
-      estimateGasFee(gasPrice);
-    });
-  };
-
   const handleSelectContact = (val: string) => {
     setAddress(val);
     setModalOpen(false);
   };
-
-  // const handleGasSettings = () => {
-  //   controller.wallet.account.updateTempTx({
-  //     ...tempTx,
-  //     fromAddress: '',
-  //     toAddress: address || '',
-  //     amount: Number(amount),
-  //   });
-  //   history.push('/gas-settings');
-  // };
 
   const handleSetMax = () => {
 
@@ -395,9 +340,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     //setUseMax(true);
   };
 
-  useEffect(() => {
-    handleGetTxFee();
-  }, []);
+  // useEffect(() => {
+  //   handleGetTxFee();
+  // }, []);
 
   return (
     <div className={styles.wrapper}>
