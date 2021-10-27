@@ -190,11 +190,13 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
             ) : importType === 'json' ? (
               <>
                 <FileSelect
+                  id="importAccount-fileInput"
                   onChange={(val) => setJsonFile(val)}
                   disabled={loading}
                 />
                 <span>Please enter your JSON file password:</span>
                 <TextInput
+                  id="importAccount-jsonPasswordInput"
                   fullWidth
                   inputRef={register}
                   name="password"
