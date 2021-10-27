@@ -42,6 +42,7 @@ const ImportWallet: FC<IImportWalletView> = () => {
         <ArrowIcon />
       </section>
       <section
+        id="importWallet-ethereum"
         className={styles.menu}
         onClick={() => handleImport(KeyringNetwork.Ethereum)}
       >
@@ -50,6 +51,7 @@ const ImportWallet: FC<IImportWalletView> = () => {
         <ArrowIcon />
       </section>
       <section
+        id="importWallet-constellation"
         className={styles.menu}
         onClick={() => handleImport(KeyringNetwork.Constellation)}
       >

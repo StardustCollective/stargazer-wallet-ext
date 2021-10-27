@@ -1,6 +1,6 @@
 const CONSTANTS = {
 
-  // Wallets
+  // Multi-Chain Wallets
   WALLET_ONE_NAME: 'Wallet #1',
   WALLET_ONE_SEED_PHRASE:'tape acoustic spy autumn ribbon badge exhibit point victory very auto stereo',
   WALLET_ONE_CONSTELLATION_ADDRESS: 'DAG7AvEZMZaseU4e1FxfHfqTSpV9UVfNvEvPs2pG',
@@ -11,6 +11,19 @@ const CONSTANTS = {
   WALLET_TWO_CONSTELLATION_ADDRESS: 'DAG0qjY8dzFDiJyFYSUENiiP244teoANHdsdMHd9',
   WALLET_TWO_ETHEREUM_ADDRESS: '0x27bC62fBc8670E373D00D6901AAD45C67A922698',
 
+  //Ethereum only wallets
+  WALLET_THREE_NAME: 'Wallet #3',
+  WALLET_THREE_ETHEREUM_ADDRESS: '0x8932678206C2131B6cEF8c5513f023BC296F9d46',
+  WALLET_THREE_PRIVATE_KEY: '169987aaa7f3cb75dff4773011a5d6ac91a70acd068fcc33e85517d800d9d8ff',
+  WALLET_THREE_JSON_FILE: 'EthereumWalletThree.json',
+
+  //Constellation only wallet
+  WALLET_FOUR_NAME: 'Wallet #4',
+  WALLET_FOUR_CONSTELLATION_ADDRESS: 'DAG6Vx2YcSmgp8eYWoKayDzee8Z68EAPiYUY1BKX',
+  WALLET_FOUR_PRIVATE_KEY: '4ff3a09d38317a8c7c6a920088914dc657a5ebee0cec291109491af0efa0f2ba',
+  WALLET_FOUR_JSON_FILE: 'ConstellationWalletFour.json',
+
+  // Other
   INVALID_SEED_PHRASE: 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor',
   PASSWORD: 'Asdqwe123!',
   INVALID_PASSWORD: '12345',

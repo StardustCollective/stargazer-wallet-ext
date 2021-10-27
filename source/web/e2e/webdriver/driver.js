@@ -87,6 +87,10 @@ class Driver {
     await this.driver.wait(condition, timeout);
   }
 
+  async actions(){
+    return this.driver.actions();
+  }
+
   async waitForSelector(
     rawLocator,
     { timeout = this.timeout, state = 'visible' } = {},
