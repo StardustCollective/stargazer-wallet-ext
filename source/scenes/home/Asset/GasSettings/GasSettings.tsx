@@ -197,7 +197,7 @@ const GasSettings: FC<IGasSettingsProps> = ({
                   <PurpleSlider
                     onChange={onSliderChange}
                     min={gasPrices[0]}
-                    max={gasPrices[gasPrices.length - 1]}
+                    max={200}
                     value={values.current}
                     defaultValue={values.current}
                     step={SLIDER_STEP_PROP}
