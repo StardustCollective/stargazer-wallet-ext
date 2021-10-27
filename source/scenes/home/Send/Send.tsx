@@ -139,7 +139,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     gasPrices,
   } = useGasEstimate({
     toAddress: tempTx?.toAddress|| to,
-    asset: activeAsset as IAssetInfoState
+    asset: activeAsset as IAssetInfoState,
+    data: memo
   });
 
   const { handleSubmit, register, errors } = useForm({
