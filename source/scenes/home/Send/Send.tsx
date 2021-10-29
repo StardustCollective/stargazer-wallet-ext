@@ -62,6 +62,11 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     memo: string;
   let history;
   let windowId: string;
+  let assetInfo: IAssetInfoState;
+
+  const assets: IAssetListState = useSelector(
+    (state: RootState) => state.assets
+  );
 
   if (isExternalRequest) {
     const {
@@ -101,6 +106,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       ) as IAssetInfoState;
     }
 
+    assetInfo = assets[activeAsset.id];
+
     from = activeAsset.address;
   } else {
     const vault: IVaultState = useSelector(
@@ -108,6 +115,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     )
     activeAsset = vault.activeAsset;
     balances = vault.balances;
+    assetInfo = assets[activeAsset.id];
 
     // Sets the header for the send screen
     useLayoutEffect(() => {
@@ -116,30 +124,27 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   }
 
-  const getFiatAmount = useFiat(true, activeAsset as IAssetInfoState);
+  const getFiatAmount = useFiat(true, assetInfo);
   const controller = useController();
   const linkTo = useLinkTo();
   const alert = useAlert();
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
 
-  // const account = accounts[activeAccountId];
-  const assetInfo = assets[activeAsset.id];
   const tempTx = controller.wallet.account.getTempTx();
 
   let {
     setToEthAddress,
+    setGasPrice,
+    setSendAmount,
     estimateGasFee,
     gasSpeedLabel,
     gasFee,
     gasLimit,
-    setGasPrice,
     gasPrice,
     gasPrices,
   } = useGasEstimate({
     toAddress: tempTx?.toAddress|| to,
-    asset: activeAsset as IAssetInfoState,
+    fromAddress: activeAsset.address,
+    asset: assetInfo,
     data: memo
   });
 
@@ -273,6 +278,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       if (changeAmount === null) return;
 
       setAmount(changeAmount);
+      setSendAmount(changeAmount);
 
       if (changeAmount !== amount) {
         setAmountBN(ethers.utils.parseUnits(changeAmount, assetInfo.decimals));

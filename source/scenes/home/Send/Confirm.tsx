@@ -81,7 +81,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
 
   }
 
-  const getFiatAmount = useFiat(false, activeAsset as IAssetInfoState);
+  const getFiatAmount = useFiat(false, assetInfo);
  
   const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
 
@@ -106,9 +106,11 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
 
   const getTotalAmount = () => {
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
+  
     //if (assetInfo.type !== AssetType.ERC20) {
     amount += Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type));
     //}
+
     return (amount).toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,

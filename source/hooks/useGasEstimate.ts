@@ -3,22 +3,23 @@ import { AssetType } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { BigNumber, ethers } from 'ethers';
 import { IAssetInfoState } from 'state/assets/types';
-import { estimateGasLimit } from 'utils/ethUtil';
+import { estimateGasLimit, estimateGasLimitForTransfer } from 'utils/ethUtil';
 
 type IUseGasEstimate = {
   toAddress?: string;
+  fromAddress?: string;
   asset?: IAssetInfoState;
   data?: string;
-  amount?: number
 };
 
-function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
+function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate) {
   const controller = useController();
   const [gasPrice, setGasPrice] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
   const [toEthAddress, setToEthAddress] = useState<string>(toAddress);
+  const [sendAmount, setSendAmount] = useState<string >('');
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
@@ -58,12 +59,19 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
   const getGasLimit = async () => {
     let gasLimit;
     if (asset.type === AssetType.ERC20) {
-      gasLimit = await estimateGasLimit({ to: asset.address, data })
+      if(data){
+        gasLimit = await estimateGasLimit({ to: asset.address, data })
+      }else{
+        gasLimit = await estimateGasLimitForTransfer({ from: fromAddress, amount: sendAmount, to: asset.address })
+        console.log(gasLimit);
+      }
+
     } else {
       gasLimit = await estimateGasLimit({ to: toEthAddress, data })
     }
-
-    setGasLimit(gasLimit);
+    if(!!gasLimit){
+      setGasLimit(gasLimit);
+    }
   }
 
   useEffect(() => {
@@ -75,6 +83,11 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
   }, [toEthAddress]);
 
   useEffect(() => {
+    getGasLimit();
+  }, [sendAmount]);
+
+
+  useEffect(() => {
     if (gasLimit > 0) {
       handleGetTxFee();
     }
@@ -83,6 +96,7 @@ function useGasEstimate({ toAddress, asset, data }: IUseGasEstimate) {
   return {
     setGasPrice,
     setToEthAddress,
+    setSendAmount,
     estimateGasFee,
     gasSpeedLabel,
     gasFee,

@@ -348,13 +348,11 @@ export class AccountController implements IAccountController {
         }
         const txData: any = await this.ethClient.transfer(txOptions);
         const to: string = activeAsset.type !== AssetType.Ethereum ? assets[activeAsset.id].address : this.tempTx.toAddress;
-        const amount: string = activeAsset.type !== AssetType.Ethereum ? '0' : this.tempTx.amount;
-
         this.txController.addPendingTx({
           txHash: txData.hash,
           fromAddress: this.tempTx.fromAddress,
           toAddress: to,
-          amount: amount,
+          amount: this.tempTx.amount,
           network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
           assetId: activeAsset.id,
           timestamp: new Date().getTime(),
