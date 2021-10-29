@@ -60,10 +60,10 @@ export const estimateGasLimitForTransfer = async ({ to, from, amount: value }: {
 
     if(value !== '0'){
         const gasLimit = await contract.methods.transfer(to, value).estimateGas({ from });
-        return gasLimit * 1.5;
+        return Math.floor(gasLimit * 1.5);
     }
     
-    return false;
+    return 0;
 }
 
 export const estimateGasLimit = async ({ to, data }: { to: string, data: string }): Promise<number> => {

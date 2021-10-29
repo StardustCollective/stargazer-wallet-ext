@@ -62,8 +62,7 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
       if(data){
         gasLimit = await estimateGasLimit({ to: asset.address, data })
       }else{
-        gasLimit = await estimateGasLimitForTransfer({ from: fromAddress, amount: sendAmount, to: asset.address })
-        console.log(gasLimit);
+        gasLimit = await estimateGasLimitForTransfer({ from: fromAddress, amount: sendAmount, to: asset.address });
       }
 
     } else {
