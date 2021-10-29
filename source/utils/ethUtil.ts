@@ -59,7 +59,8 @@ export const estimateGasLimitForTransfer = async ({ to, from, amount: value }: {
     const contract = new web3.eth.Contract(abi, to);
 
     if(value !== '0'){
-        return await contract.methods.transfer(to, value).estimateGas({ from });
+        const gasLimit = await contract.methods.transfer(to, value).estimateGas({ from });
+        return gasLimit * 1.5;
     }
     
     return false;
