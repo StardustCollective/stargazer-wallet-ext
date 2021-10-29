@@ -89,27 +89,33 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
   const [confirmed, setConfirmed] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  const gasFeeBaseId = activeAsset.type === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
 
-  const getTotalUnits = () => {
-    const balance = ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals);
-    const txFee =
-      activeAsset.id === AssetType.Constellation
-        ? ethers.utils.parseUnits(Number(tempTx?.fee || 0).toFixed(8), 8)
-        : ethers.utils.parseEther(String(tempTx?.fee || 0));
+  const getSendAmount = () => {
+     
+    const fiatAmount =  Number(getFiatAmount(Number(tempTx?.amount  || 0), 8, assetInfo.priceId));
 
-    if (assetInfo.type === AssetType.ERC20) {
-      return ethers.utils.formatUnits(balance, assetInfo.decimals);
-    }
-    return ethers.utils.formatUnits(balance.add(txFee), assetInfo.decimals);
+    return (fiatAmount).toLocaleString(navigator.language, {
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
+    });
+  }
+
+  const getFeeAmount = () => {
+
+    let priceId = assetInfo.priceId;
+
+    if(activeAsset.type === AssetType.ERC20){
+      priceId =  AssetType.Ethereum
+    }    
+
+    return Number(getFiatAmount(Number(tempTx?.fee || 0), 8, priceId));
+
   }
 
   const getTotalAmount = () => {
+
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
-  
-    //if (assetInfo.type !== AssetType.ERC20) {
-    amount += Number(getFiatAmount(Number(tempTx?.fee || 0), 8, activeAsset.type));
-    //}
+    amount += getFeeAmount();
 
     return (amount).toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
@@ -127,13 +133,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
 
   const handleConfirm = async () => {
     setDisabled(true);
-
-    // const { publicKey, type, id } = assetInfo;//accounts[activeAccountId];
-    //
-    // if (type === AccountType.Ledger) {
-    //   window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
-    //   history.push('/home');
-    // } else {
 
     try {
       if (isExternalRequest) {
@@ -160,6 +159,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
 
         window.close();
       } else {
+
         await controller.wallet.account.confirmTempTx()
         setConfirmed(true);
       }
@@ -190,11 +190,11 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
           <div className={styles.iconWrapper}>
             <UpArrowIcon />
           </div>
-          {getTotalUnits()}{' '}
+          {tempTx?.amount}{' '}
           {assetInfo.symbol}
           <small>
             (≈
-            {getTotalAmount()})
+            {getSendAmount()})
           </small>
         </section>
       }
@@ -212,11 +212,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {`${tempTx!.fee} ${feeUnit} (≈ $${getFiatAmount(
-              tempTx?.fee || 0,
-              2,
-              gasFeeBaseId
-            )})`}
+            {`${tempTx!.fee} ${feeUnit} (≈ ${getFeeAmount()})`}
           </span>
         </div>
       </section>
