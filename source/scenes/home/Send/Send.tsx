@@ -322,6 +322,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleSelectContact = (val: string) => {
     setAddress(val);
+    setToEthAddress(val);
     setModalOpen(false);
   };
 
