@@ -102,5 +102,5 @@ export const estimateGasLimit = async ({ to, data }: { to: string, data: string 
     const gasLimit = await contract.methods[method](...inputs).estimateGas({ from });
 
     // Increase to be sure we have enough
-    return gasLimit * 1.5;
+    return Math.floor(gasLimit * 1.5);
 }
