@@ -4,12 +4,14 @@ import Button from 'components/Button';
 import styles from './FileSelect.scss';
 
 interface IFileSelect {
+  id?: string;
   accept?: string;
   onChange: (val: File | null) => void;
   disabled?: boolean;
 }
 
 const FileSelect: FC<IFileSelect> = ({
+  id,
   accept = 'application/JSON',
   onChange,
   disabled = false,
@@ -39,6 +41,7 @@ const FileSelect: FC<IFileSelect> = ({
   return (
     <div className={styles.select}>
       <input
+        id={id}
         type="file"
         className={styles.file}
         ref={fileRef}

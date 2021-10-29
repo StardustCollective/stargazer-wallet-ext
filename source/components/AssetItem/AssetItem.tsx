@@ -45,6 +45,7 @@ import IVaultState, { IAssetState } from 'state/vault/types';
 import IPriceState from 'state/price/types';
 
 type IAssetItem = {
+  id?: string;
   asset: IAssetState;
   assetInfo: IAssetInfoState;
   itemClicked: () => void;
@@ -55,6 +56,7 @@ type IAssetItem = {
 ///////////////////////
 
 const AssetItem: FC<IAssetItem> = ({
+  id,
   asset,
   assetInfo,
   itemClicked,
@@ -76,7 +78,7 @@ const AssetItem: FC<IAssetItem> = ({
   return (
 
     <Fragment key={asset.id}>
-      <Card>
+      <Card id={`assetItem-${id}`}>
         <div className={styles.assetItem} onClick={() => itemClicked()}>
           <div className={styles.assetIcon}>
            {assetInfo.logo.startsWith('http') && (

@@ -43,6 +43,7 @@ const defaultHeader = ({
 
     return (
       <IconButton
+        id={'header-backButton'}
         className={`${styles.buttonLeft} ${styles.more}`}
         onClick={onBackButtonClicked}
       >
