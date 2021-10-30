@@ -22,8 +22,6 @@ import { useHistory } from "react-router-dom";
 import { useLinkTo } from '@react-navigation/native';
 
 import styles from './Confirm.scss';
-import { ethers } from 'ethers';
-
 interface ISendConfirm {
   navigation: any
 }
