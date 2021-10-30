@@ -7,7 +7,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { formatNumber } from 'scenes/home/helpers';
 import { IAssetInfoState } from 'state/assets/types';
 
-export function useFiat(currencyName = true, asset?: IAssetInfoState ) {
+export function useFiat(currencyName = true, asset?: IAssetInfoState) {
   const { activeAsset }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -21,14 +21,18 @@ export function useFiat(currencyName = true, asset?: IAssetInfoState ) {
   );
 
   return (amount: number, fraction = 4, basePriceId?: string) => {
-    const priceId = basePriceId ? basePriceId :
-      asset ? asset.priceId : 
-      assets[activeAsset.id] ? 
-      assets[activeAsset.id].priceId :
-      null;
-      
-    const value =
-      amount * (priceId ? fiat[basePriceId || priceId]?.price || 0 : 0);
+    const priceId = basePriceId
+      ? basePriceId
+      : asset
+      ? asset.priceId
+      : assets[activeAsset.id]
+      ? assets[activeAsset.id].priceId
+      : null;
+
+    const assetPrice = priceId ? fiat[basePriceId || priceId]?.price || 0 : 0;
+
+    const value = amount * assetPrice;
+    
     return `${currencyName ? currency.symbol : ''}${
       currencyName
         ? value.toLocaleString(navigator.language, {
@@ -44,21 +48,21 @@ type IBalanceObject = {
   symbol?: string;
   balance: string;
   name?: string;
-}
+};
 
-export function useTotalBalance():[IBalanceObject, string] {
-
+export function useTotalBalance(): [IBalanceObject, string] {
   const { fiat, currency }: IPriceState = useSelector(
     (state: RootState) => state.price
   );
-  const { activeWallet, activeNetwork, balances}: IVaultState = useSelector(
+  const { activeWallet, activeNetwork, balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const assetList: IAssetListState = useSelector(
     (state: RootState) => state.assets
   );
 
-  if (!activeWallet?.assets) return [{symbol:'', balance: '0', name: ''}, '0'];
+  if (!activeWallet?.assets)
+    return [{ symbol: '', balance: '0', name: '' }, '0'];
 
   const assetIds = activeWallet.assets
     .filter(
@@ -78,20 +82,21 @@ export function useTotalBalance():[IBalanceObject, string] {
   let balance = 0;
 
   for (let i = 0; i < assetIds.length; i += 1) {
-    balance += (Number(balances[assetIds[i]]) || 0) * (fiat[priceIds[i]]?.price || 0);
+    balance +=
+      (Number(balances[assetIds[i]]) || 0) * (fiat[priceIds[i]]?.price || 0);
   }
 
-  let balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
+  let balanceStr = formatNumber(balance, 2, balance >= 0.01 ? 2 : 4);
 
   const balanceObject = {
     symbol: currency.symbol || '',
     balance: balanceStr,
     name: currency.name || '',
-  }
+  };
 
-  balance = (balance / (fiat.bitcoin?.price || 0))
+  balance = balance / (fiat.bitcoin?.price || 0);
 
-  balanceStr = formatNumber(balance, 2, (balance >= 0.01) ? 2 : 4)
+  balanceStr = formatNumber(balance, 2, balance >= 0.01 ? 2 : 4);
 
   return [balanceObject, balanceStr];
 }
