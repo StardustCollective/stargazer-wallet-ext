@@ -105,7 +105,6 @@ const TxItem: FC<ITxItem> = ({
     gasPrices,
     gasPrice } = useGasEstimate({
       toAddress: tx.toAddress,
-      amount: tx.amount,
       asset: assets[activeAsset.id],
       data: tx.data,
     });

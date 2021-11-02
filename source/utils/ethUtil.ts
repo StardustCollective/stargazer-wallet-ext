@@ -34,18 +34,10 @@ const _getWeb3 = (network: 'testnet' | 'mainnet') => {
     );
 }
 
-export const estimateGasLimit = async ({ to, data }: { to: string, data: string }): Promise<number> => {
+const _getAbi = async ({ to }: {to: string}) => {
+
     const { activeNetwork, activeWallet }: IVaultState = store.getState().vault;
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
-
-    const ethAsset = activeWallet.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
-
-    if (!ethAsset) {
-        return 0; // DAG? 
-    }
-
-    const from = ethAsset.address;
-
     const knownERC20Asset = activeWallet.assets.find((asset: IAssetState) => asset.contractAddress === to && asset.type === AssetType.ERC20);
 
     let abi: Array<any> | false;
@@ -55,6 +47,38 @@ export const estimateGasLimit = async ({ to, data }: { to: string, data: string 
         abi = await getContractDetails(to, network);
     }
 
+    return abi;
+}
+
+export const estimateGasLimitForTransfer = async ({ to, from, amount: value }: {to: string, from: string,  amount: string}) => {
+
+    const { activeNetwork }: IVaultState = store.getState().vault;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
+    const abi = await _getAbi({ to });
+    const web3 = _getWeb3(network);
+    const contract = new web3.eth.Contract(abi, to);
+
+    if(value !== '0'){
+        const gasLimit = await contract.methods.transfer(to, value).estimateGas({ from });
+        return Math.floor(gasLimit * 1.5);
+    }
+    
+    return 0;
+}
+
+export const estimateGasLimit = async ({ to, data }: { to: string, data: string }): Promise<number> => {
+    const { activeNetwork, activeWallet }: IVaultState = store.getState().vault;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
+    const ethAsset = activeWallet.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
+
+
+    if (!ethAsset) {
+        return 0; // DAG? 
+    }
+
+    const from = ethAsset.address;
+    const abi = await _getAbi({to});
+
     // Not a contract -> 21,000 standard gasLimit
     if (!abi) {
         return 21000;
@@ -63,6 +87,9 @@ export const estimateGasLimit = async ({ to, data }: { to: string, data: string 
     const web3 = _getWeb3(network);
 
     const decoder = new InputDataDecoder(abi);
+
+    const contract = new web3.eth.Contract(abi, to);
+
     const { method, inputs, types } = decoder.decodeData(data);
 
     // The decoder package strips 0x from addresses which breaks web3
@@ -72,10 +99,8 @@ export const estimateGasLimit = async ({ to, data }: { to: string, data: string 
         }
     }
 
-    const contract = new web3.eth.Contract(abi, to);
-
     const gasLimit = await contract.methods[method](...inputs).estimateGas({ from });
 
     // Increase to be sure we have enough
-    return gasLimit * 2;
+    return Math.floor(gasLimit * 1.5);
 }
