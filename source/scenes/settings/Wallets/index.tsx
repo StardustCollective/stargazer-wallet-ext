@@ -81,7 +81,7 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
                 <CheckIcon className={styles.check} />
               )}
               <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
-              <span>
+              <span id={wallet.label}>
                 {wallet.label}
                 <small>Multi Chain Wallet</small>
               </span>
