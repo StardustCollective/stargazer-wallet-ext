@@ -54,6 +54,7 @@ const Phrase: FC<IPhraseView> = ({ route }) => {
       <span>Please input your wallet password and press enter:</span>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
+          id="phrase-password"
           type="password"
           name="password"
           visiblePassword
@@ -63,7 +64,7 @@ const Phrase: FC<IPhraseView> = ({ route }) => {
         />
       </form>
       <span>Click to copy your seed phrase:</span>
-      <div className={seedClass} onClick={handleCopySeed}>
+      <div id={'phrase-recoveryPhrase'} className={seedClass} onClick={handleCopySeed}>
         {phrase}
       </div>
       <span>

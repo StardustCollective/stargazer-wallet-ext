@@ -20,6 +20,7 @@ const AddWallet = () => {
   return (
     <div className={styles.wrapper}>
       <section
+        id='addWallet-createNewWallet'
         className={styles.menu}
         onClick={onCreateNewWalletClicked}
       >

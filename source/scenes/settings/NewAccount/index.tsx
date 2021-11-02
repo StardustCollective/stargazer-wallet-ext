@@ -56,6 +56,7 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
           <span>{`Your new account ${accountName} has been created`}</span>
           <label>Backup Options</label>
           <section
+            id="newAccount-showRecoveryPhrase"
             className={styles.menu}
             onClick={onShowPhraseClick}
           >
@@ -69,6 +70,7 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
           </span>
           <div className={clsx(styles.actions, styles.centered)}>
             <Button
+              id="addWallet-finishButton"
               type="button"
               variant={styles.button}
               onClick={onClickResetStack}
@@ -79,8 +81,9 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
         </>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
-          <span>Please name your new account:</span>
+          <span id="newAccount-nameAccountText">Please name your new account:</span>
           <TextInput
+            id="newAccount-accountNameInput"
             type="text"
             name="name"
             fullWidth
@@ -89,6 +92,7 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
           />
           <div className={styles.actions}>
             <Button
+              id="newAccount-cancelButton"
               type="button"
               theme="secondary"
               variant={clsx(styles.button, styles.close)}
@@ -96,7 +100,12 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
             >
               Close
             </Button>
-            <Button type="submit" variant={styles.button} loading={loading}>
+            <Button 
+              id="newAccount-confirmButton"
+              type="submit" 
+              variant={styles.button} 
+              loading={loading}
+              >
               Next
             </Button>
           </div>
