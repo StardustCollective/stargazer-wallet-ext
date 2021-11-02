@@ -3,7 +3,7 @@ const { buildWebDriver } = require('../webdriver');
 const CONSTANTS = require('../constants');
 const { Key, By } = require('selenium-webdriver');
 
-describe.only('Existing User: Create Multi-Chain Wallet', () => {
+describe('Existing User: Create Multi-Chain Wallet', () => {
   beforeEach(async () => {
     const { driver: webDriver } = await buildWebDriver();
     driver = webDriver;
