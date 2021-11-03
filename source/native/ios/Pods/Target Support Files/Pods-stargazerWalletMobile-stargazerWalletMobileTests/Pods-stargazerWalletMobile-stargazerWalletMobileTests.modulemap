@@ -1,6 +1,0 @@
-module Pods_stargazerWalletMobile_stargazerWalletMobileTests {
-  umbrella header "Pods-stargazerWalletMobile-stargazerWalletMobileTests-umbrella.h"
-
-  export *
-  module * { export * }
-}

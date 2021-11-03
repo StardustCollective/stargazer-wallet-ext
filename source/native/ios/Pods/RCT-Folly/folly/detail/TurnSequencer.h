@@ -19,13 +19,13 @@
 #include <algorithm>
 #include <limits>
 
+#include <glog/logging.h>
+
 #include <folly/Portability.h>
 #include <folly/chrono/Hardware.h>
 #include <folly/detail/Futex.h>
 #include <folly/portability/Asm.h>
 #include <folly/portability/Unistd.h>
-
-#include <glog/logging.h>
 
 namespace folly {
 
@@ -124,7 +124,7 @@ struct TurnSequencer {
     const uint32_t effectiveSpinCutoff =
         updateSpinCutoff || prevThresh == 0 ? kMaxSpinLimit : prevThresh;
 
-    uint64_t begin;
+    uint64_t begin = 0;
     uint32_t tries;
     const uint32_t sturn = turn << kTurnShift;
     for (tries = 0;; ++tries) {

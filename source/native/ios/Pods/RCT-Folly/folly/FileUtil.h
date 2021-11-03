@@ -84,7 +84,8 @@ ssize_t pwritevNoInt(int fd, const iovec* iov, int count, off_t offset);
  * is unspecified.
  */
 FOLLY_NODISCARD ssize_t readFull(int fd, void* buf, size_t count);
-FOLLY_NODISCARD ssize_t preadFull(int fd, void* buf, size_t count, off_t offset);
+FOLLY_NODISCARD ssize_t
+preadFull(int fd, void* buf, size_t count, off_t offset);
 FOLLY_NODISCARD ssize_t readvFull(int fd, iovec* iov, int count);
 FOLLY_NODISCARD ssize_t preadvFull(int fd, iovec* iov, int count, off_t offset);
 
@@ -223,30 +224,63 @@ bool writeFile(
   return closeNoInt(fd) == 0 && ok;
 }
 
+/* For atomic writes, do we sync to guarantee ordering or not? */
+enum class SyncType {
+  WITH_SYNC,
+  WITHOUT_SYNC,
+};
+
+/*
+ * writeFileAtomic() does not currently work on Windows.
+ * Windows does not provide atomic file renames, which makes implementing this
+ * tricky.  Windows does have a MoveFileTransactedA() API which could
+ * potentially be used, but according to the Microsoft documentation this API is
+ * discouraged and may be removed in a future version.
+ *
+ * In order to implement this properly on Windows we would probably need a pair
+ * of functions: one for writing the file, and one for reading the contents,
+ * where the two functions synchronize with each other.  We can probably only
+ * provide atomic update behavior with cooperation from the reader.
+ */
+#ifndef _WIN32
+
 /**
  * Write file contents "atomically".
  *
  * This writes the data to a temporary file in the destination directory, and
  * then renames it to the specified path.  This guarantees that the specified
- * file will be replaced the the specified contents on success, or will not be
+ * file will be replaced the specified contents on success, or will not be
  * modified on failure.
  *
  * Note that on platforms that do not provide atomic filesystem rename
  * functionality (e.g., Windows) this behavior may not be truly atomic.
+ *
+ * The default implementation does not sync the data to storage before
+ * the rename.  Therefore, the write is *not* atomic in the event of a
+ * power failure or OS crash.  To guarantee atomicity in these cases,
+ * specify syncType = WITH_SYNC, which will incur a performance cost
+ * of waiting for the data to be persisted to storage.  Note that the
+ * return of the function does not guarantee the directory
+ * modifications have been written to disk; a further sync of the
+ * directory after the function returns is required to ensure the
+ * modification is durable.
  */
 void writeFileAtomic(
     StringPiece filename,
     iovec* iov,
     int count,
-    mode_t permissions = 0644);
+    mode_t permissions = 0644,
+    SyncType syncType = SyncType::WITHOUT_SYNC);
 void writeFileAtomic(
     StringPiece filename,
     ByteRange data,
-    mode_t permissions = 0644);
+    mode_t permissions = 0644,
+    SyncType syncType = SyncType::WITHOUT_SYNC);
 void writeFileAtomic(
     StringPiece filename,
     StringPiece data,
-    mode_t permissions = 0644);
+    mode_t permissions = 0644,
+    SyncType syncType = SyncType::WITHOUT_SYNC);
 
 /**
  * A version of writeFileAtomic() that returns an errno value instead of
@@ -258,6 +292,9 @@ int writeFileAtomicNoThrow(
     StringPiece filename,
     iovec* iov,
     int count,
-    mode_t permissions = 0644);
+    mode_t permissions = 0644,
+    SyncType syncType = SyncType::WITHOUT_SYNC);
+
+#endif // !_WIN32
 
 } // namespace folly
