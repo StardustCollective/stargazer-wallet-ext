@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D9245543B79C09FAC40FC8B9F291536A"
-               BuildableName = "libFlipper-DoubleConversion.a"
+               BuildableName = "Flipper-DoubleConversion"
                BlueprintName = "Flipper-DoubleConversion"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>

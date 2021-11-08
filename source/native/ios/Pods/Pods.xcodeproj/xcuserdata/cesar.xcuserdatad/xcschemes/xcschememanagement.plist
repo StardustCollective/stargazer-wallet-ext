@@ -24,7 +24,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Flipper-Boost-iOSX.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Flipper-DoubleConversion.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Flipper-Fmt.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -64,12 +74,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-stargazerWalletMobile-stargazerWalletMobileTests.xcscheme</key>
+		<key>Pods-Stargazer-StargazerTests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-stargazerWalletMobile.xcscheme</key>
+		<key>Pods-Stargazer.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -174,6 +184,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>React-logger.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>React-perflogger.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -204,7 +219,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>boost-for-react-native.xcscheme</key>
+		<key>boost.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>fmt.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
