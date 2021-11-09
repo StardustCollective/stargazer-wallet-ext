@@ -157,6 +157,7 @@
     "webpack-extension-reloader": "^1.1.4",
     "wext-manifest-loader": "^2.2.0",
     "wext-manifest-webpack-plugin": "^1.2.1",
+    "yargs": "^17.2.1",
     "zip-webpack-plugin": "^3.0.0"
   },
   "jest": {
