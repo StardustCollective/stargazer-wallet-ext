@@ -15,7 +15,7 @@ export const handleRequest = async (
 ) => {
     const { method, args, asset } = message.data;
 
-    console.log('CAL_REQUEST.method', method, args);
+    console.log('CAL_REQUEST.method:', method, args);
 
     const allowed = masterController.dapp.isDAppConnected(origin);
     const walletIsLocked = !masterController.wallet.isUnlocked();
@@ -23,7 +23,7 @@ export const handleRequest = async (
     const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
 
     const windowId = uuid();
-    
+
     let result: any = undefined;
     switch (+method) {
         case SUPPORTED_WALLET_METHODS.isConnected:
@@ -91,7 +91,6 @@ export const handleRequest = async (
             const decoder = getERC20DataDecoder();
             const decodedTxData = data?.data ? decoder.decodeData(data?.data) : null;
 
-
             const sendTransaction = async () => {
                 await masterController.createPopup(
                     windowId,
@@ -109,7 +108,7 @@ export const handleRequest = async (
                         if (ev.detail.windowId === windowId) {
                             port.postMessage({
                                 id: message.id,
-                                data: { result: true, data: {} },
+                                data: {result: ev.detail.result, data: {}},
                             });
                             setPendingWindow(false);
                         }
@@ -118,7 +117,7 @@ export const handleRequest = async (
                 );
             }
 
-            const approveSpend = async () => {
+            const approveSpend = async () => { //special case transaction
                 await masterController.createPopup(
                     windowId,
                     message.data.network,
@@ -135,9 +134,9 @@ export const handleRequest = async (
                         if (ev.detail.windowId === windowId) {
                             port.postMessage({
                                 id: message.id,
-                                data: { result: true, data: {} },
+                                data: {result: ev.detail.result, data: {}},
                             });
-                            setPendingWindow(false);
+                            setPendingWindow(false); //prevents popup?
                         }
                     },
                     { once: true, passive: true }
@@ -160,8 +159,8 @@ export const handleRequest = async (
     }
 
     if (result !== undefined) {
-        return Promise.resolve({ id: message.id, result });
+        return Promise.resolve({id: message.id, result});
     }
 
-    return Promise.reject(new CustomEvent(message.id, { detail: 'Unknown Request' }));
+    return Promise.reject(new CustomEvent(message.id, {detail: 'Unknown Request' }));
 }
