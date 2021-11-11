@@ -76,7 +76,7 @@ async function handleRequest(chain, req) {
   if (method === 'requestAccounts') {
     const { result, data } = await window.providerManager.enable();
 
-    if (!result) throw ERRORS.USER_REJECTED();
+    if (!result ) throw ERRORS.USER_REJECTED();
 
     return data.accounts;
   }
@@ -90,7 +90,10 @@ async function handleRequest(chain, req) {
       ...req.params
     );
 
-    if (!response.result) throw ERRORS.USER_REJECTED();
+    if(response.result === false) {
+      throw ERRORS.USER_REJECTED();
+    }
+
     return response;
   }
 
