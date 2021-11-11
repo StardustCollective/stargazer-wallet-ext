@@ -6,6 +6,8 @@
  */
 const path = require('path');
 
+let nodeModules = require('node-libs-react-native');
+
 const extraNodeModules = {
   source: path.resolve(__dirname + '/../'),
   navigation: path.resolve(__dirname + '/../navigation'),
@@ -18,6 +20,10 @@ const extraNodeModules = {
   types: path.resolve(__dirname + '/../types'),
   utils: path.resolve(__dirname + '/../utils'),
   assets: path.resolve(__dirname + '/../assets'),
+  constants: path.resolve(__dirname + '/../constants'),
+  process: nodeModules.process,
+  crypto: nodeModules.crypto,
+  stream: nodeModules.stream
 };
 
 const nodeModulesPaths = [
