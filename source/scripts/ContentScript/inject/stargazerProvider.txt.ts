@@ -34,15 +34,22 @@ const SUPPORTED_CHAINS = {
   }
 };
 
+class RPCError extends Error {
+  constructor(message, code) {
+    super(message);
+
+    this.name = 'RPC Error';
+    this.code = code;
+  }
+}
+
 const ERRORS = {
   USER_REJECTED: (message = 'User Rejected Request') => {
-    const err = new Error(message);
-    err.code = 4001;
+    const err = new RPCError(message, 4001);
     return err;
   },
   INVALID_METHOD: (message = 'Unsupported Method') => {
-    const err = new Error(message);
-    err.code = 4200;
+    const err = new RPCError(message, 4200);
     return err;
   }
 };
