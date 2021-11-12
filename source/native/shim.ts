@@ -1,6 +1,6 @@
 // global.process: Not the best solution, but good for now to make React Native happy.
 global.process = {
-  version : '1.1',
+  version : '',
   env: {
     NODE_ENV : '',
   }
