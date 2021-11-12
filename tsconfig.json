@@ -30,5 +30,6 @@
     "source/web/webpack.config.js",
     "source/web/e2e",
     "source/web/extension",
+    "**/*.native.*"
   ]
 }
