@@ -10,8 +10,18 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.11",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-navigation/native": "^6.0.6",
+    "node-libs-react-native": "^1.2.1",
     "react": "17.0.2",
-    "react-native": "0.66.1"
+    "react-native": "0.66.1",
+    "react-native-crypto": "^2.1.0",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-randombytes": "^3.6.1",
+    "react-native-reanimated": "^2.2.4",
+    "react-native-safe-area-context": "^3.3.2",
+    "react-native-screens": "^3.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -26,6 +36,14 @@
     "metro-react-native-babel-preset": "^0.66.2",
     "react-test-renderer": "17.0.2",
     "typescript": "^3.8.3"
+  },
+  "workspaces": {
+    "nohoist": [
+      "react-native",
+      "react-native/**",
+      "react-native-community",
+      "react-native-community/**"
+    ]
   },
   "resolutions": {
     "@types/react": "^17"

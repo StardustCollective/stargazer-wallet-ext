@@ -15,6 +15,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
 
 const viewsPath = path.join(__dirname, '../../views');
 const sourcePath = path.join(__dirname, '../');
@@ -62,6 +63,10 @@ module.exports = {
     errors: true,
     hash: true,
   },
+  
+  node: {
+    fs: "empty"
+  },
 
   mode: nodeEnv,
 
@@ -81,9 +86,8 @@ module.exports = {
   },
 
   resolve: {
-    modules: [
-      path.resolve(rootPath, 'node_modules'),
-      path.resolve(__dirname, './'),
+    plugins: [
+      PnpWebpackPlugin,
     ],
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
@@ -104,7 +108,11 @@ module.exports = {
       'react-native$': 'react-native-web',
     },
   },
-
+  resolveLoader: {
+    plugins: [
+      PnpWebpackPlugin.moduleLoader(module),
+    ],
+  },
   module: {
     rules: [
       {
