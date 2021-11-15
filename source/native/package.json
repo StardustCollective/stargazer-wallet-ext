@@ -13,6 +13,7 @@
     "@react-native-async-storage/async-storage": "^1.15.11",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/native": "^6.0.6",
+    "@react-navigation/stack": "^6.0.11",
     "native-base": "^3.2.2",
     "node-libs-react-native": "^1.2.1",
     "react": "17.0.2",
@@ -20,9 +21,9 @@
     "react-native-crypto": "^2.1.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-randombytes": "^3.6.1",
-    "react-native-reanimated": "^2.2.4",
-    "react-native-safe-area-context": "^3.3.2",
-    "react-native-screens": "^3.9.0"
+    "react-native-svg": "^12.1.1",
+    "react-native-safe-area-context": "^3.2.0",
+    "react-native-screens": "^3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
