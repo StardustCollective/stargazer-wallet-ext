@@ -1,6 +1,6 @@
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import { ETHNetwork } from 'scripts/types';
-import IAssetListState from 'state/assets/types';
+import TOKEN_LIST from 'state/assets/tokens';
 import store from 'state/store';
 import { addERC20Asset } from 'state/assets';
 import IVaultState, { AssetType } from 'state/vault/types';
@@ -8,7 +8,7 @@ import { TOKEN_INFO_API } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 export interface IAssetsController {
-  fetchTokenInfo: (address: string) => void;
+  fetchTokenInfo: (address: string) => Promise<void>;
 }
 
 const AssetsController = (updateFiat: () => void): IAssetsController => {
@@ -37,14 +37,27 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
   const fetchTokenInfo = async (address: string) => {
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const assets: IAssetListState = store.getState().assets;
+
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
     ethClient.setNetwork(network);
+
     const info = await ethClient.getTokenInfo(address);
     const assetId = `${network === 'testnet' ? 'T-' : ''}${address}`;
-    if (info && !assets[assetId]) {
+
+    if (info) {
       try {
-        const data = await (await fetch(`${TOKEN_INFO_API}${address}`)).json();
+        let data;
+        try {
+          data = await (await fetch(`${TOKEN_INFO_API}${address}`)).json();
+        } catch (err) {
+          // Allow values to be set from config if CoinGecko doesn't know about token
+          data = {
+            id: TOKEN_LIST[address]?.priceId,
+            image: {
+              small: TOKEN_LIST[address]?.logo
+            }
+          }
+        }
 
         store.dispatch(
           addERC20Asset({
@@ -62,7 +75,9 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
         updateFiat();
       }
-      catch(e) {}
+      catch(e) {
+        // NOOP
+      }
     }
   };
 
