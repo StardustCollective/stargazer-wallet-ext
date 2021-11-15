@@ -82,7 +82,6 @@ const Login = ({
     })
       .catch((err: any) => {
         console.log('err: ', err);
-        // Some other error thrown, logged in successfully though
         if (onLoginError) {
           onLoginError()
         }
