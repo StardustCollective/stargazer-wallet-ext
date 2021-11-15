@@ -23,7 +23,8 @@ const extraNodeModules = {
   constants: path.resolve(__dirname + '/../constants'),
   process: nodeModules.process,
   crypto: nodeModules.crypto,
-  stream: nodeModules.stream
+  stream: nodeModules.stream,
+  "react-native": require.resolve('react-native-web')
 };
 
 const nodeModulesPaths = [
