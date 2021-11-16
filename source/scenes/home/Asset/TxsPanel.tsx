@@ -116,6 +116,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
 
             return (
                 <TxItem
+                  key={idx}
                   onItemClick={handleOpenExplorer}
                   tx={tx}
                   isETH={isETH}
