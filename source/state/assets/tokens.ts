@@ -13,6 +13,7 @@ const TOKEN_LIST: IAssetListState = {
     network: 'mainnet',
     logo: LatticeLogo,
     decimals: 8,
+    isDefault: true,
   },
   '0x3106a0a076BeDAE847652F42ef07FD58589E001f': {
     id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
@@ -24,6 +25,19 @@ const TOKEN_LIST: IAssetListState = {
     network: 'mainnet',
     logo: 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG',
     decimals: 18,
+    isDefault: true,
+  },
+  '0x4e08f03079c5cd3083ea331ec61bcc87538b7665': {
+    id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
+    address: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
+    label: 'DoubleDice',
+    symbol: 'DODI',
+    type: AssetType.ERC20,
+    priceId: 'doubledice',
+    network: 'mainnet',
+    logo: 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png',
+    decimals: 18,
+    isDefault: true,
   },
   '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9': {
     id: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
@@ -36,6 +50,7 @@ const TOKEN_LIST: IAssetListState = {
     logo:
       'https://assets.coingecko.com/coins/images/12645/small/AAVE.png?1601374110',
     type: AssetType.ERC20,
+    isDefault: false,
   },
   '0xfF20817765cB7f73d4bde2e66e067E58D11095C2': {
     id: '0xfF20817765cB7f73d4bde2e66e067E58D11095C2',
@@ -48,6 +63,7 @@ const TOKEN_LIST: IAssetListState = {
     logo:
       'https://assets.coingecko.com/coins/images/12409/small/amp-200x200.png?1599625397',
     type: AssetType.ERC20,
+    isDefault: false,
   },
   '0x960b236A07cf122663c4303350609A66A7B288C0': {
     id: '0x960b236A07cf122663c4303350609A66A7B288C0',
@@ -60,6 +76,7 @@ const TOKEN_LIST: IAssetListState = {
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x960b236A07cf122663c4303350609A66A7B288C0/logo.png',
     type: AssetType.ERC20,
+    isDefault: false,
   },
   '0xba100000625a3754423978a60c9317c58a424e3D': {
     id: '0xba100000625a3754423978a60c9317c58a424e3D',
@@ -72,6 +89,7 @@ const TOKEN_LIST: IAssetListState = {
     network: 'mainnet',
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xba100000625a3754423978a60c9317c58a424e3D/logo.png',
+    isDefault: false,
   },
   '0xBA11D00c5f74255f56a5E366F4F77f5A186d7f55': {
     id: '0xBA11D00c5f74255f56a5E366F4F77f5A186d7f55',
@@ -84,6 +102,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://assets.coingecko.com/coins/images/9545/small/band-protocol.png?1568730326',
+    isDefault: false,
   },
   '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C': {
     id: '0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C',
@@ -96,6 +115,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C/logo.png',
+    isDefault: false,
   },
   '0xc00e94Cb662C3520282E6f5717214004A7f26888': {
     id: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
@@ -108,6 +128,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xc00e94Cb662C3520282E6f5717214004A7f26888/logo.png',
+    isDefault: false,
   },
   '0xD533a949740bb3306d119CC777fa900bA034cd52': {
     id: '0xD533a949740bb3306d119CC777fa900bA034cd52',
@@ -120,6 +141,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xD533a949740bb3306d119CC777fa900bA034cd52/logo.png',
+    isDefault: false,
   },
   '0x41e5560054824eA6B0732E656E3Ad64E20e94E45': {
     id: '0x41e5560054824eA6B0732E656E3Ad64E20e94E45',
@@ -132,6 +154,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://assets.coingecko.com/coins/images/788/small/civic.png?1547034556',
+    isDefault: false,
   },
   '0x6B175474E89094C44Da98b954EedeAC495271d0F': {
     id: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
@@ -144,6 +167,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
+    isDefault: false,
   },
   '0x0AbdAce70D3790235af448C88547603b945604ea': {
     id: '0x0AbdAce70D3790235af448C88547603b945604ea',
@@ -156,6 +180,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://assets.coingecko.com/coins/images/849/small/district0x.png?1547223762',
+    isDefault: false,
   },
   '0x6810e776880C02933D47DB1b9fc05908e5386b96': {
     id: '0x6810e776880C02933D47DB1b9fc05908e5386b96',
@@ -168,6 +193,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png',
+    isDefault: false,
   },
   '0xc944E90C64B2c07662A292be6244BDf05Cda44a7': {
     id: '0xc944E90C64B2c07662A292be6244BDf05Cda44a7',
@@ -180,6 +206,7 @@ const TOKEN_LIST: IAssetListState = {
     decimals: 18,
     logo:
       'https://assets.coingecko.com/coins/images/13397/small/Graph_Token.png?1608145566',
+    isDefault: false,
   },
   '0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC': {
     id: '0x85Eee30c52B0b379b046Fb0F85F4f3Dc3009aFEC',
@@ -192,6 +219,7 @@ const TOKEN_LIST: IAssetListState = {
     decimals: 18,
     logo:
       'https://assets.coingecko.com/coins/images/3373/small/IuNzUb5b_400x400.jpg?1589526336',
+    isDefault: false,
   },
   '0xdd974D5C2e2928deA5F71b9825b8b646686BD200': {
     id: '0xdd974D5C2e2928deA5F71b9825b8b646686BD200',
@@ -204,6 +232,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdd974D5C2e2928deA5F71b9825b8b646686BD200/logo.png',
+    isDefault: false,
   },
   '0x514910771AF9Ca656af840dff83E8264EcF986CA': {
     id: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
@@ -216,6 +245,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x514910771AF9Ca656af840dff83E8264EcF986CA/logo.png',
+    isDefault: false,
   },
   '0xA4e8C3Ec456107eA67d3075bF9e3DF3A75823DB0': {
     id: '0xA4e8C3Ec456107eA67d3075bF9e3DF3A75823DB0',
@@ -228,6 +258,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA4e8C3Ec456107eA67d3075bF9e3DF3A75823DB0/logo.png',
+    isDefault: false,
   },
   '0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD': {
     id: '0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD',
@@ -240,6 +271,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD/logo.png',
+    isDefault: false,
   },
   '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942': {
     id: '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942',
@@ -252,6 +284,7 @@ const TOKEN_LIST: IAssetListState = {
     decimals: 18,
     logo:
       'https://assets.coingecko.com/coins/images/878/small/decentraland-mana.png?1550108745',
+    isDefault: false,
   },
   '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2': {
     id: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
@@ -264,6 +297,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2/logo.png',
+    isDefault: false,
   },
   '0xec67005c4E498Ec7f55E092bd1d35cbC47C91892': {
     id: '0xec67005c4E498Ec7f55E092bd1d35cbC47C91892',
@@ -276,6 +310,7 @@ const TOKEN_LIST: IAssetListState = {
     decimals: 18,
     logo:
       'https://assets.coingecko.com/coins/images/605/small/melon.png?1547034295',
+    isDefault: false,
   },
   '0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671': {
     id: '0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671',
@@ -288,6 +323,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1776e1F26f98b1A5dF9cD347953a26dd3Cb46671/logo.png',
+    isDefault: false,
   },
   '0x4fE83213D56308330EC302a8BD641f1d0113A4Cc': {
     id: '0x4fE83213D56308330EC302a8BD641f1d0113A4Cc',
@@ -300,6 +336,7 @@ const TOKEN_LIST: IAssetListState = {
     decimals: 18,
     logo:
       'https://assets.coingecko.com/coins/images/3318/small/photo1198982838879365035.jpg?1547037916',
+    isDefault: false,
   },
   '0x4575f41308EC1483f3d399aa9a2826d74Da13Deb': {
     id: '0x4575f41308EC1483f3d399aa9a2826d74Da13Deb',
@@ -312,6 +349,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x4575f41308EC1483f3d399aa9a2826d74Da13Deb/logo.png',
+    isDefault: false,
   },
   '0x408e41876cCCDC0F92210600ef50372656052a38': {
     id: '0x408e41876cCCDC0F92210600ef50372656052a38',
@@ -324,6 +362,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x408e41876cCCDC0F92210600ef50372656052a38/logo.png',
+    isDefault: false,
   },
   '0x1985365e9f78359a9B6AD760e32412f4a445E862': {
     id: '0x1985365e9f78359a9B6AD760e32412f4a445E862',
@@ -336,6 +375,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1985365e9f78359a9B6AD760e32412f4a445E862/logo.png',
+    isDefault: false,
   },
   '0x221657776846890989a759BA2973e427DfF5C9bB': {
     id: '0x221657776846890989a759BA2973e427DfF5C9bB',
@@ -347,6 +387,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x221657776846890989a759BA2973e427DfF5C9bB/logo.png',
+    isDefault: false,
   },
   '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F': {
     id: '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F',
@@ -359,6 +400,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F/logo.png',
+    isDefault: false,
   },
   '0xB64ef51C888972c908CFacf59B47C1AfBC0Ab8aC': {
     id: '0xB64ef51C888972c908CFacf59B47C1AfBC0Ab8aC',
@@ -371,6 +413,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xB64ef51C888972c908CFacf59B47C1AfBC0Ab8aC/logo.png',
+    isDefault: false,
   },
   '0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa': {
     id: '0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa',
@@ -383,6 +426,7 @@ const TOKEN_LIST: IAssetListState = {
     decimals: 18,
     logo:
       'https://assets.coingecko.com/coins/images/11224/small/tBTC.png?1589620754',
+    isDefault: false,
   },
   '0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828': {
     id: '0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828',
@@ -395,6 +439,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828/logo.png',
+    isDefault: false,
   },
   '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984': {
     id: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
@@ -407,6 +452,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604',
+    isDefault: false,
   },
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
     id: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -431,6 +477,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
+    isDefault: false,
   },
   '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599': {
     id: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
@@ -443,6 +490,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png',
+    isDefault: false,
   },
   '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2': {
     id: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
@@ -455,6 +503,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+    isDefault: false,
   },
   '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': {
     id: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
@@ -467,6 +516,7 @@ const TOKEN_LIST: IAssetListState = {
     decimals: 18,
     logo:
       'https://assets.coingecko.com/coins/images/11849/small/yfi-192x192.png?1598325330',
+    isDefault: false,
   },
   '0xE41d2489571d322189246DaFA5ebDe1F4699F498': {
     id: '0xE41d2489571d322189246DaFA5ebDe1F4699F498',
@@ -479,6 +529,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xE41d2489571d322189246DaFA5ebDe1F4699F498/logo.png',
+    isDefault: false,
   },
   'T-0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
     id: 'T-0xaD6D458402F60fD3Bd25163575031ACDce07538D',
@@ -490,6 +541,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
+    isDefault: false,
   },
   'T-0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984': {
     id: 'T-0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
@@ -501,6 +553,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604',
+    isDefault: false,
   },
   'T-0xc778417E063141139Fce010982780140Aa0cD5Ab': {
     id: 'T-0xc778417E063141139Fce010982780140Aa0cD5Ab',
@@ -512,6 +565,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
+    isDefault: false,
   },
   'T-0xB404c51BBC10dcBE948077F18a4B8E553D160084': {
     id: 'T-0xB404c51BBC10dcBE948077F18a4B8E553D160084',
@@ -523,6 +577,7 @@ const TOKEN_LIST: IAssetListState = {
     type: AssetType.ERC20,
     logo:
       'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
+    isDefault: false,
   }
 };
 
