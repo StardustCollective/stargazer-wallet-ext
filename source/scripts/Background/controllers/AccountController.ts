@@ -25,6 +25,7 @@ import IVaultState, {
 
 import { ETHNetwork, ITransactionInfo, IETHPendingTx } from '../../types';
 import IAssetListState from 'state/assets/types';
+import TOKEN_LIST from 'state/assets/tokens';
 import { EthTransactionController } from './EthTransactionController';
 
 import { IAccountController } from './IAccountController';
@@ -37,10 +38,9 @@ import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 
 // limit number of txs
 const TXS_LIMIT = 10;
-const ETH_TOKENS = [
-  '0xa393473d64d2F9F026B60b6Df7859A689715d092',
-  '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
-]; //LTX, ADS
+const ETH_TOKENS = Object.values(TOKEN_LIST)
+  .filter((token) => token.isDefault)
+  .map((token) => token.address);
 
 export class AccountController implements IAccountController {
   tempTx: ITransactionInfo | null;
@@ -118,14 +118,18 @@ export class AccountController implements IAccountController {
   async buildAccountEthTokens(address: string, accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
-    const resolveTokens = accountTokens.map(async (t) => {
-      if (!assetInfoMap[t]) {
-        await window.controller.assets.fetchTokenInfo(t);
+    const resolveTokens = accountTokens.map(async (address) => {
+      if (!assetInfoMap[address]) {
+        try {
+          await window.controller.assets.fetchTokenInfo(address);
+        } catch (err: any) {
+          // NOOP
+        }
       }
-      return assetInfoMap[t];
+      return assetInfoMap[address];
     });
 
-    const tokens = await Promise.all(resolveTokens);
+    const tokens = (await Promise.all(resolveTokens)).filter((token) => !!token);
 
     let assetList: IAssetState[] = [];
 
@@ -253,18 +257,17 @@ export class AccountController implements IAccountController {
       ),
       gasPrice: gasPrice
         ? utils.baseAmount(
-            ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-            9
-          )
+          ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+          9
+        )
         : undefined,
       gasLimit: BigNumber.from(gasLimit),
       nonce: tx.nonce,
     };
-    
+
     if (activeAsset.type !== AssetType.Ethereum) {
       txOptions.asset = utils.assetFromString(
-        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-          assets[activeAsset.id].address
+        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address
         }`
       );
     }
@@ -332,17 +335,16 @@ export class AccountController implements IAccountController {
           ),
           gasPrice: gasPrice
             ? utils.baseAmount(
-                ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-                9
-              )
+              ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+              9
+            )
             : undefined,
           gasLimit: gasLimit && BigNumber.from(gasLimit),
           nonce: nonce,
         };
         if (activeAsset.type !== AssetType.Ethereum) {
           txOptions.asset = utils.assetFromString(
-            `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-              assets[activeAsset.id].address
+            `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address
             }`
           );
         }
@@ -392,7 +394,7 @@ export class AccountController implements IAccountController {
         9
       );
       let bigNumberGasPrice = BigNumber.from(baseAmountGasPrice.amount().toFixed())
-      
+
       const txOptions: any = {
         to: this.tempTx.toAddress,
         value: ethers.utils.parseEther(this.tempTx.amount),
