@@ -21,9 +21,10 @@
     "react-native-crypto": "^2.1.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-randombytes": "^3.6.1",
-    "react-native-svg": "^12.1.1",
     "react-native-safe-area-context": "^3.2.0",
-    "react-native-screens": "^3.4.0"
+    "react-native-screens": "^3.4.0",
+    "react-native-svg": "^12.1.1",
+    "react-native-svg-transformer": "^0.14.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
