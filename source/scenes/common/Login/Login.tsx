@@ -62,12 +62,12 @@ const Login = ({
   onLoginError,
   onImportClicked
 }: ILoginProps) => {
-
   const { handleSubmit, register, errors } = useForm({
     validationSchema: schema,
   });
   const [isInvalid, setInvalid] = useState(false);
   const controller = useController();
+
   const errorClass = clsx(styles.error, {
     [styles.confirm]: location.pathname.includes('confirm.html'),
   });
@@ -75,13 +75,13 @@ const Login = ({
   const onSubmit = (data: any) => {
     // An unlock response of  false means migration attempt failed but user is logged in
     controller.wallet.unLock(data.password).then(async (res: boolean) => {
-      console.log('Res: ', res);
-        if (onLoginSuccess) {
-          onLoginSuccess(res)
-        }
-        setInvalid(false);
-      })
-      .catch(() => {
+      if (onLoginSuccess) {
+        onLoginSuccess(res)
+      }
+      setInvalid(false);
+    })
+      .catch((err: any) => {
+        console.log('err: ', err);
         if (onLoginError) {
           onLoginError()
         }
@@ -90,7 +90,7 @@ const Login = ({
   };
 
   const importClicked = () => {
-    if(onImportClicked) {
+    if (onImportClicked) {
       onImportClicked();
     }
   }
