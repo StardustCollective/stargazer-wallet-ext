@@ -131,23 +131,6 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const tempTx = controller.wallet.account.getTempTx();
 
-  let {
-    setToEthAddress,
-    setGasPrice,
-    setSendAmount,
-    estimateGasFee,
-    gasSpeedLabel,
-    gasFee,
-    gasLimit,
-    gasPrice,
-    gasPrices,
-  } = useGasEstimate({
-    toAddress: tempTx?.toAddress|| to,
-    fromAddress: activeAsset.address,
-    asset: assetInfo,
-    data: memo
-  });
-
   const { handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
@@ -183,6 +166,23 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   });
   const errorIconClass = clsx(styles.statusIcon, {
     [styles.hide]: isValidAddress,
+  });
+
+  let {
+    setToEthAddress,
+    setGasPrice,
+    setSendAmount,
+    estimateGasFee,
+    gasSpeedLabel,
+    gasFee,
+    gasLimit,
+    gasPrice,
+    gasPrices,
+  } = useGasEstimate({
+    toAddress: tempTx?.toAddress|| to,
+    fromAddress: activeAsset.address,
+    asset: assetInfo,
+    data: memo
   });
 
   const onSubmit = async (data: any) => {
@@ -272,9 +272,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   }, [amountBN, address, gasFee]);
 
   const handleAmountChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-
-      const changeAmount = getChangeAmount(ev.target.value, MAX_AMOUNT_NUMBER, assetInfo.decimals);
+    (changeVal: string) => {
+      const changeAmount = getChangeAmount(changeVal, MAX_AMOUNT_NUMBER, assetInfo.decimals);
       if (changeAmount === null) return;
 
       setAmount(changeAmount);
@@ -327,15 +326,13 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   };
 
   const handleSetMax = () => {
-
     const { balance, txFee } = getBalanceAndFees();
 
     let computedAmount;
 
     if (assetInfo.type === AssetType.ERC20) {
       computedAmount = balance;
-    }
-    else {
+    } else {
       computedAmount = balance.sub(txFee);
     }
 
@@ -343,14 +340,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       computedAmount = BigNumber.from(0);
     }
 
-    setAmount(ethers.utils.formatUnits(computedAmount, assetInfo.decimals));
-    setAmountBN(computedAmount);
-    //setUseMax(true);
+    handleAmountChange(ethers.utils.formatUnits(computedAmount, assetInfo.decimals));
   };
-
-  // useEffect(() => {
-  //   handleGetTxFee();
-  // }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -409,7 +400,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 inputRef={register}
                 name="amount"
                 value={amount === '0' ? '' : amount}
-                onChange={handleAmountChange}
+                onChange={(ev) => handleAmountChange(ev.target.value)}
                 disabled={isExternalRequest}
                 variant={clsx(styles.input, styles.amount)}
               />
