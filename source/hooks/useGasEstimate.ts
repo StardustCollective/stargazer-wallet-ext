@@ -65,7 +65,6 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
         } else {
           gasLimit = await estimateGasLimitForTransfer({ from: fromAddress, amount: sendAmount, to: asset.address });
         }
-
       } else {
         gasLimit = await estimateGasLimit({ to: toEthAddress, data })
       }
@@ -78,6 +77,7 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
       setGasLimit(gasLimit);
     }
   }
+
   useEffect(() => {
     getGasLimit();
   }, [toEthAddress, sendAmount]);
