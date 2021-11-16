@@ -179,7 +179,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     gasPrice,
     gasPrices,
   } = useGasEstimate({
-    toAddress: tempTx?.toAddress|| to,
+    toAddress: tempTx?.toAddress || to,
     fromAddress: activeAsset.address,
     asset: assetInfo,
     data: memo
@@ -216,9 +216,9 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   };
 
   const handleClose = () => {
-    if(isExternalRequest){
+    if (isExternalRequest) {
       window.close();
-    }else{
+    } else {
       linkTo('/asset');
     }
   }
@@ -232,10 +232,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
     const txFee =
       activeAsset.id === AssetType.Constellation
-        ? ethers.utils.parseUnits(String(Number(fee) * 1e8), 8)
+        ? ethers.utils.parseUnits(fee, assetInfo.decimals)
         : ethers.utils.parseEther(gasFee.toString());
-
-    //console.log('getBalanceAndFees', fee, balance, gasFee, txFee.toString());
 
     return { balance: balanceBN, txFee };
   }
@@ -247,8 +245,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
     if (assetInfo.type === AssetType.ERC20) {
       computedAmount = amountBN;
-    }
-    else {
+    } else {
       computedAmount = amountBN.add(txFee);
     }
 
@@ -258,18 +255,18 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         !fee ||
         !address
       );
-    } else {
-      return (
-        !isValidAddress ||
-        !amount ||
-        !fee ||
-        !address ||
-        balance.lt(0) ||
-        computedAmount.gt(balance)
-      );
-    }
+    } 
+    
+    return (
+      !isValidAddress ||
+      !amount ||
+      !fee ||
+      !address ||
+      balance.lt(0) ||
+      computedAmount.gt(balance)
+    );
 
-  }, [amountBN, address, gasFee]);
+  }, [amountBN, address, fee, gasFee]);
 
   const handleAmountChange = useCallback(
     (changeVal: string) => {
@@ -288,7 +285,8 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleFeeChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if (!isNaN(parseFloat(ev.target.value))) {
+      const val = ev.target.value;
+      if (!isNaN(parseFloat(val)) && (parseFloat(val) === 0 || parseFloat(val) >= 0.00000001)) {
         setFee(ev.target.value);
         estimateGasFee(gasPrice);
       }
