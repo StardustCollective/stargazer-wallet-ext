@@ -19,7 +19,7 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
   const [toEthAddress, setToEthAddress] = useState<string>(toAddress);
-  const [sendAmount, setSendAmount] = useState<string >('');
+  const [sendAmount, setSendAmount] = useState<string>('');
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
@@ -58,33 +58,29 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
 
   const getGasLimit = async () => {
     let gasLimit;
-    if (asset.type === AssetType.ERC20) {
-      if(data){
-        gasLimit = await estimateGasLimit({ to: asset.address, data })
-      }else{
-        gasLimit = await estimateGasLimitForTransfer({ from: fromAddress, amount: sendAmount, to: asset.address });
-      }
+    try {
+      if (asset.type === AssetType.ERC20) {
+        if (data) {
+          gasLimit = await estimateGasLimit({ to: asset.address, data })
+        } else {
+          gasLimit = await estimateGasLimitForTransfer({ from: fromAddress, amount: sendAmount, to: asset.address });
+        }
 
-    } else {
-      gasLimit = await estimateGasLimit({ to: toEthAddress, data })
+      } else {
+        gasLimit = await estimateGasLimit({ to: toEthAddress, data })
+      }
+    } catch (err: any) {
+      console.log('estimateGas err: ', err);
+      gasLimit = 0;
     }
-    if(!!gasLimit){
+
+    if (!!gasLimit) {
       setGasLimit(gasLimit);
     }
   }
-
   useEffect(() => {
     getGasLimit();
-  }, []);
-
-  useEffect(() => {
-    getGasLimit();
-  }, [toEthAddress]);
-
-  useEffect(() => {
-    getGasLimit();
-  }, [sendAmount]);
-
+  }, [toEthAddress, sendAmount]);
 
   useEffect(() => {
     if (gasLimit > 0) {
