@@ -51,15 +51,15 @@ const _getAbi = async ({ to }: {to: string}) => {
 }
 
 export const estimateGasLimitForTransfer = async ({ to, from, amount: value }: {to: string, from: string,  amount: string}) => {
-
     const { activeNetwork }: IVaultState = store.getState().vault;
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
     const abi = await _getAbi({ to });
     const web3 = _getWeb3(network);
     const contract = new web3.eth.Contract(abi, to);
 
-    if(value !== '0'){
-        const gasLimit = await contract.methods.transfer(to, value).estimateGas({ from });
+    if(value !== '0' && value !== ''){
+        const val = parseInt(value); // transfer throws error on decimals, int amount estimate should be basically the same
+        const gasLimit = await contract.methods.transfer(to, val).estimateGas({ from });
         return Math.floor(gasLimit * 1.5);
     }
     
@@ -69,13 +69,12 @@ export const estimateGasLimitForTransfer = async ({ to, from, amount: value }: {
 export const estimateGasLimit = async ({ to, data }: { to: string, data: string }): Promise<number> => {
     const { activeNetwork, activeWallet }: IVaultState = store.getState().vault;
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
-    const ethAsset = activeWallet.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
+    const ethAsset = activeWallet?.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
 
-
-    if (!ethAsset) {
+    if (!ethAsset || !to || to?.toUpperCase().startsWith('DAG')) {
         return 0; // DAG? 
     }
-
+    
     const from = ethAsset.address;
     const abi = await _getAbi({to});
 

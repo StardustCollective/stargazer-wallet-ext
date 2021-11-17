@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "3.1.4",
+  "version": "3.2.0",
 
   "icons": {
     "16": "assets/icons/favicon-16.png",
@@ -23,7 +23,7 @@
     "https://assets.coingecko.com/"
   ],
 
-  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon https://assets.coingecko.com;",
+  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon https://assets.coingecko.com https://lattice-exchange-assets.s3.amazonaws.com;",
 
   "__chrome|firefox__author": "Stardust Collective",
 
