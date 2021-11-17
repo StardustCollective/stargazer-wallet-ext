@@ -8,8 +8,6 @@ import {
   View,
   HamburgerIcon, 
   Pressable,
-  Image,
-  Icon
 } from "native-base"
 
 
