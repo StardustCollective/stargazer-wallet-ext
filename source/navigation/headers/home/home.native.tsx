@@ -17,26 +17,13 @@ import {
 // Images
 ///////////////////////////
 
-// require('assets/images/logo.svg')
-
 import LogoImage from 'assets/images/logo.svg';
-
-// import IconButton from '@material-ui/core/IconButton';
-
-// import MenuIcon from '@material-ui/icons/Menu';
 
 ///////////////////////////
 // Screens
 ///////////////////////////
 
 import screens from 'navigation/screens';
-
-///////////////////////////
-// Styles
-///////////////////////////
-
-// import styles from './styles.scss';
-// import commonStyles from './../styles.scss';
 
 ///////////////////////////
 // Interfaces
