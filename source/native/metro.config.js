@@ -4,9 +4,9 @@
  *
  * @format
  */
+const {getDefaultConfig} = require('metro-config');
 const path = require('path');
-
-let nodeModules = require('node-libs-react-native');
+const nodeModules = require('node-libs-react-native');
 
 const extraNodeModules = {
   source: path.resolve(__dirname + '/../'),
@@ -20,34 +20,44 @@ const extraNodeModules = {
   types: path.resolve(__dirname + '/../types'),
   utils: path.resolve(__dirname + '/../utils'),
   assets: path.resolve(__dirname + '/../assets'),
-  constants: path.resolve(__dirname + '/../constants'),
   process: nodeModules.process,
   crypto: nodeModules.crypto,
-  stream: nodeModules.stream
+  stream: nodeModules.stream,
+  'react-native': require.resolve('react-native-web'),
 };
 
 const nodeModulesPaths = [
   path.resolve(__dirname + '/node_modules'),
-  path.resolve(__dirname + '/../../node_modules')
+  path.resolve(__dirname + '/../../node_modules'),
 ];
 
 const watchFolders = [
   path.resolve(__dirname + '/../../source'),
-  path.resolve(__dirname + '/../../node_modules')
+  path.resolve(__dirname + '/../../node_modules'),
 ];
 
-module.exports = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: false,
-      },
-    }),
-  },
-  resolver: {
-    extraNodeModules,
-    nodeModulesPaths,
-  },
-  watchFolders,
+module.exports = async () => {
+
+  const {
+    resolver: { sourceExts, assetExts }
+  } = await getDefaultConfig();
+
+  return {
+    transformer: {
+      babelTransformerPath: require.resolve('react-native-svg-transformer'),
+      getTransformOptions: async () => ({
+        transform: {
+          experimentalImportSupport: false,
+          inlineRequires: false,
+        },
+      }),
+    },
+    resolver: {
+      extraNodeModules,
+      nodeModulesPaths,
+      assetExts: assetExts.filter(ext => ext !== 'svg'),
+      sourceExts: [...sourceExts, 'svg'],
+    },
+    watchFolders,
+  };
 };
