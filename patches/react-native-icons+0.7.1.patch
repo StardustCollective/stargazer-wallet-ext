@@ -1,0 +1,15 @@
+diff --git a/node_modules/react-native-icons/react-native-icons.podspec b/node_modules/react-native-icons/react-native-icons.podspec
+index 7f5fa4c..f7fd11c 100644
+--- a/node_modules/react-native-icons/react-native-icons.podspec
++++ b/node_modules/react-native-icons/react-native-icons.podspec
+@@ -4,8 +4,10 @@ Pod::Spec.new do |s|
+   s.summary          = "React Native Icons Module"
+   s.platform     = :ios, '7.0'
+   s.requires_arc = true
++  s.license           = 'MIT'
+   s.author = 'Cory Smith'
+   s.homepage = "https://github.com/corymsmith/react-native-icons"
++  s.source   = { :git => "https://github.com/corymsmith/react-native-icons.git", :tag => "v#{s.version}" }
+   s.source_files = 'ios/**/*.{h,m}'
+   s.preserve_paths = "**/*.js"
+   s.resources = ["**/**.ttf", "**/**.otf"]
