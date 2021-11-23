@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7A020DAB6F3F0BA0A6D9946E84B38B7F"
-               BuildableName = "AccessibilityResources.bundle"
+               BuildableName = "React-Core-AccessibilityResources.bundle"
                BlueprintName = "React-Core-AccessibilityResources"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
