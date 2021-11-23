@@ -16,13 +16,13 @@ export const COLORS = {
   black: '#000',
   grey_50: '#F2F2F2',
   grey_100: '#E6E6E6',
-  gray_light: '#f5f5f5',
+  grey_light: '#f5f5f5',
 };
 
-export const FONt_WEIGHT = {
-  light: 300,
-  regular: 400,
-  medium: 500,
-  semibold: 600,
-  bold: 700,
+export const FONT_WEIGHTS = {
+  light: '300',
+  regular: '400',
+  medium: '500',
+  semibold: '600',
+  bold: '700',
 };
