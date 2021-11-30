@@ -24,10 +24,6 @@ const TextInput: FC<ITextInput> = ({
     keyboardType = 'numeric'
   }
 
-  const handleMouseDownPassword = (event: MouseEvent) => {
-    event.preventDefault();
-  };
-
   return (
     <>
       <RNEInput
