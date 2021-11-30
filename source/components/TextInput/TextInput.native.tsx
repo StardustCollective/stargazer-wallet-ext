@@ -30,7 +30,6 @@ const TextInput: FC<ITextInput> = ({
         placeholder={placeholder}
         secureTextEntry={type === 'password'}
         inputContainerStyle={styles.inputContainer}
-        inputStyle={styles.input}
         labelStyle={styles.label}
         label={label}
         keyboardType={keyboardType}

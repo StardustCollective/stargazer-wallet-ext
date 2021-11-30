@@ -9,10 +9,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     borderColor: COLORS.grey_100,
   },
-  input: {
-    fontSize: 18,
-    fontFamily: FONTS.rubik,
-  },
   label: {
     paddingLeft: 14,
     paddingBottom: 10,
