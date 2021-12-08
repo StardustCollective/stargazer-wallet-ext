@@ -27,8 +27,11 @@ jobs:
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
-        with:
+        with: 
           node-version: ${{ matrix.node-version }}
+        # install and cache 
+      - name: Install and cache
+        uses: bahmutov/npm-install@v1.6.0
       - run: npm i -g yarn
 
       - run: yarn install
@@ -40,7 +43,7 @@ jobs:
           name: extension-build-files
           path: extension/
       - run: yarn install
-        working-directory: web
+        working-directory: source/web/
       - name: Run E2E Tests
         run: yarn test:e2e:chrome:silent
         env: 
