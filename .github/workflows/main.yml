@@ -30,6 +30,14 @@ jobs:
         with: 
           node-version: ${{ matrix.node-version }}
         # install and cache 
+      - uses: nanasess/setup-chromedriver@master
+        # with:
+          # Optional: do not specify to match Chrome's version
+          # chromedriver-version: '88.0.4324.96'
+      - run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
       - name: Install and cache
         uses: bahmutov/npm-install@v1.6.0
       - run: npm i -g yarn
@@ -42,10 +50,12 @@ jobs:
         with:
           name: extension-build-files
           path: extension/
-      - run: yarn install
+      - name: start selenium server
+        uses: Xotabu4/selenoid-github-action@v2
+      - run: yarn install web
         working-directory: source/web/
       - name: Run E2E Tests
-        run: yarn test:e2e:chrome:silent
+        run: yarn test:e2e:chrome
         env: 
           SELENIUM_BROWER: chrome
           ENABLE_CHROME_LOGGING: false
