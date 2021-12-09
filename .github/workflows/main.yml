@@ -16,7 +16,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [12.x]
@@ -27,9 +27,9 @@ jobs:
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
-        with: 
+        with:
           node-version: ${{ matrix.node-version }}
-        # install and cache 
+        # install and cache
       - uses: nanasess/setup-chromedriver@master
         # with:
           # Optional: do not specify to match Chrome's version
@@ -50,12 +50,11 @@ jobs:
         with:
           name: extension-build-files
           path: extension/
-      - name: start selenium server
-        uses: Xotabu4/selenoid-github-action@v2
       - run: yarn install web
         working-directory: source/web/
       - name: Run E2E Tests
-        run: yarn test:e2e:chrome
-        env: 
+        run: yarn test:e2e:chrome:headless
+        env:
           SELENIUM_BROWER: chrome
           ENABLE_CHROME_LOGGING: false
+          CHROME_HEADLESS: true
