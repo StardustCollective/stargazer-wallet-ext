@@ -131,7 +131,7 @@ const AssetItem: FC<IAssetItem> = ({
               color={COLORS_ENUMS.BLACK}
               extraStyles={styles.balanceText}
             >
-              {formatNumber(Number(balances[asset.id]), 2, 2)}
+              {formatNumber(Number(balances[asset.id]), 2, 4)}
             </TextV3.Header>
           </div>
         </div>
