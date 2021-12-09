@@ -17,6 +17,7 @@
     "build": "yarn workspace extension build",
     "test:e2e:chrome": "yarn workspace extension test:e2e:chrome",
     "test:e2e:chrome:silent": "yarn workspace extension test:e2e:chrome:silent",
+    "test:e2e:chrome:headless": "yarn workspace extension test:e2e:chrome:headless",
     "android": "yarn workspace mobile react-native run-android",
     "ios": "yarn workspace mobile react-native run-ios",
     "start": "yarn workspace mobile react-native start",

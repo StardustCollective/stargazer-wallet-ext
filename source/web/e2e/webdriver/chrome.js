@@ -8,7 +8,20 @@ class ChromeDriver {
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
-    args.push('--window-size=100,720')
+
+    if (process.env.CHROME_HEADLESS === 'true') {
+      args.push('--disable-gpu');
+      args.push('--no-sandbox');
+      args.push('--headless');
+      args.push('--disk-cache-dir=/tmp');
+      args.push('--user-data-dir=/tmp');
+      args.push('--crash-dumps-dir=/tmp');
+      args.push('--disable-dev-shm-usage')
+    } else {
+      args.push('--window-size=100,720');
+    }
+
+    console.log( 'args', args );
     const options = new chrome.Options().addArguments(args);
     const builder = new Builder()
       .forBrowser('chrome')
@@ -24,7 +37,9 @@ class ChromeDriver {
     builder.setChromeService(service);
     const driver = builder.build();
     const chromeDriver = new ChromeDriver(driver);
-    const extensionId = await chromeDriver.getExtensionIdByName('Stargazer Wallet');
+    const extensionId = await chromeDriver.getExtensionIdByName(
+      'Stargazer Wallet'
+    );
 
     return {
       driver,

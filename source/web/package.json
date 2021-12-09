@@ -25,6 +25,7 @@
     "test": "jest",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node e2e/run-all.js",
     "test:e2e:chrome:silent": "SELENIUM_BROWSER=chrome ENABLE_CHROME_LOGGING=false node e2e/run-all.js",
+    "test:e2e:chrome:headless": "SELENIUM_BROWSER=chrome CHROME_HEADLESS=true node e2e/run-all.js",
     "postinstall": "cd ../../ && npx patch-package"
   },
   "dependencies": {
