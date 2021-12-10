@@ -32,12 +32,13 @@ jobs:
         # install and cache
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@latest
+      -- run: chrome --version
         with:
           chrome-version: stable
       - uses: nanasess/setup-chromedriver@master
         with:
-          Optional: do not specify to match Chrome's version
-          chromedriver-version: '88.0.4324.96'
+          #Optional: do not specify to match Chrome's version
+          chromedriver-version: '96.0.4664.93'
       - run: |
           export DISPLAY=:99
           chromedriver --url-base=/wd/hub &
