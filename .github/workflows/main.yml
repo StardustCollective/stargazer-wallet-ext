@@ -53,8 +53,7 @@ jobs:
       - run: yarn install
         working-directory: source/web/
       - name: Run E2E Tests
-        run: yarn test:e2e:chrome:headless
+        run: yarn test:e2e:chrome
         env:
           SELENIUM_BROWER: chrome
           ENABLE_CHROME_LOGGING: false
-          CHROME_HEADLESS: true
