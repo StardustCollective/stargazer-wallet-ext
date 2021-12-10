@@ -22,7 +22,7 @@ import { RootState } from 'state/store';
 // Helpers
 ///////////////////////
 
-import { formatNumber, formatPrice } from 'scenes/home/helpers';
+import { formatNumber, formatPrice, formatStringDecimal } from 'scenes/home/helpers';
 
 ///////////////////////
 // Styles
@@ -131,7 +131,7 @@ const AssetItem: FC<IAssetItem> = ({
               color={COLORS_ENUMS.BLACK}
               extraStyles={styles.balanceText}
             >
-              {formatNumber(Number(balances[asset.id]), 2, 4)}
+              {formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)}
             </TextV3.Header>
           </div>
         </div>
