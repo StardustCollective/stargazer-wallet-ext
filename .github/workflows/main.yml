@@ -32,9 +32,9 @@ jobs:
         # install and cache
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@latest
-      - run: chrome --version
         with:
           chrome-version: stable
+      - run: chrome --version
       - uses: nanasess/setup-chromedriver@master
         with:
           #Optional: do not specify to match Chrome's version
