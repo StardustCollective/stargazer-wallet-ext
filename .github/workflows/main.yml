@@ -52,6 +52,7 @@ jobs:
       - run: yarn install
         working-directory: source/web/
       - run: ls -laog /usr/bin/google-chrome
+      - run: ls -laog /etc/alternatives/google-chrome
       - run: ls /usr/bin/ | grep chrome
       - name: Run E2E Tests
         run: yarn test:e2e:chrome

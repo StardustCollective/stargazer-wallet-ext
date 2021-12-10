@@ -19,6 +19,7 @@ class ChromeDriver {
       args.push('--disable-dev-shm-usage')
     } else {
       args.push('--window-size=100,720');
+      args.push('--no-sandbox');
     }
 
     console.log( 'args', args );
