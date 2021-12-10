@@ -36,9 +36,6 @@ jobs:
           chrome-version: stable
       - run: chrome --version
       - uses: nanasess/setup-chromedriver@master
-        with:
-          #Optional: do not specify to match Chrome's version
-          chromedriver-version: '96.0.4664.93'
       - run: |
           export DISPLAY=:99
           chromedriver --url-base=/wd/hub &
