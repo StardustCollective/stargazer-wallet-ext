@@ -5,7 +5,7 @@
 import React, { useEffect, useMemo, useLayoutEffect } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { formatNumber, getAddressURL } from '../helpers';
+import { formatNumber, getAddressURL, formatStringDecimal } from '../helpers';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////
@@ -128,7 +128,7 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
           <section className={styles.center}>
             <div className={styles.balance}>
               <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
-                {formatNumber(balance, 2, 4)}{' '}
+                {formatStringDecimal(formatNumber(balance, 16, 20), 4)}{' '}
               </TextV3.HeaderDisplay>
               <TextV3.Body>
                 {assets[activeAsset.id].symbol}

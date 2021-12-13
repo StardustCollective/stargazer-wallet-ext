@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType, Transaction } from 'state/vault/types';
+import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import IAssetListState from 'state/assets/types';
 import TxItem from './TxItem';
 import TextV3 from 'components/TextV3';
@@ -109,13 +110,15 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   ? tx.to && tx.to[0].to
                   : tx.receiver
               }`
-            const amount = isETH ? Number(isETHPending ? tx.amount : tx.balance).toFixed(4)
-              : (tx.amount / 1e8).toFixed(4)
+            let amount = isETH ? Number(isETHPending ? tx.amount : tx.balance)
+              : (tx.amount / 1e8)
+            let amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
             const fiatAmount = isETH ? getFiatAmount(Number(isETHPending ? tx.amount : tx.balance), 2)
               : getFiatAmount(tx.amount / 1e8, 8)
 
             return (
                 <TxItem
+                  key={idx}
                   onItemClick={handleOpenExplorer}
                   tx={tx}
                   isETH={isETH}
@@ -125,7 +128,7 @@ const TxsPanel: FC<ITxsPanel> = ({ address, transactions }) => {
                   showGroupBar={isShowedGroupBar(tx, idx)}
                   txTypeLabel={txTypeLabel}
                   currencySymbol={assets[activeAsset.id].symbol}
-                  amount={amount}
+                  amount={amountString}
                   fiatAmount={fiatAmount}
                 />
             );

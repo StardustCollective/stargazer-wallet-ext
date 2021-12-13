@@ -24,6 +24,14 @@ const MigrationController = () => {
     v3_1_1.default(state);
    }
 
+   /**
+   * version < 3.2.0
+   */
+    if(state.assets && !state.assets.hasOwnProperty('0x4e08f03079c5cd3083ea331ec61bcc87538b7665')){
+      const v3_2_0 = require('../migration/v3_2_0');
+      v3_2_0.default(state);
+     }
+
 
 };
 

@@ -6,7 +6,7 @@ import IAssetListState, { IAssetInfoState } from './types';
 import ConstellationLogo from 'assets/images/svg/constellation.svg';
 import EthereumLogo from 'assets/images/svg/ethereum.svg';
 
-const initialState: IAssetListState = {
+export const initialState: IAssetListState = {
   [AssetType.Ethereum]: {
     id: AssetType.Ethereum,
     label: 'Ethereum',
