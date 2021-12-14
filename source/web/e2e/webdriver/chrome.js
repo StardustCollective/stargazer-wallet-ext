@@ -23,6 +23,7 @@ class ChromeDriver {
       service.setStdio('inherit').enableChromeLogging();
     }
     if (port) {
+      console.log( 'PORT::::', port );
       service.setPort(port);
     }
     builder.setChromeService(service);
