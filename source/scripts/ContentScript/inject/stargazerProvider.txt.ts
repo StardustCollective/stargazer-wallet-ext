@@ -34,23 +34,20 @@ const SUPPORTED_CHAINS = {
   }
 };
 
-class RPCError extends Error {
+class RPCError {
   constructor(message, code) {
-    super(message);
-
-    this.name = 'RPC Error';
+    this.message = message;
+    this.name = 'Stargazer Wallet Error';
     this.code = code;
   }
 }
 
 const ERRORS = {
   USER_REJECTED: (message = 'User Rejected Request') => {
-    const err = new RPCError(message, 4001);
-    return err;
+    return new RPCError(message, 4001);
   },
   INVALID_METHOD: (message = 'Unsupported Method') => {
-    const err = new RPCError(message, 4200);
-    return err;
+    return new RPCError(message, 4200);
   }
 };
 
@@ -74,23 +71,18 @@ async function handleRequest(chain, req) {
 
   // All request accounts go to the same place
   if (method === 'requestAccounts') {
-    const { result, data } = await window.providerManager.enable();
+    const {result, data} = await window.providerManager.enable();
 
-    if (!result ) throw ERRORS.USER_REJECTED();
-
+    if (!result) {
+      throw ERRORS.USER_REJECTED();
+    }
     return data.accounts;
   }
 
-  if (
-    prefix &&
-    REQUEST_MAP.hasOwnProperty(prefix) &&
-    REQUEST_MAP[prefix].hasOwnProperty(method)
-  ) {
-    const response = await provider.getMethod(REQUEST_MAP[prefix][method])(
-      ...req.params
-    );
+  if (prefix && REQUEST_MAP.hasOwnProperty(prefix) && REQUEST_MAP[prefix].hasOwnProperty(method)) {
+    const response = await provider.getMethod(REQUEST_MAP[prefix][method])(... req.params);
 
-    if(response.result === false) {
+    if (response.result === false) {
       throw ERRORS.USER_REJECTED();
     }
 
@@ -110,9 +102,13 @@ const provider = chain => {
   return {
     request: async req => {
       const params = req.params || [];
+
       return await handleRequest(chain, {
         method: req.method,
         params
+      }).catch( err => {
+        console.error(err);
+        throw err;
       });
     },
     on: (method, callback) => {
@@ -123,21 +119,24 @@ const provider = chain => {
 
       const id = chain + '.' + origin + '.' + method;
 
-      window.stargazer._listeners[id] = ({ detail }) => {
+      window.stargazer._listeners[id] = ({detail}) => {
         if (detail) {
           callback(JSON.parse(detail));
         }
       };
 
-      window.addEventListener(id, window.stargazer._listeners[id], {
-        passive: true
-      });
+      window.addEventListener(id, window.stargazer._listeners[id], {passive: true});
 
       // Register the origin of the listening site.
-      window.postMessage(
-        { id, type: 'STARGAZER_EVENT_REG', data: { method, origin, chain } },
-        '*'
-      );
+      window.postMessage({
+        id,
+        type: 'STARGAZER_EVENT_REG',
+        data: {
+          method,
+          origin,
+          chain
+        }
+      }, '*');
     },
     removeListener: method => {
       let origin = window.location.hostname;
@@ -153,10 +152,15 @@ const provider = chain => {
         delete window.stargazer._listeners[id];
       }
 
-      window.postMessage(
-        { id, type: 'STARGAZER_EVENT_DEREG', data: { method, origin, chain } },
-        '*'
-      );
+      window.postMessage({
+        id,
+        type: 'STARGAZER_EVENT_DEREG',
+        data: {
+          method,
+          origin,
+          chain
+        }
+      }, '*');
     }
   };
 };
@@ -172,9 +176,10 @@ window.stargazer = {
     return provider.getMethod('wallet.isConnected')();
   },
   enable: async () => {
-    const { result, data } = await window.providerManager.enable();
-
-    if (!result) throw ERRORS.USER_REJECTED();
+    const {result, data} = await window.providerManager.enable();
+    if (!result) {
+      throw ERRORS.USER_REJECTED();
+    }
 
     return data.accounts;
   },
