@@ -9,18 +9,8 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
 
-    if (process.env.CHROME_HEADLESS === 'true') {
-      args.push('--disable-gpu');
-      args.push('--no-sandbox');
-      args.push('--headless');
-      args.push('--disk-cache-dir=/tmp');
-      args.push('--user-data-dir=/tmp');
-      args.push('--crash-dumps-dir=/tmp');
-      args.push('--disable-dev-shm-usage')
-    } else {
-      args.push('--window-size=100,720');
-      args.push('--no-sandbox');
-    }
+    args.push('--window-size=900,700');
+    args.push('--no-sandbox');
 
     console.log( 'args', args );
     const options = new chrome.Options().addArguments(args);
