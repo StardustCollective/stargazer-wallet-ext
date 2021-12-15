@@ -1,0 +1,14 @@
+diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
+index 90db138..8287307 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
++++ b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
+@@ -6,7 +6,8 @@ export declare enum KeyringWalletType {
+     MultiChainWallet = "MCW",
+     CrossChainWallet = "CCW",
+     MultiAccountWallet = "MAW",
+-    SingleAccountWallet = "SAW"
++    SingleAccountWallet = "SAW",
++    LedgerAccountWallet ="LAW"
+ }
+ export declare enum KeyringAssetType {
+     DAG = "DAG",
