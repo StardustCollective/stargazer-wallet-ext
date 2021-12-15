@@ -249,9 +249,10 @@ const LedgerPage: FC = () => {
     setFetchingPage(true);
     let port = browser.runtime.connect(undefined, { name: 'stargazer' });
     port.postMessage({
-      type: 'CAL_REQUEST',
+      type: 'IMPORT_LEDGER_ACCOUNTS',
       data: {
-        method: 'wallet.setLedgerAccounts',
+        method: SUPPORTED_WALLET_METHODS.setLedgerAccounts,
+        asset: 'DAG',
         args: [selectedAccounts],
       }
     });

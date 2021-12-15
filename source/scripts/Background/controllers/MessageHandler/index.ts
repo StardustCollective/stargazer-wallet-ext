@@ -4,6 +4,7 @@ import { Message } from './types';
 import { initializeEvents, registerEvent, deregisterEvent } from './events';
 import { enable } from './enable';
 import { handleRequest } from './requests';
+import { importLedgerAccounts } from './ledger';
 
 export const messagesHandler = (
     port: Runtime.Port,
@@ -55,6 +56,8 @@ export const messagesHandler = (
         masterController.dapp.fromPageConnectDApp(origin, title);
 
         switch (message.type) {
+            case 'IMPORT_LEDGER_ACCOUNTS':
+                return importLedgerAccounts( port, masterController, message);
             case 'STARGAZER_EVENT_REG':
                 return registerEvent(masterController, message);
             case 'STAGAZER_EVENT_DEREG':
