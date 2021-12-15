@@ -80,7 +80,7 @@ const VaultState = createSlice({
     //     activeAccountId: action.payload.id,
     //   };
     // },
-    addWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
+    addWallet(state: IVaultState, action) {
       return {
         ...state,
         wallets: [
