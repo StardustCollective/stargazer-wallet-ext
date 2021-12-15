@@ -3,6 +3,7 @@ import {
   KeyringManager,
   KeyringNetwork,
 } from '@stardust-collective/dag4-keyring';
+import { AccountItem } from 'scripts/types';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 
 export interface IWalletController {
@@ -20,6 +21,9 @@ export interface IWalletController {
     phrase?: string,
     resetAll?: boolean
   ) => Promise<string>;
+  importLedgerAccountsByAddress: (
+    addresses: AccountItem[]
+  ) => void;
   deleteWallet: (walletId: string, password: string) => Promise<boolean>;
   switchWallet: (walletId: string) => Promise<void>;
   switchNetwork: (networkType: KeyringNetwork, networkId: string) => void;

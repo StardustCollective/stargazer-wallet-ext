@@ -11,6 +11,11 @@ import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import DappController from 'scripts/Background/controllers/DAppController';
+import { getAccountByAddress } from 'utils/dagUtil';
+import { AccountItem } from 'scripts/types';
+import { AssetType } from 'state/vault/types';
+import { addWallet } from 'state/vault';
+import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 
 export class WalletController implements IWalletController {
   account: AccountController;
@@ -94,6 +99,30 @@ export class WalletController implements IWalletController {
     await this.switchWallet(wallet.id);
 
     return wallet.id;
+  }
+
+  async importLedgerAccountsByAddress(addresses: AccountItem[]) {
+    for (let i = 0; i < addresses.length; i++) {
+      let accountItem = addresses[i];
+
+      const res = await getAccountByAddress(accountItem.address);
+
+      const wallet = {
+        id: 'L' + accountItem.id,
+        label: 'Ledger ' + (accountItem.id + 1),
+        type: AssetType.Ledger,
+        accounts: [
+          {
+            address: res!.address,
+            network: KeyringNetwork.Constellation,
+            publicKey: accountItem!.publicKey,
+          },
+        ],
+        supportedAssets: [KeyringAssetType.DAG],
+      };
+
+      await store.dispatch(addWallet(wallet));
+    }
   }
 
   async deleteWallet(walletId: string, password: string) {
