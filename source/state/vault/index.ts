@@ -6,7 +6,8 @@ import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import IVaultState, {
   AssetBalances,
   AssetType,
-  IAssetState, IWalletState
+  IAssetState, 
+  IWalletState,
 } from './types';
 
 import {
@@ -79,16 +80,15 @@ const VaultState = createSlice({
     //     activeAccountId: action.payload.id,
     //   };
     // },
-    // createAccount(state: IVaultState, action: PayloadAction<IWalletState>) {
-    //   return {
-    //     ...state,
-    //     accounts: {
-    //       ...state.accounts,
-    //       [action.payload.id]: action.payload,
-    //     },
-    //     activeAccountId: action.payload.id,
-    //   };
-    // },
+    addWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
+      return {
+        ...state,
+        wallets: [
+          ...state.wallets,
+          action.payload,
+        ]
+      };
+    },
     // removeAccount(state: IVaultState, action: PayloadAction<string>) {
     //   if (Object.keys(state.accounts).length <= 1) return;
     //   if (state.activeAccountId === action.payload) {
@@ -194,6 +194,7 @@ const VaultState = createSlice({
 });
 
 export const {
+  addWallet,
   setVaultInfo,
   // setKeystoreInfo,
   // removeKeystoreInfo,
