@@ -251,7 +251,6 @@ const LedgerPage: FC = () => {
     port.postMessage({
       type: 'IMPORT_LEDGER_ACCOUNTS',
       data: {
-        method: SUPPORTED_WALLET_METHODS.setLedgerAccounts,
         asset: 'DAG',
         args: [selectedAccounts],
       }
