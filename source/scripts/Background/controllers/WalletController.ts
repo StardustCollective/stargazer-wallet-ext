@@ -6,14 +6,13 @@ import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
-import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
+import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletType} from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import DappController from 'scripts/Background/controllers/DAppController';
 import { getAccountByAddress } from 'utils/dagUtil';
 import { AccountItem } from 'scripts/types';
-import { AssetType } from 'state/vault/types';
 import { addWallet } from 'state/vault';
 import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 
@@ -105,15 +104,15 @@ export class WalletController implements IWalletController {
     for (let i = 0; i < addresses.length; i++) {
       let accountItem = addresses[i];
 
-      const res = await getAccountByAddress(accountItem.address);
+      const  res = await getAccountByAddress(accountItem.address);
 
       const wallet = {
         id: 'L' + accountItem.id,
         label: 'Ledger ' + (accountItem.id + 1),
-        type: AssetType.Ledger,
+        type: KeyringWalletType.LedgerAccountWallet,
         accounts: [
           {
-            address: res!.address,
+            address: res!.address.constellation,
             network: KeyringNetwork.Constellation,
             publicKey: accountItem!.publicKey,
           },
@@ -144,7 +143,6 @@ export class WalletController implements IWalletController {
   }
 
   async switchWallet(id: string) {
-
     store.dispatch(updateBalances({ pending: 'true' }));
 
     await this.account.buildAccountAssetInfo(id);

@@ -33,6 +33,7 @@ import {
   KeyringManager,
   KeyringNetwork,
   KeyringWalletState,
+  KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 
@@ -71,17 +72,31 @@ export class AccountController implements IAccountController {
     const walletInfo = wallets.find((w) => w.id === walletId);
 
     for (let i = 0; i < walletInfo.accounts.length; i++) {
-      const account = walletInfo.accounts[i];
-      const privateKey = this.keyringManager.exportAccountPrivateKey(
-        account.address
-      );
+      const account  = walletInfo.accounts[i];
+      let privateKey = undefined;
+      let publicKey  = undefined;
+
+      // Excludes ledger accounts since we do not have access 
+      // to the private key.
+      if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet){
+        privateKey = this.keyringManager.exportAccountPrivateKey(
+          account.address
+        );
+      }else {
+        publicKey = account.publicKey;
+      }
 
       if (account.network === KeyringNetwork.Constellation) {
-        dag4.account.loginPrivateKey(privateKey);
+        if(privateKey){
+          dag4.account.loginPrivateKey(privateKey);
+        }else {
+          dag4.account.loginPublicKey(publicKey);
+        }
 
+       
         buildAssetList.push({
           id: AssetType.Constellation,
-          type: AssetType.Constellation,
+          type: walletInfo.type === KeyringWalletType.LedgerAccountWallet ?  AssetType.LedgerConstellation : AssetType.Constellation,
           label: 'Constellation',
           // balance: dagBalance || 0,
           address: account.address,

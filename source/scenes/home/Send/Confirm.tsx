@@ -158,8 +158,21 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
         window.close();
       } else {
 
-        await controller.wallet.account.confirmTempTx()
-        setConfirmed(true);
+        if(activeAsset.type === AssetType.LedgerConstellation){
+
+          // const {
+          //   publicKey,
+          //   id,
+          // } = accounts[activeAccountId];
+          let publicKey = '';
+          let id = '';
+          window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
+          history.push('/home');
+        }else{
+          await controller.wallet.account.confirmTempTx()
+          setConfirmed(true);
+        }
+
       }
     } catch (error: any) {
       let message = error.message;
@@ -229,7 +242,7 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
             Cancel
           </Button>
           <Button type="submit" variant={styles.button} onClick={handleConfirm} disabled={disabled}>
-            {assetInfo.type === AssetType.Ledger ? 'Next' : 'Confirm'}
+            {activeAsset.type === AssetType.LedgerConstellation ? 'Next' : 'Confirm'}
           </Button>
         </div>
       </section>

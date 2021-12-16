@@ -153,7 +153,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const [modalOpened, setModalOpen] = useState(false);
 
   const isValidAddress = useMemo(() => {
-    if (activeAsset.type === AssetType.Constellation)
+    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation)
       return controller.wallet.account.isValidDAGAddress(address);
     return controller.wallet.account.isValidERC20Address(address);
   }, [address]);
@@ -256,7 +256,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         !address
       );
     } 
-    
+
     return (
       !isValidAddress ||
       !amount ||
@@ -411,7 +411,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
               </Button>
             </li>
 
-            {activeAsset.type === AssetType.Constellation && (
+            {activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation && (
               <li>
                 <label>Transaction Fee</label>
                 <TextInput
@@ -450,7 +450,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
             </div>
           )}
         </section>
-        {activeAsset.type !== AssetType.Constellation && (
+        {activeAsset.type !== AssetType.Constellation && activeAsset.type !== AssetType.LedgerConstellation  && (
           <section
             className={clsx(styles.transactionFee, {
               [styles.hide]: !gasPrices.length,

@@ -17,7 +17,7 @@ export type Keystore = SeedKeystore | PrivKeystore;
 
 export enum AssetType {
   Constellation = 'constellation',
-  Ledger = 'ledger',
+  LedgerConstellation = 'ledger-constellation',
   Ethereum = 'ethereum',
   ERC20 = 'erc20',
 }

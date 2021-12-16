@@ -33,7 +33,7 @@ export class AssetsBalanceMonitor {
       let hasDAG = false, hasETH = false;
 
       activeWallet.assets.forEach(a => {
-        hasDAG = hasDAG || a.type === AssetType.Constellation;
+        hasDAG = hasDAG || a.type === AssetType.Constellation || a.type === AssetType.LedgerConstellation;
         hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
       });
 
@@ -59,7 +59,6 @@ export class AssetsBalanceMonitor {
       //   const { balances } = store.getState().vault;
       //   store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
       // })
-
       if (hasDAG) {
         this.subscription = dag4.monitor.observeMemPoolChange().subscribe((up) => this.pollPendingTxs(up));
         dag4.monitor.startMonitor();
