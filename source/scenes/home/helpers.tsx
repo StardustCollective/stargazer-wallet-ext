@@ -24,6 +24,13 @@ const getYesterday = () => {
   return d;
 };
 
+const getDecimalSeparatorByLocale = (locale: string) => {
+  const numberWithDecimalSeparator = 1.1;
+  return numberWithDecimalSeparator
+      .toLocaleString(locale)
+      .substring(1, 2);
+}
+
 export const formatDistanceDate = (timestamp: number) => {
   const formatStyle = 'M-d-yyyy';
   const today = new Date();
@@ -50,6 +57,14 @@ export const formatNumber = (num: number, min: number, max: number, maxSig?: num
   }
   return (num || 0).toLocaleString(navigator.language, options);
 };
+
+export const formatStringDecimal = (numberString: string, decimalPlaces: number) => {
+
+  const decimalSeparator = getDecimalSeparatorByLocale(navigator.language);
+  const [whole, fractional] = numberString.split(decimalSeparator);
+
+  return `${whole}${decimalSeparator}${fractional.substring(0, decimalPlaces)}`;
+}
 
 export const formatPrice = (num: number, round = 2) => {
   num = Number(num || 0);
