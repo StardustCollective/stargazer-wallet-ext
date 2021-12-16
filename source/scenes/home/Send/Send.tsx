@@ -26,7 +26,7 @@ import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { RootState } from 'state/store';
-import { formatNumber } from '../helpers';
+import { formatNumber, formatStringDecimal } from '../helpers';
 import { useLinkTo } from '@react-navigation/native';
 import { IAssetInfoState } from 'state/assets/types';
 import find from 'lodash/find';
@@ -352,7 +352,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         {!isExternalRequest &&
           <section className={styles.balance}>
             <div>
-              Balance: <span>{formatNumber(Number(balances[activeAsset.id]), 4, 4)}</span>{' '}
+              Balance: <span>{formatStringDecimal(formatNumber(Number(balances[activeAsset.id]), 16, 20), 4)}</span>{' '}
               {assetInfo.symbol}
             </div>
           </section>
