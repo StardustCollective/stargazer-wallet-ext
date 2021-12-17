@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import { useAlert } from 'react-alert';
 import Slider from '@material-ui/core/Slider';
 import queryString from 'query-string';
+import { browser } from 'webextension-polyfill-ts';
 import { useHistory } from "react-router-dom";
 import useGasEstimate from 'hooks/useGasEstimate';
 
@@ -26,7 +27,7 @@ import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { RootState } from 'state/store';
-import { formatNumber } from '../helpers';
+import { formatNumber, formatStringDecimal } from '../helpers';
 import { useLinkTo } from '@react-navigation/native';
 import { IAssetInfoState } from 'state/assets/types';
 import find from 'lodash/find';
@@ -38,7 +39,6 @@ import IAssetListState from 'state/assets/types';
 import { BigNumber, ethers } from 'ethers';
 import { ITransactionInfo } from '../../../scripts/types';
 import { getChangeAmount } from 'utils/sendUtil';
-
 import sendHeader from 'navigation/headers/send';
 
 interface IWalletSend {
@@ -215,8 +215,13 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     }
   };
 
-  const handleClose = () => {
-    if (isExternalRequest) {
+  const handleClose = async() => {
+    if(isExternalRequest){
+      const cancelEvent = new CustomEvent('transactionSent', {detail: {windowId, approved: false, result: false }});
+      const background = await browser.runtime.getBackgroundPage();
+
+      background.dispatchEvent(cancelEvent);
+
       window.close();
     } else {
       linkTo('/asset');
@@ -255,7 +260,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         !fee ||
         !address
       );
-    } 
+    }
 
     return (
       !isValidAddress ||
@@ -352,7 +357,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         {!isExternalRequest &&
           <section className={styles.balance}>
             <div>
-              Balance: <span>{formatNumber(Number(balances[activeAsset.id]), 4, 4)}</span>{' '}
+              Balance: <span>{formatStringDecimal(formatNumber(Number(balances[activeAsset.id]), 16, 20), 4)}</span>{' '}
               {assetInfo.symbol}
             </div>
           </section>
