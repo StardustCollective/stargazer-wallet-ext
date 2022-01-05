@@ -134,8 +134,6 @@ const SendConfirm = ({ navigation }: ISendConfirm) => {
 
     try {
       if (isExternalRequest) {
-        await controller.wallet.account.confirmContractTempTx(activeAsset)
-
         const background = await browser.runtime.getBackgroundPage();
 
         const {windowId} = queryString.parse(window.location.search);
