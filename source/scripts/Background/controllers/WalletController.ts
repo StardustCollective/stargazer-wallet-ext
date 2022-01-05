@@ -11,7 +11,6 @@ import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import DappController from 'scripts/Background/controllers/DAppController';
-import { getAccountByAddress } from 'utils/dagUtil';
 import { AccountItem } from 'scripts/types';
 import { addWallet } from 'state/vault';
 import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
