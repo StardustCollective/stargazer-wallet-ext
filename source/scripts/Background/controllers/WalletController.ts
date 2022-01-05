@@ -16,6 +16,7 @@ import { AccountItem } from 'scripts/types';
 import { addWallet } from 'state/vault';
 import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 
+const LedgerWalletIdPrefix = 'L';
 export class WalletController implements IWalletController {
   account: AccountController;
   keyringManager: KeyringManager;
@@ -100,19 +101,18 @@ export class WalletController implements IWalletController {
     return wallet.id;
   }
 
-  async importLedgerAccountsByAddress(addresses: AccountItem[]) {
-    for (let i = 0; i < addresses.length; i++) {
-      let accountItem = addresses[i];
+  async importLedgerAccountsByAddress(accountItems: AccountItem[]) {
 
-      const  res = await getAccountByAddress(accountItem.address);
+    for (let i = 0; i < accountItems.length; i++) {
+      let accountItem = accountItems[i];
 
       const wallet = {
-        id: 'L' + accountItem.id,
+        id: `${LedgerWalletIdPrefix}${accountItem.id}`,
         label: 'Ledger ' + (accountItem.id + 1),
         type: KeyringWalletType.LedgerAccountWallet,
         accounts: [
           {
-            address: res!.address.constellation,
+            address: accountItem.address,
             network: KeyringNetwork.Constellation,
             publicKey: accountItem!.publicKey,
           },
@@ -121,6 +121,13 @@ export class WalletController implements IWalletController {
       };
 
       await store.dispatch(addWallet(wallet));
+      
+      // Switches wallets immediately after adding the first item 
+      // to prevent a visual delay in the wallet extension.
+      if(i === 0){
+       // Switches wallets to the first ledger item in the accountItem array.
+        this.switchWallet(`${LedgerWalletIdPrefix}${accountItems[0].id}`);
+      }
     }
   }
 
