@@ -83,9 +83,9 @@ const Login = ({
       .catch((err: any) => {
         console.log('err: ', err);
         if (onLoginError) {
-          onLoginError()
+          onLoginError();
+          setInvalid(true);
         }
-        setInvalid(true);
       });
   };
 
