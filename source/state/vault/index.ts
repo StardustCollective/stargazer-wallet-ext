@@ -19,7 +19,10 @@ const hasEncryptedVault = !!localStorage.getItem('stargazer-vault');
 
 const initialState: IVaultState = {
   status: 0,
-  wallets: [],
+  wallets: {
+    local: [],
+    ledger: [],
+  },
   hasEncryptedVault,
   balances: {
     [AssetType.Constellation]: '0',
@@ -45,7 +48,7 @@ const VaultState = createSlice({
       state: IVaultState,
       action: PayloadAction<KeyringVaultState>
     ) {
-      state.wallets = action.payload.wallets;
+      state.wallets.local = action.payload.wallets;
       // if (!state.activeWallet) {
       //   state.activeWallet = { assets:[], ...state.wallets[0] };
       // }
@@ -80,13 +83,16 @@ const VaultState = createSlice({
     //     activeAccountId: action.payload.id,
     //   };
     // },
-    addWallet(state: IVaultState, action) {
+    addLedgerWallet(state: IVaultState, action) {
       return {
         ...state,
-        wallets: [
+        wallets: {
           ...state.wallets,
-          action.payload,
-        ]
+          ledger: [
+            ...state.wallets.ledger,
+            action.payload,
+          ]
+        }
       };
     },
     // removeAccount(state: IVaultState, action: PayloadAction<string>) {
@@ -194,7 +200,7 @@ const VaultState = createSlice({
 });
 
 export const {
-  addWallet,
+  addLedgerWallet,
   setVaultInfo,
   // setKeystoreInfo,
   // removeKeystoreInfo,

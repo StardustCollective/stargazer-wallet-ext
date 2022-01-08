@@ -80,12 +80,17 @@ export interface IAccountDerived {
   tokens?: string[];
 }
 
+export interface IVaultWalletsStoreState {
+  local: KeyringWalletState[],
+  ledger: KeyringWalletState[],
+}
+
 export default interface IVaultState {
   hasEncryptedVault: boolean;
   balances: AssetBalances;
   status: number;
   version: string;
-  wallets: KeyringWalletState[];
+  wallets: IVaultWalletsStoreState;
   activeWallet: IWalletState;
   activeAsset: IActiveAssetState;
   activeNetwork: ActiveNetwork;
