@@ -26,8 +26,8 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
     (state: RootState) => state.vault
   );
   const hasMainAccount =
-    wallets.length &&
-    wallets.some((w) => w.type === KeyringWalletType.MultiChainWallet);
+    wallets.local.length &&
+    wallets.local.some((w) => w.type === KeyringWalletType.MultiChainWallet);
 
   const handleBack = () => {
     showSettings(false);
