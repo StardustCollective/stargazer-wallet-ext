@@ -24,8 +24,8 @@ const Home = ({ navigation, route }: IHome) => {
   );
 
   const hasMainAccount =
-    wallets.length &&
-    wallets.some((w) => w.type === KeyringWalletType.MultiChainWallet);
+    wallets.local.length &&
+    wallets.local.some((w) => w.type === KeyringWalletType.MultiChainWallet);
 
   // const getFiatAmount = useFiat();
   // const dapp: IDAppState = useSelector((state: RootState) => state.dapp);
