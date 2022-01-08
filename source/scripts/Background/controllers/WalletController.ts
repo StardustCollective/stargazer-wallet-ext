@@ -6,13 +6,13 @@ import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { browser } from 'webextension-polyfill-ts';
-import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletType} from '@stardust-collective/dag4-keyring';
+import { KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletType} from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import DappController from 'scripts/Background/controllers/DAppController';
 import { AccountItem } from 'scripts/types';
-import { addWallet } from 'state/vault';
+import { addLedgerWallet } from 'state/vault';
 import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 
 const LedgerWalletIdPrefix = 'L';
@@ -88,7 +88,7 @@ export class WalletController implements IWalletController {
   }
 
   async createWallet(label: string, phrase?: string, resetAll = false) {
-    let wallet: IKeyringWallet;
+    let wallet;
     if (resetAll) {
       wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
     } else {
@@ -119,7 +119,7 @@ export class WalletController implements IWalletController {
         supportedAssets: [KeyringAssetType.DAG],
       };
 
-      await store.dispatch(addWallet(wallet));
+      await store.dispatch(addLedgerWallet(wallet));
       
       // Switches wallets immediately after adding the first item 
       // to prevent a visual delay in the wallet extension.
