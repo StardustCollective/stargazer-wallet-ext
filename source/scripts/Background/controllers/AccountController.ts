@@ -32,7 +32,6 @@ import { IAccountController } from './IAccountController';
 import {
   KeyringManager,
   KeyringNetwork,
-  KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
@@ -65,7 +64,8 @@ export class AccountController implements IAccountController {
     const state = store.getState();
     const vault: IVaultState = state.vault;
     const activeNetwork = vault.activeNetwork;
-    const wallets: KeyringWalletState[] = vault.wallets;
+    const { local, ledger } = vault.wallets;
+    const wallets = [...local, ...ledger];
 
     let buildAssetList: IAssetState[] = [];
 
