@@ -1,5 +1,5 @@
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
-index 90db138..8287307 100644
+index 90db138..582726c 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
 @@ -6,7 +6,8 @@ export declare enum KeyringWalletType {
@@ -12,3 +12,11 @@ index 90db138..8287307 100644
  }
  export declare enum KeyringAssetType {
      DAG = "DAG",
+@@ -31,6 +32,7 @@ export declare type KeyringWalletAccountState = {
+     address: string;
+     network: KeyringNetwork;
+     tokens: string[];
++    publicKey: string;
+ };
+ export declare type KeyringRingSerialized = {
+     network: KeyringNetwork;
