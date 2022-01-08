@@ -44,11 +44,16 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
     navigation.setOptions(addHeader({ navigation, onRightIconClick }));
   }, []);
 
-  const privKeyAccounts = wallets.filter(
+
+  const multiChainAccounts = wallets.local.filter(
+    (w) => w.type === KeyringWalletType.MultiChainWallet
+  );
+
+  const privKeyAccounts = wallets.local.filter(
     (w) => w.type === KeyringWalletType.SingleAccountWallet
   );
 
-  const ledgerAccounts = wallets.filter(
+  const ledgerAccounts = wallets.ledger.filter(
     (w) => w.type === KeyringWalletType.LedgerAccountWallet
   );
 
@@ -73,9 +78,7 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
         Multi chain wallets
       </label>
       <div className={styles.group}>
-        {wallets
-          .filter((w) => w.type === KeyringWalletType.MultiChainWallet)
-          .map((wallet) => (
+        {multiChainAccounts.map((wallet) => (
             <section
               className={styles.wallet}
               key={wallet.id}
