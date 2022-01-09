@@ -10,15 +10,13 @@ import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
-import IVaultState  from 'state/vault/types';
 import { useController } from 'hooks/index';
 
 import styles from './index.scss';;
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletState, KeyringWalletType} from '@stardust-collective/dag4-keyring';
 import { useSelector } from 'react-redux';
-import { RootState } from 'state/store';
 import { useLinkTo } from '@react-navigation/native';
-
+import WalletSelectors from 'selectors/walletsSelectors';
 interface IManageWalletView {
   route: any;
   navigation: any;
@@ -29,10 +27,7 @@ const ManageWallet: FC<IManageWalletView> = ({route, navigation}) => {
   const linkTo = useLinkTo();
   const id = route.params.id;
   const { handleSubmit, register } = useForm();
-  const { wallets }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-
+  const wallets: KeyringWalletState[]  = useSelector(WalletSelectors.selectAllWallets);
   const wallet = wallets.find(w => w.id === id);
 
   const onSubmit = (data: any) => {
