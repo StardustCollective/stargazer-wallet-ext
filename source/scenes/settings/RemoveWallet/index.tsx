@@ -9,12 +9,11 @@ import * as yup from 'yup';
 import { useController } from 'hooks/index';
 import TextInput from 'components/TextInput';
 import Button from 'components/Button';
-import IVaultState from 'state/vault/types';
-import { RootState } from 'state/store';
 import navigationUtil from 'navigation/util';
+import WalletSelectors from 'selectors/walletsSelectors';
 
 import styles from './index.scss';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IRemoveWalletView {
   route: any;
@@ -27,9 +26,7 @@ const RemoveWallet: FC<IRemoveWalletView> = ({ route, navigation }) => {
   const history = useHistory();
   const id = route.params.id;
 
-  const { wallets }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
+  const wallets: KeyringWalletState[]  = useSelector(WalletSelectors.selectAllWallets);
   const wallet = wallets.find((w) => w.id === id);
   const isSeedWallet = wallet && (wallet.type === KeyringWalletType.MultiChainWallet);
 
