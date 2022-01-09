@@ -8,10 +8,9 @@ import TextInput from 'components/TextInput';
 import { useController, useCopyClipboard } from 'hooks/index';
 
 import styles from './index.scss';
-import IVaultState from 'state/vault/types';
-import { RootState } from 'state/store';
 import { useSelector } from 'react-redux';
-
+import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
+import WalletSelectors from 'selectors/walletsSelectors';
 interface IPrivateKeyView {
   route: any;
 }
@@ -20,9 +19,7 @@ const PrivateKey: FC<IPrivateKeyView> = ({ route }) => {
   const controller = useController();
   const alert = useAlert();
   const id = route.params.id;
-  const { wallets }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
+  const wallets: KeyringWalletState[]  = useSelector(WalletSelectors.selectAllWallets);
   const wallet = wallets.find(w => w.id === id);
   const { handleSubmit, register } = useForm({
     validationSchema: yup.object().shape({
