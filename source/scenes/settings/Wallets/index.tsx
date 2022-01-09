@@ -82,7 +82,7 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
             <section
               className={styles.wallet}
               key={wallet.id}
-              onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as IAccountDerived[])}
+              onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as any as IAccountDerived[])}
             >
               {wallet.id === activeWallet.id && (
                 <CheckIcon className={styles.check} />
