@@ -14,6 +14,8 @@ import {
   KeyringNetwork,
   KeyringVaultState,
 } from '@stardust-collective/dag4-keyring';
+import findIndex from 'lodash/findIndex';
+import filter from 'lodash/filter';
 
 const hasEncryptedVault = !!localStorage.getItem('stargazer-vault');
 
@@ -84,16 +86,13 @@ const VaultState = createSlice({
     //   };
     // },
     addLedgerWallet(state: IVaultState, action) {
-      return {
-        ...state,
-        wallets: {
-          ...state.wallets,
-          ledger: [
-            ...state.wallets.ledger,
-            action.payload,
-          ]
-        }
-      };
+      state.wallets.ledger = [
+        ...state.wallets.ledger,
+        action.payload
+      ];
+    },
+    deleteLedgerWallet(state: IVaultState, action){
+      state.wallets.ledger = filter(state.wallets.ledger, (w) => w.id !== action.payload)
     },
     // removeAccount(state: IVaultState, action: PayloadAction<string>) {
     //   if (Object.keys(state.accounts).length <= 1) return;
@@ -201,6 +200,7 @@ const VaultState = createSlice({
 
 export const {
   addLedgerWallet,
+  deleteLedgerWallet,
   setVaultInfo,
   // setKeystoreInfo,
   // removeKeystoreInfo,

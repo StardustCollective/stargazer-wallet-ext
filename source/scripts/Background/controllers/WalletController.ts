@@ -12,7 +12,7 @@ import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import DappController from 'scripts/Background/controllers/DAppController';
 import { AccountItem } from 'scripts/types';
-import { addLedgerWallet } from 'state/vault';
+import { addLedgerWallet, deleteLedgerWallet } from 'state/vault';
 import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 
 const LedgerWalletIdPrefix = 'L';
@@ -136,6 +136,22 @@ export class WalletController implements IWalletController {
       await this.keyringManager.removeWalletById(walletId);
       // store.dispatch(deleteWalletState());
       const vault: IVaultState = store.getState().vault;
+      if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
+        const wallets = this.keyringManager.getWallets();
+        if (wallets.length) {
+          this.switchWallet(wallets[0].id);
+        }
+      }
+      store.dispatch(updateStatus());
+      return true;
+    }
+    return false;
+  }
+
+  async deleteLedgerWallet(walletId: string, password: string){
+    const vault: IVaultState = store.getState().vault;
+    if(this.checkPassword(password)){
+      store.dispatch(deleteLedgerWallet(walletId));
       if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
         const wallets = this.keyringManager.getWallets();
         if (wallets.length) {

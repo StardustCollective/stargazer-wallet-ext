@@ -38,7 +38,11 @@ const RemoveWallet: FC<IRemoveWalletView> = ({ route, navigation }) => {
 
   const onSubmit = async (data: any) => {
     let isChecked;
-    isChecked = await controller.wallet.deleteWallet(id, data.password);
+    if(wallet.type === KeyringWalletType.LedgerAccountWallet){
+      isChecked = await controller.wallet.deleteLedgerWallet(id, data.password);
+    }else{
+      isChecked = await controller.wallet.deleteWallet(id, data.password);
+    }
     if (isChecked) {
       if (wallets.length === 1) {
         controller.wallet.logOut();

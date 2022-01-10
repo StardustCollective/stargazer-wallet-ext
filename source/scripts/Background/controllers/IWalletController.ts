@@ -21,10 +21,11 @@ export interface IWalletController {
     phrase?: string,
     resetAll?: boolean
   ) => Promise<string>;
+  deleteWallet: (walletId: string, password: string) => Promise<boolean>;
   createLedgerWallets: (
     addresses: AccountItem[]
   ) => void;
-  deleteWallet: (walletId: string, password: string) => Promise<boolean>;
+  deleteLedgerWallet: (walletId: string, password: string) => void;
   switchWallet: (walletId: string) => Promise<void>;
   switchNetwork: (networkType: KeyringNetwork, networkId: string) => void;
   // generateSeedPhrase: (update?: boolean) => string;
