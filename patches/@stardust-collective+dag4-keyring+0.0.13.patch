@@ -1,5 +1,5 @@
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
-index 90db138..582726c 100644
+index 90db138..5cee75b 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
 @@ -6,7 +6,8 @@ export declare enum KeyringWalletType {
@@ -8,7 +8,7 @@ index 90db138..582726c 100644
      MultiAccountWallet = "MAW",
 -    SingleAccountWallet = "SAW"
 +    SingleAccountWallet = "SAW",
-+    LedgerAccountWallet ="LAW"
++    LedgerAccountWallet = "LAW"
  }
  export declare enum KeyringAssetType {
      DAG = "DAG",
@@ -20,3 +20,42 @@ index 90db138..582726c 100644
  };
  export declare type KeyringRingSerialized = {
      network: KeyringNetwork;
+diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.js b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.js
+index 4d8f421..273b265 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.js
++++ b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.js
+@@ -12,6 +12,7 @@ var KeyringWalletType;
+     KeyringWalletType["CrossChainWallet"] = "CCW";
+     KeyringWalletType["MultiAccountWallet"] = "MAW";
+     KeyringWalletType["SingleAccountWallet"] = "SAW";
++    KeyringWalletType["LedgerAccountWallet"] = "LAW";
+ })(KeyringWalletType = exports.KeyringWalletType || (exports.KeyringWalletType = {}));
+ var KeyringAssetType;
+ (function (KeyringAssetType) {
+diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/kcs.d.ts b/node_modules/@stardust-collective/dag4-keyring/esm/kcs.d.ts
+index 90db138..db7ee0e 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/esm/kcs.d.ts
++++ b/node_modules/@stardust-collective/dag4-keyring/esm/kcs.d.ts
+@@ -6,7 +6,9 @@ export declare enum KeyringWalletType {
+     MultiChainWallet = "MCW",
+     CrossChainWallet = "CCW",
+     MultiAccountWallet = "MAW",
+-    SingleAccountWallet = "SAW"
++    SingleAccountWallet = "SAW",
++    LedgerAccountWallet = "LAW"
++
+ }
+ export declare enum KeyringAssetType {
+     DAG = "DAG",
+diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/kcs.js b/node_modules/@stardust-collective/dag4-keyring/esm/kcs.js
+index b653c18..ca2349b 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/esm/kcs.js
++++ b/node_modules/@stardust-collective/dag4-keyring/esm/kcs.js
+@@ -9,6 +9,7 @@ export var KeyringWalletType;
+     KeyringWalletType["CrossChainWallet"] = "CCW";
+     KeyringWalletType["MultiAccountWallet"] = "MAW";
+     KeyringWalletType["SingleAccountWallet"] = "SAW";
++    KeyringWalletType["LedgerAccountWallet"] = "LAW";
+ })(KeyringWalletType || (KeyringWalletType = {}));
+ export var KeyringAssetType;
+ (function (KeyringAssetType) {
