@@ -21,7 +21,7 @@ export interface IWalletController {
     phrase?: string,
     resetAll?: boolean
   ) => Promise<string>;
-  importLedgerAccountsByAddress: (
+  createLedgerWallets: (
     addresses: AccountItem[]
   ) => void;
   deleteWallet: (walletId: string, password: string) => Promise<boolean>;

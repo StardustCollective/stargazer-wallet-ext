@@ -100,7 +100,7 @@ export class WalletController implements IWalletController {
     return wallet.id;
   }
 
-  async importLedgerAccountsByAddress(accountItems: AccountItem[]) {
+  async createLedgerWallets(accountItems: AccountItem[]) {
 
     for (let i = 0; i < accountItems.length; i++) {
       let accountItem = accountItems[i];

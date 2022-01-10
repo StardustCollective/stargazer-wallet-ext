@@ -9,7 +9,7 @@ export const importLedgerAccounts = (
 ) => {
 
   const { args } = message.data;
-  masterController.wallet.importLedgerAccountsByAddress(args[0]);
+  masterController.wallet.createLedgerWallets(args[0]);
   port.postMessage({ id: message.id, data: { result: "success" } });
 
 };
