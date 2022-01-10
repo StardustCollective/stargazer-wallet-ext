@@ -102,7 +102,7 @@ const Login = ({
       >
         Welcome to Stargazer Wallet
       </TextV3.HeaderLarge>
-      <img src={LogoImage} className={styles.logo} alt="Stargazer" />
+      <img src={'/'+LogoImage} className={styles.logo} alt="Stargazer" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.inputWrapper}>
           <TextInput
