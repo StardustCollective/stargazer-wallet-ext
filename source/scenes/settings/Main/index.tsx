@@ -68,7 +68,7 @@ const Main: FC = () => {
 
   const handleLogout = () => {
     controller.wallet.logOut();
-    linkTo('/app.html');
+    linkTo('/authRoot');
   };
 
   const onWalletLinkClick = () => {
@@ -145,7 +145,7 @@ const Main: FC = () => {
             Stargazer Wallet {version}
           </TextV3.Caption>
         </div>
-        <div id={"ui-logout-div"} onClick={handleLogout} className={styles.footer__right}>
+        <div id={"settings-logoutButton"} onClick={handleLogout} className={styles.footer__right}>
           <TextV3.Caption>
             Logout
           </TextV3.Caption>
