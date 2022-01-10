@@ -106,6 +106,7 @@ const Login = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.inputWrapper}>
           <TextInput
+            id={'ui-login-password'}
             type="password"
             name="password"
             visiblePassword
@@ -125,6 +126,7 @@ const Login = ({
           </div>
         </div>
         <ButtonV3
+          id={'ui-login-submit-button'}
           type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           label={UNLOCK_STRING}

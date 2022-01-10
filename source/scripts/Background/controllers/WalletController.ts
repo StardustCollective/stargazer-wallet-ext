@@ -115,14 +115,17 @@ export class WalletController implements IWalletController {
   }
 
   async switchWallet(id: string) {
+    try {
+      store.dispatch(updateBalances({ pending: 'true' }));
 
-    store.dispatch(updateBalances({ pending: 'true' }));
-
-    await this.account.buildAccountAssetInfo(id);
-    await this.account.getLatestTxUpdate();
-    this.account.assetsBalanceMonitor.start();
-    this.account.txController.startMonitor();
-
+      await this.account.buildAccountAssetInfo(id);
+      await this.account.getLatestTxUpdate();
+      this.account.assetsBalanceMonitor.start();
+      this.account.txController.startMonitor();
+    }
+    catch (e) {
+      throw e;
+    }
   }
 
   async notifyWalletChange(accounts: string[]) {
