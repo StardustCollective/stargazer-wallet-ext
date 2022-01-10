@@ -68,7 +68,13 @@ export class WalletController implements IWalletController {
       }
 
       if (vault.activeWallet) {
-        await this.switchWallet(vault.activeWallet.id);
+        try {
+          await this.switchWallet(vault.activeWallet.id);
+        }
+        catch(e)
+        {
+          console.log('ERROR - Unable to unlock account - ', e.toString());
+        }
       }
     }
     return true;
@@ -115,17 +121,12 @@ export class WalletController implements IWalletController {
   }
 
   async switchWallet(id: string) {
-    try {
       store.dispatch(updateBalances({ pending: 'true' }));
 
       await this.account.buildAccountAssetInfo(id);
       await this.account.getLatestTxUpdate();
       this.account.assetsBalanceMonitor.start();
       this.account.txController.startMonitor();
-    }
-    catch (e) {
-      throw e;
-    }
   }
 
   async notifyWalletChange(accounts: string[]) {
@@ -175,6 +176,6 @@ export class WalletController implements IWalletController {
     this.account.ethClient = undefined;
     store.dispatch(changeActiveWallet(undefined));
     store.dispatch(updateStatus());
-    browser.runtime.reload();
+    //browser.runtime.reload();
   }
 }
