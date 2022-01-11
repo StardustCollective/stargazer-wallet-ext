@@ -79,6 +79,7 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
     if(activeAsset){
       return Number((activeAsset && balances[activeAsset.id]) || 0)
     }
+    return 0;
   }, [activeAsset, balances]);
 
   // Sets the header for the asset screen.
