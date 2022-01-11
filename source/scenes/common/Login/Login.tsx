@@ -27,6 +27,8 @@ import { useController } from 'hooks/index';
 
 // Imports
 import { schema } from './consts';
+import * as consts from './consts';
+
 // Strings
 const UNLOCK_STRING = 'Unlock';
 const PLEASE_ENTER_YOUR_PASSWORD_STRING = 'Please enter your password';
@@ -68,6 +70,9 @@ const Login = ({
   const [isInvalid, setInvalid] = useState(false);
   const controller = useController();
 
+  const successComment = consts.LOGIN_SUCCESS_COMMENT;
+  const failureComment = consts.LOGIN_FAILURE_COMMENT;
+
   const errorClass = clsx(styles.error, {
     [styles.confirm]: location.pathname.includes('confirm.html'),
   });
@@ -83,9 +88,9 @@ const Login = ({
       .catch((err: any) => {
         console.log('err: ', err);
         if (onLoginError) {
-          onLoginError();
-          setInvalid(true);
+          onLoginError();          
         }
+        setInvalid(true);
       });
   };
 
@@ -115,13 +120,11 @@ const Login = ({
             placeholder={PLEASE_ENTER_YOUR_PASSWORD_STRING}
             variant={styles.password}
           />
-          <div className={styles.errorWrapper}>
-            {errors.password ? (
-              <span className={errorClass}>{errors.password.message}</span>
+          <div id={'ui-login-status'} className={styles.errorWrapper}>
+            {isInvalid ? (
+              <span id={'ui-login-error'} className={errorClass}>{failureComment}</span>
             ) : (
-              isInvalid && (
-                <span className={errorClass}>Error: Invalid password</span>
-              )
+              <span id={'ui-login-success'} className={errorClass}>{successComment}</span>
             )}
           </div>
         </div>
