@@ -13,19 +13,27 @@ export type V2WalletState = {
   vault: IVaultState
 }
 
-const MigrateRunner = (oldState: V2WalletState) => {
+const MigrateRunner = (oldState: V2WalletState): Boolean => {
   try {
+    if (JSON.stringify(oldState.assets) === JSON.stringify(initialState)) {
+      return false;
+    }
+
     const newState = {
       ...oldState,
       assets: initialState
     };
 
     localStorage.setItem('state', JSON.stringify(newState));
-    console.emoji('✅', 'Migrate to <v3.2.0> successfully!');
+    console.emoji('✅', 'Updated asset list successfully!');
     browser.runtime.reload();
+
+    return true;
   } catch (error) {
-    console.emoji('🔺', '<v3.2.0> Migration Error');
+    console.emoji('🔺', '<AssetList> Migration Error');
     console.log(error);
+
+    return false;
   }
 };
 

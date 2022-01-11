@@ -54,8 +54,6 @@ const ImportPhrase: FC<IImportPhrase> = ({ onRegister }) => {
     <Layout title="Let's import your wallet">
       <form className={styles.importForm} onSubmit={handleSubmit(onSubmit)}>
 
-        <span className={styles.important}>IMPORTANT: Importing a recovery seed phrase will replace any existing accounts.</span>
-
         <span>Paste your recovery seed phrase below:</span>
         <TextInput
           id={'recoveryPhraseInput'}
