@@ -76,19 +76,23 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
   );
 
   const balance = useMemo(() => {
-    return Number((activeAsset && balances[activeAsset.id]) || 0)
+    if(activeAsset){
+      return Number((activeAsset && balances[activeAsset.id]) || 0)
+    }
   }, [activeAsset, balances]);
 
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
-    navigation.setOptions(
-      assetHeader({
-        navigation,
-        asset: assets[activeAsset.id],
-        address: activeAsset.address,
-        addressUrl: getAddressURL(activeAsset.address, activeAsset.contractAddress, activeAsset.type, activeNetwork[networkId]),
-      }));
-  }, []);
+    if (activeAsset) {
+      navigation.setOptions(
+        assetHeader({
+          navigation,
+          asset: assets[activeAsset.id],
+          address: activeAsset.address,
+          addressUrl: getAddressURL(activeAsset.address, activeAsset.contractAddress, activeAsset.type, activeNetwork[networkId]),
+        }));
+    }
+  }, [activeAsset]);
 
   useEffect(() => {
     controller.wallet.account.updateTempTx({
@@ -98,7 +102,6 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
       amount: '0',
     });
   }, []);
-
 
   ///////////////////////
   // Callbacks
