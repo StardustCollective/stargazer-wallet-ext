@@ -54,8 +54,6 @@
     "qrcode.react": "^1.0.1",
     "react-dynamic-font": "^2.0.1"
   },
-  "devDependencies": {
-    "node-wifi": "^2.0.16"
-  },
+  "devDependencies": {},
   "workspaces": ["source/web", "source/native"]
 }
