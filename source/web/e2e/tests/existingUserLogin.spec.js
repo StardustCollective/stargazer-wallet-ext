@@ -60,7 +60,7 @@ describe.only('Existing user login', async () => {
       actions.move({ origin: walletLogOut }).click().perform();
     });
 
-    it('test login success w/ correct key', async () => {
+    it('test login success with correct key', async () => {
       await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
       await driver.clickElement('#ui-login-submit-button');
       const statusElement = await driver.findElement('#ui-login-status');
@@ -77,15 +77,15 @@ describe.only('Existing user login', async () => {
       assert.equal(await await statusElement.getText(),'Error: Invalid password');
     });
 
-    it('test login failure with correct key and w/o wifi', async () => {
+    it('test login success with correct key and no wifi', async () => {
       disconnectWifi();
       await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
       await driver.clickElement('#ui-login-submit-button');
       const statusElement = await driver.findElement('#ui-login-status');
-      assert.equal(await await statusElement.getText(),'Error: Invalid password');
+      assert.equal(await await statusElement.getText(),'Login successful.');
     });
 
-    it('test login failure with incorrect key and w/o wifi', async () => {
+    it('test login failure with incorrect key and no wifi', async () => {
       disconnectWifi();
       await driver.fill('#ui-login-password', 'incorrect_password');
       await driver.clickElement('#ui-login-submit-button');
