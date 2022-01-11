@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -29,33 +29,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-        # install and cache
-      - name: Set up Chrome
-        uses: browser-actions/setup-chrome@latest
-        with:
-          chrome-version: stable
-      - run: chrome --version
-      - uses: nanasess/setup-chromedriver@master
-      - run: |
-          export DISPLAY=:99
-          chromedriver --url-base=/wd/hub &
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-      - run: npm i -g yarn
       - run: yarn install
-
       - run: yarn run build
-
       - uses: actions/upload-artifact@v2
         with:
           name: extension-build-files
           path: extension/
-      - run: yarn install
-        working-directory: source/web/
-      - run: ls -laog /usr/bin/google-chrome
-      - run: ls -laog /etc/alternatives/google-chrome
-      - run: ls /usr/bin/ | grep chrome
-      - name: Run E2E Tests
-        run: yarn test:e2e:chrome
-        env:
-          SELENIUM_BROWER: chrome
-          ENABLE_CHROME_LOGGING: false
+     - run: yarn install
+       working-directory: source/web/
+     - run: yarn lint
