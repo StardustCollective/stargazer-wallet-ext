@@ -8,18 +8,17 @@
   padding: 0 24px;
   box-sizing: border-box;
 
+  section {
+    margin-top: 24px;
+  }
+
   label {
     font-family: rubik;
     font-size: 10px;
     font-weight: 500;
-    margin-top: 24px;
     margin-bottom: 12px;
     display: block;
     text-transform: uppercase;
-  }
-
-  .input {
-    border: 1px solid $gray-200 !important;
   }
 
   & > span {
@@ -29,6 +28,10 @@
     font-weight: 500;
     display: block;
     font-family: $rubik;
+  }
+
+  .backupWarningText{
+    margin-top: 10px;
   }
 
   .menu {
@@ -86,5 +89,8 @@
       margin-bottom: 20px;
       width: 144px;
     }
+  }
+  .input {
+    border: 1px solid $gray-200 !important;
   }
 }
