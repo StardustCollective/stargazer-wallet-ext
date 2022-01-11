@@ -55,6 +55,7 @@
     "react-dynamic-font": "^2.0.1"
   },
   "devDependencies": {
+    "node-wifi": "^2.0.16"
   },
   "workspaces": ["source/web", "source/native"]
 }
