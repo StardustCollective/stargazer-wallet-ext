@@ -19,20 +19,18 @@ const MigrationController = () => {
   /**
    * version < 3.1.1
    */
-   if(state.dapp && !state.dapp.whitelist && !state.dapp.listening){
+  if (state.dapp && !state.dapp.whitelist && !state.dapp.listening){
     const v3_1_1 = require('../migration/v3_1_1');
     v3_1_1.default(state);
-   }
+  }
 
    /**
-   * version < 3.2.0
+   * Upgrade asset list any time it's out of sync
    */
-    if(state.assets && !state.assets.hasOwnProperty('0x4e08f03079c5cd3083ea331ec61bcc87538b7665')){
-      const v3_2_0 = require('../migration/v3_2_0');
-      v3_2_0.default(state);
-     }
-
-
+  if (state.assets){
+    const assetListMigration = require('../migration/update_token_list');
+    assetListMigration.default(state);  // Checks if state needs to be updated
+  }
 };
 
 export default MigrationController;

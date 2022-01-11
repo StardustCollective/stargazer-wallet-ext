@@ -33,7 +33,7 @@ const TOKEN_LIST: IAssetListState = {
     label: 'DoubleDice',
     symbol: 'DODI',
     type: AssetType.ERC20,
-    priceId: 'doubledice',
+    priceId: 'doubledice-token',
     network: 'mainnet',
     logo: 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png',
     decimals: 18,
