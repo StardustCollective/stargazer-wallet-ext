@@ -14,7 +14,6 @@ import {
   KeyringNetwork,
   KeyringVaultState,
 } from '@stardust-collective/dag4-keyring';
-import findIndex from 'lodash/findIndex';
 import filter from 'lodash/filter';
 
 const hasEncryptedVault = !!localStorage.getItem('stargazer-vault');
