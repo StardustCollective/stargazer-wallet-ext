@@ -415,8 +415,7 @@ const WalletSend: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
                 Max
               </Button>
             </li>
-
-            {activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation && (
+            {(activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) && (
               <li>
                 <label>Transaction Fee</label>
                 <TextInput
