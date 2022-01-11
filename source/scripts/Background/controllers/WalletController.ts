@@ -5,7 +5,6 @@ import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
-import { browser } from 'webextension-polyfill-ts';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
@@ -179,6 +178,5 @@ export class WalletController implements IWalletController {
     this.account.ethClient = undefined;
     store.dispatch(changeActiveWallet(undefined));
     store.dispatch(updateStatus());
-    //browser.runtime.reload();
   }
 }
