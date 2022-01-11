@@ -65,6 +65,7 @@ export class WalletController implements IWalletController {
         catch (e) {
           return false;
         }
+        console.log('Login successful.');
       }
 
       if (vault.activeWallet) {
@@ -73,7 +74,9 @@ export class WalletController implements IWalletController {
         }
         catch(e)
         {
-          console.log('ERROR - Unable to unlock account - ', e.toString());
+          console.log('Error while switching wallet.');
+          console.log(e.toString());
+          return true;
         }
       }
     }
