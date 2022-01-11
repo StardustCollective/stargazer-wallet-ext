@@ -64,7 +64,7 @@ const Login = ({
   onLoginError,
   onImportClicked
 }: ILoginProps) => {
-  const { handleSubmit, register, errors } = useForm({
+  const { handleSubmit, register} = useForm({
     validationSchema: schema,
   });
   const [isInvalid, setInvalid] = useState(false);
