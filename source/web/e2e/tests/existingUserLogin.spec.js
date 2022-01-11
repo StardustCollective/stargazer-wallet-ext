@@ -2,19 +2,27 @@ const { strict: assert } = require('assert');
 const { buildWebDriver } = require('../webdriver');
 const CONSTANTS = require('../constants');
 const { Key, By } = require('selenium-webdriver');
+const wifi = require('../../../../node_modules/node-wifi');
 
 ////////////////////////////
 // Helper Functions
 ////////////////////////////
 
 /**
- * Helper method used to raise an error during log in (simulate internet disconnection)
- * @param {string} connected 
+ * Helper method used to simulate internet disconnection
  */
-const isConnected = async (connected, driver) => {
-  var connectionState = connected == "yes" ? true : false;
-  // Logic to simulate disconnection (if needed)
-  return connectionState;
+const disconnectWifi = async () => {
+  wifi.init({
+    iface: null
+  });
+
+  wifi.disconnect(error => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Wifi Disconnected');
+    }
+  });
 }
 
 ////////////////////////////
@@ -22,7 +30,7 @@ const isConnected = async (connected, driver) => {
 ////////////////////////////
 
 
-describe('Existing user login', async () => {
+describe.only('Existing user login', async () => {
   let driver;
 
   beforeEach(async () => {
@@ -44,41 +52,45 @@ describe('Existing user login', async () => {
     driver.quit();
   });
 
-  describe('Test login failure on branch \"main\"', async () => {
+  describe('Test login success w/wifi and w/o wifi', async () => {
     beforeEach(async () => {
+      await driver.clickElement('#header-moreButton');
       const actions = await driver.actions();
-      const walletLogOut = await driver.findElement('#ui-logout-div');
+      const walletLogOut = await driver.findElement('#settings-logoutButton');
       actions.move({ origin: walletLogOut }).click().perform();
+    });
+
+    it('test login success w/ correct key', async () => {
       await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
-    });
-
-    it('test that the login attempt fails', async () => {
-      await driver.clickElement('#ui-login-submit-button')
-      // Include login to raise an error during login ...
-      // Observe the login failure with "Invalid Password" message
-      // Trigger an error and then attempt to login
-      //await driver.clickElement('#ui-logout-div');
-      
-      // Check internet connection
-      const result = await isConnected("no", driver);
-      assert.equal(result, false);
-    });
-  })
-
-  describe('Test login success on branch \"chin-sgw-64-invalid-password-bug\"', async () => {
-    beforeEach(async () => {
+      await driver.clickElement('#ui-login-submit-button');
+      const statusElement = await driver.findElement('#ui-login-status');
+      assert.equal(await await statusElement.getText(),'Login successful.');
+      await driver.clickElement('#header-moreButton');
       const actions = await driver.actions();
-      const walletLogOut = await driver.findElement('#ui-logout-div');
-      actions.move({ origin: walletLogOut }).click().perform();
-      await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
+      const walletLogOut = await driver.findElement('#settings-logoutButton');
     });
 
-    it('test that the login attempt succeeds', async () => {
-      await driver.clickElement('#ui-login-submit-button')
-      // Check internet connection
-      const result = await isConnected("yes", driver);
-      // Observe the login success
-      assert.equal(result, true);
+    it('test login failure with incorrect key', async () => {
+      await driver.fill('#ui-login-password', 'incorrect_password');
+      await driver.clickElement('#ui-login-submit-button');
+      const statusElement = await driver.findElement('#ui-login-status');
+      assert.equal(await await statusElement.getText(),'Error: Invalid password');
+    });
+
+    it('test login failure with correct key and w/o wifi', async () => {
+      disconnectWifi();
+      await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
+      await driver.clickElement('#ui-login-submit-button');
+      const statusElement = await driver.findElement('#ui-login-status');
+      assert.equal(await await statusElement.getText(),'Error: Invalid password');
+    });
+
+    it('test login failure with incorrect key and w/o wifi', async () => {
+      disconnectWifi();
+      await driver.fill('#ui-login-password', 'incorrect_password');
+      await driver.clickElement('#ui-login-submit-button');
+      const statusElement = await driver.findElement('#ui-login-status');
+      assert.equal(await await statusElement.getText(),'Error: Invalid password');
     });
   })
 });
