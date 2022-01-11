@@ -35,6 +35,6 @@ jobs:
         with:
           name: extension-build-files
           path: extension/
-     - run: yarn install
-       working-directory: source/web/
-     - run: yarn lint
+      - run: yarn install
+        working-directory: source/web/
+      - run: yarn lint
