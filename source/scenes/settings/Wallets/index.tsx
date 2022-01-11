@@ -139,44 +139,6 @@ const Wallets: FC<IWalletsView> = ({ navigation }) => {
           </div>
         </>
       )}
-      {!!privKeyAccounts.length && (
-        <>
-          <label>Private key wallets</label>
-          <div className={styles.group}>
-            {privKeyAccounts.map((wallet) => (
-              <section
-                className={styles.wallet}
-                key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as any as IAccountDerived[])}
-              >
-                {wallet.id === activeWallet.id && (
-                  <CheckIcon className={styles.check} />
-                )}
-                <Icon
-                  width={24}
-                  Component={
-                    assets[
-                      wallet.supportedAssets.includes(KeyringAssetType.ETH)
-                        ? AssetType.Ethereum
-                        : AssetType.Constellation
-                    ].logo || StargazerIcon
-                  }
-                />
-                <span>
-                  {wallet.label}
-                  <small>{wallet.accounts[0].address}</small>
-                </span>
-                <IconButton
-                  className={styles.details}
-                  onClick={(ev) => handleManageWallet(ev, wallet.id)}
-                >
-                  <InfoIcon />
-                </IconButton>
-              </section>
-            ))}
-          </div>
-        </>
-      )}
       {!!ledgerAccounts.length && (
         <>
           <label>Ledger wallets</label>
