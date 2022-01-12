@@ -1,7 +1,5 @@
 import React, { ReactNode, FC } from 'react';
-import clsx from 'clsx';
-// import MUIButton from '@material-ui/core/Button';
-// import Spinner from '@material-ui/core/CircularProgress';
+import clsx from 'clsx';x
 import { Button as RNEButton } from "react-native-elements";
 import { useLinkTo } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
