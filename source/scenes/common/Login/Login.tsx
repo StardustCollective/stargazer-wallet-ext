@@ -31,8 +31,7 @@ import { schema } from './consts';
 // Strings
 const UNLOCK_STRING = 'Unlock';
 const PLEASE_ENTER_YOUR_PASSWORD_STRING = 'Please enter your password';
-
-const LOGIN_ERROR_COMMENT = 'Error: Invalid password';
+const LOGIN_ERROR_STRING = 'Error: Invalid password';
 
 //////////////////////
 // Images Imports
@@ -65,7 +64,7 @@ const Login = ({
   onLoginError,
   onImportClicked
 }: ILoginProps) => {
-  const { handleSubmit, register, errors} = useForm({
+  const {handleSubmit, register, errors} = useForm({
     validationSchema: schema,
   });
   const [isInvalid, setInvalid] = useState(false);
@@ -119,11 +118,11 @@ const Login = ({
             variant={styles.password}
           />
           <div id={'login-failure'} className={styles.errorWrapper}>
-          {errors.password ? (
+            {errors.password ? (
               <span className={errorClass}>{errors.password.message}</span>
             ) : (
               isInvalid && (
-                <span id={'login-errorComment'} className={errorClass}>{LOGIN_ERROR_COMMENT}</span>
+                <span className={errorClass}>{LOGIN_ERROR_STRING}</span>
               )
             )}
           </div>

@@ -1,36 +1,12 @@
 const { strict: assert } = require('assert');
 const { buildWebDriver } = require('../webdriver');
 const CONSTANTS = require('../constants');
-const { Key, By } = require('selenium-webdriver');
-const wifi = require('node-wifi');
-
-////////////////////////////
-// Helper Functions
-////////////////////////////
-
-/**
- * Helper method used to simulate internet disconnection
- */
-const disconnectWifi = async () => {
-  wifi.init({
-    iface: null
-  });
-
-  wifi.disconnect(error => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Wifi Disconnected');
-    }
-  });
-}
 
 ////////////////////////////
 // Test
 ////////////////////////////
 
-
-describe.only('Existing user login', async () => {
+describe('Existing user login', async () => {
   let driver;
 
   beforeEach(async () => {
@@ -60,14 +36,17 @@ describe.only('Existing user login', async () => {
       actions.move({ origin: walletLogOut }).click().perform();
     });
 
-    it('test login success with correct key', async () => {
+    it('Logs in successfully with correct password', async () => {
+      const statusElement = await driver.findElement('#login-failure');
+      assert.notEqual(await statusElement.getText(),'Error: Invalid password');
+
       await driver.fill('#login-passwordField', CONSTANTS.PASSWORD);
       await driver.clickElement('#login-submitButton');
       const homeScene = await driver.findElement('#home-scene');
       assert.notEqual(homeScene,null);
     });
 
-    it('test login failure with incorrect key', async () => {
+    it('Displays error with incorrect password', async () => {
       await driver.fill('#login-passwordField', 'incorrect_key_value');
       await driver.clickElement('#login-submitButton');
       const statusElement = await driver.findElement('#login-failure');
