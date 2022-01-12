@@ -4,9 +4,9 @@ import { View, Text } from 'react-native';
 
 const Start = ({ navigation }) => {
   return (
-    <SafeAreaView>
-      <Text>What is going on?</Text>
-    </SafeAreaView>
+    <>
+      <Text>Hello World!</Text>
+    </>
   );
 };
 
