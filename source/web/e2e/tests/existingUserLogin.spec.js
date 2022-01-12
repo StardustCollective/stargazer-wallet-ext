@@ -52,41 +52,25 @@ describe.only('Existing user login', async () => {
     driver.quit();
   });
 
-  describe('Test login success with wifi and without wifi', async () => {
+  describe('test login', async () => {
     beforeEach(async () => {
       await driver.clickElement('#header-moreButton');
       const actions = await driver.actions();
-      const walletLogOut = await driver.findElement('#settings-logoutButton');
+      const walletLogOut = await driver.findElement('#wallet-logoutButton');
       actions.move({ origin: walletLogOut }).click().perform();
     });
 
     it('test login success with correct key', async () => {
-      await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
-      await driver.clickElement('#ui-login-submit-button');
+      await driver.fill('#login-passwordField', CONSTANTS.PASSWORD);
+      await driver.clickElement('#login-submitButton');
       const homeScene = await driver.findElement('#home-scene');
       assert.notEqual(homeScene,null);
     });
 
     it('test login failure with incorrect key', async () => {
-      await driver.fill('#ui-login-password', 'incorrect_key_value');
-      await driver.clickElement('#ui-login-submit-button');
-      const statusElement = await driver.findElement('#ui-login-failure');
-      assert.equal(await statusElement.getText(),'Error: Invalid password');
-    });
-
-    it('test login success with correct key and no wifi', async () => {
-      //disconnectWifi();
-      await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
-      await driver.clickElement('#ui-login-submit-button');
-      const homeScene = await driver.findElement('#home-scene');
-      assert.notEqual(homeScene,null);
-    });
-
-    it('test login failure with incorrect key and no wifi', async () => {
-      //disconnectWifi();
-      await driver.fill('#ui-login-password', 'incorrect_key_value');
-      await driver.clickElement('#ui-login-submit-button');
-      const statusElement = await driver.findElement('#ui-login-failure');
+      await driver.fill('#login-passwordField', 'incorrect_key_value');
+      await driver.clickElement('#login-submitButton');
+      const statusElement = await driver.findElement('#login-failure');
       assert.equal(await statusElement.getText(),'Error: Invalid password');
     });
   })
