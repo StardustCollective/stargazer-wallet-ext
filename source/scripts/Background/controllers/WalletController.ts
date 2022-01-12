@@ -64,18 +64,16 @@ export class WalletController implements IWalletController {
         catch (e) {
           return false;
         }
-        console.log('Login successful.');
       }
 
       if (vault.activeWallet) {
         try {
           await this.switchWallet(vault.activeWallet.id);
         }
-        catch(e)
-        {
+        catch(e) {
           console.log('Error while switching wallet.');
-          console.log(e.toString());
-          return true;
+          console.log(e);
+          return false;
         }
       }
     }
