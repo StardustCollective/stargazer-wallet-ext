@@ -32,7 +32,7 @@ import { schema } from './consts';
 const UNLOCK_STRING = 'Unlock';
 const PLEASE_ENTER_YOUR_PASSWORD_STRING = 'Please enter your password';
 
-const LOGIN_FAILURE_COMMENT = 'Error: Invalid password';
+const LOGIN_ERROR_COMMENT = 'Error: Invalid password';
 
 //////////////////////
 // Images Imports
@@ -119,8 +119,13 @@ const Login = ({
             variant={styles.password}
           />
           <div id={'login-failure'} className={styles.errorWrapper}>
-            {errors.passwordErrors && isInvalid}
-              <span id={'login-error'} className={errorClass}>{LOGIN_FAILURE_COMMENT}</span>
+          {errors.password ? (
+              <span className={errorClass}>{errors.password.message}</span>
+            ) : (
+              isInvalid && (
+                <span id={'login-errorComment'} className={errorClass}>{LOGIN_ERROR_COMMENT}</span>
+              )
+            )}
           </div>
         </div>
         <ButtonV3
