@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { buildWebDriver } = require('../webdriver');
 const CONSTANTS = require('../constants');
 const { Key, By } = require('selenium-webdriver');
-const wifi = require('../../../../node_modules/node-wifi');
+const wifi = require('node-wifi');
 
 ////////////////////////////
 // Helper Functions
@@ -52,7 +52,7 @@ describe.only('Existing user login', async () => {
     driver.quit();
   });
 
-  describe('Test login success w/wifi and w/o wifi', async () => {
+  describe('Test login success with wifi and without wifi', async () => {
     beforeEach(async () => {
       await driver.clickElement('#header-moreButton');
       const actions = await driver.actions();
@@ -63,34 +63,31 @@ describe.only('Existing user login', async () => {
     it('test login success with correct key', async () => {
       await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
       await driver.clickElement('#ui-login-submit-button');
-      const statusElement = await driver.findElement('#ui-login-status');
-      assert.equal(await await statusElement.getText(),'Login successful.');
-      await driver.clickElement('#header-moreButton');
-      const actions = await driver.actions();
-      const walletLogOut = await driver.findElement('#settings-logoutButton');
+      const homeScene = await driver.findElement('#home-scene');
+      assert.notEqual(homeScene,null);
     });
 
     it('test login failure with incorrect key', async () => {
-      await driver.fill('#ui-login-password', 'incorrect_password');
+      await driver.fill('#ui-login-password', 'incorrect_key_value');
       await driver.clickElement('#ui-login-submit-button');
-      const statusElement = await driver.findElement('#ui-login-status');
-      assert.equal(await await statusElement.getText(),'Error: Invalid password');
+      const statusElement = await driver.findElement('#ui-login-failure');
+      assert.equal(await statusElement.getText(),'Error: Invalid password');
     });
 
     it('test login success with correct key and no wifi', async () => {
-      disconnectWifi();
+      //disconnectWifi();
       await driver.fill('#ui-login-password', CONSTANTS.PASSWORD);
       await driver.clickElement('#ui-login-submit-button');
-      const statusElement = await driver.findElement('#ui-login-status');
-      assert.equal(await await statusElement.getText(),'Login successful.');
+      const homeScene = await driver.findElement('#home-scene');
+      assert.notEqual(homeScene,null);
     });
 
     it('test login failure with incorrect key and no wifi', async () => {
-      disconnectWifi();
-      await driver.fill('#ui-login-password', 'incorrect_password');
+      //disconnectWifi();
+      await driver.fill('#ui-login-password', 'incorrect_key_value');
       await driver.clickElement('#ui-login-submit-button');
-      const statusElement = await driver.findElement('#ui-login-status');
-      assert.equal(await await statusElement.getText(),'Error: Invalid password');
+      const statusElement = await driver.findElement('#ui-login-failure');
+      assert.equal(await statusElement.getText(),'Error: Invalid password');
     });
   })
 });
