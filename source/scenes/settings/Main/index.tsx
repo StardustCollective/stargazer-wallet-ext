@@ -145,7 +145,7 @@ const Main: FC = () => {
             Stargazer Wallet {version}
           </TextV3.Caption>
         </div>
-        <div id={"settings-logoutButton"} onClick={handleLogout} className={styles.footer__right}>
+        <div id={"wallet-logoutButton"} onClick={handleLogout} className={styles.footer__right}>
           <TextV3.Caption>
             Logout
           </TextV3.Caption>
