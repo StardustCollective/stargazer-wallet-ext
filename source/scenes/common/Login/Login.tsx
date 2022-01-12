@@ -27,11 +27,12 @@ import { useController } from 'hooks/index';
 
 // Imports
 import { schema } from './consts';
-import * as consts from './consts';
 
 // Strings
 const UNLOCK_STRING = 'Unlock';
 const PLEASE_ENTER_YOUR_PASSWORD_STRING = 'Please enter your password';
+
+const LOGIN_FAILURE_COMMENT = 'Error: Invalid password';
 
 //////////////////////
 // Images Imports
@@ -64,14 +65,11 @@ const Login = ({
   onLoginError,
   onImportClicked
 }: ILoginProps) => {
-  const { handleSubmit, register} = useForm({
+  const { handleSubmit, register, errors} = useForm({
     validationSchema: schema,
   });
   const [isInvalid, setInvalid] = useState(false);
   const controller = useController();
-
-  const successComment = consts.LOGIN_SUCCESS_COMMENT;
-  const failureComment = consts.LOGIN_FAILURE_COMMENT;
 
   const errorClass = clsx(styles.error, {
     [styles.confirm]: location.pathname.includes('confirm.html'),
@@ -111,7 +109,7 @@ const Login = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.inputWrapper}>
           <TextInput
-            id={'ui-login-password'}
+            id={'login-passwordField'}
             type="password"
             name="password"
             visiblePassword
@@ -120,16 +118,13 @@ const Login = ({
             placeholder={PLEASE_ENTER_YOUR_PASSWORD_STRING}
             variant={styles.password}
           />
-          <div id={'ui-login-status'} className={styles.errorWrapper}>
-            {isInvalid ? (
-              <span id={'ui-login-error'} className={errorClass}>{failureComment}</span>
-            ) : (
-              <span id={'ui-login-success'} className={errorClass}>{successComment}</span>
-            )}
+          <div id={'login-failure'} className={styles.errorWrapper}>
+            {errors.passwordErrors && isInvalid}
+              <span id={'login-error'} className={errorClass}>{LOGIN_FAILURE_COMMENT}</span>
           </div>
         </div>
         <ButtonV3
-          id={'ui-login-submit-button'}
+          id={'login-submitButton'}
           type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           label={UNLOCK_STRING}
