@@ -3,7 +3,6 @@ const { strict: assert } = require('assert');
 const { until, error: webdriverError, By } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 
-
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
   element.fill = async (input) => {
@@ -24,7 +23,6 @@ function wrapElementWithAPI(element, driver) {
 }
 
 class Driver {
-
   constructor(driver, browser, extensionUrl, timeout = 10000) {
     this.driver = driver;
     this.browser = browser;
@@ -39,11 +37,11 @@ class Driver {
   buildLocator(locator) {
     if (typeof locator === 'string') {
       return By.css(locator);
-    } else if (locator.value) {
+    } if (locator.value) {
       return locator;
-    } else if (locator.xpath) {
+    } if (locator.xpath) {
       return By.xpath(locator.xpath);
-    } else if (locator.text) {
+    } if (locator.text) {
       if (locator.css) {
         const xpath = cssToXPath
           .parse(locator.css)
@@ -60,7 +58,6 @@ class Driver {
           .toXPath();
         return By.xpath(xpath);
       }
-
     }
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
@@ -87,7 +84,7 @@ class Driver {
     await this.driver.wait(condition, timeout);
   }
 
-  async actions(){
+  async actions() {
     return this.driver.actions();
   }
 
@@ -150,8 +147,8 @@ class Driver {
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
-  async findAllElementsWithId(id){
-    let elements = await this.driver.findElements(By.id(id));
+  async findAllElementsWithId(id) {
+    const elements = await this.driver.findElements(By.id(id));
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
@@ -200,19 +197,16 @@ class Driver {
       dataTab = await this.findElement(locator);
     } catch (err) {
       assert(
-        err instanceof webdriverError.NoSuchElementError ||
-          err instanceof webdriverError.TimeoutError,
+        err instanceof webdriverError.NoSuchElementError
+          || err instanceof webdriverError.TimeoutError,
       );
     }
     assert.ok(!dataTab, 'Found element that should not be present');
   }
 
-
   async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
   }
-
-
 
   async collectMetrics() {
     return await this.driver.executeScript(collectMetrics);
@@ -252,8 +246,7 @@ class Driver {
     delayStep = 1000,
     timeout = 5000,
   ) {
-    let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
+    let windowHandles = initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
@@ -272,7 +265,6 @@ class Driver {
   }
 
   async closeAllWindowHandlesExcept(exceptions, windowHandles) {
-
     windowHandles = windowHandles || (await this.driver.getAllWindowHandles());
 
     for (const handle of windowHandles) {
@@ -315,10 +307,7 @@ class Driver {
     );
     const errorObjects = errorEntries.map((entry) => entry.toJSON());
     return errorObjects.filter(
-      (entry) =>
-        !ignoredErrorMessages.some((message) =>
-          entry.message.includes(message),
-        ),
+      (entry) => !ignoredErrorMessages.some((message) => entry.message.includes(message)),
     );
   }
 }

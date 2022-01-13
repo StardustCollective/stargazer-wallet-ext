@@ -1,17 +1,16 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
-const CONSTANTS = require('../constants'); 
+const CONSTANTS = require('../constants');
 
-describe('New install new account', function () {
-
+describe('New install new account', () => {
   it('should create a new account successfully', async function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
-        let recoveryPhrase = [];
+        const recoveryPhrase = [];
 
         await driver.navigate();
 
@@ -22,23 +21,22 @@ describe('New install new account', function () {
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');
 
-       let elements = await driver.findAllElementsWithId('createPhrase-phrase')
+        const elements = await driver.findAllElementsWithId('createPhrase-phrase');
 
-       for(const element of elements){
-        const phrase = await element.getText();
-        recoveryPhrase.push(phrase);
-       }
+        for (const element of elements) {
+          const phrase = await element.getText();
+          recoveryPhrase.push(phrase);
+        }
 
-       await driver.clickElement('#createPhrase-confirmButton');
-       await driver.clickElement('#createPhrase-confirmButton');
+        await driver.clickElement('#createPhrase-confirmButton');
+        await driver.clickElement('#createPhrase-confirmButton');
 
-       for(const phrase of recoveryPhrase){
-        await driver.clickElement(`#${phrase}`);
-       }
+        for (const phrase of recoveryPhrase) {
+          await driver.clickElement(`#${phrase}`);
+        }
 
-       await driver.clickElement('#confirmPhrase-confirmButton');
-       await driver.clickElement('#confirmPhrase-confirmButton');
-
+        await driver.clickElement('#confirmPhrase-confirmButton');
+        await driver.clickElement('#confirmPhrase-confirmButton');
       },
     );
   });
@@ -47,10 +45,10 @@ describe('New install new account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
-        let recoveryPhrase = [];
+        const recoveryPhrase = [];
 
         await driver.navigate();
 
@@ -64,9 +62,8 @@ describe('New install new account', function () {
           css: '#createPass-passwordError',
           text: 'Please check',
         });
-        
-        assert.equal(await message.getText(), 'Please check the above requirements!');
 
+        assert.equal(await message.getText(), 'Please check the above requirements!');
       },
     );
   });
@@ -75,10 +72,10 @@ describe('New install new account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
-        let recoveryPhrase = [];
+        const recoveryPhrase = [];
 
         await driver.navigate();
 
@@ -92,9 +89,8 @@ describe('New install new account', function () {
           css: '#createPass-passwordError',
           text: 'Incorrect please',
         });
-        
-        assert.equal(await message.getText(), 'Incorrect please re-enter password!');
 
+        assert.equal(await message.getText(), 'Incorrect please re-enter password!');
       },
     );
   });
@@ -103,10 +99,10 @@ describe('New install new account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
-        let recoveryPhrase = [];
+        const recoveryPhrase = [];
 
         await driver.navigate();
 
@@ -117,9 +113,8 @@ describe('New install new account', function () {
           css: '#createPass-passwordError',
           text: 'Password is a',
         });
-        
-        assert.equal(await message.getText(), 'Password is a required field!');
 
+        assert.equal(await message.getText(), 'Password is a required field!');
       },
     );
   });
@@ -128,10 +123,9 @@ describe('New install new account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
-
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');
@@ -143,9 +137,8 @@ describe('New install new account', function () {
           css: '#createPass-passwordError',
           text: 'Confirm password',
         });
-        
-        assert.equal(await message.getText(), 'Confirm password is a required field!');
 
+        assert.equal(await message.getText(), 'Confirm password is a required field!');
       },
     );
   });
@@ -154,7 +147,7 @@ describe('New install new account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -168,9 +161,8 @@ describe('New install new account', function () {
         await driver.clickElement('#createPhrase-confirmButton');
         await driver.clickElement('#createPhrase-confirmButton');
 
-        let element = await driver.findElement('#confirmPhrase-confirmButton')
+        const element = await driver.findElement('#confirmPhrase-confirmButton');
         assert.equal(await element.isEnabled(), false);
-
       },
     );
   });
@@ -179,10 +171,10 @@ describe('New install new account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
-        let recoveryPhrase = [];
+        const recoveryPhrase = [];
 
         await driver.navigate();
 
@@ -192,24 +184,23 @@ describe('New install new account', function () {
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');
-        
-        let elements = await driver.findAllElementsWithId('createPhrase-phrase')
 
-        for(const element of elements){
-         const phrase = await element.getText();
-         recoveryPhrase.push(phrase);
+        const elements = await driver.findAllElementsWithId('createPhrase-phrase');
+
+        for (const element of elements) {
+          const phrase = await element.getText();
+          recoveryPhrase.push(phrase);
         }
 
         await driver.clickElement('#createPhrase-confirmButton');
         await driver.clickElement('#createPhrase-confirmButton');
 
-        for(let i = 0; i < recoveryPhrase.length - 1; i++){
+        for (let i = 0; i < recoveryPhrase.length - 1; i++) {
           await driver.clickElement(`#${recoveryPhrase[i]}`);
         }
 
-        let element = await driver.findElement('#confirmPhrase-confirmButton')
+        const element = await driver.findElement('#confirmPhrase-confirmButton');
         assert.equal(await element.isEnabled(), false);
-
       },
     );
   });
@@ -218,10 +209,10 @@ describe('New install new account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
-        let recoveryPhrase = [];
+        const recoveryPhrase = [];
 
         await driver.navigate();
 
@@ -231,24 +222,23 @@ describe('New install new account', function () {
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');
-        
-        let elements = await driver.findAllElementsWithId('createPhrase-phrase')
 
-        for(const element of elements){
-         const phrase = await element.getText();
-         recoveryPhrase.push(phrase);
+        const elements = await driver.findAllElementsWithId('createPhrase-phrase');
+
+        for (const element of elements) {
+          const phrase = await element.getText();
+          recoveryPhrase.push(phrase);
         }
 
         await driver.clickElement('#createPhrase-confirmButton');
         await driver.clickElement('#createPhrase-confirmButton');
 
-        for(const phrase of recoveryPhrase){
+        for (const phrase of recoveryPhrase) {
           await driver.clickElement(`#${phrase}`);
-         }
+        }
 
-        let element = await driver.findElement('#confirmPhrase-confirmButton')
+        const element = await driver.findElement('#confirmPhrase-confirmButton');
         assert.equal(await element.isEnabled(), true);
-
       },
     );
   });
@@ -257,10 +247,10 @@ describe('New install new account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
-        let recoveryPhrase = [];
+        const recoveryPhrase = [];
 
         await driver.navigate();
 
@@ -270,27 +260,24 @@ describe('New install new account', function () {
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#createPass-nextButton');
         await driver.clickElement('#remindPhrase-startButton');
-        
-        let elements = await driver.findAllElementsWithId('createPhrase-phrase')
 
-        for(const element of elements){
-         const phrase = await element.getText();
-         recoveryPhrase.push(phrase);
+        const elements = await driver.findAllElementsWithId('createPhrase-phrase');
+
+        for (const element of elements) {
+          const phrase = await element.getText();
+          recoveryPhrase.push(phrase);
         }
 
         await driver.clickElement('#createPhrase-confirmButton');
         await driver.clickElement('#createPhrase-confirmButton');
 
-        for(let i = recoveryPhrase.length - 1; i >= 0; i--){
+        for (let i = recoveryPhrase.length - 1; i >= 0; i--) {
           await driver.clickElement(`#${recoveryPhrase[i]}`);
         }
 
-        let element = await driver.findElement('#confirmPhrase-confirmButton')
+        const element = await driver.findElement('#confirmPhrase-confirmButton');
         assert.equal(await element.isEnabled(), false);
-
       },
     );
   });
-  
-  
 });

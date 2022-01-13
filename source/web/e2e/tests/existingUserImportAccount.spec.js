@@ -1,20 +1,20 @@
 const { strict: assert } = require('assert');
-const { buildWebDriver } = require('./../webdriver');
-const CONSTANTS = require('../constants');
 const { Key, By } = require('selenium-webdriver');
+const { buildWebDriver } = require('../webdriver');
+const CONSTANTS = require('../constants');
 
-////////////////////////////
+/// /////////////////////////
 // Helper Functions
-////////////////////////////
+/// /////////////////////////
 
 /**
  * Helper method used to verify if an account address generated
  * from the import is what is expected.
- * @param {string} address 
+ * @param {string} address
  */
 const verifyAccountAddress = async (address, driver) => {
   const shortAddressLength = address.includes('0x') ? 4 : 5;
-  
+
   const message = await driver.waitForSelector({
     css: '#assetHeader-address',
     text: address.substring(0, 4),
@@ -24,20 +24,19 @@ const verifyAccountAddress = async (address, driver) => {
   const prefix = address.substring(0, 4);
   const suffix = address.substring(
     addressLength - 4,
-    addressLength
+    addressLength,
   );
   return ellipsesAddress.includes(prefix) && ellipsesAddress.includes(suffix);
-}
+};
 
 const getPathForFile = (fileName) => {
-  const root = process.cwd()
-  return`${root}/e2e/data/${fileName}`
-}
+  const root = process.cwd();
+  return `${root}/e2e/data/${fileName}`;
+};
 
-////////////////////////////
+/// /////////////////////////
 // Test
-////////////////////////////
-
+/// /////////////////////////
 
 describe('Existing user import account', async () => {
   let driver;
@@ -70,7 +69,7 @@ describe('Existing user import account', async () => {
       await driver.clickElement('#importWallet-multiChainWallet');
       await driver.fill(
         '#importPhrase-phraseInput',
-        CONSTANTS.WALLET_TWO_SEED_PHRASE
+        CONSTANTS.WALLET_TWO_SEED_PHRASE,
       );
       await driver.fill('#importPhrase-nameInput', CONSTANTS.WALLET_TWO_NAME);
       await driver.clickElement('#importPhrase-importButton');
@@ -83,20 +82,19 @@ describe('Existing user import account', async () => {
     });
 
     it('test that the constellation account has been imported', async () => {
-      await driver.clickElement('#assetItem-constellation')
+      await driver.clickElement('#assetItem-constellation');
       const result = await verifyAccountAddress(CONSTANTS.WALLET_TWO_CONSTELLATION_ADDRESS, driver);
       assert.equal(result, true);
     });
 
     it('test that the ethereum account has been imported', async () => {
-      await driver.clickElement('#assetItem-ethereum')
+      await driver.clickElement('#assetItem-ethereum');
       const result = await verifyAccountAddress(CONSTANTS.WALLET_TWO_ETHEREUM_ADDRESS, driver);
       assert.equal(result, true);
     });
   });
 
   describe('Ethereum Only Wallet', async () => {
-    
     beforeEach(async () => {
       await driver.clickElement('#importWallet-ethereum');
     });
@@ -110,7 +108,7 @@ describe('Existing user import account', async () => {
       const actions = await driver.actions();
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
-      await driver.clickElement('#assetItem-ethereum')
+      await driver.clickElement('#assetItem-ethereum');
       const result = await verifyAccountAddress(CONSTANTS.WALLET_THREE_ETHEREUM_ADDRESS, driver);
       assert.equal(result, true);
     });
@@ -118,7 +116,7 @@ describe('Existing user import account', async () => {
     it('should import an ethereum wallet by JSON file', async () => {
       const importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
       importTypeSelectElement.click();
-      const jsonFileElement = importTypeSelectElement.findElement(By.xpath("//*[.=\"JSON file\"]"));
+      const jsonFileElement = importTypeSelectElement.findElement(By.xpath('//*[.="JSON file"]'));
       jsonFileElement.click();
       const fileInputElement = await driver.findElement('#importAccount-fileInput');
       fileInputElement.sendKeys(getPathForFile(CONSTANTS.WALLET_THREE_ETHEREUM_JSON_FILE));
@@ -130,7 +128,7 @@ describe('Existing user import account', async () => {
       const actions = await driver.actions();
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
-      await driver.clickElement('#assetItem-ethereum')
+      await driver.clickElement('#assetItem-ethereum');
       const result = await verifyAccountAddress(CONSTANTS.WALLET_THREE_ETHEREUM_ADDRESS, driver);
       assert.equal(result, true);
     });
@@ -141,28 +139,28 @@ describe('Existing user import account', async () => {
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.delay(500);
       const errorElement = await driver.findElement('#__react-alert__');
-      const errorText = errorElement.findElement(By.xpath("//*[.=\"Error: Invalid private key\"]"))      
+      const errorText = errorElement.findElement(By.xpath('//*[.="Error: Invalid private key"]'));
       assert.equal(await errorText.getText(), 'Error: Invalid private key');
     });
 
     it('should display an error when no JSON file has been selected', async () => {
       const importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
       importTypeSelectElement.click();
-      const jsonFileElement = importTypeSelectElement.findElement(By.xpath("//*[.=\"JSON file\"]"));
+      const jsonFileElement = importTypeSelectElement.findElement(By.xpath('//*[.="JSON file"]'));
       jsonFileElement.click();
       await driver.fill('#importAccount-jsonPasswordInput', CONSTANTS.INVALID_PASSWORD);
       await driver.fill('#importAccount-accountNameInput', CONSTANTS.WALLET_FOUR_NAME);
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.delay(500);
       const errorElement = await driver.findElement('#__react-alert__');
-      const errorText = errorElement.findElement(By.xpath("//*[.=\"Error: A private key json file is not chosen\"]"))      
+      const errorText = errorElement.findElement(By.xpath('//*[.="Error: A private key json file is not chosen"]'));
       assert.equal(await errorText.getText(), 'Error: A private key json file is not chosen');
-    })
+    });
 
     it('should display an error when selecting an invalid JSON file', async () => {
       const importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
       importTypeSelectElement.click();
-      const jsonFileElement = importTypeSelectElement.findElement(By.xpath("//*[.=\"JSON file\"]"));
+      const jsonFileElement = importTypeSelectElement.findElement(By.xpath('//*[.="JSON file"]'));
       jsonFileElement.click();
       const fileInputElement = await driver.findElement('#importAccount-fileInput');
       fileInputElement.sendKeys(getPathForFile(CONSTANTS.INVALID_JSON_FILE));
@@ -171,14 +169,12 @@ describe('Existing user import account', async () => {
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.delay(500);
       const errorElement = await driver.findElement('#__react-alert__');
-      const errorText = errorElement.findElement(By.xpath("//*[.=\"Error: Invalid private key json file\"]"))      
+      const errorText = errorElement.findElement(By.xpath('//*[.="Error: Invalid private key json file"]'));
       assert.equal(await errorText.getText(), 'Error: Invalid private key json file');
-    })
-
-  })
+    });
+  });
 
   describe('Constellation Only Wallet', async () => {
-    
     beforeEach(async () => {
       await driver.clickElement('#importWallet-constellation');
     });
@@ -192,7 +188,7 @@ describe('Existing user import account', async () => {
       const actions = await driver.actions();
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
-      await driver.clickElement('#assetItem-constellation')
+      await driver.clickElement('#assetItem-constellation');
       const result = await verifyAccountAddress(CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS, driver);
       assert.equal(result, true);
     });
@@ -200,7 +196,7 @@ describe('Existing user import account', async () => {
     it('should import a Constellation wallet by JSON file', async () => {
       const importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
       importTypeSelectElement.click();
-      const jsonFileElement = importTypeSelectElement.findElement(By.xpath("//*[.=\"JSON file\"]"));
+      const jsonFileElement = importTypeSelectElement.findElement(By.xpath('//*[.="JSON file"]'));
       jsonFileElement.click();
       const fileInputElement = await driver.findElement('#importAccount-fileInput');
       fileInputElement.sendKeys(getPathForFile(CONSTANTS.WALLET_FOUR_CONSTELLATION_JSON_FILE));
@@ -212,7 +208,7 @@ describe('Existing user import account', async () => {
       const actions = await driver.actions();
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
-      await driver.clickElement('#assetItem-constellation')
+      await driver.clickElement('#assetItem-constellation');
       const result = await verifyAccountAddress(CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS, driver);
       assert.equal(result, true);
     });
@@ -223,28 +219,28 @@ describe('Existing user import account', async () => {
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.delay(500);
       const errorElement = await driver.findElement('#__react-alert__');
-      const errorText = errorElement.findElement(By.xpath("//*[.=\"Error: Invalid private key\"]"))      
+      const errorText = errorElement.findElement(By.xpath('//*[.="Error: Invalid private key"]'));
       assert.equal(await errorText.getText(), 'Error: Invalid private key');
     });
 
     it('should display an error when no JSON file has been selected', async () => {
       const importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
       importTypeSelectElement.click();
-      const jsonFileElement = importTypeSelectElement.findElement(By.xpath("//*[.=\"JSON file\"]"));
+      const jsonFileElement = importTypeSelectElement.findElement(By.xpath('//*[.="JSON file"]'));
       jsonFileElement.click();
       await driver.fill('#importAccount-jsonPasswordInput', CONSTANTS.INVALID_PASSWORD);
       await driver.fill('#importAccount-accountNameInput', CONSTANTS.WALLET_FOUR_NAME);
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.delay(500);
       const errorElement = await driver.findElement('#__react-alert__');
-      const errorText = errorElement.findElement(By.xpath("//*[.=\"Error: A private key json file is not chosen\"]"))      
+      const errorText = errorElement.findElement(By.xpath('//*[.="Error: A private key json file is not chosen"]'));
       assert.equal(await errorText.getText(), 'Error: A private key json file is not chosen');
-    })
+    });
 
     it('should display an error when selecting an invalid JSON file', async () => {
       const importTypeSelectElement = await driver.findElement('#importAccount-importTypeSelect');
       importTypeSelectElement.click();
-      const jsonFileElement = importTypeSelectElement.findElement(By.xpath("//*[.=\"JSON file\"]"));
+      const jsonFileElement = importTypeSelectElement.findElement(By.xpath('//*[.="JSON file"]'));
       jsonFileElement.click();
       const fileInputElement = await driver.findElement('#importAccount-fileInput');
       fileInputElement.sendKeys(getPathForFile(CONSTANTS.INVALID_JSON_FILE));
@@ -253,8 +249,8 @@ describe('Existing user import account', async () => {
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.delay(500);
       const errorElement = await driver.findElement('#__react-alert__');
-      const errorText = errorElement.findElement(By.xpath("//*[.=\"Error: Invalid private key json file\"]"))      
+      const errorText = errorElement.findElement(By.xpath('//*[.="Error: Invalid private key json file"]'));
       assert.equal(await errorText.getText(), 'Error: Invalid private key json file');
     });
-  })
+  });
 });

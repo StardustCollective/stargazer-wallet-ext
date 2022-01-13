@@ -1,7 +1,9 @@
 const { strict: assert } = require('assert');
+const { Key, By } = require('selenium-webdriver');
 const { buildWebDriver } = require('../webdriver');
 const CONSTANTS = require('../constants');
-const { Key, By } = require('selenium-webdriver');
+
+let driver;
 
 describe('Existing User: Create Multi-Chain Wallet', () => {
   beforeEach(async () => {
@@ -28,18 +30,16 @@ describe('Existing User: Create Multi-Chain Wallet', () => {
   });
 
   it('should create a new multi-chain wallet successfully', async () => {
-    const walletName = 'wallet' + Math.floor(Math.random() * 1000);
+    const walletName = `wallet${Math.floor(Math.random() * 1000)}`;
 
     await driver.fill('#newAccount-accountNameInput', walletName);
     await driver.clickElement('#newAccount-confirmButton');
     await driver.clickElement('#addWallet-finishButton');
     await driver.clickElement('#settings-wallets');
     await driver.findElement(`#${walletName}`);
-
   });
 
   it('should display the 12 word recovery phrase when a new wallet is created', async () => {
-
     await driver.fill('#newAccount-accountNameInput', 'wallet348397894');
     await driver.clickElement('#newAccount-confirmButton');
     await driver.clickElement('#newAccount-showRecoveryPhrase');
@@ -52,26 +52,21 @@ describe('Existing User: Create Multi-Chain Wallet', () => {
     const phraseArray = phrase.split(' ');
 
     assert.equal(phraseArray.length, 12);
-
-  })
+  });
 
   it('should test that the user remains in the enter account name screen when no name is entered', async () => {
     await driver.clickElement('#newAccount-confirmButton');
 
     const message = await driver.waitForSelector({
-        css: '#newAccount-nameAccountText',
-        text: 'Please name',
-      });
-      
-    assert.equal(await message.getText(), 'Please name your new account:');
+      css: '#newAccount-nameAccountText',
+      text: 'Please name',
+    });
 
-  })
+    assert.equal(await message.getText(), 'Please name your new account:');
+  });
 
   it('should send the user back to the main setting screen when clicking the close button', async () => {
-
     await driver.clickElement('#newAccount-cancelButton');
     await driver.findElement('#settings-wallets');
-
-  })
-
+  });
 });

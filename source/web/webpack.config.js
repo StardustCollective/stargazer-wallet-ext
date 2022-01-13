@@ -15,7 +15,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
+
+const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
 const viewsPath = path.join(__dirname, '../../views');
 const sourcePath = path.join(__dirname, '../');
@@ -26,21 +27,20 @@ const typeScriptPath = path.join(__dirname, '../../node_modules/typescript');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
 
-const extensionReloaderPlugin =
-  nodeEnv === 'development'
-    ? new ExtensionReloader({
-        port: 9090,
-        reloadPage: true,
-        entries: {
-          // TODO: reload manifest on update
-          background: 'background',
-          contentScript: 'contentScript',
-          extensionPage: ['popup', 'options'],
-        },
-      })
-    : () => {
-        this.apply = () => {};
-      };
+const extensionReloaderPlugin = nodeEnv === 'development'
+  ? new ExtensionReloader({
+    port: 9090,
+    reloadPage: true,
+    entries: {
+      // TODO: reload manifest on update
+      background: 'background',
+      contentScript: 'contentScript',
+      extensionPage: ['popup', 'options'],
+    },
+  })
+  : () => {
+    this.apply = () => {};
+  };
 
 const getExtensionFileType = (browser) => {
   if (browser === 'opera') {
@@ -63,9 +63,9 @@ module.exports = {
     errors: true,
     hash: true,
   },
-  
+
   node: {
-    fs: "empty"
+    fs: 'empty',
   },
 
   mode: nodeEnv,
@@ -92,7 +92,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
       'webextension-polyfill-ts': path.resolve(
-        path.join(__dirname, '../../node_modules', 'webextension-polyfill-ts')
+        path.join(__dirname, '../../node_modules', 'webextension-polyfill-ts'),
       ),
       assets: path.resolve(sharedPath, 'assets'),
       components: path.resolve(sharedPath, 'components'),
@@ -124,7 +124,7 @@ module.exports = {
             usePackageJSONVersion: true, // set to false to not use package.json version for manifest
           },
         },
-        exclude: [/node_modules/,  /native/],
+        exclude: [/node_modules/, /native/],
       },
       {
         test: /\.(js|ts)x?$/,
@@ -132,7 +132,7 @@ module.exports = {
         exclude: [/node_modules/, /native/], // Exclude node_modules and react-native project folders.
         options: {
           ...JSON.parse(fs.readFileSync(path.resolve(__dirname, '.babelrc'))),
-        }
+        },
       },
       {
         test: /\.(jpg|png|svg)x?$/,
@@ -179,7 +179,7 @@ module.exports = {
     // Generate sourcemaps
     new webpack.SourceMapDevToolPlugin({ filename: false }),
     new ForkTsCheckerWebpackPlugin({
-      tsconfig: path.resolve(rootPath+'tsconfig.json'),
+      tsconfig: path.resolve(`${rootPath}tsconfig.json`),
     }),
     // environmental variables
     new webpack.EnvironmentPlugin(['NODE_ENV', 'TARGET_BROWSER']),
@@ -189,7 +189,7 @@ module.exports = {
         path.join(process.cwd(), `extension/${targetBrowser}`),
         path.join(
           process.cwd(),
-          `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`
+          `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`,
         ),
       ],
       cleanStaleWebpackAssets: false,
@@ -221,12 +221,12 @@ module.exports = {
       filename: 'options.html',
     }),
     new DotEnv({
-      path: './.env'
+      path: './.env',
     }),
     // write css file(s) to build folder
     new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
     // copy static assets
-    new CopyWebpackPlugin([{ from: sharedPath+'assets', to: 'assets' }]),
+    new CopyWebpackPlugin([{ from: `${sharedPath}assets`, to: 'assets' }]),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
   ],

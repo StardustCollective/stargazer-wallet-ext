@@ -10,18 +10,17 @@ async function main() {
     .usage(
       '$0 [options]',
       'Run all E2E tests, with a variable number of retries.',
-      (_yargs) =>
-        _yargs
-          .option('browser', {
-            description: `Set the browser used; either 'chrome' or 'firefox'.`,
-            type: 'string',
-            choices: ['chrome', 'firefox'],
-          })
-          .option('retries', {
-            description:
+      (_yargs) => _yargs
+        .option('browser', {
+          description: 'Set the browser used; either \'chrome\' or \'firefox\'.',
+          type: 'string',
+          choices: ['chrome', 'firefox'],
+        })
+        .option('retries', {
+          description:
               'Set how many times the test should be retried upon failure.',
-            type: 'number',
-          }),
+          type: 'number',
+        }),
     )
     .strict()
     .help('help');
@@ -42,7 +41,6 @@ async function main() {
   }
 
   await runInShell('node', [...args, allE2eTestPath]);
-
 }
 
 main().catch((error) => {

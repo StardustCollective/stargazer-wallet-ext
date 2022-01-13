@@ -7,7 +7,6 @@ const { version } = require('../../package.json');
 
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 class FirefoxDriver {
-
   static async build({ responsive, port }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
@@ -36,7 +35,6 @@ class FirefoxDriver {
       extensionUrl: `moz-extension://${internalExtensionId}`,
     };
   }
-
 
   constructor(driver) {
     this._driver = driver;
