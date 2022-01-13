@@ -59,7 +59,7 @@ const Home = ({ navigation, route }: IHome) => {
   // }, []);
 
   return (
-    <div className={styles.wrapper}>
+    <div id={'home-scene'} className={styles.wrapper}>
       {activeWallet ? (
         <>
           {

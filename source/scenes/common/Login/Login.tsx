@@ -27,9 +27,11 @@ import { useController } from 'hooks/index';
 
 // Imports
 import { schema } from './consts';
+
 // Strings
 const UNLOCK_STRING = 'Unlock';
 const PLEASE_ENTER_YOUR_PASSWORD_STRING = 'Please enter your password';
+const LOGIN_ERROR_STRING = 'Error: Invalid password';
 
 //////////////////////
 // Images Imports
@@ -62,7 +64,7 @@ const Login = ({
   onLoginError,
   onImportClicked
 }: ILoginProps) => {
-  const { handleSubmit, register, errors } = useForm({
+  const {handleSubmit, register, errors} = useForm({
     validationSchema: schema,
   });
   const [isInvalid, setInvalid] = useState(false);
@@ -83,7 +85,7 @@ const Login = ({
       .catch((err: any) => {
         console.log('err: ', err);
         if (onLoginError) {
-          onLoginError()
+          onLoginError();          
         }
         setInvalid(true);
       });
@@ -102,10 +104,11 @@ const Login = ({
       >
         Welcome to Stargazer Wallet
       </TextV3.HeaderLarge>
-      <img src={LogoImage} className={styles.logo} alt="Stargazer" />
+      <img src={'/'+LogoImage} className={styles.logo} alt="Stargazer" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.inputWrapper}>
           <TextInput
+            id={'login-passwordField'}
             type="password"
             name="password"
             visiblePassword
@@ -114,17 +117,18 @@ const Login = ({
             placeholder={PLEASE_ENTER_YOUR_PASSWORD_STRING}
             variant={styles.password}
           />
-          <div className={styles.errorWrapper}>
+          <div id={'login-failure'} className={styles.errorWrapper}>
             {errors.password ? (
               <span className={errorClass}>{errors.password.message}</span>
             ) : (
               isInvalid && (
-                <span className={errorClass}>Error: Invalid password</span>
+                <span className={errorClass}>{LOGIN_ERROR_STRING}</span>
               )
             )}
           </div>
         </div>
         <ButtonV3
+          id={'login-submitButton'}
           type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           label={UNLOCK_STRING}
