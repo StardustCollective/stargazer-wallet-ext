@@ -1,13 +1,39 @@
+///////////////////////////
+// Imports
+///////////////////////////
+
 import React from 'react';
 import { useLinkTo } from '@react-navigation/native';
 
+///////////////////////////
+// Components
+///////////////////////////
+
 import Container from 'components/Container';
 
+///////////////////////////
+// Scene
+///////////////////////////
 
 import Start from './Start';
 
+
+///////////////////////////
+// Container
+///////////////////////////
+
 const StartContainer = () => {
+
+  ///////////////////////////
+  // Hooks
+  ///////////////////////////
+
   const linkTo = useLinkTo();
+
+
+  ///////////////////////////
+  // Callbacks
+  ///////////////////////////
 
   const onImportClicked = () => {
     linkTo('/import');
@@ -17,9 +43,13 @@ const StartContainer = () => {
     linkTo('/create/pass');
   }
 
+  ///////////////////////////
+  // Render
+  ///////////////////////////
+
   return (
     <Container>
-      <Start 
+      <Start
         onImportClicked={onImportClicked}
         onGetStartedClicked={onGetStartedClicked}
       />
