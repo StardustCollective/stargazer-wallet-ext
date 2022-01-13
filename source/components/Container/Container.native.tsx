@@ -3,7 +3,7 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 
 ///////////////////////////
 // Types
@@ -22,14 +22,16 @@ import styles from './styles';
 ///////////////////////////
 
 const Container: FC<IContainer> = (
-{
-  children
-}
+  {
+    children
+  }
 ) => {
   return (
-    <SafeAreaView style={styles.container}>
-      {children}
-    </SafeAreaView>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        {children}
+      </SafeAreaView>
+    </View>
   )
 }
 
