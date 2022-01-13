@@ -4,10 +4,11 @@ import IContainer from './types';
 const Container: FC<IContainer> = (
   children
 ) => {
+
   return (
-    <>
-      {children}
-    </>
+    <div>
+      {children.children}
+    </div>
   )
 }
 
