@@ -26,7 +26,10 @@
         "no-console": "off",
         "func-names": "off",
         "import/no-extraneous-dependencies": "off",
-        "no-promise-executor-return": "off"
+        "no-promise-executor-return": "off",
+        "no-restricted-syntax": "off",
+        "no-plusplus": "off",
+        "class-methods-use-this": "off"
     },
     "globals": {
         "it": "readonly",

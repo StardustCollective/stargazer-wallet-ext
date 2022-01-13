@@ -6,14 +6,9 @@ const delay800 = delay400 * 2;
 
 async function withFixtures(options, testSuite) {
   const {
-    dapp,
-    fixtures,
-    ganacheOptions,
     driverOptions,
-    mockSegment,
     title,
     failOnConsoleError = true,
-    dappPath = undefined,
     leaveRunning = false,
   } = options;
 

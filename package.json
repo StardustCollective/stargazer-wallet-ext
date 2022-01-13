@@ -20,8 +20,8 @@
     "android": "yarn workspace mobile react-native run-android",
     "ios": "yarn workspace mobile react-native run-ios",
     "start": "yarn workspace mobile react-native start",
-    "lint": "npx eslint . --ext .ts,.tsx",
-    "lint:fix": "npx eslint . --ext .ts,.tsx --fix",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix",
     "postinstall": "npx patch-package"
   },
   "dependencies": {

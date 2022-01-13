@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-env browser */
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const { until, error: webdriverError, By } = require('selenium-webdriver');
@@ -20,6 +22,31 @@ function wrapElementWithAPI(element, driver) {
     }
   };
   return element;
+}
+
+function collectMetrics() {
+  const results = {
+    paint: {},
+    navigation: [],
+  };
+
+  window.performance.getEntriesByType('paint').forEach((paintEntry) => {
+    results.paint[paintEntry.name] = paintEntry.startTime;
+  });
+
+  window.performance
+    .getEntriesByType('navigation')
+    .forEach((navigationEntry) => {
+      results.navigation.push({
+        domContentLoaded: navigationEntry.domContentLoadedEventEnd,
+        load: navigationEntry.loadEventEnd,
+        domInteractive: navigationEntry.domInteractive,
+        redirectCount: navigationEntry.redirectCount,
+        type: navigationEntry.type,
+      });
+    });
+
+  return results;
 }
 
 class Driver {
@@ -310,31 +337,6 @@ class Driver {
       (entry) => !ignoredErrorMessages.some((message) => entry.message.includes(message)),
     );
   }
-}
-
-function collectMetrics() {
-  const results = {
-    paint: {},
-    navigation: [],
-  };
-
-  window.performance.getEntriesByType('paint').forEach((paintEntry) => {
-    results.paint[paintEntry.name] = paintEntry.startTime;
-  });
-
-  window.performance
-    .getEntriesByType('navigation')
-    .forEach((navigationEntry) => {
-      results.navigation.push({
-        domContentLoaded: navigationEntry.domContentLoadedEventEnd,
-        load: navigationEntry.loadEventEnd,
-        domInteractive: navigationEntry.domInteractive,
-        redirectCount: navigationEntry.redirectCount,
-        type: navigationEntry.type,
-      });
-    });
-
-  return results;
 }
 
 Driver.PAGES = {

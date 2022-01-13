@@ -19,11 +19,9 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
 const viewsPath = path.join(__dirname, '../../views');
-const sourcePath = path.join(__dirname, '../');
 const destPath = path.join(__dirname, 'extension');
 const rootPath = path.join(__dirname, '../../');
 const sharedPath = path.join(__dirname, '../');
-const typeScriptPath = path.join(__dirname, '../../node_modules/typescript');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
 
@@ -116,12 +114,14 @@ module.exports = {
   module: {
     rules: [
       {
-        type: 'javascript/auto', // prevent webpack handling json with its own loaders,
+        // prevent webpack handling json with its own loaders,
+        type: 'javascript/auto',
         test: /manifest\.json$/,
         use: {
           loader: 'wext-manifest-loader',
           options: {
-            usePackageJSONVersion: true, // set to false to not use package.json version for manifest
+            // set to false to not use package.json version for manifest
+            usePackageJSONVersion: true,
           },
         },
         exclude: [/node_modules/, /native/],
@@ -129,7 +129,8 @@ module.exports = {
       {
         test: /\.(js|ts)x?$/,
         loader: 'babel-loader',
-        exclude: [/node_modules/, /native/], // Exclude node_modules and react-native project folders.
+        // Exclude node_modules and react-native project folders.
+        exclude: [/node_modules/, /native/],
         options: {
           ...JSON.parse(fs.readFileSync(path.resolve(__dirname, '.babelrc'))),
         },

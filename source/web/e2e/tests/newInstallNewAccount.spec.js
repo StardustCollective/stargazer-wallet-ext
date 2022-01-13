@@ -48,8 +48,6 @@ describe('New install new account', () => {
         leaveRunning: false,
       },
       async ({ driver }) => {
-        const recoveryPhrase = [];
-
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');
@@ -75,8 +73,6 @@ describe('New install new account', () => {
         leaveRunning: false,
       },
       async ({ driver }) => {
-        const recoveryPhrase = [];
-
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');
@@ -102,8 +98,6 @@ describe('New install new account', () => {
         leaveRunning: false,
       },
       async ({ driver }) => {
-        const recoveryPhrase = [];
-
         await driver.navigate();
 
         await driver.clickElement('#start-getStartedButton');

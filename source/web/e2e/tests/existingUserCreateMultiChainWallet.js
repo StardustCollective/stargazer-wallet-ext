@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Key, By } = require('selenium-webdriver');
+const { Key } = require('selenium-webdriver');
 const { buildWebDriver } = require('../webdriver');
 const CONSTANTS = require('../constants');
 

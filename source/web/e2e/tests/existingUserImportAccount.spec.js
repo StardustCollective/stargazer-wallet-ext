@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Key, By } = require('selenium-webdriver');
+const { By } = require('selenium-webdriver');
 const { buildWebDriver } = require('../webdriver');
 const CONSTANTS = require('../constants');
 
@@ -13,8 +13,6 @@ const CONSTANTS = require('../constants');
  * @param {string} address
  */
 const verifyAccountAddress = async (address, driver) => {
-  const shortAddressLength = address.includes('0x') ? 4 : 5;
-
   const message = await driver.waitForSelector({
     css: '#assetHeader-address',
     text: address.substring(0, 4),
@@ -180,7 +178,10 @@ describe('Existing user import account', async () => {
     });
 
     it('should import a Constellation wallet by private key', async () => {
-      await driver.fill('#importAccount-privateKeyInput', CONSTANTS.WALLET_FOUR_CONSTELLATION_PRIVATE_KEY);
+      await driver.fill(
+        '#importAccount-privateKeyInput',
+        CONSTANTS.WALLET_FOUR_CONSTELLATION_PRIVATE_KEY,
+      );
       await driver.fill('#importAccount-accountNameInput', CONSTANTS.WALLET_FOUR_NAME);
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.clickElement('#importAccount-finishButton');
@@ -189,7 +190,10 @@ describe('Existing user import account', async () => {
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
       await driver.clickElement('#assetItem-constellation');
-      const result = await verifyAccountAddress(CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS, driver);
+      const result = await verifyAccountAddress(
+        CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS,
+        driver,
+      );
       assert.equal(result, true);
     });
 
@@ -209,7 +213,10 @@ describe('Existing user import account', async () => {
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
       await driver.clickElement('#assetItem-constellation');
-      const result = await verifyAccountAddress(CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS, driver);
+      const result = await verifyAccountAddress(
+        CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS,
+        driver,
+      );
       assert.equal(result, true);
     });
 

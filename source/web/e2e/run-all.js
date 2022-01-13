@@ -1,5 +1,4 @@
 const path = require('path');
-const { promises: fs } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('./lib/run-command');
@@ -26,8 +25,6 @@ async function main() {
     .help('help');
 
   const { browser, retries } = argv;
-
-  const testDir = path.join(__dirname, 'tests');
 
   const allE2eTestPath = path.join(__dirname, '/tests');
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
