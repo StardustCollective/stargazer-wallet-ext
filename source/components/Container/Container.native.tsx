@@ -1,6 +1,25 @@
+///////////////////////////
+// Modules
+///////////////////////////
+
 import React, { FC } from 'react';
 import { SafeAreaView } from 'react-native';
+
+///////////////////////////
+// Types
+///////////////////////////
+
 import IContainer from './types';
+
+///////////////////////////
+// Styles
+///////////////////////////
+
+import styles from './styles';
+
+///////////////////////////
+// Component
+///////////////////////////
 
 const Container: FC<IContainer> = (
 {
@@ -8,7 +27,7 @@ const Container: FC<IContainer> = (
 }
 ) => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       {children}
     </SafeAreaView>
   )
