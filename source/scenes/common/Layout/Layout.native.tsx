@@ -41,11 +41,11 @@ const Layout: FC<ILayout> = ({
   return (
     <View style={styles.layout}>
       <View style={styles.heading}>
-        <TextV3.HeaderLargeRegular color={COLORS_ENUMS.BLACK}>
+        <TextV3.HeaderLargeRegular color={COLORS_ENUMS.DARK_GRAY}>
           {title}
         </TextV3.HeaderLargeRegular>
       </View>
-      <View>
+      <View style={styles.content}>
         {children}
       </View>
     </View>
