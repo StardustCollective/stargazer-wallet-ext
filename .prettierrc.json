@@ -2,5 +2,7 @@
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "singleQuote": true,
-  "tabWidth": 2
+  "printWidth": 120,
+  "tabWidth": 2,
+  "trailingComma": "es5"
 }

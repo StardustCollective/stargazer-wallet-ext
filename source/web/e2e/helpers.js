@@ -5,12 +5,7 @@ const delay400 = delay200 * 2;
 const delay800 = delay400 * 2;
 
 async function withFixtures(options, testSuite) {
-  const {
-    driverOptions,
-    title,
-    failOnConsoleError = true,
-    leaveRunning = false,
-  } = options;
+  const { driverOptions, title, failOnConsoleError = true, leaveRunning = false } = options;
 
   let webDriver;
   let failed = false;
@@ -26,9 +21,7 @@ async function withFixtures(options, testSuite) {
       const errors = await driver.checkBrowserForConsoleErrors(driver);
       if (errors.length) {
         const errorReports = errors.map((err) => err.message);
-        const errorMessage = `Errors found in browser console:\n${errorReports.join(
-          '\n',
-        )}`;
+        const errorMessage = `Errors found in browser console:\n${errorReports.join('\n')}`;
         if (failOnConsoleError) {
           throw new Error(errorMessage);
         } else {
