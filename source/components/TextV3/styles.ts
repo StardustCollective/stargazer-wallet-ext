@@ -16,6 +16,11 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 48,
   },
+  headerLargeRegular: {
+    fontWeight: FONT_WEIGHTS.regular,
+    fontSize: 32,
+    lineHeight: 48,
+  },
   header: {
     fontWeight: FONT_WEIGHTS.medium,
     fontSize: 24,
