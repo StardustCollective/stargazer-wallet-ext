@@ -6,6 +6,7 @@ export enum COLORS_ENUMS {
   WHITE = 0,
   BLACK,
   DARK_GRAY,
+  GRAY_100,
   ACCENT_ONE,
   MONOTONE_ONE,
 }

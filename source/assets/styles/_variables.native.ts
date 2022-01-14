@@ -15,6 +15,7 @@ export const COLORS = {
   white: '#fff',
   black: '#000',
   grey_50: '#F2F2F2',
+  grey_100_V1: '#888888',
   grey_100: '#E6E6E6',
   grey_light: '#f5f5f5',
   grey_dark: '#474747'

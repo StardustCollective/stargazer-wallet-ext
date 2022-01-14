@@ -63,6 +63,9 @@ const styles = StyleSheet.create({
   },
   greyDarkFont: {
     color: COLORS.grey_dark
+  },
+  gray100Font: {
+    color: COLORS.grey_100_V1
   }
 });
 
