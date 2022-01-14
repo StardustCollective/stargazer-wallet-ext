@@ -57,11 +57,11 @@ const Start: FC<IStart> = ({
         size={BUTTON_SIZES_ENUM.LARGE}
         title={'Get Started'}
         extraStyle={styles.started}
-        onClick={onGetStartedClicked}
+        onPress={onGetStartedClicked}
       />
       <Link
         color="monotoneOne"
-        onClick={onImportClicked}
+        onPress={onImportClicked}
         title="Import from recovery seed phrase"
       />
     </View>
