@@ -1,8 +1,9 @@
 import { StackNavigationOptions } from '@react-navigation/stack';
+import { Platform } from 'react-native';
 
  const config: StackNavigationOptions = {
   headerStyle: {
-    height: '80px',
+    height: Platform.OS === 'web' ? '80px' : 110,
     backgroundColor: '#2B1D52',
     borderBottomColor: 'transparent'
   },
