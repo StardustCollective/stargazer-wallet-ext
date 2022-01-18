@@ -45,6 +45,7 @@
 		ABFE59519B596E51CEFDCCC0 /* libPods-Stargazer-StargazerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stargazer-StargazerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0A881CF5CF3F2B244570E2A /* Pods-Stargazer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer.debug.xcconfig"; path = "Target Support Files/Pods-Stargazer/Pods-Stargazer.debug.xcconfig"; sourceTree = "<group>"; };
 		D00AAFFCFCFDA5787532823F /* Pods-Stargazer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer.release.xcconfig"; path = "Target Support Files/Pods-Stargazer/Pods-Stargazer.release.xcconfig"; sourceTree = "<group>"; };
+		DBA7691127975C4C0038EE92 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -88,6 +89,7 @@
 		13B07FAE1A68108700A75B9A /* Stargazer */ = {
 			isa = PBXGroup;
 			children = (
+				DBA7691027975BBE0038EE92 /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -146,6 +148,14 @@
 				4CB947F12DA1438EA7989B2A /* Rubik.ttf */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		DBA7691027975BBE0038EE92 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DBA7691127975C4C0038EE92 /* FontAwesome.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		E233CBF5F47BEE60B243DCF8 /* Pods */ = {
