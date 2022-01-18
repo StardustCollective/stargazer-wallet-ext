@@ -1,10 +1,14 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   container: {
+    width: 125,
+    height: 125,
     padding: 20,
-    backgroundColor: 'purple',
-    borderRadius: 50,
+    justifyContent: 'center',
+    backgroundColor: COLORS.primary,
+    borderRadius: 100,
   },
 });
 
