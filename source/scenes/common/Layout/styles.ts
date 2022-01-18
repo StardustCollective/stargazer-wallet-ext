@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   content: {
+    flex: 1,
     marginTop: 25,
     marginHorizontal: 10,
   }
