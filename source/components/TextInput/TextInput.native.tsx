@@ -29,6 +29,7 @@ const TextInput: FC<ITextInput> = ({
       <RNEInput
         placeholder={placeholder}
         secureTextEntry={type === 'password'}
+        inputStyle={styles.input}
         inputContainerStyle={styles.inputContainer}
         labelStyle={styles.label}
         label={label}
