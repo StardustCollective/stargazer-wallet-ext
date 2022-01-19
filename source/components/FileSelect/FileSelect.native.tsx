@@ -49,7 +49,7 @@ const FileSelect: FC<IFileSelect> = ({
   const handleFileChoose = () => {
     DocumentPicker.pickSingle({
       //restrict files types?
-      type: [DocumentPicker.types.plainText],
+      type: [DocumentPicker.types.allFiles],
       presentationStyle: 'fullScreen',
       copyTo: 'cachesDirectory',
     })
@@ -59,7 +59,7 @@ const FileSelect: FC<IFileSelect> = ({
         [
           {
             uri:
-            copyToUri:
+            fileCopyUri:
             type:
             name:
             size:
@@ -68,16 +68,17 @@ const FileSelect: FC<IFileSelect> = ({
         */
 
         setResult(res);
-        //read file uploaded
-        return RNFS.readFile(res.fileCopyUri, 'utf8')
-          .then((file:String) => {
-            /*
-            Save string read
-            Should we JSON.parse(file)????
-            */
+        RNFS.stat(res.fileCopyUri)
+          .then( file => {
             setReadFile(file);
-            onChange(file);
-          })
+            
+            //return file from read
+            if(file.isFile()) {
+              onChange(file.path);
+            } else {
+              throw new Error('No file processed');
+            }
+          });
       })
       .catch((e) => handleError(e));
   };
