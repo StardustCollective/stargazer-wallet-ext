@@ -1,20 +1,21 @@
-import React, { ChangeEvent, FC, useRef, useState, useEffect } from 'react';
-import Button from 'components/Button';
+import React, { FC, useEffect } from 'react';
+import  RNFS from 'react-native-fs';
+import Button from 'components/ButtonV3';
 
-import { StyleSheet, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import DocumentPicker, {
   DocumentPickerResponse,
   isInProgress,
   types,
 } from 'react-native-document-picker';
 
-// import styles from './styles';
+import styles from './styles';
 
 interface IFileSelect {
   accept?: string;
   disabled?: boolean;
   id?: string;
-  onChange: (val: File | null) => void;
+  onChange: (val: File | null | String) => void;
 }
 
 const FileSelect: FC<IFileSelect> = ({
@@ -23,8 +24,9 @@ const FileSelect: FC<IFileSelect> = ({
   disabled = false,
 }) => {
   const [result, setResult] = React.useState<
-    Array<DocumentPickerResponse> | undefined | null
+  DocumentPickerResponse | undefined | null
   >();
+  const [ readFile, setReadFile ] = React.useState<any>();
 
   useEffect(() => {
     console.log(JSON.stringify(result, null, 2));
@@ -45,28 +47,50 @@ const FileSelect: FC<IFileSelect> = ({
   };
 
   const handleFileChoose = () => {
-    const res = DocumentPicker.pickSingle({
-        type: [DocumentPicker.types.allFiles],
-        presentationStyle: 'fullScreen',
-        copyTo: 'cachesDirectory',
-      })
-        .then((res) => setResult([res]))
-        .catch((e) => handleError(e));
-    
-    console.log('res::::', res);
-    // onChange(res);
+    DocumentPicker.pickSingle({
+      //restrict files types?
+      type: [DocumentPicker.types.plainText],
+      presentationStyle: 'fullScreen',
+      copyTo: 'cachesDirectory',
+    })
+      .then((res) => {
+        /*
+        https://github.com/rnmods/react-native-document-picker
+        [
+          {
+            uri:
+            copyToUri:
+            type:
+            name:
+            size:
+          }
+        ]
+        */
 
+        setResult(res);
+        //read file uploaded
+        return RNFS.readFile(res.fileCopyUri, 'utf8')
+          .then((file:String) => {
+            /*
+            Save string read
+            Should we JSON.parse(file)????
+            */
+            setReadFile(file);
+            onChange(file);
+          })
+      })
+      .catch((e) => handleError(e));
   };
 
-
   return (
-    <View>
+    <View style={styles.container}>
       <Button
+        extraStyle={styles.button}
         disabled={disabled}
         title="Choose File"
         onPress={handleFileChoose}
       />
-      <Text>{result ? JSON.stringify(result) : 'No file selected'}</Text>
+      <Text style={styles.chosen}>{ readFile ? result.name : 'No file chosen' }</Text>
     </View>
   );
 };
