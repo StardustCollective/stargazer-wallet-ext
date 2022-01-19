@@ -13,7 +13,7 @@ import contacts from './contacts';
 import assets from './assets';
 
 import dapp from './dapp';
-import { saveState, /*loadState*/ } from './localStorage';
+import { saveState, loadState } from './localStorage';
 
 const middleware = [
   ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
@@ -23,12 +23,12 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(logger);
 }
 
-// const preloadedState = loadState();
+const preloadedState = loadState();
 
 //v1.0 wallet state
-// if (preloadedState && preloadedState.wallet) {
-//   delete preloadedState.wallet;
-// }
+if (preloadedState && preloadedState.wallet) {
+  delete preloadedState.wallet;
+}
 
 const store: Store = configureStore({
   reducer: combineReducers({
@@ -40,7 +40,7 @@ const store: Store = configureStore({
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
-  // preloadedState,
+  preloadedState,
 });
 
 store.subscribe(
