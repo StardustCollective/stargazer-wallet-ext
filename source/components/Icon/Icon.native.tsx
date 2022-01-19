@@ -14,6 +14,7 @@ interface IIcon {
   spaced?: boolean;
   variant?: object;
   width?: number;
+  name?: string;
 }
 
 const IconComponent: FC<IIcon> = ({
@@ -22,6 +23,7 @@ const IconComponent: FC<IIcon> = ({
   variant,
   width = 24,
   iconStyles,
+  name= '',
 }) => {
     let spacedStyle;
     if(spaced === true) {
@@ -30,18 +32,26 @@ const IconComponent: FC<IIcon> = ({
         spacedStyle = null;
     }
 
-    // const componentStyles = StyleSheet.flatten([
-    //     styles.icon,
-    //     spacedStyle,
-    //     // variant,
-    //     // iconStyles,
-    // ]);
+    const componentStyles = StyleSheet.flatten([
+        styles.icon,
+        spacedStyle,
+        // variant,
+        // iconStyles,
+    ]);
 
-    // const _Component = typeof Component === 'string' ? (
-    //     <Image source={{ uri: `/${Component}`, width: width }} />
-    //   ) : (
-    //     <Component styles={{ width }} />
-    //   );
+    if(name) {
+      return (
+        <View>
+          <Icon type="EvilIcons" name={name} iconStyle={componentStyles}/>
+        </View>
+      )
+    }
+
+    const _Component = typeof Component === 'string' ? (
+        <Image source={{ uri: `/${Component}`, width: width }} />
+      ) : (
+        <Component styles={{ width }} />
+      );
 
     return (
       <View
@@ -49,42 +59,12 @@ const IconComponent: FC<IIcon> = ({
           alignItems: 'center',
           paddingVertical: 5,
           flexGrow: 1,
-        }}
-      >
-        <Icon
-          type="EvilIcons"
-          name='search' />
-
-        <Icon
-          name='g-translate'
-          color='#00aced' />
-
-        <Icon
-          name='sc-telegram'
-          type='evilicon'
-          color='#517fa4'
-        />
-
-        <Icon
-          reverse
-          name='ios-american-football'
-          type='ionicon'
-          color='#517fa4'
-        />
-
-        <Icon
-          raised
-          name='heartbeat'
-          type='font-awesome'
-          color='#f50'
-          onPress={() => console.log('hello')} />
+        }}>
+        <Icon 
+        containerStyle={componentStyles}
+        Component={_Component}/>
       </View>
     );
-  // return (
-  //   <Icon 
-  //       containerStyle={componentStyles}
-  //       Component={_Component}/>
-  // );
 };
 
 export default IconComponent;
