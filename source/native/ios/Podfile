@@ -5,6 +5,7 @@ platform :ios, '11.0'
 
 pod 'RNVectorIcons', :path => '../../../node_modules/react-native-vector-icons'
 pod 'react-native-document-picker', :path => '../../../node_modules/react-native-document-picker'
+pod 'RNFS', :path => '../../../node_modules/react-native-fs'
 
 target 'Stargazer' do
   config = use_native_modules!
