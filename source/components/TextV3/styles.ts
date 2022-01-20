@@ -61,6 +61,9 @@ const styles = StyleSheet.create({
   blackFont: {
     color: COLORS.black
   },
+  redFont: {
+    color: COLORS.red
+  },
   greyDarkFont: {
     color: COLORS.grey_dark
   },
