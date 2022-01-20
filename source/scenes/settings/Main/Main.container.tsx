@@ -86,7 +86,6 @@ const MainContainer:FC = () => {
       />
     </Container>
   );
-
 }
 
 export default MainContainer;

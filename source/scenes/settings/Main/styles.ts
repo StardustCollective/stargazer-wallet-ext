@@ -5,6 +5,8 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: COLORS.primary,
     overflow: 'scroll',
+    flex: 1,
+    flexDirection: 'column',
   },
   box: {
     width: '100%',
@@ -13,6 +15,7 @@ const styles = StyleSheet.create({
   },
   content: {
     margin: 16,
+    marginBottom: 10,
   },
   card: {
     alignItems: 'center',
@@ -50,10 +53,18 @@ const styles = StyleSheet.create({
   },
   footer: {
     display: 'flex',
+
+    flexGrow: 1,
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    margin: 16,
+  },
+  footer_section: {
+    width: '100%',
+    display: 'flex',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: 16,
   },
   footer__left: {
     display: 'flex',
@@ -69,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginBottom: 7
+    marginBottom: 7,
   },
   footer__right_img: {
     marginLeft: 8,

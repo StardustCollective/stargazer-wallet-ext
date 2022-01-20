@@ -108,23 +108,25 @@ const Main: FC<IMainSettings> = ({
       <View style={styles.box}>
         <View style={styles.content}>
           {SETTINGS_MAP.map((section_props) => {
-            return <RenderSettingsItem {...section_props}/>;
+            return <RenderSettingsItem {...section_props} />;
           })}
         </View>
       </View>
       <View style={styles.footer}>
-        <TouchableHighlight onPress={onAboutLinkClicked}>
-          <View style={styles.footer__left}>
-            <InfoIcon style={styles.footer__left_img} />
-            <TextV3.Caption>Stargazer Wallet {version}</TextV3.Caption>
-          </View>
-        </TouchableHighlight>
-        <TouchableHighlight onPress={handleLogout}>
-          <View style={styles.footer__right}>
-            <TextV3.Caption>Logout</TextV3.Caption>
-            <ExitIcon style={styles.footer__right_img} />
-          </View>
-        </TouchableHighlight>
+        <View style={styles.footer_section}>
+          <TouchableHighlight onPress={onAboutLinkClicked}>
+            <View style={styles.footer__left}>
+              <InfoIcon style={styles.footer__left_img} />
+              <TextV3.Caption>Stargazer Wallet {version}</TextV3.Caption>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={handleLogout}>
+            <View style={styles.footer__right}>
+              <TextV3.Caption>Logout</TextV3.Caption>
+              <ExitIcon style={styles.footer__right_img} />
+            </View>
+          </TouchableHighlight>
+        </View>
       </View>
     </View>
   );
