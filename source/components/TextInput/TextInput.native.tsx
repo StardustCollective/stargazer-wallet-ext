@@ -1,39 +1,52 @@
 import React, { FC, useState, MouseEvent, ReactNode } from 'react';
 import { Input as RNEInput } from 'react-native-elements';
-import { View, KeyboardType } from 'react-native';
+import { KeyboardType } from 'react-native';
+import { Controller } from "react-hook-form";
 
 import styles from './styles';
 
 interface ITextInput {
-  id?: string;
+  name: string;
   placeholder: string;
   type?: 'text' | 'password' | 'number';
   label?: string;
+  control: any;
 }
 
 const TextInput: FC<ITextInput> = ({
-  id,
   type = 'text',
   placeholder = '',
   label = '',
+  name = '',
+  control,
 }) => {
 
   let keyboardType: KeyboardType = 'default';
 
-  if(type === 'number'){
+  if (type === 'number') {
     keyboardType = 'numeric'
   }
 
   return (
     <>
-      <RNEInput
-        placeholder={placeholder}
-        secureTextEntry={type === 'password'}
-        inputStyle={styles.input}
-        inputContainerStyle={styles.inputContainer}
-        labelStyle={styles.label}
-        label={label}
-        keyboardType={keyboardType}
+      <Controller
+        control={control}
+        as={
+          <RNEInput
+            placeholder={placeholder}
+            secureTextEntry={type === 'password'}
+            inputStyle={styles.input}
+            inputContainerStyle={styles.inputContainer}
+            labelStyle={styles.label}
+            label={label}
+            keyboardType={keyboardType}
+          />
+        }
+        onChange={([text]) => {
+          return text;
+        }}
+        name={name}
+        onChangeName={'onChangeText'}
       />
     </>
   );
