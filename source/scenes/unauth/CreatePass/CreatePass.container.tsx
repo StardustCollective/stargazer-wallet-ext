@@ -28,7 +28,7 @@ const CreatePassContainer = () => {
   const controller = useController();
   const linkTo = useLinkTo();
   const [passed, setPassed] = useState(false);
-  const { handleSubmit, register, errors } = useForm({
+  const { control, handleSubmit, register, errors } = useForm({
     validationSchema: consts.schema,
   });
 
@@ -63,6 +63,7 @@ const CreatePassContainer = () => {
   return (
     <Container>
       <CreatePass
+        control={control}
         onSubmit={onSubmit}
         handleSubmit={handleSubmit}
         nextHandler={nextHandler}
