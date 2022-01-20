@@ -18,7 +18,7 @@ const CreatePass: FC<ICreatePass> = ({
 }) => {
 
   return (
-    <Layout title={title} linkTo="/homeUnauth">
+    <Layout title={title}>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {passed ? (
           <CheckIcon className={styles.checked} />
