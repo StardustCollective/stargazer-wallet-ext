@@ -14,7 +14,6 @@ import TextV3 from 'components/TextV3';
 import CheckIcon from 'components/CheckIcon';
 import TextInput from 'components/TextInput';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-import { Controller } from "react-hook-form";
 
 ///////////////////////////
 // Types  
@@ -33,42 +32,12 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 // Scene  
 ///////////////////////////
 
-
-const InputTest = ({
-  name,
-  control,
-  placeholder,
-}) => {
-
-  return (
-    <>
-      <Controller
-        control={control}
-        as={
-          <TextInput
-            type="password"
-            placeholder={placeholder}
-            visiblePassword
-          />
-        }
-        onChange={([text]) => {
-          return text;
-        }}
-        name={name}
-        onChangeName={'onChangeText'}
-      />
-
-    </>
-  )
-}
-
 const CreatePass: FC<ICreatePass> = ({
   control,
   onSubmit,
   handleSubmit,
   nextHandler,
   passed,
-  register,
   errors,
   comment,
   title,
