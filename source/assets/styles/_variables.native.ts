@@ -14,6 +14,8 @@ export const COLORS = {
   monotone_1: '#AAA3D6',
   white: '#fff',
   black: '#000',
+  red: '#de0c00',
+  red_100: '#ff3b30',
   grey_50: '#F2F2F2',
   grey_100_V1: '#888888',
   grey_100: '#E6E6E6',
