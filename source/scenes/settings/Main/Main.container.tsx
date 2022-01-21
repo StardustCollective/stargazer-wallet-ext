@@ -20,7 +20,7 @@ import Main from './Main';
 // Hooks
 ///////////////////////
 
-import { useController } from 'hooks/index';
+// import { useController } from 'hooks/index';
 // import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 

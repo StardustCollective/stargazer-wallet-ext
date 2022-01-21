@@ -56,7 +56,7 @@ const Main: FC<IMainSettings> = ({
   const RenderSettingsItem = ({
     label,
     IconImageOrComponent,
-    imageStyles,
+    imageStyles = '',
     onClick,
   }: IRenderSettingsItemProps) => {
     ///////////////////////

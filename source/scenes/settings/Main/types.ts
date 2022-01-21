@@ -14,5 +14,5 @@ export type IRenderSettingsItemProps = {
   label: string;
   IconImageOrComponent: FC | string;
   onClick: () => void;
-  imageStyles?: object | string;
+  imageStyles?: any;
 }
