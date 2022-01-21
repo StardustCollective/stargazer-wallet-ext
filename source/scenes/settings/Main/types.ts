@@ -7,7 +7,7 @@ export default interface IMainSettings {
   onAboutLinkClicked: () => void;
   onContactsLinkClicked: () => void;
   onConnectedSitesClicked: () => void;
-  version: number;
+  version: string | number;
 }
 
 export type IRenderSettingsItemProps = {
