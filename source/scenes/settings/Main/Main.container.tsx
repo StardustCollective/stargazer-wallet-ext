@@ -21,7 +21,7 @@ import Main from './Main';
 ///////////////////////
 
 // import { useController } from 'hooks/index';
-import useVersion from 'hooks/useVersion';
+// import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////
@@ -35,8 +35,8 @@ const MainContainer:FC = () => {
   ///////////////////////
 
   //   const controller = useController();
-  const version = useVersion(3);
-  // const version = '3.2.4';
+  // const version = useVersion(3);
+  const version = '3.2.4';
   const linkTo = useLinkTo();
 
   ///////////////////////
