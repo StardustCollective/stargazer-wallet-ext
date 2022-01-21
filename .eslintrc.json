@@ -6,7 +6,9 @@
     "extends": [
         "plugin:react/recommended",
         "airbnb",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -35,7 +37,9 @@
         "no-promise-executor-return": "off",
         "no-restricted-syntax": "off",
         "no-plusplus": "off",
-        "class-methods-use-this": "off"
+        "class-methods-use-this": "off",
+        "no-param-reassign": "off",
+        "@typescript-eslint/no-explicit-any": "off"
     },
     "globals": {
         "it": "readonly",
