@@ -2,9 +2,9 @@ const { strict: assert } = require('assert');
 const { buildWebDriver } = require('../webdriver');
 const CONSTANTS = require('../constants');
 
-////////////////////////////
+/// /////////////////////////
 // Test
-////////////////////////////
+/// /////////////////////////
 
 describe('Existing user login', async () => {
   let driver;
@@ -38,19 +38,19 @@ describe('Existing user login', async () => {
 
     it('Logs in successfully with correct password', async () => {
       const statusElement = await driver.findElement('#login-failure');
-      assert.notEqual(await statusElement.getText(),'Error: Invalid password');
+      assert.notEqual(await statusElement.getText(), 'Error: Invalid password');
 
       await driver.fill('#login-passwordField', CONSTANTS.PASSWORD);
       await driver.clickElement('#login-submitButton');
       const homeScene = await driver.findElement('#home-scene');
-      assert.notEqual(homeScene,null);
+      assert.notEqual(homeScene, null);
     });
 
     it('Displays error with incorrect password', async () => {
       await driver.fill('#login-passwordField', 'incorrect_key_value');
       await driver.clickElement('#login-submitButton');
       const statusElement = await driver.findElement('#login-failure');
-      assert.equal(await statusElement.getText(),'Error: Invalid password');
+      assert.equal(await statusElement.getText(), 'Error: Invalid password');
     });
-  })
+  });
 });

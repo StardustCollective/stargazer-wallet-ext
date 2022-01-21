@@ -32,7 +32,7 @@ const initialState: IVaultState = {
     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
   },
-  version: '2.1.1',
+  version: '2.1.1' ,
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update

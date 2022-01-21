@@ -1,0 +1,46 @@
+{
+    "env": {
+        "webextensions": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb",
+        "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 13,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "prettier",
+        "react",
+        "react-hooks",
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "no-return-await": "off",
+        "no-underscore-dangle": "off",
+        "no-await-in-loop": "off",
+        "no-console": "off",
+        "func-names": "off",
+        "import/no-extraneous-dependencies": "off",
+        "import/no-unresolved": "off",
+        "import/extensions": "off",
+        "import/prefer-default-export": "off",
+        "no-promise-executor-return": "off",
+        "no-restricted-syntax": "off",
+        "no-plusplus": "off",
+        "class-methods-use-this": "off"
+    },
+    "globals": {
+        "it": "readonly",
+        "describe": "readonly",
+        "beforeEach": "writable",
+        "afterEach": "writable"
+    }
+}

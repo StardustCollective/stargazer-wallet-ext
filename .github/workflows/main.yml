@@ -4,11 +4,7 @@ name: Main workflow
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -44,18 +40,4 @@ jobs:
 
       - run: yarn install
 
-      - run: yarn run build
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: extension-build-files
-          path: extension/
-      - name: start selenium server
-        uses: Xotabu4/selenoid-github-action@v2
-      - run: yarn install web
-        working-directory: source/web/
-      - name: Run E2E Tests
-        run: yarn test:e2e:chrome
-        env: 
-          SELENIUM_BROWER: chrome
-          ENABLE_CHROME_LOGGING: false
+      - run: yarn lint
