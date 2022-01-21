@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
 import { TouchableWithoutFeedback, View, StyleSheet, Text } from 'react-native';
-// import { Image, Icon } from 'react-native-elements';
-
 import styles from './styles';
 
 interface IAlertTemplate {
