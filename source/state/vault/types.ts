@@ -1,13 +1,10 @@
-import {
-  V3Keystore,
-  KDFParamsPhrase,
-  KDFParamsPrivateKey,
-} from '@stardust-collective/dag4-keystore';
+import { V3Keystore, KDFParamsPhrase, KDFParamsPrivateKey } from '@stardust-collective/dag4-keystore';
 import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
 import {
-  KeyringAssetType, KeyringNetwork,
+  KeyringAssetType,
+  KeyringNetwork,
   KeyringWalletState,
-  KeyringWalletType
+  KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
@@ -20,51 +17,33 @@ export enum AssetType {
   Ledger = 'ledger',
   Ethereum = 'ethereum',
   ERC20 = 'erc20',
+  ERC721 = 'erc721',
 }
 
 export type Transaction = DAGTransaction | any;
 
 export type ActiveNetwork = {
-  [KeyringNetwork.Constellation]: string,
-  [KeyringNetwork.Ethereum]: string,
-}
+  [KeyringNetwork.Constellation]: string;
+  [KeyringNetwork.Ethereum]: string;
+};
 
-
-export interface IAssetState   {
+export interface IAssetState {
   id: string;
   type: AssetType;
   label: string;
   address: string;
   contractAddress?: string;
-  // balance?: number;
 }
 
 export interface IActiveAssetState extends IAssetState {
   transactions: Transaction[];
 }
 
-// export class BalanceValue {
-//   valueNum: number;
-//   valueStr: string;
-//   valueBn: BigNumber;
-//   static createDefault(): BalanceValue {
-//     return { valueNum: 0, valueStr: '0', valueBn: BigNumber.from(0) }
-//   }
-// }
-
 export type AssetBalances = {
   [AssetType.Ethereum]?: string;
   [AssetType.Constellation]?: string;
   [contractAddress: string]: string;
-}
-
-export interface IWalletState {
-  id: string;
-  type: KeyringWalletType;
-  label: string;
-  supportedAssets: KeyringAssetType[]; //eth,dag,erc20
-  assets: IAssetState[];
-}
+};
 
 export interface IAccountUpdateState {
   id: string;
@@ -80,6 +59,14 @@ export interface IAccountDerived {
   tokens?: string[];
 }
 
+export interface IWalletState {
+  id: string;
+  type: KeyringWalletType;
+  label: string;
+  supportedAssets: KeyringAssetType[]; // eth,dag,erc20,erc721
+  assets: IAssetState[];
+}
+
 export default interface IVaultState {
   hasEncryptedVault: boolean;
   balances: AssetBalances;
@@ -89,5 +76,5 @@ export default interface IVaultState {
   activeWallet: IWalletState;
   activeAsset: IActiveAssetState;
   activeNetwork: ActiveNetwork;
-  migrateWallet?: any
+  migrateWallet?: any;
 }

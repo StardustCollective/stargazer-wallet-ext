@@ -121,6 +121,7 @@ export class WalletController implements IWalletController {
   }
 
   async switchWallet(id: string) {
+    console.log('Switching wallet to: ', id);
       store.dispatch(updateBalances({ pending: 'true' }));
 
       await this.account.buildAccountAssetInfo(id);
