@@ -25,20 +25,21 @@ const sharedPath = path.join(__dirname, '../');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
 
-const extensionReloaderPlugin = nodeEnv === 'development'
-  ? new ExtensionReloader({
-    port: 9090,
-    reloadPage: true,
-    entries: {
-      // TODO: reload manifest on update
-      background: 'background',
-      contentScript: 'contentScript',
-      extensionPage: ['popup', 'options'],
-    },
-  })
-  : () => {
-    this.apply = () => {};
-  };
+const extensionReloaderPlugin =
+  nodeEnv === 'development'
+    ? new ExtensionReloader({
+        port: 9090,
+        reloadPage: true,
+        entries: {
+          // TODO: reload manifest on update
+          background: 'background',
+          contentScript: 'contentScript',
+          extensionPage: ['popup', 'options'],
+        },
+      })
+    : () => {
+        this.apply = () => {};
+      };
 
 const getExtensionFileType = (browser) => {
   if (browser === 'opera') {
@@ -84,14 +85,10 @@ module.exports = {
   },
 
   resolve: {
-    plugins: [
-      PnpWebpackPlugin,
-    ],
+    plugins: [PnpWebpackPlugin],
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
-      'webextension-polyfill-ts': path.resolve(
-        path.join(__dirname, '../../node_modules', 'webextension-polyfill-ts'),
-      ),
+      'webextension-polyfill-ts': path.resolve(path.join(__dirname, '../../node_modules', 'webextension-polyfill-ts')),
       assets: path.resolve(sharedPath, 'assets'),
       components: path.resolve(sharedPath, 'components'),
       scripts: path.resolve(sharedPath, 'scripts'),
@@ -107,9 +104,7 @@ module.exports = {
     },
   },
   resolveLoader: {
-    plugins: [
-      PnpWebpackPlugin.moduleLoader(module),
-    ],
+    plugins: [PnpWebpackPlugin.moduleLoader(module)],
   },
   module: {
     rules: [
@@ -188,10 +183,7 @@ module.exports = {
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [
         path.join(process.cwd(), `extension/${targetBrowser}`),
-        path.join(
-          process.cwd(),
-          `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`,
-        ),
+        path.join(process.cwd(), `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`),
       ],
       cleanStaleWebpackAssets: false,
       verbose: true,

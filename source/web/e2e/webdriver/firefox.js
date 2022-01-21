@@ -10,9 +10,7 @@ class FirefoxDriver {
   static async build({ responsive, port }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
-    const builder = new Builder()
-      .forBrowser('firefox')
-      .setFirefoxOptions(options);
+    const builder = new Builder().forBrowser('firefox').setFirefoxOptions(options);
     if (port) {
       const service = new firefox.ServiceBuilder().setPort(port);
       builder.setFirefoxService(service);
@@ -20,9 +18,7 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension(
-      `builds/metamask-firefox-${version}.zip`,
-    );
+    const extensionId = await fxDriver.installExtension(`builds/metamask-firefox-${version}.zip`);
     const internalExtensionId = await fxDriver.getInternalId();
 
     if (responsive) {
@@ -46,12 +42,7 @@ class FirefoxDriver {
 
   async getInternalId() {
     await this._driver.get('about:debugging#addons');
-    return await this._driver
-      .wait(
-        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
-        1000,
-      )
-      .getText();
+    return await this._driver.wait(until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")), 1000).getText();
   }
 }
 

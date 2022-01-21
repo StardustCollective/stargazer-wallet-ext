@@ -37,7 +37,7 @@ describe('New install new account', () => {
 
         await driver.clickElement('#confirmPhrase-confirmButton');
         await driver.clickElement('#confirmPhrase-confirmButton');
-      },
+      }
     );
   });
 
@@ -62,7 +62,7 @@ describe('New install new account', () => {
         });
 
         assert.equal(await message.getText(), 'Please check the above requirements!');
-      },
+      }
     );
   });
 
@@ -87,7 +87,7 @@ describe('New install new account', () => {
         });
 
         assert.equal(await message.getText(), 'Incorrect please re-enter password!');
-      },
+      }
     );
   });
 
@@ -109,7 +109,7 @@ describe('New install new account', () => {
         });
 
         assert.equal(await message.getText(), 'Password is a required field!');
-      },
+      }
     );
   });
 
@@ -133,7 +133,7 @@ describe('New install new account', () => {
         });
 
         assert.equal(await message.getText(), 'Confirm password is a required field!');
-      },
+      }
     );
   });
 
@@ -157,7 +157,7 @@ describe('New install new account', () => {
 
         const element = await driver.findElement('#confirmPhrase-confirmButton');
         assert.equal(await element.isEnabled(), false);
-      },
+      }
     );
   });
 
@@ -195,7 +195,7 @@ describe('New install new account', () => {
 
         const element = await driver.findElement('#confirmPhrase-confirmButton');
         assert.equal(await element.isEnabled(), false);
-      },
+      }
     );
   });
 
@@ -233,7 +233,7 @@ describe('New install new account', () => {
 
         const element = await driver.findElement('#confirmPhrase-confirmButton');
         assert.equal(await element.isEnabled(), true);
-      },
+      }
     );
   });
 
@@ -271,7 +271,7 @@ describe('New install new account', () => {
 
         const element = await driver.findElement('#confirmPhrase-confirmButton');
         assert.equal(await element.isEnabled(), false);
-      },
+      }
     );
   });
 });

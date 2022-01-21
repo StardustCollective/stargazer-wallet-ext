@@ -1,7 +1,4 @@
-async function retry(
-  { retries, delay = 0, rejectionMessage = 'Retry limit reached' },
-  functionToRetry,
-) {
+async function retry({ retries, delay = 0, rejectionMessage = 'Retry limit reached' }, functionToRetry) {
   let attempts = 0;
   while (attempts <= retries) {
     if (attempts > 0 && delay > 0) {

@@ -26,7 +26,7 @@ describe('New install import account', () => {
         });
 
         assert.equal(await message.getText(), 'Your wallet and all connected accounts have been imported.');
-      },
+      }
     );
   });
 
@@ -49,7 +49,7 @@ describe('New install import account', () => {
         });
 
         assert.equal(await message.getText(), 'Invalid recovery seed phrase');
-      },
+      }
     );
   });
 
@@ -65,7 +65,7 @@ describe('New install import account', () => {
         await driver.clickElement('#link');
         const element = await driver.findElement('#recoveryPhraseSubmit');
         assert.equal(await element.isEnabled(), false);
-      },
+      }
     );
   });
 
@@ -82,7 +82,7 @@ describe('New install import account', () => {
         await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
         const element = await driver.findElement('#recoveryPhraseSubmit');
         assert.equal(await element.isEnabled(), true);
-      },
+      }
     );
   });
 
@@ -109,7 +109,7 @@ describe('New install import account', () => {
         });
 
         assert.equal(await message.getText(), 'Please check the above requirements!');
-      },
+      }
     );
   });
 
@@ -136,7 +136,7 @@ describe('New install import account', () => {
         });
 
         assert.equal(await message.getText(), 'Incorrect please re-enter password!');
-      },
+      }
     );
   });
 
@@ -161,7 +161,7 @@ describe('New install import account', () => {
         });
 
         assert.equal(await message.getText(), 'Password is a required field!');
-      },
+      }
     );
   });
 
@@ -187,7 +187,7 @@ describe('New install import account', () => {
         });
 
         assert.equal(await message.getText(), 'Confirm password is a required field!');
-      },
+      }
     );
   });
 });

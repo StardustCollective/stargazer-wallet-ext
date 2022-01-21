@@ -20,10 +20,7 @@ const verifyAccountAddress = async (address, driver) => {
   const ellipsesAddress = await message.getText();
   const addressLength = address.length;
   const prefix = address.substring(0, 4);
-  const suffix = address.substring(
-    addressLength - 4,
-    addressLength,
-  );
+  const suffix = address.substring(addressLength - 4, addressLength);
   return ellipsesAddress.includes(prefix) && ellipsesAddress.includes(suffix);
 };
 
@@ -65,10 +62,7 @@ describe('Existing user import account', async () => {
   describe('Multi-chain wallet', async () => {
     beforeEach(async () => {
       await driver.clickElement('#importWallet-multiChainWallet');
-      await driver.fill(
-        '#importPhrase-phraseInput',
-        CONSTANTS.WALLET_TWO_SEED_PHRASE,
-      );
+      await driver.fill('#importPhrase-phraseInput', CONSTANTS.WALLET_TWO_SEED_PHRASE);
       await driver.fill('#importPhrase-nameInput', CONSTANTS.WALLET_TWO_NAME);
       await driver.clickElement('#importPhrase-importButton');
       const backButtonWallets = await driver.findElement('#header-backButton');
@@ -178,10 +172,7 @@ describe('Existing user import account', async () => {
     });
 
     it('should import a Constellation wallet by private key', async () => {
-      await driver.fill(
-        '#importAccount-privateKeyInput',
-        CONSTANTS.WALLET_FOUR_CONSTELLATION_PRIVATE_KEY,
-      );
+      await driver.fill('#importAccount-privateKeyInput', CONSTANTS.WALLET_FOUR_CONSTELLATION_PRIVATE_KEY);
       await driver.fill('#importAccount-accountNameInput', CONSTANTS.WALLET_FOUR_NAME);
       await driver.clickElement('#importAccount-confirmNextButton');
       await driver.clickElement('#importAccount-finishButton');
@@ -190,10 +181,7 @@ describe('Existing user import account', async () => {
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
       await driver.clickElement('#assetItem-constellation');
-      const result = await verifyAccountAddress(
-        CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS,
-        driver,
-      );
+      const result = await verifyAccountAddress(CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS, driver);
       assert.equal(result, true);
     });
 
@@ -213,10 +201,7 @@ describe('Existing user import account', async () => {
       actions.move({ origin: backButtonMainSettings }).click().perform();
       await driver.delay(500);
       await driver.clickElement('#assetItem-constellation');
-      const result = await verifyAccountAddress(
-        CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS,
-        driver,
-      );
+      const result = await verifyAccountAddress(CONSTANTS.WALLET_FOUR_CONSTELLATION_ADDRESS, driver);
       assert.equal(result, true);
     });
 

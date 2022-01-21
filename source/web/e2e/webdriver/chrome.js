@@ -11,9 +11,7 @@ class ChromeDriver {
     }
     args.push('--window-size=100,720');
     const options = new chrome.Options().addArguments(args);
-    const builder = new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(options);
+    const builder = new Builder().forBrowser('chrome').setChromeOptions(options);
     const service = new chrome.ServiceBuilder();
 
     if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
