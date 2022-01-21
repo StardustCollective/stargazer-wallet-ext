@@ -24,6 +24,10 @@ const extraNodeModules = {
   process: nodeModules.process,
   crypto: nodeModules.crypto,
   stream: nodeModules.stream,
+  http: nodeModules.http,
+  https: nodeModules.https,
+  os: nodeModules.os,
+  fs: path.resolve(__dirname + './shims/fs'),
   'react-native': require.resolve('react-native-web'),
 };
 
