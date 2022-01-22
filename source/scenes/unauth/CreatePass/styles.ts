@@ -22,10 +22,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-  },
-  button: {
-    marginBottom: 10,
-  },
+  }
 });
 
 export default styles;
