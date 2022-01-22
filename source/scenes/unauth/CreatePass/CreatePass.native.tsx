@@ -62,7 +62,6 @@ const CreatePass: FC<ICreatePass> = ({
             placeholder='Please enter at least 8 characters'
             control={control}
           />
-          <View style={styles.instructions}>
             <TextV3.CaptionStrong color={COLORS_ENUMS.GRAY_100}>
               At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1
               special character.
@@ -76,7 +75,6 @@ const CreatePass: FC<ICreatePass> = ({
                 </TextV3.CaptionStrong>
               </View>
             )}
-          </View>
         </>
       )
       }

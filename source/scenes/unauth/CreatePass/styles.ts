@@ -12,12 +12,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 50,
   },
-  instructions: {
-    marginHorizontal: 13,
-  },
   savePasswordWarning: {
     marginTop: 10,
-    marginHorizontal: 13,
   },
   errors: {
     marginTop: 10,
