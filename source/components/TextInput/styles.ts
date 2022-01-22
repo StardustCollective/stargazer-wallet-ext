@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingLeft: 10,
     borderColor: COLORS.grey_100,
-    marginBottom: -15
+    marginBottom: -15,
+    marginHorizontal: -10
   },
   label: {
     paddingLeft: 14,
