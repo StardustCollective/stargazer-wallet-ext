@@ -1,7 +1,7 @@
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import { ETHNetwork } from 'scripts/types';
 import { initialState as tokenState, addERC20Asset } from 'state/assets';
-import { addNFTAsset } from 'state/nfts';
+import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
@@ -89,6 +89,9 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     try {
       const apiEndpoint = `${apiBase}assets?owner=${walletAddress}`;
       data = await (await fetch(apiEndpoint)).json();
+
+      // Clear out previous NFT state to be fully replaced
+      store.dispatch(resetNFTState());
     } catch (err) {
       // NOOP
     }
@@ -111,7 +114,6 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     }, {});
 
     Object.values(groupedNFTs).forEach((nft: any) => {
-      console.log('NFT DISPATCHING -> ', nft);
       store.dispatch(
         addNFTAsset({
           id: nft.id,

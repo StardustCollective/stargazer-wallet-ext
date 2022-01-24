@@ -11,10 +11,15 @@ const NFTListState = createSlice({
       if (action.payload.address) {
         state[action.payload.address] = action.payload;
       }
+      return state;
     },
+    resetNFTState(state: INFTListState) {
+      state = {};
+      return state;
+    }
   },
 });
 
-export const { addNFTAsset } = NFTListState.actions;
+export const { addNFTAsset, resetNFTState } = NFTListState.actions;
 
 export default NFTListState.reducer;
