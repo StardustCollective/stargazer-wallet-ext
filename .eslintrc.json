@@ -39,9 +39,10 @@
         "no-plusplus": "off",
         "class-methods-use-this": "off",
         "no-param-reassign": "off",
+        "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "react/function-component-definition": ["warning", { "namedComponents": "arrow-function" }],
-        "react/jsx-filename-extension": ["warning", {"extensions": [".jsx", ".tsx"]}]
+        "react/function-component-definition": ["warn", { "namedComponents": "arrow-function" }],
+        "react/jsx-filename-extension": ["warn", {"extensions": [".jsx", ".tsx"]}]
     },
     "globals": {
         "it": "readonly",
