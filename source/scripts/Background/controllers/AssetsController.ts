@@ -1,9 +1,15 @@
 import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import { ETHNetwork } from 'scripts/types';
 import { initialState as tokenState, addERC20Asset } from 'state/assets';
+import { addNFTAsset } from 'state/nfts';
+import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
-import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API } from 'constants/index';
+import { 
+  TOKEN_INFO_API, 
+  NFT_MAINNET_API, 
+  NFT_TESTNET_API 
+} from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 export interface IAssetsController {
@@ -77,21 +83,49 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   const fetchWalletNFTInfo = async (walletAddress: string): Promise<any> => {
     activeNetwork = store.getState().vault.activeNetwork;
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
-
     const apiBase = network === 'testnet' ? NFT_TESTNET_API : NFT_MAINNET_API;
 
     let data: any;
     try {
       const apiEndpoint = `${apiBase}assets?owner=${walletAddress}`;
-      console.log('apiEndpoint: ', apiEndpoint);
       data = await (await fetch(apiEndpoint)).json();
     } catch (err) {
       // NOOP
     }
 
-    console.log('nft_data', data);
+    const nfts: IOpenSeaNFT[] = data.assets;
 
-    return data;
+    if (!nfts.length) {
+      return [];
+    }
+
+    const groupedNFTs = nfts.reduce((carry: Record<string, any>, nft: any) => {
+      const address = nft.asset_contract.address;
+      if (!carry[address]) {
+        carry[address] = { ...nft, quantity: 0 };
+      }
+
+      carry[address].quantity += 1;
+
+      return carry;
+    }, {});
+
+    Object.values(groupedNFTs).forEach((nft: any) => {
+      console.log('NFT DISPATCHING -> ', nft);
+      store.dispatch(
+        addNFTAsset({
+          id: nft.id,
+          type: nft.asset_contract.schema_name === 'ERC721' ? AssetType.ERC721 : AssetType.ERC1155,
+          label: nft.name,
+          address: nft.asset_contract.address,
+          quantity: nft.quantity,
+          link: nft.permalink,
+          logo: nft.image_thumbnail_url,
+        })
+      );
+    })
+
+    return Object.values(groupedNFTs);
   };
 
   return { fetchTokenInfo, fetchWalletNFTInfo };

@@ -75,6 +75,10 @@ const selectAllWallets = createSelector(getWallets, (wallets: KeyringWalletState
   return [...wallets];
 });
 
+/**
+ * Returns known assets that belong to the currently active network
+ * Does not return custom assets that are not part of token initialState
+ */
 const selectActiveNetworkAssets = createSelector(
   getActiveWallet,
   getActiveNetwork,
@@ -85,11 +89,33 @@ const selectActiveNetworkAssets = createSelector(
       return [];
     }
 
+    console.log('activeWallet.assets', activeWallet.assets);
+
     return activeWallet.assets.filter(
-      (asset: IAssetState) =>
-        assets[asset.id as any]?.network === 'both' ||
-        assets[asset.id as any]?.network ===
-          activeNetwork[asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum]
+      (asset: IAssetState) => {
+        const assetType = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
+        const assetNetwork = assets[asset.id as any]?.network;
+
+        return assetNetwork === 'both' || assetNetwork === activeNetwork[assetType]
+      }
+    );
+  }
+);
+
+/**
+ * Returns NFT assets 
+ * NFTs are fetched for the active network only so no activeNetwork checks are needed
+ */
+ const selectNFTAssets = createSelector(
+  getActiveWallet,
+  (activeWallet: IWalletState): IAssetState[] => {
+    if (!activeWallet?.assets) {
+      console.log('no activeWallet.assets - no NFTs: ', activeWallet.assets);
+      return [];
+    }
+
+    return activeWallet.assets.filter(
+      (asset: IAssetState) => asset.type === AssetType.ERC721
     );
   }
 );
@@ -105,4 +131,5 @@ export default {
   selectAllWallets,
   selectActiveNetworkAssets,
   selectActiveNetworkAssetIds,
+  selectNFTAssets,
 };

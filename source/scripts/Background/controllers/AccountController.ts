@@ -127,8 +127,6 @@ export class AccountController implements IAccountController {
       assets: assetList,
     };
 
-    console.log('activeWallet: ', activeWallet);
-
     store.dispatch(changeActiveWallet(activeWallet));
   }
 
@@ -162,20 +160,19 @@ export class AccountController implements IAccountController {
   }
 
   async buildAccountERC721Tokens(address: string) {
-    let response: any;
+    let nfts: any;
     try {
-      console.log('Fetching NFTs');
-      response = await window.controller.assets.fetchWalletNFTInfo(address);
+      nfts = await window.controller.assets.fetchWalletNFTInfo(address);
     } catch (err: any) {
       console.log('failed to fetch NFTs: ', err);
       return [];
     }
 
-    if (!response.assets.length) {
+    if (!nfts.length) {
       return [];
     }
 
-    const assetList: IAssetState[] = response.assets.map((nft: any) => {
+    const assetList: IAssetState[] = nfts.map((nft: any) => {
       return {
         id: nft.asset_contract.address,
         type: AssetType.ERC721,
@@ -183,7 +180,7 @@ export class AccountController implements IAccountController {
         contractAddress: nft.asset_contract.address,
         address,
       };
-    });
+    }) ;
 
     return assetList;
   }
@@ -240,7 +237,7 @@ export class AccountController implements IAccountController {
     this.assetsBalanceMonitor.start();
   }
 
-  async updateTxs(limit = 10, searchAfter?: string) {
+  async updateTxs(limit = 10, searchAfter?: string) { /* eslint-disable-line default-param-last */
     const { activeAsset }: IVaultState = store.getState().vault;
     if (!activeAsset) return;
     const newTxs = await dag4.account.getTransactions(limit, searchAfter);

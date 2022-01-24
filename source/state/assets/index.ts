@@ -41,7 +41,6 @@ export const initialState: IAssetListState = {
     network: 'mainnet',
     logo: LatticeLogo,
     decimals: 8,
-    isDefault: true,
   },
   '0x3106a0a076BeDAE847652F42ef07FD58589E001f': {
     id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
@@ -53,7 +52,6 @@ export const initialState: IAssetListState = {
     network: 'mainnet',
     logo: 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG',
     decimals: 18,
-    isDefault: true,
   },
   '0x4e08f03079c5cd3083ea331ec61bcc87538b7665': {
     id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
@@ -65,7 +63,6 @@ export const initialState: IAssetListState = {
     network: 'mainnet',
     logo: 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png',
     decimals: 18,
-    isDefault: true,
   },
 };
 
