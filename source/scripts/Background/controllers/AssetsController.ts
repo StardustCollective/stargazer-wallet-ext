@@ -8,8 +8,8 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-// Batch size for OpenSea API requests (max 25 when sorted)
-const BATCH_SIZE = 25;
+// Batch size for OpenSea API requests (max 50)
+const BATCH_SIZE = 50;
 
 // DTM and Alkimi NFTs should appear on top by default
 const DTM_STRINGS = ['DTM', 'Dor Traffic', 'Dor Foot Traffic'];
@@ -88,7 +88,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
     const apiBase = network === 'testnet' ? NFT_TESTNET_API : NFT_MAINNET_API;
 
-    const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}&order_by=sale_date&order_direction=desc`;
+    const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}`;
     return (await fetch(apiEndpoint)).json();
   };
 
@@ -110,8 +110,6 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     } catch (err) {
       // NOOP
     }
-
-    nfts[3].name = 'Dor Traffic Miner';
 
     const groupedNFTs = nfts.reduce((carry: Record<string, any>, nft: any) => {
       const { address, schema_name: schemaName } = nft.asset_contract; // eslint-disable-line camelcase

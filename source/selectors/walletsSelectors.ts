@@ -85,40 +85,29 @@ const selectActiveNetworkAssets = createSelector(
   getAssets,
   (activeWallet: IWalletState, activeNetwork: ActiveNetwork, assets: KeyringAssetInfo[]): IAssetState[] => {
     if (!activeWallet?.assets) {
-      console.log('no activeWallet.assets: ', activeWallet);
       return [];
     }
 
-    console.log('activeWallet.assets', activeWallet.assets);
+    return activeWallet.assets.filter((asset: IAssetState) => {
+      const assetType = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
+      const assetNetwork = assets[asset.id as any]?.network;
 
-    return activeWallet.assets.filter(
-      (asset: IAssetState) => {
-        const assetType = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
-        const assetNetwork = assets[asset.id as any]?.network;
-
-        return assetNetwork === 'both' || assetNetwork === activeNetwork[assetType]
-      }
-    );
+      return assetNetwork === 'both' || assetNetwork === activeNetwork[assetType];
+    });
   }
 );
 
 /**
- * Returns NFT assets 
+ * Returns NFT assets
  * NFTs are fetched for the active network only so no activeNetwork checks are needed
  */
- const selectNFTAssets = createSelector(
-  getActiveWallet,
-  (activeWallet: IWalletState): IAssetState[] => {
-    if (!activeWallet?.assets) {
-      console.log('no activeWallet.assets - no NFTs: ', activeWallet.assets);
-      return [];
-    }
-
-    return activeWallet.assets.filter(
-      (asset: IAssetState) => asset.type === AssetType.ERC721
-    );
+const selectNFTAssets = createSelector(getActiveWallet, (activeWallet: IWalletState): IAssetState[] => {
+  if (!activeWallet?.assets) {
+    return [];
   }
-);
+
+  return activeWallet.assets.filter((asset: IAssetState) => asset.type === AssetType.ERC721);
+});
 
 const selectActiveNetworkAssetIds = createSelector(selectActiveNetworkAssets, (assets: IAssetState[]): string[] => {
   return assets.map((asset) => asset.id);
