@@ -5,17 +5,17 @@
 /// //////////////////////
 // Modules
 /// //////////////////////
-
 import { RootState } from 'state/store';
 import { createSelector } from 'reselect';
 import { KeyringNetwork, KeyringWalletState, KeyringAssetInfo } from '@stardust-collective/dag4-keyring';
-import { getNfts } from './nftSelectors';
+
 /// //////////////////////
 // Types
 /// //////////////////////
-
 import { IAccountDerived, IWalletState, AssetType, IAssetState, ActiveNetwork } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
+import { getNfts } from './nftSelectors';
+
 /// //////////////////////
 // Selectors
 /// //////////////////////
@@ -101,15 +101,19 @@ const selectActiveNetworkAssets = createSelector(
  * Returns NFT assets
  * NFTs are fetched for the active network only so no activeNetwork checks are needed
  */
-const selectNFTAssets = createSelector(getActiveWallet, getNfts, (activeWallet: IWalletState, nfts: INFTListState[] , ): IAssetState[] => {
-  if (!activeWallet?.assets) {
-    return [];
-  }
+const selectNFTAssets = createSelector(
+  getActiveWallet,
+  getNfts,
+  (activeWallet: IWalletState, nfts: INFTListState[]): IAssetState[] => {
+    if (!activeWallet?.assets) {
+      return [];
+    }
 
-  return activeWallet.assets.filter((asset: IAssetState) => {
-    return asset.type === AssetType.ERC721 && nfts[asset.id as any];
-  });
-});
+    return activeWallet.assets.filter((asset: IAssetState) => {
+      return asset.type === AssetType.ERC721 && nfts[asset.id as any];
+    });
+  }
+);
 
 const selectActiveNetworkAssetIds = createSelector(selectActiveNetworkAssets, (assets: IAssetState[]): string[] => {
   return assets.map((asset) => asset.id);

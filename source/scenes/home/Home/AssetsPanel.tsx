@@ -5,13 +5,15 @@ import { useLinkTo } from '@react-navigation/native';
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { RootState } from 'state/store';
-import IVaultState, { IAssetState } from 'state/vault/types';
+
 import { useController } from 'hooks/index';
 import walletSelectors from 'selectors/walletsSelectors';
 
-import styles from './Home.scss';
-import IAssetListState from '../../../state/assets/types';
+import IVaultState, { IAssetState } from 'state/vault/types';
 import { INFTInfoState, INFTListState } from 'state/nfts/types';
+import IAssetListState from '../../../state/assets/types';
+
+import styles from './Home.scss';
 
 const AssetsPanel: FC = () => {
   const controller = useController();
@@ -23,17 +25,14 @@ const AssetsPanel: FC = () => {
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const activeNFTAssets = useSelector(walletSelectors.selectNFTAssets);
 
-  console.log('activeNetworkAssets: ', activeNetworkAssets);
-
   const handleSelectAsset = (asset: IAssetState) => {
     controller.wallet.account.updateAccountActiveAsset(asset);
     linkTo('/asset');
   };
 
   const handleSelectNFT = (nft: INFTInfoState) => {
-    console.log('linking to : ', nft.link);
     window.open(nft.link, '_blank');
-  }
+  };
 
   const renderAssetList = () => {
     return (
