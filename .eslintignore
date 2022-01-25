@@ -2,4 +2,7 @@ node_modules/
 dist/
 extension/
 .yarn/
+.github/
 .pnp.js
+source/native/
+source/extension/

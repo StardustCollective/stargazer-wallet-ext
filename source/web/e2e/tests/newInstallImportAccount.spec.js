@@ -1,14 +1,13 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
-const CONSTANTS = require('../constants'); 
+const CONSTANTS = require('../constants');
 
-describe('New install import account', function () {
-
+describe('New install import account', () => {
   it('should import existing account successfully', async function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -25,15 +24,13 @@ describe('New install import account', function () {
           css: '.body-comment',
           text: 'Your wallet',
         });
-        
+
         assert.equal(await message.getText(), 'Your wallet and all connected accounts have been imported.');
- 
-      },
+      }
     );
   });
 
   it('should display an error message when entering an invalid seed phrase ', async function () {
-    
     await withFixtures(
       {
         title: this.test.title,
@@ -50,15 +47,13 @@ describe('New install import account', function () {
           css: '#seedPhraseError',
           text: 'Invalid recovery',
         });
-        
+
         assert.equal(await message.getText(), 'Invalid recovery seed phrase');
- 
-      },
+      }
     );
   });
 
   it('should test that the import button is disabled when the seed phrase input is blank ', async function () {
-    
     await withFixtures(
       {
         title: this.test.title,
@@ -68,15 +63,13 @@ describe('New install import account', function () {
         await driver.navigate();
 
         await driver.clickElement('#link');
-        let element = await driver.findElement('#recoveryPhraseSubmit')
+        const element = await driver.findElement('#recoveryPhraseSubmit');
         assert.equal(await element.isEnabled(), false);
- 
-      },
+      }
     );
   });
 
   it('should test that the import button is enabled when 12 word seed phrase is entered', async function () {
-    
     await withFixtures(
       {
         title: this.test.title,
@@ -87,10 +80,9 @@ describe('New install import account', function () {
 
         await driver.clickElement('#link');
         await driver.fill('#recoveryPhraseInput', CONSTANTS.WALLET_ONE_SEED_PHRASE);
-        let element = await driver.findElement('#recoveryPhraseSubmit')
+        const element = await driver.findElement('#recoveryPhraseSubmit');
         assert.equal(await element.isEnabled(), true);
- 
-      },
+      }
     );
   });
 
@@ -98,7 +90,7 @@ describe('New install import account', function () {
     await withFixtures(
       {
         title: this.test.title,
-        leaveRunning: false
+        leaveRunning: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -115,10 +107,9 @@ describe('New install import account', function () {
           css: '#passwordError',
           text: 'Please check',
         });
-        
+
         assert.equal(await message.getText(), 'Please check the above requirements!');
- 
-      },
+      }
     );
   });
 
@@ -143,10 +134,9 @@ describe('New install import account', function () {
           css: '#passwordError',
           text: 'Incorrect please',
         });
-        
+
         assert.equal(await message.getText(), 'Incorrect please re-enter password!');
- 
-      },
+      }
     );
   });
 
@@ -169,10 +159,9 @@ describe('New install import account', function () {
           css: '#passwordError',
           text: 'Password is a',
         });
-        
+
         assert.equal(await message.getText(), 'Password is a required field!');
- 
-      },
+      }
     );
   });
 
@@ -196,13 +185,9 @@ describe('New install import account', function () {
           css: '#passwordError',
           text: 'Confirm password',
         });
-        
+
         assert.equal(await message.getText(), 'Confirm password is a required field!');
- 
-      },
+      }
     );
   });
-
-
-  
 });
