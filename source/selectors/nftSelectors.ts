@@ -1,0 +1,13 @@
+/// //////////////////////
+// Modules
+/// //////////////////////
+
+import { RootState } from 'state/store';
+
+
+/// //////////////////////
+// Selectors
+/// //////////////////////
+
+
+export const getNfts = (state: RootState) => state.nfts;

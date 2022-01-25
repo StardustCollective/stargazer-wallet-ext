@@ -31,6 +31,14 @@ const MigrationController = () => {
     const assetListMigration = require('../migration/update_token_list');
     assetListMigration.default(state);  // Checks if state needs to be updated
   }
+
+  /**
+   * version < 3.3.0
+   */
+  if (!state.nfts) {
+    const NFTMigration = require('../migration/v3_3');
+    NFTMigration.default(state); 
+  }
 };
 
 export default MigrationController;

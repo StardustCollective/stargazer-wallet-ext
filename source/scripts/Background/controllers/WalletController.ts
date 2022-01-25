@@ -1,19 +1,20 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
 import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
-import { AccountController } from './AccountController';
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
-import IAssetListState from 'state/assets/types';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
+import DappController from 'scripts/Background/controllers/DAppController';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
-import DappController from 'scripts/Background/controllers/DAppController';
+import { AccountController } from './AccountController';
 
 export class WalletController implements IWalletController {
   account: AccountController;
+
   keyringManager: KeyringManager;
+
   onboardHelper: OnboardWalletHelper;
 
   constructor() {
@@ -21,7 +22,7 @@ export class WalletController implements IWalletController {
     this.keyringManager = new KeyringManager();
     this.keyringManager.on('update', (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
-      const vault: IVaultState = store.getState().vault;
+      const { vault } = store.getState();
       if (vault && !vault.activeWallet && state.wallets.length) {
         this.switchWallet(state.wallets[0].id);
       }
@@ -52,16 +53,14 @@ export class WalletController implements IWalletController {
     await this.keyringManager.login(password);
 
     const state = store.getState();
-    const vault: IVaultState = state.vault;
+    const { vault } = state;
 
     if (vault) {
-
-      //Check for v1.4 migration
+      // Check for v1.4 migration
       if (vault.migrateWallet) {
         try {
           await KeystoreToKeyringHelper.migrate(vault.migrateWallet, password);
-        }
-        catch (e) {
+        } catch (e) {
           return false;
         }
       }
@@ -69,8 +68,7 @@ export class WalletController implements IWalletController {
       if (vault.activeWallet) {
         try {
           await this.switchWallet(vault.activeWallet.id);
-        }
-        catch(e) {
+        } catch (e) {
           console.log('Error while switching wallet.');
           console.log(e);
           return false;
@@ -107,7 +105,7 @@ export class WalletController implements IWalletController {
       // const { wallet }: IVaultState = store.getState().vault;
       await this.keyringManager.removeWalletById(walletId);
       // store.dispatch(deleteWalletState());
-      const vault: IVaultState = store.getState().vault;
+      const { vault } = store.getState();
       if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
         const wallets = this.keyringManager.getWallets();
         if (wallets.length) {
@@ -121,24 +119,23 @@ export class WalletController implements IWalletController {
   }
 
   async switchWallet(id: string) {
-      store.dispatch(updateBalances({ pending: 'true' }));
+    store.dispatch(updateBalances({ pending: 'true' }));
 
-      await this.account.buildAccountAssetInfo(id);
-      await this.account.getLatestTxUpdate();
-      this.account.assetsBalanceMonitor.start();
-      this.account.txController.startMonitor();
+    await this.account.buildAccountAssetInfo(id);
+    await this.account.getLatestTxUpdate();
+    this.account.assetsBalanceMonitor.start();
+    this.account.txController.startMonitor();
   }
 
   async notifyWalletChange(accounts: string[]) {
-    return DappController().notifyAccountsChanged(accounts)
+    return DappController().notifyAccountsChanged(accounts);
   }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
-
     store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
-    const assets: IAssetListState = store.getState().assets;
+    const { assets } = store.getState();
     console.log(network, chainId);
 
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
@@ -163,7 +160,7 @@ export class WalletController implements IWalletController {
       this.account.getLatestTxUpdate();
     }
 
-    //restart monitor with different network
+    // restart monitor with different network
     this.account.assetsBalanceMonitor.start();
   }
 
