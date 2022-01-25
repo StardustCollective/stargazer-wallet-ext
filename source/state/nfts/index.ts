@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {INFTListState, INFTInfoState} from './types';
+import { INFTListState, INFTInfoState } from './types';
 
 const initialState: INFTListState = {};
 
@@ -8,15 +8,14 @@ const NFTListState = createSlice({
   initialState,
   reducers: {
     addNFTAsset(state: INFTListState, action: PayloadAction<INFTInfoState>) {
-      if (action.payload.address) {
-        state[action.payload.address] = action.payload;
+      if (action.payload.id) {
+        state[action.payload.id] = action.payload;
       }
       return state;
     },
-    resetNFTState(state: INFTListState) {
-      state = {};
-      return state;
-    }
+    resetNFTState() {
+      return initialState;
+    },
   },
 });
 

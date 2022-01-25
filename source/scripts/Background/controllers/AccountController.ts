@@ -174,13 +174,13 @@ export class AccountController implements IAccountController {
 
     const assetList: IAssetState[] = nfts.map((nft: any) => {
       return {
-        id: nft.asset_contract.address,
-        type: AssetType.ERC721,
+        id: nft.id,
+        type: nft.type,
         label: nft.name,
-        contractAddress: nft.asset_contract.address,
+        contractAddress: nft.address,
         address,
       };
-    }) ;
+    });
 
     return assetList;
   }
@@ -237,7 +237,8 @@ export class AccountController implements IAccountController {
     this.assetsBalanceMonitor.start();
   }
 
-  async updateTxs(limit = 10, searchAfter?: string) { /* eslint-disable-line default-param-last */
+  async updateTxs(limit = 10, searchAfter?: string) {
+    /* eslint-disable-line default-param-last */
     const { activeAsset }: IVaultState = store.getState().vault;
     if (!activeAsset) return;
     const newTxs = await dag4.account.getTransactions(limit, searchAfter);

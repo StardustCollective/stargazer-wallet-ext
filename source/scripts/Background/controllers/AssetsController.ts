@@ -5,12 +5,15 @@ import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
-import { 
-  TOKEN_INFO_API, 
-  NFT_MAINNET_API, 
-  NFT_TESTNET_API 
-} from 'constants/index';
+import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+
+// Batch size for OpenSea API requests (max 25 when sorted)
+const BATCH_SIZE = 25;
+
+// DTM and Alkimi NFTs should appear on top by default
+const DTM_STRINGS = ['DTM', 'Dor Traffic', 'Dor Foot Traffic'];
+const ALKIMI_STRING = 'alkimi';
 
 export interface IAssetsController {
   fetchTokenInfo: (address: string) => Promise<void>;
@@ -80,15 +83,27 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     }
   };
 
-  const fetchWalletNFTInfo = async (walletAddress: string): Promise<any> => {
+  const fetchNFTBatch = async (walletAddress: string, offset = 0) => {
     activeNetwork = store.getState().vault.activeNetwork;
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
     const apiBase = network === 'testnet' ? NFT_TESTNET_API : NFT_MAINNET_API;
 
-    let data: any;
+    const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}&order_by=sale_date&order_direction=desc`;
+    return (await fetch(apiEndpoint)).json();
+  };
+
+  const fetchWalletNFTInfo = async (walletAddress: string): Promise<any> => {
+    let nfts: IOpenSeaNFT[] = [];
     try {
-      const apiEndpoint = `${apiBase}assets?owner=${walletAddress}`;
-      data = await (await fetch(apiEndpoint)).json();
+      const { assets } = await fetchNFTBatch(walletAddress, 0);
+      nfts = assets;
+
+      // Fetch up to 100 NFTs
+      if (nfts.length === BATCH_SIZE) {
+        const { assets: b2Assets } = await fetchNFTBatch(walletAddress, BATCH_SIZE);
+
+        nfts = nfts.concat(b2Assets);
+      }
 
       // Clear out previous NFT state to be fully replaced
       store.dispatch(resetNFTState());
@@ -96,38 +111,63 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
       // NOOP
     }
 
-    const nfts: IOpenSeaNFT[] = data.assets;
-
-    if (!nfts.length) {
-      return [];
-    }
+    nfts[3].name = 'Dor Traffic Miner';
 
     const groupedNFTs = nfts.reduce((carry: Record<string, any>, nft: any) => {
-      const address = nft.asset_contract.address;
-      if (!carry[address]) {
-        carry[address] = { ...nft, quantity: 0 };
-      }
+      const { address, schema_name: schemaName } = nft.asset_contract; // eslint-disable-line camelcase
 
-      carry[address].quantity += 1;
+      // Group ERC1155s by contract but separate each ERC721 individually
+      const key = schemaName === 'ERC1155' ? address : `${address}-${nft.token_id}`;
+
+      if (!carry[key]) {
+        carry[key] = { ...nft, quantity: 1 };
+      } else {
+        carry[key].quantity += 1;
+      }
 
       return carry;
     }, {});
 
-    Object.values(groupedNFTs).forEach((nft: any) => {
-      store.dispatch(
-        addNFTAsset({
-          id: nft.id,
-          type: nft.asset_contract.schema_name === 'ERC721' ? AssetType.ERC721 : AssetType.ERC1155,
+    const retNFTs: any[] = Object.values(groupedNFTs)
+      .filter((nft) => nft.name && nft.name.length > 0)
+      .sort((a: any, b: any) => {
+        // Move DTM and Alkimi tokens to the top
+        const aIsDTM = DTM_STRINGS.some((str: string) => a.name.toLowerCase().includes(str.toLowerCase()));
+        const bIsDTM = DTM_STRINGS.some((str: string) => b.name.toLowerCase().includes(str.toLowerCase()));
+        const aIsAlkimi = a.name.toLowerCase().includes(ALKIMI_STRING);
+        const bIsAlkimi = b.name.toLowerCase().includes(ALKIMI_STRING);
+
+        if (aIsDTM && bIsDTM) return 0;
+        if (aIsDTM && !bIsDTM) return -1;
+        if (!aIsDTM && bIsDTM) return 1;
+        if (aIsAlkimi && bIsAlkimi) return 0;
+        if (aIsAlkimi && !bIsAlkimi) return -1;
+        if (!aIsAlkimi && bIsAlkimi) return 1;
+
+        return -1;
+      })
+      .map((nft: any) => {
+        const { address, schema_name: schemaName } = nft.asset_contract; // eslint-disable-line camelcase
+        const isERC721 = schemaName === 'ERC721' ? AssetType.ERC721 : AssetType.ERC1155;
+
+        const id = isERC721 ? `${address}-${nft.token_id}` : address;
+
+        const nftData = {
+          id,
+          type: isERC721 ? AssetType.ERC721 : AssetType.ERC1155,
           label: nft.name,
           address: nft.asset_contract.address,
           quantity: nft.quantity,
           link: nft.permalink,
-          logo: nft.image_thumbnail_url,
-        })
-      );
-    })
+          logo: nft.image_thumbnail_url || '',
+        };
 
-    return Object.values(groupedNFTs);
+        store.dispatch(addNFTAsset(nftData));
+
+        return nftData;
+      });
+
+    return retNFTs;
   };
 
   return { fetchTokenInfo, fetchWalletNFTInfo };
