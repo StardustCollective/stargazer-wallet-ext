@@ -2,10 +2,6 @@ import React, { FC, ReactElement, ReactNode, ChangeEvent, useState } from 'react
 import { View, Text } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-// import MUISelect from '@material-ui/core/Select';
-// import MUIMenuItem from '@material-ui/core/MenuItem';
-// import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-
 import styles from './styles';
 
 interface IOption {
@@ -25,7 +21,7 @@ interface ISelect {
   extraProps: object;
 }
 
-const Select: FC<ISelect> = ({ id, options, value, input, fullWidth, onChange, disabled = false, extraProps = {} }) => {
+const Select: FC<ISelect> = ({ id, options, value, onChange, disabled = false, extraProps = {} }) => {
   const _options = options.map((option) => {
     const optionValue = Object.keys(option)[0];
     const label = option[optionValue];
@@ -35,8 +31,6 @@ const Select: FC<ISelect> = ({ id, options, value, input, fullWidth, onChange, d
     };
   });
 
-  console.log('WHAT IS VALUE:::::::', value);
-  console.log('SELECT PROPS:::', extraProps);
   const [open, setOpen] = useState(false);
   const [_value, setValue] = useState(value);
   const [items, setItems] = useState(_options);
@@ -57,7 +51,7 @@ const Select: FC<ISelect> = ({ id, options, value, input, fullWidth, onChange, d
         style={styles.wrapper}
         textStyle={styles.text}
         /**
-         * avoid using borderColor, backgroundColor in contrainerStyle
+         * avoid using borderColor, backgroundColor in containerStyle
          */
         dropDownContainerStyle={styles.dropDownBox}
         showTickIcon={false}

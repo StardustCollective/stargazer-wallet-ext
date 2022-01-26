@@ -23,9 +23,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: COLORS.gray_dark,
     cursor: 'initial',
-    '&:hover': {
-      background: 'initial',
-    },
+    // '&:hover': {
+    //   background: 'initial',
+    // },
   },
 });
 
