@@ -65,11 +65,12 @@ describe('Existing user import account', async () => {
       await driver.fill('#importPhrase-phraseInput', CONSTANTS.WALLET_TWO_SEED_PHRASE);
       await driver.fill('#importPhrase-nameInput', CONSTANTS.WALLET_TWO_NAME);
       await driver.clickElement('#importPhrase-importButton');
-      const backButtonWallets = await driver.findElement('#header-backButton');
-      const actions = await driver.actions();
-      actions.move({ origin: backButtonWallets }).click().perform();
-      const backButtonMainSettings = await driver.findElement('#header-backButton');
-      actions.move({ origin: backButtonMainSettings }).click().perform();
+      await driver.delay(500);
+      // Selenium thinks this element isn't visible even though it very much is -
+      // this JS hack is the only workaround that works
+      await driver.driver.executeScript("document.getElementById('header-backButton').click('click');");
+      await driver.delay(500);
+      await driver.driver.executeScript("document.getElementById('header-backButton').click('click');");
       await driver.delay(500);
     });
 
