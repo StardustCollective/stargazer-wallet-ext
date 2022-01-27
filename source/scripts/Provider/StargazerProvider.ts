@@ -2,7 +2,6 @@ import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import find from 'lodash/find';
-import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
@@ -10,14 +9,14 @@ import { useController } from 'hooks/index';
 export class StargazerProvider {
   constructor() {}
 
-  getNetwork () {
+  getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
 
     return activeNetwork[KeyringNetwork.Constellation];
   }
 
   // TODO: how to handle chain IDs for DAG? Currently mapped to Eth mainnet + Ropsten
-  getChainId () {
+  getChainId() {
     const networkName = this.getNetwork();
 
     return networkName === 'main' ? 1 : 3;
@@ -27,6 +26,35 @@ export class StargazerProvider {
     let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && stargazerAsset.address;
+  }
+
+  getPublicKey(){
+    const { dapp, vault } = store.getState();
+    const { whitelist }: IDAppState = dapp;
+
+    const controller = useController();
+    const current = controller.dapp.getCurrent();
+    const origin = current && current.origin;
+
+    if (!origin) {
+      return {};
+    }
+
+    const _origin = origin.replace(/https?:\/\//, '');
+
+    const dappData = whitelist[_origin];
+
+    if (!dappData?.accounts?.Constellation) {
+      return {};
+    }
+
+    const { activeWallet }: IVaultState = vault;
+
+    if (!activeWallet) {
+      return {};
+    }
+
+    return {publicKey:dag4.account.keyTrio.publicKey};
   }
 
   getAccounts(): Array<string> {
@@ -57,11 +85,10 @@ export class StargazerProvider {
 
     const dagAddresses = dappData.accounts.Constellation;
     const activeAddress = find(activeWallet.assets, { id: 'constellation' });
-  
-    return [
-      activeAddress?.address,
-      ...dagAddresses.filter( address => address !== activeAddress?.address)
-    ].filter(Boolean);  // if no active address, remove
+
+    return [activeAddress?.address, ...dagAddresses.filter((address) => address !== activeAddress?.address)].filter(
+      Boolean
+    ); // if no active address, remove
   }
 
   getBlockNumber() {
@@ -84,26 +111,27 @@ export class StargazerProvider {
 
   signMessage(msg: string) {
     const privateKeyHex = dag4.account.keyTrio.privateKey;
-    const privateKey = Buffer.from(privateKeyHex, 'hex');
-    const msgHash = hashPersonalMessage(Buffer.from(msg));
-
-    const { v, r, s } = ecsign(msgHash, privateKey);
-    const sig = this.remove0x(toRpcSig(v, r, s));
+    const sig = dag4.keyStore.sign(privateKeyHex, msg);
 
     return sig;
   }
 
-  getAssetByType(type: AssetType) {
+  verifyMessage(msg: string, sig: string) {
+    const publicKeyHex = dag4.account.keyTrio.publicKey;
+    const result = dag4.keyStore.verify(publicKeyHex, msg, sig);
+    return result;
+  }
 
+  getAssetByType(type: AssetType) {
     const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
 
     let stargazerAsset: IAssetState = activeAsset as IAssetState;
 
     if (!activeAsset || activeAsset.type !== type) {
-      stargazerAsset = activeWallet.assets.find(a => a.type === type);
+      stargazerAsset = activeWallet.assets.find((a) => a.type === type);
     }
 
-    return stargazerAsset
+    return stargazerAsset;
   }
 
   /*
@@ -152,10 +180,6 @@ export class StargazerProvider {
   //     transactions,
   //   };
   // }
-
-  private remove0x(hash: string) {
-    return hash.startsWith('0x') ? hash.slice(2) : hash;
-  }
 }
 
 // type AccountItem = {

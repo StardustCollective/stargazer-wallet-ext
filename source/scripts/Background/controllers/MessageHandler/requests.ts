@@ -50,42 +50,57 @@ export const handleRequest = async (
         case SUPPORTED_WALLET_METHODS.getBalance:
             result = provider.getBalance();
             break;
-        case SUPPORTED_WALLET_METHODS.signMessage:
-            if (isPendingWindow()) {
-                return Promise.resolve(null);
+        case SUPPORTED_WALLET_METHODS.signMessage:{
+            const data = {
+                origin,
+                signingAddress: args[0],
+                message: args[1]
             }
 
-            const popup = await masterController.createPopup(windowId);
+            const popup = await masterController.createPopup(
+                windowId,
+                message.data.network,
+                'signMessage',
+                { ...data }
+            );
+
             setPendingWindow(true);
 
-            masterController.dapp.setSigRequest({
-                origin: origin as string,
-                address: args[1],
-                message: args[0],
-            });
             window.addEventListener(
-                'sign',
+                'messageSigned',
                 (ev: any) => {
-                    if (ev.detail.substring(1) === windowId) {
-                        result = masterController.stargazerProvider.signMessage(args[0]);
-                        port.postMessage({ id: message.id, data: { result } });
+                    console.log('Connect window addEventListener', ev.detail);
+                    if (ev.detail.windowId === windowId) {
+                        port.postMessage({
+                            id: message.id,
+                            data: {result: ev.detail.result, data: {signature: ev.detail.signature ?? null}},
+                        });
                         setPendingWindow(false);
                     }
                 },
-                {
-                    once: true,
-                    passive: true,
-                }
+                { once: true, passive: true }
             );
-
-            browser.windows.onRemoved.addListener((id) => {
+            
+            const handler = (id: number)=>{
                 if (popup && id === popup.id) {
-                    port.postMessage({ id: message.id, data: { result: false } });
+                    port.postMessage({ id: message.id, data: { result: false, data: {signature: null} } });
                     setPendingWindow(false);
-                }
-            });
+                    browser.windows.onRemoved.removeListener(handler);
+                }    
+            }
 
-            return Promise.resolve(null);
+            browser.windows.onRemoved.addListener(handler);
+
+            return;
+        }
+        case SUPPORTED_WALLET_METHODS.getPublicKey:{
+            if(asset === 'DAG'){
+                result = masterController.stargazerProvider.getPublicKey();
+            }else{
+                throw new Error('getPublicKey method is not allowed in chain:ethereum')
+            }
+            break;
+        }
         case SUPPORTED_WALLET_METHODS.sendTransaction:
             const data = args[0] ? args[0] : {};
             const decoder = getERC20DataDecoder();

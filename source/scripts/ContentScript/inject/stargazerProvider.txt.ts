@@ -15,7 +15,9 @@ const REQUEST_MAP = {
     chainId: SUPPORTED_WALLET_METHODS.getChainId,
     accounts: SUPPORTED_WALLET_METHODS.getAccounts,
     sendTransaction: SUPPORTED_WALLET_METHODS.sendTransaction,
-    getBalance: SUPPORTED_WALLET_METHODS.getBalance
+    getBalance: SUPPORTED_WALLET_METHODS.getBalance,
+    getPublicKey: SUPPORTED_WALLET_METHODS.getPublicKey,
+    signMessage: SUPPORTED_WALLET_METHODS.signMessage
   },
   isConnected: SUPPORTED_WALLET_METHODS.isConnected,
   getNetwork: SUPPORTED_WALLET_METHODS.getNetwork,

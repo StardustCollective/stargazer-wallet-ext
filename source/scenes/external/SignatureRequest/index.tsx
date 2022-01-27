@@ -1,4 +1,5 @@
 import styles from './index.module.scss';
+import queryString from 'query-string';
 import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import Button from 'components/Button';
@@ -8,21 +9,28 @@ import { AssetType } from '../../../state/vault/types';
 
 const SignatureRequest = () => {
   const controller = useController();
-  const params = controller.dapp.getSigRequest();
+  const { windowId, data: stringData } = queryString.parse(location.search);
+  const params = JSON.parse(stringData as string);
   const account = controller.stargazerProvider.getAssetByType(AssetType.Constellation);
   const balance = controller.stargazerProvider.getBalance();
 
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
+    const background = await browser.runtime.getBackgroundPage();
+    background.dispatchEvent(
+      new CustomEvent('messageSigned', { detail: { windowId, result: false } })
+    );
     window.close();
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   const handleSign = async () => {
+    const signature = controller.stargazerProvider.signMessage(params.message);
+
     const background = await browser.runtime.getBackgroundPage();
     background.dispatchEvent(
-      new CustomEvent('sign', { detail: window.location.hash })
+      new CustomEvent('messageSigned', { detail: { windowId, result: true, signature } })
     );
     window.close();
   };
