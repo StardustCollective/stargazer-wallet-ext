@@ -44,9 +44,6 @@ const styles = StyleSheet.create({
   itemContainer: {
     height: 24,
     borderTopWidth: 0,
-    // '&:hover': {
-    //   backgroundColor: COLORS.gray_light_100,
-    // },
   },
   itemLabel: {
     fontWeight: '600',
@@ -56,11 +53,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.03,
     color: COLORS.gray_dark,
     // fontFamily: FONTS.inter,
-    // '&:hover': {
-    //   backgroundColor: COLORS.gray_light_100,
-    // },
   },
 });
 
 export default styles;
-

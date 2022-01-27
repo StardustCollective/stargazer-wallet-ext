@@ -45,8 +45,7 @@ const NetworksContainer: FC = () => {
   ///////////////////////
   // const controller = useController();
   const handleChangeNetwork = (networkType: KeyringNetwork, networkId: string) => {
-    console.log('HANDLE SWITCH NETWORKS');
-    console.log('WHAT IS NEW VALUES:', KeyringNetwork, `networkId=${networkId}`);
+    //TODO: uncomment out this
     // controller.wallet.switchNetwork(networkType, networkId);
   };
 
