@@ -5,6 +5,8 @@ import { IMasterController } from '../';
 import { getERC20DataDecoder } from 'utils/ethUtil';
 import { SUPPORTED_WALLET_METHODS } from './types';
 
+import {ConstellationSignatureRequest} from '../../../Provider/StargazerProvider';
+
 export const handleRequest = async (
     port: Runtime.Port,
     masterController: IMasterController,
@@ -51,10 +53,24 @@ export const handleRequest = async (
             result = provider.getBalance();
             break;
         case SUPPORTED_WALLET_METHODS.signMessage:{
+            if(asset !== 'DAG'){
+                return Promise.reject(new CustomEvent(message.id, {
+                    detail: 'signMessage method is not allowed in chain:ethereum'
+                }));
+            }
+            
+            let signatureRequest: ConstellationSignatureRequest;
+            try{
+                signatureRequest = masterController.stargazerProvider.parseSignatureRequest(args[0]);
+            }catch(e){
+                return Promise.reject(new CustomEvent(message.id, {
+                    detail: e instanceof Error ? e.message : 'signMessage-error'
+                }));
+            }
+        
             const data = {
                 origin,
-                signingAddress: args[0],
-                message: args[1]
+                signatureRequest,
             }
 
             const popup = await masterController.createPopup(
@@ -97,7 +113,9 @@ export const handleRequest = async (
             if(asset === 'DAG'){
                 result = masterController.stargazerProvider.getPublicKey();
             }else{
-                throw new Error('getPublicKey method is not allowed in chain:ethereum')
+                return Promise.reject(new CustomEvent(message.id, {
+                    detail: 'getPublicKey method is not allowed in chain:ethereum'
+                }));
             }
             break;
         }

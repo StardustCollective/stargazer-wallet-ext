@@ -6,11 +6,13 @@ import Button from 'components/Button';
 import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
 import { AssetType } from '../../../state/vault/types';
+import { ConstellationSignatureRequest } from '../../../scripts/Provider/StargazerProvider';
 
 const SignatureRequest = () => {
   const controller = useController();
   const { windowId, data: stringData } = queryString.parse(location.search);
-  const params = JSON.parse(stringData as string);
+  const { origin, signatureRequest }:
+    { origin: string, signatureRequest: ConstellationSignatureRequest } = JSON.parse(stringData as string);
   const account = controller.stargazerProvider.getAssetByType(AssetType.Constellation);
   const balance = controller.stargazerProvider.getBalance();
 
@@ -26,11 +28,17 @@ const SignatureRequest = () => {
   useEffect(() => { }, []);
 
   const handleSign = async () => {
-    const signature = controller.stargazerProvider.signMessage(params.message);
+    const signatureRequestEncoded = window.btoa(JSON.stringify(signatureRequest));
+    const signature = controller.stargazerProvider.signMessage(signatureRequestEncoded);
 
     const background = await browser.runtime.getBackgroundPage();
     background.dispatchEvent(
-      new CustomEvent('messageSigned', { detail: { windowId, result: true, signature } })
+      new CustomEvent('messageSigned', {
+        detail: { windowId, result: true, signature: {
+          hex: signature,
+          requestEncoded: signatureRequestEncoded
+        }}
+      })
     );
     window.close();
   };
@@ -51,13 +59,28 @@ const SignatureRequest = () => {
         </section>
         <div className={styles.row}>
           <span>Origin:</span>
-          <span>{params.origin}</span>
+          <span>{origin}</span>
         </div>
         <label>You are signing:</label>
+        <section className={styles.domain}>
+          <span>Domain Details:</span>
+          <small>ChainId: {signatureRequest.domain.chainId}</small>
+          <small>Name: {signatureRequest.domain.name}</small>
+          <small>Uri: {signatureRequest.domain.uri}</small>
+          <small>Version: {signatureRequest.domain.version}</small>
+        </section>
         <section className={styles.message}>
           <span>Message:</span>
-          {params.message}
+          {signatureRequest.message.content}
         </section>
+        {Object.keys(signatureRequest.message.metadata).length > 0 && <>
+          <label>With metadata:</label>
+          <section className={styles.metadata}>
+            {Object.entries(signatureRequest.message.metadata).map(
+              ([key, value]) => (<small>{key} = {value}</small>)
+            )}
+          </section>
+        </>}
         <section className={styles.actions}>
           <Button
             type="button"

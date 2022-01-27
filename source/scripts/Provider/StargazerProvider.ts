@@ -6,6 +6,19 @@ import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 
+export type ConstellationSignatureRequest = {
+  domain: {
+    chainId: number;
+    name: string;
+    uri: string;
+    version: string;
+  },
+  message:{
+    content: string,
+    metadata: Record<string, any>
+  }
+}
+
 export class StargazerProvider {
   constructor() {}
 
@@ -107,6 +120,41 @@ export class StargazerProvider {
     let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && balances[AssetType.Constellation];
+  }
+
+  parseSignatureRequest(encodedSignatureRequest: string): ConstellationSignatureRequest{
+    let signatureRequest: ConstellationSignatureRequest;
+    try{
+        signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
+    }catch(e){
+        throw new Error('Unable to decode signatureRequest');
+    }
+
+    let test = true;
+    test = test && typeof signatureRequest?.domain === 'object' && signatureRequest?.domain !== null;
+    test = test && typeof signatureRequest.domain?.chainId === 'number';
+    test = test && typeof signatureRequest.domain?.name === 'string';
+    test = test && typeof signatureRequest.domain?.uri === 'string';
+    test = test && typeof signatureRequest.domain?.version === 'string';
+
+    test = test && typeof signatureRequest?.message === 'object' && signatureRequest?.message !== null;
+    test = test && typeof signatureRequest.message.content === 'string';
+    test = test && typeof signatureRequest.message.metadata === 'object' && signatureRequest.message.metadata !== null;
+
+    if(!test){
+      throw new Error('SignatureRequest does not match spec');
+    }
+
+    let parsedMetadata: Record<string, any> = {};
+    for(const [key, value] of Object.entries(signatureRequest.message.metadata)){
+      if(["boolean", "number", "string"].includes(typeof value) || value === null){
+        parsedMetadata[key] = value;
+      }
+    }
+
+    signatureRequest.message.metadata = parsedMetadata;
+
+    return signatureRequest;
   }
 
   signMessage(msg: string) {
