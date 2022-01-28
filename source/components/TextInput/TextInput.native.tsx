@@ -11,6 +11,8 @@ interface ITextInput {
   type?: 'text' | 'password' | 'number';
   label?: string;
   control: any;
+  inputContainerStyle: {};
+  multiline: boolean;
 }
 
 const TextInput: FC<ITextInput> = ({
@@ -19,6 +21,8 @@ const TextInput: FC<ITextInput> = ({
   label = '',
   name = '',
   control,
+  inputContainerStyle,
+  multiline = false,
 }) => {
 
   let keyboardType: KeyboardType = 'default';
@@ -36,10 +40,11 @@ const TextInput: FC<ITextInput> = ({
             placeholder={placeholder}
             secureTextEntry={type === 'password'}
             inputStyle={styles.input}
-            inputContainerStyle={styles.inputContainer}
+            inputContainerStyle={[styles.inputContainer, inputContainerStyle]}
             labelStyle={styles.label}
             label={label}
             keyboardType={keyboardType}
+            multiline={multiline}
           />
         }
         onChange={([text]) => {
