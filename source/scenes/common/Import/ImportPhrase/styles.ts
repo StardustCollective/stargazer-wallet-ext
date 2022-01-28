@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     alignText: 'center',
   },
   errorLabel: {
-    marginTop: 20;
+    marginTop: 20,
   }
 });
 
