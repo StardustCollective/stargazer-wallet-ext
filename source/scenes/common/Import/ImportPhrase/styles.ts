@@ -12,6 +12,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     alignText: 'center',
   },
+  errorLabel: {
+    marginTop: 20;
+  }
 });
 
 export default styles;

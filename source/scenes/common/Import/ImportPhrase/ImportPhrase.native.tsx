@@ -39,7 +39,7 @@ const ImportPhrase: FC<IImportPhrase> = ({
         The phrase can be 12, 15, 18, 21 or 24 words with a single space between.
       </TextV3.CaptionStrong>
       {isInvalid && (
-        <TextV3.Caption extraStyles={{marginTop: 20}}color={COLORS_ENUMS.RED}>Invalid recovery seed phrase</TextV3.Caption>
+        <TextV3.Caption extraStyles={styles.errorLabel}color={COLORS_ENUMS.RED}>Invalid recovery seed phrase</TextV3.Caption>
       )}
       <View style={styles.buttonContainer}>
         <ButtonV3
