@@ -5,9 +5,14 @@
 import React, { useState } from 'react';
 import Container from 'components/Container'
 import { useForm } from 'react-hook-form';
-import { useController } from 'hooks/index';
 import { useLinkTo } from '@react-navigation/native';
 import * as consts from './consts';
+
+///////////////////////////
+// Controllers
+///////////////////////////
+
+import { WalletController } from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Scene
@@ -16,16 +21,22 @@ import * as consts from './consts';
 import CreatePass from './CreatePass';
 
 ///////////////////////////
+// Constants
+///////////////////////////
+
+const walletController = new WalletController();
+
+///////////////////////////
 // Container
 ///////////////////////////
 
 const CreatePassContainer = () => {
 
+
   ///////////////////////////
-  // Hooks
+  // Hooks 
   ///////////////////////////
 
-  const controller = useController();
   const linkTo = useLinkTo();
   const [passed, setPassed] = useState(false);
   const { control, handleSubmit, register, errors } = useForm({
@@ -52,7 +63,7 @@ const CreatePassContainer = () => {
   };
 
   const onSubmit = (data: any) => {
-    controller.wallet.setWalletPassword(data.password);
+    walletController.setWalletPassword(data.password);
     setPassed(true);
   };
 
