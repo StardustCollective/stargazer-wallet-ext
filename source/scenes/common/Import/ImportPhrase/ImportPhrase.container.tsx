@@ -1,15 +1,45 @@
+///////////////////////////
+// Controllers
+///////////////////////////
+
 import React, { useMemo, useState } from 'react';
-// import { useController } from 'hooks/index';
+import { useLinkTo } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+
+///////////////////////////
+// Controllers
+///////////////////////////
+
+import { WalletController } from 'scripts/Background/controllers/WalletController';
+
+///////////////////////////
+// Components
+///////////////////////////
+
 import Container from 'components/Container';
 
-import ImportPhrase from './ImportPhrase';
-import { useLinkTo } from '@react-navigation/native';
+///////////////////////////
+// Scene
+///////////////////////////
 
+import ImportPhrase from './ImportPhrase';
+
+///////////////////////////
+// Constants
+///////////////////////////
+
+const walletController = new WalletController();
+
+///////////////////////////
+// Container
+///////////////////////////
 
 const ImportPhraseContainer = () => {
-  // const controller = useController();
+
+  ///////////////////////////
+  // Hooks
+  ///////////////////////////
 
   const linkTo = useLinkTo();
 
@@ -20,19 +50,6 @@ const ImportPhraseContainer = () => {
       phrase: yup.string().required(),
     }),
   });
-
-  const onSubmit = (data: any) => {
-    // const phrase = data.phrase.trim();
-  
-    // if (controller.wallet.onboardHelper.importAndValidateSeedPhrase(phrase)
-    // ) {
-    //   linkTo('/create/pass');
-    //   onRegister();
-    // }
-    // else {
-      // setInvalid(true)
-    // }
-  };
 
   const isDisabled = useMemo(() => {
     const phrase: string = watch('phrase');
@@ -48,6 +65,27 @@ const ImportPhraseContainer = () => {
 
     return result;
   }, [watch('phrase')]);
+
+  ///////////////////////////
+  // Callbacks
+  ///////////////////////////
+
+  const onSubmit = (data: any) => {
+    const phrase = data.phrase.trim();
+
+    if (walletController.onboardHelper.importAndValidateSeedPhrase(phrase)
+    ) {
+      linkTo('/create/pass');
+      // onRegister();
+    }
+    else {
+      setInvalid(true)
+    }
+  };
+
+  ///////////////////////////
+  // Renders
+  ///////////////////////////
 
   return (
     <Container>
