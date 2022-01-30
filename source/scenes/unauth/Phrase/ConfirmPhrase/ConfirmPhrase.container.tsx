@@ -1,20 +1,57 @@
+///////////////////////////
+// Modules
+///////////////////////////
+
 import React, { useState, useMemo } from 'react';
-import ConfirmPhrase from './ConfirmPhrase';
-import Container from 'components/Container';
 import shuffle from 'lodash/shuffle';
 import isEqual from 'lodash/isEqual';
-// import { useController } from 'hooks/index';
-import { useNavigation} from '@react-navigation/native';
+
+///////////////////////////
+// Components
+///////////////////////////
+
+import Container from 'components/Container';
+
+///////////////////////////
+// Controllers
+///////////////////////////
+
+import { WalletController } from 'scripts/Background/controllers/WalletController';
+
+///////////////////////////
+// Navigation
+///////////////////////////
+
+import { useNavigation } from '@react-navigation/native';
 import navigationUtil from 'navigation/util';
 import screens from 'navigation/screens';
 
+///////////////////////////
+// Scene
+///////////////////////////
+
+import ConfirmPhrase from './ConfirmPhrase';
+
+///////////////////////////
+// Constants
+///////////////////////////
+
+const walletController = new WalletController();
+const phrases = walletController.onboardHelper.getSeedPhrase();
+
+///////////////////////////
+// Container
+///////////////////////////
 
 const ConfirmPhraseContainer = () => {
 
+
+  ///////////////////////////
+  // Hooks
+  ///////////////////////////
+
   const navigation = useNavigation();
-  // const controller = useController();
-  // const phrases = controller.wallet.onboardHelper.getSeedPhrase();
-  const phrases = 'wave squeeze stamp film work eyebrow resist balance strong danger street economy';
+
   const [orgList] = useState<Array<string>>(
     shuffle((phrases || '').split(' '))
   );
@@ -46,6 +83,10 @@ const ConfirmPhraseContainer = () => {
     setCheckList([...checkNewList]);
   };
 
+  ///////////////////////////
+  // Callbacks
+  ///////////////////////////
+
   const handleOrgPhrase = (idx: number) => {
     handleSetPhrase(idx);
   };
@@ -59,15 +100,19 @@ const ConfirmPhraseContainer = () => {
     if (!passed) {
       setPassed(true);
     } else {
-      // await controller.wallet.createWallet('Main Wallet', phrases, true);
-      // controller.wallet.onboardHelper.reset();
-      navigationUtil.replace( navigation, screens.authorized.root);
+      walletController.createWallet('Main Wallet - Test', phrases, true);
+      walletController.onboardHelper.reset();
+      // navigationUtil.replace( navigation, screens.authorized.root);
     }
   };
 
+  ///////////////////////////
+  // Renders
+  ///////////////////////////
+
   return (
     <Container>
-      <ConfirmPhrase 
+      <ConfirmPhrase
         title={title}
         isNotEqualArrays={isNotEqualArrays}
         passed={passed}
