@@ -18,8 +18,6 @@ const ImportPhrase: FC<IImportPhrase> = ({
   isDisabled,
  }) => {
 
-  console.log(isValid);
-
   return (
     <Layout title="Let's import your wallet">
       <form className={styles.importForm} onSubmit={handleSubmit(onSubmit)}>
