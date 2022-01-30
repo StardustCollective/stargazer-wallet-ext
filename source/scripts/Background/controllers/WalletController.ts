@@ -9,7 +9,7 @@ import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } fro
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
-import DappController from 'scripts/Background/controllers/DAppController';
+// import DappController from 'scripts/Background/controllers/DAppController';
 
 export class WalletController implements IWalletController {
   account: AccountController;
@@ -138,9 +138,9 @@ export class WalletController implements IWalletController {
       this.account.txController.startMonitor();
   }
 
-  async notifyWalletChange(accounts: string[]) {
-    return DappController().notifyAccountsChanged(accounts)
-  }
+  // async notifyWalletChange(accounts: string[]) {
+  //   return DappController().notifyAccountsChanged(accounts)
+  // }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
 
