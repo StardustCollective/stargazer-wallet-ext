@@ -23,12 +23,12 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(logger);
 }
 
-const preloadedState = loadState();
+// const preloadedState = loadState();
 
-//v1.0 wallet state
-if (preloadedState && preloadedState.wallet) {
-  delete preloadedState.wallet;
-}
+// //v1.0 wallet state
+// if (preloadedState && preloadedState.wallet) {
+//   delete preloadedState.wallet;
+// }
 
 const store: Store = configureStore({
   reducer: combineReducers({
@@ -40,16 +40,8 @@ const store: Store = configureStore({
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
-  preloadedState,
+  // preloadedState,
 });
-
-store.subscribe(
-  throttle(() => {
-    updateState();
-  }, 1000)
-);
-
-// updateState();
 
 function updateState() {
   const state = store.getState();
@@ -61,6 +53,12 @@ function updateState() {
     dapp: state.dapp,
   });
 }
+
+store.subscribe(
+  throttle(() => {
+    updateState();
+  }, 1000)
+);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
