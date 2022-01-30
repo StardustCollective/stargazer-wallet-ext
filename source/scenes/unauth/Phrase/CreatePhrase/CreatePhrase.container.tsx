@@ -29,10 +29,18 @@ import CreatePhrase from './CreatePhrase';
 
 import * as consts from '../consts';
 
+///////////////////////////
+// Constants
+///////////////////////////
+
+const walletController = new WalletController();
+const phrases = walletController.onboardHelper.getSeedPhrase();
+
+///////////////////////////
+// Container
+///////////////////////////
+
 const CreatePhraseContainer = () => {
-
-
-  const walletController = new WalletController();
 
   ///////////////////////////
   // Hooks
@@ -40,7 +48,6 @@ const CreatePhraseContainer = () => {
 
   const linkTo = useLinkTo();
   const [passed, setPassed] = useState(false);
-  // const controller = Controller();
 
   ///////////////////////////
   // Strings
@@ -52,8 +59,6 @@ const CreatePhraseContainer = () => {
   const description = passed
     ? consts.CREATE_PHRASE_DESCRIPTION2
     : consts.CREATE_PHRASE_DESCRIPTION1;
-
-  const phrases = walletController.onboardHelper.getSeedPhrase();
 
   ///////////////////////////
   // Callbacks
