@@ -100,7 +100,7 @@ const ConfirmPhraseContainer = () => {
     if (!passed) {
       setPassed(true);
     } else {
-      walletController.createWallet('Main Wallet - Test', phrases, true);
+      walletController.createWallet('Main Wallet', phrases, true);
       walletController.onboardHelper.reset();
       // navigationUtil.replace( navigation, screens.authorized.root);
     }
