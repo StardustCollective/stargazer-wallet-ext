@@ -15,19 +15,28 @@ export class WalletController implements IWalletController {
   account: AccountController;
   keyringManager: KeyringManager;
   onboardHelper: OnboardWalletHelper;
+  static instance: WalletController;
 
   constructor() {
-    this.onboardHelper = new OnboardWalletHelper();
-    this.keyringManager = new KeyringManager();
-    this.keyringManager.on('update', (state: KeyringVaultState) => {
-      store.dispatch(setVaultInfo(state));
-      const vault: IVaultState = store.getState().vault;
-      if (vault && !vault.activeWallet && state.wallets.length) {
-        this.switchWallet(state.wallets[0].id);
-      }
-    });
 
-    this.account = new AccountController(this.keyringManager);
+    if(!WalletController.instance){
+
+      WalletController.instance = this;
+
+      this.onboardHelper = new OnboardWalletHelper();
+      this.keyringManager = new KeyringManager();
+      this.keyringManager.on('update', (state: KeyringVaultState) => {
+        store.dispatch(setVaultInfo(state));
+        const vault: IVaultState = store.getState().vault;
+        if (vault && !vault.activeWallet && state.wallets.length) {
+          this.switchWallet(state.wallets[0].id);
+        }
+      });
+      this.account = new AccountController(this.keyringManager);
+
+    }
+
+    return WalletController.instance;
   }
 
   checkPassword(password: string) {
