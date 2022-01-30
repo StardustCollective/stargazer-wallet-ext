@@ -5,6 +5,11 @@
 import React, { useState } from 'react';
 import { useLinkTo } from '@react-navigation/native';
 
+///////////////////////////
+// Controllers
+///////////////////////////
+
+import { WalletController } from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Component
@@ -19,18 +24,15 @@ import Container from 'components/Container';
 import CreatePhrase from './CreatePhrase';
 
 ///////////////////////////
-// Controller
-///////////////////////////
-
-// import Controller from 'scripts/Background/controllers';
-
-///////////////////////////
 // Container
 ///////////////////////////
 
 import * as consts from '../consts';
 
 const CreatePhraseContainer = () => {
+
+
+  const walletController = new WalletController();
 
   ///////////////////////////
   // Hooks
@@ -51,8 +53,7 @@ const CreatePhraseContainer = () => {
     ? consts.CREATE_PHRASE_DESCRIPTION2
     : consts.CREATE_PHRASE_DESCRIPTION1;
 
-  // const phrases = controller.wallet.onboardHelper.getSeedPhrase();
-  const phrases = 'wave squeeze stamp film work eyebrow resist balance strong danger street economy';
+  const phrases = walletController.onboardHelper.getSeedPhrase();
 
   ///////////////////////////
   // Callbacks
