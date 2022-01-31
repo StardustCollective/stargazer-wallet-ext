@@ -2,7 +2,7 @@ import React, { ReactNode, FC } from 'react';
 import clsx from 'clsx';
 // import MUIButton from '@material-ui/core/Button';
 // import Spinner from '@material-ui/core/CircularProgress';
-import { Button as RNEButton } from "react-native-elements";
+import { Button as RNEButton } from 'react-native-elements';
 import { useLinkTo } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
@@ -17,6 +17,8 @@ interface IButton {
   theme?: 'primary' | 'secondary';
   loading?: boolean;
   title?: string;
+  titleStyle?: object;
+  variant?: object;
 }
 
 const Button: FC<IButton> = ({
@@ -27,27 +29,18 @@ const Button: FC<IButton> = ({
   onPress,
   linkTo = '#',
   loading = false,
-  title = "",
+  variant = {},
+  titleStyle = {},
+  title = '',
   ...otherProps
 }) => {
+  const composedButtonStyles = [styles.button, styles[theme]];
 
-  const composedButtonStyles  = [
-    styles.button,
-    styles[theme],
-  ]
+  const composedButtonTitleStyles = [styles.buttonTitle, styles[theme + '_title']];
 
-  const composedButtonTitleStyles = [
-    styles.buttonTitle,
-    styles[theme+'_title']
-  ]
+  const flatButtonStyles = StyleSheet.flatten([composedButtonStyles, variant]);
 
-  const flatButtonStyles = StyleSheet.flatten([
-    composedButtonStyles
-  ])
-
-  const flayTitleStyles = StyleSheet.flatten([
-    composedButtonTitleStyles
-  ])
+  const flayTitleStyles = StyleSheet.flatten([composedButtonTitleStyles, titleStyle]);
 
   const rnLinkTo = useLinkTo();
 
@@ -55,13 +48,12 @@ const Button: FC<IButton> = ({
     if (linkTo !== '#') rnLinkTo(linkTo);
   };
 
-  console.log("Button Native Styles");
-;
+  console.log('Button Native Styles');
   return (
     <RNEButton
       testID={id}
       title={title}
-      loadingProps={{color: COLORS.primary}}
+      loadingProps={{ color: COLORS.primary }}
       buttonStyle={flatButtonStyles}
       titleStyle={flayTitleStyles}
       disabledStyle={styles.disabled}
