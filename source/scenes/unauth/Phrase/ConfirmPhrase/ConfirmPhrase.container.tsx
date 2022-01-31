@@ -99,8 +99,8 @@ const ConfirmPhraseContainer = () => {
     if (!passed) {
       setPassed(true);
     } else {
-      walletController.createWallet('Main Wallet', phrases, true);
-      walletController.onboardHelper.reset();
+      WalletController.createWallet('Main Wallet', phrases, true);
+      WalletController.onboardHelper.reset();
       // navigationUtil.replace( navigation, screens.authorized.root);
     }
   };
