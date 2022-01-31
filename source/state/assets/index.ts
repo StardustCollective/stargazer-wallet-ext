@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AssetType } from 'state/vault/types';
-import ERC20_TOKEN_LIST from './tokens';
 
-import IAssetListState, { IAssetInfoState } from './types';
 import ConstellationLogo from 'assets/images/svg/constellation.svg';
 import EthereumLogo from 'assets/images/svg/ethereum.svg';
+import LatticeLogo from 'assets/images/svg/lattice.svg';
+import IAssetListState, { IAssetInfoState } from './types';
 
 export const initialState: IAssetListState = {
   [AssetType.Ethereum]: {
@@ -31,7 +31,39 @@ export const initialState: IAssetListState = {
     priceId: 'constellation-labs',
     decimals: 8,
   },
-  ...ERC20_TOKEN_LIST,
+  '0xa393473d64d2F9F026B60b6Df7859A689715d092': {
+    id: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
+    address: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
+    label: 'Lattice Token',
+    symbol: 'LTX',
+    type: AssetType.ERC20,
+    priceId: 'lattice-token',
+    network: 'mainnet',
+    logo: LatticeLogo,
+    decimals: 8,
+  },
+  '0x3106a0a076BeDAE847652F42ef07FD58589E001f': {
+    id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
+    address: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
+    label: 'Alkimi Exchange',
+    symbol: 'ADS',
+    type: AssetType.ERC20,
+    priceId: 'alkimi',
+    network: 'mainnet',
+    logo: 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG',
+    decimals: 18,
+  },
+  '0x4e08f03079c5cd3083ea331ec61bcc87538b7665': {
+    id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
+    address: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
+    label: 'DoubleDice',
+    symbol: 'DODI',
+    type: AssetType.ERC20,
+    priceId: 'doubledice-token',
+    network: 'mainnet',
+    logo: 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png',
+    decimals: 18,
+  },
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -39,10 +71,7 @@ const AssetListState = createSlice({
   name: 'assets',
   initialState,
   reducers: {
-    addERC20Asset(
-      state: IAssetListState,
-      action: PayloadAction<IAssetInfoState>
-    ) {
+    addERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
       if (action.payload.address) {
         state[action.payload.address] = action.payload;
       }

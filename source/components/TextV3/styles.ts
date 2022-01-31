@@ -16,6 +16,11 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 48,
   },
+  headerLargeRegular: {
+    fontWeight: FONT_WEIGHTS.regular,
+    fontSize: 32,
+    lineHeight: 48,
+  },
   header: {
     fontWeight: FONT_WEIGHTS.medium,
     fontSize: 24,
@@ -55,6 +60,15 @@ const styles = StyleSheet.create({
   },
   blackFont: {
     color: COLORS.black
+  },
+  redFont: {
+    color: COLORS.red
+  },
+  greyDarkFont: {
+    color: COLORS.grey_dark
+  },
+  gray100Font: {
+    color: COLORS.grey_100_V1
   }
 });
 

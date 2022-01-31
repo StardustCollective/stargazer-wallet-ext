@@ -1,69 +1,66 @@
-///////////////////////
+/// ////////////////////
 // Modules
-///////////////////////
+/// ////////////////////
 
 import React, { useEffect, useMemo, useLayoutEffect } from 'react';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { formatNumber, getAddressURL, formatStringDecimal } from '../helpers';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-///////////////////////
+/// ////////////////////
 // Components
-///////////////////////
+/// ////////////////////
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
-import TxsPanel from './TxsPanel';
 
-///////////////////////
+/// ////////////////////
 // Hooks
-///////////////////////
+/// ////////////////////
 
 import { useController } from 'hooks/index';
 import { useFiat } from 'hooks/usePrice';
 
-///////////////////////
+/// ////////////////////
 // State
-///////////////////////
+/// ////////////////////
 
 import { RootState } from 'state/store';
 
-///////////////////////
+/// ////////////////////
 // Navigation
-///////////////////////
+/// ////////////////////
 
 import assetHeader from 'navigation/headers/asset';
 import { useLinkTo } from '@react-navigation/native';
 
-///////////////////////
+/// ////////////////////
 // Styles
-///////////////////////
+/// ////////////////////
 
-import styles from './Asset.scss';
-
-///////////////////////
+/// ////////////////////
 // Types
-///////////////////////
+/// ////////////////////
 
 import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
+import styles from './Asset.scss';
+import TxsPanel from './TxsPanel';
+import { formatNumber, getAddressURL, formatStringDecimal } from '../helpers';
 
 type IAssetDetail = {
   navigation: any;
-}
+};
 
-///////////////////////
+/// ////////////////////
 // Component
-///////////////////////
+/// ////////////////////
 
 const AssetDetail = ({ navigation }: IAssetDetail) => {
-
-
-  ///////////////////////
+  /// ////////////////////
   // Hooks
-  ///////////////////////
+  /// ////////////////////
 
   const linkTo = useLinkTo();
   const controller = useController();
@@ -71,24 +68,33 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
   const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
+  const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
   const balance = useMemo(() => {
-    return Number((activeAsset && balances[activeAsset.id]) || 0)
+    return Number((activeAsset && balances[activeAsset.id]) || 0);
   }, [activeAsset, balances]);
+
+  const networkId =
+    activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
 
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
+    if (!activeAsset) return;
+
     navigation.setOptions(
       assetHeader({
         navigation,
         asset: assets[activeAsset.id],
         address: activeAsset.address,
-        addressUrl: getAddressURL(activeAsset.address, activeAsset.contractAddress, activeAsset.type, activeNetwork[networkId]),
-      }));
-  }, []);
+        addressUrl: getAddressURL(
+          activeAsset.address,
+          activeAsset.contractAddress,
+          activeAsset.type,
+          activeNetwork[networkId]
+        ),
+      })
+    );
+  }, [activeAsset]);
 
   useEffect(() => {
     controller.wallet.account.updateTempTx({
@@ -99,10 +105,9 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
     });
   }, []);
 
-
-  ///////////////////////
+  /// ////////////////////
   // Callbacks
-  ///////////////////////
+  /// ////////////////////
 
   const fetchTxs = () => {
     if (activeAsset.type === AssetType.Constellation) {
@@ -111,15 +116,13 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
     return controller.wallet.account.getFullETHTxs().sort((a, b) => b.timestamp - a.timestamp);
   };
 
-  const networkId = activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
-
   const onSendClick = () => {
     linkTo('/send');
-  }
+  };
 
-  ///////////////////////
+  /// ////////////////////
   // Renders
-  ///////////////////////
+  /// ////////////////////
 
   return (
     <div className={styles.wrapper}>
@@ -130,28 +133,21 @@ const AssetDetail = ({ navigation }: IAssetDetail) => {
               <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
                 {formatStringDecimal(formatNumber(balance, 16, 20), 4)}{' '}
               </TextV3.HeaderDisplay>
-              <TextV3.Body>
-                {assets[activeAsset.id].symbol}
-              </TextV3.Body>
+              <TextV3.Body>{assets[activeAsset.id].symbol}</TextV3.Body>
             </div>
             <div className={styles.fiatBalance}>
-              <TextV3.Body>
-                ≈ {getFiatAmount(balance, (balance >= 0.01) ? 2 : 4)}
-              </TextV3.Body>
+              <TextV3.Body>≈ {getFiatAmount(balance, balance >= 0.01 ? 2 : 4)}</TextV3.Body>
             </div>
             <div className={styles.actions}>
               <ButtonV3
-                label={'Send'}
+                label="Send"
                 size={BUTTON_SIZES_ENUM.LARGE}
                 type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
                 onClick={onSendClick}
               />
             </div>
           </section>
-          <TxsPanel
-            address={activeAsset.address}
-            transactions={fetchTxs()}
-          />
+          <TxsPanel address={activeAsset.address} transactions={fetchTxs()} />
         </>
       ) : (
         <section

@@ -1,21 +1,16 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Link from 'components/Link';
 import LogoImage from 'assets/images/logo.svg';
-import { useLinkTo } from '@react-navigation/native';
+
 import styles from './Start.scss';
 import TextV3, { TEXT_ALIGN_ENUM }  from 'components/TextV3';
 import ButtonV3, {BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM} from 'components/ButtonV3';
+import IStart from './types';
 
-const Start = () => {
-  const linkTo = useLinkTo();
-
-  const onImportClicked = () => {
-    linkTo('/import');
-  }
-
-  const onGetStartedClicked = () => {
-    linkTo('/create/pass');
-  }
+const Start: FC<IStart> = ({
+  onImportClicked,
+  onGetStartedClicked
+}) => {
 
   return (
     <div className={styles.home}>

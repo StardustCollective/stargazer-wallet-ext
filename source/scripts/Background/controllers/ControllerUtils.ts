@@ -24,8 +24,8 @@ const ControllerUtils = (): IControllerUtils => {
       const { activeWallet }: IVaultState = store.getState().vault;
       const assets: IAssetListState = store.getState().assets;
       const assetIds = activeWallet.assets
-        .filter(a => !!assets[a.id].priceId)
-        .map(a => assets[a.id].priceId)
+        .filter(a => !!assets[a.id]?.priceId)
+        .map(a => assets[a.id]?.priceId)
         .join(',');
       const data = await (
         await fetch(

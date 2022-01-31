@@ -16,9 +16,13 @@ export const COLORS = {
   monotone_1: '#AAA3D6',
   white: '#fff',
   black: '#000',
+  red: '#de0c00',
+  red_100: '#ff3b30',
   grey_50: '#F2F2F2',
   grey_100: '#E6E6E6',
   gray_100: '#888888',
+  grey_light: '#f5f5f5',
+  grey_dark: '#474747',
   gray_200: '#c4c4c4',
   gray_light: '#f5f5f5',
   gray_light_100: '#ededed',
@@ -29,8 +33,6 @@ export const COLORS = {
   gray_medium: '#979797',
   gray_hover: '#dedede',
   gray_disabled: '#dadada',
-  red: '#de0c00',
-  red_100: '#ff3b30',
 };
 
 export const FONT_WEIGHTS = {

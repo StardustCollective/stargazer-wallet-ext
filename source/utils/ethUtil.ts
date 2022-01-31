@@ -55,7 +55,7 @@ export const estimateGasLimitForTransfer = async ({ to, from, amount: value }: {
     const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
     const abi = await _getAbi({ to });
     const web3 = _getWeb3(network);
-    const contract = new web3.eth.Contract(abi, to);
+    const contract = new web3.eth.Contract(abi as any, to);
 
     if(value !== '0' && value !== ''){
         const val = parseInt(value); // transfer throws error on decimals, int amount estimate should be basically the same

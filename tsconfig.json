@@ -14,6 +14,7 @@
     "isolatedModules": true,
     /* Additional Checks */
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,

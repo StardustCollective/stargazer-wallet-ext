@@ -1,38 +1,47 @@
-import React, { FC, useState } from 'react';
+///////////////////////////
+// Modules
+///////////////////////////
+
+import React, { FC } from 'react';
 import clsx from 'clsx';
+
+///////////////////////////
+// Components
+///////////////////////////
+
 import Button from 'components/Button';
-import { useLinkTo } from '@react-navigation/native';
+import Layout from 'scenes/common/Layout';
 
-import Layout from '../../common/Layout';
+///////////////////////////
+// Styles
+///////////////////////////
 
-import * as consts from './consts';
-import styles from './index.scss';
-import { useController } from 'hooks/index';
+import styles from '../styles.scss';
 
-const CreatePhrase: FC = () => {
-  const controller = useController();
-  const linkTo = useLinkTo();
-  const [passed, setPassed] = useState(false);
-  const title = passed
-    ? consts.CREATE_PHRASE_TITLE2
-    : consts.CREATE_PHRASE_TITLE1;
-  const description = passed
-    ? consts.CREATE_PHRASE_DESCRIPTION2
-    : consts.CREATE_PHRASE_DESCRIPTION1;
+///////////////////////////
+// Types
+///////////////////////////
 
-  const phrases = controller.wallet.onboardHelper.getSeedPhrase();
+import ICreatePhrase from './types';
 
+///////////////////////////
+// Scene
+///////////////////////////
 
-  const nextHandler = () => {
-    if (passed && phrases) {
-      linkTo('/create/phrase/check');
-    } else {
-      setPassed(true);
-    }
-  };
+const CreatePhrase: FC<ICreatePhrase> = ({
+  title,
+  description,
+  nextHandler,
+  phrases,
+  passed,
+}) => {
+
+  ///////////////////////////
+  // Render
+  ///////////////////////////
 
   return (
-    <Layout title={title} linkTo="/create/phrase/remind">
+    <Layout title={title}>
       <div className="body-description mb-30">{description}</div>
       {!passed && phrases && (
         <ul className={styles.generated}>

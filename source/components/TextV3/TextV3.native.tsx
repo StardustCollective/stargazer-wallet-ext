@@ -64,6 +64,12 @@ const TextV3 = {
       colorStyle = styles.blackFont;
     } else if (color === COLORS_ENUMS.WHITE) {
       colorStyle = styles.whiteFont;
+    }else if (color === COLORS_ENUMS.RED) {
+      colorStyle = styles.redFont;
+    }else if (color === COLORS_ENUMS.DARK_GRAY) {
+      colorStyle = styles.greyDarkFont;
+    }else if (color === COLORS_ENUMS.GRAY_100) {
+      colorStyle = styles.gray100Font;
     }
 
     //Alignment
@@ -115,6 +121,19 @@ const TextV3 = {
         dynamic={dynamic}
         color={color}
         textStyle={styles.headerLarge}
+        align={align}
+        extraStyles={extraStyles}
+      >
+        {children}
+      </TextV3.base>
+    )
+  },
+  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.headerLargeRegular}
         align={align}
         extraStyles={extraStyles}
       >

@@ -1,4 +1,4 @@
-import { WalletController } from './WalletController';
+import WalletController from './WalletController';
 import { IWalletController } from './IWalletController';
 import ControllerUtils from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
@@ -25,7 +25,7 @@ export interface IMasterController {
 const MasterController = (): IMasterController => {
   const stargazerProvider = Object.freeze(new StargazerProvider());
   const ethereumProvider = Object.freeze(new EthereumProvider());
-  const wallet = new WalletController();
+  const wallet = WalletController;
   const utils = Object.freeze(ControllerUtils());
   const dapp = Object.freeze(DAppController());
   const contacts = Object.freeze(ContactsController());

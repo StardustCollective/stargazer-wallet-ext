@@ -1,13 +1,7 @@
-import React, { ReactNode, FC } from 'react';
+import React, { FC } from 'react';
 
 import styles from './Layout.scss';
-
-interface ILayout {
-  children: ReactNode;
-  linkTo?: string;
-  showLogo?: boolean;
-  title: string;
-}
+import ILayout from './types';
 
 const Layout: FC<ILayout> = ({
   title,
