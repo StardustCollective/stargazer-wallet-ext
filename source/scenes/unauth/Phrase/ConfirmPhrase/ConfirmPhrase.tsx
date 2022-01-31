@@ -42,6 +42,17 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
 }) => {
 
   ///////////////////////////
+  // Callbacks  
+  ///////////////////////////
+
+  const handleKeydown = (ev: KeyboardEvent) => {
+    if (ev.code === 'Enter') {
+      handleConfirm();
+    }
+  };
+
+
+  ///////////////////////////
   // Hooks  
   ///////////////////////////
 
@@ -52,16 +63,6 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
       window.removeEventListener('keydown', handleKeydown);
     };
   }, [passed]);
-
-  ///////////////////////////
-  // Callbacks  
-  ///////////////////////////
-
-  const handleKeydown = (ev: KeyboardEvent) => {
-    if (ev.code === 'Enter') {
-      handleConfirm();
-    }
-  };
 
   ///////////////////////////
   // Renders  
