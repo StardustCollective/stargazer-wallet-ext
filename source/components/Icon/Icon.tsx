@@ -7,19 +7,32 @@ import styles from './Icon.scss';
 
 interface IIcon {
   Component: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> | string;
+  iconStyles?: string;
   spaced?: boolean;
   variant?: string;
-  iconStyles?: string;
   width?: number;
 }
 
-const Icon: FC<IIcon> = ({ Component, spaced = true, variant, width, iconStyles }) => {
+const Icon: FC<IIcon> = ({
+  Component,
+  spaced = true,
+  variant,
+  width,
+  iconStyles,
+}) => {
   return (
-    <div className={clsx(styles.icon, iconStyles, { [styles.spaced]: spaced }, variant)}>
+    <div
+      className={clsx(
+        styles.icon,
+        iconStyles,
+        { [styles.spaced]: spaced },
+        variant
+      )}
+    >
       {typeof Component === 'string' ? (
-        <img src={'/'+Component} width={width} />
+        <img src={`/${Component}`} width={width} />
       ) : (
-        <Component style={{ width }}/>
+        <Component style={{ width }} />
       )}
     </div>
   );

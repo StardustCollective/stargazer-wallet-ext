@@ -3,23 +3,18 @@ import React, { FC } from 'react';
 import styles from './CircleIcon.scss';
 
 interface ICircleIcon {
-  logo: string;
   label: string;
+  logo: string;
 }
 
 const CircleIcon: FC<ICircleIcon> = ({ logo, label }) => {
+  const uri = logo.startsWith('http') ? logo : `/${logo}`;
 
   return (
     <div className={styles.logoWrapper}>
-      {logo.startsWith('http') && (
-        <img src={logo} alt={label} height="23" />
-      )}
-      {!logo.startsWith('http') && (
-        <img src={'/'+logo} alt={label} height="23" />
-      )}
+      <img src={uri} alt={label} height="23" />
     </div>
   );
-
-}
+};
 
 export default CircleIcon;

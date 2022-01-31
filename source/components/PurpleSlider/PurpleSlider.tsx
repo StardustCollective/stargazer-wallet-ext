@@ -1,13 +1,13 @@
-///////////////////////
+/// ////////////////////
 // Modules
-///////////////////////
+/// ////////////////////
 
 import React, { ChangeEvent, FC } from 'react';
 import Slider from '@material-ui/core/Slider';
 
-///////////////////////
+/// ////////////////////
 // Styles
-///////////////////////
+/// ////////////////////
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -41,29 +41,28 @@ const PSlider = withStyles({
   },
 })(Slider);
 
-///////////////////////
+/// ////////////////////
 // Types
-///////////////////////
+/// ////////////////////
 
 type IPurpleSliderProps = {
-  onChange: (_event: ChangeEvent<{}>, value: number | number[]) => void,
-  min: number,
-  max: number,
-  value: number,
   defaultValue: number,
+  max: number,
+  min: number,
+  onChange: (_event: ChangeEvent<{}>, value: number | number[]) => void,
   step: number,
-}
+  value: number,
+};
 
-///////////////////////
+/// ////////////////////
 // Constants
-///////////////////////
+/// ////////////////////
 
 const SLIDER_LABEL_DISPLAY_PROP = 'off';
 
-
-///////////////////////
+/// ////////////////////
 // Component
-///////////////////////
+/// ////////////////////
 
 const PurpleSlider: FC<IPurpleSliderProps> = ({
   onChange,
@@ -73,20 +72,17 @@ const PurpleSlider: FC<IPurpleSliderProps> = ({
   defaultValue,
   step,
 }) => {
-
   return (
     <PSlider
-    onChange={onChange}
-    min={min}
-    max={max}
-    value={value}
-    defaultValue={defaultValue}
-    step={step}
-    valueLabelDisplay={SLIDER_LABEL_DISPLAY_PROP}
-  />
+      onChange={onChange}
+      min={min}
+      max={max}
+      value={value}
+      defaultValue={defaultValue}
+      step={step}
+      valueLabelDisplay={SLIDER_LABEL_DISPLAY_PROP}
+    />
   );
-
-}
-
+};
 
 export default PurpleSlider;

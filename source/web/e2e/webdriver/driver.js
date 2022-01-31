@@ -1,8 +1,9 @@
+/* eslint-disable no-param-reassign */
+/* eslint-env browser */
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const { until, error: webdriverError, By } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
-
 
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
@@ -23,8 +24,30 @@ function wrapElementWithAPI(element, driver) {
   return element;
 }
 
-class Driver {
+function collectMetrics() {
+  const results = {
+    paint: {},
+    navigation: [],
+  };
 
+  window.performance.getEntriesByType('paint').forEach((paintEntry) => {
+    results.paint[paintEntry.name] = paintEntry.startTime;
+  });
+
+  window.performance.getEntriesByType('navigation').forEach((navigationEntry) => {
+    results.navigation.push({
+      domContentLoaded: navigationEntry.domContentLoadedEventEnd,
+      load: navigationEntry.loadEventEnd,
+      domInteractive: navigationEntry.domInteractive,
+      redirectCount: navigationEntry.redirectCount,
+      type: navigationEntry.type,
+    });
+  });
+
+  return results;
+}
+
+class Driver {
   constructor(driver, browser, extensionUrl, timeout = 10000) {
     this.driver = driver;
     this.browser = browser;
@@ -39,11 +62,14 @@ class Driver {
   buildLocator(locator) {
     if (typeof locator === 'string') {
       return By.css(locator);
-    } else if (locator.value) {
+    }
+    if (locator.value) {
       return locator;
-    } else if (locator.xpath) {
+    }
+    if (locator.xpath) {
       return By.xpath(locator.xpath);
-    } else if (locator.text) {
+    }
+    if (locator.text) {
       if (locator.css) {
         const xpath = cssToXPath
           .parse(locator.css)
@@ -51,20 +77,13 @@ class Driver {
             cssToXPath.xPathBuilder
               .string()
               .contains(locator.text)
-              .or(
-                cssToXPath.xPathBuilder
-                  .string()
-                  .contains(locator.text.split(' ').join('')),
-              ),
+              .or(cssToXPath.xPathBuilder.string().contains(locator.text.split(' ').join('')))
           )
           .toXPath();
         return By.xpath(xpath);
       }
-
     }
-    throw new Error(
-      `The locator '${locator}' is not supported by the E2E test driver`,
-    );
+    throw new Error(`The locator '${locator}' is not supported by the E2E test driver`);
   }
 
   async fill(rawLocator, input) {
@@ -87,14 +106,11 @@ class Driver {
     await this.driver.wait(condition, timeout);
   }
 
-  async actions(){
+  async actions() {
     return this.driver.actions();
   }
 
-  async waitForSelector(
-    rawLocator,
-    { timeout = this.timeout, state = 'visible' } = {},
-  ) {
+  async waitForSelector(rawLocator, { timeout = this.timeout, state = 'visible' } = {}) {
     const selector = this.buildLocator(rawLocator);
     let element;
     if (!['visible', 'detached'].includes(state)) {
@@ -103,10 +119,7 @@ class Driver {
     if (state === 'visible') {
       element = await this.driver.wait(until.elementLocated(selector), timeout);
     } else if (state === 'detached') {
-      element = await this.driver.wait(
-        until.stalenessOf(await this.findElement(selector)),
-        timeout,
-      );
+      element = await this.driver.wait(until.stalenessOf(await this.findElement(selector)), timeout);
     }
     return wrapElementWithAPI(element, this);
   }
@@ -117,10 +130,7 @@ class Driver {
 
   async findElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
-    const element = await this.driver.wait(
-      until.elementLocated(locator),
-      this.timeout,
-    );
+    const element = await this.driver.wait(until.elementLocated(locator), this.timeout);
     return wrapElementWithAPI(element, this);
   }
 
@@ -143,15 +153,12 @@ class Driver {
 
   async findElements(rawLocator) {
     const locator = this.buildLocator(rawLocator);
-    const elements = await this.driver.wait(
-      until.elementsLocated(locator),
-      this.timeout,
-    );
+    const elements = await this.driver.wait(until.elementsLocated(locator), this.timeout);
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
-  async findAllElementsWithId(id){
-    let elements = await this.driver.findElements(By.id(id));
+  async findAllElementsWithId(id) {
+    const elements = await this.driver.findElements(By.id(id));
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
@@ -162,10 +169,10 @@ class Driver {
       elements.reduce((acc, element) => {
         acc.push(
           this.driver.wait(until.elementIsVisible(element), this.timeout),
-          this.driver.wait(until.elementIsEnabled(element), this.timeout),
+          this.driver.wait(until.elementIsEnabled(element), this.timeout)
         );
         return acc;
-      }, []),
+      }, [])
     );
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
@@ -179,18 +186,11 @@ class Driver {
   async clickPoint(rawLocator, x, y) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.findElement(locator);
-    await this.driver
-      .actions()
-      .move({ origin: element, x, y })
-      .click()
-      .perform();
+    await this.driver.actions().move({ origin: element, x, y }).click().perform();
   }
 
   async scrollToElement(element) {
-    await this.driver.executeScript(
-      'arguments[0].scrollIntoView(true)',
-      element,
-    );
+    await this.driver.executeScript('arguments[0].scrollIntoView(true)', element);
   }
 
   async assertElementNotPresent(rawLocator) {
@@ -199,20 +199,14 @@ class Driver {
     try {
       dataTab = await this.findElement(locator);
     } catch (err) {
-      assert(
-        err instanceof webdriverError.NoSuchElementError ||
-          err instanceof webdriverError.TimeoutError,
-      );
+      assert(err instanceof webdriverError.NoSuchElementError || err instanceof webdriverError.TimeoutError);
     }
     assert.ok(!dataTab, 'Found element that should not be present');
   }
 
-
   async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
   }
-
-
 
   async collectMetrics() {
     return await this.driver.executeScript(collectMetrics);
@@ -246,14 +240,8 @@ class Driver {
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
   }
 
-  async switchToWindowWithTitle(
-    title,
-    initialWindowHandles,
-    delayStep = 1000,
-    timeout = 5000,
-  ) {
-    let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
+  async switchToWindowWithTitle(title, initialWindowHandles, delayStep = 1000, timeout = 5000) {
+    let windowHandles = initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
@@ -272,7 +260,6 @@ class Driver {
   }
 
   async closeAllWindowHandlesExcept(exceptions, windowHandles) {
-
     windowHandles = windowHandles || (await this.driver.getAllWindowHandles());
 
     for (const handle of windowHandles) {
@@ -295,13 +282,8 @@ class Driver {
     });
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
-    const uiState = await this.driver.executeScript(
-      () => window.getCleanAppState && window.getCleanAppState(),
-    );
-    await fs.writeFile(
-      `${filepathBase}-state.json`,
-      JSON.stringify(uiState, null, 2),
-    );
+    const uiState = await this.driver.executeScript(() => window.getCleanAppState && window.getCleanAppState());
+    await fs.writeFile(`${filepathBase}-state.json`, JSON.stringify(uiState, null, 2));
   }
 
   async checkBrowserForConsoleErrors() {
@@ -310,42 +292,10 @@ class Driver {
       'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
     ];
     const browserLogs = await this.driver.manage().logs().get('browser');
-    const errorEntries = browserLogs.filter(
-      (entry) => !ignoredLogTypes.includes(entry.level.toString()),
-    );
+    const errorEntries = browserLogs.filter((entry) => !ignoredLogTypes.includes(entry.level.toString()));
     const errorObjects = errorEntries.map((entry) => entry.toJSON());
-    return errorObjects.filter(
-      (entry) =>
-        !ignoredErrorMessages.some((message) =>
-          entry.message.includes(message),
-        ),
-    );
+    return errorObjects.filter((entry) => !ignoredErrorMessages.some((message) => entry.message.includes(message)));
   }
-}
-
-function collectMetrics() {
-  const results = {
-    paint: {},
-    navigation: [],
-  };
-
-  window.performance.getEntriesByType('paint').forEach((paintEntry) => {
-    results.paint[paintEntry.name] = paintEntry.startTime;
-  });
-
-  window.performance
-    .getEntriesByType('navigation')
-    .forEach((navigationEntry) => {
-      results.navigation.push({
-        domContentLoaded: navigationEntry.domContentLoadedEventEnd,
-        load: navigationEntry.loadEventEnd,
-        domInteractive: navigationEntry.domInteractive,
-        redirectCount: navigationEntry.redirectCount,
-        type: navigationEntry.type,
-      });
-    });
-
-  return results;
 }
 
 Driver.PAGES = {

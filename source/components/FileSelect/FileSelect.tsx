@@ -4,10 +4,10 @@ import Button from 'components/Button';
 import styles from './FileSelect.scss';
 
 interface IFileSelect {
-  id?: string;
   accept?: string;
-  onChange: (val: File | null) => void;
   disabled?: boolean;
+  id?: string;
+  onChange: (val: File | null) => void;
 }
 
 const FileSelect: FC<IFileSelect> = ({

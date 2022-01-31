@@ -3,16 +3,8 @@ import { Transaction } from '@stardust-collective/dag4-network';
 
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
-import IVaultState, {
-  AssetBalances,
-  AssetType,
-  IAssetState, IWalletState
-} from './types';
-
-import {
-  KeyringNetwork,
-  KeyringVaultState,
-} from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
+import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState } from './types';
 
 const hasEncryptedVault = !!localStorage.getItem('stargazer-vault');
 
@@ -40,10 +32,7 @@ const VaultState = createSlice({
   name: 'vault',
   initialState,
   reducers: {
-    setVaultInfo(
-      state: IVaultState,
-      action: PayloadAction<KeyringVaultState>
-    ) {
+    setVaultInfo(state: IVaultState, action: PayloadAction<KeyringVaultState>) {
       state.wallets = action.payload.wallets;
       // if (!state.activeWallet) {
       //   state.activeWallet = { assets:[], ...state.wallets[0] };
@@ -118,58 +107,36 @@ const VaultState = createSlice({
     //     [AssetType.Ethereum]: ETH_NETWORK.main.id,
     //   };
     // },
-    changeActiveWallet(
-      state: IVaultState,
-      action: PayloadAction<IWalletState>
-    ) {
+    changeActiveWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
       state.activeWallet = action.payload;
       if (state.activeWallet) {
         if (state.activeAsset) {
           state.activeAsset = { transactions: [], ...state.activeWallet.assets[0] };
         }
-      }
-      else {
+      } else {
         delete state.activeWallet;
         delete state.activeAsset;
       }
     },
-    changeActiveNetwork(
-      state: IVaultState,
-      action: PayloadAction<{ network: KeyringNetwork; chainId: string }>
-    ) {
+    changeActiveNetwork(state: IVaultState, action: PayloadAction<{ network: KeyringNetwork; chainId: string }>) {
       state.activeNetwork = {
         ...state.activeNetwork,
         [action.payload.network]: action.payload.chainId,
       };
     },
-    changeActiveAsset(
-      state: IVaultState,
-      action: PayloadAction<IAssetState>
-    ) {
+    changeActiveAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
       state.activeAsset = { transactions: [], ...action.payload };
     },
-    updateWalletAssets(
-      state: IVaultState,
-      action: PayloadAction<IAssetState[]>
-    ) {
+    updateWalletAssets(state: IVaultState, action: PayloadAction<IAssetState[]>) {
       state.activeWallet.assets = action.payload;
     },
-    updateWalletLabel(
-      state: IVaultState,
-      action: PayloadAction<string>
-    ) {
+    updateWalletLabel(state: IVaultState, action: PayloadAction<string>) {
       state.activeWallet.label = action.payload;
     },
-    updateTransactions(
-      state: IVaultState,
-      action: PayloadAction<{txs: Transaction[]}>
-    ) {
+    updateTransactions(state: IVaultState, action: PayloadAction<{ txs: Transaction[] }>) {
       state.activeAsset.transactions = action.payload.txs;
     },
-    updateBalances(
-      state: IVaultState,
-      action: PayloadAction<AssetBalances>
-    ) {
+    updateBalances(state: IVaultState, action: PayloadAction<AssetBalances>) {
       state.balances = action.payload;
     },
     // updateLabel(
@@ -178,16 +145,11 @@ const VaultState = createSlice({
     // ) {
     //   state.activeWallet.label = action.payload.label;
     // },
-    addAsset(
-      state: IVaultState,
-      action: PayloadAction<IAssetState>
-    ) {
+    addAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
       state.activeWallet.assets = state.activeWallet.assets.concat([action.payload]);
-      //state.activeAsset = action.payload.asset;
+      // state.activeAsset = action.payload.asset;
     },
-    migrateWalletComplete(
-      state: IVaultState,
-    ) {
+    migrateWalletComplete(state: IVaultState) {
       delete state.migrateWallet;
     },
   },

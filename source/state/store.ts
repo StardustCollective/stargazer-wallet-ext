@@ -11,6 +11,7 @@ import vault  from './vault';
 import price from './price';
 import contacts from './contacts';
 import assets from './assets';
+import nfts from './nfts';
 
 import dapp from './dapp';
 import { saveState, loadState } from './localStorage';
@@ -36,6 +37,7 @@ const store: Store = configureStore({
     price,
     contacts,
     assets,
+    nfts,
     dapp,
   }),
   middleware,
@@ -50,6 +52,7 @@ function updateState() {
     price: state.price,
     contacts: state.contacts,
     assets: state.assets,
+    nfts: state.nfts,
     dapp: state.dapp,
   });
 }

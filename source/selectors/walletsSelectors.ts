@@ -2,85 +2,129 @@
  * Handles derived data for wallets state.
  */
 
-/////////////////////////
+/// //////////////////////
 // Modules
-/////////////////////////
-
+/// //////////////////////
 import { RootState } from 'state/store';
 import { createSelector } from 'reselect';
-import {
-  KeyringNetwork,
-  KeyringWalletState,
-} from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork, KeyringWalletState, KeyringAssetInfo } from '@stardust-collective/dag4-keyring';
 
-/////////////////////////
+/// //////////////////////
 // Types
-/////////////////////////
+/// //////////////////////
+import { IAccountDerived, IWalletState, AssetType, IAssetState, ActiveNetwork } from 'state/vault/types';
+import { INFTListState } from 'state/nfts/types';
+import { getNfts } from './nftSelectors';
 
-import { IAccountDerived } from 'state/vault/types';
-
-/////////////////////////
+/// //////////////////////
 // Selectors
-/////////////////////////
+/// //////////////////////
 
 /**
  * Returns root wallets state
  */
-const wallets = (state: RootState) => state.vault.wallets;
+const getWallets = (state: RootState) => state.vault.wallets;
+
+/**
+ * Returns activeWallet state
+ */
+const getActiveWallet = (state: RootState) => state.vault.activeWallet;
+
+/**
+ * Returns activeNetwork state
+ */
+const getActiveNetwork = (state: RootState) => state.vault.activeNetwork;
+
+/**
+ * Returns assets
+ */
+const getAssets = (state: RootState) => state.assets;
 
 /**
  * Returns all accounts from all wallets.
  */
 
-const selectAllAccounts = createSelector(
-  wallets, 
-  (wallets: KeyringWalletState[]) => {
-    let allAccounts = [];
-    for (let i = 0; i < wallets.length; i++) {
-      let accounts = wallets[i].accounts
-      for (let j = 0; j < wallets[i].accounts.length; j++) {
-        let account = accounts[j] as IAccountDerived;
-        account.label = wallets[i].label;
-        allAccounts.push(account);
-      }
+const selectAllAccounts = createSelector(getWallets, (wallets: KeyringWalletState[]) => {
+  const allAccounts = [];
+  for (let i = 0; i < wallets.length; i++) {
+    const { accounts } = wallets[i];
+    for (let j = 0; j < wallets[i].accounts.length; j++) {
+      const account = accounts[j] as IAccountDerived;
+      account.label = wallets[i].label;
+      allAccounts.push(account);
     }
-    return allAccounts;
-  });
+  }
+  return allAccounts;
+});
 
 /**
  * Returns all DAG accounts from all wallets.
  */
-const selectAllDagAccounts = createSelector(
-  selectAllAccounts,
-  (allAccounts: IAccountDerived[]) => {
-    return allAccounts.filter(
-      (account) => account.network === KeyringNetwork.Constellation
-    );
-  }
-);
+const selectAllDagAccounts = createSelector(selectAllAccounts, (allAccounts: IAccountDerived[]) => {
+  return allAccounts.filter((account) => account.network === KeyringNetwork.Constellation);
+});
 
 /**
  * Returns all ETH accounts from all wallets.
  */
-const selectAllEthAccounts = createSelector(
-  selectAllAccounts,
-  (allAccounts: IAccountDerived[]) => {
-    return allAccounts.filter(
-      (account) => account.network === KeyringNetwork.Ethereum
-    );
+const selectAllEthAccounts = createSelector(selectAllAccounts, (allAccounts: IAccountDerived[]) => {
+  return allAccounts.filter((account) => account.network === KeyringNetwork.Ethereum);
+});
+
+const selectAllWallets = createSelector(getWallets, (wallets: KeyringWalletState[]) => {
+  return [...wallets];
+});
+
+/**
+ * Returns known assets that belong to the currently active network
+ * Does not return custom assets that are not part of token initialState
+ */
+const selectActiveNetworkAssets = createSelector(
+  getActiveWallet,
+  getActiveNetwork,
+  getAssets,
+  (activeWallet: IWalletState, activeNetwork: ActiveNetwork, assets: KeyringAssetInfo[]): IAssetState[] => {
+    if (!activeWallet?.assets) {
+      return [];
+    }
+
+    return activeWallet.assets.filter((asset: IAssetState) => {
+      const assetType = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
+      const assetNetwork = assets[asset.id as any]?.network;
+
+      return assetNetwork === 'both' || assetNetwork === activeNetwork[assetType];
+    });
   }
 );
 
-const selectAllWallets = createSelector(
-  wallets,
-  (wallets: KeyringWalletState[]) => {
-    return [...wallets];
+/**
+ * Returns NFT assets
+ * NFTs are fetched for the active network only so no activeNetwork checks are needed
+ */
+const selectNFTAssets = createSelector(
+  getActiveWallet,
+  getNfts,
+  (activeWallet: IWalletState, nfts: INFTListState[]): IAssetState[] => {
+    if (!activeWallet?.assets) {
+      return [];
+    }
+
+    return activeWallet.assets.filter((asset: IAssetState) => {
+      return asset.type === AssetType.ERC721 && nfts[asset.id as any];
+    });
   }
 );
+
+const selectActiveNetworkAssetIds = createSelector(selectActiveNetworkAssets, (assets: IAssetState[]): string[] => {
+  return assets.map((asset) => asset.id);
+});
 
 export default {
   selectAllAccounts,
   selectAllDagAccounts,
   selectAllEthAccounts,
-  selectAllWallets
+  selectAllWallets,
+  selectActiveNetworkAssets,
+  selectActiveNetworkAssetIds,
+  selectNFTAssets,
 };
