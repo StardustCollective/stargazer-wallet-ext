@@ -11,17 +11,11 @@ interface ITextInput {
   label?: string;
 }
 
-const TextInput: FC<ITextInput> = ({
-  id,
-  type = 'text',
-  placeholder = '',
-  label = '',
-}) => {
-
+const TextInput: FC<ITextInput> = ({ id, type = 'text', placeholder = '', label = '', ...otherProps }) => {
   let keyboardType: KeyboardType = 'default';
 
-  if(type === 'number'){
-    keyboardType = 'numeric'
+  if (type === 'number') {
+    keyboardType = 'numeric';
   }
 
   return (
@@ -33,10 +27,10 @@ const TextInput: FC<ITextInput> = ({
         labelStyle={styles.label}
         label={label}
         keyboardType={keyboardType}
+        {...otherProps}
       />
     </>
   );
-
 };
 
 export default TextInput;
