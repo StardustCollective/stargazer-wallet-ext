@@ -7,7 +7,7 @@ import clsx from 'clsx';
 ///////////////////////
 // Styles
 ///////////////////////
-import styles from './index.scss';
+import styles from './About.scss';
 
 ///////////////////////
 // Types

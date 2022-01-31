@@ -3,7 +3,8 @@ import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   base: {
-    width: 160,
+    minWidth: 160,
+    paddingHorizontal: 30,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 0,
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   titleLarge: {
-    fontWeight: FONT_WEIGHTS.medium,
+    fontWeight: FONT_WEIGHTS.bold,
     fontSize: 18,
     color: COLORS.white,
   },

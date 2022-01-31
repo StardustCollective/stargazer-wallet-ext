@@ -39,7 +39,9 @@ interface IButtonV3Props {
   type?: BUTTON_TYPES_ENUM;
   size?: BUTTON_SIZES_ENUM;
   title: string;
-  extraStyle?: string;
+  disabled: boolean;
+  extraStyle?: {};
+  extraTitleStyles: {};
   onPress?: () => void;
 }
 
@@ -52,7 +54,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
   type = BUTTON_TYPES_ENUM.PRIMARY_SOLID,
   size = BUTTON_SIZES_ENUM.SMALL,
   title = "",
-  extraStyle = "",
+  disabled = false,
+  extraStyle = {},
+  extraTitleStyles = {},
   onPress = () => {},
 }) => {
 
@@ -83,13 +87,15 @@ const ButtonV3: FC<IButtonV3Props> = ({
   ]);
 
   const composedButtonStyles = StyleSheet.compose(flatButtonStyles, extraStyle);
+  const composedTitleStyles = StyleSheet.compose(titleStyle, extraTitleStyles);
 
   return (
     <Button 
       testID={id}
       title={title} 
+      disabled={disabled}
       buttonStyle={composedButtonStyles} 
-      titleStyle={titleStyle}
+      titleStyle={composedTitleStyles}
       onPress={onPress}
     />
   );

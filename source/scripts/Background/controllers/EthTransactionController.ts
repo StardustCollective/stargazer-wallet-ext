@@ -26,12 +26,12 @@ const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
 
-  private ethClient: XChainEthClient = new XChainEthClient({
-    network: 'mainnet',
-    privateKey: process.env.TEST_PRIVATE_KEY,
-    etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-    infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
-  });
+  // private ethClient: XChainEthClient = new XChainEthClient({
+  //   network: 'mainnet',
+  //   privateKey: process.env.TEST_PRIVATE_KEY,
+  //   etherscanApiKey: process.env.ETHERSCAN_API_KEY,
+  //   infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
+  // });
 
   private _getPendingData () {
     const state = localStorage.getItem(TX_STORE) || '{}';

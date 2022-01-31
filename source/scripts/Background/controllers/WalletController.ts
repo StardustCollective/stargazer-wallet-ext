@@ -4,31 +4,40 @@ import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, 
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
-import DappController from 'scripts/Background/controllers/DAppController';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
+// import DappController from 'scripts/Background/controllers/DAppController';
 
-export class WalletController implements IWalletController {
+class WalletController implements IWalletController {
   account: AccountController;
 
   keyringManager: KeyringManager;
 
   onboardHelper: OnboardWalletHelper;
+  static instance: WalletController;
 
   constructor() {
-    this.onboardHelper = new OnboardWalletHelper();
-    this.keyringManager = new KeyringManager();
-    this.keyringManager.on('update', (state: KeyringVaultState) => {
-      store.dispatch(setVaultInfo(state));
-      const { vault } = store.getState();
-      if (vault && !vault.activeWallet && state.wallets.length) {
-        this.switchWallet(state.wallets[0].id);
-      }
-    });
 
-    this.account = new AccountController(this.keyringManager);
+    if(!WalletController.instance){
+
+      WalletController.instance = this;
+
+      this.onboardHelper = new OnboardWalletHelper();
+      this.keyringManager = new KeyringManager();
+      this.keyringManager.on('update', (state: KeyringVaultState) => {
+        store.dispatch(setVaultInfo(state));
+        const vault: IVaultState = store.getState().vault;
+        if (vault && !vault.activeWallet && state.wallets.length) {
+          this.switchWallet(state.wallets[0].id);
+        }
+      });
+      this.account = new AccountController(this.keyringManager);
+
+    }
+
+    return WalletController.instance;
   }
 
   checkPassword(password: string) {
@@ -127,9 +136,9 @@ export class WalletController implements IWalletController {
     this.account.txController.startMonitor();
   }
 
-  async notifyWalletChange(accounts: string[]) {
-    return DappController().notifyAccountsChanged(accounts);
-  }
+  // async notifyWalletChange(accounts: string[]) {
+  //   return DappController().notifyAccountsChanged(accounts)
+  // }
 
   switchNetwork(network: KeyringNetwork, chainId: string) {
     store.dispatch(updateBalances({ pending: 'true' }));
@@ -175,3 +184,5 @@ export class WalletController implements IWalletController {
     store.dispatch(updateStatus());
   }
 }
+
+export default new WalletController();

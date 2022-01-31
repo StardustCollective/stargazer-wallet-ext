@@ -1,41 +1,24 @@
-import React, { useState } from 'react';
+import React, { FC } from 'react';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import CheckIcon from '@material-ui/icons/CheckCircle';
-import { useForm } from 'react-hook-form';
-import { useController } from 'hooks/index';
-import { useLinkTo } from '@react-navigation/native';
-
 import Layout from '../../common/Layout';
-
-import * as consts from './consts';
 import styles from './CreatePass.scss';
+import ICreatePass from './types';
 
-const CreatePass = () => {
-  const controller = useController();
-  const linkTo = useLinkTo();
-  const [passed, setPassed] = useState(false);
-  const { handleSubmit, register, errors } = useForm({
-    validationSchema: consts.schema,
-  });
-  const title = passed ? consts.CREATE_PASS_TITLE2 : consts.CREATE_PASS_TITLE1;
-  const comment = passed
-    ? consts.CREATE_PASS_COMMENT2
-    : consts.CREATE_PASS_COMMENT1;
-
-  const nextHandler = () => {
-    if (passed) {
-      linkTo('/create/phrase/remind');
-    }
-  };
-
-  const onSubmit = (data: any) => {
-    controller.wallet.setWalletPassword(data.password);
-    setPassed(true);
-  };
+const CreatePass: FC<ICreatePass> = ({
+  onSubmit,
+  handleSubmit,
+  nextHandler,
+  passed,
+  register,
+  errors,
+  comment,
+  title,
+}) => {
 
   return (
-    <Layout title={title} linkTo="/homeUnauth">
+    <Layout title={title}>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {passed ? (
           <CheckIcon className={styles.checked} />
