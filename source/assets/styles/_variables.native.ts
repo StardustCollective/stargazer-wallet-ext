@@ -18,7 +18,7 @@ export const COLORS = {
   black: '#000',
   grey_50: '#F2F2F2',
   grey_100: '#E6E6E6',
-  grey_light: '#f5f5f5',
+  gray_100: '#888888',
   gray_200: '#c4c4c4',
   gray_light: '#f5f5f5',
   gray_light_100: '#ededed',
@@ -44,4 +44,4 @@ export const FONT_WEIGHTS = {
 export const SHADOWS = {
   shadow_btn: '0px 1px 5px rgba(0, 0, 0, 0.25)',
   shadow_tooltip: '0px 0px 5px rgba(0, 0, 0, 0.25)',
-}
+};
