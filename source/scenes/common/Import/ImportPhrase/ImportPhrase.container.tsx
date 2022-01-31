@@ -11,7 +11,7 @@ import * as yup from 'yup';
 // Controllers
 ///////////////////////////
 
-import { WalletController } from 'scripts/Background/controllers/WalletController';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Components
@@ -24,12 +24,6 @@ import Container from 'components/Container';
 ///////////////////////////
 
 import ImportPhrase from './ImportPhrase';
-
-///////////////////////////
-// Constants
-///////////////////////////
-
-const walletController = new WalletController();
 
 ///////////////////////////
 // Container
@@ -73,7 +67,7 @@ const ImportPhraseContainer = () => {
   const onSubmit = (data: any) => {
     const phrase = data.phrase.trim();
 
-    if (walletController.onboardHelper.importAndValidateSeedPhrase(phrase)
+    if (WalletController.onboardHelper.importAndValidateSeedPhrase(phrase)
     ) {
       linkTo('/create/pass');
       // onRegister();

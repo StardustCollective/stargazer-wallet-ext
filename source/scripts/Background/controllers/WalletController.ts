@@ -11,7 +11,7 @@ import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 // import DappController from 'scripts/Background/controllers/DAppController';
 
-export class WalletController implements IWalletController {
+class WalletController implements IWalletController {
   account: AccountController;
   keyringManager: KeyringManager;
   onboardHelper: OnboardWalletHelper;
@@ -187,3 +187,5 @@ export class WalletController implements IWalletController {
     store.dispatch(updateStatus());
   }
 }
+
+export default new WalletController();

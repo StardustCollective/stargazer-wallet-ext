@@ -12,19 +12,13 @@ import * as consts from './consts';
 // Controllers
 ///////////////////////////
 
-import { WalletController } from 'scripts/Background/controllers/WalletController';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Scene
 ///////////////////////////
 
 import CreatePass from './CreatePass';
-
-///////////////////////////
-// Constants
-///////////////////////////
-
-const walletController = new WalletController();
 
 ///////////////////////////
 // Container
@@ -63,7 +57,7 @@ const CreatePassContainer = () => {
   };
 
   const onSubmit = (data: any) => {
-    walletController.setWalletPassword(data.password);
+    WalletController.setWalletPassword(data.password);
     setPassed(true);
   };
 

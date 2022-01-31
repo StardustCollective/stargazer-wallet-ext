@@ -16,7 +16,7 @@ import Container from 'components/Container';
 // Controllers
 ///////////////////////////
 
-import { WalletController } from 'scripts/Background/controllers/WalletController';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Navigation
@@ -36,8 +36,7 @@ import ConfirmPhrase from './ConfirmPhrase';
 // Constants
 ///////////////////////////
 
-const walletController = new WalletController();
-const phrases = walletController.onboardHelper.getSeedPhrase();
+const phrases = WalletController.onboardHelper.getSeedPhrase();
 
 ///////////////////////////
 // Container
