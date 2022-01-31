@@ -5,7 +5,6 @@
 import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
-import { Text } from 'react-native';
 ///////////////////////
 // Components
 ///////////////////////
