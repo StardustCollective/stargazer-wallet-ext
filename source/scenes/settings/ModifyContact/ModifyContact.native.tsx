@@ -5,7 +5,7 @@ import VerifiedIcon from 'assets/images/svg/check-green.svg';
 
 import TextInput from 'components/TextInput';
 import TextV3 from 'components/TextV3';
-import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import ButtonV3, { BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 

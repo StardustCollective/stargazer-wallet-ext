@@ -1,4 +1,5 @@
 import { Ref } from 'react';
+import IContactBookState from 'state/contacts/types';
 
 export type IModifyContactView = {
   selected?: string;
@@ -12,7 +13,7 @@ export default interface IModifyContactSettings {
   handleAddressChange: (arg0: any) => void;
   selected: string;
   hideStatusIcon: boolean;
-  contacts: any;
+  contacts: IContactBookState;
   register: Ref<any>;
   address: string;
   isValidAddress: boolean;

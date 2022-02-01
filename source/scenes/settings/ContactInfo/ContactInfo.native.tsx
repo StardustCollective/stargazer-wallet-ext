@@ -11,7 +11,6 @@ import { ellipsis } from 'scenes/home/helpers';
 import { COLORS } from 'assets/styles/_variables';
 
 import IContactInfoSettings from './types';
-// import IContactBookState from 'state/contacts/types';
 
 import styles from './styles';
 

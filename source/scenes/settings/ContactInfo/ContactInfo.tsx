@@ -1,17 +1,17 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import CopyIcon from '@material-ui/icons/FileCopy';
+
 import QRCode from 'qrcode.react';
 import Avatar from '@devneser/gradient-avatar';
-import { useLinkTo } from '@react-navigation/native';
 
 import Button from 'components/Button';
-import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 import Tooltip from 'components/Tooltip';
-import IContactBookState from 'state/contacts/types';
+
 import { ellipsis } from 'scenes/home/helpers';
+
+import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 
 import styles from './index.scss';
 
