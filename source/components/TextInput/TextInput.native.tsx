@@ -1,6 +1,6 @@
 import React, { FC, useState, MouseEvent, ReactNode } from 'react';
 import { Input as RNEInput } from 'react-native-elements';
-import { KeyboardType } from 'react-native';
+import { KeyboardType, StyleSheet } from 'react-native';
 import { Controller } from 'react-hook-form';
 
 import styles from './styles';
@@ -12,6 +12,7 @@ interface ITextInput {
   label?: string;
   control: any;
   inputContainerStyle: {};
+  inputStyle: {};
   multiline: boolean;
 }
 
@@ -21,7 +22,8 @@ const TextInput: FC<ITextInput> = ({
   label = '',
   name = '',
   control,
-  inputContainerStyle,
+  inputContainerStyle = {},
+  inputStyle = {},
   multiline = false,
   ...otherProps
 }) => {
@@ -31,6 +33,9 @@ const TextInput: FC<ITextInput> = ({
     keyboardType = 'numeric';
   }
 
+  const inputContainerStyles = StyleSheet.flatten([styles.inputContainer, inputContainerStyle]);
+  const inputComposedStyles = StyleSheet.flatten([styles.input, inputStyle]);
+
   return (
     <Controller
       control={control}
@@ -38,8 +43,8 @@ const TextInput: FC<ITextInput> = ({
         <RNEInput
           placeholder={placeholder}
           secureTextEntry={type === 'password'}
-          inputStyle={styles.input}
-          inputContainerStyle={[styles.inputContainer, inputContainerStyle]}
+          inputStyle={inputComposedStyles}
+          inputContainerStyle={inputContainerStyles}
           labelStyle={styles.label}
           label={label}
           keyboardType={keyboardType}

@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingLeft: 10,
     borderColor: COLORS.grey_100,
-    marginBottom: -15,
-    marginHorizontal: -10
+    marginBottom: -24,
+    marginHorizontal: -24,
   },
   label: {
     paddingLeft: 14,
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: FONTS.rubik,
     fontWeight: FONT_WEIGHTS.medium,
-  }
+  },
 });
 
 export default styles;
