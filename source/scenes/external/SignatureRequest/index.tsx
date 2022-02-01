@@ -1,15 +1,18 @@
 import styles from './index.module.scss';
 import queryString from 'query-string';
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import Button from 'components/Button';
 import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
 import { AssetType } from '../../../state/vault/types';
 import { ConstellationSignatureRequest } from '../../../scripts/Provider/StargazerProvider';
+import walletsSelectors from 'selectors/walletsSelectors'
 
 const SignatureRequest = () => {
   const controller = useController();
+  const wallets = useSelector(walletsSelectors.selectAllAccounts);
   const { windowId, data: stringData } = queryString.parse(location.search);
   const { origin, signatureRequest }:
     { origin: string, signatureRequest: ConstellationSignatureRequest } = JSON.parse(stringData as string);
@@ -34,10 +37,12 @@ const SignatureRequest = () => {
     const background = await browser.runtime.getBackgroundPage();
     background.dispatchEvent(
       new CustomEvent('messageSigned', {
-        detail: { windowId, result: true, signature: {
-          hex: signature,
-          requestEncoded: signatureRequestEncoded
-        }}
+        detail: {
+          windowId, result: true, signature: {
+            hex: signature,
+            requestEncoded: signatureRequestEncoded
+          }
+        }
       })
     );
     window.close();
@@ -53,7 +58,7 @@ const SignatureRequest = () => {
             <span>Balance:</span>
           </div>
           <div className={styles.row}>
-            <span>{account.label}</span>
+            <span>{wallets.find(w => w.address === account.address)?.label ?? account.address}</span>
             <span>{balance} DAG</span>
           </div>
         </section>
