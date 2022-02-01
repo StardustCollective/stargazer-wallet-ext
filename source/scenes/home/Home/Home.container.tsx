@@ -43,13 +43,14 @@ interface IHome {
 
 const HomeContainer: FC<IHome> = ({ navigation, route }) => {
 
-  // const controller = useController();
+  ///////////////////////////
+  // Hooks
+  ///////////////////////////
+
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-
   const hasMainAccount = wallets.length && wallets.some((w) => w.type === KeyringWalletType.MultiChainWallet);
-
   const [balanceObject, balance] = useTotalBalance();
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
@@ -63,9 +64,13 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     });
   }, [activeWallet]);
 
+  ///////////////////////////
+  // Render
+  ///////////////////////////
+
   return (
     <Container>
-      <Home 
+      <Home
         activeWallet={activeWallet}
         balanceObject={balanceObject}
         balance={balance}
