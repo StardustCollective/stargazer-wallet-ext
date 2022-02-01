@@ -17,7 +17,6 @@ import TextV3 from 'components/TextV3';
 ///////////////////////////
 
 import styles from './styles';
-import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////////
 // Types

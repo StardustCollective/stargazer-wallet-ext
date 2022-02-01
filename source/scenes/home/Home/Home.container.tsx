@@ -58,8 +58,8 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   // Sets the header for the home screen.
   useLayoutEffect(() => {
     navigation.setOptions({
-      ...homeHeader({ navigation, route, hasMainAccount: true }),
-      title: "Main Account"//activeWallet ? activeWallet.label : "",
+      ...homeHeader({ navigation, route, hasMainAccount }),
+      title: activeWallet ? activeWallet.label : "",
     });
   }, [activeWallet]);
 
