@@ -34,9 +34,12 @@ const TooltipComponent: FC<ITooltip> = ({
 
   let otherProps = {};
   if (visible !== undefined) {
-    otherProps.visible = visble;
+    otherProps = {
+      visible,
+    };
   }
 
+  console.log('visible in tooltip', visible);
   return (
     <View style={styles.container}>
       <Tooltip

@@ -1,13 +1,5 @@
-import React, { ReactNode, FC } from 'react';
-<<<<<<< HEAD
-import clsx from 'clsx';
-// import MUIButton from '@material-ui/core/Button';
-// import Spinner from '@material-ui/core/CircularProgress';
+import React, { FC } from 'react';
 import { Button as RNEButton } from 'react-native-elements';
-=======
-import clsx from 'clsx';x
-import { Button as RNEButton } from "react-native-elements";
->>>>>>> v1.0-mobile
 import { useLinkTo } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';

@@ -1,34 +1,19 @@
-///////////////////////
-// Modules
-///////////////////////
 import React, { FC, useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
 
-///////////////////////
-// Components
-///////////////////////
 import Button from 'components/Button';
 import Tooltip from 'components/Tooltip';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 
-///////////////////////
-// Helpers
-///////////////////////
 import { ellipsis } from 'scenes/home/helpers';
+import { COLORS } from 'assets/styles/_variables';
 
-///////////////////////
-// Types
-///////////////////////
 import IContactInfoSettings from './types';
 // import IContactBookState from 'state/contacts/types';
 
-///////////////////////
-// Constants
-///////////////////////
 import styles from './styles';
-import { COLORS } from 'assets/styles/_variables';
 
 const ICON_SIZE = 18;
 

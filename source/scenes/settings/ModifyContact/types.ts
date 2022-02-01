@@ -1,3 +1,5 @@
+import { Ref } from 'react';
+
 export type IModifyContactView = {
   selected?: string;
   navigation: any;
@@ -10,10 +12,11 @@ export default interface IModifyContactSettings {
   handleAddressChange: (arg0: any) => void;
   selected: string;
   hideStatusIcon: boolean;
-  contacts: object;
-  register: object;
+  contacts: any;
+  register: Ref<any>;
   address: string;
   isValidAddress: boolean;
   onClickCancel: () => void;
   disabled: boolean;
+  control: object;
 }

@@ -1,12 +1,8 @@
-import React, { FC, useLayoutEffect } from 'react';
+import React, { FC } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Avatar } from 'react-native-elements';
 
-import { useSelector } from 'react-redux';
-
 import { IContactState } from 'state/contacts/types';
-import addHeader from 'navigation/headers/add';
-// import { COLORS } fomr 'assets/styles/_variables';
 
 import styles from './styles';
 

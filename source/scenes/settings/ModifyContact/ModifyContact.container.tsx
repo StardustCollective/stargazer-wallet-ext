@@ -26,7 +26,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
 
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit, register, control } = useForm({
     validationSchema: yup.object().shape({
       name: yup.string().required(),
       address: yup.string().required(),
@@ -58,8 +58,12 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
 
   const hideStatusIcon = !isValidAddress;
 
-  const handleAddressChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setAddress(ev.target.value.trim());
+  const handleAddressChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | string) => {
+    if (typeof ev === 'string') {
+      setAddress(ev.trim());
+    } else if (ev?.target) {
+      setAddress(ev.target.value.trim());
+    }
   }, []);
 
   const onSubmit = (data: any) => {
@@ -82,6 +86,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   return (
     <Container>
       <ModifyContact
+        control={control}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
         handleAddressChange={handleAddressChange}

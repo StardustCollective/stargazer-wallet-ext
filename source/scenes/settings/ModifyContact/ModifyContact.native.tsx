@@ -1,10 +1,8 @@
-import React, { useEffect, ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
+import React, { FC } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
-import { useForm } from 'react-hook-form';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 
-import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -16,15 +14,16 @@ import styles from './styles';
 import IModifyContactSettings from './types';
 
 const ModifyContact: FC<IModifyContactSettings> = ({
+  control,
   handleSubmit,
   onSubmit,
-  handleAddressChange,
   selected,
   hideStatusIcon,
   contacts,
   register,
   disabled,
   isValidAddress,
+  handleAddressChange,
   onClickCancel,
 }) => {
   const addressStyle = StyleSheet.flatten([styles.input, isValidAddress ? styles.verified : {}]);
@@ -33,6 +32,7 @@ const ModifyContact: FC<IModifyContactSettings> = ({
     <View style={styles.wrapper}>
       <TextV3.Caption color={COLORS_ENUMS.BLACK}>Contact Name</TextV3.Caption>
       <TextInput
+        control={control}
         name="name"
         type="text"
         fullWidth
@@ -46,6 +46,7 @@ const ModifyContact: FC<IModifyContactSettings> = ({
           <VerifiedIcon />
         </View>
         <TextInput
+          control={control}
           name="address"
           type="text"
           fullWidth

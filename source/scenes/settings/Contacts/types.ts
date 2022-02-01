@@ -5,7 +5,7 @@ export type IContactsView = {
 };
 
 export default interface IContactSettings {
-  contacts: Array<IContactBookState>;
+  contacts: IContactBookState;
   handleSelect: (id: string) => void;
   addContactLabel: string;
 }
