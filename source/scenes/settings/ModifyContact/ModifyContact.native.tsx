@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 
@@ -23,11 +23,12 @@ const ModifyContact: FC<IModifyContactSettings> = ({
   register,
   disabled,
   isValidAddress,
+  address,
   handleAddressChange,
   onClickCancel,
 }) => {
-  const addressStyle = StyleSheet.flatten([styles.input, isValidAddress ? styles.verified : {}]);
-
+  const addressStyle = isValidAddress ? styles.inputVerfied : undefined;
+  const verifiedStyle = hideStatusIcon ? styles.hide : styles.statusIcon;
   return (
     <View style={styles.wrapper}>
       <TextV3.Caption color={COLORS_ENUMS.BLACK}>Contact Name</TextV3.Caption>
@@ -39,46 +40,55 @@ const ModifyContact: FC<IModifyContactSettings> = ({
         inputContainerStyle={styles.input}
         defaultValue={selected && contacts[selected].name}
         inputRef={register}
+        containerStyle={styles.inputWrapper}
       />
-      <Text>Address</Text>
+      <TextV3.Caption color={COLORS_ENUMS.BLACK}>Address</TextV3.Caption>
       <View style={styles.inputWrap}>
-        <View style={styles.statusIcon}>
-          <VerifiedIcon />
+        <View style={verifiedStyle}>
+          <VerifiedIcon height={15} width={15} lineHeight={24} />
         </View>
         <TextInput
           control={control}
           name="address"
           type="text"
           fullWidth
-          inputContainerStyle={addressStyle}
+          inputContainerStyle={styles.input}
+          inputStyle={addressStyle}
+          containerStyle={styles.inputWrapper}
           defaultValue={address}
           onChange={handleAddressChange}
           value={address}
           inputRef={register}
         />
       </View>
-      <Text>Memo</Text>
+      <TextV3.Caption color={COLORS_ENUMS.BLACK}>Memo</TextV3.Caption>
       <TextInput
+        control={control}
         name="memo"
         fullWidth
         multiline
-        variant={styles.textareaText}
+        containerStyle={styles.textareaWrapper}
+        inputContainerStyle={styles.textareaText}
         defaultValue={selected && contacts[selected].memo}
         inputRef={register}
       />
       <View style={styles.actions}>
-        <ButtonV3 
-          title="Cancel" 
-          type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE } 
-          extraStyle={styles.cancel} 
-          onPress={onClickCancel}/>
-        <ButtonV3 
+        <ButtonV3
+          title="Cancel"
+          type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE}
+          extraStyles={styles.cancel}
+          extraTitleStyles={styles.cancelTitle}
+          onPress={onClickCancel}
+        />
+        <ButtonV3
           type={BUTTON_TYPES_ENUM.PRIMARY}
-          size={BUTTON_SIZES_ENUM.LARGE} 
-          extraStyle={styles.save} 
-          disabled={disabled} 
-          title="Submit" 
-          onPress={handleSubmit(data => onSubmit(data)}/>
+          extraStyles={styles.save}
+          disabled={disabled}
+          title="Save"
+          onPress={handleSubmit((data) => {
+            onSubmit(data);
+          })}
+        />
       </View>
     </View>
   );

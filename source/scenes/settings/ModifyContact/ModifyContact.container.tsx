@@ -8,6 +8,7 @@ import { showMessage } from 'react-native-flash-message';
 import { RootState } from 'state/store';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
+import { Text } from 'react-native';
 import Container from 'scenes/common/Container';
 
 import IContactBookState from 'state/contacts/types';
@@ -18,13 +19,35 @@ import ModifyContact from './ModifyContact';
 import { IModifyContactView } from './types';
 
 const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) => {
-  const controller = useController();
+  // const controller = useController();
 
-  const { type } = route.params;
-  const { selected } = route.params;
+  // const { type } = route.params;
+  // const { selected } = route.params;
+  const selected = 'trini';
 
-  const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
-  const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
+  // const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
+  // const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
+  // const activeWallet = {
+  //   wallets: [
+  //     {
+
+  //     }
+  //   ]
+  // }
+  const contacts = {
+    trini: {
+      id: 'trini',
+      name: 'Trini',
+      address: '0xa49706472Af0Daa902459917eB56ccB3085DF040',
+      memo: 'I am trini what is your contact',
+    },
+    gussy: {
+      id: 'gussy',
+      name: 'Gussy',
+      address: '0xa49706472Af0Daa902459917eB56ccB3085DF040',
+      memo: 'I am guster what is your contact',
+    },
+  };
 
   const { handleSubmit, register, control } = useForm({
     validationSchema: yup.object().shape({
@@ -43,28 +66,33 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   }, []);
 
   const isValidAddress = useMemo(() => {
-    if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
-      return (
-        controller.wallet.account.isValidDAGAddress(address) || controller.wallet.account.isValidERC20Address(address)
-      );
-    }
-    const asset = activeWallet.assets[0];
-    if (asset.type === AssetType.Constellation) {
-      return controller.wallet.account.isValidDAGAddress(address);
-    }
+    // if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
+    // return (
+    //   // controller.wallet.account.isValidDAGAddress(address) || controller.wallet.account.isValidERC20Address(address)
+    // );
+    // }
+    // const asset = activeWallet.assets[0];
+    // if (asset.type === AssetType.Constellation) {
+    //   // return controller.wallet.account.isValidDAGAddress(address);
+    // }
 
-    return controller.wallet.account.isValidERC20Address(address);
+    // return controller.wallet.account.isValidERC20Address(address);
+
+    return false; //REMOVE
   }, [address]);
 
   const hideStatusIcon = !isValidAddress;
 
-  const handleAddressChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | string) => {
-    if (typeof ev === 'string') {
-      setAddress(ev.trim());
-    } else if (ev?.target) {
-      setAddress(ev.target.value.trim());
-    }
-  }, []);
+  const handleAddressChange = useCallback(
+    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | React.BaseSyntheticEvent>) => {
+      if (ev.nativeEvent?.text) {
+        setAddress(ev.nativeEvent.text.trim());
+      } else if (ev.target) {
+        setAddress(ev.target.value.trim());
+      }
+    },
+    []
+  );
 
   const onSubmit = (data: any) => {
     if (!isValidAddress) {
@@ -75,11 +103,14 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
       return;
     }
 
-    controller.contacts.modifyContact(type, data.name, data.address.trim(), data.memo, selected);
+    // controller.contacts.modifyContact(type, data.name, data.address.trim(), data.memo, selected);
     navigation.goBack();
   };
 
-  const onClickCancel = () => navigation.goBack();
+  const onClickCancel = () => {
+    console.log('click cancel');
+    // navigation.goBack();
+  };
 
   const disabled = !address || !isValidAddress;
 
@@ -96,6 +127,8 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
         register={register}
         onClickCancel={onClickCancel}
         disabled={disabled}
+        isValidAddress={isValidAddress}
+        address={address}
       />
     </Container>
   );
