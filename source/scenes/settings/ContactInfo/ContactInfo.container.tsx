@@ -20,25 +20,9 @@ const ContactInfoContainer: FC<IContactInfoView> = ({ route, navigation }) => {
   // const [isCopied, copyText] = useCopyClipboard();
   const [isCopied, copyText] = useState(false);
 
-  // const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
-  const contacts = {
-    trini: {
-      id: 'trini',
-      name: 'Trini',
-      address: '0xa49706472Af0Daa902459917eB56ccB3085DF040',
-      memo: 'I am trini what is your contact',
-    },
-    gussy: {
-      id: 'gussy',
-      name: 'Gussy',
-      address: '0xa49706472Af0Daa902459917eB56ccB3085DF040',
-      memo: 'I am guster what is your contact',
-    },
-  };
+  const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
 
-  const selectedContactId = route?.params?.selected || 'trini';
-
-  console.log('selectedContactId', selectedContactId);
+  const selectedContactId = route?.params?.selected;
 
   const handleDelete = () => {
     // controller.contacts.deleteContact(selectedContactId);
