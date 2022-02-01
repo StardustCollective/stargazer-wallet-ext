@@ -8,8 +8,7 @@ const REQUEST_MAP = {
     accounts: SUPPORTED_WALLET_METHODS.getAccounts,
     blockNumber: SUPPORTED_WALLET_METHODS.getBlockNumber,
     estimateGas: SUPPORTED_WALLET_METHODS.estimateGas,
-    sendTransaction: SUPPORTED_WALLET_METHODS.sendTransaction,
-    signMessage: SUPPORTED_WALLET_METHODS.signMessage
+    sendTransaction: SUPPORTED_WALLET_METHODS.sendTransaction
   },
   DAG: {
     chainId: SUPPORTED_WALLET_METHODS.getChainId,
