@@ -42,14 +42,13 @@ const watchFolders = [
 ];
 
 module.exports = async () => {
-
   const {
-    resolver: { sourceExts, assetExts }
+    resolver: {sourceExts, assetExts},
   } = await getDefaultConfig();
 
   return {
     transformer: {
-      babelTransformerPath: require.resolve("./transformerHandler.js"),
+      babelTransformerPath: require.resolve('./transformerHandler.js'),
       getTransformOptions: async () => ({
         transform: {
           experimentalImportSupport: false,

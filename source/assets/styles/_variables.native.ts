@@ -20,6 +20,7 @@ export const COLORS = {
   red_100: '#ff3b30',
   grey_50: '#F2F2F2',
   grey_100: '#E6E6E6',
+  gray_100: '#888888',
   grey_light: '#f5f5f5',
   grey_dark: '#474747',
   gray_200: '#c4c4c4',
@@ -32,8 +33,6 @@ export const COLORS = {
   gray_medium: '#979797',
   gray_hover: '#dedede',
   gray_disabled: '#dadada',
-  red: '#de0c00',
-  red_100: '#ff3b30',
 };
 
 export const FONT_WEIGHTS = {
@@ -47,4 +46,4 @@ export const FONT_WEIGHTS = {
 export const SHADOWS = {
   shadow_btn: '0px 1px 5px rgba(0, 0, 0, 0.25)',
   shadow_tooltip: '0px 0px 5px rgba(0, 0, 0, 0.25)',
-}
+};
