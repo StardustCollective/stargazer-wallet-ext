@@ -45,7 +45,6 @@ const Button: FC<IButton> = ({
     if (linkTo !== '#') rnLinkTo(linkTo);
   };
 
-  console.log('Button Native Styles');
   return (
     <RNEButton
       testID={id}

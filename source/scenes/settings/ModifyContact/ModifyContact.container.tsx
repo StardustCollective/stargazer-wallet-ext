@@ -44,9 +44,9 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
 
   const isValidAddress = useMemo(() => {
     if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
-    return (
-      // controller.wallet.account.isValidDAGAddress(address) || controller.wallet.account.isValidERC20Address(address)
-    );
+      return (
+        controller.wallet.account.isValidDAGAddress(address) || controller.wallet.account.isValidERC20Address(address)
+      );
     }
     const asset = activeWallet.assets[0];
     if (asset.type === AssetType.Constellation) {

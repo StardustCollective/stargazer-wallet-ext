@@ -39,7 +39,6 @@ const TooltipComponent: FC<ITooltip> = ({
     };
   }
 
-  console.log('visible in tooltip', visible);
   return (
     <View style={styles.container}>
       <Tooltip
