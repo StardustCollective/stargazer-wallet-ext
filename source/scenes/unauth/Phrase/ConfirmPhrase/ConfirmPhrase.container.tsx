@@ -101,7 +101,7 @@ const ConfirmPhraseContainer = () => {
     } else {
       WalletController.createWallet('Main Wallet', phrases, true);
       WalletController.onboardHelper.reset();
-      // navigationUtil.replace( navigation, screens.authorized.root);
+      navigationUtil.replace( navigation, screens.authorized.root);
     }
   };
 
