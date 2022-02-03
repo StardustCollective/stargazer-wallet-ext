@@ -11,9 +11,9 @@ import walletSelectors from 'selectors/walletsSelectors';
 
 import IVaultState, { IAssetState } from 'state/vault/types';
 import { INFTInfoState, INFTListState } from 'state/nfts/types';
-import IAssetListState from '../../../state/assets/types';
+import IAssetListState from 'state/assets/types';
 
-import styles from './Home.scss';
+import styles from './../Home.scss';
 
 const AssetsPanel: FC = () => {
   const controller = useController();
