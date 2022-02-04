@@ -8,6 +8,8 @@ import Icon from 'components/Icon';
 import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { AssetType, IAccountDerived } from 'state/vault/types';
 
+import { ellipsis } from 'scenes/home/helpers';
+
 import StargazerIcon from 'assets/images/logo-s.svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
@@ -31,7 +33,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
     return (
       <Icon
         name="check-circle"
-        spaced={false}
+        // spaced={false}
         iconContainerStyles={styles.iconCheckWrapper}
         iconStyles={styles.iconCheck}
         style="solid"
@@ -47,7 +49,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
           ...styles.infoIcon,
         }}
         iconContainerStyle={styles.infoIconWrapper}
-        buttonStyle={{ backgroundColor: 'transparent' }}
+        buttonStyle={{ backgroundColor: 'transparent', padding: 0, alignSelf: 'flex-end' }}
         onPress={(ev) => handleManageWallet(ev, walletId)}
       />
     );
@@ -62,7 +64,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
   const renderStargazerIcon = () => {
     return (
       <View style={styles.stargazerIconWrapper}>
-        <StargazerIcon width={25} height={25} style={{ backgroundColor: COLORS_ENUMS.primary }} />
+        <StargazerIcon width={24} height={24} style={{ backgroundColor: COLORS_ENUMS.primary }} />
       </View>
     );
   };
@@ -71,8 +73,8 @@ const WalletsComponent: FC<IWalletsSettings> = ({
     const Logo = assets[AssetType.Ethereum].logo;
 
     return (
-      <View style={styles.stargazerIconWrapper}>
-        <Logo width={25} height={25} style={{ backgroundColor: 'transparent' }} />
+      <View style={StyleSheet.flatten([styles.stargazerIconWrapper, styles.assetIconWrapperETH])}>
+        <Logo width={24} height={24} iconStyles={styles.assetIcon} />
       </View>
     );
   };
@@ -81,8 +83,8 @@ const WalletsComponent: FC<IWalletsSettings> = ({
     const Logo = assets[AssetType.Constellation].logo;
 
     return (
-      <View style={styles.stargazerIconWrapper}>
-        <Logo width={25} height={25} style={{ backgroundColor: 'white' }} />
+      <View style={StyleSheet.flatten([styles.stargazerIconWrapper, styles.assetIconWrapperDAG])}>
+        <Logo width={24} height={24} iconStyles={styles.assetIcon} />
       </View>
     );
   };
@@ -131,7 +133,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
                 i === privKeyAccounts.length - 1 ? styles.lastChild : {},
               ]);
               return (
-                <TouchableOpacity pointerkey={wallet.id} onPress={onHandleSwitchWallet(wallet.id, wallet.accounts)}>
+                <TouchableOpacity key={wallet.id} onPress={onHandleSwitchWallet(wallet.id, wallet.accounts)}>
                   <View style={walletStyles} key={wallet.id}>
                     {renderCheckIcon(wallet.id, activeWallet.id)}
                     {assets[wallet.supportedAssets.includes(KeyringAssetType.ETH)]
@@ -141,9 +143,11 @@ const WalletsComponent: FC<IWalletsSettings> = ({
                       <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
                         {wallet.label}
                       </TextV3.Caption>
-                      <TextV3.Caption extraStyles={styles.textSmall}>{wallet.accounts[0].address}</TextV3.Caption>
+                      <TextV3.Caption extraStyles={styles.textSmall}>
+                        {ellipsis(wallet.accounts[0].address)}
+                      </TextV3.Caption>
                     </View>
-                    {renderInfoIcon(wallet.id)}
+                    <View>{renderInfoIcon(wallet.id)}</View>
                   </View>
                 </TouchableOpacity>
               );

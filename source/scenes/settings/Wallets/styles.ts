@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
   walletWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     paddingTop: 0,
     paddingBottom: 0,
     paddingRight: 24,
@@ -35,9 +36,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     transition: 'all 0.3s',
     backgroundColor: COLORS.white,
-    borderBottom: `1px solid ${COLORS.gray_light}`,
-    position: 'relative',
-    borderColor: 'black',
+    borderBottomWidth: 1,
+    borderColor: COLORS.gray_light,
   },
   text: {
     fontWeight: '500',
@@ -76,6 +76,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  assetIconWrapperDAG: {
+    backgroundColor: COLORS.white,
+  },
+  assetIconWrapperETH: {
+    backgroundColor: COLORS.gray_light_100,
+  },
+  assetIcon: {
+    color: COLORS.gray_light_100,
+  },
   icon: {
     fontSize: 24,
     color: COLORS.primary,
@@ -104,6 +113,7 @@ const styles = StyleSheet.create({
   },
   infoIconWrapper: {
     color: 'white',
+    padding: 0,
   },
   infoIcon: {
     size: 20,
