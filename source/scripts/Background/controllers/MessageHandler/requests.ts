@@ -59,9 +59,9 @@ export const handleRequest = async (
                 }));
             }
             
-            let signatureRequest: ConstellationSignatureRequest;
+            let signatureRequestEncoded: string;
             try{
-                signatureRequest = masterController.stargazerProvider.parseSignatureRequest(args[0]);
+                signatureRequestEncoded = masterController.stargazerProvider.normalizeSignatureRequest(args[0]);
             }catch(e){
                 return Promise.reject(new CustomEvent(message.id, {
                     detail: e instanceof Error ? e.message : 'signMessage-error'
@@ -70,7 +70,7 @@ export const handleRequest = async (
         
             const data = {
                 origin,
-                signatureRequest,
+                signatureRequestEncoded,
             }
 
             const popup = await masterController.createPopup(

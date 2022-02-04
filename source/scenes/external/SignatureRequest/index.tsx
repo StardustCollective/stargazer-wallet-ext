@@ -7,18 +7,18 @@ import Button from 'components/Button';
 import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
 import { AssetType } from '../../../state/vault/types';
-import { ConstellationSignatureRequest } from '../../../scripts/Provider/StargazerProvider';
 import walletsSelectors from 'selectors/walletsSelectors'
 
 const SignatureRequest = () => {
   const controller = useController();
   const wallets = useSelector(walletsSelectors.selectAllAccounts);
   const { windowId, data: stringData } = queryString.parse(location.search);
-  const { origin, signatureRequest }:
-    { origin: string, signatureRequest: ConstellationSignatureRequest } = JSON.parse(stringData as string);
+  const { origin, signatureRequestEncoded }:
+    { origin: string, signatureRequestEncoded: string } = JSON.parse(stringData as string);
   const account = controller.stargazerProvider.getAssetByType(AssetType.Constellation);
   const balance = controller.stargazerProvider.getBalance();
 
+  const signatureRequest = JSON.parse(window.atob(signatureRequestEncoded));
 
   const handleCancel = async () => {
     const background = await browser.runtime.getBackgroundPage();
@@ -31,7 +31,6 @@ const SignatureRequest = () => {
   useEffect(() => { }, []);
 
   const handleSign = async () => {
-    const signatureRequestEncoded = window.btoa(JSON.stringify(signatureRequest));
     const signature = controller.stargazerProvider.signMessage(signatureRequestEncoded);
 
     const background = await browser.runtime.getBackgroundPage();
@@ -76,7 +75,9 @@ const SignatureRequest = () => {
         </section>
         <section className={styles.message}>
           <span>Message:</span>
-          {signatureRequest.message.content}
+          <div className={styles.content}>
+            {signatureRequest.message.content}
+          </div>
         </section>
         {Object.keys(signatureRequest.message.metadata).length > 0 && <>
           <label>With metadata:</label>

@@ -10,6 +10,7 @@
   bottom: 0;
   z-index: 0;
   background: $white;
+  overflow: auto;
 
   .frame {
     width: 100%;
@@ -21,6 +22,7 @@
     position: relative;
 
     section.heading {
+      padding-top: 20px;
       display: flex;
       background: $gray-light;
       width: 100%;
@@ -57,16 +59,22 @@
       padding: 0px 24px;
       display: flex;
       color: $gray-100;
-      font-size: 16px;
-      line-height: 42px;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
       font-weight: 500;
       flex-direction: column;
       border-top: 1px solid $gray-light;
       border-bottom: 1px solid $gray-light;
 
       & > span {
+        font-size: 16px;
         line-height: 24px;
         color: $black;
+      }
+
+      & > div.content{
+        padding: 10px 0;
       }
     }
 
@@ -78,7 +86,6 @@
       padding: 0px 24px;
       color: $black;
       font-size: 16px;
-      line-height: 42px;
       font-weight: 500;
       
       border-top: 1px solid $gray-light;
@@ -104,7 +111,6 @@
       padding: 0px 24px;
       color: $black;
       font-size: 16px;
-      line-height: 42px;
       font-weight: 500;
       
       border-top: 1px solid $gray-light;
@@ -117,7 +123,7 @@
       }
 
       & > small{
-        line-height: 24px;
+        font-size: 12px;
         color: $gray-100;
       }
     }
@@ -137,13 +143,13 @@
     }
 
     section.actions {
+      margin-top: 20px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 36px;
-      bottom: 56px;
-      position: absolute;
+      padding-bottom: 20px;
       box-sizing: border-box;
 
       .close,

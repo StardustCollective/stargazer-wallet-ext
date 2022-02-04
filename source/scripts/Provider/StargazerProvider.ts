@@ -122,7 +122,7 @@ export class StargazerProvider {
     return stargazerAsset && balances[AssetType.Constellation];
   }
 
-  parseSignatureRequest(encodedSignatureRequest: string): ConstellationSignatureRequest{
+  normalizeSignatureRequest(encodedSignatureRequest: string): string{
     let signatureRequest: ConstellationSignatureRequest;
     try{
         signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
@@ -154,7 +154,7 @@ export class StargazerProvider {
 
     signatureRequest.message.metadata = parsedMetadata;
 
-    return signatureRequest;
+    return window.btoa(JSON.stringify(signatureRequest));
   }
 
   signMessage(msg: string) {
