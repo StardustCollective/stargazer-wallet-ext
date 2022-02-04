@@ -1,7 +1,6 @@
-
 //////////////////////
 // Modules
-///////////////////// 
+/////////////////////
 
 import React from 'react';
 import clsx from 'clsx';
@@ -9,14 +8,14 @@ import DynamicFont from 'react-dynamic-font';
 
 //////////////////////
 // Styles
-///////////////////// 
+/////////////////////
 
 import styles from './TextV3.scss';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 //////////////////////
 // Enums
-///////////////////// 
+/////////////////////
 
 export enum TEXT_ALIGN_ENUM {
   LEFT = 0,
@@ -26,7 +25,7 @@ export enum TEXT_ALIGN_ENUM {
 
 //////////////////////
 // Types
-///////////////////// 
+/////////////////////
 
 type ITextProps = {
   children?: React.ReactNode;
@@ -35,16 +34,16 @@ type ITextProps = {
   extraStyles?: string;
   color?: COLORS_ENUMS;
   align?: TEXT_ALIGN_ENUM;
-}
+};
 
 //////////////////////
 // Components
-///////////////////// 
+/////////////////////
 
 /*
- * Dynamic Font Resizing 
+ * Dynamic Font Resizing
  * Note: For the Dynamic font sized to work properly a `max-width`,
- * and `overflow: hidden` must be assigned to the Text via 
+ * and `overflow: hidden` must be assigned to the Text via
  * the extraStyles prop.
  */
 
@@ -55,9 +54,8 @@ const TextV3 = {
     color = COLORS_ENUMS.WHITE,
     align = TEXT_ALIGN_ENUM.LEFT,
     textStyle = '',
-    extraStyles = ''
+    extraStyles = '',
   }: ITextProps) => {
-
     let colorStyle = '';
     let alignStyle = '';
 
@@ -77,24 +75,13 @@ const TextV3 = {
       alignStyle = 't-alignRight';
     }
 
-    const ParentComponent  = dynamic ? 'div' : 'span';
+    const ParentComponent = dynamic ? 'div' : 'span';
 
     return (
-      <ParentComponent className={clsx([
-        styles.base,
-        colorStyle,
-        alignStyle,
-        textStyle,
-        extraStyles,
-      ])}
-      >
-        {dynamic ?
-          (<DynamicFont content={children as string} />)
-          :
-          ([children])
-        }
+      <ParentComponent className={clsx([styles.base, colorStyle, alignStyle, textStyle, extraStyles])}>
+        {dynamic ? <DynamicFont content={children as string} /> : [children]}
       </ParentComponent>
-    )
+    );
   },
   HeaderDisplay: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
@@ -107,7 +94,7 @@ const TextV3 = {
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
   HeaderLarge: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
@@ -120,33 +107,21 @@ const TextV3 = {
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
   Header: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base
-        dynamic={dynamic}
-        color={color}
-        textStyle={styles.header}
-        align={align}
-        extraStyles={extraStyles}
-      >
+      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.header} align={align} extraStyles={extraStyles}>
         {children}
       </TextV3.base>
-    )
+    );
   },
   Body: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base
-        dynamic={dynamic}
-        color={color}
-        textStyle={styles.body}
-        align={align}
-        extraStyles={extraStyles}
-      >
+      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.body} align={align} extraStyles={extraStyles}>
         {children}
       </TextV3.base>
-    )
+    );
   },
   BodyStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
@@ -159,20 +134,14 @@ const TextV3 = {
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
   Caption: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base
-        dynamic={dynamic}
-        color={color}
-        textStyle={styles.caption}
-        align={align}
-        extraStyles={extraStyles}
-      >
+      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.caption} align={align} extraStyles={extraStyles}>
         {children}
       </TextV3.base>
-    )
+    );
   },
   CaptionStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
@@ -185,8 +154,8 @@ const TextV3 = {
       >
         {children}
       </TextV3.base>
-    )
-  }
-}
+    );
+  },
+};
 
 export default TextV3;
