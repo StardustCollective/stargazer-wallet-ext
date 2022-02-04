@@ -5,8 +5,6 @@ import { IMasterController } from '../';
 import { getERC20DataDecoder } from 'utils/ethUtil';
 import { SUPPORTED_WALLET_METHODS } from './types';
 
-import {ConstellationSignatureRequest} from '../../../Provider/StargazerProvider';
-
 export const handleRequest = async (
     port: Runtime.Port,
     masterController: IMasterController,
@@ -89,7 +87,7 @@ export const handleRequest = async (
                     if (ev.detail.windowId === windowId) {
                         port.postMessage({
                             id: message.id,
-                            data: {result: ev.detail.result, data: {signature: ev.detail.signature ?? null}},
+                            data: {result: ev.detail.result, data: ev.detail.signature},
                         });
                         setPendingWindow(false);
                     }
@@ -99,7 +97,7 @@ export const handleRequest = async (
             
             const handler = (id: number)=>{
                 if (popup && id === popup.id) {
-                    port.postMessage({ id: message.id, data: { result: false, data: {signature: null} } });
+                    port.postMessage({ id: message.id, data: { result: false, data: null } });
                     setPendingWindow(false);
                     browser.windows.onRemoved.removeListener(handler);
                 }    
@@ -111,7 +109,15 @@ export const handleRequest = async (
         }
         case SUPPORTED_WALLET_METHODS.getPublicKey:{
             if(asset === 'DAG'){
-                result = masterController.stargazerProvider.getPublicKey();
+                try{
+                    result = {
+                        result: true,
+                        data: masterController.stargazerProvider.getPublicKey()
+                    };
+                }catch(e){
+                    port.postMessage({ id: message.id, data: { result: false, data: null } });
+                }
+                
             }else{
                 return Promise.reject(new CustomEvent(message.id, {
                     detail: 'getPublicKey method is not allowed in chain:ethereum'

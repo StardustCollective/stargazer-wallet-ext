@@ -66,23 +66,16 @@ const SignatureRequest = () => {
           <span>{origin}</span>
         </div>
         <label>You are signing:</label>
-        <section className={styles.domain}>
-          <span>Domain Details:</span>
-          <small>ChainId: {signatureRequest.domain.chainId}</small>
-          <small>Name: {signatureRequest.domain.name}</small>
-          <small>Uri: {signatureRequest.domain.uri}</small>
-          <small>Version: {signatureRequest.domain.version}</small>
-        </section>
         <section className={styles.message}>
           <span>Message:</span>
           <div className={styles.content}>
-            {signatureRequest.message.content}
+            {signatureRequest.content}
           </div>
         </section>
-        {Object.keys(signatureRequest.message.metadata).length > 0 && <>
+        {Object.keys(signatureRequest.metadata).length > 0 && <>
           <label>With metadata:</label>
           <section className={styles.metadata}>
-            {Object.entries(signatureRequest.message.metadata).map(
+            {Object.entries(signatureRequest.metadata).map(
               ([key, value]) => (<small>{key} = {value}</small>)
             )}
           </section>

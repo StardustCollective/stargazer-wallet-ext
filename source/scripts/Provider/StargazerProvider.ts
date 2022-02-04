@@ -7,16 +7,8 @@ import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 
 export type ConstellationSignatureRequest = {
-  domain: {
-    chainId: number;
-    name: string;
-    uri: string;
-    version: string;
-  },
-  message:{
-    content: string,
-    metadata: Record<string, any>
-  }
+  content: string,
+  metadata: Record<string, any>
 }
 
 export class StargazerProvider {
@@ -50,7 +42,7 @@ export class StargazerProvider {
     const origin = current && current.origin;
 
     if (!origin) {
-      return {};
+      throw new Error('StargazerProvider.getPublicKey: No origin');
     }
 
     const _origin = origin.replace(/https?:\/\//, '');
@@ -58,16 +50,16 @@ export class StargazerProvider {
     const dappData = whitelist[_origin];
 
     if (!dappData?.accounts?.Constellation) {
-      return {};
+      throw new Error('StargazerProvider.getPublicKey: Not whitelisted');
     }
 
     const { activeWallet }: IVaultState = vault;
 
     if (!activeWallet) {
-      return {};
+      throw new Error('StargazerProvider.getPublicKey: No active wallet');
     }
 
-    return {publicKey:dag4.account.keyTrio.publicKey};
+    return dag4.account.keyTrio.publicKey;
   }
 
   getAccounts(): Array<string> {
@@ -131,28 +123,22 @@ export class StargazerProvider {
     }
 
     let test = true;
-    test = test && typeof signatureRequest?.domain === 'object' && signatureRequest?.domain !== null;
-    test = test && typeof signatureRequest.domain?.chainId === 'number';
-    test = test && typeof signatureRequest.domain?.name === 'string';
-    test = test && typeof signatureRequest.domain?.uri === 'string';
-    test = test && typeof signatureRequest.domain?.version === 'string';
-
-    test = test && typeof signatureRequest?.message === 'object' && signatureRequest?.message !== null;
-    test = test && typeof signatureRequest.message.content === 'string';
-    test = test && typeof signatureRequest.message.metadata === 'object' && signatureRequest.message.metadata !== null;
+    test = test && typeof signatureRequest === 'object' && signatureRequest !== null;
+    test = test && typeof signatureRequest.content === 'string';
+    test = test && typeof signatureRequest.metadata === 'object' && signatureRequest.metadata !== null;
 
     if(!test){
       throw new Error('SignatureRequest does not match spec');
     }
 
     let parsedMetadata: Record<string, any> = {};
-    for(const [key, value] of Object.entries(signatureRequest.message.metadata)){
+    for(const [key, value] of Object.entries(signatureRequest.metadata)){
       if(["boolean", "number", "string"].includes(typeof value) || value === null){
         parsedMetadata[key] = value;
       }
     }
 
-    signatureRequest.message.metadata = parsedMetadata;
+    signatureRequest.metadata = parsedMetadata;
 
     return window.btoa(JSON.stringify(signatureRequest));
   }
