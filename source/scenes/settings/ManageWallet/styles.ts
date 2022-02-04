@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.rubik,
   },
   icon: {
-    fontSize: 18,
+    fontSize: 24,
     color: COLORS.gray,
   },
   iconWrapper: {
