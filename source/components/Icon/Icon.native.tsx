@@ -1,6 +1,4 @@
 import React, { FC } from 'react';
-import { OverridableComponent } from '@material-ui/core/OverridableComponent';
-import { SvgIconTypeMap } from '@material-ui/core/SvgIcon';
 
 import { Icon as RNEIcon, Image } from 'react-native-elements';
 import { View, StyleSheet } from 'react-native';
@@ -8,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 import styles from './styles';
 
 interface IIcon {
-  Component: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> | string;
+  Component: React.ReactNode | string;
   name: string;
   fontType: string;
   iconStyles: object;
@@ -53,7 +51,10 @@ const IconComponent: FC<IIcon> = ({
   }
 
   if (Component) {
-    <Component style={composedIconStyles} />;
+    // this doesn't seem to work
+    <View style={composedContainerStyles}>
+      <Component width={width} iconStyles={composedIconStyles} />
+    </View>;
   }
 
   return (
