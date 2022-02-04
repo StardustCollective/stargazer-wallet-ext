@@ -3,14 +3,15 @@ import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   base: {
-    minWidth: 160,
-    paddingHorizontal: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: 160,
+    paddingHorizontal: 30,
     borderWidth: 0,
     borderStyle: 'solid',
     borderColor: 'rgba(0,0,0,0)',
   },
+  containerStyle: {},
   buttonSmall: {
     height: 32,
     borderRadius: 20,
@@ -38,4 +39,3 @@ const styles = StyleSheet.create({
 });
 
 export default styles;
-
