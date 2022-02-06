@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
+import { FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   base: {
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {},
   buttonSmall: {
-    height: 32,
+    height: 40,
     borderRadius: 20,
   },
   buttonLarge: {

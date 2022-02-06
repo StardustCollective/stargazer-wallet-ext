@@ -8,8 +8,8 @@ import styles from './styles';
 interface ITextInput {
   name: string;
   placeholder: string;
-  type?: 'text' | 'password' | 'number';
-  label?: string;
+  type: 'text' | 'password' | 'number';
+  label: string;
   control: any;
   inputContainerStyle: {};
   inputStyle: {};
@@ -36,27 +36,49 @@ const TextInput: FC<ITextInput> = ({
   const inputContainerStyles = StyleSheet.flatten([styles.inputContainer, inputContainerStyle]);
   const inputComposedStyles = StyleSheet.flatten([styles.input, inputStyle]);
 
+  const [showed, setShowed] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowed(!showed);
+  };
+
+  const passwordProps =
+    type === 'password'
+      ? {
+          rightIcon: {
+            name: showed ? 'visibility' : 'visibility-off',
+            size: 20,
+            onPress: handleClickShowPassword,
+          },
+          rightIconContainerStyle: {
+            paddingRight: 15,
+          },
+        }
+      : {};
+
+  const secureTextEntry = type === 'password' && !showed;
   return (
     <Controller
       control={control}
       as={
         <RNEInput
           placeholder={placeholder}
-          secureTextEntry={type === 'password'}
+          secureTextEntry={secureTextEntry}
           inputStyle={inputComposedStyles}
           inputContainerStyle={inputContainerStyles}
           labelStyle={styles.label}
           label={label}
           keyboardType={keyboardType}
           multiline={multiline}
-          {...otherProps}
+          {...passwordProps} // eslint-disable-line
+          {...otherProps} // eslint-disable-line
         />
       }
       onChange={([text]) => {
         return text;
       }}
       name={name}
-      onChangeName={'onChangeText'}
+      onChangeName="onChangeText"
     />
   );
 };
