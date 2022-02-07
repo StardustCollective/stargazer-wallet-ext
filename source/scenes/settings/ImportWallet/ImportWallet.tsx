@@ -7,7 +7,6 @@ import EthereumIcon from 'assets/images/svg/ethereum.svg';
 import ConstellationIcon from 'assets/images/svg/constellation.svg';
 
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { useLinkTo } from '@react-navigation/native';
 
 import styles from './ImportWallet.scss';
 
@@ -21,7 +20,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
         <span>Multi Chain Wallet</span>
         <ArrowIcon />
       </section>
-      <section id="importWallet-ethereum" className={styles.menu} onClick={() => handleImport(KeyringNetwork.Ethereum)}>
+      <section id="importWallet-ethereum" className={styles.menu} onClick={handleImport(KeyringNetwork.Ethereum)}>
         <Icon Component={EthereumIcon} />
         <span>Ethereum</span>
         <ArrowIcon />
@@ -29,7 +28,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
       <section
         id="importWallet-constellation"
         className={styles.menu}
-        onClick={() => handleImport(KeyringNetwork.Constellation)}
+        onClick={handleImport(KeyringNetwork.Constellation)}
       >
         <Icon Component={ConstellationIcon} />
         <span>Constellation</span>
