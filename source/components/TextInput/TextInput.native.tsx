@@ -11,12 +11,14 @@ interface ITextInput {
   type: 'text' | 'password' | 'number';
   label: string;
   control: any;
-  inputContainerStyle: {};
-  inputStyle: {};
+  inputContainerStyle: object;
+  inputStyle: object;
   multiline: boolean;
+  fullWidth: boolean;
 }
 
 const TextInput: FC<ITextInput> = ({
+  fullWidth = true,
   type = 'text',
   placeholder = '',
   label = '',
@@ -33,7 +35,11 @@ const TextInput: FC<ITextInput> = ({
     keyboardType = 'numeric';
   }
 
-  const inputContainerStyles = StyleSheet.flatten([styles.inputContainer, inputContainerStyle]);
+  const inputContainerStyles = StyleSheet.flatten([
+    styles.inputContainer,
+    fullWidth ? styles.fullWidth : null,
+    inputContainerStyle,
+  ]);
   const inputComposedStyles = StyleSheet.flatten([styles.input, inputStyle]);
 
   const [showed, setShowed] = useState(false);

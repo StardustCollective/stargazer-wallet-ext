@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   buttonSmall: {
     height: 40,
     borderRadius: 20,
+    minWidth: 144,
   },
   buttonLarge: {
     height: 48,
@@ -35,6 +36,13 @@ const styles = StyleSheet.create({
   },
   accentOneButton: {
     backgroundColor: COLORS.accent_1,
+  },
+  secondaryOutline: {
+    backgroundColor: COLORS.white,
+    color: COLORS.gray_dark,
+  },
+  secondaryOutlineTitle: {
+    color: COLORS.gray_dark,
   },
 });
 

@@ -1,14 +1,6 @@
-//////////////////////
-// Modules
-/////////////////////
-
 import React from 'react';
 import clsx from 'clsx';
 import DynamicFont from 'react-dynamic-font';
-
-//////////////////////
-// Styles
-/////////////////////
 
 import styles from './TextV3.scss';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -151,6 +143,34 @@ const TextV3 = {
         textStyle={styles.captionStrong}
         align={align}
         extraStyles={extraStyles}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
+  Label: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.label}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
+  Description: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.description}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
       >
         {children}
       </TextV3.base>

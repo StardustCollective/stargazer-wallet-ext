@@ -33,6 +33,7 @@ type ITextProps = {
   extraStyles?: StyleProp<TextStyle>;
   color?: COLORS_ENUMS;
   align?: TEXT_ALIGN_ENUM;
+  uppercase?: boolean;
 };
 
 //////////////////////
@@ -45,6 +46,7 @@ const TextV3 = {
     dynamic = false,
     color = COLORS_ENUMS.WHITE,
     align = TEXT_ALIGN_ENUM.LEFT,
+    uppercase = false,
     textStyle,
     extraStyles = {},
   }: ITextProps) => {
@@ -74,7 +76,13 @@ const TextV3 = {
       alignStyle = styles.alignRight;
     }
 
-    const flatStyles = StyleSheet.flatten([styles.base, textStyle, alignStyle, colorStyle]);
+    const flatStyles = StyleSheet.flatten([
+      styles.base,
+      textStyle,
+      alignStyle,
+      colorStyle,
+      uppercase && styles.uppercase,
+    ]);
 
     const composedStyle = StyleSheet.compose(flatStyles, extraStyles);
 
@@ -89,7 +97,7 @@ const TextV3 = {
       </Text>
     );
   },
-  HeaderDisplay: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  HeaderDisplay: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -97,12 +105,13 @@ const TextV3 = {
         textStyle={styles.headerDisplay}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
       >
         {children}
       </TextV3.base>
     );
   },
-  HeaderLarge: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  HeaderLarge: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -110,12 +119,13 @@ const TextV3 = {
         textStyle={styles.headerLarge}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
       >
         {children}
       </TextV3.base>
     );
   },
-  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -123,26 +133,41 @@ const TextV3 = {
         textStyle={styles.headerLargeRegular}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
       >
         {children}
       </TextV3.base>
     );
   },
-  Header: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  Header: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
     return (
-      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.header} align={align} extraStyles={extraStyles}>
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.header}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+      >
         {children}
       </TextV3.base>
     );
   },
-  Body: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  Body: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
     return (
-      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.body} align={align} extraStyles={extraStyles}>
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.body}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+      >
         {children}
       </TextV3.base>
     );
   },
-  BodyStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  BodyStrong: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -150,19 +175,27 @@ const TextV3 = {
         textStyle={styles.bodyStrong}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
       >
         {children}
       </TextV3.base>
     );
   },
-  Caption: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  Caption: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
     return (
-      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.caption} align={align} extraStyles={extraStyles}>
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.caption}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+      >
         {children}
       </TextV3.base>
     );
   },
-  CaptionStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  CaptionStrong: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -170,6 +203,35 @@ const TextV3 = {
         textStyle={styles.captionStrong}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
+  Label: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.label}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
+  Description: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.description}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
       >
         {children}
       </TextV3.base>
