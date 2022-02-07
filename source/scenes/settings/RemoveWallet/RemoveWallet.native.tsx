@@ -4,11 +4,11 @@ import { View, StyleSheet, Text } from 'react-native';
 import TextInput from 'components/TextInput';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
+import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import styles from './styles';
 
 import IRemoveWalletSettings from './types';
-import { COLORS_ENUMS } from 'assets/styles/colors';
 
 const RemoveWallet: FC<IRemoveWalletSettings> = ({
   goBack,
@@ -23,20 +23,21 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
     <View style={styles.removeAccount}>
       {wallet && (
         <View style={styles.subheading}>
-          <TextV3.Caption extraStyles={styles.subheadingText}>Account name:</TextV3.Caption>
+          <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.subheadingText}>
+            Account name:
+          </TextV3.Description>
           <View style={styles.accountNameWrapper}>
             <Text style={styles.accountName}>{wallet.label}</Text>
           </View>
         </View>
       )}
 
-      <TextV3.Caption extraStyles={StyleSheet.compose(styles.text, styles.formText)}>
+      <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={StyleSheet.compose(styles.text, styles.formText)}>
         Please enter your wallet password:
-      </TextV3.Caption>
+      </TextV3.Description>
       <TextInput
         control={control}
         type="password"
-        // type="text"
         name="password"
         visiblePassword
         fullWidth
@@ -46,10 +47,13 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
       />
       <View>
         {isSeedWallet && (
-          <TextV3.Body color={COLORS_ENUMS.DARK_GRAY} extraStyles={StyleSheet.compose(styles.text, styles.formText)}>
+          <TextV3.Description
+            color={COLORS_ENUMS.DARK_GRAY}
+            extraStyles={StyleSheet.compose(styles.text, styles.formText)}
+          >
             This wallet will be removed from Stargazer. You will need to provide the recovery seed phrase in order to
             restore it.
-          </TextV3.Body>
+          </TextV3.Description>
         )}
         {!isSeedWallet && (
           <TextV3.Body color={COLORS_ENUMS.DARK_GRAY} extraStyles={StyleSheet.compose(styles.text, styles.formText)}>
@@ -60,19 +64,18 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
       </View>
       <View style={styles.actions}>
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE}
+          type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
           size={BUTTON_SIZES_ENUM.SMALL}
           title="Cancel"
-          extraTitleStyles={styles.close}
-          extraStyles={StyleSheet.compose(styles.button, styles.close)}
           onPress={goBack}
         />
         <ButtonV3
           type={BUTTON_TYPES_ENUM.PRIMARY}
           size={BUTTON_SIZES_ENUM.SMALL}
           title="Confirm"
-          extraStyles={styles.button}
-          onPress={() => console.log('submit')}
+          onPress={handleSubmit((data) => {
+            onSubmit(data);
+          })}
         />
       </View>
     </View>
