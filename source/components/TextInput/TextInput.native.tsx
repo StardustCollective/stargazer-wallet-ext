@@ -15,6 +15,8 @@ interface ITextInput {
   inputStyle: object;
   multiline: boolean;
   fullWidth: boolean;
+  visiblePassword: boolean;
+  onSubmit: (ev: any) => void;
 }
 
 const TextInput: FC<ITextInput> = ({
@@ -24,6 +26,7 @@ const TextInput: FC<ITextInput> = ({
   label = '',
   name = '',
   control,
+  visiblePassword = false,
   inputContainerStyle = {},
   inputStyle = {},
   multiline = false,
@@ -49,10 +52,10 @@ const TextInput: FC<ITextInput> = ({
   };
 
   const passwordProps =
-    type === 'password'
+    type === 'password' && visiblePassword
       ? {
           rightIcon: {
-            name: showed ? 'visibility' : 'visibility-off',
+            name: showed ? 'visibility-off' : 'visibility',
             size: 20,
             onPress: handleClickShowPassword,
           },
