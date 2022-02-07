@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.rubik,
   },
   iconWrapper: {
-    // backgroundColor: COLORS.primary,
     backgroundColor: 'transparent',
   },
   icon: {

@@ -8,8 +8,8 @@ export type INewAccountView = {
 export default interface INewAccountSettings {
   onClickResetStack: () => void;
   onShowPhraseClick: () => void;
-  onSubmit: () => void;
-  handleSubmit: () => void;
+  onSubmit: (data: any) => void;
+  handleSubmit: (callback: any) => void;
   register: Ref<any>;
   control: any;
   accountName: string;

@@ -3,7 +3,9 @@ import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   input: {
-    fontSize: 15,
+    fontSize: 14,
+    color: COLORS.gray_dark,
+    fontFamily: FONTS.rubik,
   },
   inputContainer: {
     backgroundColor: COLORS.white,
