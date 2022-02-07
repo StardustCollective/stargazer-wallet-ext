@@ -12,12 +12,12 @@ import { useController } from 'hooks/index';
 import NavigationUtil from 'navigation/util';
 import { useLinkTo } from '@react-navigation/native';
 
-import styles from './index.scss';
+import styles from './NewAccount.scss';
 // import { MAIN_VIEW, PHRASE_VIEW } from '../routes';
 
 interface INewAccountView {
   // onChange: (id: string) => void;
-  navigation: any
+  navigation: any;
 }
 
 const NewAccount: FC<INewAccountView> = ({ navigation }) => {
@@ -29,7 +29,7 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
     validationSchema: yup.object().shape({
       name: yup.string().required(),
     }),
-  });;
+  });
   const linkTo = useLinkTo();
 
   const onSubmit = async (data: any) => {
@@ -43,11 +43,11 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
 
   const onClickResetStack = () => {
     NavigationUtil.popToTop(navigation);
-  }
+  };
 
   const onShowPhraseClick = () => {
     linkTo(`/settings/wallets/phrase?id=${walletId}`);
-  }
+  };
 
   return (
     <div className={styles.newAccount}>
@@ -55,26 +55,14 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
         <>
           <span>{`Your new account ${accountName} has been created`}</span>
           <label>Backup Options</label>
-          <section
-            id="newAccount-showRecoveryPhrase"
-            className={styles.menu}
-            onClick={onShowPhraseClick}
-          >
+          <section id="newAccount-showRecoveryPhrase" className={styles.menu} onClick={onShowPhraseClick}>
             <Icon Component={SeedIcon} />
             <span>Show Recovery Phrase</span>
             <ArrowIcon />
           </section>
-          <span>
-            If you lose access to this wallet, your funds will be lost, unless
-            you back up!
-          </span>
+          <span>If you lose access to this wallet, your funds will be lost, unless you back up!</span>
           <div className={clsx(styles.actions, styles.centered)}>
-            <Button
-              id="addWallet-finishButton"
-              type="button"
-              variant={styles.button}
-              onClick={onClickResetStack}
-            >
+            <Button id="addWallet-finishButton" type="button" variant={styles.button} onClick={onClickResetStack}>
               Finish
             </Button>
           </div>
@@ -100,12 +88,7 @@ const NewAccount: FC<INewAccountView> = ({ navigation }) => {
             >
               Close
             </Button>
-            <Button 
-              id="newAccount-confirmButton"
-              type="submit" 
-              variant={styles.button} 
-              loading={loading}
-              >
+            <Button id="newAccount-confirmButton" type="submit" variant={styles.button} loading={loading}>
               Next
             </Button>
           </div>
