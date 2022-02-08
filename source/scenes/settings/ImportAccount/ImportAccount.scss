@@ -1,0 +1,243 @@
+@import '~assets/styles/variables';
+
+.import {
+  width: 100%;
+  height: 468px;
+  position: relative;
+
+  .generated {
+    padding: 24px 36px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    & > span {
+      margin-bottom: 24px;
+      display: flex;
+
+      b {
+        font-weight: 500;
+        color: $red-100;
+      }
+    }
+
+    .address {
+      width: 100%;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: $white;
+      border: 1px solid $gray-200;
+      box-sizing: border-box;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 24px;
+      letter-spacing: 0.03em;
+      color: $gray-dark;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s;
+
+      &.copied {
+        background: $purple-medium;
+        color: $purple;
+        border: 1px solid $purple;
+      }
+    }
+
+    .actions {
+      left: 0;
+      justify-content: center;
+    }
+  }
+
+  .warning {
+    width: 100vw;
+    height: 96px;
+    background: $purple-light;
+    display: block;
+    padding: 24px 36px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: $black;
+    box-sizing: border-box;
+    word-wrap: break-word;
+
+    small {
+      color: $purple;
+      font-weight: 500;
+      line-height: 18px;
+      font-size: 12px;
+    }
+  }
+
+  .content {
+    padding: 24px 36px;
+
+    .select {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+
+      .inner {
+        width: 156px;
+        margin-left: 12px;
+      }
+
+      & + span {
+        margin-top: 0px;
+      }
+    }
+
+    .textarea {
+      height: 60px !important;
+
+      textarea {
+        height: 58px !important;
+      }
+    }
+
+    // for hardware import step1
+    .hardwareList {
+      display: flex;
+      .walletModel {
+        background-color: $white;
+        padding: 28px 16px;
+        border: 1px solid $gray-200;
+        box-sizing: border-box;
+        border-radius: 6px;
+        transition: all 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          box-shadow: $shadow-btn;
+          border: 1px solid $purple;
+          background: $purple-light;
+        }
+      }
+    }
+    // for hardware import step2
+    .walletList {
+      display: flex;
+      position: relative;
+      height: 180px;
+      background: $white;
+      border-radius: 6px;
+      &.loading {
+        justify-content: center;
+        align-items: center;
+        svg {
+          color: $purple;
+          width: 24px;
+          -webkit-animation: spin 4s linear infinite;
+          -moz-animation: spin 4s linear infinite;
+          animation: spin 2s linear infinite;
+        }
+        span {
+          position: absolute;
+          top: 127px;
+          font-family: Inter;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 12px;
+          line-height: 18px;
+        }
+      }
+
+      .wallet {
+        width: 100%;
+        padding: 2px 12px 0px 11px;
+        table {
+          width: 100%;
+          tr {
+            height: 33px;
+            td {
+              .expand {
+                svg {
+                  color: $gray-100;
+                }
+              }
+            }
+          }
+        }
+        :global(.MuiCheckbox-colorPrimary) {
+          padding: 0 !important;
+        }
+        :global(.MuiCheckbox-colorPrimary.Mui-checked) {
+          color: $purple !important;
+        }
+        svg {
+          width: 16px !important;
+        }
+      }
+    }
+
+    .pagination {
+      padding: 12px;
+      display: flex;
+      justify-content: flex-end;
+      span {
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 24px;
+
+        color: $purple;
+      }
+      .previous {
+        margin-right: 12px;
+      }
+    }
+
+    & > span {
+      margin: 18px 0px;
+      font-size: 12px;
+      font-weight: 500;
+      color: $gray-dark;
+      display: block;
+    }
+  }
+  @-moz-keyframes spin {
+    100% {
+      -moz-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  .actions {
+    position: absolute;
+    bottom: 24px;
+    width: 100%;
+    padding: 0 36px;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .cancel,
+    .cancel:hover {
+      background: $gray-light-100;
+      color: $gray-dark;
+    }
+
+    .button {
+      width: 144px;
+    }
+  }
+}
