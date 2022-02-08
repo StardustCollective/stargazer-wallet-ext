@@ -1,56 +1,25 @@
-///////////////////////
-// Modules
-///////////////////////
+import React, { FC } from 'react';
 
-import React, {FC} from 'react';
-
-///////////////////////
-// Components
-///////////////////////
-
-import Container from 'scenes/common/Container';
-
-///////////////////////
-// Scene
-///////////////////////
-
-import Main from './Main';
-
-///////////////////////
-// Hooks
-///////////////////////
-
-// import { useController } from 'hooks/index';
-// import useVersion from 'hooks/useVersion';
+import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 
-///////////////////////
-// Component
-///////////////////////
+import WalletController from 'scripts/Background/controllers/WalletController';
 
-const MainContainer:FC = () => {
+import Container from 'scenes/common/Container';
+import Main from './Main';
 
-  ///////////////////////
-  // Hooks
-  ///////////////////////
-
-  //   const controller = useController();
-  // const version = useVersion(3);
-  const version = '3.2.4';
+const MainContainer: FC = () => {
+  const version = useVersion(3);
   const linkTo = useLinkTo();
 
-  ///////////////////////
-  // Callbacks
-  ///////////////////////
-
   const handleLogout = () => {
-    // controller.wallet.logOut();
+    WalletController.logOut();
     linkTo('/authRoot');
   };
 
   const onWalletLinkClick = () => {
     linkTo('/settings/wallets');
-  }
+  };
 
   const onNetworkLinkClicked = () => {
     linkTo('/settings/networks');
@@ -58,20 +27,15 @@ const MainContainer:FC = () => {
 
   const onAboutLinkClicked = () => {
     linkTo('/settings/about');
-  }
+  };
 
   const onContactsLinkClicked = () => {
     linkTo('/settings/contacts');
-  }
+  };
 
   const onConnectedSitesClicked = () => {
-    linkTo('/settings/connectedSites')
-  }
-
-
-  ///////////////////////
-  // Render
-  ///////////////////////
+    linkTo('/settings/connectedSites');
+  };
 
   return (
     <Container>
@@ -86,6 +50,6 @@ const MainContainer:FC = () => {
       />
     </Container>
   );
-}
+};
 
 export default MainContainer;

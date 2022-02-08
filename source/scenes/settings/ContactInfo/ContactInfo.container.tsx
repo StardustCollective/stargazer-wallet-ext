@@ -2,7 +2,8 @@ import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
-import { useController, useCopyClipboard } from 'hooks/index';
+import { useCopyClipboard } from 'hooks/index';
+import ContactsController from 'scripts/Background/controllers/ContactsController';
 import IContactBookState from 'state/contacts/types';
 import { RootState } from 'state/store';
 
@@ -13,7 +14,6 @@ import ContactInfo from './ContactInfo';
 import { IContactInfoView } from './types';
 
 const ContactInfoContainer: FC<IContactInfoView> = ({ route, navigation }) => {
-  const controller = useController();
   const linkTo = useLinkTo();
 
   const [codeOpened, setCodeOpened] = useState(false);
@@ -24,7 +24,7 @@ const ContactInfoContainer: FC<IContactInfoView> = ({ route, navigation }) => {
   const selectedContactId = route?.params?.selected;
 
   const handleDelete = () => {
-    controller.contacts.deleteContact(selectedContactId);
+    ContactsController.deleteContact(selectedContactId);
     navigation.goBack();
   };
 

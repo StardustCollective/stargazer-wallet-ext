@@ -4,20 +4,20 @@ import * as yup from 'yup';
 import { showMessage } from 'react-native-flash-message';
 
 import WalletController from 'scripts/Background/controllers/WalletController';
-
-import Container from 'scenes/common/Container';
-
-import PrivateKey from './PrivateKey';
+import { useCopyClipboard } from 'hooks/index';
 
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
 import { useSelector } from 'react-redux';
 
+import Container from 'scenes/common/Container';
+
+import PrivateKey from './PrivateKey';
+
 import { IPrivateKeyView } from './types';
 
 const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
-  // const { id } = route.params;
-  const id = '12313123123213';
+  const { id } = route.params;
   const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
   const wallet = wallets.find((w) => w.id === id);
 
@@ -27,16 +27,12 @@ const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
     }),
   });
 
-  // const [isCopied, copyText] = useCopyClipboard();
-  const [isCopied, copyText] = useState(false);
-
+  const [isCopied, copyText] = useCopyClipboard();
   const [checked, setChecked] = useState(false);
   const [privKey, setPrivKey] = useState<string>('*************************************************************');
 
   const onSubmit = async (data: any) => {
-    // const res = await WalletController.getPrivateKey(id, data.password);
-    const res = 'private key copy...........';
-    console.log('res data', data);
+    const res = await WalletController.getPrivateKey(id, data.password);
 
     if (res) {
       setPrivKey(res);
