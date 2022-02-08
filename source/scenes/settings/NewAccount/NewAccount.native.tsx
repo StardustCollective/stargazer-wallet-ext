@@ -1,8 +1,5 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-
-import SeedIcon from '@material-ui/icons/Description';
-import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
+import { View, TouchableOpacity } from 'react-native';
 
 import TextInput from 'components/TextInput';
 import Icon from 'components/Icon';
@@ -23,37 +20,45 @@ const NewAccount: FC<INewAccountSettings> = ({
   control,
   accountName,
   loading,
-  walletId,
 }) => {
   return (
     <View style={styles.newAccount}>
-      {accountName ? (
+      {!accountName ? (
         <>
-          <TextV3.Label color={COLORS_ENUMS.BLACK}>{`Your new account ${accountName} has been created`}</TextV3.Label>
-          <TextV3.Label color={COLORS_ENUMS.BLACK}>Backup Options</TextV3.Label>
+          <TextV3.Description
+            color={COLORS_ENUMS.DARK_GRAY}
+          >{`Your new account ${accountName} has been created`}</TextV3.Description>
+          <TextV3.Label uppercase color={COLORS_ENUMS.DARK_GRAY}>
+            Backup Options
+          </TextV3.Label>
           <TouchableOpacity onPress={onShowPhraseClick}>
             <View testID="newAccount-showRecoveryPhrase" style={styles.menu}>
-              <Icon Component={SeedIcon} />
-              <TextV3.Caption>Show Recovery Phrase</TextV3.Caption>
+              <View style={styles.menuSectionWrapper}>
+                <Icon name="description" fontType="material" />
+                <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.menuText}>
+                  Show Recovery Phrase
+                </TextV3.Description>
+              </View>
               <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
             </View>
           </TouchableOpacity>
-          <TextV3.Description>
+          <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>
             If you lose access to this wallet, your funds will be lost, unless you back up!
           </TextV3.Description>
-          <View style={StyleSheet.compose(styles.actions, styles.centered)}>
+          <View style={styles.actions}>
             <ButtonV3
+              size={BUTTON_SIZES_ENUM.SMALL}
+              type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
               title="Finish"
               testID="addWallet-finishButton"
-              type="button"
-              variant={styles.button}
+              inputStyles={styles.button}
               onPress={onClickResetStack}
             />
           </View>
         </>
       ) : (
         <View style={styles.newAccountSubWrapper}>
-          <TextV3.Label id="newAccount-nameAccountText" color={COLORS_ENUMS.BLACK}>
+          <TextV3.Label id="newAccount-nameAccountText" color={COLORS_ENUMS.DARK_GRAY}>
             Please name your new account:
           </TextV3.Label>
           <TextInput
@@ -72,7 +77,7 @@ const NewAccount: FC<INewAccountSettings> = ({
               testID="newAccount-cancelButton"
               size={BUTTON_SIZES_ENUM.SMALL}
               type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
-              extraStyles={StyleSheet.compose(styles.button, styles.close)}
+              extraStyles={styles.button}
               onPress={onClickResetStack}
             />
             <ButtonV3
