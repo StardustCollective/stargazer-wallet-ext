@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     height: 60,
     alignItems: 'center',
-    transition: 'all 0.3s',
     backgroundColor: COLORS.white,
     borderBottom: `1px solid ${COLORS.gray_light}`,
     borderRadius: 6,

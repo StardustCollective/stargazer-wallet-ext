@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     height: 60,
     alignItems: 'center',
-    transition: 'all 0.3s',
     backgroundColor: COLORS.white,
     // cursor: pointer,
     borderBottomWidth: 1,
@@ -78,7 +77,6 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     letterSpacing: '0.03',
     color: COLORS.gray_dark,
-    transition: 'all 0.3s',
   },
   copied: {
     background: COLORS.purple_medium,

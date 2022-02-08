@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.gray_dark,
     fontFamily: FONTS.rubik,
+    paddingVertical: 10,
   },
   inputContainer: {
     backgroundColor: COLORS.white,

@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     height: 60,
     alignItems: 'center',
-    transition: 'all 0.3s',
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,
     borderColor: COLORS.gray_light,

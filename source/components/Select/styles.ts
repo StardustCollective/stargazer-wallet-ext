@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 0,
     height: 36,
-    transition: 'all 0.3s',
     '&::before': {
       borderBottom: 'none !important',
     },
@@ -29,7 +28,8 @@ const styles = StyleSheet.create({
   text: {
     paddingLeft: 16,
     color: COLORS.gray_dark,
-    fontSize: 14,
+    fontSize: 12,
+    lineHeight: 24,
     fontWeight: '500',
   },
   select: {
@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   arrowIcon: {
-    transition: 'all 0.3s',
     marginRight: 6,
   },
   itemContainer: {

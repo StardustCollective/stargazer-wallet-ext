@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: 'center',
     justifyContent: 'space-between',
-    transition: 'all 0.3s',
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,
     borderColor: COLORS.gray_light,
