@@ -3,10 +3,12 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { useSelector } from 'react-redux';
-import { useController } from 'hooks/index';
 import { showMessage } from 'react-native-flash-message';
 import { RootState } from 'state/store';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+
+import WalletController from 'scripts/Background/controllers/WalletController';
+import ContactsController from 'scripts/Background/controllers/ContactsController';
 
 import Container from 'scenes/common/Container';
 
@@ -18,8 +20,6 @@ import ModifyContact from './ModifyContact';
 import { IModifyContactView } from './types';
 
 const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) => {
-  const controller = useController();
-
   const { type } = route.params;
   const { selected } = route.params;
 
@@ -45,14 +45,14 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const isValidAddress = useMemo(() => {
     if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
       return (
-        controller.wallet.account.isValidDAGAddress(address) || controller.wallet.account.isValidERC20Address(address)
+        WalletController.account.isValidDAGAddress(address) || WalletController.account.isValidERC20Address(address)
       );
     }
     const asset = activeWallet.assets[0];
     if (asset.type === AssetType.Constellation) {
-      // return controller.wallet.account.isValidDAGAddress(address);
+      return WalletController.account.isValidDAGAddress(address);
     }
-    return controller.wallet.account.isValidERC20Address(address);
+    return WalletController.account.isValidERC20Address(address);
   }, [address]);
 
   const hideStatusIcon = !isValidAddress;
@@ -77,7 +77,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
       return;
     }
 
-    controller.contacts.modifyContact(type, data.name, data.address.trim(), data.memo, selected);
+    ContactsController.modifyContact(type, data.name, data.address.trim(), data.memo, selected);
     navigation.goBack();
   };
 
