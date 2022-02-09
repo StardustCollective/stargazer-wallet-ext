@@ -21,15 +21,12 @@ const ContactInfo: FC<IContactInfoSettings> = ({
   setCodeOpened,
   isCopied,
   copyText,
-  contacts,
-  selectedContactId,
+  contact,
   handleDelete,
   handleEdit,
 }) => {
   const qrCodeStyle = codeOpened ? styles.qrCode : StyleSheet.flatten([styles.qrCode, styles.qrCodeHide]);
   const [tooltipVisible, toggleTooltipVisibility] = useState(false);
-
-  const contact = contacts[selectedContactId];
 
   const tooltipTitle = isCopied ? 'Copied' : 'Copy Address';
 
@@ -98,14 +95,14 @@ const ContactInfo: FC<IContactInfoSettings> = ({
           onClick={handleDelete}
           title="Delete"
           titleStyle={styles.deleteTitleStyle}
-        ></Button>
+        />
         <Button
           type="button"
           variant={styles.edit}
           onClick={handleEdit}
           title="Edit"
           titleStyle={styles.editTitleStyle}
-        ></Button>
+        />
       </View>
     </View>
   );

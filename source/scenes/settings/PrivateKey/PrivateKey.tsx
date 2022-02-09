@@ -15,6 +15,7 @@ const PrivateKey: FC<IPrivateKeySettings> = ({
   checked,
   isCopied,
   wallet,
+  privKey,
 }) => {
   const privKeyClass = clsx(styles.privKey, {
     [styles.copied]: isCopied,

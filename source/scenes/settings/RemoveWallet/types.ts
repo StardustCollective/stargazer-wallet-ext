@@ -1,5 +1,5 @@
 import { Ref } from 'react';
-import { IWalletState } from 'state/vault/types';
+import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
 
 export type IRemoveWalletView = {
   route: any;
@@ -8,9 +8,9 @@ export type IRemoveWalletView = {
 
 export default interface IRemoveWalletSettings {
   goBack: () => void;
-  wallet: IWalletState;
+  wallet: KeyringWalletState;
   isSeedWallet: boolean;
-  handleSubmit: (data: any) => void;
+  handleSubmit: (callback: any) => void;
   register: Ref<any>;
   control: any;
   onSubmit: (data: any) => void;

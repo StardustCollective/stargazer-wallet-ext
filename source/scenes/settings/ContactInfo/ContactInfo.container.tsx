@@ -21,10 +21,12 @@ const ContactInfoContainer: FC<IContactInfoView> = ({ route, navigation }) => {
 
   const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
 
-  const selectedContactId = route?.params?.selected;
+  const selectedContactId = route.params.selected;
+
+  const contact = contacts[selectedContactId];
 
   const handleDelete = () => {
-    ContactsController.deleteContact(selectedContactId);
+    ContactsController().deleteContact(selectedContactId);
     navigation.goBack();
   };
 
@@ -39,8 +41,7 @@ const ContactInfoContainer: FC<IContactInfoView> = ({ route, navigation }) => {
         setCodeOpened={setCodeOpened}
         isCopied={isCopied}
         copyText={copyText}
-        contacts={contacts}
-        selectedContactId={selectedContactId}
+        contact={contact}
         handleDelete={handleDelete}
         handleEdit={handleEdit}
       />

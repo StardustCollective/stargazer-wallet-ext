@@ -37,10 +37,8 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     // setAccountName(undefined);
     if (importType === 'priv') {
       setLoading(true);
-      return handleImportPrivKey(data.privKey, data.label);
-    }
-
-    if (importType === 'json' && jsonFile) {
+      handleImportPrivKey(data.privKey, data.label);
+    } else if (importType === 'json' && jsonFile) {
       const fileReader = new FileReader();
       fileReader.readAsText(jsonFile, 'UTF-8');
       fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -69,9 +67,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         }
       };
     } else if (importType === 'hardware') {
-      window.open('/ledger.html', '_newtab');
+      return window.open('/ledger.html', '_newtab');
     } else {
-      showErrorAlert('Error: A private key json file is not chosen');
+      return showErrorAlert('Error: A private key json file is not chosen');
     }
   };
 

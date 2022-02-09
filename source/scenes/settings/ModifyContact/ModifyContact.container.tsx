@@ -1,4 +1,6 @@
 import React, { useEffect, ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
+import { NativeSyntheticEvent } from 'react-native';
+
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -58,7 +60,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const hideStatusIcon = !isValidAddress;
 
   const handleAddressChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | React.BaseSyntheticEvent>) => {
+    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | React.BaseSyntheticEvent) => {
       if (ev.nativeEvent?.text) {
         setAddress(ev.nativeEvent.text.trim());
       } else if (ev.target) {
@@ -77,7 +79,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
       return;
     }
 
-    ContactsController.modifyContact(type, data.name, data.address.trim(), data.memo, selected);
+    ContactsController().modifyContact(type, data.name, data.address.trim(), data.memo, selected);
     navigation.goBack();
   };
 

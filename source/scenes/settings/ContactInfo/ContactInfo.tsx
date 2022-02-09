@@ -22,42 +22,32 @@ const ContactInfo: FC<IContactInfoSettings> = ({
   setCodeOpened,
   isCopied,
   copyText,
-  contacts,
-  selectedContactId,
   handleDelete,
   handleEdit,
+  contact,
 }) => {
   return (
     <div className={styles.wrapper}>
-      {contacts[selectedContactId] && (
+      {contact && (
         <div className={clsx(styles.qrcode, { [styles.hide]: !codeOpened })}>
-          <QRCode
-            value={contacts[selectedContactId].address}
-            bgColor="#fff"
-            fgColor="#000"
-            className={styles.code}
-            size={180}
-          />
-          {contacts[selectedContactId].address}
+          <QRCode value={contact.address} bgColor="#fff" fgColor="#000" className={styles.code} size={180} />
+          {contact.address}
         </div>
       )}
       <div className={clsx(styles.item, styles.main)}>
         <div className={styles.name}>
           <span>Contact Name</span>
-          {contacts[selectedContactId]?.name}
+          {contact?.name}
         </div>
-        <Avatar address={contacts[selectedContactId]?.address || ''} />
+        <Avatar address={contact?.address || ''} />
       </div>
       <div className={styles.item}>
         <span>Address</span>
         <div className={styles.address}>
-          {ellipsis(contacts[selectedContactId]?.address || '')}
+          {ellipsis(contact?.address || '')}
           <div className={styles.controls}>
             <Tooltip title={isCopied ? 'Copied' : 'Copy Address'} placement="bottom" arrow>
-              <IconButton
-                className={styles.iconButton}
-                onClick={() => copyText(contacts[selectedContactId]?.address || '')}
-              >
+              <IconButton className={styles.iconButton} onClick={() => copyText(contact?.address || '')}>
                 <CopyIcon />
               </IconButton>
             </Tooltip>
@@ -69,7 +59,7 @@ const ContactInfo: FC<IContactInfoSettings> = ({
       </div>
       <div className={styles.item}>
         <span>Memo</span>
-        {contacts[selectedContactId]?.memo || ''}
+        {contact?.memo || ''}
       </div>
       <div className={styles.actions}>
         <Button type="button" variant={styles.delete} onClick={handleDelete}>

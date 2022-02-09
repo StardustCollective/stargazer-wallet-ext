@@ -148,21 +148,14 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  Label: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
+  Label: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base
-        dynamic={dynamic}
-        color={color}
-        textStyle={styles.label}
-        align={align}
-        extraStyles={extraStyles}
-        uppercase={uppercase}
-      >
+      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.label} align={align} extraStyles={extraStyles}>
         {children}
       </TextV3.base>
     );
   },
-  Description: ({ children, dynamic, color, align, extraStyles, uppercase }: ITextProps) => {
+  Description: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -170,7 +163,6 @@ const TextV3 = {
         textStyle={styles.description}
         align={align}
         extraStyles={extraStyles}
-        uppercase={uppercase}
       >
         {children}
       </TextV3.base>
