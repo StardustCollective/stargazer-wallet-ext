@@ -6,20 +6,20 @@ import PrivKeyIcon from '@material-ui/icons/VpnKey';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+
 import Icon from 'components/Icon';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 
-import styles from './index.scss';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import styles from './ManageWallet.scss';
 
 import IManageWalletSettings from './types';
+
 const ManageWallet: FC<IManageWalletSettings> = ({
-  walletId,
   handleSubmit,
   register,
   control,
-  wallets,
   wallet,
   onSubmit,
   onCancelClicked,

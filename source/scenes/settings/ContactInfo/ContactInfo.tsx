@@ -13,7 +13,7 @@ import { ellipsis } from 'scenes/home/helpers';
 
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 
-import styles from './index.scss';
+import styles from './ContactInfo.scss';
 
 import IContactInfoSettings from './types';
 
