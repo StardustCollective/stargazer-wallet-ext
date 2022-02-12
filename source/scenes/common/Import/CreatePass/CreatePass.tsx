@@ -1,46 +1,58 @@
-import React, { useEffect, useState } from 'react';
+///////////////////////////
+// Modules  
+///////////////////////////
+
+import React, { FC, useEffect } from 'react';
+
+///////////////////////////
+// Components  
+///////////////////////////
+
+import Layout from 'scenes/common/Layout';
+import CheckIcon from '@material-ui/icons/CheckCircle';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
-import CheckIcon from '@material-ui/icons/CheckCircle';
-import { useForm } from 'react-hook-form';
-import { useController } from 'hooks/index';
-import { useNavigation } from '@react-navigation/native';
-import navigationUtil from 'navigation/util';
-import screens from 'navigation/screens';
-import Layout from '../../common/Layout';
-import * as consts from './consts';
+
+///////////////////////////
+// Styles  
+///////////////////////////
+
 import styles from './CreatePass.scss';
 
-const CreatePass = () => {
-  const navigation = useNavigation();
-  const controller = useController();
-  const [passed, setPassed] = useState(false);
-  const { handleSubmit, register, errors } = useForm({
-    validationSchema: consts.schema,
-  });
-  const title = passed ? consts.CREATE_PASS_TITLE2 : consts.CREATE_PASS_TITLE1;
-  const comment = passed
-    ? consts.CREATE_PASS_COMMENT2
-    : consts.CREATE_PASS_COMMENT1;
+///////////////////////////
+// Types  
+///////////////////////////
 
-  const nextHandler = () => {
-    if (passed) {
-      const phrase = controller.wallet.onboardHelper.getSeedPhrase();
-      controller.wallet.createWallet('Main Wallet', phrase, true);
-      navigationUtil.replace( navigation, screens.authorized.root);
-    }
-  };
+import ICreatePass from './types';
 
-  const onSubmit = async (data: any) => {
-    controller.wallet.setWalletPassword(data.password);
-    setPassed(true);
-  };
+///////////////////////////
+// Scene  
+///////////////////////////
+
+const CreatePass: FC<ICreatePass> = ({
+  title,
+  passed,
+  register,
+  errors,
+  comment,
+  onSubmit,
+  handleSubmit,
+  nextHandler,
+}) => {
+
+  ///////////////////////////
+  // Callbacks  
+  ///////////////////////////
 
   const handleKeydown = (ev: KeyboardEvent) => {
     if (ev.code === 'Enter') {
       nextHandler();
     }
   };
+
+  ///////////////////////////
+  // Hooks  
+  ///////////////////////////
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeydown);
@@ -50,8 +62,12 @@ const CreatePass = () => {
     };
   }, [passed]);
 
+  ///////////////////////////
+  // Render  
+  ///////////////////////////
+
   return (
-    <Layout title={title} linkTo="/app.html">
+    <Layout title={title}>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {passed ? (
           <CheckIcon className={styles.checked} />
