@@ -8,7 +8,7 @@ import {
 export default interface ICreatePass {
   onSubmit: (data: any) => void;
   control: any;
-  handleSubmit: BaseSyntheticEvent<object, any, any>;
+  handleSubmit: any;
   nextHandler: () => void;
   passed: boolean;
   register: Ref<any>;
