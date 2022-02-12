@@ -2,8 +2,8 @@
 // Modules   
 ///////////////////////////
 
-import React, { FC, useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { FC } from 'react';
+import { View } from 'react-native';
 
 ///////////////////////////
 // Components  
