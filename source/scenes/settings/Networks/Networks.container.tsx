@@ -1,52 +1,21 @@
-///////////////////////
-// Modules
-///////////////////////
-
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { Text } from 'react-native';
-///////////////////////
-// Components
-///////////////////////
 
-import Container from 'scenes/common/Container';
-
-///////////////////////
-// Scene
-///////////////////////
-
-import Networks from './Networks';
-
-///////////////////////
-// Hooks
-///////////////////////
-// import { useController } from 'hooks/index';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
-
-///////////////////////
-// CONSTANTS
-///////////////////////
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
-///////////////////////
-// Component
-///////////////////////
+import Container from 'scenes/common/Container';
+import Networks from './Networks';
+
 const NetworksContainer: FC = () => {
-  ///////////////////////
-  // STATE
-  ///////////////////////
   const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
 
-  ///////////////////////
-  // HOOKS
-  ///////////////////////
-  // const controller = useController();
   const handleChangeNetwork = (networkType: KeyringNetwork, networkId: string) => {
-    //TODO: uncomment out this
-    // controller.wallet.switchNetwork(networkType, networkId);
+    WalletController.switchNetwork(networkType, networkId);
   };
 
   const networkOptions = [

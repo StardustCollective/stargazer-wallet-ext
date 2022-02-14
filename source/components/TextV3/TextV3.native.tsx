@@ -1,26 +1,20 @@
-
 //////////////////////
 // Modules
-///////////////////// 
+/////////////////////
 
 import React from 'react';
-import { 
-  Text, 
-  TextStyle, 
-  StyleProp, 
-  StyleSheet 
-} from 'react-native';
+import { Text, TextStyle, StyleProp, StyleSheet } from 'react-native';
 
 //////////////////////
 // Styles
-///////////////////// 
+/////////////////////
 
 import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 //////////////////////
 // Enums
-///////////////////// 
+/////////////////////
 
 export enum TEXT_ALIGN_ENUM {
   LEFT = 0,
@@ -30,7 +24,7 @@ export enum TEXT_ALIGN_ENUM {
 
 //////////////////////
 // Types
-///////////////////// 
+/////////////////////
 
 type ITextProps = {
   children?: React.ReactNode;
@@ -39,11 +33,13 @@ type ITextProps = {
   extraStyles?: StyleProp<TextStyle>;
   color?: COLORS_ENUMS;
   align?: TEXT_ALIGN_ENUM;
-}
+  uppercase?: boolean;
+  selectable?: boolean;
+};
 
 //////////////////////
 // Components
-///////////////////// 
+/////////////////////
 
 const TextV3 = {
   base: ({
@@ -51,24 +47,25 @@ const TextV3 = {
     dynamic = false,
     color = COLORS_ENUMS.WHITE,
     align = TEXT_ALIGN_ENUM.LEFT,
+    uppercase = false,
+    selectable = false,
     textStyle,
-    extraStyles = {}
+    extraStyles = {},
   }: ITextProps) => {
-
-    let colorStyle   = {};
-    let alignStyle   = {};
-    let dynamicProps = {numberOfLines: null, adjustsFontSizeToFit: false};
+    let colorStyle = {};
+    let alignStyle = {};
+    let dynamicProps = { numberOfLines: null, adjustsFontSizeToFit: false };
 
     // // Colors
     if (color === COLORS_ENUMS.BLACK) {
       colorStyle = styles.blackFont;
     } else if (color === COLORS_ENUMS.WHITE) {
       colorStyle = styles.whiteFont;
-    }else if (color === COLORS_ENUMS.RED) {
+    } else if (color === COLORS_ENUMS.RED) {
       colorStyle = styles.redFont;
-    }else if (color === COLORS_ENUMS.DARK_GRAY) {
+    } else if (color === COLORS_ENUMS.DARK_GRAY) {
       colorStyle = styles.greyDarkFont;
-    }else if (color === COLORS_ENUMS.GRAY_100) {
+    } else if (color === COLORS_ENUMS.GRAY_100) {
       colorStyle = styles.gray100Font;
     }
 
@@ -86,23 +83,23 @@ const TextV3 = {
       textStyle,
       alignStyle,
       colorStyle,
+      uppercase && styles.uppercase,
     ]);
 
     const composedStyle = StyleSheet.compose(flatStyles, extraStyles);
 
-    if(dynamic){
+    if (dynamic) {
       dynamicProps.numberOfLines = 1;
       dynamicProps.adjustsFontSizeToFit = true;
     }
 
-
     return (
-      <Text style={composedStyle} {...dynamicProps}>
+      <Text style={composedStyle} {...dynamicProps} selectable={selectable}>
         {children}
       </Text>
-    )
+    );
   },
-  HeaderDisplay: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  HeaderDisplay: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -110,12 +107,14 @@ const TextV3 = {
         textStyle={styles.headerDisplay}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
-  HeaderLarge: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  HeaderLarge: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -123,12 +122,14 @@ const TextV3 = {
         textStyle={styles.headerLarge}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
-  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -136,12 +137,14 @@ const TextV3 = {
         textStyle={styles.headerLargeRegular}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
-  Header: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  Header: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -149,12 +152,14 @@ const TextV3 = {
         textStyle={styles.header}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
-  Body: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  Body: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -162,12 +167,14 @@ const TextV3 = {
         textStyle={styles.body}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
-  BodyStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  BodyStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -175,12 +182,14 @@ const TextV3 = {
         textStyle={styles.bodyStrong}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
-  Caption: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  Caption: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -188,12 +197,14 @@ const TextV3 = {
         textStyle={styles.caption}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
       >
         {children}
       </TextV3.base>
-    )
+    );
   },
-  CaptionStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+  CaptionStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -201,11 +212,43 @@ const TextV3 = {
         textStyle={styles.captionStrong}
         align={align}
         extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
       >
         {children}
       </TextV3.base>
-    )
-  }
-}
+    );
+  },
+  Label: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.label}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
+  Description: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.description}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
+};
 
 export default TextV3;

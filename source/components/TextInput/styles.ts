@@ -3,16 +3,24 @@ import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   input: {
-    fontSize: 15,
+    fontSize: 14,
+    color: COLORS.gray_dark,
+    fontFamily: FONTS.rubik,
+    paddingVertical: 10,
   },
   inputContainer: {
     backgroundColor: COLORS.white,
     borderWidth: 1,
     borderRadius: 6,
     paddingLeft: 10,
-    borderColor: COLORS.grey_100,
+    borderColor: COLORS.gray_200,
+    borderStyle: 'solid',
     marginBottom: -24,
     marginHorizontal: -24,
+  },
+  fullWidth: {
+    paddingHorizontal: 0,
+    marginHorizontal: -10, // container has 10 padding to compensate you cant change
   },
   label: {
     paddingLeft: 14,

@@ -12,18 +12,19 @@ const Networks: FC<INetworkSettings> = ({ networkOptions }) => {
         return (
           <>
             <label>{network.label}</label>
-            <Select 
+            <Select
               fullWidth
-              value={network.value} 
-              onChange={(ev: ChangeEvent<{
-                    name?: string | undefined;
-                    value: unknown;
-                  }>
-                ) => {
+              value={network.value}
+              onChange={(
+                ev: ChangeEvent<{
+                  name?: string | undefined;
+                  value: unknown;
+                }>
+              ) => {
                 network.onChange(ev.target.value as string);
-              }} 
+              }}
               options={network.options}
-              />
+            />
           </>
         );
       })}

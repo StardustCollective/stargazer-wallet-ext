@@ -4,7 +4,8 @@ import clsx from 'clsx';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
-import styles from './index.scss';
+
+import styles from './ModifyContact.scss';
 
 import IModifyContactSettings from './types';
 

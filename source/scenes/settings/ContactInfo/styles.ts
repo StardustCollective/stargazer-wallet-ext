@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     color: COLORS.gray_100,
     opacity: 1,
     userSelect: 'none',
-    transition: 'all 300ms',
     pointerEvents: 'initial',
   },
   qrCodeHide: {

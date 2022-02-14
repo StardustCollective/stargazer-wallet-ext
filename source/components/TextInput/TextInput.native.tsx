@@ -8,20 +8,25 @@ import styles from './styles';
 interface ITextInput {
   name: string;
   placeholder: string;
-  type?: 'text' | 'password' | 'number';
-  label?: string;
+  type: 'text' | 'password' | 'number';
+  label: string;
   control: any;
-  inputContainerStyle: {};
-  inputStyle: {};
+  inputContainerStyle: object;
+  inputStyle: object;
   multiline: boolean;
+  fullWidth: boolean;
+  visiblePassword: boolean;
+  onSubmit: (ev: any) => void;
 }
 
 const TextInput: FC<ITextInput> = ({
+  fullWidth = true,
   type = 'text',
   placeholder = '',
   label = '',
   name = '',
   control,
+  visiblePassword = false,
   inputContainerStyle = {},
   inputStyle = {},
   multiline = false,
@@ -33,30 +38,56 @@ const TextInput: FC<ITextInput> = ({
     keyboardType = 'numeric';
   }
 
-  const inputContainerStyles = StyleSheet.flatten([styles.inputContainer, inputContainerStyle]);
+  const inputContainerStyles = StyleSheet.flatten([
+    styles.inputContainer,
+    fullWidth ? styles.fullWidth : null,
+    inputContainerStyle,
+  ]);
   const inputComposedStyles = StyleSheet.flatten([styles.input, inputStyle]);
 
+  const [showed, setShowed] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowed(!showed);
+  };
+
+  const passwordProps =
+    type === 'password' && visiblePassword
+      ? {
+          rightIcon: {
+            name: showed ? 'visibility-off' : 'visibility',
+            size: 20,
+            onPress: handleClickShowPassword,
+          },
+          rightIconContainerStyle: {
+            paddingRight: 15,
+          },
+        }
+      : {};
+
+  const secureTextEntry = type === 'password' && !showed;
   return (
     <Controller
       control={control}
       as={
         <RNEInput
           placeholder={placeholder}
-          secureTextEntry={type === 'password'}
+          secureTextEntry={secureTextEntry}
           inputStyle={inputComposedStyles}
           inputContainerStyle={inputContainerStyles}
           labelStyle={styles.label}
           label={label}
           keyboardType={keyboardType}
           multiline={multiline}
-          {...otherProps}
+          {...passwordProps} // eslint-disable-line
+          {...otherProps} // eslint-disable-line
         />
       }
       onChange={([text]) => {
         return text;
       }}
       name={name}
-      onChangeName={'onChangeText'}
+      onChangeName="onChangeText"
     />
   );
 };

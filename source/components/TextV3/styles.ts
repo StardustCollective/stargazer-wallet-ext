@@ -4,7 +4,7 @@ import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 const styles = StyleSheet.create({
   base: {
     fontFamily: FONTS.rubik,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   headerDisplay: {
     fontWeight: FONT_WEIGHTS.bold,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   caption: {
     fontWeight: FONT_WEIGHTS.regular,
     fontSize: 14,
-    lineHeight: 20
+    lineHeight: 20,
   },
   captionStrong: {
     fontWeight: FONT_WEIGHTS.medium,
@@ -47,37 +47,52 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   alignLeft: {
-    textAlign: 'left'
+    textAlign: 'left',
   },
   alignCenter: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   alignRight: {
-    textAlign: 'right'
+    textAlign: 'right',
   },
   whiteFont: {
-    color: COLORS.white
+    color: COLORS.white,
   },
   blackFont: {
-    color: COLORS.black
+    color: COLORS.black,
   },
   redFont: {
-    color: COLORS.red
+    color: COLORS.red,
   },
   greyDarkFont: {
-    color: COLORS.grey_dark
+    color: COLORS.grey_dark,
   },
   gray100Font: {
-    color: COLORS.grey_100_V1
-  }
+    color: COLORS.grey_100_V1,
+  },
+  label: {
+    fontWeight: FONT_WEIGHTS.medium,
+    fontSize: 10,
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  description: {
+    marginTop: 12,
+    marginBottom: 24,
+    fontSize: 12,
+    fontWeight: FONT_WEIGHTS.medium,
+    lineHeight: 16,
+  },
+  uppercase: {
+    textTransform: 'uppercase',
+  },
 });
 
 export default styles;
 
-
 /*
-* Text Alignment
-*/
+ * Text Alignment
+ */
 
 // .alignLeft {
 //   text-align: left;
@@ -90,4 +105,3 @@ export default styles;
 // .alignRight {
 //   text-align: right;
 // }
-

@@ -6,46 +6,21 @@ import StargazerIcon from 'assets/images/logo-s.svg';
 import EthereumIcon from 'assets/images/svg/ethereum.svg';
 import ConstellationIcon from 'assets/images/svg/constellation.svg';
 
-import styles from './index.scss';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { useLinkTo } from '@react-navigation/native';
 
-// export enum ImportWalletType {
-//   Ethereum,
-//   Constellation,
-//   MultiChain
-// }
+import styles from './ImportWallet.scss';
 
-interface IImportWalletView {
-}
+import IImportWalletSettings from './types';
 
-const ImportWallet: FC<IImportWalletView> = () => {
-  const linkTo = useLinkTo();
-
-  const handleImport = (network: KeyringNetwork) => {
-    linkTo(`/settings/wallets/import/account?network=${network}`);
-  };
-
-  const onImportPhraseView = () => {
-    linkTo('/settings/wallets/import/phrase');
-  }
-
+const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseView }) => {
   return (
     <div className={styles.wrapper}>
-      <section
-        id="importWallet-multiChainWallet"
-        className={styles.menu}
-        onClick={onImportPhraseView}
-      >
+      <section id="importWallet-multiChainWallet" className={styles.menu} onClick={onImportPhraseView}>
         <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
         <span>Multi Chain Wallet</span>
         <ArrowIcon />
       </section>
-      <section
-        id="importWallet-ethereum"
-        className={styles.menu}
-        onClick={() => handleImport(KeyringNetwork.Ethereum)}
-      >
+      <section id="importWallet-ethereum" className={styles.menu} onClick={handleImport(KeyringNetwork.Ethereum)}>
         <Icon Component={EthereumIcon} />
         <span>Ethereum</span>
         <ArrowIcon />
@@ -53,7 +28,7 @@ const ImportWallet: FC<IImportWalletView> = () => {
       <section
         id="importWallet-constellation"
         className={styles.menu}
-        onClick={() => handleImport(KeyringNetwork.Constellation)}
+        onClick={handleImport(KeyringNetwork.Constellation)}
       >
         <Icon Component={ConstellationIcon} />
         <span>Constellation</span>

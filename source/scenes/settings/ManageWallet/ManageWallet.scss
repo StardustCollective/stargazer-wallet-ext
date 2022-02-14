@@ -1,7 +1,7 @@
 @import '~assets/styles/variables';
 
 .wrapper {
-  display:flex;
+  display: flex;
   flex: 1;
   flex-direction: column;
   overflow: auto;
@@ -74,7 +74,7 @@
       color: $gray-dark;
     }
 
-    .buttons{
+    .buttons {
       display: flex;
       flex: 1;
       justify-content: center;

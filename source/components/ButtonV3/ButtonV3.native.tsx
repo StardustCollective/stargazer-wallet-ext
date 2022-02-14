@@ -22,6 +22,7 @@ export enum BUTTON_TYPES_ENUM {
   MONOTONE_ONE_SOLID,
   PRIMARY_OUTLINE,
   ACCENT_ONE_OUTLINE,
+  SECONDARY_OUTLINE,
 }
 
 export enum BUTTON_SIZES_ENUM {
@@ -78,6 +79,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
     buttonColorStyle = styles.primaryButton;
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {
     buttonColorStyle = styles.accentOneButton;
+  } else if (type === BUTTON_TYPES_ENUM.SECONDARY_OUTLINE) {
+    buttonColorStyle = styles.secondaryOutline;
+    titleStyle = { ...titleStyle, ...styles.secondaryOutlineTitle };
   }
 
   const flatButtonStyles = StyleSheet.flatten([styles.base, buttonSizeStyle, buttonColorStyle]);

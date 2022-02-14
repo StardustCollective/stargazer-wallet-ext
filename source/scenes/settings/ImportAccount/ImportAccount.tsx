@@ -1,78 +1,38 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import clsx from 'clsx';
-import { useAlert } from 'react-alert';
-import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { dag4 } from '@stardust-collective/dag4';
 import CachedIcon from '@material-ui/icons/Cached';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Checkbox } from '@material-ui/core';
+import { dag4 } from '@stardust-collective/dag4';
+// import { KeyboardReturnOutlined } from '@material-ui/icons';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
 import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
-import { useController } from 'hooks/index';
 
-import styles from './index.scss';
+import styles from './ImportAccount.scss';
 import LedgerIcon from 'assets/images/svg/ledger.svg';
-import navigationUtil from 'navigation/util';
 
-interface IImportAccountView {
-  route: any;
-  navigation: any;
-}
+import IImportAccountSettings, { HardwareWallet } from './types';
 
-interface HardwareWallet {
-  address: string;
-  balance: number;
-}
-
-const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
-
-  const alert = useAlert();
-  const controller = useController();
-  const [importType, setImportType] = useState('priv');
-  const [loading, setLoading] = useState(false);
-  const [jsonFile, setJsonFile] = useState<File | null>(null);
-  const [accountName, setAccountName] = useState<string>();
-  const [hardwareStep] = useState(1);
-  const [loadingWalletList] = useState(false);
-  // @ts-ignore
-  const [hardwareWalletList, setHardwareWalletList] = useState<
-    Array<HardwareWallet>
-  >([]);
-  const network = route.params.network;
-
-  const { handleSubmit, register } = useForm({
-    validationSchema: yup.object().shape({
-      privKey: importType === 'priv' ? yup.string().required() : yup.string(),
-      password: importType === 'json' ? yup.string().required() : yup.string(),
-      // label: yup.string().required(),
-    }),
-  });
-
-  const handleImportPrivKey = async (privKey: string, label: string) => {
-
-    controller.wallet.importSingleAccount(label, network, privKey)
-      .then((addr: string) => {
-        setLoading(false);
-        if (addr) {
-          setAccountName(label);
-        }
-      })
-      .catch(() => {
-        alert.removeAll();
-        alert.error('Error: Invalid private key');
-        setLoading(false);
-        setAccountName(undefined);
-      });
-  };
-
-  const onFinishButtonPressed = () => {
-    navigationUtil.popToTop(navigation);
-  }
-
+const ImportAccount: FC<IImportAccountSettings> = ({
+  accountName,
+  hardwareStep,
+  loadingWalletList,
+  handleSubmit,
+  showErrorAlert,
+  register,
+  handleImportPrivKey,
+  onFinishButtonPressed,
+  hardwareWalletList,
+  importType,
+  setImportType,
+  loading,
+  setLoading,
+  jsonFile,
+  setJsonFile,
+}) => {
   const onSubmit = async (data: any) => {
     // setAccountName(undefined);
     if (importType === 'priv') {
@@ -86,8 +46,7 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
           try {
             const json = JSON.parse(ev.target.result as string);
             if (!dag4.keyStore.isValidJsonPrivateKey(json)) {
-              alert.removeAll();
-              alert.error('Error: Invalid private key json file');
+              showErrorAlert('Error: Invalid private key json file');
               return;
             }
 
@@ -98,24 +57,19 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
                 handleImportPrivKey(privKey, data.label);
               })
               .catch(() => {
-                alert.removeAll();
-                alert.error(
-                  'Error: Invalid password to decrypt private key json file'
-                );
+                showErrorAlert('Error: Invalid password to decrypt private key json file');
                 setLoading(false);
               });
           } catch (error) {
-            alert.removeAll();
-            alert.error('Error: Invalid private key json file');
+            showErrorAlert('Error: Invalid private key json file');
             setLoading(false);
           }
         }
       };
     } else if (importType === 'hardware') {
-      window.open('/ledger.html', '_newtab');
+      return window.open('/ledger.html', '_newtab');
     } else {
-      alert.removeAll();
-      alert.error('Error: A private key json file is not chosen');
+      return showErrorAlert('Error: A private key json file is not chosen');
     }
   };
 
@@ -134,18 +88,17 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
       </tr>
     );
   };
+
   return (
     <form className={styles.import} onSubmit={handleSubmit(onSubmit)}>
       {accountName ? (
         <div className={styles.generated}>
           <span>Your new private key account has been imported.</span>
-          <span>
-            You can view the public address in the asset view.
-          </span>
+          <span>You can view the public address in the asset view.</span>
 
           <div className={clsx(styles.actions, styles.centered)}>
             <Button
-              id='importAccount-finishButton'
+              id="importAccount-finishButton"
               type="button"
               variant={styles.button}
               onClick={onFinishButtonPressed}
@@ -189,11 +142,7 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
               </>
             ) : importType === 'json' ? (
               <>
-                <FileSelect
-                  id="importAccount-fileInput"
-                  onChange={(val) => setJsonFile(val)}
-                  disabled={loading}
-                />
+                <FileSelect id="importAccount-fileInput" onChange={(val) => setJsonFile(val)} disabled={loading} />
                 <span>Please enter your JSON file password:</span>
                 <TextInput
                   id="importAccount-jsonPasswordInput"
@@ -234,9 +183,8 @@ const ImportAccount: FC<IImportAccountView> = ({ route, navigation }) => {
                           <div className={styles.wallet}>
                             <table>
                               <tbody>
-                                {hardwareWalletList.map(
-                                  (hwItem: HardwareWallet, index: number) =>
-                                    renderWallet(hwItem, index)
+                                {hardwareWalletList.map((hwItem: HardwareWallet, index: number) =>
+                                  renderWallet(hwItem, index)
                                 )}
                               </tbody>
                             </table>

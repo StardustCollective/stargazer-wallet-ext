@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import Avatar from '@devneser/gradient-avatar';
 
-import IContactState from 'state/contacts/types';
+import { IContactState } from 'state/contacts/types';
 
 import styles from './Contacts.scss';
 
