@@ -54,6 +54,9 @@ const AssetsPanelContainer = () => {
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const activeNFTAssets = useSelector(walletSelectors.selectNFTAssets);
 
+  console.log('!!!!!!!Active Wallet: ');
+  console.log(activeWallet);
+
   ///////////////////////
   // Callbacks
   ///////////////////////
@@ -72,17 +75,17 @@ const AssetsPanelContainer = () => {
   ///////////////////////
 
   return (
-    <Container>
+    <>
       <AssetsPanel
         activeNetworkAssets={activeNetworkAssets}
-        handleSelectAsset={handleSelectAsset}
         assets={assets}
         activeNFTAssets={activeNFTAssets}
         nfts={nfts}
-        handleSelectNFT={handleSelectNFT}
         activeWallet={activeWallet}
+        handleSelectAsset={handleSelectAsset}
+        handleSelectNFT={handleSelectNFT}
       />
-    </Container>
+    </>
   );
 
 }

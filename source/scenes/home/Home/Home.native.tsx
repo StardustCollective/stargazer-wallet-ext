@@ -63,7 +63,7 @@ const Home: FC<IHome> = ({
               </TextV3.Body>
             </View>
           </View>
-          {/* <AssetsPanel /> */}
+          <AssetsPanel />
         </>
       ) : (
 
