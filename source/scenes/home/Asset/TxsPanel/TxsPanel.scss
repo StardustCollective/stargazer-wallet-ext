@@ -1,0 +1,208 @@
+@import '~assets/styles/variables';
+
+.activity {
+  background: $gray-light;
+  width: 100%;
+  height: 2000px;
+  border-radius: 8px 8px 0px 0px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  .spinner {
+    svg {
+      color: $primary;
+    }
+  }
+
+  .stargazer {
+    user-select: none;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    opacity: 0.6;
+    position: sticky;
+    bottom: 0;
+  }
+
+  .noTx {
+    display: flex;
+    flex: 1;
+    margin: 20px;
+  }
+
+  .heading {
+    box-sizing: border-box;
+    display: flex;
+    background: $gray-light;
+    border-bottom: 1px solid $gray-100;
+    position: sticky;
+    top: 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 60px;
+    width: 100%;
+    color: $gray-dark;
+    z-index: 2;
+
+    .goTop {
+      width: 26px;
+      font-size: 16px;
+      height: 26px;
+      position: absolute;
+      right: 36px;
+    }
+  }
+
+  ul {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    list-style: none;
+    position: relative;
+    z-index: 1;
+    flex-grow: 4;
+
+    li {
+      width: 100%;
+      height: 84px;
+      display: flex;
+      box-sizing: border-box;
+      flex-direction: row;
+      padding: 0 36px;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s;
+      cursor: pointer;
+
+      &:hover {
+        background: rgab($gray-light-100, 0.9);
+        backdrop-filter: blur(10px);
+
+        .linkIcon {
+          background: $gray-200;
+        }
+      }
+
+      &.groupbar {
+        height: 24px;
+        background: $purple-medium;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 18px;
+        color: $purple;
+      }
+
+      & > div {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+
+        &:first-child > span {
+          font-size: 16px;
+        }
+
+        & > span {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: start;
+          font-weight: 500;
+          font-size: 18px;
+          line-height: 24px;
+          color: $gray-dark;
+
+          & > span {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+
+            & > b {
+              font-weight: 500;
+              font-size: 12px;
+              line-height: 18px;
+              margin-left: 4px;
+            }
+          }
+
+          & > small {
+            margin-top: 4px;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 18px;
+            color: $gray;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: auto;
+            width: 96px;
+            text-align: right;
+            display: inline-block;
+            overflow: hidden;
+          }
+        }
+
+        &:last-child > span {
+          align-items: flex-end;
+          justify-content: end;
+        }
+      }
+
+      .bullet {
+        height: 16px;
+        width: auto;
+        margin-right: 12px;
+        color: $purple;
+      }
+
+      .angle {
+        height: 25px;
+        margin-left: 12px;
+        color: $gray-medium;
+      }
+
+      .iconWrapper {
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        border-radius: 50%;
+        color: $gray-100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        margin-right: 12px;
+
+        svg {
+          font-size: 16px;
+        }
+
+        img.recvIcon {
+          transform: scaleX(-1);
+        }
+      }
+
+      .linkIcon {
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        border-radius: 50%;
+        color: $gray-dark;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        margin-left: 12px;
+        transition: all 0.3s;
+
+        svg {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}

@@ -18,20 +18,15 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 const AddAsset = () => {
   const controller = useController();
   const history = useHistory();
-  const { activeWallet, activeNetwork }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
-  const [filteredAssets, setFilteredAssets] = useState<
-    Array<IAssetInfoState>
-  >();
+  const { activeWallet, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const assets: IAssetListState = useSelector((state: RootState) => state.assets);
+  const [filteredAssets, setFilteredAssets] = useState<Array<IAssetInfoState>>();
   const [keyword, setKeyword] = useState('');
   // const account = accounts[activeAccountId];
 
-  const alreadyInWallet = activeWallet.assets.reduce<{[key: string]: boolean}>(
-    (res, a) => (res[a.address] = true, res ), {}
+  const alreadyInWallet = activeWallet.assets.reduce<{ [key: string]: boolean }>(
+    (res, a) => ((res[a.address] = true), res),
+    {}
   );
 
   const handleAddAsset = (asset: IAssetInfoState) => {
@@ -42,27 +37,23 @@ const AddAsset = () => {
   };
 
   useEffect(() => {
-    if (
-      activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' &&
-      keyword.startsWith('0x')
-    ) {
+    if (activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' && keyword.startsWith('0x')) {
       controller.assets.fetchTokenInfo(keyword);
     }
 
     const currentNetwork = activeNetwork[KeyringNetwork.Ethereum];
-    const lcKeyword = keyword.toLowerCase()
+    const lcKeyword = keyword.toLowerCase();
 
     setFilteredAssets(
-      Object.values(assets).filter(asset => {
-          if(asset.network === 'both' || asset.network === currentNetwork) {
-            if(asset.type === AssetType.ERC20 && asset.address && !alreadyInWallet[asset.id]) {
-              const label = asset.label.toLowerCase();
-              return label.includes(lcKeyword) || asset.address.includes(lcKeyword);
-            }
+      Object.values(assets).filter((asset) => {
+        if (asset.network === 'both' || asset.network === currentNetwork) {
+          if (asset.type === AssetType.ERC20 && asset.address && !alreadyInWallet[asset.id]) {
+            const label = asset.label.toLowerCase();
+            return label.includes(lcKeyword) || asset.address.includes(lcKeyword);
           }
-          return false;
         }
-      )
+        return false;
+      })
     );
   }, [keyword, assets]);
 
@@ -95,10 +86,7 @@ const AddAsset = () => {
                         </div>
                         <span>{asset.label}</span>
                       </div>
-                      <IconButton
-                        className={styles.addButton}
-                        onClick={() => handleAddAsset(asset)}
-                      >
+                      <IconButton className={styles.addButton} onClick={() => handleAddAsset(asset)}>
                         <AddCircle />
                       </IconButton>
                     </li>

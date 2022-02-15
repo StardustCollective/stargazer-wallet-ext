@@ -31,12 +31,11 @@ import { useController } from 'hooks/index';
 
 import TxIcon from 'assets/images/svg/txIcon.svg';
 
-
 ///////////////////////
 // Styles
 ///////////////////////
 
-import styles from './TxItem.scss'
+import styles from './TxItem.scss';
 
 ///////////////////////
 // Enums
@@ -61,7 +60,7 @@ type ITxItem = {
   currencySymbol: string;
   amount: string;
   fiatAmount: string;
-}
+};
 
 const MAX_GAS_NUMBER = 200;
 
@@ -77,37 +76,27 @@ const TxItem: FC<ITxItem> = ({
   isGasSettingsVisible,
   showGroupBar,
   txTypeLabel,
-  currencySymbol,
   amount,
   fiatAmount,
   onItemClick,
+  receivedOrSentText,
+  formattedDistanceDate,
+  renderGasSettings,
 }) => {
-
-  const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.10 : 0;
+  const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.1 : 0;
 
   /////////////////////////
   // Hooks
   ////////////////////////
-  const { activeAsset }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
+  const { activeAsset }: IVaultState = useSelector((state: RootState) => state.vault);
 
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
+  const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
-  let {
-    estimateGasFee,
-    gasSpeedLabel,
-    gasFee,
-    setGasPrice,
-    gasLimit,
-    gasPrices,
-    gasPrice } = useGasEstimate({
-      toAddress: tx.toAddress,
-      asset: assets[activeAsset.id],
-      data: tx.data,
-    });
+  let { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasLimit, gasPrices, gasPrice } = useGasEstimate({
+    toAddress: tx.toAddress,
+    asset: assets[activeAsset.id],
+    data: tx.data,
+  });
 
   const controller = useController();
 
@@ -118,10 +107,9 @@ const TxItem: FC<ITxItem> = ({
   const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
     setGasPrice(value as number);
     estimateGasFee(value as number);
-  }
+  };
 
   const onSpeedUpClick = (gas: number) => {
-
     const txConfig: ITransactionInfo = {
       fromAddress: tx.fromAddress,
       toAddress: tx.toAddress,
@@ -132,18 +120,17 @@ const TxItem: FC<ITxItem> = ({
         gasLimit,
         memo: tx.data,
         nonce: tx.nonce,
-      }
+      },
     };
 
     controller.wallet.account.updateTempTx(txConfig);
     controller.wallet.account.confirmContractTempTx(activeAsset);
     controller.wallet.account.txController.removePendingTxHash(tx.txHash);
-  }
+  };
 
   /////////////////////////
   // Renders
   ////////////////////////
-
 
   const RenderIcon: FC = () => {
     if (!isETH) {
@@ -177,12 +164,15 @@ const TxItem: FC<ITxItem> = ({
   };
 
   return (
-    <div onClick={() => { onItemClick(tx.hash) }} className={styles.txItem}>
+    <div
+      onClick={() => {
+        onItemClick(tx.hash);
+      }}
+      className={styles.txItem}
+    >
       {showGroupBar && (
         <div className={styles.groupBar}>
-          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} >
-            {formatDistanceDate(tx.timestamp)}
-          </TextV3.CaptionStrong>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{formatDistanceDate(tx.timestamp)}</TextV3.CaptionStrong>
         </div>
       )}
       <div className={styles.content}>
@@ -194,13 +184,11 @@ const TxItem: FC<ITxItem> = ({
         <div className={styles.txInfo}>
           <div>
             <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
-              {isSelf ? 'Self' : (isReceived ? 'Received' : 'Sent')} {currencySymbol}
+              {isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'} {currencySymbol}
             </TextV3.BodyStrong>
           </div>
           <div>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-              {txTypeLabel}
-            </TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>{txTypeLabel}</TextV3.Caption>
           </div>
         </div>
         <div className={styles.txAmount}>
@@ -212,7 +200,7 @@ const TxItem: FC<ITxItem> = ({
           </TextV3.Caption>
         </div>
       </div>
-      {isGasSettingsVisible &&
+      {isGasSettingsVisible && (
         <div className={styles.gasSettings}>
           <GasSettings
             values={{
@@ -228,10 +216,9 @@ const TxItem: FC<ITxItem> = ({
             gasPrice={gasPrice}
           />
         </div>
-      }
+      )}
     </div>
   );
-
-}
+};
 
 export default TxItem;
