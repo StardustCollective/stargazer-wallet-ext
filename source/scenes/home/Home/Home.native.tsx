@@ -42,7 +42,7 @@ const Home: FC<IHome> = ({
 }) => {
 
   return (
-    <ScrollView contentContainerStyle={styles.home}>
+    <ScrollView>
       {activeWallet ? (
         <>
           <View style={styles.fiatBalanceContainer}>
