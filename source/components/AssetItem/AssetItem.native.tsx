@@ -2,8 +2,8 @@
 // Modules
 ///////////////////////
 
-import React, { FC, Fragment } from 'react';
-import clsx from 'clsx';
+import React, { FC } from 'react';
+import { View, Image, TouchableOpacity } from 'react-native';
 
 ///////////////////////
 // Components
@@ -36,8 +36,7 @@ import IAssetItem from './types';
 // Styles
 ///////////////////////
 
-import styles from './AssetItem.scss';
-
+import styles from './styles';
 
 ///////////////////////
 // Component
@@ -45,18 +44,14 @@ import styles from './AssetItem.scss';
 
 const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked }: IAssetItem) => {
 
-  ///////////////////////
-  // Render
-  ///////////////////////
-
   const renderNFTPriceSection = () => {
-    return <div />;
+    return <View />;
   };
 
   const renderAssetPriceSection = (assetInfoData: IAssetInfoState) => {
     if (assetInfoData.priceId && fiat[assetInfoData.priceId]?.price && fiat[assetInfoData.priceId]?.priceChange) {
       return (
-        <div>
+        <View>
           <TextV3.Caption color={COLORS_ENUMS.BLACK}>{formatPrice(fiat[assetInfoData.priceId].price)}</TextV3.Caption>
           <TextV3.Caption
             color={COLORS_ENUMS.BLACK}
@@ -65,37 +60,36 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
             {fiat[assetInfoData.priceId].priceChange > 0 ? '+' : ''}
             {formatNumber(fiat[assetInfoData.priceId].priceChange, 2, 2, 3)}%
           </TextV3.Caption>
-        </div>
+        </View>
       );
     }
+  }
 
-    return null;
-  };
-
-  const classes = clsx(styles.assetItem, isNFT && styles.nft);
-
+  // const classes = clsx(styles.assetItem, isNFT && styles.nft);
   return (
-    <Fragment key={asset.id}>
-      <Card id={`assetItem-${id}`}>
-        <div className={classes} onClick={() => itemClicked()}>
-          <div className={styles.assetIcon}>
-            {assetInfo.logo.startsWith('http') ? <img src={assetInfo.logo} /> : <img src={`/${assetInfo.logo}`} />}
-          </div>
-          <div className={styles.assetName}>
-            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{assetInfo.label}</TextV3.BodyStrong>
-            {isNFT ? renderNFTPriceSection() : renderAssetPriceSection(assetInfo as IAssetInfoState)}
-          </div>
-          <div className={styles.assetBalance}>
-            <TextV3.Header dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
-              {isNFT
-                ? Number((assetInfo as INFTInfoState).quantity)
-                : formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)}
-            </TextV3.Header>
-          </div>
-        </div>
-      </Card>
-    </Fragment>
-  );
-};
 
-export default AssetItem;
+    <Card style={{width:'100%'}} onClick={itemClicked}>
+      <View style={styles.assetIcon}>
+        {typeof assetInfo.logo === 'string' && assetInfo.logo.startsWith('http') ?
+          (<Image style={styles.imageIcon} source={{ uri: assetInfo.logo }} />)
+          :
+          (<assetInfo.logo style={styles.componentIcon} />)
+        }
+      </View>
+      <View style={styles.assetName}>
+        <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{assetInfo.label}</TextV3.BodyStrong>
+        {isNFT ? renderNFTPriceSection() : renderAssetPriceSection(assetInfo as IAssetInfoState)}
+      </View>
+      <View style={styles.assetBalance}>
+        <TextV3.Header dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
+          {isNFT
+            ? Number((assetInfo as INFTInfoState).quantity)
+            : formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)}
+        </TextV3.Header>
+      </View>
+    </Card>
+  );
+
+}
+
+export default AssetItem;``
