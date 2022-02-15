@@ -33,7 +33,7 @@ const isAssetNFT = (assetInfo: any) => {
 ///////////////////////
 
 const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked }) => {
-  
+
   ///////////////////////
   // Hooks
   ///////////////////////
@@ -43,17 +43,15 @@ const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked 
   const isNFT = isAssetNFT(assetInfo);
 
   return (
-    <>
-      <AssetItem
-        id={id}
-        asset={asset}
-        assetInfo={assetInfo}
-        itemClicked={itemClicked}
-        balances={balances}
-        fiat={fiat}
-        isNFT={isNFT}
-      />
-    </>
+    <AssetItem
+      id={id}
+      asset={asset}
+      assetInfo={assetInfo}
+      itemClicked={itemClicked}
+      balances={balances}
+      fiat={fiat}
+      isNFT={isNFT}
+    />
   )
 
 }
