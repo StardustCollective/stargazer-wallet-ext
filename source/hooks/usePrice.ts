@@ -37,7 +37,7 @@ export function useFiat(currencyName = true, asset?: IAssetInfoState) {
   };
 }
 
-type IBalanceObject = {
+export type IBalanceObject = {
   symbol?: string;
   balance: string;
   name?: string;

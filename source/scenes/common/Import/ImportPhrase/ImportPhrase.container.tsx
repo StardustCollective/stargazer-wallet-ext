@@ -2,8 +2,7 @@
 // Controllers
 ///////////////////////////
 
-import React, { useMemo, useState } from 'react';
-import { useLinkTo } from '@react-navigation/native';
+import React, { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -26,16 +25,24 @@ import Container from 'components/Container';
 import ImportPhrase from './ImportPhrase';
 
 ///////////////////////////
+// Types
+///////////////////////////
+
+interface IImportPhraseContainer {
+  onRegister: () => void;
+}
+
+///////////////////////////
 // Container
 ///////////////////////////
 
-const ImportPhraseContainer = () => {
+const ImportPhraseContainer: FC<IImportPhraseContainer>= ({
+  onRegister,
+}) => {
 
   ///////////////////////////
   // Hooks
   ///////////////////////////
-
-  const linkTo = useLinkTo();
 
   const [isInvalid, setInvalid] = useState(false);
 
@@ -69,8 +76,7 @@ const ImportPhraseContainer = () => {
 
     if (WalletController.onboardHelper.importAndValidateSeedPhrase(phrase)
     ) {
-      linkTo('/create/pass');
-      // onRegister();
+      onRegister();
     }
     else {
       setInvalid(true)
@@ -89,6 +95,7 @@ const ImportPhraseContainer = () => {
         register={register}
         onSubmit={onSubmit}
         isInvalid={isInvalid}
+        isDisabled={isDisabled}
       />
     </Container>
   )

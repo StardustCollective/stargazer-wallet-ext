@@ -42,6 +42,11 @@ const CreatePass: FC<ICreatePass> = ({
   comment,
   title,
 }) => {
+
+  ///////////////////////////
+  // Render  
+  ///////////////////////////
+  
   return (
     <Layout title={title}>
       {passed ? (
@@ -62,19 +67,19 @@ const CreatePass: FC<ICreatePass> = ({
             placeholder='Please enter at least 8 characters'
             control={control}
           />
-            <TextV3.CaptionStrong color={COLORS_ENUMS.GRAY_100}>
-              At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1
-              special character.
-            </TextV3.CaptionStrong>
-            {(errors.password || errors.repassword) && (
-              <View style={styles.errors}>
-                <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>
-                  {errors.password
-                    ? errors.password.message
-                    : errors.repassword.message}
-                </TextV3.CaptionStrong>
-              </View>
-            )}
+          <TextV3.CaptionStrong color={COLORS_ENUMS.GRAY_100}>
+            At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1
+            special character.
+          </TextV3.CaptionStrong>
+          {(errors.password || errors.repassword) && (
+            <View style={styles.errors}>
+              <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>
+                {errors.password
+                  ? errors.password.message
+                  : errors.repassword.message}
+              </TextV3.CaptionStrong>
+            </View>
+          )}
         </>
       )
       }
