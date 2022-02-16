@@ -15,23 +15,32 @@ const AssetHeader: FC<IAssetHeaderSettings> = ({
   asset,
   copiedTextToolip,
 }) => {
-  const tooltipStyle = StyleSheet.flatten([styles.address, isCopied ? styles.active : {}]);
+  const tooltipStyle = StyleSheet.flatten([styles.address, isCopied ? styles.addressActive : {}]);
 
   return (
     <View style={styles.fullselect}>
       <View style={styles.selected}>
         <TouchableOpacity onPress={onClickCopyText}>
-          <View style={styles.main}></View>
-        </TouchableOpacity>
-        <View style={styles.assetLogo}>
-          <CircleIcon logo={asset.logo} label={asset.label} />
-        </View>
-        <Tooltip title={copiedTextToolip} placement="bottom" arrow>
-          <View style={tooltipStyle}>
-            <TextV3.Label>{asset.label}</TextV3.Label>
-            <TextV3.Description id="assetHeader-address">{shortenedAddress}</TextV3.Description>
+          <View style={styles.headerSection}>
+            <View style={styles.assetLogo}>
+              <CircleIcon
+                logo={asset.logo}
+                label={asset.label}
+                containerStyle={styles.assetLogo}
+                iconStyle={{ height: 10 }}
+              />
+            </View>
+            {/* Add onClickCopyText function to Tooltip so it also copies when user clicks on text */}
+            <Tooltip body={copiedTextToolip} arrow onOpen={onClickCopyText}>
+              <View style={tooltipStyle}>
+                <TextV3.Header extraStyles={styles.logoHeader}>{asset.label}</TextV3.Header>
+                <TextV3.Description extraStyles={styles.addressText} id="assetHeader-address">
+                  {shortenedAddress}
+                </TextV3.Description>
+              </View>
+            </Tooltip>
           </View>
-        </Tooltip>
+        </TouchableOpacity>
       </View>
     </View>
   );

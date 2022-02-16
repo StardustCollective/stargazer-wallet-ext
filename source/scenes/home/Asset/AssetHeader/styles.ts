@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from 'assets/styles/_variables';
+import { COLORS, FONTS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   fullselect: {
@@ -21,14 +21,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
   },
-  selectedMain: {
+  headerSection: {
     display: 'flex',
     flexDirection: 'row',
-    transition: 'all 0.3s',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   assetLogo: {
     marginRight: 8,
+  },
+  logoHeader: {
+    marginBottom: 0,
+    marginTop: 0,
+    lineHeight: 24,
+    fontSize: 18,
+    fontWeight: FONT_WEIGHTS.medium,
+    color: COLORS.white,
   },
   address: {
     display: 'flex',
@@ -37,26 +45,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 60,
     width: '100%',
-    // font-family: FONTS.quicksand,
-    fontWeight: 'bold',
-    fontSize: 18,
-    lineHeight: 24,
-    color: COLORS.white,
-    transition: 'all 0.3s',
-    cursor: 'pointer',
   },
   addressActive: {
     color: COLORS.gray_light,
   },
   addressText: {
     fontSize: 12,
-    lineHeight: 10,
-    fontWeight: 500,
+    lineHeight: 14,
+    fontWeight: FONT_WEIGHTS.regular,
     // fontFamily: FONTS.quicksand,
+    color: COLORS.white,
     marginTop: 2,
     marginLeft: 0,
-    color: COLORS.white,
-    transition: 'all 0.3s',
+    marginBottom: 0,
   },
   options: {
     margin: 0,
