@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 14,
     border: `2px solid ${COLORS.gray_dark}`,
-    boxShadow: SHADOWS.shadow_btn,
+    // boxShadow: SHADOWS.shadow_btn,
   },
   deleteTitleStyle: {
     color: COLORS.red,

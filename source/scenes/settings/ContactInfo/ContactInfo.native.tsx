@@ -61,7 +61,8 @@ const ContactInfo: FC<IContactInfoSettings> = ({
         <View style={styles.address}>
           <Text style={styles.text}>{ellipsis(contact?.address || '')}</Text>
           <View style={{ flexDirection: 'row' }}>
-            <Tooltip body={tooltipTitle} arrow visible={tooltipVisible}>
+            {/* need to add copyText function to Tooltip so it also copies when user clicks in tooltip area */}
+            <Tooltip body={tooltipTitle} arrow visible={tooltipVisible} onOpen={onClickCopyText}>
               <Button
                 icon={{
                   name: 'copy',
