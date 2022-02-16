@@ -16,7 +16,7 @@ export default interface IAssetItem {
   asset: IAssetState;
   assetInfo: IAssetInfoState | INFTInfoState;
   itemClicked: () => void;
-  balances: AssetBalances,
-  fiat: IFiatState,
-  isNFT: boolean,
+  balances?: AssetBalances;
+  fiat?: IFiatState;
+  isNFT?: boolean;
 };
