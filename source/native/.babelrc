@@ -1,7 +1,7 @@
 {
   "plugins": [
     ["module:react-native-dotenv", {
-      "path": "../web/.env"
+      "path": "../../.env"
     }]
   ]
 }
