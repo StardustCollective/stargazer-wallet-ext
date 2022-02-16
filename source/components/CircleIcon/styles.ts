@@ -6,11 +6,15 @@ const styles = StyleSheet.create({
     height: 32,
     width: 32,
     borderRadius: 50,
-    border: `2px solid ${COLORS.gray_light}`,
+    borderWidth: 2,
+    borderColor: COLORS.gray_light,
     backgroundColor: COLORS.white,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  logoIcon: {
+    height: 23,
   },
 });
 
