@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   },
   tooltip: {
     opacity: 0.95,
-    boxShadow: SHADOWS.shadow_tooltip,
+    // boxShadow: SHADOWS.shadow_tooltip,
     // fontFamily: FONTS.quicksand,
     color: COLORS.white,
     borderRadius: 3,
