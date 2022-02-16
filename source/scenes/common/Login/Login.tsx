@@ -29,7 +29,7 @@ import LogoImage from 'assets/images/logo.svg';
 // Styles Imports
 ///////////////////// 
 
-import styles from './Login.scss';
+import styles from './styles.scss';
 
 //////////////////////
 // Types
