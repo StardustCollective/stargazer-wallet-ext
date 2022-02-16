@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
-import { useCopyClipboard } from 'hooks/index';
+// import { useCopyClipboard } from 'hooks/index';
 import ContactsController from 'scripts/Background/controllers/ContactsController';
 import IContactBookState from 'state/contacts/types';
 import { RootState } from 'state/store';
@@ -17,7 +17,7 @@ const ContactInfoContainer: FC<IContactInfoView> = ({ route, navigation }) => {
   const linkTo = useLinkTo();
 
   const [codeOpened, setCodeOpened] = useState(false);
-  const [isCopied, copyText] = useCopyClipboard();
+  // const [isCopied, copyText] = useCopyClipboard();
 
   const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
 
@@ -39,8 +39,8 @@ const ContactInfoContainer: FC<IContactInfoView> = ({ route, navigation }) => {
       <ContactInfo
         codeOpened={codeOpened}
         setCodeOpened={setCodeOpened}
-        isCopied={isCopied}
-        copyText={copyText}
+        // isCopied={isCopied}
+        // copyText={copyText}
         contact={contact}
         handleDelete={handleDelete}
         handleEdit={handleEdit}

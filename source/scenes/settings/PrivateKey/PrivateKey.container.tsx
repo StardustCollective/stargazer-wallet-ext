@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { showMessage } from 'react-native-flash-message';
 
 import WalletController from 'scripts/Background/controllers/WalletController';
-import { useCopyClipboard } from 'hooks/index';
+// import { useCopyClipboard } from 'hooks/index';
 
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
@@ -27,7 +27,7 @@ const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
     }),
   });
 
-  const [isCopied, copyText] = useCopyClipboard();
+  // const [isCopied, copyText] = useCopyClipboard();
   const [checked, setChecked] = useState(false);
   const [privKey, setPrivKey] = useState<string>('*************************************************************');
 
@@ -47,7 +47,7 @@ const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
 
   const handleCopyPrivKey = () => {
     if (!checked) return;
-    copyText(privKey);
+    // copyText(privKey);
   };
 
   return (
@@ -59,7 +59,7 @@ const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
         onSubmit={onSubmit}
         handleSubmit={handleSubmit}
         checked={checked}
-        isCopied={isCopied}
+        // isCopied={isCopied}
         wallet={wallet}
         privKey={privKey}
       />
