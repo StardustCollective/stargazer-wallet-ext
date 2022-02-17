@@ -7,6 +7,9 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
+import ControllerUtils from './../controllers/ControllerUtils';
+import { INFURA_CREDENTIAL } from 'utils/envUtil';
+
 
 const FIFTEEN_SECONDS = 15 * 1000;
 const ONE_MINUTE = 60 * 1000;
@@ -16,11 +19,13 @@ export class AssetsBalanceMonitor {
   private priceIntervalId: any;
   private dagBalIntervalId: any;
 
-  private ethAccountTracker = new AccountTracker({infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }});
+  private ethAccountTracker = new AccountTracker({infuraCreds: { projectId: INFURA_CREDENTIAL || '' }});
   private subscription: Subscription;
 
   private hasDAGPending = false;
   private hasETHPending = false;
+  private utils = ControllerUtils();
+  
 
   constructor () {}
 
@@ -83,8 +88,8 @@ export class AssetsBalanceMonitor {
         clearInterval(this.priceIntervalId);
       }
 
-      window.controller.stateUpdater();
-      this.priceIntervalId = setInterval(window.controller.stateUpdater, 3 * ONE_MINUTE);
+      this.utils.updateFiat();
+      this.priceIntervalId = setInterval(this.utils.updateFiat, 3 * ONE_MINUTE);
     }
   }
 
