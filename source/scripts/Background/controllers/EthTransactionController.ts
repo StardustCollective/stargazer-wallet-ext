@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import { IAssetInfoState } from '../../../state/assets/types';
 import IVaultState  from 'state/vault/types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import {TEST_PRIVATE_KEY, ETHERSCAN_API_KEY, INFURA_CREDENTIAL} from 'utils/envUtil';
 
 export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => boolean;
@@ -26,12 +27,12 @@ const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
 
-  // private ethClient: XChainEthClient = new XChainEthClient({
-  //   network: 'mainnet',
-  //   privateKey: process.env.TEST_PRIVATE_KEY,
-  //   etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-  //   infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
-  // });
+  private ethClient: XChainEthClient = new XChainEthClient({
+    network: 'mainnet',
+    privateKey: TEST_PRIVATE_KEY,
+    etherscanApiKey: ETHERSCAN_API_KEY,
+    infuraCreds: { projectId: INFURA_CREDENTIAL || '' },
+  });
 
   private _getPendingData () {
     const state = localStorage.getItem(TX_STORE) || '{}';

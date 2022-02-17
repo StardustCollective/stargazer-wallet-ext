@@ -220,7 +220,7 @@ module.exports = {
       filename: 'options.html',
     }),
     new DotEnv({
-      path: './.env',
+      path: '../../.env',
     }),
     // write css file(s) to build folder
     new MiniCssExtractPlugin({ filename: 'css/[name].css' }),
