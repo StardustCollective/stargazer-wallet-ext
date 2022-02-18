@@ -44,7 +44,6 @@ const GasSettings: FC<IGasSettings> = ({
   gasPrice,
   gasPrices,
   onSliderChange,
-  onSpeedUpClick,
   onSpeedUpButtonClick,
   onSettingCancelButtonClick,
   onSpeedUpConfirmButtonClicked,
@@ -53,7 +52,8 @@ const GasSettings: FC<IGasSettings> = ({
   viewState,
   getFiatAmount,
 }) => {
-  const FEE_STRING_VALUE = getFiatAmount(gasFeeLabel, 2, 'ethereum';
+  const FEE_STRING_VALUE = getFiatAmount(gasFeeLabel, 2, 'ethereum');
+
   return (
     <View style={styles.gasSettings}>
       {viewState === GAS_SETTINGS_STATE_ENUM.OPTIONS && (
