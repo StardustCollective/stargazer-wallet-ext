@@ -1,20 +1,26 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   txItem: {
     display: 'flex',
     backgroundColor: COLORS.white,
-    flex: 1,
+    // flex: 1,
     flexDirection: 'column',
     width: '100%',
   },
   groupBar: {
     display: 'flex',
-    alignItems: 'center',
-    height: 36,
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: 24,
     backgroundColor: COLORS.grey_50,
-    color: COLORS.black,
+  },
+  groupBarText: {
+    marginLeft: 24,
+    marginTop: 0,
+    marginBottom: 0,
   },
   groupBarSpan: {
     marginLeft: 24,
@@ -22,8 +28,15 @@ const styles = StyleSheet.create({
   content: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 16,
     marginHorizontal: 24,
+    backgroundColor: COLORS.white,
+  },
+  leftContent: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
   txIcon: {
     display: 'flex',
@@ -40,40 +53,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  recvIcon: {
-    transform: 'scaleX(-1)',
-  },
-  txInfo: {
+  txInfoWrapper: {
     display: 'flex',
-    flex: 1,
+    height: 48,
     flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'flex-start',
   },
-  txInfoLastChild: {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'scroll',
-    width: 96,
+  txAddress: {
+    maxWidth: 96,
     textAlign: 'right',
-    overflow: 'scroll',
+    fontSize: 14,
+    lineHeight: 20,
+    color: COLORS.black,
   },
-  txAmount: {
+  txAmountWrapper: {
     display: 'flex',
-    flex: 1,
+    right: 0,
+    height: 48,
     flexDirection: 'column',
     textAlign: 'right',
     alignItems: 'flex-end',
   },
   txAmountText: {
-    overflow: 'hidden',
+    color: COLORS.black,
     maxWidth: 100,
+    fontWeight: FONT_WEIGHTS.medium,
+    fontSize: 18,
+    lineHeight: 24,
   },
   txAmountFiatText: {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'scroll',
     width: 96,
-    overflow: 'scroll',
+    fontSize: 14,
+    fontWeight: FONT_WEIGHTS.regular,
+    lineHeight: 20,
   },
   txExplorerIcon: {
     width: 60,
@@ -92,6 +105,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 16,
+  },
+  gasSettings: {
+    position: 'relative',
   },
 });
 

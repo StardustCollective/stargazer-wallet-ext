@@ -5,8 +5,6 @@ import { RootState } from 'state/store';
 import IAssetListState from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
 
-import Container from 'components/Container';
-
 import WalletController from 'scripts/Background/controllers/WalletController';
 
 import useGasEstimate from 'hooks/useGasEstimate';
@@ -57,7 +55,7 @@ const TxItemContainer: FC<ITxItem> = ({
       timestamp: new Date().getTime(),
       ethConfig: {
         gasPrice: gas,
-        gasLimit,
+        gasLimit: 12313232,
         memo: tx.data,
         nonce: tx.nonce,
       },
