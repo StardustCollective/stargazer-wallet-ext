@@ -1,7 +1,7 @@
 export const FONTS = {
   rubik: 'Rubik',
-  quicksand: 'Quicksand, sans-serif',
-  inter: 'Inter, sans-serif',
+  quicksand: 'Quicksand',
+  inter: 'Inter',
 };
 
 export const COLORS = {
@@ -33,6 +33,10 @@ export const COLORS = {
   gray_medium: '#979797',
   gray_hover: '#dedede',
   gray_disabled: '#dadada',
+  green: '#1dbf8e',
+  green_100: '#1dbf8e',
+  green_light: '#d6ffdc',
+  green_dark: '#00660e',
 };
 
 export const FONT_WEIGHTS = {
