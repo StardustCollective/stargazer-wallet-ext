@@ -23,7 +23,7 @@ const AssetDetail: FC<IAssetSettings> = ({
 }) => {
   const activeAssetStyle = StyleSheet.flatten([styles.mask, activeAsset && activeWallet ? styles.loaderHide : {}]);
 
-  if (/*activeWallet && */ activeAsset) {
+  if (activeWallet && activeAsset) {
     return (
       <View style={styles.wrapper}>
         <View style={styles.center}>
