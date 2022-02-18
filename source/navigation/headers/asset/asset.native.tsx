@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Linking } from 'react-native';
 
 import AssetHeader from 'scenes/home/Asset/AssetHeader';
 import AddressLinkImage from 'assets/images/svg/addressLink.svg';
@@ -17,7 +17,7 @@ const assetHeader = ({ navigation, asset, address, addressUrl }: IAssetHeader) =
       <TouchableOpacity
         onPress={(e) => {
           e.stopPropagation();
-          window.open(addressUrl, '_blank');
+          Linking.openURL(addressUrl);
         }}
       >
         <View>
