@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     opacity: 0.6,
-    // position: 'sticky',
   },
   noTx: {
     display: 'flex',
@@ -36,7 +35,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light,
     borderBottomColor: COLORS.gray_100,
     borderBottomWidth: 1,
-    // position: 'sticky',
     top: 0,
     justifyContent: 'center',
     alignItems: 'center',

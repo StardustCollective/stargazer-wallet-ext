@@ -13,11 +13,6 @@ export type ITxItemSettings = {
 
 export default interface ITxPanelSettings {
   transactions: Transaction[];
-  isETH: boolean;
-  handleOpenExplorer: () => void;
-  isShowedGroupBar: boolean;
-  assets: IAssetState[];
   renderTxItem: (transaction: Transaction, index: number) => void;
   transactionDescription: string;
-  activeAsset: IAssetInfoState;
 }
