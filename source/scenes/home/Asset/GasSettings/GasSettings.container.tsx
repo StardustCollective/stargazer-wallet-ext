@@ -4,7 +4,8 @@ import { useFiat } from 'hooks/usePrice';
 
 import GasSettings from './GasSettings';
 
-import IGasSettingsProps, { GAS_SETTINGS_STATE_ENUM } from './types';
+import { GAS_SETTINGS_STATE_ENUM } from './constants';
+import IGasSettingsProps from './types';
 
 const GasSettingsContainer: FC<IGasSettingsProps> = ({
   values,
@@ -47,6 +48,7 @@ const GasSettingsContainer: FC<IGasSettingsProps> = ({
       onKeepButtonClicked={onKeepButtonClicked}
       onCancelTransactionButtonClicked={onCancelTransactionButtonClicked}
       viewState={viewState}
+      setViewState={setViewState}
       values={values}
       speedLabel={speedLabel}
       gasFeeLabel={gasFeeLabel}
