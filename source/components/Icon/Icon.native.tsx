@@ -51,9 +51,10 @@ const IconComponent: FC<IIcon> = ({
   }
 
   if (Component) {
+    const IconComponent = Component;
     // this doesn't seem to work
     <View style={composedContainerStyles}>
-      <Component width={width} iconStyles={composedIconStyles} />
+      <IconComponent iconStyles={composedIconStyles} />
     </View>;
   }
 

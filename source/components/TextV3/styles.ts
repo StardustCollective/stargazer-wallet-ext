@@ -86,6 +86,10 @@ const styles = StyleSheet.create({
   uppercase: {
     textTransform: 'uppercase',
   },
+  noMargin: {
+    marginTop: 0,
+    marginBottom: 0,
+  },
 });
 
 export default styles;
