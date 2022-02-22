@@ -6,7 +6,7 @@ import * as yup from 'yup';
 
 import navigationUtil from 'navigation/util';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 import Container from 'scenes/common/Container';
 
@@ -15,6 +15,7 @@ import ImportAccount from './ImportAccount';
 import { IImportAccountView, HardwareWallet } from './types';
 
 const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) => {
+  const walletController = getWalletController();
   const { network } = route.params;
 
   const [importType, setImportType] = useState('priv');
@@ -36,7 +37,8 @@ const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) =
   });
 
   const handleImportPrivKey = async (privKey: string, label: string) => {
-    return WalletController.importSingleAccount(label, network, privKey)
+    return walletController
+      .importSingleAccount(label, network, privKey)
       .then((addr: string) => {
         setLoading(false);
         if (addr) {

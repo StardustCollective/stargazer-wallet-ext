@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { showMessage } from 'react-native-flash-message';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
-// import { useCopyClipboard } from 'hooks/index';
+import { getWalletController } from 'utils/controllersUtils';
+import { useCopyClipboard } from 'hooks/index';
 
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
@@ -17,6 +17,7 @@ import PrivateKey from './PrivateKey';
 import { IPrivateKeyView } from './types';
 
 const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
+  const walletController = getWalletController();
   const { id } = route.params;
   const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
   const wallet = wallets.find((w) => w.id === id);
@@ -27,12 +28,12 @@ const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
     }),
   });
 
-  // const [isCopied, copyText] = useCopyClipboard();
+  const [isCopied, copyText] = useCopyClipboard();
   const [checked, setChecked] = useState(false);
   const [privKey, setPrivKey] = useState<string>('*************************************************************');
 
   const onSubmit = async (data: any) => {
-    const res = await WalletController.getPrivateKey(id, data.password);
+    const res = await walletController.getPrivateKey(id, data.password);
 
     if (res) {
       setPrivKey(res);
@@ -47,7 +48,7 @@ const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
 
   const handleCopyPrivKey = () => {
     if (!checked) return;
-    // copyText(privKey);
+    copyText(privKey);
   };
 
   return (
@@ -59,7 +60,7 @@ const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
         onSubmit={onSubmit}
         handleSubmit={handleSubmit}
         checked={checked}
-        // isCopied={isCopied}
+        isCopied={isCopied}
         wallet={wallet}
         privKey={privKey}
       />

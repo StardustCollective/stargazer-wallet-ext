@@ -5,21 +5,22 @@ import * as yup from 'yup';
 
 import Container from 'scenes/common/Container';
 
-// import { useCopyClipboard } from 'hooks/index';
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { useCopyClipboard } from 'hooks/index';
+import { getWalletController } from 'utils/controllersUtils';
 
 import Phrase from './Phrase';
 
 import { IPhraseView } from './types';
 
 const PhraseContainer: FC<IPhraseView> = ({ route }) => {
+  const walletController = getWalletController();
   const [checked, setChecked] = useState(false);
   const [phrase, setPhrase] = useState<string>(
     '**** ******* ****** ****** ****** ******** *** ***** ****** ***** *****'
   );
 
   const { id } = route.params;
-  // const [isCopied, copyText] = useCopyClipboard();
+  const [isCopied, copyText] = useCopyClipboard();
   const { handleSubmit, register, control } = useForm({
     validationSchema: yup.object().shape({
       password: yup.string().required(),
@@ -27,7 +28,7 @@ const PhraseContainer: FC<IPhraseView> = ({ route }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const res = await WalletController.getPhrase(id, data.password);
+    const res = await walletController.getPhrase(id, data.password);
 
     if (res) {
       setPhrase(res);
@@ -42,7 +43,7 @@ const PhraseContainer: FC<IPhraseView> = ({ route }) => {
 
   const handleCopySeed = () => {
     if (!checked) return;
-    // copyText(phrase);
+    copyText(phrase);
   };
 
   return (
@@ -54,7 +55,7 @@ const PhraseContainer: FC<IPhraseView> = ({ route }) => {
         handleSubmit={handleSubmit}
         control={control}
         register={register}
-        // isCopied={isCopied}
+        isCopied={isCopied}
         handleCopySeed={handleCopySeed}
       />
     </Container>
