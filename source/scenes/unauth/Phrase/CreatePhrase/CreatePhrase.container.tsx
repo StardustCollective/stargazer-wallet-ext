@@ -9,7 +9,7 @@ import { useLinkTo } from '@react-navigation/native';
 // Controllers
 ///////////////////////////
 
-import { getWalletController } from 'utils/controllersUtils';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Component
@@ -33,7 +33,7 @@ import * as consts from '../consts';
 // Constants
 ///////////////////////////
 
-const phrases = getWalletController().onboardHelper.getSeedPhrase();
+const phrases = WalletController.onboardHelper.getSeedPhrase();
 
 ///////////////////////////
 // Container

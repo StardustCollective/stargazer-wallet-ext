@@ -10,7 +10,7 @@ import * as yup from 'yup';
 // Controllers
 ///////////////////////////
 
-import { getWalletController } from 'utils/controllersUtils';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Components
@@ -74,7 +74,7 @@ const ImportPhraseContainer: FC<IImportPhraseContainer>= ({
   const onSubmit = (data: any) => {
     const phrase = data.phrase.trim();
 
-    if (getWalletController().onboardHelper.importAndValidateSeedPhrase(phrase)
+    if (WalletController.onboardHelper.importAndValidateSeedPhrase(phrase)
     ) {
       onRegister();
     }

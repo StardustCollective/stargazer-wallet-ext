@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 // Controllers
 ///////////////////////////
 
-import { getWalletController } from 'utils/controllersUtils';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Components  
@@ -63,14 +63,14 @@ const CreatePassContainer = () => {
 
   const nextHandler = () => {
     if (passed) {
-      const phrase = getWalletController().onboardHelper.getSeedPhrase();
-      getWalletController().createWallet('Main Wallet', phrase, true);
+      const phrase = WalletController.onboardHelper.getSeedPhrase();
+      WalletController.createWallet('Main Wallet', phrase, true);
       navigationUtil.replace(navigation, screens.authorized.root);
     }
   };
 
   const onSubmit = async (data: any) => {
-    getWalletController().setWalletPassword(data.password);
+    WalletController.setWalletPassword(data.password);
     setPassed(true);
   };
 
