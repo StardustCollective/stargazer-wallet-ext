@@ -2,14 +2,8 @@ import React, { FC } from 'react';
 
 import { View, Text, Linking, StyleSheet } from 'react-native';
 
-///////////////////////
-// Types
-///////////////////////
 import styles from './styles';
 
-///////////////////////
-// Types
-///////////////////////
 import IAboutSettings from './types';
 
 const About: FC<IAboutSettings> = ({
@@ -22,21 +16,12 @@ const About: FC<IAboutSettings> = ({
   privacyLabel,
   privacyLink,
 }) => {
-  const termsAndPrivacyStyles = StyleSheet.flatten([
-    styles.text,
-    styles.termsAndPrivacy,
-  ]);
+  const termsAndPrivacyStyles = StyleSheet.flatten([styles.text, styles.termsAndPrivacy]);
 
-  const privacyStyles = StyleSheet.flatten([
-    styles.text,
-    styles.termsAndPrivacy,
-    styles.privacy
-  ]);
+  const privacyStyles = StyleSheet.flatten([styles.text, styles.termsAndPrivacy, styles.privacy]);
   return (
     <View style={styles.about}>
-      <Text style={styles.text}>
-        Stargazer Wallet Chrome Extension v{versionMajorMinor}
-      </Text>
+      <Text style={styles.text}>Stargazer Wallet Chrome Extension v{versionMajorMinor}</Text>
       <Text style={styles.text}>Version: {version}</Text>
       <Text style={styles.text}>
         Support:{' '}
