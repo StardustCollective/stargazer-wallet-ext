@@ -12,7 +12,7 @@ import * as consts from './consts';
 // Controllers
 ///////////////////////////
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import {getWalletController} from 'utils/controllersUtils';
 
 ///////////////////////////
 // Scene
@@ -26,6 +26,7 @@ import CreatePass from './CreatePass';
 
 const CreatePassContainer = () => {
 
+  const walletController = getWalletController();
 
   ///////////////////////////
   // Hooks 
@@ -57,7 +58,7 @@ const CreatePassContainer = () => {
   };
 
   const onSubmit = (data: any) => {
-    WalletController.setWalletPassword(data.password);
+    walletController.setWalletPassword(data.password);
     setPassed(true);
   };
 
