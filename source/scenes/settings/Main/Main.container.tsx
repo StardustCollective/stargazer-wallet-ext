@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-// import useVersion from 'hooks/useVersion';
+import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 
 import WalletController from 'scripts/Background/controllers/WalletController';
@@ -9,7 +9,7 @@ import Container from 'scenes/common/Container';
 import Main from './Main';
 
 const MainContainer: FC = () => {
-  // const version = useVersion(3);
+  const version = useVersion(3);
   const linkTo = useLinkTo();
 
   const handleLogout = () => {
@@ -46,7 +46,7 @@ const MainContainer: FC = () => {
         onAboutLinkClicked={onAboutLinkClicked}
         onContactsLinkClicked={onContactsLinkClicked}
         onConnectedSitesClicked={onConnectedSitesClicked}
-        // version={version}
+        version={version}
       />
     </Container>
   );
