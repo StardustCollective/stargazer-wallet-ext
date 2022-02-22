@@ -1,10 +1,10 @@
 import React from 'react';
 
 ///////////////////////////
-// Hooks
+// Controllers
 ///////////////////////////
 
-import { useController } from 'hooks/index';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Screens
@@ -15,7 +15,6 @@ import Home from 'scenes/home/Home';
 import Asset from 'scenes/home/Asset';
 import Send, { SendConfirm } from 'scenes/home/Send';
 import GasSettings from 'scenes/home/Send/GasSettings';
-import AddAsset from 'scenes/home/Asset/AddAsset';
 import Import from 'scenes/common/Import';
 
 ///////////////////////////
@@ -36,6 +35,7 @@ import screens from '../screens';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import defaultHeader from 'navigation/headers/default'
+
 ///////////////////////////
 // Constants
 ///////////////////////////
@@ -54,24 +54,8 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
 
 const Auth = () => {
 
-  const controller = useController();
-  const isUnlocked = controller.wallet.isUnlocked();
-  const redirectRoute = controller.appRoute();
-  const lockedRoute = screens.authorized.start;
-
-  let unlockedRoute = screens.authorized.home;
-
-  // If there is a pending confirmation for a send
-  // the user will be returned to the confirm screen
-  // if they exit and return to the app.
-  if (
-    redirectRoute === screens.authorized.sendConfirm &&
-    controller.wallet.account.getTempTx()
-  ) {
-    unlockedRoute = screens.authorized.sendConfirm;
-  }
-
-  let initialRoute = isUnlocked ? unlockedRoute : lockedRoute;
+  const isUnlocked = WalletController.isUnlocked();
+  const initialRoute = isUnlocked ? screens.authorized.home : screens.authorized.start;
 
   return (
     <Stack.Navigator
@@ -84,11 +68,9 @@ const Auth = () => {
       { isUnlocked && (
         <>
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallet }} name={screens.authorized.home} component={Home} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addAsset }} name={screens.authorized.addAsset} component={AddAsset} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.asset }} name={screens.authorized.asset} component={Asset} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={SendConfirm} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.gasSettings }} name={screens.authorized.gasSettings} component={GasSettings} />
+          {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.asset }} name={screens.authorized.asset} component={Asset} /> */}
+          {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={SendConfirm} /> */}
+          {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} /> */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerShown: false }} name={screens.authorized.settings} component={SettingStack} />
         </>)
       }

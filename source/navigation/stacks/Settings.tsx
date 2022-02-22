@@ -5,10 +5,10 @@
 import React from 'react';
 
 ///////////////////////////
-// Hooks
+// Controllers
 ///////////////////////////
 
-import { useController } from 'hooks/index';
+import WalletController from 'scripts/Background/controllers/WalletController';
 
 ///////////////////////////
 // Screens
@@ -72,8 +72,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
 
 const Settings = () => {
 
-  const controller = useController();
-  const isUnlocked = controller.wallet.isUnlocked();
+  const isUnlocked = WalletController.isUnlocked();
 
   return (
     <Stack.Navigator
@@ -87,9 +86,9 @@ const Settings = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.about }} name={screens.settings.about} component={About} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.networks }} name={screens.settings.networks} component={Networks} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contacts }} name={screens.settings.contacts} component={Contacts} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contactInfo }} name={screens.settings.contactInfo} component={ContactInfo} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.modifyContact }} name={screens.settings.modifyContact} component={ModifyContact} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallets }} name={screens.settings.wallets} component={Wallets} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contactInfo }} name={screens.settings.contactInfo} component={ContactInfo} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addWallet }} name={screens.settings.addWallet} component={AddWallet} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.createWallet }} name={screens.settings.createWallet} component={CreateWallet} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.walletPhrase }} name={screens.settings.walletPhrase} component={walletPhrase} />

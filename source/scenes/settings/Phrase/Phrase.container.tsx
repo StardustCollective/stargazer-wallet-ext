@@ -5,7 +5,7 @@ import * as yup from 'yup';
 
 import Container from 'scenes/common/Container';
 
-import { useCopyClipboard } from 'hooks/index';
+// import { useCopyClipboard } from 'hooks/index';
 import WalletController from 'scripts/Background/controllers/WalletController';
 
 import Phrase from './Phrase';
@@ -19,7 +19,7 @@ const PhraseContainer: FC<IPhraseView> = ({ route }) => {
   );
 
   const { id } = route.params;
-  const [isCopied, copyText] = useCopyClipboard();
+  // const [isCopied, copyText] = useCopyClipboard();
   const { handleSubmit, register, control } = useForm({
     validationSchema: yup.object().shape({
       password: yup.string().required(),
@@ -42,7 +42,7 @@ const PhraseContainer: FC<IPhraseView> = ({ route }) => {
 
   const handleCopySeed = () => {
     if (!checked) return;
-    copyText(phrase);
+    // copyText(phrase);
   };
 
   return (
@@ -54,7 +54,7 @@ const PhraseContainer: FC<IPhraseView> = ({ route }) => {
         handleSubmit={handleSubmit}
         control={control}
         register={register}
-        isCopied={isCopied}
+        // isCopied={isCopied}
         handleCopySeed={handleCopySeed}
       />
     </Container>

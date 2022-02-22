@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import IAssetPanel from './types';
-import styles from './AssetPanel.scss';
+import styles from './AssetsPanel.scss';
 
 const AssetsPanel: FC<IAssetPanel> = ({
   activeNetworkAssets,

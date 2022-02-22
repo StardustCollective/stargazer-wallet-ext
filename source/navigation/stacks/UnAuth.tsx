@@ -14,7 +14,7 @@ import CreatePass from 'scenes/unauth/CreatePass';
 import RemindPhrase from 'scenes/unauth/Phrase/RemindPhrase';
 import CreatePhrase from 'scenes/unauth/Phrase/CreatePhrase';
 import ConfirmPhrase from 'scenes/unauth/Phrase/ConfirmPhrase';
-import Import from 'scenes/common/Import/ImportPhrase';
+import Import from 'scenes/common/Import';
 
 ///////////////////////////
 // Screens Names
