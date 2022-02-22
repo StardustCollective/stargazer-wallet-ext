@@ -4,7 +4,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 import Container from 'components/Container';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getAccountController } from 'utils/controllersUtils';
 import { useFiat } from 'hooks/usePrice';
 
 import { RootState } from 'state/store';
@@ -21,6 +21,8 @@ import AssetDetail from './Asset';
 import { IAssetDetail } from './types';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
+  const accountController = getAccountController();
+
   const linkTo = useLinkTo();
   const getFiatAmount = useFiat();
   const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
@@ -55,7 +57,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   }, [activeAsset]);
 
   useEffect(() => {
-    WalletController.account.updateTempTx({
+    accountController.updateTempTx({
       timestamp: Date.now(),
       fromAddress: '',
       toAddress: '',
@@ -67,7 +69,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     if (activeAsset.type === AssetType.Constellation) {
       return activeAsset.transactions;
     }
-    return WalletController.account.getFullETHTxs().sort((a, b) => b.timestamp - a.timestamp);
+    return accountController.getFullETHTxs().sort((a, b) => b.timestamp - a.timestamp);
   };
 
   const onSendClick = () => {

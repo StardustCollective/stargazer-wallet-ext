@@ -5,7 +5,7 @@ import { RootState } from 'state/store';
 import IAssetListState from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getAccountController } from 'utils/controllersUtils';
 
 import useGasEstimate from 'hooks/useGasEstimate';
 
@@ -30,6 +30,7 @@ const TxItemContainer: FC<ITxItem> = ({
   fiatAmount,
   onItemClick,
 }) => {
+  const accountController = getAccountController();
   const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.1 : 0;
 
   const { activeAsset }: IVaultState = useSelector((state: RootState) => state.vault);
@@ -61,9 +62,9 @@ const TxItemContainer: FC<ITxItem> = ({
       },
     };
 
-    WalletController.account.updateTempTx(txConfig);
-    WalletController.account.confirmContractTempTx(activeAsset);
-    WalletController.account.txController.removePendingTxHash(tx.txHash);
+    accountController.updateTempTx(txConfig);
+    accountController.confirmContractTempTx(activeAsset);
+    accountController.txController.removePendingTxHash(tx.txHash);
   };
 
   const receivedOrSentText = `${isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'} ${currencySymbol}`;
