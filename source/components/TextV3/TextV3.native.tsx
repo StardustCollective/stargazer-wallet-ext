@@ -118,7 +118,7 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  HeaderLarge: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
+  HeaderLarge: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -134,7 +134,7 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable }: ITextProps) => {
+  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
