@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 50,
-    boxShadow: SHADOWS.shadow_btn,
     padding: 8,
   },
   buttonTitle: {

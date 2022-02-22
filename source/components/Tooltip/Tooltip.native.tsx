@@ -13,6 +13,7 @@ interface ITooltip {
   width?: number;
   backgroundColor?: string;
   visible?: Boolean;
+  onOpen?: () => void;
 }
 
 const TooltipComponent: FC<ITooltip> = ({
@@ -22,10 +23,9 @@ const TooltipComponent: FC<ITooltip> = ({
   width = 150,
   backgroundColor = COLORS.gray_dark,
   visible,
+  onOpen,
 }) => {
-  const pointerStyle = arrow ? styles.arrow : {};
-
-  const tooltipBody =
+  const tooltipBody: JSX.Element =
     typeof body === 'string' ? (
       <Text style={styles.tooltip}>{body}</Text>
     ) : (
@@ -43,10 +43,11 @@ const TooltipComponent: FC<ITooltip> = ({
     <View style={styles.container}>
       <Tooltip
         width={width}
-        containerStyle={styles.tooltipContainer}
+        containerStyle={styles.container}
         popover={tooltipBody}
         withPointer={arrow}
         backgroundColor={backgroundColor}
+        onOpen={onOpen}
         {...otherProps}
       >
         {children}
