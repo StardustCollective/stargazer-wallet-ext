@@ -9,13 +9,15 @@ import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 import Container from 'components/Container';
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
+
 import AssetsController from 'scripts/Background/controllers/AssetsController';
 import ControllerUtils from 'scripts/Background/controllers/ControllerUtils';
 
 import AddAsset from './AddAsset';
 
 const AddAssetContainer: FC = () => {
+  const walletController = getWalletController();
   const history = useHistory();
   const { activeWallet, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
@@ -30,7 +32,7 @@ const AddAssetContainer: FC = () => {
 
   const handleAddAsset = (asset: IAssetInfoState) => {
     if (!asset.address) return;
-    WalletController.account.addNewToken(asset.address).then(() => {
+    walletController.account.addNewToken(asset.address).then(() => {
       history.push('/home');
     });
   };

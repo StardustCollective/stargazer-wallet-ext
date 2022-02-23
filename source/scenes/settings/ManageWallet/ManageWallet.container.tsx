@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 
 import IVaultState from 'state/vault/types';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
@@ -16,6 +16,7 @@ import ManageWallet from './ManageWallet';
 import { IManageWalletView } from './types';
 
 const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => {
+  const walletController = getWalletController();
   const linkTo = useLinkTo();
   const { id } = route.params;
 
@@ -25,7 +26,7 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   const wallet = wallets.find((w) => w.id === id);
 
   const onSubmit = (data: any) => {
-    WalletController.account.updateWalletLabel(id, data.name);
+    walletController.account.updateWalletLabel(id, data.name);
     navigation.goBack();
   };
 

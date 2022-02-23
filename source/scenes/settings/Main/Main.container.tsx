@@ -3,17 +3,17 @@ import React, { FC } from 'react';
 // import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
-
+import { getWalletController } from 'utils/controllersUtils';
 import Container from 'scenes/common/Container';
 import Main from './Main';
 
 const MainContainer: FC = () => {
+  const walletController = getWalletController();
   // const version = useVersion(3);
   const linkTo = useLinkTo();
 
   const handleLogout = () => {
-    WalletController.logOut();
+    walletController.logOut();
     linkTo('/authRoot');
   };
 

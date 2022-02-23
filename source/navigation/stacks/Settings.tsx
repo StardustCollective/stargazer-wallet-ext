@@ -8,7 +8,7 @@ import React from 'react';
 // Controllers
 ///////////////////////////
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Screens
@@ -43,7 +43,7 @@ import screens from '../screens';
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
-import defaultHeader from 'navigation/headers/default'
+import defaultHeader from 'navigation/headers/default';
 
 ///////////////////////////
 // Constants
@@ -68,39 +68,108 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   importAccount: 'Import Account',
   importPhrase: 'Import Phrase',
   connectedSites: 'Connected Sites',
-}
+};
 
 const Settings = () => {
-
-  const isUnlocked = WalletController.isUnlocked();
+  const walletController = getWalletController();
+  const isUnlocked = walletController.isUnlocked();
 
   return (
     <Stack.Navigator
-      screenOptions={(navigation) => ({ 
+      screenOptions={(navigation) => ({
         ...defaultHeader(navigation),
       })}
-      initialRouteName={screens.settings.main}>
-      { isUnlocked && (
+      initialRouteName={screens.settings.main}
+    >
+      {isUnlocked && (
         <>
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings }} name={screens.settings.main} component={Main} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.about }} name={screens.settings.about} component={About} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.networks }} name={screens.settings.networks} component={Networks} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contacts }} name={screens.settings.contacts} component={Contacts} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contactInfo }} name={screens.settings.contactInfo} component={ContactInfo} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.modifyContact }} name={screens.settings.modifyContact} component={ModifyContact} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallets }} name={screens.settings.wallets} component={Wallets} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addWallet }} name={screens.settings.addWallet} component={AddWallet} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.createWallet }} name={screens.settings.createWallet} component={CreateWallet} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.walletPhrase }} name={screens.settings.walletPhrase} component={walletPhrase} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.manageWallet }} name={screens.settings.manageWallet} component={ManageWallet} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.removeWallet }} name={screens.settings.removeWallet} component={RemoveWallet} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.privateKey }} name={screens.settings.privateKey} component={PrivateKey} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importWallet }} name={screens.settings.importWallet} component={ImportWallet} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importAccount }} name={screens.settings.importAccount} component={ImportAccount} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importPhrase }} name={screens.settings.importPhrase} component={ImportPhrase} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.connectedSites }} name={screens.settings.connectedSites} component={ConnectedSites} />
-        </>)
-      }
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings }}
+            name={screens.settings.main}
+            component={Main}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.about }}
+            name={screens.settings.about}
+            component={About}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.networks }}
+            name={screens.settings.networks}
+            component={Networks}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contacts }}
+            name={screens.settings.contacts}
+            component={Contacts}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contactInfo }}
+            name={screens.settings.contactInfo}
+            component={ContactInfo}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.modifyContact }}
+            name={screens.settings.modifyContact}
+            component={ModifyContact}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallets }}
+            name={screens.settings.wallets}
+            component={Wallets}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addWallet }}
+            name={screens.settings.addWallet}
+            component={AddWallet}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.createWallet }}
+            name={screens.settings.createWallet}
+            component={CreateWallet}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.walletPhrase }}
+            name={screens.settings.walletPhrase}
+            component={walletPhrase}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.manageWallet }}
+            name={screens.settings.manageWallet}
+            component={ManageWallet}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.removeWallet }}
+            name={screens.settings.removeWallet}
+            component={RemoveWallet}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.privateKey }}
+            name={screens.settings.privateKey}
+            component={PrivateKey}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importWallet }}
+            name={screens.settings.importWallet}
+            component={ImportWallet}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importAccount }}
+            name={screens.settings.importAccount}
+            component={ImportAccount}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importPhrase }}
+            name={screens.settings.importPhrase}
+            component={ImportPhrase}
+          />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.connectedSites }}
+            name={screens.settings.connectedSites}
+            component={ConnectedSites}
+          />
+        </>
+      )}
     </Stack.Navigator>
   );
 };
