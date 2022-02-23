@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 
-import manifestJson from '../web/manifest.json';
+import DeviceInfo from 'react-native-device-info';
 
 function useVersion(parts: 1 | 2 | 3) {
   const [version, setVersion] = useState(null);
 
   useEffect(() => {
-    const manifestVersion = manifestJson.version;
-    const v = manifestVersion.split('.');
+    const readableVersion = DeviceInfo.getReadableVersion();
+    console.log('READABLE VERSION::::::', readableVersion);
+    const v = readableVersion.split('.');
 
     if (parts === 3) {
-      setVersion(manifestVersion);
+      setVersion(readableVersion);
     } else if (parts === 2) {
       v.pop();
       setVersion(v.join('.'));
