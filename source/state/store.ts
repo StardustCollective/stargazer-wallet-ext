@@ -41,7 +41,7 @@ const store: Store = configureStore({
     dapp,
   }),
   middleware,
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: false, //process.env.NODE_ENV !== 'production',
   // preloadedState,
 });
 

@@ -27,7 +27,7 @@ const extraNodeModules = {
   http: nodeModules.http,
   https: nodeModules.https,
   os: nodeModules.os,
-  fs: path.resolve(__dirname + './shims/fs'),
+  fs: require.resolve('react-native-fs'),
   'react-native': require.resolve('react-native-web'),
 };
 

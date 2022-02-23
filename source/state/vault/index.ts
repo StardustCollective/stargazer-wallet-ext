@@ -11,7 +11,7 @@ const hasEncryptedVault = !!localStorage.getItem('stargazer-vault');
 const initialState: IVaultState = {
   status: 0,
   wallets: [],
-  hasEncryptedVault,
+  hasEncryptedVault: false,
   balances: {
     [AssetType.Constellation]: '0',
     [AssetType.Ethereum]: '0',
