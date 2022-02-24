@@ -8,7 +8,8 @@ const REQUEST_MAP = {
     accounts: SUPPORTED_WALLET_METHODS.getAccounts,
     blockNumber: SUPPORTED_WALLET_METHODS.getBlockNumber,
     estimateGas: SUPPORTED_WALLET_METHODS.estimateGas,
-    sendTransaction: SUPPORTED_WALLET_METHODS.sendTransaction
+    sendTransaction: SUPPORTED_WALLET_METHODS.sendTransaction,
+    signMessage: SUPPORTED_WALLET_METHODS.signMessage,
   },
   DAG: {
     chainId: SUPPORTED_WALLET_METHODS.getChainId,
@@ -56,6 +57,10 @@ async function handleRequest(chain, req) {
   const asset = SUPPORTED_CHAINS[chain].asset;
 
   const provider = window.providerManager.getProviderFor(asset);
+
+  if(req.method === 'personal_sign'){
+    req.method = `eth_signMessage`;
+  }
 
   let [prefix, method] = req.method.split('_');
 

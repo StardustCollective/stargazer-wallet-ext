@@ -6,11 +6,10 @@ import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 
-export type ConstellationSignatureRequest = {
+export type StargazerSignatureRequest = {
   content: string,
   metadata: Record<string, any>
 }
-
 export class StargazerProvider {
   constructor() {}
 
@@ -115,7 +114,7 @@ export class StargazerProvider {
   }
 
   normalizeSignatureRequest(encodedSignatureRequest: string): string{
-    let signatureRequest: ConstellationSignatureRequest;
+    let signatureRequest: StargazerSignatureRequest;
     try{
         signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
     }catch(e){
@@ -148,12 +147,6 @@ export class StargazerProvider {
     const sig = dag4.keyStore.sign(privateKeyHex, msg);
 
     return sig;
-  }
-
-  verifyMessage(msg: string, sig: string) {
-    const publicKeyHex = dag4.account.keyTrio.publicKey;
-    const result = dag4.keyStore.verify(publicKeyHex, msg, sig);
-    return result;
   }
 
   getAssetByType(type: AssetType) {

@@ -1,5 +1,4 @@
 import store from 'state/store';
-import { dag4 } from '@stardust-collective/dag4';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import find from 'lodash/find';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
@@ -7,6 +6,7 @@ import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { estimateGasPrice } from 'utils/ethUtil';
+import { StargazerSignatureRequest } from './StargazerProvider';
 
 export class EthereumProvider {
   constructor() { }
@@ -80,13 +80,44 @@ export class EthereumProvider {
     return stargazerAsset && balances[AssetType.Ethereum];
   }
 
+  normalizeSignatureRequest(encodedSignatureRequest: string): string{
+    let signatureRequest: StargazerSignatureRequest;
+    try{
+        signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
+    }catch(e){
+        throw new Error('Unable to decode signatureRequest');
+    }
+
+    let test = true;
+    test = test && typeof signatureRequest === 'object' && signatureRequest !== null;
+    test = test && typeof signatureRequest.content === 'string';
+    test = test && typeof signatureRequest.metadata === 'object' && signatureRequest.metadata !== null;
+
+    if(!test){
+      throw new Error('SignatureRequest does not match spec');
+    }
+
+    let parsedMetadata: Record<string, any> = {};
+    for(const [key, value] of Object.entries(signatureRequest.metadata)){
+      if(["boolean", "number", "string"].includes(typeof value) || value === null){
+        parsedMetadata[key] = value;
+      }
+    }
+
+    signatureRequest.metadata = parsedMetadata;
+
+    return window.btoa(JSON.stringify(signatureRequest));
+  }
+
   signMessage(msg: string) {
-    const privateKeyHex = dag4.account.keyTrio.privateKey;
+    const controller = useController();
+    const wallet = controller.wallet.account.ethClient.getWallet();
+    const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = hashPersonalMessage(Buffer.from(msg));
 
     const { v, r, s } = ecsign(msgHash, privateKey);
-    const sig = this.remove0x(toRpcSig(v, r, s));
+    const sig = this.preserve0x(toRpcSig(v, r, s));
 
     return sig;
   }
@@ -152,6 +183,10 @@ export class EthereumProvider {
 
   private remove0x(hash: string) {
     return hash.startsWith('0x') ? hash.slice(2) : hash;
+  }
+
+  private preserve0x(hash: string) {
+    return hash.startsWith('0x') ? hash : '0x' + hash;
   }
 }
 
