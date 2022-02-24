@@ -87,10 +87,12 @@ export class EthereumProvider {
       throw new Error('Unable to decode signatureRequest');
     }
 
-    let test = true;
-    test = test && typeof signatureRequest === 'object' && signatureRequest !== null;
-    test = test && typeof signatureRequest.content === 'string';
-    test = test && typeof signatureRequest.metadata === 'object' && signatureRequest.metadata !== null;
+    const test =
+      typeof signatureRequest === 'object' &&
+      signatureRequest !== null &&
+      typeof signatureRequest.content === 'string' &&
+      typeof signatureRequest.metadata === 'object' &&
+      signatureRequest.metadata !== null;
 
     if (!test) {
       throw new Error('SignatureRequest does not match spec');

@@ -7,9 +7,9 @@ import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 
 export type StargazerSignatureRequest = {
-  content: string,
-  metadata: Record<string, any>
-}
+  content: string;
+  metadata: Record<string, any>;
+};
 export class StargazerProvider {
   constructor() {}
 
@@ -32,7 +32,7 @@ export class StargazerProvider {
     return stargazerAsset && stargazerAsset.address;
   }
 
-  getPublicKey(){
+  getPublicKey() {
     const { dapp, vault } = store.getState();
     const { whitelist }: IDAppState = dapp;
 
@@ -113,26 +113,28 @@ export class StargazerProvider {
     return stargazerAsset && balances[AssetType.Constellation];
   }
 
-  normalizeSignatureRequest(encodedSignatureRequest: string): string{
+  normalizeSignatureRequest(encodedSignatureRequest: string): string {
     let signatureRequest: StargazerSignatureRequest;
-    try{
-        signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
-    }catch(e){
-        throw new Error('Unable to decode signatureRequest');
+    try {
+      signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
+    } catch (e) {
+      throw new Error('Unable to decode signatureRequest');
     }
 
-    let test = true;
-    test = test && typeof signatureRequest === 'object' && signatureRequest !== null;
-    test = test && typeof signatureRequest.content === 'string';
-    test = test && typeof signatureRequest.metadata === 'object' && signatureRequest.metadata !== null;
+    const test =
+      typeof signatureRequest === 'object' &&
+      signatureRequest !== null &&
+      typeof signatureRequest.content === 'string' &&
+      typeof signatureRequest.metadata === 'object' &&
+      signatureRequest.metadata !== null;
 
-    if(!test){
+    if (!test) {
       throw new Error('SignatureRequest does not match spec');
     }
 
     let parsedMetadata: Record<string, any> = {};
-    for(const [key, value] of Object.entries(signatureRequest.metadata)){
-      if(["boolean", "number", "string"].includes(typeof value) || value === null){
+    for (const [key, value] of Object.entries(signatureRequest.metadata)) {
+      if (['boolean', 'number', 'string'].includes(typeof value) || value === null) {
         parsedMetadata[key] = value;
       }
     }
@@ -141,7 +143,7 @@ export class StargazerProvider {
 
     const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
 
-    if(newEncodedSignatureRequest !== encodedSignatureRequest){
+    if (newEncodedSignatureRequest !== encodedSignatureRequest) {
       throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
     }
 
