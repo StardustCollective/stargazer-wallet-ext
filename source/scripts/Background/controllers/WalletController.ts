@@ -8,6 +8,7 @@ import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
+import RNEncryptor from '../../../native/shims/encryptor';
 // import DappController from 'scripts/Background/controllers/DAppController';
 
 class WalletController implements IWalletController {
@@ -24,7 +25,10 @@ class WalletController implements IWalletController {
       WalletController.instance = this;
 
       this.onboardHelper = new OnboardWalletHelper();
-      this.keyringManager = new KeyringManager();
+      // TODO: if React-native -> pass encryptor
+      this.keyringManager = new KeyringManager({
+        encryptor: new RNEncryptor()
+      });
       this.keyringManager.on('update', (state: KeyringVaultState) => {
         store.dispatch(setVaultInfo(state));
         const { vault } = store.getState();
@@ -96,15 +100,16 @@ class WalletController implements IWalletController {
 
   async createWallet(label: string, phrase?: string, resetAll = false) {
     let wallet: IKeyringWallet;
-    if (resetAll) {
-      try {
+    try {
+      if (resetAll) {
         wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
-      } catch (err: any) {
-        console.log('createWallet create Wallet err: ', err);
-        console.log(err.stack);
+      } else {
+        wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
       }
-    } else {
-      wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
+    } catch (err) {
+      console.log('CREATE WALLET ERR CAUGHT =====>>>>> ', err);
+      console.log('err.stack');
+      throw err;
     }
 
     await this.switchWallet(wallet.id);

@@ -4,14 +4,8 @@ import React from 'react';
 // Controllers
 /// ////////////////////////
 
-<<<<<<< HEAD
 import { getWalletController } from 'utils/controllersUtils';
-///////////////////////////
-=======
-import WalletController from 'scripts/Background/controllers/WalletController';
-
 /// ////////////////////////
->>>>>>> 01c4c7a4 (Added isomorphic-webcrypto support)
 // Screens
 /// ////////////////////////
 
@@ -38,14 +32,7 @@ import screens from '../screens';
 
 /// ////////////////////////
 // Navigation
-<<<<<<< HEAD
-///////////////////////////
-
-import { createStackNavigator } from '@react-navigation/stack';
-import defaultHeader from 'navigation/headers/default';
-=======
 /// ////////////////////////
->>>>>>> 01c4c7a4 (Added isomorphic-webcrypto support)
 
 /// ////////////////////////
 // Constants
