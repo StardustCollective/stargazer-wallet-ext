@@ -11,8 +11,8 @@ import Select from 'components/Select';
 import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
 
-import styles from './ImportAccount.scss';
 import LedgerIcon from 'assets/images/svg/ledger.svg';
+import styles from './ImportAccount.scss';
 
 import IImportAccountSettings, { HardwareWallet } from './types';
 
