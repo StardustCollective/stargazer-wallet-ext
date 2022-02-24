@@ -17,7 +17,6 @@ import Container from 'components/Container';
 // Selectors
 ///////////////////////
 
-// import { useController } from 'hooks/index';
 import walletSelectors from 'selectors/walletsSelectors';
 
 ///////////////////////
@@ -25,6 +24,12 @@ import walletSelectors from 'selectors/walletsSelectors';
 ///////////////////////
 
 import AssetsPanel from './AssetsPanel';
+
+///////////////////////
+// Utils
+///////////////////////
+
+import { getAccountController } from 'utils/controllersUtils';
 
 ///////////////////////
 // Types
@@ -41,7 +46,7 @@ import IAssetListState from 'state/assets/types';
 
 const AssetsPanelContainer = () => {
 
-  // const controller = useController();
+   const accountController = getAccountController();
 
   ///////////////////////
   // Hooks
@@ -54,15 +59,12 @@ const AssetsPanelContainer = () => {
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const activeNFTAssets = useSelector(walletSelectors.selectNFTAssets);
 
-  console.log('!!!!!!!Active Wallet: ');
-  console.log(activeWallet);
-
   ///////////////////////
   // Callbacks
   ///////////////////////
 
   const handleSelectAsset = (asset: IAssetState) => {
-    // controller.wallet.account.updateAccountActiveAsset(asset);
+    accountController.updateAccountActiveAsset(asset);
     linkTo('/asset');
   };
 
