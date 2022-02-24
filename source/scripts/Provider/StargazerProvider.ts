@@ -139,7 +139,13 @@ export class StargazerProvider {
 
     signatureRequest.metadata = parsedMetadata;
 
-    return window.btoa(JSON.stringify(signatureRequest));
+    const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
+
+    if(newEncodedSignatureRequest !== encodedSignatureRequest){
+      throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
+    }
+
+    return newEncodedSignatureRequest;
   }
 
   signMessage(msg: string) {

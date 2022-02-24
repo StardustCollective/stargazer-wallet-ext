@@ -9,7 +9,7 @@ import { estimateGasPrice } from 'utils/ethUtil';
 import { StargazerSignatureRequest } from './StargazerProvider';
 
 export class EthereumProvider {
-  constructor() { }
+  constructor() {}
 
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
@@ -57,11 +57,10 @@ export class EthereumProvider {
 
     const ethAddresses = dappData.accounts.Ethereum;
     const activeAddress = find(activeWallet.assets, { id: 'ethereum' });
-  
-    return [
-      activeAddress?.address,
-      ...ethAddresses.filter( address => address !== activeAddress?.address)
-    ].filter(Boolean);  // if no active address, remove
+
+    return [activeAddress?.address, ...ethAddresses.filter((address) => address !== activeAddress?.address)].filter(
+      Boolean
+    ); // if no active address, remove
   }
 
   getBlockNumber() {
@@ -80,12 +79,12 @@ export class EthereumProvider {
     return stargazerAsset && balances[AssetType.Ethereum];
   }
 
-  normalizeSignatureRequest(encodedSignatureRequest: string): string{
+  normalizeSignatureRequest(encodedSignatureRequest: string): string {
     let signatureRequest: StargazerSignatureRequest;
-    try{
-        signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
-    }catch(e){
-        throw new Error('Unable to decode signatureRequest');
+    try {
+      signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
+    } catch (e) {
+      throw new Error('Unable to decode signatureRequest');
     }
 
     let test = true;
@@ -93,20 +92,26 @@ export class EthereumProvider {
     test = test && typeof signatureRequest.content === 'string';
     test = test && typeof signatureRequest.metadata === 'object' && signatureRequest.metadata !== null;
 
-    if(!test){
+    if (!test) {
       throw new Error('SignatureRequest does not match spec');
     }
 
     let parsedMetadata: Record<string, any> = {};
-    for(const [key, value] of Object.entries(signatureRequest.metadata)){
-      if(["boolean", "number", "string"].includes(typeof value) || value === null){
+    for (const [key, value] of Object.entries(signatureRequest.metadata)) {
+      if (['boolean', 'number', 'string'].includes(typeof value) || value === null) {
         parsedMetadata[key] = value;
       }
     }
 
     signatureRequest.metadata = parsedMetadata;
 
-    return window.btoa(JSON.stringify(signatureRequest));
+    const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
+
+    if(newEncodedSignatureRequest !== encodedSignatureRequest){
+      throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
+    }
+
+    return newEncodedSignatureRequest;
   }
 
   signMessage(msg: string) {
@@ -128,10 +133,10 @@ export class EthereumProvider {
     let stargazerAsset: IAssetState = activeAsset as IAssetState;
 
     if (!activeAsset || activeAsset.type !== type) {
-      stargazerAsset = activeWallet.assets.find(a => a.type === type);
+      stargazerAsset = activeWallet.assets.find((a) => a.type === type);
     }
 
-    return stargazerAsset
+    return stargazerAsset;
   }
 
   /*
