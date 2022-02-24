@@ -1,11 +1,11 @@
-/**
- * @format
- */
-
-import './shim';
-import "@ethersproject/shims"
+import shim from './shim';
+import '@ethersproject/shims';
 import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
 
-AppRegistry.registerComponent(appName, () => App);
+shim().then(() => {
+  const App = require('./App').default;
+
+  const AppConfig = require('./app.json');
+
+  AppRegistry.registerComponent(AppConfig.name, () => App);
+});

@@ -1,51 +1,49 @@
-///////////////////////////
-// Modules  
-///////////////////////////
+/// ////////////////////////
+// Modules
+/// ////////////////////////
 
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 
-///////////////////////////
+/// ////////////////////////
 // Controllers
-///////////////////////////
+/// ////////////////////////
 
 import { getWalletController } from 'utils/controllersUtils';
 
-///////////////////////////
-// Components  
-///////////////////////////
+/// ////////////////////////
+// Components
+/// ////////////////////////
 
 import Container from 'components/Container';
 
-///////////////////////////
-// Scene  
-//////////////////////////
+/// ////////////////////////
+// Scene
+/// ///////////////////////
 
-import CreatePass from './CreatePass';
-
-///////////////////////////
-// Navigation  
-//////////////////////////
+/// ////////////////////////
+// Navigation
+/// ///////////////////////
 
 import navigationUtil from 'navigation/util';
 import screens from 'navigation/screens';
+import CreatePass from './CreatePass';
 
-///////////////////////////
-// Contants  
-//////////////////////////
+/// ////////////////////////
+// Contants
+/// ///////////////////////
 
-import * as consts from './../consts';
+import * as consts from '../consts';
 
-///////////////////////////
-// Container  
-//////////////////////////
+/// ////////////////////////
+// Container
+/// ///////////////////////
 
 const CreatePassContainer = () => {
-
-  ///////////////////////////
-  // Hooks  
-  //////////////////////////
+  /// ////////////////////////
+  // Hooks
+  /// ///////////////////////
 
   const navigation = useNavigation();
   const [passed, setPassed] = useState(false);
@@ -53,13 +51,11 @@ const CreatePassContainer = () => {
     validationSchema: consts.schema,
   });
   const title = passed ? consts.CREATE_PASS_TITLE2 : consts.CREATE_PASS_TITLE1;
-  const comment = passed
-    ? consts.CREATE_PASS_COMMENT2
-    : consts.CREATE_PASS_COMMENT1;
+  const comment = passed ? consts.CREATE_PASS_COMMENT2 : consts.CREATE_PASS_COMMENT1;
 
-  ///////////////////////////
-  // Callbacks  
-  //////////////////////////
+  /// ////////////////////////
+  // Callbacks
+  /// ///////////////////////
 
   const nextHandler = () => {
     if (passed) {
@@ -74,9 +70,9 @@ const CreatePassContainer = () => {
     setPassed(true);
   };
 
-  ///////////////////////////
-  // Render  
-  //////////////////////////
+  /// ////////////////////////
+  // Render
+  /// ///////////////////////
 
   return (
     <Container>
@@ -92,8 +88,7 @@ const CreatePassContainer = () => {
         control={control}
       />
     </Container>
-  )
-
-}
+  );
+};
 
 export default CreatePassContainer;

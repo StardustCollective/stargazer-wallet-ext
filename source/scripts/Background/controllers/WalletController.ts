@@ -16,25 +16,23 @@ class WalletController implements IWalletController {
   keyringManager: KeyringManager;
 
   onboardHelper: OnboardWalletHelper;
+
   static instance: WalletController;
 
   constructor() {
-
-    if(!WalletController.instance){
-
+    if (!WalletController.instance) {
       WalletController.instance = this;
 
       this.onboardHelper = new OnboardWalletHelper();
       this.keyringManager = new KeyringManager();
       this.keyringManager.on('update', (state: KeyringVaultState) => {
         store.dispatch(setVaultInfo(state));
-        const vault: IVaultState = store.getState().vault;
+        const { vault } = store.getState();
         if (vault && !vault.activeWallet && state.wallets.length) {
           this.switchWallet(state.wallets[0].id);
         }
       });
       this.account = new AccountController(this.keyringManager);
-
     }
 
     return WalletController.instance;
@@ -99,7 +97,12 @@ class WalletController implements IWalletController {
   async createWallet(label: string, phrase?: string, resetAll = false) {
     let wallet: IKeyringWallet;
     if (resetAll) {
-      wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
+      try {
+        wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
+      } catch (err: any) {
+        console.log('createWallet create Wallet err: ', err);
+        console.log(err.stack);
+      }
     } else {
       wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
     }

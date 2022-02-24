@@ -9,7 +9,6 @@ import { STORE_PORT, DAG_NETWORK } from 'constants/index';
 import {Provider} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
 import { dag4 } from '@stardust-collective/dag4';
-
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 ////////////////////
@@ -29,18 +28,17 @@ dag4.network.config({
   lbUrl: networkInfo.lbUrl
 });
 
-
 const App = () => {
   return (
     <SafeAreaProvider>
-      <NativeBaseProvider>
-        <Provider store={Store}>
+       <NativeBaseProvider>
+       <Provider store={Store}>
           <NavigationContainer linking={linking}>
             <RootStack />
           </NavigationContainer>
         </Provider>
       </NativeBaseProvider>
-      <FlashMessage position="top" />
+      <FlashMessage position="top" /> 
     </SafeAreaProvider>
   );
 };

@@ -1,13 +1,19 @@
 import React from 'react';
 
-///////////////////////////
+/// ////////////////////////
 // Controllers
-///////////////////////////
+/// ////////////////////////
 
+<<<<<<< HEAD
 import { getWalletController } from 'utils/controllersUtils';
 ///////////////////////////
+=======
+import WalletController from 'scripts/Background/controllers/WalletController';
+
+/// ////////////////////////
+>>>>>>> 01c4c7a4 (Added isomorphic-webcrypto support)
 // Screens
-///////////////////////////
+/// ////////////////////////
 
 import Start from 'scenes/home/Start';
 import Home from 'scenes/home/Home';
@@ -16,28 +22,34 @@ import Send, { SendConfirm } from 'scenes/home/Send';
 import GasSettings from 'scenes/home/Send/GasSettings';
 import Import from 'scenes/common/Import';
 
-///////////////////////////
+/// ////////////////////////
 // Stacks
-///////////////////////////
+/// ////////////////////////
 
+import { createStackNavigator } from '@react-navigation/stack';
+import defaultHeader from 'navigation/headers/default';
 import SettingStack from './Settings';
 
-///////////////////////////
+/// ////////////////////////
 // Screens Names
-///////////////////////////
+/// ////////////////////////
 
 import screens from '../screens';
 
-///////////////////////////
+/// ////////////////////////
 // Navigation
+<<<<<<< HEAD
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
 import defaultHeader from 'navigation/headers/default';
+=======
+/// ////////////////////////
+>>>>>>> 01c4c7a4 (Added isomorphic-webcrypto support)
 
-///////////////////////////
+/// ////////////////////////
 // Constants
-///////////////////////////
+/// ////////////////////////
 
 const Stack = createStackNavigator();
 const SCREEN_DEFAULT_TITLE_STRINGS = {
