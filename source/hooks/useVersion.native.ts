@@ -7,7 +7,6 @@ function useVersion(parts: 1 | 2 | 3) {
 
   useEffect(() => {
     const readableVersion = DeviceInfo.getReadableVersion();
-    console.log('READABLE VERSION::::::', readableVersion);
     const v = readableVersion.split('.');
 
     if (parts === 3) {
