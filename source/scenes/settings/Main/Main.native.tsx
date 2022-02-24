@@ -3,12 +3,7 @@
 ///////////////////////
 
 import React, { FC } from 'react';
-import {
-  View,
-  Text,
-  TouchableHighlight,
-  Image as ReactNativeImage,
-} from 'react-native';
+import { View, TouchableHighlight } from 'react-native';
 
 ///////////////////////
 // Components
@@ -40,7 +35,6 @@ import ContactsIcon from 'assets/images/svg/contacts.svg';
 import NetworksIcon from 'assets/images/svg/networks.svg';
 import InfoIcon from 'assets/images/svg/info.svg';
 import ExitIcon from 'assets/images/svg/exit.svg';
-import LinkedApps from 'assets/images/svg/linkedApps.svg';
 
 const Main: FC<IMainSettings> = ({
   handleLogout,
@@ -48,21 +42,11 @@ const Main: FC<IMainSettings> = ({
   onNetworkLinkClicked,
   onAboutLinkClicked,
   onContactsLinkClicked,
-  onConnectedSitesClicked,
   version,
 }) => {
-  const RenderSettingsItem = ({
-    label,
-    IconImageOrComponent,
-    imageStyles = {},
-    onClick,
-  }: IRenderSettingsItemProps) => {
+  const RenderSettingsItem = React.memo(({ label, IconImageOrComponent, onClick }: IRenderSettingsItemProps) => {
     return (
-      <Card
-        id={'settings-' + label.toLowerCase()}
-        onClick={onClick}
-        style={styles.card}
-      >
+      <Card id={`settings-${label.toLowerCase()}`} onClick={onClick} style={styles.card}>
         <View style={styles.settingsItemIconWrapper}>
           <View style={styles.iconCircle}>
             <IconImageOrComponent />
@@ -73,7 +57,7 @@ const Main: FC<IMainSettings> = ({
         </View>
       </Card>
     );
-  };
+  });
 
   const SETTINGS_MAP = [
     {
@@ -94,21 +78,14 @@ const Main: FC<IMainSettings> = ({
       IconImageOrComponent: NetworksIcon,
       onClick: onNetworkLinkClicked,
     },
-    {
-      label: 'Connected Sites',
-      key: 'Connected Sites',
-      IconImageOrComponent: LinkedApps,
-      onClick: onConnectedSitesClicked,
-      imageStyles: styles.linkedIconImage,
-    },
   ];
 
   return (
     <View style={styles.main}>
       <View style={styles.box}>
         <View style={styles.content}>
-          {SETTINGS_MAP.map((section_props) => {
-            return <RenderSettingsItem {...section_props} />;
+          {SETTINGS_MAP.map((sectionProps) => {
+            return <RenderSettingsItem {...sectionProps} />; // eslint-disable-line
           })}
         </View>
       </View>
