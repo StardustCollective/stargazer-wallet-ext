@@ -34,10 +34,14 @@ export class EthTransactionController implements IEthTransactionController {
     infuraCreds: { projectId: INFURA_CREDENTIAL || '' },
   });
 
-  private _getPendingData () {
+  private _getPendingData() {
     const state = localStorage.getItem(TX_STORE) || '{}';
-    const pendingData = JSON.parse(state);
-    return pendingData as IPendingData;
+    try {
+      return JSON.parse(state) as IPendingData;
+    } catch (err: any) {
+      console.log('_getPendingData invalid JSON');
+      return {};
+    }
   };
 
   private _transactionListeners : ITransactionListeners = {};
@@ -52,11 +56,18 @@ export class EthTransactionController implements IEthTransactionController {
   }
 
   addPendingTx (pendingTx: IETHPendingTx) {
-    const pendingData = this._getPendingData();
+    let pendingData;
+    try {
+      pendingData = this._getPendingData();
+    } catch (err: any) {
+      console.log('addPendingTX err: ', err);
+      console.log(err.stack);
+    }
 
-    if (Object.keys(pendingData).includes(pendingTx.txHash)) {
+    if (!pendingData || Object.keys(pendingData).includes(pendingTx.txHash)) {
       return false;
     }
+
     pendingData[pendingTx.txHash] = pendingTx;
     localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
     
