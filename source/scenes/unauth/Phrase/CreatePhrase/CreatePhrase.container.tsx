@@ -9,7 +9,7 @@ import { useLinkTo } from '@react-navigation/native';
 // Controllers
 ///////////////////////////
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Component
@@ -32,15 +32,14 @@ import * as consts from '../consts';
 ///////////////////////////
 // Constants
 ///////////////////////////
-
-const phrases = WalletController.onboardHelper.getSeedPhrase();
+const walletController = getWalletController();
+const phrases = walletController.onboardHelper.getSeedPhrase();
 
 ///////////////////////////
 // Container
 ///////////////////////////
 
 const CreatePhraseContainer = () => {
-
   ///////////////////////////
   // Hooks
   ///////////////////////////
@@ -52,12 +51,8 @@ const CreatePhraseContainer = () => {
   // Strings
   ///////////////////////////
 
-  const title = passed
-    ? consts.CREATE_PHRASE_TITLE2
-    : consts.CREATE_PHRASE_TITLE1;
-  const description = passed
-    ? consts.CREATE_PHRASE_DESCRIPTION2
-    : consts.CREATE_PHRASE_DESCRIPTION1;
+  const title = passed ? consts.CREATE_PHRASE_TITLE2 : consts.CREATE_PHRASE_TITLE1;
+  const description = passed ? consts.CREATE_PHRASE_DESCRIPTION2 : consts.CREATE_PHRASE_DESCRIPTION1;
 
   ///////////////////////////
   // Callbacks
@@ -86,7 +81,6 @@ const CreatePhraseContainer = () => {
       />
     </Container>
   );
-
 };
 
 export default CreatePhraseContainer;

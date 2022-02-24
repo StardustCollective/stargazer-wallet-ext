@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import navigationUtil from 'navigation/util';
 import { useLinkTo } from '@react-navigation/native';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 import Container from 'scenes/common/Container';
 
@@ -14,6 +14,7 @@ import ImportPhrase from './ImportPhrase';
 import { IImportPhraseView } from './types';
 
 const ImportPhraseContainer = ({ navigation }: IImportPhraseView) => {
+  const walletController = getWalletController();
   const [loading, setLoading] = useState(false);
   const linkTo = useLinkTo();
 
@@ -28,7 +29,7 @@ const ImportPhraseContainer = ({ navigation }: IImportPhraseView) => {
     setLoading(true);
 
     try {
-      await WalletController.createWallet(data.label, data.phrase.trim());
+      await walletController.createWallet(data.label, data.phrase.trim());
       navigationUtil.popToTop(navigation);
       linkTo('/settings/wallets');
     } catch (error) {

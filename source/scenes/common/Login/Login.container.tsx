@@ -8,65 +8,62 @@ import React, { FC, useState } from 'react';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container'
+import Container from 'components/Container';
 
 //////////////////////
 // Hooks Imports
-///////////////////// 
+/////////////////////
 
 import { useForm } from 'react-hook-form';
 
 //////////////////////
 // Controllers
-///////////////////// 
+/////////////////////
 
-import WalletController from 'scripts/Background/controllers/WalletController';
-
+import { getWalletController } from 'utils/controllersUtils';
 ////////////////////////
 // Scene
-/////////////////////// 
+///////////////////////
 
-import Login from './Login'
+import Login from './Login';
 
 //////////////////////
 // Constants
-///////////////////// 
+/////////////////////
 
 import { schema } from './consts';
 
 ////////////////////////
 // Types
-/////////////////////// 
+///////////////////////
 
 type ILoginProps = {
   onLoginSuccess: (res: boolean) => void;
   onLoginError?: () => void;
   onImportClicked?: () => void;
-}
+};
 
 ////////////////////////
 // Container
-/////////////////////// 
+///////////////////////
 
-const LoginContainer: FC<ILoginProps> = ({
-  onLoginSuccess,
-  onLoginError,
-  onImportClicked,
-}) => {
-
+const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImportClicked }) => {
   const { control, handleSubmit, register, errors } = useForm({
     validationSchema: schema,
   });
   const [isInvalid, setInvalid] = useState(false);
 
   const onSubmit = (data: any) => {
+    const walletController = getWalletController();
     // An unlock response of  false means migration attempt failed but user is logged in
-    WalletController.unLock(data.password).then(async (res: boolean) => {
-      if (onLoginSuccess) {
-        onLoginSuccess(res)
-      }
-      setInvalid(false);
-    })
+    walletController
+      .unLock(data.password)
+      .then(async (res: boolean) => {
+        if (onLoginSuccess) {
+          onLoginSuccess(res);
+        }
+        setInvalid(false);
+      })
       .catch((err: any) => {
         if (onLoginError) {
           onLoginError();
@@ -79,7 +76,7 @@ const LoginContainer: FC<ILoginProps> = ({
     if (onImportClicked) {
       onImportClicked();
     }
-  }
+  };
 
   return (
     <Container>
@@ -94,7 +91,6 @@ const LoginContainer: FC<ILoginProps> = ({
       />
     </Container>
   );
-
-}
+};
 
 export default LoginContainer;

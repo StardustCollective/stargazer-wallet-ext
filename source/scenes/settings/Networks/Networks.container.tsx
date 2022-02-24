@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
@@ -12,10 +12,11 @@ import Container from 'scenes/common/Container';
 import Networks from './Networks';
 
 const NetworksContainer: FC = () => {
+  const walletController = getWalletController();
   const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
 
   const handleChangeNetwork = (networkType: KeyringNetwork, networkId: string) => {
-    WalletController.switchNetwork(networkType, networkId);
+    walletController.switchNetwork(networkType, networkId);
   };
 
   const networkOptions = [

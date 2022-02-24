@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { showMessage } from 'react-native-flash-message';
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
@@ -20,6 +20,7 @@ import RemoveWallet from './RemoveWallet';
 import { IRemoveWalletView } from './types';
 
 const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => {
+  const walletController = getWalletController();
   const history = useHistory();
   const { id } = route.params;
   const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
@@ -33,10 +34,10 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   });
 
   const onSubmit = async (data: any) => {
-    const isChecked = await WalletController.deleteWallet(id, data.password);
+    const isChecked = await walletController.deleteWallet(id, data.password);
     if (isChecked) {
       if (wallets.length === 1) {
-        WalletController.logOut();
+        walletController.logOut();
       } else {
         navigationUtil.popToTop(navigation);
       }

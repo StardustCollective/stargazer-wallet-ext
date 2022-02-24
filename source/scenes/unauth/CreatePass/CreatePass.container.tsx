@@ -3,7 +3,7 @@
 ///////////////////////////
 
 import React, { useState } from 'react';
-import Container from 'components/Container'
+import Container from 'components/Container';
 import { useForm } from 'react-hook-form';
 import { useLinkTo } from '@react-navigation/native';
 import * as consts from './consts';
@@ -12,7 +12,7 @@ import * as consts from './consts';
 // Controllers
 ///////////////////////////
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Scene
@@ -25,10 +25,10 @@ import CreatePass from './CreatePass';
 ///////////////////////////
 
 const CreatePassContainer = () => {
-
+  const walletController = getWalletController();
 
   ///////////////////////////
-  // Hooks 
+  // Hooks
   ///////////////////////////
 
   const linkTo = useLinkTo();
@@ -42,9 +42,7 @@ const CreatePassContainer = () => {
   ///////////////////////////
 
   const title = passed ? consts.CREATE_PASS_TITLE2 : consts.CREATE_PASS_TITLE1;
-  const comment = passed
-    ? consts.CREATE_PASS_COMMENT2
-    : consts.CREATE_PASS_COMMENT1;
+  const comment = passed ? consts.CREATE_PASS_COMMENT2 : consts.CREATE_PASS_COMMENT1;
 
   ///////////////////////////
   // Callbacks
@@ -57,7 +55,7 @@ const CreatePassContainer = () => {
   };
 
   const onSubmit = (data: any) => {
-    WalletController.setWalletPassword(data.password);
+    walletController.setWalletPassword(data.password);
     setPassed(true);
   };
 
@@ -80,7 +78,6 @@ const CreatePassContainer = () => {
       />
     </Container>
   );
-
-}
+};
 
 export default CreatePassContainer;

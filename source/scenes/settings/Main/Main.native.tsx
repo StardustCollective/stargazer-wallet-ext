@@ -11,7 +11,6 @@ import ContactsIcon from 'assets/images/svg/contacts.svg';
 import NetworksIcon from 'assets/images/svg/networks.svg';
 import InfoIcon from 'assets/images/svg/info.svg';
 import ExitIcon from 'assets/images/svg/exit.svg';
-import LinkedApps from 'assets/images/svg/linkedApps.svg';
 
 import styles from './styles';
 
@@ -38,9 +37,23 @@ const Main: FC<IMainSettings> = ({
   onNetworkLinkClicked,
   onAboutLinkClicked,
   onContactsLinkClicked,
-  onConnectedSitesClicked,
   version,
 }) => {
+  const RenderSettingsItem = React.memo(({ label, IconImageOrComponent, onClick }: IRenderSettingsItemProps) => {
+    return (
+      <Card id={`settings-${label.toLowerCase()}`} onClick={onClick} style={styles.card}>
+        <View style={styles.settingsItemIconWrapper}>
+          <View style={styles.iconCircle}>
+            <IconImageOrComponent />
+          </View>
+        </View>
+        <View style={styles.settingsItemLabelWrapper}>
+          <TextV3.BodyStrong color={COLORS.black}>{label}</TextV3.BodyStrong>
+        </View>
+      </Card>
+    );
+  });
+
   const SETTINGS_MAP = [
     {
       label: 'Wallets',
@@ -60,21 +73,14 @@ const Main: FC<IMainSettings> = ({
       IconImageOrComponent: NetworksIcon,
       onClick: onNetworkLinkClicked,
     },
-    {
-      label: 'Connected Sites',
-      key: 'Connected Sites',
-      IconImageOrComponent: LinkedApps,
-      onClick: onConnectedSitesClicked,
-      imageStyles: styles.linkedIconImage,
-    },
   ];
 
   return (
     <View style={styles.main}>
       <View style={styles.box}>
         <View style={styles.content}>
-          {SETTINGS_MAP.map((section_props) => {
-            return <RenderSettingsItem {...section_props} />;
+          {SETTINGS_MAP.map((sectionProps) => {
+            return <RenderSettingsItem {...sectionProps} />; // eslint-disable-line
           })}
         </View>
       </View>

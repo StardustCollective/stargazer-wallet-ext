@@ -16,7 +16,7 @@ import Container from 'components/Container';
 // Controllers
 ///////////////////////////
 
-import WalletController from 'scripts/Background/controllers/WalletController';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Navigation
@@ -36,32 +36,25 @@ import ConfirmPhrase from './ConfirmPhrase';
 // Constants
 ///////////////////////////
 
-const phrases = WalletController.onboardHelper.getSeedPhrase();
+const walletController = getWalletController();
+const phrases = walletController.onboardHelper.getSeedPhrase();
 
 ///////////////////////////
 // Container
 ///////////////////////////
 
 const ConfirmPhraseContainer = () => {
-
-
   ///////////////////////////
   // Hooks
   ///////////////////////////
 
   const navigation = useNavigation();
 
-  const [orgList] = useState<Array<string>>(
-    shuffle((phrases || '').split(' '))
-  );
-  const [checkList, setCheckList] = useState<Array<boolean>>(
-    new Array(12).fill(true)
-  );
+  const [orgList] = useState<Array<string>>(shuffle((phrases || '').split(' ')));
+  const [checkList, setCheckList] = useState<Array<boolean>>(new Array(12).fill(true));
   const [newList, setNewList] = useState<Array<string>>([]);
   const [passed, setPassed] = useState(false);
-  const title = passed
-    ? `Your Wallet is ready`
-    : `Verify your recovery\nphrase`;
+  const title = passed ? `Your Wallet is ready` : `Verify your recovery\nphrase`;
 
   const isNotEqualArrays = useMemo((): boolean => {
     if (!phrases) return true;
@@ -99,9 +92,9 @@ const ConfirmPhraseContainer = () => {
     if (!passed) {
       setPassed(true);
     } else {
-      WalletController.createWallet('Main Wallet', phrases, true);
-      WalletController.onboardHelper.reset();
-      navigationUtil.replace( navigation, screens.authorized.root);
+      walletController.createWallet('Main Wallet', phrases, true);
+      walletController.onboardHelper.reset();
+      navigationUtil.replace(navigation, screens.authorized.root);
     }
   };
 
@@ -124,7 +117,6 @@ const ConfirmPhraseContainer = () => {
       />
     </Container>
   );
-
 };
 
 export default ConfirmPhraseContainer;

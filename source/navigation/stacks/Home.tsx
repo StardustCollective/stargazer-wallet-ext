@@ -4,8 +4,7 @@ import React from 'react';
 // Controllers
 ///////////////////////////
 
-import WalletController from 'scripts/Background/controllers/WalletController';
-
+import { getWalletController } from 'utils/controllersUtils';
 ///////////////////////////
 // Screens
 ///////////////////////////
@@ -34,7 +33,7 @@ import screens from '../screens';
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
-import defaultHeader from 'navigation/headers/default'
+import defaultHeader from 'navigation/headers/default';
 
 ///////////////////////////
 // Constants
@@ -49,32 +48,46 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   confirm: 'Confirm',
   send: 'Send',
   gasSettings: 'Gas Settings',
-  settings: 'Settings'
-}
+  settings: 'Settings',
+};
 
 const Auth = () => {
-
-  const isUnlocked = WalletController.isUnlocked();
+  const walletController = getWalletController();
+  const isUnlocked = walletController.isUnlocked();
   const initialRoute = isUnlocked ? screens.authorized.home : screens.authorized.start;
 
   return (
     <Stack.Navigator
-      screenOptions={(navigation) => ({ 
+      screenOptions={(navigation) => ({
         ...defaultHeader(navigation),
       })}
-      initialRouteName={initialRoute}>
-
-      {!isUnlocked && <Stack.Screen options={{ headerShown: false }} name={screens.authorized.start} component={Start} />}
-      { isUnlocked && (
+      initialRouteName={initialRoute}
+    >
+      {!isUnlocked && (
+        <Stack.Screen options={{ headerShown: false }} name={screens.authorized.start} component={Start} />
+      )}
+      {isUnlocked && (
         <>
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallet }} name={screens.authorized.home} component={Home} />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallet }}
+            name={screens.authorized.home}
+            component={Home}
+          />
           {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.asset }} name={screens.authorized.asset} component={Asset} /> */}
           {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={SendConfirm} /> */}
           {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} /> */}
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerShown: false }} name={screens.authorized.settings} component={SettingStack} />
-        </>)
-      }
-      <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }} name={screens.common.import} component={Import} />
+          <Stack.Screen
+            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerShown: false }}
+            name={screens.authorized.settings}
+            component={SettingStack}
+          />
+        </>
+      )}
+      <Stack.Screen
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }}
+        name={screens.common.import}
+        component={Import}
+      />
     </Stack.Navigator>
   );
 };
