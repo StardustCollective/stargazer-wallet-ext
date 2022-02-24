@@ -74,8 +74,7 @@ export const messagesHandler = (
                     masterController,
                     message,
                     origin,
-                    setPendingWindow,
-                    isPendingWindow
+                    setPendingWindow
                 );
             default:
                 return Promise.resolve(null);
