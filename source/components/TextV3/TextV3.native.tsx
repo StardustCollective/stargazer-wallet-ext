@@ -69,6 +69,8 @@ const TextV3 = {
       colorStyle = styles.greyDarkFont;
     } else if (color === COLORS_ENUMS.GRAY_100) {
       colorStyle = styles.gray100Font;
+    }else if (color === COLORS_ENUMS.PRIMARY) {
+      colorStyle = styles.primary;
     }
 
     //Alignment
