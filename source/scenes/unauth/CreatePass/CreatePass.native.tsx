@@ -67,12 +67,12 @@ const CreatePass: FC<ICreatePass> = ({
             visiblePassword
             inputContainerStyle={styles.passwordContainer}
           />
-          <TextV3.Description margin={false} color={COLORS_ENUMS.GRAY_100} extraStyle={styles.warning}>
+          <TextV3.Description color={COLORS_ENUMS.GRAY_100} extraStyle={styles.warning}>
             At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1 special character.
           </TextV3.Description>
           {(errors.password || errors.repassword) && (
             <View style={styles.errors}>
-              <TextV3.Description margin={false} color={COLORS_ENUMS.RED} extraStyle={styles.errorText}>
+              <TextV3.Description color={COLORS_ENUMS.RED} extraStyle={styles.errorText}>
                 {errors.password ? errors.password.message : errors.repassword.message}
               </TextV3.Description>
             </View>
