@@ -1,11 +1,10 @@
 import React from 'react';
-import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NativeBaseProvider} from 'native-base';
 import RootStack from 'navigation/stacks/Root';
 import linking from 'navigation/linking';
-import Store, {persistor} from 'state/store';
+import Store from 'state/store';
 import {STORE_PORT, DAG_NETWORK} from 'constants/index';
 import {Provider} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
@@ -38,11 +37,9 @@ const App = () => {
     <SafeAreaProvider>
       <NativeBaseProvider>
         <Provider store={Store}>
-          {/* <PersistGate loading={null} persistor={persistor}> */}
           <NavigationContainer linking={linking}>
             <RootStack />
           </NavigationContainer>
-          {/* </PersistGate> */}
         </Provider>
       </NativeBaseProvider>
       <FlashMessage position="top" />

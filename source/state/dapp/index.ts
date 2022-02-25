@@ -3,7 +3,7 @@ import { IDAppState, IDAppInfo } from './types';
 
 const initialState: IDAppState = {
   listening: {},
-  whitelist: {}
+  whitelist: {},
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -11,29 +11,28 @@ const DAppState = createSlice({
   name: 'dapp',
   initialState,
   reducers: {
-    registerListeningSite(
-      state: IDAppState,
-      action: PayloadAction<{ origin: string, eventName: string }>
-    ) {
+    rehydrate(state: IDAppState, action: PayloadAction<{ origin: string; eventName: string }>) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    registerListeningSite(state: IDAppState, action: PayloadAction<{ origin: string; eventName: string }>) {
       const { origin, eventName } = action.payload;
 
-      const originState = state.listening.hasOwnProperty(origin) ? state.listening[origin].filter((val: string) => val !== eventName) : [];
+      const originState = state.listening.hasOwnProperty(origin)
+        ? state.listening[origin].filter((val: string) => val !== eventName)
+        : [];
 
       return {
         ...state,
         listening: {
           ...state.listening,
-          [origin]: [
-            ...originState,
-            eventName
-          ]
-        }
+          [origin]: [...originState, eventName],
+        },
       };
     },
-    deregisterListeningSite(
-      state: IDAppState,
-      action: PayloadAction<{ origin: string, eventName: string }>
-    ) {
+    deregisterListeningSite(state: IDAppState, action: PayloadAction<{ origin: string; eventName: string }>) {
       const { origin, eventName } = action.payload;
 
       if (!state.listening.hasOwnProperty(origin)) {
@@ -46,8 +45,8 @@ const DAppState = createSlice({
         ...state,
         listening: {
           ...state.listening,
-          [origin]: originState
-        }
+          [origin]: originState,
+        },
       };
 
       if (originState.length === 0) {
@@ -65,11 +64,7 @@ const DAppState = createSlice({
         accounts: string[];
       }>
     ) {
-      const {
-        dapp,
-        network,
-        accounts
-      } = action.payload;
+      const { dapp, network, accounts } = action.payload;
 
       const id = action.payload.id.replace(/(^\w+:|^)\/\//, '');
 
@@ -77,8 +72,8 @@ const DAppState = createSlice({
       let accountsByNetwork = {};
       if (state.whitelist[id]) {
         accountsByNetwork = {
-          ...state.whitelist[id].accounts
-        }
+          ...state.whitelist[id].accounts,
+        };
       }
 
       return {
@@ -90,11 +85,9 @@ const DAppState = createSlice({
             ...dapp,
             accounts: {
               ...accountsByNetwork,
-              [network]: [
-                ...accounts
-              ]
-            }
-          }
+              [network]: [...accounts],
+            },
+          },
         },
       };
     },
@@ -103,10 +96,9 @@ const DAppState = createSlice({
       delete state.whitelist[action.payload.id];
       delete state.listening[action.payload.id];
     },
-
   },
 });
 
-export const { listNewDapp, unlistDapp, registerListeningSite, deregisterListeningSite } = DAppState.actions;
+export const { listNewDapp, unlistDapp, registerListeningSite, deregisterListeningSite, rehydrate } = DAppState.actions;
 
 export default DAppState.reducer;
