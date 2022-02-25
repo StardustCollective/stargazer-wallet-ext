@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from "react";
+import React, { FC } from 'react';
 import { View } from 'react-native';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -39,29 +39,11 @@ const LOGIN_ERROR_STRING = 'Error: Invalid password';
 
 import ILogin from './types';
 
-const Login: FC<ILogin> = ({
-  control,
-  importClicked,
-  handleSubmit,
-  onSubmit,
-  errors,
-  register,
-  isInvalid,
-}) => {
-
-
+const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid }) => {
   return (
     <View style={styles.layout}>
-      <TextV3.HeaderLarge
-        align={TEXT_ALIGN_ENUM.CENTER}
-      >
-        Welcome to {'\n'} Stargazer Wallet
-      </TextV3.HeaderLarge>
-      <Logo
-        width={LOGO_IMAGE_SIZE}
-        height={LOGO_IMAGE_SIZE}
-        style={styles.logo}
-      />
+      <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
+      <Logo width={LOGO_IMAGE_SIZE} height={LOGO_IMAGE_SIZE} style={styles.logo} />
       <View style={styles.input}>
         <TextInput
           id="createPass-password"
@@ -71,15 +53,9 @@ const Login: FC<ILogin> = ({
           control={control}
         />
         {errors.password ? (
-          <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>
-            {errors.password.message}
-          </TextV3.CaptionStrong>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>{errors.password.message}</TextV3.CaptionStrong>
         ) : (
-          isInvalid && (
-            <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>
-              {LOGIN_ERROR_STRING}
-            </TextV3.CaptionStrong>
-          )
+          isInvalid && <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>{LOGIN_ERROR_STRING}</TextV3.CaptionStrong>
         )}
       </View>
 
@@ -87,17 +63,14 @@ const Login: FC<ILogin> = ({
         type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
         title={UNLOCK_STRING}
-        extraStyle={styles.unlockButton}
-        onPress={handleSubmit(data => { onSubmit(data) })}
+        extraStyles={styles.unlockButton}
+        onPress={handleSubmit((data) => {
+          onSubmit(data);
+        })}
       />
-      <Link
-        color="monotoneOne"
-        onPress={importClicked}
-        title="Reset and restore from recovery seed phrase"
-      />
+      <Link color="monotoneOne" onPress={importClicked} title="Reset and restore from recovery seed phrase" />
     </View>
-  )
-
-}
+  );
+};
 
 export default Login;

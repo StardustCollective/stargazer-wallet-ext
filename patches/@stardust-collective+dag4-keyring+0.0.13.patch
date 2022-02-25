@@ -1,0 +1,62 @@
+diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.d.ts b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.d.ts
+index b042587..1c63516 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.d.ts
++++ b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.d.ts
+@@ -13,7 +13,7 @@ export declare class KeyringManager extends SafeEventEmitter {
+     private wallets;
+     private memStore;
+     private password;
+-    constructor();
++    constructor({encryptor}?: {encryptor?: any});
+     isUnlocked(): boolean;
+     generateSeedPhrase(): string;
+     private fullUpdate;
+diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
+index 741aaeb..ed8098b 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
++++ b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
+@@ -32,11 +32,11 @@ const single_account_wallet_1 = require("./wallets/single-account-wallet");
+ const dag4 = __importStar(require("@stardust-collective/dag4-core"));
+ const bip39_helper_1 = require("./bip39-helper");
+ class KeyringManager extends safe_event_emitter_1.default {
+-    constructor() {
++    constructor({encryptor}) {
+         super();
+         //Encrypted State
+         this.storage = dag4.dagDi.getStateStorageDb();
+-        this.encryptor = new encryptor_1.Encryptor();
++        this.encryptor = encryptor || new encryptor_1.Encryptor();
+         this.memStore = new obs_store_1.ObservableStore({
+             isUnlocked: false,
+             wallets: [],
+diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts
+index b042587..1c63516 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts
++++ b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts
+@@ -13,7 +13,7 @@ export declare class KeyringManager extends SafeEventEmitter {
+     private wallets;
+     private memStore;
+     private password;
+-    constructor();
++    constructor({encryptor}?: {encryptor?: any});
+     isUnlocked(): boolean;
+     generateSeedPhrase(): string;
+     private fullUpdate;
+diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.js b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.js
+index 6c9cb03..a7ab4fb 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.js
++++ b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.js
+@@ -7,11 +7,11 @@ import { SingleAccountWallet } from './wallets/single-account-wallet';
+ import * as dag4 from '@stardust-collective/dag4-core';
+ import { Bip39Helper } from './bip39-helper';
+ export class KeyringManager extends SafeEventEmitter {
+-    constructor() {
++    constructor({encryptor}) {
+         super();
+         //Encrypted State
+         this.storage = dag4.dagDi.getStateStorageDb();
+-        this.encryptor = new Encryptor();
++        this.encryptor = encryptor || new Encryptor();
+         this.memStore = new ObservableStore({
+             isUnlocked: false,
+             wallets: [],

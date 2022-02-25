@@ -1,12 +1,12 @@
 ///////////////////////////
-// Modules  
+// Modules
 ///////////////////////////
 
 import React, { FC } from 'react';
 import { View, Text } from 'react-native';
 
 ///////////////////////////
-// Components  
+// Components
 ///////////////////////////
 
 import Layout from 'scenes/common/Layout';
@@ -16,20 +16,21 @@ import CheckIcon from 'components/CheckIcon';
 import TextV3 from 'components/TextV3';
 
 ///////////////////////////
-// Types  
+// Types
 ///////////////////////////
 
 import IConfirmPhrase from './types';
 
 ///////////////////////////
-// Styles  
+// Styles
 ///////////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
+import { COLORS } from '../../../../assets/styles/_variables.native';
 
 ///////////////////////////
-// Scene  
+// Scene
 ///////////////////////////
 
 const ConfirmPhrase: FC<IConfirmPhrase> = ({
@@ -43,20 +44,15 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
   handleNewPhrase,
   handleConfirm,
 }) => {
-
   return (
     <Layout title={title}>
       <View style={styles.readyContainer}>
-        {passed && (
-          <View style={styles.checkIcon}>
-            {passed && <CheckIcon />}
-          </View>
-        )}
-        <TextV3.BodyStrong color={COLORS_ENUMS.DARK_GRAY}>
+        {passed && <View style={styles.checkIcon}>{passed && <CheckIcon />}</View>}
+        <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY}>
           {passed
             ? 'You should now have your recovery phrase and your wallet password written down for future reference.'
             : 'Select the words in the correct order.'}
-        </TextV3.BodyStrong>
+        </TextV3.CaptionStrong>
       </View>
       {!passed && (
         <>
@@ -67,7 +63,7 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
                 key={phrase}
                 title={phrase}
                 type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
-                extraStyle={[styles.wordButton, styles.wordButtonSelected]}
+                extraStyles={[styles.wordButton, styles.wordButtonSelected]}
                 extraTitleStyles={styles.wordButtonSelectedTitle}
                 onPress={() => handleNewPhrase(idx)}
               />
@@ -79,12 +75,12 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
                 id={phrase}
                 key={phrase}
                 title={phrase}
-                extraStyle={[
+                extraStyles={[
                   styles.wordButton,
-                  styles.wordButtonPurpleLight,
-                  !checkList[idx] && styles.wordButtonPressed
+                  !checkList[idx] && styles.wordButtonPurpleLight,
+                  checkList[idx] && styles.wordButtonPressed,
                 ]}
-                extraTitleStyles={[checkList[idx] && styles.wordButtonTitle]}
+                extraTitleStyles={[!checkList[idx] && styles.wordButtonTitle]}
                 onPress={() => handleOrgPhrase(idx)}
               />
             ))}
@@ -102,7 +98,6 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
       </View>
     </Layout>
   );
-
-}
+};
 
 export default ConfirmPhrase;

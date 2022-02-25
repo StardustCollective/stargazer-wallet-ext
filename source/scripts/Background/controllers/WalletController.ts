@@ -8,6 +8,7 @@ import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
+import { getEncryptor } from '../../../utils/keyringManagerUtils';
 // import DappController from 'scripts/Background/controllers/DAppController';
 
 class WalletController implements IWalletController {
@@ -25,7 +26,9 @@ class WalletController implements IWalletController {
       WalletController.instance = this;
 
       this.onboardHelper = new OnboardWalletHelper();
-      this.keyringManager = new KeyringManager();
+      this.keyringManager = new KeyringManager({
+        encryptor: getEncryptor()
+      });
       this.keyringManager.on('update', (state: KeyringVaultState) => {
         store.dispatch(setVaultInfo(state));
         const vault: IVaultState = store.getState().vault;
@@ -98,12 +101,18 @@ class WalletController implements IWalletController {
 
   async createWallet(label: string, phrase?: string, resetAll = false) {
     let wallet: IKeyringWallet;
-    if (resetAll) {
-      wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
-    } else {
-      wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
+    try {
+      if (resetAll) {
+        wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
+      } else {
+        wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
+      }
+    } catch (err) {
+      console.log('CREATE WALLET ERR CAUGHT =====>>>>> ', err);
+      console.log('err.stack');
+      throw err;
     }
-
+    
     await this.switchWallet(wallet.id);
 
     return wallet.id;

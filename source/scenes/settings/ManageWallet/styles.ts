@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     overflow: 'scroll',
     paddingHorizontal: 24,
-    paddingVertical: 0,
+    paddingVertical: 24,
     backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
   },
