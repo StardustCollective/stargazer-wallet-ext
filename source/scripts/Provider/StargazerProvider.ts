@@ -6,11 +6,10 @@ import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 
-export type ConstellationSignatureRequest = {
-  content: string,
-  metadata: Record<string, any>
-}
-
+export type StargazerSignatureRequest = {
+  content: string;
+  metadata: Record<string, any>;
+};
 export class StargazerProvider {
   constructor() {}
 
@@ -33,7 +32,7 @@ export class StargazerProvider {
     return stargazerAsset && stargazerAsset.address;
   }
 
-  getPublicKey(){
+  getPublicKey() {
     const { dapp, vault } = store.getState();
     const { whitelist }: IDAppState = dapp;
 
@@ -114,33 +113,41 @@ export class StargazerProvider {
     return stargazerAsset && balances[AssetType.Constellation];
   }
 
-  normalizeSignatureRequest(encodedSignatureRequest: string): string{
-    let signatureRequest: ConstellationSignatureRequest;
-    try{
-        signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
-    }catch(e){
-        throw new Error('Unable to decode signatureRequest');
+  normalizeSignatureRequest(encodedSignatureRequest: string): string {
+    let signatureRequest: StargazerSignatureRequest;
+    try {
+      signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
+    } catch (e) {
+      throw new Error('Unable to decode signatureRequest');
     }
 
-    let test = true;
-    test = test && typeof signatureRequest === 'object' && signatureRequest !== null;
-    test = test && typeof signatureRequest.content === 'string';
-    test = test && typeof signatureRequest.metadata === 'object' && signatureRequest.metadata !== null;
+    const test =
+      typeof signatureRequest === 'object' &&
+      signatureRequest !== null &&
+      typeof signatureRequest.content === 'string' &&
+      typeof signatureRequest.metadata === 'object' &&
+      signatureRequest.metadata !== null;
 
-    if(!test){
+    if (!test) {
       throw new Error('SignatureRequest does not match spec');
     }
 
     let parsedMetadata: Record<string, any> = {};
-    for(const [key, value] of Object.entries(signatureRequest.metadata)){
-      if(["boolean", "number", "string"].includes(typeof value) || value === null){
+    for (const [key, value] of Object.entries(signatureRequest.metadata)) {
+      if (['boolean', 'number', 'string'].includes(typeof value) || value === null) {
         parsedMetadata[key] = value;
       }
     }
 
     signatureRequest.metadata = parsedMetadata;
 
-    return window.btoa(JSON.stringify(signatureRequest));
+    const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
+
+    if (newEncodedSignatureRequest !== encodedSignatureRequest) {
+      throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
+    }
+
+    return newEncodedSignatureRequest;
   }
 
   signMessage(msg: string) {
@@ -148,12 +155,6 @@ export class StargazerProvider {
     const sig = dag4.keyStore.sign(privateKeyHex, msg);
 
     return sig;
-  }
-
-  verifyMessage(msg: string, sig: string) {
-    const publicKeyHex = dag4.account.keyTrio.publicKey;
-    const result = dag4.keyStore.verify(publicKeyHex, msg, sig);
-    return result;
   }
 
   getAssetByType(type: AssetType) {

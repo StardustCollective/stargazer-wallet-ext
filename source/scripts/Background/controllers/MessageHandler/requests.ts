@@ -10,8 +10,7 @@ export const handleRequest = async (
     masterController: IMasterController,
     message: Message,
     origin: string,
-    setPendingWindow: (isPending: boolean) => void,
-    isPendingWindow: () => boolean
+    setPendingWindow: (isPending: boolean) => void
 ) => {
     const { method, args, asset } = message.data;
 
@@ -51,15 +50,9 @@ export const handleRequest = async (
             result = provider.getBalance();
             break;
         case SUPPORTED_WALLET_METHODS.signMessage:{
-            if(asset !== 'DAG'){
-                return Promise.reject(new CustomEvent(message.id, {
-                    detail: 'signMessage method is not allowed in chain:ethereum'
-                }));
-            }
-            
             let signatureRequestEncoded: string;
             try{
-                signatureRequestEncoded = masterController.stargazerProvider.normalizeSignatureRequest(args[0]);
+                signatureRequestEncoded = provider.normalizeSignatureRequest(args[1]);
             }catch(e){
                 return Promise.reject(new CustomEvent(message.id, {
                     detail: e instanceof Error ? e.message : 'signMessage-error'
@@ -68,6 +61,7 @@ export const handleRequest = async (
         
             const data = {
                 origin,
+                asset,
                 signatureRequestEncoded,
             }
 
@@ -85,10 +79,18 @@ export const handleRequest = async (
                 (ev: any) => {
                     console.log('Connect window addEventListener', ev.detail);
                     if (ev.detail.windowId === windowId) {
-                        port.postMessage({
-                            id: message.id,
-                            data: {result: ev.detail.result, data: ev.detail.signature},
-                        });
+                        
+                        if (ev.detail.result) {
+                            port.postMessage({
+                                id: message.id,
+                                data: ev.detail.signature.hex,
+                            });
+                        } else {
+                            port.postMessage({
+                                id: message.id,
+                                data: {result: ev.detail.result},
+                            });
+                        }
                         setPendingWindow(false);
                     }
                 },
@@ -97,7 +99,7 @@ export const handleRequest = async (
             
             const handler = (id: number)=>{
                 if (popup && id === popup.id) {
-                    port.postMessage({ id: message.id, data: { result: false, data: null } });
+                    port.postMessage({ id: message.id, data: { result: false } });
                     setPendingWindow(false);
                     browser.windows.onRemoved.removeListener(handler);
                 }    
