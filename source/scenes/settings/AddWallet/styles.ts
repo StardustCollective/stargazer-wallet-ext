@@ -3,11 +3,10 @@ import { COLORS, FONTS } from 'assets/styles/_variables';
 const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
-    padding: 24,
     flexDirection: 'column',
     overflow: 'scroll',
     paddingHorizontal: 24,
-    paddingVertical: 0,
+    paddingVertical: 24,
     backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
   },
@@ -54,16 +53,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-// text: {
-//   marginTop: 12,
-//   marginBottom: 24,
-//   fontSize: 12,
-//   fontWeight: '500',
-//   fontFamily: FONTS.rubik,
-//   lineHeight: 16,
-// },
-// iconWrapper: {
-//   backgroundColor: 'transparent',
-// },
 
 export default styles;

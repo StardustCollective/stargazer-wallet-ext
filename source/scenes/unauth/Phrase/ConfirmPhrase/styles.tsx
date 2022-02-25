@@ -7,11 +7,11 @@ const styles = StyleSheet.create({
     marginTop: 15,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   sectionBorder: {
     borderBottomWidth: 1,
-    borderColor: COLORS.grey_light
+    borderColor: COLORS.grey_light,
   },
   wordButton: {
     minWidth: 0,
@@ -21,6 +21,18 @@ const styles = StyleSheet.create({
     marginRight: 4,
     marginBottom: 5,
     paddingHorizontal: 0,
+    padding: 0,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wordButtonText: {
+    color: COLORS.white,
+    fontWeight: '500',
+    fontSize: 12,
+    lineHeight: 18,
+    letterSpacing: 0.03,
   },
   wordButtonPurpleLight: {
     backgroundColor: COLORS.purple_light,
@@ -29,7 +41,7 @@ const styles = StyleSheet.create({
     color: COLORS.purple,
   },
   wordButtonPressed: {
-    backgroundColor: COLORS.grey_dark
+    backgroundColor: COLORS.grey_dark,
   },
   wordButtonSelected: {
     backgroundColor: COLORS.grey_light,
@@ -43,11 +55,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   readyContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   checkIcon: {
     marginBottom: 40,
-  }
+  },
 });
 
 export default styles;
