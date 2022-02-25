@@ -4,10 +4,12 @@ import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { IAssetState, IActiveAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { EthTransactionController } from './EthTransactionController';
+import { IAssetsController } from './AssetsController';
 
 export interface IAccountController {
   ethClient: XChainEthClient;
   txController: EthTransactionController;
+  assetsController: Readonly<IAssetsController>;
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;

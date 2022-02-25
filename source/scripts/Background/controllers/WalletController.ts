@@ -8,6 +8,8 @@ import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
+import ControllerUtils from './ControllerUtils';
+import AssetsController from './AssetsController';
 import { getEncryptor } from '../../../utils/keyringManagerUtils';
 // import DappController from 'scripts/Background/controllers/DAppController';
 
@@ -17,30 +19,28 @@ class WalletController implements IWalletController {
   keyringManager: KeyringManager;
 
   onboardHelper: OnboardWalletHelper;
+
   static instance: WalletController;
 
   constructor() {
+    this.onboardHelper = new OnboardWalletHelper();
+    this.keyringManager = new KeyringManager({
+      encryptor: getEncryptor(),
+    });
+    this.keyringManager.on('update', (state: KeyringVaultState) => {
+      store.dispatch(setVaultInfo(state));
+      const { vault } = store.getState();
+      if (vault && !vault.activeWallet && state.wallets.length) {
+        this.switchWallet(state.wallets[0].id);
+      }
+    });
 
-    if(!WalletController.instance){
+    const utils = Object.freeze(ControllerUtils());
 
-      WalletController.instance = this;
-
-      this.onboardHelper = new OnboardWalletHelper();
-      this.keyringManager = new KeyringManager({
-        encryptor: getEncryptor()
-      });
-      this.keyringManager.on('update', (state: KeyringVaultState) => {
-        store.dispatch(setVaultInfo(state));
-        const vault: IVaultState = store.getState().vault;
-        if (vault && !vault.activeWallet && state.wallets.length) {
-          this.switchWallet(state.wallets[0].id);
-        }
-      });
-      this.account = new AccountController(this.keyringManager);
-
-    }
-
-    return WalletController.instance;
+    this.account = new AccountController(
+      this.keyringManager,
+      AssetsController(() => utils.updateFiat())
+    );
   }
 
   checkPassword(password: string) {
@@ -112,7 +112,7 @@ class WalletController implements IWalletController {
       console.log('err.stack');
       throw err;
     }
-    
+
     await this.switchWallet(wallet.id);
 
     return wallet.id;
