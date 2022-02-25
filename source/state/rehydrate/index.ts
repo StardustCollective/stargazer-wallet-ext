@@ -11,7 +11,7 @@ const rehydrateStore = async (store) => {
   const storageState = await loadState();
   console.log('storageState::::', storageState);
 
-  // await store.dispatch(getHasEncryptedVault());
+  // await store.dispatch(await getHasEncryptedVault());
 
   if (storageState) {
     store.dispatch(vaultRehydrate(storageState.vault));
