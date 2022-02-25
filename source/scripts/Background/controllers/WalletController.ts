@@ -141,15 +141,15 @@ class WalletController implements IWalletController {
 
     await this.account.buildAccountAssetInfo(id);
     await this.account.getLatestTxUpdate();
-    this.account.assetsBalanceMonitor.start();
-    this.account.txController.startMonitor();
+    await this.account.assetsBalanceMonitor.start();
+    await this.account.txController.startMonitor();
   }
 
   // async notifyWalletChange(accounts: string[]) {
   //   return DappController().notifyAccountsChanged(accounts)
   // }
 
-  switchNetwork(network: KeyringNetwork, chainId: string) {
+  async switchNetwork(network: KeyringNetwork, chainId: string) {
     store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
@@ -175,11 +175,11 @@ class WalletController implements IWalletController {
         this.account.updateAccountActiveAsset(activeAsset);
       }
 
-      this.account.getLatestTxUpdate();
+      await this.account.getLatestTxUpdate();
     }
 
     // restart monitor with different network
-    this.account.assetsBalanceMonitor.start();
+    await this.account.assetsBalanceMonitor.start();
   }
 
   setWalletPassword(password: string) {

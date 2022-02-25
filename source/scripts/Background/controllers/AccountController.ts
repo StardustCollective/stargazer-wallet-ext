@@ -322,7 +322,7 @@ export class AccountController implements IAccountController {
           Number(this.tempTx.amount),
           this.tempTx.fee
         );
-        const tx = dag4.monitor.addToMemPoolMonitor(pendingTx);
+        const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
         store.dispatch(
           updateTransactions({
             txs: [tx, ...activeAsset.transactions],

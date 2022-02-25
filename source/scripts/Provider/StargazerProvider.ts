@@ -3,28 +3,28 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import find from 'lodash/find';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
+import { useController } from 'hooks/index';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
-import { useController } from 'hooks/index';
 
 export class StargazerProvider {
   constructor() {}
 
-  getNetwork () {
+  getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
 
     return activeNetwork[KeyringNetwork.Constellation];
   }
 
   // TODO: how to handle chain IDs for DAG? Currently mapped to Eth mainnet + Ropsten
-  getChainId () {
+  getChainId() {
     const networkName = this.getNetwork();
 
     return networkName === 'main' ? 1 : 3;
   }
 
   getAddress() {
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && stargazerAsset.address;
   }
@@ -57,11 +57,10 @@ export class StargazerProvider {
 
     const dagAddresses = dappData.accounts.Constellation;
     const activeAddress = find(activeWallet.assets, { id: 'constellation' });
-  
-    return [
-      activeAddress?.address,
-      ...dagAddresses.filter( address => address !== activeAddress?.address)
-    ].filter(Boolean);  // if no active address, remove
+
+    return [activeAddress?.address, ...dagAddresses.filter((address) => address !== activeAddress?.address)].filter(
+      Boolean
+    ); // if no active address, remove
   }
 
   getBlockNumber() {
@@ -77,7 +76,7 @@ export class StargazerProvider {
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && balances[AssetType.Constellation];
   }
@@ -94,16 +93,15 @@ export class StargazerProvider {
   }
 
   getAssetByType(type: AssetType) {
-
     const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
 
     let stargazerAsset: IAssetState = activeAsset as IAssetState;
 
     if (!activeAsset || activeAsset.type !== type) {
-      stargazerAsset = activeWallet.assets.find(a => a.type === type);
+      stargazerAsset = activeWallet.assets.find((a) => a.type === type);
     }
 
-    return stargazerAsset
+    return stargazerAsset;
   }
 
   /*
@@ -127,12 +125,12 @@ export class StargazerProvider {
 
       await store.dispatch(createAccount(account));
     }
-  }*/
+  } */
 
   // async postTransactionResult (hash: string) {
   //   console.log('postTransactionResult.addToMemPoolMonitor', hash);
   //
-  //   dag4.monitor.addToMemPoolMonitor(hash);
+  //   await dag4.monitor.addToMemPoolMonitor(hash);
   //
   //   setTimeout(() => {
   //     console.log('postTransactionResult.watchMemPool');

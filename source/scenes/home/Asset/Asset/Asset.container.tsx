@@ -65,11 +65,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     });
   }, []);
 
-  const fetchTxs = () => {
+  const fetchTxs = async () => {
     if (activeAsset.type === AssetType.Constellation) {
       return activeAsset.transactions;
     }
-    return accountController.getFullETHTxs().sort((a, b) => b.timestamp - a.timestamp);
+    return await accountController.getFullETHTxs().sort((a, b) => b.timestamp - a.timestamp);
   };
 
   const onSendClick = () => {

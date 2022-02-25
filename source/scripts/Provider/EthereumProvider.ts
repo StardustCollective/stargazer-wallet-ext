@@ -2,14 +2,14 @@ import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import find from 'lodash/find';
-import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
-import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { estimateGasPrice } from 'utils/ethUtil';
+import { IDAppState } from '../../state/dapp/types';
+import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 
 export class EthereumProvider {
-  constructor() { }
+  constructor() {}
 
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
@@ -24,7 +24,7 @@ export class EthereumProvider {
   }
 
   getAddress() {
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
     return stargazerAsset && stargazerAsset.address;
   }
@@ -57,11 +57,10 @@ export class EthereumProvider {
 
     const ethAddresses = dappData.accounts.Ethereum;
     const activeAddress = find(activeWallet.assets, { id: 'ethereum' });
-  
-    return [
-      activeAddress?.address,
-      ...ethAddresses.filter( address => address !== activeAddress?.address)
-    ].filter(Boolean);  // if no active address, remove
+
+    return [activeAddress?.address, ...ethAddresses.filter((address) => address !== activeAddress?.address)].filter(
+      Boolean
+    ); // if no active address, remove
   }
 
   getBlockNumber() {
@@ -75,7 +74,7 @@ export class EthereumProvider {
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
     return stargazerAsset && balances[AssetType.Ethereum];
   }
@@ -97,10 +96,10 @@ export class EthereumProvider {
     let stargazerAsset: IAssetState = activeAsset as IAssetState;
 
     if (!activeAsset || activeAsset.type !== type) {
-      stargazerAsset = activeWallet.assets.find(a => a.type === type);
+      stargazerAsset = activeWallet.assets.find((a) => a.type === type);
     }
 
-    return stargazerAsset
+    return stargazerAsset;
   }
 
   /*
@@ -124,12 +123,12 @@ export class EthereumProvider {
 
       await store.dispatch(createAccount(account));
     }
-  }*/
+  } */
 
   // async postTransactionResult (hash: string) {
   //   console.log('postTransactionResult.addToMemPoolMonitor', hash);
   //
-  //   dag4.monitor.addToMemPoolMonitor(hash);
+  //   await dag4.monitor.addToMemPoolMonitor(hash);
   //
   //   setTimeout(() => {
   //     console.log('postTransactionResult.watchMemPool');
