@@ -2,14 +2,8 @@ import React, { FC } from 'react';
 
 import { View, Text, Linking, StyleSheet } from 'react-native';
 
-///////////////////////
-// Types
-///////////////////////
 import styles from './styles';
 
-///////////////////////
-// Types
-///////////////////////
 import IAboutSettings from './types';
 
 const About: FC<IAboutSettings> = ({
