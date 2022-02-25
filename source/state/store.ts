@@ -1,6 +1,8 @@
 import { combineReducers, configureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
+import { persistStore, persistReducer, persistCombineReducers } from 'redux-persist';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import logger from 'redux-logger';
 import throttle from 'lodash/throttle';
 
@@ -19,27 +21,43 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(logger);
 }
 
-// const persistConfig = {
-//   key: 'state',
-//   storage: AsyncStorage,
-// };
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+  stateReconciler: autoMergeLevel2,
+};
+
+const rootReducer = persistCombineReducers(persistConfig, {
+  vault,
+  price,
+  contacts,
+  assets,
+  nfts,
+  dapp,
+  // vault: persistReducer(persistConfig, vault),
+  // price: persistReducer(persistConfig, price),
+  // contacts: persistReducer(persistConfig, contacts),
+  // assets: persistReducer(persistConfig, assets),
+  // nfts: persistReducer(persistConfig, nfts),
+  // dapp: persistReducer(persistConfig, dapp),
+});
 
 const store: Store = configureStore({
-  reducer: combineReducers({
-    // vault: persistReducer(persistConfig, vault),
-    // price: persistReducer(persistConfig, price),
-    // contacts: persistReducer(persistConfig, contacts),
-    // assets: persistReducer(persistConfig, assets),
-    // nfts: persistReducer(persistConfig, nfts),
-    // dapp: persistReducer(persistConfig, dapp),
-    vault,
-    price,
-    contacts,
-    assets,
-    nfts,
-    dapp,
-  }),
-
+  reducer: rootReducer,
+  // reducer: combineReducers({
+  // vault: persistReducer(persistConfig, vault),
+  // price: persistReducer(persistConfig, price),
+  // contacts: persistReducer(persistConfig, contacts),
+  // assets: persistReducer(persistConfig, assets),
+  // nfts: persistReducer(persistConfig, nfts),
+  // dapp: persistReducer(persistConfig, dapp),
+  // vault,
+  // price,
+  // contacts,
+  // assets,
+  // nfts,
+  // dapp,
+  // }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
   // preloadedState,
@@ -47,6 +65,9 @@ const store: Store = configureStore({
 
 function updateState() {
   const state = store.getState();
+
+  console.log('wat is state in update state', state);
+
   saveState({
     vault: state.vault,
     price: state.price,
