@@ -100,7 +100,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     );
   };
 
-  const _renderPrivateKey = React.memo(() => {
+  const PrivateKey = React.memo(() => {
     return (
       <>
         <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.descriptionText}>
@@ -120,7 +120,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     );
   });
 
-  const _renderJSONInput = React.memo(() => {
+  const JSONInput = React.memo(() => {
     return (
       <>
         <FileSelect id="importAccount-fileInput" onChange={setJsonFile} disabled={loading} />
@@ -186,9 +186,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           </View>
         </View>
         {importType === 'priv' ? (
-          _renderPrivateKey()
+          <PrivateKey />
         ) : importType === 'json' ? (
-          _renderJSONInput()
+          <JSONInput />
         ) : (
           <>
             {hardwareStep === 1 && (

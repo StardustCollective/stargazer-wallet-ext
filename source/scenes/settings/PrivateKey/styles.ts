@@ -86,9 +86,17 @@ const styles = StyleSheet.create({
   notAllowed: {},
   privKeyCopied: {
     backgroundColor: COLORS.purple_medium,
-    color: COLORS.purple,
     borderWidth: 1,
     borderColor: COLORS.purple,
+  },
+  privKeyCopiedText: {
+    color: COLORS.purple,
+  },
+  buttonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: 12,
+    maxWidth: 144,
   },
 });
 

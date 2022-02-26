@@ -90,6 +90,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
   };
 
   const multiChainWallets = wallets.filter((w) => w.type === KeyringWalletType.MultiChainWallet);
+
   return (
     <View style={styles.wallets}>
       <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
@@ -132,11 +133,12 @@ const WalletsComponent: FC<IWalletsSettings> = ({
                 i === 0 ? styles.firstChild : {},
                 i === privKeyAccounts.length - 1 ? styles.lastChild : {},
               ]);
+
               return (
                 <TouchableOpacity key={wallet.id} onPress={onHandleSwitchWallet(wallet.id, wallet.accounts)}>
                   <View style={walletStyles} key={wallet.id}>
                     {renderCheckIcon(wallet.id, activeWallet.id)}
-                    {assets[wallet.supportedAssets.includes(KeyringAssetType.ETH)]
+                    {wallet.supportedAssets.includes(KeyringAssetType.ETH)
                       ? renderEthereumIcon()
                       : renderConstellationIcon() || renderStargazerIcon()}
                     <View>
