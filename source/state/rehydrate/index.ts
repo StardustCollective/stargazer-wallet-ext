@@ -8,10 +8,8 @@ import { rehydrate as dappRehydrate } from '../dapp';
 import { loadState } from '../localStorage';
 
 const rehydrateStore = async (store) => {
-  const storageState = await loadState();
-  console.log('storageState::::', storageState);
 
-  // await store.dispatch(await getHasEncryptedVault());
+  const storageState = await loadState();
 
   if (storageState) {
     store.dispatch(vaultRehydrate(storageState.vault));
@@ -21,6 +19,8 @@ const rehydrateStore = async (store) => {
     store.dispatch(nftsRehydrate(storageState.nfts));
     store.dispatch(dappRehydrate(storageState.dapp));
   }
+
+  await store.dispatch(getHasEncryptedVault());
 };
 
 export default rehydrateStore;

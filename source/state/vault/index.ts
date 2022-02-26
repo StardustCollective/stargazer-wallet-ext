@@ -25,11 +25,10 @@ const initialState: IVaultState = {
   version: '2.1.1',
 };
 
-export const getHasEncryptedVault = createAsyncThunk('vault/getHasEncryptedVault', async () => {
-  console.log('checking if they have encrypted vault....');
+export const getHasEncryptedVault = createAsyncThunk('vault/getHasEncryptedVault', 
+async () => {
   const hasEncryptedVault = await localStorage.getItem('stargazer-vault');
-  console.log('hasEncryptedVault in original fcn:', hasEncryptedVault);
-  return hasEncryptedVault;
+  return !!hasEncryptedVault;
 });
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -166,9 +165,7 @@ const VaultState = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getHasEncryptedVault.fulfilled, (state, action) => {
-      console.log('what is payload in getHaEncryptied', action);
-
-      state.hasEncryptedVault = !!action.payload;
+      state.hasEncryptedVault = action.payload;
     });
   },
 });
