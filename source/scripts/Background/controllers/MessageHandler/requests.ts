@@ -10,8 +10,7 @@ export const handleRequest = async (
     masterController: IMasterController,
     message: Message,
     origin: string,
-    setPendingWindow: (isPending: boolean) => void,
-    isPendingWindow: () => boolean
+    setPendingWindow: (isPending: boolean) => void
 ) => {
     const { method, args, asset } = message.data;
 
@@ -50,42 +49,84 @@ export const handleRequest = async (
         case SUPPORTED_WALLET_METHODS.getBalance:
             result = provider.getBalance();
             break;
-        case SUPPORTED_WALLET_METHODS.signMessage:
-            if (isPendingWindow()) {
-                return Promise.resolve(null);
+        case SUPPORTED_WALLET_METHODS.signMessage:{
+            let signatureRequestEncoded: string;
+            try{
+                signatureRequestEncoded = provider.normalizeSignatureRequest(args[1]);
+            }catch(e){
+                return Promise.reject(new CustomEvent(message.id, {
+                    detail: e instanceof Error ? e.message : 'signMessage-error'
+                }));
+            }
+        
+            const data = {
+                origin,
+                asset,
+                signatureRequestEncoded,
             }
 
-            const popup = await masterController.createPopup(windowId);
+            const popup = await masterController.createPopup(
+                windowId,
+                message.data.network,
+                'signMessage',
+                { ...data }
+            );
+
             setPendingWindow(true);
 
-            masterController.dapp.setSigRequest({
-                origin: origin as string,
-                address: args[1],
-                message: args[0],
-            });
             window.addEventListener(
-                'sign',
+                'messageSigned',
                 (ev: any) => {
-                    if (ev.detail.substring(1) === windowId) {
-                        result = masterController.stargazerProvider.signMessage(args[0]);
-                        port.postMessage({ id: message.id, data: { result } });
+                    console.log('Connect window addEventListener', ev.detail);
+                    if (ev.detail.windowId === windowId) {
+                        
+                        if (ev.detail.result) {
+                            port.postMessage({
+                                id: message.id,
+                                data: ev.detail.signature.hex,
+                            });
+                        } else {
+                            port.postMessage({
+                                id: message.id,
+                                data: {result: ev.detail.result},
+                            });
+                        }
                         setPendingWindow(false);
                     }
                 },
-                {
-                    once: true,
-                    passive: true,
-                }
+                { once: true, passive: true }
             );
-
-            browser.windows.onRemoved.addListener((id) => {
+            
+            const handler = (id: number)=>{
                 if (popup && id === popup.id) {
                     port.postMessage({ id: message.id, data: { result: false } });
                     setPendingWindow(false);
-                }
-            });
+                    browser.windows.onRemoved.removeListener(handler);
+                }    
+            }
 
-            return Promise.resolve(null);
+            browser.windows.onRemoved.addListener(handler);
+
+            return;
+        }
+        case SUPPORTED_WALLET_METHODS.getPublicKey:{
+            if(asset === 'DAG'){
+                try{
+                    result = {
+                        result: true,
+                        data: masterController.stargazerProvider.getPublicKey()
+                    };
+                }catch(e){
+                    port.postMessage({ id: message.id, data: { result: false, data: null } });
+                }
+                
+            }else{
+                return Promise.reject(new CustomEvent(message.id, {
+                    detail: 'getPublicKey method is not allowed in chain:ethereum'
+                }));
+            }
+            break;
+        }
         case SUPPORTED_WALLET_METHODS.sendTransaction:
             const data = args[0] ? args[0] : {};
             const decoder = getERC20DataDecoder();

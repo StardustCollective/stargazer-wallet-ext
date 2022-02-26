@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 
 import TextInput from 'components/TextInput';
 import Icon from 'components/Icon';
@@ -23,7 +23,7 @@ const NewAccount: FC<INewAccountSettings> = ({
 }) => {
   return (
     <View style={styles.newAccount}>
-      {!accountName ? (
+      {accountName ? (
         <>
           <TextV3.Description
             color={COLORS_ENUMS.DARK_GRAY}
@@ -45,7 +45,7 @@ const NewAccount: FC<INewAccountSettings> = ({
           <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>
             If you lose access to this wallet, your funds will be lost, unless you back up!
           </TextV3.Description>
-          <View style={styles.actions}>
+          <View style={StyleSheet.compose(styles.actions, styles.centered)}>
             <ButtonV3
               size={BUTTON_SIZES_ENUM.SMALL}
               type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}

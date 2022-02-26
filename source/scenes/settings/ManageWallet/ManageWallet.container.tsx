@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 
 import IVaultState from 'state/vault/types';
 
-import { getWalletController } from 'utils/controllersUtils';
+import { getAccountController } from 'utils/controllersUtils';
 
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
@@ -16,7 +16,7 @@ import ManageWallet from './ManageWallet';
 import { IManageWalletView } from './types';
 
 const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => {
-  const walletController = getWalletController();
+  const accountController = getAccountController();
   const linkTo = useLinkTo();
   const { id } = route.params;
 
@@ -26,7 +26,7 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   const wallet = wallets.find((w) => w.id === id);
 
   const onSubmit = (data: any) => {
-    walletController.account.updateWalletLabel(id, data.name);
+    accountController.updateWalletLabel(id, data.name);
     navigation.goBack();
   };
 
@@ -45,6 +45,11 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   const onShowPrivateKeyClicked = () => {
     linkTo(`/settings/wallets/privateKey?id=${id}`);
   };
+
+  if (!wallet) {
+    // throws error when deleting Wallet and wallet is undefined
+    return null;
+  }
 
   return (
     <Container>

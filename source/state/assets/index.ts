@@ -71,6 +71,14 @@ const AssetListState = createSlice({
   name: 'assets',
   initialState,
   reducers: {
+    rehydrate(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
+      console.log('state:::asset', state);
+      console.log('payload::aset;', action.payload);
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     addERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
       if (action.payload.address) {
         state[action.payload.address] = action.payload;
@@ -79,6 +87,6 @@ const AssetListState = createSlice({
   },
 });
 
-export const { addERC20Asset } = AssetListState.actions;
+export const { addERC20Asset, rehydrate } = AssetListState.actions;
 
 export default AssetListState.reducer;

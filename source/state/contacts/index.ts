@@ -7,19 +7,17 @@ const initialState: IContactBookState = {};
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
 const ContactBookState = createSlice({
-  name: 'price',
+  name: 'contacts',
   initialState,
   reducers: {
+    rehydrate(state: IContactBookState, action: PayloadAction<{ name: string; address: string; memo: string }>) {
+      state = action.payload;
+    },
     addContactAddress(
       state: IContactBookState,
       action: PayloadAction<{ name: string; address: string; memo: string }>
     ) {
-      if (
-        Object.values(state).filter(
-          (option) =>
-            option.address === action.payload.address
-        ).length
-      ) {
+      if (Object.values(state).filter((option) => option.address === action.payload.address).length) {
         return undefined;
       }
       const id = uuid();
@@ -43,14 +41,9 @@ const ContactBookState = createSlice({
       }>
     ) {
       const res = Object.values(state).filter(
-        (option) =>
-          option.address === action.payload.address ||
-          option.name === action.payload.name
+        (option) => option.address === action.payload.address || option.name === action.payload.name
       );
-      if (
-        !state[action.payload.id] ||
-        (res.length && res[0].id !== action.payload.id)
-      ) {
+      if (!state[action.payload.id] || (res.length && res[0].id !== action.payload.id)) {
         return undefined;
       }
       return {
@@ -63,19 +56,12 @@ const ContactBookState = createSlice({
         },
       };
     },
-    deleteContactAddress(
-      state: IContactBookState,
-      action: PayloadAction<{ id: string }>
-    ) {
+    deleteContactAddress(state: IContactBookState, action: PayloadAction<{ id: string }>) {
       delete state[action.payload.id];
     },
   },
 });
 
-export const {
-  addContactAddress,
-  updateContactAddress,
-  deleteContactAddress,
-} = ContactBookState.actions;
+export const { addContactAddress, updateContactAddress, deleteContactAddress, rehydrate } = ContactBookState.actions;
 
 export default ContactBookState.reducer;

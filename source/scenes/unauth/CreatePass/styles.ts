@@ -13,16 +13,39 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   savePasswordWarning: {
-    marginTop: 10,
+    marginTop: 0,
   },
   errors: {
-    marginTop: 10,
+    marginTop: 0,
+  },
+  passwordContainer: {
+    marginTop: 12,
+  },
+  warning: {
+    fontWeight: '500',
+    fontSize: 12,
+    lineHeight: 18,
+    letterSpacing: 0.03,
+    // marginTop: 12,
+    width: '100%',
+    color: COLORS.gray_100,
+  },
+  comment: {
+    marginTop: 0,
+  },
+  errorText: {
+    fontWeight: '500',
+    lineHeight: 18,
+    letterSpacing: 0.03,
+    width: '100%',
+    // marginTop: 12,
+    color: COLORS.red,
   },
   buttonContainer: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-  }
+  },
 });
 
 export default styles;

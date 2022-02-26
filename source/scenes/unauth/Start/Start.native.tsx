@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from "react";
+import React, { FC } from 'react';
 import { View, Image } from 'react-native';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -36,34 +36,20 @@ import IStart from './types';
 // Scene
 ///////////////////////////
 
-const Start: FC<IStart> = ({
-  onGetStartedClicked,
-  onImportClicked
-}) => {
+const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
+  console.log('opening start...');
   return (
     <View style={styles.layout}>
-      <TextV3.HeaderLarge
-        align={TEXT_ALIGN_ENUM.CENTER}
-      >
-        Welcome to {'\n'} Stargazer Wallet
-      </TextV3.HeaderLarge>
-      <Logo
-        width={LOGO_IMAGE_SIZE}
-        height={LOGO_IMAGE_SIZE}
-        style={styles.logo}
-      />
+      <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
+      <Logo width={LOGO_IMAGE_SIZE} height={LOGO_IMAGE_SIZE} style={styles.logo} />
       <ButtonV3
         type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
         title={'Get Started'}
-        extraStyle={styles.started}
+        extraStyles={styles.started}
         onPress={onGetStartedClicked}
       />
-      <Link
-        color="monotoneOne"
-        onPress={onImportClicked}
-        title="Import from recovery seed phrase"
-      />
+      <Link color="monotoneOne" onPress={onImportClicked} title="Import from recovery seed phrase" />
     </View>
   );
 };

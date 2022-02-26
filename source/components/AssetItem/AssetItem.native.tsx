@@ -30,7 +30,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import { IAssetInfoState } from 'state/assets/types';
 import { INFTInfoState } from 'state/nfts/types';
-import IAssetItem from './types';
+import IAssetItem, { IAssetLogo } from './types';
 
 ///////////////////////
 // Styles
@@ -43,7 +43,6 @@ import styles from './styles';
 ///////////////////////
 
 const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked }: IAssetItem) => {
-
   const renderNFTPriceSection = () => {
     return <View />;
   };
@@ -63,18 +62,26 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
         </View>
       );
     }
-  }
+  };
+
+  const AssetIcon: FC<IAssetLogo> = React.memo(({ logo }) => {
+    if (!logo) {
+      return null;
+    }
+
+    if (typeof logo === 'string' && logo.startsWith('http')) {
+      return <Image style={styles.imageIcon} source={{ uri: logo }} />;
+    }
+
+    const LogoComponent = logo;
+    return <LogoComponent iconStyle={styles.componentIcon} />;
+  });
 
   // const classes = clsx(styles.assetItem, isNFT && styles.nft);
   return (
-
-    <Card style={{width:'100%'}} onClick={itemClicked}>
+    <Card style={{ width: '100%' }} onClick={itemClicked}>
       <View style={styles.assetIcon}>
-        {typeof assetInfo.logo === 'string' && assetInfo.logo.startsWith('http') ?
-          (<Image style={styles.imageIcon} source={{ uri: assetInfo.logo }} />)
-          :
-          (<assetInfo.logo style={styles.componentIcon} />)
-        }
+        <AssetIcon logo={assetInfo?.logo} />
       </View>
       <View style={styles.assetName}>
         <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{assetInfo.label}</TextV3.BodyStrong>
@@ -89,7 +96,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
       </View>
     </Card>
   );
+};
 
-}
-
-export default AssetItem;``
+export default AssetItem;
+``;

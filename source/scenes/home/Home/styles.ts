@@ -1,21 +1,25 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+  },
+  scrollView: {},
   fiatBalanceContainer: {
     width: '100%',
-    height: '40%',
+    height: 200, // do not use percentages messes up scrollview
     alignItems: 'center',
     justifyContent: 'center',
   },
   fiatBalance: {
     maxWidth: '80%',
-    flexDirection:'row',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 10,
   },
   fiatBalanceLabel: {
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   bitcoinBalance: {
     opacity: 0.5,
@@ -23,8 +27,8 @@ const styles = StyleSheet.create({
   activityIndicator: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
 
 export default styles;

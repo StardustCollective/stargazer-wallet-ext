@@ -12,8 +12,28 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 50,
   },
-  savePasswordWarning: {
-    marginTop: 10,
+  passwordContainer: {
+    marginTop: 12,
+  },
+  warning: {
+    fontWeight: '500',
+    fontSize: 12,
+    lineHeight: 18,
+    letterSpacing: 0.03,
+    marginTop: 12,
+    width: '100%',
+    color: COLORS.gray_100,
+  },
+  errorText: {
+    fontWeight: '500',
+    lineHeight: 18,
+    letterSpacing: 0.03,
+    width: '100%',
+    marginTop: 12,
+    color: COLORS.red,
+  },
+  comment: {
+    marginTop: 0,
   },
   errors: {
     marginTop: 10,
@@ -22,7 +42,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-  }
+  },
 });
 
 export default styles;

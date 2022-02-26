@@ -1,12 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState } from './types';
-
-const hasEncryptedVault = !!localStorage.getItem('stargazer-vault');
 
 const initialState: IVaultState = {
   status: 0,
@@ -27,11 +25,23 @@ const initialState: IVaultState = {
   version: '2.1.1',
 };
 
+export const getHasEncryptedVault = createAsyncThunk('vault/getHasEncryptedVault', 
+async () => {
+  const hasEncryptedVault = await localStorage.getItem('stargazer-vault');
+  return !!hasEncryptedVault;
+});
+
 // createSlice comes with immer produce so we don't need to take care of immutational update
 const VaultState = createSlice({
   name: 'vault',
   initialState,
   reducers: {
+    rehydrate(state: IVaultState, action: PayloadAction<KeyringVaultState>) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     setVaultInfo(state: IVaultState, action: PayloadAction<KeyringVaultState>) {
       state.wallets = action.payload.wallets;
       // if (!state.activeWallet) {
@@ -153,9 +163,15 @@ const VaultState = createSlice({
       delete state.migrateWallet;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(getHasEncryptedVault.fulfilled, (state, action) => {
+      state.hasEncryptedVault = action.payload;
+    });
+  },
 });
 
 export const {
+  rehydrate,
   setVaultInfo,
   // setKeystoreInfo,
   // removeKeystoreInfo,
