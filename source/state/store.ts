@@ -1,5 +1,6 @@
 import { combineReducers, configureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
+import thunk from "redux-thunk";
 import throttle from 'lodash/throttle';
 
 import vault from './vault';
@@ -18,6 +19,8 @@ if (process.env.NODE_ENV !== 'production') {
   middleware.push(logger);
 }
 
+middleware.push(thunk);
+
 const store: Store = configureStore({
   reducer: combineReducers({
     vault,
@@ -34,7 +37,6 @@ const store: Store = configureStore({
 function updateState() {
   const state = store.getState();
 
-  console.log('state in updateState:', state);
   saveState({
     vault: state.vault,
     price: state.price,
