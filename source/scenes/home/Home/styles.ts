@@ -4,9 +4,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
   },
-  scrollView: {
-    marginBottom: 24,
-  },
+  scrollView: {},
   fiatBalanceContainer: {
     width: '100%',
     height: 200, // do not use percentages messes up scrollview
