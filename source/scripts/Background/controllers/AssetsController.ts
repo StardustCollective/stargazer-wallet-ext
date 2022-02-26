@@ -89,7 +89,14 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     const apiBase = network === 'testnet' ? NFT_TESTNET_API : NFT_MAINNET_API;
 
     const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}`;
-    return (await fetch(apiEndpoint)).json();
+
+    const response = await fetch(apiEndpoint, {
+      headers: {
+        'X-API-KEY': process.env.OPENSEA_API_KEY,
+      },
+    });
+
+    return response.json();
   };
 
   const fetchWalletNFTInfo = async (walletAddress: string): Promise<any> => {

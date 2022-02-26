@@ -31,7 +31,8 @@ export enum SUPPORTED_WALLET_METHODS {
     isConnected,
     getNetwork,
     getAddress,
-    getBalance
+    getBalance,
+    getPublicKey
 }
 
 export const SUPPORTED_CHAINS = [

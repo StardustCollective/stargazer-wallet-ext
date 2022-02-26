@@ -7,6 +7,9 @@ import { IAssetInfoState } from 'state/assets/types';
 import { INFTInfoState } from 'state/nfts/types';
 import { IFiatState } from 'state/price/types';
 
+export type IAssetLogo = {
+  logo: string | React.Component;
+};
 ///////////////////////
 // Types
 ///////////////////////
@@ -19,4 +22,4 @@ export default interface IAssetItem {
   balances?: AssetBalances;
   fiat?: IFiatState;
   isNFT?: boolean;
-};
+}

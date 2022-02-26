@@ -1,35 +1,25 @@
-import {
-  combineReducers,
-  configureStore,
-  getDefaultMiddleware,
-  Store,
-} from '@reduxjs/toolkit';
+import { combineReducers, configureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
+import thunk from "redux-thunk";
 import throttle from 'lodash/throttle';
 
-import vault  from './vault';
+import vault from './vault';
 import price from './price';
 import contacts from './contacts';
 import assets from './assets';
 import nfts from './nfts';
-
 import dapp from './dapp';
-import { saveState, loadState } from './localStorage';
 
-const middleware = [
-  ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
-];
+import { saveState } from './localStorage';
+import rehydrateStore from './rehydrate';
+
+const middleware = [...getDefaultMiddleware({ thunk: false, serializableCheck: false })];
 
 if (process.env.NODE_ENV !== 'production') {
   middleware.push(logger);
 }
 
-// const preloadedState = loadState();
-
-// //v1.0 wallet state
-// if (preloadedState && preloadedState.wallet) {
-//   delete preloadedState.wallet;
-// }
+middleware.push(thunk);
 
 const store: Store = configureStore({
   reducer: combineReducers({
@@ -42,11 +32,11 @@ const store: Store = configureStore({
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
-  // preloadedState,
 });
 
 function updateState() {
   const state = store.getState();
+
   saveState({
     vault: state.vault,
     price: state.price,
@@ -59,9 +49,13 @@ function updateState() {
 
 store.subscribe(
   throttle(() => {
+    // every second we update store state
     updateState();
   }, 1000)
 );
+
+// initialize store from state
+rehydrateStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
