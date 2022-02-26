@@ -1,8 +1,6 @@
 export const saveState = async (appState: any) => {
   try {
     const serializedState = JSON.stringify(appState);
-    console.log('serializedState in update:::', serializedState);
-
     await localStorage.setItem('state', serializedState);
   } catch (e) {
     console.error('<!> Error saving state', e);
