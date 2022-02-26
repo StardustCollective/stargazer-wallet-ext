@@ -9,7 +9,6 @@ import {STORE_PORT, DAG_NETWORK} from 'constants/index';
 import {Provider} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
 import {dag4} from '@stardust-collective/dag4';
-
 import {KeyringNetwork} from '@stardust-collective/dag4-keyring';
 
 ////////////////////
@@ -23,9 +22,10 @@ const networkId =
   vault.activeNetwork[KeyringNetwork.Constellation];
 const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
 
+dag4.di.registerStorageClient(localStorage);
 dag4.di.getStateStorageDb().setPrefix('stargazer-');
 dag4.di.useFetchHttpClient(fetch);
-dag4.di.useLocalStorageClient(global.localStorage);
+
 dag4.network.config({
   id: networkInfo.id,
   beUrl: networkInfo.beUrl,

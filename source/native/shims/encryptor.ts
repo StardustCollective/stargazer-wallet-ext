@@ -27,7 +27,7 @@ class RNEncryptor<T> {
     payload = (typeof payload === 'string' ? JSON.parse(payload) : payload) as Payload;
     const salt = payload.salt || ''; 
 
-    return AES.decrypt(payload.data, this.getKey(password, salt)).toString(enc.Utf8);
+    return JSON.parse(AES.decrypt(payload.data, this.getKey(password, salt)).toString(enc.Utf8));
   }
 
   getKey(password: string, salt: string): string {
