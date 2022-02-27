@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Modal } from 'react-native';
 
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -19,6 +19,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 // import ErrorIcon from 'assets/images/svg/error.svg';
 import { AssetType } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
+import Contact from 'scenes/home/Contacts';
 
 
 
@@ -71,100 +72,102 @@ const Send = ({
   );
 
   return (
-    <View style={styles.layout}>
-      <View style={styles.content}>
-        <View>
-          {/* Contacts Goes here */}
-        </View>
-        <View style={styles.balance}>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-            Balance:
-            <TextV3.Body color={COLORS_ENUMS.BLACK}> {formatStringDecimal(formatNumber(Number(balances[activeAsset.id]), 16, 20), 4)} </TextV3.Body>
+    <>
+      <View style={styles.layout}>
+        <View style={styles.content}>
+          <View>
+            {/* Contacts Goes here */}
+          </View>
+          <View style={styles.balance}>
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-              {assetInfo.symbol}
-            </TextV3.Caption>
-          </TextV3.Caption>
-        </View>
-        <View style={styles.form}>
-          <TextInput
-            name="address"
-            placeholder={`Enter a valid ${assetInfo.symbol} address`}
-            label={'RECIPIENT ADDRESS'}
-            control={control}
-            inputContainerStyle={styles.input}
-            onChange={(text) => { handleAddressChange({ target: { value: text } }) }}
-            rightIconContainerStyle={styles.inputRightIcon}
-            rightIcon={(
-              <InputRightButton label='CONTACTS' onPress={() => { }} />
-            )}
-          />
-          <TextInput
-            name="amount"
-            placeholder={"Enter amount to send"}
-            label={`${assetInfo.symbol} AMOUNT`}
-            control={control}
-            defaultValue={amount === '0' ? '' : amount.toString()}
-            inputContainerStyle={styles.input}
-            onChange={(text) => handleAmountChange(text)}
-            rightIconContainerStyle={styles.inputRightIcon}
-            rightIcon={(
-              <InputRightButton label='MAX' onPress={handleSetMax} />
-            )}
-          />
-          {activeAsset.type === AssetType.Constellation && (
-            <TextInput
-              defaultValue={fee.toString()}
-              name="fee"
-              placeholder={"Enter transaction fee"}
-              label={'TRANSACTION FEE'}
-              control={control}
-              onChange={(text) => { handleFeeChange({ target: { value: text } }) }}
-              rightIconContainerStyle={styles.inputRightIcon}
-              rightIcon={(
-                <InputRightButton label='RECOMMENDED' onPress={handleGetDAGTxFee} />
-              )}
-            />
-          )}
-        </View>
-        <View style={styles.estimate}>
-          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-            ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
-          </TextV3.Caption>
-        </View>
-        {!!Object.values(errors).length && (
-          <View style={styles.error}>
-            <TextV3.Caption color={COLORS_ENUMS.RED}>
-              {Object.values(errors)[0].message}
+              Balance:
+              <TextV3.Body color={COLORS_ENUMS.BLACK}> {formatStringDecimal(formatNumber(Number(balances[activeAsset.id]), 16, 20), 4)} </TextV3.Body>
+              <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+                {assetInfo.symbol}
+              </TextV3.Caption>
             </TextV3.Caption>
           </View>
-        )}
-        {activeAsset.type === AssetType.Constellation && (
-          <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-            {`With current network conditions we recommend a fee of ${recommend} DAG.`}
-          </TextV3.Caption>
-        )}
-        {activeAsset.type !== AssetType.Constellation && !!gasPrices.length && (
-          <>
-            <View style={styles.gasSettings}>
-              <View style={styles.gasSettingsLabel}>
-                <View style={styles.gasSettingLabelLeft}>
-                  <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                    GAS PRICE (IN GWEI)
-                  </TextV3.Caption>
+          <View style={styles.form}>
+            <TextInput
+              name="address"
+              defaultValue={address}
+              placeholder={`Enter a valid ${assetInfo.symbol} address`}
+              label={'RECIPIENT ADDRESS'}
+              control={control}
+              inputContainerStyle={styles.input}
+              onChange={(text) => { handleAddressChange({ target: { value: text } }) }}
+              rightIconContainerStyle={styles.inputRightIcon}
+              rightIcon={(
+                <InputRightButton label='CONTACTS' onPress={() => setModalOpen(true)} />
+              )}
+            />
+            <TextInput
+              name="amount"
+              placeholder={"Enter amount to send"}
+              label={`${assetInfo.symbol} AMOUNT`}
+              control={control}
+              defaultValue={amount === '0' ? '' : amount.toString()}
+              inputContainerStyle={styles.input}
+              onChange={(text) => handleAmountChange(text)}
+              rightIconContainerStyle={styles.inputRightIcon}
+              rightIcon={(
+                <InputRightButton label='MAX' onPress={handleSetMax} />
+              )}
+            />
+            {activeAsset.type === AssetType.Constellation && (
+              <TextInput
+                defaultValue={fee.toString()}
+                name="fee"
+                placeholder={"Enter transaction fee"}
+                label={'TRANSACTION FEE'}
+                control={control}
+                onChange={(text) => { handleFeeChange({ target: { value: text } }) }}
+                rightIconContainerStyle={styles.inputRightIcon}
+                rightIcon={(
+                  <InputRightButton label='RECOMMENDED' onPress={handleGetDAGTxFee} />
+                )}
+              />
+            )}
+          </View>
+          <View style={styles.estimate}>
+            <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
+              ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
+            </TextV3.Caption>
+          </View>
+          {!!Object.values(errors).length && (
+            <View style={styles.error}>
+              <TextV3.Caption color={COLORS_ENUMS.RED}>
+                {Object.values(errors)[0].message}
+              </TextV3.Caption>
+            </View>
+          )}
+          {activeAsset.type === AssetType.Constellation && (
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+              {`With current network conditions we recommend a fee of ${recommend} DAG.`}
+            </TextV3.Caption>
+          )}
+          {activeAsset.type !== AssetType.Constellation && !!gasPrices.length && (
+            <>
+              <View style={styles.gasSettings}>
+                <View style={styles.gasSettingsLabel}>
+                  <View style={styles.gasSettingLabelLeft}>
+                    <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+                      GAS PRICE (IN GWEI)
+                    </TextV3.Caption>
+                  </View>
+                  <View style={styles.gasSettingLabelRight}>
+                    <Input
+                      defaultValue={gasPrice.toString()}
+                      onChange={(event) => handleGasPriceChange(null, Number(event.nativeEvent.text))}
+                      inputContainerStyle={styles.gasSettingInputContainer}
+                      rightIcon={(
+                        <InputRightButton label={gasSpeedLabel} onPress={handleGetDAGTxFee} />
+                      )}
+                    />
+                  </View>
                 </View>
-                <View style={styles.gasSettingLabelRight}>
-                  <Input
-                    defaultValue={gasPrice.toString()}
-                    onChange={(event) => handleGasPriceChange(null, Number(event.nativeEvent.text))}
-                    inputContainerStyle={styles.gasSettingInputContainer}
-                    rightIcon={(
-                      <InputRightButton label={gasSpeedLabel} onPress={handleGetDAGTxFee} />
-                    )}
-                  />
-                </View>
-              </View>
-              <View style={styles.gasSettingsSlider}>
-                {/* <PurpleSlider
+                <View style={styles.gasSettingsSlider}>
+                  {/* <PurpleSlider 
                 onChange={handleGasPriceChange}
                 // min={gasPrices[0]}
                 // max={gasPrices[2]}
@@ -173,39 +176,53 @@ const Send = ({
                 // trackStyle={{ width: 100 }}
                 step={1}
               /> */}
+                </View>
               </View>
+              <View style={styles.gasSettingsEstimate}>
+                <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+                  {`${gasPrice} GWei, ${gasFee} ETH (≈ ${getFiatAmount(
+                    gasFee,
+                    2,
+                    'ethereum'
+                  )})`}
+                </TextV3.Caption>
+              </View>
+            </>
+          )}
+          <View style={styles.footer}>
+            <View style={styles.footerButtons}>
+              <ButtonV3
+                type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE}
+                size={BUTTON_SIZES_ENUM.LARGE}
+                title={'Cancel'}
+                onPress={handleClose}
+                extraStyles={styles.button}
+              />
+              <ButtonV3
+                disabled={isDisabled}
+                type={BUTTON_TYPES_ENUM.PRIMARY}
+                size={BUTTON_SIZES_ENUM.LARGE}
+                title={'Submit'}
+                onPress={handleSubmit(data => { onSubmit(data) })}
+              />
             </View>
-            <View style={styles.gasSettingsEstimate}>
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                {`${gasPrice} GWei, ${gasFee} ETH (≈ ${getFiatAmount(
-                  gasFee,
-                  2,
-                  'ethereum'
-                )})`}
-              </TextV3.Caption>
-            </View>
-          </>
-        )}
-        <View style={styles.footer}>
-          <View style={styles.footerButtons}>
-            <ButtonV3
-              type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE}
-              size={BUTTON_SIZES_ENUM.LARGE}
-              title={'Cancel'}
-              onPress={handleClose}
-              extraStyles={styles.button}
-            />
-            <ButtonV3
-              disabled={isDisabled}
-              type={BUTTON_TYPES_ENUM.PRIMARY}
-              size={BUTTON_SIZES_ENUM.LARGE}
-              title={'Submit'}
-              onPress={handleSubmit(data => { onSubmit(data) })}
-            />
           </View>
         </View>
       </View>
-    </View>
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalOpened}
+        onRequestClose={() => {
+          setModalOpen(false)
+        }}
+      >
+        <Contact
+          onChange={handleSelectContact}
+          onClose={() => setModalOpen(false)}
+        />
+      </Modal>
+    </>
   );
 
 }

@@ -1,46 +1,22 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
-import { useSelector } from 'react-redux';
 import Avatar from '@devneser/gradient-avatar';
 import Portal from '@reach/portal';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-
-import { RootState } from 'state/store';
-import { useController } from 'hooks/index';
-import IContactBookState, { IContactState } from 'state/contacts/types';
-import IVaultState, { AssetType } from 'state/vault/types';
+import { IContactState } from 'state/contacts/types';
 
 import styles from './Contacts.scss';
 
-interface IWalletContacts {
-  open: boolean;
-  onClose?: () => void;
-  onChange: (address: string) => void;
-}
+import IWalletContacts from './types';
 
-const WalletContacts: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
-  const controller = useController();
-  const { activeAsset }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-  const contacts: IContactBookState = useSelector(
-    (state: RootState) => state.contacts
-  );
-  // const account = accounts[activeAccountId];
-
-  const isDAGAddress = (address: string) => {
-    return controller.wallet.account.isValidDAGAddress(address);
-  };
-
-  const isValidContact = (contact: IContactState) => {
-    return (
-      (activeAsset.type === AssetType.Constellation &&
-        isDAGAddress(contact.address)) ||
-      (activeAsset.type !== AssetType.Constellation &&
-        !isDAGAddress(contact.address))
-    );
-  };
+const WalletContacts: FC<IWalletContacts> = ({ 
+  open, 
+  onClose, 
+  onChange,
+  contacts,
+  isValidContact,
+}) => {
 
   return (
     <Portal>
