@@ -72,8 +72,6 @@ const AssetListState = createSlice({
   initialState,
   reducers: {
     rehydrate(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
-      console.log('state:::asset', state);
-      console.log('payload::aset;', action.payload);
       return {
         ...state,
         ...action.payload,
