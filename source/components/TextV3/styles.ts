@@ -55,6 +55,9 @@ const styles = StyleSheet.create({
   alignRight: {
     textAlign: 'right',
   },
+  primary: {
+    color: COLORS.primary,
+  },
   whiteFont: {
     color: COLORS.white,
   },

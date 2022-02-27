@@ -10,5 +10,5 @@ export enum COLORS_ENUMS {
   GRAY_100,
   ACCENT_ONE,
   MONOTONE_ONE,
-
+  PRIMARY,
 }

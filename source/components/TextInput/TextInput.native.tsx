@@ -16,6 +16,8 @@ interface ITextInput {
   multiline: boolean;
   fullWidth: boolean;
   visiblePassword: boolean;
+  defaultValue: string;
+  onChange: (text: any) => void;
   onSubmit: (ev: any) => void;
 }
 
@@ -30,6 +32,8 @@ const TextInput: FC<ITextInput> = ({
   inputContainerStyle = {},
   inputStyle = {},
   multiline = false,
+  defaultValue = '',
+  onChange,
   ...otherProps
 }) => {
   let keyboardType: KeyboardType = 'default';
@@ -84,9 +88,13 @@ const TextInput: FC<ITextInput> = ({
         />
       }
       onChange={([text]) => {
+        if(onChange){
+          onChange(text);
+        }
         return text;
       }}
       name={name}
+      defaultValue={defaultValue}
       onChangeName="onChangeText"
     />
   );
