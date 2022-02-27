@@ -14,7 +14,6 @@ import Home from 'scenes/home/Home';
 import Asset from 'scenes/home/Asset';
 import Send from 'scenes/home/SendAsset/Send';
 import Confirm from 'scenes/home/SendAsset/Confirm';
-// import GasSettings from 'scenes/home/Send/GasSettings';
 import Import from 'scenes/common/Import';
 
 ///////////////////////////
