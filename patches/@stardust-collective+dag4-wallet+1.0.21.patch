@@ -1,3 +1,76 @@
+diff --git a/node_modules/@stardust-collective/dag4-wallet/cjs/dag-monitor.js b/node_modules/@stardust-collective/dag4-wallet/cjs/dag-monitor.js
+index 7b34ee9..e1a49ee 100644
+--- a/node_modules/@stardust-collective/dag4-wallet/cjs/dag-monitor.js
++++ b/node_modules/@stardust-collective/dag4-wallet/cjs/dag-monitor.js
+@@ -18,16 +18,21 @@ class DagMonitor {
+     observeMemPoolChange() {
+         return this.memPoolChange$;
+     }
+-    addToMemPoolMonitor(value) {
++    async addToMemPoolMonitor(value) {
+         const key = `network-${dag4_network_1.globalDagNetwork.getNetwork().id}-mempool`;
+-        const payload = this.cacheUtils.get(key) || [];
++        let payload = (await this.cacheUtils.get(key)) || [];
+         let tx = value;
+         if (typeof value === 'string') {
+             tx = { hash: value, timestamp: Date.now() };
+         }
++
++        if (!payload || !payload.some) {
++            payload = [];
++        }
++
+         if (!payload.some(p => p.hash === tx.hash)) {
+             payload.push(tx);
+-            this.cacheUtils.set(key, payload);
++            await this.cacheUtils.set(key, payload);
+             this.lastTimer = Date.now();
+             this.pendingTimer = 1000;
+         }
+@@ -39,14 +44,14 @@ class DagMonitor {
+         const { pendingTxs } = await this.processPendingTxs();
+         return pendingTxs.map(pending => this.transformPendingToTransaction(pending)).concat(cTxs);
+     }
+-    getMemPoolFromMonitor(address) {
++    async getMemPoolFromMonitor(address) {
+         address = address || this.walletParent.address;
+-        const txs = this.cacheUtils.get(`network-${dag4_network_1.globalDagNetwork.getNetwork().id}-mempool`) || [];
++        const txs = (await this.cacheUtils.get(`network-${dag4_network_1.globalDagNetwork.getNetwork().id}-mempool`)) || [];
+         return txs.filter(tx => !address || !tx.receiver || tx.receiver === address || tx.sender === address);
+     }
+-    setToMemPoolMonitor(pool) {
++    async setToMemPoolMonitor(pool) {
+         const key = `network-${dag4_network_1.globalDagNetwork.getNetwork().id}-mempool`;
+-        this.cacheUtils.set(key, pool);
++        await this.cacheUtils.set(key, pool);
+     }
+     async waitForTransaction(hash) {
+         if (!this.waitForMap[hash]) {
+@@ -76,21 +81,21 @@ class DagMonitor {
+         const { pendingTxs, txChanged, transTxs, pendingHasConfirmed, poolCount } = await this.processPendingTxs();
+         //Has any memPollTxs pending
+         if (pendingTxs.length) {
+-            this.setToMemPoolMonitor(pendingTxs);
++            await this.setToMemPoolMonitor(pendingTxs);
+             this.pendingTimer = 10000;
+             this.lastTimer = Date.now();
+             setTimeout(() => this.pollPendingTxs(), 10000);
+         }
+         else if (poolCount > 0) {
+             //NOTE: All tx in persisted pool have completed
+-            this.setToMemPoolMonitor([]);
++            await this.setToMemPoolMonitor([]);
+         }
+         this.memPoolChange$.next({
+             txChanged, transTxs, pendingHasConfirmed
+         });
+     }
+     async processPendingTxs() {
+-        const pool = this.getMemPoolFromMonitor();
++        const pool = await this.getMemPoolFromMonitor();
+         const transTxs = [];
+         const nextPool = [];
+         let pendingHasConfirmed = false;
 diff --git a/node_modules/@stardust-collective/dag4-wallet/types/dag-monitor.d.ts b/node_modules/@stardust-collective/dag4-wallet/types/dag-monitor.d.ts
 index 0c39b57..0650165 100644
 --- a/node_modules/@stardust-collective/dag4-wallet/types/dag-monitor.d.ts

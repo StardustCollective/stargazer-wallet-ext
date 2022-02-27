@@ -9,6 +9,7 @@ import { updateBalances } from '../../../state/vault';
 import IVaultState, { ActiveNetwork, AssetType, IWalletState } from '../../../state/vault/types';
 import IAssetListState from '../../../state/assets/types';
 import ControllerUtils from '../controllers/ControllerUtils';
+import { getAccountController } from 'utils/controllersUtils';
 
 const FIFTEEN_SECONDS = 15 * 1000;
 const ONE_MINUTE = 60 * 1000;
@@ -107,7 +108,7 @@ export class AssetsBalanceMonitor {
 
   private async pollPendingTxs(update: DagWalletMonitorUpdate) {
     if (update.pendingHasConfirmed) {
-      window.controller.wallet.account.getLatestTxUpdate();
+      getAccountController().getLatestTxUpdate();
     }
   }
 
