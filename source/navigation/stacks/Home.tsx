@@ -12,8 +12,8 @@ import { getWalletController } from 'utils/controllersUtils';
 import Start from 'scenes/home/Start';
 import Home from 'scenes/home/Home';
 import Asset from 'scenes/home/Asset';
-import Send, { SendConfirm } from 'scenes/home/Send';
-import GasSettings from 'scenes/home/Send/GasSettings';
+import Send from 'scenes/home/SendAsset/Send';
+import Confirm from 'scenes/home/SendAsset/Confirm';
 import Import from 'scenes/common/Import';
 
 ///////////////////////////
@@ -68,26 +68,14 @@ const Auth = () => {
       )}
       {isUnlocked && (
         <>
-          <Stack.Screen
-            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallet }}
-            name={screens.authorized.home}
-            component={Home}
-          />
-          {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.asset }} name={screens.authorized.asset} component={Asset} /> */}
-          {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={SendConfirm} /> */}
-          {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} /> */}
-          <Stack.Screen
-            options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerShown: false }}
-            name={screens.authorized.settings}
-            component={SettingStack}
-          />
-        </>
-      )}
-      <Stack.Screen
-        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }}
-        name={screens.common.import}
-        component={Import}
-      />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallet }} name={screens.authorized.home} component={Home} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.asset }} name={screens.authorized.asset} component={Asset} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={Confirm} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerShown: false }} name={screens.authorized.settings} component={SettingStack} />
+        </>)
+      }
+      <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }} name={screens.common.import} component={Import} />
     </Stack.Navigator>
   );
 };

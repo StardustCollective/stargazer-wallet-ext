@@ -1,0 +1,21 @@
+diff --git a/node_modules/@stardust-collective/dag4-wallet/types/dag-monitor.d.ts b/node_modules/@stardust-collective/dag4-wallet/types/dag-monitor.d.ts
+index 0c39b57..0650165 100644
+--- a/node_modules/@stardust-collective/dag4-wallet/types/dag-monitor.d.ts
++++ b/node_modules/@stardust-collective/dag4-wallet/types/dag-monitor.d.ts
+@@ -13,12 +13,12 @@ export declare class DagMonitor {
+     private waitForMap;
+     constructor(walletParent: WalletParent);
+     observeMemPoolChange(): Subject<DagWalletMonitorUpdate>;
+-    addToMemPoolMonitor(value: PendingTx | string): Transaction;
++    addToMemPoolMonitor(value: PendingTx | string): Promise<Transaction>;
+     getLatestTransactions(address: string, limit?: number, searchAfter?: string): Promise<Transaction[]>;
+-    getMemPoolFromMonitor(address?: string): PendingTx[];
+-    setToMemPoolMonitor(pool: PendingTx[]): void;
++    getMemPoolFromMonitor(address?: string): Promise<PendingTx[]>;
++    setToMemPoolMonitor(pool: PendingTx[]): Promise<void>;
+     waitForTransaction(hash: string): Promise<boolean>;
+-    startMonitor(): void;
++    startMonitor(): Promise<void>;
+     private transformPendingToTransaction;
+     private pollPendingTxs;
+     private processPendingTxs;

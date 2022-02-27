@@ -349,6 +349,8 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
+  - RNDeviceInfo (8.4.9):
+    - React-Core
   - RNFS (2.18.0):
     - React
   - RNGestureHandler (1.10.3):
@@ -451,6 +453,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../../../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../../../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../../../node_modules/@react-native-community/masked-view`)"
+  - RNDeviceInfo (from `../../../node_modules/react-native-device-info`)
   - RNFS (from `../../../node_modules/react-native-fs`)
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
@@ -547,6 +550,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/@react-native-community/clipboard"
   RNCMaskedView:
     :path: "../../../node_modules/@react-native-community/masked-view"
+  RNDeviceInfo:
+    :path: "../../../node_modules/react-native-device-info"
   RNFS:
     :path: "../../../node_modules/react-native-fs"
   RNGestureHandler:
@@ -611,6 +616,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: b49b4e38a1548d03b74b30e558a1d18465b94be7
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
+  RNDeviceInfo: 4944cf8787b9c5bffaf301fda68cc1a2ec003341
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNReanimated: e8afbe2a9e08e9e778ea72ddb1a8533445812621

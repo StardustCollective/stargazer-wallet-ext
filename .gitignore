@@ -120,3 +120,6 @@ yarn.lock
 
 # E2E Test Environment
 source/web/test-artifacts
+
+# iOS Pods
+source/native/ios/Pods
