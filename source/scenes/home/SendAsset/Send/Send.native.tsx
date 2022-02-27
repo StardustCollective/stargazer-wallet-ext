@@ -97,6 +97,7 @@ const Send = ({
               inputContainerStyle={styles.input}
               onChange={(text) => { handleAddressChange({ target: { value: text } }) }}
               rightIconContainerStyle={styles.inputRightIcon}
+              returnKeyType={'done'}
               rightIcon={(
                 <InputRightButton label='CONTACTS' onPress={() => setModalOpen(true)} />
               )}
@@ -106,10 +107,13 @@ const Send = ({
               placeholder={"Enter amount to send"}
               label={`${assetInfo.symbol} AMOUNT`}
               control={control}
-              defaultValue={amount === '0' ? '' : amount.toString()}
+              defaultValue={Number(amount) === 0 ? '' : amount.toString()}
               inputContainerStyle={styles.input}
               onChange={(text) => handleAmountChange(text)}
               rightIconContainerStyle={styles.inputRightIcon}
+              keyboardType={'number-pad'}
+              returnKeyType={'done'}
+              textContentType={''}
               rightIcon={(
                 <InputRightButton label='MAX' onPress={handleSetMax} />
               )}
@@ -123,6 +127,8 @@ const Send = ({
                 control={control}
                 onChange={(text) => { handleFeeChange({ target: { value: text } }) }}
                 rightIconContainerStyle={styles.inputRightIcon}
+                keyboardType={'number-pad'}
+                returnKeyType={'done'}
                 rightIcon={(
                   <InputRightButton label='RECOMMENDED' onPress={handleGetDAGTxFee} />
                 )}
