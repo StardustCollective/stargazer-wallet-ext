@@ -4,11 +4,12 @@
 	 viewBox="0 0 614.1 629" style="enable-background:new 0 0 614.1 629;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:#FFCC00;}
+	.black{fill:#000000}
 </style>
 <g>
-	<path d="M497.8,62.6l-190.7,182V366l190.7-182V62.6z"/>
+	<path class="black" d="M497.8,62.6l-190.7,182V366l190.7-182V62.6z"/>
 	<path class="st0" d="M116.4,62.6l190.7,182V366L116.4,184V62.6z"/>
-	<path d="M307.1,244L116.4,426v121.3l190.7-182V244z"/>
+	<path class="black" d="M307.1,244L116.4,426v121.3l190.7-182V244z"/>
 	<path class="st0" d="M307.1,244l190.7,182v121.3l-190.7-182L307.1,244L307.1,244z"/>
 </g>
 </svg>
