@@ -46,14 +46,16 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   }, []);
 
   const isValidAddress = useMemo(() => {
-    if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
-      return accountController.isValidDAGAddress(address) || accountController.isValidERC20Address(address);
+    if (address) {
+      if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
+        return accountController.isValidDAGAddress(address) || accountController.isValidERC20Address(address);
+      }
+      const asset = activeWallet.assets[0];
+      if (asset.type === AssetType.Constellation) {
+        return accountController.isValidDAGAddress(address);
+      }
+      return accountController.isValidERC20Address(address);
     }
-    const asset = activeWallet.assets[0];
-    if (asset.type === AssetType.Constellation) {
-      return accountController.isValidDAGAddress(address);
-    }
-    return accountController.isValidERC20Address(address);
   }, [address]);
 
   const hideStatusIcon = !isValidAddress;
