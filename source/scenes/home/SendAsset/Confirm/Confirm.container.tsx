@@ -60,8 +60,11 @@ const ConfirmContainer = ({ navigation }) => {
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
   let history: any;
+  let isExternalRequest: boolean;
 
-  const isExternalRequest = location.pathname.includes('confirmTransaction');
+  if(!!location){
+    isExternalRequest = location.pathname.includes('confirmTransaction');
+  }
 
   const accountController = getAccountController();
   // const alert = useAlert();
