@@ -48,8 +48,32 @@ const styles = StyleSheet.create({
     margin: 10,
     justifyContent: 'space-evenly'
   },
+  sendSuccessContent:{
+    height: '100%',
+    backgroundColor: COLORS.white,
+  },
   button:{
     marginRight: 10
+  },
+  heading: {
+    backgroundColor: COLORS.grey_light,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+  },
+  checkIcon:{
+    marginTop: 40,
+    alignItems: 'center'
+  },
+  message: {
+    paddingVertical: 30,
+  },
+  wrapper: {
+    marginHorizontal: 30,
+  },
+  successButtonFooter:{
+
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   }
 })
 
