@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 
 import TextInput from 'components/TextInput';
+import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
@@ -25,6 +26,7 @@ const PrivateKey: FC<IPrivateKeySettings> = ({
     !checked ? styles.notAllowed : {},
   ]);
 
+  const privKeyTextClass = StyleSheet.flatten([styles.privKeyText, isCopied ? styles.privKeyTextCopied : {}]);
   return (
     <View style={styles.wrapper}>
       {wallet && (
@@ -51,14 +53,21 @@ const PrivateKey: FC<IPrivateKeySettings> = ({
               fullWidth
               inputRef={register}
               inputStyle={styles.input}
-              onSubmitEditing={handleSubmit((data) => onSubmit(data))}
             />
+            <View style={styles.buttonContainer}>
+              <ButtonV3
+                size={BUTTON_SIZES_ENUM.SMALL}
+                type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+                title="Submit"
+                onPress={handleSubmit((data) => onSubmit(data))}
+              />
+            </View>
             <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.contentText}>
               Click to copy your private key:
             </TextV3.Description>
             <TouchableOpacity onPress={handleCopyPrivKey}>
               <View style={privKeyClass}>
-                <TextV3.Label extraStyle={privKeyClass} color={COLORS_ENUMS.DARK_GRAY}>
+                <TextV3.Label margin={false} extraStyles={privKeyTextClass} color={COLORS_ENUMS.DARK_GRAY}>
                   {privKey}
                 </TextV3.Label>
               </View>

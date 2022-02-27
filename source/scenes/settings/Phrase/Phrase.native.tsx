@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 
 import TextInput from 'components/TextInput';
+import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
@@ -20,7 +21,11 @@ const Phrase: FC<IPhraseSettings> = ({
   handleCopySeed,
 }) => {
   const seedClass = StyleSheet.flatten([styles.seed, isCopied ? styles.copied : {}, !checked ? styles.notAllowed : {}]);
-
+  const seedTextClass = StyleSheet.flatten([
+    styles.seedText,
+    isCopied ? styles.copiedText : {},
+    !checked ? styles.notAllowed : {},
+  ]);
   return (
     <View style={styles.phrase}>
       <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
@@ -36,15 +41,22 @@ const Phrase: FC<IPhraseSettings> = ({
           fullWidth
           inputRef={register}
           inputStyles={styles.phraseText}
-          onSubmitEditing={handleSubmit((data) => onSubmit(data))}
         />
+        <View style={styles.buttonContainer}>
+          <ButtonV3
+            size={BUTTON_SIZES_ENUM.SMALL}
+            type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+            title="Submit"
+            onPress={handleSubmit((data) => onSubmit(data))}
+          />
+        </View>
       </View>
       <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
         Click to copy your seed phrase:
       </TextV3.Description>
       <TouchableOpacity testID="phrase-recoveryPhrase" onPress={handleCopySeed}>
         <View style={seedClass}>
-          <TextV3.Body color={COLORS_ENUMS.DARK_GRAY} selectable extraStyles={styles.seedText}>
+          <TextV3.Body color={COLORS_ENUMS.DARK_GRAY} selectable extraStyles={seedTextClass}>
             {phrase}
           </TextV3.Body>
         </View>

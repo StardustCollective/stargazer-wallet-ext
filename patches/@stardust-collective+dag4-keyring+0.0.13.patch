@@ -12,7 +12,7 @@ index b042587..1c63516 100644
      generateSeedPhrase(): string;
      private fullUpdate;
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
-index 741aaeb..ed8098b 100644
+index 741aaeb..bed3476 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
 @@ -32,11 +32,11 @@ const single_account_wallet_1 = require("./wallets/single-account-wallet");
@@ -29,6 +29,33 @@ index 741aaeb..ed8098b 100644
          this.memStore = new obs_store_1.ObservableStore({
              isUnlocked: false,
              wallets: [],
+@@ -178,7 +178,7 @@ class KeyringManager extends safe_event_emitter_1.default {
+         return this.findAccount(msgParams.from).signMessage(msgParams.from, msgParams.data, opts);
+     }
+     async unlockWallets(password) {
+-        const encryptedVault = this.storage.get('vault');
++        const encryptedVault = await this.storage.get('vault');
+         if (!encryptedVault) {
+             //Support recovering wallets from migration
+             this.password = password;
+@@ -198,7 +198,7 @@ class KeyringManager extends safe_event_emitter_1.default {
+         if (filterByType) {
+             return this.wallets.filter(w => w.type === filterByType);
+         }
+-        return this.wallets;
++    return this.wallets;
+     }
+     getWalletById(id) {
+         const wallet = this.wallets.find(w => w.id === id);
+@@ -226,7 +226,7 @@ class KeyringManager extends safe_event_emitter_1.default {
+         this.password = password;
+         const sWallets = this.wallets.map(w => w.serialize());
+         const encryptedString = await this.encryptor.encrypt(this.password, { wallets: sWallets });
+-        this.storage.set('vault', encryptedString);
++        await this.storage.set('vault', encryptedString);
+     }
+     async _restoreWallet(wData) {
+         let chainWallet;
 diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts
 index b042587..1c63516 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts

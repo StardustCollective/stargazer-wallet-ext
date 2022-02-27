@@ -69,6 +69,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           }
         })
         .catch((err) => {
+          console.log('err in private key json file upload', err);
           showErrorAlert('Error: Invalid private key json file');
           setLoading(false);
         });
@@ -80,6 +81,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     }
 
     showErrorAlert('Error: A private key json file is not chosen');
+    return;
   };
 
   const renderWallet = (hwItem: HardwareWallet, index: number) => {
@@ -98,7 +100,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     );
   };
 
-  const _renderPrivateKey = () => {
+  const PrivateKey = React.memo(() => {
     return (
       <>
         <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.descriptionText}>
@@ -116,9 +118,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         />
       </>
     );
-  };
+  });
 
-  const _renderJSONInput = () => {
+  const JSONInput = React.memo(() => {
     return (
       <>
         <FileSelect id="importAccount-fileInput" onChange={setJsonFile} disabled={loading} />
@@ -137,7 +139,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         />
       </>
     );
-  };
+  });
 
   if (accountName) {
     return (
@@ -170,7 +172,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           </TextV3.Description>
           <View style={styles.inner}>
             <Select
-              id={'importAccount-importTypeSelect'}
+              id="importAccount-importTypeSelect"
               value={importType}
               options={[
                 { priv: 'Private key' },
@@ -184,9 +186,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           </View>
         </View>
         {importType === 'priv' ? (
-          _renderPrivateKey()
+          <PrivateKey />
         ) : importType === 'json' ? (
-          _renderJSONInput()
+          <JSONInput />
         ) : (
           <>
             {hardwareStep === 1 && (

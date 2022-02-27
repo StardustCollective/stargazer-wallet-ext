@@ -54,9 +54,6 @@ const AssetsPanelContainer = () => {
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const activeNFTAssets = useSelector(walletSelectors.selectNFTAssets);
 
-  console.log('!!!!!!!Active Wallet: ');
-  console.log(activeWallet);
-
   ///////////////////////
   // Callbacks
   ///////////////////////

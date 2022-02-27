@@ -45,14 +45,22 @@ const styles = StyleSheet.create({
     // cursor: 'no-drop',
   },
   copied: {
-    backgroundColor: COLORS.primary_light,
-    color: COLORS.primary,
+    backgroundColor: COLORS.purple_medium,
     borderWidth: 1,
     borderColor: COLORS.purple,
+  },
+  copiedText: {
+    color: COLORS.primary,
   },
   input: {
     borderWidth: 1,
     borderColor: COLORS.gray_200,
+  },
+  buttonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginTop: 12,
+    maxWidth: 144,
   },
 });
 

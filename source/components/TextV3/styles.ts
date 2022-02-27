@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     color: COLORS.grey_dark,
   },
   gray100Font: {
-    color: COLORS.grey_100_V1,
+    color: COLORS.gray_100,
   },
   label: {
     fontWeight: FONT_WEIGHTS.medium,

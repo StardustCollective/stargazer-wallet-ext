@@ -1,8 +1,5 @@
 import { StyleSheet } from 'react-native';
 
-///////////////////////
-// Variables
-///////////////////////
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
@@ -23,14 +20,9 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     fontSize: 12,
     fontWeight: '500',
-    '&:hover': {
-      textDecoration: 'underline',
-    },
   },
   termsAndPrivacy: {
     marginBottom: 12,
-    // display: 'block',
-    // marginTop: 12,
   },
   privacy: {
     marginTop: 24,

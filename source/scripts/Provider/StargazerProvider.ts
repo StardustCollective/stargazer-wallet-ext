@@ -2,11 +2,13 @@ import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import find from 'lodash/find';
-import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
-import { useController } from 'hooks/index';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 
+export type StargazerSignatureRequest = {
+  content: string;
+  metadata: Record<string, any>;
+};
 export class StargazerProvider {
   constructor() {}
 
@@ -27,6 +29,35 @@ export class StargazerProvider {
     const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && stargazerAsset.address;
+  }
+
+  getPublicKey() {
+    const { dapp, vault } = store.getState();
+    const { whitelist }: IDAppState = dapp;
+
+    const controller = useController();
+    const current = controller.dapp.getCurrent();
+    const origin = current && current.origin;
+
+    if (!origin) {
+      throw new Error('StargazerProvider.getPublicKey: No origin');
+    }
+
+    const _origin = origin.replace(/https?:\/\//, '');
+
+    const dappData = whitelist[_origin];
+
+    if (!dappData?.accounts?.Constellation) {
+      throw new Error('StargazerProvider.getPublicKey: Not whitelisted');
+    }
+
+    const { activeWallet }: IVaultState = vault;
+
+    if (!activeWallet) {
+      throw new Error('StargazerProvider.getPublicKey: No active wallet');
+    }
+
+    return dag4.account.keyTrio.publicKey;
   }
 
   getAccounts(): Array<string> {
@@ -81,13 +112,46 @@ export class StargazerProvider {
     return stargazerAsset && balances[AssetType.Constellation];
   }
 
+  normalizeSignatureRequest(encodedSignatureRequest: string): string {
+    let signatureRequest: StargazerSignatureRequest;
+    try {
+      signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
+    } catch (e) {
+      throw new Error('Unable to decode signatureRequest');
+    }
+
+    const test =
+      typeof signatureRequest === 'object' &&
+      signatureRequest !== null &&
+      typeof signatureRequest.content === 'string' &&
+      typeof signatureRequest.metadata === 'object' &&
+      signatureRequest.metadata !== null;
+
+    if (!test) {
+      throw new Error('SignatureRequest does not match spec');
+    }
+
+    let parsedMetadata: Record<string, any> = {};
+    for (const [key, value] of Object.entries(signatureRequest.metadata)) {
+      if (['boolean', 'number', 'string'].includes(typeof value) || value === null) {
+        parsedMetadata[key] = value;
+      }
+    }
+
+    signatureRequest.metadata = parsedMetadata;
+
+    const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
+
+    if (newEncodedSignatureRequest !== encodedSignatureRequest) {
+      throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
+    }
+
+    return newEncodedSignatureRequest;
+  }
+
   signMessage(msg: string) {
     const privateKeyHex = dag4.account.keyTrio.privateKey;
-    const privateKey = Buffer.from(privateKeyHex, 'hex');
-    const msgHash = hashPersonalMessage(Buffer.from(msg));
-
-    const { v, r, s } = ecsign(msgHash, privateKey);
-    const sig = this.remove0x(toRpcSig(v, r, s));
+    const sig = dag4.keyStore.sign(privateKeyHex, msg);
 
     return sig;
   }
@@ -150,10 +214,6 @@ export class StargazerProvider {
   //     transactions,
   //   };
   // }
-
-  private remove0x(hash: string) {
-    return hash.startsWith('0x') ? hash.slice(2) : hash;
-  }
 }
 
 // type AccountItem = {
