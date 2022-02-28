@@ -10,8 +10,8 @@ import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
 import ControllerUtils from './ControllerUtils';
 import AssetsController from './AssetsController';
-import { getEncryptor } from '../../../utils/keyringManagerUtils';
-// import DappController from 'scripts/Background/controllers/DAppController';
+import { getEncryptor } from 'utils/keyringManagerUtils';
+import { getDappController } from 'utils/controllersUtils';
 
 class WalletController implements IWalletController {
   account: AccountController;
@@ -145,9 +145,16 @@ class WalletController implements IWalletController {
     await this.account.txController.startMonitor();
   }
 
-  // async notifyWalletChange(accounts: string[]) {
-  //   return DappController().notifyAccountsChanged(accounts)
-  // }
+  async notifyWalletChange(accounts: string[]) {
+    const dappController = getDappController();
+
+    // No Dapp controller on mobile
+    if (!dappController) {
+      return;
+    }
+
+    return dappController.notifyAccountsChanged(accounts)
+  }
 
   async switchNetwork(network: KeyringNetwork, chainId: string) {
     store.dispatch(updateBalances({ pending: 'true' }));

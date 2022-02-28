@@ -7,3 +7,8 @@ export const getWalletController = () => {
 export const getAccountController = () => {
   return WalletController.account;
 }
+
+// There are no Dapp features on mobile 
+export const getDappController = () => {
+  return null;
+}
