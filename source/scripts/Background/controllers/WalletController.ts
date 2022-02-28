@@ -179,7 +179,7 @@ class WalletController implements IWalletController {
 
     if (activeAsset) {
       if (assets[activeAsset.id].network !== chainId) {
-        this.account.updateAccountActiveAsset(activeAsset);
+        await this.account.updateAccountActiveAsset(activeAsset);
       }
 
       await this.account.getLatestTxUpdate();
