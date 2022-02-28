@@ -283,8 +283,8 @@ export class AccountController implements IAccountController {
       );
     }
     const newTx: any = await this.ethClient.transfer(txOptions);
-    this.txController.removePendingTxHash(tx.txHash);
-    this.txController.addPendingTx({
+    await this.txController.removePendingTxHash(tx.txHash);
+    await this.txController.addPendingTx({
       txHash: newTx.hash,
       fromAddress: tx.fromAddress,
       toAddress: tx.toAddress,
@@ -510,7 +510,7 @@ export class AccountController implements IAccountController {
     return Number(ethers.utils.formatEther(fee).toString());
   }
 
-  getFullETHTxs() {
+  async getFullETHTxs() {
     return this.txController.getFullTxs();
   }
 }

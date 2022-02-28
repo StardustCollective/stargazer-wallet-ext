@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
@@ -37,6 +37,8 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const networkId =
     activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
 
+  const [transactions, setTransactions] = useState([]);
+
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
     if (!activeAsset) return;
@@ -65,12 +67,18 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     });
   }, []);
 
-  const fetchTxs = async () => {
-    if (activeAsset.type === AssetType.Constellation) {
-      return activeAsset.transactions;
-    }
-    return await accountController.getFullETHTxs().sort((a, b) => b.timestamp - a.timestamp);
-  };
+  useEffect(() => {
+    const fetchTxs = async () => {
+      if (activeAsset.type === AssetType.Constellation) {
+        return activeAsset.transactions;
+      }
+      return (await accountController.getFullETHTxs()).sort((a, b) => b.timestamp - a.timestamp);
+    };
+
+    fetchTxs().then((txns: any[]) => {
+      return setTransactions(txns);
+    });
+  }, [activeAsset]);
 
   const onSendClick = () => {
     linkTo('/send');
@@ -78,7 +86,6 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
 
   const BALANCE_TEXT = formatStringDecimal(formatNumber(balance, 16, 20), 4);
   const FIAT_AMOUNT = getFiatAmount(balance, balance >= 0.01 ? 2 : 4);
-  const TRANSACTIONS = fetchTxs();
 
   return (
     <Container>
@@ -87,7 +94,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
         activeAsset={activeAsset}
         balanceText={BALANCE_TEXT}
         fiatAmount={FIAT_AMOUNT}
-        transactions={TRANSACTIONS}
+        transactions={transactions}
         onSendClick={onSendClick}
         assets={assets}
       />

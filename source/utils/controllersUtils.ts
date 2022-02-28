@@ -11,3 +11,7 @@ export const getWalletController = () => {
 export const getAccountController = () => {
   return getController().wallet.account;
 }
+
+export const getDappController = () => {
+  return getController().dapp;
+}

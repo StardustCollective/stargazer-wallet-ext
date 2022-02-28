@@ -8,9 +8,9 @@ import { TEST_PRIVATE_KEY, ETHERSCAN_API_KEY, INFURA_CREDENTIAL } from 'utils/en
 import { IAssetInfoState } from '../../../state/assets/types';
 
 export interface IEthTransactionController {
-  addPendingTx: (tx: IETHPendingTx) => boolean;
-  startMonitor: () => void;
-  getFullTxs: () => any[];
+  addPendingTx: (tx: IETHPendingTx) => Promise<boolean>;
+  startMonitor: () => Promise<void>;
+  getFullTxs: () => Promise<any[]>;
 }
 
 interface IPendingData {
@@ -80,18 +80,18 @@ export class EthTransactionController implements IEthTransactionController {
     return true;
   }
 
-  removePendingTxHash(txHash: string) {
-    const pendingData = this._getPendingData();
+  async removePendingTxHash(txHash: string) {
+    const pendingData = await this._getPendingData();
 
     if (pendingData[txHash]) {
       delete pendingData[txHash];
-      localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
+      await localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
       window.controller.wallet.account.getLatestTxUpdate();
     }
   }
 
-  getFullTxs() {
-    const pendingData = this._getPendingData();
+  async getFullTxs() {
+    const pendingData = await this._getPendingData();
     const { activeAsset, activeNetwork }: IVaultState = store.getState().vault;
 
     const filteredData = Object.values(pendingData).filter(
@@ -112,7 +112,7 @@ export class EthTransactionController implements IEthTransactionController {
           this._transactionListeners[pendingTx.txHash].onConfirmed();
         }
 
-        this.removePendingTxHash(pendingTx.txHash);
+        return this.removePendingTxHash(pendingTx.txHash);
       });
     });
   }
