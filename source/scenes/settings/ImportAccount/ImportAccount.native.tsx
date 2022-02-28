@@ -57,6 +57,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
             dag4.keyStore
               .decryptPrivateKey(json, data.password)
               .then((privKey: string) => {
+                console.log('handleImportPrivKey....', privKey);
                 handleImportPrivKey(privKey, data.label);
               })
               .catch(() => {
@@ -100,7 +101,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     );
   };
 
-  const PrivateKey = React.memo(() => {
+  const renderPrivateKey = () => {
     return (
       <>
         <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.descriptionText}>
@@ -118,9 +119,10 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         />
       </>
     );
-  });
+  };
 
-  const JSONInput = React.memo(() => {
+  const renderJSONInput = () => {
+    // do not memoize as this causes issues in JSON file select
     return (
       <>
         <FileSelect id="importAccount-fileInput" onChange={setJsonFile} disabled={loading} />
@@ -139,7 +141,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         />
       </>
     );
-  });
+  };
 
   if (accountName) {
     return (
@@ -186,9 +188,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           </View>
         </View>
         {importType === 'priv' ? (
-          <PrivateKey />
+          renderPrivateKey()
         ) : importType === 'json' ? (
-          <JSONInput />
+          renderJSONInput()
         ) : (
           <>
             {hardwareStep === 1 && (
