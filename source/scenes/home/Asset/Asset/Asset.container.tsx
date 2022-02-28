@@ -39,8 +39,6 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
 
   const [transactions, setTransactions] = useState([]);
 
-  
-
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
     if (!activeAsset) return;
@@ -78,7 +76,6 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     };
 
     fetchTxs().then((txns: any[]) => {
-      console.log('fetched txns =========>>>>>>>', txns);
       return setTransactions(txns);
     });
   }, [activeAsset]);
