@@ -9,7 +9,7 @@ import clsx from 'clsx';
 // Components
 ///////////////////////////
 
-import TextV3 from 'components/TextV3';
+import TextV3, {TEXT_ALIGN_ENUM} from 'components/TextV3';
 import Button from 'components/Button';
 
 ///////////////////////////
@@ -33,6 +33,7 @@ type ICardLayoutProps = {
   stepLabel: string;
   originDescriptionLabel: string;
   headerLabel: string;
+  footerLabel?: string;
   captionLabel: string;
   negativeButtonLabel: string,
   onNegativeButtonClick: () => void,
@@ -52,6 +53,7 @@ const CardLayout: FC<ICardLayoutProps> = ({
   stepLabel,
   originDescriptionLabel,
   headerLabel,
+  footerLabel='Only connect with sites you trust.',
   captionLabel,
   negativeButtonLabel,
   onNegativeButtonClick,
@@ -105,8 +107,8 @@ const CardLayout: FC<ICardLayoutProps> = ({
               {children}
             </div>
             <div className={styles.cardFooter}>
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                Only connect with sites you trust.
+              <TextV3.Caption color={COLORS_ENUMS.BLACK} align={TEXT_ALIGN_ENUM.CENTER}>
+                {footerLabel}
               </TextV3.Caption>
             </div>
           </div>
