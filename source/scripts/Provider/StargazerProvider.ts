@@ -4,7 +4,6 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import find from 'lodash/find';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
-import { useController } from 'hooks/index';
 
 export type StargazerSignatureRequest = {
   content: string;
@@ -27,7 +26,7 @@ export class StargazerProvider {
   }
 
   getAddress() {
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && stargazerAsset.address;
   }
@@ -108,7 +107,7 @@ export class StargazerProvider {
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && balances[AssetType.Constellation];
   }
@@ -190,12 +189,12 @@ export class StargazerProvider {
 
       await store.dispatch(createAccount(account));
     }
-  }*/
+  } */
 
   // async postTransactionResult (hash: string) {
   //   console.log('postTransactionResult.addToMemPoolMonitor', hash);
   //
-  //   dag4.monitor.addToMemPoolMonitor(hash);
+  //   await dag4.monitor.addToMemPoolMonitor(hash);
   //
   //   setTimeout(() => {
   //     console.log('postTransactionResult.watchMemPool');

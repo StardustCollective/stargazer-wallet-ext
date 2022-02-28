@@ -45,9 +45,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
       return;
     }
 
-    const tokenList = Object.values(tokenState).filter((token) => {
-      return token.type === AssetType.ERC20;
-    });
+    const tokenList = Object.values(tokenState).filter((token) => token.type === AssetType.ERC20);
 
     try {
       let data;
@@ -116,6 +114,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
       store.dispatch(resetNFTState());
     } catch (err) {
       // NOOP
+      console.log('fetchNFTBatch err: ', err);
     }
 
     const groupedNFTs = nfts.reduce((carry: Record<string, any>, nft: any) => {

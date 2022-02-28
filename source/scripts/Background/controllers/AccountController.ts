@@ -26,6 +26,7 @@ import { ETHNetwork, ITransactionInfo, IETHPendingTx } from '../../types';
 import { EthTransactionController } from './EthTransactionController';
 
 import { IAccountController } from './IAccountController';
+import { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 
 // limit number of txs
@@ -43,9 +44,12 @@ export class AccountController implements IAccountController {
 
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
 
-  constructor(private keyringManager: Readonly<KeyringManager>) {
+  assetsController: IAssetsController;
+
+  constructor(private keyringManager: Readonly<KeyringManager>, assetsController: IAssetsController) {
     this.txController = new EthTransactionController();
     this.assetsBalanceMonitor = new AssetsBalanceMonitor();
+    this.assetsController = assetsController;
   }
 
   async removeWallet(id: string, pwd: string) {
@@ -136,7 +140,7 @@ export class AccountController implements IAccountController {
     const resolveTokens = accountTokens.map(async (address) => {
       if (!assetInfoMap[address]) {
         try {
-          await window.controller.assets.fetchTokenInfo(address);
+          await this.assetsController.fetchTokenInfo(address);
         } catch (err: any) {
           // NOOP
         }
@@ -146,15 +150,13 @@ export class AccountController implements IAccountController {
 
     const tokens = (await Promise.all(resolveTokens)).filter((token) => !!token);
 
-    const assetList: IAssetState[] = tokens.map((t) => {
-      return {
-        id: t.address,
-        type: AssetType.ERC20,
-        label: t.label,
-        contractAddress: t.address,
-        address,
-      };
-    });
+    const assetList: IAssetState[] = tokens.map((t) => ({
+      id: t.address,
+      type: AssetType.ERC20,
+      label: t.label,
+      contractAddress: t.address,
+      address,
+    }));
 
     return assetList;
   }
@@ -162,9 +164,8 @@ export class AccountController implements IAccountController {
   async buildAccountERC721Tokens(address: string) {
     let nfts: any;
     try {
-      nfts = await window.controller.assets.fetchWalletNFTInfo(address);
+      nfts = await this.assetsController.fetchWalletNFTInfo(address);
     } catch (err: any) {
-      console.log('failed to fetch NFTs: ', err);
       return [];
     }
 
@@ -172,15 +173,13 @@ export class AccountController implements IAccountController {
       return [];
     }
 
-    const assetList: IAssetState[] = nfts.map((nft: any) => {
-      return {
-        id: nft.id,
-        type: nft.type,
-        label: nft.name,
-        contractAddress: nft.address,
-        address,
-      };
-    });
+    const assetList: IAssetState[] = nfts.map((nft: any) => ({
+      id: nft.id,
+      type: nft.type,
+      label: nft.name,
+      contractAddress: nft.address,
+      address,
+    }));
 
     return assetList;
   }
@@ -323,7 +322,7 @@ export class AccountController implements IAccountController {
           Number(this.tempTx.amount),
           this.tempTx.fee
         );
-        const tx = dag4.monitor.addToMemPoolMonitor(pendingTx);
+        const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
         store.dispatch(
           updateTransactions({
             txs: [tx, ...activeAsset.transactions],
@@ -440,9 +439,9 @@ export class AccountController implements IAccountController {
 
   async getLatestGasPrices() {
     const gasPrices = await this.ethClient.estimateGasPrices();
-    const results = Object.values(gasPrices).map((gas) => {
-      return Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei'));
-    });
+    const results = Object.values(gasPrices).map((gas) =>
+      Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei'))
+    );
     // if (results[0] === results[1]) {
     //   results[1] = Math.round((results[0] + results[2]) / 2);
     // }
