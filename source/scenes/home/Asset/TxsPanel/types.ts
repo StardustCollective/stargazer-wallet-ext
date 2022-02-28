@@ -1,5 +1,4 @@
-import { IAssetInfoState } from 'state/assets/types';
-import { IAssetState, Transaction } from 'state/vault/types';
+import { Transaction } from 'state/vault/types';
 
 export type ITxsPanel = {
   address: string;
@@ -13,6 +12,7 @@ export type ITxItemSettings = {
 
 export default interface ITxPanelSettings {
   transactions: Transaction[];
-  renderTxItem: (transaction: Transaction, index: number) => void;
+  renderTxItem: (transaction: Transaction, index: number, onItemClick: (tx: string) => boolean) => void;
   transactionDescription: string;
+  getTxLink: (txHash: string) => string;
 }

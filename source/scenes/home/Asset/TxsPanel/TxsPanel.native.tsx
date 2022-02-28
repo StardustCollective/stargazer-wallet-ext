@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View } from 'react-native';
+import { View, ScrollView, Linking } from 'react-native';
 
 import { Transaction } from 'state/vault/types';
 
@@ -10,18 +10,32 @@ import styles from './styles';
 
 import ITxPanelSettings from './types';
 
-const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription }) => {
+const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription, getTxLink }) => {
+  const handleOpenExplorer = (txHash: string): boolean => {
+    // dont open if no link
+    if (!txHash) {
+      return true;
+    }
+
+    const txLink = getTxLink(txHash);
+    Linking.openURL(txLink);
+
+    return true;
+  };
+
   return (
     <View style={styles.activity}>
-      {transactions.length ? (
-        transactions.map((tx: Transaction, idx: number) => {
-          return renderTxItem(tx, idx);
-        })
-      ) : (
-        <View style={styles.noTx}>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK}>{transactionDescription}</TextV3.Caption>
-        </View>
-      )}
+      <ScrollView>
+        {transactions.length ? (
+          transactions.map((tx: Transaction, idx: number) => {
+            return renderTxItem(tx, idx, handleOpenExplorer);
+          })
+        ) : (
+          <View style={styles.noTx}>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>{transactionDescription}</TextV3.Caption>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };

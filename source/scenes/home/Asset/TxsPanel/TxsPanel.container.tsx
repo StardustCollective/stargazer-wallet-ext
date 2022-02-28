@@ -30,19 +30,17 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     [transactions]
   );
 
-  const handleOpenExplorer = (tx?: string): boolean => {
+  const getTxLink = (tx?: string): string | null => {
     // If we don't have a tx ID then we can't link block explorer
     if (!tx) {
-      return true;
+      return null;
     }
 
     const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
-    window.open(isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`, '_blank');
-
-    return true;
+    return isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`;
   };
 
-  const renderTxItem = (tx: Transaction, idx: number) => {
+  const renderTxItem = (tx: Transaction, idx: number, onItemClick: (txhash: string) => void) => {
     const isETHPending = isETH && tx.assetId === activeAsset.id;
     const isReceived =
       (!isETH && tx.receiver === address) ||
@@ -65,7 +63,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     return (
       <TxItem
         key={idx}
-        onItemClick={handleOpenExplorer}
+        onItemClick={onItemClick}
         tx={tx}
         isETH={isETH}
         isSelf={isSelf}
@@ -86,6 +84,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
 
   return (
     <TxsPanel
+      getTxLink={getTxLink}
       transactions={transactions}
       renderTxItem={renderTxItem}
       transactionDescription={TRANSACTION_DESCRIPTION}
