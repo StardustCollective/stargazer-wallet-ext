@@ -54,7 +54,7 @@ type ITxItem = {
   isReceived: boolean;
   isETH: boolean;
   isGasSettingsVisible: boolean;
-  onItemClick: (hash: string) => void;
+  getLinkUrl: (hash: string) => string;
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
@@ -77,7 +77,7 @@ const TxItem: FC<ITxItem> = ({
   txTypeLabel,
   amount,
   fiatAmount,
-  onItemClick,
+  getLinkUrl,
   receivedOrSentText,
   formattedDistanceDate,
   renderGasSettings,
@@ -120,7 +120,13 @@ const TxItem: FC<ITxItem> = ({
   return (
     <div
       onClick={() => {
-        onItemClick(tx.hash);
+        const url = getLinkUrl(tx.hash);
+
+        if (!url) {
+          return;
+        }
+
+        window.open(url, '_blank');
       }}
       className={styles.txItem}
     >
