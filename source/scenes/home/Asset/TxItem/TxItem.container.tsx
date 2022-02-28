@@ -48,7 +48,7 @@ const TxItemContainer: FC<ITxItem> = ({
     estimateGasFee(value as number);
   };
 
-  const onSpeedUpClick = (gas: number) => {
+  const onSpeedUpClick = async (gas: number) => {
     const txConfig: ITransactionInfo = {
       fromAddress: tx.fromAddress,
       toAddress: tx.toAddress,
@@ -64,7 +64,7 @@ const TxItemContainer: FC<ITxItem> = ({
 
     accountController.updateTempTx(txConfig);
     accountController.confirmContractTempTx(activeAsset);
-    accountController.txController.removePendingTxHash(tx.txHash);
+    await accountController.txController.removePendingTxHash(tx.txHash);
   };
 
   const receivedOrSentText = `${isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'} ${currencySymbol}`;
