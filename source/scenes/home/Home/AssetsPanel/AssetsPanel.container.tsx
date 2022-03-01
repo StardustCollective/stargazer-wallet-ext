@@ -37,7 +37,7 @@ import { getAccountController } from 'utils/controllersUtils';
 
 import { RootState } from 'state/store';
 import IVaultState, { IAssetState } from 'state/vault/types';
-import { INFTInfoState, INFTListState } from 'state/nfts/types';
+import { INFTListState } from 'state/nfts/types';
 import IAssetListState from 'state/assets/types';
 
 ///////////////////////
@@ -45,8 +45,7 @@ import IAssetListState from 'state/assets/types';
 ///////////////////////
 
 const AssetsPanelContainer = () => {
-
-   const accountController = getAccountController();
+  const accountController = getAccountController();
 
   ///////////////////////
   // Hooks
@@ -68,28 +67,20 @@ const AssetsPanelContainer = () => {
     linkTo('/asset');
   };
 
-  const handleSelectNFT = (nft: INFTInfoState) => {
-    window.open(nft.link, '_blank');
-  };
-
   ///////////////////////
   // Render
   ///////////////////////
 
   return (
-    <>
-      <AssetsPanel
-        activeNetworkAssets={activeNetworkAssets}
-        assets={assets}
-        activeNFTAssets={activeNFTAssets}
-        nfts={nfts}
-        activeWallet={activeWallet}
-        handleSelectAsset={handleSelectAsset}
-        handleSelectNFT={handleSelectNFT}
-      />
-    </>
+    <AssetsPanel
+      activeNetworkAssets={activeNetworkAssets}
+      assets={assets}
+      activeNFTAssets={activeNFTAssets}
+      nfts={nfts}
+      activeWallet={activeWallet}
+      handleSelectAsset={handleSelectAsset}
+    />
   );
-
-}
+};
 
 export default AssetsPanelContainer;

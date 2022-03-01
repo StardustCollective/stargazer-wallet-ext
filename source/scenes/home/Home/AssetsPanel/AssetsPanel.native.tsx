@@ -3,7 +3,7 @@
 ///////////////////////
 
 import React, { FC } from 'react';
-import { View } from 'react-native';
+import { View, Linking } from 'react-native';
 
 ///////////////////////
 // Components
@@ -15,7 +15,7 @@ import TextV3 from 'components/TextV3';
 ///////////////////////
 // Types
 ///////////////////////
-
+import { INFTInfoState } from 'state/nfts/types';
 import IAssetState from './types';
 
 ///////////////////////
@@ -35,9 +35,12 @@ const AssetsPanel: FC<IAssetState> = ({
   assets,
   activeNFTAssets,
   nfts,
-  handleSelectNFT,
   activeWallet,
 }) => {
+  const handleSelectNFT = (nft: INFTInfoState) => {
+    Linking.openURL(nft.link);
+  };
+
   const renderAssetList = () => {
     ///////////////////////
     // Render

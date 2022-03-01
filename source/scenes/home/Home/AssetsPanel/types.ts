@@ -1,6 +1,6 @@
 import { IAssetState, IWalletState } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
-import { INFTInfoState, INFTListState } from 'state/nfts/types';
+import { INFTListState } from 'state/nfts/types';
 
 export default interface IAssetPanel {
   activeNetworkAssets: IAssetState[];
@@ -8,6 +8,5 @@ export default interface IAssetPanel {
   assets: IAssetListState;
   activeNFTAssets: IAssetState[];
   nfts: INFTListState;
-  handleSelectNFT: (nft: INFTInfoState ) => void;
   activeWallet: IWalletState;
 }
