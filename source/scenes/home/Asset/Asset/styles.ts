@@ -93,8 +93,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light,
     width: '100%',
     height: 2000,
-    // borderRadiusVertical: 8,
-    // borderRadiusHorizontal: 0,
     display: 'flex',
     flexDirection: 'column',
   },
@@ -102,14 +100,12 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   stargazer: {
-    userSelect: 'none',
     bottom: 0,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     opacity: 0.6,
-    // position: 'sticky',
   },
   noTx: {
     display: 'flex',
@@ -121,7 +117,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light,
     borderWidth: 1,
     borderBottomColor: COLORS.gray_100,
-    // position: 'sticky',
     top: 0,
     justifyContent: 'center',
     alignItems: 'center',
@@ -239,9 +234,7 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 16,
   },
-  recvIcon: {
-    transform: 'scaleX(-1)',
-  },
+  recvIcon: {},
   linkIcon: {
     width: 24,
     height: 24,

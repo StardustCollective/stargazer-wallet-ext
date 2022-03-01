@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   logo: {
     marginTop: 56,
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   started: {
     marginBottom: 56,
-  }
+  },
 });
 
 export default styles;

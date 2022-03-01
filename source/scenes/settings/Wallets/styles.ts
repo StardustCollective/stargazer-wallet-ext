@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     height: 468,
     paddingBottom: 24,
-    overflow: 'scroll',
     backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
   },
@@ -26,7 +25,6 @@ const styles = StyleSheet.create({
   walletWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    // justifyContent: 'flex-start',
     justifyContent: 'space-between',
     paddingTop: 0,
     paddingBottom: 0,
