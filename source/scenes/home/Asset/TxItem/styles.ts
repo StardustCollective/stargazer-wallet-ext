@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'column',
     justifyContent: 'center',
-    height: 24,
+    height: 36,
     backgroundColor: COLORS.grey_50,
   },
   groupBarText: {
