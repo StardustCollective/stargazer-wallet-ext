@@ -163,7 +163,7 @@ const SendContainer: FC<IWalletSend> = ({
 
   const tempTx = accountController.getTempTx();
 
-  const { control, handleSubmit, register, errors } = useForm({
+  const { setValue, control, handleSubmit, register, errors } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
       amount: !isExternalRequest ? yup.number().moreThan(0).required('Error: Invalid DAG Amount') : null,
@@ -346,6 +346,7 @@ const SendContainer: FC<IWalletSend> = ({
   };
 
   const handleSelectContact = (val: string) => {
+    setValue('address', val);
     setAddress(val);
     setToEthAddress(val);
     setModalOpen(false);
