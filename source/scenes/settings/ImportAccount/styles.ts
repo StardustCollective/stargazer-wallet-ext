@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   row: {
     height: 33,
   },
-  column_expand: {
+  expand: {
     color: COLORS.gray_light_100,
   },
   svg: {
