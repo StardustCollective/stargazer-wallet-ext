@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
+import { INFTInfoState } from 'state/nfts/types';
 import IAssetPanel from './types';
 import styles from './AssetsPanel.scss';
 
@@ -11,9 +12,11 @@ const AssetsPanel: FC<IAssetPanel> = ({
   assets,
   activeNFTAssets,
   nfts,
-  handleSelectNFT,
-  activeWallet
+  activeWallet,
 }) => {
+  const handleSelectNFT = (nft: INFTInfoState) => {
+    window.open(nft.link, '_blank');
+  };
 
   const renderAssetList = () => {
     return (

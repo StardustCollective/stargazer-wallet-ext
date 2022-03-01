@@ -1,10 +1,9 @@
-
 ///////////////////////
 // Modules
 ///////////////////////
 
 import React, { FC } from 'react';
-import { View } from 'react-native';
+import { View, Linking } from 'react-native';
 
 ///////////////////////
 // Components
@@ -16,7 +15,7 @@ import TextV3 from 'components/TextV3';
 ///////////////////////
 // Types
 ///////////////////////
-
+import { INFTInfoState } from 'state/nfts/types';
 import IAssetState from './types';
 
 ///////////////////////
@@ -36,12 +35,13 @@ const AssetsPanel: FC<IAssetState> = ({
   assets,
   activeNFTAssets,
   nfts,
-  handleSelectNFT,
-  activeWallet
+  activeWallet,
 }) => {
+  const handleSelectNFT = (nft: INFTInfoState) => {
+    Linking.openURL(nft.link);
+  };
 
   const renderAssetList = () => {
-
     ///////////////////////
     // Render
     ///////////////////////
@@ -80,11 +80,9 @@ const AssetsPanel: FC<IAssetState> = ({
         {Object.keys(activeWallet.assets).length ? (
           <>{renderAssetList()}</>
         ) : (
-          <>
-            <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-              You have no assets. Please add new Asset by Click + icon.
-            </TextV3.Caption>
-          </>
+          <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
+            You have no assets. Please add new Asset by Click + icon.
+          </TextV3.Caption>
         )}
       </View>
     </View>
