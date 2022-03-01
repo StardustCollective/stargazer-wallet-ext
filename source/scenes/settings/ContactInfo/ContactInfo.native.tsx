@@ -4,7 +4,7 @@ import { Avatar } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
 
 import Button from 'components/Button';
-import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import ButtonV3, { BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import Tooltip from 'components/Tooltip';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 
