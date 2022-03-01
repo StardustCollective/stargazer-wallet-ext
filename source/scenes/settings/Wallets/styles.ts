@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
     color: COLORS.gray_100,
     width: 204,
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
     fontFamily: FONTS.rubik,
   },
   iconWrapper: {

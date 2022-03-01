@@ -5,13 +5,13 @@ const styles = StyleSheet.create({
   activity: {
     backgroundColor: COLORS.gray_light,
     width: '100%',
-    height: 2000,
     borderTopRightRadius: 8,
     borderTopStartRadius: 8,
     borderBottomEndRadius: 0,
     borderBottomStartRadius: 0,
     display: 'flex',
     flexDirection: 'column',
+    flexGrow: 1,
   },
   spinner: {
     color: COLORS.primary,
