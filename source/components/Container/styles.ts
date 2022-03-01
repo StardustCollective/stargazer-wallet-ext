@@ -7,8 +7,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   safeArea: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });
 
 export default styles;

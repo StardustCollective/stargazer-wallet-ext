@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: COLORS.gray_dark,
-    cursor: 'initial',
   },
 });
 

@@ -8,12 +8,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 0,
     height: 36,
-    '&::before': {
-      borderBottom: 'none !important',
-    },
-    '&::after': {
-      borderBottom: 'none !important',
-    },
   },
   dropDownBox: {
     borderColor: COLORS.gray_200,

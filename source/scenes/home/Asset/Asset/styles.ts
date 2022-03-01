@@ -157,12 +157,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     alignItems: 'center',
     justifyContent: 'space-between',
-    // transition: 'all 0.3s',
-    // cursor: 'pointer',
   },
   hover: {
     backgroundColor: `rgab(${COLORS.gray_light_100}, 0.9)`,
-    // backdropFilter: 'blur(10)',
   },
   hoverLinkIcon: {
     backgroundColor: COLORS.gray_200,
