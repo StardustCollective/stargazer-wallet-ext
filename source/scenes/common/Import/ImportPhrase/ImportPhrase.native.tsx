@@ -30,8 +30,8 @@ const ImportPhrase: FC<IImportPhrase> = ({
       <TextInput
         name="phrase"
         type="text"
-        autoCapitalize='none'
-        returnKeyType={'done'}
+        autoCapitalize="none"
+        returnKeyType="done"
         autoCorrect={false} 
         control={control}
         inputContainerStyle={styles.phraseInput}
