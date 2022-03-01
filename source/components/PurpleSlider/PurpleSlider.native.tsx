@@ -5,7 +5,6 @@ import { Slider, Text, Icon } from 'react-native-elements';
 import styles from './styles';
 
 type IPurpleSliderProps = {
-  defaultValue: number;
   max: number;
   min: number;
   onChange: (_event: ChangeEvent<{}>, value: number | number[]) => void;
@@ -18,14 +17,13 @@ const PurpleSlider: FC<IPurpleSliderProps> = ({
   min,
   max,
   value,
-  defaultValue,
   step,
 }) => {
   return (
     <View style={[styles.contentView]}>
       <Slider
         value={value}
-        onValueChange={onChange}
+        onValueChange={(val) => onChange({} as ChangeEvent, val)}
         maximumValue={max}
         minimumValue={min}
         step={step}

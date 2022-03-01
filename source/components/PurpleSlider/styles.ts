@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     border: '2px solid white',
     backgroundColor: '#2B1D52',
     marginTop: -8,
-    marginLeft: -12,
     '&:focus, &:hover, &$active': {
       boxShadow: 'inherit',
     },

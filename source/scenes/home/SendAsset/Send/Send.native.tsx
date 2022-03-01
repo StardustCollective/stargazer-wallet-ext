@@ -173,15 +173,13 @@ const Send = ({
                   </View>
                 </View>
                 <View style={styles.gasSettingsSlider}>
-                  {/* <PurpleSlider 
-                onChange={handleGasPriceChange}
-                // min={gasPrices[0]}
-                // max={gasPrices[2]}
-                // value={gasPrice}
-                // style={{ width: 120 }}
-                // trackStyle={{ width: 100 }}
-                step={1}
-              /> */}
+                  <PurpleSlider
+                    onChange={handleGasPriceChange}
+                    min={gasPrices[0]}
+                    max={gasPrices[2]}
+                    value={gasPrice}
+                    step={1}
+                  />
                 </View>
               </View>
               <View style={styles.gasSettingsEstimate}>
