@@ -10,25 +10,13 @@ import styles from './styles';
 
 import ITxPanelSettings from './types';
 
-const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription, getTxLink }) => {
-  const handleOpenExplorer = (txHash: string): boolean => {
-    // dont open if no link
-    if (!txHash) {
-      return true;
-    }
-
-    const txLink = getTxLink(txHash);
-    Linking.openURL(txLink);
-
-    return true;
-  };
-
+const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription }) => {
   return (
     <View style={styles.activity}>
       <ScrollView>
         {transactions.length ? (
           transactions.map((tx: Transaction, idx: number) => {
-            return renderTxItem(tx, idx, handleOpenExplorer);
+            return renderTxItem(tx, idx);
           })
         ) : (
           <View style={styles.noTx}>

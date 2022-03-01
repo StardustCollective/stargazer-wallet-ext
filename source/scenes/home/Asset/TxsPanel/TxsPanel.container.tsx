@@ -40,7 +40,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     return isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`;
   };
 
-  const renderTxItem = (tx: Transaction, idx: number, onItemClick: (txhash: string) => void) => {
+  const renderTxItem = (tx: Transaction, idx: number) => {
     const isETHPending = isETH && tx.assetId === activeAsset.id;
     const isReceived =
       (!isETH && tx.receiver === address) ||
@@ -63,7 +63,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     return (
       <TxItem
         key={idx}
-        onItemClick={onItemClick}
+        getLinkUrl={getTxLink}
         tx={tx}
         isETH={isETH}
         isSelf={isSelf}
@@ -84,7 +84,6 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
 
   return (
     <TxsPanel
-      getTxLink={getTxLink}
       transactions={transactions}
       renderTxItem={renderTxItem}
       transactionDescription={TRANSACTION_DESCRIPTION}

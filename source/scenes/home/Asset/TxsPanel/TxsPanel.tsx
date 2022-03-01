@@ -7,24 +7,13 @@ import styles from './Asset.scss';
 
 import ITxPanelSettings from './types';
 
-const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription, getTxLink }) => {
-  const handleOpenExplorer = (txHash: string): boolean => {
-    if (!txHash) {
-      return true;
-    }
-
-    const txLink = getTxLink(txHash);
-    window.open(txLink, '_blank');
-
-    return true;
-  };
-
+const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription }) => {
   return (
     <div className={styles.activity}>
       {transactions.length ? (
         <div>
           {transactions.map((tx: Transaction, idx: number) => {
-            return renderTxItem(tx, idx, handleOpenExplorer);
+            return renderTxItem(tx, idx);
           })}
         </div>
       ) : (
