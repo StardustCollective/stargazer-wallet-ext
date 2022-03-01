@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS, SHADOWS } from 'assets/styles/_variables';
+import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   assetIcon: {
@@ -10,14 +10,13 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 1,
     borderColor: COLORS.gray_100,
-    overflow: 'hidden',
   },
   imageIcon: {
     width: 30,
     height: 30,
   },
   componentIcon: {
-    width: 40, 
+    width: 40,
     height: 40,
   },
   assetBalance: {
@@ -29,12 +28,11 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   green: {
-    color: COLORS.green
+    color: COLORS.green,
   },
   red: {
-    color: COLORS.green
+    color: COLORS.green,
   },
 });
-
 
 export default styles;

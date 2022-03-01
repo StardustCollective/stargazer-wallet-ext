@@ -10,15 +10,14 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   primary: {
-    color: COLORS.primary
+    color: COLORS.primary,
   },
   secondary: {
-    color: COLORS.white
+    color: COLORS.white,
   },
   monotoneOne: {
-    color: COLORS.monotone_1
-  }
-
+    color: COLORS.monotone_1,
+  },
 });
 
 export default styles;

@@ -93,8 +93,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light,
     width: '100%',
     height: 2000,
-    // borderRadiusVertical: 8,
-    // borderRadiusHorizontal: 0,
     display: 'flex',
     flexDirection: 'column',
   },
@@ -102,14 +100,12 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   stargazer: {
-    userSelect: 'none',
     bottom: 0,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     opacity: 0.6,
-    // position: 'sticky',
   },
   noTx: {
     display: 'flex',
@@ -121,7 +117,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light,
     borderWidth: 1,
     borderBottomColor: COLORS.gray_100,
-    // position: 'sticky',
     top: 0,
     justifyContent: 'center',
     alignItems: 'center',
@@ -157,12 +152,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     alignItems: 'center',
     justifyContent: 'space-between',
-    // transition: 'all 0.3s',
-    // cursor: 'pointer',
   },
   hover: {
     backgroundColor: `rgab(${COLORS.gray_light_100}, 0.9)`,
-    // backdropFilter: 'blur(10)',
   },
   hoverLinkIcon: {
     backgroundColor: COLORS.gray_200,
@@ -242,9 +234,7 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 16,
   },
-  recvIcon: {
-    transform: 'scaleX(-1)',
-  },
+  recvIcon: {},
   linkIcon: {
     width: 24,
     height: 24,

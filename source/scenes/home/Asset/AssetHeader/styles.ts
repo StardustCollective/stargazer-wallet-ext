@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS, FONT_WEIGHTS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   fullselect: {
@@ -62,9 +62,7 @@ const styles = StyleSheet.create({
   options: {
     margin: 0,
     padding: 0,
-    // listStyle: none,
     transition: 'all 300ms',
-    // transform: 'scaleY(0)',
     transformOrigin: 'top',
     position: 'absolute',
     width: '100%',
