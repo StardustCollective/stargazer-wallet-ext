@@ -6,12 +6,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
+    marginBottom: 0,
   },
   content: {
-    overflow: 'scroll',
     margin: 16,
-  }
-
+    marginBottom: 8,
+  },
 });
 
 export default styles;
