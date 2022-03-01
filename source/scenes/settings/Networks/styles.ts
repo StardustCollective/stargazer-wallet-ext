@@ -11,18 +11,15 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     paddingRight: 24,
     paddingLeft: 24,
-    boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
   },
   label: {
     marginTop: 24,
-    boxSizing: 'border-box',
     marginBottom: 12,
     fontSize: 12,
     fontWeight: '500',
     color: COLORS.gray_dark,
-    cursor: 'initial',
   },
 });
 

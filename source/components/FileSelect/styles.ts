@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
   },
   button: {
     ...buttonStyles,
-    '&:hover': buttonStyles,
   },
   chosen: {
     color: COLORS.purple,

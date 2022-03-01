@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS, SHADOWS } from 'assets/styles/_variables';
+import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   container: {
@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
   },
   tooltip: {
     opacity: 0.95,
-    // boxShadow: SHADOWS.shadow_tooltip,
     // fontFamily: FONTS.quicksand,
     color: COLORS.white,
     borderRadius: 3,

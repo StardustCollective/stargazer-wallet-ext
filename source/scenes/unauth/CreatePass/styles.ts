@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
     letterSpacing: 0.03,
-    // marginTop: 12,
     width: '100%',
     color: COLORS.gray_100,
   },
@@ -38,7 +37,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     letterSpacing: 0.03,
     width: '100%',
-    // marginTop: 12,
     color: COLORS.red,
   },
   buttonContainer: {

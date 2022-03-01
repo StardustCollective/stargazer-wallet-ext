@@ -4,6 +4,7 @@ import { Avatar } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
 
 import Button from 'components/Button';
+import ButtonV3, { BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import Tooltip from 'components/Tooltip';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 
@@ -90,19 +91,19 @@ const ContactInfo: FC<IContactInfoSettings> = ({
         <Text style={styles.text}>{contact?.memo || ''}</Text>
       </View>
       <View style={styles.actions}>
-        <Button
-          type="secondary"
+        <ButtonV3
+          type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
           variant={styles.delete}
-          onClick={handleDelete}
+          onPress={handleDelete}
           title="Delete"
-          titleStyle={styles.deleteTitleStyle}
+          extraTitleStyles={styles.deleteTitleStyle}
         />
-        <Button
-          type="button"
+        <ButtonV3
+          type={BUTTON_TYPES_ENUM.PRIMARY}
           variant={styles.edit}
-          onClick={handleEdit}
+          onPress={handleEdit}
           title="Edit"
-          titleStyle={styles.editTitleStyle}
+          extraTitleStyles={styles.editTitleStyle}
         />
       </View>
     </View>
