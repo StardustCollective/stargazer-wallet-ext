@@ -3,7 +3,7 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { View } from 'react-native';
+import { View, KeyboardAvoidingView, Platform } from 'react-native';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import Link from 'components/Link';
@@ -41,7 +41,7 @@ import ILogin from './types';
 
 const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid }) => {
   return (
-    <View style={styles.layout}>
+    <KeyboardAvoidingView style={styles.layout} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
       <Logo width={LOGO_IMAGE_SIZE} height={LOGO_IMAGE_SIZE} style={styles.logo} />
       <View style={styles.input}>
@@ -69,7 +69,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
         })}
       />
       <Link color="monotoneOne" onPress={importClicked} title="Reset and restore from recovery seed phrase" />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
