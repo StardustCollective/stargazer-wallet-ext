@@ -28,7 +28,7 @@ const TxItemContainer: FC<ITxItem> = ({
   currencySymbol,
   amount,
   fiatAmount,
-  onItemClick,
+  getLinkUrl,
 }) => {
   const accountController = getAccountController();
   const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.1 : 0;
@@ -100,7 +100,7 @@ const TxItemContainer: FC<ITxItem> = ({
       currencySymbol={currencySymbol}
       amount={amount}
       fiatAmount={fiatAmount}
-      onItemClick={onItemClick}
+      getLinkUrl={getLinkUrl}
       receivedOrSentText={receivedOrSentText}
       formattedDistanceDate={formattedDistanceDate}
       renderGasSettings={renderGasSettings}

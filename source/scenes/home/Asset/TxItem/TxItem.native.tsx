@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Linking } from 'react-native';
 import { Text } from 'react-native';
 
 import * as Progress from 'react-native-progress';
@@ -13,6 +13,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
 
 import ITxItemSettings, { RenderIconProps } from './types';
+import { useLinking } from '@react-navigation/native';
 
 const RenderIcon: FC<RenderIconProps> = ({ tx, isETH }) => {
   const { checkpointBlock, assetId } = tx;
@@ -39,13 +40,22 @@ const TxItem: FC<ITxItemSettings> = ({
   txTypeLabel,
   amount,
   fiatAmount,
-  onItemClick,
+  getLinkUrl,
   receivedOrSentText,
   formattedDistanceDate,
   renderGasSettings,
 }) => {
   return (
-    <TouchableOpacity onPress={() => onItemClick(tx.hash)}>
+    <TouchableOpacity onPress={(e) => {
+      e.stopPropagation();
+      const url = getLinkUrl(tx.hash);
+
+      if (!url) {
+        return;
+      }
+
+      Linking.openURL(url);
+    }}>
       <View style={styles.txItem}>
         {showGroupBar && (
           <View style={styles.groupBar}>
