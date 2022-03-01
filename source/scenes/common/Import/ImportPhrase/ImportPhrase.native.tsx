@@ -30,10 +30,14 @@ const ImportPhrase: FC<IImportPhrase> = ({
       <TextInput
         name="phrase"
         type="text"
+        autoCapitalize="none"
+        returnKeyType="done"
+        autoCorrect={false} 
         control={control}
         inputContainerStyle={styles.phraseInput}
         multiline
         fullWidth
+        blurOnSubmit
       />
       <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
         The phrase can be 12, 15, 18, 21 or 24 words with a single space between.
