@@ -12,7 +12,7 @@ export type ITxItem = {
   isReceived: boolean;
   isETH: boolean;
   isGasSettingsVisible: boolean;
-  onItemClick: (hash: string) => void;
+  getLinkUrl: (hash: string) => string;
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
