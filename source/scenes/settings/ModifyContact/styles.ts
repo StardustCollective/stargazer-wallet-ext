@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
   statusIcon: {
     position: 'absolute',
     opacity: 1,
-    top: 38,
-    left: 15,
+    top: 36,
+    left: 12,
     zIndex: 1,
   },
   hide: {
