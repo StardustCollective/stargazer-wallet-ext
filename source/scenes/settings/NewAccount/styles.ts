@@ -107,8 +107,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   actions: {
-    position: 'relative',
-    bottom: 24,
     marginTop: 50,
     width: '100%',
     display: 'flex',
