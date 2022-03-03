@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
   },
   qrIcon: {
-    marginRight: 20,
+    marginRight: 10,
   }
 });
 
