@@ -79,39 +79,13 @@ export class EthereumProvider {
     return stargazerAsset && balances[AssetType.Ethereum];
   }
 
-  normalizeSignatureRequest(encodedSignatureRequest: string): string {
-    let signatureRequest: StargazerSignatureRequest;
-    try {
-      signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
-    } catch (e) {
-      throw new Error('Unable to decode signatureRequest');
-    }
-
-    const test =
-      typeof signatureRequest === 'object' &&
-      signatureRequest !== null &&
-      typeof signatureRequest.content === 'string' &&
-      typeof signatureRequest.metadata === 'object' &&
-      signatureRequest.metadata !== null;
-
-    if (!test) {
-      throw new Error('SignatureRequest does not match spec');
-    }
-
-    let parsedMetadata: Record<string, any> = {};
-    for (const [key, value] of Object.entries(signatureRequest.metadata)) {
-      if (['boolean', 'number', 'string'].includes(typeof value) || value === null) {
-        parsedMetadata[key] = value;
-      }
-    }
-
-    signatureRequest.metadata = parsedMetadata;
+  normalizeSignatureRequest(message: string): string {
+    const signatureRequest: StargazerSignatureRequest = {
+      content: message,
+      metadata: {},
+    };
 
     const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
-
-    if(newEncodedSignatureRequest !== encodedSignatureRequest){
-      throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
-    }
 
     return newEncodedSignatureRequest;
   }

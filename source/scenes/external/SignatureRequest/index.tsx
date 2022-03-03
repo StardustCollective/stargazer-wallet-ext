@@ -2,7 +2,7 @@
 // Modules Imports
 /////////////////////
 
-import React, {} from 'react';
+import React, { } from 'react';
 import queryString from 'query-string';
 import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
@@ -22,6 +22,7 @@ import CardLayout from 'scenes/external/Layouts/CardLayout'
 import styles from './index.module.scss';
 
 import walletsSelectors from 'selectors/walletsSelectors'
+import { StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
 
 //////////////////////
 // Component
@@ -38,10 +39,10 @@ const SignatureRequest = () => {
   const { data: stringData } = queryString.parse(location.search);
 
   const { signatureRequestEncoded, asset }:
-    {  signatureRequestEncoded: string, asset: string } = JSON.parse(stringData as string);
+    { signatureRequestEncoded: string, asset: string } = JSON.parse(stringData as string);
   const provider = asset === 'DAG' ? controller.stargazerProvider : controller.ethereumProvider;
   const account = provider.getAssetByType(asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum);
-  const signatureRequest = JSON.parse(window.atob(signatureRequestEncoded));
+  const signatureRequest = JSON.parse(window.atob(signatureRequestEncoded)) as StargazerSignatureRequest;
 
 
   //////////////////////
@@ -60,7 +61,7 @@ const SignatureRequest = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    const signature = provider.signMessage(signatureRequestEncoded);
+    const signature = provider.signMessage(asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content);
 
     const background = await browser.runtime.getBackgroundPage();
 
@@ -112,7 +113,7 @@ const SignatureRequest = () => {
             {signatureRequest.content}
           </div>
         </section>
-        <section className={styles.metadata}>
+        {Object.keys(signatureRequest.metadata).length > 0 && <section className={styles.metadata}>
           <label>
             Metadata
           </label>
@@ -121,7 +122,7 @@ const SignatureRequest = () => {
               ([key, value]) => (<small>{key} = {value}</small>)
             )}
           </div>
-        </section>
+        </section>}
       </div>
     </CardLayout>
   );
