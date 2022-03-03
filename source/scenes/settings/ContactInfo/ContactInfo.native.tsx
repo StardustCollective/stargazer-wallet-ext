@@ -80,7 +80,7 @@ const ContactInfo: FC<IContactInfoSettings> = ({
             </Tooltip>
             <TouchableOpacity onPress={onClickOpenCode}>
               <View style={styles.qrIcon}>
-                <QRCodeIcon height={ICON_SIZE} width={ICON_SIZE} color={COLORS.purple} />
+                <QRCodeIcon height={ICON_SIZE} width={ICON_SIZE} fill={COLORS.purple} />
               </View>
             </TouchableOpacity>
           </View>
