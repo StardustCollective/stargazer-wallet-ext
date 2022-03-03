@@ -2,7 +2,7 @@
 // Modules Imports
 /////////////////////
 
-import React, { } from 'react';
+import React from 'react';
 import queryString from 'query-string';
 import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
