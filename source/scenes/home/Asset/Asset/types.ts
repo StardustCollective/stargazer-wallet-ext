@@ -13,4 +13,6 @@ export default interface IAssetSettings {
   transactions: DAGTransaction[];
   onSendClick: () => void;
   assets: { [address: string]: IActiveAssetState };
+  showQrCode?: boolean;
+  setShowQrCode?: (isVisible: boolean) => void;
 }

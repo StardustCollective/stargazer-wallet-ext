@@ -272,6 +272,25 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.white,
     borderWidth: 1,
   },
+  qrCode: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
+  qrCodeCard: {
+    backgroundColor: 'white', 
+    padding: 20, 
+    borderRadius: 10, 
+    alignItems: 'center'
+  },
+  qrCodeAddressText: {
+    marginTop: 20
+  },
+  qrCodeCloseButton: {
+    alignItems: 'flex-end',
+    marginRight: 20,
+    marginTop: 20,
+  }
 });
 
 export default styles;
