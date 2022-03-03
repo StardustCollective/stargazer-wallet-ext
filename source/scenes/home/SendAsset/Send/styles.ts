@@ -71,6 +71,38 @@ const styles = StyleSheet.create({
   },
   button: {
     marginRight: 10
+  },
+  qrCodeHeader: {
+    flexDirection: 'row',
+    marginTop: '12%',
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
+  },
+  qrCameraTopContent: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: COLORS.primary,
+  },
+  qrCameraBottomContent: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: COLORS.primary,
+  },
+  qrSectionLeft: {
+    flex: 1,
+    backgrounColor: 'orange',
+  },
+  qrSectionCenter: {
+    flex: 1,
+
+    backgrounColor: 'orange',
+  },
+  qrSectionRight: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  qrCodeIcon: {
+    marginRight: 20,
   }
 });
 
