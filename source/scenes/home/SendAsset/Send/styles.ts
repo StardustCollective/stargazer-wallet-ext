@@ -103,6 +103,13 @@ const styles = StyleSheet.create({
   },
   qrCodeIcon: {
     marginRight: 20,
+  },
+  recipientButtons:{
+    flexDirection: 'row', 
+    alignItems: 'center'
+  },
+  qrCodeButton: {
+    marginLeft: 10
   }
 });
 

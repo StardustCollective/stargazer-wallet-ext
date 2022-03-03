@@ -9,37 +9,16 @@ import { Input } from 'react-native-elements';
 import { COLORS } from 'assets/styles/_variables';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 import Icon from 'components/Icon';
-
-import { useForm } from 'react-hook-form';
-
 import { COLORS_ENUMS } from 'assets/styles/colors';
-
-// import Slider from '@material-ui/core/Slider';
-// import Contacts from 'scenes/home/Contacts';
-// import Button from 'components/Button';
-// import TextInput from 'components/TextInput';
-// import VerifiedIcon from 'assets/images/svg/check-green.svg';
-// import ErrorIcon from 'assets/images/svg/error.svg';
 import { AssetType } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import Contact from 'scenes/home/Contacts';
-
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
-
-
 import styles from './styles';
 
 
-
-// <View>
-// <InputRightButton label='CONTACTS' onPress={() => setModalOpen(true)} />
-// <TouchableOpacity onPress={() => { setCameraOpen } )}>
-//   <View style={styles.qrIcon}>
-//     <QRCodeIcon height={25} width={25} fill={COLORS.purple} />
-//   </View>
-// </TouchableOpacity>
-// </View>
+const QR_CODE_BUTTON_SIZE = 25;
 
 const Send = ({
   control,
@@ -74,7 +53,6 @@ const Send = ({
   gasSpeedLabel
 }) => {
 
-  let [value, setValue] = useState(1);
   const [cameraOpen, setCameraOpen] = useState(false);
 
   const InputRightButton = ({
@@ -90,18 +68,16 @@ const Send = ({
 
   const RenderRecipientRightButton = () => {
     return (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={styles.recipientButtons}>
         <InputRightButton label='CONTACTS' onPress={() => setModalOpen(true)} />
-        <TouchableOpacity onPress={() => { setCameraOpen(true) }} style={{ marginLeft: 15 }}>
-          <View style={styles.qrIcon}>
-            <QRCodeIcon height={25} width={25} fill={COLORS.purple} />
+        <TouchableOpacity onPress={() => { setCameraOpen(true) }} style={styles.qrCodeButton}>
+          <View>
+            <QRCodeIcon height={QR_CODE_BUTTON_SIZE} width={QR_CODE_BUTTON_SIZE} fill={COLORS.purple} />
           </View>
         </TouchableOpacity>
       </View >
     )
   }
-
-
 
   return (
     <>
