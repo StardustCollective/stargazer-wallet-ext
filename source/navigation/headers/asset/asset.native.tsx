@@ -3,27 +3,40 @@ import { View, TouchableOpacity, Linking } from 'react-native';
 
 import AssetHeader from 'scenes/home/Asset/AssetHeader';
 import AddressLinkImage from 'assets/images/svg/addressLink.svg';
-
+import QRCodeIcon from 'assets/images/svg/qrcode.svg';
+import { COLORS } from 'assets/styles/_variables';
 import defaultHeader from '../default';
 import styles from './styles';
 
 import IAssetHeader from './types';
 
-const assetHeader = ({ navigation, asset, address, addressUrl }: IAssetHeader) => {
+
+const ICON_SIZE = 25
+
+const assetHeader = ({ navigation, asset, address, addressUrl, onQrCodePress }: IAssetHeader) => {
   return {
     ...defaultHeader({ navigation }),
     headerTitle: () => <AssetHeader asset={asset} address={address} />,
     headerRight: () => (
-      <TouchableOpacity
-        onPress={(e) => {
-          e.stopPropagation();
-          Linking.openURL(addressUrl);
-        }}
-      >
-        <View>
-          <AddressLinkImage height={32} iconStyles={styles.linkIcon} />
-        </View>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity onPress={onQrCodePress}>
+          <View style={styles.qrIcon}>
+            <QRCodeIcon height={ICON_SIZE} width={ICON_SIZE} fill={COLORS.white} />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={(e) => {
+            e.stopPropagation();
+            Linking.openURL(addressUrl);
+          }}
+          style={styles.linkIcon}
+        >
+          <View >
+            <AddressLinkImage height={32} />
+          </View>
+        </TouchableOpacity>
+      </View>
+
     ),
   };
 };

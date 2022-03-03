@@ -3,16 +3,7 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   linkIcon: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'absolute',
-    right: 24,
-    padding: 0,
-    width: 32,
-    height: 32,
-    background: COLORS.gray_100,
-    transition: 'all 0.3s',
+    paddingRight: 20,
   },
   active: {
     backgroundColor: COLORS.gray_light,
@@ -20,6 +11,9 @@ const styles = StyleSheet.create({
   svg: {
     color: COLORS.gray,
   },
+  qrIcon: {
+    marginRight: 20,
+  }
 });
 
 export default styles;

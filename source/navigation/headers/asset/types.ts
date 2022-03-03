@@ -5,4 +5,5 @@ export default interface IAssetHeader {
   asset: IAssetInfoState;
   address: string;
   addressUrl: string;
+  onQrCodePress: () => {};
 }
