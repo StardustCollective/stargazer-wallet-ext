@@ -47,11 +47,11 @@ const NewAccount: FC<INewAccountSettings> = ({
           </TextV3.Description>
           <View style={StyleSheet.compose(styles.actions, styles.centered)}>
             <ButtonV3
-              size={BUTTON_SIZES_ENUM.SMALL}
+              size={BUTTON_SIZES_ENUM.LARGE}
               type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
               title="Finish"
               testID="addWallet-finishButton"
-              inputStyles={styles.button}
+              extraStyles={styles.button}
               onPress={onClickResetStack}
             />
           </View>
@@ -75,7 +75,7 @@ const NewAccount: FC<INewAccountSettings> = ({
             <ButtonV3
               title="Close"
               testID="newAccount-cancelButton"
-              size={BUTTON_SIZES_ENUM.SMALL}
+              size={BUTTON_SIZES_ENUM.LARGE}
               type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
               extraStyles={styles.button}
               onPress={onClickResetStack}
@@ -83,7 +83,7 @@ const NewAccount: FC<INewAccountSettings> = ({
             <ButtonV3
               title="Next"
               testID="newAccount-confirmButton"
-              size={BUTTON_SIZES_ENUM.SMALL}
+              size={BUTTON_SIZES_ENUM.LARGE}
               type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
               extraStyles={styles.button}
               loading={loading}

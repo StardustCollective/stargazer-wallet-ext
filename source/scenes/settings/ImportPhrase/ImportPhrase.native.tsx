@@ -55,7 +55,7 @@ const ImportPhrase: FC<IImportPhraseSettings> = ({
         <ButtonV3
           title="Cancel"
           id="importPhrase-cancelButton"
-          size={BUTTON_SIZES_ENUM.SMALL}
+          size={BUTTON_SIZES_ENUM.LARGE}
           type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
           theme="secondary"
           onPress={onCancelClick}
@@ -63,7 +63,7 @@ const ImportPhrase: FC<IImportPhraseSettings> = ({
         <ButtonV3
           title="Import"
           id="importPhrase-importButton"
-          size={BUTTON_SIZES_ENUM.SMALL}
+          size={BUTTON_SIZES_ENUM.LARGE}
           type={BUTTON_TYPES_ENUM.PRIMARY}
           loading={loading}
           onPress={handleSubmit((data) => onSubmit(data))}
