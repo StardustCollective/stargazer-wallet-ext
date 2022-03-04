@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 120,
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   delete: {
     backgroundColor: COLORS.gray_light,
