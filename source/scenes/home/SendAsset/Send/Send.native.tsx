@@ -119,7 +119,7 @@ const Send = ({
               inputContainerStyle={styles.input}
               onChange={(text) => handleAmountChange(text)}
               rightIconContainerStyle={styles.inputRightIcon}
-              keyboardType={'number-pad'}
+              keyboardType={'decimal-pad'}
               returnKeyType={'done'}
               textContentType={''}
               rightIcon={(
@@ -135,7 +135,7 @@ const Send = ({
                 control={control}
                 onChange={(text) => { handleFeeChange({ target: { value: text } }) }}
                 rightIconContainerStyle={styles.inputRightIcon}
-                keyboardType={'number-pad'}
+                keyboardType={'decimal-pad'}
                 returnKeyType={'done'}
                 rightIcon={(
                   <InputRightButton label='RECOMMENDED' onPress={handleGetDAGTxFee} />
