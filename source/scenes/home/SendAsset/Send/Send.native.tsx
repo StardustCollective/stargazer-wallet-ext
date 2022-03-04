@@ -1,29 +1,24 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Modal } from 'react-native';
+import { View, TouchableOpacity, Modal, Text } from 'react-native';
 
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextInput from 'components/TextInput';
 import PurpleSlider from 'components/PurpleSlider';
 import { Input } from 'react-native-elements';
-
-import { useForm } from 'react-hook-form';
-
+import { COLORS } from 'assets/styles/_variables';
+import QRCodeIcon from 'assets/images/svg/qrcode.svg';
+import Icon from 'components/Icon';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-
-// import Slider from '@material-ui/core/Slider';
-// import Contacts from 'scenes/home/Contacts';
-// import Button from 'components/Button';
-// import TextInput from 'components/TextInput';
-// import VerifiedIcon from 'assets/images/svg/check-green.svg';
-// import ErrorIcon from 'assets/images/svg/error.svg';
 import { AssetType } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import Contact from 'scenes/home/Contacts';
-
-
-
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import { RNCamera } from 'react-native-camera';
 import styles from './styles';
+
+
+const QR_CODE_BUTTON_SIZE = 25;
 
 const Send = ({
   control,
@@ -58,7 +53,7 @@ const Send = ({
   gasSpeedLabel
 }) => {
 
-  let [value, setValue] = useState(1);
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   const InputRightButton = ({
     label,
@@ -70,6 +65,19 @@ const Send = ({
       </TextV3.Caption>
     </TouchableOpacity>
   );
+
+  const RenderRecipientRightButton = () => {
+    return (
+      <View style={styles.recipientButtons}>
+        <InputRightButton label='CONTACTS' onPress={() => setModalOpen(true)} />
+        <TouchableOpacity onPress={() => { setCameraOpen(true) }} style={styles.qrCodeButton}>
+          <View>
+            <QRCodeIcon height={QR_CODE_BUTTON_SIZE} width={QR_CODE_BUTTON_SIZE} fill={COLORS.purple} />
+          </View>
+        </TouchableOpacity>
+      </View >
+    )
+  }
 
   return (
     <>
@@ -99,7 +107,7 @@ const Send = ({
               rightIconContainerStyle={styles.inputRightIcon}
               returnKeyType={'done'}
               rightIcon={(
-                <InputRightButton label='CONTACTS' onPress={() => setModalOpen(true)} />
+                <RenderRecipientRightButton />
               )}
             />
             <TextInput
@@ -224,6 +232,41 @@ const Send = ({
         <Contact
           onChange={handleSelectContact}
           onClose={() => setModalOpen(false)}
+        />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={cameraOpen}
+        onRequestClose={() => {
+          setModalOpen(false)
+        }}
+      >
+        <QRCodeScanner
+          onRead={(event) => {
+            handleSelectContact(event.data);
+            setCameraOpen(false);
+          }}
+          flashMode={RNCamera.Constants.FlashMode.off}
+          topContent={
+            <View style={styles.qrCameraTopContent}>
+              <View style={styles.qrCodeHeader}>
+                <View style={styles.qrSectionLeft}></View>
+                <View><TextV3.Header>Scan QR Code</TextV3.Header></View>
+                <View style={styles.qrSectionRight}>
+                  <View style={styles.qrCodeIcon}>
+                    <TouchableOpacity onPress={() => { setCameraOpen(false) }}>
+                      <Icon name="close" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+
+            </View>
+          }
+          bottomContent={
+            <View style={styles.qrCameraBottomContent}></View>
+          }
         />
       </Modal>
     </>

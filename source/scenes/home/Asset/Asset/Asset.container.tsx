@@ -38,6 +38,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
 
   const [transactions, setTransactions] = useState([]);
+  const [showQrCode, setShowQrCode]     = useState(false);
 
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
@@ -54,6 +55,9 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
           activeAsset.type,
           activeNetwork[networkId]
         ),
+        onQrCodePress: () => {
+          setShowQrCode(true);
+        }
       })
     );
   }, [activeAsset]);
@@ -97,6 +101,8 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
         transactions={transactions}
         onSendClick={onSendClick}
         assets={assets}
+        showQrCode={showQrCode}
+        setShowQrCode={setShowQrCode}
       />
     </Container>
   );
