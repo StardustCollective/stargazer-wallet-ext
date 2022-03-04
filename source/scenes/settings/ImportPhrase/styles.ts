@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-end',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   cancel: {
     backgroundColor: COLORS.gray_light,
