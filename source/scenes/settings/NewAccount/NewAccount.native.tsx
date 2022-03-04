@@ -51,7 +51,7 @@ const NewAccount: FC<INewAccountSettings> = ({
               type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
               title="Finish"
               testID="addWallet-finishButton"
-              inputStyles={styles.button}
+              extraStyles={styles.button}
               onPress={onClickResetStack}
             />
           </View>
