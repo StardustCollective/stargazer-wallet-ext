@@ -93,7 +93,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
         <View style={styles.buttons}>
           <ButtonV3
             type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE}
-            size={BUTTON_SIZES_ENUM.SMALL}
+            size={BUTTON_SIZES_ENUM.LARGE}
             title="Cancel"
             extraStyles={cancelButtonStyles}
             extraTitleStyles={styles.buttonCancelText}
@@ -101,7 +101,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           />
           <ButtonV3
             type={BUTTON_TYPES_ENUM.PRIMARY}
-            size={BUTTON_SIZES_ENUM.SMALL}
+            size={BUTTON_SIZES_ENUM.LARGE}
             title="Save"
             submit
             extraStyles={submitButtonStyles}

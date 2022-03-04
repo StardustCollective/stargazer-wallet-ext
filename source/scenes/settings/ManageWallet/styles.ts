@@ -65,8 +65,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
     display: 'flex',
     flex: 1,
-    alignItems: 'flex-end',
-    alignSelf: 'flex-end',
     justifyContent: 'flex-end',
   },
   cancel: {
@@ -77,10 +75,8 @@ const styles = StyleSheet.create({
     color: COLORS.gray_dark,
   },
   buttons: {
-    display: 'flex',
-    justifyContent: 'center',
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    justifyContent: 'space-evenly',
   },
   button: {
     marginRight: 10,
