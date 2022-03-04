@@ -27,11 +27,16 @@ const styles = StyleSheet.create({
   assetName: {
     marginLeft: 16,
   },
+  assetPrice:{
+    flexDirection: 'row',
+  },
   green: {
     color: COLORS.green,
+    paddingLeft: 10,
   },
   red: {
-    color: COLORS.green,
+    color: COLORS.red,
+    paddingLeft: 10,
   },
 });
 

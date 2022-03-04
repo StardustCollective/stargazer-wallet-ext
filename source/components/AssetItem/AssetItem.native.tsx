@@ -50,7 +50,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
   const renderAssetPriceSection = (assetInfoData: IAssetInfoState) => {
     if (assetInfoData.priceId && fiat[assetInfoData.priceId]?.price && fiat[assetInfoData.priceId]?.priceChange) {
       return (
-        <View>
+        <View style={styles.assetPrice}>
           <TextV3.Caption color={COLORS_ENUMS.BLACK}>{formatPrice(fiat[assetInfoData.priceId].price)}</TextV3.Caption>
           <TextV3.Caption
             color={COLORS_ENUMS.BLACK}
