@@ -156,7 +156,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           <ButtonV3
             title="Finish"
             type={BUTTON_TYPES_ENUM.PRIMARY}
-            size={BUTTON_SIZES_ENUM.SMALL}
+            size={BUTTON_SIZES_ENUM.LARGE}
             id="importAccount-finishButton"
             onPress={onFinishButtonPressed}
           />
