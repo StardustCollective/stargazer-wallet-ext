@@ -263,14 +263,14 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         <ButtonV3
           title="Cancel"
           type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
-          size={BUTTON_SIZES_ENUM.SMALL}
+          size={BUTTON_SIZES_ENUM.LARGE}
           onPress={onFinishButtonPressed}
         />
         <ButtonV3
           title={importType === 'hardware' ? 'Next' : 'Import'}
           id="importAccount-confirmNextButton"
           type={BUTTON_TYPES_ENUM.PRIMARY}
-          size={BUTTON_SIZES_ENUM.SMALL}
+          size={BUTTON_SIZES_ENUM.LARGE}
           loading={loading}
           onPress={handleSubmit((data) => onSubmit(data))}
         />

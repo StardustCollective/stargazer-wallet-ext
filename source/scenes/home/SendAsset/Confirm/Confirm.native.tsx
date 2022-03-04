@@ -114,7 +114,7 @@ const Confirm = ({
                 <View style={styles.footer}>
                   <View style={styles.footerButtons}>
                     <ButtonV3
-                      type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE}
+                      type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
                       size={BUTTON_SIZES_ENUM.LARGE}
                       title={'Cancel'}
                       onPress={handleCancel}

@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   base: {
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 160,
+    minWidth: 145,
     paddingHorizontal: 30,
     borderWidth: 0,
     borderStyle: 'solid',
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray_dark,
   },
   secondaryOutlineTitle: {
-    color: COLORS.gray_dark,
+    color: COLORS.primary,
   },
 });
 

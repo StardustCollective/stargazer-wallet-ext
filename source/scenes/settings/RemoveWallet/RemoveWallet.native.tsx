@@ -62,13 +62,13 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
       <View style={styles.actions}>
         <ButtonV3
           type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
-          size={BUTTON_SIZES_ENUM.SMALL}
+          size={BUTTON_SIZES_ENUM.LARGE}
           title="Cancel"
           onPress={goBack}
         />
         <ButtonV3
           type={BUTTON_TYPES_ENUM.PRIMARY}
-          size={BUTTON_SIZES_ENUM.SMALL}
+          size={BUTTON_SIZES_ENUM.LARGE}
           title="Confirm"
           onPress={handleSubmit((data) => {
             onSubmit(data);

@@ -65,12 +65,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerButtons: {
-    flexDirection: 'row',
+    width: '100%',
     margin: 10,
-    justifyContent: 'space-evenly'
-  },
-  button: {
-    marginRight: 10
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-evenly',
   }
 });
 
