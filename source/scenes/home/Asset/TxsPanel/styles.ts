@@ -3,15 +3,17 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   activity: {
-    backgroundColor: COLORS.gray_light,
+    flex: 1,
     width: '100%',
+    backgroundColor: COLORS.gray_light,
     borderTopRightRadius: 8,
     borderTopStartRadius: 8,
     borderBottomEndRadius: 0,
     borderBottomStartRadius: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
+    overflow: 'hidden',
+  },
+  activityScrollView:{
+    flex: 1
   },
   spinner: {
     color: COLORS.primary,

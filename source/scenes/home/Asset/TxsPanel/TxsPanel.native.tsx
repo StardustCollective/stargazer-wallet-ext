@@ -13,7 +13,7 @@ import ITxPanelSettings from './types';
 const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription }) => {
   return (
     <View style={styles.activity}>
-      <ScrollView>
+      <ScrollView style={styles.activityScrollView}>
         {transactions.length ? (
           transactions.map((tx: Transaction, idx: number) => {
             return renderTxItem(tx, idx);
