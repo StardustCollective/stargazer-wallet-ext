@@ -51,7 +51,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
         Backup Options
       </TextV3.Caption>
-      {wallet.type !== KeyringWalletType.MultiChainWallet ? (
+      {wallet.type === KeyringWalletType.MultiChainWallet ? (
         <TouchableOpacity onPress={onShowRecoveryPhraseClicked}>
           <View style={styles.menu}>
             <Icon
