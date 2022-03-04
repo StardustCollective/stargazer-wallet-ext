@@ -114,6 +114,7 @@ dist/
 !.yarn/plugins
 .pnp.*
 yarn.lock
+.yarnrc
 
 # Desktop Services Store,
 .DS_Store
