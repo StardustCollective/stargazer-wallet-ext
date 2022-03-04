@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 100,
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   cancel: {
     backgroundColor: COLORS.gray_light,
