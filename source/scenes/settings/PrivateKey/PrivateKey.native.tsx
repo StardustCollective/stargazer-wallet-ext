@@ -56,7 +56,7 @@ const PrivateKey: FC<IPrivateKeySettings> = ({
             />
             <View style={styles.buttonContainer}>
               <ButtonV3
-                size={BUTTON_SIZES_ENUM.SMALL}
+                size={BUTTON_SIZES_ENUM.LARGE}
                 type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
                 title="Submit"
                 onPress={handleSubmit((data) => onSubmit(data))}
