@@ -3,10 +3,9 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   wrapper: {
-    display: 'flex',
+    flex: 1,
     flexDirection: 'column',
     width: '100%',
-    maxHeight: 520,
     backgroundColor: COLORS.primary,
   },
   mask: {
