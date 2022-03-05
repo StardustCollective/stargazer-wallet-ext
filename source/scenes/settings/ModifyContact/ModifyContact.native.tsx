@@ -57,7 +57,6 @@ const ModifyContact: FC<IModifyContactSettings> = ({
           containerStyle={styles.inputWrapper}
           defaultValue={address}
           onChange={(text) => handleAddressChange({ nativeEvent: { text } })}
-          value={address}
           inputRef={register}
         />
       </View>
