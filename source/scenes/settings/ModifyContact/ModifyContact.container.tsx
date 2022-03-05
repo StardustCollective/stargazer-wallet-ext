@@ -29,7 +29,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
 
-  const { handleSubmit, register, control } = useForm({
+  const { setValue, handleSubmit, register, control } = useForm({
     validationSchema: yup.object().shape({
       name: yup.string().required(),
       address: yup.string().required(),
@@ -41,7 +41,9 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
 
   useEffect(() => {
     if (selected && contacts[selected].address) {
+      const address = contacts[selected].address;
       setAddress(contacts[selected].address);
+      setValue('address', address);
     }
   }, []);
 
