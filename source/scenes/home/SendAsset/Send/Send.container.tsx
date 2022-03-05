@@ -366,8 +366,9 @@ const SendContainer: FC<IWalletSend> = ({
     if (computedAmount.lt(0)) {
       computedAmount = BigNumber.from(0);
     }
-
-    handleAmountChange(ethers.utils.formatUnits(computedAmount, assetInfo.decimals));
+    const formattedUnits = ethers.utils.formatUnits(computedAmount, assetInfo.decimals);
+    setValue('amount', formattedUnits.toString());
+    handleAmountChange(formattedUnits);
   };
 
   return (
