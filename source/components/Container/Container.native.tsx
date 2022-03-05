@@ -23,14 +23,18 @@ import styles from './styles';
 
 const Container: FC<IContainer> = (
   {
-    children
+    children,
+    safeArea = true,
   }
 ) => {
+
+  const AreaView = safeArea? SafeAreaView : View;
+
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
+      <AreaView style={styles.safeArea}>
         {children}
-      </SafeAreaView>
+      </AreaView>
     </View>
   )
 }
