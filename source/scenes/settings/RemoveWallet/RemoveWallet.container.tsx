@@ -13,7 +13,7 @@ import navigationUtil from 'navigation/util';
 
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
-import Container from 'scenes/common/Container';
+import Container, {CONTAINER_COLOR} from 'components/Container';
 
 import RemoveWallet from './RemoveWallet';
 
@@ -54,7 +54,7 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <RemoveWallet
         goBack={goBack}
         wallet={wallet}
