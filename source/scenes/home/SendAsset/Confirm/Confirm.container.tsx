@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Types
@@ -202,7 +202,7 @@ const ConfirmContainer = ({ navigation }) => {
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <Confirm
         isExternalRequest={isExternalRequest}
         confirmed={confirmed}
