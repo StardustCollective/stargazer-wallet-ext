@@ -7,7 +7,7 @@ import { useLinkTo } from '@react-navigation/native';
 
 import { getWalletController } from 'utils/controllersUtils';
 
-import Container from 'scenes/common/Container';
+import Container, { CONTAINER_COLOR }from 'components/Container';
 
 import ImportPhrase from './ImportPhrase';
 
@@ -43,7 +43,7 @@ const ImportPhraseContainer = ({ navigation }: IImportPhraseView) => {
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <ImportPhrase
         loading={loading}
         setLoading={setLoading}
