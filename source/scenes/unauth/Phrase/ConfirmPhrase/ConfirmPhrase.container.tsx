@@ -10,7 +10,7 @@ import isEqual from 'lodash/isEqual';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Controllers
@@ -103,7 +103,7 @@ const ConfirmPhraseContainer = () => {
   ///////////////////////////
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <ConfirmPhrase
         title={title}
         isNotEqualArrays={isNotEqualArrays}
