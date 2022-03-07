@@ -92,7 +92,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const FIAT_AMOUNT = getFiatAmount(balance, balance >= 0.01 ? 2 : 4);
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <AssetDetail
         activeWallet={activeWallet}
         activeAsset={activeAsset}
