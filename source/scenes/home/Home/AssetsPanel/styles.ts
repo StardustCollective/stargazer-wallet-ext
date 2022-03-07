@@ -3,6 +3,7 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   activity: {
+    flex: 1,
     backgroundColor: COLORS.white,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
