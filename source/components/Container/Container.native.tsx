@@ -48,6 +48,10 @@ const Container: FC<IContainer> = (
     extraSafeAreaStyles = {
       backgroundColor: COLORS.primary
     }
+  }else if (color === CONTAINER_COLOR.EXTRA_LIGHT) { 
+    extraSafeAreaStyles = {
+      backgroundColor: COLORS.white
+    }
   }
 
   return (
