@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { useLinkTo } from '@react-navigation/native';
 
-import Container from 'scenes/common/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import ImportWallet from './ImportWallet';
 
@@ -21,7 +21,7 @@ const ImportWalletContainer: FC<IImportWalletView> = () => {
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <ImportWallet handleImport={handleImport} onImportPhraseView={onImportPhraseView} />
     </Container>
   );
