@@ -3,7 +3,7 @@ import { showMessage } from 'react-native-flash-message';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import Container from 'scenes/common/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import { useCopyClipboard } from 'hooks/index';
 import { getWalletController } from 'utils/controllersUtils';
@@ -47,7 +47,7 @@ const PhraseContainer: FC<IPhraseView> = ({ route }) => {
   };
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <Phrase
         checked={checked}
         phrase={phrase}
