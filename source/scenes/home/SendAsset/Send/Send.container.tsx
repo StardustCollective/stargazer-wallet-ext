@@ -24,7 +24,7 @@ import queryString from 'query-string';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Utils
@@ -372,7 +372,7 @@ const SendContainer: FC<IWalletSend> = ({
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <Send
         control={control}
         modalOpened={modalOpened}

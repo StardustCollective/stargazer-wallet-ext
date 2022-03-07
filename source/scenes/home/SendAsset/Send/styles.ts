@@ -4,7 +4,7 @@ import { COLORS } from 'assets/styles/_variables';
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
-    backgroundColor: COLORS.grey_50,
+    backgroundColor: COLORS.grey_light_100,
   },
   content: {
     flex: 1,
