@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { useLinkTo } from '@react-navigation/native';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 
 import Wallets from './AddWallet';
 
@@ -20,10 +20,10 @@ const WalletsContainer: FC<IAddWalletView> = () => {
   };
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <Wallets onCreateNewWalletClicked={onCreateNewWalletClicked} onImportWalletClicked={onImportWalletClicked} />
     </Container>
-  );
+);
 };
 
 export default WalletsContainer;

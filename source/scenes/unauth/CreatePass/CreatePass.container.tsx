@@ -3,7 +3,7 @@
 ///////////////////////////
 
 import React, { useState } from 'react';
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 import { useForm } from 'react-hook-form';
 import { useLinkTo } from '@react-navigation/native';
 import * as consts from './consts';
@@ -64,7 +64,7 @@ const CreatePassContainer = () => {
   ///////////////////////////
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <CreatePass
         control={control}
         onSubmit={onSubmit}

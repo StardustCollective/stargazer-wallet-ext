@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 
 import About from './About';
 
@@ -18,7 +18,7 @@ const AboutContainer: FC = () => {
   const version = useVersion(3);
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <About
         version={version}
         versionMajorMinor={versionMajorMinor}

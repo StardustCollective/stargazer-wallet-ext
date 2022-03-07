@@ -3,7 +3,6 @@ import Container from 'components/Container';
 import Contacts from './Contacts';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
-import { useController } from 'hooks/index';
 import IContactBookState, { IContactState } from 'state/contacts/types';
 import IVaultState, { AssetType } from 'state/vault/types';
 

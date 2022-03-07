@@ -36,7 +36,7 @@ const ACTIVITY_INDICATOR_COLOR = '#FFF';
 const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
         {activeWallet ? (
           <>
             <View style={styles.fiatBalanceContainer}>

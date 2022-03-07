@@ -16,7 +16,7 @@ import { getWalletController } from 'utils/controllersUtils';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Scene
@@ -88,7 +88,7 @@ const ImportPhraseContainer: FC<IImportPhraseContainer>= ({
   ///////////////////////////
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <ImportPhrase
         control={control}
         handleSubmit={handleSubmit}

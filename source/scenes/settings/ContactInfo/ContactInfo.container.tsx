@@ -7,7 +7,7 @@ import ContactsController from 'scripts/Background/controllers/ContactsControlle
 import IContactBookState from 'state/contacts/types';
 import { RootState } from 'state/store';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 
 import ContactInfo from './ContactInfo';
 
@@ -35,7 +35,7 @@ const ContactInfoContainer: FC<IContactInfoView> = ({ route, navigation }) => {
   };
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <ContactInfo
         codeOpened={codeOpened}
         setCodeOpened={setCodeOpened}

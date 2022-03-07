@@ -15,7 +15,7 @@ import { getWalletController } from 'utils/controllersUtils';
 // Component
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Scene
@@ -71,7 +71,7 @@ const CreatePhraseContainer = () => {
   ///////////////////////////
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <CreatePhrase
         title={title}
         description={description}

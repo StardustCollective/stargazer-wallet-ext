@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import NavigationUtil from 'navigation/util';
 import { useLinkTo } from '@react-navigation/native';
 import { getWalletController } from 'utils/controllersUtils';
-import Container from 'scenes/common/Container';
+import Container, { CONTAINER_COLOR }from 'components/Container';
 
 import NewAccount from './NewAccount';
 
@@ -42,7 +42,7 @@ const NewAccountContainer: FC<INewAccountView> = ({ navigation }) => {
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <NewAccount
         onClickResetStack={onClickResetStack}
         onShowPhraseClick={onShowPhraseClick}

@@ -16,6 +16,13 @@ import IContainer from './types';
 ///////////////////////////
 
 import styles from './styles';
+import { COLORS } from 'assets/styles/_variables';
+
+///////////////////////////
+// Enums
+///////////////////////////
+
+import { CONTAINER_COLOR } from './enum';
 
 ///////////////////////////
 // Component
@@ -23,14 +30,35 @@ import styles from './styles';
 
 const Container: FC<IContainer> = (
   {
-    children
+    children,
+    safeArea = true,
+    color = CONTAINER_COLOR.DARK,
   }
 ) => {
+
+  const AreaView = safeArea ? SafeAreaView : View;
+
+  let extraSafeAreaStyles = {};
+
+  if (color === CONTAINER_COLOR.LIGHT) {
+    extraSafeAreaStyles = {
+      backgroundColor: COLORS.gray_light_100
+    }
+  } else if (color === CONTAINER_COLOR.DARK) {
+    extraSafeAreaStyles = {
+      backgroundColor: COLORS.primary
+    }
+  }else if (color === CONTAINER_COLOR.EXTRA_LIGHT) { 
+    extraSafeAreaStyles = {
+      backgroundColor: COLORS.white
+    }
+  }
+
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
+    <View style={[styles.container]}>
+      <AreaView style={[styles.safeArea, extraSafeAreaStyles]}>
         {children}
-      </SafeAreaView>
+      </AreaView>
     </View>
   )
 }

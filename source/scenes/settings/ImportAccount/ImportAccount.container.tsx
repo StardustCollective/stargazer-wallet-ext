@@ -8,7 +8,7 @@ import navigationUtil from 'navigation/util';
 
 import { getWalletController } from 'utils/controllersUtils';
 
-import Container from 'scenes/common/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import ImportAccount from './ImportAccount';
 
@@ -67,7 +67,7 @@ const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) =
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <ImportAccount
         handleSubmit={handleSubmit}
         control={control}

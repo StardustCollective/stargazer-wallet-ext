@@ -7,7 +7,7 @@ import addHeader from 'navigation/headers/add';
 
 import IContactBookState from 'state/contacts/types';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 
 import Contacts from './Contacts';
 
@@ -32,7 +32,7 @@ const ContactsContainer: FC<IContactsView> = ({ navigation }) => {
   }, []);
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <Contacts contacts={contacts} handleSelect={handleSelect} addContactLabel={addContactLabel} />
     </Container>
   );

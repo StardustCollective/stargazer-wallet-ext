@@ -9,7 +9,7 @@ import { useLinkTo } from '@react-navigation/native';
 // Components  
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Scene  
@@ -42,7 +42,7 @@ const RemindPhraseContainer = () => {
   ///////////////////////////
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <RemindPhrase
         nextHandler={nextHandler}
       />

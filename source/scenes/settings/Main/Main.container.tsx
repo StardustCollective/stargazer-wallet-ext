@@ -4,7 +4,7 @@ import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 
 import { getWalletController } from 'utils/controllersUtils';
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 import Main from './Main';
 
 const MainContainer: FC = () => {
