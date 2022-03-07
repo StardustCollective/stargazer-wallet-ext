@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 
 // import DAppController from 'scripts/Background/controllers/DAppController';
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 
 // import defaultHeader from 'navigation/headers/default';
 
@@ -24,7 +24,7 @@ const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = ({ navigation
   };
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <ConnectedSites onDeleteSiteClicked={onDeleteSiteClicked} connectedSites={connectedSites} />
     </Container>
   );
