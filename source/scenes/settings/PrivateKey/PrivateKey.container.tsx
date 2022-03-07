@@ -10,7 +10,7 @@ import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
 import { useSelector } from 'react-redux';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 
 import PrivateKey from './PrivateKey';
 
