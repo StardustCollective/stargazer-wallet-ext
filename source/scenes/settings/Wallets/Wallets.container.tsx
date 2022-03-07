@@ -10,7 +10,7 @@ import { getWalletController } from 'utils/controllersUtils';
 import addHeader from 'navigation/headers/add';
 import { useLinkTo } from '@react-navigation/native';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 
 import Wallets from './Wallets';
 
@@ -44,7 +44,7 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   };
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <Wallets
         wallets={wallets}
         activeWallet={activeWallet}
