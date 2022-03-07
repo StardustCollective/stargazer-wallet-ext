@@ -12,7 +12,7 @@ import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { getAccountController } from 'utils/controllersUtils';
 import ContactsController from 'scripts/Background/controllers/ContactsController';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 
 import IContactBookState from 'state/contacts/types';
 import IVaultState, { AssetType } from 'state/vault/types';
@@ -93,7 +93,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const disabled = !address || !isValidAddress;
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <ModifyContact
         control={control}
         handleSubmit={handleSubmit}
