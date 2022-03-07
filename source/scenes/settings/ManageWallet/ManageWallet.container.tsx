@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Container from 'scenes/common/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import { useForm } from 'react-hook-form';
 
@@ -52,7 +52,7 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   }
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <ManageWallet
         walletId={id}
         handleSubmit={handleSubmit}
