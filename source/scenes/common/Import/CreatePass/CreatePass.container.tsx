@@ -16,7 +16,7 @@ import { getWalletController } from 'utils/controllersUtils';
 // Components  
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Scene  
@@ -79,7 +79,7 @@ const CreatePassContainer = () => {
   //////////////////////////
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <CreatePass
         title={title}
         passed={passed}
