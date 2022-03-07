@@ -8,7 +8,7 @@ import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 import Networks from './Networks';
 
 const NetworksContainer: FC = () => {
@@ -58,7 +58,7 @@ const NetworksContainer: FC = () => {
   ];
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <Networks networkOptions={networkOptions} />
     </Container>
   );
