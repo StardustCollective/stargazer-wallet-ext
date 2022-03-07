@@ -69,7 +69,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   ///////////////////////////
 
   return (
-    <Container>
+    <Container safeArea={false}>
       <Home
         activeWallet={activeWallet}
         balanceObject={balanceObject}
