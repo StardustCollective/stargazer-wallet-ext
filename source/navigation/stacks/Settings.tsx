@@ -78,7 +78,6 @@ const Settings = () => {
     <Stack.Navigator
       screenOptions={(navigation) => ({
         ...defaultHeader(navigation),
-        animationEnabled: true,
       })}
       initialRouteName={screens.settings.main}
     >
