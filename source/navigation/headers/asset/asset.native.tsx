@@ -18,7 +18,7 @@ const assetHeader = ({ navigation, asset, address, addressUrl, onQrCodePress }: 
     ...defaultHeader({ navigation }),
     headerTitle: () => <AssetHeader asset={asset} address={address} />,
     headerRight: () => (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={styles.buttons}>
         <TouchableOpacity onPress={onQrCodePress}>
           <View style={styles.qrIcon}>
             <QRCodeIcon height={ICON_SIZE} width={ICON_SIZE} fill={COLORS.white} />

@@ -35,7 +35,6 @@ const addHeader = ({
       >
         <AddIcon
           size="6"
-          mr="3"
           color="white" 
           testId={'header-addButton'} 
         />

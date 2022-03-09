@@ -3,23 +3,15 @@ import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   fullselect: {
-    position: 'relative',
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    textAlign: 'center',
     flexDirection: 'column',
     height: 60,
     transition: 'all 300ms',
   },
   selected: {
-    width: '100%',
     height: 36,
-    marginTop: 12,
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'center', 
     justifyContent: 'center',
-    position: 'relative',
   },
   headerSection: {
     display: 'flex',
@@ -28,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   assetLogo: {
-    marginRight: 8,
+    marginRight: 5,
   },
   logoHeader: {
     marginBottom: 0,
