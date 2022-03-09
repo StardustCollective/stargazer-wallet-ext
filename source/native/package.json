@@ -15,6 +15,7 @@
     "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/native": "^6.0.6",
+    "@react-navigation/native-stack": "^6.5.0",
     "@react-navigation/stack": "^6.0.11",
     "crypto-js": "^4.1.1",
     "metro-react-native-babel-transformer": "^0.66.2",
