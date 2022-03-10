@@ -31,9 +31,9 @@ const ModifyContact: FC<IModifyContactSettings> = ({
   const verifiedStyle = hideStatusIcon ? styles.hide : styles.statusIcon;
   return (
     <View style={styles.wrapper}>
-      <TextV3.Caption color={COLORS_ENUMS.BLACK}>Contact Name</TextV3.Caption>
       <TextInput
         control={control}
+        label="Contact Name"
         name="name"
         type="text"
         fullWidth
@@ -42,27 +42,27 @@ const ModifyContact: FC<IModifyContactSettings> = ({
         inputRef={register}
         containerStyle={styles.inputWrapper}
       />
-      <TextV3.Caption color={COLORS_ENUMS.BLACK}>Address</TextV3.Caption>
-      <View style={styles.inputWrap}>
-        <View style={verifiedStyle}>
-          <VerifiedIcon height={15} width={15} lineHeight={24} />
-        </View>
-        <TextInput
-          control={control}
-          name="address"
-          type="text"
-          fullWidth
-          inputContainerStyle={styles.input}
-          inputStyle={addressStyle}
-          containerStyle={styles.inputWrapper}
-          defaultValue={address}
-          onChange={(text) => handleAddressChange({ nativeEvent: { text } })}
-          inputRef={register}
-        />
-      </View>
-      <TextV3.Caption color={COLORS_ENUMS.BLACK}>Memo</TextV3.Caption>
       <TextInput
         control={control}
+        label="Address"
+        name="address"
+        type="text"
+        fullWidth
+        inputContainerStyle={styles.input}
+        inputStyle={addressStyle}
+        containerStyle={styles.inputWrapper}
+        defaultValue={address}
+        onChange={(text) => handleAddressChange({ nativeEvent: { text } })}
+        inputRef={register}
+        leftIcon={!hideStatusIcon && (
+          <View style={verifiedStyle}>
+            <VerifiedIcon height={15} width={15} lineHeight={0} />
+          </View>
+        )}
+      />
+      <TextInput
+        control={control}
+        label="Memo"
         name="memo"
         fullWidth
         multiline
