@@ -1,5 +1,6 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
+import { StatusBar } from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NativeBaseProvider} from 'native-base';
 import RootStack from 'navigation/stacks/Root';
@@ -38,6 +39,7 @@ const App = () => {
       <NativeBaseProvider>
         <Provider store={Store}>
           <NavigationContainer linking={linking}>
+            <StatusBar translucent barStyle="light-content" />
             <RootStack />
           </NavigationContainer>
         </Provider>
