@@ -284,6 +284,9 @@ PODS:
     - React-Core
   - react-native-document-picker (7.1.3):
     - React-Core
+  - react-native-fast-crypto (2.1.0):
+    - OpenSSL-Universal
+    - React
   - react-native-randombytes (3.6.1):
     - React-Core
   - react-native-safe-area-context (3.4.1):
@@ -450,6 +453,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-camera (from `../../../node_modules/react-native-camera`)
   - react-native-document-picker (from `../../../node_modules/react-native-document-picker`)
+  - react-native-fast-crypto (from `../../../node_modules/react-native-fast-crypto`)
   - react-native-randombytes (from `../../../node_modules/react-native-randombytes`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -535,6 +539,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-camera"
   react-native-document-picker:
     :path: "../../../node_modules/react-native-document-picker"
+  react-native-fast-crypto:
+    :path: "../../../node_modules/react-native-fast-crypto"
   react-native-randombytes:
     :path: "../../../node_modules/react-native-randombytes"
   react-native-safe-area-context:
@@ -622,6 +628,7 @@ SPEC CHECKSUMS:
   React-logger: bfddd3418dc1d45b77b822958f3e31422e2c179b
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-document-picker: ec07866a30707f23660c0f3ae591d669d3e89096
+  react-native-fast-crypto: 027489bc7f180b1274ac99f96222794dcea9de42
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   React-perflogger: fcac6090a80e3d967791b4c7f1b1a017f9d4a398
