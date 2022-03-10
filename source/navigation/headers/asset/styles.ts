@@ -3,7 +3,6 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   linkIcon: {
-    paddingRight: 20,
   },
   active: {
     backgroundColor: COLORS.gray_light,
@@ -13,6 +12,10 @@ const styles = StyleSheet.create({
   },
   qrIcon: {
     marginRight: 10,
+  },
+  buttons: {
+    flexDirection: 'row',
+    alignItems: 'center',
   }
 });
 

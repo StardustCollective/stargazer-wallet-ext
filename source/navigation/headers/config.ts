@@ -12,8 +12,8 @@ import { Platform } from 'react-native';
     fontWeight: '500',
     fontFamily: 'Rubik',
     color: '#fff',
-    textAlign: 'center'
   },
+  headerTitleAlign: 'center',
 };
 
 export default config;

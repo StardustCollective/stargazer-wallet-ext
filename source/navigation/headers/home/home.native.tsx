@@ -52,7 +52,7 @@ const homeHeader = ({
       <Pressable
         onPress={onMenuButtonClicked}
       >
-        <HamburgerIcon testId="header-moreButton" color="white" mr="15px" />
+        <HamburgerIcon testId="header-moreButton" color="white"/>
       </Pressable>)
     }
     // Hack: The header title will not center unless there is 
@@ -65,7 +65,7 @@ const homeHeader = ({
   return {
     ...config,
     headerLeft: () => (
-      <View ml="15px">
+      <View>
         <LogoImage width={30} height={30}/>
       </View>
 
