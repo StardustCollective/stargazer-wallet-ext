@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC }from 'react';
 import { View, TouchableOpacity, Modal } from 'react-native';
 import TextV3 from 'components/TextV3';
 
@@ -7,7 +7,9 @@ import { RNCamera } from 'react-native-camera';
 import Icon from 'components/Icon';
 import styles from './styles';
 
-const QRCodeScanner = ({
+import IQRCodeScanner from './types';
+
+const QRCodeScanner: FC<IQRCodeScanner> = ({
   visble,
   onRead,
   onClosePress,
