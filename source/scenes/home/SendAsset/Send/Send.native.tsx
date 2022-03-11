@@ -5,6 +5,7 @@ import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/Butto
 import TextInput from 'components/TextInput';
 import PurpleSlider from 'components/PurpleSlider';
 import QRCodeScanner from 'components/QRCodeScanner';
+import QRCodeButton from 'components/QRCodeButton';
 import { Input } from 'react-native-elements';
 import { COLORS } from 'assets/styles/_variables';
 import QRCodeIcon from 'assets/images/svg/qrcode.svg';
@@ -69,11 +70,7 @@ const Send = ({
     return (
       <View style={styles.recipientButtons}>
         <InputRightButton label='CONTACTS' onPress={() => setModalOpen(true)} />
-        <TouchableOpacity onPress={() => { setCameraOpen(true) }} style={styles.qrCodeButton}>
-          <View>
-            <QRCodeIcon height={QR_CODE_BUTTON_SIZE} width={QR_CODE_BUTTON_SIZE} fill={COLORS.purple} />
-          </View>
-        </TouchableOpacity>
+        <QRCodeButton onPress={() => { setCameraOpen(true) }} style={styles.qrCodeButton} />
       </View >
     )
   }
