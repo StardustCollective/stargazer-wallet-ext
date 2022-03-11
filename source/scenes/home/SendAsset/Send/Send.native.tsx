@@ -7,8 +7,6 @@ import PurpleSlider from 'components/PurpleSlider';
 import QRCodeScanner from 'components/QRCodeScanner';
 import QRCodeButton from 'components/QRCodeButton';
 import { Input } from 'react-native-elements';
-import { COLORS } from 'assets/styles/_variables';
-import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { AssetType } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
