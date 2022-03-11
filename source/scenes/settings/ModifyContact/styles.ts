@@ -81,6 +81,10 @@ const styles = StyleSheet.create({
     minWidth: 144,
     padding: 8,
   },
+  qrCodeButton: {
+    marginHorizontal: 5
+
+  },
 });
 
 export default styles;

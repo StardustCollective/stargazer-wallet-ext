@@ -1,8 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, useState} from 'react';
 import { View } from 'react-native';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import TextInput from 'components/TextInput';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import QRCodeScanner from 'components/QRCodeScanner';
+import QRCodeButton from 'components/QRCodeButton';
 import styles from './styles';
 import IModifyContactSettings from './types';
 
@@ -20,6 +22,7 @@ const ModifyContact: FC<IModifyContactSettings> = ({
   handleAddressChange,
   onClickCancel,
 }) => {
+  let [showCamera, setShowCamera] = useState(false);
   const addressStyle = isValidAddress ? styles.inputVerfied : undefined;
   const verifiedStyle = hideStatusIcon ? styles.hide : styles.statusIcon;
   return (
@@ -52,6 +55,9 @@ const ModifyContact: FC<IModifyContactSettings> = ({
             <VerifiedIcon height={15} width={15} lineHeight={0} />
           </View>
         )}
+        rightIcon={
+          <QRCodeButton onPress={() => { setShowCamera(true) }} style={styles.qrCodeButton} />
+        }
       />
       <TextInput
         control={control}
@@ -84,6 +90,16 @@ const ModifyContact: FC<IModifyContactSettings> = ({
           })}
         />
       </View>
+      <QRCodeScanner 
+        visble={showCamera}
+        onRead={(event) => {
+          handleAddressChange(event.data);
+          setShowCamera(false);
+        }}
+        onClosePress={() => {
+          setShowCamera(false) 
+        }}
+      />
     </View>
   );
 };
