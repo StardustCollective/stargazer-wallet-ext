@@ -13,4 +13,5 @@ export default interface ILogin {
   register: Ref<any>;
   isInvalid: boolean;
   importClicked: () => void;
+  isLoading?: boolean;
 }
