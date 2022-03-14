@@ -17,6 +17,7 @@ interface ITextInput {
   fullWidth: boolean;
   visiblePassword: boolean;
   defaultValue: string;
+  returnKeyType: string;
   onChange: (text: any) => void;
   onSubmit: (ev: any) => void;
 }
@@ -33,6 +34,7 @@ const TextInput: FC<ITextInput> = ({
   inputStyle = {},
   multiline = false,
   defaultValue = '',
+  returnKeyType = 'done',
   onChange,
   ...otherProps
 }) => {
@@ -83,6 +85,7 @@ const TextInput: FC<ITextInput> = ({
           label={label}
           keyboardType={keyboardType}
           multiline={multiline}
+          returnKeyType={returnKeyType}
           {...passwordProps} // eslint-disable-line
           {...otherProps} // eslint-disable-line
         />
