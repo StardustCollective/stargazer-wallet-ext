@@ -18,6 +18,7 @@ interface ITextInput {
   visiblePassword: boolean;
   defaultValue: string;
   returnKeyType: string;
+  blurOnSubmit: boolean;
   onChange: (text: any) => void;
   onSubmit: (ev: any) => void;
 }
@@ -35,6 +36,7 @@ const TextInput: FC<ITextInput> = ({
   multiline = false,
   defaultValue = '',
   returnKeyType = 'done',
+  blurOnSubmit = true,
   onChange,
   ...otherProps
 }) => {
@@ -86,6 +88,7 @@ const TextInput: FC<ITextInput> = ({
           keyboardType={keyboardType}
           multiline={multiline}
           returnKeyType={returnKeyType}
+          blurOnSubmit={blurOnSubmit}
           {...passwordProps} // eslint-disable-line
           {...otherProps} // eslint-disable-line
         />

@@ -6,8 +6,8 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingRight: 36,
     paddingLeft: 36,
-    paddingTop: 24,
     paddingBottom: 24,
+    paddingTop: 24,
     backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
   },
@@ -15,32 +15,20 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingHorizontal: 0,
     position: 'relative',
-    lineHeight: 24,
-    marginBottom: -24,
+
   },
   input: {
-    marginTop: 24,
-    marginBottom: 24,
+    marginBottom: 0,
     marginRight: 0,
     marginLeft: 0,
     height: 40,
     lineHeight: 24,
   },
-  inputWrap: {
-    position: 'relative',
-  },
   inputVerfied: {
     color: COLORS.purple,
     fontSize: 15,
-    padding: 5,
-    paddingLeft: 20,
   },
   statusIcon: {
-    position: 'absolute',
-    opacity: 1,
-    top: 36,
-    left: 12,
-    zIndex: 1,
   },
   hide: {
     opacity: 0,
@@ -55,12 +43,9 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   textareaText: {
-    height: 60,
-    marginTop: 24,
-    marginBottom: 24,
+    height: 100,
     marginRight: 0,
     marginLeft: 0,
-    lineHeight: 24,
     paddingHorizontal: 0,
     marginHorizontal: 0,
   },
@@ -73,10 +58,11 @@ const styles = StyleSheet.create({
   },
   actions: {
     width: '100%',
-    display: 'flex',
+    flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     marginTop: 100,
+    marginBottom: 24,
     justifyContent: 'space-evenly',
   },
   cancel: {
@@ -94,6 +80,10 @@ const styles = StyleSheet.create({
     width: 144,
     minWidth: 144,
     padding: 8,
+  },
+  qrCodeButton: {
+    marginHorizontal: 5
+
   },
 });
 
