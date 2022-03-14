@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, Text, Modal, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
 
 import * as Progress from 'react-native-progress';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -32,7 +32,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   if (activeWallet && activeAsset) {
     return (
       <>
-        <View style={styles.wrapper}>
+        <ScrollView style={styles.wrapper} contentContainerStyle={styles.assetContentContainer}>
           <View style={styles.center}>
             <View style={styles.balance}>
               <TextV3.HeaderDisplay color={COLORS_ENUMS.WHITE} dynamic extraStyles={styles.balanceText}>
@@ -53,7 +53,7 @@ const AssetDetail: FC<IAssetSettings> = ({
             </View>
           </View>
           <TxsPanel address={activeAsset.address} transactions={transactions} />
-        </View>
+        </ScrollView>
         <Modal
           animationType="slide"
           transparent={false}

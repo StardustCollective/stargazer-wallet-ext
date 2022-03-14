@@ -15,9 +15,6 @@ const styles = StyleSheet.create({
   activityScrollView:{
     flex: 1
   },
-  activityContentContainer: {
-    paddingBottom: 50,
-  },
   spinner: {
     color: COLORS.primary,
   },

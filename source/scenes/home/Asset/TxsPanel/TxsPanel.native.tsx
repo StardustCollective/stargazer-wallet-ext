@@ -13,7 +13,7 @@ import ITxPanelSettings from './types';
 const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription }) => {
   return (
     <View style={styles.activity}>
-      <ScrollView style={styles.activityScrollView} contentContainerStyle={styles.activityContentContainer}>
+      <View style={styles.activityScrollView}>
         {transactions.length ? (
           transactions.map((tx: Transaction, idx: number) => {
             return renderTxItem(tx, idx);
@@ -23,7 +23,7 @@ const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactio
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>{transactionDescription}</TextV3.Caption>
           </View>
         )}
-      </ScrollView>
+      </View>
     </View>
   );
 };

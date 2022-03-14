@@ -8,6 +8,10 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.primary,
   },
+  assetContentContainer: {
+    // paddingBottom: 50,
+    backgroudColor: 'white',
+  },
   mask: {
     flexGrow: 1,
     display: 'flex',
