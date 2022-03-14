@@ -40,6 +40,7 @@ interface IButtonV3Props {
   size?: BUTTON_SIZES_ENUM;
   title: string;
   disabled: boolean;
+  loading: boolean;
   extraStyles?: {};
   extraTitleStyles?: {};
   extraContainerStyles?: {};
@@ -56,6 +57,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   size = BUTTON_SIZES_ENUM.SMALL,
   title = '',
   disabled = false,
+  loading = false,
   extraStyles = {},
   extraTitleStyles = {},
   extraContainerStyles = {},
@@ -95,6 +97,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
       testID={id}
       title={title}
       disabled={disabled}
+      loading={loading}
       buttonStyle={composedButtonStyles}
       titleStyle={composedTitleStyles}
       containerStyle={composedContainerStyles}

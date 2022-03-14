@@ -39,7 +39,7 @@ const LOGIN_ERROR_STRING = 'Error: Invalid password';
 
 import ILogin from './types';
 
-const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid }) => {
+const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid, isLoading }) => {
   return (
     <KeyboardAvoidingView style={styles.layout} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
@@ -64,6 +64,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
         size={BUTTON_SIZES_ENUM.LARGE}
         title={UNLOCK_STRING}
         extraStyles={styles.unlockButton}
+        loading={isLoading}
         onPress={handleSubmit((data) => {
           onSubmit(data);
         })}

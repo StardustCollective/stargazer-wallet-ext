@@ -52,8 +52,10 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
     validationSchema: schema,
   });
   const [isInvalid, setInvalid] = useState(false);
+  const [isLoading , setIsLoading] = useState(false);
 
   const onSubmit = (data: any) => {
+    setIsLoading(true);
     const walletController = getWalletController();
     // An unlock response of  false means migration attempt failed but user is logged in
     walletController
@@ -68,6 +70,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
         if (onLoginError) {
           onLoginError();
         }
+        setIsLoading(false);
         setInvalid(true);
       });
   };
@@ -88,6 +91,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
         errors={errors}
         register={register}
         isInvalid={isInvalid}
+        isLoading={isLoading}
       />
     </Container>
   );
