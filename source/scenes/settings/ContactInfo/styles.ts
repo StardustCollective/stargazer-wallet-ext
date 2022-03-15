@@ -112,11 +112,11 @@ const styles = StyleSheet.create({
     height: 36,
   },
   actions: {
-    width: '100%',
-    display: 'flex',
+    flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     marginTop: 120,
+    marginBottom: 24,
     justifyContent: 'space-evenly',
   },
   delete: {
