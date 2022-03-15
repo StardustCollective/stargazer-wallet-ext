@@ -93,7 +93,7 @@ const ModifyContact: FC<IModifyContactSettings> = ({
       <QRCodeScanner 
         visble={showCamera}
         onRead={(event) => {
-          handleAddressChange(event.data);
+          handleAddressChange({ nativeEvent: { text: event.data } });
           setShowCamera(false);
         }}
         onClosePress={() => {

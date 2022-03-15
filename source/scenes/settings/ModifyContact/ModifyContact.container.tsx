@@ -65,7 +65,9 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const handleAddressChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | NativeSyntheticEvent<TextInputChangeEventData>) => {
       if (ev.nativeEvent?.text) {
-        setAddress(ev.nativeEvent.text.trim());
+        const address = ev.nativeEvent.text.trim();
+        setAddress(address);
+        setValue('address', address);
       } else if (ev.target) {
         setAddress(ev.target.value.trim());
       }
