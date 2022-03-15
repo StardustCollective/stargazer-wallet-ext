@@ -37,11 +37,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   footer: {
-    // flex: 1,
-    // height: '100%',
-    // backgroundColor: 'orange',
-    // justifyContent: 'flex-',
-    // alignItems: 'center',
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   footerButtons: {
     flexDirection: 'row',
