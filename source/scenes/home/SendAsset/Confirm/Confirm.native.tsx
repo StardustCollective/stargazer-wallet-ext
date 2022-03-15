@@ -36,29 +36,33 @@ const Confirm = ({
     <>
       {
         confirmed ? (
-          <View>
-            <View style={styles.heading}>
-              <TextV3.HeaderLargeRegular color={COLORS_ENUMS.DARK_GRAY}>
-                Your transaction is underway
-              </TextV3.HeaderLargeRegular>
-            </View>
-            <View style={[styles.sendSuccessContent]}>
-              <View style={styles.wrapper}>
-                <View style={styles.checkIcon}>
-                  <CheckIcon />
+          <>
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
+              <View style={{flex: 1}}>
+                <View style={styles.heading}>
+                  <TextV3.HeaderLargeRegular color={COLORS_ENUMS.DARK_GRAY}>
+                    Your transaction is underway
+                  </TextV3.HeaderLargeRegular>
                 </View>
-                <TextV3.Body
-                  color={COLORS_ENUMS.BLACK}
-                  extraStyles={styles.message}
-                >
-                  You can follow your transaction under activity on your account screen.
-                </TextV3.Body>
-                <View style={styles.successButtonFooter}>
-                  <Button type="button" onPress={onNextPressed} title={'Next'} />
+                <View style={[styles.sendSuccessContent]}>
+                  <View style={styles.wrapper}>
+                    <View style={styles.checkIcon}>
+                      <CheckIcon />
+                    </View>
+                    <TextV3.Body
+                      color={COLORS_ENUMS.BLACK}
+                      extraStyles={styles.message}
+                    >
+                      You can follow your transaction under activity on your account screen.
+                    </TextV3.Body>
+                  </View>
                 </View>
               </View>
+              <View style={styles.successButtonFooter}>
+                <Button type="button" onPress={onNextPressed} title={'Next'} />
+              </View>
             </View>
-          </View >
+          </>
         ) : (
           <>
             <View style={styles.layout}>

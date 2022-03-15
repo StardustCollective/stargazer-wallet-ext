@@ -69,9 +69,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
   },
   successButtonFooter:{
-
+    flex: 1,
+    backgroundColor: COLORS.white,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginBottom: 24,
   }
 })
 
