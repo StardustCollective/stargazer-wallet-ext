@@ -11,8 +11,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
   },
+  qrCodeContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.50)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   qrCode: {
-    position: 'absolute',
     width: 228,
     height: 264,
     backgroundColor: COLORS.white,
@@ -23,8 +28,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
     wordBreak: 'break-all',
-    left: 66,
-    top: 48,
     zIndex: 5,
     textAlign: 'center',
     padding: 24,
