@@ -27,7 +27,7 @@ class WalletController implements IWalletController {
     this.keyringManager = new KeyringManager({
       encryptor: getEncryptor(),
     });
-    this.keyringManager.on('update', async (state: KeyringVaultState) => {
+    this.keyringManager.on('update', (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
       const { vault } = store.getState();
 
