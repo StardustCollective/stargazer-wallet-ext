@@ -32,9 +32,18 @@ class WalletController implements IWalletController {
     this.keyringManager.on('update', (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
       const { vault } = store.getState();
-      if (vault && !vault.activeWallet && state.wallets.length) {
-        this.switchWallet(state.wallets[0].id);
+
+      try {
+        if (vault && vault.activeWallet) {
+          this.switchWallet(vault.activeWallet.id);
+        } else if (state.wallets.length) {
+          this.switchWallet(state.wallets[0].id);
+        }
+      } catch (e) {
+        console.log('Error while switching wallet at login');
+        console.log(e);
       }
+
     });
 
     const utils = Object.freeze(ControllerUtils());
@@ -79,17 +88,8 @@ class WalletController implements IWalletController {
           return false;
         }
       }
-
-      if (vault.activeWallet) {
-        try {
-          await this.switchWallet(vault.activeWallet.id);
-        } catch (e) {
-          console.log('Error while switching wallet.');
-          console.log(e);
-          return false;
-        }
-      }
     }
+
     return true;
   }
 
