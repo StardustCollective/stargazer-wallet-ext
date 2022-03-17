@@ -3,6 +3,8 @@ import store from 'state/store';
 import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
+import ProcessStates from 'state/process/enums';
+import { updateLoginState } from 'state/process';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
@@ -62,6 +64,7 @@ class WalletController implements IWalletController {
   }
 
   async unLock(password: string): Promise<boolean> {
+    store.dispatch(updateLoginState(ProcessStates.IN_PROGRESS));
     await this.keyringManager.login(password);
 
     const state = store.getState();
