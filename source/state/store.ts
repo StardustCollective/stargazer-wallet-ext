@@ -9,6 +9,7 @@ import contacts from './contacts';
 import assets from './assets';
 import nfts from './nfts';
 import dapp from './dapp';
+import process from './process';
 
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -29,6 +30,7 @@ const store: Store = configureStore({
     assets,
     nfts,
     dapp,
+    process,
   }),
   middleware,
   devTools: process.env.NODE_ENV !== 'production',
