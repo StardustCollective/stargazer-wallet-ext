@@ -2,8 +2,10 @@
 // Modules
 ///////////////////////
 
-import React, { FC } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { View, Image } from 'react-native';
+import { useSelector } from 'react-redux';
+import {useNetInfo} from "@react-native-community/netinfo";
 
 ///////////////////////
 // Components
@@ -11,6 +13,12 @@ import { View, Image, TouchableOpacity } from 'react-native';
 
 import Card from 'components/Card';
 import TextV3 from 'components/TextV3';
+
+///////////////////////
+// Images
+///////////////////////
+
+import NoConnectionIcon from 'assets/images/svg/no-connection.svg'
 
 ///////////////////////
 // Helpers
@@ -31,6 +39,13 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import { IAssetInfoState } from 'state/assets/types';
 import { INFTInfoState } from 'state/nfts/types';
 import IAssetItem, { IAssetLogo } from './types';
+import { IAssetState, AssetType } from 'state/vault/types';
+
+import { RootState } from 'state/store';
+import IVaultState from 'state/vault/types';
+import IProcessState from 'state/process/types';
+import { ProcessStates } from 'state/process/enums';
+
 
 ///////////////////////
 // Styles
@@ -43,6 +58,11 @@ import styles from './styles';
 ///////////////////////
 
 const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked }: IAssetItem) => {
+  
+  const { fetchDagBalance }: IProcessState = useSelector((state: RootState) => state.process);
+  const [isConnected, setIsConnected] = useState(true);
+  const netInfo = useNetInfo();
+
   const renderNFTPriceSection = () => {
     return <View />;
   };
@@ -63,6 +83,36 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
       );
     }
   };
+
+  const renderBalance = (assetInfo: IAssetInfoState | INFTInfoState) => {
+    return (
+      <TextV3.Header dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
+        {isNFT
+          ? Number((assetInfo as INFTInfoState).quantity)
+          : formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)}
+      </TextV3.Header>
+    );
+  }
+
+  const renderBalanceSection = (asset: IAssetState, assetInfo: IAssetInfoState | INFTInfoState) => {
+
+    if (asset.type === AssetType.Constellation) {
+      // If the balance has failed to fetch display a no connection icon.
+      if (balances.constellation === undefined && !netInfo.isConnected) {
+        return (<NoConnectionIcon />)
+      } else {
+        return (renderBalance(assetInfo));
+      }
+    } else if (asset.type === AssetType.Ethereum || asset.type === AssetType.ERC20) {
+      // If the balance has failed to fetch display a no connection icon.
+      if (balances.ethereum === undefined && !netInfo.isConnected ) {
+        return (<NoConnectionIcon />)
+      } else {
+        return (renderBalance(assetInfo));
+      }
+    }
+
+  }
 
   const AssetIcon: FC<IAssetLogo> = React.memo(({ logo }) => {
     if (!logo) {
@@ -88,11 +138,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
         {isNFT ? renderNFTPriceSection() : renderAssetPriceSection(assetInfo as IAssetInfoState)}
       </View>
       <View style={styles.assetBalance}>
-        <TextV3.Header dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
-          {isNFT
-            ? Number((assetInfo as INFTInfoState).quantity)
-            : formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)}
-        </TextV3.Header>
+        {renderBalanceSection(asset, assetInfo)}
       </View>
     </Card>
   );

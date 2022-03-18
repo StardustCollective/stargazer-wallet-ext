@@ -1,0 +1,13 @@
+diff --git a/node_modules/@stardust-collective/dag4-xchain-ethereum/types/account-tracker.d.ts b/node_modules/@stardust-collective/dag4-xchain-ethereum/types/account-tracker.d.ts
+index 968a64d..5153521 100644
+--- a/node_modules/@stardust-collective/dag4-xchain-ethereum/types/account-tracker.d.ts
++++ b/node_modules/@stardust-collective/dag4-xchain-ethereum/types/account-tracker.d.ts
+@@ -16,7 +16,7 @@ export declare class AccountTracker {
+     private start;
+     private runInterval;
+     private stop;
+-    private getTokenBalances;
++    public getTokenBalances;
+ }
+ declare type TokenBalances = {
+     [address: string]: string;
