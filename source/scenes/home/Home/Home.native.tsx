@@ -27,14 +27,17 @@ import styles from './styles';
 import { IHome } from './types';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
+import IProcessState from 'state/process/types';
+import { ProcessStates } from 'state/process/enums';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
+import {BUY_DAG_URL} from 'constants/index';
+
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
-const BUY_DAG_URL = 'https://howtobuydag.com/';
 
 ///////////////////////////
 // Scene
@@ -44,6 +47,7 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
 
 
   const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { login: LoginProcessState, fetchDagBalance }: IProcessState = useSelector((state: RootState) => state.process);
   const constellationBalance  = Number(balances.constellation);
 
   const onHowToBuyDagPressed = () => {
@@ -66,7 +70,9 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
               <View style={styles.bitcoinBalance}>
                 <TextV3.Body>{`≈ ₿${balance}`}</TextV3.Body>
               </View>
-              {!constellationBalance && (
+              { !(fetchDagBalance === ProcessStates.IN_PROGRESS 
+                && LoginProcessState === ProcessStates.IN_PROGRESS) 
+                && !constellationBalance && (
                 <>
                   <ButtonV3
                     title="How to Buy DAG"
