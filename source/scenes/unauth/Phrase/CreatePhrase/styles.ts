@@ -20,6 +20,12 @@ const styles = StyleSheet.create({
     borderColor: COLORS.grey_light,
     paddingVertical: 10,
   },
+  nextButton: {
+    marginTop: 30,
+  },
+  contentContainer: {
+    flexGrow: 1,
+  }
 });
 
 export default styles;
