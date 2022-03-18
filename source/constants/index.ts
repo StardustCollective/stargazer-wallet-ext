@@ -71,3 +71,5 @@ export const DEFAULT_CURRENCY = {
   symbol: '$',
   name: 'USD',
 };
+
+export const BUY_DAG_URL = 'https://howtobuydag.com/';
