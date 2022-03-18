@@ -64,6 +64,17 @@ export const initialState: IAssetListState = {
     logo: 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png',
     decimals: 18,
   },
+  '0x23894dc9da6c94ecb439911caf7d337746575a72': {
+    id: '0x23894dc9da6c94ecb439911caf7d337746575a72',
+    address: '0x23894dc9da6c94ecb439911caf7d337746575a72',
+    label: 'Geojam',
+    symbol: 'JAM',
+    type: AssetType.ERC20,
+    priceId: 'geojam-token',
+    network: 'mainnet',
+    logo: 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png',
+    decimals: 18,
+  },
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
