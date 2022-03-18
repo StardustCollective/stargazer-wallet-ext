@@ -48,7 +48,6 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
 
   const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
   const { login: LoginProcessState, fetchDagBalance }: IProcessState = useSelector((state: RootState) => state.process);
-  const constellationBalance  = Number(balances.constellation);
 
   const onHowToBuyDagPressed = () => {
     Linking.openURL(BUY_DAG_URL);
@@ -72,7 +71,8 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
               </View>
               { !(fetchDagBalance === ProcessStates.IN_PROGRESS 
                 && LoginProcessState === ProcessStates.IN_PROGRESS) 
-                && !constellationBalance && (
+                && balances.constellation === 0
+                && (
                 <>
                   <ButtonV3
                     title="How to Buy DAG"
