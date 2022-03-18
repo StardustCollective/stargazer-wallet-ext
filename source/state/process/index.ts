@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import IProcessState from './types';
-import ProcessStates from './enums';
+import { ProcessStates } from './enums';
 
 const initialState: IProcessState = {
   login: ProcessStates.IDLE,

@@ -1,4 +1,4 @@
-import ProcessStates from './enums';
+import { ProcessStates } from './enums';
 
 export default interface IProcessState {
   login: ProcessStates;
