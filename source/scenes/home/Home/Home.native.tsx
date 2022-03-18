@@ -79,7 +79,7 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
                     size={BUTTON_SIZES_ENUM.LARGE}
                     type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
                     onPress={onHowToBuyDagPressed}
-                    extraStyles={{ marginTop: 20, marginBottom: 10 }}
+                    extraStyles={styles.buyDagButton}
                   />
                 </>
               )}

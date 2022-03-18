@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +35,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  buyDagButton: {
+    marginTop: 20, 
+    marginBottom: 10, 
+    backgroundColor: COLORS.blue_violet,
+  }
 });
 
 export default styles;
