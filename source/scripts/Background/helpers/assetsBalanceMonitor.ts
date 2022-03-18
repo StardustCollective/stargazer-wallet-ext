@@ -7,9 +7,10 @@ import { INFURA_CREDENTIAL } from 'utils/envUtil';
 import store from '../../../state/store';
 import { updateBalances } from '../../../state/vault';
 import IVaultState, { ActiveNetwork, AssetType, IWalletState } from '../../../state/vault/types';
-import IAssetListState from '../../../state/assets/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { getAccountController } from 'utils/controllersUtils';
+import { updatefetchDagBalanceState } from 'state/process';
+import { ProcessStates } from 'state/process/enums';
 
 const FIFTEEN_SECONDS = 15 * 1000;
 const ONE_MINUTE = 60 * 1000;
@@ -76,7 +77,7 @@ export class AssetsBalanceMonitor {
 
         this.hasDAGPending = true;
 
-        this.refreshDagBalance();
+        await this.refreshDagBalance();
         this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIFTEEN_SECONDS);
       }
 
@@ -113,6 +114,7 @@ export class AssetsBalanceMonitor {
   }
 
   async refreshDagBalance() {
+    store.dispatch(updatefetchDagBalanceState({processState: ProcessStates.IN_PROGRESS}));
     const bal = await dag4.account.getBalance();
 
     this.hasDAGPending = false;
@@ -120,6 +122,7 @@ export class AssetsBalanceMonitor {
     const { balances } = store.getState().vault;
     const pending = this.hasETHPending ? 'true' : undefined;
     store.dispatch(updateBalances({ ...balances, [AssetType.Constellation]: bal, pending }));
+    store.dispatch(updatefetchDagBalanceState({processState: ProcessStates.IDLE}));
   }
 
   private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
