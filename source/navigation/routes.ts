@@ -29,7 +29,7 @@ export default {
   [screens.authorized.send]: '/send/:address?',
   [screens.authorized.gasSettings]: '/gas-settings',
   // Settings Stack
-  [screens.authorized.settings]: '/settings',
+  [screens.settings.main]: '/settings',
   [screens.settings.about]: '/settings/about',
   [screens.settings.networks]: '/settings/networks',
   [screens.settings.contacts]: '/settings/contacts',
