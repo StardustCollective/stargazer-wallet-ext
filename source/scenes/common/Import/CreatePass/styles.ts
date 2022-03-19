@@ -5,13 +5,6 @@ const styles = StyleSheet.create({
   layout: {
     flex: 1,
   },
-  contentContainer: {
-    flexGrow: 1,
-  },
-  content: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
   checkIcon: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -48,7 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 50,
   },
 });
 
