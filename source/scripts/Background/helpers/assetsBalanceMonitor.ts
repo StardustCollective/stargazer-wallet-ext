@@ -1,5 +1,6 @@
 import { AccountTracker } from '@stardust-collective/dag4-xchain-ethereum';
 import { dag4 } from '@stardust-collective/dag4';
+import NetInfo from "@react-native-community/netinfo";
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
@@ -7,12 +8,12 @@ import { INFURA_CREDENTIAL } from 'utils/envUtil';
 import store from '../../../state/store';
 import { updateBalances } from '../../../state/vault';
 import IVaultState, { ActiveNetwork, AssetType, IWalletState } from '../../../state/vault/types';
-import IAssetListState from '../../../state/assets/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { getAccountController } from 'utils/controllersUtils';
+import { updatefetchDagBalanceState } from 'state/process';
+import { ProcessStates } from 'state/process/enums';
 
-const FIFTEEN_SECONDS = 15 * 1000;
-const ONE_MINUTE = 60 * 1000;
+const FIVE_SECONDS = 5 * 1000;
 
 export class AssetsBalanceMonitor {
   private priceIntervalId: any;
@@ -27,9 +28,25 @@ export class AssetsBalanceMonitor {
 
   private hasETHPending = false;
 
+  private lastIsConnected = true;
+
+  private unsubscribeNetInfo = undefined;
+
   private utils = ControllerUtils();
 
-  constructor() {}
+  constructor() {
+
+    this.unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
+      if (state.isConnected && !this.lastIsConnected) {
+        this.lastIsConnected = true;
+        await this.refreshDagBalance();
+        await this.ethAccountTracker.getTokenBalances()
+      } else {
+        this.lastIsConnected = false;
+      }
+    });
+
+  }
 
   async start() {
     const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
@@ -76,8 +93,8 @@ export class AssetsBalanceMonitor {
 
         this.hasDAGPending = true;
 
-        this.refreshDagBalance();
-        this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIFTEEN_SECONDS);
+        this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIVE_SECONDS);
+        await this.refreshDagBalance();
       }
 
       if (hasETH) {
@@ -90,13 +107,14 @@ export class AssetsBalanceMonitor {
       }
 
       this.utils.updateFiat();
-      this.priceIntervalId = setInterval(this.utils.updateFiat, 3 * ONE_MINUTE);
+      this.priceIntervalId = setInterval(this.utils.updateFiat, FIVE_SECONDS);
     }
   }
 
   stop() {
     clearInterval(this.priceIntervalId);
     clearInterval(this.dagBalIntervalId);
+    this.unsubscribeNetInfo();
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
@@ -113,13 +131,20 @@ export class AssetsBalanceMonitor {
   }
 
   async refreshDagBalance() {
-    const bal = await dag4.account.getBalance();
-
-    this.hasDAGPending = false;
-
+    store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS }));
     const { balances } = store.getState().vault;
-    const pending = this.hasETHPending ? 'true' : undefined;
-    store.dispatch(updateBalances({ ...balances, [AssetType.Constellation]: bal, pending }));
+    try {
+      const bal = await dag4.account.getBalance();
+      this.hasDAGPending = false;
+      const pending = this.hasETHPending ? 'true' : undefined;
+      store.dispatch(updateBalances({ ...balances, [AssetType.Constellation]: bal || 0, pending }));
+      store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IDLE }));
+    } catch (e) {
+      console.error(e.message);
+      return;
+    }
+
+
   }
 
   private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
@@ -141,7 +166,7 @@ export class AssetsBalanceMonitor {
         const { balances } = store.getState().vault;
         const pending = this.hasDAGPending ? 'true' : undefined;
         this.hasETHPending = false;
-        store.dispatch(updateBalances({ ...balances, [AssetType.Ethereum]: ethBalance, ...tokenBals, pending }));
+        store.dispatch(updateBalances({ ...balances, [AssetType.Ethereum]: ethBalance || 0, ...tokenBals, pending }));
       },
       10
     );

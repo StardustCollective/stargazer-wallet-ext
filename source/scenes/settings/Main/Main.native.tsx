@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, TouchableHighlight } from 'react-native';
+import { View, TouchableHighlight, Linking } from 'react-native';
 
 import Card from 'components/Card';
 import TextV3 from 'components/TextV3';
@@ -11,6 +11,9 @@ import ContactsIcon from 'assets/images/svg/contacts.svg';
 import NetworksIcon from 'assets/images/svg/networks.svg';
 import InfoIcon from 'assets/images/svg/info.svg';
 import ExitIcon from 'assets/images/svg/exit.svg';
+import coinsIcon from 'assets/images/svg/coins.svg'
+
+import {BUY_DAG_URL} from 'constants/index';
 
 import styles from './styles';
 
@@ -39,6 +42,11 @@ const Main: FC<IMainSettings> = ({
   onContactsLinkClicked,
   version,
 }) => {
+
+  const onHowToBuyDagPressed = () => {
+    Linking.openURL(BUY_DAG_URL);
+  }
+
   const RenderSettingsItem = React.memo(({ label, IconImageOrComponent, onClick }: IRenderSettingsItemProps) => {
     return (
       <Card id={`settings-${label.toLowerCase()}`} onClick={onClick} style={styles.card}>
@@ -73,6 +81,13 @@ const Main: FC<IMainSettings> = ({
       IconImageOrComponent: NetworksIcon,
       onClick: onNetworkLinkClicked,
     },
+    {
+      label: 'How to buy DAG',
+      key: 'How to buy DAG',
+      IconImageOrComponent: coinsIcon,
+      onClick: onHowToBuyDagPressed,
+      imageStyles: styles.linkedIconImage,
+    }
   ];
 
   return (

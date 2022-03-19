@@ -12,6 +12,7 @@ export const COLORS = {
   purple: '#521e8a',
   purple_medium: '#c2a8de',
   purple_light: '#e0d3ee',
+  blue_violet: '#534AAE',
   accent_1: '#1A88A3',
   monotone_1: '#AAA3D6',
   white: '#fff',

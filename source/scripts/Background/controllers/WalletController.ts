@@ -3,6 +3,8 @@ import store from 'state/store';
 import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
+import { ProcessStates } from 'state/process/enums';
+import { updateLoginState } from 'state/process';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
@@ -27,21 +29,21 @@ class WalletController implements IWalletController {
     this.keyringManager = new KeyringManager({
       encryptor: getEncryptor(),
     });
-    this.keyringManager.on('update', (state: KeyringVaultState) => {
+    this.keyringManager.on('update', async (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
       const { vault } = store.getState();
 
       try {
         if (vault && vault.activeWallet) {
-          this.switchWallet(vault.activeWallet.id);
+          await this.switchWallet(vault.activeWallet.id);
         } else if (state.wallets.length) {
-          this.switchWallet(state.wallets[0].id);
+          await this.switchWallet(state.wallets[0].id);
         }
       } catch (e) {
         console.log('Error while switching wallet at login');
         console.log(e);
       }
-
+      store.dispatch(updateLoginState({processState: ProcessStates.IDLE}));
     });
 
     const utils = Object.freeze(ControllerUtils());
@@ -71,6 +73,7 @@ class WalletController implements IWalletController {
   }
 
   async unLock(password: string): Promise<boolean> {
+    store.dispatch(updateLoginState({processState: ProcessStates.IN_PROGRESS}));
     await this.keyringManager.login(password);
 
     const state = store.getState();
