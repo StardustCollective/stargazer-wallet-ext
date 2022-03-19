@@ -41,8 +41,6 @@ import ILogin from './types';
 
 const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid, isLoading }) => {
   return (
-
-    // <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={100}>
     <KeyboardAvoidingView style={styles.layout} behavior={Platform.OS === "ios" ? "padding" : "height"} enabled keyboardVerticalOffset={10}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
