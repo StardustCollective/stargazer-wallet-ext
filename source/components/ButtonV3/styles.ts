@@ -1,11 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
+import { getDeviceId } from 'react-native-device-info';
 
 const styles = StyleSheet.create({
   base: {
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 145,
+    minWidth: getDeviceId().includes('iPod') ? 120 : 145,
     paddingHorizontal: 30,
     borderWidth: 0,
     borderStyle: 'solid',
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     minWidth: 144,
   },
   buttonLarge: {
-    height: 48,
+    height: getDeviceId().includes('iPod') ? 40 : 48,
     borderRadius: 24,
   },
   titleSmall: {

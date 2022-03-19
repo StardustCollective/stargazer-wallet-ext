@@ -4,7 +4,7 @@
 ///////////////////////////
 
 import React from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 
 ///////////////////////////
 // Components  
@@ -35,33 +35,36 @@ const CreatePhrase = ({
 }) => {
 
   return (
-    <Layout title={title}>
-      <TextV3.BodyStrong color={COLORS_ENUMS.DARK_GRAY}>
-        {description}
-      </TextV3.BodyStrong>
-      {!passed && phrases && (
-        <View style={styles.phraseContainer}>
-          {phrases.split(' ').map((phrase: string, index: number) => (
-            <View key={phrase} style={styles.phrase} >
-              <TextV3.CaptionStrong color={COLORS_ENUMS.GRAY_100}>
-                {String(index + 1).padStart(2, '0')}.{'  '}
-                <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY}>
-                  {phrase}
+    <ScrollView contentContainerStyle={styles.contentContainer}>
+      <Layout title={title}>
+        <TextV3.BodyStrong color={COLORS_ENUMS.DARK_GRAY}>
+          {description}
+        </TextV3.BodyStrong>
+        {!passed && phrases && (
+          <View style={styles.phraseContainer}>
+            {phrases.split(' ').map((phrase: string, index: number) => (
+              <View key={phrase} style={styles.phrase} >
+                <TextV3.CaptionStrong color={COLORS_ENUMS.GRAY_100}>
+                  {String(index + 1).padStart(2, '0')}.{'  '}
+                  <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY}>
+                    {phrase}
+                  </TextV3.CaptionStrong>
                 </TextV3.CaptionStrong>
-              </TextV3.CaptionStrong>
-            </View>
-          ))}
+              </View>
+            ))}
+          </View>
+        )}
+        <View style={styles.buttonContainer}>
+          <ButtonV3
+            type={BUTTON_TYPES_ENUM.PRIMARY}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            title={passed ? "Let's do it" : "I've written it down"}
+            onPress={nextHandler}
+            extraStyles={styles.nextButton}
+          />
         </View>
-      )}
-      <View style={styles.buttonContainer}>
-        <ButtonV3
-          type={BUTTON_TYPES_ENUM.PRIMARY}
-          size={BUTTON_SIZES_ENUM.LARGE}
-          title={passed ? "Let's do it" : "I've written it down"}
-          onPress={nextHandler}
-        />
-      </View>
-    </Layout>
+      </Layout>
+    </ScrollView>
   );
 
 }

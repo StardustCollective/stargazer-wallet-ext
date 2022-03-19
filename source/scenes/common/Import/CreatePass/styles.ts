@@ -2,9 +2,8 @@ import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
-  content: {
+  layout: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   checkIcon: {
     justifyContent: 'center',
@@ -42,6 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginTop: 50,
   },
 });
 

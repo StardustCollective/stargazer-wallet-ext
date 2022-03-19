@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
+import { getDeviceId } from 'react-native-device-info';
 
 const styles = StyleSheet.create({
   layout: {
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
     height: 192,
   },
   started: {
-    marginBottom: 56,
+    marginBottom: getDeviceId().includes('iPod') ? 30 : 56,
   },
 });
 

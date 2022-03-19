@@ -41,9 +41,13 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
+    marginTop: 50,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
+  contentContainer: {
+    flexGrow: 1
+  }
 });
 
 export default styles;
