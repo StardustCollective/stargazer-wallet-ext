@@ -42,7 +42,7 @@ const homeHeader = ({
 }: IHomeHeader) => {
 
   const onMenuButtonClicked = () => {
-    navigation.navigate(screens.authorized.settings)
+    navigation.navigate(screens.settings.main)
   }
 
   const renderHeaderRight = () => {
@@ -51,6 +51,7 @@ const homeHeader = ({
       return (
       <Pressable
         onPress={onMenuButtonClicked}
+        mr="5"
       >
         <HamburgerIcon testId="header-moreButton" color="white"/>
       </Pressable>)
@@ -65,7 +66,7 @@ const homeHeader = ({
   return {
     ...config,
     headerLeft: () => (
-      <View>
+      <View style={{marginLeft: 20}}>
         <LogoImage width={30} height={30}/>
       </View>
 
