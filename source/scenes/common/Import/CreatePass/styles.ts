@@ -2,6 +2,12 @@ import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
+  layout: {
+    flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
+  },
   content: {
     flex: 1,
     backgroundColor: COLORS.white,
@@ -42,6 +48,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    marginTop: 15,
   },
 });
 
