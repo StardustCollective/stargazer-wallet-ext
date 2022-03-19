@@ -4,7 +4,7 @@ import { getDeviceId } from 'react-native-device-info';
 
 const styles = StyleSheet.create({
   layout: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: COLORS.primary,
   },
   contentContainer: {
