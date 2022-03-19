@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   base: {
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: getDeviceId().includes('iPod') ? 100 : 145,
+    minWidth: getDeviceId().includes('iPod') ? 120 : 145,
     paddingHorizontal: 30,
     borderWidth: 0,
     borderStyle: 'solid',
