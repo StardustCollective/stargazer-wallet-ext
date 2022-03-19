@@ -34,6 +34,7 @@ const ImportPhrase: FC<IImportPhrase> = ({
         returnKeyType="done"
         autoCorrect={false} 
         control={control}
+        keyboardType='web-search'
         inputContainerStyle={styles.phraseInput}
         multiline
         fullWidth
