@@ -109,13 +109,17 @@ const WalletsComponent: FC<IWalletsSettings> = ({
               <View style={walletStyles}>
                 {renderCheckIcon(wallet.id, activeWallet.id)}
                 {renderStargazerIcon()}
-                <View testID={wallet.label}>
-                  <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
-                    {wallet.label}
-                  </TextV3.Caption>
-                  <TextV3.Caption extraStyles={styles.textSmall}>Multi Chain Wallet</TextV3.Caption>
+                <View testID={wallet.label} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{justifyContent: 'flex-end'}}>
+                    <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
+                      {wallet.label}
+                    </TextV3.Caption>
+                    <TextV3.Caption extraStyles={styles.textSmall}>Multi Chain Wallet</TextV3.Caption>
+                  </View>
+                  <View style={{flex: 1}}>
+                    {renderInfoIcon(wallet.id)}
+                  </View>
                 </View>
-                {renderInfoIcon(wallet.id)}
               </View>
             </TouchableOpacity>
           );
