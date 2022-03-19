@@ -1,12 +1,16 @@
 import { StyleSheet } from 'react-native'
 import { COLORS } from 'assets/styles/_variables';
+import { getDeviceId } from 'react-native-device-info';
 
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
     backgroundColor: COLORS.primary,
+  },
+  contentContainer: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexGrow: 1,
   },
   logo: {
     marginTop: 56,
@@ -19,7 +23,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   unlockButton: {
-    marginBottom: 56,
+    marginBottom: getDeviceId().includes('iPod') ? 10 : 56,
   }
 });
 
