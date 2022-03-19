@@ -47,7 +47,7 @@ const CreatePass: FC<ICreatePass> = ({
   ///////////////////////////
 
   return (
-    <KeyboardAvoidingView style={styles.layout} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView style={styles.layout} behavior={Platform.OS === "ios" ? "position" : "height"}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Layout title={title}>
           {passed ? (
