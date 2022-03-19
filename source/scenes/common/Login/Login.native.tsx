@@ -70,7 +70,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
             onSubmit(data);
           })}
         />
-        <Link extraStyles={{ fontSize: 12, marginBottom: 10 }} color="monotoneOne" onPress={importClicked} title="Reset and restore from recovery seed phrase" />
+        <Link extraStyles={styles.recoveryButton} color="monotoneOne" onPress={importClicked} title="Reset and restore from recovery seed phrase" />
       </ScrollView>
     </KeyboardAvoidingView>
   );

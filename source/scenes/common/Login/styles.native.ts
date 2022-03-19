@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
   },
   unlockButton: {
     marginBottom: getDeviceId().includes('iPod') ? 10 : 56,
+  },
+  recoveryButton: {
+    fontSize: getDeviceId().includes('iPod') ? 12 : 16, 
+    marginBottom: 10 
   }
 });
 
