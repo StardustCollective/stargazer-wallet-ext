@@ -34,19 +34,7 @@ export class AssetsBalanceMonitor {
 
   private utils = ControllerUtils();
 
-  constructor() {
-
-    this.unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
-      if (state.isConnected && !this.lastIsConnected) {
-        this.lastIsConnected = true;
-        await this.refreshDagBalance();
-        await this.ethAccountTracker.getTokenBalances()
-      } else {
-        this.lastIsConnected = false;
-      }
-    });
-
-  }
+  constructor() {}
 
   async start() {
     const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
@@ -82,6 +70,16 @@ export class AssetsBalanceMonitor {
       //   const { balances } = store.getState().vault;
       //   store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
       // })
+      
+      this.unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
+        if (state.isConnected && !this.lastIsConnected) {
+          this.lastIsConnected = true;
+          await this.refreshDagBalance();
+          await this.ethAccountTracker.getTokenBalances()
+        } else {
+          this.lastIsConnected = false;
+        }
+      });
 
       if (hasDAG) {
         this.subscription = dag4.monitor.observeMemPoolChange().subscribe((up) => this.pollPendingTxs(up));
