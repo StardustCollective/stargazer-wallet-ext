@@ -3,6 +3,8 @@ import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   fullselect: {
+    flex: 1,
+    justifyContent: 'center',
     flexDirection: 'column',
     height: 60,
     transition: 'all 300ms',

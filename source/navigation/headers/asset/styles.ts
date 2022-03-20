@@ -3,6 +3,7 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   linkIcon: {
+    marginRight: 10,
   },
   active: {
     backgroundColor: COLORS.gray_light,

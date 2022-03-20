@@ -26,14 +26,14 @@ import screens from '../screens';
 // Navigation
 ///////////////////////////
 
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import defaultHeader from 'navigation/headers/default'
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const DEFAULT_TITLE = 'Stargazer';
 
 ///////////////////////////
