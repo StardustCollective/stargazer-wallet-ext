@@ -70,7 +70,10 @@ export class AssetsBalanceMonitor {
       //   const { balances } = store.getState().vault;
       //   store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
       // })
-      
+
+      if(this.unsubscribeNetInfo){
+        this.unsubscribeNetInfo();
+      }
       this.unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
         if (state.isConnected && !this.lastIsConnected) {
           this.lastIsConnected = true;
