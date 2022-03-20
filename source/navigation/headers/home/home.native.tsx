@@ -9,6 +9,7 @@ import {
   HamburgerIcon, 
   Pressable,
 } from "native-base"
+import { scale } from 'react-native-size-matters';
 
 
 ///////////////////////////
@@ -16,6 +17,13 @@ import {
 ///////////////////////////
 
 import LogoImage from 'assets/images/logo.svg';
+
+
+///////////////////////////
+// Styles
+///////////////////////////
+
+import styles from './styles';
 
 ///////////////////////////
 // Screens
@@ -66,8 +74,8 @@ const homeHeader = ({
   return {
     ...config,
     headerLeft: () => (
-      <View style={{marginLeft: 20}}>
-        <LogoImage width={30} height={30}/>
+      <View style={styles.logo}>
+        <LogoImage width={scale(30)} height={scale(30)}/>
       </View>
 
     ),
