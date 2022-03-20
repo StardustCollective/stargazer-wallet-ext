@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
   assetContentContainer: {
     // paddingBottom: 50,
     backgroudColor: 'white',
+    flexGrow: 1,
   },
   mask: {
     flexGrow: 1,
