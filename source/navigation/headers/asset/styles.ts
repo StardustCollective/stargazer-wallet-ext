@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
+import { scale } from 'react-native-size-matters';
 
 const styles = StyleSheet.create({
   linkIcon: {
-    marginRight: 10,
+    marginRight: scale(10),
   },
   active: {
     backgroundColor: COLORS.gray_light,
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
   },
   qrIcon: {
-    marginRight: 10,
+    marginRight: scale(8),
   },
   buttons: {
     flexDirection: 'row',

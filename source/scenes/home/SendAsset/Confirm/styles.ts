@@ -8,9 +8,9 @@ const styles = StyleSheet.create({
   },
   content: {
     marginHorizontal: 30,
+    backgroundColor: COLORS.grey_light_100,
   },
   confirm: {
-    // flex: 1
   },
   header: {
     marginVertical: 30,
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   section: {
     borderTopWidth: 1,
     borderStyle: 'solid',
-    borderColor: COLORS.gray_light,
+    borderColor: COLORS.grey_light,
     marginBottom: 10,
     paddingVertical: 10,
   },
@@ -31,13 +31,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderStyle: 'solid',
-    borderColor: COLORS.gray_light,
+    borderColor: COLORS.grey_light,
   },
   maxTotalLabel: {
     flex: 1,
   },
   footer: {
-    flex: 1,
+    backgroundColor: COLORS.grey_light_100,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },

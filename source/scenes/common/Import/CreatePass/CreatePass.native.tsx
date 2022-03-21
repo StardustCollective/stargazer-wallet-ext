@@ -3,7 +3,9 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { scale } from 'react-native-size-matters';
 
 ///////////////////////////
 // Components
@@ -29,6 +31,12 @@ import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////////
+// Constants
+///////////////////////////
+
+const EXTRA_SCROLL_HEIGHT = scale(25);
+
+///////////////////////////
 // Scene
 ///////////////////////////
 
@@ -47,8 +55,7 @@ const CreatePass: FC<ICreatePass> = ({
   ///////////////////////////
 
   return (
-    <KeyboardAvoidingView style={styles.layout} keyboardVerticalOffset={-50} behavior={Platform.OS === "ios" ? "position" : "height"} enabled>
-      <ScrollView contentContainerStyle={styles.containerStyle}>
+    <KeyboardAwareScrollView extraScrollHeight={EXTRA_SCROLL_HEIGHT} contentContainerStyle={styles.layout}>
         <Layout title={title}>
           {passed ? (
             <View style={styles.checkIcon}>
@@ -105,8 +112,7 @@ const CreatePass: FC<ICreatePass> = ({
             />
           </View>
         </Layout>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 
