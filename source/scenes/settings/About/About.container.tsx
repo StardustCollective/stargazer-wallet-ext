@@ -10,7 +10,7 @@ const SUPPORT_LINK = 'https://t.me/StardustSupport';
 const SUPPORT_LABEL = 'https://t.me/StardustSupport';
 const TERMS_LINK = 'https://www.stargazer.network/assets/static/terms.html';
 const TERMS_LABEL = 'https://www.stargazer.network/.../terms.html';
-const PRIVACY_LINK = 'https://www.stargazer.network/assets/static/privacy.html';
+const PRIVACY_LINK = 'https://constellationnetwork.io/privacy-policy/';
 const PRIVACY_LABEL = 'https://www.stargazer.network/.../privacy.html';
 
 const AboutContainer: FC = () => {

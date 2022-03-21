@@ -7,11 +7,12 @@ import QRCodeIcon from 'assets/images/svg/qrcode.svg';
 import { COLORS } from 'assets/styles/_variables';
 import defaultHeader from '../default';
 import styles from './styles';
+import { moderateScale } from 'react-native-size-matters';
 
 import IAssetHeader from './types';
 
 
-const ICON_SIZE = 25
+const ICON_SIZE = moderateScale(25)
 
 const assetHeader = ({ navigation, asset, address, addressUrl, onQrCodePress }: IAssetHeader) => {
   return {
@@ -32,7 +33,7 @@ const assetHeader = ({ navigation, asset, address, addressUrl, onQrCodePress }: 
           style={styles.linkIcon}
         >
           <View >
-            <AddressLinkImage height={32} />
+            <AddressLinkImage height={moderateScale(30)} />
           </View>
         </TouchableOpacity>
       </View>

@@ -3,7 +3,7 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   layout: {
-    flex: 1,
+    flexGrow: 1,
   },
   checkIcon: {
     justifyContent: 'center',

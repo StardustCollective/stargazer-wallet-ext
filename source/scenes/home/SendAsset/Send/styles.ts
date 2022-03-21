@@ -3,8 +3,8 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   layout: {
-    flex: 1,
     backgroundColor: COLORS.grey_light_100,
+    flexGrow: 1,
   },
   content: {
     flex: 1,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   footerButtons: {
     flexDirection: 'row',
-    margin: 10,
+    marginVertical: 24,
     justifyContent: 'space-evenly'
   },
   button: {
