@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from 'assets/styles/_variables';
+import { COLORS, FONTS, SHADOWS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   button: {
@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 50,
+    padding: 8,
   },
   buttonTitle: {
     fontFamily: FONTS.rubik,
@@ -20,17 +21,16 @@ const styles = StyleSheet.create({
   },
   secondary: {
     backgroundColor: COLORS.primary_lighter_2,
-
   },
   secondary_title: {
-    color: COLORS.purple
+    color: COLORS.purple,
   },
   disabled: {
-    backgroundColor: COLORS.grey_light
+    backgroundColor: COLORS.gray_light,
   },
   disabledTitle: {
-    color: COLORS.grey_100
-  }
+    color: COLORS.grey_100,
+  },
 });
 
 export default styles;

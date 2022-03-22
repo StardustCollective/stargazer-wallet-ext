@@ -1,42 +1,109 @@
 import React, { FC, useState, MouseEvent, ReactNode } from 'react';
 import { Input as RNEInput } from 'react-native-elements';
-import { View, KeyboardType } from 'react-native';
+import { KeyboardType, StyleSheet } from 'react-native';
+import { Controller } from 'react-hook-form';
 
 import styles from './styles';
 
 interface ITextInput {
-  id?: string;
+  name: string;
   placeholder: string;
-  type?: 'text' | 'password' | 'number';
-  label?: string;
+  type: 'text' | 'password' | 'number';
+  label: string;
+  control: any;
+  inputContainerStyle: object;
+  inputStyle: object;
+  multiline: boolean;
+  fullWidth: boolean;
+  visiblePassword: boolean;
+  defaultValue: string;
+  returnKeyType: string;
+  blurOnSubmit: boolean;
+  onChange: (text: any) => void;
+  onSubmit: (ev: any) => void;
 }
 
 const TextInput: FC<ITextInput> = ({
-  id,
+  fullWidth = true,
   type = 'text',
   placeholder = '',
   label = '',
+  name = '',
+  control,
+  visiblePassword = false,
+  inputContainerStyle = {},
+  inputStyle = {},
+  multiline = false,
+  defaultValue = '',
+  returnKeyType = 'done',
+  blurOnSubmit = true,
+  onChange,
+  ...otherProps
 }) => {
-
   let keyboardType: KeyboardType = 'default';
 
-  if(type === 'number'){
-    keyboardType = 'numeric'
+  if (type === 'number') {
+    keyboardType = 'numeric';
   }
 
-  return (
-    <>
-      <RNEInput
-        placeholder={placeholder}
-        secureTextEntry={type === 'password'}
-        inputContainerStyle={styles.inputContainer}
-        labelStyle={styles.label}
-        label={label}
-        keyboardType={keyboardType}
-      />
-    </>
-  );
+  const inputContainerStyles = StyleSheet.flatten([
+    styles.inputContainer,
+    fullWidth ? styles.fullWidth : null,
+    inputContainerStyle,
+  ]);
+  const inputComposedStyles = StyleSheet.flatten([styles.input, inputStyle]);
 
+  const [showed, setShowed] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowed(!showed);
+  };
+
+  const passwordProps =
+    type === 'password' && visiblePassword
+      ? {
+          rightIcon: {
+            name: showed ? 'visibility-off' : 'visibility',
+            size: 20,
+            onPress: handleClickShowPassword,
+          },
+          rightIconContainerStyle: {
+            paddingRight: 15,
+          },
+        }
+      : {};
+
+  const secureTextEntry = type === 'password' && !showed;
+  return (
+    <Controller
+      control={control}
+      as={
+        <RNEInput
+          placeholder={placeholder}
+          secureTextEntry={secureTextEntry}
+          inputStyle={inputComposedStyles}
+          inputContainerStyle={inputContainerStyles}
+          labelStyle={styles.label}
+          label={label}
+          keyboardType={keyboardType}
+          multiline={multiline}
+          returnKeyType={returnKeyType}
+          blurOnSubmit={blurOnSubmit}
+          {...passwordProps} // eslint-disable-line
+          {...otherProps} // eslint-disable-line
+        />
+      }
+      onChange={([text]) => {
+        if(onChange){
+          onChange(text);
+        }
+        return text;
+      }}
+      name={name}
+      defaultValue={defaultValue}
+      onChangeName="onChangeText"
+    />
+  );
 };
 
 export default TextInput;

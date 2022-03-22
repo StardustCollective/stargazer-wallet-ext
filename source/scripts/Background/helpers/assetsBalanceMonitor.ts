@@ -1,38 +1,49 @@
 import { AccountTracker } from '@stardust-collective/dag4-xchain-ethereum';
-import store from '../../../state/store';
-import { updateBalances } from '../../../state/vault';
-import IVaultState, { ActiveNetwork, AssetType, IWalletState } from '../../../state/vault/types';
-import IAssetListState from '../../../state/assets/types';
 import { dag4 } from '@stardust-collective/dag4';
+import NetInfo from "@react-native-community/netinfo";
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
+import { INFURA_CREDENTIAL } from 'utils/envUtil';
+import store from '../../../state/store';
+import { updateBalances } from '../../../state/vault';
+import IVaultState, { ActiveNetwork, AssetType, IWalletState } from '../../../state/vault/types';
+import ControllerUtils from '../controllers/ControllerUtils';
+import { getAccountController } from 'utils/controllersUtils';
+import { updatefetchDagBalanceState } from 'state/process';
+import { ProcessStates } from 'state/process/enums';
 
-const FIFTEEN_SECONDS = 15 * 1000;
-const ONE_MINUTE = 60 * 1000;
+const FIVE_SECONDS = 5 * 1000;
 
 export class AssetsBalanceMonitor {
-
   private priceIntervalId: any;
+
   private dagBalIntervalId: any;
 
-  private ethAccountTracker = new AccountTracker({infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' }});
+  private ethAccountTracker = new AccountTracker({ infuraCreds: { projectId: INFURA_CREDENTIAL || '' } });
+
   private subscription: Subscription;
 
   private hasDAGPending = false;
+
   private hasETHPending = false;
 
-  constructor () {}
+  private lastIsConnected = true;
 
-  start () {
+  private unsubscribeNetInfo = undefined;
 
-    const {activeWallet, activeNetwork}: IVaultState = store.getState().vault;
+  private utils = ControllerUtils();
+
+  constructor() {}
+
+  async start() {
+    const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
 
     if (activeWallet) {
+      let hasDAG = false;
+      let hasETH = false;
 
-      let hasDAG = false, hasETH = false;
-
-      activeWallet.assets.forEach(a => {
+      activeWallet.assets.forEach((a) => {
         hasDAG = hasDAG || a.type === AssetType.Constellation;
         hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
       });
@@ -60,9 +71,22 @@ export class AssetsBalanceMonitor {
       //   store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
       // })
 
+      if(this.unsubscribeNetInfo){
+        this.unsubscribeNetInfo();
+      }
+      this.unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
+        if (state.isConnected && !this.lastIsConnected) {
+          this.lastIsConnected = true;
+          await this.refreshDagBalance();
+          await this.ethAccountTracker.getTokenBalances()
+        } else {
+          this.lastIsConnected = false;
+        }
+      });
+
       if (hasDAG) {
         this.subscription = dag4.monitor.observeMemPoolChange().subscribe((up) => this.pollPendingTxs(up));
-        dag4.monitor.startMonitor();
+        await dag4.monitor.startMonitor();
 
         if (this.dagBalIntervalId) {
           clearInterval(this.dagBalIntervalId);
@@ -70,8 +94,8 @@ export class AssetsBalanceMonitor {
 
         this.hasDAGPending = true;
 
-        this.refreshDagBalance();
-        this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIFTEEN_SECONDS);
+        this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIVE_SECONDS);
+        await this.refreshDagBalance();
       }
 
       if (hasETH) {
@@ -83,14 +107,15 @@ export class AssetsBalanceMonitor {
         clearInterval(this.priceIntervalId);
       }
 
-      window.controller.stateUpdater();
-      this.priceIntervalId = setInterval(window.controller.stateUpdater, 3 * ONE_MINUTE);
+      this.utils.updateFiat();
+      this.priceIntervalId = setInterval(this.utils.updateFiat, FIVE_SECONDS);
     }
   }
 
-  stop () {
+  stop() {
     clearInterval(this.priceIntervalId);
     clearInterval(this.dagBalIntervalId);
+    this.unsubscribeNetInfo();
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
@@ -100,39 +125,51 @@ export class AssetsBalanceMonitor {
     this.ethAccountTracker.config(null, null, null, null);
   }
 
-  private async pollPendingTxs (update: DagWalletMonitorUpdate) {
-
+  private async pollPendingTxs(update: DagWalletMonitorUpdate) {
     if (update.pendingHasConfirmed) {
-      window.controller.wallet.account.getLatestTxUpdate();
+      getAccountController().getLatestTxUpdate();
     }
   }
 
-
-  async refreshDagBalance () {
-    const bal = await dag4.account.getBalance();
-
-    this.hasDAGPending = false;
-
+  async refreshDagBalance() {
+    store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS }));
     const { balances } = store.getState().vault;
-    const pending = this.hasETHPending ? 'true' : undefined
-    store.dispatch(updateBalances({ ...balances, [AssetType.Constellation]: bal, pending }));
+    try {
+      const bal = await dag4.account.getBalance();
+      this.hasDAGPending = false;
+      const pending = this.hasETHPending ? 'true' : undefined;
+      store.dispatch(updateBalances({ ...balances, [AssetType.Constellation]: bal || 0, pending }));
+      store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IDLE }));
+    } catch (e) {
+      console.error(e.message);
+      return;
+    }
+
+
   }
 
   private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
-    const assets: IAssetListState = store.getState().assets;
+    const { assets } = store.getState();
     const chainId = activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' ? 1 : 3;
-    const tokens = activeWallet.assets.filter(a => a.type === AssetType.ERC20).map(a => {
-      const { address, decimals } = assets[a.id];
-      return { contractAddress: address, decimals };
-    });
-    const ethAsset = activeWallet.assets.find(a => a.type === AssetType.Ethereum);
+    const tokens = activeWallet.assets
+      .filter((a) => a.type === AssetType.ERC20)
+      .map((a) => {
+        const { address, decimals } = assets[a.id];
+        return { contractAddress: address, decimals };
+      });
+    const ethAsset = activeWallet.assets.find((a) => a.type === AssetType.Ethereum);
 
-    this.ethAccountTracker.config(ethAsset.address, tokens, chainId, (ethBalance, tokenBals) => {
-      const { balances } = store.getState().vault;
-      const pending = this.hasDAGPending ? 'true' : undefined
-      this.hasETHPending = false;
-      store.dispatch(updateBalances({ ...balances, [AssetType.Ethereum]: ethBalance, ...tokenBals, pending }));
-    }, 10);
+    this.ethAccountTracker.config(
+      ethAsset.address,
+      tokens,
+      chainId,
+      (ethBalance, tokenBals) => {
+        const { balances } = store.getState().vault;
+        const pending = this.hasDAGPending ? 'true' : undefined;
+        this.hasETHPending = false;
+        store.dispatch(updateBalances({ ...balances, [AssetType.Ethereum]: ethBalance || 0, ...tokenBals, pending }));
+      },
+      10
+    );
   }
-
 }

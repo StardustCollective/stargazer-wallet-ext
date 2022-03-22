@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
 import { AssetType } from 'state/vault/types';
-import { useController } from 'hooks/index';
 import { BigNumber, ethers } from 'ethers';
 import { IAssetInfoState } from 'state/assets/types';
 import { estimateGasLimit, estimateGasLimitForTransfer } from 'utils/ethUtil';
+import { getAccountController } from 'utils/controllersUtils';
 
 type IUseGasEstimate = {
   toAddress?: string;
@@ -13,13 +13,13 @@ type IUseGasEstimate = {
 };
 
 function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate) {
-  const controller = useController();
   const [gasPrice, setGasPrice] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
   const [toEthAddress, setToEthAddress] = useState<string>(toAddress);
   const [sendAmount, setSendAmount] = useState<string>('');
+  const accountController = getAccountController();
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
@@ -43,7 +43,7 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
   };
 
   const handleGetTxFee = async () => {
-    controller.wallet.account.getLatestGasPrices().then((gas) => {
+    accountController.getLatestGasPrices().then((gas) => {
       let gasPrices: number[] = [...gas];
       let uniquePrices = [...new Set(gas)].length;
       if (uniquePrices === 1) {

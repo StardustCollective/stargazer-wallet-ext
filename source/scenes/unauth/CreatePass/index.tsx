@@ -1,1 +1,1 @@
-export { default } from './CreatePass';
+export { default } from './CreatePass.container';

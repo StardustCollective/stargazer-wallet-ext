@@ -1,10 +1,10 @@
 import React from 'react';
 
 ///////////////////////////
-// Hooks
+// Controllers
 ///////////////////////////
 
-import { useController } from 'hooks/index';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Screens
@@ -13,16 +13,33 @@ import { useController } from 'hooks/index';
 import Start from 'scenes/home/Start';
 import Home from 'scenes/home/Home';
 import Asset from 'scenes/home/Asset';
-import Send, { SendConfirm } from 'scenes/home/Send';
-import GasSettings from 'scenes/home/Send/GasSettings';
-import AddAsset from 'scenes/home/Asset/AddAsset';
+import Send from 'scenes/home/SendAsset/Send';
+import Confirm from 'scenes/home/SendAsset/Confirm';
 import Import from 'scenes/common/Import';
+import Main from 'scenes/settings/Main';
+import About from 'scenes/settings/About';
+import Networks from 'scenes/settings/Networks';
+import Contacts from 'scenes/settings/Contacts';
+import ContactInfo from 'scenes/settings/ContactInfo';
+import ModifyContact from 'scenes/settings/ModifyContact';
+import Wallets from 'scenes/settings/Wallets';
+import AddWallet from 'scenes/settings/AddWallet';
+import CreateWallet from 'scenes/settings/NewAccount';
+import walletPhrase from 'scenes/settings/Phrase';
+import ManageWallet from 'scenes/settings/ManageWallet';
+import RemoveWallet from 'scenes/settings/RemoveWallet';
+import PrivateKey from 'scenes/settings/PrivateKey';
+import ImportWallet from 'scenes/settings/ImportWallet';
+import ImportAccount from 'scenes/settings/ImportAccount';
+import ImportPhrase from 'scenes/settings/ImportPhrase';
+import ConnectedSites from 'scenes/settings/ConnectedSites';
+
 
 ///////////////////////////
 // Stacks
 ///////////////////////////
 
-import SettingStack from './Settings';
+import SettingsStack from './Settings';
 
 ///////////////////////////
 // Screens Names
@@ -35,7 +52,8 @@ import screens from '../screens';
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
-import defaultHeader from 'navigation/headers/default'
+import defaultHeader from 'navigation/headers/default';
+
 ///////////////////////////
 // Constants
 ///////////////////////////
@@ -49,49 +67,67 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   confirm: 'Confirm',
   send: 'Send',
   gasSettings: 'Gas Settings',
-  settings: 'Settings'
-}
+  settings: 'Settings',
+  about: 'About',
+  networks: 'Networks',
+  contacts: 'Contacts',
+  modifyContact: 'Add Contact',
+  wallets: 'Wallets',
+  contactInfo: 'Contact Info',
+  addWallet: 'Add Wallet',
+  createWallet: 'Create Wallet',
+  walletPhrase: 'Wallet Phrase',
+  manageWallet: 'Manage Wallet',
+  removeWallet: 'Delete Wallet',
+  privateKey: 'Private Key',
+  importWallet: 'Import Wallet',
+  importAccount: 'Import Account',
+  importPhrase: 'Import Phrase',
+  connectedSites: 'Connected Sites',
+};
 
 const Auth = () => {
-
-  const controller = useController();
-  const isUnlocked = controller.wallet.isUnlocked();
-  const redirectRoute = controller.appRoute();
-  const lockedRoute = screens.authorized.start;
-
-  let unlockedRoute = screens.authorized.home;
-
-  // If there is a pending confirmation for a send
-  // the user will be returned to the confirm screen
-  // if they exit and return to the app.
-  if (
-    redirectRoute === screens.authorized.sendConfirm &&
-    controller.wallet.account.getTempTx()
-  ) {
-    unlockedRoute = screens.authorized.sendConfirm;
-  }
-
-  let initialRoute = isUnlocked ? unlockedRoute : lockedRoute;
+  const walletController = getWalletController();
+  const isUnlocked = walletController.isUnlocked();
+  const initialRoute = isUnlocked ? screens.authorized.home : screens.authorized.start;
 
   return (
     <Stack.Navigator
-      screenOptions={(navigation) => ({ 
+      screenOptions={(navigation) => ({
         ...defaultHeader(navigation),
       })}
-      initialRouteName={initialRoute}>
-
-      {!isUnlocked && <Stack.Screen options={{ headerShown: false }} name={screens.authorized.start} component={Start} />}
-      { isUnlocked && (
+      initialRouteName={initialRoute}
+    >
+      {!isUnlocked && (
+        <Stack.Screen options={{ headerShown: false }} name={screens.authorized.start} component={Start} />
+      )}
+      {isUnlocked && (
         <>
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallet }} name={screens.authorized.home} component={Home} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addAsset }} name={screens.authorized.addAsset} component={AddAsset} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.asset }} name={screens.authorized.asset} component={Asset} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={SendConfirm} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={Confirm} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.gasSettings }} name={screens.authorized.gasSettings} component={GasSettings} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerShown: false }} name={screens.authorized.settings} component={SettingStack} />
-        </>)
-      }
+
+          {/* Settings Screens */}
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings }} name={screens.settings.main} component={Main} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.about }} name={screens.settings.about} component={About} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.networks }} name={screens.settings.networks} component={Networks} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contacts }} name={screens.settings.contacts} component={Contacts} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contactInfo }} name={screens.settings.contactInfo} component={ContactInfo} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.modifyContact }} name={screens.settings.modifyContact} component={ModifyContact} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallets }} name={screens.settings.wallets} component={Wallets} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addWallet }} name={screens.settings.addWallet} component={AddWallet} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.createWallet }} name={screens.settings.createWallet} component={CreateWallet} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.walletPhrase }} name={screens.settings.walletPhrase} component={walletPhrase} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.manageWallet }} name={screens.settings.manageWallet} component={ManageWallet} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.removeWallet }} name={screens.settings.removeWallet} component={RemoveWallet} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.privateKey }} name={screens.settings.privateKey} component={PrivateKey} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importWallet }} name={screens.settings.importWallet} component={ImportWallet} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importAccount }} name={screens.settings.importAccount} component={ImportAccount} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importPhrase }} name={screens.settings.importPhrase} component={ImportPhrase} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.connectedSites }} name={screens.settings.connectedSites} component={ConnectedSites} />
+        </>
+      )}
       <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }} name={screens.common.import} component={Import} />
     </Stack.Navigator>
   );

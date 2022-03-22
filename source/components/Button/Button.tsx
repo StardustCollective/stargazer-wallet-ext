@@ -4,7 +4,6 @@ import MUIButton from '@material-ui/core/Button';
 import Spinner from '@material-ui/core/CircularProgress';
 import { useLinkTo } from '@react-navigation/native';
 
-
 import styles from './Button.scss';
 
 interface IButton {

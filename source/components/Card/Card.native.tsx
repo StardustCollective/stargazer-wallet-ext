@@ -3,8 +3,8 @@
 /// ////////////////////
 
 import React from 'react';
-import {  Card } from 'react-native-elements';
-import { View, ScrollView, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
+import { Card } from 'react-native-elements';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 /// ////////////////////
 // Styles
 /// ////////////////////
@@ -18,21 +18,23 @@ interface ICardProps {
   children?: React.ReactNode;
   id?: string;
   onClick?: () => void;
+  style: {};
 }
 
 /// ////////////////////
 // Component
 /// ////////////////////
 
-const CardComponent = ({ id, children, onClick }: ICardProps) => {
+const CardComponent = ({ id, children, onClick, style = {} }: ICardProps) => {
+  const wrapperStyle = StyleSheet.flatten([styles.wrapperStyle, style]);
+
   return (
-    <TouchableWithoutFeedback 
-        testID={id} onPress={onClick}>
-        <Card containerStyle={styles.card}>
-            {children}
-        </Card>
-    </TouchableWithoutFeedback>
+    <TouchableOpacity testID={id} onPress={onClick}>
+      <Card containerStyle={styles.containerStyle} wrapperStyle={wrapperStyle}>
+        {children}
+      </Card>
+    </TouchableOpacity>
   );
 };
 
-export default CardComponent
+export default CardComponent;

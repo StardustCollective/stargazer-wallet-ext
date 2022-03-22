@@ -1,13 +1,9 @@
 import React, { FC, useEffect } from 'react';
-import  RNFS from 'react-native-fs';
+import RNFS from 'react-native-fs';
 import Button from 'components/ButtonV3';
 
 import { View, Text } from 'react-native';
-import DocumentPicker, {
-  DocumentPickerResponse,
-  isInProgress,
-  types,
-} from 'react-native-document-picker';
+import DocumentPicker, { DocumentPickerResponse, isInProgress, types } from 'react-native-document-picker';
 
 import styles from './styles';
 
@@ -18,15 +14,9 @@ interface IFileSelect {
   onChange: (val: File | null | String) => void;
 }
 
-const FileSelect: FC<IFileSelect> = ({
-  id,
-  onChange,
-  disabled = false,
-}) => {
-  const [result, setResult] = React.useState<
-  DocumentPickerResponse | undefined | null
-  >();
-  const [ readFile, setReadFile ] = React.useState<any>();
+const FileSelect: FC<IFileSelect> = ({ id, onChange, disabled = false }) => {
+  const [result, setResult] = React.useState<DocumentPickerResponse | undefined | null>();
+  const [readFile, setReadFile] = React.useState<any>();
 
   useEffect(() => {
     console.log(JSON.stringify(result, null, 2));
@@ -38,9 +28,7 @@ const FileSelect: FC<IFileSelect> = ({
       console.warn('cancelled');
       // User cancelled the picker, exit any dialogs or menus and move on
     } else if (isInProgress(err)) {
-      console.warn(
-        'multiple pickers were opened, only the last will be considered'
-      );
+      console.warn('multiple pickers were opened, only the last will be considered');
     } else {
       throw err;
     }
@@ -68,17 +56,17 @@ const FileSelect: FC<IFileSelect> = ({
         */
 
         setResult(res);
-        RNFS.stat(res.fileCopyUri)
-          .then( file => {
-            setReadFile(file);
-            
-            //return file from read
-            if(file.isFile()) {
-              onChange(file.path);
-            } else {
-              throw new Error('No file processed');
-            }
-          });
+        RNFS.stat(res.fileCopyUri).then((file) => {
+          setReadFile(file);
+
+          //return file from read
+          if (file.isFile()) {
+            console.log('calling onChange on FileSelect--->>>', file.path);
+            onChange(file.path);
+          } else {
+            throw new Error('No file processed');
+          }
+        });
       })
       .catch((e) => handleError(e));
   };
@@ -86,12 +74,13 @@ const FileSelect: FC<IFileSelect> = ({
   return (
     <View style={styles.container}>
       <Button
-        extraStyle={styles.button}
+        extraTitleStyles={styles.buttonTitle}
+        extraStyles={styles.button}
         disabled={disabled}
         title="Choose File"
         onPress={handleFileChoose}
       />
-      <Text style={styles.chosen}>{ readFile ? result.name : 'No file chosen' }</Text>
+      <Text style={styles.chosen}>{readFile ? result.name : 'No file chosen'}</Text>
     </View>
   );
 };

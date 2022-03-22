@@ -4,10 +4,12 @@ import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { IAssetState, IActiveAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { EthTransactionController } from './EthTransactionController';
+import { IAssetsController } from './AssetsController';
 
 export interface IAccountController {
   ethClient: XChainEthClient;
   txController: EthTransactionController;
+  assetsController: Readonly<IAssetsController>;
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
@@ -19,7 +21,7 @@ export interface IAccountController {
   // unsubscribeAccount: (index: number, pwd: string) => boolean;
   // addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
-  getFullETHTxs: () => ITransactionInfo[];
+  getFullETHTxs: () => Promise<ITransactionInfo[]>;
   updateWalletLabel: (walletId: string, label: string) => void;
   updateAccountActiveAsset: (asset: IAssetState) => void;
   addNewToken: (address: string) => Promise<void>;

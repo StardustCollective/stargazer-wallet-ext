@@ -3,32 +3,55 @@ import store from 'state/store';
 import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
+import { ProcessStates } from 'state/process/enums';
+import { updateLoginState } from 'state/process';
 import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
-import DappController from 'scripts/Background/controllers/DAppController';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
+import ControllerUtils from './ControllerUtils';
+import AssetsController from './AssetsController';
+import { getEncryptor } from 'utils/keyringManagerUtils';
+import { getDappController } from 'utils/controllersUtils';
 
-export class WalletController implements IWalletController {
+class WalletController implements IWalletController {
   account: AccountController;
 
   keyringManager: KeyringManager;
 
   onboardHelper: OnboardWalletHelper;
 
+  static instance: WalletController;
+
   constructor() {
     this.onboardHelper = new OnboardWalletHelper();
-    this.keyringManager = new KeyringManager();
-    this.keyringManager.on('update', (state: KeyringVaultState) => {
+    this.keyringManager = new KeyringManager({
+      encryptor: getEncryptor(),
+    });
+    this.keyringManager.on('update', async (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
       const { vault } = store.getState();
-      if (vault && !vault.activeWallet && state.wallets.length) {
-        this.switchWallet(state.wallets[0].id);
+
+      try {
+        if (vault && vault.activeWallet) {
+          await this.switchWallet(vault.activeWallet.id);
+        } else if (state.wallets.length) {
+          await this.switchWallet(state.wallets[0].id);
+        }
+      } catch (e) {
+        console.log('Error while switching wallet at login');
+        console.log(e);
       }
+      store.dispatch(updateLoginState({processState: ProcessStates.IDLE}));
     });
 
-    this.account = new AccountController(this.keyringManager);
+    const utils = Object.freeze(ControllerUtils());
+
+    this.account = new AccountController(
+      this.keyringManager,
+      AssetsController(() => utils.updateFiat())
+    );
   }
 
   checkPassword(password: string) {
@@ -50,6 +73,7 @@ export class WalletController implements IWalletController {
   }
 
   async unLock(password: string): Promise<boolean> {
+    store.dispatch(updateLoginState({processState: ProcessStates.IN_PROGRESS}));
     await this.keyringManager.login(password);
 
     const state = store.getState();
@@ -64,17 +88,8 @@ export class WalletController implements IWalletController {
           return false;
         }
       }
-
-      if (vault.activeWallet) {
-        try {
-          await this.switchWallet(vault.activeWallet.id);
-        } catch (e) {
-          console.log('Error while switching wallet.');
-          console.log(e);
-          return false;
-        }
-      }
     }
+
     return true;
   }
 
@@ -89,10 +104,16 @@ export class WalletController implements IWalletController {
 
   async createWallet(label: string, phrase?: string, resetAll = false) {
     let wallet: IKeyringWallet;
-    if (resetAll) {
-      wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
-    } else {
-      wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
+    try {
+      if (resetAll) {
+        wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
+      } else {
+        wallet = await this.keyringManager.createMultiChainHdWallet(label, phrase);
+      }
+    } catch (err) {
+      console.log('CREATE WALLET ERR CAUGHT =====>>>>> ', err);
+      console.log('err.stack');
+      throw err;
     }
 
     await this.switchWallet(wallet.id);
@@ -123,15 +144,22 @@ export class WalletController implements IWalletController {
 
     await this.account.buildAccountAssetInfo(id);
     await this.account.getLatestTxUpdate();
-    this.account.assetsBalanceMonitor.start();
-    this.account.txController.startMonitor();
+    await this.account.assetsBalanceMonitor.start();
+    await this.account.txController.startMonitor();
   }
 
   async notifyWalletChange(accounts: string[]) {
-    return DappController().notifyAccountsChanged(accounts);
+    const dappController = getDappController();
+
+    // No Dapp controller on mobile
+    if (!dappController) {
+      return;
+    }
+
+    return dappController.notifyAccountsChanged(accounts)
   }
 
-  switchNetwork(network: KeyringNetwork, chainId: string) {
+  async switchNetwork(network: KeyringNetwork, chainId: string) {
     store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
@@ -154,14 +182,14 @@ export class WalletController implements IWalletController {
 
     if (activeAsset) {
       if (assets[activeAsset.id].network !== chainId) {
-        this.account.updateAccountActiveAsset(activeAsset);
+        await this.account.updateAccountActiveAsset(activeAsset);
       }
 
-      this.account.getLatestTxUpdate();
+      await this.account.getLatestTxUpdate();
     }
 
     // restart monitor with different network
-    this.account.assetsBalanceMonitor.start();
+    await this.account.assetsBalanceMonitor.start();
   }
 
   setWalletPassword(password: string) {
@@ -175,3 +203,5 @@ export class WalletController implements IWalletController {
     store.dispatch(updateStatus());
   }
 }
+
+export default new WalletController();

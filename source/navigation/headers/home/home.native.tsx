@@ -9,6 +9,7 @@ import {
   HamburgerIcon, 
   Pressable,
 } from "native-base"
+import { scale } from 'react-native-size-matters';
 
 
 ///////////////////////////
@@ -16,6 +17,13 @@ import {
 ///////////////////////////
 
 import LogoImage from 'assets/images/logo.svg';
+
+
+///////////////////////////
+// Styles
+///////////////////////////
+
+import styles from './styles';
 
 ///////////////////////////
 // Screens
@@ -42,7 +50,7 @@ const homeHeader = ({
 }: IHomeHeader) => {
 
   const onMenuButtonClicked = () => {
-    navigation.navigate(screens.authorized.settings)
+    navigation.navigate(screens.settings.main)
   }
 
   const renderHeaderRight = () => {
@@ -51,8 +59,9 @@ const homeHeader = ({
       return (
       <Pressable
         onPress={onMenuButtonClicked}
+        mr="5"
       >
-        <HamburgerIcon testId="header-moreButton" color="white" mr="15px" />
+        <HamburgerIcon testId="header-moreButton" color="white"/>
       </Pressable>)
     }
     // Hack: The header title will not center unless there is 
@@ -65,8 +74,8 @@ const homeHeader = ({
   return {
     ...config,
     headerLeft: () => (
-      <View ml="15px">
-        <LogoImage width={30} height={30}/>
+      <View style={styles.logo}>
+        <LogoImage width={scale(30)} height={scale(30)}/>
       </View>
 
     ),

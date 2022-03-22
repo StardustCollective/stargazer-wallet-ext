@@ -31,12 +31,11 @@ import { useController } from 'hooks/index';
 
 import TxIcon from 'assets/images/svg/txIcon.svg';
 
-
 ///////////////////////
 // Styles
 ///////////////////////
 
-import styles from './TxItem.scss'
+import styles from './TxItem.scss';
 
 ///////////////////////
 // Enums
@@ -55,13 +54,13 @@ type ITxItem = {
   isReceived: boolean;
   isETH: boolean;
   isGasSettingsVisible: boolean;
-  onItemClick: (hash: string) => void;
+  getLinkUrl: (hash: string) => string;
   showGroupBar: boolean;
   txTypeLabel: string;
   currencySymbol: string;
   amount: string;
   fiatAmount: string;
-}
+};
 
 const MAX_GAS_NUMBER = 200;
 
@@ -72,78 +71,20 @@ const MAX_GAS_NUMBER = 200;
 const TxItem: FC<ITxItem> = ({
   tx,
   isETH,
-  isSelf,
   isReceived,
   isGasSettingsVisible,
   showGroupBar,
   txTypeLabel,
-  currencySymbol,
   amount,
   fiatAmount,
-  onItemClick,
+  getLinkUrl,
+  receivedOrSentText,
+  formattedDistanceDate,
+  renderGasSettings,
 }) => {
-
-  const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.10 : 0;
-
-  /////////////////////////
-  // Hooks
-  ////////////////////////
-  const { activeAsset }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
-
-  let {
-    estimateGasFee,
-    gasSpeedLabel,
-    gasFee,
-    setGasPrice,
-    gasLimit,
-    gasPrices,
-    gasPrice } = useGasEstimate({
-      toAddress: tx.toAddress,
-      asset: assets[activeAsset.id],
-      data: tx.data,
-    });
-
-  const controller = useController();
-
-  /////////////////////////
-  // Callbacks
-  //////////////////////////
-
-  const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
-    setGasPrice(value as number);
-    estimateGasFee(value as number);
-  }
-
-  const onSpeedUpClick = (gas: number) => {
-
-    const txConfig: ITransactionInfo = {
-      fromAddress: tx.fromAddress,
-      toAddress: tx.toAddress,
-      amount: tx.amount,
-      timestamp: new Date().getTime(),
-      ethConfig: {
-        gasPrice: gas,
-        gasLimit,
-        memo: tx.data,
-        nonce: tx.nonce,
-      }
-    };
-
-    controller.wallet.account.updateTempTx(txConfig);
-    controller.wallet.account.confirmContractTempTx(activeAsset);
-    controller.wallet.account.txController.removePendingTxHash(tx.txHash);
-  }
-
   /////////////////////////
   // Renders
   ////////////////////////
-
 
   const RenderIcon: FC = () => {
     if (!isETH) {
@@ -177,12 +118,21 @@ const TxItem: FC<ITxItem> = ({
   };
 
   return (
-    <div onClick={() => { onItemClick(tx.hash) }} className={styles.txItem}>
+    <div
+      onClick={() => {
+        const url = getLinkUrl(tx.hash);
+
+        if (!url) {
+          return;
+        }
+
+        window.open(url, '_blank');
+      }}
+      className={styles.txItem}
+    >
       {showGroupBar && (
         <div className={styles.groupBar}>
-          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} >
-            {formatDistanceDate(tx.timestamp)}
-          </TextV3.CaptionStrong>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{formattedDistanceDate}</TextV3.CaptionStrong>
         </div>
       )}
       <div className={styles.content}>
@@ -193,14 +143,10 @@ const TxItem: FC<ITxItem> = ({
         </div>
         <div className={styles.txInfo}>
           <div>
-            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
-              {isSelf ? 'Self' : (isReceived ? 'Received' : 'Sent')} {currencySymbol}
-            </TextV3.BodyStrong>
+            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{receivedOrSentText}</TextV3.BodyStrong>
           </div>
           <div>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-              {txTypeLabel}
-            </TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>{txTypeLabel}</TextV3.Caption>
           </div>
         </div>
         <div className={styles.txAmount}>
@@ -212,26 +158,9 @@ const TxItem: FC<ITxItem> = ({
           </TextV3.Caption>
         </div>
       </div>
-      {isGasSettingsVisible &&
-        <div className={styles.gasSettings}>
-          <GasSettings
-            values={{
-              min: minGasPrice,
-              max: MAX_GAS_NUMBER,
-              current: gasPrice,
-            }}
-            gasPrices={gasPrices}
-            speedLabel={gasSpeedLabel}
-            gasFeeLabel={gasFee}
-            onSliderChange={onGasPriceChanged}
-            onSpeedUpClick={onSpeedUpClick}
-            gasPrice={gasPrice}
-          />
-        </div>
-      }
+      {isGasSettingsVisible && <div className={styles.gasSettings}>{renderGasSettings()}</div>}
     </div>
   );
-
-}
+};
 
 export default TxItem;

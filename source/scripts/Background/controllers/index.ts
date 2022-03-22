@@ -1,13 +1,13 @@
-import { WalletController } from './WalletController';
-import { IWalletController } from './IWalletController';
-import ControllerUtils from './ControllerUtils';
-import ContactsController, { IContactsController } from './ContactsController';
-import AssetsController, { IAssetsController } from './AssetsController';
-import MigrationController from './MigrationController';
-
 import { browser, Windows } from 'webextension-polyfill-ts';
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
 import { EthereumProvider } from 'scripts/Provider/EthereumProvider';
+import WalletController from './WalletController';
+import { IWalletController } from './IWalletController';
+import ControllerUtils from './ControllerUtils';
+import ContactsController, { IContactsController } from './ContactsController';
+import { IAssetsController } from './AssetsController';
+import MigrationController from './MigrationController';
+
 import DAppController, { IDAppController } from './DAppController';
 
 export interface IMasterController {
@@ -25,11 +25,11 @@ export interface IMasterController {
 const MasterController = (): IMasterController => {
   const stargazerProvider = Object.freeze(new StargazerProvider());
   const ethereumProvider = Object.freeze(new EthereumProvider());
-  const wallet = new WalletController();
+  const wallet = WalletController;
   const utils = Object.freeze(ControllerUtils());
   const dapp = Object.freeze(DAppController());
   const contacts = Object.freeze(ContactsController());
-  const assets = Object.freeze(AssetsController(() => utils.updateFiat()));
+  const assets = WalletController.account.assetsController;
 
   // Migration process
   Object.freeze(MigrationController());
@@ -42,14 +42,14 @@ const MasterController = (): IMasterController => {
     const _window = await browser.windows.getCurrent();
     if (!_window || !_window.width) return null;
     let url = `/external.html?`;
-    if(route){
+    if (route) {
       url += `&route=${route}`;
     }
-    if(network){
-      url += `&network=${network}`; 
+    if (network) {
+      url += `&network=${network}`;
     }
-    if(data){
-      url += `&data=${JSON.stringify(data)}`; 
+    if (data) {
+      url += `&data=${JSON.stringify(data)}`;
     }
     // This was being passed only in hash value but it gets dropped somethings in routing
     url += `&windowId=${windowId}`;

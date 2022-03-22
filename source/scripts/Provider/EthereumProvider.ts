@@ -1,8 +1,6 @@
 import store from 'state/store';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import find from 'lodash/find';
-import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
-import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { estimateGasPrice } from 'utils/ethUtil';
@@ -24,7 +22,7 @@ export class EthereumProvider {
   }
 
   getAddress() {
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
     return stargazerAsset && stargazerAsset.address;
   }
@@ -74,7 +72,7 @@ export class EthereumProvider {
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
     return stargazerAsset && balances[AssetType.Ethereum];
   }
@@ -162,12 +160,12 @@ export class EthereumProvider {
 
       await store.dispatch(createAccount(account));
     }
-  }*/
+  } */
 
   // async postTransactionResult (hash: string) {
   //   console.log('postTransactionResult.addToMemPoolMonitor', hash);
   //
-  //   dag4.monitor.addToMemPoolMonitor(hash);
+  //   await dag4.monitor.addToMemPoolMonitor(hash);
   //
   //   setTimeout(() => {
   //     console.log('postTransactionResult.watchMemPool');

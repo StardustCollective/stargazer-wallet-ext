@@ -114,9 +114,14 @@ dist/
 !.yarn/plugins
 .pnp.*
 yarn.lock
+.yarnrc
+.yarn
 
 # Desktop Services Store,
 .DS_Store
 
 # E2E Test Environment
 source/web/test-artifacts
+
+# iOS Pods
+source/native/ios/Pods

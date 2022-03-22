@@ -20,9 +20,14 @@ const extraNodeModules = {
   types: path.resolve(__dirname + '/../types'),
   utils: path.resolve(__dirname + '/../utils'),
   assets: path.resolve(__dirname + '/../assets'),
+  scripts: path.resolve(__dirname + '/../scripts'),
   process: nodeModules.process,
   crypto: nodeModules.crypto,
   stream: nodeModules.stream,
+  http: nodeModules.http,
+  https: nodeModules.https,
+  os: nodeModules.os,
+  fs: require.resolve('react-native-fs'),
   'react-native': require.resolve('react-native-web'),
 };
 
@@ -37,14 +42,13 @@ const watchFolders = [
 ];
 
 module.exports = async () => {
-
   const {
-    resolver: { sourceExts, assetExts }
+    resolver: {sourceExts, assetExts},
   } = await getDefaultConfig();
 
   return {
     transformer: {
-      babelTransformerPath: require.resolve("./transformerHandler.js"),
+      babelTransformerPath: require.resolve('./transformerHandler.js'),
       getTransformOptions: async () => ({
         transform: {
           experimentalImportSupport: false,
