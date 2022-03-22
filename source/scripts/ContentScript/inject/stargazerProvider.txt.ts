@@ -36,8 +36,9 @@ const SUPPORTED_CHAINS = {
   }
 };
 
-class RPCError {
+class RPCError extends Error{
   constructor(message, code) {
+    super(message);
     this.message = message;
     this.name = 'Stargazer Wallet Error';
     this.code = code;
@@ -167,7 +168,10 @@ const provider = chain => {
           chain
         }
       }, '*');
-    }
+    },
+    get version(){
+      return window.STARGAZER_VERSION;
+    },
   };
 };
 
@@ -175,7 +179,9 @@ const allPrivider = provider('ethereum');
 
 window.stargazer = {
   evtRegMap: {},
-  version: 1,
+  get version(){
+    return window.STARGAZER_VERSION;
+  },
   getProvider: chain => provider(chain),
   isConnected: async () => {
     const provider = window.providerManager.getProviderFor('main');
