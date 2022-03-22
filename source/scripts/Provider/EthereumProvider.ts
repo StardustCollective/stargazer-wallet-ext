@@ -1,5 +1,5 @@
 import store from 'state/store';
-import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
+import { ecsign, hashPersonalMessage, toRpcSig, isHexString, toUtf8 } from 'ethereumjs-util';
 import find from 'lodash/find';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
@@ -80,6 +80,16 @@ export class EthereumProvider {
   }
 
   normalizeSignatureRequest(message: string): string {
+    // Test for hex message data
+    if(isHexString(message)){
+      try{
+        message = toUtf8(message)
+      }catch(e){
+        // NOOP
+      }
+    }
+
+
     const signatureRequest: StargazerSignatureRequest = {
       content: message,
       metadata: {},

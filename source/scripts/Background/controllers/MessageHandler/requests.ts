@@ -1,5 +1,8 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { v4 as uuid } from 'uuid';
+import { KeyringWalletState, KeyringNetwork } from '@stardust-collective/dag4-keyring';
+
+import store from 'state/store';
 import { Message } from './types';
 import { IMasterController } from '../';
 import { getERC20DataDecoder } from 'utils/ethUtil';
@@ -12,6 +15,11 @@ export const handleRequest = async (
     origin: string,
     setPendingWindow: (isPending: boolean) => void
 ) => {
+    const { vault } = store.getState();
+    const activeWallet: KeyringWalletState | null = 
+        vault?.activeWallet ? vault.wallets.find(
+            (wallet: any) => wallet.id === vault.activeWallet.id
+        ) : null;
     const { method, args, asset } = message.data;
 
     console.log('CAL_REQUEST.method:', method, args);
@@ -20,6 +28,7 @@ export const handleRequest = async (
     const walletIsLocked = !masterController.wallet.isUnlocked();
 
     const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
+    const network = asset === 'DAG' ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
 
     const windowId = uuid();
 
@@ -50,6 +59,25 @@ export const handleRequest = async (
             result = provider.getBalance();
             break;
         case SUPPORTED_WALLET_METHODS.signMessage:{
+            if(!activeWallet){
+                return Promise.reject(new CustomEvent(message.id, {
+                    detail: 'There is no active wallet'
+                }));
+            }
+
+            const assetAccount = activeWallet.accounts.find(account=>account.network===network);
+            if(!assetAccount){
+                return Promise.reject(new CustomEvent(message.id, {
+                    detail: 'No active account for the request asset type'
+                }));
+            }
+
+            if(assetAccount.address !== args[0]){
+                return Promise.reject(new CustomEvent(message.id, {
+                    detail: 'The active account is not the requested'
+                }));
+            }
+
             let signatureRequestEncoded: string;
             try{
                 signatureRequestEncoded = provider.normalizeSignatureRequest(args[1]);
@@ -111,11 +139,27 @@ export const handleRequest = async (
         }
         case SUPPORTED_WALLET_METHODS.getPublicKey:{
             if(asset === 'DAG'){
+                if(!activeWallet){
+                    return Promise.reject(new CustomEvent(message.id, {
+                        detail: 'There is no active wallet'
+                    }));
+                }
+    
+                const assetAccount = activeWallet.accounts.find(account=>account.network===network);
+                if(!assetAccount){
+                    return Promise.reject(new CustomEvent(message.id, {
+                        detail: 'No active account for the request asset type'
+                    }));
+                }
+    
+                if(assetAccount.address !== args[0]){
+                    return Promise.reject(new CustomEvent(message.id, {
+                        detail: 'The active account is not the requested'
+                    }));
+                }
+
                 try{
-                    result = {
-                        result: true,
-                        data: masterController.stargazerProvider.getPublicKey()
-                    };
+                    result = masterController.stargazerProvider.getPublicKey();
                 }catch(e){
                     port.postMessage({ id: message.id, data: { result: false, data: null } });
                 }
