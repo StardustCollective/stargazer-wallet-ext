@@ -4,8 +4,6 @@ import find from 'lodash/find';
 import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { estimateGasPrice } from 'utils/ethUtil';
-import { IDAppState } from '../../state/dapp/types';
-import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { StargazerSignatureRequest } from './StargazerProvider';
 
 export class EthereumProvider {
