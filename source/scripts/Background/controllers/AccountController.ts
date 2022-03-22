@@ -350,20 +350,16 @@ export class AccountController implements IAccountController {
             `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address}`
           );
         }
-        const txData: any = await this.ethClient.transfer(txOptions);
-        const to: string =
-          activeAsset.type !== AssetType.Ethereum ? assets[activeAsset.id].address : this.tempTx.toAddress;
+        const txHash: string = await this.ethClient.transfer(txOptions);
         this.txController.addPendingTx({
-          txHash: txData.hash,
+          txHash,
           fromAddress: this.tempTx.fromAddress,
-          toAddress: to,
+          toAddress: this.tempTx.toAddress,
           amount: this.tempTx.amount,
           network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
           assetId: activeAsset.id,
           timestamp: new Date().getTime(),
-          nonce: txData.nonce,
           gasPrice,
-          data: txData.data,
         });
       }
       this.tempTx = null;
