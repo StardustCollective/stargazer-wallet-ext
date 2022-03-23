@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
 import { Button } from 'react-native-elements';
 import TextV3 from 'components/TextV3';
@@ -92,7 +92,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
   const multiChainWallets = wallets.filter((w) => w.type === KeyringWalletType.MultiChainWallet);
 
   return (
-    <View style={styles.wallets}>
+    <ScrollView style={styles.wallets} contentContainerStyle={styles.walletsContentContainer}>
       <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
         Multi chain wallets
       </TextV3.Caption>
@@ -110,15 +110,13 @@ const WalletsComponent: FC<IWalletsSettings> = ({
                 {renderCheckIcon(wallet.id, activeWallet.id)}
                 {renderStargazerIcon()}
                 <View testID={wallet.label} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <View style={{justifyContent: 'flex-end'}}>
+                  <View style={{ justifyContent: 'flex-end' }}>
                     <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
                       {wallet.label}
                     </TextV3.Caption>
                     <TextV3.Caption extraStyles={styles.textSmall}>Multi Chain Wallet</TextV3.Caption>
                   </View>
-                  <View style={{flex: 1}}>
-                    {renderInfoIcon(wallet.id)}
-                  </View>
+                  <View style={{ flex: 1 }}>{renderInfoIcon(wallet.id)}</View>
                 </View>
               </View>
             </TouchableOpacity>
@@ -161,7 +159,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
           </View>
         </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 

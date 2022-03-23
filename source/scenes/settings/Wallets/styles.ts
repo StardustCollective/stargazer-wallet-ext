@@ -3,15 +3,15 @@ import { COLORS, FONTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   wallets: {
-    width: '100%',
-    paddingHorizontal: 24,
-    paddingVertical: 24,
+    flex: 1,
+    backgroundColor: COLORS.gray_light_100,
+  },
+  walletsContentContainer: {
     display: 'flex',
     flexDirection: 'column',
-    height: 468,
-    paddingBottom: 24,
-    backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 24,
   },
   label: {
     fontSize: 10,
