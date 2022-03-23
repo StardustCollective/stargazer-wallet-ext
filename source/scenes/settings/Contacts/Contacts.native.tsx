@@ -20,7 +20,7 @@ const Contacts: FC<IContactSettings> = ({ contacts, handleSelect, addContactLabe
   }
 
   return (
-    <View style={styles.contacts}>
+    <ScrollView style={styles.contacts} contentContainerStyle={styles.contactsContentContainer}>
       <View style={styles.list}>
         {Object.values(contacts).map((contact: IContactState) => (
           <TouchableOpacity onPress={() => handleSelect(contact.id)} key={contact.id}>
@@ -45,7 +45,7 @@ const Contacts: FC<IContactSettings> = ({ contacts, handleSelect, addContactLabe
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

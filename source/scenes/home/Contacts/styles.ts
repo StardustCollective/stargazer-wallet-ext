@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
-
   content: {
-    flex: 1,
     backgroundColor: COLORS.grey_50,
+    flexGrow: 1,
+    marginBottom: -50, // This line removes the margin bottom that's added in the Modal component. TODO: Look for a better solution.
   },
   header: {
     flexDirection: 'row',
@@ -22,23 +22,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  closeButton:{
+  closeButton: {
     flex: 1,
     alignItems: 'flex-end',
   },
   contacts: {
+    flex: 1,
     backgroundColor: COLORS.gray_light_100,
+  },
+  contactsContentContainer: {
     flexGrow: 1,
+    backgroundColor: COLORS.gray_light_100,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     paddingTop: 24,
     paddingBottom: 24,
     paddingRight: 0,
     paddingLeft: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-    overflow: 'visible',
-    height: 468,
   },
   addContactLabel: {
     width: '100%',
@@ -114,7 +115,6 @@ const styles = StyleSheet.create({
     height: 14,
     marginLeft: 2,
   },
-
 });
 
 export default styles;

@@ -175,7 +175,7 @@ export class EthereumProvider {
   }
 
   private preserve0x(hash: string) {
-    return hash.startsWith('0x') ? hash : '0x' + hash;
+    return hash.startsWith('0x') ? hash : `0x${hash}`;
   }
 }
 
