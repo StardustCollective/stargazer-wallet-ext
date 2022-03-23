@@ -17,6 +17,7 @@ import Container from 'components/Container';
 import IContactBookState from 'state/contacts/types';
 import IVaultState, { AssetType } from 'state/vault/types';
 
+import { removeEthereumPrefix } from 'utils/addressUtil';
 import ModifyContact from './ModifyContact';
 
 import { IModifyContactView } from './types';
@@ -65,11 +66,14 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const handleAddressChange = useCallback(
     (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | NativeSyntheticEvent<TextInputChangeEventData>) => {
       if (ev.nativeEvent?.text) {
-        const address = ev.nativeEvent.text.trim();
-        setAddress(address);
-        setValue('address', address);
+        const addressValue = ev.nativeEvent.text.trim();
+        const filteredAddress = removeEthereumPrefix(addressValue);
+        setAddress(filteredAddress);
+        setValue('address', filteredAddress);
       } else if (ev.target) {
-        setAddress(ev.target.value.trim());
+        const addressValue = ev.target.value.trim();
+        const filteredAddress = removeEthereumPrefix(addressValue);
+        setAddress(filteredAddress);
       }
     },
     []
