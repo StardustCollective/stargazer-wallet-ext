@@ -33,6 +33,7 @@ import Container, { CONTAINER_COLOR } from 'components/Container';
 import { getChangeAmount } from 'utils/sendUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { cancelEvent } from 'utils/backgroundUtils';
+import { removeEthereumPrefix } from 'utils/addressUtil';
 
 ///////////////////////////
 // Types
@@ -346,9 +347,10 @@ const SendContainer: FC<IWalletSend> = ({
   };
 
   const handleSelectContact = (val: string) => {
-    setValue('address', val);
-    setAddress(val);
-    setToEthAddress(val);
+    const filteredAddress = removeEthereumPrefix(val);
+    setValue('address', filteredAddress);
+    setAddress(filteredAddress);
+    setToEthAddress(filteredAddress);
     setModalOpen(false);
   };
 
