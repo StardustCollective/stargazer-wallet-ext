@@ -1,15 +1,7 @@
 ///////////////////////////
 // Modules
 ///////////////////////////
-import React, {
-  ChangeEvent,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  useLayoutEffect,
-  FC,
-} from 'react';
+import React, { ChangeEvent, useState, useCallback, useMemo, useEffect, useLayoutEffect, FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 // import { useAlert } from 'react-alert';
@@ -17,7 +9,7 @@ import * as yup from 'yup';
 import { BigNumber, ethers } from 'ethers';
 import { useLinkTo } from '@react-navigation/native';
 import find from 'lodash/find';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import queryString from 'query-string';
 
 ///////////////////////////
@@ -30,7 +22,7 @@ import Container, { CONTAINER_COLOR } from 'components/Container';
 // Utils
 ///////////////////////////
 
-import { getChangeAmount } from 'utils/sendUtil';
+import { checkOneDecimalPoint, getChangeAmount } from 'utils/sendUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { cancelEvent } from 'utils/backgroundUtils';
 
@@ -38,11 +30,9 @@ import { cancelEvent } from 'utils/backgroundUtils';
 // Types
 ///////////////////////////
 
-import IAssetListState from 'state/assets/types';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
-import { IAssetInfoState } from 'state/assets/types';
-import IVaultState, { AssetType } from 'state/vault/types';
-import { IActiveAssetState, AssetBalances } from 'state/vault/types';
+import IVaultState, { AssetType, IActiveAssetState, AssetBalances } from 'state/vault/types';
 import { RootState } from 'state/store';
 
 ///////////////////////////
@@ -62,23 +52,17 @@ import useGasEstimate from 'hooks/useGasEstimate';
 // Header
 ///////////////////////////
 
-
 import Send from './Send';
-
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
 
 interface IWalletSend {
   initAddress?: string;
-  navigation: any
-};
+  navigation: any;
+}
 
-const SendContainer: FC<IWalletSend> = ({
-  initAddress = '',
-  navigation
-}) => {
-
+const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const accountController = getAccountController();
   let isExternalRequest = false;
 
@@ -88,29 +72,24 @@ const SendContainer: FC<IWalletSend> = ({
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let balances: AssetBalances;
-  let to: string,
-    from: string,
-    value: string,
-    gas: string,
-    memo: string;
+  let to: string;
+  let from: string;
+  let value: string;
+  let gas: string;
+  let memo: string;
   let history;
   let windowId: string;
   let assetInfo: IAssetInfoState;
 
-  const assets: IAssetListState = useSelector(
-    (state: RootState) => state.assets
-  );
+  const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
   if (isExternalRequest) {
-    const {
-      data: dataJsonString,
-      windowId: _windowId
-    } = queryString.parse(location.search);
+    const { data: dataJsonString, windowId: _windowId } = queryString.parse(location.search);
 
     windowId = _windowId as string;
 
     if (dataJsonString) {
-      let params = JSON.parse(dataJsonString as string);
+      const params = JSON.parse(dataJsonString as string);
       to = params.to;
       value = params.value || 0;
       gas = params.gas;
@@ -119,23 +98,21 @@ const SendContainer: FC<IWalletSend> = ({
 
     useEffect(() => {
       // Set initial gas
-      let amount = parseInt(value, 16);
+      const amount = parseInt(value, 16);
       setAmount(amount);
 
-      let initialGas = parseInt(gas, 16);
+      const initialGas = parseInt(gas, 16);
       setGasPrice(initialGas);
       estimateGasFee(initialGas);
     }, []);
 
     history = useHistory();
 
-    activeAsset = useSelector(
-      (state: RootState) => find(state.assets, { address: to })
-    ) as IAssetInfoState;
+    activeAsset = useSelector((state: RootState) => find(state.assets, { address: to })) as IAssetInfoState;
 
     if (!activeAsset) {
-      activeAsset = useSelector(
-        (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
+      activeAsset = useSelector((state: RootState) =>
+        find(state.assets, { type: AssetType.Ethereum })
       ) as IAssetInfoState;
     }
 
@@ -143,9 +120,7 @@ const SendContainer: FC<IWalletSend> = ({
 
     from = activeAsset.address;
   } else {
-    const vault: IVaultState = useSelector(
-      (state: RootState) => state.vault
-    )
+    const vault: IVaultState = useSelector((state: RootState) => state.vault);
     activeAsset = vault.activeAsset;
     balances = vault.balances;
     assetInfo = assets[activeAsset.id];
@@ -154,7 +129,6 @@ const SendContainer: FC<IWalletSend> = ({
     // useLayoutEffect(() => {
     //   navigation.setOptions(sendHeader({ navigation, asset: assetInfo }));
     // }, []);
-
   }
 
   const getFiatAmount = useFiat(true, assetInfo);
@@ -174,23 +148,20 @@ const SendContainer: FC<IWalletSend> = ({
     }),
   });
 
-  const [address, setAddress] = useState(
-    initAddress || tempTx?.toAddress || to || ''
-  );
+  const [address, setAddress] = useState(initAddress || tempTx?.toAddress || to || '');
 
   const [amount, setAmount] = useState<number | string>(tempTx?.amount ? Number(tempTx?.amount) : 0);
   const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
   const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
+  const [decimalPointOnAmount, setDecimalPointOnAmount] = useState<boolean>(false);
+  const [decimalPointOnFee, setDecimalPointOnFee] = useState<boolean>(false);
 
   const isValidAddress = useMemo(() => {
-    if (activeAsset.type === AssetType.Constellation)
-      return accountController.isValidDAGAddress(address);
+    if (activeAsset.type === AssetType.Constellation) return accountController.isValidDAGAddress(address);
     return accountController.isValidERC20Address(address);
   }, [address]);
-
-
 
   let {
     setToEthAddress,
@@ -206,7 +177,7 @@ const SendContainer: FC<IWalletSend> = ({
     toAddress: tempTx?.toAddress || to,
     fromAddress: activeAsset.address,
     asset: assetInfo,
-    data: memo
+    data: memo,
   });
 
   const onSubmit = async (data: any) => {
@@ -242,16 +213,17 @@ const SendContainer: FC<IWalletSend> = ({
   const handleClose = async () => {
     if (isExternalRequest) {
       await cancelEvent(windowId);
-      if(window){
+      if (window) {
         window.close();
       }
     } else {
       linkTo('/asset');
     }
-  }
+  };
 
   const getBalanceAndFees = () => {
-    let balance, balanceBN;
+    let balance;
+    let balanceBN;
     if (balances) {
       balance = balances[activeAsset.id] || '0';
       balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
@@ -263,7 +235,7 @@ const SendContainer: FC<IWalletSend> = ({
         : ethers.utils.parseEther(gasFee.toString());
 
     return { balance: balanceBN, txFee };
-  }
+  };
 
   const isDisabled = useMemo(() => {
     const { balance, txFee } = getBalanceAndFees();
@@ -277,26 +249,16 @@ const SendContainer: FC<IWalletSend> = ({
     }
 
     if (isExternalRequest) {
-      return (
-        !isValidAddress ||
-        !fee ||
-        !address
-      );
+      return !isValidAddress || !fee || !address;
     }
 
-    return (
-      !isValidAddress ||
-      !amount ||
-      !fee ||
-      !address ||
-      balance.lt(0) ||
-      computedAmount.gt(balance)
-    );
-
+    return !isValidAddress || !amount || !fee || !address || !balance || balance.lt(0) || computedAmount.gt(balance);
   }, [amountBN, address, fee, gasFee]);
 
   const handleAmountChange = useCallback(
     (changeVal: string) => {
+      const decimalPointEntered = checkOneDecimalPoint(changeVal);
+      setDecimalPointOnAmount(decimalPointEntered);
       const changeAmount = getChangeAmount(changeVal, MAX_AMOUNT_NUMBER, assetInfo.decimals);
       if (changeAmount === null) return;
 
@@ -310,27 +272,22 @@ const SendContainer: FC<IWalletSend> = ({
     [address, gasLimit]
   );
 
-  const handleFeeChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      console.log('Handle Fee Change Called');
-      const val = ev.target.value;
-      if (!isNaN(parseFloat(val)) && (parseFloat(val) === 0 || parseFloat(val) >= 0.00000001)) {
-        setFee(ev.target.value);
-        estimateGasFee(gasPrice);
-      }
-    },
-    []
-  );
-
-  const handleAddressChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      let toAddress = ev.target.value.trim();
-      setAddress(toAddress);
-      setToEthAddress(toAddress)
+  const handleFeeChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const val = ev.target.value;
+    const decimalPointEntered = checkOneDecimalPoint(val);
+    setDecimalPointOnFee(decimalPointEntered);
+    if (!isNaN(parseFloat(val)) && (parseFloat(val) === 0 || parseFloat(val) >= 0.00000001)) {
+      setFee(ev.target.value);
       estimateGasFee(gasPrice);
-    },
-    []
-  );
+    }
+  }, []);
+
+  const handleAddressChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const toAddress = ev.target.value.trim();
+    setAddress(toAddress);
+    setToEthAddress(toAddress);
+    estimateGasFee(gasPrice);
+  }, []);
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
     val = Number(val) || 1;
@@ -404,10 +361,11 @@ const SendContainer: FC<IWalletSend> = ({
         gasPrice={gasPrice}
         gasFee={gasFee}
         gasSpeedLabel={gasSpeedLabel}
+        decimalPointOnAmount={decimalPointOnAmount}
+        decimalPointOnFee={decimalPointOnFee}
       />
     </Container>
   );
-
-}
+};
 
 export default SendContainer;
