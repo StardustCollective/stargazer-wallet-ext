@@ -4,8 +4,6 @@ import find from 'lodash/find';
 import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { estimateGasPrice } from 'utils/ethUtil';
-import { IDAppState } from '../../state/dapp/types';
-import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { StargazerSignatureRequest } from './StargazerProvider';
 
 export class EthereumProvider {
@@ -98,7 +96,7 @@ export class EthereumProvider {
       throw new Error('SignatureRequest does not match spec');
     }
 
-    let parsedMetadata: Record<string, any> = {};
+    const parsedMetadata: Record<string, any> = {};
     for (const [key, value] of Object.entries(signatureRequest.metadata)) {
       if (['boolean', 'number', 'string'].includes(typeof value) || value === null) {
         parsedMetadata[key] = value;
@@ -109,7 +107,7 @@ export class EthereumProvider {
 
     const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
 
-    if(newEncodedSignatureRequest !== encodedSignatureRequest){
+    if (newEncodedSignatureRequest !== encodedSignatureRequest) {
       throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
     }
 
@@ -193,7 +191,7 @@ export class EthereumProvider {
   }
 
   private preserve0x(hash: string) {
-    return hash.startsWith('0x') ? hash : '0x' + hash;
+    return hash.startsWith('0x') ? hash : `0x${hash}`;
   }
 }
 
