@@ -66,7 +66,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const accountController = getAccountController();
   let isExternalRequest = false;
 
-  if (location) {
+  if(!!location){
     isExternalRequest = location.pathname.includes('sendTransaction');
   }
 
