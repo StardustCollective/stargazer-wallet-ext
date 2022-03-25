@@ -21,7 +21,7 @@ const EnableCamera: FC = (): JSX.Element => {
         type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
         title="Go to Settings"
-        onPress={() => Linking.openURL('app-settings:')}
+        onPress={async () => await Linking.openSettings()}
       />
     </View>
   );

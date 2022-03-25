@@ -25,6 +25,9 @@ const QRCodeScanner: FC<IQRCodeScanner> = ({
       <RNQRCodeScanner
         onRead={onRead}
         flashMode={RNCamera.Constants.FlashMode.off}
+        cameraProps={{
+          notAuthorizedView: <EnableCamera />,
+        }}
         notAuthorizedView={<EnableCamera />}
         topContent={
           <View style={styles.qrCameraTopContent}>
