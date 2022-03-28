@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import { StatusBar } from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NativeBaseProvider} from 'native-base';
@@ -33,7 +33,6 @@ dag4.network.config({
   beUrl: networkInfo.beUrl,
   lbUrl: networkInfo.lbUrl,
 });
-
 
 const App = () => {
   return (
