@@ -3,11 +3,18 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
+import { scale } from 'react-native-size-matters';
+
+///////////////////////////
+// Components
+///////////////////////////
+
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import Link from 'components/Link';
 import TextInput from 'components/TextInput';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 ///////////////////////////
 // Images
@@ -27,6 +34,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 ///////////////////////////
 
 const LOGO_IMAGE_SIZE = 192;
+const EXTRA_SCROLL_HEIGHT = scale(25);
 
 // Strings
 const UNLOCK_STRING = 'Unlock';
@@ -41,7 +49,10 @@ import ILogin from './types';
 
 const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid, isLoading }) => {
   return (
-    <KeyboardAvoidingView style={styles.layout} behavior={Platform.OS === "ios" ? "padding" : "height"} enabled keyboardVerticalOffset={10}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.layout}
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
+      enableOnAndroid>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
         <Logo width={LOGO_IMAGE_SIZE} height={LOGO_IMAGE_SIZE} style={styles.logo} />
@@ -72,7 +83,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
         />
         <Link extraStyles={styles.recoveryButton} color="monotoneOne" onPress={importClicked} title="Reset and restore from recovery seed phrase" />
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

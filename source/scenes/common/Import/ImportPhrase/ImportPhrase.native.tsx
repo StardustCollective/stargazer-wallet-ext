@@ -1,17 +1,44 @@
+///////////////////////////
+// Modules
+///////////////////////////
+
 import React, { FC } from 'react';
-import { View, KeyboardAvoidingView } from 'react-native';
-import Layout from 'scenes/common/Layout';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { scale } from 'react-native-size-matters';
+
+///////////////////////////
+// Components
+///////////////////////////
+
 import TextV3 from 'components/TextV3';
 import TextInput from 'components/TextInput';
-
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 
-import { COLORS_ENUMS } from 'assets/styles/colors';
-
-import styles from './styles';
+///////////////////////////
+// Types
+///////////////////////////
 
 import IImportPhrase from './types';
 
+///////////////////////////
+// Styles
+///////////////////////////
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
+import styles from './styles';
+
+///////////////////////////
+// Scene
+///////////////////////////
+
+import Layout from 'scenes/common/Layout';
+
+///////////////////////////
+// Constants
+///////////////////////////
+
+const EXTRA_SCROLL_HEIGHT = scale(25);
 
 const ImportPhrase: FC<IImportPhrase> = ({
   control,
@@ -21,9 +48,14 @@ const ImportPhrase: FC<IImportPhrase> = ({
   isInvalid,
   isDisabled,
 }) => {
+  ///////////////////////////
+  // Render
+  ///////////////////////////
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior='padding'>
+    <KeyboardAwareScrollView
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
+      enableOnAndroid>
       <Layout title="Let's import your wallet">
         <TextV3.Caption color={COLORS_ENUMS.BLACK}>
           Paste your recovery seed phrase below:
@@ -57,7 +89,7 @@ const ImportPhrase: FC<IImportPhrase> = ({
           />
         </View>
       </Layout>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

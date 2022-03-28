@@ -4,7 +4,6 @@
 
 import React, { FC } from 'react';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { scale } from 'react-native-size-matters';
 
 ///////////////////////////
@@ -16,6 +15,7 @@ import TextV3 from 'components/TextV3';
 import CheckIcon from 'components/CheckIcon';
 import TextInput from 'components/TextInput';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 ///////////////////////////
 // Types
@@ -55,7 +55,10 @@ const CreatePass: FC<ICreatePass> = ({
   ///////////////////////////
 
   return (
-    <KeyboardAwareScrollView extraScrollHeight={EXTRA_SCROLL_HEIGHT} contentContainerStyle={styles.layout}>
+    <KeyboardAwareScrollView 
+      contentContainerStyle={styles.layout}
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
+      enableOnAndroid>
         <Layout title={title}>
           {passed ? (
             <View style={styles.checkIcon}>
