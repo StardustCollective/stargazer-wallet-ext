@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import { StatusBar } from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NativeBaseProvider} from 'native-base';
@@ -11,6 +11,7 @@ import {Provider} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
 import {dag4} from '@stardust-collective/dag4';
 import {KeyringNetwork} from '@stardust-collective/dag4-keyring';
+import { COLORS } from 'assets/styles/_variables';
 
 ////////////////////
 // DAG Config
@@ -33,13 +34,14 @@ dag4.network.config({
   lbUrl: networkInfo.lbUrl,
 });
 
+
 const App = () => {
   return (
     <SafeAreaProvider>
       <NativeBaseProvider>
         <Provider store={Store}>
           <NavigationContainer linking={linking}>
-            <StatusBar translucent barStyle="light-content" />
+            <StatusBar translucent barStyle="light-content" backgroundColor={COLORS.primary} />
             <RootStack />
           </NavigationContainer>
         </Provider>
