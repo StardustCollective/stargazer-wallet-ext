@@ -1,8 +1,6 @@
 import store from 'state/store';
-import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
+import { ecsign, hashPersonalMessage, toRpcSig, isHexString, toUtf8 } from 'ethereumjs-util';
 import find from 'lodash/find';
-import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
-import { IDAppState } from '../../state/dapp/types';
 import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { estimateGasPrice } from 'utils/ethUtil';
@@ -24,7 +22,7 @@ export class EthereumProvider {
   }
 
   getAddress() {
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
     return stargazerAsset && stargazerAsset.address;
   }
@@ -74,44 +72,28 @@ export class EthereumProvider {
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 
-    let stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
     return stargazerAsset && balances[AssetType.Ethereum];
   }
 
-  normalizeSignatureRequest(encodedSignatureRequest: string): string {
-    let signatureRequest: StargazerSignatureRequest;
-    try {
-      signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
-    } catch (e) {
-      throw new Error('Unable to decode signatureRequest');
-    }
-
-    const test =
-      typeof signatureRequest === 'object' &&
-      signatureRequest !== null &&
-      typeof signatureRequest.content === 'string' &&
-      typeof signatureRequest.metadata === 'object' &&
-      signatureRequest.metadata !== null;
-
-    if (!test) {
-      throw new Error('SignatureRequest does not match spec');
-    }
-
-    let parsedMetadata: Record<string, any> = {};
-    for (const [key, value] of Object.entries(signatureRequest.metadata)) {
-      if (['boolean', 'number', 'string'].includes(typeof value) || value === null) {
-        parsedMetadata[key] = value;
+  normalizeSignatureRequest(message: string): string {
+    // Test for hex message data
+    if(isHexString(message)){
+      try{
+        message = toUtf8(message)
+      }catch(e){
+        // NOOP
       }
     }
 
-    signatureRequest.metadata = parsedMetadata;
+
+    const signatureRequest: StargazerSignatureRequest = {
+      content: message,
+      metadata: {},
+    };
 
     const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
-
-    if(newEncodedSignatureRequest !== encodedSignatureRequest){
-      throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
-    }
 
     return newEncodedSignatureRequest;
   }
@@ -162,12 +144,12 @@ export class EthereumProvider {
 
       await store.dispatch(createAccount(account));
     }
-  }*/
+  } */
 
   // async postTransactionResult (hash: string) {
   //   console.log('postTransactionResult.addToMemPoolMonitor', hash);
   //
-  //   dag4.monitor.addToMemPoolMonitor(hash);
+  //   await dag4.monitor.addToMemPoolMonitor(hash);
   //
   //   setTimeout(() => {
   //     console.log('postTransactionResult.watchMemPool');
@@ -193,7 +175,7 @@ export class EthereumProvider {
   }
 
   private preserve0x(hash: string) {
-    return hash.startsWith('0x') ? hash : '0x' + hash;
+    return hash.startsWith('0x') ? hash : `0x${hash}`;
   }
 }
 

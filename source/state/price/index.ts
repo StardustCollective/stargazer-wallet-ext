@@ -16,6 +16,19 @@ const PriceState = createSlice({
   name: 'price',
   initialState,
   reducers: {
+    rehydrate(
+      state: IPriceState,
+      action: PayloadAction<{
+        assetId: string;
+        price: number;
+        priceChange: number;
+      }>
+    ) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     updateFiatPrice(
       state: IPriceState,
       action: PayloadAction<{
@@ -44,13 +57,13 @@ const PriceState = createSlice({
     ) {
       const fiat: any = {};
       action.payload.forEach(({ id, price, priceChange }) => {
-        if (id) fiat[id] = { price, priceChange }
+        if (id) fiat[id] = { price, priceChange };
       });
       state.fiat = fiat;
     },
   },
 });
 
-export const { updateFiatPrice, updateFiatPrices } = PriceState.actions;
+export const { updateFiatPrice, updateFiatPrices, rehydrate } = PriceState.actions;
 
 export default PriceState.reducer;

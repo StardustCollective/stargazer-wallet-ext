@@ -34,7 +34,7 @@ const defaultHeader = ({
 
     return (
       <Pressable onPress={onBackButtonClicked}>
-        <ArrowBackIcon size="7" m="3" color="white" />
+        <ArrowBackIcon size="7" color="white" ml="5" />
       </Pressable>
     );
   }

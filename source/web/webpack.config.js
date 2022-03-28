@@ -125,7 +125,13 @@ module.exports = {
         test: /\.(js|ts)x?$/,
         loader: 'babel-loader',
         // Exclude node_modules and react-native project folders.
-        exclude: [/node_modules/, /native/],
+        // Exclude react-native-flash-message (needs to be processed)
+        exclude: (modulePath) => {
+          return (
+            !/node_modules\/react-native-flash-message/.test(modulePath) &&
+            (/node_modules/.test(modulePath) || /native/.test(modulePath))
+          );
+        },
         options: {
           ...JSON.parse(fs.readFileSync(path.resolve(__dirname, '.babelrc'))),
         },
@@ -214,7 +220,7 @@ module.exports = {
       filename: 'options.html',
     }),
     new DotEnv({
-      path: './.env',
+      path: '../../.env',
     }),
     // write css file(s) to build folder
     new MiniCssExtractPlugin({ filename: 'css/[name].css' }),

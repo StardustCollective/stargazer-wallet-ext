@@ -6,7 +6,7 @@ import React from 'react';
 import defaultHeader from '../default';
 import AssetHeader from 'scenes/home/Asset/AssetHeader';
 import IconButton from '@material-ui/core/IconButton';
-import addressLinkImage from 'assets/images/svg/addressLink.svg'
+import addressLinkImage from 'assets/images/svg/addressLink.svg';
 import { IAssetInfoState } from 'state/assets/types';
 
 ///////////////////////////
@@ -20,23 +20,17 @@ import styles from './styles.scss';
 ///////////////////////////
 
 interface IAssetHeader {
-  navigation: any,
-  asset: IAssetInfoState,
-  address: string,
-  addressUrl: string,
+  navigation: any;
+  asset: IAssetInfoState;
+  address: string;
+  addressUrl: string;
 }
 
 ///////////////////////////
 // Header
 ///////////////////////////
 
-const assetHeader = ({
-  navigation,
-  asset,
-  address,
-  addressUrl,
-}: IAssetHeader) => {
-
+const assetHeader = ({ navigation, asset, address, addressUrl }: IAssetHeader) => {
   return {
     ...defaultHeader({ navigation }),
     headerTitle: () => <AssetHeader asset={asset} address={address} />,
@@ -48,10 +42,10 @@ const assetHeader = ({
           window.open(addressUrl, '_blank');
         }}
       >
-        <img src={'/'+addressLinkImage} height="32" />
+        <img src={'/' + addressLinkImage} height="32" />
       </IconButton>
     ),
-  }
+  };
 };
 
 export default assetHeader;

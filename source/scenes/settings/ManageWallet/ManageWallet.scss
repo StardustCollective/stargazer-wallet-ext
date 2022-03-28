@@ -1,0 +1,90 @@
+@import '~assets/styles/variables';
+
+.wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+
+  label {
+    font-family: rubik;
+    font-size: 10px;
+    font-weight: 500;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  .input {
+    border: 1px solid $gray-200 !important;
+  }
+
+  & > span {
+    margin-top: 12px;
+    margin-bottom: 24px;
+    font-size: 12px;
+    font-weight: 500;
+    display: block;
+    font-family: $rubik;
+  }
+
+  .menu {
+    font-weight: 500;
+    font-size: 16px;
+    font-family: $rubik;
+    line-height: 24px;
+    color: $gray-dark;
+    height: 24px;
+    display: flex;
+    padding: 0 12px;
+    height: 60px;
+    align-items: center;
+    transition: all 0.3s;
+    background-color: $white;
+    cursor: pointer;
+    border-bottom: 1px solid $gray-light;
+    border-radius: 6px;
+
+    & > span {
+      flex-grow: 1;
+      font-family: $rubik;
+    }
+
+    & > svg {
+      font-size: 16px;
+      color: $gray;
+    }
+
+    &:hover {
+      background: $gray-light-100;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+
+    .cancel,
+    .cancel:hover {
+      background: $gray-light;
+      color: $gray-dark;
+    }
+
+    .buttons {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      flex-direction: row;
+    }
+
+    .button {
+      margin-right: 10px;
+      margin-bottom: 20px;
+      width: 144px;
+    }
+  }
+}

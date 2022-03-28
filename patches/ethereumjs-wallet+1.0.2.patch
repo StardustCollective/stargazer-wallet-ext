@@ -1,0 +1,13 @@
+diff --git a/node_modules/ethereumjs-wallet/dist.browser/index.js b/node_modules/ethereumjs-wallet/dist.browser/index.js
+index ef4695c..0303e87 100644
+--- a/node_modules/ethereumjs-wallet/dist.browser/index.js
++++ b/node_modules/ethereumjs-wallet/dist.browser/index.js
+@@ -312,7 +312,7 @@ var Wallet = /** @class */ (function () {
+                         }
+                         if (!(json.crypto.kdf === 'scrypt')) return [3 /*break*/, 2];
+                         kdfparams = json.crypto.kdfparams;
+-                        return [4 /*yield*/, (0, scrypt_js_1.scrypt)(Buffer.from(password), Buffer.from(kdfparams.salt, 'hex'), kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen)];
++                        return [4 /*yield*/, (0, scrypt)(Buffer.from(password), Buffer.from(kdfparams.salt, 'hex'), kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen)];
+                     case 1:
+                         // FIXME: support progress reporting callback
+                         derivedKey = _a.sent();

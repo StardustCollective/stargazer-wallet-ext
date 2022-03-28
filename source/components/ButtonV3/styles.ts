@@ -1,21 +1,25 @@
 import { StyleSheet } from 'react-native';
-import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
+import { FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
+import { getDeviceId } from 'react-native-device-info';
 
 const styles = StyleSheet.create({
   base: {
-    width: 160,
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: getDeviceId().includes('iPod') ? 120 : 145,
+    paddingHorizontal: 30,
     borderWidth: 0,
     borderStyle: 'solid',
     borderColor: 'rgba(0,0,0,0)',
   },
+  containerStyle: {},
   buttonSmall: {
-    height: 32,
+    height: 40,
     borderRadius: 20,
+    minWidth: 144,
   },
   buttonLarge: {
-    height: 48,
+    height: getDeviceId().includes('iPod') ? 40 : 48,
     borderRadius: 24,
   },
   titleSmall: {
@@ -24,7 +28,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   titleLarge: {
-    fontWeight: FONT_WEIGHTS.medium,
+    fontWeight: FONT_WEIGHTS.bold,
     fontSize: 18,
     color: COLORS.white,
   },
@@ -34,7 +38,13 @@ const styles = StyleSheet.create({
   accentOneButton: {
     backgroundColor: COLORS.accent_1,
   },
+  secondaryOutline: {
+    backgroundColor: COLORS.white,
+    color: COLORS.gray_dark,
+  },
+  secondaryOutlineTitle: {
+    color: COLORS.primary,
+  },
 });
 
 export default styles;
-

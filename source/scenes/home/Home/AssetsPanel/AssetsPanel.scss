@@ -1,0 +1,116 @@
+@import '~assets/styles/variables';
+
+  section.activity {
+    display: flex;
+    flex: 1;
+    min-height: 350px;
+    flex-direction: column;
+    background: $grey-50;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s;
+    border-radius: 8px 8px 0px 0px;
+    
+    .content {
+      margin: 16px;
+    }
+
+    .spinner {
+      svg {
+        color: $white;
+      }
+    }
+
+    &.expanded {
+      height: 528px;
+      z-index: 3;
+    }
+
+    .stargazer {
+      user-select: none;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      opacity: 0.6;
+      position: sticky;
+      bottom: 0;
+    }
+
+    .noTxComment {
+      padding: 12px 36px;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 18px;
+      color: $gray-dark;
+    }
+
+    .heading {
+      box-sizing: border-box;
+      display: flex;
+      background: $gray-light;
+      border-bottom: 1px solid $gray-100;
+      position: sticky;
+      top: 0;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 60px;
+      width: 100%;
+      color: $gray-dark;
+      z-index: 2;
+
+      .addAssets {
+        width: 40px;
+        font-size: 24px;
+        height: 40px;
+        position: absolute;
+        left: 34px;
+        background: $gray-light-100;
+        color: $gray-dark;
+
+        svg {
+          width: 26px;
+          height: 26px;
+        }
+      }
+
+      .buydag {
+        position: absolute;
+        left: 20px;
+        box-shadow: none !important;
+
+        .buydagIcon {
+          width: 48px;
+          height: 48px;
+          // background: url('../../../assets/images/svg/buy-dag-purple.svg');
+          transition: all 0.3s;
+
+          &:hover {
+            // background: url('../../../assets/images/svg/buy-dag-green.svg');
+          }
+        }
+      }
+
+      .goTop {
+        width: 26px;
+        font-size: 16px;
+        height: 26px;
+        position: absolute;
+        right: 36px;
+      }
+    }
+
+    ul {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      list-style: none;
+      position: relative;
+      z-index: 1;
+      flex-grow: 4;
+    }
+  }

@@ -1,1 +1,1 @@
-export { default } from './AssetItem';
+export { default } from './AssetItem.container';

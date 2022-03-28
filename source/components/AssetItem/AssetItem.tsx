@@ -1,73 +1,54 @@
-/// ////////////////////
+///////////////////////
 // Modules
-/// ////////////////////
+///////////////////////
 
 import React, { FC, Fragment } from 'react';
-import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
-/// ////////////////////
+///////////////////////
 // Components
-/// ////////////////////
+///////////////////////
 
 import Card from 'components/Card';
 import TextV3 from 'components/TextV3';
 
-/// ////////////////////
-// State
-/// ////////////////////
-
-import { RootState } from 'state/store';
-
-/// ////////////////////
+///////////////////////
 // Helpers
-/// ////////////////////
+///////////////////////
+
 import { formatNumber, formatPrice, formatStringDecimal } from 'scenes/home/helpers';
 
-/// ////////////////////
+///////////////////////
 // Enums
-/// ////////////////////
+///////////////////////
+
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
-/// ////////////////////
+///////////////////////
 // Types
-/// ////////////////////
+///////////////////////
+
 import { IAssetInfoState } from 'state/assets/types';
 import { INFTInfoState } from 'state/nfts/types';
-import IPriceState from 'state/price/types';
-import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
+import IAssetItem from './types';
 
-/// ////////////////////
+///////////////////////
 // Styles
-/// ////////////////////
+///////////////////////
+
 import styles from './AssetItem.scss';
 
-const isAssetNFT = (assetInfo: any) => {
-  return [AssetType.ERC721, AssetType.ERC1155].includes(assetInfo.type);
-};
 
-type IAssetItem = {
-  id?: string;
-  asset: IAssetState;
-  assetInfo: IAssetInfoState | INFTInfoState;
-  itemClicked: () => void;
-};
-
-/// ////////////////////
+///////////////////////
 // Component
-/// ////////////////////
-const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked }: IAssetItem) => {
-  /// ////////////////////
-  // Hooks
-  /// ////////////////////
-  const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
-  const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
+///////////////////////
 
-  const isNFT = isAssetNFT(assetInfo);
+const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked }: IAssetItem) => {
 
-  /// ////////////////////
+  ///////////////////////
   // Render
-  /// ////////////////////
+  ///////////////////////
+
   const renderNFTPriceSection = () => {
     return <div />;
   };

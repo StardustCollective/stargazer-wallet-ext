@@ -22,7 +22,7 @@ export interface IETHPendingTx {
   timestamp: number;
   network: ETHNetwork;
   assetId: string;
-  nonce: number;
+  nonce?: number;
   gasPrice: number;
   data?: string;
   onConfirmed?: () => void

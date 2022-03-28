@@ -4,7 +4,7 @@ import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 const styles = StyleSheet.create({
   base: {
     fontFamily: FONTS.rubik,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   headerDisplay: {
     fontWeight: FONT_WEIGHTS.bold,
@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
   },
   headerLarge: {
     fontWeight: FONT_WEIGHTS.medium,
+    fontSize: 32,
+    lineHeight: 48,
+  },
+  headerLargeRegular: {
+    fontWeight: FONT_WEIGHTS.regular,
     fontSize: 32,
     lineHeight: 48,
   },
@@ -34,7 +39,7 @@ const styles = StyleSheet.create({
   caption: {
     fontWeight: FONT_WEIGHTS.regular,
     fontSize: 14,
-    lineHeight: 20
+    lineHeight: 20,
   },
   captionStrong: {
     fontWeight: FONT_WEIGHTS.medium,
@@ -42,28 +47,59 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   alignLeft: {
-    textAlign: 'left'
+    textAlign: 'left',
   },
   alignCenter: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   alignRight: {
-    textAlign: 'right'
+    textAlign: 'right',
+  },
+  primary: {
+    color: COLORS.primary,
   },
   whiteFont: {
-    color: COLORS.white
+    color: COLORS.white,
   },
   blackFont: {
-    color: COLORS.black
-  }
+    color: COLORS.black,
+  },
+  redFont: {
+    color: COLORS.red,
+  },
+  greyDarkFont: {
+    color: COLORS.grey_dark,
+  },
+  gray100Font: {
+    color: COLORS.gray_100,
+  },
+  label: {
+    fontWeight: FONT_WEIGHTS.medium,
+    fontSize: 10,
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  description: {
+    marginTop: 12,
+    marginBottom: 24,
+    fontSize: 12,
+    fontWeight: FONT_WEIGHTS.medium,
+    lineHeight: 16,
+  },
+  uppercase: {
+    textTransform: 'uppercase',
+  },
+  noMargin: {
+    marginTop: 0,
+    marginBottom: 0,
+  },
 });
 
 export default styles;
 
-
 /*
-* Text Alignment
-*/
+ * Text Alignment
+ */
 
 // .alignLeft {
 //   text-align: left;
@@ -76,4 +112,3 @@ export default styles;
 // .alignRight {
 //   text-align: right;
 // }
-

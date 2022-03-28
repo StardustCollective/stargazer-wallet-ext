@@ -2,17 +2,14 @@ import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 
 const buttonStyles = {
-    width: 84,
-    height: 24,
-    border: `1px solid ${COLORS.gray_dark}`,
-    borderRadius: 6,
-    fontSize: 10,
-    lineHeight: 24,
-    color: COLORS.gray_dark,
-    background: `${COLORS.gray_light_100}`,
-    padding: 0,
-    boxSizing: 'border-box',
-    boxShadow: 'none',
+  width: 84,
+  height: 24,
+  borderWidth: 1,
+  borderColor: COLORS.gray_dark,
+  borderRadius: 6,
+  backgroundColor: `${COLORS.gray_light_100}`,
+  padding: 0,
+  minWidth: 84,
 };
 
 const styles = StyleSheet.create({
@@ -24,9 +21,13 @@ const styles = StyleSheet.create({
   file: {
     display: 'none',
   },
+  buttonTitle: {
+    fontSize: 10,
+    color: COLORS.gray_dark,
+    width: 84,
+  },
   button: {
     ...buttonStyles,
-    '&:hover': buttonStyles,
   },
   chosen: {
     color: COLORS.purple,
@@ -34,8 +35,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: '500',
     marginLeft: 12,
-    // whiteSpace: 'no-wrap', //throws error
-    // textOverflow: 'ellipsis',
     flexWrap: 'wrap',
     overflow: 'hidden',
     maxWidth: 204,
