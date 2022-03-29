@@ -4,8 +4,17 @@ import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/Butto
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import CameraIcon from 'assets/images/svg/camera.svg';
 import styles from './styles';
+import IEnableCamera from './types';
 
-const EnableCamera: FC = (): JSX.Element => {
+const EnableCamera: FC<IEnableCamera> = ({onPress}): JSX.Element => {
+
+  const onGoToSettingPressed = async () => {
+    if(onPress){
+      onPress();
+    }
+    await Linking.openSettings()
+  }
+
   return (
     <View style={styles.container}>
       <CameraIcon height={50} width={50} />
@@ -21,7 +30,7 @@ const EnableCamera: FC = (): JSX.Element => {
         type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
         title="Go to Settings"
-        onPress={async () => await Linking.openSettings()}
+        onPress={onGoToSettingPressed}
       />
     </View>
   );
