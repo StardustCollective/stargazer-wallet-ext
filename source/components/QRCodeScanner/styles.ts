@@ -1,12 +1,13 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
+import { iosPlatform } from 'utils/platform';
 
 const styles = StyleSheet.create({
   qrCodeHeader: {
     flexDirection: 'row',
-    marginTop: '12%',
+    marginTop: iosPlatform() ? '12%' : '5%',
     justifyContent: 'space-evenly',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   qrCameraTopContent: {
     width: '100%',
@@ -20,12 +21,9 @@ const styles = StyleSheet.create({
   },
   qrSectionLeft: {
     flex: 1,
-    backgrounColor: 'orange',
   },
   qrSectionCenter: {
     flex: 1,
-
-    backgrounColor: 'orange',
   },
   qrSectionRight: {
     flex: 1,
