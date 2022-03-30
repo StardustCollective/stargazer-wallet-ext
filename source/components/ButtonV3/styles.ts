@@ -35,6 +35,9 @@ const styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: COLORS.primary,
   },
+  secondaryButton: {
+    backgroundColor: COLORS.blue_violet,
+  },
   accentOneButton: {
     backgroundColor: COLORS.accent_1,
   },
