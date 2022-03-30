@@ -70,7 +70,7 @@ export const initialState: IAssetListState = {
     label: 'Geojam',
     symbol: 'JAM',
     type: AssetType.ERC20,
-    priceId: 'geojam-token',
+    priceId: 'geojam',
     network: 'mainnet',
     logo: 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png',
     decimals: 18,
