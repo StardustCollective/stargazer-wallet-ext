@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 import { getDeviceId } from 'react-native-device-info';
 
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   logo: {
-    marginTop: Platform.OS === 'ios' ? 56 : 12,
+    marginTop: Platform.OS === 'ios' ? 56 : StatusBar.currentHeight,
     marginBottom: 56,
     width: 192,
     height: 192,
