@@ -54,6 +54,7 @@ const ImportPhrase: FC<IImportPhrase> = ({
 
   return (
     <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
       extraScrollHeight={EXTRA_SCROLL_HEIGHT}
       enableOnAndroid>
       <Layout title="Let's import your wallet">
