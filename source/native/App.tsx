@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { StatusBar } from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import SplashScreen from 'react-native-splash-screen';
 import {NativeBaseProvider} from 'native-base';
 import RootStack from 'navigation/stacks/Root';
 import linking from 'navigation/linking';
@@ -34,6 +35,13 @@ dag4.network.config({
 });
 
 const App = () => {
+  useEffect(() => {
+    // This timeout is used to avoid a blank screen between the splash screen end and the app start.
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 1000)
+  },[]);
+  
   return (
     <SafeAreaProvider>
       <NativeBaseProvider>
