@@ -15,6 +15,7 @@ export type Keystore = SeedKeystore | PrivKeystore;
 export enum AssetType {
   Constellation = 'constellation',
   Ledger = 'ledger',
+  LedgerConstellation = 'ledger-constellation',
   Ethereum = 'ethereum',
   ERC20 = 'erc20',
   ERC721 = 'erc721',
@@ -60,6 +61,11 @@ export interface IAccountDerived {
   tokens?: string[];
 }
 
+export interface IVaultWalletsStoreState {
+  local: KeyringWalletState[],
+  ledger: KeyringWalletState[],
+}
+
 export interface IWalletState {
   id: string;
   type: KeyringWalletType;
@@ -73,7 +79,7 @@ export default interface IVaultState {
   balances: AssetBalances;
   status: number;
   version: string;
-  wallets: KeyringWalletState[];
+  wallets: IVaultWalletsStoreState;
   activeWallet: IWalletState;
   activeAsset: IActiveAssetState;
   activeNetwork: ActiveNetwork;
