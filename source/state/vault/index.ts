@@ -5,10 +5,14 @@ import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState } from './types';
+import filter from 'lodash/filter';
 
 const initialState: IVaultState = {
   status: 0,
-  wallets: [],
+  wallets: {
+    local: [],
+    ledger: [],
+  },
   hasEncryptedVault: false,
   balances: {
     [AssetType.Constellation]: '0',
@@ -43,7 +47,7 @@ const VaultState = createSlice({
       };
     },
     setVaultInfo(state: IVaultState, action: PayloadAction<KeyringVaultState>) {
-      state.wallets = action.payload.wallets;
+      state.wallets.local = action.payload.wallets;
       // if (!state.activeWallet) {
       //   state.activeWallet = { assets:[], ...state.wallets[0] };
       // }
@@ -117,6 +121,15 @@ const VaultState = createSlice({
     //     [AssetType.Ethereum]: ETH_NETWORK.main.id,
     //   };
     // },
+    addLedgerWallet(state: IVaultState, action){
+      state.wallets.ledger = [
+        ...state.wallets.ledger,
+        action.payload
+      ];
+    },
+    deleteLedgerWallet(state: IVaultState, action){
+      state.wallets.ledger = filter(state.wallets.ledger, (w) => w.id !== action.payload);
+    },
     changeActiveWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
       state.activeWallet = action.payload;
       if (state.activeWallet) {
@@ -171,6 +184,8 @@ const VaultState = createSlice({
 });
 
 export const {
+  addLedgerWallet,
+  deleteLedgerWallet,
   rehydrate,
   setVaultInfo,
   // setKeystoreInfo,
