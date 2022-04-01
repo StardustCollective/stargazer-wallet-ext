@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     paddingTop: 24,
-    paddingBottom: 24,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 64,
     paddingRight: 0,
     paddingLeft: 0,
   },
