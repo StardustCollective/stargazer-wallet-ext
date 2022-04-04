@@ -51,8 +51,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.layout}
-      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
-      enableOnAndroid>
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
         <Logo width={LOGO_IMAGE_SIZE} height={LOGO_IMAGE_SIZE} style={styles.logo} />

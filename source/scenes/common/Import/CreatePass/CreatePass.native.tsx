@@ -58,8 +58,7 @@ const CreatePass: FC<ICreatePass> = ({
   return (
     <KeyboardAwareScrollView 
       contentContainerStyle={styles.layout}
-      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
-      enableOnAndroid>
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
         <Layout title={title}>
           {passed ? (
             <View style={styles.checkIcon}>

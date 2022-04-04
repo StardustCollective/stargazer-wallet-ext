@@ -55,8 +55,7 @@ const ImportPhrase: FC<IImportPhrase> = ({
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.container}
-      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
-      enableOnAndroid>
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
       <Layout title="Let's import your wallet">
         <TextV3.Caption color={COLORS_ENUMS.BLACK}>
           Paste your recovery seed phrase below:

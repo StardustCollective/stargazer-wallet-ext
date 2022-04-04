@@ -109,8 +109,7 @@ const Send = ({
   return (
     <KeyboardAwareScrollView 
       contentContainerStyle={styles.layout} 
-      extraScrollHeight={EXTRA_SCROLL_HEIGHT} 
-      enableOnAndroid>
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
       <View style={styles.content}>
         <View>{/* Contacts Goes here */}</View>
         <View style={styles.balance}>
