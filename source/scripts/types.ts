@@ -1,5 +1,11 @@
 import { IActiveAssetState } from 'state/vault/types';
 
+export interface AccountItem  {
+  id: number;
+  address: string;
+  publicKey: string;
+};
+
 export interface IAccountInfo {
   assets: {
     [assetId: string]: IActiveAssetState;
