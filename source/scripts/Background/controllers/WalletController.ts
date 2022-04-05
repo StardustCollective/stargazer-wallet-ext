@@ -5,7 +5,7 @@ import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
-import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
+import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
@@ -14,6 +14,10 @@ import ControllerUtils from './ControllerUtils';
 import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
+import { AccountItem } from 'scripts/types';
+import { addLedgerWallet, deleteLedgerWallet } from 'state/vault';
+
+const LedgerWalletIdPrefix = 'L';
 
 class WalletController implements IWalletController {
   account: AccountController;
@@ -103,7 +107,7 @@ class WalletController implements IWalletController {
   }
 
   async createWallet(label: string, phrase?: string, resetAll = false) {
-    let wallet: IKeyringWallet;
+    let wallet;
     try {
       if (resetAll) {
         wallet = await this.keyringManager.createOrRestoreVault(label, phrase);
@@ -121,12 +125,58 @@ class WalletController implements IWalletController {
     return wallet.id;
   }
 
+  async createLedgerWallets(accountItems: AccountItem[]) {
+
+    for (let i = 0; i < accountItems.length; i++) {
+      let accountItem = accountItems[i];
+
+      const wallet = {
+        id: `${LedgerWalletIdPrefix}${accountItem.id}`,
+        label: 'Ledger ' + (accountItem.id + 1),
+        type: KeyringWalletType.LedgerAccountWallet,
+        accounts: [
+          {
+            address: accountItem.address,
+            network: KeyringNetwork.Constellation,
+            publicKey: accountItem!.publicKey,
+          },
+        ],
+        supportedAssets: [KeyringAssetType.DAG],
+      };
+
+      await store.dispatch(addLedgerWallet(wallet));
+
+      // Switches wallets immediately after adding the first item 
+      // to prevent a visual delay in the wallet extension.
+      if(i === 0){
+       // Switches wallets to the first ledger item in the accountItem array.
+        this.switchWallet(`${LedgerWalletIdPrefix}${accountItems[0].id}`);
+      }
+    }
+  }
+
   async deleteWallet(walletId: string, password: string) {
     if (this.checkPassword(password)) {
       // const { wallet }: IVaultState = store.getState().vault;
       await this.keyringManager.removeWalletById(walletId);
       // store.dispatch(deleteWalletState());
       const { vault } = store.getState();
+      if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
+        const wallets = this.keyringManager.getWallets();
+        if (wallets.length) {
+          this.switchWallet(wallets[0].id);
+        }
+      }
+      store.dispatch(updateStatus());
+      return true;
+    }
+    return false;
+  }
+
+  async deleteLedgerWallet(walletId: string, password: string){
+    const vault: IVaultState = store.getState().vault;
+    if(this.checkPassword(password)){
+      store.dispatch(deleteLedgerWallet(walletId));
       if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
         const wallets = this.keyringManager.getWallets();
         if (wallets.length) {
