@@ -135,7 +135,7 @@ export class AccountController implements IAccountController {
 
     let assetList: IAssetState[] = [];
     for (const account of walletInfo.accounts) {
-      const accountAssetList = await this.buildAccountAssetList(account);
+      const accountAssetList = await this.buildAccountAssetList(walletInfo, account);
 
       assetList = assetList.concat(accountAssetList);
     }
