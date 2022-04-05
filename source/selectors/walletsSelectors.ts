@@ -12,7 +12,7 @@ import { KeyringNetwork, KeyringWalletState, KeyringAssetInfo } from '@stardust-
 /// //////////////////////
 // Types
 /// //////////////////////
-import { IAccountDerived, IWalletState, AssetType, IAssetState, ActiveNetwork } from 'state/vault/types';
+import { IAccountDerived, IVaultWalletsStoreState, IWalletState, AssetType, IAssetState, ActiveNetwork } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
 import { getNfts } from './nftSelectors';
 
@@ -40,16 +40,42 @@ const getActiveNetwork = (state: RootState) => state.vault.activeNetwork;
  */
 const getAssets = (state: RootState) => state.assets;
 
+
+const selectLocalWallets = createSelector(getWallets,
+  (wallets: IVaultWalletsStoreState) => wallets.local
+);
+
+/**
+ * Returns ledger wallets.
+ */
+
+ const selectLedgerWallets = createSelector(getWallets,
+  (wallets: IVaultWalletsStoreState) => wallets.ledger
+);
+
+
+/**
+ * Returns all wallets.
+ */
+
+ const selectAllWallets = createSelector(
+  selectLocalWallets,
+  selectLedgerWallets,
+  (localWallet, ledgerWallet) => {
+    return [...localWallet, ...ledgerWallet];
+  }
+);
+
 /**
  * Returns all accounts from all wallets.
  */
 
-const selectAllAccounts = createSelector(getWallets, (wallets: KeyringWalletState[]) => {
+const selectAllAccounts = createSelector(selectAllWallets, (wallets: KeyringWalletState[]) => {
   const allAccounts = [];
   for (let i = 0; i < wallets.length; i++) {
     const { accounts } = wallets[i];
     for (let j = 0; j < wallets[i].accounts.length; j++) {
-      const account = accounts[j] as IAccountDerived;
+      const account = accounts[j] as any as IAccountDerived;;
       account.label = wallets[i].label;
       allAccounts.push(account);
     }
@@ -60,19 +86,15 @@ const selectAllAccounts = createSelector(getWallets, (wallets: KeyringWalletStat
 /**
  * Returns all DAG accounts from all wallets.
  */
-const selectAllDagAccounts = createSelector(selectAllAccounts, (allAccounts: IAccountDerived[]) => {
+const selectAllDagAccounts = createSelector(selectAllAccounts, (allAccounts) => {
   return allAccounts.filter((account) => account.network === KeyringNetwork.Constellation);
 });
 
 /**
  * Returns all ETH accounts from all wallets.
  */
-const selectAllEthAccounts = createSelector(selectAllAccounts, (allAccounts: IAccountDerived[]) => {
+const selectAllEthAccounts = createSelector(selectAllAccounts, (allAccounts) => {
   return allAccounts.filter((account) => account.network === KeyringNetwork.Ethereum);
-});
-
-const selectAllWallets = createSelector(getWallets, (wallets: KeyringWalletState[]) => {
-  return [...wallets];
 });
 
 /**
