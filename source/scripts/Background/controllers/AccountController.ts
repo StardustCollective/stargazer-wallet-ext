@@ -21,6 +21,7 @@ import {
   KeyringNetwork,
   KeyringWalletState,
   KeyringWalletAccountState,
+  KeyringWalletType
 } from '@stardust-collective/dag4-keyring';
 import { ETHNetwork, ITransactionInfo, IETHPendingTx } from '../../types';
 import { EthTransactionController } from './EthTransactionController';
@@ -59,20 +60,35 @@ export class AccountController implements IAccountController {
     return true;
   }
 
-  async buildAccountAssetList(account: KeyringWalletAccountState): Promise<IAssetState[]> {
+  async buildAccountAssetList(walletInfo: KeyringWalletState,  account: KeyringWalletAccountState): Promise<IAssetState[]> {
     const {
       vault: { activeNetwork },
     } = store.getState();
 
-    const privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
+    let privateKey = undefined;
+    let publicKey  = undefined;
+
+      // Excludes ledger accounts since we do not have access 
+      // to the private key.
+      if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet){
+        privateKey = this.keyringManager.exportAccountPrivateKey(
+          account.address
+        );
+      }else {
+        publicKey = account.publicKey;
+      }
 
     if (account.network === KeyringNetwork.Constellation) {
-      dag4.account.loginPrivateKey(privateKey);
+      if(privateKey){
+        dag4.account.loginPrivateKey(privateKey);
+      }else {
+        dag4.account.loginPublicKey(publicKey);
+      }
 
       return [
         {
           id: AssetType.Constellation,
-          type: AssetType.Constellation,
+          type: walletInfo.type === KeyringWalletType.LedgerAccountWallet ?  AssetType.LedgerConstellation : AssetType.Constellation,
           label: 'Constellation',
           address: account.address,
         },
@@ -108,9 +124,10 @@ export class AccountController implements IAccountController {
   async buildAccountAssetInfo(walletId: string): Promise<void> {
     const state = store.getState();
     const { vault } = state;
-    const { wallets } = vault;
+    const { local, ledger } = vault.wallets;
+    const allWallets = [...local, ...ledger];
 
-    const walletInfo: KeyringWalletState = wallets.find((w: KeyringWalletState) => w.id === walletId);
+    const walletInfo: KeyringWalletState = allWallets.find((w: KeyringWalletState) => w.id === walletId);
 
     if (!walletInfo) {
       return;
