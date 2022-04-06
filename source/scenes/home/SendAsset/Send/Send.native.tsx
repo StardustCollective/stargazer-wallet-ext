@@ -1,19 +1,47 @@
+///////////////////////////
+// Modules
+///////////////////////////
+
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Modal } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { scale } from 'react-native-size-matters';
+import { Input } from 'react-native-elements';
+
+///////////////////////////
+// Components
+///////////////////////////
+
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextInput from 'components/TextInput';
 import PurpleSlider from 'components/PurpleSlider';
 import QRCodeScanner from 'components/QRCodeScanner';
 import QRCodeButton from 'components/QRCodeButton';
-import { Input } from 'react-native-elements';
-import { COLORS_ENUMS } from 'assets/styles/colors';
+
+///////////////////////////
+// Types
+///////////////////////////
+
 import { AssetType } from 'state/vault/types';
+
+///////////////////////////
+// Styles
+///////////////////////////
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
+import styles from './styles';
+
+///////////////////////////
+// Scene
+///////////////////////////
+
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import Contact from 'scenes/home/Contacts';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { scale } from 'react-native-size-matters';
-import styles from './styles';
+
+///////////////////////////
+// Constants
+///////////////////////////
 
 const EXTRA_SCROLL_HEIGHT = scale(25);
 const QR_CODE_BUTTON_SIZE = 25;
@@ -74,8 +102,14 @@ const Send = ({
     );
   };
 
+  ///////////////////////////
+  // Render
+  ///////////////////////////
+
   return (
-    <KeyboardAwareScrollView extraScrollHeight={EXTRA_SCROLL_HEIGHT} contentContainerStyle={styles.layout}>
+    <KeyboardAwareScrollView 
+      contentContainerStyle={styles.layout} 
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
       <View style={styles.content}>
         <View>{/* Contacts Goes here */}</View>
         <View style={styles.balance}>

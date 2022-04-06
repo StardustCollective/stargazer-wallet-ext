@@ -4,14 +4,13 @@
 
 import React, { FC } from 'react';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { scale } from 'react-native-size-matters';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
-import Layout from 'scenes/common/Layout';
 import TextV3 from 'components/TextV3';
 import CheckIcon from 'components/CheckIcon';
 import TextInput from 'components/TextInput';
@@ -31,14 +30,16 @@ import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////////
+// Scene
+///////////////////////////
+
+import Layout from 'scenes/common/Layout';
+
+///////////////////////////
 // Constants
 ///////////////////////////
 
 const EXTRA_SCROLL_HEIGHT = scale(25);
-
-///////////////////////////
-// Scene
-///////////////////////////
 
 const CreatePass: FC<ICreatePass> = ({
   control,
@@ -55,7 +56,9 @@ const CreatePass: FC<ICreatePass> = ({
   ///////////////////////////
 
   return (
-    <KeyboardAwareScrollView extraScrollHeight={EXTRA_SCROLL_HEIGHT} contentContainerStyle={styles.layout}>
+    <KeyboardAwareScrollView 
+      contentContainerStyle={styles.layout}
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
         <Layout title={title}>
           {passed ? (
             <View style={styles.checkIcon}>
