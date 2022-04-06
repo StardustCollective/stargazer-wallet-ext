@@ -52,7 +52,7 @@ const WalletSend: FC = ({
   });
   const errorIconClass = clsx(styles.statusIcon, {
     [styles.hide]: isValidAddress,
-  });
+  }); 
 
   return (
     <div className={styles.wrapper}>
@@ -123,8 +123,7 @@ const WalletSend: FC = ({
                 Max
               </Button>
             </li>
-
-            {activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation && (
+            {(activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) && (
               <li>
                 <label>Transaction Fee</label>
                 <TextInput
@@ -157,7 +156,7 @@ const WalletSend: FC = ({
               </span>
             )}
           </div>
-          {activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation && (
+          {(activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) && (
             <div className={styles.description}>
               {`With current network conditions we recommend a fee of ${recommend} DAG.`}
             </div>
