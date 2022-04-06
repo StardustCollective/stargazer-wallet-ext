@@ -9,11 +9,11 @@ import styles from './styles';
 import IContactSettings from './types';
 
 const Contacts: FC<IContactSettings> = ({ contacts, handleSelect, addContactLabel }) => {
-  if (Object.keys(contacts).length === 0) {
+   if (Object.keys(contacts).length === 0) {
     return (
       <ScrollView stickyHeaderIndices={[1]} style={styles.wrapper}>
         <View style={styles.addContactLabel}>
-          <Text>{addContactLabel}</Text>
+          <Text style={styles.addContactText}>{addContactLabel}</Text>
         </View>
       </ScrollView>
     );
