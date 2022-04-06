@@ -11,9 +11,9 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1E2FE09827F62384002BAE26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2FE09727F62384002BAE26 /* LaunchScreen.storyboard */; };
 		26343C94D6BF485C88B9FFA3 /* Rubik.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CB947F12DA1438EA7989B2A /* Rubik.ttf */; };
 		722F3CBD5DF5AA385D8EBFF8 /* libPods-Stargazer-StargazerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28B3D412B4B748BCE8796E7A /* libPods-Stargazer-StargazerTests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		94AA58ADD20B4844B07EF299 /* Inter-SansSerif.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71AE7215BA994DFD9ADA3726 /* Inter-SansSerif.ttf */; };
 		9735026AE3EB4F37550FB76C /* libPods-Stargazer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D699BF480D78949CA8F4C1DD /* libPods-Stargazer.a */; };
 /* End PBXBuildFile section */
@@ -38,11 +38,11 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Stargazer/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Stargazer/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Stargazer/main.m; sourceTree = "<group>"; };
+		1E2FE09727F62384002BAE26 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		24FC348AE109A6CB5166C46F /* Pods-Stargazer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer.debug.xcconfig"; path = "Target Support Files/Pods-Stargazer/Pods-Stargazer.debug.xcconfig"; sourceTree = "<group>"; };
 		28B3D412B4B748BCE8796E7A /* libPods-Stargazer-StargazerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stargazer-StargazerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB947F12DA1438EA7989B2A /* Rubik.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Rubik.ttf; path = ../fonts/Rubik.ttf; sourceTree = "<group>"; };
 		71AE7215BA994DFD9ADA3726 /* Inter-SansSerif.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-SansSerif.ttf"; path = "../fonts/Inter-SansSerif.ttf"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Stargazer/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B705D36BB4DC7FC5B51E1C5F /* Pods-Stargazer-StargazerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer-StargazerTests.release.xcconfig"; path = "Target Support Files/Pods-Stargazer-StargazerTests/Pods-Stargazer-StargazerTests.release.xcconfig"; sourceTree = "<group>"; };
 		C95FE2881785AFDB8B19FCC6 /* Pods-Stargazer-StargazerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer-StargazerTests.debug.xcconfig"; path = "Target Support Files/Pods-Stargazer-StargazerTests/Pods-Stargazer-StargazerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D699BF480D78949CA8F4C1DD /* libPods-Stargazer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stargazer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,8 +96,8 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				1E2FE09727F62384002BAE26 /* LaunchScreen.storyboard */,
 			);
 			name = Stargazer;
 			sourceTree = "<group>";
@@ -266,8 +266,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				1E2FE09827F62384002BAE26 /* LaunchScreen.storyboard in Resources */,
 				26343C94D6BF485C88B9FFA3 /* Rubik.ttf in Resources */,
 				94AA58ADD20B4844B07EF299 /* Inter-SansSerif.ttf in Resources */,
 			);
