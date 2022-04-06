@@ -188,9 +188,15 @@ const ConfirmContainer = ({ navigation }) => {
           window.close();
         }
       } else {
-
-        await accountController.confirmTempTx()
-        setConfirmed(true);
+        if(activeAsset.type === AssetType.LedgerConstellation){
+          let publicKey = '';
+          let id = '';
+          window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
+          // history.push('/home');
+        }else{
+          await accountController.confirmTempTx()
+          setConfirmed(true);
+        }
       }
     } catch (error: any) {
       let message = error.message;
@@ -206,6 +212,7 @@ const ConfirmContainer = ({ navigation }) => {
       <Confirm
         isExternalRequest={isExternalRequest}
         confirmed={confirmed}
+        activeAsset={activeAsset}
         tempTx={tempTx}
         assetInfo={assetInfo}
         getSendAmount={getSendAmount}

@@ -5,7 +5,7 @@ import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
-import { IKeyringWallet, KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringAssetType, KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
