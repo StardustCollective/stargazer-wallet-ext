@@ -30,6 +30,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  addContactText: {
+    color: COLORS.black,
+  },
   add: {
     padding: 8,
     width: 144,
