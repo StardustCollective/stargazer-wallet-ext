@@ -44,7 +44,7 @@ export class AssetsBalanceMonitor {
       let hasETH = false;
 
       activeWallet.assets.forEach((a) => {
-        hasDAG = hasDAG || a.type === AssetType.Constellation;
+        hasDAG = hasDAG || a.type === AssetType.Constellation || a.type === AssetType.LedgerConstellation;
         hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
       });
 
