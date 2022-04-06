@@ -4,7 +4,7 @@ import { View, TouchableOpacity, Linking } from 'react-native';
 import Card from 'components/Card';
 import TextV3 from 'components/TextV3';
 
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import WalletIcon from 'assets/images/svg/wallet.svg';
 import ContactsIcon from 'assets/images/svg/contacts.svg';
@@ -18,21 +18,6 @@ import {BUY_DAG_URL} from 'constants/index';
 import styles from './styles';
 
 import IMainSettings, { IRenderSettingsItemProps } from './types';
-
-const RenderSettingsItem = ({ label, IconImageOrComponent, onClick }: IRenderSettingsItemProps) => {
-  return (
-    <Card id={`settings-${label.toLowerCase()}`} onClick={onClick} style={styles.card}>
-      <View style={styles.settingsItemIconWrapper}>
-        <View style={styles.iconCircle}>
-          <IconImageOrComponent />
-        </View>
-      </View>
-      <View style={styles.settingsItemLabelWrapper}>
-        <TextV3.BodyStrong color={COLORS.black}>{label}</TextV3.BodyStrong>
-      </View>
-    </Card>
-  );
-};
 
 const Main: FC<IMainSettings> = ({
   handleLogout,
@@ -56,7 +41,7 @@ const Main: FC<IMainSettings> = ({
           </View>
         </View>
         <View style={styles.settingsItemLabelWrapper}>
-          <TextV3.BodyStrong color={COLORS.black}>{label}</TextV3.BodyStrong>
+          <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{label}</TextV3.BodyStrong>
         </View>
       </Card>
     );
