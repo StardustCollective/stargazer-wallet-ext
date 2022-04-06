@@ -143,7 +143,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       address: yup.string().required('Error: Invalid DAG address'),
       amount: !isExternalRequest ? yup.number().moreThan(0).required('Error: Invalid DAG Amount') : null,
       fee:
-        activeAsset.type === AssetType.Constellation
+        (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation)
           ? yup.string().required('Error: Invalid transaction fee')
           : yup.string(),
     }),
@@ -160,7 +160,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const [decimalPointOnFee, setDecimalPointOnFee] = useState<boolean>(false);
 
   const isValidAddress = useMemo(() => {
-    if (activeAsset.type === AssetType.Constellation) return accountController.isValidDAGAddress(address);
+    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) return accountController.isValidDAGAddress(address);
     return accountController.isValidERC20Address(address);
   }, [address]);
 
@@ -231,7 +231,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     }
 
     const txFee =
-      activeAsset.id === AssetType.Constellation
+      activeAsset.id === AssetType.Constellation || activeAsset.id === AssetType.LedgerConstellation
         ? ethers.utils.parseUnits(fee, assetInfo.decimals)
         : ethers.utils.parseEther(gasFee.toString());
 
