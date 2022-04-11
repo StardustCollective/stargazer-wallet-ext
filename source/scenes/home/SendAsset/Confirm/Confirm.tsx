@@ -22,6 +22,7 @@ const SendConfirm = ({
   confirmed,
   tempTx,
   assetInfo,
+  activeAsset,
   getSendAmount,
   activeWallet,
   feeUnit,
@@ -90,7 +91,7 @@ const SendConfirm = ({
             Cancel
           </Button>
           <Button type="submit" variant={styles.button} onClick={handleConfirm} disabled={disabled}>
-            {assetInfo.type === AssetType.Ledger ? 'Next' : 'Confirm'}
+            {activeAsset.type === AssetType.LedgerConstellation ? 'Next' : 'Confirm'}
           </Button>
         </div>
       </section>
