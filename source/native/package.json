@@ -18,6 +18,7 @@
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.5.0",
     "@react-navigation/stack": "^6.0.11",
+    "@sentry/react-native": "^3.4.0",
     "crypto-js": "^4.1.1",
     "metro-react-native-babel-transformer": "^0.66.2",
     "native-base": "^3.2.2",
