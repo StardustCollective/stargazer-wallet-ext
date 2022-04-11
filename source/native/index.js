@@ -11,7 +11,6 @@ import * as Sentry from "@sentry/react-native";
 
 Sentry.init({
   dsn: process.env.SENTRY_DNS,
-  tracesSampleRate: __DEV__ ? 1 : 0.2,
   debug: __DEV__ ? true : false,
   environment: __DEV__ ? 'development' : 'production'
 });
