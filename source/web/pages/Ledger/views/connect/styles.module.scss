@@ -1,3 +1,5 @@
+@import '~assets/styles/variables';
+
 .content {
   display: flex;
   padding: 15px;
@@ -10,7 +12,7 @@
     flex-direction: column;
     .button {
       width: 100%;
-      background-color: #521E8A;
+      background-color: $primary;
       flex: 0 1 auto;
     }
     .instructions{
