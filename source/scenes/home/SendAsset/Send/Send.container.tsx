@@ -272,9 +272,10 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleAmountChange = useCallback(
     (changeVal: string) => {
-      const decimalPointEntered = checkOneDecimalPoint(changeVal);
+      const formattedValue = changeVal.replace(/,/g, '.');
+      const decimalPointEntered = checkOneDecimalPoint(formattedValue);
       setDecimalPointOnAmount(decimalPointEntered);
-      const changeAmount = getChangeAmount(changeVal, MAX_AMOUNT_NUMBER, assetInfo.decimals);
+      const changeAmount = getChangeAmount(formattedValue, MAX_AMOUNT_NUMBER, assetInfo.decimals);
       if (changeAmount === null) return;
       
       setAmount(changeAmount);
@@ -298,10 +299,11 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleFeeChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const val = ev.target.value;
-    const decimalPointEntered = checkOneDecimalPoint(val);
+    const formattedValue = val.replace(/,/g, '.');
+    const decimalPointEntered = checkOneDecimalPoint(formattedValue);
     setDecimalPointOnFee(decimalPointEntered);
-    if (!isNaN(parseFloat(val)) && (parseFloat(val) === 0 || parseFloat(val) >= 0.00000001)) {
-      setFee(ev.target.value);
+    if (!isNaN(parseFloat(formattedValue)) && (parseFloat(formattedValue) === 0 || parseFloat(formattedValue) >= 0.00000001)) {
+      setFee(formattedValue);
       estimateGasFee(gasPrice);
     }
   }, []);
