@@ -301,7 +301,6 @@ const LedgerPage: FC = () => {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
       const signedTX = await LedgerBridgeUtil.buildTransaction(amount, publicKey, Number(id.replace('L','')), from, to);
-      //console.log('signedTX', JSON.stringify(signedTX,null,2));
       const hash = await dag4.network.loadBalancerApi.postTransaction(signedTX);
       if (hash) {
         postTransactionResult(hash);

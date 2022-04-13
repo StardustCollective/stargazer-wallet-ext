@@ -21,6 +21,11 @@ import { getNfts } from './nftSelectors';
 /// //////////////////////
 
 /**
+ * Returns the active asset
+ */
+ const getActiveAsset = (state: RootState) => state.vault.activeAsset;
+
+/**
  * Returns root wallets state
  */
 const getWallets = (state: RootState) => state.vault.wallets;
@@ -81,6 +86,22 @@ const selectAllAccounts = createSelector(selectAllWallets, (wallets: KeyringWall
     }
   }
   return allAccounts;
+});
+
+/**
+ * Return wallet of active asset
+ */
+
+const selectActiveAssetPublicKey = createSelector(selectAllWallets, getActiveAsset, (wallets: KeyringWalletState[], activeAsset: IWalletState) => {
+  for (let i = 0; i < wallets.length; i++) {
+    const { accounts } = wallets[i];
+    for (let j = 0; j < wallets[i].accounts.length; j++) {
+      let account = accounts[j];
+      if(activeAsset.address === account.address){
+        return account!.publicKey;
+      }
+    }
+  }
 });
 
 /**
@@ -149,4 +170,5 @@ export default {
   selectActiveNetworkAssets,
   selectActiveNetworkAssetIds,
   selectNFTAssets,
+  selectActiveAssetPublicKey
 };
