@@ -46,13 +46,13 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           <span>Show Recovery Phrase</span>
           <ArrowIcon />
         </section>
-      ) : (
+      ) : wallet.type !== KeyringWalletType.LedgerAccountWallet ? (
         <section className={styles.menu} onClick={onShowPrivateKeyClicked}>
           <Icon Component={PrivKeyIcon} />
           <span>Export private key</span>
           <ArrowIcon />
         </section>
-      )}
+      ): null}
 
       <span>If you lose access to this wallet, your funds will be lost, unless you back up!</span>
       <section className={styles.menu} onClick={onDeleteWalletClicked}>
