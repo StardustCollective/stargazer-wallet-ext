@@ -38,13 +38,13 @@ const Confirm = ({
         confirmed ? (
           <>
             <View style={{ flex: 1, backgroundColor: 'white' }}>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <View style={styles.heading}>
                   <TextV3.HeaderLargeRegular color={COLORS_ENUMS.DARK_GRAY}>
                     Your transaction is underway
                   </TextV3.HeaderLargeRegular>
                 </View>
-                <View style={[styles.sendSuccessContent]}>
+                <View style={styles.sendSuccessContent}>
                   <View style={styles.wrapper}>
                     <View style={styles.checkIcon}>
                       <CheckIcon />

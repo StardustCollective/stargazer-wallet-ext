@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     width: 144,
     minWidth: 144,
     padding: 8,
+    marginRight: Platform.OS === 'android' ? 16 : 0,
   },
   cancelTitle: {
     color: COLORS.gray_dark,
@@ -80,10 +81,10 @@ const styles = StyleSheet.create({
     width: 144,
     minWidth: 144,
     padding: 8,
+    marginLeft: Platform.OS === 'android' ? 16 : 0,
   },
   qrCodeButton: {
-    marginHorizontal: 5
-
+    marginHorizontal: 5,
   },
 });
 

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
@@ -192,6 +192,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'flex-end',
     flex: 1,
+  },
+  button: {
+    marginHorizontal: Platform.OS === 'android' ? 16 : 0,
   },
 });
 
