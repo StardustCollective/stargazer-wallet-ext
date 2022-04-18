@@ -22,7 +22,7 @@ const ProgressStyles = () => ({
     backgroundColor: '#888888',
   },
   barColorPrimary: {
-    backgroundColor: '#521E8A',
+    backgroundColor: '#2b1d52',
   }
 });
 

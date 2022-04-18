@@ -11,6 +11,7 @@ export default interface IWalletSettings {
   activeWallet: IWalletState;
   assets: IAssetState[];
   privKeyAccounts: Array<any>;
+  ledgerAccounts: Array<any>;
   handleSwitchWallet: (walletId: string, accounts: Array<any>) => void;
   handleManageWallet: (ev: any, walletId: string) => void;
 }

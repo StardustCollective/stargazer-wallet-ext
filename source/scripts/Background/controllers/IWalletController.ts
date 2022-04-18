@@ -4,6 +4,7 @@ import {
   KeyringNetwork,
 } from '@stardust-collective/dag4-keyring';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
+import { AccountItem } from 'scripts/types';
 
 export interface IWalletController {
   account: Readonly<IAccountController>;
@@ -21,6 +22,9 @@ export interface IWalletController {
     resetAll?: boolean
   ) => Promise<string>;
   deleteWallet: (walletId: string, password: string) => Promise<boolean>;
+  createLedgerWallets: (
+    addresses: AccountItem[]
+  ) => void;
   switchWallet: (walletId: string) => Promise<void>;
   switchNetwork: (networkType: KeyringNetwork, networkId: string) => void;
   // generateSeedPhrase: (update?: boolean) => string;

@@ -46,7 +46,7 @@ const homeHeader = ({
 }: IHomeHeader) => {
 
   const onMenuButtonClicked = () => {
-    navigation.navigate(screens.authorized.settings)
+    navigation.navigate(screens.settings.main)
   }
 
   const renderHeaderRight = () => {

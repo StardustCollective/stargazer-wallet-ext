@@ -67,7 +67,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const accountController = getAccountController();
   let isExternalRequest = false;
 
-  if(!!location){
+  if (!!location) {
     isExternalRequest = location.pathname.includes('sendTransaction');
   }
 
@@ -143,7 +143,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       address: yup.string().required('Error: Invalid DAG address'),
       amount: !isExternalRequest ? yup.number().moreThan(0).required('Error: Invalid DAG Amount') : null,
       fee:
-        activeAsset.type === AssetType.Constellation
+        (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation)
           ? yup.string().required('Error: Invalid transaction fee')
           : yup.string(),
     }),
@@ -160,7 +160,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const [decimalPointOnFee, setDecimalPointOnFee] = useState<boolean>(false);
 
   const isValidAddress = useMemo(() => {
-    if (activeAsset.type === AssetType.Constellation) return accountController.isValidDAGAddress(address);
+    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) return accountController.isValidDAGAddress(address);
     return accountController.isValidERC20Address(address);
   }, [address]);
 
@@ -231,9 +231,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         balance = balances[activeAsset.id] || '0';
         balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
       }
-  
+
       txFee =
-        activeAsset.id === AssetType.Constellation
+        activeAsset.id === AssetType.Constellation || activeAsset.id === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee, assetInfo.decimals)
           : ethers.utils.parseEther(gasFee.toString());
 
@@ -260,14 +260,14 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       return !isValidAddress || !fee || !address;
     }
 
-    return  !isValidAddress || 
-            !amount || 
-            !fee || 
-            !address || 
-            !balance || 
-            !computedAmount || 
-            balance.lt(0) || 
-            computedAmount.gt(balance);
+    return !isValidAddress ||
+      !amount ||
+      !fee ||
+      !address ||
+      !balance ||
+      !computedAmount ||
+      balance.lt(0) ||
+      computedAmount.gt(balance);
   }, [amountBN, address, fee, gasFee]);
 
   const handleAmountChange = useCallback(
@@ -277,10 +277,10 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       setDecimalPointOnAmount(decimalPointEntered);
       const changeAmount = getChangeAmount(formattedValue, MAX_AMOUNT_NUMBER, assetInfo.decimals);
       if (changeAmount === null) return;
-      
+
       setAmount(changeAmount);
       setSendAmount(changeAmount);
-      
+
       if (changeAmount !== amount) {
         let bigNumberAmount: BigNumber | null = null;
         try {

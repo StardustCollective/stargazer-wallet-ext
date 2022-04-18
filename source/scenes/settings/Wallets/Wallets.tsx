@@ -17,8 +17,9 @@ import styles from './Wallets.scss';
 const WalletsComponent: FC<IWalletSettings> = ({
   wallets,
   activeWallet,
-  assets,
   privKeyAccounts,
+  ledgerAccounts,
+  assets,
   handleSwitchWallet,
   handleManageWallet,
 }) => {
@@ -51,6 +52,39 @@ const WalletsComponent: FC<IWalletSettings> = ({
           <label>Private key wallets</label>
           <div className={styles.group}>
             {privKeyAccounts.map((wallet) => (
+              <section
+                className={styles.wallet}
+                key={wallet.id}
+                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as IAccountDerived[])}
+              >
+                {wallet.id === activeWallet.id && <CheckIcon className={styles.check} />}
+                <Icon
+                  width={24}
+                  Component={
+                    assets[
+                      wallet.supportedAssets.includes(KeyringAssetType.ETH)
+                        ? AssetType.Ethereum
+                        : AssetType.Constellation
+                    ].logo || StargazerIcon
+                  }
+                />
+                <span>
+                  {wallet.label}
+                  <small>{wallet.accounts[0].address}</small>
+                </span>
+                <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
+                  <InfoIcon />
+                </IconButton>
+              </section>
+            ))}
+          </div>
+        </>
+      )}
+      {!!ledgerAccounts.length && (
+        <>
+          <label>Ledger Wallets</label>
+          <div className={styles.group}>
+            {ledgerAccounts.map((wallet) => (
               <section
                 className={styles.wallet}
                 key={wallet.id}
