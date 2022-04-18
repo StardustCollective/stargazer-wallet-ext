@@ -10,6 +10,7 @@ import { getAccountController } from 'utils/controllersUtils';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 import { useLinkTo } from '@react-navigation/native';
+import walletsSelector from 'selectors/walletsSelectors';
 
 import ManageWallet from './ManageWallet';
 
@@ -22,8 +23,8 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
 
   const { handleSubmit, register, control } = useForm();
   const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
-
-  const wallet = wallets.find((w) => w.id === id);
+  const allWallets = useSelector(walletsSelector.selectAllWallets);
+  const wallet = allWallets.find((w) => w.id === id);
 
   const onSubmit = (data: any) => {
     accountController.updateWalletLabel(id, data.name);

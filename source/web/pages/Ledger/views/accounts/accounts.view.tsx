@@ -152,10 +152,10 @@ let Accounts = ({
                     <Checkbox checked={(checkBoxesState[key])} onChange={(_, checked) => { _onCheckboxChange(item, checked, key) }} color={CHECKBOX_COLOR_PROP} />
                   </UITableCell>
                   <UITableCell>
-                    {key}
+                    <span>{key}</span>
                   </UITableCell>
-                  <UITableCell>{ellipsis(item.address, PREVIEW_CHARACTERS_NUMBER, PREVIEW_CHARACTERS_NUMBER)}</UITableCell>
-                  <UITableCell>{item.balance} {DAG_STRING}</UITableCell>
+                  <UITableCell><span>{ellipsis(item.address, PREVIEW_CHARACTERS_NUMBER, PREVIEW_CHARACTERS_NUMBER)}</span></UITableCell>
+                  <UITableCell><span>{item.balance} {DAG_STRING}</span></UITableCell>
                 </TableRow>
               )
             })}

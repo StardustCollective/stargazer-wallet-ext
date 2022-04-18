@@ -1,3 +1,5 @@
+@import "~assets/styles/variables";
+
 .content {
   display: flex;
   flex-direction: column;
@@ -6,10 +8,10 @@
   align-items: center;
   padding: 30px;
   .progress {
-    color: #521E8A;
+    color: $primary;
   }
   span {
-    color: #521E8A;
+    color: $primary;
     font-size: 80px;
     .percentage{
       font-size: 40px;

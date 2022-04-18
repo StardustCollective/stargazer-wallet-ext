@@ -51,6 +51,12 @@ import { showAlert } from 'utils/alertUtil';
 import Confirm from './Confirm';
 
 ///////////////////////////
+// Selectors
+///////////////////////////
+
+import walletSelectors from 'selectors/walletsSelectors';
+
+///////////////////////////
 // Container
 ///////////////////////////
 
@@ -59,6 +65,7 @@ const ConfirmContainer = ({ navigation }) => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
+  let activeWalletPublicKey: any = useSelector(walletSelectors.selectActiveAssetPublicKey)
   let history: any;
   let isExternalRequest: boolean;
 
@@ -188,9 +195,14 @@ const ConfirmContainer = ({ navigation }) => {
           window.close();
         }
       } else {
-
-        await accountController.confirmTempTx()
-        setConfirmed(true);
+        if(activeAsset.type === AssetType.LedgerConstellation){
+          let publicKey = activeWalletPublicKey;
+          let id = activeWallet.id;
+          window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
+        }else{
+          await accountController.confirmTempTx()
+          setConfirmed(true);
+        }
       }
     } catch (error: any) {
       let message = error.message;
@@ -206,6 +218,7 @@ const ConfirmContainer = ({ navigation }) => {
       <Confirm
         isExternalRequest={isExternalRequest}
         confirmed={confirmed}
+        activeAsset={activeAsset}
         tempTx={tempTx}
         assetInfo={assetInfo}
         getSendAmount={getSendAmount}
