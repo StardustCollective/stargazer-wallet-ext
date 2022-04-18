@@ -67,7 +67,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const accountController = getAccountController();
   let isExternalRequest = false;
 
-  if(!!location){
+  if (!!location) {
     isExternalRequest = location.pathname.includes('sendTransaction');
   }
 
@@ -231,23 +231,16 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
         balance = balances[activeAsset.id] || '0';
         balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
       }
-  
+
       txFee =
-        activeAsset.id === AssetType.Constellation
+        activeAsset.id === AssetType.Constellation || activeAsset.id === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee, assetInfo.decimals)
           : ethers.utils.parseEther(gasFee.toString());
 
-<<<<<<< HEAD
-    const txFee =
-      activeAsset.id === AssetType.Constellation || activeAsset.id === AssetType.LedgerConstellation
-        ? ethers.utils.parseUnits(fee, assetInfo.decimals)
-        : ethers.utils.parseEther(gasFee.toString());
-=======
       clearError('fee');
     } catch (err) {
       setError('fee', 'badFee', 'Please enter a valid transaction fee.');
     }
->>>>>>> main
 
     return { balance: balanceBN, txFee };
   };
@@ -267,14 +260,14 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       return !isValidAddress || !fee || !address;
     }
 
-    return  !isValidAddress || 
-            !amount || 
-            !fee || 
-            !address || 
-            !balance || 
-            !computedAmount || 
-            balance.lt(0) || 
-            computedAmount.gt(balance);
+    return !isValidAddress ||
+      !amount ||
+      !fee ||
+      !address ||
+      !balance ||
+      !computedAmount ||
+      balance.lt(0) ||
+      computedAmount.gt(balance);
   }, [amountBN, address, fee, gasFee]);
 
   const handleAmountChange = useCallback(
@@ -284,10 +277,10 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       setDecimalPointOnAmount(decimalPointEntered);
       const changeAmount = getChangeAmount(formattedValue, MAX_AMOUNT_NUMBER, assetInfo.decimals);
       if (changeAmount === null) return;
-      
+
       setAmount(changeAmount);
       setSendAmount(changeAmount);
-      
+
       if (changeAmount !== amount) {
         let bigNumberAmount: BigNumber | null = null;
         try {
