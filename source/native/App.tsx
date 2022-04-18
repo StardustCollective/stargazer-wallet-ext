@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { StatusBar } from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import SplashScreen from 'react-native-splash-screen';
 import {NativeBaseProvider} from 'native-base';
 import RootStack from 'navigation/stacks/Root';
 import linking from 'navigation/linking';
@@ -11,6 +12,7 @@ import {Provider} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
 import {dag4} from '@stardust-collective/dag4';
 import {KeyringNetwork} from '@stardust-collective/dag4-keyring';
+import { COLORS } from 'assets/styles/_variables';
 
 ////////////////////
 // DAG Config
@@ -34,12 +36,19 @@ dag4.network.config({
 });
 
 const App = () => {
+  useEffect(() => {
+    // This timeout is used to avoid a blank screen between the splash screen end and the app start.
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 1000)
+  },[]);
+  
   return (
     <SafeAreaProvider>
       <NativeBaseProvider>
         <Provider store={Store}>
           <NavigationContainer linking={linking}>
-            <StatusBar translucent barStyle="light-content" />
+            <StatusBar translucent barStyle="light-content" backgroundColor={COLORS.primary} />
             <RootStack />
           </NavigationContainer>
         </Provider>

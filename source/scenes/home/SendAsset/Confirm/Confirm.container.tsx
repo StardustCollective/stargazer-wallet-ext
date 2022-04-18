@@ -214,7 +214,7 @@ const ConfirmContainer = ({ navigation }) => {
   };
 
   return (
-    <Container color={CONTAINER_COLOR.LIGHT}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <Confirm
         isExternalRequest={isExternalRequest}
         confirmed={confirmed}

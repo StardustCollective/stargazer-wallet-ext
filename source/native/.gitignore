@@ -21,6 +21,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 xcshareddata
+sentry.properties
 
 # Android/IntelliJ
 #
@@ -30,6 +31,7 @@ build/
 local.properties
 *.iml
 *.hprof
+sentry.properties
 
 # node.js
 #

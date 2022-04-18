@@ -138,7 +138,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const tempTx = accountController.getTempTx();
 
-  const { setValue, control, handleSubmit, register, errors } = useForm({
+  const { setValue, control, handleSubmit, register, errors, setError, clearError } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
       amount: !isExternalRequest ? yup.number().moreThan(0).required('Error: Invalid DAG Amount') : null,
@@ -225,15 +225,29 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
   const getBalanceAndFees = () => {
     let balance;
     let balanceBN;
-    if (balances) {
-      balance = balances[activeAsset.id] || '0';
-      balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
-    }
+    let txFee;
+    try {
+      if (balances) {
+        balance = balances[activeAsset.id] || '0';
+        balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
+      }
+  
+      txFee =
+        activeAsset.id === AssetType.Constellation
+          ? ethers.utils.parseUnits(fee, assetInfo.decimals)
+          : ethers.utils.parseEther(gasFee.toString());
 
+<<<<<<< HEAD
     const txFee =
       activeAsset.id === AssetType.Constellation || activeAsset.id === AssetType.LedgerConstellation
         ? ethers.utils.parseUnits(fee, assetInfo.decimals)
         : ethers.utils.parseEther(gasFee.toString());
+=======
+      clearError('fee');
+    } catch (err) {
+      setError('fee', 'badFee', 'Please enter a valid transaction fee.');
+    }
+>>>>>>> main
 
     return { balance: balanceBN, txFee };
   };
@@ -245,7 +259,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
     if (assetInfo.type === AssetType.ERC20) {
       computedAmount = amountBN;
-    } else {
+    } else if (txFee) {
       computedAmount = amountBN.add(txFee);
     }
 
@@ -253,21 +267,38 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
       return !isValidAddress || !fee || !address;
     }
 
-    return !isValidAddress || !amount || !fee || !address || !balance || balance.lt(0) || computedAmount.gt(balance);
+    return  !isValidAddress || 
+            !amount || 
+            !fee || 
+            !address || 
+            !balance || 
+            !computedAmount || 
+            balance.lt(0) || 
+            computedAmount.gt(balance);
   }, [amountBN, address, fee, gasFee]);
 
   const handleAmountChange = useCallback(
     (changeVal: string) => {
-      const decimalPointEntered = checkOneDecimalPoint(changeVal);
+      const formattedValue = changeVal.replace(/,/g, '.');
+      const decimalPointEntered = checkOneDecimalPoint(formattedValue);
       setDecimalPointOnAmount(decimalPointEntered);
-      const changeAmount = getChangeAmount(changeVal, MAX_AMOUNT_NUMBER, assetInfo.decimals);
+      const changeAmount = getChangeAmount(formattedValue, MAX_AMOUNT_NUMBER, assetInfo.decimals);
       if (changeAmount === null) return;
-
+      
       setAmount(changeAmount);
       setSendAmount(changeAmount);
-
+      
       if (changeAmount !== amount) {
-        setAmountBN(ethers.utils.parseUnits(changeAmount, assetInfo.decimals));
+        let bigNumberAmount: BigNumber | null = null;
+        try {
+          bigNumberAmount = ethers.utils.parseUnits(changeAmount, assetInfo.decimals);
+        } catch (err) {
+          setError('amount', 'badAmount', 'Please enter a valid DAG amount.');
+        }
+        if (bigNumberAmount !== null) {
+          clearError('amount');
+          setAmountBN(bigNumberAmount);
+        }
       }
     },
     [address, gasLimit]
@@ -275,10 +306,11 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
   const handleFeeChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const val = ev.target.value;
-    const decimalPointEntered = checkOneDecimalPoint(val);
+    const formattedValue = val.replace(/,/g, '.');
+    const decimalPointEntered = checkOneDecimalPoint(formattedValue);
     setDecimalPointOnFee(decimalPointEntered);
-    if (!isNaN(parseFloat(val)) && (parseFloat(val) === 0 || parseFloat(val) >= 0.00000001)) {
-      setFee(ev.target.value);
+    if (!isNaN(parseFloat(formattedValue)) && (parseFloat(formattedValue) === 0 || parseFloat(formattedValue) >= 0.00000001)) {
+      setFee(formattedValue);
       estimateGasFee(gasPrice);
     }
   }, []);
@@ -318,11 +350,11 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
 
     if (assetInfo.type === AssetType.ERC20) {
       computedAmount = balance;
-    } else {
+    } else if (txFee) {
       computedAmount = balance.sub(txFee);
     }
 
-    if (computedAmount.lt(0)) {
+    if (computedAmount && computedAmount.lt(0)) {
       computedAmount = BigNumber.from(0);
     }
     const formattedUnits = ethers.utils.formatUnits(computedAmount, assetInfo.decimals);

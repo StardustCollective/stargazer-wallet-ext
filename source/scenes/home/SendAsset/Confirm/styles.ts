@@ -10,8 +10,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     backgroundColor: COLORS.grey_light_100,
   },
-  confirm: {
-  },
+  confirm: {},
   header: {
     marginVertical: 30,
     justifyContent: 'center',
@@ -44,23 +43,23 @@ const styles = StyleSheet.create({
   footerButtons: {
     flexDirection: 'row',
     margin: 10,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
-  sendSuccessContent:{
+  sendSuccessContent: {
     height: '100%',
     backgroundColor: COLORS.white,
   },
-  button:{
-    marginRight: 10
+  button: {
+    marginRight: 10,
   },
   heading: {
     backgroundColor: COLORS.grey_light,
     paddingVertical: 18,
     paddingHorizontal: 24,
   },
-  checkIcon:{
+  checkIcon: {
     marginTop: 40,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   message: {
     paddingVertical: 30,
@@ -68,13 +67,12 @@ const styles = StyleSheet.create({
   wrapper: {
     marginHorizontal: 30,
   },
-  successButtonFooter:{
-    flex: 1,
+  successButtonFooter: {
     backgroundColor: COLORS.white,
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: 24,
-  }
-})
+  },
+});
 
 export default styles;

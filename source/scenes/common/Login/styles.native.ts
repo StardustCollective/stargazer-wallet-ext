@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 import { getDeviceId } from 'react-native-device-info';
 
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   logo: {
-    marginTop: 56,
+    marginTop: Platform.OS === 'ios' ? 56 : StatusBar.currentHeight,
     marginBottom: 56,
     width: 192,
     height: 192,
@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
     marginBottom: getDeviceId().includes('iPod') ? 10 : 56,
   },
   recoveryButton: {
-    fontSize: getDeviceId().includes('iPod') ? 12 : 16, 
-    marginBottom: 10 
-  }
+    fontSize: getDeviceId().includes('iPod') ? 12 : 16,
+    marginBottom: 10,
+  },
 });
 
 export default styles;
