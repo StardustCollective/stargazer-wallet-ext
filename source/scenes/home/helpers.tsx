@@ -82,7 +82,7 @@ export const getAddressURL = (
   type: AssetType,
   networkId: string
 ) => {
-  if (type === AssetType.Constellation) {
+  if (type === AssetType.Constellation || type === AssetType.LedgerConstellation) {
     let url = `${DAG_EXPLORER_SEARCH}${address}`;
     if (networkId === 'ceres') {
       url += `&network=${networkId}`

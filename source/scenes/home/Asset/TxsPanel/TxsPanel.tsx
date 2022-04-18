@@ -3,7 +3,7 @@ import { Transaction } from 'state/vault/types';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
-import styles from './Asset.scss';
+import styles from './TxsPanel.scss';
 
 import ITxPanelSettings from './types';
 

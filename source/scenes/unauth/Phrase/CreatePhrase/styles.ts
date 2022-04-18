@@ -8,13 +8,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   phraseContainer: {
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    height: 250,
+    flexDirection: 'row',
     marginTop: 20,
   },
+  firstColumnContainer: {
+    flexDirection: 'column',
+    width: '50%',
+  },
+  secondColumnContainer: {
+    flexDirection: 'column',
+    width: '50%',
+  },
   phrase: {
-    width: '49%',
     marginRight: 10,
     borderBottomWidth: 1,
     borderColor: COLORS.grey_light,
@@ -25,7 +30,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-  }
+  },
 });
 
 export default styles;

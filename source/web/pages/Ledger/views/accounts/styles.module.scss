@@ -7,9 +7,19 @@
   flex: 1 1 auto;
   position: relative;
   justify-content: flex-end;
+  font-family: $rubik;
   .table {
     position: relative;
+    span {
+      font-family: $rubik;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 24px;
+      color: $black;
+    }
   }
+
   .progressWrapper{
     position: absolute;
     left: 0;
@@ -33,7 +43,7 @@
     display: flex;
     justify-content: flex-end;
     span {
-      font-family: Inter;
+      font-family: $rubik;
       font-style: normal;
       font-weight: 500;
       font-size: 12px;

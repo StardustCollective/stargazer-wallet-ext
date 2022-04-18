@@ -13,7 +13,7 @@ import { IAssetInfoState } from 'state/assets/types';
 // Styles
 ///////////////////////////
 
-import styles from './styles.scss';
+import styles from './asset.scss';
 
 ///////////////////////////
 // Interface

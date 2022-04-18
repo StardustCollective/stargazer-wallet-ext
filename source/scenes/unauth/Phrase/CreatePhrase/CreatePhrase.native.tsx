@@ -34,6 +34,10 @@ const CreatePhrase = ({
   passed,
 }) => {
 
+  const phrasesArray = phrases?.split(' ');
+  const firstColumn = phrasesArray?.slice(0, 6);
+  const secondColumn = phrasesArray?.slice(6, 12);
+
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
       <Layout title={title}>
@@ -42,16 +46,30 @@ const CreatePhrase = ({
         </TextV3.BodyStrong>
         {!passed && phrases && (
           <View style={styles.phraseContainer}>
-            {phrases.split(' ').map((phrase: string, index: number) => (
-              <View key={phrase} style={styles.phrase} >
-                <TextV3.CaptionStrong color={COLORS_ENUMS.GRAY_100}>
-                  {String(index + 1).padStart(2, '0')}.{'  '}
-                  <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY}>
-                    {phrase}
+            <View style={styles.firstColumnContainer}>
+              {firstColumn.map((phrase: string, index: number) => (
+                <View key={phrase} style={styles.phrase}>
+                  <TextV3.CaptionStrong color={COLORS_ENUMS.GRAY_100}>
+                    {String(index + 1).padStart(2, '0')}.{'  '}
+                    <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY}>
+                      {phrase}
+                    </TextV3.CaptionStrong>
                   </TextV3.CaptionStrong>
-                </TextV3.CaptionStrong>
               </View>
-            ))}
+              ))}
+            </View>
+            <View style={styles.secondColumnContainer}>
+              {secondColumn.map((phrase: string, index: number) => (
+                <View key={phrase} style={styles.phrase} >
+                  <TextV3.CaptionStrong color={COLORS_ENUMS.GRAY_100}>
+                    {String(index + 7).padStart(2, '0')}.{'  '}
+                    <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY}>
+                      {phrase}
+                    </TextV3.CaptionStrong>
+                  </TextV3.CaptionStrong>
+              </View>
+              ))}
+            </View>
           </View>
         )}
         <View style={styles.buttonContainer}>

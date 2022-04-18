@@ -46,7 +46,7 @@ const Root = () => {
     (state: RootState) => state.vault
   );
 
-  if(migrateWallet || (wallets && Object.values(wallets).length > 0) || hasEncryptedVault ){
+  if(migrateWallet || (wallets.local && Object.values(wallets.local).length > 0) || hasEncryptedVault ){
     initialRoute = screens.authorized.root;
   }
 

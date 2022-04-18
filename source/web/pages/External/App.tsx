@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import queryString from 'query-string';
 
-import Container from 'scenes/common/Container';
+import Container from 'components/Container';
 import Login from 'scenes/external/Login';
 import SelectAccounts from 'scenes/external/SelectAccounts';
 import ApproveSpend from 'scenes/external/ApproveSpend';
-import SendTransaction from 'scenes/home/Send/Send';
-import ConfirmTransaction from 'scenes/home/Send/Confirm';
+import SendTransaction from 'scenes/Home/SendAsset/Send';
+import ConfirmTransaction from 'scenes/Home/SendAsset/Confirm';
 import SignatureRequest from 'scenes/external/SignatureRequest'
 
 import 'assets/styles/global.scss';

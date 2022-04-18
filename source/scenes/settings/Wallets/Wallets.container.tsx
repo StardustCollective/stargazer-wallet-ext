@@ -29,7 +29,19 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
     navigation.setOptions(addHeader({ navigation, onRightIconClick }));
   }, []);
 
-  const privKeyAccounts = wallets.filter((w) => w.type === KeyringWalletType.SingleAccountWallet);
+
+  const multiChainAccounts = wallets.local.filter(
+    (w) => w.type === KeyringWalletType.MultiChainWallet
+  );
+
+  const privKeyAccounts = wallets.local.filter(
+    (w) => w.type === KeyringWalletType.SingleAccountWallet
+  );
+
+  const ledgerAccounts = wallets.ledger.filter(
+    (w) => w.type === KeyringWalletType.LedgerAccountWallet
+  );
+
 
   const handleSwitchWallet = async (walletId: string, walletAccounts: IAccountDerived[]) => {
     await walletController.switchWallet(walletId);
@@ -46,10 +58,11 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   return (
     <Container safeArea={false}>
       <Wallets
-        wallets={wallets}
+        wallets={multiChainAccounts}
         activeWallet={activeWallet}
-        assets={assets}
         privKeyAccounts={privKeyAccounts}
+        ledgerAccounts={ledgerAccounts}
+        assets={assets}
         handleSwitchWallet={handleSwitchWallet}
         handleManageWallet={handleManageWallet}
       />
