@@ -1,45 +1,26 @@
 ///////////////////////////
-// Modules  
+// Modules
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { Icon } from 'react-native-elements';
+import Check from '@material-ui/icons/Check';
 
 ///////////////////////////
-// Styles  
+// Styles
 ///////////////////////////
 
-import styles from './styles';
+import styles from './CheckIcon.scss';
 
 ///////////////////////////
-// Constants  
-///////////////////////////
-
-const ICON_NAME_STRING  = 'check';
-const ICON_TYPE_STRING  = 'font-awesome';
-const ICON_COLOR_STRING = 'white';
-const ICON_SIZE_NUMBER  = 90;
-
-///////////////////////////
-// Component  
+// Component
 ///////////////////////////
 
 const CheckIcon: FC = () => {
-
   ///////////////////////////
-  // Render  
+  // Render
   ///////////////////////////
 
-  return (
-    <Icon
-      name={ICON_NAME_STRING}
-      type={ICON_TYPE_STRING}
-      color={ICON_COLOR_STRING}
-      size={ICON_SIZE_NUMBER}
-      containerStyle={styles.container}
-    />
-  );
-
-}
+  return <Check className={styles.icon} />;
+};
 
 export default CheckIcon;

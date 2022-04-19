@@ -2,10 +2,10 @@
 // Components
 ///////////////////////////
 
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState } from 'react';
 import queryString from 'query-string';
 import find from 'lodash/find';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 // import { useAlert } from 'react-alert';
@@ -61,7 +61,7 @@ import walletSelectors from 'selectors/walletsSelectors';
 ///////////////////////////
 
 
-const ConfirmContainer = ({ navigation }) => {
+const ConfirmContainer = () => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;

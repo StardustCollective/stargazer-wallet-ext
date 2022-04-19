@@ -37,7 +37,7 @@ const TxItemContainer: FC<ITxItem> = ({
 
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
-  const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasLimit, gasPrices, gasPrice } = useGasEstimate({
+  const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice } = useGasEstimate({
     toAddress: tx.toAddress,
     asset: assets[activeAsset.id],
     data: tx.data,

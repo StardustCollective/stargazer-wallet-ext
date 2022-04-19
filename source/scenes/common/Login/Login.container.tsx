@@ -52,7 +52,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
     validationSchema: schema,
   });
   const [isInvalid, setInvalid] = useState(false);
-  const [isLoading , setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = (data: any) => {
     setIsLoading(true);
@@ -66,7 +66,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
         }
         setInvalid(false);
       })
-      .catch((err: any) => {
+      .catch(() => {
         if (onLoginError) {
           onLoginError();
         }

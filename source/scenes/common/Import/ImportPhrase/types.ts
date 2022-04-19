@@ -1,4 +1,4 @@
-import { Ref, BaseSyntheticEvent } from 'react';
+import { Ref } from 'react';
 
 export default interface IImportPhrase {
   handleSubmit: any;
@@ -7,5 +7,4 @@ export default interface IImportPhrase {
   isInvalid: boolean;
   isDisabled: boolean;
   control: any;
-  
 }

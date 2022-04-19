@@ -80,7 +80,7 @@ const selectAllAccounts = createSelector(selectAllWallets, (wallets: KeyringWall
   for (let i = 0; i < wallets.length; i++) {
     const { accounts } = wallets[i];
     for (let j = 0; j < wallets[i].accounts.length; j++) {
-      const account = accounts[j] as any as IAccountDerived;;
+      const account = accounts[j] as any as IAccountDerived;
       account.label = wallets[i].label;
       allAccounts.push(account);
     }

@@ -82,7 +82,7 @@ const AssetListState = createSlice({
   name: 'assets',
   initialState,
   reducers: {
-    rehydrate(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
+    rehydrate(state: IAssetListState, action: PayloadAction<IAssetListState>) {
       return {
         ...state,
         ...action.payload,

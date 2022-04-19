@@ -42,9 +42,9 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
 
   useEffect(() => {
     if (selected && contacts[selected].address) {
-      const address = contacts[selected].address;
-      setAddress(contacts[selected].address);
-      setValue('address', address);
+      const { address: contactAddress } = contacts[selected];
+      setAddress(contactAddress);
+      setValue('address', contactAddress);
     }
   }, []);
 
@@ -59,6 +59,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
       }
       return accountController.isValidERC20Address(address);
     }
+    return false;
   }, [address]);
 
   const hideStatusIcon = !isValidAddress;

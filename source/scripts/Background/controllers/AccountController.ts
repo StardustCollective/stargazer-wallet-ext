@@ -497,7 +497,6 @@ export class AccountController implements IAccountController {
   }
 
   async estimateTotalGasFee(recipient: string, amount: string, gas: number, gasLimit: number) {
-    console.log('ethClient.estimateGasLimit', arguments);
     if (!gasLimit || true) {
       const state = store.getState();
       const { activeAsset }: IVaultState = state.vault;

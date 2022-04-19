@@ -4,6 +4,7 @@ import MUIMenuItem from '@material-ui/core/MenuItem';
 import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 import styles from './Select.scss';
+
 interface IOption {
   // key => value of Option
   // value => label of Option
@@ -12,7 +13,7 @@ interface IOption {
 
 interface ISelect {
   id?: string;
-  options: Array<IOption>;
+  options: Array<IOption> | Array<object>;
   value?: unknown;
   input?: ReactElement;
   fullWidth?: boolean;

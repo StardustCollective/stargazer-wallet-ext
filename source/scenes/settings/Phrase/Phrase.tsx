@@ -37,7 +37,7 @@ const Phrase: FC<IPhraseSettings> = ({
         />
       </form>
       <span>Click to copy your seed phrase:</span>
-      <div id={'phrase-recoveryPhrase'} className={seedClass} onClick={handleCopySeed}>
+      <div id='phrase-recoveryPhrase' className={seedClass} onClick={handleCopySeed}>
         {phrase}
       </div>
       <span>

@@ -1,0 +1,10 @@
+@import "~assets/styles/variables";
+
+.icon {
+  width: 125px;
+  height: 125px;
+  padding: 20px;
+  justify-content: 'center';
+  background-color: $primary;
+  border-radius: 100px;
+}

@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import NavigationUtil from 'navigation/util';
 import { useLinkTo } from '@react-navigation/native';
 import { getWalletController } from 'utils/controllersUtils';
-import Container, { CONTAINER_COLOR }from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import NewAccount from './NewAccount';
 

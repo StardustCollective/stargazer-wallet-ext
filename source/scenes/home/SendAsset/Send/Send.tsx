@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
-
 import Slider from '@material-ui/core/Slider';
 import Contacts from 'scenes/home/Contacts';
 import Button from 'components/Button';
@@ -9,10 +8,10 @@ import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import ErrorIcon from 'assets/images/svg/error.svg';
 import { AssetType } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
-
+import { IWalletSend } from './types';
 import styles from './Send.scss';
 
-const WalletSend: FC = ({ 
+const WalletSend: FC<IWalletSend> = ({ 
   modalOpened,
   setModalOpen,
   handleSelectContact,
@@ -41,7 +40,7 @@ const WalletSend: FC = ({
   gasPrices,
   gasPrice,
   gasFee,
-  gasSpeedLabel
+  gasSpeedLabel,
  }) => {
 
   const addressInputClass = clsx(styles.input, styles.address, {

@@ -1,4 +1,5 @@
 import { Ref } from 'react';
+import { FieldValues, OnSubmit } from 'react-hook-form';
 import IContactBookState from 'state/contacts/types';
 
 export type IModifyContactView = {
@@ -8,7 +9,7 @@ export type IModifyContactView = {
 };
 
 export default interface IModifyContactSettings {
-  handleSubmit: (arg0: any) => void;
+  handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
   onSubmit: (arg0: any) => void;
   handleAddressChange: (arg0: any) => void;
   selected: string;

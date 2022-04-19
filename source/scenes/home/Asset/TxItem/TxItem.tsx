@@ -2,40 +2,20 @@
 // Modules
 ///////////////////////
 
-import React, { FC, ChangeEvent } from 'react';
-import { formatDistanceDate } from '../../helpers';
-import IVaultState from 'state/vault/types';
-import { useSelector } from 'react-redux';
-import { RootState } from 'state/store';
-import IAssetListState from 'state/assets/types';
-import { ITransactionInfo } from 'scripts/types';
+import React, { FC } from 'react';
 
 ///////////////////////
 // Components
 ///////////////////////
 
 import Spinner from '@material-ui/core/CircularProgress';
-import GasSettings from '../GasSettings';
 import TextV3 from 'components/TextV3';
-
-///////////////////////
-// Hooks
-///////////////////////
-
-import useGasEstimate from 'hooks/useGasEstimate';
-import { useController } from 'hooks/index';
 
 ///////////////////////
 // Images
 ///////////////////////
 
 import TxIcon from 'assets/images/svg/txIcon.svg';
-
-///////////////////////
-// Styles
-///////////////////////
-
-import styles from './TxItem.scss';
 
 ///////////////////////
 // Enums
@@ -47,6 +27,12 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 // Types
 ///////////////////////
 import { Transaction } from 'state/vault/types';
+
+///////////////////////
+// Styles
+///////////////////////
+
+import styles from './TxItem.scss';
 
 type ITxItem = {
   tx: Transaction;
@@ -61,8 +47,6 @@ type ITxItem = {
   amount: string;
   fiatAmount: string;
 };
-
-const MAX_GAS_NUMBER = 200;
 
 ///////////////////////
 // Component

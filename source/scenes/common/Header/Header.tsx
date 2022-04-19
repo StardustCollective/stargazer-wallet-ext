@@ -5,13 +5,11 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Link from 'components/Link';
 import LogoImage from 'assets/images/logo-s.svg';
-import { useLinkTo } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-
-import styles from './Header.scss';
+import { useLinkTo, useNavigation } from '@react-navigation/native';
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import styles from './Header.scss';
 
 interface IHeader {
   backLink?: string;
@@ -27,7 +25,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   );
   const hasMainAccount =
     wallets.length &&
-    wallets.some((w) => w.type === KeyringWalletType.MultiChainWallet);
+    wallets.some((w: any) => w.type === KeyringWalletType.MultiChainWallet);
 
   const handleBack = () => {
     showSettings(false);

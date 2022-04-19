@@ -4,7 +4,6 @@ import { getDeviceId } from 'react-native-device-info';
 
 const BUTTON_TITLE_FONT_SIZE = getDeviceId().includes('iPod') ? 12 : 15;
 
-
 const styles = StyleSheet.create({
   section: {
     height: 133,

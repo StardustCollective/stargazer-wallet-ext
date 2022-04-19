@@ -1,13 +1,12 @@
 import React, { FC, useState, MouseEvent, ReactNode } from 'react';
 import clsx from 'clsx';
-import MUITextInput, {
-  OutlinedInputProps,
-} from '@material-ui/core/OutlinedInput';
+import MUITextInput, { OutlinedInputProps } from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
+import { Control, FieldValues } from 'react-hook-form';
 import styles from './TextInput.scss';
 
 interface ITextInput extends Partial<OutlinedInputProps> {
@@ -16,6 +15,7 @@ interface ITextInput extends Partial<OutlinedInputProps> {
   type?: 'text' | 'password' | 'number';
   variant?: string;
   visiblePassword?: boolean;
+  control?: Control<FieldValues>;
 }
 
 const TextInput: FC<ITextInput> = ({

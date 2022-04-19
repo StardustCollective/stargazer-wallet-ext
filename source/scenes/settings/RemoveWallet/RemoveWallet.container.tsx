@@ -13,7 +13,7 @@ import navigationUtil from 'navigation/util';
 
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
-import Container, {CONTAINER_COLOR} from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import RemoveWallet from './RemoveWallet';
 
