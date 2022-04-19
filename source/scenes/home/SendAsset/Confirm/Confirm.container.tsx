@@ -44,17 +44,18 @@ import { useFiat } from 'hooks/usePrice';
 import { getAccountController } from 'utils/controllersUtils';
 import { confirmEvent } from 'utils/backgroundUtils';
 import { showAlert } from 'utils/alertUtil';
-///////////////////////////
-// Scene
-///////////////////////////
-
-import Confirm from './Confirm';
 
 ///////////////////////////
 // Selectors
 ///////////////////////////
 
 import walletSelectors from 'selectors/walletsSelectors';
+
+///////////////////////////
+// Scene
+///////////////////////////
+
+import Confirm from './Confirm';
 
 ///////////////////////////
 // Container

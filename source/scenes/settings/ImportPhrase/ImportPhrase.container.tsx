@@ -7,7 +7,7 @@ import { useLinkTo } from '@react-navigation/native';
 
 import { getWalletController } from 'utils/controllersUtils';
 
-import Container, { CONTAINER_COLOR }from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import ImportPhrase from './ImportPhrase';
 

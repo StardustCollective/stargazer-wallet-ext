@@ -1,13 +1,9 @@
 import React, { FC } from 'react';
-import { View, ScrollView, Linking } from 'react-native';
-
+import { View } from 'react-native';
 import { Transaction } from 'state/vault/types';
-
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-
 import styles from './styles';
-
 import ITxPanelSettings from './types';
 
 const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription }) => {

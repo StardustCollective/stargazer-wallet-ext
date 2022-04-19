@@ -1,29 +1,19 @@
 import React, { FC } from 'react';
 import { StyleSheet } from 'react-native';
 import { TouchableOpacity, View } from 'react-native';
-
-import PrivKeyIcon from '@material-ui/icons/VpnKey';
-import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
-
 import Icon from 'components/Icon';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import TextInput from 'components/TextInput';
-
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
-
-import IManageWalletSettings from './types';
-
-import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { COLORS } from '../../../assets/styles/_variables.native';
+import IManageWalletSettings from './types';
+import styles from './styles';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
-  walletId,
   handleSubmit,
   register,
   control,
-  wallets,
   wallet,
   onSubmit,
   onCancelClicked,

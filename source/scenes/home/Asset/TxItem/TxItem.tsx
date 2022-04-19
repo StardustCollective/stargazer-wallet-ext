@@ -46,6 +46,9 @@ type ITxItem = {
   currencySymbol: string;
   amount: string;
   fiatAmount: string;
+  receivedOrSentText?: string;
+  formattedDistanceDate?: string;
+  renderGasSettings?: () => JSX.Element;
 };
 
 ///////////////////////

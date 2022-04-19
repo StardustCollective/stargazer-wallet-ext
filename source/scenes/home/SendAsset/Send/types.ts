@@ -1,9 +1,10 @@
 import { ChangeEvent } from 'react';
-import { FieldError, FieldValues, NestDataObject, OnSubmit } from 'react-hook-form';
+import { Control, FieldError, FieldValues, NestDataObject, OnSubmit } from 'react-hook-form';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetBalances, IActiveAssetState } from 'state/vault/types';
 
 export interface IWalletSend {
+  control?: Control<FieldValues>;
   modalOpened: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleSelectContact: (val: string) => void;
@@ -33,4 +34,6 @@ export interface IWalletSend {
   gasPrice: number;
   gasFee: number;
   gasSpeedLabel: string;
+  decimalPointOnAmount?: boolean;
+  decimalPointOnFee?: boolean;
 }

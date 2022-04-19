@@ -33,7 +33,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   jsonFile,
   setJsonFile,
 }) => {
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: any): Promise<any> => {
     // setAccountName(undefined);
     if (importType === 'priv') {
       setLoading(true);
@@ -114,7 +114,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
               Select Type:
               <div className={styles.inner}>
                 <Select
-                  id={'importAccount-importTypeSelect'}
+                  id="importAccount-importTypeSelect"
                   value={importType}
                   options={[
                     { priv: 'Private key' },

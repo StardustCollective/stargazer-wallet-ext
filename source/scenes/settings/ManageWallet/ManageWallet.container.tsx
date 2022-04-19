@@ -3,12 +3,9 @@ import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import { useForm } from 'react-hook-form';
 
-import IVaultState from 'state/vault/types';
-
 import { getAccountController } from 'utils/controllersUtils';
 
 import { useSelector } from 'react-redux';
-import { RootState } from 'state/store';
 import { useLinkTo } from '@react-navigation/native';
 import walletsSelector from 'selectors/walletsSelectors';
 
@@ -22,7 +19,6 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   const { id } = route.params;
 
   const { handleSubmit, register, control } = useForm();
-  const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
   const allWallets = useSelector(walletsSelector.selectAllWallets);
   const wallet = allWallets.find((w) => w.id === id);
 
@@ -59,7 +55,6 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
         handleSubmit={handleSubmit}
         register={register}
         control={control}
-        wallets={wallets}
         wallet={wallet}
         onSubmit={onSubmit}
         onCancelClicked={onCancelClicked}

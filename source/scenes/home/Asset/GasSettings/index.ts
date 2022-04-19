@@ -1,1 +1,1 @@
-export { default } from './GasSettings';
+export { default } from './GasSettings.container';
