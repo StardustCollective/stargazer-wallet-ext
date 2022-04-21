@@ -7,7 +7,7 @@ import "@ethersproject/shims"
 import { AppRegistry , Text, TextInput} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
-// import * as Sentry from "@sentry/react-native";
+import * as Sentry from "@sentry/react-native";
 
 Text.defaultProps = {};
 Text.defaultProps.maxFontSizeMultiplier = 1.2;
@@ -15,13 +15,11 @@ Text.defaultProps.maxFontSizeMultiplier = 1.2;
 TextInput.defaultProps = {};
 TextInput.defaultProps.maxFontSizeMultiplier = 1.2;
 
-// Sentry.init({
-//   dsn: process.env.SENTRY_DNS,
-//   debug: __DEV__ ? true : false,
-//   environment: __DEV__ ? 'development' : 'production',
-//   enableNative: false,
-// });
+Sentry.init({
+  dsn: process.env.SENTRY_DNS,
+  debug: __DEV__ ? true : false,
+  environment: __DEV__ ? 'development' : 'production',
+  enableNative: __DEV__ ? false : true,
+});
 
-// AppRegistry.registerComponent(appName, () => Sentry.wrap(App));
-
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => Sentry.wrap(App));
