@@ -25,7 +25,10 @@ const MigrateRunner = (oldState: V1WalletState) => {
 
     const vault: IVaultState = {
       status: 0,
-      wallets: [],
+      wallets: {
+        local: [],
+        ledger: [],
+      },
       hasEncryptedVault: false,
       balances: {
         [AssetType.Constellation]: '0',

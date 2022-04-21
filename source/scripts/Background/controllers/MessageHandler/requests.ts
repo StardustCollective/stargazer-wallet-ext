@@ -3,10 +3,9 @@ import { v4 as uuid } from 'uuid';
 import { KeyringWalletState, KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 import store from 'state/store';
-import { Message } from './types';
-import { IMasterController } from '../';
 import { getERC20DataDecoder } from 'utils/ethUtil';
-import { SUPPORTED_WALLET_METHODS } from './types';
+import { IMasterController } from '../';
+import { SUPPORTED_WALLET_METHODS, Message } from './types';
 
 export const handleRequest = async (
     port: Runtime.Port,
@@ -17,7 +16,7 @@ export const handleRequest = async (
 ) => {
     const { vault } = store.getState();
     const activeWallet: KeyringWalletState | null = 
-        vault?.activeWallet ? vault.wallets.find(
+        vault?.activeWallet ? vault.wallets.local.find(
             (wallet: any) => wallet.id === vault.activeWallet.id
         ) : null;
     const { method, args, asset } = message.data;

@@ -42,7 +42,7 @@ import { useFiat } from 'hooks/usePrice';
 ///////////////////////////
 
 import { getAccountController } from 'utils/controllersUtils';
-import { confirmEvent } from 'utils/backgroundUtils';
+// import { confirmEvent } from 'utils/backgroundUtils';
 import { showAlert } from 'utils/alertUtil';
 
 ///////////////////////////
@@ -175,8 +175,8 @@ const ConfirmContainer = () => {
     try {
       if (isExternalRequest) {
 
-        const { windowId } = queryString.parse(window.location.search);
-        const confirm = await confirmEvent(windowId);
+        // const { windowId } = queryString.parse(window.location.search);
+        // const confirm = await confirmEvent(windowId);
 
         const txConfig: ITransactionInfo = {
           fromAddress: tempTx.fromAddress,
@@ -185,7 +185,7 @@ const ConfirmContainer = () => {
           amount: tempTx.amount,
           ethConfig: tempTx.ethConfig,
           onConfirmed: () => {
-            confirm();
+            // confirm();
           }
         };
 

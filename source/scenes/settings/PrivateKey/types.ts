@@ -1,6 +1,6 @@
+import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
 import { Ref } from 'react';
 import { FieldValues, OnSubmit } from 'react-hook-form';
-import { IWalletState } from 'state/vault/types';
 
 export type IPrivateKeyView = {
   route: any;
@@ -14,6 +14,6 @@ export default interface IPrivateKeySettings {
   onSubmit: (data: any) => Promise<void>;
   checked: boolean;
   isCopied: boolean;
-  wallet: IWalletState;
+  wallet: KeyringWalletState;
   privKey: string;
 }

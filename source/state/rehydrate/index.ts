@@ -1,4 +1,5 @@
 import { Store } from '@reduxjs/toolkit';
+import { useThunkDispatch } from 'state/store';
 import { rehydrate as vaultRehydrate, getHasEncryptedVault } from '../vault';
 import { rehydrate as assetsRehydrate } from '../assets';
 import { rehydrate as contactsRehydrate } from '../contacts';
@@ -9,7 +10,6 @@ import { rehydrate as dappRehydrate } from '../dapp';
 import { loadState } from '../localStorage';
 
 const rehydrateStore = async (store: Store) => {
-
   const storageState = await loadState();
 
   if (storageState) {
@@ -21,7 +21,7 @@ const rehydrateStore = async (store: Store) => {
     store.dispatch(dappRehydrate(storageState.dapp));
   }
 
-  await store.dispatch(getHasEncryptedVault());
+  useThunkDispatch(getHasEncryptedVault());
 };
 
 export default rehydrateStore;

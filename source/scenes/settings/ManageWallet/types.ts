@@ -1,6 +1,6 @@
 import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
 import { Ref } from 'react';
-import { Control, FieldValues, OnSubmit } from 'react-hook-form';
+import { Control, FieldValues, OnSubmit, ValidationOptions } from 'react-hook-form';
 
 export type IManageWalletView = {
   route: any;
@@ -10,7 +10,7 @@ export type IManageWalletView = {
 export default interface IManageWalletSettings {
   walletId: string;
   handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
-  register: Ref<any>;
+  register: (options: ValidationOptions) => Ref<any>;
   control: Control<FieldValues>;
   wallet: KeyringWalletState;
   onSubmit: (data: any) => void;
