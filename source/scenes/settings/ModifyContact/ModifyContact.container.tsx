@@ -1,5 +1,4 @@
-import React, { useEffect, ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
-import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+import React, { useEffect, FC, useCallback, useMemo, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -65,7 +64,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const hideStatusIcon = !isValidAddress;
 
   const handleAddressChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | NativeSyntheticEvent<TextInputChangeEventData>) => {
+    (ev: any) => {
       if (ev.nativeEvent?.text) {
         const addressValue = ev.nativeEvent.text.trim();
         const filteredAddress = removeEthereumPrefix(addressValue);

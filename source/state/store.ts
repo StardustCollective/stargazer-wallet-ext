@@ -1,10 +1,8 @@
 import { combineReducers, configureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
-import thunk, { ThunkDispatch } from 'redux-thunk';
+ import thunk from 'redux-thunk';
 import throttle from 'lodash/throttle';
 import { NODE_ENV } from 'utils/envUtil';
-import { useDispatch } from 'react-redux';
-import { AnyAction } from 'redux';
 
 import vault from './vault';
 import price from './price';
@@ -64,7 +62,5 @@ rehydrateStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-export type AppThunkDispatch = ThunkDispatch<Store, any, AnyAction>;
-export const useThunkDispatch: AppThunkDispatch = () => useDispatch();
 
 export default store;
