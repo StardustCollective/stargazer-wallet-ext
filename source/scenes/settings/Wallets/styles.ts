@@ -129,6 +129,16 @@ const styles = StyleSheet.create({
     height: 32,
     color: COLORS.gray_100,
   },
+  walletInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  walletLabelContainer: {
+    justifyContent: 'flex-end',
+  },
+  walletInfoIcon: {
+    flex: 1,
+  },
 });
 
 export default styles;
