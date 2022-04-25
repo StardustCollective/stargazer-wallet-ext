@@ -40,12 +40,15 @@ const styles = StyleSheet.create({
   },
   gasSettingInputContainer: {
     backgroundColor: COLORS.white,
-    width: 100,
+    width: 110,
     height: 30,
     borderRadius: 10,
     padding: 6,
     marginTop: 10,
     borderWidth: 1,
+  },
+  gasSettingInputText: {
+    fontSize: 14,
   },
   gasSettingLabelLeft: {
     flex: 1,
