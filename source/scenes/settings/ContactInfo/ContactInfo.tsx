@@ -30,8 +30,8 @@ const ContactInfo: FC<IContactInfoSettings> = ({
     <div className={styles.wrapper}>
       {contact && (
         <div className={clsx(styles.qrcode, { [styles.hide]: !codeOpened })}>
-          <QRCode value={contact.address} bgColor="#fff" fgColor="#000" className={styles.code} size={180} />
-          {contact.address}
+          <QRCode value={contact?.address} bgColor="#fff" fgColor="#000" className={styles.code} size={180} />
+          {contact?.address}
         </div>
       )}
       <div className={clsx(styles.item, styles.main)}>
