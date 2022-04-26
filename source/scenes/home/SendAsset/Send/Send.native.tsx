@@ -193,6 +193,7 @@ const Send: FC<IWalletSend> = ({
                   <Input
                     defaultValue={gasPrice.toString()}
                     onChange={(event) => handleGasPriceChange(null, Number(event.nativeEvent.text))}
+                    inputStyle={styles.gasSettingInputText}
                     inputContainerStyle={styles.gasSettingInputContainer}
                     rightIcon={<InputRightButton label={gasSpeedLabel} onPress={handleGetDAGTxFee} />}
                   />
