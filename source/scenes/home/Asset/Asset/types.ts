@@ -1,5 +1,6 @@
 import { IActiveAssetState, IWalletState } from 'state/vault/types';
 import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
+import IAssetListState from 'state/assets/types';
 
 export type IAssetDetail = {
   navigation: any;
@@ -12,7 +13,7 @@ export default interface IAssetSettings {
   fiatAmount: string;
   transactions: DAGTransaction[];
   onSendClick: () => void;
-  assets: { [address: string]: IActiveAssetState };
+  assets: IAssetListState;
   showQrCode?: boolean;
   setShowQrCode?: (isVisible: boolean) => void;
 }

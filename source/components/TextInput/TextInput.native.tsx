@@ -94,7 +94,7 @@ const TextInput: FC<ITextInput> = ({
         />
       }
       onChange={([text]) => {
-        if(onChange){
+        if (onChange) {
           onChange(text);
         }
         return text;

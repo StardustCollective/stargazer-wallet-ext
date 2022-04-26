@@ -11,7 +11,6 @@ import { View, ScrollView } from 'react-native';
 
 import Layout from 'scenes/common/Layout';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-import Button from 'components/Button';
 import CheckIcon from 'components/CheckIcon';
 import TextV3 from 'components/TextV3';
 
@@ -19,15 +18,15 @@ import TextV3 from 'components/TextV3';
 // Types
 ///////////////////////////
 
+import { COLORS_ENUMS } from 'assets/styles/colors';
 import IConfirmPhrase from './types';
 
 ///////////////////////////
 // Styles
 ///////////////////////////
 
-import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
-import { COLORS } from '../../../../assets/styles/_variables.native';
+
 
 ///////////////////////////
 // Scene

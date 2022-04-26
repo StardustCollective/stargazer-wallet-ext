@@ -7,7 +7,7 @@
 /// //////////////////////
 import { RootState } from 'state/store';
 import { createSelector } from 'reselect';
-import { KeyringNetwork, KeyringWalletState, KeyringAssetInfo } from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork, KeyringWalletState, KeyringAssetInfo, KeyringAccountState } from '@stardust-collective/dag4-keyring';
 
 /// //////////////////////
 // Types
@@ -80,7 +80,7 @@ const selectAllAccounts = createSelector(selectAllWallets, (wallets: KeyringWall
   for (let i = 0; i < wallets.length; i++) {
     const { accounts } = wallets[i];
     for (let j = 0; j < wallets[i].accounts.length; j++) {
-      const account = accounts[j] as any as IAccountDerived;;
+      const account = accounts[j] as any as IAccountDerived;
       account.label = wallets[i].label;
       allAccounts.push(account);
     }
@@ -92,7 +92,7 @@ const selectAllAccounts = createSelector(selectAllWallets, (wallets: KeyringWall
  * Return wallet of active asset
  */
 
-const selectActiveAssetPublicKey = createSelector(selectAllWallets, getActiveAsset, (wallets: KeyringWalletState[], activeAsset: IWalletState) => {
+const selectActiveAssetPublicKey = createSelector(selectAllWallets, getActiveAsset, (wallets: KeyringWalletState[], activeAsset: KeyringAccountState) => {
   for (let i = 0; i < wallets.length; i++) {
     const { accounts } = wallets[i];
     for (let j = 0; j < wallets[i].accounts.length; j++) {
@@ -102,6 +102,7 @@ const selectActiveAssetPublicKey = createSelector(selectAllWallets, getActiveAss
       }
     }
   }
+  return '';
 });
 
 /**

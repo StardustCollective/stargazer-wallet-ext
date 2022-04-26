@@ -9,7 +9,6 @@ import React from 'react';
 ///////////////////////////
 
 import Start from 'scenes/unauth/Start';
-import Remind from 'scenes/unauth/Remind';
 import CreatePass from 'scenes/unauth/CreatePass';
 import RemindPhrase from 'scenes/unauth/Phrase/RemindPhrase';
 import CreatePhrase from 'scenes/unauth/Phrase/CreatePhrase';
@@ -17,17 +16,17 @@ import ConfirmPhrase from 'scenes/unauth/Phrase/ConfirmPhrase';
 import Import from 'scenes/common/Import';
 
 ///////////////////////////
-// Screens Names
-///////////////////////////
-
-import screens from '../screens';
-
-///////////////////////////
 // Navigation
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
-import defaultHeader from 'navigation/headers/default'
+import defaultHeader from 'navigation/headers/default';
+
+///////////////////////////
+// Screens Names
+///////////////////////////
+
+import screens from '../screens';
 
 ///////////////////////////
 // Constants
@@ -61,8 +60,6 @@ const UnAuth = () => {
       <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.unAuthorized.createPhraseCheck} component={ConfirmPhrase} />
       <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.common.import} component={Import} />
       {/* <Stack.Screen options={{ title: DEFAULT_TITLE }} name={screens.unAuthorized.remind} component={Remind} /> */}
-
-
     </Stack.Navigator>
   );
 };

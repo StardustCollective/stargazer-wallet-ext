@@ -12,22 +12,10 @@ import Card from 'components/Card';
 import TextV3 from 'components/TextV3';
 
 ///////////////////////
-// Styles
-///////////////////////
-
-import styles from './Main.scss';
-
-///////////////////////
 // Enums
 ///////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
-
-///////////////////////
-// Types
-///////////////////////
-
-import IMainSettings, { IRenderSettingsItemProps } from './types';
 
 ///////////////////////
 // Constants
@@ -39,6 +27,17 @@ import infoIcon from 'assets/images/svg/info.svg';
 import exitIcon from 'assets/images/svg/exit.svg';
 import linkedApps from 'assets/images/svg/linkedApps.svg';
 
+///////////////////////
+// Styles
+///////////////////////
+
+import styles from './Main.scss';
+
+///////////////////////
+// Types
+///////////////////////
+
+import IMainSettings, { IRenderSettingsItemProps } from './types';
 
 ///////////////////////
 // Scene

@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-
 import AssetItem from 'components/AssetItem';
 import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { INFTInfoState } from 'state/nfts/types';

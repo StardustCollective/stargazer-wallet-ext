@@ -12,7 +12,6 @@ export type ITxItemSettings = {
 
 export default interface ITxPanelSettings {
   transactions: Transaction[];
-  renderTxItem: (transaction: Transaction, index: number, onItemClick: (tx: string) => boolean) => void;
+  renderTxItem: (transaction: Transaction, index: number) => JSX.Element;
   transactionDescription: string;
-  getTxLink: (txHash: string) => string;
 }

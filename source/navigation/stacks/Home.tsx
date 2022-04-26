@@ -34,25 +34,18 @@ import ImportAccount from 'scenes/settings/ImportAccount';
 import ImportPhrase from 'scenes/settings/ImportPhrase';
 import ConnectedSites from 'scenes/settings/ConnectedSites';
 
-
-///////////////////////////
-// Stacks
-///////////////////////////
-
-import SettingsStack from './Settings';
-
-///////////////////////////
-// Screens Names
-///////////////////////////
-
-import screens from '../screens';
-
 ///////////////////////////
 // Navigation
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
 import defaultHeader from 'navigation/headers/default';
+
+///////////////////////////
+// Screens Names
+///////////////////////////
+
+import screens from '../screens';
 
 ///////////////////////////
 // Constants

@@ -5,7 +5,7 @@ import { useFiat } from 'hooks/usePrice';
 import GasSettings from './GasSettings';
 
 import { GAS_SETTINGS_STATE_ENUM } from './constants';
-import IGasSettingsProps from './types';
+import { IGasSettingsProps } from './types';
 
 const GasSettingsContainer: FC<IGasSettingsProps> = ({
   values,

@@ -2,6 +2,7 @@ import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import find from 'lodash/find';
+import { useController } from 'hooks';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 
@@ -10,8 +11,7 @@ export type StargazerSignatureRequest = {
   metadata: Record<string, any>;
 };
 export class StargazerProvider {
-  constructor() {}
-
+  
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
 

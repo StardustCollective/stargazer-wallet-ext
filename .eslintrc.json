@@ -30,6 +30,7 @@
         "no-await-in-loop": "off",
         "no-console": "off",
         "func-names": "off",
+        "spaced-comment": "off",
         "import/no-extraneous-dependencies": "off",
         "import/no-unresolved": "off",
         "import/extensions": "off",

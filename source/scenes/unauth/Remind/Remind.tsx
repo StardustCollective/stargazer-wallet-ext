@@ -11,8 +11,6 @@ const WelcomeWallet = () => {
   return (
     <Layout
       title={`Let's create a new\nStargazer Wallet`}
-      linkTo="/app.html"
-      showLogo
     >
       <span className={clsx('body-caption', styles.description)}>
         {`To create a wallet, you will generate a unique identifier and choose a password. They will allow you to interact with the DAG blockchain.\n

@@ -10,7 +10,7 @@ const ContactBookState = createSlice({
   name: 'contacts',
   initialState,
   reducers: {
-    rehydrate(state: IContactBookState, action: PayloadAction<{ name: string; address: string; memo: string }>) {
+    rehydrate(state: IContactBookState, action: PayloadAction<IContactBookState>) {
       return {
         ...state,
         ...action.payload,

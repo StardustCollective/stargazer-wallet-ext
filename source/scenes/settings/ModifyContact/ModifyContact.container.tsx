@@ -1,5 +1,4 @@
-import React, { useEffect, ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
-import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+import React, { useEffect, FC, useCallback, useMemo, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -42,9 +41,9 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
 
   useEffect(() => {
     if (selected && contacts[selected].address) {
-      const address = contacts[selected].address;
-      setAddress(contacts[selected].address);
-      setValue('address', address);
+      const { address: contactAddress } = contacts[selected];
+      setAddress(contactAddress);
+      setValue('address', contactAddress);
     }
   }, []);
 
@@ -59,12 +58,13 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
       }
       return accountController.isValidERC20Address(address);
     }
+    return false;
   }, [address]);
 
   const hideStatusIcon = !isValidAddress;
 
   const handleAddressChange = useCallback(
-    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | NativeSyntheticEvent<TextInputChangeEventData>) => {
+    (ev: any) => {
       if (ev.nativeEvent?.text) {
         const addressValue = ev.nativeEvent.text.trim();
         const filteredAddress = removeEthereumPrefix(addressValue);

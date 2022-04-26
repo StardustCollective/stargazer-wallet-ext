@@ -6,7 +6,6 @@ import IAssetListState from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
 
 import { getAccountController } from 'utils/controllersUtils';
-import { useFiat } from 'hooks/usePrice';
 import useGasEstimate from 'hooks/useGasEstimate';
 
 import TxItem from './TxItem';
@@ -32,12 +31,11 @@ const TxItemContainer: FC<ITxItem> = ({
 }) => {
   const accountController = getAccountController();
   const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.1 : 0;
-  const getFiatAmount = useFiat();
   const { activeAsset }: IVaultState = useSelector((state: RootState) => state.vault);
 
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
-  const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasLimit, gasPrices, gasPrice } = useGasEstimate({
+  const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice } = useGasEstimate({
     toAddress: tx.toAddress,
     asset: assets[activeAsset.id],
     data: tx.data,
@@ -84,7 +82,6 @@ const TxItemContainer: FC<ITxItem> = ({
         onSliderChange={onGasPriceChanged}
         onSpeedUpClick={onSpeedUpClick}
         gasPrice={gasPrice}
-        getFiatAmount={getFiatAmount}
       />
     );
   };

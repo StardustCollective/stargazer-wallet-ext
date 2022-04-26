@@ -1,9 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
 
-export const cancelEvent = async (windowId) => {
-
-  const cancelEvent = new CustomEvent('transactionSent', { detail: { windowId, approved: false, result: false } });
+export const cancelEvent = async (windowId: any) => {
+  const event = new CustomEvent('transactionSent', { detail: { windowId, approved: false, result: false } });
   const background = await browser.runtime.getBackgroundPage();
-  background.dispatchEvent(cancelEvent);
-
-}
+  background.dispatchEvent(event);
+};
