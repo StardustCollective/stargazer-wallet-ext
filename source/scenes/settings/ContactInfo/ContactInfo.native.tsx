@@ -108,7 +108,7 @@ const ContactInfo: FC<IContactInfoSettings> = ({
         <TouchableWithoutFeedback onPress={onClickOpenCode}>
           <View style={styles.qrCodeContainer}>
             <View style={qrCodeStyle}>
-              <QRCode value={contact.address} backgroundColor={COLORS.white} color={COLORS.black} size={180} />
+              <QRCode value={contact?.address} backgroundColor={COLORS.white} color={COLORS.black} size={180} />
               <Text style={styles.codeText}>{ellipsis(contact?.address || '')}</Text>
             </View>
           </View>
