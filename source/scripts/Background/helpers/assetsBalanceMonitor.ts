@@ -1,6 +1,5 @@
 import { AccountTracker } from '@stardust-collective/dag4-xchain-ethereum';
 import { dag4 } from '@stardust-collective/dag4';
-import NetInfo from '@react-native-community/netinfo';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
@@ -27,10 +26,6 @@ export class AssetsBalanceMonitor {
   private hasDAGPending = false;
 
   private hasETHPending = false;
-
-  private lastIsConnected = true;
-
-  private unsubscribeNetInfo: any = undefined;
 
   private utils = ControllerUtils();
 
@@ -69,19 +64,6 @@ export class AssetsBalanceMonitor {
       //   store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
       // })
 
-      if (this.unsubscribeNetInfo) {
-        this.unsubscribeNetInfo();
-      }
-      this.unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
-        if (state.isConnected && !this.lastIsConnected) {
-          this.lastIsConnected = true;
-          await this.refreshDagBalance();
-          await this.ethAccountTracker.getTokenBalances()
-        } else {
-          this.lastIsConnected = false;
-        }
-      });
-
       if (hasDAG) {
         this.subscription = dag4.monitor.observeMemPoolChange().subscribe((up) => this.pollPendingTxs(up));
         await dag4.monitor.startMonitor();
@@ -113,7 +95,6 @@ export class AssetsBalanceMonitor {
   stop() {
     clearInterval(this.priceIntervalId);
     clearInterval(this.dagBalIntervalId);
-    this.unsubscribeNetInfo();
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
