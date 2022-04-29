@@ -3,7 +3,7 @@ import { showMessage } from 'react-native-flash-message';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import Container, { CONTAINER_COLOR } from 'components/Container';
+import Container from 'components/Container';
 
 import { useCopyClipboard } from 'hooks/index';
 import { getWalletController } from 'utils/controllersUtils';

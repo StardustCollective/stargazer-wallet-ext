@@ -4,10 +4,11 @@ import find from 'lodash/find';
 import { useController } from 'hooks/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { estimateGasPrice } from 'utils/ethUtil';
+import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
+import { IDAppState } from 'state/dapp/types';
 import { StargazerSignatureRequest } from './StargazerProvider';
 
 export class EthereumProvider {
-  constructor() {}
 
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
@@ -79,14 +80,13 @@ export class EthereumProvider {
 
   normalizeSignatureRequest(message: string): string {
     // Test for hex message data
-    if(isHexString(message)){
-      try{
-        message = toUtf8(message)
-      }catch(e){
+    if (isHexString(message)) {
+      try {
+        message = toUtf8(message);
+      } catch (e) {
         // NOOP
       }
     }
-
 
     const signatureRequest: StargazerSignatureRequest = {
       content: message,

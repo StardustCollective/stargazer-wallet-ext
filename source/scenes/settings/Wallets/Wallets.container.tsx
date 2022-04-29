@@ -1,9 +1,9 @@
 import React, { FC, MouseEvent, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletAccountState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { RootState } from 'state/store';
-import IVaultState, { IAccountDerived } from 'state/vault/types';
+import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { getWalletController } from 'utils/controllersUtils';
 
@@ -43,7 +43,7 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   );
 
 
-  const handleSwitchWallet = async (walletId: string, walletAccounts: IAccountDerived[]) => {
+  const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
     await walletController.switchWallet(walletId);
     const accounts = walletAccounts.map((account) => account.address);
     walletController.notifyWalletChange(accounts);

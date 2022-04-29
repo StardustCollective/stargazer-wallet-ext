@@ -6,12 +6,11 @@ import { showMessage } from 'react-native-flash-message';
 import { getWalletController } from 'utils/controllersUtils';
 import { useCopyClipboard } from 'hooks/index';
 
-import IVaultState from 'state/vault/types';
-import { RootState } from 'state/store';
 import { useSelector } from 'react-redux';
 
 import Container from 'components/Container';
 
+import walletsSelectors from 'selectors/walletsSelectors';
 import PrivateKey from './PrivateKey';
 
 import { IPrivateKeyView } from './types';
@@ -19,8 +18,8 @@ import { IPrivateKeyView } from './types';
 const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
   const walletController = getWalletController();
   const { id } = route.params;
-  const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
-  const wallet = wallets.find((w) => w.id === id);
+  const allWallets = useSelector(walletsSelectors.selectAllWallets);
+  const wallet = allWallets.find((w) => w.id === id);
 
   const { handleSubmit, register, control } = useForm({
     validationSchema: yup.object().shape({

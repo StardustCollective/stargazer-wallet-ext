@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { View, TouchableOpacity, Modal } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { scale } from 'react-native-size-matters';
@@ -24,6 +24,7 @@ import QRCodeButton from 'components/QRCodeButton';
 ///////////////////////////
 
 import { AssetType } from 'state/vault/types';
+import { IWalletSend } from './types';
 
 ///////////////////////////
 // Styles
@@ -46,7 +47,7 @@ import Contact from 'scenes/home/Contacts';
 const EXTRA_SCROLL_HEIGHT = scale(25);
 const QR_CODE_BUTTON_SIZE = 25;
 
-const Send = ({
+const Send: FC<IWalletSend> = ({
   control,
   modalOpened,
   setModalOpen,
@@ -192,6 +193,7 @@ const Send = ({
                   <Input
                     defaultValue={gasPrice.toString()}
                     onChange={(event) => handleGasPriceChange(null, Number(event.nativeEvent.text))}
+                    inputStyle={styles.gasSettingInputText}
                     inputContainerStyle={styles.gasSettingInputContainer}
                     rightIcon={<InputRightButton label={gasSpeedLabel} onPress={handleGetDAGTxFee} />}
                   />

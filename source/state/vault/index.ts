@@ -4,8 +4,8 @@ import { Transaction } from '@stardust-collective/dag4-network';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
-import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState } from './types';
 import filter from 'lodash/filter';
+import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState } from './types';
 
 const initialState: IVaultState = {
   status: 0,
@@ -29,7 +29,7 @@ const initialState: IVaultState = {
   version: '2.1.1',
 };
 
-export const getHasEncryptedVault = createAsyncThunk('vault/getHasEncryptedVault', 
+export const getHasEncryptedVault = createAsyncThunk('vault/getHasEncryptedVault',
 async () => {
   const hasEncryptedVault = await localStorage.getItem('stargazer-vault');
   return !!hasEncryptedVault;
@@ -40,7 +40,7 @@ const VaultState = createSlice({
   name: 'vault',
   initialState,
   reducers: {
-    rehydrate(state: IVaultState, action: PayloadAction<KeyringVaultState>) {
+    rehydrate(state: IVaultState, action: PayloadAction<IVaultState>) {
       return {
         ...state,
         ...action.payload,

@@ -1,4 +1,4 @@
-import React, { FC, useLayoutEffect } from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 
 import { RootState } from 'state/store';
@@ -12,14 +12,14 @@ import ConnectedSites from './ConnectedSites';
 
 import { IConnectedSitesContainerProps } from './types';
 
-const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = ({ navigation }) => {
+const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = () => {
   const connectedSites = useSelector((state: RootState) => state.dapp.whitelist);
 
   // useLayoutEffect(() => {
   //   // navigation.setOptions(defaultHeader({ navigation }));
   // }, []);
 
-  const onDeleteSiteClicked = (id: string) => {
+  const onDeleteSiteClicked = () => {
     // DAppController.fromUserDisconnectDApp(id);
   };
 

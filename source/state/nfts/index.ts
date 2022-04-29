@@ -7,7 +7,7 @@ const NFTListState = createSlice({
   name: 'nfts',
   initialState,
   reducers: {
-    rehydrate(state: INFTListState, action: PayloadAction<INFTInfoState>) {
+    rehydrate(state: INFTListState, action: PayloadAction<INFTListState>) {
       return {
         ...state,
         ...action.payload,

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { FC, Fragment, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,11 +11,12 @@ import { RootState } from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import SearchIcon from 'assets/images/svg/search.svg';
-import styles from './Asset.scss';
 import { v4 as uuid } from 'uuid';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import styles from './Asset.scss';
+import AddAssetSettings from './types';
 
-const AddAsset = () => {
+const AddAsset: FC<AddAssetSettings> = () => {
   const controller = useController();
   const history = useHistory();
   const { activeWallet, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
@@ -82,7 +83,7 @@ const AddAsset = () => {
                     <li>
                       <div>
                         <div className={styles.iconWrapper}>
-                          <img src={asset.logo}></img>
+                          <img src={asset.logo} />
                         </div>
                         <span>{asset.label}</span>
                       </div>

@@ -13,7 +13,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 
-import TxsPanel from '../TxsPanel/TxsPanel';
+import TxsPanel from '../TxsPanel';
 
 import styles from './Asset.scss';
 

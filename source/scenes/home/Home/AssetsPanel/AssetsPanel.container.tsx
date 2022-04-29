@@ -3,27 +3,14 @@
 ///////////////////////
 
 import React from 'react';
-
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
-
-///////////////////////
-// Components
-///////////////////////
-
-import Container from 'components/Container';
 
 ///////////////////////
 // Selectors
 ///////////////////////
 
 import walletSelectors from 'selectors/walletsSelectors';
-
-///////////////////////
-// Scene
-///////////////////////
-
-import AssetsPanel from './AssetsPanel';
 
 ///////////////////////
 // Utils
@@ -39,6 +26,12 @@ import { RootState } from 'state/store';
 import IVaultState, { IAssetState } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
 import IAssetListState from 'state/assets/types';
+
+///////////////////////
+// Scene
+///////////////////////
+
+import AssetsPanel from './AssetsPanel';
 
 ///////////////////////
 // Container

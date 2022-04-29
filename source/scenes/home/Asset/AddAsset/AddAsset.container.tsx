@@ -1,8 +1,6 @@
-import React, { ChangeEvent, useEffect, useState, FC } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
-
 import { RootState } from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
@@ -60,8 +58,8 @@ const AddAssetContainer: FC = () => {
     );
   }, [keyword, assets]);
 
-  const onChangeAddress = (e: ChangeEvent<HTMLInputElement> | NativeSyntheticEvent<TextInputChangeEventData>) => {
-    if (e.nativeEvent) {
+  const onChangeAddress = (e: any) => {
+    if (e?.nativeEvent?.text) {
       return setKeyword(e.nativeEvent.text);
     }
 

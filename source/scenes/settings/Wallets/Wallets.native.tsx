@@ -5,8 +5,8 @@ import { Button } from 'react-native-elements';
 import TextV3 from 'components/TextV3';
 import Icon from 'components/Icon';
 
-import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { AssetType, IAccountDerived } from 'state/vault/types';
+import { KeyringAssetType, KeyringWalletAccountState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { AssetType } from 'state/vault/types';
 
 import { ellipsis } from 'scenes/home/helpers';
 
@@ -55,9 +55,9 @@ const WalletsComponent: FC<IWalletsSettings> = ({
     );
   };
 
-  const onHandleSwitchWallet = (walletId, accounts) => {
+  const onHandleSwitchWallet = (walletId: string, accounts: KeyringWalletAccountState[]) => {
     return () => {
-      return handleSwitchWallet(walletId, accounts as IAccountDerived[]);
+      return handleSwitchWallet(walletId, accounts);
     };
   };
 

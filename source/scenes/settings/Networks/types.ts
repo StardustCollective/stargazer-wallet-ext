@@ -1,9 +1,11 @@
+import { IOption } from 'components/Select/Select';
+
 export type INetworkOptions = {
   key: string;
   label: string;
   value: string;
   onChange: (value: string) => void;
-  options: Array<object>;
+  options: Array<IOption>;
   containerStyle?: object;
   extraProps?: object;
 };

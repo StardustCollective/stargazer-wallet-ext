@@ -92,7 +92,6 @@ const DAppState = createSlice({
       };
     },
     unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
-      console.log('Unlist App ID: ' + action.payload.id);
       delete state.whitelist[action.payload.id];
       delete state.listening[action.payload.id];
     },

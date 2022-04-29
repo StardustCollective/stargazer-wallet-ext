@@ -6,7 +6,7 @@ import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-k
 
 import Icon from 'components/Icon';
 
-import { IAccountDerived, AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 
 import StargazerIcon from 'assets/images/logo-s.svg';
 
@@ -33,7 +33,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
             <section
               className={styles.wallet}
               key={wallet.id}
-              onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as IAccountDerived[])}
+              onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
             >
               {wallet.id === activeWallet.id && <CheckIcon className={styles.check} />}
               <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
@@ -55,7 +55,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
               <section
                 className={styles.wallet}
                 key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as IAccountDerived[])}
+                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
               >
                 {wallet.id === activeWallet.id && <CheckIcon className={styles.check} />}
                 <Icon
@@ -88,7 +88,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
               <section
                 className={styles.wallet}
                 key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts as IAccountDerived[])}
+                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
               >
                 {wallet.id === activeWallet.id && <CheckIcon className={styles.check} />}
                 <Icon

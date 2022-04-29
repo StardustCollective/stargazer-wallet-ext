@@ -2,10 +2,10 @@
 // Components
 ///////////////////////////
 
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState } from 'react';
 import queryString from 'query-string';
 import find from 'lodash/find';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 // import { useAlert } from 'react-alert';
@@ -42,13 +42,8 @@ import { useFiat } from 'hooks/usePrice';
 ///////////////////////////
 
 import { getAccountController } from 'utils/controllersUtils';
-import { confirmEvent } from 'utils/backgroundUtils';
+// import { confirmEvent } from 'utils/backgroundUtils';
 import { showAlert } from 'utils/alertUtil';
-///////////////////////////
-// Scene
-///////////////////////////
-
-import Confirm from './Confirm';
 
 ///////////////////////////
 // Selectors
@@ -57,11 +52,17 @@ import Confirm from './Confirm';
 import walletSelectors from 'selectors/walletsSelectors';
 
 ///////////////////////////
+// Scene
+///////////////////////////
+
+import Confirm from './Confirm';
+
+///////////////////////////
 // Container
 ///////////////////////////
 
 
-const ConfirmContainer = ({ navigation }) => {
+const ConfirmContainer = () => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
@@ -174,8 +175,8 @@ const ConfirmContainer = ({ navigation }) => {
     try {
       if (isExternalRequest) {
 
-        const { windowId } = queryString.parse(window.location.search);
-        const confirm = await confirmEvent(windowId);
+        // const { windowId } = queryString.parse(window.location.search);
+        // const confirm = await confirmEvent(windowId);
 
         const txConfig: ITransactionInfo = {
           fromAddress: tempTx.fromAddress,
@@ -184,7 +185,7 @@ const ConfirmContainer = ({ navigation }) => {
           amount: tempTx.amount,
           ethConfig: tempTx.ethConfig,
           onConfirmed: () => {
-            confirm();
+            // confirm();
           }
         };
 

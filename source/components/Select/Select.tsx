@@ -4,7 +4,8 @@ import MUIMenuItem from '@material-ui/core/MenuItem';
 import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 import styles from './Select.scss';
-interface IOption {
+
+export interface IOption {
   // key => value of Option
   // value => label of Option
   [key: string]: string;
@@ -54,10 +55,10 @@ const Select: FC<ISelect> = ({
         }}
       >
         {options.map((option: IOption) => {
-          const value = Object.keys(option)[0];
-          const label = option[value];
+          const val = Object.keys(option)[0];
+          const label = option[val];
           return (
-            <MUIMenuItem key={value} value={value}>
+            <MUIMenuItem key={val} value={val}>
               {label}
             </MUIMenuItem>
           );

@@ -1,20 +1,29 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-
 import Layout from 'scenes/common/Layout';
 import Button from 'components/Button';
-
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
-
-import { AssetType } from 'state/vault/types';
-
+import { AssetType, IActiveAssetState, IWalletState } from 'state/vault/types';
+import { ITransactionInfo } from 'scripts/types';
+import { IAssetInfoState } from 'state/assets/types';
 import { ellipsis } from '../../helpers';
-
 import styles from './Confirm.scss';
 
 interface ISendConfirm {
-  navigation: any
+  isExternalRequest: boolean;
+  confirmed: boolean;
+  tempTx: ITransactionInfo;
+  assetInfo: IAssetInfoState;
+  activeAsset: IAssetInfoState | IActiveAssetState;
+  getSendAmount: () => any;
+  activeWallet: IWalletState;
+  feeUnit: string;
+  getFeeAmount: () => any;
+  getTotalAmount: () => any;
+  handleCancel: () => void;
+  handleConfirm: () => void;
+  disabled: boolean;
 }
 
 const SendConfirm = ({ 
@@ -30,7 +39,7 @@ const SendConfirm = ({
   getTotalAmount,
   handleCancel,
   handleConfirm,
-  disabled
+  disabled,
  }: ISendConfirm) => {
 
   return confirmed ? (
@@ -95,7 +104,7 @@ const SendConfirm = ({
           </Button>
         </div>
       </section>
-    </div >
+    </div>
   );
 };
 

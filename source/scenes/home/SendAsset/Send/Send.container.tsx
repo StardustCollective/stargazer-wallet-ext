@@ -1,7 +1,7 @@
 ///////////////////////////
 // Modules
 ///////////////////////////
-import React, { ChangeEvent, useState, useCallback, useMemo, useEffect, useLayoutEffect, FC } from 'react';
+import React, { ChangeEvent, useState, useCallback, useMemo, useEffect, FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 // import { useAlert } from 'react-alert';
@@ -63,7 +63,7 @@ interface IWalletSend {
   navigation: any;
 }
 
-const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
+const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const accountController = getAccountController();
   let isExternalRequest = false;
 
@@ -164,7 +164,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '', navigation }) => {
     return accountController.isValidERC20Address(address);
   }, [address]);
 
-  let {
+  const {
     setToEthAddress,
     setGasPrice,
     setSendAmount,

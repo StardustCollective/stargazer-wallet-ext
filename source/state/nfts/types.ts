@@ -1,7 +1,7 @@
 import { AssetType } from 'state/vault/types';
 
 export interface INFTInfoState {
-  id: string; 
+  id: string;
   label: string;
   type: AssetType;
   address: string;
@@ -16,48 +16,48 @@ export interface INFTListState {
 }
 
 interface IOpenSeaAssetContract {
-    address: string;
-    asset_contract_type: string;
-    buyer_fee_basis_points: number;
-    created_date: string;
-    default_to_fiat: boolean;
-    description: string | null;
-    dev_buyer_fee_basis_points: number;
-    dev_seller_fee_basis_points: number;
-    external_link: string | null;
-    image_url: string | null;
-    name: string;
-    nft_version: string | null;
-    only_proxied_transfers: boolean;
-    opensea_buyer_fee_basis_points: number;
-    opensea_seller_fee_basis_points: number;
-    opensea_version: string;
-    owner: number;
-    payout_address: string | null;
-    schema_name: string;
-    seller_fee_basis_points: number;
-    symbol: string;
-    total_supply: null | number;
+  address: string;
+  asset_contract_type: string;
+  buyer_fee_basis_points: number;
+  created_date: string;
+  default_to_fiat: boolean;
+  description: string | null;
+  dev_buyer_fee_basis_points: number;
+  dev_seller_fee_basis_points: number;
+  external_link: string | null;
+  image_url: string | null;
+  name: string;
+  nft_version: string | null;
+  only_proxied_transfers: boolean;
+  opensea_buyer_fee_basis_points: number;
+  opensea_seller_fee_basis_points: number;
+  opensea_version: string;
+  owner: number;
+  payout_address: string | null;
+  schema_name: string;
+  seller_fee_basis_points: number;
+  symbol: string;
+  total_supply: null | number;
 }
 
 // TODO: add keys
 interface IOpenSeaCollection {
-  [id: string]: any
+  [id: string]: any;
 }
 
 // TODO: add keys
 interface IOpenSeaCreator {
-  [id: string]: any
+  [id: string]: any;
 }
 
 // TODO: add keys
 interface IOpenSeaSale {
-  [id: string]: any
+  [id: string]: any;
 }
 
 // TODO: add keys
 interface IOpenSeaOwner {
-  [id: string]: any
+  [id: string]: any;
 }
 
 export interface IOpenSeaNFT {
@@ -66,7 +66,7 @@ export interface IOpenSeaNFT {
   description: string;
   permalink: string;
   token_id: string;
-  num_sales: number; 
+  num_sales: number;
   background_color: string | null;
   image_url: string;
   animation_original_url: string | null;
@@ -74,7 +74,7 @@ export interface IOpenSeaNFT {
   asset_contract: IOpenSeaAssetContract;
   collection: IOpenSeaCollection;
   creator: IOpenSeaCreator;
-  decimals: number| null;
+  decimals: number | null;
   external_link: string | null;
   image_original_url: string | null;
   image_preview_url: string | null;

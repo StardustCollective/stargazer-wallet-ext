@@ -1,17 +1,17 @@
 import { AccountTracker } from '@stardust-collective/dag4-xchain-ethereum';
 import { dag4 } from '@stardust-collective/dag4';
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo from '@react-native-community/netinfo';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
 import { INFURA_CREDENTIAL } from 'utils/envUtil';
+import { updatefetchDagBalanceState } from 'state/process';
+import { ProcessStates } from 'state/process/enums';
+import { getAccountController } from 'utils/controllersUtils';
 import store from '../../../state/store';
 import { updateBalances } from '../../../state/vault';
 import IVaultState, { ActiveNetwork, AssetType, IWalletState } from '../../../state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
-import { getAccountController } from 'utils/controllersUtils';
-import { updatefetchDagBalanceState } from 'state/process';
-import { ProcessStates } from 'state/process/enums';
 
 const FIVE_SECONDS = 5 * 1000;
 
@@ -30,11 +30,9 @@ export class AssetsBalanceMonitor {
 
   private lastIsConnected = true;
 
-  private unsubscribeNetInfo = undefined;
+  private unsubscribeNetInfo: any = undefined;
 
   private utils = ControllerUtils();
-
-  constructor() {}
 
   async start() {
     const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
@@ -71,7 +69,7 @@ export class AssetsBalanceMonitor {
       //   store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
       // })
 
-      if(this.unsubscribeNetInfo){
+      if (this.unsubscribeNetInfo) {
         this.unsubscribeNetInfo();
       }
       this.unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {

@@ -7,7 +7,7 @@ export type IAssetHeader = {
 
 export default interface IAssetHeaderSettings {
   isCopied: boolean;
-  onClickCopyText: (e: Event) => void;
+  onClickCopyText: (event: any) => void;
   shortenedAddress: string;
   asset: IAssetInfoState;
   copiedTextToolip: string;
