@@ -107,7 +107,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
           return (
             <TouchableOpacity key={wallet.id} onPress={onHandleSwitchWallet(wallet.id, wallet.accounts)}>
               <View style={walletStyles}>
-                {renderCheckIcon(wallet.id, activeWallet.id)}
+                {renderCheckIcon(wallet.id, activeWallet?.id)}
                 {renderStargazerIcon()}
                 <View testID={wallet.label} style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <View style={{ justifyContent: 'flex-end' }}>
@@ -139,7 +139,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
               return (
                 <TouchableOpacity key={wallet.id} onPress={onHandleSwitchWallet(wallet.id, wallet.accounts)}>
                   <View style={walletStyles} key={wallet.id}>
-                    {renderCheckIcon(wallet.id, activeWallet.id)}
+                    {renderCheckIcon(wallet.id, activeWallet?.id)}
                     {wallet.supportedAssets.includes(KeyringAssetType.ETH)
                       ? renderEthereumIcon()
                       : renderConstellationIcon() || renderStargazerIcon()}
