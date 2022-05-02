@@ -15,6 +15,11 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  imageNFTIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
   componentIcon: {
     width: 40,
     height: 40,
@@ -27,7 +32,7 @@ const styles = StyleSheet.create({
   assetName: {
     marginLeft: 16,
   },
-  assetPrice:{
+  assetPrice: {
     flexDirection: 'row',
   },
   green: {
