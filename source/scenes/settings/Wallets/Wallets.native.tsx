@@ -109,14 +109,14 @@ const WalletsComponent: FC<IWalletsSettings> = ({
               <View style={walletStyles}>
                 {renderCheckIcon(wallet.id, activeWallet.id)}
                 {renderStargazerIcon()}
-                <View testID={wallet.label} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <View style={{ justifyContent: 'flex-end' }}>
-                    <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
+                <View testID={wallet.label} style={styles.walletInfoContainer}>
+                  <View style={styles.walletLabelContainer}>
+                    <TextV3.Caption dynamic color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
                       {wallet.label}
                     </TextV3.Caption>
-                    <TextV3.Caption extraStyles={styles.textSmall}>Multi Chain Wallet</TextV3.Caption>
+                    <TextV3.Caption dynamic extraStyles={styles.textSmall}>Multi Chain Wallet</TextV3.Caption>
                   </View>
-                  <View style={{ flex: 1 }}>{renderInfoIcon(wallet.id)}</View>
+                  <View style={styles.walletInfoIcon}>{renderInfoIcon(wallet.id)}</View>
                 </View>
               </View>
             </TouchableOpacity>
@@ -143,15 +143,17 @@ const WalletsComponent: FC<IWalletsSettings> = ({
                     {wallet.supportedAssets.includes(KeyringAssetType.ETH)
                       ? renderEthereumIcon()
                       : renderConstellationIcon() || renderStargazerIcon()}
-                    <View>
-                      <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
-                        {wallet.label}
-                      </TextV3.Caption>
-                      <TextV3.Caption extraStyles={styles.textSmall}>
-                        {ellipsis(wallet.accounts[0].address)}
-                      </TextV3.Caption>
+                    <View testID={wallet.label} style={styles.walletInfoContainer}>
+                      <View style={styles.walletLabelContainer}>
+                        <TextV3.Caption dynamic color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
+                          {wallet.label}
+                        </TextV3.Caption>
+                        <TextV3.Caption dynamic extraStyles={styles.textSmall}>
+                          {ellipsis(wallet.accounts[0].address)}
+                        </TextV3.Caption>
+                      </View>
+                      <View style={styles.walletInfoIcon}>{renderInfoIcon(wallet.id)}</View>
                     </View>
-                    <View>{renderInfoIcon(wallet.id)}</View>
                   </View>
                 </TouchableOpacity>
               );
