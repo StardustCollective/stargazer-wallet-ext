@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -21,7 +20,6 @@ import { IRemoveWalletView } from './types';
 
 const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => {
   const walletController = getWalletController();
-  const history = useHistory();
   const { id } = route.params;
   const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
   const wallet = wallets.local.find((w) => w.id === id);
@@ -50,7 +48,7 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   };
 
   const goBack = () => {
-    history.goBack();
+    navigation.goBack();
   };
 
   return (
