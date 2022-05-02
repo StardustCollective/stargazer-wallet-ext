@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import queryString from 'query-string';
 import find from 'lodash/find';
+import { browser } from 'webextension-polyfill-ts';
 import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -42,7 +43,6 @@ import { useFiat } from 'hooks/usePrice';
 ///////////////////////////
 
 import { getAccountController } from 'utils/controllersUtils';
-// import { confirmEvent } from 'utils/backgroundUtils';
 import { showAlert } from 'utils/alertUtil';
 
 ///////////////////////////
@@ -175,8 +175,11 @@ const ConfirmContainer = () => {
     try {
       if (isExternalRequest) {
 
-        // const { windowId } = queryString.parse(window.location.search);
-        // const confirm = await confirmEvent(windowId);
+        const background = await browser.runtime.getBackgroundPage();
+        const { windowId } = queryString.parse(window.location.search);
+        const confirmEvent = new CustomEvent('transactionSent', {
+          detail: { windowId, approved: true },
+        });
 
         const txConfig: ITransactionInfo = {
           fromAddress: tempTx.fromAddress,
@@ -185,8 +188,8 @@ const ConfirmContainer = () => {
           amount: tempTx.amount,
           ethConfig: tempTx.ethConfig,
           onConfirmed: () => {
-            // confirm();
-          }
+            background.dispatchEvent(confirmEvent);
+          },
         };
 
         accountController.updateTempTx(txConfig);
