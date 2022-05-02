@@ -9,7 +9,8 @@
   height: 100%;
 
   form.bodywrapper {
-    width: 372px;
+    width: 100%;
+    height: 100%;
   }
   section.subheading {
     height: 60px;
@@ -224,7 +225,7 @@
       }
 
       .gasInput {
-        width: 84px;
+        width: 100px;
         height: 24px;
         margin-left: 12px;
         border: 1px solid $purple !important;
