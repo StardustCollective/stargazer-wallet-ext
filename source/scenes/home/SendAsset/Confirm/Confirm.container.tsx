@@ -5,7 +5,6 @@
 import React, { useState } from 'react';
 import queryString from 'query-string';
 import find from 'lodash/find';
-import { browser } from 'webextension-polyfill-ts';
 import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -169,7 +168,7 @@ const ConfirmContainer = () => {
     }
   }
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (browser: any = null) => {
     setDisabled(true);
 
     try {
