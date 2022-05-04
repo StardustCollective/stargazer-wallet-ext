@@ -36,6 +36,7 @@ const AssetsPanel: FC<IAssetState> = ({
   activeNFTAssets,
   nfts,
   activeWallet,
+  showNFTs,
 }) => {
   const handleSelectNFT = (nft: INFTInfoState) => {
     Linking.openURL(nft.link);
@@ -59,23 +60,26 @@ const AssetsPanel: FC<IAssetState> = ({
             />
           );
         })}
-        {activeNFTAssets.map((nft: any) => {
-          return (
-            <AssetItem
-              id={nft.id}
-              key={nft.id}
-              asset={nft}
-              assetInfo={nfts[nft.id]}
-              itemClicked={() => handleSelectNFT(nfts[nft.id])}
-            />
-          );
+        {showNFTs &&
+          activeNFTAssets.map((nft: any) => {
+            return (
+              <AssetItem
+                id={nft.id}
+                key={nft.id}
+                asset={nft}
+                assetInfo={nfts[nft.id]}
+                itemClicked={() => handleSelectNFT(nfts[nft.id])}
+              />
+            );
         })}
       </>
     );
   };
 
+  const radiusStyle = showNFTs ? styles.radius : {};
+
   return (
-    <View style={styles.activity}>
+    <View style={[styles.container, radiusStyle]}>
       <View style={styles.content}>
         {Object.keys(activeWallet.assets).length ? (
           <>{renderAssetList()}</>

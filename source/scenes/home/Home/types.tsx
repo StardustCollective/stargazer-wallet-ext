@@ -14,4 +14,5 @@ export interface IHome {
   activeWallet: IWalletState;
   balanceObject: IBalanceObject;
   balance: string;
+  onBuyPressed: () => void;
 }

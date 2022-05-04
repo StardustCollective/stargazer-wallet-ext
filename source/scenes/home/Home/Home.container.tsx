@@ -31,6 +31,7 @@ import Home from './Home';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
+import screens from 'navigation/screens';
 
 interface IHome {
   navigation: any,
@@ -64,6 +65,10 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     });
   }, [activeWallet]);
 
+  const onBuyPressed = () => {
+    navigation.navigate(screens.authorized.buyList);
+  };
+
   ///////////////////////////
   // Render
   ///////////////////////////
@@ -74,6 +79,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
         activeWallet={activeWallet}
         balanceObject={balanceObject}
         balance={balance}
+        onBuyPressed={onBuyPressed}
       />
     </Container>
   );

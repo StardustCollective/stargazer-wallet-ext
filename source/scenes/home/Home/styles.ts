@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buyDagButton: {
-    marginTop: 20, 
-    marginBottom: 10, 
-    backgroundColor: COLORS.blue_violet,
-  }
+  buyButton: {
+    marginTop: 20,
+    marginBottom: 10,
+    backgroundColor: COLORS.primary_lighter_1,
+  },
 });
 
 export default styles;

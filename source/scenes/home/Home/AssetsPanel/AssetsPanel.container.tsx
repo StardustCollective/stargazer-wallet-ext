@@ -2,7 +2,7 @@
 // Module
 ///////////////////////
 
-import React from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -32,12 +32,13 @@ import IAssetListState from 'state/assets/types';
 ///////////////////////
 
 import AssetsPanel from './AssetsPanel';
+import { IAssetsPanelContainer } from './types';
 
 ///////////////////////
 // Container
 ///////////////////////
 
-const AssetsPanelContainer = () => {
+const AssetsPanelContainer: FC<IAssetsPanelContainer> = ({ showNFTs }) => {
   const accountController = getAccountController();
 
   ///////////////////////
@@ -56,8 +57,12 @@ const AssetsPanelContainer = () => {
   ///////////////////////
 
   const handleSelectAsset = (asset: IAssetState) => {
-    accountController.updateAccountActiveAsset(asset);
-    linkTo('/asset');
+    if (showNFTs) {
+      accountController.updateAccountActiveAsset(asset);
+      linkTo('/asset');
+    } else {
+      console.log('Navigate to Buy with', asset);
+    }
   };
 
   ///////////////////////
@@ -72,6 +77,7 @@ const AssetsPanelContainer = () => {
       nfts={nfts}
       activeWallet={activeWallet}
       handleSelectAsset={handleSelectAsset}
+      showNFTs={showNFTs}
     />
   );
 };
