@@ -174,7 +174,7 @@ const ApproveSpend = () => {
       <div className={styles.content}>
         <TextV3.Caption color={COLORS_ENUMS.BLACK}>
           Do you trust this site? By granting permissions you're allowing this
-          site to withdraw your LTX and automate transactions for you.
+          site to withdraw your tokens and automate transactions for you.
         </TextV3.Caption>
         <div className={styles.gasFees}>
           <div className={styles.box}>
