@@ -35,7 +35,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
               key={wallet.id}
               onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
             >
-              {wallet.id === activeWallet.id && <CheckIcon className={styles.check} />}
+              {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
               <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
               <span id={wallet.label}>
                 {wallet.label}
@@ -57,7 +57,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
                 key={wallet.id}
                 onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
               >
-                {wallet.id === activeWallet.id && <CheckIcon className={styles.check} />}
+                {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
                 <Icon
                   width={24}
                   Component={
@@ -90,7 +90,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
                 key={wallet.id}
                 onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
               >
-                {wallet.id === activeWallet.id && <CheckIcon className={styles.check} />}
+                {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
                 <Icon
                   width={24}
                   Component={
