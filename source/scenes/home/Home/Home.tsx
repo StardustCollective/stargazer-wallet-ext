@@ -73,7 +73,7 @@ const Home: FC<IHome> = ({
                 <ButtonV3
                   label="Buy"
                   size={BUTTON_SIZES_ENUM.LARGE}
-                  type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                   onClick={onBuyPressed}
                   extraStyle={styles.buyButton}
                 />

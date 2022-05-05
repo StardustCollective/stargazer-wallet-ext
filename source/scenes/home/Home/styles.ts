@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
   buyButton: {
     marginTop: 20,
     marginBottom: 10,
-    backgroundColor: COLORS.primary_lighter_1,
   },
 });
 

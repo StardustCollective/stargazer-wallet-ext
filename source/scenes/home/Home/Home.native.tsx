@@ -57,7 +57,7 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed })
               <ButtonV3
                 title="Buy"
                 size={BUTTON_SIZES_ENUM.LARGE}
-                type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
+                type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                 onPress={onBuyPressed}
                 extraStyles={styles.buyButton}
               />

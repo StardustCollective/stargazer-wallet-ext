@@ -61,7 +61,7 @@ const AssetsPanelContainer: FC<IAssetsPanelContainer> = ({ showNFTs }) => {
       accountController.updateAccountActiveAsset(asset);
       linkTo('/asset');
     } else {
-      console.log('Navigate to Buy with', asset);
+      linkTo(`/buyAsset?selected=${asset.id}`);
     }
   };
 

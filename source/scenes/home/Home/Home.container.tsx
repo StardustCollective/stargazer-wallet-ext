@@ -5,6 +5,7 @@
 import React, { FC, useLayoutEffect } from 'react';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { useSelector } from 'react-redux';
+import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
 // Components
@@ -31,7 +32,6 @@ import Home from './Home';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
-import screens from 'navigation/screens';
 
 interface IHome {
   navigation: any,
@@ -56,6 +56,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+  const linkTo = useLinkTo();
 
   // Sets the header for the home screen.
   useLayoutEffect(() => {
@@ -66,7 +67,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   }, [activeWallet]);
 
   const onBuyPressed = () => {
-    navigation.navigate(screens.authorized.buyList);
+    linkTo('/buyList');
   };
 
   ///////////////////////////

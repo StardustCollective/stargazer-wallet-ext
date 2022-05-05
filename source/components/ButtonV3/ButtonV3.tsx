@@ -25,6 +25,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 
 export enum BUTTON_TYPES_ENUM {
   PRIMARY_SOLID = 0,
+  SECONDARY_SOLID,
   ACCENT_ONE_SOLID,
   MONOTONE_ONE_SOLID,
   PRIMARY_OUTLINE,
@@ -49,6 +50,7 @@ interface IButtonV3Props {
   extraStyle?: string;
   onClick?: () => void;
   submit?: boolean;
+  disabled?: boolean;
 }
 
 //////////////////////
@@ -63,12 +65,14 @@ const ButtonV3: FC<IButtonV3Props> = ({
   extraStyle = '',
   onClick = () => {},
   submit = false,
+  disabled = false,
 }) => {
   let buttonSizeStyle = '';
   let buttonColorStyle = '';
   let buttonTextColor = null;
   let buttonBorderStyle = '';
   let TextComponent = null;
+  let disabledStyles = '';
 
   if (size === BUTTON_SIZES_ENUM.SMALL) {
     buttonSizeStyle = styles.buttonSmall;
@@ -79,18 +83,26 @@ const ButtonV3: FC<IButtonV3Props> = ({
   }
 
   if (type === BUTTON_TYPES_ENUM.PRIMARY_SOLID) {
-    buttonColorStyle = 'b-primary';
+    buttonColorStyle = styles.primaryButton;
+    buttonTextColor = COLORS_ENUMS.WHITE;
+  } else if (type === BUTTON_TYPES_ENUM.SECONDARY_SOLID) {
+    buttonColorStyle = styles.secondaryButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {
-    buttonColorStyle = 'b-accentOne';
+    buttonColorStyle = styles.accentOneButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
+  }
+
+  if (disabled) {
+    disabledStyles = styles.disabled;
   }
 
   return (
     <button
       id={id}
+      disabled={disabled}
       type={submit ? 'submit' : 'button'}
-      className={clsx([styles.base, buttonColorStyle, buttonTextColor, buttonSizeStyle, buttonBorderStyle, extraStyle])}
+      className={clsx([styles.base, buttonColorStyle, buttonTextColor, buttonSizeStyle, buttonBorderStyle, extraStyle, disabledStyles])}
       onClick={onClick}
     >
       <TextComponent align={TEXT_ALIGN_ENUM.CENTER}>{label}</TextComponent>

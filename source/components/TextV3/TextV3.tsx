@@ -53,9 +53,11 @@ const TextV3 = {
 
     // Colors
     if (color === COLORS_ENUMS.BLACK) {
-      colorStyle = 't-black';
+      colorStyle = styles.textBlack;
     } else if (color === COLORS_ENUMS.WHITE) {
-      colorStyle = 't-white';
+      colorStyle = styles.textWhite;
+    } else if (color === COLORS_ENUMS.GRAY_100) {
+      colorStyle = styles.textGray100;
     }
 
     //Alignment

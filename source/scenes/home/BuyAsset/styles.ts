@@ -1,0 +1,99 @@
+import { StyleSheet } from 'react-native';
+import { COLORS, FONT_WEIGHTS, FONTS } from 'assets/styles/_variables';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  amountContainer: {
+    flex: 3,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  amountValue: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  amountText: {
+    marginHorizontal: 8,
+  },
+  amountMessage: {
+    marginTop: 16,
+  },
+  providerContainer: {
+    flex: 2,
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingHorizontal: 16,
+  },
+  providerTitle: {
+    marginBottom: 12,
+  },
+  providerCard: {
+    width: '100%',
+    flexDirection: 'row',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.gray_200,
+    backgroundColor: COLORS.white,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    elevation: 2,
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  providerIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 48,
+    height: 48,
+    backgroundColor: 'red',
+  },
+  providerText: {
+    marginLeft: 16,
+  },
+  numpadContainer: {
+    flex: 4,
+    width: '100%',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  buttonContainer: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  numPadItem: {
+    width: '33.33%',
+    height: '25%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  confirmButton: {
+    backgroundColor: COLORS.primary_lighter_1,
+    marginTop: 8,
+    width: 300,
+  },
+  confirmButtonText: {
+    fontFamily: FONTS.rubik,
+    fontWeight: FONT_WEIGHTS.medium,
+  },
+  disabled: {
+    opacity: 0.3,
+  },
+});
+
+export default styles;

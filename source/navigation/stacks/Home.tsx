@@ -16,6 +16,7 @@ import Asset from 'scenes/home/Asset';
 import Send from 'scenes/home/SendAsset/Send';
 import Confirm from 'scenes/home/SendAsset/Confirm';
 import BuyList from 'scenes/home/BuyList';
+import BuyAsset from 'scenes/home/BuyAsset';
 
 import Import from 'scenes/common/Import';
 import Main from 'scenes/settings/Main';
@@ -62,7 +63,6 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   confirm: 'Confirm',
   send: 'Send',
   buyList: 'Buy',
-  buy: 'Buy',
   gasSettings: 'Gas Settings',
   settings: 'Settings',
   about: 'About',
@@ -105,7 +105,7 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={Confirm} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.buyList }} name={screens.authorized.buyList} component={BuyList} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.buy }} name={screens.authorized.buy} component={Send} />
+          <Stack.Screen name={screens.authorized.buyAsset} component={BuyAsset} />
 
           {/* Settings Screens */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings }} name={screens.settings.main} component={Main} />

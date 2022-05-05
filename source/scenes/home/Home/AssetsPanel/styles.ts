@@ -4,7 +4,7 @@ import { COLORS } from 'assets/styles/_variables';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.gray_light,
   },
   radius: {
     borderTopRightRadius: 8,

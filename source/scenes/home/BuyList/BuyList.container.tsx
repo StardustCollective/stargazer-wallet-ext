@@ -8,7 +8,7 @@ import React, { FC } from 'react';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 import BuyList from './BuyList';
 
 ///////////////////////////
@@ -25,7 +25,7 @@ const BuyListContainer: FC<IBuyListContainer> = ({ navigation, route }) => {
   ///////////////////////////
 
   return (
-    <Container safeArea={false}>
+    <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <BuyList />
     </Container>
   );
