@@ -16,4 +16,6 @@ export default interface IAssetSettings {
   assets: IAssetListState;
   showQrCode?: boolean;
   setShowQrCode?: (isVisible: boolean) => void;
+  isAddressCopied: boolean;
+  copyAddress: (address: string) => void;
 }

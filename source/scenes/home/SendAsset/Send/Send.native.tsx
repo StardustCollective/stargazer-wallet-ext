@@ -148,7 +148,6 @@ const Send: FC<IWalletSend> = ({
           rightIconContainerStyle={styles.inputRightIcon}
           keyboardType={decimalPointOnAmount ? 'number-pad' : 'decimal-pad'}
           returnKeyType="done"
-          textContentType=""
           rightIcon={<InputRightButton label="MAX" onPress={handleSetMax} />}
         />
         {activeAsset.type === AssetType.Constellation && (

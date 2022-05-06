@@ -10,7 +10,7 @@ import clsx from 'clsx';
 /// ////////////////////
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import QRCodeModal from 'components/QRCodeModal';
 import TextV3 from 'components/TextV3';
 
 import TxsPanel from '../TxsPanel';
@@ -18,6 +18,7 @@ import TxsPanel from '../TxsPanel';
 import styles from './Asset.scss';
 
 import IAssetSettings from './types';
+import AssetButtons from '../AssetButtons';
 
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
@@ -25,9 +26,14 @@ const AssetDetail: FC<IAssetSettings> = ({
   balanceText,
   fiatAmount,
   transactions,
+  showQrCode,
   onSendClick,
+  setShowQrCode,
   assets,
+  isAddressCopied,
+  copyAddress,
 }) => {
+  const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
   return (
     <div className={styles.wrapper}>
       {activeWallet && activeAsset ? (
@@ -43,14 +49,16 @@ const AssetDetail: FC<IAssetSettings> = ({
               <TextV3.Body>≈ {fiatAmount}</TextV3.Body>
             </div>
             <div className={styles.actions}>
-              <ButtonV3
-                label="Send"
-                size={BUTTON_SIZES_ENUM.LARGE}
-                type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
-                onClick={onSendClick}
-              />
+              <AssetButtons setShowQrCode={setShowQrCode} onSendClick={onSendClick} assetId={activeAsset?.id} />
             </div>
           </section>
+          <QRCodeModal
+            open={showQrCode}
+            onClose={() => setShowQrCode(false)}
+            address={activeAsset.address}
+            textTooltip={textTooltip}
+            copyAddress={copyAddress}
+          />
           <TxsPanel address={activeAsset.address} transactions={transactions} />
         </>
       ) : (
