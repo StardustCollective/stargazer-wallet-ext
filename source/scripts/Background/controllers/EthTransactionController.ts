@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import IVaultState from 'state/vault/types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { TEST_PRIVATE_KEY, ETHERSCAN_API_KEY, INFURA_CREDENTIAL } from 'utils/envUtil';
+import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from '../../../state/assets/types';
 
 export interface IEthTransactionController {
@@ -86,7 +87,7 @@ export class EthTransactionController implements IEthTransactionController {
     if (pendingData[txHash]) {
       delete pendingData[txHash];
       await localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
-      window.controller.wallet.account.getLatestTxUpdate();
+      await getAccountController().getLatestTxUpdate();
     }
   }
 
