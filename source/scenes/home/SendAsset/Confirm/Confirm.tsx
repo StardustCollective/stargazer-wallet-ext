@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { AssetType, IActiveAssetState, IWalletState } from 'state/vault/types';
+import { browser } from 'webextension-polyfill-ts';
 import { ITransactionInfo } from 'scripts/types';
 import { IAssetInfoState } from 'state/assets/types';
 import { ellipsis } from '../../helpers';
@@ -22,7 +23,7 @@ interface ISendConfirm {
   getFeeAmount: () => any;
   getTotalAmount: () => any;
   handleCancel: () => void;
-  handleConfirm: () => void;
+  handleConfirm: (browserObject: any) => void;
   disabled: boolean;
 }
 
@@ -99,7 +100,7 @@ const SendConfirm = ({
           >
             Cancel
           </Button>
-          <Button type="submit" variant={styles.button} onClick={handleConfirm} disabled={disabled}>
+          <Button type="submit" variant={styles.button} onClick={() => handleConfirm(browser)} disabled={disabled}>
             {activeAsset.type === AssetType.LedgerConstellation ? 'Next' : 'Confirm'}
           </Button>
         </div>
