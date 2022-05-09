@@ -10,6 +10,7 @@ import clsx from 'clsx';
 ///////////////////////////
 
 import Portal from '@reach/portal';
+import QRCode from 'react-qr-code';
 import TextV3 from 'components/TextV3';
 import Tooltip from 'components/Tooltip';
 import closeIcon from 'assets/images/svg/close.svg';
@@ -46,7 +47,7 @@ const QRCodeModal: FC<IQRCodeModal> = ({ open, address, onClose, copyAddress, te
             <div onClick={() => copyAddress(address)}>
               <Tooltip title={textTooltip} placement="bottom" arrow>
                 <div className={styles.qrCodeCard}>
-                  <p className={styles.qrCode}>QR CODE</p>
+                  <QRCode value={address} />
                   <div className={styles.addressContainer}>
                     <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.qrCodeAddressText}>
                       {formattedAddress}
