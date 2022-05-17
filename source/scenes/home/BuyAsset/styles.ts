@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   amountMessage: {
+    minHeight: 30,
     marginTop: 16,
   },
   providerContainer: {
@@ -57,7 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 48,
     height: 48,
-    backgroundColor: 'red',
   },
   providerText: {
     marginLeft: 16,

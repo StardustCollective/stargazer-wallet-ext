@@ -3,7 +3,7 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 
 ///////////////////////////
 // Components
@@ -11,7 +11,6 @@ import { View, TouchableOpacity } from 'react-native';
 
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
-import SimplexIcon from 'assets/images/svg/simplex.svg';
 import ArrowIcon from 'assets/images/svg/arrow-left.svg';
 
 ///////////////////////////
@@ -32,8 +31,23 @@ import { IBuyAsset } from './types';
 
 import styles from './styles';
 
-const BuyAsset: FC<IBuyAsset> = ({ amount, message, buttonDisabled, handleItemClick, handleConfirm }) => {
+const ACTIVITY_INDICATOR_SIZE = 'small';
+
+const BuyAsset: FC<IBuyAsset> = ({
+  amount,
+  message,
+  buttonDisabled,
+  buttonLoading,
+  provider,
+  response,
+  handleItemClick,
+  handleConfirm,
+}) => {
   const padList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'];
+
+  const ProviderIcon = React.memo(() => {
+    return <Image source={{ uri: provider.logo }} height={48} width={48} style={styles.providerIcon} resizeMode='contain' />
+  });
 
   ///////////////////////////
   // Render
@@ -54,7 +68,11 @@ const BuyAsset: FC<IBuyAsset> = ({ amount, message, buttonDisabled, handleItemCl
           </TextV3.Body>
         </View>
         <View style={styles.amountMessage}>
-          <TextV3.Body color={COLORS_ENUMS.GRAY_100}>{message}</TextV3.Body>
+          {response.loading ? (
+            <ActivityIndicator size={ACTIVITY_INDICATOR_SIZE} />
+          ) : (
+            <TextV3.Body color={COLORS_ENUMS.GRAY_100}>{message}</TextV3.Body>
+          )}
         </View>
       </View>
       <View style={styles.providerContainer}>
@@ -62,9 +80,9 @@ const BuyAsset: FC<IBuyAsset> = ({ amount, message, buttonDisabled, handleItemCl
           Third Party Provider
         </TextV3.CaptionStrong>
         <TouchableOpacity style={styles.providerCard} disabled>
-          <SimplexIcon height={48} width={48} />
+          <ProviderIcon />
           <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.providerText}>
-            Simplex
+            {provider.label}
           </TextV3.BodyStrong>
         </TouchableOpacity>
       </View>
@@ -84,6 +102,7 @@ const BuyAsset: FC<IBuyAsset> = ({ amount, message, buttonDisabled, handleItemCl
           <ButtonV3
             title="Confirm"
             disabled={buttonDisabled}
+            loading={buttonLoading}
             size={BUTTON_SIZES_ENUM.LARGE}
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             extraStyles={styles.confirmButton}

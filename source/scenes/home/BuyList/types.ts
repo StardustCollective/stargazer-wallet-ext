@@ -1,4 +1,6 @@
-export interface IBuyListContainer {
-  navigation: any;
-  route: any;
+import { ISupportedAssetsState } from "state/providers/types";
+
+export interface IBuyList {
+  supportedAssets: ISupportedAssetsState;
+  handleSelectAsset: (assetId: string) => void;
 }

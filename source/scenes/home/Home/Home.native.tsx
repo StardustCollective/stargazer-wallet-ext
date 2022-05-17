@@ -62,7 +62,7 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed })
                 extraStyles={styles.buyButton}
               />
             </View>
-            <AssetsPanel showNFTs />
+            <AssetsPanel />
           </>
         ) : (
           <View style={styles.activityIndicator}>

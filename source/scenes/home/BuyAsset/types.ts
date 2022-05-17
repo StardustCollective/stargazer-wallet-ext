@@ -1,3 +1,5 @@
+import { IProviderDataState, IProviderInfoState } from 'state/providers/types';
+
 export interface IBuyAssetContainer {
   navigation: any;
   route: any;
@@ -9,4 +11,7 @@ export interface IBuyAsset {
   handleItemClick: (value: string) => void;
   handleConfirm: () => void;
   buttonDisabled: boolean;
+  buttonLoading: boolean;
+  provider: IProviderInfoState;
+  response: IProviderDataState;
 }

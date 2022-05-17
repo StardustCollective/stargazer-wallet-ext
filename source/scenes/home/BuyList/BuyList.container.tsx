@@ -3,6 +3,8 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
+import { useSelector } from 'react-redux';
+import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
 // Components
@@ -15,10 +17,17 @@ import BuyList from './BuyList';
 // Types
 ///////////////////////////
 
-import { IBuyListContainer } from './types';
+import{ RootState } from 'state/store';
+import IProvidersState from 'state/providers/types';
 
-const BuyListContainer: FC<IBuyListContainer> = ({ navigation, route }) => {
-  console.log(navigation, route);
+const BuyListContainer: FC = () => {
+  
+  const linkTo = useLinkTo();
+  const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
+
+  const handleSelectAsset = async (assetId: string) => {
+    linkTo(`/buyAsset?selected=${assetId}`);
+  };
 
   ///////////////////////////
   // Render
@@ -26,7 +35,7 @@ const BuyListContainer: FC<IBuyListContainer> = ({ navigation, route }) => {
 
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
-      <BuyList />
+      <BuyList supportedAssets={supportedAssets} handleSelectAsset={handleSelectAsset} />
     </Container>
   );
 };

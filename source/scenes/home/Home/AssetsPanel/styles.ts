@@ -6,11 +6,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.gray_light,
   },
-  radius: {
-    borderTopRightRadius: 8,
-    borderTopLeftRadius: 8,
-    marginBottom: 0,
-  },
   content: {
     margin: 16,
     marginBottom: 8,

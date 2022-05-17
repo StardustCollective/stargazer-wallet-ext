@@ -10,7 +10,7 @@ import React, { FC } from 'react';
 
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
-import SimplexIcon from 'assets/images/svg/simplex.svg';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ArrowIcon from 'assets/images/svg/arrow-left.svg';
 
 ///////////////////////////
@@ -31,8 +31,22 @@ import { IBuyAsset } from './types';
 
 import styles from './BuyAsset.scss';
 
-const BuyAsset: FC<IBuyAsset> = ({ amount, message, buttonDisabled, handleItemClick, handleConfirm }) => {
+const BuyAsset: FC<IBuyAsset> = ({
+  amount,
+  message,
+  buttonDisabled,
+  provider,
+  response,
+  handleItemClick,
+  handleConfirm,
+}) => {
   const padList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'];
+
+  const ProviderIcon = React.memo(() => {
+    const Icon = provider.logo;
+    return <img src={`/${Icon}`} alt={`${provider.id}-icon`} />;
+  });
+
   ///////////////////////////
   // Render
   ///////////////////////////
@@ -52,15 +66,19 @@ const BuyAsset: FC<IBuyAsset> = ({ amount, message, buttonDisabled, handleItemCl
           </TextV3.Body>
         </div>
         <div className={styles.amountMessage}>
-          <TextV3.Body color={COLORS_ENUMS.GRAY_100}>{message}</TextV3.Body>
+          {response.loading ? (
+            <CircularProgress className={styles.loader} />
+          ) : (
+            <TextV3.Body color={COLORS_ENUMS.GRAY_100}>{message}</TextV3.Body>
+          )}
         </div>
       </div>
       <div className={styles.providerContainer}>
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>Third Party Provider</TextV3.CaptionStrong>
         <div className={styles.providerCard}>
-          <img src={`/${SimplexIcon}`} alt="simplex-icon" />
+          <ProviderIcon />
           <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.providerText}>
-            Simplex
+            {provider.label}
           </TextV3.BodyStrong>
         </div>
       </div>

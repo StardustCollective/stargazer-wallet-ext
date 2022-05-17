@@ -1,3 +1,4 @@
+import { STARGAZER_PROVIDERS_BASE_URL, NODE_ENV, STARGAZER_PROVIDERS_BASE_URL_PROD, SIMPLEX_FORM_URL_PROD } from 'utils/envUtil';
 export const STORE_PORT = 'STARGAZER';
 
 export const DAG_NETWORK: {
@@ -73,3 +74,10 @@ export const DEFAULT_CURRENCY = {
 };
 
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
+export const IS_PROD = NODE_ENV == 'production';
+const PROVIDERS_BASE_URL = IS_PROD ? STARGAZER_PROVIDERS_BASE_URL_PROD : STARGAZER_PROVIDERS_BASE_URL;
+
+export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/quote`;
+export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;
+export const GET_SUPPORTED_ASSETS_API = `${PROVIDERS_BASE_URL}/supported-assets`;
+export const SIMPLEX_FORM_SUBMISSION_URL = IS_PROD ? SIMPLEX_FORM_URL_PROD : 'https://stargazer-assets.s3.us-east-2.amazonaws.com/stargazer-simplex.html?payment_id=';

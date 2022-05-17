@@ -78,7 +78,7 @@ const Home: FC<IHome> = ({
                   extraStyle={styles.buyButton}
                 />
               </section>
-              <AssetsPanel showNFTs />
+              <AssetsPanel />
             </>
           }
         </>

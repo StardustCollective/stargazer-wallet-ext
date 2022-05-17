@@ -3,13 +3,19 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, ActivityIndicator } from 'react-native';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
-import AssetsPanel from 'scenes/home/Home/AssetsPanel';
+import AssetItem from 'components/AssetItem';
+
+///////////////////////////
+// Types
+///////////////////////////
+
+import { IBuyList } from './types';
 
 ///////////////////////////
 // Styles
@@ -17,14 +23,40 @@ import AssetsPanel from 'scenes/home/Home/AssetsPanel';
 
 import styles from './styles';
 
-const BuyList: FC = () => {
+///////////////////////////
+// Constants
+///////////////////////////
+
+const ACTIVITY_INDICATOR_SIZE = 'small';
+
+const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
+
+  const renderAssetList = () => {
+    const assets = supportedAssets?.data;
+
+    return (
+      <>
+        {assets && Object.keys(assets).map((key: string) => {
+          return (
+            <AssetItem
+              id={assets[key].id}
+              key={assets[key].id}
+              asset={assets[key]}
+              assetInfo={assets[key]}
+              itemClicked={() => handleSelectAsset(assets[key].id)}
+            />
+          );
+        })}
+      </>
+    );
+  };
   ///////////////////////////
   // Render
   ///////////////////////////
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
-      <AssetsPanel showNFTs={false} />
+      {supportedAssets?.loading ? <ActivityIndicator style={styles.loadingContainer} size={ACTIVITY_INDICATOR_SIZE} /> : renderAssetList()}
     </ScrollView>
   );
 };

@@ -1,6 +1,6 @@
 import { combineReducers, configureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
- import thunk from 'redux-thunk';
+import thunk from 'redux-thunk';
 import throttle from 'lodash/throttle';
 import { NODE_ENV } from 'utils/envUtil';
 
@@ -11,6 +11,7 @@ import assets from './assets';
 import nfts from './nfts';
 import dapp from './dapp';
 import process from './process';
+import providers from './providers';
 
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -32,6 +33,7 @@ const store: Store = configureStore({
     nfts,
     dapp,
     process,
+    providers,
   }),
   middleware,
   devTools: NODE_ENV !== 'production',
@@ -47,6 +49,7 @@ function updateState() {
     assets: state.assets,
     nfts: state.nfts,
     dapp: state.dapp,
+    providers: state.providers,
   });
 }
 

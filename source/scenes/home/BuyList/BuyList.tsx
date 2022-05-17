@@ -8,7 +8,8 @@ import React, { FC } from 'react';
 // Components
 ///////////////////////////
 
-import AssetsPanel from 'scenes/home/Home/AssetsPanel';
+import AssetItem from 'components/AssetItem';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 ///////////////////////////
 // Styles
@@ -16,14 +17,41 @@ import AssetsPanel from 'scenes/home/Home/AssetsPanel';
 
 import styles from './BuyList.scss';
 
-const BuyList: FC = () => {
+///////////////////////////
+// Types
+///////////////////////////
+
+import { IBuyList } from './types';
+
+const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
+
+  const renderAssetList = () => {
+    const assets = supportedAssets?.data;
+
+    return (
+      <>
+        {assets && Object.keys(assets).map((key: string) => {
+          return (
+            <AssetItem
+              id={assets[key].id}
+              key={assets[key].id}
+              asset={assets[key]}
+              assetInfo={assets[key]}
+              itemClicked={() => handleSelectAsset(assets[key].id)}
+            />
+          );
+        })}
+      </>
+    );
+  };
+
   ///////////////////////////
   // Render
   ///////////////////////////
 
   return (
     <div className={styles.container}>
-      <AssetsPanel showNFTs={false} />
+      {supportedAssets?.loading ? <CircularProgress className={styles.loader} /> : renderAssetList()}
     </div>
   );
 };

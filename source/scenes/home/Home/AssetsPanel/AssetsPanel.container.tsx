@@ -32,13 +32,12 @@ import IAssetListState from 'state/assets/types';
 ///////////////////////
 
 import AssetsPanel from './AssetsPanel';
-import { IAssetsPanelContainer } from './types';
 
 ///////////////////////
 // Container
 ///////////////////////
 
-const AssetsPanelContainer: FC<IAssetsPanelContainer> = ({ showNFTs }) => {
+const AssetsPanelContainer: FC = () => {
   const accountController = getAccountController();
 
   ///////////////////////
@@ -57,12 +56,8 @@ const AssetsPanelContainer: FC<IAssetsPanelContainer> = ({ showNFTs }) => {
   ///////////////////////
 
   const handleSelectAsset = (asset: IAssetState) => {
-    if (showNFTs) {
-      accountController.updateAccountActiveAsset(asset);
-      linkTo('/asset');
-    } else {
-      linkTo(`/buyAsset?selected=${asset.id}`);
-    }
+    accountController.updateAccountActiveAsset(asset);
+    linkTo('/asset');
   };
 
   ///////////////////////
@@ -77,7 +72,6 @@ const AssetsPanelContainer: FC<IAssetsPanelContainer> = ({ showNFTs }) => {
       nfts={nfts}
       activeWallet={activeWallet}
       handleSelectAsset={handleSelectAsset}
-      showNFTs={showNFTs}
     />
   );
 };
