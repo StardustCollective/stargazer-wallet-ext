@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { GET_QUOTE_API, GET_SUPPORTED_ASSETS_API, PAYMENT_REQUEST_API } from 'constants/index';
+import { verifySignedResponse } from 'utils/verifySignedLatticeResponse';
 import { GetQuoteRequest, GetQuoteResponse, GetSupportedAssetsResponse, PaymentRequestBody, PaymentRequestResponse, Providers } from './types';
 
 export const getQuote = createAsyncThunk(
@@ -20,7 +21,10 @@ export const paymentRequest = createAsyncThunk(
       method: 'POST',
       body: JSON.stringify(requestData),
     });
-    return response.json();
+    const responseJson = await response.json();
+    const isValidResponse = await verifySignedResponse(responseJson);
+    if (isValidResponse) return responseJson;
+    return { message: 'Invalid signature' };
   }
 );
 

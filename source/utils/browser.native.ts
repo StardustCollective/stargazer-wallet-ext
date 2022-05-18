@@ -5,7 +5,6 @@ import { showAlert } from './alertUtil';
 export const open = async (url: string) => {
   try {
     if (await InAppBrowser.isAvailable()) {
-      console.log('Abir in app browser');
       await InAppBrowser.open(url, {
         // iOS Properties
         dismissButtonStyle: 'done',

@@ -4,6 +4,7 @@
 
 import React, { FC } from 'react';
 import { useLinkTo } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 ///////////////////////////
 // Components
@@ -15,6 +16,8 @@ import AssetButtons from './AssetButtons';
 // Types
 ///////////////////////////
 
+import IProvidersState from 'state/providers/types';
+import { RootState } from 'state/store';
 import { IAssetButtonsContainer } from './types';
 
 const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({ setShowQrCode, onSendClick, assetId }) => {
@@ -23,13 +26,19 @@ const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({ setShowQrCode, onSe
   ///////////////////////////
 
   const linkTo = useLinkTo();
+  const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
 
   ///////////////////////////
   // Render
   ///////////////////////////
 
   const onBuyPressed = () => {
-    linkTo(`/buyAsset?selected=${assetId}`);
+    const assetSupported = supportedAssets.data[assetId];
+    if (assetSupported) {
+      linkTo(`/buyAsset?selected=${assetId}`);
+    } else {
+      linkTo('/buyList');
+    }
   };
 
   const onSendPressed = () => {
