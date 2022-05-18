@@ -2,9 +2,10 @@
 // Imports
 ///////////////////////////
 
-import React, { FC, useLayoutEffect } from 'react';
+import React, { FC, useLayoutEffect, useEffect } from 'react';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { useSelector } from 'react-redux';
+import store from 'state/store';
 import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
@@ -32,6 +33,8 @@ import Home from './Home';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
+import { getSupportedAssets } from 'state/providers/api';
+import IProvidersState from 'state/providers/types';
 
 interface IHome {
   navigation: any,
@@ -53,10 +56,18 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   );
   const hasMainAccount = wallets.local.length && wallets.local.some((w) => w.type === KeyringWalletType.MultiChainWallet);
   const [balanceObject, balance] = useTotalBalance();
+
+  const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
   const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const linkTo = useLinkTo();
+
+  useEffect(() => {
+    if (!supportedAssets.data) {
+      store.dispatch<any>(getSupportedAssets());
+    }
+  }, []);
 
   // Sets the header for the home screen.
   useLayoutEffect(() => {

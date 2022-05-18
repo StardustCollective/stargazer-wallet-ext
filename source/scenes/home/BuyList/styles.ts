@@ -12,6 +12,10 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
   }
 });
 
