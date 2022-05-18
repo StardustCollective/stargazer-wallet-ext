@@ -3,8 +3,6 @@
 ///////////////////////////
 
 import React, { FC, useState } from 'react';
-import store from 'state/store';
-import { getSupportedAssets } from 'state/providers/api';
 
 ///////////////////////////
 // Components
@@ -66,7 +64,6 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
       .then(async (res: boolean) => {
         if (onLoginSuccess) {
           onLoginSuccess(res);
-          store.dispatch<any>(getSupportedAssets());
         }
         setInvalid(false);
       })
