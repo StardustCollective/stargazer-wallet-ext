@@ -8,6 +8,8 @@ export interface IBuyAssetContainer {
 export interface IBuyAsset {
   amount: string;
   message: string;
+  error: string;
+  setError: React.Dispatch<React.SetStateAction<string>>;
   handleItemClick: (value: string) => void;
   handleConfirm: () => void;
   buttonDisabled: boolean;

@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 
 ///////////////////////////
 // Components
@@ -12,6 +12,7 @@ import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/Butto
 import TextV3 from 'components/TextV3';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ArrowIcon from 'assets/images/svg/arrow-left.svg';
+import { useAlert } from 'react-alert';
 
 ///////////////////////////
 // Constants
@@ -35,16 +36,26 @@ const BuyAsset: FC<IBuyAsset> = ({
   amount,
   message,
   buttonDisabled,
+  buttonLoading,
   provider,
   response,
+  error,
+  setError,
   handleItemClick,
   handleConfirm,
 }) => {
   const padList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'];
+  const alert = useAlert();
+
+  useEffect(() => {
+    if (error) {
+      alert.error(error);
+      setError('');
+    }
+  }, [error]);
 
   const ProviderIcon = React.memo(() => {
-    const Icon = provider.logo;
-    return <img src={`/${Icon}`} alt={`${provider.id}-icon`} />;
+    return <img src={provider.logo} height={48} width={48} alt={`${provider.id}-icon`} />;
   });
 
   ///////////////////////////
@@ -67,7 +78,7 @@ const BuyAsset: FC<IBuyAsset> = ({
         </div>
         <div className={styles.amountMessage}>
           {response.loading ? (
-            <CircularProgress className={styles.loader} />
+            <CircularProgress size={18} className={styles.loader} />
           ) : (
             <TextV3.Body color={COLORS_ENUMS.GRAY_100}>{message}</TextV3.Body>
           )}
@@ -97,6 +108,7 @@ const BuyAsset: FC<IBuyAsset> = ({
         <ButtonV3
           label="Confirm"
           disabled={buttonDisabled}
+          loading={buttonLoading}
           size={BUTTON_SIZES_ENUM.LARGE}
           type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
           extraStyle={styles.confirmButton}

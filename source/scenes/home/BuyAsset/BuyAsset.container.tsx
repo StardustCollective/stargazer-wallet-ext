@@ -17,7 +17,6 @@ import BuyAsset from './BuyAsset';
 ///////////////////////////
 
 import { formatNumber } from 'scenes/home/helpers';
-import { getQuote, paymentRequest as paymentRequestDispatch } from 'state/providers/api';
 import { v4 as uuid } from 'uuid';
 import { open } from 'utils/browser';
 
@@ -26,13 +25,12 @@ import { open } from 'utils/browser';
 ///////////////////////////
 
 import IAssetListState from 'state/assets/types';
-import store, { RootState } from 'state/store';
-import IProvidersState, { PaymentRequestBody } from 'state/providers/types';
-import { showAlert } from 'utils/alertUtil';
-import { clearErrors, clearPaymentRequest, setRequestId } from 'state/providers';
+import { RootState } from 'state/store';
+import IProvidersState, { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { IBuyAssetContainer } from './types';
 import { SIMPLEX_FORM_SUBMISSION_URL } from 'constants/index';
 import IVaultState from 'state/vault/types';
+import { getAccountController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Constants
@@ -53,8 +51,10 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const selectedAsset = assets[assetId];
   const [amount, setAmount] = useState<string>(INITIAL_AMOUNT);
   const [message, setMessage] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const [onlyDelete, setOnlyDelete] = useState<boolean>(false);
+  const accountController = getAccountController();
 
   const getActiveAddress = (): string => {
     const currentAsset = activeWallet.assets.find((asset) => asset.id === assetId);
@@ -67,6 +67,17 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
 
   useEffect(() => {
     const floatAmount = parseFloat(amount);
+    const dispatchActions = async () => {
+      const randomId = uuid();
+      const quoteData: GetQuoteRequest = {
+        id: randomId, 
+        provider: selected.id, 
+        requested_amount: floatAmount, 
+        digital_currency: selectedAsset.symbol
+      }
+      accountController.assetsController.setRequestId(randomId);
+      await accountController.assetsController.fetchQuote(quoteData);
+    };
     if (floatAmount < MINIMUM_AMOUNT) {
       setMessage(MINIMUM_AMOUNT_MESSAGE);
       setButtonDisabled(true);
@@ -76,9 +87,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
       setButtonDisabled(true);
       setOnlyDelete(true);
     } else {
-      const randomId = uuid();
-      store.dispatch(setRequestId(randomId));
-      store.dispatch<any>(getQuote({ id: randomId, provider: selected.id, requested_amount: floatAmount, digital_currency: selectedAsset.symbol }));
+      dispatchActions();
     }
   }, [amount]);
 
@@ -104,7 +113,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
     const payment_id = paymentRequest?.data?.payment_id;
     const openBrowser = async (url: string): Promise<void> => {
       await open(url);
-      store.dispatch(clearPaymentRequest());
+      accountController.assetsController.clearPaymentRequest();
     }
 
     if (payment_id) {
@@ -114,8 +123,8 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
 
   useEffect(() => {
     if (response.error || paymentRequest.error) {
-      store.dispatch(clearErrors());
-      showAlert(DEFAULT_ERROR_MESSAGE, 'danger');
+      accountController.assetsController.clearErrors();
+      setError(DEFAULT_ERROR_MESSAGE);
     }
   }, [response.error, paymentRequest.error]);
 
@@ -165,7 +174,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
       quote_id: response?.data?.quote_id,
       user_id: response?.data?.user_id,
     };
-    store.dispatch<any>(paymentRequestDispatch(requestData));
+    await accountController.assetsController.fetchPaymentRequest(requestData);
   };
 
   ///////////////////////////
@@ -175,6 +184,8 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   return (
     <Container safeArea={false} color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <BuyAsset
+        error={error}
+        setError={setError}
         amount={amount}
         message={message}
         buttonDisabled={buttonDisabled}

@@ -10,11 +10,13 @@ import React, { FC } from 'react';
 
 import AssetItem from 'components/AssetItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import TextV3 from 'components/TextV3';
 
 ///////////////////////////
 // Styles
 ///////////////////////////
 
+import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './BuyList.scss';
 
 ///////////////////////////
@@ -30,7 +32,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
 
     return (
       <>
-        {assets && Object.keys(assets).map((key: string) => {
+        {assets ? Object.keys(assets).map((key: string) => {
           return (
             <AssetItem
               id={assets[key].id}
@@ -40,7 +42,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
               itemClicked={() => handleSelectAsset(assets[key].id)}
             />
           );
-        })}
+        }) : <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>There was an error loading assets. Please try again later.</TextV3.Caption>}
       </>
     );
   };
