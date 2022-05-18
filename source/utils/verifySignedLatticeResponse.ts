@@ -4,25 +4,27 @@ const isProd = process.env.NODE_ENV === 'production';
 const isNative = global.location === undefined;
 
 /**
- * This key will not be valid until @juandavidkincaid
- * removes this comment
+ * ES512 https://www.rfc-editor.org/rfc/rfc7518.html#section-3.4
  */
 export const PROD_SIGNATURE_GENERATION_PUB_KEY = jose.importSPKI(
   `-----BEGIN PUBLIC KEY-----
-MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQA5Zfgx1RrLjXXCgr33XwJ7h4czNB2
-+GIoXR8+9D0mmQdGIiQtD0q13q1IBfqUmQnym8KyjBIUkwj92cQRW6bwYWQAxWTe
-JXPiuUmNq0hQK/j+DsAlUcqYFMIZOLY2JtOA8CwuBrn9mbB2fv4HuD2nWynngjz3
-LgRAUG+P2BWXaaUanWk=
+MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBAoZkYotNxiQYSxEYZ5KX0C6T0+WW
+eAEV50ya73TdyKXqwzStIyYpQzUwO/3jEE4xV+P8S8hwiC8t73iFlJBK9ekBW/UP
+Vu1KtKFMhgbLHu4ojHL2Wz8XOIIqBJYPhqMyjSV5c/vv0IFGl51NHDmzPJb1Ahqx
+cQ5fnerS99Rc3mBm3ks=
 -----END PUBLIC KEY-----`,
   'ES512'
 );
 
+/**
+ * ES512 https://www.rfc-editor.org/rfc/rfc7518.html#section-3.4
+ */
 export const NON_PROD_SIGNATURE_GENERATION_PUB_KEY = jose.importSPKI(
   `-----BEGIN PUBLIC KEY-----
-MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBNPCJkdUBGuRwpyrSgtphtymSV5md
-um4ghdNaAvRdskP9xrvoOptciBHWpLpm6O87OwbUmkjr33XpoSOfji4yU7MBs8EL
-ujAMNYJ5L4xCbyPsO8zhxX04isjtD19OJsfBx3UIsndlgrzSCXtzbyEtPOXZSlkg
-LdKtvv23PpYOYe2TS/Y=
+MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQAgkl5lup+rjDR1yuN0s5+u/tsVch1
+vlVk+Ov6nECnIavTtNjLtfJG+vj62JedTfN0X5WcFv4yP5OlazZ4lkp6a7YB5vkb
+B0uPSOItDgn2dqa5GCDASx25A+u7rUsvyUBmcsmv7jKfifSqEDQc6Wman9lNWuju
+XDnI0qOUf06j4ndjKTI=
 -----END PUBLIC KEY-----`,
   'ES512'
 );
