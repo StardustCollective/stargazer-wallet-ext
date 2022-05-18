@@ -33,13 +33,6 @@ import screens from 'navigation/screens';
 import ConfirmPhrase from './ConfirmPhrase';
 
 ///////////////////////////
-// Constants
-///////////////////////////
-
-const walletController = getWalletController();
-const phrases = walletController.onboardHelper.getSeedPhrase();
-
-///////////////////////////
 // Container
 ///////////////////////////
 
@@ -49,6 +42,8 @@ const ConfirmPhraseContainer = () => {
   ///////////////////////////
 
   const navigation = useNavigation();
+  const walletController = getWalletController();
+  const phrases = walletController.onboardHelper.getSeedPhrase();
 
   const [orgList] = useState<Array<string>>(shuffle((phrases || '').split(' ')));
   const [checkList, setCheckList] = useState<Array<boolean>>(new Array(12).fill(true));
