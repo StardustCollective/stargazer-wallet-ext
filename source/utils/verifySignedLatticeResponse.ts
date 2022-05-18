@@ -1,6 +1,7 @@
 import * as jose from 'jose';
 
-const isProd = false;
+const isProd = process.env.NODE_ENV === 'production';
+const isNative = global.location === undefined;
 
 /**
  * This key will not be valid until @juandavidkincaid
@@ -40,5 +41,29 @@ export type SignedApiResponse = {
 };
 
 export const verifySignedResponse = async (response: SignedApiResponse): Promise<boolean> => {
+  let payload: Record<any, any>;
+  try {
+    payload = (await jose.jwtVerify(response.signature.token, await SIGNATURE_GENERATION_PUB_KEY)).payload;
+  } catch (e) {
+    return false;
+  }
+
+  const baseResponse = Object.assign({}, response);
+  delete baseResponse.signature;
+  const baseResponseEncoded = JSON.stringify(baseResponse);
+
+  let hash: string;
+  if (isNative) {
+    const crypto = await import('react-native-fast-crypto');
+    hash = crypto.createHash('sha256').update(baseResponseEncoded).digest('hex');
+  } else {
+    const jsCrypto = await import('crypto-js');
+    hash = jsCrypto.SHA256(baseResponseEncoded).toString();
+  }
+
+  if (payload.hash !== hash) {
+    return false;
+  }
+
   return true;
 };
