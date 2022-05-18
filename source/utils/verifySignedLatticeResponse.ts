@@ -1,7 +1,7 @@
 import * as jose from 'jose';
+import cryptoJS from 'crypto-js';
 
 const isProd = process.env.NODE_ENV === 'production';
-const isNative = global.location === undefined;
 
 /**
  * ES512 https://www.rfc-editor.org/rfc/rfc7518.html#section-3.4
@@ -52,16 +52,9 @@ export const verifySignedResponse = async (response: SignedApiResponse): Promise
 
   const baseResponse = Object.assign({}, response);
   delete baseResponse.signature;
-  const baseResponseEncoded = JSON.stringify(baseResponse);
 
-  let hash: string;
-  if (isNative) {
-    const crypto = await import('react-native-fast-crypto');
-    hash = crypto.createHash('sha256').update(baseResponseEncoded).digest('hex');
-  } else {
-    const jsCrypto = await import('crypto-js');
-    hash = jsCrypto.SHA256(baseResponseEncoded).toString();
-  }
+  const baseResponseEncoded = JSON.stringify(baseResponse);
+  const hash = cryptoJS.SHA256(baseResponseEncoded).toString();
 
   if (payload.hash !== hash) {
     return false;
