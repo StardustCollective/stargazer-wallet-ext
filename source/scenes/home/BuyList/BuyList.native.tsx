@@ -3,13 +3,14 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { ScrollView, ActivityIndicator } from 'react-native';
+import { ScrollView, ActivityIndicator, View } from 'react-native';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
 import AssetItem from 'components/AssetItem';
+import TextV3 from 'components/TextV3';
 
 ///////////////////////////
 // Types
@@ -27,6 +28,7 @@ import styles from './styles';
 // Constants
 ///////////////////////////
 
+import { COLORS_ENUMS } from 'assets/styles/colors';
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
 const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
@@ -36,7 +38,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
 
     return (
       <>
-        {assets && Object.keys(assets).map((key: string) => {
+        {assets ? Object.keys(assets).map((key: string) => {
           return (
             <AssetItem
               id={assets[key].id}
@@ -46,7 +48,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
               itemClicked={() => handleSelectAsset(assets[key].id)}
             />
           );
-        })}
+        }) : <View style={styles.errorContainer}><TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>There was an error loading assets. Please try again later.</TextV3.Caption></View>}
       </>
     );
   };

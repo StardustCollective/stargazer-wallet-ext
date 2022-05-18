@@ -43,6 +43,7 @@ const MINIMUM_AMOUNT = 50;
 const MAXIMUM_AMOUNT = 20000;
 const MINIMUM_AMOUNT_MESSAGE = 'Minimum amount is $50';
 const MAXIMUM_AMOUNT_MESSAGE = 'Maximum amount is $20000';
+const DEFAULT_ERROR_MESSAGE = 'There was an error. Please try again later.';
 
 const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const assetId = route.params.selected;
@@ -89,7 +90,6 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
         setOnlyDelete(false);
       } else {
         if (response?.data?.digital_money) {
-          console.log('Entre', response);
           const tokenAmount = response?.data?.digital_money?.amount;
           const formattedAmount = formatNumber(tokenAmount, 2, 4);
           setMessage(`≈ ${formattedAmount} ${selectedAsset.symbol}`);
@@ -113,11 +113,11 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   }, [paymentRequest?.data]);
 
   useEffect(() => {
-    if (response.data?.message === 'Internal Error') {
-      showAlert(response.data.message, 'danger');
+    if (response.error || paymentRequest.error) {
       store.dispatch(clearErrors());
+      showAlert(DEFAULT_ERROR_MESSAGE, 'danger');
     }
-  }, [response.data?.message]);
+  }, [response.error, paymentRequest.error]);
 
   const removeChar = () => {
     setAmount(amount.slice(0, -1));

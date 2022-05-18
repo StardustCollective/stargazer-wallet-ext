@@ -45,15 +45,9 @@ const ProviderListState = createSlice({
       };
     },
     clearErrors(state: IProvidersState) {
-      return {
-        ...state,
-        response: {
-          requestId: null,
-          loading: false,
-          data: null,
-          error: null,
-        },
-      };
+      state.response.error = null;
+      state.paymentRequest.error = null;
+      state.supportedAssets.error = null;
     },
     clearPaymentRequest(state: IProvidersState) {
       return {
@@ -84,10 +78,13 @@ const ProviderListState = createSlice({
       state.response.error = null;
     });
     builder.addCase(getQuote.fulfilled, (state, action) => {
-      const data = action.payload?.message ? action.payload : action.payload.data;
+      const error = action.payload?.message ? action.payload : null;
+      const data = action.payload?.data ? action.payload.data : null;
       const requestId = action.payload?.data?.id;
       state.response.loading = false;
-      state.response.error = null;
+      if (error && !state.response.error) {
+        state.response.error = error;
+      }
       if (requestId === state.response.requestId) {
         state.response.data = data;
       }
@@ -103,9 +100,11 @@ const ProviderListState = createSlice({
       state.paymentRequest.error = null;
     });
     builder.addCase(paymentRequest.fulfilled, (state, action) => {
+      const error = action.payload?.message ? action.payload : null;
+      const data = action.payload?.data ? action.payload.data : null;
       state.paymentRequest.loading = false;
-      state.paymentRequest.data = action.payload.data;
-      state.paymentRequest.error = null;
+      state.paymentRequest.data = data;
+      state.paymentRequest.error = error;
     });
     builder.addCase(paymentRequest.rejected, (state, action) => {
       state.paymentRequest.loading = false;
@@ -118,9 +117,11 @@ const ProviderListState = createSlice({
       state.supportedAssets.error = null;
     });
     builder.addCase(getSupportedAssets.fulfilled, (state, action) => {
+      const error = action.payload?.message ? action.payload : null;
+      const data = action.payload?.data ? action.payload.data : null;
       state.supportedAssets.loading = false;
-      state.supportedAssets.data = action.payload.data;
-      state.supportedAssets.error = null;
+      state.supportedAssets.data = data;
+      state.supportedAssets.error = error;
     });
     builder.addCase(getSupportedAssets.rejected, (state, action) => {
       state.supportedAssets.loading = false;
