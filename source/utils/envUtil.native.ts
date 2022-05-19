@@ -13,3 +13,4 @@ export const INFURA_CREDENTIAL = infuraCredentials;
 export const STARGAZER_PROVIDERS_BASE_URL = stargazerProvidersBaseUrl;
 export const STARGAZER_PROVIDERS_BASE_URL_PROD = stargazerProvidersBaseUrlProd;
 export const SIMPLEX_FORM_URL_PROD = simplexFormUrlProd;
+export const isProd = __DEV__ !== true;
