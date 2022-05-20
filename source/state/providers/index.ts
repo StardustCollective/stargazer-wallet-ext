@@ -22,13 +22,13 @@ export const initialState: IProvidersState = {
   selected: {
     id: Providers.Simplex,
     label: 'Simplex',
-    logo: 'https://lattice-exchange-assets.s3.amazonaws.com/stargazer_simplex/simplex-logo.png',
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png',
   },
   list: {
     [Providers.Simplex]: {
       id: Providers.Simplex,
       label: 'Simplex',
-      logo: 'https://lattice-exchange-assets.s3.amazonaws.com/stargazer_simplex/simplex-logo.png',
+      logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png',
     },
   },
 };

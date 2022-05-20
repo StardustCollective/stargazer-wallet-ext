@@ -33,7 +33,7 @@ const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({ setShowQrCode, onSe
   ///////////////////////////
 
   const onBuyPressed = () => {
-    const assetSupported = supportedAssets.data[assetId];
+    const assetSupported = supportedAssets?.data && supportedAssets?.data[assetId];
     if (assetSupported) {
       linkTo(`/buyAsset?selected=${assetId}`);
     } else {
