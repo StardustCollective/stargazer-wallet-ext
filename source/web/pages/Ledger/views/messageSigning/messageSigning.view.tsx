@@ -3,14 +3,12 @@
 /////////////////////////
 
 import React from 'react';
-import { useFiat } from 'hooks/usePrice';
 
 /////////////////////////
 // Component Import
 /////////////////////////
 
 import Button from 'components/Button';
-import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 
@@ -60,8 +58,6 @@ const SignMessageView = ({
   message,
   onSignMessagePress
 }: IMessageSignViewProps) => {
-
-  const getFiatAmount = useFiat();
 
   return messageSigned ? (
     <div className={styles.layout}>

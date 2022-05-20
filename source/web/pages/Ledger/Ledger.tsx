@@ -424,7 +424,6 @@ const LedgerPage: FC = () => {
 
       const {
         data,
-        walletLabel
       } = queryString.parse(location.search) as any;
 
       const parsedData = JSON.parse(data);

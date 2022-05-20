@@ -1,3 +1,27 @@
+diff --git a/node_modules/@stardust-collective/dag4-ledger/cjs/index.d.ts b/node_modules/@stardust-collective/dag4-ledger/cjs/index.d.ts
+index 6484035..0e98739 100644
+--- a/node_modules/@stardust-collective/dag4-ledger/cjs/index.d.ts
++++ b/node_modules/@stardust-collective/dag4-ledger/cjs/index.d.ts
+@@ -11,6 +11,7 @@ interface LedgerTransport {
+ export declare class LedgerBridge {
+     private transport;
+     constructor(transport: LedgerTransport);
++    signMessage( message: string, bip44Index: number);
+     buildTx(amount: number, publicKey: string, bip44Index: number, fromAddress: string, toAddress: string): Promise<import("@stardust-collective/dag4-keystore").PostTransaction>;
+     /**
+      * Returns a signed transaction ready to be posted to the network.
+diff --git a/node_modules/@stardust-collective/dag4-ledger/esm/index.d.ts b/node_modules/@stardust-collective/dag4-ledger/esm/index.d.ts
+index 6484035..853e0d3 100644
+--- a/node_modules/@stardust-collective/dag4-ledger/esm/index.d.ts
++++ b/node_modules/@stardust-collective/dag4-ledger/esm/index.d.ts
+@@ -11,6 +11,7 @@ interface LedgerTransport {
+ export declare class LedgerBridge {
+     private transport;
+     constructor(transport: LedgerTransport);
++    signMessage( message: string, bip44Index: string);
+     buildTx(amount: number, publicKey: string, bip44Index: number, fromAddress: string, toAddress: string): Promise<import("@stardust-collective/dag4-keystore").PostTransaction>;
+     /**
+      * Returns a signed transaction ready to be posted to the network.
 diff --git a/node_modules/@stardust-collective/dag4-ledger/esm/index.js b/node_modules/@stardust-collective/dag4-ledger/esm/index.js
 index 9b76160..2250a9a 100644
 --- a/node_modules/@stardust-collective/dag4-ledger/esm/index.js
