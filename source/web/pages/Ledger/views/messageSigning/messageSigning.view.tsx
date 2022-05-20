@@ -34,7 +34,14 @@ interface IMessageSignViewProps {
   // transactionSigned: boolean
   messageSigned: boolean,
   walletLabel: string,
-  message: string,
+  message: {
+    content: string,
+    metadata: {
+      projectId: string,
+      nodes: number,
+      fee: number
+    }
+  },
   onSignMessagePress: () => void,
 }
 
@@ -82,17 +89,24 @@ const SignMessageView = ({
         </section>
         <section className={styles.message}>
           <div className={styles.messageBox}>
-            <span>
-              Message:
-            </span>
-            <p>
-              {message}
-            </p>
+            <div className={styles.messageContent}>
+              <span className={styles.key}>Message:</span><br/>
+              <p>{message.content}</p>
+            </div>
+            <div className={styles.messageContent}>
+              <span className={styles.key}>Meta Data:</span><br/>
+              <p>
+                projectId = {message.metadata.projectId}<br/>
+                nodes = {message.metadata.nodes}<br/>
+                fee = {message.metadata.fee}
+              </p>
+            </div>
           </div>
         </section>
         <section className={styles.instruction}>
             <span>
               Please connect your Ledger device and open the Constellation app to sign the message.
+              Only sign messages on sites you trust.
             </span>
           </section>
           <div className={styles.actions}>
