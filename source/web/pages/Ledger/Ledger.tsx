@@ -331,11 +331,12 @@ const LedgerPage: FC = () => {
       windowId
     } = queryString.parse(location.search) as any;
 
-    const jsonData = JSON.parse(data);
-    const message  = jsonData.signatureRequestEncoded;
-    const walletId = jsonData.walletId;
+    const jsonData  = JSON.parse(data);
+    const message   = jsonData.signatureRequestEncoded;
+    const walletId  = jsonData.walletId;
+    const publicKey = jsonData.publicKey;
     const background = await browser.runtime.getBackgroundPage();
-
+    
     try{
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
@@ -344,7 +345,10 @@ const LedgerPage: FC = () => {
       const signatureEvent = new CustomEvent('messageSigned', {
         detail: {
           windowId, result: true, signature: {
-            hex: signature,
+            hex: {
+              signature,
+              publicKey,
+            },
             requestEncoded: message,
           }
         }

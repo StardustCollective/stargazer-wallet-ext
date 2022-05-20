@@ -1,6 +1,6 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { v4 as uuid } from 'uuid';
-import { KeyringWalletState, KeyringNetwork, KeyringWalletType} from '@stardust-collective/dag4-keyring';
+import { KeyringWalletState, KeyringNetwork, KeyringWalletType, KeyringWalletAccountState} from '@stardust-collective/dag4-keyring';
 
 import store from 'state/store';
 import { getERC20DataDecoder } from 'utils/ethUtil';
@@ -103,6 +103,16 @@ export const handleRequest = async (
                 signatureRequestEncoded,
                 walletId: activeWallet.id,
                 walletLabel: activeWallet.label,
+                publicKey: "",
+            }
+
+            // If the type of account is Ledger send back the public key so the
+            // signature can be verified by the requester.
+            let accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
+            if(activeWallet.type === KeyringWalletType.LedgerAccountWallet &&
+               accounts && 
+               accounts[0]){
+                data.publicKey = accounts[0].publicKey;
             }
 
             const popup = await masterController.createPopup(
