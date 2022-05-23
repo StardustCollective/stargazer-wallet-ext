@@ -6,13 +6,14 @@ import { GetQuoteRequest, GetQuoteResponse, GetSupportedAssetsResponse, PaymentR
 export const getQuote = createAsyncThunk(
   'providers/getQuote',
   async (requestData: GetQuoteRequest): Promise<GetQuoteResponse | any> => {
-    const response = await fetch(GET_QUOTE_API, {
-      method: 'POST',
-      headers: {
-        'x-lattice-api-key': STARGAZER_API_KEY
-      },
-      body: JSON.stringify(requestData),
-    });
+      const response = await fetch(GET_QUOTE_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-lattice-api-key': STARGAZER_API_KEY
+        },
+        body: JSON.stringify(requestData),
+      });
     return response.json();
   }
 );
@@ -23,6 +24,7 @@ export const paymentRequest = createAsyncThunk(
     const response = await fetch(PAYMENT_REQUEST_API, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'x-lattice-api-key': STARGAZER_API_KEY
       },
       body: JSON.stringify(requestData),
