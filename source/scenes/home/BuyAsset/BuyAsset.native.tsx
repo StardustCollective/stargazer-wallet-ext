@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 
 ///////////////////////////
@@ -12,6 +12,7 @@ import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import ArrowIcon from 'assets/images/svg/arrow-left.svg';
+import { showAlert } from 'utils/alertUtil';
 
 ///////////////////////////
 // Constants
@@ -36,6 +37,8 @@ const ACTIVITY_INDICATOR_SIZE = 'small';
 const BuyAsset: FC<IBuyAsset> = ({
   amount,
   message,
+  error,
+  setError,
   buttonDisabled,
   buttonLoading,
   provider,
@@ -45,8 +48,15 @@ const BuyAsset: FC<IBuyAsset> = ({
 }) => {
   const padList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'];
 
+  useEffect(() => {
+    if (error) {
+      showAlert(error, 'danger');
+      setError('');
+    }
+  }, [error]);
+
   const ProviderIcon = React.memo(() => {
-    return <Image source={{ uri: provider.logo }} height={48} width={48} style={styles.providerIcon} resizeMode='contain' />
+    return <Image source={{ uri: provider.logo }} height={48} width={48} style={styles.providerIcon} />
   });
 
   ///////////////////////////

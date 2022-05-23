@@ -1,7 +1,6 @@
 import * as jose from 'jose';
 import cryptoJS from 'crypto-js';
-
-const isProd = process.env.NODE_ENV === 'production';
+import { isProd  } from './envUtil'; 'utils/envUtil';
 
 /**
  * ES512 https://www.rfc-editor.org/rfc/rfc7518.html#section-3.4

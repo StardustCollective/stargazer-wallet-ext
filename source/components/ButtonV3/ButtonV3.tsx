@@ -10,6 +10,7 @@ import clsx from 'clsx';
 /////////////////////
 
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 //////////////////////
 // Styles
@@ -46,6 +47,7 @@ interface IButtonV3Props {
   id?: string;
   type?: BUTTON_TYPES_ENUM;
   size?: BUTTON_SIZES_ENUM;
+  loading?: boolean;
   label: string;
   extraStyle?: string;
   onClick?: () => void;
@@ -61,6 +63,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   id,
   type = BUTTON_TYPES_ENUM.PRIMARY_SOLID,
   size = BUTTON_SIZES_ENUM.SMALL,
+  loading = false,
   label = '',
   extraStyle = '',
   onClick = () => {},
@@ -100,12 +103,18 @@ const ButtonV3: FC<IButtonV3Props> = ({
   return (
     <button
       id={id}
-      disabled={disabled}
+      disabled={disabled || loading}
       type={submit ? 'submit' : 'button'}
       className={clsx([styles.base, buttonColorStyle, buttonTextColor, buttonSizeStyle, buttonBorderStyle, extraStyle, disabledStyles])}
       onClick={onClick}
     >
-      <TextComponent align={TEXT_ALIGN_ENUM.CENTER}>{label}</TextComponent>
+      {!loading ? 
+        <TextComponent align={TEXT_ALIGN_ENUM.CENTER}>{label}</TextComponent> : 
+        <div className={styles.loader}>
+          <CircularProgress size={24}/>
+        </div>
+      }
+      
     </button>
   );
 };

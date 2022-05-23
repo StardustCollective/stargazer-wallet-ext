@@ -2,7 +2,7 @@ import { combineReducers, configureStore, getDefaultMiddleware, Store } from '@r
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import throttle from 'lodash/throttle';
-import { NODE_ENV } from 'utils/envUtil';
+import { isProd } from 'utils/envUtil';
 
 import vault from './vault';
 import price from './price';
@@ -18,7 +18,7 @@ import rehydrateStore from './rehydrate';
 
 const middleware = [...getDefaultMiddleware({ thunk: false, serializableCheck: false })];
 
-if (NODE_ENV !== 'production') {
+if (!isProd) {
   middleware.push(logger);
 }
 
@@ -36,7 +36,7 @@ const store: Store = configureStore({
     providers,
   }),
   middleware,
-  devTools: NODE_ENV !== 'production',
+  devTools: !isProd,
 });
 
 function updateState() {

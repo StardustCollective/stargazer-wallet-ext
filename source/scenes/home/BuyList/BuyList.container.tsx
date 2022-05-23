@@ -17,7 +17,7 @@ import BuyList from './BuyList';
 // Types
 ///////////////////////////
 
-import{ RootState } from 'state/store';
+import { RootState } from 'state/store';
 import IProvidersState from 'state/providers/types';
 
 const BuyListContainer: FC = () => {

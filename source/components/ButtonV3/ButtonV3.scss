@@ -56,3 +56,10 @@
 .accentOneButton {
   background-color: $accent_1;
 }
+
+.loader {
+  width: 100%;
+  align-self: center;
+  transition: all 300ms;
+  opacity: 1;
+}

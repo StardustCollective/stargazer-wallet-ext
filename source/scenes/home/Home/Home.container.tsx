@@ -5,7 +5,6 @@
 import React, { FC, useLayoutEffect, useEffect } from 'react';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { useSelector } from 'react-redux';
-import store from 'state/store';
 import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
@@ -33,8 +32,8 @@ import Home from './Home';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
-import { getSupportedAssets } from 'state/providers/api';
 import IProvidersState from 'state/providers/types';
+import { getAccountController } from 'utils/controllersUtils';
 
 interface IHome {
   navigation: any,
@@ -62,10 +61,14 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     (state: RootState) => state.vault
   );
   const linkTo = useLinkTo();
+  const accountController = getAccountController();
 
   useEffect(() => {
+    const getAssets = async () => {
+      await accountController.assetsController.fetchSupportedAssets();
+    }
     if (!supportedAssets.data) {
-      store.dispatch<any>(getSupportedAssets());
+      getAssets();
     }
   }, []);
 

@@ -31,7 +31,7 @@ const TooltipComponent: FC<ITooltip> = ({
   useEffect(() => {
     if (visible) {
       setTimeout(() => {
-        tooltipRef.current.toggleTooltip();
+        tooltipRef?.current?.toggleTooltip();
       }, 500);
     }
   }, [visible]);
