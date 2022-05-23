@@ -46,7 +46,6 @@
     "ethereum-input-data-decoder": "^0.3.5",
     "ethers": "^5.0.32",
     "etherscan-api": "^10.0.5",
-    "jose": "^4.8.1",
     "qrcode.react": "^1.0.1",
     "react-alert": "^7.0.2",
     "react-dom": "^16.13.1",
