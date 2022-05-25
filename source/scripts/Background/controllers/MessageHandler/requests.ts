@@ -1,11 +1,19 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { v4 as uuid } from 'uuid';
-import { KeyringWalletState, KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletState, KeyringNetwork, KeyringWalletType, KeyringWalletAccountState} from '@stardust-collective/dag4-keyring';
 
 import store from 'state/store';
 import { getERC20DataDecoder } from 'utils/ethUtil';
 import { IMasterController } from '../';
 import { SUPPORTED_WALLET_METHODS, Message } from './types';
+
+// Constants
+const LEDGER_URL = '/ledger.html';
+const EXTERNAL_URL  = '/external.html';
+const WINDOW_TYPES = {
+    popup: 'popup',
+    normal: 'normal'
+}
 
 export const handleRequest = async (
     port: Runtime.Port,
@@ -15,8 +23,9 @@ export const handleRequest = async (
     setPendingWindow: (isPending: boolean) => void
 ) => {
     const { vault } = store.getState();
+    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger];
     const activeWallet: KeyringWalletState | null = 
-        vault?.activeWallet ? vault.wallets.local.find(
+        vault?.activeWallet ? allWallets.find(
             (wallet: any) => wallet.id === vault.activeWallet.id
         ) : null;
     const { method, args, asset } = message.data;
@@ -25,11 +34,13 @@ export const handleRequest = async (
 
     const allowed = masterController.dapp.isDAppConnected(origin);
     const walletIsLocked = !masterController.wallet.isUnlocked();
-
     const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
     const network = asset === 'DAG' ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
-
+    const windowUrl = activeWallet.type ===  KeyringWalletType.LedgerAccountWallet ? LEDGER_URL : EXTERNAL_URL;
+    const windowType = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
+    const windowSize = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? { width: 1000, height: 1000 } : { width: 372, height: 600 }
     const windowId = uuid();
+
 
     let result: any = undefined;
     switch (+method) {
@@ -90,13 +101,28 @@ export const handleRequest = async (
                 origin,
                 asset,
                 signatureRequestEncoded,
+                walletId: activeWallet.id,
+                walletLabel: activeWallet.label,
+                publicKey: "",
+            }
+
+            // If the type of account is Ledger send back the public key so the
+            // signature can be verified by the requester.
+            let accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
+            if(activeWallet.type === KeyringWalletType.LedgerAccountWallet &&
+               accounts && 
+               accounts[0]){
+                data.publicKey = accounts[0].publicKey;
             }
 
             const popup = await masterController.createPopup(
                 windowId,
                 message.data.network,
                 'signMessage',
-                { ...data }
+                { ...data },
+                windowType,
+                windowUrl,
+                windowSize,
             );
 
             setPendingWindow(true);

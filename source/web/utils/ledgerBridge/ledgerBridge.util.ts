@@ -100,6 +100,10 @@ class LedgerBridgeUtil {
     return this.ledgerBridge.buildTx(amount, publicKey, bip44Index, fromAddress, toAddress);
   };
 
+  public signMessage = (message: string, bip44Index: number) => {
+    return this.ledgerBridge.signMessage(message, bip44Index);
+  }
+
   /**
    * Closes any existing transport connections
    */

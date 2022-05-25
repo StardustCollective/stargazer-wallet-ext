@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.10.2",
-    "@ledgerhq/hw-transport-webhid": "^5.51.1",
+    "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "@n8tb1t/use-scroll-position": "^2.0.3",
     "@types/lodash": "^4.14.162",
     "@types/qrcode.react": "^1.0.1",

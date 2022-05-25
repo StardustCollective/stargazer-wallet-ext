@@ -201,7 +201,7 @@ const ConfirmContainer = () => {
         if(activeAsset.type === AssetType.LedgerConstellation){
           let publicKey = activeWalletPublicKey;
           let id = activeWallet.id;
-          window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
+          window.open(`/ledger.html?route=signTransaction&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
         }else{
           await accountController.confirmTempTx()
           setConfirmed(true);
