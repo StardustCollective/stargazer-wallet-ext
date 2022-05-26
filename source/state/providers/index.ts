@@ -82,6 +82,7 @@ const ProviderListState = createSlice({
       const data = action.payload?.data ? action.payload.data : null;
       const requestId = action.payload?.data?.id;
       if (error && !state.response.error) {
+        state.response.loading = false;
         state.response.error = error;
       }
       if (requestId === state.response.requestId) {
