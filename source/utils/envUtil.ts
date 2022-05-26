@@ -6,3 +6,4 @@ export const STARGAZER_PROVIDERS_BASE_URL = process.env.STARGAZER_PROVIDERS_BASE
 export const STARGAZER_PROVIDERS_BASE_URL_PROD = process.env.STARGAZER_PROVIDERS_BASE_URL_PROD;
 export const STARGAZER_API_KEY = process.env.STARGAZER_API_KEY;
 export const isProd = NODE_ENV === 'production';
+export const isNative = false;
