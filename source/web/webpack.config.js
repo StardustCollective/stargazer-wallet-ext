@@ -76,6 +76,7 @@ module.exports = {
     app: path.join(__dirname, 'pages/App', 'index.tsx'),
     external: path.join(__dirname, 'pages/External', 'index.tsx'),
     ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
+    bitfi: path.join(__dirname, 'pages/Bitfi', 'index.tsx'),
     options: path.join(__dirname, 'pages/Options', 'index.tsx'),
   },
 
@@ -212,6 +213,12 @@ module.exports = {
       inject: 'body',
       chunks: ['ledger'],
       filename: 'ledger.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(viewsPath, 'bitfi.html'),
+      inject: 'body',
+      chunks: ['bitfi'],
+      filename: 'bitfi.html',
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'options.html'),
