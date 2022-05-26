@@ -1,11 +1,12 @@
-import { browser } from 'webextension-polyfill-ts';
+import { reload } from 'utils/browser';
 import IAssetListState from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring'
+import { KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring'
+import { saveState } from 'state/localStorage';
 
 type V2WalletState = {
     assets: IAssetListState
@@ -14,7 +15,7 @@ type V2WalletState = {
     nfts: INFTListState,
     price: IPriceState,
     vault: {
-        wallets: []
+        wallets: KeyringWalletState[]
     }
 }
 
@@ -27,7 +28,7 @@ type V3_3_4WalletState = {
     vault: IVaultState
 }
 
-const MigrateRunner = (oldState: V2WalletState) => {
+const MigrateRunner = async (oldState: V2WalletState) => {
     try {
         const newState: V3_3_4WalletState = {
             ...oldState,
@@ -35,9 +36,7 @@ const MigrateRunner = (oldState: V2WalletState) => {
                 ...oldState.vault,
                 // Wallets shape changed
                 wallets: {
-                    local: [
-                        ...oldState.vault.wallets
-                    ],
+                    local: oldState.vault.wallets,
                     ledger: []
                 },
                 // No change to all other properties.
@@ -57,11 +56,11 @@ const MigrateRunner = (oldState: V2WalletState) => {
             },
 
         };
-        localStorage.setItem('state', JSON.stringify(newState));
-        console.emoji('✅', 'Migrate to <v3.4.2> successfully!');
-        browser.runtime.reload();
+        await saveState(newState);
+        console.log('Migrate to <v3.4.2> successfully!');
+        reload();
     } catch (error) {
-        console.emoji('🔺', '<v3.4.2> Migration Error');
+        console.log('<v3.4.2> Migration Error');
         console.log(error);
     }
 };

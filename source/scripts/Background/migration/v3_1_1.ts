@@ -1,8 +1,9 @@
-import { browser } from 'webextension-polyfill-ts';
+import { reload } from 'utils/browser';
 import IAssetListState from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
 import IVaultState from 'state/vault/types';
+import { saveState } from 'state/localStorage';
 
 export type V2WalletState = {
   assets: IAssetListState
@@ -12,7 +13,7 @@ export type V2WalletState = {
   vault:  IVaultState
 }
 
-const MigrateRunner = (oldState: V2WalletState) => {
+const MigrateRunner = async (oldState: V2WalletState) => {
   try {
 
     const newState = {
@@ -23,11 +24,11 @@ const MigrateRunner = (oldState: V2WalletState) => {
       }
     };
 
-    localStorage.setItem('state', JSON.stringify(newState));
-    console.emoji('✅', 'Migrate to <v3.1.1> successfully!');
-    browser.runtime.reload();
+    await saveState(newState);
+    console.log('Migrate to <v3.1.1> successfully!');
+    reload();
   } catch (error) {
-    console.emoji('🔺', '<v3.1.1> Migration Error');
+    console.log('<v3.1.1> Migration Error');
     console.log(error);
   }
 };

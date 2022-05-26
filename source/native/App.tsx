@@ -14,6 +14,7 @@ import {dag4} from '@stardust-collective/dag4';
 import {KeyringNetwork} from '@stardust-collective/dag4-keyring';
 import { COLORS } from 'assets/styles/_variables';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn';
+import MigrationController from '../scripts/Background/controllers/MigrationController';
 
 ////////////////////
 // DAG Config
@@ -38,6 +39,7 @@ dag4.network.config({
 
 const App = () => {
   useEffect(() => {
+    MigrationController();
     // This timeout is used to avoid a blank screen between the splash screen end and the app start.
     Linking.addEventListener('url', () => {
       InAppBrowser.close();

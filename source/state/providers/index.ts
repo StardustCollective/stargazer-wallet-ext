@@ -81,11 +81,11 @@ const ProviderListState = createSlice({
       const error = action.payload?.message ? action.payload : null;
       const data = action.payload?.data ? action.payload.data : null;
       const requestId = action.payload?.data?.id;
-      state.response.loading = false;
       if (error && !state.response.error) {
         state.response.error = error;
       }
       if (requestId === state.response.requestId) {
+        state.response.loading = false;
         state.response.data = data;
       }
     });
