@@ -443,7 +443,7 @@ export class AccountController implements IAccountController {
   }
 
   isValidERC20Address(address: string) {
-    return this.ethClient.validateAddress(address);
+    return this.ethClient.isValidEthereumAddress(address);
   }
 
   async getRecommendFee() {
