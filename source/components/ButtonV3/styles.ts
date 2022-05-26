@@ -13,6 +13,12 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0)',
   },
   containerStyle: {},
+  disabled: {
+    opacity: 0.3,
+  },
+  disabledTitle: {
+    color: COLORS.white,
+  },
   buttonSmall: {
     height: 40,
     borderRadius: 20,
@@ -36,7 +42,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   secondaryButton: {
-    backgroundColor: COLORS.blue_violet,
+    backgroundColor: COLORS.primary_lighter_1,
   },
   accentOneButton: {
     backgroundColor: COLORS.accent_1,

@@ -3,6 +3,7 @@
  */
 
 import './shim';
+import 'fast-text-encoding';
 import "@ethersproject/shims"
 import { AppRegistry , Text, TextInput} from 'react-native';
 import App from './App';

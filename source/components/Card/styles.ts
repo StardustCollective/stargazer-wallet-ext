@@ -4,7 +4,10 @@ import { COLORS } from 'assets/styles/_variables';
 const styles = StyleSheet.create({
   containerStyle: {
     borderRadius: 8,
-    background: COLORS.white,
+    borderWidth: 0.5,
+    borderStyle: 'solid',
+    borderColor: 'rgba(0, 0, 0, 0.12)',
+    backgroundColor: COLORS.white,
     margin: 0,
     marginBottom: 10,
   },

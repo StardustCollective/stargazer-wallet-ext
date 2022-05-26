@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   },
   headerDisplay: {
     fontWeight: FONT_WEIGHTS.bold,
-    fontSize: 49,
+    fontSize: 48,
     lineHeight: 64,
   },
   headerLarge: {

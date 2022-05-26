@@ -1,0 +1,92 @@
+@import '~assets/styles/variables';
+
+.mask {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $primary;
+  z-index: 1;
+  padding: 0px;
+  transition: all 0.5s;
+  opacity: 0;
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+
+  .modal {
+    width: 100vw;
+    height: 100vh;
+    background: $primary;
+    transition: all 0.5s;
+    padding: 0px;
+    transform: translateX(-10px);
+    box-sizing: border-box;
+    opacity: 0;
+
+    .iconContainer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      width: 100vw;
+      height: 10vh;
+      
+      .icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 32px;
+        width: 32px;
+        border-radius: 16px;
+        margin-right: 20px;
+        background-color: $white;
+        cursor: pointer;
+      }
+    }
+
+    .contentContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 90vh;
+
+      .qrCodeCard {
+        padding: 20px;
+        border-radius: 10px;
+        background-color: $white;
+        cursor: pointer;
+
+        .qrCode {
+          height: 200px;
+          width: 100%;
+          background-color: $black;
+        }
+
+        .addressContainer {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 20px;
+  
+  
+          .qrCodeAddressText {
+            margin-right: 12px;
+          }
+        }
+      }
+    }
+  }
+
+  &.open {
+    opacity: 1;
+    pointer-events: initial;
+
+    .modal {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
