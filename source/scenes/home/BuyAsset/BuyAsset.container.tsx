@@ -56,7 +56,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const [onlyDelete, setOnlyDelete] = useState<boolean>(false);
   const accountController = getAccountController();
 
-  const getActiveAddress = (): string => {
+  const getActiveAddress = (): string | undefined => {
     const currentAsset = activeWallet.assets.find((asset) => asset.id === assetId);
     return currentAsset?.address;
   }
@@ -169,7 +169,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const handleConfirm = async () => {
     const requestData: PaymentRequestBody = {
       provider: selected.id,
-      address: getActiveAddress(),
+      address: getActiveAddress() || '',
       digital_currency: selectedAsset.symbol,
       quote_id: response?.data?.quote_id,
       user_id: response?.data?.user_id,
