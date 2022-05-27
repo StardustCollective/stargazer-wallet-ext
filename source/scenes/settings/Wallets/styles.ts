@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light_100,
   },
   assetIcon: {
-    color: COLORS.gray_light_100,
+    height: 24,
+    width: 24,
   },
   icon: {
     fontSize: 24,
