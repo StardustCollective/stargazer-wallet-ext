@@ -15,3 +15,7 @@ export const getAccountController = () => {
 export const getDappController = () => {
   return getController().dapp;
 }
+
+export const getContactsController = () => {
+  return getController().contacts;
+}
