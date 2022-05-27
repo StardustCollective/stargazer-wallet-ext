@@ -26,18 +26,18 @@ const BuyListContainer: FC = () => {
   const linkTo = useLinkTo();
   const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
-  const assetsFiltered = Object.keys(supportedAssets?.data)
+  const assetsFiltered = supportedAssets.data ? Object.keys(supportedAssets.data)
     .filter((assetId) => !!activeWallet?.assets?.find((asset) => asset?.id === assetId))
     .reduce((obj: any, key: any) => {
-      obj[key] = supportedAssets?.data[`${key}`];
+      obj[key] = supportedAssets.data[`${key}`];
       return obj;
-    }, {});
+    }, {}) : {};
 
   const handleSelectAsset = async (assetId: string) => {
     linkTo(`/buyAsset?selected=${assetId}`);
   };
 
-  const newSupportedAssets = {
+  const filteredAssets = {
     ...supportedAssets,
     data: assetsFiltered
   };
@@ -48,7 +48,7 @@ const BuyListContainer: FC = () => {
 
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
-      <BuyList supportedAssets={newSupportedAssets} handleSelectAsset={handleSelectAsset} />
+      <BuyList supportedAssets={filteredAssets} handleSelectAsset={handleSelectAsset} />
     </Container>
   );
 };
