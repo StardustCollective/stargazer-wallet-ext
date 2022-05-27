@@ -8,6 +8,8 @@ import { scale } from 'react-native-size-matters';
     height: Platform.OS === 'web' ? '80px' : scale(90),
     backgroundColor: '#2B1D52',
     borderBottomColor: 'transparent',
+    elevation: 0,
+    shadowOpacity: 0,
   },
   headerTitleStyle: {
     fontSize: 24,

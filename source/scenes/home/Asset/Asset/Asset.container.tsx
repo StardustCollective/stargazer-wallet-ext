@@ -14,6 +14,7 @@ import { useLinkTo } from '@react-navigation/native';
 
 import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
+import { useCopyClipboard } from 'hooks';
 import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers';
 
 import AssetDetail from './Asset';
@@ -25,6 +26,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
 
   const linkTo = useLinkTo();
   const getFiatAmount = useFiat();
+  const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
@@ -55,9 +57,6 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
           activeAsset.type,
           activeNetwork[networkId]
         ),
-        onQrCodePress: () => {
-          setShowQrCode(true);
-        },
       })
     );
   }, [activeAsset]);
@@ -103,6 +102,8 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
         assets={assets}
         showQrCode={showQrCode}
         setShowQrCode={setShowQrCode}
+        isAddressCopied={isAddressCopied}
+        copyAddress={copyAddress}
       />
     </Container>
   );

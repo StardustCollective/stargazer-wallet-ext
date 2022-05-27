@@ -1,4 +1,4 @@
-
+@import '~assets/styles/variables';
 /* 
 * Base Styles
 */
@@ -22,6 +22,11 @@
   }
 }
 
+.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 /* 
 * Button Sizes Style
 */
@@ -34,4 +39,27 @@
 .buttonLarge {
   height: 48px;
   border-radius: 24px
+}
+
+/* 
+* Button Background Color Style
+*/
+
+.primaryButton {
+  background-color: $primary;
+}
+
+.secondaryButton {
+  background-color: $primary_lighter_1;
+}
+
+.accentOneButton {
+  background-color: $accent_1;
+}
+
+.loader {
+  width: 100%;
+  align-self: center;
+  transition: all 300ms;
+  opacity: 1;
 }

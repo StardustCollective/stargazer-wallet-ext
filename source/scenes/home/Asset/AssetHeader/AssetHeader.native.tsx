@@ -13,7 +13,6 @@ const AssetHeader: FC<IAssetHeaderSettings> = ({
   onClickCopyText,
   shortenedAddress,
   asset,
-  copiedTextToolip,
 }) => {
   const tooltipStyle = StyleSheet.flatten([styles.address, isCopied ? styles.addressActive : {}]);
 
@@ -31,7 +30,7 @@ const AssetHeader: FC<IAssetHeaderSettings> = ({
               />
             </View>
             {/* Add onClickCopyText function to Tooltip so it also copies when user clicks on text */}
-            <Tooltip body={copiedTextToolip} arrow onOpen={onClickCopyText}>
+            <Tooltip visible={isCopied} body="Copied" width={80} arrow onOpen={onClickCopyText}>
               <View style={tooltipStyle}>
                 <TextV3.Header extraStyles={styles.logoHeader}>{asset.label}</TextV3.Header>
                 <TextV3.Description extraStyles={styles.addressText} id="assetHeader-address">

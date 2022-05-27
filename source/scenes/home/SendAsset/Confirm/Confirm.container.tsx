@@ -42,7 +42,6 @@ import { useFiat } from 'hooks/usePrice';
 ///////////////////////////
 
 import { getAccountController } from 'utils/controllersUtils';
-// import { confirmEvent } from 'utils/backgroundUtils';
 import { showAlert } from 'utils/alertUtil';
 
 ///////////////////////////
@@ -169,14 +168,17 @@ const ConfirmContainer = () => {
     }
   }
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (browser: any = null) => {
     setDisabled(true);
 
     try {
       if (isExternalRequest) {
 
-        // const { windowId } = queryString.parse(window.location.search);
-        // const confirm = await confirmEvent(windowId);
+        const background = await browser.runtime.getBackgroundPage();
+        const { windowId } = queryString.parse(window.location.search);
+        const confirmEvent = new CustomEvent('transactionSent', {
+          detail: { windowId, approved: true },
+        });
 
         const txConfig: ITransactionInfo = {
           fromAddress: tempTx.fromAddress,
@@ -185,8 +187,8 @@ const ConfirmContainer = () => {
           amount: tempTx.amount,
           ethConfig: tempTx.ethConfig,
           onConfirmed: () => {
-            // confirm();
-          }
+            background.dispatchEvent(confirmEvent);
+          },
         };
 
         accountController.updateTempTx(txConfig);
@@ -199,7 +201,7 @@ const ConfirmContainer = () => {
         if(activeAsset.type === AssetType.LedgerConstellation){
           let publicKey = activeWalletPublicKey;
           let id = activeWallet.id;
-          window.open(`/ledger.html?walletState=sign&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
+          window.open(`/ledger.html?route=signTransaction&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
         }else{
           await accountController.confirmTempTx()
           setConfirmed(true);

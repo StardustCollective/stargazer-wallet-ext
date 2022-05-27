@@ -2,10 +2,9 @@
 // Modules
 ///////////////////////
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { View, Image } from 'react-native';
-import { useSelector } from 'react-redux';
-import {useNetInfo} from "@react-native-community/netinfo";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 ///////////////////////
 // Components
@@ -38,14 +37,8 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import { IAssetInfoState } from 'state/assets/types';
 import { INFTInfoState } from 'state/nfts/types';
-import IAssetItem, { IAssetLogo } from './types';
 import { IAssetState, AssetType } from 'state/vault/types';
-
-import { RootState } from 'state/store';
-import IVaultState from 'state/vault/types';
-import IProcessState from 'state/process/types';
-import { ProcessStates } from 'state/process/enums';
-
+import IAssetItem, { IAssetLogo } from './types';
 
 ///////////////////////
 // Styles
@@ -59,8 +52,6 @@ import styles from './styles';
 
 const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked }: IAssetItem) => {
   
-  const { fetchDagBalance }: IProcessState = useSelector((state: RootState) => state.process);
-  const [isConnected, setIsConnected] = useState(true);
   const netInfo = useNetInfo();
 
   const renderNFTPriceSection = () => {
@@ -95,24 +86,21 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
   }
 
   const renderBalanceSection = (asset: IAssetState, assetInfo: IAssetInfoState | INFTInfoState) => {
-
     if (asset.type === AssetType.Constellation) {
       // If the balance has failed to fetch display a no connection icon.
       if (balances.constellation === undefined && !netInfo.isConnected) {
-        return (<NoConnectionIcon />)
-      } else {
-        return (renderBalance(assetInfo));
+        return <NoConnectionIcon />;
       }
-    } else if (asset.type === AssetType.Ethereum || asset.type === AssetType.ERC20) {
-      // If the balance has failed to fetch display a no connection icon.
-      if (balances.ethereum === undefined && !netInfo.isConnected ) {
-        return (<NoConnectionIcon />)
-      } else {
-        return (renderBalance(assetInfo));
-      }
+      return renderBalance(assetInfo);
     }
-
-  }
+    if ([AssetType.Ethereum, AssetType.ERC20, AssetType.ERC721, AssetType.ERC1155].includes(asset.type)) {
+      // If the balance has failed to fetch display a no connection icon.
+      if (balances.ethereum === undefined && !netInfo.isConnected) {
+        return <NoConnectionIcon />;
+      }
+      return renderBalance(assetInfo);
+    }
+  };
 
   const AssetIcon: FC<IAssetLogo> = React.memo(({ logo }) => {
     if (!logo) {
@@ -120,7 +108,9 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
     }
 
     if (typeof logo === 'string' && logo.startsWith('http')) {
-      return <Image style={styles.imageIcon} source={{ uri: logo }} />;
+      let iconStyle = isNFT ? styles.imageNFTIcon : styles.imageIcon;
+      iconStyle = logo.includes('constellation-logo') ? styles.dagIcon : iconStyle;
+      return <Image style={iconStyle} source={{ uri: logo }}/>;
     }
 
     const LogoComponent = logo;

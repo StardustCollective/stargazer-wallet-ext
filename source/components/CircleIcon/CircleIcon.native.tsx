@@ -23,6 +23,7 @@ const CircleIcon: FC<ICircleIcon> = ({ logo, label, containerStyle = {}, iconSty
         accessible
         accessibilityLabel={label}
         source={{ uri, height: 23, width: 23 }}
+        resizeMode='contain'
       />
     );
   }

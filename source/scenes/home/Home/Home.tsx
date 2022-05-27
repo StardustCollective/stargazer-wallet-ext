@@ -10,8 +10,9 @@ import clsx from 'clsx';
 ///////////////////////////
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import AssetsPanel from './AssetsPanel';
+import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
+import AssetsPanel from './AssetsPanel';
 
 ///////////////////////////
 // Styles
@@ -33,6 +34,7 @@ const Home: FC<IHome> = ({
   activeWallet,
   balanceObject,
   balance,
+  onBuyPressed,
 }) => {
 
   ///////////////////////////
@@ -68,6 +70,13 @@ const Home: FC<IHome> = ({
                     {`≈ ₿${balance}`}
                   </TextV3.Body>
                 </div>
+                <ButtonV3
+                  label="Buy"
+                  size={BUTTON_SIZES_ENUM.LARGE}
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                  onClick={onBuyPressed}
+                  extraStyle={styles.buyButton}
+                />
               </section>
               <AssetsPanel />
             </>

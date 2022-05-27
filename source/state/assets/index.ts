@@ -1,9 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AssetType } from 'state/vault/types';
-
-import ConstellationLogo from 'assets/images/svg/constellation.svg';
-import EthereumLogo from 'assets/images/svg/ethereum.svg';
-import LatticeLogo from 'assets/images/svg/lattice.svg';
 import IAssetListState, { IAssetInfoState } from './types';
 
 export const initialState: IAssetListState = {
@@ -15,7 +11,7 @@ export const initialState: IAssetListState = {
     address: '',
     native: true,
     network: 'both',
-    logo: EthereumLogo,
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png',
     priceId: 'ethereum',
     decimals: 18,
   },
@@ -27,7 +23,7 @@ export const initialState: IAssetListState = {
     address: '',
     native: true,
     network: 'both',
-    logo: ConstellationLogo,
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png',
     priceId: 'constellation-labs',
     decimals: 8,
   },
@@ -39,7 +35,7 @@ export const initialState: IAssetListState = {
     type: AssetType.ERC20,
     priceId: 'lattice-token',
     network: 'mainnet',
-    logo: LatticeLogo,
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/lattice-logo.png',
     decimals: 8,
   },
   '0x3106a0a076BeDAE847652F42ef07FD58589E001f': {

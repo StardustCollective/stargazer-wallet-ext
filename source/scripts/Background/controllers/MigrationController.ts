@@ -1,8 +1,8 @@
+import { loadState } from "state/localStorage";
 
-const MigrationController = () => {
+const MigrationController = async () => {
   // check current version of wallet
-  const stateStr = localStorage.getItem('state');
-  const state = JSON.parse(stateStr);
+  const state = await loadState();
 
   if (!state) {
     return;
@@ -13,7 +13,7 @@ const MigrationController = () => {
    */
   if (state.wallet) {
     const v2_1 = require('../migration/v2_1');
-    v2_1.default(state);
+    await v2_1.default(state);
   }
 
   /**
@@ -21,7 +21,7 @@ const MigrationController = () => {
    */
   if (state.dapp && !state.dapp.whitelist && !state.dapp.listening){
     const v3_1_1 = require('../migration/v3_1_1');
-    v3_1_1.default(state);
+    await v3_1_1.default(state);
   }
 
    /**
@@ -29,7 +29,7 @@ const MigrationController = () => {
    */
   if (state.assets){
     const assetListMigration = require('../migration/update_token_list');
-    assetListMigration.default(state);  // Checks if state needs to be updated
+    await assetListMigration.default(state);  // Checks if state needs to be updated
   }
 
   /**
@@ -37,7 +37,15 @@ const MigrationController = () => {
    */
   if (!state.nfts) {
     const NFTMigration = require('../migration/v3_3');
-    NFTMigration.default(state); 
+    await NFTMigration.default(state); 
+  }
+
+  /**
+   * version < 3_4_2
+   */
+  if (Array.isArray(state?.vault?.wallets)) {
+    const v3_4_2 = require('../migration/v3_4_2');
+    await v3_4_2.default(state); 
   }
 };
 

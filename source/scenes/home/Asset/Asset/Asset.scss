@@ -8,6 +8,43 @@
   max-height: 520px;
   background-color: $primary;
 
+  .maskQrCode {
+    display: flex;
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba($gray-light, 0.3);
+    z-index: 1;
+    padding: 0px;
+    transition: all 0.5s;
+    opacity: 0;
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+  
+    .modalQrCode {
+      width: 100vw;
+      height: 100vh;
+      background: $gray-light;
+      transition: all 0.5s;
+      padding: 0px;
+      transform: translateX(-10px);
+      box-sizing: border-box;
+      opacity: 0;
+    }
+  
+    &.showQrCode {
+      opacity: 1;
+      pointer-events: initial;
+  
+      .modalQrCode {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+
   .mask {
     transition: all 0.3s;
     display: flex;
@@ -112,10 +149,8 @@
 
     .actions {
       display: flex;
-      width: 300px;
+      width: 100%;
       margin-bottom: 32px;
-      flex-direction: row;
-      justify-content: center;
     }
   }
 
