@@ -58,7 +58,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
 
   const getActiveAddress = (): string => {
     const currentAsset = activeWallet.assets.find((asset) => asset.id === assetId);
-    return currentAsset.address;
+    return currentAsset?.address;
   }
 
   useEffect(() => {
