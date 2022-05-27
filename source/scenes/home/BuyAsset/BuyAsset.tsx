@@ -55,7 +55,7 @@ const BuyAsset: FC<IBuyAsset> = ({
   }, [error]);
 
   const ProviderIcon = React.memo(() => {
-    return <img src={provider.logo} height={48} width={48} alt={`${provider.id}-icon`} />;
+    return <img src={provider.logo} height={40} width={40} alt={`${provider.id}-icon`} />;
   });
 
   ///////////////////////////
