@@ -2,8 +2,9 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { View, ActivityIndicator, ScrollView } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 ///////////////////////////
 // Components
@@ -12,6 +13,12 @@ import { View, ActivityIndicator, ScrollView } from 'react-native';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import AssetsPanel from './AssetsPanel';
+
+///////////////////////////
+// Utils
+///////////////////////////
+
+import { getAccountController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Styles
@@ -31,12 +38,33 @@ import { IHome } from './types';
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
+let lastIsConnected: boolean = true;
 
 ///////////////////////////
 // Scene
 ///////////////////////////
 
 const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed }) => {
+
+  const accountController = getAccountController();
+
+  // Subscribe to NetInfo
+  useEffect(() => {
+    const unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
+      if (state.isConnected && !lastIsConnected) {
+        lastIsConnected = true;
+        await accountController.assetsBalanceMonitor.refreshDagBalance();
+        await accountController.assetsBalanceMonitor.getEthTokenBalances();
+      } else {
+        lastIsConnected = false;
+      }
+    });
+  
+    return () => {
+      unsubscribeNetInfo();
+    }
+  }, []);
+  
 
   return (
     <View style={styles.container}>

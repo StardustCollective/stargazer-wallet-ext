@@ -110,6 +110,14 @@ export class AssetsBalanceMonitor {
     }
   }
 
+  async getEthTokenBalances() {
+    try {
+      await this.ethAccountTracker.getTokenBalances();
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
   async refreshDagBalance() {
     store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS }));
     const { balances } = store.getState().vault;
@@ -123,8 +131,6 @@ export class AssetsBalanceMonitor {
       console.error(e.message);
       return;
     }
-
-
   }
 
   private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
