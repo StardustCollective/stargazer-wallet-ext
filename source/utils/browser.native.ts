@@ -39,3 +39,7 @@ export const open = async (url: string) => {
     showAlert(error?.message, 'danger');
   }
 }
+
+export const reload = () => {
+  // We don't need to reload for React Native
+};

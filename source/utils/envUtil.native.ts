@@ -14,3 +14,4 @@ export const STARGAZER_PROVIDERS_BASE_URL = stargazerProvidersBaseUrl;
 export const STARGAZER_PROVIDERS_BASE_URL_PROD = stargazerProvidersBaseUrlProd;
 export const STARGAZER_API_KEY = stargazerApiKey;
 export const isProd = __DEV__ !== true;
+export const isNative = true;

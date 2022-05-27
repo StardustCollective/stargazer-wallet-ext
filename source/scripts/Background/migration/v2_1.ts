@@ -1,8 +1,9 @@
-import { browser } from 'webextension-polyfill-ts';
+import { reload } from 'utils/browser';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { KeyringWalletState } from '../helpers/keystoreToKeyringHelper';
+import { saveState } from 'state/localStorage';
 
 export type V1WalletState = {
   'wallet': KeyringWalletState,
@@ -13,12 +14,12 @@ export type V1WalletState = {
   'dapp': {}
 }
 
-const MigrateRunner = (oldState: V1WalletState) => {
+const MigrateRunner = async (oldState: V1WalletState) => {
   try {
-    console.emoji('ℹ️', 'You are using old version lower than v2');
+    console.log('You are using old version lower than v2');
 
     // if (!oldState) {
-    //   console.emoji('🔺', '<v2.1> Migration Error');
+    //   console.log('🔺', '<v2.1> Migration Error');
     //   console.log('Error: Can\'t find state on localstorage');
     //   return;
     // }
@@ -76,11 +77,11 @@ const MigrateRunner = (oldState: V1WalletState) => {
     walletUpdater();
     contactsUpdater();
 
-    localStorage.setItem('state', JSON.stringify(newState));
-    console.emoji('✅', 'Migrate to <v2.1> successfully!');
-    browser.runtime.reload();
+    await saveState(newState);
+    console.log('Migrate to <v2.1> successfully!');
+    reload();
   } catch (error) {
-    console.emoji('🔺', '<v2.1> Migration Error');
+    console.log('<v2.1> Migration Error');
     console.log(error);
   }
 };

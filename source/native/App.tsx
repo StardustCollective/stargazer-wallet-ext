@@ -38,10 +38,10 @@ dag4.network.config({
 
 const App = () => {
   useEffect(() => {
-    // This timeout is used to avoid a blank screen between the splash screen end and the app start.
     Linking.addEventListener('url', () => {
       InAppBrowser.close();
     })
+    // This timeout is used to avoid a blank screen between the splash screen end and the app start.
     setTimeout(() => {
       SplashScreen.hide();
     }, 1000)
