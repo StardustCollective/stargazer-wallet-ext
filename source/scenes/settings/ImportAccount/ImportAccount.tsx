@@ -13,7 +13,7 @@ import FileSelect from 'components/FileSelect';
 
 import LedgerIcon from 'assets/images/svg/ledger.svg';
 import styles from './ImportAccount.scss';
-import { withAlert } from 'react-alert'
+import { useAlert } from 'react-alert'
 
 import IImportAccountSettings, { HardwareWallet } from './types';
 
@@ -22,7 +22,6 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   hardwareStep,
   loadingWalletList,
   handleSubmit,
-  alert,
   register,
   handleImportPrivKey,
   onFinishButtonPressed,
@@ -34,6 +33,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   jsonFile,
   setJsonFile,
 }) => {
+  const alert = useAlert();
   const onSubmit = async (data: any): Promise<any> => {
     // setAccountName(undefined);
     if (importType === 'priv') {
@@ -241,4 +241,4 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   );
 };
 
-export default withAlert()(ImportAccount);
+export default ImportAccount;
