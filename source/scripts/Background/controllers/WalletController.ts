@@ -16,6 +16,7 @@ import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import { addLedgerWallet, deleteLedgerWallet } from 'state/vault';
+import { reload } from 'utils/browser';
 
 const LedgerWalletIdPrefix = 'L';
 
@@ -251,6 +252,7 @@ class WalletController implements IWalletController {
     this.account.ethClient = undefined;
     store.dispatch(changeActiveWallet(undefined));
     store.dispatch(updateStatus());
+    reload();
   }
 }
 
