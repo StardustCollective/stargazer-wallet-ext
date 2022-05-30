@@ -13,6 +13,7 @@ import StargazerIcon from 'assets/images/logo-s.svg';
 import IWalletSettings from './types';
 
 import styles from './Wallets.scss';
+import { ellipsis } from 'scenes/home/helpers';
 
 const WalletsComponent: FC<IWalletSettings> = ({
   wallets,
@@ -58,19 +59,14 @@ const WalletsComponent: FC<IWalletSettings> = ({
                 onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
               >
                 {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-                <Icon
-                  width={24}
-                  Component={
-                    assets[
+                {<img className={styles.walletIcon} src={`${assets[
                       wallet.supportedAssets.includes(KeyringAssetType.ETH)
                         ? AssetType.Ethereum
                         : AssetType.Constellation
-                    ].logo || StargazerIcon
-                  }
-                />
+                    ].logo}`} width={36} />}
                 <span>
                   {wallet.label}
-                  <small>{wallet.accounts[0].address}</small>
+                  <small>{ellipsis(wallet.accounts[0].address)}</small>
                 </span>
                 <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
                   <InfoIcon />
@@ -85,7 +81,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
           <label>Ledger Wallets</label>
           <div className={styles.group}>
             {ledgerAccounts.map((wallet) => (
-              <section
+            <section
                 className={styles.wallet}
                 key={wallet.id}
                 onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}

@@ -38,6 +38,14 @@
       border-bottom: 1px solid $gray-light;
       position: relative;
 
+      .walletIcon {
+        display: flex;
+        margin-right: 12px;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+      }
+
       & > span {
         flex-grow: 1;
         display: flex;

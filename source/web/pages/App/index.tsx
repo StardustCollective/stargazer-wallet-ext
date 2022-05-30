@@ -9,8 +9,11 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 
 import ToastAlert from 'components/ToastAlert';
 import appStore from 'state/store';
+import scrypt from 'scrypt-js';
 
 import App from './App';
+
+global.scrypt = scrypt.scrypt;
 
 const app = document.getElementById('app-root');
 const store = new Store({ portName: STORE_PORT });

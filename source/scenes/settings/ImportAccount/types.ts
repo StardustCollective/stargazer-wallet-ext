@@ -29,4 +29,5 @@ export default interface IImportAccountSettings {
   setLoading: (val: boolean) => void;
   showErrorAlert: (message: string) => void;
   setImportType: (type: string) => void;
+  alert?: any;
 }
