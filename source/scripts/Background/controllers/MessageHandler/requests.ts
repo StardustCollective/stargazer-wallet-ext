@@ -22,10 +22,9 @@ const WINDOW_TYPES = {
 };
 
 const handleTransparentRequest = async (message: Message, masterController: IMasterController) => {
-  console.log('message ', message);
   const { method, args } = message.data;
 
-  const provider = getInfuraProvider('testnet');
+  const provider = getInfuraProvider(masterController.ethereumProvider.getChainId() === 1 ? 'mainnet' : 'testnet');
   return provider.send(`eth_${SUPPORTED_WALLET_METHODS_NAMES[method as unknown as SUPPORTED_WALLET_METHODS]}`, args);
 };
 
