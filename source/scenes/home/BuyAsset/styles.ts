@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   amountContainer: {
-    flex: 3,
+    flex: 30,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -28,11 +28,12 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   providerContainer: {
-    flex: 2,
+    flex: 15,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingHorizontal: 16,
+    marginBottom: 10,
   },
   providerTitle: {
     marginBottom: 12,
@@ -56,14 +57,14 @@ const styles = StyleSheet.create({
   providerIcon: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
   },
   providerText: {
     marginLeft: 16,
   },
   numpadContainer: {
-    flex: 4,
+    flex: 40,
     width: '100%',
     flexWrap: 'wrap',
     flexDirection: 'row',
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   buttonContainer: {
-    flex: 1,
+    flex: 15,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     backgroundColor: COLORS.primary_lighter_1,
-    marginTop: 8,
+    marginTop: 16,
     width: 300,
   },
   confirmButtonText: {

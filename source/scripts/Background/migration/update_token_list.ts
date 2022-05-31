@@ -1,9 +1,10 @@
-import { browser } from 'webextension-polyfill-ts';
+import { reload } from 'utils/browser';
 import IAssetListState from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
 import IVaultState from 'state/vault/types';
 import { initialState } from 'state/assets';
+import { saveState } from 'state/localStorage';
 
 export type V2WalletState = {
   assets: IAssetListState
@@ -13,7 +14,7 @@ export type V2WalletState = {
   vault: IVaultState
 }
 
-const MigrateRunner = (oldState: V2WalletState): Boolean => {
+const MigrateRunner = async (oldState: V2WalletState): Promise<boolean> => {
   try {
     if (JSON.stringify(oldState.assets) === JSON.stringify(initialState)) {
       return false;
@@ -24,13 +25,13 @@ const MigrateRunner = (oldState: V2WalletState): Boolean => {
       assets: initialState
     };
 
-    localStorage.setItem('state', JSON.stringify(newState));
-    console.emoji('✅', 'Updated asset list successfully!');
-    browser.runtime.reload();
+    await saveState(newState);
+    console.log('Updated asset list successfully!');
+    reload();
 
     return true;
   } catch (error) {
-    console.emoji('🔺', '<AssetList> Migration Error');
+    console.log('<AssetList> Migration Error');
     console.log(error);
 
     return false;

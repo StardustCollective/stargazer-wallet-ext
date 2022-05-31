@@ -13,6 +13,7 @@ import FileSelect from 'components/FileSelect';
 
 import LedgerIcon from 'assets/images/svg/ledger.svg';
 import styles from './ImportAccount.scss';
+import { useAlert } from 'react-alert'
 
 import IImportAccountSettings, { HardwareWallet } from './types';
 
@@ -21,7 +22,6 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   hardwareStep,
   loadingWalletList,
   handleSubmit,
-  showErrorAlert,
   register,
   handleImportPrivKey,
   onFinishButtonPressed,
@@ -33,6 +33,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   jsonFile,
   setJsonFile,
 }) => {
+  const alert = useAlert();
   const onSubmit = async (data: any): Promise<any> => {
     // setAccountName(undefined);
     if (importType === 'priv') {
@@ -46,7 +47,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           try {
             const json = JSON.parse(ev.target.result as string);
             if (!dag4.keyStore.isValidJsonPrivateKey(json)) {
-              showErrorAlert('Error: Invalid private key json file');
+              alert.error('Error: Invalid private key json file');
               return;
             }
 
@@ -57,11 +58,11 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 handleImportPrivKey(privKey, data.label);
               })
               .catch(() => {
-                showErrorAlert('Error: Invalid password to decrypt private key json file');
+                alert.error('Error: Invalid password to decrypt private key json file');
                 setLoading(false);
               });
           } catch (error) {
-            showErrorAlert('Error: Invalid private key json file');
+            alert.error('Error: Invalid private key json file');
             setLoading(false);
           }
         }
@@ -69,7 +70,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     } else if (importType === 'hardware') {
       return window.open('/ledger.html', '_newtab');
     } else {
-      return showErrorAlert('Error: A private key json file is not chosen');
+      return alert.error('Error: A private key json file is not chosen');
     }
   };
 

@@ -8,8 +8,7 @@ import { showMessage } from 'react-native-flash-message';
 import { RootState } from 'state/store';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
-import { getAccountController } from 'utils/controllersUtils';
-import ContactsController from 'scripts/Background/controllers/ContactsController';
+import { getAccountController, getContactsController } from 'utils/controllersUtils';
 
 import Container from 'components/Container';
 
@@ -25,7 +24,8 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const accountController = getAccountController();
   const { type } = route.params;
   const { selected } = route.params;
-
+  
+  const contactsController = getContactsController();
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
 
@@ -38,7 +38,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   });
 
   const [address, setAddress] = useState('');
-
+  
   useEffect(() => {
     if (selected && contacts[selected].address) {
       const { address: contactAddress } = contacts[selected];
@@ -87,8 +87,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
       });
       return;
     }
-
-    ContactsController().modifyContact(type, data.name, data.address.trim(), data.memo, selected);
+    contactsController.modifyContact(type, data.name, data.address.trim(), data.memo, selected);
     navigation.goBack();
   };
 

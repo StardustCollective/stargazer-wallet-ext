@@ -2,7 +2,8 @@ import { combineReducers, configureStore, getDefaultMiddleware, Store } from '@r
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import throttle from 'lodash/throttle';
-import { isProd } from 'utils/envUtil';
+import { isNative, isProd } from 'utils/envUtil';
+import MigrationController from 'scripts/Background/controllers/MigrationController';
 
 import vault from './vault';
 import price from './price';
@@ -61,7 +62,13 @@ store.subscribe(
 );
 
 // initialize store from state
+if (isNative) {
+  MigrationController().then(() => {
 rehydrateStore(store);
+  })
+} else {
+  rehydrateStore(store);
+}
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
