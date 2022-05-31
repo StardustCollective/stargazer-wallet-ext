@@ -1,0 +1,154 @@
+diff --git a/node_modules/@stardust-collective/dag4-ledger/cjs/index.d.ts b/node_modules/@stardust-collective/dag4-ledger/cjs/index.d.ts
+index 6484035..0e98739 100644
+--- a/node_modules/@stardust-collective/dag4-ledger/cjs/index.d.ts
++++ b/node_modules/@stardust-collective/dag4-ledger/cjs/index.d.ts
+@@ -11,6 +11,7 @@ interface LedgerTransport {
+ export declare class LedgerBridge {
+     private transport;
+     constructor(transport: LedgerTransport);
++    signMessage( message: string, bip44Index: number);
+     buildTx(amount: number, publicKey: string, bip44Index: number, fromAddress: string, toAddress: string): Promise<import("@stardust-collective/dag4-keystore").PostTransaction>;
+     /**
+      * Returns a signed transaction ready to be posted to the network.
+diff --git a/node_modules/@stardust-collective/dag4-ledger/esm/index.d.ts b/node_modules/@stardust-collective/dag4-ledger/esm/index.d.ts
+index 6484035..853e0d3 100644
+--- a/node_modules/@stardust-collective/dag4-ledger/esm/index.d.ts
++++ b/node_modules/@stardust-collective/dag4-ledger/esm/index.d.ts
+@@ -11,6 +11,7 @@ interface LedgerTransport {
+ export declare class LedgerBridge {
+     private transport;
+     constructor(transport: LedgerTransport);
++    signMessage( message: string, bip44Index: string);
+     buildTx(amount: number, publicKey: string, bip44Index: number, fromAddress: string, toAddress: string): Promise<import("@stardust-collective/dag4-keystore").PostTransaction>;
+     /**
+      * Returns a signed transaction ready to be posted to the network.
+diff --git a/node_modules/@stardust-collective/dag4-ledger/esm/index.js b/node_modules/@stardust-collective/dag4-ledger/esm/index.js
+index 9b76160..2250a9a 100644
+--- a/node_modules/@stardust-collective/dag4-ledger/esm/index.js
++++ b/node_modules/@stardust-collective/dag4-ledger/esm/index.js
+@@ -1,13 +1,26 @@
+ // max length in bytes.
++import { ContactlessOutlined } from '@material-ui/icons';
+ import { dag4 } from '@stardust-collective/dag4';
+ import * as txHashEncodeUtil from './lib/tx-hash-encode';
+ import * as txTranscodeUtil from './lib/tx-transcode';
+ const MAX_SIGNED_TX_LEN = 512;
+ const DEVICE_ID = '8004000000';
++const MESSAGE_TYPE_CODES = {
++    SIGN_TRANSACTION: "02",
++    GET_PUBLIC_KEY: "04",
++    SIGN_MESSAGE: "06"
++}
+ export class LedgerBridge {
+     constructor(transport) {
+         this.transport = transport;
+     }
++    async signMessage( message, bip44Index){
++        let messageLengthHex = parseInt(message.length).toString(16).padStart(8, "0");
++        let messageHex = Buffer.from(message, 'utf-8').toString('hex');
++        messageHex = messageLengthHex + messageHex;
++        const results = await this.sign(messageHex, bip44Index, MESSAGE_TYPE_CODES.SIGN_MESSAGE);
++        return results.signature;
++    }
+     async buildTx(amount, publicKey, bip44Index, fromAddress, toAddress) {
+         const lastRef = await dag4.network.loadBalancerApi.getAddressLastAcceptedTransactionRef(fromAddress);
+         const { tx, rle } = dag4.keyStore.prepareTx(amount, toAddress, fromAddress, lastRef, 0);
+@@ -34,7 +47,7 @@ export class LedgerBridge {
+      * Returns a signed transaction ready to be posted to the network.
+      */
+     async signTransaction(publicKey, bip44Index, hash, ledgerEncodedTx) {
+-        const results = await this.sign(ledgerEncodedTx, bip44Index);
++        const results = await this.sign(ledgerEncodedTx, bip44Index, MESSAGE_TYPE_CODES.SIGN_TRANSACTION);
+         //console.log('signTransaction\n' + results.signature);
+         //const success = dag4.keyStore.verify(publicKey, hash, results.signature);
+         //console.log('verify: ', success);
+@@ -87,25 +100,22 @@ export class LedgerBridge {
+         }
+         return results;
+     }
+-    async sign(ledgerEncodedTx, bip44Index) {
++    async sign(ledgerEncodedTx, bip44Index, messageTypeCode) {
++        console.log('Sign Called');
+         const bip44Path = this.createBipPathFromAccount(bip44Index);
+-        //console.log('bip44Path', bip44Path);
+         const transactionByteLength = Math.ceil(ledgerEncodedTx.length / 2);
+         if (transactionByteLength > MAX_SIGNED_TX_LEN) {
+             throw new Error(`Transaction length of ${transactionByteLength} bytes exceeds max length of ${MAX_SIGNED_TX_LEN} bytes.`);
+         }
+         const ledgerMessage = ledgerEncodedTx + bip44Path;
+-        const messages = this.splitMessageIntoChunks(ledgerMessage);
++        const messages = this.splitMessageIntoChunks(ledgerMessage, messageTypeCode);
+         const device = await this.getLedgerInfo();
+         let lastResponse = undefined;
+-        // console.log('splitMessageIntoChunks', messages);
+         for (let ix = 0; ix < messages.length; ix++) {
+             const request = messages[ix];
+             const message = Buffer.from(request, 'hex');
+             const response = await device.exchange(message);
+             const responseStr = response.toString('hex').toUpperCase();
+-            // console.log('exchange', 'request', request);
+-            // console.log('exchange', 'response', responseStr);
+             lastResponse = responseStr;
+         }
+         let signature = '';
+@@ -193,35 +203,37 @@ export class LedgerBridge {
+             });
+         });
+     }
+-    splitMessageIntoChunks(ledgerMessage) {
++    splitMessageIntoChunks (ledgerMessage, messageTypeCode) {
+         const messages = [];
+         const bufferSize = 255 * 2;
+         let offset = 0;
+         while (offset < ledgerMessage.length) {
+-            let chunk;
+-            let p1;
+-            if ((ledgerMessage.length - offset) > bufferSize) {
+-                chunk = ledgerMessage.substring(offset, offset + bufferSize);
+-            }
+-            else {
+-                chunk = ledgerMessage.substring(offset);
+-            }
+-            if ((offset + chunk.length) == ledgerMessage.length) {
+-                p1 = '80';
+-            }
+-            else {
+-                p1 = '00';
+-            }
+-            const chunkLength = chunk.length / 2;
+-            let chunkLengthHex = chunkLength.toString(16);
+-            while (chunkLengthHex.length < 2) {
+-                chunkLengthHex = '0' + chunkLengthHex;
+-            }
+-            messages.push('8002' + p1 + '00' + chunkLengthHex + chunk);
+-            offset += chunk.length;
++          let chunk;
++          let p1;
++          if ((ledgerMessage.length - offset) > bufferSize) {
++            chunk = ledgerMessage.substring(offset, offset + bufferSize);
++          } else {
++            chunk = ledgerMessage.substring(offset);
++          }
++          if ((offset + chunk.length) == ledgerMessage.length) {
++            p1 = '80';
++          } else {
++            p1 = '00';
++          }
++    
++          const chunkLength = chunk.length / 2;
++    
++          let chunkLengthHex = chunkLength.toString(16);
++          while (chunkLengthHex.length < 2) {
++            chunkLengthHex = '0' + chunkLengthHex;
++          }
++    
++          messages.push('80' + messageTypeCode + p1 + '00' + chunkLengthHex + chunk);
++          offset += chunk.length;
+         }
++    
+         return messages;
+-    }
++      }
+     decodeSignature(response) {
+         const rLenHex = response.substring(6, 8);
+         const rLen = parseInt(rLenHex, 16) * 2;

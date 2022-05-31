@@ -27,6 +27,8 @@ export default {
     sendConfirm: 'auth-sendConfirm',
     send: 'auth-send',
     gasSettings: 'auth-gasSettings',
+    buyList: 'auth-buyList',
+    buyAsset: 'auth-buyAsset',
   },
 
   ////////////////////////////

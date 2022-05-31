@@ -1,7 +1,7 @@
 {
   "name": "extension",
-  "version": "3.3.2",
-  "description": "Extension wallet for $DAG tokens.",
+  "version": "3.5.0",
+  "description": "Cross-chain compatible wallet for Constellation and Ethereum",
   "private": true,
   "repository": "https://github.com/StardustCollective/stargazer-wallet-ext.git",
   "license": "MIT",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.10.2",
-    "@ledgerhq/hw-transport-webhid": "^5.51.1",
+    "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "@n8tb1t/use-scroll-position": "^2.0.3",
     "@types/lodash": "^4.14.162",
     "@types/qrcode.react": "^1.0.1",
@@ -52,6 +52,7 @@
     "react-spring": "^8.0.27",
     "rxjs": "^6.6.7",
     "sass": "^1.35.1",
+    "scrypt-js": "^3.0.1",
     "tls": "^0.0.1",
     "url-loader": "^4.1.1",
     "uuid": "^8.3.2",

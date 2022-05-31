@@ -19,7 +19,7 @@ export function useFiat(currencyName = true, asset?: IAssetInfoState) {
     let priceId = basePriceId;
 
     if (!priceId) {
-      priceId = asset ? asset.priceId : assets[activeAsset.id]?.priceId;
+      priceId = asset ? asset.priceId : assets[activeAsset?.id]?.priceId;
     }
 
     const assetPrice = priceId ? fiat[basePriceId || priceId]?.price || 0 : 0;

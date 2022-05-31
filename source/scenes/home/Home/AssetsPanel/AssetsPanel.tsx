@@ -32,15 +32,15 @@ const AssetsPanel: FC<IAssetPanel> = ({
           );
         })}
         {activeNFTAssets.map((nft: any) => {
-          return (
-            <AssetItem
-              id={nft.id}
-              key={nft.id}
-              asset={nft}
-              assetInfo={nfts[nft.id]}
-              itemClicked={() => handleSelectNFT(nfts[nft.id])}
-            />
-          );
+            return (
+              <AssetItem
+                id={nft.id}
+                key={nft.id}
+                asset={nft}
+                assetInfo={nfts[nft.id]}
+                itemClicked={() => handleSelectNFT(nfts[nft.id])}
+              />
+            );
         })}
       </>
     );

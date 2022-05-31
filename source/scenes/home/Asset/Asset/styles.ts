@@ -87,11 +87,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   actions: {
-    display: 'flex',
-    width: 300,
-    marginBottom: 32,
+    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
   },
   activity: {
     backgroundColor: COLORS.gray_light,
@@ -277,24 +274,31 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   qrCode: {
-    flex: 1, 
-    justifyContent: 'center', 
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   qrCodeCard: {
-    backgroundColor: 'white', 
-    padding: 20, 
-    borderRadius: 10, 
-    alignItems: 'center'
-  },
-  qrCodeAddressText: {
-    marginTop: 20
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   qrCodeCloseButton: {
     alignItems: 'flex-end',
     marginRight: 20,
     marginTop: 20,
-  }
+  },
+  qrCodeAddressText: {
+    marginRight: 12,
+  },
+  addressContainer: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default styles;

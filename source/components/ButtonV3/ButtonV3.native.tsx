@@ -94,12 +94,15 @@ const ButtonV3: FC<IButtonV3Props> = ({
   const composedButtonStyles = StyleSheet.compose(flatButtonStyles, extraStyles);
   const composedTitleStyles = StyleSheet.compose(titleStyle, extraTitleStyles);
   const composedContainerStyles = StyleSheet.compose(styles.containerStyle, extraContainerStyles);
+  const composedDisabledStyles = StyleSheet.compose(buttonColorStyle, styles.disabled);
 
   return (
     <Button
       testID={id}
       title={title}
       disabled={disabled}
+      disabledTitleStyle={styles.disabledTitle}
+      disabledStyle={composedDisabledStyles}
       loading={loading}
       buttonStyle={composedButtonStyles}
       titleStyle={composedTitleStyles}

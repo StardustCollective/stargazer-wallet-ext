@@ -70,13 +70,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   assetIconWrapperDAG: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.gray_light_100,
   },
   assetIconWrapperETH: {
     backgroundColor: COLORS.gray_light_100,
   },
   assetIcon: {
-    color: COLORS.gray_light_100,
+    height: 24,
+    width: 24,
   },
   icon: {
     fontSize: 24,

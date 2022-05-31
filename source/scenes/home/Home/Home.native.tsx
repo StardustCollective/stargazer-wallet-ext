@@ -2,17 +2,23 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
-import { View, ActivityIndicator, ScrollView, Linking } from 'react-native';
-import { useSelector } from 'react-redux';
+import React, { FC, useEffect } from 'react';
+import { View, ActivityIndicator, ScrollView } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
-import AssetsPanel from './AssetsPanel';
-import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import TextV3 from 'components/TextV3';
+import AssetsPanel from './AssetsPanel';
+
+///////////////////////////
+// Utils
+///////////////////////////
+
+import { getAccountController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Styles
@@ -25,33 +31,40 @@ import styles from './styles';
 ///////////////////////////
 
 import { IHome } from './types';
-import { RootState } from 'state/store';
-import IVaultState from 'state/vault/types';
-import IProcessState from 'state/process/types';
-import { ProcessStates } from 'state/process/enums';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
-import {BUY_DAG_URL} from 'constants/index';
-
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
+let lastIsConnected: boolean = true;
 
 ///////////////////////////
 // Scene
 ///////////////////////////
 
-const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
+const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed }) => {
 
+  const accountController = getAccountController();
 
-  const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
-  const { login: LoginProcessState, fetchDagBalance }: IProcessState = useSelector((state: RootState) => state.process);
-
-  const onHowToBuyDagPressed = () => {
-    Linking.openURL(BUY_DAG_URL);
-  }
+  // Subscribe to NetInfo
+  useEffect(() => {
+    const unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
+      if (state.isConnected && !lastIsConnected) {
+        lastIsConnected = true;
+        await accountController.assetsBalanceMonitor.refreshDagBalance();
+        await accountController.assetsBalanceMonitor.getEthTokenBalances();
+      } else {
+        lastIsConnected = false;
+      }
+    });
+  
+    return () => {
+      unsubscribeNetInfo();
+    }
+  }, []);
+  
 
   return (
     <View style={styles.container}>
@@ -69,20 +82,13 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
               <View style={styles.bitcoinBalance}>
                 <TextV3.Body>{`≈ ₿${balance}`}</TextV3.Body>
               </View>
-              { !(fetchDagBalance === ProcessStates.IN_PROGRESS 
-                && LoginProcessState === ProcessStates.IN_PROGRESS) 
-                && balances.constellation === 0
-                && (
-                <>
-                  <ButtonV3
-                    title="How to Buy DAG"
-                    size={BUTTON_SIZES_ENUM.LARGE}
-                    type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
-                    onPress={onHowToBuyDagPressed}
-                    extraStyles={styles.buyDagButton}
-                  />
-                </>
-              )}
+              <ButtonV3
+                title="Buy"
+                size={BUTTON_SIZES_ENUM.LARGE}
+                type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                onPress={onBuyPressed}
+                extraStyles={styles.buyButton}
+              />
             </View>
             <AssetsPanel />
           </>
@@ -92,7 +98,7 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance }) => {
           </View>
         )}
       </ScrollView>
-    </View >
+    </View>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
 
 import { Button } from 'react-native-elements';
 import TextV3 from 'components/TextV3';
@@ -70,21 +70,20 @@ const WalletsComponent: FC<IWalletsSettings> = ({
   };
 
   const renderEthereumIcon = () => {
-    const Logo = assets[AssetType.Ethereum].logo;
-
+    const logoURL = assets[AssetType.Ethereum].logo;
     return (
       <View style={StyleSheet.flatten([styles.stargazerIconWrapper, styles.assetIconWrapperETH])}>
-        <Logo width={24} height={24} iconStyles={styles.assetIcon} />
+        <Image source={{ uri: logoURL }} style={styles.assetIcon} />
       </View>
     );
   };
 
   const renderConstellationIcon = () => {
-    const Logo = assets[AssetType.Constellation].logo;
+    const logoURL = assets[AssetType.Constellation].logo;
 
     return (
       <View style={StyleSheet.flatten([styles.stargazerIconWrapper, styles.assetIconWrapperDAG])}>
-        <Logo width={24} height={24} iconStyles={styles.assetIcon} />
+        <Image source={{ uri: logoURL }} style={styles.assetIcon} />
       </View>
     );
   };

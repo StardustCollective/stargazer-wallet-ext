@@ -16,7 +16,7 @@ const AssetHeaderContainer: FC<IAssetHeader> = ({ asset, address }) => {
   };
 
   const shortenedAddress = ellipsis(address);
-  const copiedTextToolip = isCopied ? 'Copied' : 'Copy Address ';
+  const copiedTextToolip = isCopied ? 'Copied' : 'Copy Address';
 
   return (
     <AssetHeader

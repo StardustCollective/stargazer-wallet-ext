@@ -2,7 +2,7 @@
 // Module
 ///////////////////////
 
-import React from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -37,7 +37,7 @@ import AssetsPanel from './AssetsPanel';
 // Container
 ///////////////////////
 
-const AssetsPanelContainer = () => {
+const AssetsPanelContainer: FC = () => {
   const accountController = getAccountController();
 
   ///////////////////////

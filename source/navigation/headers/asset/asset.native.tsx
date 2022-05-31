@@ -1,30 +1,19 @@
 import React from 'react';
 import { View, TouchableOpacity, Linking } from 'react-native';
+import { moderateScale } from 'react-native-size-matters';
 
 import AssetHeader from 'scenes/home/Asset/AssetHeader';
 import AddressLinkImage from 'assets/images/svg/addressLink.svg';
-import QRCodeIcon from 'assets/images/svg/qrcode.svg';
-import { COLORS } from 'assets/styles/_variables';
 import defaultHeader from '../default';
 import styles from './styles';
-import { moderateScale } from 'react-native-size-matters';
-
 import IAssetHeader from './types';
 
-
-const ICON_SIZE = moderateScale(25)
-
-const assetHeader = ({ navigation, asset, address, addressUrl, onQrCodePress }: IAssetHeader) => {
+const assetHeader = ({ navigation, asset, address, addressUrl }: IAssetHeader) => {
   return {
     ...defaultHeader({ navigation }),
     headerTitle: () => <AssetHeader asset={asset} address={address} />,
     headerRight: () => (
       <View style={styles.buttons}>
-        <TouchableOpacity onPress={onQrCodePress}>
-          <View style={styles.qrIcon}>
-            <QRCodeIcon height={ICON_SIZE} width={ICON_SIZE} fill={COLORS.white} />
-          </View>
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={(e) => {
             e.stopPropagation();
@@ -32,12 +21,11 @@ const assetHeader = ({ navigation, asset, address, addressUrl, onQrCodePress }: 
           }}
           style={styles.linkIcon}
         >
-          <View >
+          <View>
             <AddressLinkImage height={moderateScale(30)} />
           </View>
         </TouchableOpacity>
       </View>
-
     ),
   };
 };

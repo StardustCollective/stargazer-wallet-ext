@@ -6,7 +6,7 @@ export const FONTS = {
 
 export const COLORS = {
   primary: '#2B1D52',
-  primary_lighter_1: '#412C7A',
+  primary_lighter_1: '#473194',
   primary_lighter_2: '#6A55A3',
   primary_lighter_3: '#8D7DB8',
   purple: '#521e8a',

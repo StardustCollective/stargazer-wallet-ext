@@ -7,6 +7,9 @@ import store from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
+import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
+import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
@@ -18,6 +21,12 @@ const ALKIMI_STRING = 'alkimi';
 export interface IAssetsController {
   fetchTokenInfo: (address: string) => Promise<void>;
   fetchWalletNFTInfo: (address: string) => Promise<void>;
+  fetchSupportedAssets: () => Promise<void>;
+  fetchQuote: (data: GetQuoteRequest) => Promise<void>;
+  fetchPaymentRequest: (data: PaymentRequestBody) => Promise<void>;
+  setRequestId: (value: string) => void;
+  clearErrors: () => void;
+  clearPaymentRequest: () => void;
 }
 
 const AssetsController = (updateFiat: () => void): IAssetsController => {
@@ -174,7 +183,31 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     return retNFTs;
   };
 
-  return { fetchTokenInfo, fetchWalletNFTInfo };
+  const fetchSupportedAssets = async (): Promise<void> => {
+    await store.dispatch<any>(getSupportedAssets());
+  }
+
+  const fetchQuote = async (data: GetQuoteRequest): Promise<void> => {
+    await store.dispatch<any>(getQuote(data));
+  }
+
+  const fetchPaymentRequest = async (data: PaymentRequestBody): Promise<void> => {
+    await store.dispatch<any>(paymentRequest(data));
+  }
+
+  const setRequestId = (value: string): void => {
+    store.dispatch(setRequestIdDispatch(value));
+  }
+
+  const clearErrors = (): void => {
+    store.dispatch(clearErrorsDispatch());
+  }
+
+  const clearPaymentRequest = (): void => {
+    store.dispatch(clearPaymentRequestDispatch());
+  }
+
+  return { fetchTokenInfo, fetchWalletNFTInfo, fetchSupportedAssets, fetchQuote, fetchPaymentRequest, setRequestId, clearErrors, clearPaymentRequest };
 };
 
 export default AssetsController;

@@ -15,6 +15,10 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  dagIcon: {
+    width: 30,
+    height: 35,
+  },
   imageNFTIcon: {
     width: 48,
     height: 48,

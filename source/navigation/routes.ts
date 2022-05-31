@@ -23,6 +23,8 @@ export default {
   // Auth Stack
   [screens.authorized.root]: '/authRoot',
   [screens.authorized.home]: '/home',
+  [screens.authorized.buyList]: '/buyList',
+  [screens.authorized.buyAsset]: '/buyAsset',
   [screens.authorized.addAsset]: '/asset/add',
   [screens.authorized.asset]: '/asset',
   [screens.authorized.sendConfirm]: '/send/confirm',
