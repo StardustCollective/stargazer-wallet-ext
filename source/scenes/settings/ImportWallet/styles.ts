@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     height: 22,
   },
   iconDAGWrapper: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.gray_light_100,
   },
   text: {
     flexGrow: 1,
