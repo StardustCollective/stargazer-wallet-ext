@@ -1,4 +1,5 @@
 import { browser } from 'webextension-polyfill-ts';
+/* 
 import { SUPPORTED_WALLET_METHODS } from 'scripts/Background/controllers/MessageHandler/types';
 import { providerManager, stargazerProvider } from './inject';
 
@@ -18,3 +19,13 @@ function inject(content: string) {
   scriptTag.textContent = `(() => {${content}})()`;
   container.insertBefore(scriptTag, container.children[0]);
 }
+ */
+
+const initInjectedScript = () => {
+  const scriptElem = document.createElement('script');
+  scriptElem.type = 'text/javascript';
+  scriptElem.src = browser.runtime.getURL('js/injectedScript.bundle.js');
+  document.body.appendChild(scriptElem);
+};
+
+document.addEventListener('DOMContentLoaded', initInjectedScript);

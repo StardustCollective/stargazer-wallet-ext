@@ -73,6 +73,7 @@ module.exports = {
     manifest: path.join(__dirname, 'manifest.json'),
     background: path.join(sharedPath, 'scripts/Background', 'index.ts'),
     contentScript: path.join(sharedPath, 'scripts/ContentScript', 'index.ts'),
+    injectedScript: path.join(sharedPath, 'scripts/InjectedScript', 'index.ts'),
     app: path.join(__dirname, 'pages/App', 'index.tsx'),
     external: path.join(__dirname, 'pages/External', 'index.tsx'),
     ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
@@ -139,10 +140,6 @@ module.exports = {
       {
         test: /\.(jpg|png|svg)x?$/,
         loader: 'file-loader',
-      },
-      {
-        test: /\.txt\.ts$/,
-        loader: 'raw-loader',
       },
       {
         test: /\.(sa|sc|c)ss$/,
