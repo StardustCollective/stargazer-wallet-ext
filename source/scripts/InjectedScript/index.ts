@@ -1,14 +1,9 @@
 import { StargazerWalletProvider } from './stargazerWalletProvider';
-
+import { readOnlyProxy } from './utils';
 declare global {
   interface Window {
     stargazer: StargazerWalletProvider;
   }
 }
 
-window.stargazer = new Proxy(new StargazerWalletProvider(), {
-  set: () => false,
-  defineProperty: () => false,
-  deleteProperty: () => false,
-  setPrototypeOf: () => false,
-});
+window.stargazer = readOnlyProxy(new StargazerWalletProvider());
