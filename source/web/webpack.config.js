@@ -182,6 +182,12 @@ module.exports = {
     }),
     // environmental variables
     new webpack.EnvironmentPlugin(['NODE_ENV', 'TARGET_BROWSER']),
+    // global variables
+    new webpack.DefinePlugin({
+      STARGAZER_WALLET_VERSION: JSON.stringify(
+        JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'))).version
+      ),
+    }),
     // delete previous build files
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [
