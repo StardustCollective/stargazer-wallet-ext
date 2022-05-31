@@ -59,11 +59,15 @@ const WalletsComponent: FC<IWalletSettings> = ({
                 onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
               >
                 {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-                {<img className={styles.walletIcon} src={`${assets[
+                {
+                <div className={styles.walletIcon}>
+                  <img  src={`${assets[
                       wallet.supportedAssets.includes(KeyringAssetType.ETH)
                         ? AssetType.Ethereum
                         : AssetType.Constellation
-                    ].logo}`} width={36} />}
+                    ].logo}`} width={24} />
+                </div>
+                }
                 <span>
                   {wallet.label}
                   <small>{ellipsis(wallet.accounts[0].address)}</small>

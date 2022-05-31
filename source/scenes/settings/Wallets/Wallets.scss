@@ -40,7 +40,10 @@
 
       .walletIcon {
         display: flex;
+        height: 36px;
+        width: 36px;
         margin-right: 12px;
+        background-color: $gray-light;
         border-radius: 50%;
         align-items: center;
         justify-content: center;
