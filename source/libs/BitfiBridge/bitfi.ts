@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { w3cwebsocket } from 'websocket'
+import { w3cwebsocket, IMessageEvent } from 'websocket'
 import bs58 from 'bs58'
 import * as CryptoJS from 'crypto';
 import * as base64 from './base64';
@@ -121,12 +121,12 @@ export class Bitfi {
     return new Promise((res, rej) => {
       var websocket = new WebSocket(this._config.envoyUrl);
       
-      websocket.addEventListener("open", function (event) {
+      websocket.onopen =  () => {
         websocket.send(JSON.stringify({ ClientToken: envoyToken }));
-      });
+      };
   
-      websocket.addEventListener("message", function (e) {
-        var obj = JSON.parse(e.data);
+      websocket.onmessage = (message: IMessageEvent) => {
+        var obj = JSON.parse(message.data as string);
 
         const envoyMes: EnvoyMessage = {
           completed: obj.Completed,
@@ -148,7 +148,7 @@ export class Bitfi {
           websocket.close()
           res(JSON.parse(base64.decode(envoyMes.user_message)))
         }
-      })
+      }
     })
   }
 
@@ -352,12 +352,12 @@ export class Bitfi {
         derivation_index: "22" //dag
       }
 
-      websocket.addEventListener('open', function (event) {
+      websocket.onopen = () => {
         websocket.send(JSON.stringify(request));
-      });
+      };
       
 
-      websocket.addEventListener('message', async function (e) {
+      websocket.onmessage = async (e: any) => {
         const response = JSON.parse(e.data) as BitfiMessage
 
         if (response.display_code && response.display_code !== code) {
@@ -390,7 +390,7 @@ export class Bitfi {
             websocket.close()
           }
         }
-      });
+      }
     })
   };
 
@@ -413,7 +413,7 @@ export class Bitfi {
     
   }
   
-  private static request = async (token: string, method: 'GetAddresses' | 'IsTokenValid', url: string, params = undefined) => {
+  private static request = async (token: string, method: 'GetAddresses' | 'IsTokenValid', url: string, params: any = undefined) => {
     const res = await axios.post(url, {
       authToken: token,
       method,

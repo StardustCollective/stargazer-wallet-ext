@@ -3,7 +3,7 @@ import { BitfiConfig, Bitfi, SignInParams, EnvoyMessage, Callback,  } from './bi
 export class BitfiBridge {
   private _bitfi: Bitfi
 
-  private constructor(private bitfi: Bitfi) {
+  private constructor(bitfi: Bitfi) {
     this._bitfi = bitfi 
   }
 
