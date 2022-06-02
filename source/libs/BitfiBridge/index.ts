@@ -25,13 +25,7 @@ export class BitfiBridge {
     const result = await this.sign(message, onMessage);
     return result;
   }
-
-  /**
-   * Takes a signed transaction and posts it to the network.
-   
-  postTransaction() {}
-  */
-
+  
   public getAccount() {
     return this._bitfi.getAddress()
   }
@@ -43,30 +37,6 @@ export class BitfiBridge {
   public getAuthToken(): string {
     return this._bitfi.getAuthToken()
   }
-  /*
-  public async getAccountInfo() {
-    dag4.account.loginPublicKey(this._bitfi.getPublicKey())
-
-    const accounts = [this._bitfi.getAddress()]
-
-    if (accounts.length > 0) {
-      let responseArray = [];
-      for (let i = 0; i < accounts.length; i++) {
-        const address = accounts;
-        const balance = (await dag4.account.getBalance() || 0);
-        const response = {
-          address,
-          //publicKey,
-          balance: balance
-        };
-        responseArray.push(response);
-      }
-      return responseArray;
-    } else {
-      throw new Error('No accounts found');
-    }
-  }
-  */
 
   public static async signin(params: SignInParams): Promise<BitfiBridge> {
     const bitfi = await Bitfi.signin(params)
