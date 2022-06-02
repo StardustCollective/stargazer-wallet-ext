@@ -57,7 +57,6 @@ const MasterController = (): IMasterController => {
   ) => {
     const { width = 372, height = 600 } = windowSize;
     const _window = await browser.windows.getCurrent();
-    
     if (!_window || !_window.width) return null;
     url += '?';
     if (route) {
