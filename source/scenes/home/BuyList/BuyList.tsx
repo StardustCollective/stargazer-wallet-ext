@@ -53,7 +53,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
 
   return (
     <div className={styles.container}>
-      {supportedAssets?.loading ? <CircularProgress className={styles.loader} /> : renderAssetList()}
+      {supportedAssets?.loading ? <div className={styles.loaderContainer}><CircularProgress size={18} /></div> : renderAssetList()}
     </div>
   );
 };

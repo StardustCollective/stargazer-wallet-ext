@@ -34,7 +34,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
       <TouchableOpacity testID="importWallet-multiChainWallet" onPress={onImportPhraseView}>
         <View style={StyleSheet.flatten([styles.menu, styles.firstChild])}>
           <View style={styles.menuIconSection}>
-            {_renderIcon(StargazerIcon, 25, 25, styles.iconContainer)}
+            {_renderIcon(StargazerIcon, 24, 24, styles.iconContainer)}
             <TextV3.Label color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
               Multi Chain Wallet
             </TextV3.Label>
@@ -50,7 +50,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
       <TouchableOpacity testID="importWallet-ethereum" onPress={handleImport(KeyringNetwork.Ethereum)}>
         <View style={StyleSheet.flatten([styles.menu, styles.secondChild])}>
           <View style={styles.menuIconSection}>
-            {_renderIcon(EthereumIcon, 36, 36, { ...styles.iconContainer, ...styles.iconETHWrapper }, styles.iconETH)}
+            {_renderIcon(EthereumIcon, 24, 24, { ...styles.iconContainer, ...styles.iconETHWrapper }, styles.iconETH)}
             <TextV3.Label color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
               Ethereum
             </TextV3.Label>
@@ -66,7 +66,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
       <TouchableOpacity testID="importWallet-constellation" onPress={handleImport(KeyringNetwork.Constellation)}>
         <View style={StyleSheet.flatten([styles.menu, styles.lastChild])}>
           <View style={styles.menuIconSection}>
-            {_renderIcon(ConstellationIcon, 36, 36, { ...styles.iconContainer, ...styles.iconDAGWrapper })}
+            {_renderIcon(ConstellationIcon, 24, 24, { ...styles.iconContainer, ...styles.iconDAGWrapper })}
             <TextV3.Label color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
               Constellation
             </TextV3.Label>

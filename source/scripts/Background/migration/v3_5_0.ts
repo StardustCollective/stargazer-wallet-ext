@@ -19,7 +19,7 @@ type V2WalletState = {
     }
 }
 
-type V3_3_4WalletState = {
+type V3_5_0WalletState = {
     assets: IAssetListState
     nfts: INFTListState,
     contacts: IContactBookState,
@@ -30,7 +30,7 @@ type V3_3_4WalletState = {
 
 const MigrateRunner = async (oldState: V2WalletState) => {
     try {
-        const newState: V3_3_4WalletState = {
+        const newState: V3_5_0WalletState = {
             ...oldState,
             vault: {
                 ...oldState.vault,
@@ -52,15 +52,15 @@ const MigrateRunner = async (oldState: V2WalletState) => {
                     [AssetType.Constellation]: '0',
                     [AssetType.Ethereum]: '0',
                 },
-                version: '3.4.2',
+                version: '3.5.0',
             },
 
         };
         await saveState(newState);
-        console.log('Migrate to <v3.4.2> successfully!');
+        console.log('Migrate to <v3.5.0> successfully!');
         reload();
     } catch (error) {
-        console.log('<v3.4.2> Migration Error');
+        console.log('<v3.5.0> Migration Error');
         console.log(error);
     }
 };
