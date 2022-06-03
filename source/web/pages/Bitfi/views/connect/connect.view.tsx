@@ -35,6 +35,9 @@ const BUTTON_COLOR_PROP = 'primary';
 const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
 // Strings
 const CONNECT_TO_BITFI_STRING = 'Connect to Bitfi';
+const BITFI_LOGO_ALT = 'bitfi_icon';
+// Numbers 
+const BITFI_LOGO_SIZE = 180;
 
 /////////////////////////
 // Interface
@@ -81,9 +84,9 @@ function Connect(props: IConnectProps) {
     <div className={styles.content}>
       <div className={styles.wrapper}>
         <div className={styles.instructions}>
-          <img src={BitfiLogo} alt="bitfi_icon" width={180} height={180} />
+          <img src={BitfiLogo} alt={BITFI_LOGO_ALT} width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
           <span>
-            Connect your hardware device and click the <br/>"Connect to Bitfi" button below.
+            Turn on your hardware device and connect to wifi, then click<br/>"Connect to Bitfi" button below.
           </span>
         </div>
         <div>
