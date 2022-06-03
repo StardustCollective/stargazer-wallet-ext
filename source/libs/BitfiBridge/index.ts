@@ -1,4 +1,5 @@
 import { BitfiConfig, Bitfi, SignInParams, EnvoyMessage, Callback,  } from './bitfi'
+export { calculateCode } from './bitfi';
 
 export class BitfiBridge {
   private _bitfi: Bitfi
