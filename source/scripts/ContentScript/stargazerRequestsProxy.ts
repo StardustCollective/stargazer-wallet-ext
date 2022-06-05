@@ -1,27 +1,34 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
-import {
-  StargazerEncodedProxyRequest,
-  StargazerProxyRequest,
-  StargazerEncodedProxyResponse,
-  StargazerProxyResponse,
-} from '../common/proxy-types';
 
-const isStargazerProxyRequest = (value: any, once: string): value is StargazerEncodedProxyRequest => {
-  return 'once' in value && value.once === once;
+import { StargazerEncodedProxyRequest, StargazerEncodedProxyResponse, StargazerEncodedProxyEvent } from '../common';
+
+const isStargazerProxyRequest = (value: any, proxyId: string): value is StargazerEncodedProxyRequest => {
+  return 'proxyId' in value && value.proxyId === proxyId;
 };
 
+/**
+ * Transparent Requests Proxy
+ *
+ * Handles all interaction between the injected
+ * script and the background script.
+ *
+ * Uses a proxyId defined on initialization to validate requests origin. Not super secure but yeah.
+ */
 class StargazerRequestsProxy {
-  #once: string;
-  #port: Runtime.Port;
+  #proxyId: string;
+  #requestsPort: Runtime.Port;
+  #eventsPort: Runtime.Port;
 
-  constructor(once: string) {
-    this.#once = once;
-    this.#port = browser.runtime.connect(undefined, { name: 'stargazer' });
+  constructor(proxyId: string) {
+    this.#proxyId = proxyId;
+    this.#requestsPort = browser.runtime.connect(undefined, { name: `stargazer-requests:${window.btoa(proxyId)}` });
+    this.#eventsPort = browser.runtime.connect(undefined, { name: `stargazer-events:${window.btoa(proxyId)}` });
   }
 
   listen() {
     window.addEventListener('message', this.onWindowMessage.bind(this));
-    this.#port.onMessage.addListener(this.onPortMessage.bind(this));
+    this.#requestsPort.onMessage.addListener(this.onPortResponse.bind(this));
+    this.#eventsPort.onMessage.addListener(this.onPortEvent.bind(this));
   }
 
   onWindowMessage(event: MessageEvent<unknown>) {
@@ -31,13 +38,29 @@ class StargazerRequestsProxy {
     }
 
     const encodedRequest = event.data;
-    if (!isStargazerProxyRequest(encodedRequest, this.#once)) {
+    if (!isStargazerProxyRequest(encodedRequest, this.#proxyId)) {
       // NOOP
       return;
     }
+
+    this.#requestsPort.postMessage(encodedRequest);
   }
 
-  onPortMessage(event: { id: string; data: string }) {}
+  onPortResponse(encodedResponse: StargazerEncodedProxyResponse) {
+    if (encodedResponse.proxyId !== this.#proxyId) {
+      throw new Error('Unmatched proxy id on port response');
+    }
+
+    window.dispatchEvent(new CustomEvent(encodedResponse.reqId, { detail: JSON.stringify(encodedResponse) }));
+  }
+
+  onPortEvent(encodedEvent: StargazerEncodedProxyEvent) {
+    if (encodedEvent.proxyId !== this.#proxyId) {
+      throw new Error('Unmatched proxy id on port event');
+    }
+
+    window.dispatchEvent(new CustomEvent(encodedEvent.listenerId, { detail: JSON.stringify(encodedEvent) }));
+  }
 }
 
 export { StargazerRequestsProxy };

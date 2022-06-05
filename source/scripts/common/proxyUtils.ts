@@ -27,6 +27,7 @@ type StargazerProxyRequest =
   | { type: 'rpc'; method: RequestArguments['method']; params: RequestArguments['params'] };
 
 type StargazerEncodedProxyEvent = {
+  listenerId: string;
   proxyId: string;
   event: StargazerProxyEvent;
 };
