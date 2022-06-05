@@ -2,13 +2,13 @@ import { browser } from 'webextension-polyfill-ts';
 
 import { generateNamespaceId } from '../common';
 
-import { StargazerRequestsProxy } from './stargazerRequestsProxy';
+import { RequestsProxy } from './requestsProxy';
 
 const initInjectedScript = () => {
   const proxyId = generateNamespaceId('proxy');
 
   /* init requests proxy */
-  const requestsProxy = new StargazerRequestsProxy(proxyId);
+  const requestsProxy = new RequestsProxy(proxyId);
   requestsProxy.listen();
 
   /* inject script in third-party-page */

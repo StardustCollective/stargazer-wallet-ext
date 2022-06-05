@@ -14,7 +14,7 @@ const isStargazerProxyRequest = (value: any, proxyId: string): value is Stargaze
  *
  * Uses a proxyId defined on initialization to validate requests origin. Not super secure but yeah.
  */
-class StargazerRequestsProxy {
+class RequestsProxy {
   #proxyId: string;
   #requestsPort: Runtime.Port;
   #eventsPort: Runtime.Port;
@@ -63,4 +63,4 @@ class StargazerRequestsProxy {
   }
 }
 
-export { StargazerRequestsProxy };
+export { RequestsProxy };
