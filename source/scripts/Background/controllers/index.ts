@@ -59,19 +59,21 @@ const MasterController = (): IMasterController => {
     const _window = await browser.windows.getCurrent();
 
     if (!_window || !_window.width) return null;
-    url += '?';
+
+    const params = new URLSearchParams();
     if (route) {
-      url += `&route=${route}`;
+      params.set('route', route);
     }
     if (network) {
-      url += `&network=${network}`;
+      params.set('network', network);
     }
     if (data) {
-      url += `&data=${JSON.stringify(data)}`;
+      params.set('data', JSON.stringify(data));
     }
+
     // This was being passed only in hash value but it gets dropped somethings in routing
-    url += `&windowId=${windowId}`;
-    url += `#${windowId}`;
+    params.set('windowId', windowId);
+    url += `?${params.toString()}#${windowId}`;
 
     return await browser.windows.create({
       url,

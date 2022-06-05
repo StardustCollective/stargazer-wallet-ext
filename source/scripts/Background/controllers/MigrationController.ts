@@ -41,11 +41,11 @@ const MigrationController = async () => {
   }
 
   /**
-   * version < 3_4_2
+   * version < 3_5_0
    */
   if (Array.isArray(state?.vault?.wallets)) {
-    const v3_4_2 = require('../migration/v3_4_2');
-    await v3_4_2.default(state); 
+    const v3_5_0 = require('../migration/v3_5_0');
+    await v3_5_0.default(state); 
   }
 };
 

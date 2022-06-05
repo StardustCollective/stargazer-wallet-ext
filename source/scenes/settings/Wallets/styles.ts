@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   assetIconWrapperDAG: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.gray_light_100,
   },
   assetIconWrapperETH: {
     backgroundColor: COLORS.gray_light_100,

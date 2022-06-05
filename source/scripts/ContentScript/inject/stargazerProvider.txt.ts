@@ -6,10 +6,36 @@ const REQUEST_MAP = {
   ETH: {
     chainId: SUPPORTED_WALLET_METHODS.getChainId,
     accounts: SUPPORTED_WALLET_METHODS.getAccounts,
-    blockNumber: SUPPORTED_WALLET_METHODS.getBlockNumber,
-    estimateGas: SUPPORTED_WALLET_METHODS.estimateGas,
     sendTransaction: SUPPORTED_WALLET_METHODS.sendTransaction,
     signMessage: SUPPORTED_WALLET_METHODS.signMessage,
+
+    // Transparent Implementations
+    blockNumber: SUPPORTED_WALLET_METHODS.blockNumber,
+    estimateGas: SUPPORTED_WALLET_METHODS.estimateGas,
+    call: SUPPORTED_WALLET_METHODS.call,
+    gasPrice: SUPPORTED_WALLET_METHODS.gasPrice,
+    getBlockByHash: SUPPORTED_WALLET_METHODS.getBlockByHash,
+    getBlockByNumber: SUPPORTED_WALLET_METHODS.getBlockByNumber,
+    getBlockTransactionCountByHash: SUPPORTED_WALLET_METHODS.getBlockTransactionCountByHash,
+    getBlockTransactionCountByNumber: SUPPORTED_WALLET_METHODS.getBlockTransactionCountByNumber,
+    getCode: SUPPORTED_WALLET_METHODS.getCode,
+    getFilterChanges: SUPPORTED_WALLET_METHODS.getFilterChanges,
+    getFilterLogs: SUPPORTED_WALLET_METHODS.getFilterLogs,
+    getLogs: SUPPORTED_WALLET_METHODS.getLogs,
+    getStorageAt: SUPPORTED_WALLET_METHODS.getStorageAt,
+    getTransactionByBlockHashAndIndex: SUPPORTED_WALLET_METHODS.getTransactionByBlockHashAndIndex,
+    getTransactionByBlockNumberAndIndex: SUPPORTED_WALLET_METHODS.getTransactionByBlockNumberAndIndex,
+    getTransactionByHash: SUPPORTED_WALLET_METHODS.getTransactionByHash,
+    getTransactionCount: SUPPORTED_WALLET_METHODS.getTransactionCount,
+    getTransactionReceipt: SUPPORTED_WALLET_METHODS.getTransactionReceipt,
+    getUncleByBlockHashAndIndex: SUPPORTED_WALLET_METHODS.getUncleByBlockHashAndIndex,
+    getUncleByBlockNumberAndIndex: SUPPORTED_WALLET_METHODS.getUncleByBlockNumberAndIndex,
+    getUncleCountByBlockHash: SUPPORTED_WALLET_METHODS.getUncleCountByBlockHash,
+    getUncleCountByBlockNumber: SUPPORTED_WALLET_METHODS.getUncleCountByBlockNumber,
+    newBlockFilter: SUPPORTED_WALLET_METHODS.newBlockFilter,
+    newFilter: SUPPORTED_WALLET_METHODS.newFilter,
+    protocolVersion: SUPPORTED_WALLET_METHODS.protocolVersion,
+    uninstallFilter: SUPPORTED_WALLET_METHODS.uninstallFilter,
   },
   DAG: {
     chainId: SUPPORTED_WALLET_METHODS.getChainId,
@@ -185,7 +211,6 @@ const allPrivider = provider('ethereum');
 
 window.stargazer = {
   evtRegMap: {},
-
   getProvider: (chain) => provider(chain),
   isConnected: async () => {
     const provider = window.providerManager.getProviderFor('main');

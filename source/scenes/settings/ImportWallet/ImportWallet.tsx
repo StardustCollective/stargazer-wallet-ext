@@ -21,7 +21,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
         <ArrowIcon />
       </section>
       <section id="importWallet-ethereum" className={styles.menu} onClick={handleImport(KeyringNetwork.Ethereum)}>
-        <Icon Component={EthereumIcon} />
+        <Icon width={25} Component={EthereumIcon} />
         <span>Ethereum</span>
         <ArrowIcon />
       </section>
@@ -30,7 +30,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
         className={styles.menu}
         onClick={handleImport(KeyringNetwork.Constellation)}
       >
-        <Icon Component={ConstellationIcon} />
+        <Icon width={20} Component={ConstellationIcon} />
         <span>Constellation</span>
         <ArrowIcon />
       </section>

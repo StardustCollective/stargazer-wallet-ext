@@ -27,6 +27,6 @@ export default interface IImportAccountSettings {
   loadingWalletList: boolean;
   setJsonFile: (file: File) => void;
   setLoading: (val: boolean) => void;
-  showErrorAlert: (message: string) => void;
+  showErrorAlert?: (message: string) => void;
   setImportType: (type: string) => void;
 }
