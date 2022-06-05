@@ -84,12 +84,6 @@ export const handleRequest = async (
     case SUPPORTED_WALLET_METHODS.getChainId:
       result = provider.getChainId();
       break;
-    case SUPPORTED_WALLET_METHODS.getBlockNumber:
-      result = provider.getBlockNumber();
-      break;
-    case SUPPORTED_WALLET_METHODS.estimateGas:
-      result = await provider.getGasEstimate();
-      break;
     case SUPPORTED_WALLET_METHODS.getNetwork:
       result = provider.getNetwork();
       break;

@@ -6,12 +6,12 @@ const REQUEST_MAP = {
   ETH: {
     chainId: SUPPORTED_WALLET_METHODS.getChainId,
     accounts: SUPPORTED_WALLET_METHODS.getAccounts,
-    blockNumber: SUPPORTED_WALLET_METHODS.getBlockNumber,
-    estimateGas: SUPPORTED_WALLET_METHODS.estimateGas,
     sendTransaction: SUPPORTED_WALLET_METHODS.sendTransaction,
     signMessage: SUPPORTED_WALLET_METHODS.signMessage,
 
     // Transparent Implementations
+    blockNumber: SUPPORTED_WALLET_METHODS.blockNumber,
+    estimateGas: SUPPORTED_WALLET_METHODS.estimateGas,
     call: SUPPORTED_WALLET_METHODS.call,
     gasPrice: SUPPORTED_WALLET_METHODS.gasPrice,
     getBlockByHash: SUPPORTED_WALLET_METHODS.getBlockByHash,
