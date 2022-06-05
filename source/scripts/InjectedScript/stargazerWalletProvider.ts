@@ -1,5 +1,6 @@
+import {readOnlyProxy, StargazerChain} from '../common'
+
 import { StargazerChainProvider } from './stargazerChainProvider';
-import { StargazerChain, readOnlyProxy } from './utils';
 import {
   StargazerError,
   StargazerWalletProviderError,
@@ -7,6 +8,13 @@ import {
   StargazerChainProviderRpcError,
 } from './errors';
 
+/**
+ * Client-Facing Wallet Provider
+ * 
+ * + Generates chain providers.
+ * + Provides error classes used by the providers.
+ * + Provides wallet version.
+ */
 class StargazerWalletProvider {
   get version() {
     return STARGAZER_WALLET_VERSION;

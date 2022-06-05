@@ -1,84 +1,165 @@
-import {
-  StargazerEncodedProxyRequest,
-  StargazerProxyRequest,
-  StargazerEncodedProxyResponse,
-  StargazerProxyResponse,
-} from '../common/proxy-types';
+import { StargazerProxyEvent, StargazerProxyRequest, StargazerEncodedProxyRequest } from '../common';
 
+import { encodeProxyRequest, decodeProxyResponse, decodeProxyEvent } from './utils';
+import type { StargazerChainProvider } from './stargazerChainProvider';
 import { StargazerChainProviderError, StargazerChainProviderRpcError } from './errors';
-import { genProxyReqId } from './utils';
 
+type AsyncEventHandlerReturnType<Handler> = Handler extends (event: Event) => Promise<infer T> ? T : never;
+
+/**
+ * Private Requests Provider Proxy
+ *
+ * + Proxies/handles all provider's requests.
+ * + Handles activation (handshake).
+ * + There is only one provider proxy per provider.
+ * + Each provider must be activated independently.
+ */
 class StargazerChainProviderProxy {
-  retreiveProxyOnce() {
-    const scriptElem = document.querySelector('[data-stargazer-injected=injected]');
-    if (!scriptElem || !(scriptElem instanceof HTMLScriptElement)) {
-      throw new StargazerChainProviderError('Unable to retreive proxy once element');
-    }
+  #activated: null | boolean;
+  #provider: StargazerChainProvider;
+  #providerListenerEventHandler: (event: StargazerProxyEvent) => any;
+  #listeners: Map<string, (event: Event) => any>;
 
-    if (!scriptElem.dataset.stargazerOnce) {
-      throw new StargazerChainProviderError('Unable to retreive proxy once attribute');
-    }
-
-    return scriptElem.dataset.stargazerOnce;
+  constructor(provider: StargazerChainProvider, providerListenerEventHandler: (event: StargazerProxyEvent) => any) {
+    this.#activated = null;
+    this.#provider = provider;
+    this.#providerListenerEventHandler = providerListenerEventHandler;
+    this.#listeners = new Map();
   }
 
-  request<T = any>(request: StargazerProxyRequest): Promise<T> {
-    return new Promise<T>((rs, rj) => {
-      const reqId = genProxyReqId();
+  get activated() {
+    return this.#activated;
+  }
 
+  #addListener(type: string, listener: (event: Event) => any) {
+    this.#listeners.set(type, listener);
+    window.addEventListener(type, listener, { passive: true });
+  }
+
+  #removeListener(type: string) {
+    const listener = this.#listeners.get(type);
+    if (!listener) {
+      return;
+    }
+
+    window.removeEventListener(type, listener);
+  }
+
+  #promisifiedRequestResponse<T extends (event: Event) => Promise<any>>(
+    encodedRequest: StargazerEncodedProxyRequest,
+    handler: T
+  ): Promise<AsyncEventHandlerReturnType<T>> {
+    return new Promise<AsyncEventHandlerReturnType<T>>((resolve, reject) => {
       window.addEventListener(
-        reqId,
-        (event) => {
-          if (!(event instanceof CustomEvent)) {
-            rj(new StargazerChainProviderError('Unable to process proxy response event'));
-            return;
-          }
-
-          let encodedResponse: StargazerEncodedProxyResponse;
+        encodedRequest.reqId,
+        async (event) => {
           try {
-            encodedResponse = JSON.parse(event.detail);
+            resolve(await handler(event));
           } catch (e) {
-            rj(new StargazerChainProviderError('Unable to decode proxy response data'));
-            return;
+            reject(e);
           }
-
-          const response: StargazerProxyResponse = encodedResponse.response;
-
-          if (response.type === 'error' && response.error.type === 'general') {
-            rj(new StargazerChainProviderError(response.error.message));
-            return;
-          }
-
-          if (response.type === 'error' && response.error.type === 'rpc') {
-            rj(new StargazerChainProviderRpcError(response.error.code, response.error.data, response.error.message));
-            return;
-          }
-
-          if (response.type === 'response') {
-            rs(response.data as T);
-          }
-
-          rj(new StargazerChainProviderError('Unable to classify proxy response'));
         },
         { once: true, passive: true }
       );
 
-      let once: string;
-      try {
-        once = this.retreiveProxyOnce();
-      } catch (e) {
-        rj(e);
-        return;
-      }
-
-      const encodedRequest: StargazerEncodedProxyRequest = {
-        reqId,
-        once,
-        request,
-      };
-
       window.postMessage(encodedRequest, '*');
     });
+  }
+
+  async #handlePromisifiedRequestResponse<T extends (event: Event) => Promise<any>>(
+    request: StargazerProxyRequest,
+    handler: T
+  ) {
+    const encodedRequest = encodeProxyRequest(request);
+    return this.#promisifiedRequestResponse(encodedRequest, handler);
+  }
+
+  async #handleHandshakeResponse(event: Event) {
+    const response = decodeProxyResponse('handshake', event);
+
+    if ('error' in response) {
+      throw new StargazerChainProviderError(response.error);
+    }
+
+    return response.result;
+  }
+
+  async #handleRpcResponse(event: Event) {
+    const response = decodeProxyResponse('rpc', event);
+
+    if ('error' in response) {
+      if ('code' in response.error && 'data' in response.error) {
+        throw new StargazerChainProviderRpcError(response.error.code, response.error.data, response.error.message);
+      }
+
+      throw new StargazerChainProviderError(response.error.message);
+    }
+
+    return response.result;
+  }
+
+  async #handleEventRequest(request: StargazerProxyRequest & { type: 'event' }) {
+    const encodedRequest = encodeProxyRequest(request);
+
+    if (request.action === 'register') {
+      this.#addListener(request.listenerId, this.#handleListenerEvent.bind(this));
+    }
+
+    if (request.action === 'deregister') {
+      this.#removeListener(request.listenerId);
+    }
+
+    return this.#promisifiedRequestResponse(encodedRequest, this.#handleEventResponse.bind(this));
+  }
+
+  async #handleEventResponse(event: Event) {
+    const response = decodeProxyResponse('event', event);
+
+    if ('error' in response) {
+      throw new StargazerChainProviderError(response.error);
+    }
+
+    return response.result;
+  }
+
+  async #handleListenerEvent(event: Event) {
+    const listenerEvent = decodeProxyEvent(event);
+
+    this.#providerListenerEventHandler(listenerEvent);
+  }
+
+  async activate(title?: string) {
+    const request: StargazerProxyRequest = {
+      type: 'handshake',
+      providerId: this.#provider.providerId,
+      chain: this.#provider.chain,
+      origin: location.origin,
+      title: title ?? document.title,
+    };
+
+    const result = await this.#handlePromisifiedRequestResponse(request, this.#handleHandshakeResponse);
+    this.#activated = result;
+    return result;
+  }
+
+  async request(request: StargazerProxyRequest): Promise<any> {
+    if (this.#activated === null) {
+      await this.activate();
+    }
+
+    if (this.#activated === false) {
+      throw new StargazerChainProviderError('User denied provider activation');
+    }
+
+    if (request.type === 'rpc') {
+      return this.#handlePromisifiedRequestResponse(request, this.#handleRpcResponse);
+    }
+
+    if (request.type === 'event') {
+      return this.#handleEventRequest(request);
+    }
+
+    throw new StargazerChainProviderError('Unable to classify proxy request');
   }
 }
 

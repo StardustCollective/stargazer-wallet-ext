@@ -1,13 +1,14 @@
 import { browser } from 'webextension-polyfill-ts';
+
+import { generateNamespaceId } from '../common';
+
 import { StargazerRequestsProxy } from './stargazerRequestsProxy';
 
-const genStargazerProxyOnce = () => `stargazer:${window.btoa(`${Date.now()}:${Math.random()}`)}`;
-
 const initInjectedScript = () => {
-  const proxyOnce = genStargazerProxyOnce();
+  const proxyId = generateNamespaceId('proxy');
 
   /* init requests proxy */
-  const requestsProxy = new StargazerRequestsProxy(proxyOnce);
+  const requestsProxy = new StargazerRequestsProxy(proxyId);
   requestsProxy.listen();
 
   /* inject script in third-party-page */
@@ -15,7 +16,7 @@ const initInjectedScript = () => {
   scriptElem.type = 'text/javascript';
   scriptElem.src = browser.runtime.getURL('js/injectedScript.bundle.js');
   scriptElem.dataset.stargazerInjected = 'injected';
-  scriptElem.dataset.stargazerOnce = proxyOnce;
+  scriptElem.dataset.stargazerProxyId = proxyId;
   document.body.appendChild(scriptElem);
 };
 
