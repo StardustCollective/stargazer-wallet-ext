@@ -68,7 +68,7 @@ const SignView = ({
   ) : (
     <>
       <div className={styles.wrapper}>
-        <section className={styles.subheading}>Ledger - Sign Transaction</section>
+        <section className={styles.subheading}>Bitfi - Sign Transaction</section>
         <section className={styles.txAmount}>
           <div className={styles.iconWrapper}>
             <UpArrowIcon />
@@ -114,7 +114,7 @@ const SignView = ({
         </section>
         <section className={styles.instruction}>
             <span>
-              Please connect your Ledger device and open the Constellation app to sign the transaction.
+              Please connect your Bitfi device to WiFi to sign the transaction.
             </span>
           </section>
           <div className={styles.actions}>
@@ -129,7 +129,7 @@ const SignView = ({
                 <CircularProgress />
               </div>
               <div>
-                <span>Waiting For Ledger</span>
+                <span>Waiting For Bitfi</span>
               </div>
             </div>
           </div>

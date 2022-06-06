@@ -15,8 +15,7 @@ import Button from '@material-ui/core/Button';
 // Image Imports
 /////////////////////////
 
-import LedgerIcon from 'assets/images/svg/ledger.svg';
-
+import BitfiLogo from 'assets/images/bitfi_logo.png';
 
 /////////////////////////
 // Styles Imports
@@ -35,6 +34,8 @@ const BUTTON_COLOR_PROP = 'primary';
 const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
 // Strings
 const CONNECT_TO_LEDGER_STRING = 'Connect to Bitfi';
+// Numbers
+const BITFI_LOGO_SIZE = 260;
 
 /////////////////////////
 // Interface
@@ -91,10 +92,12 @@ function Connect(props: IConnectProps) {
   return (
     <div className={styles.content}>
       <div className={styles.wrapper}>
-        <div className={styles.instructions}>
-          <h2 style={{ marginBottom: '15px' }}>Bitfi signin</h2>
+        <div className={styles.connectInstructions}>
+          <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
           <span style={{ marginBottom: '15px', paddingTop: '0px', fontSize: '15px' }}>
-            Connect your hardware device and click the <br/>"Connect to Bitfi" button below.
+            1. Connect your Bitfi device to WiFi.<br/> 
+            2. Enter your Device ID below.<br/> 
+            3. Click "Connect to Bitfi" button.
           </span>
           <input
             style={{ height: '30px', width: '100px', textAlign: 'center' }}

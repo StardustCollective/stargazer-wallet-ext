@@ -74,7 +74,7 @@ const SignMessageView = ({
   ) : (
     <>
       <div className={styles.wrapper}>
-        <section className={styles.subheading}>Ledger - Signature Request</section>
+        <section className={styles.subheading}>Bitfi - Signature Request</section>
         <section className={styles.account}>
           <div className={styles.row}>
             Account: 
@@ -101,7 +101,7 @@ const SignMessageView = ({
         </section>
         <section className={styles.instruction}>
             <span>
-              Please connect your Ledger device and open the Constellation app to sign the message.
+              Please connect your Bitfi device to WiFI to sign the message.
               Only sign messages on sites you trust.
             </span>
           </section>
@@ -117,7 +117,7 @@ const SignMessageView = ({
                 <CircularProgress />
               </div>
               <div>
-                <span>Waiting For Ledger</span>
+                <span>Waiting For Bitfi</span>
               </div>
             </div>
           </div>

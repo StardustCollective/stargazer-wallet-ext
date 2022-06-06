@@ -4,6 +4,10 @@ import Button from '@material-ui/core/Button';
 import styles from './styles.module.scss';
 
 
+import BitfiLogo from 'assets/images/bitfi_logo.png';
+
+const BITFI_LOGO_SIZE = 260;
+
 const BUTTON_SIZE_PROP = 'large';
 const BUTTON_VARIANT_PROP = 'contained';
 const BUTTON_COLOR_PROP = 'primary';
@@ -30,16 +34,14 @@ function ConnectBitfiView({ onBack, message, error, code }: IConnectProps) {
     return (
       <div className={styles.content}>
         <div className={styles.wrapper}>
-          <div className={styles.instructions}>
-            <h2 style={{ marginBottom: '15px' }}>Bitfi signin</h2>
-            <span style={{ marginBottom: '15px', paddingTop: '0px', fontSize: '15px' }}>
-              {message}
+          <div className={styles.connectInstructions}>
+            <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
+            <span style={{ marginBottom: '20px', paddingTop: '0px', fontSize: '14px' }}>
+              {message.charAt(0).toUpperCase() + message.slice(1)}.
             </span>
-            <span style={{ fontSize: '20px' }}>Please, make sure the code below matches what's displayed on your device</span>
-            <h2 style={{ marginBottom: '15px' }}>{code}</h2>
-            
+            <span style={{ fontSize: '14px', marginBottom: '5px' }}>Please, make sure the code below matches what's displayed on your device</span>
+            <h5 style={{ margin: '0px' }}>{code}</h5>
           </div>
-
           {error}
           <div>
           <BlueButton
