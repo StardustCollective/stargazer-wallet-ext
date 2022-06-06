@@ -1,4 +1,9 @@
-import { combineReducers, configureStore, getDefaultMiddleware, Store } from '@reduxjs/toolkit';
+import {
+  combineReducers,
+  configureStore,
+  getDefaultMiddleware,
+  Middleware,
+} from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import throttle from 'lodash/throttle';
@@ -17,7 +22,9 @@ import providers from './providers';
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
 
-const middleware = [...getDefaultMiddleware({ thunk: false, serializableCheck: false })];
+const middleware: Middleware[] = [
+  ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
+];
 
 if (!isProd) {
   middleware.push(logger);
@@ -25,7 +32,7 @@ if (!isProd) {
 
 middleware.push(thunk);
 
-const store: Store = configureStore({
+const store = configureStore({
   reducer: combineReducers({
     vault,
     price,
@@ -64,8 +71,8 @@ store.subscribe(
 // initialize store from state
 if (isNative) {
   MigrationController().then(() => {
-rehydrateStore(store);
-  })
+    rehydrateStore(store);
+  });
 } else {
   rehydrateStore(store);
 }

@@ -69,7 +69,7 @@ const ConfirmContainer = () => {
   let history: any;
   let isExternalRequest: boolean;
 
-  if(!!location){
+  if (!!location) {
     isExternalRequest = location.pathname.includes('confirmTransaction');
   }
 
@@ -90,8 +90,9 @@ const ConfirmContainer = () => {
       to
     } = queryString.parse(location.search);
 
+
     activeAsset = useSelector(
-      (state: RootState) => find(state.assets, { address: to })
+      (state: RootState) => find(state.assets, { address: Array.isArray(to) ? to[0] : to })
     ) as IAssetInfoState;
 
     if (!activeAsset) {
@@ -198,11 +199,11 @@ const ConfirmContainer = () => {
           window.close();
         }
       } else {
-        if(activeAsset.type === AssetType.LedgerConstellation){
+        if (activeAsset.type === AssetType.LedgerConstellation) {
           let publicKey = activeWalletPublicKey;
           let id = activeWallet.id;
           window.open(`/ledger.html?route=signTransaction&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
-        }else{
+        } else {
           await accountController.confirmTempTx()
           setConfirmed(true);
         }

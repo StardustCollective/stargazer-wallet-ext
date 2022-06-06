@@ -72,8 +72,8 @@ const DAppController = (): IDAppController => {
 
   const notifyAccountsChanged = async (accounts: string[]): Promise<void> => {
     const state = store.getState();
-    const whiteList: { [dappId: string]: IDAppInfo }[] = state.dapp.whitelist;
-    const listening: { [origin: string]: Array<string> } = state.dapp.listening;
+    const whiteList = state.dapp.whitelist;
+    const listening = state.dapp.listening;
 
     let events: any[] = [];
 

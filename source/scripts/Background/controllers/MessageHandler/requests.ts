@@ -1,4 +1,4 @@
-import { browser, Runtime } from 'webextension-polyfill-ts';
+import { browser, Runtime, Windows } from 'webextension-polyfill-ts';
 import { v4 as uuid } from 'uuid';
 import {
   KeyringWalletState,
@@ -11,21 +11,36 @@ import store from 'state/store';
 import { getERC20DataDecoder } from 'utils/ethUtil';
 import { getInfuraProvider } from 'utils/ethersUtil';
 import { MasterController } from '../';
-import { SUPPORTED_WALLET_METHODS, Message, TRANSPARENT_WALLET_METHODS, SUPPORTED_WALLET_METHODS_NAMES } from './types';
+import {
+  SUPPORTED_WALLET_METHODS,
+  Message,
+  TRANSPARENT_WALLET_METHODS,
+  SUPPORTED_WALLET_METHODS_NAMES,
+} from './types';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
 const EXTERNAL_URL = '/external.html';
-const WINDOW_TYPES = {
+const WINDOW_TYPES: Record<string, Windows.CreateType> = {
   popup: 'popup',
   normal: 'normal',
 };
 
-const handleTransparentRequest = async (message: Message, masterController: MasterController) => {
+const handleTransparentRequest = async (
+  message: Message,
+  masterController: MasterController
+) => {
   const { method, args } = message.data;
 
-  const provider = getInfuraProvider(masterController.ethereumProvider.getChainId() === 1 ? 'mainnet' : 'testnet');
-  return provider.send(`eth_${SUPPORTED_WALLET_METHODS_NAMES[method as unknown as SUPPORTED_WALLET_METHODS]}`, args);
+  const provider = getInfuraProvider(
+    masterController.ethereumProvider.getChainId() === 1 ? 'mainnet' : 'testnet'
+  );
+  return provider.send(
+    `eth_${
+      SUPPORTED_WALLET_METHODS_NAMES[method as unknown as SUPPORTED_WALLET_METHODS]
+    }`,
+    args
+  );
 };
 
 export const handleRequest = async (
@@ -46,18 +61,30 @@ export const handleRequest = async (
 
   const allowed = masterController.dapp.isDAppConnected(origin);
   const walletIsLocked = !masterController.wallet.isUnlocked();
-  const provider = asset === 'DAG' ? masterController.stargazerProvider : masterController.ethereumProvider;
-  const network = asset === 'DAG' ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
-  const windowUrl = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_URL : EXTERNAL_URL;
+  const provider =
+    asset === 'DAG'
+      ? masterController.stargazerProvider
+      : masterController.ethereumProvider;
+  const network =
+    asset === 'DAG' ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
+  const windowUrl =
+    activeWallet.type === KeyringWalletType.LedgerAccountWallet
+      ? LEDGER_URL
+      : EXTERNAL_URL;
   const windowType =
-    activeWallet.type === KeyringWalletType.LedgerAccountWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
+    activeWallet.type === KeyringWalletType.LedgerAccountWallet
+      ? WINDOW_TYPES.normal
+      : WINDOW_TYPES.popup;
   const windowSize =
     activeWallet.type === KeyringWalletType.LedgerAccountWallet
       ? { width: 1000, height: 1000 }
       : { width: 372, height: 600 };
   const windowId = uuid();
 
-  if (network === KeyringNetwork.Ethereum && TRANSPARENT_WALLET_METHODS.includes(+method)) {
+  if (
+    network === KeyringNetwork.Ethereum &&
+    TRANSPARENT_WALLET_METHODS.includes(+method)
+  ) {
     try {
       const result = await handleTransparentRequest(message, masterController);
       return Promise.resolve({ id: message.id, result });
@@ -99,7 +126,9 @@ export const handleRequest = async (
         );
       }
 
-      const assetAccount = activeWallet.accounts.find((account) => account.network === network);
+      const assetAccount = activeWallet.accounts.find(
+        (account) => account.network === network
+      );
       if (!assetAccount) {
         return Promise.reject(
           new CustomEvent(message.id, {
@@ -139,7 +168,11 @@ export const handleRequest = async (
       // If the type of account is Ledger send back the public key so the
       // signature can be verified by the requester.
       let accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
-      if (activeWallet.type === KeyringWalletType.LedgerAccountWallet && accounts && accounts[0]) {
+      if (
+        activeWallet.type === KeyringWalletType.LedgerAccountWallet &&
+        accounts &&
+        accounts[0]
+      ) {
         data.publicKey = accounts[0].publicKey;
       }
 
@@ -199,7 +232,9 @@ export const handleRequest = async (
           );
         }
 
-        const assetAccount = activeWallet.accounts.find((account) => account.network === network);
+        const assetAccount = activeWallet.accounts.find(
+          (account) => account.network === network
+        );
         if (!assetAccount) {
           return Promise.reject(
             new CustomEvent(message.id, {
@@ -236,7 +271,12 @@ export const handleRequest = async (
       const decodedTxData = data?.data ? decoder.decodeData(data?.data) : null;
 
       const sendTransaction = async () => {
-        await masterController.createPopup(windowId, message.data.network, 'sendTransaction', { ...data });
+        await masterController.createPopup(
+          windowId,
+          message.data.network,
+          'sendTransaction',
+          { ...data }
+        );
 
         setPendingWindow(true);
 
@@ -258,7 +298,12 @@ export const handleRequest = async (
 
       const approveSpend = async () => {
         //special case transaction
-        await masterController.createPopup(windowId, message.data.network, 'approveSpend', { ...data });
+        await masterController.createPopup(
+          windowId,
+          message.data.network,
+          'approveSpend',
+          { ...data }
+        );
 
         setPendingWindow(true);
 
