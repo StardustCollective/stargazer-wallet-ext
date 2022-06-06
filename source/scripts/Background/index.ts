@@ -7,14 +7,14 @@ import { wrapStore } from 'webext-redux';
 import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
 
-import MasterController, { IMasterController } from './controllers';
+import { MasterController } from './controllers';
 import { Runtime } from 'webextension-polyfill-ts';
 import { messagesHandler } from './controllers/MessageHandler';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 declare global {
   interface Window {
-    controller: Readonly<IMasterController>;
+    controller: MasterController;
   }
 }
 
@@ -25,15 +25,13 @@ browser.runtime.onInstalled.addListener((): void => {
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {
   if (port.name === 'stargazer') {
     messagesHandler(port, window.controller);
-  }
-  else if (
-    port.sender &&
-    port.sender.url &&
-    (port.sender.url?.includes(browser.runtime.getURL('/app.html')) ||
-    port.sender.url?.includes(browser.runtime.getURL('/external.html')))
+  } else if (
+    port.sender?.url?.includes(browser.runtime.getURL('/app.html')) ||
+    port.sender?.url?.includes(browser.runtime.getURL('/external.html'))
   ) {
     const vault = store.getState().vault;
-    const networkId = (vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation]);
+    const networkId =
+      vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation];
     const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
     dag4.di.getStateStorageDb().setPrefix('stargazer-');
     dag4.di.useFetchHttpClient(window.fetch.bind(window));
@@ -41,7 +39,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     dag4.network.config({
       id: networkInfo.id,
       beUrl: networkInfo.beUrl,
-      lbUrl: networkInfo.lbUrl
+      lbUrl: networkInfo.lbUrl,
     });
 
     port.onDisconnect.addListener(() => {
@@ -52,13 +50,13 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     console.log('onConnect');
     if (window.controller.wallet.isUnlocked()) {
       window.controller.wallet.account.assetsBalanceMonitor.start();
-      window.controller.wallet.account.getLatestTxUpdate()
+      window.controller.wallet.account.getLatestTxUpdate();
     }
   }
 });
 
 if (!window.controller) {
-  window.controller = MasterController();
+  window.controller = new MasterController();
 }
 
 wrapStore(store, { portName: STORE_PORT });

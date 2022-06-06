@@ -10,7 +10,7 @@ import {
 import store from 'state/store';
 import { getERC20DataDecoder } from 'utils/ethUtil';
 import { getInfuraProvider } from 'utils/ethersUtil';
-import { IMasterController } from '../';
+import { MasterController } from '../';
 import { SUPPORTED_WALLET_METHODS, Message, TRANSPARENT_WALLET_METHODS, SUPPORTED_WALLET_METHODS_NAMES } from './types';
 
 // Constants
@@ -21,7 +21,7 @@ const WINDOW_TYPES = {
   normal: 'normal',
 };
 
-const handleTransparentRequest = async (message: Message, masterController: IMasterController) => {
+const handleTransparentRequest = async (message: Message, masterController: MasterController) => {
   const { method, args } = message.data;
 
   const provider = getInfuraProvider(masterController.ethereumProvider.getChainId() === 1 ? 'mainnet' : 'testnet');
@@ -30,7 +30,7 @@ const handleTransparentRequest = async (message: Message, masterController: IMas
 
 export const handleRequest = async (
   port: Runtime.Port,
-  masterController: IMasterController,
+  masterController: MasterController,
   message: Message,
   origin: string,
   setPendingWindow: (isPending: boolean) => void

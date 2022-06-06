@@ -1,10 +1,10 @@
 import { Runtime } from 'webextension-polyfill-ts';
 import { Message } from './types';
-import { IMasterController } from '../';
+import { MasterController } from '../';
 
 export const importLedgerAccounts = (
   port: Runtime.Port,
-  masterController: IMasterController,
+  masterController: MasterController,
   message: Message
 ) => {
 

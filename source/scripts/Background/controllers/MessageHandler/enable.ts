@@ -1,11 +1,11 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import { v4 as uuid } from 'uuid';
 import { Message } from './types';
-import { IMasterController } from '..';
+import { MasterController } from '..';
 
 export const enable = async (
   port: Runtime.Port,
-  masterController: IMasterController,
+  masterController: MasterController,
   message: Message,
   origin: string,
   setPendingWindow: (isPending: boolean) => void,

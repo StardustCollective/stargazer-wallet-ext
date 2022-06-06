@@ -1,5 +1,5 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
-import { IMasterController } from '../';
+import { MasterController } from '../';
 import { Message } from './types';
 import { initializeEvents, registerEvent, deregisterEvent } from './events';
 import { enable } from './enable';
@@ -8,7 +8,7 @@ import { importLedgerAccounts } from './ledger';
 
 export const messagesHandler = (
     port: Runtime.Port,
-    masterController: IMasterController
+    masterController: MasterController
 ) => {
     let pendingWindow = false;
 

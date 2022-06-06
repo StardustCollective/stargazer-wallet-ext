@@ -1,10 +1,10 @@
 import { Runtime } from 'webextension-polyfill-ts';
 import { Message, SUPPORTED_EVENT_TYPES } from './types';
-import { IMasterController } from '../';
+import { MasterController } from '../';
 
 
 
-export const initializeEvents = (masterController: IMasterController, port: Runtime.Port,) => {
+export const initializeEvents = (masterController: MasterController, port: Runtime.Port,) => {
     Object.values(SUPPORTED_EVENT_TYPES).map((method) => {
         window.addEventListener(
             method,
@@ -33,7 +33,7 @@ export const initializeEvents = (masterController: IMasterController, port: Runt
     })
 };
 
-export const registerEvent = (masterController: IMasterController, message: Message) => {
+export const registerEvent = (masterController: MasterController, message: Message) => {
     const listenerOrigin = message.data.origin;
     const method = message.data.method;
 
@@ -47,7 +47,7 @@ export const registerEvent = (masterController: IMasterController, message: Mess
     masterController.dapp.registerListeningSite(listenerOrigin, method);
 };
 
-export const deregisterEvent = (masterController: IMasterController, message: Message) => {
+export const deregisterEvent = (masterController: MasterController, message: Message) => {
     const listenerOrigin = message.data.origin;
     const method = message.data.method;
 
