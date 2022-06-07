@@ -4,6 +4,7 @@
 
 import React, { FC, useState, useEffect} from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { makeStyles } from '@material-ui/core/styles'
 import { LedgerBridgeUtil } from '../../utils/ledgerBridge';
 import queryString from 'query-string';
@@ -240,7 +241,13 @@ const LedgerPage: FC = () => {
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
       setSelectedAccounts((state) => {
-        return [...state, { publicKey: account.publicKey, address: account.address, id: key - 1, balance: '' }];
+        return [...state, {
+          id: key - 1, 
+          type: KeyringWalletType.LedgerAccountWallet,
+          publicKey: account.publicKey, 
+          address: account.address, 
+          balance: '' 
+        }];
       })
     } else {
       setSelectedAccounts((state) => {

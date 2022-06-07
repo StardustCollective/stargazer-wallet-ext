@@ -12,6 +12,7 @@ const initialState: IVaultState = {
   wallets: {
     local: [],
     ledger: [],
+    bitfi: [],
   },
   hasEncryptedVault: false,
   balances: {
@@ -127,6 +128,12 @@ const VaultState = createSlice({
         action.payload
       ];
     },
+    addBitfiWallet(state: IVaultState, action){
+      state.wallets.bitfi = [
+        ...state.wallets.ledger,
+        action.payload
+      ];
+    },
     deleteLedgerWallet(state: IVaultState, action){
       state.wallets.ledger = filter(state.wallets.ledger, (w) => w.id !== action.payload);
     },
@@ -185,6 +192,7 @@ const VaultState = createSlice({
 
 export const {
   addLedgerWallet,
+  addBitfiWallet,
   deleteLedgerWallet,
   rehydrate,
   setVaultInfo,

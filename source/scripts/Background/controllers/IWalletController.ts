@@ -22,7 +22,7 @@ export interface IWalletController {
     resetAll?: boolean
   ) => Promise<string>;
   deleteWallet: (walletId: string, password: string) => Promise<boolean>;
-  createLedgerWallets: (
+  importHardwareWalletAccounts: (
     addresses: AccountItem[]
   ) => void;
   switchWallet: (walletId: string) => Promise<void>;

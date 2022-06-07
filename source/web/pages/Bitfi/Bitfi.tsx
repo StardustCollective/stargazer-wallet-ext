@@ -4,6 +4,7 @@
 
 import React, { FC, useState, useEffect} from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { makeStyles } from '@material-ui/core/styles'
 import BitfiBridgeUtil from '../../utils/bitfiBridge';
 import queryString from 'query-string';
@@ -248,7 +249,12 @@ const LedgerPage: FC = () => {
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
       setSelectedAccounts((state) => {
-        return [...state, { publicKey: account.publicKey, address: account.address, id: key - 1, balance: '' }];
+        return [...state, { 
+          id: key - 1, 
+          type: KeyringWalletType.BitfiAccountWallet,
+          publicKey: account.publicKey, 
+          address: account.address, 
+          balance: '' }];
       })
     } else {
       setSelectedAccounts((state) => {
@@ -316,7 +322,7 @@ const LedgerPage: FC = () => {
     } catch(e) {
       console.log('error', JSON.stringify(e,null,2));
       setWaitingForLedger(false);
-      LedgerBridgeUtil.closeConnection();
+      BitfiBridgeUtil.closeConnection();
     }
   }
 

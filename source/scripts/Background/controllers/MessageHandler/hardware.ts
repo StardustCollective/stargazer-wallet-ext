@@ -1,15 +1,15 @@
 import { Runtime } from 'webextension-polyfill-ts';
 import { Message } from './types';
-import { IMasterController } from '../';
+import { IMasterController } from '..';
 
-export const importLedgerAccounts = (
+export const importHardwareWalletAccounts = (
   port: Runtime.Port,
   masterController: IMasterController,
   message: Message
 ) => {
 
   const { args } = message.data;
-  masterController.wallet.createLedgerWallets(args[0]);
+  masterController.wallet.importHardwareWalletAccounts(args[0]);
   port.postMessage({ id: message.id, data: { result: "success" } });
 
 };

@@ -15,10 +15,16 @@ import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { addLedgerWallet, deleteLedgerWallet } from 'state/vault';
+import { addLedgerWallet, deleteLedgerWallet, addBitfiWallet } from 'state/vault';
 import { reload } from 'utils/browser';
 
-const LedgerWalletIdPrefix = 'L';
+// Constants
+const LEDGER_WALLET_PREFIX      = 'L';
+const BITFI_WALLET_PREFIX       = 'B';
+const LEDGER_WALLET_LABEL       = 'Ledger';
+const BITFI_WALLET_LABEL        = 'Bitfi;'
+const HARDWARE_WALLET_OFFSET    = 1;
+const ACCOUNT_ITEMS_FIRST_INDEX = 0;
 
 class WalletController implements IWalletController {
   account: AccountController;
@@ -126,15 +132,24 @@ class WalletController implements IWalletController {
     return wallet.id;
   }
 
-  async createLedgerWallets(accountItems: AccountItem[]) {
+  async importHardwareWalletAccounts(accountItems: AccountItem[]) {
 
     for (let i = 0; i < accountItems.length; i++) {
-      let accountItem = accountItems[i];
+      const accountItem = accountItems[i];
+      const prefix    = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_PREFIX : BITFI_WALLET_PREFIX;
+      const label     = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_LABEL  : BITFI_WALLET_LABEL;
+      const addWallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? addLedgerWallet  : addBitfiWallet;
 
+
+      // Determine the name of the wallet for Ledger we need to create a recursive 
+      // function that will name the wallets.
+      console.log('Attempting to add Wallet: ')
       const wallet = {
-        id: `${LedgerWalletIdPrefix}${accountItem.id}`,
-        label: 'Ledger ' + (accountItem.id + 1),
-        type: KeyringWalletType.LedgerAccountWallet,
+        id: `${prefix}${accountItem.id}`,
+        // The account id is offset by one so the UI displays will
+        // the first account as 1 and not 0.
+        label: `${label} ${(accountItem.id + HARDWARE_WALLET_OFFSET)}`,
+        type: accountItem.type,
         accounts: [
           {
             address: accountItem.address,
@@ -144,14 +159,14 @@ class WalletController implements IWalletController {
         ],
         supportedAssets: [KeyringAssetType.DAG],
       };
-
-      await store.dispatch(addLedgerWallet(wallet));
-
-      // Switches wallets immediately after adding the first item 
-      // to prevent a visual delay in the wallet extension.
-      if(i === 0){
-       // Switches wallets to the first ledger item in the accountItem array.
-        this.switchWallet(`${LedgerWalletIdPrefix}${accountItems[0].id}`);
+      
+      await store.dispatch(addWallet(wallet));
+      
+      // Switches wallets immediately after adding the first account item 
+      // to prevent a rendering delay in the wallet extension.
+      if(i === ACCOUNT_ITEMS_FIRST_INDEX){
+       // Switches wallets to the first hardware wallet account item in the accountItem array.
+        this.switchWallet(`${prefix}${accountItems[0].id}`);
       }
     }
   }

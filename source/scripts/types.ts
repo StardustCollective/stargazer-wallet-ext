@@ -1,7 +1,9 @@
 import { IActiveAssetState } from 'state/vault/types';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 export interface AccountItem  {
   id: number;
+  type: KeyringWalletType;
   address: string;
   publicKey: string;
 };
