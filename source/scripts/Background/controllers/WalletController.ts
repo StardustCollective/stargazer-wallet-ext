@@ -22,7 +22,7 @@ import { reload } from 'utils/browser';
 const LEDGER_WALLET_PREFIX      = 'L';
 const BITFI_WALLET_PREFIX       = 'B';
 const LEDGER_WALLET_LABEL       = 'Ledger';
-const BITFI_WALLET_LABEL        = 'Bitfi;'
+const BITFI_WALLET_LABEL        = 'Bitfi';
 const HARDWARE_WALLET_OFFSET    = 1;
 const ACCOUNT_ITEMS_FIRST_INDEX = 0;
 
