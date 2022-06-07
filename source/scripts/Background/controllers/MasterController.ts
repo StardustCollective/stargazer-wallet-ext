@@ -7,13 +7,13 @@ import ControllerUtils, { IControllerUtils } from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
 import MigrationController from './MigrationController';
 
-import DAppController, { IDAppController } from './DAppController';
+import { DAppController } from './DAppController';
 
 class MasterController {
   #stargazerProvider: StargazerProvider;
   #ethereumProvider: EthereumProvider;
   #wallet: IWalletController;
-  #dapp: IDAppController;
+  #dapp: DAppController;
   #contacts: IContactsController;
   #utils: IControllerUtils;
 
@@ -21,7 +21,7 @@ class MasterController {
     this.#stargazerProvider = new StargazerProvider();
     this.#ethereumProvider = new EthereumProvider();
     this.#wallet = WalletController;
-    this.#dapp = DAppController();
+    this.#dapp = new DAppController();
     this.#contacts = ContactsController();
 
     this.#utils = ControllerUtils();
