@@ -18,7 +18,9 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension(`builds/metamask-firefox-${version}.zip`);
+    const extensionId = await fxDriver.installExtension(
+      `builds/metamask-firefox-${version}.zip`
+    );
     const internalExtensionId = await fxDriver.getInternalId();
 
     if (responsive) {
@@ -42,7 +44,9 @@ class FirefoxDriver {
 
   async getInternalId() {
     await this._driver.get('about:debugging#addons');
-    return await this._driver.wait(until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")), 1000).getText();
+    return await this._driver
+      .wait(until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")), 1000)
+      .getText();
   }
 }
 
