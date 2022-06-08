@@ -25,12 +25,11 @@ import {
   InfuraCreds, 
   EthereumNetwork, 
   TxOverrides,
-  NetworkId
+  EthNetworkId
 } from './types';
-import { Address, FeeOptionKey, TxHash, TxHistoryParams, TxParams } from '../ChainsController';
+import { Address, FeeOptionKey, TxHistoryParams, TxParams } from '../ChainsController';
 import { getETHTransactionHistory, getGasOracle, getTokenTransactionHistory } from './etherscanApi';
 import { GasOracleResponse } from './etherscanApi.types';
-
 
 class EthChainController implements IEthChainController {
   private network: EthereumNetwork;
@@ -94,7 +93,7 @@ class EthChainController implements IEthChainController {
     return this.network.etherscan;
   }
 
-  setNetwork(network: NetworkId) {
+  setNetwork(network: EthNetworkId) {
     if (!network) {
       throw new Error('Network must be provided');
     } else {
@@ -127,11 +126,13 @@ class EthChainController implements IEthChainController {
     feeOptionKey,
     gasPrice,
     gasLimit,
+    nonce,
   }: TxParams & {
     feeOptionKey?: FeeOptionKey;
     gasPrice?: BaseAmount;
     gasLimit?: BigNumber;
-  }): Promise<TxHash> {
+    nonce: string;
+  }): Promise<TransactionResponse> {
     try {
       const txAmount = BigNumber.from(amount.amount().toFixed());
 
@@ -170,12 +171,12 @@ class EthChainController implements IEthChainController {
         txResult = await this.call<TransactionResponse>(assetAddress, ERC_20_ABI, 'transfer', [
           recipient,
           txAmount,
-          Object.assign({}, overrides),
+          Object.assign({}, { ...overrides, nonce }),
         ])
       } else {
         // Transfer ETH
         const transactionRequest = Object.assign(
-          { to: recipient, value: txAmount },
+          { to: recipient, value: txAmount, nonce },
           {
             ...overrides,
             data: memo ? toUtf8Bytes(memo) : undefined,
@@ -185,7 +186,7 @@ class EthChainController implements IEthChainController {
         txResult = await this.getWallet().sendTransaction(transactionRequest);
       }
 
-      return txResult.hash
+      return txResult;
     } catch (error) {
       return Promise.reject(error)
     }

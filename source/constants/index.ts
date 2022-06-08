@@ -1,4 +1,4 @@
-import { NetworkId, NetworkValue } from 'scripts/Background/controllers/EthChainController/types';
+import { EthNetworkId, EthNetworkValue } from 'scripts/Background/controllers/EthChainController/types';
 import { STARGAZER_PROVIDERS_BASE_URL, STARGAZER_PROVIDERS_BASE_URL_PROD, isProd } from 'utils/envUtil';
 export const STORE_PORT = 'STARGAZER';
 
@@ -33,8 +33,8 @@ export const DAG_NETWORK: {
 
 export const ETH_NETWORK: {
   [networkId: string]: {
-    id: NetworkId;
-    value: NetworkValue;
+    id: EthNetworkId;
+    value: EthNetworkValue;
     label: string;
     etherscan: string;
     chainId: number;

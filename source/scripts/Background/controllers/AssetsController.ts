@@ -1,5 +1,3 @@
-import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
-import { ETHNetwork } from 'scripts/types';
 import { initialState as tokenState, addERC20Asset } from 'state/assets';
 import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
@@ -10,6 +8,9 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
 import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
+import { EthNetworkId } from './EthChainController/types';
+import EthChainController from './EthChainController';
+import { isTestnet } from './EthChainController/utils';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
@@ -34,8 +35,8 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
   if (!activeNetwork) return undefined;
 
-  const ethClient: XChainEthClient = new XChainEthClient({
-    network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
+  const ethClient: EthChainController = new EthChainController({
+    network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
     privateKey: process.env.TEST_PRIVATE_KEY,
     etherscanApiKey: process.env.ETHERSCAN_API_KEY,
     infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
@@ -44,11 +45,11 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   const fetchTokenInfo = async (address: string) => {
     activeNetwork = store.getState().vault.activeNetwork;
 
-    const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
     ethClient.setNetwork(network);
 
     const info = await ethClient.getTokenInfo(address);
-    const assetId = `${network === 'testnet' ? 'T-' : ''}${address}`;
+    const assetId = `${isTestnet(network) ? 'T-' : ''}${address}`;
 
     if (!info) {
       return;
@@ -92,8 +93,8 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
   const fetchNFTBatch = async (walletAddress: string, offset = 0) => {
     activeNetwork = store.getState().vault.activeNetwork;
-    const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
-    const apiBase = network === 'testnet' ? NFT_TESTNET_API : NFT_MAINNET_API;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
+    const apiBase = isTestnet(network) ? NFT_TESTNET_API : NFT_MAINNET_API;
 
     const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}`;
 

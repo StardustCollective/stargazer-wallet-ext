@@ -1,7 +1,8 @@
 import Etherscan from 'etherscan-api';
+import { EthNetworkId } from 'scripts/Background/controllers/EthChainController/types';
 
-export const getContractDetails = async (address: string, network: 'mainnet' | 'testnet'): Promise<Array<any> | null> => {
-    const etherscan = Etherscan.init(process.env.ETHERSCAN_API_KEY, network === 'mainnet' ? undefined : 'ropsten');
+export const getContractDetails = async (address: string, network: EthNetworkId): Promise<Array<any> | null> => {
+    const etherscan = Etherscan.init(process.env.ETHERSCAN_API_KEY, network);
 
     try {
         console.log('fetching ABI for address: ', address);

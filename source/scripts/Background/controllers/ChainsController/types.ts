@@ -65,6 +65,6 @@ export interface ChainsController {
   getTransactions(params?: TxHistoryParams): Promise<TxsPage>;
   setNetwork(network: Network): void;
   validateAddress(address: string): boolean;
-  transfer(params: TxParams): Promise<TxHash>;
+  transfer(params: TxParams): Promise<any>;
   purgeClient(): void;
 };

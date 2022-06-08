@@ -1,3 +1,4 @@
+import { EthNetworkId } from 'scripts/Background/controllers/EthChainController/types';
 import { AssetType } from 'state/vault/types';
 
 export interface INFTInfoState {
@@ -7,7 +8,7 @@ export interface INFTInfoState {
   address: string;
   quantity: number;
   link: string;
-  network?: 'mainnet' | 'testnet';
+  network?: EthNetworkId;
   logo?: string;
 }
 

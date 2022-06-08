@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Address, Tx } from '../ChainsController';
 import { ETHTransactionInfo, TokenTransactionInfo } from './etherscanApi.types';
-import { FeesWithGasPricesAndLimits, GasPrices, NetworkId } from './types';
+import { FeesWithGasPricesAndLimits, GasPrices, EthNetworkId, testnets } from './types';
 import { 
   Asset, 
   BaseAmount, 
@@ -21,7 +21,35 @@ import {
 } from './constants';
 import { ETH_NETWORK } from 'constants/index';
 
-export const getNetworkInfo = (networkId: NetworkId) => {
+export const isTestnet = (network: EthNetworkId) => {
+  return testnets.includes(network);
+};
+
+export const getInfuraUrl = (network: EthNetworkId): string => {
+  switch (network) {
+    case 'mainnet':
+      return 'https://mainnet.infura.io/v3/';
+    case 'ropsten':
+      return 'https://ropsten.infura.io/v3/';
+      
+    default:
+      return 'https://mainnet.infura.io/v3/';
+  }
+}
+
+export const getChainId = (network: EthNetworkId): number => {
+  switch (network) {
+    case 'mainnet':
+      return 1;
+    case 'ropsten':
+      return 3;
+      
+    default:
+      return 1;
+  }
+}
+
+export const getNetworkInfo = (networkId: EthNetworkId) => {
   return ETH_NETWORK[networkId];
 }
 

@@ -7,6 +7,7 @@ import { estimateGasPrice } from 'utils/ethUtil';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { IDAppState } from 'state/dapp/types';
 import { StargazerSignatureRequest } from './StargazerProvider';
+import { getChainId } from 'scripts/Background/controllers/EthChainController/utils';
 
 export class EthereumProvider {
 
@@ -19,7 +20,7 @@ export class EthereumProvider {
   getChainId() {
     const networkName = this.getNetwork();
 
-    return networkName === 'mainnet' ? 1 : 3;
+    return getChainId(networkName);
   }
 
   getAddress() {

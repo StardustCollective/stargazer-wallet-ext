@@ -1,13 +1,15 @@
 import { BigNumber, ethers, Wallet } from 'ethers';
 import { BaseAmount } from '@xchainjs/xchain-util';
-import { ChainsController, FeeOptionKey, Fees, FeesParams, TxHash, TxParams } from '../ChainsController';
+import { ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
-export type NetworkId = 'mainnet' | 'ropsten';
-export type NetworkValue = 'homestead' | 'ropsten';
+export type EthNetworkId = 'mainnet' | 'ropsten';
+export type EthNetworkValue = 'homestead' | 'ropsten';
+export const testnets = ['ropsten'];
 
 export type EthereumNetwork = {
-  id: NetworkId;
-  value: NetworkValue;
+  id: EthNetworkId;
+  value: EthNetworkValue;
   label: string;
   chainId: number;
   etherscan: string;
@@ -39,7 +41,7 @@ type GetTokenInfoResponse = {
 }
 
 export type EthChainControllerParams = {
-  network?: NetworkId;
+  network?: EthNetworkId;
   etherscanApiKey?: string;
   privateKey?: string;
   infuraCreds?: InfuraCreds;
@@ -49,7 +51,7 @@ export interface IEthChainController extends ChainsController {
   estimateTokenTransferGasLimit: (recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) => Promise<number>;
   getTokenInfo: (address: string, chainId: number) => Promise<GetTokenInfoResponse | null>;
   waitForTransaction: (hash: string, chainId: number) => Promise<ethers.providers.TransactionReceipt>;
-  transfer: (txParams: TxParams & { feeOptionKey?: FeeOptionKey; gasPrice?: BaseAmount; gasLimit?: BigNumber }) => Promise<TxHash>;
+  transfer: (txParams: TxParams & { feeOptionKey?: FeeOptionKey; gasPrice?: BaseAmount; gasLimit?: BigNumber; nonce: string; }) => Promise<TransactionResponse>;
   getWallet: (walletIndex: number) => Wallet;
   estimateGasPrices: () => Promise<GasPrices>;
 };

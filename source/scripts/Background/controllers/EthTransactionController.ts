@@ -1,4 +1,3 @@
-import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import store from 'state/store';
 import { IETHPendingTx } from 'scripts/types';
 import { ethers } from 'ethers';
@@ -7,6 +6,9 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { TEST_PRIVATE_KEY, ETHERSCAN_API_KEY, INFURA_CREDENTIAL } from 'utils/envUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from '../../../state/assets/types';
+import EthChainController from './EthChainController';
+import { EthNetworkId } from './EthChainController/types';
+import { getChainId } from './EthChainController/utils';
 
 export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => Promise<boolean>;
@@ -27,7 +29,7 @@ type ITransactionListeners = {
 const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
-  private ethClient: XChainEthClient = new XChainEthClient({
+  private ethClient: EthChainController = new EthChainController({
     network: 'mainnet',
     privateKey: TEST_PRIVATE_KEY,
     etherscanApiKey: ETHERSCAN_API_KEY,
@@ -46,8 +48,8 @@ export class EthTransactionController implements IEthTransactionController {
 
   private _transactionListeners: ITransactionListeners = {};
 
-  setNetwork(value: 'mainnet' | 'testnet') {
-    this.ethClient = new XChainEthClient({
+  setNetwork(value: EthNetworkId) {
+    this.ethClient = new EthChainController({
       network: value,
       privateKey: process.env.TEST_PRIVATE_KEY,
       etherscanApiKey: process.env.ETHERSCAN_API_KEY,
@@ -107,7 +109,7 @@ export class EthTransactionController implements IEthTransactionController {
     const pendingData = await this._getPendingData();
 
     Object.values(pendingData).forEach((pendingTx: IETHPendingTx) => {
-      this.ethClient.waitForTransaction(pendingTx.txHash, pendingTx.network === 'mainnet' ? 1 : 3).then(() => {
+      this.ethClient.waitForTransaction(pendingTx.txHash, getChainId(pendingTx.network)).then(() => {
         console.log('removing pending tx');
         if (this._transactionListeners[pendingTx.txHash] && this._transactionListeners[pendingTx.txHash].onConfirmed) {
           this._transactionListeners[pendingTx.txHash].onConfirmed();

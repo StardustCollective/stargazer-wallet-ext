@@ -51,4 +51,5 @@ export type ETHTransactionInfo = {
   traceId: string;
   isError: string;
   errCode: string;
+  nonce: string;
 }
