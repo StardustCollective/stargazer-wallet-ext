@@ -2,6 +2,7 @@ import { IAccountController } from './IAccountController';
 import {
   KeyringManager,
   KeyringNetwork,
+  KeyringWalletState
 } from '@stardust-collective/dag4-keyring';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { AccountItem } from 'scripts/types';
@@ -21,7 +22,7 @@ export interface IWalletController {
     phrase?: string,
     resetAll?: boolean
   ) => Promise<string>;
-  deleteWallet: (walletId: string, password: string) => Promise<boolean>;
+  deleteWallet: (walletId: KeyringWalletState, password: string) => Promise<boolean>;
   importHardwareWalletAccounts: (
     addresses: AccountItem[]
   ) => void;

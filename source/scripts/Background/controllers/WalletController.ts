@@ -5,7 +5,7 @@ import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
-import { KeyringAssetType, KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringAssetType, KeyringManager, KeyringNetwork, KeyringWalletState, KeyringVaultState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
@@ -15,7 +15,7 @@ import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { addLedgerWallet, deleteLedgerWallet, addBitfiWallet } from 'state/vault';
+import { addLedgerWallet, deleteHardwareWalletAccount, addBitfiWallet } from 'state/vault';
 import { reload } from 'utils/browser';
 
 // Constants
@@ -143,7 +143,6 @@ class WalletController implements IWalletController {
 
       // Determine the name of the wallet for Ledger we need to create a recursive 
       // function that will name the wallets.
-      console.log('Attempting to add Wallet: ')
       const wallet = {
         id: `${prefix}${accountItem.id}`,
         // The account id is offset by one so the UI displays will
@@ -171,35 +170,24 @@ class WalletController implements IWalletController {
     }
   }
 
-  async deleteWallet(walletId: string, password: string) {
+  async deleteWallet(wallet: KeyringWalletState, password: string) {
     if (this.checkPassword(password)) {
-      // const { wallet }: IVaultState = store.getState().vault;
-      await this.keyringManager.removeWalletById(walletId);
-      // store.dispatch(deleteWalletState());
       const { vault } = store.getState();
-      if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
+      if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
         const wallets = this.keyringManager.getWallets();
         if (wallets.length) {
           this.switchWallet(wallets[0].id);
         }
       }
       store.dispatch(updateStatus());
-      return true;
-    }
-    return false;
-  }
+      if(wallet.type !== KeyringWalletType.LedgerAccountWallet && 
+       wallet.type !== KeyringWalletType.BitfiAccountWallet
+      ){
+       await this.keyringManager.removeWalletById(wallet.id);
+      }else{
+       store.dispatch(deleteHardwareWalletAccount({wallet}));
+      }
 
-  async deleteLedgerWallet(walletId: string, password: string){
-    const vault: IVaultState = store.getState().vault;
-    if(this.checkPassword(password)){
-      store.dispatch(deleteLedgerWallet(walletId));
-      if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
-        const wallets = this.keyringManager.getWallets();
-        if (wallets.length) {
-          this.switchWallet(wallets[0].id);
-        }
-      }
-      store.dispatch(updateStatus());
       return true;
     }
     return false;

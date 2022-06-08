@@ -22,7 +22,8 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   const walletController = getWalletController();
   const { id } = route.params;
   const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
-  const wallet = wallets.local.find((w) => w.id === id);
+  const allWallets = [...wallets.local, ...wallets.bitfi, ...wallets.ledger];
+  const wallet = allWallets.find((w) => w.id === id);
   const isSeedWallet = wallet && wallet.type === KeyringWalletType.MultiChainWallet;
 
   const { handleSubmit, register, control } = useForm({
@@ -32,9 +33,9 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   });
 
   const onSubmit = async (data: any) => {
-    const isChecked = await walletController.deleteWallet(id, data.password);
+    const isChecked = walletController.deleteWallet(wallet, data.password);
     if (isChecked) {
-      if (wallets.local.length === 1) {
+      if (allWallets.length === 1) {
         walletController.logOut();
       } else {
         navigationUtil.popToTop(navigation);

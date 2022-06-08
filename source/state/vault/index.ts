@@ -132,12 +132,19 @@ const VaultState = createSlice({
     },
     addBitfiWallet(state: IVaultState, action){
       state.wallets.bitfi = [
-        ...state.wallets.ledger,
+        ...state.wallets.bitfi,
         action.payload
       ];
     },
-    deleteLedgerWallet(state: IVaultState, action){
-      state.wallets.ledger = filter(state.wallets.ledger, (w) => w.id !== action.payload);
+    deleteHardwareWalletAccount(state: IVaultState, action: PayloadAction<{wallet: KeyringWalletState}>){
+      const isLedger = action.payload.wallet.type === KeyringWalletType.LedgerAccountWallet;
+      const wallets  = isLedger ? state.wallets.ledger : state.wallets.bitfi;
+      let newWalletState = filter(wallets, (w) => w.id !== action.payload.wallet.id);
+      if(isLedger){
+        state.wallets.ledger = newWalletState;
+      }else{
+        state.wallets.bitfi = newWalletState;
+      }
     },
     updateWalletLabel(state: IVaultState, action: PayloadAction<{wallet: KeyringWalletState, label: string}>){
       const isLedger = action.payload.wallet.type === KeyringWalletType.LedgerAccountWallet;
@@ -201,7 +208,7 @@ const VaultState = createSlice({
 export const {
   addLedgerWallet,
   addBitfiWallet,
-  deleteLedgerWallet,
+  deleteHardwareWalletAccount,
   rehydrate,
   setVaultInfo,
   // setKeystoreInfo,
