@@ -19,7 +19,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
   wallets,
   activeWallet,
   privKeyAccounts,
-  ledgerAccounts,
+  hardwareWalletAccounts,
   assets,
   handleSwitchWallet,
   handleManageWallet,
@@ -80,27 +80,18 @@ const WalletsComponent: FC<IWalletSettings> = ({
           </div>
         </>
       )}
-      {!!ledgerAccounts.length && (
+      {!!hardwareWalletAccounts.length && (
         <>
-          <label>Ledger Wallets</label>
+          <label>Hardware Wallets</label>
           <div className={styles.group}>
-            {ledgerAccounts.map((wallet) => (
+            {hardwareWalletAccounts.map((wallet) => (
             <section
                 className={styles.wallet}
                 key={wallet.id}
                 onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
               >
                 {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-                <Icon
-                  width={24}
-                  Component={
-                    assets[
-                      wallet.supportedAssets.includes(KeyringAssetType.ETH)
-                        ? AssetType.Ethereum
-                        : AssetType.Constellation
-                    ].logo || StargazerIcon
-                  }
-                />
+                <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
                 <span>
                   {wallet.label}
                   <small>{wallet.accounts[0].address}</small>

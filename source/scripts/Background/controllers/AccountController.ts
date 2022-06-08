@@ -70,7 +70,9 @@ export class AccountController implements IAccountController {
 
       // Excludes ledger accounts since we do not have access 
       // to the private key.
-      if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet){
+      if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet && 
+         walletInfo.type !== KeyringWalletType.BitfiAccountWallet
+        ){
         privateKey = this.keyringManager.exportAccountPrivateKey(
           account.address
         );
@@ -88,7 +90,7 @@ export class AccountController implements IAccountController {
       return [
         {
           id: AssetType.Constellation,
-          type: walletInfo.type === KeyringWalletType.LedgerAccountWallet ?  AssetType.LedgerConstellation : AssetType.Constellation,
+          type: AssetType.Constellation,
           label: 'Constellation',
           address: account.address,
         },
@@ -124,9 +126,8 @@ export class AccountController implements IAccountController {
   async buildAccountAssetInfo(walletId: string): Promise<void> {
     const state = store.getState();
     const { vault } = state;
-    const { local, ledger } = vault.wallets;
-    const allWallets = [...local, ...ledger];
-
+    const { local, ledger, bitfi } = vault.wallets;
+    const allWallets = [...local, ...ledger, ...bitfi];
     const walletInfo: KeyringWalletState = allWallets.find((w: KeyringWalletState) => w.id === walletId);
 
     if (!walletInfo) {

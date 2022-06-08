@@ -21,7 +21,8 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   const linkTo = useLinkTo();
   const { wallets, activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-
+  const hardwareWalletAccounts = [...wallets.ledger, ...wallets.bitfi];
+  
   useLayoutEffect(() => {
     const onRightIconClick = () => {
       linkTo('/settings/wallets/add');
@@ -37,11 +38,6 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   const privKeyAccounts = wallets.local.filter(
     (w) => w.type === KeyringWalletType.SingleAccountWallet
   );
-
-  const ledgerAccounts = wallets.ledger.filter(
-    (w) => w.type === KeyringWalletType.LedgerAccountWallet
-  );
-
 
   const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
     await walletController.switchWallet(walletId);
@@ -61,7 +57,7 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
         wallets={multiChainAccounts}
         activeWallet={activeWallet}
         privKeyAccounts={privKeyAccounts}
-        ledgerAccounts={ledgerAccounts}
+        hardwareWalletAccounts={hardwareWalletAccounts}
         assets={assets}
         handleSwitchWallet={handleSwitchWallet}
         handleManageWallet={handleManageWallet}

@@ -12,7 +12,7 @@ export default interface IWalletSettings {
   activeWallet: IWalletState;
   assets: IAssetListState;
   privKeyAccounts: Array<any>;
-  ledgerAccounts: Array<any>;
+  hardwareWalletAccounts: Array<any>;
   handleSwitchWallet: (walletId: string, accounts: KeyringWalletAccountState[]) => void;
   handleManageWallet: (ev: any, walletId: string) => void;
 }
