@@ -54,10 +54,17 @@ const selectLocalWallets = createSelector(getWallets,
  * Returns ledger wallets.
  */
 
- const selectLedgerWallets = createSelector(getWallets,
+const selectLedgerWallets = createSelector(getWallets,
   (wallets: IVaultWalletsStoreState) => wallets.ledger
 );
 
+/**
+ * Returns Bitfi wallets.
+ */
+
+ const selectBitfiWallets = createSelector(getWallets,
+  (wallets: IVaultWalletsStoreState) => wallets.bitfi
+);
 
 /**
  * Returns all wallets.
@@ -66,8 +73,9 @@ const selectLocalWallets = createSelector(getWallets,
  const selectAllWallets = createSelector(
   selectLocalWallets,
   selectLedgerWallets,
-  (localWallet, ledgerWallet) => {
-    return [...localWallet, ...ledgerWallet];
+  selectBitfiWallets,
+  (localWallets, ledgerWallets, bitfiWallets) => {
+    return [...localWallets, ...ledgerWallets, ...bitfiWallets];
   }
 );
 
