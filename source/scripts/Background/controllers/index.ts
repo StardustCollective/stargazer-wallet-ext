@@ -55,7 +55,7 @@ const MasterController = (): IMasterController => {
     url: any = '/external.html',
     windowSize = { width: 372, height: 600 }
   ) => {
-    const { width = 372, height = 600 } = windowSize;
+    const { width, height } = windowSize;
     const _window = await browser.windows.getCurrent();
     
     if (!_window || !_window.width) return null;
@@ -79,7 +79,7 @@ const MasterController = (): IMasterController => {
       height,
       type,
       top: 0,
-      left: _window.width - 372,
+      left: _window.width - width,
     });
   };
 
