@@ -11,6 +11,7 @@ import {
   updateStatus,
   updateTransactions,
   updateWalletAssets,
+  updateActiveWalletLabel,
   updateWalletLabel,
 } from 'state/vault';
 
@@ -228,13 +229,24 @@ export class AccountController implements IAccountController {
     }
   }
 
-  updateWalletLabel(id: string, label: string) {
-    this.keyringManager.setWalletLabel(id, label);
+  updateWalletLabel(wallet: KeyringWalletState, label: string) {
+
+    if(wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+       wallet.type !== KeyringWalletType.BitfiAccountWallet)
+      {
+        this.keyringManager.setWalletLabel(wallet.id, label);
+      }else{
+        // Hardware wallet label update:
+        // We do not store any hardware wallet data in the Keyring
+        // manager. Hardware wallet info must be manipulated directly
+        // in the redux store state.vault.wallets.
+        store.dispatch(updateWalletLabel({wallet, label}));
+      }
 
     const { activeWallet }: IVaultState = store.getState().vault;
 
-    if (activeWallet.id === id) {
-      store.dispatch(updateWalletLabel(label));
+    if (activeWallet.id === wallet.id) {
+      store.dispatch(updateActiveWalletLabel(label));
     }
   }
 
