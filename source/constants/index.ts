@@ -43,14 +43,14 @@ export const ETH_NETWORK: {
   mainnet: {
     id: 'mainnet',
     value: 'homestead',
-    label: 'Ethereum Mainnet',
+    label: 'Mainnet',
     etherscan: 'https://etherscan.io/',
     chainId: 1,
   },
   ropsten: {
     id: 'ropsten',
     value: 'ropsten',
-    label: 'Ethereum Testnet',
+    label: 'Ropsten Testnet',
     etherscan: 'https://ropsten.etherscan.io/',
     chainId: 3,
   },

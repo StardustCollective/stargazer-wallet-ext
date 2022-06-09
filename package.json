@@ -22,6 +22,9 @@
     "start": "yarn workspace native react-native start",
     "lint": "npx eslint --ext=.js,.jsx .",
     "lint:fix": "npx eslint --ext=.js,.jsx . --fix",
+    "clean": "npx rimraf ./node_modules && cd source/native && rm -rf ./node_modules && cd .. && cd web && rm -rf ./node_modules",
+    "clean:pods": "cd source/native/ios && rm -rf Pods",
+    "install:pods": "cd source/native/ios && pod install",
     "postinstall": "npx patch-package"
   },
   "dependencies": {
@@ -41,6 +44,8 @@
     "@types/react-redux": "^7.1.9",
     "@types/redux-logger": "^3.0.8",
     "@types/redux-watch": "^1.1.0",
+    "@xchainjs/xchain-client": "^0.11.3",
+    "@xchainjs/xchain-crypto": "^0.2.6",
     "bignumber.js": "^9.0.2",
     "erc-20-abi": "^1.0.0",
     "crypto-js": "^4.1.1",
