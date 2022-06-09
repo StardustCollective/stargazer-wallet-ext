@@ -1,20 +1,19 @@
-/* eslint-disable prettier/prettier */
-import 'emoji-log';
-import { STORE_PORT, DAG_NETWORK } from 'constants/index';
-
-import { browser } from 'webextension-polyfill-ts';
+import { browser, Runtime } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
-import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import 'emoji-log';
+
+import { STORE_PORT, DAG_NETWORK } from 'constants/index';
+import store from 'state/store';
 
 import { MasterController } from './controllers';
-import { Runtime } from 'webextension-polyfill-ts';
-import { messagesHandler } from './controllers/MessageHandler';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { DappRegistry } from './dappRegistry';
 
 declare global {
   interface Window {
     controller: MasterController;
+    dappRegistry: DappRegistry;
   }
 }
 
@@ -23,9 +22,7 @@ browser.runtime.onInstalled.addListener((): void => {
 });
 
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {
-  if (port.name === 'stargazer') {
-    messagesHandler(port, window.controller);
-  } else if (
+  if (
     port.sender?.url?.includes(browser.runtime.getURL('/app.html')) ||
     port.sender?.url?.includes(browser.runtime.getURL('/external.html'))
   ) {
@@ -57,6 +54,10 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 
 if (!window.controller) {
   window.controller = new MasterController();
+}
+
+if (!window.dappRegistry) {
+  window.dappRegistry = new DappRegistry();
 }
 
 wrapStore(store, { portName: STORE_PORT });

@@ -77,14 +77,13 @@ class DAppController {
 
   notifyAccountsChanged(accounts: string[]) {
     const state = store.getState();
-    const whiteList = state.dapp.whitelist;
-    const listening = state.dapp.listening;
+    const { whitelist, listening } = state.dapp;
 
     const events: CustomEvent[] = [];
 
     // Will only notify whitelisted dapps that are listening for a wallet change.
     for (const origin of Object.keys(listening)) {
-      const site = whiteList[origin];
+      const site = whitelist[origin];
       const listeningEvents = listening[origin];
 
       if (!listeningEvents.includes('accountsChanged')) {
