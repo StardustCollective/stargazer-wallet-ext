@@ -1,3 +1,5 @@
+import debugFn from 'debug';
+
 import {
   RequestArguments,
   EIPChainProvider,
@@ -8,6 +10,8 @@ import {
 } from '../common';
 
 import { StargazerChainProviderProxy } from './stargazerChainProviderProxy';
+
+const debug = debugFn('Stargazer:StargazerChainProvider');
 
 /**
  * Client-Facing EIP provider
@@ -85,7 +89,7 @@ class StargazerChainProvider extends EIPChainProvider {
       });
     } catch (e) {
       this.#listeners.delete(listener);
-      console.error(e);
+      debug('error:', e);
       throw e;
     }
   }
@@ -109,7 +113,7 @@ class StargazerChainProvider extends EIPChainProvider {
       });
     } catch (e) {
       this.#listeners.set(listener, listenerId);
-      console.error(e);
+      debug('error:', e);
       throw e;
     }
   }

@@ -1,3 +1,4 @@
+import debugFn from 'debug';
 import { browser, Runtime } from 'webextension-polyfill-ts';
 
 import {
@@ -5,6 +6,8 @@ import {
   StargazerEncodedProxyResponse,
   StargazerEncodedProxyEvent,
 } from '../common';
+
+const debug = debugFn('Stargazer:StargazerChainProvider');
 
 const isStargazerProxyRequest = (
   value: any,
@@ -18,7 +21,7 @@ const isStargazerProxyRequest = (
  *
  * Handles all interaction between the injected
  * script and the background script.
- * 
+ *
  * Each injected provider created is piped throught a different port.
  *
  * Uses a proxyId defined on initialization to validate requests origin. Not super secure but yeah.
@@ -40,6 +43,7 @@ class RequestsProxy {
       });
       port.onMessage.addListener(this.onPortMessage.bind(this));
       this.#ports.set(providerId, port);
+      debug('Provider port added', providerId);
     }
     return port;
   }
@@ -60,7 +64,33 @@ class RequestsProxy {
       return;
     }
 
-    this.getPortByProviderId(encodedRequest.providerId).postMessage(encodedRequest);
+    try {
+      const port = this.getPortByProviderId(encodedRequest.providerId);
+      port.postMessage(encodedRequest);
+      debug(
+        'Message Sent',
+        'reqId:',
+        encodedRequest.reqId,
+        'providerId:',
+        encodedRequest.providerId
+      );
+    } catch (e) {
+      debug(
+        'Message Error',
+        'reqId:',
+        encodedRequest.reqId,
+        'providerId:',
+        encodedRequest.providerId,
+        'error:',
+        e
+      );
+      this.onPortResponse({
+        reqId: encodedRequest.reqId,
+        providerId: encodedRequest.providerId,
+        proxyId: encodedRequest.proxyId,
+        response: { type: 'proxy', error: String(e) },
+      });
+    }
   }
 
   onPortMessage(encoded: StargazerEncodedProxyResponse | StargazerEncodedProxyEvent) {

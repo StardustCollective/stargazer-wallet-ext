@@ -82,6 +82,7 @@ class DappProvider {
         encodedRequest,
         await this.onHandshakeRequest(port, encodedRequest.request, encodedRequest)
       );
+      return;
     }
 
     if (encodedRequest.request.type === 'event') {
@@ -90,6 +91,7 @@ class DappProvider {
         encodedRequest,
         await this.onEventRequest(port, encodedRequest.request, encodedRequest)
       );
+      return;
     }
 
     if (encodedRequest.request.type === 'rpc') {
@@ -98,6 +100,7 @@ class DappProvider {
         encodedRequest,
         await this.onRpcRequest(port, encodedRequest.request, encodedRequest)
       );
+      return;
     }
 
     throw new Error('Unable to classify port request');

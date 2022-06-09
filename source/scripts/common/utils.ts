@@ -4,6 +4,12 @@ const readOnlyProxy = <T extends object>(object: T): T => {
     defineProperty: () => false,
     deleteProperty: () => false,
     setPrototypeOf: () => false,
+    get: (target: any, prop) => {
+      if (typeof target[prop] === 'function') {
+        return target[prop].bind(target);
+      }
+      return target[prop];
+    },
   });
 };
 

@@ -32,7 +32,7 @@ const encodeProxyRequest = (request: StargazerProxyRequest, providerId: string) 
     reqId,
     proxyId,
     request,
-    providerId
+    providerId,
   };
 
   return encodedRequest;
@@ -54,6 +54,10 @@ const decodeProxyResponse = <T extends StargazerProxyResponse['type']>(
   }
 
   const response = encodedResponse.response;
+
+  if (response.type === 'proxy') {
+    throw new StargazerChainProviderError(response.error);
+  }
 
   if (response.type !== type) {
     throw new StargazerChainProviderError('Unable to classify proxy response');
@@ -77,4 +81,9 @@ const decodeProxyEvent = (event: Event): StargazerProxyEvent => {
   return encodedEvent.event;
 };
 
-export { retreiveInjectedProxyId, encodeProxyRequest, decodeProxyResponse, decodeProxyEvent };
+export {
+  retreiveInjectedProxyId,
+  encodeProxyRequest,
+  decodeProxyResponse,
+  decodeProxyEvent,
+};

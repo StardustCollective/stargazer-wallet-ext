@@ -12,6 +12,7 @@ type StargazerProxyEvent = {
 };
 
 type StargazerProxyResponse =
+  | { type: 'proxy'; error: string }
   | { type: 'handshake'; result: boolean }
   | { type: 'handshake'; error: string }
   | { type: 'rpc'; result: unknown }
