@@ -53,6 +53,7 @@ const NetworksContainer: FC = () => {
       options: [
         { [ETH_NETWORK.mainnet.id]: ETH_NETWORK.mainnet.label },
         { [ETH_NETWORK.ropsten.id]: ETH_NETWORK.ropsten.label },
+        { [ETH_NETWORK.rinkeby.id]: ETH_NETWORK.rinkeby.label },
       ],
     },
   ];
