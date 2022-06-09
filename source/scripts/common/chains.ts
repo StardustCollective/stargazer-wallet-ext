@@ -1,6 +1,6 @@
 enum StargazerChain {
   CONSTELLATION = 'constellation',
-  ETHEREUM = 'ethereum',
+  ETHEREUM = 'ethereum'
 }
 
 export { StargazerChain };

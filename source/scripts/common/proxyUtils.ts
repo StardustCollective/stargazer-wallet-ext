@@ -1,8 +1,12 @@
+import { AccountItem } from '../types';
+
+import { AvailableEvents } from './availableEvents';
+import {AvailableMethods} from './availableMethods'
 import { RequestArguments } from './eipChainProvider';
 import { StargazerChain } from './chains';
 
 type StargazerProxyEvent = {
-  event: string;
+  event: AvailableEvents;
   listenerId: string;
   params: any[];
 };
@@ -13,34 +17,48 @@ type StargazerProxyResponse =
   | { type: 'rpc'; result: unknown }
   | { type: 'rpc'; error: { message: string; code?: number; data?: unknown } }
   | { type: 'event'; result: boolean }
-  | { type: 'event'; error: string };
+  | { type: 'event'; error: string }
+  | { type: 'import'; result: boolean }
+  | { type: 'import'; error: string };
 
 type StargazerProxyRequest =
   | {
       type: 'handshake';
       providerId: string;
       chain: StargazerChain;
-      origin: string;
       title: string;
     }
-  | { type: 'event'; event: string; listenerId: string; action: 'register' | 'deregister' }
-  | { type: 'rpc'; method: RequestArguments['method']; params: RequestArguments['params'] };
+  | {
+      type: 'event';
+      event: AvailableEvents;
+      listenerId: string;
+      action: 'register' | 'deregister';
+    }
+  | {
+      type: 'rpc';
+      method: RequestArguments['method'] & AvailableMethods;
+      params: RequestArguments['params'];
+    }
+  | { type: 'import'; provider: 'ledger'; addresses: AccountItem[] };
 
 type StargazerEncodedProxyEvent = {
   listenerId: string;
   proxyId: string;
+  providerId: string;
   event: StargazerProxyEvent;
 };
 
 type StargazerEncodedProxyRequest = {
   reqId: string;
   proxyId: string;
+  providerId: string;
   request: StargazerProxyRequest;
 };
 
 type StargazerEncodedProxyResponse = {
   reqId: string;
   proxyId: string;
+  providerId: string;
   response: StargazerProxyResponse;
 };
 
