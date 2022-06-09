@@ -1,4 +1,4 @@
-import { AvailableEvents } from '../../../common';
+import { AvailableEvents, isCustomEvent } from '../../../common';
 
 import type { DappProviderExternalImplementation } from '../dappProvider';
 
@@ -21,7 +21,7 @@ const handleEventRequest: DappProviderExternalImplementation<
     window.addEventListener(
       eventName,
       (event: Event) => {
-        if (event instanceof CustomEvent) {
+        if (isCustomEvent(event)) {
           const { data } = event.detail;
 
           // Always send close because site will already be disconnected and not listening

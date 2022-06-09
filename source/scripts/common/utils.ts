@@ -10,4 +10,11 @@ const readOnlyProxy = <T extends object>(object: T): T => {
 const generateNamespaceId = (namespace: string) =>
   `stargazer:${namespace}:${window.btoa([Date.now(), Math.random()].join('.'))}`;
 
-export { readOnlyProxy, generateNamespaceId };
+/**
+ * CustomEvents are not allways instances of the CustomEvent class
+ */
+const isCustomEvent = (value: any): value is CustomEvent => {
+  return value instanceof CustomEvent || value[Symbol.toStringTag] === 'CustomEvent';
+};
+
+export { readOnlyProxy, generateNamespaceId, isCustomEvent };

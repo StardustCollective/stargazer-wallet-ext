@@ -9,6 +9,7 @@ import {
   StargazerEncodedProxyEvent,
   StargazerEncodedProxyRequest,
   StargazerEncodedProxyResponse,
+  isCustomEvent,
 } from '../../common';
 
 import {
@@ -256,7 +257,7 @@ class DappProvider {
     return new Promise<CustomEvent | null>((resolve, reject) => {
       try {
         const onEvent = (event: Event) => {
-          if (event instanceof CustomEvent && event.detail.windowId === windowId) {
+          if (isCustomEvent(event) && event.detail.windowId === windowId) {
             // Matching event, resolve to event
             resolvePopup(event);
           }

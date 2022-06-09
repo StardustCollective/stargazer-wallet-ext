@@ -6,6 +6,7 @@ import {
   StargazerEncodedProxyEvent,
   StargazerEncodedProxyRequest,
   StargazerEncodedProxyResponse,
+  isCustomEvent,
 } from '../common';
 
 import { StargazerChainProviderError } from './errors';
@@ -41,7 +42,7 @@ const decodeProxyResponse = <T extends StargazerProxyResponse['type']>(
   type: T,
   event: Event
 ): StargazerProxyResponse & { type: T } => {
-  if (!(event instanceof CustomEvent)) {
+  if (!isCustomEvent(event)) {
     throw new StargazerChainProviderError('Unable to process proxy response event');
   }
 
@@ -62,7 +63,7 @@ const decodeProxyResponse = <T extends StargazerProxyResponse['type']>(
 };
 
 const decodeProxyEvent = (event: Event): StargazerProxyEvent => {
-  if (!(event instanceof CustomEvent)) {
+  if (!isCustomEvent(event)) {
     throw new StargazerChainProviderError('Unable to process proxy listen event');
   }
 
