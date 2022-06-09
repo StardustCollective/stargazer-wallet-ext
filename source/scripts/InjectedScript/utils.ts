@@ -23,7 +23,7 @@ const retreiveInjectedProxyId = () => {
   return scriptElem.dataset.stargazerProxyId;
 };
 
-const encodeProxyRequest = (request: StargazerProxyRequest) => {
+const encodeProxyRequest = (request: StargazerProxyRequest, providerId: string) => {
   const reqId = generateNamespaceId('request');
   const proxyId = retreiveInjectedProxyId();
 
@@ -31,6 +31,7 @@ const encodeProxyRequest = (request: StargazerProxyRequest) => {
     reqId,
     proxyId,
     request,
+    providerId
   };
 
   return encodedRequest;

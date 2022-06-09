@@ -1,8 +1,15 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 
-import { StargazerEncodedProxyRequest, StargazerEncodedProxyResponse, StargazerEncodedProxyEvent } from '../common';
+import {
+  StargazerEncodedProxyRequest,
+  StargazerEncodedProxyResponse,
+  StargazerEncodedProxyEvent,
+} from '../common';
 
-const isStargazerProxyRequest = (value: any, proxyId: string): value is StargazerEncodedProxyRequest => {
+const isStargazerProxyRequest = (
+  value: any,
+  proxyId: string
+): value is StargazerEncodedProxyRequest => {
   return 'proxyId' in value && value.proxyId === proxyId;
 };
 
@@ -16,19 +23,18 @@ const isStargazerProxyRequest = (value: any, proxyId: string): value is Stargaze
  */
 class RequestsProxy {
   #proxyId: string;
-  #requestsPort: Runtime.Port;
-  #eventsPort: Runtime.Port;
+  #port: Runtime.Port;
 
   constructor(proxyId: string) {
     this.#proxyId = proxyId;
-    this.#requestsPort = browser.runtime.connect(undefined, { name: `stargazer-requests:${window.btoa(proxyId)}` });
-    this.#eventsPort = browser.runtime.connect(undefined, { name: `stargazer-events:${window.btoa(proxyId)}` });
+    this.#port = browser.runtime.connect(undefined, {
+      name: `stargazer-dapp-proxy:${window.btoa(proxyId)}`,
+    });
   }
 
   listen() {
     window.addEventListener('message', this.onWindowMessage.bind(this));
-    this.#requestsPort.onMessage.addListener(this.onPortResponse.bind(this));
-    this.#eventsPort.onMessage.addListener(this.onPortEvent.bind(this));
+    this.#port.onMessage.addListener(this.onPortMessage.bind(this));
   }
 
   onWindowMessage(event: MessageEvent<unknown>) {
@@ -43,7 +49,21 @@ class RequestsProxy {
       return;
     }
 
-    this.#requestsPort.postMessage(encodedRequest);
+    this.#port.postMessage(encodedRequest);
+  }
+
+  onPortMessage(encoded: StargazerEncodedProxyResponse | StargazerEncodedProxyEvent) {
+    if ('listenerId' in encoded) {
+      this.onPortEvent(encoded);
+      return;
+    }
+
+    if ('reqId' in encoded) {
+      this.onPortResponse(encoded);
+      return;
+    }
+
+    throw new Error('Unable to classify port message');
   }
 
   onPortResponse(encodedResponse: StargazerEncodedProxyResponse) {
@@ -51,7 +71,9 @@ class RequestsProxy {
       throw new Error('Unmatched proxy id on port response');
     }
 
-    window.dispatchEvent(new CustomEvent(encodedResponse.reqId, { detail: JSON.stringify(encodedResponse) }));
+    window.dispatchEvent(
+      new CustomEvent(encodedResponse.reqId, { detail: JSON.stringify(encodedResponse) })
+    );
   }
 
   onPortEvent(encodedEvent: StargazerEncodedProxyEvent) {
@@ -59,7 +81,9 @@ class RequestsProxy {
       throw new Error('Unmatched proxy id on port event');
     }
 
-    window.dispatchEvent(new CustomEvent(encodedEvent.listenerId, { detail: JSON.stringify(encodedEvent) }));
+    window.dispatchEvent(
+      new CustomEvent(encodedEvent.listenerId, { detail: JSON.stringify(encodedEvent) })
+    );
   }
 }
 

@@ -1,10 +1,18 @@
-import { StargazerProxyEvent, StargazerProxyRequest, StargazerEncodedProxyRequest } from '../common';
+import {
+  StargazerProxyEvent,
+  StargazerProxyRequest,
+  StargazerEncodedProxyRequest,
+} from '../common';
 
 import { encodeProxyRequest, decodeProxyResponse, decodeProxyEvent } from './utils';
 import type { StargazerChainProvider } from './stargazerChainProvider';
 import { StargazerChainProviderError, StargazerChainProviderRpcError } from './errors';
 
-type AsyncEventHandlerReturnType<Handler> = Handler extends (event: Event) => Promise<infer T> ? T : never;
+type AsyncEventHandlerReturnType<Handler> = Handler extends (
+  event: Event
+) => Promise<infer T>
+  ? T
+  : never;
 
 /**
  * Private Requests Provider Proxy
@@ -20,7 +28,10 @@ class StargazerChainProviderProxy {
   #providerListenerEventHandler: (event: StargazerProxyEvent) => any;
   #listeners: Map<string, (event: Event) => any>;
 
-  constructor(provider: StargazerChainProvider, providerListenerEventHandler: (event: StargazerProxyEvent) => any) {
+  constructor(
+    provider: StargazerChainProvider,
+    providerListenerEventHandler: (event: StargazerProxyEvent) => any
+  ) {
     this.#activated = null;
     this.#provider = provider;
     this.#providerListenerEventHandler = providerListenerEventHandler;
@@ -70,7 +81,7 @@ class StargazerChainProviderProxy {
     request: StargazerProxyRequest,
     handler: T
   ) {
-    const encodedRequest = encodeProxyRequest(request);
+    const encodedRequest = encodeProxyRequest(request, this.#provider.providerId);
     return this.#promisifiedRequestResponse(encodedRequest, handler);
   }
 
@@ -89,7 +100,11 @@ class StargazerChainProviderProxy {
 
     if ('error' in response) {
       if ('code' in response.error && 'data' in response.error) {
-        throw new StargazerChainProviderRpcError(response.error.code, response.error.data, response.error.message);
+        throw new StargazerChainProviderRpcError(
+          response.error.code,
+          response.error.data,
+          response.error.message
+        );
       }
 
       throw new StargazerChainProviderError(response.error.message);
@@ -99,7 +114,7 @@ class StargazerChainProviderProxy {
   }
 
   async #handleEventRequest(request: StargazerProxyRequest & { type: 'event' }) {
-    const encodedRequest = encodeProxyRequest(request);
+    const encodedRequest = encodeProxyRequest(request, this.#provider.providerId);
 
     if (request.action === 'register') {
       this.#addListener(request.listenerId, this.#handleListenerEvent.bind(this));
@@ -109,7 +124,10 @@ class StargazerChainProviderProxy {
       this.#removeListener(request.listenerId);
     }
 
-    return this.#promisifiedRequestResponse(encodedRequest, this.#handleEventResponse.bind(this));
+    return this.#promisifiedRequestResponse(
+      encodedRequest,
+      this.#handleEventResponse.bind(this)
+    );
   }
 
   async #handleEventResponse(event: Event) {
@@ -133,11 +151,13 @@ class StargazerChainProviderProxy {
       type: 'handshake',
       providerId: this.#provider.providerId,
       chain: this.#provider.chain,
-      origin: location.origin,
       title: title ?? document.title,
     };
 
-    const result = await this.#handlePromisifiedRequestResponse(request, this.#handleHandshakeResponse);
+    const result = await this.#handlePromisifiedRequestResponse(
+      request,
+      this.#handleHandshakeResponse
+    );
     this.#activated = result;
     return result;
   }
