@@ -1,7 +1,7 @@
 import { AccountItem } from '../types';
 
 import { AvailableEvents } from './availableEvents';
-import {AvailableMethods} from './availableMethods'
+import { AvailableMethods } from './availableMethods';
 import { RequestArguments } from './eipChainProvider';
 import { StargazerChain } from './chains';
 
@@ -24,7 +24,6 @@ type StargazerProxyResponse =
 type StargazerProxyRequest =
   | {
       type: 'handshake';
-      providerId: string;
       chain: StargazerChain;
       title: string;
     }

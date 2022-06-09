@@ -149,7 +149,6 @@ class StargazerChainProviderProxy {
   async activate(title?: string) {
     const request: StargazerProxyRequest = {
       type: 'handshake',
-      providerId: this.#provider.providerId,
       chain: this.#provider.chain,
       title: title ?? document.title,
     };

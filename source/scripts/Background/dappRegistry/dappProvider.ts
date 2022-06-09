@@ -20,6 +20,7 @@ import {
 
 type ChainProviderData = {
   proxyId: string;
+  providerId: string;
   chain: StargazerChain;
   title: string;
 };
@@ -165,8 +166,12 @@ class DappProvider {
     }
   }
 
-  getClientProviderChain(providerId: string): StargazerChain {
-    throw new Error('Not implemented');
+  getChainProviderDataByPort(port: Runtime.Port): ChainProviderData {
+    const chainData = this.#ports.get(port);
+    if (!chainData) {
+      throw new Error('Unable to retrive ChainProviderData for port');
+    }
+    return chainData;
   }
 
   assertProviderIsActivated() {

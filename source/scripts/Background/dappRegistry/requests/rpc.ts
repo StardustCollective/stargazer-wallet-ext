@@ -13,13 +13,13 @@ const handleRpcRequest: DappProviderExternalImplementation<'onRpcRequest', []> =
   dappProvider,
   port,
   request,
-  encodedRequest
+  _encodedRequest
 ) => {
   if (!window.controller.wallet.isUnlocked()) {
     throw new Error('Wallet must be unlocked');
   }
 
-  const chain = dappProvider.getClientProviderChain(encodedRequest.providerId);
+  const chain = dappProvider.getChainProviderDataByPort(port).chain;
   const chainProvider =
     chain === StargazerChain.CONSTELLATION
       ? window.controller.stargazerProvider

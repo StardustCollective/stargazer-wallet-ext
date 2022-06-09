@@ -18,23 +18,34 @@ const isStargazerProxyRequest = (
  *
  * Handles all interaction between the injected
  * script and the background script.
+ * 
+ * Each injected provider created is piped throught a different port.
  *
  * Uses a proxyId defined on initialization to validate requests origin. Not super secure but yeah.
  */
 class RequestsProxy {
   #proxyId: string;
-  #port: Runtime.Port;
+  #ports: Map<string, Runtime.Port>;
 
   constructor(proxyId: string) {
     this.#proxyId = proxyId;
-    this.#port = browser.runtime.connect(undefined, {
-      name: `stargazer-dapp-proxy:${window.btoa(proxyId)}`,
-    });
+    this.#ports = new Map();
+  }
+
+  getPortByProviderId(providerId: string) {
+    let port = this.#ports.get(providerId);
+    if (!port) {
+      port = browser.runtime.connect(undefined, {
+        name: `stargazer-provider-proxy:${window.btoa(this.#proxyId)}:${providerId}`,
+      });
+      port.onMessage.addListener(this.onPortMessage.bind(this));
+      this.#ports.set(providerId, port);
+    }
+    return port;
   }
 
   listen() {
     window.addEventListener('message', this.onWindowMessage.bind(this));
-    this.#port.onMessage.addListener(this.onPortMessage.bind(this));
   }
 
   onWindowMessage(event: MessageEvent<unknown>) {
@@ -49,7 +60,7 @@ class RequestsProxy {
       return;
     }
 
-    this.#port.postMessage(encodedRequest);
+    this.getPortByProviderId(encodedRequest.providerId).postMessage(encodedRequest);
   }
 
   onPortMessage(encoded: StargazerEncodedProxyResponse | StargazerEncodedProxyEvent) {

@@ -29,8 +29,9 @@ const handleHandshakeRequest: DappProviderExternalImplementation<
   if (connectWalletEvent !== null) {
     setPortChainProviderData({
       chain: request.chain,
-      proxyId: encodedRequest.proxyId,
       title: request.title,
+      providerId: encodedRequest.providerId,
+      proxyId: encodedRequest.proxyId,
     });
     return { type: 'handshake', result: true };
   }
