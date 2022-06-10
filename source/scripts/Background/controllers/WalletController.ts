@@ -132,14 +132,40 @@ class WalletController implements IWalletController {
     return wallet.id;
   }
 
+  private checkForDuplicateWallet(address: string){
+
+    const state = store.getState();
+    const { vault }   = state;
+    const { wallets } = vault; 
+    const allWallets = [...wallets.local, ...wallets.ledger, ...wallets.bitfi];
+
+    for(let i = 0; i < allWallets.length; i++){
+      let accounts = allWallets[i].accounts;
+      for(let j = 0; j < accounts.length; j++){
+        let account = accounts[j];
+        if(account.address === address)
+          return true;
+      }
+    }
+
+    return false;
+
+  }
+
   async importHardwareWalletAccounts(accountItems: AccountItem[]) {
 
     for (let i = 0; i < accountItems.length; i++) {
       const accountItem = accountItems[i];
+      const isDuplicate = this.checkForDuplicateWallet(accountItem.address);
+
+      // Skip the account if it already exist in the redux store.
+      if(isDuplicate){
+        continue;
+      }
+
       const prefix    = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_PREFIX : BITFI_WALLET_PREFIX;
       const label     = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_LABEL  : BITFI_WALLET_LABEL;
       const addWallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? addLedgerWallet  : addBitfiWallet;
-
 
       // Determine the name of the wallet for Ledger we need to create a recursive 
       // function that will name the wallets.
@@ -179,7 +205,6 @@ class WalletController implements IWalletController {
           this.switchWallet(wallets[0].id);
         }
       }
-      store.dispatch(updateStatus());
       if(wallet.type !== KeyringWalletType.LedgerAccountWallet && 
        wallet.type !== KeyringWalletType.BitfiAccountWallet
       ){
