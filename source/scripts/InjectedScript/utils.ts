@@ -11,6 +11,8 @@ import {
 
 import { StargazerChainProviderError } from './errors';
 
+let injectedProxyId: string = null;
+
 const retreiveInjectedProxyId = () => {
   const scriptElem = document.querySelector('[data-stargazer-injected=injected]');
   if (!scriptElem || !(scriptElem instanceof HTMLScriptElement)) {
@@ -21,12 +23,21 @@ const retreiveInjectedProxyId = () => {
     throw new StargazerChainProviderError('Unable to retreive proxy id attribute');
   }
 
-  return scriptElem.dataset.stargazerProxyId;
+  injectedProxyId = scriptElem.dataset.stargazerProxyId;
+  scriptElem.remove();
+};
+
+const getInjectedProxyId = () => {
+  if (injectedProxyId === null) {
+    throw new StargazerChainProviderError('Proxy Id is not available');
+  }
+
+  return injectedProxyId;
 };
 
 const encodeProxyRequest = (request: StargazerProxyRequest, providerId: string) => {
   const reqId = generateNamespaceId('request');
-  const proxyId = retreiveInjectedProxyId();
+  const proxyId = getInjectedProxyId();
 
   const encodedRequest: StargazerEncodedProxyRequest = {
     reqId,
@@ -83,6 +94,7 @@ const decodeProxyEvent = (event: Event): StargazerProxyEvent => {
 
 export {
   retreiveInjectedProxyId,
+  getInjectedProxyId,
   encodeProxyRequest,
   decodeProxyResponse,
   decodeProxyEvent,
