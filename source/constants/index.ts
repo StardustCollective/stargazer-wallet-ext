@@ -54,6 +54,13 @@ export const ETH_NETWORK: {
     etherscan: 'https://ropsten.etherscan.io/',
     chainId: 3,
   },
+  rinkeby: {
+    id: 'rinkeby',
+    value: 'rinkeby',
+    label: 'Rinkeby Testnet',
+    etherscan: 'https://rinkeby.etherscan.io/',
+    chainId: 4,
+  },
 };
 
 export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';

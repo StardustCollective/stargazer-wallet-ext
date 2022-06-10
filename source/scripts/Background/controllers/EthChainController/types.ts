@@ -3,9 +3,9 @@ import { BaseAmount } from '@xchainjs/xchain-util';
 import { ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
-export type EthNetworkId = 'mainnet' | 'ropsten';
-export type EthNetworkValue = 'homestead' | 'ropsten';
-export const testnets = ['ropsten'];
+export type EthNetworkId = 'mainnet' | 'ropsten' | 'rinkeby';
+export type EthNetworkValue = 'homestead' | 'ropsten' | 'rinkeby';
+export const testnets = ['ropsten', 'rinkeby'];
 
 export type EthereumNetwork = {
   id: EthNetworkId;

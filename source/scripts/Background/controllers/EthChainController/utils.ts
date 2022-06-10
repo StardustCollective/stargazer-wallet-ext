@@ -31,6 +31,8 @@ export const getInfuraUrl = (network: EthNetworkId): string => {
       return 'https://mainnet.infura.io/v3/';
     case 'ropsten':
       return 'https://ropsten.infura.io/v3/';
+    case 'rinkeby':
+      return 'https://rinkeby.infura.io/v3/';
       
     default:
       return 'https://mainnet.infura.io/v3/';
@@ -43,6 +45,8 @@ export const getChainId = (network: EthNetworkId): number => {
       return 1;
     case 'ropsten':
       return 3;
+    case 'rinkeby':
+      return 4;
       
     default:
       return 1;
