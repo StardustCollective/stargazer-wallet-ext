@@ -17,10 +17,21 @@ const generateNamespaceId = (namespace: string) =>
   `stargazer:${namespace}:${window.btoa([Date.now(), Math.random()].join('.'))}`;
 
 /**
- * CustomEvents are not allways instances of the CustomEvent class
+ * Native object references passed between different execution contexts are not
+ * the same always.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof#instanceof_and_multiple_context_e.g._frames_or_windows
  */
+
 const isCustomEvent = (value: any): value is CustomEvent => {
   return value instanceof CustomEvent || value[Symbol.toStringTag] === 'CustomEvent';
 };
 
-export { readOnlyProxy, generateNamespaceId, isCustomEvent };
+const isError = (value: any): value is Error => {
+  return (
+    value instanceof Error ||
+    (typeof value?.name === 'string' && typeof value?.message === 'string')
+  );
+};
+
+export { readOnlyProxy, generateNamespaceId, isCustomEvent, isError };
