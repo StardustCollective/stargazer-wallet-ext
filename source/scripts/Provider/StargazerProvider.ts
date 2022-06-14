@@ -65,9 +65,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       throw new Error('StargazerProvider.getPublicKey: No origin');
     }
 
-    const _origin = origin.replace(/https?:\/\//, '');
-
-    const dappData = whitelist[_origin];
+    const dappData = whitelist[origin];
 
     if (!dappData?.accounts?.Constellation) {
       throw new Error('StargazerProvider.getPublicKey: Not whitelisted');
@@ -94,9 +92,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       return [];
     }
 
-    const _origin = origin.replace(/https?:\/\//, '');
-
-    const dappData = whitelist[_origin];
+    const dappData = whitelist[origin];
 
     if (!dappData?.accounts?.Constellation) {
       return [];
