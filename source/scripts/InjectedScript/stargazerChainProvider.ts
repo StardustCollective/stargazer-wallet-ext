@@ -124,7 +124,7 @@ class StargazerChainProvider extends EIPChainProvider {
   }
 
   removeListener(eventName: AvailableEvents, listener: (...args: any[]) => void): this {
-    this.removeListener(eventName, listener);
+    this.removeListenerAsync(eventName, listener);
     return this;
   }
 }
