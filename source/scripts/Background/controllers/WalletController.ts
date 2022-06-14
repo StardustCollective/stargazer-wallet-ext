@@ -19,11 +19,10 @@ import { addLedgerWallet, deleteHardwareWalletAccount, addBitfiWallet } from 'st
 import { reload } from 'utils/browser';
 
 // Constants
-const LEDGER_WALLET_PREFIX      = 'L';
-const BITFI_WALLET_PREFIX       = 'B';
-const LEDGER_WALLET_LABEL       = 'Ledger';
-const BITFI_WALLET_LABEL        = 'Bitfi';
-const HARDWARE_WALLET_OFFSET    = 1;
+const LEDGER_WALLET_PREFIX = 'L';
+const BITFI_WALLET_PREFIX = 'B';
+const LEDGER_WALLET_LABEL = 'Ledger';
+const BITFI_WALLET_LABEL = 'Bitfi';
 const ACCOUNT_ITEMS_FIRST_INDEX = 0;
 
 class WalletController implements IWalletController {
@@ -54,7 +53,7 @@ class WalletController implements IWalletController {
         console.log('Error while switching wallet at login');
         console.log(e);
       }
-      store.dispatch(updateLoginState({processState: ProcessStates.IDLE}));
+      store.dispatch(updateLoginState({ processState: ProcessStates.IDLE }));
     });
 
     const utils = Object.freeze(ControllerUtils());
@@ -84,7 +83,7 @@ class WalletController implements IWalletController {
   }
 
   async unLock(password: string): Promise<boolean> {
-    store.dispatch(updateLoginState({processState: ProcessStates.IN_PROGRESS}));
+    store.dispatch(updateLoginState({ processState: ProcessStates.IN_PROGRESS }));
     await this.keyringManager.login(password);
 
     const state = store.getState();
@@ -132,18 +131,18 @@ class WalletController implements IWalletController {
     return wallet.id;
   }
 
-  private checkForDuplicateWallet(address: string){
+  private checkForDuplicateWallet(address: string) {
 
     const state = store.getState();
-    const { vault }   = state;
-    const { wallets } = vault; 
+    const { vault } = state;
+    const { wallets } = vault;
     const allWallets = [...wallets.local, ...wallets.ledger, ...wallets.bitfi];
 
-    for(let i = 0; i < allWallets.length; i++){
+    for (let i = 0; i < allWallets.length; i++) {
       let accounts = allWallets[i].accounts;
-      for(let j = 0; j < accounts.length; j++){
+      for (let j = 0; j < accounts.length; j++) {
         let account = accounts[j];
-        if(account.address === address)
+        if (account.address === address)
           return true;
       }
     }
@@ -152,28 +151,54 @@ class WalletController implements IWalletController {
 
   }
 
+  private getNextHardwareWaletAccountId = (wallets: any, prefix: string) => {
+    // If no wallets exist return 1 as the first ID.
+    if(wallets.length === 0){
+      return 1;
+    }
+
+    let walletIds = [];
+
+    // Move all the existing IDs the walletIds array.
+    for (let i = 0; i < wallets.length; i++) {
+      const wallet = wallets[i];
+      const num = wallet.id.replace(prefix, "");
+      walletIds.push((parseInt(num)));
+    }
+
+    //Determin the next ID.
+    return walletIds.sort(function (a, b) { return a - b; })[walletIds.length - 1] + 1;
+
+  };
+
   async importHardwareWalletAccounts(accountItems: AccountItem[]) {
 
     for (let i = 0; i < accountItems.length; i++) {
+      const state = store.getState();
+      const { vault } = state;
+      const { wallets } = vault;
       const accountItem = accountItems[i];
       const isDuplicate = this.checkForDuplicateWallet(accountItem.address);
 
-      // Skip the account if it already exist in the redux store.
-      if(isDuplicate){
+      // Skip the account if it already exist in the vault.wallets redux store.
+      if (isDuplicate) {
         continue;
       }
 
-      const prefix    = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_PREFIX : BITFI_WALLET_PREFIX;
-      const label     = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_LABEL  : BITFI_WALLET_LABEL;
-      const addWallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? addLedgerWallet  : addBitfiWallet;
-
+      const wallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? wallets.ledger : wallets.bitfi;
+      const prefix = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_PREFIX : BITFI_WALLET_PREFIX;
+      const label = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_LABEL : BITFI_WALLET_LABEL;
+      const addWallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? addLedgerWallet : addBitfiWallet;
+      // Determine the next ID for either a ledger or bitfi wallet.
+      const id: number = this.getNextHardwareWaletAccountId(wallet, prefix);
+      
       // Determine the name of the wallet for Ledger we need to create a recursive 
       // function that will name the wallets.
-      const wallet = {
-        id: `${prefix}${accountItem.id}`,
+      const newWallet = {
+        id: `${prefix}${id}`,
         // The account id is offset by one so the UI displays will
         // the first account as 1 and not 0.
-        label: `${label} ${(accountItem.id + HARDWARE_WALLET_OFFSET)}`,
+        label: `${label} ${id}`,
         type: accountItem.type,
         accounts: [
           {
@@ -184,13 +209,13 @@ class WalletController implements IWalletController {
         ],
         supportedAssets: [KeyringAssetType.DAG],
       };
-      
-      await store.dispatch(addWallet(wallet));
-      
+
+      await store.dispatch(addWallet(newWallet));
+
       // Switches wallets immediately after adding the first account item 
       // to prevent a rendering delay in the wallet extension.
-      if(i === ACCOUNT_ITEMS_FIRST_INDEX){
-       // Switches wallets to the first hardware wallet account item in the accountItem array.
+      if (i === ACCOUNT_ITEMS_FIRST_INDEX) {
+        // Switches wallets to the first hardware wallet account item in the accountItem array.
         this.switchWallet(`${prefix}${accountItems[0].id}`);
       }
     }
@@ -205,12 +230,12 @@ class WalletController implements IWalletController {
           this.switchWallet(wallets[0].id);
         }
       }
-      if(wallet.type !== KeyringWalletType.LedgerAccountWallet && 
-       wallet.type !== KeyringWalletType.BitfiAccountWallet
-      ){
-       await this.keyringManager.removeWalletById(wallet.id);
-      }else{
-       store.dispatch(deleteHardwareWalletAccount({wallet}));
+      if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+        wallet.type !== KeyringWalletType.BitfiAccountWallet
+      ) {
+        await this.keyringManager.removeWalletById(wallet.id);
+      } else {
+        store.dispatch(deleteHardwareWalletAccount({ wallet }));
       }
 
       return true;
