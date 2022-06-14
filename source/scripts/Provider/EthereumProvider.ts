@@ -71,9 +71,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
       return [];
     }
 
-    const _origin = origin.replace(/https?:\/\//, '');
-
-    const dappData = whitelist[_origin];
+    const dappData = whitelist[origin];
 
     if (!dappData?.accounts?.Ethereum) {
       return [];
@@ -304,6 +302,10 @@ export class EthereumProvider implements IRpcChainRequestHandler {
           throw new EIPRpcError('User Rejected Request', 4001);
         }
 
+        if (spendEvent.detail.error) {
+          throw new EIPRpcError(spendEvent.detail.error, 4002);
+        }
+
         if (!spendEvent.detail.result) {
           throw new EIPRpcError('User Rejected Request', 4001);
         }
@@ -320,6 +322,10 @@ export class EthereumProvider implements IRpcChainRequestHandler {
 
         if (sentTransactionEvent === null) {
           throw new EIPRpcError('User Rejected Request', 4001);
+        }
+
+        if (sentTransactionEvent.detail.error) {
+          throw new EIPRpcError(sentTransactionEvent.detail.error, 4002);
         }
 
         if (!sentTransactionEvent.detail.result) {
