@@ -77,7 +77,11 @@ class Driver {
             cssToXPath.xPathBuilder
               .string()
               .contains(locator.text)
-              .or(cssToXPath.xPathBuilder.string().contains(locator.text.split(' ').join('')))
+              .or(
+                cssToXPath.xPathBuilder
+                  .string()
+                  .contains(locator.text.split(' ').join(''))
+              )
           )
           .toXPath();
         return By.xpath(xpath);
@@ -119,7 +123,10 @@ class Driver {
     if (state === 'visible') {
       element = await this.driver.wait(until.elementLocated(selector), timeout);
     } else if (state === 'detached') {
-      element = await this.driver.wait(until.stalenessOf(await this.findElement(selector)), timeout);
+      element = await this.driver.wait(
+        until.stalenessOf(await this.findElement(selector)),
+        timeout
+      );
     }
     return wrapElementWithAPI(element, this);
   }
@@ -199,7 +206,10 @@ class Driver {
     try {
       dataTab = await this.findElement(locator);
     } catch (err) {
-      assert(err instanceof webdriverError.NoSuchElementError || err instanceof webdriverError.TimeoutError);
+      assert(
+        err instanceof webdriverError.NoSuchElementError ||
+          err instanceof webdriverError.TimeoutError
+      );
     }
     assert.ok(!dataTab, 'Found element that should not be present');
   }
@@ -240,7 +250,12 @@ class Driver {
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
   }
 
-  async switchToWindowWithTitle(title, initialWindowHandles, delayStep = 1000, timeout = 5000) {
+  async switchToWindowWithTitle(
+    title,
+    initialWindowHandles,
+    delayStep = 1000,
+    timeout = 5000
+  ) {
     let windowHandles = initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
     while (timeElapsed <= timeout) {
@@ -282,7 +297,9 @@ class Driver {
     });
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
-    const uiState = await this.driver.executeScript(() => window.getCleanAppState && window.getCleanAppState());
+    const uiState = await this.driver.executeScript(
+      () => window.getCleanAppState && window.getCleanAppState()
+    );
     await fs.writeFile(`${filepathBase}-state.json`, JSON.stringify(uiState, null, 2));
   }
 
@@ -292,9 +309,13 @@ class Driver {
       'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
     ];
     const browserLogs = await this.driver.manage().logs().get('browser');
-    const errorEntries = browserLogs.filter((entry) => !ignoredLogTypes.includes(entry.level.toString()));
+    const errorEntries = browserLogs.filter(
+      (entry) => !ignoredLogTypes.includes(entry.level.toString())
+    );
     const errorObjects = errorEntries.map((entry) => entry.toJSON());
-    return errorObjects.filter((entry) => !ignoredErrorMessages.some((message) => entry.message.includes(message)));
+    return errorObjects.filter(
+      (entry) => !ignoredErrorMessages.some((message) => entry.message.includes(message))
+    );
   }
 }
 

@@ -11,13 +11,19 @@ const DAppState = createSlice({
   name: 'dapp',
   initialState,
   reducers: {
-    rehydrate(state: IDAppState, action: PayloadAction<{ origin: string; eventName: string }>) {
+    rehydrate(
+      state: IDAppState,
+      action: PayloadAction<{ origin: string; eventName: string }>
+    ) {
       return {
         ...state,
         ...action.payload,
       };
     },
-    registerListeningSite(state: IDAppState, action: PayloadAction<{ origin: string; eventName: string }>) {
+    registerListeningSite(
+      state: IDAppState,
+      action: PayloadAction<{ origin: string; eventName: string }>
+    ) {
       const { origin, eventName } = action.payload;
 
       const originState = state.listening.hasOwnProperty(origin)
@@ -32,14 +38,19 @@ const DAppState = createSlice({
         },
       };
     },
-    deregisterListeningSite(state: IDAppState, action: PayloadAction<{ origin: string; eventName: string }>) {
+    deregisterListeningSite(
+      state: IDAppState,
+      action: PayloadAction<{ origin: string; eventName: string }>
+    ) {
       const { origin, eventName } = action.payload;
 
       if (!state.listening.hasOwnProperty(origin)) {
         return state;
       }
 
-      const originState = state.listening[origin].filter((val: string) => val !== eventName);
+      const originState = state.listening[origin].filter(
+        (val: string) => val !== eventName
+      );
 
       const retState = {
         ...state,
@@ -66,7 +77,7 @@ const DAppState = createSlice({
     ) {
       const { dapp, network, accounts } = action.payload;
 
-      const id = action.payload.id.replace(/(^\w+:|^)\/\//, '');
+      const id = action.payload.id;
 
       // Append to accounts if a network already exists
       let accountsByNetwork = {};
@@ -98,6 +109,12 @@ const DAppState = createSlice({
   },
 });
 
-export const { listNewDapp, unlistDapp, registerListeningSite, deregisterListeningSite, rehydrate } = DAppState.actions;
+export const {
+  listNewDapp,
+  unlistDapp,
+  registerListeningSite,
+  deregisterListeningSite,
+  rehydrate,
+} = DAppState.actions;
 
 export default DAppState.reducer;
