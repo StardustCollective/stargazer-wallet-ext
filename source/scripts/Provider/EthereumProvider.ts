@@ -31,6 +31,7 @@ import {
 } from '../common';
 
 import { StargazerSignatureRequest } from './StargazerProvider';
+import { getChainId } from 'scripts/Background/controllers/EthChainController/utils';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -50,7 +51,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   getChainId() {
     const networkName = this.getNetwork();
 
-    return networkName === 'mainnet' ? 1 : 3;
+    return getChainId(networkName);
   }
 
   getAddress() {

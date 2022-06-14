@@ -1,4 +1,5 @@
 import { IActiveAssetState } from 'state/vault/types';
+import { EthNetworkId } from './Background/controllers/EthChainController/types';
 
 export interface AccountItem  {
   id: number;
@@ -26,7 +27,7 @@ export interface IETHPendingTx {
   fromAddress: string;
   toAddress: string;
   timestamp: number;
-  network: ETHNetwork;
+  network: EthNetworkId;
   assetId: string;
   nonce?: number;
   gasPrice: number;
@@ -44,5 +45,3 @@ export interface ITransactionInfo {
   nonce?: number;
   onConfirmed?: () => void
 }
-
-export type ETHNetwork = 'testnet' | 'mainnet';

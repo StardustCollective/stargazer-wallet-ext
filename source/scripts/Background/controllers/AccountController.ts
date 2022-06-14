@@ -1,6 +1,6 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { BigNumber, ethers } from 'ethers';
-import { utils, XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 import store from 'state/store';
 import { initialState as tokenState } from 'state/assets';
@@ -28,12 +28,15 @@ import {
   KeyringWalletAccountState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { ETHNetwork, ITransactionInfo, IETHPendingTx } from '../../types';
+import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { EthTransactionController } from './EthTransactionController';
 
 import { IAccountController } from './IAccountController';
 import { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
+import { EthNetworkId } from './EthChainController/types';
+import EthChainController, { utils } from './EthChainController';
+import { getChainId } from './EthChainController/utils';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -44,7 +47,7 @@ const ETH_TOKENS = Object.values(tokenState)
 export class AccountController implements IAccountController {
   tempTx: ITransactionInfo | null;
 
-  ethClient: XChainEthClient;
+  ethClient: EthChainController;
 
   txController: EthTransactionController;
 
@@ -108,8 +111,8 @@ export class AccountController implements IAccountController {
     }
 
     if (account.network === KeyringNetwork.Ethereum) {
-      this.ethClient = new XChainEthClient({
-        network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
+      this.ethClient = new EthChainController({
+        network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
         privateKey,
         etherscanApiKey: process.env.ETHERSCAN_API_KEY,
         infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
@@ -328,7 +331,7 @@ export class AccountController implements IAccountController {
         }`
       );
     }
-    const newTx: any = await this.ethClient.transfer(txOptions);
+    const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
     await this.txController.removePendingTxHash(tx.txHash);
     await this.txController.addPendingTx({
       txHash: newTx.hash,
@@ -363,67 +366,65 @@ export class AccountController implements IAccountController {
 
     let trxHash: string;
 
-    try {
-      if (activeAsset.type === AssetType.Constellation) {
-        const pendingTx = await dag4.account.transferDag(
-          this.tempTx.toAddress,
-          Number(this.tempTx.amount),
-          this.tempTx.fee
-        );
-        const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
-        store.dispatch(
-          updateTransactions({
-            txs: [tx, ...activeAsset.transactions],
-          })
-        );
-        trxHash = tx.hash;
-      } else {
-        if (!this.tempTx.ethConfig) {
-          throw new Error('No tempTx.ethConfig present');
-        }
-
-        const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
-        const { activeNetwork }: IVaultState = store.getState().vault;
-        const txOptions: any = {
-          recipient: this.tempTx.toAddress,
-          amount: utils.baseAmount(
-            ethers.utils
-              .parseUnits(this.tempTx.amount.toString(), assets[activeAsset.id].decimals)
-              .toString(),
-            assets[activeAsset.id].decimals
-          ),
-          gasPrice: gasPrice
-            ? utils.baseAmount(
-                ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-                9
-              )
-            : undefined,
-          gasLimit: gasLimit && BigNumber.from(gasLimit),
-          nonce,
-        };
-        if (activeAsset.type !== AssetType.Ethereum) {
-          txOptions.asset = utils.assetFromString(
-            `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-              assets[activeAsset.id].address
-            }`
-          );
-        }
-        trxHash = await this.ethClient.transfer(txOptions);
-        this.txController.addPendingTx({
-          txHash: trxHash,
-          fromAddress: this.tempTx.fromAddress,
-          toAddress: this.tempTx.toAddress,
-          amount: this.tempTx.amount,
-          network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
-          assetId: activeAsset.id,
-          timestamp: new Date().getTime(),
-          gasPrice,
-        });
+    if (activeAsset.type === AssetType.Constellation) {
+      const pendingTx = await dag4.account.transferDag(
+        this.tempTx.toAddress,
+        Number(this.tempTx.amount),
+        this.tempTx.fee
+      );
+      const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
+      store.dispatch(
+        updateTransactions({
+          txs: [tx, ...activeAsset.transactions],
+        })
+      );
+      trxHash = tx.hash;
+    } else {
+      if (!this.tempTx.ethConfig) {
+        throw new Error('No tempTx.ethConfig present');
       }
-      this.tempTx = null;
-    } catch (error: any) {
-      throw new Error(error);
+
+      const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
+      const { activeNetwork }: IVaultState = store.getState().vault;
+      const txOptions: any = {
+        recipient: this.tempTx.toAddress,
+        amount: utils.baseAmount(
+          ethers.utils
+            .parseUnits(this.tempTx.amount.toString(), assets[activeAsset.id].decimals)
+            .toString(),
+          assets[activeAsset.id].decimals
+        ),
+        gasPrice: gasPrice
+          ? utils.baseAmount(
+              ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+              9
+            )
+          : undefined,
+        gasLimit: gasLimit && BigNumber.from(gasLimit),
+        nonce,
+      };
+      if (activeAsset.type !== AssetType.Ethereum) {
+        txOptions.asset = utils.assetFromString(
+          `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
+            assets[activeAsset.id].address
+          }`
+        );
+      }
+      const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
+
+      trxHash = newTx.hash;
+      this.txController.addPendingTx({
+        txHash: newTx.hash,
+        fromAddress: this.tempTx.fromAddress,
+        toAddress: this.tempTx.toAddress,
+        amount: this.tempTx.amount,
+        network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
+        assetId: activeAsset.id,
+        timestamp: new Date().getTime(),
+        gasPrice,
+      });
     }
+    this.tempTx = null;
 
     if (!trxHash) {
       throw new Error('Transaction hash was not set');
@@ -445,8 +446,6 @@ export class AccountController implements IAccountController {
       throw new Error("Error: Can't find transaction info");
     }
 
-    let trxHash: string;
-
     if (!this.tempTx.ethConfig) {
       throw new Error('No tempTx.ethConfig present');
     }
@@ -466,7 +465,7 @@ export class AccountController implements IAccountController {
       gasPrice: bigNumberGasPrice,
       gasLimit: ethers.utils.hexlify(gasLimit),
       data: memo,
-      chainId: activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' ? 1 : 3,
+      chainId: getChainId(activeNetwork[KeyringNetwork.Ethereum]),
       nonce,
     };
 
@@ -477,7 +476,7 @@ export class AccountController implements IAccountController {
       fromAddress: this.tempTx.fromAddress,
       toAddress: this.tempTx.toAddress,
       amount: this.tempTx.amount,
-      network: activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork,
+      network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
       assetId: activeAsset.id,
       timestamp: new Date().getTime(),
       nonce: txData.nonce,
@@ -486,15 +485,9 @@ export class AccountController implements IAccountController {
       onConfirmed: this.tempTx.onConfirmed,
     });
 
-    trxHash = txData.hash;
-
     this.tempTx = null;
 
-    if (!trxHash) {
-      throw new Error('Transaction hash was not set');
-    }
-
-    return trxHash;
+    return txData.hash;
   }
 
   // Other

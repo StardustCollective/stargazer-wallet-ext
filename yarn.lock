@@ -3420,22 +3420,6 @@
     "@stardust-collective/dag4-network" "^1.0.9"
     bignumber.js "^9.0.1"
 
-"@stardust-collective/dag4-xchain-ethereum@^0.1.14":
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-xchain-ethereum/-/dag4-xchain-ethereum-0.1.14.tgz#3ab133fa8524a53c82d4f4a43a904a6719100dc0"
-  integrity sha512-Q2COouCACA042I2HMNiazs2B82rtW1m2gwohcbKKPE13mAIqynTsKd4Sk6YSwjoPGmTdLD6niSosszXOQHMsoA==
-  dependencies:
-    "@xchainjs/xchain-client" "^0.7.0"
-    "@xchainjs/xchain-crypto" "^0.2.3"
-    "@xchainjs/xchain-ethereum" "^0.14.1"
-    "@xchainjs/xchain-util" "^0.2.5"
-    axios "^0.21.1"
-    bignumber.js "^9.0.1"
-    erc-20-abi "^1.0.0"
-    ethers "^5.0.32"
-    rxjs "^7.0.0"
-    single-call-balance-checker-abi "^1.0.0"
-
 "@stardust-collective/dag4@1.1.9":
   version "1.1.9"
   resolved "https://registry.yarnpkg.com/@stardust-collective/dag4/-/dag4-1.1.9.tgz#a4cce771a10af806212b8e8475b51ddcd93916d4"
@@ -4292,12 +4276,12 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@xchainjs/xchain-client@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-client/-/xchain-client-0.7.0.tgz#c03419c63ea61f54af2b9f064159372aa538f4f8"
-  integrity sha512-Z+/TSiKBp0IRib9udlhc7yB1atecTt7Z1AN706YLAgbMSvO1XDmLU//KLhZ7MF47Ajg3hK3slq06FJmsAgZ4FA==
+"@xchainjs/xchain-client@^0.11.3":
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-client/-/xchain-client-0.11.3.tgz#9c76d27d287eae4d9e9bd623290c0fb95dfc56e9"
+  integrity sha512-wdL2kKUi/07RXQHGVp8yzsJvo75hBVlqr44xfp5PY7fAOhckQhbTSgfDfEFjyI+udpno8FDgZ2UwoZODO2kJMA==
 
-"@xchainjs/xchain-crypto@^0.2.3":
+"@xchainjs/xchain-crypto@^0.2.6":
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/@xchainjs/xchain-crypto/-/xchain-crypto-0.2.6.tgz#2d0a6f81aefd8741b4e428431651d9c312f4b410"
   integrity sha512-DVw+JDNQ0uNgc8JbWYh8BEJuABxzvfwXvp0mX8ywEeN0xwZ87JavyKQs+I2aWNhcE0shww1bQd9u8w6BdtUM4g==
@@ -4309,15 +4293,10 @@
     hdkey "^2.0.1"
     uuid "^8.3.2"
 
-"@xchainjs/xchain-ethereum@^0.14.1":
-  version "0.14.2"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-ethereum/-/xchain-ethereum-0.14.2.tgz#59974207fc07bd72f8190f0b96f6d992daf467ec"
-  integrity sha512-n26E2OQKq/+WBYq3UrugLfA7s5/5xf3xbEFmS/ZRpF+MochOW/rqSTRTOLryHkH/ViuAtarEJcj2LaiuhfciVA==
-
-"@xchainjs/xchain-util@^0.2.5":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-util/-/xchain-util-0.2.8.tgz#f83c49a6dbcf95bf6a9ffda89f8c13ce8c3214fd"
-  integrity sha512-noaf89yfcFlTG+07u1jA07i6V76XHhwGuyiFnTuuTQUsoQ0B1PTbvEd5OOYosoLeUzFCtPGVS3l/SCSTVG5zpg==
+"@xchainjs/xchain-util@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-util/-/xchain-util-0.7.1.tgz#6df007e4715778314c772aba2685447aa9b10fc7"
+  integrity sha512-CTYdrfJ7i9cHJY1AxDPq5c/4uHC2LWIt1F5WeuTriuGK5flRf9mPze7PmAZk05FI983kjKF/JiDKV/iewafTHQ==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -4829,13 +4808,6 @@ axios@^0.19.0:
   dependencies:
     follow-redirects "1.5.10"
 
-axios@^0.21.1:
-  version "0.21.4"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
-  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
-  dependencies:
-    follow-redirects "^1.14.0"
-
 axios@^0.24.0:
   version "0.24.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
@@ -5109,7 +5081,7 @@ bignumber.js@^7.2.1:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-7.2.1.tgz#80c048759d826800807c4bfd521e50edbba57a5f"
   integrity sha512-S4XzBk5sMB+Rcb/LNcpzXr57VRTxgAvaAEDAl1AwRx27j00hT84O6OkteE7u8UB3NuaaygCRrEpqox4uDOrbdQ==
 
-bignumber.js@^9.0.0, bignumber.js@^9.0.1:
+bignumber.js@^9.0.0, bignumber.js@^9.0.1, bignumber.js@^9.0.2:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.2.tgz#71c6c6bed38de64e24a65ebe16cfcf23ae693673"
   integrity sha512-GAcQvbpsM0pUb0zw1EI0KhQEZ+lRwR5fYaAp3vPOYuP7aDvGy6cVN6XHLauvF8SOga2y0dcLcjt3iQDTSEliyw==
@@ -8337,7 +8309,7 @@ follow-redirects@1.5.10:
   dependencies:
     debug "=3.1.0"
 
-follow-redirects@^1.14.0, follow-redirects@^1.14.4:
+follow-redirects@^1.14.4:
   version "1.14.9"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.9.tgz#dd4ea157de7bfaf9ea9b3fbd85aa16951f78d8d7"
   integrity sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==
@@ -14886,13 +14858,6 @@ rxjs@6, rxjs@^6.4.0, rxjs@^6.6.3, rxjs@^6.6.7:
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
   dependencies:
     tslib "^1.9.0"
-
-rxjs@^7.0.0:
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.5.tgz#2ebad89af0f560f460ad5cc4213219e1f7dd4e9f"
-  integrity sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==
-  dependencies:
-    tslib "^2.1.0"
 
 safe-buffer@5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
