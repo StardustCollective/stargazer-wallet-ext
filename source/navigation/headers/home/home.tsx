@@ -30,7 +30,7 @@ import commonStyles from './../styles.scss';
 // Interfaces
 ///////////////////////////
 
-interface IHomeHeader{
+interface IHomeHeader {
   navigation: any;
   route: any;
   hasMainAccount: boolean;
@@ -51,20 +51,15 @@ const homeHeader = ({
 
   const renderHeaderRight = () => {
 
-    if (hasMainAccount) {
-      return (
+    return (
       <IconButton
         id="header-moreButton"
         className={`${styles.buttonRight} ${styles.more}`}
         onClick={onMenuButtonClicked}
       >
         <MenuIcon className={styles.buttonRight} />
-      </IconButton>)
-    }
-    // Hack: The header title will not center unless there is 
-    // both a headerLeft and headerRight. So we insert an 
-    // empty div to meet the requirement.
-    return (<div className={commonStyles.emptyDiv}></div>);
+      </IconButton>
+    )
 
   }
 

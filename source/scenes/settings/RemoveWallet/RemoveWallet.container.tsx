@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { showMessage } from 'react-native-flash-message';
-
+import { useLinkTo } from '@react-navigation/native';
 import { getWalletController } from 'utils/controllersUtils';
 
 import IVaultState from 'state/vault/types';
@@ -25,6 +25,7 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   const allWallets = [...wallets.local, ...wallets.bitfi, ...wallets.ledger];
   const wallet = allWallets.find((w) => w.id === id);
   const isSeedWallet = wallet && wallet.type === KeyringWalletType.MultiChainWallet;
+  const linkTo = useLinkTo();
 
   const { handleSubmit, register, control } = useForm({
     validationSchema: yup.object().shape({
@@ -33,10 +34,11 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   });
 
   const onSubmit = async (data: any) => {
-    const isChecked = walletController.deleteWallet(wallet, data.password);
+    const isChecked = await walletController.deleteWallet(wallet, data.password);
     if (isChecked) {
       if (allWallets.length === 1) {
-        walletController.logOut();
+       await  walletController.logOut();
+       linkTo('/unAuthRoot');
       } else {
         navigationUtil.popToTop(navigation);
       }

@@ -1,6 +1,15 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
-import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
+import { 
+  changeActiveNetwork, 
+  changeActiveWallet, 
+  setVaultInfo, 
+  updateBalances,
+  addLedgerWallet, 
+  updateWallets, 
+  addBitfiWallet 
+} from 'state/vault';
+import { IVaultWalletsStoreState } from 'state/vault/types'
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
@@ -15,8 +24,8 @@ import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { addLedgerWallet, deleteHardwareWalletAccount, addBitfiWallet } from 'state/vault';
-import { reload } from 'utils/browser';
+import { } from 'state/vault';
+import filter from 'lodash/filter';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -153,7 +162,7 @@ class WalletController implements IWalletController {
 
   private getNextHardwareWaletAccountId = (wallets: any, prefix: string) => {
     // If no wallets exist return 1 as the first ID.
-    if(wallets.length === 0){
+    if (wallets.length === 0) {
       return 1;
     }
 
@@ -191,7 +200,7 @@ class WalletController implements IWalletController {
       const addWallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? addLedgerWallet : addBitfiWallet;
       // Determine the next ID for either a ledger or bitfi wallet.
       const id: number = this.getNextHardwareWaletAccountId(wallet, prefix);
-      
+
       // Determine the name of the wallet for Ledger we need to create a recursive 
       // function that will name the wallets.
       const newWallet = {
@@ -222,20 +231,49 @@ class WalletController implements IWalletController {
   }
 
   async deleteWallet(wallet: KeyringWalletState, password: string) {
+
     if (this.checkPassword(password)) {
+
       const { vault } = store.getState();
-      if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
-        const wallets = this.keyringManager.getWallets();
-        if (wallets.length) {
-          this.switchWallet(wallets[0].id);
+      const { wallets } = vault;
+      const { local, bitfi, ledger } = wallets;
+
+      let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: []}
+      let newLocalState = [...local];
+      let newLedgerState = [...ledger];
+      let newBitfiState = [...bitfi];
+
+      if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+        wallet.type !== KeyringWalletType.BitfiAccountWallet) {
+         newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
+      } else {
+        if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
+          newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
+        } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
+          newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
         }
       }
+
+      newWalletState = {
+        local: [...newLocalState],
+        ledger: [...newLedgerState],
+        bitfi: [...newBitfiState],
+      }
+
+      const newAllWallets  = [...newWalletState.local, ...newWalletState.ledger, ...newWalletState.bitfi];
+
+      if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
+        if (newAllWallets.length) {
+          this.switchWallet(newAllWallets[0].id);
+        }
+      }
+
+      store.dispatch(updateWallets({wallets: newWalletState}));
+
       if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
         wallet.type !== KeyringWalletType.BitfiAccountWallet
       ) {
         await this.keyringManager.removeWalletById(wallet.id);
-      } else {
-        store.dispatch(deleteHardwareWalletAccount({ wallet }));
       }
 
       return true;
@@ -304,8 +342,6 @@ class WalletController implements IWalletController {
     this.keyringManager.logout();
     this.account.ethClient = undefined;
     store.dispatch(changeActiveWallet(undefined));
-    store.dispatch(updateStatus());
-    reload();
   }
 }
 

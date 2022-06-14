@@ -4,9 +4,8 @@ import { Transaction } from '@stardust-collective/dag4-network';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
-import filter from 'lodash/filter';
 import findIndex from 'lodash/findIndex';
-import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState } from './types';
+import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState, IVaultWalletsStoreState } from './types';
 import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 const initialState: IVaultState = {
@@ -136,15 +135,8 @@ const VaultState = createSlice({
         action.payload
       ];
     },
-    deleteHardwareWalletAccount(state: IVaultState, action: PayloadAction<{wallet: KeyringWalletState}>){
-      const isLedger = action.payload.wallet.type === KeyringWalletType.LedgerAccountWallet;
-      const wallets  = isLedger ? state.wallets.ledger : state.wallets.bitfi;
-      let newWalletState = filter(wallets, (w) => w.id !== action.payload.wallet.id);
-      if(isLedger){
-        state.wallets.ledger = newWalletState;
-      }else{
-        state.wallets.bitfi = newWalletState;
-      }
+    updateWallets(state: IVaultState, action: PayloadAction<{wallets: IVaultWalletsStoreState}>){
+      state.wallets = action.payload.wallets;
     },
     updateWalletLabel(state: IVaultState, action: PayloadAction<{wallet: KeyringWalletState, label: string}>){
       const isLedger = action.payload.wallet.type === KeyringWalletType.LedgerAccountWallet;
@@ -208,7 +200,7 @@ const VaultState = createSlice({
 export const {
   addLedgerWallet,
   addBitfiWallet,
-  deleteHardwareWalletAccount,
+  updateWallets,
   rehydrate,
   setVaultInfo,
   // setKeystoreInfo,

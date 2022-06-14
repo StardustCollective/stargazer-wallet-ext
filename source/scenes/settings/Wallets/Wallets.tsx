@@ -26,28 +26,32 @@ const WalletsComponent: FC<IWalletSettings> = ({
 }) => {
   return (
     <div className={styles.wallets}>
-      <label>Multi chain wallets</label>
-      <div className={styles.group}>
-        {wallets
-          .filter((w) => w.type === KeyringWalletType.MultiChainWallet)
-          .map((wallet) => (
-            <section
-              className={styles.wallet}
-              key={wallet.id}
-              onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
-            >
-              {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-              <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
-              <span id={wallet.label}>
-                {wallet.label}
-                <small>Multi Chain Wallet</small>
-              </span>
-              <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
-                <InfoIcon />
-              </IconButton>
-            </section>
-          ))}
-      </div>
+      {!!wallets.length && (
+        <>
+          <label>Multi chain wallets</label>
+          <div className={styles.group}>
+            {wallets
+              .filter((w) => w.type === KeyringWalletType.MultiChainWallet)
+              .map((wallet) => (
+                <section
+                  className={styles.wallet}
+                  key={wallet.id}
+                  onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                >
+                  {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
+                  <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
+                  <span id={wallet.label}>
+                    {wallet.label}
+                    <small>Multi Chain Wallet</small>
+                  </span>
+                  <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
+                    <InfoIcon />
+                  </IconButton>
+                </section>
+              ))}
+          </div>
+        </>
+      )}
       {!!privKeyAccounts.length && (
         <>
           <label>Private key wallets</label>
@@ -60,13 +64,13 @@ const WalletsComponent: FC<IWalletSettings> = ({
               >
                 {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
                 {
-                <div className={styles.walletIcon}>
-                  <img  src={`${assets[
+                  <div className={styles.walletIcon}>
+                    <img src={`${assets[
                       wallet.supportedAssets.includes(KeyringAssetType.ETH)
                         ? AssetType.Ethereum
                         : AssetType.Constellation
                     ].logo}`} width={24} />
-                </div>
+                  </div>
                 }
                 <span>
                   {wallet.label}
@@ -85,7 +89,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
           <label>Hardware Wallets</label>
           <div className={styles.group}>
             {hardwareWalletAccounts.map((wallet) => (
-            <section
+              <section
                 className={styles.wallet}
                 key={wallet.id}
                 onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
