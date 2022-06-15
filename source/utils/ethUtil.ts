@@ -78,18 +78,19 @@ export const estimateGasLimit = async ({ to, data }: { to: string, data: string 
     
     const from = ethAsset.address;
     const abi = await _getAbi({to});
+    const web3 = _getWeb3(network);
+    const bytecode = await web3.eth.getCode(to);
 
+    // bytecode === '0x' is used for rinkeby testnet
     // Not a contract -> 21,000 standard gasLimit
-    if (!abi) {
+    if (!abi || bytecode === '0x') {
         return 21000;
     }
 
-    const web3 = _getWeb3(network);
-
     const decoder = new InputDataDecoder(abi);
-
+    
     const contract = new web3.eth.Contract(abi, to);
-
+    
     const { method, inputs, types } = decoder.decodeData(data);
 
     // The decoder package strips 0x from addresses which breaks web3

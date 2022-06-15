@@ -4,7 +4,7 @@ import { baseAmount, BaseAmount, assetToString, AssetETH } from '@xchainjs/xchai
 import { EtherscanProvider, getDefaultProvider } from '@ethersproject/providers';
 import { Provider, TransactionResponse } from '@ethersproject/abstract-provider';
 import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
-import { parseUnits, toUtf8Bytes } from 'ethers/lib/utils';
+import { formatUnits, parseUnits, toUtf8Bytes } from 'ethers/lib/utils';
 import { 
   BASE_TOKEN_GAS_COST, 
   ETHAddress, 
@@ -16,6 +16,7 @@ import {
   getDefaultGasPrices,
   getNetworkInfo,
   getTokenAddress,
+  isTestnet,
   validateAddress 
 } from './utils';
 import { 
@@ -244,12 +245,20 @@ class EthChainController implements IEthChainController {
 
   async estimateGasPrices() {
     try {
-      const response: GasOracleResponse = await getGasOracle(this.etherscan.baseUrl, this.etherscan.apiKey)
+      const isTest = isTestnet(this.network.id);
+      let averageWei, fastWei, fastestWei;
+      if (isTest) {
+        const feeData = await this.etherscan.getFeeData();
+        averageWei = parseUnits(parseInt(formatUnits(feeData.maxFeePerGas, 'gwei'), 10).toString(), 'gwei');
+        fastWei = parseUnits(parseInt(formatUnits(feeData.maxFeePerGas.add('1000000000'), 'gwei'), 10).toString(), 'gwei');
+        fastestWei = parseUnits(parseInt(formatUnits(feeData.maxFeePerGas.add('2000000000'), 'gwei'), 10).toString(), 'gwei');
+      } else {
+        const response: GasOracleResponse = await getGasOracle(this.etherscan.baseUrl, this.etherscan.apiKey);
+        averageWei = parseUnits(response.SafeGasPrice, 'gwei');
+        fastWei = parseUnits(response.FastGasPrice, 'gwei');
+        fastestWei = parseUnits(response.FastGasPrice, 'gwei');
 
-      // Convert result of gas prices: `Gwei` -> `Wei`
-      const averageWei = parseUnits(response.SafeGasPrice, 'gwei')
-      const fastWei = parseUnits(response.ProposeGasPrice, 'gwei')
-      const fastestWei = parseUnits(response.FastGasPrice, 'gwei')
+      }
 
       return {
         average: baseAmount(averageWei.toString(), ETH_DECIMAL),
