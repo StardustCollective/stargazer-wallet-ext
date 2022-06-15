@@ -154,6 +154,19 @@ const LedgerPage: FC = () => {
 
   }, []);
 
+  useEffect(() => {
+    if(accountData.length){
+      setSelectedAccounts((state) => {
+        return [{ 
+          id: 0, 
+          type: KeyringWalletType.BitfiAccountWallet,
+          publicKey: accountData[0].publicKey, 
+          address: accountData[0].address, 
+          balance: '' }];
+      })
+    }
+  }, [accountData])
+
 
   /////////////////////////
   // Helper
@@ -247,36 +260,6 @@ const LedgerPage: FC = () => {
   // Updates the alert bar state
   const onAlertBarClose = () => {
     setOpenAlert(false);
-  }
-
-  const onPreviousClick = async () => {
-    await getAccountData(PAGING_ACTIONS_ENUM.PREVIOUS);
-  }
-
-  const onNextClick = async () => {
-    await getAccountData(PAGING_ACTIONS_ENUM.NEXT);
-  }
-
-  const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
-    if (checked) {
-      setSelectedAccounts((state) => {
-        return [...state, { 
-          id: key - 1, 
-          type: KeyringWalletType.BitfiAccountWallet,
-          publicKey: account.publicKey, 
-          address: account.address, 
-          balance: '' }];
-      })
-    } else {
-      setSelectedAccounts((state) => {
-        _.remove(state, { address: account.address })
-        return [...state];
-      })
-    }
-    setCheckBoxesState((state: boolean[]) => {
-      state[key] = checked;
-      return [...state];
-    })
   }
 
   const onImportClick = () => {
@@ -421,16 +404,13 @@ const LedgerPage: FC = () => {
         </>
       );
     } else if (walletState === WALLET_STATE_ENUM.VIEW_ACCOUNTS) {
+
       return (
         <>
           <AccountsView
             onCancelClick={onCancelClick}
             onImportClick={onImportClick}
-            onNextClick={onNextClick}
-            onPreviousClick={onPreviousClick}
-            onCheckboxChange={onCheckboxChange}
             accountData={accountData}
-            checkBoxesState={checkBoxesState}
             fetchingPage={fetchingPage}
             startIndex={startIndex}
           />

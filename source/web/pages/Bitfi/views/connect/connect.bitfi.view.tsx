@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button';
-import styles from './styles.module.scss';
+import styles from './bitfiStyles.module.scss';
 
 
 import BitfiLogo from 'assets/images/bitfi_logo.png';
 
-const BITFI_LOGO_SIZE = 260;
+const BITFI_LOGO_SIZE = 240;
 
 const BUTTON_SIZE_PROP = 'large';
 const BUTTON_VARIANT_PROP = 'contained';
@@ -31,19 +31,21 @@ function ConnectBitfiView({ onBack, message, error, code }: IConnectProps) {
     },
   }))(Button);
 
-    return (
-      <div className={styles.content}>
-        <div className={styles.wrapper}>
-          <div className={styles.connectInstructions}>
-            <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
-            <span style={{ paddingTop: '0px', fontSize: '14px' }}>
-              {message.charAt(0).toUpperCase() + message.slice(1)}.
-            </span>
-          </div>
-          {error}
-          <div>
+  return (
+    <div className={styles.content}>
+      <div className={styles.wrapper}>
+        <div className={styles.logo}>
+          <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
+        </div>
+        <div className={styles.instructions}>
+          <span className={styles.text}>
+            {message.charAt(0).toUpperCase() + message.slice(1)}.
+          </span>
+        </div>
+        {error}
+        <div className={styles.footer}>
           <BlueButton
-            style={{textTransform: 'none'}}
+            style={{ textTransform: 'none' }}
             onClick={onBack}
             className={styles.button}
             size={BUTTON_SIZE_PROP}
@@ -51,11 +53,10 @@ function ConnectBitfiView({ onBack, message, error, code }: IConnectProps) {
             color={BUTTON_COLOR_PROP}>
             Back
           </BlueButton>
-
-          </div>
         </div>
       </div>
-    )
+    </div>
+  )
 }
 
 export default ConnectBitfiView;

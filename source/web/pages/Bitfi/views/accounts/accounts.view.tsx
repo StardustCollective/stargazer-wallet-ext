@@ -56,10 +56,6 @@ interface IAccountsProps {
   accountData: LedgerAccount[];
   onCancelClick: () => void;
   onImportClick: () => void;
-  onCheckboxChange: (account: LedgerAccount, checked: boolean, key: number) => void
-  onNextClick: () => void;
-  onPreviousClick: () => void;
-  checkBoxesState: boolean[];
   fetchingPage: boolean;
   startIndex: number;
 }
@@ -73,8 +69,6 @@ interface IUiTableCell {
 
 // Strings
 const DAG_STRING: string = 'DAG';
-const PREV_BUTTON_LABEL_STRING: string = 'PREVIOUS';
-const NEXT_BUTTON_LABEL_STRING: string = 'NEXT';
 const CANCEL_BUTTON_LABEL_STRING: string = 'Cancel';
 const IMPORT_BUTTON_LABEL_STRING: string = 'Import';
 // Numbers
@@ -98,23 +92,9 @@ let Accounts = ({
   accountData,
   onCancelClick,
   onImportClick,
-  onNextClick,
-  onPreviousClick,
-  onCheckboxChange,
-  checkBoxesState,
   fetchingPage,
   startIndex,
 }: IAccountsProps) => {
-
-  /////////////////////////
-  // Callback
-  /////////////////////////
-
-  const _onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
-    if (onCheckboxChange) {
-      onCheckboxChange(account, checked, key);
-    }
-  };
 
   /////////////////////////
   // Render
@@ -133,7 +113,7 @@ let Accounts = ({
 
   return (
     <div className={styles.tableContainer}>
-      <span className={styles.selectAccount}>Please select an account:</span>
+      <span className={styles.selectAccount}>Bitfi Account:</span>
       <TableContainer elevation={TABLE_ELEVATION_PROP} className={styles.table} component={Paper}>
         {fetchingPage && (
           <div className={styles.progressWrapper}>
@@ -149,7 +129,7 @@ let Accounts = ({
               return (
                 <TableRow key={itemKey}>
                   <UITableCell>
-                    <Checkbox checked={(checkBoxesState[key])} onChange={(_, checked) => { _onCheckboxChange(item, checked, key) }} color={CHECKBOX_COLOR_PROP} />
+                    <Checkbox checked disabled color={CHECKBOX_COLOR_PROP} />
                   </UITableCell>
                   <UITableCell>
                     <span>{key}</span>
@@ -162,30 +142,6 @@ let Accounts = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <div className={styles.pagination}>
-        {!fetchingPage ? (
-          <>
-            {startIndex !== 0 && (
-              <Link onClick={onPreviousClick}>
-                <span className={styles.previous}>
-                  {PREV_BUTTON_LABEL_STRING}
-                </span>
-              </Link>
-            )
-            }
-            <Link onClick={onNextClick}>
-              <span>{NEXT_BUTTON_LABEL_STRING}</span>
-            </Link>
-          </>
-        ) : (
-          <>
-            <span className={styles.previous}>
-              {PREV_BUTTON_LABEL_STRING}
-            </span>
-            <span>{NEXT_BUTTON_LABEL_STRING}</span>
-          </>
-        )}
-      </div>
       <section className={styles.actions}>
         <div className={styles.buttonWrapper}>
           <Button

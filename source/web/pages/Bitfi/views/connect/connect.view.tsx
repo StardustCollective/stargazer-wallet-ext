@@ -35,7 +35,7 @@ const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
 // Strings
 const CONNECT_TO_LEDGER_STRING = 'Connect to Bitfi';
 // Numbers
-const BITFI_LOGO_SIZE = 260;
+const BITFI_LOGO_SIZE = 240;
 
 /////////////////////////
 // Interface
@@ -54,7 +54,7 @@ function Connect(props: IConnectProps) {
 
   const [deviceId, setDeviceId] = useState<string>('')
   const [error, setError] = useState<string>('')
-  
+
   /////////////////////////
   // Callbacks
   /////////////////////////
@@ -64,18 +64,18 @@ function Connect(props: IConnectProps) {
       if (Buffer.from(deviceId, 'hex').length !== 3) {
         throw new Error('Invalid device ID')
       }
-  
+
       if (props.onConnectClick) {
         props.onConnectClick(deviceId);
       }
-  
+
     }
     catch (exc: any) {
-      if(props.onConnectError){
-        props.onConnectError(JSON.stringify(exc.message ||exc));
+      if (props.onConnectError) {
+        props.onConnectError(JSON.stringify(exc.message || exc));
       }
     }
-    
+
   };
 
   /////////////////////////
@@ -95,25 +95,29 @@ function Connect(props: IConnectProps) {
   return (
     <div className={styles.content}>
       <div className={styles.wrapper}>
-        <div className={styles.connectInstructions}>
-          <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
-          <span style={{ marginBottom: '15px', paddingTop: '0px', fontSize: '15px' }}>
-            1. Connect your Bitfi device to WiFi.<br/> 
-            2. Enter your Device ID below.<br/> 
-            3. Click "Connect to Bitfi" button.
-          </span>
-          <input
-            style={{ height: '30px', width: '100px', textAlign: 'center' }}
-            value={deviceId} 
-            onChange={(e) => setDeviceId(e.target.value)} 
-            placeholder='FFFFFF'
-          />
+        <div className={styles.connect}>
+          <div className={styles.logo}>
+            <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
+          </div>
+          <div className={styles.instructions}>
+            <span className={styles.text}>
+              1. Connect your Bitfi device to WiFi.<br />
+              2. Enter your Device ID below.<br />
+              3. Click "Connect to Bitfi" button.
+            </span>
+          </div>
+          <div className={styles.deviceId}>
+            <input
+              className={styles.input}
+              value={deviceId}
+              onChange={(e) => setDeviceId(e.target.value)}
+              placeholder='Device ID'
+            />
+          </div>
         </div>
-        
-        {error}
         <div>
           <BlueButton
-            style={{textTransform: 'none'}}
+            style={{ textTransform: 'none' }}
             onClick={onClick}
             className={styles.button}
             size={BUTTON_SIZE_PROP}
