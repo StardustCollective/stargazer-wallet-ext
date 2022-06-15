@@ -169,7 +169,7 @@ class BitfiBridgeUtil {
     
   };
 
-  public async signMessage(msg: string, n: Number) {
+  public async signMessage(msg: string) {
     const address = (await this.bitfiBridge.getAccounts('dag', REQUEST_TIMOUT_MSEC))[0]
     const sig = await this.bitfiBridge.signMessage(address, msg, 'dag', APPROVE_TIMEOUT_MSEC)
     return sig;
@@ -181,15 +181,15 @@ class BitfiBridgeUtil {
 
   // There is only one account, there is nothing to iterate through
   public getInitialPage = (): Promise<LedgerAccount[]> => {
-    return this.getAccountData(0)
+    return this.getAccountData()
   };
 
   public getNextPage = (): Promise<LedgerAccount[]> => {
-    return this.getAccountData(0)
+    return this.getAccountData()
   };
 
   public getPreviousPage = (): Promise<LedgerAccount[]> => {
-    return this.getAccountData(0)
+    return this.getAccountData()
   };
 }
 

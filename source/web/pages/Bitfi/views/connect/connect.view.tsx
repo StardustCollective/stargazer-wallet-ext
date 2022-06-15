@@ -42,7 +42,8 @@ const BITFI_LOGO_SIZE = 260;
 /////////////////////////
 
 interface IConnectProps {
-  onConnectClick: (deviceId: string) => void
+  onConnectClick: (deviceId: string) => void,
+  onConnectError: (error: string) => void
 }
 
 /////////////////////////
@@ -53,6 +54,7 @@ function Connect(props: IConnectProps) {
 
   const [deviceId, setDeviceId] = useState<string>('')
   const [error, setError] = useState<string>('')
+  
   /////////////////////////
   // Callbacks
   /////////////////////////
@@ -68,9 +70,10 @@ function Connect(props: IConnectProps) {
       }
   
     }
-    catch (exc) {
-      //@ts-ignore
-      setError(JSON.stringify(exc.message ||exc))
+    catch (exc: any) {
+      if(props.onConnectError){
+        props.onConnectError(JSON.stringify(exc.message ||exc));
+      }
     }
     
   };

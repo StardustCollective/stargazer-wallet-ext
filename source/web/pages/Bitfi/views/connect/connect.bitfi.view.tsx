@@ -36,11 +36,9 @@ function ConnectBitfiView({ onBack, message, error, code }: IConnectProps) {
         <div className={styles.wrapper}>
           <div className={styles.connectInstructions}>
             <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
-            <span style={{ marginBottom: '20px', paddingTop: '0px', fontSize: '14px' }}>
+            <span style={{ paddingTop: '0px', fontSize: '14px' }}>
               {message.charAt(0).toUpperCase() + message.slice(1)}.
             </span>
-            <span style={{ fontSize: '14px', marginBottom: '5px' }}>Please, make sure the code below matches what's displayed on your device</span>
-            <h5 style={{ margin: '0px' }}>{code}</h5>
           </div>
           {error}
           <div>

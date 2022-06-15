@@ -47,16 +47,17 @@ const ROUTES = {
   SIGN_MESSAGE: 'signMessage',
 }
 
-const LEDGER_ERROR_STRINGS = {
-  CONNECTION_CANCELED: 'Cannot read property',
-  APP_CLOSED: '6E01',
-  PIN_OR_NOT_CONNECTED: 'No USB device found',
+const BITFI_ERROR_STRINGS = {
+  INVLAID_DEVICE_ID: 'Invalid device ID',
+  CANNOT_READ_PROPERTIES: 'Cannot read properties of undefined',
+  INVALID_HEX_STRING: 'Invalid hex string',
+  REJECTED: 'REJECTED',
+  ERROR_CODE_ZERO: '0',
 }
 const ALERT_MESSAGES_STRINGS = {
-  DEFAULT: 'Error: Please contact support',
-  CONNECTION_CANCELED: 'Connection Canceled: Please connect to unlock wallet with Ledger.',
-  OPEN_CONSTELLATION_APP: 'Open App: Please open the Constellation App on your Ledger',
-  PIN_OR_CONNECTION: 'Connection or Pin: Ledger device USB is disconnected or is awaiting pin input',
+  DEFAULT: 'Error: Please contact support.',
+  INVLAID_DEVICE_ID: 'Error: Please input a valid device ID.',
+  REJECTED : 'Error: Request has been rejected by user.',
 }
 
 // States
@@ -190,16 +191,23 @@ const LedgerPage: FC = () => {
     setAccountsLoadProgress(0);
   }
 
-  const showAlert = (error: any): void => {
+  const showAlert = (error: string): void => {
+    console.log("Error: " + error);
     let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
     let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
-    if (error.message.includes(LEDGER_ERROR_STRINGS.CONNECTION_CANCELED)) {
-      errorMessage = ALERT_MESSAGES_STRINGS.CONNECTION_CANCELED
-    } else if (error.message.includes(LEDGER_ERROR_STRINGS.APP_CLOSED)) {
-      errorMessage = ALERT_MESSAGES_STRINGS.OPEN_CONSTELLATION_APP
-    } else if (error.message.includes(LEDGER_ERROR_STRINGS.PIN_OR_NOT_CONNECTED)) {
-      errorMessage = ALERT_MESSAGES_STRINGS.PIN_OR_CONNECTION
+
+    if(error.includes(BITFI_ERROR_STRINGS.INVALID_HEX_STRING)){
+      errorMessage = ALERT_MESSAGES_STRINGS.INVLAID_DEVICE_ID;
+    }else if(error.includes(BITFI_ERROR_STRINGS.INVLAID_DEVICE_ID) ||
+      error.includes(BITFI_ERROR_STRINGS.CANNOT_READ_PROPERTIES)
+    ){
+      errorMessage = ALERT_MESSAGES_STRINGS.INVLAID_DEVICE_ID;
+    } else if(error.includes(BITFI_ERROR_STRINGS.REJECTED) || 
+      error.includes(BITFI_ERROR_STRINGS.ERROR_CODE_ZERO)
+    ){
+      errorMessage = ALERT_MESSAGES_STRINGS.REJECTED;
     }
+
     setAlertSeverity(errorSeverity);
     setAlertMessage(errorMessage);
     setOpenAlert(true);
@@ -208,6 +216,10 @@ const LedgerPage: FC = () => {
   /////////////////////////
   // Callbacks
   /////////////////////////
+
+  const onConnectError = (error: string) => {
+    showAlert(error);
+  }
 
   // Updates the state when the progress is updated.
   const onProgressUpdate = (loadProgress: number) => {
@@ -227,9 +239,8 @@ const LedgerPage: FC = () => {
       await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
 
     }
-    catch (exc) {
-      //@ts-ignore
-      setError(JSON.stringify(exc.message || exc))
+    catch (exc: any) {
+      showAlert(exc.message || exc);
     }
   }
 
@@ -319,8 +330,8 @@ const LedgerPage: FC = () => {
   
       background.dispatchEvent(signatureEvent);
       window.close();
-    } catch(e) {
-      console.log('error', JSON.stringify(e,null,2));
+    } catch(error: any) {
+      showAlert(error.code.toString());
       setWaitingForLedger(false);
       BitfiBridgeUtil.closeConnection();
     }
@@ -353,8 +364,6 @@ const LedgerPage: FC = () => {
   const onSignPress = async () => {
     const {
       amount,
-      publicKey,
-      id,
       from,
       to,
     } = queryString.parse(location.search) as any;
@@ -362,8 +371,7 @@ const LedgerPage: FC = () => {
     try{
       setWaitingForLedger(true);
       await BitfiBridgeUtil.requestPermissions();
-      const signedTX = await BitfiBridgeUtil.buildTransaction(amount, publicKey, Number(id.replace('L','')), from, to);
-
+      const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to);
       const hash = await dag4.network.loadBalancerApi.postTransaction(signedTX);
       if (hash) {
         postTransactionResult(hash);
@@ -371,9 +379,9 @@ const LedgerPage: FC = () => {
       setWaitingForLedger(false);
       setTransactionSigned(true);
       BitfiBridgeUtil.closeConnection();
-    } catch(e) {
-      console.log('error', JSON.stringify(e,null,2));
-      setWaitingForLedger(false);
+    } catch(error: any) {
+      showAlert(error.code.toString());
+      setWaitingForLedger(false)
       BitfiBridgeUtil.closeConnection();
     }
   }
@@ -400,7 +408,10 @@ const LedgerPage: FC = () => {
       
       return (
         <>
-          <ConnectView onConnectClick={onConnectClick} />
+          <ConnectView 
+            onConnectClick={onConnectClick} 
+            onConnectError={onConnectError}
+          />
         </>
       );
     } else if (walletState === WALLET_STATE_ENUM.FETCHING) {
