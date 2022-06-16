@@ -123,7 +123,6 @@ const LedgerPage: FC = () => {
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [alertSeverity, setAlertSeverity] = useState<Color>('success');
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
-  const [checkBoxesState, setCheckBoxesState] = useState<boolean[]>([]);
   const [fetchingPage, setFetchingPage] = useState<boolean>(false);
   const [startIndex, setStartIndex] = useState<number>(0);
   const [waitingForLedger, setWaitingForLedger] = useState<boolean>(false);
