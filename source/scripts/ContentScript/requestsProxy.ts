@@ -13,7 +13,12 @@ const isStargazerProxyRequest = (
   value: any,
   proxyId: string
 ): value is StargazerEncodedProxyRequest => {
-  return 'proxyId' in value && value.proxyId === proxyId;
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'proxyId' in value &&
+    value.proxyId === proxyId
+  );
 };
 
 /**
