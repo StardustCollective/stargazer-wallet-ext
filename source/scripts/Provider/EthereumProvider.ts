@@ -159,7 +159,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     _dappProvider: DappProvider,
     _port: Runtime.Port
   ) {
-    const provider = getInfuraProvider(this.getChainId() === 1 ? 'mainnet' : 'testnet');
+    const provider = getInfuraProvider(this.getNetwork());
 
     return provider.send(request.method, request.params);
   }
