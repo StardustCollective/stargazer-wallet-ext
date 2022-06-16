@@ -1,4 +1,3 @@
-import { AccountTracker } from '@stardust-collective/dag4-xchain-ethereum';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
@@ -15,6 +14,8 @@ import IVaultState, {
   IWalletState,
 } from '../../../state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
+import { getChainId } from '../controllers/EthChainController/utils';
+import { AccountTracker } from '../controllers/EthChainController';
 
 const FIVE_SECONDS = 5 * 1000;
 
@@ -158,7 +159,7 @@ export class AssetsBalanceMonitor {
 
   private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
     const { assets } = store.getState();
-    const chainId = activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' ? 1 : 3;
+    const chainId = getChainId(activeNetwork[KeyringNetwork.Ethereum]);
     const tokens = activeWallet.assets
       .filter((a) => a.type === AssetType.ERC20)
       .map((a) => {

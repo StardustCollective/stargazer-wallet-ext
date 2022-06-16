@@ -1,3 +1,4 @@
+import { EthNetworkId, EthNetworkValue } from 'scripts/Background/controllers/EthChainController/types';
 import { STARGAZER_PROVIDERS_BASE_URL, STARGAZER_PROVIDERS_BASE_URL_PROD, isProd } from 'utils/envUtil';
 export const STORE_PORT = 'STARGAZER';
 
@@ -32,7 +33,8 @@ export const DAG_NETWORK: {
 
 export const ETH_NETWORK: {
   [networkId: string]: {
-    id: string;
+    id: EthNetworkId;
+    value: EthNetworkValue;
     label: string;
     etherscan: string;
     chainId: number;
@@ -40,15 +42,24 @@ export const ETH_NETWORK: {
 } = {
   mainnet: {
     id: 'mainnet',
-    label: 'Ethereum Mainnet',
+    value: 'homestead',
+    label: 'Mainnet',
     etherscan: 'https://etherscan.io/',
     chainId: 1,
   },
-  testnet: {
-    id: 'testnet',
-    label: 'Ethereum Testnet',
+  ropsten: {
+    id: 'ropsten',
+    value: 'ropsten',
+    label: 'Ropsten Testnet',
     etherscan: 'https://ropsten.etherscan.io/',
     chainId: 3,
+  },
+  rinkeby: {
+    id: 'rinkeby',
+    value: 'rinkeby',
+    label: 'Rinkeby Testnet',
+    etherscan: 'https://rinkeby.etherscan.io/',
+    chainId: 4,
   },
 };
 
