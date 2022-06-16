@@ -17,7 +17,7 @@ interface ISendConfirm {
   confirmed: boolean;
   tempTx: ITransactionInfo;
   assetInfo: IAssetInfoState;
-  activeAsset: IAssetInfoState | IActiveAssetState;
+  activeAsset?: IAssetInfoState | IActiveAssetState;
   getSendAmount: () => any;
   activeWallet: IWalletState;
   feeUnit: string;
@@ -33,7 +33,6 @@ const SendConfirm = ({
   confirmed,
   tempTx,
   assetInfo,
-  activeAsset,
   getSendAmount,
   activeWallet,
   feeUnit,
