@@ -1,6 +1,7 @@
 import type { DappProviderExternalImplementation } from '../dappProvider';
 
 /**
+ * @deprecated ledger accounts can be directly imported using 
  * Extended implementation of DappProvider.onImportRequest
  */
 const handleImportRequest: DappProviderExternalImplementation<

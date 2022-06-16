@@ -203,9 +203,19 @@ const ConfirmContainer = () => {
         }
       } else {
         if (activeAsset.type === AssetType.LedgerConstellation) {
-          let publicKey = activeWalletPublicKey;
-          let id = activeWallet.id;
-          window.open(`/ledger.html?route=signTransaction&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
+
+
+          const params = new URLSearchParams();
+          params.set('route', 'signTransaction');
+          params.set('windowId', Array.isArray(windowId) ? windowId[0] : windowId);
+          params.set('id', activeWallet.id);
+          params.set('publicKey', activeWalletPublicKey)
+          params.set('amount', tempTx!.amount);
+          params.set('fee', String(tempTx!.fee));
+          params.set('from', tempTx!.fromAddress)
+          params.set('to', tempTx!.toAddress)
+
+          window.open(`/ledger.html?${params.toString()}`, '_newtab');
         } else {
           const trxHash = await accountController.confirmTempTx()
 
