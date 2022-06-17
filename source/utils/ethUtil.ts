@@ -41,8 +41,6 @@ export const estimateGasLimit = async ({ to, data, gas }: { to: string, data: st
     if (!ethAsset || !to || to?.toUpperCase().startsWith('DAG')) {
         return 0; // DAG? 
     }
-
-    console.log('estimateGasLimit', { gas, data, from, to});
     
     // ETH asset
     if (gas) {
