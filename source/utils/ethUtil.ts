@@ -9,24 +9,13 @@ export const getERC20DataDecoder = () => {
     return new InputDataDecoder(erc20ABI as any);
 }
 
-export const estimateGasPrice = async (): Promise<number> => {
-    const walletController = getWalletController();
-    const ethClient = walletController.account.ethClient;
-
-    if (!ethClient) {
-        return 0;
-    }
-
-    // Returns average, fast, or fastest
-    const { fast } = await ethClient.estimateGasPrices();
-    return fast.amount().toNumber();
-}
-
 export const estimateGasLimitForTransfer = async ({ to, from, amount: value, gas }: {to: string, from: string, amount: string, gas: string}): Promise<number> => {
     const walletController = getWalletController();
     const ethClient = walletController.account.ethClient;
 
-    if (gas) return parseInt(gas);
+    if (gas) {
+        return parseInt(gas);
+    } 
 
     if (value !== '' && to && from) {
         try {
@@ -35,7 +24,7 @@ export const estimateGasLimitForTransfer = async ({ to, from, amount: value, gas
             const gasLimit = gasLimitBigNumber.toNumber();
             return Math.floor(gasLimit * 1.5);
         } catch(err) {
-            return 21000;
+            return 90000;
         }
     }
 
@@ -52,15 +41,22 @@ export const estimateGasLimit = async ({ to, data, gas }: { to: string, data: st
     if (!ethAsset || !to || to?.toUpperCase().startsWith('DAG')) {
         return 0; // DAG? 
     }
+
+    console.log('estimateGasLimit', { gas, data, from, to});
     
     // ETH asset
-    if (gas) return parseInt(gas);
-    if (!data) return 21000;
+    if (gas) {
+        return parseInt(gas);
+    } 
+    if (!data) {
+        return 21000;
+    } 
 
     try {
         const gasBigNumber = await ethClient.estimateGas(from, to, data);
         return gasBigNumber.toNumber();
     } catch(err) {
+        console.error('Error estimating gas limit:', err);
         return 90000;
     }
 }
