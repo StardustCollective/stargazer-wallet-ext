@@ -37,7 +37,7 @@ const WalletContacts: FC<IWalletContacts> = ({
                 .filter(isValidContact)
                 .map((contact: IContactState) => (
                   <li
-                    key={contact.id}
+                    key={contact.address}
                     onClick={() => onChange(contact.address)}
                   >
                     <div className={styles.contact}>

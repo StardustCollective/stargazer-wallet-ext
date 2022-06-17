@@ -30,6 +30,7 @@ import {
 import { Address, FeeOptionKey, TxHistoryParams, TxParams } from '../ChainsController';
 import { getETHTransactionHistory, getGasOracle, getTokenTransactionHistory } from './etherscanApi';
 import { GasOracleResponse } from './etherscanApi.types';
+import erc20abi from 'utils/erc20.json';
 
 class EthChainController implements IEthChainController {
   private network: EthereumNetwork;
@@ -116,6 +117,10 @@ class EthChainController implements IEthChainController {
 
   validateAddress(address: Address) {
     return validateAddress(address);
+  }
+
+  createERC20Contract(address: Address) {
+    return new ethers.Contract(address, erc20abi, this.provider);
   }
 
   async transfer({
@@ -240,6 +245,10 @@ class EthChainController implements IEthChainController {
     } catch (error) {
       return Promise.reject(error);
     }
+  }
+
+  async estimateGas(from: string, to: string, data: string) {
+    return this.provider.estimateGas({ from, to, data });
   }
 
   async estimateGasPrices() {

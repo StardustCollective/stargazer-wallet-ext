@@ -190,6 +190,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     fromAddress: activeAsset.address,
     asset: assetInfo,
     data: memo,
+    gas,
   });
 
   const onSubmit = async (data: any) => {

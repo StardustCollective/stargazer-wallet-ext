@@ -17,6 +17,7 @@ import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import { addLedgerWallet, deleteLedgerWallet } from 'state/vault';
 import { reload } from 'utils/browser';
+import { EthNetworkId } from './EthChainController/types';
 
 const LedgerWalletIdPrefix = 'L';
 
@@ -223,7 +224,8 @@ class WalletController implements IWalletController {
     }
 
     if (network === KeyringNetwork.Ethereum) {
-      this.account.txController.setNetwork(chainId as any);
+      this.account.txController.setNetwork(chainId as EthNetworkId);
+      this.account.ethClient.setNetwork(chainId as EthNetworkId);
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
