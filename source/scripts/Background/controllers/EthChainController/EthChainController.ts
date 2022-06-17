@@ -112,6 +112,7 @@ class EthChainController implements IEthChainController {
       }
 
       this.etherscan = new EtherscanProvider(this.network.value, this.etherscanApiKey);
+      this.wallet = this.wallet.connect(this.provider);
     }
   }
 
