@@ -23,10 +23,8 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
-    if (gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2))
-      return 'Fast';
-    if (gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2))
-      return 'Average';
+    if (gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
+    if (gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
     if (gasPrice > gasPrices[0]) return 'Slow';
     return 'Turtle';
   }, [gasPrice, gasPrices]);
@@ -43,17 +41,16 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
   };
 
   const handleGetTxFee = async () => {
-    accountController.getLatestGasPrices().then((gas) => {
-      let gasPrices: number[] = [...gas];
-      let uniquePrices = [...new Set(gas)].length;
-      if (uniquePrices === 1) {
-        let gp = gas[0];
-        gasPrices = [gp - 5, gp, gp + 5];
-      }
-      setGasPrices(gasPrices);
-      setGasPrice(gasPrices[2]);
-      estimateGasFee(gasPrices[2]);
-    })
+    const gas = await accountController.getLatestGasPrices();
+    let gasPrices: number[] = [...gas];
+    let uniquePrices = [...new Set(gas)].length;
+    if (uniquePrices === 1) {
+      let gp = gas[0];
+      gasPrices = [gp - 5, gp, gp + 5];
+    }
+    setGasPrices(gasPrices);
+    setGasPrice(gasPrices[2]);
+    estimateGasFee(gasPrices[2]);
   };
 
   const getGasLimit = async () => {
@@ -61,12 +58,16 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
     try {
       if (asset.type === AssetType.ERC20) {
         if (data) {
-          gasLimit = await estimateGasLimit({ to: asset.address, data })
+          gasLimit = await estimateGasLimit({ to: asset.address, data });
         } else {
-          gasLimit = await estimateGasLimitForTransfer({ from: fromAddress, amount: sendAmount, to: asset.address });
+          gasLimit = await estimateGasLimitForTransfer({
+            from: fromAddress,
+            amount: sendAmount,
+            to: asset.address,
+          });
         }
       } else {
-        gasLimit = await estimateGasLimit({ to: toEthAddress, data })
+        gasLimit = await estimateGasLimit({ to: toEthAddress, data });
       }
     } catch (err: any) {
       console.log('estimateGas err: ', err);
@@ -76,7 +77,7 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
     if (!!gasLimit) {
       setGasLimit(gasLimit);
     }
-  }
+  };
 
   useEffect(() => {
     getGasLimit();
@@ -86,7 +87,7 @@ function useGasEstimate({ toAddress, fromAddress, asset, data }: IUseGasEstimate
     if (gasLimit > 0) {
       handleGetTxFee();
     }
-  }, [gasLimit])
+  }, [gasLimit]);
 
   return {
     setGasPrice,

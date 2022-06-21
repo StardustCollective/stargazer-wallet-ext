@@ -1,20 +1,38 @@
 import { browser } from 'webextension-polyfill-ts';
-import { SUPPORTED_WALLET_METHODS } from 'scripts/Background/controllers/MessageHandler/types';
-import { providerManager, stargazerProvider } from './inject';
 
-import { Script } from 'scripts/Provider/Script';
+import { generateNamespaceId } from '../common';
 
-new Script().start();
+import { RequestsProxy } from './requestsProxy';
 
-inject(`window.SUPPORTED_WALLET_METHODS = ${JSON.stringify(SUPPORTED_WALLET_METHODS)}`);
-inject(`window.STARGAZER_VERSION = ${JSON.stringify(browser.runtime.getManifest().version)}`);
-inject(providerManager);
-inject(stargazerProvider);
+const initInjectedScript = () => {
+  const proxyId = generateNamespaceId('proxy');
+  const scriptSrc = browser.runtime.getURL('js/injectedScript.bundle.js');
 
-function inject(content: string) {
+  /* init requests proxy */
+  const requestsProxy = new RequestsProxy(proxyId);
+  requestsProxy.listen();
+
+  /* fetch script contents (MV2) */
+  const scriptContentXHR = new XMLHttpRequest();
+  scriptContentXHR.open('get', scriptSrc, false);
+  scriptContentXHR.send();
+
+  /* build script content */
+  const scriptContent = [
+    scriptContentXHR.responseText,
+    `//# sourceURL=${scriptSrc}`,
+  ].join('\n');
+
+  /* build script elem in third-party-page */
+  const scriptElem = document.createElement('script');
+  scriptElem.type = 'text/javascript';
+  scriptElem.textContent = scriptContent;
+  scriptElem.dataset.stargazerInjected = 'injected';
+  scriptElem.dataset.stargazerProxyId = proxyId;
+
+  /* inject script in third-party-page */
   const container = document.head || document.documentElement;
-  const scriptTag = document.createElement('script');
-  scriptTag.setAttribute('async', 'false');
-  scriptTag.textContent = `(() => {${content}})()`;
-  container.insertBefore(scriptTag, container.children[0]);
-}
+  container.insertBefore(scriptElem, container.children[0]);
+};
+
+initInjectedScript();

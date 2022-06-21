@@ -1,20 +1,19 @@
-/* eslint-disable prettier/prettier */
-import 'emoji-log';
-import { STORE_PORT, DAG_NETWORK } from 'constants/index';
-
-import { browser } from 'webextension-polyfill-ts';
+import { browser, Runtime } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
-import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
-
-import MasterController, { IMasterController } from './controllers';
-import { Runtime } from 'webextension-polyfill-ts';
-import { messagesHandler } from './controllers/MessageHandler';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import 'emoji-log';
+
+import { STORE_PORT, DAG_NETWORK } from 'constants/index';
+import store from 'state/store';
+
+import { MasterController } from './controllers';
+import { DappRegistry } from './dappRegistry';
 
 declare global {
   interface Window {
-    controller: Readonly<IMasterController>;
+    controller: MasterController;
+    dappRegistry: DappRegistry;
   }
 }
 
@@ -23,17 +22,13 @@ browser.runtime.onInstalled.addListener((): void => {
 });
 
 browser.runtime.onConnect.addListener((port: Runtime.Port) => {
-  if (port.name === 'stargazer') {
-    messagesHandler(port, window.controller);
-  }
-  else if (
-    port.sender &&
-    port.sender.url &&
-    (port.sender.url?.includes(browser.runtime.getURL('/app.html')) ||
-    port.sender.url?.includes(browser.runtime.getURL('/external.html')))
+  if (
+    port.sender?.url?.includes(browser.runtime.getURL('/app.html')) ||
+    port.sender?.url?.includes(browser.runtime.getURL('/external.html'))
   ) {
     const vault = store.getState().vault;
-    const networkId = (vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation]);
+    const networkId =
+      vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation];
     const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
     dag4.di.getStateStorageDb().setPrefix('stargazer-');
     dag4.di.useFetchHttpClient(window.fetch.bind(window));
@@ -41,7 +36,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     dag4.network.config({
       id: networkInfo.id,
       beUrl: networkInfo.beUrl,
-      lbUrl: networkInfo.lbUrl
+      lbUrl: networkInfo.lbUrl,
     });
 
     port.onDisconnect.addListener(() => {
@@ -52,13 +47,17 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     console.log('onConnect');
     if (window.controller.wallet.isUnlocked()) {
       window.controller.wallet.account.assetsBalanceMonitor.start();
-      window.controller.wallet.account.getLatestTxUpdate()
+      window.controller.wallet.account.getLatestTxUpdate();
     }
   }
 });
 
 if (!window.controller) {
-  window.controller = MasterController();
+  window.controller = new MasterController();
+}
+
+if (!window.dappRegistry) {
+  window.dappRegistry = new DappRegistry();
 }
 
 wrapStore(store, { portName: STORE_PORT });

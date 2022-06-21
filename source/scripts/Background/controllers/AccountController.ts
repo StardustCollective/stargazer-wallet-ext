@@ -14,14 +14,19 @@ import {
   updateWalletLabel,
 } from 'state/vault';
 
-import IVaultState, { AssetType, IAssetState, IWalletState, IActiveAssetState } from 'state/vault/types';
+import IVaultState, {
+  AssetType,
+  IAssetState,
+  IWalletState,
+  IActiveAssetState,
+} from 'state/vault/types';
 
 import {
   KeyringManager,
   KeyringNetwork,
   KeyringWalletState,
   KeyringWalletAccountState,
-  KeyringWalletType
+  KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { EthTransactionController } from './EthTransactionController';
@@ -50,7 +55,10 @@ export class AccountController implements IAccountController {
 
   assetsController: IAssetsController;
 
-  constructor(private keyringManager: Readonly<KeyringManager>, assetsController: IAssetsController) {
+  constructor(
+    private keyringManager: Readonly<KeyringManager>,
+    assetsController: IAssetsController
+  ) {
     this.txController = new EthTransactionController();
     this.assetsBalanceMonitor = new AssetsBalanceMonitor();
     this.assetsController = assetsController;
@@ -63,35 +71,39 @@ export class AccountController implements IAccountController {
     return true;
   }
 
-  async buildAccountAssetList(walletInfo: KeyringWalletState,  account: KeyringWalletAccountState): Promise<IAssetState[]> {
+  async buildAccountAssetList(
+    walletInfo: KeyringWalletState,
+    account: KeyringWalletAccountState
+  ): Promise<IAssetState[]> {
     const {
       vault: { activeNetwork },
     } = store.getState();
 
     let privateKey = undefined;
-    let publicKey  = undefined;
+    let publicKey = undefined;
 
-      // Excludes ledger accounts since we do not have access 
-      // to the private key.
-      if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet){
-        privateKey = this.keyringManager.exportAccountPrivateKey(
-          account.address
-        );
-      }else {
-        publicKey = account.publicKey;
-      }
+    // Excludes ledger accounts since we do not have access
+    // to the private key.
+    if (walletInfo.type !== KeyringWalletType.LedgerAccountWallet) {
+      privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
+    } else {
+      publicKey = account.publicKey;
+    }
 
     if (account.network === KeyringNetwork.Constellation) {
-      if(privateKey){
+      if (privateKey) {
         dag4.account.loginPrivateKey(privateKey);
-      }else {
+      } else {
         dag4.account.loginPublicKey(publicKey);
       }
 
       return [
         {
           id: AssetType.Constellation,
-          type: walletInfo.type === KeyringWalletType.LedgerAccountWallet ?  AssetType.LedgerConstellation : AssetType.Constellation,
+          type:
+            walletInfo.type === KeyringWalletType.LedgerAccountWallet
+              ? AssetType.LedgerConstellation
+              : AssetType.Constellation,
           label: 'Constellation',
           address: account.address,
         },
@@ -130,7 +142,9 @@ export class AccountController implements IAccountController {
     const { local, ledger } = vault.wallets;
     const allWallets = [...local, ...ledger];
 
-    const walletInfo: KeyringWalletState = allWallets.find((w: KeyringWalletState) => w.id === walletId);
+    const walletInfo: KeyringWalletState = allWallets.find(
+      (w: KeyringWalletState) => w.id === walletId
+    );
 
     if (!walletInfo) {
       return;
@@ -212,11 +226,17 @@ export class AccountController implements IAccountController {
     if (!activeAsset) return;
 
     if (activeAsset.type === AssetType.Constellation) {
-      const txs = await dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT);
+      const txs = await dag4.monitor.getLatestTransactions(
+        activeAsset.address,
+        TXS_LIMIT
+      );
 
       store.dispatch(updateTransactions({ txs }));
     } else if (activeAsset.type === AssetType.Ethereum) {
-      const txs: any = await this.txController.getTransactionHistory(activeAsset.address, TXS_LIMIT);
+      const txs: any = await this.txController.getTransactionHistory(
+        activeAsset.address,
+        TXS_LIMIT
+      );
 
       store.dispatch(updateTransactions({ txs: txs.transactions }));
     } else if (activeAsset.type === AssetType.ERC20) {
@@ -247,7 +267,11 @@ export class AccountController implements IAccountController {
 
   async addNewToken(address: string) {
     const { activeWallet }: IVaultState = store.getState().vault;
-    const account = this.keyringManager.addTokenToAccount(activeWallet.id, this.ethClient.getAddress(), address);
+    const account = this.keyringManager.addTokenToAccount(
+      activeWallet.id,
+      this.ethClient.getAddress(),
+      address
+    );
     const tokenAssets = await this.buildAccountERC20Tokens(address, account.getTokens());
     const newToken = tokenAssets.find((t) => t.address === address);
     store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
@@ -291,7 +315,10 @@ export class AccountController implements IAccountController {
         assets[activeAsset.id].decimals
       ),
       gasPrice: gasPrice
-        ? utils.baseAmount(ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(), 9)
+        ? utils.baseAmount(
+            ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+            9
+          )
         : undefined,
       gasLimit: BigNumber.from(gasLimit),
       nonce: tx.nonce,
@@ -299,7 +326,9 @@ export class AccountController implements IAccountController {
 
     if (activeAsset.type !== AssetType.Ethereum) {
       txOptions.asset = utils.assetFromString(
-        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address}`
+        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
+          assets[activeAsset.id].address
+        }`
       );
     }
     const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
@@ -335,57 +364,73 @@ export class AccountController implements IAccountController {
       throw new Error("Error: Can't find transaction info");
     }
 
-    try {
-      if (activeAsset.type === AssetType.Constellation) {
-        const pendingTx = await dag4.account.transferDag(
-          this.tempTx.toAddress,
-          Number(this.tempTx.amount),
-          this.tempTx.fee
-        );
-        const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
-        store.dispatch(
-          updateTransactions({
-            txs: [tx, ...activeAsset.transactions],
-          })
-        );
-        // this.watchMemPool();
-      } else {
-        if (!this.tempTx.ethConfig) return;
-        const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
-        const { activeNetwork }: IVaultState = store.getState().vault;
-        const txOptions: any = {
-          recipient: this.tempTx.toAddress,
-          amount: utils.baseAmount(
-            ethers.utils.parseUnits(this.tempTx.amount.toString(), assets[activeAsset.id].decimals).toString(),
-            assets[activeAsset.id].decimals
-          ),
-          gasPrice: gasPrice
-            ? utils.baseAmount(ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(), 9)
-            : undefined,
-          gasLimit: gasLimit && BigNumber.from(gasLimit),
-          nonce,
-        };
-        if (activeAsset.type !== AssetType.Ethereum) {
-          txOptions.asset = utils.assetFromString(
-            `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address}`
-          );
-        }
-        const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
-        this.txController.addPendingTx({
-          txHash: newTx.hash,
-          fromAddress: this.tempTx.fromAddress,
-          toAddress: this.tempTx.toAddress,
-          amount: this.tempTx.amount,
-          network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
-          assetId: activeAsset.id,
-          timestamp: new Date().getTime(),
-          gasPrice,
-        });
+    let trxHash: string;
+
+    if (activeAsset.type === AssetType.Constellation) {
+      const pendingTx = await dag4.account.transferDag(
+        this.tempTx.toAddress,
+        Number(this.tempTx.amount),
+        this.tempTx.fee
+      );
+      const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
+      store.dispatch(
+        updateTransactions({
+          txs: [tx, ...activeAsset.transactions],
+        })
+      );
+      trxHash = tx.hash;
+    } else {
+      if (!this.tempTx.ethConfig) {
+        throw new Error('No tempTx.ethConfig present');
       }
-      this.tempTx = null;
-    } catch (error: any) {
-      throw new Error(error);
+
+      const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
+      const { activeNetwork }: IVaultState = store.getState().vault;
+      const txOptions: any = {
+        recipient: this.tempTx.toAddress,
+        amount: utils.baseAmount(
+          ethers.utils
+            .parseUnits(this.tempTx.amount.toString(), assets[activeAsset.id].decimals)
+            .toString(),
+          assets[activeAsset.id].decimals
+        ),
+        gasPrice: gasPrice
+          ? utils.baseAmount(
+              ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+              9
+            )
+          : undefined,
+        gasLimit: gasLimit && BigNumber.from(gasLimit),
+        nonce,
+      };
+      if (activeAsset.type !== AssetType.Ethereum) {
+        txOptions.asset = utils.assetFromString(
+          `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
+            assets[activeAsset.id].address
+          }`
+        );
+      }
+      const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
+
+      trxHash = newTx.hash;
+      this.txController.addPendingTx({
+        txHash: newTx.hash,
+        fromAddress: this.tempTx.fromAddress,
+        toAddress: this.tempTx.toAddress,
+        amount: this.tempTx.amount,
+        network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
+        assetId: activeAsset.id,
+        timestamp: new Date().getTime(),
+        gasPrice,
+      });
     }
+    this.tempTx = null;
+
+    if (!trxHash) {
+      throw new Error('Transaction hash was not set');
+    }
+
+    return trxHash;
   }
 
   async confirmContractTempTx(activeAsset: IAssetInfoState | IActiveAssetState) {
@@ -401,43 +446,48 @@ export class AccountController implements IAccountController {
       throw new Error("Error: Can't find transaction info");
     }
 
-    try {
-      if (!this.tempTx.ethConfig) return;
-      const { gasPrice, gasLimit, nonce, memo } = this.tempTx.ethConfig;
-      const { activeNetwork }: IVaultState = store.getState().vault;
-
-      const baseAmountGasPrice = utils.baseAmount(ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(), 9);
-      const bigNumberGasPrice = BigNumber.from(baseAmountGasPrice.amount().toFixed());
-
-      const txOptions: any = {
-        to: this.tempTx.toAddress,
-        value: ethers.utils.parseEther(this.tempTx.amount),
-        gasPrice: bigNumberGasPrice,
-        gasLimit: ethers.utils.hexlify(gasLimit),
-        data: memo,
-        chainId: getChainId(activeNetwork[KeyringNetwork.Ethereum]),
-        nonce,
-      };
-
-      const txData: any = await this.ethClient.getWallet().sendTransaction(txOptions);
-
-      this.txController.addPendingTx({
-        txHash: txData.hash,
-        fromAddress: this.tempTx.fromAddress,
-        toAddress: this.tempTx.toAddress,
-        amount: this.tempTx.amount,
-        network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
-        assetId: activeAsset.id,
-        timestamp: new Date().getTime(),
-        nonce: txData.nonce,
-        gasPrice,
-        data: memo,
-        onConfirmed: this.tempTx.onConfirmed,
-      });
-      this.tempTx = null;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!this.tempTx.ethConfig) {
+      throw new Error('No tempTx.ethConfig present');
     }
+
+    const { gasPrice, gasLimit, nonce, memo } = this.tempTx.ethConfig;
+    const { activeNetwork }: IVaultState = store.getState().vault;
+
+    const baseAmountGasPrice = utils.baseAmount(
+      ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+      9
+    );
+    const bigNumberGasPrice = BigNumber.from(baseAmountGasPrice.amount().toFixed());
+
+    const txOptions: any = {
+      to: this.tempTx.toAddress,
+      value: ethers.utils.parseEther(this.tempTx.amount),
+      gasPrice: bigNumberGasPrice,
+      gasLimit: ethers.utils.hexlify(gasLimit),
+      data: memo,
+      chainId: getChainId(activeNetwork[KeyringNetwork.Ethereum]),
+      nonce,
+    };
+
+    const txData = await this.ethClient.getWallet().sendTransaction(txOptions);
+
+    this.txController.addPendingTx({
+      txHash: txData.hash,
+      fromAddress: this.tempTx.fromAddress,
+      toAddress: this.tempTx.toAddress,
+      amount: this.tempTx.amount,
+      network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
+      assetId: activeAsset.id,
+      timestamp: new Date().getTime(),
+      nonce: txData.nonce,
+      gasPrice,
+      data: memo,
+      onConfirmed: this.tempTx.onConfirmed,
+    });
+
+    this.tempTx = null;
+
+    return txData.hash;
   }
 
   // Other
@@ -489,7 +539,16 @@ export class AccountController implements IAccountController {
     return recommendConfig;
   }
 
-  updateETHTxConfig({ nonce, gas, gasLimit }: { gas?: number; gasLimit?: number; nonce?: number; txData?: string }) {
+  updateETHTxConfig({
+    nonce,
+    gas,
+    gasLimit,
+  }: {
+    gas?: number;
+    gasLimit?: number;
+    nonce?: number;
+    txData?: string;
+  }) {
     if (!this.tempTx || !this.tempTx.ethConfig) return;
     this.tempTx.ethConfig = {
       ...this.tempTx.ethConfig,
@@ -499,7 +558,12 @@ export class AccountController implements IAccountController {
     };
   }
 
-  async estimateTotalGasFee(recipient: string, amount: string, gas: number, gasLimit: number) {
+  async estimateTotalGasFee(
+    recipient: string,
+    amount: string,
+    gas: number,
+    gasLimit: number
+  ) {
     if (!gasLimit || true) {
       const state = store.getState();
       const { activeAsset }: IVaultState = state.vault;
@@ -518,7 +582,9 @@ export class AccountController implements IAccountController {
       );
       console.log('ethClient.estimateGasLimit2', gasLimit);
     }
-    const fee = ethers.utils.parseUnits(gas.toString(), 'gwei').mul(BigNumber.from(gasLimit));
+    const fee = ethers.utils
+      .parseUnits(gas.toString(), 'gwei')
+      .mul(BigNumber.from(gasLimit));
 
     console.log('estimateTotalGasFee3', gas, gasLimit);
 

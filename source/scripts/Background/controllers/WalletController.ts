@@ -127,10 +127,7 @@ class WalletController implements IWalletController {
   }
 
   async createLedgerWallets(accountItems: AccountItem[]) {
-
-    for (let i = 0; i < accountItems.length; i++) {
-      let accountItem = accountItems[i];
-
+    for (const [i, accountItem] of accountItems.entries()) {
       const wallet = {
         id: `${LedgerWalletIdPrefix}${accountItem.id}`,
         label: 'Ledger ' + (accountItem.id + 1),

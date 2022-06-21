@@ -7,131 +7,38 @@ import {
   registerListeningSite as registerListeningSiteAction,
   deregisterListeningSite as deregisterListeningSiteAction,
 } from 'state/dapp';
-import { IDAppInfo, IDAppState, IDappAccounts } from 'state/dapp/types';
+import { IDAppInfo } from 'state/dapp/types';
 import store from 'state/store';
 
-export interface IDAppController {
-  getCurrent: () => IDAppInfo;
-  fromUserConnectDApp: (
-    origin: string,
-    dapp: IDAppInfo,
-    network: string,
-    accounts: string[]
-  ) => void;
-  fromUserDisconnectDApp: (origin: string) => void;
-  notifyAccountsChanged: (accounts: string[]) => void;
-  fromPageConnectDApp: (origin: string, title: string) => boolean;
-  setSigRequest: (req: ISigRequest) => void;
-  getSigRequest: () => ISigRequest;
-  registerListeningSite: (origin: string, eventName: string) => void;
-  deregisterListeningSite: (origin: string, eventName: string) => void;
-  isSiteListening: (origin: string, eventName: string) => boolean;
-  isDAppConnected: (origin: string) => boolean;
-}
-
-interface ISigRequest {
+type ISigRequest = {
   address: string;
   message: string;
   origin: string;
-}
+};
 
-const DAppController = (): IDAppController => {
-  let current: IDAppInfo = { origin: '', logo: '', title: '' };
-  let request: ISigRequest;
+class DAppController {
+  #current: IDAppInfo;
+  #request: ISigRequest | null;
 
-  const isDAppConnected = (origin: string) => {
-    const dapp: IDAppState = store.getState().dapp;
+  constructor() {
+    this.#current = { origin: '', logo: '', title: '' };
+    this.#request = null;
+  }
 
-    return !!dapp.whitelist[origin as keyof IDAppState];
-  };
-
-  const fromPageConnectDApp = (origin: string, title: string) => {
-    current = {
-      origin,
-      logo: `chrome://favicon/size/64@1x/${origin}`,
-      title,
-    };
-
-    return isDAppConnected(origin);
-  };
-
-  const fromUserConnectDApp = (
-    origin: string,
-    dapp: IDAppInfo,
-    network: string,
-    accounts: string[]
-  ) => {
-    store.dispatch(listNewDapp({ id: origin, dapp, network, accounts }));
-  };
-
-  const _dispatchEvents = async (events: any[]) => {
+  async #dispatchEvents(events: CustomEvent[]) {
     const background = await browser.runtime.getBackgroundPage();
 
     events.forEach((event) => background.dispatchEvent(event));
-  };
+  }
 
-  const notifyAccountsChanged = async (accounts: string[]): Promise<void> => {
+  async #notifySiteDisconnected(origin: string) {
+    console.log('notifySiteDisconnected');
     const state = store.getState();
-    const whiteList: { [dappId: string]: IDAppInfo }[] = state.dapp.whitelist;
-    const listening: { [origin: string]: Array<string> } = state.dapp.listening;
-
-    let events: any[] = [];
-
-    // Will only notify whitelisted dapps that are listening for a wallet change.
-    for (const origin of Object.keys(listening)) {
-      const site = whiteList[origin as any];
-      const listeningEvents = listening[origin];
-
-      if (!listeningEvents.includes('accountsChanged')) {
-        continue;
-      }
-
-      if (site) {
-        const siteAccounts = site.accounts as IDappAccounts;
-        const allAccountsWithDuplicates = accounts.concat(
-          siteAccounts.Constellation,
-          siteAccounts.Ethereum
-        );
-        const matchingAccounts = filter(
-          allAccountsWithDuplicates,
-          (value, index, iteratee) =>
-            includes(iteratee, value as string, index + 1)
-        );
-
-        if (matchingAccounts.length) {
-          const ethAccounts = matchingAccounts.filter((account) =>
-            account.toLowerCase().startsWith('0x')
-          );
-          const dagAccounts = matchingAccounts.filter((account) =>
-            account.toLowerCase().startsWith('dag')
-          );
-
-          // Dispatch a separate event for each chain
-          const _events = [
-            new CustomEvent('accountsChanged', {
-              detail: { data: ethAccounts, origin, chain: 'ethereum' },
-            }),
-            new CustomEvent('accountsChanged', {
-              detail: { data: dagAccounts, origin, chain: 'constellation' },
-            }),
-          ];
-
-          events = [...events, ..._events];
-        }
-      }
-    }
-
-    return _dispatchEvents(events);
-  };
-
-  const notifySiteDisconnected = async (origin: string): Promise<void> => {
-    console.log('notifySiteDisconnected')
-    const state = store.getState();
-    const listening: { [origin: string]: Array<string> } = state.dapp.listening;
+    const listening = state.dapp.listening;
     const listeningEvents = listening[origin];
 
     if (!listeningEvents.includes('close')) {
-      console.log('notifySiteDisconnected includes close')
+      console.log('notifySiteDisconnected includes close');
       return;
     }
 
@@ -145,55 +52,117 @@ const DAppController = (): IDAppController => {
       }),
     ];
 
-    console.log('notifySiteDisconnected dispatching: ', events)
+    console.log('notifySiteDisconnected dispatching: ', events);
 
-    return _dispatchEvents(events);
-  };
+    return this.#dispatchEvents(events);
+  }
 
-  const fromUserDisconnectDApp = (origin: string) => {
-    notifySiteDisconnected(origin);
+  getCurrent(): IDAppInfo {
+    return this.#current;
+  }
+
+  fromUserConnectDApp(
+    origin: string,
+    dapp: IDAppInfo,
+    network: string,
+    accounts: string[]
+  ) {
+    store.dispatch(listNewDapp({ id: origin, dapp, network, accounts }));
+  }
+
+  fromUserDisconnectDApp(origin: string) {
+    this.#notifySiteDisconnected(origin);
     store.dispatch(unlistDapp({ id: origin }));
-  };
+  }
 
-  const registerListeningSite = (origin: string, eventName: string) => {
+  notifyAccountsChanged(accounts: string[]) {
+    const state = store.getState();
+    const { whitelist, listening } = state.dapp;
+
+    const events: CustomEvent[] = [];
+
+    // Will only notify whitelisted dapps that are listening for a wallet change.
+    for (const origin of Object.keys(listening)) {
+      const site = whitelist[origin];
+      const listeningEvents = listening[origin];
+
+      if (!listeningEvents.includes('accountsChanged')) {
+        continue;
+      }
+
+      if (site) {
+        const siteAccounts = site.accounts;
+        const allAccountsWithDuplicates = accounts.concat(
+          siteAccounts.Constellation,
+          siteAccounts.Ethereum
+        );
+
+        const matchingAccounts = filter(
+          allAccountsWithDuplicates,
+          (value, index, iteratee) => includes(iteratee, value, index + 1)
+        );
+
+        if (matchingAccounts.length) {
+          const ethAccounts = matchingAccounts.filter((account) =>
+            account.toLowerCase().startsWith('0x')
+          );
+          const dagAccounts = matchingAccounts.filter((account) =>
+            account.toLowerCase().startsWith('dag')
+          );
+
+          // Dispatch a separate event for each chain
+          const newEvents = [
+            new CustomEvent('accountsChanged', {
+              detail: { data: ethAccounts, origin, chain: 'ethereum' },
+            }),
+            new CustomEvent('accountsChanged', {
+              detail: { data: dagAccounts, origin, chain: 'constellation' },
+            }),
+          ];
+
+          events.push(...newEvents);
+        }
+      }
+    }
+
+    this.#dispatchEvents(events);
+  }
+
+  fromPageConnectDApp(origin: string, title: string) {
+    this.#current = {
+      origin,
+      logo: `chrome://favicon/size/64@1x/${origin}`,
+      title,
+    };
+
+    return this.isDAppConnected(origin);
+  }
+
+  setSigRequest(request: ISigRequest) {
+    this.#request = request;
+  }
+
+  getSigRequest() {
+    return this.#request;
+  }
+
+  registerListeningSite(origin: string, eventName: string) {
     store.dispatch(registerListeningSiteAction({ origin, eventName }));
-  };
+  }
 
-  const deregisterListeningSite = (origin: string, eventName: string) => {
+  deregisterListeningSite(origin: string, eventName: string) {
     store.dispatch(deregisterListeningSiteAction({ origin, eventName }));
-  };
+  }
 
-  const isSiteListening = (origin: string, eventName: string) => {
-    const dapp: IDAppState = store.getState().dapp;
+  isSiteListening(origin: string, eventName: string) {
+    const dappState = store.getState().dapp;
+    return !!dappState.listening[origin]?.includes(eventName);
+  }
 
-    return dapp.listening[origin] && dapp.listening[origin].includes(eventName);
-  };
+  isDAppConnected(origin: string) {
+    const dappState = store.getState().dapp;
+    return !!dappState.whitelist[origin];
+  }
+}
 
-  const getCurrent = () => {
-    return current;
-  };
-
-  const setSigRequest = (req: ISigRequest) => {
-    request = req;
-  };
-
-  const getSigRequest = () => {
-    return request;
-  };
-
-  return {
-    getCurrent,
-    fromPageConnectDApp,
-    fromUserConnectDApp,
-    setSigRequest,
-    getSigRequest,
-    fromUserDisconnectDApp,
-    notifyAccountsChanged,
-    registerListeningSite,
-    deregisterListeningSite,
-    isSiteListening,
-    isDAppConnected,
-  };
-};
-
-export default DAppController;
+export { DAppController };

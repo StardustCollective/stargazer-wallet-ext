@@ -13,7 +13,7 @@ import scrypt from 'scrypt-js';
 
 import App from './App';
 
-global.scrypt = scrypt.scrypt;
+global.scrypt = scrypt;
 
 const app = document.getElementById('external-root');
 const store = new Store({ portName: STORE_PORT });

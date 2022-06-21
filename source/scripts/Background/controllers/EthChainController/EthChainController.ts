@@ -243,6 +243,17 @@ class EthChainController implements IEthChainController {
   }
 
   async estimateGasPrices() {
+    if(this.network.value !== 'homestead'){
+      // Etherscan gas oracle is not working in testnets
+      const oneGwei = ethers.BigNumber.from(1e9);
+      const feeData = await this.provider.getFeeData()
+      return{
+        average: baseAmount(feeData.gasPrice.toString(), ETH_DECIMAL),
+        fast: baseAmount(feeData.gasPrice.add(oneGwei.mul(5)).toString(), ETH_DECIMAL),
+        fastest: baseAmount(feeData.gasPrice.add(oneGwei.mul(10)).toString(), ETH_DECIMAL),
+      }
+    }
+
     try {
       const response: GasOracleResponse = await getGasOracle(this.etherscan.baseUrl, this.etherscan.apiKey)
 
@@ -257,7 +268,7 @@ class EthChainController implements IEthChainController {
         fastest: baseAmount(fastestWei.toString(), ETH_DECIMAL),
       }
     } catch (error) {
-      return Promise.reject(new Error(`Failed to estimate gas price: ${error}`));
+      throw new Error(`Failed to estimate gas price: ${error}`);
     }
   }
 
