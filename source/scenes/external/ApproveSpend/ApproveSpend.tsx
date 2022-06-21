@@ -14,6 +14,8 @@ import { RootState } from 'state/store';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetType } from 'state/vault/types';
 import { ITransactionInfo } from '../../../scripts/types';
+import { isError } from '../../../scripts/common';
+import { usePlatformAlert } from 'utils/alertUtil'
 
 ///////////////////////
 // Components
@@ -60,6 +62,7 @@ const ApproveSpend = () => {
   /////////////////////
 
   const controller = useController();
+  const showAlert = usePlatformAlert()
 
   const { data: stringData } = queryString.parse(location.search);
 
@@ -119,31 +122,40 @@ const ApproveSpend = () => {
 
   const onPositiveButtonClick = async () => {
     const background = await browser.runtime.getBackgroundPage();
-
     const { windowId } = queryString.parse(window.location.search);
 
-    const confirmEvent = new CustomEvent('spendApproved', {
-      detail: { windowId, approved: true }
-    });
+    try {
+      const txConfig: ITransactionInfo = {
+        fromAddress: from,
+        toAddress: to,
+        timestamp: Date.now(),
+        amount: '0',
+        fee: gasFee,
+        ethConfig: {
+          gasPrice,
+          gasLimit,
+          memo: data
+        },
+        onConfirmed: () => {
+          // NOOP
+        }
+      };
 
-    const txConfig: ITransactionInfo = {
-      fromAddress: from,
-      toAddress: to,
-      timestamp: Date.now(),
-      amount: '0',
-      fee: gasFee,
-      ethConfig: {
-        gasPrice,
-        gasLimit,
-        memo: data
-      },
-      onConfirmed: () => {
-        background.dispatchEvent(confirmEvent);
+      controller.wallet.account.updateTempTx(txConfig);
+      const trxHash = await controller.wallet.account.confirmContractTempTx(asset);
+
+      background.dispatchEvent(new CustomEvent('spendApproved', {
+        detail: { windowId, approved: true, result: trxHash }
+      }));
+    } catch (e) {
+      if (isError(e)) {
+        background.dispatchEvent(new CustomEvent('spendApproved', {
+          detail: { windowId, approved: false, error: e.message },
+        }));
+
+        showAlert(e.message, 'danger');
       }
-    };
-
-    controller.wallet.account.updateTempTx(txConfig);
-    await controller.wallet.account.confirmContractTempTx(asset);
+    }
 
     window.close();
   };

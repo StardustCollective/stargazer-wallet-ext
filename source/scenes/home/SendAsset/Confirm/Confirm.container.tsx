@@ -43,7 +43,8 @@ import { useFiat } from 'hooks/usePrice';
 ///////////////////////////
 
 import { getAccountController } from 'utils/controllersUtils';
-import { showAlert } from 'utils/alertUtil';
+import { usePlatformAlert } from 'utils/alertUtil';
+import { isError } from 'scripts/common';
 
 ///////////////////////////
 // Selectors
@@ -61,8 +62,8 @@ import Confirm from './Confirm';
 // Constants
 ///////////////////////////
 
-const BITFI_PAGE  = "bitfi.html";
-const LEDGER_PAGE = "ledger.html";
+const BITFI_PAGE  = "bitfi";
+const LEDGER_PAGE = "ledger";
 
 ///////////////////////////
 // Container
@@ -71,13 +72,15 @@ const LEDGER_PAGE = "ledger.html";
 
 const ConfirmContainer = () => {
 
+  const showAlert = usePlatformAlert()
+
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
   let activeWalletPublicKey: any = useSelector(walletSelectors.selectActiveAssetPublicKey)
   let history: any;
   let isExternalRequest: boolean;
 
-  if(!!location){
+  if (!!location) {
     isExternalRequest = location.pathname.includes('confirmTransaction');
   }
 
@@ -98,8 +101,9 @@ const ConfirmContainer = () => {
       to
     } = queryString.parse(location.search);
 
+
     activeAsset = useSelector(
-      (state: RootState) => find(state.assets, { address: to })
+      (state: RootState) => find(state.assets, { address: Array.isArray(to) ? to[0] : to })
     ) as IAssetInfoState;
 
     if (!activeAsset) {
@@ -179,15 +183,11 @@ const ConfirmContainer = () => {
   const handleConfirm = async (browser: any = null) => {
     setDisabled(true);
 
+    const background = await browser.runtime.getBackgroundPage();
+    const { windowId } = queryString.parse(window.location.search);
+
     try {
       if (isExternalRequest) {
-
-        const background = await browser.runtime.getBackgroundPage();
-        const { windowId } = queryString.parse(window.location.search);
-        const confirmEvent = new CustomEvent('transactionSent', {
-          detail: { windowId, approved: true },
-        });
-
         const txConfig: ITransactionInfo = {
           fromAddress: tempTx.fromAddress,
           toAddress: tempTx.toAddress,
@@ -195,36 +195,61 @@ const ConfirmContainer = () => {
           amount: tempTx.amount,
           ethConfig: tempTx.ethConfig,
           onConfirmed: () => {
-            background.dispatchEvent(confirmEvent);
+            // NOOP
           },
         };
 
         accountController.updateTempTx(txConfig);
-        await accountController.confirmContractTempTx(activeAsset);
+        const trxHash = await accountController.confirmContractTempTx(activeAsset);
+
+        background.dispatchEvent(new CustomEvent('transactionSent', {
+          detail: { windowId, approved: true, result: trxHash },
+        }));
 
         if (window) {
           window.close();
         }
       } else {
-        if(activeWallet.type === KeyringWalletType.LedgerAccountWallet || 
-           activeWallet.type === KeyringWalletType.BitfiAccountWallet 
-          ){
-          let publicKey = activeWalletPublicKey;
-          let id = activeWallet.id;
-          let page = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_PAGE : BITFI_PAGE;
-          console.log()
-          window.open(`/${page}?route=signTransaction&id=${id}&publicKey=${publicKey}&amount=${tempTx!.amount}&fee=${tempTx!.fee}&from=${tempTx!.fromAddress}&to=${tempTx!.toAddress}`, '_newtab');
-        }else{
-          await accountController.confirmTempTx()
-          setConfirmed(true);
+        if (activeWallet.type === KeyringWalletType.LedgerAccountWallet || 
+            activeWallet.type === KeyringWalletType.BitfiAccountWallet ) {
+
+
+          const page = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_PAGE : BITFI_PAGE;
+
+          const params = new URLSearchParams();
+          params.set('route', 'signTransaction');
+          params.set('windowId', Array.isArray(windowId) ? windowId[0] : windowId);
+          params.set('id', activeWallet.id);
+          params.set('publicKey', activeWalletPublicKey)
+          params.set('amount', tempTx!.amount);
+          params.set('fee', String(tempTx!.fee));
+          params.set('from', tempTx!.fromAddress)
+          params.set('to', tempTx!.toAddress)
+
+          window.open(`/${page}.html?${params.toString()}`, '_newtab');
+        } else {
+
+          const trxHash = await accountController.confirmTempTx()
+          background.dispatchEvent(new CustomEvent('transactionSent', {
+            detail: { windowId, approved: true, result: trxHash },
+          }));  
+          
         }
       }
-    } catch (error: any) {
-      let message = error.message;
-      if (error.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
-        message = 'Insufficient ETH to cover gas fee.';
+    } catch (e) {
+      if (isError(e)) {
+        let message = e.message;
+        if (e.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
+          message = 'Insufficient ETH to cover gas fee.';
+        }
+
+        background.dispatchEvent(new CustomEvent('transactionSent', {
+          detail: { windowId, approved: false, error: e.message },
+        }));
+
+        showAlert(message, 'danger');
       }
-      showAlert(message, 'danger');
+      console.error(e)
     }
   };
 

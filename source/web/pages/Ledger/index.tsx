@@ -13,7 +13,7 @@ import scrypt from 'scrypt-js';
 
 import LedgerPage from './Ledger';
 
-global.scrypt = scrypt.scrypt;
+global.scrypt = scrypt;
 
 const app = document.getElementById('ledger-root');
 const store = new Store({ portName: STORE_PORT });

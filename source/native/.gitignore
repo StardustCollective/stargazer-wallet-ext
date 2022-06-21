@@ -32,6 +32,7 @@ local.properties
 *.iml
 *.hprof
 sentry.properties
+app-release.aab
 
 # node.js
 #

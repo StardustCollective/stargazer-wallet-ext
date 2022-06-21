@@ -1,21 +1,23 @@
 import { IAssetInfoState } from 'state/assets/types';
-import { XChainEthClient } from '@stardust-collective/dag4-xchain-ethereum';
 import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { IAssetState, IActiveAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { EthTransactionController } from './EthTransactionController';
 import { IAssetsController } from './AssetsController';
+import EthChainController from './EthChainController';
 import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
 
 export interface IAccountController {
-  ethClient: XChainEthClient;
+  ethClient: EthChainController;
   txController: EthTransactionController;
   assetsController: Readonly<IAssetsController>;
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
   getTempTx: () => ITransactionInfo | null;
   updateTempTx: (tx: ITransactionInfo) => void;
-  confirmContractTempTx: (activeAsset: IAssetInfoState | IActiveAssetState) => Promise<void>;
-  confirmTempTx: () => Promise<void>;
+  confirmContractTempTx: (
+    activeAsset: IAssetInfoState | IActiveAssetState
+  ) => Promise<string>;
+  confirmTempTx: () => Promise<string>;
   isValidDAGAddress: (address: string) => boolean;
   isValidERC20Address: (address: string) => boolean;
   // subscribeAccount: (id: string, label?: string) => Promise<string | null>;
@@ -31,9 +33,22 @@ export interface IAccountController {
     nonce: number;
     gasPrice: number;
   }>;
-  updateETHTxConfig: ({ nonce, gas, gasLimit }: { gas?: number; gasLimit?: number; nonce?: number }) => void;
+  updateETHTxConfig: ({
+    nonce,
+    gas,
+    gasLimit,
+  }: {
+    gas?: number;
+    gasLimit?: number;
+    nonce?: number;
+  }) => void;
   getLatestGasPrices: () => Promise<number[]>;
-  estimateTotalGasFee: (recipient: string, amount: string, gas: number, gasLimit?: number) => Promise<number>;
+  estimateTotalGasFee: (
+    recipient: string,
+    amount: string,
+    gas: number,
+    gasLimit?: number
+  ) => Promise<number>;
   getLatestTxUpdate: () => Promise<void>;
   updatePendingTx: (tx: IETHPendingTx, gasPrice: number, gasLimit: number) => {};
 }

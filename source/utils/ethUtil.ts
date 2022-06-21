@@ -3,10 +3,11 @@ import InputDataDecoder from 'ethereum-input-data-decoder';
 import Web3 from 'web3';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring'
 import store from 'state/store';
-import { ETHNetwork } from 'scripts/types';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import erc20ABI from './erc20.json'
 import { getContractDetails } from './etherscan';
+import { EthNetworkId } from 'scripts/Background/controllers/EthChainController/types';
+import { getInfuraUrl } from 'scripts/Background/controllers/EthChainController/utils';
 
 export const getERC20DataDecoder = () => {
     return new InputDataDecoder(erc20ABI as any);
@@ -26,8 +27,8 @@ export const estimateGasPrice = async (): Promise<number> => {
     return fast.amount().toNumber();
 }
 
-const _getWeb3 = (network: 'testnet' | 'mainnet') => {
-    const infuraUrl = network === 'testnet' ? 'https://ropsten.infura.io/v3/' : 'https://mainnet.infura.io/v3/';
+const _getWeb3 = (network: EthNetworkId) => {
+    const infuraUrl = getInfuraUrl(network);
 
     return new Web3(
         new Web3.providers.HttpProvider(`${infuraUrl}${process.env.INFURA_CREDENTIAL}`)
@@ -37,7 +38,7 @@ const _getWeb3 = (network: 'testnet' | 'mainnet') => {
 const _getAbi = async ({ to }: {to: string}) => {
 
     const { activeNetwork, activeWallet }: IVaultState = store.getState().vault;
-    const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
     const knownERC20Asset = activeWallet.assets.find((asset: IAssetState) => asset.contractAddress === to && asset.type === AssetType.ERC20);
 
     let abi: Array<any> | false;
@@ -52,7 +53,7 @@ const _getAbi = async ({ to }: {to: string}) => {
 
 export const estimateGasLimitForTransfer = async ({ to, from, amount: value }: {to: string, from: string,  amount: string}) => {
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
     const abi = await _getAbi({ to });
     const web3 = _getWeb3(network);
     const contract = new web3.eth.Contract(abi as any, to);
@@ -68,7 +69,7 @@ export const estimateGasLimitForTransfer = async ({ to, from, amount: value }: {
 
 export const estimateGasLimit = async ({ to, data }: { to: string, data: string }): Promise<number> => {
     const { activeNetwork, activeWallet }: IVaultState = store.getState().vault;
-    const network = activeNetwork[KeyringNetwork.Ethereum] as ETHNetwork;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
     const ethAsset = activeWallet?.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
 
     if (!ethAsset || !to || to?.toUpperCase().startsWith('DAG')) {
