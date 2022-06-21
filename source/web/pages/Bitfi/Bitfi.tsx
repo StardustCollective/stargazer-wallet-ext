@@ -130,14 +130,10 @@ const LedgerPage: FC = () => {
   
 
   const [message, setMessage] = useState<string>('')
-  const [code, setCode] = useState<string>('')
-  const [error, setError] = useState<string>('')
+  const [code] = useState<string>('')
+  const [error] = useState<string>('')
 
   useEffect(() => {}, [selectedAccounts])
-
-  useEffect(() => {
-    BitfiBridgeUtil.setOnProgressUpdate(onProgressUpdate);
-  }, []);
 
   useEffect(() => {
 
@@ -155,7 +151,7 @@ const LedgerPage: FC = () => {
 
   useEffect(() => {
     if(accountData.length){
-      setSelectedAccounts((state) => {
+      setSelectedAccounts(() => {
         return [{ 
           id: 0, 
           type: KeyringWalletType.BitfiAccountWallet,
@@ -190,7 +186,7 @@ const LedgerPage: FC = () => {
         setAccountData(accountData);
       }
       setStartIndex(BitfiBridgeUtil.startIndex);
-    } catch (error) {
+    } catch (error: any) {
       console.log('error', error);
       if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
         setWalletState(WALLET_STATE_ENUM.LOCKED);
@@ -233,20 +229,14 @@ const LedgerPage: FC = () => {
     showAlert(error);
   }
 
-  // Updates the state when the progress is updated.
-  const onProgressUpdate = (loadProgress: number) => {
-    let progress = loadProgress * 100;
-    setAccountsLoadProgress(progress);
-  }
-
   // Handles the click to the Connect with Ledger Button
   
   const onConnectClick = async (deviceId: string) => {
     try {
       // Close any open alerts
       // Request permission to access the ledger device.
-      setWalletState(WALLET_STATE_ENUM.BITFI_SIGNIN)
-      await BitfiBridgeUtil.requestPermissions(deviceId, setMessage, setCode)
+      setWalletState(WALLET_STATE_ENUM.BITFI_SIGNIN);
+      await BitfiBridgeUtil.requestPermissions(deviceId, setMessage);
       // Get the initial page of the account data
       await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
 

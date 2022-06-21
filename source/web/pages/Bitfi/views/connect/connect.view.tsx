@@ -53,7 +53,6 @@ interface IConnectProps {
 function Connect(props: IConnectProps) {
 
   const [deviceId, setDeviceId] = useState<string>('')
-  const [error, setError] = useState<string>('')
 
   /////////////////////////
   // Callbacks

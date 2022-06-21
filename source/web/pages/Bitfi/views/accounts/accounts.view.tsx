@@ -23,7 +23,7 @@ import MUITableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Checkbox, Link } from '@material-ui/core';
+import { Checkbox } from '@material-ui/core';
 import Button from 'components/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 

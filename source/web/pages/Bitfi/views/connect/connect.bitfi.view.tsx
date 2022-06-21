@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button';
 import styles from './bitfiStyles.module.scss';
@@ -20,7 +20,7 @@ interface IConnectProps {
   onBack: () => void
 }
 
-function ConnectBitfiView({ onBack, message, error, code }: IConnectProps) {
+function ConnectBitfiView({ onBack, message, error }: IConnectProps) {
   const BlueButton = withStyles((theme) => ({
     root: {
       color: theme.palette.getContrastText(BUTTON_CUSTOM_COLOR_PROP),

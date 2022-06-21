@@ -12,7 +12,7 @@ import { KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-ke
 /// //////////////////////
 // Types
 /// //////////////////////
-import { IAccountDerived, AssetType, IAssetState } from 'state/vault/types';
+import { IAccountDerived, AssetType, IAssetState, IVaultWalletsStoreState } from 'state/vault/types';
 import { getNfts } from './nftSelectors';
 
 /// //////////////////////

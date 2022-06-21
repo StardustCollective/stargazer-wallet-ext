@@ -175,10 +175,6 @@ class BitfiBridgeUtil {
     return sig;
   }
 
-  //not used
-  public setOnProgressUpdate(onProgressUpdate: (progress: number) => void) {
-  }
-
   // There is only one account, there is nothing to iterate through
   public getInitialPage = (): Promise<LedgerAccount[]> => {
     return this.getAccountData()

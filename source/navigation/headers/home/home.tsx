@@ -24,7 +24,6 @@ import screens from 'navigation/screens';
 ///////////////////////////
 
 import styles from './styles.scss';
-import commonStyles from './../styles.scss';
 
 ///////////////////////////
 // Interfaces
@@ -33,7 +32,6 @@ import commonStyles from './../styles.scss';
 interface IHomeHeader {
   navigation: any;
   route: any;
-  hasMainAccount: boolean;
 }
 
 ///////////////////////////
@@ -42,7 +40,6 @@ interface IHomeHeader {
 
 const homeHeader = ({
   navigation,
-  hasMainAccount
 }: IHomeHeader) => {
 
   const onMenuButtonClicked = () => {

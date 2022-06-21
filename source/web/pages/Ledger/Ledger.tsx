@@ -262,7 +262,7 @@ const LedgerPage: FC = () => {
   const onImportClick = async () => {
     setFetchingPage(true);
     const background = await browser.runtime.getBackgroundPage();
-    background.controller.wallet.createLedgerWallets(selectedAccounts as any)
+    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any)
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     LedgerBridgeUtil.closeConnection();

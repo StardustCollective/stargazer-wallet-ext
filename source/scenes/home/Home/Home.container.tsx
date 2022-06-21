@@ -3,7 +3,6 @@
 ///////////////////////////
 
 import React, { FC, useLayoutEffect, useEffect } from 'react';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -50,10 +49,6 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   // Hooks
   ///////////////////////////
 
-  const { wallets }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-  const hasMainAccount = wallets.local.length && wallets.local.some((w) => w.type === KeyringWalletType.MultiChainWallet);
   const [balanceObject, balance] = useTotalBalance();
 
   const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
@@ -75,7 +70,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   // Sets the header for the home screen.
   useLayoutEffect(() => {
     navigation.setOptions({
-      ...homeHeader({ navigation, route, hasMainAccount }),
+      ...homeHeader({ navigation, route }),
       title: activeWallet ? activeWallet.label : "",
     });
   }, [activeWallet]);

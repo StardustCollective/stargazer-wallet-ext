@@ -135,7 +135,7 @@ const ConfirmContainer = () => {
   const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
 
   const tempTx = accountController.getTempTx();
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed ] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
 
@@ -233,7 +233,7 @@ const ConfirmContainer = () => {
           background.dispatchEvent(new CustomEvent('transactionSent', {
             detail: { windowId, approved: true, result: trxHash },
           }));  
-          
+
         }
       }
     } catch (e) {
