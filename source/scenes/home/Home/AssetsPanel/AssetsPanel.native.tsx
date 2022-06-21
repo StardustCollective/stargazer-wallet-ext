@@ -10,7 +10,7 @@ import { View, Linking } from 'react-native';
 ///////////////////////
 
 import AssetItem from 'components/AssetItem';
-import TextV3 from 'components/TextV3';
+import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
 // Types
@@ -32,6 +32,7 @@ import styles from './styles';
 const AssetsPanel: FC<IAssetState> = ({
   activeNetworkAssets,
   handleSelectAsset,
+  handleAddTokens,
   assets,
   activeNFTAssets,
   nfts,
@@ -77,13 +78,16 @@ const AssetsPanel: FC<IAssetState> = ({
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {Object.keys(activeWallet.assets).length ? (
+        {Object.keys(activeWallet.assets).length && (
           <>{renderAssetList()}</>
-        ) : (
-          <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-            You have no assets. Please add new Asset by Click + icon.
-          </TextV3.Caption>
         )}
+        <ButtonV3 
+          title="+ Add Tokens" 
+          size={BUTTON_SIZES_ENUM.LARGE}
+          type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE} 
+          color={COLORS_ENUMS.DARK_GRAY}
+          onPress={handleAddTokens} 
+        />
       </View>
     </View>
   );

@@ -2,9 +2,15 @@
   width: 40px;
   margin: 0 16px;
 }
+.plusIcon {
+  width: 14px;
+}
 .buttonRight {
   color: white;
+  &.plus {
+    margin-right: 0px;
+  }
   &.more {
-    margin-right: 24px;
+    margin-right: 10px;
   }
 }

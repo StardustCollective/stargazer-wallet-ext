@@ -58,6 +58,8 @@ const TextV3 = {
       colorStyle = styles.textWhite;
     } else if (color === COLORS_ENUMS.GRAY_100) {
       colorStyle = styles.textGray100;
+    } else if (color === COLORS_ENUMS.PRIMARY) {
+      colorStyle = styles.textPrimary;
     }
 
     //Alignment

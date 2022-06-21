@@ -11,6 +11,7 @@ import config from '../config';
 
 import IconButton from '@material-ui/core/IconButton';
 import LogoImage from 'assets/images/logo.svg';
+import PlusImage from 'assets/images/svg/plus.svg';
 import MenuIcon from '@material-ui/icons/Menu';
 
 ///////////////////////////
@@ -49,17 +50,29 @@ const homeHeader = ({
     navigation.navigate(screens.settings.main)
   }
 
+  const onPlusButtonClicked = () => {
+    navigation.navigate(screens.authorized.addAsset);
+  }
+
   const renderHeaderRight = () => {
 
     if (hasMainAccount) {
       return (
-      <IconButton
-        id="header-moreButton"
-        className={`${styles.buttonRight} ${styles.more}`}
-        onClick={onMenuButtonClicked}
-      >
-        <MenuIcon className={styles.buttonRight} />
-      </IconButton>)
+        <div>
+          <IconButton
+            id="header-plusButton"
+            className={`${styles.buttonRight} ${styles.plus}`}
+            onClick={onPlusButtonClicked}>
+              <img src={`/${PlusImage}`} className={styles.plusIcon} alt="Plus icon" />
+          </IconButton>
+          <IconButton
+            id="header-moreButton"
+            className={`${styles.buttonRight} ${styles.more}`}
+            onClick={onMenuButtonClicked}>
+              <MenuIcon className={styles.buttonRight} />
+          </IconButton>
+        </div>
+      )
     }
     // Hack: The header title will not center unless there is 
     // both a headerLeft and headerRight. So we insert an 

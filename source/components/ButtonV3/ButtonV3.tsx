@@ -91,6 +91,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
   } else if (type === BUTTON_TYPES_ENUM.SECONDARY_SOLID) {
     buttonColorStyle = styles.secondaryButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
+  } else if (type === BUTTON_TYPES_ENUM.SECONDARY_OUTLINE) {
+    buttonColorStyle = styles.secondaryOutlineButton;
+    buttonTextColor = COLORS_ENUMS.PRIMARY;
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {
     buttonColorStyle = styles.accentOneButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
@@ -109,7 +112,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
       onClick={onClick}
     >
       {!loading ? 
-        <TextComponent align={TEXT_ALIGN_ENUM.CENTER}>{label}</TextComponent> : 
+        <TextComponent color={buttonTextColor} align={TEXT_ALIGN_ENUM.CENTER}>{label}</TextComponent> : 
         <div className={styles.loader}>
           <CircularProgress size={24}/>
         </div>
