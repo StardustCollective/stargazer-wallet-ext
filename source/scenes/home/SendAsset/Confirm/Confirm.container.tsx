@@ -8,6 +8,7 @@ import find from 'lodash/find';
 import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 // import { useAlert } from 'react-alert';
 
 ///////////////////////////
@@ -56,6 +57,13 @@ import walletSelectors from 'selectors/walletsSelectors';
 ///////////////////////////
 
 import Confirm from './Confirm';
+
+///////////////////////////
+// Constants
+///////////////////////////
+
+const BITFI_PAGE  = "bitfi";
+const LEDGER_PAGE = "ledger";
 
 ///////////////////////////
 // Container
@@ -127,7 +135,7 @@ const ConfirmContainer = () => {
   const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
 
   const tempTx = accountController.getTempTx();
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed ] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
 
@@ -202,8 +210,11 @@ const ConfirmContainer = () => {
           window.close();
         }
       } else {
-        if (activeAsset.type === AssetType.LedgerConstellation) {
+        if (activeWallet.type === KeyringWalletType.LedgerAccountWallet || 
+            activeWallet.type === KeyringWalletType.BitfiAccountWallet ) {
 
+
+          const page = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_PAGE : BITFI_PAGE;
 
           const params = new URLSearchParams();
           params.set('route', 'signTransaction');
@@ -215,15 +226,14 @@ const ConfirmContainer = () => {
           params.set('from', tempTx!.fromAddress)
           params.set('to', tempTx!.toAddress)
 
-          window.open(`/ledger.html?${params.toString()}`, '_newtab');
+          window.open(`/${page}.html?${params.toString()}`, '_newtab');
         } else {
-          const trxHash = await accountController.confirmTempTx()
 
+          const trxHash = await accountController.confirmTempTx()
           background.dispatchEvent(new CustomEvent('transactionSent', {
             detail: { windowId, approved: true, result: trxHash },
-          }));
+          }));  
 
-          setConfirmed(true);
         }
       }
     } catch (e) {

@@ -4,9 +4,9 @@
 
 import React from 'react';
 import config from '../config';
-import { 
+import {
   View,
-  HamburgerIcon, 
+  HamburgerIcon,
   Pressable,
 } from "native-base"
 import { scale } from 'react-native-size-matters';
@@ -35,7 +35,7 @@ import screens from 'navigation/screens';
 // Interfaces
 ///////////////////////////
 
-interface IHomeHeader{
+interface IHomeHeader {
   navigation: any;
   hasMainAccount: boolean;
 }
@@ -55,19 +55,15 @@ const homeHeader = ({
 
   const renderHeaderRight = () => {
 
-    if (hasMainAccount) {
-      return (
+    return (
       <Pressable
         onPress={onMenuButtonClicked}
         mr="5"
       >
-        <HamburgerIcon testId="header-moreButton" color="white"/>
-      </Pressable>)
-    }
-    // Hack: The header title will not center unless there is 
-    // both a headerLeft and headerRight. So we insert an 
-    // empty View to meet the requirement.
-    return (<View m='1'></View>);
+        <HamburgerIcon testId="header-moreButton" color="white" />
+      </Pressable>
+    );
+
 
   }
 
@@ -75,7 +71,7 @@ const homeHeader = ({
     ...config,
     headerLeft: () => (
       <View style={styles.logo}>
-        <LogoImage width={scale(30)} height={scale(30)}/>
+        <LogoImage width={scale(30)} height={scale(30)} />
       </View>
 
     ),

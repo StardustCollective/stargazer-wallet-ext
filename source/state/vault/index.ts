@@ -4,14 +4,16 @@ import { Transaction } from '@stardust-collective/dag4-network';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
-import filter from 'lodash/filter';
-import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState } from './types';
+import findIndex from 'lodash/findIndex';
+import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState, IVaultWalletsStoreState } from './types';
+import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 const initialState: IVaultState = {
   status: 0,
   wallets: {
     local: [],
     ledger: [],
+    bitfi: [],
   },
   hasEncryptedVault: false,
   balances: {
@@ -127,8 +129,20 @@ const VaultState = createSlice({
         action.payload
       ];
     },
-    deleteLedgerWallet(state: IVaultState, action){
-      state.wallets.ledger = filter(state.wallets.ledger, (w) => w.id !== action.payload);
+    addBitfiWallet(state: IVaultState, action){
+      state.wallets.bitfi = [
+        ...state.wallets.bitfi,
+        action.payload
+      ];
+    },
+    updateWallets(state: IVaultState, action: PayloadAction<{wallets: IVaultWalletsStoreState}>){
+      state.wallets = action.payload.wallets;
+    },
+    updateWalletLabel(state: IVaultState, action: PayloadAction<{wallet: KeyringWalletState, label: string}>){
+      const isLedger = action.payload.wallet.type === KeyringWalletType.LedgerAccountWallet;
+      const wallets  = isLedger ? state.wallets.ledger : state.wallets.bitfi;
+      const index    = findIndex(wallets, (w) => w.id === action.payload.wallet.id);
+      wallets[index].label = action.payload.label;
     },
     changeActiveWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
       state.activeWallet = action.payload;
@@ -153,7 +167,7 @@ const VaultState = createSlice({
     updateWalletAssets(state: IVaultState, action: PayloadAction<IAssetState[]>) {
       state.activeWallet.assets = action.payload;
     },
-    updateWalletLabel(state: IVaultState, action: PayloadAction<string>) {
+    updateActiveWalletLabel(state: IVaultState, action: PayloadAction<string>) {
       state.activeWallet.label = action.payload;
     },
     updateTransactions(state: IVaultState, action: PayloadAction<{ txs: Transaction[] }>) {
@@ -185,7 +199,8 @@ const VaultState = createSlice({
 
 export const {
   addLedgerWallet,
-  deleteLedgerWallet,
+  addBitfiWallet,
+  updateWallets,
   rehydrate,
   setVaultInfo,
   // setKeystoreInfo,
@@ -201,6 +216,7 @@ export const {
   // updateAccount,
   updateWalletAssets,
   updateWalletLabel,
+  updateActiveWalletLabel,
   updateTransactions,
   updateBalances,
   // updateLabel,

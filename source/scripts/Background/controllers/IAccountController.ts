@@ -5,6 +5,7 @@ import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { EthTransactionController } from './EthTransactionController';
 import { IAssetsController } from './AssetsController';
 import EthChainController from './EthChainController';
+import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
 
 export interface IAccountController {
   ethClient: EthChainController;
@@ -24,7 +25,7 @@ export interface IAccountController {
   // addNewAccount: (label: string) => Promise<string | null>;
   updateTxs: (limit?: number, searchAfter?: string) => Promise<void>;
   getFullETHTxs: () => Promise<ITransactionInfo[]>;
-  updateWalletLabel: (walletId: string, label: string) => void;
+  updateWalletLabel: (wallet: KeyringWalletState, label: string) => void;
   updateAccountActiveAsset: (asset: IAssetState) => void;
   addNewToken: (address: string) => Promise<void>;
   getRecommendFee: () => Promise<number>;

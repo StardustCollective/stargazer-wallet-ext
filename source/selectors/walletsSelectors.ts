@@ -12,7 +12,7 @@ import { KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-ke
 /// //////////////////////
 // Types
 /// //////////////////////
-import { IAccountDerived, AssetType, IAssetState } from 'state/vault/types';
+import { IAccountDerived, AssetType, IAssetState, IVaultWalletsStoreState } from 'state/vault/types';
 import { getNfts } from './nftSelectors';
 
 /// //////////////////////
@@ -50,7 +50,17 @@ const selectLocalWallets = createSelector(getWallets, (wallets) => wallets.local
  * Returns ledger wallets.
  */
 
-const selectLedgerWallets = createSelector(getWallets, (wallets) => wallets.ledger);
+const selectLedgerWallets = createSelector(getWallets,
+  (wallets: IVaultWalletsStoreState) => wallets.ledger
+);
+
+/**
+ * Returns Bitfi wallets.
+ */
+
+ const selectBitfiWallets = createSelector(getWallets,
+  (wallets: IVaultWalletsStoreState) => wallets.bitfi
+);
 
 /**
  * Returns all wallets.
@@ -59,8 +69,9 @@ const selectLedgerWallets = createSelector(getWallets, (wallets) => wallets.ledg
 const selectAllWallets = createSelector(
   selectLocalWallets,
   selectLedgerWallets,
-  (localWallet, ledgerWallet) => {
-    return [...localWallet, ...ledgerWallet];
+  selectBitfiWallets,
+  (localWallets, ledgerWallets, bitfiWallets) => {
+    return [...localWallets, ...ledgerWallets, ...bitfiWallets];
   }
 );
 

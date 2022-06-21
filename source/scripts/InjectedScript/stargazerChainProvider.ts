@@ -23,44 +23,40 @@ const debug = debugFn('Stargazer:StargazerChainProvider');
  * + Handles client listen events.
  */
 class StargazerChainProvider extends EIPChainProvider {
-  #proxy: StargazerChainProviderProxy;
-  #providerId: string;
-  #chain: StargazerChain;
-  #listeners: Map<Function, string>;
+  private proxy: StargazerChainProviderProxy;
+  public providerId: string;
+  public chain: StargazerChain;
+  private listeners: Map<Function, string>;
 
   constructor(chain: StargazerChain) {
     super();
-    this.#proxy = new StargazerChainProviderProxy(
+    this.proxy = new StargazerChainProviderProxy(
       this,
-      this.#handleListenerEvent.bind(this)
+      this.handleListenerEvent.bind(this)
     );
-    this.#providerId = generateNamespaceId('provider');
-    this.#chain = chain;
-    this.#listeners = new Map();
+    this.providerId = generateNamespaceId('provider');
+    this.chain = chain;
+    this.listeners = new Map();
   }
 
   get version() {
     return STARGAZER_WALLET_VERSION;
   }
 
-  get chain() {
-    return this.#chain;
-  }
+  // get chain() {
+  //   return this.#chain;
+  // }
 
-  get providerId() {
-    return this.#providerId;
-  }
-
-  get activated() {
-    return this.#proxy.activated;
-  }
+  // get activated() {
+  //   return this.proxy.activated;
+  // }
 
   get activate() {
-    return this.#proxy.activate.bind(this.#proxy);
+    return this.proxy.activate.bind(this.proxy);
   }
 
-  #handleListenerEvent(event: StargazerProxyEvent) {
-    for (const [listener, listenerId] of this.#listeners) {
+  private handleListenerEvent(event: StargazerProxyEvent) {
+    for (const [listener, listenerId] of this.listeners) {
       if (event.listenerId === listenerId) {
         listener(...event.params);
         break;
@@ -69,7 +65,7 @@ class StargazerChainProvider extends EIPChainProvider {
   }
 
   async request(args: RequestArguments) {
-    return this.#proxy.request({
+    return this.proxy.request({
       type: 'rpc',
       method: args.method as any,
       params: args.params,
@@ -78,17 +74,17 @@ class StargazerChainProvider extends EIPChainProvider {
 
   async onAsync(eventName: AvailableEvents, listener: (...args: any[]) => void) {
     const listenerId = generateNamespaceId('listener');
-    this.#listeners.set(listener, listenerId);
+    this.listeners.set(listener, listenerId);
 
     try {
-      return this.#proxy.request({
+      return this.proxy.request({
         type: 'event',
         action: 'register',
         listenerId,
         event: eventName,
       });
     } catch (e) {
-      this.#listeners.delete(listener);
+      this.listeners.delete(listener);
       debug('error:', e);
       throw e;
     }
@@ -98,21 +94,21 @@ class StargazerChainProvider extends EIPChainProvider {
     eventName: AvailableEvents,
     listener: (...args: any[]) => void
   ) {
-    const listenerId = this.#listeners.get(listener);
+    const listenerId = this.listeners.get(listener);
     if (!listenerId) {
       return false;
     }
-    this.#listeners.delete(listener);
+    this.listeners.delete(listener);
 
     try {
-      return await this.#proxy.request({
+      return await this.proxy.request({
         type: 'event',
         action: 'deregister',
         listenerId,
         event: eventName,
       });
     } catch (e) {
-      this.#listeners.set(listener, listenerId);
+      this.listeners.set(listener, listenerId);
       debug('error:', e);
       throw e;
     }

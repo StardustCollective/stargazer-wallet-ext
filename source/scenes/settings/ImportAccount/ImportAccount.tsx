@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
 import CachedIcon from '@material-ui/icons/Cached';
 import CallMadeIcon from '@material-ui/icons/CallMade';
@@ -12,10 +12,17 @@ import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
 
 import LedgerIcon from 'assets/images/svg/ledger.svg';
+import BitfiIcon from 'assets/images/svg/bitfi.svg';
 import styles from './ImportAccount.scss';
 import { useAlert } from 'react-alert'
 
 import IImportAccountSettings, { HardwareWallet } from './types';
+
+enum HARDWARE_WALLET {
+  none = 0,
+  bitfi,
+  ledger,
+}
 
 const ImportAccount: FC<IImportAccountSettings> = ({
   accountName,
@@ -34,6 +41,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   setJsonFile,
 }) => {
   const alert = useAlert();
+  let [ hardwareWallet, setHardwareWallet] = useState(HARDWARE_WALLET.none);
   const onSubmit = async (data: any): Promise<any> => {
     // setAccountName(undefined);
     if (importType === 'priv') {
@@ -68,7 +76,11 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         }
       };
     } else if (importType === 'hardware') {
-      return window.open('/ledger.html', '_newtab');
+      if(hardwareWallet === HARDWARE_WALLET.ledger){
+        return window.open('/ledger.html', '_newtab');
+      }else if(hardwareWallet === HARDWARE_WALLET.bitfi){
+        return window.open('/bitfi.html', '_newtab');
+      }
     } else {
       return alert.error('Error: A private key json file is not chosen');
     }
@@ -89,6 +101,10 @@ const ImportAccount: FC<IImportAccountSettings> = ({
       </tr>
     );
   };
+
+  const onHardwareTypeClick = (hardwareType: HARDWARE_WALLET ) => {
+    setHardwareWallet(hardwareType);
+  }
 
   return (
     <form className={styles.import} onSubmit={handleSubmit(onSubmit)}>
@@ -120,7 +136,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                   options={[
                     { priv: 'Private key' },
                     { json: 'JSON file' },
-                    // { hardware: 'Hardware wallet' },
+                    { hardware: 'Hardware wallet' },
                   ]}
                   onChange={(ev) => setImportType(ev.target.value as string)}
                   fullWidth
@@ -160,8 +176,12 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 {hardwareStep === 1 && (
                   <>
                     <div className={styles.hardwareList}>
-                      <div className={styles.walletModel}>
-                        <img src={LedgerIcon} alt="ledger_icon" />
+                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.ledger)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.ledger ? styles. walletModelSelected : null])}>
+                        <img src={`/${LedgerIcon}`} alt="ledger_icon" />
+                      </div>
+                      &nbsp;
+                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.bitfi)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.bitfi ? styles. walletModelSelected : null])}>
+                        <img src={`/${BitfiIcon}`} alt="bitfi_icon" />
                       </div>
                     </div>
                   </>
@@ -207,7 +227,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
               <>
                 <span>
                   {importType === 'hardware'
-                    ? 'Connect to your ledger hardware wallet to import accounts'
+                    ? 'Please select a hardware wallet to continue.'
                     : 'Please name your new account:'}
                 </span>
                 {importType !== 'hardware' && (
@@ -231,7 +251,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
             >
               Cancel
             </Button>
-            <Button id="importAccount-confirmNextButton" type="submit" variant={styles.button} loading={loading}>
+            <Button disabled={importType === 'hardware' ? hardwareWallet === HARDWARE_WALLET.none ? true : false : false} id="importAccount-confirmNextButton" type="submit" variant={styles.button} loading={loading}>
               {importType === 'hardware' ? 'Next' : 'Import'}
             </Button>
           </section>
