@@ -23,7 +23,7 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   const wallet = allWallets.find((w) => w.id === id);
 
   const onSubmit = (data: any) => {
-    accountController.updateWalletLabel(id, data.name);
+    accountController.updateWalletLabel(wallet, data.name);
     navigation.goBack();
   };
 

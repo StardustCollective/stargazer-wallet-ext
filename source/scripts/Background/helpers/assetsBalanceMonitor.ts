@@ -1,4 +1,3 @@
-import { AccountTracker } from '@stardust-collective/dag4-xchain-ethereum';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
@@ -9,8 +8,14 @@ import { ProcessStates } from 'state/process/enums';
 import { getAccountController } from 'utils/controllersUtils';
 import store from '../../../state/store';
 import { updateBalances } from '../../../state/vault';
-import IVaultState, { ActiveNetwork, AssetType, IWalletState } from '../../../state/vault/types';
+import IVaultState, {
+  ActiveNetwork,
+  AssetType,
+  IWalletState,
+} from '../../../state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
+import { getChainId } from '../controllers/EthChainController/utils';
+import { AccountTracker } from '../controllers/EthChainController';
 
 const FIVE_SECONDS = 5 * 1000;
 
@@ -19,7 +24,9 @@ export class AssetsBalanceMonitor {
 
   private dagBalIntervalId: any;
 
-  private ethAccountTracker = new AccountTracker({ infuraCreds: { projectId: INFURA_CREDENTIAL || '' } });
+  private ethAccountTracker = new AccountTracker({
+    infuraCreds: { projectId: INFURA_CREDENTIAL || '' },
+  });
 
   private subscription: Subscription;
 
@@ -37,7 +44,10 @@ export class AssetsBalanceMonitor {
       let hasETH = false;
 
       activeWallet.assets.forEach((a) => {
-        hasDAG = hasDAG || a.type === AssetType.Constellation || a.type === AssetType.LedgerConstellation;
+        hasDAG =
+          hasDAG ||
+          a.type === AssetType.Constellation ||
+          a.type === AssetType.LedgerConstellation;
         hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
       });
 
@@ -65,7 +75,9 @@ export class AssetsBalanceMonitor {
       // })
 
       if (hasDAG) {
-        this.subscription = dag4.monitor.observeMemPoolChange().subscribe((up) => this.pollPendingTxs(up));
+        this.subscription = dag4.monitor
+          .observeMemPoolChange()
+          .subscribe((up) => this.pollPendingTxs(up));
         await dag4.monitor.startMonitor();
 
         if (this.dagBalIntervalId) {
@@ -114,28 +126,40 @@ export class AssetsBalanceMonitor {
     try {
       await this.ethAccountTracker.getTokenBalances();
     } catch (err) {
-      console.log(err.message);
+      if (err instanceof Error) {
+        console.log(err.message);
+      } else {
+        console.log(err);
+      }
     }
   }
 
   async refreshDagBalance() {
-    store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS }));
+    store.dispatch(
+      updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS })
+    );
     const { balances } = store.getState().vault;
     try {
       const bal = await dag4.account.getBalance();
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;
-      store.dispatch(updateBalances({ ...balances, [AssetType.Constellation]: bal || 0, pending }));
+      store.dispatch(
+        updateBalances({ ...balances, [AssetType.Constellation]: String(bal) || '0', pending })
+      );
       store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IDLE }));
     } catch (e) {
-      console.error(e.message);
+      if (e instanceof Error) {
+        console.log(e.message);
+      } else {
+        console.log(e);
+      }
       return;
     }
   }
 
   private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
     const { assets } = store.getState();
-    const chainId = activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' ? 1 : 3;
+    const chainId = getChainId(activeNetwork[KeyringNetwork.Ethereum]);
     const tokens = activeWallet.assets
       .filter((a) => a.type === AssetType.ERC20)
       .map((a) => {
@@ -152,7 +176,14 @@ export class AssetsBalanceMonitor {
         const { balances } = store.getState().vault;
         const pending = this.hasDAGPending ? 'true' : undefined;
         this.hasETHPending = false;
-        store.dispatch(updateBalances({ ...balances, [AssetType.Ethereum]: ethBalance || 0, ...tokenBals, pending }));
+        store.dispatch(
+          updateBalances({
+            ...balances,
+            [AssetType.Ethereum]: ethBalance || '0',
+            ...tokenBals,
+            pending,
+          })
+        );
       },
       10
     );

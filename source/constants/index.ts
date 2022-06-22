@@ -1,3 +1,4 @@
+import { EthNetworkId, EthNetworkValue } from 'scripts/Background/controllers/EthChainController/types';
 import { STARGAZER_PROVIDERS_BASE_URL, STARGAZER_PROVIDERS_BASE_URL_PROD, isProd } from 'utils/envUtil';
 export const STORE_PORT = 'STARGAZER';
 
@@ -32,7 +33,8 @@ export const DAG_NETWORK: {
 
 export const ETH_NETWORK: {
   [networkId: string]: {
-    id: string;
+    id: EthNetworkId;
+    value: EthNetworkValue;
     label: string;
     etherscan: string;
     chainId: number;
@@ -40,15 +42,24 @@ export const ETH_NETWORK: {
 } = {
   mainnet: {
     id: 'mainnet',
-    label: 'Ethereum Mainnet',
+    value: 'homestead',
+    label: 'Mainnet',
     etherscan: 'https://etherscan.io/',
     chainId: 1,
   },
-  testnet: {
-    id: 'testnet',
-    label: 'Ethereum Testnet',
+  ropsten: {
+    id: 'ropsten',
+    value: 'ropsten',
+    label: 'Ropsten Testnet',
     etherscan: 'https://ropsten.etherscan.io/',
     chainId: 3,
+  },
+  rinkeby: {
+    id: 'rinkeby',
+    value: 'rinkeby',
+    label: 'Rinkeby Testnet',
+    etherscan: 'https://rinkeby.etherscan.io/',
+    chainId: 4,
   },
 };
 
@@ -56,7 +67,7 @@ export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 export const TOKEN_INFO_API =
   'https://api.coingecko.com/api/v3/coins/ethereum/contract/';
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
-export const NFT_TESTNET_API = 'https://rinkeby-api.opensea.io/api/v1/';
+export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 
 export const PRICE_DAG_ID = 'constellation-labs';

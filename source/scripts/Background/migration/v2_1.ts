@@ -29,6 +29,7 @@ const MigrateRunner = async (oldState: V1WalletState) => {
       wallets: {
         local: [],
         ledger: [],
+        bitfi: [],
       },
       hasEncryptedVault: false,
       balances: {

@@ -6,6 +6,7 @@ import {
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
+import { EthNetworkId } from 'scripts/Background/controllers/EthChainController/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -26,7 +27,7 @@ export type Transaction = DAGTransaction | any;
 
 export type ActiveNetwork = {
   [KeyringNetwork.Constellation]: string;
-  [KeyringNetwork.Ethereum]: string;
+  [KeyringNetwork.Ethereum]: EthNetworkId;
 };
 
 export interface IAssetState {
@@ -64,6 +65,7 @@ export interface IAccountDerived {
 export interface IVaultWalletsStoreState {
   local: KeyringWalletState[];
   ledger: KeyringWalletState[];
+  bitfi: KeyringWalletState[];
 }
 
 export interface IWalletState {
