@@ -52,8 +52,8 @@ const MigrationController = async () => {
    * version < 3_5_1
    */
      if (Array.isArray(!state?.vault?.wallets.bitfi)) {
-      const v3_5_0 = require('../migration/v3_5_0');
-      await v3_5_0.default(state); 
+      const v3_5_1 = require('../migration/v3_5_1');
+      await v3_5_1.default(state); 
     }
 };
 
