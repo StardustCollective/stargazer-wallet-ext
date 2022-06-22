@@ -23,32 +23,28 @@ type AsyncEventHandlerReturnType<Handler> = Handler extends (
  * + Each provider must be activated independently.
  */
 class StargazerChainProviderProxy {
-  #activated: null | boolean;
-  #provider: StargazerChainProvider;
-  #providerListenerEventHandler: (event: StargazerProxyEvent) => any;
-  #listeners: Map<string, (event: Event) => any>;
+  private activated: null | boolean;
+  private provider: StargazerChainProvider;
+  private providerListenerEventHandler: (event: StargazerProxyEvent) => any;
+  private listeners: Map<string, (event: Event) => any>;
 
   constructor(
     provider: StargazerChainProvider,
     providerListenerEventHandler: (event: StargazerProxyEvent) => any
   ) {
-    this.#activated = null;
-    this.#provider = provider;
-    this.#providerListenerEventHandler = providerListenerEventHandler;
-    this.#listeners = new Map();
+    this.activated = null;
+    this.provider = provider;
+    this.providerListenerEventHandler = providerListenerEventHandler;
+    this.listeners = new Map();
   }
 
-  get activated() {
-    return this.#activated;
-  }
-
-  #addListener(type: string, listener: (event: Event) => any) {
-    this.#listeners.set(type, listener);
+  private addListener(type: string, listener: (event: Event) => any) {
+    this.listeners.set(type, listener);
     window.addEventListener(type, listener, { passive: true });
   }
 
-  #removeListener(type: string) {
-    const listener = this.#listeners.get(type);
+  private removeListener(type: string) {
+    const listener = this.listeners.get(type);
     if (!listener) {
       return;
     }
@@ -56,7 +52,7 @@ class StargazerChainProviderProxy {
     window.removeEventListener(type, listener);
   }
 
-  #promisifiedRequestResponse<T extends (event: Event) => Promise<any>>(
+  private promisifiedRequestResponse<T extends (event: Event) => Promise<any>>(
     encodedRequest: StargazerEncodedProxyRequest,
     handler: T
   ): Promise<AsyncEventHandlerReturnType<T>> {
@@ -77,15 +73,15 @@ class StargazerChainProviderProxy {
     });
   }
 
-  async #handlePromisifiedRequestResponse<T extends (event: Event) => Promise<any>>(
+  private async handlePromisifiedRequestResponse<T extends (event: Event) => Promise<any>>(
     request: StargazerProxyRequest,
     handler: T
   ) {
-    const encodedRequest = encodeProxyRequest(request, this.#provider.providerId);
-    return this.#promisifiedRequestResponse(encodedRequest, handler);
+    const encodedRequest = encodeProxyRequest(request, this.provider.providerId);
+    return this.promisifiedRequestResponse(encodedRequest, handler);
   }
 
-  async #handleHandshakeResponse(event: Event) {
+  private async handleHandshakeResponse(event: Event) {
     const response = decodeProxyResponse('handshake', event);
 
     if ('error' in response) {
@@ -95,7 +91,7 @@ class StargazerChainProviderProxy {
     return response.result;
   }
 
-  async #handleRpcResponse(event: Event) {
+  private async handleRpcResponse(event: Event) {
     const response = decodeProxyResponse('rpc', event);
 
     if ('error' in response) {
@@ -113,24 +109,24 @@ class StargazerChainProviderProxy {
     return response.result;
   }
 
-  async #handleEventRequest(request: StargazerProxyRequest & { type: 'event' }) {
-    const encodedRequest = encodeProxyRequest(request, this.#provider.providerId);
+  private async handleEventRequest(request: StargazerProxyRequest & { type: 'event' }) {
+    const encodedRequest = encodeProxyRequest(request, this.provider.providerId);
 
     if (request.action === 'register') {
-      this.#addListener(request.listenerId, this.#handleListenerEvent.bind(this));
+      this.addListener(request.listenerId, this.handleListenerEvent.bind(this));
     }
 
     if (request.action === 'deregister') {
-      this.#removeListener(request.listenerId);
+      this.removeListener(request.listenerId);
     }
 
-    return this.#promisifiedRequestResponse(
+    return this.promisifiedRequestResponse(
       encodedRequest,
-      this.#handleEventResponse.bind(this)
+      this.handleEventResponse.bind(this)
     );
   }
 
-  async #handleEventResponse(event: Event) {
+  private async handleEventResponse(event: Event) {
     const response = decodeProxyResponse('event', event);
 
     if ('error' in response) {
@@ -140,42 +136,42 @@ class StargazerChainProviderProxy {
     return response.result;
   }
 
-  async #handleListenerEvent(event: Event) {
+  private async handleListenerEvent(event: Event) {
     const listenerEvent = decodeProxyEvent(event);
 
-    this.#providerListenerEventHandler(listenerEvent);
+    this.providerListenerEventHandler(listenerEvent);
   }
 
   async activate(title?: string) {
     const request: StargazerProxyRequest = {
       type: 'handshake',
-      chain: this.#provider.chain,
+      chain: this.provider.chain,
       title: title ?? document.title,
     };
 
-    const result = await this.#handlePromisifiedRequestResponse(
+    const result = await this.handlePromisifiedRequestResponse(
       request,
-      this.#handleHandshakeResponse
+      this.handleHandshakeResponse
     );
-    this.#activated = result;
+    this.activated = result;
     return result;
   }
 
   async request(request: StargazerProxyRequest): Promise<any> {
-    if (this.#activated === null) {
+    if (this.activated === null) {
       await this.activate();
     }
 
-    if (this.#activated === false) {
+    if (this.activated === false) {
       throw new StargazerChainProviderError('User denied provider activation');
     }
 
     if (request.type === 'rpc') {
-      return this.#handlePromisifiedRequestResponse(request, this.#handleRpcResponse);
+      return this.handlePromisifiedRequestResponse(request, this.handleRpcResponse);
     }
 
     if (request.type === 'event') {
-      return this.#handleEventRequest(request);
+      return this.handleEventRequest(request);
     }
 
     throw new StargazerChainProviderError('Unable to classify proxy request');

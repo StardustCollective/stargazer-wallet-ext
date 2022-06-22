@@ -1,0 +1,56 @@
+@import '~assets/styles/variables';
+
+.content {
+  display: flex;
+  padding: 15px;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  flex-direction: column;
+
+  .wrapper {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+
+    .button {
+      width: 100%;
+      background-color: $primary;
+      flex: 0 1 auto;
+    }
+
+    .connect {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+
+      .logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .instructions {
+        display: flex;
+        justify-content: flex-start;
+        margin-left: 20px;
+        .text {
+          line-height: 30px;
+          font-size: 13px;
+        }
+      }
+      .deviceId {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        .input {
+          height: 35px;
+          width: 300px; 
+          text-align: center;
+          border-radius: 8px;
+          border: 1px solid #CCC;
+        }
+      }
+    }
+  }
+}

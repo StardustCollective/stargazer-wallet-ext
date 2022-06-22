@@ -1,0 +1,42 @@
+@import '~assets/styles/variables';
+
+.content {
+  display: flex;
+  padding: 15px;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  flex-direction: column;
+  .wrapper{
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .instructions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 20px;
+      margin-left: 20px;
+      .text {
+        padding-top: 0px;
+        font-size: 14px;
+      }
+    }
+    .footer {
+      display: flex;
+      flex: 1;
+      align-items: flex-end;
+      .button {
+        width: 100%;
+        height: 50px;
+        background-color: $primary;
+        flex: 0 1 auto;
+      }
+    }
+  }
+}
+

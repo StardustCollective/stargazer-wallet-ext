@@ -1,11 +1,20 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
-import { changeActiveNetwork, changeActiveWallet, setVaultInfo, updateBalances, updateStatus } from 'state/vault';
+import { 
+  changeActiveNetwork, 
+  changeActiveWallet, 
+  setVaultInfo, 
+  updateBalances,
+  addLedgerWallet, 
+  updateWallets, 
+  addBitfiWallet 
+} from 'state/vault';
+import { IVaultWalletsStoreState } from 'state/vault/types'
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
-import { KeyringAssetType, KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringAssetType, KeyringManager, KeyringNetwork, KeyringWalletState, KeyringVaultState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
@@ -15,11 +24,15 @@ import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { addLedgerWallet, deleteLedgerWallet } from 'state/vault';
-import { reload } from 'utils/browser';
 import { EthNetworkId } from './EthChainController/types';
+import filter from 'lodash/filter';
 
-const LedgerWalletIdPrefix = 'L';
+// Constants
+const LEDGER_WALLET_PREFIX = 'L';
+const BITFI_WALLET_PREFIX = 'B';
+const LEDGER_WALLET_LABEL = 'Ledger';
+const BITFI_WALLET_LABEL = 'Bitfi';
+const ACCOUNT_ITEMS_FIRST_INDEX = 0;
 
 class WalletController implements IWalletController {
   account: AccountController;
@@ -49,7 +62,7 @@ class WalletController implements IWalletController {
         console.log('Error while switching wallet at login');
         console.log(e);
       }
-      store.dispatch(updateLoginState({processState: ProcessStates.IDLE}));
+      store.dispatch(updateLoginState({ processState: ProcessStates.IDLE }));
     });
 
     const utils = Object.freeze(ControllerUtils());
@@ -79,7 +92,7 @@ class WalletController implements IWalletController {
   }
 
   async unLock(password: string): Promise<boolean> {
-    store.dispatch(updateLoginState({processState: ProcessStates.IN_PROGRESS}));
+    store.dispatch(updateLoginState({ processState: ProcessStates.IN_PROGRESS }));
     await this.keyringManager.login(password);
 
     const state = store.getState();
@@ -127,12 +140,75 @@ class WalletController implements IWalletController {
     return wallet.id;
   }
 
-  async createLedgerWallets(accountItems: AccountItem[]) {
-    for (const [i, accountItem] of accountItems.entries()) {
-      const wallet = {
-        id: `${LedgerWalletIdPrefix}${accountItem.id}`,
-        label: 'Ledger ' + (accountItem.id + 1),
-        type: KeyringWalletType.LedgerAccountWallet,
+  private checkForDuplicateWallet(address: string) {
+
+    const state = store.getState();
+    const { vault } = state;
+    const { wallets } = vault;
+    const allWallets = [...wallets.local, ...wallets.ledger, ...wallets.bitfi];
+
+    for (let i = 0; i < allWallets.length; i++) {
+      let accounts = allWallets[i].accounts;
+      for (let j = 0; j < accounts.length; j++) {
+        let account = accounts[j];
+        if (account.address === address)
+          return true;
+      }
+    }
+
+    return false;
+
+  }
+
+  private getNextHardwareWaletAccountId = (wallets: any, prefix: string) => {
+    // If no wallets exist return 1 as the first ID.
+    if (wallets.length === 0) {
+      return 1;
+    }
+
+    let walletIds = [];
+
+    // Move all the existing IDs the walletIds array.
+    for (let i = 0; i < wallets.length; i++) {
+      const wallet = wallets[i];
+      const num = wallet.id.replace(prefix, "");
+      walletIds.push((parseInt(num)));
+    }
+
+    //Determin the next ID.
+    return walletIds.sort(function (a, b) { return a - b; })[walletIds.length - 1] + 1;
+
+  };
+
+  async importHardwareWalletAccounts(accountItems: AccountItem[]) {
+
+    for (let i = 0; i < accountItems.length; i++) {
+      const state = store.getState();
+      const { vault } = state;
+      const { wallets } = vault;
+      const accountItem = accountItems[i];
+      const isDuplicate = this.checkForDuplicateWallet(accountItem.address);
+
+      // Skip the account if it already exist in the vault.wallets redux store.
+      if (isDuplicate) {
+        continue;
+      }
+
+      const wallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? wallets.ledger : wallets.bitfi;
+      const prefix = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_PREFIX : BITFI_WALLET_PREFIX;
+      const label = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_LABEL : BITFI_WALLET_LABEL;
+      const addWallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? addLedgerWallet : addBitfiWallet;
+      // Determine the next ID for either a ledger or bitfi wallet.
+      const id: number = this.getNextHardwareWaletAccountId(wallet, prefix);
+
+      // Determine the name of the wallet for Ledger we need to create a recursive 
+      // function that will name the wallets.
+      const newWallet = {
+        id: `${prefix}${id}`,
+        // The account id is offset by one so the UI displays will
+        // the first account as 1 and not 0.
+        label: `${label} ${id}`,
+        type: accountItem.type,
         accounts: [
           {
             address: accountItem.address,
@@ -143,46 +219,63 @@ class WalletController implements IWalletController {
         supportedAssets: [KeyringAssetType.DAG],
       };
 
-      await store.dispatch(addLedgerWallet(wallet));
+      await store.dispatch(addWallet(newWallet));
 
-      // Switches wallets immediately after adding the first item 
-      // to prevent a visual delay in the wallet extension.
-      if(i === 0){
-       // Switches wallets to the first ledger item in the accountItem array.
-        this.switchWallet(`${LedgerWalletIdPrefix}${accountItems[0].id}`);
+      // Switches wallets immediately after adding the first account item 
+      // to prevent a rendering delay in the wallet extension.
+      if (i === ACCOUNT_ITEMS_FIRST_INDEX) {
+        // Switches wallets to the first hardware wallet account item in the accountItem array.
+        this.switchWallet(`${prefix}${accountItems[0].id}`);
       }
     }
   }
 
-  async deleteWallet(walletId: string, password: string) {
+  async deleteWallet(wallet: KeyringWalletState, password: string) {
+
     if (this.checkPassword(password)) {
-      // const { wallet }: IVaultState = store.getState().vault;
-      await this.keyringManager.removeWalletById(walletId);
-      // store.dispatch(deleteWalletState());
-      const { vault } = store.getState();
-      if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
-        const wallets = this.keyringManager.getWallets();
-        if (wallets.length) {
-          this.switchWallet(wallets[0].id);
-        }
-      }
-      store.dispatch(updateStatus());
-      return true;
-    }
-    return false;
-  }
 
-  async deleteLedgerWallet(walletId: string, password: string){
-    const vault: IVaultState = store.getState().vault;
-    if(this.checkPassword(password)){
-      store.dispatch(deleteLedgerWallet(walletId));
-      if (vault && vault.activeWallet && vault.activeWallet.id === walletId) {
-        const wallets = this.keyringManager.getWallets();
-        if (wallets.length) {
-          this.switchWallet(wallets[0].id);
+      const { vault } = store.getState();
+      const { wallets } = vault;
+      const { local, bitfi, ledger } = wallets;
+
+      let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: []}
+      let newLocalState = [...local];
+      let newLedgerState = [...ledger];
+      let newBitfiState = [...bitfi];
+
+      if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+        wallet.type !== KeyringWalletType.BitfiAccountWallet) {
+         newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
+      } else {
+        if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
+          newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
+        } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
+          newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
         }
       }
-      store.dispatch(updateStatus());
+
+      newWalletState = {
+        local: [...newLocalState],
+        ledger: [...newLedgerState],
+        bitfi: [...newBitfiState],
+      }
+
+      const newAllWallets  = [...newWalletState.local, ...newWalletState.ledger, ...newWalletState.bitfi];
+
+      if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
+        if (newAllWallets.length) {
+          this.switchWallet(newAllWallets[0].id);
+        }
+      }
+
+      store.dispatch(updateWallets({wallets: newWalletState}));
+
+      if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+        wallet.type !== KeyringWalletType.BitfiAccountWallet
+      ) {
+        await this.keyringManager.removeWalletById(wallet.id);
+      }
+
       return true;
     }
     return false;
@@ -250,8 +343,6 @@ class WalletController implements IWalletController {
     this.keyringManager.logout();
     this.account.ethClient = undefined;
     store.dispatch(changeActiveWallet(undefined));
-    store.dispatch(updateStatus());
-    reload();
   }
 }
 
