@@ -19,7 +19,7 @@ import store from 'state/store';
 import { IDAppState } from 'state/dapp/types';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { useController } from 'hooks/index';
-import { estimateGasPrice, getERC20DataDecoder } from 'utils/ethUtil';
+import { getERC20DataDecoder } from 'utils/ethUtil';
 import { getInfuraProvider } from 'utils/ethersUtil';
 
 import type { DappProvider } from '../Background/dappRegistry';
@@ -95,10 +95,6 @@ export class EthereumProvider implements IRpcChainRequestHandler {
 
   getBlockNumber() {
     return 1;
-  }
-
-  async getGasEstimate() {
-    return estimateGasPrice();
   }
 
   getBalance() {

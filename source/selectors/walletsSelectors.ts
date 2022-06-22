@@ -12,7 +12,12 @@ import { KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-ke
 /// //////////////////////
 // Types
 /// //////////////////////
-import { IAccountDerived, AssetType, IAssetState, IVaultWalletsStoreState } from 'state/vault/types';
+import {
+  IAccountDerived,
+  AssetType,
+  IAssetState,
+  IVaultWalletsStoreState,
+} from 'state/vault/types';
 import { getNfts } from './nftSelectors';
 
 /// //////////////////////
@@ -50,7 +55,8 @@ const selectLocalWallets = createSelector(getWallets, (wallets) => wallets.local
  * Returns ledger wallets.
  */
 
-const selectLedgerWallets = createSelector(getWallets,
+const selectLedgerWallets = createSelector(
+  getWallets,
   (wallets: IVaultWalletsStoreState) => wallets.ledger
 );
 
@@ -58,7 +64,8 @@ const selectLedgerWallets = createSelector(getWallets,
  * Returns Bitfi wallets.
  */
 
- const selectBitfiWallets = createSelector(getWallets,
+const selectBitfiWallets = createSelector(
+  getWallets,
   (wallets: IVaultWalletsStoreState) => wallets.bitfi
 );
 
@@ -107,8 +114,8 @@ const selectActiveAssetPublicKey = createSelector(
       const { accounts } = wallets[i];
       for (let j = 0; j < wallets[i].accounts.length; j++) {
         let account = accounts[j];
-        if (activeAsset.address === account.address) {
-          return account!.publicKey;
+        if (activeAsset?.address === account.address) {
+          return account!.publicKey ?? null;
         }
       }
     }

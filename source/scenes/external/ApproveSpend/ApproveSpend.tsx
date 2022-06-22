@@ -89,7 +89,8 @@ const ApproveSpend = () => {
   } = useGasEstimate({
     toAddress: to as string,
     asset,
-    data
+    data,
+    gas,
   });
 
   const getFiatAmount = useFiat(true, asset);
