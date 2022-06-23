@@ -106,7 +106,7 @@ let Accounts = ({
         padding={TABLE_CELL_PADDING_PROP}
         size={TABLE_CELL_SIZE_PROP}
         align={TABLE_CELL_ALIGN_PROP}>
-        {children}
+        {children as any}
       </TableCell>
     </>
     ;
