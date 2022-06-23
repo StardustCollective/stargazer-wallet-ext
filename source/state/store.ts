@@ -13,6 +13,7 @@ import nfts from './nfts';
 import dapp from './dapp';
 import process from './process';
 import providers from './providers';
+import erc20assets from './erc20assets';
 
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -35,6 +36,7 @@ const store: Store = configureStore({
     dapp,
     process,
     providers,
+    erc20assets,
   }),
   middleware,
   devTools: !isProd,

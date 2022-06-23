@@ -82,7 +82,7 @@ const AssetsPanel: FC<IAssetState> = ({
           <>{renderAssetList()}</>
         )}
         <ButtonV3 
-          title="+ Add Tokens" 
+          title="Select Tokens" 
           size={BUTTON_SIZES_ENUM.LARGE}
           type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE} 
           color={COLORS_ENUMS.DARK_GRAY}

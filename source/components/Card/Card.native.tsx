@@ -19,17 +19,18 @@ interface ICardProps {
   id?: string;
   onClick?: () => void;
   style: {};
+  disabled: boolean;
 }
 
 /// ////////////////////
 // Component
 /// ////////////////////
 
-const CardComponent = ({ id, children, onClick, style = {} }: ICardProps) => {
+const CardComponent = ({ id, children, onClick, style = {}, disabled = false }: ICardProps) => {
   const wrapperStyle = StyleSheet.flatten([styles.wrapperStyle, style]);
 
   return (
-    <TouchableOpacity testID={id} onPress={onClick}>
+    <TouchableOpacity key={id} testID={id} onPress={onClick} disabled={disabled}>
       <Card containerStyle={styles.containerStyle} wrapperStyle={wrapperStyle}>
         {children}
       </Card>

@@ -23,6 +23,7 @@ export default {
     start: 'auth-start',
     home: 'auth-home',
     addAsset: 'auth-addAsset',
+    addCustomAsset: 'auth-addCustomAsset',
     asset: 'auth-asset',
     sendConfirm: 'auth-sendConfirm',
     send: 'auth-send',

@@ -89,9 +89,14 @@ const AssetListState = createSlice({
         state[action.payload.address] = action.payload;
       }
     },
+    removeERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
+      if (action.payload.address) {
+        delete state[action.payload.address];
+      }
+    },
   },
 });
 
-export const { addERC20Asset, rehydrate } = AssetListState.actions;
+export const { addERC20Asset, removeERC20Asset, rehydrate } = AssetListState.actions;
 
 export default AssetListState.reducer;

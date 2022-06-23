@@ -17,7 +17,6 @@ import { scale } from 'react-native-size-matters';
 ///////////////////////////
 
 import LogoImage from 'assets/images/logo.svg';
-import PlusImage from 'assets/images/svg/plus.svg';
 
 ///////////////////////////
 // Styles
@@ -53,28 +52,18 @@ const homeHeader = ({
     navigation.navigate(screens.settings.main)
   }
 
-  const onPlusButtonClicked = () => {
-    navigation.navigate(screens.authorized.addAsset);
-  }
-
   const renderHeaderRight = () => {
 
     if (hasMainAccount) {
       return (
-        <View style={styles.iconsContainer}>
-          <Pressable
-            onPress={onPlusButtonClicked}
-            style={styles.plusContainer}
-            mr="3">
-              <PlusImage width={scale(15)} height={scale(15)} />
-          </Pressable>
+        <>
           <Pressable
             onPress={onMenuButtonClicked}
             mr="3"
           >
             <HamburgerIcon testId="header-moreButton" color="white"/>
           </Pressable>
-        </View>
+        </>
       )
     }
     // Hack: The header title will not center unless there is 

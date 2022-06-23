@@ -24,9 +24,7 @@ import styles from './AssetList.scss';
 
 import { IAssetList } from './types';
 
-const AssetList: FC<IAssetList> = ({ constellationAssets, erc20Assets, handleAddCustomToken }) => {
-
-  console.log(erc20Assets, handleAddCustomToken);
+const AssetList: FC<IAssetList> = ({ constellationAssets, erc20Assets }) => {
 
   const renderAssetList = () => {
 

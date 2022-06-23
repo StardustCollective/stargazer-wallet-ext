@@ -2,7 +2,9 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useLayoutEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
 // Components
@@ -11,14 +13,42 @@ import React, { FC } from 'react';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import AssetList from './AssetList';
 
-const AssetListContainer: FC = () => {
+///////////////////////////
+// Navigation
+///////////////////////////
 
-  const handleAddCustomToken = async () => {
-    console.log('Navigate to Add custom token');
-  };
+import addHeader from 'navigation/headers/add';
 
-  const constellationAssets: any[] = [];
-  const erc20Assets: any[] = [];
+///////////////////////////
+// Types
+///////////////////////////
+
+import IERC20AssetsListState from 'state/erc20assets/types';
+import IAssetListState from 'state/assets/types';
+import { RootState } from 'state/store';
+import  { IAssetListContainer } from './types';
+
+const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
+
+  const linkTo = useLinkTo();
+  const { constellationAssets, erc20assets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
+  const assets: IAssetListState = useSelector((state: RootState) => state.assets);
+
+  useLayoutEffect(() => {
+    const onRightIconClick = () => {
+      linkTo('/asset/addCustom');
+    };
+    navigation.setOptions(addHeader({ navigation, onRightIconClick }));
+  }, []);
+
+  const toggleAssetItem = (assetInfo: any, value: boolean) => {
+    if (value) {
+      // Add to assets
+    } else {
+      // Remove from assets
+    }
+    console.log('toggleAssetItem', assetInfo, value);
+  } 
 
   ///////////////////////////
   // Render
@@ -27,9 +57,12 @@ const AssetListContainer: FC = () => {
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <AssetList 
-        constellationAssets={constellationAssets}  
-        erc20Assets={erc20Assets}
-        handleAddCustomToken={handleAddCustomToken} />
+        assets={assets}
+        loading={loading}
+        constellationAssets={constellationAssets.slice(0, 2000)}  
+        erc20assets={erc20assets}
+        toggleAssetItem={toggleAssetItem}
+      />
     </Container>
   );
 };

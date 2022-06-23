@@ -17,6 +17,7 @@ interface ICardProps {
   children?: React.ReactNode;
   id?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 /// ////////////////////
@@ -25,7 +26,7 @@ interface ICardProps {
 
 const Card = ({ id, children, onClick }: ICardProps) => {
   return (
-    <div id={id} onClick={onClick} className={styles.card}>
+    <div key={id} id={id} onClick={onClick} className={styles.card}>
       {children}
     </div>
   );

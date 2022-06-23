@@ -14,6 +14,10 @@ const styles = StyleSheet.create({
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
+  },
+  subtitle: {
+    marginBottom: 16,
+    marginTop: 8,
   }
 });
 

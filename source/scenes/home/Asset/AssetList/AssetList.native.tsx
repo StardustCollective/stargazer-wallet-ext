@@ -3,19 +3,22 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { ScrollView, ActivityIndicator, View, Text } from 'react-native';
+import { ScrollView, ActivityIndicator } from 'react-native';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
 import TextV3 from 'components/TextV3';
+import AssetWithToggle from 'components/AssetWithToggle';
 
 ///////////////////////////
 // Types
 ///////////////////////////
 
 import { IAssetList } from './types';
+import { IAssetInfoState } from 'state/assets/types';
+import { ERC20Asset } from 'state/erc20assets/types';
 
 ///////////////////////////
 // Styles
@@ -30,26 +33,49 @@ import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
-const AssetList: FC<IAssetList> = ({ constellationAssets, erc20Assets, handleAddCustomToken }) => {
+const AssetList: FC<IAssetList> = ({ assets, loading, constellationAssets, erc20assets, toggleAssetItem }) => {
 
   const renderAssetList = () => {
-
     return (
       <>
-        {constellationAssets ? constellationAssets.map((key: string) => {
-          return (
-            <TextV3.Caption>Asset item</TextV3.Caption>)
-        }) : <View style={styles.errorContainer}><TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>There was an error loading assets. Please try again later.</TextV3.Caption></View>}
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle}>Constellation Ecosystem</TextV3.CaptionStrong>
+        {constellationAssets?.length 
+          && constellationAssets.map((item: IAssetInfoState) => {
+            const selected = !!assets[item.id];
+            return <AssetWithToggle 
+                      id={item.id}
+                      symbol={item.symbol} 
+                      logo={item.logo} 
+                      label={item.label} 
+                      selected={selected} 
+                      toggleItem={(value) => toggleAssetItem(item, value)} />;
+          })
+        }
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle}>All ERC-20 Tokens</TextV3.CaptionStrong>
+        {erc20assets?.length 
+          && erc20assets.map((item: ERC20Asset) => {
+            if (item.symbol === 'eth') return null;
+            const selected = !!assets[item.id];
+            return <AssetWithToggle 
+                      id={item.id}
+                      symbol={item.symbol.toUpperCase()} 
+                      logo={item.image} 
+                      label={item.name} 
+                      selected={selected} 
+                      toggleItem={(value) => toggleAssetItem(item, value)} />;
+          })
+        }
       </>
     );
   };
+
   ///////////////////////////
   // Render
   ///////////////////////////
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
-      {false ? <ActivityIndicator style={styles.loadingContainer} size={ACTIVITY_INDICATOR_SIZE} /> : renderAssetList()}
+      {loading ? <ActivityIndicator style={styles.loadingContainer} size={ACTIVITY_INDICATOR_SIZE} /> : renderAssetList()}
     </ScrollView>
   );
 };

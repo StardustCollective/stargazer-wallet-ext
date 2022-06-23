@@ -26,6 +26,7 @@ export default {
   [screens.authorized.buyList]: '/buyList',
   [screens.authorized.buyAsset]: '/buyAsset',
   [screens.authorized.addAsset]: '/asset/add',
+  [screens.authorized.addCustomAsset]: '/asset/addCustom',
   [screens.authorized.asset]: '/asset',
   [screens.authorized.sendConfirm]: '/send/confirm',
   [screens.authorized.send]: '/send/:address?',

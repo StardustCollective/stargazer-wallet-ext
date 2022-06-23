@@ -1,0 +1,85 @@
+@import '~assets/styles/variables';
+
+$icon-margin-left: 24px;
+
+div.assetItem {
+  width: 352px;
+  height: 80px;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: center;
+  transition: all 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    backdrop-filter: blur(10px);
+    background-color: $gray-light;
+    border-radius: 8px;
+  }
+
+  .assetIcon {
+    display: flex;
+    flex: 1 0 auto;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    border: 1px solid $grey-100;
+    margin-left: $icon-margin-left;
+
+    img {
+      width: 32px;
+    }
+  }
+
+  .assetName {
+    margin-left: 16px;
+    flex: 1 1 60%;
+
+    span:first-child {
+      margin-bottom: 8px;
+    }
+
+    span:last-child {
+      margin-left: 8px;
+    }
+
+    .red {
+      color: $red-100;
+    }
+    .green {
+      color: $green-100;
+    }
+  }
+
+  .assetBalance {
+    display: flex;
+    flex: 1 0 auto;
+    overflow: hidden;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 20px;
+    margin-right: 24px;
+
+    .balanceText {
+      max-width: 100px;
+      overflow: hidden;
+    }
+  }
+
+  &.nft {
+    .assetIcon {
+      clip-path: circle(40%);
+      width: 56px;
+      height: 56px;
+      margin-left: $icon-margin-left - 4px;
+
+      img {
+        width: 64px;  
+      }
+    }
+  }
+}

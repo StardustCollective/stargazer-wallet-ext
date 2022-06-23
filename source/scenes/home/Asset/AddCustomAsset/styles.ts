@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  logo: {
-    marginLeft: 20
-  }
+  container: {
+    flex: 1,
+  },
 });
 
 export default styles;

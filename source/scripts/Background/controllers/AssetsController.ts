@@ -1,4 +1,4 @@
-import { initialState as tokenState, addERC20Asset } from 'state/assets';
+import { initialState as tokenState, addERC20Asset, removeERC20Asset } from 'state/assets';
 import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
@@ -11,6 +11,7 @@ import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { EthNetworkId } from './EthChainController/types';
 import EthChainController from './EthChainController';
 import { isTestnet } from './EthChainController/utils';
+import { getERC20Assets, getERC20AssetsWithAddress } from 'state/erc20assets/api';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
@@ -23,6 +24,10 @@ export interface IAssetsController {
   fetchTokenInfo: (address: string) => Promise<void>;
   fetchWalletNFTInfo: (address: string) => Promise<void>;
   fetchSupportedAssets: () => Promise<void>;
+  fetchERC20Assets: () => Promise<void>;
+  fetchERC20AssetsWithAddress: () => Promise<void>;
+  addERC20AssetFn: () => Promise<void>;
+  removeERC20AssetFn: () => Promise<void>;
   fetchQuote: (data: GetQuoteRequest) => Promise<void>;
   fetchPaymentRequest: (data: PaymentRequestBody) => Promise<void>;
   setRequestId: (value: string) => void;
@@ -184,6 +189,23 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     return retNFTs;
   };
 
+
+  const fetchERC20Assets = async (): Promise<void> => {
+    await store.dispatch<any>(getERC20Assets());
+  }
+
+  const fetchERC20AssetsWithAddress = async (): Promise<void> => {
+    await store.dispatch<any>(getERC20AssetsWithAddress());
+  }
+
+  const addERC20AssetFn = async (): Promise<void> => {
+    await store.dispatch<any>(addERC20Asset());
+  }
+
+  const removeERC20AssetFn = async (): Promise<void> => {
+    await store.dispatch<any>(removeERC20Asset());
+  }
+
   const fetchSupportedAssets = async (): Promise<void> => {
     await store.dispatch<any>(getSupportedAssets());
   }
@@ -208,7 +230,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     store.dispatch(clearPaymentRequestDispatch());
   }
 
-  return { fetchTokenInfo, fetchWalletNFTInfo, fetchSupportedAssets, fetchQuote, fetchPaymentRequest, setRequestId, clearErrors, clearPaymentRequest };
+  return { fetchTokenInfo, fetchWalletNFTInfo, fetchSupportedAssets, fetchERC20Assets, fetchERC20AssetsWithAddress, addERC20AssetFn, removeERC20AssetFn, fetchQuote, fetchPaymentRequest, setRequestId, clearErrors, clearPaymentRequest };
 };
 
 export default AssetsController;

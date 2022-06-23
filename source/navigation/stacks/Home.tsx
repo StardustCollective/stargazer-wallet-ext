@@ -16,6 +16,7 @@ import Asset from 'scenes/home/Asset';
 import Send from 'scenes/home/SendAsset/Send';
 import Confirm from 'scenes/home/SendAsset/Confirm';
 import AssetList from 'scenes/home/Asset/AssetList';
+import AddCustomAsset from 'scenes/home/Asset/AddCustomAsset';
 import BuyList from 'scenes/home/BuyList';
 import BuyAsset from 'scenes/home/BuyAsset';
 
@@ -51,6 +52,7 @@ import defaultHeader from 'navigation/headers/default';
 
 import screens from '../screens';
 
+
 ///////////////////////////
 // Constants
 ///////////////////////////
@@ -59,7 +61,8 @@ const Stack = createStackNavigator();
 const SCREEN_DEFAULT_TITLE_STRINGS = {
   wallet: 'Wallet',
   import: 'Import',
-  addAsset: 'Tokens',
+  addAsset: 'Select Tokens',
+  addCustomAsset: 'Add Custom Token',
   asset: 'Asset',
   confirm: 'Confirm',
   send: 'Send',
@@ -106,6 +109,7 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={Confirm} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addAsset }} name={screens.authorized.addAsset} component={AssetList} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addCustomAsset }} name={screens.authorized.addCustomAsset} component={AddCustomAsset} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.buyList }} name={screens.authorized.buyList} component={BuyList} />
           <Stack.Screen name={screens.authorized.buyAsset} component={BuyAsset} />
 
