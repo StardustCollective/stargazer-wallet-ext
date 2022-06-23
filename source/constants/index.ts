@@ -10,15 +10,8 @@ export const DAG_NETWORK: {
     lbUrl: string;
   };
 } = {
-  //
   main: {
     id: 'main',
-    label: 'Main Constellation Network',
-    beUrl: 'https://www.dagexplorer.io/api/scan',
-    lbUrl: 'https://www.dagexplorer.io/api/node',
-  },
-  main2: {
-    id: 'main2',
     label: 'Main Constellation Network',
     beUrl: 'https://block-explorer.constellationnetwork.io',
     lbUrl: 'http://lb.constellationnetwork.io:9000',
@@ -71,7 +64,7 @@ export const ERC20_TOKENS_API =
 export const ERC20_TOKENS_WITH_ADDRESS_API =
   'https://api.coingecko.com/api/v3/coins/list?include_platform=true';
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
-export const NFT_TESTNET_API = 'https://rinkeby-api.opensea.io/api/v1/';
+export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 
 export const PRICE_DAG_ID = 'constellation-labs';

@@ -1,6 +1,6 @@
-import { BigNumber, ethers, Wallet } from 'ethers';
+import { BigNumber, Contract, ethers, Wallet } from 'ethers';
 import { BaseAmount } from '@xchainjs/xchain-util';
-import { ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
+import { Address, ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 export type EthNetworkId = 'mainnet' | 'ropsten' | 'rinkeby';
@@ -54,4 +54,6 @@ export interface IEthChainController extends ChainsController {
   transfer: (txParams: TxParams & { feeOptionKey?: FeeOptionKey; gasPrice?: BaseAmount; gasLimit?: BigNumber; nonce: string; }) => Promise<TransactionResponse>;
   getWallet: (walletIndex: number) => Wallet;
   estimateGasPrices: () => Promise<GasPrices>;
+  estimateGas: (from: string, to: string, data: string) => Promise<BigNumber>;
+  createERC20Contract: (address: Address) => Contract;
 };

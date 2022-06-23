@@ -103,6 +103,17 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       setAmount(amount);
 
       const initialGas = parseInt(gas, 16);
+
+      /**
+       * TODO: @todo
+       * The next line sets the gas price based on the gas limit estimation
+       * those two units are completely unrelated, if we're unable to retrive
+       * the gas oracle values, the user could an exagerated gas price set
+       * as the two units do not correlate with each other one could say a normal
+       * ERC20 call is 62850 gas units (gasLimit), if we set this value as a gas price
+       * (gasPrice) in gwei. The total cost of the transaction would be 62850 * 62850 GWEI
+       * which is 3.9501225 ETH. !!!
+       */
       setGasPrice(initialGas);
       estimateGasFee(initialGas);
     }, []);
@@ -179,6 +190,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     fromAddress: activeAsset.address,
     asset: assetInfo,
     data: memo,
+    gas,
   });
 
   const onSubmit = async (data: any) => {

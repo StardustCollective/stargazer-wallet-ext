@@ -65,6 +65,7 @@ export interface IAccountDerived {
 export interface IVaultWalletsStoreState {
   local: KeyringWalletState[];
   ledger: KeyringWalletState[];
+  bitfi: KeyringWalletState[];
 }
 
 export interface IWalletState {

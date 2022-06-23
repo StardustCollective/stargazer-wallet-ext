@@ -74,7 +74,9 @@ const GasSettings: FC<IGasSettings> = ({
                 <div className={styles.body__sliderLabels}>
                   <div>
                     <span>
-                      {constants.FEE_STRING} {getFiatAmount(gasFeeLabel, 2, 'ethereum')}
+                      <>
+                        {constants.FEE_STRING} {getFiatAmount(gasFeeLabel, 2, 'ethereum')}
+                      </>
                     </span>
                   </div>
                   <div>

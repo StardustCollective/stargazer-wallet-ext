@@ -10,7 +10,7 @@ export function useController() {
 export function useSettingsView() {
   const history = useHistory();
 
-  return useCallback((view) => {
+  return useCallback((view: any) => {
     history.push(view);
   }, []);
 }
@@ -20,7 +20,7 @@ export function useCopyClipboard(
 ): [boolean, (toCopy: string) => void] {
   const [isCopied, setIsCopied] = useState(false);
 
-  const staticCopy = useCallback(async (text) => {
+  const staticCopy = useCallback(async (text: any) => {
     await navigator.clipboard.writeText(text);
     setIsCopied(true);
   }, []);

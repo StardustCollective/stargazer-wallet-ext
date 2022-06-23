@@ -4,8 +4,9 @@ import Layout from 'scenes/common/Layout';
 import Button from 'components/Button';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
-import { AssetType, IActiveAssetState, IWalletState } from 'state/vault/types';
+import { IActiveAssetState, IWalletState } from 'state/vault/types';
 import { browser } from 'webextension-polyfill-ts';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { ITransactionInfo } from 'scripts/types';
 import { IAssetInfoState } from 'state/assets/types';
 import { ellipsis } from '../../helpers';
@@ -16,7 +17,7 @@ interface ISendConfirm {
   confirmed: boolean;
   tempTx: ITransactionInfo;
   assetInfo: IAssetInfoState;
-  activeAsset: IAssetInfoState | IActiveAssetState;
+  activeAsset?: IAssetInfoState | IActiveAssetState;
   getSendAmount: () => any;
   activeWallet: IWalletState;
   feeUnit: string;
@@ -32,7 +33,6 @@ const SendConfirm = ({
   confirmed,
   tempTx,
   assetInfo,
-  activeAsset,
   getSendAmount,
   activeWallet,
   feeUnit,
@@ -101,7 +101,9 @@ const SendConfirm = ({
             Cancel
           </Button>
           <Button type="submit" variant={styles.button} onClick={() => handleConfirm(browser)} disabled={disabled}>
-            {activeAsset.type === AssetType.LedgerConstellation ? 'Next' : 'Confirm'}
+            {activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
+             activeWallet.type === KeyringWalletType.BitfiAccountWallet
+            ? 'Next' : 'Confirm'}
           </Button>
         </div>
       </section>

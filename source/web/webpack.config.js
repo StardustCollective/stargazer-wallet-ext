@@ -73,9 +73,11 @@ module.exports = {
     manifest: path.join(__dirname, 'manifest.json'),
     background: path.join(sharedPath, 'scripts/Background', 'index.ts'),
     contentScript: path.join(sharedPath, 'scripts/ContentScript', 'index.ts'),
+    injectedScript: path.join(sharedPath, 'scripts/InjectedScript', 'index.ts'),
     app: path.join(__dirname, 'pages/App', 'index.tsx'),
     external: path.join(__dirname, 'pages/External', 'index.tsx'),
     ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
+    bitfi: path.join(__dirname, 'pages/Bitfi', 'index.tsx'),
     options: path.join(__dirname, 'pages/Options', 'index.tsx'),
   },
 
@@ -88,7 +90,9 @@ module.exports = {
     plugins: [PnpWebpackPlugin],
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
-      'webextension-polyfill-ts': path.resolve(path.join(__dirname, '../../node_modules', 'webextension-polyfill-ts')),
+      'webextension-polyfill-ts': path.resolve(
+        path.join(__dirname, '../../node_modules', 'webextension-polyfill-ts')
+      ),
       assets: path.resolve(sharedPath, 'assets'),
       components: path.resolve(sharedPath, 'components'),
       scripts: path.resolve(sharedPath, 'scripts'),
@@ -141,10 +145,6 @@ module.exports = {
         loader: 'file-loader',
       },
       {
-        test: /\.txt\.ts$/,
-        loader: 'raw-loader',
-      },
-      {
         test: /\.(sa|sc|c)ss$/,
         use: [
           {
@@ -185,11 +185,20 @@ module.exports = {
     }),
     // environmental variables
     new webpack.EnvironmentPlugin(['NODE_ENV', 'TARGET_BROWSER']),
+    // global variables
+    new webpack.DefinePlugin({
+      STARGAZER_WALLET_VERSION: JSON.stringify(
+        JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'))).version
+      ),
+    }),
     // delete previous build files
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [
         path.join(process.cwd(), `extension/${targetBrowser}`),
-        path.join(process.cwd(), `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`),
+        path.join(
+          process.cwd(),
+          `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`
+        ),
       ],
       cleanStaleWebpackAssets: false,
       verbose: true,
@@ -212,6 +221,12 @@ module.exports = {
       inject: 'body',
       chunks: ['ledger'],
       filename: 'ledger.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(viewsPath, 'bitfi.html'),
+      inject: 'body',
+      chunks: ['bitfi'],
+      filename: 'bitfi.html',
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'options.html'),

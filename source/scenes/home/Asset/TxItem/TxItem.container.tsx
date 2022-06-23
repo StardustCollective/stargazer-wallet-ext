@@ -39,6 +39,7 @@ const TxItemContainer: FC<ITxItem> = ({
     toAddress: tx.toAddress,
     asset: assets[activeAsset.id],
     data: tx.data,
+    gas: tx.gas,
   });
 
   const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {

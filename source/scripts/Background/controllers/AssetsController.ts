@@ -48,7 +48,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   });
 
   const fetchTokenInfo = async (address: string) => {
-    activeNetwork = store.getState().vault.activeNetwork;
+    const activeNetwork = store.getState().vault.activeNetwork;
 
     const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
     ethClient.setNetwork(network);
@@ -97,17 +97,21 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   };
 
   const fetchNFTBatch = async (walletAddress: string, offset = 0) => {
-    activeNetwork = store.getState().vault.activeNetwork;
+    const activeNetwork = store.getState().vault.activeNetwork;
     const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
     const apiBase = isTestnet(network) ? NFT_TESTNET_API : NFT_MAINNET_API;
 
-    const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}`;
+    // OpenSea testnets API call is failing or taking a long time to respond.
+    // We should update this logic to display NFTs when OpenSea fixes the testnets API.
+    if (isTestnet(network)) {
+      return {
+        assets: []
+      }
+    }
 
-    const response = await fetch(apiEndpoint, {
-      headers: {
-        'X-API-KEY': process.env.OPENSEA_API_KEY,
-      },
-    });
+    const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}`;
+    const headers = isTestnet(network) ? undefined : { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
+    const response = await fetch(apiEndpoint, headers);
 
     return response.json();
   };

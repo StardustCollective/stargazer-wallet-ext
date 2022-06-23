@@ -25,7 +25,10 @@ describe('New install import account', () => {
           text: 'Your wallet',
         });
 
-        assert.equal(await message.getText(), 'Your wallet and all connected accounts have been imported.');
+        assert.equal(
+          await message.getText(),
+          'Your wallet and all connected accounts have been imported.'
+        );
       }
     );
   });
