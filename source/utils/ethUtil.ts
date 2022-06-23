@@ -3,7 +3,6 @@ import store from 'state/store';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import erc20ABI from './erc20.json';
 import { getWalletController } from './controllersUtils';
-import { parseUnits } from 'ethers/lib/utils';
 
 export const getERC20DataDecoder = () => {
     return new InputDataDecoder(erc20ABI as any);
@@ -12,15 +11,17 @@ export const getERC20DataDecoder = () => {
 export const estimateGasLimitForTransfer = async ({ to, from, amount: value, gas }: {to: string, from: string, amount: string, gas: string}): Promise<number> => {
     const walletController = getWalletController();
     const ethClient = walletController.account.ethClient;
+    const { activeAsset }: IVaultState = store.getState().vault;
+    const assetAddress = activeAsset?.contractAddress;
 
     if (gas) {
         return parseInt(gas);
     } 
 
-    if (value !== '' && to && from) {
+    if (value !== '' && to && from && assetAddress) {
         try {
-            const contract = ethClient.createERC20Contract(from);
-            const gasLimitBigNumber = await contract.estimateGas.transfer(to, parseUnits(value));
+            const contract = ethClient.createERC20Contract(assetAddress);
+            const gasLimitBigNumber = await contract.estimateGas.transfer(to, parseInt(value), { from });
             const gasLimit = gasLimitBigNumber.toNumber();
             return Math.floor(gasLimit * 1.5);
         } catch(err) {
