@@ -39,8 +39,7 @@ export interface ERC20AssetWithAddress {
 
 export default interface IERC20AssetsListState {
   loading: boolean;
-  erc20assets: ERC20Asset[];
   error: any;
-  erc20assetsWithAddress: ERC20AssetWithAddress[];
+  erc20assets: IAssetInfoState[];
   constellationAssets: IAssetInfoState[];
 };

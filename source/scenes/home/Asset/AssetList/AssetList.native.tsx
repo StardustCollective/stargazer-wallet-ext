@@ -3,7 +3,7 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { ScrollView, ActivityIndicator } from 'react-native';
+import { SectionList, ActivityIndicator, View } from 'react-native';
 
 ///////////////////////////
 // Components
@@ -11,14 +11,13 @@ import { ScrollView, ActivityIndicator } from 'react-native';
 
 import TextV3 from 'components/TextV3';
 import AssetWithToggle from 'components/AssetWithToggle';
+import SearchInput from 'components/SearchInput';
 
 ///////////////////////////
 // Types
 ///////////////////////////
 
 import { IAssetList } from './types';
-import { IAssetInfoState } from 'state/assets/types';
-import { ERC20Asset } from 'state/erc20assets/types';
 
 ///////////////////////////
 // Styles
@@ -33,40 +32,19 @@ import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
-const AssetList: FC<IAssetList> = ({ assets, loading, constellationAssets, erc20assets, toggleAssetItem }) => {
+const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch }) => {
 
-  const renderAssetList = () => {
-    return (
-      <>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle}>Constellation Ecosystem</TextV3.CaptionStrong>
-        {constellationAssets?.length 
-          && constellationAssets.map((item: IAssetInfoState) => {
-            const selected = !!assets[item.id];
-            return <AssetWithToggle 
-                      id={item.id}
-                      symbol={item.symbol} 
-                      logo={item.logo} 
-                      label={item.label} 
-                      selected={selected} 
-                      toggleItem={(value) => toggleAssetItem(item, value)} />;
-          })
-        }
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle}>All ERC-20 Tokens</TextV3.CaptionStrong>
-        {erc20assets?.length 
-          && erc20assets.map((item: ERC20Asset) => {
-            if (item.symbol === 'eth') return null;
-            const selected = !!assets[item.id];
-            return <AssetWithToggle 
-                      id={item.id}
-                      symbol={item.symbol.toUpperCase()} 
-                      logo={item.image} 
-                      label={item.name} 
-                      selected={selected} 
-                      toggleItem={(value) => toggleAssetItem(item, value)} />;
-          })
-        }
-      </>
-    );
+  const renderAssetItem = ({ item }) => {
+    const selected = !!assets[item.id];
+    const disabled = ['constellation', 'ethereum'].includes(item.id);
+    return <AssetWithToggle 
+              id={item.id}
+              symbol={item.symbol} 
+              logo={item.logo} 
+              label={item.label} 
+              selected={selected} 
+              disabled={disabled}
+              toggleItem={(value) => toggleAssetItem(item, value)} />;
   };
 
   ///////////////////////////
@@ -74,9 +52,27 @@ const AssetList: FC<IAssetList> = ({ assets, loading, constellationAssets, erc20
   ///////////////////////////
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
-      {loading ? <ActivityIndicator style={styles.loadingContainer} size={ACTIVITY_INDICATOR_SIZE} /> : renderAssetList()}
-    </ScrollView>
+    <>
+      <View style={styles.searchContainer}>
+        <SearchInput value={searchValue} onChange={onSearch} />
+      </View>
+      {
+        loading ? 
+        <ActivityIndicator style={styles.loadingContainer} size={ACTIVITY_INDICATOR_SIZE} /> : 
+        <SectionList 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContentContainer}
+          sections={allAssets}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderAssetItem}
+          initialNumToRender={20}
+          stickySectionHeadersEnabled={false}
+          renderSectionHeader={({ section: { title } }) => (
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle}>{title}</TextV3.CaptionStrong>
+          )}
+        />
+      }
+    </>
   );
 };
 

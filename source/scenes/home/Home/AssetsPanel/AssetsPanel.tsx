@@ -55,7 +55,7 @@ const AssetsPanel: FC<IAssetPanel> = ({
         )}
         <div className={styles.buttonContainer}>
           <ButtonV3 
-            label="Select Tokens" 
+            label="Manage Tokens" 
             size={BUTTON_SIZES_ENUM.LARGE}
             type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
             onClick={handleAddTokens} 

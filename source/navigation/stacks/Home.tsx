@@ -61,7 +61,7 @@ const Stack = createStackNavigator();
 const SCREEN_DEFAULT_TITLE_STRINGS = {
   wallet: 'Wallet',
   import: 'Import',
-  addAsset: 'Select Tokens',
+  addAsset: 'Manage Tokens',
   addCustomAsset: 'Add Custom Token',
   asset: 'Asset',
   confirm: 'Confirm',

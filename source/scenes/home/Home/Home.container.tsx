@@ -61,7 +61,6 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   useEffect(() => {
     const getAssets = async () => {
       await accountController.assetsController.fetchSupportedAssets();
-      await accountController.assetsController.fetchERC20AssetsWithAddress();
       await accountController.assetsController.fetchERC20Assets();
     }
     if (!supportedAssets.data) {

@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////
 
-import React, { FC } from 'react'
+import React, { FC, memo } from 'react'
 
 ///////////////////////
 // Types
@@ -20,7 +20,7 @@ import AssetWithToggle from './AssetWithToggle';
 // Container
 ///////////////////////
 
-const AssetWithToggleContainer: FC<IAssetWithToggle> = ({ id, symbol, logo, label, selected, toggleItem }) => {
+const AssetWithToggleContainer: FC<IAssetWithToggle> = ({ id, symbol, logo, label, selected, disabled, toggleItem }) => {
 
   ///////////////////////
   // Render
@@ -33,10 +33,11 @@ const AssetWithToggleContainer: FC<IAssetWithToggle> = ({ id, symbol, logo, labe
       logo={logo}
       label={label}
       selected={selected}
+      disabled={disabled}
       toggleItem={toggleItem}
     />
   )
 
 }
 
-export default AssetWithToggleContainer;
+export default memo(AssetWithToggleContainer);

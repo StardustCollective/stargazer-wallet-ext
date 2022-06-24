@@ -36,7 +36,6 @@ import screens from 'navigation/screens';
 
 interface IHomeHeader {
   navigation: any;
-  hasMainAccount: boolean;
 }
 
 ///////////////////////////
@@ -44,8 +43,7 @@ interface IHomeHeader {
 ///////////////////////////
 
 const homeHeader = ({
-  navigation,
-  hasMainAccount
+  navigation
 }: IHomeHeader) => {
 
   const onMenuButtonClicked = () => {

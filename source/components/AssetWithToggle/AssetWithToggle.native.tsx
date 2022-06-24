@@ -35,7 +35,7 @@ import { COLORS } from 'assets/styles/_variables.native';
 // Component
 ///////////////////////
 
-const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, label, logo, selected, toggleItem }: IAssetWithToggle) => {
+const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, label, logo, selected, disabled = false, toggleItem }: IAssetWithToggle) => {
 
   const iconStyle = logo.includes('constellation-logo') ? styles.dagIcon : styles.imageIcon;
 
@@ -50,6 +50,7 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, label, logo, select
       </View>
       <View style={styles.toggleContainer}>
        <Switch 
+          disabled={disabled}
           value={selected} 
           ios_backgroundColor={COLORS.purple_light}
           trackColor={{ true: COLORS.primary_lighter_1 , false: COLORS.purple_light }}

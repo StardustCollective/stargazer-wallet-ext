@@ -1,11 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetType } from 'state/vault/types';
-import { getERC20Assets, getERC20AssetsWithAddress } from './api';
+import { getERC20Assets } from './api';
 import IERC20AssetsListState from './types';
-import { filterERC20Assets } from './utils';
 
-const constellationInitialValues: IAssetInfoState[] = [
+export const constellationInitialValues: IAssetInfoState[] = [
   {
     id: AssetType.Constellation,
     label: 'Constellation',
@@ -80,7 +79,6 @@ export const initialState: IERC20AssetsListState = {
   loading: false,
   erc20assets: null,
   error: null,
-  erc20assetsWithAddress: null,
   constellationAssets: constellationInitialValues
 };
 
@@ -96,29 +94,14 @@ const ERC20AssetsListState = createSlice({
       state.erc20assets = null;
     });
     builder.addCase(getERC20Assets.fulfilled, (state, action) => {
-      console.log('fullfiled', action.payload);
       state.loading = false;
       state.error = null;
-      state.erc20assets = action.payload.slice(0, 500);
+      state.erc20assets = action.payload;
     });
     builder.addCase(getERC20Assets.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
       state.erc20assets = null;
-    });
-    builder.addCase(getERC20AssetsWithAddress.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-      state.erc20assetsWithAddress = null;
-    });
-    builder.addCase(getERC20AssetsWithAddress.fulfilled, (state, action) => {
-      state.error = null;
-      state.erc20assetsWithAddress = filterERC20Assets(action.payload);
-    });
-    builder.addCase(getERC20AssetsWithAddress.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-      state.erc20assetsWithAddress = null;
     });
   }
 });

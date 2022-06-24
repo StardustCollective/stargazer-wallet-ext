@@ -1,10 +1,11 @@
-import IAssetListState from "state/assets/types";
+import IAssetListState, { IAssetInfoState } from "state/assets/types";
 
 export interface IAssetList {
   assets: IAssetListState;
+  allAssets: any;
   loading: boolean;
-  constellationAssets: any[];
-  erc20assets: any[];
+  searchValue: string;
+  onSearch: (text: string) => any;
   toggleAssetItem: (assetInfo: any, value: any) => void;
 }
 

@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
   assetIcon: {
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
     width: 48,
     height: 48,
     borderRadius: 24,
@@ -25,6 +26,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   assetInfo: {
+    width: '60%',
     marginLeft: 16,
   },
 });

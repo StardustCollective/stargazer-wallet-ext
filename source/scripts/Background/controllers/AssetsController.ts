@@ -11,7 +11,9 @@ import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { EthNetworkId } from './EthChainController/types';
 import EthChainController from './EthChainController';
 import { isTestnet } from './EthChainController/utils';
-import { getERC20Assets, getERC20AssetsWithAddress } from 'state/erc20assets/api';
+import { getERC20Assets } from 'state/erc20assets/api';
+import { addAsset, removeAsset } from 'state/vault';
+import { IAssetInfoState } from 'state/assets/types';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
@@ -25,9 +27,8 @@ export interface IAssetsController {
   fetchWalletNFTInfo: (address: string) => Promise<void>;
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
-  fetchERC20AssetsWithAddress: () => Promise<void>;
-  addERC20AssetFn: () => Promise<void>;
-  removeERC20AssetFn: () => Promise<void>;
+  addERC20AssetFn: (asset: IAssetInfoState) => void;
+  removeERC20AssetFn: (asset: IAssetInfoState) => void;
   fetchQuote: (data: GetQuoteRequest) => Promise<void>;
   fetchPaymentRequest: (data: PaymentRequestBody) => Promise<void>;
   setRequestId: (value: string) => void;
@@ -48,7 +49,8 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   });
 
   const fetchTokenInfo = async (address: string) => {
-    const activeNetwork = store.getState().vault.activeNetwork;
+    const { activeNetwork, activeWallet } = store.getState().vault;
+    const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
 
     const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
     ethClient.setNetwork(network);
@@ -75,6 +77,14 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
           },
         };
       }
+
+      store.dispatch(addAsset({
+        id: assetId,
+        type: AssetType.ERC20,
+        label: info.name,
+        address: ethAddress,
+        contractAddress: info.address,
+      }))
 
       store.dispatch(
         addERC20Asset({
@@ -198,16 +208,22 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     await store.dispatch<any>(getERC20Assets());
   }
 
-  const fetchERC20AssetsWithAddress = async (): Promise<void> => {
-    await store.dispatch<any>(getERC20AssetsWithAddress());
+  const addERC20AssetFn = (asset: IAssetInfoState): void => {
+    const { activeWallet } = store.getState().vault;
+    const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
+    store.dispatch(addERC20Asset(asset));
+    store.dispatch(addAsset({
+      id: asset.id,
+      type: AssetType.ERC20,
+      label: asset.label,
+      address: ethAddress,
+      contractAddress: asset.address,
+    }));
   }
 
-  const addERC20AssetFn = async (): Promise<void> => {
-    await store.dispatch<any>(addERC20Asset());
-  }
-
-  const removeERC20AssetFn = async (): Promise<void> => {
-    await store.dispatch<any>(removeERC20Asset());
+  const removeERC20AssetFn = (asset: IAssetInfoState): void => {
+    store.dispatch(removeERC20Asset(asset));
+    store.dispatch(removeAsset(asset));
   }
 
   const fetchSupportedAssets = async (): Promise<void> => {
@@ -234,7 +250,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     store.dispatch(clearPaymentRequestDispatch());
   }
 
-  return { fetchTokenInfo, fetchWalletNFTInfo, fetchSupportedAssets, fetchERC20Assets, fetchERC20AssetsWithAddress, addERC20AssetFn, removeERC20AssetFn, fetchQuote, fetchPaymentRequest, setRequestId, clearErrors, clearPaymentRequest };
+  return { fetchTokenInfo, fetchWalletNFTInfo, fetchSupportedAssets, fetchERC20Assets, addERC20AssetFn, removeERC20AssetFn, fetchQuote, fetchPaymentRequest, setRequestId, clearErrors, clearPaymentRequest };
 };
 
 export default AssetsController;

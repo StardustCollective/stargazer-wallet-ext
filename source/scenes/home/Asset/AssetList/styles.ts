@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -10,6 +11,12 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    paddingTop: 4,
+    backgroundColor: COLORS.primary,
   },
   errorContainer: {
     flex: 1,

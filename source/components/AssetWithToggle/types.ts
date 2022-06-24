@@ -6,5 +6,6 @@ export default interface IAssetWithToggle {
   symbol: string;
   label: string;
   selected: boolean;
+  disabled: boolean;
   toggleItem: (value: boolean) => void;
 }

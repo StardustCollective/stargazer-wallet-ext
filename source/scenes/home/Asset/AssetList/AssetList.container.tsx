@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC, useLayoutEffect } from 'react';
+import React, { FC, useLayoutEffect, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -24,15 +24,19 @@ import addHeader from 'navigation/headers/add';
 ///////////////////////////
 
 import IERC20AssetsListState from 'state/erc20assets/types';
-import IAssetListState from 'state/assets/types';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
 import  { IAssetListContainer } from './types';
+import { getAccountController } from 'utils/controllersUtils';
 
 const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
   const { constellationAssets, erc20assets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
+  const [allAssets, setAllAssets] = useState([{ title: 'Constellation Ecosystem', data: constellationAssets || [] }, { title: 'All ERC-20 Tokens', data: erc20assets || [] }]);
+  const [searchValue, setSearchValue] = useState('');
+  const accountController = getAccountController();
 
   useLayoutEffect(() => {
     const onRightIconClick = () => {
@@ -41,13 +45,49 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     navigation.setOptions(addHeader({ navigation, onRightIconClick }));
   }, []);
 
-  const toggleAssetItem = (assetInfo: any, value: boolean) => {
+  useEffect(() => {
+    const newAssetsArray = [
+      allAssets[0],
+      {
+        ...allAssets[1],
+        data: erc20assets || [],
+      }
+    ]
+    setAllAssets(newAssetsArray);
+  }, [erc20assets])
+
+  const onSearch = (event: any) => {
+    const text = event.nativeEvent.text;
+    const textLowerCase = text.toLowerCase();
+    const newAssetsArray = [
+      {
+        ...allAssets[0],
+        data: constellationAssets.filter(item => item.label.toLowerCase().includes(textLowerCase) || item.symbol.toLowerCase().includes(textLowerCase)),
+      },
+      {
+        ...allAssets[1],
+        data: erc20assets.filter(item => item.label.toLowerCase().includes(textLowerCase) || item.symbol.toLowerCase().includes(textLowerCase)),
+      }
+    ]
+    setAllAssets(newAssetsArray);
+    setSearchValue(text);
+  }
+  
+
+  const toggleAssetItem = async (assetInfo: IAssetInfoState, value: boolean) => {
+    const contractAddress = assetInfo.address;
+    const assetExists = !!assets[contractAddress];
     if (value) {
-      // Add to assets
+      // Add asset
+      if (!assetExists) {
+        accountController.assetsController.addERC20AssetFn(assetInfo);
+      }
     } else {
-      // Remove from assets
+      // Remove asset
+      if (assetExists) {
+        accountController.assetsController.removeERC20AssetFn(assetInfo);
+      }
     }
-    console.log('toggleAssetItem', assetInfo, value);
   } 
 
   ///////////////////////////
@@ -58,10 +98,11 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <AssetList 
         assets={assets}
+        allAssets={allAssets}
         loading={loading}
-        constellationAssets={constellationAssets.slice(0, 2000)}  
-        erc20assets={erc20assets}
+        searchValue={searchValue}
         toggleAssetItem={toggleAssetItem}
+        onSearch={onSearch}
       />
     </Container>
   );
