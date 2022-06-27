@@ -14,7 +14,7 @@ import IAddCustomAsset from './types';
 // Styles
 ///////////////////////////
 
-import styles from './Asset.scss';
+import styles from './AddCustomAsset.scss';
 
 const AddCustomAsset: FC<IAddCustomAsset> = () => {
 

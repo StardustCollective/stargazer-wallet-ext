@@ -1,4 +1,4 @@
-import IAssetListState, { IAssetInfoState } from "state/assets/types";
+import IAssetListState from "state/assets/types";
 
 export interface IAssetList {
   assets: IAssetListState;

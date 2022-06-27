@@ -24,9 +24,10 @@ interface ICardProps {
 // Component
 /// ////////////////////
 
-const Card = ({ id, children, onClick }: ICardProps) => {
+const Card = ({ id, children, disabled, onClick }: ICardProps) => {
+  const onClickFn = disabled ? null : onClick;
   return (
-    <div key={id} id={id} onClick={onClick} className={styles.card}>
+    <div key={id} id={id} onClick={onClickFn} className={styles.card}>
       {children}
     </div>
   );

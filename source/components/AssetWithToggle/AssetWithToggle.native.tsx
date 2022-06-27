@@ -52,8 +52,9 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, label, logo, select
        <Switch 
           disabled={disabled}
           value={selected} 
+          thumbColor={COLORS.white}
           ios_backgroundColor={COLORS.purple_light}
-          trackColor={{ true: COLORS.primary_lighter_1 , false: COLORS.purple_light }}
+          trackColor={{ true: disabled ? COLORS.primary_lighter_3 : COLORS.primary_lighter_1 , false: COLORS.purple_light }}
           onValueChange={toggleItem} />
       </View>
     </Card>

@@ -8,36 +8,69 @@ import React, { FC } from 'react';
 // Components
 ///////////////////////////
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import TextV3 from 'components/TextV3';
-
-///////////////////////////
-// Styles
-///////////////////////////
-
-import { COLORS_ENUMS } from 'assets/styles/colors';
-import styles from './AssetList.scss';
+import AssetWithToggle from 'components/AssetWithToggle';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import SearchInput from 'components/SearchInput';
 
 ///////////////////////////
 // Types
 ///////////////////////////
 
 import { IAssetList } from './types';
+import { IAssetInfoState } from 'state/assets/types';
 
-const AssetList: FC<IAssetList> = ({ constellationAssets, erc20Assets }) => {
+///////////////////////////
+// Styles
+///////////////////////////
+
+import styles from './AssetList.scss';
+
+///////////////////////////
+// Constants
+///////////////////////////
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
+const CIRCULAR_PROGRESS_SIZE = 18;
+
+const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch }) => {
 
   const renderAssetList = () => {
 
     return (
-      <>
-        {constellationAssets ? constellationAssets.map((key: string) => {
-          return (
-           <div key={key}>Asset Item</div>
-          );
-        }) : <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>There was an error loading assets. Please try again later.</TextV3.Caption>}
-      </>
-    );
-  };
+      <div className={styles.listContainer}>
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle} dynamic>{allAssets[0].title}</TextV3.CaptionStrong>
+        {
+          allAssets[0].data.map((item: IAssetInfoState) => {
+            const selected = !!assets[item.id];
+            const disabled = ['constellation', 'ethereum'].includes(item.id);
+            return <AssetWithToggle 
+                      id={item.id}
+                      symbol={item.symbol} 
+                      logo={item.logo} 
+                      label={item.label} 
+                      selected={selected} 
+                      disabled={disabled}
+                      toggleItem={(value) => toggleAssetItem(item, value)} />;
+          })
+        }
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle} dynamic>{allAssets[1].title}</TextV3.CaptionStrong>
+        {
+          allAssets[1].data.map((item: IAssetInfoState) => {
+            const selected = !!assets[item.id];
+            const disabled = ['constellation', 'ethereum'].includes(item.id);
+            return <AssetWithToggle 
+                      id={item.id}
+                      symbol={item.symbol} 
+                      logo={item.logo} 
+                      label={item.label} 
+                      selected={selected} 
+                      disabled={disabled}
+                      toggleItem={(value) => toggleAssetItem(item, value)} />;
+          })
+        }
+      </div>);
+  }
 
   ///////////////////////////
   // Render
@@ -45,7 +78,14 @@ const AssetList: FC<IAssetList> = ({ constellationAssets, erc20Assets }) => {
 
   return (
     <div className={styles.container}>
-      {false ? <div className={styles.loaderContainer}><CircularProgress size={18} /></div> : renderAssetList()}
+      <div className={styles.searchContainer}>
+        <SearchInput value={searchValue} onChange={onSearch} />
+      </div>
+      {
+        loading ? 
+        <CircularProgress size={CIRCULAR_PROGRESS_SIZE} /> : 
+        <>{renderAssetList()}</>
+      }
     </div>
   );
 };

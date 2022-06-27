@@ -1,4 +1,4 @@
 export default interface ISearchInput {
   value: string;
-  onChange: (text: string) => any;
+  onChange: (text: any) => any;
 }

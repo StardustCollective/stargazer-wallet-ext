@@ -27,8 +27,9 @@ const SearchInput: FC<ISearchInput> = ({ value, onChange }) => {
         style={styles.input}
         value={value}
         placeholder='Search'
+        placeholderTextColor='grey'
         selectionColor='white'
-        onChange={onChange}
+        onChange={(e) => onChange(e.nativeEvent.text)}
       />
     </View>
   )

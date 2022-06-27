@@ -33,6 +33,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
   const { constellationAssets, erc20assets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
+  console.log(error);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const [allAssets, setAllAssets] = useState([{ title: 'Constellation Ecosystem', data: constellationAssets || [] }, { title: 'All ERC-20 Tokens', data: erc20assets || [] }]);
   const [searchValue, setSearchValue] = useState('');
@@ -56,8 +57,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     setAllAssets(newAssetsArray);
   }, [erc20assets])
 
-  const onSearch = (event: any) => {
-    const text = event.nativeEvent.text;
+  const onSearch = (text: string) => {
     const textLowerCase = text.toLowerCase();
     const newAssetsArray = [
       {

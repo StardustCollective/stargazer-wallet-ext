@@ -4,7 +4,20 @@
   height: 520px;
   overflow: auto;
   width: 100%;
-  margin: 16px;
+
+  .listContainer {
+    margin: 16px 16px 0px 16px;
+
+    .subtitle {
+      margin-bottom: 16px;
+      margin-top: 8px;
+    }
+  }
+
+  .searchContainer {
+    background-color: $primary;
+    padding: 0px 16px 16px 16px;
+  }
 }
 
 .loaderContainer {
