@@ -23,11 +23,13 @@ const styles = StyleSheet.create({
     marginHorizontal: -10, // container has 10 padding to compensate you cant change
   },
   label: {
-    paddingLeft: 14,
     paddingBottom: 10,
     fontSize: 12,
+    color: COLORS.black,
+    lineHeight: 20,
     fontFamily: FONTS.rubik,
     fontWeight: FONT_WEIGHTS.medium,
+    marginHorizontal: -10, // container has 10 padding to compensate you cant change
   },
 });
 

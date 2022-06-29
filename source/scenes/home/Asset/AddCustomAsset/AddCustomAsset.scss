@@ -1,9 +1,96 @@
-@import '~assets/styles/variables';
+@import '~assets/styles/_variables';
 
 .container {
-  display: flex;
-  height: 520px;
-  overflow: auto;
   width: 100%;
   margin: 16px;
+}
+
+.input {
+  width: auto;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  height: 48px;
+  padding: 0 16px;
+  background-color: $white;
+  transition: all 0.3s;
+
+  input {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-family: $rubik;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: $black;
+    transition: all 0.3s;
+  }
+
+  &.amount {
+    input {
+      padding-right: 48px;
+    }
+  }
+
+  &.fee {
+    input {
+      padding-right: 92px;
+    }
+  }
+}
+
+ul.form {
+  list-style: none;
+  margin: -12px;
+  padding: 12px;
+  border-radius: 10px;
+  background-color: $gray-light;
+
+  li {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+    align-items: flex-start;
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      margin-bottom: 8px;
+      font-family: $rubik;
+      color: $black;
+    }
+  }
+}
+
+.warningContainer {
+  display: flex;
+  padding: 12px;
+  margin-top: 14px;
+  border-radius: 8px;
+  border: 1px solid #FDB022; 
+  background-color: #FFFCF5;
+  flex-direction: row;
+}
+
+.warningText {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.buttonContainer {
+  position: absolute;
+  width: 352px;
+  bottom: 14px;
+}
+
+.button {
+  width: 100%;
 }

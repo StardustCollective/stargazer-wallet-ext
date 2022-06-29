@@ -13,6 +13,7 @@ interface ITextInput {
   control: any;
   inputContainerStyle: object;
   inputStyle: object;
+  labelStyle: object;
   multiline: boolean;
   fullWidth: boolean;
   visiblePassword: boolean;
@@ -33,6 +34,7 @@ const TextInput: FC<ITextInput> = ({
   visiblePassword = false,
   inputContainerStyle = {},
   inputStyle = {},
+  labelStyle = {},
   multiline = false,
   defaultValue = '',
   returnKeyType = 'done',
@@ -52,6 +54,7 @@ const TextInput: FC<ITextInput> = ({
     inputContainerStyle,
   ]);
   const inputComposedStyles = StyleSheet.flatten([styles.input, inputStyle]);
+  const labelComposedStyles = StyleSheet.flatten([styles.label, labelStyle]);
 
   const [showed, setShowed] = useState(false);
 
@@ -83,7 +86,7 @@ const TextInput: FC<ITextInput> = ({
           secureTextEntry={secureTextEntry}
           inputStyle={inputComposedStyles}
           inputContainerStyle={inputContainerStyles}
-          labelStyle={styles.label}
+          labelStyle={labelComposedStyles}
           label={label}
           keyboardType={keyboardType}
           multiline={multiline}
