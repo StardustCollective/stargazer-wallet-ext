@@ -103,6 +103,17 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       setAmount(amount);
 
       const initialGas = parseInt(gas, 16);
+
+      /**
+       * TODO: @todo
+       * The next line sets the gas price based on the gas limit estimation
+       * those two units are completely unrelated, if we're unable to retrive
+       * the gas oracle values, the user could an exagerated gas price set
+       * as the two units do not correlate with each other one could say a normal
+       * ERC20 call is 62850 gas units (gasLimit), if we set this value as a gas price
+       * (gasPrice) in gwei. The total cost of the transaction would be 62850 * 62850 GWEI
+       * which is 3.9501225 ETH. !!!
+       */
       setGasPrice(initialGas);
       estimateGasFee(initialGas);
     }, []);
@@ -141,11 +152,21 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const { setValue, control, handleSubmit, register, errors, setError, clearError } = useForm({
     validationSchema: yup.object().shape({
       address: yup.string().required('Error: Invalid DAG address'),
-      amount: !isExternalRequest ? yup.number().moreThan(0).required('Error: Invalid DAG Amount') : null,
+      amount: !isExternalRequest ? yup.mixed().transform(value => {
+        const formattedValue = value.replace(/,/g, '.');
+        if (isNaN(formattedValue)) return undefined;
+        const floatNumber = parseFloat(formattedValue);
+        return isNaN(floatNumber) || floatNumber <= 0 ? undefined : floatNumber;
+      }).required('Error: Invalid DAG amount') : null,
       fee:
         (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation)
-          ? yup.string().required('Error: Invalid transaction fee')
-          : yup.string(),
+          ? yup.mixed().transform(value => {
+            const formattedValue = value.replace(/,/g, '.');
+            if (isNaN(formattedValue)) return undefined;
+            const floatNumber = parseFloat(formattedValue);
+            return isNaN(floatNumber) ? undefined : floatNumber;
+          }).required('Error: Invalid transaction fee')
+          : yup.mixed(),
     }),
   });
 
@@ -179,6 +200,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     fromAddress: activeAsset.address,
     asset: assetInfo,
     data: memo,
+    gas,
   });
 
   const onSubmit = async (data: any) => {
@@ -260,15 +282,25 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       return !isValidAddress || !fee || !address;
     }
 
+    let formattedAmount: number;
+    if (typeof amount === 'string') {
+      formattedAmount = parseFloat(amount);
+    } else {
+      formattedAmount = amount;
+    }
+    
+    if (isNaN(formattedAmount)) return true;
+    
     return !isValidAddress ||
       !amount ||
       !fee ||
       !address ||
       !balance ||
       !computedAmount ||
+      !!Object.values(errors).length ||
       balance.lt(0) ||
       computedAmount.gt(balance);
-  }, [amountBN, address, fee, gasFee]);
+  }, [amountBN, address, fee, gasFee, errors, amount]);
 
   const handleAmountChange = useCallback(
     (changeVal: string) => {

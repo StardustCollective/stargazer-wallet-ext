@@ -92,36 +92,40 @@ const WalletsComponent: FC<IWalletsSettings> = ({
 
   return (
     <ScrollView style={styles.wallets} contentContainerStyle={styles.walletsContentContainer}>
-      <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
-        Multi chain wallets
-      </TextV3.Caption>
-      <View style={styles.groupWalletWrapper}>
-        {multiChainWallets.map((wallet, i) => {
-          const walletStyles = StyleSheet.flatten([
-            styles.walletWrapper,
-            i === 0 ? styles.firstChild : {},
-            i === multiChainWallets.length - 1 ? styles.lastChild : {},
-          ]);
+      {!!multiChainWallets.length && (
+        <>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
+            Multi chain wallets
+          </TextV3.Caption>
+          <View style={styles.groupWalletWrapper}>
+            {multiChainWallets.map((wallet, i) => {
+              const walletStyles = StyleSheet.flatten([
+                styles.walletWrapper,
+                i === 0 ? styles.firstChild : {},
+                i === multiChainWallets.length - 1 ? styles.lastChild : {},
+              ]);
 
-          return (
-            <TouchableOpacity key={wallet.id} onPress={onHandleSwitchWallet(wallet.id, wallet.accounts)}>
-              <View style={walletStyles}>
-                {renderCheckIcon(wallet.id, activeWallet?.id)}
-                {renderStargazerIcon()}
-                <View testID={wallet.label} style={styles.walletInfoContainer}>
-                  <View style={styles.walletLabelContainer}>
-                    <TextV3.Caption dynamic color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
-                      {wallet.label}
-                    </TextV3.Caption>
-                    <TextV3.Caption dynamic extraStyles={styles.textSmall}>Multi Chain Wallet</TextV3.Caption>
+              return (
+                <TouchableOpacity key={wallet.id} onPress={onHandleSwitchWallet(wallet.id, wallet.accounts)}>
+                  <View style={walletStyles}>
+                    {renderCheckIcon(wallet.id, activeWallet?.id)}
+                    {renderStargazerIcon()}
+                    <View testID={wallet.label} style={styles.walletInfoContainer}>
+                      <View style={styles.walletLabelContainer}>
+                        <TextV3.Caption dynamic color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
+                          {wallet.label}
+                        </TextV3.Caption>
+                        <TextV3.Caption dynamic extraStyles={styles.textSmall}>Multi Chain Wallet</TextV3.Caption>
+                      </View>
+                      <View style={styles.walletInfoIcon}>{renderInfoIcon(wallet.id)}</View>
+                    </View>
                   </View>
-                  <View style={styles.walletInfoIcon}>{renderInfoIcon(wallet.id)}</View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </>
+      )}
       {!!privKeyAccounts.length && (
         <>
           <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>

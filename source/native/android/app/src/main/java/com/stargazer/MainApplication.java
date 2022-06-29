@@ -10,9 +10,12 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.views.text.ReactFontManager;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.Class;
 import java.util.List;
+import java.util.ArrayList;
 
 public class MainApplication extends Application implements ReactApplication {
+  private ArrayList<Class> runningActivities = new ArrayList<>();
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -78,5 +81,17 @@ public class MainApplication extends Application implements ReactApplication {
         e.printStackTrace();
       }
     }
+  }
+
+  public void addActivityToStack (Class cls) {
+        if (!runningActivities.contains(cls)) runningActivities.add(cls);
+    }
+
+  public void removeActivityFromStack (Class cls) {
+      if (runningActivities.contains(cls)) runningActivities.remove(cls);
+  }
+
+  public boolean isActivityInBackStack (Class cls) {
+      return runningActivities.contains(cls);
   }
 }

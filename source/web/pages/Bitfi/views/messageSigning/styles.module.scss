@@ -1,0 +1,175 @@
+@import '~assets/styles/variables';
+
+.layout {
+  height: 528px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+
+  .heading {
+    background: $gray-light;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 18px 34px;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    color: $gray-dark;
+
+    span {
+      white-space: pre-wrap;
+    }
+  }
+  .content {
+    background: $white;
+    padding: 36px;
+    padding-bottom: 24px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    position: relative;
+  }
+}
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 300;
+  height: 100%;
+
+  .progressWrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    flex-direction: row;
+    .progress {
+      flex-direction: column;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      span {
+        font-size: 15px;
+        color: $white;
+      }
+    }
+  }
+
+  section.message {
+    .messageBox{
+      height: 180px;
+      padding: 10px;
+      margin: 25px 25px 10px 25px;
+      border-radius: 5px;
+      border: 1px solid $gray-100;
+      overflow: scroll;
+      span{
+        font-size: 17px;
+      }
+      p {
+        margin-top: 0px;
+        font-size: 14px;
+        display: inline-block;
+      }
+
+      
+    }
+  }
+
+  section.subheading {
+    height: 60px;
+    width: 100%;
+    border-bottom: 1px solid $gray-200;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 30px;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    display: flex;
+    color: $gray-dark;
+  }
+
+  .actions {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    .button {
+      width: 144px;
+    }
+  }
+
+  section.instruction {
+    background: $white;
+    padding: 15px;
+    text-align: center;
+    font-size: 13px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    // justify-content: center;
+  
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 24px;
+    box-sizing: border-box;
+    padding: 0 30px;
+    color: $gray-dark;
+    height: 60px;
+    width: 100%;
+    border-bottom: 1px solid $gray-200;
+
+    span {
+      font-size: 18px;
+      line-height: 10px;
+      color: $gray-100;
+      font-weight: 400;
+      padding-left: 10px;
+    }
+  }
+
+  section.account {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+  }
+
+  .confirm {
+    width: 100%;
+    // height: 264px;
+    background: $gray-light;
+    box-sizing: border-box;
+    padding: 0;
+
+    & > .row {
+      border-bottom: 1px solid $white;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      span {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.checked {
+  margin-bottom: 36px;
+  width: 84px !important;
+  height: 84px !important;
+  color: $purple;
+}

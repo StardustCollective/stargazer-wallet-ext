@@ -1,3 +1,4 @@
+import { EthNetworkId, EthNetworkValue } from 'scripts/Background/controllers/EthChainController/types';
 import { STARGAZER_PROVIDERS_BASE_URL, STARGAZER_PROVIDERS_BASE_URL_PROD, isProd, isNative } from 'utils/envUtil';
 export const STORE_PORT = 'STARGAZER';
 
@@ -9,15 +10,8 @@ export const DAG_NETWORK: {
     lbUrl: string;
   };
 } = {
-  //
   main: {
     id: 'main',
-    label: 'Main Constellation Network',
-    beUrl: 'https://www.dagexplorer.io/api/scan',
-    lbUrl: 'https://www.dagexplorer.io/api/node',
-  },
-  main2: {
-    id: 'main2',
     label: 'Main Constellation Network',
     beUrl: 'https://block-explorer.constellationnetwork.io',
     lbUrl: 'http://lb.constellationnetwork.io:9000',
@@ -32,7 +26,8 @@ export const DAG_NETWORK: {
 
 export const ETH_NETWORK: {
   [networkId: string]: {
-    id: string;
+    id: EthNetworkId;
+    value: EthNetworkValue;
     label: string;
     etherscan: string;
     chainId: number;
@@ -40,15 +35,24 @@ export const ETH_NETWORK: {
 } = {
   mainnet: {
     id: 'mainnet',
-    label: 'Ethereum Mainnet',
+    value: 'homestead',
+    label: 'Mainnet',
     etherscan: 'https://etherscan.io/',
     chainId: 1,
   },
-  testnet: {
-    id: 'testnet',
-    label: 'Ethereum Testnet',
+  ropsten: {
+    id: 'ropsten',
+    value: 'ropsten',
+    label: 'Ropsten Testnet',
     etherscan: 'https://ropsten.etherscan.io/',
     chainId: 3,
+  },
+  rinkeby: {
+    id: 'rinkeby',
+    value: 'rinkeby',
+    label: 'Rinkeby Testnet',
+    etherscan: 'https://rinkeby.etherscan.io/',
+    chainId: 4,
   },
 };
 
@@ -56,7 +60,7 @@ export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 export const TOKEN_INFO_API =
   'https://api.coingecko.com/api/v3/coins/ethereum/contract/';
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
-export const NFT_TESTNET_API = 'https://rinkeby-api.opensea.io/api/v1/';
+export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 
 export const PRICE_DAG_ID = 'constellation-labs';

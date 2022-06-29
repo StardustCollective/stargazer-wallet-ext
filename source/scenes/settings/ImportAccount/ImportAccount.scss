@@ -104,14 +104,20 @@
     // for hardware import step1
     .hardwareList {
       display: flex;
+      justify-content: space-evenly;
       .walletModel {
+        display: flex;
+        width: 100px;
+        height: 100px;
         background-color: $white;
-        padding: 28px 16px;
+        padding: 75px;
         border: 1px solid $gray-200;
         box-sizing: border-box;
         border-radius: 6px;
         transition: all 0.3s;
         cursor: pointer;
+        align-items: center;
+        justify-content: center;
 
         &:hover {
           box-shadow: $shadow-btn;
@@ -119,6 +125,9 @@
           background: $purple-light;
         }
       }
+      .walletModelSelected {
+        background: $purple-light;
+      } 
     }
     // for hardware import step2
     .walletList {
