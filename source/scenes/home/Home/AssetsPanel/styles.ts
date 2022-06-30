@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
     margin: 16,
     marginBottom: 8,
   },
+  titleContainer: {
+    marginLeft: 8,
+  }
 });
 
 export default styles;

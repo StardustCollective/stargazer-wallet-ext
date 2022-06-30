@@ -83,8 +83,8 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
       </div>
       {
         loading ? 
-        <CircularProgress size={CIRCULAR_PROGRESS_SIZE} /> : 
-        <>{renderAssetList()}</>
+        <div className={styles.progressContainer}><CircularProgress size={CIRCULAR_PROGRESS_SIZE} /></div> : 
+        <div className={styles.assetList}>{renderAssetList()}</div>
       }
     </div>
   );

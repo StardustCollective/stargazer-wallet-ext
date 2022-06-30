@@ -11,9 +11,10 @@ import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { EthNetworkId } from './EthChainController/types';
 import EthChainController from './EthChainController';
 import { isTestnet } from './EthChainController/utils';
-import { getERC20Assets } from 'state/erc20assets/api';
+import { getERC20Assets, search } from 'state/erc20assets/api';
 import { addAsset, removeAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
+import { clearSearchAssets as clearSearch } from 'state/erc20assets';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
@@ -27,8 +28,10 @@ export interface IAssetsController {
   fetchWalletNFTInfo: (address: string) => Promise<void>;
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
+  searchERC20Assets: (value: string) => Promise<void>;
   addERC20AssetFn: (asset: IAssetInfoState) => void;
   removeERC20AssetFn: (asset: IAssetInfoState) => void;
+  clearSearchAssets: () => void;
   fetchQuote: (data: GetQuoteRequest) => Promise<void>;
   fetchPaymentRequest: (data: PaymentRequestBody) => Promise<void>;
   setRequestId: (value: string) => void;
@@ -208,6 +211,14 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     await store.dispatch<any>(getERC20Assets());
   }
 
+  const searchERC20Assets = async (value: string): Promise<void> => {
+    await store.dispatch<any>(search(value));
+  }
+
+  const clearSearchAssets = (): void => {
+    store.dispatch(clearSearch());
+  }
+
   const addERC20AssetFn = (asset: IAssetInfoState): void => {
     const { activeWallet } = store.getState().vault;
     const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
@@ -250,7 +261,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     store.dispatch(clearPaymentRequestDispatch());
   }
 
-  return { fetchTokenInfo, fetchWalletNFTInfo, fetchSupportedAssets, fetchERC20Assets, addERC20AssetFn, removeERC20AssetFn, fetchQuote, fetchPaymentRequest, setRequestId, clearErrors, clearPaymentRequest };
+  return { fetchTokenInfo, fetchWalletNFTInfo, fetchSupportedAssets, searchERC20Assets, clearSearchAssets, fetchERC20Assets, addERC20AssetFn, removeERC20AssetFn, fetchQuote, fetchPaymentRequest, setRequestId, clearErrors, clearPaymentRequest };
 };
 
 export default AssetsController;

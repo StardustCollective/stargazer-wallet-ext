@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
   scrollViewContentContainer: {
     flexGrow: 1,
     margin: 16,
+    paddingBottom: 30,
   },
   loadingContainer: {
     flex: 1

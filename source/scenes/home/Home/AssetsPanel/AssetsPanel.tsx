@@ -4,6 +4,7 @@ import { INFTInfoState } from 'state/nfts/types';
 import IAssetPanel from './types';
 import styles from './AssetsPanel.scss';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import SlidersIcon from 'assets/images/svg/sliders.svg'
 
 const AssetsPanel: FC<IAssetPanel> = ({
   activeNetworkAssets,
@@ -58,7 +59,9 @@ const AssetsPanel: FC<IAssetPanel> = ({
             label="Manage Tokens" 
             size={BUTTON_SIZES_ENUM.LARGE}
             type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
+            leftIcon={<img src={`/${SlidersIcon}`} className={styles.icon} alt="Slider icon" />}
             onClick={handleAddTokens} 
+            extraStyle={styles.button}
           />
         </div>
       </div>

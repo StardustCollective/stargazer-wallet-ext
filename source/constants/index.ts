@@ -63,6 +63,8 @@ export const ERC20_TOKENS_API =
   'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=ethereum-ecosystem';
 export const ERC20_TOKENS_WITH_ADDRESS_API =
   'https://api.coingecko.com/api/v3/coins/list?include_platform=true';
+export const SEARCH_API =
+  'https://api.coingecko.com/api/v3/search?query=';
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
 export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';

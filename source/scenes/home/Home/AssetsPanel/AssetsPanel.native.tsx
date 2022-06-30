@@ -11,6 +11,7 @@ import { View, Linking } from 'react-native';
 
 import AssetItem from 'components/AssetItem';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import SlidersIcon from 'assets/images/svg/sliders.svg';
 
 ///////////////////////
 // Types
@@ -84,9 +85,11 @@ const AssetsPanel: FC<IAssetState> = ({
         <ButtonV3 
           title="Manage Tokens" 
           size={BUTTON_SIZES_ENUM.LARGE}
-          type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE} 
-          color={COLORS_ENUMS.DARK_GRAY}
+          type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
           onPress={handleAddTokens} 
+          icon={<SlidersIcon width={24} height={24} />}
+          iconPosition="left"
+          extraTitleStyles={styles.titleContainer}
         />
       </View>
     </View>

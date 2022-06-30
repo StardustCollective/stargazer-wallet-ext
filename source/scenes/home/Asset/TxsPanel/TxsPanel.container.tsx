@@ -71,7 +71,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
         isGasSettingsVisible={isETHPending && (!isReceived || isSelf)}
         showGroupBar={isShowedGroupBar(tx, idx)}
         txTypeLabel={txTypeLabel}
-        currencySymbol={assets[activeAsset.id].symbol}
+        currencySymbol={assets[activeAsset?.id]?.symbol}
         amount={amountString}
         fiatAmount={fiatAmount}
       />
@@ -79,7 +79,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
   };
 
   const TRANSACTION_DESCRIPTION = `You have no transaction history, send or receive $${
-    assets[activeAsset.id].symbol
+    assets[activeAsset?.id]?.symbol
   } to register your first transaction.`;
 
   return (

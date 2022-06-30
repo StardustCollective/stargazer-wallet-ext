@@ -20,11 +20,11 @@ const AssetHeader: FC<IAssetHeaderSettings> = ({
       <span className={styles.selected}>
         <span className={styles.main} onClick={onClickCopyText}>
           <div className={styles.assetLogo}>
-            <CircleIcon logo={asset.logo} label={asset.label} />
+            <CircleIcon logo={asset?.logo} label={asset?.label} />
           </div>
           <Tooltip title={copiedTextToolip} placement="bottom" arrow>
             <div className={clsx(styles.address, { [styles.active]: isCopied })}>
-              <span>{asset.label}</span>
+              <span>{asset?.label}</span>
               <small id="assetHeader-address">{shortenedAddress}</small>
             </div>
           </Tooltip>

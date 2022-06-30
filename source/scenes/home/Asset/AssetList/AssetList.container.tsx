@@ -28,15 +28,18 @@ import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
 import  { IAssetListContainer } from './types';
 import { getAccountController } from 'utils/controllersUtils';
+import useDebounce from 'hooks/useDebounce';
 
 const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
-  const { constellationAssets, erc20assets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
-  console.log(error);
+  const { constellationAssets, erc20assets, searchAssets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
+  console.log('Error:', error);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const [allAssets, setAllAssets] = useState([{ title: 'Constellation Ecosystem', data: constellationAssets || [] }, { title: 'All ERC-20 Tokens', data: erc20assets || [] }]);
   const [searchValue, setSearchValue] = useState('');
+  const [customLoading, setCustomLoading] = useState(false);
+  const debouncedSearchTerm = useDebounce(searchValue, 500);
   const accountController = getAccountController();
 
   useLayoutEffect(() => {
@@ -47,29 +50,48 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    const newAssetsArray = [
-      allAssets[0],
-      {
-        ...allAssets[1],
-        data: erc20assets || [],
-      }
-    ]
-    setAllAssets(newAssetsArray);
-  }, [erc20assets])
+    if (!loading) {
+      setCustomLoading(false);
+    }
+  }, [loading]);
 
-  const onSearch = (text: string) => {
-    const textLowerCase = text.toLowerCase();
+  useEffect(() => {
+    let newDataArray = searchAssets?.length ? searchAssets : erc20assets;
+    let constellationDataArray = constellationAssets;
+    if (searchValue) {
+      const searchLowerCase = searchValue.toLowerCase();
+      newDataArray = searchAssets?.length ? searchAssets : erc20assets.filter(item => item.label.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase));
+      constellationDataArray = constellationDataArray.filter(item => item.label.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase));
+    } else {
+      if (searchAssets?.length) {
+        accountController.assetsController.clearSearchAssets();
+      }
+    }
     const newAssetsArray = [
       {
         ...allAssets[0],
-        data: constellationAssets.filter(item => item.label.toLowerCase().includes(textLowerCase) || item.symbol.toLowerCase().includes(textLowerCase)),
+        data: constellationDataArray || [],
       },
       {
         ...allAssets[1],
-        data: erc20assets.filter(item => item.label.toLowerCase().includes(textLowerCase) || item.symbol.toLowerCase().includes(textLowerCase)),
+        data: newDataArray || [],
       }
-    ]
+    ];
     setAllAssets(newAssetsArray);
+  }, [erc20assets, searchAssets, searchValue])
+
+  useEffect(() => {
+    const searchAssets = async (value: string) => {
+      await accountController.assetsController.searchERC20Assets(value);
+    }
+    if (debouncedSearchTerm) {
+      searchAssets(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm]);
+
+  const onSearch = (text: string) => {
+    const isLoading = !!text;
+    setCustomLoading(isLoading);
     setSearchValue(text);
   }
   
@@ -99,7 +121,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
       <AssetList 
         assets={assets}
         allAssets={allAssets}
-        loading={loading}
+        loading={loading || customLoading}
         searchValue={searchValue}
         toggleAssetItem={toggleAssetItem}
         onSearch={onSearch}

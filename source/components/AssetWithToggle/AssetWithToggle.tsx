@@ -43,13 +43,13 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, label, logo, select
   ///////////////////////
 
   return (
-    <Card id={`AssetWithToggle-${id}`} disabled>
+    <Card id={`AssetWithToggle-${id}`} disabled style={styles.cardContainer}>
       <div className={styles.container}>
         <div className={styles.assetIcon}>
           <img className={iconStyle} src={logo} />
         </div>
         <div className={styles.assetInfo}>
-          <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.BodyStrong>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.CaptionStrong>
           <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
         </div>
         <div className={styles.toggleContainer}>

@@ -37,9 +37,19 @@ export interface ERC20AssetWithAddress {
   platforms: any;
 }
 
+export interface SearchAsset {
+  id: string;
+  name: string;
+  symbol: string;
+  market_cap_rank: number | null;
+  thumb: string;
+  large: string;
+}
+
 export default interface IERC20AssetsListState {
   loading: boolean;
   error: any;
   erc20assets: IAssetInfoState[];
   constellationAssets: IAssetInfoState[];
+  searchAssets: IAssetInfoState[];
 };

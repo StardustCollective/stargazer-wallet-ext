@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetType } from 'state/vault/types';
-import { getERC20Assets } from './api';
+import { getERC20Assets, search } from './api';
 import IERC20AssetsListState from './types';
 
 export const constellationInitialValues: IAssetInfoState[] = [
@@ -78,6 +78,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
 export const initialState: IERC20AssetsListState = {
   loading: false,
   erc20assets: null,
+  searchAssets: null,
   error: null,
   constellationAssets: constellationInitialValues
 };
@@ -86,7 +87,12 @@ export const initialState: IERC20AssetsListState = {
 const ERC20AssetsListState = createSlice({
   name: 'erc20assets',
   initialState,
-  reducers: {},
+  reducers: {
+    clearSearchAssets(state: IERC20AssetsListState) {
+      state.loading = false;
+      state.searchAssets = [];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getERC20Assets.pending, (state) => {
       state.loading = true;
@@ -103,9 +109,24 @@ const ERC20AssetsListState = createSlice({
       state.error = action.payload;
       state.erc20assets = null;
     });
+    builder.addCase(search.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+      state.searchAssets = null;
+    });
+    builder.addCase(search.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.searchAssets = action.payload;
+    });
+    builder.addCase(search.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.searchAssets = null;
+    });
   }
 });
 
-export const {} = ERC20AssetsListState.actions;
+export const { clearSearchAssets } = ERC20AssetsListState.actions;
 
 export default ERC20AssetsListState.reducer;

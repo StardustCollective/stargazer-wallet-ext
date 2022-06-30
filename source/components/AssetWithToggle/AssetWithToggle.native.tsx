@@ -40,12 +40,12 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, label, logo, select
   const iconStyle = logo.includes('constellation-logo') ? styles.dagIcon : styles.imageIcon;
 
   return (
-    <Card id={id} disabled>
+    <Card style={styles.cardContainer} id={id} disabled>
       <View style={styles.assetIcon}>
         <Image style={iconStyle} source={{ uri: logo }}/>
       </View>
       <View style={styles.assetInfo}>
-        <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.BodyStrong>
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.CaptionStrong>
         <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
       </View>
       <View style={styles.toggleContainer}>
