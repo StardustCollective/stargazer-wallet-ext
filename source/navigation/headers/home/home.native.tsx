@@ -57,7 +57,7 @@ const homeHeader = ({
         onPress={onMenuButtonClicked}
         mr="5"
       >
-        <HamburgerIcon testId="header-moreButton" color="white" />
+        <HamburgerIcon testId="header-moreButton" size={scale(26)} color="white" />
       </Pressable>
     );
 

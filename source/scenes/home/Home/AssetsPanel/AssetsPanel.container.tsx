@@ -32,7 +32,6 @@ import IAssetListState from 'state/assets/types';
 ///////////////////////
 
 import AssetsPanel from './AssetsPanel';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////
 // Container
@@ -46,7 +45,7 @@ const AssetsPanelContainer: FC = () => {
   ///////////////////////
 
   const linkTo = useLinkTo();
-  const { activeWallet, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const nfts: INFTListState = useSelector((state: RootState) => state.nfts);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
@@ -62,11 +61,7 @@ const AssetsPanelContainer: FC = () => {
   };
 
   const handleAddTokens = () => {
-    if (activeNetwork[KeyringNetwork.Ethereum] === 'mainnet') {
-      linkTo('/asset/add');
-    } else {
-      linkTo('/asset/addCustom');
-    }
+    linkTo('/asset/add');
   };
 
   ///////////////////////

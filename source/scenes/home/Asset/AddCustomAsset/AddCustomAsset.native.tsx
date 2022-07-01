@@ -47,6 +47,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   handleDecimalsChange,
   handleSubmit,
   onSubmit,
+  errors,
 }) => {
 
   ///////////////////////////
@@ -64,12 +65,18 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
           label="Token Address"
           control={control}
           onChange={(text) => {
-            handleAddressChange({ target: { value: text } });
+            handleAddressChange(text);
           }}
+          error={!!errors?.tokenAddress}
           // rightIconContainerStyle={styles.inputRightIcon}
           returnKeyType="done"
           // rightIcon={<RenderRecipientRightButton />}
         />
+        <TextV3.Caption 
+          color={COLORS_ENUMS.RED} 
+          extraStyles={styles.errorMessage}>
+            {!!errors?.tokenAddress ? errors?.tokenAddress?.message: ' '}
+        </TextV3.Caption>
         <TextInput
           name="tokenName"
           defaultValue={tokenName}
@@ -78,10 +85,16 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
           control={control}
           labelStyle={styles.label}
           returnKeyType="done"
+          error={!!errors?.tokenName}
           onChange={(text) => {
-            handleNameChange({ target: { value: text } });
+            handleNameChange(text);
           }}
         />
+        <TextV3.Caption 
+          color={COLORS_ENUMS.RED} 
+          extraStyles={styles.errorMessage}>
+            {!!errors?.tokenName ? errors?.tokenName?.message: ' '}
+        </TextV3.Caption>
         <TextInput
           name="tokenSymbol"
           defaultValue={tokenSymbol}
@@ -90,10 +103,16 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
           control={control}
           labelStyle={styles.label}
           returnKeyType="done"
+          error={!!errors?.tokenSymbol}
           onChange={(text) => {
-            handleSymbolChange({ target: { value: text } });
+            handleSymbolChange(text);
           }}
         />
+        <TextV3.Caption 
+          color={COLORS_ENUMS.RED} 
+          extraStyles={styles.errorMessage}>
+            {!!errors?.tokenSymbol ? errors?.tokenSymbol?.message: ' '}
+        </TextV3.Caption>
         <TextInput
           name="tokenDecimals"
           defaultValue={tokenDecimals}
@@ -103,10 +122,16 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
           labelStyle={styles.label}
           keyboardType="number-pad"
           returnKeyType="done"
+          error={!!errors?.tokenDecimals}
           onChange={(text) => {
-            handleDecimalsChange({ target: { value: text } });
+            handleDecimalsChange(text);
           }}
         />
+        <TextV3.Caption 
+          color={COLORS_ENUMS.RED} 
+          extraStyles={styles.errorMessage}>
+            {!!errors?.tokenDecimals ? errors?.tokenDecimals?.message: ' '}
+        </TextV3.Caption>
         <View style={styles.warningContainer}>
           <WarningIcon width={20} height={20} style={styles.warningIcon} />
           <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.warningText}>

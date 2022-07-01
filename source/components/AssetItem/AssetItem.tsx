@@ -57,7 +57,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
     if (assetInfoData.priceId && fiat[assetInfoData.priceId]?.price && fiat[assetInfoData.priceId]?.priceChange) {
       return (
         <div>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK}>{formatPrice(fiat[assetInfoData.priceId].price)}</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>{formatPrice(fiat[assetInfoData.priceId].price)}</TextV3.Caption>
           <TextV3.Caption
             color={COLORS_ENUMS.BLACK}
             extraStyles={fiat[assetInfoData.priceId].priceChange > 0 ? styles.green : styles.red}
@@ -82,15 +82,15 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
             {assetInfo.logo.startsWith('http') ? <img src={assetInfo.logo} /> : <img src={`/${assetInfo.logo}`} />}
           </div>
           <div className={styles.assetName}>
-            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{assetInfo.label}</TextV3.BodyStrong>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{assetInfo.label}</TextV3.CaptionStrong>
             {isNFT ? renderNFTPriceSection() : renderAssetPriceSection(assetInfo as IAssetInfoState)}
           </div>
           <div className={styles.assetBalance}>
-            <TextV3.Header dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
+            <TextV3.Caption dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
               {isNFT
                 ? Number((assetInfo as INFTInfoState).quantity)
                 : formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)}
-            </TextV3.Header>
+            </TextV3.Caption>
           </div>
         </div>
       </Card>

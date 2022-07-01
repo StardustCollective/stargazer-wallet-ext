@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
   fiatBalanceContainer: {
     width: '100%',
-    height: 200, // do not use percentages messes up scrollview
+    height: 190, // do not use percentages messes up scrollview
     alignItems: 'center',
     justifyContent: 'center',
   },

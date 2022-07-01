@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHTS.medium,
     marginHorizontal: -10, // container has 10 padding to compensate you cant change
   },
+  error: {
+    borderColor: COLORS.red,
+  }
 });
 
 export default styles;

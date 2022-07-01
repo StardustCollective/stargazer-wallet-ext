@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetType } from 'state/vault/types';
 import { getERC20Assets, search } from './api';
-import IERC20AssetsListState from './types';
+import IERC20AssetsListState, { ICustomAssetForm } from './types';
 
 export const constellationInitialValues: IAssetInfoState[] = [
   {
@@ -80,7 +80,14 @@ export const initialState: IERC20AssetsListState = {
   erc20assets: null,
   searchAssets: null,
   error: null,
-  constellationAssets: constellationInitialValues
+  constellationAssets: constellationInitialValues,
+  customAssets: [],
+  customAssetForm: {
+    tokenAddress: '',
+    tokenName: '',
+    tokenSymbol: '',
+    tokenDecimals: '',
+  }
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -91,6 +98,24 @@ const ERC20AssetsListState = createSlice({
     clearSearchAssets(state: IERC20AssetsListState) {
       state.loading = false;
       state.searchAssets = [];
+    },
+    addCustomAsset(state: IERC20AssetsListState, action: PayloadAction<IAssetInfoState>) {
+      state.customAssets.push(action.payload);
+    },
+    removeCustomAsset(state: IERC20AssetsListState, action: PayloadAction<IAssetInfoState>) {
+      state.customAssets = state.customAssets.filter(asset => asset.id !== action.payload.id);
+    },
+    setCustomAsset(state: IERC20AssetsListState, action: PayloadAction<ICustomAssetForm>) {
+      state.customAssetForm.tokenAddress = action.payload.tokenAddress;
+      state.customAssetForm.tokenName = action.payload.tokenName;
+      state.customAssetForm.tokenSymbol = action.payload.tokenSymbol;
+      state.customAssetForm.tokenDecimals = action.payload.tokenDecimals;
+    },
+    clearCustomAsset(state: IERC20AssetsListState) {
+      state.customAssetForm.tokenAddress = '';
+      state.customAssetForm.tokenName = '';
+      state.customAssetForm.tokenSymbol = '';
+      state.customAssetForm.tokenDecimals = '';
     },
   },
   extraReducers: (builder) => {
@@ -127,6 +152,6 @@ const ERC20AssetsListState = createSlice({
   }
 });
 
-export const { clearSearchAssets } = ERC20AssetsListState.actions;
+export const { clearSearchAssets, setCustomAsset, clearCustomAsset, addCustomAsset, removeCustomAsset } = ERC20AssetsListState.actions;
 
 export default ERC20AssetsListState.reducer;

@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -12,40 +12,102 @@ import * as yup from 'yup';
 
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import AddCustomAsset from './AddCustomAsset';
+import { RootState } from 'state/store';
+import { useSelector } from 'react-redux';
+import IERC20AssetsListState, { ICustomAssetForm } from 'state/erc20assets/types';
+import { getAccountController } from 'utils/controllersUtils';
+import { useLinkTo } from '@react-navigation/native';
+import { validateAddress } from 'scripts/Background/controllers/EthChainController/utils';
 
 const AddCustomAssetContainer: FC = () => {
 
-  const { control, handleSubmit, register } = useForm({
-    validationSchema: yup.object().shape({
-      tokenAddress: yup.string().required('Token address is required'),
-      tokenName: yup.string().required('Token name is required'),
-      tokenSymbol: yup.string().required('Token symbol is required'),
-      tokenDecimals: yup.number().required('Token decimals is required'),
+  const { customAssetForm }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
 
+  const { control, handleSubmit, register, setValue, setError, triggerValidation, errors } = useForm({
+    validationSchema: yup.object().shape({
+      tokenAddress: yup.string().test('valid', 'Invalid token address', (val) => validateAddress(val)).required('Token address is required'),
+      tokenName: yup.string().required('Token name is required'),
+      tokenSymbol: yup.string().test('len', 'Symbol must be 11 characters or fewer', (val) => val.length <= 11).required('Token symbol is required'),
+      tokenDecimals: yup.string()
+        .test('decimals', 'Decimals must be at least 0, and not over 36', (val) => {
+            const numVal = parseInt(val);
+            return !isNaN(numVal) && numVal >= 0 && numVal <= 36;
+        }).required('Token decimals is required'),
     }),
   });
 
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [tokenName, setTokenName] = useState<string>('');
   const [tokenSymbol, setTokenSymbol] = useState<string>('');
-  const [tokenDecimals, setTokenDecimals] = useState<number>();
+  const [tokenDecimals, setTokenDecimals] = useState<string>('');
+  const accountController = getAccountController();
+  const linkTo = useLinkTo();
+
+  useEffect(() => {
+    const {
+      tokenAddress: address,
+      tokenName: name,
+      tokenSymbol: symbol,
+      tokenDecimals: decimals,
+    } = customAssetForm;
+
+    if (tokenAddress !== address) {
+      setTokenAddress(address);
+      setValue('tokenAddress', address);
+    }
+    if (tokenName !== name) {
+      handleNameChange(name);
+    }
+    if (tokenSymbol !== symbol) {
+      handleSymbolChange(symbol);
+    }
+    if (tokenDecimals !== decimals) {
+      handleDecimalsChange(decimals);
+    }
+
+  }, [customAssetForm.tokenAddress])
+  
 
 
-  const handleAddressChange = (value: string) => {
+  const handleAddressChange = async (value: string) => {
     setTokenAddress(value);
-  }
-  const handleNameChange = (value: string) => {
-    setTokenName(value);
-  }
-  const handleSymbolChange = (value: string) => {
-    setTokenSymbol(value);
-  }
-  const handleDecimalsChange = (value: number) => {
-    setTokenDecimals(value);
+    setValue('tokenAddress', value);
+    triggerValidation('tokenAddress');
+    try {
+      await accountController.assetsController.fetchCustomToken(value);
+    } catch (err) {
+      console.log(err);
+      setError('tokenAddress', 'invalidAddress', 'Invalid token address');
+    }
   }
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const handleNameChange = (value: string) => {
+    setValue('tokenName', value);
+    setTokenName(value);
+    triggerValidation('tokenName');
+  }
+
+  const handleSymbolChange = (value: string) => {
+    setValue('tokenSymbol', value);
+    setTokenSymbol(value);
+    triggerValidation('tokenSymbol');
+  }
+
+  const handleDecimalsChange = (value: string) => {
+    setValue('tokenDecimals', value);
+    setTokenDecimals(value);
+    triggerValidation('tokenDecimals');
+  }
+
+  const onSubmit = async (asset: ICustomAssetForm): Promise<void> => {
+    const { tokenAddress, tokenName, tokenSymbol, tokenDecimals } = asset;
+    if (!validateAddress(tokenAddress)) {
+      setError('tokenAddress', 'invalidAddress', 'Invalid token address');
+      return;
+    }
+    await accountController.assetsController.addCustomERC20Asset(tokenAddress, tokenName, tokenSymbol, tokenDecimals);
+    accountController.assetsController.clearCustomToken();
+    linkTo('/home');
   }
 
   ///////////////////////////
@@ -67,6 +129,7 @@ const AddCustomAssetContainer: FC = () => {
         handleDecimalsChange={handleDecimalsChange} 
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
+        errors={errors}
       />
     </Container>
   );

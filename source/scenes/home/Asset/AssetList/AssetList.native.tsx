@@ -3,13 +3,12 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { SectionList, ActivityIndicator, View } from 'react-native';
+import { FlatList, ActivityIndicator, View } from 'react-native';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
-import TextV3 from 'components/TextV3';
 import AssetWithToggle from 'components/AssetWithToggle';
 import SearchInput from 'components/SearchInput';
 
@@ -29,7 +28,6 @@ import styles from './styles';
 // Constants
 ///////////////////////////
 
-import { COLORS_ENUMS } from 'assets/styles/colors';
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
 const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch }) => {
@@ -59,17 +57,13 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
       {
         loading ? 
         <ActivityIndicator style={styles.loadingContainer} size={ACTIVITY_INDICATOR_SIZE} /> : 
-        <SectionList 
+        <FlatList 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollViewContentContainer}
-          sections={allAssets}
+          data={allAssets}
           keyExtractor={(item, index) => item + index}
           renderItem={renderAssetItem}
           initialNumToRender={20}
-          stickySectionHeadersEnabled={false}
-          renderSectionHeader={({ section: { title } }) => (
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle}>{title}</TextV3.CaptionStrong>
-          )}
         />
       }
     </>

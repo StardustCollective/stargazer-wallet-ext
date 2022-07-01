@@ -45,6 +45,12 @@ export interface SearchAsset {
   thumb: string;
   large: string;
 }
+export interface ICustomAssetForm {
+  tokenAddress: string;
+  tokenName: string;
+  tokenSymbol: string;
+  tokenDecimals: string;
+}
 
 export default interface IERC20AssetsListState {
   loading: boolean;
@@ -52,4 +58,6 @@ export default interface IERC20AssetsListState {
   erc20assets: IAssetInfoState[];
   constellationAssets: IAssetInfoState[];
   searchAssets: IAssetInfoState[];
+  customAssets: IAssetInfoState[];
+  customAssetForm: ICustomAssetForm;
 };

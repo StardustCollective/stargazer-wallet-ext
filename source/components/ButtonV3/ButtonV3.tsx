@@ -97,7 +97,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
     buttonTextColor = COLORS_ENUMS.WHITE;
   } else if (type === BUTTON_TYPES_ENUM.SECONDARY_OUTLINE) {
     buttonColorStyle = styles.secondaryOutlineButton;
-    buttonTextColor = COLORS_ENUMS.PRIMARY;
+    buttonTextColor = COLORS_ENUMS.PRIMARY_LIGHTER_1;
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {
     buttonColorStyle = styles.accentOneButton;
     buttonTextColor = COLORS_ENUMS.WHITE;

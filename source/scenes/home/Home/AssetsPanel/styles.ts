@@ -8,7 +8,10 @@ const styles = StyleSheet.create({
   },
   content: {
     margin: 16,
-    marginBottom: 8,
+    paddingBottom: 18,
+  },
+  buttonContainer: {
+    backgroundColor: 'transparent',
   },
   titleContainer: {
     marginLeft: 8,

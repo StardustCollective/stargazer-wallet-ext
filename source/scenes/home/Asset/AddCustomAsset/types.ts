@@ -12,4 +12,5 @@ export default interface IAddCustomAsset {
   handleDecimalsChange: any;
   handleSubmit: any;
   onSubmit: any;
+  errors: any;
 }

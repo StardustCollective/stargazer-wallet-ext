@@ -5,28 +5,28 @@ const styles = StyleSheet.create({
   assetIcon: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: COLORS.gray_100,
   },
   imageIcon: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
   },
   dagIcon: {
-    width: 30,
-    height: 35,
+    width: 20,
+    height: 25,
   },
   imageNFTIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
   },
   componentIcon: {
-    width: 40,
-    height: 40,
+    width: 20,
+    height: 20,
   },
   assetBalance: {
     flex: 1,
@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   assetName: {
+    width: '50%',
+    justifyContent: 'center',
     marginLeft: 16,
   },
   assetPrice: {

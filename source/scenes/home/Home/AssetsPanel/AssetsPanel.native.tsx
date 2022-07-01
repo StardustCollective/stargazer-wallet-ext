@@ -89,6 +89,7 @@ const AssetsPanel: FC<IAssetState> = ({
           onPress={handleAddTokens} 
           icon={<SlidersIcon width={24} height={24} />}
           iconPosition="left"
+          extraStyles={styles.buttonContainer}
           extraTitleStyles={styles.titleContainer}
         />
       </View>

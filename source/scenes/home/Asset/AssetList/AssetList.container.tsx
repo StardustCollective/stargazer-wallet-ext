@@ -33,10 +33,10 @@ import useDebounce from 'hooks/useDebounce';
 const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
-  const { constellationAssets, erc20assets, searchAssets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
+  const { constellationAssets, erc20assets, customAssets, searchAssets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
   console.log('Error:', error);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-  const [allAssets, setAllAssets] = useState([{ title: 'Constellation Ecosystem', data: constellationAssets || [] }, { title: 'All ERC-20 Tokens', data: erc20assets || [] }]);
+  const [allAssets, setAllAssets] = useState(constellationAssets.concat(customAssets).concat(erc20assets));
   const [searchValue, setSearchValue] = useState('');
   const [customLoading, setCustomLoading] = useState(false);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
@@ -57,7 +57,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   useEffect(() => {
     let newDataArray = searchAssets?.length ? searchAssets : erc20assets;
-    let constellationDataArray = constellationAssets;
+    let constellationDataArray = constellationAssets.concat(customAssets);
     if (searchValue) {
       const searchLowerCase = searchValue.toLowerCase();
       newDataArray = searchAssets?.length ? searchAssets : erc20assets.filter(item => item.label.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase));
@@ -67,16 +67,8 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
         accountController.assetsController.clearSearchAssets();
       }
     }
-    const newAssetsArray = [
-      {
-        ...allAssets[0],
-        data: constellationDataArray || [],
-      },
-      {
-        ...allAssets[1],
-        data: newDataArray || [],
-      }
-    ];
+    
+    const newAssetsArray = constellationDataArray.concat(newDataArray);
     setAllAssets(newAssetsArray);
   }, [erc20assets, searchAssets, searchValue])
 

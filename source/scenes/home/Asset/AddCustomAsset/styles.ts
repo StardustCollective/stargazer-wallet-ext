@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   label: {
-    marginTop: 16,
+    marginTop: 6,
   },
   warningContainer: {
     padding: 16,
@@ -29,6 +29,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 24,
     alignSelf: 'center',
+  },
+  errorMessage: {
+    fontSize: 12,
+    lineHeight: 18,
+    paddingLeft: 10,
+    paddingTop: 6,
   }
 });
 

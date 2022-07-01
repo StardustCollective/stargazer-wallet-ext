@@ -60,6 +60,8 @@ const TextV3 = {
       colorStyle = styles.textGray100;
     } else if (color === COLORS_ENUMS.PRIMARY) {
       colorStyle = styles.textPrimary;
+    } else if (color === COLORS_ENUMS.PRIMARY_LIGHTER_1) {
+      colorStyle = styles.textPrimaryLighter1
     }
 
     //Alignment
