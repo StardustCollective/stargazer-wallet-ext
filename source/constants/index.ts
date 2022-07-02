@@ -20,7 +20,7 @@ export const DAG_NETWORK: {
     id: 'main2',
     label: 'Main Constellation Network',
     beUrl: 'https://block-explorer.constellationnetwork.io',
-    lbUrl: 'http://lb.constellationnetwork.io:9000',
+    lbUrl: 'https://proxy.constellationnetwork.io/api/node',
   },
   ceres: {
     id: 'ceres',
