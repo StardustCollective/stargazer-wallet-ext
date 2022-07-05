@@ -13,10 +13,18 @@ import AssetWithToggle from 'components/AssetWithToggle';
 import SearchInput from 'components/SearchInput';
 
 ///////////////////////////
+// Utils
+///////////////////////////
+
+import { getKeyringAssetType } from 'utils/keyringUtil';
+
+///////////////////////////
 // Types
 ///////////////////////////
 
 import { IAssetList } from './types';
+import { IAssetInfoState } from 'state/assets/types';
+import { KeyringAssetType } from "@stardust-collective/dag4-keyring";
 
 ///////////////////////////
 // Styles
@@ -30,11 +38,14 @@ import styles from './styles';
 
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
-const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch }) => {
+const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, toggleAssetItem, searchValue, onSearch, activeWallet }) => {
 
-  const renderAssetItem = ({ item }) => {
-    const selected = !!assets[item.id];
-    const disabled = ['constellation', 'ethereum'].includes(item.id);
+  const renderAssetItem = ({ item }: { item: IAssetInfoState }) => {
+    const selected = !!activeNetworkAssets.find(asset => asset.id === item.id);
+    const itemType = getKeyringAssetType(item?.type);
+    const disabled = [KeyringAssetType.DAG, KeyringAssetType.ETH].includes(itemType);
+    const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
+    if (!isAssetSupported) return null;
     return <AssetWithToggle 
               id={item.id}
               symbol={item.symbol} 

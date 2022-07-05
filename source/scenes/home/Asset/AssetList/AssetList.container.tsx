@@ -20,6 +20,19 @@ import AssetList from './AssetList';
 import addHeader from 'navigation/headers/add';
 
 ///////////////////////////
+// Hooks
+///////////////////////////
+
+import useDebounce from 'hooks/useDebounce';
+
+///////////////////////////
+// Utils
+///////////////////////////
+
+import { getAccountController } from 'utils/controllersUtils';
+import walletsSelectors from 'selectors/walletsSelectors';
+
+///////////////////////////
 // Types
 ///////////////////////////
 
@@ -27,16 +40,20 @@ import IERC20AssetsListState from 'state/erc20assets/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
 import  { IAssetListContainer } from './types';
-import { getAccountController } from 'utils/controllersUtils';
-import useDebounce from 'hooks/useDebounce';
+import IVaultState from 'state/vault/types';
 
 const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
   const { constellationAssets, erc20assets, customAssets, searchAssets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
-  console.log('Error:', error);
+  const { activeWallet, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const activeNetworkAssets = useSelector(walletsSelectors.selectActiveNetworkAssets);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-  const [allAssets, setAllAssets] = useState(constellationAssets.concat(customAssets).concat(erc20assets));
+  let filteredArray = constellationAssets?.concat(customAssets).concat(erc20assets);
+  if (activeNetwork.Ethereum !== 'mainnet') {
+    filteredArray = constellationAssets?.slice(0, 2);
+  }
+  const [allAssets, setAllAssets] = useState(filteredArray);
   const [searchValue, setSearchValue] = useState('');
   const [customLoading, setCustomLoading] = useState(false);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
@@ -57,7 +74,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   useEffect(() => {
     let newDataArray = searchAssets?.length ? searchAssets : erc20assets;
-    let constellationDataArray = constellationAssets.concat(customAssets);
+    let constellationDataArray = filteredArray.concat(customAssets);
     if (searchValue) {
       const searchLowerCase = searchValue.toLowerCase();
       newDataArray = searchAssets?.length ? searchAssets : erc20assets.filter(item => item.label.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase));
@@ -68,7 +85,10 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
       }
     }
     
-    const newAssetsArray = constellationDataArray.concat(newDataArray);
+    let newAssetsArray = constellationDataArray;
+    if (activeNetwork.Ethereum === 'mainnet') {
+      newAssetsArray = newAssetsArray.concat(newDataArray);
+    }
     setAllAssets(newAssetsArray);
   }, [erc20assets, searchAssets, searchValue])
 
@@ -117,6 +137,8 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
         searchValue={searchValue}
         toggleAssetItem={toggleAssetItem}
         onSearch={onSearch}
+        activeWallet={activeWallet}
+        activeNetworkAssets={activeNetworkAssets}
       />
     </Container>
   );

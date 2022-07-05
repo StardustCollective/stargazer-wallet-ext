@@ -39,11 +39,11 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   handleDecimalsChange,
   handleSubmit,
   onSubmit,
+  errors,
+  buttonDisabled,
 }) => {
   
-  const addressInputClass = clsx(styles.input, styles.address, {
-    [styles.verified]: true,
-  });
+  const inputClass = clsx(styles.input, styles.address);
 
   ///////////////////////////
   // Render
@@ -64,8 +64,14 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
               value={tokenAddress}
               onChange={(ev) => handleAddressChange(ev.target.value)}
               disabled={false}
-              variant={addressInputClass}
+              error={!!errors?.tokenAddress}
+              variant={inputClass}
               />
+              <TextV3.Caption 
+                color={COLORS_ENUMS.RED} 
+                extraStyles={styles.errorMessage}>
+                  {!!errors?.tokenAddress ? errors?.tokenAddress?.message: ' '}
+              </TextV3.Caption>
           </li>
           <li>
             <label>Token Name</label>
@@ -78,8 +84,14 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
               value={tokenName}
               onChange={(ev) => handleNameChange(ev.target.value)}
               disabled={false}
-              variant={addressInputClass}
+              error={!!errors?.tokenName}
+              variant={inputClass}
               />
+              <TextV3.Caption 
+                color={COLORS_ENUMS.RED} 
+                extraStyles={styles.errorMessage}>
+                  {!!errors?.tokenName ? errors?.tokenName?.message: ' '}
+              </TextV3.Caption>
           </li>
           <li>
             <label>Token Symbol</label>
@@ -92,8 +104,14 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
               value={tokenSymbol}
               onChange={(ev) => handleSymbolChange(ev.target.value)}
               disabled={false}
-              variant={addressInputClass}
+              error={!!errors?.tokenSymbol}
+              variant={inputClass}
               />
+              <TextV3.Caption 
+                color={COLORS_ENUMS.RED} 
+                extraStyles={styles.errorMessage}>
+                  {!!errors?.tokenSymbol ? errors?.tokenSymbol?.message: ' '}
+              </TextV3.Caption>
           </li>
           <li>
             <label>Decimals</label>
@@ -107,8 +125,14 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
               value={tokenDecimals}
               onChange={(ev) => handleDecimalsChange(ev.target.value)}
               disabled={false}
-              variant={addressInputClass}
+              error={!!errors?.tokenDecimals}
+              variant={inputClass}
               />
+              <TextV3.Caption 
+                color={COLORS_ENUMS.RED} 
+                extraStyles={styles.errorMessage}>
+                  {!!errors?.tokenDecimals ? errors?.tokenDecimals?.message: ' '}
+              </TextV3.Caption>
           </li>
         </ul>
         <div className={styles.warningContainer}>
@@ -122,7 +146,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
             type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             label="Add Token"
-            disabled={false}
+            disabled={buttonDisabled}
             extraStyle={styles.button}
             onClick={handleSubmit((data: any) => {
               onSubmit(data);

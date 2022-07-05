@@ -50,6 +50,10 @@ body {
     outline: 0px !important;
     border-radius: 6px;
 
+    &.Mui-error {
+      border: 1px solid $red !important;
+    }
+
     & input {
       padding: 0px;
     }

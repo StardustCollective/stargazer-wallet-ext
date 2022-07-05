@@ -13,4 +13,5 @@ export default interface IAddCustomAsset {
   handleSubmit: any;
   onSubmit: any;
   errors: any;
+  buttonDisabled: boolean;
 }

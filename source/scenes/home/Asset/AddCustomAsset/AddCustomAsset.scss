@@ -2,7 +2,7 @@
 
 .container {
   width: 100%;
-  margin: 16px;
+  margin: 8px 16px 16px 16px;
 }
 
 .input {
@@ -39,6 +39,19 @@
   }
 }
 
+.error {
+  border: 1px solid $red !important;
+  background-color: red;
+}
+
+.errorMessage {
+  font-size: 12px;
+  line-height: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 6px;
+}
+
 ul.form {
   list-style: none;
   margin: -12px;
@@ -51,7 +64,6 @@ ul.form {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    margin-bottom: 12px;
     align-items: flex-start;
 
     &:last-child {
@@ -63,7 +75,7 @@ ul.form {
       font-weight: 500;
       font-size: 14px;
       line-height: 20px;
-      margin-bottom: 8px;
+      margin-bottom: 2px;
       font-family: $rubik;
       color: $black;
     }
@@ -73,7 +85,7 @@ ul.form {
 .warningContainer {
   display: flex;
   padding: 12px;
-  margin-top: 14px;
+  margin-top: 8px;
   border-radius: 8px;
   border: 1px solid #FDB022; 
   background-color: #FFFCF5;
@@ -88,7 +100,7 @@ ul.form {
 .buttonContainer {
   position: absolute;
   width: 352px;
-  bottom: 14px;
+  bottom: 10px;
 }
 
 .button {

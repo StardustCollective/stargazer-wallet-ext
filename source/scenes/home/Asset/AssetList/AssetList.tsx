@@ -13,11 +13,18 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SearchInput from 'components/SearchInput';
 
 ///////////////////////////
+// Utils
+///////////////////////////
+
+import { getKeyringAssetType } from 'utils/keyringUtil';
+
+///////////////////////////
 // Types
 ///////////////////////////
 
 import { IAssetList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
+import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////////
 // Styles
@@ -31,7 +38,7 @@ import styles from './AssetList.scss';
 
 const CIRCULAR_PROGRESS_SIZE = 18;
 
-const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch }) => {
+const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch, activeWallet }) => {
 
   const renderAssetList = () => {
 
@@ -39,8 +46,11 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
       <div className={styles.listContainer}>
         {
           allAssets.map((item: IAssetInfoState) => {
-            const selected = !!assets[item.id];
-            const disabled = ['constellation', 'ethereum'].includes(item.id);
+            const selected = !!assets[item?.id];
+            const itemType = getKeyringAssetType(item?.type);
+            const disabled = [KeyringAssetType.DAG, KeyringAssetType.ETH].includes(itemType);
+            const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
+            if (!isAssetSupported) return null;
             return <AssetWithToggle 
                       id={item.id}
                       symbol={item.symbol} 

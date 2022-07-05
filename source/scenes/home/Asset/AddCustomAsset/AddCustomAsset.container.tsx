@@ -3,6 +3,8 @@
 ///////////////////////////
 
 import React, { FC, useState, useEffect } from 'react';
+import { useLinkTo } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -12,17 +14,26 @@ import * as yup from 'yup';
 
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import AddCustomAsset from './AddCustomAsset';
+
+///////////////////////////
+// Types 
+///////////////////////////
+
 import { RootState } from 'state/store';
-import { useSelector } from 'react-redux';
 import IERC20AssetsListState, { ICustomAssetForm } from 'state/erc20assets/types';
-import { getAccountController } from 'utils/controllersUtils';
-import { useLinkTo } from '@react-navigation/native';
+
+///////////////////////////
+// Utils
+///////////////////////////
+
 import { validateAddress } from 'scripts/Background/controllers/EthChainController/utils';
+import { getAccountController } from 'utils/controllersUtils';
+
 
 const AddCustomAssetContainer: FC = () => {
 
   const { customAssetForm }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
-
+  
   const { control, handleSubmit, register, setValue, setError, triggerValidation, errors } = useForm({
     validationSchema: yup.object().shape({
       tokenAddress: yup.string().test('valid', 'Invalid token address', (val) => validateAddress(val)).required('Token address is required'),
@@ -40,6 +51,7 @@ const AddCustomAssetContainer: FC = () => {
   const [tokenName, setTokenName] = useState<string>('');
   const [tokenSymbol, setTokenSymbol] = useState<string>('');
   const [tokenDecimals, setTokenDecimals] = useState<string>('');
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
   const accountController = getAccountController();
   const linkTo = useLinkTo();
 
@@ -66,6 +78,12 @@ const AddCustomAssetContainer: FC = () => {
     }
 
   }, [customAssetForm.tokenAddress])
+
+  useEffect(() => {
+    const hasErrors = !!Object.keys(errors)?.length;
+    const disabled = hasErrors || tokenAddress === '' || tokenName === '' || tokenSymbol === '' || tokenDecimals === '';
+    setButtonDisabled(disabled);
+  }, [errors, tokenAddress, tokenName, tokenSymbol, tokenDecimals]);
   
 
 
@@ -130,6 +148,7 @@ const AddCustomAssetContainer: FC = () => {
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
         errors={errors}
+        buttonDisabled={buttonDisabled}
       />
     </Container>
   );

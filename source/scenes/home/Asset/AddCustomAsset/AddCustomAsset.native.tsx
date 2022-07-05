@@ -48,6 +48,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   handleSubmit,
   onSubmit,
   errors,
+  buttonDisabled,
 }) => {
 
   ///////////////////////////
@@ -143,7 +144,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
             type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             title="Add Token"
-            disabled={false}
+            disabled={buttonDisabled}
             onPress={handleSubmit((data) => {
               onSubmit(data);
             })}
