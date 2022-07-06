@@ -24,6 +24,11 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 24,
   },
+  qrCodeContainer: {
+    height: '100%',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
   buttonContainer: {
     width: '100%',
     position: 'absolute',

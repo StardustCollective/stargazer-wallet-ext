@@ -183,8 +183,8 @@ const ConfirmContainer = () => {
   const handleConfirm = async (browser: any = null) => {
     setDisabled(true);
 
-    const background = await browser.runtime.getBackgroundPage();
-    const { windowId } = queryString.parse(window.location.search);
+    const background = await browser?.runtime?.getBackgroundPage();
+    const { windowId } = queryString?.parse(window?.location?.search);
 
     try {
       if (isExternalRequest) {
@@ -229,10 +229,7 @@ const ConfirmContainer = () => {
           window.open(`/${page}.html?${params.toString()}`, '_newtab');
         } else {
 
-          const trxHash = await accountController.confirmTempTx()
-          background.dispatchEvent(new CustomEvent('transactionSent', {
-            detail: { windowId, approved: true, result: trxHash },
-          }));  
+          await accountController.confirmTempTx() 
           setConfirmed(true);
 
         }
@@ -244,7 +241,7 @@ const ConfirmContainer = () => {
           message = 'Insufficient ETH to cover gas fee.';
         }
 
-        background.dispatchEvent(new CustomEvent('transactionSent', {
+        background?.dispatchEvent(new CustomEvent('transactionSent', {
           detail: { windowId, approved: false, error: e.message },
         }));
 

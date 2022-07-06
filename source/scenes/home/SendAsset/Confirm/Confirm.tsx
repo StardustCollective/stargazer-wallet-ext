@@ -72,17 +72,17 @@ const SendConfirm = ({
         <div className={styles.row}>
           From
           <span>
-            {activeWallet?.label || ''} ({ellipsis(tempTx!.fromAddress)})
+            {activeWallet?.label || ''} ({ellipsis(tempTx?.fromAddress)})
           </span>
         </div>
         <div className={styles.row}>
           To
-          <span>{tempTx!.toAddress}</span>
+          <span>{tempTx?.toAddress}</span>
         </div>
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {`${tempTx!.fee} ${feeUnit} (≈ ${getFeeAmount()})`}
+            {`${tempTx?.fee} ${feeUnit} (≈ ${getFeeAmount()})`}
           </span>
         </div>
       </section>

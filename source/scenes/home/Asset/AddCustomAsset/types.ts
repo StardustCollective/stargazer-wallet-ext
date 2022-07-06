@@ -6,6 +6,7 @@ export default interface IAddCustomAsset {
   tokenName: any;
   tokenSymbol: any;
   tokenDecimals: any;
+  handleAddressScan?: any;
   handleAddressChange: any;
   handleNameChange: any;
   handleSymbolChange: any;

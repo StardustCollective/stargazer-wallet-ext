@@ -436,7 +436,7 @@ export class AccountController implements IAccountController {
       const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
 
       trxHash = newTx.hash;
-      this.txController.addPendingTx({
+      await this.txController.addPendingTx({
         txHash: newTx.hash,
         fromAddress: this.tempTx.fromAddress,
         toAddress: this.tempTx.toAddress,

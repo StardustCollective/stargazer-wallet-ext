@@ -48,7 +48,7 @@ const Root = () => {
 
   if(migrateWallet || (wallets.local && Object.values(wallets.local).length > 0) || hasEncryptedVault ){
     initialRoute = screens.authorized.root;
-  }
+  }  
   
   return (
     <Stack.Navigator
@@ -56,13 +56,8 @@ const Root = () => {
         ...defaultHeader(navigation),
       })}
       initialRouteName={initialRoute}>
-        {
-          initialRoute === screens.unAuthorized.root ? (
-            <Stack.Screen options={{ headerShown: false }} name={screens.unAuthorized.root} component={UnAuthStack} />
-          ) : (
-            <Stack.Screen options={{ headerShown: false }} name={screens.authorized.root} component={HomeStack} />
-          )
-        }
+        <Stack.Screen options={{ headerShown: false }} name={screens.unAuthorized.root} component={UnAuthStack} />
+        <Stack.Screen options={{ headerShown: false }} name={screens.authorized.root} component={HomeStack} />
     </Stack.Navigator>
   );
 };

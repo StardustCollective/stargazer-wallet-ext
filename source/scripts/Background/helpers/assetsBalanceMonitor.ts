@@ -169,7 +169,7 @@ export class AssetsBalanceMonitor {
     const ethAsset = activeWallet.assets.find((a) => a.type === AssetType.Ethereum);
 
     this.ethAccountTracker.config(
-      ethAsset.address,
+      ethAsset?.address,
       tokens,
       chainId,
       (ethBalance, tokenBals) => {

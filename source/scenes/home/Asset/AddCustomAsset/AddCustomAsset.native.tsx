@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { scale } from 'react-native-size-matters';
@@ -14,6 +14,8 @@ import { scale } from 'react-native-size-matters';
 import TextInput from 'components/TextInput';
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import QRCodeScanner from 'components/QRCodeScanner';
+import QRCodeButton from 'components/QRCodeButton';
 import WarningIcon from 'assets/images/svg/warning.svg'
 
 ///////////////////////////
@@ -41,6 +43,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   tokenName,
   tokenSymbol,
   tokenDecimals,
+  handleAddressScan,
   handleAddressChange,
   handleNameChange,
   handleSymbolChange,
@@ -50,6 +53,20 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   errors,
   buttonDisabled,
 }) => {
+  const [cameraOpen, setCameraOpen] = useState(false);
+
+  const QRCodeButtonIcon = () => {
+    return (
+      <View style={styles.qrCodeContainer}>
+        <QRCodeButton
+          size={20}
+          onPress={() => {
+            setCameraOpen(true);
+          }}
+        />
+      </View>
+    );
+  };
 
   ///////////////////////////
   // Render
@@ -69,9 +86,8 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
             handleAddressChange(text);
           }}
           error={!!errors?.tokenAddress}
-          // rightIconContainerStyle={styles.inputRightIcon}
           returnKeyType="done"
-          // rightIcon={<RenderRecipientRightButton />}
+          rightIcon={<QRCodeButtonIcon />}
         />
         <TextV3.Caption 
           color={COLORS_ENUMS.RED} 
@@ -150,6 +166,16 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
             })}
           />
         </View>
+        <QRCodeScanner
+          visble={cameraOpen}
+          onRead={(event) => {
+            handleAddressScan(event.data);
+            setCameraOpen(false);
+          }}
+          onClosePress={() => {
+            setCameraOpen(false);
+          }}
+        />
     </KeyboardAwareScrollView>
   );
 };

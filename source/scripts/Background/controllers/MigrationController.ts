@@ -27,10 +27,10 @@ const MigrationController = async () => {
   /**
      * Upgrade asset list any time it's out of sync
      */
-   if (state.assets) {
-    const assetListMigration = require('../migration/update_token_list');
-    await assetListMigration.default(state);  // Checks if state needs to be updated
-  }
+  //  if (state.assets) {
+  //   const assetListMigration = require('../migration/update_token_list');
+  //   await assetListMigration.default(state);  // Checks if state needs to be updated
+  // }
 
   /**
    * version < 3.3.0

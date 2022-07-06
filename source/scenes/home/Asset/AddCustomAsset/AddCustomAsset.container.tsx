@@ -28,6 +28,7 @@ import IERC20AssetsListState, { ICustomAssetForm } from 'state/erc20assets/types
 
 import { validateAddress } from 'scripts/Background/controllers/EthChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
+import { removeEthereumPrefix } from 'utils/addressUtil';
 
 
 const AddCustomAssetContainer: FC = () => {
@@ -116,6 +117,11 @@ const AddCustomAssetContainer: FC = () => {
     setTokenDecimals(value);
     triggerValidation('tokenDecimals');
   }
+  
+  const handleAddressScan = async (address: string) => {
+    const filteredAddress = removeEthereumPrefix(address);
+    await handleAddressChange(filteredAddress);
+  }
 
   const onSubmit = async (asset: ICustomAssetForm): Promise<void> => {
     const { tokenAddress, tokenName, tokenSymbol, tokenDecimals } = asset;
@@ -124,8 +130,9 @@ const AddCustomAssetContainer: FC = () => {
       return;
     }
     await accountController.assetsController.addCustomERC20Asset(tokenAddress, tokenName, tokenSymbol, tokenDecimals);
-    accountController.assetsController.clearCustomToken();
+    await accountController.assetsBalanceMonitor.start();
     linkTo('/home');
+    accountController.assetsController.clearCustomToken();
   }
 
   ///////////////////////////
@@ -141,6 +148,7 @@ const AddCustomAssetContainer: FC = () => {
         tokenName={tokenName}
         tokenSymbol={tokenSymbol}
         tokenDecimals={tokenDecimals}
+        handleAddressScan={handleAddressScan}
         handleAddressChange={handleAddressChange}
         handleNameChange={handleNameChange}
         handleSymbolChange={handleSymbolChange}
