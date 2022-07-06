@@ -1,5 +1,5 @@
 import { EthNetworkId, EthNetworkValue } from 'scripts/Background/controllers/EthChainController/types';
-import { STARGAZER_PROVIDERS_BASE_URL, STARGAZER_PROVIDERS_BASE_URL_PROD, isProd } from 'utils/envUtil';
+import { STARGAZER_PROVIDERS_BASE_URL, STARGAZER_PROVIDERS_BASE_URL_PROD, isProd, isNative } from 'utils/envUtil';
 export const STORE_PORT = 'STARGAZER';
 
 export const DAG_NETWORK: {
@@ -14,7 +14,7 @@ export const DAG_NETWORK: {
     id: 'main',
     label: 'Main Constellation Network',
     beUrl: 'https://block-explorer.constellationnetwork.io',
-    lbUrl: 'http://lb.constellationnetwork.io:9000',
+    lbUrl: 'https://proxy.constellationnetwork.io/api/node',
   },
   ceres: {
     id: 'ceres',
@@ -90,4 +90,6 @@ export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/quote`;
 export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;
 export const GET_SUPPORTED_ASSETS_API = `${PROVIDERS_BASE_URL}/supported-assets`;
 const SIMPLEX_FORM_BASE_URL = 'https://stargazer-assets.s3.us-east-2.amazonaws.com';
-export const SIMPLEX_FORM_SUBMISSION_URL = isProd ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.html?payment_id=` : `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.staging.html?payment_id=`;
+const SIMPLEX_FORM_SUBMISSION_URL_WEB = isProd ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.html?payment_id=` : `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.staging.html?payment_id=`;
+const SIMPLEX_FORM_SUBMISSION_URL_NATIVE = isProd ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.html?payment_id=` : `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.staging.html?payment_id=`;
+export const SIMPLEX_FORM_SUBMISSION_URL = isNative ? SIMPLEX_FORM_SUBMISSION_URL_NATIVE : SIMPLEX_FORM_SUBMISSION_URL_WEB;

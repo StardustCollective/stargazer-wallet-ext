@@ -191,6 +191,7 @@ const Send: FC<IWalletSend> = ({
                 <View style={styles.gasSettingLabelRight}>
                   <Input
                     defaultValue={gasPrice.toString()}
+                    keyboardType="number-pad"
                     onChange={(event) => handleGasPriceChange(null, Number(event.nativeEvent.text))}
                     inputStyle={styles.gasSettingInputText}
                     inputContainerStyle={styles.gasSettingInputContainer}
