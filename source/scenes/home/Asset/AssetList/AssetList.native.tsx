@@ -38,19 +38,20 @@ import styles from './styles';
 
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
-const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, toggleAssetItem, searchValue, onSearch, activeWallet }) => {
+const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, toggleAssetItem, searchValue, onSearch, activeWallet, activeNetwork }) => {
 
   const renderAssetItem = ({ item }: { item: IAssetInfoState }) => {
-    const selected = !!activeNetworkAssets.find(asset => asset.id === item.id);
+    const selected = !!activeNetworkAssets?.find(asset => asset?.id === item?.id);
     const itemType = getKeyringAssetType(item?.type);
     const disabled = [KeyringAssetType.DAG, KeyringAssetType.ETH].includes(itemType);
     const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
-    if (!isAssetSupported) return null;
+    const differentNetwork = item?.network !== 'both' && activeNetwork.Ethereum !== item?.network;
+    if (!isAssetSupported || differentNetwork) return null;
     return <AssetWithToggle 
-              id={item.id}
-              symbol={item.symbol} 
-              logo={item.logo} 
-              label={item.label} 
+              id={item?.id}
+              symbol={item?.symbol} 
+              logo={item?.logo} 
+              label={item?.label} 
               selected={selected} 
               disabled={disabled}
               toggleItem={(value) => toggleAssetItem(item, value)} />;

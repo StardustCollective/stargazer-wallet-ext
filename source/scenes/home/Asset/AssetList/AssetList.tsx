@@ -38,7 +38,7 @@ import styles from './AssetList.scss';
 
 const CIRCULAR_PROGRESS_SIZE = 18;
 
-const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch, activeWallet }) => {
+const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch, activeWallet, activeNetwork }) => {
 
   const renderAssetList = () => {
 
@@ -50,7 +50,8 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
             const itemType = getKeyringAssetType(item?.type);
             const disabled = [KeyringAssetType.DAG, KeyringAssetType.ETH].includes(itemType);
             const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
-            if (!isAssetSupported) return null;
+            const differentNetwork = item?.network !== 'both' && activeNetwork.Ethereum !== item?.network;
+            if (!isAssetSupported || differentNetwork) return null;
             return <AssetWithToggle 
                       id={item.id}
                       symbol={item.symbol} 

@@ -78,11 +78,8 @@ const AssetListState = createSlice({
   name: 'assets',
   initialState,
   reducers: {
-    rehydrate(state: IAssetListState, action: PayloadAction<IAssetListState>) {
-      return {
-        ...state,
-        ...action.payload,
-      };
+    rehydrate(_: IAssetListState, action: PayloadAction<IAssetListState>) {
+      return action.payload;
     },
     addERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
       if (action.payload.address) {

@@ -3,7 +3,6 @@ import IAssetListState from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
 import IVaultState from 'state/vault/types';
-// import { initialState } from 'state/assets';
 import { saveState } from 'state/localStorage';
 
 export type V2WalletState = {
@@ -14,15 +13,19 @@ export type V2WalletState = {
   vault: IVaultState
 }
 
-const MigrateRunner = async (oldState: V2WalletState): Promise<boolean> => {
+const MigrateRunner = async (oldState: any): Promise<boolean> => {
   try {
-    // if (JSON.stringify(oldState.assets) === JSON.stringify(initialState)) {
-    //   return false;
-    // }
 
     const newState = {
       ...oldState,
       assets: oldState.assets,
+      vault: {
+        ...oldState.vault,
+        activeWallet: {
+          ...oldState.vault.activeWallet,
+          assets: oldState.vault.activeWallet.assets,
+        }
+      }
     };
 
     await saveState(newState);

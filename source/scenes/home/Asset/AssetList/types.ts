@@ -1,5 +1,5 @@
 import IAssetListState, { IAssetInfoState } from "state/assets/types";
-import { IAssetState, IWalletState } from "state/vault/types";
+import { ActiveNetwork, IAssetState, IWalletState } from "state/vault/types";
 
 export interface IAssetList {
   assets: IAssetListState;
@@ -10,6 +10,7 @@ export interface IAssetList {
   toggleAssetItem: (assetInfo: any, value: any) => void;
   activeWallet: IWalletState;
   activeNetworkAssets: IAssetState[];
+  activeNetwork: ActiveNetwork;
 }
 
 export interface IAssetListContainer {

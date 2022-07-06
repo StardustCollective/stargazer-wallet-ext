@@ -18,7 +18,7 @@ import { addCustomAsset, clearCustomAsset, clearSearchAssets as clearSearch, rem
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
-const DEAFAULT_LOGO = 'https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/13c43/eth-diamond-black.png';
+const DEAFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
 
 // DTM and Alkimi NFTs should appear on top by default
 const DTM_STRINGS = ['DTM', 'Dor Traffic', 'Dor Foot Traffic'];
@@ -29,6 +29,7 @@ export interface IAssetsController {
   addCustomERC20Asset: (address: string, name: string, symbol: string, decimals: string) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
   fetchCustomToken: (address: string) => Promise<void>;
+  getCustomAssets: () => void;
   fetchTokenInfo: (address: string) => Promise<void>;
   fetchWalletNFTInfo: (address: string) => Promise<void>;
   fetchSupportedAssets: () => Promise<void>;
@@ -257,7 +258,6 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
       console.log('Token Error:', err);
     }
 
-    console.log('tokenData', tokenData);
     if (!tokenData?.error) {
       logo = tokenData.image.small;
     }
@@ -272,6 +272,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
       priceId: tokenData?.id || '',
       logo,
       network,
+      custom: true,
     }
 
     const asset = Object.keys(assets).find(assetId => assetId === newAsset.address);
@@ -284,6 +285,15 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   const removeCustomERC20Asset = (asset: IAssetInfoState): void => {
     store.dispatch(removeCustomAsset(asset));
     removeERC20AssetFn(asset);
+  }
+
+  const getCustomAssets = (): void => {
+    const { assets } = store.getState();
+    for (const asset in assets) {
+      if (assets[asset]?.custom) {
+        store.dispatch(addCustomAsset(assets[asset]));
+      }
+    }
   }
 
   const addERC20AssetFn = (asset: IAssetInfoState): void => {
@@ -334,6 +344,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
      fetchTokenInfo,
      addCustomERC20Asset,
      removeCustomERC20Asset,
+     getCustomAssets,
      fetchWalletNFTInfo,
      fetchSupportedAssets,
      searchERC20Assets,

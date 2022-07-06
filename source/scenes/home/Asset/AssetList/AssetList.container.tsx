@@ -46,6 +46,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
   const { constellationAssets, erc20assets, customAssets, searchAssets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
+  console.log('Error', error);
   const { activeWallet, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const activeNetworkAssets = useSelector(walletsSelectors.selectActiveNetworkAssets);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
@@ -139,6 +140,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
         onSearch={onSearch}
         activeWallet={activeWallet}
         activeNetworkAssets={activeNetworkAssets}
+        activeNetwork={activeNetwork}
       />
     </Container>
   );

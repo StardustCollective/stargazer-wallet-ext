@@ -37,7 +37,7 @@ import { COLORS } from 'assets/styles/_variables.native';
 
 const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, label, logo, selected, disabled = false, toggleItem }: IAssetWithToggle) => {
 
-  const iconStyle = logo.includes('constellation-logo') ? styles.dagIcon : styles.imageIcon;
+  const iconStyle = logo?.includes('constellation-logo') ? styles.dagIcon : styles.imageIcon;
 
   return (
     <Card style={styles.cardContainer} id={id} disabled>
