@@ -60,6 +60,14 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   const debouncedSearchTerm = useDebounce(searchValue, 500);
   const accountController = getAccountController();
 
+  const filterArrayById = (array: IAssetInfoState[]): IAssetInfoState[] => {
+    return [...new Map(array.map((item: IAssetInfoState) => [item.id, item])).values()];
+  }
+
+  const filterArrayByValue = (array: IAssetInfoState[], value: string): IAssetInfoState[] => {
+    return array?.filter(item => item?.label?.toLowerCase()?.includes(value) || item?.symbol?.toLowerCase()?.includes(value));
+  }
+
   useLayoutEffect(() => {
     const onRightIconClick = () => {
       linkTo('/asset/addCustom');
@@ -75,11 +83,11 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   useEffect(() => {
     let newDataArray = searchAssets?.length ? searchAssets : erc20assets;
-    let constellationDataArray = filteredArray.concat(customAssets);
+    let constellationDataArray = filteredArray?.concat(customAssets);
     if (searchValue) {
-      const searchLowerCase = searchValue.toLowerCase();
-      newDataArray = searchAssets?.length ? searchAssets : erc20assets.filter(item => item.label.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase));
-      constellationDataArray = constellationDataArray.filter(item => item.label.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase));
+      const searchLowerCase = searchValue?.toLowerCase();
+      newDataArray = searchAssets?.length ? searchAssets : filterArrayByValue(erc20assets, searchLowerCase);
+      constellationDataArray = filterArrayByValue(constellationDataArray, searchLowerCase);
     } else {
       if (searchAssets?.length) {
         accountController.assetsController.clearSearchAssets();
@@ -88,8 +96,9 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     
     let newAssetsArray = constellationDataArray;
     if (activeNetwork.Ethereum === 'mainnet') {
-      newAssetsArray = newAssetsArray.concat(newDataArray);
+      newAssetsArray = newAssetsArray?.concat(newDataArray);
     }
+    newAssetsArray = filterArrayById(newAssetsArray);
     setAllAssets(newAssetsArray);
   }, [erc20assets, searchAssets, searchValue])
 
