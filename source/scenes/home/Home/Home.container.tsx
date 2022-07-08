@@ -53,7 +53,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   const { wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-  const hasMainAccount = wallets.local.length && wallets.local.some((w) => w.type === KeyringWalletType.MultiChainWallet);
+  const hasMainAccount = !!wallets?.local?.length && wallets.local.some((w) => w.type === KeyringWalletType.MultiChainWallet);
   const [balanceObject, balance] = useTotalBalance();
 
   const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
