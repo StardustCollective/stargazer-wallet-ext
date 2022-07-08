@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import IAssetListState from 'state/assets/types';
+
+import { IAssetInfoState } from "state/assets/types";
 
 export interface IProviderInfoState {
   id: string;
@@ -16,7 +17,13 @@ export interface IProviderDataState {
 
 export interface ISupportedAssetsState {
   loading: boolean;
-  data: IAssetListState;
+  data: SupportedAssetSimplex[];
+  error: any;
+}
+
+export interface ISupportedAssetsFiltered {
+  loading: boolean;
+  data: IAssetInfoState[];
   error: any;
 }
 
@@ -77,8 +84,16 @@ export type GetQuoteResponse = {
   };
 };
 
+export type SupportedAssetSimplex = {
+  name: string;
+  ticker_symbol: string;
+  'memo/tag_field': string;
+  fixed_min_amount?: any,
+  networks: string[];
+}
+
 export type GetSupportedAssetsResponse = {
-  data: IAssetListState;
+  data: SupportedAssetSimplex[];
 };
 
 export enum Providers {
