@@ -48,14 +48,12 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
       <View>
         {isSeedWallet && (
           <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.formText} å>
-            This wallet will be removed from Stargazer. You will need to provide the recovery seed phrase in order to
-            restore it.
+            Are you sure you want to delete this wallet? It will be permanently deleted unless you have a backup saved.
           </TextV3.Description>
         )}
         {!isSeedWallet && (
           <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} ç>
-            This account will be removed from Stargazer. You will need to provide the private key in order to restore
-            it.
+            Are you sure you want to delete this account? It will be permanently deleted unless you have a backup saved.
           </TextV3.Description>
         )}
       </View>

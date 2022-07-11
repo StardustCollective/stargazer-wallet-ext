@@ -45,14 +45,12 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
         <span>
           {isSeedWallet && (
             <span>
-              This wallet will be removed from Stargazer. You will need to provide the recovery seed phrase in order to
-              restore it.
+              Are you sure you want to delete this wallet? It will be permanently deleted unless you have a backup saved.
             </span>
           )}
           {!isSeedWallet && (
             <span>
-              This account will be removed from Stargazer. You will need to provide the private key in order to restore
-              it.
+              Are you sure you want to delete this account? It will be permanently deleted unless you have a backup saved.
             </span>
           )}
         </span>
