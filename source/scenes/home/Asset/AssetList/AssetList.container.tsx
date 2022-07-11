@@ -61,7 +61,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   const accountController = getAccountController();
 
   const filterArrayById = (array: IAssetInfoState[]): IAssetInfoState[] => {
-    return [...new Map(array.map((item: IAssetInfoState) => [item.id, item])).values()];
+    return [...new Map(array.map((item: IAssetInfoState) => [item?.id, item])).values()];
   }
 
   const filterArrayByValue = (array: IAssetInfoState[], value: string): IAssetInfoState[] => {
