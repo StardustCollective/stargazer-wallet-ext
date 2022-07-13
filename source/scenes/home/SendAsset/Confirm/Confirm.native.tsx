@@ -84,7 +84,7 @@ const Confirm = ({
                         From
                       </TextV3.BodyStrong>
                       <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-                        {activeWallet?.label || ''} ({ellipsis(tempTx!.fromAddress)})
+                        {activeWallet?.label || ''} ({ellipsis(tempTx?.fromAddress)})
                       </TextV3.Caption>
                     </View>
                     <View style={styles.section}>
@@ -92,14 +92,14 @@ const Confirm = ({
                         To
                       </TextV3.BodyStrong>
                       <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-                        {tempTx!.toAddress}
+                        {tempTx?.toAddress}
                       </TextV3.Caption>
                     </View>
                     <View style={[styles.section, styles.transcationFee]}>
                       <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
                         Transaction Fee
                         <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-                          {'    '}{`${tempTx!.fee} ${feeUnit} (≈ ${getFeeAmount()})`}
+                          {'    '}{`${tempTx?.fee} ${feeUnit} (≈ ${getFeeAmount()})`}
                         </TextV3.Caption>
                       </TextV3.BodyStrong>
                     </View>

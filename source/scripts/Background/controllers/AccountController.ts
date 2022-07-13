@@ -3,7 +3,6 @@ import { BigNumber, ethers } from 'ethers';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 import store from 'state/store';
-import { initialState as tokenState } from 'state/assets';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import {
   changeActiveAsset,
@@ -41,9 +40,6 @@ import { getChainId } from './EthChainController/utils';
 
 // limit number of txs
 const TXS_LIMIT = 10;
-const ETH_TOKENS = Object.values(tokenState)
-  .filter((token) => token.type === AssetType.ERC20)
-  .map((token) => token.address);
 
 export class AccountController implements IAccountController {
   tempTx: ITransactionInfo | null;
@@ -77,6 +73,7 @@ export class AccountController implements IAccountController {
     account: KeyringWalletAccountState
   ): Promise<IAssetState[]> {
     const {
+      assets,
       vault: { activeNetwork },
     } = store.getState();
 
@@ -136,6 +133,10 @@ export class AccountController implements IAccountController {
         label: 'Ethereum',
         address: account.address,
       };
+      
+      const ETH_TOKENS = Object.values(assets)
+                                .filter((token) => token.type === AssetType.ERC20)
+                                .map((token) => token.address);
 
       const erc20Assets = await this.buildAccountERC20Tokens(account.address, ETH_TOKENS);
 
@@ -435,7 +436,7 @@ export class AccountController implements IAccountController {
       const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
 
       trxHash = newTx.hash;
-      this.txController.addPendingTx({
+      await this.txController.addPendingTx({
         txHash: newTx.hash,
         fromAddress: this.tempTx.fromAddress,
         toAddress: this.tempTx.toAddress,

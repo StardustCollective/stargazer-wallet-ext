@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray_dark,
   },
   secondaryOutlineTitle: {
-    color: COLORS.primary,
+    color: COLORS.primary_lighter_1,
   },
 });
 

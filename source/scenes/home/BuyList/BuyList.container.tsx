@@ -20,18 +20,19 @@ import BuyList from './BuyList';
 import { RootState } from 'state/store';
 import IProvidersState from 'state/providers/types';
 import IVaultState from 'state/vault/types';
+import IAssetListState from 'state/assets/types';
 
 const BuyListContainer: FC = () => {
   
   const linkTo = useLinkTo();
   const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
-  const assetsFiltered = supportedAssets.data ? Object.keys(supportedAssets.data)
-    .filter((assetId) => !!activeWallet?.assets?.find((asset) => asset?.id === assetId))
-    .reduce((obj: any, key: any) => {
-      obj[key] = supportedAssets.data[`${key}`];
-      return obj;
-    }, {}) : {};
+  const assets: IAssetListState = useSelector((state: RootState) => state.assets);
+  const supportedAssetsArray = supportedAssets?.data;
+  const assetsFiltered = assets && supportedAssetsArray ? Object.values(assets)
+    .filter((assetValues) => 
+        !!activeWallet?.assets?.find(asset => asset?.id === assetValues?.id) && 
+        !!supportedAssetsArray?.find(simplexItem => simplexItem?.ticker_symbol === assetValues?.symbol)) : [];
 
   const handleSelectAsset = async (assetId: string) => {
     linkTo(`/buyAsset?selected=${assetId}`);

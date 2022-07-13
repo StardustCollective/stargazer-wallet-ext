@@ -1,6 +1,5 @@
 import { Linking } from 'react-native';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn';
-import { showAlert } from './alertUtil';
 
 export const open = async (url: string) => {
   try {
@@ -37,7 +36,7 @@ export const open = async (url: string) => {
       })
     } else Linking.openURL(url)
   } catch (error) {
-    showAlert(error?.message, 'danger');
+    console.log(error);
   }
 }
 

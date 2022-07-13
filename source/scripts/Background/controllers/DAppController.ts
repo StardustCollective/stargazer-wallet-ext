@@ -37,7 +37,7 @@ class DAppController {
     const listening = state.dapp.listening;
     const listeningEvents = listening[origin];
 
-    if (!listeningEvents.includes('close')) {
+    if (!!listeningEvents && !listeningEvents.includes('close')) {
       console.log('notifySiteDisconnected includes close');
       return;
     }

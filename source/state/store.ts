@@ -18,6 +18,7 @@ import nfts from './nfts';
 import dapp from './dapp';
 import process from './process';
 import providers from './providers';
+import erc20assets from './erc20assets';
 
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -42,6 +43,7 @@ const store = configureStore({
     dapp,
     process,
     providers,
+    erc20assets,
   }),
   middleware,
   devTools: !isProd,
@@ -61,20 +63,25 @@ function updateState() {
   });
 }
 
-store.subscribe(
-  throttle(() => {
-    // every second we update store state
-    updateState();
-  }, 1000)
-);
-
 // initialize store from state
 if (isNative) {
-  MigrationController().then(() => {
-    rehydrateStore(store);
+  MigrationController().then(async () => {
+    await rehydrateStore(store);
+    store.subscribe(
+      throttle(() => {
+        // every second we update store state
+        updateState();
+      }, 1000)
+    );
   });
 } else {
   rehydrateStore(store);
+  store.subscribe(
+    throttle(() => {
+      // every second we update store state
+      updateState();
+    }, 1000)
+  );
 }
 
 export type RootState = ReturnType<typeof store.getState>;

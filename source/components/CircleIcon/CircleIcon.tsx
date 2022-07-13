@@ -8,7 +8,7 @@ interface ICircleIcon {
 }
 
 const CircleIcon: FC<ICircleIcon> = ({ logo, label }) => {
-  const uri = logo.startsWith('http') ? logo : `/${logo}`;
+  const uri = logo?.startsWith('http') ? logo : `/${logo}`;
 
   return (
     <div className={styles.logoWrapper}>

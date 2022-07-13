@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     paddingTop: 0,
-    paddingHorizontal: 36,
+    paddingHorizontal: 24,
     width: '100%',
     position: 'relative',
     backgroundColor: COLORS.gray_light_100,
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   subheading: {
     display: 'flex',
     flexDirection: 'column',
-    marginTop: 24,
+    marginTop: 16,
     width: '100%',
     padding: 0,
     alignItems: 'flex-start',

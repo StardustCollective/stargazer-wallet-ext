@@ -15,6 +15,7 @@ interface ITextInput extends Partial<OutlinedInputProps> {
   type?: 'text' | 'password' | 'number';
   variant?: string;
   visiblePassword?: boolean;
+  error?: boolean;
   control?: Control<FieldValues>;
 }
 
@@ -23,6 +24,7 @@ const TextInput: FC<ITextInput> = ({
   type = 'text',
   visiblePassword = false,
   variant = '',
+  error = false,
   endAdornment,
   ...otherProps
 }) => {
@@ -42,6 +44,7 @@ const TextInput: FC<ITextInput> = ({
       id={id}
       className={clsx(styles.textInput, variant)}
       type={inputType}
+      error={error}
       {...otherProps}
       endAdornment={
         endAdornment ||

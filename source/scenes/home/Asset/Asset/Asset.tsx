@@ -43,7 +43,7 @@ const AssetDetail: FC<IAssetSettings> = ({
               <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
                 {balanceText}{' '}
               </TextV3.HeaderDisplay>
-              <TextV3.Body>{assets[activeAsset.id].symbol}</TextV3.Body>
+              <TextV3.Body>{assets[activeAsset?.id]?.symbol}</TextV3.Body>
             </div>
             <div className={styles.fiatBalance}>
               <TextV3.Body>≈ {fiatAmount}</TextV3.Body>

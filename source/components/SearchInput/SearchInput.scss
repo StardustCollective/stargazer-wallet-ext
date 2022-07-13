@@ -1,0 +1,40 @@
+@import "~assets/styles/variables";
+
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  border: 2px solid #4F3A9C;
+
+  .input {
+    margin-left: 8px;
+    height: 44px;
+    width: 100%;
+    border-radius: 8px;
+    background-color: transparent;
+    border: none !important;
+    border-color: transparent;
+    outline: none;
+    caret-color: $white;
+    color: $white;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 400;
+    font-family: $rubik;
+  }
+
+  
+
+  .icon {
+    margin-left: 12px;
+    height: 18px;
+    width: 18px;
+    align-self: center;
+  }
+}
+
+::placeholder {
+  color: $gray;
+}

@@ -1,13 +1,15 @@
 import React, { FC } from 'react';
 import AssetItem from 'components/AssetItem';
-import StargazerIcon from 'assets/images/svg/stargazer.svg';
 import { INFTInfoState } from 'state/nfts/types';
 import IAssetPanel from './types';
 import styles from './AssetsPanel.scss';
+import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import SlidersIcon from 'assets/images/svg/sliders.svg'
 
 const AssetsPanel: FC<IAssetPanel> = ({
   activeNetworkAssets,
   handleSelectAsset,
+  handleAddTokens,
   assets,
   activeNFTAssets,
   nfts,
@@ -49,14 +51,19 @@ const AssetsPanel: FC<IAssetPanel> = ({
   return (
     <section className={styles.activity}>
       <div className={styles.content}>
-        {Object.keys(activeWallet.assets).length ? (
+        {Object.keys(activeWallet.assets).length && (
           <>{renderAssetList()}</>
-        ) : (
-          <>
-            <span className={styles.noTxComment}>You have no assets. Please add new Asset by Click + icon.</span>
-            <img src={StargazerIcon} className={styles.stargazer} alt="stargazer" height="167" width="auto" />
-          </>
         )}
+        <div className={styles.buttonContainer}>
+          <ButtonV3 
+            label="Manage Tokens" 
+            size={BUTTON_SIZES_ENUM.LARGE}
+            type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
+            leftIcon={<img src={`/${SlidersIcon}`} className={styles.icon} alt="Slider icon" />}
+            onClick={handleAddTokens} 
+            extraStyle={styles.button}
+          />
+        </div>
       </div>
     </section>
   );

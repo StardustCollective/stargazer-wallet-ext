@@ -60,6 +60,10 @@ const AssetsPanelContainer: FC = () => {
     linkTo('/asset');
   };
 
+  const handleAddTokens = () => {
+    linkTo('/asset/add');
+  };
+
   ///////////////////////
   // Render
   ///////////////////////
@@ -72,6 +76,7 @@ const AssetsPanelContainer: FC = () => {
       nfts={nfts}
       activeWallet={activeWallet}
       handleSelectAsset={handleSelectAsset}
+      handleAddTokens={handleAddTokens}
     />
   );
 };

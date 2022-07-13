@@ -21,7 +21,20 @@
     "skipLibCheck": true,
     "noResolve": false,
     "resolveJsonModule": true,
-    "baseUrl": "source"
+    "baseUrl": "source",
+    "paths": {
+      "components/*": ["components/*"],
+      "assets/*": ["assets/*"],
+      "constants/*": ["constants/*"],
+      "hooks/*": ["hooks/*"],
+      "navigation/*": ["navigation/*"],
+      "scenes/*": ["scenes/*"],
+      "scripts/*": ["scripts/*"],
+      "selectors/*": ["selectors/*"],
+      "state/*": ["state/*"],
+      "types/*": ["types/*"],
+      "utils/*": ["utils/*"],
+    }, 
   },
   "include": [
     "source", "test.ts",

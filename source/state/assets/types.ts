@@ -13,6 +13,7 @@ export interface IAssetInfoState {
   priceId?: string;
   decimals: number;
   address: string;
+  custom?: boolean;
   // contractAddress?: string;
 }
 
