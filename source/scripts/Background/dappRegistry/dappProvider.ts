@@ -122,6 +122,7 @@ class DappProvider {
         }
       );
     } catch (e) {
+      console.error('HandshakeRequestError', String(e), e);
       return { type: 'handshake', error: String(e) };
     }
   }
@@ -135,6 +136,7 @@ class DappProvider {
       this.assertProviderIsActivated();
       return await handleEventRequest(this, port, request, encodedRequest);
     } catch (e) {
+      console.error('EventRequestError', String(e), e);
       return { type: 'event', error: String(e) };
     }
   }
@@ -148,6 +150,7 @@ class DappProvider {
       this.assertProviderIsActivated();
       return await handleRpcRequest(this, port, request, encodedRequest);
     } catch (e) {
+      console.error('RpcRequestError', String(e), e);
       if (e instanceof Error) {
         return {
           type: 'rpc',
@@ -166,6 +169,7 @@ class DappProvider {
     try {
       return await handleImportRequest(this, port, request, encodedRequest);
     } catch (e) {
+      console.error('ImportRequestError', String(e), e);
       return { type: 'event', error: String(e) };
     }
   }
