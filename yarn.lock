@@ -1095,10 +1095,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bitfi/bitfi.js@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@bitfi/bitfi.js/-/bitfi.js-0.0.18.tgz#234a3167248c356f2b0fd382f66b1f8499da8d34"
-  integrity sha512-EtsrJk+xZJpWBw9O6OwlnCZ8rv8lYaJ9pXxMEtp95uhqXaxGsCe1bRflk/lAJ24B+vP+zCNT/uinP4rpmZGFGw==
+"@bitfi/bitfi.js@^0.1.8":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@bitfi/bitfi.js/-/bitfi.js-0.1.9.tgz#336a7f68fb22141f445a746e33ad091ab1768f16"
+  integrity sha512-TVAKGZ3usJlPib3nERVBV7W3ef6gxKpln6WkfNHx4hFoGpjInNFmGihI/P5PNYiDpI3W2wc/r06SSI/IR0ml6A==
   dependencies:
     "@types/ethereumjs-tx" "^2.0.0"
     "@types/ws" "^8.5.3"

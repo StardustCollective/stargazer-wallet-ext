@@ -35,7 +35,7 @@
     "@types/uuid": "^8.3.0",
     "@types/yup": "^0.29.9",
     "axios": "^0.26.1",
-    "@bitfi/bitfi.js": "^0.0.18",
+    "@bitfi/bitfi.js": "^0.1.8",
     "advanced-css-reset": "^1.1.1",
     "clsx": "^1.1.1",
     "date-fns": "^2.16.1",
