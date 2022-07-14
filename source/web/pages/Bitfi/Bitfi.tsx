@@ -251,23 +251,13 @@ const LedgerPage: FC = () => {
     setOpenAlert(false);
   }
 
-  const onImportClick = () => {
+  const onImportClick = async () => {
     setFetchingPage(true);
-    let port = browser.runtime.connect(undefined, { name: 'stargazer' });
-    port.postMessage({
-      type: 'IMPORT_LEDGER_ACCOUNTS',
-      data: {
-        asset: 'DAG',
-        args: [selectedAccounts],
-      }
-    });
-    port.onMessage.addListener((res: any) => {
-      if (res.data.result === 'success') {
-        setWalletState(WALLET_STATE_ENUM.SUCCESS);
-        setFetchingPage(false);
-        BitfiBridgeUtil.closeConnection();
-      };
-    });
+    const background = await browser.runtime.getBackgroundPage();
+    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any)
+    setWalletState(WALLET_STATE_ENUM.SUCCESS);
+    setFetchingPage(false);
+    BitfiBridgeUtil.closeConnection();
   }
 
   const onSignMessagePress = async () => {
