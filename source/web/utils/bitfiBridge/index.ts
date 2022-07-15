@@ -52,8 +52,7 @@ class BitfiBridgeUtil {
   };
 
   public buildTransaction = async (
-    amount: number, publicKey: string, bip44Index: number, 
-    fromAddress: string, toAddress: string, index?: number, fee?: number
+    amount: number, fromAddress: string, toAddress: string, index?: number, fee?: number
   ) => {
     const lastTxRef = await dag4.network.loadBalancerApi.getAddressLastAcceptedTransactionRef(fromAddress)
     

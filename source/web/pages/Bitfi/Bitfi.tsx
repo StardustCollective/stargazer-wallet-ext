@@ -128,7 +128,7 @@ const LedgerPage: FC = () => {
   const [waitingForLedger, setWaitingForLedger] = useState<boolean>(false);
   const [transactionSigned, setTransactionSigned] = useState<boolean>(false);
   const [deviceId, setDeviceId] = useState<string | string[]>('');
-
+  const [waitingMessage, setWaitingMessage] = useState<string>('Waiting For Bitfi');
   const [message, setMessage] = useState<string>('')
   const [code] = useState<string>('')
   const [error] = useState<string>('')
@@ -260,7 +260,7 @@ const LedgerPage: FC = () => {
   const onImportClick = async () => {
     setFetchingPage(true);
     const background = await browser.runtime.getBackgroundPage();
-    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any, deviceId)
+    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any, deviceId as string)
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     BitfiBridgeUtil.closeConnection();
@@ -281,7 +281,7 @@ const LedgerPage: FC = () => {
     
     try{
       setWaitingForLedger(true);
-      await BitfiBridgeUtil.requestPermissions();
+      await BitfiBridgeUtil.requestPermissions(deviceId as string);
       const signature = await BitfiBridgeUtil.signMessage(message);
       BitfiBridgeUtil.closeConnection();
       const signatureEvent = new CustomEvent('messageSigned', {
@@ -338,7 +338,10 @@ const LedgerPage: FC = () => {
 
     try{
       setWaitingForLedger(true);
-      await BitfiBridgeUtil.requestPermissions();
+      await BitfiBridgeUtil.requestPermissions(
+        deviceId as string, 
+        (message) => { setWaitingMessage(message); },
+      );
       const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to);
       const hash = await dag4.network.loadBalancerApi.postTransaction(signedTX);
       if (hash) {
@@ -421,12 +424,13 @@ const LedgerPage: FC = () => {
          <SignView
          amount={amount}
          fee={fee}
-         deviceId={deviceId}
+         deviceId={deviceId as string}
          fromAddress={from}
          toAddress={to}
          waiting={waitingForLedger}
          onSignPress={onSignPress}
          transactionSigned={transactionSigned}
+         waitingMessage={waitingMessage}
          />
         </>
       );
