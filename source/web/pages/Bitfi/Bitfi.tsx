@@ -127,7 +127,7 @@ const LedgerPage: FC = () => {
   const [startIndex, setStartIndex] = useState<number>(0);
   const [waitingForLedger, setWaitingForLedger] = useState<boolean>(false);
   const [transactionSigned, setTransactionSigned] = useState<boolean>(false);
-  
+  const [deviceId, setDeviceId] = useState<string | string[]>('');
 
   const [message, setMessage] = useState<string>('')
   const [code] = useState<string>('')
@@ -139,7 +139,12 @@ const LedgerPage: FC = () => {
 
     const {
       route,
+      deviceId: id,
     } = queryString.parse(location.search);
+
+    if(id){
+      setDeviceId(id);
+    }
 
     if (route === ROUTES.SIGN_TRANSACTION) {
       setWalletState(WALLET_STATE_ENUM.SIGN);
@@ -236,6 +241,7 @@ const LedgerPage: FC = () => {
       // Close any open alerts
       // Request permission to access the ledger device.
       setWalletState(WALLET_STATE_ENUM.BITFI_SIGNIN);
+      setDeviceId(deviceId);
       await BitfiBridgeUtil.requestPermissions(deviceId, setMessage);
       // Get the initial page of the account data
       await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
@@ -254,7 +260,7 @@ const LedgerPage: FC = () => {
   const onImportClick = async () => {
     setFetchingPage(true);
     const background = await browser.runtime.getBackgroundPage();
-    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any)
+    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any, deviceId)
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     BitfiBridgeUtil.closeConnection();
@@ -415,6 +421,7 @@ const LedgerPage: FC = () => {
          <SignView
          amount={amount}
          fee={fee}
+         deviceId={deviceId}
          fromAddress={from}
          toAddress={to}
          waiting={waitingForLedger}

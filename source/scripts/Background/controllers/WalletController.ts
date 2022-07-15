@@ -180,7 +180,7 @@ class WalletController implements IWalletController {
 
   };
 
-  async importHardwareWalletAccounts(accountItems: AccountItem[]) {
+  async importHardwareWalletAccounts(accountItems: AccountItem[], deviceId?: string) {
 
     for (let i = 0; i < accountItems.length; i++) {
       const state = store.getState();
@@ -209,6 +209,7 @@ class WalletController implements IWalletController {
         // the first account as 1 and not 0.
         label: `${label} ${id}`,
         type: accountItem.type,
+        deviceId,
         accounts: [
           {
             address: accountItem.address,
