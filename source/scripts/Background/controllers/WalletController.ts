@@ -209,12 +209,12 @@ class WalletController implements IWalletController {
         // the first account as 1 and not 0.
         label: `${label} ${id}`,
         type: accountItem.type,
-        deviceId,
         accounts: [
           {
             address: accountItem.address,
             network: KeyringNetwork.Constellation,
             publicKey: accountItem!.publicKey,
+            deviceId,
           },
         ],
         supportedAssets: [KeyringAssetType.DAG],
