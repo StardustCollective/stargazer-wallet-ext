@@ -1,6 +1,6 @@
 import { StargazerChain } from 'scripts/common';
 
-export type SignatureConsent = {
+export type TypedSignatureRequest = {
   chain: StargazerChain;
   signer: string;
   content: string;

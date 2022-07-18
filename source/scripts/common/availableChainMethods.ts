@@ -42,6 +42,12 @@ const AvailableChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: StargazerChain.ETHEREUM,
+    method: AvailableMethods.eth_signTypedData_v4,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: StargazerChain.ETHEREUM,
     method: AvailableMethods.net_version,
     proxied: true,
     permissions: [],

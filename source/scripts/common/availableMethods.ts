@@ -34,6 +34,7 @@ enum AvailableMethods {
   eth_protocolVersion = 'eth_protocolVersion',
   eth_uninstallFilter = 'eth_uninstallFilter',
   eth_signTypedData = 'eth_signTypedData',
+  eth_signTypedData_v4 = 'eth_signTypedData_v4', // Alias of eth_signTypedData
 
   /* Constellation */
   dag_chainId = 'dag_chainId',

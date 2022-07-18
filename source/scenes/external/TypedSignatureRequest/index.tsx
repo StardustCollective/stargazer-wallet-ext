@@ -18,13 +18,13 @@ import CardLayout from 'scenes/external/Layouts/CardLayout'
 
 import styles from './index.module.scss';
 
-import { SignatureConsent } from './types';
+import { TypedSignatureRequest } from './types';
 
 //////////////////////
 // Component
 /////////////////////
 
-const SignatureConsentScreen = () => {
+const TypedSignatureRequestScreen = () => {
   //////////////////////
   // Hooks
   /////////////////////
@@ -32,8 +32,8 @@ const SignatureConsentScreen = () => {
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { signatureConsent }:
-    { signatureConsent: SignatureConsent } = JSON.parse(stringData as string);
+  const { signatureConsent: signatureRequest }:
+    { signatureConsent: TypedSignatureRequest } = JSON.parse(stringData as string);
 
 
   //////////////////////
@@ -43,7 +43,7 @@ const SignatureConsentScreen = () => {
   const onNegativeButtonClick = async () => {
     const background = await browser.runtime.getBackgroundPage();
     const { windowId } = queryString.parse(window.location.search);
-    const denied = new CustomEvent('signatureConsentResult', {
+    const denied = new CustomEvent('signTypedMessageResult', {
       detail: { windowId, result: false }
     });
 
@@ -56,7 +56,7 @@ const SignatureConsentScreen = () => {
 
     const { windowId } = queryString.parse(window.location.search);
 
-    const approved = new CustomEvent('signatureConsentResult', {
+    const approved = new CustomEvent('signTypedMessageResult', {
       detail: { windowId, result: true }
     });
 
@@ -86,7 +86,7 @@ const SignatureConsentScreen = () => {
             Account
           </label>
           <div>
-            {signatureConsent.signer}
+            {signatureRequest.signer}
           </div>
         </section>
         <section className={styles.message}>
@@ -94,15 +94,15 @@ const SignatureConsentScreen = () => {
             Message
           </label>
           <div>
-            {signatureConsent.content}
+            {signatureRequest.content}
           </div>
         </section>
-        {signatureConsent.data && Object.keys(signatureConsent.data).length > 0 && <section className={styles.metadata}>
+        {signatureRequest.data && Object.keys(signatureRequest.data).length > 0 && <section className={styles.metadata}>
           <label>
             Metadata
           </label>
           <div>
-            {Object.entries(signatureConsent.data).map(
+            {Object.entries(signatureRequest.data).map(
               ([key, value]) => (<small>{key} = {value}</small>)
             )}
           </div>
@@ -113,4 +113,4 @@ const SignatureConsentScreen = () => {
 };
 
 export * from './types'
-export default SignatureConsentScreen;
+export default TypedSignatureRequestScreen;

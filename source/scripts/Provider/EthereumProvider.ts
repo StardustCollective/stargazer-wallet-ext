@@ -21,7 +21,7 @@ import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { getERC20DataDecoder } from 'utils/ethUtil';
 import { getInfuraProvider } from 'utils/ethersUtil';
-import { SignatureConsent } from 'scenes/external/SignatureConsent';
+import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { getChainId } from 'scripts/Background/controllers/EthChainController/utils';
 
 import type { DappProvider } from '../Background/dappRegistry';
@@ -243,7 +243,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'address'");
       }
 
-      if (assetAccount.address !== address) {
+      if (assetAccount.address.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
         throw new Error('The active account is not the requested');
       }
 
@@ -291,7 +291,12 @@ export class EthereumProvider implements IRpcChainRequestHandler {
       return signatureEvent.detail.signature.hex;
     }
 
-    if (request.method === AvailableMethods.eth_signTypedData) {
+    if (
+      [
+        AvailableMethods.eth_signTypedData,
+        AvailableMethods.eth_signTypedData_v4,
+      ].includes(request.method)
+    ) {
       if (!activeWallet) {
         throw new Error('There is no active wallet');
       }
@@ -311,6 +316,14 @@ export class EthereumProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'address'");
       }
 
+      if (typeof data === 'string') {
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          throw new Error("Bad argument 'data' => " + String(e));
+        }
+      }
+
       if (typeof data !== 'object' || data === null) {
         throw new Error("Bad argument 'data'");
       }
@@ -319,7 +332,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'address'");
       }
 
-      if (assetAccount.address !== address) {
+      if (assetAccount.address.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
         throw new Error('The active account is not the requested');
       }
 
@@ -334,7 +347,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'data' => " + String(e));
       }
 
-      const signatureConsent: SignatureConsent = {
+      const signatureConsent: TypedSignatureRequest = {
         chain: StargazerChain.ETHEREUM,
         signer: address,
         content: JSON.stringify(data.message, null, 2),
@@ -361,9 +374,9 @@ export class EthereumProvider implements IRpcChainRequestHandler {
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
         port,
-        'signatureConsentResult',
+        'signTypedMessageResult',
         undefined,
-        'signatureConsent',
+        'signTypedMessage',
         signatureData,
         windowType,
         windowUrl,
