@@ -96,7 +96,7 @@ class MasterController {
       height,
       type,
       top: 0,
-      left: currentWindow.width - 372,
+      left: currentWindow.width - 600,
     });
   }
 }

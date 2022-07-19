@@ -28,6 +28,7 @@ export type StargazerSignatureRequest = {
 
 // Constants
 const LEDGER_URL = '/ledger.html';
+const BITFI_URL = '/bitfi.html';
 const EXTERNAL_URL = '/external.html';
 const WINDOW_TYPES: Record<string, Windows.CreateType> = {
   popup: 'popup',
@@ -200,24 +201,32 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     dappProvider: DappProvider,
     port: Runtime.Port
   ) {
+    console.log("StargazerProvider.ts::handleNonProxiedRequest::Executed");
     const { vault } = store.getState();
 
-    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger];
+    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
-    const windowUrl =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
-        ? LEDGER_URL
-        : EXTERNAL_URL;
+    console.log("Active Wallet: ");
+    console.log(activeWallet);
+
+    let windowUrl = EXTERNAL_URL;
+    if(activeWallet.type === KeyringWalletType.LedgerAccountWallet){
+      windowUrl = LEDGER_URL;
+    }else if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
+      windowUrl = BITFI_URL;
+    }
     const windowType =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
+      activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
+      activeWallet.type === KeyringWalletType.BitfiAccountWallet
         ? WINDOW_TYPES.normal
         : WINDOW_TYPES.popup;
     const windowSize =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
-        ? { width: 1000, height: 1000 }
+      activeWallet.type === KeyringWalletType.LedgerAccountWallet||
+      activeWallet.type === KeyringWalletType.BitfiAccountWallet
+        ? { width: 600, height: 1000 }
         : { width: 372, height: 600 };
 
     if (request.method === AvailableMethods.dag_chainId) {
