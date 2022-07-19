@@ -31,8 +31,8 @@ class BitfiBridgeUtil {
     startIndex: number
   ): Promise<LedgerAccount[]> => {
     //uncomment for multiple accounts
-    const indexes = Array.from({length: this.NUMBER_OF_ACCOUNTS}, (_, index) => index + startIndex);
-    // const indexes = [0]
+    // const indexes = Array.from({length: this.NUMBER_OF_ACCOUNTS}, (_, index) => index + startIndex);
+    const indexes = [0];
 
     const accounts = await this.bitfiBridge.getAccounts('dag', indexes, false, REQUEST_TIMOUT_MSEC);
     const publicKeys = await this.bitfiBridge.getPublicKeys('dag', indexes, REQUEST_TIMOUT_MSEC);
