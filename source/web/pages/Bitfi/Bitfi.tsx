@@ -2,7 +2,7 @@
 // Module Imports
 /////////////////////////
 
-import React, { FC, useState, useEffect} from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { makeStyles } from '@material-ui/core/styles'
@@ -57,7 +57,7 @@ const BITFI_ERROR_STRINGS = {
 const ALERT_MESSAGES_STRINGS = {
   DEFAULT: 'Error: Please contact support.',
   INVLAID_DEVICE_ID: 'Error: Please input a valid device ID.',
-  REJECTED : 'Error: Request has been rejected by user.',
+  REJECTED: 'Error: Request has been rejected by user.',
 }
 
 // States
@@ -123,6 +123,7 @@ const LedgerPage: FC = () => {
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [alertSeverity, setAlertSeverity] = useState<Color>('success');
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
+  const [checkBoxesState, setCheckBoxesState] = useState<boolean[]>([]);
   const [fetchingPage, setFetchingPage] = useState<boolean>(false);
   const [startIndex, setStartIndex] = useState<number>(0);
   const [waitingForLedger, setWaitingForLedger] = useState<boolean>(false);
@@ -133,7 +134,7 @@ const LedgerPage: FC = () => {
   const [code] = useState<string>('')
   const [error] = useState<string>('')
 
-  useEffect(() => {}, [selectedAccounts])
+  useEffect(() => { }, [selectedAccounts])
 
   useEffect(() => {
 
@@ -142,27 +143,28 @@ const LedgerPage: FC = () => {
       deviceId: id,
     } = queryString.parse(location.search);
 
-    if(id){
+    if (id) {
       setDeviceId(id);
     }
 
     if (route === ROUTES.SIGN_TRANSACTION) {
       setWalletState(WALLET_STATE_ENUM.SIGN);
-    }else if(route === ROUTES.SIGN_MESSAGE){
+    } else if (route === ROUTES.SIGN_MESSAGE) {
       setWalletState(WALLET_STATE_ENUM.MESSAGE_SIGNING);
     }
 
   }, []);
 
   useEffect(() => {
-    if(accountData.length){
+    if (accountData.length) {
       setSelectedAccounts(() => {
-        return [{ 
-          id: 0, 
+        return [{
+          id: 0,
           type: KeyringWalletType.BitfiAccountWallet,
-          publicKey: accountData[0].publicKey, 
-          address: accountData[0].address, 
-          balance: '' }];
+          publicKey: accountData[0].publicKey,
+          address: accountData[0].address,
+          balance: ''
+        }];
       })
     }
   }, [accountData])
@@ -209,15 +211,15 @@ const LedgerPage: FC = () => {
     let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
     let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
 
-    if(error.includes(BITFI_ERROR_STRINGS.INVALID_HEX_STRING)){
+    if (error.includes(BITFI_ERROR_STRINGS.INVALID_HEX_STRING)) {
       errorMessage = ALERT_MESSAGES_STRINGS.INVLAID_DEVICE_ID;
-    }else if(error.includes(BITFI_ERROR_STRINGS.INVLAID_DEVICE_ID) ||
+    } else if (error.includes(BITFI_ERROR_STRINGS.INVLAID_DEVICE_ID) ||
       error.includes(BITFI_ERROR_STRINGS.CANNOT_READ_PROPERTIES)
-    ){
+    ) {
       errorMessage = ALERT_MESSAGES_STRINGS.INVLAID_DEVICE_ID;
-    } else if(error.includes(BITFI_ERROR_STRINGS.REJECTED) || 
+    } else if (error.includes(BITFI_ERROR_STRINGS.REJECTED) ||
       error.includes(BITFI_ERROR_STRINGS.ERROR_CODE_ZERO)
-    ){
+    ) {
       errorMessage = ALERT_MESSAGES_STRINGS.REJECTED;
     }
 
@@ -235,7 +237,7 @@ const LedgerPage: FC = () => {
   }
 
   // Handles the click to the Connect with Ledger Button
-  
+
   const onConnectClick = async (deviceId: string) => {
     try {
       // Close any open alerts
@@ -257,9 +259,48 @@ const LedgerPage: FC = () => {
     setOpenAlert(false);
   }
 
+  const onPreviousClick = async () => {
+    await getAccountData(PAGING_ACTIONS_ENUM.PREVIOUS);
+  }
+
+  const onNextClick = async () => {
+    await getAccountData(PAGING_ACTIONS_ENUM.NEXT);
+  }
+
+  const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
+    if (checked) {
+      console.log("Key: ");
+      console.log(key);
+      setSelectedAccounts((state) => {
+        return [...state, {
+          deviceIndex: key - 1,
+          type: KeyringWalletType.BitfiAccountWallet,
+          publicKey: account.publicKey, 
+          address: account.address, 
+          balance: '' 
+        }];
+      });
+      console.log('Selected Accounts: ');
+      console.log(selectedAccounts);
+    } else {
+      setSelectedAccounts((state) => {
+        _.remove(state, { address: account.address })
+        return [...state];
+      })
+    }
+    setCheckBoxesState((state: boolean[]) => {
+      state[key] = checked;
+      return [...state];
+    })
+  }
+
   const onImportClick = async () => {
     setFetchingPage(true);
     const background = await browser.runtime.getBackgroundPage();
+
+    console.log("Selected Accounts: ");
+    console.log(selectedAccounts);
+
     background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any, deviceId as string)
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
@@ -273,16 +314,20 @@ const LedgerPage: FC = () => {
       windowId
     } = queryString.parse(location.search) as any;
 
-    const jsonData  = JSON.parse(data);
-    const message   = jsonData.signatureRequestEncoded;
+    const jsonData = JSON.parse(data);
+    const message = jsonData.signatureRequestEncoded;
     // const walletId  = jsonData.walletId;
     const publicKey = jsonData.publicKey;
     const background = await browser.runtime.getBackgroundPage();
-    
-    try{
+
+    try {
       setWaitingForLedger(true);
-      await BitfiBridgeUtil.requestPermissions(deviceId as string);
-      const signature = await BitfiBridgeUtil.signMessage(message);
+      console.log("Device ID: " + deviceId);
+      await BitfiBridgeUtil.requestPermissions(
+        deviceId as string,
+        (message) => { setWaitingMessage(message); },
+      );
+      const signature = await BitfiBridgeUtil.signMessage(message, 0);
       BitfiBridgeUtil.closeConnection();
       const signatureEvent = new CustomEvent('messageSigned', {
         detail: {
@@ -295,10 +340,10 @@ const LedgerPage: FC = () => {
           }
         }
       });
-  
+
       background.dispatchEvent(signatureEvent);
       window.close();
-    } catch(error: any) {
+    } catch (error: any) {
       showAlert(error.code.toString());
       setWaitingForLedger(false);
       BitfiBridgeUtil.closeConnection();
@@ -336,10 +381,10 @@ const LedgerPage: FC = () => {
       to,
     } = queryString.parse(location.search) as any;
 
-    try{
+    try {
       setWaitingForLedger(true);
       await BitfiBridgeUtil.requestPermissions(
-        deviceId as string, 
+        deviceId as string,
         (message) => { setWaitingMessage(message); },
       );
       const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to);
@@ -350,7 +395,7 @@ const LedgerPage: FC = () => {
       setWaitingForLedger(false);
       setTransactionSigned(true);
       BitfiBridgeUtil.closeConnection();
-    } catch(error: any) {
+    } catch (error: any) {
       showAlert(error.code.toString());
       setWaitingForLedger(false)
       BitfiBridgeUtil.closeConnection();
@@ -366,21 +411,21 @@ const LedgerPage: FC = () => {
     if (walletState === WALLET_STATE_ENUM.BITFI_SIGNIN) {
       return (
         <>
-          <ConnectBitfiView 
-            message={message} 
-            error={error} 
-            code={code} 
+          <ConnectBitfiView
+            message={message}
+            error={error}
+            code={code}
             onBack={() => setWalletState(WALLET_STATE_ENUM.LOCKED)}
           />
         </>
       )
-    } 
+    }
     else if (walletState === WALLET_STATE_ENUM.LOCKED) {
-      
+
       return (
         <>
-          <ConnectView 
-            onConnectClick={onConnectClick} 
+          <ConnectView
+            onConnectClick={onConnectClick}
             onConnectError={onConnectError}
           />
         </>
@@ -398,7 +443,11 @@ const LedgerPage: FC = () => {
           <AccountsView
             onCancelClick={onCancelClick}
             onImportClick={onImportClick}
+            onNextClick={onNextClick}
+            onPreviousClick={onPreviousClick}
+            onCheckboxChange={onCheckboxChange}
             accountData={accountData}
+            checkBoxesState={checkBoxesState}
             fetchingPage={fetchingPage}
             startIndex={startIndex}
           />
@@ -421,20 +470,20 @@ const LedgerPage: FC = () => {
 
       return (
         <>
-         <SignView
-         amount={amount}
-         fee={fee}
-         deviceId={deviceId as string}
-         fromAddress={from}
-         toAddress={to}
-         waiting={waitingForLedger}
-         onSignPress={onSignPress}
-         transactionSigned={transactionSigned}
-         waitingMessage={waitingMessage}
-         />
+          <SignView
+            amount={amount}
+            fee={fee}
+            deviceId={deviceId as string}
+            fromAddress={from}
+            toAddress={to}
+            waiting={waitingForLedger}
+            onSignPress={onSignPress}
+            transactionSigned={transactionSigned}
+            waitingMessage={waitingMessage}
+          />
         </>
       );
-    }else if( walletState === WALLET_STATE_ENUM.MESSAGE_SIGNING){
+    } else if (walletState === WALLET_STATE_ENUM.MESSAGE_SIGNING) {
 
       const {
         data,
@@ -442,14 +491,18 @@ const LedgerPage: FC = () => {
 
       const parsedData = JSON.parse(data);
       const message = JSON.parse(atob(parsedData.signatureRequestEncoded));
+      const deviceId = parsedData.deviceId;
+      setDeviceId(deviceId);
 
       return (
         <>
-          <MessageSigning 
-            walletLabel={parsedData.walletLabel} 
+          <MessageSigning
+            waitingMessage={waitingMessage}
+            walletLabel={parsedData.walletLabel}
+            deviceId={deviceId}
             message={message}
             waiting={waitingForLedger}
-            onSignMessagePress={onSignMessagePress} 
+            onSignMessagePress={onSignMessagePress}
             messageSigned={transactionSigned}
           />
         </>

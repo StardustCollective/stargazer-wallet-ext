@@ -201,18 +201,19 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     dappProvider: DappProvider,
     port: Runtime.Port
   ) {
-    console.log("StargazerProvider.ts::handleNonProxiedRequest::Executed");
-    const { vault } = store.getState();
 
+    const { vault } = store.getState();
+    let windowUrl = EXTERNAL_URL;
+    let deviceId = "";
     const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
-    console.log("Active Wallet: ");
-    console.log(activeWallet);
+    if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
+      deviceId =  activeWallet.accounts[0].deviceId;
+    };
 
-    let windowUrl = EXTERNAL_URL;
     if(activeWallet.type === KeyringWalletType.LedgerAccountWallet){
       windowUrl = LEDGER_URL;
     }else if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
@@ -288,7 +289,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         signatureRequestEncoded,
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
-        publicKey: '',
+        deviceId,
       };
 
       // If the type of account is Ledger send back the public key so the
