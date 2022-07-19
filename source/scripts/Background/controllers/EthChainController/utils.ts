@@ -25,20 +25,6 @@ export const isTestnet = (network: EthNetworkId) => {
   return testnets.includes(network);
 };
 
-export const getInfuraUrl = (network: EthNetworkId): string => {
-  switch (network) {
-    case 'mainnet':
-      return 'https://mainnet.infura.io/v3/';
-    case 'ropsten':
-      return 'https://ropsten.infura.io/v3/';
-    case 'rinkeby':
-      return 'https://rinkeby.infura.io/v3/';
-      
-    default:
-      return 'https://mainnet.infura.io/v3/';
-  }
-}
-
 export const getChainId = (network: EthNetworkId): number => {
   switch (network) {
     case 'mainnet':

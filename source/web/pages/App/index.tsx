@@ -26,7 +26,6 @@ store.subscribe(
 );
 
 if(!process.env.ETHERSCAN_API_KEY ||
-   !process.env.INFURA_CREDENTIAL ||
    !process.env.TEST_PRIVATE_KEY){
     throw 'Missing .env file or missing definition';
 }

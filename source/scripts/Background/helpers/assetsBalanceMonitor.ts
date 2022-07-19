@@ -2,7 +2,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
-import { INFURA_CREDENTIAL } from 'utils/envUtil';
 import { updatefetchDagBalanceState } from 'state/process';
 import { ProcessStates } from 'state/process/enums';
 import { getAccountController } from 'utils/controllersUtils';
@@ -24,9 +23,7 @@ export class AssetsBalanceMonitor {
 
   private dagBalIntervalId: any;
 
-  private ethAccountTracker = new AccountTracker({
-    infuraCreds: { projectId: INFURA_CREDENTIAL || '' },
-  });
+  private ethAccountTracker = new AccountTracker();
 
   private subscription: Subscription;
 

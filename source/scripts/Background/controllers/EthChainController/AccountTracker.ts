@@ -1,6 +1,5 @@
-import { ethers } from 'ethers';
+import * as ethers from 'ethers';
 import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
-import { InfuraCreds } from './types';
 
 type TokenBalances = {
   [address: string]: string;
@@ -12,28 +11,17 @@ type TokenInfo = {
   balance?: string
 }
 
-type AccountTrackerParams = {
-  infuraCreds: InfuraCreds;
-}
-
 export class AccountTracker {
 
-  private infuraProjectId: string;
   private chainId: number;
   private isRunning = false;
   private accounts: TokenInfo[];
-  private provider: ethers.providers.InfuraProvider;
+  private provider: ethers.providers.JsonRpcProvider;
   private callback: (e: string, t:TokenBalances) => void;
   private ethAddress: string;
   private debounceTimeSec: number;
   private timeoutId: any;
   private lastBlock: number;
-
-  constructor ({ infuraCreds }: AccountTrackerParams) {
-    if (infuraCreds.projectId) {
-      this.infuraProjectId = infuraCreds.projectId;
-    }
-  }
 
   config (ethAddress: string, accounts: TokenInfo[], chainId = 1, callback: (e: string, t:TokenBalances) => void, debounceTimeSec = 1) {
     this.ethAddress = ethAddress;
@@ -65,7 +53,8 @@ export class AccountTracker {
     if (this.isRunning) {
       this.stop();
     }
-    this.provider = new ethers.providers.InfuraProvider(this.chainId, this.infuraProjectId);
+    // TODO-349: Update provider dinamically
+    this.provider = new ethers.providers.JsonRpcProvider('');
     this.isRunning = true;
     this.runInterval();
   }

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
-import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
+import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
@@ -27,6 +27,10 @@ const initialState: IVaultState = {
   activeNetwork: {
     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
+    // TODO-349: Check if these values are set on the migration process.
+    'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
+    'BSC': BSC_NETWORK.bsc.id,
+    'Polygon': POLYGON_NETWORK.matic.id,
   },
   version: '2.1.1',
 };
@@ -155,7 +159,7 @@ const VaultState = createSlice({
         delete state.activeAsset;
       }
     },
-    changeActiveNetwork(state: IVaultState, action: PayloadAction<{ network: KeyringNetwork; chainId: string }>) {
+    changeActiveNetwork(state: IVaultState, action: PayloadAction<{ network: string; chainId: string }>) {
       state.activeNetwork = {
         ...state.activeNetwork,
         [action.payload.network]: action.payload.chainId,

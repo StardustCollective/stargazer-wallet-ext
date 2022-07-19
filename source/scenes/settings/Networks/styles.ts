@@ -7,10 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
     width: '100%',
-    paddingTop: 0,
-    paddingBottom: 24,
-    paddingRight: 24,
-    paddingLeft: 24,
+    padding: 16,
     display: 'flex',
     flexDirection: 'column',
   },
@@ -21,6 +18,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: COLORS.gray_dark,
   },
+  containerBase: {
+    marginBottom: 8,
+  }
 });
 
 export default styles;

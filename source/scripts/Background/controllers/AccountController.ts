@@ -123,8 +123,7 @@ export class AccountController implements IAccountController {
       this.ethClient = new EthChainController({
         network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
         privateKey,
-        etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-        infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
+        etherscanApiKey: process.env.ETHERSCAN_API_KEY
       });
 
       const ethAsset = {

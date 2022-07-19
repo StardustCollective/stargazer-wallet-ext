@@ -28,6 +28,9 @@ export type Transaction = DAGTransaction | any;
 export type ActiveNetwork = {
   [KeyringNetwork.Constellation]: string;
   [KeyringNetwork.Ethereum]: EthNetworkId;
+  'Avalanche': string;
+  'BSC': string;
+  'Polygon': string;
 };
 
 export interface IAssetState {

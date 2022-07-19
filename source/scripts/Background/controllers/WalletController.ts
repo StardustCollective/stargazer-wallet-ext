@@ -301,7 +301,7 @@ class WalletController implements IWalletController {
     return dappController.notifyAccountsChanged(accounts)
   }
 
-  async switchNetwork(network: KeyringNetwork, chainId: string) {
+  async switchNetwork(network: string, chainId: string) {
     store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
@@ -319,6 +319,21 @@ class WalletController implements IWalletController {
     if (network === KeyringNetwork.Ethereum) {
       this.account.txController.setNetwork(chainId as EthNetworkId);
       this.account.ethClient.setNetwork(chainId as EthNetworkId);
+      this.account.assetsController.setNetwork(chainId as EthNetworkId);
+    }
+
+    // TODO-349: Check if we need to add some logic here
+    if (network === 'Avalanche') {
+      // Do AVALANCHE stuff
+      console.log('Avalanche - ', chainId);
+    }
+    if (network === 'BSC') {
+      // Do BSC stuff
+      console.log('BSC - ', chainId);
+    }
+    if (network === 'Polygon') {
+      // Do Polygon stuff
+      console.log('Polygon - ', chainId);
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));

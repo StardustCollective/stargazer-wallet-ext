@@ -12,12 +12,9 @@ export type EthereumNetwork = {
   value: EthNetworkValue;
   label: string;
   chainId: number;
-  etherscan: string;
-}
-
-export type InfuraCreds = {
-  projectId: string;
-  projectSecret?: string;
+  explorer: string;
+  rpcEndpoint: string;
+  explorerAPI: string;
 }
 
 export type GasPrices = Record<FeeOptionKey, BaseAmount>;
@@ -44,13 +41,12 @@ export type EthChainControllerParams = {
   network?: EthNetworkId;
   etherscanApiKey?: string;
   privateKey?: string;
-  infuraCreds?: InfuraCreds;
 };
 
 export interface IEthChainController extends ChainsController {
   estimateTokenTransferGasLimit: (recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) => Promise<number>;
-  getTokenInfo: (address: string, chainId: number) => Promise<GetTokenInfoResponse | null>;
-  waitForTransaction: (hash: string, chainId: number) => Promise<ethers.providers.TransactionReceipt>;
+  getTokenInfo: (address: string) => Promise<GetTokenInfoResponse | null>;
+  waitForTransaction: (hash: string) => Promise<ethers.providers.TransactionReceipt>;
   transfer: (txParams: TxParams & { feeOptionKey?: FeeOptionKey; gasPrice?: BaseAmount; gasLimit?: BigNumber; nonce: string; }) => Promise<TransactionResponse>;
   getWallet: (walletIndex: number) => Wallet;
   estimateGasPrices: () => Promise<GasPrices>;

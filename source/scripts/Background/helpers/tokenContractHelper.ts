@@ -12,6 +12,7 @@ type AddressBalanceMap = {
   [address: string]: BalanceMap;
 }
 
+// TODO-349: Update object with all contract addresses
 const NETWORK_TO_CONTRACT_MAP = {
   1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
   3: '0x9a5f9a99054a513d1d6d3eb1fef7d06981b4ba9d',
@@ -55,6 +56,8 @@ export class TokenContractHelper {
       provider
     );
 
+    // TODO-349: Check why "balances" fails sometimes. 
+    // What happens if "balances" is not defined in the contract? 
     const balances = await contract.balances([ethAddress], tokenContractAddress);
 
     return this.formatAddressBalances(balances, [ethAddress], tokenContractAddress)[ethAddress];

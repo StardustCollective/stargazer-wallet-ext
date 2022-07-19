@@ -1,13 +1,17 @@
-import { IOption } from 'components/Select/Select';
+
+export type IItem = {
+  value: string;
+  label: string;
+}
 
 export type INetworkOptions = {
+  icon: string;
   key: string;
-  label: string;
+  title: string;
   value: string;
   onChange: (value: string) => void;
-  options: Array<IOption>;
-  containerStyle?: object;
-  extraProps?: object;
+  items: IItem[];
+  containerStyle: object;
 };
 
 export default interface INetworkSettings {

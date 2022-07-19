@@ -10,7 +10,7 @@ import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/ap
 import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { EthNetworkId } from './EthChainController/types';
 import EthChainController from './EthChainController';
-import { getChainId, isTestnet, validateAddress } from './EthChainController/utils';
+import { isTestnet, validateAddress } from './EthChainController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
 import { addAsset, removeAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
@@ -43,6 +43,7 @@ export interface IAssetsController {
   setRequestId: (value: string) => void;
   clearErrors: () => void;
   clearPaymentRequest: () => void;
+  setNetwork: (network: string) => void;
 }
 
 const AssetsController = (updateFiat: () => void): IAssetsController => {
@@ -50,17 +51,14 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
   if (!activeNetwork) return undefined;
 
-  const ethClient: EthChainController = new EthChainController({
+  let ethClient: EthChainController = new EthChainController({
     network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
     privateKey: process.env.TEST_PRIVATE_KEY,
-    etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-    infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
+    etherscanApiKey: process.env.ETHERSCAN_API_KEY
   });
 
   const fetchCustomToken = async (address: string) => {
-    const { activeNetwork } = store.getState().vault;
-    const chainId = getChainId(activeNetwork.Ethereum)
-    const info = await ethClient.getTokenInfo(address, chainId);
+    const info = await ethClient.getTokenInfo(address);
     if (info) {
       store.dispatch(setCustomAsset({
         tokenAddress: info.address || '',
@@ -69,6 +67,14 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
         tokenDecimals: info.decimals?.toString() || '',
       }))
     }
+  }
+
+  const setNetwork = (network: string) => {
+    ethClient = new EthChainController({
+      network: network as EthNetworkId,
+      privateKey: process.env.TEST_PRIVATE_KEY,
+      etherscanApiKey: process.env.ETHERSCAN_API_KEY,
+    });
   }
   
   const clearCustomToken = (): void => {
@@ -356,7 +362,8 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
      fetchPaymentRequest,
      setRequestId,
      clearErrors,
-     clearPaymentRequest 
+     clearPaymentRequest,
+     setNetwork,
   };
 };
 

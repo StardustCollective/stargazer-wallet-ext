@@ -20,7 +20,6 @@ import { IDAppState } from 'state/dapp/types';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { getERC20DataDecoder } from 'utils/ethUtil';
-import { getInfuraProvider } from 'utils/ethersUtil';
 
 import type { DappProvider } from '../Background/dappRegistry';
 import {
@@ -31,7 +30,7 @@ import {
 } from '../common';
 
 import { StargazerSignatureRequest } from './StargazerProvider';
-import { getChainId } from 'scripts/Background/controllers/EthChainController/utils';
+import { getChainId, getNetworkInfo } from 'scripts/Background/controllers/EthChainController/utils';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -155,7 +154,10 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     _dappProvider: DappProvider,
     _port: Runtime.Port
   ) {
-    const provider = getInfuraProvider(this.getNetwork());
+    // TODO-349: Check if this logic works as expected.
+    const { activeNetwork }: IVaultState = store.getState().vault;
+    const networkInfo = getNetworkInfo(activeNetwork.Ethereum);
+    const provider = new ethers.providers.JsonRpcProvider(networkInfo.rpcEndpoint);
 
     return provider.send(request.method, request.params);
   }

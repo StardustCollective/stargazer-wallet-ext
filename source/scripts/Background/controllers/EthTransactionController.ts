@@ -3,12 +3,11 @@ import { IETHPendingTx } from 'scripts/types';
 import { ethers } from 'ethers';
 import IVaultState from 'state/vault/types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { TEST_PRIVATE_KEY, ETHERSCAN_API_KEY, INFURA_CREDENTIAL } from 'utils/envUtil';
+import { TEST_PRIVATE_KEY, ETHERSCAN_API_KEY } from 'utils/envUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from '../../../state/assets/types';
 import EthChainController from './EthChainController';
 import { EthNetworkId } from './EthChainController/types';
-import { getChainId } from './EthChainController/utils';
 
 export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => Promise<boolean>;
@@ -29,11 +28,11 @@ type ITransactionListeners = {
 const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
+  // TODO-349: Update ethClient with setNetwork()
   private ethClient: EthChainController = new EthChainController({
     network: 'mainnet',
     privateKey: TEST_PRIVATE_KEY,
     etherscanApiKey: ETHERSCAN_API_KEY,
-    infuraCreds: { projectId: INFURA_CREDENTIAL || '' },
   });
 
   private async _getPendingData() {
@@ -53,7 +52,6 @@ export class EthTransactionController implements IEthTransactionController {
       network: value,
       privateKey: process.env.TEST_PRIVATE_KEY,
       etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-      infuraCreds: { projectId: process.env.INFURA_CREDENTIAL || '' },
     });
   }
 
@@ -109,7 +107,7 @@ export class EthTransactionController implements IEthTransactionController {
     const pendingData = await this._getPendingData();
 
     Object.values(pendingData).forEach((pendingTx: IETHPendingTx) => {
-      this.ethClient.waitForTransaction(pendingTx.txHash, getChainId(pendingTx.network)).then(() => {
+      this.ethClient.waitForTransaction(pendingTx.txHash).then(() => {
         console.log('removing pending tx');
         if (this._transactionListeners[pendingTx.txHash] && this._transactionListeners[pendingTx.txHash].onConfirmed) {
           this._transactionListeners[pendingTx.txHash].onConfirmed();

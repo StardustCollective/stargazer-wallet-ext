@@ -91,7 +91,7 @@ export const getAddressURL = (
   }
   if(type === AssetType.ERC20) {
     //token/0xdac17f958d2ee523a2206206994597c13d831ec7?a=
-    return `${ETH_NETWORK[networkId].etherscan}token/${contractAddress}?a=${address}`
+    return `${ETH_NETWORK[networkId].explorer}token/${contractAddress}?a=${address}`
   }
-  return `${ETH_NETWORK[networkId].etherscan}address/${address}`;
+  return `${ETH_NETWORK[networkId].explorer}address/${address}`;
 };

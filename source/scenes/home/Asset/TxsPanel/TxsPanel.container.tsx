@@ -36,7 +36,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
       return null;
     }
 
-    const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].etherscan;
+    const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].explorer;
     return isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`;
   };
 

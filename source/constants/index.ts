@@ -1,5 +1,20 @@
 import { EthNetworkId, EthNetworkValue } from 'scripts/Background/controllers/EthChainController/types';
-import { STARGAZER_PROVIDERS_BASE_URL, STARGAZER_PROVIDERS_BASE_URL_PROD, isProd, isNative } from 'utils/envUtil';
+import { 
+  isProd,
+  isNative, 
+  STARGAZER_PROVIDERS_BASE_URL, 
+  STARGAZER_PROVIDERS_BASE_URL_PROD, 
+  QUICKNODE_ETHEREUM_MAINNET,
+  QUICKNODE_ETHEREUM_ROPSTEN,
+  QUICKNODE_ETHEREUM_RINKEBY,
+  QUICKNODE_AVALANCHE_MAINNET,
+  QUICKNODE_AVALANCHE_TESTNET,
+  QUICKNODE_BSC_MAINNET,
+  QUICKNODE_BSC_TESTNET,
+  QUICKNODE_POLYGON_MAINNET,
+  QUICKNODE_POLYGON_TESTNET,
+} from 'utils/envUtil';
+
 export const STORE_PORT = 'STARGAZER';
 
 export const DAG_NETWORK: {
@@ -12,13 +27,13 @@ export const DAG_NETWORK: {
 } = {
   main: {
     id: 'main',
-    label: 'Main Constellation Network',
+    label: 'Mainnet 1.0',
     beUrl: 'https://block-explorer.constellationnetwork.io',
     lbUrl: 'https://proxy.constellationnetwork.io/api/node',
   },
   ceres: {
     id: 'ceres',
-    label: 'Ceres Test Network',
+    label: 'Testnet 1.0',
     beUrl: 'https://api-be.exchanges.constellationnetwork.io',
     lbUrl: 'http://lb.exchanges.constellationnetwork.io:9000',
   },
@@ -29,30 +44,131 @@ export const ETH_NETWORK: {
     id: EthNetworkId;
     value: EthNetworkValue;
     label: string;
-    etherscan: string;
+    explorer: string;
     chainId: number;
+    rpcEndpoint: string;
+    explorerAPI: string;
   };
 } = {
   mainnet: {
     id: 'mainnet',
     value: 'homestead',
     label: 'Mainnet',
-    etherscan: 'https://etherscan.io/',
+    rpcEndpoint: QUICKNODE_ETHEREUM_MAINNET,
+    explorer: 'https://etherscan.io/',
+    explorerAPI: 'https://api.etherscan.io',
     chainId: 1,
   },
   ropsten: {
     id: 'ropsten',
     value: 'ropsten',
-    label: 'Ropsten Testnet',
-    etherscan: 'https://ropsten.etherscan.io/',
+    label: 'Ropsten',
+    rpcEndpoint: QUICKNODE_ETHEREUM_ROPSTEN,
+    explorer: 'https://ropsten.etherscan.io/',
+    explorerAPI: 'https://api-ropsten.etherscan.io',
     chainId: 3,
   },
   rinkeby: {
     id: 'rinkeby',
     value: 'rinkeby',
-    label: 'Rinkeby Testnet',
-    etherscan: 'https://rinkeby.etherscan.io/',
+    label: 'Rinkeby',
+    rpcEndpoint: QUICKNODE_ETHEREUM_RINKEBY,
+    explorer: 'https://rinkeby.etherscan.io/',
+    explorerAPI: 'https://api-rinkeby.etherscan.io',
     chainId: 4,
+  },
+};
+
+export const AVALANCHE_NETWORK: {
+  [networkId: string]: {
+    id: string;
+    value: string;
+    label: string;
+    explorer: string;
+    chainId: number;
+    rpcEndpoint: string;
+    explorerAPI: string;
+  };
+} = {
+  ['avalanche-mainnet']: {
+    id: 'avalanche-mainnet',
+    value: 'avalanche-mainnet',
+    label: 'Avalanche C-Chain',
+    rpcEndpoint: QUICKNODE_AVALANCHE_MAINNET,
+    explorer: 'https://snowtrace.io/',
+    explorerAPI: 'https://api.snowtrace.io',
+    chainId: 43114,
+  },
+  ['avalanche-testnet']: {
+    id: 'avalanche-testnet',
+    value: 'avalanche-testnet',
+    label: 'Fuji Testnet',
+    rpcEndpoint: QUICKNODE_AVALANCHE_TESTNET,
+    explorer: 'https://testnet.snowtrace.io/',
+    explorerAPI: 'https://api-testnet.snowtrace.io',
+    chainId: 43113,
+  },
+};
+
+export const BSC_NETWORK: {
+  [networkId: string]: {
+    id: string;
+    value: string;
+    label: string;
+    explorer: string;
+    chainId: number;
+    rpcEndpoint: string;
+    explorerAPI: string;
+  };
+} = {
+  bsc: {
+    id: 'bsc',
+    value: 'bsc',
+    label: 'Binance Smart Chain Mainnet',
+    rpcEndpoint: QUICKNODE_BSC_MAINNET,
+    explorer: 'https://bscscan.com/',
+    explorerAPI: 'https://api.bscscan.com',
+    chainId: 56,
+  },
+  ['bsc-testnet']: {
+    id: 'bsc-testnet',
+    value: 'bsc-testnet',
+    label: 'Testnet',
+    rpcEndpoint: QUICKNODE_BSC_TESTNET,
+    explorer: 'https://testnet.bscscan.com/',
+    explorerAPI: 'https://api-testnet.bscscan.com',
+    chainId: 97,
+  },
+};
+
+export const POLYGON_NETWORK: {
+  [networkId: string]: {
+    id: string;
+    value: string;
+    label: string;
+    explorer: string;
+    chainId: number;
+    rpcEndpoint: string;
+    explorerAPI: string;
+  };
+} = {
+  matic: {
+    id: 'matic',
+    value: 'matic',
+    label: 'Mainnet',
+    rpcEndpoint: QUICKNODE_POLYGON_MAINNET,
+    explorer: 'https://polygonscan.com/',
+    explorerAPI: 'https://api.polygonscan.com',
+    chainId: 137,
+  },
+  ['matic-testnet']: {
+    id: 'matic-testnet',
+    value: 'matic-testnet',
+    label: 'Testnet',
+    rpcEndpoint: QUICKNODE_POLYGON_TESTNET,
+    explorer: 'https://mumbai.polygonscan.com/',
+    explorerAPI: 'https://api-testnet.polygonscan.com',
+    chainId: 80001,
   },
 };
 

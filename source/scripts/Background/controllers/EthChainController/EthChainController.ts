@@ -1,7 +1,6 @@
 import ERC_20_ABI from 'erc-20-abi';
 import { BigNumber, ethers } from 'ethers';
 import { baseAmount, BaseAmount, assetToString, AssetETH } from '@xchainjs/xchain-util';
-import { EtherscanProvider, getDefaultProvider } from '@ethersproject/providers';
 import { Provider, TransactionResponse } from '@ethersproject/abstract-provider';
 import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
 import { parseUnits, toUtf8Bytes } from 'ethers/lib/utils';
@@ -9,7 +8,6 @@ import {
   BASE_TOKEN_GAS_COST,
   ETHAddress,
   ETH_DECIMAL,
-  InfuraProvider,
   SIMPLE_GAS_COST,
 } from './constants';
 import {
@@ -22,7 +20,6 @@ import {
   EthChainControllerParams,
   FeesParamsEth,
   IEthChainController,
-  InfuraCreds,
   EthereumNetwork,
   TxOverrides,
   EthNetworkId,
@@ -40,35 +37,18 @@ class EthChainController implements IEthChainController {
   private network: EthereumNetwork;
   private address: Address | null = null;
   private wallet: ethers.Wallet | null = null;
-  private provider: Provider;
-  private etherscan: EtherscanProvider;
+  private provider: ethers.providers.JsonRpcProvider;
   private etherscanApiKey?: string;
-  private infuraCreds: InfuraCreds | null = null;
-  private infuraProjectId: string;
 
   constructor({
     network,
     privateKey,
-    etherscanApiKey,
-    infuraCreds,
+    etherscanApiKey
   }: EthChainControllerParams) {
     this.network = getNetworkInfo(network);
     this.etherscanApiKey = etherscanApiKey;
-    this.etherscan = new EtherscanProvider(this.network.value, this.etherscanApiKey);
-
-    if (infuraCreds) {
-      if (infuraCreds.projectId) {
-        this.infuraProjectId = infuraCreds.projectId;
-      }
-      this.infuraCreds = infuraCreds;
-      this.provider = infuraCreds.projectSecret
-        ? new ethers.providers.InfuraProvider(this.network.value, infuraCreds)
-        : new ethers.providers.InfuraProvider(this.network.value, infuraCreds.projectId);
-    } else {
-      this.provider = getDefaultProvider(this.network.value);
-    }
-
-    this.changeWallet(new ethers.Wallet(privateKey, this.getProvider()));
+    this.provider = new ethers.providers.JsonRpcProvider(this.network.rpcEndpoint);
+    this.changeWallet(new ethers.Wallet(privateKey, this.provider));
   }
 
   // Public methods
@@ -100,31 +80,16 @@ class EthChainController implements IEthChainController {
   }
 
   getExplorerUrl = (): string => {
-    return this.network.etherscan;
+    return this.network.explorer;
   };
 
   setNetwork(network: EthNetworkId) {
     if (!network) {
       throw new Error('Network must be provided');
     } else {
-      this.network = getNetworkInfo(network);
-
-      if (this.infuraCreds) {
-        if (this.infuraCreds.projectId) {
-          this.infuraProjectId = this.infuraCreds.projectId;
-        }
-        this.provider = this.infuraCreds.projectSecret
-          ? new ethers.providers.InfuraProvider(this.network.value, this.infuraCreds)
-          : new ethers.providers.InfuraProvider(
-              this.network.value,
-              this.infuraCreds.projectId
-            );
-      } else {
-        this.provider = getDefaultProvider(this.network.value);
-      }
-
-      this.etherscan = new EtherscanProvider(this.network.value, this.etherscanApiKey);
-      this.wallet = this.wallet.connect(this.provider);
+        this.network = getNetworkInfo(network);
+        this.provider = new ethers.providers.JsonRpcProvider(this.network.rpcEndpoint);
+        this.wallet = this.wallet.connect(this.provider);
     }
   }
 
@@ -218,11 +183,10 @@ class EthChainController implements IEthChainController {
     }
   }
 
-  async getTokenInfo(address: string, chainId = 1) {
+  async getTokenInfo(address: string) {
     if (this.isValidEthereumAddress(address)) {
-      const infuraProvider = new InfuraProvider(chainId, this.infuraProjectId);
       try {
-        return tokenContractHelper.getTokenInfo(infuraProvider, address);
+        return tokenContractHelper.getTokenInfo(this.getProvider(), address);
       } catch (e) {
         console.log('ERROR: getTokenInfo = ', e);
         return null;
@@ -238,23 +202,25 @@ class EthChainController implements IEthChainController {
       const offset = params?.limit;
       const assetAddress = params?.asset;
 
+      // TODO-349: Check if we can reuse etherscanApiKey in all explorers.
+
       let transations;
       if (assetAddress) {
         transations = await getTokenTransactionHistory({
-          baseUrl: this.etherscan.baseUrl,
+          baseUrl: this.network.explorerAPI,
           address,
           assetAddress,
           page,
           offset,
-          apiKey: this.etherscan.apiKey,
+          apiKey: this.etherscanApiKey,
         });
       } else {
         transations = await getETHTransactionHistory({
-          baseUrl: this.etherscan.baseUrl,
+          baseUrl: this.network.explorerAPI,
           address,
           page,
           offset,
-          apiKey: this.etherscan.apiKey,
+          apiKey: this.etherscanApiKey,
         });
       }
 
@@ -272,6 +238,7 @@ class EthChainController implements IEthChainController {
   }
 
   async estimateGasPrices() {
+    // TODO-349: We should check all testnets here.
     if (this.network.value !== 'homestead') {
       // Etherscan gas oracle is not working in testnets
       const oneGwei = ethers.BigNumber.from(1e9);
@@ -287,9 +254,10 @@ class EthChainController implements IEthChainController {
     }
 
     try {
+      // TODO-349: Check if we can reuse etherscanApiKey in all explorers.
       const response: GasOracleResponse = await getGasOracle(
-        this.etherscan.baseUrl,
-        this.etherscan.apiKey
+        this.network.explorerAPI,
+        this.etherscanApiKey
       );
 
       // Convert result of gas prices: `Gwei` -> `Wei`
@@ -307,9 +275,8 @@ class EthChainController implements IEthChainController {
     }
   }
 
-  async waitForTransaction(hash: string, chainId = 1) {
-    const infuraProvider = new InfuraProvider(chainId, this.infuraProjectId);
-    return infuraProvider.waitForTransaction(hash);
+  async waitForTransaction(hash: string) {
+    return this.provider.waitForTransaction(hash);
   }
 
   async estimateTokenTransferGasLimit(
