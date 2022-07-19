@@ -162,7 +162,7 @@ let Accounts = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <div className={styles.pagination}>
+      {/* <div className={styles.pagination}>
         {!fetchingPage ? (
           <>
             {startIndex !== 0 && (
@@ -185,7 +185,7 @@ let Accounts = ({
             <span>{NEXT_BUTTON_LABEL_STRING}</span>
           </>
         )}
-      </div>
+      </div> */}
       <section className={styles.actions}>
         <div className={styles.buttonWrapper}>
           <Button
