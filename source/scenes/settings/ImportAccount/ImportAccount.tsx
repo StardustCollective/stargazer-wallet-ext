@@ -41,7 +41,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   setJsonFile,
 }) => {
   const alert = useAlert();
-  let [ hardwareWallet, setHardwareWallet] = useState(HARDWARE_WALLET.none);
+  let [hardwareWallet, setHardwareWallet] = useState(HARDWARE_WALLET.none);
   const onSubmit = async (data: any): Promise<any> => {
     // setAccountName(undefined);
     if (importType === 'priv') {
@@ -76,9 +76,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         }
       };
     } else if (importType === 'hardware') {
-      if(hardwareWallet === HARDWARE_WALLET.ledger){
+      if (hardwareWallet === HARDWARE_WALLET.ledger) {
         return window.open('/ledger.html', '_newtab');
-      }else if(hardwareWallet === HARDWARE_WALLET.bitfi){
+      } else if (hardwareWallet === HARDWARE_WALLET.bitfi) {
         return window.open('/bitfi.html', '_newtab');
       }
     } else {
@@ -102,7 +102,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     );
   };
 
-  const onHardwareTypeClick = (hardwareType: HARDWARE_WALLET ) => {
+  const onHardwareTypeClick = (hardwareType: HARDWARE_WALLET) => {
     setHardwareWallet(hardwareType);
   }
 
@@ -175,12 +175,30 @@ const ImportAccount: FC<IImportAccountSettings> = ({
               <>
                 {hardwareStep === 1 && (
                   <>
+                    <span>
+                      {importType === 'hardware'
+                        ? 'Please select a hardware wallet to continue.'
+                        : 'Please name your new account:'}
+                    </span>
+                    {importType !== 'hardware' && (
+                      <TextInput
+                        id="importAccount-accountNameInput"
+                        fullWidth
+                        inputRef={register}
+                        name="label"
+                        disabled={loading}
+                      />
+                    )}
+                  </>
+                )}
+                {hardwareStep === 1 && (
+                  <>
                     <div className={styles.hardwareList}>
-                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.ledger)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.ledger ? styles. walletModelSelected : null])}>
+                      {/* <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.ledger)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.ledger ? styles. walletModelSelected : null])}>
                         <img src={`/${LedgerIcon}`} alt="ledger_icon" />
                       </div>
-                      &nbsp;
-                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.bitfi)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.bitfi ? styles. walletModelSelected : null])}>
+                      &nbsp; */}
+                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.bitfi)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.bitfi ? styles.walletModelSelected : null])}>
                         <img src={`/${BitfiIcon}`} alt="bitfi_icon" />
                       </div>
                     </div>
@@ -223,24 +241,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 )}
               </>
             )}
-            {hardwareStep === 1 && (
-              <>
-                <span>
-                  {importType === 'hardware'
-                    ? 'Please select a hardware wallet to continue.'
-                    : 'Please name your new account:'}
-                </span>
-                {importType !== 'hardware' && (
-                  <TextInput
-                    id="importAccount-accountNameInput"
-                    fullWidth
-                    inputRef={register}
-                    name="label"
-                    disabled={loading}
-                  />
-                )}
-              </>
-            )}
+
           </section>
           <section className={styles.actions}>
             <Button
