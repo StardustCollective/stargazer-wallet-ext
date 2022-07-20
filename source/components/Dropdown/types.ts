@@ -6,6 +6,7 @@ export type IDropdownOptions = {
   value: string;
   items: IItem[];
   isOpen: boolean;
+  containerStyle: object;
   onChange: (value: string) => void;
   toggleItem: () => void;
 }

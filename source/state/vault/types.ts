@@ -48,6 +48,9 @@ export interface IActiveAssetState extends IAssetState {
 export type AssetBalances = {
   [AssetType.Ethereum]?: string;
   [AssetType.Constellation]?: string;
+  'avalanche'?: string;
+  'bsc'?: string;
+  'polygon'?: string;
   [contractAddress: string]: string;
 };
 

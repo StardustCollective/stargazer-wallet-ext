@@ -66,7 +66,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
             const selectedStyle = selected ? styles.selectedItem : {};
             const TextComponent = selected ? TextV3.CaptionStrong : TextV3.Caption;
             return (
-              <TouchableOpacity style={[styles.itemContainer, selectedStyle]} onPress={() => onChange(item.value)}>
+              <TouchableOpacity key={item.value} style={[styles.itemContainer, selectedStyle]} onPress={() => onChange(item.value)}>
                 <TextComponent color={COLORS_ENUMS.BLACK}>
                   {item.label}  
                 </TextComponent>

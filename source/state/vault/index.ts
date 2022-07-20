@@ -19,6 +19,9 @@ const initialState: IVaultState = {
   balances: {
     [AssetType.Constellation]: '0',
     [AssetType.Ethereum]: '0',
+    'avalanche': '0',
+    'bsc': '0',
+    'polygon': '0',
   },
   // activeWalletId: undefined,
   activeWallet: undefined,

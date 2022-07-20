@@ -5,21 +5,10 @@ import IPriceState from 'state/price/types';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
 import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
-import { KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring'
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring'
 import { saveState } from 'state/localStorage';
 
-type V2WalletState = {
-    assets: IAssetListState
-    contacts: IContactBookState,
-    dapp: {},
-    nfts: INFTListState,
-    price: IPriceState,
-    vault: {
-        wallets: KeyringWalletState[]
-    }
-}
-
-type V3_5_0WalletState = {
+type V3_7_0ActiveNetworkState = {
     assets: IAssetListState
     nfts: INFTListState,
     contacts: IContactBookState,
@@ -28,23 +17,13 @@ type V3_5_0WalletState = {
     vault: IVaultState
 }
 
-const MigrateRunner = async (oldState: V2WalletState) => {
+const MigrateRunner = async (oldState: any) => {
     try {
-        const newState: V3_5_0WalletState = {
+        const newState: V3_7_0ActiveNetworkState = {
             ...oldState,
             vault: {
                 ...oldState.vault,
-                // Wallets shape changed
-                wallets: {
-                    local: oldState.vault.wallets,
-                    ledger: [],
-                    bitfi: [],
-                },
-                // No change to all other properties.
-                status: 0,
-                activeWallet: undefined,
-                activeAsset: undefined,
-                hasEncryptedVault: false,
+                // activeNetwork shape changed
                 activeNetwork: {
                     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
                     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
@@ -55,16 +34,19 @@ const MigrateRunner = async (oldState: V2WalletState) => {
                 balances: {
                     [AssetType.Constellation]: '0',
                     [AssetType.Ethereum]: '0',
+                    'avalanche': '0',
+                    'bsc': '0',
+                    'polygon': '0',
                 },
-                version: '3.5.0',
+                version: '3.7.0',
             },
 
         };
         await saveState(newState);
-        console.log('Migrate to <v3.5.0> successfully!');
+        console.log('Migrate to <v3.7.0> successfully!');
         reload();
     } catch (error) {
-        console.log('<v3.5.0> Migration Error');
+        console.log('<v3.7.0> Migration Error');
         console.log(error);
     }
 };

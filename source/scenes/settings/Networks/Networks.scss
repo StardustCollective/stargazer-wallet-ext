@@ -2,7 +2,7 @@
 
 .wrapper {
   width: 100%;
-  padding: 0 24px;
+  padding: 16px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -20,3 +20,7 @@
     cursor: initial;
   }
 }
+
+.containerBase {
+  margin-bottom: 8px;
+} 
