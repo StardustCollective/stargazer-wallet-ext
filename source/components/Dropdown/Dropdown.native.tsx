@@ -36,6 +36,8 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
   const { icon, title, value, items, isOpen, toggleItem, onChange } = options;
 
   const selectedValue = items.find(item => item.value === value);
+  const TextComponent = !!title ? TextV3.Caption : TextV3.CaptionStrong;
+  const TextColor = !!title ? COLORS_ENUMS.GRAY_100 : COLORS_ENUMS.BLACK;
 
   ///////////////////////
   // Render
@@ -49,8 +51,8 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
         </View>
       }
       <View style={styles.titleContainer}>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{title}</TextV3.CaptionStrong>
-        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{selectedValue?.label}</TextV3.Caption>
+        {!!title && <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{title}</TextV3.CaptionStrong>}
+        <TextComponent color={TextColor}>{selectedValue?.label}</TextComponent>
       </View>
       <View>
         {isOpen ? (

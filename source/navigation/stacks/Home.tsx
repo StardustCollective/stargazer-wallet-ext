@@ -24,6 +24,7 @@ import Import from 'scenes/common/Import';
 import Main from 'scenes/settings/Main';
 import About from 'scenes/settings/About';
 import Networks from 'scenes/settings/Networks';
+import AddNetwork from 'scenes/settings/AddNetwork';
 import Contacts from 'scenes/settings/Contacts';
 import ContactInfo from 'scenes/settings/ContactInfo';
 import ModifyContact from 'scenes/settings/ModifyContact';
@@ -71,6 +72,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   settings: 'Settings',
   about: 'About',
   networks: 'Networks',
+  addNetork: 'Add Network',
   contacts: 'Contacts',
   modifyContact: 'Add Contact',
   wallets: 'Wallets',
@@ -117,6 +119,7 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings }} name={screens.settings.main} component={Main} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.about }} name={screens.settings.about} component={About} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.networks }} name={screens.settings.networks} component={Networks} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addNetork }} name={screens.settings.addNetwork} component={AddNetwork} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contacts }} name={screens.settings.contacts} component={Contacts} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contactInfo }} name={screens.settings.contactInfo} component={ContactInfo} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.modifyContact }} name={screens.settings.modifyContact} component={ModifyContact} />

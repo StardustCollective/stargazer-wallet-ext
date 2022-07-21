@@ -1,9 +1,8 @@
 import { StyleSheet } from 'react-native';
-
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
-  wrapper: {
+  container: {
     backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
     width: '100%',
@@ -11,22 +10,21 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  label: {
-    marginTop: 24,
-    marginBottom: 12,
-    fontSize: 12,
-    fontWeight: '500',
-    color: COLORS.gray_dark,
-  },
-  containerBase: {
-    height: 64,
-    marginBottom: 8,
+  networkTypeContainer: {
+    height: 50,
+    zIndex: 1000,
   },
   buttonContainer: {
     position: 'absolute',
     alignSelf: 'center',
     width: '100%',
     bottom: 40,
+  },
+  errorMessage: {
+    fontSize: 12,
+    lineHeight: 18,
+    paddingLeft: 10,
+    paddingTop: 6,
   }
 });
 

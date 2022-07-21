@@ -16,4 +16,5 @@ export type INetworkOptions = {
 
 export default interface INetworkSettings {
   networkOptions: Array<INetworkOptions>;
+  handleAddNetwork: () => void;
 }

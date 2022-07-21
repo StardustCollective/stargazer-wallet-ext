@@ -40,6 +40,7 @@ export default {
     main: 'settings-main',
     about: 'settings-about',
     networks: 'settings-networks',
+    addNetwork: 'settings-networks-add',
     contacts: 'settings-contacts',
     contactInfo: 'setting-contact-info',
     modifyContact: 'settings-modify-contact',

@@ -10,6 +10,7 @@ import { View } from 'react-native';
 ///////////////////////
 
 import Dropdown from 'components/Dropdown';
+import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
 // Types
@@ -23,7 +24,7 @@ import INetworkSettings from './types';
 
 import styles from './styles';
 
-const NetworksComponent: FC<INetworkSettings> = ({ networkOptions }) => {
+const NetworksComponent: FC<INetworkSettings> = ({ networkOptions, handleAddNetwork }) => {
   // Logic used to not have multiple dropdowns open at the same time
   const initialArray = Array.from({ length: networkOptions.length }, () => false);
   const [itemsOpenArray, setItemsOpenArray] = useState(initialArray)
@@ -50,6 +51,14 @@ const NetworksComponent: FC<INetworkSettings> = ({ networkOptions }) => {
           </View>
         );
       })}
+      <View style={styles.buttonContainer}>
+        <ButtonV3 
+          title="Add Network"
+          type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+          size={BUTTON_SIZES_ENUM.LARGE}
+          onPress={handleAddNetwork}
+        />
+      </View>
     </View>
   );
 };

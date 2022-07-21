@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { useLinkTo } from '@react-navigation/native';
 
 import { getWalletController } from 'utils/controllersUtils';
 
@@ -14,10 +15,15 @@ import Networks from './Networks';
 const NetworksContainer: FC = () => {
   const walletController = getWalletController();
   const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const linkTo = useLinkTo();
 
   const handleChangeNetwork = (networkType: string, networkId: string) => {
     walletController.switchNetwork(networkType, networkId);
   };
+
+  const handleAddNetwork = () => {
+    linkTo('/settings/networks/add');
+  }
 
   const networkOptions = [
     {
@@ -105,7 +111,10 @@ const NetworksContainer: FC = () => {
 
   return (
     <Container safeArea={false}>
-      <Networks networkOptions={networkOptions} />
+      <Networks 
+        networkOptions={networkOptions} 
+        handleAddNetwork={handleAddNetwork}
+      />
     </Container>
   );
 };

@@ -35,6 +35,7 @@ export default {
   [screens.settings.main]: '/settings',
   [screens.settings.about]: '/settings/about',
   [screens.settings.networks]: '/settings/networks',
+  [screens.settings.addNetwork]: '/settings/networks/add',
   [screens.settings.contacts]: '/settings/contacts',
   [screens.settings.modifyContact]: '/setting/contacts/modify',
   [screens.settings.contactInfo]: '/settings/contacts/info',
