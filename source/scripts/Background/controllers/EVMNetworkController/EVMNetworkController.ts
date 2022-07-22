@@ -17,7 +17,7 @@ import {
   validateAddress,
 } from './utils';
 import {
-  EthChainControllerParams,
+  EVMNetworkControllerParams,
   FeesParamsEth,
   IEVMNetworkController,
   EthereumNetwork,
@@ -44,7 +44,7 @@ class EVMNetworkController implements IEVMNetworkController {
     network,
     privateKey,
     etherscanApiKey
-  }: EthChainControllerParams) {
+  }: EVMNetworkControllerParams) {
     this.network = getNetworkInfo(network);
     this.etherscanApiKey = etherscanApiKey;
     this.provider = new ethers.providers.JsonRpcProvider(this.network.rpcEndpoint);

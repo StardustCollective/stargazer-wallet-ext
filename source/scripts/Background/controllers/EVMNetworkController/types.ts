@@ -37,7 +37,7 @@ type GetTokenInfoResponse = {
   name: string;
 }
 
-export type EthChainControllerParams = {
+export type EVMNetworkControllerParams = {
   network?: EthNetworkId;
   etherscanApiKey?: string;
   privateKey?: string;
