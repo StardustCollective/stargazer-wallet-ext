@@ -19,7 +19,7 @@ import {
 import {
   EthChainControllerParams,
   FeesParamsEth,
-  IEthChainController,
+  IEVMNetworkController,
   EthereumNetwork,
   TxOverrides,
   EthNetworkId,
@@ -33,7 +33,7 @@ import {
 import { GasOracleResponse } from './etherscanApi.types';
 import erc20abi from 'utils/erc20.json';
 
-class EthChainController implements IEthChainController {
+class EVMNetworkController implements IEVMNetworkController {
   private network: EthereumNetwork;
   private address: Address | null = null;
   private wallet: ethers.Wallet | null = null;
@@ -374,4 +374,4 @@ class EthChainController implements IEthChainController {
   }
 }
 
-export default EthChainController;
+export default EVMNetworkController;

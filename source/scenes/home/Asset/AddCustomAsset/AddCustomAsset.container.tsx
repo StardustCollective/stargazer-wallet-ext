@@ -26,7 +26,7 @@ import IERC20AssetsListState, { ICustomAssetForm } from 'state/erc20assets/types
 // Utils
 ///////////////////////////
 
-import { validateAddress } from 'scripts/Background/controllers/EthChainController/utils';
+import { validateAddress } from 'scripts/Background/controllers/EVMNetworkController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { removeEthereumPrefix } from 'utils/addressUtil';
 

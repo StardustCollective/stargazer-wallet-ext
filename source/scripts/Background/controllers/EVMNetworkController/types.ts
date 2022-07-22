@@ -43,7 +43,7 @@ export type EthChainControllerParams = {
   privateKey?: string;
 };
 
-export interface IEthChainController extends ChainsController {
+export interface IEVMNetworkController extends ChainsController {
   estimateTokenTransferGasLimit: (recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) => Promise<number>;
   getTokenInfo: (address: string) => Promise<GetTokenInfoResponse | null>;
   waitForTransaction: (hash: string) => Promise<ethers.providers.TransactionReceipt>;

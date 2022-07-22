@@ -13,8 +13,8 @@ import IVaultState, {
   IWalletState,
 } from '../../../state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
-import { getChainId } from '../controllers/EthChainController/utils';
-import { AccountTracker } from '../controllers/EthChainController';
+import { getChainId } from '../controllers/EVMNetworkController/utils';
+import { AccountTracker } from '../controllers/EVMNetworkController';
 
 const FIVE_SECONDS = 5 * 1000;
 

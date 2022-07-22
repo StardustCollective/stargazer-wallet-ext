@@ -34,9 +34,9 @@ import { EthTransactionController } from './EthTransactionController';
 import { IAccountController } from './IAccountController';
 import { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
-import { EthNetworkId } from './EthChainController/types';
-import EthChainController, { utils } from './EthChainController';
-import { getChainId } from './EthChainController/utils';
+import { EthNetworkId } from './EVMNetworkController/types';
+import EVMNetworkController, { utils } from './EVMNetworkController';
+import { getChainId } from './EVMNetworkController/utils';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -44,7 +44,7 @@ const TXS_LIMIT = 10;
 export class AccountController implements IAccountController {
   tempTx: ITransactionInfo | null;
 
-  ethClient: EthChainController;
+  ethClient: EVMNetworkController;
 
   txController: EthTransactionController;
 
@@ -120,7 +120,7 @@ export class AccountController implements IAccountController {
     }
 
     if (account.network === KeyringNetwork.Ethereum) {
-      this.ethClient = new EthChainController({
+      this.ethClient = new EVMNetworkController({
         network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
         privateKey,
         etherscanApiKey: process.env.ETHERSCAN_API_KEY

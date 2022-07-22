@@ -6,8 +6,8 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { TEST_PRIVATE_KEY, ETHERSCAN_API_KEY } from 'utils/envUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from '../../../state/assets/types';
-import EthChainController from './EthChainController';
-import { EthNetworkId } from './EthChainController/types';
+import EVMNetworkController from './EVMNetworkController';
+import { EthNetworkId } from './EVMNetworkController/types';
 
 export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => Promise<boolean>;
@@ -29,7 +29,7 @@ const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
   // TODO-349: Update ethClient with setNetwork()
-  private ethClient: EthChainController = new EthChainController({
+  private ethClient: EVMNetworkController = new EVMNetworkController({
     network: 'mainnet',
     privateKey: TEST_PRIVATE_KEY,
     etherscanApiKey: ETHERSCAN_API_KEY,
@@ -48,7 +48,7 @@ export class EthTransactionController implements IEthTransactionController {
   private _transactionListeners: ITransactionListeners = {};
 
   setNetwork(value: EthNetworkId) {
-    this.ethClient = new EthChainController({
+    this.ethClient = new EVMNetworkController({
       network: value,
       privateKey: process.env.TEST_PRIVATE_KEY,
       etherscanApiKey: process.env.ETHERSCAN_API_KEY,

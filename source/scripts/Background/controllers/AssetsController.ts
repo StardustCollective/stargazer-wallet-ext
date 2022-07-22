@@ -8,9 +8,9 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
 import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
-import { EthNetworkId } from './EthChainController/types';
-import EthChainController from './EthChainController';
-import { isTestnet, validateAddress } from './EthChainController/utils';
+import { EthNetworkId } from './EVMNetworkController/types';
+import EVMNetworkController from './EVMNetworkController';
+import { isTestnet, validateAddress } from './EVMNetworkController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
 import { addAsset, removeAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
@@ -51,7 +51,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
   if (!activeNetwork) return undefined;
 
-  let ethClient: EthChainController = new EthChainController({
+  let ethClient: EVMNetworkController = new EVMNetworkController({
     network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
     privateKey: process.env.TEST_PRIVATE_KEY,
     etherscanApiKey: process.env.ETHERSCAN_API_KEY
@@ -70,7 +70,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   }
 
   const setNetwork = (network: string) => {
-    ethClient = new EthChainController({
+    ethClient = new EVMNetworkController({
       network: network as EthNetworkId,
       privateKey: process.env.TEST_PRIVATE_KEY,
       etherscanApiKey: process.env.ETHERSCAN_API_KEY,

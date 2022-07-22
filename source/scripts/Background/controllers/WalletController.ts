@@ -24,7 +24,7 @@ import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { EthNetworkId } from './EthChainController/types';
+import { EthNetworkId } from './EVMNetworkController/types';
 import filter from 'lodash/filter';
 
 // Constants
