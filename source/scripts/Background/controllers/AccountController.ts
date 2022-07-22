@@ -34,7 +34,7 @@ import { EthTransactionController } from './EthTransactionController';
 import { IAccountController } from './IAccountController';
 import { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
-import { EthNetworkId } from './EVMChainController/types';
+import { EthChainId } from './EVMChainController/types';
 import EVMChainController, { utils } from './EVMChainController';
 import { getChainId } from './EVMChainController/utils';
 
@@ -121,7 +121,7 @@ export class AccountController implements IAccountController {
 
     if (account.network === KeyringNetwork.Ethereum) {
       this.ethClient = new EVMChainController({
-        network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
+        network: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
         privateKey,
         etherscanApiKey: process.env.ETHERSCAN_API_KEY
       });
@@ -440,7 +440,7 @@ export class AccountController implements IAccountController {
         fromAddress: this.tempTx.fromAddress,
         toAddress: this.tempTx.toAddress,
         amount: this.tempTx.amount,
-        network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
+        network: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
         assetId: activeAsset.id,
         timestamp: new Date().getTime(),
         gasPrice,
@@ -498,7 +498,7 @@ export class AccountController implements IAccountController {
       fromAddress: this.tempTx.fromAddress,
       toAddress: this.tempTx.toAddress,
       amount: this.tempTx.amount,
-      network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
+      network: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
       assetId: activeAsset.id,
       timestamp: new Date().getTime(),
       nonce: txData.nonce,

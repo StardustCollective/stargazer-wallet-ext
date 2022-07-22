@@ -24,7 +24,7 @@ import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { EthNetworkId } from './EVMChainController/types';
+import { EthChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
 
 // Constants
@@ -317,9 +317,9 @@ class WalletController implements IWalletController {
     }
 
     if (network === KeyringNetwork.Ethereum) {
-      this.account.txController.setNetwork(chainId as EthNetworkId);
-      this.account.ethClient.setNetwork(chainId as EthNetworkId);
-      this.account.assetsController.setNetwork(chainId as EthNetworkId);
+      this.account.txController.setNetwork(chainId as EthChainId);
+      this.account.ethClient.setNetwork(chainId as EthChainId);
+      this.account.assetsController.setNetwork(chainId as EthChainId);
     }
 
     // TODO-349: Check if we need to add some logic here

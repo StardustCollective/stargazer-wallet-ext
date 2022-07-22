@@ -22,7 +22,7 @@ import {
   IEVMChainController,
   EthereumNetwork,
   TxOverrides,
-  EthNetworkId,
+  EthChainId,
 } from './types';
 import { Address, FeeOptionKey, TxHistoryParams, TxParams } from '../ChainsController';
 import {
@@ -83,7 +83,7 @@ class EVMChainController implements IEVMChainController {
     return this.network.explorer;
   };
 
-  setNetwork(network: EthNetworkId) {
+  setNetwork(network: EthChainId) {
     if (!network) {
       throw new Error('Network must be provided');
     } else {

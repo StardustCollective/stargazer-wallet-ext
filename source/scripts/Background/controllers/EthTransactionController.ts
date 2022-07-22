@@ -7,7 +7,7 @@ import { TEST_PRIVATE_KEY, ETHERSCAN_API_KEY } from 'utils/envUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from '../../../state/assets/types';
 import EVMChainController from './EVMChainController';
-import { EthNetworkId } from './EVMChainController/types';
+import { EthChainId } from './EVMChainController/types';
 
 export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => Promise<boolean>;
@@ -47,7 +47,7 @@ export class EthTransactionController implements IEthTransactionController {
 
   private _transactionListeners: ITransactionListeners = {};
 
-  setNetwork(value: EthNetworkId) {
+  setNetwork(value: EthChainId) {
     this.ethClient = new EVMChainController({
       network: value,
       privateKey: process.env.TEST_PRIVATE_KEY,

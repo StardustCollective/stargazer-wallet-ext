@@ -8,7 +8,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
 import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
-import { EthNetworkId } from './EVMChainController/types';
+import { EthChainId } from './EVMChainController/types';
 import EVMChainController from './EVMChainController';
 import { isTestnet, validateAddress } from './EVMChainController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
@@ -52,7 +52,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   if (!activeNetwork) return undefined;
 
   let ethClient: EVMChainController = new EVMChainController({
-    network: activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId,
+    network: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
     privateKey: process.env.TEST_PRIVATE_KEY,
     etherscanApiKey: process.env.ETHERSCAN_API_KEY
   });
@@ -71,7 +71,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
   const setNetwork = (network: string) => {
     ethClient = new EVMChainController({
-      network: network as EthNetworkId,
+      network: network as EthChainId,
       privateKey: process.env.TEST_PRIVATE_KEY,
       etherscanApiKey: process.env.ETHERSCAN_API_KEY,
     });
@@ -86,7 +86,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     const { activeNetwork, activeWallet } = vault;
     const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
 
-    const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as EthChainId;
     ethClient.setNetwork(network);
 
     const info = await ethClient.getTokenInfo(address);
@@ -142,7 +142,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
   const fetchNFTBatch = async (walletAddress: string, offset = 0) => {
     const activeNetwork = store.getState().vault.activeNetwork;
-    const network = activeNetwork[KeyringNetwork.Ethereum] as EthNetworkId;
+    const network = activeNetwork[KeyringNetwork.Ethereum] as EthChainId;
     const apiBase = isTestnet(network) ? NFT_TESTNET_API : NFT_MAINNET_API;
 
     // OpenSea testnets API call is failing or taking a long time to respond.
@@ -254,7 +254,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
 
     const { activeNetwork } = store.getState().vault;
     const assets = store.getState().assets;
-    const network = activeNetwork.Ethereum as EthNetworkId;
+    const network = activeNetwork.Ethereum as EthChainId;
     let logo = DEAFAULT_LOGO;
     let tokenData;
 

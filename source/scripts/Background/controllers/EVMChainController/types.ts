@@ -3,12 +3,12 @@ import { BaseAmount } from '@xchainjs/xchain-util';
 import { Address, ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
-export type EthNetworkId = 'mainnet' | 'ropsten' | 'rinkeby';
+export type EthChainId = 'mainnet' | 'ropsten' | 'rinkeby';
 export type EthNetworkValue = 'homestead' | 'ropsten' | 'rinkeby';
 export const testnets = ['ropsten', 'rinkeby'];
 
 export type EthereumNetwork = {
-  id: EthNetworkId;
+  id: EthChainId;
   value: EthNetworkValue;
   label: string;
   chainId: number;
@@ -38,7 +38,7 @@ type GetTokenInfoResponse = {
 }
 
 export type EVMChainControllerParams = {
-  network?: EthNetworkId;
+  network?: EthChainId;
   etherscanApiKey?: string;
   privateKey?: string;
 };

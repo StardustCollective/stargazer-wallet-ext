@@ -1,7 +1,7 @@
 import { ERC20Asset, ERC20AssetWithAddress, SearchAsset } from "./types";
 import { IAssetInfoState } from '../assets/types';
 import { AssetType } from "state/vault/types";
-import { EthNetworkId } from "scripts/Background/controllers/EVMChainController/types";
+import { EthChainId } from "scripts/Background/controllers/EVMChainController/types";
 import { constellationInitialValues } from "./index";
 
 const INITIAL_ARRAY_LENGTH = 203;
@@ -19,7 +19,7 @@ export const mapToAssetsArray = (tokensArray: ERC20Asset[], tokensAddressArray: 
               symbol: item.symbol.toUpperCase(),
               type: AssetType.ERC20,
               priceId: item.id,
-              network: 'mainnet' as EthNetworkId,
+              network: 'mainnet' as EthChainId,
               logo: item.image,
               decimals: 18,
             }))
@@ -37,7 +37,7 @@ export const mapSearchAssetsToArray = (tokens: SearchAsset[], tokensAddressArray
             symbol: item.symbol.toUpperCase(),
             type: AssetType.ERC20,
             priceId: item.id,
-            network: 'mainnet' as EthNetworkId,
+            network: 'mainnet' as EthChainId,
             logo: item.large,
             decimals: 18,
           }))

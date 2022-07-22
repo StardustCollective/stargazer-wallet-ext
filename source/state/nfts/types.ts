@@ -1,4 +1,4 @@
-import { EthNetworkId } from 'scripts/Background/controllers/EVMChainController/types';
+import { EthChainId } from 'scripts/Background/controllers/EVMChainController/types';
 import { AssetType } from 'state/vault/types';
 
 export interface INFTInfoState {
@@ -8,7 +8,7 @@ export interface INFTInfoState {
   address: string;
   quantity: number;
   link: string;
-  network?: EthNetworkId;
+  network?: EthChainId;
   logo?: string;
 }
 

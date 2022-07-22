@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Address, Tx } from '../ChainsController';
 import { ETHTransactionInfo, TokenTransactionInfo } from './etherscanApi.types';
-import { FeesWithGasPricesAndLimits, GasPrices, EthNetworkId, testnets } from './types';
+import { FeesWithGasPricesAndLimits, GasPrices, EthChainId, testnets } from './types';
 import { 
   Asset, 
   BaseAmount, 
@@ -21,11 +21,11 @@ import {
 } from './constants';
 import { ETH_NETWORK } from 'constants/index';
 
-export const isTestnet = (network: EthNetworkId) => {
+export const isTestnet = (network: EthChainId) => {
   return testnets.includes(network);
 };
 
-export const getChainId = (network: EthNetworkId): number => {
+export const getChainId = (network: EthChainId): number => {
   switch (network) {
     case 'mainnet':
       return 1;
@@ -39,7 +39,7 @@ export const getChainId = (network: EthNetworkId): number => {
   }
 }
 
-export const getNetworkInfo = (networkId: EthNetworkId) => {
+export const getNetworkInfo = (networkId: EthChainId) => {
   return ETH_NETWORK[networkId];
 }
 
