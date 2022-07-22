@@ -317,9 +317,9 @@ class WalletController implements IWalletController {
     }
 
     if (network === KeyringNetwork.Ethereum) {
-      this.account.txController.setNetwork(chainId as EthChainId);
-      this.account.ethClient.setNetwork(chainId as EthChainId);
-      this.account.assetsController.setNetwork(chainId as EthChainId);
+      this.account.txController.setChain(chainId as EthChainId);
+      this.account.ethClient.setChain(chainId as EthChainId);
+      this.account.assetsController.setChain(chainId as EthChainId);
     }
 
     // TODO-349: Check if we need to add some logic here

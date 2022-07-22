@@ -30,7 +30,7 @@ import {
 } from '../common';
 
 import { StargazerSignatureRequest } from './StargazerProvider';
-import { getChainId, getNetworkInfo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { getChainId, getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -156,7 +156,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   ) {
     // TODO-349: Check if this logic works as expected.
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const networkInfo = getNetworkInfo(activeNetwork.Ethereum);
+    const networkInfo = getChainInfo(activeNetwork.Ethereum);
     const provider = new ethers.providers.JsonRpcProvider(networkInfo.rpcEndpoint);
 
     return provider.send(request.method, request.params);

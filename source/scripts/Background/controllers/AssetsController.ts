@@ -43,7 +43,7 @@ export interface IAssetsController {
   setRequestId: (value: string) => void;
   clearErrors: () => void;
   clearPaymentRequest: () => void;
-  setNetwork: (network: string) => void;
+  setChain: (chain: string) => void;
 }
 
 const AssetsController = (updateFiat: () => void): IAssetsController => {
@@ -52,7 +52,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
   if (!activeNetwork) return undefined;
 
   let ethClient: EVMChainController = new EVMChainController({
-    network: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
+    chain: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
     privateKey: process.env.TEST_PRIVATE_KEY,
     etherscanApiKey: process.env.ETHERSCAN_API_KEY
   });
@@ -69,9 +69,9 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     }
   }
 
-  const setNetwork = (network: string) => {
+  const setChain = (chain: string) => {
     ethClient = new EVMChainController({
-      network: network as EthChainId,
+      chain: chain as EthChainId,
       privateKey: process.env.TEST_PRIVATE_KEY,
       etherscanApiKey: process.env.ETHERSCAN_API_KEY,
     });
@@ -87,7 +87,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
 
     const network = activeNetwork[KeyringNetwork.Ethereum] as EthChainId;
-    ethClient.setNetwork(network);
+    ethClient.setChain(network);
 
     const info = await ethClient.getTokenInfo(address);
     const assetId = `${isTestnet(network) ? 'T-' : ''}${address}`;
@@ -363,7 +363,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
      setRequestId,
      clearErrors,
      clearPaymentRequest,
-     setNetwork,
+     setChain,
   };
 };
 

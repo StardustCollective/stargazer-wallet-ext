@@ -1,4 +1,4 @@
-import { EthChainId, EthNetworkValue } from 'scripts/Background/controllers/EVMChainController/types';
+import { EthChainId, EthChainValue } from 'scripts/Background/controllers/EVMChainController/types';
 import { 
   isProd,
   isNative, 
@@ -42,7 +42,7 @@ export const DAG_NETWORK: {
 export const ETH_NETWORK: {
   [networkId: string]: {
     id: EthChainId;
-    value: EthNetworkValue;
+    value: EthChainValue;
     label: string;
     explorer: string;
     chainId: number;

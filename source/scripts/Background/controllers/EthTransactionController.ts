@@ -28,9 +28,9 @@ type ITransactionListeners = {
 const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
-  // TODO-349: Update ethClient with setNetwork()
+  // TODO-349: Update ethClient with setChain()
   private ethClient: EVMChainController = new EVMChainController({
-    network: 'mainnet',
+    chain: 'mainnet',
     privateKey: TEST_PRIVATE_KEY,
     etherscanApiKey: ETHERSCAN_API_KEY,
   });
@@ -47,9 +47,9 @@ export class EthTransactionController implements IEthTransactionController {
 
   private _transactionListeners: ITransactionListeners = {};
 
-  setNetwork(value: EthChainId) {
+  setChain(value: EthChainId) {
     this.ethClient = new EVMChainController({
-      network: value,
+      chain: value,
       privateKey: process.env.TEST_PRIVATE_KEY,
       etherscanApiKey: process.env.ETHERSCAN_API_KEY,
     });

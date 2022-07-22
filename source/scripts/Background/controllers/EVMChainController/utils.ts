@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Address, Tx } from '../ChainsController';
 import { ETHTransactionInfo, TokenTransactionInfo } from './etherscanApi.types';
-import { FeesWithGasPricesAndLimits, GasPrices, EthChainId, testnets } from './types';
+import { FeesWithGasPricesAndLimits, GasPrices, EthChainId, testnets, AllChainsIds } from './types';
 import { 
   Asset, 
   BaseAmount, 
@@ -39,8 +39,9 @@ export const getChainId = (network: EthChainId): number => {
   }
 }
 
-export const getNetworkInfo = (networkId: EthChainId) => {
-  return ETH_NETWORK[networkId];
+export const getChainInfo = (chainId: AllChainsIds) => {
+  // TODO-349: Search chainId in all networks and return
+  return ETH_NETWORK[chainId];
 }
 
 export const filterSelfTxs = <T extends { from: string; to: string; hash: string }>(txs: T[]): T[] => {

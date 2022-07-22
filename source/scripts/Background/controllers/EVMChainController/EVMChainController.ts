@@ -12,7 +12,7 @@ import {
 } from './constants';
 import {
   getDefaultGasPrices,
-  getNetworkInfo,
+  getChainInfo,
   getTokenAddress,
   validateAddress,
 } from './utils';
@@ -20,9 +20,9 @@ import {
   EVMChainControllerParams,
   FeesParamsEth,
   IEVMChainController,
-  EthereumNetwork,
+  IChain,
   TxOverrides,
-  EthChainId,
+  AllChainsIds,
 } from './types';
 import { Address, FeeOptionKey, TxHistoryParams, TxParams } from '../ChainsController';
 import {
@@ -34,20 +34,20 @@ import { GasOracleResponse } from './etherscanApi.types';
 import erc20abi from 'utils/erc20.json';
 
 class EVMChainController implements IEVMChainController {
-  private network: EthereumNetwork;
+  private chain: IChain;
   private address: Address | null = null;
   private wallet: ethers.Wallet | null = null;
   private provider: ethers.providers.JsonRpcProvider;
   private etherscanApiKey?: string;
 
   constructor({
-    network,
+    chain,
     privateKey,
     etherscanApiKey
   }: EVMChainControllerParams) {
-    this.network = getNetworkInfo(network);
     this.etherscanApiKey = etherscanApiKey;
-    this.provider = new ethers.providers.JsonRpcProvider(this.network.rpcEndpoint);
+    this.chain = getChainInfo(chain);
+    this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
     this.changeWallet(new ethers.Wallet(privateKey, this.provider));
   }
 
@@ -66,10 +66,10 @@ class EVMChainController implements IEVMChainController {
   }
 
   getNetwork() {
-    if (!this.network) {
+    if (!this.chain) {
       throw new Error('Network is not defined');
     }
-    return this.network;
+    return this.chain;
   }
 
   getWallet() {
@@ -80,15 +80,15 @@ class EVMChainController implements IEVMChainController {
   }
 
   getExplorerUrl = (): string => {
-    return this.network.explorer;
+    return this.chain.explorer;
   };
 
-  setNetwork(network: EthChainId) {
-    if (!network) {
-      throw new Error('Network must be provided');
+  setChain(chain: AllChainsIds) {
+    if (!chain) {
+      throw new Error('Chain must be provided');
     } else {
-        this.network = getNetworkInfo(network);
-        this.provider = new ethers.providers.JsonRpcProvider(this.network.rpcEndpoint);
+        this.chain = getChainInfo(chain);
+        this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
         this.wallet = this.wallet.connect(this.provider);
     }
   }
@@ -207,7 +207,7 @@ class EVMChainController implements IEVMChainController {
       let transations;
       if (assetAddress) {
         transations = await getTokenTransactionHistory({
-          baseUrl: this.network.explorerAPI,
+          baseUrl: this.chain.explorerAPI,
           address,
           assetAddress,
           page,
@@ -216,7 +216,7 @@ class EVMChainController implements IEVMChainController {
         });
       } else {
         transations = await getETHTransactionHistory({
-          baseUrl: this.network.explorerAPI,
+          baseUrl: this.chain.explorerAPI,
           address,
           page,
           offset,
@@ -239,7 +239,7 @@ class EVMChainController implements IEVMChainController {
 
   async estimateGasPrices() {
     // TODO-349: We should check all testnets here.
-    if (this.network.value !== 'homestead') {
+    if (this.chain.value !== 'homestead') {
       // Etherscan gas oracle is not working in testnets
       const oneGwei = ethers.BigNumber.from(1e9);
       const feeData = await this.provider.getFeeData();
@@ -256,7 +256,7 @@ class EVMChainController implements IEVMChainController {
     try {
       // TODO-349: Check if we can reuse etherscanApiKey in all explorers.
       const response: GasOracleResponse = await getGasOracle(
-        this.network.explorerAPI,
+        this.chain.explorerAPI,
         this.etherscanApiKey
       );
 

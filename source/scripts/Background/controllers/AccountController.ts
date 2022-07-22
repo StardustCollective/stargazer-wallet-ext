@@ -80,24 +80,17 @@ export class AccountController implements IAccountController {
     let privateKey = undefined;
     let publicKey = undefined;
 
-    // Excludes ledger accounts since we do not have access
+    // Excludes ledger accounts since we do not have access 
     // to the private key.
-    if (walletInfo.type !== KeyringWalletType.LedgerAccountWallet) {
-      privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
-    } else {
+    if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet && 
+        walletInfo.type !== KeyringWalletType.BitfiAccountWallet
+      ){
+      privateKey = this.keyringManager.exportAccountPrivateKey(
+        account.address
+      );
+    }else {
       publicKey = account.publicKey;
     }
-      // Excludes ledger accounts since we do not have access 
-      // to the private key.
-      if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet && 
-         walletInfo.type !== KeyringWalletType.BitfiAccountWallet
-        ){
-        privateKey = this.keyringManager.exportAccountPrivateKey(
-          account.address
-        );
-      }else {
-        publicKey = account.publicKey;
-      }
 
     if (account.network === KeyringNetwork.Constellation) {
       if (privateKey) {
@@ -121,7 +114,7 @@ export class AccountController implements IAccountController {
 
     if (account.network === KeyringNetwork.Ethereum) {
       this.ethClient = new EVMChainController({
-        network: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
+        chain: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
         privateKey,
         etherscanApiKey: process.env.ETHERSCAN_API_KEY
       });

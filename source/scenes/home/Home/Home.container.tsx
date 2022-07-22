@@ -71,7 +71,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
 
   useEffect(() => {
     const networkUpdate = async () => {
-      await accountController.assetsController.setNetwork(activeNetwork.Ethereum);
+      await accountController.assetsController.setChain(activeNetwork.Ethereum);
       await accountController.assetsBalanceMonitor.start();
     }
     networkUpdate();
