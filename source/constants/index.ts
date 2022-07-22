@@ -1,4 +1,4 @@
-import { EthNetworkId, EthNetworkValue } from 'scripts/Background/controllers/EVMNetworkController/types';
+import { EthNetworkId, EthNetworkValue } from 'scripts/Background/controllers/EVMChainController/types';
 import { 
   isProd,
   isNative, 

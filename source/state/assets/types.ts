@@ -1,4 +1,4 @@
-import { EthNetworkId } from 'scripts/Background/controllers/EVMNetworkController/types';
+import { EthNetworkId } from 'scripts/Background/controllers/EVMChainController/types';
 import { AssetType } from 'state/vault/types';
 
 export interface IAssetInfoState {

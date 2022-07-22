@@ -6,7 +6,7 @@ import {
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { EthNetworkId } from 'scripts/Background/controllers/EVMNetworkController/types';
+import { EthNetworkId } from 'scripts/Background/controllers/EVMChainController/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;

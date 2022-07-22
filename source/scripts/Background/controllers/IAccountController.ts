@@ -4,11 +4,11 @@ import { IAssetState, IActiveAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { EthTransactionController } from './EthTransactionController';
 import { IAssetsController } from './AssetsController';
-import EVMNetworkController from './EVMNetworkController';
+import EVMChainController from './EVMChainController';
 import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
 
 export interface IAccountController {
-  ethClient: EVMNetworkController;
+  ethClient: EVMChainController;
   txController: EthTransactionController;
   assetsController: Readonly<IAssetsController>;
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;

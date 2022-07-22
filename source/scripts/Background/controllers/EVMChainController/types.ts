@@ -37,13 +37,13 @@ type GetTokenInfoResponse = {
   name: string;
 }
 
-export type EVMNetworkControllerParams = {
+export type EVMChainControllerParams = {
   network?: EthNetworkId;
   etherscanApiKey?: string;
   privateKey?: string;
 };
 
-export interface IEVMNetworkController extends ChainsController {
+export interface IEVMChainController extends ChainsController {
   estimateTokenTransferGasLimit: (recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) => Promise<number>;
   getTokenInfo: (address: string) => Promise<GetTokenInfoResponse | null>;
   waitForTransaction: (hash: string) => Promise<ethers.providers.TransactionReceipt>;

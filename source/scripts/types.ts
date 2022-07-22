@@ -1,5 +1,5 @@
 import { IActiveAssetState } from 'state/vault/types';
-import { EthNetworkId } from './Background/controllers/EVMNetworkController/types';
+import { EthNetworkId } from './Background/controllers/EVMChainController/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 export interface AccountItem  {

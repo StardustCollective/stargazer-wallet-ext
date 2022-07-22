@@ -1,7 +1,7 @@
 import { ERC20Asset, ERC20AssetWithAddress, SearchAsset } from "./types";
 import { IAssetInfoState } from '../assets/types';
 import { AssetType } from "state/vault/types";
-import { EthNetworkId } from "scripts/Background/controllers/EVMNetworkController/types";
+import { EthNetworkId } from "scripts/Background/controllers/EVMChainController/types";
 import { constellationInitialValues } from "./index";
 
 const INITIAL_ARRAY_LENGTH = 203;

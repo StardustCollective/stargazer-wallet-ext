@@ -17,9 +17,9 @@ import {
   validateAddress,
 } from './utils';
 import {
-  EVMNetworkControllerParams,
+  EVMChainControllerParams,
   FeesParamsEth,
-  IEVMNetworkController,
+  IEVMChainController,
   EthereumNetwork,
   TxOverrides,
   EthNetworkId,
@@ -33,7 +33,7 @@ import {
 import { GasOracleResponse } from './etherscanApi.types';
 import erc20abi from 'utils/erc20.json';
 
-class EVMNetworkController implements IEVMNetworkController {
+class EVMChainController implements IEVMChainController {
   private network: EthereumNetwork;
   private address: Address | null = null;
   private wallet: ethers.Wallet | null = null;
@@ -44,7 +44,7 @@ class EVMNetworkController implements IEVMNetworkController {
     network,
     privateKey,
     etherscanApiKey
-  }: EVMNetworkControllerParams) {
+  }: EVMChainControllerParams) {
     this.network = getNetworkInfo(network);
     this.etherscanApiKey = etherscanApiKey;
     this.provider = new ethers.providers.JsonRpcProvider(this.network.rpcEndpoint);
@@ -374,4 +374,4 @@ class EVMNetworkController implements IEVMNetworkController {
   }
 }
 
-export default EVMNetworkController;
+export default EVMChainController;

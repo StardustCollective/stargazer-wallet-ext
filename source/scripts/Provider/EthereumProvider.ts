@@ -30,7 +30,7 @@ import {
 } from '../common';
 
 import { StargazerSignatureRequest } from './StargazerProvider';
-import { getChainId, getNetworkInfo } from 'scripts/Background/controllers/EVMNetworkController/utils';
+import { getChainId, getNetworkInfo } from 'scripts/Background/controllers/EVMChainController/utils';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
