@@ -11,7 +11,7 @@ import Select from 'components/Select';
 import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
 
-import LedgerIcon from 'assets/images/svg/ledger.svg';
+// import LedgerIcon from 'assets/images/svg/ledger.svg';
 import BitfiIcon from 'assets/images/svg/bitfi.svg';
 import styles from './ImportAccount.scss';
 import { useAlert } from 'react-alert'

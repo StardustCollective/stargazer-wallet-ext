@@ -28,7 +28,7 @@ class BitfiBridgeUtil {
 
 
   private getAccountData = async (
-    startIndex: number
+    // startIndex: number
   ): Promise<LedgerAccount[]> => {
     //uncomment for multiple accounts
     // const indexes = Array.from({length: this.NUMBER_OF_ACCOUNTS}, (_, index) => index + startIndex);
@@ -51,7 +51,7 @@ class BitfiBridgeUtil {
   };
 
   public buildTransaction = async (
-    amount: number, fromAddress: string, toAddress: string, index?: number, fee?: number
+    amount: number, fromAddress: string, toAddress: string, fee?: number
   ) => {
     const lastTxRef = await dag4.network.loadBalancerApi.getAddressLastAcceptedTransactionRef(fromAddress);
     
@@ -63,7 +63,7 @@ class BitfiBridgeUtil {
       amount: amountSat,
       symbol: 'dag',
       fee: feeSat, 
-      index: /*index ||*/ 0,
+      index:  0, /*index ||*/
       lastTxRef,
       transferType: TransferType.OUT_SELF,
     }, APPROVE_TIMEOUT_MSEC);
@@ -163,25 +163,25 @@ class BitfiBridgeUtil {
     await this._signin(deviceId, onMessage, onCodeGenerated);
   };
 
-  public async signMessage(msg: string, index: number) {
-    const account = (await this.bitfiBridge.getAccounts('dag', [/*index ||*/0], false, REQUEST_TIMOUT_MSEC))[0];
+  public async signMessage(msg: string) {
+    const account = (await this.bitfiBridge.getAccounts('dag', [0], false, REQUEST_TIMOUT_MSEC))[0];
     const sig = await this.bitfiBridge.signMessage(account.address, msg, 'dag', 0, false, APPROVE_TIMEOUT_MSEC);
     return sig;
   }
 
   //not used
-  public setOnProgressUpdate(onProgressUpdate: (progress: number) => void) {
-  }
+  // public setOnProgressUpdate(onProgressUpdate: (progress: number) => void) {
+  // }
 
   // There is only one account, there is nothing to iterate through
   public getInitialPage = (): Promise<LedgerAccount[]> => {
     this.startIndex = 0;
-    return this.getAccountData(this.startIndex);
+    return this.getAccountData();
   };
 
   public getNextPage = (): Promise<LedgerAccount[]> => {
     this.startIndex += this.NUMBER_OF_ACCOUNTS;
-    return this.getAccountData(this.startIndex);
+    return this.getAccountData();
   };
 
   public getPreviousPage = (): Promise<LedgerAccount[]> => {
@@ -189,7 +189,7 @@ class BitfiBridgeUtil {
       throw Error('You are at page 1, no more previous pages');
     }
     this.startIndex -= this.NUMBER_OF_ACCOUNTS;
-    return this.getAccountData(this.startIndex);
+    return this.getAccountData();
   };
 }
 

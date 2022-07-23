@@ -259,13 +259,13 @@ const LedgerPage: FC = () => {
     setOpenAlert(false);
   }
 
-  const onPreviousClick = async () => {
-    await getAccountData(PAGING_ACTIONS_ENUM.PREVIOUS);
-  }
+  // const onPreviousClick = async () => {
+  //   await getAccountData(PAGING_ACTIONS_ENUM.PREVIOUS);
+  // }
 
-  const onNextClick = async () => {
-    await getAccountData(PAGING_ACTIONS_ENUM.NEXT);
-  }
+  // const onNextClick = async () => {
+  //   await getAccountData(PAGING_ACTIONS_ENUM.NEXT);
+  // }
 
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
@@ -327,7 +327,7 @@ const LedgerPage: FC = () => {
         deviceId as string,
         (message) => { setWaitingMessage(message); },
       );
-      const signature = await BitfiBridgeUtil.signMessage(message, 0);
+      const signature = await BitfiBridgeUtil.signMessage(message);
       BitfiBridgeUtil.closeConnection();
       const signatureEvent = new CustomEvent('messageSigned', {
         detail: {
@@ -443,8 +443,8 @@ const LedgerPage: FC = () => {
           <AccountsView
             onCancelClick={onCancelClick}
             onImportClick={onImportClick}
-            onNextClick={onNextClick}
-            onPreviousClick={onPreviousClick}
+            // onNextClick={onNextClick}
+            // onPreviousClick={onPreviousClick}
             onCheckboxChange={onCheckboxChange}
             accountData={accountData}
             checkBoxesState={checkBoxesState}

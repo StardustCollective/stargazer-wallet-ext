@@ -2,7 +2,7 @@ import find from 'lodash/find';
 import { dag4 } from '@stardust-collective/dag4';
 import {
   KeyringNetwork,
-  KeyringWalletAccountState,
+  // KeyringWalletAccountState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { Runtime, Windows } from 'webextension-polyfill-ts';
@@ -291,17 +291,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         walletLabel: activeWallet.label,
         deviceId,
       };
-
-      // If the type of account is Ledger send back the public key so the
-      // signature can be verified by the requester.
-      let accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
-      if (
-        activeWallet.type === KeyringWalletType.LedgerAccountWallet &&
-        accounts &&
-        accounts[0]
-      ) {
-        signatureData.publicKey = accounts[0].publicKey;
-      }
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
         port,
