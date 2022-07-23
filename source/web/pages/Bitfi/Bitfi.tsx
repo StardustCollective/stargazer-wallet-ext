@@ -131,7 +131,7 @@ const LedgerPage: FC = () => {
   const [deviceId, setDeviceId] = useState<string | string[]>('');
   const [waitingMessage, setWaitingMessage] = useState<string>('Waiting For Bitfi');
   const [message, setMessage] = useState<string>('')
-  const [code] = useState<string>('')
+  const [code, setCode] = useState<string>('')
   const [error] = useState<string>('')
 
   useEffect(() => { }, [selectedAccounts])
@@ -244,7 +244,7 @@ const LedgerPage: FC = () => {
       // Request permission to access the ledger device.
       setWalletState(WALLET_STATE_ENUM.BITFI_SIGNIN);
       setDeviceId(deviceId);
-      await BitfiBridgeUtil.requestPermissions(deviceId, setMessage);
+      await BitfiBridgeUtil.requestPermissions(deviceId, setMessage, setCode);
       // Get the initial page of the account data
       await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
 

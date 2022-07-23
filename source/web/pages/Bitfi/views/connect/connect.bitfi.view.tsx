@@ -4,10 +4,6 @@ import Button from '@material-ui/core/Button';
 import styles from './bitfiStyles.module.scss';
 
 
-import BitfiLogo from 'assets/images/bitfi_logo.png';
-
-const BITFI_LOGO_SIZE = 240;
-
 const BUTTON_SIZE_PROP = 'large';
 const BUTTON_VARIANT_PROP = 'contained';
 const BUTTON_COLOR_PROP = 'primary';
@@ -20,7 +16,7 @@ interface IConnectProps {
   onBack: () => void
 }
 
-function ConnectBitfiView({ onBack, message, error }: IConnectProps) {
+function ConnectBitfiView({ onBack, message, code, error }: IConnectProps) {
   const BlueButton = withStyles((theme) => ({
     root: {
       color: theme.palette.getContrastText(BUTTON_CUSTOM_COLOR_PROP),
@@ -34,8 +30,10 @@ function ConnectBitfiView({ onBack, message, error }: IConnectProps) {
   return (
     <div className={styles.content}>
       <div className={styles.wrapper}>
-        <div className={styles.logo}>
-          <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
+        <div className={styles.code}>
+          <span className={styles.text}>
+            {code.toUpperCase()}
+          </span>
         </div>
         <div className={styles.instructions}>
           <span className={styles.text}>

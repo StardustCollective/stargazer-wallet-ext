@@ -15,7 +15,7 @@ import Button from '@material-ui/core/Button';
 // Image Imports
 /////////////////////////
 
-import BitfiLogo from 'assets/images/bitfi_logo.png';
+import BitfiUserGuide from 'assets/images/bitfi-user-guide.png';
 
 /////////////////////////
 // Styles Imports
@@ -35,7 +35,8 @@ const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
 // Strings
 const CONNECT_TO_LEDGER_STRING = 'Connect to Bitfi';
 // Numbers
-const BITFI_LOGO_SIZE = 240;
+const BITFI_USER_GUIDE_WIDTH = 360;
+const BITFI_USER_GUIDE_HEIGHT = 130;
 
 /////////////////////////
 // Interface
@@ -96,7 +97,7 @@ function Connect(props: IConnectProps) {
       <div className={styles.wrapper}>
         <div className={styles.connect}>
           <div className={styles.logo}>
-            <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
+            <img src={BitfiUserGuide} alt="bitfi_user_guide" width={BITFI_USER_GUIDE_WIDTH} height={BITFI_USER_GUIDE_HEIGHT} />
           </div>
           <div className={styles.instructions}>
             <span className={styles.text}>
