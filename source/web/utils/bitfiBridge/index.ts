@@ -3,8 +3,8 @@ import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { dag4 } from '@stardust-collective/dag4';
 
 const SESSION_KEY = 'bitfi_session';
-const APPROVE_TIMEOUT_MSEC = 120 * 1000;
-const CONNECT_TIMEOUT_MSEC = 5 * 60 * 1000;
+const APPROVE_TIMEOUT_MSEC = 2 * 60 * 1000;
+const CONNECT_TIMEOUT_MSEC = 10 * 60 * 1000;
 const REQUEST_TIMOUT_MSEC = 7 * 1000;
 
 const checkCodeMessage = (code: string) => 
