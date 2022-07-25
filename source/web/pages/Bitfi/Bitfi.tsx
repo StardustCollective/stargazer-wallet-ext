@@ -51,13 +51,19 @@ const BITFI_ERROR_STRINGS = {
   INVLAID_DEVICE_ID: 'Invalid device ID',
   CANNOT_READ_PROPERTIES: 'Cannot read properties of undefined',
   INVALID_HEX_STRING: 'Invalid hex string',
+  TIMEOUT: 'Timeout Error',
+  BLOCKED: 'USER IS BLOCKING',
+  BUSY: 'USER IS BUSY',
   REJECTED: 'REJECTED',
   ERROR_CODE_ZERO: '0',
 }
 const ALERT_MESSAGES_STRINGS = {
   DEFAULT: 'Error: Please contact support.',
+  TIMEOUT: 'Error: Timeout, please, try again',
   INVLAID_DEVICE_ID: 'Error: Please input a valid device ID.',
   REJECTED: 'Error: Request has been rejected by user.',
+  BUSY: 'Error: There is a pending request on device, please, cancel it',
+  BLOCKED: 'Error: "Allow connect" toggle on the device is switched OFF'
 }
 
 // States
@@ -221,6 +227,12 @@ const LedgerPage: FC = () => {
       error.includes(BITFI_ERROR_STRINGS.ERROR_CODE_ZERO)
     ) {
       errorMessage = ALERT_MESSAGES_STRINGS.REJECTED;
+    } else if (error.includes(BITFI_ERROR_STRINGS.TIMEOUT)) {
+      errorMessage = ALERT_MESSAGES_STRINGS.TIMEOUT
+    } else if (error.includes(BITFI_ERROR_STRINGS.BUSY)) {
+      errorMessage = ALERT_MESSAGES_STRINGS.BUSY
+    } else if (error.includes(BITFI_ERROR_STRINGS.BLOCKED)) {
+      errorMessage = ALERT_MESSAGES_STRINGS.BLOCKED
     }
 
     setAlertSeverity(errorSeverity);
@@ -242,6 +254,7 @@ const LedgerPage: FC = () => {
     try {
       // Close any open alerts
       // Request permission to access the ledger device.
+      setCode('')
       setWalletState(WALLET_STATE_ENUM.BITFI_SIGNIN);
       setDeviceId(deviceId);
       await BitfiBridgeUtil.requestPermissions(deviceId, setMessage, setCode);
@@ -250,7 +263,10 @@ const LedgerPage: FC = () => {
 
     }
     catch (exc: any) {
-      showAlert(exc.message || exc);
+      showAlert(exc.message || exc.toString());
+      
+      setWalletState(WALLET_STATE_ENUM.LOCKED)
+      BitfiBridgeUtil.closeConnection();
     }
   }
 
@@ -322,10 +338,12 @@ const LedgerPage: FC = () => {
 
     try {
       setWaitingForLedger(true);
+      setCode('')
       console.log("Device ID: " + deviceId);
       await BitfiBridgeUtil.requestPermissions(
         deviceId as string,
         (message) => { setWaitingMessage(message); },
+        setCode
       );
       const signature = await BitfiBridgeUtil.signMessage(message);
       BitfiBridgeUtil.closeConnection();
@@ -344,7 +362,7 @@ const LedgerPage: FC = () => {
       background.dispatchEvent(signatureEvent);
       window.close();
     } catch (error: any) {
-      showAlert(error.code.toString());
+      showAlert(error.message || error.toString());
       setWaitingForLedger(false);
       BitfiBridgeUtil.closeConnection();
     }
@@ -383,9 +401,11 @@ const LedgerPage: FC = () => {
 
     try {
       setWaitingForLedger(true);
+      setCode('')
       await BitfiBridgeUtil.requestPermissions(
         deviceId as string,
         (message) => { setWaitingMessage(message); },
+        setCode
       );
       const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to);
       const hash = await dag4.network.loadBalancerApi.postTransaction(signedTX);
@@ -396,7 +416,7 @@ const LedgerPage: FC = () => {
       setTransactionSigned(true);
       BitfiBridgeUtil.closeConnection();
     } catch (error: any) {
-      showAlert(error.code.toString());
+      showAlert(error.message || error.toString());
       setWaitingForLedger(false)
       BitfiBridgeUtil.closeConnection();
     }
@@ -471,6 +491,7 @@ const LedgerPage: FC = () => {
       return (
         <>
           <SignView
+            code={code}
             amount={amount}
             fee={fee}
             deviceId={deviceId as string}
@@ -497,6 +518,7 @@ const LedgerPage: FC = () => {
       return (
         <>
           <MessageSigning
+            code={code}
             waitingMessage={waitingMessage}
             walletLabel={parsedData.walletLabel}
             deviceId={deviceId}
