@@ -9,6 +9,7 @@ import {
 } from 'state/dapp';
 import { IDAppInfo } from 'state/dapp/types';
 import store from 'state/store';
+import { AvailableEvents } from 'scripts/common';
 
 type ISigRequest = {
   address: string;
@@ -37,17 +38,17 @@ class DAppController {
     const listening = state.dapp.listening;
     const listeningEvents = listening[origin];
 
-    if (!!listeningEvents && !listeningEvents.includes('close')) {
+    if (!!listeningEvents && !listeningEvents.includes(AvailableEvents.disconnect)) {
       console.log('notifySiteDisconnected includes close');
       return;
     }
 
     // Dispatch a separate event for each chain
     const events = [
-      new CustomEvent('close', {
+      new CustomEvent(AvailableEvents.disconnect, {
         detail: { data: {}, origin, chain: 'ethereum' },
       }),
-      new CustomEvent('close', {
+      new CustomEvent(AvailableEvents.disconnect, {
         detail: { data: {}, origin, chain: 'constellation' },
       }),
     ];

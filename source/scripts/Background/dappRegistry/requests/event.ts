@@ -14,12 +14,9 @@ const handleEventRequest: DappProviderExternalImplementation<
   }
 
   if (request.action === 'register') {
-    // Backwards Compatibility with 'close'
-    const eventName =
-      request.event === AvailableEvents.disconnect ? 'close' : request.event;
 
     window.addEventListener(
-      eventName,
+      request.event,
       (event: Event) => {
         if (isCustomEvent(event)) {
           const { data } = event.detail;
