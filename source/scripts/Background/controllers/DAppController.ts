@@ -4,6 +4,7 @@ import { listNewDapp, unlistDapp } from 'state/dapp';
 import { IDAppInfo } from 'state/dapp/types';
 import store from 'state/store';
 import { AvailableEvents, StargazerChain } from 'scripts/common';
+import { getDappRegistry } from 'utils/controllersUtils';
 
 type ISigRequest = {
   address: string;
@@ -22,7 +23,7 @@ class DAppController {
 
   async #notifySiteDisconnected(origin: string) {
     console.log('notifySiteDisconnected');
-    window.dappRegistry.sendOriginChainEvent(origin, '*', AvailableEvents.disconnect);
+    getDappRegistry().sendOriginChainEvent(origin, '*', AvailableEvents.disconnect);
   }
 
   getCurrent(): IDAppInfo {
@@ -48,7 +49,7 @@ class DAppController {
     const { whitelist } = state.dapp;
 
     // Will only notify whitelisted dapps that are listening for a wallet change.
-    for (const origin of window.dappRegistry.onlineOrigins) {
+    for (const origin of getDappRegistry().onlineOrigins) {
       const site = whitelist[origin];
 
       if (!site) {
@@ -77,13 +78,13 @@ class DAppController {
         account.toLowerCase().startsWith('dag')
       );
 
-      window.dappRegistry.sendOriginChainEvent(
+      getDappRegistry().sendOriginChainEvent(
         origin,
         StargazerChain.CONSTELLATION,
         AvailableEvents.accountsChanged,
         [dagAccounts]
       );
-      window.dappRegistry.sendOriginChainEvent(
+      getDappRegistry().sendOriginChainEvent(
         origin,
         StargazerChain.ETHEREUM,
         AvailableEvents.accountsChanged,

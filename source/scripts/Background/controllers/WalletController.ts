@@ -29,7 +29,7 @@ import { AccountController } from './AccountController';
 import ControllerUtils from './ControllerUtils';
 import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
-import { getDappController } from 'utils/controllersUtils';
+import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import { EthNetworkId } from './EthChainController/types';
 import filter from 'lodash/filter';
@@ -348,7 +348,7 @@ class WalletController implements IWalletController {
         lbUrl: DAG_NETWORK[chainId].lbUrl,
       });
 
-      window.dappRegistry.sendOriginChainEvent(
+      getDappRegistry().sendOriginChainEvent(
         '*',
         StargazerChain.CONSTELLATION,
         AvailableEvents.chainChanged,
@@ -360,7 +360,7 @@ class WalletController implements IWalletController {
       this.account.txController.setNetwork(chainId as EthNetworkId);
       this.account.ethClient.setNetwork(chainId as EthNetworkId);
 
-      window.dappRegistry.sendOriginChainEvent(
+      getDappRegistry().sendOriginChainEvent(
         '*',
         StargazerChain.ETHEREUM,
         AvailableEvents.chainChanged,
