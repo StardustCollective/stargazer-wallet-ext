@@ -13,10 +13,13 @@ type AddressBalanceMap = {
 }
 
 // TODO-349: Update object with all contract addresses
+// This contract address is taken from https://github.com/wbobeirne/eth-balance-checker
 const NETWORK_TO_CONTRACT_MAP = {
   1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
-  3: '0x9a5f9a99054a513d1d6d3eb1fef7d06981b4ba9d',
-  4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2'
+  3: '0x8D9708f3F514206486D7E988533f770a16d074a7',
+  4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2',
+  137: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4',
+  80001: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4',
 }
 
 export class TokenContractHelper {
@@ -35,23 +38,9 @@ export class TokenContractHelper {
 
 
   async getAddressBalances (provider: Provider | Signer, ethAddress: string, tokenContractAddress: string[], chainId = 1) {
-    let contractAddress: string;
-    switch (chainId) {
-      case 1:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[1];
-        break;
-      case 3:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[3];
-        break;
-      case 4:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[4];
-        break;
-      default:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[1];
-        break;
-    }
+    
     const contract = new Contract(
-      contractAddress,
+      NETWORK_TO_CONTRACT_MAP[chainId as keyof typeof NETWORK_TO_CONTRACT_MAP],
       SINGLE_CALL_BALANCES_ABI,
       provider
     );
@@ -64,23 +53,8 @@ export class TokenContractHelper {
   }
 
   async getTokenBalance(provider: Provider | Signer, ethAddress: string, tokenContractAddress: string, chainId = 1) {
-    let contractAddress: string;
-    switch (chainId) {
-      case 1:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[1];
-        break;
-      case 3:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[3];
-        break;
-      case 4:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[4];
-        break;
-      default:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[1];
-        break;
-    }
     const contract = new Contract(
-      contractAddress,
+      NETWORK_TO_CONTRACT_MAP[chainId as keyof typeof NETWORK_TO_CONTRACT_MAP],
       SINGLE_CALL_BALANCES_ABI,
       provider
     );

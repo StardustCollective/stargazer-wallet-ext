@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
-import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
@@ -19,9 +19,9 @@ const initialState: IVaultState = {
   balances: {
     [AssetType.Constellation]: '0',
     [AssetType.Ethereum]: '0',
-    'avalanche': '0',
-    'bsc': '0',
-    'polygon': '0',
+    // [AssetType.Avalanche]: '0',
+    // [AssetType.BSC]: '0',
+    [AssetType.Polygon]: '0',
   },
   // activeWalletId: undefined,
   activeWallet: undefined,
@@ -31,8 +31,8 @@ const initialState: IVaultState = {
     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
     // TODO-349: Check if these values are set on the migration process.
-    'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
-    'BSC': BSC_NETWORK.bsc.id,
+    // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
+    // 'BSC': BSC_NETWORK.bsc.id,
     'Polygon': POLYGON_NETWORK.matic.id,
   },
   version: '2.1.1',

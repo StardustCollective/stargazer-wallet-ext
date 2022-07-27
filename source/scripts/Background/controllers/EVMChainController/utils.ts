@@ -19,11 +19,56 @@ import {
   SIMPLE_GAS_COST ,
   ETHAddress 
 } from './constants';
-import { ETH_NETWORK } from 'constants/index';
+import { ALL_EVM_CHAINS } from 'constants/index';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-export const isTestnet = (network: EthChainId) => {
+export const isTestnet = (network: AllChainsIds) => {
   return testnets.includes(network);
 };
+
+// TODO-349: Check all these methods
+export const equalMainTokenAddress = (chainId: AllChainsIds) => {
+  switch (chainId) {
+    case 'matic':
+    case 'maticmum':
+      return true;
+    case 'mainnet':
+    case 'rinkeby':
+    case 'ropsten':
+      return false;
+  
+    default:
+      return false;
+  }
+}
+
+export const getMainnetFromTestnet = (chainId: AllChainsIds) => {
+  switch (chainId) {
+    case 'rinkeby':
+    case 'ropsten':
+      return 'mainnet';
+    case 'maticmum':
+      return 'matic';
+  
+    default:
+      return 'mainnet';
+  }
+}
+
+export const getNetworkFromChainId = (chainId: AllChainsIds) => {
+  switch (chainId) {
+    case 'mainnet':
+    case 'rinkeby':
+    case 'ropsten':
+        return KeyringNetwork.Ethereum;
+    case 'matic':
+    case 'maticmum':
+        return 'Polygon';
+  
+    default:
+      return KeyringNetwork.Ethereum;
+  }
+}
 
 export const getChainId = (network: EthChainId): number => {
   switch (network) {
@@ -40,8 +85,7 @@ export const getChainId = (network: EthChainId): number => {
 }
 
 export const getChainInfo = (chainId: AllChainsIds) => {
-  // TODO-349: Search chainId in all networks and return
-  return ETH_NETWORK[chainId];
+  return ALL_EVM_CHAINS[chainId];
 }
 
 export const filterSelfTxs = <T extends { from: string; to: string; hash: string }>(txs: T[]): T[] => {

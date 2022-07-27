@@ -13,10 +13,16 @@ import IVaultState, {
   IWalletState,
 } from '../../../state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
-import { getChainId } from '../controllers/EVMChainController/utils';
 import { AccountTracker } from '../controllers/EVMChainController';
+import { ALL_EVM_CHAINS } from 'constants/index';
+import { equalMainTokenAddress, getMainnetFromTestnet, isTestnet } from '../controllers/EVMChainController/utils';
+import { AllChainsIds } from '../controllers/EVMChainController/types';
 
 const FIVE_SECONDS = 5 * 1000;
+
+export type AccountTrackerList = {
+  [network: string]: AccountTracker;
+}
 
 export class AssetsBalanceMonitor {
   private priceIntervalId: any;
@@ -25,6 +31,8 @@ export class AssetsBalanceMonitor {
 
   private ethAccountTracker = new AccountTracker();
 
+  private accountTrackerList: AccountTrackerList;
+
   private subscription: Subscription;
 
   private hasDAGPending = false;
@@ -32,6 +40,16 @@ export class AssetsBalanceMonitor {
   private hasETHPending = false;
 
   private utils = ControllerUtils();
+
+  constructor() {
+    this.accountTrackerList = {
+      [KeyringNetwork.Constellation]: new AccountTracker(),
+      [KeyringNetwork.Ethereum]: new AccountTracker(),
+      'Avalanche': new AccountTracker(),
+      'BSC': new AccountTracker(),
+      'Polygon': new AccountTracker(),
+    }
+  }
 
   async start() {
     const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
@@ -47,29 +65,6 @@ export class AssetsBalanceMonitor {
           a.type === AssetType.LedgerConstellation;
         hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
       });
-
-      // const promises = [];
-      // let firstRunDagBalance: FirstRunCallback;
-      // let firstRunEthBalance: FirstRunCallback;
-      //
-      // if (this.hasDAG) {
-      //   const p = new Promise<object>(resolve => firstRunDagBalance = resolve);
-      //   promises.push(p);
-      // }
-      //
-      // if (this.hasETH) {
-      //   const p = new Promise<object>(resolve => firstRunEthBalance = resolve);
-      //   promises.push(p);
-      // }
-      //
-      // //On startup, update all balances at the same time
-      // Promise.all(promises).then(results => {
-      //
-      //   const [dBal, eBal] = results;
-      //
-      //   const { balances } = store.getState().vault;
-      //   store.dispatch(updateBalances({ ...balances, ...dBal, ...eBal }));
-      // })
 
       if (hasDAG) {
         this.subscription = dag4.monitor
@@ -89,7 +84,7 @@ export class AssetsBalanceMonitor {
 
       if (hasETH) {
         this.hasETHPending = true;
-        this.startEthMonitor(activeWallet, activeNetwork);
+        this.startMonitor(activeWallet, activeNetwork);
       }
 
       if (this.priceIntervalId) {
@@ -102,6 +97,8 @@ export class AssetsBalanceMonitor {
   }
 
   stop() {
+    const { activeNetwork } = store.getState().vault;
+    const networksList = Object.keys(activeNetwork);
     clearInterval(this.priceIntervalId);
     clearInterval(this.dagBalIntervalId);
     if (this.subscription) {
@@ -110,7 +107,10 @@ export class AssetsBalanceMonitor {
     }
     this.priceIntervalId = null;
     this.dagBalIntervalId = null;
-    this.ethAccountTracker.config(null, null, null, null);
+    for(let i = 0; i < networksList.length; i++) {
+      const networkId = networksList[i];
+      this.accountTrackerList[networkId].config(null, null, null, null, null);
+    }
   }
 
   private async pollPendingTxs(update: DagWalletMonitorUpdate) {
@@ -119,6 +119,7 @@ export class AssetsBalanceMonitor {
     }
   }
 
+  // TODO-349: Check if we need this for all other networks
   async getEthTokenBalances() {
     try {
       await this.ethAccountTracker.getTokenBalances();
@@ -154,35 +155,85 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  private startEthMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
-    const { assets } = store.getState();
-    const chainId = getChainId(activeNetwork[KeyringNetwork.Ethereum]);
-    const tokens = activeWallet.assets
-      .filter((a) => a.type === AssetType.ERC20)
-      .map((a) => {
-        const { address, decimals } = assets[a.id];
-        return { contractAddress: address, decimals };
-      });
-    const ethAsset = activeWallet.assets.find((a) => a.type === AssetType.Ethereum);
+  // TODO-349: Check if this util is fine here
+  private getNetworkMainTokenType(networkId: string) {
+    switch (networkId) {
+      case KeyringNetwork.Constellation:
+        return AssetType.Constellation;
+      case KeyringNetwork.Ethereum:
+        return AssetType.Ethereum;
+      case 'Avalanche':
+        return AssetType.Avalanche;
+      case 'BSC':
+        return AssetType.BSC;
+      case 'Polygon':
+        return AssetType.Polygon;
+    
+      default:
+        return AssetType.Constellation;
+    }
+  }
 
-    this.ethAccountTracker.config(
-      ethAsset?.address,
-      tokens,
-      chainId,
-      (ethBalance, tokenBals) => {
-        const { balances } = store.getState().vault;
-        const pending = this.hasDAGPending ? 'true' : undefined;
-        this.hasETHPending = false;
-        store.dispatch(
-          updateBalances({
-            ...balances,
-            [AssetType.Ethereum]: ethBalance || '0',
-            ...tokenBals,
-            pending,
-          })
+  private startMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
+    const { assets } = store.getState();
+    const networksList = Object.keys(activeNetwork);
+    const chainsList = Object.values(activeNetwork);
+
+    // Remove Constellation chain
+    networksList.shift();
+    chainsList.shift();
+
+    for(let i = 0; i < chainsList.length; i++) {
+      const chainId = chainsList[i];
+      const networkId = networksList[i];
+      const chainInfo = ALL_EVM_CHAINS[chainId];
+
+      // TODO-349: Check if tokens are filtered correctly
+      const chainTokens = activeWallet.assets
+        .filter((a) =>  {
+          const chain = !isTestnet(chainId as AllChainsIds) ? 
+                        chainId : 
+                        equalMainTokenAddress(chainId as AllChainsIds) ?
+                        getMainnetFromTestnet(chainId as AllChainsIds) : 
+                        chainId;
+
+          return a.type === AssetType.ERC20 && assets[a.id]?.network === chain;
+        })
+        .map((a) => {
+          const { address, decimals } = assets[a.id];
+          return { contractAddress: address, decimals };
+        });
+
+      // Main token type
+      const MainAssetType = this.getNetworkMainTokenType(networkId);
+
+      // ETH asset
+      const ethAsset = activeWallet.assets.find((a) => a.type === AssetType.Ethereum);
+
+      if (!!ethAsset && !!chainInfo) {
+        this.accountTrackerList[networkId].config(
+          ethAsset?.address,
+          chainInfo.rpcEndpoint,
+          chainTokens,
+          chainInfo.chainId,
+          (mainAssetBalance, tokenBals) => {
+            const { balances } = store.getState().vault;
+            const pending = this.hasDAGPending ? 'true' : undefined;
+            this.hasETHPending = false;
+            store.dispatch(
+              updateBalances({
+                ...balances,
+                [MainAssetType]: mainAssetBalance || '0',
+                ...tokenBals,
+                pending,
+              })
+            );
+          },
+          10
         );
-      },
-      10
-    );
+      } else {
+        console.log(`Error: Unable to configure ${networkId}`);
+      }
+    }
   }
 }

@@ -126,7 +126,8 @@ export class EthereumProvider implements IRpcChainRequestHandler {
 
   signMessage(msg: string) {
     const controller = useController();
-    const wallet = controller.wallet.account.ethClient.getWallet();
+    // TODO-349: Check if we need to create Providers for all networks
+    const wallet = controller.wallet.account.networkController.ethereumNetwork.getWallet();
     const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = hashPersonalMessage(Buffer.from(msg));

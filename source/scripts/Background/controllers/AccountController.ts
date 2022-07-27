@@ -32,11 +32,12 @@ import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { EthTransactionController } from './EthTransactionController';
 
 import { IAccountController } from './IAccountController';
-import { IAssetsController } from './AssetsController';
+import AssetsController, { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { EthChainId } from './EVMChainController/types';
-import EVMChainController, { utils } from './EVMChainController';
+import { utils } from './EVMChainController';
 import { getChainId } from './EVMChainController/utils';
+import NetworkController from './NetworkController';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -44,7 +45,7 @@ const TXS_LIMIT = 10;
 export class AccountController implements IAccountController {
   tempTx: ITransactionInfo | null;
 
-  ethClient: EVMChainController;
+  networkController: NetworkController;
 
   txController: EthTransactionController;
 
@@ -52,13 +53,10 @@ export class AccountController implements IAccountController {
 
   assetsController: IAssetsController;
 
-  constructor(
-    private keyringManager: Readonly<KeyringManager>,
-    assetsController: IAssetsController
-  ) {
+  constructor(private keyringManager: Readonly<KeyringManager>) {
     this.txController = new EthTransactionController();
     this.assetsBalanceMonitor = new AssetsBalanceMonitor();
-    this.assetsController = assetsController;
+    this.assetsController = AssetsController();
   }
 
   async removeWallet(id: string, pwd: string) {
@@ -72,10 +70,7 @@ export class AccountController implements IAccountController {
     walletInfo: KeyringWalletState,
     account: KeyringWalletAccountState
   ): Promise<IAssetState[]> {
-    const {
-      assets,
-      vault: { activeNetwork },
-    } = store.getState();
+    const { assets } = store.getState();
 
     let privateKey = undefined;
     let publicKey = undefined;
@@ -112,12 +107,9 @@ export class AccountController implements IAccountController {
       ];
     }
 
+    // TODO-349: Check if we need to add logic for all networks here
     if (account.network === KeyringNetwork.Ethereum) {
-      this.ethClient = new EVMChainController({
-        chain: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
-        privateKey,
-        etherscanApiKey: process.env.ETHERSCAN_API_KEY
-      });
+      this.networkController = new NetworkController(privateKey);
 
       const ethAsset = {
         id: AssetType.Ethereum,
@@ -178,7 +170,8 @@ export class AccountController implements IAccountController {
     const resolveTokens = accountTokens.map(async (address) => {
       if (!assetInfoMap[address]) {
         try {
-          await this.assetsController.fetchTokenInfo(address);
+          // TODO-349: Check if this line is used
+          // await this.assetsController.fetchTokenInfo(address);
         } catch (err: any) {
           // NOOP
         }
@@ -284,7 +277,7 @@ export class AccountController implements IAccountController {
     const { activeWallet }: IVaultState = store.getState().vault;
     const account = this.keyringManager.addTokenToAccount(
       activeWallet.id,
-      this.ethClient.getAddress(),
+      this.networkController.getAddress(),
       address
     );
     const tokenAssets = await this.buildAccountERC20Tokens(address, account.getTokens());
@@ -346,7 +339,7 @@ export class AccountController implements IAccountController {
         }`
       );
     }
-    const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
+    const newTx: TransactionResponse = await this.networkController.transfer(txOptions);
     await this.txController.removePendingTxHash(tx.txHash);
     await this.txController.addPendingTx({
       txHash: newTx.hash,
@@ -425,7 +418,7 @@ export class AccountController implements IAccountController {
           }`
         );
       }
-      const newTx: TransactionResponse = await this.ethClient.transfer(txOptions);
+      const newTx: TransactionResponse = await this.networkController.transfer(txOptions);
 
       trxHash = newTx.hash;
       await this.txController.addPendingTx({
@@ -484,7 +477,7 @@ export class AccountController implements IAccountController {
       nonce,
     };
 
-    const txData = await this.ethClient.getWallet().sendTransaction(txOptions);
+    const txData = await this.networkController.getWallet().sendTransaction(txOptions);
 
     this.txController.addPendingTx({
       txHash: txData.hash,
@@ -511,7 +504,7 @@ export class AccountController implements IAccountController {
   }
 
   isValidERC20Address(address: string) {
-    return this.ethClient.validateAddress(address);
+    return this.networkController.validateAddress(address);
   }
 
   async getRecommendFee() {
@@ -519,7 +512,7 @@ export class AccountController implements IAccountController {
   }
 
   async getLatestGasPrices() {
-    const gasPrices = await this.ethClient.estimateGasPrices();
+    const gasPrices = await this.networkController.estimateGasPrices();
     const results = Object.values(gasPrices).map((gas) =>
       Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei'))
     );
@@ -530,7 +523,7 @@ export class AccountController implements IAccountController {
   }
 
   async getRecommendETHTxConfig() {
-    const txHistory = await this.ethClient.getTransactions();
+    const txHistory = await this.networkController.getTransactions();
     const nonce = txHistory.txs.length;
     const gasPrices = await this.getLatestGasPrices();
 
@@ -589,13 +582,13 @@ export class AccountController implements IAccountController {
       // const asset: any = { chain: 'ETH', symbol, ticker: symbol }
       // // const recipient = '0x0000000000000000000000000000000000000000';
       // const amount: any  = { amount: () => ({ toFixed: () => this.tempTx.amount }) };
-      // const gasLimit0 = (await this.ethClient.estimateGasLimit({asset, recipient, amount})).toNumber();
-      gasLimit = await this.ethClient.estimateTokenTransferGasLimit(
+      // const gasLimit0 = (await this.networkController.estimateGasLimit({asset, recipient, amount})).toNumber();
+      gasLimit = await this.networkController.estimateTokenTransferGasLimit(
         recipient,
         assetInfo.address,
         ethers.utils.parseUnits(amount, assetInfo.decimals)
       );
-      console.log('ethClient.estimateGasLimit2', gasLimit);
+      console.log('networkController.estimateGasLimit2', gasLimit);
     }
     const fee = ethers.utils
       .parseUnits(gas.toString(), 'gwei')

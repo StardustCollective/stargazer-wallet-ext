@@ -19,6 +19,8 @@ import {
   IVaultWalletsStoreState,
 } from 'state/vault/types';
 import { getNfts } from './nftSelectors';
+import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { AllChainsIds } from 'scripts/Background/controllers/EVMChainController/types';
 
 /// //////////////////////
 // Selectors
@@ -153,13 +155,15 @@ const selectActiveNetworkAssets = createSelector(
     }
 
     return activeWallet.assets.filter((asset: IAssetState) => {
-      const assetType =
-        asset.type === AssetType.Constellation
-          ? KeyringNetwork.Constellation
-          : KeyringNetwork.Ethereum;
-      const assetNetwork = assets[asset.id as any]?.network;
-
-      return assetNetwork === 'both' || assetNetwork === activeNetwork[assetType];
+      // TODO-349: Check if this logic works for all networks
+      const assetInfo = assets[asset.id];
+      const assetNetwork = assetInfo?.network;
+      let assetNetworkType: string = 
+              asset.type === AssetType.Constellation ? 
+              KeyringNetwork.Constellation : 
+              getNetworkFromChainId(assetNetwork as AllChainsIds);
+              
+      return assetNetwork === 'both' || assetNetwork === 'matic' || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
     });
   }
 );

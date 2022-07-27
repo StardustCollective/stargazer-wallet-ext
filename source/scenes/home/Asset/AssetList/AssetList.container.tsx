@@ -132,7 +132,8 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
         accountController.assetsController.removeERC20AssetFn(assetInfo);
       }
     }
-    await accountController.assetsBalanceMonitor.start();
+    // TODO-349: Check if necessary
+    // await accountController.assetsBalanceMonitor.start();
   } 
 
   ///////////////////////////

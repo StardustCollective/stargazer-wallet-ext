@@ -39,7 +39,7 @@ const AddAsset: FC<AddAssetSettings> = () => {
 
   useEffect(() => {
     if (activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' && keyword.startsWith('0x')) {
-      controller.assets.fetchTokenInfo(keyword);
+      // controller.assets.fetchTokenInfo(keyword);
     }
 
     const currentNetwork = activeNetwork[KeyringNetwork.Ethereum];

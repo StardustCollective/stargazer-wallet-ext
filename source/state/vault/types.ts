@@ -6,15 +6,19 @@ import {
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { EthChainId } from 'scripts/Background/controllers/EVMChainController/types';
+import { EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
 
 export type Keystore = SeedKeystore | PrivKeystore;
 
+// TODO-349: Check AssetType and ActiveNetwork types
 export enum AssetType {
   Constellation = 'constellation',
+  Avalanche = 'avalanche',
+  BSC = 'bsc',
+  Polygon = 'polygon',
   Ledger = 'ledger',
   LedgerConstellation = 'ledger-constellation',
   Ethereum = 'ethereum',
@@ -28,9 +32,9 @@ export type Transaction = DAGTransaction | any;
 export type ActiveNetwork = {
   [KeyringNetwork.Constellation]: string;
   [KeyringNetwork.Ethereum]: EthChainId;
-  'Avalanche': string;
-  'BSC': string;
-  'Polygon': string;
+  // 'Avalanche': string;
+  // 'BSC': string;
+  'Polygon': PolygonChainId;
 };
 
 export interface IAssetState {

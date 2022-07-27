@@ -52,7 +52,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   const [balanceObject, balance] = useTotalBalance();
 
   const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
-  const { activeWallet, activeNetwork }: IVaultState = useSelector(
+  const { activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const linkTo = useLinkTo();
@@ -69,13 +69,14 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     }
   }, []);
 
-  useEffect(() => {
-    const networkUpdate = async () => {
-      await accountController.assetsController.setChain(activeNetwork.Ethereum);
-      await accountController.assetsBalanceMonitor.start();
-    }
-    networkUpdate();
-  }, [activeNetwork.Ethereum]);
+  // TODO-349: Check if necessary
+  // useEffect(() => {
+  //   const networkUpdate = async () => {
+  //     await accountController.assetsController.setChain(activeNetwork.Ethereum);
+  //     // await accountController.assetsBalanceMonitor.start();
+  //   }
+  //   networkUpdate();
+  // }, [activeNetwork.Ethereum]);
 
   // Sets the header for the home screen.
   useLayoutEffect(() => {

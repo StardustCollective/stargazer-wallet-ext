@@ -130,7 +130,8 @@ const AddCustomAssetContainer: FC = () => {
       return;
     }
     await accountController.assetsController.addCustomERC20Asset(tokenAddress, tokenName, tokenSymbol, tokenDecimals);
-    await accountController.assetsBalanceMonitor.start();
+    // TODO-349: Check if necessary
+    // await accountController.assetsBalanceMonitor.start();
     linkTo('/home');
     accountController.assetsController.clearCustomToken();
   }

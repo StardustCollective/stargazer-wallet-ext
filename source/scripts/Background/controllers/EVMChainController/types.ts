@@ -3,18 +3,20 @@ import { BaseAmount } from '@xchainjs/xchain-util';
 import { Address, ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
+// TODO-349: Add all chains and networks here
 // Chain IDs
 export type EthChainId = 'mainnet' | 'ropsten' | 'rinkeby';
-export type PolygonChainId = 'matic' | 'matic-testnet';
+export type PolygonChainId = 'matic' | 'maticmum';
 
 // Chain values
 export type EthChainValue = 'homestead' | 'ropsten' | 'rinkeby';
+export type PolygonChainValue = 'matic' | 'maticmum';
 
 // All chains
 export type AllChainsIds = EthChainId | PolygonChainId;
-export type AllChainsValues = EthChainValue;
+export type AllChainsValues = EthChainValue | PolygonChainValue;
 
-export const testnets = ['ropsten', 'rinkeby'];
+export const testnets = ['ropsten', 'rinkeby', 'maticmum'];
 
 export type IChain = {
   id: AllChainsIds;

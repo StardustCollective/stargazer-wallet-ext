@@ -19,12 +19,10 @@ import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
-import ControllerUtils from './ControllerUtils';
-import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { EthChainId } from './EVMChainController/types';
+import { EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
 
 // Constants
@@ -65,12 +63,7 @@ class WalletController implements IWalletController {
       store.dispatch(updateLoginState({ processState: ProcessStates.IDLE }));
     });
 
-    const utils = Object.freeze(ControllerUtils());
-
-    this.account = new AccountController(
-      this.keyringManager,
-      AssetsController(() => utils.updateFiat())
-    );
+    this.account = new AccountController(this.keyringManager);
   }
 
   checkPassword(password: string) {
@@ -306,7 +299,7 @@ class WalletController implements IWalletController {
 
     const { activeAsset }: IVaultState = store.getState().vault;
     const { assets } = store.getState();
-    console.log(network, chainId);
+    console.log(`${network} - ${chainId}`);
 
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
       dag4.network.setNetwork({
@@ -318,27 +311,23 @@ class WalletController implements IWalletController {
 
     if (network === KeyringNetwork.Ethereum) {
       this.account.txController.setChain(chainId as EthChainId);
-      this.account.ethClient.setChain(chainId as EthChainId);
+      this.account.networkController.switchEthereumChain(chainId as EthChainId);
       this.account.assetsController.setChain(chainId as EthChainId);
     }
 
     // TODO-349: Check if we need to add some logic here
     if (network === 'Avalanche') {
-      // Do AVALANCHE stuff
-      console.log('Avalanche - ', chainId);
     }
     if (network === 'BSC') {
-      // Do BSC stuff
-      console.log('BSC - ', chainId);
     }
     if (network === 'Polygon') {
-      // Do Polygon stuff
-      console.log('Polygon - ', chainId);
+      this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
 
     if (activeAsset) {
+      // TODO-349: Check how activeAsset works here for other networks
       if (assets[activeAsset.id].network !== chainId) {
         await this.account.updateAccountActiveAsset(activeAsset);
       }
@@ -356,7 +345,7 @@ class WalletController implements IWalletController {
 
   async logOut() {
     this.keyringManager.logout();
-    this.account.ethClient = undefined;
+    this.account.networkController = undefined;
     store.dispatch(changeActiveWallet(undefined));
   }
 }

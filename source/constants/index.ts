@@ -1,4 +1,4 @@
-import { EthChainId, EthChainValue } from 'scripts/Background/controllers/EVMChainController/types';
+import { EthChainId, EthChainValue, PolygonChainId, PolygonChainValue } from 'scripts/Background/controllers/EVMChainController/types';
 import { 
   isProd,
   isNative, 
@@ -143,8 +143,8 @@ export const BSC_NETWORK: {
 
 export const POLYGON_NETWORK: {
   [networkId: string]: {
-    id: string;
-    value: string;
+    id: PolygonChainId;
+    value: PolygonChainValue;
     label: string;
     explorer: string;
     chainId: number;
@@ -161,15 +161,23 @@ export const POLYGON_NETWORK: {
     explorerAPI: 'https://api.polygonscan.com',
     chainId: 137,
   },
-  ['matic-testnet']: {
-    id: 'matic-testnet',
-    value: 'matic-testnet',
-    label: 'Testnet',
+  maticmum: {
+    id: 'maticmum',
+    value: 'maticmum',
+    label: 'Maticmum Testnet',
     rpcEndpoint: QUICKNODE_POLYGON_TESTNET,
     explorer: 'https://mumbai.polygonscan.com/',
     explorerAPI: 'https://api-testnet.polygonscan.com',
     chainId: 80001,
   },
+};
+
+// TODO-349: Include all networks
+export const ALL_EVM_CHAINS = {
+  ...ETH_NETWORK,
+  // ...AVALANCHE_NETWORK,
+  // ...BSC_NETWORK,
+  ...POLYGON_NETWORK
 };
 
 export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';

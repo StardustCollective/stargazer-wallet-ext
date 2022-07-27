@@ -11,7 +11,7 @@ export const getERC20DataDecoder = () => {
 
 export const estimateGasLimitForTransfer = async ({ to, from, amount: value, gas }: {to: string, from: string, amount: string, gas: string}): Promise<number> => {
     const walletController = getWalletController();
-    const ethClient = walletController.account.ethClient;
+    const networkController = walletController.account.networkController;
     const { activeAsset }: IVaultState = store.getState().vault;
     const assetAddress = activeAsset?.contractAddress;
 
@@ -22,8 +22,8 @@ export const estimateGasLimitForTransfer = async ({ to, from, amount: value, gas
     if (value !== '' && to && from && assetAddress) {
         
         try {
-            const contract = ethClient.createERC20Contract(assetAddress);
-            const contractInfo = await ethClient.getTokenInfo(assetAddress);
+            const contract = networkController.createERC20Contract(assetAddress);
+            const contractInfo = await networkController.getTokenInfo(assetAddress);
             const decimals = contractInfo?.decimals || 18;
             const amount = ethers.utils.parseUnits(value, decimals).toString();
             const gasLimitBigNumber = await contract.estimateGas.transfer(to, amount, { from });
@@ -39,7 +39,7 @@ export const estimateGasLimitForTransfer = async ({ to, from, amount: value, gas
 
 export const estimateGasLimit = async ({ to, data, gas }: { to: string, data: string, gas: string }): Promise<number> => {
     const walletController = getWalletController();
-    const ethClient = walletController.account.ethClient;
+    const networkController = walletController.account.networkController;
     const { activeWallet }: IVaultState = store.getState().vault;
     const ethAsset = activeWallet?.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
     const from = ethAsset.address;
@@ -57,7 +57,7 @@ export const estimateGasLimit = async ({ to, data, gas }: { to: string, data: st
     } 
 
     try {
-        const gasBigNumber = await ethClient.estimateGas(from, to, data);
+        const gasBigNumber = await networkController.estimateGas(from, to, data);
         return gasBigNumber.toNumber();
     } catch(err) {
         console.error('Error estimating gas limit:', err);

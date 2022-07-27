@@ -1,5 +1,8 @@
 export const TEST_PRIVATE_KEY = process.env.TEST_PRIVATE_KEY ;
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+export const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
+export const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY;
+export const SNOWTRACE_API_KEY = process.env.SNOWTRACE_API_KEY;
 export const NODE_ENV = process.env.NODE_ENV;
 export const STARGAZER_PROVIDERS_BASE_URL = process.env.STARGAZER_PROVIDERS_BASE_URL;
 export const STARGAZER_PROVIDERS_BASE_URL_PROD = process.env.STARGAZER_PROVIDERS_BASE_URL_PROD;

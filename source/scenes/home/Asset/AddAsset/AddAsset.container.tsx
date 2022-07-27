@@ -9,8 +9,8 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import Container from 'components/Container';
 import { getWalletController } from 'utils/controllersUtils';
 
-import AssetsController from 'scripts/Background/controllers/AssetsController';
-import ControllerUtils from 'scripts/Background/controllers/ControllerUtils';
+// import AssetsController from 'scripts/Background/controllers/AssetsController';
+// import ControllerUtils from 'scripts/Background/controllers/ControllerUtils';
 
 import AddAsset from './AddAsset';
 
@@ -38,8 +38,8 @@ const AddAssetContainer: FC = () => {
   useEffect(() => {
     if (activeNetwork[KeyringNetwork.Ethereum] === 'mainnet' && keyword.startsWith('0x')) {
       // TODO: check if this is correct usage of updateFiat
-      const util = ControllerUtils();
-      AssetsController(util.updateFiat).fetchTokenInfo(keyword);
+      // const util = ControllerUtils();
+      // AssetsController(util.updateFiat).fetchTokenInfo(keyword);
     }
 
     const currentNetwork = activeNetwork[KeyringNetwork.Ethereum];

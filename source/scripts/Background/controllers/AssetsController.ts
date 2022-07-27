@@ -46,7 +46,7 @@ export interface IAssetsController {
   setChain: (chain: string) => void;
 }
 
-const AssetsController = (updateFiat: () => void): IAssetsController => {
+const AssetsController = (): IAssetsController => {
   let { activeNetwork }: IVaultState = store.getState().vault;
 
   if (!activeNetwork) return undefined;
@@ -134,7 +134,8 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
         })
       );
 
-      updateFiat();
+      // TODO-349: Check if this line is used
+      // updateFiat();
     } catch (e) {
       // NOOP
     }
