@@ -8,12 +8,10 @@ import { STORE_PORT, DAG_NETWORK } from 'constants/index';
 import store from 'state/store';
 
 import { MasterController } from './controllers';
-import { DappRegistry } from './dappRegistry';
 
 declare global {
   interface Window {
     controller: MasterController;
-    dappRegistry: DappRegistry;
   }
 }
 
@@ -54,10 +52,6 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 
 if (!window.controller) {
   window.controller = new MasterController();
-}
-
-if (!window.dappRegistry) {
-  window.dappRegistry = new DappRegistry();
 }
 
 wrapStore(store, { portName: STORE_PORT });
