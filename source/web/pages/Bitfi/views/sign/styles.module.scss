@@ -56,14 +56,10 @@
       height: 100%;
       align-items: center;
       justify-content: center;
-      .message{
-        text-align: center;
-        span {
-          font-size: 15px;
-          color: $white;
-        }
+      span {
+        font-size: 15px;
+        color: $white;;
       }
-
     }
   }
 

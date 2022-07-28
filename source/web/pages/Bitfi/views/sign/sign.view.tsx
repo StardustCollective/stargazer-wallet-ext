@@ -28,12 +28,9 @@ import 'assets/styles/global.scss';
 interface ISignViewProps {
   amount: string,
   fee: string,
-  code: string,
-  deviceId: string,
   fromAddress: string,
   toAddress: string,
   waiting: boolean,
-  waitingMessage: string,
   transactionSigned: boolean
   onSignPress: () => {},
 }
@@ -45,12 +42,9 @@ interface ISignViewProps {
 const SignView = ({
   amount,
   fee,
-  deviceId,
   fromAddress,
   toAddress,
   waiting,
-  code,
-  waitingMessage,
   transactionSigned,
   onSignPress
 }: ISignViewProps) => {
@@ -74,10 +68,7 @@ const SignView = ({
   ) : (
     <>
       <div className={styles.wrapper}>
-        <section className={styles.subheading}>
-          Bitfi - Sign Transaction <br/> 
-          Device ID: {deviceId.toUpperCase()}
-        </section>
+        <section className={styles.subheading}>Bitfi - Sign Transaction</section>
         <section className={styles.txAmount}>
           <div className={styles.iconWrapper}>
             <UpArrowIcon />
@@ -137,9 +128,8 @@ const SignView = ({
               <div>
                 <CircularProgress />
               </div>
-              <div className={styles.message}>
-                <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
-                <span>{waitingMessage}</span>
+              <div>
+                <span>Waiting For Bitfi</span>
               </div>
             </div>
           </div>

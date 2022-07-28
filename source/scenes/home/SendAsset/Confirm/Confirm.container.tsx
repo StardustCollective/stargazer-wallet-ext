@@ -77,8 +77,7 @@ const ConfirmContainer = () => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
-  let activeWalletPublicKey: any = useSelector(walletSelectors.selectActiveAssetPublicKey);
-  let activeWalletDeviceId: any = useSelector(walletSelectors.selectActiveAssetDeviceId);
+  let activeWalletPublicKey: any = useSelector(walletSelectors.selectActiveAssetPublicKey)
   let history: any;
   let isExternalRequest: boolean;
 
@@ -216,18 +215,18 @@ const ConfirmContainer = () => {
         if (activeWallet.type === KeyringWalletType.LedgerAccountWallet || 
             activeWallet.type === KeyringWalletType.BitfiAccountWallet ) {
 
+
           const page = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_PAGE : BITFI_PAGE;
 
           const params = new URLSearchParams();
           params.set('route', 'signTransaction');
           params.set('windowId', Array.isArray(windowId) ? windowId[0] : windowId);
           params.set('id', activeWallet.id);
-          params.set('publicKey', activeWalletPublicKey);
-          params.set('deviceId', activeWalletDeviceId);
+          params.set('publicKey', activeWalletPublicKey)
           params.set('amount', tempTx!.amount);
           params.set('fee', String(tempTx!.fee));
-          params.set('from', tempTx!.fromAddress);
-          params.set('to', tempTx!.toAddress);
+          params.set('from', tempTx!.fromAddress)
+          params.set('to', tempTx!.toAddress)
 
           window.open(`/${page}.html?${params.toString()}`, '_newtab');
         } else {

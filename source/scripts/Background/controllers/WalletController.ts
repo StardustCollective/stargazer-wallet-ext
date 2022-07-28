@@ -197,7 +197,7 @@ class WalletController implements IWalletController {
     );
   };
 
-  async importHardwareWalletAccounts(accountItems: AccountItem[], deviceId?: string) {
+  async importHardwareWalletAccounts(accountItems: AccountItem[]) {
     for (let i = 0; i < accountItems.length; i++) {
       const state = store.getState();
       const { vault } = state;
@@ -242,7 +242,6 @@ class WalletController implements IWalletController {
             address: accountItem.address,
             network: KeyringNetwork.Constellation,
             publicKey: accountItem!.publicKey,
-            deviceId,
           },
         ],
         supportedAssets: [KeyringAssetType.DAG],
