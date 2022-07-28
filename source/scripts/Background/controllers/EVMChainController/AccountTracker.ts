@@ -30,7 +30,6 @@ export class AccountTracker {
     this.ethAddress = ethAddress;
     this.accounts = accounts;
     this.chainId = chainId;
-    // TODO-349: Check if provider is updated
     this.provider = rpcProviderURL ? new ethers.providers.JsonRpcProvider(rpcProviderURL) : null;
     this.callback = callback;
     this.debounceTimeSec = debounceTimeSec > 0.1 ? debounceTimeSec : 1

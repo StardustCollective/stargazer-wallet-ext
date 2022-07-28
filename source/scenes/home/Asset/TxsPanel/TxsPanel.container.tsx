@@ -1,10 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { useFiat } from 'hooks/usePrice';
 import { useSelector } from 'react-redux';
-
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-
-import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
+import { DAG_EXPLORER_SEARCH } from 'constants/index';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType, Transaction } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
@@ -13,11 +10,13 @@ import IAssetListState from 'state/assets/types';
 import TxsPanel from './TxsPanel';
 import TxItem from '../TxItem';
 import { ITxsPanel } from './types';
+import { getAccountController } from 'utils/controllersUtils';
 
 const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
   const getFiatAmount = useFiat();
-  const { activeNetwork, activeAsset }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { activeAsset }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
+  const accountController = getAccountController();
 
   const isETH = activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
 
@@ -36,8 +35,8 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
       return null;
     }
 
-    const ethUrl = ETH_NETWORK[activeNetwork[KeyringNetwork.Ethereum]].explorer;
-    return isETH ? `${ethUrl}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`;
+    const explorerURL = accountController.networkController.getExplorerURL();
+    return isETH ? `${explorerURL}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`;
   };
 
   const renderTxItem = (tx: Transaction, idx: number) => {

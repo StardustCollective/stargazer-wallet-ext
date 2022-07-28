@@ -20,6 +20,7 @@ import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers'
 import AssetDetail from './Asset';
 
 import { IAssetDetail } from './types';
+import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const accountController = getAccountController();
@@ -36,8 +37,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     return Number((activeAsset && balances[activeAsset.id]) || 0);
   }, [activeAsset, balances]);
 
+  const { id } = accountController.networkController.getNetwork();
+  const network = getNetworkFromChainId(id);
+
   const networkId =
-    activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
+    activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : network;
 
   const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);

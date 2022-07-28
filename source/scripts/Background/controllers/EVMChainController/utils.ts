@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Address, Tx } from '../ChainsController';
 import { ETHTransactionInfo, TokenTransactionInfo } from './etherscanApi.types';
-import { FeesWithGasPricesAndLimits, GasPrices, EthChainId, testnets, AllChainsIds } from './types';
+import { FeesWithGasPricesAndLimits, GasPrices, testnets, AllChainsIds } from './types';
 import { 
   Asset, 
   BaseAmount, 
@@ -55,11 +55,12 @@ export const getMainnetFromTestnet = (chainId: AllChainsIds) => {
   }
 }
 
-export const getNetworkFromChainId = (chainId: AllChainsIds) => {
+export const getNetworkFromChainId = (chainId: AllChainsIds | 'both') => {
   switch (chainId) {
     case 'mainnet':
     case 'rinkeby':
     case 'ropsten':
+    case 'both':
         return KeyringNetwork.Ethereum;
     case 'matic':
     case 'maticmum':
@@ -70,7 +71,7 @@ export const getNetworkFromChainId = (chainId: AllChainsIds) => {
   }
 }
 
-export const getChainId = (network: EthChainId): number => {
+export const getChainId = (network: AllChainsIds): number => {
   switch (network) {
     case 'mainnet':
       return 1;
@@ -78,6 +79,10 @@ export const getChainId = (network: EthChainId): number => {
       return 3;
     case 'rinkeby':
       return 4;
+    case 'matic':
+      return 137;
+    case 'maticmum':
+      return 80001;
       
     default:
       return 1;

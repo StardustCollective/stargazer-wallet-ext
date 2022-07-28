@@ -93,7 +93,7 @@ const AddCustomAssetContainer: FC = () => {
     setValue('tokenAddress', value);
     triggerValidation('tokenAddress');
     try {
-      await accountController.assetsController.fetchCustomToken(value);
+      await accountController.fetchCustomToken(value);
     } catch (err) {
       console.log(err);
       setError('tokenAddress', 'invalidAddress', 'Invalid token address');
@@ -130,8 +130,6 @@ const AddCustomAssetContainer: FC = () => {
       return;
     }
     await accountController.assetsController.addCustomERC20Asset(tokenAddress, tokenName, tokenSymbol, tokenDecimals);
-    // TODO-349: Check if necessary
-    // await accountController.assetsBalanceMonitor.start();
     linkTo('/home');
     accountController.assetsController.clearCustomToken();
   }

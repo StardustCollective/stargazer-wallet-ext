@@ -9,12 +9,11 @@ import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPayment
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
 import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { EthChainId } from './EVMChainController/types';
-import EVMChainController from './EVMChainController';
 import { isTestnet, validateAddress } from './EVMChainController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
 import { addAsset, removeAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
-import { addCustomAsset, clearCustomAsset, clearSearchAssets as clearSearch, removeCustomAsset, setCustomAsset } from 'state/erc20assets';
+import { addCustomAsset, clearCustomAsset, clearSearchAssets as clearSearch, removeCustomAsset } from 'state/erc20assets';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
@@ -28,9 +27,7 @@ export interface IAssetsController {
   clearCustomToken: () => void;
   addCustomERC20Asset: (address: string, name: string, symbol: string, decimals: string) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
-  fetchCustomToken: (address: string) => Promise<void>;
   getCustomAssets: () => void;
-  fetchTokenInfo: (address: string) => Promise<void>;
   fetchWalletNFTInfo: (address: string) => Promise<void>;
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
@@ -43,106 +40,20 @@ export interface IAssetsController {
   setRequestId: (value: string) => void;
   clearErrors: () => void;
   clearPaymentRequest: () => void;
-  setChain: (chain: string) => void;
 }
 
 const AssetsController = (): IAssetsController => {
   let { activeNetwork }: IVaultState = store.getState().vault;
 
   if (!activeNetwork) return undefined;
-
-  let ethClient: EVMChainController = new EVMChainController({
-    chain: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
-    privateKey: process.env.TEST_PRIVATE_KEY,
-    etherscanApiKey: process.env.ETHERSCAN_API_KEY
-  });
-
-  const fetchCustomToken = async (address: string) => {
-    const info = await ethClient.getTokenInfo(address);
-    if (info) {
-      store.dispatch(setCustomAsset({
-        tokenAddress: info.address || '',
-        tokenName: info.name || '',
-        tokenSymbol: info.symbol || '',
-        tokenDecimals: info.decimals?.toString() || '',
-      }))
-    }
-  }
-
-  const setChain = (chain: string) => {
-    ethClient = new EVMChainController({
-      chain: chain as EthChainId,
-      privateKey: process.env.TEST_PRIVATE_KEY,
-      etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-    });
-  }
   
   const clearCustomToken = (): void => {
     store.dispatch(clearCustomAsset());
   }
 
-  const fetchTokenInfo = async (address: string) => {
-    const { vault, assets } = store.getState();
-    const { activeNetwork, activeWallet } = vault;
-    const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
-
-    const network = activeNetwork[KeyringNetwork.Ethereum] as EthChainId;
-    ethClient.setChain(network);
-
-    const info = await ethClient.getTokenInfo(address);
-    const assetId = `${isTestnet(network) ? 'T-' : ''}${address}`;
-
-    if (!info) {
-      return;
-    }
-
-    const tokenList = Object.values(assets).filter((token) => token.type === AssetType.ERC20);
-
-    try {
-      let data;
-      try {
-        data = await (await fetch(`${TOKEN_INFO_API}${address}`)).json();
-      } catch (err) {
-        // Allow values to be set from config if CoinGecko doesn't know about token
-        data = {
-          id: tokenList[address as any]?.priceId,
-          image: {
-            small: tokenList[address as any]?.logo,
-          },
-        };
-      }
-
-      store.dispatch(addAsset({
-        id: assetId,
-        type: AssetType.ERC20,
-        label: info.name,
-        address: ethAddress,
-        contractAddress: info.address,
-      }))
-
-      store.dispatch(
-        addERC20Asset({
-          id: assetId,
-          decimals: info.decimals,
-          type: AssetType.ERC20,
-          label: info.name,
-          symbol: info.symbol,
-          address: info.address,
-          priceId: data.id,
-          logo: data.image.small,
-          network,
-        })
-      );
-
-      // TODO-349: Check if this line is used
-      // updateFiat();
-    } catch (e) {
-      // NOOP
-    }
-  };
-
   const fetchNFTBatch = async (walletAddress: string, offset = 0) => {
     const activeNetwork = store.getState().vault.activeNetwork;
+    // OpenSea only supports Ethereum on v1 so it's fine to check activeNetwork on Ethereum here.
     const network = activeNetwork[KeyringNetwork.Ethereum] as EthChainId;
     const apiBase = isTestnet(network) ? NFT_TESTNET_API : NFT_MAINNET_API;
 
@@ -255,6 +166,7 @@ const AssetsController = (): IAssetsController => {
 
     const { activeNetwork } = store.getState().vault;
     const assets = store.getState().assets;
+    // TODO-349: Check if we should add custom tokens only on Ethereum
     const network = activeNetwork.Ethereum as EthChainId;
     let logo = DEAFAULT_LOGO;
     let tokenData;
@@ -346,9 +258,7 @@ const AssetsController = (): IAssetsController => {
   }
 
   return { 
-     fetchCustomToken,
      clearCustomToken,
-     fetchTokenInfo,
      addCustomERC20Asset,
      removeCustomERC20Asset,
      getCustomAssets,
@@ -363,8 +273,7 @@ const AssetsController = (): IAssetsController => {
      fetchPaymentRequest,
      setRequestId,
      clearErrors,
-     clearPaymentRequest,
-     setChain,
+     clearPaymentRequest
   };
 };
 

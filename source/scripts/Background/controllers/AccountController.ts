@@ -34,10 +34,9 @@ import { EthTransactionController } from './EthTransactionController';
 import { IAccountController } from './IAccountController';
 import AssetsController, { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
-import { EthChainId } from './EVMChainController/types';
 import { utils } from './EVMChainController';
-import { getChainId } from './EVMChainController/utils';
 import NetworkController from './NetworkController';
+import { setCustomAsset } from 'state/erc20assets';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -54,7 +53,7 @@ export class AccountController implements IAccountController {
   assetsController: IAssetsController;
 
   constructor(private keyringManager: Readonly<KeyringManager>) {
-    this.txController = new EthTransactionController();
+    this.txController = new EthTransactionController(this);
     this.assetsBalanceMonitor = new AssetsBalanceMonitor();
     this.assetsController = AssetsController();
   }
@@ -117,6 +116,13 @@ export class AccountController implements IAccountController {
         label: 'Ethereum',
         address: account.address,
       };
+
+      const polygonAsset = {
+        id: AssetType.Polygon,
+        type: AssetType.Ethereum,
+        label: 'Polygon',
+        address: account.address,
+      };
       
       const ETH_TOKENS = Object.values(assets)
                                 .filter((token) => token.type === AssetType.ERC20)
@@ -126,7 +132,7 @@ export class AccountController implements IAccountController {
 
       const erc721Assets = await this.buildAccountERC721Tokens(account.address);
 
-      return [ethAsset, ...erc20Assets, ...erc721Assets];
+      return [ethAsset, polygonAsset, ...erc20Assets, ...erc721Assets];
     }
 
     console.log('Unknown account network: cannot build asset list');
@@ -393,7 +399,6 @@ export class AccountController implements IAccountController {
       }
 
       const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
-      const { activeNetwork }: IVaultState = store.getState().vault;
       const txOptions: any = {
         recipient: this.tempTx.toAddress,
         amount: utils.baseAmount(
@@ -411,6 +416,7 @@ export class AccountController implements IAccountController {
         gasLimit: gasLimit && BigNumber.from(gasLimit),
         nonce,
       };
+      // TODO-349: Check how this works for ERC-20 tokens in Polygon, Avalanche, etc.
       if (activeAsset.type !== AssetType.Ethereum) {
         txOptions.asset = utils.assetFromString(
           `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
@@ -418,7 +424,9 @@ export class AccountController implements IAccountController {
           }`
         );
       }
+      
       const newTx: TransactionResponse = await this.networkController.transfer(txOptions);
+      const { id: networkId } = this.networkController.getNetwork();
 
       trxHash = newTx.hash;
       await this.txController.addPendingTx({
@@ -426,7 +434,7 @@ export class AccountController implements IAccountController {
         fromAddress: this.tempTx.fromAddress,
         toAddress: this.tempTx.toAddress,
         amount: this.tempTx.amount,
-        network: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
+        network: networkId,
         assetId: activeAsset.id,
         timestamp: new Date().getTime(),
         gasPrice,
@@ -459,13 +467,13 @@ export class AccountController implements IAccountController {
     }
 
     const { gasPrice, gasLimit, nonce, memo } = this.tempTx.ethConfig;
-    const { activeNetwork }: IVaultState = store.getState().vault;
 
     const baseAmountGasPrice = utils.baseAmount(
       ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
       9
     );
     const bigNumberGasPrice = BigNumber.from(baseAmountGasPrice.amount().toFixed());
+    const { chainId, id: networkId } = this.networkController.getNetwork();
 
     const txOptions: any = {
       to: this.tempTx.toAddress,
@@ -473,7 +481,7 @@ export class AccountController implements IAccountController {
       gasPrice: bigNumberGasPrice,
       gasLimit: ethers.utils.hexlify(gasLimit),
       data: memo,
-      chainId: getChainId(activeNetwork[KeyringNetwork.Ethereum]),
+      chainId,
       nonce,
     };
 
@@ -484,7 +492,7 @@ export class AccountController implements IAccountController {
       fromAddress: this.tempTx.fromAddress,
       toAddress: this.tempTx.toAddress,
       amount: this.tempTx.amount,
-      network: activeNetwork[KeyringNetwork.Ethereum] as EthChainId,
+      network: networkId,
       assetId: activeAsset.id,
       timestamp: new Date().getTime(),
       nonce: txData.nonce,
@@ -505,6 +513,18 @@ export class AccountController implements IAccountController {
 
   isValidERC20Address(address: string) {
     return this.networkController.validateAddress(address);
+  }
+
+  async fetchCustomToken(address: string) {
+    const info = await this.networkController.getTokenInfo(address);
+    if (info) {
+      store.dispatch(setCustomAsset({
+        tokenAddress: info.address || '',
+        tokenName: info.name || '',
+        tokenSymbol: info.symbol || '',
+        tokenDecimals: info.decimals?.toString() || '',
+      }))
+    }
   }
 
   async getRecommendFee() {

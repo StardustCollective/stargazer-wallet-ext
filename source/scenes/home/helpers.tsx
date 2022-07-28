@@ -1,4 +1,4 @@
-import { DAG_EXPLORER_SEARCH, ETH_NETWORK } from 'constants/index';
+import { ALL_EVM_CHAINS, DAG_EXPLORER_SEARCH } from 'constants/index';
 import format from 'date-fns/format';
 import { AssetType } from 'state/vault/types';
 
@@ -89,9 +89,10 @@ export const getAddressURL = (
     }
     return url;
   }
-  if(type === AssetType.ERC20) {
+
+  if (type === AssetType.ERC20) {
     //token/0xdac17f958d2ee523a2206206994597c13d831ec7?a=
-    return `${ETH_NETWORK[networkId].explorer}token/${contractAddress}?a=${address}`
+    return `${ALL_EVM_CHAINS[networkId].explorer}token/${contractAddress}?a=${address}`
   }
-  return `${ETH_NETWORK[networkId].explorer}address/${address}`;
+  return `${ALL_EVM_CHAINS[networkId].explorer}address/${address}`;
 };

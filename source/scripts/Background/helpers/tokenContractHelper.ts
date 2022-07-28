@@ -45,8 +45,6 @@ export class TokenContractHelper {
       provider
     );
 
-    // TODO-349: Check why "balances" fails sometimes. 
-    // What happens if "balances" is not defined in the contract? 
     const balances = await contract.balances([ethAddress], tokenContractAddress);
 
     return this.formatAddressBalances(balances, [ethAddress], tokenContractAddress)[ethAddress];

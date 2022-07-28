@@ -29,8 +29,6 @@ export class AssetsBalanceMonitor {
 
   private dagBalIntervalId: any;
 
-  private ethAccountTracker = new AccountTracker();
-
   private accountTrackerList: AccountTrackerList;
 
   private subscription: Subscription;
@@ -116,19 +114,6 @@ export class AssetsBalanceMonitor {
   private async pollPendingTxs(update: DagWalletMonitorUpdate) {
     if (update.pendingHasConfirmed) {
       getAccountController().getLatestTxUpdate();
-    }
-  }
-
-  // TODO-349: Check if we need this for all other networks
-  async getEthTokenBalances() {
-    try {
-      await this.ethAccountTracker.getTokenBalances();
-    } catch (err) {
-      if (err instanceof Error) {
-        console.log(err.message);
-      } else {
-        console.log(err);
-      }
     }
   }
 

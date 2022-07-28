@@ -15,6 +15,7 @@ import {
   getChainInfo,
   getTokenAddress,
   validateAddress,
+  isTestnet,
 } from './utils';
 import {
   EVMChainControllerParams,
@@ -156,6 +157,7 @@ class EVMChainController implements IEVMChainController {
       }
 
       let txResult;
+      // TODO-349: Check ERC-20 token transfer for Polygon, Avalanche, etc.
       if (assetAddress && !isETHAddress) {
         // Transfer ERC20
         txResult = await this.call<TransactionResponse>(
@@ -202,8 +204,6 @@ class EVMChainController implements IEVMChainController {
       const offset = params?.limit;
       const assetAddress = params?.asset;
 
-      // TODO-349: Check if we can reuse etherscanApiKey in all explorers.
-
       let transations;
       if (assetAddress) {
         transations = await getTokenTransactionHistory({
@@ -238,8 +238,7 @@ class EVMChainController implements IEVMChainController {
   }
 
   async estimateGasPrices() {
-    // TODO-349: We should check all testnets here.
-    if (this.chain.value !== 'homestead') {
+    if (isTestnet(this.chain.id)) {
       // Etherscan gas oracle is not working in testnets
       const oneGwei = ethers.BigNumber.from(1e9);
       const feeData = await this.provider.getFeeData();
@@ -254,7 +253,6 @@ class EVMChainController implements IEVMChainController {
     }
 
     try {
-      // TODO-349: Check if we can reuse etherscanApiKey in all explorers.
       const response: GasOracleResponse = await getGasOracle(
         this.chain.explorerAPI,
         this.etherscanApiKey

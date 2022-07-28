@@ -2,12 +2,9 @@ import store from 'state/store';
 import { IETHPendingTx } from 'scripts/types';
 import { ethers } from 'ethers';
 import IVaultState from 'state/vault/types';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { TEST_PRIVATE_KEY, ETHERSCAN_API_KEY } from 'utils/envUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from '../../../state/assets/types';
-import EVMChainController from './EVMChainController';
-import { EthChainId } from './EVMChainController/types';
+import { AccountController } from './AccountController';
 
 export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => Promise<boolean>;
@@ -28,12 +25,12 @@ type ITransactionListeners = {
 const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
-  // TODO-349: Update ethClient with setChain()
-  private ethClient: EVMChainController = new EVMChainController({
-    chain: 'mainnet',
-    privateKey: TEST_PRIVATE_KEY,
-    etherscanApiKey: ETHERSCAN_API_KEY,
-  });
+
+  accountController: AccountController;
+
+  constructor(accountController: AccountController) {
+    this.accountController = accountController;
+  }
 
   private async _getPendingData() {
     const state = (await localStorage.getItem(TX_STORE)) || '{}';
@@ -46,14 +43,6 @@ export class EthTransactionController implements IEthTransactionController {
   }
 
   private _transactionListeners: ITransactionListeners = {};
-
-  setChain(value: EthChainId) {
-    this.ethClient = new EVMChainController({
-      chain: value,
-      privateKey: process.env.TEST_PRIVATE_KEY,
-      etherscanApiKey: process.env.ETHERSCAN_API_KEY,
-    });
-  }
 
   async addPendingTx(pendingTx: IETHPendingTx) {
     let pendingData;
@@ -93,11 +82,12 @@ export class EthTransactionController implements IEthTransactionController {
 
   async getFullTxs() {
     const pendingData = await this._getPendingData();
-    const { activeAsset, activeNetwork }: IVaultState = store.getState().vault;
+    const { activeAsset }: IVaultState = store.getState().vault;
+    const { id: networkId } = this.accountController.networkController.getNetwork();
 
     const filteredData = Object.values(pendingData).filter(
       (pendingTx: IETHPendingTx) =>
-        pendingTx.network === activeNetwork[KeyringNetwork.Ethereum] && pendingTx.assetId === activeAsset.id
+        pendingTx.network === networkId && pendingTx.assetId === activeAsset.id
     );
 
     return [...filteredData, ...activeAsset.transactions];
@@ -107,7 +97,7 @@ export class EthTransactionController implements IEthTransactionController {
     const pendingData = await this._getPendingData();
 
     Object.values(pendingData).forEach((pendingTx: IETHPendingTx) => {
-      this.ethClient.waitForTransaction(pendingTx.txHash).then(() => {
+      this.accountController.networkController.waitForTransaction(pendingTx.txHash).then(() => {
         console.log('removing pending tx');
         if (this._transactionListeners[pendingTx.txHash] && this._transactionListeners[pendingTx.txHash].onConfirmed) {
           this._transactionListeners[pendingTx.txHash].onConfirmed();
@@ -119,7 +109,7 @@ export class EthTransactionController implements IEthTransactionController {
   }
 
   async getTransactionHistory(ethAddress: string, limit: number) {
-    const ethTxs = await this.ethClient.getTransactions({
+    const ethTxs = await this.accountController.networkController.getTransactions({
       address: ethAddress,
       limit,
     });
@@ -134,7 +124,7 @@ export class EthTransactionController implements IEthTransactionController {
   }
 
   async getTokenTransactionHistory(ethAddress: string, asset: IAssetInfoState, limit: number) {
-    const transactions = await this.ethClient.getTransactions({
+    const transactions = await this.accountController.networkController.getTransactions({
       address: ethAddress,
       limit,
       asset: asset.address,

@@ -53,8 +53,8 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed })
     const unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
       if (state.isConnected && !lastIsConnected) {
         lastIsConnected = true;
-        await accountController.assetsBalanceMonitor.refreshDagBalance();
-        await accountController.assetsBalanceMonitor.getEthTokenBalances();
+        // TODO-349: Check if this update works
+        await accountController.assetsBalanceMonitor.start();
       } else {
         lastIsConnected = false;
       }

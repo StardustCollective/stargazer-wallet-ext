@@ -3,6 +3,9 @@ import { ETHERSCAN_API_KEY, POLYGONSCAN_API_KEY } from 'utils/envUtil';
 import { AllChainsIds, EthChainId, PolygonChainId } from './EVMChainController/types';
 import { BigNumber, Wallet } from 'ethers';
 import store from 'state/store';
+import { TxHistoryParams } from './ChainsController';
+import { getNetworkFromChainId } from './EVMChainController/utils';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 class NetworkController {
 
@@ -42,45 +45,71 @@ class NetworkController {
     this.#polygonNetwork.setChain(chain);
   }
 
-  // TODO-349: Add logic to check provider before calling the method.
+  private getProviderByActiveAsset(): EVMChainController {
+    const assets = store.getState().assets;
+    const { activeAsset } = store.getState().vault;
+    const activeAssetInfo = assets[activeAsset.id];
+    const network = getNetworkFromChainId(activeAssetInfo.network);
+    // TODO-349: Add all chains here
+    const networkToProvider = {
+      [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
+      'Polygon': this.#polygonNetwork,
+    }
+    return networkToProvider[network];
+  }
+
+  // TODO-349: Check if getProviderByActiveAsset is fine in all scenarios
+
+  getNetwork() {
+    return this.getProviderByActiveAsset().getNetwork();
+  }
+
+  getExplorerURL() {
+    return this.getProviderByActiveAsset().getExplorerUrl();
+  }
+
   getAddress(): string {
-    return this.#ethereumNetwork.getAddress();
+    return this.getProviderByActiveAsset().getAddress();
   }
 
   getWallet(): Wallet {
-    return this.#ethereumNetwork.getWallet();
+    return this.getProviderByActiveAsset().getWallet();
   }
 
   validateAddress(address: string): boolean {
-    return this.#ethereumNetwork.validateAddress(address);
+    return this.getProviderByActiveAsset().validateAddress(address);
   }
 
   createERC20Contract(address: string) {
-    return this.#ethereumNetwork.createERC20Contract(address);
+    return this.getProviderByActiveAsset().createERC20Contract(address);
   }
 
   async estimateGas(from: string, to: string, data: string) {
-    return this.#ethereumNetwork.estimateGas(from, to, data);
+    return this.getProviderByActiveAsset().estimateGas(from, to, data);
   }
 
   async getTokenInfo(address: string) {
-    return this.#ethereumNetwork.getTokenInfo(address);
+    return this.getProviderByActiveAsset().getTokenInfo(address);
   }
 
   async estimateGasPrices() {
-    return this.#ethereumNetwork.estimateGasPrices();
+    return this.getProviderByActiveAsset().estimateGasPrices();
   }
 
-  async getTransactions() {
-    return this.#ethereumNetwork.getTransactions();
+  async getTransactions(params?: TxHistoryParams) {
+    return this.getProviderByActiveAsset().getTransactions(params);
+  }
+
+  async waitForTransaction(hash: string) {
+    return this.getProviderByActiveAsset().waitForTransaction(hash);
   }
 
   async estimateTokenTransferGasLimit(recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) {
-    return this.#ethereumNetwork.estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
+    return this.getProviderByActiveAsset().estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
   }
 
   async transfer(txOptions: any) {
-    return this.#ethereumNetwork.transfer(txOptions);
+    return this.getProviderByActiveAsset().transfer(txOptions);
   }
 
 }

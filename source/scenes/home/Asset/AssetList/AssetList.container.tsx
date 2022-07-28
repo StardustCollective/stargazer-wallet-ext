@@ -51,6 +51,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   const activeNetworkAssets = useSelector(walletsSelectors.selectActiveNetworkAssets);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   let filteredArray = constellationAssets?.concat(customAssets).concat(erc20assets);
+  // TODO-349: Check how activeNetwork should work here
   if (activeNetwork.Ethereum !== 'mainnet') {
     filteredArray = constellationAssets?.slice(0, 2);
   }
@@ -132,8 +133,6 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
         accountController.assetsController.removeERC20AssetFn(assetInfo);
       }
     }
-    // TODO-349: Check if necessary
-    // await accountController.assetsBalanceMonitor.start();
   } 
 
   ///////////////////////////

@@ -310,9 +310,7 @@ class WalletController implements IWalletController {
     }
 
     if (network === KeyringNetwork.Ethereum) {
-      this.account.txController.setChain(chainId as EthChainId);
       this.account.networkController.switchEthereumChain(chainId as EthChainId);
-      this.account.assetsController.setChain(chainId as EthChainId);
     }
 
     // TODO-349: Check if we need to add some logic here

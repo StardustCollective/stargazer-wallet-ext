@@ -27,6 +27,18 @@ export const initialState: IAssetListState = {
     priceId: 'constellation-labs',
     decimals: 8,
   },
+  // TODO-349: Add main tokens for all networks
+  [AssetType.Polygon]: {
+    id: AssetType.Polygon,
+    address: '0x0000000000000000000000000000000000001010',
+    label: 'Polygon',
+    symbol: 'MATIC',
+    type: AssetType.Ethereum,
+    priceId: 'matic-network',
+    network: 'matic',
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png',
+    decimals: 18,
+  },
   '0xa393473d64d2F9F026B60b6Df7859A689715d092': {
     id: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
     address: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
@@ -69,18 +81,6 @@ export const initialState: IAssetListState = {
     priceId: 'geojam',
     network: 'mainnet',
     logo: 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png',
-    decimals: 18,
-  },
-  // TODO-349: Add main tokens for all networks
-  '0x0000000000000000000000000000000000001010': {
-    id: '0x0000000000000000000000000000000000001010',
-    address: '0x0000000000000000000000000000000000001010',
-    label: 'Polygon',
-    symbol: 'MATIC',
-    type: AssetType.ERC20,
-    priceId: 'matic-network',
-    network: 'matic',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png',
     decimals: 18,
   },
 };

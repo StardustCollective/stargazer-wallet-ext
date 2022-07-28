@@ -69,15 +69,6 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     }
   }, []);
 
-  // TODO-349: Check if necessary
-  // useEffect(() => {
-  //   const networkUpdate = async () => {
-  //     await accountController.assetsController.setChain(activeNetwork.Ethereum);
-  //     // await accountController.assetsBalanceMonitor.start();
-  //   }
-  //   networkUpdate();
-  // }, [activeNetwork.Ethereum]);
-
   // Sets the header for the home screen.
   useLayoutEffect(() => {
     navigation.setOptions({
