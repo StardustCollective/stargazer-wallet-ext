@@ -8,12 +8,14 @@ import ContactsController, { IContactsController } from './ContactsController';
 import MigrationController from './MigrationController';
 
 import { DAppController } from './DAppController';
+import { DappRegistry } from '../dappRegistry';
 
 class MasterController {
   #stargazerProvider: StargazerProvider;
   #ethereumProvider: EthereumProvider;
   #wallet: IWalletController;
   #dapp: DAppController;
+  #dappRegistry: DappRegistry;
   #contacts: IContactsController;
   #utils: IControllerUtils;
 
@@ -22,6 +24,7 @@ class MasterController {
     this.#ethereumProvider = new EthereumProvider();
     this.#wallet = WalletController;
     this.#dapp = new DAppController();
+    this.#dappRegistry = new DappRegistry()
     this.#contacts = ContactsController();
 
     this.#utils = ControllerUtils();
@@ -43,6 +46,10 @@ class MasterController {
 
   get dapp() {
     return this.#dapp;
+  }
+
+  get dappRegistry() {
+    return this.#dappRegistry;
   }
 
   get contacts() {

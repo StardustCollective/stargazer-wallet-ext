@@ -21,6 +21,8 @@ import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { getERC20DataDecoder } from 'utils/ethUtil';
 import { getInfuraProvider } from 'utils/ethersUtil';
+import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
+import { getChainId } from 'scripts/Background/controllers/EthChainController/utils';
 
 import type { DappProvider } from '../Background/dappRegistry';
 import {
@@ -28,10 +30,10 @@ import {
   IRpcChainRequestHandler,
   StargazerProxyRequest,
   EIPRpcError,
+  StargazerChain,
 } from '../common';
 
 import { StargazerSignatureRequest } from './StargazerProvider';
-import { getChainId } from 'scripts/Background/controllers/EthChainController/utils';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -138,6 +140,23 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     return sig;
   }
 
+  signTypedData(
+    domain: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[0],
+    types: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[1],
+    value: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[2]
+  ) {
+    const controller = useController();
+    const wallet = controller.wallet.account.ethClient.getWallet();
+    const privateKeyHex = this.remove0x(wallet.privateKey);
+    const privateKey = Buffer.from(privateKeyHex, 'hex');
+    const msgHash = ethers.utils._TypedDataEncoder.hash(domain, types, value);
+
+    const { v, r, s } = ecsign(Buffer.from(this.remove0x(msgHash), 'hex'), privateKey);
+    const sig = this.preserve0x(toRpcSig(v, r, s));
+
+    return sig;
+  }
+
   getAssetByType(type: AssetType) {
     const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
 
@@ -224,7 +243,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'address'");
       }
 
-      if (assetAccount.address !== address) {
+      if (assetAccount.address.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
         throw new Error('The active account is not the requested');
       }
 
@@ -270,6 +289,111 @@ export class EthereumProvider implements IRpcChainRequestHandler {
       }
 
       return signatureEvent.detail.signature.hex;
+    }
+
+    if (
+      [
+        AvailableMethods.eth_signTypedData,
+        AvailableMethods.eth_signTypedData_v4,
+      ].includes(request.method)
+    ) {
+      if (!activeWallet) {
+        throw new Error('There is no active wallet');
+      }
+
+      const assetAccount = activeWallet.accounts.find(
+        (account) => account.network === KeyringNetwork.Ethereum
+      );
+
+      if (!assetAccount) {
+        throw new Error('No active account for the request asset type');
+      }
+
+      // Extension 3.6.0+
+      let [address, data] = request.params as [string, Record<string, any>];
+
+      if (typeof address !== 'string') {
+        throw new Error("Bad argument 'address'");
+      }
+
+      if (typeof data === 'string') {
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          throw new Error("Bad argument 'data' => " + String(e));
+        }
+      }
+
+      if (typeof data !== 'object' || data === null) {
+        throw new Error("Bad argument 'data'");
+      }
+
+      if (!ethers.utils.isAddress(address)) {
+        throw new Error("Bad argument 'address'");
+      }
+
+      if (assetAccount.address.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
+        throw new Error('The active account is not the requested');
+      }
+
+      if ('EIP712Domain' in data.types) {
+        // Ethers does not need EIP712Domain type
+        delete data.types['EIP712Domain'];
+      }
+
+      try {
+        ethers.utils._TypedDataEncoder.hash(data.domain, data.types, data.message);
+      } catch (e) {
+        throw new Error("Bad argument 'data' => " + String(e));
+      }
+
+      const signatureConsent: TypedSignatureRequest = {
+        chain: StargazerChain.ETHEREUM,
+        signer: address,
+        content: JSON.stringify(data.message, null, 2),
+      };
+
+      const signatureData = {
+        origin: dappProvider.origin,
+        signatureConsent,
+        walletId: activeWallet.id,
+        walletLabel: activeWallet.label,
+        publicKey: '',
+      };
+
+      // If the type of account is Ledger send back the public key so the
+      // signature can be verified by the requester.
+      let accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
+      if (
+        activeWallet.type === KeyringWalletType.LedgerAccountWallet &&
+        accounts &&
+        accounts[0]
+      ) {
+        signatureData.publicKey = accounts[0].publicKey;
+      }
+
+      const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'signTypedMessageResult',
+        undefined,
+        'signTypedMessage',
+        signatureData,
+        windowType,
+        windowUrl,
+        windowSize
+      );
+
+      if (signatureEvent === null) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      if (!signatureEvent.detail.result) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      const signature = this.signTypedData(data.domain, data.types, data.message);
+
+      return signature;
     }
 
     if (request.method === AvailableMethods.eth_sendTransaction) {

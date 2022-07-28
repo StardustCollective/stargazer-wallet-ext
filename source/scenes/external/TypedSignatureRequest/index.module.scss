@@ -1,0 +1,36 @@
+@import '~assets/styles/variables';
+
+.content {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 10px 15px;
+  row-gap: 15px;
+
+  section {
+    > label {
+      color: $black;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    > div {
+      color: $gray-100;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    &.message > div {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    &.metadata > div {
+      display: flex;
+      flex-flow: column nowrap;
+
+      & > small {
+        font-size: 12px;
+      }
+    }
+  }
+}

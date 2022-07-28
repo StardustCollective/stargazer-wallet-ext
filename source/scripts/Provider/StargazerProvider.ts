@@ -171,7 +171,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
   signMessage(msg: string) {
     const privateKeyHex = dag4.account.keyTrio.privateKey;
-    const sig = dag4.keyStore.sign(privateKeyHex, msg);
+    const sig = dag4.keyStore.personalSign(privateKeyHex, msg);
 
     return sig;
   }
