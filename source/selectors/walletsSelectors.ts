@@ -103,7 +103,7 @@ const selectAllAccounts = createSelector(
 );
 
 /**
- * Return the public key of the active asset
+ * Return wallet of active asset
  */
 
 const selectActiveAssetPublicKey = createSelector(
@@ -116,27 +116,6 @@ const selectActiveAssetPublicKey = createSelector(
         let account = accounts[j];
         if (activeAsset?.address === account.address) {
           return account!.publicKey ?? null;
-        }
-      }
-    }
-    return '';
-  }
-);
-
-/**
- * Return the deviceId of the active asset
- */
-
- const selectActiveAssetDeviceId = createSelector(
-  selectAllWallets,
-  getActiveAsset,
-  (wallets, activeAsset) => {
-    for (let i = 0; i < wallets.length; i++) {
-      const { accounts } = wallets[i];
-      for (let j = 0; j < wallets[i].accounts.length; j++) {
-        let account = accounts[j];
-        if (activeAsset?.address === account.address) {
-          return account!.deviceId ?? null;
         }
       }
     }
@@ -215,5 +194,4 @@ export default {
   selectActiveNetworkAssetIds,
   selectNFTAssets,
   selectActiveAssetPublicKey,
-  selectActiveAssetDeviceId,
 };

@@ -2,18 +2,19 @@ import { BitfiDump, BitfiV2, TransferType } from '@bitfi/bitfi.js';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { dag4 } from '@stardust-collective/dag4';
 
-const SESSION_KEY = 'bitfi_session';
-const APPROVE_TIMEOUT_MSEC = 2 * 60 * 1000;
-const CONNECT_TIMEOUT_MSEC = 10 * 60 * 1000;
-const REQUEST_TIMOUT_MSEC = 7 * 1000;
+const DEVICE_ID_KEY = 'bitfi_device_id'
+const SESSION_KEY = 'bitfi_session'
+
+const APPROVE_TIMEOUT_MSEC = 120 * 1000
+const CONNECT_TIMEOUT_MSEC = 5 * 60 * 1000
+const REQUEST_TIMOUT_MSEC = 7 * 1000
 
 const checkCodeMessage = (code: string) => 
-`Make sure the code on the device is equal to ${code.toUpperCase()} and then approve the request`;
+`Make sure the code on the device is equal to ${code.toUpperCase()} and then approve the request`
 
 class BitfiBridgeUtil {
-
   private bitfiBridge: BitfiV2;
-  private readonly NUMBER_OF_ACCOUNTS = 5;
+
   public startIndex: number = 0;
 
   constructor() {
@@ -21,175 +22,170 @@ class BitfiBridgeUtil {
     dag4.di.useFetchHttpClient();
     dag4.network.config({
       id: 'main',
-      beUrl: 'https://block-explorer.constellationnetwork.io',
-      lbUrl: 'https://proxy.constellationnetwork.io/api/node',
+      beUrl: 'https://www.dagexplorer.io/api/scan',
+      lbUrl: 'https://www.dagexplorer.io/api/node',
     });
   }
 
+  //there is only one account available
+  private getAccountData = async (): Promise<LedgerAccount[]> => {
+    const addresses = await this.bitfiBridge.getAccounts('dag', REQUEST_TIMOUT_MSEC)
+    const publicKeys = await this.bitfiBridge.getPublicKeys('dag', REQUEST_TIMOUT_MSEC)
 
-  private getAccountData = async (
-    // startIndex: number
-  ): Promise<LedgerAccount[]> => {
-    //uncomment for multiple accounts
-    // const indexes = Array.from({length: this.NUMBER_OF_ACCOUNTS}, (_, index) => index + startIndex);
-    const indexes = [0];
+    const address = addresses[0]
+    const publicKey = publicKeys[0]
+    const balance = await dag4.account.getBalanceFor(address)
 
-    const accounts = await this.bitfiBridge.getAccounts('dag', indexes, false, REQUEST_TIMOUT_MSEC);
-    const publicKeys = await this.bitfiBridge.getPublicKeys('dag', indexes, REQUEST_TIMOUT_MSEC);
-    const balances = await Promise.all(accounts.map(async ({ address }) => {
-      return (await dag4.account.getBalanceFor(address) || 0);
+    const accountData = [
+      {
+        address,
+        publicKey,
+        balance: balance.toString()
+      }
+    ]
+
+    return accountData.map((d: LedgerAccount) => ({
+      ...d,
+      balance: Number(d.balance).toFixed(2).toString(),
     }));
-      
-    const accountData = accounts.map((acc, i) => ({
-      address: acc.address,
-      //index: acc.index,
-      publicKey: publicKeys[i],
-      balance: Number(balances[i]).toFixed(2).toString()
-    } as LedgerAccount));
-
-    return accountData;
   };
 
   public buildTransaction = async (
     amount: number, fromAddress: string, toAddress: string, fee?: number
   ) => {
-    const lastTxRef = await dag4.network.loadBalancerApi.getAddressLastAcceptedTransactionRef(fromAddress);
+    const lastTxRef = await dag4.network.loadBalancerApi.getAddressLastAcceptedTransactionRef(fromAddress)
     
-    const feeSat = (fee && (fee * Math.pow(10, 8)).toString()) || "0";
-    const amountSat = (amount * Math.pow(10, 8)).toString();
-    let tx = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>({
+    const feeSat = (fee && (fee * Math.pow(10, 8)).toString()) || "1"
+    const amountSat = (amount * Math.pow(10, 8)).toString()
+    const tx = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>({
       from: fromAddress,
       to: toAddress,
       amount: amountSat,
       symbol: 'dag',
       fee: feeSat, 
-      index:  0, /*index ||*/
       lastTxRef,
       transferType: TransferType.OUT_SELF,
-    }, APPROVE_TIMEOUT_MSEC);
+    }, APPROVE_TIMEOUT_MSEC)
 
-    if (tx.edge.data.fee == "0") {
-      delete tx.edge.data.fee;
+    console.log(tx)
+    if (tx.edge.data.amount !== amountSat || tx.edge.data.fee !== feeSat) {
+      throw new Error('Transaction was formed incorrectly')
     }
 
-    if (tx.edge.data.amount !== amountSat || (tx.edge.data.fee && tx.edge.data.fee !== feeSat)) {
-      throw new Error('Transaction was formed incorrectly');
-    }
-
-    return tx;
+    return tx
   };
 
+  // not used
   public closeConnection = () => {
-    this.bitfiBridge = null;
+    this.bitfiBridge = null
   };   
   
+  // Should be use when deleting the wallet
   public logOut = () => {
-    this.bitfiBridge = null;
-    localStorage.removeItem(SESSION_KEY);
+    this.bitfiBridge = null
+    localStorage.removeItem(DEVICE_ID_KEY)
+    localStorage.removeItem(SESSION_KEY)
   }
 
-  private async _signin(
-    deviceId: string, 
-    onMessage: (mes: string) => void,
-    onCodeGenerated: (mes: string) => void
-  ) {
+  private async _signin(deviceId: string, onMessage: (mes: string) => void) {
     try {
       this.bitfiBridge = new BitfiV2(
         "https://dpx.async360.com", 
         "029e6fae4c08d3136631c5a5a20e03677136d0cf143e0942f925b26d954a20536c",
         deviceId,
-      );
+      )
       
-      onMessage(`Open your wallet, click on "Connect wallet" and then "Start wallet" button and enter your salt and secret phrase to start a session`);
+      onMessage(`Open your wallet, click on "Private Channels" button and then enter your salt and secret phrase to start a session`)
       
-      await this.bitfiBridge.enable(CONNECT_TIMEOUT_MSEC);
+      await this.bitfiBridge.enable(CONNECT_TIMEOUT_MSEC)
+      
       
       await this.bitfiBridge.authorize(code => {
-        onCodeGenerated && onCodeGenerated(code);
-        onMessage && onMessage(`Authorization: ${checkCodeMessage(code)}`);
-      }, APPROVE_TIMEOUT_MSEC);
+        onMessage(`Authorization: ${checkCodeMessage(code)}`)
+      }, APPROVE_TIMEOUT_MSEC)
       
-      const dump = await this.bitfiBridge.serialize();
-      delete dump.deviceId;
-      localStorage.setItem(SESSION_KEY, JSON.stringify(dump)) ;
+      const dump = await this.bitfiBridge.serialize()
+      localStorage.setItem(DEVICE_ID_KEY, dump.deviceId)
+      delete dump.deviceId
+      localStorage.setItem(SESSION_KEY, JSON.stringify(dump)) 
     }
     catch (exc) {
-      this.bitfiBridge = null;
-      throw exc;
+      this.bitfiBridge = null
+      throw exc
     }
     
   }
 
-  public requestPermissions = async (
-    deviceId: string, 
-    onMessage?: (mes: string) => void, 
-    onCodeGenerated?: (mes: string) => void
-  ) => {
-    const session = localStorage.getItem(SESSION_KEY);
+  public requestPermissions = async (deviceId?: string, onMessage?: (mes: string) => void) => {
+    if (!this.bitfiBridge) {
+      if (deviceId) {
+        await this._signin(deviceId, onMessage || (() => {}))
+      } else {
+        const savedDeviceId = localStorage.getItem(DEVICE_ID_KEY)
+        const session = localStorage.getItem(SESSION_KEY)
 
-    if (session) {
-      const dump = {
-        deviceId,
-        ...JSON.parse(session)
-      } as BitfiDump;
+        if (savedDeviceId) {
+          if (session) {
+            const dump = {
+              deviceId: savedDeviceId,
+              ...JSON.parse(session)
+            } as BitfiDump
 
-      if (!dump.code || !dump.eckey || !dump.sharedSecretHash) {
-        localStorage.removeItem(SESSION_KEY);
-        throw new Error('Invalid session format');
-      }
+            if (!dump.code || !dump.eckey || !dump.sharedSecretHash) {
+              localStorage.removeItem(SESSION_KEY)
+              throw new Error('Invalid session format')
+            }
 
-      this.bitfiBridge = new BitfiV2(
-        "https://dpx.async360.com", 
-        "029e6fae4c08d3136631c5a5a20e03677136d0cf143e0942f925b26d954a20536c"
-      );
+            this.bitfiBridge = new BitfiV2(
+              "https://dpx.async360.com", 
+              "029e6fae4c08d3136631c5a5a20e03677136d0cf143e0942f925b26d954a20536c"
+            )
 
-      try {
-        await this.bitfiBridge.deserialize(dump);
-        onMessage('Checking session...');
-        const info = await this.bitfiBridge.getDeviceInfo(3000);
+            try {
+              await this.bitfiBridge.deserialize(dump)
+              onMessage('Checking session...')
+              const info = await this.bitfiBridge.getDeviceInfo(3000)
 
-        if (info) {
-          // session is still open, no need to authorize 
-          onCodeGenerated && onCodeGenerated(dump.code);
-          onMessage && onMessage(checkCodeMessage(dump.code));
-          return;
+              if (info) {
+                // session is still open, no need to authorize 
+                onMessage && onMessage(checkCodeMessage(dump.code))
+                return
+              }
+            }
+            catch (exc) {
+              console.log(exc)
+            }
+          }
+
+          await this._signin(savedDeviceId, onMessage || (() => {}))
+        } else {
+          throw new Error('NO saved account found, NO device ID provided')
         }
       }
-      catch (exc) {
-        console.log(exc);
-      }
+    } else {
+      const code = (await this.bitfiBridge.serialize()).code
+      onMessage && onMessage(checkCodeMessage(code))
     }
-
-    await this._signin(deviceId, onMessage, onCodeGenerated);
+    
   };
 
   public async signMessage(msg: string) {
-    const account = (await this.bitfiBridge.getAccounts('dag', [0], false, REQUEST_TIMOUT_MSEC))[0];
-    const sig = await this.bitfiBridge.signMessage(account.address, msg, 'dag', 0, false, APPROVE_TIMEOUT_MSEC);
+    const address = (await this.bitfiBridge.getAccounts('dag', REQUEST_TIMOUT_MSEC))[0]
+    const sig = await this.bitfiBridge.signMessage(address, msg, 'dag', APPROVE_TIMEOUT_MSEC)
     return sig;
   }
 
-  //not used
-  // public setOnProgressUpdate(onProgressUpdate: (progress: number) => void) {
-  // }
-
   // There is only one account, there is nothing to iterate through
   public getInitialPage = (): Promise<LedgerAccount[]> => {
-    this.startIndex = 0;
-    return this.getAccountData();
+    return this.getAccountData()
   };
 
   public getNextPage = (): Promise<LedgerAccount[]> => {
-    this.startIndex += this.NUMBER_OF_ACCOUNTS;
-    return this.getAccountData();
+    return this.getAccountData()
   };
 
   public getPreviousPage = (): Promise<LedgerAccount[]> => {
-    if (this.startIndex === 0) {
-      throw Error('You are at page 1, no more previous pages');
-    }
-    this.startIndex -= this.NUMBER_OF_ACCOUNTS;
-    return this.getAccountData();
+    return this.getAccountData()
   };
 }
 
