@@ -28,6 +28,17 @@ export const initialState: IAssetListState = {
     decimals: 8,
   },
   // TODO-349: Add main tokens for all networks
+  [AssetType.BSC]: {
+    id: AssetType.BSC,
+    address: '',
+    label: 'BNB',
+    symbol: 'BNB',
+    type: AssetType.Ethereum,
+    priceId: 'binancecoin',
+    network: 'bsc',
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png',
+    decimals: 18,
+  },
   [AssetType.Polygon]: {
     id: AssetType.Polygon,
     address: '0x0000000000000000000000000000000000001010',
@@ -94,13 +105,13 @@ const AssetListState = createSlice({
       return action.payload;
     },
     addERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
-      if (action.payload.address) {
-        state[action.payload.address] = action.payload;
+      if (action.payload.id) {
+        state[action.payload.id] = action.payload;
       }
     },
     removeERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
-      if (action.payload.address) {
-        delete state[action.payload.address];
+      if (action.payload.id) {
+        delete state[action.payload.id];
       }
     },
   },

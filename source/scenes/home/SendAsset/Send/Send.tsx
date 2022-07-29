@@ -29,6 +29,7 @@ const WalletSend: FC<IWalletSend> = ({
   isValidAddress,
   balances,
   activeAsset,
+  nativeToken,
   assetInfo,
   address,
   register,
@@ -208,11 +209,7 @@ const WalletSend: FC<IWalletSend> = ({
             <div className={styles.status}>
               <span
                 className={styles.equalAmount}
-              >{`${gasPrice} GWei, ${gasFee} ETH (≈ ${getFiatAmount(
-                gasFee,
-                2,
-                'ethereum'
-              )})`}</span>
+              >{`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2)})`}</span>
             </div>
           </section>
         )}

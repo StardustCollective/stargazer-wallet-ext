@@ -54,6 +54,7 @@ import useGasEstimate from 'hooks/useGasEstimate';
 ///////////////////////////
 
 import Send from './Send';
+import { getNativeToken } from 'scripts/Background/controllers/EVMChainController/utils';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -387,6 +388,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     handleAmountChange(formattedUnits);
   };
 
+  const assetNetwork = assets[activeAsset?.id]?.network;
+  const nativeToken = getNativeToken(assetNetwork);
+
   return (
     <Container color={CONTAINER_COLOR.LIGHT}>
       <Send
@@ -408,6 +412,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         isValidAddress={isValidAddress}
         balances={balances}
         activeAsset={activeAsset}
+        nativeToken={nativeToken}
         assetInfo={assetInfo}
         address={address}
         register={register}

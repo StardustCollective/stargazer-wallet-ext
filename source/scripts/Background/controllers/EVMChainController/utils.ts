@@ -32,6 +32,10 @@ export const equalMainTokenAddress = (chainId: AllChainsIds) => {
     case 'matic':
     case 'maticmum':
       return true;
+    case 'bsc':
+    case 'bsc-testnet':
+    // TODO-349: Check if BSC token has the same address
+      return true;
     case 'mainnet':
     case 'rinkeby':
     case 'ropsten':
@@ -49,6 +53,8 @@ export const getMainnetFromTestnet = (chainId: AllChainsIds) => {
       return 'mainnet';
     case 'maticmum':
       return 'matic';
+    case 'bsc-testnet':
+      return 'bsc';
   
     default:
       return 'mainnet';
@@ -65,9 +71,31 @@ export const getNetworkFromChainId = (chainId: AllChainsIds | 'both') => {
     case 'matic':
     case 'maticmum':
         return 'Polygon';
+    case 'bsc':
+    case 'bsc-testnet':
+        return 'BSC';
   
     default:
       return KeyringNetwork.Ethereum;
+  }
+}
+
+export const getNativeToken = (chainId: AllChainsIds | 'both') => {
+  switch (chainId) {
+    case 'mainnet':
+    case 'rinkeby':
+    case 'ropsten':
+    case 'both':
+        return 'ETH';
+    case 'matic':
+    case 'maticmum':
+        return 'MATIC';
+    case 'bsc':
+    case 'bsc-testnet':
+        return 'BNB';
+  
+    default:
+      return 'ETH';
   }
 }
 
@@ -83,6 +111,10 @@ export const getChainId = (network: AllChainsIds): number => {
       return 137;
     case 'maticmum':
       return 80001;
+    case 'bsc':
+      return 56;
+    case 'bsc-testnet':
+      return 97;
       
     default:
       return 1;

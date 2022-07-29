@@ -17,6 +17,7 @@ import SearchInput from 'components/SearchInput';
 ///////////////////////////
 
 import { getKeyringAssetType } from 'utils/keyringUtil';
+import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Types
@@ -24,7 +25,6 @@ import { getKeyringAssetType } from 'utils/keyringUtil';
 
 import { IAssetList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
-import { KeyringAssetType } from "@stardust-collective/dag4-keyring";
 
 ///////////////////////////
 // Styles
@@ -43,9 +43,11 @@ const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, to
   const renderAssetItem = ({ item }: { item: IAssetInfoState }) => {
     const selected = !!activeNetworkAssets?.find(asset => asset?.id === item?.id);
     const itemType = getKeyringAssetType(item?.type);
-    const disabled = [KeyringAssetType.DAG, KeyringAssetType.ETH].includes(itemType);
+    const disabled = ['DAG', 'ETH'].includes(item?.symbol);
     const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
-    const differentNetwork = item?.network !== 'both' && activeNetwork.Ethereum !== item?.network;
+    const itemChainId = item?.network;
+    const itemNetwork = getNetworkFromChainId(itemChainId);
+    const differentNetwork = !['both', 'matic', 'bsc'].includes(itemChainId) && activeNetwork[itemNetwork] !== itemChainId;
     if (!isAssetSupported || differentNetwork) return null;
     return <AssetWithToggle 
               id={item?.id}

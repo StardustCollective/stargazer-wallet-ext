@@ -53,7 +53,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   let filteredArray = constellationAssets?.concat(customAssets).concat(erc20assets);
   // TODO-349: Check how activeNetwork should work here
   if (activeNetwork.Ethereum !== 'mainnet') {
-    filteredArray = constellationAssets?.slice(0, 2);
+    filteredArray = constellationAssets?.filter(item => ['DAG', 'ETH', 'MATIC', 'BNB'].includes(item.symbol));
   }
   const [allAssets, setAllAssets] = useState(filteredArray);
   const [searchValue, setSearchValue] = useState('');
@@ -120,8 +120,8 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   
 
   const toggleAssetItem = async (assetInfo: IAssetInfoState, value: boolean) => {
-    const contractAddress = assetInfo.address;
-    const assetExists = !!assets[contractAddress];
+    const assetId = assetInfo.id;
+    const assetExists = !!assets[assetId];
     if (value) {
       // Add asset
       if (!assetExists) {

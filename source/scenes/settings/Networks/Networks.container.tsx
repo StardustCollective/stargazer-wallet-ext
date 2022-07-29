@@ -7,7 +7,7 @@ import { getWalletController } from 'utils/controllersUtils';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
-import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 
 import Container from 'components/Container';
 import Networks from './Networks';
@@ -59,22 +59,22 @@ const NetworksContainer: FC = () => {
         { value: ETH_NETWORK.rinkeby.id, label: ETH_NETWORK.rinkeby.label },
       ],
     },
-    {
-      icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png',
-      key: 'Avalanche',
-      title: 'Avalanche',
-      value: activeNetwork['Avalanche'],
-      onChange: (value: string) => {
-        handleChangeNetwork('Avalanche', value);
-      },
-      containerStyle: {
-        zIndex: 8000,
-      },
-      items: [
-        { value: AVALANCHE_NETWORK['avalanche-mainnet'].id, label: AVALANCHE_NETWORK['avalanche-mainnet'].label  },
-        { value: AVALANCHE_NETWORK['avalanche-testnet'].id, label: AVALANCHE_NETWORK['avalanche-testnet'].label },
-      ],
-    },
+    // {
+    //   icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png',
+    //   key: 'Avalanche',
+    //   title: 'Avalanche',
+    //   value: activeNetwork['Avalanche'],
+    //   onChange: (value: string) => {
+    //     handleChangeNetwork('Avalanche', value);
+    //   },
+    //   containerStyle: {
+    //     zIndex: 8000,
+    //   },
+    //   items: [
+    //     { value: AVALANCHE_NETWORK['avalanche-mainnet'].id, label: AVALANCHE_NETWORK['avalanche-mainnet'].label  },
+    //     { value: AVALANCHE_NETWORK['avalanche-testnet'].id, label: AVALANCHE_NETWORK['avalanche-testnet'].label },
+    //   ],
+    // },
     {
       icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png',
       key: 'BNB Chain',
@@ -104,7 +104,7 @@ const NetworksContainer: FC = () => {
       },
       items: [
         { value: POLYGON_NETWORK.matic.id, label: POLYGON_NETWORK.matic.label  },
-        { value: POLYGON_NETWORK['matic-testnet'].id, label: POLYGON_NETWORK['matic-testnet'].label },
+        { value: POLYGON_NETWORK.maticmum.id, label: POLYGON_NETWORK.maticmum.label },
       ],
     },
   ];

@@ -28,6 +28,7 @@ export const mapToAssetsArray = (tokensArray: ERC20Asset[], tokensAddressArray: 
 
 export const mapSearchAssetsToArray = (tokens: SearchAsset[], tokensAddressArray: ERC20AssetWithAddress[]): IAssetInfoState[] => {
   const CONSTELLATION_ASSETS = constellationInitialValues.map(asset => asset.priceId);
+  // TODO-349: Update logic to include assets from other networks
   return tokens
           .map((token: SearchAsset) => ({...token, ...tokensAddressArray.find((tokenAddress: ERC20AssetWithAddress) => token.id === tokenAddress.id && !CONSTELLATION_ASSETS.includes(token.id) && tokenAddress?.platforms?.ethereum?.length)}))
           .map(item => ({

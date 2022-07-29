@@ -22,6 +22,7 @@ export interface IWalletSend {
   isValidAddress: boolean;
   balances: AssetBalances;
   activeAsset: IAssetInfoState | IActiveAssetState;
+  nativeToken: string;
   assetInfo: IAssetInfoState;
   address: string;
   register: () => void;

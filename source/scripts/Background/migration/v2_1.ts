@@ -1,6 +1,6 @@
 import { reload } from 'utils/browser';
 import IVaultState, { AssetType } from 'state/vault/types';
-import { DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { KeyringWalletState } from '../helpers/keystoreToKeyringHelper';
 import { saveState } from 'state/localStorage';
@@ -43,7 +43,7 @@ const MigrateRunner = async (oldState: V1WalletState) => {
         [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
         // TODO-349: Add netoworks in all migration files
         // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
-        // 'BSC': BSC_NETWORK.bsc.id,
+        'BSC': BSC_NETWORK.bsc.id,
         'Polygon': POLYGON_NETWORK.matic.id,
       },
       version: '2.1',

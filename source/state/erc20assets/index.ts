@@ -73,6 +73,29 @@ export const constellationInitialValues: IAssetInfoState[] = [
     logo: 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png',
     decimals: 18,
   },
+  // TODO-349: Add all tokens here
+  {
+    id: AssetType.Polygon,
+    address: '0x0000000000000000000000000000000000001010',
+    label: 'Polygon',
+    symbol: 'MATIC',
+    type: AssetType.Ethereum,
+    priceId: 'matic-network',
+    network: 'matic',
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png',
+    decimals: 18,
+  },
+  {
+    id: AssetType.BSC,
+    address: '',
+    label: 'BNB',
+    symbol: 'BNB',
+    type: AssetType.Ethereum,
+    priceId: 'binancecoin',
+    network: 'bsc',
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png',
+    decimals: 18,
+  },
 ];
 
 export const initialState: IERC20AssetsListState = {

@@ -22,7 +22,7 @@ import { AccountController } from './AccountController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { EthChainId, PolygonChainId } from './EVMChainController/types';
+import { BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
 
 // Constants
@@ -316,8 +316,11 @@ class WalletController implements IWalletController {
     // TODO-349: Check if we need to add some logic here
     if (network === 'Avalanche') {
     }
+    
     if (network === 'BSC') {
+      this.account.networkController.switchBSCChain(chainId as BSCChainId);
     }
+
     if (network === 'Polygon') {
       this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
     }

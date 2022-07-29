@@ -221,7 +221,7 @@ const AssetsController = (): IAssetsController => {
     store.dispatch(addERC20Asset(asset));
     store.dispatch(addAsset({
       id: asset.id,
-      type: AssetType.ERC20,
+      type: asset.type,
       label: asset.label,
       address: ethAddress,
       contractAddress: asset.address,

@@ -7,16 +7,18 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 // Chain IDs
 export type EthChainId = 'mainnet' | 'ropsten' | 'rinkeby';
 export type PolygonChainId = 'matic' | 'maticmum';
+export type BSCChainId = 'bsc' | 'bsc-testnet';
 
 // Chain values
 export type EthChainValue = 'homestead' | 'ropsten' | 'rinkeby';
 export type PolygonChainValue = 'matic' | 'maticmum';
+export type BSCChainValue = 'bsc' | 'bsc-testnet';
 
 // All chains
-export type AllChainsIds = EthChainId | PolygonChainId;
-export type AllChainsValues = EthChainValue | PolygonChainValue;
+export type AllChainsIds = EthChainId | PolygonChainId | BSCChainId;
+export type AllChainsValues = EthChainValue | PolygonChainValue | BSCChainValue;
 
-export const testnets = ['ropsten', 'rinkeby', 'maticmum'];
+export const testnets = ['ropsten', 'rinkeby', 'maticmum', 'bsc-testnet'];
 
 export type IChain = {
   id: AllChainsIds;

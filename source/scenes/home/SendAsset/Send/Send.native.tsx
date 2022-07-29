@@ -66,6 +66,7 @@ const Send: FC<IWalletSend> = ({
   isValidAddress,
   balances,
   activeAsset,
+  nativeToken,
   assetInfo,
   address,
   register,
@@ -211,7 +212,7 @@ const Send: FC<IWalletSend> = ({
             </View>
             <View style={styles.gasSettingsEstimate}>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                {`${gasPrice} GWei, ${gasFee} ETH (≈ ${getFiatAmount(gasFee, 2, 'ethereum')})`}
+                {`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2)})`}
               </TextV3.Caption>
             </View>
           </>
