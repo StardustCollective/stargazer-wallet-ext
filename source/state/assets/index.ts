@@ -27,7 +27,17 @@ export const initialState: IAssetListState = {
     priceId: 'constellation-labs',
     decimals: 8,
   },
-  // TODO-349: Add main tokens for all networks
+  [AssetType.Avalanche]: {
+    id: AssetType.Avalanche,
+    address: '',
+    label: 'AVAX',
+    symbol: 'AVAX',
+    type: AssetType.Ethereum,
+    priceId: 'avalanche-2',
+    network: 'avalanche-mainnet',
+    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png',
+    decimals: 18,
+  },
   [AssetType.BSC]: {
     id: AssetType.BSC,
     address: '',

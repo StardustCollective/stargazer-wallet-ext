@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
-import { BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
@@ -31,7 +31,7 @@ const initialState: IVaultState = {
     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
     // TODO-349: Check if these values are set on the migration process.
-    // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
+    'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
     'BSC': BSC_NETWORK.bsc.id,
     'Polygon': POLYGON_NETWORK.matic.id,
   },

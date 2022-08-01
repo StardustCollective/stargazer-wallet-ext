@@ -6,7 +6,7 @@ import {
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { BSCChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
+import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -32,7 +32,7 @@ export type Transaction = DAGTransaction | any;
 export type ActiveNetwork = {
   [KeyringNetwork.Constellation]: string;
   [KeyringNetwork.Ethereum]: EthChainId;
-  // 'Avalanche': string;
+  'Avalanche': AvalancheChainId;
   'BSC': BSCChainId;
   'Polygon': PolygonChainId;
 };

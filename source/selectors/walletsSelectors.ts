@@ -160,7 +160,7 @@ const selectActiveNetworkAssets = createSelector(
       const assetNetwork = assetInfo?.network;
       let assetNetworkType: string = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(assetNetwork as AllChainsIds);
               
-      return ['both', 'matic', 'bsc'].includes(assetNetwork) || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
+      return ['both', 'matic', 'avalanche-mainnet', 'bsc'].includes(assetNetwork) || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
     });
   }
 );

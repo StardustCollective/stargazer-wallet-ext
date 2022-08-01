@@ -15,11 +15,15 @@ type AddressBalanceMap = {
 // TODO-349: Update object with all contract addresses
 // This contract address is taken from https://github.com/wbobeirne/eth-balance-checker
 const NETWORK_TO_CONTRACT_MAP = {
-  1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
-  3: '0x8D9708f3F514206486D7E988533f770a16d074a7',
-  4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2',
-  137: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4',
-  80001: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4',
+  1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39', // ETH mainnet
+  3: '0x8D9708f3F514206486D7E988533f770a16d074a7', // ETH ropsten
+  4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2', // ETH rinkeby
+  137: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // Polygon mainnet
+  80001: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // Polygon testnet
+  56: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // BSC mainnet
+  97: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // BSC testnet
+  43114: '0xD023D153a0DFa485130ECFdE2FAA7e612EF94818', // AVAX mainnet
+  43113: '0xaaEe9Ece50e5a5A1b125cf9300b6a8AdC72cDE40', // AVAX testnet (this contract was deployed by us)
 }
 
 export class TokenContractHelper {

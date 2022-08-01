@@ -4,7 +4,7 @@ import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
-import { BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring'
 import { saveState } from 'state/localStorage';
 
@@ -27,7 +27,7 @@ const MigrateRunner = async (oldState: any) => {
                 activeNetwork: {
                     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
                     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
-                    // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
+                    'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
                     'BSC': BSC_NETWORK.bsc.id,
                     'Polygon': POLYGON_NETWORK.matic.id,
                 },

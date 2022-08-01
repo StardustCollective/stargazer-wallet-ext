@@ -1,4 +1,4 @@
-import { BSCChainId, BSCChainValue, EthChainId, EthChainValue, PolygonChainId, PolygonChainValue } from 'scripts/Background/controllers/EVMChainController/types';
+import { AvalancheChainId, AvalancheChainValue, BSCChainId, BSCChainValue, EthChainId, EthChainValue, PolygonChainId, PolygonChainValue } from 'scripts/Background/controllers/EVMChainController/types';
 import { 
   isProd,
   isNative, 
@@ -81,8 +81,8 @@ export const ETH_NETWORK: {
 
 export const AVALANCHE_NETWORK: {
   [networkId: string]: {
-    id: string;
-    value: string;
+    id: AvalancheChainId;
+    value: AvalancheChainValue;
     label: string;
     explorer: string;
     chainId: number;
@@ -175,7 +175,7 @@ export const POLYGON_NETWORK: {
 // TODO-349: Include all networks
 export const ALL_EVM_CHAINS = {
   ...ETH_NETWORK,
-  // ...AVALANCHE_NETWORK,
+  ...AVALANCHE_NETWORK,
   ...BSC_NETWORK,
   ...POLYGON_NETWORK
 };

@@ -130,6 +130,13 @@ export class AccountController implements IAccountController {
         label: 'BNB',
         address: account.address,
       };
+
+      const avaxAsset = {
+        id: AssetType.Avalanche,
+        type: AssetType.Ethereum,
+        label: 'AVAX',
+        address: account.address,
+      };
       
       const ETH_TOKENS = Object.values(assets)
                                 .filter((token) => token.type === AssetType.ERC20)
@@ -139,7 +146,7 @@ export class AccountController implements IAccountController {
 
       const erc721Assets = await this.buildAccountERC721Tokens(account.address);
 
-      return [ethAsset, bscAsset, polygonAsset, ...erc20Assets, ...erc721Assets];
+      return [ethAsset, avaxAsset, bscAsset, polygonAsset, ...erc20Assets, ...erc721Assets];
     }
 
     console.log('Unknown account network: cannot build asset list');

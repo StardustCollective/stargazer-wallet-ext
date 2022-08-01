@@ -36,6 +36,10 @@ export const equalMainTokenAddress = (chainId: AllChainsIds) => {
     case 'bsc-testnet':
     // TODO-349: Check if BSC token has the same address
       return true;
+    case 'avalanche-mainnet':
+    case 'avalanche-testnet':
+    // TODO-349: Check if AVAX has the same address
+      return true;
     case 'mainnet':
     case 'rinkeby':
     case 'ropsten':
@@ -55,6 +59,8 @@ export const getMainnetFromTestnet = (chainId: AllChainsIds) => {
       return 'matic';
     case 'bsc-testnet':
       return 'bsc';
+    case 'avalanche-testnet':
+      return 'avalanche-mainnet';
   
     default:
       return 'mainnet';
@@ -74,6 +80,9 @@ export const getNetworkFromChainId = (chainId: AllChainsIds | 'both') => {
     case 'bsc':
     case 'bsc-testnet':
         return 'BSC';
+    case 'avalanche-mainnet':
+    case 'avalanche-testnet':
+        return 'Avalanche';
   
     default:
       return KeyringNetwork.Ethereum;
@@ -93,6 +102,9 @@ export const getNativeToken = (chainId: AllChainsIds | 'both') => {
     case 'bsc':
     case 'bsc-testnet':
         return 'BNB';
+    case 'avalanche-mainnet':
+    case 'avalanche-testnet':
+        return 'AVAX';
   
     default:
       return 'ETH';
@@ -115,6 +127,10 @@ export const getChainId = (network: AllChainsIds): number => {
       return 56;
     case 'bsc-testnet':
       return 97;
+    case 'avalanche-mainnet':
+      return 43114;
+    case 'avalanche-testnet':
+      return 43113;
       
     default:
       return 1;
