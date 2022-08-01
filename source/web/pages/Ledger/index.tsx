@@ -9,11 +9,11 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 
 import ToastAlert from 'components/ToastAlert';
 import appStore from 'state/store';
-import scrypt from 'scrypt-js';
+import scryptJS from 'scrypt-js';
 
 import LedgerPage from './Ledger';
 
-global.scrypt = scrypt;
+global.scrypt = scryptJS.scrypt;
 
 const app = document.getElementById('ledger-root');
 const store = new Store({ portName: STORE_PORT });
