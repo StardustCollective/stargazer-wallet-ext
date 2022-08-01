@@ -1,4 +1,4 @@
-import { IOption } from 'components/Select/Select';
+import { IOption } from 'components/Select/types';
 
 export type INetworkOptions = {
   key: string;
