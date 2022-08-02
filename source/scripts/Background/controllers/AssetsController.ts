@@ -1,4 +1,4 @@
-import { addERC20Asset, removeERC20Asset } from 'state/assets';
+import { addERC20Asset, removeERC20Asset, updateAssetDecimals } from 'state/assets';
 import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
@@ -35,7 +35,7 @@ export interface IAssetsController {
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
   searchERC20Assets: (value: string) => Promise<void>;
-  addERC20AssetFn: (asset: IAssetInfoState) => void;
+  addERC20AssetFn: (asset: IAssetInfoState) => Promise<void>;
   removeERC20AssetFn: (asset: IAssetInfoState) => void;
   clearSearchAssets: () => void;
   fetchQuote: (data: GetQuoteRequest) => Promise<void>;
@@ -296,7 +296,7 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
     }
   }
 
-  const addERC20AssetFn = (asset: IAssetInfoState): void => {
+  const addERC20AssetFn = async (asset: IAssetInfoState): Promise<void> => {
     const { activeWallet } = store.getState().vault;
     const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
     store.dispatch(addERC20Asset(asset));
@@ -307,6 +307,10 @@ const AssetsController = (updateFiat: () => void): IAssetsController => {
       address: ethAddress,
       contractAddress: asset.address,
     }));
+    const assetInfo = await ethClient.getTokenInfo(asset.address);
+    if (assetInfo && assetInfo.decimals !== asset.decimals) {
+      store.dispatch(updateAssetDecimals({ address: asset.address, decimals: assetInfo.decimals }));
+    }
   }
 
   const removeERC20AssetFn = (asset: IAssetInfoState): void => {

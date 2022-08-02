@@ -1,20 +1,27 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
-import { 
-  changeActiveNetwork, 
-  changeActiveWallet, 
-  setVaultInfo, 
+import {
+  changeActiveNetwork,
+  changeActiveWallet,
+  setVaultInfo,
   updateBalances,
-  addLedgerWallet, 
-  updateWallets, 
-  addBitfiWallet 
+  addLedgerWallet,
+  updateWallets,
+  addBitfiWallet,
 } from 'state/vault';
-import { IVaultWalletsStoreState } from 'state/vault/types'
-import { DAG_NETWORK } from 'constants/index';
+import { IVaultWalletsStoreState } from 'state/vault/types';
+import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
-import { KeyringAssetType, KeyringManager, KeyringNetwork, KeyringWalletState, KeyringVaultState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import {
+  KeyringAssetType,
+  KeyringManager,
+  KeyringNetwork,
+  KeyringWalletState,
+  KeyringVaultState,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
@@ -22,10 +29,11 @@ import { AccountController } from './AccountController';
 import ControllerUtils from './ControllerUtils';
 import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
-import { getDappController } from 'utils/controllersUtils';
+import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import { EthNetworkId } from './EthChainController/types';
 import filter from 'lodash/filter';
+import { AvailableEvents, StargazerChain } from 'scripts/common';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -112,8 +120,17 @@ class WalletController implements IWalletController {
     return true;
   }
 
-  async importSingleAccount(label: string, network: KeyringNetwork, privateKey: string, silent?: boolean) {
-    const wallet = await this.keyringManager.createSingleAccountWallet(label, network, privateKey);
+  async importSingleAccount(
+    label: string,
+    network: KeyringNetwork,
+    privateKey: string,
+    silent?: boolean
+  ) {
+    const wallet = await this.keyringManager.createSingleAccountWallet(
+      label,
+      network,
+      privateKey
+    );
 
     if (!silent) {
       await this.switchWallet(wallet.id);
@@ -141,7 +158,6 @@ class WalletController implements IWalletController {
   }
 
   private checkForDuplicateWallet(address: string) {
-
     const state = store.getState();
     const { vault } = state;
     const { wallets } = vault;
@@ -151,13 +167,11 @@ class WalletController implements IWalletController {
       let accounts = allWallets[i].accounts;
       for (let j = 0; j < accounts.length; j++) {
         let account = accounts[j];
-        if (account.address === address)
-          return true;
+        if (account.address === address) return true;
       }
     }
 
     return false;
-
   }
 
   private getNextHardwareWaletAccountId = (wallets: any, prefix: string) => {
@@ -171,17 +185,19 @@ class WalletController implements IWalletController {
     // Move all the existing IDs the walletIds array.
     for (let i = 0; i < wallets.length; i++) {
       const wallet = wallets[i];
-      const num = wallet.id.replace(prefix, "");
-      walletIds.push((parseInt(num)));
+      const num = wallet.id.replace(prefix, '');
+      walletIds.push(parseInt(num));
     }
 
     //Determin the next ID.
-    return walletIds.sort(function (a, b) { return a - b; })[walletIds.length - 1] + 1;
-
+    return (
+      walletIds.sort(function (a, b) {
+        return a - b;
+      })[walletIds.length - 1] + 1
+    );
   };
 
   async importHardwareWalletAccounts(accountItems: AccountItem[], deviceId?: string) {
-
     for (let i = 0; i < accountItems.length; i++) {
       const state = store.getState();
       const { vault } = state;
@@ -194,14 +210,26 @@ class WalletController implements IWalletController {
         continue;
       }
 
-      const wallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? wallets.ledger : wallets.bitfi;
-      const prefix = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_PREFIX : BITFI_WALLET_PREFIX;
-      const label = accountItem.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_WALLET_LABEL : BITFI_WALLET_LABEL;
-      const addWallet = accountItem.type === KeyringWalletType.LedgerAccountWallet ? addLedgerWallet : addBitfiWallet;
+      const wallet =
+        accountItem.type === KeyringWalletType.LedgerAccountWallet
+          ? wallets.ledger
+          : wallets.bitfi;
+      const prefix =
+        accountItem.type === KeyringWalletType.LedgerAccountWallet
+          ? LEDGER_WALLET_PREFIX
+          : BITFI_WALLET_PREFIX;
+      const label =
+        accountItem.type === KeyringWalletType.LedgerAccountWallet
+          ? LEDGER_WALLET_LABEL
+          : BITFI_WALLET_LABEL;
+      const addWallet =
+        accountItem.type === KeyringWalletType.LedgerAccountWallet
+          ? addLedgerWallet
+          : addBitfiWallet;
       // Determine the next ID for either a ledger or bitfi wallet.
       const id: number = this.getNextHardwareWaletAccountId(wallet, prefix);
 
-      // Determine the name of the wallet for Ledger we need to create a recursive 
+      // Determine the name of the wallet for Ledger we need to create a recursive
       // function that will name the wallets.
       const newWallet = {
         id: `${prefix}${id}`,
@@ -222,7 +250,7 @@ class WalletController implements IWalletController {
 
       await store.dispatch(addWallet(newWallet));
 
-      // Switches wallets immediately after adding the first account item 
+      // Switches wallets immediately after adding the first account item
       // to prevent a rendering delay in the wallet extension.
       if (i === ACCOUNT_ITEMS_FIRST_INDEX) {
         // Switches wallets to the first hardware wallet account item in the accountItem array.
@@ -232,21 +260,21 @@ class WalletController implements IWalletController {
   }
 
   async deleteWallet(wallet: KeyringWalletState, password: string) {
-
     if (this.checkPassword(password)) {
-
       const { vault } = store.getState();
       const { wallets } = vault;
       const { local, bitfi, ledger } = wallets;
 
-      let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: []}
+      let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: [] };
       let newLocalState = [...local];
       let newLedgerState = [...ledger];
       let newBitfiState = [...bitfi];
 
-      if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-        wallet.type !== KeyringWalletType.BitfiAccountWallet) {
-         newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
+      if (
+        wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+        wallet.type !== KeyringWalletType.BitfiAccountWallet
+      ) {
+        newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
       } else {
         if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
           newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
@@ -259,9 +287,13 @@ class WalletController implements IWalletController {
         local: [...newLocalState],
         ledger: [...newLedgerState],
         bitfi: [...newBitfiState],
-      }
+      };
 
-      const newAllWallets  = [...newWalletState.local, ...newWalletState.ledger, ...newWalletState.bitfi];
+      const newAllWallets = [
+        ...newWalletState.local,
+        ...newWalletState.ledger,
+        ...newWalletState.bitfi,
+      ];
 
       if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
         if (newAllWallets.length) {
@@ -269,9 +301,10 @@ class WalletController implements IWalletController {
         }
       }
 
-      store.dispatch(updateWallets({wallets: newWalletState}));
+      store.dispatch(updateWallets({ wallets: newWalletState }));
 
-      if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+      if (
+        wallet.type !== KeyringWalletType.LedgerAccountWallet &&
         wallet.type !== KeyringWalletType.BitfiAccountWallet
       ) {
         await this.keyringManager.removeWalletById(wallet.id);
@@ -299,7 +332,7 @@ class WalletController implements IWalletController {
       return;
     }
 
-    return dappController.notifyAccountsChanged(accounts)
+    return dappController.notifyAccountsChanged(accounts);
   }
 
   async switchNetwork(network: KeyringNetwork, chainId: string) {
@@ -315,11 +348,25 @@ class WalletController implements IWalletController {
         beUrl: DAG_NETWORK[chainId].beUrl,
         lbUrl: DAG_NETWORK[chainId].lbUrl,
       });
+
+      getDappRegistry().sendOriginChainEvent(
+        '*',
+        StargazerChain.CONSTELLATION,
+        AvailableEvents.chainChanged,
+        [DAG_NETWORK[chainId].id]
+      );
     }
 
     if (network === KeyringNetwork.Ethereum) {
       this.account.txController.setNetwork(chainId as EthNetworkId);
       this.account.ethClient.setNetwork(chainId as EthNetworkId);
+
+      getDappRegistry().sendOriginChainEvent(
+        '*',
+        StargazerChain.ETHEREUM,
+        AvailableEvents.chainChanged,
+        [ETH_NETWORK[chainId].chainId.toString(16)]
+      );
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
