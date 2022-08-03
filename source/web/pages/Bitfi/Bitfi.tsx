@@ -332,14 +332,11 @@ const LedgerPage: FC = () => {
 
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
-    // const walletId  = jsonData.walletId;
-    const publicKey = jsonData.publicKey;
     const background = await browser.runtime.getBackgroundPage();
 
     try {
       setWaitingForLedger(true);
       setCode('')
-      console.log("Device ID: " + deviceId);
       await BitfiBridgeUtil.requestPermissions(
         deviceId as string,
         (message) => { setWaitingMessage(message); },
@@ -350,10 +347,7 @@ const LedgerPage: FC = () => {
       const signatureEvent = new CustomEvent('messageSigned', {
         detail: {
           windowId, result: true, signature: {
-            hex: {
-              signature,
-              publicKey,
-            },
+            hex: signature,
             requestEncoded: message,
           }
         }
