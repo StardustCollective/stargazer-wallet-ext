@@ -24,14 +24,12 @@ import 'assets/styles/global.scss';
 /////////////////////////
 
 interface IMessageSignViewProps {
-  // amount: string,
-  // fee: string,
-  // fromAddress: string,
-  // toAddress: string,
   waiting: boolean,
-  // transactionSigned: boolean
+  waitingMessage: string
   messageSigned: boolean,
   walletLabel: string,
+  deviceId: string,
+  code: string,
   message: {
     content: string,
     metadata: {
@@ -48,14 +46,13 @@ interface IMessageSignViewProps {
 /////////////////////////
 
 const SignMessageView = ({
-  // amount,
-  // fee,
-  // fromAddress,
-  // toAddress,
   waiting,
+  waitingMessage,
   messageSigned,
   walletLabel,
+  code,
   message,
+  deviceId,
   onSignMessagePress
 }: IMessageSignViewProps) => {
 
@@ -74,13 +71,21 @@ const SignMessageView = ({
   ) : (
     <>
       <div className={styles.wrapper}>
-        <section className={styles.subheading}>Bitfi - Signature Request</section>
+        <section className={styles.subheading}>
+          Bitfi - Signature Request
+        </section>
         <section className={styles.account}>
           <div className={styles.row}>
             Account: 
             <span>
               {walletLabel}
             </span>
+          </div>
+        </section>
+        <section className={styles.account}>
+          <div className={styles.row}>
+            Device ID:  
+            <span>{deviceId}</span> 
           </div>
         </section>
         <section className={styles.message}>
@@ -113,12 +118,9 @@ const SignMessageView = ({
         {waiting &&
           <div className={styles.progressWrapper}>
             <div className={styles.progress}>
-              <div>
                 <CircularProgress />
-              </div>
-              <div>
-                <span>Waiting For Bitfi</span>
-              </div>
+                <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
+                <span>{waitingMessage}</span>
             </div>
           </div>
         }

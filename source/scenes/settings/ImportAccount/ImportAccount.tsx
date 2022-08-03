@@ -1,17 +1,19 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import CachedIcon from '@material-ui/icons/Cached';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Checkbox } from '@material-ui/core';
 import { dag4 } from '@stardust-collective/dag4';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 // import { KeyboardReturnOutlined } from '@material-ui/icons';
 
 import Button from 'components/Button';
 import Select from 'components/Select';
+import { IOption } from 'components/Select/types';
 import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
 
-import LedgerIcon from 'assets/images/svg/ledger.svg';
+// import LedgerIcon from 'assets/images/svg/ledger.svg';
 import BitfiIcon from 'assets/images/svg/bitfi.svg';
 import styles from './ImportAccount.scss';
 import { useAlert } from 'react-alert'
@@ -36,12 +38,26 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   importType,
   setImportType,
   loading,
+  network,
   setLoading,
   jsonFile,
   setJsonFile,
 }) => {
   const alert = useAlert();
-  let [ hardwareWallet, setHardwareWallet] = useState(HARDWARE_WALLET.none);
+  let [hardwareWallet, setHardwareWallet] = useState(HARDWARE_WALLET.none);
+  let [dropDownMenuOptions, setDropDownMenuOptions] = useState<Array<IOption>>([{ priv: 'Private key' },{ json: 'JSON file' }]);
+
+  useEffect(()=> {
+    // Display a hardware option for Constellation wallet imports.
+    if(network === KeyringNetwork.Constellation){
+      let newDropDownState = [
+         ...dropDownMenuOptions,
+         { hardware: 'Hardware wallet' }
+      ]
+      setDropDownMenuOptions(newDropDownState);
+    }
+  }, []);
+
   const onSubmit = async (data: any): Promise<any> => {
     // setAccountName(undefined);
     if (importType === 'priv') {
@@ -76,9 +92,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         }
       };
     } else if (importType === 'hardware') {
-      if(hardwareWallet === HARDWARE_WALLET.ledger){
+      if (hardwareWallet === HARDWARE_WALLET.ledger) {
         return window.open('/ledger.html', '_newtab');
-      }else if(hardwareWallet === HARDWARE_WALLET.bitfi){
+      } else if (hardwareWallet === HARDWARE_WALLET.bitfi) {
         return window.open('/bitfi.html', '_newtab');
       }
     } else {
@@ -102,7 +118,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     );
   };
 
-  const onHardwareTypeClick = (hardwareType: HARDWARE_WALLET ) => {
+  const onHardwareTypeClick = (hardwareType: HARDWARE_WALLET) => {
     setHardwareWallet(hardwareType);
   }
 
@@ -133,11 +149,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 <Select
                   id="importAccount-importTypeSelect"
                   value={importType}
-                  options={[
-                    { priv: 'Private key' },
-                    { json: 'JSON file' },
-                    // { hardware: 'Hardware wallet' },
-                  ]}
+                  options={dropDownMenuOptions}
                   onChange={(ev) => setImportType(ev.target.value as string)}
                   fullWidth
                   disabled={loading}
@@ -175,12 +187,30 @@ const ImportAccount: FC<IImportAccountSettings> = ({
               <>
                 {hardwareStep === 1 && (
                   <>
+                    <span>
+                      {importType === 'hardware'
+                        ? 'Please select a hardware wallet to continue.'
+                        : 'Please name your new account:'}
+                    </span>
+                    {importType !== 'hardware' && (
+                      <TextInput
+                        id="importAccount-accountNameInput"
+                        fullWidth
+                        inputRef={register}
+                        name="label"
+                        disabled={loading}
+                      />
+                    )}
+                  </>
+                )}
+                {hardwareStep === 1 && (
+                  <>
                     <div className={styles.hardwareList}>
-                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.ledger)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.ledger ? styles. walletModelSelected : null])}>
+                      {/* <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.ledger)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.ledger ? styles. walletModelSelected : null])}>
                         <img src={`/${LedgerIcon}`} alt="ledger_icon" />
                       </div>
-                      &nbsp;
-                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.bitfi)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.bitfi ? styles. walletModelSelected : null])}>
+                      &nbsp; */}
+                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.bitfi)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.bitfi ? styles.walletModelSelected : null])}>
                         <img src={`/${BitfiIcon}`} alt="bitfi_icon" />
                       </div>
                     </div>
@@ -223,24 +253,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 )}
               </>
             )}
-            {hardwareStep === 1 && (
-              <>
-                <span>
-                  {importType === 'hardware'
-                    ? 'Please select a hardware wallet to continue.'
-                    : 'Please name your new account:'}
-                </span>
-                {importType !== 'hardware' && (
-                  <TextInput
-                    id="importAccount-accountNameInput"
-                    fullWidth
-                    inputRef={register}
-                    name="label"
-                    disabled={loading}
-                  />
-                )}
-              </>
-            )}
+
           </section>
           <section className={styles.actions}>
             <Button

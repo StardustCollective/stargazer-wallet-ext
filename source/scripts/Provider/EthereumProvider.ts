@@ -186,7 +186,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   ) {
     const { vault } = store.getState();
 
-    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger];
+    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
