@@ -45,14 +45,14 @@ const ImportAccount: FC<IImportAccountSettings> = ({
 }) => {
   const alert = useAlert();
   let [hardwareWallet, setHardwareWallet] = useState(HARDWARE_WALLET.none);
-  let [dropDownMenuOptions, setDropDownMenuOptions] = useState<Array<IOption>>([{ priv: 'Private key' },{ json: 'JSON file' }]);
+  let [dropDownMenuOptions, setDropDownMenuOptions] = useState<Array<IOption>>([{ priv: 'Private key' }, { json: 'JSON file' }]);
 
-  useEffect(()=> {
-    // Display a hardware option for Constellation wallet imports.
-    if(network === KeyringNetwork.Constellation){
+  useEffect(() => {
+    // Display a hardware type in drop down for constenllation wallet imports
+    if (network === KeyringNetwork.Constellation) {
       let newDropDownState = [
-         ...dropDownMenuOptions,
-         { hardware: 'Hardware wallet' }
+        ...dropDownMenuOptions,
+        { hardware: 'Hardware wallet' }
       ]
       setDropDownMenuOptions(newDropDownState);
     }
@@ -192,15 +192,6 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                         ? 'Please select a hardware wallet to continue.'
                         : 'Please name your new account:'}
                     </span>
-                    {importType !== 'hardware' && (
-                      <TextInput
-                        id="importAccount-accountNameInput"
-                        fullWidth
-                        inputRef={register}
-                        name="label"
-                        disabled={loading}
-                      />
-                    )}
                   </>
                 )}
                 {hardwareStep === 1 && (
@@ -253,7 +244,20 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 )}
               </>
             )}
-
+            {importType !== 'hardware' && (
+              <>
+                <span>
+                  Please name your new account:
+                </span>
+                <TextInput
+                  id="importAccount-accountNameInput"
+                  fullWidth
+                  inputRef={register}
+                  name="label"
+                  disabled={loading}
+                />
+              </>
+            )}
           </section>
           <section className={styles.actions}>
             <Button
