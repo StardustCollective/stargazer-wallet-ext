@@ -10,10 +10,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  networkTypeContainer: {
-    height: 50,
-    zIndex: 1000,
-  },
   buttonContainer: {
     position: 'absolute',
     alignSelf: 'center',

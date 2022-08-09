@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////
 
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -13,11 +13,17 @@ import * as yup from 'yup';
 import Container from 'components/Container';
 import AddNetwork from './AddNetwork';
 
-const AddNetorkContainer: FC = () => {
+///////////////////////
+// Constants
+///////////////////////
+
+import screens from 'navigation/screens';
+
+const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
   const { control, handleSubmit, register, setValue, setError, triggerValidation, errors } = useForm({
     validationSchema: yup.object().shape({
-      networkType: yup.string().required('Network type is required'),
+      networkType: yup.string(),
       chainName: yup.string().required('Chain name is required'),
       rpcUrl: yup.string().required('RPC URL is required'),
       chainId: yup.string().required('Chain ID is required'),
@@ -25,17 +31,26 @@ const AddNetorkContainer: FC = () => {
     }),
   });
 
-  console.log(handleSubmit, register, setError);
-
   const [networkType, setNetworkType] = useState<string>('constellation');
   const [chainName, setChainName] = useState<string>('');
   const [rpcUrl, setRpcUrl] = useState<string>('');
   const [chainId, setChainId] = useState<string>('');
   const [blockExplorerUrl, setBlockExplorerUrl] = useState<string>('');
-  const [networkTypeOpen, setNetworkTypeOpen] = useState<boolean>(false);
+  const [saveDisabled, setSaveDisabled] = useState<boolean>(true);
+
+  useEffect(() => {
+    const disabled = networkType === '' || chainName === '' || rpcUrl === '' || (networkType === 'ethereum' && chainId === '') || blockExplorerUrl === '';
+    setSaveDisabled(disabled);
+  }, [networkType, chainName, rpcUrl, chainId, blockExplorerUrl]);
+
+  useEffect(() => {
+    const disabled = !!Object.keys(errors)?.length;
+    setSaveDisabled(disabled);
+  }, [errors]);
 
   const handleSave = () => {
-    console.log('Save');
+    console.log('Save', {networkType, chainName, rpcUrl, chainId, blockExplorerUrl});
+    console.log('handle', {handleSubmit, setError});
   }
 
   const handleChainNameChange = (value: string) => {
@@ -63,22 +78,30 @@ const AddNetorkContainer: FC = () => {
   const handleNetworkTypeChange = (value: string) => {
     setNetworkType(value);
     setValue('networkType', value);
-    triggerValidation('networkType');
+    setChainName('');
+    setRpcUrl('');
+    setChainId('');
+    setBlockExplorerUrl('');
   }
 
-  const toggleNetworkType = () => {
-    setNetworkTypeOpen(!networkTypeOpen);
+  const navigateToSingleSelect = () => {
+    console.log('Navigate to Single Select')
+    navigation.navigate(screens.authorized.singleSelect, { 
+      title: 'Select Network Type', 
+      data: networkTypeOptions.items, 
+      selected: networkType,
+      onSelect: handleNetworkTypeChange
+    });
   }
 
   const networkTypeOptions = {
+    title: 'Network Type',
     value: networkType,
     items: [
-      { value: 'constellation', label: 'Constellation' }, 
-      { value: 'evm', label: 'EVM' }, 
+      { value: 'constellation', label: 'Constellation', icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png' }, 
+      { value: 'ethereum', label: 'Ethereum', icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png' }, 
     ],
-    isOpen: networkTypeOpen,
-    toggleItem: toggleNetworkType,
-    onChange: handleNetworkTypeChange
+    onClick: navigateToSingleSelect,
   }
 
   ///////////////////////
@@ -88,9 +111,10 @@ const AddNetorkContainer: FC = () => {
   return (
     <Container safeArea={false}>
       <AddNetwork 
+        register={register}
         control={control}
         errors={errors}
-        saveDisabled={false}
+        saveDisabled={saveDisabled}
         networkTypeOptions={networkTypeOptions}
         chainName={chainName}
         rpcUrl={rpcUrl}

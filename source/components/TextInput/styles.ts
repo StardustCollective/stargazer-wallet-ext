@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 6,
     paddingLeft: 10,
-    borderColor: COLORS.gray_200,
+    borderColor: 'rgba(0, 0, 0, 0.12)',
     borderStyle: 'solid',
     marginBottom: -24,
     marginHorizontal: -24,

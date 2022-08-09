@@ -9,6 +9,7 @@ import React, { FC, useState } from 'react';
 ///////////////////////
 
 import Dropdown from 'components/Dropdown';
+import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
 // Types
@@ -22,7 +23,7 @@ import INetworkSettings from './types';
 
 import styles from './Networks.scss';
 
-const Networks: FC<INetworkSettings> = ({ networkOptions }) => {
+const Networks: FC<INetworkSettings> = ({ networkOptions, handleAddNetwork }) => {
   // Logic used to not have multiple dropdowns open at the same time
   const initialArray = Array.from({ length: networkOptions.length }, () => false);
   const [itemsOpenArray, setItemsOpenArray] = useState(initialArray)
@@ -53,6 +54,15 @@ const Networks: FC<INetworkSettings> = ({ networkOptions }) => {
           </div>
         );
       })}
+      <div className={styles.buttonContainer}>
+        <ButtonV3 
+          label="Add Network"
+          type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+          size={BUTTON_SIZES_ENUM.LARGE}
+          onClick={handleAddNetwork}
+          extraStyle={styles.addNetwork}
+        />
+      </div>
     </div>
   );
 };

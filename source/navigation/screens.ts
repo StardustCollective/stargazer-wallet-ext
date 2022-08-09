@@ -30,6 +30,7 @@ export default {
     gasSettings: 'auth-gasSettings',
     buyList: 'auth-buyList',
     buyAsset: 'auth-buyAsset',
+    singleSelect: 'auth-singleSelect',
   },
 
   ////////////////////////////

@@ -3,7 +3,7 @@
 ///////////////////////
 
 import React, { FC } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 ///////////////////////
 // Components
@@ -12,7 +12,7 @@ import { View, Text } from 'react-native';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import TextInput from 'components/TextInput';
 import TextV3 from 'components/TextV3';
-import Dropdown from 'components/Dropdown';
+import InputClickable from 'components/InputClickable';
 
 ///////////////////////
 // Types
@@ -32,6 +32,7 @@ import styles from './styles';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
+
 const AddNetwork: FC<IAddNetwork> = ({ 
   control,
   errors,
@@ -48,7 +49,7 @@ const AddNetwork: FC<IAddNetwork> = ({
   handleSave
  }) => {
 
-  const isChainIdVisible = networkTypeOptions.value === 'evm';
+  const isChainIdVisible = networkTypeOptions.value === 'ethereum';
 
   ///////////////////////
   // Render
@@ -56,9 +57,7 @@ const AddNetwork: FC<IAddNetwork> = ({
 
   return (
     <View style={styles.container}>
-      <View style={styles.networkTypeContainer}>
-        <Dropdown options={networkTypeOptions} /> 
-      </View>
+      <InputClickable options={networkTypeOptions} />
       <TextInput
         name="chainName"
         defaultValue={chainName}

@@ -19,6 +19,7 @@ import AssetList from 'scenes/home/Asset/AssetList';
 import AddCustomAsset from 'scenes/home/Asset/AddCustomAsset';
 import BuyList from 'scenes/home/BuyList';
 import BuyAsset from 'scenes/home/BuyAsset';
+import SingleSelect from 'scenes/home/SingleSelect';
 
 import Import from 'scenes/common/Import';
 import Main from 'scenes/settings/Main';
@@ -114,6 +115,7 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addCustomAsset }} name={screens.authorized.addCustomAsset} component={AddCustomAsset} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.buyList }} name={screens.authorized.buyList} component={BuyList} />
           <Stack.Screen name={screens.authorized.buyAsset} component={BuyAsset} />
+          <Stack.Screen name={screens.authorized.singleSelect} component={SingleSelect} />
 
           {/* Settings Screens */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings }} name={screens.settings.main} component={Main} />

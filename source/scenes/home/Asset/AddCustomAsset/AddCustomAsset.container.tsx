@@ -81,12 +81,14 @@ const AddCustomAssetContainer: FC = () => {
   }, [customAssetForm.tokenAddress])
 
   useEffect(() => {
-    const hasErrors = !!Object.keys(errors)?.length;
-    const disabled = hasErrors || tokenAddress === '' || tokenName === '' || tokenSymbol === '' || tokenDecimals === '';
+    const disabled = tokenAddress === '' || tokenName === '' || tokenSymbol === '' || tokenDecimals === '';
     setButtonDisabled(disabled);
-  }, [errors, tokenAddress, tokenName, tokenSymbol, tokenDecimals]);
-  
+  }, [tokenAddress, tokenName, tokenSymbol, tokenDecimals]);
 
+  useEffect(() => {
+    const disabled = !!Object.keys(errors)?.length;
+    setButtonDisabled(disabled);
+  }, [errors]);
 
   const handleAddressChange = async (value: string) => {
     setTokenAddress(value);

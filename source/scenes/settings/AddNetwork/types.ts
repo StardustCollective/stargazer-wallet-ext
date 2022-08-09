@@ -1,5 +1,6 @@
 
 export default interface IAddNetwork {
+  register: any;
   control: any;
   errors: any;
   saveDisabled: boolean;
