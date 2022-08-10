@@ -1,6 +1,6 @@
 {
   "name": "extension",
-  "version": "3.6.4",
+  "version": "3.7.0",
   "description": "Cross-chain compatible wallet for Constellation and Ethereum",
   "private": true,
   "repository": "https://github.com/StardustCollective/stargazer-wallet-ext.git",
@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.10.2",
-    "@bitfi/bitfi.js": "^0.0.18",
     "@ledgerhq/hw-transport-webhid": "^6.27.1",
     "@n8tb1t/use-scroll-position": "^2.0.3",
     "@types/lodash": "^4.14.162",
@@ -35,8 +34,9 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/uuid": "^8.3.0",
     "@types/yup": "^0.29.9",
-    "advanced-css-reset": "^1.1.1",
     "axios": "^0.26.1",
+    "@bitfi/bitfi.js": "^0.1.8",
+    "advanced-css-reset": "^1.1.1",
     "clsx": "^1.1.1",
     "date-fns": "^2.16.1",
     "emoji-log": "^1.0.2",

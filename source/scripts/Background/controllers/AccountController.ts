@@ -80,24 +80,25 @@ export class AccountController implements IAccountController {
     let privateKey = undefined;
     let publicKey = undefined;
 
-    // Excludes ledger accounts since we do not have access
+    // Excludes bitfi and ledger accounts since we do not have access
     // to the private key.
-    if (walletInfo.type !== KeyringWalletType.LedgerAccountWallet) {
+    if (walletInfo.type !== KeyringWalletType.LedgerAccountWallet &&
+      walletInfo.type !== KeyringWalletType.BitfiAccountWallet) {
       privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
     } else {
       publicKey = account.publicKey;
     }
-      // Excludes ledger accounts since we do not have access 
-      // to the private key.
-      if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet && 
-         walletInfo.type !== KeyringWalletType.BitfiAccountWallet
-        ){
-        privateKey = this.keyringManager.exportAccountPrivateKey(
-          account.address
-        );
-      }else {
-        publicKey = account.publicKey;
-      }
+    // Excludes bitfi and ledger accounts since we do not have access 
+    // to the private key.
+    if (walletInfo.type !== KeyringWalletType.LedgerAccountWallet &&
+      walletInfo.type !== KeyringWalletType.BitfiAccountWallet
+    ) {
+      privateKey = this.keyringManager.exportAccountPrivateKey(
+        account.address
+      );
+    } else {
+      publicKey = account.publicKey;
+    }
 
     if (account.network === KeyringNetwork.Constellation) {
       if (privateKey) {
@@ -133,10 +134,10 @@ export class AccountController implements IAccountController {
         label: 'Ethereum',
         address: account.address,
       };
-      
+
       const ETH_TOKENS = Object.values(assets)
-                                .filter((token) => token.type === AssetType.ERC20)
-                                .map((token) => token.address);
+        .filter((token) => token.type === AssetType.ERC20)
+        .map((token) => token.address);
 
       const erc20Assets = await this.buildAccountERC20Tokens(account.address, ETH_TOKENS);
 
@@ -264,17 +265,16 @@ export class AccountController implements IAccountController {
 
   updateWalletLabel(wallet: KeyringWalletState, label: string) {
 
-    if(wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-       wallet.type !== KeyringWalletType.BitfiAccountWallet)
-      {
-        this.keyringManager.setWalletLabel(wallet.id, label);
-      }else{
-        // Hardware wallet label update:
-        // We do not store any hardware wallet data in the Keyring
-        // manager. Hardware wallet info must be manipulated directly
-        // in the redux store state.vault.wallets.
-        store.dispatch(updateWalletLabel({wallet, label}));
-      }
+    if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+      wallet.type !== KeyringWalletType.BitfiAccountWallet) {
+      this.keyringManager.setWalletLabel(wallet.id, label);
+    } else {
+      // Hardware wallet label update:
+      // We do not store any hardware wallet data in the Keyring
+      // manager. Hardware wallet info must be manipulated directly
+      // in the redux store state.vault.wallets.
+      store.dispatch(updateWalletLabel({ wallet, label }));
+    }
 
     const { activeWallet }: IVaultState = store.getState().vault;
 
@@ -339,9 +339,9 @@ export class AccountController implements IAccountController {
       ),
       gasPrice: gasPrice
         ? utils.baseAmount(
-            ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-            9
-          )
+          ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+          9
+        )
         : undefined,
       gasLimit: BigNumber.from(gasLimit),
       nonce: tx.nonce,
@@ -349,8 +349,7 @@ export class AccountController implements IAccountController {
 
     if (activeAsset.type !== AssetType.Ethereum) {
       txOptions.asset = utils.assetFromString(
-        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-          assets[activeAsset.id].address
+        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address
         }`
       );
     }
@@ -419,17 +418,16 @@ export class AccountController implements IAccountController {
         ),
         gasPrice: gasPrice
           ? utils.baseAmount(
-              ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-              9
-            )
+            ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+            9
+          )
           : undefined,
         gasLimit: gasLimit && BigNumber.from(gasLimit),
         nonce,
       };
       if (activeAsset.type !== AssetType.Ethereum) {
         txOptions.asset = utils.assetFromString(
-          `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-            assets[activeAsset.id].address
+          `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address
           }`
         );
       }

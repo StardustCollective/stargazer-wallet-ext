@@ -27,15 +27,15 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin-bottom: 50px;
       }
-
       .instructions {
         display: flex;
         justify-content: flex-start;
         margin-left: 20px;
         .text {
           line-height: 30px;
-          font-size: 13px;
+          font-size: 16px;
         }
       }
       .deviceId {
@@ -46,6 +46,7 @@
         .input {
           height: 35px;
           width: 300px; 
+          text-transform: uppercase;
           text-align: center;
           border-radius: 8px;
           border: 1px solid #CCC;

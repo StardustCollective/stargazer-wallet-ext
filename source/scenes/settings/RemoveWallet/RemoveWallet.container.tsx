@@ -38,6 +38,7 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
     if (isChecked) {
       if (allWallets.length === 1) {
        await  walletController.logOut();
+       walletController.onboardHelper.reset();
        linkTo('/unAuthRoot');
       } else {
         navigationUtil.popToTop(navigation);
