@@ -11,6 +11,7 @@ import clsx from 'clsx';
 
 import TextInput from 'components/TextInput';
 import TextV3 from 'components/TextV3';
+import InputClickable from 'components/InputClickable';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import WarningIcon from 'assets/images/svg/warning.svg';
 
@@ -33,6 +34,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   tokenName,
   tokenSymbol,
   tokenDecimals,
+  networkTypeOptions,
   handleAddressChange,
   handleNameChange,
   handleSymbolChange,
@@ -53,6 +55,9 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
     <div className={styles.container}>
       <section>
         <ul className={styles.form}>
+          <li>
+            <InputClickable options={networkTypeOptions} />
+          </li>
           <li>
             <label>Token Address</label>
             <TextInput

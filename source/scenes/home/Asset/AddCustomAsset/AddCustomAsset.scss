@@ -1,8 +1,9 @@
 @import '~assets/styles/_variables';
 
 .container {
-  width: 100%;
-  margin: 8px 16px 16px 16px;
+  overflow: scroll;
+  height: 488px;
+  padding: 16px;
 }
 
 .input {
@@ -98,9 +99,8 @@ ul.form {
 }
 
 .buttonContainer {
-  position: absolute;
+  margin-top: 16px;
   width: 352px;
-  bottom: 10px;
 }
 
 .button {

@@ -66,6 +66,22 @@ export const getMainnetFromPlatform = (platform: string): string => {
   }
 }
 
+export const getPlatformFromMainnet = (network: string): string => {
+  switch (network) {
+    case 'mainnet':
+      return 'ethereum';
+    case 'avalanche-mainnet':
+      return 'avalanche';
+    case 'bsc':
+      return 'binance-smart-chain';
+    case 'matic':
+      return 'polygon-pos';
+      
+    default:
+      return 'mainnet';
+  }
+}
+
 export const getNetworkLabel = (network: string): string => {
   switch (network) {
     case 'mainnet':

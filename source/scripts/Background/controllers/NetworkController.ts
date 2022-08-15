@@ -110,8 +110,19 @@ class NetworkController {
     return this.getProviderByActiveAsset().estimateGas(from, to, data);
   }
 
-  async getTokenInfo(address: string) {
-    return this.getProviderByActiveAsset().getTokenInfo(address);
+  async getTokenInfo(address: string, chainId?: string) {
+    let provider = this.getProviderByActiveAsset();
+    if (!!chainId) {
+      const network = getNetworkFromChainId(chainId);
+      const networkToProvider = {
+        [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
+        'Polygon': this.#polygonNetwork,
+        'BSC': this.#bscNetwork,
+        'Avalanche': this.#avalancheNetwork,
+      }
+      provider = networkToProvider[network as keyof typeof networkToProvider];
+    }
+    return provider.getTokenInfo(address);
   }
 
   async estimateGasPrices() {

@@ -529,8 +529,8 @@ export class AccountController implements IAccountController {
     return this.networkController.validateAddress(address);
   }
 
-  async fetchCustomToken(address: string) {
-    const info = await this.networkController.getTokenInfo(address);
+  async fetchCustomToken(address: string, chainId: string) {
+    const info = await this.networkController.getTokenInfo(address, chainId);
     if (info) {
       store.dispatch(setCustomAsset({
         tokenAddress: info.address || '',

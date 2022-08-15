@@ -57,11 +57,11 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
             const differentNetwork = !['both', 'matic', 'avalanche-mainnet', 'bsc'].includes(itemChainId) && activeNetwork[itemNetwork as keyof ActiveNetwork] !== itemChainId;
             if (!isAssetSupported || differentNetwork) return null;
             return <AssetWithToggle 
-                      id={item.id}
-                      symbol={item.symbol} 
+                      id={item?.id}
+                      symbol={item?.symbol} 
                       network={network}
-                      logo={item.logo} 
-                      label={item.label} 
+                      logo={item?.logo} 
+                      label={item?.label} 
                       selected={selected} 
                       disabled={disabled}
                       toggleItem={(value) => toggleAssetItem(item, value)} />;

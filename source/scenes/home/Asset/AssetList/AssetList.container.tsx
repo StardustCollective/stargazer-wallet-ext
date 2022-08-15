@@ -86,7 +86,11 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     if (searchValue) {
       const searchLowerCase = searchValue?.toLocaleLowerCase();
       constellation = filterArrayByValue(constellation, searchLowerCase);
-      all = constellation.concat(search);
+      if (activeNetwork.Ethereum !== 'mainnet') {
+        all = constellation;
+      } else {
+        all = constellation.concat(search);
+      }
     } else {
       all = constellation.concat(erc20);
 

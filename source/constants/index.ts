@@ -221,7 +221,7 @@ export const ALL_EVM_CHAINS = {
 
 export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
 export const TOKEN_INFO_API =
-  'https://api.coingecko.com/api/v3/coins/ethereum/contract/';
+  'https://api.coingecko.com/api/v3/coins';
 export const ERC20_TOKENS_API =
   'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=ethereum-ecosystem';
 export const ERC20_TOKENS_WITH_ADDRESS_API =

@@ -3,14 +3,15 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 8,
   },
   label: {
-    marginTop: 6,
+    marginTop: 0,
   },
   warningContainer: {
     padding: 16,
-    marginTop: 24,
+    marginTop: 10,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#FDB022',
@@ -31,15 +32,14 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-    position: 'absolute',
-    bottom: 24,
+    marginTop: 12,
     alignSelf: 'center',
   },
   errorMessage: {
     fontSize: 12,
     lineHeight: 18,
     paddingLeft: 10,
-    paddingTop: 6,
+    paddingTop: 4,
   }
 });
 

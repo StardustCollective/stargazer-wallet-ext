@@ -51,5 +51,5 @@ export interface IAccountController {
   ) => Promise<number>;
   getLatestTxUpdate: () => Promise<void>;
   updatePendingTx: (tx: IETHPendingTx, gasPrice: number, gasLimit: number) => {};
-  fetchCustomToken: (address: string) => Promise<void>;
+  fetchCustomToken: (address: string, chainId: string) => Promise<void>;
 }

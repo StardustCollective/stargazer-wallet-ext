@@ -12,7 +12,6 @@ import * as yup from 'yup';
 // Components
 ///////////////////////////
 
-import Container, { CONTAINER_COLOR } from 'components/Container';
 import AddCustomAsset from './AddCustomAsset';
 
 ///////////////////////////
@@ -30,8 +29,15 @@ import { validateAddress } from 'scripts/Background/controllers/EVMChainControll
 import { getAccountController } from 'utils/controllersUtils';
 import { removeEthereumPrefix } from 'utils/addressUtil';
 
+///////////////////////////
+// Constants 
+///////////////////////////
 
-const AddCustomAssetContainer: FC = () => {
+import screens from 'navigation/screens';
+import { AVALANCHE_LOGO, BSC_LOGO, ETHEREUM_LOGO, POLYGON_LOGO } from 'constants/index';
+
+
+const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
   const { customAssetForm }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
   
@@ -48,6 +54,7 @@ const AddCustomAssetContainer: FC = () => {
     }),
   });
 
+  const [networkType, setNetworkType] = useState<string>('mainnet');
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [tokenName, setTokenName] = useState<string>('');
   const [tokenSymbol, setTokenSymbol] = useState<string>('');
@@ -91,7 +98,7 @@ const AddCustomAssetContainer: FC = () => {
     setValue('tokenAddress', value);
     triggerValidation('tokenAddress');
     try {
-      await accountController.fetchCustomToken(value);
+      await accountController.fetchCustomToken(value, networkType);
     } catch (err) {
       console.log(err);
       setError('tokenAddress', 'invalidAddress', 'Invalid token address');
@@ -127,9 +134,42 @@ const AddCustomAssetContainer: FC = () => {
       setError('tokenAddress', 'invalidAddress', 'Invalid token address');
       return;
     }
-    await accountController.assetsController.addCustomERC20Asset(tokenAddress, tokenName, tokenSymbol, tokenDecimals);
+    await accountController.assetsController.addCustomERC20Asset(networkType, tokenAddress, tokenName, tokenSymbol, tokenDecimals);
     linkTo('/home');
     accountController.assetsController.clearCustomToken();
+  }
+
+  const handleNetworkTypeChange = (value: string) => {
+    setNetworkType(value);
+    setValue('tokenAddress', '');
+    setValue('tokenName', '');
+    setValue('tokenSymbol', '');
+    setValue('tokenDecimals', '');
+    setTokenAddress('');
+    setTokenName('');
+    setTokenSymbol('');
+    setTokenDecimals('');
+  }
+
+  const navigateToSingleSelect = () => {
+    navigation.navigate(screens.authorized.singleSelect, { 
+      title: 'Select Network', 
+      data: networkTypeOptions.items, 
+      selected: networkType,
+      onSelect: handleNetworkTypeChange
+    });
+  }
+
+  const networkTypeOptions = {
+    title: 'Network Type',
+    value: networkType,
+    items: [
+      { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
+      { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
+      { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO }, 
+      { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO }, 
+    ],
+    onClick: navigateToSingleSelect,
   }
 
   ///////////////////////////
@@ -137,25 +177,24 @@ const AddCustomAssetContainer: FC = () => {
   ///////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.LIGHT}>
-      <AddCustomAsset  
-        control={control}
-        register={register}
-        tokenAddress={tokenAddress}
-        tokenName={tokenName}
-        tokenSymbol={tokenSymbol}
-        tokenDecimals={tokenDecimals}
-        handleAddressScan={handleAddressScan}
-        handleAddressChange={handleAddressChange}
-        handleNameChange={handleNameChange}
-        handleSymbolChange={handleSymbolChange}
-        handleDecimalsChange={handleDecimalsChange} 
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        errors={errors}
-        buttonDisabled={buttonDisabled}
-      />
-    </Container>
+    <AddCustomAsset  
+      control={control}
+      register={register}
+      tokenAddress={tokenAddress}
+      tokenName={tokenName}
+      tokenSymbol={tokenSymbol}
+      tokenDecimals={tokenDecimals}
+      networkTypeOptions={networkTypeOptions}
+      handleAddressScan={handleAddressScan}
+      handleAddressChange={handleAddressChange}
+      handleNameChange={handleNameChange}
+      handleSymbolChange={handleSymbolChange}
+      handleDecimalsChange={handleDecimalsChange} 
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+      errors={errors}
+      buttonDisabled={buttonDisabled}
+    />
   );
 };
 

@@ -2,14 +2,14 @@ import { addERC20Asset, removeERC20Asset } from 'state/assets';
 import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
-import IVaultState, { AssetType } from 'state/vault/types';
+import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
 import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { EthChainId } from './EVMChainController/types';
-import { isTestnet, validateAddress } from './EVMChainController/utils';
+import { getNetworkFromChainId, getPlatformFromMainnet, isTestnet, validateAddress } from './EVMChainController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
 import { addAsset, removeAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
@@ -24,7 +24,7 @@ const ALKIMI_STRING = 'alkimi';
 
 export interface IAssetsController {
   clearCustomToken: () => void;
-  addCustomERC20Asset: (address: string, name: string, symbol: string, decimals: string) => Promise<void>;
+  addCustomERC20Asset: (networkType: string, address: string, name: string, symbol: string, decimals: string) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
   getCustomAssets: () => void;
   fetchWalletNFTInfo: (address: string) => Promise<void>;
@@ -160,18 +160,20 @@ const AssetsController = (): IAssetsController => {
     store.dispatch(clearSearch());
   }
 
-  const addCustomERC20Asset = async (address: string, name: string, symbol: string, decimals: string): Promise<void> => {
+  const addCustomERC20Asset = async (networkType: string, address: string, name: string, symbol: string, decimals: string): Promise<void> => {
     if (!validateAddress(address)) return;
 
     const { activeNetwork } = store.getState().vault;
     const assets = store.getState().assets;
     // TODO-349: Check if we should add custom tokens only on Ethereum
-    const network = activeNetwork.Ethereum as EthChainId;
+    const currentNetwork = getNetworkFromChainId(networkType);
+    const network = activeNetwork[currentNetwork as keyof ActiveNetwork];
     let logo = ETHEREUM_DEFAULT_LOGO;
     let tokenData;
+    const platform = getPlatformFromMainnet(networkType);
 
     try {
-      tokenData = await (await fetch(`${TOKEN_INFO_API}${address}`)).json();
+      tokenData = await (await fetch(`${TOKEN_INFO_API}/${platform}/contract/${address}`)).json();
     } catch (err) {
       console.log('Token Error:', err);
     }
@@ -192,6 +194,8 @@ const AssetsController = (): IAssetsController => {
       network,
       custom: true,
     }
+
+    console.log('newAsset', newAsset);
 
     const asset = Object.keys(assets).find(assetId => assetId === newAsset.address);
     if (!asset) {
