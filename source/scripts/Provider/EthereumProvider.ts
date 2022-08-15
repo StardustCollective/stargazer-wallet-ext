@@ -155,7 +155,6 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     _dappProvider: DappProvider,
     _port: Runtime.Port
   ) {
-    // TODO-349: Check if this logic works as expected.
     const { activeNetwork }: IVaultState = store.getState().vault;
     const networkInfo = getChainInfo(activeNetwork.Ethereum);
     const provider = new ethers.providers.JsonRpcProvider(networkInfo.rpcEndpoint);

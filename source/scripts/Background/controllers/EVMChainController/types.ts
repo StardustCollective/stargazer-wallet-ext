@@ -3,7 +3,6 @@ import { BaseAmount } from '@xchainjs/xchain-util';
 import { Address, ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
-// TODO-349: Add all chains and networks here
 // Chain IDs
 export type EthChainId = 'mainnet' | 'ropsten' | 'rinkeby';
 export type PolygonChainId = 'matic' | 'maticmum';

@@ -70,7 +70,6 @@ class NetworkController {
     const { activeAsset } = store.getState().vault;
     const activeAssetInfo = assets[activeAsset.id];
     const network = getNetworkFromChainId(activeAssetInfo.network);
-    // TODO-349: Add all chains here
     const networkToProvider = {
       [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
       'Polygon': this.#polygonNetwork,

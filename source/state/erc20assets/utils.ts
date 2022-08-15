@@ -30,7 +30,6 @@ export const mapToAssetsArray = (tokensArray: ERC20Asset[], tokensAddressArray: 
 export const mapSearchAssetsToArray = (tokens: SearchAsset[], tokensAddressArray: ERC20AssetWithAddress[]): IAssetInfoState[] => {
   const CONSTELLATION_ASSETS = constellationInitialValues.map(asset => asset.priceId);
   const SUPPORTED_NETWORKS = ['ethereum', 'binance-smart-chain', 'avalanche', 'polygon-pos'];
-  // TODO-349: Update logic to include assets from other networks
   const tokensWithAddress = tokens.map((token: SearchAsset) => (
     {
       ...token, 

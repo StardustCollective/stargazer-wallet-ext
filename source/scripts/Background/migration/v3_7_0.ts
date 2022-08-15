@@ -34,9 +34,9 @@ const MigrateRunner = async (oldState: any) => {
                 balances: {
                     [AssetType.Constellation]: '0',
                     [AssetType.Ethereum]: '0',
-                    'avalanche': '0',
-                    'bsc': '0',
-                    'polygon': '0',
+                    [AssetType.Avalanche]: '0',
+                    [AssetType.BSC]: '0',
+                    [AssetType.Polygon]: '0',
                 },
                 customNetworks: {
                     constellation: {},

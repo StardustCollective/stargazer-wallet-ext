@@ -316,7 +316,6 @@ class WalletController implements IWalletController {
       this.account.networkController.switchEthereumChain(chainId as EthChainId);
     }
 
-    // TODO-349: Check if we need to add some logic here
     if (network === 'Avalanche') {
       this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
     }
@@ -332,7 +331,6 @@ class WalletController implements IWalletController {
     store.dispatch(changeActiveNetwork({ network, chainId }));
 
     if (activeAsset) {
-      // TODO-349: Check how activeAsset works here for other networks
       if (assets[activeAsset.id].network !== chainId) {
         await this.account.updateAccountActiveAsset(activeAsset);
       }

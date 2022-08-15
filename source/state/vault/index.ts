@@ -19,7 +19,7 @@ const initialState: IVaultState = {
   balances: {
     [AssetType.Constellation]: '0',
     [AssetType.Ethereum]: '0',
-    // [AssetType.Avalanche]: '0',
+    [AssetType.Avalanche]: '0',
     [AssetType.BSC]: '0',
     [AssetType.Polygon]: '0',
   },
@@ -30,7 +30,6 @@ const initialState: IVaultState = {
   activeNetwork: {
     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
-    // TODO-349: Check if these values are set on the migration process.
     'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
     'BSC': BSC_NETWORK.bsc.id,
     'Polygon': POLYGON_NETWORK.matic.id,

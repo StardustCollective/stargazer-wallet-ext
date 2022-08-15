@@ -59,6 +59,9 @@ const MigrateRunner = async (oldState: V2WalletState) => {
                 balances: {
                     [AssetType.Constellation]: '0',
                     [AssetType.Ethereum]: '0',
+                    [AssetType.Avalanche]: '0',
+                    [AssetType.BSC]: '0',
+                    [AssetType.Polygon]: '0',
                 },
                 version: '3.5.0',
             },

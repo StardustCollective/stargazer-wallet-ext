@@ -165,9 +165,9 @@ const AssetsController = (): IAssetsController => {
 
     const { activeNetwork } = store.getState().vault;
     const assets = store.getState().assets;
-    // TODO-349: Check if we should add custom tokens only on Ethereum
     const currentNetwork = getNetworkFromChainId(networkType);
     const network = activeNetwork[currentNetwork as keyof ActiveNetwork];
+    // TODO-349: Add default logo for all networks
     let logo = ETHEREUM_DEFAULT_LOGO;
     let tokenData;
     const platform = getPlatformFromMainnet(networkType);

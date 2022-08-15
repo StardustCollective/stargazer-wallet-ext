@@ -12,7 +12,6 @@ type AddressBalanceMap = {
   [address: string]: BalanceMap;
 }
 
-// TODO-349: Update object with all contract addresses
 // This contract address is taken from https://github.com/wbobeirne/eth-balance-checker
 const NETWORK_TO_CONTRACT_MAP = {
   1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39', // ETH mainnet

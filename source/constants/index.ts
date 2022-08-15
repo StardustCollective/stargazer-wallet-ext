@@ -211,7 +211,6 @@ export const POLYGON_NETWORK: {
   },
 };
 
-// TODO-349: Include all networks
 export const ALL_EVM_CHAINS = {
   ...ETH_NETWORK,
   ...AVALANCHE_NETWORK,

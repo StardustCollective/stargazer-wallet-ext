@@ -134,7 +134,7 @@ export class AccountController implements IAccountController {
       const avaxAsset = {
         id: AssetType.Avalanche,
         type: AssetType.Ethereum,
-        label: 'AVAX',
+        label: 'Avalanche',
         address: account.address,
       };
       
