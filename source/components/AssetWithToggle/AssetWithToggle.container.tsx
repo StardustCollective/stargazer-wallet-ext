@@ -20,7 +20,7 @@ import AssetWithToggle from './AssetWithToggle';
 // Container
 ///////////////////////
 
-const AssetWithToggleContainer: FC<IAssetWithToggle> = ({ id, symbol, logo, label, selected, disabled, toggleItem }) => {
+const AssetWithToggleContainer: FC<IAssetWithToggle> = ({ id, symbol, network, logo, label, selected, disabled, toggleItem }) => {
 
   ///////////////////////
   // Render
@@ -30,6 +30,7 @@ const AssetWithToggleContainer: FC<IAssetWithToggle> = ({ id, symbol, logo, labe
     <AssetWithToggle
       id={id}
       symbol={symbol}
+      network={network}
       logo={logo}
       label={label}
       selected={selected}

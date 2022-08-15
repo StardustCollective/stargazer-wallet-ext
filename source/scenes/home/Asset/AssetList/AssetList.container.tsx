@@ -45,25 +45,16 @@ import IVaultState from 'state/vault/types';
 const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
-  const { constellationAssets, erc20assets, customAssets, searchAssets, loading, error }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
-  console.log('Error', error);
+  const { constellationAssets, erc20assets, customAssets, searchAssets, loading }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
   const { activeWallet, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const activeNetworkAssets = useSelector(walletsSelectors.selectActiveNetworkAssets);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-  let filteredArray = constellationAssets?.concat(customAssets).concat(erc20assets);
-  // TODO-349: Check how activeNetwork should work here
-  if (activeNetwork.Ethereum !== 'mainnet') {
-    filteredArray = constellationAssets?.filter(item => ['DAG', 'ETH', 'MATIC', 'AVAX', 'BNB'].includes(item.symbol));
-  }
-  const [allAssets, setAllAssets] = useState(filteredArray);
+  
+  const [allAssets, setAllAssets] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [customLoading, setCustomLoading] = useState(false);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
   const accountController = getAccountController();
-
-  const filterArrayById = (array: IAssetInfoState[]): IAssetInfoState[] => {
-    return [...new Map(array.map((item: IAssetInfoState) => [item?.id, item])).values()];
-  }
 
   const filterArrayByValue = (array: IAssetInfoState[], value: string): IAssetInfoState[] => {
     return array?.filter(item => item?.label?.toLowerCase()?.includes(value) || item?.symbol?.toLowerCase()?.includes(value));
@@ -83,25 +74,29 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   }, [loading]);
 
   useEffect(() => {
-    let newDataArray = searchAssets?.length ? searchAssets : erc20assets;
-    let constellationDataArray = filteredArray?.concat(customAssets);
+    let constellation = constellationAssets.concat(customAssets);
+    let erc20 = erc20assets;
+    let search = searchAssets;
+    let all: IAssetInfoState[] = [];
+
+    if (activeNetwork.Ethereum !== 'mainnet') {
+      constellation = constellationAssets?.filter(item => ['DAG', 'ETH', 'MATIC', 'AVAX', 'BNB'].includes(item.symbol));
+    } 
+
     if (searchValue) {
-      const searchLowerCase = searchValue?.toLowerCase();
-      newDataArray = searchAssets?.length ? searchAssets : filterArrayByValue(erc20assets, searchLowerCase);
-      constellationDataArray = filterArrayByValue(constellationDataArray, searchLowerCase);
+      const searchLowerCase = searchValue?.toLocaleLowerCase();
+      constellation = filterArrayByValue(constellation, searchLowerCase);
+      all = constellation.concat(search);
     } else {
+      all = constellation.concat(erc20);
+
       if (searchAssets?.length) {
         accountController.assetsController.clearSearchAssets();
       }
     }
-    
-    let newAssetsArray = constellationDataArray;
-    if (activeNetwork.Ethereum === 'mainnet') {
-      newAssetsArray = newAssetsArray?.concat(newDataArray);
-    }
-    newAssetsArray = filterArrayById(newAssetsArray);
-    setAllAssets(newAssetsArray);
-  }, [erc20assets, searchAssets, searchValue])
+
+    setAllAssets(all);
+  }, [erc20assets?.length, searchAssets?.length, searchValue])
 
   useEffect(() => {
     const searchAssets = async (value: string) => {

@@ -36,6 +36,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
   const { icon, title, value, items, isOpen, toggleItem, onChange } = options;
 
   const selectedValue = items.find(item => item.value === value);
+  const scrollContainer = items?.length > 3 ? styles.itemScrollable : {};
 
   ///////////////////////
   // Render
@@ -60,7 +61,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
         )}
       </div>
       {isOpen && (
-        <div className={styles.listContainer}>
+        <div className={clsx(styles.listContainer, scrollContainer)}>
           {!!items && items.map((item) => {
             const selected = item.value === value;
             const selectedStyle = selected ? styles.selectedItem : {};

@@ -17,7 +17,7 @@ import SearchInput from 'components/SearchInput';
 ///////////////////////////
 
 import { getKeyringAssetType } from 'utils/keyringUtil';
-import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { getNetworkFromChainId, getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Types
@@ -31,6 +31,7 @@ import { IAssetInfoState } from 'state/assets/types';
 ///////////////////////////
 
 import styles from './AssetList.scss';
+import { ActiveNetwork } from 'state/vault/types';
 
 ///////////////////////////
 // Constants
@@ -52,11 +53,13 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
             const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
             const itemChainId = item?.network;
             const itemNetwork = getNetworkFromChainId(itemChainId);
-            const differentNetwork = !['both', 'matic', 'avalanche-mainnet', 'bsc'].includes(itemChainId) && activeNetwork[itemNetwork] !== itemChainId;
+            const network = ['DAG', 'ETH', 'AVAX', 'BNB', 'MATIC'].includes(item?.symbol) ? '' : getNetworkLabel(item?.network);
+            const differentNetwork = !['both', 'matic', 'avalanche-mainnet', 'bsc'].includes(itemChainId) && activeNetwork[itemNetwork as keyof ActiveNetwork] !== itemChainId;
             if (!isAssetSupported || differentNetwork) return null;
             return <AssetWithToggle 
                       id={item.id}
                       symbol={item.symbol} 
+                      network={network}
                       logo={item.logo} 
                       label={item.label} 
                       selected={selected} 

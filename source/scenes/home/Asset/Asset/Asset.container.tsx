@@ -12,7 +12,7 @@ import { RootState } from 'state/store';
 import assetHeader from 'navigation/headers/asset';
 import { useLinkTo } from '@react-navigation/native';
 
-import IVaultState, { AssetType } from 'state/vault/types';
+import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { useCopyClipboard } from 'hooks';
 import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers';
@@ -59,7 +59,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
           activeAsset.address,
           activeAsset.contractAddress,
           activeAsset.type,
-          activeNetwork[networkId]
+          activeNetwork[networkId as keyof ActiveNetwork]
         ),
       })
     );

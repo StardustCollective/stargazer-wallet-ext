@@ -8,7 +8,7 @@ export interface IAssetInfoState {
   symbol: string;
   native?: true;
   // if `native` is "true", `network` should be "both"
-  network?: 'both' | AllChainsIds;
+  network?: 'both' | AllChainsIds | string;
   logo?: string;
   priceId?: string;
   decimals: number;

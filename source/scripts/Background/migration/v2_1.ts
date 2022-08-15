@@ -45,6 +45,10 @@ const MigrateRunner = async (oldState: V1WalletState) => {
         'BSC': BSC_NETWORK.bsc.id,
         'Polygon': POLYGON_NETWORK.matic.id,
       },
+      customNetworks: {
+        constellation: {},
+        ethereum: {},
+      },
       version: '2.1',
     };
 

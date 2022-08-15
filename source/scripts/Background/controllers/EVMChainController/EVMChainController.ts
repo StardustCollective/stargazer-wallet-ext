@@ -84,7 +84,7 @@ class EVMChainController implements IEVMChainController {
     return this.chain.explorer;
   };
 
-  setChain(chain: AllChainsIds) {
+  setChain(chain: AllChainsIds | string) {
     if (!chain) {
       throw new Error('Chain must be provided');
     } else {

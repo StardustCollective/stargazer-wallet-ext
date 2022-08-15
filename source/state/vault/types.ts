@@ -85,6 +85,26 @@ export interface IWalletState {
   supportedAssets: KeyringAssetType[]; // eth,dag,erc20,erc721
   assets: IAssetState[];
 }
+export interface ICustomNetworkObject {
+  id: string;
+  value: string;
+  label: string;
+  explorer: string;
+  chainId: number;
+  rpcEndpoint: string;
+  explorerAPI: string;
+  nativeToken: string;
+  mainnet: string;
+  network: string;
+}
+export interface ICustomNetworkState {
+  [networkId: string]: ICustomNetworkObject;
+}
+
+export interface ICustomNetworks {
+  constellation: ICustomNetworkState;
+  ethereum: ICustomNetworkState;
+}
 
 export default interface IVaultState {
   hasEncryptedVault: boolean;
@@ -96,4 +116,5 @@ export default interface IVaultState {
   activeAsset: IActiveAssetState;
   activeNetwork: ActiveNetwork;
   migrateWallet?: any;
+  customNetworks: ICustomNetworks;
 }

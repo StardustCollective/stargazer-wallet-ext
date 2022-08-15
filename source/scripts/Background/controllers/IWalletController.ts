@@ -28,6 +28,7 @@ export interface IWalletController {
   ) => void;
   switchWallet: (walletId: string) => Promise<void>;
   switchNetwork: (networkType: string, networkId: string) => void;
+  addNetwork: (network: string, data: any) => void;
   // generateSeedPhrase: (update?: boolean) => string;
   // getGeneratedSeedPhrase: () => string;
   setWalletPassword: (password: string) => void;

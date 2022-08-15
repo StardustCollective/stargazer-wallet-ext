@@ -1,5 +1,6 @@
-import { ALL_EVM_CHAINS, DAG_EXPLORER_SEARCH } from 'constants/index';
+import { DAG_EXPLORER_SEARCH } from 'constants/index';
 import format from 'date-fns/format';
+import { getAllEVMChains } from 'scripts/Background/controllers/EVMChainController/utils';
 import { AssetType } from 'state/vault/types';
 
 export const ellipsis = (str: string, start?: number, end?: number) => {
@@ -82,6 +83,7 @@ export const getAddressURL = (
   type: AssetType,
   networkId: string
 ) => {
+  const EVM_CHAINS = getAllEVMChains();
   if (type === AssetType.Constellation || type === AssetType.LedgerConstellation) {
     let url = `${DAG_EXPLORER_SEARCH}${address}`;
     if (networkId === 'ceres') {
@@ -92,7 +94,7 @@ export const getAddressURL = (
 
   if (type === AssetType.ERC20) {
     //token/0xdac17f958d2ee523a2206206994597c13d831ec7?a=
-    return `${ALL_EVM_CHAINS[networkId].explorer}token/${contractAddress}?a=${address}`
+    return `${EVM_CHAINS[networkId].explorer}token/${contractAddress}?a=${address}`
   }
-  return `${ALL_EVM_CHAINS[networkId].explorer}address/${address}`;
+  return `${EVM_CHAINS[networkId].explorer}address/${address}`;
 };

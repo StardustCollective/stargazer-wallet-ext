@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ALKIMI_LOGO, AVALANCHE_LOGO, BSC_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO } from 'constants/index';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetType } from 'state/vault/types';
 import { getERC20Assets, search } from './api';
@@ -13,7 +14,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     address: '',
     native: true,
     network: 'both',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png',
+    logo: CONSTELLATION_LOGO,
     priceId: 'constellation-labs',
     decimals: 8,
   },
@@ -25,7 +26,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     address: '',
     native: true,
     network: 'both',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png',
+    logo: ETHEREUM_LOGO,
     priceId: 'ethereum',
     decimals: 18,
   },
@@ -37,7 +38,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     type: AssetType.ERC20,
     priceId: 'lattice-token',
     network: 'mainnet',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/lattice-logo.png',
+    logo: LATTICE_LOGO,
     decimals: 8,
   },
   {
@@ -48,7 +49,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     type: AssetType.ERC20,
     priceId: 'alkimi',
     network: 'mainnet',
-    logo: 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG',
+    logo: ALKIMI_LOGO,
     decimals: 18,
   },
   {
@@ -59,7 +60,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     type: AssetType.ERC20,
     priceId: 'doubledice-token',
     network: 'mainnet',
-    logo: 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png',
+    logo: DODI_LOGO,
     decimals: 18,
   },
   {
@@ -70,18 +71,18 @@ export const constellationInitialValues: IAssetInfoState[] = [
     type: AssetType.ERC20,
     priceId: 'geojam',
     network: 'mainnet',
-    logo: 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png',
+    logo: GEOJAM_LOGO,
     decimals: 18,
   },
   {
     id: AssetType.Avalanche,
     address: '',
-    label: 'AVAX',
+    label: 'Avalanche',
     symbol: 'AVAX',
     type: AssetType.Ethereum,
     priceId: 'avalanche-2',
     network: 'avalanche-mainnet',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png',
+    logo: AVALANCHE_LOGO,
     decimals: 18,
   },
   {
@@ -92,7 +93,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     type: AssetType.Ethereum,
     priceId: 'binancecoin',
     network: 'bsc',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png',
+    logo: BSC_LOGO,
     decimals: 18,
   },
   {
@@ -103,7 +104,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     type: AssetType.Ethereum,
     priceId: 'matic-network',
     network: 'matic',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png',
+    logo: POLYGON_LOGO,
     decimals: 18,
   },
 ];

@@ -29,7 +29,7 @@ export interface IETHPendingTx {
   fromAddress: string;
   toAddress: string;
   timestamp: number;
-  network: AllChainsIds;
+  network: AllChainsIds | string;
   assetId: string;
   nonce?: number;
   gasPrice: number;

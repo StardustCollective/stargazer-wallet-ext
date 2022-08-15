@@ -14,8 +14,7 @@ import IVaultState, {
 } from '../../../state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
-import { ALL_EVM_CHAINS } from 'constants/index';
-import { equalMainTokenAddress, getMainnetFromTestnet, isTestnet } from '../controllers/EVMChainController/utils';
+import { equalMainTokenAddress, getAllEVMChains, getMainnetFromTestnet, isTestnet } from '../controllers/EVMChainController/utils';
 import { AllChainsIds } from '../controllers/EVMChainController/types';
 
 const FIVE_SECONDS = 5 * 1000;
@@ -163,6 +162,7 @@ export class AssetsBalanceMonitor {
     const { assets } = store.getState();
     const networksList = Object.keys(activeNetwork);
     const chainsList = Object.values(activeNetwork);
+    const EVM_CHAINS = getAllEVMChains();
 
     // Remove Constellation chain
     networksList.shift();
@@ -171,7 +171,7 @@ export class AssetsBalanceMonitor {
     for(let i = 0; i < chainsList.length; i++) {
       const chainId = chainsList[i];
       const networkId = networksList[i];
-      const chainInfo = ALL_EVM_CHAINS[chainId];
+      const chainInfo = EVM_CHAINS[chainId];
 
       // TODO-349: Check if tokens are filtered correctly
       const chainTokens = activeWallet.assets

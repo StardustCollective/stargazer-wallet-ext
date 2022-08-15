@@ -7,6 +7,13 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 ///////////////////////
+// Utils
+///////////////////////
+
+import { getWalletController } from 'utils/controllersUtils';
+import { usePlatformAlert } from 'utils/alertUtil';
+
+///////////////////////
 // Components
 ///////////////////////
 
@@ -18,10 +25,11 @@ import AddNetwork from './AddNetwork';
 ///////////////////////
 
 import screens from 'navigation/screens';
+import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
 
 const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
-  const { control, handleSubmit, register, setValue, setError, triggerValidation, errors } = useForm({
+  const { control, register, setValue, triggerValidation, errors } = useForm({
     validationSchema: yup.object().shape({
       networkType: yup.string(),
       chainName: yup.string().required('Chain name is required'),
@@ -31,6 +39,9 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
     }),
   });
 
+  const walletController = getWalletController();
+  const showAlert = usePlatformAlert();
+
   const [networkType, setNetworkType] = useState<string>('constellation');
   const [chainName, setChainName] = useState<string>('');
   const [rpcUrl, setRpcUrl] = useState<string>('');
@@ -39,18 +50,17 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
   const [saveDisabled, setSaveDisabled] = useState<boolean>(true);
 
   useEffect(() => {
-    const disabled = networkType === '' || chainName === '' || rpcUrl === '' || (networkType === 'ethereum' && chainId === '') || blockExplorerUrl === '';
+    const hasErrors = !!Object.keys(errors)?.length;
+    const disabled = hasErrors || networkType === '' || chainName === '' || rpcUrl === '' || (networkType === 'ethereum' && chainId === '') || blockExplorerUrl === '';
     setSaveDisabled(disabled);
-  }, [networkType, chainName, rpcUrl, chainId, blockExplorerUrl]);
+  }, [Object.keys(errors), networkType, chainName, rpcUrl, chainId, blockExplorerUrl]);
 
-  useEffect(() => {
-    const disabled = !!Object.keys(errors)?.length;
-    setSaveDisabled(disabled);
-  }, [errors]);
-
-  const handleSave = () => {
-    console.log('Save', {networkType, chainName, rpcUrl, chainId, blockExplorerUrl});
-    console.log('handle', {handleSubmit, setError});
+  const handleSave = async () => {
+    try {
+      await walletController.addNetwork(networkType, { chainName, rpcUrl, chainId, blockExplorerUrl })
+    } catch (err) {
+      showAlert('Unable to connect to RPC provider', 'danger');
+    }
   }
 
   const handleChainNameChange = (value: string) => {
@@ -77,7 +87,10 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
   const handleNetworkTypeChange = (value: string) => {
     setNetworkType(value);
-    setValue('networkType', value);
+    setValue('chainName', '');
+    setValue('rpcUrl', '');
+    setValue('chainId', '');
+    setValue('blockExplorerUrl', '');
     setChainName('');
     setRpcUrl('');
     setChainId('');
@@ -85,7 +98,6 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
   }
 
   const navigateToSingleSelect = () => {
-    console.log('Navigate to Single Select')
     navigation.navigate(screens.authorized.singleSelect, { 
       title: 'Select Network Type', 
       data: networkTypeOptions.items, 
@@ -98,8 +110,8 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
     title: 'Network Type',
     value: networkType,
     items: [
-      { value: 'constellation', label: 'Constellation', icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png' }, 
-      { value: 'ethereum', label: 'Ethereum', icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png' }, 
+      { value: 'constellation', label: 'Constellation', icon: CONSTELLATION_LOGO }, 
+      { value: 'ethereum', label: 'Ethereum', icon: ETHEREUM_LOGO }, 
     ],
     onClick: navigateToSingleSelect,
   }

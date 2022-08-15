@@ -5,7 +5,7 @@ import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWO
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
-import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState, IVaultWalletsStoreState } from './types';
+import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState, IVaultWalletsStoreState, ICustomNetworkObject, ICustomNetworks } from './types';
 import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 const initialState: IVaultState = {
@@ -34,6 +34,10 @@ const initialState: IVaultState = {
     'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
     'BSC': BSC_NETWORK.bsc.id,
     'Polygon': POLYGON_NETWORK.matic.id,
+  },
+  customNetworks: {
+    constellation: {},
+    ethereum: {},
   },
   version: '2.1.1',
 };
@@ -198,6 +202,16 @@ const VaultState = createSlice({
     migrateWalletComplete(state: IVaultState) {
       delete state.migrateWallet;
     },
+    addCustomNetwork(state: IVaultState, action: PayloadAction<{network: string, data: ICustomNetworkObject }>) {
+      const { network, data } = action.payload;
+
+      if (network && data) {
+        state.customNetworks[network as keyof ICustomNetworks] = {
+          ...state.customNetworks[network as keyof ICustomNetworks],
+          [data.id]: data,
+        };
+      }
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getHasEncryptedVault.fulfilled, (state, action) => {
@@ -232,6 +246,7 @@ export const {
   addAsset,
   removeAsset,
   migrateWalletComplete,
+  addCustomNetwork,
 } = VaultState.actions;
 
 export default VaultState.reducer;

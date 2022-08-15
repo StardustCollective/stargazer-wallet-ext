@@ -1,5 +1,6 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
+import * as ethers from 'ethers';
 import { 
   changeActiveNetwork, 
   changeActiveWallet, 
@@ -7,9 +8,10 @@ import {
   updateBalances,
   addLedgerWallet, 
   updateWallets, 
-  addBitfiWallet 
+  addBitfiWallet, 
+  addCustomNetwork
 } from 'state/vault';
-import { IVaultWalletsStoreState } from 'state/vault/types'
+import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types'
 import { DAG_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
@@ -24,6 +26,7 @@ import { getDappController } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
+import { generateId } from './EVMChainController/utils';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -339,6 +342,47 @@ class WalletController implements IWalletController {
 
     // restart monitor with different network
     await this.account.assetsBalanceMonitor.start();
+  }
+
+  async addNetwork(network: string, data: any) {
+
+    if (network === 'constellation') {
+      // Add chain in Constellation dropdown.
+      console.log('Constellation', data);
+      // Switch chain in Constellation
+    }
+
+    if (network === 'ethereum') {
+      // Add chain in Ethereum dropdown.
+      console.log('Ethereum', data);
+      const provider = data?.rpcUrl && new ethers.providers.JsonRpcProvider(data?.rpcUrl);
+      // We're catching this Promise in AddNetwork.container.tsx
+      await provider._networkPromise;
+      // Here I'm connected to the RPC Provider.
+
+      const customNetworkId = generateId(data.chainName);
+      const chainId = parseInt(data.chainId);
+      // TODO-349: Check all fields
+      const customNetwork: ICustomNetworkObject = {
+        id: customNetworkId,
+        value: customNetworkId,
+        label: data.chainName,
+        explorer: data.blockExplorerUrl,
+        chainId,
+        rpcEndpoint: data.rpcUrl,
+        explorerAPI: '',
+        nativeToken: 'ETH',
+        mainnet: 'mainnet',
+        network: 'Ethereum',
+      }
+      console.log('customNetwork', customNetwork);
+
+      store.dispatch(addCustomNetwork({ network, data: customNetwork }));
+
+      // this.account.networkController.ethereumNetwork.setChain();
+
+      // Switch chain in NetworkController (ethereumProvider)
+    }
   }
 
   setWalletPassword(password: string) {

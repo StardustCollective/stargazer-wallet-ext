@@ -3,7 +3,7 @@ import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { AssetType } from 'state/vault/types';
-import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API } from 'constants/index';
+import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
@@ -17,7 +17,6 @@ import { addCustomAsset, clearCustomAsset, clearSearchAssets as clearSearch, rem
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
-const DEAFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
 
 // DTM and Alkimi NFTs should appear on top by default
 const DTM_STRINGS = ['DTM', 'Dor Traffic', 'Dor Foot Traffic'];
@@ -168,7 +167,7 @@ const AssetsController = (): IAssetsController => {
     const assets = store.getState().assets;
     // TODO-349: Check if we should add custom tokens only on Ethereum
     const network = activeNetwork.Ethereum as EthChainId;
-    let logo = DEAFAULT_LOGO;
+    let logo = ETHEREUM_DEFAULT_LOGO;
     let tokenData;
 
     try {

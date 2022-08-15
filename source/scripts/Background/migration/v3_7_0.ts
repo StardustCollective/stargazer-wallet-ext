@@ -38,6 +38,10 @@ const MigrateRunner = async (oldState: any) => {
                     'bsc': '0',
                     'polygon': '0',
                 },
+                customNetworks: {
+                    constellation: {},
+                    ethereum: {},
+                },
                 version: '3.7.0',
             },
 

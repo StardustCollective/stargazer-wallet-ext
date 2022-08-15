@@ -43,6 +43,11 @@
   z-index: 1000;
 }
 
+.itemScrollable {
+  overflow: auto;
+  height: 195px;
+}
+
 .itemContainer {
   display: flex;
   flex-direction: row;

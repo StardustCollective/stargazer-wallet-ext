@@ -23,13 +23,16 @@ export type AllChainsValues = EthChainValue | PolygonChainValue | BSCChainValue 
 export const testnets = ['ropsten', 'rinkeby', 'maticmum', 'bsc-testnet', 'avalanche-testnet'];
 
 export type IChain = {
-  id: AllChainsIds;
-  value: AllChainsValues;
+  id: AllChainsIds | string;
+  value: AllChainsValues | string;
   label: string;
   chainId: number;
   explorer: string;
   rpcEndpoint: string;
   explorerAPI: string;
+  nativeToken: string;
+  mainnet: string;
+  network: string;
 }
 
 export type GasPrices = Record<FeeOptionKey, BaseAmount>;
@@ -53,7 +56,7 @@ type GetTokenInfoResponse = {
 }
 
 export type EVMChainControllerParams = {
-  chain?: AllChainsIds;
+  chain?: AllChainsIds | string;
   etherscanApiKey?: string;
   privateKey?: string;
 };

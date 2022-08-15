@@ -7,14 +7,14 @@ import { getWalletController } from 'utils/controllersUtils';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
-import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { AVALANCHE_LOGO, AVALANCHE_NETWORK, BSC_LOGO, BSC_NETWORK, CONSTELLATION_LOGO, DAG_NETWORK, ETHEREUM_LOGO, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
 
 import Container from 'components/Container';
 import Networks from './Networks';
 
 const NetworksContainer: FC = () => {
   const walletController = getWalletController();
-  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { activeNetwork, customNetworks }: IVaultState = useSelector((state: RootState) => state.vault);
   const linkTo = useLinkTo();
 
   const handleChangeNetwork = (networkType: string, networkId: string) => {
@@ -25,9 +25,38 @@ const NetworksContainer: FC = () => {
     linkTo('/settings/networks/add');
   }
 
+  const generateConstellationChains = () => {
+    const constellationChains = customNetworks['constellation'];
+    const items = [
+      { value: DAG_NETWORK.main.id, label: DAG_NETWORK.main.label }, 
+      { value: DAG_NETWORK.ceres.id, label: DAG_NETWORK.ceres.label }
+    ];
+    const constellationObject = Object.keys(constellationChains);
+    if (constellationObject.length) {
+      const customItems = constellationObject.map((item: string) =>  { return { value: constellationChains[item].id, label: constellationChains[item].label }});
+      return items.concat(customItems);
+    }
+    return items;
+  }
+
+  const generateEthereumChains = () => {
+    const ethChains = customNetworks['ethereum'];
+    const items = [
+      { value: ETH_NETWORK.mainnet.id as string, label: ETH_NETWORK.mainnet.label  },
+      { value: ETH_NETWORK.ropsten.id as string, label: ETH_NETWORK.ropsten.label },
+      { value: ETH_NETWORK.rinkeby.id as string, label: ETH_NETWORK.rinkeby.label },
+    ];
+    const ethObjects = Object.keys(ethChains);
+    if (ethObjects.length) {
+      const customItems = ethObjects.map((item: string) =>  { return { value: ethChains[item].id, label: ethChains[item].label }});
+      return items.concat(customItems);
+    }
+    return items;
+  }
+
   const networkOptions = [
     {
-      icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png',
+      icon: CONSTELLATION_LOGO,
       key: 'Constellation',
       title: 'Constellation',
       value: activeNetwork[KeyringNetwork.Constellation],
@@ -37,13 +66,10 @@ const NetworksContainer: FC = () => {
       containerStyle: {
         zIndex: 10000,
       },
-      items: [
-        { value: DAG_NETWORK.main.id, label: DAG_NETWORK.main.label }, 
-        { value: DAG_NETWORK.ceres.id, label: DAG_NETWORK.ceres.label }
-      ],
+      items: generateConstellationChains(),
     },
     {
-      icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png',
+      icon: ETHEREUM_LOGO,
       key: 'Ethereum',
       title: 'Ethereum',
       value: activeNetwork[KeyringNetwork.Ethereum],
@@ -53,14 +79,10 @@ const NetworksContainer: FC = () => {
       containerStyle: {
         zIndex: 9000,
       },
-      items: [
-        { value: ETH_NETWORK.mainnet.id, label: ETH_NETWORK.mainnet.label  },
-        { value: ETH_NETWORK.ropsten.id, label: ETH_NETWORK.ropsten.label },
-        { value: ETH_NETWORK.rinkeby.id, label: ETH_NETWORK.rinkeby.label },
-      ],
+      items: generateEthereumChains(),
     },
     {
-      icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png',
+      icon: AVALANCHE_LOGO,
       key: 'Avalanche',
       title: 'Avalanche',
       value: activeNetwork['Avalanche'],
@@ -76,7 +98,7 @@ const NetworksContainer: FC = () => {
       ],
     },
     {
-      icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png',
+      icon: BSC_LOGO,
       key: 'BNB Chain',
       title: 'BNB Chain',
       value: activeNetwork['BSC'],
@@ -92,7 +114,7 @@ const NetworksContainer: FC = () => {
       ],
     },
     {
-      icon: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png',
+      icon: POLYGON_LOGO,
       key: 'Polygon',
       title: 'Polygon',
       value: activeNetwork['Polygon'],

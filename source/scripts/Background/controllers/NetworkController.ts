@@ -77,7 +77,7 @@ class NetworkController {
       'BSC': this.#bscNetwork,
       'Avalanche': this.#avalancheNetwork,
     }
-    return networkToProvider[network];
+    return networkToProvider[network as keyof typeof networkToProvider];
   }
 
   // TODO-349: Check if getProviderByActiveAsset is fine in all scenarios

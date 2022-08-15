@@ -20,9 +20,9 @@ import {
   ETHAddress 
 } from './constants';
 import { ALL_EVM_CHAINS } from 'constants/index';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import store from 'state/store';
 
-export const isTestnet = (network: AllChainsIds) => {
+export const isTestnet = (network: AllChainsIds | string) => {
   return testnets.includes(network);
 };
 
@@ -50,95 +50,76 @@ export const equalMainTokenAddress = (chainId: AllChainsIds) => {
   }
 }
 
-export const getMainnetFromTestnet = (chainId: AllChainsIds) => {
-  switch (chainId) {
-    case 'rinkeby':
-    case 'ropsten':
+export const getMainnetFromPlatform = (platform: string): string => {
+  switch (platform) {
+    case 'ethereum':
       return 'mainnet';
-    case 'maticmum':
-      return 'matic';
-    case 'bsc-testnet':
-      return 'bsc';
-    case 'avalanche-testnet':
+    case 'avalanche':
       return 'avalanche-mainnet';
-  
-    default:
-      return 'mainnet';
-  }
-}
-
-export const getNetworkFromChainId = (chainId: AllChainsIds | 'both') => {
-  switch (chainId) {
-    case 'mainnet':
-    case 'rinkeby':
-    case 'ropsten':
-    case 'both':
-        return KeyringNetwork.Ethereum;
-    case 'matic':
-    case 'maticmum':
-        return 'Polygon';
-    case 'bsc':
-    case 'bsc-testnet':
-        return 'BSC';
-    case 'avalanche-mainnet':
-    case 'avalanche-testnet':
-        return 'Avalanche';
-  
-    default:
-      return KeyringNetwork.Ethereum;
-  }
-}
-
-export const getNativeToken = (chainId: AllChainsIds | 'both') => {
-  switch (chainId) {
-    case 'mainnet':
-    case 'rinkeby':
-    case 'ropsten':
-    case 'both':
-        return 'ETH';
-    case 'matic':
-    case 'maticmum':
-        return 'MATIC';
-    case 'bsc':
-    case 'bsc-testnet':
-        return 'BNB';
-    case 'avalanche-mainnet':
-    case 'avalanche-testnet':
-        return 'AVAX';
-  
-    default:
-      return 'ETH';
-  }
-}
-
-export const getChainId = (network: AllChainsIds): number => {
-  switch (network) {
-    case 'mainnet':
-      return 1;
-    case 'ropsten':
-      return 3;
-    case 'rinkeby':
-      return 4;
-    case 'matic':
-      return 137;
-    case 'maticmum':
-      return 80001;
-    case 'bsc':
-      return 56;
-    case 'bsc-testnet':
-      return 97;
-    case 'avalanche-mainnet':
-      return 43114;
-    case 'avalanche-testnet':
-      return 43113;
+    case 'binance-smart-chain':
+      return 'bsc';
+    case 'polygon-pos':
+      return 'matic';
       
     default:
-      return 1;
+      return 'mainnet';
   }
 }
 
-export const getChainInfo = (chainId: AllChainsIds) => {
-  return ALL_EVM_CHAINS[chainId];
+export const getNetworkLabel = (network: string): string => {
+  switch (network) {
+    case 'mainnet':
+      return 'ERC-20';
+    case 'avalanche-mainnet':
+      return 'Avalanche';
+    case 'bsc':
+      return 'BEP-20';
+    case 'matic':
+      return 'Polygon';
+      
+    default:
+      return 'both';
+  }
+}
+
+
+export const getAllEVMChains = () => {
+  const { customNetworks } = store.getState().vault;
+  return {
+    ...ALL_EVM_CHAINS,
+    ...customNetworks['ethereum'],
+  };
+}
+
+export const generateId = (value: string): string => {
+  return value.toLocaleLowerCase().replace(/[^a-zA-Z0-9]+/g, '-');
+}
+
+export const getMainnetFromTestnet = (chainId: AllChainsIds | string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  return EVM_CHAINS[chainId]?.mainnet;
+}
+
+export const getNetworkFromChainId = (chainId: AllChainsIds | 'both' | string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  if (chainId === 'both') return 'Ethereum';
+  return EVM_CHAINS[chainId]?.network;
+}
+
+export const getNativeToken = (chainId: AllChainsIds | 'both' | string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  if (chainId === 'both') return 'ETH';
+  return EVM_CHAINS[chainId]?.nativeToken;
+}
+
+export const getChainId = (network: AllChainsIds | string): number => {
+  const EVM_CHAINS = getAllEVMChains();
+  return EVM_CHAINS[network]?.chainId;
+}
+
+export const getChainInfo = (chainId: string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  return EVM_CHAINS[chainId];
 }
 
 export const filterSelfTxs = <T extends { from: string; to: string; hash: string }>(txs: T[]): T[] => {
