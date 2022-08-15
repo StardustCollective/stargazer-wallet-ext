@@ -8,4 +8,5 @@ export interface IAssetButtons {
   onBuyPressed: () => void;
   onSendPressed: () => void;
   onReceivePressed: () => void;
+  assetBuyable: boolean;
 }

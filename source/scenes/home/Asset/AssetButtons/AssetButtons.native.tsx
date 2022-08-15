@@ -26,19 +26,21 @@ import { IAssetButtons } from './types';
 
 import styles from './styles';
 
-const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed }) => {
+const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, assetBuyable }) => {
   ///////////////////////////
   // Render
   ///////////////////////////
   
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={onBuyPressed} style={styles.buttonContainer}>
-        <View style={styles.icon}>
-          <DollarIcon height={24} width={24} />
-        </View>
-        <TextV3.Caption>Buy</TextV3.Caption>
-      </TouchableOpacity>
+      {assetBuyable && 
+        <TouchableOpacity onPress={onBuyPressed} style={styles.buttonContainer}>
+          <View style={styles.icon}>
+            <DollarIcon height={24} width={24} />
+          </View>
+          <TextV3.Caption>Buy</TextV3.Caption>
+        </TouchableOpacity>
+      }
       <TouchableOpacity onPress={onSendPressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
           <ArrowUpIcon height={24} width={24} />
