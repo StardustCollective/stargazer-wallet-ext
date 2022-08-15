@@ -3,15 +3,12 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: COLORS.primary,
     overflow: 'scroll',
     flex: 1,
     flexDirection: 'column',
   },
   box: {
     width: '100%',
-    backgroundColor: COLORS.grey_50,
-    borderRadius: 8,
   },
   content: {
     margin: 16,
@@ -53,7 +50,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     display: 'flex',
-
     flexGrow: 1,
     alignItems: 'flex-end',
     flexDirection: 'row',

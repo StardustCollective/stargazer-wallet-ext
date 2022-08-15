@@ -2,7 +2,6 @@
 
 .main {
   display: flex;
-  background-color: $primary;
   flex-grow: 1;
   height: 100%;
   flex-direction: column;
@@ -11,7 +10,6 @@
   .box {
     width: 100%;
     background: $grey-50;
-    border-radius: 8px;
 
     .content {
       margin: 16px;

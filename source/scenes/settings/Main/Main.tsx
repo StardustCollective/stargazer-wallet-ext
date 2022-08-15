@@ -116,14 +116,14 @@ const Main: FC<IMainSettings> = ({
       <div className={styles.footer}>
         <div onClick={onAboutLinkClicked} className={styles.footer__left}>
           <img src={'/' + infoIcon} />
-          <TextV3.Caption>Stargazer Wallet {version}</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK}>Stargazer Wallet {version}</TextV3.Caption>
         </div>
         <div
           id={'wallet-logoutButton'}
           onClick={handleLogout}
           className={styles.footer__right}
         >
-          <TextV3.Caption>Logout</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.PRIMARY}>Logout</TextV3.Caption>
           <img src={'/' + exitIcon} />
         </div>
       </div>
