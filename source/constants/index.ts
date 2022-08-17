@@ -31,12 +31,6 @@ export const DAG_NETWORK: {
     beUrl: 'https://block-explorer.constellationnetwork.io',
     lbUrl: 'https://proxy.constellationnetwork.io/api/node',
   },
-  ceres: {
-    id: 'ceres',
-    label: 'Testnet 1.0',
-    beUrl: 'https://api-be.exchanges.constellationnetwork.io',
-    lbUrl: 'http://lb.exchanges.constellationnetwork.io:9000',
-  },
 };
 
 export const ETH_NETWORK: {

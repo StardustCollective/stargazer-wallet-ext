@@ -9,7 +9,7 @@ import React, { FC, useState } from 'react';
 ///////////////////////
 
 import Dropdown from 'components/Dropdown';
-import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+// import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
 // Types
@@ -23,7 +23,7 @@ import INetworkSettings from './types';
 
 import styles from './Networks.scss';
 
-const Networks: FC<INetworkSettings> = ({ networkOptions, handleAddNetwork }) => {
+const Networks: FC<INetworkSettings> = ({ networkOptions }) => {
   // Logic used to not have multiple dropdowns open at the same time
   const initialArray = Array.from({ length: networkOptions.length }, () => false);
   const [itemsOpenArray, setItemsOpenArray] = useState(initialArray)
@@ -54,15 +54,17 @@ const Networks: FC<INetworkSettings> = ({ networkOptions, handleAddNetwork }) =>
           </div>
         );
       })}
-      <div className={styles.buttonContainer}>
-        <ButtonV3 
-          label="Add Network"
-          type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
-          size={BUTTON_SIZES_ENUM.LARGE}
-          onClick={handleAddNetwork}
-          extraStyle={styles.addNetwork}
-        />
-      </div>
+      {/* TODO-349: Add Custom Networks in the future.
+        <div className={styles.buttonContainer}>
+          <ButtonV3 
+            label="Add Network"
+            type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            onClick={handleAddNetwork}
+            extraStyle={styles.addNetwork}
+          />
+        </div> 
+      */}
     </div>
   );
 };

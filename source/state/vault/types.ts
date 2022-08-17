@@ -13,7 +13,6 @@ export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
 
 export type Keystore = SeedKeystore | PrivKeystore;
 
-// TODO-349: Check AssetType and ActiveNetwork types
 export enum AssetType {
   Constellation = 'constellation',
   Avalanche = 'avalanche',

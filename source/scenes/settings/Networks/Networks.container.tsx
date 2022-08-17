@@ -28,8 +28,7 @@ const NetworksContainer: FC = () => {
   const generateConstellationChains = () => {
     const constellationChains = customNetworks['constellation'];
     const items = [
-      { value: DAG_NETWORK.main.id, label: DAG_NETWORK.main.label }, 
-      { value: DAG_NETWORK.ceres.id, label: DAG_NETWORK.ceres.label }
+      { value: DAG_NETWORK.main.id, label: DAG_NETWORK.main.label },
     ];
     const constellationObject = Object.keys(constellationChains);
     if (constellationObject.length) {
