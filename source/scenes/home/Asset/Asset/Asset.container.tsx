@@ -54,7 +54,6 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
       assetHeader({
         navigation,
         asset: assets[activeAsset.id],
-        address: activeAsset.address,
         addressUrl: getAddressURL(
           activeAsset.address,
           activeAsset.contractAddress,

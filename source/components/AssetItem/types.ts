@@ -22,4 +22,5 @@ export default interface IAssetItem {
   balances?: AssetBalances;
   fiat?: IFiatState;
   isNFT?: boolean;
+  showNetwork?: boolean;
 }

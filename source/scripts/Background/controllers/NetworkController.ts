@@ -68,6 +68,7 @@ class NetworkController {
   private getProviderByActiveAsset(): EVMChainController {
     const assets = store.getState().assets;
     const { activeAsset } = store.getState().vault;
+    if (!activeAsset) return null;
     const activeAssetInfo = assets[activeAsset.id];
     const network = getNetworkFromChainId(activeAssetInfo.network);
     const networkToProvider = {

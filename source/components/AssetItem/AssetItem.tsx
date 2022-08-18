@@ -17,6 +17,7 @@ import TextV3 from 'components/TextV3';
 ///////////////////////
 
 import { formatNumber, formatPrice, formatStringDecimal } from 'scenes/home/helpers';
+import { getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////
 // Enums
@@ -37,13 +38,13 @@ import IAssetItem from './types';
 ///////////////////////
 
 import styles from './AssetItem.scss';
-
+import { AssetType } from 'state/vault/types';
 
 ///////////////////////
 // Component
 ///////////////////////
 
-const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked }: IAssetItem) => {
+const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked, showNetwork }: IAssetItem) => {
 
   ///////////////////////
   // Render
@@ -54,6 +55,15 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
   };
 
   const renderAssetPriceSection = (assetInfoData: IAssetInfoState) => {
+    if (showNetwork) {
+      const label = assetInfoData.type === AssetType.Constellation ? 'Constellation' : getNetworkLabel(assetInfoData.network);
+
+      return (
+        <div>
+          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
+        </div>
+      );
+    }
     if (assetInfoData.priceId && fiat[assetInfoData.priceId]?.price) {
       return (
         <div>
@@ -91,7 +101,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
             <TextV3.Caption dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
               {isNFT
                 ? Number((assetInfo as INFTInfoState).quantity)
-                : formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)}
+                : `${formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)} ${(assetInfo as IAssetInfoState).symbol}`}
             </TextV3.Caption>
           </div>
         </div>

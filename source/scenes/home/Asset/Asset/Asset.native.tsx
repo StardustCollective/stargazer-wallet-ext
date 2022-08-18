@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, Modal, TouchableOpacity, ScrollView } from 'react-native';
 
 import * as Progress from 'react-native-progress';
 import TextV3 from 'components/TextV3';
@@ -10,6 +10,9 @@ import Container from 'components/Container';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
+
+import { getNetworkLabel, getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { CONSTELLATION_LOGO } from 'constants/index';
 
 import TxsPanel from '../TxsPanel';
 import IAssetSettings from './types';
@@ -32,6 +35,9 @@ const AssetDetail: FC<IAssetSettings> = ({
   copyAddress,
 }) => {
   const activeAssetStyle = StyleSheet.flatten([styles.mask, activeAsset && activeWallet ? styles.loaderHide : {}]);
+  const asset = assets[activeAsset?.id];
+  const networkLabel = asset?.symbol === 'DAG' ? 'Constellation' : getNetworkLabel(asset?.network);
+  const networkLogo = asset?.symbol === 'DAG' ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
 
   if (activeWallet && activeAsset) {
     return (
@@ -70,6 +76,14 @@ const AssetDetail: FC<IAssetSettings> = ({
                 skipAndroidStatusBar
               >
                 <View style={styles.qrCodeCard}>
+                  <View style={styles.network}>
+                    <View style={styles.logoContainer}>
+                      <Image source={{ uri: networkLogo }} style={styles.logo} />
+                    </View>
+                    <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+                      {networkLabel}
+                    </TextV3.BodyStrong>
+                  </View>
                   <QRCode
                     value={activeAsset.address}
                     backgroundColor={COLORS.white}

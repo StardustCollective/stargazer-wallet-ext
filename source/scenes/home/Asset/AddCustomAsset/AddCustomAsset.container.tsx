@@ -97,12 +97,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     setTokenAddress(value);
     setValue('tokenAddress', value);
     triggerValidation('tokenAddress');
-    try {
-      await accountController.fetchCustomToken(value, networkType);
-    } catch (err) {
-      console.log(err);
-      setError('tokenAddress', 'invalidAddress', 'Invalid token address');
-    }
+    await accountController.fetchCustomToken(value, networkType);
   }
 
   const handleNameChange = (value: string) => {
@@ -164,9 +159,9 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     title: 'Network Type',
     value: networkType,
     items: [
+      { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO }, 
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
       { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
-      { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO }, 
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO }, 
     ],
     onClick: navigateToSingleSelect,

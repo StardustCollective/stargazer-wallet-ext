@@ -74,7 +74,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   }, [loading]);
 
   useEffect(() => {
-    let constellation = constellationAssets.concat(customAssets);
+    let constellation = constellationAssets;
     let erc20 = erc20assets;
     let search = searchAssets;
     let all: IAssetInfoState[] = [];
@@ -87,12 +87,12 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
       const searchLowerCase = searchValue?.toLocaleLowerCase();
       constellation = filterArrayByValue(constellation, searchLowerCase);
       if (activeNetwork.Ethereum !== 'mainnet') {
-        all = constellation;
+        all = constellation.concat(customAssets);
       } else {
-        all = constellation.concat(search);
+        all = constellation.concat(customAssets).concat(search);
       }
     } else {
-      all = constellation.concat(erc20);
+      all = constellation.concat(customAssets).concat(erc20);
 
       if (searchAssets?.length) {
         accountController.assetsController.clearSearchAssets();

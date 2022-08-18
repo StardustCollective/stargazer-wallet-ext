@@ -24,6 +24,26 @@ const styles = StyleSheet.create({
   loaderHide: {
     opacity: 0,
   },
+  network: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  logoContainer: {
+    height: 24,
+    width: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.12)',
+    marginRight: 8,
+  },
+  logo: {
+    height: 18,
+    width: 18,
+  },
   account: {
     height: 60,
     width: '100%',

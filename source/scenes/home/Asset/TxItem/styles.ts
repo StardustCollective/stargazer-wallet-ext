@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: FONT_WEIGHTS.regular,
     lineHeight: 20,
+    textAlign: 'right',
   },
   txExplorerIcon: {
     width: 60,

@@ -14,7 +14,7 @@ export const mapToAssetsArray = (tokensArray: ERC20Asset[], tokensAddressArray: 
   return tokensArrayReduced
             .map((token: ERC20Asset) => ({...token, ...tokensAddressArray.find((tokenAddress: ERC20AssetWithAddress) => token.id === tokenAddress.id && !CONSTELLATION_ASSETS.includes(token.id) && tokenAddress?.platforms?.ethereum?.length)}))
             .map(item => ({
-              id: item?.platforms?.ethereum as string,
+              id: `${item?.platforms?.ethereum}-mainnet` ,
               address: item?.platforms?.ethereum as string,
               label: item.name,
               symbol: item.symbol.toUpperCase(),
@@ -45,14 +45,16 @@ export const mapSearchAssetsToArray = (tokens: SearchAsset[], tokensAddressArray
       for (const platform of SUPPORTED_NETWORKS) {
         if (platforms.includes(platform)) {
           // Create a new token for each platform.
+          const address = tokenItem.platforms[platform] as string;
+          const network = getMainnetFromPlatform(platform);
           const newItem = {
-              id: tokenItem.platforms[platform] as string,
-              address: tokenItem.platforms[platform] as string,
+              id: `${address}-${network}`,
+              address,
               label: tokenItem.name,
               symbol: tokenItem.symbol.toUpperCase(),
               type: AssetType.ERC20,
               priceId: tokenItem.id,
-              network: getMainnetFromPlatform(platform),
+              network,
               logo: tokenItem.large,
               decimals: 18,
           }

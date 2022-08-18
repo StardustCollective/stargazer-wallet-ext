@@ -17,10 +17,28 @@ type V3_7_0ActiveNetworkState = {
     vault: IVaultState
 }
 
+const generateERC20assets = (assets: IAssetListState) => {
+    let newAssets: IAssetListState = {};
+    for(const assetId in assets) {
+        const assetInfo = assets[assetId];
+        if (assetInfo.type === AssetType.ERC20) {
+            const newId = `${assetId}-${assetInfo.network}`;
+            newAssets[newId] = {
+                id: newId,
+                ...assetInfo,
+            }
+        } else {
+            newAssets[assetId] = assetInfo;
+        }
+    }
+    return newAssets;
+}
+
 const MigrateRunner = async (oldState: any) => {
     try {
         const newState: V3_7_0ActiveNetworkState = {
             ...oldState,
+            assets: generateERC20assets(oldState.assets),
             vault: {
                 ...oldState.vault,
                 // activeNetwork shape changed

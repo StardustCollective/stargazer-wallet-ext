@@ -3,7 +3,7 @@ import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
-import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO } from 'constants/index';
+import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO, AVALANCHE_DEFAULT_LOGO, BSC_DEFAULT_LOGO, POLYGON_DEFAULT_LOGO } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
@@ -17,6 +17,14 @@ import { addCustomAsset, clearCustomAsset, clearSearchAssets as clearSearch, rem
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
+
+// Default logos
+const DEFAULT_LOGOS = {
+  'Ethereum': ETHEREUM_DEFAULT_LOGO,
+  'Avalanche': AVALANCHE_DEFAULT_LOGO,
+  'BSC': BSC_DEFAULT_LOGO,
+  'Polygon': POLYGON_DEFAULT_LOGO,
+}
 
 // DTM and Alkimi NFTs should appear on top by default
 const DTM_STRINGS = ['DTM', 'Dor Traffic', 'Dor Foot Traffic'];
@@ -167,8 +175,7 @@ const AssetsController = (): IAssetsController => {
     const assets = store.getState().assets;
     const currentNetwork = getNetworkFromChainId(networkType);
     const network = activeNetwork[currentNetwork as keyof ActiveNetwork];
-    // TODO-349: Add default logo for all networks
-    let logo = ETHEREUM_DEFAULT_LOGO;
+    let logo = DEFAULT_LOGOS[currentNetwork as keyof typeof DEFAULT_LOGOS];
     let tokenData;
     const platform = getPlatformFromMainnet(networkType);
 
@@ -183,7 +190,7 @@ const AssetsController = (): IAssetsController => {
     }
 
     const newAsset: IAssetInfoState = {
-      id: address,
+      id: `${address}-${network}`,
       address,
       label: name,
       symbol,
@@ -195,9 +202,7 @@ const AssetsController = (): IAssetsController => {
       custom: true,
     }
 
-    console.log('newAsset', newAsset);
-
-    const asset = Object.keys(assets).find(assetId => assetId === newAsset.address);
+    const asset = Object.keys(assets).find(assetId => assetId === newAsset.id);
     if (!asset) {
       store.dispatch(addCustomAsset(newAsset));
       addERC20AssetFn(newAsset);
@@ -232,8 +237,8 @@ const AssetsController = (): IAssetsController => {
   }
 
   const removeERC20AssetFn = (asset: IAssetInfoState): void => {
-    store.dispatch(removeERC20Asset(asset));
     store.dispatch(removeAsset(asset));
+    store.dispatch(removeERC20Asset(asset));
   }
 
   const fetchSupportedAssets = async (): Promise<void> => {

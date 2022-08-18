@@ -56,6 +56,7 @@ const AssetDetail: FC<IAssetSettings> = ({
             open={showQrCode}
             onClose={() => setShowQrCode(false)}
             address={activeAsset.address}
+            asset={assets[activeAsset?.id]}
             textTooltip={textTooltip}
             copyAddress={copyAddress}
           />

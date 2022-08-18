@@ -31,7 +31,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     decimals: 18,
   },
   {
-    id: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
+    id: '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet',
     address: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
     label: 'Lattice Token',
     symbol: 'LTX',
@@ -42,7 +42,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     decimals: 8,
   },
   {
-    id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
+    id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet',
     address: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
     label: 'Alkimi Exchange',
     symbol: 'ADS',
@@ -53,7 +53,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     decimals: 18,
   },
   {
-    id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
+    id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665-mainnet',
     address: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
     label: 'DoubleDice',
     symbol: 'DODI',
@@ -64,7 +64,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     decimals: 18,
   },
   {
-    id: '0x23894dc9da6c94ecb439911caf7d337746575a72',
+    id: '0x23894dc9da6c94ecb439911caf7d337746575a72-mainnet',
     address: '0x23894dc9da6c94ecb439911caf7d337746575a72',
     label: 'Geojam',
     symbol: 'JAM',
@@ -98,7 +98,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
   },
   {
     id: AssetType.Polygon,
-    address: '0x0000000000000000000000000000000000001010',
+    address: '',
     label: 'Polygon',
     symbol: 'MATIC',
     type: AssetType.Ethereum,

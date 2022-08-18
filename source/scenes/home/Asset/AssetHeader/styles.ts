@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 60,
-    width: '100%',
   },
   addressActive: {
     color: COLORS.gray_light,

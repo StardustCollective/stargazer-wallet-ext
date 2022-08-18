@@ -142,7 +142,7 @@ export const BSC_NETWORK: {
   bsc: {
     id: 'bsc',
     value: 'bsc',
-    label: 'Binance Smart Chain Mainnet',
+    label: 'BSC Mainnet',
     rpcEndpoint: QUICKNODE_BSC_MAINNET,
     explorer: 'https://bscscan.com/',
     explorerAPI: 'https://api.bscscan.com',
@@ -154,7 +154,7 @@ export const BSC_NETWORK: {
   ['bsc-testnet']: {
     id: 'bsc-testnet',
     value: 'bsc-testnet',
-    label: 'Testnet',
+    label: 'BSC Testnet',
     rpcEndpoint: QUICKNODE_BSC_TESTNET,
     explorer: 'https://testnet.bscscan.com/',
     explorerAPI: 'https://api-testnet.bscscan.com',
@@ -228,6 +228,9 @@ export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 export const CONSTELLATION_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
 export const ETHEREUM_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
 export const ETHEREUM_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
+export const AVALANCHE_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-default-logo.png';
+export const BSC_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
+export const POLYGON_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-default-logo.png';
 export const AVALANCHE_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png';
 export const BSC_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
 export const POLYGON_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png';

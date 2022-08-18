@@ -1,30 +1,17 @@
 import React, { FC } from 'react';
 
-import { ellipsis } from 'scenes/home/helpers';
-import { useCopyClipboard } from 'hooks/index';
-
 import AssetHeader from './AssetHeader';
 
 import { IAssetHeader } from './types';
+import { getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
 
-const AssetHeaderContainer: FC<IAssetHeader> = ({ asset, address }) => {
-  const [isCopied, copyText] = useCopyClipboard(2000);
-
-  const onClickCopyText = (e: Event) => {
-    e.stopPropagation();
-    copyText(address);
-  };
-
-  const shortenedAddress = ellipsis(address);
-  const copiedTextToolip = isCopied ? 'Copied' : 'Copy Address';
+const AssetHeaderContainer: FC<IAssetHeader> = ({ asset }) => {
+  const network = asset?.symbol === 'DAG' ? 'Constellation' : getNetworkLabel(asset?.network);
 
   return (
     <AssetHeader
-      isCopied={isCopied}
-      onClickCopyText={onClickCopyText}
-      shortenedAddress={shortenedAddress}
+      network={network}
       asset={asset}
-      copiedTextToolip={copiedTextToolip}
     />
   );
 };

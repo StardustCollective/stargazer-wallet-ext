@@ -19,7 +19,7 @@ import {
   SIMPLE_GAS_COST ,
   ETHAddress 
 } from './constants';
-import { ALL_EVM_CHAINS } from 'constants/index';
+import { ALL_EVM_CHAINS, AVALANCHE_LOGO, BSC_LOGO, ETHEREUM_LOGO, POLYGON_LOGO } from 'constants/index';
 import store from 'state/store';
 
 export const isTestnet = (network: AllChainsIds | string) => {
@@ -47,6 +47,28 @@ export const equalMainTokenAddress = (chainId: AllChainsIds) => {
   
     default:
       return false;
+  }
+}
+
+export const getNetworkLogo = (network: string) => {
+  switch (network) {
+    case 'both':
+    case 'mainnet':
+    case 'ropsten':
+    case 'rinkeby':
+      return ETHEREUM_LOGO;
+    case 'avalanche-mainnet':
+    case 'avalanche-testnet':
+      return AVALANCHE_LOGO;
+    case 'bsc':
+    case 'bsc-testnet':
+      return BSC_LOGO;
+    case 'matic':
+    case 'maticmum':
+      return POLYGON_LOGO;
+  
+    default:
+      return ETHEREUM_LOGO;
   }
 }
 
@@ -86,15 +108,25 @@ export const getNetworkLabel = (network: string): string => {
   switch (network) {
     case 'mainnet':
       return 'ERC-20';
+    case 'ropsten':
+      return 'Ropsten';
+    case 'rinkeby':
+      return 'Rinkeby';
     case 'avalanche-mainnet':
       return 'Avalanche';
+    case 'avalanche-testnet':
+      return 'Fuji Testnet';
     case 'bsc':
       return 'BEP-20';
+    case 'bsc-testnet':
+      return 'BEP-20 Testnet';
     case 'matic':
       return 'Polygon';
+    case 'maticmum':
+      return 'Maticmum Testnet';
       
     default:
-      return 'both';
+      return 'ERC-20';
   }
 }
 

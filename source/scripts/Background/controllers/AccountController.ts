@@ -140,7 +140,7 @@ export class AccountController implements IAccountController {
       
       const ETH_TOKENS = Object.values(assets)
                                 .filter((token) => token.type === AssetType.ERC20)
-                                .map((token) => token.address);
+                                .map((token) => token.id);
 
       const erc20Assets = await this.buildAccountERC20Tokens(account.address, ETH_TOKENS);
 
@@ -202,7 +202,7 @@ export class AccountController implements IAccountController {
     const tokens = (await Promise.all(resolveTokens)).filter((token) => !!token);
 
     const assetList: IAssetState[] = tokens.map((t) => ({
-      id: t.address,
+      id: t.id,
       type: AssetType.ERC20,
       label: t.label,
       contractAddress: t.address,
@@ -530,7 +530,12 @@ export class AccountController implements IAccountController {
   }
 
   async fetchCustomToken(address: string, chainId: string) {
-    const info = await this.networkController.getTokenInfo(address, chainId);
+    let info = null;
+    try {
+      info = await this.networkController.getTokenInfo(address, chainId);
+    } catch (err) {
+      console.log('Error: Unable to fetch token info');
+    }
     if (info) {
       store.dispatch(setCustomAsset({
         tokenAddress: info.address || '',
