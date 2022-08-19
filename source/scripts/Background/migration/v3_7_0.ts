@@ -24,8 +24,8 @@ const generateERC20assets = (assets: IAssetListState) => {
         if (assetInfo.type === AssetType.ERC20) {
             const newId = `${assetId}-${assetInfo.network}`;
             newAssets[newId] = {
-                id: newId,
                 ...assetInfo,
+                id: newId,
             }
         } else {
             newAssets[assetId] = assetInfo;
@@ -41,8 +41,8 @@ const generateCustomTokens = (assets: IAssetListState) => {
         if (!!assetInfo?.custom) {
             const newId = `${assetId}-${assetInfo.network}`;
             const customAsset = {
-                id: newId,
                 ...assetInfo,
+                id: newId,
             }
             newCustomAssets.push(customAsset);
         }

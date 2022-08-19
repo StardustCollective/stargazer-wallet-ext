@@ -146,7 +146,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     value: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[2]
   ) {
     const controller = useController();
-    const wallet = controller.wallet.account.ethClient.getWallet();
+    const wallet = controller.wallet.account.networkController.ethereumNetwork.getWallet();
     const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = ethers.utils._TypedDataEncoder.hash(domain, types, value);

@@ -33,7 +33,7 @@ import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
-import { generateId, getAllEVMChains } from './EVMChainController/utils';
+import { generateId } from './EVMChainController/utils';
 import { AvailableEvents, StargazerChain } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 
