@@ -249,7 +249,7 @@
         line-height: 24px;
       }
       .advancedSetting {
-        font-family: Inter;
+        font-family: $inter;
         font-style: normal;
         font-weight: 500;
         font-size: 10px;
@@ -303,7 +303,7 @@
       font-weight: 500;
       font-size: 10px;
       line-height: 24px;
-      font-family: Inter;
+      font-family: $inter;
       color: $gray-100;
 
       &[data-index='0'] {

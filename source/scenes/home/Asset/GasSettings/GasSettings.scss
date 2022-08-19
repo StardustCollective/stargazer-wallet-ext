@@ -67,14 +67,14 @@
                 max-width: 4ch;
                 margin-right: 8px;
                 border: none;
-                font-family: $quicksand;
+                font-family: $inter;
                 font-weight: bold;
                 font-size: 14px;
                 color: $purple;
               }
               & > span:last-child {
                 font-size: 14px;
-                font-family: $rubik;
+                font-family: $inter;
                 font-weight: $medium;
               }
             }
@@ -125,7 +125,7 @@
       }
       span {
         color: $green-dark;
-        font-family: $rubik;
+        font-family: $inter;
         font-style: normal;
         font-weight: bold;
         font-size: 14px;
@@ -147,7 +147,7 @@
         flex: 1;
         margin: 16px;
         flex-direction: column;
-        font-family: $rubik;
+        font-family: $inter;
 
         .header {
           font-size: 18px;
@@ -182,7 +182,7 @@
 
   & > span {
     margin: 0px 24px 0px 24px;
-    font-family: $rubik;
+    font-family: $inter;
     font-size: 14px;
     font-weight: $bold;
     line-height: 20px;
@@ -200,7 +200,7 @@
 
   & > span {
     margin: 0px 24px 0px 24px;
-    font-family: $rubik;
+    font-family: $inter;
     font-size: 13px;
     font-weight: $bold;
     color: $white;

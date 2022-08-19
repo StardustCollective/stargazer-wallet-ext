@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 12,
     textTransform: 'uppercase',
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
   },
   groupWallet: {
     display: 'flex',
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 16,
     lineHeight: 24,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     color: COLORS.gray_dark,
   },
   iconContainer: {

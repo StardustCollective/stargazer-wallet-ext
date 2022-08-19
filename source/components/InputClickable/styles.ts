@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.black,
     lineHeight: 20,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.medium,
   },
   titleContainer: {

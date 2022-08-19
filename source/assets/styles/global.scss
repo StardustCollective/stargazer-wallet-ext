@@ -4,7 +4,7 @@
 
   margin: 0px;
   padding: 0px;
-  font-family: $rubik !important;
+  font-family: $inter !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
   user-select: none !important;
@@ -24,7 +24,7 @@
 
   // Font styles
   .heading-1 {
-    font-family: $rubik;
+    font-family: $inter;
     font-weight: normal;
     font-size: 30px;
     line-height: 36px;
@@ -32,7 +32,7 @@
   }
 
   .body-caption {
-    font-family: $rubik;
+    font-family: $inter;
     font-weight: $medium;
     font-size: 16px;
     line-height: 24px;
@@ -40,7 +40,7 @@
   }
 
   .body-description {
-    font-family: $rubik;
+    font-family: $inter;
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
@@ -49,7 +49,7 @@
   }
 
   .body-comment {
-    font-family: $rubik;
+    font-family: $inter;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
@@ -59,10 +59,10 @@
 
   // Font families
   .t-quicksand {
-    font-family: $rubik;
+    font-family: $quicksand;
   }
   .t-inter {
-    font-family: $rubik;
+    font-family: $inter;
   }
 
   // Font Weights

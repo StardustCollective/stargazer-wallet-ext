@@ -3,7 +3,7 @@ import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   base: {
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     overflow: 'hidden',
   },
   headerDisplay: {

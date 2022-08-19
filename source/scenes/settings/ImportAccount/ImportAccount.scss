@@ -149,7 +149,7 @@
         span {
           position: absolute;
           top: 127px;
-          font-family: Inter;
+          font-family: $inter;
           font-style: normal;
           font-weight: 500;
           font-size: 12px;
@@ -190,7 +190,7 @@
       display: flex;
       justify-content: flex-end;
       span {
-        font-family: Inter;
+        font-family: $inter;
         font-style: normal;
         font-weight: 500;
         font-size: 10px;

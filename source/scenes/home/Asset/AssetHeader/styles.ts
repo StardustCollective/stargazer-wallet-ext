@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS, FONTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   fullselect: {
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 14,
     fontWeight: FONT_WEIGHTS.regular,
-    // fontFamily: FONTS.quicksand,
+    fontFamily: FONTS.inter,
     color: COLORS.white,
     marginTop: 2,
     marginLeft: 0,
