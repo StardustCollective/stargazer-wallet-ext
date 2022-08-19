@@ -47,8 +47,8 @@ const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, to
     const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
     const itemChainId = item?.network;
     const itemNetwork = getNetworkFromChainId(itemChainId);
-    const network = item?.symbol === 'DAG' ? 'Constellation' : getNetworkLabel(item?.network);
-    const differentNetwork = !['both', 'matic', 'avalanche-mainnet', 'bsc'].includes(itemChainId) && activeNetwork[itemNetwork] !== itemChainId;
+    const network = item?.symbol === 'DAG' ? 'Constellation' : getNetworkLabel(itemChainId);
+    const differentNetwork = !['both'].includes(itemChainId) && activeNetwork[itemNetwork] !== itemChainId;
     if (!isAssetSupported || differentNetwork) return null;
     return <AssetWithToggle 
               id={item?.id}

@@ -79,19 +79,12 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     let search = searchAssets;
     let all: IAssetInfoState[] = [];
 
-    if (activeNetwork.Ethereum !== 'mainnet') {
-      constellation = constellationAssets?.filter(item => ['DAG', 'ETH', 'MATIC', 'AVAX', 'BNB'].includes(item.symbol));
-    } 
 
     if (searchValue) {
       const searchLowerCase = searchValue?.toLocaleLowerCase();
       constellation = constellation.concat(customAssets);
       constellation = filterArrayByValue(constellation, searchLowerCase);
-      if (activeNetwork.Ethereum !== 'mainnet') {
-        all = constellation;
-      } else {
-        all = constellation.concat(search);
-      }
+      all = constellation.concat(search);
     } else {
       all = constellation.concat(customAssets).concat(erc20);
 

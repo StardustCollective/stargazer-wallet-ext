@@ -42,6 +42,7 @@ import { useFiat } from 'hooks/usePrice';
 // Utils
 ///////////////////////////
 
+import { getNativeToken } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
 import { isError } from 'scripts/common';
@@ -133,7 +134,8 @@ const ConfirmContainer = () => {
 
   const getFiatAmount = useFiat(false, assetInfo);
 
-  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
+  const assetNetwork = assets[activeAsset?.id]?.network;
+  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
 
   const tempTx = accountController.getTempTx();
   const [confirmed, setConfirmed ] = useState(false);

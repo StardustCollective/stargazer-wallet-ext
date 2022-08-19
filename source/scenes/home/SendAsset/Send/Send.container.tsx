@@ -152,13 +152,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const { setValue, control, handleSubmit, register, errors, setError, clearError } = useForm({
     validationSchema: yup.object().shape({
-      address: yup.string().required('Error: Invalid DAG address'),
+      address: yup.string().required('Error: Invalid address'),
       amount: !isExternalRequest ? yup.mixed().transform(value => {
         const formattedValue = value.replace(/,/g, '.');
         if (isNaN(formattedValue)) return undefined;
         const floatNumber = parseFloat(formattedValue);
         return isNaN(floatNumber) || floatNumber <= 0 ? undefined : floatNumber;
-      }).required('Error: Invalid DAG amount') : null,
+      }).required('Error: Invalid amount') : null,
       fee:
         (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation)
           ? yup.mixed().transform(value => {
