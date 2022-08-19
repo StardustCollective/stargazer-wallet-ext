@@ -1095,10 +1095,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bitfi/bitfi.js@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@bitfi/bitfi.js/-/bitfi.js-0.0.18.tgz#234a3167248c356f2b0fd382f66b1f8499da8d34"
-  integrity sha512-EtsrJk+xZJpWBw9O6OwlnCZ8rv8lYaJ9pXxMEtp95uhqXaxGsCe1bRflk/lAJ24B+vP+zCNT/uinP4rpmZGFGw==
+"@bitfi/bitfi.js@^0.1.8":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@bitfi/bitfi.js/-/bitfi.js-0.1.9.tgz#336a7f68fb22141f445a746e33ad091ab1768f16"
+  integrity sha512-TVAKGZ3usJlPib3nERVBV7W3ef6gxKpln6WkfNHx4hFoGpjInNFmGihI/P5PNYiDpI3W2wc/r06SSI/IR0ml6A==
   dependencies:
     "@types/ethereumjs-tx" "^2.0.0"
     "@types/ws" "^8.5.3"
@@ -7709,22 +7709,7 @@ ethereumjs-wallet@^1.0.1:
     utf8 "^3.0.0"
     uuid "^8.3.2"
 
-ethers@^4.0.27:
-  version "4.0.49"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.49.tgz#0eb0e9161a0c8b4761be547396bbe2fb121a8894"
-  integrity sha512-kPltTvWiyu+OktYy1IStSO16i2e7cS9D9OxZ81q2UUaiNPVrm/RTcbxamCXF9VUSKzJIdJV68EAIhTEVBalRWg==
-  dependencies:
-    aes-js "3.0.0"
-    bn.js "^4.11.9"
-    elliptic "6.5.4"
-    hash.js "1.1.3"
-    js-sha3 "0.5.7"
-    scrypt-js "2.0.4"
-    setimmediate "1.0.4"
-    uuid "2.0.1"
-    xmlhttprequest "1.8.0"
-
-ethers@^5.0.32:
+ethers@5.6.9:
   version "5.6.9"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.6.9.tgz#4e12f8dfcb67b88ae7a78a9519b384c23c576a4d"
   integrity sha512-lMGC2zv9HC5EC+8r429WaWu3uWJUCgUCt8xxKCFqkrFuBDZXDYIdzDUECxzjf2BMF8IVBByY1EBoGSL3RTm8RA==
@@ -7759,6 +7744,21 @@ ethers@^5.0.32:
     "@ethersproject/wallet" "5.6.2"
     "@ethersproject/web" "5.6.1"
     "@ethersproject/wordlists" "5.6.1"
+
+ethers@^4.0.27:
+  version "4.0.49"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.49.tgz#0eb0e9161a0c8b4761be547396bbe2fb121a8894"
+  integrity sha512-kPltTvWiyu+OktYy1IStSO16i2e7cS9D9OxZ81q2UUaiNPVrm/RTcbxamCXF9VUSKzJIdJV68EAIhTEVBalRWg==
+  dependencies:
+    aes-js "3.0.0"
+    bn.js "^4.11.9"
+    elliptic "6.5.4"
+    hash.js "1.1.3"
+    js-sha3 "0.5.7"
+    scrypt-js "2.0.4"
+    setimmediate "1.0.4"
+    uuid "2.0.1"
+    xmlhttprequest "1.8.0"
 
 etherscan-api@^10.0.5:
   version "10.0.9"

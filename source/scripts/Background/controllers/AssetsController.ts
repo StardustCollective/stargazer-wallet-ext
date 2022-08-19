@@ -1,4 +1,4 @@
-import { addERC20Asset, removeERC20Asset } from 'state/assets';
+import { addERC20Asset, removeERC20Asset, updateAssetDecimals } from 'state/assets';
 import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
@@ -14,6 +14,7 @@ import { getERC20Assets, search } from 'state/erc20assets/api';
 import { addAsset, removeAsset, addCustomAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
 import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
+import { getAccountController } from 'utils/controllersUtils';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
@@ -38,7 +39,7 @@ export interface IAssetsController {
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
   searchERC20Assets: (value: string) => Promise<void>;
-  addERC20AssetFn: (asset: IAssetInfoState) => void;
+  addERC20AssetFn: (asset: IAssetInfoState) => Promise<void>;
   removeERC20AssetFn: (asset: IAssetInfoState) => void;
   clearSearchAssets: () => void;
   fetchQuote: (data: GetQuoteRequest) => Promise<void>;
@@ -212,7 +213,8 @@ const AssetsController = (): IAssetsController => {
     removeERC20AssetFn(asset);
   }
 
-  const addERC20AssetFn = (asset: IAssetInfoState): void => {
+  const addERC20AssetFn = async (asset: IAssetInfoState): Promise<void> => {
+    const accountController = getAccountController();
     const { activeWallet } = store.getState().vault;
     const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
     store.dispatch(addERC20Asset(asset));
@@ -223,6 +225,11 @@ const AssetsController = (): IAssetsController => {
       address: ethAddress,
       contractAddress: asset.address,
     }));
+    // TODO-349: Check if this works
+    const assetInfo = await accountController.networkController.getTokenInfo(asset.address);
+    if (assetInfo && assetInfo.decimals !== asset.decimals) {
+      store.dispatch(updateAssetDecimals({ address: asset.address, decimals: assetInfo.decimals }));
+    }
   }
 
   const removeERC20AssetFn = (asset: IAssetInfoState): void => {

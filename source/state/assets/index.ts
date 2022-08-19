@@ -125,9 +125,14 @@ const AssetListState = createSlice({
         delete state[action.payload.id];
       }
     },
+    updateAssetDecimals(state: IAssetListState, action: PayloadAction<{ address: string, decimals: number}>) {
+      if (action.payload.address && action.payload.decimals) {
+        state[action.payload.address].decimals = action.payload.decimals;
+      }
+    },
   },
 });
 
-export const { addERC20Asset, removeERC20Asset, rehydrate } = AssetListState.actions;
+export const { addERC20Asset, removeERC20Asset, updateAssetDecimals, rehydrate } = AssetListState.actions;
 
 export default AssetListState.reducer;

@@ -23,28 +23,32 @@ type AsyncEventHandlerReturnType<Handler> = Handler extends (
  * + Each provider must be activated independently.
  */
 class StargazerChainProviderProxy {
-  private activated: null | boolean;
-  private provider: StargazerChainProvider;
-  private providerListenerEventHandler: (event: StargazerProxyEvent) => any;
-  private listeners: Map<string, (event: Event) => any>;
+  #activated: null | boolean;
+  #provider: StargazerChainProvider;
+  #listeners: Map<string, (event: Event) => any>;
+  #providerListenerEventHandler: (event: StargazerProxyEvent) => any;
 
   constructor(
     provider: StargazerChainProvider,
     providerListenerEventHandler: (event: StargazerProxyEvent) => any
   ) {
-    this.activated = null;
-    this.provider = provider;
-    this.providerListenerEventHandler = providerListenerEventHandler;
-    this.listeners = new Map();
+    this.#activated = null;
+    this.#provider = provider;
+    this.#providerListenerEventHandler = providerListenerEventHandler;
+    this.#listeners = new Map();
+  }
+
+  get activated() {
+    return this.#activated;
   }
 
   private addListener(type: string, listener: (event: Event) => any) {
-    this.listeners.set(type, listener);
+    this.#listeners.set(type, listener);
     window.addEventListener(type, listener, { passive: true });
   }
 
   private removeListener(type: string) {
-    const listener = this.listeners.get(type);
+    const listener = this.#listeners.get(type);
     if (!listener) {
       return;
     }
@@ -73,11 +77,10 @@ class StargazerChainProviderProxy {
     });
   }
 
-  private async handlePromisifiedRequestResponse<T extends (event: Event) => Promise<any>>(
-    request: StargazerProxyRequest,
-    handler: T
-  ) {
-    const encodedRequest = encodeProxyRequest(request, this.provider.providerId);
+  private async handlePromisifiedRequestResponse<
+    T extends (event: Event) => Promise<any>
+  >(request: StargazerProxyRequest, handler: T) {
+    const encodedRequest = encodeProxyRequest(request, this.#provider.providerId);
     return this.promisifiedRequestResponse(encodedRequest, handler);
   }
 
@@ -110,7 +113,7 @@ class StargazerChainProviderProxy {
   }
 
   private async handleEventRequest(request: StargazerProxyRequest & { type: 'event' }) {
-    const encodedRequest = encodeProxyRequest(request, this.provider.providerId);
+    const encodedRequest = encodeProxyRequest(request, this.#provider.providerId);
 
     if (request.action === 'register') {
       this.addListener(request.listenerId, this.handleListenerEvent.bind(this));
@@ -139,13 +142,13 @@ class StargazerChainProviderProxy {
   private async handleListenerEvent(event: Event) {
     const listenerEvent = decodeProxyEvent(event);
 
-    this.providerListenerEventHandler(listenerEvent);
+    this.#providerListenerEventHandler(listenerEvent);
   }
 
   async activate(title?: string) {
     const request: StargazerProxyRequest = {
       type: 'handshake',
-      chain: this.provider.chain,
+      chain: this.#provider.chain,
       title: title ?? document.title,
     };
 
@@ -153,16 +156,16 @@ class StargazerChainProviderProxy {
       request,
       this.handleHandshakeResponse
     );
-    this.activated = result;
+    this.#activated = result;
     return result;
   }
 
   async request(request: StargazerProxyRequest): Promise<any> {
-    if (this.activated === null) {
+    if (this.#activated === null) {
       await this.activate();
     }
 
-    if (this.activated === false) {
+    if (this.#activated === false) {
       throw new StargazerChainProviderError('User denied provider activation');
     }
 

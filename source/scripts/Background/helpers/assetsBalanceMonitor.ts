@@ -122,11 +122,15 @@ export class AssetsBalanceMonitor {
     );
     const { balances } = store.getState().vault;
     try {
-      const bal = await dag4.account.getBalance();
+      const bal = (await dag4.account.getBalance()) ?? 0;
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;
       store.dispatch(
-        updateBalances({ ...balances, [AssetType.Constellation]: String(bal) || '0', pending })
+        updateBalances({
+          ...balances,
+          [AssetType.Constellation]: String(bal) || '0',
+          pending,
+        })
       );
       store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IDLE }));
     } catch (e) {

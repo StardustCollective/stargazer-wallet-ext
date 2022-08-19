@@ -24,7 +24,8 @@ export interface IWalletController {
   ) => Promise<string>;
   deleteWallet: (walletId: KeyringWalletState, password: string) => Promise<boolean>;
   importHardwareWalletAccounts: (
-    addresses: AccountItem[]
+    addresses: AccountItem[],
+    deviceId?: string
   ) => void;
   switchWallet: (walletId: string) => Promise<void>;
   switchNetwork: (networkType: string, networkId: string) => void;
