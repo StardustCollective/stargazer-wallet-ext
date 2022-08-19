@@ -11,9 +11,9 @@ import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { EthChainId } from './EVMChainController/types';
 import { getNetworkFromChainId, getPlatformFromMainnet, isTestnet, validateAddress } from './EVMChainController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
-import { addAsset, removeAsset } from 'state/vault';
+import { addAsset, removeAsset, addCustomAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
-import { addCustomAsset, clearCustomAsset, clearSearchAssets as clearSearch, removeCustomAsset } from 'state/erc20assets';
+import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
@@ -34,7 +34,6 @@ export interface IAssetsController {
   clearCustomToken: () => void;
   addCustomERC20Asset: (networkType: string, address: string, name: string, symbol: string, decimals: string) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
-  getCustomAssets: () => void;
   fetchWalletNFTInfo: (address: string) => Promise<void>;
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
@@ -210,17 +209,7 @@ const AssetsController = (): IAssetsController => {
   }
 
   const removeCustomERC20Asset = (asset: IAssetInfoState): void => {
-    store.dispatch(removeCustomAsset(asset));
     removeERC20AssetFn(asset);
-  }
-
-  const getCustomAssets = (): void => {
-    const { assets } = store.getState();
-    for (const asset in assets) {
-      if (assets[asset]?.custom) {
-        store.dispatch(addCustomAsset(assets[asset]));
-      }
-    }
   }
 
   const addERC20AssetFn = (asset: IAssetInfoState): void => {
@@ -269,7 +258,6 @@ const AssetsController = (): IAssetsController => {
      clearCustomToken,
      addCustomERC20Asset,
      removeCustomERC20Asset,
-     getCustomAssets,
      fetchWalletNFTInfo,
      fetchSupportedAssets,
      searchERC20Assets,

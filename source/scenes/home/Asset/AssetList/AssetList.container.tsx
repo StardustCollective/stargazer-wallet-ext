@@ -45,8 +45,8 @@ import IVaultState from 'state/vault/types';
 const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
-  const { constellationAssets, erc20assets, customAssets, searchAssets, loading }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
-  const { activeWallet, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { constellationAssets, erc20assets, searchAssets, loading }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
+  const { activeWallet, activeNetwork, customAssets }: IVaultState = useSelector((state: RootState) => state.vault);
   const activeNetworkAssets = useSelector(walletsSelectors.selectActiveNetworkAssets);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   
@@ -85,11 +85,12 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
     if (searchValue) {
       const searchLowerCase = searchValue?.toLocaleLowerCase();
+      constellation = constellation.concat(customAssets);
       constellation = filterArrayByValue(constellation, searchLowerCase);
       if (activeNetwork.Ethereum !== 'mainnet') {
-        all = constellation.concat(customAssets);
+        all = constellation;
       } else {
-        all = constellation.concat(customAssets).concat(search);
+        all = constellation.concat(search);
       }
     } else {
       all = constellation.concat(customAssets).concat(erc20);

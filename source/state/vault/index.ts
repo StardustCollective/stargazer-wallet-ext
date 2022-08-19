@@ -7,6 +7,7 @@ import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-key
 import findIndex from 'lodash/findIndex';
 import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState, IVaultWalletsStoreState, ICustomNetworkObject, ICustomNetworks } from './types';
 import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { IAssetInfoState } from 'state/assets/types';
 
 const initialState: IVaultState = {
   status: 0,
@@ -38,6 +39,7 @@ const initialState: IVaultState = {
     constellation: {},
     ethereum: {},
   },
+  customAssets: [],
   version: '2.1.1',
 };
 
@@ -210,7 +212,13 @@ const VaultState = createSlice({
           [data.id]: data,
         };
       }
-    }
+    },
+    addCustomAsset(state: IVaultState, action: PayloadAction<IAssetInfoState>) {
+      state.customAssets.push(action.payload);
+    },
+    removeCustomAsset(state: IVaultState, action: PayloadAction<IAssetInfoState>) {
+      state.customAssets = state.customAssets.filter(asset => asset.id !== action.payload.id);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getHasEncryptedVault.fulfilled, (state, action) => {
@@ -246,6 +254,8 @@ export const {
   removeAsset,
   migrateWalletComplete,
   addCustomNetwork,
+  addCustomAsset,
+  removeCustomAsset,
 } = VaultState.actions;
 
 export default VaultState.reducer;

@@ -1,5 +1,5 @@
 import { reload } from 'utils/browser';
-import IAssetListState from 'state/assets/types';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
 import IVaultState, { AssetType } from 'state/vault/types';
@@ -34,6 +34,22 @@ const generateERC20assets = (assets: IAssetListState) => {
     return newAssets;
 }
 
+const generateCustomTokens = (assets: IAssetListState) => {
+    let newCustomAssets: IAssetInfoState[] = [];
+    for(const assetId in assets) {
+        const assetInfo = assets[assetId];
+        if (!!assetInfo?.custom) {
+            const newId = `${assetId}-${assetInfo.network}`;
+            const customAsset = {
+                id: newId,
+                ...assetInfo,
+            }
+            newCustomAssets.push(customAsset);
+        }
+    }
+    return newCustomAssets;
+}
+
 const MigrateRunner = async (oldState: any) => {
     try {
         const newState: V3_7_0ActiveNetworkState = {
@@ -60,6 +76,7 @@ const MigrateRunner = async (oldState: any) => {
                     constellation: {},
                     ethereum: {},
                 },
+                customAssets: generateCustomTokens(oldState.assets),
                 version: '3.7.0',
             },
 

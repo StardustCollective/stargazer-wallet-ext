@@ -116,41 +116,65 @@ export class AccountController implements IAccountController {
         label: 'Ethereum',
         address: account.address,
       };
-
-      const polygonAsset = {
-        id: AssetType.Polygon,
-        type: AssetType.Ethereum,
-        label: 'Polygon',
-        address: account.address,
-      };
-
-      const bscAsset = {
-        id: AssetType.BSC,
-        type: AssetType.Ethereum,
-        label: 'BNB',
-        address: account.address,
-      };
-
-      const avaxAsset = {
-        id: AssetType.Avalanche,
-        type: AssetType.Ethereum,
-        label: 'Avalanche',
-        address: account.address,
-      };
       
-      const ETH_TOKENS = Object.values(assets)
+      const ERC_20_TOKENS = Object.values(assets)
                                 .filter((token) => token.type === AssetType.ERC20)
                                 .map((token) => token.id);
 
-      const erc20Assets = await this.buildAccountERC20Tokens(account.address, ETH_TOKENS);
+      const NETWORK_TOKENS = Object.values(assets)
+                                .filter((token) => ['AVAX', 'BNB', 'MATIC'].includes(token.symbol))
+                                .map((token) => token.id);
+
+      const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);                          
+
+      const erc20Assets = await this.buildAccountERC20Tokens(account.address, ERC_20_TOKENS);
 
       const erc721Assets = await this.buildAccountERC721Tokens(account.address);
 
-      return [ethAsset, avaxAsset, bscAsset, polygonAsset, ...erc20Assets, ...erc721Assets];
+      return [ethAsset, ...networkAssets, ...erc20Assets, ...erc721Assets];
     }
 
     console.log('Unknown account network: cannot build asset list');
     return [];
+  }
+
+  buildNetworkAssets(address: string, tokens: string[]): IAssetState[] {
+    const networkAssets = [];
+
+    const polygonAsset = {
+      id: AssetType.Polygon,
+      type: AssetType.Ethereum,
+      label: 'Polygon',
+      address,
+    };
+
+    const bscAsset = {
+      id: AssetType.BSC,
+      type: AssetType.Ethereum,
+      label: 'BNB',
+      address,
+    };
+
+    const avaxAsset = {
+      id: AssetType.Avalanche,
+      type: AssetType.Ethereum,
+      label: 'Avalanche',
+      address,
+    };
+
+    if (tokens.includes(polygonAsset.id)) {
+      networkAssets.push(polygonAsset);
+    }
+
+    if (tokens.includes(bscAsset.id)) {
+      networkAssets.push(bscAsset);
+    }
+
+    if (tokens.includes(avaxAsset.id)) {
+      networkAssets.push(avaxAsset);
+    }
+
+    return networkAssets;
   }
 
   async buildAccountAssetInfo(walletId: string): Promise<void> {

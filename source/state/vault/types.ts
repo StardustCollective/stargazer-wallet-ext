@@ -7,6 +7,7 @@ import {
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
+import { IAssetInfoState } from 'state/assets/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -116,4 +117,5 @@ export default interface IVaultState {
   activeNetwork: ActiveNetwork;
   migrateWallet?: any;
   customNetworks: ICustomNetworks;
+  customAssets: IAssetInfoState[];
 }

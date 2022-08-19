@@ -52,6 +52,7 @@ const MigrateRunner = async (oldState: V1WalletState) => {
         constellation: {},
         ethereum: {},
       },
+      customAssets: [],
       version: '2.1',
     };
 

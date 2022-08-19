@@ -115,7 +115,6 @@ export const initialState: IERC20AssetsListState = {
   searchAssets: null,
   error: null,
   constellationAssets: constellationInitialValues,
-  customAssets: [],
   customAssetForm: {
     tokenAddress: '',
     tokenName: '',
@@ -132,12 +131,6 @@ const ERC20AssetsListState = createSlice({
     clearSearchAssets(state: IERC20AssetsListState) {
       state.loading = false;
       state.searchAssets = [];
-    },
-    addCustomAsset(state: IERC20AssetsListState, action: PayloadAction<IAssetInfoState>) {
-      state.customAssets.push(action.payload);
-    },
-    removeCustomAsset(state: IERC20AssetsListState, action: PayloadAction<IAssetInfoState>) {
-      state.customAssets = state.customAssets.filter(asset => asset.id !== action.payload.id);
     },
     setCustomAsset(state: IERC20AssetsListState, action: PayloadAction<ICustomAssetForm>) {
       state.customAssetForm.tokenAddress = action.payload.tokenAddress;
@@ -186,6 +179,6 @@ const ERC20AssetsListState = createSlice({
   }
 });
 
-export const { clearSearchAssets, setCustomAsset, clearCustomAsset, addCustomAsset, removeCustomAsset } = ERC20AssetsListState.actions;
+export const { clearSearchAssets, setCustomAsset, clearCustomAsset } = ERC20AssetsListState.actions;
 
 export default ERC20AssetsListState.reducer;
