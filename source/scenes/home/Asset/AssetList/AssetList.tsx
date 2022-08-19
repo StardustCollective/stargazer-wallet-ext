@@ -54,8 +54,8 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
             const itemChainId = item?.network;
             const itemNetwork = getNetworkFromChainId(itemChainId);
             const network = item?.symbol === 'DAG' ? 'Constellation' : getNetworkLabel(itemChainId);
-            const differentNetwork = !['both'].includes(itemChainId) && activeNetwork[itemNetwork as keyof ActiveNetwork] !== itemChainId;
-            if (!isAssetSupported || differentNetwork) return null;
+            const hideToken = itemChainId !== 'both' && !['AVAX', 'BNB', 'MATIC'].includes(item?.symbol) && activeNetwork[itemNetwork as keyof ActiveNetwork] !== itemChainId;
+            if (!isAssetSupported || hideToken) return null;
             return <AssetWithToggle 
                       id={item?.id}
                       symbol={item?.symbol} 
