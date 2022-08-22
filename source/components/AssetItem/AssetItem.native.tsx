@@ -24,7 +24,7 @@ import NoConnectionIcon from 'assets/images/svg/no-connection.svg'
 ///////////////////////
 
 import { formatNumber, formatPrice, formatStringDecimal } from 'scenes/home/helpers';
-import { getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
+import { getNetworkLabel, getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////
 // Enums
@@ -51,7 +51,7 @@ import styles from './styles';
 // Component
 ///////////////////////
 
-const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked, showNetwork }: IAssetItem) => {
+const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked, showNetwork, activeNetwork }: IAssetItem) => {
   
   const netInfo = useNetInfo();
 
@@ -62,7 +62,14 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
   const renderAssetPriceSection = (assetInfoData: IAssetInfoState) => {
 
     if (showNetwork) {
-      const label = assetInfoData.type === AssetType.Constellation ? 'Constellation' : getNetworkLabel(assetInfoData.network);
+      let network = assetInfoData.network;
+      
+      if (['ETH', 'AVAX', 'BNB', 'MATIC'].includes(assetInfoData?.symbol)) {
+        const currentNetwork = getNetworkFromChainId(network);
+        network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+      }
+
+      const label = getNetworkLabel(network, assetInfoData?.symbol);
 
       return (
         <View>

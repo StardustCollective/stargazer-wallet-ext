@@ -20,7 +20,7 @@ import copyIcon from 'assets/images/svg/copy.svg';
 // Utils
 ///////////////////////////
 
-import { getNetworkLabel, getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { getNetworkFromChainId, getNetworkLabel, getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Types
@@ -41,12 +41,17 @@ import styles from './QRCodeModal.scss';
 
 import { CONSTELLATION_LOGO } from 'constants/index';
 
-const QRCodeModal: FC<IQRCodeModal> = ({ open, address, asset, onClose, copyAddress, textTooltip }) => {
+const QRCodeModal: FC<IQRCodeModal> = ({ open, address, asset, onClose, copyAddress, textTooltip, activeNetwork }) => {
   ///////////////////////////
   // Render
   ///////////////////////////
   const formattedAddress = `${address.substring(0, 10)}...${address.substring(address.length - 10, address.length)}`;
-  const networkLabel = asset?.symbol === 'DAG' ? 'Constellation' : getNetworkLabel(asset?.network);
+  let network = asset?.network;
+  if (['ETH', 'AVAX', 'BNB', 'MATIC'].includes(asset?.symbol)) {
+    const currentNetwork = getNetworkFromChainId(network);
+    network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+  }
+  const networkLabel = getNetworkLabel(network, asset?.symbol);
   const networkLogo = asset?.symbol === 'DAG' ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
   return (
     <Portal>

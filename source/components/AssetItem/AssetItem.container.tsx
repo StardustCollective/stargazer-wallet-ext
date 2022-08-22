@@ -38,7 +38,7 @@ const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked,
   // Hooks
   ///////////////////////
 
-  const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { balances, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
   const isNFT = isAssetNFT(assetInfo);
 
@@ -52,6 +52,7 @@ const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked,
       fiat={fiat}
       isNFT={isNFT}
       showNetwork={showNetwork}
+      activeNetwork={activeNetwork}
     />
   )
 

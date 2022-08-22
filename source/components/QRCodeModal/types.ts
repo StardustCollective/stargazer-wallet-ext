@@ -1,4 +1,5 @@
 import { IAssetInfoState } from "state/assets/types";
+import { ActiveNetwork } from "state/vault/types";
 
 export interface IQRCodeModal {
   address: string;
@@ -7,4 +8,5 @@ export interface IQRCodeModal {
   onClose: () => void;
   textTooltip: string;
   copyAddress: (address: string) => void;
+  activeNetwork: ActiveNetwork;
 }

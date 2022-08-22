@@ -23,6 +23,7 @@ import AssetButtons from '../AssetButtons';
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
   activeAsset,
+  activeNetwork,
   balanceText,
   fiatAmount,
   transactions,
@@ -59,6 +60,7 @@ const AssetDetail: FC<IAssetSettings> = ({
             asset={assets[activeAsset?.id]}
             textTooltip={textTooltip}
             copyAddress={copyAddress}
+            activeNetwork={activeNetwork}
           />
           <TxsPanel address={activeAsset.address} transactions={transactions} />
         </>

@@ -2,7 +2,7 @@
 // Imports
 ///////////////////////
 
-import { IAssetState, AssetBalances } from 'state/vault/types';
+import { IAssetState, AssetBalances, ActiveNetwork } from 'state/vault/types';
 import { IAssetInfoState } from 'state/assets/types';
 import { INFTInfoState } from 'state/nfts/types';
 import { IFiatState } from 'state/price/types';
@@ -23,4 +23,5 @@ export default interface IAssetItem {
   fiat?: IFiatState;
   isNFT?: boolean;
   showNetwork?: boolean;
+  activeNetwork?: ActiveNetwork;
 }

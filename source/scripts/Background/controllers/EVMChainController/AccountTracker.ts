@@ -8,7 +8,8 @@ type TokenBalances = {
 type TokenInfo = {
   contractAddress: string,
   decimals: number,
-  balance?: string
+  balance?: string,
+  chain: string,
 }
 
 export class AccountTracker {
@@ -50,7 +51,7 @@ export class AccountTracker {
       if (tokenAddresses?.length) {
         const rawTokenBalances = await tokenContractHelper.getAddressBalances(this.provider, this.ethAddress, tokenAddresses, this.chainId);
         this.accounts.forEach(t => {
-          tokenBalances[t.contractAddress] = ethers.utils.formatUnits(rawTokenBalances[t.contractAddress], t.decimals) || '0';
+          tokenBalances[`${t.contractAddress}-${t.chain}`] = ethers.utils.formatUnits(rawTokenBalances[t.contractAddress], t.decimals) || '0';
         })
       }
       this.callback(mainTokenBalanceNum, tokenBalances);

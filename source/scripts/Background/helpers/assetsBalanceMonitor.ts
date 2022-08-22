@@ -14,8 +14,7 @@ import IVaultState, {
 } from '../../../state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
-import { equalMainTokenAddress, getAllEVMChains, getMainnetFromTestnet, isTestnet } from '../controllers/EVMChainController/utils';
-import { AllChainsIds } from '../controllers/EVMChainController/types';
+import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 
 const FIVE_SECONDS = 5 * 1000;
 
@@ -180,17 +179,11 @@ export class AssetsBalanceMonitor {
       // TODO-349: Check if tokens are filtered correctly
       const chainTokens = activeWallet.assets
         .filter((a) =>  {
-          const chain = !isTestnet(chainId as AllChainsIds) ? 
-                        chainId : 
-                        equalMainTokenAddress(chainId as AllChainsIds) ?
-                        getMainnetFromTestnet(chainId as AllChainsIds) : 
-                        chainId;
-
-          return a.type === AssetType.ERC20 && assets[a.id]?.network === chain;
+          return a.type === AssetType.ERC20 && assets[a.id]?.network === chainId;
         })
         .map((a) => {
-          const { address, decimals } = assets[a.id];
-          return { contractAddress: address, decimals };
+          const { address, decimals, network } = assets[a.id];
+          return { contractAddress: address, decimals, chain: network };
         });
 
       // Main token type

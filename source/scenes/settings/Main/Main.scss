@@ -59,16 +59,17 @@
     .footer__left {
       display: flex;
       flex: 2;
+      min-height: 32px;
       align-items: center;
       cursor: pointer;
-      margin-bottom: 7px;
       img {
-        margin-right: 10px;
+        margin-right: 8px;
       }
     }
     .footer__right {
       display: flex;
       flex: 1;
+      min-height: 32px;
       align-items: center;
       justify-content: flex-end;
       cursor: pointer;

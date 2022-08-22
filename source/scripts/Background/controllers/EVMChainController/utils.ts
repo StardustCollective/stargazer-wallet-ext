@@ -26,30 +26,6 @@ export const isTestnet = (network: AllChainsIds | string) => {
   return testnets.includes(network);
 };
 
-// TODO-349: Check all these methods
-export const equalMainTokenAddress = (chainId: AllChainsIds) => {
-  switch (chainId) {
-    case 'matic':
-    case 'maticmum':
-      return true;
-    case 'bsc':
-    case 'bsc-testnet':
-    // TODO-349: Check if BSC token has the same address
-      return true;
-    case 'avalanche-mainnet':
-    case 'avalanche-testnet':
-    // TODO-349: Check if AVAX has the same address
-      return true;
-    case 'mainnet':
-    case 'rinkeby':
-    case 'ropsten':
-      return false;
-  
-    default:
-      return false;
-  }
-}
-
 export const getNetworkLogo = (network: string) => {
   switch (network) {
     case 'both':
@@ -104,7 +80,12 @@ export const getPlatformFromMainnet = (network: string): string => {
   }
 }
 
-export const getNetworkLabel = (network: string): string => {
+export const getNetworkLabel = (network: string, assetSymbol: string): string => {
+
+  if (assetSymbol === 'DAG') {
+    return 'Constellation';
+  }
+
   switch (network) {
     case 'mainnet':
       return 'ERC-20';

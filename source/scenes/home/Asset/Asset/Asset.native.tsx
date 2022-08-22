@@ -11,7 +11,7 @@ import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
 
-import { getNetworkLabel, getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { getNetworkLabel, getNetworkLogo, getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { CONSTELLATION_LOGO } from 'constants/index';
 
 import TxsPanel from '../TxsPanel';
@@ -24,6 +24,7 @@ const QR_CODE_SIZE = 240;
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
   activeAsset,
+  activeNetwork,
   balanceText,
   fiatAmount,
   transactions,
@@ -36,7 +37,12 @@ const AssetDetail: FC<IAssetSettings> = ({
 }) => {
   const activeAssetStyle = StyleSheet.flatten([styles.mask, activeAsset && activeWallet ? styles.loaderHide : {}]);
   const asset = assets[activeAsset?.id];
-  const networkLabel = asset?.symbol === 'DAG' ? 'Constellation' : getNetworkLabel(asset?.network);
+  let network = asset?.network;
+  if (['ETH', 'AVAX', 'BNB', 'MATIC'].includes(asset?.symbol)) {
+    const currentNetwork = getNetworkFromChainId(network);
+    network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+  }
+  const networkLabel = getNetworkLabel(network, asset?.symbol);
   const networkLogo = asset?.symbol === 'DAG' ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
 
   if (activeWallet && activeAsset) {

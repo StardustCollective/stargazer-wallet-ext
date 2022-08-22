@@ -98,6 +98,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
       <AssetDetail
         activeWallet={activeWallet}
         activeAsset={activeAsset}
+        activeNetwork={activeNetwork}
         balanceText={BALANCE_TEXT}
         fiatAmount={FIAT_AMOUNT}
         transactions={transactions}

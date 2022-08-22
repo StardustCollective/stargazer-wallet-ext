@@ -53,8 +53,9 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
             const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
             const itemChainId = item?.network;
             const itemNetwork = getNetworkFromChainId(itemChainId);
-            const network = item?.symbol === 'DAG' ? 'Constellation' : getNetworkLabel(itemChainId);
-            const hideToken = itemChainId !== 'both' && !['AVAX', 'BNB', 'MATIC'].includes(item?.symbol) && activeNetwork[itemNetwork as keyof ActiveNetwork] !== itemChainId;
+            const currentActiveNetwork = activeNetwork[itemNetwork as keyof ActiveNetwork];
+            const network = getNetworkLabel(currentActiveNetwork, item?.symbol);
+            const hideToken = itemChainId !== 'both' && !['AVAX', 'BNB', 'MATIC'].includes(item?.symbol) && currentActiveNetwork !== itemChainId;
             if (!isAssetSupported || hideToken) return null;
             return <AssetWithToggle 
                       id={item?.id}

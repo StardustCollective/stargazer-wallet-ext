@@ -82,19 +82,19 @@ class NetworkController {
 
   // TODO-349: Check if getProviderByActiveAsset is fine in all scenarios
 
-  getNetwork() {
+  public getNetwork() {
     return this.getProviderByActiveAsset().getNetwork();
   }
 
-  getExplorerURL() {
+  public getExplorerURL() {
     return this.getProviderByActiveAsset().getExplorerUrl();
   }
 
-  getAddress(): string {
+  public getAddress(): string {
     return this.getProviderByActiveAsset().getAddress();
   }
 
-  getWallet(): Wallet {
+  public getWallet(): Wallet {
     return this.getProviderByActiveAsset().getWallet();
   }
 
@@ -110,7 +110,7 @@ class NetworkController {
     return this.getProviderByActiveAsset().estimateGas(from, to, data);
   }
 
-  async getTokenInfo(address: string, chainId?: string) {
+  public async getTokenInfo(address: string, chainId?: string) {
     let provider = this.getProviderByActiveAsset();
     if (!!chainId) {
       const network = getNetworkFromChainId(chainId);

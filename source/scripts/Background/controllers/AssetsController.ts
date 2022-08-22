@@ -225,8 +225,7 @@ const AssetsController = (): IAssetsController => {
       address: ethAddress,
       contractAddress: asset.address,
     }));
-    // TODO-349: Check if this works
-    const assetInfo = await accountController.networkController.getTokenInfo(asset.address);
+    const assetInfo = await accountController.networkController.getTokenInfo(asset.address, asset.network);
     if (assetInfo && assetInfo.decimals !== asset.decimals) {
       store.dispatch(updateAssetDecimals({ address: asset.address, decimals: assetInfo.decimals }));
     }
