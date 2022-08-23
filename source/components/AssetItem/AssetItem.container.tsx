@@ -25,7 +25,7 @@ import AssetItem from './AssetItem';
 ///////////////////////
 
 const isAssetNFT = (assetInfo: any) => {
-  return [AssetType.ERC721, AssetType.ERC1155].includes(assetInfo.type);
+  return [AssetType.ERC721, AssetType.ERC1155].includes(assetInfo?.type);
 };
 
 ///////////////////////
@@ -40,6 +40,9 @@ const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked,
 
   const { balances, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
+
+  if (!assetInfo) return null;
+
   const isNFT = isAssetNFT(assetInfo);
 
   return (

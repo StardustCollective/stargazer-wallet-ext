@@ -4,17 +4,53 @@ import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
-import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { AVALANCHE_LOGO, AVALANCHE_NETWORK, BSC_LOGO, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring'
 import { saveState } from 'state/localStorage';
 
-type V3_7_0ActiveNetworkState = {
+type V3_8_0ActiveNetworkState = {
     assets: IAssetListState
     nfts: INFTListState,
     contacts: IContactBookState,
     dapp: {},
     price: IPriceState,
     vault: IVaultState
+}
+
+const avaxAsset = {
+    id: AssetType.Avalanche,
+    address: '',
+    label: 'Avalanche',
+    symbol: 'AVAX',
+    type: AssetType.Ethereum,
+    priceId: 'avalanche-2',
+    network: 'avalanche-mainnet',
+    logo: AVALANCHE_LOGO,
+    decimals: 18,
+}
+
+const bscAsset = {
+    id: AssetType.BSC,
+    address: '',
+    label: 'BNB',
+    symbol: 'BNB',
+    type: AssetType.Ethereum,
+    priceId: 'binancecoin',
+    network: 'bsc',
+    logo: BSC_LOGO,
+    decimals: 18,
+}
+
+const polygonAsset = {
+    id: AssetType.Polygon,
+    address: '',
+    label: 'Polygon',
+    symbol: 'MATIC',
+    type: AssetType.Ethereum,
+    priceId: 'matic-network',
+    network: 'matic',
+    logo: POLYGON_LOGO,
+    decimals: 18,
 }
 
 const generateERC20assets = (assets: IAssetListState) => {
@@ -31,6 +67,9 @@ const generateERC20assets = (assets: IAssetListState) => {
             newAssets[assetId] = assetInfo;
         }
     }
+    newAssets[AssetType.Avalanche] = avaxAsset;
+    newAssets[AssetType.BSC] = bscAsset;
+    newAssets[AssetType.Polygon] = polygonAsset;
     return newAssets;
 }
 
@@ -52,7 +91,7 @@ const generateCustomTokens = (assets: IAssetListState) => {
 
 const MigrateRunner = async (oldState: any) => {
     try {
-        const newState: V3_7_0ActiveNetworkState = {
+        const newState: V3_8_0ActiveNetworkState = {
             ...oldState,
             assets: generateERC20assets(oldState.assets),
             vault: {
@@ -77,15 +116,15 @@ const MigrateRunner = async (oldState: any) => {
                     ethereum: {},
                 },
                 customAssets: generateCustomTokens(oldState.assets),
-                version: '3.7.0',
+                version: '3.8.0',
             },
 
         };
         await saveState(newState);
-        console.log('Migrate to <v3.7.0> successfully!');
+        console.log('Migrate to <v3.8.0> successfully!');
         reload();
     } catch (error) {
-        console.log('<v3.7.0> Migration Error');
+        console.log('<v3.8.0> Migration Error');
         console.log(error);
     }
 };

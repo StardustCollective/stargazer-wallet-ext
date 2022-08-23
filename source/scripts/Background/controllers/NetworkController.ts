@@ -68,7 +68,7 @@ class NetworkController {
   private getProviderByActiveAsset(): EVMChainController {
     const assets = store.getState().assets;
     const { activeAsset } = store.getState().vault;
-    if (!activeAsset) return null;
+    if (!activeAsset) throw new Error('No active asset');
     const activeAssetInfo = assets[activeAsset.id];
     const network = getNetworkFromChainId(activeAssetInfo.network);
     const networkToProvider = {
@@ -83,35 +83,82 @@ class NetworkController {
   // TODO-349: Check if getProviderByActiveAsset is fine in all scenarios
 
   public getNetwork() {
-    return this.getProviderByActiveAsset().getNetwork();
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: getNetwork - provider not found.');
+    }
+    return provider.getNetwork();
   }
 
-  public getExplorerURL() {
-    return this.getProviderByActiveAsset().getExplorerUrl();
+  public getExplorerURL() { 
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: getExplorerUrl - provider not found.');
+    }
+    return provider.getExplorerUrl();
   }
 
   public getAddress(): string {
-    return this.getProviderByActiveAsset().getAddress();
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: getAddress - provider not found.');
+    }
+    return provider.getAddress();
   }
 
   public getWallet(): Wallet {
-    return this.getProviderByActiveAsset().getWallet();
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: getWallet - provider not found.');
+    }
+    return provider.getWallet();
   }
 
   validateAddress(address: string): boolean {
-    return this.getProviderByActiveAsset().validateAddress(address);
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: validateAddress - provider not found.');
+    }
+    return provider.validateAddress(address);
   }
 
   createERC20Contract(address: string) {
-    return this.getProviderByActiveAsset().createERC20Contract(address);
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: createERC20Contract - provider not found.');
+    }
+    return provider.createERC20Contract(address);
   }
 
   async estimateGas(from: string, to: string, data: string) {
-    return this.getProviderByActiveAsset().estimateGas(from, to, data);
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: estimateGas - provider not found.');
+    }
+    return provider.estimateGas(from, to, data);
   }
 
   public async getTokenInfo(address: string, chainId?: string) {
-    let provider = this.getProviderByActiveAsset();
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: getTokenInfo - provider not found.');
+    }
     if (!!chainId) {
       const network = getNetworkFromChainId(chainId);
       const networkToProvider = {
@@ -126,23 +173,53 @@ class NetworkController {
   }
 
   async estimateGasPrices() {
-    return this.getProviderByActiveAsset().estimateGasPrices();
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: estimateGasPrices - provider not found.');
+    }
+    return provider.estimateGasPrices();
   }
 
   async getTransactions(params?: TxHistoryParams) {
-    return this.getProviderByActiveAsset().getTransactions(params);
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: getTransactions - provider not found.');
+    }
+    return provider.getTransactions(params);
   }
 
   async waitForTransaction(hash: string) {
-    return this.getProviderByActiveAsset().waitForTransaction(hash);
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: waitForTransaction - provider not found.');
+    }
+    return provider.waitForTransaction(hash);
   }
 
   async estimateTokenTransferGasLimit(recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) {
-    return this.getProviderByActiveAsset().estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: estimateTokenTransferGasLimit - provider not found.');
+    }
+    return provider.estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
   }
 
   async transfer(txOptions: any) {
-    return this.getProviderByActiveAsset().transfer(txOptions);
+    let provider;
+    try {
+      provider = this.getProviderByActiveAsset();
+    } catch (err) {
+      console.log('Error: transfer - provider not found.');
+    }
+    return provider.transfer(txOptions);
   }
 
 }

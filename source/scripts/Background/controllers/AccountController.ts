@@ -140,11 +140,11 @@ export class AccountController implements IAccountController {
 
   buildNetworkAssets(address: string, tokens: string[]): IAssetState[] {
     const networkAssets = [];
-
-    const polygonAsset = {
-      id: AssetType.Polygon,
+    
+    const avaxAsset = {
+      id: AssetType.Avalanche,
       type: AssetType.Ethereum,
-      label: 'Polygon',
+      label: 'Avalanche',
       address,
     };
 
@@ -155,23 +155,23 @@ export class AccountController implements IAccountController {
       address,
     };
 
-    const avaxAsset = {
-      id: AssetType.Avalanche,
+    const polygonAsset = {
+      id: AssetType.Polygon,
       type: AssetType.Ethereum,
-      label: 'Avalanche',
+      label: 'Polygon',
       address,
     };
 
-    if (tokens.includes(polygonAsset.id)) {
-      networkAssets.push(polygonAsset);
+    if (tokens.includes(avaxAsset.id)) {
+      networkAssets.push(avaxAsset);
     }
 
     if (tokens.includes(bscAsset.id)) {
       networkAssets.push(bscAsset);
     }
 
-    if (tokens.includes(avaxAsset.id)) {
-      networkAssets.push(avaxAsset);
+    if (tokens.includes(polygonAsset.id)) {
+      networkAssets.push(polygonAsset);
     }
 
     return networkAssets;

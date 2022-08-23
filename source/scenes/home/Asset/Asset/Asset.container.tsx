@@ -37,7 +37,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     return Number((activeAsset && balances[activeAsset.id]) || 0);
   }, [activeAsset, balances]);
 
-  const { id } = accountController.networkController.getNetwork();
+  const { id } = accountController.networkController?.getNetwork() || {};
   const network = getNetworkFromChainId(id);
 
   const networkId =

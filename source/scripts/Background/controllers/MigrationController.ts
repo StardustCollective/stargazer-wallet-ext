@@ -57,11 +57,11 @@ const MigrationController = async () => {
     }
 
   /** 
-   * version < 3_7_0
+   * version < 3_8_0
    */
   if (!state.vault.activeNetwork.Polygon) {
-    const v3_7_0 = require('../migration/v3_7_0');
-    await v3_7_0.default(state);
+    const v3_8_0 = require('../migration/v3_8_0');
+    await v3_8_0.default(state);
   }
 
 };
