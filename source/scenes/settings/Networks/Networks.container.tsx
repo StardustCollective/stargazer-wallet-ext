@@ -6,8 +6,8 @@ import { useLinkTo } from '@react-navigation/native';
 import { getWalletController } from 'utils/controllersUtils';
 
 import { RootState } from 'state/store';
-import IVaultState from 'state/vault/types';
-import { AVALANCHE_LOGO, AVALANCHE_NETWORK, BSC_LOGO, BSC_NETWORK, CONSTELLATION_LOGO, DAG_NETWORK, ETHEREUM_LOGO, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
+import IVaultState, { ActiveNetwork } from 'state/vault/types';
+import { CONSTELLATION_LOGO, DAG_NETWORK, ETHEREUM_LOGO, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
 
 import Container from 'components/Container';
 import Networks from './Networks';
@@ -18,7 +18,9 @@ const NetworksContainer: FC = () => {
   const linkTo = useLinkTo();
 
   const handleChangeNetwork = (networkType: string, networkId: string) => {
-    walletController.switchNetwork(networkType, networkId);
+    if (activeNetwork[networkType as keyof ActiveNetwork] !== networkId) {
+      walletController.switchNetwork(networkType, networkId);
+    }
   };
 
   const handleAddNetwork = () => {
@@ -80,38 +82,39 @@ const NetworksContainer: FC = () => {
       },
       items: generateEthereumChains(),
     },
-    {
-      icon: AVALANCHE_LOGO,
-      key: 'Avalanche',
-      title: 'Avalanche',
-      value: activeNetwork['Avalanche'],
-      onChange: (value: string) => {
-        handleChangeNetwork('Avalanche', value);
-      },
-      containerStyle: {
-        zIndex: 8000,
-      },
-      items: [
-        { value: AVALANCHE_NETWORK['avalanche-mainnet'].id, label: AVALANCHE_NETWORK['avalanche-mainnet'].label  },
-        { value: AVALANCHE_NETWORK['avalanche-testnet'].id, label: AVALANCHE_NETWORK['avalanche-testnet'].label },
-      ],
-    },
-    {
-      icon: BSC_LOGO,
-      key: 'BNB Chain',
-      title: 'BNB Chain',
-      value: activeNetwork['BSC'],
-      onChange: (value: string) => {
-        handleChangeNetwork('BSC', value);
-      },
-      containerStyle: {
-        zIndex: 7000,
-      },
-      items: [
-        { value: BSC_NETWORK.bsc.id, label: BSC_NETWORK.bsc.label  },
-        { value: BSC_NETWORK['bsc-testnet'].id, label: BSC_NETWORK['bsc-testnet'].label },
-      ],
-    },
+    // TODO-349: Only Polygon
+    // {
+    //   icon: AVALANCHE_LOGO,
+    //   key: 'Avalanche',
+    //   title: 'Avalanche',
+    //   value: activeNetwork['Avalanche'],
+    //   onChange: (value: string) => {
+    //     handleChangeNetwork('Avalanche', value);
+    //   },
+    //   containerStyle: {
+    //     zIndex: 8000,
+    //   },
+    //   items: [
+    //     { value: AVALANCHE_NETWORK['avalanche-mainnet'].id, label: AVALANCHE_NETWORK['avalanche-mainnet'].label  },
+    //     { value: AVALANCHE_NETWORK['avalanche-testnet'].id, label: AVALANCHE_NETWORK['avalanche-testnet'].label },
+    //   ],
+    // },
+    // {
+    //   icon: BSC_LOGO,
+    //   key: 'BNB Chain',
+    //   title: 'BNB Chain',
+    //   value: activeNetwork['BSC'],
+    //   onChange: (value: string) => {
+    //     handleChangeNetwork('BSC', value);
+    //   },
+    //   containerStyle: {
+    //     zIndex: 7000,
+    //   },
+    //   items: [
+    //     { value: BSC_NETWORK.bsc.id, label: BSC_NETWORK.bsc.label  },
+    //     { value: BSC_NETWORK['bsc-testnet'].id, label: BSC_NETWORK['bsc-testnet'].label },
+    //   ],
+    // },
     {
       icon: POLYGON_LOGO,
       key: 'Polygon',

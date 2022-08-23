@@ -4,7 +4,7 @@ import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
 import IVaultState, { AssetType } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
-import { AVALANCHE_LOGO, AVALANCHE_NETWORK, BSC_LOGO, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
+import { DAG_NETWORK, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring'
 import { saveState } from 'state/localStorage';
 
@@ -17,29 +17,30 @@ type V3_8_0ActiveNetworkState = {
     vault: IVaultState
 }
 
-const avaxAsset = {
-    id: AssetType.Avalanche,
-    address: '',
-    label: 'Avalanche',
-    symbol: 'AVAX',
-    type: AssetType.Ethereum,
-    priceId: 'avalanche-2',
-    network: 'avalanche-mainnet',
-    logo: AVALANCHE_LOGO,
-    decimals: 18,
-}
+// TODO-349: Only Polygon
+// const avaxAsset = {
+//     id: AssetType.Avalanche,
+//     address: '',
+//     label: 'Avalanche',
+//     symbol: 'AVAX',
+//     type: AssetType.Ethereum,
+//     priceId: 'avalanche-2',
+//     network: 'avalanche-mainnet',
+//     logo: AVALANCHE_LOGO,
+//     decimals: 18,
+// }
 
-const bscAsset = {
-    id: AssetType.BSC,
-    address: '',
-    label: 'BNB',
-    symbol: 'BNB',
-    type: AssetType.Ethereum,
-    priceId: 'binancecoin',
-    network: 'bsc',
-    logo: BSC_LOGO,
-    decimals: 18,
-}
+// const bscAsset = {
+//     id: AssetType.BSC,
+//     address: '',
+//     label: 'BNB',
+//     symbol: 'BNB',
+//     type: AssetType.Ethereum,
+//     priceId: 'binancecoin',
+//     network: 'bsc',
+//     logo: BSC_LOGO,
+//     decimals: 18,
+// }
 
 const polygonAsset = {
     id: AssetType.Polygon,
@@ -67,8 +68,9 @@ const generateERC20assets = (assets: IAssetListState) => {
             newAssets[assetId] = assetInfo;
         }
     }
-    newAssets[AssetType.Avalanche] = avaxAsset;
-    newAssets[AssetType.BSC] = bscAsset;
+    // TODO-349: Only Polygon
+    // newAssets[AssetType.Avalanche] = avaxAsset;
+    // newAssets[AssetType.BSC] = bscAsset;
     newAssets[AssetType.Polygon] = polygonAsset;
     return newAssets;
 }
@@ -100,15 +102,17 @@ const MigrateRunner = async (oldState: any) => {
                 activeNetwork: {
                     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
                     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
-                    'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
-                    'BSC': BSC_NETWORK.bsc.id,
+                    // TODO-349: Only Polygon
+                    // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
+                    // 'BSC': BSC_NETWORK.bsc.id,
                     'Polygon': POLYGON_NETWORK.matic.id,
                 },
                 balances: {
                     [AssetType.Constellation]: '0',
                     [AssetType.Ethereum]: '0',
-                    [AssetType.Avalanche]: '0',
-                    [AssetType.BSC]: '0',
+                    // TODO-349: Only Polygon
+                    // [AssetType.Avalanche]: '0',
+                    // [AssetType.BSC]: '0',
                     [AssetType.Polygon]: '0',
                 },
                 customNetworks: {

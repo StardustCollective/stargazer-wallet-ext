@@ -49,7 +49,8 @@ const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, to
     const itemNetwork = getNetworkFromChainId(itemChainId);
     const currentActiveNetwork = activeNetwork[itemNetwork];
     const network = getNetworkLabel(currentActiveNetwork, item?.symbol);
-    const hideToken = itemChainId !== 'both' && !['AVAX', 'BNB', 'MATIC'].includes(item?.symbol) && currentActiveNetwork !== itemChainId;
+    // TODO-349: Only Polygon ['AVAX', 'BNB', 'MATIC']
+    const hideToken = itemChainId !== 'both' && !['MATIC'].includes(item?.symbol) && currentActiveNetwork !== itemChainId;
     if (!isAssetSupported || hideToken) return null;
     return <AssetWithToggle 
               id={item?.id}

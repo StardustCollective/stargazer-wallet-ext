@@ -47,7 +47,8 @@ const QRCodeModal: FC<IQRCodeModal> = ({ open, address, asset, onClose, copyAddr
   ///////////////////////////
   const formattedAddress = `${address.substring(0, 10)}...${address.substring(address.length - 10, address.length)}`;
   let network = asset?.network;
-  if (['ETH', 'AVAX', 'BNB', 'MATIC'].includes(asset?.symbol)) {
+  // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
+  if (['ETH', 'MATIC'].includes(asset?.symbol)) {
     const currentNetwork = getNetworkFromChainId(network);
     network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
   }

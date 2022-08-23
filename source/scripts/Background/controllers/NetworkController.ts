@@ -1,6 +1,6 @@
 import EVMChainController from './EVMChainController';
-import { BSCSCAN_API_KEY, ETHERSCAN_API_KEY, POLYGONSCAN_API_KEY, SNOWTRACE_API_KEY,  } from 'utils/envUtil';
-import { AllChainsIds, AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
+import { ETHERSCAN_API_KEY, POLYGONSCAN_API_KEY } from 'utils/envUtil';
+import { AllChainsIds, EthChainId, PolygonChainId } from './EVMChainController/types';
 import { BigNumber, Wallet } from 'ethers';
 import store from 'state/store';
 import { TxHistoryParams } from './ChainsController';
@@ -13,16 +13,17 @@ class NetworkController {
   
   #ethereumNetwork: EVMChainController;
   #polygonNetwork: EVMChainController;
-  #bscNetwork: EVMChainController;
-  #avalancheNetwork: EVMChainController;
+  // TODO-349: Only Polygon
+  // #bscNetwork: EVMChainController;
+  // #avalancheNetwork: EVMChainController;
 
   constructor(privateKey: string) {
     const { activeNetwork } = store.getState().vault;
     this.privateKey = privateKey;
     this.#ethereumNetwork = this.createEVMController(activeNetwork.Ethereum, ETHERSCAN_API_KEY);
     this.#polygonNetwork = this.createEVMController(activeNetwork.Polygon, POLYGONSCAN_API_KEY);
-    this.#bscNetwork = this.createEVMController(activeNetwork.BSC, BSCSCAN_API_KEY);
-    this.#avalancheNetwork = this.createEVMController(activeNetwork.Avalanche, SNOWTRACE_API_KEY);
+    // this.#bscNetwork = this.createEVMController(activeNetwork.BSC, BSCSCAN_API_KEY);
+    // this.#avalancheNetwork = this.createEVMController(activeNetwork.Avalanche, SNOWTRACE_API_KEY);
   }
 
   private createEVMController(chain: AllChainsIds, apiKey: string) {
@@ -41,13 +42,13 @@ class NetworkController {
     return this.#polygonNetwork;
   }
 
-  get bscNetwork() {
-    return this.#bscNetwork;
-  }
+  // get bscNetwork() {
+  //   return this.#bscNetwork;
+  // }
 
-  get avalancheNetwork() {
-    return this.#avalancheNetwork;
-  }
+  // get avalancheNetwork() {
+  //   return this.#avalancheNetwork;
+  // }
 
   switchEthereumChain(chain: EthChainId) {
     this.#ethereumNetwork.setChain(chain);
@@ -57,13 +58,13 @@ class NetworkController {
     this.#polygonNetwork.setChain(chain);
   }
 
-  switchBSCChain(chain: BSCChainId) {
-    this.#bscNetwork.setChain(chain);
-  }
+  // switchBSCChain(chain: BSCChainId) {
+  //   this.#bscNetwork.setChain(chain);
+  // }
 
-  switchAvalancheChain(chain: AvalancheChainId) {
-    this.#avalancheNetwork.setChain(chain);
-  }
+  // switchAvalancheChain(chain: AvalancheChainId) {
+  //   this.#avalancheNetwork.setChain(chain);
+  // }
 
   private getProviderByActiveAsset(): EVMChainController {
     const assets = store.getState().assets;
@@ -74,8 +75,8 @@ class NetworkController {
     const networkToProvider = {
       [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
       'Polygon': this.#polygonNetwork,
-      'BSC': this.#bscNetwork,
-      'Avalanche': this.#avalancheNetwork,
+      // 'BSC': this.#bscNetwork,
+      // 'Avalanche': this.#avalancheNetwork,
     }
     return networkToProvider[network as keyof typeof networkToProvider];
   }
@@ -164,8 +165,8 @@ class NetworkController {
       const networkToProvider = {
         [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
         'Polygon': this.#polygonNetwork,
-        'BSC': this.#bscNetwork,
-        'Avalanche': this.#avalancheNetwork,
+        // 'BSC': this.#bscNetwork,
+        // 'Avalanche': this.#avalancheNetwork,
       }
       provider = networkToProvider[network as keyof typeof networkToProvider];
     }

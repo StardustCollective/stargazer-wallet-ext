@@ -121,8 +121,9 @@ export class AccountController implements IAccountController {
                                 .filter((token) => token.type === AssetType.ERC20)
                                 .map((token) => token.id);
 
+      // TODO-349: Only Polygon ['AVAX', 'BNB', 'MATIC']
       const NETWORK_TOKENS = Object.values(assets)
-                                .filter((token) => ['AVAX', 'BNB', 'MATIC'].includes(token.symbol))
+                                .filter((token) => ['MATIC'].includes(token.symbol))
                                 .map((token) => token.id);
 
       const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);                          
@@ -141,19 +142,20 @@ export class AccountController implements IAccountController {
   buildNetworkAssets(address: string, tokens: string[]): IAssetState[] {
     const networkAssets = [];
     
-    const avaxAsset = {
-      id: AssetType.Avalanche,
-      type: AssetType.Ethereum,
-      label: 'Avalanche',
-      address,
-    };
+    // TODO-349: Only Polygon
+    // const avaxAsset = {
+    //   id: AssetType.Avalanche,
+    //   type: AssetType.Ethereum,
+    //   label: 'Avalanche',
+    //   address,
+    // };
 
-    const bscAsset = {
-      id: AssetType.BSC,
-      type: AssetType.Ethereum,
-      label: 'BNB',
-      address,
-    };
+    // const bscAsset = {
+    //   id: AssetType.BSC,
+    //   type: AssetType.Ethereum,
+    //   label: 'BNB',
+    //   address,
+    // };
 
     const polygonAsset = {
       id: AssetType.Polygon,
@@ -162,13 +164,14 @@ export class AccountController implements IAccountController {
       address,
     };
 
-    if (tokens.includes(avaxAsset.id)) {
-      networkAssets.push(avaxAsset);
-    }
+    // TODO-349: Only Polygon
+    // if (tokens.includes(avaxAsset.id)) {
+    //   networkAssets.push(avaxAsset);
+    // }
 
-    if (tokens.includes(bscAsset.id)) {
-      networkAssets.push(bscAsset);
-    }
+    // if (tokens.includes(bscAsset.id)) {
+    //   networkAssets.push(bscAsset);
+    // }
 
     if (tokens.includes(polygonAsset.id)) {
       networkAssets.push(polygonAsset);

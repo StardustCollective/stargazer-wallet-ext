@@ -178,8 +178,8 @@ const selectActiveNetworkAssets = createSelector(
       const assetInfo = assets[asset.id];
       const assetNetwork = assetInfo?.network;
       let assetNetworkType: string = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(assetNetwork);
-              
-      return ['both', 'matic', 'avalanche-mainnet', 'bsc'].includes(assetNetwork) || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
+      // TODO-349: Only Polygon ['DAG', 'ETH', 'AVAX', 'BNB', 'MATIC']
+      return ['DAG', 'ETH', 'MATIC'].includes(assetInfo?.symbol) || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
     });
   }
 );
