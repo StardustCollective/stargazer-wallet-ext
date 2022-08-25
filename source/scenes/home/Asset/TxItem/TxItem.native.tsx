@@ -21,14 +21,14 @@ const RenderIcon: FC<RenderIconProps> = ({ tx, isETH }) => {
     if (checkpointBlock) {
       return <TxIcon />;
     }
-    return <Progress.Circle size={24} indeterminate />;
+    return <Progress.Circle size={16} indeterminate />;
   }
 
   if (!assetId) {
     return <TxIcon />;
   }
 
-  return <Progress.Circle size={24} indeterminate />;
+  return <Progress.Circle size={16} indeterminate />;
 };
 
 const TxItem: FC<ITxItemSettings> = ({
