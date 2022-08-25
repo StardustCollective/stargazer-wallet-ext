@@ -45,8 +45,8 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, network, label, log
         <Image style={iconStyle} source={{ uri: logo }}/>
       </View>
       <View style={styles.assetInfo}>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.CaptionStrong>
-        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}{!!network && ` (${network})`}</TextV3.Caption>
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.symbolLabel}>{symbol}</TextV3.CaptionStrong>
+        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{!!network && `${network}`}</TextV3.Caption>
       </View>
       <View style={styles.toggleContainer}>
        <Switch 

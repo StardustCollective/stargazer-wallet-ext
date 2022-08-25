@@ -13,6 +13,18 @@
     height: 36px;
     background: $grey-50;
     color: $black;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-top-color: $grey-100;
+    border-bottom-color: $grey-100;
+
+    .groupBarText {
+      margin-left: 16px;
+      color: #575757;
+      font-weight: $semibold;
+    }
 
     span {
       margin-left: 24px;
@@ -22,17 +34,18 @@
   .content {
     display: flex;
     flex-direction: row;
-    margin: 16px 24px 16px 24px;
+    margin: 16px;
     .txIcon {
       display: flex;
       color: $gray-100;
       align-items: center;
+
       .iconCircle {
         display: flex;
-        width: 48px;
-        height: 48px;
-        margin-right: 16px;
-        border-radius: 24px;
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
+        border-radius: 20px;
         background-color: $primary;
         align-items: center;
         justify-content: center;
@@ -49,11 +62,19 @@
       flex-direction: column;
       justify-content: center;
 
+      .statusText {
+        font-weight: $semibold;
+        letter-spacing: -0.3px;
+      }
+
+      .txAddress {
+        color: #575757;
+      }
+
       div:last-child span {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: auto;
-        width: 96px;
         text-align: right;
         display: inline-block;
         overflow: hidden;
@@ -68,13 +89,12 @@
       align-items: flex-end;
       .txAmountText {
         overflow: hidden;
-        max-width: 100px;
       }
       .txAmountFiatText {
         white-space: nowrap;
         text-overflow: ellipsis;
+        color: #575757;
         overflow: auto;
-        width: 96px;
         display: inline-block;
         overflow: hidden;
         text-align: end;

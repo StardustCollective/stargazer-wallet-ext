@@ -1,12 +1,11 @@
 @import '~assets/styles/variables';
 
-$icon-margin-left: 24px;
+$icon-margin-left: 12px;
 
 div.assetItem {
   width: 352px;
   height: 64px;
   display: flex;
-  box-sizing: border-box;
   flex-direction: row;
   align-items: center;
   transition: all 0.3s;
@@ -20,15 +19,14 @@ div.assetItem {
 
   .assetIcon {
     display: flex;
-    flex: 1 0 auto;
-    align-items: center;
     justify-content: center;
-    box-sizing: border-box;
+    align-items: center;
     width: 40px;
     height: 40px;
     border-radius: 20px;
     border: 1px solid $grey-100;
     margin-left: $icon-margin-left;
+    min-width: 40px;
 
     img {
       width: 20px;
@@ -36,8 +34,12 @@ div.assetItem {
   }
 
   .assetName {
-    margin-left: 16px;
-    flex: 1 1 60%;
+    margin-left: 8px;
+    width: 100%;
+
+    .labelText {
+      letter-spacing: -0.3px;
+    }
 
     span:first-child {
       margin-bottom: 8px;
@@ -54,16 +56,14 @@ div.assetItem {
 
   .assetBalance {
     display: flex;
-    flex: 1 0 auto;
-    overflow: hidden;
-    align-items: center;
+    width: 100%;
     justify-content: flex-end;
-    padding-left: 20px;
-    margin-right: 24px;
+    margin-right: 12px;
 
     .balanceText {
-      max-width: 100px;
       overflow: hidden;
+      text-align: right;
+      letter-spacing: -0.3px;
     }
   }
 

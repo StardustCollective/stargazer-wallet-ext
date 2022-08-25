@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -35,8 +35,11 @@ const styles = StyleSheet.create({
   assetInfo: {
     width: '60%',
     justifyContent: 'center',
-    marginLeft: 16,
+    marginLeft: 12,
   },
+  symbolLabel: {
+    fontWeight: FONT_WEIGHTS.semibold,
+  }
 });
 
 export default styles;

@@ -38,20 +38,20 @@ const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceiv
           <View style={styles.icon}>
             <DollarIcon height={24} width={24} />
           </View>
-          <TextV3.Caption>Buy</TextV3.Caption>
+          <TextV3.CaptionStrong extraStyles={styles.label}>Buy</TextV3.CaptionStrong>
         </TouchableOpacity>
       }
       <TouchableOpacity onPress={onSendPressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
           <ArrowUpIcon height={24} width={24} />
         </View>
-        <TextV3.Caption>Send</TextV3.Caption>
+        <TextV3.CaptionStrong extraStyles={styles.label}>Send</TextV3.CaptionStrong>
       </TouchableOpacity>
       <TouchableOpacity onPress={onReceivePressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
           <ArrowDownIcon height={24} width={24} />
         </View>
-        <TextV3.Caption>Receive</TextV3.Caption>
+        <TextV3.CaptionStrong extraStyles={styles.label}>Receive</TextV3.CaptionStrong>
       </TouchableOpacity>
     </View>
   );

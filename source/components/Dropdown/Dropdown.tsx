@@ -65,7 +65,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
           {!!items && items.map((item) => {
             const selected = item.value === value;
             const selectedStyle = selected ? styles.selectedItem : {};
-            const TextComponent = selected ? TextV3.CaptionStrong : TextV3.Caption;
+            const TextComponent = selected ? TextV3.CaptionStrong : TextV3.CaptionRegular;
             return (
               <div key={item.value} className={clsx(styles.itemContainer, selectedStyle)} onClick={() => onChange(item.value)}>
                 <TextComponent color={COLORS_ENUMS.BLACK}>

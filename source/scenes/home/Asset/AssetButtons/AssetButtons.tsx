@@ -36,20 +36,20 @@ const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceiv
           <div className={styles.icon}>
             <img src={`/${DollarIcon}`} alt="dollar-icon" />
           </div>
-          <TextV3.Caption>Buy</TextV3.Caption>
+          <TextV3.CaptionStrong extraStyles={styles.label}>Buy</TextV3.CaptionStrong>
         </div>
       }
       <div className={styles.buttonContainer} onClick={onSendPressed}>
         <div className={styles.icon}>
           <img src={`/${ArrowUpIcon}`} alt="arrow-up-icon" />
         </div>
-        <TextV3.Caption>Send</TextV3.Caption>
+        <TextV3.CaptionStrong extraStyles={styles.label}>Send</TextV3.CaptionStrong>
       </div>
       <div className={styles.buttonContainer} onClick={onReceivePressed}>
         <div className={styles.icon}>
           <img src={`/${ArrowDownIcon}`} alt="arrow-down-icon" />
         </div>
-        <TextV3.Caption>Receive</TextV3.Caption>
+        <TextV3.CaptionStrong extraStyles={styles.label}>Receive</TextV3.CaptionStrong>
       </div>
     </div>
   );

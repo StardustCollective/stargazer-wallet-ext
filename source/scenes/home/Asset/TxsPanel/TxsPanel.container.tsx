@@ -57,7 +57,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = isETH
       ? getFiatAmount(Number(isETHPending ? tx.amount : tx.balance), 2)
-      : getFiatAmount(tx.amount / 1e8, 8);
+      : getFiatAmount(tx.amount / 1e8, 4);
 
     return (
       <TxItem

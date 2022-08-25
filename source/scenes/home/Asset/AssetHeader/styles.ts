@@ -24,18 +24,15 @@ const styles = StyleSheet.create({
   assetLogo: {
     marginRight: 5,
   },
-  logoHeader: {
+  labelText: {
     marginBottom: 0,
     marginTop: 0,
-    lineHeight: 24,
-    fontSize: 18,
-    fontWeight: FONT_WEIGHTS.medium,
+    fontWeight: FONT_WEIGHTS.semibold,
     color: COLORS.white,
   },
   address: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     justifyContent: 'center',
     height: 60,
   },
@@ -43,12 +40,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray_light,
   },
   addressText: {
-    fontSize: 12,
-    lineHeight: 14,
-    fontWeight: FONT_WEIGHTS.regular,
-    fontFamily: FONTS.inter,
-    color: COLORS.white,
-    marginTop: 2,
+    color: 'rgba(255, 255, 255, 0.66)',
     marginLeft: 0,
     marginBottom: 0,
   },

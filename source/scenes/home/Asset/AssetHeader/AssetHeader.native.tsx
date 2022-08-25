@@ -23,10 +23,10 @@ const AssetHeader: FC<IAssetHeaderSettings> = ({ asset, network }) => {
               />
             </View>
             <View style={styles.address}>
-              <TextV3.Header extraStyles={styles.logoHeader}>{asset?.label}</TextV3.Header>
-              <TextV3.Description extraStyles={styles.addressText} id="assetHeader-address">
+              <TextV3.CaptionStrong extraStyles={styles.labelText}>{asset?.label}</TextV3.CaptionStrong>
+              <TextV3.Caption extraStyles={styles.addressText} id="assetHeader-address">
                 {`${asset.symbol} (${network})`}
-              </TextV3.Description>
+              </TextV3.Caption>
             </View>
           </View>
       </View>

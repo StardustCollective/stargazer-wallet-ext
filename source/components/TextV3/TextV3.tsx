@@ -143,6 +143,19 @@ const TextV3 = {
       </TextV3.base>
     );
   },
+  CaptionRegular: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.captionRegular}
+        align={align}
+        extraStyles={extraStyles}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
   CaptionStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
       <TextV3.base

@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import CircleIcon from 'components/CircleIcon';
+import TextV3 from 'components/TextV3';
 
 import styles from './AssetHeader.scss';
 
@@ -15,8 +16,8 @@ const AssetHeader: FC<IAssetHeaderSettings> = ({ asset, network }) => {
             <CircleIcon logo={asset?.logo} label={asset?.label} />
           </div>
           <div className={styles.address}>
-            <span>{asset?.label}</span>
-            <small id="assetHeader-address">{`${asset.symbol} (${network})`}</small>
+            <TextV3.CaptionStrong extraStyles={styles.labelText}>{asset?.label}</TextV3.CaptionStrong>
+            <TextV3.Caption extraStyles={styles.networkText}>{`${asset.symbol} (${network})`}</TextV3.Caption>
           </div>
           </span>
       </span>

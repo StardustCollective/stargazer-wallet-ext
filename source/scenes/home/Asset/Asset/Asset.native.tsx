@@ -53,12 +53,12 @@ const AssetDetail: FC<IAssetSettings> = ({
           <View style={styles.center}>
             <View style={styles.balance}>
               <TextV3.HeaderDisplay color={COLORS_ENUMS.WHITE} dynamic extraStyles={styles.balanceText}>
-                {balanceText}{' '}
+                {balanceText}
               </TextV3.HeaderDisplay>
-              <TextV3.Body color={COLORS_ENUMS.WHITE}>{assets[activeAsset.id].symbol}</TextV3.Body>
+              <TextV3.Body color={COLORS_ENUMS.WHITE} extraStyles={styles.symbolText}>{assets[activeAsset.id].symbol}</TextV3.Body>
             </View>
             <View style={styles.fiatBalance}>
-              <TextV3.Body>≈ {fiatAmount}</TextV3.Body>
+              <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
             </View>
             <View style={styles.actions}>
               <AssetButtons setShowQrCode={setShowQrCode} onSendClick={onSendClick} assetId={activeAsset?.id} />

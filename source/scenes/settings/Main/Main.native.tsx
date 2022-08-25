@@ -11,6 +11,7 @@ import ContactsIcon from 'assets/images/svg/contacts.svg';
 import NetworksIcon from 'assets/images/svg/networks.svg';
 import InfoIcon from 'assets/images/svg/info.svg';
 import ExitIcon from 'assets/images/svg/exit.svg';
+import ArrowRightIcon from 'assets/images/svg/arrow-rounded-right.svg';
 
 import styles from './styles';
 
@@ -33,8 +34,13 @@ const Main: FC<IMainSettings> = ({
             <IconImageOrComponent />
           </View>
         </View>
-        <View style={styles.settingsItemLabelWrapper}>
-          <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{label}</TextV3.BodyStrong>
+        <View style={styles.infoContainer}> 
+          <View style={styles.settingsItemLabelWrapper}>
+            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>{label}</TextV3.BodyStrong>
+          </View>
+          <View style={styles.arrowRightContainer}>
+            <ArrowRightIcon width={24} />
+          </View>
         </View>
       </Card>
     );
@@ -48,16 +54,16 @@ const Main: FC<IMainSettings> = ({
       onClick: onWalletLinkClick,
     },
     {
-      label: 'Contacts',
-      key: 'Contacts',
-      IconImageOrComponent: ContactsIcon,
-      onClick: onContactsLinkClicked,
-    },
-    {
       label: 'Networks',
       key: 'Networks',
       IconImageOrComponent: NetworksIcon,
       onClick: onNetworkLinkClicked,
+    },
+    {
+      label: 'Contacts',
+      key: 'Contacts',
+      IconImageOrComponent: ContactsIcon,
+      onClick: onContactsLinkClicked,
     },
   ];
 

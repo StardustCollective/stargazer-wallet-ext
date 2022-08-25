@@ -88,7 +88,7 @@ export const getNetworkLabel = (network: string, assetSymbol: string): string =>
 
   switch (network) {
     case 'mainnet':
-      return 'ERC-20';
+      return 'Ethereum';
     case 'ropsten':
       return 'Ropsten';
     case 'rinkeby':

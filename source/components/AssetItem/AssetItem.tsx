@@ -100,15 +100,15 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
             {assetInfo.logo.startsWith('http') ? <img src={assetInfo.logo} /> : <img src={`/${assetInfo.logo}`} />}
           </div>
           <div className={styles.assetName}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{assetInfo.label}</TextV3.CaptionStrong>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.labelText}>{assetInfo.label}</TextV3.CaptionStrong>
             {isNFT ? renderNFTPriceSection() : renderAssetPriceSection(assetInfo as IAssetInfoState)}
           </div>
           <div className={styles.assetBalance}>
-            <TextV3.Caption dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
               {isNFT
                 ? Number((assetInfo as INFTInfoState).quantity)
                 : `${formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)} ${(assetInfo as IAssetInfoState).symbol}`}
-            </TextV3.Caption>
+            </TextV3.CaptionRegular>
           </div>
         </div>
       </Card>

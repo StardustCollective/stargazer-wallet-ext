@@ -17,10 +17,13 @@
       .settingsItemIconWrapper {
         display: flex;
         height: 100%;
-        width: 72px;
+        margin-left: 16px;
+        margin-right: 16px;
         flex-direction: row;
         justify-content: center;
         align-items: center;
+
+        
 
         .iconCircle {
           display: flex;
@@ -32,21 +35,36 @@
           border-radius: 24px;
 
           img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
           }
 
           .linkedIconImage {
-            width: 25px;
-            height: 25px;
+            width: 20px;
+            height: 20px;
           }
         }
+      }
+
+      .infoContainer {
+        display: flex;
+        flex-grow: 1;
       }
 
       .settingsItemLabelWrapper {
         display: flex;
         flex: 1;
         align-items: center;
+
+        .label {
+          font-size: 16px;
+        }
+      }
+
+      .arrowRightContainer {
+        display: flex;
+        align-items: center;
+        margin-right: 24px;
       }
     }
   }

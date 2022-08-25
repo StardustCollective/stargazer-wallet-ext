@@ -98,11 +98,11 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
 
   const renderBalance = (assetInfo: IAssetInfoState | INFTInfoState) => {
     return (
-      <TextV3.Caption dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
+      <TextV3.CaptionRegular extraStyles={styles.balanceText} color={COLORS_ENUMS.BLACK}>
         {isNFT
           ? Number((assetInfo as INFTInfoState).quantity)
           : `${formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)} ${assetInfo.symbol}`}
-      </TextV3.Caption>
+      </TextV3.CaptionRegular>
     );
   }
 
@@ -145,7 +145,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
         <AssetIcon logo={assetInfo?.logo} />
       </View>
       <View style={styles.assetName}>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{assetInfo.label}</TextV3.CaptionStrong>
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.labelText}>{assetInfo.label}</TextV3.CaptionStrong>
         {isNFT ? renderNFTPriceSection() : renderAssetPriceSection(assetInfo as IAssetInfoState)}
       </View>
       <View style={styles.assetBalance}>

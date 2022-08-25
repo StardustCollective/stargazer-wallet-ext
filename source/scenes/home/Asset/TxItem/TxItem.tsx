@@ -24,8 +24,15 @@ import TxIcon from 'assets/images/svg/txIcon.svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////
+// Utils
+///////////////////////
+
+import { ellipsis } from 'scenes/home/helpers';
+
+///////////////////////
 // Types
 ///////////////////////
+
 import { Transaction } from 'state/vault/types';
 
 ///////////////////////
@@ -119,7 +126,7 @@ const TxItem: FC<ITxItem> = ({
     >
       {showGroupBar && (
         <div className={styles.groupBar}>
-          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{formattedDistanceDate}</TextV3.CaptionStrong>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.groupBarText}>{formattedDistanceDate}</TextV3.Caption>
         </div>
       )}
       <div className={styles.content}>
@@ -130,16 +137,16 @@ const TxItem: FC<ITxItem> = ({
         </div>
         <div className={styles.txInfo}>
           <div>
-            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{receivedOrSentText}</TextV3.BodyStrong>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.statusText}>{receivedOrSentText}</TextV3.CaptionStrong>
           </div>
           <div>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>{txTypeLabel}</TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAddress}>{ellipsis(txTypeLabel)}</TextV3.Caption>
           </div>
         </div>
         <div className={styles.txAmount}>
-          <TextV3.BodyStrong dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountText}>
+          <TextV3.CaptionRegular dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountText}>
             {amount}
-          </TextV3.BodyStrong>
+          </TextV3.CaptionRegular>
           <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText}>
             ≈ {fiatAmount}
           </TextV3.Caption>

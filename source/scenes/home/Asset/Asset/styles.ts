@@ -85,12 +85,11 @@ const styles = StyleSheet.create({
   },
   center: {
     width: '100%',
-    height: 216,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
     flexDirection: 'column',
     position: 'relative',
+    paddingTop: 24,
   },
   balance: {
     display: 'flex',
@@ -102,13 +101,23 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: 8,
   },
+  symbolText: {
+    fontSize: 20,
+    lineHeight: 28,
+  },
   fiatBalance: {
-    opacity: 0.5,
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 32,
+  },
+  fiatText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: 'rgba(255, 255, 255, 0.66)',
   },
   actions: {
     width: '100%',
     flexDirection: 'row',
+    marginBottom: 24,
   },
   activity: {
     backgroundColor: COLORS.gray_light,
