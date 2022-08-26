@@ -84,7 +84,10 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
       const searchLowerCase = searchValue?.toLocaleLowerCase();
       constellation = constellation.concat(customAssets);
       constellation = filterArrayByValue(constellation, searchLowerCase);
-      all = constellation.concat(search);
+      all = constellation;
+      if (search) {
+        all = constellation.concat(search);
+      }
     } else {
       all = constellation.concat(customAssets).concat(erc20);
 

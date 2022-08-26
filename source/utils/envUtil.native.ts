@@ -16,6 +16,7 @@ import {
     QUICKNODE_BSC_TESTNET as quickNodeBSCTestnet,
     QUICKNODE_AVALANCHE_MAINNET as quickNodeAvalancheMainnet,
     QUICKNODE_AVALANCHE_TESTNET as quickNodeAvalancheTestnet,
+    COINGECKO_API_KEY as coinGeckoApiKey,
 } from '@env';
 
 export const TEST_PRIVATE_KEY = testPrivateKey;
@@ -26,6 +27,7 @@ export const SNOWTRACE_API_KEY = snowtraceApiKey;
 export const STARGAZER_PROVIDERS_BASE_URL = stargazerProvidersBaseUrl;
 export const STARGAZER_PROVIDERS_BASE_URL_PROD = stargazerProvidersBaseUrlProd;
 export const STARGAZER_API_KEY = stargazerApiKey;
+export const COINGECKO_API_KEY = coinGeckoApiKey;
 export const QUICKNODE_ETHEREUM_MAINNET = quickNodeEthereumMainnet;
 export const QUICKNODE_ETHEREUM_ROPSTEN = quickNodeEthereumRopsten;
 export const QUICKNODE_ETHEREUM_RINKEBY = quickNodeEthereumRinkeby;

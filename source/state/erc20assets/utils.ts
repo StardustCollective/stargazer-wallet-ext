@@ -27,14 +27,14 @@ export const mapToAssetsArray = (tokensArray: ERC20Asset[], tokensAddressArray: 
             .filter(token => token?.address);
 }
 
-export const mapSearchAssetsToArray = (tokens: SearchAsset[], tokensAddressArray: ERC20AssetWithAddress[]): IAssetInfoState[] => {
+export const mapSearchAssetsToArray = (tokens: SearchAsset[], tokensAddressArray: ERC20AssetWithAddress[] = []): IAssetInfoState[] => {
   const CONSTELLATION_ASSETS = constellationInitialValues.map(asset => asset.priceId);
   // TODO-349: Only Polygon ['ethereum', 'binance-smart-chain', 'avalanche', 'polygon-pos']
   const SUPPORTED_NETWORKS = ['ethereum', 'polygon-pos'];
   const tokensWithAddress = tokens.map((token: SearchAsset) => (
     {
       ...token, 
-      ...tokensAddressArray.find(function(tokenAddress: ERC20AssetWithAddress) { 
+      ...tokensAddressArray?.find(function(tokenAddress: ERC20AssetWithAddress) { 
         const networks = !!tokenAddress?.platforms ? Object.keys(tokenAddress.platforms) : [];
         return token.id === tokenAddress.id && !CONSTELLATION_ASSETS.includes(token.id) && SUPPORTED_NETWORKS.some(net => networks.includes(net));
       })

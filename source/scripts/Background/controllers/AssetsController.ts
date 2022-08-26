@@ -3,7 +3,7 @@ import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
-import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO, AVALANCHE_DEFAULT_LOGO, BSC_DEFAULT_LOGO, POLYGON_DEFAULT_LOGO } from 'constants/index';
+import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO, AVALANCHE_DEFAULT_LOGO, BSC_DEFAULT_LOGO, POLYGON_DEFAULT_LOGO, COINGECKO_API_KEY_PARAM } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
@@ -180,7 +180,7 @@ const AssetsController = (): IAssetsController => {
     const platform = getPlatformFromMainnet(networkType);
 
     try {
-      tokenData = await (await fetch(`${TOKEN_INFO_API}/${platform}/contract/${address}`)).json();
+      tokenData = await (await fetch(`${TOKEN_INFO_API}/${platform}/contract/${address}${COINGECKO_API_KEY_PARAM}`)).json();
     } catch (err) {
       console.log('Token Error:', err);
     }

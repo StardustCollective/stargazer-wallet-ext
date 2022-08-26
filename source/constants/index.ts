@@ -2,6 +2,7 @@ import { AvalancheChainId, AvalancheChainValue, BSCChainId, BSCChainValue, EthCh
 import { 
   isProd,
   isNative, 
+  COINGECKO_API_KEY,
   STARGAZER_PROVIDERS_BASE_URL, 
   STARGAZER_PROVIDERS_BASE_URL_PROD, 
   QUICKNODE_ETHEREUM_MAINNET,
@@ -212,15 +213,16 @@ export const ALL_EVM_CHAINS = {
   ...POLYGON_NETWORK
 };
 
-export const ASSET_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
+export const ASSET_PRICE_API = 'https://pro-api.coingecko.com/api/v3/simple/price';
 export const TOKEN_INFO_API =
-  'https://api.coingecko.com/api/v3/coins';
+  'https://pro-api.coingecko.com/api/v3/coins';
 export const ERC20_TOKENS_API =
-  'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=ethereum-ecosystem';
+  'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=ethereum-ecosystem';
 export const ERC20_TOKENS_WITH_ADDRESS_API =
-  'https://api.coingecko.com/api/v3/coins/list?include_platform=true';
+  'https://pro-api.coingecko.com/api/v3/coins/list?include_platform=true';
 export const SEARCH_API =
-  'https://api.coingecko.com/api/v3/search?query=';
+  'https://pro-api.coingecko.com/api/v3/search?query=';
+export const COINGECKO_API_KEY_PARAM = `&x_cg_pro_api_key=${COINGECKO_API_KEY}`
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
 export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
