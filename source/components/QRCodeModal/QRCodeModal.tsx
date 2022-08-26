@@ -27,6 +27,7 @@ import { getNetworkFromChainId, getNetworkLabel, getNetworkLogo } from 'scripts/
 ///////////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
+import { AssetSymbol } from 'state/vault/types';
 import { IQRCodeModal } from './types';
 
 ///////////////////////////
@@ -48,7 +49,7 @@ const QRCodeModal: FC<IQRCodeModal> = ({ open, address, asset, onClose, copyAddr
   const formattedAddress = `${address.substring(0, 10)}...${address.substring(address.length - 10, address.length)}`;
   let network = asset?.network;
   // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
-  if (['ETH', 'MATIC'].includes(asset?.symbol)) {
+  if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(asset?.symbol as AssetSymbol)) {
     const currentNetwork = getNetworkFromChainId(network);
     network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
   }

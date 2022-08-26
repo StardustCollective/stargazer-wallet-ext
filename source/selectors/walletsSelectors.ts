@@ -17,6 +17,7 @@ import {
   AssetType,
   IAssetState,
   IVaultWalletsStoreState,
+  AssetSymbol,
 } from 'state/vault/types';
 import { getNfts } from './nftSelectors';
 import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
@@ -179,7 +180,7 @@ const selectActiveNetworkAssets = createSelector(
       const assetNetwork = assetInfo?.network;
       let assetNetworkType: string = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(assetNetwork);
       // TODO-349: Only Polygon ['DAG', 'ETH', 'AVAX', 'BNB', 'MATIC']
-      return ['DAG', 'ETH', 'MATIC'].includes(assetInfo?.symbol) || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
+      return [AssetSymbol.DAG, AssetSymbol.ETH, AssetSymbol.MATIC].includes(assetInfo?.symbol as AssetSymbol) || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
     });
   }
 );

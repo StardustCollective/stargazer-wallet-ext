@@ -18,6 +18,7 @@ import TxsPanel from '../TxsPanel';
 import IAssetSettings from './types';
 import AssetButtons from '../AssetButtons';
 import styles from './styles';
+import { AssetSymbol } from 'state/vault/types';
 
 const QR_CODE_SIZE = 240;
 
@@ -39,7 +40,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   const asset = assets[activeAsset?.id];
   let network = asset?.network;
   // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
-  if (['ETH', 'MATIC'].includes(asset?.symbol)) {
+  if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(asset?.symbol)) {
     const currentNetwork = getNetworkFromChainId(network);
     network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
   }

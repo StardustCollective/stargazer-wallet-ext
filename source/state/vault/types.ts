@@ -14,6 +14,12 @@ export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
 
 export type Keystore = SeedKeystore | PrivKeystore;
 
+export enum AssetSymbol {
+  DAG = 'DAG',
+  ETH = 'ETH',
+  MATIC = 'MATIC',
+}
+
 export enum AssetType {
   Constellation = 'constellation',
   Avalanche = 'avalanche',

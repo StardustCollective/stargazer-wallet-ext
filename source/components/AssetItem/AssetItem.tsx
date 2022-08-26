@@ -31,6 +31,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import { IAssetInfoState } from 'state/assets/types';
 import { INFTInfoState } from 'state/nfts/types';
+import { AssetSymbol } from 'state/vault/types';
 import IAssetItem from './types';
 
 ///////////////////////
@@ -57,7 +58,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
     if (showNetwork) {
       let network = assetInfoData.network;
       // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
-      if (['ETH', 'MATIC'].includes(assetInfoData?.symbol)) {
+      if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(assetInfoData?.symbol as AssetSymbol)) {
         const currentNetwork = getNetworkFromChainId(network);
         network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
       }

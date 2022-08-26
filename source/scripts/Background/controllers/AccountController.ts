@@ -19,6 +19,7 @@ import IVaultState, {
   IAssetState,
   IWalletState,
   IActiveAssetState,
+  AssetSymbol,
 } from 'state/vault/types';
 
 import {
@@ -123,7 +124,7 @@ export class AccountController implements IAccountController {
 
       // TODO-349: Only Polygon ['AVAX', 'BNB', 'MATIC']
       const NETWORK_TOKENS = Object.values(assets)
-                                .filter((token) => ['MATIC'].includes(token.symbol))
+                                .filter((token) => [AssetSymbol.MATIC].includes(token.symbol as AssetSymbol))
                                 .map((token) => token.id);
 
       const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);                          

@@ -31,7 +31,7 @@ import { IAssetInfoState } from 'state/assets/types';
 ///////////////////////////
 
 import styles from './AssetList.scss';
-import { ActiveNetwork } from 'state/vault/types';
+import { ActiveNetwork, AssetSymbol } from 'state/vault/types';
 
 ///////////////////////////
 // Constants
@@ -49,14 +49,14 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
           allAssets.map((item: IAssetInfoState) => {
             const selected = !!assets[item?.id];
             const itemType = getKeyringAssetType(item?.type);
-            const disabled = ['DAG', 'ETH'].includes(item?.symbol);
+            const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(item?.symbol as AssetSymbol);
             const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
             const itemChainId = item?.network;
             const itemNetwork = getNetworkFromChainId(itemChainId);
             const currentActiveNetwork = activeNetwork[itemNetwork as keyof ActiveNetwork];
             const network = getNetworkLabel(currentActiveNetwork, item?.symbol);
             // TODO-349: Only Polygon ['AVAX', 'BNB', 'MATIC']
-            const hideToken = itemChainId !== 'both' && !['MATIC'].includes(item?.symbol) && currentActiveNetwork !== itemChainId;
+            const hideToken = itemChainId !== 'both' && ![AssetSymbol.MATIC].includes(item?.symbol as AssetSymbol) && currentActiveNetwork !== itemChainId;
             if (!isAssetSupported || hideToken) return null;
             return <AssetWithToggle 
                       id={item?.id}
