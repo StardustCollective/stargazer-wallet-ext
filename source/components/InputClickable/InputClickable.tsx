@@ -29,6 +29,8 @@ import styles from './InputClickable.scss';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
+const ICON_SIZE = 16;
+
 const InputClickable: FC<IInputClickable> = ({ options }): JSX.Element => {
   const { title, value, items, onClick } = options;
 
@@ -50,7 +52,7 @@ const InputClickable: FC<IInputClickable> = ({ options }): JSX.Element => {
         <div className={styles.titleContainer}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{selectedItem?.label}</TextV3.CaptionStrong>
         </div>
-        <img src={`/${ArrowRightIcon}`} color="white" height={16} width={16} alt="arrow" />
+        <img src={`/${ArrowRightIcon}`} color="white" height={ICON_SIZE} width={ICON_SIZE} alt="arrow" />
       </div>
     </div>
   );

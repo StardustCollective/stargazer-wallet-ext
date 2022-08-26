@@ -32,11 +32,13 @@ import styles from './Dropdown.scss';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
+const MAX_ITEMS = 3;
+
 const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
   const { icon, title, value, items, isOpen, toggleItem, onChange } = options;
 
   const selectedValue = items.find(item => item.value === value);
-  const scrollContainer = items?.length > 3 ? styles.itemScrollable : {};
+  const scrollContainer = items?.length > MAX_ITEMS ? styles.itemScrollable : {};
 
   ///////////////////////
   // Render

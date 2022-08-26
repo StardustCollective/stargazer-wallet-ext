@@ -41,6 +41,8 @@ const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked,
   const { balances, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
 
+  // Sometimes the assetInfo is undefined after the Migration process.
+  // This issue could be related to a race condition.
   if (!assetInfo) return null;
 
   const isNFT = isAssetNFT(assetInfo);

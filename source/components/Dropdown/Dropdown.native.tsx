@@ -32,6 +32,8 @@ import styles from './styles';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
+const ICON_SIZE = 16;
+
 const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
   const { icon, title, value, items, isOpen, toggleItem, onChange } = options;
 
@@ -56,9 +58,9 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
       </View>
       <View>
         {isOpen ? (
-          <ArrowUpIcon width={16} />
+          <ArrowUpIcon width={ICON_SIZE} />
           ) : (
-          <ArrowDownIcon width={16} />
+          <ArrowDownIcon width={ICON_SIZE} />
         )}
       </View>
       {isOpen && (
@@ -72,7 +74,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
                 <TextComponent color={COLORS_ENUMS.BLACK}>
                   {item.label}  
                 </TextComponent>
-                {!!selected && <CheckIcon height={16} width={16} />}
+                {!!selected && <CheckIcon height={ICON_SIZE} width={ICON_SIZE} />}
               </TouchableOpacity>
             )})
           }
