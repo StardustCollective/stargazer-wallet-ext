@@ -1,3 +1,4 @@
+import { IInputClickableOptions } from 'components/InputClickable/types';
 import { ChangeEvent } from 'react';
 import { Control, FieldError, FieldValues, NestDataObject, OnSubmit } from 'react-hook-form';
 import { IAssetInfoState } from 'state/assets/types';
@@ -37,4 +38,5 @@ export interface IWalletSend {
   gasSpeedLabel: string;
   decimalPointOnAmount?: boolean;
   decimalPointOnFee?: boolean;
+  networkTypeOptions: IInputClickableOptions;
 }

@@ -33,7 +33,7 @@ import { removeEthereumPrefix } from 'utils/addressUtil';
 
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
-import IVaultState, { AssetType, IActiveAssetState, AssetBalances } from 'state/vault/types';
+import IVaultState, { AssetType, IActiveAssetState, AssetBalances, AssetSymbol, ActiveNetwork } from 'state/vault/types';
 import { RootState } from 'state/store';
 
 ///////////////////////////
@@ -54,7 +54,13 @@ import useGasEstimate from 'hooks/useGasEstimate';
 ///////////////////////////
 
 import Send from './Send';
-import { getNativeToken } from 'scripts/Background/controllers/EVMChainController/utils';
+import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+
+///////////////////////////
+// Constants
+///////////////////////////
+
+import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO } from 'constants/index';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -170,6 +176,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
           : yup.mixed(),
     }),
   });
+
+  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
 
   const [address, setAddress] = useState(initAddress || tempTx?.toAddress || to || '');
 
@@ -388,6 +396,28 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     handleAmountChange(formattedUnits);
   };
 
+  const isDAG = assetInfo.symbol === AssetSymbol.DAG;
+
+  const networkLabel = getNetworkFromChainId(assetInfo?.network);
+  const chainValue = activeNetwork[networkLabel as keyof ActiveNetwork];
+  const tokenMainnet = isDAG ? 'main' : getMainnetFromTestnet(assetInfo?.network);
+  const tokenChainLabel = isDAG ? 'Mainnet 1.0' : getChainInfo(chainValue)?.label;
+
+  const networkTypeOptions = {
+    title: 'NETWORK',
+    value: tokenMainnet,
+    items: [
+      { value: 'main', label: 'Constellation', icon: CONSTELLATION_LOGO },  
+      { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },   
+      { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO }, 
+      // TODO-349: Only Polygon
+      // { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
+      // { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
+    ],
+    disabled: true,
+    labelRight: tokenChainLabel,
+  }
+
   const assetNetwork = assets[activeAsset?.id]?.network;
   const nativeToken = getNativeToken(assetNetwork);
 
@@ -427,6 +457,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         gasSpeedLabel={gasSpeedLabel}
         decimalPointOnAmount={decimalPointOnAmount}
         decimalPointOnFee={decimalPointOnFee}
+        networkTypeOptions={networkTypeOptions}
       />
     </Container>
   );

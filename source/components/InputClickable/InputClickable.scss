@@ -3,6 +3,9 @@
 .container {
   margin-bottom: 10px;
   width: 100%;
+}
+
+.cursorPointer {
   cursor: pointer;
 }
 
@@ -26,6 +29,10 @@
   border-radius: 16px;
   border-width: 1px;
   border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.labelRight {
+  color: rgba(0, 0, 0, 0.66);
 }
 
 .titleContainer {

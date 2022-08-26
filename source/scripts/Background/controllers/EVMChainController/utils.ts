@@ -126,6 +126,7 @@ export const generateId = (value: string): string => {
 
 export const getMainnetFromTestnet = (chainId: AllChainsIds | string) => {
   const EVM_CHAINS = getAllEVMChains();
+  if (chainId === 'both') return 'mainnet';
   return EVM_CHAINS[chainId]?.mainnet;
 }
 

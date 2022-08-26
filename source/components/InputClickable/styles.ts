@@ -33,6 +33,9 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.medium,
   },
+  labelRight: {
+    color: 'rgba(0, 0, 0, 0.66)',
+  },
   titleContainer: {
     flex: 1,
     marginHorizontal: 12,

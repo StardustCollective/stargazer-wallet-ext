@@ -5,14 +5,16 @@ export type IItem = {
 };
 
 export type IInputClickableOptions = {
-  icon: string;
   title: string;
   value: string;
   items: IItem[];
   containerStyle?: object;
-  onClick: () => void;
+  onClick?: () => void;
+  disabled?: boolean;
+  labelRight?: string;
 }
 
 export default interface IInputClickable {
   options: IInputClickableOptions;
+  titleStyles?: any;
 }

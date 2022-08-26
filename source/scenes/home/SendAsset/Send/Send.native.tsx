@@ -13,6 +13,7 @@ import { Input } from 'react-native-elements';
 ///////////////////////////
 
 import TextV3 from 'components/TextV3';
+import InputClickable from 'components/InputClickable';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextInput from 'components/TextInput';
 import PurpleSlider from 'components/PurpleSlider';
@@ -81,6 +82,7 @@ const Send: FC<IWalletSend> = ({
   gasSpeedLabel,
   decimalPointOnAmount,
   decimalPointOnFee,
+  networkTypeOptions,
 }) => {
   const [cameraOpen, setCameraOpen] = useState(false);
 
@@ -124,6 +126,7 @@ const Send: FC<IWalletSend> = ({
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>{assetInfo.symbol}</TextV3.Caption>
           </TextV3.Caption>
         </View>
+        <InputClickable options={networkTypeOptions} />
         <TextInput
           name="address"
           defaultValue={address}
