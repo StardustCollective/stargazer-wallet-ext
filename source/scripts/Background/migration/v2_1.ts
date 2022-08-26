@@ -1,6 +1,6 @@
 import { reload } from 'utils/browser';
-import IVaultState, { AssetType } from 'state/vault/types';
-import { DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { AssetType } from 'state/vault/types';
+import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { KeyringWalletState } from '../helpers/keystoreToKeyringHelper';
 import { saveState } from 'state/localStorage';
@@ -24,7 +24,7 @@ const MigrateRunner = async (oldState: V1WalletState) => {
     //   return;
     // }
 
-    const vault: IVaultState = {
+    const vault: any = {
       status: 0,
       wallets: {
         local: [],
@@ -45,16 +45,7 @@ const MigrateRunner = async (oldState: V1WalletState) => {
       activeNetwork: {
         [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
         [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
-        // TODO-349: Only Polygon
-        // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
-        // 'BSC': BSC_NETWORK.bsc.id,
-        'Polygon': POLYGON_NETWORK.matic.id,
       },
-      customNetworks: {
-        constellation: {},
-        ethereum: {},
-      },
-      customAssets: [],
       version: '2.1',
     };
 

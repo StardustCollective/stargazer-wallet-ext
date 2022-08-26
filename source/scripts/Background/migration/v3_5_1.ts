@@ -2,9 +2,9 @@ import { reload } from 'utils/browser';
 import IAssetListState from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
-import IVaultState, { AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
-import { DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring'
 import { saveState } from 'state/localStorage';
 
@@ -25,7 +25,7 @@ type V3_5_0WalletState = {
     contacts: IContactBookState,
     dapp: {},
     price: IPriceState,
-    vault: IVaultState
+    vault: any,
 }
 
 const MigrateRunner = async (oldState: V2WalletState) => {
@@ -48,23 +48,10 @@ const MigrateRunner = async (oldState: V2WalletState) => {
                 activeNetwork: {
                     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
                     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
-                    // TODO-349: Only Polygon
-                    // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
-                    // 'BSC': BSC_NETWORK.bsc.id,
-                    'Polygon': POLYGON_NETWORK.matic.id,
                 },
-                customNetworks: {
-                    constellation: {},
-                    ethereum: {},
-                },
-                customAssets: [],
                 balances: {
                     [AssetType.Constellation]: '0',
                     [AssetType.Ethereum]: '0',
-                    // TODO-349: Only Polygon
-                    // [AssetType.Avalanche]: '0',
-                    // [AssetType.BSC]: '0',
-                    [AssetType.Polygon]: '0',
                 },
                 version: '3.5.0',
             },
