@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
   fiatBalanceContainer: {
     width: '100%',
-    height: 190, // do not use percentages messes up scrollview
+    height: 220, // do not use percentages messes up scrollview
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -35,7 +35,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buyButton: {
+  buttons:{
+    flex: 1, 
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  buttonNormal: {
     marginTop: 20,
     marginBottom: 10,
   },
