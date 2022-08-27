@@ -75,6 +75,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
   if (size === BUTTON_SIZES_ENUM.SMALL) {
     buttonSizeStyle = styles.buttonSmall;
     titleStyle = styles.titleSmall;
+  }else if (size === BUTTON_SIZES_ENUM.LARGE) {
+      buttonSizeStyle = styles.buttonMedium;
+      titleStyle = styles.titleMedium;
   } else if (size === BUTTON_SIZES_ENUM.LARGE) {
     buttonSizeStyle = styles.buttonLarge;
     titleStyle = styles.titleLarge;

@@ -36,6 +36,7 @@ export enum BUTTON_TYPES_ENUM {
 
 export enum BUTTON_SIZES_ENUM {
   SMALL = 0,
+  MEDIUM,
   LARGE,
 }
 
@@ -84,6 +85,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
   if (size === BUTTON_SIZES_ENUM.SMALL) {
     buttonSizeStyle = styles.buttonSmall;
     TextComponent = TextV3.CaptionStrong;
+  }else if(size === BUTTON_SIZES_ENUM.MEDIUM){
+    buttonSizeStyle = styles.buttonMedium;
+    TextComponent = TextV3.BodyStrong;
   } else if (size === BUTTON_SIZES_ENUM.LARGE) {
     buttonSizeStyle = styles.buttonLarge;
     TextComponent = TextV3.BodyStrong;
