@@ -13,6 +13,7 @@ import TextV3 from 'components/TextV3';
 import DollarIcon from 'assets/images/svg/dollar.svg';
 import ArrowUpIcon from 'assets/images/svg/arrow-up.svg';
 import ArrowDownIcon from 'assets/images/svg/arrow-down.svg';
+import SwapIcon from 'assets/images/svg/swap.svg';
 
 ///////////////////////////
 // Types
@@ -26,7 +27,22 @@ import { IAssetButtons } from './types';
 
 import styles from './styles';
 
+///////////////////////////
+// Constants
+///////////////////////////
+
+import {
+  BUY_STRING,
+  SWAP_STRING,
+  SEND_STRING,
+  RECEIVE_STRING
+} from './constants';
+
+const BUTTON_SIZE_WIDTH = 24;
+const BUTTON_SIZE_HEIGHT = 24;
+
 const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed }) => {
+  
   ///////////////////////////
   // Render
   ///////////////////////////
@@ -35,21 +51,27 @@ const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceiv
     <View style={styles.container}>
       <TouchableOpacity onPress={onBuyPressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
-          <DollarIcon height={24} width={24} />
+          <DollarIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />
         </View>
-        <TextV3.Caption>Buy</TextV3.Caption>
+        <TextV3.Caption>{BUY_STRING}</TextV3.Caption>
       </TouchableOpacity>
       <TouchableOpacity onPress={onSendPressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
-          <ArrowUpIcon height={24} width={24} />
+          <SwapIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />
         </View>
-        <TextV3.Caption>Send</TextV3.Caption>
+        <TextV3.Caption>{SWAP_STRING}</TextV3.Caption>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onSendPressed} style={styles.buttonContainer}>
+        <View style={styles.icon}>
+          <ArrowUpIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />
+        </View>
+        <TextV3.Caption>{SEND_STRING}</TextV3.Caption>
       </TouchableOpacity>
       <TouchableOpacity onPress={onReceivePressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
-          <ArrowDownIcon height={24} width={24} />
+          <ArrowDownIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />
         </View>
-        <TextV3.Caption>Receive</TextV3.Caption>
+        <TextV3.Caption>{RECEIVE_STRING}</TextV3.Caption>
       </TouchableOpacity>
     </View>
   );
