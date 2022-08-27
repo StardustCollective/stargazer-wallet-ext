@@ -31,6 +31,14 @@ export default {
     buyList: 'auth-buyList',
     buyAsset: 'auth-buyAsset',
   },
+  
+  ////////////////////////////
+  // swap
+  ////////////////////////////
+
+  swap: {
+    swapTokens: 'swap-tokens',
+  },
 
   ////////////////////////////
   // Settings

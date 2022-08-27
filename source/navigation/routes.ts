@@ -31,6 +31,8 @@ export default {
   [screens.authorized.sendConfirm]: '/send/confirm',
   [screens.authorized.send]: '/send/:address?',
   [screens.authorized.gasSettings]: '/gas-settings',
+  // UnAuth Stack
+  [screens.swap.swapTokens]: '/swapTokens',
   // Settings Stack
   [screens.settings.main]: '/settings',
   [screens.settings.about]: '/settings/about',

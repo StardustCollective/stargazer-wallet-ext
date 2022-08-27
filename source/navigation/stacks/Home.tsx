@@ -9,7 +9,7 @@ import { getWalletController } from 'utils/controllersUtils';
 ///////////////////////////
 // Screens
 ///////////////////////////
-
+// Home
 import Start from 'scenes/home/Start';
 import Home from 'scenes/home/Home';
 import Asset from 'scenes/home/Asset';
@@ -19,7 +19,7 @@ import AssetList from 'scenes/home/Asset/AssetList';
 import AddCustomAsset from 'scenes/home/Asset/AddCustomAsset';
 import BuyList from 'scenes/home/BuyList';
 import BuyAsset from 'scenes/home/BuyAsset';
-
+// Settings
 import Import from 'scenes/common/Import';
 import Main from 'scenes/settings/Main';
 import About from 'scenes/settings/About';
@@ -38,6 +38,8 @@ import ImportWallet from 'scenes/settings/ImportWallet';
 import ImportAccount from 'scenes/settings/ImportAccount';
 import ImportPhrase from 'scenes/settings/ImportPhrase';
 import ConnectedSites from 'scenes/settings/ConnectedSites';
+// Swap
+import swapTokens from 'scenes/swap/swapTokens';
 
 ///////////////////////////
 // Navigation
@@ -68,6 +70,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   send: 'Send',
   buyList: 'Buy',
   gasSettings: 'Gas Settings',
+  // Settings
   settings: 'Settings',
   about: 'About',
   networks: 'Networks',
@@ -85,6 +88,8 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   importAccount: 'Import Account',
   importPhrase: 'Import Phrase',
   connectedSites: 'Connected Sites',
+  // Swap
+  swapTokens: 'Swap Tokens',
 };
 
 const Auth = () => {
@@ -131,6 +136,9 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importAccount }} name={screens.settings.importAccount} component={ImportAccount} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importPhrase }} name={screens.settings.importPhrase} component={ImportPhrase} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.connectedSites }} name={screens.settings.connectedSites} component={ConnectedSites} />
+          
+          {/* Swap Stack */}
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.swapTokens }} name={screens.swap.swapTokens}  component={swapTokens} />
         </>
       )}
       <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }} name={screens.common.import} component={Import} />

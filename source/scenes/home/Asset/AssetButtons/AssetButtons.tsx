@@ -38,7 +38,7 @@ import {
 } from './constants';
 
 
-const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed }) => {
+const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, onSwapPressed }) => {
   ///////////////////////////
   // Render
   ///////////////////////////
@@ -50,7 +50,7 @@ const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceiv
         </div>
         <TextV3.Caption>{BUY_STRING}</TextV3.Caption>
       </div>
-      <div className={styles.buttonContainer} onClick={onSendPressed}>
+      <div className={styles.buttonContainer} onClick={onSwapPressed}>
         <div className={styles.icon}>
           <img src={`/${SwapIcon}`} alt="swap-icon" />
         </div>

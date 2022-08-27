@@ -5,6 +5,7 @@ export interface IAssetButtonsContainer {
 }
 
 export interface IAssetButtons {
+  onSwapPressed: () => void
   onBuyPressed: () => void;
   onSendPressed: () => void;
   onReceivePressed: () => void;

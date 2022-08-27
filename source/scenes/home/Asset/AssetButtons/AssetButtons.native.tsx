@@ -41,7 +41,7 @@ import {
 const BUTTON_SIZE_WIDTH = 24;
 const BUTTON_SIZE_HEIGHT = 24;
 
-const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed }) => {
+const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, onSwapPressed }) => {
   
   ///////////////////////////
   // Render
@@ -55,7 +55,7 @@ const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceiv
         </View>
         <TextV3.Caption>{BUY_STRING}</TextV3.Caption>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onSendPressed} style={styles.buttonContainer}>
+      <TouchableOpacity onPress={onSwapPressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
           <SwapIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />
         </View>

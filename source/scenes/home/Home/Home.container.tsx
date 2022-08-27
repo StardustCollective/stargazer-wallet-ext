@@ -83,7 +83,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   };
 
    const onSwapPressed = () => {
-    linkTo('swapTokens');
+    linkTo('/swapTokens');
    }
 
   ///////////////////////////
