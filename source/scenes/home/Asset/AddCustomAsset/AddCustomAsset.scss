@@ -1,0 +1,108 @@
+@import '~assets/styles/_variables';
+
+.container {
+  overflow: scroll;
+  height: 488px;
+  padding: 16px;
+}
+
+.input {
+  width: auto;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  height: 48px;
+  padding: 0 16px;
+  background-color: $white;
+  transition: all 0.3s;
+
+  input {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-family: $inter;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: $black;
+    transition: all 0.3s;
+  }
+
+  &.amount {
+    input {
+      padding-right: 48px;
+    }
+  }
+
+  &.fee {
+    input {
+      padding-right: 92px;
+    }
+  }
+}
+
+.error {
+  border: 1px solid $red !important;
+  background-color: red;
+}
+
+.errorMessage {
+  font-size: 12px;
+  line-height: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 6px;
+}
+
+ul.form {
+  list-style: none;
+  margin: -12px;
+  padding: 12px;
+  border-radius: 10px;
+  background-color: $gray-light;
+
+  li {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      margin-bottom: 2px;
+      font-family: $inter;
+      color: $black;
+    }
+  }
+}
+
+.warningContainer {
+  display: flex;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #FDB022; 
+  background-color: #FFFCF5;
+  flex-direction: row;
+}
+
+.warningText {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.buttonContainer {
+  margin-top: 16px;
+  width: 352px;
+}
+
+.button {
+  width: 100%;
+}

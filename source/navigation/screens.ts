@@ -23,12 +23,14 @@ export default {
     start: 'auth-start',
     home: 'auth-home',
     addAsset: 'auth-addAsset',
+    addCustomAsset: 'auth-addCustomAsset',
     asset: 'auth-asset',
     sendConfirm: 'auth-sendConfirm',
     send: 'auth-send',
     gasSettings: 'auth-gasSettings',
     buyList: 'auth-buyList',
     buyAsset: 'auth-buyAsset',
+    singleSelect: 'auth-singleSelect',
   },
 
   ////////////////////////////
@@ -39,6 +41,7 @@ export default {
     main: 'settings-main',
     about: 'settings-about',
     networks: 'settings-networks',
+    addNetwork: 'settings-networks-add',
     contacts: 'settings-contacts',
     contactInfo: 'setting-contact-info',
     modifyContact: 'settings-modify-contact',

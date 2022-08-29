@@ -59,6 +59,24 @@
         background-color: $white;
         cursor: pointer;
 
+        .network {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 16px;
+
+          .logoContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 24px;
+            width: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 12px;
+            margin-right: 8px;
+          }
+        }
+
         .qrCode {
           height: 200px;
           width: 100%;

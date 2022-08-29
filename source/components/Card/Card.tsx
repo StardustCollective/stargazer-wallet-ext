@@ -3,6 +3,7 @@
 /// ////////////////////
 
 import React from 'react';
+import clsx from 'clsx';
 
 /// ////////////////////
 // Styles
@@ -17,15 +18,19 @@ interface ICardProps {
   children?: React.ReactNode;
   id?: string;
   onClick?: () => void;
+  disabled?: boolean;
+  style?: {};
 }
 
 /// ////////////////////
 // Component
 /// ////////////////////
 
-const Card = ({ id, children, onClick }: ICardProps) => {
+const Card = ({ id, children, disabled, onClick, style = {} }: ICardProps) => {
+  const onClickFn = disabled ? null : onClick;
+  const cardStyle = clsx(styles.card, style);
   return (
-    <div id={id} onClick={onClick} className={styles.card}>
+    <div key={id} id={id} onClick={onClickFn} className={cardStyle}>
       {children}
     </div>
   );

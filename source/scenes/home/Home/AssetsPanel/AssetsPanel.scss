@@ -3,16 +3,24 @@
   section.activity {
     display: flex;
     flex: 1;
-    min-height: 350px;
+    min-height: 360px;
     flex-direction: column;
     background: $grey-50;
     width: 100%;
     box-sizing: border-box;
     transition: all 0.3s;
-    border-radius: 8px 8px 0px 0px;
     
     .content {
       margin: 16px;
+    }
+
+    .buttonContainer {
+      display: flex;
+      justify-content: center;
+    }
+
+    .button {
+      width: 100%;
     }
 
     .spinner {

@@ -15,13 +15,17 @@ import Home from 'scenes/home/Home';
 import Asset from 'scenes/home/Asset';
 import Send from 'scenes/home/SendAsset/Send';
 import Confirm from 'scenes/home/SendAsset/Confirm';
+import AssetList from 'scenes/home/Asset/AssetList';
+import AddCustomAsset from 'scenes/home/Asset/AddCustomAsset';
 import BuyList from 'scenes/home/BuyList';
 import BuyAsset from 'scenes/home/BuyAsset';
+import SingleSelect from 'scenes/home/SingleSelect';
 
 import Import from 'scenes/common/Import';
 import Main from 'scenes/settings/Main';
 import About from 'scenes/settings/About';
 import Networks from 'scenes/settings/Networks';
+// import AddNetwork from 'scenes/settings/AddNetwork';
 import Contacts from 'scenes/settings/Contacts';
 import ContactInfo from 'scenes/settings/ContactInfo';
 import ModifyContact from 'scenes/settings/ModifyContact';
@@ -50,6 +54,7 @@ import defaultHeader from 'navigation/headers/default';
 
 import screens from '../screens';
 
+
 ///////////////////////////
 // Constants
 ///////////////////////////
@@ -58,7 +63,8 @@ const Stack = createStackNavigator();
 const SCREEN_DEFAULT_TITLE_STRINGS = {
   wallet: 'Wallet',
   import: 'Import',
-  addAsset: 'Add Asset',
+  addAsset: 'Manage Tokens',
+  addCustomAsset: 'Add Custom Token',
   asset: 'Asset',
   confirm: 'Confirm',
   send: 'Send',
@@ -67,6 +73,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   settings: 'Settings',
   about: 'About',
   networks: 'Networks',
+  addNetork: 'Add Network',
   contacts: 'Contacts',
   modifyContact: 'Add Contact',
   wallets: 'Wallets',
@@ -104,13 +111,18 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.asset }} name={screens.authorized.asset} component={Asset} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirm }} name={screens.authorized.sendConfirm} component={Confirm} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.send }} name={screens.authorized.send} component={Send} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addAsset }} name={screens.authorized.addAsset} component={AssetList} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addCustomAsset }} name={screens.authorized.addCustomAsset} component={AddCustomAsset} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.buyList }} name={screens.authorized.buyList} component={BuyList} />
           <Stack.Screen name={screens.authorized.buyAsset} component={BuyAsset} />
+          <Stack.Screen name={screens.authorized.singleSelect} component={SingleSelect} />
 
           {/* Settings Screens */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings }} name={screens.settings.main} component={Main} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.about }} name={screens.settings.about} component={About} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.networks }} name={screens.settings.networks} component={Networks} />
+          {/* TODO-349: Add Custom Networks in the future. */}
+          {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addNetork }} name={screens.settings.addNetwork} component={AddNetwork} /> */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contacts }} name={screens.settings.contacts} component={Contacts} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contactInfo }} name={screens.settings.contactInfo} component={ContactInfo} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.modifyContact }} name={screens.settings.modifyContact} component={ModifyContact} />

@@ -1,4 +1,4 @@
-import { EthNetworkId } from 'scripts/Background/controllers/EthChainController/types';
+import { AllChainsIds } from 'scripts/Background/controllers/EVMChainController/types';
 import { AssetType } from 'state/vault/types';
 
 export interface IAssetInfoState {
@@ -8,11 +8,12 @@ export interface IAssetInfoState {
   symbol: string;
   native?: true;
   // if `native` is "true", `network` should be "both"
-  network?: 'both' | EthNetworkId;
+  network?: 'both' | AllChainsIds | string;
   logo?: string;
   priceId?: string;
   decimals: number;
   address: string;
+  custom?: boolean;
   // contractAddress?: string;
 }
 

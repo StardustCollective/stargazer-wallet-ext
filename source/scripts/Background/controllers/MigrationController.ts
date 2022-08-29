@@ -24,13 +24,13 @@ const MigrationController = async () => {
     await v3_1_1.default(state);
   }
 
-   /**
-   * Upgrade asset list any time it's out of sync
-   */
-  if (state.assets){
-    const assetListMigration = require('../migration/update_token_list');
-    await assetListMigration.default(state);  // Checks if state needs to be updated
-  }
+  /**
+     * Upgrade asset list any time it's out of sync
+     */
+  //  if (state.assets) {
+  //   const assetListMigration = require('../migration/update_token_list');
+  //   await assetListMigration.default(state);  // Checks if state needs to be updated
+  // }
 
   /**
    * version < 3.3.0
@@ -55,6 +55,15 @@ const MigrationController = async () => {
       const v3_5_1 = require('../migration/v3_5_1');
       await v3_5_1.default(state); 
     }
+
+  /** 
+   * version < 3_8_0
+   */
+  if (!state.vault.activeNetwork.Polygon) {
+    const v3_8_0 = require('../migration/v3_8_0');
+    await v3_8_0.default(state);
+  }
+
 };
 
 export default MigrationController;

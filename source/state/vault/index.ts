@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
-import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
+import { DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
-import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState, IVaultWalletsStoreState } from './types';
+import IVaultState, { AssetBalances, AssetType, IAssetState, IWalletState, IVaultWalletsStoreState, ICustomNetworkObject, ICustomNetworks } from './types';
 import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { IAssetInfoState } from 'state/assets/types';
 
 const initialState: IVaultState = {
   status: 0,
@@ -19,6 +20,10 @@ const initialState: IVaultState = {
   balances: {
     [AssetType.Constellation]: '0',
     [AssetType.Ethereum]: '0',
+    // TODO-349: Only Polygon
+    // [AssetType.Avalanche]: '0',
+    // [AssetType.BSC]: '0',
+    [AssetType.Polygon]: '0',
   },
   // activeWalletId: undefined,
   activeWallet: undefined,
@@ -27,7 +32,16 @@ const initialState: IVaultState = {
   activeNetwork: {
     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
+    // TODO-349: Only Polygon
+    // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
+    // 'BSC': BSC_NETWORK.bsc.id,
+    'Polygon': POLYGON_NETWORK.matic.id,
   },
+  customNetworks: {
+    constellation: {},
+    ethereum: {},
+  },
+  customAssets: [],
   version: '2.1.1',
 };
 
@@ -155,7 +169,7 @@ const VaultState = createSlice({
         delete state.activeAsset;
       }
     },
-    changeActiveNetwork(state: IVaultState, action: PayloadAction<{ network: KeyringNetwork; chainId: string }>) {
+    changeActiveNetwork(state: IVaultState, action: PayloadAction<{ network: string; chainId: string }>) {
       state.activeNetwork = {
         ...state.activeNetwork,
         [action.payload.network]: action.payload.chainId,
@@ -184,10 +198,28 @@ const VaultState = createSlice({
     // },
     addAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
       state.activeWallet.assets = state.activeWallet.assets.concat([action.payload]);
-      // state.activeAsset = action.payload.asset;
+    },
+    removeAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
+      state.activeWallet.assets = state.activeWallet.assets.filter(asset => asset.id !== action.payload.id);
     },
     migrateWalletComplete(state: IVaultState) {
       delete state.migrateWallet;
+    },
+    addCustomNetwork(state: IVaultState, action: PayloadAction<{network: string, data: ICustomNetworkObject }>) {
+      const { network, data } = action.payload;
+
+      if (network && data) {
+        state.customNetworks[network as keyof ICustomNetworks] = {
+          ...state.customNetworks[network as keyof ICustomNetworks],
+          [data.id]: data,
+        };
+      }
+    },
+    addCustomAsset(state: IVaultState, action: PayloadAction<IAssetInfoState>) {
+      state.customAssets.push(action.payload);
+    },
+    removeCustomAsset(state: IVaultState, action: PayloadAction<IAssetInfoState>) {
+      state.customAssets = state.customAssets.filter(asset => asset.id !== action.payload.id);
     },
   },
   extraReducers: (builder) => {
@@ -221,7 +253,11 @@ export const {
   updateBalances,
   // updateLabel,
   addAsset,
+  removeAsset,
   migrateWalletComplete,
+  addCustomNetwork,
+  addCustomAsset,
+  removeCustomAsset,
 } = VaultState.actions;
 
 export default VaultState.reducer;

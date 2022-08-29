@@ -4,10 +4,10 @@
 
 import React from 'react';
 import config from '../config';
+import ArrowLeftIcon from 'assets/images/svg/arrow-rounded-left.svg';
 import { fade } from 'navigation/animations';
 import { 
   View,
-  ArrowBackIcon, 
   Pressable 
 } from "native-base"
 
@@ -33,8 +33,8 @@ const defaultHeader = ({
   const renderHeaderLeft = () => {
 
     return (
-      <Pressable onPress={onBackButtonClicked}>
-        <ArrowBackIcon size="7" color="white" ml="5" />
+      <Pressable style={{ marginLeft: 16 }} onPress={onBackButtonClicked}>
+        <ArrowLeftIcon width={24} />
       </Pressable>
     );
   }

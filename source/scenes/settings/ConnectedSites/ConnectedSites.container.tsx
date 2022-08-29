@@ -1,27 +1,44 @@
+///////////////////////////
+// Modules
+///////////////////////////
+
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RootState } from 'state/store';
+///////////////////////////
+// Components
+///////////////////////////
 
-// import DAppController from 'scripts/Background/controllers/DAppController';
 import Container from 'components/Container';
-
-// import defaultHeader from 'navigation/headers/default';
-
 import ConnectedSites from './ConnectedSites';
 
+///////////////////////////
+// Utils
+///////////////////////////
+
+import { getDappController } from 'utils/controllersUtils';
+
+///////////////////////////
+// Types
+///////////////////////////
+
+import { RootState } from 'state/store';
 import { IConnectedSitesContainerProps } from './types';
 
 const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = () => {
+
   const connectedSites = useSelector((state: RootState) => state.dapp.whitelist);
+  const DAppController = getDappController();
 
-  // useLayoutEffect(() => {
-  //   // navigation.setOptions(defaultHeader({ navigation }));
-  // }, []);
-
-  const onDeleteSiteClicked = () => {
-    // DAppController.fromUserDisconnectDApp(id);
+  const onDeleteSiteClicked = (id: string) => {
+    if (DAppController) {
+      DAppController.fromUserDisconnectDApp(id);
+    }
   };
+
+  ///////////////////////////
+  // Render
+  ///////////////////////////
 
   return (
     <Container safeArea={false}>

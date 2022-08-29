@@ -1,32 +1,40 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   assetIcon: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: COLORS.gray_100,
   },
   imageIcon: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
   },
   dagIcon: {
-    width: 30,
-    height: 35,
+    width: 20,
+    height: 25,
   },
   imageNFTIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
   },
   componentIcon: {
-    width: 40,
-    height: 40,
+    width: 20,
+    height: 20,
+  },
+  labelText: {
+    fontWeight: FONT_WEIGHTS.semibold,
+    letterSpacing: -0.3
+  },
+  balanceText: {
+    letterSpacing: -0.3,
+    textAlign: 'right',
   },
   assetBalance: {
     flex: 1,
@@ -34,7 +42,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   assetName: {
-    marginLeft: 16,
+    width: '40%',
+    justifyContent: 'center',
+    marginLeft: 8,
   },
   assetPrice: {
     flexDirection: 'row',

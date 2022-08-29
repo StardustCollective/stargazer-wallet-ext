@@ -17,8 +17,10 @@ import {
   AssetType,
   IAssetState,
   IVaultWalletsStoreState,
+  AssetSymbol,
 } from 'state/vault/types';
 import { getNfts } from './nftSelectors';
+import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
 /// //////////////////////
 // Selectors
@@ -103,7 +105,7 @@ const selectAllAccounts = createSelector(
 );
 
 /**
- * Return wallet of active asset
+ * Return the public key of the active asset
  */
 
 const selectActiveAssetPublicKey = createSelector(
@@ -116,6 +118,27 @@ const selectActiveAssetPublicKey = createSelector(
         let account = accounts[j];
         if (activeAsset?.address === account.address) {
           return account!.publicKey ?? null;
+        }
+      }
+    }
+    return '';
+  }
+);
+
+/**
+ * Return the deviceId of the active asset
+ */
+
+ const selectActiveAssetDeviceId = createSelector(
+  selectAllWallets,
+  getActiveAsset,
+  (wallets, activeAsset) => {
+    for (let i = 0; i < wallets.length; i++) {
+      const { accounts } = wallets[i];
+      for (let j = 0; j < wallets[i].accounts.length; j++) {
+        let account = accounts[j];
+        if (activeAsset?.address === account.address) {
+          return account!.deviceId ?? null;
         }
       }
     }
@@ -153,13 +176,15 @@ const selectActiveNetworkAssets = createSelector(
     }
 
     return activeWallet.assets.filter((asset: IAssetState) => {
-      const assetType =
-        asset.type === AssetType.Constellation
-          ? KeyringNetwork.Constellation
-          : KeyringNetwork.Ethereum;
-      const assetNetwork = assets[asset.id as any]?.network;
-
-      return assetNetwork === 'both' || assetNetwork === activeNetwork[assetType];
+      const assetInfo = assets[asset.id];
+      const assetNetwork = assetInfo?.network;
+      const assetSymbol = assetInfo?.symbol;
+      let assetNetworkType: string = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(assetNetwork);
+      // TODO-349: Only Polygon isAVAX and isBNB missing
+      const isDAG = assetSymbol === AssetSymbol.DAG && assetNetwork === 'both';
+      const isETH = assetSymbol === AssetSymbol.ETH && assetNetwork === 'both';
+      const isMATIC = assetSymbol === AssetSymbol.MATIC && assetNetwork === 'matic';
+      return isDAG || isETH || isMATIC || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
     });
   }
 );
@@ -194,4 +219,5 @@ export default {
   selectActiveNetworkAssetIds,
   selectNFTAssets,
   selectActiveAssetPublicKey,
+  selectActiveAssetDeviceId,
 };

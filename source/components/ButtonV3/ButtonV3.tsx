@@ -53,6 +53,8 @@ interface IButtonV3Props {
   onClick?: () => void;
   submit?: boolean;
   disabled?: boolean;
+  leftIcon?: JSX.Element;
+  rightIcon?: JSX.Element;
 }
 
 //////////////////////
@@ -69,6 +71,8 @@ const ButtonV3: FC<IButtonV3Props> = ({
   onClick = () => {},
   submit = false,
   disabled = false,
+  leftIcon = null,
+  rightIcon = null,
 }) => {
   let buttonSizeStyle = '';
   let buttonColorStyle = '';
@@ -91,6 +95,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
   } else if (type === BUTTON_TYPES_ENUM.SECONDARY_SOLID) {
     buttonColorStyle = styles.secondaryButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
+  } else if (type === BUTTON_TYPES_ENUM.SECONDARY_OUTLINE) {
+    buttonColorStyle = styles.secondaryOutlineButton;
+    buttonTextColor = COLORS_ENUMS.PRIMARY_LIGHTER_1;
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {
     buttonColorStyle = styles.accentOneButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
@@ -108,8 +115,14 @@ const ButtonV3: FC<IButtonV3Props> = ({
       className={clsx([styles.base, buttonColorStyle, buttonTextColor, buttonSizeStyle, buttonBorderStyle, extraStyle, disabledStyles])}
       onClick={onClick}
     >
-      {!loading ? 
-        <TextComponent align={TEXT_ALIGN_ENUM.CENTER}>{label}</TextComponent> : 
+      {!loading ? (
+        <div className={styles.textContainer}>
+          { !!leftIcon && <div className={styles.iconLeft}>{leftIcon}</div>}
+          <TextComponent color={buttonTextColor} align={TEXT_ALIGN_ENUM.CENTER}>{label}</TextComponent> 
+          { !!rightIcon && <div className={styles.iconRight}>{rightIcon}</div>}
+        </div>
+      )
+        : 
         <div className={styles.loader}>
           <CircularProgress size={24}/>
         </div>

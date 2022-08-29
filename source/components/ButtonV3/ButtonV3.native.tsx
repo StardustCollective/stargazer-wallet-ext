@@ -46,6 +46,7 @@ interface IButtonV3Props {
   extraTitleStyles?: {};
   extraContainerStyles?: {};
   onPress?: () => void;
+  otherProps: any;
 }
 
 //////////////////////
@@ -63,6 +64,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   extraTitleStyles = {},
   extraContainerStyles = {},
   onPress = () => {},
+  ...otherProps
 }) => {
   let buttonSizeStyle = {};
   let buttonColorStyle = {};
@@ -108,6 +110,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
       titleStyle={composedTitleStyles}
       containerStyle={composedContainerStyles}
       onPress={onPress}
+      {...otherProps}
     />
   );
 };

@@ -1,0 +1,48 @@
+@import '~assets/styles/variables';
+
+.container {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.cursorPointer {
+  cursor: pointer;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+  padding: 8px 16px 8px 16px;
+  border-radius: 8px;
+  border: 1px solid $gray-200;
+  align-items: center;
+  background-color: $white;
+  margin-top: 4px;
+}
+
+.iconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 16px;
+  border-width: 1px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.labelRight {
+  color: rgba(0, 0, 0, 0.66);
+}
+
+.titleContainer {
+  display: flex;
+  flex-grow: 1;
+  margin-right: 12px;
+  margin-left: 12px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}

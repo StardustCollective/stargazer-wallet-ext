@@ -1,5 +1,5 @@
 import { IActiveAssetState } from 'state/vault/types';
-import { EthNetworkId } from './Background/controllers/EthChainController/types';
+import { AllChainsIds } from './Background/controllers/EVMChainController/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 export interface AccountItem  {
@@ -29,7 +29,7 @@ export interface IETHPendingTx {
   fromAddress: string;
   toAddress: string;
   timestamp: number;
-  network: EthNetworkId;
+  network: AllChainsIds | string;
   assetId: string;
   nonce?: number;
   gasPrice: number;

@@ -3,13 +3,13 @@ import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   base: {
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     overflow: 'hidden',
   },
   headerDisplay: {
-    fontWeight: FONT_WEIGHTS.bold,
-    fontSize: 48,
-    lineHeight: 64,
+    fontWeight: FONT_WEIGHTS.semibold,
+    fontSize: 40,
+    lineHeight: 48,
   },
   headerLarge: {
     fontWeight: FONT_WEIGHTS.medium,
@@ -37,6 +37,11 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   caption: {
+    fontWeight: FONT_WEIGHTS.regular,
+    fontSize: 12,
+    lineHeight: 20,
+  },
+  captionRegular: {
     fontWeight: FONT_WEIGHTS.regular,
     fontSize: 14,
     lineHeight: 20,

@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 14,
     color: COLORS.gray_dark,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     paddingVertical: 10,
   },
   inputContainer: {
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 6,
     paddingLeft: 10,
-    borderColor: COLORS.gray_200,
+    borderColor: 'rgba(0, 0, 0, 0.12)',
     borderStyle: 'solid',
     marginBottom: -24,
     marginHorizontal: -24,
@@ -23,12 +23,17 @@ const styles = StyleSheet.create({
     marginHorizontal: -10, // container has 10 padding to compensate you cant change
   },
   label: {
-    paddingLeft: 14,
     paddingBottom: 10,
     fontSize: 12,
-    fontFamily: FONTS.rubik,
+    color: COLORS.black,
+    lineHeight: 20,
+    fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.medium,
+    marginHorizontal: -10, // container has 10 padding to compensate you cant change
   },
+  error: {
+    borderColor: COLORS.red,
+  }
 });
 
 export default styles;

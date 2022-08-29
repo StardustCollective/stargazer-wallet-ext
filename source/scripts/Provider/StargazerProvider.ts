@@ -2,7 +2,7 @@ import find from 'lodash/find';
 import { dag4 } from '@stardust-collective/dag4';
 import {
   KeyringNetwork,
-  KeyringWalletAccountState,
+  // KeyringWalletAccountState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { Runtime, Windows } from 'webextension-polyfill-ts';
@@ -28,6 +28,7 @@ export type StargazerSignatureRequest = {
 
 // Constants
 const LEDGER_URL = '/ledger.html';
+const BITFI_URL = '/bitfi.html';
 const EXTERNAL_URL = '/external.html';
 const WINDOW_TYPES: Record<string, Windows.CreateType> = {
   popup: 'popup',
@@ -170,7 +171,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
   signMessage(msg: string) {
     const privateKeyHex = dag4.account.keyTrio.privateKey;
-    const sig = dag4.keyStore.sign(privateKeyHex, msg);
+    const sig = dag4.keyStore.personalSign(privateKeyHex, msg);
 
     return sig;
   }
@@ -200,24 +201,33 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     dappProvider: DappProvider,
     port: Runtime.Port
   ) {
-    const { vault } = store.getState();
 
-    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger];
+    const { vault } = store.getState();
+    let windowUrl = EXTERNAL_URL;
+    let deviceId = "";
+    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
-    const windowUrl =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
-        ? LEDGER_URL
-        : EXTERNAL_URL;
+    if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
+      deviceId =  activeWallet.accounts[0].deviceId;
+    };
+
+    if(activeWallet.type === KeyringWalletType.LedgerAccountWallet){
+      windowUrl = LEDGER_URL;
+    }else if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
+      windowUrl = BITFI_URL;
+    }
     const windowType =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
+      activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
+      activeWallet.type === KeyringWalletType.BitfiAccountWallet
         ? WINDOW_TYPES.normal
         : WINDOW_TYPES.popup;
     const windowSize =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
-        ? { width: 1000, height: 1000 }
+      activeWallet.type === KeyringWalletType.LedgerAccountWallet||
+      activeWallet.type === KeyringWalletType.BitfiAccountWallet
+        ? { width: 600, height: 1000 }
         : { width: 372, height: 600 };
 
     if (request.method === AvailableMethods.dag_chainId) {
@@ -279,19 +289,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         signatureRequestEncoded,
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
-        publicKey: '',
+        deviceId,
       };
-
-      // If the type of account is Ledger send back the public key so the
-      // signature can be verified by the requester.
-      let accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
-      if (
-        activeWallet.type === KeyringWalletType.LedgerAccountWallet &&
-        accounts &&
-        accounts[0]
-      ) {
-        signatureData.publicKey = accounts[0].publicKey;
-      }
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
         port,

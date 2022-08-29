@@ -12,9 +12,10 @@ import { scale } from 'react-native-size-matters';
     shadowOpacity: 0,
   },
   headerTitleStyle: {
-    fontSize: 24,
+    fontSize: 18,
+    lineHeight: 24,
     fontWeight: '500',
-    fontFamily: 'Rubik',
+    fontFamily: 'Inter',
     color: '#fff',
   },
   headerTitleAlign: 'center',

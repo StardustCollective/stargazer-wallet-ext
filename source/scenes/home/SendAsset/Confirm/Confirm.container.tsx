@@ -42,9 +42,11 @@ import { useFiat } from 'hooks/usePrice';
 // Utils
 ///////////////////////////
 
+import { getNativeToken } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
 import { isError } from 'scripts/common';
+import { isNative } from 'utils/envUtil';
 
 ///////////////////////////
 // Selectors
@@ -76,7 +78,8 @@ const ConfirmContainer = () => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
-  let activeWalletPublicKey: any = useSelector(walletSelectors.selectActiveAssetPublicKey)
+  let activeWalletPublicKey: any = useSelector(walletSelectors.selectActiveAssetPublicKey);
+  let activeWalletDeviceId: any = useSelector(walletSelectors.selectActiveAssetDeviceId);
   let history: any;
   let isExternalRequest: boolean;
 
@@ -132,7 +135,8 @@ const ConfirmContainer = () => {
 
   const getFiatAmount = useFiat(false, assetInfo);
 
-  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
+  const assetNetwork = assets[activeAsset?.id]?.network;
+  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
 
   const tempTx = accountController.getTempTx();
   const [confirmed, setConfirmed ] = useState(false);
@@ -183,8 +187,9 @@ const ConfirmContainer = () => {
   const handleConfirm = async (browser: any = null) => {
     setDisabled(true);
 
-    const background = await browser.runtime.getBackgroundPage();
-    const { windowId } = queryString.parse(window.location.search);
+    const background = isNative ? undefined : await browser?.runtime?.getBackgroundPage();
+    const NON_WINDOW_ID = 'non-window-id';
+    const windowId = queryString?.parse(window?.location?.search)?.windowId;
 
     try {
       if (isExternalRequest) {
@@ -203,7 +208,7 @@ const ConfirmContainer = () => {
         const trxHash = await accountController.confirmContractTempTx(activeAsset);
 
         background.dispatchEvent(new CustomEvent('transactionSent', {
-          detail: { windowId, approved: true, result: trxHash },
+          detail: { windowId: windowId || NON_WINDOW_ID, approved: true, result: trxHash },
         }));
 
         if (window) {
@@ -213,28 +218,23 @@ const ConfirmContainer = () => {
         if (activeWallet.type === KeyringWalletType.LedgerAccountWallet || 
             activeWallet.type === KeyringWalletType.BitfiAccountWallet ) {
 
-
           const page = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_PAGE : BITFI_PAGE;
 
           const params = new URLSearchParams();
           params.set('route', 'signTransaction');
           params.set('windowId', Array.isArray(windowId) ? windowId[0] : windowId);
           params.set('id', activeWallet.id);
-          params.set('publicKey', activeWalletPublicKey)
+          params.set('publicKey', activeWalletPublicKey);
+          params.set('deviceId', activeWalletDeviceId);
           params.set('amount', tempTx!.amount);
           params.set('fee', String(tempTx!.fee));
-          params.set('from', tempTx!.fromAddress)
-          params.set('to', tempTx!.toAddress)
+          params.set('from', tempTx!.fromAddress);
+          params.set('to', tempTx!.toAddress);
 
           window.open(`/${page}.html?${params.toString()}`, '_newtab');
         } else {
-
-          const trxHash = await accountController.confirmTempTx()
-          background.dispatchEvent(new CustomEvent('transactionSent', {
-            detail: { windowId, approved: true, result: trxHash },
-          }));  
+          await accountController.confirmTempTx();
           setConfirmed(true);
-
         }
       }
     } catch (e) {
@@ -244,9 +244,12 @@ const ConfirmContainer = () => {
           message = 'Insufficient ETH to cover gas fee.';
         }
 
-        background.dispatchEvent(new CustomEvent('transactionSent', {
-          detail: { windowId, approved: false, error: e.message },
-        }));
+        if (background) {
+          background?.dispatchEvent(new CustomEvent('transactionSent', {
+            detail: { windowId: windowId || NON_WINDOW_ID, approved: false, error: e.message },
+          }));
+        }
+
 
         showAlert(message, 'danger');
       }

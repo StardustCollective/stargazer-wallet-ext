@@ -1,34 +1,25 @@
 import React, { FC } from 'react';
-import clsx from 'clsx';
 
-import Tooltip from 'components/Tooltip';
 import CircleIcon from 'components/CircleIcon';
+import TextV3 from 'components/TextV3';
 
 import styles from './AssetHeader.scss';
 
 import IAssetHeaderSettings from './types';
 
-const AssetHeader: FC<IAssetHeaderSettings> = ({
-  isCopied,
-  onClickCopyText,
-  shortenedAddress,
-  asset,
-  copiedTextToolip,
-}) => {
+const AssetHeader: FC<IAssetHeaderSettings> = ({ asset, network }) => {
   return (
     <div className={styles.fullselect}>
       <span className={styles.selected}>
-        <span className={styles.main} onClick={onClickCopyText}>
+        <span className={styles.main}>
           <div className={styles.assetLogo}>
-            <CircleIcon logo={asset.logo} label={asset.label} />
+            <CircleIcon logo={asset?.logo} label={asset?.label} />
           </div>
-          <Tooltip title={copiedTextToolip} placement="bottom" arrow>
-            <div className={clsx(styles.address, { [styles.active]: isCopied })}>
-              <span>{asset.label}</span>
-              <small id="assetHeader-address">{shortenedAddress}</small>
-            </div>
-          </Tooltip>
-        </span>
+          <div className={styles.address}>
+            <TextV3.CaptionStrong extraStyles={styles.labelText}>{asset?.label}</TextV3.CaptionStrong>
+            <TextV3.Caption extraStyles={styles.networkText}>{`${asset.symbol} (${network})`}</TextV3.Caption>
+          </div>
+          </span>
       </span>
     </div>
   );

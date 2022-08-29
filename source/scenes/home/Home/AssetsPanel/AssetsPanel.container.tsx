@@ -50,7 +50,7 @@ const AssetsPanelContainer: FC = () => {
   const nfts: INFTListState = useSelector((state: RootState) => state.nfts);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const activeNFTAssets = useSelector(walletSelectors.selectNFTAssets);
-
+  
   ///////////////////////
   // Callbacks
   ///////////////////////
@@ -58,6 +58,10 @@ const AssetsPanelContainer: FC = () => {
   const handleSelectAsset = (asset: IAssetState) => {
     accountController.updateAccountActiveAsset(asset);
     linkTo('/asset');
+  };
+
+  const handleAddTokens = () => {
+    linkTo('/asset/add');
   };
 
   ///////////////////////
@@ -72,6 +76,7 @@ const AssetsPanelContainer: FC = () => {
       nfts={nfts}
       activeWallet={activeWallet}
       handleSelectAsset={handleSelectAsset}
+      handleAddTokens={handleAddTokens}
     />
   );
 };

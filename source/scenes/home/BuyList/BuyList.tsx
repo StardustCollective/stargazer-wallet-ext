@@ -24,6 +24,7 @@ import styles from './BuyList.scss';
 ///////////////////////////
 
 import { IBuyList } from './types';
+import { IAssetInfoState } from 'state/assets/types';
 
 const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
 
@@ -32,14 +33,14 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
 
     return (
       <>
-        {assets ? Object.keys(assets).map((key: string) => {
+        {assets ? assets.map((asset: IAssetInfoState) => {
           return (
             <AssetItem
-              id={assets[key].id}
-              key={assets[key].id}
-              asset={assets[key]}
-              assetInfo={assets[key]}
-              itemClicked={() => handleSelectAsset(assets[key].id)}
+              id={asset.id}
+              key={asset.id}
+              asset={asset}
+              assetInfo={asset}
+              itemClicked={() => handleSelectAsset(asset.id)}
             />
           );
         }) : <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>There was an error loading assets. Please try again later.</TextV3.Caption>}

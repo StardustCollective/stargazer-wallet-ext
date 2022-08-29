@@ -24,10 +24,12 @@ export interface IWalletController {
   ) => Promise<string>;
   deleteWallet: (walletId: KeyringWalletState, password: string) => Promise<boolean>;
   importHardwareWalletAccounts: (
-    addresses: AccountItem[]
+    addresses: AccountItem[],
+    deviceId?: string
   ) => void;
   switchWallet: (walletId: string) => Promise<void>;
-  switchNetwork: (networkType: KeyringNetwork, networkId: string) => void;
+  switchNetwork: (networkType: string, networkId: string) => void;
+  addNetwork: (network: string, data: any) => void;
   // generateSeedPhrase: (update?: boolean) => string;
   // getGeneratedSeedPhrase: () => string;
   setWalletPassword: (password: string) => void;

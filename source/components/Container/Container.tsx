@@ -8,7 +8,7 @@ const Container: FC<IContainer> = (
 
   return (
     <div className={styles.container}>
-      {children.children}
+      {children.children as any}
     </div>
   )
 }

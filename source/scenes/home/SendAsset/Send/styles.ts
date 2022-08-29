@@ -8,11 +8,12 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginHorizontal: 30,
+    marginHorizontal: 16,
   },
   balance: {
     alignItems: 'center',
-    marginVertical: 30,
+    marginTop: 30,
+    marginBottom: 16,
   },
   form: {},
   input: {

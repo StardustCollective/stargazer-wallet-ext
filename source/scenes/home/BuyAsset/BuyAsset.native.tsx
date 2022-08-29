@@ -12,7 +12,7 @@ import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import ArrowIcon from 'assets/images/svg/arrow-left.svg';
-import { showAlert } from 'utils/alertUtil';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 ///////////////////////////
 // Constants
@@ -46,6 +46,7 @@ const BuyAsset: FC<IBuyAsset> = ({
   handleItemClick,
   handleConfirm,
 }) => {
+  const showAlert = usePlatformAlert();
   const padList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'];
 
   useEffect(() => {
