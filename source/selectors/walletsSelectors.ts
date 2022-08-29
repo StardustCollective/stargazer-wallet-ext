@@ -178,9 +178,13 @@ const selectActiveNetworkAssets = createSelector(
     return activeWallet.assets.filter((asset: IAssetState) => {
       const assetInfo = assets[asset.id];
       const assetNetwork = assetInfo?.network;
+      const assetSymbol = assetInfo?.symbol;
       let assetNetworkType: string = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(assetNetwork);
-      // TODO-349: Only Polygon ['DAG', 'ETH', 'AVAX', 'BNB', 'MATIC']
-      return [AssetSymbol.DAG, AssetSymbol.ETH, AssetSymbol.MATIC].includes(assetInfo?.symbol as AssetSymbol) || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
+      // TODO-349: Only Polygon isAVAX and isBNB missing
+      const isDAG = assetSymbol === AssetSymbol.DAG && assetNetwork === 'both';
+      const isETH = assetSymbol === AssetSymbol.ETH && assetNetwork === 'both';
+      const isMATIC = assetSymbol === AssetSymbol.MATIC && assetNetwork === 'matic';
+      return isDAG || isETH || isMATIC || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
     });
   }
 );
