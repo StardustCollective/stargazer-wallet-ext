@@ -180,12 +180,12 @@ const AssetsController = (): IAssetsController => {
     const platform = getPlatformFromMainnet(networkType);
 
     try {
-      tokenData = await (await fetch(`${TOKEN_INFO_API}/${platform}/contract/${address}${COINGECKO_API_KEY_PARAM}`)).json();
+      tokenData = await (await fetch(`${TOKEN_INFO_API}/${platform}/contract/${address}?${COINGECKO_API_KEY_PARAM}`)).json();
     } catch (err) {
       console.log('Token Error:', err);
     }
 
-    if (!tokenData?.error) {
+    if (!tokenData?.error && !!tokenData?.image?.small) {
       logo = tokenData.image.small;
     }
 
@@ -229,6 +229,7 @@ const AssetsController = (): IAssetsController => {
     if (assetInfo && assetInfo.decimals !== asset.decimals) {
       store.dispatch(updateAssetDecimals({ address: asset.address, decimals: assetInfo.decimals }));
     }
+    await accountController.assetsBalanceMonitor.start();
   }
 
   const removeERC20AssetFn = (asset: IAssetInfoState): void => {

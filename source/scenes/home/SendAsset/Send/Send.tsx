@@ -44,6 +44,7 @@ const WalletSend: FC<IWalletSend> = ({
   gasFee,
   gasSpeedLabel,
   networkTypeOptions,
+  basePriceId,
  }) => {
 
   const addressInputClass = clsx(styles.input, styles.address, {
@@ -214,7 +215,7 @@ const WalletSend: FC<IWalletSend> = ({
             <div className={styles.status}>
               <span
                 className={styles.equalAmount}
-              >{`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2)})`}</span>
+              >{`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2, basePriceId)})`}</span>
             </div>
           </section>
         )}

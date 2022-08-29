@@ -124,6 +124,21 @@ export const generateId = (value: string): string => {
   return value.toLocaleLowerCase().replace(/[^a-zA-Z0-9]+/g, '-');
 }
 
+export const getPriceId = (network: string): string => {
+  switch (network) {
+    case 'mainnet':
+    case 'ropsten':
+    case 'rinkeby':
+      return 'ethereum';
+    case 'matic':
+    case 'maticmum':
+      return 'matic-network';
+  
+    default:
+      return 'ethereum';
+  }
+}
+
 export const getMainnetFromTestnet = (chainId: AllChainsIds | string) => {
   const EVM_CHAINS = getAllEVMChains();
   if (chainId === 'both') return 'mainnet';
