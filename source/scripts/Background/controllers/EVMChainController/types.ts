@@ -3,21 +3,35 @@ import { BaseAmount } from '@xchainjs/xchain-util';
 import { Address, ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
-export type EthNetworkId = 'mainnet' | 'ropsten' | 'rinkeby';
-export type EthNetworkValue = 'homestead' | 'ropsten' | 'rinkeby';
-export const testnets = ['ropsten', 'rinkeby'];
+// Chain IDs
+export type EthChainId = 'mainnet' | 'ropsten' | 'rinkeby';
+export type PolygonChainId = 'matic' | 'maticmum';
+export type BSCChainId = 'bsc' | 'bsc-testnet';
+export type AvalancheChainId = 'avalanche-mainnet' | 'avalanche-testnet';
 
-export type EthereumNetwork = {
-  id: EthNetworkId;
-  value: EthNetworkValue;
+// Chain values
+export type EthChainValue = 'homestead' | 'ropsten' | 'rinkeby';
+export type PolygonChainValue = 'matic' | 'maticmum';
+export type BSCChainValue = 'bsc' | 'bsc-testnet';
+export type AvalancheChainValue = 'avalanche-mainnet' | 'avalanche-testnet';
+
+// All chains
+export type AllChainsIds = EthChainId | PolygonChainId | BSCChainId | AvalancheChainId;
+export type AllChainsValues = EthChainValue | PolygonChainValue | BSCChainValue | AvalancheChainValue;
+
+export const testnets = ['ropsten', 'rinkeby', 'maticmum', 'bsc-testnet', 'avalanche-testnet'];
+
+export type IChain = {
+  id: AllChainsIds | string;
+  value: AllChainsValues | string;
   label: string;
   chainId: number;
-  etherscan: string;
-}
-
-export type InfuraCreds = {
-  projectId: string;
-  projectSecret?: string;
+  explorer: string;
+  rpcEndpoint: string;
+  explorerAPI: string;
+  nativeToken: string;
+  mainnet: string;
+  network: string;
 }
 
 export type GasPrices = Record<FeeOptionKey, BaseAmount>;
@@ -40,17 +54,16 @@ type GetTokenInfoResponse = {
   name: string;
 }
 
-export type EthChainControllerParams = {
-  network?: EthNetworkId;
+export type EVMChainControllerParams = {
+  chain?: AllChainsIds | string;
   etherscanApiKey?: string;
   privateKey?: string;
-  infuraCreds?: InfuraCreds;
 };
 
-export interface IEthChainController extends ChainsController {
+export interface IEVMChainController extends ChainsController {
   estimateTokenTransferGasLimit: (recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) => Promise<number>;
-  getTokenInfo: (address: string, chainId: number) => Promise<GetTokenInfoResponse | null>;
-  waitForTransaction: (hash: string, chainId: number) => Promise<ethers.providers.TransactionReceipt>;
+  getTokenInfo: (address: string) => Promise<GetTokenInfoResponse | null>;
+  waitForTransaction: (hash: string) => Promise<ethers.providers.TransactionReceipt>;
   transfer: (txParams: TxParams & { feeOptionKey?: FeeOptionKey; gasPrice?: BaseAmount; gasLimit?: BigNumber; nonce: string; }) => Promise<TransactionResponse>;
   getWallet: (walletIndex: number) => Wallet;
   estimateGasPrices: () => Promise<GasPrices>;

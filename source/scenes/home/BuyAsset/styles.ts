@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     width: 300,
   },
   confirmButtonText: {
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.medium,
   },
   disabled: {

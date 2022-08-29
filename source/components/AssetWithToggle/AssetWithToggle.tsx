@@ -34,23 +34,23 @@ import styles from './AssetWithToggle.scss';
 // Component
 ///////////////////////
 
-const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, label, logo, selected, disabled = false, toggleItem }: IAssetWithToggle) => {
+const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, network, logo, selected, disabled = false, toggleItem }: IAssetWithToggle) => {
 
-  const iconStyle = logo.includes('constellation-logo') ? styles.dagIcon : styles.imageIcon;
+  const iconStyle = logo?.includes('constellation-logo') ? styles.dagIcon : styles.imageIcon;
 
   ///////////////////////
   // Render
   ///////////////////////
 
   return (
-    <Card id={`AssetWithToggle-${id}`} disabled style={styles.cardContainer}>
+    <Card id={`AssetWithToggle-${id}-${network}`} disabled style={styles.cardContainer}>
       <div className={styles.container}>
         <div className={styles.assetIcon}>
           <img className={iconStyle} src={logo} />
         </div>
         <div className={styles.assetInfo}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.CaptionStrong>
-          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{!!network && `${network}`}</TextV3.Caption>
         </div>
         <div className={styles.toggleContainer}>
           <Switch

@@ -22,7 +22,6 @@ import styles from './asset.scss';
 interface IAssetHeader {
   navigation: any;
   asset: IAssetInfoState;
-  address: string;
   addressUrl: string;
   onQrCodePress?: () => void;
 }
@@ -31,10 +30,10 @@ interface IAssetHeader {
 // Header
 ///////////////////////////
 
-const assetHeader = ({ navigation, asset, address, addressUrl }: IAssetHeader) => {
+const assetHeader = ({ navigation, asset, addressUrl }: IAssetHeader) => {
   return {
     ...defaultHeader({ navigation }),
-    headerTitle: () => <AssetHeader asset={asset} address={address} />,
+    headerTitle: () => <AssetHeader asset={asset} />,
     headerRight: () => (
       <IconButton
         className={styles.linkIcon}

@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light_100,
   },
   phraseText: {
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontSize: 12,
     lineHeight: 18,
     color: COLORS.gray_dark,

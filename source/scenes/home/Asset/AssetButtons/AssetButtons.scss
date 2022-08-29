@@ -18,6 +18,10 @@
     cursor: pointer;
   }
 
+  .label {
+    font-weight: $semibold;
+  }
+
   .icon {
     display: flex;
     justify-content: center;

@@ -1,6 +1,6 @@
 import store from 'state/store';
 import { updateFiatPrices } from 'state/price';
-import { ASSET_PRICE_API, DEFAULT_CURRENCY } from 'constants/index';
+import { ASSET_PRICE_API, COINGECKO_API_KEY_PARAM, DEFAULT_CURRENCY } from 'constants/index';
 import IAssetListState from 'state/assets/types';
 import IVaultState  from '../../../state/vault/types';
 
@@ -29,7 +29,7 @@ const ControllerUtils = (): IControllerUtils => {
         .join(',');
       const data = await (
         await fetch(
-          `${ASSET_PRICE_API}?ids=${assetIds},bitcoin&vs_currencies=${currency}&include_24hr_change=true`
+          `${ASSET_PRICE_API}?ids=${assetIds},bitcoin&vs_currencies=${currency}&include_24hr_change=true${COINGECKO_API_KEY_PARAM}`
         )
       ).json();
       store.dispatch(

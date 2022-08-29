@@ -33,7 +33,7 @@ import { removeEthereumPrefix } from 'utils/addressUtil';
 
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
-import IVaultState, { AssetType, IActiveAssetState, AssetBalances } from 'state/vault/types';
+import IVaultState, { AssetType, IActiveAssetState, AssetBalances, AssetSymbol, ActiveNetwork } from 'state/vault/types';
 import { RootState } from 'state/store';
 
 ///////////////////////////
@@ -54,6 +54,13 @@ import useGasEstimate from 'hooks/useGasEstimate';
 ///////////////////////////
 
 import Send from './Send';
+import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+
+///////////////////////////
+// Constants
+///////////////////////////
+
+import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO } from 'constants/index';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -151,13 +158,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const { setValue, control, handleSubmit, register, errors, setError, clearError } = useForm({
     validationSchema: yup.object().shape({
-      address: yup.string().required('Error: Invalid DAG address'),
+      address: yup.string().required('Error: Invalid address'),
       amount: !isExternalRequest ? yup.mixed().transform(value => {
         const formattedValue = value.replace(/,/g, '.');
         if (isNaN(formattedValue)) return undefined;
         const floatNumber = parseFloat(formattedValue);
         return isNaN(floatNumber) || floatNumber <= 0 ? undefined : floatNumber;
-      }).required('Error: Invalid DAG amount') : null,
+      }).required('Error: Invalid amount') : null,
       fee:
         (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation)
           ? yup.mixed().transform(value => {
@@ -169,6 +176,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
           : yup.mixed(),
     }),
   });
+
+  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
 
   const [address, setAddress] = useState(initAddress || tempTx?.toAddress || to || '');
 
@@ -387,6 +396,31 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     handleAmountChange(formattedUnits);
   };
 
+  const isDAG = assetInfo.symbol === AssetSymbol.DAG;
+
+  const networkLabel = getNetworkFromChainId(assetInfo?.network);
+  const chainValue = activeNetwork[networkLabel as keyof ActiveNetwork];
+  const tokenMainnet = isDAG ? 'main' : getMainnetFromTestnet(assetInfo?.network);
+  const tokenChainLabel = isDAG ? 'Mainnet 1.0' : getChainInfo(chainValue)?.label;
+
+  const networkTypeOptions = {
+    title: 'NETWORK',
+    value: tokenMainnet,
+    items: [
+      { value: 'main', label: 'Constellation', icon: CONSTELLATION_LOGO },  
+      { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },   
+      { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO }, 
+      // TODO-349: Only Polygon
+      // { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
+      // { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
+    ],
+    disabled: true,
+    labelRight: tokenChainLabel,
+  }
+
+  const assetNetwork = assets[activeAsset?.id]?.network;
+  const nativeToken = getNativeToken(assetNetwork);
+
   return (
     <Container color={CONTAINER_COLOR.LIGHT}>
       <Send
@@ -408,6 +442,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         isValidAddress={isValidAddress}
         balances={balances}
         activeAsset={activeAsset}
+        nativeToken={nativeToken}
         assetInfo={assetInfo}
         address={address}
         register={register}
@@ -422,6 +457,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         gasSpeedLabel={gasSpeedLabel}
         decimalPointOnAmount={decimalPointOnAmount}
         decimalPointOnFee={decimalPointOnFee}
+        networkTypeOptions={networkTypeOptions}
       />
     </Container>
   );

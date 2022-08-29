@@ -1,0 +1,32 @@
+@import '~assets/styles/variables';
+
+.container {
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-color: $gray_light;
+}
+
+.label {
+  margin-bottom: 4px;
+}
+
+.buttonContainer {
+  position: absolute;
+  align-self: center;
+  width: 90%;
+  bottom: 8px;
+}
+
+.saveButton {
+  width: 100%;
+}
+
+.errorMessage {
+  font-size: 12px;
+  line-height: 18px;
+  padding-left: 10px;
+  padding-top: 6px;
+}

@@ -6,15 +6,25 @@ import {
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { EthNetworkId } from 'scripts/Background/controllers/EthChainController/types';
+import { EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
+import { IAssetInfoState } from 'state/assets/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
 
 export type Keystore = SeedKeystore | PrivKeystore;
 
+export enum AssetSymbol {
+  DAG = 'DAG',
+  ETH = 'ETH',
+  MATIC = 'MATIC',
+}
+
 export enum AssetType {
   Constellation = 'constellation',
+  Avalanche = 'avalanche',
+  BSC = 'bsc',
+  Polygon = 'polygon',
   Ledger = 'ledger',
   LedgerConstellation = 'ledger-constellation',
   Ethereum = 'ethereum',
@@ -27,7 +37,11 @@ export type Transaction = DAGTransaction | any;
 
 export type ActiveNetwork = {
   [KeyringNetwork.Constellation]: string;
-  [KeyringNetwork.Ethereum]: EthNetworkId;
+  [KeyringNetwork.Ethereum]: EthChainId;
+  // TODO-349: Only Polygon
+  // 'Avalanche': AvalancheChainId;
+  // 'BSC': BSCChainId;
+  'Polygon': PolygonChainId;
 };
 
 export interface IAssetState {
@@ -45,6 +59,10 @@ export interface IActiveAssetState extends IAssetState {
 export type AssetBalances = {
   [AssetType.Ethereum]?: string;
   [AssetType.Constellation]?: string;
+  // TODO-349: Only Polygon
+  // 'avalanche'?: string;
+  // 'bsc'?: string;
+  'polygon'?: string;
   [contractAddress: string]: string;
 };
 
@@ -75,6 +93,26 @@ export interface IWalletState {
   supportedAssets: KeyringAssetType[]; // eth,dag,erc20,erc721
   assets: IAssetState[];
 }
+export interface ICustomNetworkObject {
+  id: string;
+  value: string;
+  label: string;
+  explorer: string;
+  chainId: number;
+  rpcEndpoint: string;
+  explorerAPI: string;
+  nativeToken: string;
+  mainnet: string;
+  network: string;
+}
+export interface ICustomNetworkState {
+  [networkId: string]: ICustomNetworkObject;
+}
+
+export interface ICustomNetworks {
+  constellation: ICustomNetworkState;
+  ethereum: ICustomNetworkState;
+}
 
 export default interface IVaultState {
   hasEncryptedVault: boolean;
@@ -86,4 +124,6 @@ export default interface IVaultState {
   activeAsset: IActiveAssetState;
   activeNetwork: ActiveNetwork;
   migrateWallet?: any;
+  customNetworks: ICustomNetworks;
+  customAssets: IAssetInfoState[];
 }

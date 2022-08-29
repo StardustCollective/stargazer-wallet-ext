@@ -12,10 +12,17 @@ type AddressBalanceMap = {
   [address: string]: BalanceMap;
 }
 
+// This contract address is taken from https://github.com/wbobeirne/eth-balance-checker
 const NETWORK_TO_CONTRACT_MAP = {
-  1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39',
-  3: '0x9a5f9a99054a513d1d6d3eb1fef7d06981b4ba9d',
-  4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2'
+  1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39', // ETH mainnet
+  3: '0x9A5F9a99054A513D1D6d3Eb1fef7d06981B4BA9d', // ETH ropsten
+  4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2', // ETH rinkeby
+  137: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // Polygon mainnet
+  80001: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // Polygon testnet
+  56: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // BSC mainnet
+  97: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // BSC testnet
+  43114: '0xD023D153a0DFa485130ECFdE2FAA7e612EF94818', // AVAX mainnet
+  43113: '0xaaEe9Ece50e5a5A1b125cf9300b6a8AdC72cDE40', // AVAX testnet (this contract was deployed by us)
 }
 
 export class TokenContractHelper {
@@ -34,23 +41,9 @@ export class TokenContractHelper {
 
 
   async getAddressBalances (provider: Provider | Signer, ethAddress: string, tokenContractAddress: string[], chainId = 1) {
-    let contractAddress: string;
-    switch (chainId) {
-      case 1:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[1];
-        break;
-      case 3:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[3];
-        break;
-      case 4:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[4];
-        break;
-      default:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[1];
-        break;
-    }
+    
     const contract = new Contract(
-      contractAddress,
+      NETWORK_TO_CONTRACT_MAP[chainId as keyof typeof NETWORK_TO_CONTRACT_MAP],
       SINGLE_CALL_BALANCES_ABI,
       provider
     );
@@ -61,23 +54,8 @@ export class TokenContractHelper {
   }
 
   async getTokenBalance(provider: Provider | Signer, ethAddress: string, tokenContractAddress: string, chainId = 1) {
-    let contractAddress: string;
-    switch (chainId) {
-      case 1:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[1];
-        break;
-      case 3:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[3];
-        break;
-      case 4:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[4];
-        break;
-      default:
-        contractAddress = NETWORK_TO_CONTRACT_MAP[1];
-        break;
-    }
     const contract = new Contract(
-      contractAddress,
+      NETWORK_TO_CONTRACT_MAP[chainId as keyof typeof NETWORK_TO_CONTRACT_MAP],
       SINGLE_CALL_BALANCES_ABI,
       provider
     );

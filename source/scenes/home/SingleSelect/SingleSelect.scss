@@ -1,0 +1,47 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.itemContainer {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 40px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid $gray-200;
+  background-color: $white;
+  margin-bottom: 8px;
+}
+
+.iconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.titleContainer {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  margin: 0px 12px;
+}
+
+.selectedBorder {
+  border-color: #7C5BF3;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
