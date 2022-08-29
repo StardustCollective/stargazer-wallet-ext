@@ -29,7 +29,7 @@ const ControllerUtils = (): IControllerUtils => {
         .join(',');
       const data = await (
         await fetch(
-          `${ASSET_PRICE_API}?ids=${assetIds},bitcoin&vs_currencies=${currency}&include_24hr_change=true${COINGECKO_API_KEY_PARAM}`
+          `${ASSET_PRICE_API}?ids=${assetIds},bitcoin&vs_currencies=${currency}&include_24hr_change=true&${COINGECKO_API_KEY_PARAM}`
         )
       ).json();
       store.dispatch(

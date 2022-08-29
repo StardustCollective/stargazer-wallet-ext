@@ -83,6 +83,7 @@ const Send: FC<IWalletSend> = ({
   decimalPointOnAmount,
   decimalPointOnFee,
   networkTypeOptions,
+  basePriceId,
 }) => {
   const [cameraOpen, setCameraOpen] = useState(false);
 
@@ -215,7 +216,7 @@ const Send: FC<IWalletSend> = ({
             </View>
             <View style={styles.gasSettingsEstimate}>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                {`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2)})`}
+                {`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2, basePriceId)})`}
               </TextV3.Caption>
             </View>
           </>

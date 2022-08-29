@@ -222,7 +222,7 @@ export const ERC20_TOKENS_WITH_ADDRESS_API =
   'https://pro-api.coingecko.com/api/v3/coins/list?include_platform=true';
 export const SEARCH_API =
   'https://pro-api.coingecko.com/api/v3/search?query=';
-export const COINGECKO_API_KEY_PARAM = `&x_cg_pro_api_key=${COINGECKO_API_KEY}`
+export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
 export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
 export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
