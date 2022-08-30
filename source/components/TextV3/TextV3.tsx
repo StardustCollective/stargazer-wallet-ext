@@ -58,6 +58,8 @@ const TextV3 = {
       colorStyle = styles.textWhite;
     } else if (color === COLORS_ENUMS.GRAY_100) {
       colorStyle = styles.textGray100;
+    } else if (color === COLORS_ENUMS.DARK_GRAY_200) {
+      colorStyle = styles.textDarkGray200;
     } else if (color === COLORS_ENUMS.PRIMARY) {
       colorStyle = styles.textPrimary;
     } else if (color === COLORS_ENUMS.PRIMARY_LIGHTER_1) {
@@ -152,6 +154,13 @@ const TextV3 = {
         align={align}
         extraStyles={extraStyles}
       >
+        {children}
+      </TextV3.base>
+    );
+  },
+  LabelSemiStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
+    return (
+      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.labelSemiStrong} align={align} extraStyles={extraStyles}>
         {children}
       </TextV3.base>
     );

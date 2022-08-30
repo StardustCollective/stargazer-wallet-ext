@@ -58,7 +58,7 @@ const TextV3 = {
     let alignStyle = {};
     let dynamicProps = { numberOfLines: null, adjustsFontSizeToFit: false };
 
-    // // Colors
+    //Colors
     if (color === COLORS_ENUMS.BLACK) {
       colorStyle = styles.blackFont;
     } else if (color === COLORS_ENUMS.WHITE) {
@@ -67,6 +67,8 @@ const TextV3 = {
       colorStyle = styles.redFont;
     } else if (color === COLORS_ENUMS.DARK_GRAY) {
       colorStyle = styles.greyDarkFont;
+    } else if (color === COLORS_ENUMS.DARK_GRAY_200) {
+      colorStyle = styles.greyDark200Font;
     } else if (color === COLORS_ENUMS.GRAY_100) {
       colorStyle = styles.gray100Font;
     }else if (color === COLORS_ENUMS.PRIMARY) {
@@ -190,6 +192,22 @@ const TextV3 = {
         dynamic={dynamic}
         color={color}
         textStyle={styles.bodyStrong}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
+        margin={margin}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
+  LabelSemiStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.labelSemiStrong}
         align={align}
         extraStyles={extraStyles}
         uppercase={uppercase}

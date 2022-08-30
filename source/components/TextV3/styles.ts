@@ -36,6 +36,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 24,
   },
+  labelSemiStrong: {
+    fontWeight: FONT_WEIGHTS.semibold,
+    fontSize: 16,
+    lineHeight: 20,
+  },
   caption: {
     fontWeight: FONT_WEIGHTS.regular,
     fontSize: 14,
@@ -69,6 +74,9 @@ const styles = StyleSheet.create({
   },
   greyDarkFont: {
     color: COLORS.grey_dark,
+  },
+  greyDark200Font: {
+    color: COLORS.gray_dark_200,
   },
   gray100Font: {
     color: COLORS.gray_100,
