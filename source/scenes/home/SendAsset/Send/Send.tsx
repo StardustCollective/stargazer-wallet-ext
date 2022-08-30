@@ -4,6 +4,7 @@ import Slider from '@material-ui/core/Slider';
 import Contacts from 'scenes/home/Contacts';
 import Button from 'components/Button';
 import TextInput from 'components/TextInput';
+import InputClickable from 'components/InputClickable';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import ErrorIcon from 'assets/images/svg/error.svg';
 import { AssetType } from 'state/vault/types';
@@ -29,6 +30,7 @@ const WalletSend: FC<IWalletSend> = ({
   isValidAddress,
   balances,
   activeAsset,
+  nativeToken,
   assetInfo,
   address,
   register,
@@ -41,6 +43,8 @@ const WalletSend: FC<IWalletSend> = ({
   gasPrice,
   gasFee,
   gasSpeedLabel,
+  networkTypeOptions,
+  basePriceId,
  }) => {
 
   const addressInputClass = clsx(styles.input, styles.address, {
@@ -69,6 +73,9 @@ const WalletSend: FC<IWalletSend> = ({
             </div>
           </section>
         }
+        <div className={styles.networkContainer}>
+          <InputClickable options={networkTypeOptions} titleStyles={styles.networkTitle} />
+        </div>
         <section className={styles.content}>
           <ul className={styles.form}>
             <li>
@@ -208,11 +215,7 @@ const WalletSend: FC<IWalletSend> = ({
             <div className={styles.status}>
               <span
                 className={styles.equalAmount}
-              >{`${gasPrice} GWei, ${gasFee} ETH (≈ ${getFiatAmount(
-                gasFee,
-                2,
-                'ethereum'
-              )})`}</span>
+              >{`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2, basePriceId)})`}</span>
             </div>
           </section>
         )}

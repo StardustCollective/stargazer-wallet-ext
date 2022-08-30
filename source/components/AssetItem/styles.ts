@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   assetIcon: {
@@ -28,15 +28,23 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
+  labelText: {
+    fontWeight: FONT_WEIGHTS.semibold,
+    letterSpacing: -0.3
+  },
+  balanceText: {
+    letterSpacing: -0.3,
+    textAlign: 'right',
+  },
   assetBalance: {
     flex: 1,
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
   assetName: {
-    width: '50%',
+    width: '40%',
     justifyContent: 'center',
-    marginLeft: 16,
+    marginLeft: 8,
   },
   assetPrice: {
     flexDirection: 'row',

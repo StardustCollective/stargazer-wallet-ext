@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,6 +23,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     backgroundColor: COLORS.primary_lighter_1,
   },
+  label: {
+    fontWeight: FONT_WEIGHTS.semibold,
+  }
 });
 
 export default styles;

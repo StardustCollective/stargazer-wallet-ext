@@ -1,15 +1,17 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
-import {
-  changeActiveNetwork,
-  changeActiveWallet,
-  setVaultInfo,
+import * as ethers from 'ethers';
+import { 
+  changeActiveNetwork, 
+  changeActiveWallet, 
+  setVaultInfo, 
   updateBalances,
-  addLedgerWallet,
-  updateWallets,
-  addBitfiWallet,
+  addLedgerWallet, 
+  updateWallets, 
+  addBitfiWallet, 
+  addCustomNetwork
 } from 'state/vault';
-import { IVaultWalletsStoreState } from 'state/vault/types';
+import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types'
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
@@ -26,14 +28,14 @@ import { IWalletController } from './IWalletController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
-import ControllerUtils from './ControllerUtils';
-import AssetsController from './AssetsController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { EthNetworkId } from './EthChainController/types';
+import { EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
+import { generateId } from './EVMChainController/utils';
 import { AvailableEvents, StargazerChain } from 'scripts/common';
+import { isNative } from 'utils/envUtil';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -73,12 +75,7 @@ class WalletController implements IWalletController {
       store.dispatch(updateLoginState({ processState: ProcessStates.IDLE }));
     });
 
-    const utils = Object.freeze(ControllerUtils());
-
-    this.account = new AccountController(
-      this.keyringManager,
-      AssetsController(() => utils.updateFiat())
-    );
+    this.account = new AccountController(this.keyringManager);
   }
 
   checkPassword(password: string) {
@@ -335,12 +332,12 @@ class WalletController implements IWalletController {
     return dappController.notifyAccountsChanged(accounts);
   }
 
-  async switchNetwork(network: KeyringNetwork, chainId: string) {
+  async switchNetwork(network: string, chainId: string) {
     store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
     const { assets } = store.getState();
-    console.log(network, chainId);
+    console.log(`${network} - ${chainId}`);
 
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
       dag4.network.setNetwork({
@@ -348,25 +345,38 @@ class WalletController implements IWalletController {
         beUrl: DAG_NETWORK[chainId].beUrl,
         lbUrl: DAG_NETWORK[chainId].lbUrl,
       });
-
-      getDappRegistry().sendOriginChainEvent(
-        '*',
-        StargazerChain.CONSTELLATION,
-        AvailableEvents.chainChanged,
-        [DAG_NETWORK[chainId].id]
-      );
+      if (!isNative) {
+        getDappRegistry().sendOriginChainEvent(
+          '*',
+          StargazerChain.CONSTELLATION,
+          AvailableEvents.chainChanged,
+          [DAG_NETWORK[chainId].id]
+        );
+      }
     }
 
     if (network === KeyringNetwork.Ethereum) {
-      this.account.txController.setNetwork(chainId as EthNetworkId);
-      this.account.ethClient.setNetwork(chainId as EthNetworkId);
+      this.account.networkController.switchEthereumChain(chainId as EthChainId);
+      if (!isNative) {
+        getDappRegistry().sendOriginChainEvent(
+          '*',
+          StargazerChain.ETHEREUM,
+          AvailableEvents.chainChanged,
+          [ETH_NETWORK[chainId].chainId.toString(16)]
+        );
+      }
+    }
+    // TODO-349: Only Polygon
+    // if (network === 'Avalanche') {
+    //   this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
+    // }
+    
+    // if (network === 'BSC') {
+    //   this.account.networkController.switchBSCChain(chainId as BSCChainId);
+    // }
 
-      getDappRegistry().sendOriginChainEvent(
-        '*',
-        StargazerChain.ETHEREUM,
-        AvailableEvents.chainChanged,
-        [ETH_NETWORK[chainId].chainId.toString(16)]
-      );
+    if (network === 'Polygon') {
+      this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
@@ -383,13 +393,54 @@ class WalletController implements IWalletController {
     await this.account.assetsBalanceMonitor.start();
   }
 
+  async addNetwork(network: string, data: any) {
+
+    if (network === 'constellation') {
+      // Add chain in Constellation dropdown.
+      console.log('Constellation', data);
+      // Switch chain in Constellation
+    }
+
+    if (network === 'ethereum') {
+      // Add chain in Ethereum dropdown.
+      console.log('Ethereum', data);
+      const provider = data?.rpcUrl && new ethers.providers.JsonRpcProvider(data?.rpcUrl);
+      // We're catching this Promise in AddNetwork.container.tsx
+      await provider._networkPromise;
+      // Here I'm connected to the RPC Provider.
+
+      const customNetworkId = generateId(data.chainName);
+      const chainId = parseInt(data.chainId);
+      // TODO-349: Check all fields
+      const customNetwork: ICustomNetworkObject = {
+        id: customNetworkId,
+        value: customNetworkId,
+        label: data.chainName,
+        explorer: data.blockExplorerUrl,
+        chainId,
+        rpcEndpoint: data.rpcUrl,
+        explorerAPI: '',
+        nativeToken: 'ETH',
+        mainnet: 'mainnet',
+        network: 'Ethereum',
+      }
+      console.log('customNetwork', customNetwork);
+
+      store.dispatch(addCustomNetwork({ network, data: customNetwork }));
+
+      // this.account.networkController.ethereumNetwork.setChain();
+
+      // Switch chain in NetworkController (ethereumProvider)
+    }
+  }
+
   setWalletPassword(password: string) {
     this.keyringManager.setPassword(password);
   }
 
   async logOut() {
     this.keyringManager.logout();
-    this.account.ethClient = undefined;
+    this.account.networkController = undefined;
     store.dispatch(changeActiveWallet(undefined));
   }
 }

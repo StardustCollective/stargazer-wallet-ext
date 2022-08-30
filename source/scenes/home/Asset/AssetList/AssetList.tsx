@@ -17,6 +17,7 @@ import SearchInput from 'components/SearchInput';
 ///////////////////////////
 
 import { getKeyringAssetType } from 'utils/keyringUtil';
+import { getNetworkFromChainId, getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Types
@@ -24,13 +25,13 @@ import { getKeyringAssetType } from 'utils/keyringUtil';
 
 import { IAssetList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
-import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////////
 // Styles
 ///////////////////////////
 
 import styles from './AssetList.scss';
+import { ActiveNetwork, AssetSymbol } from 'state/vault/types';
 
 ///////////////////////////
 // Constants
@@ -48,15 +49,22 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
           allAssets.map((item: IAssetInfoState) => {
             const selected = !!assets[item?.id];
             const itemType = getKeyringAssetType(item?.type);
-            const disabled = [KeyringAssetType.DAG, KeyringAssetType.ETH].includes(itemType);
+            const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(item?.symbol as AssetSymbol);
             const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
-            const differentNetwork = item?.network !== 'both' && activeNetwork.Ethereum !== item?.network;
-            if (!isAssetSupported || differentNetwork) return null;
+            const itemChainId = item?.network;
+            const itemNetwork = getNetworkFromChainId(itemChainId);
+            const currentActiveNetwork = activeNetwork[itemNetwork as keyof ActiveNetwork];
+            const network = getNetworkLabel(currentActiveNetwork, item?.symbol);
+            // TODO-349: Only Polygon. Add isAVAX and isBNB
+            const isMATIC = item?.symbol === AssetSymbol.MATIC && itemChainId === 'matic';
+            const hideToken = itemChainId !== 'both' && !isMATIC && currentActiveNetwork !== itemChainId;
+            if (!isAssetSupported || hideToken) return null;
             return <AssetWithToggle 
-                      id={item.id}
-                      symbol={item.symbol} 
-                      logo={item.logo} 
-                      label={item.label} 
+                      id={item?.id}
+                      symbol={item?.symbol} 
+                      network={network}
+                      logo={item?.logo} 
+                      label={item?.label} 
                       selected={selected} 
                       disabled={disabled}
                       toggleItem={(value) => toggleAssetItem(item, value)} />;

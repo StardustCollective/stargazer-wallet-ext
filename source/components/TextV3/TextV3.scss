@@ -5,14 +5,14 @@
 */
 
 .base {
-  font-family: $rubik;
+  font-family: $inter;
   overflow: hidden;
 }
 
 .headerDisplay {
-  font-weight: $bold;
-  font-size: 49px;
-  line-height: 64px;
+  font-weight: $semibold;
+  font-size: 40px;
+  line-height: 48px;
 }
 
 .headerLarge {
@@ -41,10 +41,16 @@
 
 .caption {
   font-weight: $regular;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 20px;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.captionRegular {
+  font-weight: $regular;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .captionStrong {

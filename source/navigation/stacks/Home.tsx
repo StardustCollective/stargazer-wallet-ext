@@ -19,11 +19,13 @@ import AssetList from 'scenes/home/Asset/AssetList';
 import AddCustomAsset from 'scenes/home/Asset/AddCustomAsset';
 import BuyList from 'scenes/home/BuyList';
 import BuyAsset from 'scenes/home/BuyAsset';
+import SingleSelect from 'scenes/home/SingleSelect';
 
 import Import from 'scenes/common/Import';
 import Main from 'scenes/settings/Main';
 import About from 'scenes/settings/About';
 import Networks from 'scenes/settings/Networks';
+// import AddNetwork from 'scenes/settings/AddNetwork';
 import Contacts from 'scenes/settings/Contacts';
 import ContactInfo from 'scenes/settings/ContactInfo';
 import ModifyContact from 'scenes/settings/ModifyContact';
@@ -71,6 +73,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   settings: 'Settings',
   about: 'About',
   networks: 'Networks',
+  addNetork: 'Add Network',
   contacts: 'Contacts',
   modifyContact: 'Add Contact',
   wallets: 'Wallets',
@@ -112,11 +115,14 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addCustomAsset }} name={screens.authorized.addCustomAsset} component={AddCustomAsset} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.buyList }} name={screens.authorized.buyList} component={BuyList} />
           <Stack.Screen name={screens.authorized.buyAsset} component={BuyAsset} />
+          <Stack.Screen name={screens.authorized.singleSelect} component={SingleSelect} />
 
           {/* Settings Screens */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings }} name={screens.settings.main} component={Main} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.about }} name={screens.settings.about} component={About} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.networks }} name={screens.settings.networks} component={Networks} />
+          {/* TODO-349: Add Custom Networks in the future. */}
+          {/* <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addNetork }} name={screens.settings.addNetwork} component={AddNetwork} /> */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contacts }} name={screens.settings.contacts} component={Contacts} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.contactInfo }} name={screens.settings.contactInfo} component={ContactInfo} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.modifyContact }} name={screens.settings.modifyContact} component={ModifyContact} />

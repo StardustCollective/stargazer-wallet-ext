@@ -1,3 +1,4 @@
+import { IInputClickableOptions } from 'components/InputClickable/types';
 import { ChangeEvent } from 'react';
 import { Control, FieldError, FieldValues, NestDataObject, OnSubmit } from 'react-hook-form';
 import { IAssetInfoState } from 'state/assets/types';
@@ -22,6 +23,7 @@ export interface IWalletSend {
   isValidAddress: boolean;
   balances: AssetBalances;
   activeAsset: IAssetInfoState | IActiveAssetState;
+  nativeToken: string;
   assetInfo: IAssetInfoState;
   address: string;
   register: () => void;
@@ -36,4 +38,6 @@ export interface IWalletSend {
   gasSpeedLabel: string;
   decimalPointOnAmount?: boolean;
   decimalPointOnFee?: boolean;
+  networkTypeOptions: IInputClickableOptions;
+  basePriceId: string;
 }

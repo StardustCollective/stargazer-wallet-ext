@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Address, Tx } from '../ChainsController';
 import { ETHTransactionInfo, TokenTransactionInfo } from './etherscanApi.types';
-import { FeesWithGasPricesAndLimits, GasPrices, EthNetworkId, testnets } from './types';
+import { FeesWithGasPricesAndLimits, GasPrices, testnets, AllChainsIds } from './types';
 import { 
   Asset, 
   BaseAmount, 
@@ -19,42 +19,152 @@ import {
   SIMPLE_GAS_COST ,
   ETHAddress 
 } from './constants';
-import { ETH_NETWORK } from 'constants/index';
+import { ALL_EVM_CHAINS, AVALANCHE_LOGO, BSC_LOGO, ETHEREUM_LOGO, POLYGON_LOGO } from 'constants/index';
+import store from 'state/store';
 
-export const isTestnet = (network: EthNetworkId) => {
+export const isTestnet = (network: AllChainsIds | string) => {
   return testnets.includes(network);
 };
 
-export const getInfuraUrl = (network: EthNetworkId): string => {
+export const getNetworkLogo = (network: string) => {
   switch (network) {
+    case 'both':
     case 'mainnet':
-      return 'https://mainnet.infura.io/v3/';
     case 'ropsten':
-      return 'https://ropsten.infura.io/v3/';
     case 'rinkeby':
-      return 'https://rinkeby.infura.io/v3/';
-      
+      return ETHEREUM_LOGO;
+    case 'avalanche-mainnet':
+    case 'avalanche-testnet':
+      return AVALANCHE_LOGO;
+    case 'bsc':
+    case 'bsc-testnet':
+      return BSC_LOGO;
+    case 'matic':
+    case 'maticmum':
+      return POLYGON_LOGO;
+  
     default:
-      return 'https://mainnet.infura.io/v3/';
+      return ETHEREUM_LOGO;
   }
 }
 
-export const getChainId = (network: EthNetworkId): number => {
-  switch (network) {
-    case 'mainnet':
-      return 1;
-    case 'ropsten':
-      return 3;
-    case 'rinkeby':
-      return 4;
+export const getMainnetFromPlatform = (platform: string): string => {
+  switch (platform) {
+    case 'ethereum':
+      return 'mainnet';
+    case 'avalanche':
+      return 'avalanche-mainnet';
+    case 'binance-smart-chain':
+      return 'bsc';
+    case 'polygon-pos':
+      return 'matic';
       
     default:
-      return 1;
+      return 'mainnet';
   }
 }
 
-export const getNetworkInfo = (networkId: EthNetworkId) => {
-  return ETH_NETWORK[networkId];
+export const getPlatformFromMainnet = (network: string): string => {
+  switch (network) {
+    case 'mainnet':
+      return 'ethereum';
+    case 'avalanche-mainnet':
+      return 'avalanche';
+    case 'bsc':
+      return 'binance-smart-chain';
+    case 'matic':
+      return 'polygon-pos';
+      
+    default:
+      return 'mainnet';
+  }
+}
+
+export const getNetworkLabel = (network: string, assetSymbol: string): string => {
+
+  if (assetSymbol === 'DAG') {
+    return 'Constellation';
+  }
+
+  switch (network) {
+    case 'mainnet':
+      return 'Ethereum';
+    case 'ropsten':
+      return 'Ropsten';
+    case 'rinkeby':
+      return 'Rinkeby';
+    case 'avalanche-mainnet':
+      return 'Avalanche';
+    case 'avalanche-testnet':
+      return 'Fuji Testnet';
+    case 'bsc':
+      return 'BEP-20';
+    case 'bsc-testnet':
+      return 'BEP-20 Testnet';
+    case 'matic':
+      return 'Polygon';
+    case 'maticmum':
+      return 'Maticmum Testnet';
+      
+    default:
+      return 'ERC-20';
+  }
+}
+
+
+export const getAllEVMChains = () => {
+  const { customNetworks } = store.getState().vault;
+  return {
+    ...ALL_EVM_CHAINS,
+    ...customNetworks['ethereum'],
+  };
+}
+
+export const generateId = (value: string): string => {
+  return value.toLocaleLowerCase().replace(/[^a-zA-Z0-9]+/g, '-');
+}
+
+export const getPriceId = (network: string): string => {
+  switch (network) {
+    case 'mainnet':
+    case 'ropsten':
+    case 'rinkeby':
+      return 'ethereum';
+    case 'matic':
+    case 'maticmum':
+      return 'matic-network';
+  
+    default:
+      return 'ethereum';
+  }
+}
+
+export const getMainnetFromTestnet = (chainId: AllChainsIds | string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  if (chainId === 'both') return 'mainnet';
+  return EVM_CHAINS[chainId]?.mainnet;
+}
+
+export const getNetworkFromChainId = (chainId: AllChainsIds | 'both' | string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  if (chainId === 'both') return 'Ethereum';
+  return EVM_CHAINS[chainId]?.network;
+}
+
+export const getNativeToken = (chainId: AllChainsIds | 'both' | string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  if (chainId === 'both') return 'ETH';
+  return EVM_CHAINS[chainId]?.nativeToken;
+}
+
+export const getChainId = (network: AllChainsIds | string): number => {
+  const EVM_CHAINS = getAllEVMChains();
+  return EVM_CHAINS[network]?.chainId;
+}
+
+export const getChainInfo = (chainId: string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  return EVM_CHAINS[chainId];
 }
 
 export const filterSelfTxs = <T extends { from: string; to: string; hash: string }>(txs: T[]): T[] => {
