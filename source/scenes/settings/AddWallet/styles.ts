@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 16,
     flexGrow: 1,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
   },
   iconWrapper: {
     backgroundColor: 'transparent',
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   text: {
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     flexGrow: 1,
   },
   stargazerIconWrapper: {

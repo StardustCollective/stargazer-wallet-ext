@@ -8,6 +8,7 @@ export default interface IAddCustomAsset {
   tokenName: string;
   tokenSymbol: string;
   tokenDecimals: string;
+  networkTypeOptions: any;
   handleAddressScan?: (value: string) => Promise<void>;
   handleAddressChange: (value: string) => Promise<void>;
   handleNameChange: (value: string) => void;

@@ -57,8 +57,10 @@
       align-items: center;
       justify-content: center;
       span {
+        margin-top: 10px;
         font-size: 15px;
         color: $white;
+        text-align: center;
       }
     }
   }
@@ -85,7 +87,7 @@
   }
 
   section.subheading {
-    height: 60px;
+    height: 40px;
     width: 100%;
     border-bottom: 1px solid $gray-200;
     display: flex;
@@ -145,6 +147,9 @@
     width: 100%;
     box-sizing: border-box;
     padding: 0;
+    .row{
+      height: 40px;
+    }
   }
 
   .confirm {

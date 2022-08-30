@@ -10,6 +10,7 @@ import {
   StargazerEncodedProxyRequest,
   StargazerEncodedProxyResponse,
   isCustomEvent,
+  AvailableEvents,
 } from '../../common';
 
 import {
@@ -38,11 +39,13 @@ type DappProviderExternalImplementation<
 class DappProvider {
   #origin: string;
   #ports: Map<Runtime.Port, ChainProviderData | null>;
+  #listeners: Map<Runtime.Port, Map<AvailableEvents, Set<string>>>;
   #pendingPortWindows: Set<Runtime.Port>;
 
   constructor(origin: string) {
     this.#origin = origin;
     this.#ports = new Map();
+    this.#listeners = new Map();
     this.#pendingPortWindows = new Set();
   }
 
@@ -60,11 +63,13 @@ class DappProvider {
 
   registerProviderPort(port: Runtime.Port) {
     this.#ports.set(port, null);
+    this.#listeners.set(port, new Map());
     port.onMessage.addListener(this.onProviderPortMessage.bind(this, port));
   }
 
-  unregisterProviderPort(port: Runtime.Port) {
+  deregisterProviderPort(port: Runtime.Port) {
     this.#ports.delete(port);
+    this.#listeners.delete(port);
   }
 
   async onProviderPortMessage(
@@ -122,6 +127,7 @@ class DappProvider {
         }
       );
     } catch (e) {
+      console.error('HandshakeRequestError', String(e), e);
       return { type: 'handshake', error: String(e) };
     }
   }
@@ -135,6 +141,7 @@ class DappProvider {
       this.assertProviderIsActivated();
       return await handleEventRequest(this, port, request, encodedRequest);
     } catch (e) {
+      console.error('EventRequestError', String(e), e);
       return { type: 'event', error: String(e) };
     }
   }
@@ -148,6 +155,7 @@ class DappProvider {
       this.assertProviderIsActivated();
       return await handleRpcRequest(this, port, request, encodedRequest);
     } catch (e) {
+      console.error('RpcRequestError', String(e), e);
       if (e instanceof Error) {
         return {
           type: 'rpc',
@@ -166,6 +174,7 @@ class DappProvider {
     try {
       return await handleImportRequest(this, port, request, encodedRequest);
     } catch (e) {
+      console.error('ImportRequestError', String(e), e);
       return { type: 'event', error: String(e) };
     }
   }
@@ -286,6 +295,73 @@ class DappProvider {
         reject(e);
       }
     });
+  }
+
+  registerEventListener(port: Runtime.Port, listenerId: string, event: AvailableEvents) {
+    const listeners = this.#listeners.get(port);
+    if (!listeners) {
+      console.warn('Port was unregistered, skipping event register');
+      return;
+    }
+
+    const eventListeners = listeners.get(event) ?? new Set();
+    eventListeners.add(listenerId);
+    listeners.set(event, eventListeners);
+  }
+
+  deregisterEventListener(
+    port: Runtime.Port,
+    listenerId: string,
+    event: AvailableEvents
+  ) {
+    const listeners = this.#listeners.get(port);
+    if (!listeners) {
+      console.warn('Port was unregistered, skipping event deregister');
+      return;
+    }
+
+    const eventListeners = listeners.get(event);
+    if (!eventListeners) {
+      console.warn('No listeners for event, skipping event deregister');
+      return;
+    }
+
+    eventListeners.delete(listenerId);
+  }
+
+  sendEventByFilter(
+    event: AvailableEvents,
+    data: any[] = [],
+    ...filters: ((
+      chain: StargazerChain,
+      listenerId: string,
+      chainData: ChainProviderData
+    ) => boolean)[]
+  ) {
+    if (!this.activated) {
+      return;
+    }
+
+    for (const [port, eventListeners] of this.#listeners) {
+      const chainData = this.#ports.get(port);
+      const listenerIds = eventListeners.get(event);
+
+      if (!chainData || !listenerIds) {
+        continue;
+      }
+
+      for (const listenerId of listenerIds) {
+        if (!filters.every((filter) => filter(chainData.chain, listenerId, chainData))) {
+          continue;
+        }
+
+        this.sendEventToPort(port, chainData.proxyId, chainData.providerId, listenerId, {
+          event,
+          listenerId,
+          params: data,
+        });
+      }
+    }
   }
 }
 

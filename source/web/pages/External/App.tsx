@@ -8,6 +8,7 @@ import ApproveSpend from 'scenes/external/ApproveSpend';
 import SendTransaction from 'scenes/home/SendAsset/Send';
 import ConfirmTransaction from 'scenes/home/SendAsset/Confirm';
 import SignatureRequest from 'scenes/external/SignatureRequest'
+import TypedSignatureRequest from 'scenes/external/TypedSignatureRequest'
 
 import 'assets/styles/global.scss';
 import { useController } from 'hooks/index';
@@ -30,6 +31,7 @@ const App: FC = () => {
             <Route path="/sendTransaction" component={SendTransaction} />
             <Route path="/confirmTransaction" component={ConfirmTransaction} />
             <Route path="/signMessage" component={SignatureRequest} />
+            <Route path="/signTypedMessage" component={TypedSignatureRequest} />
             <Route path="/">
               {!isUnlocked ?
                 <Redirect to={`/login${location.search}`} /> :

@@ -1,6 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
 
-export const InfuraProvider = ethers.providers.InfuraProvider;
 export const ETH_DECIMAL = 18;
 export const DEFAULT_GAS_PRICE = 50;
 export const ETHAddress = '0x0000000000000000000000000000000000000000';

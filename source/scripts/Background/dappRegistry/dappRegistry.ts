@@ -1,4 +1,5 @@
 import debugFn from 'debug';
+import { AvailableEvents, StargazerChain } from 'scripts/common';
 import { browser, Runtime } from 'webextension-polyfill-ts';
 
 import { DappProvider } from './dappProvider';
@@ -12,6 +13,10 @@ class DappRegistry {
     this.#registeredDapps = new Map();
 
     browser.runtime.onConnect.addListener(this.onPortConnected.bind(this));
+  }
+
+  get onlineOrigins() {
+    return [...this.#registeredDapps.keys()];
   }
 
   onPortConnected(port: Runtime.Port) {
@@ -44,13 +49,48 @@ class DappRegistry {
   }
 
   onPortDisconnected(port: Runtime.Port, dapp: DappProvider) {
-    dapp.unregisterProviderPort(port);
+    dapp.deregisterProviderPort(port);
     debug('Port Provider Unregistered', 'portName:', port.name);
 
     if (dapp.portsSize === 0) {
       // Remove the dapp from registry since there is no other provider connected
       this.#registeredDapps.delete(dapp.origin);
       debug('Dapp Provider Unregistered', 'origin:', dapp.origin);
+    }
+  }
+
+  sendOriginChainEvent(
+    origin: '*' | string,
+    chain: '*' | StargazerChain,
+    event: AvailableEvents,
+    data: any[] = []
+  ) {
+    if (origin === '*') {
+      for (const dappProvider of this.#registeredDapps.values()) {
+        dappProvider.sendEventByFilter(
+          event,
+          data,
+          (providerChain) => chain === '*' || chain === providerChain
+        );
+      }
+      return;
+    }
+
+    const dappProvider = this.#registeredDapps.get(origin);
+    dappProvider.sendEventByFilter(
+      event,
+      data,
+      (providerChain) => chain === '*' || chain === providerChain
+    );
+  }
+
+  sendListenerEvent(listenerId: string, event: AvailableEvents, data: any[] = []) {
+    for (const dappProvider of this.#registeredDapps.values()) {
+      dappProvider.sendEventByFilter(
+        event,
+        data,
+        (_, providerListenerId) => listenerId === providerListenerId
+      );
     }
   }
 }

@@ -24,6 +24,26 @@ const styles = StyleSheet.create({
   loaderHide: {
     opacity: 0,
   },
+  network: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  logoContainer: {
+    height: 24,
+    width: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.12)',
+    marginRight: 8,
+  },
+  logo: {
+    height: 18,
+    width: 18,
+  },
   account: {
     height: 60,
     width: '100%',
@@ -65,12 +85,11 @@ const styles = StyleSheet.create({
   },
   center: {
     width: '100%',
-    height: 216,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
     flexDirection: 'column',
     position: 'relative',
+    paddingTop: 24,
   },
   balance: {
     display: 'flex',
@@ -82,13 +101,23 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginRight: 8,
   },
+  symbolText: {
+    fontSize: 20,
+    lineHeight: 28,
+  },
   fiatBalance: {
-    opacity: 0.5,
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 32,
+  },
+  fiatText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: 'rgba(255, 255, 255, 0.66)',
   },
   actions: {
     width: '100%',
     flexDirection: 'row',
+    marginBottom: 24,
   },
   activity: {
     backgroundColor: COLORS.gray_light,

@@ -1,45 +1,65 @@
+///////////////////////
+// Modules
+///////////////////////
+
 import React, { FC, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
-import Select from 'components/Select';
+///////////////////////
+// Components
+///////////////////////
 
-import styles from './styles';
+import Dropdown from 'components/Dropdown';
+// import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+
+///////////////////////
+// Types
+///////////////////////
 
 import INetworkSettings from './types';
 
-const NetworksComponent: FC<INetworkSettings> = ({ networkOptions }) => {
-  // pass in open state methods so we can not have multiple dropdowns open on the same page
-  const [openNetwork1, setOpenNetwork1] = useState(false);
-  const [openNetwork2, setOpenNetwork2] = useState(false);
-  const onOpenNetwork1 = () => {
-    setOpenNetwork2(false);
-  };
+///////////////////////
+// Styles
+///////////////////////
 
-  const onOpenNetwork2 = () => {
-    setOpenNetwork1(false);
-  };
+import styles from './styles';
+
+const NetworksComponent: FC<INetworkSettings> = ({ networkOptions }) => {
+  // Logic used to not have multiple dropdowns open at the same time
+  const [itemsOpenArray, setItemsOpenArray] = useState([false, false, false]);
+
+  const toggleItem = (i) => {
+    const value = itemsOpenArray[i];
+    let newItemsOpenArray = [false, false, false];
+    newItemsOpenArray[i] = !value;
+    setItemsOpenArray(newItemsOpenArray);
+  }
 
   return (
     <View style={styles.wrapper}>
-      {networkOptions.map((network, i) => {
-        const openProps = {
-          open: i === 0 ? openNetwork1 : openNetwork2,
-          setOpen: i === 0 ? setOpenNetwork1 : setOpenNetwork2,
-          onOpen: i === 0 ? onOpenNetwork1 : onOpenNetwork2,
-        };
-
+      {networkOptions.map((options, i) => {
         return (
-          <View key={network.key} style={network.containerStyle}>
-            <Text style={styles.label}>{network.label}</Text>
-            <Select
-              value={network.value}
-              onChange={network.onChange}
-              options={network.options}
-              extraProps={{ ...network.extraProps, ...openProps }}
+          <View key={options.key} style={[styles.containerBase, options.containerStyle]}>
+            <Dropdown 
+              options={{
+                ...options, 
+                isOpen: itemsOpenArray[i], 
+                toggleItem: () => toggleItem(i) 
+              }} 
             />
           </View>
         );
       })}
+      {/* TODO-349: Add Custom Networks in the future.
+        <View style={styles.buttonContainer}>
+          <ButtonV3 
+            title="Add Network"
+            type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            onPress={handleAddNetwork}
+          />
+        </View> 
+      */}
     </View>
   );
 };

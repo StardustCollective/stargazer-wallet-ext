@@ -4,12 +4,7 @@ import MUIMenuItem from '@material-ui/core/MenuItem';
 import ArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 import styles from './Select.scss';
-
-export interface IOption {
-  // key => value of Option
-  // value => label of Option
-  [key: string]: string;
-}
+import { IOption } from './types';
 
 interface ISelect {
   id?: string;

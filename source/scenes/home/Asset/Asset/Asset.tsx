@@ -23,6 +23,7 @@ import AssetButtons from '../AssetButtons';
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
   activeAsset,
+  activeNetwork,
   balanceText,
   fiatAmount,
   transactions,
@@ -43,10 +44,10 @@ const AssetDetail: FC<IAssetSettings> = ({
               <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
                 {balanceText}{' '}
               </TextV3.HeaderDisplay>
-              <TextV3.Body>{assets[activeAsset?.id]?.symbol}</TextV3.Body>
+              <TextV3.Body extraStyles={styles.symbolText}>{assets[activeAsset?.id]?.symbol}</TextV3.Body>
             </div>
             <div className={styles.fiatBalance}>
-              <TextV3.Body>≈ {fiatAmount}</TextV3.Body>
+              <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
             </div>
             <div className={styles.actions}>
               <AssetButtons setShowQrCode={setShowQrCode} onSendClick={onSendClick} assetId={activeAsset?.id} />
@@ -56,8 +57,10 @@ const AssetDetail: FC<IAssetSettings> = ({
             open={showQrCode}
             onClose={() => setShowQrCode(false)}
             address={activeAsset.address}
+            asset={assets[activeAsset?.id]}
             textTooltip={textTooltip}
             copyAddress={copyAddress}
+            activeNetwork={activeNetwork}
           />
           <TxsPanel address={activeAsset.address} transactions={transactions} />
         </>

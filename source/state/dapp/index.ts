@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IDAppState, IDAppInfo } from './types';
 
 const initialState: IDAppState = {
-  listening: {},
   whitelist: {},
 };
 
@@ -19,52 +18,6 @@ const DAppState = createSlice({
         ...state,
         ...action.payload,
       };
-    },
-    registerListeningSite(
-      state: IDAppState,
-      action: PayloadAction<{ origin: string; eventName: string }>
-    ) {
-      const { origin, eventName } = action.payload;
-
-      const originState = state.listening.hasOwnProperty(origin)
-        ? state.listening[origin].filter((val: string) => val !== eventName)
-        : [];
-
-      return {
-        ...state,
-        listening: {
-          ...state.listening,
-          [origin]: [...originState, eventName],
-        },
-      };
-    },
-    deregisterListeningSite(
-      state: IDAppState,
-      action: PayloadAction<{ origin: string; eventName: string }>
-    ) {
-      const { origin, eventName } = action.payload;
-
-      if (!state.listening.hasOwnProperty(origin)) {
-        return state;
-      }
-
-      const originState = state.listening[origin].filter(
-        (val: string) => val !== eventName
-      );
-
-      const retState = {
-        ...state,
-        listening: {
-          ...state.listening,
-          [origin]: originState,
-        },
-      };
-
-      if (originState.length === 0) {
-        delete retState.listening[origin];
-      }
-
-      return retState;
     },
     listNewDapp(
       state: IDAppState,
@@ -104,7 +57,6 @@ const DAppState = createSlice({
     },
     unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
       delete state.whitelist[action.payload.id];
-      delete state.listening[action.payload.id];
     },
   },
 });
@@ -112,8 +64,6 @@ const DAppState = createSlice({
 export const {
   listNewDapp,
   unlistDapp,
-  registerListeningSite,
-  deregisterListeningSite,
   rehydrate,
 } = DAppState.actions;
 

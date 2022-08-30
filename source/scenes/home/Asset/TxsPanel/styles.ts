@@ -6,10 +6,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: COLORS.gray_light,
-    borderTopRightRadius: 8,
-    borderTopStartRadius: 8,
-    borderBottomEndRadius: 0,
-    borderBottomStartRadius: 0,
     overflow: 'hidden',
   },
   activityScrollView:{

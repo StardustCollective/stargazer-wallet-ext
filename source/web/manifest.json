@@ -1,8 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "3.6.0",
-
+  "version": "3.8.0",
   "icons": {
     "16": "assets/icons/favicon-16.png",
     "32": "assets/icons/favicon-32.png",
@@ -17,7 +16,6 @@
     "https://*.coingecko.com/",
     "https://*.constellationnetwork.io/",
     "http://*.constellationnetwork.io:9000/",
-    "https://*.infura.io/",
     "chrome://favicon/",
     "https://assets.coingecko.com/",
     "https://*.googleusercontent.com/*",

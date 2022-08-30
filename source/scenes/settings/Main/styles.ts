@@ -3,15 +3,12 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: COLORS.primary,
     overflow: 'scroll',
     flex: 1,
     flexDirection: 'column',
   },
   box: {
     width: '100%',
-    backgroundColor: COLORS.grey_50,
-    borderRadius: 8,
   },
   content: {
     margin: 16,
@@ -26,7 +23,6 @@ const styles = StyleSheet.create({
   settingsItemIconWrapper: {
     display: 'flex',
     height: 47,
-    width: 72,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -40,6 +36,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 24,
   },
+  label: {
+    fontSize: 16,
+  },
   img: {
     width: 32,
     height: 32,
@@ -50,10 +49,19 @@ const styles = StyleSheet.create({
   },
   settingsItemLabelWrapper: {
     alignItems: 'center',
+    marginLeft: 16,
+  },
+  infoContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  arrowRightContainer: {
+    justifyContent: 'center',
+    marginRight: 8,
   },
   footer: {
     display: 'flex',
-
     flexGrow: 1,
     alignItems: 'flex-end',
     flexDirection: 'row',

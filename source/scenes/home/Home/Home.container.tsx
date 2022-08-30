@@ -62,8 +62,6 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     const getAssets = async () => {
       await accountController.assetsController.fetchSupportedAssets();
       await accountController.assetsController.fetchERC20Assets();
-      accountController.assetsController.getCustomAssets();
-      await accountController.assetsBalanceMonitor.start();
     }
     if (!supportedAssets.data) {
       getAssets();
