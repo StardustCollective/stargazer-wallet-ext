@@ -15,7 +15,7 @@ import { scale } from 'react-native-size-matters';
     fontSize: 18,
     lineHeight: 24,
     fontWeight: '500',
-    fontFamily: 'Rubik',
+    fontFamily: 'Inter',
     color: '#fff',
   },
   headerTitleAlign: 'center',

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ALKIMI_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO } from 'constants/index';
 import { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from './types';
 
@@ -11,7 +12,7 @@ export const initialState: IAssetListState = {
     address: '',
     native: true,
     network: 'both',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png',
+    logo: ETHEREUM_LOGO,
     priceId: 'ethereum',
     decimals: 18,
   },
@@ -23,52 +24,86 @@ export const initialState: IAssetListState = {
     address: '',
     native: true,
     network: 'both',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png',
+    logo: CONSTELLATION_LOGO,
     priceId: 'constellation-labs',
     decimals: 8,
   },
-  '0xa393473d64d2F9F026B60b6Df7859A689715d092': {
-    id: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
+  // TODO-349: Only Polygon
+  // [AssetType.Avalanche]: {
+  //   id: AssetType.Avalanche,
+  //   address: '',
+  //   label: 'Avalanche',
+  //   symbol: 'AVAX',
+  //   type: AssetType.Ethereum,
+  //   priceId: 'avalanche-2',
+  //   network: 'avalanche-mainnet',
+  //   logo: AVALANCHE_LOGO,
+  //   decimals: 18,
+  // },
+  // [AssetType.BSC]: {
+  //   id: AssetType.BSC,
+  //   address: '',
+  //   label: 'BNB',
+  //   symbol: 'BNB',
+  //   type: AssetType.Ethereum,
+  //   priceId: 'binancecoin',
+  //   network: 'bsc',
+  //   logo: BSC_LOGO,
+  //   decimals: 18,
+  // },
+  [AssetType.Polygon]: {
+    id: AssetType.Polygon,
+    address: '',
+    label: 'Polygon',
+    symbol: 'MATIC',
+    type: AssetType.Ethereum,
+    priceId: 'matic-network',
+    network: 'matic',
+    logo: POLYGON_LOGO,
+    decimals: 18,
+  },
+  '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet': {
+    id: '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet',
     address: '0xa393473d64d2F9F026B60b6Df7859A689715d092',
     label: 'Lattice Token',
     symbol: 'LTX',
     type: AssetType.ERC20,
     priceId: 'lattice-token',
     network: 'mainnet',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/lattice-logo.png',
+    logo: LATTICE_LOGO,
     decimals: 8,
   },
-  '0x3106a0a076BeDAE847652F42ef07FD58589E001f': {
-    id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
+  '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet': {
+    id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet',
     address: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
     label: 'Alkimi Exchange',
     symbol: 'ADS',
     type: AssetType.ERC20,
     priceId: 'alkimi',
     network: 'mainnet',
-    logo: 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG',
+    logo: ALKIMI_LOGO,
     decimals: 18,
   },
-  '0x4e08f03079c5cd3083ea331ec61bcc87538b7665': {
-    id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
+  '0x4e08f03079c5cd3083ea331ec61bcc87538b7665-mainnet': {
+    id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665-mainnet',
     address: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
     label: 'DoubleDice',
     symbol: 'DODI',
     type: AssetType.ERC20,
     priceId: 'doubledice-token',
     network: 'mainnet',
-    logo: 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png',
+    logo: DODI_LOGO,
     decimals: 18,
   },
-  '0x23894dc9da6c94ecb439911caf7d337746575a72': {
-    id: '0x23894dc9da6c94ecb439911caf7d337746575a72',
+  '0x23894dc9da6c94ecb439911caf7d337746575a72-mainnet': {
+    id: '0x23894dc9da6c94ecb439911caf7d337746575a72-mainnet',
     address: '0x23894dc9da6c94ecb439911caf7d337746575a72',
     label: 'Geojam',
     symbol: 'JAM',
     type: AssetType.ERC20,
     priceId: 'geojam',
     network: 'mainnet',
-    logo: 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png',
+    logo: GEOJAM_LOGO,
     decimals: 18,
   },
 };
@@ -82,13 +117,18 @@ const AssetListState = createSlice({
       return action.payload;
     },
     addERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
-      if (action.payload.address) {
-        state[action.payload.address] = action.payload;
+      if (action.payload.id) {
+        state[action.payload.id] = action.payload;
       }
     },
     removeERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
-      if (action.payload.address) {
-        delete state[action.payload.address];
+      if (action.payload.id) {
+        delete state[action.payload.id];
+      }
+    },
+    updateAssetDecimals(state: IAssetListState, action: PayloadAction<{ address: string, decimals: number}>) {
+      if (action.payload.address && action.payload.decimals) {
+        state[action.payload.address].decimals = action.payload.decimals;
       }
     },
     updateAssetDecimals(state: IAssetListState, action: PayloadAction<{ address: string, decimals: number}>) {

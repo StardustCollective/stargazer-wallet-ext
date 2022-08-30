@@ -13,6 +13,7 @@ import { scale } from 'react-native-size-matters';
 
 import TextInput from 'components/TextInput';
 import TextV3 from 'components/TextV3';
+import InputClickable from 'components/InputClickable';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import QRCodeScanner from 'components/QRCodeScanner';
 import QRCodeButton from 'components/QRCodeButton';
@@ -43,6 +44,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   tokenName,
   tokenSymbol,
   tokenDecimals,
+  networkTypeOptions,
   handleAddressScan,
   handleAddressChange,
   handleNameChange,
@@ -76,6 +78,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
     <KeyboardAwareScrollView 
       contentContainerStyle={styles.container} 
       extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
+        <InputClickable options={networkTypeOptions} />
         <TextInput
           name="tokenAddress"
           defaultValue={tokenAddress}

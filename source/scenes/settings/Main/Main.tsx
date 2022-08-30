@@ -26,6 +26,7 @@ import networksIcon from 'assets/images/svg/networks.svg';
 import infoIcon from 'assets/images/svg/info.svg';
 import exitIcon from 'assets/images/svg/exit.svg';
 import linkedApps from 'assets/images/svg/linkedApps.svg';
+import ArrowRightIcon from 'assets/images/svg/arrow-rounded-right.svg';
 
 ///////////////////////
 // Styles
@@ -68,10 +69,15 @@ const Main: FC<IMainSettings> = ({
             <img src={'/' + IconImageOrComponent} className={imageStyles} />
           </div>
         </div>
-        <div className={styles.settingsItemLabelWrapper}>
-          <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
-            {label}
-          </TextV3.BodyStrong>
+        <div className={styles.infoContainer}>
+          <div className={styles.settingsItemLabelWrapper}>
+            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
+              {label}
+            </TextV3.BodyStrong>
+          </div>
+          <div className={styles.arrowRightContainer}>
+            <img src={`/${ArrowRightIcon}`} />
+          </div>
         </div>
       </Card>
     );
@@ -85,16 +91,16 @@ const Main: FC<IMainSettings> = ({
       onClick: onWalletLinkClick,
     },
     {
-      label: 'Contacts',
-      key: 'Contacts',
-      IconImageOrComponent: contactsIcon,
-      onClick: onContactsLinkClicked,
-    },
-    {
       label: 'Networks',
       key: 'Networks',
       IconImageOrComponent: networksIcon,
       onClick: onNetworkLinkClicked,
+    },
+    {
+      label: 'Contacts',
+      key: 'Contacts',
+      IconImageOrComponent: contactsIcon,
+      onClick: onContactsLinkClicked,
     },
     {
       label: 'Connected Sites',
@@ -116,14 +122,14 @@ const Main: FC<IMainSettings> = ({
       <div className={styles.footer}>
         <div onClick={onAboutLinkClicked} className={styles.footer__left}>
           <img src={'/' + infoIcon} />
-          <TextV3.Caption>Stargazer Wallet {version}</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK}>Stargazer Wallet {version}</TextV3.Caption>
         </div>
         <div
           id={'wallet-logoutButton'}
           onClick={handleLogout}
           className={styles.footer__right}
         >
-          <TextV3.Caption>Logout</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.PRIMARY}>Logout</TextV3.Caption>
           <img src={'/' + exitIcon} />
         </div>
       </div>

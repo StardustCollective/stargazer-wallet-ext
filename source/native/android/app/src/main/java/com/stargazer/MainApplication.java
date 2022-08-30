@@ -47,7 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-    ReactFontManager.getInstance().addCustomFont(this, "Rubik", R.font.rubik);
+    ReactFontManager.getInstance().addCustomFont(this, "Inter", R.font.inter);
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }

@@ -35,7 +35,8 @@ const BUTTON_CUSTOM_COLOR_PROP = '#521e8a';
 // Strings
 const CONNECT_TO_LEDGER_STRING = 'Connect to Bitfi';
 // Numbers
-const BITFI_LOGO_SIZE = 240;
+const BITFI_LOGO_WIDTH = 200;
+const BITFI_LOGO_HEIGHT = 200;
 
 /////////////////////////
 // Interface
@@ -95,8 +96,8 @@ function Connect(props: IConnectProps) {
     <div className={styles.content}>
       <div className={styles.wrapper}>
         <div className={styles.connect}>
-          <div className={styles.logo}>
-            <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_SIZE} height={BITFI_LOGO_SIZE} />
+          <div className={styles.logo} style={{ marginBottom: '0px' }}>
+            <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_WIDTH} height={BITFI_LOGO_HEIGHT} />
           </div>
           <div className={styles.instructions}>
             <span className={styles.text}>

@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   buttonTitle: {
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontSize: 20,
   },
   primary: {

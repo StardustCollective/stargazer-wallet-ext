@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
     marginLeft: 8,
     color: COLORS.white,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.regular,
     fontSize: 16,
     lineHeight: 22,

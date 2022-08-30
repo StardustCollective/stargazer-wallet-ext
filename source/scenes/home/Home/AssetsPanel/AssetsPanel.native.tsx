@@ -58,6 +58,7 @@ const AssetsPanel: FC<IAssetState> = ({
               asset={asset}
               assetInfo={assets[asset.id]}
               itemClicked={() => handleSelectAsset(asset)}
+              showNetwork
             />
           );
         })}

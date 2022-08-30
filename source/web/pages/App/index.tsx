@@ -9,11 +9,11 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 
 import ToastAlert from 'components/ToastAlert';
 import appStore from 'state/store';
-import scrypt from 'scrypt-js';
+import scryptJS from 'scrypt-js';
 
 import App from './App';
 
-global.scrypt = scrypt;
+global.scrypt = scryptJS.scrypt;
 
 const app = document.getElementById('app-root');
 const store = new Store({ portName: STORE_PORT });
@@ -26,8 +26,10 @@ store.subscribe(
 );
 
 if(!process.env.ETHERSCAN_API_KEY ||
-   !process.env.INFURA_CREDENTIAL ||
-   !process.env.TEST_PRIVATE_KEY){
+    !process.env.POLYGONSCAN_API_KEY ||
+    !process.env.BSCSCAN_API_KEY ||
+    !process.env.SNOWTRACE_API_KEY ||
+    !process.env.TEST_PRIVATE_KEY){
     throw 'Missing .env file or missing definition';
 }
 

@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { View, TouchableOpacity, Linking } from 'react-native';
-import { Text } from 'react-native';
 
 import * as Progress from 'react-native-progress';
 
@@ -13,7 +12,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
 
 import ITxItemSettings, { RenderIconProps } from './types';
-import { useLinking } from '@react-navigation/native';
+import { ellipsis } from 'scenes/home/helpers';
 
 const RenderIcon: FC<RenderIconProps> = ({ tx, isETH }) => {
   const { checkpointBlock, assetId } = tx;
@@ -22,14 +21,14 @@ const RenderIcon: FC<RenderIconProps> = ({ tx, isETH }) => {
     if (checkpointBlock) {
       return <TxIcon />;
     }
-    return <Progress.Circle size={24} indeterminate />;
+    return <Progress.Circle size={16} indeterminate />;
   }
 
   if (!assetId) {
     return <TxIcon />;
   }
 
-  return <Progress.Circle size={24} indeterminate />;
+  return <Progress.Circle size={16} indeterminate />;
 };
 
 const TxItem: FC<ITxItemSettings> = ({
@@ -59,9 +58,9 @@ const TxItem: FC<ITxItemSettings> = ({
       <View style={styles.txItem}>
         {showGroupBar && (
           <View style={styles.groupBar}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.groupBarText}>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.groupBarText}>
               {formattedDistanceDate}
-            </TextV3.CaptionStrong>
+            </TextV3.Caption>
           </View>
         )}
         <View style={styles.content}>
@@ -70,19 +69,19 @@ const TxItem: FC<ITxItemSettings> = ({
               <RenderIcon tx={tx} isETH={isETH} />
             </View>
             <View style={styles.txInfoWrapper}>
-              <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{receivedOrSentText}</TextV3.BodyStrong>
-              <Text numberOfLines={1} style={styles.txAddress}>
-                {txTypeLabel}
-              </Text>
+              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.statusText}>{receivedOrSentText}</TextV3.CaptionStrong>
+              <TextV3.Caption extraStyles={styles.txAddress}>
+                {ellipsis(txTypeLabel)}
+              </TextV3.Caption>
             </View>
           </View>
           <View style={styles.txAmountWrapper}>
-            <Text style={styles.txAmountText} numberOfLines={1}>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK}>
               {amount}
-            </Text>
-            <Text style={styles.txAmountFiatText} numberOfLines={1}>
+            </TextV3.CaptionRegular>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText} numberOfLines={1}>
               ≈ {fiatAmount}
-            </Text>
+            </TextV3.Caption>
           </View>
         </View>
         {/* {isGasSettingsVisible && <View style={styles.gasSettings}>{renderGasSettings()}</View>} */}

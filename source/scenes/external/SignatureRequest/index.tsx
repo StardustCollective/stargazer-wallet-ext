@@ -40,6 +40,7 @@ const SignatureRequest = () => {
 
   const { signatureRequestEncoded, asset }:
     { signatureRequestEncoded: string, asset: string } = JSON.parse(stringData as string);
+  // TODO-349: Check how signature should work here
   const provider = asset === 'DAG' ? controller.stargazerProvider : controller.ethereumProvider;
   const account = provider.getAssetByType(asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum);
   const signatureRequest = JSON.parse(window.atob(signatureRequestEncoded)) as StargazerSignatureRequest;

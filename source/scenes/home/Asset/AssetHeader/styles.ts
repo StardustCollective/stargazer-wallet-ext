@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS, FONTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   fullselect: {
@@ -24,32 +24,23 @@ const styles = StyleSheet.create({
   assetLogo: {
     marginRight: 5,
   },
-  logoHeader: {
+  labelText: {
     marginBottom: 0,
     marginTop: 0,
-    lineHeight: 24,
-    fontSize: 18,
-    fontWeight: FONT_WEIGHTS.medium,
+    fontWeight: FONT_WEIGHTS.semibold,
     color: COLORS.white,
   },
   address: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     justifyContent: 'center',
     height: 60,
-    width: '100%',
   },
   addressActive: {
     color: COLORS.gray_light,
   },
   addressText: {
-    fontSize: 12,
-    lineHeight: 14,
-    fontWeight: FONT_WEIGHTS.regular,
-    // fontFamily: FONTS.quicksand,
-    color: COLORS.white,
-    marginTop: 2,
+    color: 'rgba(255, 255, 255, 0.66)',
     marginLeft: 0,
     marginBottom: 0,
   },

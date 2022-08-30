@@ -8,10 +8,10 @@ import defaultHeader from '../default';
 import styles from './styles';
 import IAssetHeader from './types';
 
-const assetHeader = ({ navigation, asset, address, addressUrl }: IAssetHeader) => {
+const assetHeader = ({ navigation, asset, addressUrl }: IAssetHeader) => {
   return {
     ...defaultHeader({ navigation }),
-    headerTitle: () => <AssetHeader asset={asset} address={address} />,
+    headerTitle: () => <AssetHeader asset={asset} />,
     headerRight: () => (
       <View style={styles.buttons}>
         <TouchableOpacity

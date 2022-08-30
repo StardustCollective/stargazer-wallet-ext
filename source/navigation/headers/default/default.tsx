@@ -11,7 +11,7 @@ import { fade } from 'navigation/animations';
 ///////////////////////////
 
 import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowLeftIcon from 'assets/images/svg/arrow-rounded-left.svg';
 
 ///////////////////////////
 // Styles
@@ -47,7 +47,7 @@ const defaultHeader = ({
         className={`${styles.buttonLeft} ${styles.more}`}
         onClick={onBackButtonClicked}
       >
-        <ArrowBackIcon className={styles.buttonLeft} />
+        <img src={`/${ArrowLeftIcon}`} />
       </IconButton>
     )
 

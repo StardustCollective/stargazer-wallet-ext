@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, Modal, TouchableOpacity, ScrollView } from 'react-native';
 
 import * as Progress from 'react-native-progress';
 import TextV3 from 'components/TextV3';
@@ -11,16 +11,21 @@ import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
 
+import { getNetworkLabel, getNetworkLogo, getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { CONSTELLATION_LOGO } from 'constants/index';
+
 import TxsPanel from '../TxsPanel';
 import IAssetSettings from './types';
 import AssetButtons from '../AssetButtons';
 import styles from './styles';
+import { AssetSymbol } from 'state/vault/types';
 
 const QR_CODE_SIZE = 240;
 
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
   activeAsset,
+  activeNetwork,
   balanceText,
   fiatAmount,
   transactions,
@@ -32,6 +37,15 @@ const AssetDetail: FC<IAssetSettings> = ({
   copyAddress,
 }) => {
   const activeAssetStyle = StyleSheet.flatten([styles.mask, activeAsset && activeWallet ? styles.loaderHide : {}]);
+  const asset = assets[activeAsset?.id];
+  let network = asset?.network;
+  // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
+  if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(asset?.symbol)) {
+    const currentNetwork = getNetworkFromChainId(network);
+    network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+  }
+  const networkLabel = getNetworkLabel(network, asset?.symbol);
+  const networkLogo = asset?.symbol === 'DAG' ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
 
   if (activeWallet && activeAsset) {
     return (
@@ -40,12 +54,12 @@ const AssetDetail: FC<IAssetSettings> = ({
           <View style={styles.center}>
             <View style={styles.balance}>
               <TextV3.HeaderDisplay color={COLORS_ENUMS.WHITE} dynamic extraStyles={styles.balanceText}>
-                {balanceText}{' '}
+                {balanceText}
               </TextV3.HeaderDisplay>
-              <TextV3.Body color={COLORS_ENUMS.WHITE}>{assets[activeAsset.id].symbol}</TextV3.Body>
+              <TextV3.Body color={COLORS_ENUMS.WHITE} extraStyles={styles.symbolText}>{assets[activeAsset.id].symbol}</TextV3.Body>
             </View>
             <View style={styles.fiatBalance}>
-              <TextV3.Body>≈ {fiatAmount}</TextV3.Body>
+              <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
             </View>
             <View style={styles.actions}>
               <AssetButtons setShowQrCode={setShowQrCode} onSendClick={onSendClick} assetId={activeAsset?.id} />
@@ -70,6 +84,14 @@ const AssetDetail: FC<IAssetSettings> = ({
                 skipAndroidStatusBar
               >
                 <View style={styles.qrCodeCard}>
+                  <View style={styles.network}>
+                    <View style={styles.logoContainer}>
+                      <Image source={{ uri: networkLogo }} style={styles.logo} />
+                    </View>
+                    <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+                      {networkLabel}
+                    </TextV3.BodyStrong>
+                  </View>
                   <QRCode
                     value={activeAsset.address}
                     backgroundColor={COLORS.white}

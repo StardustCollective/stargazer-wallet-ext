@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     maxWidth: 24,
     marginRight: 8,
     border: 'none',
-    // fontFamily: FONTS.quicksand,
+    fontFamily: FONTS.inter,
     fontWeight: 'bold',
     fontSize: 14,
     color: COLORS.purple,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   headerTextLast: {
     fontSize: 14,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.medium,
     color: COLORS.black,
     marginBottom: 0,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   updatedBoxText: {
     color: COLORS.green_dark,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontStyle: 'normal',
     fontWeight: FONT_WEIGHTS.bold,
     fontSize: 14,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     margin: 16,
     flexDirection: 'column',
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
   },
   cancelHeader: {
     fontSize: 18,
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   outlineButtonText: {
     marginVertical: 0,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.bold,
     color: COLORS.primary,
   },
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   solidButtonText: {
     marginVertical: 0,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontSize: 13,
     fontWeight: FONT_WEIGHTS.bold,
   },
