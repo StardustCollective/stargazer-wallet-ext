@@ -10,7 +10,8 @@ import { View, Text, ScrollView, Image, TextInput } from 'react-native';
 ///////////////////////
 
 import TextV3 from 'components/TextV3';
-import CurrencyImport from 'components/CurrencyInput'
+import CurrencyImport from 'components/CurrencyInput';
+import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
 // Images
@@ -41,12 +42,13 @@ import {
   BALANCE_STRING,
   SWAP_TO_STRING,
   RATE_STRING,
-  MINIMUM_AMOUNT_STRING
+  MINIMUM_AMOUNT_STRING,
+  NEXT_BUTTON_STRING
 } from './constants';
 
 
 const SwapTokens: FC<ISwapTokens> = ({
-
+  onNextPressed
 }) => {
 
   const [fromInputValue, setFromInputValue] = useState('');
@@ -105,7 +107,7 @@ const SwapTokens: FC<ISwapTokens> = ({
             </View>
             <View style={styles.toBlank} />
           </View>
-          <CurrencyImport tickerValue='ETH'  style={styles.toCurrencyInput} placeholder='0' />
+          <CurrencyImport tickerValue='ETH' style={styles.toCurrencyInput} placeholder='0' />
         </View>
         <View style={styles.rate}>
           <View style={styles.rateLabel}>
@@ -134,6 +136,14 @@ const SwapTokens: FC<ISwapTokens> = ({
               0.06954103 ETH
             </TextV3.Caption>
           </View>
+        </View>
+        <View style={styles.nextButton}>
+          <ButtonV3
+            title={NEXT_BUTTON_STRING}
+            size={BUTTON_SIZES_ENUM.FULL_WIDTH}
+            type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+            onPress={onNextPressed}
+          />
         </View>
       </ScrollView>
     </View>

@@ -102,6 +102,10 @@ const styles = StyleSheet.create({
   minimumAmountValue: {
     flex: 1,
     alignItems: 'flex-end'
+  },
+  nextButton: {
+    flexGrow: 1,
+    justifyContent: 'flex-end',
   }
 });
 

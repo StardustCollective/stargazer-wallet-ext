@@ -33,6 +33,11 @@ const styles = StyleSheet.create({
     height: getDeviceId().includes('iPod') ? 40 : 48,
     borderRadius: 24,
   },
+  buttonFullWidth: {
+    height: getDeviceId().includes('iPod') ? 40 : 48,
+    width: '100%',
+    borderRadius: 24,
+  },
   titleSmall: {
     fontWeight: FONT_WEIGHTS.medium,
     fontSize: 14,

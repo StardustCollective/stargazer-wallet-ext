@@ -4,6 +4,8 @@ import React, { useEffect, useState, FC } from 'react';
 // Imports
 ///////////////////////////
 
+import { useLinkTo } from '@react-navigation/native';
+
 ///////////////////////////
 // Types
 ///////////////////////////
@@ -24,10 +26,16 @@ import Container from 'components/Container';
 ///////////////////////////
 
 const SwapTokenContainer: FC<ISwapTokensContainer> = ({navigation, route}) => {
+  
+  const linkTo = useLinkTo();
+
+  const onNextPressed = () => {
+    linkTo('/transferInfo');
+  }
 
   return (
     <Container>
-      <SwapTokens />
+      <SwapTokens onNextPressed={onNextPressed} />
     </Container>
   );
 };

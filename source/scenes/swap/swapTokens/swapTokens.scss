@@ -1,6 +1,9 @@
 @import '~assets/styles/_variables';
 
 .container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   width: 100%;
   margin: 16px;
 
@@ -33,7 +36,6 @@
   .fromInputLabels {
     display: flex;
     width: 100%;
-    flex: 1;
     flex-direction: row;
     margin-bottom: 9px;
 
@@ -56,9 +58,7 @@
   }
 
   .toInputLabels {
-    display: flex;
     width: 100%;
-    flex: 1;
     flex-direction: row;
     margin-bottom: 9px;
 
@@ -142,5 +142,9 @@
       justify-content: flex-end;
     }
   }
-
+  .nextButton {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+  }
 }

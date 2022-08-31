@@ -9,13 +9,12 @@ import React, { FC, useState } from 'react';
 
 import TextV3 from 'components/TextV3';
 import CurrencyImport from 'components/CurrencyInput'
+import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
 // Images
 ///////////////////////
 
-// const exolixLogo = require('assets/images/exolixLogo.png');
-// import SwapArrows from 'assets/images/svg/swapArrows.svg';
 import ExolixLogo from 'assets/images/exolixLogo.png';
 import SwapArrows from 'assets/images/svg/swapArrows.svg';
 
@@ -41,14 +40,17 @@ import {
   BALANCE_STRING,
   SWAP_TO_STRING,
   RATE_STRING,
-  MINIMUM_AMOUNT_STRING
+  MINIMUM_AMOUNT_STRING,
+  NEXT_BUTTON_STRING
 } from './constants';
 
 const EXOLIX_LOGO_WIDTH = 80;
 const EXOLIX_LOGO_HEIGHT = 32;
 
 
-const SwapTokens: FC<ISwapTokens> = ({ }) => {
+const SwapTokens: FC<ISwapTokens> = ({
+  onNextPressed
+}) => {
 
   const [fromInputValue, setFromInputValue] = useState('');
 
@@ -100,33 +102,42 @@ const SwapTokens: FC<ISwapTokens> = ({ }) => {
       </div>
       <CurrencyImport tickerValue='DAG' onPress={onSwapFromPress} containerStyle={styles.toCurrencyInputContainer} placeholder='0' value={fromInputValue} onChangeText={fromOnChangeText} />
       <div className={styles.rate}>
-          <div className={styles.rateLabel}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.DARK_GRAY_200}>
-              {RATE_STRING}
-            </TextV3.CaptionStrong>
-          </div>
-          <div className={styles.rateValue}>
-            <TextV3.Caption
-              color={COLORS_ENUMS.DARK_GRAY_200}>
-              1 ETH ≈ 3,076.9006 DAG
-            </TextV3.Caption>
-          </div>
+        <div className={styles.rateLabel}>
+          <TextV3.CaptionStrong
+            color={COLORS_ENUMS.DARK_GRAY_200}>
+            {RATE_STRING}
+          </TextV3.CaptionStrong>
         </div>
-        <div className={styles.minimumAmount}>
-          <div className={styles.minimumAmountLabel}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.DARK_GRAY_200}>
-              {MINIMUM_AMOUNT_STRING}
-            </TextV3.CaptionStrong>
-          </div>
-          <div className={styles.minimumAmountValue}>
-            <TextV3.Caption
-              color={COLORS_ENUMS.DARK_GRAY_200}>
-              0.06954103 ETH
-            </TextV3.Caption>
-          </div>
+        <div className={styles.rateValue}>
+          <TextV3.Caption
+            color={COLORS_ENUMS.DARK_GRAY_200}>
+            1 ETH ≈ 3,076.9006 DAG
+          </TextV3.Caption>
         </div>
+      </div>
+      <div className={styles.minimumAmount}>
+        <div className={styles.minimumAmountLabel}>
+          <TextV3.CaptionStrong
+            color={COLORS_ENUMS.DARK_GRAY_200}>
+            {MINIMUM_AMOUNT_STRING}
+          </TextV3.CaptionStrong>
+        </div>
+        <div className={styles.minimumAmountValue}>
+          <TextV3.Caption
+            color={COLORS_ENUMS.DARK_GRAY_200}>
+            0.06954103 ETH
+          </TextV3.Caption>
+        </div>
+      </div>
+      <div className={styles.nextButton}>
+        <ButtonV3
+          label={NEXT_BUTTON_STRING}
+          size={BUTTON_SIZES_ENUM.FULL_WIDTH}
+          type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+          onClick={onNextPressed}
+          extraStyle={styles.buttonNormal}
+        />
+      </div>
     </div>
   );
 }
