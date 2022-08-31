@@ -33,6 +33,7 @@ export default {
   [screens.authorized.gasSettings]: '/gas-settings',
   // UnAuth Stack
   [screens.swap.swapTokens]: '/swapTokens',
+  [screens.swap.transferInfo]: '/transferInfo',
   // Settings Stack
   [screens.settings.main]: '/settings',
   [screens.settings.about]: '/settings/about',

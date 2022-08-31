@@ -40,6 +40,7 @@ import ImportPhrase from 'scenes/settings/ImportPhrase';
 import ConnectedSites from 'scenes/settings/ConnectedSites';
 // Swap
 import swapTokens from 'scenes/swap/swapTokens';
+import transferInfo from 'scenes/swap/transferInfo';
 
 ///////////////////////////
 // Navigation
@@ -90,6 +91,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   connectedSites: 'Connected Sites',
   // Swap
   swapTokens: 'Swap Tokens',
+  transferInfo: 'Transfer Info'
 };
 
 const Auth = () => {
@@ -139,6 +141,7 @@ const Auth = () => {
           
           {/* Swap Stack */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.swapTokens }} name={screens.swap.swapTokens}  component={swapTokens} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.transferInfo }} name={screens.swap.transferInfo}  component={transferInfo} />
         </>
       )}
       <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }} name={screens.common.import} component={Import} />

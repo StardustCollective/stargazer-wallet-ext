@@ -1,0 +1,55 @@
+@import '~assets/styles/_variables';
+
+.container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  margin: 16px;
+
+  .dataRow {
+
+  }
+  .dataValue {
+    display: flex;
+    width: 350px;
+    height: 48px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    border: 1px solid $gray-300;
+    align-items: center;
+    border-radius: 4px;
+    background-color: $gray-400;
+  }
+  .dataValueText{
+    text-overflow: ellipsis;
+    margin-left: 16px;
+    margin-right: 38px;
+  }
+  .transactionFeeInput {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    margin-left: 16px;
+  }
+  .transactionFeeTextField {
+    display: flex;
+    flex: 1;
+    font-size: 16px;
+  }
+  .transactionFeeRecommend {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 16px;
+  }
+  .recommendedFeeInput {
+    font-size: 16px;
+  }
+  .nextButton {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+  }
+}
