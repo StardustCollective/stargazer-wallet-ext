@@ -10,7 +10,6 @@ import clsx from 'clsx';
 ///////////////////////
 
 import TextV3 from 'components/TextV3';
-import TextInput from 'components/TextInput';
 import MUITextField from '@material-ui/core/TextField';
 
 ///////////////////////
