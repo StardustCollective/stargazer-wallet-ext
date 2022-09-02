@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,9 +12,9 @@ const styles = StyleSheet.create({
   },
   fiatBalanceContainer: {
     width: '100%',
-    height: 220, // do not use percentages messes up scrollview
+    // height: 193, // do not use percentages messes up scrollview
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 24,
   },
   fiatBalance: {
     maxWidth: '80%',
@@ -25,10 +24,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   fiatBalanceLabel: {
-    marginHorizontal: 10,
+    marginHorizontal: 8,
+  },
+  fiatType: {
+    fontSize: 20,
+    lineHeight: 28,
   },
   bitcoinBalance: {
-    opacity: 0.5,
+    opacity: 0.66,
+    marginTop: 8,
+  },
+  balanceText: {
+    fontSize: 16,
   },
   activityIndicator: {
     flex: 1,
@@ -43,8 +50,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonNormal: {
-    marginTop: 20,
-    marginBottom: 10,
+    marginVertical: 32,
   },
 });
 

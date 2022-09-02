@@ -1,7 +1,6 @@
 import ERC_20_ABI from 'erc-20-abi';
 import { BigNumber, ethers } from 'ethers';
 import { baseAmount, BaseAmount, assetToString, AssetETH } from '@xchainjs/xchain-util';
-import { EtherscanProvider, getDefaultProvider } from '@ethersproject/providers';
 import { Provider, TransactionResponse } from '@ethersproject/abstract-provider';
 import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
 import { parseUnits, toUtf8Bytes } from 'ethers/lib/utils';
@@ -9,23 +8,22 @@ import {
   BASE_TOKEN_GAS_COST,
   ETHAddress,
   ETH_DECIMAL,
-  InfuraProvider,
   SIMPLE_GAS_COST,
 } from './constants';
 import {
   getDefaultGasPrices,
-  getNetworkInfo,
+  getChainInfo,
   getTokenAddress,
   validateAddress,
+  isTestnet,
 } from './utils';
 import {
-  EthChainControllerParams,
+  EVMChainControllerParams,
   FeesParamsEth,
-  IEthChainController,
-  InfuraCreds,
-  EthereumNetwork,
+  IEVMChainController,
+  IChain,
   TxOverrides,
-  EthNetworkId,
+  AllChainsIds,
 } from './types';
 import { Address, FeeOptionKey, TxHistoryParams, TxParams } from '../ChainsController';
 import {
@@ -36,39 +34,22 @@ import {
 import { GasOracleResponse } from './etherscanApi.types';
 import erc20abi from 'utils/erc20.json';
 
-class EthChainController implements IEthChainController {
-  private network: EthereumNetwork;
+class EVMChainController implements IEVMChainController {
+  private chain: IChain;
   private address: Address | null = null;
   private wallet: ethers.Wallet | null = null;
-  private provider: Provider;
-  private etherscan: EtherscanProvider;
+  private provider: ethers.providers.JsonRpcProvider;
   private etherscanApiKey?: string;
-  private infuraCreds: InfuraCreds | null = null;
-  private infuraProjectId: string;
 
   constructor({
-    network,
+    chain,
     privateKey,
-    etherscanApiKey,
-    infuraCreds,
-  }: EthChainControllerParams) {
-    this.network = getNetworkInfo(network);
+    etherscanApiKey
+  }: EVMChainControllerParams) {
     this.etherscanApiKey = etherscanApiKey;
-    this.etherscan = new EtherscanProvider(this.network.value, this.etherscanApiKey);
-
-    if (infuraCreds) {
-      if (infuraCreds.projectId) {
-        this.infuraProjectId = infuraCreds.projectId;
-      }
-      this.infuraCreds = infuraCreds;
-      this.provider = infuraCreds.projectSecret
-        ? new ethers.providers.InfuraProvider(this.network.value, infuraCreds)
-        : new ethers.providers.InfuraProvider(this.network.value, infuraCreds.projectId);
-    } else {
-      this.provider = getDefaultProvider(this.network.value);
-    }
-
-    this.changeWallet(new ethers.Wallet(privateKey, this.getProvider()));
+    this.chain = getChainInfo(chain);
+    this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
+    this.changeWallet(new ethers.Wallet(privateKey, this.provider));
   }
 
   // Public methods
@@ -86,10 +67,10 @@ class EthChainController implements IEthChainController {
   }
 
   getNetwork() {
-    if (!this.network) {
+    if (!this.chain) {
       throw new Error('Network is not defined');
     }
-    return this.network;
+    return this.chain;
   }
 
   getWallet() {
@@ -100,31 +81,16 @@ class EthChainController implements IEthChainController {
   }
 
   getExplorerUrl = (): string => {
-    return this.network.etherscan;
+    return this.chain.explorer;
   };
 
-  setNetwork(network: EthNetworkId) {
-    if (!network) {
-      throw new Error('Network must be provided');
+  setChain(chain: AllChainsIds | string) {
+    if (!chain) {
+      throw new Error('Chain must be provided');
     } else {
-      this.network = getNetworkInfo(network);
-
-      if (this.infuraCreds) {
-        if (this.infuraCreds.projectId) {
-          this.infuraProjectId = this.infuraCreds.projectId;
-        }
-        this.provider = this.infuraCreds.projectSecret
-          ? new ethers.providers.InfuraProvider(this.network.value, this.infuraCreds)
-          : new ethers.providers.InfuraProvider(
-              this.network.value,
-              this.infuraCreds.projectId
-            );
-      } else {
-        this.provider = getDefaultProvider(this.network.value);
-      }
-
-      this.etherscan = new EtherscanProvider(this.network.value, this.etherscanApiKey);
-      this.wallet = this.wallet.connect(this.provider);
+        this.chain = getChainInfo(chain);
+        this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
+        this.wallet = this.wallet.connect(this.provider);
     }
   }
 
@@ -191,6 +157,7 @@ class EthChainController implements IEthChainController {
       }
 
       let txResult;
+      // TODO-349: Check ERC-20 token transfer for Polygon, Avalanche, etc.
       if (assetAddress && !isETHAddress) {
         // Transfer ERC20
         txResult = await this.call<TransactionResponse>(
@@ -218,11 +185,10 @@ class EthChainController implements IEthChainController {
     }
   }
 
-  async getTokenInfo(address: string, chainId = 1) {
+  async getTokenInfo(address: string) {
     if (this.isValidEthereumAddress(address)) {
-      const infuraProvider = new InfuraProvider(chainId, this.infuraProjectId);
       try {
-        return tokenContractHelper.getTokenInfo(infuraProvider, address);
+        return tokenContractHelper.getTokenInfo(this.getProvider(), address);
       } catch (e) {
         console.log('ERROR: getTokenInfo = ', e);
         return null;
@@ -241,20 +207,20 @@ class EthChainController implements IEthChainController {
       let transations;
       if (assetAddress) {
         transations = await getTokenTransactionHistory({
-          baseUrl: this.etherscan.baseUrl,
+          baseUrl: this.chain.explorerAPI,
           address,
           assetAddress,
           page,
           offset,
-          apiKey: this.etherscan.apiKey,
+          apiKey: this.etherscanApiKey,
         });
       } else {
         transations = await getETHTransactionHistory({
-          baseUrl: this.etherscan.baseUrl,
+          baseUrl: this.chain.explorerAPI,
           address,
           page,
           offset,
-          apiKey: this.etherscan.apiKey,
+          apiKey: this.etherscanApiKey,
         });
       }
 
@@ -272,7 +238,7 @@ class EthChainController implements IEthChainController {
   }
 
   async estimateGasPrices() {
-    if (this.network.value !== 'homestead') {
+    if (isTestnet(this.chain.id)) {
       // Etherscan gas oracle is not working in testnets
       const oneGwei = ethers.BigNumber.from(1e9);
       const feeData = await this.provider.getFeeData();
@@ -288,8 +254,8 @@ class EthChainController implements IEthChainController {
 
     try {
       const response: GasOracleResponse = await getGasOracle(
-        this.etherscan.baseUrl,
-        this.etherscan.apiKey
+        this.chain.explorerAPI,
+        this.etherscanApiKey
       );
 
       // Convert result of gas prices: `Gwei` -> `Wei`
@@ -307,9 +273,8 @@ class EthChainController implements IEthChainController {
     }
   }
 
-  async waitForTransaction(hash: string, chainId = 1) {
-    const infuraProvider = new InfuraProvider(chainId, this.infuraProjectId);
-    return infuraProvider.waitForTransaction(hash);
+  async waitForTransaction(hash: string) {
+    return this.provider.waitForTransaction(hash);
   }
 
   async estimateTokenTransferGasLimit(
@@ -407,4 +372,4 @@ class EthChainController implements IEthChainController {
   }
 }
 
-export default EthChainController;
+export default EVMChainController;

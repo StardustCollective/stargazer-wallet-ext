@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { SIMPLEX_LOGO } from 'constants/index';
 import { getQuote, getSupportedAssets, paymentRequest } from './api';
 import IProvidersState, { Providers } from './types';
 
@@ -22,13 +23,13 @@ export const initialState: IProvidersState = {
   selected: {
     id: Providers.Simplex,
     label: 'Simplex',
-    logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png',
+    logo: SIMPLEX_LOGO,
   },
   list: {
     [Providers.Simplex]: {
       id: Providers.Simplex,
       label: 'Simplex',
-      logo: 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png',
+      logo: SIMPLEX_LOGO,
     },
   },
 };

@@ -42,6 +42,7 @@ import { useFiat } from 'hooks/usePrice';
 // Utils
 ///////////////////////////
 
+import { getNativeToken, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
 import { isError } from 'scripts/common';
@@ -134,7 +135,8 @@ const ConfirmContainer = () => {
 
   const getFiatAmount = useFiat(false, assetInfo);
 
-  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : 'ETH'
+  const assetNetwork = assets[activeAsset?.id]?.network;
+  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
 
   const tempTx = accountController.getTempTx();
   const [confirmed, setConfirmed ] = useState(false);
@@ -156,7 +158,8 @@ const ConfirmContainer = () => {
     let priceId = assetInfo.priceId;
 
     if (activeAsset.type === AssetType.ERC20) {
-      priceId = AssetType.Ethereum
+      // TODO-349: Only Polygon. Include AVAX and BNB basePriceId.
+      priceId = getPriceId(assetNetwork);
     }
 
     return Number(getFiatAmount(Number(tempTx?.fee || 0), 8, priceId));

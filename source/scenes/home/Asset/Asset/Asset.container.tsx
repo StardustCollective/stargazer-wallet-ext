@@ -12,7 +12,7 @@ import { RootState } from 'state/store';
 import assetHeader from 'navigation/headers/asset';
 import { useLinkTo } from '@react-navigation/native';
 
-import IVaultState, { AssetType } from 'state/vault/types';
+import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { useCopyClipboard } from 'hooks';
 import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers';
@@ -20,6 +20,7 @@ import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers'
 import AssetDetail from './Asset';
 
 import { IAssetDetail } from './types';
+import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const accountController = getAccountController();
@@ -36,8 +37,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     return Number((activeAsset && balances[activeAsset.id]) || 0);
   }, [activeAsset, balances]);
 
+  const { id } = accountController.networkController?.getNetwork() || {};
+  const network = getNetworkFromChainId(id);
+
   const networkId =
-    activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : KeyringNetwork.Ethereum;
+    activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : network;
 
   const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);
@@ -50,12 +54,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
       assetHeader({
         navigation,
         asset: assets[activeAsset.id],
-        address: activeAsset.address,
         addressUrl: getAddressURL(
           activeAsset.address,
           activeAsset.contractAddress,
           activeAsset.type,
-          activeNetwork[networkId]
+          activeNetwork[networkId as keyof ActiveNetwork]
         ),
       })
     );
@@ -95,6 +98,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
       <AssetDetail
         activeWallet={activeWallet}
         activeAsset={activeAsset}
+        activeNetwork={activeNetwork}
         balanceText={BALANCE_TEXT}
         fiatAmount={FIAT_AMOUNT}
         transactions={transactions}

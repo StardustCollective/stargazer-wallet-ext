@@ -61,7 +61,7 @@ const Home: FC<IHome> = ({
               <section className={styles.center}>
                 <div className={styles.price}>
                   <div className={styles.symbol}>
-                    <TextV3.Body>
+                    <TextV3.Body extraStyles={styles.fiatType}>
                       {balanceObject.symbol}
                     </TextV3.Body>
                   </div>
@@ -71,13 +71,13 @@ const Home: FC<IHome> = ({
                     </TextV3.HeaderDisplay>
                   </div>
                   <div className={styles.name}>
-                    <TextV3.Body>
+                    <TextV3.Body extraStyles={styles.fiatType}>
                       {balanceObject.name}
                     </TextV3.Body>
                   </div>
                 </div>
                 <div className={styles.bitcoinBalance}>
-                  <TextV3.Body>
+                  <TextV3.Body extraStyles={styles.bitcoinBalance}>
                     {`≈ ₿${balance}`}
                   </TextV3.Body>
                 </div>

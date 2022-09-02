@@ -1,5 +1,5 @@
 import { reload } from 'utils/browser';
-import IVaultState, { AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { KeyringWalletState } from '../helpers/keystoreToKeyringHelper';
@@ -24,7 +24,7 @@ const MigrateRunner = async (oldState: V1WalletState) => {
     //   return;
     // }
 
-    const vault: IVaultState = {
+    const vault: any = {
       status: 0,
       wallets: {
         local: [],
@@ -35,6 +35,10 @@ const MigrateRunner = async (oldState: V1WalletState) => {
       balances: {
         [AssetType.Constellation]: '0',
         [AssetType.Ethereum]: '0',
+        // TODO-349: Only Polygon
+        // [AssetType.Avalanche]: '0',
+        // [AssetType.BSC]: '0',
+        [AssetType.Polygon]: '0',
       },
       activeWallet: undefined,
       activeAsset: undefined,

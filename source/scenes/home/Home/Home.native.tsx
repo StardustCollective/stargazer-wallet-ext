@@ -58,8 +58,7 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed, o
     const unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
       if (state.isConnected && !lastIsConnected) {
         lastIsConnected = true;
-        await accountController.assetsBalanceMonitor.refreshDagBalance();
-        await accountController.assetsBalanceMonitor.getEthTokenBalances();
+        await accountController.assetsBalanceMonitor.start();
       } else {
         lastIsConnected = false;
       }
@@ -78,14 +77,14 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed, o
           <>
             <View style={styles.fiatBalanceContainer}>
               <View style={styles.fiatBalance}>
-                <TextV3.Body>{balanceObject.symbol}</TextV3.Body>
+                <TextV3.Body extraStyles={styles.fiatType}>{balanceObject.symbol}</TextV3.Body>
                 <TextV3.HeaderDisplay dynamic extraStyles={styles.fiatBalanceLabel}>
                   {balanceObject.balance}
                 </TextV3.HeaderDisplay>
-                <TextV3.Body>{balanceObject.name}</TextV3.Body>
+                <TextV3.Body extraStyles={styles.fiatType}>{balanceObject.name}</TextV3.Body>
               </View>
               <View style={styles.bitcoinBalance}>
-                <TextV3.Body>{`≈ ₿${balance}`}</TextV3.Body>
+                <TextV3.Body extraStyles={styles.balanceText}>{`≈ ₿${balance}`}</TextV3.Body>
               </View>
               <View style={styles.buttons}> 
                 <ButtonV3

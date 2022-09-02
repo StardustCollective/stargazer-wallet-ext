@@ -17,6 +17,7 @@ import TextV3 from 'components/TextV3';
 ///////////////////////
 
 import { formatNumber, formatPrice, formatStringDecimal } from 'scenes/home/helpers';
+import { getNetworkFromChainId, getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////
 // Enums
@@ -30,6 +31,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import { IAssetInfoState } from 'state/assets/types';
 import { INFTInfoState } from 'state/nfts/types';
+import { AssetSymbol } from 'state/vault/types';
 import IAssetItem from './types';
 
 ///////////////////////
@@ -38,12 +40,11 @@ import IAssetItem from './types';
 
 import styles from './AssetItem.scss';
 
-
 ///////////////////////
 // Component
 ///////////////////////
 
-const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked }: IAssetItem) => {
+const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT, itemClicked, showNetwork, activeNetwork }: IAssetItem) => {
 
   ///////////////////////
   // Render
@@ -54,17 +55,35 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
   };
 
   const renderAssetPriceSection = (assetInfoData: IAssetInfoState) => {
-    if (assetInfoData.priceId && fiat[assetInfoData.priceId]?.price && fiat[assetInfoData.priceId]?.priceChange) {
+    if (showNetwork) {
+      let network = assetInfoData.network;
+      // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
+      if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(assetInfoData?.symbol as AssetSymbol)) {
+        const currentNetwork = getNetworkFromChainId(network);
+        network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+      }
+
+      const label = getNetworkLabel(network, assetInfoData?.symbol);
+
+      return (
+        <div>
+          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
+        </div>
+      );
+    }
+    if (assetInfoData.priceId && fiat[assetInfoData.priceId]?.price) {
       return (
         <div>
           <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>{formatPrice(fiat[assetInfoData.priceId].price)}</TextV3.Caption>
-          <TextV3.Caption
-            color={COLORS_ENUMS.BLACK}
-            extraStyles={fiat[assetInfoData.priceId].priceChange > 0 ? styles.green : styles.red}
-          >
-            {fiat[assetInfoData.priceId].priceChange > 0 ? '+' : ''}
-            {formatNumber(fiat[assetInfoData.priceId].priceChange, 2, 2, 3)}%
-          </TextV3.Caption>
+          {fiat[assetInfoData.priceId]?.priceChange &&
+            <TextV3.Caption
+              color={COLORS_ENUMS.BLACK}
+              extraStyles={fiat[assetInfoData.priceId].priceChange > 0 ? styles.green : styles.red}
+            >
+              {fiat[assetInfoData.priceId].priceChange > 0 ? '+' : ''}
+              {formatNumber(fiat[assetInfoData.priceId].priceChange, 2, 2, 3)}%
+            </TextV3.Caption>
+          }
         </div>
       );
     }
@@ -82,15 +101,15 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
             {assetInfo.logo.startsWith('http') ? <img src={assetInfo.logo} /> : <img src={`/${assetInfo.logo}`} />}
           </div>
           <div className={styles.assetName}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{assetInfo.label}</TextV3.CaptionStrong>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.labelText}>{assetInfo.label}</TextV3.CaptionStrong>
             {isNFT ? renderNFTPriceSection() : renderAssetPriceSection(assetInfo as IAssetInfoState)}
           </div>
           <div className={styles.assetBalance}>
-            <TextV3.Caption dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
               {isNFT
                 ? Number((assetInfo as INFTInfoState).quantity)
-                : formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)}
-            </TextV3.Caption>
+                : `${formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)} ${(assetInfo as IAssetInfoState).symbol}`}
+            </TextV3.CaptionRegular>
           </div>
         </div>
       </Card>

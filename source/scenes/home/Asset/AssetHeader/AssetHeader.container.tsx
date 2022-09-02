@@ -1,30 +1,29 @@
 import React, { FC } from 'react';
 
-import { ellipsis } from 'scenes/home/helpers';
-import { useCopyClipboard } from 'hooks/index';
-
 import AssetHeader from './AssetHeader';
 
 import { IAssetHeader } from './types';
+import { getNetworkFromChainId, getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
+import IVaultState, { AssetSymbol } from 'state/vault/types';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/store';
 
-const AssetHeaderContainer: FC<IAssetHeader> = ({ asset, address }) => {
-  const [isCopied, copyText] = useCopyClipboard(2000);
+const AssetHeaderContainer: FC<IAssetHeader> = ({ asset }) => {
+  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
 
-  const onClickCopyText = (e: Event) => {
-    e.stopPropagation();
-    copyText(address);
-  };
+  let network = asset?.network;
+  // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
+  if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(asset?.symbol as AssetSymbol)) {
+    const currentNetwork = getNetworkFromChainId(network);
+    network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+  }
 
-  const shortenedAddress = ellipsis(address);
-  const copiedTextToolip = isCopied ? 'Copied' : 'Copy Address';
+  const networkLabel = getNetworkLabel(network, asset?.symbol);
 
   return (
     <AssetHeader
-      isCopied={isCopied}
-      onClickCopyText={onClickCopyText}
-      shortenedAddress={shortenedAddress}
+      network={networkLabel}
       asset={asset}
-      copiedTextToolip={copiedTextToolip}
     />
   );
 };

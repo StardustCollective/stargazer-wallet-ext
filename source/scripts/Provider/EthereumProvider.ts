@@ -20,9 +20,6 @@ import { IDAppState } from 'state/dapp/types';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { getERC20DataDecoder } from 'utils/ethUtil';
-import { getInfuraProvider } from 'utils/ethersUtil';
-import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
-import { getChainId } from 'scripts/Background/controllers/EthChainController/utils';
 
 import type { DappProvider } from '../Background/dappRegistry';
 import {
@@ -33,7 +30,9 @@ import {
   StargazerChain,
 } from '../common';
 
+import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
+import { getChainId, getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -129,7 +128,8 @@ export class EthereumProvider implements IRpcChainRequestHandler {
 
   signMessage(msg: string) {
     const controller = useController();
-    const wallet = controller.wallet.account.ethClient.getWallet();
+    // TODO-349: Check if we need to create Providers for all networks
+    const wallet = controller.wallet.account.networkController.ethereumNetwork.getWallet();
     const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = hashPersonalMessage(Buffer.from(msg));
@@ -146,7 +146,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     value: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[2]
   ) {
     const controller = useController();
-    const wallet = controller.wallet.account.ethClient.getWallet();
+    const wallet = controller.wallet.account.networkController.ethereumNetwork.getWallet();
     const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = ethers.utils._TypedDataEncoder.hash(domain, types, value);
@@ -174,7 +174,9 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     _dappProvider: DappProvider,
     _port: Runtime.Port
   ) {
-    const provider = getInfuraProvider(this.getNetwork());
+    const { activeNetwork }: IVaultState = store.getState().vault;
+    const networkInfo = getChainInfo(activeNetwork.Ethereum);
+    const provider = new ethers.providers.JsonRpcProvider(networkInfo.rpcEndpoint);
 
     return provider.send(request.method, request.params);
   }

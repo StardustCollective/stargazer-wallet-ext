@@ -35,17 +35,15 @@
       .address {
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: center;
         height: 60px;
         width: 100%;
-        font-family: $quicksand;
+        font-family: $inter;
         font-weight: bold;
         font-size: 18px;  
         line-height: 24px;
         color: $white;
         transition: all 0.3s;
-        cursor: pointer;
 
         &.active {
           color: $gray-light;
@@ -55,15 +53,12 @@
           }
         }
 
-        small {
-          font-size: 12px;
-          line-height: 10px;
-          font-weight: 500;
-          font-family: $quicksand;
-          margin-top: 2px;
-          margin-left: 0;
-          color: $white;
-          transition: all 0.3s;
+        .labelText {
+          font-weight: $semibold;
+        }
+
+        .networkText {
+          color: rgba(255, 255, 255, 0.66);
         }
       }
     }

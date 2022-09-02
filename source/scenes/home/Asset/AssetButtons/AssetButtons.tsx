@@ -44,9 +44,12 @@ const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceiv
   ///////////////////////////
   return (
     <div className={styles.container}>
-      <div className={styles.buttonContainer} onClick={onBuyPressed}>
-        <div className={styles.icon}>
-          <img src={`/${DollarIcon}`} alt="dollar-icon" />
+      {assetBuyable && 
+        <div className={styles.buttonContainer} onClick={onBuyPressed}>
+          <div className={styles.icon}>
+            <img src={`/${DollarIcon}`} alt="dollar-icon" />
+          </div>
+          <TextV3.CaptionStrong extraStyles={styles.label}>Buy</TextV3.CaptionStrong>
         </div>
         <TextV3.Caption>{BUY_STRING}</TextV3.Caption>
       </div>

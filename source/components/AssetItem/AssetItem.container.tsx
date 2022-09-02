@@ -25,21 +25,26 @@ import AssetItem from './AssetItem';
 ///////////////////////
 
 const isAssetNFT = (assetInfo: any) => {
-  return [AssetType.ERC721, AssetType.ERC1155].includes(assetInfo.type);
+  return [AssetType.ERC721, AssetType.ERC1155].includes(assetInfo?.type);
 };
 
 ///////////////////////
 // Container
 ///////////////////////
 
-const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked }) => {
+const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked, showNetwork = false }) => {
 
   ///////////////////////
   // Hooks
   ///////////////////////
 
-  const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { balances, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
+
+  // Sometimes the assetInfo is undefined after the Migration process.
+  // This issue could be related to a race condition.
+  if (!assetInfo) return null;
+
   const isNFT = isAssetNFT(assetInfo);
 
   return (
@@ -51,6 +56,8 @@ const AssetItemContainer: FC<IAssetItem> = ({ id, asset, assetInfo, itemClicked 
       balances={balances}
       fiat={fiat}
       isNFT={isNFT}
+      showNetwork={showNetwork}
+      activeNetwork={activeNetwork}
     />
   )
 

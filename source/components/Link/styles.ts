@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: FONT_WEIGHTS.medium,
     fontSize: 16,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     lineHeight: 18,
   },
   primary: {

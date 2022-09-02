@@ -31,7 +31,7 @@ const BuyListContainer: FC = () => {
   const supportedAssetsArray = supportedAssets?.data;
   const assetsFiltered = assets && supportedAssetsArray ? Object.values(assets)
     .filter((assetValues) => 
-        !!activeWallet?.assets?.find(asset => asset?.id === assetValues?.id) && 
+        !!activeWallet?.assets?.find(asset => asset?.id === assetValues?.id && ['both', 'mainnet'].includes(assetValues?.network)) && 
         !!supportedAssetsArray?.find(simplexItem => simplexItem?.ticker_symbol === assetValues?.symbol)) : [];
 
   const handleSelectAsset = async (assetId: string) => {

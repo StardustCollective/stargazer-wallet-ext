@@ -4,11 +4,11 @@ import { IAssetState, IActiveAssetState } from '../../../state/vault/types';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { EthTransactionController } from './EthTransactionController';
 import { IAssetsController } from './AssetsController';
-import EthChainController from './EthChainController';
 import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
+import NetworkController from './NetworkController';
 
 export interface IAccountController {
-  ethClient: EthChainController;
+  networkController: NetworkController;
   txController: EthTransactionController;
   assetsController: Readonly<IAssetsController>;
   assetsBalanceMonitor: Readonly<AssetsBalanceMonitor>;
@@ -51,4 +51,5 @@ export interface IAccountController {
   ) => Promise<number>;
   getLatestTxUpdate: () => Promise<void>;
   updatePendingTx: (tx: IETHPendingTx, gasPrice: number, gasLimit: number) => {};
+  fetchCustomToken: (address: string, chainId: string) => Promise<void>;
 }

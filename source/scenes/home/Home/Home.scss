@@ -111,38 +111,42 @@
   section.center {
     display: flex;
     width: 100%;
-    height: 200px;
+    height: 160px;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
     .price {
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-top: 16px;
       .balance {
         margin-left: 8px;
         margin-right: 8px;
         .balanceText{
           overflow: hidden;
-          max-width: 200px;
+          max-width: 280px;
         }
       }
     }
-    .bitcoinBalance{
-      display: flex;
-      justify-content: center;
-      opacity: 0.5;
-    }
-    .buttons{
-      display: flex;
-      flex: 1;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-evenly;
-      .buttonNormal {
-        margin-top: 15px;
-        margin-bottom: 15px;
-      }
-    } 
 
+    .fiatType {
+      font-size: 20px;
+      line-height: 28px;
+    }
+
+    .bitcoinBalance {
+      font-size: 16px;
+    }
+
+    .bitcoinBalance{
+      opacity: 0.66;
+      margin-top: 8px;
+    }
+    .buyButton {
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
   }
 }
 

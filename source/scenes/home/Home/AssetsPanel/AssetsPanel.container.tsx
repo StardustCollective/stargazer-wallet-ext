@@ -50,7 +50,7 @@ const AssetsPanelContainer: FC = () => {
   const nfts: INFTListState = useSelector((state: RootState) => state.nfts);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const activeNFTAssets = useSelector(walletSelectors.selectNFTAssets);
-
+  
   ///////////////////////
   // Callbacks
   ///////////////////////

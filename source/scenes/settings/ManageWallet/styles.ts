@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   label: {
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     fontSize: 10,
     fontWeight: '500',
     marginTop: 24,
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     fontSize: 12,
     fontWeight: '500',
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
     lineHeight: 16,
   },
   menu: {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 16,
     flexGrow: 1,
-    fontFamily: FONTS.rubik,
+    fontFamily: FONTS.inter,
   },
   icon: {
     fontSize: 24,

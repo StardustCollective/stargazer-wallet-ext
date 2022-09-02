@@ -34,7 +34,6 @@
     width: 100%;
     font-weight: 500;
     font-size: 12px;
-    margin-bottom: 12px;
     height: 60px;
     display: flex;
     align-items: center;
@@ -76,6 +75,19 @@
         padding-right: 92px;
       }
     }
+  }
+
+  .networkContainer {
+    padding: 0px 36px 10px 36px;
+  }
+
+  .networkTitle {
+    font-weight: 500;
+    font-size: 10px;
+    margin-bottom: 8px;
+    margin-left: 16px;
+    text-transform: uppercase;
+    color: #474747;
   }
 
   section.content {
@@ -249,7 +261,7 @@
         line-height: 24px;
       }
       .advancedSetting {
-        font-family: Inter;
+        font-family: $inter;
         font-style: normal;
         font-weight: 500;
         font-size: 10px;
@@ -303,7 +315,7 @@
       font-weight: 500;
       font-size: 10px;
       line-height: 24px;
-      font-family: Inter;
+      font-family: $inter;
       color: $gray-100;
 
       &[data-index='0'] {

@@ -4,7 +4,7 @@ import useVersion from 'hooks/useVersion';
 import { useLinkTo } from '@react-navigation/native';
 
 import { getWalletController } from 'utils/controllersUtils';
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 import Main from './Main';
 
 const MainContainer: FC = () => {
@@ -38,7 +38,7 @@ const MainContainer: FC = () => {
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.LIGHT}>
       <Main
         handleLogout={handleLogout}
         onWalletLinkClick={onWalletLinkClick}

@@ -18,7 +18,6 @@ TextInput.defaultProps.maxFontSizeMultiplier = 1.2;
 
 Sentry.init({
   dsn: process.env.SENTRY_DNS,
-  debug: __DEV__ ? true : false,
   environment: __DEV__ ? 'development' : 'production',
   enableNative: __DEV__ ? false : true,
 });

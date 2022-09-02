@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   cardContainer: {
-    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   assetIcon: {
     alignItems: 'center',
@@ -14,6 +15,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: COLORS.gray_100,
+  },
+  subtitleContainer: {
+    flexDirection: 'row',
   },
   imageIcon: {
     width: 20,
@@ -30,8 +34,12 @@ const styles = StyleSheet.create({
   },
   assetInfo: {
     width: '60%',
-    marginLeft: 16,
+    justifyContent: 'center',
+    marginLeft: 12,
   },
+  symbolLabel: {
+    fontWeight: FONT_WEIGHTS.semibold,
+  }
 });
 
 export default styles;

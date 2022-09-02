@@ -2,7 +2,7 @@ import { reload } from 'utils/browser';
 import IAssetListState from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IPriceState from 'state/price/types';
-import IVaultState, { AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 import { INFTListState } from 'state/nfts/types';
 import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
 import { KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring'
@@ -25,7 +25,7 @@ type V3_5_0WalletState = {
     contacts: IContactBookState,
     dapp: {},
     price: IPriceState,
-    vault: IVaultState
+    vault: any,
 }
 
 const MigrateRunner = async (oldState: V2WalletState) => {
