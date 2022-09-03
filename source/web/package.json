@@ -1,6 +1,6 @@
 {
   "name": "extension",
-  "version": "3.8.0",
+  "version": "3.8.1",
   "description": "Cross-chain compatible wallet for Constellation and Ethereum",
   "private": true,
   "repository": "https://github.com/StardustCollective/stargazer-wallet-ext.git",
