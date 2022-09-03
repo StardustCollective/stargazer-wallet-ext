@@ -126,9 +126,9 @@ const AssetListState = createSlice({
         delete state[action.payload.id];
       }
     },
-    updateAssetDecimals(state: IAssetListState, action: PayloadAction<{ address: string, decimals: number}>) {
-      if (action.payload.address && action.payload.decimals) {
-        state[action.payload.address].decimals = action.payload.decimals;
+    updateAssetDecimals(state: IAssetListState, action: PayloadAction<{ assetId: string, decimals: number}>) {
+      if (action.payload.assetId && action.payload.decimals) {
+        state[action.payload.assetId].decimals = action.payload.decimals;
       }
     },
     updateAssetDecimals(state: IAssetListState, action: PayloadAction<{ address: string, decimals: number}>) {
