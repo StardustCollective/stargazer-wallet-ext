@@ -32,7 +32,7 @@ export default {
   [screens.authorized.send]: '/send/:address?',
   [screens.authorized.gasSettings]: '/gas-settings',
   [screens.authorized.singleSelect]: '/single-select',
-  // UnAuth Stack
+  // Swap Tokens Stack
   [screens.swap.swapTokens]: '/swapTokens',
   [screens.swap.transferInfo]: '/transferInfo',
   // Settings Stack

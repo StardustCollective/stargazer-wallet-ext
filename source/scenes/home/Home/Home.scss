@@ -143,9 +143,14 @@
       opacity: 0.66;
       margin-top: 8px;
     }
-    .buyButton {
-      margin-top: 24px;
+    .buttons {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      flex-direction: row;
+      margin-top: 15px;
       margin-bottom: 24px;
+      justify-content: space-evenly;
     }
   }
 }

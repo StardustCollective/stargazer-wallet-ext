@@ -38,7 +38,7 @@ import {
 } from './constants';
 
 
-const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, onSwapPressed }) => {
+const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, assetBuyable, onSwapPressed }) => {
   ///////////////////////////
   // Render
   ///////////////////////////
@@ -51,25 +51,24 @@ const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceiv
           </div>
           <TextV3.CaptionStrong extraStyles={styles.label}>Buy</TextV3.CaptionStrong>
         </div>
-        <TextV3.Caption>{BUY_STRING}</TextV3.Caption>
-      </div>
+      }
       <div className={styles.buttonContainer} onClick={onSwapPressed}>
         <div className={styles.icon}>
           <img src={`/${SwapIcon}`} alt="swap-icon" />
         </div>
         <TextV3.Caption>{SWAP_STRING}</TextV3.Caption>
-      </div>
+      </div> 
       <div className={styles.buttonContainer} onClick={onSendPressed}>
         <div className={styles.icon}>
           <img src={`/${ArrowUpIcon}`} alt="arrow-up-icon" />
         </div>
-        <TextV3.Caption>{SEND_STRING}</TextV3.Caption>
+        <TextV3.CaptionStrong extraStyles={styles.label}>Send</TextV3.CaptionStrong>
       </div>
       <div className={styles.buttonContainer} onClick={onReceivePressed}>
         <div className={styles.icon}>
           <img src={`/${ArrowDownIcon}`} alt="arrow-down-icon" />
         </div>
-        <TextV3.Caption>{RECEIVE_STRING}</TextV3.Caption>
+        <TextV3.CaptionStrong extraStyles={styles.label}>Receive</TextV3.CaptionStrong>
       </div>
     </div>
   );

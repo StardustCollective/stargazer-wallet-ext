@@ -87,14 +87,12 @@ const Home: FC<IHome> = ({
                     size={BUTTON_SIZES_ENUM.MEDIUM}
                     type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                     onClick={onBuyPressed}
-                    extraStyle={styles.buttonNormal}
                   />
                   <ButtonV3
                     label={SWAP_STRING}
                     size={BUTTON_SIZES_ENUM.MEDIUM}
                     type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                     onClick={onSwapPressed}
-                    extraStyle={styles.buttonNormal}
                   />
                 </div>
               </section>
