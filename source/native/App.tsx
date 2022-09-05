@@ -28,7 +28,6 @@ const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
 
 dag4.di.registerStorageClient(localStorage);
 dag4.di.getStateStorageDb().setPrefix('stargazer-');
-dag4.di.useFetchHttpClient(fetch);
 
 dag4.network.config({
   id: networkInfo.id,

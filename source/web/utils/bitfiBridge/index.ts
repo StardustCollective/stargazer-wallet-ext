@@ -18,7 +18,6 @@ class BitfiBridgeUtil {
 
   constructor() {
     // Configure Dag4 network
-    dag4.di.useFetchHttpClient();
     dag4.network.config({
       id: 'main',
       beUrl: 'https://block-explorer.constellationnetwork.io',
