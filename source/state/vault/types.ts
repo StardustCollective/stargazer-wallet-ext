@@ -6,7 +6,7 @@ import {
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
+import { AvalancheChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
 import { IAssetInfoState } from 'state/assets/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
@@ -18,6 +18,7 @@ export enum AssetSymbol {
   DAG = 'DAG',
   ETH = 'ETH',
   MATIC = 'MATIC',
+  AVAX = 'AVAX',
 }
 
 export enum AssetType {
@@ -38,8 +39,8 @@ export type Transaction = DAGTransaction | any;
 export type ActiveNetwork = {
   [KeyringNetwork.Constellation]: string;
   [KeyringNetwork.Ethereum]: EthChainId;
-  // TODO-349: Only Polygon
-  // 'Avalanche': AvalancheChainId;
+  // TODO-349: Only Polygon and AVAX
+  'Avalanche': AvalancheChainId;
   // 'BSC': BSCChainId;
   'Polygon': PolygonChainId;
 };
@@ -59,8 +60,8 @@ export interface IActiveAssetState extends IAssetState {
 export type AssetBalances = {
   [AssetType.Ethereum]?: string;
   [AssetType.Constellation]?: string;
-  // TODO-349: Only Polygon
-  // 'avalanche'?: string;
+  // TODO-349: Only Polygon and AVAX
+  'avalanche'?: string;
   // 'bsc'?: string;
   'polygon'?: string;
   [contractAddress: string]: string;

@@ -31,7 +31,7 @@ import { AccountController } from './AccountController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { EthChainId, PolygonChainId } from './EVMChainController/types';
+import { AvalancheChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
 import { generateId } from './EVMChainController/utils';
 import { AvailableEvents, StargazerChain } from 'scripts/common';
@@ -366,10 +366,10 @@ class WalletController implements IWalletController {
         );
       }
     }
-    // TODO-349: Only Polygon
-    // if (network === 'Avalanche') {
-    //   this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
-    // }
+    // TODO-349: Only Polygon and AVAX
+    if (network === 'Avalanche') {
+      this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
+    }
     
     // if (network === 'BSC') {
     //   this.account.networkController.switchBSCChain(chainId as BSCChainId);
