@@ -30,11 +30,10 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
     dag4.di.getStateStorageDb().setPrefix('stargazer-');
     dag4.di.useLocalStorageClient(localStorage);
-    dag4.network.config({
-      id: networkInfo.id,
-      beUrl: networkInfo.beUrl,
-      lbUrl: networkInfo.lbUrl,
-    });
+    dag4.account.connect({
+      networkVersion: networkInfo.version,
+      testnet: networkInfo.testnet,
+    }, true);
 
     port.onDisconnect.addListener(() => {
       console.log('onDisconnect');

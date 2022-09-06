@@ -1,6 +1,7 @@
 import { LedgerBridge, LedgerAccount } from '@stardust-collective/dag4-ledger';
 import webHidTransport from '@ledgerhq/hw-transport-webhid';
 import { dag4 } from '@stardust-collective/dag4';
+import { DAG_NETWORK } from 'constants/index';
 
 /////////////////////////////
 // Interface
@@ -64,11 +65,10 @@ class LedgerBridgeUtil {
 
   private initialize = async () => {
     // Configure Dag4 network
-    dag4.network.config({
-      id: 'main',
-      beUrl: 'https://www.dagexplorer.io/api/scan',
-      lbUrl: 'https://www.dagexplorer.io/api/node',
-    });
+    dag4.account.connect({
+      networkVersion: DAG_NETWORK.main.version,
+      testnet: DAG_NETWORK.main.testnet,
+    }, true);
   };
 
   private getAccountData = async (

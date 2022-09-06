@@ -22,16 +22,28 @@ export const DAG_NETWORK: {
   [networkId: string]: {
     id: string;
     label: string;
-    beUrl: string;
-    lbUrl: string;
+    version: string;
+    testnet: boolean;
   };
 } = {
   main: {
     id: 'main',
     label: 'Mainnet 1.0',
-    beUrl: 'https://block-explorer.constellationnetwork.io',
-    lbUrl: 'https://proxy.constellationnetwork.io/api/node',
+    version: '1.0',
+    testnet: false,
   },
+  main2: {
+    id: 'main2',
+    label: 'Mainnet 2.0',
+    version: '2.0',
+    testnet: false,
+  },
+  test2: {
+    id: 'test2',
+    label: 'Testnet 2.0',
+    version: '2.0',
+    testnet: true,
+  }
 };
 
 export const ETH_NETWORK: {

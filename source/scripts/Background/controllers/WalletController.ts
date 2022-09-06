@@ -340,11 +340,11 @@ class WalletController implements IWalletController {
     console.log(`${network} - ${chainId}`);
 
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
-      dag4.network.setNetwork({
-        id: DAG_NETWORK[chainId].id,
-        beUrl: DAG_NETWORK[chainId].beUrl,
-        lbUrl: DAG_NETWORK[chainId].lbUrl,
-      });
+      dag4.account.connect({
+        networkVersion: DAG_NETWORK[chainId].version,
+        testnet: DAG_NETWORK[chainId].testnet,
+      }, true);
+
       if (!isNative) {
         getDappRegistry().sendOriginChainEvent(
           '*',

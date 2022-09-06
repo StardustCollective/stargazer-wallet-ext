@@ -29,11 +29,10 @@ const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
 dag4.di.registerStorageClient(localStorage);
 dag4.di.getStateStorageDb().setPrefix('stargazer-');
 
-dag4.network.config({
-  id: networkInfo.id,
-  beUrl: networkInfo.beUrl,
-  lbUrl: networkInfo.lbUrl,
-});
+dag4.account.connect({
+  networkVersion: networkInfo.version,
+  testnet: networkInfo.testnet,
+}, true);
 
 const App = () => {
   useEffect(() => {

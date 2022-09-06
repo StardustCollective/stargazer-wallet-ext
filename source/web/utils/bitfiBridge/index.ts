@@ -1,6 +1,7 @@
 import { BitfiDump, BitfiV2, TransferType } from '@bitfi/bitfi.js';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { dag4 } from '@stardust-collective/dag4';
+import { DAG_NETWORK } from 'constants/index';
 
 const SESSION_KEY = 'bitfi_session';
 const APPROVE_TIMEOUT_MSEC = 2 * 60 * 1000;
@@ -18,11 +19,10 @@ class BitfiBridgeUtil {
 
   constructor() {
     // Configure Dag4 network
-    dag4.network.config({
-      id: 'main',
-      beUrl: 'https://block-explorer.constellationnetwork.io',
-      lbUrl: 'https://proxy.constellationnetwork.io/api/node',
-    });
+    dag4.account.connect({
+      networkVersion: DAG_NETWORK.main.version,
+      testnet: DAG_NETWORK.main.testnet,
+    }, true);
   }
 
 
