@@ -54,7 +54,7 @@ import useGasEstimate from 'hooks/useGasEstimate';
 ///////////////////////////
 
 import Send from './Send';
-import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChainId, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Constants
@@ -420,6 +420,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const assetNetwork = assets[activeAsset?.id]?.network;
   const nativeToken = getNativeToken(assetNetwork);
+  // TODO-349: Only Polygon. Include AVAX and BNB basePriceId.
+  const basePriceId = getPriceId(assetNetwork);
 
   return (
     <Container color={CONTAINER_COLOR.LIGHT}>
@@ -458,6 +460,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         decimalPointOnAmount={decimalPointOnAmount}
         decimalPointOnFee={decimalPointOnFee}
         networkTypeOptions={networkTypeOptions}
+        basePriceId={basePriceId}
       />
     </Container>
   );

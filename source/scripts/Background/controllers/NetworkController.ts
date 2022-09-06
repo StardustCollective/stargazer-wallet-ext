@@ -124,13 +124,7 @@ class NetworkController {
   }
 
   validateAddress(address: string): boolean {
-    let provider;
-    try {
-      provider = this.getProviderByActiveAsset();
-    } catch (err) {
-      console.log('Error: validateAddress - provider not found.');
-    }
-    return provider.validateAddress(address);
+    return this.#ethereumNetwork.validateAddress(address);
   }
 
   createERC20Contract(address: string) {
