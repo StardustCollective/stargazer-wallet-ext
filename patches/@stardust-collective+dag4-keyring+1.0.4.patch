@@ -1,45 +1,45 @@
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
-index 90db138..41a6863 100644
+index 2d95377..297bf15 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.d.ts
-@@ -6,7 +6,9 @@ export declare enum KeyringWalletType {
-     MultiChainWallet = "MCW",
+@@ -8,7 +8,9 @@ export declare enum KeyringWalletType {
      CrossChainWallet = "CCW",
      MultiAccountWallet = "MAW",
--    SingleAccountWallet = "SAW"
-+    SingleAccountWallet = "SAW",
+     SingleAccountWallet = "SAW",
+-    MultiKeyWallet = "MKW"
++    MultiKeyWallet = "MKW",
 +    LedgerAccountWallet = "LAW",
 +    BitfiAccountWallet  = "BAW"
  }
  export declare enum KeyringAssetType {
      DAG = "DAG",
-@@ -31,6 +33,8 @@ export declare type KeyringWalletAccountState = {
+@@ -35,6 +37,8 @@ export declare type KeyringWalletAccountState = {
      address: string;
-     network: KeyringNetwork;
-     tokens: string[];
+     network?: KeyringNetwork;
+     tokens?: string[];
 +    publicKey?: string;
-+    deviceId?: string
++    deviceId?: string;
  };
  export declare type KeyringRingSerialized = {
      network: KeyringNetwork;
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.js b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.js
-index 4d8f421..8387fc9 100644
+index 3ef97cc..445580c 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.js
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/kcs.js
-@@ -12,6 +12,8 @@ var KeyringWalletType;
-     KeyringWalletType["CrossChainWallet"] = "CCW";
+@@ -13,6 +13,8 @@ var KeyringWalletType;
      KeyringWalletType["MultiAccountWallet"] = "MAW";
      KeyringWalletType["SingleAccountWallet"] = "SAW";
+     KeyringWalletType["MultiKeyWallet"] = "MKW"; //Single Chain, Multiple Key accounts, MKW
 +    KeyringWalletType["LedgerAccountWallet"] = "LAW";
 +    KeyringWalletType["BitfiAccountWallet"] = "BAW";
  })(KeyringWalletType = exports.KeyringWalletType || (exports.KeyringWalletType = {}));
  var KeyringAssetType;
  (function (KeyringAssetType) {
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.d.ts b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.d.ts
-index b042587..1c63516 100644
+index 5cbcc8a..b95eb00 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.d.ts
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.d.ts
-@@ -13,7 +13,7 @@ export declare class KeyringManager extends SafeEventEmitter {
+@@ -12,7 +12,7 @@ export declare class KeyringManager extends SafeEventEmitter {
      private wallets;
      private memStore;
      private password;
@@ -49,30 +49,10 @@ index b042587..1c63516 100644
      generateSeedPhrase(): string;
      private fullUpdate;
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
-index 741aaeb..f5daf8d 100644
+index d29201d..bde3af6 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/keyring-manager.js
-@@ -1,14 +1,14 @@
- "use strict";
--var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-+var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
-     if (k2 === undefined) k2 = k;
--    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
--}) : (function(o, m, k, k2) {
-+    Object.defineProperty(o, k2, { enumerable: true, get: function () { return m[k]; } });
-+}) : (function (o, m, k, k2) {
-     if (k2 === undefined) k2 = k;
-     o[k2] = m[k];
- }));
--var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
-     Object.defineProperty(o, "default", { enumerable: true, value: v });
--}) : function(o, v) {
-+}) : function (o, v) {
-     o["default"] = v;
- });
- var __importStar = (this && this.__importStar) || function (mod) {
-@@ -32,11 +32,11 @@ const single_account_wallet_1 = require("./wallets/single-account-wallet");
+@@ -31,11 +31,11 @@ const wallets_1 = require("./wallets");
  const dag4 = __importStar(require("@stardust-collective/dag4-core"));
  const bip39_helper_1 = require("./bip39-helper");
  class KeyringManager extends safe_event_emitter_1.default {
@@ -86,7 +66,7 @@ index 741aaeb..f5daf8d 100644
          this.memStore = new obs_store_1.ObservableStore({
              isUnlocked: false,
              wallets: [],
-@@ -126,6 +126,9 @@ class KeyringManager extends safe_event_emitter_1.default {
+@@ -139,6 +139,9 @@ class KeyringManager extends safe_event_emitter_1.default {
          return wallet;
      }
      logout() {
@@ -96,7 +76,7 @@ index 741aaeb..f5daf8d 100644
          this.password = null;
          this.memStore.updateState({ isUnlocked: false });
          this.emit('lock');
-@@ -178,7 +181,7 @@ class KeyringManager extends safe_event_emitter_1.default {
+@@ -199,7 +202,7 @@ class KeyringManager extends safe_event_emitter_1.default {
          return this.findAccount(msgParams.from).signMessage(msgParams.from, msgParams.data, opts);
      }
      async unlockWallets(password) {
@@ -105,7 +85,7 @@ index 741aaeb..f5daf8d 100644
          if (!encryptedVault) {
              //Support recovering wallets from migration
              this.password = password;
-@@ -226,7 +229,7 @@ class KeyringManager extends safe_event_emitter_1.default {
+@@ -247,7 +250,7 @@ class KeyringManager extends safe_event_emitter_1.default {
          this.password = password;
          const sWallets = this.wallets.map(w => w.serialize());
          const encryptedString = await this.encryptor.encrypt(this.password, { wallets: sWallets });
@@ -113,12 +93,12 @@ index 741aaeb..f5daf8d 100644
 +        await this.storage.set('vault', encryptedString);
      }
      async _restoreWallet(wData) {
-         let chainWallet;
+         let wallet;
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/wallets/multi-chain-wallet.js b/node_modules/@stardust-collective/dag4-keyring/cjs/wallets/multi-chain-wallet.js
-index f10a13c..c8cd762 100644
+index 37762fa..8412d12 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/wallets/multi-chain-wallet.js
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/wallets/multi-chain-wallet.js
-@@ -87,4 +87,5 @@ class MultiChainWallet {
+@@ -83,4 +83,5 @@ class MultiChainWallet {
      }
  }
  exports.MultiChainWallet = MultiChainWallet;
@@ -126,10 +106,10 @@ index f10a13c..c8cd762 100644
  //# sourceMappingURL=multi-chain-wallet.js.map
 \ No newline at end of file
 diff --git a/node_modules/@stardust-collective/dag4-keyring/cjs/wallets/single-account-wallet.js b/node_modules/@stardust-collective/dag4-keyring/cjs/wallets/single-account-wallet.js
-index 91d3fb3..87f693b 100644
+index 3178711..371a4b4 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/cjs/wallets/single-account-wallet.js
 +++ b/node_modules/@stardust-collective/dag4-keyring/cjs/wallets/single-account-wallet.js
-@@ -69,4 +69,5 @@ class SingleAccountWallet {
+@@ -84,4 +84,5 @@ class SingleAccountWallet {
      }
  }
  exports.SingleAccountWallet = SingleAccountWallet;
@@ -137,38 +117,38 @@ index 91d3fb3..87f693b 100644
  //# sourceMappingURL=single-account-wallet.js.map
 \ No newline at end of file
 diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/kcs.d.ts b/node_modules/@stardust-collective/dag4-keyring/esm/kcs.d.ts
-index 90db138..1b92128 100644
+index 2d95377..bed603f 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/esm/kcs.d.ts
 +++ b/node_modules/@stardust-collective/dag4-keyring/esm/kcs.d.ts
-@@ -6,7 +6,9 @@ export declare enum KeyringWalletType {
-     MultiChainWallet = "MCW",
+@@ -8,7 +8,9 @@ export declare enum KeyringWalletType {
      CrossChainWallet = "CCW",
      MultiAccountWallet = "MAW",
--    SingleAccountWallet = "SAW"
-+    SingleAccountWallet = "SAW",
+     SingleAccountWallet = "SAW",
+-    MultiKeyWallet = "MKW"
++    MultiKeyWallet = "MKW",
 +    LedgerAccountWallet = "LAW",
 +    BitfiAccountWallet = "BAW"
  }
  export declare enum KeyringAssetType {
      DAG = "DAG",
 diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/kcs.js b/node_modules/@stardust-collective/dag4-keyring/esm/kcs.js
-index b653c18..ef5d2a7 100644
+index 30a59bb..ed493cc 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/esm/kcs.js
 +++ b/node_modules/@stardust-collective/dag4-keyring/esm/kcs.js
-@@ -9,6 +9,8 @@ export var KeyringWalletType;
-     KeyringWalletType["CrossChainWallet"] = "CCW";
+@@ -10,6 +10,8 @@ export var KeyringWalletType;
      KeyringWalletType["MultiAccountWallet"] = "MAW";
      KeyringWalletType["SingleAccountWallet"] = "SAW";
+     KeyringWalletType["MultiKeyWallet"] = "MKW"; //Single Chain, Multiple Key accounts, MKW
 +    KeyringWalletType["LedgerAccountWallet"] = "LAW";
 +    KeyringWalletType["BitfiAccountWallet"] = "BAW";
  })(KeyringWalletType || (KeyringWalletType = {}));
  export var KeyringAssetType;
  (function (KeyringAssetType) {
 diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts
-index b042587..1c63516 100644
+index 5cbcc8a..b95eb00 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts
 +++ b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.d.ts
-@@ -13,7 +13,7 @@ export declare class KeyringManager extends SafeEventEmitter {
+@@ -12,7 +12,7 @@ export declare class KeyringManager extends SafeEventEmitter {
      private wallets;
      private memStore;
      private password;
@@ -178,10 +158,10 @@ index b042587..1c63516 100644
      generateSeedPhrase(): string;
      private fullUpdate;
 diff --git a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.js b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.js
-index 6c9cb03..a7ab4fb 100644
+index 50e81b8..252e84f 100644
 --- a/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.js
 +++ b/node_modules/@stardust-collective/dag4-keyring/esm/keyring-manager.js
-@@ -7,11 +7,11 @@ import { SingleAccountWallet } from './wallets/single-account-wallet';
+@@ -6,11 +6,11 @@ import { MultiChainWallet, SingleAccountWallet, MultiAccountWallet, MultiKeyWall
  import * as dag4 from '@stardust-collective/dag4-core';
  import { Bip39Helper } from './bip39-helper';
  export class KeyringManager extends SafeEventEmitter {

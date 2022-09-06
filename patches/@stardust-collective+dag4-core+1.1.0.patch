@@ -1,0 +1,21 @@
+diff --git a/node_modules/@stardust-collective/dag4-core/src/cross-platform/clients/state-storage-db.ts b/node_modules/@stardust-collective/dag4-core/src/cross-platform/clients/state-storage-db.ts
+index 78b01c0..d23a39a 100644
+--- a/node_modules/@stardust-collective/dag4-core/src/cross-platform/clients/state-storage-db.ts
++++ b/node_modules/@stardust-collective/dag4-core/src/cross-platform/clients/state-storage-db.ts
+@@ -21,12 +21,12 @@ export class StateStorageDb {
+     this.keyPrefix = prefix;
+   }
+ 
+-  set (key: string, value: any) {
+-    this.storageClient.setItem(this.keyPrefix + key, JSON.stringify(value));
++  async set (key: string, value: any) {
++    await this.storageClient.setItem(this.keyPrefix + key, JSON.stringify(value));
+   }
+ 
+-  get (key: string): any {
+-    const value = this.storageClient.getItem(this.keyPrefix + key);
++  async get (key: string): Promise<any> {
++    const value = await this.storageClient.getItem(this.keyPrefix + key);
+     if (value) {
+       return JSON.parse(value);
+     }
