@@ -7,7 +7,7 @@ import { getWalletController } from 'utils/controllersUtils';
 
 import { RootState } from 'state/store';
 import IVaultState, { ActiveNetwork } from 'state/vault/types';
-import { CONSTELLATION_LOGO, DAG_NETWORK, ETHEREUM_LOGO, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
+import { AVALANCHE_LOGO, AVALANCHE_NETWORK, CONSTELLATION_LOGO, DAG_NETWORK, ETHEREUM_LOGO, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
 
 import Container from 'components/Container';
 import Networks from './Networks';
@@ -82,23 +82,23 @@ const NetworksContainer: FC = () => {
       },
       items: generateEthereumChains(),
     },
-    // TODO-349: Only Polygon
-    // {
-    //   icon: AVALANCHE_LOGO,
-    //   key: 'Avalanche',
-    //   title: 'Avalanche',
-    //   value: activeNetwork['Avalanche'],
-    //   onChange: (value: string) => {
-    //     handleChangeNetwork('Avalanche', value);
-    //   },
-    //   containerStyle: {
-    //     zIndex: 8000,
-    //   },
-    //   items: [
-    //     { value: AVALANCHE_NETWORK['avalanche-mainnet'].id, label: AVALANCHE_NETWORK['avalanche-mainnet'].label  },
-    //     { value: AVALANCHE_NETWORK['avalanche-testnet'].id, label: AVALANCHE_NETWORK['avalanche-testnet'].label },
-    //   ],
-    // },
+    // TODO-349: Only Polygon and AVAX
+    {
+      icon: AVALANCHE_LOGO,
+      key: 'Avalanche',
+      title: 'Avalanche',
+      value: activeNetwork['Avalanche'],
+      onChange: (value: string) => {
+        handleChangeNetwork('Avalanche', value);
+      },
+      containerStyle: {
+        zIndex: 8000,
+      },
+      items: [
+        { value: AVALANCHE_NETWORK['avalanche-mainnet'].id, label: AVALANCHE_NETWORK['avalanche-mainnet'].label  },
+        { value: AVALANCHE_NETWORK['avalanche-testnet'].id, label: AVALANCHE_NETWORK['avalanche-testnet'].label },
+      ],
+    },
     // {
     //   icon: BSC_LOGO,
     //   key: 'BNB Chain',

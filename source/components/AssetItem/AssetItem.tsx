@@ -57,8 +57,8 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
   const renderAssetPriceSection = (assetInfoData: IAssetInfoState) => {
     if (showNetwork) {
       let network = assetInfoData.network;
-      // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
-      if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(assetInfoData?.symbol as AssetSymbol)) {
+      // TODO-349: Only Polygon and AVAX ['ETH', 'AVAX', 'BNB', 'MATIC']
+      if ([AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX].includes(assetInfoData?.symbol as AssetSymbol)) {
         const currentNetwork = getNetworkFromChainId(network);
         network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
       }

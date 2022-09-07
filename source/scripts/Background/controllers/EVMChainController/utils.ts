@@ -133,6 +133,9 @@ export const getPriceId = (network: string): string => {
     case 'matic':
     case 'maticmum':
       return 'matic-network';
+    case 'avalanche-mainnet':
+    case 'avalanche-testnet':
+      return 'avalanche-2';
   
     default:
       return 'ethereum';
