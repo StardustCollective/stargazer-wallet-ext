@@ -2,7 +2,7 @@ import { IInputClickableOptions } from 'components/InputClickable/types';
 import { ChangeEvent } from 'react';
 import { Control, FieldError, FieldValues, NestDataObject, OnSubmit } from 'react-hook-form';
 import { IAssetInfoState } from 'state/assets/types';
-import { AssetBalances, IActiveAssetState } from 'state/vault/types';
+import { AssetBalances, IActiveAssetState, IAssetState } from 'state/vault/types';
 
 export interface IWalletSend {
   control?: Control<FieldValues>;
@@ -22,7 +22,7 @@ export interface IWalletSend {
   isDisabled: boolean;
   isValidAddress: boolean;
   balances: AssetBalances;
-  activeAsset: IAssetInfoState | IActiveAssetState;
+  activeAsset: IAssetInfoState | IActiveAssetState | IAssetState;
   nativeToken: string;
   assetInfo: IAssetInfoState;
   address: string;

@@ -33,7 +33,7 @@ import { removeEthereumPrefix } from 'utils/addressUtil';
 
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
-import IVaultState, { AssetType, IActiveAssetState, AssetBalances, AssetSymbol, ActiveNetwork } from 'state/vault/types';
+import IVaultState, { AssetType, IActiveAssetState, IAssetState, AssetBalances, AssetSymbol, ActiveNetwork } from 'state/vault/types';
 import { RootState } from 'state/store';
 
 ///////////////////////////
@@ -78,7 +78,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     isExternalRequest = location.pathname.includes('sendTransaction');
   }
 
-  let activeAsset: IAssetInfoState | IActiveAssetState;
+  let activeAsset: IAssetInfoState | IActiveAssetState | IAssetState;
   let balances: AssetBalances;
   let to: string;
   let from: string;
@@ -128,11 +128,24 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     history = useHistory();
 
     activeAsset = useSelector((state: RootState) => find(state.assets, { address: to })) as IAssetInfoState;
+    const vault = useSelector((state: RootState) => state.vault);
+    const vaultActiveAsset = vault.activeAsset;
 
     if (!activeAsset) {
+      // Set ETH as the default activeAsset
       activeAsset = useSelector((state: RootState) =>
-        find(state.assets, { type: AssetType.Ethereum })
-      ) as IAssetInfoState;
+        find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
+      );
+    } else {
+      // Get activeAsset from wallet assets
+      activeAsset = useSelector((state: RootState) =>
+        find(state.vault.activeWallet.assets, { id: activeAsset.id })
+      );
+    }
+
+    if (!vaultActiveAsset) {
+      // Update activeAsset so NetworkController doesn't fail
+      accountController.updateAccountActiveAsset(activeAsset);
     }
 
     assetInfo = assets[activeAsset.id];
