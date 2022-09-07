@@ -122,9 +122,9 @@ export class AccountController implements IAccountController {
                                 .filter((token) => token.type === AssetType.ERC20)
                                 .map((token) => token.id);
 
-      // TODO-349: Only Polygon ['AVAX', 'BNB', 'MATIC']
+      // TODO-349: Only Polygon and AVAX ['AVAX', 'BNB', 'MATIC']
       const NETWORK_TOKENS = Object.values(assets)
-                                .filter((token) => [AssetSymbol.MATIC].includes(token.symbol as AssetSymbol))
+                                .filter((token) => [AssetSymbol.MATIC, AssetSymbol.AVAX].includes(token.symbol as AssetSymbol))
                                 .map((token) => token.id);
 
       const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);                          
@@ -143,13 +143,13 @@ export class AccountController implements IAccountController {
   buildNetworkAssets(address: string, tokens: string[]): IAssetState[] {
     const networkAssets = [];
     
-    // TODO-349: Only Polygon
-    // const avaxAsset = {
-    //   id: AssetType.Avalanche,
-    //   type: AssetType.Ethereum,
-    //   label: 'Avalanche',
-    //   address,
-    // };
+    // TODO-349: Only Polygon and AVAX
+    const avaxAsset = {
+      id: AssetType.Avalanche,
+      type: AssetType.Ethereum,
+      label: 'Avalanche',
+      address,
+    };
 
     // const bscAsset = {
     //   id: AssetType.BSC,
@@ -165,10 +165,10 @@ export class AccountController implements IAccountController {
       address,
     };
 
-    // TODO-349: Only Polygon
-    // if (tokens.includes(avaxAsset.id)) {
-    //   networkAssets.push(avaxAsset);
-    // }
+    // TODO-349: Only Polygon and AVAX
+    if (tokens.includes(avaxAsset.id)) {
+      networkAssets.push(avaxAsset);
+    }
 
     // if (tokens.includes(bscAsset.id)) {
     //   networkAssets.push(bscAsset);

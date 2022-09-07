@@ -42,8 +42,8 @@ export class AssetsBalanceMonitor {
       [KeyringNetwork.Constellation]: new AccountTracker(),
       [KeyringNetwork.Ethereum]: new AccountTracker(),
       'Polygon': new AccountTracker(),
-      // TODO-349: Only Polygon
-      // 'Avalanche': new AccountTracker(),
+      // TODO-349: Only Polygon and AVAX
+      'Avalanche': new AccountTracker(),
       // 'BSC': new AccountTracker(),
     }
   }

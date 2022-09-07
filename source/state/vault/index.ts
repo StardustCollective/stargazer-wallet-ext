@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Transaction } from '@stardust-collective/dag4-network';
 
-import { DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { AVALANCHE_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
@@ -20,8 +20,8 @@ const initialState: IVaultState = {
   balances: {
     [AssetType.Constellation]: '0',
     [AssetType.Ethereum]: '0',
-    // TODO-349: Only Polygon
-    // [AssetType.Avalanche]: '0',
+    // TODO-349: Only Polygon and AVAX
+    [AssetType.Avalanche]: '0',
     // [AssetType.BSC]: '0',
     [AssetType.Polygon]: '0',
   },
@@ -32,8 +32,8 @@ const initialState: IVaultState = {
   activeNetwork: {
     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
-    // TODO-349: Only Polygon
-    // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
+    // TODO-349: Only Polygon and AVAX
+    'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
     // 'BSC': BSC_NETWORK.bsc.id,
     'Polygon': POLYGON_NETWORK.matic.id,
   },
