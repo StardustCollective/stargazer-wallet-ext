@@ -47,9 +47,7 @@ const MigrateRunner = async (oldState: any) => {
                     'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
                 },
                 balances: {
-                    [AssetType.Constellation]: '0',
-                    [AssetType.Ethereum]: '0',
-                    [AssetType.Polygon]: '0',
+                    ...oldState.vault.balances,
                     [AssetType.Avalanche]: '0',
                 },
                 customNetworks: {

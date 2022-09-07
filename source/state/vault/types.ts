@@ -14,6 +14,11 @@ export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
 
 export type Keystore = SeedKeystore | PrivKeystore;
 
+export enum Network {
+  Polygon = 'Polygon',
+  Avalanche = 'Avalanche',
+}
+
 export enum AssetSymbol {
   DAG = 'DAG',
   ETH = 'ETH',
@@ -40,9 +45,9 @@ export type ActiveNetwork = {
   [KeyringNetwork.Constellation]: string;
   [KeyringNetwork.Ethereum]: EthChainId;
   // TODO-349: Only Polygon and AVAX
-  'Avalanche': AvalancheChainId;
+  [Network.Avalanche]: AvalancheChainId;
   // 'BSC': BSCChainId;
-  'Polygon': PolygonChainId;
+  [Network.Polygon]: PolygonChainId;
 };
 
 export interface IAssetState {
