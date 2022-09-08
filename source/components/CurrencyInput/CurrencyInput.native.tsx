@@ -43,14 +43,10 @@ const CurrencyInput: FC<ICurrencyInput> = ({
   placeholder = '0',
   value,
   onChangeText,
-  source,
+  source = imagePlaceholder,
   onPress,
   tickerValue,
 }) => {
-  
-  if(!source){
-    source = imagePlaceholder
-  }
 
   return (
     <View style={[styles.swapInput, style]}>

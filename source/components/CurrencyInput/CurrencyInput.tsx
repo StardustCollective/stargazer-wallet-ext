@@ -44,16 +44,12 @@ const CurrencyInput: FC<ICurrencyInput> = ({
   inputStyle,
   placeholder = '0',
   value,
-  source,
+  source = ImagePlaceholder,
   onPress,
   tickerValue,
   onChangeText,
   ...otherProps
 }) => {
-
-  if (!source) {
-    source = ImagePlaceholder
-  }
 
   return (
     <div className={clsx(styles.swapInput, containerStyle)}>

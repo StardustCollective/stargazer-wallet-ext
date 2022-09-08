@@ -33,11 +33,11 @@
   
     .currencyIcon {
       display: flex;
-      border-color: $black;
       border-radius: 100px;
       width: 30px;
       height: 30px; 
       overflow: hidden; 
+      border: 1px solid $gray-200;
     }
     
     .swapInputChevron {

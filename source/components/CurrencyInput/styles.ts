@@ -32,11 +32,12 @@ const styles = StyleSheet.create({
     marginLeft: 17
   },
   currencyIcon: {
-    borderColor: 'black', 
     borderRadius: 100, 
     width: 30, 
     height: 30, 
-    overflow: 'hidden' 
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor:  COLORS.gray_200,
   }
 });
 
