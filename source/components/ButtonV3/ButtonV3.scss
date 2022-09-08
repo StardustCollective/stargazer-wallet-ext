@@ -84,6 +84,11 @@
   background-color: $primary;
 }
 
+.primaryOutlineButton {
+  border: 1px solid $primary_lighter_1;
+  background-color: transparent;
+}
+
 .secondaryButton {
   background-color: $primary_lighter_1;
 }

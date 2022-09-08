@@ -56,6 +56,14 @@ const styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: COLORS.primary,
   },
+  primaryOutline: {
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    borderColor: COLORS.primary_lighter_1,
+    borderWidth: 1,
+  },
+  primaryOutlineTitle: {
+    color: COLORS.primary_lighter_1
+  },
   secondaryButton: {
     backgroundColor: COLORS.primary_lighter_1,
   },

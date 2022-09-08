@@ -35,6 +35,7 @@ export default {
   // Swap Tokens Stack
   [screens.swap.swapTokens]: '/swapTokens',
   [screens.swap.transferInfo]: '/transferInfo',
+  [screens.swap.confirmDetails]: '/confirmDetails',
   // Settings Stack
   [screens.settings.main]: '/settings',
   [screens.settings.about]: '/settings/about',

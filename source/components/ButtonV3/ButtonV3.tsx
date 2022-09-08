@@ -100,6 +100,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
   if (type === BUTTON_TYPES_ENUM.PRIMARY_SOLID) {
     buttonColorStyle = styles.primaryButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
+  } else if (type === BUTTON_TYPES_ENUM.PRIMARY_OUTLINE) {
+    buttonColorStyle = styles.primaryOutlineButton;
+    buttonTextColor = COLORS_ENUMS.PRIMARY_LIGHTER_1;
   } else if (type === BUTTON_TYPES_ENUM.SECONDARY_SOLID) {
     buttonColorStyle = styles.secondaryButton;
     buttonTextColor = COLORS_ENUMS.WHITE;

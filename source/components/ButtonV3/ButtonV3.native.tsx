@@ -90,6 +90,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
 
   if (type === BUTTON_TYPES_ENUM.PRIMARY_SOLID) {
     buttonColorStyle = styles.primaryButton;
+  } else if (type === BUTTON_TYPES_ENUM.PRIMARY_OUTLINE) {
+    buttonColorStyle = styles.primaryOutline;
+    titleStyle = { ...titleStyle, ...styles.primaryOutlineTitle };
   } else if (type === BUTTON_TYPES_ENUM.SECONDARY_SOLID) {
     buttonColorStyle = styles.secondaryButton;
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {
