@@ -11,4 +11,5 @@ export default interface ITransferInfo {
   onNextPressed: () => void;
   onRecommendedPress: () => void;
   onRecommendedFeeChangeText: () => void;
+  source: string;
 }
