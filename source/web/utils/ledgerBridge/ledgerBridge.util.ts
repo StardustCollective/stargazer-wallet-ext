@@ -68,7 +68,7 @@ class LedgerBridgeUtil {
     dag4.account.connect({
       networkVersion: DAG_NETWORK.main.version,
       testnet: DAG_NETWORK.main.testnet,
-    }, true);
+    });
   };
 
   private getAccountData = async (

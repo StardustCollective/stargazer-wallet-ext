@@ -1,4 +1,4 @@
-import { BitfiDump, BitfiV2, TransferType } from '@bitfi/bitfi.js';
+import { BitfiDump, BitfiV2, DagLastTxRef, TransferType } from '@bitfi/bitfi.js';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { dag4 } from '@stardust-collective/dag4';
 import { DAG_NETWORK } from 'constants/index';
@@ -22,7 +22,7 @@ class BitfiBridgeUtil {
     dag4.account.connect({
       networkVersion: DAG_NETWORK.main.version,
       testnet: DAG_NETWORK.main.testnet,
-    }, true);
+    });
   }
 
 
@@ -52,7 +52,8 @@ class BitfiBridgeUtil {
   public buildTransaction = async (
     amount: number, fromAddress: string, toAddress: string, fee?: number
   ) => {
-    const lastTxRef = await dag4.network.loadBalancerApi.getAddressLastAcceptedTransactionRef(fromAddress);
+    // TODO-421: Check if bitfiBridge.transfer works for 1.0 and 2.0
+    const lastTxRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress) as DagLastTxRef;
     
     const feeSat = (fee && (fee * Math.pow(10, 8)).toString()) || "0";
     const amountSat = (amount * Math.pow(10, 8)).toString();

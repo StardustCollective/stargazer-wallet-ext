@@ -64,6 +64,7 @@ export class AssetsBalanceMonitor {
       });
 
       if (hasDAG) {
+        // TODO-421: Check observeMemPoolChange and startMonitor
         this.subscription = dag4.monitor
           .observeMemPoolChange()
           .subscribe((up) => this.pollPendingTxs(up));

@@ -33,7 +33,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     dag4.account.connect({
       networkVersion: networkInfo.version,
       testnet: networkInfo.testnet,
-    }, true);
+    });
 
     port.onDisconnect.addListener(() => {
       console.log('onDisconnect');

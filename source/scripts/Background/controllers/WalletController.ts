@@ -343,7 +343,7 @@ class WalletController implements IWalletController {
       dag4.account.connect({
         networkVersion: DAG_NETWORK[chainId].version,
         testnet: DAG_NETWORK[chainId].testnet,
-      }, true);
+      });
 
       if (!isNative) {
         getDappRegistry().sendOriginChainEvent(

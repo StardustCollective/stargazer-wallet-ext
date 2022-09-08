@@ -32,7 +32,7 @@ dag4.di.getStateStorageDb().setPrefix('stargazer-');
 dag4.account.connect({
   networkVersion: networkInfo.version,
   testnet: networkInfo.testnet,
-}, true);
+});
 
 const App = () => {
   useEffect(() => {
