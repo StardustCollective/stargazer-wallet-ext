@@ -21,8 +21,8 @@ class BitfiBridgeUtil {
     // Configure Dag4 network
     dag4.account.connect({
       networkVersion: DAG_NETWORK.main.version,
-      testnet: DAG_NETWORK.main.testnet,
-    });
+      ...DAG_NETWORK.main.config,
+    }, false);
   }
 
 

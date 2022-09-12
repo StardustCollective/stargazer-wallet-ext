@@ -24,6 +24,12 @@ export const DAG_NETWORK: {
     label: string;
     version: string;
     testnet: boolean;
+    config: {
+      beUrl: string;  // 1.0 and 2.0
+      lbUrl?: string; // 1.0
+      l0Url?: string; // 2.0
+      l1Url?: string; // 2.0
+    };
   };
 } = {
   main: {
@@ -31,18 +37,32 @@ export const DAG_NETWORK: {
     label: 'Mainnet 1.0',
     version: '1.0',
     testnet: false,
+    config: {
+      beUrl: 'https://block-explorer.constellationnetwork.io',
+      lbUrl: 'https://proxy.constellationnetwork.io/api/node',
+    }
   },
   main2: {
     id: 'main2',
     label: 'Mainnet 2.0',
     version: '2.0',
     testnet: false,
+    config: {
+      beUrl: 'https://be-mainnet.constellationnetwork.io',
+      l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',
+      l1Url: 'https://l1-lb-mainnet.constellationnetwork.io'
+    }
   },
   test2: {
     id: 'test2',
     label: 'Testnet 2.0',
     version: '2.0',
     testnet: true,
+    config: {
+      beUrl: 'https://be-testnet.constellationnetwork.io',
+      l0Url: 'https://l0-lb-testnet.constellationnetwork.io',
+      l1Url: 'https://l1-lb-testnet.constellationnetwork.io'
+    }
   }
 };
 

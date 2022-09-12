@@ -32,8 +32,8 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     dag4.di.useLocalStorageClient(localStorage);
     dag4.account.connect({
       networkVersion: networkInfo.version,
-      testnet: networkInfo.testnet,
-    });
+      ...networkInfo.config,
+    }, false);
 
     port.onDisconnect.addListener(() => {
       console.log('onDisconnect');
