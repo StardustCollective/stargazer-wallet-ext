@@ -86,6 +86,9 @@ const styles = StyleSheet.create({
   gray100Font: {
     color: COLORS.gray_100,
   },
+  prupleDark: {
+    color: COLORS.purple_dark,
+  },
   label: {
     fontWeight: FONT_WEIGHTS.medium,
     fontSize: 10,

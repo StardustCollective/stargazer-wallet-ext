@@ -40,7 +40,9 @@ export default {
   swap: {
     swapTokens: 'swap-tokens',
     transferInfo: 'transfer-info',
-    confirmDetails: 'confirm-details'
+    confirmDetails: 'confirm-details',
+    confirmation: 'confirmation',
+    swapHistory: 'swap-history',
   },
 
   ////////////////////////////

@@ -2,13 +2,12 @@ import { ChangeEvent, Ref } from 'react';
 import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
 import { IAssetInfoState } from 'state/assets/types';
 
-export interface ISwapTokensContainer {
+export interface IConfirmationContainer {
   navigation: any;
   route: any;
 }
 
-export default interface ITransferInfo {
-  onSwapPressed: () => void;
-  onCancelPressed: () => void;
-  source?: string;
+export default interface IConfirmationInfo {
+  onViewSwapHistoryPressed: () => void;
+  onDonePressed: () => void;
 }

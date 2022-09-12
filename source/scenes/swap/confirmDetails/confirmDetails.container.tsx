@@ -4,6 +4,8 @@ import React, { useEffect, useState, FC } from 'react';
 // Imports
 ///////////////////////////
 
+import { useLinkTo } from '@react-navigation/native';
+
 ///////////////////////////
 // Types
 ///////////////////////////
@@ -25,9 +27,21 @@ import Container from 'components/Container';
 
 const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({navigation, route}) => {
 
+  const linkTo = useLinkTo();
+
+  const onSwapPressed = () => {
+    linkTo('/confirmation')
+  }
+
+  const onCancelPressed = () => {
+    alert('Swap Canceled');
+  }
+
   return (
     <Container>
-      <ConfirmDetails />
+      <ConfirmDetails 
+        onSwapPressed={onSwapPressed}
+        onCancelPressed={onCancelPressed} />
     </Container>
   );
 };

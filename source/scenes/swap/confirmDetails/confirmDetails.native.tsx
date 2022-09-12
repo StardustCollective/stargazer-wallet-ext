@@ -46,25 +46,11 @@ import {
 
 
 const ConfirmDetails: FC<ITransferInfo> = ({
-  onNextPressed,
+  onSwapPressed,
+  onCancelPressed,
   source = imagePlaceholder
 }) => {
-
-  const [fromInputValue, setFromInputValue] = useState('');
-
-  const fromoOnChangeText = text => {
-    console.log(text);
-    setFromInputValue(text);
-  };
-
-  const onSwapFromPress = () => {
-    console.log('On From Press');
-  }
-
-  const onRecommendedPress = () => {
-    console.log('On Recommended PRessed');
-  }
-
+  
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
@@ -156,13 +142,13 @@ const ConfirmDetails: FC<ITransferInfo> = ({
             title={CANCEL_BUTTON_STRING}
             size={BUTTON_SIZES_ENUM.LARGE}
             type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
-            onPress={onNextPressed}
+            onPress={onCancelPressed}
           />
           <ButtonV3
             title={SWAP_BUTTON_STRING}
             size={BUTTON_SIZES_ENUM.LARGE}
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-            onPress={onNextPressed}
+            onPress={onSwapPressed}
           />
         </View>
       </ScrollView>

@@ -47,9 +47,8 @@ import {
 } from './constants';
 
 const ConfirmDetails: FC<ITransferInfo> = ({
-  onNextPressed,
-  onRecommendedPress,
-  onRecommendedFeeChangeText,
+  onSwapPressed,
+  onCancelPressed,
   source = ImagePlaceholder
 }) => {
 
@@ -143,13 +142,13 @@ const ConfirmDetails: FC<ITransferInfo> = ({
           label={CANCEL_BUTTON_STRING}
           size={BUTTON_SIZES_ENUM.LARGE}
           type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
-          onClick={onNextPressed}
+          onClick={onCancelPressed}
         />
         <ButtonV3
           label={SWAP_BUTTON_STRING}
           size={BUTTON_SIZES_ENUM.LARGE}
           type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-          onClick={onNextPressed}
+          onClick={onSwapPressed}
         />
       </div>
     </div>

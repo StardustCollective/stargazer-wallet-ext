@@ -42,9 +42,10 @@ import ImportAccount from 'scenes/settings/ImportAccount';
 import ImportPhrase from 'scenes/settings/ImportPhrase';
 import ConnectedSites from 'scenes/settings/ConnectedSites';
 // Swap
-import swapTokens from 'scenes/swap/swapTokens';
-import transferInfo from 'scenes/swap/transferInfo';
-import confirmDetails from 'scenes/swap/confirmDetails';
+import SwapTokens from 'scenes/swap/SwapTokens';
+import TransferInfo from 'scenes/swap/TransferInfo';
+import ConfirmDetails from 'scenes/swap/ConfirmDetails';
+import Confirmation from 'scenes/swap/Confirmation';
 
 ///////////////////////////
 // Navigation
@@ -98,6 +99,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   swapTokens: 'Swap Tokens',
   transferInfo: 'Transfer Info',
   confirmDetails: 'Confirm Details',
+  confirmation: '',
 };
 
 const Auth = () => {
@@ -149,9 +151,10 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.connectedSites }} name={screens.settings.connectedSites} component={ConnectedSites} />
           
           {/* Swap Stack */}
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.swapTokens }} name={screens.swap.swapTokens}  component={swapTokens} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.transferInfo }} name={screens.swap.transferInfo}  component={transferInfo} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirmDetails }} name={screens.swap.confirmDetails}  component={confirmDetails} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.swapTokens }} name={screens.swap.swapTokens}  component={SwapTokens} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.transferInfo }} name={screens.swap.transferInfo}  component={TransferInfo} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirmDetails }} name={screens.swap.confirmDetails}  component={ConfirmDetails} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirmation }} name={screens.swap.confirmation}  component={Confirmation} />
         </>
       )}
       <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }} name={screens.common.import} component={Import} />
