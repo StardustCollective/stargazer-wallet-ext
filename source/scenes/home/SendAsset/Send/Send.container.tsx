@@ -60,7 +60,7 @@ import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChai
 // Constants
 ///////////////////////////
 
-import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO } from 'constants/index';
+import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO, BSC_LOGO } from 'constants/index';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -420,12 +420,12 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     title: 'NETWORK',
     value: tokenMainnet,
     items: [
+      // 349: New network should be added here.
       { value: 'main', label: 'Constellation', icon: CONSTELLATION_LOGO },  
       { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },   
-      { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO }, 
-      // TODO-349: Only Polygon and AVAX
+      { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
-      // { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
+      { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
     ],
     disabled: true,
     labelRight: tokenChainLabel,
@@ -433,7 +433,6 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const assetNetwork = assets[activeAsset?.id]?.network;
   const nativeToken = getNativeToken(assetNetwork);
-  // TODO-349: Only Polygon and AVAX. Include BNB basePriceId.
   const basePriceId = getPriceId(assetNetwork);
 
   return (

@@ -125,6 +125,7 @@ export const generateId = (value: string): string => {
 }
 
 export const getPriceId = (network: string): string => {
+  // 349: New network should be added here.
   switch (network) {
     case 'mainnet':
     case 'ropsten':
@@ -136,6 +137,9 @@ export const getPriceId = (network: string): string => {
     case 'avalanche-mainnet':
     case 'avalanche-testnet':
       return 'avalanche-2';
+    case 'bsc':
+    case 'bsc-testnet':
+      return 'binancecoin';
   
     default:
       return 'ethereum';
