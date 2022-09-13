@@ -30,6 +30,7 @@ dag4.di.registerStorageClient(localStorage);
 dag4.di.getStateStorageDb().setPrefix('stargazer-');
 
 dag4.account.connect({
+  id: networkInfo.id,
   networkVersion: networkInfo.version,
   ...networkInfo.config,
 }, false);

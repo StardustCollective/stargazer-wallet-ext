@@ -66,6 +66,7 @@ class LedgerBridgeUtil {
   private initialize = async () => {
     // Configure Dag4 network
     dag4.account.connect({
+      id: DAG_NETWORK.main.id,
       networkVersion: DAG_NETWORK.main.version,
       ...DAG_NETWORK.main.config,
     }, false);

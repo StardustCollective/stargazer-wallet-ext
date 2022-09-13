@@ -341,6 +341,7 @@ class WalletController implements IWalletController {
 
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
       dag4.account.connect({
+        id: DAG_NETWORK[chainId].id,
         networkVersion: DAG_NETWORK[chainId].version,
         ...DAG_NETWORK[chainId].config,
       }, false);
