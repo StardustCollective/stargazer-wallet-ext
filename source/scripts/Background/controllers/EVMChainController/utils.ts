@@ -98,9 +98,9 @@ export const getNetworkLabel = (network: string, assetSymbol: string): string =>
     case 'avalanche-testnet':
       return 'Fuji Testnet';
     case 'bsc':
-      return 'BEP-20';
+      return 'BSC';
     case 'bsc-testnet':
-      return 'BEP-20 Testnet';
+      return 'BSC Testnet';
     case 'matic':
       return 'Polygon';
     case 'maticmum':

@@ -425,7 +425,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },   
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
-      { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
+      { value: 'bsc', label: 'BSC', icon: BSC_LOGO }, 
     ],
     disabled: true,
     labelRight: tokenChainLabel,

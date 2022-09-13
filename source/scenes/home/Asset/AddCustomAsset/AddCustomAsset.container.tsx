@@ -162,7 +162,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       // 349: New network should be added here.
       { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO }, 
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
-      { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
+      { value: 'bsc', label: 'Binance Smart Chain', icon: BSC_LOGO }, 
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO }, 
     ],
     onClick: navigateToSingleSelect,
