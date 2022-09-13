@@ -340,6 +340,7 @@ export class AccountController implements IAccountController {
     /* eslint-disable-line default-param-last */
     const { activeAsset }: IVaultState = store.getState().vault;
     if (!activeAsset) return;
+    // TODO-421: Update getTransactions to support TransactionV2
     const newTxs = await dag4.account.getTransactions(limit, searchAfter);
     store.dispatch(
       updateTransactions({

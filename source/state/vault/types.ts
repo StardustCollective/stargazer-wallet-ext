@@ -1,5 +1,5 @@
 import { V3Keystore, KDFParamsPhrase, KDFParamsPrivateKey } from '@stardust-collective/dag4-keystore';
-import { Transaction as DAGTransaction } from '@stardust-collective/dag4-network';
+import { Transaction as DAGTransaction, TransactionV2 as DAGTransactionV2 } from '@stardust-collective/dag4-network';
 import {
   KeyringAssetType,
   KeyringNetwork,
@@ -33,7 +33,7 @@ export enum AssetType {
   ERC1155 = 'erc1155',
 }
 
-export type Transaction = DAGTransaction | any;
+export type Transaction = DAGTransaction | DAGTransactionV2 | any;
 
 export type ActiveNetwork = {
   [KeyringNetwork.Constellation]: string;
