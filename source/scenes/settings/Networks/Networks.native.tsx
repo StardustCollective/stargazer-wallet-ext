@@ -26,12 +26,12 @@ import styles from './styles';
 
 const NetworksComponent: FC<INetworkSettings> = ({ networkOptions }) => {
   // Logic used to not have multiple dropdowns open at the same time
-  // TODO-349: Only Polygon and AVAX
-  const [itemsOpenArray, setItemsOpenArray] = useState([false, false, false, false]);
+  // 349: New network should be added here.
+  const [itemsOpenArray, setItemsOpenArray] = useState([false, false, false, false, false]);
 
   const toggleItem = (i) => {
     const value = itemsOpenArray[i];
-    let newItemsOpenArray = [false, false, false, false];
+    let newItemsOpenArray = [false, false, false, false, false];
     newItemsOpenArray[i] = !value;
     setItemsOpenArray(newItemsOpenArray);
   }

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ALKIMI_LOGO, AVALANCHE_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO } from 'constants/index';
+import { ALKIMI_LOGO, AVALANCHE_LOGO, BSC_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO } from 'constants/index';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetType } from 'state/vault/types';
 import { getERC20Assets, search } from './api';
@@ -74,7 +74,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     logo: GEOJAM_LOGO,
     decimals: 18,
   },
-  // TODO-349: Only Polygon and AVAX
+  // 349: New network should be added here.
   {
     id: AssetType.Avalanche,
     address: '',
@@ -86,17 +86,17 @@ export const constellationInitialValues: IAssetInfoState[] = [
     logo: AVALANCHE_LOGO,
     decimals: 18,
   },
-  // {
-  //   id: AssetType.BSC,
-  //   address: '',
-  //   label: 'BNB',
-  //   symbol: 'BNB',
-  //   type: AssetType.Ethereum,
-  //   priceId: 'binancecoin',
-  //   network: 'bsc',
-  //   logo: BSC_LOGO,
-  //   decimals: 18,
-  // },
+  {
+    id: AssetType.BSC,
+    address: '',
+    label: 'BNB',
+    symbol: 'BNB',
+    type: AssetType.Ethereum,
+    priceId: 'binancecoin',
+    network: 'bsc',
+    logo: BSC_LOGO,
+    decimals: 18,
+  },
   {
     id: AssetType.Polygon,
     address: '',
