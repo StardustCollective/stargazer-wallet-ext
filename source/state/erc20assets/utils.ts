@@ -29,8 +29,8 @@ export const mapToAssetsArray = (tokensArray: ERC20Asset[], tokensAddressArray: 
 
 export const mapSearchAssetsToArray = (tokens: SearchAsset[], tokensAddressArray: ERC20AssetWithAddress[] = []): IAssetInfoState[] => {
   const CONSTELLATION_ASSETS = constellationInitialValues.map(asset => asset.priceId).filter(priceId => !['matic-network'].includes(priceId));
-  // TODO-349: Only Polygon ['ethereum', 'binance-smart-chain', 'avalanche', 'polygon-pos']
-  const SUPPORTED_NETWORKS = ['ethereum', 'polygon-pos', 'avalanche'];
+  // 349: New network should be added here.
+  const SUPPORTED_NETWORKS = ['ethereum', 'polygon-pos', 'avalanche', 'binance-smart-chain'];
   const tokensWithAddress = tokens.map((token: SearchAsset) => (
     {
       ...token, 
@@ -59,9 +59,10 @@ export const mapSearchAssetsToArray = (tokens: SearchAsset[], tokensAddressArray
               logo: tokenItem.large,
               decimals: 18,
           }
-          // TODO-349: Only Polygon and AVAX. Do not include MATIC - Polygon in the array. It's already hardcoded.
+          // 349: New network should be added here.
           if (newItem.symbol === AssetSymbol.MATIC && newItem.network === 'matic' ||
-              newItem.symbol === AssetSymbol.AVAX && newItem.network === 'avalanche-mainnet') {
+              newItem.symbol === AssetSymbol.AVAX && newItem.network === 'avalanche-mainnet' ||
+              newItem.symbol === AssetSymbol.BNB && newItem.network === 'bsc') {
             continue;
           }
           tokensArray.push(newItem);

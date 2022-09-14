@@ -38,13 +38,13 @@ export class AssetsBalanceMonitor {
   private utils = ControllerUtils();
 
   constructor() {
+    // 349: New network should be added here.
     this.accountTrackerList = {
       [KeyringNetwork.Constellation]: new AccountTracker(),
       [KeyringNetwork.Ethereum]: new AccountTracker(),
       'Polygon': new AccountTracker(),
-      // TODO-349: Only Polygon and AVAX
       'Avalanche': new AccountTracker(),
-      // 'BSC': new AccountTracker(),
+      'BSC': new AccountTracker(),
     }
   }
 
