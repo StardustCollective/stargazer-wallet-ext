@@ -180,12 +180,13 @@ const selectActiveNetworkAssets = createSelector(
       const assetNetwork = assetInfo?.network;
       const assetSymbol = assetInfo?.symbol;
       let assetNetworkType: string = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(assetNetwork);
-      // TODO-349: Only Polygon and AVAX. isBNB missing
+      // 349: New network should be added here.
       const isDAG = assetSymbol === AssetSymbol.DAG && assetNetwork === 'both';
       const isETH = assetSymbol === AssetSymbol.ETH && assetNetwork === 'both';
       const isMATIC = assetSymbol === AssetSymbol.MATIC && assetNetwork === 'matic';
       const isAVAX = assetSymbol === AssetSymbol.AVAX && assetNetwork === 'avalanche-mainnet';
-      return isDAG || isETH || isMATIC || isAVAX || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
+      const isBNB = assetSymbol === AssetSymbol.BNB && assetNetwork === 'bsc';
+      return isDAG || isETH || isMATIC || isAVAX || isBNB || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
     });
   }
 );
