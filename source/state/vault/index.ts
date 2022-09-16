@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 
 import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
@@ -17,11 +17,11 @@ const initialState: IVaultState = {
   },
   hasEncryptedVault: false,
   balances: {
+    // 349: New network should be added here.
     [AssetType.Constellation]: '0',
     [AssetType.Ethereum]: '0',
-    // TODO-349: Only Polygon
-    // [AssetType.Avalanche]: '0',
-    // [AssetType.BSC]: '0',
+    [AssetType.Avalanche]: '0',
+    [AssetType.BSC]: '0',
     [AssetType.Polygon]: '0',
   },
   // activeWalletId: undefined,
@@ -29,11 +29,11 @@ const initialState: IVaultState = {
   activeAsset: undefined,
   // activeAccountId: '',
   activeNetwork: {
+    // 349: New network should be added here.
     [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
-    // TODO-349: Only Polygon
-    // 'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
-    // 'BSC': BSC_NETWORK.bsc.id,
+    'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
+    'BSC': BSC_NETWORK.bsc.id,
     'Polygon': POLYGON_NETWORK.matic.id,
   },
   customNetworks: {

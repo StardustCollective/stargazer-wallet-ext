@@ -12,8 +12,8 @@ const AssetHeaderContainer: FC<IAssetHeader> = ({ asset }) => {
   const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
 
   let network = asset?.network;
-  // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
-  if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(asset?.symbol as AssetSymbol)) {
+  // 349: New network should be added here.
+  if ([AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(asset?.symbol as AssetSymbol)) {
     const currentNetwork = getNetworkFromChainId(network);
     network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
   }
