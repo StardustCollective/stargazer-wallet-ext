@@ -60,7 +60,7 @@ import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChai
 // Constants
 ///////////////////////////
 
-import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO } from 'constants/index';
+import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, DAG_NETWORK } from 'constants/index';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -400,8 +400,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const networkLabel = getNetworkFromChainId(assetInfo?.network);
   const chainValue = activeNetwork[networkLabel as keyof ActiveNetwork];
+  const dagChainLabel = DAG_NETWORK[activeNetwork.Constellation].label;
   const tokenMainnet = isDAG ? 'main' : getMainnetFromTestnet(assetInfo?.network);
-  const tokenChainLabel = isDAG ? 'Mainnet 1.0' : getChainInfo(chainValue)?.label;
+  const tokenChainLabel = isDAG ? dagChainLabel : getChainInfo(chainValue)?.label;
 
   const networkTypeOptions = {
     title: 'NETWORK',

@@ -401,9 +401,9 @@ const LedgerPage: FC = () => {
         (message) => { setWaitingMessage(message); },
         setCode
       );
-      // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2
+      // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2 (remove as any)
       const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to);
-      const hash = await dag4.network.postTransaction(signedTX);
+      const hash = await dag4.network.postTransaction(signedTX as any);
       if (hash) {
         postTransactionResult(hash);
       }

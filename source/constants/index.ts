@@ -24,6 +24,7 @@ export const DAG_NETWORK: {
     label: string;
     version: string;
     testnet: boolean;
+    explorer: string;
     config: {
       beUrl: string;  // 1.0 and 2.0
       lbUrl?: string; // 1.0
@@ -37,6 +38,7 @@ export const DAG_NETWORK: {
     label: 'Mainnet 1.0',
     version: '1.0',
     testnet: false,
+    explorer: 'https://dagexplorer.io',
     config: {
       beUrl: 'https://block-explorer.constellationnetwork.io',
       lbUrl: 'https://proxy.constellationnetwork.io/api/node',
@@ -47,6 +49,7 @@ export const DAG_NETWORK: {
     label: 'Mainnet 2.0',
     version: '2.0',
     testnet: false,
+    explorer: 'https://mainnet2.dagexplorer.io',
     config: {
       beUrl: 'https://be-mainnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',
@@ -58,6 +61,7 @@ export const DAG_NETWORK: {
     label: 'Testnet 2.0',
     version: '2.0',
     testnet: true,
+    explorer: 'https://testnet.dagexplorer.io',
     config: {
       beUrl: 'https://be-testnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-testnet.constellationnetwork.io',
@@ -257,7 +261,6 @@ export const SEARCH_API =
 export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
 export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
-export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 
 export const CONSTELLATION_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
 export const ETHEREUM_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
