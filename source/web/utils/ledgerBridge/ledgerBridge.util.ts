@@ -2,6 +2,7 @@ import { LedgerBridge, LedgerAccount } from '@stardust-collective/dag4-ledger';
 import webHidTransport from '@ledgerhq/hw-transport-webhid';
 import { dag4 } from '@stardust-collective/dag4';
 import { DAG_NETWORK } from 'constants/index';
+import store from 'state/store';
 
 /////////////////////////////
 // Interface
@@ -65,10 +66,12 @@ class LedgerBridgeUtil {
 
   private initialize = async () => {
     // Configure Dag4 network
+    const { activeNetwork } = store.getState().vault;
+    const dagNetworkValue = activeNetwork.Constellation;
     dag4.account.connect({
-      id: DAG_NETWORK.main.id,
-      networkVersion: DAG_NETWORK.main.version,
-      ...DAG_NETWORK.main.config,
+      id: DAG_NETWORK[dagNetworkValue].id,
+      networkVersion: DAG_NETWORK[dagNetworkValue].version,
+      ...DAG_NETWORK[dagNetworkValue].config,
     }, false);
   };
 

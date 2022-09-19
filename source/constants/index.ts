@@ -38,7 +38,7 @@ export const DAG_NETWORK: {
     label: 'Mainnet 1.0',
     version: '1.0',
     testnet: false,
-    explorer: 'https://dagexplorer.io',
+    explorer: 'https://mainnet1.dagexplorer.io',
     config: {
       beUrl: 'https://block-explorer.constellationnetwork.io',
       lbUrl: 'https://proxy.constellationnetwork.io/api/node',
@@ -49,7 +49,7 @@ export const DAG_NETWORK: {
     label: 'Mainnet 2.0',
     version: '2.0',
     testnet: false,
-    explorer: 'https://mainnet2.dagexplorer.io',
+    explorer: 'https://dagexplorer.io',
     config: {
       beUrl: 'https://be-mainnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',
