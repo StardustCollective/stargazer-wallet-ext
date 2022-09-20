@@ -29,6 +29,14 @@ class BitfiBridgeUtil {
     }, false);
   }
 
+  switchDagNetwork = (dagNetwork: string) => {
+    dag4.account.connect({
+      id: DAG_NETWORK[dagNetwork].id,
+      networkVersion: DAG_NETWORK[dagNetwork].version,
+      ...DAG_NETWORK[dagNetwork].config,
+    }, false);
+  }
+
 
   private getAccountData = async (
     // startIndex: number

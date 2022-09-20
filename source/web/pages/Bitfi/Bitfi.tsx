@@ -3,6 +3,7 @@
 /////////////////////////
 
 import React, { FC, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { makeStyles } from '@material-ui/core/styles'
@@ -36,6 +37,13 @@ import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
 import { browser } from 'webextension-polyfill-ts';
 import { dag4 } from '@stardust-collective/dag4';
+
+/////////////////////////
+// Types
+/////////////////////////
+
+import IVaultState from 'state/vault/types';
+import { RootState } from 'state/store';
 
 /////////////////////////
 // Constants
@@ -121,6 +129,7 @@ const LedgerPage: FC = () => {
   // Hooks
   /////////////////////////
 
+  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const classes = useStyles();
   const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(WALLET_STATE_ENUM.LOCKED);
   const [accountData, setAccountData] = useState<LedgerAccount[]>([]);
@@ -142,6 +151,12 @@ const LedgerPage: FC = () => {
 
   useEffect(() => { }, [selectedAccounts])
 
+  useEffect(() => {
+    if (['main', 'main2'].includes(activeNetwork.Constellation)) {
+      BitfiBridgeUtil.switchDagNetwork(activeNetwork.Constellation);
+    }
+  }, [activeNetwork.Constellation])
+  
   useEffect(() => {
 
     const {
