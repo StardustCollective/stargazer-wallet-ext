@@ -2164,9 +2164,9 @@
   integrity sha512-6GO4FHVJTMI4jbRHborzemuL6B319qh2cVLOLj8DApJhjyT71eLgANbQ4bNKSZ51zBm3uJ3WmqnyNF17eSsDyw==
 
 "@noble/secp256k1@^1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.6.3.tgz#7eed12d9f4404b416999d0c87686836c4c5c9b94"
-  integrity sha512-T04e4iTurVy7I8Sw4+c5OSN9/RkPlo1uKxAomtxQNLq8j1uPAqnsqG1bqvY3Jv7c13gyr6dui0zmh/I3+f/JaQ==
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.7.0.tgz#d15357f7c227e751d90aa06b05a0e5cf993ba8c1"
+  integrity sha512-kbacwGSsH/CTout0ZnZWxnW1B+jH/7r/WAAKLBtrRJ/+CUH7lgmQzl3GTrQua3SGKWNSDsS6lmjnDpIJ5Dxyaw==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -3405,18 +3405,18 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stardust-collective/dag4-core@1.1.0", "@stardust-collective/dag4-core@^1.0.5":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-1.1.0.tgz#5f105add639e2d042c5f01f98c09cd09c037bcc0"
-  integrity sha512-dwDGqztcrhcBu7PegKGBCgXTtF2TEEoBnqtiZjnbI+/ViT/418IwPCSdnDM6sa8YEWeBluDZGpaEQNiDyw6Zow==
+"@stardust-collective/dag4-core@1.1.2-beta.2":
+  version "1.1.2-beta.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-1.1.2-beta.2.tgz#f58eaf45a09ca9c8042ee45ce03cc9283400561f"
+  integrity sha512-+WyfPbl8xdymrTwGl+T9Y3E8Xzxxk27cR7ZRcmhWekNIpb3BjVw+fn6fXMmHRBuQeLBQJl7t8RpFQInDCPE67A==
 
-"@stardust-collective/dag4-keyring@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keyring/-/dag4-keyring-1.0.4.tgz#0417c2c94a4a3e65026bfbfbaeae21eb368c8e76"
-  integrity sha512-mnVZVR2pRLA7x6MUwHQRrem/5xxHl61DAN1mci+jVr0toc8TO2WFRrHJKa5Kna7uxFPA7DbbzB0URzPm+ZGYmg==
+"@stardust-collective/dag4-keyring@1.1.2-beta.3":
+  version "1.1.2-beta.3"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keyring/-/dag4-keyring-1.1.2-beta.3.tgz#fa23295ca634ce1e49e5143034bf57dbfb789d63"
+  integrity sha512-Ivq2sDQYy4umCu373Optka5TZtkoTgAWGVd6GfW0kcQyAmxtRN4nf2d6ckyjiQPNXmXOi5FjGnbhZcZDTGYALw==
   dependencies:
     "@metamask/obs-store" "^6.0.2"
-    "@stardust-collective/dag4-core" "^1.0.5"
+    "@stardust-collective/dag4-core" "1.1.2-beta.2"
     bn.js "^4.12.0"
     bs58 "^4.0.1"
     buffer "^5.6.0"
@@ -3425,10 +3425,10 @@
     ethereumjs-wallet "^1.0.1"
     js-sha256 "^0.9.0"
 
-"@stardust-collective/dag4-keystore@1.1.0", "@stardust-collective/dag4-keystore@^1.0.8":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keystore/-/dag4-keystore-1.1.0.tgz#e51712f3b4b5fd319b1b4b1874ab5293b9c6601e"
-  integrity sha512-/zkc/Kf+xIhHAouR9NpcYL4JMXArlQqVfmzMKPQoYWSoYUr81CEm4vxlSSWAiIywqL72+BS24lmdKSSPIsZWkg==
+"@stardust-collective/dag4-keystore@1.1.2-beta.2":
+  version "1.1.2-beta.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keystore/-/dag4-keystore-1.1.2-beta.2.tgz#aa194610170314e2474f59e9a8826817ed1517be"
+  integrity sha512-FgyG696V9R0uaqkPb0ZaXXUNR1ubQ0RLSX4MtiTJuCmsWR6r4xN2slwQDC5CWROFScUqcl2PtsPlPNc/7kgMOA==
   dependencies:
     "@noble/secp256k1" "^1.6.3"
     bignumber.js "^9.0.1"
@@ -3449,54 +3449,44 @@
     stream-browserify "^3.0.0"
     uuid "^3.4.0"
 
-"@stardust-collective/dag4-ledger@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.0.12.tgz#245b9b24332fc4c2a22d1c2c6848e90a5ce65fc5"
-  integrity sha512-eSDSeR604X9MbLLSt6ik9ZSkHDWkJsa5ZNRbdYKIdhSmP8eDGaSrCgEuW/DF2Az3imVoW7E04vWo9YsAfca23g==
+"@stardust-collective/dag4-ledger@0.0.12-beta.2":
+  version "0.0.12-beta.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.0.12-beta.2.tgz#afed30dc3b5992def539fd9172a1838ac9d212d0"
+  integrity sha512-c2aPVI+1j/L9kEk5dikeucDaAe8eXbCclRKbatP6vFfpXddyAnQOfSd0//hsofYTycESlHp22sRO+xPuB5QSgA==
   dependencies:
-    "@stardust-collective/dag4" "1.1.9"
+    "@stardust-collective/dag4" "1.2.2-beta.2"
     bignumber.js "^9.0.1"
 
-"@stardust-collective/dag4-network@1.1.0", "@stardust-collective/dag4-network@^1.0.8":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-network/-/dag4-network-1.1.0.tgz#29638082d5ce3112c70009463946df7c8526f495"
-  integrity sha512-eObNwafvFTEPW0wWbF0xkfyIy8UDU8anRghZKQQvEmmS6/2w/rprLMcJkrb8RY6V5X29p8AsLkDzZG9PMU5VUw==
+"@stardust-collective/dag4-network@1.1.2-beta.2":
+  version "1.1.2-beta.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-network/-/dag4-network-1.1.2-beta.2.tgz#b988bbc41097aeea21af0a85521746bff28d699a"
+  integrity sha512-Bh/d0DEHr0y1aUz3z5KWrTvJwClej2ymPgQcHrjNGnr2UbV5ZWwsr6IiE+P5eNT6E6ZaW0Zk2GP4ehPwSP/4Xg==
   dependencies:
-    "@stardust-collective/dag4-core" "1.1.0"
+    "@stardust-collective/dag4-core" "1.1.2-beta.2"
     bignumber.js "^9.0.1"
     rxjs "^6.6.3"
 
-"@stardust-collective/dag4-wallet@1.1.0", "@stardust-collective/dag4-wallet@^1.0.18":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-wallet/-/dag4-wallet-1.1.0.tgz#cf9be3223c8c8d48e447891db447b00e9e536a26"
-  integrity sha512-nZQLW4NeW5uo3evlKyATZOyb97fa3JCYyx0XX/18zpi+o8Lge/BhxpgxFUjJGLhQV6PhAcHFtH8qzp1/az5rQA==
+"@stardust-collective/dag4-wallet@2.0.0-beta.2":
+  version "2.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-wallet/-/dag4-wallet-2.0.0-beta.2.tgz#370bb631ea2bed9c67dbc2225ff838661abaca95"
+  integrity sha512-OIovZ4UBpEbDP9aZR4kaks02UOuZmHtwjehGjB1wqgZUd01ucZUFitG4BFRpi1IniPkC5xyMSWRhjD2V7W9Jtg==
   dependencies:
-    "@stardust-collective/dag4-core" "1.1.0"
-    "@stardust-collective/dag4-keystore" "1.1.0"
-    "@stardust-collective/dag4-network" "1.1.0"
+    "@stardust-collective/dag4-core" "1.1.2-beta.2"
+    "@stardust-collective/dag4-keystore" "1.1.2-beta.2"
+    "@stardust-collective/dag4-network" "1.1.2-beta.2"
     bignumber.js "^9.0.1"
     rimraf "^3.0.2"
     typescript "^4.6.4"
 
-"@stardust-collective/dag4@1.1.9":
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4/-/dag4-1.1.9.tgz#a4cce771a10af806212b8e8475b51ddcd93916d4"
-  integrity sha512-AkViAm2Es22ENuFb/ozmrmTqepxk47HVTgK4JDJXj7WD5ycLMxBw7thljeHsNEGAUgNv4E1bFKpk9eOgTFretg==
+"@stardust-collective/dag4@1.2.2-beta.2":
+  version "1.2.2-beta.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4/-/dag4-1.2.2-beta.2.tgz#6cb6b8ca159d9fb33c729f23a929b0dba1f9955d"
+  integrity sha512-wROXegdUo8WHVsMcWOADIs4yh0ErGwwpH5pD0iMmFrbpxha3UAvaB2I7qjubtaJ1TPxxdGQbXsOdPBFsUBq5lw==
   dependencies:
-    "@stardust-collective/dag4-core" "^1.0.5"
-    "@stardust-collective/dag4-keystore" "^1.0.8"
-    "@stardust-collective/dag4-network" "^1.0.8"
-    "@stardust-collective/dag4-wallet" "^1.0.18"
-
-"@stardust-collective/dag4@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4/-/dag4-1.2.0.tgz#e3ac1d4306a31595978dcc73dbe197e6299ff505"
-  integrity sha512-LHczPKgRDXPNxiDV2RkYZqLWoczeWA2eHfB7Gpw5BkREgj6VRPXOe99XvvEJmKmhVMy/YglTyllWJCGbqbgTcw==
-  dependencies:
-    "@stardust-collective/dag4-core" "1.1.0"
-    "@stardust-collective/dag4-keystore" "1.1.0"
-    "@stardust-collective/dag4-network" "1.1.0"
-    "@stardust-collective/dag4-wallet" "1.1.0"
+    "@stardust-collective/dag4-core" "1.1.2-beta.2"
+    "@stardust-collective/dag4-keystore" "1.1.2-beta.2"
+    "@stardust-collective/dag4-network" "1.1.2-beta.2"
+    "@stardust-collective/dag4-wallet" "2.0.0-beta.2"
     cross-fetch "^3.1.5"
 
 "@svgr/babel-plugin-add-jsx-attribute@^4.2.0":
@@ -15999,9 +15989,9 @@ typescript@^3.9.3:
   integrity sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==
 
 typescript@^4.6.4:
-  version "4.8.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.2.tgz#e3b33d5ccfb5914e4eeab6699cf208adee3fd790"
-  integrity sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==
+  version "4.8.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.3.tgz#d59344522c4bc464a65a730ac695007fdb66dd88"
+  integrity sha512-goMHfm00nWPa8UvR/CPSvykqf6dVV8x/dp0c5mFTMTIu0u0FlGWRioyy7Nn0PGAdHxpJZnuO/ut+PpQ8UiHAig==
 
 typescript@^4.7.3:
   version "4.7.4"
