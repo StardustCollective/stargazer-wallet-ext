@@ -3405,18 +3405,18 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stardust-collective/dag4-core@1.1.2-beta.2":
-  version "1.1.2-beta.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-1.1.2-beta.2.tgz#f58eaf45a09ca9c8042ee45ce03cc9283400561f"
-  integrity sha512-+WyfPbl8xdymrTwGl+T9Y3E8Xzxxk27cR7ZRcmhWekNIpb3BjVw+fn6fXMmHRBuQeLBQJl7t8RpFQInDCPE67A==
+"@stardust-collective/dag4-core@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-1.2.2.tgz#20c7c6740f9125f0620ddd0db1a23187c9cc086f"
+  integrity sha512-u0PuvLeLR4nvA0+aok8UHTO94GfKo1TEhEIsDH6DOLPBJPgm1R3eRW55Ni7si6hlhI2LPnspgbVKBWL/cvyrqw==
 
-"@stardust-collective/dag4-keyring@1.1.2-beta.3":
-  version "1.1.2-beta.3"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keyring/-/dag4-keyring-1.1.2-beta.3.tgz#fa23295ca634ce1e49e5143034bf57dbfb789d63"
-  integrity sha512-Ivq2sDQYy4umCu373Optka5TZtkoTgAWGVd6GfW0kcQyAmxtRN4nf2d6ckyjiQPNXmXOi5FjGnbhZcZDTGYALw==
+"@stardust-collective/dag4-keyring@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keyring/-/dag4-keyring-1.2.2.tgz#327c5d0b6412066666d6372867e085a544b7e2a9"
+  integrity sha512-XIBLExZQORiXUx+pNuvzrnxAMbePGiWJVZwgHK0UXM4UA1ewNpo62Ex+lfR5F+PmHIlCYPN1gHa4/a6bxP7htg==
   dependencies:
     "@metamask/obs-store" "^6.0.2"
-    "@stardust-collective/dag4-core" "1.1.2-beta.2"
+    "@stardust-collective/dag4-core" "1.2.2"
     bn.js "^4.12.0"
     bs58 "^4.0.1"
     buffer "^5.6.0"
@@ -3425,10 +3425,10 @@
     ethereumjs-wallet "^1.0.1"
     js-sha256 "^0.9.0"
 
-"@stardust-collective/dag4-keystore@1.1.2-beta.2":
-  version "1.1.2-beta.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keystore/-/dag4-keystore-1.1.2-beta.2.tgz#aa194610170314e2474f59e9a8826817ed1517be"
-  integrity sha512-FgyG696V9R0uaqkPb0ZaXXUNR1ubQ0RLSX4MtiTJuCmsWR6r4xN2slwQDC5CWROFScUqcl2PtsPlPNc/7kgMOA==
+"@stardust-collective/dag4-keystore@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keystore/-/dag4-keystore-1.2.2.tgz#b75ba398836de9e50ca45464c4190e262af554d4"
+  integrity sha512-d3r+vco7KnAfMCnX0pjvegdtO2z4O8jdo2lVR9v/jg2O8UTuuSKHCbIaZeAGw60UkiC9s255U5IqvSiqUTcNtA==
   dependencies:
     "@noble/secp256k1" "^1.6.3"
     bignumber.js "^9.0.1"
@@ -3449,44 +3449,44 @@
     stream-browserify "^3.0.0"
     uuid "^3.4.0"
 
-"@stardust-collective/dag4-ledger@0.0.12-beta.2":
-  version "0.0.12-beta.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.0.12-beta.2.tgz#afed30dc3b5992def539fd9172a1838ac9d212d0"
-  integrity sha512-c2aPVI+1j/L9kEk5dikeucDaAe8eXbCclRKbatP6vFfpXddyAnQOfSd0//hsofYTycESlHp22sRO+xPuB5QSgA==
+"@stardust-collective/dag4-ledger@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.0.15.tgz#91c709097fad09629134fb02df4413167b40bccc"
+  integrity sha512-/T0GsFORkbgwhpc1vZGEec714hLLqhoe/fJuE43slOHhfGW8ElODizCZbyWg9dC/QqYhmyjvwRJezwnF1l63hA==
   dependencies:
-    "@stardust-collective/dag4" "1.2.2-beta.2"
+    "@stardust-collective/dag4" "1.2.3"
     bignumber.js "^9.0.1"
 
-"@stardust-collective/dag4-network@1.1.2-beta.2":
-  version "1.1.2-beta.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-network/-/dag4-network-1.1.2-beta.2.tgz#b988bbc41097aeea21af0a85521746bff28d699a"
-  integrity sha512-Bh/d0DEHr0y1aUz3z5KWrTvJwClej2ymPgQcHrjNGnr2UbV5ZWwsr6IiE+P5eNT6E6ZaW0Zk2GP4ehPwSP/4Xg==
+"@stardust-collective/dag4-network@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-network/-/dag4-network-1.2.2.tgz#45ad202a515b721884a021337a8822c3bc8ec4d9"
+  integrity sha512-oENqbL3gvglPBHZwRXTfnpT62OKt5DPgvBYRASpr0gyMoODaWK84A6BlgNNw64ro1eYWOPHA9ZF84C49D+VFnw==
   dependencies:
-    "@stardust-collective/dag4-core" "1.1.2-beta.2"
+    "@stardust-collective/dag4-core" "1.2.2"
     bignumber.js "^9.0.1"
     rxjs "^6.6.3"
 
-"@stardust-collective/dag4-wallet@2.0.0-beta.2":
-  version "2.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-wallet/-/dag4-wallet-2.0.0-beta.2.tgz#370bb631ea2bed9c67dbc2225ff838661abaca95"
-  integrity sha512-OIovZ4UBpEbDP9aZR4kaks02UOuZmHtwjehGjB1wqgZUd01ucZUFitG4BFRpi1IniPkC5xyMSWRhjD2V7W9Jtg==
+"@stardust-collective/dag4-wallet@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-wallet/-/dag4-wallet-2.0.0.tgz#2c40b91e17aa607a701acdf5e94315fa9e840915"
+  integrity sha512-iBhY6fFsli3eD8gPfgXeOC6SgxPEgTCKO5TD8mpdI30ukyyGbyKx0Y9kQ7VvWcty2WpQ4/iEgNalzRL4u/7ZFA==
   dependencies:
-    "@stardust-collective/dag4-core" "1.1.2-beta.2"
-    "@stardust-collective/dag4-keystore" "1.1.2-beta.2"
-    "@stardust-collective/dag4-network" "1.1.2-beta.2"
+    "@stardust-collective/dag4-core" "1.2.2"
+    "@stardust-collective/dag4-keystore" "1.2.2"
+    "@stardust-collective/dag4-network" "1.2.2"
     bignumber.js "^9.0.1"
     rimraf "^3.0.2"
     typescript "^4.6.4"
 
-"@stardust-collective/dag4@1.2.2-beta.2":
-  version "1.2.2-beta.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4/-/dag4-1.2.2-beta.2.tgz#6cb6b8ca159d9fb33c729f23a929b0dba1f9955d"
-  integrity sha512-wROXegdUo8WHVsMcWOADIs4yh0ErGwwpH5pD0iMmFrbpxha3UAvaB2I7qjubtaJ1TPxxdGQbXsOdPBFsUBq5lw==
+"@stardust-collective/dag4@1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4/-/dag4-1.2.3.tgz#894709c775c9b24414b797202e513623f1369c6a"
+  integrity sha512-IzqS8ZNGFy+nhsY0CCfYtsIX1j6UGSs5xg25BEuHLEbkLMqV/0s/W5HCQ8ppRxONzIGw91vmr3JY9zYvFMYcZw==
   dependencies:
-    "@stardust-collective/dag4-core" "1.1.2-beta.2"
-    "@stardust-collective/dag4-keystore" "1.1.2-beta.2"
-    "@stardust-collective/dag4-network" "1.1.2-beta.2"
-    "@stardust-collective/dag4-wallet" "2.0.0-beta.2"
+    "@stardust-collective/dag4-core" "1.2.2"
+    "@stardust-collective/dag4-keystore" "1.2.2"
+    "@stardust-collective/dag4-network" "1.2.2"
+    "@stardust-collective/dag4-wallet" "2.0.0"
     cross-fetch "^3.1.5"
 
 "@svgr/babel-plugin-add-jsx-attribute@^4.2.0":
