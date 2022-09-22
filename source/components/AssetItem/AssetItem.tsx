@@ -61,9 +61,11 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
       if ([AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(assetInfoData?.symbol as AssetSymbol)) {
         const currentNetwork = getNetworkFromChainId(network);
         network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+      } else if (AssetSymbol.DAG === assetInfoData?.symbol) {
+        network = activeNetwork.Constellation;
       }
 
-      const label = getNetworkLabel(network, assetInfoData?.symbol);
+      const label = getNetworkLabel(network);
 
       return (
         <div>
