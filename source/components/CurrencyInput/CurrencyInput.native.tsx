@@ -43,7 +43,7 @@ const CurrencyInput: FC<ICurrencyInput> = ({
   placeholder = '0',
   value,
   onChangeText,
-  source = imagePlaceholder,
+  source,
   onPress,
   tickerValue,
 }) => {
@@ -60,7 +60,7 @@ const CurrencyInput: FC<ICurrencyInput> = ({
         />
       </View>
       <TouchableOpacity onPress={onPress} style={styles.swapInputRightBlock}>
-        <Image source={source} style={styles.currencyIcon} />
+        <Image source={source} defaultSource={imagePlaceholder} style={styles.currencyIcon} />
         <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>{tickerValue}</TextV3.Body>
         <ChevronRight width={CHEVRON_WIDTH} style={styles.swapInputChevron} />
       </TouchableOpacity>
