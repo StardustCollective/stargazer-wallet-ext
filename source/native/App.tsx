@@ -7,33 +7,10 @@ import {NativeBaseProvider} from 'native-base';
 import RootStack from 'navigation/stacks/Root';
 import linking from 'navigation/linking';
 import Store from 'state/store';
-import {DAG_NETWORK} from 'constants/index';
 import {Provider} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
-import {dag4} from '@stardust-collective/dag4';
-import {KeyringNetwork} from '@stardust-collective/dag4-keyring';
 import { COLORS } from 'assets/styles/_variables';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn';
-
-////////////////////
-// DAG Config
-////////////////////
-
-const vault = Store.getState().vault;
-const networkId =
-  vault &&
-  vault.activeNetwork &&
-  vault.activeNetwork[KeyringNetwork.Constellation];
-const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
-
-dag4.di.registerStorageClient(localStorage);
-dag4.di.getStateStorageDb().setPrefix('stargazer-');
-
-dag4.account.connect({
-  id: networkInfo.id,
-  networkVersion: networkInfo.version,
-  ...networkInfo.config,
-}, false);
 
 const App = () => {
   useEffect(() => {
