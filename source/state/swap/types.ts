@@ -31,7 +31,7 @@ export interface ISelectedCurrency {
   network: ICurrencyNetwork
 }
 
-export default interface ISwappingState {
+export default interface ISwapState {
   currencyData: ISearchCurrency[];
   loading: boolean;
   error: any;
