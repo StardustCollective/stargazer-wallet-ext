@@ -69,6 +69,9 @@ const styles = StyleSheet.create({
   toCurrencyInput: {
     marginBottom: 24,
   },
+  toInputSwapFromLabel:{
+    flex: 1,
+  },
   swapIcon: {
     flex: 1,
     alignItems: 'center',
