@@ -11,7 +11,7 @@ import { useLinkTo } from '@react-navigation/native';
 ///////////////////////////
 
 import { ISwapTokensContainer } from './types';
-import { ISelectedCurrency } from 'state/swapping/types';
+import { ISelectedCurrency } from 'state/swap/types';
 import { RootState } from 'state/store';
 
 ///////////////////////////
@@ -36,7 +36,7 @@ const NEXT_SCREEN_ROUTE = '/transferInfo';
 const SwapTokenContainer: FC<ISwapTokensContainer> = ({navigation, route}) => {
   
   const linkTo = useLinkTo();
-  const { swapTo, swapFrom }: {swapTo: ISelectedCurrency, swapFrom: ISelectedCurrency} = useSelector((state: RootState) => state.swapping);
+  const { swapTo, swapFrom }: {swapTo: ISelectedCurrency, swapFrom: ISelectedCurrency} = useSelector((state: RootState) => state.swap);
 
   const onNextPressed = () => {
     linkTo(NEXT_SCREEN_ROUTE);

@@ -19,6 +19,7 @@ import dapp from './dapp';
 import process from './process';
 import providers from './providers';
 import erc20assets from './erc20assets';
+import swap from './swap';
 
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -44,6 +45,7 @@ const store = configureStore({
     process,
     providers,
     erc20assets,
+    swap
   }),
   middleware,
   devTools: !isProd,

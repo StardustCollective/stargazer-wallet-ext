@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getCurrencyData } from './api';
-import ISwappingState, { ISelectedCurrency } from './types';
+import ISwapState, { ISelectedCurrency } from './types';
 
 
-export const initialState: ISwappingState = {
+export const initialState: ISwapState = {
   currencyData: null,
   loading: false,
   error: null,
@@ -30,14 +30,14 @@ export const initialState: ISwappingState = {
 };
 
 const SwappingState = createSlice({
-  name: 'swapping',
+  name: 'swap',
   initialState,
   reducers: {
-    setSwapFrom(state: ISwappingState, action: PayloadAction<ISelectedCurrency>) {
+    setSwapFrom(state: ISwapState, action: PayloadAction<ISelectedCurrency>) {
       state.swapFrom.currency = action.payload.currency;
       state.swapFrom.network = action.payload.network;
     },
-    setSwapTo(state: ISwappingState, action: PayloadAction<ISelectedCurrency>) {
+    setSwapTo(state: ISwapState, action: PayloadAction<ISelectedCurrency>) {
       state.swapTo.currency = action.payload.currency;
       state.swapTo.network = action.payload.network;
     },
