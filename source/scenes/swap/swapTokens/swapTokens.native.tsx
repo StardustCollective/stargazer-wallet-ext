@@ -48,7 +48,11 @@ import {
 
 
 const SwapTokens: FC<ISwapTokens> = ({
-  onNextPressed
+  selectedCurrencySwapFrom,
+  selectedCurrencySwapTo,
+  onNextPressed,
+  onSwapFromTokenListPressed,
+  onSwapToTokenListPressed,
 }) => {
 
   const [fromInputValue, setFromInputValue] = useState('');
@@ -87,11 +91,19 @@ const SwapTokens: FC<ISwapTokens> = ({
             </View>
             <View style={styles.fromInputBalanceLabel}>
               <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY_200}>
-                {BALANCE_STRING} 1 ETH
+                {BALANCE_STRING} 1 {selectedCurrencySwapFrom.code}
               </TextV3.Caption>
             </View>
           </View>
-          <CurrencyImport tickerValue='DAG' onPress={onSwapFromPress} style={styles.fromCurrencyInput} placeholder='1' value={fromInputValue} onChangeText={fromoOnChangeText} />
+          <CurrencyImport 
+            source={{uri: selectedCurrencySwapFrom.icon}}
+            tickerValue={selectedCurrencySwapFrom.code} 
+            onPress={onSwapFromTokenListPressed} 
+            onChangeText={fromoOnChangeText}
+            style={styles.fromCurrencyInput} 
+            placeholder='0' 
+            value={fromInputValue} 
+           />
         </View>
         <View>
           <View style={styles.toInputLabels}>
@@ -107,7 +119,12 @@ const SwapTokens: FC<ISwapTokens> = ({
             </View>
             <View style={styles.toBlank} />
           </View>
-          <CurrencyImport tickerValue='ETH' style={styles.toCurrencyInput} placeholder='0' />
+          <CurrencyImport 
+            source={{uri: selectedCurrencySwapTo.icon}}
+            tickerValue={selectedCurrencySwapTo.code} 
+            onPress={onSwapToTokenListPressed} 
+            style={styles.toCurrencyInput} 
+            placeholder='0' />
         </View>
         <View style={styles.rate}>
           <View style={styles.rateLabel}>
