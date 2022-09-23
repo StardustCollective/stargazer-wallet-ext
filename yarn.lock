@@ -3908,28 +3908,19 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
-  version "18.0.14"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.14.tgz#e016616ffff51dba01b04945610fe3671fdbe06d"
-  integrity sha512-x4gGuASSiWmo0xjDLpm5mPb52syZHJx02VKbqUKdLmKtAwIh63XClGsiTI1K6DO5q7ox4xAsQrU+Gl3+gGXF9Q==
+"@types/react@*", "@types/react@^17":
+  version "17.0.47"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.47.tgz#4ee71aaf4c5a9e290e03aa4d0d313c5d666b3b78"
+  integrity sha512-mk0BL8zBinf2ozNr3qPnlu1oyVTYq+4V7WA76RgxUAtf0Em/Wbid38KN6n4abEkvO4xMTBWmnP1FtQzgkEiJoA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
 "@types/react@^16", "@types/react@^16.9.35":
-  version "16.14.28"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.28.tgz#073258f3fe7bb80c748842c1f93aeaafe16dffad"
-  integrity sha512-83zBE6+XUVXsdL3iFzOyUewdauaU+KviKCHEGOgSW52coAuqW7tEKQM0E9+ZC0Zk6TELQ2/JgogPvp7FavzFwg==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^17":
-  version "17.0.47"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.47.tgz#4ee71aaf4c5a9e290e03aa4d0d313c5d666b3b78"
-  integrity sha512-mk0BL8zBinf2ozNr3qPnlu1oyVTYq+4V7WA76RgxUAtf0Em/Wbid38KN6n4abEkvO4xMTBWmnP1FtQzgkEiJoA==
+  version "16.14.32"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.32.tgz#d4e4fe5ece3c27fcb4608b1f4a614f7dec881392"
+  integrity sha512-hvEy4vGVADbtj/U6+CA5SRC5QFIjdxD7JslAie8EuAYZwhYY9bgforpXNyF1VFzhnkEOesDy1278t1wdjN74cw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -13797,6 +13788,13 @@ react-native-inappbrowser-reborn@^3.6.3:
   dependencies:
     invariant "^2.2.4"
     opencollective-postinstall "^2.0.2"
+
+react-native-indicators@^0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/react-native-indicators/-/react-native-indicators-0.17.0.tgz#92f95efaf5fb53be576dfe4e1980a25655a93f55"
+  integrity sha512-s23em477GHGxWeGczWrixScAZD6tQU4mx1fttlrwhEGKOxhBgp55Kh3RoD9Wj4yna4e5W35xQNoPqoJAT6QW5A==
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-iphone-x-helper@^1.0.3, react-native-iphone-x-helper@^1.3.0, react-native-iphone-x-helper@^1.3.1:
   version "1.3.1"
