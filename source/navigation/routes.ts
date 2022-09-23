@@ -37,6 +37,8 @@ export default {
   [screens.swap.transferInfo]: '/transferInfo',
   [screens.swap.confirmDetails]: '/confirmDetails',
   [screens.swap.confirmation]: '/confirmation',
+  [screens.swap.swapHistory]: '/swapHistory',
+  [screens.swap.tokenList]: '/tokenList',
   // Settings Stack
   [screens.settings.main]: '/settings',
   [screens.settings.about]: '/settings/about',

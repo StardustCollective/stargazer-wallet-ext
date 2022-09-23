@@ -43,6 +43,7 @@ export default {
     confirmDetails: 'confirm-details',
     confirmation: 'confirmation',
     swapHistory: 'swap-history',
+    tokenList: 'token-list',
   },
 
   ////////////////////////////
