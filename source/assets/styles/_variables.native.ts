@@ -13,6 +13,7 @@ export const COLORS = {
   purple_medium: '#c2a8de',
   purple_light: '#e0d3ee',
   purple_dark: '#281B4B',
+  purple_dark_2: '#37296D',
   blue_violet: '#534AAE',
   accent_1: '#1A88A3',
   monotone_1: '#AAA3D6',
@@ -28,6 +29,7 @@ export const COLORS = {
   gray_200: '#c4c4c4',
   gray_300: '#B9B9C0',
   gray_400: '#F4F3FB',
+  gray_500: '#C1C3C2',
   gray_light: '#f5f5f5',
   gray_light_100: '#ededed',
   gray_light_200: '#dcdcdc85',
@@ -43,6 +45,8 @@ export const COLORS = {
   green_100: '#1dbf8e',
   green_light: '#d6ffdc',
   green_dark: '#00660e',
+  yellow_light: '#FFFAEB',
+  orange: '#DC6803',
 };
 
 export const FONT_WEIGHTS = {
