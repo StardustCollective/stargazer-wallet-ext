@@ -227,7 +227,7 @@ const AssetsController = (): IAssetsController => {
     }));
     const assetInfo = await accountController.networkController.getTokenInfo(asset.address, asset.network);
     if (assetInfo && assetInfo.decimals !== asset.decimals) {
-      store.dispatch(updateAssetDecimals({ address: asset.address, decimals: assetInfo.decimals }));
+      store.dispatch(updateAssetDecimals({ assetId: asset.id, decimals: assetInfo.decimals }));
     }
     await accountController.assetsBalanceMonitor.start();
   }

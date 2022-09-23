@@ -158,7 +158,6 @@ const ConfirmContainer = () => {
     let priceId = assetInfo.priceId;
 
     if (activeAsset.type === AssetType.ERC20) {
-      // TODO-349: Only Polygon. Include AVAX and BNB basePriceId.
       priceId = getPriceId(assetNetwork);
     }
 

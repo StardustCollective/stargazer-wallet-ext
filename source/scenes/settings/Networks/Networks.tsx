@@ -25,11 +25,12 @@ import styles from './Networks.scss';
 
 const Networks: FC<INetworkSettings> = ({ networkOptions }) => {
   // Logic used to not have multiple dropdowns open at the same time
-  const [itemsOpenArray, setItemsOpenArray] = useState([false, false, false])
+  // 349: New network should be added here.
+  const [itemsOpenArray, setItemsOpenArray] = useState([false, false, false, false, false])
 
   const toggleItem = (i: number) => {
     const value = itemsOpenArray[i];
-    let newItemsOpenArray = [false, false, false];
+    let newItemsOpenArray = [false, false, false, false, false];
     newItemsOpenArray[i] = !value;
     setItemsOpenArray(newItemsOpenArray);
   }

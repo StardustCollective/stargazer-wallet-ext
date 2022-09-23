@@ -6,7 +6,7 @@ import {
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
+import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
 import { IAssetInfoState } from 'state/assets/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
@@ -14,10 +14,19 @@ export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
 
 export type Keystore = SeedKeystore | PrivKeystore;
 
+export enum Network {
+  Polygon = 'Polygon',
+  Avalanche = 'Avalanche',
+  BSC = 'BSC',
+}
+
 export enum AssetSymbol {
+  // 349: New network should be added here.
   DAG = 'DAG',
   ETH = 'ETH',
   MATIC = 'MATIC',
+  AVAX = 'AVAX',
+  BNB = 'BNB',
 }
 
 export enum AssetType {
@@ -36,12 +45,12 @@ export enum AssetType {
 export type Transaction = DAGTransaction | any;
 
 export type ActiveNetwork = {
+  // 349: New network should be added here.
   [KeyringNetwork.Constellation]: string;
   [KeyringNetwork.Ethereum]: EthChainId;
-  // TODO-349: Only Polygon
-  // 'Avalanche': AvalancheChainId;
-  // 'BSC': BSCChainId;
-  'Polygon': PolygonChainId;
+  [Network.Avalanche]: AvalancheChainId;
+  [Network.BSC]: BSCChainId;
+  [Network.Polygon]: PolygonChainId;
 };
 
 export interface IAssetState {
@@ -57,11 +66,11 @@ export interface IActiveAssetState extends IAssetState {
 }
 
 export type AssetBalances = {
+  // 349: New network should be added here.
   [AssetType.Ethereum]?: string;
   [AssetType.Constellation]?: string;
-  // TODO-349: Only Polygon
-  // 'avalanche'?: string;
-  // 'bsc'?: string;
+  'avalanche'?: string;
+  'bsc'?: string;
   'polygon'?: string;
   [contractAddress: string]: string;
 };

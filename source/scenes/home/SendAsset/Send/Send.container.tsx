@@ -33,7 +33,7 @@ import { removeEthereumPrefix } from 'utils/addressUtil';
 
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
-import IVaultState, { AssetType, IActiveAssetState, AssetBalances, AssetSymbol, ActiveNetwork } from 'state/vault/types';
+import IVaultState, { AssetType, IActiveAssetState, IAssetState, AssetBalances, AssetSymbol, ActiveNetwork } from 'state/vault/types';
 import { RootState } from 'state/store';
 
 ///////////////////////////
@@ -60,7 +60,7 @@ import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChai
 // Constants
 ///////////////////////////
 
-import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO } from 'constants/index';
+import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO, BSC_LOGO } from 'constants/index';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -78,7 +78,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     isExternalRequest = location.pathname.includes('sendTransaction');
   }
 
-  let activeAsset: IAssetInfoState | IActiveAssetState;
+  let activeAsset: IAssetInfoState | IActiveAssetState | IAssetState;
   let balances: AssetBalances;
   let to: string;
   let from: string;
@@ -128,11 +128,24 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     history = useHistory();
 
     activeAsset = useSelector((state: RootState) => find(state.assets, { address: to })) as IAssetInfoState;
+    const vault = useSelector((state: RootState) => state.vault);
+    const vaultActiveAsset = vault.activeAsset;
 
     if (!activeAsset) {
+      // Set ETH as the default activeAsset
       activeAsset = useSelector((state: RootState) =>
-        find(state.assets, { type: AssetType.Ethereum })
-      ) as IAssetInfoState;
+        find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
+      );
+    } else {
+      // Get activeAsset from wallet assets
+      activeAsset = useSelector((state: RootState) =>
+        find(state.vault.activeWallet.assets, { id: activeAsset.id })
+      );
+    }
+
+    if (!vaultActiveAsset) {
+      // Update activeAsset so NetworkController doesn't fail
+      accountController.updateAccountActiveAsset(activeAsset);
     }
 
     assetInfo = assets[activeAsset.id];
@@ -407,12 +420,12 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     title: 'NETWORK',
     value: tokenMainnet,
     items: [
+      // 349: New network should be added here.
       { value: 'main', label: 'Constellation', icon: CONSTELLATION_LOGO },  
       { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },   
-      { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO }, 
-      // TODO-349: Only Polygon
-      // { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
-      // { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
+      { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
+      { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
+      { value: 'bsc', label: 'BSC', icon: BSC_LOGO }, 
     ],
     disabled: true,
     labelRight: tokenChainLabel,
@@ -420,7 +433,6 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const assetNetwork = assets[activeAsset?.id]?.network;
   const nativeToken = getNativeToken(assetNetwork);
-  // TODO-349: Only Polygon. Include AVAX and BNB basePriceId.
   const basePriceId = getPriceId(assetNetwork);
 
   return (

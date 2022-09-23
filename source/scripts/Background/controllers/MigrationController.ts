@@ -64,6 +64,22 @@ const MigrationController = async () => {
     await v3_8_0.default(state);
   }
 
+  /** 
+   * version < 3_8_2
+   */
+  if (!state.vault.activeNetwork.Avalanche) {
+    const v3_8_2 = require('../migration/v3_8_2');
+    await v3_8_2.default(state);
+  }
+
+  /** 
+   * version < 3_8_3
+   */
+  if (!state.vault.activeNetwork.BSC) {
+    const v3_8_3 = require('../migration/v3_8_3');
+    await v3_8_3.default(state);
+  }
+
 };
 
 export default MigrationController;

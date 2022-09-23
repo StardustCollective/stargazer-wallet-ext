@@ -238,7 +238,9 @@ class EVMChainController implements IEVMChainController {
   }
 
   async estimateGasPrices() {
-    if (isTestnet(this.chain.id)) {
+    // Snowtrace API doesn't support the gas tracker module yet (https://snowtrace.io/apis)
+    // That's why we need to include Avalanche Mainnet here.
+    if (isTestnet(this.chain.id) || this.chain.id === 'avalanche-mainnet') {
       // Etherscan gas oracle is not working in testnets
       const oneGwei = ethers.BigNumber.from(1e9);
       const feeData = await this.provider.getFeeData();

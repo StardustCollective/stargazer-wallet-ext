@@ -98,9 +98,9 @@ export const getNetworkLabel = (network: string, assetSymbol: string): string =>
     case 'avalanche-testnet':
       return 'Fuji Testnet';
     case 'bsc':
-      return 'BEP-20';
+      return 'BSC';
     case 'bsc-testnet':
-      return 'BEP-20 Testnet';
+      return 'BSC Testnet';
     case 'matic':
       return 'Polygon';
     case 'maticmum':
@@ -125,6 +125,7 @@ export const generateId = (value: string): string => {
 }
 
 export const getPriceId = (network: string): string => {
+  // 349: New network should be added here.
   switch (network) {
     case 'mainnet':
     case 'ropsten':
@@ -133,6 +134,12 @@ export const getPriceId = (network: string): string => {
     case 'matic':
     case 'maticmum':
       return 'matic-network';
+    case 'avalanche-mainnet':
+    case 'avalanche-testnet':
+      return 'avalanche-2';
+    case 'bsc':
+    case 'bsc-testnet':
+      return 'binancecoin';
   
     default:
       return 'ethereum';
