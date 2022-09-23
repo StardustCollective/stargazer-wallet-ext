@@ -1,6 +1,5 @@
-import { ChangeEvent, Ref } from 'react';
-import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
-import { IAssetInfoState } from 'state/assets/types';
+
+import { ISearchCurrency } from 'state/swapping/types';
 
 export interface ISwapTokensContainer {
   navigation: any;
@@ -8,5 +7,9 @@ export interface ISwapTokensContainer {
 }
 
 export default interface ISwapTokens {
+  selectedCurrencySwapFrom: ISearchCurrency;
+  selectedCurrencySwapTo: ISearchCurrency;
   onNextPressed: () => void;
+  onSwapFromTokenListPressed: () => void;
+  onSwapToTokenListPressed: () => void;
 }
