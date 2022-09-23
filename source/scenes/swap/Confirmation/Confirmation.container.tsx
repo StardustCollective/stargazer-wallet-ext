@@ -4,6 +4,14 @@ import React, { useEffect, useState, FC } from 'react';
 // Imports
 ///////////////////////////
 
+import { useLinkTo } from '@react-navigation/native';
+
+///////////////////////////
+// Utils
+///////////////////////////
+
+import NavUtils from 'navigation/util';
+
 ///////////////////////////
 // Types
 ///////////////////////////
@@ -25,13 +33,14 @@ import Container from 'components/Container';
 
 const ConfirmationContainer: FC<IConfirmationContainer> = ({navigation, route}) => {
 
+  const linkTo = useLinkTo();
 
   const onViewSwapHistoryPressed = () => {
-    alert('On View History Pressed');
+    linkTo('/swapHistory');
   }
 
   const onDonePressed = () => {
-    alert('On Done Pressed');
+    NavUtils.popToTop(navigation);
   }
 
   return (
