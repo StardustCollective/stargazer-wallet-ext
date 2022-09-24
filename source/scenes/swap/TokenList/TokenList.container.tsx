@@ -15,8 +15,8 @@ import store from 'state/store';
 // State
 ///////////////////////////
 
-import { getCurrencyData } from 'state/swapping/api';
-import {setSwapFrom, setSwapTo} from 'state/swapping';
+import { getCurrencyData } from 'state/swap/api';
+import {setSwapFrom, setSwapTo} from 'state/swap';
 
 ///////////////////////
 // Selectors
@@ -29,7 +29,7 @@ import walletSelectors from 'selectors/walletsSelectors';
 ///////////////////////////
 
 import { RootState } from 'state/store';
-import { ISearchCurrency, ICurrencyNetwork } from 'state/swapping/types';
+import { ISearchCurrency, ICurrencyNetwork } from 'state/swap/types';
 
 ///////////////////////////
 // Types
@@ -62,8 +62,8 @@ const TokenListContainer: FC<ITokenListContainer> = ({navigation, route}) => {
 
 
   const { action } = route.params
-  const { currencyData }: {currencyData: ISearchCurrency[]} = useSelector((state: RootState) => state.swapping);
-  const { loading }: { loading: boolean } = useSelector((state: RootState) => state.swapping);
+  const { currencyData }: {currencyData: ISearchCurrency[]} = useSelector((state: RootState) => state.swap);
+  const { loading }: { loading: boolean } = useSelector((state: RootState) => state.swap);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const [searchValue, setSearchValue ] = useState<string>('');
 

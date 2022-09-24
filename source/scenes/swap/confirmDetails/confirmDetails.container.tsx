@@ -18,7 +18,7 @@ import {
 // Components
 ///////////////////////////
 
-import ConfirmDetails from './confirmDetails';
+import ConfirmDetails from './ConfirmDetails';
 import Container from 'components/Container';
 
 ///////////////////////////

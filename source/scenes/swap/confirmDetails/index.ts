@@ -1,1 +1,1 @@
-export { default } from './confirmDetails.container';
+export { default } from './ConfirmDetails.container';

@@ -1,5 +1,5 @@
 
-import { ISearchCurrency } from 'state/swapping/types';
+import { ISearchCurrency } from 'state/swap/types';
 
 export interface ISwapTokensContainer {
   navigation: any;

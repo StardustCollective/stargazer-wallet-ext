@@ -1,1 +1,1 @@
-export { default } from './transferInfo.container';
+export { default } from './TransferInfo.container';

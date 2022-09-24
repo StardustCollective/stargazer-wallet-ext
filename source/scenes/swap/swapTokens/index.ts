@@ -1,1 +1,1 @@
-export { default } from './swapTokens.container';
+export { default } from './SwapTokens.container';

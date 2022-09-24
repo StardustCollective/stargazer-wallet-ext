@@ -18,7 +18,7 @@ import { RootState } from 'state/store';
 // Components
 ///////////////////////////
 
-import SwapTokens from './swapTokens';
+import SwapTokens from './SwapTokens';
 import Container from 'components/Container';
 
 ///////////////////////////

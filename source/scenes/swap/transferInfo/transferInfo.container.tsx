@@ -18,7 +18,7 @@ import {
 // Components
 ///////////////////////////
 
-import TransferInfo from './transferInfo';
+import TransferInfo from './TransferInfo';
 import Container from 'components/Container';
 
 ///////////////////////////

@@ -1,4 +1,4 @@
-import { ISearchCurrency, ICurrencyNetwork} from 'state/swapping/types';
+import { ISearchCurrency, ICurrencyNetwork} from 'state/swap/types';
 import { IAssetState } from 'state/vault/types';
 
 export interface ITokenListContainer {
