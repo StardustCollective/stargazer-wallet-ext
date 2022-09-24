@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ISearchCurrency, ISearchResponse } from "./types";
+import { ISearchResponse } from "./types";
 
 export const getCurrencyData = createAsyncThunk(
   'swapping/getCurrencyData',
