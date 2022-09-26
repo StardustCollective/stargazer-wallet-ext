@@ -64,12 +64,15 @@ class BitfiBridgeUtil {
   public buildTransaction = async (
     amount: number, fromAddress: string, toAddress: string, fee?: number
   ) => {
+    const { activeNetwork } = store.getState().vault;
+    const dagNetworkValue = activeNetwork.Constellation;
+    const dagNetworkVersion = DAG_NETWORK[dagNetworkValue].version;
     // TODO-421: Check if bitfiBridge.transfer works for 1.0 and 2.0
     const lastTxRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress) as DagLastTxRef;
     
     const feeSat = (fee && (fee * Math.pow(10, 8)).toString()) || "0";
     const amountSat = (amount * Math.pow(10, 8)).toString();
-    let tx = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>({
+    let tx: any = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>({
       from: fromAddress,
       to: toAddress,
       amount: amountSat,
@@ -80,14 +83,26 @@ class BitfiBridgeUtil {
       transferType: TransferType.OUT_SELF,
     }, APPROVE_TIMEOUT_MSEC);
 
-    if (tx.edge.data.fee == "0") {
-      delete tx.edge.data.fee;
-    }
+    if (dagNetworkVersion === '1.0') {
+      if (tx.edge.data.fee == "0") {
+        delete tx.edge.data.fee;
+      }
+  
+      if (tx.edge.data.amount !== amountSat || (tx.edge.data.fee && tx.edge.data.fee !== feeSat)) {
+        throw new Error('Transaction was formed incorrectly');
+      }
+    } 
 
-    if (tx.edge.data.amount !== amountSat || (tx.edge.data.fee && tx.edge.data.fee !== feeSat)) {
-      throw new Error('Transaction was formed incorrectly');
-    }
+    if (dagNetworkVersion === '2.0') {
+      if (!tx.value || !tx.proofs || tx.value.amount !== amountSat || (tx.value.fee && tx.value.fee !== feeSat)) {
+        throw new Error('Transaction was formed incorrectly');
+      }
 
+      if (tx.value.fee == "0") {
+        delete tx.value.fee;
+      }
+    }
+    
     return tx;
   };
 
