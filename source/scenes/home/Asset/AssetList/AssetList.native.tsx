@@ -4,6 +4,7 @@
 
 import React, { FC } from 'react';
 import { FlatList, ActivityIndicator, View } from 'react-native';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////////
 // Components
@@ -47,9 +48,9 @@ const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, to
     const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(item?.symbol);
     const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
     const itemChainId = item?.network;
-    const itemNetwork = getNetworkFromChainId(itemChainId);
+    const itemNetwork = item?.symbol === AssetSymbol.DAG ? KeyringNetwork.Constellation : getNetworkFromChainId(itemChainId);
     const currentActiveNetwork = activeNetwork[itemNetwork];
-    const network = getNetworkLabel(currentActiveNetwork, item?.symbol);
+    const network = getNetworkLabel(currentActiveNetwork);
     // 349: New network should be added here.
     const isMATIC = item?.symbol === AssetSymbol.MATIC && itemChainId === 'matic';
     const isAVAX = item?.symbol === AssetSymbol.AVAX && itemChainId === 'avalanche-mainnet';

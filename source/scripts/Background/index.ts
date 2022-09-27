@@ -29,13 +29,12 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
       vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation];
     const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
     dag4.di.getStateStorageDb().setPrefix('stargazer-');
-    dag4.di.useFetchHttpClient(window.fetch.bind(window));
     dag4.di.useLocalStorageClient(localStorage);
-    dag4.network.config({
+    dag4.account.connect({
       id: networkInfo.id,
-      beUrl: networkInfo.beUrl,
-      lbUrl: networkInfo.lbUrl,
-    });
+      networkVersion: networkInfo.version,
+      ...networkInfo.config,
+    }, false);
 
     port.onDisconnect.addListener(() => {
       console.log('onDisconnect');

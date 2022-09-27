@@ -80,13 +80,14 @@ export const getPlatformFromMainnet = (network: string): string => {
   }
 }
 
-export const getNetworkLabel = (network: string, assetSymbol: string): string => {
-
-  if (assetSymbol === 'DAG') {
-    return 'Constellation';
-  }
+export const getNetworkLabel = (network: string): string => {
 
   switch (network) {
+    case 'main':
+    case 'main2':
+      return 'Constellation';
+    case 'test2':
+      return 'Constellation Testnet';
     case 'mainnet':
       return 'Ethereum';
     case 'ropsten':

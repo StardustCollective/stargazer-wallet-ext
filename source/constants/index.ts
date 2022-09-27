@@ -22,16 +22,52 @@ export const DAG_NETWORK: {
   [networkId: string]: {
     id: string;
     label: string;
-    beUrl: string;
-    lbUrl: string;
+    version: string;
+    testnet: boolean;
+    explorer: string;
+    config: {
+      beUrl: string;  // 1.0 and 2.0
+      lbUrl?: string; // 1.0
+      l0Url?: string; // 2.0
+      l1Url?: string; // 2.0
+    };
   };
 } = {
   main: {
     id: 'main',
     label: 'Mainnet 1.0',
-    beUrl: 'https://block-explorer.constellationnetwork.io',
-    lbUrl: 'https://proxy.constellationnetwork.io/api/node',
+    version: '1.0',
+    testnet: false,
+    explorer: 'https://mainnet1.dagexplorer.io',
+    config: {
+      beUrl: 'https://block-explorer.constellationnetwork.io',
+      lbUrl: 'https://proxy.constellationnetwork.io/api/node',
+    }
   },
+  main2: {
+    id: 'main2',
+    label: 'Mainnet 2.0',
+    version: '2.0',
+    testnet: false,
+    explorer: 'https://dagexplorer.io',
+    config: {
+      beUrl: 'https://be-mainnet.constellationnetwork.io',
+      l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',
+      l1Url: 'https://l1-lb-mainnet.constellationnetwork.io'
+    }
+  },
+  test2: {
+    id: 'test2',
+    label: 'Testnet 2.0',
+    version: '2.0',
+    testnet: true,
+    explorer: 'https://testnet.dagexplorer.io',
+    config: {
+      beUrl: 'https://be-testnet.constellationnetwork.io',
+      l0Url: 'https://l0-lb-testnet.constellationnetwork.io',
+      l1Url: 'https://l1-lb-testnet.constellationnetwork.io'
+    }
+  }
 };
 
 export const ETH_NETWORK: {
@@ -225,7 +261,6 @@ export const SEARCH_API =
 export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
 export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
-export const DAG_EXPLORER_SEARCH = 'https://www.dagexplorer.io/search?term=';
 
 export const CONSTELLATION_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
 export const ETHEREUM_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
