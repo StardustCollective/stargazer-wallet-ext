@@ -149,6 +149,64 @@
   }
 }
 
+// TODO-421: Remove when Mainnet 2.0 is available 
+.modalMask {
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  align-items: flex-start;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(#000, 0.3);
+  z-index: 1;
+  padding: 0px;
+  opacity: 0;
+  pointer-events: none;
+
+  .modal {
+    width: 90vw;
+    height: 45vh;
+    margin-top: 100px;
+    padding: 16px 24px;
+    background: $white;
+    border-radius: 8px;
+    box-sizing: border-box;
+    opacity: 0;
+    box-shadow: 4px 4px 10px 1px rgba($black, 0.3);
+
+    .titleContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .textContainer {
+      margin-top: 8px;
+      margin-bottom: 28px;
+    }
+
+    .buttonContainer {
+      display: flex;
+      justify-content: center;
+    }
+
+    .extraButtonStyles {
+      background-color: #4F3A9C;
+    }
+  }
+
+  &.open {
+    opacity: 1;
+    pointer-events: initial;
+
+    .modal {
+      opacity: 1;
+    }
+  }
+}
+
 :global([data-scrollbar='true']) {
   width: 100%;
 }
