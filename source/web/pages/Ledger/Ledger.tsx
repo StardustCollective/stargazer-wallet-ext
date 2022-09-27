@@ -302,8 +302,9 @@ const LedgerPage: FC = () => {
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
+      // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2
       const signedTX = await LedgerBridgeUtil.buildTransaction(amount, publicKey, Number(id.replace('L', '')), from, to);
-      const hash = await dag4.network.loadBalancerApi.postTransaction(signedTX);
+      const hash = await dag4.network.postTransaction(signedTX);
       if (hash) {
         postTransactionResult(hash);
       }

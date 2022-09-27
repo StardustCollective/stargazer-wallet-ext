@@ -84,7 +84,7 @@ const TxItem: FC<ITxItem> = ({
     if (!isETH) {
       return (
         <>
-          {tx.checkpointBlock ? (
+          {(tx.checkpointBlock || tx.blockHash) ? (
             isReceived ? (
               <img src={'/' + TxIcon} className={styles.recvIcon} />
             ) : (

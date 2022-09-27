@@ -270,6 +270,7 @@ export class AccountController implements IAccountController {
     if (!activeAsset) return;
 
     if (activeAsset.type === AssetType.Constellation) {
+      // TODO-421: Check getLatestTransactions
       const txs = await dag4.monitor.getLatestTransactions(
         activeAsset.address,
         TXS_LIMIT
@@ -338,6 +339,7 @@ export class AccountController implements IAccountController {
     /* eslint-disable-line default-param-last */
     const { activeAsset }: IVaultState = store.getState().vault;
     if (!activeAsset) return;
+    // TODO-421: Update getTransactions to support TransactionV2
     const newTxs = await dag4.account.getTransactions(limit, searchAfter);
     store.dispatch(
       updateTransactions({
@@ -402,7 +404,7 @@ export class AccountController implements IAccountController {
   }
 
   async confirmTempTx() {
-    if (!dag4.account.isActive) {
+    if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
 
@@ -425,6 +427,7 @@ export class AccountController implements IAccountController {
         Number(this.tempTx.amount),
         this.tempTx.fee
       );
+      // TODO-421: Check addToMemPoolMonitor
       const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
       store.dispatch(
         updateTransactions({
@@ -488,7 +491,7 @@ export class AccountController implements IAccountController {
   }
 
   async confirmContractTempTx(activeAsset: IAssetInfoState | IActiveAssetState) {
-    if (!dag4.account.isActive) {
+    if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
 

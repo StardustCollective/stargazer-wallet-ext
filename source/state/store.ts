@@ -6,9 +6,11 @@ import {
 } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
+import { dag4 } from '@stardust-collective/dag4';
 import throttle from 'lodash/throttle';
 import { isNative, isProd } from 'utils/envUtil';
 import MigrationController from 'scripts/Background/controllers/MigrationController';
+import { DAG_NETWORK } from 'constants/index';
 
 import vault from './vault';
 import price from './price';
@@ -73,6 +75,23 @@ if (isNative) {
         updateState();
       }, 1000)
     );
+
+    // DAG Config
+    const vault = store.getState().vault;
+    const networkId =
+      vault &&
+      vault.activeNetwork &&
+      vault.activeNetwork.Constellation;
+    const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
+
+    dag4.di.registerStorageClient(localStorage);
+    dag4.di.getStateStorageDb().setPrefix('stargazer-');
+
+    dag4.account.connect({
+      id: networkInfo.id,
+      networkVersion: networkInfo.version,
+      ...networkInfo.config,
+    }, false);
   });
 } else {
   rehydrateStore(store);

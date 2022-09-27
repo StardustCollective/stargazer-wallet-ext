@@ -16,9 +16,11 @@ const AssetHeaderContainer: FC<IAssetHeader> = ({ asset }) => {
   if ([AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(asset?.symbol as AssetSymbol)) {
     const currentNetwork = getNetworkFromChainId(network);
     network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+  } else if (AssetSymbol.DAG === asset?.symbol) {
+    network = activeNetwork.Constellation;
   }
 
-  const networkLabel = getNetworkLabel(network, asset?.symbol);
+  const networkLabel = getNetworkLabel(network);
 
   return (
     <AssetHeader

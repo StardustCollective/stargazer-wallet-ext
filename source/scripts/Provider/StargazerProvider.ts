@@ -268,12 +268,12 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       /* -- Backwards Compatibility */
       // Extension pre 3.6.0
-      if (dag4.keyStore.validateDagAddress(signatureRequest)) {
+      if (dag4.account.validateDagAddress(signatureRequest)) {
         [signatureRequest, address] = [address, signatureRequest];
       }
       /* Backwards Compatibility -- */
 
-      if (!dag4.keyStore.validateDagAddress(address)) {
+      if (!dag4.account.validateDagAddress(address)) {
         throw new Error("Bad argument 'address'");
       }
 
@@ -329,7 +329,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       const [address] = request.params as [string];
 
-      if (!dag4.keyStore.validateDagAddress(address)) {
+      if (!dag4.account.validateDagAddress(address)) {
         throw new Error("Bad argument 'address'");
       }
 
