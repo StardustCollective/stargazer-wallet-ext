@@ -2,8 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { FC } from 'react';
 import clsx from 'clsx';
 
 ///////////////////////////
@@ -14,7 +13,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import AssetsPanel from './AssetsPanel';
-import Portal from '@reach/portal';
 
 ///////////////////////////
 // Styles
@@ -27,9 +25,6 @@ import styles from './Home.scss';
 ///////////////////////////
 
 import { IHome } from './types';
-import { RootState } from 'state/store';
-import IVaultState from 'state/vault/types';
-import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////////
 // Scene
@@ -41,10 +36,6 @@ const Home: FC<IHome> = ({
   balance,
   onBuyPressed,
 }) => {
-  {/* TODO-421: Remove when Mainnet 2.0 is available */}
-  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
-  const isModalVisible = activeNetwork.Constellation === 'main';
-  const [modalOpen, setModalOpen] = useState(isModalVisible);
 
   ///////////////////////////
   // Render
@@ -88,26 +79,6 @@ const Home: FC<IHome> = ({
                 />
               </section>
               <AssetsPanel />
-              {/* TODO-421: Remove this modal when Mainnet 2.0 is available */}
-              <Portal>
-                <section className={clsx(styles.modalMask, { [styles.open]: modalOpen })}>
-                  <div className={styles.modal}>
-                    <section className={styles.titleContainer}>
-                      <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>Notice</TextV3.BodyStrong>
-                    </section>
-                    <section className={styles.textContainer}>
-                      <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.modalText}>Constellation mainnet will upgrade to v2.0 at 12:00 UTC on September 28th. At that time mainnet 1.0 will become obsolete. You will need to go to Settings -{'>'} Networks and switch to the 2.0 network in order to connect to the new network and interact with your Constellation assets.</TextV3.CaptionRegular>
-                    </section>
-                    <section className={styles.buttonContainer}>
-                      <ButtonV3
-                        label="Ok"
-                        extraStyle={styles.extraButtonStyles}
-                        onClick={() => setModalOpen(false)}
-                      />
-                    </section>
-                  </div>
-                </section>
-              </Portal>
             </>
           }
         </>
