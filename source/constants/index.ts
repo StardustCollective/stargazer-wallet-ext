@@ -49,7 +49,7 @@ export const DAG_NETWORK: {
     label: 'Mainnet 2.0',
     version: '2.0',
     testnet: false,
-    explorer: 'https://dagexplorer.io',
+    explorer: 'https://mainnet.dagexplorer.io',
     config: {
       beUrl: 'https://be-mainnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',

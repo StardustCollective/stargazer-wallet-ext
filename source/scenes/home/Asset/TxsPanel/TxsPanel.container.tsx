@@ -29,17 +29,23 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     [transactions]
   );
 
-  const getTxLink = (tx?: string): string | null => {
+  const getTxLink = (tx?: any): string | null => {
     // If we don't have a tx ID then we can't link block explorer
-    if (!tx) {
+    const txHash = tx.hash;
+    if (!txHash) {
       return null;
     }
 
-    const DAG_EXPLORER = DAG_NETWORK[activeNetwork.Constellation].explorer;
+
+    let DAG_EXPLORER = DAG_NETWORK[activeNetwork.Constellation].explorer;
+    // tx.sender is only available on txs in Mainnet 1.0
+    if (tx.sender) {
+      DAG_EXPLORER = 'https://mainnet1.dagexplorer.io';
+    }
     const DAG_EXPLORER_SEARCH = `${DAG_EXPLORER}/search?term=`;
 
     const explorerURL = accountController.networkController.getExplorerURL();
-    return isETH ? `${explorerURL}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`;
+    return isETH ? `${explorerURL}tx/${txHash}` : `${DAG_EXPLORER_SEARCH}${txHash}`;
   };
 
   const renderTxItem = (tx: Transaction, idx: number) => {
