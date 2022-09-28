@@ -85,7 +85,7 @@ export const getAddressURL = (
 ) => {
   const EVM_CHAINS = getAllEVMChains();
   if (type === AssetType.Constellation || type === AssetType.LedgerConstellation) {
-    return `${DAG_NETWORK[networkId].explorer}/search?term=${address}`;
+    return `${DAG_NETWORK[networkId].explorer}/address/${address}`;
   }
 
   if (type === AssetType.ERC20) {

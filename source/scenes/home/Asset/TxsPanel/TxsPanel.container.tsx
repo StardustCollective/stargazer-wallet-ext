@@ -42,10 +42,10 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     if (tx.sender) {
       DAG_EXPLORER = 'https://mainnet1.dagexplorer.io';
     }
-    const DAG_EXPLORER_SEARCH = `${DAG_EXPLORER}/search?term=`;
+    const DAG_EXPLORER_TX = `${DAG_EXPLORER}/transactions`;
 
     const explorerURL = accountController.networkController.getExplorerURL();
-    return isETH ? `${explorerURL}tx/${txHash}` : `${DAG_EXPLORER_SEARCH}${txHash}`;
+    return isETH ? `${explorerURL}tx/${txHash}` : `${DAG_EXPLORER_TX}/${txHash}`;
   };
 
   const renderTxItem = (tx: Transaction, idx: number) => {
