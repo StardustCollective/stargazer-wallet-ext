@@ -27,7 +27,7 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
     const vault = store.getState().vault;
     const networkId =
       vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation];
-    const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
+    const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main2;
     dag4.di.getStateStorageDb().setPrefix('stargazer-');
     dag4.di.useLocalStorageClient(localStorage);
     dag4.account.connect({

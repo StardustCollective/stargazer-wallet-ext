@@ -33,17 +33,6 @@ export const DAG_NETWORK: {
     };
   };
 } = {
-  main: {
-    id: 'main',
-    label: 'Mainnet 1.0',
-    version: '1.0',
-    testnet: false,
-    explorer: 'https://mainnet1.dagexplorer.io',
-    config: {
-      beUrl: 'https://block-explorer.constellationnetwork.io',
-      lbUrl: 'https://proxy.constellationnetwork.io/api/node',
-    }
-  },
   main2: {
     id: 'main2',
     label: 'Mainnet 2.0',
