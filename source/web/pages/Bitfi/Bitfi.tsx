@@ -152,7 +152,7 @@ const LedgerPage: FC = () => {
   useEffect(() => { }, [selectedAccounts])
 
   useEffect(() => {
-    if (['main', 'main2'].includes(activeNetwork.Constellation)) {
+    if (['main2'].includes(activeNetwork.Constellation)) {
       BitfiBridgeUtil.switchDagNetwork(activeNetwork.Constellation);
     }
   }, [activeNetwork.Constellation])

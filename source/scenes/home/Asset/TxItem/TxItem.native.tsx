@@ -48,7 +48,7 @@ const TxItem: FC<ITxItemSettings> = ({
   return (
     <TouchableOpacity onPress={(e) => {
       e.stopPropagation();
-      const url = getLinkUrl(tx.hash);
+      const url = getLinkUrl(tx);
 
       if (!url) {
         return;

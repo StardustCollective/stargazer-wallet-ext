@@ -80,6 +80,13 @@ const MigrationController = async () => {
     await v3_8_3.default(state);
   }
 
+  /** 
+   * version < 3_9_1
+   */
+  if (state.vault.activeNetwork.Constellation === 'main') {
+    const v3_9_1 = require('../migration/v3_9_1');
+    await v3_9_1.default(state);
+  }
 };
 
 export default MigrationController;
