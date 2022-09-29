@@ -45,8 +45,7 @@ const NetworksContainer: FC = () => {
     const ethChains = customNetworks['ethereum'];
     const items = [
       { value: ETH_NETWORK.mainnet.id as string, label: ETH_NETWORK.mainnet.label  },
-      { value: ETH_NETWORK.ropsten.id as string, label: ETH_NETWORK.ropsten.label },
-      { value: ETH_NETWORK.rinkeby.id as string, label: ETH_NETWORK.rinkeby.label },
+      { value: ETH_NETWORK.goerli.id as string, label: ETH_NETWORK.goerli.label },
     ];
     const ethObjects = Object.keys(ethChains);
     if (ethObjects.length) {

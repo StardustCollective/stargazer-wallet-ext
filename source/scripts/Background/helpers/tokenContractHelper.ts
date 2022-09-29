@@ -15,8 +15,7 @@ type AddressBalanceMap = {
 // This contract address is taken from https://github.com/wbobeirne/eth-balance-checker
 const NETWORK_TO_CONTRACT_MAP = {
   1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39', // ETH mainnet
-  3: '0x9A5F9a99054A513D1D6d3Eb1fef7d06981B4BA9d', // ETH ropsten
-  4: '0x3183B673f4816C94BeF53958BaF93C671B7F8Cf2', // ETH rinkeby
+  5: '0x9788C4E93f9002a7ad8e72633b11E8d1ecd51f9b', // ETH goerli
   137: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // Polygon mainnet
   80001: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // Polygon testnet
   56: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // BSC mainnet
