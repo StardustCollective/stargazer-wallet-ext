@@ -45,7 +45,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
   getChainId() {
     const networkName = this.getNetwork();
 
-    return networkName === 'main' ? 1 : 3;
+    return networkName === 'main2' ? 1 : 3;
   }
 
   getAddress() {

@@ -271,12 +271,26 @@ export class AccountController implements IAccountController {
 
     if (activeAsset.type === AssetType.Constellation) {
       // TODO-421: Check getLatestTransactions
-      const txs = await dag4.monitor.getLatestTransactions(
-        activeAsset.address,
-        TXS_LIMIT
-      );
+      let txsV2: any = [];
+      let txsV1: any = [];
 
-      store.dispatch(updateTransactions({ txs }));
+      try {
+        txsV2 = await dag4.monitor.getLatestTransactions(
+          activeAsset.address,
+          TXS_LIMIT
+        );
+      } catch (err) {
+        console.log('Error: getLatestTransactions', err);
+        txsV2 = [];
+      }
+
+      if (txsV2.length < TXS_LIMIT) {
+        const LIMIT_V1 = TXS_LIMIT - txsV2.length;
+        const TRANSACTIONS_V1_URL = `https://block-explorer.constellationnetwork.io/address/${activeAsset.address}/transaction?limit=${LIMIT_V1}`;
+        txsV1 = await (await fetch(TRANSACTIONS_V1_URL)).json();
+      }
+
+      store.dispatch(updateTransactions({ txs: [...txsV2, ...txsV1] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
       const txs: any = await this.txController.getTransactionHistory(
         activeAsset.address,

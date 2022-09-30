@@ -30,7 +30,6 @@ const NetworksContainer: FC = () => {
   const generateConstellationChains = () => {
     const constellationChains = customNetworks['constellation'];
     const items = [
-      { value: DAG_NETWORK.main.id, label: DAG_NETWORK.main.label },
       { value: DAG_NETWORK.main2.id, label: DAG_NETWORK.main2.label },
       { value: DAG_NETWORK.test2.id, label: DAG_NETWORK.test2.label },
     ];
@@ -46,8 +45,7 @@ const NetworksContainer: FC = () => {
     const ethChains = customNetworks['ethereum'];
     const items = [
       { value: ETH_NETWORK.mainnet.id as string, label: ETH_NETWORK.mainnet.label  },
-      { value: ETH_NETWORK.ropsten.id as string, label: ETH_NETWORK.ropsten.label },
-      { value: ETH_NETWORK.rinkeby.id as string, label: ETH_NETWORK.rinkeby.label },
+      { value: ETH_NETWORK.goerli.id as string, label: ETH_NETWORK.goerli.label },
     ];
     const ethObjects = Object.keys(ethChains);
     if (ethObjects.length) {

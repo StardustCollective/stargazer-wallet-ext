@@ -2,9 +2,8 @@
 // Modules
 ///////////////////////////
 
-import React, { FC, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { View, ActivityIndicator, ScrollView, Modal } from 'react-native';
+import React, { FC, useEffect } from 'react';
+import { View, ActivityIndicator, ScrollView } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 ///////////////////////////
@@ -32,8 +31,6 @@ import styles from './styles';
 ///////////////////////////
 
 import { IHome } from './types';
-import { RootState } from 'state/store';
-import IVaultState from 'state/vault/types';
 
 ///////////////////////////
 // Constants
@@ -42,7 +39,6 @@ import IVaultState from 'state/vault/types';
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
 let lastIsConnected: boolean = true;
-import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////////
 // Scene
@@ -51,10 +47,6 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed }) => {
 
   const accountController = getAccountController();
-  {/* TODO-421: Remove when Mainnet 2.0 is available */}
-  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
-  const isModalVisible = activeNetwork.Constellation === 'main';
-  const [modalOpen, setModalOpen] = useState(isModalVisible);
 
   // Subscribe to NetInfo
   useEffect(() => {
@@ -98,22 +90,6 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed })
               />
             </View>
             <AssetsPanel />
-            {/* TODO-421: Remove this modal when Mainnet 2.0 is available */}
-            <View style={styles.centeredView}>
-              <Modal animationType='fade' transparent={true} visible={modalOpen}>
-                <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                    <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>Notice</TextV3.BodyStrong>
-                    <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.modalText}>Constellation mainnet will upgrade to v2.0 at 12:00 UTC on September 28th. At that time mainnet 1.0 will become obsolete. You will need to go to Settings -{'>'} Networks and switch to the 2.0 network in order to connect to the new network and interact with your Constellation assets.</TextV3.CaptionRegular>
-                    <ButtonV3
-                      title="Ok"
-                      extraStyles={{ backgroundColor: '#4F3A9C' }}
-                      onPress={() => setModalOpen(false)}
-                    />
-                  </View>
-                </View>
-              </Modal>
-            </View>
           </>
         ) : (
           <View style={styles.activityIndicator}>
