@@ -30,7 +30,7 @@ const initialState: IVaultState = {
   // activeAccountId: '',
   activeNetwork: {
     // 349: New network should be added here.
-    [KeyringNetwork.Constellation]: DAG_NETWORK.main.id,
+    [KeyringNetwork.Constellation]: DAG_NETWORK.main2.id,
     [KeyringNetwork.Ethereum]: ETH_NETWORK.mainnet.id,
     'Avalanche': AVALANCHE_NETWORK['avalanche-mainnet'].id,
     'BSC': BSC_NETWORK.bsc.id,

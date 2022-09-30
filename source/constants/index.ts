@@ -6,8 +6,7 @@ import {
   STARGAZER_PROVIDERS_BASE_URL, 
   STARGAZER_PROVIDERS_BASE_URL_PROD, 
   QUICKNODE_ETHEREUM_MAINNET,
-  QUICKNODE_ETHEREUM_ROPSTEN,
-  QUICKNODE_ETHEREUM_RINKEBY,
+  QUICKNODE_ETHEREUM_GOERLI,
   QUICKNODE_AVALANCHE_MAINNET,
   QUICKNODE_AVALANCHE_TESTNET,
   QUICKNODE_BSC_MAINNET,
@@ -33,23 +32,12 @@ export const DAG_NETWORK: {
     };
   };
 } = {
-  main: {
-    id: 'main',
-    label: 'Mainnet 1.0',
-    version: '1.0',
-    testnet: false,
-    explorer: 'https://mainnet1.dagexplorer.io',
-    config: {
-      beUrl: 'https://block-explorer.constellationnetwork.io',
-      lbUrl: 'https://proxy.constellationnetwork.io/api/node',
-    }
-  },
   main2: {
     id: 'main2',
     label: 'Mainnet 2.0',
     version: '2.0',
     testnet: false,
-    explorer: 'https://dagexplorer.io',
+    explorer: 'https://mainnet.dagexplorer.io',
     config: {
       beUrl: 'https://be-mainnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',
@@ -96,26 +84,14 @@ export const ETH_NETWORK: {
     mainnet: 'mainnet',
     network: 'Ethereum',
   },
-  ropsten: {
-    id: 'ropsten',
-    value: 'ropsten',
-    label: 'Ropsten',
-    rpcEndpoint: QUICKNODE_ETHEREUM_ROPSTEN,
-    explorer: 'https://ropsten.etherscan.io/',
-    explorerAPI: 'https://api-ropsten.etherscan.io',
-    chainId: 3,
-    nativeToken: 'ETH',
-    mainnet: 'mainnet',
-    network: 'Ethereum',
-  },
-  rinkeby: {
-    id: 'rinkeby',
-    value: 'rinkeby',
-    label: 'Rinkeby',
-    rpcEndpoint: QUICKNODE_ETHEREUM_RINKEBY,
-    explorer: 'https://rinkeby.etherscan.io/',
-    explorerAPI: 'https://api-rinkeby.etherscan.io',
-    chainId: 4,
+  goerli: {
+    id: 'goerli',
+    value: 'goerli',
+    label: 'Goerli',
+    rpcEndpoint: QUICKNODE_ETHEREUM_GOERLI,
+    explorer: 'https://goerli.etherscan.io/',
+    explorerAPI: 'https://api-goerli.etherscan.io',
+    chainId: 5,
     nativeToken: 'ETH',
     mainnet: 'mainnet',
     network: 'Ethereum',

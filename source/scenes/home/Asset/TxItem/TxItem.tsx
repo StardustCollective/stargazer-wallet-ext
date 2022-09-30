@@ -114,7 +114,7 @@ const TxItem: FC<ITxItem> = ({
   return (
     <div
       onClick={() => {
-        const url = getLinkUrl(tx.hash);
+        const url = getLinkUrl(tx);
 
         if (!url) {
           return;

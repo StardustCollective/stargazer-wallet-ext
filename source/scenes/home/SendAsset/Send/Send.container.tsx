@@ -414,7 +414,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const networkLabel = getNetworkFromChainId(assetInfo?.network);
   const chainValue = activeNetwork[networkLabel as keyof ActiveNetwork];
   const dagChainLabel = DAG_NETWORK[activeNetwork.Constellation].label;
-  const tokenMainnet = isDAG ? 'main' : getMainnetFromTestnet(assetInfo?.network);
+  const tokenMainnet = isDAG ? 'main2' : getMainnetFromTestnet(assetInfo?.network);
   const tokenChainLabel = isDAG ? dagChainLabel : getChainInfo(chainValue)?.label;
 
   const networkTypeOptions = {
@@ -422,7 +422,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     value: tokenMainnet,
     items: [
       // 349: New network should be added here.
-      { value: 'main', label: 'Constellation', icon: CONSTELLATION_LOGO },  
+      { value: 'main2', label: 'Constellation', icon: CONSTELLATION_LOGO },  
       { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },   
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
