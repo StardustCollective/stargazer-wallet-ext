@@ -30,8 +30,7 @@ export const getNetworkLogo = (network: string) => {
   switch (network) {
     case 'both':
     case 'mainnet':
-    case 'ropsten':
-    case 'rinkeby':
+    case 'goerli':
       return ETHEREUM_LOGO;
     case 'avalanche-mainnet':
     case 'avalanche-testnet':
@@ -83,17 +82,14 @@ export const getPlatformFromMainnet = (network: string): string => {
 export const getNetworkLabel = (network: string): string => {
 
   switch (network) {
-    case 'main':
     case 'main2':
       return 'Constellation';
     case 'test2':
       return 'Constellation Testnet';
     case 'mainnet':
       return 'Ethereum';
-    case 'ropsten':
-      return 'Ropsten';
-    case 'rinkeby':
-      return 'Rinkeby';
+    case 'goerli':
+      return 'Goerli';
     case 'avalanche-mainnet':
       return 'Avalanche';
     case 'avalanche-testnet':
@@ -129,8 +125,7 @@ export const getPriceId = (network: string): string => {
   // 349: New network should be added here.
   switch (network) {
     case 'mainnet':
-    case 'ropsten':
-    case 'rinkeby':
+    case 'goerli':
       return 'ethereum';
     case 'matic':
     case 'maticmum':

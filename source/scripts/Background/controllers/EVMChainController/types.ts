@@ -4,13 +4,13 @@ import { Address, ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } f
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 // Chain IDs
-export type EthChainId = 'mainnet' | 'ropsten' | 'rinkeby';
+export type EthChainId = 'mainnet' | 'goerli';
 export type PolygonChainId = 'matic' | 'maticmum';
 export type BSCChainId = 'bsc' | 'bsc-testnet';
 export type AvalancheChainId = 'avalanche-mainnet' | 'avalanche-testnet';
 
 // Chain values
-export type EthChainValue = 'homestead' | 'ropsten' | 'rinkeby';
+export type EthChainValue = 'homestead' | 'goerli';
 export type PolygonChainValue = 'matic' | 'maticmum';
 export type BSCChainValue = 'bsc' | 'bsc-testnet';
 export type AvalancheChainValue = 'avalanche-mainnet' | 'avalanche-testnet';
@@ -19,7 +19,7 @@ export type AvalancheChainValue = 'avalanche-mainnet' | 'avalanche-testnet';
 export type AllChainsIds = EthChainId | PolygonChainId | BSCChainId | AvalancheChainId;
 export type AllChainsValues = EthChainValue | PolygonChainValue | BSCChainValue | AvalancheChainValue;
 
-export const testnets = ['ropsten', 'rinkeby', 'maticmum', 'bsc-testnet', 'avalanche-testnet'];
+export const testnets = ['goerli', 'maticmum', 'bsc-testnet', 'avalanche-testnet'];
 
 export type IChain = {
   id: AllChainsIds | string;
