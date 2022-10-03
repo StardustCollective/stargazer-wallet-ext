@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '../../assets/styles/_variables.native';
 
 const styles = StyleSheet.create({
   contentView: {
     color: '#2B1D52',
     height: 4,
-    //
     padding: 20,
     width: '100%',
     justifyContent: 'center',
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     height: 24,
     width: 24,
     border: '2px solid white',
-    backgroundColor: '#2B1D52',
+    backgroundColor: COLORS.purple_2,
     marginTop: -8,
   },
   active: {},
@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
   },
   rail: {
     height: 4,
-    backgroundColor: '#fff',
     borderRadius: 4,
   },
 });
