@@ -70,8 +70,9 @@ class BitfiBridgeUtil {
     // TODO-421: Check if bitfiBridge.transfer works for 1.0 and 2.0
     const lastTxRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress) as DagLastTxRef;
     
-    const feeSat = (fee && (fee * Math.pow(10, 8)).toString()) || "0";
-    const amountSat = (amount * Math.pow(10, 8)).toString();
+    const feeSat = (fee && Math.floor(fee * Math.pow(10,8)).toString()) || "0"; 
+    const amountSat = Math.floor(amount * Math.pow(10, 8)).toString();
+
     let tx: any = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>({
       from: fromAddress,
       to: toAddress,
@@ -96,10 +97,6 @@ class BitfiBridgeUtil {
     if (dagNetworkVersion === '2.0') {
       if (!tx.value || !tx.proofs || tx.value.amount !== amountSat || (tx.value.fee && tx.value.fee !== feeSat)) {
         throw new Error('Transaction was formed incorrectly');
-      }
-
-      if (tx.value.fee == "0") {
-        delete tx.value.fee;
       }
     }
     
