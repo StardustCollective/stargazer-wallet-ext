@@ -1,6 +1,7 @@
 import { Ref } from 'react';
 
 export default interface ICurrencyInput {
+  style?: object, 
   textInputPlaceholder?: string,
   onChangeText: (text: any) => void,
   placeholder: string,
@@ -10,4 +11,5 @@ export default interface ICurrencyInput {
   tickerValue: string,
   containerStyle?: string,
   inputStyle?: string,
+  editable: boolean,
 }

@@ -46,6 +46,7 @@ const CurrencyInput: FC<ICurrencyInput> = ({
   source,
   onPress,
   tickerValue,
+  editable = true,
 }) => {
 
   return (
@@ -56,7 +57,8 @@ const CurrencyInput: FC<ICurrencyInput> = ({
           onChangeText={onChangeText} 
           placeholder={placeholder} 
           keyboardType={TEXT_INPUT_KEYBOARD_TYPE} 
-          style={styles.swapInputTextInput} 
+          style={styles.swapInputTextInput}
+          editable={editable}
         />
       </View>
       <TouchableOpacity onPress={onPress} style={styles.swapInputRightBlock}>
