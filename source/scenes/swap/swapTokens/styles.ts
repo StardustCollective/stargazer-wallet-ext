@@ -53,6 +53,10 @@ const styles = StyleSheet.create({
   fromCurrencyInput: {
     marginBottom: 16,
   },
+  fromCurrencyInputError: {
+    marginBottom: 16,
+    borderColor: COLORS.red
+  },
   toInputLabels: {
     flexDirection: 'row',
     marginBottom: 9,

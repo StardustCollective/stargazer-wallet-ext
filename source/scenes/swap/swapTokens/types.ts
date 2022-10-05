@@ -1,5 +1,5 @@
 
-import { ISearchCurrency } from 'state/swap/types';
+import { ISearchCurrency, ICurrencyRate } from 'state/swap/types';
 
 export interface ISwapTokensContainer {
   navigation: any;
@@ -12,4 +12,13 @@ export default interface ISwapTokens {
   onNextPressed: () => void;
   onSwapFromTokenListPressed: () => void;
   onSwapToTokenListPressed: () => void;
+  fromBalance: string;
+  onFromChangeText: ( text: string) => void;
+  isBalanceError: boolean;
+  isNextButtonDisabled: boolean;
+  isRateError: boolean;
+  isCurrencyRateLoading: boolean;
+  currencyRate: ICurrencyRate;
+  toAmount: number;
+  isNextButtonLoading: boolean;
 }

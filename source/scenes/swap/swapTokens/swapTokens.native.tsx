@@ -3,7 +3,14 @@
 ///////////////////////
 
 import React, { FC, useState } from 'react';
-import { View, Text, ScrollView, Image, TextInput } from 'react-native';
+import { View, ScrollView, Image } from 'react-native';
+import { DotIndicator } from 'react-native-indicators';
+
+///////////////////////
+// Helpers
+///////////////////////
+
+import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 
 ///////////////////////
 // Components
@@ -46,6 +53,16 @@ import {
   NEXT_BUTTON_STRING
 } from './constants';
 
+const CURRENCY_INPUT_ZERO_PLACEHOLDER = '0';
+const TO_CURRENCY_INPUT_EDITABLE = false;
+const EXCHANGE_RATE_ONE = 1;
+const DOT_INDICATOR_SIZE = 6;
+const DOT_INDICATOR_COUNT = 3;
+const DOT_INDICATOR_COLOR = '#473194';
+
+///////////////////////
+// Scene
+///////////////////////
 
 const SwapTokens: FC<ISwapTokens> = ({
   selectedCurrencySwapFrom,
@@ -53,18 +70,25 @@ const SwapTokens: FC<ISwapTokens> = ({
   onNextPressed,
   onSwapFromTokenListPressed,
   onSwapToTokenListPressed,
+  fromBalance,
+  onFromChangeText,
+  isBalanceError,
+  isNextButtonDisabled,
+  isRateError,
+  isCurrencyRateLoading,
+  currencyRate,
+  toAmount,
+  isNextButtonLoading,
 }) => {
 
   const [fromInputValue, setFromInputValue] = useState('');
 
   const fromoOnChangeText = text => {
-    console.log(text);
     setFromInputValue(text);
+    if (onFromChangeText) {
+      onFromChangeText(text);
+    }
   };
-
-  const onSwapFromPress = () => {
-    console.log('On From Press');
-  }
 
   return (
     <View style={styles.container}>
@@ -90,20 +114,20 @@ const SwapTokens: FC<ISwapTokens> = ({
               </TextV3.CaptionStrong>
             </View>
             <View style={styles.fromInputBalanceLabel}>
-              <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY_200}>
-                {BALANCE_STRING} 1 {selectedCurrencySwapFrom.code}
+              <TextV3.Caption color={isBalanceError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}>
+                {BALANCE_STRING} {`${formatStringDecimal(formatNumber(Number(fromBalance), 16, 20), 4)}`} {selectedCurrencySwapFrom.code}
               </TextV3.Caption>
             </View>
           </View>
-          <CurrencyImport 
-            source={{uri: selectedCurrencySwapFrom.icon}}
-            tickerValue={selectedCurrencySwapFrom.code} 
-            onPress={onSwapFromTokenListPressed} 
+          <CurrencyImport
+            source={{ uri: selectedCurrencySwapFrom.icon }}
+            tickerValue={selectedCurrencySwapFrom.code}
+            onPress={onSwapFromTokenListPressed}
             onChangeText={fromoOnChangeText}
-            style={styles.fromCurrencyInput} 
-            placeholder='0' 
-            value={fromInputValue} 
-           />
+            style={isBalanceError || isRateError ? styles.fromCurrencyInputError : styles.fromCurrencyInput}
+            placeholder={CURRENCY_INPUT_ZERO_PLACEHOLDER}
+            value={fromInputValue}
+          />
         </View>
         <View>
           <View style={styles.toInputLabels}>
@@ -119,12 +143,16 @@ const SwapTokens: FC<ISwapTokens> = ({
             </View>
             <View style={styles.toBlank} />
           </View>
-          <CurrencyImport 
-            source={{uri: selectedCurrencySwapTo.icon}}
-            tickerValue={selectedCurrencySwapTo.code} 
-            onPress={onSwapToTokenListPressed} 
-            style={styles.toCurrencyInput} 
-            placeholder='0' />
+          <CurrencyImport
+            source={{ uri: selectedCurrencySwapTo.icon }}
+            tickerValue={selectedCurrencySwapTo.code}
+            onPress={onSwapToTokenListPressed}
+            style={styles.toCurrencyInput}
+            placeholder={CURRENCY_INPUT_ZERO_PLACEHOLDER}
+            editable={TO_CURRENCY_INPUT_EDITABLE}
+            value={toAmount.toString()}
+            onChangeText={onFromChangeText}
+          />
         </View>
         <View style={styles.rate}>
           <View style={styles.rateLabel}>
@@ -134,10 +162,16 @@ const SwapTokens: FC<ISwapTokens> = ({
             </TextV3.CaptionStrong>
           </View>
           <View style={styles.rateValue}>
-            <TextV3.Caption
-              color={COLORS_ENUMS.DARK_GRAY_200}>
-              1 ETH ≈ 3,076.9006 DAG
-            </TextV3.Caption>
+            {isCurrencyRateLoading ? (
+              <>
+                <DotIndicator size={DOT_INDICATOR_SIZE} count={DOT_INDICATOR_COUNT} color={DOT_INDICATOR_COLOR}/>
+              </>
+            ) : (
+              <TextV3.Caption
+                color={COLORS_ENUMS.DARK_GRAY_200}>
+                {EXCHANGE_RATE_ONE} {selectedCurrencySwapFrom?.code} ≈ {currencyRate?.rate} {selectedCurrencySwapTo?.code}
+              </TextV3.Caption>
+            )}
           </View>
         </View>
         <View style={styles.minimumAmount}>
@@ -148,10 +182,16 @@ const SwapTokens: FC<ISwapTokens> = ({
             </TextV3.CaptionStrong>
           </View>
           <View style={styles.minimumAmountValue}>
-            <TextV3.Caption
-              color={COLORS_ENUMS.DARK_GRAY_200}>
-              0.06954103 ETH
-            </TextV3.Caption>
+            {isCurrencyRateLoading ? (
+              <>
+                <DotIndicator size={DOT_INDICATOR_SIZE} count={DOT_INDICATOR_COUNT} color={DOT_INDICATOR_COLOR}/>
+              </>
+            ) : (
+              <TextV3.Caption
+                color={isRateError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}>
+                {currencyRate?.minAmount} {selectedCurrencySwapFrom?.code}
+              </TextV3.Caption>
+            )}
           </View>
         </View>
         <View style={styles.nextButton}>
@@ -159,6 +199,8 @@ const SwapTokens: FC<ISwapTokens> = ({
             title={NEXT_BUTTON_STRING}
             size={BUTTON_SIZES_ENUM.FULL_WIDTH}
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+            disabled={isNextButtonDisabled}
+            loading={isNextButtonLoading}
             onPress={onNextPressed}
           />
         </View>
