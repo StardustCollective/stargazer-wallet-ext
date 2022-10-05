@@ -1,2 +1,4 @@
-export const SWAP_FROM_ACTION = 'swapFrom';
-export const SWAP_TO_ACTION = 'swapTo';
+export enum SWAP_ACTIONS {
+    FROM = 'FROM',
+    TO = 'TO',
+  }
