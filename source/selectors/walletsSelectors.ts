@@ -213,6 +213,7 @@ const selectActiveNetworkAssetIds = createSelector(
 );
 
 export default {
+  getActiveAsset,
   selectAllAccounts,
   selectAllDagAccounts,
   selectAllEthAccounts,
