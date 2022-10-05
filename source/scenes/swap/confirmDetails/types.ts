@@ -1,6 +1,6 @@
-import { ChangeEvent, Ref } from 'react';
-import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+import { ITransactionInfo } from 'scripts/types';
 import { IAssetInfoState } from 'state/assets/types';
+import { IWalletState } from 'state/vault/types';
 
 export interface ISwapTokensContainer {
   navigation: any;
@@ -8,6 +8,14 @@ export interface ISwapTokensContainer {
 }
 
 export default interface ITransferInfo {
+  tempTx: ITransactionInfo,
+  assetInfo: IAssetInfoState,
+  activeWallet: IWalletState,
+  feeUnit: string,
+  transactionId: string,
+  getSendAmount: () => string;
+  getFeeAmount: () => number;
+  getTotalAmount: () => string;
   onSwapPressed: () => void;
   onCancelPressed: () => void;
   source?: string;
