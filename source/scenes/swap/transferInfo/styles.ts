@@ -52,6 +52,58 @@ const styles = StyleSheet.create({
   nextButton: {
     flexGrow: 1,
     justifyContent: 'flex-end',
+  },
+  gasPriceContainer: {
+    width: '100%',
+    height: 120,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.gray_light_200,
+    borderRadius: 6,
+  },
+  gasPriceHeader: {
+    flex: 1,
+    marginHorizontal: 16,
+    flexDirection:'row',
+  },
+  gasPriceHeaderLeft: {
+    flex: 1,
+    // alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gasPriceHeaderRight: {
+    flex: 1,
+    alignItems:'flex-end',
+    justifyContent: 'center',
+  },
+  gasSpeedBox: {
+    flexDirection: 'row',
+    height: 35,
+    borderWidth: 1,
+    borderColor: COLORS.gray_300,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  gasSpeedBoxRight: {
+    marginRight: 15,
+  },
+  gasSpeedBoxLeft: {
+    marginLeft: 15,
+    marginRight: 8,
+  },
+  gasPriceFooter: {
+    flex: 1,
+  },
+  sliderContainer:{
+    marginHorizontal: 30
+  },
+  gasEstimateLabel: {
+    marginTop: 16,
+  },
+  gasLoadingIndicator: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
 
