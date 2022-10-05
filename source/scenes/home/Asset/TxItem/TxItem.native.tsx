@@ -15,10 +15,11 @@ import ITxItemSettings, { RenderIconProps } from './types';
 import { ellipsis } from 'scenes/home/helpers';
 
 const RenderIcon: FC<RenderIconProps> = ({ tx, isETH }) => {
-  const { checkpointBlock, assetId } = tx;
+  const { checkpointBlock, blockHash, assetId } = tx;
   // removing logic about isReceived because we do not have styling for txIcon if received
   if (!isETH) {
-    if (checkpointBlock) {
+    // checkpointBlock is V1 and blockHash is V2
+    if (checkpointBlock || blockHash) {
       return <TxIcon />;
     }
     return <Progress.Circle size={16} indeterminate />;
@@ -47,7 +48,7 @@ const TxItem: FC<ITxItemSettings> = ({
   return (
     <TouchableOpacity onPress={(e) => {
       e.stopPropagation();
-      const url = getLinkUrl(tx.hash);
+      const url = getLinkUrl(tx);
 
       if (!url) {
         return;

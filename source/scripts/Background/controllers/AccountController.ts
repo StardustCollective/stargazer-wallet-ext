@@ -270,12 +270,27 @@ export class AccountController implements IAccountController {
     if (!activeAsset) return;
 
     if (activeAsset.type === AssetType.Constellation) {
-      const txs = await dag4.monitor.getLatestTransactions(
-        activeAsset.address,
-        TXS_LIMIT
-      );
+      // TODO-421: Check getLatestTransactions
+      let txsV2: any = [];
+      let txsV1: any = [];
 
-      store.dispatch(updateTransactions({ txs }));
+      try {
+        txsV2 = await dag4.monitor.getLatestTransactions(
+          activeAsset.address,
+          TXS_LIMIT
+        );
+      } catch (err) {
+        console.log('Error: getLatestTransactions', err);
+        txsV2 = [];
+      }
+
+      if (txsV2.length < TXS_LIMIT) {
+        const LIMIT_V1 = TXS_LIMIT - txsV2.length;
+        const TRANSACTIONS_V1_URL = `https://block-explorer.constellationnetwork.io/address/${activeAsset.address}/transaction?limit=${LIMIT_V1}`;
+        txsV1 = await (await fetch(TRANSACTIONS_V1_URL)).json();
+      }
+
+      store.dispatch(updateTransactions({ txs: [...txsV2, ...txsV1] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
       const txs: any = await this.txController.getTransactionHistory(
         activeAsset.address,
@@ -338,6 +353,7 @@ export class AccountController implements IAccountController {
     /* eslint-disable-line default-param-last */
     const { activeAsset }: IVaultState = store.getState().vault;
     if (!activeAsset) return;
+    // TODO-421: Update getTransactions to support TransactionV2
     const newTxs = await dag4.account.getTransactions(limit, searchAfter);
     store.dispatch(
       updateTransactions({
@@ -402,7 +418,7 @@ export class AccountController implements IAccountController {
   }
 
   async confirmTempTx() {
-    if (!dag4.account.isActive) {
+    if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
 
@@ -425,6 +441,7 @@ export class AccountController implements IAccountController {
         Number(this.tempTx.amount),
         this.tempTx.fee
       );
+      // TODO-421: Check addToMemPoolMonitor
       const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
       store.dispatch(
         updateTransactions({
@@ -488,7 +505,7 @@ export class AccountController implements IAccountController {
   }
 
   async confirmContractTempTx(activeAsset: IAssetInfoState | IActiveAssetState) {
-    if (!dag4.account.isActive) {
+    if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
 

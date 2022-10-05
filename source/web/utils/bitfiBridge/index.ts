@@ -1,6 +1,8 @@
-import { BitfiDump, BitfiV2, TransferType } from '@bitfi/bitfi.js';
+import { BitfiDump, BitfiV2, DagLastTxRef, TransferType } from '@bitfi/bitfi.js';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { dag4 } from '@stardust-collective/dag4';
+import { DAG_NETWORK } from 'constants/index';
+import store from 'state/store';
 
 const SESSION_KEY = 'bitfi_session';
 const APPROVE_TIMEOUT_MSEC = 2 * 60 * 1000;
@@ -18,12 +20,21 @@ class BitfiBridgeUtil {
 
   constructor() {
     // Configure Dag4 network
-    dag4.di.useFetchHttpClient();
-    dag4.network.config({
-      id: 'main',
-      beUrl: 'https://block-explorer.constellationnetwork.io',
-      lbUrl: 'https://proxy.constellationnetwork.io/api/node',
-    });
+    const { activeNetwork } = store.getState().vault;
+    const dagNetworkValue = activeNetwork.Constellation;
+    dag4.account.connect({
+      id: DAG_NETWORK[dagNetworkValue].id,
+      networkVersion: DAG_NETWORK[dagNetworkValue].version,
+      ...DAG_NETWORK[dagNetworkValue].config,
+    }, false);
+  }
+
+  switchDagNetwork = (dagNetwork: string) => {
+    dag4.account.connect({
+      id: DAG_NETWORK[dagNetwork].id,
+      networkVersion: DAG_NETWORK[dagNetwork].version,
+      ...DAG_NETWORK[dagNetwork].config,
+    }, false);
   }
 
 
@@ -53,11 +64,16 @@ class BitfiBridgeUtil {
   public buildTransaction = async (
     amount: number, fromAddress: string, toAddress: string, fee?: number
   ) => {
-    const lastTxRef = await dag4.network.loadBalancerApi.getAddressLastAcceptedTransactionRef(fromAddress);
+    const { activeNetwork } = store.getState().vault;
+    const dagNetworkValue = activeNetwork.Constellation;
+    const dagNetworkVersion = DAG_NETWORK[dagNetworkValue].version;
+    // TODO-421: Check if bitfiBridge.transfer works for 1.0 and 2.0
+    const lastTxRef = await dag4.network.getAddressLastAcceptedTransactionRef(fromAddress) as DagLastTxRef;
     
-    const feeSat = (fee && (fee * Math.pow(10, 8)).toString()) || "0";
-    const amountSat = (amount * Math.pow(10, 8)).toString();
-    let tx = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>({
+    const feeSat = (fee && Math.floor(fee * Math.pow(10,8)).toString()) || "0"; 
+    const amountSat = Math.floor(amount * Math.pow(10, 8)).toString();
+
+    let tx: any = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>({
       from: fromAddress,
       to: toAddress,
       amount: amountSat,
@@ -68,14 +84,22 @@ class BitfiBridgeUtil {
       transferType: TransferType.OUT_SELF,
     }, APPROVE_TIMEOUT_MSEC);
 
-    if (tx.edge.data.fee == "0") {
-      delete tx.edge.data.fee;
-    }
+    if (dagNetworkVersion === '1.0') {
+      if (tx.edge.data.fee == "0") {
+        delete tx.edge.data.fee;
+      }
+  
+      if (tx.edge.data.amount !== amountSat || (tx.edge.data.fee && tx.edge.data.fee !== feeSat)) {
+        throw new Error('Transaction was formed incorrectly');
+      }
+    } 
 
-    if (tx.edge.data.amount !== amountSat || (tx.edge.data.fee && tx.edge.data.fee !== feeSat)) {
-      throw new Error('Transaction was formed incorrectly');
+    if (dagNetworkVersion === '2.0') {
+      if (!tx.value || !tx.proofs || tx.value.amount !== amountSat || (tx.value.fee && tx.value.fee !== feeSat)) {
+        throw new Error('Transaction was formed incorrectly');
+      }
     }
-
+    
     return tx;
   };
 

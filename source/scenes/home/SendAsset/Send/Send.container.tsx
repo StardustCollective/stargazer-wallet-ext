@@ -60,7 +60,7 @@ import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChai
 // Constants
 ///////////////////////////
 
-import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO, BSC_LOGO } from 'constants/index';
+import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO, BSC_LOGO, DAG_NETWORK } from 'constants/index';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -413,15 +413,16 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const networkLabel = getNetworkFromChainId(assetInfo?.network);
   const chainValue = activeNetwork[networkLabel as keyof ActiveNetwork];
-  const tokenMainnet = isDAG ? 'main' : getMainnetFromTestnet(assetInfo?.network);
-  const tokenChainLabel = isDAG ? 'Mainnet 1.0' : getChainInfo(chainValue)?.label;
+  const dagChainLabel = DAG_NETWORK[activeNetwork.Constellation].label;
+  const tokenMainnet = isDAG ? 'main2' : getMainnetFromTestnet(assetInfo?.network);
+  const tokenChainLabel = isDAG ? dagChainLabel : getChainInfo(chainValue)?.label;
 
   const networkTypeOptions = {
     title: 'NETWORK',
     value: tokenMainnet,
     items: [
       // 349: New network should be added here.
-      { value: 'main', label: 'Constellation', icon: CONSTELLATION_LOGO },  
+      { value: 'main2', label: 'Constellation', icon: CONSTELLATION_LOGO },  
       { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },   
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 

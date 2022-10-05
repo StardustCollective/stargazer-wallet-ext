@@ -84,7 +84,7 @@ const TxItem: FC<ITxItem> = ({
     if (!isETH) {
       return (
         <>
-          {tx.checkpointBlock ? (
+          {(tx.checkpointBlock || tx.blockHash) ? (
             isReceived ? (
               <img src={'/' + TxIcon} className={styles.recvIcon} />
             ) : (
@@ -114,7 +114,7 @@ const TxItem: FC<ITxItem> = ({
   return (
     <div
       onClick={() => {
-        const url = getLinkUrl(tx.hash);
+        const url = getLinkUrl(tx);
 
         if (!url) {
           return;
