@@ -12,6 +12,12 @@ import {
   ActivityIndicator
 } from 'react-native';
 
+///////////////////////////
+// Helpers
+///////////////////////////
+
+import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
+
 ///////////////////////
 // Components
 ///////////////////////
@@ -30,6 +36,7 @@ import SearchIcon from 'assets/images/svg/search.svg'
 
 import ITokenList from './types';
 
+
 ///////////////////////
 // Styles
 ///////////////////////
@@ -41,6 +48,8 @@ import styles from './styles';
 // constants
 ///////////////////////
 
+
+import { SWAP_ACTIONS } from 'scenes/swap/constants';
 import {
   SEARCH_STRING
 } from './constants';
@@ -61,12 +70,32 @@ const ConfirmDetails: FC<ITokenList> = ({
   onSearchChange,
   searchValue,
   isLoading,
+  action,
 }) => {
 
-  const RenderItem = ({ item }) => {
+  const RenderFromItem = ({ item }) => {
+    return (
+      <View key={item.code}>
+        <TouchableOpacity style={styles.tokenCell} onPress={() => onTokenCellPressed(item, null)} >
+          <View style={styles.tokenCellLeft}>
+            <Image source={{ uri: item.icon }} style={styles.tokenIcon} />
+            <View>
+              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{item.code}</TextV3.CaptionStrong>
+              <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item.name}</TextV3.Caption>
+            </View>
+          </View>
+          <View style={styles.tokenCellRight}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(item.balance), 16, 20), 4)}`}</TextV3.CaptionStrong>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  const RenderToItem = ({ item }) => {
     return item.networks.map((network) => {
       return (
-        <>
+        <View key={item.code+network.name}>
           <TouchableOpacity style={styles.tokenCell} onPress={() => onTokenCellPressed(item, network)} >
             <View style={styles.tokenCellLeft}>
               <Image source={{ uri: item.icon }} style={styles.tokenIcon} />
@@ -80,7 +109,7 @@ const ConfirmDetails: FC<ITokenList> = ({
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>{network.name}</TextV3.Caption>
             </View>
           </TouchableOpacity>
-        </>
+        </View>
       )
     })
   }
@@ -91,34 +120,36 @@ const ConfirmDetails: FC<ITokenList> = ({
         {isLoading ? (
           <ActivityIndicator size={ACTIVITY_INDICATOR_SIZE} />
         ) :
-        (
-          <TextV3.Body color={COLORS_ENUMS.BLACK}>Coin not found...</TextV3.Body>
-        )}
+          (
+            <TextV3.Body color={COLORS_ENUMS.BLACK}>Coin not found...</TextV3.Body>
+          )}
       </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.search}>
-          <View style={styles.searchIcon}>
-            <SearchIcon width={SEARCH_ICON_SIZE} height={SEARCH_ICON_SIZE} fill={SEARCH_ICON_COLOR} />
+      {action === SWAP_ACTIONS.TO && (
+        <View style={styles.header}>
+          <View style={styles.search}>
+            <View style={styles.searchIcon}>
+              <SearchIcon width={SEARCH_ICON_SIZE} height={SEARCH_ICON_SIZE} fill={SEARCH_ICON_COLOR} />
+            </View>
+            <TextInput
+              style={styles.searchInput}
+              value={searchValue}
+              placeholder={SEARCH_STRING}
+              placeholderTextColor={SEARCH_BAR_PLACEHOLDER_TEXT_COLOR}
+              selectionColor={SEARCH_BAR_SELECTION_COLOR}
+              onChange={(e) => onSearchChange(e.nativeEvent.text)}
+            />
           </View>
-          <TextInput
-            style={styles.searchInput}
-            value={searchValue}
-            placeholder={SEARCH_STRING}
-            placeholderTextColor={SEARCH_BAR_PLACEHOLDER_TEXT_COLOR}
-            selectionColor={SEARCH_BAR_SELECTION_COLOR}
-            onChange={(e) => onSearchChange(e.nativeEvent.text)}
-          />
         </View>
-      </View>
+      )}
       <FlatList
         ListEmptyComponent={ListEmptyComponent}
         data={currencyData}
-        renderItem={RenderItem}
+        renderItem={action === SWAP_ACTIONS.TO ? RenderToItem : RenderFromItem}
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContentContainer}
       />

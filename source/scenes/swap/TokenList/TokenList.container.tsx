@@ -6,23 +6,18 @@ import React, { FC, useEffect, useState, useLayoutEffect} from 'react';
 import { useSelector } from 'react-redux';
 
 ///////////////////////////
-// Redux
-///////////////////////////
-
-import store from 'state/store';
-
-///////////////////////////
 // State
 ///////////////////////////
 
-import { getCurrencyData } from 'state/swap/api';
+import store from 'state/store';
+import { getCurrencyData, getSupportedAssets} from 'state/swap/api';
 import {setSwapFrom, setSwapTo} from 'state/swap';
 
 ///////////////////////
 // Selectors
 ///////////////////////
 
-import walletSelectors from 'selectors/walletsSelectors';
+import swapSelectors from 'selectors/swapSelectors';
 
 ///////////////////////////
 // Types
@@ -50,7 +45,7 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
-import { SWAP_FROM_ACTION, SWAP_TO_ACTION } from 'scenes/swap/constants';
+import { SWAP_ACTIONS } from 'scenes/swap/constants';
 const SWAP_FROM_TITLE = 'Swap From';
 const SWAP_TO_TITLE = 'Swap To';
 
@@ -62,25 +57,29 @@ const TokenListContainer: FC<ITokenListContainer> = ({navigation, route}) => {
 
 
   const { action } = route.params
-  const { currencyData }: {currencyData: ISearchCurrency[]} = useSelector((state: RootState) => state.swap);
+  const currencyData: ISearchCurrency[] =  action === SWAP_ACTIONS.FROM ? useSelector(swapSelectors.getSupportedAssets) : useSelector(swapSelectors.selectSupportedCurrencyData);
   const { loading }: { loading: boolean } = useSelector((state: RootState) => state.swap);
-  const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const [searchValue, setSearchValue ] = useState<string>('');
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: action === SWAP_FROM_ACTION ? SWAP_FROM_TITLE : SWAP_TO_TITLE,
+      title: action === SWAP_ACTIONS.FROM ? SWAP_FROM_TITLE : SWAP_TO_TITLE,
     });
+    if(action === SWAP_ACTIONS.FROM){
+      store.dispatch<any>(getSupportedAssets());
+    }
   }, []);
 
   useEffect(() => {
-    store.dispatch<any>(getCurrencyData(searchValue));
+    if(action === SWAP_ACTIONS.TO){
+      store.dispatch<any>(getCurrencyData(searchValue));
+    }
   }, [searchValue]);
 
   const onTokenCellPressed = (currency: ISearchCurrency, network: ICurrencyNetwork ) => {
-    if(action === SWAP_FROM_ACTION){
+    if(action === SWAP_ACTIONS.FROM){
       store.dispatch(setSwapFrom({currency, network}));
-    }else if(action === SWAP_TO_ACTION){
+    }else if(action === SWAP_ACTIONS.TO){
       store.dispatch(setSwapTo({currency, network}));
     }
     navigation.pop();
@@ -94,7 +93,7 @@ const TokenListContainer: FC<ITokenListContainer> = ({navigation, route}) => {
         isLoading={loading}
         onTokenCellPressed={onTokenCellPressed} 
         onSearchChange={setSearchValue}
-        activeNetworkAssets={activeNetworkAssets}
+        action={action}
       />
     </Container>
   );

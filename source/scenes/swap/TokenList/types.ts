@@ -1,5 +1,5 @@
 import { ISearchCurrency, ICurrencyNetwork} from 'state/swap/types';
-import { IAssetState } from 'state/vault/types';
+import { SWAP_ACTIONS } from 'scenes/swap/constants';
 
 export interface ITokenListContainer {
   navigation: any;
@@ -12,5 +12,5 @@ export default interface ITokenList {
   onSearchChange: (value: string) => void;
   searchValue: string,
   isLoading: boolean,
-  activeNetworkAssets: IAssetState[],
+  action: SWAP_ACTIONS,
 }
