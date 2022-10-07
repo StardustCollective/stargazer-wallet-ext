@@ -11,5 +11,5 @@ export default interface ICurrencyInput {
   tickerValue: string,
   containerStyle?: string,
   inputStyle?: string,
-  editable: boolean,
+  editable?: boolean,
 }
