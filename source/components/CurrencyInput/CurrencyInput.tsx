@@ -70,8 +70,8 @@ const CurrencyInput: FC<ICurrencyInput> = ({
           {...otherProps}
         />
       </div>
-      <div onClick={onPress} className={styles.swapInputRightBlock}>
-        <img src={`/${source}`} className={styles.currencyIcon}/>
+      <div onClick={() => onPress()} className={styles.swapInputRightBlock}>
+        <img src={source} className={styles.currencyIcon}/>
         <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>{tickerValue}</TextV3.Body>
         <img src={`/${ChevronRight}`} className={styles.swapInputChevron} alt="chevron_right" width={CHEVRON_WIDTH} />
       </div>
