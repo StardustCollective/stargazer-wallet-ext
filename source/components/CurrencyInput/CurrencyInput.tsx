@@ -10,7 +10,7 @@ import clsx from 'clsx';
 ///////////////////////
 
 import TextV3 from 'components/TextV3';
-import MUITextField from '@material-ui/core/TextField';
+import TextInput from 'components/TextInput';
 
 ///////////////////////
 // Images/Icons
@@ -37,41 +37,31 @@ import ICurrencyInput from './types';
 ///////////////////////
 
 const CHEVRON_WIDTH = 7;
-const TEXT_INPUT_KEYBOARD_TYPE = 'numeric';
 
 const CurrencyInput: FC<ICurrencyInput> = ({
   containerStyle,
-  inputStyle,
   placeholder = '0',
   value,
   source = ImagePlaceholder,
   onPress,
   tickerValue,
+  isError = false,
   onChangeText,
-  ...otherProps
 }) => {
 
   return (
-    <div className={clsx(styles.swapInput, containerStyle)}>
+    <div className={clsx(styles.swapInput, containerStyle, isError && styles.swapInputError)}>
       <div className={styles.swapInputLeftBlock}>
-        <MUITextField
-          id="curreny-input"
-          name="currency-input"
+        <TextInput
+          type="number"
           value={value}
           placeholder={placeholder}
-          fullWidth
+          classes={{ root: clsx(styles.swapTextField, isError && styles.swapTextFieldError) }}
           onChange={onChangeText}
-          InputProps={{ 
-            disableUnderline: true,
-            classes: {
-              input: styles.swapInputTextInput,
-            }
-          }}
-          {...otherProps}
         />
       </div>
       <div onClick={() => onPress()} className={styles.swapInputRightBlock}>
-        <img src={source} className={styles.currencyIcon}/>
+        <img src={source} className={styles.currencyIcon} />
         <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>{tickerValue}</TextV3.Body>
         <img src={`/${ChevronRight}`} className={styles.swapInputChevron} alt="chevron_right" width={CHEVRON_WIDTH} />
       </div>

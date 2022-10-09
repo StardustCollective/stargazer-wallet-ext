@@ -1,5 +1,3 @@
-import { Ref } from 'react';
-
 export default interface ICurrencyInput {
   style?: object, 
   textInputPlaceholder?: string,
@@ -12,4 +10,5 @@ export default interface ICurrencyInput {
   containerStyle?: string,
   inputStyle?: string,
   editable?: boolean,
+  isError?: boolean,
 }
