@@ -18,5 +18,4 @@ export default interface ITransferInfo {
   getTotalAmount: () => string;
   onSwapPressed: () => void;
   onCancelPressed: () => void;
-  source?: string;
 }

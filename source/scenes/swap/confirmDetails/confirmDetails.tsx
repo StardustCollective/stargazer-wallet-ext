@@ -11,7 +11,6 @@ import clsx from 'clsx';
 
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-import MUITextField from '@material-ui/core/TextField';
 
 ///////////////////////
 // Images
@@ -24,6 +23,12 @@ import ImagePlaceholder from 'assets/images/placeholder.png';
 ///////////////////////
 
 import ITransferInfo from './types';
+
+///////////////////////
+// Helpers
+///////////////////////
+
+import { ellipsis } from '../../home/helpers';
 
 ///////////////////////
 // Styles
@@ -47,18 +52,28 @@ import {
 } from './constants';
 
 const ConfirmDetails: FC<ITransferInfo> = ({
+  tempTx,
+  assetInfo,
+  activeWallet,
+  feeUnit,
+  transactionId,
+  getSendAmount,
+  getFeeAmount,
+  getTotalAmount,
   onSwapPressed,
   onCancelPressed,
-  source = ImagePlaceholder
 }) => {
 
   return (
     <div className={styles.container}>
       <div className={styles.amount}>
-      <img src={`/${source}`} className={styles.currencyIcon}/>
-        <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
-          1,000.9089 DAG
-        </TextV3.BodyStrong>
+      <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+            {tempTx?.amount}{' '}{assetInfo.symbol}
+            <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
+              {' '}(≈
+              {getSendAmount()})
+            </TextV3.Caption>
+          </TextV3.BodyStrong>
       </div>
       <div className={styles.detailRow}>
         <TextV3.CaptionStrong
@@ -71,7 +86,7 @@ const ConfirmDetails: FC<ITransferInfo> = ({
           color={COLORS_ENUMS.DARK_GRAY_200}
           extraStyles={styles.detailValue}
         >
-          Main Wallet (0x4ef...sVy5T)
+          {activeWallet?.label || ''} ({ellipsis(tempTx?.fromAddress || "")})
         </TextV3.CaptionRegular>
       </div>
       <div className={styles.detailRow}>
@@ -85,7 +100,7 @@ const ConfirmDetails: FC<ITransferInfo> = ({
           color={COLORS_ENUMS.DARK_GRAY_200}
           extraStyles={styles.detailValue}
         >
-          0x997b0F25155C8225d51A46e28d77aacD7737cb2d
+          {tempTx?.toAddress}
         </TextV3.CaptionRegular>
       </div>
       <div className={styles.detailRow}>
@@ -99,7 +114,7 @@ const ConfirmDetails: FC<ITransferInfo> = ({
           color={COLORS_ENUMS.DARK_GRAY_200}
           extraStyles={styles.detailValue}
         >
-          0.000315 ETH (≈ $0.49877773000000003)
+          {`${tempTx?.fee} ${feeUnit} (≈ ${getFeeAmount()})`}
         </TextV3.CaptionRegular>
       </div>
       <div className={styles.detailRow}>
@@ -113,7 +128,7 @@ const ConfirmDetails: FC<ITransferInfo> = ({
           color={COLORS_ENUMS.DARK_GRAY_200}
           extraStyles={styles.detailValue}
         >
-          174dj334jjfdjfkds3ww
+          {transactionId}
         </TextV3.CaptionRegular>
       </div>
       <div className={styles.detailRowMaxTotal}>
@@ -128,12 +143,12 @@ const ConfirmDetails: FC<ITransferInfo> = ({
           <TextV3.CaptionStrong
             color={COLORS_ENUMS.DARK_GRAY_200}
           >
-            3,076.9006 DAG
+            {tempTx?.amount}{' '}{assetInfo.symbol}
           </TextV3.CaptionStrong>
           <TextV3.Caption
             color={COLORS_ENUMS.DARK_GRAY_200}
           >
-            ≈ $189.725531
+            ≈ {`$${getTotalAmount()}`}
           </TextV3.Caption>
         </div>
       </div>

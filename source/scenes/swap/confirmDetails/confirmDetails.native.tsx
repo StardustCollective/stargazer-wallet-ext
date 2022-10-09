@@ -13,12 +13,6 @@ import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
-// Images
-///////////////////////
-
-const imagePlaceholder = require('assets/images/placeholder.png');
-
-///////////////////////
 // Types
 ///////////////////////
 
@@ -62,7 +56,6 @@ const ConfirmDetails: FC<ITransferInfo> = ({
   getTotalAmount,
   onSwapPressed,
   onCancelPressed,
-  source = imagePlaceholder
 }) => {
 
   return (

@@ -62,7 +62,6 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
   const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
 
   const getSendAmount = () => {
-
     const fiatAmount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8, assetInfo.priceId));
 
     return (fiatAmount).toLocaleString(navigator.language, {
@@ -83,7 +82,6 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
   }
 
   const getTotalAmount = () => {
-
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
     amount += getFeeAmount();
 
