@@ -62,11 +62,18 @@ import Container from 'components/Container';
 // Utils
 ///////////////////////////
 
+///////////////////////////
+// Utils
+///////////////////////////
+
+import { getWalletController } from 'utils/controllersUtils';
+
 import { getAccountController } from 'utils/controllersUtils';
 
 const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
 
   const linkTo = useLinkTo();
+  const walletController = getWalletController();
   const { swapFrom, swapTo }: { swapTo: ISelectedCurrency, swapFrom: ISelectedCurrency } = useSelector((state: RootState) => state.swap);
   const assets = useSelector((state: RootState) => state.assets);
   const activeAsset = useSelector(walletSelectors.getActiveAsset);
@@ -79,7 +86,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   
   useEffect(() => {
     return () => {
-      store.dispatch(clearPendingSwap());
+      walletController.swap.clearPendingSwap();
     }
   }, [])
 
@@ -110,10 +117,12 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
         gasLimit
       };
     }
-
     accountController.updateTempTx(txConfig);
-
     linkTo('/confirmDetails');
+  }
+
+  const onRecommendedPress = () => {
+    
   }
 
   return (
@@ -138,6 +147,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
         getFiatAmount={getFiatAmount}
         onGasPriceChange={onGasPriceChange}
         onNextPressed={onNextPressed}
+        onRecommendedPress={onRecommendedPress}
       />
     </Container>
   );

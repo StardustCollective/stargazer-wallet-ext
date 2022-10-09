@@ -30,14 +30,11 @@ import styles from './styles';
 // constants
 ///////////////////////
 
-const DAG_CODE = 'DAG';
-const DOT_INDICATOR_SIZE = 6;
-const DOT_INDICATOR_COUNT = 3;
-const DOT_INDICATOR_COLOR = '#473194';
+const ACTIVITY_INDICATOR_SIZE = 6;
+const ACTIVITY_INDICATOR_COUNT = 3;
 const DEPOSIT_ADDRESS_NUMBER_OF_LINES = 1;
-const TRANSACTION_FEE_DEFAULT_VALUE = '0';
 const TRANSACTION_FEE_KEYBOARD_TYPE = 'numeric';
-const GAS_SLIDER_STEP = 1;
+
 
 import {
   DEPOSIT_ADDRESS_STRING,
@@ -47,6 +44,10 @@ import {
   RECOMMENDED_STRING,
   NEXT_BUTTON_STRING,
   GAS_PRICE_IN_GWEI_STRING,
+  GAS_SLIDER_STEP,
+  DAG_CODE,
+  TRANSACTION_FEE_DEFAULT_VALUE,
+  ACTIVITY_INDICATOR_COLOR
 } from './constants';
 
 const SwapTokens: FC<ITransferInfo> = ({
@@ -57,7 +58,7 @@ const SwapTokens: FC<ITransferInfo> = ({
   gas,
   onGasPriceChange,
   getFiatAmount,
-  onRecommendPress
+  onRecommendedPress
 }) => {
 
   return (
@@ -167,7 +168,11 @@ const SwapTokens: FC<ITransferInfo> = ({
                 </>
               ) : (
                 <View style={styles.gasLoadingIndicator}>
-                  <DotIndicator size={DOT_INDICATOR_SIZE} count={DOT_INDICATOR_COUNT} color={DOT_INDICATOR_COLOR} />
+                  <DotIndicator 
+                    size={ACTIVITY_INDICATOR_SIZE} 
+                    count={ACTIVITY_INDICATOR_COUNT} 
+                    color={ACTIVITY_INDICATOR_COLOR} 
+                  />
                 </View>
               )}
             </View>
