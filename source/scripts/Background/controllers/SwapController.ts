@@ -62,7 +62,6 @@ class SwapController implements ISwapController {
       withdrawalAddress: params.withdrawalAddress,
       refundAddress: params.withdrawalAddress
     }));
-
   }
 
 }
