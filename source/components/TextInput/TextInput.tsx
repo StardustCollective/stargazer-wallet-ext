@@ -17,7 +17,7 @@ interface ITextInput extends Partial<OutlinedInputProps> {
   visiblePassword?: boolean;
   error?: boolean;
   control?: Control<FieldValues>;
-  classes: object;
+  classes?: object;
 }
 
 const TextInput: FC<ITextInput> = ({
