@@ -2,41 +2,114 @@
 
 .container {
   display: flex;
-  flex: 1;
   flex-direction: column;
-  width: 100%;
-  margin: 16px;
+  flex: 1;
+  background-color: $gray-light-300;
 
-  .content {
+  .header {
+    width: 100%;
+    background-color: $primary;
+
+    .search {
+      display: flex;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.1);
+      flex-direction: row;
+      margin: 16px;
+      border-radius: 8px;
+      flex-direction: row;
+      align-items: center;
+
+      .searchIcon {
+        margin-left: 16px;
+      }
+
+      .searchInput {
+        width: 100%;
+        color: $white;
+        background-color: transparent;
+        border-color: transparent;
+        border-width: 0px;
+        font-family: $inter;
+        font-size: 16px;
+        font-weight: 400;
+        height: 40px;
+        border: 0px solid $gray-200  !important;
+        outline: 0px !important;
+      }
+
+    }
+  }
+
+  .listEmpty {
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 60px;
-    margin-left: 10px;
-    margin-right: 10px;
-
-    .tokenSwapText {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .statusText {
-      margin-top: 12px;
-      text-align: center;
-    }
   }
 
-  .buttons {
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
+  .list {
+    background-color:'purple';
     flex-direction: column;
+    overflow: auto;
+    height: 445px;
 
-    .viewHistoryButton {
-      margin-bottom: 20px,
+    &:last-child{
+      margin-bottom: 40px;
+    }
+
+    .tokenCell {
+      display: flex;
+      background-color: $white;
+      border-radius: 8px;
+      margin: 8px 16px 0px 16px;
+      overflow: hidden; 
+      border: 1px solid $gray-600;
+
+      .tokenCellLeft{
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        margin-top: 12px;
+        margin-left: 12px;
+        margin-bottom: 12px;
+        align-items: center;
+
+        .tokenIcon {
+          display: flex;
+          width: 30px;
+          height: 30px;
+          border-radius: 30px;
+          overflow: hidden; 
+          border: 1px solid $gray-700;
+          justify-items: center;
+        }
+        
+        .tokenCellLeftText {
+          display: flex;
+          flex-direction: column;
+          justify-items: center;
+          margin-left: 8px;
+        }
+      }
+
+      .tokenCellRight{
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        margin-right: 12px;
+        margin-bottom: 12px;
+        margin-top: 12px;
+        align-items: flex-end;
+        justify-content: center;
+
+        .currencyName{
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
     }
   }
-
-
 }
+

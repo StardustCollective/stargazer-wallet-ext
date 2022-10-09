@@ -51,7 +51,10 @@ import styles from './styles';
 
 import { SWAP_ACTIONS } from 'scenes/swap/constants';
 import {
-  SEARCH_STRING
+  SEARCH_STRING,
+  NO_COINS_FOUND,
+  NO_COINS_AVAILABLE,
+  PLEASE_ADD_FUNDS
 } from './constants';
 
 const SEARCH_ICON_SIZE = 16;
@@ -75,17 +78,17 @@ const ConfirmDetails: FC<ITokenList> = ({
 
   const RenderFromItem = ({ item }) => {
     return (
-      <View key={item.code}>
+      <View key={item?.code}>
         <TouchableOpacity style={styles.tokenCell} onPress={() => onTokenCellPressed(item, null)} >
           <View style={styles.tokenCellLeft}>
-            <Image source={{ uri: item.icon }} style={styles.tokenIcon} />
+            <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
             <View>
-              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{item.code}</TextV3.CaptionStrong>
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item.name}</TextV3.Caption>
+              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{item?.code}</TextV3.CaptionStrong>
+              <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item?.name}</TextV3.Caption>
             </View>
           </View>
           <View style={styles.tokenCellRight}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(item.balance), 16, 20), 4)}`}</TextV3.CaptionStrong>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(item?.balance), 16, 20), 4)}`}</TextV3.CaptionStrong>
           </View>
         </TouchableOpacity>
       </View>
@@ -93,20 +96,20 @@ const ConfirmDetails: FC<ITokenList> = ({
   }
 
   const RenderToItem = ({ item }) => {
-    return item.networks.map((network) => {
+    return item?.networks.map((network) => {
       return (
-        <View key={item.code+network.name}>
+        <View key={item?.code + network?.name}>
           <TouchableOpacity style={styles.tokenCell} onPress={() => onTokenCellPressed(item, network)} >
             <View style={styles.tokenCellLeft}>
-              <Image source={{ uri: item.icon }} style={styles.tokenIcon} />
+              <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
               <View>
-                <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{item.code}</TextV3.CaptionStrong>
-                <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item.name}</TextV3.Caption>
+                <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{item?.code}</TextV3.CaptionStrong>
+                <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item?.name}</TextV3.Caption>
               </View>
             </View>
             <View style={styles.tokenCellRight}>
-              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{network.network}</TextV3.CaptionStrong>
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>{network.name}</TextV3.Caption>
+              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{network?.network}</TextV3.CaptionStrong>
+              <TextV3.Caption color={COLORS_ENUMS.BLACK}>{network?.name}</TextV3.Caption>
             </View>
           </TouchableOpacity>
         </View>
@@ -116,12 +119,19 @@ const ConfirmDetails: FC<ITokenList> = ({
 
   const ListEmptyComponent = () => {
     return (
-      <View style={styles.activityIndicator}>
+      <View style={styles.listEmptyContainer}>
         {isLoading ? (
           <ActivityIndicator size={ACTIVITY_INDICATOR_SIZE} />
-        ) :
+        ) : action === SWAP_ACTIONS.TO ?
           (
-            <TextV3.Body color={COLORS_ENUMS.BLACK}>Coin not found...</TextV3.Body>
+            <>
+              <TextV3.Body color={COLORS_ENUMS.BLACK}>{NO_COINS_FOUND}</TextV3.Body>
+            </>
+          ) : (
+            <>
+              <TextV3.Body color={COLORS_ENUMS.BLACK}>{NO_COINS_AVAILABLE}</TextV3.Body>
+              <TextV3.Body color={COLORS_ENUMS.BLACK}>{PLEASE_ADD_FUNDS}</TextV3.Body>
+            </>
           )}
       </View>
     );

@@ -37,13 +37,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
     flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: COLORS.gray_600,
   },
   tokenIcon: {
     width: 30,
     height: 30,
     borderRadius: 30,
     borderWidth: 1,
-    borderColor: COLORS.gray_500,
+    borderColor: COLORS.gray_700,
     marginRight: 8,
   },
   tokenCellLeft: {
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 12,
   },
-  activityIndicator: {
+  listEmptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

@@ -2,16 +2,8 @@
 // Imports
 ///////////////////////////
 
-import React, { FC, useEffect, useState, useLayoutEffect} from 'react';
+import React, { FC, useEffect, useState, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
-
-///////////////////////////
-// State
-///////////////////////////
-
-import store from 'state/store';
-import { getCurrencyData, getSupportedAssets} from 'state/swap/api';
-import {setSwapFrom, setSwapTo} from 'state/swap';
 
 ///////////////////////
 // Selectors
@@ -24,7 +16,7 @@ import swapSelectors from 'selectors/swapSelectors';
 ///////////////////////////
 
 import { RootState } from 'state/store';
-import { ISearchCurrency, ICurrencyNetwork } from 'state/swap/types';
+import { ISearchCurrency, ICurrencyNetwork, } from 'state/swap/types';
 
 ///////////////////////////
 // Types
@@ -33,6 +25,12 @@ import { ISearchCurrency, ICurrencyNetwork } from 'state/swap/types';
 import {
   ITokenListContainer
 } from './types';
+
+///////////////////////////
+// Utils
+///////////////////////////
+
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Components
@@ -53,45 +51,47 @@ const SWAP_TO_TITLE = 'Swap To';
 // Container
 ///////////////////////////
 
-const TokenListContainer: FC<ITokenListContainer> = ({navigation, route}) => {
+const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
 
-
+  const walletController = getWalletController();
   const { action } = route.params
-  const currencyData: ISearchCurrency[] =  action === SWAP_ACTIONS.FROM ? useSelector(swapSelectors.getSupportedAssets) : useSelector(swapSelectors.selectSupportedCurrencyData);
+  const currencyData: ISearchCurrency[] = action === SWAP_ACTIONS.FROM ? useSelector((state: RootState) => state.swap.supportedAssets) : useSelector(swapSelectors.selectSupportedCurrencyData);
   const { loading }: { loading: boolean } = useSelector((state: RootState) => state.swap);
-  const [searchValue, setSearchValue ] = useState<string>('');
-
+  const [searchValue, setSearchValue] = useState<string>('');
   useLayoutEffect(() => {
     navigation.setOptions({
       title: action === SWAP_ACTIONS.FROM ? SWAP_FROM_TITLE : SWAP_TO_TITLE,
     });
-    if(action === SWAP_ACTIONS.FROM){
-      store.dispatch<any>(getSupportedAssets());
+  }, []);
+
+  useEffect(() => {
+    if (action === SWAP_ACTIONS.FROM) {
+      walletController.swap.getSupportedAssets();
     }
   }, []);
 
   useEffect(() => {
-    if(action === SWAP_ACTIONS.TO){
-      store.dispatch<any>(getCurrencyData(searchValue));
+    if (action === SWAP_ACTIONS.TO) {
+      walletController.swap.getCurrencyData(searchValue);
     }
   }, [searchValue]);
 
-  const onTokenCellPressed = (currency: ISearchCurrency, network: ICurrencyNetwork ) => {
-    if(action === SWAP_ACTIONS.FROM){
-      store.dispatch(setSwapFrom({currency, network}));
-    }else if(action === SWAP_ACTIONS.TO){
-      store.dispatch(setSwapTo({currency, network}));
+  const onTokenCellPressed = (currency: ISearchCurrency, network: ICurrencyNetwork) => {
+    if (action === SWAP_ACTIONS.FROM) {
+      walletController.swap.setSwapFrom(currency, network);
+    } else if (action === SWAP_ACTIONS.TO) {
+      walletController.swap.setSwapTo(currency, network);
     }
     navigation.pop();
   }
 
   return (
     <Container>
-      <TokenList 
+      <TokenList
         currencyData={currencyData}
         searchValue={searchValue}
         isLoading={loading}
-        onTokenCellPressed={onTokenCellPressed} 
+        onTokenCellPressed={onTokenCellPressed}
         onSearchChange={setSearchValue}
         action={action}
       />
