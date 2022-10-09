@@ -15,12 +15,10 @@ import swapSelectors from 'selectors/swapSelectors';
 import walletSelectors from 'selectors/walletsSelectors';
 
 ///////////////////////////
-// State
+// Utils
 ///////////////////////////
 
-import store from 'state/store';
-import { changeActiveAsset } from 'state/vault';
-import { getCurrencyRate, sendTransaction } from 'state/swap/api';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Types
@@ -45,6 +43,7 @@ import { SWAP_ACTIONS } from 'scenes/swap/constants';
 const SELECT_CURRENCY_ROUTE = '/tokenList?action=';
 const NEXT_SCREEN_ROUTE = '/transferInfo?';
 const FROM_AMOUNT_ZERO = 0;
+const TO_AMOUNT_ZERO = 0;
 const DEFAULT_TO_AMOUNT = 0;
 
 ///////////////////////////
@@ -54,6 +53,7 @@ const DEFAULT_TO_AMOUNT = 0;
 const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
 
   const linkTo = useLinkTo();
+  const walletController = getWalletController();
   const [isBalanceError, setIsBalanceError] = useState<boolean>(false);
   const [fromAmount, setFromAmount] = useState<number>(0);
   const [isRateError, setIsRateError] = useState<boolean>(false);
@@ -66,13 +66,14 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const activeAsset = useSelector(walletSelectors.getActiveAsset);
 
+
   // Update the active asset when the swapFrom state changes
   useEffect(() => {
-    if(swapFrom.currency !== null){
-      const newActiveAsset = find(activeNetworkAssets, {id: swapFrom.currency.id })
-      store.dispatch(changeActiveAsset(newActiveAsset));
+    if (swapFrom.currency !== null) {
+      const newActiveAsset = find(activeNetworkAssets, { id: swapFrom.currency.id })
+      walletController.account.updateAccountActiveAsset(newActiveAsset);
     }
-  }, [swapFrom])
+  }, [swapFrom]);
 
   // Manages next button enabled or disabled state.
   useEffect(() => {
@@ -80,26 +81,28 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
       swapTo.currency.code !== null &&
       !isBalanceError &&
       !isRateError &&
-      fromAmount > FROM_AMOUNT_ZERO
+      fromAmount > FROM_AMOUNT_ZERO &&
+      currencyRate?.toAmount > TO_AMOUNT_ZERO
     ) {
       setIsNextButtonDisabled(false);
     } else {
       setIsNextButtonDisabled(true);
     }
-  }, [swapFrom, swapTo, fromAmount, isBalanceError, isRateError]);
+  }, [swapFrom, swapTo, fromAmount, isBalanceError, isRateError, currencyRate]);
 
-  // Updates the exchange rate when the amount is changed.
+  // Updates the exchange rate when the from amount is changed.
   useEffect(() => {
     if (swapFrom.currency.code !== null &&
-      swapTo.currency.code !== null &&
-      fromAmount > 0) {
-      store.dispatch<any>(getCurrencyRate({
-        coinFrom: swapFrom.currency.code,
-        coinTo: swapTo.currency.code,
-        amount: fromAmount
-      }));
+        swapTo.currency.code !== null &&
+        fromAmount > 0
+      ) {
+      walletController.swap.getCurrencyRate({
+        coinFromCode: swapFrom.currency.code,
+        coinToCode: swapTo.currency.code,
+        amount: fromAmount,
+      })
     }
-  }, [swapFrom, swapTo, fromAmount]);
+  }, [swapFrom?.currency.code, swapTo?.currency.code, fromAmount]);
 
   // Check if currency rate is valid.
   useEffect(() => {
@@ -111,24 +114,33 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   }, [currencyRate]);
 
   // Will wait until a pending swap state has been populated
-  // before mcing to the next screen.
+  // before transitioning to the next screen.
   useEffect(() => {
     if (pendingSwap !== null) {
       linkTo(`${NEXT_SCREEN_ROUTE}`);
       setIsNextButtonLoading(false);
     }
-  }, [pendingSwap])
+  }, [pendingSwap]);
+
+    // Check if the balance is valid.
+    useEffect(() => {
+      if (fromAmount > parseFloat(swapFrom.currency.balance)) {
+        setIsBalanceError(true);
+      } else {
+        setIsBalanceError(false);
+      }
+    }, [fromAmount, swapFrom, swapTo]);
+  
 
   const onNextPressed = () => {
-    
     setIsNextButtonLoading(true);
-    store.dispatch<any>(sendTransaction({
+    walletController.swap.stageTransaction({
       coinFrom: swapFrom.currency.code,
       coinTo: swapTo.currency.code,
       amount: currencyRate?.fromAmount,
       withdrawalAddress: activeAsset.address,
       refundAddress: activeAsset.address
-    }));
+    })
   }
 
   const onSwapFromTokenListPressed = () => {
@@ -142,11 +154,6 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   const onFromChangeText = (text: string) => {
     const fromAmount = parseFloat(text);
     setFromAmount(fromAmount);
-    if (fromAmount > parseFloat(swapFrom.currency.balance)) {
-      setIsBalanceError(true);
-    } else {
-      setIsBalanceError(false);
-    }
   }
 
   return (
