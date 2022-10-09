@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getCurrencyData, getSupportedAssets, getCurrencyRate, sendTransaction} from './api';
+import { getCurrencyData, getSupportedAssets, getCurrencyRate, stageTransaction} from './api';
 import ISwapState, { ISelectedCurrency } from './types';
 
 export const initialState: ISwapState = {
@@ -98,17 +98,17 @@ const SwappingState = createSlice({
       state.error = action.payload;
       state.currencyRate.rate = null;
     });
-    builder.addCase(sendTransaction.pending, (state) => {
+    builder.addCase(stageTransaction.pending, (state) => {
       state.loading = true;
       state.error = null;
       state.pendingSwap = null;
     });
-    builder.addCase(sendTransaction.fulfilled, (state, action) => {
+    builder.addCase(stageTransaction.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
       state.pendingSwap = action.payload;
     });
-    builder.addCase(sendTransaction.rejected, (state, action) => {
+    builder.addCase(stageTransaction.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
       state.pendingSwap = null;

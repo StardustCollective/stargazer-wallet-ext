@@ -8,7 +8,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 // Types
 /////////////////////////
 
-import { ISearchResponse, ISearchCurrency, ICurrencyRate, IPendingTransaction } from "./types";
+import { 
+  IStageTransaction, 
+  ISearchResponse, 
+  ISearchCurrency, 
+  ICurrencyRate, 
+  IPendingTransaction 
+} from "./types";
 import { RootState } from 'state/store';
 
 
@@ -18,7 +24,7 @@ import { RootState } from 'state/store';
 
 const EXOLIX_SEARCH_END_POINT = 'https://exolix.com/api/v2/currencies?withNetworks=true&search=';
 const EXOLIX_RATE_END_POINT = 'https://exolix.com/api/v2/rate?'
-const EXOLIX_SEND_TRANSACTION_END_POINT = 'https://exolix.com/api/v2/transactions';
+const EXOLIX_STAGE_TRANSACTION_END_POINT = 'https://exolix.com/api/v2/transactions';
 const BALANCE_ZERO = '0.0';
 
 const LOCAL_TO_EXOLIX_NETWORK_MAP = {
@@ -88,12 +94,11 @@ export const getCurrencyRate = createAsyncThunk(
 
 
 // Stages a transaction on Exolix 
-export const sendTransaction = createAsyncThunk(
-  'swap/sendTransaction',
-  async ({coinFrom, coinTo, amount, withdrawalAddress, refundAddress}:{coinFrom: string, coinTo: string, amount: number, withdrawalAddress: string, refundAddress: string } ): Promise<IPendingTransaction> => {
-    console.log(coinFrom, coinTo, amount, withdrawalAddress, refundAddress);
-    
-    const response = await fetch(`${EXOLIX_SEND_TRANSACTION_END_POINT}`,{
+export const stageTransaction = createAsyncThunk(
+  'swap/stageTransaction',
+  async ({coinFrom, coinTo, amount, withdrawalAddress, refundAddress}: IStageTransaction ): Promise<IPendingTransaction> => {
+
+    const response = await fetch(`${EXOLIX_STAGE_TRANSACTION_END_POINT}`,{
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -109,8 +114,6 @@ export const sendTransaction = createAsyncThunk(
     });
 
     const data = await response.json();
-
-    console.log(data);
 
     return {
       id: data.id,

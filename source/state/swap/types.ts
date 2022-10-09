@@ -7,6 +7,14 @@ export enum SupportedExolixSwapNetworks {
   CONSTELLATION = 'Constellation'
 }
 
+export interface IStageTransaction {
+  coinFrom: string, 
+  coinTo: string, 
+  amount: number, 
+  withdrawalAddress: string, 
+  refundAddress: string,
+}
+
 export interface IPendingTransaction {
   id: string,
   amount: number, // Amount being sent
