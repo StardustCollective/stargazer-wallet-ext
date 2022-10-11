@@ -64,6 +64,9 @@ function updateState() {
     nfts: state.nfts,
     dapp: state.dapp,
     providers: state.providers,
+    swap: {
+      txIds: state.swap.txIds,
+    }
   });
 }
 

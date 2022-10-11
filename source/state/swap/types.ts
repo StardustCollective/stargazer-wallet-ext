@@ -7,6 +7,59 @@ export enum SupportedExolixSwapNetworks {
   CONSTELLATION = 'Constellation'
 }
 
+export enum ExolixTransactionStatuses {
+  WAIT = 'wait',
+  CONFIRMATION = 'confirmation',
+  EXCHANGING = 'exchanging',
+  SUCCESS = 'success',
+  OVERDUE = 'overdue',
+  REFUNDED = 'refunded',
+}
+
+export interface IExolixTransaction {
+  id: string,
+  amount: number,
+  amountTo: number,
+  coinFrom: {
+    coinCode: string,
+    coinName: string,
+    network: string,
+    networkName: string,
+    networkShortName: string,
+    icon: string,
+    memoName: string,
+  },
+  coinTo: {
+    coinCode: string,
+    coinName: string,
+    network: string,
+    networkName: string,
+    networkShortName: string,
+    icon: string,
+    memoName: string,
+  }
+  comment: string,
+  createdAt: string,
+  depositAddress: string,
+  depositExtraId: string | null,
+  withdrawalAddress: string,
+  withdrawalExtraId: string | null,
+  refundAddress: string,
+  refundExtraId: string | null,
+  hashIn: {
+    hash: string,
+    link: string,
+  },
+  hashOut: {
+    hash: string,
+    link: string,
+  } ,
+  rate: number,
+  rateType: string,
+  affiliateToken: string | null,
+  status: string,
+}
+
 export interface IStageTransaction {
   coinFrom: string, 
   coinTo: string, 
@@ -87,6 +140,7 @@ export default interface ISwapState {
   },
   pendingSwap: IPendingTransaction,
   txIds: string[];
+  transactionHistory: IExolixTransaction[];
 };
 
 

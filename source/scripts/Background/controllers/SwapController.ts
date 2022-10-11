@@ -5,7 +5,7 @@ import {
   getCurrencyRate,
   stageTransaction
 } from 'state/swap/api';
-import { setSwapFrom, setSwapTo, clearPendingSwap } from 'state/swap';
+import { setSwapFrom, setSwapTo, clearPendingSwap, addTxId } from 'state/swap';
 import { ISearchCurrency, ICurrencyNetwork, IStageTransaction } from 'state/swap/types';
 
 interface ICurrencyRateParams {
@@ -22,6 +22,7 @@ export interface ISwapController {
   getCurrencyRate: (params: ICurrencyRateParams) => void;
   stageTransaction: (params: IStageTransaction) => void;
   clearPendingSwap: () => void;
+  addTxId: (txId: string) => void;
 }
 
 class SwapController implements ISwapController {
@@ -62,6 +63,10 @@ class SwapController implements ISwapController {
       withdrawalAddress: params.withdrawalAddress,
       refundAddress: params.withdrawalAddress
     }));
+  }
+
+  addTxId(txId: string){
+    store.dispatch<any>(addTxId(txId));
   }
 
 }

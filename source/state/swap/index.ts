@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getCurrencyData, getSupportedAssets, getCurrencyRate, stageTransaction} from './api';
+import { getCurrencyData, getSupportedAssets, getCurrencyRate, stageTransaction } from './api';
 import ISwapState, { ISelectedCurrency } from './types';
 
 export const initialState: ISwapState = {
@@ -33,13 +33,23 @@ export const initialState: ISwapState = {
     loading: false,
   },
   pendingSwap: null,
-  txIds: null,
+  txIds: [],
 };
 
 const SwappingState = createSlice({
   name: 'swap',
   initialState,
   reducers: {
+    rehydrate(state: ISwapState, action: PayloadAction<ISwapState>) {
+      // txIds is the only key/values that are presisted for the swap state.
+      return {
+        ...state,
+        txIds: [
+          ...state.txIds,
+          ...action.payload.txIds,
+        ],
+      };
+    },
     setSwapFrom(state: ISwapState, action: PayloadAction<ISelectedCurrency>) {
       state.swapFrom.currency = action.payload.currency;
       state.swapFrom.network = action.payload.network;
@@ -47,6 +57,12 @@ const SwappingState = createSlice({
     setSwapTo(state: ISwapState, action: PayloadAction<ISelectedCurrency>) {
       state.swapTo.currency = action.payload.currency;
       state.swapTo.network = action.payload.network;
+    },
+    addTxId(state: ISwapState, action: PayloadAction<string>) {
+      state.txIds = [
+        ...state.txIds,
+        action.payload,
+      ];
     },
     clearPendingSwap(state: ISwapState) {
       state.pendingSwap = null;
@@ -116,6 +132,6 @@ const SwappingState = createSlice({
   }
 });
 
-export const { setSwapFrom, setSwapTo, clearPendingSwap } = SwappingState.actions;
+export const { setSwapFrom, setSwapTo, clearPendingSwap, addTxId } = SwappingState.actions;
 
 export default SwappingState.reducer;
