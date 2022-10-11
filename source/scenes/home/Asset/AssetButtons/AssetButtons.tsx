@@ -52,12 +52,6 @@ const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceiv
           <TextV3.CaptionStrong extraStyles={styles.label}>Buy</TextV3.CaptionStrong>
         </div>
       }
-      <div className={styles.buttonContainer} onClick={onSwapPressed}>
-        <div className={styles.icon}>
-          <img src={`/${SwapIcon}`} alt="swap-icon" />
-        </div>
-        <TextV3.Caption>{SWAP_STRING}</TextV3.Caption>
-      </div> 
       <div className={styles.buttonContainer} onClick={onSendPressed}>
         <div className={styles.icon}>
           <img src={`/${ArrowUpIcon}`} alt="arrow-up-icon" />

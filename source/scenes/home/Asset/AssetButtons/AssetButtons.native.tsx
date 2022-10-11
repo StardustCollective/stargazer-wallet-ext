@@ -57,12 +57,6 @@ const AssetButtons: FC<IAssetButtons> = ({ assetBuyable, onBuyPressed, onSendPre
           <TextV3.CaptionStrong extraStyles={styles.label}>Buy</TextV3.CaptionStrong>
         </TouchableOpacity>
       }
-      <TouchableOpacity onPress={onSwapPressed} style={styles.buttonContainer}>
-        <View style={styles.icon}>
-          <SwapIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />
-        </View>
-        <TextV3.Caption>{SWAP_STRING}</TextV3.Caption>
-      </TouchableOpacity>
       <TouchableOpacity onPress={onSendPressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
           <ArrowUpIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />
