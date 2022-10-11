@@ -8,12 +8,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 // Types
 /////////////////////////
 
-import { 
-  IStageTransaction, 
-  ISearchResponse, 
-  ISearchCurrency, 
-  ICurrencyRate, 
-  IPendingTransaction 
+import {
+  IStageTransaction,
+  ISearchResponse,
+  ISearchCurrency,
+  ICurrencyRate,
+  IPendingTransaction,
+  IExolixTransaction
 } from "./types";
 import { RootState } from 'state/store';
 
@@ -22,10 +23,21 @@ import { RootState } from 'state/store';
 // Constants
 /////////////////////////
 
-const EXOLIX_SEARCH_END_POINT = 'https://exolix.com/api/v2/currencies?withNetworks=true&search=';
-const EXOLIX_RATE_END_POINT = 'https://exolix.com/api/v2/rate?'
-const EXOLIX_STAGE_TRANSACTION_END_POINT = 'https://exolix.com/api/v2/transactions';
+const API_KEY = 'Zm5w8D384z4E9Yma24Adn24obD';
+const SWAP_BASE_URL = 'https://api.lattice.exchange/swapping';
+const SEARCH_END_POINT = '/currencies';
+const RATE_END_POINT = '/rate'
+const TRANSACTION_END_POINT = '/transactions';
 const BALANCE_ZERO = '0.0';
+const WITH_NETWORKS_BOOLEAN = true;
+const POST_METHOD = 'POST';
+const GET_METHOD = 'GET';
+
+const HEADERS = {
+  'x-lattice-api-key': API_KEY,
+  Accept: 'application/json',
+  'Content-Type': 'application/json'
+}
 
 const LOCAL_TO_EXOLIX_NETWORK_MAP = {
   'bsc': 'BNB Smart Chain (BEP20)',
@@ -42,15 +54,22 @@ const LOCAL_TO_EXOLIX_NETWORK_MAP = {
 export const getCurrencyData = createAsyncThunk(
   'swap/getCurrencyData',
   async (query: string): Promise<ISearchResponse> => {
-    const response = await fetch(`${EXOLIX_SEARCH_END_POINT}${query}`);
-    return response.json();
+    const response = await fetch(`${SWAP_BASE_URL}${SEARCH_END_POINT}`, {
+      method: POST_METHOD,
+      headers: HEADERS,
+      body: JSON.stringify({
+        search: query,
+        withNetworks: WITH_NETWORKS_BOOLEAN,
+      })
+    });
+    return await response.json();
   }
 );
 
 // Checks against the exolix api if the users assets are supported for swapping.
 export const getSupportedAssets = createAsyncThunk(
   'swap/getSupportedAssets',
-  async (arg, thunkAPI): Promise<ISearchCurrency[]> => {
+  async (_, thunkAPI): Promise<ISearchCurrency[]> => {
     let supportedAssets: ISearchCurrency[] = [];
 
     const { assets, vault } = thunkAPI.getState() as RootState;
@@ -64,7 +83,14 @@ export const getSupportedAssets = createAsyncThunk(
       const assetBalance = balances[key];
       // Only check assets whos balance is greater than zero.
       if (assetBalance !== BALANCE_ZERO) {
-        const response = await fetch(`${EXOLIX_SEARCH_END_POINT}${asset.symbol}`) as any;
+        const response = await fetch(`${SWAP_BASE_URL}${SEARCH_END_POINT}`, {
+          method: POST_METHOD,
+          headers: HEADERS,
+          body: JSON.stringify({
+            search: asset.symbol,
+            withNetworks: WITH_NETWORKS_BOOLEAN,
+          })
+        });
         const json = await response.json();
         const { count } = json;
         if (count) {
@@ -86,24 +112,29 @@ export const getSupportedAssets = createAsyncThunk(
 // Returns currency rate for a trading pair
 export const getCurrencyRate = createAsyncThunk(
   'swap/getCurrencyRate',
-  async ({coinFrom, coinTo, amount }:{coinFrom: string, coinTo: string, amount: number} ): Promise<ICurrencyRate> => {
-    const response = await fetch(`${EXOLIX_RATE_END_POINT}coinFrom=${coinFrom}&coinTo=${coinTo}&amount=${amount}`);
-    return response.json();
+  async ({ coinFrom, coinTo, amount }: { coinFrom: string, coinTo: string, amount: number }): Promise<ICurrencyRate> => {
+    const response = await fetch(`${SWAP_BASE_URL}${RATE_END_POINT}`, {
+      method: POST_METHOD,
+      headers: HEADERS,
+      body: JSON.stringify({
+        coinFrom,
+        coinTo,
+        amount,
+      })
+    });
+    const json = await response.json();
+    return json.data;
   }
 );
-
 
 // Stages a transaction on Exolix 
 export const stageTransaction = createAsyncThunk(
   'swap/stageTransaction',
-  async ({coinFrom, coinTo, amount, withdrawalAddress, refundAddress}: IStageTransaction ): Promise<IPendingTransaction> => {
+  async ({ coinFrom, coinTo, amount, withdrawalAddress, refundAddress }: IStageTransaction): Promise<IPendingTransaction> => {
 
-    const response = await fetch(`${EXOLIX_STAGE_TRANSACTION_END_POINT}`,{
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
+    const response = await fetch(`${SWAP_BASE_URL}${TRANSACTION_END_POINT}`, {
+      method: POST_METHOD,
+      headers: HEADERS,
       body: JSON.stringify({
         coinFrom,
         coinTo,
@@ -113,15 +144,38 @@ export const stageTransaction = createAsyncThunk(
       })
     });
 
-    const data = await response.json();
+    const json = await response.json();
 
     return {
-      id: data.id,
-      amount: data.amount,
-      amountTo: data.amountTo,
-      depositAddress: data.depositAddress,
-      withdrawalAddress: data.withdrawalAddress,
-      refundAddress: data.refundAddress,
+      id: json.data.id,
+      amount: json.data.amount,
+      amountTo: json.data.amountTo,
+      depositAddress: json.data.depositAddress,
+      withdrawalAddress: json.data.withdrawalAddress,
+      refundAddress: json.data.refundAddress,
     };
+  }
+)
+
+// Get Transaction Histry
+export const transactionHistory = createAsyncThunk(
+  'swap/stageTransaction',
+  async (_, thunkAPI): Promise<IExolixTransaction[]> => {
+
+    const { swap } = thunkAPI.getState() as RootState;
+    const { txIds } = swap;
+    const transactionHistory: IExolixTransaction[] = []
+
+    for(let i = 0; i < txIds.length; i++){
+      const id = txIds[i];
+      const response = await fetch(`${SWAP_BASE_URL}${TRANSACTION_END_POINT}/${id}`, {
+        method: POST_METHOD,
+        headers: HEADERS,
+      });
+      const json = await response.json();
+      transactionHistory.push(json.data);
+    }
+
+    return transactionHistory;
   }
 )

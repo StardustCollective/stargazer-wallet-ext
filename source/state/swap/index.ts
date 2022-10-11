@@ -34,6 +34,7 @@ export const initialState: ISwapState = {
   },
   pendingSwap: null,
   txIds: [],
+  transactionHistory: [],
 };
 
 const SwappingState = createSlice({
@@ -132,6 +133,6 @@ const SwappingState = createSlice({
   }
 });
 
-export const { setSwapFrom, setSwapTo, clearPendingSwap, addTxId } = SwappingState.actions;
+export const { setSwapFrom, setSwapTo, clearPendingSwap, addTxId, rehydrate } = SwappingState.actions;
 
 export default SwappingState.reducer;
