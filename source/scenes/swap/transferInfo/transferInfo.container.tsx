@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 
 import { getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 
-
 ///////////////////////
 // Selectors
 ///////////////////////
@@ -25,13 +24,6 @@ import walletSelectors from 'selectors/walletsSelectors';
 
 import useGasEstimate from 'hooks/useGasEstimate';
 import { useFiat } from 'hooks/usePrice';
-
-///////////////////////////
-// State
-///////////////////////////
-
-import store from 'state/store';
-import { clearPendingSwap } from 'state/swap';
 
 ///////////////////////
 // Selectors
@@ -62,13 +54,12 @@ import Container from 'components/Container';
 // Utils
 ///////////////////////////
 
-///////////////////////////
-// Utils
-///////////////////////////
-
 import { getWalletController } from 'utils/controllersUtils';
-
 import { getAccountController } from 'utils/controllersUtils';
+
+///////////////////////////
+// Container
+///////////////////////////
 
 const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
 

@@ -136,9 +136,9 @@ const SwapTokens: FC<ITransferInfo> = ({
           </View>
         ) : (
           <>
-            <View style={styles.gasPriceContainer}>
-              {gas.prices.length > 0 ? (
-                <>
+            {gas.prices.length > 0 && (
+              <>
+                <View style={styles.gasPriceContainer}>
                   <View style={styles.gasPriceHeader}>
                     <View style={styles.gasPriceHeaderLeft}>
                       <TextV3.LabelSemiStrong color={COLORS_ENUMS.BLACK}>{GAS_PRICE_IN_GWEI_STRING}</TextV3.LabelSemiStrong>
@@ -165,21 +165,12 @@ const SwapTokens: FC<ITransferInfo> = ({
                       />
                     </View>
                   </View>
-                </>
-              ) : (
-                <View style={styles.gasLoadingIndicator}>
-                  <DotIndicator 
-                    size={ACTIVITY_INDICATOR_SIZE} 
-                    count={ACTIVITY_INDICATOR_COUNT} 
-                    color={ACTIVITY_INDICATOR_COLOR} 
-                  />
+
                 </View>
-              )}
-            </View>
-            {gas.prices.length > 0 && (
-              <TextV3.CaptionRegular extraStyles={styles.gasEstimateLabel} color={COLORS_ENUMS.DARK_GRAY_200}>
-                {`${gas.price} GWEI, ${gas.fee} ${from.code} (≈ ${getFiatAmount(gas.fee, 2, gas.basePriceId)})`}
-              </TextV3.CaptionRegular>
+                <TextV3.CaptionRegular extraStyles={styles.gasEstimateLabel} color={COLORS_ENUMS.DARK_GRAY_200}>
+                  {`${gas.price} GWEI, ${gas.fee} ${from.code} (≈ ${getFiatAmount(gas.fee, 2, gas.basePriceId)})`}
+                </TextV3.CaptionRegular>
+              </>
             )}
           </>
         )}
@@ -193,7 +184,7 @@ const SwapTokens: FC<ITransferInfo> = ({
           />
         </View>
       </ScrollView>
-    </View>
+    </View >
   );
 };
 

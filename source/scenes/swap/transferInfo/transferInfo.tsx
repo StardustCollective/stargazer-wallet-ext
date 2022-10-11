@@ -144,9 +144,9 @@ const SwapTokens: FC<ITransferInfo> = ({
         </div>
       ) : (
         <>
-          <div className={styles.gasPriceContainer}>
-            {gas.prices.length > 0 ? (
-              <>
+          {gas.prices.length > 0 && (
+            <>
+              <div className={styles.gasPriceContainer}>
                 <div className={styles.gasPriceHeader}>
                   <div className={styles.gasPriceHeaderLeft}>
                     <TextV3.LabelSemiStrong color={COLORS_ENUMS.BLACK}>{GAS_PRICE_IN_GWEI_STRING}</TextV3.LabelSemiStrong>
@@ -174,15 +174,7 @@ const SwapTokens: FC<ITransferInfo> = ({
                     />
                   </div>
                 </div>
-              </>
-            ) : (
-              <div className={styles.gasLoadingIndicator}>
-                <CircularProgress size={CIRCULAR_PROGRESS_SIZE} />
               </div>
-            )}
-          </div>
-          {gas.prices.length > 0 && (
-            <>
               <TextV3.CaptionRegular extraStyles={styles.gasEstimateLabel} color={COLORS_ENUMS.DARK_GRAY_200}>
                 {`${gas.price} GWEI, ${gas.fee} ${from.code} (≈ ${getFiatAmount(gas.fee, 2, gas.basePriceId)})`}
               </TextV3.CaptionRegular>
@@ -197,10 +189,9 @@ const SwapTokens: FC<ITransferInfo> = ({
           type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
           onClick={onNextPressed}
           extraStyle={styles.buttonNormal}
-          disabled={!(gas.prices.length > 0)}
         />
       </div>
-    </div>
+    </div >
   );
 }
 
