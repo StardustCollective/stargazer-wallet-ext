@@ -169,7 +169,7 @@ export const transactionHistory = createAsyncThunk(
     for(let i = 0; i < txIds.length; i++){
       const id = txIds[i];
       const response = await fetch(`${SWAP_BASE_URL}${TRANSACTION_END_POINT}/${id}`, {
-        method: POST_METHOD,
+        method: GET_METHOD,
         headers: HEADERS,
       });
       const json = await response.json();
