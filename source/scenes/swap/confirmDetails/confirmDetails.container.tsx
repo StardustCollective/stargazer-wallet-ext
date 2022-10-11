@@ -35,6 +35,7 @@ import swapSelectors from 'selectors/swapSelectors';
 
 import { getNativeToken, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Components
@@ -50,6 +51,7 @@ import Container from 'components/Container';
 const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
 
   const accountController = getAccountController();
+  const walletController = getWalletController();
   const tempTx = accountController.getTempTx();
   const assets = useSelector((state: RootState) => state.assets);
   const { activeWallet } = useSelector((state: RootState) => state.vault);
@@ -91,8 +93,9 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
     });
   };
 
-  const onSwapPressed =  async() => {
+  const onSwapPressed =  async () => {
     await accountController.confirmTempTx();
+    walletController.swap.addTxId(pendingSwap.id);
     linkTo('/confirmation')
   }
 
