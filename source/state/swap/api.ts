@@ -158,8 +158,8 @@ export const stageTransaction = createAsyncThunk(
 )
 
 // Get Transaction Histry
-export const transactionHistory = createAsyncThunk(
-  'swap/stageTransaction',
+export const getTransactionHistory = createAsyncThunk(
+  'swap/getTransactionHistory',
   async (_, thunkAPI): Promise<IExolixTransaction[]> => {
 
     const { swap } = thunkAPI.getState() as RootState;

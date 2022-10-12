@@ -141,6 +141,7 @@ export default interface ISwapState {
   pendingSwap: IPendingTransaction,
   txIds: string[];
   transactionHistory: IExolixTransaction[];
+  selectedTransaction: IExolixTransaction;
 };
 
 

@@ -165,12 +165,12 @@ const SwapTokens: FC<ISwapTokens> = ({
               <>
                 <DotIndicator size={DOT_INDICATOR_SIZE} count={DOT_INDICATOR_COUNT} color={DOT_INDICATOR_COLOR}/>
               </>
-            ) : (
+            ) : currencyRate?.rate !== undefined ? (
               <TextV3.Caption
                 color={COLORS_ENUMS.DARK_GRAY_200}>
                 {EXCHANGE_RATE_ONE} {selectedCurrencySwapFrom?.code} ≈ {currencyRate?.rate} {selectedCurrencySwapTo?.code}
               </TextV3.Caption>
-            )}
+            ): (<></>)}
           </View>
         </View>
         <View style={styles.minimumAmount}>
@@ -185,12 +185,12 @@ const SwapTokens: FC<ISwapTokens> = ({
               <>
                 <DotIndicator size={DOT_INDICATOR_SIZE} count={DOT_INDICATOR_COUNT} color={DOT_INDICATOR_COLOR}/>
               </>
-            ) : (
+            ) : currencyRate?.minAmount !== undefined ? (
               <TextV3.Caption
                 color={isRateError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}>
                 {currencyRate?.minAmount} {selectedCurrencySwapFrom?.code}
               </TextV3.Caption>
-            )}
+            ): (<></>)}
           </View>
         </View>
         <View style={styles.nextButton}>

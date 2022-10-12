@@ -1,6 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getCurrencyData, getSupportedAssets, getCurrencyRate, stageTransaction } from './api';
-import ISwapState, { ISelectedCurrency } from './types';
+import { 
+  getCurrencyData, 
+  getSupportedAssets, 
+  getCurrencyRate, 
+  getTransactionHistory,
+  stageTransaction,
+} from './api';
+import ISwapState, { ISelectedCurrency, IExolixTransaction } from './types';
 
 export const initialState: ISwapState = {
   currencyData: null,
@@ -35,6 +41,7 @@ export const initialState: ISwapState = {
   pendingSwap: null,
   txIds: [],
   transactionHistory: [],
+  selectedTransaction: null,
 };
 
 const SwappingState = createSlice({
@@ -58,6 +65,9 @@ const SwappingState = createSlice({
     setSwapTo(state: ISwapState, action: PayloadAction<ISelectedCurrency>) {
       state.swapTo.currency = action.payload.currency;
       state.swapTo.network = action.payload.network;
+    },
+    setSelectedTransaction(state: ISwapState, action: PayloadAction<IExolixTransaction>) {
+      state.selectedTransaction = action.payload;
     },
     addTxId(state: ISwapState, action: PayloadAction<string>) {
       state.txIds = [
@@ -130,9 +140,24 @@ const SwappingState = createSlice({
       state.error = action.payload;
       state.pendingSwap = null;
     });
+    builder.addCase(getTransactionHistory.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+      state.pendingSwap = null;
+    });
+    builder.addCase(getTransactionHistory.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.transactionHistory = action.payload;
+    });
+    builder.addCase(getTransactionHistory.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.pendingSwap = null;
+    });
   }
 });
 
-export const { setSwapFrom, setSwapTo, clearPendingSwap, addTxId, rehydrate } = SwappingState.actions;
+export const { setSwapFrom, setSwapTo, clearPendingSwap, addTxId, rehydrate, setSelectedTransaction } = SwappingState.actions;
 
 export default SwappingState.reducer;

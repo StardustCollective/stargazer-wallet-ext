@@ -2,7 +2,7 @@
 // Imports
 ///////////////////////////
 
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect, useState, FC, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 import find from 'lodash/find';
@@ -13,6 +13,7 @@ import find from 'lodash/find';
 
 import swapSelectors from 'selectors/swapSelectors';
 import walletSelectors from 'selectors/walletsSelectors';
+import historyHeader from 'navigation/headers/history';
 
 ///////////////////////////
 // Utils
@@ -50,7 +51,7 @@ const DEFAULT_TO_AMOUNT = 0;
 // Container
 ///////////////////////////
 
-const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
+const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
   const walletController = getWalletController();
@@ -66,6 +67,13 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const activeAsset = useSelector(walletSelectors.getActiveAsset);
 
+  // Add the transaction history button to the header.
+  useLayoutEffect(() => {
+    const onRightIconClick = () => {
+      linkTo('/swapHistory');
+    };
+    navigation.setOptions(historyHeader({ navigation, onRightIconClick }));
+  }, []);
 
   // Update the active asset when the swapFrom state changes
   useEffect(() => {

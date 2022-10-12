@@ -37,6 +37,11 @@ const getSupportedAssets = (state: RootState) => state.swap.supportedAssets;
 const getCurrencyRate = (state: RootState) => state.swap.currencyRate.rate;
 
 /**
+ * Return the transaction history.
+ */
+ const getTransactionHistory = (state: RootState) => state.swap.transactionHistory;
+
+/**
  * Returns the loading state for the currency rate.
  */
  const getCurrencyRateLoading = (state: RootState) => state.swap.currencyRate.loading;
@@ -81,5 +86,6 @@ export default {
   getSupportedAssets,
   getCurrencyRate,
   getCurrencyRateLoading,
+  getTransactionHistory,
   selectSupportedCurrencyData,
 };

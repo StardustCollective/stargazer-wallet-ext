@@ -31,7 +31,7 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
-const ConfirmationContainer: FC<IConfirmationContainer> = ({navigation, route}) => {
+const ConfirmationContainer: FC<IConfirmationContainer> = ({navigation}) => {
 
   const linkTo = useLinkTo();
 

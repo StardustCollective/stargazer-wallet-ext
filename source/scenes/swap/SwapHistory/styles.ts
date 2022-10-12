@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderTopWidth: 1,
     borderColor: COLORS.gray_light_100,
+    backgroundColor: COLORS.white,
   },
   historyCellLeft: {
     flex: 1,
@@ -54,8 +55,11 @@ const styles = StyleSheet.create({
   swapInfo: {
     marginLeft: 12,
   },
-
-
+  listEmptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 export default styles;

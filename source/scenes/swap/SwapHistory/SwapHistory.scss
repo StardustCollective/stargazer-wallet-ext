@@ -3,6 +3,72 @@
 .container {
   display: flex;
   flex: 1;
+  background-color: $gray-light-300;
+  overflow: auto;
+  height: 520px;
   flex-direction: column;
-  width: 100%;
+
+  .historyCell {
+    display: flex;
+    flex-direction: row;
+  }
+  .historyCellSettled {
+    border-top: 1px solid $gray-light-100;
+    border-bottom: 1px solid $gray-light-100;
+    background: $white;
+  }
+  .historyCellProcessing {
+    background-color: $yellow-light;
+  }
+  .historyCellLeft {
+    display: flex;
+    flex: 2;
+    align-items: center;
+    margin: 16px 0px 16px 16px;
+    flex-direction: 'row';
+    
+    .activityIndicator {
+      display: flex;
+      background-color: $purple-dark-2;
+      border-radius: 32px;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+
+      .circularProgress {
+        color: $white;
+      }
+    }
+    .processingText {
+      margin-left: 12px;
+      color: $orange;
+    }
+    .swapInfo {
+      display: flex;
+      flex-direction: column;
+      margin-left: 12px;
+    }
+  }
+
+  .historyCellRight {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 24px;
+    flex-direction: row;
+
+    .amountText {
+      margin-right: 13px;
+    }
+  }
+}
+
+.listEmpty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }

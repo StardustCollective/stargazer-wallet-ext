@@ -36,6 +36,7 @@ import swapSelectors from 'selectors/swapSelectors';
 import { getNativeToken, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { getWalletController } from 'utils/controllersUtils';
+import NavUtils from 'navigation/util';
 
 ///////////////////////////
 // Components
@@ -48,7 +49,7 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
-const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
+const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
 
   const accountController = getAccountController();
   const walletController = getWalletController();
@@ -100,7 +101,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
   }
 
   const onCancelPressed = () => {
-    alert('Swap Canceled');
+      NavUtils.popToTop(navigation);
   }
 
   return (
@@ -110,7 +111,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
         assetInfo={assetInfo}
         activeWallet={activeWallet}
         feeUnit={feeUnit}
-        transactionId={pendingSwap.id}
+        transactionId={pendingSwap?.id}
         getSendAmount={getSendAmount}
         getFeeAmount={getFeeAmount}
         getTotalAmount={getTotalAmount}

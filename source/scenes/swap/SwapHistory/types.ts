@@ -1,6 +1,4 @@
-import { ChangeEvent, Ref } from 'react';
-import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
-import { IAssetInfoState } from 'state/assets/types';
+import { IExolixTransaction } from 'state/swap/types'
 
 export interface ISwapHistoryContainer {
   navigation: any;
@@ -8,4 +6,7 @@ export interface ISwapHistoryContainer {
 }
 
 export default interface ISwapHistory{
+  transactionHistoryData: IExolixTransaction[];
+  onTransactionCellPressed: (transaction: IExolixTransaction) => void;
+  isLoading: boolean;
 }

@@ -48,6 +48,7 @@ import ConfirmDetails from 'scenes/swap/ConfirmDetails';
 import Confirmation from 'scenes/swap/Confirmation';
 import SwapHistory from 'scenes/swap/SwapHistory';
 import TokenList from 'scenes/swap/TokenList';
+import TransactionDetails from 'scenes/swap/TransactionDetails';
 
 ///////////////////////////
 // Navigation
@@ -103,7 +104,8 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   confirmDetails: 'Confirm Details',
   confirmation: '',
   swapHistory: 'Swap History',
-  tokenList: ''
+  tokenList: '',
+  transactionDetails: 'Transaction Details',
 };
 
 const Auth = () => {
@@ -161,6 +163,7 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirmation }} name={screens.swap.confirmation}  component={Confirmation} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.swapHistory }} name={screens.swap.swapHistory}  component={SwapHistory} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.tokenList }} name={screens.swap.tokenList}  component={TokenList} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.transactionDetails }} name={screens.swap.transactionDetails}  component={TransactionDetails} />
         </>
       )}
       <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.import }} name={screens.common.import} component={Import} />

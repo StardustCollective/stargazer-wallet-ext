@@ -88,6 +88,8 @@ const SwapTokens: FC<ISwapTokens> = ({
     }
   };
 
+  console.log(currencyRate?.rate);
+
   return (
     <div className={styles.container}>
       <div className={styles.provider}>
@@ -155,14 +157,16 @@ const SwapTokens: FC<ISwapTokens> = ({
         <div className={styles.rateValue}>
           {isCurrencyRateLoading ? (
             <>
-              <CircularProgress  size={CIRCULAR_PROGRESS_SIZE}/>
+              <CircularProgress size={CIRCULAR_PROGRESS_SIZE} />
             </>
-          ) : (
-            <TextV3.Caption
-              color={COLORS_ENUMS.DARK_GRAY_200}>
-              {EXCHANGE_RATE_ONE} {selectedCurrencySwapFrom?.code} ≈ {currencyRate?.rate} {selectedCurrencySwapTo?.code}
-            </TextV3.Caption>
-          )}
+          ) : currencyRate?.rate !== undefined ? (
+            <>
+              <TextV3.Caption
+                color={COLORS_ENUMS.DARK_GRAY_200}>
+                {EXCHANGE_RATE_ONE} {selectedCurrencySwapFrom?.code} ≈ {currencyRate?.rate} {selectedCurrencySwapTo?.code}
+              </TextV3.Caption>
+            </>
+          ) : (<></>)}
         </div>
       </div>
       <div className={styles.minimumAmount}>
@@ -177,12 +181,12 @@ const SwapTokens: FC<ISwapTokens> = ({
             <>
               <CircularProgress size={CIRCULAR_PROGRESS_SIZE} />
             </>
-          ) : (
+          ) : currencyRate?.minAmount !== undefined ? (
             <TextV3.Caption
               color={isRateError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}>
               {currencyRate?.minAmount?.toString()} {selectedCurrencySwapFrom?.code}
             </TextV3.Caption>
-          )}
+          ): (<></>)}
         </div>
       </div>
       <div className={styles.nextButton}>

@@ -44,6 +44,7 @@ export default {
     confirmation: 'confirmation',
     swapHistory: 'swap-history',
     tokenList: 'token-list',
+    transactionDetails: 'transaction-details',
   },
 
   ////////////////////////////
