@@ -119,14 +119,14 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   return (
     <Container>
       <TransferInfo
-        depositAddress={pendingSwap.depositAddress}
+        depositAddress={pendingSwap?.depositAddress}
         from={{
-          code: swapFrom.currency.code,
-          amount: pendingSwap.amount
+          code: swapFrom?.currency.code,
+          amount: pendingSwap?.amount
         }}
         to={{
-          code: swapTo.currency.code,
-          amount: pendingSwap.amountTo,
+          code: swapTo?.currency.code,
+          amount: pendingSwap?.amountTo,
         }}
         gas={{
           prices: gasPrices,
