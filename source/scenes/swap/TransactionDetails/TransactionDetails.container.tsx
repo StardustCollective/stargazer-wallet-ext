@@ -1,16 +1,10 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { FC } from 'react';
 
 ///////////////////////////
 // Imports
 ///////////////////////////
 
 import { useSelector } from 'react-redux';
-
-///////////////////////////
-// Hooks
-///////////////////////////
-
-import { useFiat } from 'hooks/usePrice';
 
 ///////////////////////////
 // Types
@@ -32,7 +26,7 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
-const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
+const TransactionDetailsContainer: FC<ISwapTokensContainer> = () => {
 
   const { selectedTransaction }: { selectedTransaction: IExolixTransaction } = useSelector((state: RootState) => state.swap);
 
@@ -45,4 +39,4 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = () => {
   );
 };
 
-export default ConfirmDetailsContainer;
+export default TransactionDetailsContainer;
