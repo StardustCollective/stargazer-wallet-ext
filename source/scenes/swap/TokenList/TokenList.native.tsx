@@ -79,7 +79,7 @@ const ConfirmDetails: FC<ITokenList> = ({
   const RenderFromItem = ({ item }) => {
     return (
       <View key={item?.code}>
-        <TouchableOpacity style={styles.tokenCell} onPress={() => onTokenCellPressed(item, null)} >
+        <TouchableOpacity style={styles.tokenCell} onPress={() => onTokenCellPressed(item, item.networks[0])} >
           <View style={styles.tokenCellLeft}>
             <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
             <View>
@@ -89,6 +89,7 @@ const ConfirmDetails: FC<ITokenList> = ({
           </View>
           <View style={styles.tokenCellRight}>
             <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(item?.balance), 16, 20), 4)}`}</TextV3.CaptionStrong>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item.networks[0].name}</TextV3.Caption>
           </View>
         </TouchableOpacity>
       </View>

@@ -144,7 +144,9 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     setIsNextButtonLoading(true);
     walletController.swap.stageTransaction({
       coinFrom: swapFrom.currency.code,
+      networkFrom: swapFrom.network.network,
       coinTo: swapTo.currency.code,
+      networkTo: swapTo.network.network,
       amount: currencyRate?.fromAmount,
       withdrawalAddress: activeAsset.address,
       refundAddress: activeAsset.address

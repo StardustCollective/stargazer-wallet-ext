@@ -62,7 +62,9 @@ export interface IExolixTransaction {
 
 export interface IStageTransaction {
   coinFrom: string, 
+  networkFrom: string,
   coinTo: string, 
+  networkTo: string,
   amount: number, 
   withdrawalAddress: string, 
   refundAddress: string,

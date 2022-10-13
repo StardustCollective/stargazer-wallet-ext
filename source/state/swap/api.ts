@@ -44,7 +44,9 @@ const HEADERS = {
   'Content-Type': 'application/json'
 }
 
-const LOCAL_TO_EXOLIX_NETWORK_MAP = {
+const LOCAL_TO_EXOLIX_NETWORK_MAP: {
+  [key: string]: string
+} = {
   'bsc': 'BNB Smart Chain (BEP20)',
   'matic': 'Polygon',
   'avalanche-mainnet': 'Avalanche',
@@ -97,15 +99,30 @@ export const getSupportedAssets = createAsyncThunk(
           })
         });
         const json = await response.json();
-        const { count } = json;
+        const { count, data } = json;
         if (count) {
-          supportedAssets.push({
-            id: asset.id,
-            code: asset.symbol,
-            name: asset.label,
-            icon: asset.logo,
-            balance: assetBalance,
-          })
+          // Check if the asset network is supported by exolix
+          for(let j = 0; j < data.length; j++){
+            const currency = data[j];
+            if(currency.code === asset.symbol){
+              const mappedLocalToExolixNetwork: string = LOCAL_TO_EXOLIX_NETWORK_MAP[asset.network] as any;
+              for(let k = 0; k < currency.networks.length; k++){
+                const network = currency.networks[k];
+                if(mappedLocalToExolixNetwork === network.name || asset.symbol === network.network){
+                  supportedAssets.push({
+                    id: asset.id,
+                    code: asset.symbol,
+                    name: asset.label,
+                    icon: asset.logo,
+                    balance: assetBalance,
+                    networks: [network]
+                  })
+                  break;
+                }
+              }
+              break;
+            }
+          }
         }
       }
     }
@@ -135,14 +152,15 @@ export const getCurrencyRate = createAsyncThunk(
 // Stages a transaction on Exolix 
 export const stageTransaction = createAsyncThunk(
   'swap/stageTransaction',
-  async ({ coinFrom, coinTo, amount, withdrawalAddress, refundAddress }: IStageTransaction): Promise<IPendingTransaction> => {
-
+  async ({ coinFrom, networkFrom, coinTo, networkTo, amount, withdrawalAddress, refundAddress }: IStageTransaction): Promise<IPendingTransaction> => {
     const response = await fetch(`${SWAP_BASE_URL}${TRANSACTION_END_POINT}`, {
       method: POST_METHOD,
       headers: HEADERS,
       body: JSON.stringify({
         coinFrom,
+        networkFrom,
         coinTo,
+        networkTo,
         amount,
         withdrawalAddress,
         refundAddress,

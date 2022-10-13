@@ -69,7 +69,9 @@ class SwapController implements ISwapController {
   stageTransaction(params: IStageTransaction) {
     store.dispatch<any>(stageTransaction({
       coinFrom: params.coinFrom,
+      networkFrom: params.networkFrom,
       coinTo: params.coinTo,
+      networkTo: params.networkTo,
       amount: params.amount,  
       withdrawalAddress: params.withdrawalAddress,
       refundAddress: params.withdrawalAddress

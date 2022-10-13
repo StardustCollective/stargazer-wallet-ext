@@ -57,7 +57,7 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
   const RenderFromItem = (currencyData: ISearchCurrency[]) => {
     return currencyData?.map((item: ISearchCurrency) => {
       return (
-        <div key={item.code} className={styles.tokenCell} onClick={() => onTokenCellPressed(item, null)} >
+        <div key={item.code} className={styles.tokenCell} onClick={() => onTokenCellPressed(item, item.networks[0])} >
           <div className={styles.tokenCellLeft}>
             <img src={item.icon} className={styles.tokenIcon} />
             <div className={styles.tokenCellLeftText}>
@@ -67,6 +67,7 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
           </div>
           <div className={styles.tokenCellRight}>
             <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(item.balance), 16, 20), 4)}`}</TextV3.CaptionStrong>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item.networks[0].name}</TextV3.Caption>
           </div>
         </div>
       )
