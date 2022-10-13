@@ -5,6 +5,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 /////////////////////////
+// Utils
+/////////////////////////
+
+import { STARGAZER_API_KEY } from 'utils/envUtil';
+
+/////////////////////////
 // Types
 /////////////////////////
 
@@ -23,7 +29,6 @@ import { RootState } from 'state/store';
 // Constants
 /////////////////////////
 
-const API_KEY = 'Zm5w8D384z4E9Yma24Adn24obD';
 const SWAP_BASE_URL = 'https://api.lattice.exchange/swapping';
 const SEARCH_END_POINT = '/currencies';
 const RATE_END_POINT = '/rate'
@@ -34,7 +39,7 @@ const POST_METHOD = 'POST';
 const GET_METHOD = 'GET';
 
 const HEADERS = {
-  'x-lattice-api-key': API_KEY,
+  'x-lattice-api-key': STARGAZER_API_KEY,
   Accept: 'application/json',
   'Content-Type': 'application/json'
 }
@@ -81,7 +86,7 @@ export const getSupportedAssets = createAsyncThunk(
       const key = assetsKeysArray[i];
       const asset = assetsArray[i];
       const assetBalance = balances[key];
-      // Only check assets whos balance is greater than zero.
+      // Only check assets whos balance are greater than zero.
       if (assetBalance !== BALANCE_ZERO) {
         const response = await fetch(`${SWAP_BASE_URL}${SEARCH_END_POINT}`, {
           method: POST_METHOD,
