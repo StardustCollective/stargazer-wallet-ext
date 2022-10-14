@@ -24,7 +24,8 @@ import commonStyles from './../styles.scss';
 // Interfaces
 ///////////////////////////
 interface IDefaultHeader {
-  navigation: any
+  navigation: any,
+  onBackPressed: () => void
 }
 
 ///////////////////////////
@@ -33,6 +34,7 @@ interface IDefaultHeader {
 
 const defaultHeader = ({
   navigation,
+  onBackPressed,
 }: IDefaultHeader) => {
 
   const onBackButtonClicked = () => {
@@ -45,7 +47,7 @@ const defaultHeader = ({
       <IconButton
         id={'header-backButton'}
         className={`${styles.buttonLeft} ${styles.more}`}
-        onClick={onBackButtonClicked}
+        onClick={onBackPressed || onBackButtonClicked}
       >
         <img src={`/${ArrowLeftIcon}`} />
       </IconButton>
