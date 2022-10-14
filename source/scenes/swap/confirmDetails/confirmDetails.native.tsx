@@ -53,6 +53,7 @@ const ConfirmDetails: FC<ITransferInfo> = ({
   activeWallet,
   feeUnit,
   transactionId,
+  isSwapButtonLoading,
   getSendAmount,
   getFeeAmount,
   getTotalAmount,
@@ -161,6 +162,8 @@ const ConfirmDetails: FC<ITransferInfo> = ({
             title={SWAP_BUTTON_STRING}
             size={BUTTON_SIZES_ENUM.LARGE}
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+            loading={isSwapButtonLoading}
+            disabled={isSwapButtonLoading}
             onPress={onSwapPressed}
           />
         </View>

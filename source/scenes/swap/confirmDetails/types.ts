@@ -13,6 +13,7 @@ export default interface ITransferInfo {
   activeWallet: IWalletState,
   feeUnit: string,
   transactionId: string,
+  isSwapButtonLoading: boolean,
   getSendAmount: () => string;
   getFeeAmount: () => number;
   getTotalAmount: () => string;

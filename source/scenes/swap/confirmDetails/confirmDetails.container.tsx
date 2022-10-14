@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 ///////////////////////////
 // Imports
@@ -63,6 +63,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const assetNetwork = assets[activeAsset?.id]?.network;
   const linkTo = useLinkTo();
   const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
+  const [isSwapButtonLoading, setIsSwapButtonLoading ] = useState<boolean>(false);
 
   const getSendAmount = () => {
     const fiatAmount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8, assetInfo.priceId));
@@ -95,6 +96,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   };
 
   const onSwapPressed =  async () => {
+    setIsSwapButtonLoading(true);
     await accountController.confirmTempTx();
     walletController.swap.addTxId(pendingSwap.id);
     linkTo('/confirmation')
@@ -116,7 +118,8 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
         getFeeAmount={getFeeAmount}
         getTotalAmount={getTotalAmount}
         onSwapPressed={onSwapPressed}
-        onCancelPressed={onCancelPressed} 
+        onCancelPressed={onCancelPressed}
+        isSwapButtonLoading={isSwapButtonLoading}
         />
     </Container>
   );
