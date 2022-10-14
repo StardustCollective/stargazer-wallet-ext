@@ -158,9 +158,9 @@ const Auth = () => {
           
           {/* Swap Stack */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.swapTokens }} name={screens.swap.swapTokens}  component={SwapTokens} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.transferInfo }} name={screens.swap.transferInfo}  component={TransferInfo} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.transferInfo, gestureEnabled: false }} name={screens.swap.transferInfo}  component={TransferInfo} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirmDetails }} name={screens.swap.confirmDetails}  component={ConfirmDetails} />
-          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirmation, headerLeft: null}} name={screens.swap.confirmation}  component={Confirmation} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.confirmation, headerLeft: null, gestureEnabled: false}} name={screens.swap.confirmation}  component={Confirmation} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.swapHistory }} name={screens.swap.swapHistory}  component={SwapHistory} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.tokenList }} name={screens.swap.tokenList}  component={TokenList} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.transactionDetails }} name={screens.swap.transactionDetails}  component={TransactionDetails} />
