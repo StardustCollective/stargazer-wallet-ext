@@ -81,14 +81,11 @@ const SwapTokens: FC<ISwapTokens> = ({
 
   const fromOnChangeText = (e: any) => {
     const text = e.target.value;
-    console.log('From Changed: ' + text);
     setFromInputValue(text);
     if (onFromChangeText) {
       onFromChangeText(text);
     }
   };
-
-  console.log(currencyRate?.rate);
 
   return (
     <div className={styles.container}>
