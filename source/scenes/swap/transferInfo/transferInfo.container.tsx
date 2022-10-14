@@ -82,8 +82,8 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   }, [])
 
   const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice, gasLimit } = useGasEstimate({
-    toAddress: pendingSwap.depositAddress,
-    fromAddress: asset.address,
+    toAddress: pendingSwap?.depositAddress,
+    fromAddress: asset?.address,
     asset,
     gas,
   });
