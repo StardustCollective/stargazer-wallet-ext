@@ -44,6 +44,8 @@ import {
   CANCEL_BUTTON_STRING
 } from './constants';
 
+const SEND_TO_ADDRESS_NUMBER_OF_LINES = 1;
+
 
 const ConfirmDetails: FC<ITransferInfo> = ({
   tempTx,
@@ -94,6 +96,7 @@ const ConfirmDetails: FC<ITransferInfo> = ({
           <TextV3.CaptionRegular
             color={COLORS_ENUMS.DARK_GRAY_200}
             extraStyles={styles.detailValue}
+            numberOfLines={SEND_TO_ADDRESS_NUMBER_OF_LINES}
           >
             {tempTx?.toAddress}
           </TextV3.CaptionRegular>
