@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   },
   tokenSwapText: {
     marginTop: 41,
+    textAlign: 'center'
   },
   statusText: {
     marginTop: 12,
