@@ -3,7 +3,6 @@
 ///////////////////////
 
 import React, { FC } from 'react';
-import clsx from 'clsx';
 
 ///////////////////////
 // Components
@@ -29,7 +28,7 @@ import IConfirmationInfo from './types';
 ///////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import styles from './confirmation.scss';
+import styles from './Confirmation.scss';
 
 ///////////////////////
 // constants

@@ -22,7 +22,7 @@ import ITransferInfo from './types';
 ///////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import styles from './transactionDetails.scss';
+import styles from './TransactionDetails.scss';
 
 ///////////////////////
 // constants

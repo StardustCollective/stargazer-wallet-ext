@@ -37,7 +37,7 @@ import ISwapTokens from './types';
 ///////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import styles from './swapTokens.scss';
+import styles from './SwapTokens.scss';
 
 ///////////////////////
 // constants

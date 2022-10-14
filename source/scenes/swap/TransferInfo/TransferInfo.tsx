@@ -26,7 +26,7 @@ import ITransferInfo from './types';
 ///////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import styles from './transferInfo.scss';
+import styles from './TransferInfo.scss';
 
 ///////////////////////
 // constants

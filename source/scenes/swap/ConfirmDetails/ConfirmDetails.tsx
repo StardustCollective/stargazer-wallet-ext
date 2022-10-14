@@ -34,7 +34,7 @@ import { ellipsis } from '../../home/helpers';
 ///////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import styles from './confirmDetails.scss';
+import styles from './ConfirmDetails.scss';
 
 ///////////////////////
 // constants
