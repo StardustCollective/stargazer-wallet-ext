@@ -1,0 +1,149 @@
+@import '~assets/styles/_variables';
+
+.container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  margin: 16px;
+
+  .provider {
+    display: flex;
+    flex-direction: row;
+    height: 64px;
+    margin-bottom: 19px;
+    background-color: $white;
+    border-radius: 8px;
+    border: 1px solid $gray-600;
+
+    .thirdPartyTextView {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      margin-left: 16px;
+    }
+
+    .exolixTextView {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      align-items: center;
+      margin-right: 16px;
+    }
+  }
+
+  .fromInputLabels {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    margin-bottom: 9px;
+
+    .fromInputSwapFromLabel {
+      display: flex;
+      flex: 1;
+      align-items: flex-end;
+    }
+
+    .fromInputBalanceLabel {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      align-items: flex-end;
+    }
+  }
+
+  .fromCurrencyInputContainer {
+    margin-bottom: 16px;
+  }
+
+  .toInputLabels {
+    width: 100%;
+    flex-direction: row;
+    margin-bottom: 9px;
+
+    .toInputSwapFromLabel {
+      display: flex;
+      flex: 1;
+      align-items: flex-end;
+    }
+
+    .toInputBalanceLabel {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      align-items: flex-end;
+    }
+  }
+
+  .toInputLabels {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 9px;
+
+    .toInputSwapLabel {
+      display: flex;
+      flex: 1;
+      align-items: flex-end;
+    }
+
+    .swapIcon {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toBlank {
+      display: flex;
+      flex: 1;
+    }
+  }
+
+  .toCurrencyInputContainer {
+    margin-bottom: 24px;
+  }
+
+  .rate {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 44px;
+    border-top: 1px solid $gray-200;
+    border-bottom: 1px solid $gray-200;
+
+    .rateLabel {
+      display: flex;
+      flex: 1;
+    }
+
+    .rateValue {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+    }
+  }
+
+  .minimumAmount {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 44px;
+    border-bottom: 1px solid $gray-200;
+
+    .minimumAmountLabel {
+      display: flex;
+      flex: 1;
+    }
+
+    .minimumAmountValue {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+    }
+  }
+  .nextButton {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+  }
+}
