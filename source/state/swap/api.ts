@@ -200,6 +200,6 @@ export const getTransactionHistory = createAsyncThunk(
       transactionHistory.push(json.data);
     }
 
-    return transactionHistory;
+    return transactionHistory.reverse();
   }
 )
