@@ -180,7 +180,6 @@ const SwapTokens: FC<ITransferInfo> = ({
             size={BUTTON_SIZES_ENUM.FULL_WIDTH}
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             onPress={onNextPressed}
-            disabled={!(gas.prices.length > 0)}
           />
         </View>
       </ScrollView>
