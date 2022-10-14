@@ -30,11 +30,8 @@ import styles from './styles';
 // constants
 ///////////////////////
 
-const ACTIVITY_INDICATOR_SIZE = 6;
-const ACTIVITY_INDICATOR_COUNT = 3;
 const DEPOSIT_ADDRESS_NUMBER_OF_LINES = 1;
 const TRANSACTION_FEE_KEYBOARD_TYPE = 'numeric';
-
 
 import {
   DEPOSIT_ADDRESS_STRING,
@@ -58,7 +55,8 @@ const SwapTokens: FC<ITransferInfo> = ({
   gas,
   onGasPriceChange,
   getFiatAmount,
-  onRecommendedPress
+  onRecommendedPress,
+  onTransactionFeeChange
 }) => {
 
   return (
@@ -119,7 +117,7 @@ const SwapTokens: FC<ITransferInfo> = ({
             </TextV3.CaptionStrong>
             <View style={[styles.dataValue, styles.trasnsactionFee]}>
               <View style={styles.transactionFeeInput}>
-                <TextInput defaultValue={TRANSACTION_FEE_DEFAULT_VALUE} keyboardType={TRANSACTION_FEE_KEYBOARD_TYPE} style={styles.transactionFeeTextField} />
+                <TextInput onChangeText={onTransactionFeeChange} defaultValue={TRANSACTION_FEE_DEFAULT_VALUE} keyboardType={TRANSACTION_FEE_KEYBOARD_TYPE} style={styles.transactionFeeTextField} />
               </View>
               <View style={styles.transactionFeeRecommend}>
                 <TouchableOpacity onPress={onRecommendedPress}>

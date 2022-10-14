@@ -56,7 +56,8 @@ const SwapTokens: FC<ITransferInfo> = ({
   gas,
   onGasPriceChange,
   getFiatAmount,
-  onRecommendedPress
+  onRecommendedPress,
+  onTransactionFeeChange
 }) => {
 
   return (

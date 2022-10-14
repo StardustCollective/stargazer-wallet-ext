@@ -28,6 +28,7 @@ import { getWalletController } from 'utils/controllersUtils';
 import { ISwapTokensContainer } from './types';
 import { ISelectedCurrency, ICurrencyRate, IPendingTransaction } from 'state/swap/types';
 import { RootState } from 'state/store';
+import { AssetType, IAssetState } from 'state/vault/types';
 
 ///////////////////////////
 // Components
@@ -55,6 +56,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
 
   const linkTo = useLinkTo();
   const walletController = getWalletController();
+  const [depositAsset, setDepositAsset] = useState<IAssetState>(null);
   const [isBalanceError, setIsBalanceError] = useState<boolean>(false);
   const [fromAmount, setFromAmount] = useState<number>(0);
   const [isRateError, setIsRateError] = useState<boolean>(false);
@@ -65,7 +67,6 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const isCurrencyRateLoading: boolean = useSelector(swapSelectors.getCurrencyRateLoading);
   const pendingSwap: IPendingTransaction = useSelector(swapSelectors.getPendingSwap);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
-  const activeAsset = useSelector(walletSelectors.getActiveAsset);
 
   // Add the transaction history button to the header.
   useLayoutEffect(() => {
@@ -78,10 +79,40 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   // Update the active asset when the swapFrom state changes
   useEffect(() => {
     if (swapFrom.currency !== null) {
-      const newActiveAsset = find(activeNetworkAssets, { id: swapFrom.currency.id })
+      const assetName = swapFrom?.currency?.name.toLocaleLowerCase() === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
+      const newActiveAsset = find(
+        activeNetworkAssets,
+        { id: assetName }
+      );
       walletController.account.updateAccountActiveAsset(newActiveAsset);
     }
   }, [swapFrom]);
+
+  // Update the active asset when the swapFrom state changes
+  useEffect(() => {
+    // Set the active asset.
+    if (swapFrom.currency !== null) {
+      const assetName = swapFrom?.currency?.name.toLocaleLowerCase() === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
+      const newActiveAsset = find(
+        activeNetworkAssets,
+        { id: assetName }
+      );
+      walletController.account.updateAccountActiveAsset(newActiveAsset);
+    }
+  }, [swapFrom]);
+
+  // Set the deposit asset to be used for the withdrawal and refund addresses.
+  useEffect(() => {
+    // Set the active asset.
+    if (swapTo.currency !== null) {
+      const assetName = swapTo?.currency?.name.toLocaleLowerCase() === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
+      const depositAsset = find(
+        activeNetworkAssets,
+        { id: assetName }
+      );
+      setDepositAsset(depositAsset);
+    }
+  }, [swapTo]);
 
   // Manages next button enabled or disabled state.
   useEffect(() => {
@@ -101,9 +132,9 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   // Updates the exchange rate when the from amount is changed.
   useEffect(() => {
     if (swapFrom.currency.code !== null &&
-        swapTo.currency.code !== null &&
-        fromAmount > 0
-      ) {
+      swapTo.currency.code !== null &&
+      fromAmount > 0
+    ) {
       walletController.swap.getCurrencyRate({
         coinFromCode: swapFrom.currency.code,
         coinToCode: swapTo.currency.code,
@@ -130,15 +161,15 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     }
   }, [pendingSwap]);
 
-    // Check if the balance is valid.
-    useEffect(() => {
-      if (fromAmount > parseFloat(swapFrom.currency.balance)) {
-        setIsBalanceError(true);
-      } else {
-        setIsBalanceError(false);
-      }
-    }, [fromAmount, swapFrom, swapTo]);
-  
+  // Check if the balance is valid.
+  useEffect(() => {
+    if (fromAmount > parseFloat(swapFrom.currency.balance)) {
+      setIsBalanceError(true);
+    } else {
+      setIsBalanceError(false);
+    }
+  }, [fromAmount, swapFrom, swapTo]);
+
 
   const onNextPressed = () => {
     setIsNextButtonLoading(true);
@@ -148,8 +179,8 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       coinTo: swapTo.currency.code,
       networkTo: swapTo.network.network,
       amount: currencyRate?.fromAmount,
-      withdrawalAddress: activeAsset.address,
-      refundAddress: activeAsset.address
+      withdrawalAddress: depositAsset.address,
+      refundAddress: depositAsset.address
     })
   }
 

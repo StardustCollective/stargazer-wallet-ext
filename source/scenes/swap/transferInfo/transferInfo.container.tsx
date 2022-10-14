@@ -2,7 +2,7 @@
 // Imports
 ///////////////////////////
 
-import React, { useEffect, FC } from 'react';
+import React, { useEffect, FC, useState } from 'react';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
@@ -68,6 +68,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   const { swapFrom, swapTo }: { swapTo: ISelectedCurrency, swapFrom: ISelectedCurrency } = useSelector((state: RootState) => state.swap);
   const assets = useSelector((state: RootState) => state.assets);
   const activeAsset = useSelector(walletSelectors.getActiveAsset);
+  const [fee, setFee] = useState(0);
   const asset  = assets[activeAsset.id];
   const pendingSwap: IPendingTransaction = useSelector(swapSelectors.getPendingSwap);
   const getFiatAmount = useFiat(true, asset);
@@ -100,7 +101,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
       toAddress: pendingSwap.depositAddress,
       timestamp: Date.now(),
       amount: pendingSwap.amount.toString(),
-      fee: gasFee,// || fee,
+      fee: fee || gasFee,
     };
     if (asset.type === AssetType.Ethereum || asset.type === AssetType.ERC20) {
       txConfig.ethConfig = {
@@ -113,7 +114,11 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   }
 
   const onRecommendedPress = () => {
-    
+
+  }
+
+  const onTransactionFeeChange = (fee: string) => {
+    setFee(parseFloat(fee));
   }
 
   return (
@@ -139,6 +144,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
         onGasPriceChange={onGasPriceChange}
         onNextPressed={onNextPressed}
         onRecommendedPress={onRecommendedPress}
+        onTransactionFeeChange={onTransactionFeeChange}
       />
     </Container>
   );
