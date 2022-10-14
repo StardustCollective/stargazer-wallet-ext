@@ -100,14 +100,16 @@ export const getSupportedAssets = createAsyncThunk(
         });
         const json = await response.json();
         const { count, data } = json;
+        // Continue if exolix supports the asset.
         if (count) {
-          // Check if the asset network is supported by exolix
+          // Check if the asset network is supported by exolix.
           for(let j = 0; j < data.length; j++){
             const currency = data[j];
             if(currency.code === asset.symbol){
-              const mappedLocalToExolixNetwork: string = LOCAL_TO_EXOLIX_NETWORK_MAP[asset.network] as any;
+              const mappedLocalToExolixNetwork = LOCAL_TO_EXOLIX_NETWORK_MAP[asset.network];
               for(let k = 0; k < currency.networks.length; k++){
                 const network = currency.networks[k];
+                // Push the asset to the supportedAssets array if the network is supported.
                 if(mappedLocalToExolixNetwork === network.name || asset.symbol === network.network){
                   supportedAssets.push({
                     id: asset.id,
@@ -128,7 +130,6 @@ export const getSupportedAssets = createAsyncThunk(
     }
     return supportedAssets;
   }
-
 );
 
 // Returns currency rate for a trading pair
