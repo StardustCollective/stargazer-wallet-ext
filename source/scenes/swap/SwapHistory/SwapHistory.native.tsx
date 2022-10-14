@@ -97,7 +97,7 @@ const ConfirmDetails: FC<ISwapHistory> = ({
             color={COLORS_ENUMS.BLACK}
             extraStyles={styles.amountText}
           >
-            {amount} {swapToTicker}
+            {amount} {swapFromTicker}
           </TextV3.CaptionRegular>
           <ChevronRight width={CHEVRON_WIDTH} />
         </View>
