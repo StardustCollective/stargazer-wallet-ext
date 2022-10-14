@@ -3,7 +3,6 @@
 ///////////////////////
 
 import React, { FC } from 'react';
-import clsx from 'clsx';
 
 ///////////////////////
 // Components
@@ -16,7 +15,7 @@ import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/Butto
 // Images
 ///////////////////////
 
-import ImagePlaceholder from 'assets/images/placeholder.png';
+// import ImagePlaceholder from 'assets/images/placeholder.png';
 
 ///////////////////////
 // Types
