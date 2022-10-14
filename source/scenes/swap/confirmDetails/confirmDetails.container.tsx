@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { FC } from 'react';
 
 ///////////////////////////
 // Imports
@@ -101,7 +101,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   }
 
   const onCancelPressed = () => {
-      NavUtils.popToTop(navigation);
+    NavUtils.popToTop(navigation);
   }
 
   return (
