@@ -33,7 +33,7 @@ import {
   STATUS_STRING,
   SENT_TIME,
   SWAP_FROM,
-  SWAP_TO,
+  DEPOSIT_ADDRESS,
   SWAP_FROM_AMOUNT,
   SWAP_TO_AMOUNT,
   TRANSACTION_ID,
@@ -97,7 +97,7 @@ const TransactionDetails: FC<ITransferInfo> = ({
           color={COLORS_ENUMS.DARK_GRAY}
           extraStyles={styles.detailKey}
         >
-          {SWAP_TO}
+          {DEPOSIT_ADDRESS}
         </TextV3.CaptionStrong>
         <TextV3.CaptionRegular
           color={COLORS_ENUMS.DARK_GRAY_200}
@@ -145,7 +145,7 @@ const TransactionDetails: FC<ITransferInfo> = ({
           color={COLORS_ENUMS.DARK_GRAY_200}
           extraStyles={styles.detailValue}
         >
-          {transaction.id}
+          {transaction?.id}
         </TextV3.CaptionRegular>
       </div>
     </div>
