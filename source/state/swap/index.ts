@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { 
-  getCurrencyData, 
-  getSupportedAssets, 
-  getCurrencyRate, 
+import {
+  getCurrencyData,
+  getSupportedAssets,
+  getCurrencyRate,
   getTransactionHistory,
   stageTransaction,
 } from './api';
@@ -15,23 +15,70 @@ export const initialState: ISwapState = {
   swapFrom: {
     currency: {
       id: null,
-      code: null,
-      name: null,
-      icon: null,
+      code: 'ETH',
+      name: 'Ethereum',
+      icon: 'https://exolix.com/icons/coins/ETH.png',
       notes: null,
-      networks: null,
+      networks: [
+        {
+          network: 'ETH',
+          name: 'Ethereum (ERC20)',
+          shortName: 'ERC20',
+          notes: '',
+          addressRegex: '^(0x)[0-9A-Fa-f]{40}$',
+          isDefault: true,
+          depositMinAmount: null,
+          memoNeeded: false,
+          memoName: '',
+          precision: 6
+        }
+      ],
+      balance: '0',
     },
-    network: null,
+    network: {
+      network: 'ETH',
+      name: 'Ethereum (ERC20)',
+      shortName: 'ERC20',
+      notes: '',
+      addressRegex: '^(0x)[0-9A-Fa-f]{40}$',
+      isDefault: true,
+      depositMinAmount: null,
+      memoNeeded: false,
+      memoName: '',
+      precision: 6
+    },
   },
   swapTo: {
     currency: {
-      code: null,
-      name: null,
-      icon: null,
+      code: 'DAG',
+      name: 'Constellation',
+      icon: 'https://exolix.com/icons/coins/DAG.png',
       notes: null,
-      networks: null,
+      networks: [
+        {
+          network: 'DAG',
+          name: 'Constellation',
+          shortName: '',
+          notes: '',
+          addressRegex: '^(DAG)[0-9A-Za-z]{30,70}$',
+          isDefault: true,
+          depositMinAmount: null,
+          memoNeeded: false,
+          precision: 8
+        }
+      ],
     },
-    network: null,
+    network: {
+      network: "DAG",
+      name: "Constellation",
+      shortName: "",
+      notes: "",
+      addressRegex: "^(DAG)[0-9A-Za-z]{30,70}$",
+      isDefault: true,
+      depositMinAmount: null,
+      memoNeeded: false,
+      precision: 8
+    },
   },
   supportedAssets: null,
   currencyRate: {
