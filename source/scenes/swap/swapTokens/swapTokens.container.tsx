@@ -29,6 +29,7 @@ import { ISwapTokensContainer } from './types';
 import { ISelectedCurrency, ICurrencyRate, IPendingTransaction } from 'state/swap/types';
 import { RootState } from 'state/store';
 import { AssetType, IAssetState } from 'state/vault/types';
+import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////////
 // Components
@@ -198,7 +199,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   }
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
       <SwapTokens
         selectedCurrencySwapFrom={swapFrom.currency}
         selectedCurrencySwapTo={swapTo.currency}

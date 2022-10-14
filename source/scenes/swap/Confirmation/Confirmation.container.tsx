@@ -19,6 +19,7 @@ import NavUtils from 'navigation/util';
 import {
   IConfirmationContainer
 } from './types';
+import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////////
 // Components
@@ -44,7 +45,7 @@ const ConfirmationContainer: FC<IConfirmationContainer> = ({navigation}) => {
   }
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
       <Confirmation  
         onViewSwapHistoryPressed={onViewSwapHistoryPressed} 
         onDonePressed={onDonePressed} 

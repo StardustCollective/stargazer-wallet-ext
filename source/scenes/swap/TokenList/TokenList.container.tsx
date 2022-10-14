@@ -25,6 +25,7 @@ import { ISearchCurrency, ICurrencyNetwork, } from 'state/swap/types';
 import {
   ITokenListContainer
 } from './types';
+import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////////
 // Utils
@@ -86,7 +87,7 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
   }
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
       <TokenList
         currencyData={currencyData}
         searchValue={searchValue}

@@ -42,6 +42,7 @@ import { IExolixTransaction } from 'state/swap/types'
 import {
   ISwapHistoryContainer
 } from './types';
+import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////////
 // Utils
@@ -88,7 +89,7 @@ const SwapHistoryContainer: FC<ISwapHistoryContainer> = ({ navigation }) => {
   }
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
       <SwapHistory
         transactionHistoryData={transactionHistory}
         onTransactionCellPressed={onTransactionCellPressed}

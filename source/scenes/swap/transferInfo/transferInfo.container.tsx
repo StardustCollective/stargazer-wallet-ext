@@ -42,6 +42,7 @@ import { ISelectedCurrency, IPendingTransaction } from 'state/swap/types';
 import {
   ISwapTokensContainer
 } from './types';
+import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////////
 // Components
@@ -122,7 +123,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   }
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
       <TransferInfo
         depositAddress={pendingSwap?.depositAddress}
         from={{

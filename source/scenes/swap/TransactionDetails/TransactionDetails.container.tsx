@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import { IExolixTransaction } from 'state/swap/types'
 import { RootState } from 'state/store';
 import { ISwapTokensContainer } from './types';
-
+import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////////
 // Components
@@ -31,7 +31,7 @@ const TransactionDetailsContainer: FC<ISwapTokensContainer> = () => {
   const { selectedTransaction }: { selectedTransaction: IExolixTransaction } = useSelector((state: RootState) => state.swap);
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
       <ConfirmDetails
         transaction={selectedTransaction}
       />

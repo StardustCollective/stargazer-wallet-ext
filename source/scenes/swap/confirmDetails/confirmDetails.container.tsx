@@ -21,6 +21,7 @@ import { RootState } from 'state/store';
 import { ISwapTokensContainer } from './types';
 import { AssetType } from 'state/vault/types';
 import { IPendingTransaction } from 'state/swap/types';
+import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////
 // Selectors
@@ -107,7 +108,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   }
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
       <ConfirmDetails
         tempTx={tempTx}
         assetInfo={assetInfo}
