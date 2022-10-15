@@ -87,6 +87,16 @@ const MigrationController = async () => {
     const v3_9_1 = require('../migration/v3_9_1');
     await v3_9_1.default(state);
   }
+
+  
+  /** 
+   * version < 3_10_0
+   */
+  if (!state.swap) {
+    const v3_10_0 = require('../migration/v3_10_0');
+    await v3_10_0.default(state);
+  }
+
 };
 
 export default MigrationController;
