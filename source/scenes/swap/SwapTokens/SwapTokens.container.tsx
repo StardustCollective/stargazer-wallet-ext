@@ -80,23 +80,9 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   // Update the active asset when the swapFrom state changes
   useEffect(() => {
     if (swapFrom.currency !== null) {
-      const assetName = swapFrom?.currency?.name.toLocaleLowerCase() === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
       const newActiveAsset = find(
         activeNetworkAssets,
-        { id: assetName }
-      );
-      walletController.account.updateAccountActiveAsset(newActiveAsset);
-    }
-  }, [swapFrom]);
-
-  // Update the active asset when the swapFrom state changes
-  useEffect(() => {
-    // Set the active asset.
-    if (swapFrom.currency !== null) {
-      const assetName = swapFrom?.currency?.name.toLocaleLowerCase() === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
-      const newActiveAsset = find(
-        activeNetworkAssets,
-        { id: assetName }
+        { id: swapFrom.currency.id }
       );
       walletController.account.updateAccountActiveAsset(newActiveAsset);
     }
@@ -104,7 +90,6 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
 
   // Set the deposit asset to be used for the withdrawal and refund addresses.
   useEffect(() => {
-    // Set the active asset.
     if (swapTo.currency !== null) {
       const assetName = swapTo?.currency?.name.toLocaleLowerCase() === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
       const depositAsset = find(
