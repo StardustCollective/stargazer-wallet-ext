@@ -174,7 +174,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   }
 
   const onTransactionFeeChange = (fee: string) => {
-    setFee(parseFloat(fee));
+    setFee(parseFloat(fee === '' ? '0' : fee));
   }
 
   return (
