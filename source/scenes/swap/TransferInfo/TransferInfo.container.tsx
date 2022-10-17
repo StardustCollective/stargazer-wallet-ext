@@ -90,18 +90,20 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   const getFiatAmount = useFiat(true, asset);
   let gas: string;
 
-  useEffect(() => {
-    return () => {
-      walletController.swap.clearPendingSwap();
-    }
-  }, [])
-
-  const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice, gasLimit } = useGasEstimate({
+  const { setSendAmount, estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice, gasLimit } = useGasEstimate({
     toAddress: pendingSwap?.depositAddress,
     fromAddress: asset?.address,
     asset,
     gas,
   });
+
+
+  useEffect(() => {
+    setSendAmount(pendingSwap?.amount.toString());
+    return () => {
+      walletController.swap.clearPendingSwap();
+    }
+  }, [])
 
   const onGasPriceChange = (_: any, val: number | number[]) => {
     val = Number(val) || 1;
