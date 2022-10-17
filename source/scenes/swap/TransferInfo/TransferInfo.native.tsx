@@ -44,7 +44,6 @@ import {
   GAS_SLIDER_STEP,
   DAG_CODE,
   TRANSACTION_FEE_DEFAULT_VALUE,
-  ACTIVITY_INDICATOR_COLOR
 } from './constants';
 
 const SwapTokens: FC<ITransferInfo> = ({

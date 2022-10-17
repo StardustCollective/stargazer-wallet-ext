@@ -32,6 +32,21 @@
     flex: 1;
     align-items: center;
     margin-left: 16px;
+
+    .recommendedFeeInput {
+      width: 100%;
+      color: $gray-dark-200;
+      background-color: transparent;
+      border-color: transparent;
+      border-width: 0px;
+      font-family: $inter;
+      padding-left: 0px;
+      font-size: 14px;
+      font-weight: 400;
+      height: 40px;
+      border: 0px solid $gray-200  !important;
+      outline-width: 0px !important;
+    }
   }
 
   .transactionFeeTextField {
@@ -48,9 +63,6 @@
     margin-right: 16px;
   }
 
-  .recommendedFeeInput {
-    font-size: 16px;
-  }
 
   .nextButton {
     display: flex;

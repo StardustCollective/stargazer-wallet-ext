@@ -57,7 +57,8 @@ const SwapTokens: FC<ITransferInfo> = ({
   onGasPriceChange,
   getFiatAmount,
   onRecommendedPress,
-  onTransactionFeeChange
+  onTransactionFeeChange,
+  fee,
 }) => {
 
   return (
@@ -119,15 +120,14 @@ const SwapTokens: FC<ITransferInfo> = ({
               <MUITextField
                 id="recommended-fee-input"
                 name="recommended-fee-input"
-                type='numeric'
-                value={TRANSACTION_FEE_DEFAULT_VALUE}
+                type='number'
+                value={fee.toString()}
                 placeholder={TRANSACTION_FEE_DEFAULT_VALUE}
-                fullWidth
-                onChange={() => { }}
+                onChange={(e: any) => onTransactionFeeChange(e.target.value)}
                 InputProps={{
                   disableUnderline: true,
                   classes: {
-                    input: styles.recommendedFeeInput,
+                    root: styles.recommendedFeeInput,
                   }
                 }}
               />
