@@ -59,7 +59,7 @@ const TextV3 = {
   }: ITextProps) => {
     let colorStyle = {};
     let alignStyle = {};
-    let dynamicProps = { numberOfLines: null, adjustsFontSizeToFit: false };
+    let dynamicProps: { numberOfLines: number | null, adjustsFontSizeToFit: boolean} = { numberOfLines: null, adjustsFontSizeToFit: false };
 
     //Colors
     if (color === COLORS_ENUMS.BLACK) {
@@ -106,7 +106,11 @@ const TextV3 = {
     }
 
     return (
-      <Text style={composedStyle} {...dynamicProps} selectable={selectable} numberOfLines={numberOfLines}>
+      <Text style={composedStyle}
+        numberOfLines={dynamicProps.numberOfLines || numberOfLines}
+        adjustsFontSizeToFit={dynamicProps.adjustsFontSizeToFit} 
+        selectable={selectable}
+      >
         {children}
       </Text>
     );
