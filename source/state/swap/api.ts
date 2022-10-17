@@ -8,7 +8,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 // Utils
 /////////////////////////
 
-import { STARGAZER_API_KEY } from 'utils/envUtil';
+import { STARGAZER_API_KEY, STARGAZER_SWAPPING_BASE_URL_PROD } from 'utils/envUtil';
 
 /////////////////////////
 // Types
@@ -29,7 +29,6 @@ import { RootState } from 'state/store';
 // Constants
 /////////////////////////
 
-const SWAP_BASE_URL = 'https://api.lattice.exchange/swapping';
 const SEARCH_END_POINT = '/currencies';
 const RATE_END_POINT = '/rate'
 const TRANSACTION_END_POINT = '/transactions';
@@ -61,7 +60,7 @@ const LOCAL_TO_EXOLIX_NETWORK_MAP: {
 export const getCurrencyData = createAsyncThunk(
   'swap/getCurrencyData',
   async (query: string): Promise<ISearchResponse> => {
-    const response = await fetch(`${SWAP_BASE_URL}${SEARCH_END_POINT}`, {
+    const response = await fetch(`${STARGAZER_SWAPPING_BASE_URL_PROD}${SEARCH_END_POINT}`, {
       method: POST_METHOD,
       headers: HEADERS,
       body: JSON.stringify({
@@ -90,7 +89,7 @@ export const getSupportedAssets = createAsyncThunk(
       const assetBalance = balances[key];
       // Only check assets whos balance are greater than zero.
       if (assetBalance !== BALANCE_ZERO) {
-        const response = await fetch(`${SWAP_BASE_URL}${SEARCH_END_POINT}`, {
+        const response = await fetch(`${STARGAZER_SWAPPING_BASE_URL_PROD}${SEARCH_END_POINT}`, {
           method: POST_METHOD,
           headers: HEADERS,
           body: JSON.stringify({
@@ -136,7 +135,7 @@ export const getSupportedAssets = createAsyncThunk(
 export const getCurrencyRate = createAsyncThunk(
   'swap/getCurrencyRate',
   async ({ coinFrom, coinTo, amount }: { coinFrom: string, coinTo: string, amount: number }): Promise<ICurrencyRate> => {
-    const response = await fetch(`${SWAP_BASE_URL}${RATE_END_POINT}`, {
+    const response = await fetch(`${STARGAZER_SWAPPING_BASE_URL_PROD}${RATE_END_POINT}`, {
       method: POST_METHOD,
       headers: HEADERS,
       body: JSON.stringify({
@@ -154,7 +153,7 @@ export const getCurrencyRate = createAsyncThunk(
 export const stageTransaction = createAsyncThunk(
   'swap/stageTransaction',
   async ({ coinFrom, networkFrom, coinTo, networkTo, amount, withdrawalAddress, refundAddress }: IStageTransaction): Promise<IPendingTransaction> => {
-    const response = await fetch(`${SWAP_BASE_URL}${TRANSACTION_END_POINT}`, {
+    const response = await fetch(`${STARGAZER_SWAPPING_BASE_URL_PROD}${TRANSACTION_END_POINT}`, {
       method: POST_METHOD,
       headers: HEADERS,
       body: JSON.stringify({
@@ -192,7 +191,7 @@ export const getTransactionHistory = createAsyncThunk(
 
     for(let i = 0; i < txIds.length; i++){
       const id = txIds[i];
-      const response = await fetch(`${SWAP_BASE_URL}${TRANSACTION_END_POINT}/${id}`, {
+      const response = await fetch(`${STARGAZER_SWAPPING_BASE_URL_PROD}${TRANSACTION_END_POINT}/${id}`, {
         method: GET_METHOD,
         headers: HEADERS,
       });

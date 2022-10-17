@@ -4,6 +4,7 @@ import {
     POLYGONSCAN_API_KEY as polygonscanApiKey,
     BSCSCAN_API_KEY as bscscanApiKey,
     SNOWTRACE_API_KEY as snowtraceApiKey,
+    STARGAZER_SWAPPING_BASE_URL_PROD as stargazerSwappingBaseUrlProd,
     STARGAZER_PROVIDERS_BASE_URL as stargazerProvidersBaseUrl,
     STARGAZER_PROVIDERS_BASE_URL_PROD as stargazerProvidersBaseUrlProd,
     STARGAZER_API_KEY as stargazerApiKey,
@@ -23,6 +24,7 @@ export const ETHERSCAN_API_KEY = etherscanApiKey;
 export const POLYGONSCAN_API_KEY = polygonscanApiKey;
 export const BSCSCAN_API_KEY = bscscanApiKey;
 export const SNOWTRACE_API_KEY = snowtraceApiKey;
+export const STARGAZER_SWAPPING_BASE_URL_PROD = stargazerSwappingBaseUrlProd;
 export const STARGAZER_PROVIDERS_BASE_URL = stargazerProvidersBaseUrl;
 export const STARGAZER_PROVIDERS_BASE_URL_PROD = stargazerProvidersBaseUrlProd;
 export const STARGAZER_API_KEY = stargazerApiKey;
