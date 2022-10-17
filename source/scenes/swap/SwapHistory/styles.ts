@@ -18,10 +18,11 @@ const styles = StyleSheet.create({
   },
   historyCellProcessing: {
     backgroundColor: COLORS.yellow_light,
+    borderBottomWidth: 1,
+    borderColor: COLORS.gray_light_100,
   },
   historyCellSettled: {
     borderBottomWidth: 1,
-    borderTopWidth: 1,
     borderColor: COLORS.gray_light_100,
     backgroundColor: COLORS.white,
   },
