@@ -9,7 +9,9 @@ import {
   FlatList,
   Image,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
+  Keyboard,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 ///////////////////////////
@@ -152,18 +154,21 @@ const ConfirmDetails: FC<ITokenList> = ({
               placeholder={SEARCH_STRING}
               placeholderTextColor={SEARCH_BAR_PLACEHOLDER_TEXT_COLOR}
               selectionColor={SEARCH_BAR_SELECTION_COLOR}
+              returnKeyType='done'
               onChange={(e) => onSearchChange(e.nativeEvent.text)}
             />
           </View>
         </View>
       )}
-      <FlatList
-        ListEmptyComponent={ListEmptyComponent}
-        data={currencyData}
-        renderItem={action === SWAP_ACTIONS.TO ? RenderToItem : RenderFromItem}
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollViewContentContainer}
-      />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <FlatList
+          ListEmptyComponent={ListEmptyComponent}
+          data={currencyData}
+          renderItem={action === SWAP_ACTIONS.TO ? RenderToItem : RenderFromItem}
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContentContainer}
+        />
+      </TouchableWithoutFeedback>
     </View>
   );
 };
