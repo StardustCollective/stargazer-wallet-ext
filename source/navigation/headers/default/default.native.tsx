@@ -15,7 +15,8 @@ import {
 // Interfaces
 ///////////////////////////
 interface IDefaultHeader {
-  navigation: any
+  navigation: any,
+  onBackPressed: () => void
 }
 
 ///////////////////////////
@@ -24,6 +25,7 @@ interface IDefaultHeader {
 
 const defaultHeader = ({
   navigation,
+  onBackPressed
 }: IDefaultHeader) => {
 
   const onBackButtonClicked = () => {
@@ -33,7 +35,7 @@ const defaultHeader = ({
   const renderHeaderLeft = () => {
 
     return (
-      <Pressable style={{ marginLeft: 16 }} onPress={onBackButtonClicked}>
+      <Pressable style={{ marginLeft: 16 }} onPress={onBackPressed || onBackButtonClicked}>
         <ArrowLeftIcon width={24} />
       </Pressable>
     );

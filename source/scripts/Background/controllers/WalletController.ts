@@ -25,6 +25,7 @@ import {
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
+import SwapController, { ISwapController } from './SwapController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
@@ -48,6 +49,8 @@ class WalletController implements IWalletController {
   account: AccountController;
 
   keyringManager: KeyringManager;
+
+  swap: ISwapController;
 
   onboardHelper: OnboardWalletHelper;
 
@@ -76,6 +79,7 @@ class WalletController implements IWalletController {
     });
 
     this.account = new AccountController(this.keyringManager);
+    this.swap    = new SwapController();
   }
 
   checkPassword(password: string) {

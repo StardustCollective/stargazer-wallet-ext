@@ -26,6 +26,16 @@ import styles from './Home.scss';
 
 import { IHome } from './types';
 
+
+///////////////////////////
+// constants
+///////////////////////////
+
+import {
+  BUY_STRING,
+  SWAP_STRING
+} from './constants';
+
 ///////////////////////////
 // Scene
 ///////////////////////////
@@ -35,6 +45,7 @@ const Home: FC<IHome> = ({
   balanceObject,
   balance,
   onBuyPressed,
+  onSwapPressed,
 }) => {
 
   ///////////////////////////
@@ -70,13 +81,20 @@ const Home: FC<IHome> = ({
                     {`≈ ₿${balance}`}
                   </TextV3.Body>
                 </div>
-                <ButtonV3
-                  label="Buy"
-                  size={BUTTON_SIZES_ENUM.LARGE}
-                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                  onClick={onBuyPressed}
-                  extraStyle={styles.buyButton}
-                />
+                <div className={styles.buttons}>
+                  <ButtonV3
+                    label={BUY_STRING}
+                    size={BUTTON_SIZES_ENUM.MEDIUM}
+                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                    onClick={onBuyPressed}
+                  />
+                  <ButtonV3
+                    label={SWAP_STRING}
+                    size={BUTTON_SIZES_ENUM.MEDIUM}
+                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                    onClick={onSwapPressed}
+                  />
+                </div>
               </section>
               <AssetsPanel />
             </>

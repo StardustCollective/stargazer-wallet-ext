@@ -60,8 +60,19 @@
   border-radius: 20px
 }
 
+.buttonMedium {
+  height: 44px;
+  border-radius: 22px
+}
+
 .buttonLarge {
   height: 48px;
+  border-radius: 24px
+}
+
+.buttonFillWidth {
+  height: 48px;
+  width: 100%;
   border-radius: 24px
 }
 
@@ -71,6 +82,11 @@
 
 .primaryButton {
   background-color: $primary;
+}
+
+.primaryOutlineButton {
+  border: 1px solid $primary_lighter_1;
+  background-color: transparent;
 }
 
 .secondaryButton {
