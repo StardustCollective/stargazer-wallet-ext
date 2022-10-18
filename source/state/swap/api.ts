@@ -32,7 +32,8 @@ import { RootState } from 'state/store';
 const SEARCH_END_POINT = '/currencies';
 const RATE_END_POINT = '/rate'
 const TRANSACTION_END_POINT = '/transactions';
-const BALANCE_ZERO = '0.0';
+const BALANCE_ZERO_DECIMAL = '0.0';
+const BALANCE_ZERO = '0';
 const WITH_NETWORKS_BOOLEAN = true;
 const POST_METHOD = 'POST';
 const GET_METHOD = 'GET';
@@ -87,8 +88,8 @@ export const getSupportedAssets = createAsyncThunk(
       const key = assetsKeysArray[i];
       const asset = assetsArray[i];
       const assetBalance = balances[key];
-      // Only check assets whos balance are greater than zero.
-      if (assetBalance !== BALANCE_ZERO) {
+      // Only check assets whos balance are greater than zero and assetBalance is not undefined
+      if (assetBalance !== BALANCE_ZERO_DECIMAL && assetBalance !== BALANCE_ZERO && assetBalance !== undefined) {
         const response = await fetch(`${STARGAZER_SWAPPING_BASE_URL_PROD}${SEARCH_END_POINT}`, {
           method: POST_METHOD,
           headers: HEADERS,

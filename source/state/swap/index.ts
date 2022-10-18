@@ -33,7 +33,7 @@ export const initialState: ISwapState = {
           precision: 6
         }
       ],
-      balance: '0',
+      balance: null,
     },
     network: {
       network: 'ETH',
