@@ -102,7 +102,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
         walletController.swap.clearSwapFromBalance();
       }
     }
-  }, [supportedAssets])
+  }, [supportedAssets.length])
 
   // Update the active asset when the swapFrom state changes
   useEffect(() => {

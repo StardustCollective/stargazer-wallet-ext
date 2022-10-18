@@ -5,7 +5,7 @@
 import React, { FC } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import clsx from 'clsx';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 ///////////////////////
 // Components
@@ -82,7 +82,7 @@ const ConfirmDetails: FC<ISwapHistory> = ({
                   {SWAP_STRING} {swapFromTicker} {TO_STRING} {swapToTicker}
                 </TextV3.CaptionStrong>
                 <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-                  {moment(date).format(DATE_FORMAT)}
+                  {dayjs(date).format(DATE_FORMAT)}
                 </TextV3.Caption>
               </div>
             </>

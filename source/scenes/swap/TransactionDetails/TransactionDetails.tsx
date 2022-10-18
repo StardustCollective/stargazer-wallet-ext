@@ -3,7 +3,7 @@
 ///////////////////////
 
 import React, { FC } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 ///////////////////////
 // Components
@@ -75,7 +75,7 @@ const TransactionDetails: FC<ITransferInfo> = ({
           color={COLORS_ENUMS.DARK_GRAY_200}
           extraStyles={styles.detailValue}
         >
-          {moment(transaction?.createdAt).format(DATE_FORMAT)}
+          {dayjs(transaction?.createdAt).format(DATE_FORMAT)}
         </TextV3.CaptionRegular>
       </div>
       <div className={styles.detailRow}>
