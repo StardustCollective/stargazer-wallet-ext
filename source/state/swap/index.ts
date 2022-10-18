@@ -125,6 +125,9 @@ const SwappingState = createSlice({
     clearPendingSwap(state: ISwapState) {
       state.pendingSwap = null;
     },
+    clearCurrencyRate(state: ISwapState){
+      state.currencyRate.rate = null;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getCurrencyData.pending, (state) => {
@@ -205,6 +208,14 @@ const SwappingState = createSlice({
   }
 });
 
-export const { setSwapFrom, setSwapTo, clearPendingSwap, addTxId, rehydrate, setSelectedTransaction } = SwappingState.actions;
+export const { 
+  setSwapFrom, 
+  setSwapTo, 
+  clearPendingSwap,
+  clearCurrencyRate,
+  addTxId, 
+  rehydrate, 
+  setSelectedTransaction 
+} = SwappingState.actions;
 
 export default SwappingState.reducer;

@@ -117,17 +117,37 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
 
   // Updates the exchange rate when the from amount is changed.
   useEffect(() => {
+    let delayDebounceFn: any = null;
     if (swapFrom.currency.code !== null &&
       swapTo.currency.code !== null &&
       fromAmount > 0
     ) {
-      walletController.swap.getCurrencyRate({
-        coinFromCode: swapFrom.currency.code,
-        coinToCode: swapTo.currency.code,
-        amount: fromAmount,
-      })
+      delayDebounceFn = setTimeout(() => {
+        walletController.swap.getCurrencyRate({
+          coinFromCode: swapFrom.currency.code,
+          coinToCode: swapTo.currency.code,
+          amount: fromAmount,
+        })
+      }, 500)
     }
-  }, [swapFrom?.currency.code, swapTo?.currency.code, fromAmount]);
+    return () => clearTimeout(delayDebounceFn)
+  }, [fromAmount]);
+
+    // Updates the exchange rate when the swapFrom and swapTo changes.
+    useEffect(() => {
+      // Clear the existing exhange rate estimates
+      walletController.swap.clearCurrencyRate();
+      if (swapFrom.currency.code !== null &&
+        swapTo.currency.code !== null &&
+        fromAmount > 0
+      ) {
+        walletController.swap.getCurrencyRate({
+          coinFromCode: swapFrom.currency.code,
+          coinToCode: swapTo.currency.code,
+          amount: fromAmount,
+        })
+      }
+    }, [swapFrom?.currency?.code, swapTo?.currency?.code]);
 
   // Check if currency rate is valid.
   useEffect(() => {
