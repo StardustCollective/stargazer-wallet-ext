@@ -95,6 +95,13 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
         walletController.swap.setSwapFrom(ethAsset, ethAsset.networks[0]);
       }
     }
+
+    return () => {
+      // Clear Swap From Balance if the currency code is ETH
+      if(swapFrom.currency.code === ETH_CURRENCY_CODE){
+        walletController.swap.clearSwapFromBalance();
+      }
+    }
   }, [supportedAssets])
 
   // Update the active asset when the swapFrom state changes

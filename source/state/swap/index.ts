@@ -127,6 +127,9 @@ const SwappingState = createSlice({
     },
     clearCurrencyRate(state: ISwapState){
       state.currencyRate.rate = null;
+    },
+    clearSwapFromBalance(state: ISwapState){
+      state.swapFrom.currency.balance = null;
     }
   },
   extraReducers: (builder) => {
@@ -213,6 +216,7 @@ export const {
   setSwapTo, 
   clearPendingSwap,
   clearCurrencyRate,
+  clearSwapFromBalance,
   addTxId, 
   rehydrate, 
   setSelectedTransaction 
