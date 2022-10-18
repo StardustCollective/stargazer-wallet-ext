@@ -151,7 +151,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
 
   const onNextPressed = () => {
     if(overBalanceError()){
-      alert(`Error: Balance to low to cover gas. Purchase some more ${feeUnit} to complete the transaction.`, 'danger');
+      alert(`Error: Balance is too low to cover gas. Add ${feeUnit} to your wallet to complete the transaction.`, 'danger');
       return;
     }
     const txConfig: ITransactionInfo = {
