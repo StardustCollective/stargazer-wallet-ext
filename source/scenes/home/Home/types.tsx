@@ -15,4 +15,5 @@ export interface IHome {
   balanceObject: IBalanceObject;
   balance: string;
   onBuyPressed: () => void;
+  onSwapPressed: () => void;
 }

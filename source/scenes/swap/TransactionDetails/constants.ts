@@ -1,0 +1,9 @@
+export const STATUS_STRING = 'Status';
+export const SENT_TIME = 'Sent Time';
+export const SWAP_FROM = 'Swap From Address';
+export const SWAP_TO = 'Swap To Address';
+export const SWAP_FROM_AMOUNT = 'Swap From Amount';
+export const SWAP_TO_AMOUNT = 'Swap To Amount';
+export const TRANSACTION_ID = 'Transaction ID';
+export const DATE_FORMAT = 'DD MMM YYYY HH:mm:ss';
+export const DEPOSIT_ADDRESS = 'Deposit Address';

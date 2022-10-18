@@ -5,6 +5,7 @@ import { rehydrate as contactsRehydrate } from '../contacts';
 import { rehydrate as priceRehydrate } from '../price';
 import { rehydrate as nftsRehydrate } from '../nfts';
 import { rehydrate as dappRehydrate } from '../dapp';
+import { rehydrate as swapRehydrate } from '../swap';
 
 import { loadState } from '../localStorage';
 
@@ -18,6 +19,7 @@ const rehydrateStore = async (store: Store) => {
     store.dispatch(priceRehydrate(storageState.price));
     store.dispatch(nftsRehydrate(storageState.nfts));
     store.dispatch(dappRehydrate(storageState.dapp));
+    store.dispatch(swapRehydrate(storageState.swap));
   }
   await store.dispatch<any>(getHasEncryptedVault());
 };

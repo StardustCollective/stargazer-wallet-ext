@@ -80,6 +80,10 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     linkTo('/buyList');
   };
 
+   const onSwapPressed = () => {
+    linkTo('/swapTokens');
+   }
+
   ///////////////////////////
   // Render
   ///////////////////////////
@@ -91,6 +95,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
         balanceObject={balanceObject}
         balance={balance}
         onBuyPressed={onBuyPressed}
+        onSwapPressed={onSwapPressed}
       />
     </Container>
   );

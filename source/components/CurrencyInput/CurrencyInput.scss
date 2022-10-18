@@ -1,0 +1,67 @@
+@import '~assets/styles/_variables';
+
+.swapInput {
+  display: flex;
+  flex-direction: row;
+  height: 64px;
+  background-color: $white;
+  border-radius: 8px;
+  border: 1px solid $gray-600;
+  
+  .swapInputLeftBlock {
+    display: flex;
+    flex: 1;
+    align-items: center;
+
+    .swapTextField {
+      width: 100%;
+      color: $black;
+      background-color: transparent;
+      border-color: transparent;
+      border-width: 0px;
+      font-family: $inter;
+      font-size: 20px;
+      font-weight: 400;
+      height: 40px;
+      border: 0px solid $gray-200  !important;
+      outline-width: 0px !important;
+    }
+
+    .swapTextFieldError {
+      color: $red;
+    }
+
+  }
+
+  .swapInputRightBlock {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+    .currencyIcon {
+      display: flex;
+      border-radius: 100px;
+      width: 30px;
+      height: 30px;
+      overflow: hidden;
+      border: 1px solid $gray-200;
+    }
+
+    .swapInputChevron {
+      margin-right: 16px;
+    }
+
+    .swapInputTickerText {
+      margin-right: 17px;
+      margin-left: 17px;
+    }
+
+  }
+
+}
+
+.swapInputError {
+  border: 1px solid $red;
+}

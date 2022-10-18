@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FC } from 'react';
 import { View } from 'react-native';
 import { Slider } from 'react-native-elements';
+import { COLORS } from 'assets/styles/_variables';
 
 import styles from './styles';
 
@@ -24,6 +25,7 @@ const PurpleSlider: FC<IPurpleSliderProps> = ({ onChange, min, max, value, step 
         allowTouchTrack
         trackStyle={styles.track}
         thumbStyle={styles.thumb}
+        minimumTrackTintColor={COLORS.purple_light_2}
         thumbProps={{}}
       />
     </View>
