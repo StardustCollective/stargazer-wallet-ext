@@ -26,7 +26,7 @@ import { getWalletController } from 'utils/controllersUtils';
 ///////////////////////////
 
 import { ISwapTokensContainer } from './types';
-import { ISelectedCurrency, ICurrencyRate, IPendingTransaction } from 'state/swap/types';
+import { ISelectedCurrency, ICurrencyRate, IPendingTransaction, ISearchCurrency } from 'state/swap/types';
 import { RootState } from 'state/store';
 import { AssetType, IAssetState } from 'state/vault/types';
 import { CONTAINER_COLOR } from 'components/Container/enum';
@@ -48,6 +48,7 @@ const NEXT_SCREEN_ROUTE = '/transferInfo?';
 const FROM_AMOUNT_ZERO = 0;
 const TO_AMOUNT_ZERO = 0;
 const DEFAULT_TO_AMOUNT = 0;
+const ETH_CURRENCY_CODE = 'ETH';
 
 ///////////////////////////
 // Container
@@ -68,7 +69,8 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const isCurrencyRateLoading: boolean = useSelector(swapSelectors.getCurrencyRateLoading);
   const pendingSwap: IPendingTransaction = useSelector(swapSelectors.getPendingSwap);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
-
+  const supportedAssets: ISearchCurrency[] = useSelector((state: RootState) => state.swap.supportedAssets)
+  
   // Add the transaction history button to the header.
   useLayoutEffect(() => {
     const onRightIconClick = () => {
@@ -76,6 +78,24 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     };
     navigation.setOptions(historyHeader({ navigation, onRightIconClick }));
   }, []);
+
+  // Get the supportedAssets list
+  useEffect(() => {
+    walletController.swap.getSupportedAssets();
+  }, [])
+
+  // When the supportedAssets are populated set ETH as the default currency
+  useEffect( () => {
+    if(swapFrom.currency.code === ETH_CURRENCY_CODE && swapFrom.currency.balance === null){
+      const ethAsset = find(
+        supportedAssets,
+        { code: ETH_CURRENCY_CODE }
+      );
+      if(ethAsset){
+        walletController.swap.setSwapFrom(ethAsset, ethAsset.networks[0]);
+      }
+    }
+  }, [supportedAssets])
 
   // Update the active asset when the swapFrom state changes
   useEffect(() => {
@@ -115,7 +135,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     }
   }, [swapFrom, swapTo, fromAmount, isBalanceError, isRateError, currencyRate]);
 
-  // Updates the exchange rate when the from amount is changed.
+  // Updates the exchange rate when the from amount is changes.
   useEffect(() => {
     let delayDebounceFn: any = null;
     if (swapFrom.currency.code !== null &&
