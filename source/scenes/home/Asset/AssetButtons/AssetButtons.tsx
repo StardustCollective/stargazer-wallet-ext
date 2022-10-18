@@ -25,6 +25,10 @@ import { IAssetButtons } from './types';
 
 import styles from './AssetButtons.scss';
 
+///////////////////////////
+// Constants
+///////////////////////////
+
 const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, assetBuyable }) => {
   ///////////////////////////
   // Render

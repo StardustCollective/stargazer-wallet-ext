@@ -45,7 +45,6 @@
     "etherscan-api": "^10.0.5",
     "extensionizer": "^1.0.1",
     "framer-motion": "^4.1.17",
-    "lodash": "^4.17.20",
     "net": "^1.0.2",
     "query-string": "^7.0.1",
     "react": "^16.13.1",

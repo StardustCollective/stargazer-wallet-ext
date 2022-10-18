@@ -11,6 +11,7 @@ import { Text, TextStyle, StyleProp, StyleSheet } from 'react-native';
 
 import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
+import { COLORS } from '../../assets/styles/_variables.native';
 
 //////////////////////
 // Enums
@@ -36,6 +37,7 @@ type ITextProps = {
   uppercase?: boolean;
   selectable?: boolean;
   margin?: boolean;
+  numberOfLines?: number
 };
 
 //////////////////////
@@ -53,12 +55,13 @@ const TextV3 = {
     textStyle,
     extraStyles = {},
     margin = true,
+    numberOfLines,
   }: ITextProps) => {
     let colorStyle = {};
     let alignStyle = {};
-    let dynamicProps = { numberOfLines: null, adjustsFontSizeToFit: false };
+    let dynamicProps: { numberOfLines: number | null, adjustsFontSizeToFit: boolean} = { numberOfLines: null, adjustsFontSizeToFit: false };
 
-    // // Colors
+    //Colors
     if (color === COLORS_ENUMS.BLACK) {
       colorStyle = styles.blackFont;
     } else if (color === COLORS_ENUMS.WHITE) {
@@ -67,10 +70,14 @@ const TextV3 = {
       colorStyle = styles.redFont;
     } else if (color === COLORS_ENUMS.DARK_GRAY) {
       colorStyle = styles.greyDarkFont;
+    } else if (color === COLORS_ENUMS.DARK_GRAY_200) {
+      colorStyle = styles.greyDark200Font;
     } else if (color === COLORS_ENUMS.GRAY_100) {
       colorStyle = styles.gray100Font;
     }else if (color === COLORS_ENUMS.PRIMARY) {
       colorStyle = styles.primary;
+    } else if (color === COLORS_ENUMS.PURPLE_DARK){
+      colorStyle = styles.purpleDark
     }
 
     //Alignment
@@ -99,12 +106,16 @@ const TextV3 = {
     }
 
     return (
-      <Text style={composedStyle} {...dynamicProps} selectable={selectable}>
+      <Text style={composedStyle}
+        numberOfLines={dynamicProps.numberOfLines || numberOfLines}
+        adjustsFontSizeToFit={dynamicProps.adjustsFontSizeToFit} 
+        selectable={selectable}
+      >
         {children}
       </Text>
     );
   },
-  HeaderDisplay: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  HeaderDisplay: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -115,12 +126,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  HeaderLarge: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  HeaderLarge: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -131,12 +143,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -147,12 +160,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  Header: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  Header: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -163,12 +177,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  Body: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  Body: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -179,12 +194,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  BodyStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  BodyStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -195,12 +211,30 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  Caption: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  LabelSemiStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+    return (
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.labelSemiStrong}
+        align={align}
+        extraStyles={extraStyles}
+        uppercase={uppercase}
+        selectable={selectable}
+        margin={margin}
+        numberOfLines={numberOfLines}
+      >
+        {children}
+      </TextV3.base>
+    );
+  },
+  Caption: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -211,12 +245,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  CaptionRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  CaptionRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -227,12 +262,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  CaptionStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  CaptionStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -243,12 +279,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  Label: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  Label: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -259,12 +296,13 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>
     );
   },
-  Description: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin }: ITextProps) => {
+  Description: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -275,6 +313,7 @@ const TextV3 = {
         uppercase={uppercase}
         selectable={selectable}
         margin={margin}
+        numberOfLines={numberOfLines}
       >
         {children}
       </TextV3.base>

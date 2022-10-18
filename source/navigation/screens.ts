@@ -32,6 +32,20 @@ export default {
     buyAsset: 'auth-buyAsset',
     singleSelect: 'auth-singleSelect',
   },
+  
+  ////////////////////////////
+  // swap
+  ////////////////////////////
+
+  swap: {
+    swapTokens: 'swap-tokens',
+    transferInfo: 'transfer-info',
+    confirmDetails: 'confirm-details',
+    confirmation: 'confirmation',
+    swapHistory: 'swap-history',
+    tokenList: 'token-list',
+    transactionDetails: 'transaction-details',
+  },
 
   ////////////////////////////
   // Settings
