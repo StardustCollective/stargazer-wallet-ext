@@ -56,16 +56,7 @@ const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({ setShowQrCode, onSe
     setShowQrCode(true);
   };
 
-  const onSwapPressed = () => {
-    linkTo('/swapTokens');
-  }
-
-  return <AssetButtons 
-          onBuyPressed={onBuyPressed} 
-          onSendPressed={onSendPressed} 
-          onReceivePressed={onReceivePressed} 
-          onSwapPressed={onSwapPressed}
-        />;
+  return <AssetButtons assetBuyable={assetSupported} onBuyPressed={onBuyPressed} onSendPressed={onSendPressed} onReceivePressed={onReceivePressed} />;
 };
 
 export default AssetButtonsContainer;

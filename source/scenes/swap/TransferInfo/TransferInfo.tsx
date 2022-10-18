@@ -4,7 +4,6 @@
 
 import React, { FC } from 'react';
 import clsx from 'clsx';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 ///////////////////////
 // Components
@@ -43,10 +42,7 @@ import {
   DAG_CODE,
   GAS_SLIDER_STEP,
   TRANSACTION_FEE_DEFAULT_VALUE,
-  ACTIVITY_INDICATOR_COLOR
 } from './constants';
-
-const CIRCULAR_PROGRESS_SIZE = 20;
 
 const SwapTokens: FC<ITransferInfo> = ({
   onNextPressed,

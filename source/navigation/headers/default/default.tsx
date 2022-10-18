@@ -25,7 +25,7 @@ import commonStyles from './../styles.scss';
 ///////////////////////////
 interface IDefaultHeader {
   navigation: any,
-  onBackPressed: () => void
+  onBackPressed?: () => void
 }
 
 ///////////////////////////

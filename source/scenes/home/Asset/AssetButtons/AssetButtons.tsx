@@ -12,7 +12,6 @@ import TextV3 from 'components/TextV3';
 import DollarIcon from 'assets/images/svg/dollar.svg';
 import ArrowUpIcon from 'assets/images/svg/arrow-up.svg';
 import ArrowDownIcon from 'assets/images/svg/arrow-down.svg';
-import SwapIcon from 'assets/images/svg/swap.svg';
 
 ///////////////////////////
 // Types
@@ -30,15 +29,7 @@ import styles from './AssetButtons.scss';
 // Constants
 ///////////////////////////
 
-import {
-  BUY_STRING,
-  SWAP_STRING,
-  SEND_STRING,
-  RECEIVE_STRING
-} from './constants';
-
-
-const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, assetBuyable, onSwapPressed }) => {
+const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, assetBuyable }) => {
   ///////////////////////////
   // Render
   ///////////////////////////
