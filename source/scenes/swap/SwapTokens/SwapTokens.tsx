@@ -156,7 +156,7 @@ const SwapTokens: FC<ISwapTokens> = ({
             <>
               <CircularProgress size={CIRCULAR_PROGRESS_SIZE} />
             </>
-          ) : currencyRate?.rate !== undefined ? (
+          ) : !isRateError && currencyRate?.rate !== undefined ? (
             <>
               <TextV3.Caption
                 color={COLORS_ENUMS.DARK_GRAY_200}>
