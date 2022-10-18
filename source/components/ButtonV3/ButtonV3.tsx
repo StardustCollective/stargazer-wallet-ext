@@ -86,7 +86,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   if (size === BUTTON_SIZES_ENUM.SMALL) {
     buttonSizeStyle = styles.buttonSmall;
     TextComponent = TextV3.CaptionStrong;
-  }else if(size === BUTTON_SIZES_ENUM.MEDIUM){
+  } else if(size === BUTTON_SIZES_ENUM.MEDIUM){
     buttonSizeStyle = styles.buttonMedium;
     TextComponent = TextV3.BodyStrong;
   } else if (size === BUTTON_SIZES_ENUM.LARGE) {
