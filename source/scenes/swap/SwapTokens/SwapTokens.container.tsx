@@ -84,6 +84,18 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     walletController.swap.getSupportedAssets();
   }, [])
 
+
+  // Clears the swapFrom balance
+  useEffect(() => {
+    return () => {
+      // Clear Swap From Balance if the currency code is ETH
+      if (swapFrom.currency.code === ETH_CURRENCY_CODE){
+        console.log('Attempting to clear swap from balance');
+        walletController.swap.clearSwapFromBalance();
+      }
+    }
+  }, [])
+
   // When the supportedAssets are populated set ETH as the default currency
   useEffect( () => {
     if(swapFrom.currency.code === ETH_CURRENCY_CODE && swapFrom.currency.balance === null){
@@ -93,13 +105,6 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       );
       if(ethAsset){
         walletController.swap.setSwapFrom(ethAsset, ethAsset.networks[0]);
-      }
-    }
-
-    return () => {
-      // Clear Swap From Balance if the currency code is ETH
-      if(swapFrom.currency.code === ETH_CURRENCY_CODE){
-        walletController.swap.clearSwapFromBalance();
       }
     }
   }, [supportedAssets])
