@@ -26,6 +26,7 @@ import {
   ITokenListContainer
 } from './types';
 import { CONTAINER_COLOR } from 'components/Container/enum';
+import IVaultState from 'state/vault/types';
 
 ///////////////////////////
 // Utils
@@ -59,6 +60,8 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
   const currencyData: ISearchCurrency[] = action === SWAP_ACTIONS.FROM ? useSelector((state: RootState) => state.swap.supportedAssets) : useSelector(swapSelectors.selectSupportedCurrencyData);
   const { loading }: { loading: boolean } = useSelector((state: RootState) => state.swap);
   const [searchValue, setSearchValue] = useState<string>('');
+  const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
+  
   useLayoutEffect(() => {
     navigation.setOptions({
       title: action === SWAP_ACTIONS.FROM ? SWAP_FROM_TITLE : SWAP_TO_TITLE,
@@ -95,6 +98,7 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
         onTokenCellPressed={onTokenCellPressed}
         onSearchChange={setSearchValue}
         action={action}
+        balances={balances}
       />
     </Container>
   );
