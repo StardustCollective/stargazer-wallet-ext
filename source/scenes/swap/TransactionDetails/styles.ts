@@ -62,6 +62,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-evenly',
+  },
+  supportEmail: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 20,
   }
 });
 
