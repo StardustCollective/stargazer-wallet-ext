@@ -206,7 +206,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   }
 
   const onFromChangeText = (text: string) => {
-    const fromAmount = parseFloat(text);
+    const fromAmount = parseFloat(text.replaceAll(',','.'));
     setFromAmount(fromAmount);
   }
 
