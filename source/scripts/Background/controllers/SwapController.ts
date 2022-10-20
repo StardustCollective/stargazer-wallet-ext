@@ -6,7 +6,7 @@ import {
   getTransactionHistory,
   stageTransaction
 } from 'state/swap/api';
-import { setSelectedTransaction, setSwapFrom, setSwapTo, clearSwapFromBalance, clearPendingSwap, addTxId, clearCurrencyRate } from 'state/swap';
+import { setSelectedTransaction, setSwapFrom, setSwapTo, clearPendingSwap, addTxId, clearCurrencyRate } from 'state/swap';
 import { ISearchCurrency, ICurrencyNetwork, IStageTransaction, IExolixTransaction } from 'state/swap/types';
 
 interface ICurrencyRateParams {
@@ -26,7 +26,6 @@ export interface ISwapController {
   stageTransaction: (params: IStageTransaction) => void;
   clearPendingSwap: () => void;
   clearCurrencyRate: () => void;
-  clearSwapFromBalance: () => void;
   addTxId: (txId: string) => void;
 }
 
@@ -50,10 +49,6 @@ class SwapController implements ISwapController {
 
   clearCurrencyRate() {
     store.dispatch(clearCurrencyRate())
-  }
-
-  clearSwapFromBalance(){
-    store.dispatch(clearSwapFromBalance());
   }
 
   getTransactionHistory() {
