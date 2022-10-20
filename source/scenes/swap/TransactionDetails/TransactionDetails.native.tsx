@@ -3,7 +3,7 @@
 ///////////////////////
 
 import React, { FC, } from 'react';
-import { View, ScrollView, } from 'react-native';
+import { View, ScrollView, TouchableOpacity} from 'react-native';
 import dayjs from 'dayjs';
 
 ///////////////////////
@@ -36,12 +36,15 @@ import {
   SWAP_FROM_AMOUNT,
   SWAP_TO_AMOUNT,
   TRANSACTION_ID,
-  DEPOSIT_ADDRESS
+  DEPOSIT_ADDRESS,
+  NEED_HELP_CONTACT,
+  EXOLIX_EMAIL
 } from './constants';
 const NUMBER_OF_LINES = 1;
 
 const TransactionDetails: FC<ITransferInfo> = ({
-  transaction
+  transaction,
+  onSupportLinkPress
 }) => {
 
   return (
@@ -150,6 +153,12 @@ const TransactionDetails: FC<ITransferInfo> = ({
             {transaction.id}
           </TextV3.CaptionRegular>
         </View>
+        <TouchableOpacity style={styles.supportEmail} onPress={onSupportLinkPress}>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+            {NEED_HELP_CONTACT}
+            <TextV3.Caption color={COLORS_ENUMS.LINK_BLUE}>{EXOLIX_EMAIL}</TextV3.Caption>
+          </TextV3.Caption>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
