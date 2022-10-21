@@ -86,8 +86,12 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
+    walletController.swap.getCurrencyData(searchValue);
+  }, []);
+
+  useEffect(() => {
     let delayDebounceFn: any = null;
-    if (action === SWAP_ACTIONS.TO) {
+    if (action === SWAP_ACTIONS.TO && searchValue !== '') {
       delayDebounceFn = setTimeout(() => {
         walletController.swap.getCurrencyData(searchValue);
       }, 500)
