@@ -4,6 +4,7 @@
 
 import React, { FC, useEffect, useState, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
+import some from 'lodash/some';
 
 ///////////////////////
 // Selectors
@@ -27,6 +28,7 @@ import {
 } from './types';
 import { CONTAINER_COLOR } from 'components/Container/enum';
 import IVaultState from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 
 ///////////////////////////
 // Utils
@@ -45,9 +47,11 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
+import { LTX_DEFAULT_CURRENCY } from './constants';
 import { SWAP_ACTIONS } from 'scenes/swap/constants';
 const SWAP_FROM_TITLE = 'Swap From';
 const SWAP_TO_TITLE = 'Swap To';
+
 
 ///////////////////////////
 // Container
@@ -57,11 +61,18 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
 
   const walletController = getWalletController();
   const { action } = route.params
-  const currencyData: ISearchCurrency[] = action === SWAP_ACTIONS.FROM ? useSelector((state: RootState) => state.swap.supportedAssets) : useSelector(swapSelectors.selectSupportedCurrencyData);
+  const { balances, activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
+  const excludeDag = !some(activeWallet.assets, { 'type': AssetType.Constellation });
+  const currencyData: ISearchCurrency[] =
+    action === SWAP_ACTIONS.FROM ?
+      useSelector((state: RootState) => state.swap.supportedAssets) :
+      excludeDag ?
+        useSelector(swapSelectors.selectSupportedCurrencyData(excludeDag)) :
+        useSelector(swapSelectors.selectSupportedCurrencyData());
   const { loading }: { loading: boolean } = useSelector((state: RootState) => state.swap);
   const [searchValue, setSearchValue] = useState<string>('');
-  const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
-  
+
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: action === SWAP_ACTIONS.FROM ? SWAP_FROM_TITLE : SWAP_TO_TITLE,
@@ -75,9 +86,13 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
+    let delayDebounceFn: any = null;
     if (action === SWAP_ACTIONS.TO) {
-      walletController.swap.getCurrencyData(searchValue);
+      delayDebounceFn = setTimeout(() => {
+        walletController.swap.getCurrencyData(searchValue);
+      }, 500)
     }
+    return () => clearTimeout(delayDebounceFn)
   }, [searchValue]);
 
   const onTokenCellPressed = (currency: ISearchCurrency, network: ICurrencyNetwork) => {

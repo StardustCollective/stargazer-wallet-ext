@@ -6,6 +6,7 @@ import React, { useEffect, useState, FC, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 import find from 'lodash/find';
+import some from 'lodash/some';
 
 ///////////////////////
 // Selectors
@@ -42,6 +43,7 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
+import { LTX_DEFAULT_CURRENCY } from './constants';
 import { SWAP_ACTIONS } from 'scenes/swap/constants';
 const SELECT_CURRENCY_ROUTE = '/tokenList?action=';
 const NEXT_SCREEN_ROUTE = '/transferInfo?';
@@ -64,8 +66,9 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const [isNextButtonLoading, setIsNextButtonLoading] = useState<boolean>(false);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState<boolean>(true);
   const { swapFrom, swapTo }: { swapTo: ISelectedCurrency, swapFrom: ISelectedCurrency } = useSelector((state: RootState) => state.swap);
-  const { balances }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { balances, activeWallet}: IVaultState = useSelector((state: RootState) => state.vault);
   const fromBalance = balances[swapFrom.currency.id];
+  const excludeDag = !some(activeWallet.assets, { 'type': AssetType.Constellation });
   const currencyRate: ICurrencyRate = useSelector(swapSelectors.getCurrencyRate);
   const isCurrencyRateLoading: boolean = useSelector(swapSelectors.getCurrencyRateLoading);
   const pendingSwap: IPendingTransaction = useSelector(swapSelectors.getPendingSwap);
@@ -82,6 +85,10 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   // Get the supportedAssets list
   useEffect(() => {
     walletController.swap.getSupportedAssets();
+
+    if(excludeDag){
+      walletController.swap.setSwapTo(LTX_DEFAULT_CURRENCY, LTX_DEFAULT_CURRENCY.networks[0]);
+    }
   }, [])
 
   // Update the active asset when the swapFrom state changes
