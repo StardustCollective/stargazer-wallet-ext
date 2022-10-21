@@ -84,8 +84,6 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
 
   // Get supported assets and set Default ToSwap Token.
   useEffect(() => {
-    walletController.swap.getSupportedAssets();
-
     if(excludeDag){
       walletController.swap.setSwapTo(LTX_DEFAULT_CURRENCY, LTX_DEFAULT_CURRENCY.networks[0]);
     }else{
