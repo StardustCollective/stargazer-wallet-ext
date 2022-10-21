@@ -85,7 +85,9 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    walletController.swap.getCurrencyData(searchValue);
+    if (action === SWAP_ACTIONS.TO){
+      walletController.swap.getCurrencyData(searchValue);
+    }
   }, []);
 
   useEffect(() => {
