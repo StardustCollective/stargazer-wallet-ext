@@ -133,7 +133,7 @@ const SwapTokens: FC<ITransferInfo> = ({
             </div>
           </div>
           <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-            With current network conditions we recommened a fee of &nbsp;
+            With current network conditions we recommend a fee of &nbsp;
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>
               0 DAG
             </TextV3.Caption>
