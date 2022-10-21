@@ -47,7 +47,6 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
-import { LTX_DEFAULT_CURRENCY } from './constants';
 import { SWAP_ACTIONS } from 'scenes/swap/constants';
 const SWAP_FROM_TITLE = 'Swap From';
 const SWAP_TO_TITLE = 'Swap To';
