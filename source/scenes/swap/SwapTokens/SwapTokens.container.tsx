@@ -43,7 +43,7 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
-import { LTX_DEFAULT_CURRENCY } from './constants';
+import { LTX_DEFAULT_CURRENCY, DAG_DEFAULT_CURRENCY } from './constants';
 import { SWAP_ACTIONS } from 'scenes/swap/constants';
 const SELECT_CURRENCY_ROUTE = '/tokenList?action=';
 const NEXT_SCREEN_ROUTE = '/transferInfo?';
@@ -82,12 +82,14 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     navigation.setOptions(historyHeader({ navigation, onRightIconClick }));
   }, []);
 
-  // Get the supportedAssets list
+  // Get supported assets and set Default ToSwap Token.
   useEffect(() => {
     walletController.swap.getSupportedAssets();
 
     if(excludeDag){
       walletController.swap.setSwapTo(LTX_DEFAULT_CURRENCY, LTX_DEFAULT_CURRENCY.networks[0]);
+    }else{
+      walletController.swap.setSwapTo(DAG_DEFAULT_CURRENCY, DAG_DEFAULT_CURRENCY.networks[0]);
     }
   }, [])
 
