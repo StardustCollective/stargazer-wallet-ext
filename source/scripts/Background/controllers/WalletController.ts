@@ -190,7 +190,7 @@ class WalletController implements IWalletController {
       walletIds.push(parseInt(num));
     }
 
-    //Determin the next ID.
+    //Determine the next ID.
     return (
       walletIds.sort(function (a, b) {
         return a - b;
@@ -205,7 +205,6 @@ class WalletController implements IWalletController {
       const { wallets } = vault;
       const accountItem = accountItems[i];
       const isDuplicate = this.checkForDuplicateWallet(accountItem.address);
-
       // Skip the account if it already exist in the vault.wallets redux store.
       if (isDuplicate) {
         continue;
@@ -234,6 +233,7 @@ class WalletController implements IWalletController {
       // function that will name the wallets.
       const newWallet = {
         id: `${prefix}${id}`,
+        bipIndex: accountItem.bipIndex,
         // The account id is offset by one so the UI displays will
         // the first account as 1 and not 0.
         label: `${label} ${id}`,
@@ -243,7 +243,7 @@ class WalletController implements IWalletController {
             address: accountItem.address,
             network: KeyringNetwork.Constellation,
             publicKey: accountItem!.publicKey,
-            deviceId,
+            deviceId, // Used for bitfi devices.
           },
         ],
         supportedAssets: [KeyringAssetType.DAG],

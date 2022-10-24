@@ -19,6 +19,7 @@ export const COLORS = {
   blue_violet: '#534AAE',
   accent_1: '#1A88A3',
   monotone_1: '#AAA3D6',
+  link_blue: '#0052CC',
   white: '#fff',
   black: '#000',
   red: '#de0c00',

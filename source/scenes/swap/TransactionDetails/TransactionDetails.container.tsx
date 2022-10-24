@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Linking} from 'react-native';
 
 ///////////////////////////
 // Imports
@@ -19,21 +20,34 @@ import { CONTAINER_COLOR } from 'components/Container/enum';
 // Components
 ///////////////////////////
 
-import ConfirmDetails from './TransactionDetails';
+import TransactionDetails from './TransactionDetails';
 import Container from 'components/Container';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
+import {
+  EXOLIX_EMAIL
+} from './constants';
+
+///////////////////////////
+// Container
+///////////////////////////
+
 const TransactionDetailsContainer: FC<ISwapTokensContainer> = () => {
 
   const { selectedTransaction }: { selectedTransaction: IExolixTransaction } = useSelector((state: RootState) => state.swap);
 
+  const onSupportLinkPress = () => {
+    Linking.openURL(`mailto:${EXOLIX_EMAIL}`);
+  }
+
   return (
     <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
-      <ConfirmDetails
+      <TransactionDetails
         transaction={selectedTransaction}
+        onSupportLinkPress={onSupportLinkPress}
       />
     </Container>
   );

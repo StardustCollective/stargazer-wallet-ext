@@ -33,6 +33,7 @@ import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import IProvidersState from 'state/providers/types';
 import { getAccountController } from 'utils/controllersUtils';
+import { AssetType } from 'state/vault/types';
 
 interface IHome {
   navigation: any,
@@ -52,11 +53,10 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   const [balanceObject, balance] = useTotalBalance();
 
   const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
-  const { activeWallet }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
+  const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const linkTo = useLinkTo();
   const accountController = getAccountController();
+  const isDagOnlyWallet = (activeWallet?.assets?.length === 1 && activeWallet?.assets[0]?.type === AssetType.Constellation);
 
   useEffect(() => {
     const getAssets = async () => {
@@ -96,6 +96,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
         balance={balance}
         onBuyPressed={onBuyPressed}
         onSwapPressed={onSwapPressed}
+        isDagOnlyWallet={isDagOnlyWallet}
       />
     </Container>
   );

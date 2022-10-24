@@ -14,7 +14,7 @@ export const initialState: ISwapState = {
   error: null,
   swapFrom: {
     currency: {
-      id: null,
+      id: 'ethereum',
       code: 'ETH',
       name: 'Ethereum',
       icon: 'https://exolix.com/icons/coins/ETH.png',
@@ -33,7 +33,7 @@ export const initialState: ISwapState = {
           precision: 6
         }
       ],
-      balance: null,
+
     },
     network: {
       network: 'ETH',
@@ -128,9 +128,6 @@ const SwappingState = createSlice({
     clearCurrencyRate(state: ISwapState){
       state.currencyRate.rate = null;
     },
-    clearSwapFromBalance(state: ISwapState){
-      state.swapFrom.currency.balance = null;
-    }
   },
   extraReducers: (builder) => {
     builder.addCase(getCurrencyData.pending, (state) => {
@@ -216,7 +213,6 @@ export const {
   setSwapTo, 
   clearPendingSwap,
   clearCurrencyRate,
-  clearSwapFromBalance,
   addTxId, 
   rehydrate, 
   setSelectedTransaction 

@@ -4,6 +4,7 @@
 
 import React, { FC } from 'react';
 import dayjs from 'dayjs';
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 ///////////////////////
 // Components
@@ -37,10 +38,13 @@ import {
   SWAP_FROM_AMOUNT,
   SWAP_TO_AMOUNT,
   TRANSACTION_ID,
+  NEED_HELP_CONTACT,
+  EXOLIX_EMAIL,
 } from './constants';
 
 const TransactionDetails: FC<ITransferInfo> = ({
-  transaction
+  transaction,
+  onSupportLinkPress
 }) => {
 
   return (
@@ -64,7 +68,7 @@ const TransactionDetails: FC<ITransferInfo> = ({
           {transaction?.status}
         </TextV3.CaptionRegular>
       </div>
-       <div className={styles.detailRow}>
+      <div className={styles.detailRow}>
         <TextV3.CaptionStrong
           color={COLORS_ENUMS.DARK_GRAY}
           extraStyles={styles.detailKey}
@@ -148,6 +152,12 @@ const TransactionDetails: FC<ITransferInfo> = ({
           {transaction?.id}
         </TextV3.CaptionRegular>
       </div>
+      <ButtonBase classes={{root: styles.supportEmail}} onClick={onSupportLinkPress}>
+        <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+          {NEED_HELP_CONTACT}
+          <TextV3.Caption color={COLORS_ENUMS.LINK_BLUE}>{EXOLIX_EMAIL}</TextV3.Caption>
+        </TextV3.Caption>
+      </ButtonBase>
     </div>
   );
 }
