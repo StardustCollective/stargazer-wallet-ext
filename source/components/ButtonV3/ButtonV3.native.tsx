@@ -28,7 +28,9 @@ export enum BUTTON_TYPES_ENUM {
 
 export enum BUTTON_SIZES_ENUM {
   SMALL = 0,
+  MEDIUM,
   LARGE,
+  FULL_WIDTH,
 }
 
 //////////////////////
@@ -75,13 +77,22 @@ const ButtonV3: FC<IButtonV3Props> = ({
   if (size === BUTTON_SIZES_ENUM.SMALL) {
     buttonSizeStyle = styles.buttonSmall;
     titleStyle = styles.titleSmall;
+  } else if (size === BUTTON_SIZES_ENUM.MEDIUM) {
+      buttonSizeStyle = styles.buttonMedium;
+      titleStyle = styles.titleMedium;
   } else if (size === BUTTON_SIZES_ENUM.LARGE) {
     buttonSizeStyle = styles.buttonLarge;
+    titleStyle = styles.titleLarge;
+  } else if (size === BUTTON_SIZES_ENUM.FULL_WIDTH) {
+    buttonSizeStyle = styles.buttonFullWidth;
     titleStyle = styles.titleLarge;
   }
 
   if (type === BUTTON_TYPES_ENUM.PRIMARY_SOLID) {
     buttonColorStyle = styles.primaryButton;
+  } else if (type === BUTTON_TYPES_ENUM.PRIMARY_OUTLINE) {
+    buttonColorStyle = styles.primaryOutline;
+    titleStyle = { ...titleStyle, ...styles.primaryOutlineTitle };
   } else if (type === BUTTON_TYPES_ENUM.SECONDARY_SOLID) {
     buttonColorStyle = styles.secondaryButton;
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {

@@ -1,4 +1,5 @@
 import { IAccountController } from './IAccountController';
+import { ISwapController } from './SwapController';
 import {
   KeyringManager,
   KeyringNetwork,
@@ -11,6 +12,7 @@ export interface IWalletController {
   account: Readonly<IAccountController>;
   onboardHelper: Readonly<OnboardWalletHelper>;
   keyringManager: Readonly<KeyringManager>;
+  swap: Readonly<ISwapController>;
   importSingleAccount: (
     label: string,
     network: KeyringNetwork,

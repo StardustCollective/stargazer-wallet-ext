@@ -17,6 +17,7 @@ interface ITextInput extends Partial<OutlinedInputProps> {
   visiblePassword?: boolean;
   error?: boolean;
   control?: Control<FieldValues>;
+  classes?: object;
 }
 
 const TextInput: FC<ITextInput> = ({
@@ -26,6 +27,7 @@ const TextInput: FC<ITextInput> = ({
   variant = '',
   error = false,
   endAdornment,
+  classes,
   ...otherProps
 }) => {
   const [showed, setShowed] = useState(false);
@@ -43,6 +45,7 @@ const TextInput: FC<ITextInput> = ({
     <MUITextInput
       id={id}
       className={clsx(styles.textInput, variant)}
+      classes={classes}
       type={inputType}
       error={error}
       {...otherProps}

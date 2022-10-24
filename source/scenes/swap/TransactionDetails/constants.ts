@@ -1,0 +1,12 @@
+export const STATUS_STRING = 'Status';
+export const SENT_TIME = 'Sent Time';
+export const SWAP_FROM = 'Swap From Address';
+export const SWAP_TO = 'Swap To Address';
+export const SWAP_FROM_AMOUNT = 'Swap From Amount';
+export const SWAP_TO_AMOUNT = 'Swap To Amount';
+export const TRANSACTION_ID = 'Transaction ID';
+export const DATE_FORMAT = 'DD MMM YYYY HH:mm:ss';
+export const DEPOSIT_ADDRESS = 'Deposit Address';
+export const NEED_HELP_CONTACT = 'Need help? Contact ';
+export const EXOLIX_EMAIL = 'support@exolix.com';
+export const PLATFORM     = { web: 'web', mobile: 'mobile'};
