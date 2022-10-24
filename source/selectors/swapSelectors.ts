@@ -24,7 +24,7 @@ import { SupportedExolixSwapNetworks } from 'state/swap/types';
 /**
  * Returns the unfiltered currency currency data.
  */
-const getCurrencyData = (state: RootState): ISearchCurrency[]  => state.swap.currencyData;
+const getCurrencyData = (state: RootState): ISearchCurrency[] => state.swap.currencyData;
 
 /**
  * Returns supported asset with balances.
@@ -39,47 +39,51 @@ const getCurrencyRate = (state: RootState) => state.swap.currencyRate.rate;
 /**
  * Return the transaction history.
  */
- const getTransactionHistory = (state: RootState) => state.swap.transactionHistory;
+const getTransactionHistory = (state: RootState) => state.swap.transactionHistory;
 
 /**
  * Returns the loading state for the currency rate.
  */
- const getCurrencyRateLoading = (state: RootState) => state.swap.currencyRate.loading;
+const getCurrencyRateLoading = (state: RootState) => state.swap.currencyRate.loading;
 
 /**
  * Returns currency pending swap
  */
- const getPendingSwap = (state: RootState) => state.swap.pendingSwap;
+const getPendingSwap = (state: RootState) => state.swap.pendingSwap;
 
 
 /** 
  * Returns the filtered currency data by supported network
 */
 
-const selectSupportedCurrencyData = createSelector(
-  getCurrencyData,
-  (currencyData: ISearchCurrency[]): ISearchCurrency[] => {
-    const currencyDataReduced = currencyData?.map((currency) => {
-      let networks = currency?.networks?.filter((network) => {
-        return network.name === SupportedExolixSwapNetworks.AVALANCHE ||
-        network.name === SupportedExolixSwapNetworks.BINANCE_SMART_CHAIN ||
-        network.name === SupportedExolixSwapNetworks.ETHEREUM ||
-        network.name === SupportedExolixSwapNetworks.POLYGON || 
-        network.name === SupportedExolixSwapNetworks.CONSTELLATION
+const selectSupportedCurrencyData = (excludeDag: boolean = false) => {
+  return createSelector(
+    getCurrencyData,
+    (currencyData: ISearchCurrency[]): ISearchCurrency[] => {
+      const currencyDataReduced = currencyData?.map((currency) => {
+        let networks = currency?.networks?.filter((network) => {
+          return network.name === SupportedExolixSwapNetworks.AVALANCHE ||
+            network.name === SupportedExolixSwapNetworks.BINANCE_SMART_CHAIN ||
+            network.name === SupportedExolixSwapNetworks.ETHEREUM ||
+            network.name === SupportedExolixSwapNetworks.POLYGON ||
+            (!excludeDag && network.name === SupportedExolixSwapNetworks.CONSTELLATION)
+        });
+
+        return {
+          code: currency.code,
+          name: currency.name,
+          icon: currency.icon,
+          networks
+        };
       });
 
-      return {
-        code: currency.code,
-        name: currency.name,
-        icon: currency.icon,
-        networks
-      };
-    });
+      // Return only the currencies with supported networks.
+      return currencyDataReduced?.filter(currency => currency?.networks?.length > 0) as ISearchCurrency[];
+    }
+  );
+}
 
-    // Return only the currencies with supported networks.
-    return currencyDataReduced?.filter(currency => currency?.networks?.length > 0) as ISearchCurrency[];
-  }
-);
+
 
 export default {
   getPendingSwap,

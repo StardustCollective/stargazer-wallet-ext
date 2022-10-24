@@ -109,7 +109,6 @@ export interface ISearchCurrency {
   name: string;
   icon: string;
   notes?: string;
-  balance?: string;
   networks?: ICurrencyNetwork[];
 }
 

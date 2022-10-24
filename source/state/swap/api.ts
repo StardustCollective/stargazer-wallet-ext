@@ -116,7 +116,6 @@ export const getSupportedAssets = createAsyncThunk(
                     code: asset.symbol,
                     name: asset.label,
                     icon: asset.logo,
-                    balance: assetBalance,
                     networks: [network]
                   })
                   break;

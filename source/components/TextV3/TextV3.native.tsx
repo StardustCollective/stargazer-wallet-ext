@@ -11,7 +11,6 @@ import { Text, TextStyle, StyleProp, StyleSheet } from 'react-native';
 
 import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { COLORS } from '../../assets/styles/_variables.native';
 
 //////////////////////
 // Enums
@@ -77,7 +76,9 @@ const TextV3 = {
     }else if (color === COLORS_ENUMS.PRIMARY) {
       colorStyle = styles.primary;
     } else if (color === COLORS_ENUMS.PURPLE_DARK){
-      colorStyle = styles.purpleDark
+      colorStyle = styles.purpleDarkFont
+    } else if (color === COLORS_ENUMS.LINK_BLUE){
+      colorStyle = styles.linkBlueFont
     }
 
     //Alignment

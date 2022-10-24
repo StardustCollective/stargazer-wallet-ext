@@ -46,6 +46,7 @@ const Home: FC<IHome> = ({
   balance,
   onBuyPressed,
   onSwapPressed,
+  isDagOnlyWallet,
 }) => {
 
   ///////////////////////////
@@ -88,12 +89,16 @@ const Home: FC<IHome> = ({
                     type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                     onClick={onBuyPressed}
                   />
-                  <ButtonV3
-                    label={SWAP_STRING}
-                    size={BUTTON_SIZES_ENUM.MEDIUM}
-                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                    onClick={onSwapPressed}
-                  />
+                  {!isDagOnlyWallet && (
+                    <>
+                      <ButtonV3
+                        label={SWAP_STRING}
+                        size={BUTTON_SIZES_ENUM.MEDIUM}
+                        type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                        onClick={onSwapPressed}
+                      />
+                    </>
+                  )}
                 </div>
               </section>
               <AssetsPanel />

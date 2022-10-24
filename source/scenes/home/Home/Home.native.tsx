@@ -49,7 +49,7 @@ let lastIsConnected: boolean = true;
 // Scene
 ///////////////////////////
 
-const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed, onSwapPressed }) => {
+const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, isDagOnlyWallet, onBuyPressed, onSwapPressed }) => {
 
   const accountController = getAccountController();
 
@@ -86,7 +86,7 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed, o
               <View style={styles.bitcoinBalance}>
                 <TextV3.Body extraStyles={styles.balanceText}>{`≈ ₿${balance}`}</TextV3.Body>
               </View>
-              <View style={styles.buttons}> 
+              <View style={styles.buttons}>
                 <ButtonV3
                   title={BUY_STRING}
                   size={BUTTON_SIZES_ENUM.LARGE}
@@ -94,13 +94,17 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed, o
                   onPress={onBuyPressed}
                   extraStyles={styles.buttonNormal}
                 />
-                <ButtonV3
-                  title={SWAP_STRING}
-                  size={BUTTON_SIZES_ENUM.LARGE}
-                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                  onPress={onSwapPressed}
-                  extraStyles={styles.buttonNormal}
-                />
+                {!isDagOnlyWallet && (
+                  <>
+                    <ButtonV3
+                      title={SWAP_STRING}
+                      size={BUTTON_SIZES_ENUM.LARGE}
+                      type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                      onPress={onSwapPressed}
+                      extraStyles={styles.buttonNormal}
+                    />
+                  </>
+                )}
               </View>
             </View>
             <AssetsPanel />

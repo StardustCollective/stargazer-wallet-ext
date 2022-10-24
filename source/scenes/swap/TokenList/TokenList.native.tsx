@@ -76,6 +76,7 @@ const ConfirmDetails: FC<ITokenList> = ({
   searchValue,
   isLoading,
   action,
+  balances,
 }) => {
 
   const RenderFromItem = ({ item }) => {
@@ -90,7 +91,7 @@ const ConfirmDetails: FC<ITokenList> = ({
             </View>
           </View>
           <View style={styles.tokenCellRight}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(item?.balance), 16, 20), 4)}`}</TextV3.CaptionStrong>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(balances[item?.id]), 16, 20), 4)}`}</TextV3.CaptionStrong>
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item.networks[0].name}</TextV3.Caption>
           </View>
         </TouchableOpacity>

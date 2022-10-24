@@ -52,6 +52,7 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
   action,
   onTokenCellPressed,
   onSearchChange,
+  balances,
 }) => {
 
   const RenderFromItem = (currencyData: ISearchCurrency[]) => {
@@ -66,7 +67,7 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
             </div>
           </div>
           <div className={styles.tokenCellRight}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(item.balance), 16, 20), 4)}`}</TextV3.CaptionStrong>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(balances[item.id]), 16, 20), 4)}`}</TextV3.CaptionStrong>
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item.networks[0].name}</TextV3.Caption>
           </div>
         </div>

@@ -68,6 +68,8 @@ const TextV3 = {
       colorStyle = styles.textRed;
     } else if (color === COLORS_ENUMS.PURPLE_DARK) {
       colorStyle = styles.textPurpleDark;
+    } else if (color === COLORS_ENUMS.LINK_BLUE) {
+      colorStyle = styles.textLinkBlue;
     }
 
     //Alignment
