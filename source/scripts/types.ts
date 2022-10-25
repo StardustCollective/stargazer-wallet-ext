@@ -3,8 +3,7 @@ import { AllChainsIds } from './Background/controllers/EVMChainController/types'
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 export interface AccountItem  {
-  id?: number;
-  bipIndex?: number | null;
+  id: number;
   type: KeyringWalletType;
   address: string;
   publicKey: string;
