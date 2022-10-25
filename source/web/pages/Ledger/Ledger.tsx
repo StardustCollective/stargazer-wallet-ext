@@ -328,7 +328,6 @@ const LedgerPage: FC = () => {
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
     const walletId = jsonData.walletId;
-    const publicKey = jsonData.publicKey;
     const background = await browser.runtime.getBackgroundPage();
 
     try {
