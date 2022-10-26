@@ -240,7 +240,7 @@ const LedgerPage: FC = () => {
     if (checked) {
       setSelectedAccounts((state) => {
         return [...state, {
-          bipIndex: key - 1, 
+          id: key - 1, 
           type: KeyringWalletType.LedgerAccountWallet,
           publicKey: account.publicKey, 
           address: account.address, 
@@ -327,21 +327,18 @@ const LedgerPage: FC = () => {
 
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
-    const publicKey = jsonData.publicKey;
-    const bipIndex = jsonData.bipIndex;
+    const walletId = jsonData.walletId;
     const background = await browser.runtime.getBackgroundPage();
+
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
-      const signature = await LedgerBridgeUtil.signMessage(message, bipIndex);
+      const signature = await LedgerBridgeUtil.signMessage(message, Number(walletId.replace('L', '')));
       LedgerBridgeUtil.closeConnection();
       const signatureEvent = new CustomEvent('messageSigned', {
         detail: {
           windowId, result: true, signature: {
-            hex: {
-              signature,
-              publicKey,
-            },
+            hex: signature,
             requestEncoded: message,
           }
         }
@@ -350,7 +347,6 @@ const LedgerPage: FC = () => {
       background.dispatchEvent(signatureEvent);
       window.close();
     } catch (e) {
-      console.log('error', JSON.stringify(e, null, 2));
       setWaitingForLedger(false);
       LedgerBridgeUtil.closeConnection();
     }
