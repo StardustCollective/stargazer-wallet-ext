@@ -5,16 +5,18 @@
   flex: 1;
   flex-direction: column;
   width: 100%;
-  height: 500px;
+  height: 499px;
   overflow: auto;
   margin: 16px;
 
   .amount {
     display: flex;
     height: 80px;
+    margin-top: 10px;
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid $gray-200;
+    padding: 0px 0px 26px 0px;
 
     .currencyIcon {
       display: flex;
@@ -37,6 +39,7 @@
 
     .detailValue{
       margin-bottom: 12px;
+      text-overflow: ellipsis;
     }
   }
 
@@ -65,5 +68,12 @@
     flex: 1;
     justify-content: space-evenly;
     align-items: flex-end;
+  }
+
+  .supportEmail {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding: 20px 0px 50px 0px;
   }
 }

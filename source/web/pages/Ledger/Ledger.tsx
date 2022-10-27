@@ -327,7 +327,6 @@ const LedgerPage: FC = () => {
 
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
-    const publicKey = jsonData.publicKey;
     const bipIndex = jsonData.bipIndex;
     const background = await browser.runtime.getBackgroundPage();
     try {
@@ -338,10 +337,7 @@ const LedgerPage: FC = () => {
       const signatureEvent = new CustomEvent('messageSigned', {
         detail: {
           windowId, result: true, signature: {
-            hex: {
-              signature,
-              publicKey,
-            },
+            hex: signature,
             requestEncoded: message,
           }
         }
@@ -350,7 +346,6 @@ const LedgerPage: FC = () => {
       background.dispatchEvent(signatureEvent);
       window.close();
     } catch (e) {
-      console.log('error', JSON.stringify(e, null, 2));
       setWaitingForLedger(false);
       LedgerBridgeUtil.closeConnection();
     }

@@ -6,6 +6,7 @@ import React, { useEffect, useState, FC, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 import find from 'lodash/find';
+import some from 'lodash/some';
 
 ///////////////////////
 // Selectors
@@ -26,9 +27,9 @@ import { getWalletController } from 'utils/controllersUtils';
 ///////////////////////////
 
 import { ISwapTokensContainer } from './types';
-import { ISelectedCurrency, ICurrencyRate, IPendingTransaction, ISearchCurrency } from 'state/swap/types';
+import { ISelectedCurrency, ICurrencyRate, IPendingTransaction } from 'state/swap/types';
 import { RootState } from 'state/store';
-import { AssetType, IAssetState } from 'state/vault/types';
+import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////////
@@ -42,13 +43,13 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
+import { LTX_DEFAULT_CURRENCY, DAG_DEFAULT_CURRENCY } from './constants';
 import { SWAP_ACTIONS } from 'scenes/swap/constants';
 const SELECT_CURRENCY_ROUTE = '/tokenList?action=';
 const NEXT_SCREEN_ROUTE = '/transferInfo?';
 const FROM_AMOUNT_ZERO = 0;
 const TO_AMOUNT_ZERO = 0;
 const DEFAULT_TO_AMOUNT = 0;
-const ETH_CURRENCY_CODE = 'ETH';
 
 ///////////////////////////
 // Container
@@ -65,11 +66,13 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const [isNextButtonLoading, setIsNextButtonLoading] = useState<boolean>(false);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState<boolean>(true);
   const { swapFrom, swapTo }: { swapTo: ISelectedCurrency, swapFrom: ISelectedCurrency } = useSelector((state: RootState) => state.swap);
+  const { balances, activeWallet}: IVaultState = useSelector((state: RootState) => state.vault);
+  const fromBalance = balances[swapFrom.currency.id];
+  const excludeDag = !some(activeWallet.assets, { 'type': AssetType.Constellation });
   const currencyRate: ICurrencyRate = useSelector(swapSelectors.getCurrencyRate);
   const isCurrencyRateLoading: boolean = useSelector(swapSelectors.getCurrencyRateLoading);
   const pendingSwap: IPendingTransaction = useSelector(swapSelectors.getPendingSwap);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
-  const supportedAssets: ISearchCurrency[] = useSelector((state: RootState) => state.swap.supportedAssets)
   
   // Add the transaction history button to the header.
   useLayoutEffect(() => {
@@ -79,35 +82,14 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     navigation.setOptions(historyHeader({ navigation, onRightIconClick }));
   }, []);
 
-  // Get the supportedAssets list
+  // Get supported assets and set Default ToSwap Token.
   useEffect(() => {
-    walletController.swap.getSupportedAssets();
-  }, [])
-
-
-  // Clears the swapFrom balance
-  useEffect(() => {
-    return () => {
-      // Clear Swap From Balance if the currency code is ETH
-      if (swapFrom.currency.code === ETH_CURRENCY_CODE){
-        console.log('Attempting to clear swap from balance');
-        walletController.swap.clearSwapFromBalance();
-      }
+    if(excludeDag){
+      walletController.swap.setSwapTo(LTX_DEFAULT_CURRENCY, LTX_DEFAULT_CURRENCY.networks[0]);
+    }else{
+      walletController.swap.setSwapTo(DAG_DEFAULT_CURRENCY, DAG_DEFAULT_CURRENCY.networks[0]);
     }
   }, [])
-
-  // When the supportedAssets are populated set ETH as the default currency
-  useEffect( () => {
-    if(swapFrom.currency.code === ETH_CURRENCY_CODE && swapFrom.currency.balance === null){
-      const ethAsset = find(
-        supportedAssets,
-        { code: ETH_CURRENCY_CODE }
-      );
-      if(ethAsset){
-        walletController.swap.setSwapFrom(ethAsset, ethAsset.networks[0]);
-      }
-    }
-  }, [supportedAssets])
 
   // Update the active asset when the swapFrom state changes
   useEffect(() => {
@@ -197,11 +179,11 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       linkTo(`${NEXT_SCREEN_ROUTE}`);
       setIsNextButtonLoading(false);
     }
-  }, [pendingSwap]);
+  }, [pendingSwap?.id]);
 
   // Check if the balance is valid.
   useEffect(() => {
-    if (fromAmount > parseFloat(swapFrom.currency.balance)) {
+    if (fromAmount > parseFloat(fromBalance)) {
       setIsBalanceError(true);
     } else {
       setIsBalanceError(false);
@@ -231,7 +213,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   }
 
   const onFromChangeText = (text: string) => {
-    const fromAmount = parseFloat(text);
+    const fromAmount = parseFloat(text.replaceAll(',','.'));
     setFromAmount(fromAmount);
   }
 
@@ -243,7 +225,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
         onSwapFromTokenListPressed={onSwapFromTokenListPressed}
         onSwapToTokenListPressed={onSwapToTokenListPressed}
         onNextPressed={onNextPressed}
-        fromBalance={swapFrom.currency.balance}
+        fromBalance={fromBalance}
         onFromChangeText={onFromChangeText}
         isBalanceError={isBalanceError}
         isNextButtonDisabled={isNextButtonDisabled}

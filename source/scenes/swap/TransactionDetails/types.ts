@@ -7,4 +7,5 @@ export interface ISwapTokensContainer {
 
 export default interface ITransferInfo {
   transaction: IExolixTransaction,
+  onSupportLinkPress: () => void,
 }
