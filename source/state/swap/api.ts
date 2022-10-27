@@ -23,6 +23,7 @@ import {
   IExolixTransaction
 } from "./types";
 import { RootState } from 'state/store';
+import { AssetType } from "state/vault/types";
 
 
 /////////////////////////
@@ -110,7 +111,10 @@ export const getSupportedAssets = createAsyncThunk(
               for(let k = 0; k < currency.networks.length; k++){
                 const network = currency.networks[k];
                 // Push the asset to the supportedAssets array if the network is supported.
-                if(mappedLocalToExolixNetwork === network.name || asset.symbol === network.network){
+                if(mappedLocalToExolixNetwork === network.name ||
+                  AssetType.Constellation === network.name.toLocaleLowerCase() ||
+                  network.name.toLocaleLowerCase().includes(AssetType.Ethereum)
+                  ){
                   supportedAssets.push({
                     id: asset.id,
                     code: asset.symbol,
