@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     fontSize: 20,
+    color: COLORS.black
   },
   swapInputChevron: {
     marginRight: 16
