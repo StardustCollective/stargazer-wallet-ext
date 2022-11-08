@@ -200,13 +200,18 @@ export class AccountController implements IAccountController {
       assetList = assetList.concat(accountAssetList);
     }
 
-    const activeWallet: IWalletState = {
+    let activeWallet: IWalletState = {
       id: walletInfo.id,
       type: walletInfo.type,
       label: walletInfo.label,
       supportedAssets: walletInfo.supportedAssets,
       assets: assetList,
     };
+
+    // Ledger wallet will contain a bipIndex.
+    if(walletInfo?.bipIndex !== undefined){
+      activeWallet.bipIndex = walletInfo.bipIndex;
+    }
 
     store.dispatch(changeActiveWallet(activeWallet));
   }
