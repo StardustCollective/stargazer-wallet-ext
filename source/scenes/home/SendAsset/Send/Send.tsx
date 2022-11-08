@@ -168,7 +168,7 @@ const WalletSend: FC<IWalletSend> = ({
             </div>
           )}
         </section>
-        {activeAsset.type !== AssetType.Constellation && (
+        {activeAsset.type !== AssetType.Constellation && activeAsset.type !== AssetType.LedgerConstellation &&(
           <section
             className={clsx(styles.transactionFee, {
               [styles.hide]: !gasPrices.length,

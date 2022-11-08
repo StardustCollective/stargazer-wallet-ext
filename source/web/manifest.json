@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "3.10.1",
+  "version": "3.10.2",
   "icons": {
     "16": "assets/icons/favicon-16.png",
     "32": "assets/icons/favicon-32.png",
@@ -20,9 +20,10 @@
     "https://assets.coingecko.com/",
     "https://*.googleusercontent.com/*",
     "https://*.opensea.io/*",
-    "https://*.exolix.com/*"
+    "https://*.exolix.com/*",
+    "https://*.seadn.io/*"
   ],
-  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon https://assets.coingecko.com https://*.amazonaws.com https://*.googleusercontent.com https://*.opensea.io https://exolix.com;",
+  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon https://assets.coingecko.com https://*.amazonaws.com https://*.googleusercontent.com https://*.opensea.io https://exolix.com https://*.seadn.io",
   "__chrome|firefox__author": "Stardust Collective",
   "__firefox__applications": {
     "gecko": {
