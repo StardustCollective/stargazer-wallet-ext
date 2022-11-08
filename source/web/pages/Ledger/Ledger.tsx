@@ -294,7 +294,6 @@ const LedgerPage: FC = () => {
     const {
       amount,
       publicKey,
-      id,
       from,
       to,
       bipIndex,
