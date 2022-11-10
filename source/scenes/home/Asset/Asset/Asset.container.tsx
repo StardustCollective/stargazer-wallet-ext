@@ -74,7 +74,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
 
   useEffect(() => {
     const fetchTxs = async () => {
-      if (activeAsset.type === AssetType.Constellation) {
+      if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
         return activeAsset.transactions;
       }
       return (await accountController.getFullETHTxs()).sort((a, b) => b.timestamp - a.timestamp);
