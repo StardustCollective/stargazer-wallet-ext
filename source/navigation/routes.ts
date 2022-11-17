@@ -32,6 +32,14 @@ export default {
   [screens.authorized.send]: '/send/:address?',
   [screens.authorized.gasSettings]: '/gas-settings',
   [screens.authorized.singleSelect]: '/single-select',
+  // Swap Tokens Stack
+  [screens.swap.swapTokens]: '/swapTokens',
+  [screens.swap.transferInfo]: '/transferInfo',
+  [screens.swap.confirmDetails]: '/confirmDetails',
+  [screens.swap.confirmation]: '/confirmation',
+  [screens.swap.swapHistory]: '/swapHistory',
+  [screens.swap.transactionDetails] : '/transactionDetails',
+  [screens.swap.tokenList]: '/tokenList',
   // Settings Stack
   [screens.settings.main]: '/settings',
   [screens.settings.about]: '/settings/about',

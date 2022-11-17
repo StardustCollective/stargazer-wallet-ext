@@ -1,0 +1,42 @@
+@import '~assets/styles/_variables';
+
+.container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  margin: 16px;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 60px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    .tokenSwapText {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .statusText {
+      margin-top: 12px;
+      text-align: center;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    flex-direction: column;
+
+    .viewHistoryButton {
+      margin-bottom: 20px,
+    }
+  }
+
+
+}

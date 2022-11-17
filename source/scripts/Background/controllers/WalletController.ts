@@ -25,13 +25,14 @@ import {
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { IWalletController } from './IWalletController';
+import SwapController, { ISwapController } from './SwapController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { EthChainId, PolygonChainId } from './EVMChainController/types';
+import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
 import { generateId } from './EVMChainController/utils';
 import { AvailableEvents, StargazerChain } from 'scripts/common';
@@ -48,6 +49,8 @@ class WalletController implements IWalletController {
   account: AccountController;
 
   keyringManager: KeyringManager;
+
+  swap: ISwapController;
 
   onboardHelper: OnboardWalletHelper;
 
@@ -76,6 +79,7 @@ class WalletController implements IWalletController {
     });
 
     this.account = new AccountController(this.keyringManager);
+    this.swap    = new SwapController();
   }
 
   checkPassword(password: string) {
@@ -186,7 +190,7 @@ class WalletController implements IWalletController {
       walletIds.push(parseInt(num));
     }
 
-    //Determin the next ID.
+    //Determine the next ID.
     return (
       walletIds.sort(function (a, b) {
         return a - b;
@@ -201,7 +205,6 @@ class WalletController implements IWalletController {
       const { wallets } = vault;
       const accountItem = accountItems[i];
       const isDuplicate = this.checkForDuplicateWallet(accountItem.address);
-
       // Skip the account if it already exist in the vault.wallets redux store.
       if (isDuplicate) {
         continue;
@@ -230,6 +233,7 @@ class WalletController implements IWalletController {
       // function that will name the wallets.
       const newWallet = {
         id: `${prefix}${id}`,
+        bipIndex: accountItem.bipIndex,
         // The account id is offset by one so the UI displays will
         // the first account as 1 and not 0.
         label: `${label} ${id}`,
@@ -239,7 +243,7 @@ class WalletController implements IWalletController {
             address: accountItem.address,
             network: KeyringNetwork.Constellation,
             publicKey: accountItem!.publicKey,
-            deviceId,
+            deviceId, // Used for bitfi devices.
           },
         ],
         supportedAssets: [KeyringAssetType.DAG],
@@ -340,11 +344,12 @@ class WalletController implements IWalletController {
     console.log(`${network} - ${chainId}`);
 
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
-      dag4.network.setNetwork({
+      dag4.account.connect({
         id: DAG_NETWORK[chainId].id,
-        beUrl: DAG_NETWORK[chainId].beUrl,
-        lbUrl: DAG_NETWORK[chainId].lbUrl,
-      });
+        networkVersion: DAG_NETWORK[chainId].version,
+        ...DAG_NETWORK[chainId].config,
+      }, false);
+
       if (!isNative) {
         getDappRegistry().sendOriginChainEvent(
           '*',
@@ -366,14 +371,14 @@ class WalletController implements IWalletController {
         );
       }
     }
-    // TODO-349: Only Polygon
-    // if (network === 'Avalanche') {
-    //   this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
-    // }
+    // 349: New network should be added here.
+    if (network === 'Avalanche') {
+      this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
+    }
     
-    // if (network === 'BSC') {
-    //   this.account.networkController.switchBSCChain(chainId as BSCChainId);
-    // }
+    if (network === 'BSC') {
+      this.account.networkController.switchBSCChain(chainId as BSCChainId);
+    }
 
     if (network === 'Polygon') {
       this.account.networkController.switchPolygonChain(chainId as PolygonChainId);

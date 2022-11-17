@@ -36,6 +36,11 @@ import { IHome } from './types';
 // Constants
 ///////////////////////////
 
+import {
+  BUY_STRING,
+  SWAP_STRING
+} from './constants';
+
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
 let lastIsConnected: boolean = true;
@@ -44,7 +49,7 @@ let lastIsConnected: boolean = true;
 // Scene
 ///////////////////////////
 
-const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed }) => {
+const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, isDagOnlyWallet, onBuyPressed, onSwapPressed }) => {
 
   const accountController = getAccountController();
 
@@ -58,12 +63,12 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed })
         lastIsConnected = false;
       }
     });
-  
+
     return () => {
       unsubscribeNetInfo();
     }
   }, []);
-  
+
 
   return (
     <View style={styles.container}>
@@ -81,13 +86,26 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, onBuyPressed })
               <View style={styles.bitcoinBalance}>
                 <TextV3.Body extraStyles={styles.balanceText}>{`≈ ₿${balance}`}</TextV3.Body>
               </View>
-              <ButtonV3
-                title="Buy"
-                size={BUTTON_SIZES_ENUM.LARGE}
-                type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                onPress={onBuyPressed}
-                extraStyles={styles.buyButton}
-              />
+              <View style={styles.buttons}>
+                <ButtonV3
+                  title={BUY_STRING}
+                  size={BUTTON_SIZES_ENUM.LARGE}
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                  onPress={onBuyPressed}
+                  extraStyles={styles.buttonNormal}
+                />
+                {!isDagOnlyWallet && (
+                  <>
+                    <ButtonV3
+                      title={SWAP_STRING}
+                      size={BUTTON_SIZES_ENUM.LARGE}
+                      type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                      onPress={onSwapPressed}
+                      extraStyles={styles.buttonNormal}
+                    />
+                  </>
+                )}
+              </View>
             </View>
             <AssetsPanel />
           </>

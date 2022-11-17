@@ -158,7 +158,6 @@ const ConfirmContainer = () => {
     let priceId = assetInfo.priceId;
 
     if (activeAsset.type === AssetType.ERC20) {
-      // TODO-349: Only Polygon. Include AVAX and BNB basePriceId.
       priceId = getPriceId(assetNetwork);
     }
 
@@ -225,6 +224,7 @@ const ConfirmContainer = () => {
           params.set('route', 'signTransaction');
           params.set('windowId', Array.isArray(windowId) ? windowId[0] : windowId);
           params.set('id', activeWallet.id);
+          params.set('bipIndex', activeWallet.bipIndex.toString());
           params.set('publicKey', activeWalletPublicKey);
           params.set('deviceId', activeWalletDeviceId);
           params.set('amount', tempTx!.amount);

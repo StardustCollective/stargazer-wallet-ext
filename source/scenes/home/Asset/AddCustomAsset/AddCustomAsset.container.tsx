@@ -34,7 +34,7 @@ import { removeEthereumPrefix } from 'utils/addressUtil';
 ///////////////////////////
 
 import screens from 'navigation/screens';
-import { ETHEREUM_LOGO, POLYGON_LOGO } from 'constants/index';
+import { AVALANCHE_LOGO, BSC_LOGO, ETHEREUM_LOGO, POLYGON_LOGO } from 'constants/index';
 
 
 const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
@@ -159,10 +159,10 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     title: 'Network Type',
     value: networkType,
     items: [
+      // 349: New network should be added here.
       { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO }, 
-      // TODO-349: Only Polygon
-      // { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
-      // { value: 'bsc', label: 'BNB Chain', icon: BSC_LOGO }, 
+      { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
+      { value: 'bsc', label: 'Binance Smart Chain', icon: BSC_LOGO }, 
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO }, 
     ],
     onClick: navigateToSingleSelect,

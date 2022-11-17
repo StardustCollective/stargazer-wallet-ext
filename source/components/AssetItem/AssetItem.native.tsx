@@ -63,13 +63,15 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
 
     if (showNetwork) {
       let network = assetInfoData.network;
-      // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
-      if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(assetInfoData?.symbol)) {
+      // 349: New network should be added here.
+      if ([AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(assetInfoData?.symbol)) {
         const currentNetwork = getNetworkFromChainId(network);
         network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+      } else if (AssetSymbol.DAG === assetInfoData?.symbol) {
+        network = activeNetwork.Constellation;
       }
 
-      const label = getNetworkLabel(network, assetInfoData?.symbol);
+      const label = getNetworkLabel(network);
 
       return (
         <View>

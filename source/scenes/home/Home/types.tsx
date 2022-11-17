@@ -14,5 +14,7 @@ export interface IHome {
   activeWallet: IWalletState;
   balanceObject: IBalanceObject;
   balance: string;
+  isDagOnlyWallet: boolean;
   onBuyPressed: () => void;
+  onSwapPressed: () => void;
 }

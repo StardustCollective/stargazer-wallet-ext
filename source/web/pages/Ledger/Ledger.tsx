@@ -240,7 +240,7 @@ const LedgerPage: FC = () => {
     if (checked) {
       setSelectedAccounts((state) => {
         return [...state, {
-          id: key - 1, 
+          bipIndex: key - 1, 
           type: KeyringWalletType.LedgerAccountWallet,
           publicKey: account.publicKey, 
           address: account.address, 
@@ -294,16 +294,17 @@ const LedgerPage: FC = () => {
     const {
       amount,
       publicKey,
-      id,
       from,
       to,
+      bipIndex,
     } = queryString.parse(location.search) as any;
 
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
-      const signedTX = await LedgerBridgeUtil.buildTransaction(amount, publicKey, Number(id.replace('L', '')), from, to);
-      const hash = await dag4.network.loadBalancerApi.postTransaction(signedTX);
+      // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2
+      const signedTX = await LedgerBridgeUtil.buildTransaction(amount, publicKey, Number(bipIndex), from, to);
+      const hash = await dag4.network.postTransaction(signedTX);
       if (hash) {
         postTransactionResult(hash);
       }
@@ -326,22 +327,17 @@ const LedgerPage: FC = () => {
 
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
-    const walletId = jsonData.walletId;
-    const publicKey = jsonData.publicKey;
+    const bipIndex = jsonData.bipIndex;
     const background = await browser.runtime.getBackgroundPage();
-
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
-      const signature = await LedgerBridgeUtil.signMessage(message, Number(walletId.replace('L', '')));
+      const signature = await LedgerBridgeUtil.signMessage(message, bipIndex);
       LedgerBridgeUtil.closeConnection();
       const signatureEvent = new CustomEvent('messageSigned', {
         detail: {
           windowId, result: true, signature: {
-            hex: {
-              signature,
-              publicKey,
-            },
+            hex: signature,
             requestEncoded: message,
           }
         }
@@ -350,7 +346,6 @@ const LedgerPage: FC = () => {
       background.dispatchEvent(signatureEvent);
       window.close();
     } catch (e) {
-      console.log('error', JSON.stringify(e, null, 2));
       setWaitingForLedger(false);
       LedgerBridgeUtil.closeConnection();
     }

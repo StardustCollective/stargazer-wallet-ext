@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { useFiat } from 'hooks/usePrice';
 import { useSelector } from 'react-redux';
-import { DAG_EXPLORER_SEARCH } from 'constants/index';
+import { DAG_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType, Transaction } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
@@ -14,7 +14,7 @@ import { getAccountController } from 'utils/controllersUtils';
 
 const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
   const getFiatAmount = useFiat();
-  const { activeAsset }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { activeAsset, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const accountController = getAccountController();
 
@@ -29,30 +29,43 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     [transactions]
   );
 
-  const getTxLink = (tx?: string): string | null => {
+  const getTxLink = (tx?: any): string | null => {
     // If we don't have a tx ID then we can't link block explorer
-    if (!tx) {
+    const txHash = tx.hash;
+    if (!txHash) {
       return null;
     }
 
+
+    let DAG_EXPLORER = DAG_NETWORK[activeNetwork.Constellation].explorer;
+    // tx.sender is only available on txs in Mainnet 1.0
+    if (tx.sender) {
+      DAG_EXPLORER = 'https://mainnet1.dagexplorer.io';
+    }
+    const DAG_EXPLORER_TX = `${DAG_EXPLORER}/transactions`;
+
     const explorerURL = accountController.networkController.getExplorerURL();
-    return isETH ? `${explorerURL}tx/${tx}` : `${DAG_EXPLORER_SEARCH}${tx}`;
+    return isETH ? `${explorerURL}tx/${txHash}` : `${DAG_EXPLORER_TX}/${txHash}`;
   };
 
   const renderTxItem = (tx: Transaction, idx: number) => {
     const isETHPending = isETH && tx.assetId === activeAsset.id;
+    // tx.receiver and tx.sender are from Transaction V1
+    // tx.destination and tx.source are from Transaction V2
+    const dagTxSender = tx.sender ? tx.sender : tx.source;
+    const dagTxReceiver = tx.receiver ? tx.receiver : tx.destination;
     const isReceived =
-      (!isETH && tx.receiver === address) ||
+      (!isETH && [tx.receiver, tx.destination].includes(address)) ||
       (isETH && !tx.assetId && tx.to && tx.to[0].to.toLowerCase() === address.toLowerCase()) ||
       (isETHPending && tx.toAddress.toLowerCase() === address.toLowerCase());
     const isSent =
-      (!isETH && tx.sender === address) ||
+      (!isETH && [tx.sender, tx.source].includes(address)) ||
       (isETH && !tx.assetId && tx.from && tx.from[0].from.toLowerCase() === address.toLowerCase()) ||
       (isETHPending && tx.fromAddress.toLowerCase() === address.toLowerCase());
     const isSelf = isSent && isReceived;
     const txTypeLabel = isReceived
-      ? `${isETHPending ? tx.fromAddress : isETH ? tx.from && tx.from[0].from : tx.sender}`
-      : `${isETHPending ? tx.toAddress : isETH ? tx.to && tx.to[0].to : tx.receiver}`;
+      ? `${isETHPending ? tx.fromAddress : isETH ? tx.from && tx.from[0].from : dagTxSender}`
+      : `${isETHPending ? tx.toAddress : isETH ? tx.to && tx.to[0].to : dagTxReceiver}`;
     const amount = isETH ? Number(isETHPending ? tx.amount : tx.balance) : tx.amount / 1e8;
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = isETH

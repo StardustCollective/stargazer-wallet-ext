@@ -38,13 +38,13 @@ export class AssetsBalanceMonitor {
   private utils = ControllerUtils();
 
   constructor() {
+    // 349: New network should be added here.
     this.accountTrackerList = {
       [KeyringNetwork.Constellation]: new AccountTracker(),
       [KeyringNetwork.Ethereum]: new AccountTracker(),
       'Polygon': new AccountTracker(),
-      // TODO-349: Only Polygon
-      // 'Avalanche': new AccountTracker(),
-      // 'BSC': new AccountTracker(),
+      'Avalanche': new AccountTracker(),
+      'BSC': new AccountTracker(),
     }
   }
 
@@ -64,6 +64,7 @@ export class AssetsBalanceMonitor {
       });
 
       if (hasDAG) {
+        // TODO-421: Check observeMemPoolChange and startMonitor
         this.subscription = dag4.monitor
           .observeMemPoolChange()
           .subscribe((up) => this.pollPendingTxs(up));

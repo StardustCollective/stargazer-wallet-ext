@@ -4,12 +4,12 @@ import {
     POLYGONSCAN_API_KEY as polygonscanApiKey,
     BSCSCAN_API_KEY as bscscanApiKey,
     SNOWTRACE_API_KEY as snowtraceApiKey,
+    STARGAZER_SWAPPING_BASE_URL_PROD as stargazerSwappingBaseUrlProd,
     STARGAZER_PROVIDERS_BASE_URL as stargazerProvidersBaseUrl,
     STARGAZER_PROVIDERS_BASE_URL_PROD as stargazerProvidersBaseUrlProd,
     STARGAZER_API_KEY as stargazerApiKey,
     QUICKNODE_ETHEREUM_MAINNET as quickNodeEthereumMainnet,
-    QUICKNODE_ETHEREUM_ROPSTEN as quickNodeEthereumRopsten,
-    QUICKNODE_ETHEREUM_RINKEBY as quickNodeEthereumRinkeby,
+    QUICKNODE_ETHEREUM_GOERLI as quickNodeEthereumGoerli,
     QUICKNODE_POLYGON_MAINNET as quickNodePolygonMainnet,
     QUICKNODE_POLYGON_TESTNET as quickNodePolygonTestnet,
     QUICKNODE_BSC_MAINNET as quickNodeBSCMainnet,
@@ -24,13 +24,13 @@ export const ETHERSCAN_API_KEY = etherscanApiKey;
 export const POLYGONSCAN_API_KEY = polygonscanApiKey;
 export const BSCSCAN_API_KEY = bscscanApiKey;
 export const SNOWTRACE_API_KEY = snowtraceApiKey;
+export const STARGAZER_SWAPPING_BASE_URL_PROD = stargazerSwappingBaseUrlProd;
 export const STARGAZER_PROVIDERS_BASE_URL = stargazerProvidersBaseUrl;
 export const STARGAZER_PROVIDERS_BASE_URL_PROD = stargazerProvidersBaseUrlProd;
 export const STARGAZER_API_KEY = stargazerApiKey;
 export const COINGECKO_API_KEY = coinGeckoApiKey;
 export const QUICKNODE_ETHEREUM_MAINNET = quickNodeEthereumMainnet;
-export const QUICKNODE_ETHEREUM_ROPSTEN = quickNodeEthereumRopsten;
-export const QUICKNODE_ETHEREUM_RINKEBY = quickNodeEthereumRinkeby;
+export const QUICKNODE_ETHEREUM_GOERLI = quickNodeEthereumGoerli;
 export const QUICKNODE_POLYGON_MAINNET = quickNodePolygonMainnet;
 export const QUICKNODE_POLYGON_TESTNET = quickNodePolygonTestnet;
 export const QUICKNODE_BSC_MAINNET = quickNodeBSCMainnet;

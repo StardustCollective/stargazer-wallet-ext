@@ -39,12 +39,15 @@ const AssetDetail: FC<IAssetSettings> = ({
   const activeAssetStyle = StyleSheet.flatten([styles.mask, activeAsset && activeWallet ? styles.loaderHide : {}]);
   const asset = assets[activeAsset?.id];
   let network = asset?.network;
-  // TODO-349: Only Polygon ['ETH', 'AVAX', 'BNB', 'MATIC']
-  if ([AssetSymbol.ETH, AssetSymbol.MATIC].includes(asset?.symbol)) {
+  // 349: New network should be added here.
+  if ([AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(asset?.symbol)) {
     const currentNetwork = getNetworkFromChainId(network);
     network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+  } else if (AssetSymbol.DAG === asset?.symbol) {
+    network = activeNetwork.Constellation;
   }
-  const networkLabel = getNetworkLabel(network, asset?.symbol);
+  
+  const networkLabel = getNetworkLabel(network);
   const networkLogo = asset?.symbol === 'DAG' ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
 
   if (activeWallet && activeAsset) {

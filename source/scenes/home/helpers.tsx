@@ -1,4 +1,4 @@
-import { DAG_EXPLORER_SEARCH } from 'constants/index';
+import { DAG_NETWORK } from 'constants/index';
 import format from 'date-fns/format';
 import { getAllEVMChains } from 'scripts/Background/controllers/EVMChainController/utils';
 import { AssetType } from 'state/vault/types';
@@ -85,11 +85,7 @@ export const getAddressURL = (
 ) => {
   const EVM_CHAINS = getAllEVMChains();
   if (type === AssetType.Constellation || type === AssetType.LedgerConstellation) {
-    let url = `${DAG_EXPLORER_SEARCH}${address}`;
-    if (networkId === 'ceres') {
-      url += `&network=${networkId}`
-    }
-    return url;
+    return `${DAG_NETWORK[networkId].explorer}/address/${address}`;
   }
 
   if (type === AssetType.ERC20) {

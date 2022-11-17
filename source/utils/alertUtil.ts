@@ -16,7 +16,7 @@ export const usePlatformAlert = () => {
         type,
         duration: 4000,
         hideStatusBar: true,
-        style: { height: 90, justifyContent: 'center' },
+        style: { justifyContent: 'center' },
       });
       return;
     }

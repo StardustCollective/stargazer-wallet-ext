@@ -45,7 +45,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
   getChainId() {
     const networkName = this.getNetwork();
 
-    return networkName === 'main' ? 1 : 3;
+    return networkName === 'main2' ? 1 : 3;
   }
 
   getAddress() {
@@ -205,19 +205,18 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     const { vault } = store.getState();
     let windowUrl = EXTERNAL_URL;
     let deviceId = "";
+    let bipIndex;
     const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
-    if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
-      deviceId =  activeWallet.accounts[0].deviceId;
-    };
-
     if(activeWallet.type === KeyringWalletType.LedgerAccountWallet){
       windowUrl = LEDGER_URL;
+      bipIndex =  activeWallet.bipIndex;
     }else if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
       windowUrl = BITFI_URL;
+      deviceId =  activeWallet.accounts[0].deviceId;
     }
     const windowType =
       activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
@@ -268,12 +267,12 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       /* -- Backwards Compatibility */
       // Extension pre 3.6.0
-      if (dag4.keyStore.validateDagAddress(signatureRequest)) {
+      if (dag4.account.validateDagAddress(signatureRequest)) {
         [signatureRequest, address] = [address, signatureRequest];
       }
       /* Backwards Compatibility -- */
 
-      if (!dag4.keyStore.validateDagAddress(address)) {
+      if (!dag4.account.validateDagAddress(address)) {
         throw new Error("Bad argument 'address'");
       }
 
@@ -290,6 +289,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
         deviceId,
+        bipIndex,
       };
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
@@ -329,7 +329,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       const [address] = request.params as [string];
 
-      if (!dag4.keyStore.validateDagAddress(address)) {
+      if (!dag4.account.validateDagAddress(address)) {
         throw new Error("Bad argument 'address'");
       }
 

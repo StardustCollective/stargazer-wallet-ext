@@ -24,13 +24,28 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     minWidth: 144,
   },
+  buttonMedium: {
+    height: 44,
+    borderRadius: 20,
+    minWidth: 144,
+  },
   buttonLarge: {
     height: getDeviceId().includes('iPod') ? 40 : 48,
+    borderRadius: 24,
+  },
+  buttonFullWidth: {
+    height: getDeviceId().includes('iPod') ? 40 : 48,
+    width: '100%',
     borderRadius: 24,
   },
   titleSmall: {
     fontWeight: FONT_WEIGHTS.medium,
     fontSize: 14,
+    color: COLORS.white,
+  },
+  titleMedium: {
+    fontWeight: FONT_WEIGHTS.semibold,
+    fontSize: 16,
     color: COLORS.white,
   },
   titleLarge: {
@@ -40,6 +55,14 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: COLORS.primary,
+  },
+  primaryOutline: {
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    borderColor: COLORS.primary_lighter_1,
+    borderWidth: 1,
+  },
+  primaryOutlineTitle: {
+    color: COLORS.primary_lighter_1
   },
   secondaryButton: {
     backgroundColor: COLORS.primary_lighter_1,

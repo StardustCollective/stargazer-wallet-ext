@@ -52,7 +52,11 @@ const Container: FC<IContainer> = (
     extraSafeAreaStyles = {
       backgroundColor: COLORS.white
     }
-  }
+  }else if (color === CONTAINER_COLOR.GRAY_LIGHT_300){
+    extraSafeAreaStyles = {
+      backgroundColor: COLORS.gray_light_300
+    }
+  };
 
   return (
     <View style={[styles.container]}>

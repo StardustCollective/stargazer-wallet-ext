@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ALKIMI_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO } from 'constants/index';
+import { ALKIMI_LOGO, AVALANCHE_LOGO, BSC_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO } from 'constants/index';
 import { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from './types';
 
@@ -28,29 +28,29 @@ export const initialState: IAssetListState = {
     priceId: 'constellation-labs',
     decimals: 8,
   },
-  // TODO-349: Only Polygon
-  // [AssetType.Avalanche]: {
-  //   id: AssetType.Avalanche,
-  //   address: '',
-  //   label: 'Avalanche',
-  //   symbol: 'AVAX',
-  //   type: AssetType.Ethereum,
-  //   priceId: 'avalanche-2',
-  //   network: 'avalanche-mainnet',
-  //   logo: AVALANCHE_LOGO,
-  //   decimals: 18,
-  // },
-  // [AssetType.BSC]: {
-  //   id: AssetType.BSC,
-  //   address: '',
-  //   label: 'BNB',
-  //   symbol: 'BNB',
-  //   type: AssetType.Ethereum,
-  //   priceId: 'binancecoin',
-  //   network: 'bsc',
-  //   logo: BSC_LOGO,
-  //   decimals: 18,
-  // },
+  // 349: New network should be added here.
+  [AssetType.Avalanche]: {
+    id: AssetType.Avalanche,
+    address: '',
+    label: 'Avalanche',
+    symbol: 'AVAX',
+    type: AssetType.Ethereum,
+    priceId: 'avalanche-2',
+    network: 'avalanche-mainnet',
+    logo: AVALANCHE_LOGO,
+    decimals: 18,
+  },
+  [AssetType.BSC]: {
+    id: AssetType.BSC,
+    address: '',
+    label: 'BNB',
+    symbol: 'BNB',
+    type: AssetType.Ethereum,
+    priceId: 'binancecoin',
+    network: 'bsc',
+    logo: BSC_LOGO,
+    decimals: 18,
+  },
   [AssetType.Polygon]: {
     id: AssetType.Polygon,
     address: '',

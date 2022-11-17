@@ -122,9 +122,9 @@ export class AccountController implements IAccountController {
                                 .filter((token) => token.type === AssetType.ERC20)
                                 .map((token) => token.id);
 
-      // TODO-349: Only Polygon ['AVAX', 'BNB', 'MATIC']
+      // 349: New network should be added here.
       const NETWORK_TOKENS = Object.values(assets)
-                                .filter((token) => [AssetSymbol.MATIC].includes(token.symbol as AssetSymbol))
+                                .filter((token) => [AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(token.symbol as AssetSymbol))
                                 .map((token) => token.id);
 
       const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);                          
@@ -143,20 +143,20 @@ export class AccountController implements IAccountController {
   buildNetworkAssets(address: string, tokens: string[]): IAssetState[] {
     const networkAssets = [];
     
-    // TODO-349: Only Polygon
-    // const avaxAsset = {
-    //   id: AssetType.Avalanche,
-    //   type: AssetType.Ethereum,
-    //   label: 'Avalanche',
-    //   address,
-    // };
+    // 349: New network should be added here.
+    const avaxAsset = {
+      id: AssetType.Avalanche,
+      type: AssetType.Ethereum,
+      label: 'Avalanche',
+      address,
+    };
 
-    // const bscAsset = {
-    //   id: AssetType.BSC,
-    //   type: AssetType.Ethereum,
-    //   label: 'BNB',
-    //   address,
-    // };
+    const bscAsset = {
+      id: AssetType.BSC,
+      type: AssetType.Ethereum,
+      label: 'BNB',
+      address,
+    };
 
     const polygonAsset = {
       id: AssetType.Polygon,
@@ -165,14 +165,13 @@ export class AccountController implements IAccountController {
       address,
     };
 
-    // TODO-349: Only Polygon
-    // if (tokens.includes(avaxAsset.id)) {
-    //   networkAssets.push(avaxAsset);
-    // }
+    if (tokens.includes(avaxAsset.id)) {
+      networkAssets.push(avaxAsset);
+    }
 
-    // if (tokens.includes(bscAsset.id)) {
-    //   networkAssets.push(bscAsset);
-    // }
+    if (tokens.includes(bscAsset.id)) {
+      networkAssets.push(bscAsset);
+    }
 
     if (tokens.includes(polygonAsset.id)) {
       networkAssets.push(polygonAsset);
@@ -201,13 +200,18 @@ export class AccountController implements IAccountController {
       assetList = assetList.concat(accountAssetList);
     }
 
-    const activeWallet: IWalletState = {
+    let activeWallet: IWalletState = {
       id: walletInfo.id,
       type: walletInfo.type,
       label: walletInfo.label,
       supportedAssets: walletInfo.supportedAssets,
       assets: assetList,
     };
+
+    // Ledger wallet will contain a bipIndex.
+    if(walletInfo?.bipIndex !== undefined){
+      activeWallet.bipIndex = walletInfo.bipIndex;
+    }
 
     store.dispatch(changeActiveWallet(activeWallet));
   }
@@ -270,13 +274,27 @@ export class AccountController implements IAccountController {
 
     if (!activeAsset) return;
 
-    if (activeAsset.type === AssetType.Constellation) {
-      const txs = await dag4.monitor.getLatestTransactions(
-        activeAsset.address,
-        TXS_LIMIT
-      );
+    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
+      // TODO-421: Check getLatestTransactions
+      let txsV2: any = [];
+      let txsV1: any = [];
+      try {
+        txsV2 = await dag4.monitor.getLatestTransactions(
+          activeAsset.address,
+          TXS_LIMIT
+        );
+      } catch (err) {
+        console.log('Error: getLatestTransactions', err);
+        txsV2 = [];
+      }
 
-      store.dispatch(updateTransactions({ txs }));
+      if (txsV2.length < TXS_LIMIT) {
+        const LIMIT_V1 = TXS_LIMIT - txsV2.length;
+        const TRANSACTIONS_V1_URL = `https://block-explorer.constellationnetwork.io/address/${activeAsset.address}/transaction?limit=${LIMIT_V1}`;
+        txsV1 = await (await fetch(TRANSACTIONS_V1_URL)).json();
+      }
+
+      store.dispatch(updateTransactions({ txs: [...txsV2, ...txsV1] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
       const txs: any = await this.txController.getTransactionHistory(
         activeAsset.address,
@@ -339,6 +357,7 @@ export class AccountController implements IAccountController {
     /* eslint-disable-line default-param-last */
     const { activeAsset }: IVaultState = store.getState().vault;
     if (!activeAsset) return;
+    // TODO-421: Update getTransactions to support TransactionV2
     const newTxs = await dag4.account.getTransactions(limit, searchAfter);
     store.dispatch(
       updateTransactions({
@@ -403,7 +422,7 @@ export class AccountController implements IAccountController {
   }
 
   async confirmTempTx() {
-    if (!dag4.account.isActive) {
+    if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
 
@@ -426,6 +445,7 @@ export class AccountController implements IAccountController {
         Number(this.tempTx.amount),
         this.tempTx.fee
       );
+      // TODO-421: Check addToMemPoolMonitor
       const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
       store.dispatch(
         updateTransactions({
@@ -489,7 +509,7 @@ export class AccountController implements IAccountController {
   }
 
   async confirmContractTempTx(activeAsset: IAssetInfoState | IActiveAssetState) {
-    if (!dag4.account.isActive) {
+    if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
 

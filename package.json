@@ -25,7 +25,7 @@
     "clean": "npx rimraf ./node_modules && cd source/native && rm -rf ./node_modules && cd .. && cd web && rm -rf ./node_modules",
     "clean:pods": "cd source/native/ios && rm -rf Pods",
     "install:pods": "cd source/native/ios && pod install",
-    "postinstall": "npx patch-package"
+    "postinstall": "npx patch-package && npx rimraf ./source/web/node_modules/react"
   },
   "dependencies": {
     "@devneser/gradient-avatar": "^1.1.1",
@@ -37,9 +37,9 @@
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
     "@reduxjs/toolkit": "^1.4.0",
-    "@stardust-collective/dag4": "^1.1.12",
-    "@stardust-collective/dag4-keyring": "^0.0.13",
-    "@stardust-collective/dag4-ledger": "^0.0.12",
+    "@stardust-collective/dag4": "1.2.4",
+    "@stardust-collective/dag4-keyring": "1.2.3",
+    "@stardust-collective/dag4-ledger": "0.1.0",
     "@types/react-redux": "^7.1.9",
     "@types/redux-logger": "^3.0.8",
     "@types/redux-watch": "^1.1.0",
@@ -48,6 +48,7 @@
     "@xchainjs/xchain-util": "^0.7.1",
     "bignumber.js": "^9.0.2",
     "crypto-js": "^4.1.1",
+    "dayjs": "^1.11.5",
     "debug": "^4.3.4",
     "erc-20-abi": "^1.0.0",
     "eth-data-decoder": "^0.0.2",
@@ -55,6 +56,7 @@
     "ethereumjs-util": "^7.1.5",
     "ethers": "5.6.9",
     "etherscan-api": "^10.0.5",
+    "lodash": "^4.17.20",
     "qrcode.react": "^1.0.1",
     "react-alert": "^7.0.2",
     "react-dom": "^16.13.1",

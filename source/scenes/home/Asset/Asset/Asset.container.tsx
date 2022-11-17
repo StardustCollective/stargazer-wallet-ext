@@ -40,8 +40,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const { id } = accountController.networkController?.getNetwork() || {};
   const network = getNetworkFromChainId(id);
 
-  const networkId =
-    activeAsset?.type === AssetType.Constellation ? KeyringNetwork.Constellation : network;
+  const networkId = activeAsset?.type === AssetType.Constellation || activeAsset?.type === AssetType.LedgerConstellation ? KeyringNetwork.Constellation : network;
 
   const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);
@@ -75,7 +74,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
 
   useEffect(() => {
     const fetchTxs = async () => {
-      if (activeAsset.type === AssetType.Constellation) {
+      if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
         return activeAsset.transactions;
       }
       return (await accountController.getFullETHTxs()).sort((a, b) => b.timestamp - a.timestamp);
