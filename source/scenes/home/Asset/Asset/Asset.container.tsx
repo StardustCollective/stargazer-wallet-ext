@@ -40,14 +40,18 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const { id } = accountController.networkController?.getNetwork() || {};
   const network = getNetworkFromChainId(id);
 
-  const networkId = activeAsset?.type === AssetType.Constellation || activeAsset?.type === AssetType.LedgerConstellation ? KeyringNetwork.Constellation : network;
-
   const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);
 
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
     if (!activeAsset) return;
+
+    const networkId =
+      activeAsset?.type === AssetType.Constellation ||
+      activeAsset?.type === AssetType.LedgerConstellation
+        ? KeyringNetwork.Constellation
+        : network;
 
     navigation.setOptions(
       assetHeader({
