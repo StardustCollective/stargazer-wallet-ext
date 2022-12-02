@@ -224,13 +224,17 @@ const ConfirmContainer = () => {
           params.set('route', 'signTransaction');
           params.set('windowId', Array.isArray(windowId) ? windowId[0] : windowId);
           params.set('id', activeWallet.id);
-          params.set('bipIndex', activeWallet.bipIndex.toString());
           params.set('publicKey', activeWalletPublicKey);
           params.set('deviceId', activeWalletDeviceId);
           params.set('amount', tempTx!.amount);
           params.set('fee', String(tempTx!.fee));
           params.set('from', tempTx!.fromAddress);
           params.set('to', tempTx!.toAddress);
+          
+          // Will only be required for Ledger
+          if(activeWallet?.bipIndex){
+            params.set('bipIndex', activeWallet.bipIndex.toString());
+          }
 
           window.open(`/${page}.html?${params.toString()}`, '_newtab');
         } else {
