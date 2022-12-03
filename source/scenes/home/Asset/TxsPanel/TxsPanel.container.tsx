@@ -44,7 +44,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     }
     const DAG_EXPLORER_TX = `${DAG_EXPLORER}/transactions`;
 
-    const explorerURL = accountController.networkController.getExplorerURL();
+    const explorerURL = accountController.networkController?.getExplorerURL();
     return isETH ? `${explorerURL}tx/${txHash}` : `${DAG_EXPLORER_TX}/${txHash}`;
   };
 
