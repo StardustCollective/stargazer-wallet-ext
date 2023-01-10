@@ -80,7 +80,10 @@ const selectAllWallets = createSelector(
   selectLedgerWallets,
   selectBitfiWallets,
   (localWallets, ledgerWallets, bitfiWallets) => {
-    return [...localWallets, ...ledgerWallets, ...bitfiWallets];
+    const localWalletsArray = !!localWallets ? localWallets : [];
+    const ledgerWalletsArray = !!ledgerWallets ? ledgerWallets : [];
+    const bitfiWalletsArray = !!bitfiWallets ? bitfiWallets : [];
+    return [...localWalletsArray, ...ledgerWalletsArray, ...bitfiWalletsArray];
   }
 );
 
