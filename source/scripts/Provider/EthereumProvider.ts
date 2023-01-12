@@ -33,6 +33,7 @@ import {
 import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
 import { getChainId, getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { ETH_NETWORK } from 'constants/index';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -188,6 +189,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   ) {
     const { vault } = store.getState();
 
+    const { activeNetwork } = vault;
     const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
@@ -341,6 +343,11 @@ export class EthereumProvider implements IRpcChainRequestHandler {
       if ('EIP712Domain' in data.types) {
         // Ethers does not need EIP712Domain type
         delete data.types['EIP712Domain'];
+      }
+
+      const activeChainId = ETH_NETWORK[activeNetwork.Ethereum].chainId;
+      if (!!data?.domain?.chainId && activeChainId && parseInt(data.domain.chainId, 16) !== activeChainId) {
+        throw new Error('chainId does not match the active network chainId');
       }
 
       try {
