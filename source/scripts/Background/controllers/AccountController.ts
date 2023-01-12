@@ -200,13 +200,18 @@ export class AccountController implements IAccountController {
       assetList = assetList.concat(accountAssetList);
     }
 
-    const activeWallet: IWalletState = {
+    let activeWallet: IWalletState = {
       id: walletInfo.id,
       type: walletInfo.type,
       label: walletInfo.label,
       supportedAssets: walletInfo.supportedAssets,
       assets: assetList,
     };
+
+    // Ledger wallet will contain a bipIndex.
+    if(walletInfo?.bipIndex !== undefined){
+      activeWallet.bipIndex = walletInfo.bipIndex;
+    }
 
     store.dispatch(changeActiveWallet(activeWallet));
   }
@@ -269,11 +274,10 @@ export class AccountController implements IAccountController {
 
     if (!activeAsset) return;
 
-    if (activeAsset.type === AssetType.Constellation) {
+    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
       let txsV1: any = [];
-
       try {
         txsV2 = await dag4.monitor.getLatestTransactions(
           activeAsset.address,
@@ -567,7 +571,10 @@ export class AccountController implements IAccountController {
   }
 
   isValidERC20Address(address: string) {
-    return this.networkController.validateAddress(address);
+    if (!this.networkController) {
+      return false;
+    }
+    return this.networkController?.validateAddress(address);
   }
 
   async fetchCustomToken(address: string, chainId: string) {

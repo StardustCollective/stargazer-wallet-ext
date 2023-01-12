@@ -3410,10 +3410,10 @@
   resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-core/-/dag4-core-1.2.2.tgz#20c7c6740f9125f0620ddd0db1a23187c9cc086f"
   integrity sha512-u0PuvLeLR4nvA0+aok8UHTO94GfKo1TEhEIsDH6DOLPBJPgm1R3eRW55Ni7si6hlhI2LPnspgbVKBWL/cvyrqw==
 
-"@stardust-collective/dag4-keyring@1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keyring/-/dag4-keyring-1.2.2.tgz#327c5d0b6412066666d6372867e085a544b7e2a9"
-  integrity sha512-XIBLExZQORiXUx+pNuvzrnxAMbePGiWJVZwgHK0UXM4UA1ewNpo62Ex+lfR5F+PmHIlCYPN1gHa4/a6bxP7htg==
+"@stardust-collective/dag4-keyring@1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-keyring/-/dag4-keyring-1.2.3.tgz#bc1d7d4291a3cb483c5433d5e88795c90124f808"
+  integrity sha512-KTXicNjpCsSTZg83xxnUuRjXXRZZXSc0PeX6CVI2goHF2GgfsaH2jwL1kpL3Oou9dq/yk33dhFKR3sKHcXgQmA==
   dependencies:
     "@metamask/obs-store" "^6.0.2"
     "@stardust-collective/dag4-core" "1.2.2"
@@ -3449,10 +3449,10 @@
     stream-browserify "^3.0.0"
     uuid "^3.4.0"
 
-"@stardust-collective/dag4-ledger@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.0.16.tgz#e285714966de0c2b05d6b00d87608ff834fbe688"
-  integrity sha512-8AzxKwNoziZ1imZCj31X1oM9S7Ybt+Wb3CwTHyaME+xkeyL2BhEYCEHNWR20946LN/a2u7pP+hl7mIjN6m1IkQ==
+"@stardust-collective/dag4-ledger@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@stardust-collective/dag4-ledger/-/dag4-ledger-0.1.0.tgz#96e61af1ad5d1aa84c7daba77772360ce08ea9f7"
+  integrity sha512-qvuxdVvcFiXUw2Qer9qj/HREfOFsmYhzU0BY2yEVyYtzrEbnPUxy3ke+y+ssHELOwpf7mN39VzDQJvALSnt8TQ==
   dependencies:
     "@stardust-collective/dag4" "1.2.4"
     bignumber.js "^9.0.1"

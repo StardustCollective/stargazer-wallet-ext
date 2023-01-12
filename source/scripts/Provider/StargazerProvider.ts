@@ -205,19 +205,18 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     const { vault } = store.getState();
     let windowUrl = EXTERNAL_URL;
     let deviceId = "";
+    let bipIndex;
     const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
-    if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
-      deviceId =  activeWallet.accounts[0].deviceId;
-    };
-
     if(activeWallet.type === KeyringWalletType.LedgerAccountWallet){
       windowUrl = LEDGER_URL;
+      bipIndex =  activeWallet.bipIndex;
     }else if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
       windowUrl = BITFI_URL;
+      deviceId =  activeWallet.accounts[0].deviceId;
     }
     const windowType =
       activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
@@ -290,6 +289,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
         deviceId,
+        bipIndex,
       };
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
