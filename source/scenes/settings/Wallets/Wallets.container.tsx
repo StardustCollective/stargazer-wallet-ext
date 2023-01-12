@@ -21,7 +21,9 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   const linkTo = useLinkTo();
   const { wallets, activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-  const hardwareWalletAccounts = [...wallets.ledger, ...wallets.bitfi];
+  const ledgerWallets = !!wallets?.ledger ? wallets.ledger : [];
+  const bitfiWallets = !!wallets?.bitfi ? wallets.bitfi : [];
+  const hardwareWalletAccounts = [...ledgerWallets, ...bitfiWallets];
   
   useLayoutEffect(() => {
     const onRightIconClick = () => {

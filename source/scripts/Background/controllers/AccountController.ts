@@ -571,7 +571,10 @@ export class AccountController implements IAccountController {
   }
 
   isValidERC20Address(address: string) {
-    return this.networkController.validateAddress(address);
+    if (!this.networkController) {
+      return false;
+    }
+    return this.networkController?.validateAddress(address);
   }
 
   async fetchCustomToken(address: string, chainId: string) {
