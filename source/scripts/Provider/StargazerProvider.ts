@@ -205,7 +205,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     const { vault } = store.getState();
     let windowUrl = EXTERNAL_URL;
     let deviceId = "";
-    let bipIndex = "";
+    let bipIndex;
     const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)

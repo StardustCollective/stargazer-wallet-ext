@@ -39,6 +39,9 @@ const assetHeader = ({ navigation, asset, addressUrl }: IAssetHeader) => {
         className={styles.linkIcon}
         onClick={(e) => {
           e.stopPropagation();
+          
+          if (!addressUrl) return;
+
           window.open(addressUrl, '_blank');
         }}
       >

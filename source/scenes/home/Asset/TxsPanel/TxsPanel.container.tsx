@@ -35,16 +35,19 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     if (!txHash) {
       return null;
     }
+    const DAG_OBJECT = DAG_NETWORK[activeNetwork.Constellation];
 
-
-    let DAG_EXPLORER = DAG_NETWORK[activeNetwork.Constellation].explorer;
+    if (!DAG_OBJECT) return '';
+    let DAG_EXPLORER = DAG_OBJECT?.explorer;
     // tx.sender is only available on txs in Mainnet 1.0
     if (tx.sender) {
       DAG_EXPLORER = 'https://mainnet1.dagexplorer.io';
     }
     const DAG_EXPLORER_TX = `${DAG_EXPLORER}/transactions`;
 
-    const explorerURL = accountController.networkController.getExplorerURL();
+    if (!accountController?.networkController) return '';
+    const explorerURL = accountController?.networkController?.getExplorerURL();
+    if (!explorerURL) return '';
     return isETH ? `${explorerURL}tx/${txHash}` : `${DAG_EXPLORER_TX}/${txHash}`;
   };
 

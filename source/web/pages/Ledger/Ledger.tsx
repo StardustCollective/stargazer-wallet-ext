@@ -294,16 +294,16 @@ const LedgerPage: FC = () => {
     const {
       amount,
       publicKey,
-      id,
       from,
       to,
+      bipIndex,
     } = queryString.parse(location.search) as any;
 
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
       // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2
-      const signedTX = await LedgerBridgeUtil.buildTransaction(amount, publicKey, Number(id.replace('L', '')), from, to);
+      const signedTX = await LedgerBridgeUtil.buildTransaction(amount, publicKey, Number(bipIndex), from, to);
       const hash = await dag4.network.postTransaction(signedTX);
       if (hash) {
         postTransactionResult(hash);

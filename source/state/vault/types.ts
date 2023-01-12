@@ -97,6 +97,7 @@ export interface IVaultWalletsStoreState {
 
 export interface IWalletState {
   id: string;
+  bipIndex?: number;
   type: KeyringWalletType;
   label: string;
   supportedAssets: KeyringAssetType[]; // eth,dag,erc20,erc721

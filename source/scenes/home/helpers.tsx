@@ -84,13 +84,19 @@ export const getAddressURL = (
   networkId: string
 ) => {
   const EVM_CHAINS = getAllEVMChains();
+  if (!networkId) return '';
+  
   if (type === AssetType.Constellation || type === AssetType.LedgerConstellation) {
-    return `${DAG_NETWORK[networkId].explorer}/address/${address}`;
+    if (!DAG_NETWORK[networkId]) return '';
+
+    return `${DAG_NETWORK[networkId]?.explorer}/address/${address}`;
   }
+
+  if (!EVM_CHAINS[networkId]) return '';
 
   if (type === AssetType.ERC20) {
     //token/0xdac17f958d2ee523a2206206994597c13d831ec7?a=
-    return `${EVM_CHAINS[networkId].explorer}token/${contractAddress}?a=${address}`
+    return `${EVM_CHAINS[networkId]?.explorer}token/${contractAddress}?a=${address}`
   }
-  return `${EVM_CHAINS[networkId].explorer}address/${address}`;
+  return `${EVM_CHAINS[networkId]?.explorer}address/${address}`;
 };

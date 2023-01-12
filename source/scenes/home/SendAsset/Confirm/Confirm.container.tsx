@@ -230,6 +230,11 @@ const ConfirmContainer = () => {
           params.set('fee', String(tempTx!.fee));
           params.set('from', tempTx!.fromAddress);
           params.set('to', tempTx!.toAddress);
+          
+          // Will only be required for Ledger
+          if(activeWallet?.bipIndex){
+            params.set('bipIndex', activeWallet.bipIndex.toString());
+          }
 
           window.open(`/${page}.html?${params.toString()}`, '_newtab');
         } else {
