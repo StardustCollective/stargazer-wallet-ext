@@ -251,6 +251,12 @@ const AvailableChainMethods: AvailableChainMethod[] = [
     proxied: false,
     permissions: [],
   },
+  {
+    chain: StargazerChain.CONSTELLATION,
+    method: AvailableMethods.dag_sendTransaction,
+    proxied: false,
+    permissions: [],
+  },
 ];
 
 export type { AvailableChainMethod };
