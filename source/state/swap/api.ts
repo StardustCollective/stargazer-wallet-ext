@@ -113,16 +113,16 @@ export const getSupportedAssets = createAsyncThunk(
                 // Push the asset to the supportedAssets array if the network is supported.
                 if(mappedLocalToExolixNetwork === network.name ||
                   AssetType.Constellation === network.name.toLocaleLowerCase() ||
-                  network.name.toLocaleLowerCase().includes(AssetType.Ethereum)
-                  ){
+                  (network.name.toLocaleLowerCase().includes(AssetType.Ethereum) && 
+                  AssetType.Ethereum === currency.name.toLocaleLowerCase()
+                  )){
                   supportedAssets.push({
                     id: asset.id,
                     code: asset.symbol,
                     name: asset.label,
                     icon: asset.logo,
                     networks: [network]
-                  })
-                  break;
+                  });
                 }
               }
               break;
