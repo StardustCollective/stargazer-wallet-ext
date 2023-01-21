@@ -148,7 +148,9 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       delayDebounceFn = setTimeout(() => {
         walletController.swap.getCurrencyRate({
           coinFromCode: swapFrom.currency.code,
+          coinFromNetwork: swapFrom.network.network,
           coinToCode: swapTo.currency.code,
+          coinToNetwork: swapTo.network.network,
           amount: fromAmount,
         })
       }, 500)
@@ -166,7 +168,9 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       ) {
         walletController.swap.getCurrencyRate({
           coinFromCode: swapFrom.currency.code,
+          coinFromNetwork: swapFrom.network.network,
           coinToCode: swapTo.currency.code,
+          coinToNetwork: swapTo.network.network,
           amount: fromAmount,
         })
       }
