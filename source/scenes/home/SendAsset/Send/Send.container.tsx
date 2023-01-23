@@ -61,6 +61,7 @@ import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChai
 ///////////////////////////
 
 import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO, BSC_LOGO, DAG_NETWORK } from 'constants/index';
+import { StargazerChain } from 'scripts/common';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -80,6 +81,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState | IAssetState;
   let balances: AssetBalances;
+  let chain: string;
   let to: string;
   let from: string;
   let value: string;
@@ -100,8 +102,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       const params = JSON.parse(dataJsonString as string);
       to = params.to;
       value = params.value || 0;
-      gas = params.gas;
+      gas = params.gas || 0;
       memo = params.data;
+      chain = params.chain;
     }
 
     useEffect(() => {
@@ -132,10 +135,17 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     const vaultActiveAsset = vault.activeAsset;
 
     if (!activeAsset) {
-      // Set ETH as the default activeAsset
-      activeAsset = useSelector((state: RootState) =>
-        find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
-      );
+      if (!!chain && chain === StargazerChain.CONSTELLATION) {
+        // Set DAG as the activeAsset if 'chain' is provided.
+        activeAsset = useSelector((state: RootState) =>
+          find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
+        );
+      } else {
+        // Set ETH as the default activeAsset
+        activeAsset = useSelector((state: RootState) =>
+          find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
+        );
+      }
     } else {
       // Get activeAsset from wallet assets
       activeAsset = useSelector((state: RootState) =>
@@ -245,11 +255,15 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         memo,
       };
     }
-
+    
     accountController.updateTempTx(txConfig);
-
+    
     if (isExternalRequest) {
-      history.push(`/confirmTransaction?to=${txConfig.toAddress}&windowId=${windowId}`);
+      let URL = `/confirmTransaction?to=${txConfig.toAddress}&windowId=${windowId}`;
+      if (activeAsset.id === AssetType.Constellation) {
+        URL += `&chain=${StargazerChain.CONSTELLATION}`;
+      }
+      history.push(URL);
     } else {
       linkTo('/send/confirm');
     }

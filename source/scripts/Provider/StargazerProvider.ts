@@ -5,6 +5,7 @@ import {
   // KeyringWalletAccountState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
+import * as ethers from 'ethers';
 import { Runtime, Windows } from 'webextension-polyfill-ts';
 
 import store from 'state/store';
@@ -19,11 +20,19 @@ import {
   StargazerProxyRequest,
   AvailableMethods,
   EIPRpcError,
+  StargazerChain,
 } from '../common';
 
 export type StargazerSignatureRequest = {
   content: string;
   metadata: Record<string, any>;
+};
+
+export type StargazerTransactionRequest = {
+  source: string;
+  destination: string;
+  amount: number; // In DATUM, 1 DATUM = 0.00000001 DAG
+  fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
 };
 
 // Constants
@@ -338,6 +347,129 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       return this.getPublicKey();
+    }
+
+    if (request.method === AvailableMethods.dag_sendTransaction) {
+      if (!activeWallet) {
+        throw new Error('There is no active wallet');
+      }
+
+      const assetAccount = activeWallet.accounts.find(
+        (account) => account.network === KeyringNetwork.Constellation
+      );
+
+      if (!assetAccount) {
+        throw new Error('No active account for the request asset type');
+      }
+
+      const [txData] = request.params as [StargazerTransactionRequest];
+
+      const txSource = txData?.source;
+      const txDestination = txData?.destination;
+      const txAmount = txData?.amount;
+      const txFee = txData?.fee || 0;
+
+      if (typeof txSource !== 'string') {
+        throw new Error("Bad argument 'source'");
+      }
+
+      if (typeof txDestination !== 'string') {
+        throw new Error("Bad argument 'destination'");
+      }
+
+      if (typeof txAmount !== 'number') {
+        throw new Error("Bad argument 'amount'");
+      }
+
+      if (!!txFee && typeof txFee !== 'number') {
+        throw new Error("Bad argument 'fee'");
+      }
+
+      if (!dag4.account.validateDagAddress(txSource)) {
+        throw new Error("Invalid address 'source'");
+      }
+
+      if (!dag4.account.validateDagAddress(txDestination)) {
+        throw new Error("Invaid address 'destination'");
+      }
+
+      if (txAmount <= 0) {
+        throw new Error("'amount' should be greater than 0");
+      }
+
+      if (assetAccount.address !== txSource) {
+        throw new Error('The active account is invalid');
+      }
+
+      const txObject = {
+        to: txDestination,
+        value: txAmount * 0.00000001, // DATUM to DAG
+        fee: txFee * 0.00000001, // DATUM to DAG
+        chain: StargazerChain.CONSTELLATION
+      };
+
+      const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'transactionSent',
+        undefined,
+        'sendTransaction',
+        txObject,
+        windowType,
+        windowUrl,
+        windowSize
+      );
+
+      if (sentTransactionEvent === null) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      if (sentTransactionEvent.detail.error) {
+        throw new EIPRpcError(sentTransactionEvent.detail.error, 4002);
+      }
+
+      if (!sentTransactionEvent.detail.result) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      return sentTransactionEvent.detail.result;
+    }
+
+    if (request.method === AvailableMethods.dag_getPendingTransaction) {
+      const [hash] = request.params as [unknown];
+
+      if (typeof hash !== 'string') {
+        throw new Error("Bad argument 'hash' -> not a string");
+      }
+
+      if (!ethers.utils.isHexString('0x' + hash, 32)) {
+        throw new Error("Bad argument 'hash' -> invalid 32 byte hex value");
+      }
+
+      try {
+        return await dag4.network.getPendingTransaction(hash);
+      } catch (e) {
+        console.error('dag_getPendingTransaction:', e);
+        return null;
+      }
+    }
+
+    if (request.method === AvailableMethods.dag_getTransaction) {
+      const [hash] = request.params as [unknown];
+
+      if (typeof hash !== 'string') {
+        throw new Error("Bad argument 'hash' -> not a string");
+      }
+
+      if (!ethers.utils.isHexString('0x' + hash, 32)) {
+        throw new Error("Bad argument 'hash' -> invalid 32 byte hex value");
+      }
+
+      try {
+        return await dag4.network.getTransaction(hash);
+      } catch (e) {
+        console.error('dag_getTransaction:', e);
+        return null;
+      }
     }
 
     throw new Error('Unsupported non-proxied method');
