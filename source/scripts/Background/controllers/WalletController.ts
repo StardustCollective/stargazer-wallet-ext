@@ -355,7 +355,7 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.CONSTELLATION,
           AvailableEvents.chainChanged,
-          [DAG_NETWORK[chainId].id]
+          [DAG_NETWORK[chainId].chainId]
         );
       }
     }

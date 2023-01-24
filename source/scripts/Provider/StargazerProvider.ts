@@ -403,8 +403,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       const txObject = {
         to: txDestination,
-        value: txAmount * 0.00000001, // DATUM to DAG
-        fee: txFee * 0.00000001, // DATUM to DAG
+        value: txAmount / 1e8, // DATUM to DAG
+        fee: txFee / 1e8, // DATUM to DAG
         chain: StargazerChain.CONSTELLATION
       };
 
