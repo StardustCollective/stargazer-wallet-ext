@@ -109,8 +109,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
     useEffect(() => {
       // Set initial gas
-      const amount = parseInt(value, 16);
-      setAmount(amount);
+      setAmount(value);
 
       const initialGas = parseInt(gas, 16);
 
