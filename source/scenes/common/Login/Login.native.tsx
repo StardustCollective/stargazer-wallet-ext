@@ -2,9 +2,10 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import { scale } from 'react-native-size-matters';
+import Biometrics from 'utils/biometrics';
 
 ///////////////////////////
 // Components
@@ -48,6 +49,49 @@ const LOGIN_ERROR_STRING = 'Error: Invalid password';
 import ILogin from './types';
 
 const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid, isLoading }) => {
+  // This value should be stored in store
+  const isBiometricEnabled = true;
+
+  useEffect(() => {
+    if (isBiometricEnabled) {
+      loginWithBiometrics();
+    }
+  }, []);
+
+  const loginWithBiometrics = async () => {
+    const biometryType = await Biometrics.getBiometryType();
+    if (biometryType) {
+      if (isBiometricEnabled) {
+        const keyExist = await Biometrics.keyExists();
+        if (keyExist) {
+          try {
+            const { success, signature, secret } = await Biometrics.createSignature();
+            const publicKey = await Biometrics.getPublicKeyFromKeychain();
+            if (success && signature && secret && publicKey) {
+              const verified = await Biometrics.verifySignature(signature, secret, publicKey);
+              if (verified) {
+                const password = await Biometrics.getUserPasswordFromKeychain();
+                if (password) {
+                  onSubmit({ password }, false);
+                }
+              }
+            }
+          } catch (err) {
+            console.log('Biometric login failed', err);
+          }
+        } else {
+          // Create public private keys pair and then login
+          await Biometrics.createKeys();
+          await loginWithBiometrics();
+        }
+      } else {
+        console.log('Biometric is disabled.')
+      }
+    } else {
+      console.log('Biometric is not available.');
+    }
+  }
+  
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.layout}

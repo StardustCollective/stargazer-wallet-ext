@@ -55,8 +55,10 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
   const [isInvalid, setInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = (data: any) => {
-    setIsLoading(true);
+  const onSubmit = (data: any, useLoading: boolean = true) => {
+    if (useLoading) {
+      setIsLoading(true);
+    }
     const walletController = getWalletController();
     // An unlock response of  false means migration attempt failed but user is logged in
     walletController

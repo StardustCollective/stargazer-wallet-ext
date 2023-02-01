@@ -4,6 +4,7 @@
 
 import React, { FC } from 'react';
 import { View, ScrollView } from 'react-native';
+import Biometrics from 'utils/biometrics';
 
 ///////////////////////////
 // Components
@@ -94,7 +95,8 @@ const CreatePass: FC<ICreatePass> = ({
             onPress={
               passed
                 ? nextHandler
-                : handleSubmit((data) => {
+                : handleSubmit(async (data) => {
+                  await Biometrics.setUserPasswordInKeychain(data.password);
                   onSubmit(data);
                 })
             }
