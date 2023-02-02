@@ -45,7 +45,7 @@ import { useFiat } from 'hooks/usePrice';
 import { getNativeToken, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
-import { isError } from 'scripts/common';
+import { isError, StargazerChain } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 
 ///////////////////////////
@@ -97,11 +97,13 @@ const ConfirmContainer = () => {
     (state: RootState) => state.assets
   );
   let assetInfo: IAssetInfoState;
+  const vaultActiveAsset = vault.activeAsset;
 
 
   if (isExternalRequest) {
     const {
-      to
+      to,
+      chain
     } = queryString.parse(location.search);
 
 
@@ -110,9 +112,22 @@ const ConfirmContainer = () => {
     ) as IAssetInfoState;
 
     if (!activeAsset) {
-      activeAsset = useSelector(
-        (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
-      ) as IAssetInfoState;
+      if (!!chain && chain === StargazerChain.CONSTELLATION) {
+        // Set DAG as the activeAsset if 'chain' is provided.
+        activeAsset = useSelector(
+          (state: RootState) => find(state.assets, { type: AssetType.Constellation })
+        ) as IAssetInfoState;
+      } else {
+        // Set ETH as the default activeAsset if 'chain' is not provided
+        activeAsset = useSelector(
+          (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
+        ) as IAssetInfoState;
+      }
+    }
+
+    if (!vaultActiveAsset) {
+      // Update activeAsset so NetworkController doesn't fail
+      accountController.updateAccountActiveAsset(activeAsset);
     }
 
     activeWallet = vault.activeWallet;
@@ -193,19 +208,25 @@ const ConfirmContainer = () => {
 
     try {
       if (isExternalRequest) {
-        const txConfig: ITransactionInfo = {
-          fromAddress: tempTx.fromAddress,
-          toAddress: tempTx.toAddress,
-          timestamp: Date.now(),
-          amount: tempTx.amount,
-          ethConfig: tempTx.ethConfig,
-          onConfirmed: () => {
-            // NOOP
-          },
-        };
-
-        accountController.updateTempTx(txConfig);
-        const trxHash = await accountController.confirmContractTempTx(activeAsset);
+        let trxHash: string;
+        if (activeAsset.id === AssetType.Constellation) {
+          trxHash = await accountController.confirmTempTx();
+          setConfirmed(true);
+        } else {
+          const txConfig: ITransactionInfo = {
+            fromAddress: tempTx.fromAddress,
+            toAddress: tempTx.toAddress,
+            timestamp: Date.now(),
+            amount: tempTx.amount,
+            ethConfig: tempTx.ethConfig,
+            onConfirmed: () => {
+              // NOOP
+            },
+          };
+  
+          accountController.updateTempTx(txConfig);
+          trxHash = await accountController.confirmContractTempTx(activeAsset);
+        }
 
         background.dispatchEvent(new CustomEvent('transactionSent', {
           detail: { windowId: windowId || NON_WINDOW_ID, approved: true, result: trxHash },

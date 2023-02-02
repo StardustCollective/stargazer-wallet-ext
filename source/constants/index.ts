@@ -24,6 +24,7 @@ export const DAG_NETWORK: {
     version: string;
     testnet: boolean;
     explorer: string;
+    chainId: number;
     config: {
       beUrl: string;  // 1.0 and 2.0
       lbUrl?: string; // 1.0
@@ -38,6 +39,7 @@ export const DAG_NETWORK: {
     version: '2.0',
     testnet: false,
     explorer: 'https://mainnet.dagexplorer.io',
+    chainId: 1,
     config: {
       beUrl: 'https://be-mainnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',
@@ -50,6 +52,7 @@ export const DAG_NETWORK: {
     version: '2.0',
     testnet: true,
     explorer: 'https://testnet.dagexplorer.io',
+    chainId: 3,
     config: {
       beUrl: 'https://be-testnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-testnet.constellationnetwork.io',
