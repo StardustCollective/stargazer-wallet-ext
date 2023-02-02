@@ -258,11 +258,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     accountController.updateTempTx(txConfig);
     
     if (isExternalRequest) {
-      let URL = `/confirmTransaction?to=${txConfig.toAddress}&windowId=${windowId}`;
+      const params = new URLSearchParams();
+      params.set('to', txConfig.toAddress);
+      params.set('windowId', windowId);
       if (activeAsset.id === AssetType.Constellation) {
-        URL += `&chain=${StargazerChain.CONSTELLATION}`;
+        params.set('chain', StargazerChain.CONSTELLATION);
       }
-      history.push(URL);
+      history.push(`/confirmTransaction?${params.toString()}`);
     } else {
       linkTo('/send/confirm');
     }
