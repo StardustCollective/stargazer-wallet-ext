@@ -109,7 +109,14 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
     useEffect(() => {
       // Set initial gas
-      setAmount(value);
+      let amount;
+      if (typeof value === 'string' && value.startsWith('0x')) {
+        amount = parseInt(value, 16); // Convert hexadecimal value to integer value
+        amount = amount / 1e18; // WEI to ETH
+      } else {
+        amount = value;
+      }
+      setAmount(amount);
 
       const initialGas = parseInt(gas, 16);
 
