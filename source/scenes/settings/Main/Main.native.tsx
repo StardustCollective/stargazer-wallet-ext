@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import Card from 'components/Card';
 import TextV3 from 'components/TextV3';
@@ -9,9 +10,12 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import WalletIcon from 'assets/images/svg/wallet.svg';
 import ContactsIcon from 'assets/images/svg/contacts.svg';
 import NetworksIcon from 'assets/images/svg/networks.svg';
+import SecurityIcon from 'assets/images/svg/security.svg';
 import InfoIcon from 'assets/images/svg/info.svg';
 import ExitIcon from 'assets/images/svg/exit.svg';
 import ArrowRightIcon from 'assets/images/svg/arrow-rounded-right.svg';
+
+import { RootState } from 'state/store';
 
 import styles from './styles';
 
@@ -23,8 +27,10 @@ const Main: FC<IMainSettings> = ({
   onNetworkLinkClicked,
   onAboutLinkClicked,
   onContactsLinkClicked,
+  onSecurityLinkClicked,
   version,
 }) => {
+  const { available } = useSelector((state: RootState) => state.biometrics);
 
   const RenderSettingsItem = React.memo(({ label, IconImageOrComponent, onClick }: IRenderSettingsItemProps) => {
     return (
@@ -65,6 +71,13 @@ const Main: FC<IMainSettings> = ({
       IconImageOrComponent: ContactsIcon,
       onClick: onContactsLinkClicked,
     },
+    {
+      label: 'Security',
+      key: 'Security',
+      IconImageOrComponent: SecurityIcon,
+      onClick: onSecurityLinkClicked,
+      hide: !available
+    },
   ];
 
   return (
@@ -72,6 +85,7 @@ const Main: FC<IMainSettings> = ({
       <View style={styles.box}>
         <View style={styles.content}>
           {SETTINGS_MAP.map((sectionProps) => {
+            if (sectionProps.hide) return null;
             return <RenderSettingsItem {...sectionProps} />; // eslint-disable-line
           })}
         </View>

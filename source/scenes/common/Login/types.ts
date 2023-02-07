@@ -8,7 +8,7 @@ import {
 export default interface ILogin {
   handleSubmit: any;
   control: any;
-  onSubmit: (data: any, useLoading?: boolean) => void;
+  onSubmit: (data: any, useLoading?: boolean, callback?: (password: string) => void) => void;
   errors: NestDataObject<FieldValues, FieldError>;
   register: Ref<any>;
   isInvalid: boolean;

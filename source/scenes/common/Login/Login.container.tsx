@@ -3,6 +3,7 @@
 ///////////////////////////
 
 import React, { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 ///////////////////////////
 // Components
@@ -38,6 +39,7 @@ import { schema } from './consts';
 // Types
 ///////////////////////
 
+import { RootState } from 'state/store';
 type ILoginProps = {
   onLoginSuccess: (res: boolean) => void;
   onLoginError?: () => void;
@@ -54,8 +56,9 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
   });
   const [isInvalid, setInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { available } = useSelector((state: RootState) => state.biometrics);
 
-  const onSubmit = (data: any, useLoading: boolean = true) => {
+  const onSubmit = (data: any, useLoading: boolean = true, callback: (password: string) => void = null) => {
     if (useLoading) {
       setIsLoading(true);
     }
@@ -66,6 +69,10 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
       .then(async (res: boolean) => {
         if (onLoginSuccess) {
           onLoginSuccess(res);
+        }
+        // Store user's password in Keychain if doesn't exist
+        if (available && res && callback) {
+          await callback(data.password);
         }
         setInvalid(false);
       })

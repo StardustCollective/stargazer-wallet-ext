@@ -4,6 +4,7 @@
 
 import React, { FC, useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
+import { useSelector } from 'react-redux';
 import { scale } from 'react-native-size-matters';
 import Biometrics from 'utils/biometrics';
 
@@ -31,6 +32,13 @@ import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////////
+// Utils
+///////////////////////////
+
+import store, { RootState } from 'state/store';
+import { setBiometryType, setBiometryAvailable } from 'state/biometrics';
+
+///////////////////////////
 // Constants
 ///////////////////////////
 
@@ -49,12 +57,26 @@ const LOGIN_ERROR_STRING = 'Error: Invalid password';
 import ILogin from './types';
 
 const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid, isLoading }) => {
-  // This value should be stored in store
-  const isBiometricEnabled = true;
+  const { enabled: isBiometricEnabled, biometryType } = useSelector((state: RootState) => state.biometrics);
 
+  // Automatically login with biometrics if enabled
   useEffect(() => {
     if (isBiometricEnabled) {
       loginWithBiometrics();
+    }
+  }, []);
+
+  // Check if device supports biometrics
+  useEffect(() => {
+    const checkBiometrics = async () => {
+      const bioType = await Biometrics.getBiometryType();
+      if (bioType) {
+        store.dispatch(setBiometryAvailable(true));
+        store.dispatch(setBiometryType(bioType));
+      }
+    }
+    if (!biometryType) {
+      checkBiometrics();
     }
   }, []);
 
@@ -72,17 +94,13 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
               if (verified) {
                 const password = await Biometrics.getUserPasswordFromKeychain();
                 if (password) {
-                  onSubmit({ password }, false);
+                  onSubmit({ password }, false); 
                 }
               }
             }
           } catch (err) {
             console.log('Biometric login failed', err);
           }
-        } else {
-          // Create public private keys pair and then login
-          await Biometrics.createKeys();
-          await loginWithBiometrics();
         }
       } else {
         console.log('Biometric is disabled.')
@@ -90,6 +108,15 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
     } else {
       console.log('Biometric is not available.');
     }
+  }
+
+  const storePasswordInKeychain = async (password: string): Promise<void> => {
+    const storedPassword = await Biometrics.getUserPasswordFromKeychain();
+    
+    // Password already stored
+    if (storedPassword) return;
+
+    await Biometrics.setUserPasswordInKeychain(password);
   }
   
   return (
@@ -121,7 +148,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
           extraStyles={styles.unlockButton}
           loading={isLoading}
           onPress={handleSubmit((data) => {
-            onSubmit(data);
+            onSubmit(data, true, storePasswordInKeychain);
           })}
         />
         <Link extraStyles={styles.recoveryButton} color="monotoneOne" onPress={importClicked} title="Reset and restore from recovery seed phrase" />
