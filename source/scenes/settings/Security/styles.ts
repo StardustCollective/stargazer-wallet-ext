@@ -10,9 +10,6 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 16,
   },
-  container: {
-    marginTop: 8,
-  },
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -23,9 +20,7 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: 'rgba(0, 0, 0, 0.12)',
     backgroundColor: COLORS.white,
-    paddingVertical: 18,
     paddingHorizontal: 16,
-    marginTop: 8,
   },
 });
 

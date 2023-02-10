@@ -33,41 +33,46 @@ import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { COLORS } from 'assets/styles/_variables.native';
 
-const BIOMETRY_MAP = {
-  'FaceID': 'Face ID',
-  'TouchID': 'Touch ID',
-  'Biometrics': 'Touch ID/Face ID',
-}
-
 const Security = () => {
   const { enabled, biometryType } = useSelector((state: RootState) => state.biometrics);
 
   const toggleBiometrics = async () => {
-    store.dispatch(setBiometryEnabled(!enabled));
     if (enabled) {
       // Disable and remove keys
+      store.dispatch(setBiometryEnabled(false));
       await Biometrics.deleteKeys();
     } else {
       // Enable and create keys
-      await Biometrics.createKeys();
-      await Biometrics.createSignature();
+      store.dispatch(setBiometryEnabled(true));
+      try {
+        await Biometrics.createKeys();
+        const { success, signature, secret } = await Biometrics.createSignature();
+        const publicKey = await Biometrics.getPublicKeyFromKeychain();
+        if (success && signature && secret && publicKey) {
+          const verified = await Biometrics.verifySignature(signature, secret, publicKey);
+          if (!verified) {
+            store.dispatch(setBiometryEnabled(false));
+          }
+        } else {
+          store.dispatch(setBiometryEnabled(false));
+        }
+      } catch (err) {
+        store.dispatch(setBiometryEnabled(false));
+      }
     }
   }
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.container}>
-        <TextV3.LabelSemiStrong color={COLORS_ENUMS.DARK_GRAY_200}>{BIOMETRY_MAP[biometryType]}</TextV3.LabelSemiStrong>
-        <View style={styles.cardContainer}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>Allow {BIOMETRY_MAP[biometryType]}</TextV3.CaptionStrong>
-            <Switch 
-              value={enabled} 
-              thumbColor={COLORS.white}
-              ios_backgroundColor={COLORS.purple_light}
-              trackColor={{ true: COLORS.primary_lighter_1 , false: COLORS.purple_light }}
-              onValueChange={toggleBiometrics}
-            />
-        </View>
+      <View style={styles.cardContainer}>
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>Allow {biometryType}</TextV3.CaptionStrong>
+        <Switch 
+          value={enabled} 
+          thumbColor={COLORS.white}
+          ios_backgroundColor={COLORS.purple_light}
+          trackColor={{ true: COLORS.primary_lighter_1 , false: COLORS.purple_light }}
+          onValueChange={toggleBiometrics}
+        />
       </View>
     </View>
   );

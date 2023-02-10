@@ -12,6 +12,11 @@ const BEGIN_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----';
 const END_PUBLIC_KEY = '-----END PUBLIC KEY-----';
 const STARGAZER = 'stargazer';
 const STARGAZER_USER = 'stargazer-user';
+const BIOMETRY_MAP = {
+  'FaceID': 'Face ID',
+  'TouchID': 'Touch ID',
+  'Biometrics': 'Touch ID/Face ID',
+}
 
 const getPublicKeyFromKeychain = async () => {
   const credentials = await Keychain.getGenericPassword();
@@ -47,7 +52,7 @@ const getBiometryType = async () => {
   const { available, biometryType } = await biometrics.isSensorAvailable();
 
   if (available) {
-    return biometryType;
+    return BIOMETRY_MAP[biometryType];
   }
 
   return undefined;

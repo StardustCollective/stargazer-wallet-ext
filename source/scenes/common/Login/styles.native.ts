@@ -29,6 +29,12 @@ const styles = StyleSheet.create({
     fontSize: getDeviceId().includes('iPod') ? 12 : 16,
     marginBottom: 10,
   },
+  iconContainer: { 
+    height: '100%',
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 export default styles;

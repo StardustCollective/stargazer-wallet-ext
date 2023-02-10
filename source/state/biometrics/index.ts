@@ -5,6 +5,8 @@ const initialState: IBiometricsState = {
   available: false,
   enabled: false,
   biometryType: null,
+  autoLogin: true,
+  initialCheck: true,
 };
 
 const BiometricsState = createSlice({
@@ -26,9 +28,17 @@ const BiometricsState = createSlice({
     setBiometryType(state: IBiometricsState, action: PayloadAction<string>) {
       state.biometryType = action.payload;
     },
+    setAutoLogin(state: IBiometricsState, action: PayloadAction<boolean>) {
+      state.autoLogin = action.payload;
+    },
+    setInitialCheck(state: IBiometricsState, action: PayloadAction<boolean>) {
+      state.initialCheck = action.payload;
+    },
     resetBiometrics(state: IBiometricsState) {
       state.available = false;
       state.enabled = false;
+      state.autoLogin = true;
+      state.initialCheck = true;
       state.biometryType = null;
     },
   },
@@ -39,6 +49,8 @@ export const {
   setBiometryAvailable,
   setBiometryEnabled,
   setBiometryType,
+  setAutoLogin,
+  setInitialCheck,
   resetBiometrics,
 } = BiometricsState.actions;
 
