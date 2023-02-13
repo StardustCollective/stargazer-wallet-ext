@@ -58,6 +58,7 @@ const LOGIN_ERROR_STRING = 'Error: Invalid password';
 //////////////////////
 
 import ILogin from './types';
+import { COLORS } from 'assets/styles/_variables.native';
 
 const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid, isLoading, bioLoginLoading }) => {
   const { enabled: isBiometricEnabled, biometryType, autoLogin, initialCheck } = useSelector((state: RootState) => state.biometrics);
@@ -204,7 +205,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
       </ScrollView>
       <Modal animationType='none' transparent visible={bioLoginLoading} statusBarTranslucent>
         <View style={styles.modalContainer}>
-          <ActivityIndicator size={iosPlatform() ? 'large' : 90} color='#C2ADFF' />
+          <ActivityIndicator size={iosPlatform() ? 'large' : 90} color={COLORS.purple_medium} />
         </View>
       </Modal>
     </KeyboardAwareScrollView>
