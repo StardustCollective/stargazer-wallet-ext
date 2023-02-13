@@ -56,10 +56,13 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
   });
   const [isInvalid, setInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [bioLoginLoading, setBioLoginLoading] = useState(false);
   const { available } = useSelector((state: RootState) => state.biometrics);
 
-  const onSubmit = (data: any, useLoading: boolean = true, callback: (password: string) => void = null) => {
-    if (useLoading) {
+  const onSubmit = (data: any, bioLogin: boolean = false, callback: (password: string) => void = null) => {
+    if (bioLogin) {
+      setBioLoginLoading(true);
+    } else {
       setIsLoading(true);
     }
     const walletController = getWalletController();
@@ -67,6 +70,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
     walletController
       .unLock(data.password)
       .then(async (res: boolean) => {
+        setBioLoginLoading(false);
         if (onLoginSuccess) {
           onLoginSuccess(res);
         }
@@ -81,6 +85,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
           onLoginError();
         }
         setIsLoading(false);
+        setBioLoginLoading(false);
         setInvalid(true);
       });
   };
@@ -102,6 +107,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
         register={register}
         isInvalid={isInvalid}
         isLoading={isLoading}
+        bioLoginLoading={bioLoginLoading}
       />
     </Container>
   );

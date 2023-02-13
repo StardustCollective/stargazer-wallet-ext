@@ -14,7 +14,7 @@ import store, { RootState } from 'state/store';
 // Utils
 ///////////////////////////
 
-import Biometrics from 'utils/biometrics';
+import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
 import { setBiometryType, setBiometryAvailable, setBiometryEnabled, setInitialCheck } from 'state/biometrics';
 
 ///////////////////////////
@@ -53,7 +53,7 @@ const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
     const createSignatureAndVerify = async () => {
       try {
         await Biometrics.createKeys();
-        const { success, signature, secret } = await Biometrics.createSignature();
+        const { success, signature, secret } = await Biometrics.createSignature(PROMPT_TITLES.auth);
         const publicKey = await Biometrics.getPublicKeyFromKeychain();
         if (success && signature && secret && publicKey) {
           const verified = await Biometrics.verifySignature(signature, secret, publicKey);

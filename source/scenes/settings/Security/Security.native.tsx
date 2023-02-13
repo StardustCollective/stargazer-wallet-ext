@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 // Utils
 ///////////////////////
 
-import Biometrics from 'utils/biometrics';
+import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
 import store, { RootState } from 'state/store';
 import { setBiometryEnabled } from 'state/biometrics';
 
@@ -46,7 +46,7 @@ const Security = () => {
       store.dispatch(setBiometryEnabled(true));
       try {
         await Biometrics.createKeys();
-        const { success, signature, secret } = await Biometrics.createSignature();
+        const { success, signature, secret } = await Biometrics.createSignature(PROMPT_TITLES.auth);
         const publicKey = await Biometrics.getPublicKeyFromKeychain();
         if (success && signature && secret && publicKey) {
           const verified = await Biometrics.verifySignature(signature, secret, publicKey);

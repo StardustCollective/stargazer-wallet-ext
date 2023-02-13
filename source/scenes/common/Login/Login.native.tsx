@@ -3,10 +3,10 @@
 ///////////////////////////
 
 import React, { FC, useEffect } from 'react';
-import { View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, Modal, ActivityIndicator } from 'react-native';
 import { useSelector } from 'react-redux';
 import { scale } from 'react-native-size-matters';
-import Biometrics from 'utils/biometrics';
+import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
 
 ///////////////////////////
 // Components
@@ -39,6 +39,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import store, { RootState } from 'state/store';
 import { setBiometryType, setBiometryAvailable, setBiometryEnabled, setAutoLogin, setInitialCheck } from 'state/biometrics';
+import { iosPlatform } from 'utils/platform';
 
 ///////////////////////////
 // Constants
@@ -58,7 +59,7 @@ const LOGIN_ERROR_STRING = 'Error: Invalid password';
 
 import ILogin from './types';
 
-const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid, isLoading }) => {
+const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, errors, register, isInvalid, isLoading, bioLoginLoading }) => {
   const { enabled: isBiometricEnabled, biometryType, autoLogin, initialCheck } = useSelector((state: RootState) => state.biometrics);
 
   // Initial signature to show permission dialog
@@ -66,7 +67,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
     const createSignatureAndVerify = async () => {
       try {
         await Biometrics.createKeys();
-        const { success, signature, secret } = await Biometrics.createSignature();
+        const { success, signature, secret } = await Biometrics.createSignature(PROMPT_TITLES.auth);
         const publicKey = await Biometrics.getPublicKeyFromKeychain();
         if (success && signature && secret && publicKey) {
           const verified = await Biometrics.verifySignature(signature, secret, publicKey);
@@ -108,14 +109,14 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
         const keyExist = await Biometrics.keyExists();
         if (keyExist) {
           try {
-            const { success, signature, secret } = await Biometrics.createSignature();
+            const { success, signature, secret } = await Biometrics.createSignature(PROMPT_TITLES.signIn);
             const publicKey = await Biometrics.getPublicKeyFromKeychain();
             if (success && signature && secret && publicKey) {
               const verified = await Biometrics.verifySignature(signature, secret, publicKey);
               if (verified) {
                 let password = await Biometrics.getUserPasswordFromKeychain();
                 if (password) {
-                  onSubmit({ password }, false); 
+                  onSubmit({ password }, true); 
                 }
                 password = null;
               }
@@ -149,9 +150,9 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
 
     let rightIconComponent;
 
-      if (biometryType === 'Face ID' || biometryType === 'Touch ID/Face ID') {
+      if (biometryType === 'Face ID') {
         rightIconComponent = <FaceIdIcon width={24} />;
-      } else if (biometryType === 'Touch ID') {
+      } else if (biometryType === 'Touch ID' || biometryType === 'Touch ID/Face ID') {
         rightIconComponent = <TouchIdIcon width={24} />;
       }
 
@@ -196,11 +197,16 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
           extraStyles={styles.unlockButton}
           loading={isLoading}
           onPress={handleSubmit((data) => {
-            onSubmit(data, true, storePasswordInKeychain);
+            onSubmit(data, false, storePasswordInKeychain);
           })}
         />
         <Link extraStyles={styles.recoveryButton} color="monotoneOne" onPress={importClicked} title="Reset and restore from recovery seed phrase" />
       </ScrollView>
+      <Modal animationType='none' transparent visible={bioLoginLoading} statusBarTranslucent>
+        <View style={styles.modalContainer}>
+          <ActivityIndicator size={iosPlatform() ? 'large' : 90} color='#C2ADFF' />
+        </View>
+      </Modal>
     </KeyboardAwareScrollView>
   );
 };

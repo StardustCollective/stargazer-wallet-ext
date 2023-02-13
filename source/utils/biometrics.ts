@@ -7,7 +7,10 @@ const biometrics = new ReactNativeBiometrics();
 const GENERIC_PASSWORD_USERNAME = 'publicKey';
 const STARGAZER_SIGN_MESSAGE = ' Stargazer signature message';
 const ALGORITHM = 'SHA256withRSA';
-const PROMPT_MESSAGE = 'Sign In';
+export const PROMPT_TITLES = { 
+  signIn: 'Sign In',
+  auth: 'Authenticate'
+};
 const BEGIN_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----';
 const END_PUBLIC_KEY = '-----END PUBLIC KEY-----';
 const STARGAZER = 'stargazer';
@@ -77,12 +80,12 @@ const deleteKeys = async () => {
   return keysDeleted;
 }
 
-const createSignature = async () => {
+const createSignature = async (title: string) => {
   // Generate secret message
   const epochTimeSeconds = Math.round((new Date()).getTime() / 1000).toString();
   const secret = epochTimeSeconds + STARGAZER_SIGN_MESSAGE;
   // Return signature created
-  const signatureResult = await biometrics.createSignature({ promptMessage: PROMPT_MESSAGE, payload: secret });
+  const signatureResult = await biometrics.createSignature({ promptMessage: title, payload: secret });
   return { ...signatureResult, secret };
 }
 

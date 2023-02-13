@@ -34,7 +34,14 @@ const styles = StyleSheet.create({
     width: 40,
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: COLORS.black,
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.24
+  },
 });
 
 export default styles;

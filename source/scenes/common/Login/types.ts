@@ -14,4 +14,5 @@ export default interface ILogin {
   isInvalid: boolean;
   importClicked: () => void;
   isLoading?: boolean;
+  bioLoginLoading?: boolean;
 }
