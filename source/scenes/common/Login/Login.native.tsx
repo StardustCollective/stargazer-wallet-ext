@@ -45,8 +45,9 @@ import { iosPlatform } from 'utils/platform';
 // Constants
 ///////////////////////////
 
-const LOGO_IMAGE_SIZE = 192;
-const EXTRA_SCROLL_HEIGHT = scale(25);
+const LOGO_IMAGE_WIDTH = 192;
+const LOGO_IMAGE_HEIGTH = 166;
+const EXTRA_SCROLL_HEIGHT = scale(60);
 
 // Strings
 const UNLOCK_STRING = 'Unlock';
@@ -171,10 +172,11 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.layout}
-      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
+    >
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
-        <Logo width={LOGO_IMAGE_SIZE} height={LOGO_IMAGE_SIZE} style={styles.logo} />
+        <TextV3.HeaderLargeRegular align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge></TextV3.HeaderLargeRegular>
+        <Logo width={LOGO_IMAGE_WIDTH} height={LOGO_IMAGE_HEIGTH} style={styles.logo} />
         <View style={styles.input}>
           <TextInput
             id="createPass-password"
@@ -184,25 +186,36 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
             control={control}
             {...getRightIconProps()}
           />
-          {errors.password ? (
-            <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>{errors.password.message}</TextV3.CaptionStrong>
-          ) : (
-            isInvalid && <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>{LOGIN_ERROR_STRING}</TextV3.CaptionStrong>
-          )}
+          <View style={styles.errorContainer}>
+            {errors.password ? (
+              <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>{errors.password.message}</TextV3.CaptionStrong>
+            ) : (
+              isInvalid && <TextV3.CaptionStrong color={COLORS_ENUMS.RED}>{LOGIN_ERROR_STRING}</TextV3.CaptionStrong>
+            )}
+          </View>
         </View>
-
-        <ButtonV3
-          type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
-          size={BUTTON_SIZES_ENUM.LARGE}
-          title={UNLOCK_STRING}
-          extraStyles={styles.unlockButton}
-          loading={isLoading}
-          onPress={handleSubmit((data) => {
-            onSubmit(data, false, storePasswordInKeychain);
-          })}
-        />
-        <Link extraStyles={styles.recoveryButton} color="monotoneOne" onPress={importClicked} title="Reset and restore from recovery seed phrase" />
+        <View style={styles.unlockButtonContainer}>
+          <ButtonV3
+            type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            title={UNLOCK_STRING}
+            extraStyles={styles.unlockButton}
+            extraTitleStyles={styles.unlockTitle}
+            loading={isLoading}
+            onPress={handleSubmit((data) => {
+              onSubmit(data, false, storePasswordInKeychain);
+            })}
+          />
+        </View>
       </ScrollView>
+      <View style={styles.recoverContainer}>
+        <Link 
+          color="monotoneOne" 
+          title="Recover from seed phrase" 
+          extraStyles={styles.recoveryButton} 
+          onPress={importClicked} 
+        />
+      </View>
       <Modal animationType='none' transparent visible={bioLoginLoading} statusBarTranslucent>
         <View style={styles.modalContainer}>
           <ActivityIndicator size={iosPlatform() ? 'large' : 90} color={COLORS.purple_medium} />

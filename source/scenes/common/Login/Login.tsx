@@ -56,11 +56,11 @@ const Login: FC<ILogin> = ({
 
   return (
     <div className={styles.home}>
-      <TextV3.HeaderLarge
+      <TextV3.HeaderLargeRegular
         align={TEXT_ALIGN_ENUM.CENTER}
       >
-        Welcome to Stargazer Wallet
-      </TextV3.HeaderLarge>
+        Welcome to <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge>
+      </TextV3.HeaderLargeRegular>
       <img src={'/'+LogoImage} className={styles.logo} alt="Stargazer" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.inputWrapper}>
@@ -72,7 +72,6 @@ const Login: FC<ILogin> = ({
             fullWidth
             inputRef={register}
             placeholder={PLEASE_ENTER_YOUR_PASSWORD_STRING}
-            variant={styles.password}
           />
           <div id={'login-failure'} className={styles.errorWrapper}>
             {errors.password ? (
@@ -86,7 +85,7 @@ const Login: FC<ILogin> = ({
         </div>
         <ButtonV3
           id={'login-submitButton'}
-          type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
+          type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           label={UNLOCK_STRING}
           extraStyle={styles.started}
@@ -94,9 +93,11 @@ const Login: FC<ILogin> = ({
         />
       </form>
       {!location.pathname.includes('login') && (
-        <Link extraStyles={styles.restoreFromSeedLink} color="monotoneOne" onClick={importClicked}>
-          Reset and restore from recovery seed phrase
-        </Link>
+        <div className={styles.recoverContainer}>
+          <Link extraStyles={styles.restoreFromSeedLink} color="monotoneOne" onClick={importClicked}>
+            Recover from seed phrase
+          </Link>
+        </div>
       )}
     </div>
   )
