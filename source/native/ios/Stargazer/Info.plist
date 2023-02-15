@@ -52,8 +52,15 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+			<key>UISceneConfigurations</key>
+			<dict/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>QR Code Scanner</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>This will let you unlock the app using Face ID / Touch ID.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>

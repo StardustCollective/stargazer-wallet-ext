@@ -12,14 +12,14 @@ const styles = StyleSheet.create({
     lineHeight: 48,
   },
   headerLarge: {
-    fontWeight: FONT_WEIGHTS.medium,
+    fontWeight: FONT_WEIGHTS.semibold,
     fontSize: 32,
-    lineHeight: 48,
+    lineHeight: 40,
   },
   headerLargeRegular: {
     fontWeight: FONT_WEIGHTS.regular,
     fontSize: 32,
-    lineHeight: 48,
+    lineHeight: 40,
   },
   header: {
     fontWeight: FONT_WEIGHTS.medium,

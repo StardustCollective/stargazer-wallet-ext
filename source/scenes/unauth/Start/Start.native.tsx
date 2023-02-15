@@ -2,11 +2,20 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
-import { View, Image } from 'react-native';
+import React, { FC, useEffect } from 'react';
+import { View } from 'react-native';
+import { useSelector } from 'react-redux';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import Link from 'components/Link';
+import store, { RootState } from 'state/store';
+
+///////////////////////////
+// Utils
+///////////////////////////
+
+import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
+import { setBiometryType, setBiometryAvailable, setBiometryEnabled, setInitialCheck } from 'state/biometrics';
 
 ///////////////////////////
 // Images
@@ -24,7 +33,8 @@ import styles from './styles';
 // Constants
 ///////////////////////////
 
-const LOGO_IMAGE_SIZE = 192;
+const LOGO_IMAGE_WIDTH = 192;
+const LOGO_IMAGE_HEIGHT = 166;
 
 ///////////////////////////
 // Types
@@ -37,19 +47,63 @@ import IStart from './types';
 ///////////////////////////
 
 const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
-  console.log('opening start...');
+  const { initialCheck } = useSelector((state: RootState) => state.biometrics);
+
+  // Initial signature to show permission dialog
+  useEffect(() => {
+    const createSignatureAndVerify = async () => {
+      try {
+        await Biometrics.createKeys();
+        const { success, signature, secret } = await Biometrics.createSignature(PROMPT_TITLES.auth);
+        const publicKey = await Biometrics.getPublicKeyFromKeychain();
+        if (success && signature && secret && publicKey) {
+          const verified = await Biometrics.verifySignature(signature, secret, publicKey);
+          if (verified) {
+            store.dispatch(setBiometryEnabled(false));
+          }
+        }
+      } catch (err) {
+        console.log('Biometric signature verification failed', err);
+      }
+    }
+    if (initialCheck) {
+      store.dispatch(setInitialCheck(false));
+      createSignatureAndVerify();
+    }
+  }, []);
+
+  // Check if device supports biometrics
+  useEffect(() => {
+    const checkBiometrics = async () => {
+      const bioType = await Biometrics.getBiometryType();
+      const isAvailable = !!bioType;
+      const type = !!bioType ? bioType : null;
+      store.dispatch(setBiometryAvailable(isAvailable));
+      store.dispatch(setBiometryType(type));
+    }
+    
+    checkBiometrics();
+  }, []);
+
   return (
     <View style={styles.layout}>
-      <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
-      <Logo width={LOGO_IMAGE_SIZE} height={LOGO_IMAGE_SIZE} style={styles.logo} />
+      <TextV3.HeaderLargeRegular align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge></TextV3.HeaderLargeRegular>
+      <Logo width={LOGO_IMAGE_WIDTH} height={LOGO_IMAGE_HEIGHT} style={styles.logo} />
       <ButtonV3
-        type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
+        type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
+        extraTitleStyles={styles.unlockTitle}
         title={'Get Started'}
-        extraStyles={styles.started}
         onPress={onGetStartedClicked}
       />
-      <Link color="monotoneOne" onPress={onImportClicked} title="Import from recovery seed phrase" />
+      <View style={styles.recoverContainer}>
+        <Link 
+          color="monotoneOne" 
+          title="Recover from seed phrase" 
+          extraStyles={styles.recoveryButton} 
+          onPress={onImportClicked} 
+        />
+      </View>
     </View>
   );
 };
