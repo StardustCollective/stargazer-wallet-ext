@@ -18,7 +18,7 @@ import CardLayout from 'scenes/external/Layouts/CardLayout'
 
 import styles from './index.module.scss';
 
-import { TypedSignatureRequest } from './types';
+import { EIP712Domain, TypedSignatureRequest } from './types';
 
 //////////////////////
 // Component
@@ -32,8 +32,8 @@ const TypedSignatureRequestScreen = () => {
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { signatureConsent: signatureRequest }:
-    { signatureConsent: TypedSignatureRequest } = JSON.parse(stringData as string);
+  const { signatureConsent: signatureRequest, domain }:
+    { signatureConsent: TypedSignatureRequest, domain: EIP712Domain } = JSON.parse(stringData as string);
 
 
   //////////////////////
@@ -97,16 +97,24 @@ const TypedSignatureRequestScreen = () => {
             {signatureRequest.content}
           </div>
         </section>
-        {signatureRequest.data && Object.keys(signatureRequest.data).length > 0 && <section className={styles.metadata}>
+        <section className={styles.domain}>
           <label>
-            Metadata
+            Domain
           </label>
           <div>
-            {Object.entries(signatureRequest.data).map(
-              ([key, value]) => (<small>{key} = {value}</small>)
-            )}
+            {domain}
           </div>
-        </section>}
+        </section>
+        {signatureRequest.data && Object.keys(signatureRequest.data).length > 0 && <section className={styles.metadata}>
+            <label>
+              Metadata
+            </label>
+            <div>
+              {Object.entries(signatureRequest.data).map(
+                ([key, value]) => (<small>{key} = {value}</small>)
+              )}
+            </div>
+          </section>}
       </div>
     </CardLayout>
   );

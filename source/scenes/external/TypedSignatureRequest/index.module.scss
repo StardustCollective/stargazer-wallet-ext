@@ -24,6 +24,11 @@
       word-break: break-word;
     }
 
+    &.domain > div {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
     &.metadata > div {
       display: flex;
       flex-flow: column nowrap;
