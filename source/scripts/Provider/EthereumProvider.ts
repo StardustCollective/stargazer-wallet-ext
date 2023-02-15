@@ -364,6 +364,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
 
       const signatureData = {
         origin: dappProvider.origin,
+        domain: JSON.stringify(data.domain, null, 2),
         signatureConsent,
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
