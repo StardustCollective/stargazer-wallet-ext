@@ -12,13 +12,17 @@
   flex-direction: column;
   padding: 32px;
   box-sizing: border-box;
+  .headerText {
+    font-weight: $regular;
+  }
   .logo {
-    margin-top: 56px;
+    margin-top: 48px;
     margin-bottom: 56px;
     width: 192px;
-    height: 192px;
+    height: 166px;
   }
-  .started {
-    margin-bottom: 56px;
+  .recoverContainer {
+    position: absolute;
+    bottom: 32px;
   }
 }

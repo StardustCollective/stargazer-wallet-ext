@@ -33,7 +33,8 @@ import styles from './styles';
 // Constants
 ///////////////////////////
 
-const LOGO_IMAGE_SIZE = 192;
+const LOGO_IMAGE_WIDTH = 192;
+const LOGO_IMAGE_HEIGHT = 166;
 
 ///////////////////////////
 // Types
@@ -86,16 +87,23 @@ const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
 
   return (
     <View style={styles.layout}>
-      <TextV3.HeaderLarge align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} Stargazer Wallet</TextV3.HeaderLarge>
-      <Logo width={LOGO_IMAGE_SIZE} height={LOGO_IMAGE_SIZE} style={styles.logo} />
+      <TextV3.HeaderLargeRegular align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge></TextV3.HeaderLargeRegular>
+      <Logo width={LOGO_IMAGE_WIDTH} height={LOGO_IMAGE_HEIGHT} style={styles.logo} />
       <ButtonV3
-        type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
+        type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
+        extraTitleStyles={styles.unlockTitle}
         title={'Get Started'}
-        extraStyles={styles.started}
         onPress={onGetStartedClicked}
       />
-      <Link color="monotoneOne" onPress={onImportClicked} title="Import from recovery seed phrase" />
+      <View style={styles.recoverContainer}>
+        <Link 
+          color="monotoneOne" 
+          title="Recover from seed phrase" 
+          extraStyles={styles.recoveryButton} 
+          onPress={onImportClicked} 
+        />
+      </View>
     </View>
   );
 };
