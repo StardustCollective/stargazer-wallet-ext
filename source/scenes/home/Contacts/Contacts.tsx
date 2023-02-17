@@ -18,9 +18,15 @@ const WalletContacts: FC<IWalletContacts> = ({
   isValidContact,
 }) => {
 
+  let isExternalRequest = false;
+
+  if (!!location) {
+    isExternalRequest = location.pathname.includes('sendTransaction');
+  }
+
   return (
     <Portal>
-      <div className={clsx(styles.mask, { [styles.open]: open })}>
+      <div className={clsx(styles.mask, { [styles.open]: open, [styles.removeTop]: isExternalRequest })}>
         <div className={styles.modal}>
           <section className={styles.heading}>
             <span className={styles.title}>Contacts</span>

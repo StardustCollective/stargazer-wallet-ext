@@ -1,41 +1,61 @@
 @import '~assets/styles/variables';
 
+.domainContainer {
+  display: flex;
+  flex-direction: column;
+  padding-left: 8px;
+  padding-right: 8px;
+  
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 4px;
+
+    .headerInfoTitle {
+      font-weight: $semibold;
+      padding-right: 8px;
+    }
+
+    .headerInfoValue {
+      text-align: right;
+      word-wrap: break-word;
+    }
+
+    .copyIcon {
+      margin-right: 8px;
+      height: 16px;
+      width: 16px;
+      align-self: center;
+    }
+
+    .contractAddress {
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
 .content {
   display: flex;
   flex-flow: column nowrap;
-  padding: 10px 15px;
-  row-gap: 15px;
+  padding: 16px;
 
-  section {
-    > label {
-      color: $black;
-      font-size: 16px;
-      font-weight: 500;
-    }
+  .title {
+    font-size: 14px;
+  }
 
-    > div {
-      color: $gray-100;
-      font-size: 14px;
-      font-weight: 500;
-    }
+  .keyContainer {
+    display: flex;
+    flex-direction: column;
+  }
 
-    &.message > div {
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+  .key {
+    font-weight: $semibold;
+  }
 
-    &.domain > div {
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    &.metadata > div {
-      display: flex;
-      flex-flow: column nowrap;
-
-      & > small {
-        font-size: 12px;
-      }
-    }
+  .metadata {
+    margin-top: 12px;
   }
 }

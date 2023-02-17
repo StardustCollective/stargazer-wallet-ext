@@ -21,7 +21,7 @@ const App: FC = () => {
   const { route } = queryString.parse(location.search);
 
   return (
-    <section id="App" style={{ minHeight: '300px' }}>
+    <section id="App" style={{ minHeight: '300px', height: '100%' }}>
       <Container>
         <Router>
           <Switch>
