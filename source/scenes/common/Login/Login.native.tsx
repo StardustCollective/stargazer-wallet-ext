@@ -81,7 +81,7 @@ const Login: FC<ILogin> = ({ control, importClicked, handleSubmit, onSubmit, err
         console.log('Biometric signature verification failed', err);
       }
     }
-    if (initialCheck) {
+    if (iosPlatform() && initialCheck) {
       store.dispatch(setInitialCheck(false));
       createSignatureAndVerify();
     }
