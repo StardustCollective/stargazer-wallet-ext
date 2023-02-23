@@ -14,6 +14,7 @@ import store, { RootState } from 'state/store';
 // Utils
 ///////////////////////////
 
+import { iosPlatform } from 'utils/platform';
 import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
 import { setBiometryType, setBiometryAvailable, setBiometryEnabled, setInitialCheck } from 'state/biometrics';
 
@@ -66,7 +67,7 @@ const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
         console.log('Biometric signature verification failed', err);
       }
     }
-    if (initialCheck) {
+    if (iosPlatform() && initialCheck) {
       store.dispatch(setInitialCheck(false));
       createSignatureAndVerify();
     }
