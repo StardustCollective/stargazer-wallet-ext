@@ -6,3 +6,11 @@ export type TypedSignatureRequest = {
   content: string;
   data?: Record<any, any>;
 };
+
+export type EIP712Domain = {
+  name?: string;
+  version?: string;
+  chainId?: number;
+  verifyingContract?: string;
+  salt?: string;
+};

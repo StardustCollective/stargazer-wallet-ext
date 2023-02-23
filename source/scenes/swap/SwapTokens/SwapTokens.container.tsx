@@ -60,6 +60,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const linkTo = useLinkTo();
   const walletController = getWalletController();
   const [depositAsset, setDepositAsset] = useState<IAssetState>(null);
+  const [refundAsset, setRefundAsset] = useState<IAssetState>(null);
   const [isBalanceError, setIsBalanceError] = useState<boolean>(false);
   const [fromAmount, setFromAmount] = useState<number>(0);
   const [isRateError, setIsRateError] = useState<boolean>(false);
@@ -104,6 +105,14 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
 
   // Set the deposit asset to be used for the withdrawal and refund addresses.
   useEffect(() => {
+    if (swapFrom.currency !== null) {
+      const assetName = swapFrom?.currency?.name.toLocaleLowerCase() === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
+      const depositAsset = find(
+        activeNetworkAssets,
+        { id: assetName }
+      );
+      setRefundAsset(depositAsset);
+    }
     if (swapTo.currency !== null) {
       const assetName = swapTo?.currency?.name.toLocaleLowerCase() === AssetType.Constellation ? AssetType.Constellation : AssetType.Ethereum;
       const depositAsset = find(
@@ -139,7 +148,9 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       delayDebounceFn = setTimeout(() => {
         walletController.swap.getCurrencyRate({
           coinFromCode: swapFrom.currency.code,
+          coinFromNetwork: swapFrom.network.network,
           coinToCode: swapTo.currency.code,
+          coinToNetwork: swapTo.network.network,
           amount: fromAmount,
         })
       }, 500)
@@ -157,7 +168,9 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       ) {
         walletController.swap.getCurrencyRate({
           coinFromCode: swapFrom.currency.code,
+          coinFromNetwork: swapFrom.network.network,
           coinToCode: swapTo.currency.code,
+          coinToNetwork: swapTo.network.network,
           amount: fromAmount,
         })
       }
@@ -200,7 +213,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       networkTo: swapTo.network.network,
       amount: currencyRate?.fromAmount,
       withdrawalAddress: depositAsset.address,
-      refundAddress: depositAsset.address
+      refundAddress: refundAsset.address
     })
   }
 

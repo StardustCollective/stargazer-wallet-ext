@@ -7,13 +7,7 @@ import {
   stageTransaction
 } from 'state/swap/api';
 import { setSelectedTransaction, setSwapFrom, setSwapTo, clearPendingSwap, addTxId, clearCurrencyRate } from 'state/swap';
-import { ISearchCurrency, ICurrencyNetwork, IStageTransaction, IExolixTransaction } from 'state/swap/types';
-
-interface ICurrencyRateParams {
-  coinFromCode: string,
-  coinToCode: string,
-  amount: number
-}
+import { ISearchCurrency, ICurrencyNetwork, IStageTransaction, IExolixTransaction, ICurrencyRateParams } from 'state/swap/types';
 
 export interface ISwapController {
   getSupportedAssets: () => void;
@@ -63,10 +57,12 @@ class SwapController implements ISwapController {
     store.dispatch<any>(getCurrencyData(searchQuery));
   }
 
-  getCurrencyRate({ coinFromCode, coinToCode, amount }: ICurrencyRateParams) {
+  getCurrencyRate({ coinFromCode, coinFromNetwork, coinToCode, coinToNetwork, amount }: ICurrencyRateParams) {
     store.dispatch<any>(getCurrencyRate({
       coinFrom: coinFromCode,
+      coinFromNetwork: coinFromNetwork,
       coinTo: coinToCode,
+      coinToNetwork: coinToNetwork,
       amount: amount,
     }));
   }
