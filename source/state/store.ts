@@ -22,6 +22,7 @@ import process from './process';
 import providers from './providers';
 import erc20assets from './erc20assets';
 import swap from './swap';
+import biometrics from './biometrics';
 
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -47,7 +48,8 @@ const store = configureStore({
     process,
     providers,
     erc20assets,
-    swap
+    swap,
+    biometrics,
   }),
   middleware,
   devTools: !isProd,
@@ -66,7 +68,8 @@ function updateState() {
     providers: state.providers,
     swap: {
       txIds: state.swap.txIds,
-    }
+    },
+    biometrics: state.biometrics,
   });
 }
 

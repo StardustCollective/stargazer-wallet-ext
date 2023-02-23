@@ -14,23 +14,24 @@ const Start: FC<IStart> = ({
 
   return (
     <div className={styles.home}>
-      <TextV3.HeaderLarge
+      <TextV3.HeaderLargeRegular
         align={TEXT_ALIGN_ENUM.CENTER}
       >
-        Welcome to Stargazer Wallet
-      </TextV3.HeaderLarge>
+        Welcome to <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge>
+      </TextV3.HeaderLargeRegular>
       <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
       <ButtonV3
         id={'start-getStartedButton'}
-        type={BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID}
+        type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
         label={'Get Started'}
-        extraStyle={styles.started}
         onClick={onGetStartedClicked}
       />
-      <Link id="link" color="monotoneOne" onClick={onImportClicked}>
-        Import from recovery seed phrase
-      </Link>
+      <div className={styles.recoverContainer}>
+        <Link id="link" color="monotoneOne" onClick={onImportClicked}>
+          Recover from seed phrase
+        </Link>
+      </div>
     </div>
   );
 };

@@ -8,10 +8,11 @@ import {
 export default interface ILogin {
   handleSubmit: any;
   control: any;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: any, useLoading?: boolean, callback?: (password: string) => void) => void;
   errors: NestDataObject<FieldValues, FieldError>;
   register: Ref<any>;
   isInvalid: boolean;
   importClicked: () => void;
   isLoading?: boolean;
+  bioLoginLoading?: boolean;
 }

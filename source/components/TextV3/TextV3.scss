@@ -16,15 +16,21 @@
 }
 
 .headerLarge {
-  font-weight: $medium;
+  font-weight: $semibold;
   font-size: 32px;
-  line-height: 48px;
+  line-height: 40px;
+}
+
+.headerLargeRegular {
+  font-weight: $regular;
+  font-size: 32px;
+  line-height: 40px;
 }
 
 .header {
   font-weight: $medium;
-  font-size: 24px;
-  line-height: 32px;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 .body {
