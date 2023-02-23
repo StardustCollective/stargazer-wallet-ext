@@ -17,7 +17,7 @@
   .logo {
     margin-top: 36px;
     margin-bottom: 48px;
-    width: 212px;
+    width: 192px;
   }
 
   .restoreFromSeedLink {
@@ -30,21 +30,28 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-bottom: 20px;
     .inputWrapper {
       display: flex;
       width: 100%;
       flex-direction: column;
-      margin-bottom: 10px;
-      .password {
-        margin-bottom: 10px;
+      .errorWrapper {
+        display: flex;
+        align-items: center;
+        height: 24px;
       }
       .errorWrapper span {
-        color: white;
+        color: $red;
         font-size: 12px;
       }
     }
+    .started {
+      width: 100%;
+    }
   }
   
+  .recoverContainer {
+    position: absolute;
+    bottom: 24px;
+  }
 }
 

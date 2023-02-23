@@ -37,6 +37,7 @@ import filter from 'lodash/filter';
 import { generateId } from './EVMChainController/utils';
 import { AvailableEvents, StargazerChain } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
+import { setAutoLogin } from 'state/biometrics';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -355,7 +356,7 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.CONSTELLATION,
           AvailableEvents.chainChanged,
-          [DAG_NETWORK[chainId].id]
+          [DAG_NETWORK[chainId].chainId]
         );
       }
     }
@@ -447,6 +448,7 @@ class WalletController implements IWalletController {
     this.keyringManager.logout();
     this.account.networkController = undefined;
     store.dispatch(changeActiveWallet(undefined));
+    store.dispatch(setAutoLogin(false));
   }
 }
 

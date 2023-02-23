@@ -1,3 +1,10 @@
+export interface ICurrencyRateParams {
+  coinFromCode: string,
+  coinToNetwork: string,
+  coinToCode: string,
+  coinFromNetwork: string
+  amount: number
+}
 
 export enum SupportedExolixSwapNetworks {
   AVALANCHE = 'Avalanche',

@@ -2,11 +2,11 @@
 
 .wrapper {
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
   justify-content: start;
   width: 100%;
   height: 100%;
+  padding-top: 14px;
 
   form.bodywrapper {
     width: 100%;

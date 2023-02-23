@@ -37,6 +37,10 @@ const MainContainer: FC = () => {
     linkTo('/settings/connectedSites');
   };
 
+  const onSecurityLinkClicked = () => {
+    linkTo('/settings/security');
+  };
+
   return (
     <Container color={CONTAINER_COLOR.LIGHT}>
       <Main
@@ -46,6 +50,7 @@ const MainContainer: FC = () => {
         onAboutLinkClicked={onAboutLinkClicked}
         onContactsLinkClicked={onContactsLinkClicked}
         onConnectedSitesClicked={onConnectedSitesClicked}
+        onSecurityLinkClicked={onSecurityLinkClicked}
         version={version}
       />
     </Container>

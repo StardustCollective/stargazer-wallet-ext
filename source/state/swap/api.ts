@@ -113,16 +113,16 @@ export const getSupportedAssets = createAsyncThunk(
                 // Push the asset to the supportedAssets array if the network is supported.
                 if(mappedLocalToExolixNetwork === network.name ||
                   AssetType.Constellation === network.name.toLocaleLowerCase() ||
-                  network.name.toLocaleLowerCase().includes(AssetType.Ethereum)
-                  ){
+                  (network.name.toLocaleLowerCase().includes(AssetType.Ethereum) && 
+                  AssetType.Ethereum === currency.name.toLocaleLowerCase()
+                  )){
                   supportedAssets.push({
                     id: asset.id,
                     code: asset.symbol,
                     name: asset.label,
                     icon: asset.logo,
                     networks: [network]
-                  })
-                  break;
+                  });
                 }
               }
               break;
@@ -138,13 +138,15 @@ export const getSupportedAssets = createAsyncThunk(
 // Returns currency rate for a trading pair
 export const getCurrencyRate = createAsyncThunk(
   'swap/getCurrencyRate',
-  async ({ coinFrom, coinTo, amount }: { coinFrom: string, coinTo: string, amount: number }): Promise<ICurrencyRate> => {
+  async ({ coinFrom, coinFromNetwork, coinTo, coinToNetwork, amount }: { coinFrom: string, coinFromNetwork: string, coinTo: string, coinToNetwork: string, amount: number }): Promise<ICurrencyRate> => {
     const response = await fetch(`${STARGAZER_SWAPPING_BASE_URL_PROD}${RATE_END_POINT}`, {
       method: POST_METHOD,
       headers: HEADERS,
       body: JSON.stringify({
         coinFrom,
+        coinFromNetwork,
         coinTo,
+        coinToNetwork,
         amount,
       })
     });

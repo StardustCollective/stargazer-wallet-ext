@@ -41,6 +41,7 @@ import ImportWallet from 'scenes/settings/ImportWallet';
 import ImportAccount from 'scenes/settings/ImportAccount';
 import ImportPhrase from 'scenes/settings/ImportPhrase';
 import ConnectedSites from 'scenes/settings/ConnectedSites';
+import Security from 'scenes/settings/Security';
 // Swap
 import SwapTokens from 'scenes/swap/SwapTokens';
 import TransferInfo from 'scenes/swap/TransferInfo';
@@ -62,7 +63,6 @@ import defaultHeader from 'navigation/headers/default';
 ///////////////////////////
 
 import screens from '../screens';
-
 
 ///////////////////////////
 // Constants
@@ -98,6 +98,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   importAccount: 'Import Account',
   importPhrase: 'Import Phrase',
   connectedSites: 'Connected Sites',
+  security: 'Security',
   // Swap
   swapTokens: 'Swap Tokens',
   transferInfo: 'Transfer Info',
@@ -155,6 +156,7 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importAccount }} name={screens.settings.importAccount} component={ImportAccount} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importPhrase }} name={screens.settings.importPhrase} component={ImportPhrase} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.connectedSites }} name={screens.settings.connectedSites} component={ConnectedSites} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.security }} name={screens.settings.security} component={Security} />
           
           {/* Swap Stack */}
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.swapTokens }} name={screens.swap.swapTokens}  component={SwapTokens} />

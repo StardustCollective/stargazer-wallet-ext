@@ -18,7 +18,7 @@ export const COLORS = {
   purple_dark_2: '#37296D',
   blue_violet: '#534AAE',
   accent_1: '#1A88A3',
-  monotone_1: '#AAA3D6',
+  monotone_1: '#B5A9DF',
   link_blue: '#0052CC',
   white: '#fff',
   black: '#000',

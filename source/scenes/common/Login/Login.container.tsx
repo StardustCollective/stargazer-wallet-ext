@@ -3,6 +3,7 @@
 ///////////////////////////
 
 import React, { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 ///////////////////////////
 // Components
@@ -38,6 +39,7 @@ import { schema } from './consts';
 // Types
 ///////////////////////
 
+import { RootState } from 'state/store';
 type ILoginProps = {
   onLoginSuccess: (res: boolean) => void;
   onLoginError?: () => void;
@@ -54,16 +56,27 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
   });
   const [isInvalid, setInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [bioLoginLoading, setBioLoginLoading] = useState(false);
+  const { available } = useSelector((state: RootState) => state.biometrics);
 
-  const onSubmit = (data: any) => {
-    setIsLoading(true);
+  const onSubmit = (data: any, bioLogin: boolean = false, callback: (password: string) => void = null) => {
+    if (bioLogin) {
+      setBioLoginLoading(true);
+    } else {
+      setIsLoading(true);
+    }
     const walletController = getWalletController();
     // An unlock response of  false means migration attempt failed but user is logged in
     walletController
       .unLock(data.password)
       .then(async (res: boolean) => {
+        setBioLoginLoading(false);
         if (onLoginSuccess) {
           onLoginSuccess(res);
+        }
+        // Store user's password in Keychain if doesn't exist
+        if (available && res && callback) {
+          await callback(data.password);
         }
         setInvalid(false);
       })
@@ -72,6 +85,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
           onLoginError();
         }
         setIsLoading(false);
+        setBioLoginLoading(false);
         setInvalid(true);
       });
   };
@@ -93,6 +107,7 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
         register={register}
         isInvalid={isInvalid}
         isLoading={isLoading}
+        bioLoginLoading={bioLoginLoading}
       />
     </Container>
   );
