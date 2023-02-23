@@ -1,0 +1,102 @@
+@import "~assets/styles/variables";
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: $gray-light;
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 24px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 60px;
+    background: $primary;
+
+    .stepContainer {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+    }
+
+    .headerLogo {
+      height: 56px;
+      width: 56px;
+    }
+
+    .headerTitle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .headerContent {
+      width: 100%;
+      margin-top: 24px;
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 16px;
+    padding-right: 16px;
+    flex-grow: 1;
+
+    .card {
+      position: relative;
+      overflow-y: auto;
+      flex-grow: 1;
+      top: -44px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #0000003D;
+      background-color: $white;
+      z-index: 1;
+      height: 200px;
+    }
+
+    .footerLabel {
+      position: relative;
+      top: -44px;
+      margin-top: 8px;
+      align-self: center;
+      
+      .footerText {
+        font-size: 10px;
+        line-height: 16px;
+        font-weight: 500;
+        letter-spacing: 0.05px;
+      }
+    }
+  }
+
+  .actions {
+    position: relative;
+    bottom: 24px;
+    display: flex;
+    padding-left: 16px;
+    padding-right: 16px;
+    justify-content: center;
+    align-items: center;
+
+    button:first-child{
+      margin-right: 8px;
+      div > span {
+        font-weight: $semibold;
+      }
+    }
+    button:last-child{
+      margin-left: 8px;
+      div > span {
+        font-weight: $semibold;
+      }
+    }
+  }
+}

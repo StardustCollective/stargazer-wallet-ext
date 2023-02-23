@@ -88,7 +88,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
     TextComponent = TextV3.CaptionStrong;
   } else if(size === BUTTON_SIZES_ENUM.MEDIUM){
     buttonSizeStyle = styles.buttonMedium;
-    TextComponent = TextV3.BodyStrong;
+    TextComponent = TextV3.CaptionStrong;
   } else if (size === BUTTON_SIZES_ENUM.LARGE) {
     buttonSizeStyle = styles.buttonLarge;
     TextComponent = TextV3.LabelSemiStrong;

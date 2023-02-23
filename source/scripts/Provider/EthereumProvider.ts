@@ -206,7 +206,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     const windowSize =
       activeWallet.type === KeyringWalletType.LedgerAccountWallet
         ? { width: 1000, height: 1000 }
-        : { width: 372, height: 600 };
+        : { width: 386, height: 624 };
 
     if (request.method === AvailableMethods.eth_accounts) {
       return this.getAccounts();
@@ -359,12 +359,12 @@ export class EthereumProvider implements IRpcChainRequestHandler {
       const signatureConsent: TypedSignatureRequest = {
         chain: StargazerChain.ETHEREUM,
         signer: address,
-        content: JSON.stringify(data.message, null, 2),
+        content: JSON.stringify(data.message),
       };
 
       const signatureData = {
         origin: dappProvider.origin,
-        domain: JSON.stringify(data.domain, null, 2),
+        domain: JSON.stringify(data.domain),
         signatureConsent,
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
