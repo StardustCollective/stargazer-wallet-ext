@@ -102,7 +102,6 @@ const MigrationController = async () => {
    * version < 3_11_1
    */
   if (compareVersions(state.vault.version, '3.11.1') < 0) {
-    console.log('Entre a Migration Controller');
     const v3_11_1 = require('../migration/v3_11_1');
     await v3_11_1.default(state);
   }
