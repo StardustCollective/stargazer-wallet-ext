@@ -35,7 +35,6 @@ const veLTXAsset = {
 };
 
 const MigrateRunner = async (oldState: any) => {
-    console.log('state antes', oldState);
     try {
         const newState: V3_11_0ActiveNetworkState = {
             ...oldState,
@@ -48,7 +47,6 @@ const MigrateRunner = async (oldState: any) => {
                 version: '3.11.1',
             },
         };
-        console.log('state despues', newState);
         await saveState(newState);
         console.log('Migrate to <v3.11.1> successfully!');
         reload();
