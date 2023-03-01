@@ -20,6 +20,32 @@ type V3_11_0ActiveNetworkState = {
     swap: ISwapState,
 }
 
+const splitObject = (object: IAssetListState, splitKey: string) => {
+    const obj1: IAssetListState = {};
+    const obj2: IAssetListState = {};
+    let keyFound = false;
+
+    for (const key in object) {
+        if (key === splitKey) {
+            obj1[key] = object[key];
+            break;
+        }
+        obj1[key] = object[key];
+    }
+
+    for (const key in object) {
+        if (key !== splitKey) {
+            if (keyFound) {
+                obj2[key] = object[key];
+            }
+        } else {
+            keyFound = true;
+        }
+    }
+
+    return [obj1, obj2];
+};
+
 const veLTXAsset = {
     '0xc6a22cc9acd40b4f31467a3580d4d69c3387f349-mainnet': {
         id: '0xc6a22cc9acd40b4f31467a3580d4d69c3387f349-mainnet',
@@ -35,12 +61,15 @@ const veLTXAsset = {
 };
 
 const MigrateRunner = async (oldState: any) => {
+    const LATTICE_KEY = '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet';
+    const [assetsPart1, assetsPart2] = splitObject(oldState.assets, LATTICE_KEY);
     try {
         const newState: V3_11_0ActiveNetworkState = {
             ...oldState,
             assets: {
-                ...oldState.assets,
+                ...assetsPart1,
                 ...veLTXAsset,
+                ...assetsPart2,
             },
             vault: {
                 ...oldState.vault,
