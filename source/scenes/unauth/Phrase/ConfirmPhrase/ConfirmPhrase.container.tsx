@@ -36,7 +36,10 @@ import ConfirmPhrase from './ConfirmPhrase';
 // Container
 ///////////////////////////
 
-const ConfirmPhraseContainer = () => {
+const ConfirmPhraseContainer = ({ route } : { route: any }) => {
+
+  const { walletName = 'Main Wallet', resetAll = true } = route.params || {};
+
   ///////////////////////////
   // Hooks
   ///////////////////////////
@@ -87,7 +90,9 @@ const ConfirmPhraseContainer = () => {
     if (!passed) {
       setPassed(true);
     } else {
-      walletController.createWallet('Main Wallet', phrases, true);
+      const resetAllValue = resetAll === 'false' || resetAll === false ? false : true;
+      const walletNameValue = walletName === 'undefined' || !walletName ? 'Main Wallet' : walletName;
+      await walletController.createWallet(walletNameValue, phrases, resetAllValue);
       walletController.onboardHelper.reset();
       navigationUtil.replace(navigation, screens.authorized.root);
     }

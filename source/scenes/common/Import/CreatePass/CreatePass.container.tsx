@@ -61,10 +61,11 @@ const CreatePassContainer = () => {
   // Callbacks  
   //////////////////////////
 
-  const nextHandler = () => {
+  const nextHandler = async () => {
     if (passed) {
       const phrase = getWalletController().onboardHelper.getSeedPhrase();
-      getWalletController().createWallet('Main Wallet', phrase, true);
+      await getWalletController().createWallet('Main Wallet', phrase, true);
+      getWalletController().onboardHelper.reset();
       navigationUtil.replace(navigation, screens.authorized.root);
     }
   };
