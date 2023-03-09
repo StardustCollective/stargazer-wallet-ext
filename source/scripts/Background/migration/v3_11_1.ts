@@ -8,6 +8,7 @@ import IProvidersState from 'state/providers/types';
 import { INFTListState } from 'state/nfts/types';
 import { saveState } from 'state/localStorage';
 import { VE_LTX_LOGO } from 'constants/index';
+import { filterArrayByValue, filterObjectByKey, splitObjectByKey } from 'utils/objects';
 
 type V3_11_0ActiveNetworkState = {
     assets: IAssetListState
@@ -19,32 +20,6 @@ type V3_11_0ActiveNetworkState = {
     vault: IVaultState,
     swap: ISwapState,
 }
-
-const splitObject = (object: IAssetListState, splitKey: string) => {
-    const obj1: IAssetListState = {};
-    const obj2: IAssetListState = {};
-    let keyFound = false;
-
-    for (const key in object) {
-        if (key === splitKey) {
-            obj1[key] = object[key];
-            break;
-        }
-        obj1[key] = object[key];
-    }
-
-    for (const key in object) {
-        if (key !== splitKey) {
-            if (keyFound) {
-                obj2[key] = object[key];
-            }
-        } else {
-            keyFound = true;
-        }
-    }
-
-    return [obj1, obj2];
-};
 
 const veLTXAsset = {
     '0xc6a22cc9acd40b4f31467a3580d4d69c3387f349-mainnet': {
@@ -62,7 +37,10 @@ const veLTXAsset = {
 
 const MigrateRunner = async (oldState: any) => {
     const LATTICE_KEY = '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet';
-    const [assetsPart1, assetsPart2] = splitObject(oldState.assets, LATTICE_KEY);
+    const veLTX_KEY = '0xc6a22cc9acd40b4f31467a3580d4d69c3387f349-mainnet';
+    const assetsFiltered = filterObjectByKey(oldState.assets, veLTX_KEY);
+    const customAssetsFiltered = filterArrayByValue(oldState.vault.customAssets, 'id' ,veLTX_KEY);
+    const [assetsPart1, assetsPart2] = splitObjectByKey(assetsFiltered, LATTICE_KEY);
     try {
         const newState: V3_11_0ActiveNetworkState = {
             ...oldState,
@@ -73,6 +51,7 @@ const MigrateRunner = async (oldState: any) => {
             },
             vault: {
                 ...oldState.vault,
+                customAssets: customAssetsFiltered,
                 version: '3.11.1',
             },
         };
