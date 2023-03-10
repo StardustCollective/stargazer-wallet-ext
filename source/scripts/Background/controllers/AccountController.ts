@@ -445,6 +445,8 @@ export class AccountController implements IAccountController {
         Number(this.tempTx.amount),
         this.tempTx.fee
       );
+      // Convert the amount from DAG to DATUM
+      pendingTx.amount = Number(this.tempTx.amount) * 1e8;
       // TODO-421: Check addToMemPoolMonitor
       const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
       store.dispatch(
