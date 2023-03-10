@@ -135,9 +135,14 @@ class WalletController implements IWalletController {
     );
 
     if (!silent) {
-      await this.switchWallet(wallet.id);
+      // The createSingleAccountWallet sends an "update" event which executes the switchWallet function
+      // with an old wallet. This issue is reproducible when importing a DAG wallet with private key. 
+      // This is a workaround to fix that race conditon.
+      setTimeout(async () => {
+        await this.switchWallet(wallet.id);
+      }, 1000);
     }
-    return wallet.id;
+    return wallet.getLabel();
   }
 
   async createWallet(label: string, phrase?: string, resetAll = false) {
