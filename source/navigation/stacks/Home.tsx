@@ -33,6 +33,8 @@ import ModifyContact from 'scenes/settings/ModifyContact';
 import Wallets from 'scenes/settings/Wallets';
 import AddWallet from 'scenes/settings/AddWallet';
 import CreateWallet from 'scenes/settings/NewAccount';
+import CreatePhrase from 'scenes/unauth/Phrase/CreatePhrase';
+import ConfirmPhrase from 'scenes/unauth/Phrase/ConfirmPhrase';
 import walletPhrase from 'scenes/settings/Phrase';
 import ManageWallet from 'scenes/settings/ManageWallet';
 import RemoveWallet from 'scenes/settings/RemoveWallet';
@@ -148,6 +150,8 @@ const Auth = () => {
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.wallets }} name={screens.settings.wallets} component={Wallets} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.addWallet }} name={screens.settings.addWallet} component={AddWallet} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.createWallet }} name={screens.settings.createWallet} component={CreateWallet} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.createWallet }} name={screens.unAuthorized.createPhraseGenerated} component={CreatePhrase} />
+          <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.createWallet }} name={screens.unAuthorized.createPhraseCheck} component={ConfirmPhrase} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.walletPhrase }} name={screens.settings.walletPhrase} component={walletPhrase} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.manageWallet }} name={screens.settings.manageWallet} component={ManageWallet} />
           <Stack.Screen options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.removeWallet }} name={screens.settings.removeWallet} component={RemoveWallet} />
