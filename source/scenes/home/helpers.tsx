@@ -3,6 +3,8 @@ import format from 'date-fns/format';
 import { getAllEVMChains } from 'scripts/Background/controllers/EVMChainController/utils';
 import { AssetType } from 'state/vault/types';
 
+const MAX_LENGTH = 20;
+
 export const ellipsis = (str: string, start?: number, end?: number) => {
   if (str.substring(0,3) === 'DAG') {
     start = start || 5;
@@ -18,6 +20,10 @@ export const ellipsis = (str: string, start?: number, end?: number) => {
     str.substring(str.length - end, str.length)
   );
 };
+
+export const truncateString = (str: string) => {
+  return str.length > MAX_LENGTH ? str.slice(0, MAX_LENGTH) + '...' : str;
+}
 
 const getYesterday = () => {
   const d = new Date();

@@ -8,7 +8,7 @@ import Icon from 'components/Icon';
 import { KeyringAssetType, KeyringWalletAccountState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { AssetType } from 'state/vault/types';
 
-import { ellipsis } from 'scenes/home/helpers';
+import { ellipsis, truncateString } from 'scenes/home/helpers';
 
 import StargazerIcon from 'assets/images/logo-s.svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -113,7 +113,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
                     <View testID={wallet.label} style={styles.walletInfoContainer}>
                       <View style={styles.walletLabelContainer}>
                         <TextV3.Caption dynamic color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
-                          {wallet.label}
+                          {truncateString(wallet.label)}
                         </TextV3.Caption>
                         <TextV3.Caption dynamic extraStyles={styles.textSmall}>Multi Chain Wallet</TextV3.Caption>
                       </View>
@@ -149,7 +149,7 @@ const WalletsComponent: FC<IWalletsSettings> = ({
                     <View testID={wallet.label} style={styles.walletInfoContainer}>
                       <View style={styles.walletLabelContainer}>
                         <TextV3.Caption dynamic color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text}>
-                          {wallet.label}
+                          {truncateString(wallet.label)}
                         </TextV3.Caption>
                         <TextV3.Caption dynamic extraStyles={styles.textSmall}>
                           {ellipsis(wallet.accounts[0].address)}
