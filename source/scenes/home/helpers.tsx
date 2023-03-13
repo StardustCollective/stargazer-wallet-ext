@@ -62,10 +62,15 @@ export const formatNumber = (num: number, min: number, max: number, maxSig?: num
   if (maxSig) {
     options.maximumSignificantDigits = maxSig;
   }
+
+  if (isNaN(num)) return '-';
+  
   return (num || 0).toLocaleString(navigator.language, options);
 };
 
 export const formatStringDecimal = (numberString: string, decimalPlaces: number) => {
+
+  if (isNaN(Number(numberString))) return '-';
 
   const decimalSeparator = getDecimalSeparatorByLocale(navigator.language);
   const [whole, fractional] = numberString.split(decimalSeparator);
