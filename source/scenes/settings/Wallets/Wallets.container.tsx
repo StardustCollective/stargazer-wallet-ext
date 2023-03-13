@@ -42,9 +42,10 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   );
 
   const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
+    linkTo('/home');
     await walletController.switchWallet(walletId);
     const accounts = walletAccounts.map((account) => account.address);
-    walletController.notifyWalletChange(accounts);
+    await walletController.notifyWalletChange(accounts);
   };
 
   const handleManageWallet = async (ev: MouseEvent<HTMLButtonElement>, walletId: string) => {
