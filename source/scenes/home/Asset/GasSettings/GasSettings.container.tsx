@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 
 import { useFiat } from 'hooks/usePrice';
 
@@ -13,14 +13,29 @@ const GasSettingsContainer: FC<IGasSettingsProps> = ({
   gasFeeLabel,
   gasPrice,
   gasPrices,
+  cancelError,
   onSliderChange,
   onSpeedUpClick,
+  onCancelClick,
 }) => {
   const [viewState, setViewState] = useState<GAS_SETTINGS_STATE_ENUM>(GAS_SETTINGS_STATE_ENUM.OPTIONS);
   const getFiatAmount = useFiat();
 
+  useEffect(() => {
+    if (cancelError) {
+      // TODO: handle error in the future.
+      // What should happen if the transaction is not cancelled?
+      // setViewState(GAS_SETTINGS_STATE_ENUM.ERROR);
+    }
+  }, [cancelError])
+  
+
   const onSpeedUpButtonClick = () => {
     setViewState(GAS_SETTINGS_STATE_ENUM.SETTINGS);
+  };
+
+  const onCancelButtonClick = () => {
+    setViewState(GAS_SETTINGS_STATE_ENUM.CANCEL);
   };
 
   const onSettingCancelButtonClick = () => {
@@ -37,12 +52,14 @@ const GasSettingsContainer: FC<IGasSettingsProps> = ({
   };
 
   const onCancelTransactionButtonClicked = () => {
-    setViewState(GAS_SETTINGS_STATE_ENUM.NONE);
+    onCancelClick();
+    setViewState(GAS_SETTINGS_STATE_ENUM.UPDATED);
   };
 
   return (
     <GasSettings
       onSpeedUpButtonClick={onSpeedUpButtonClick}
+      onCancelButtonClick={onCancelButtonClick}
       onSettingCancelButtonClick={onSettingCancelButtonClick}
       onSpeedUpConfirmButtonClicked={onSpeedUpConfirmButtonClicked}
       onKeepButtonClicked={onKeepButtonClicked}
@@ -54,8 +71,10 @@ const GasSettingsContainer: FC<IGasSettingsProps> = ({
       gasFeeLabel={gasFeeLabel}
       gasPrice={gasPrice}
       gasPrices={gasPrices}
+      cancelError={cancelError}
       onSliderChange={onSliderChange}
       onSpeedUpClick={onSpeedUpClick}
+      onCancelClick={onCancelClick}
       getFiatAmount={getFiatAmount}
     />
   );
