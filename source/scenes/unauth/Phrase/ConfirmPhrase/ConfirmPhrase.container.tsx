@@ -52,6 +52,7 @@ const ConfirmPhraseContainer = ({ route } : { route: any }) => {
   const [checkList, setCheckList] = useState<Array<boolean>>(new Array(12).fill(true));
   const [newList, setNewList] = useState<Array<string>>([]);
   const [passed, setPassed] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const title = passed ? `Your Wallet is ready` : `Verify your recovery\nphrase`;
 
   const isNotEqualArrays = useMemo((): boolean => {
@@ -90,6 +91,7 @@ const ConfirmPhraseContainer = ({ route } : { route: any }) => {
     if (!passed) {
       setPassed(true);
     } else {
+      setIsButtonDisabled(true);
       const resetAllValue = resetAll === 'false' || resetAll === false ? false : true;
       const walletNameValue = walletName === 'undefined' || !walletName ? 'Main Wallet' : walletName;
       await walletController.createWallet(walletNameValue, phrases, resetAllValue);
@@ -106,7 +108,7 @@ const ConfirmPhraseContainer = ({ route } : { route: any }) => {
     <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <ConfirmPhrase
         title={title}
-        isNotEqualArrays={isNotEqualArrays}
+        isButtonDisabled={isButtonDisabled || isNotEqualArrays}
         passed={passed}
         orgList={orgList}
         newList={newList}
