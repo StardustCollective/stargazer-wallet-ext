@@ -70,7 +70,7 @@ export const formatNumber = (num: number, min: number, max: number, maxSig?: num
 
 export const formatStringDecimal = (numberString: string, decimalPlaces: number) => {
 
-  if (isNaN(Number(numberString))) return '-';
+  if (numberString === '-') return '-';
 
   const decimalSeparator = getDecimalSeparatorByLocale(navigator.language);
   const [whole, fractional] = numberString.split(decimalSeparator);
