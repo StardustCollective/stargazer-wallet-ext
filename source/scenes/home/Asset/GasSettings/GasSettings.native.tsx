@@ -143,20 +143,20 @@ const GasSettings: FC<IGasSettings> = ({
                 {constants.CANCEL_TRANSACTION_PROMPT_STRING}
               </TextV3.Caption>
               <View style={styles.cancelFooter}>
-                  <ButtonV3 
-                    type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
-                    title={constants.CANCEL_TRANSACTION_STRING}
-                    onPress={onCancelTransactionButtonClicked}
-                    extraStyles={styles.buttonContainer}
-                    extraTitleStyles={styles.buttonText}
-                  />
-                  <ButtonV3 
-                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                    title={constants.KEEP_STRING}
-                    onPress={onKeepButtonClicked}
-                    extraStyles={styles.buttonContainer}
-                    extraTitleStyles={styles.buttonText}
-                  />
+                <ButtonV3
+                  type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+                  title={constants.CANCEL_TRANSACTION_STRING}
+                  onPress={onCancelTransactionButtonClicked}
+                  extraStyles={styles.buttonContainer}
+                  extraTitleStyles={styles.buttonText}
+                />
+                <ButtonV3
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                  title={constants.KEEP_STRING}
+                  onPress={onKeepButtonClicked}
+                  extraStyles={styles.buttonContainer}
+                  extraTitleStyles={styles.buttonText}
+                />
               </View>
             </View>
           </View>
