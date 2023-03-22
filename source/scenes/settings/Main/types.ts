@@ -16,4 +16,5 @@ export type IRenderSettingsItemProps = {
   IconImageOrComponent: FC | string;
   onClick: () => void;
   imageStyles?: string;
+  disabled?: boolean;
 };

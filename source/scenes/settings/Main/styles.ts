@@ -93,6 +93,9 @@ const styles = StyleSheet.create({
   footer__right_img: {
     marginLeft: 8,
   },
+  disabled: {
+    backgroundColor: COLORS.grey_100,
+  }
 });
 
 export default styles;
