@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ALKIMI_LOGO, AVALANCHE_LOGO, BSC_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO } from 'constants/index';
+import { ALKIMI_LOGO, AVALANCHE_LOGO, BSC_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO, VE_LTX_LOGO } from 'constants/index';
 import { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from './types';
 
@@ -72,6 +72,17 @@ export const initialState: IAssetListState = {
     network: 'mainnet',
     logo: LATTICE_LOGO,
     decimals: 8,
+  },
+  '0xc6a22cc9acd40b4f31467a3580d4d69c3387f349-mainnet': {
+    id: '0xc6a22cc9acd40b4f31467a3580d4d69c3387f349-mainnet',
+    address: '0xc6a22cc9acd40b4f31467a3580d4d69c3387f349',
+    label: 'Lattice Governance',
+    symbol: 'veLTX',
+    type: AssetType.ERC20,
+    priceId: 'lattice-governance',
+    network: 'mainnet',
+    logo: VE_LTX_LOGO,
+    decimals: 18,
   },
   '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet': {
     id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet',

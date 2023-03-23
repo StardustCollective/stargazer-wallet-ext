@@ -36,7 +36,10 @@ import ConfirmPhrase from './ConfirmPhrase';
 // Container
 ///////////////////////////
 
-const ConfirmPhraseContainer = () => {
+const ConfirmPhraseContainer = ({ route } : { route: any }) => {
+
+  const { walletName = 'Main Wallet', resetAll = true } = route.params || {};
+
   ///////////////////////////
   // Hooks
   ///////////////////////////
@@ -49,6 +52,7 @@ const ConfirmPhraseContainer = () => {
   const [checkList, setCheckList] = useState<Array<boolean>>(new Array(12).fill(true));
   const [newList, setNewList] = useState<Array<string>>([]);
   const [passed, setPassed] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const title = passed ? `Your Wallet is ready` : `Verify your recovery\nphrase`;
 
   const isNotEqualArrays = useMemo((): boolean => {
@@ -87,7 +91,10 @@ const ConfirmPhraseContainer = () => {
     if (!passed) {
       setPassed(true);
     } else {
-      walletController.createWallet('Main Wallet', phrases, true);
+      setIsButtonDisabled(true);
+      const resetAllValue = resetAll === 'false' || resetAll === false ? false : true;
+      const walletNameValue = walletName === 'undefined' || !walletName ? 'Main Wallet' : walletName;
+      await walletController.createWallet(walletNameValue, phrases, resetAllValue);
       walletController.onboardHelper.reset();
       navigationUtil.replace(navigation, screens.authorized.root);
     }
@@ -101,7 +108,7 @@ const ConfirmPhraseContainer = () => {
     <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <ConfirmPhrase
         title={title}
-        isNotEqualArrays={isNotEqualArrays}
+        isButtonDisabled={isButtonDisabled || isNotEqualArrays}
         passed={passed}
         orgList={orgList}
         newList={newList}

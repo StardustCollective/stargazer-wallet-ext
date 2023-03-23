@@ -6,36 +6,13 @@ import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 
 import DarkGreenCheck from 'assets/images/svg/dark-green-check.svg';
+import ErrorIcon from 'assets/images/svg/error.svg';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
 
-import constants, { BUTTON_TYPE_ENUM, GAS_SETTINGS_STATE_ENUM } from './constants';
-import IGasSettings, { IOutlineButtonProps } from './types';
-
-const OutlineButton: FC<IOutlineButtonProps> = ({ label, type, onClick }) => {
-  let buttonStyle = styles.solidButton;
-  let buttonText = styles.solidButtonText;
-  let buttonType = BUTTON_TYPES_ENUM.PRIMARY_SOLID;
-
-  if (type === BUTTON_TYPE_ENUM.OUTLINE) {
-    buttonStyle = styles.outlineButton;
-    buttonText = styles.outlineButtonText;
-    buttonType = BUTTON_TYPES_ENUM.PRIMARY_OUTLINE;
-  }
-
-  return (
-    <ButtonV3
-      onPress={onClick}
-      title={label}
-      button
-      type={buttonType}
-      extraTitleStyles={buttonText}
-      extraStyles={buttonStyle}
-      size={BUTTON_SIZES_ENUM.SMALL}
-    />
-  );
-};
+import constants, { GAS_SETTINGS_STATE_ENUM } from './constants';
+import IGasSettings from './types';
 
 const GasSettings: FC<IGasSettings> = ({
   values,
@@ -43,8 +20,10 @@ const GasSettings: FC<IGasSettings> = ({
   gasFeeLabel,
   gasPrice,
   gasPrices,
+  cancelError,
   onSliderChange,
   onSpeedUpButtonClick,
+  onCancelButtonClick,
   onSettingCancelButtonClick,
   onSpeedUpConfirmButtonClicked,
   onKeepButtonClicked,
@@ -58,7 +37,20 @@ const GasSettings: FC<IGasSettings> = ({
     <View style={styles.gasSettings}>
       {viewState === GAS_SETTINGS_STATE_ENUM.OPTIONS && (
         <View style={styles.options}>
-          <OutlineButton label={constants.SPEED_UP_BUTTON_STRING} onClick={onSpeedUpButtonClick} />
+          <ButtonV3 
+            type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+            title={constants.CANCEL_BUTTON_STRING}
+            onPress={onCancelButtonClick}
+            extraStyles={styles.buttonContainer}
+            extraTitleStyles={styles.buttonText}
+          />
+          <ButtonV3 
+            type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+            title={constants.SPEED_UP_BUTTON_STRING}
+            onPress={onSpeedUpButtonClick}
+            extraStyles={styles.buttonContainer}
+            extraTitleStyles={styles.buttonText}
+          />
         </View>
       )}
       {viewState === GAS_SETTINGS_STATE_ENUM.SETTINGS && (
@@ -95,16 +87,20 @@ const GasSettings: FC<IGasSettings> = ({
                 </TextV3.Description>
               </View>
               <View style={styles.settingsFooter}>
-                <View style={styles.cancelButton}>
-                  <OutlineButton
-                    label={constants.CANCEL_BUTTON_STRING}
-                    type={BUTTON_TYPE_ENUM.OUTLINE}
-                    onClick={onSettingCancelButtonClick}
+                  <ButtonV3 
+                    type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+                    title={constants.CANCEL_BUTTON_STRING}
+                    onPress={onSettingCancelButtonClick}
+                    extraStyles={styles.buttonContainer}
+                    extraTitleStyles={styles.buttonText}
                   />
-                </View>
-                <View style={styles.footerButton}>
-                  <OutlineButton label={constants.SPEED_UP_BUTTON_STRING} onClick={onSpeedUpConfirmButtonClicked} />
-                </View>
+                  <ButtonV3 
+                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                    title={constants.SPEED_UP_BUTTON_STRING}
+                    onPress={onSpeedUpConfirmButtonClicked}
+                    extraStyles={styles.buttonContainer}
+                    extraTitleStyles={styles.buttonText}
+                  />
               </View>
             </View>
           </View>
@@ -112,9 +108,17 @@ const GasSettings: FC<IGasSettings> = ({
       )}
       {viewState === GAS_SETTINGS_STATE_ENUM.UPDATED && (
         <View style={styles.updatedWrapper}>
-          <DarkGreenCheck with={16} height={16} iconStyles={styles.updatedIcon} />
+          <DarkGreenCheck width={16} height={16} style={styles.updatedIcon} />
           <TextV3.Description extraStyles={styles.updatedBoxText}>
             {constants.TRANSACTION_UPDATED_STRING}
+          </TextV3.Description>
+        </View>
+      )}
+      {viewState === GAS_SETTINGS_STATE_ENUM.ERROR && (
+        <View style={styles.cancelErrorWrapper}>
+          <ErrorIcon width={16} height={16} style={styles.cancelErrorIcon} />
+          <TextV3.Description extraStyles={styles.cancelErrorBoxText}>
+            {cancelError}
           </TextV3.Description>
         </View>
       )}
@@ -123,22 +127,36 @@ const GasSettings: FC<IGasSettings> = ({
           <View style={styles.cancelBox}>
             <View style={styles.cancelBoxContent}>
               <View style={styles.cancelHeader}>
-                <TextV3.Description margin={false} color={COLORS_ENUMS.BLACK} extraStyles={styles.cancelBodyText}>
+                <TextV3.CaptionStrong 
+                  margin={false} 
+                  color={COLORS_ENUMS.BLACK} 
+                  extraStyles={styles.cancelBodyTitle}
+                >
                   {constants.CANCEL_TRANSACTION_STRING}?
-                </TextV3.Description>
+                </TextV3.CaptionStrong>
               </View>
-              <TextV3.Description margin={false} color={COLORS_ENUMS.BLACK} extraStyles={styles.cancelBodyText}>
+              <TextV3.Caption 
+                margin={false} 
+                color={COLORS_ENUMS.DARK_GRAY_200} 
+                extraStyles={styles.cancelBodyText}
+              >
                 {constants.CANCEL_TRANSACTION_PROMPT_STRING}
-              </TextV3.Description>
+              </TextV3.Caption>
               <View style={styles.cancelFooter}>
-                <View style={styles.cancelFooterLeft}>
-                  <OutlineButton
-                    label={constants.KEEP_STRING}
-                    type={BUTTON_TYPE_ENUM.OUTLINE}
-                    onClick={onKeepButtonClicked}
-                  />
-                </View>
-                <OutlineButton label={constants.CANCEL_TRANSACTION_STRING} onClick={onCancelTransactionButtonClicked} />
+                <ButtonV3
+                  type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+                  title={constants.CANCEL_TRANSACTION_STRING}
+                  onPress={onCancelTransactionButtonClicked}
+                  extraStyles={styles.buttonContainer}
+                  extraTitleStyles={styles.buttonText}
+                />
+                <ButtonV3
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                  title={constants.KEEP_STRING}
+                  onPress={onKeepButtonClicked}
+                  extraStyles={styles.buttonContainer}
+                  extraTitleStyles={styles.buttonText}
+                />
               </View>
             </View>
           </View>

@@ -29,7 +29,7 @@ const Confirm = ({
   const linkTo = useLinkTo();
 
   const onNextPressed = () => {
-    linkTo('/home');
+    linkTo('/asset');
   }
 
   return (

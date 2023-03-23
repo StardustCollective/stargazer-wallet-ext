@@ -68,9 +68,9 @@ class WalletController implements IWalletController {
 
       try {
         if (vault && vault.activeWallet) {
-          await this.switchWallet(vault.activeWallet.id);
+          await this.switchWallet(vault.activeWallet.id, vault.activeWallet.label);
         } else if (state.wallets.length) {
-          await this.switchWallet(state.wallets[0].id);
+          await this.switchWallet(state.wallets[0].id, state.wallets[0].label);
         }
       } catch (e) {
         console.log('Error while switching wallet at login');
@@ -135,9 +135,14 @@ class WalletController implements IWalletController {
     );
 
     if (!silent) {
-      await this.switchWallet(wallet.id);
+      // The createSingleAccountWallet sends an "update" event which executes the switchWallet function
+      // with an old wallet. This issue is reproducible when importing a DAG wallet with private key. 
+      // This is a workaround to fix that race conditon.
+      setTimeout(async () => {
+        await this.switchWallet(wallet.id);
+      }, 1000);
     }
-    return wallet.id;
+    return wallet.getLabel();
   }
 
   async createWallet(label: string, phrase?: string, resetAll = false) {
@@ -317,10 +322,10 @@ class WalletController implements IWalletController {
     return false;
   }
 
-  async switchWallet(id: string) {
+  async switchWallet(id: string, label?: string) {
     store.dispatch(updateBalances({ pending: 'true' }));
 
-    await this.account.buildAccountAssetInfo(id);
+    await this.account.buildAccountAssetInfo(id, label);
     await this.account.getLatestTxUpdate();
     await this.account.assetsBalanceMonitor.start();
     await this.account.txController.startMonitor();

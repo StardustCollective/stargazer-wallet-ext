@@ -99,11 +99,13 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
   };
 
   const renderBalance = (assetInfo: IAssetInfoState | INFTInfoState) => {
+    const balanceValue = !isNFT && formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4);
+    const balanceSymbol = !!balanceValue && balanceValue !== '-' ? ` ${assetInfo.symbol}` : '';
     return (
       <TextV3.CaptionRegular extraStyles={styles.balanceText} color={COLORS_ENUMS.BLACK}>
         {isNFT
           ? Number((assetInfo as INFTInfoState).quantity)
-          : `${formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)} ${assetInfo.symbol}`}
+          : `${balanceValue}${balanceSymbol}`}
       </TextV3.CaptionRegular>
     );
   }

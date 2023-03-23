@@ -39,10 +39,10 @@ const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) =
   const handleImportPrivKey = async (privKey: string, label: string) => {
     return walletController
       .importSingleAccount(label, network, privKey)
-      .then((addr: string) => {
+      .then((walletLabel: string) => {
         setLoading(false);
-        if (addr) {
-          setAccountName(label);
+        if (walletLabel) {
+          setAccountName(walletLabel);
         }
       })
       .catch(() => {

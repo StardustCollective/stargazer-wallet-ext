@@ -1,6 +1,6 @@
 export default interface IConfirmPhrase {
   title: string;
-  isNotEqualArrays: boolean;
+  isButtonDisabled: boolean;
   passed: boolean;
   orgList: Array<string>;
   newList: Array<string>;
