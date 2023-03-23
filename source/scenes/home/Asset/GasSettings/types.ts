@@ -1,11 +1,5 @@
 import { ChangeEvent } from 'react';
-import { BUTTON_TYPE_ENUM, GAS_SETTINGS_STATE_ENUM } from './constants';
-
-export type IOutlineButtonProps = {
-  label: string;
-  onClick: () => void;
-  type?: BUTTON_TYPE_ENUM;
-};
+import { GAS_SETTINGS_STATE_ENUM } from './constants';
 
 export type IGasSettingsProps = {
   values: {
@@ -17,12 +11,15 @@ export type IGasSettingsProps = {
   gasFeeLabel: number;
   gasPrice: number;
   gasPrices: number[];
+  cancelError: string;
   onSliderChange: (_event: ChangeEvent<{}>, value: number | number[]) => void;
   onSpeedUpClick: (gas: number) => void;
+  onCancelClick: () => void;
 };
 
 export default interface IGasSettings extends IGasSettingsProps {
   onSpeedUpButtonClick: () => void;
+  onCancelButtonClick: () => void;
   onSettingCancelButtonClick: () => void;
   onSpeedUpConfirmButtonClicked: () => void;
   onKeepButtonClicked: () => void;

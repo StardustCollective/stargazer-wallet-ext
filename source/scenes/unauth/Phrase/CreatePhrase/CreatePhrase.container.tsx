@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
@@ -33,7 +33,10 @@ import * as consts from '../consts';
 // Container
 ///////////////////////////
 
-const CreatePhraseContainer = () => {
+const CreatePhraseContainer = ({ route } : { route: any }) => {
+
+  const { walletName, resetAll } = route.params || {};
+
   ///////////////////////////
   // Hooks
   ///////////////////////////
@@ -43,6 +46,12 @@ const CreatePhraseContainer = () => {
   const walletController = getWalletController();
   const phrases = walletController.onboardHelper.getSeedPhrase();
 
+  useEffect(() => {
+    return () => {
+      walletController.onboardHelper.reset();
+    }
+  }, [])
+  
   ///////////////////////////
   // Strings
   ///////////////////////////
@@ -56,7 +65,7 @@ const CreatePhraseContainer = () => {
 
   const nextHandler = () => {
     if (passed && phrases) {
-      linkTo('/create/phrase/check');
+      linkTo(`/create/phrase/check?walletName=${walletName}&resetAll=${resetAll}`);
     } else {
       setPassed(true);
     }

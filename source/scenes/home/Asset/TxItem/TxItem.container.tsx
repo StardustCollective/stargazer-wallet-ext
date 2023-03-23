@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent } from 'react';
+import React, { FC, ChangeEvent, useState } from 'react';
 import IVaultState from 'state/vault/types';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
@@ -32,6 +32,7 @@ const TxItemContainer: FC<ITxItem> = ({
   const accountController = getAccountController();
   const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.1 : 0;
   const { activeAsset }: IVaultState = useSelector((state: RootState) => state.vault);
+  const [cancelError, setCancelError] = useState('');
 
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
@@ -48,6 +49,7 @@ const TxItemContainer: FC<ITxItem> = ({
   };
 
   const onSpeedUpClick = async (gas: number) => {
+    const newGasLimit = tx.gasLimit ? Math.round(tx.gasLimit * 1.3) : 21000;
     const txConfig: ITransactionInfo = {
       fromAddress: tx.fromAddress,
       toAddress: tx.toAddress,
@@ -55,15 +57,39 @@ const TxItemContainer: FC<ITxItem> = ({
       timestamp: new Date().getTime(),
       ethConfig: {
         gasPrice: gas,
-        gasLimit: 12313232,
+        gasLimit: newGasLimit,
         memo: tx.data,
         nonce: tx.nonce,
       },
     };
 
-    accountController.updateTempTx(txConfig);
-    accountController.confirmContractTempTx(activeAsset);
+    await accountController.updateTempTx(txConfig);
+    await accountController.confirmContractTempTx(activeAsset);
     await accountController.txController.removePendingTxHash(tx.txHash);
+  };
+
+  const onCancelClick = async () => {
+    const newGasLimit = tx.gasLimit ? Math.round(tx.gasLimit * 1.2) : 21000;
+    const txConfig: ITransactionInfo = {
+      fromAddress: tx.fromAddress,
+      toAddress: tx.toAddress,
+      amount: '0', // We need to send a 0 ETH (or any ERC-20 token) transaction in order to cancel the previous one
+      timestamp: new Date().getTime(),
+      ethConfig: {
+        gasPrice: Math.round(tx.gasPrice * 1.3), // Gas price increased by 30%
+        gasLimit: newGasLimit,
+        memo: tx.data,
+        nonce: tx.nonce,
+      },
+    };
+
+    try {
+      await accountController.updateTempTx(txConfig);
+      await accountController.confirmContractTempTx(activeAsset);
+      await accountController.txController.removePendingTxHash(tx.txHash);
+    } catch (err) {
+      setCancelError('Error cancelling transaction');
+    }
   };
 
   const receivedOrSentText = `${isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'} ${currencySymbol}`;
@@ -82,7 +108,9 @@ const TxItemContainer: FC<ITxItem> = ({
         gasFeeLabel={gasFee}
         onSliderChange={onGasPriceChanged}
         onSpeedUpClick={onSpeedUpClick}
+        onCancelClick={onCancelClick}
         gasPrice={gasPrice}
+        cancelError={cancelError}
       />
     );
   };

@@ -1,4 +1,5 @@
 import { loadState } from "state/localStorage";
+import { compareVersions } from "utils/version";
 
 const MigrationController = async () => {
   // check current version of wallet
@@ -95,6 +96,14 @@ const MigrationController = async () => {
   if (!state.swap) {
     const v3_10_0 = require('../migration/v3_10_0');
     await v3_10_0.default(state);
+  }
+
+  /** 
+   * version < 3_11_1
+   */
+  if (compareVersions(state.vault.version, '3.11.1') < 0) {
+    const v3_11_1 = require('../migration/v3_11_1');
+    await v3_11_1.default(state);
   }
 
 };

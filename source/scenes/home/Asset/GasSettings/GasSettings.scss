@@ -5,11 +5,20 @@
   flex-direction: column;
   margin-bottom: 5px;
 
+  .buttonContainer {
+    height: 36px;
+    min-width: 100px;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-left: 12px;
+  }
+
   .options {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: 73px;
+    justify-content: flex-end;
+    padding-right: 16px;
 
     & > div:nth-child(n + 2) {
       margin-left: 8px;
@@ -36,14 +45,12 @@
           display: flex;
           width: 100%;
           height: 36px;
-          // background-color: orange;
           align-items: center;
           & > div {
             display: flex;
             flex: 1;
           }
           .headerLeft {
-            // background-color: blue;
             & > span {
               font-family: $inter;
               font-weight: $semibold;
@@ -136,35 +143,36 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
     .box {
       display: flex;
-      width: 304px;
-      height: 148px;
-      background: $gray-light-200;
-      border-radius: 16px;
+      margin-left: 16px;
+      margin-right: 16px;
+      background-color: $gray_light_100;
+      border-radius: 8px;
+      padding: 16px;
+
       .content {
         display: flex;
         flex: 1;
-        margin: 16px;
         flex-direction: column;
         font-family: $inter;
 
-        .header {
-          font-size: 18px;
-          font-weight: $bold;
-          margin-bottom: 8px;
+        .cancelBodyTitle {
+          font-weight: $semibold;
         }
-        .body {
-          font-size: 14px;
+
+        .cancelBodyText {
           font-weight: $medium;
         }
+
+        .body {
+          margin-top: 4px;
+        }
         .footer {
-          margin-top: 8px;
+          margin-top: 12px;
           display: flex;
           justify-content: flex-end;
-          & > div:first-child{
-            margin-right: 8px;
-          }
         }
       }
     }

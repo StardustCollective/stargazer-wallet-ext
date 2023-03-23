@@ -34,7 +34,7 @@ import styles from './styles';
 
 const ConfirmPhrase: FC<IConfirmPhrase> = ({
   title,
-  isNotEqualArrays,
+  isButtonDisabled,
   passed,
   orgList,
   newList,
@@ -92,7 +92,7 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
             type={BUTTON_TYPES_ENUM.PRIMARY}
             size={BUTTON_SIZES_ENUM.LARGE}
             title={passed ? 'Next' : 'Validate'}
-            disabled={isNotEqualArrays}
+            disabled={isButtonDisabled}
             onPress={handleConfirm}
             extraStyles={styles.nextButton}
           />

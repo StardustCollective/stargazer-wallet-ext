@@ -129,7 +129,7 @@ export class AssetsBalanceMonitor {
       store.dispatch(
         updateBalances({
           ...balances,
-          [AssetType.Constellation]: String(bal) || '0',
+          [AssetType.Constellation]: String(bal) || '-',
           pending,
         })
       );
@@ -207,7 +207,7 @@ export class AssetsBalanceMonitor {
             store.dispatch(
               updateBalances({
                 ...balances,
-                [MainAssetType]: mainAssetBalance || '0',
+                [MainAssetType]: mainAssetBalance || '-',
                 ...tokenBals,
                 pending,
               })

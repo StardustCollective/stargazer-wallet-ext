@@ -74,6 +74,7 @@ const PurpleSlider: FC<IPurpleSliderProps> = ({
 }) => {
   return (
     <PSlider
+      onClick={(ev) => {ev.stopPropagation()}}
       onChange={onChange}
       min={min}
       max={max}
