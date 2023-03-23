@@ -52,7 +52,7 @@ interface IButtonV3Props {
   loading?: boolean;
   label: string;
   extraStyle?: string;
-  onClick?: () => void;
+  onClick?: (ev: any) => void;
   submit?: boolean;
   disabled?: boolean;
   leftIcon?: JSX.Element;

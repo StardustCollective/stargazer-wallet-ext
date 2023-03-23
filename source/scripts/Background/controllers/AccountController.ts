@@ -180,13 +180,13 @@ export class AccountController implements IAccountController {
     return networkAssets;
   }
 
-  async buildAccountAssetInfo(walletId: string): Promise<void> {
+  async buildAccountAssetInfo(walletId: string, walletLabel: string): Promise<void> {
     const state = store.getState();
     const { vault } = state;
     const { local, ledger, bitfi } = vault.wallets;
     const allWallets = [...local, ...ledger, ...bitfi];
     const walletInfo: KeyringWalletState = allWallets.find(
-      (w: KeyringWalletState) => w.id === walletId
+      (w: KeyringWalletState) => w.id === walletId || w.label === walletLabel
     );
 
     if (!walletInfo) {
@@ -499,6 +499,7 @@ export class AccountController implements IAccountController {
         assetId: activeAsset.id,
         timestamp: new Date().getTime(),
         gasPrice,
+        nonce: newTx.nonce,
       });
     }
     this.tempTx = null;
@@ -603,11 +604,8 @@ export class AccountController implements IAccountController {
   async getLatestGasPrices() {
     const gasPrices = await this.networkController.estimateGasPrices();
     const results = Object.values(gasPrices).map((gas) =>
-      Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei'))
+      Math.round(Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei')))
     );
-    // if (results[0] === results[1]) {
-    //   results[1] = Math.round((results[0] + results[2]) / 2);
-    // }
     return results;
   }
 

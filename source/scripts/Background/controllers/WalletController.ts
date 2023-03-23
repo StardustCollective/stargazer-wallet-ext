@@ -68,9 +68,9 @@ class WalletController implements IWalletController {
 
       try {
         if (vault && vault.activeWallet) {
-          await this.switchWallet(vault.activeWallet.id);
+          await this.switchWallet(vault.activeWallet.id, vault.activeWallet.label);
         } else if (state.wallets.length) {
-          await this.switchWallet(state.wallets[0].id);
+          await this.switchWallet(state.wallets[0].id, state.wallets[0].label);
         }
       } catch (e) {
         console.log('Error while switching wallet at login');
@@ -322,10 +322,10 @@ class WalletController implements IWalletController {
     return false;
   }
 
-  async switchWallet(id: string) {
+  async switchWallet(id: string, label?: string) {
     store.dispatch(updateBalances({ pending: 'true' }));
 
-    await this.account.buildAccountAssetInfo(id);
+    await this.account.buildAccountAssetInfo(id, label);
     await this.account.getLatestTxUpdate();
     await this.account.assetsBalanceMonitor.start();
     await this.account.txController.startMonitor();

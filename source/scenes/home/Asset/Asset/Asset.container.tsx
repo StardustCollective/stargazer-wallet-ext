@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useMemo, useLayoutEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
@@ -10,7 +10,7 @@ import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
 
 import assetHeader from 'navigation/headers/asset';
-import { useLinkTo } from '@react-navigation/native';
+import { useFocusEffect, useLinkTo } from '@react-navigation/native';
 
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
@@ -76,18 +76,20 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     });
   }, []);
 
-  useEffect(() => {
-    const fetchTxs = async () => {
-      if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
-        return activeAsset.transactions;
-      }
-      return (await accountController.getFullETHTxs()).sort((a, b) => b.timestamp - a.timestamp);
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchTxs = async () => {
+        if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
+          return activeAsset.transactions;
+        }
+        return (await accountController.getFullETHTxs()).sort((a, b) => b.timestamp - a.timestamp);
+      };
 
-    fetchTxs().then((txns: any[]) => {
-      return setTransactions(txns);
-    });
-  }, [activeAsset]);
+      fetchTxs().then((txns: any[]) => {
+        setTransactions(txns);
+      });
+    }, [activeAsset])
+  );
 
   const onSendClick = () => {
     linkTo('/send');
