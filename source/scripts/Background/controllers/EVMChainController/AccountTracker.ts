@@ -46,12 +46,12 @@ export class AccountTracker {
     if (!!this.provider) {
       const tokenAddresses = this.accounts.map(t => t.contractAddress);
       const mainTokenBalance = await this.provider.getBalance(this.ethAddress);
-      const mainTokenBalanceNum = ethers.utils.formatEther(mainTokenBalance) || '0';
+      const mainTokenBalanceNum = ethers.utils.formatEther(mainTokenBalance) || '-';
       const tokenBalances: TokenBalances = {};
       if (tokenAddresses?.length) {
         const rawTokenBalances = await tokenContractHelper.getAddressBalances(this.provider, this.ethAddress, tokenAddresses, this.chainId);
         this.accounts.forEach(t => {
-          tokenBalances[`${t.contractAddress}-${t.chain}`] = ethers.utils.formatUnits(rawTokenBalances[t.contractAddress], t.decimals) || '0';
+          tokenBalances[`${t.contractAddress}-${t.chain}`] = ethers.utils.formatUnits(rawTokenBalances[t.contractAddress], t.decimals) || '-';
         })
       }
       this.callback(mainTokenBalanceNum, tokenBalances);

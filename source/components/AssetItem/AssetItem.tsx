@@ -93,6 +93,19 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
     return null;
   };
 
+  const renderBalance = (assetInfo: IAssetInfoState | INFTInfoState) => {
+    const balanceValue = !isNFT && formatStringDecimal(formatNumber(Number(balances[assetInfo.id]), 16, 20), 4);
+    const balanceSymbol = !!balanceValue && balanceValue !== '-' ? ` ${(assetInfo as IAssetInfoState).symbol}` : '';
+
+    return (
+      <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
+        {isNFT
+          ? Number((assetInfo as INFTInfoState).quantity)
+          : `${balanceValue}${balanceSymbol}`}
+      </TextV3.CaptionRegular>
+    );
+  }
+
   const classes = clsx(styles.assetItem, isNFT && styles.nft);
 
   return (
@@ -107,11 +120,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
             {isNFT ? renderNFTPriceSection() : renderAssetPriceSection(assetInfo as IAssetInfoState)}
           </div>
           <div className={styles.assetBalance}>
-            <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
-              {isNFT
-                ? Number((assetInfo as INFTInfoState).quantity)
-                : `${formatStringDecimal(formatNumber(Number(balances[asset.id]), 16, 20), 4)} ${(assetInfo as IAssetInfoState).symbol}`}
-            </TextV3.CaptionRegular>
+            {renderBalance(assetInfo)}
           </div>
         </div>
       </Card>
