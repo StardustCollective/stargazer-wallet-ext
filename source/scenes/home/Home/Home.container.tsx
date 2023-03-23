@@ -34,6 +34,7 @@ import IVaultState from 'state/vault/types';
 import IProvidersState from 'state/providers/types';
 import { getAccountController } from 'utils/controllersUtils';
 import { AssetType } from 'state/vault/types';
+import { truncateString } from 'scenes/home/helpers';
 
 interface IHome {
   navigation: any,
@@ -72,7 +73,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       ...homeHeader({ navigation, route }),
-      title: activeWallet ? activeWallet.label : "",
+      title: activeWallet ? truncateString(activeWallet.label) : "",
     });
   }, [activeWallet]);
 

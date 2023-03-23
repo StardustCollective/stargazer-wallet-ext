@@ -11,7 +11,19 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 73,
+    justifyContent: 'flex-end',
+    paddingRight: 16,
+  },
+  buttonContainer: {
+    height: 36,
+    minWidth: 100,
+    paddingHorizontal: 24,
+    marginLeft: 12,
+  },
+  buttonText: {
+    fontWeight: FONT_WEIGHTS.semibold,
+    fontSize: 12,
+    lineHeight: 18,
   },
   nthChild2: {
     marginLeft: 8,
@@ -71,7 +83,6 @@ const styles = StyleSheet.create({
     minWidth: 6,
     maxWidth: 24,
     marginRight: 8,
-    border: 'none',
     fontFamily: FONTS.inter,
     fontWeight: 'bold',
     fontSize: 14,
@@ -122,6 +133,7 @@ const styles = StyleSheet.create({
   updatedWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    alignSelf: 'center',
     width: 304,
     height: 36,
     alignItems: 'center',
@@ -132,9 +144,9 @@ const styles = StyleSheet.create({
   },
   updatedIcon: {
     marginTop: 0,
-    marginRight: 10,
+    marginRight: 12,
     marginBottom: 0,
-    marginLeft: 18,
+    marginLeft: 12,
   },
   updatedBoxText: {
     color: COLORS.green_dark,
@@ -146,18 +158,45 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     marginLeft: 5,
   },
-  cancel: {
+  cancelErrorWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    alignSelf: 'center',
+    width: 304,
+    height: 36,
     alignItems: 'center',
+    backgroundColor: COLORS.red_100,
+    borderRadius: 16,
+    paddingHorizontal: 10,
     marginBottom: 12,
+  },
+  cancelErrorIcon: {
+    marginTop: 0,
+    marginRight: 12,
+    marginBottom: 0,
+    marginLeft: 12,
+  },
+  cancelErrorBoxText: {
+    color: COLORS.red,
+    fontFamily: FONTS.inter,
+    fontStyle: 'normal',
+    fontWeight: FONT_WEIGHTS.bold,
+    fontSize: 14,
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 5,
+  },
+  cancel: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
   },
   cancelBox: {
     display: 'flex',
-    height: 148,
-    backgroundColor: COLORS.gray_light_200,
-    borderRadius: 16,
+    flex: 1,
+    margin: 16,
+    backgroundColor: COLORS.gray_light_100,
+    borderRadius: 8,
   },
   cancelBoxContent: {
     display: 'flex',
@@ -170,8 +209,10 @@ const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHTS.bold,
     marginBottom: 8,
   },
+  cancelBodyTitle: {
+    fontWeight: FONT_WEIGHTS.semibold,
+  },
   cancelBodyText: {
-    fontSize: 14,
     fontWeight: FONT_WEIGHTS.medium,
   },
   cancelFooter: {
@@ -179,35 +220,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'flex-end',
     flexDirection: 'row',
-  },
-  cancelFooterLeft: {
-    marginRight: 8,
-  },
-  outlineButton: {
-    height: 36,
-    minWidth: 100,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.primary,
-    borderRadius: 20,
-  },
-  outlineButtonText: {
-    marginVertical: 0,
-    fontFamily: FONTS.inter,
-    fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.primary,
-  },
-  solidButton: {
-    minWidth: 100,
-    height: 36,
-  },
-  solidButtonText: {
-    marginVertical: 0,
-    fontFamily: FONTS.inter,
-    fontSize: 13,
-    fontWeight: FONT_WEIGHTS.bold,
   },
   circleIconButton: {
     display: 'flex',

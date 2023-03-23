@@ -1,27 +1,16 @@
 import React, { FC } from 'react';
 
 import PurpleSlider from 'components/PurpleSlider';
+import ButtonV3, { BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import TextV3 from 'components/TextV3';
 
 import darkGreenCheck from 'assets/images/svg/dark-green-check.svg';
 
 import styles from './GasSettings.scss';
 
 import constants from './constants';
-import IGasSettings, { IOutlineButtonProps } from './types';
-
-const OutlineButton: FC<IOutlineButtonProps> = ({ label, type, onClick }) => {
-  let cssStyle = styles.solidButton;
-
-  if (type === constants.BUTTON_TYPE_ENUM.OUTLINE) {
-    cssStyle = styles.outlineButton;
-  }
-
-  return (
-    <div onClick={onClick} className={cssStyle}>
-      <span>{label}</span>
-    </div>
-  );
-};
+import IGasSettings from './types';
+import { COLORS_ENUMS } from 'assets/styles/colors';
 
 const GasSettings: FC<IGasSettings> = ({
   values,
@@ -31,6 +20,7 @@ const GasSettings: FC<IGasSettings> = ({
   gasPrices,
   onSliderChange,
   onSpeedUpButtonClick,
+  onCancelButtonClick,
   onSettingCancelButtonClick,
   onSpeedUpConfirmButtonClicked,
   onKeepButtonClicked,
@@ -39,10 +29,27 @@ const GasSettings: FC<IGasSettings> = ({
   getFiatAmount,
 }) => {
   return (
-    <div className={styles.gasSettings}>
+    <div className={styles.gasSettings} onClick={null}>
       {viewState === constants.GAS_SETTINGS_STATE_ENUM.OPTIONS && (
         <div className={styles.options}>
-          <OutlineButton label={constants.SPEED_UP_BUTTON_STRING} onClick={onSpeedUpButtonClick} />
+          <ButtonV3 
+            type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+            label={constants.CANCEL_BUTTON_STRING}
+            onClick={(ev: any) =>  {
+              ev.stopPropagation();
+              onCancelButtonClick()
+            }}
+            extraStyle={styles.buttonContainer}
+          />
+          <ButtonV3 
+            type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+            label={constants.SPEED_UP_BUTTON_STRING}
+            onClick={(ev: any) =>  {
+              ev.stopPropagation();
+              onSpeedUpButtonClick()
+            }}
+            extraStyle={styles.buttonContainer}
+          />
         </div>
       )}
       {viewState === constants.GAS_SETTINGS_STATE_ENUM.SETTINGS && (
@@ -87,16 +94,24 @@ const GasSettings: FC<IGasSettings> = ({
                 </div>
               </div>
               <div className={styles.footer}>
-                <div className={styles.footer__cancelButton}>
-                  <OutlineButton
-                    label={constants.CANCEL_BUTTON_STRING}
-                    type={constants.BUTTON_TYPE_ENUM.OUTLINE}
-                    onClick={onSettingCancelButtonClick}
-                  />
-                </div>
-                <div className={styles.footer__speedUpButton}>
-                  <OutlineButton label={constants.SPEED_UP_BUTTON_STRING} onClick={onSpeedUpConfirmButtonClicked} />
-                </div>
+                <ButtonV3 
+                  type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+                  label={constants.CANCEL_BUTTON_STRING}
+                  onClick={(ev: any) =>  {
+                    ev.stopPropagation();
+                    onSettingCancelButtonClick()
+                  }}
+                  extraStyle={styles.buttonContainer}
+                />
+                <ButtonV3 
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                  label={constants.SPEED_UP_BUTTON_STRING}
+                  onClick={(ev: any) =>  {
+                    ev.stopPropagation();
+                    onSpeedUpConfirmButtonClicked()
+                  }}
+                  extraStyle={styles.buttonContainer}
+                />
               </div>
             </div>
           </div>
@@ -115,25 +130,40 @@ const GasSettings: FC<IGasSettings> = ({
           <div className={styles.box}>
             <div className={styles.content}>
               <div className={styles.header}>
-                <span>{constants.CANCEL_TRANSACTION_STRING}?</span>
+                <TextV3.CaptionStrong 
+                  color={COLORS_ENUMS.BLACK} 
+                  extraStyles={styles.cancelBodyTitle}
+                > 
+                  {constants.CANCEL_TRANSACTION_STRING}?
+                </TextV3.CaptionStrong>
               </div>
               <div className={styles.body}>
-                <span>{constants.CANCEL_TRANSACTION_PROMPT_STRING}</span>
+                <TextV3.Caption 
+                  color={COLORS_ENUMS.DARK_GRAY_200} 
+                  extraStyles={styles.cancelBodyText}
+                >
+                  {constants.CANCEL_TRANSACTION_PROMPT_STRING}
+                </TextV3.Caption>
               </div>
               <div className={styles.footer}>
-                <div>
-                  <OutlineButton
-                    label={constants.KEEP_STRING}
-                    type={constants.BUTTON_TYPE_ENUM.OUTLINE}
-                    onClick={onKeepButtonClicked}
-                  />
-                </div>
-                <div>
-                  <OutlineButton
-                    label={constants.CANCEL_TRANSACTION_STRING}
-                    onClick={onCancelTransactionButtonClicked}
-                  />
-                </div>
+                <ButtonV3 
+                  type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+                  label={constants.CANCEL_TRANSACTION_STRING}
+                  onClick={(ev: any) =>  {
+                    ev.stopPropagation();
+                    onCancelTransactionButtonClicked()
+                  }}
+                  extraStyle={styles.buttonContainer}
+                />
+                <ButtonV3 
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                  label={constants.KEEP_STRING}
+                  onClick={(ev: any) =>  {
+                    ev.stopPropagation();
+                    onKeepButtonClicked()
+                  }}
+                  extraStyle={styles.buttonContainer}
+                />
               </div>
             </div>
           </div>

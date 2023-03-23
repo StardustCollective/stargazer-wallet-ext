@@ -111,7 +111,7 @@ const TypedSignatureRequestScreen = () => {
         
         // Create component
         const component = 
-          <div className={styles.keyContainer} style={{ paddingLeft: identation * 8 }}>
+          <div key={`${key}-${value}`} className={styles.keyContainer} style={{ paddingLeft: identation * 8 }}>
             <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.key}>{key}</TextV3.Caption>
             {!!showValue && (
               <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{value}</TextV3.Caption>
@@ -133,16 +133,19 @@ const TypedSignatureRequestScreen = () => {
   const renderHeaderInfo = () => {
     if (!domainObject) return null;
 
-    const contractAddress = domainObject.verifyingContract;
+    const { verifyingContract: contractAddress, chainId, name } = domainObject || {};
+
+    if (!contractAddress || !chainId || !origin || !name) return null;
+
     const formattedAddress = `${contractAddress.substring(0, 6)}...${contractAddress.substring(contractAddress.length - 6, contractAddress.length)}`;
     const chainLabel = Object.values(ALL_EVM_CHAINS).find((chain: any) => chain.chainId.toString() === domainObject.chainId.toString())?.label;
 
     return (
       <div className={styles.domainContainer}>
-        {!!domainObject.name && (
+        {!!name && (
           <div className={styles.row}>
             <TextV3.CaptionStrong color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoTitle}>{DOMAIN_TITLE}</TextV3.CaptionStrong>
-            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE}>{domainObject.name}</TextV3.CaptionRegular>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE}>{name}</TextV3.CaptionRegular>
           </div>
         )}
         {!!origin && (

@@ -85,7 +85,7 @@ const TxItem: FC<ITxItemSettings> = ({
             </TextV3.Caption>
           </View>
         </View>
-        {/* {isGasSettingsVisible && <View style={styles.gasSettings}>{renderGasSettings()}</View>} */}
+        {isGasSettingsVisible && <View style={styles.gasSettings}>{renderGasSettings()}</View>}
       </View>
     </TouchableOpacity>
   );

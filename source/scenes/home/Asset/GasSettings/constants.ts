@@ -4,11 +4,7 @@ export enum GAS_SETTINGS_STATE_ENUM {
   SETTINGS,
   CANCEL,
   UPDATED,
-}
-
-export enum BUTTON_TYPE_ENUM {
-  SOLID = 1,
-  OUTLINE,
+  ERROR
 }
 
 export default {
@@ -21,11 +17,9 @@ export default {
   TRANSACTION_UPDATED_STRING: 'Transaction updated',
   KEEP_STRING: 'Keep',
   CANCEL_TRANSACTION_STRING: 'Cancel Transaction',
-  CANCEL_TRANSACTION_PROMPT_STRING: `Transaction will still process, 
-  but its value will be set at zero “0”.`,
+  CANCEL_TRANSACTION_PROMPT_STRING: `Transaction will still process, but its value will be set at zero “0”.`,
   // Props
   SLIDER_STEP_PROP: 1,
   // Enums
   GAS_SETTINGS_STATE_ENUM,
-  BUTTON_TYPE_ENUM,
 };

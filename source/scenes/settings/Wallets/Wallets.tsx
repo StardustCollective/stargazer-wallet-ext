@@ -13,7 +13,7 @@ import StargazerIcon from 'assets/images/logo-s.svg';
 import IWalletSettings from './types';
 
 import styles from './Wallets.scss';
-import { ellipsis } from 'scenes/home/helpers';
+import { ellipsis, truncateString } from 'scenes/home/helpers';
 
 const WalletsComponent: FC<IWalletSettings> = ({
   wallets,
@@ -41,7 +41,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
                   {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
                   <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
                   <span id={wallet.label}>
-                    {wallet.label}
+                    {truncateString(wallet.label)}
                     <small>Multi Chain Wallet</small>
                   </span>
                   <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
@@ -73,7 +73,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
                   </div>
                 }
                 <span>
-                  {wallet.label}
+                  {truncateString(wallet.label)}
                   <small>{ellipsis(wallet.accounts[0].address)}</small>
                 </span>
                 <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
@@ -97,7 +97,7 @@ const WalletsComponent: FC<IWalletSettings> = ({
                 {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
                 <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
                 <span>
-                  {wallet.label}
+                  {truncateString(wallet.label)}
                   <small>{wallet.accounts[0].address}</small>
                 </span>
                 <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
