@@ -31,7 +31,7 @@ import IConfirmPhrase from './types';
 
 const ConfirmPhrase: FC<IConfirmPhrase> = ({
   title,
-  isNotEqualArrays,
+  isButtonDisabled,
   passed,
   orgList,
   newList,
@@ -112,7 +112,7 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
         id="confirmPhrase-confirmButton"
         type="button"
         variant={passed ? styles.start : styles.validate}
-        disabled={isNotEqualArrays}
+        disabled={isButtonDisabled}
         onClick={handleConfirm}
       >
         {passed ? 'Next' : 'Validate'}
