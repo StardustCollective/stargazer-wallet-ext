@@ -89,6 +89,7 @@ class NetworkController {
       provider = this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: getNetwork - provider not found.');
+      return null;
     }
     return provider.getNetwork();
   }
