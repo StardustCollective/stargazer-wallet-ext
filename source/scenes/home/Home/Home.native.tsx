@@ -2,23 +2,29 @@
 // Modules
 ///////////////////////////
 
-import React, { FC, useEffect } from 'react';
-import { View, ActivityIndicator, ScrollView } from 'react-native';
+import React, { FC, useEffect, useState, useLayoutEffect } from 'react';
+import { View, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
+import Sheet from 'components/Sheet';
+import WalletsModal from './WalletsModal';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import AssetsPanel from './AssetsPanel';
+import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up.svg';
+import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down.svg';
 
 ///////////////////////////
 // Utils
 ///////////////////////////
 
-import { getAccountController } from 'utils/controllersUtils';
+import { getAccountController, getWalletController } from 'utils/controllersUtils';
+import homeHeader from 'navigation/headers/home';
+import { truncateString } from 'scenes/home/helpers';
 
 ///////////////////////////
 // Styles
@@ -31,6 +37,7 @@ import styles from './styles';
 ///////////////////////////
 
 import { IHome } from './types';
+import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////////
 // Constants
@@ -43,15 +50,54 @@ import {
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
+const ICON_SIZE = 14;
 let lastIsConnected: boolean = true;
 
 ///////////////////////////
 // Scene
 ///////////////////////////
 
-const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, isDagOnlyWallet, onBuyPressed, onSwapPressed }) => {
+const Home: FC<IHome> = ({ 
+  navigation,
+  route,
+  activeWallet,
+  balanceObject,
+  isDagOnlyWallet,
+  multiChainWallets,
+  privateKeyWallets,
+  onBuyPressed,
+  onSwapPressed
+}) => {
+
+  const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
 
   const accountController = getAccountController();
+  const walletController = getWalletController();
+
+  const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
+    setIsWalletSelectorOpen(false);
+    await walletController.switchWallet(walletId);
+    const accounts = walletAccounts.map((account) => account.address);
+    await walletController.notifyWalletChange(accounts);
+  };
+
+  const renderHeaderTitle = () => {
+    const ArrowIcon = isWalletSelectorOpen ? ArrowUpIcon : ArrowDownIcon;
+    return (
+      <TouchableOpacity style={styles.headerTitleContainer} onPress={() => setIsWalletSelectorOpen(true)}>
+        <TextV3.BodyStrong extraStyles={styles.headerTitle}>{activeWallet ? truncateString(activeWallet.label) : ""}</TextV3.BodyStrong>
+        <ArrowIcon width={ICON_SIZE} height={ICON_SIZE} color="white" />
+      </TouchableOpacity>
+    );
+  }
+
+  // Sets the header for the home screen.
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      ...homeHeader({ navigation, route }),
+      headerTitle: renderHeaderTitle,
+    });
+  }, [activeWallet, isWalletSelectorOpen]);
 
   // Subscribe to NetInfo
   useEffect(() => {
@@ -83,9 +129,6 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, isDagOnlyWallet
                 </TextV3.HeaderDisplay>
                 <TextV3.Body extraStyles={styles.fiatType}>{balanceObject.name}</TextV3.Body>
               </View>
-              <View style={styles.bitcoinBalance}>
-                <TextV3.Body extraStyles={styles.balanceText}>{`≈ ₿${balance}`}</TextV3.Body>
-              </View>
               <View style={styles.buttons}>
                 <ButtonV3
                   title={BUY_STRING}
@@ -115,6 +158,22 @@ const Home: FC<IHome> = ({ activeWallet, balanceObject, balance, isDagOnlyWallet
           </View>
         )}
       </ScrollView>
+      <Sheet 
+        isVisible={isWalletSelectorOpen}
+        onClosePress={() => setIsWalletSelectorOpen(false)}
+        height='65%'
+        title={{
+          label: 'Wallets',
+          align: 'left',
+        }}
+      >
+        <WalletsModal 
+          multiChainWallets={multiChainWallets}
+          privateKeyWallets={privateKeyWallets}
+          activeWallet={activeWallet}
+          handleSwitchWallet={handleSwitchWallet}
+        />
+      </Sheet>
     </View>
   );
 };

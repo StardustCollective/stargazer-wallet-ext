@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,13 +31,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 28,
   },
-  bitcoinBalance: {
-    opacity: 0.66,
-    marginTop: 8,
-  },
-  balanceText: {
-    fontSize: 16,
-  },
   activityIndicator: {
     flex: 1,
     justifyContent: 'center',
@@ -52,6 +46,13 @@ const styles = StyleSheet.create({
   buttonNormal: {
     marginVertical: 32,
   },
+  headerTitleContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+  },
+  headerTitle: {
+    marginRight: 12,
+  }
 });
 
 export default styles;
