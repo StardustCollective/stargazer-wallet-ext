@@ -58,9 +58,9 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
       </View>
       <View>
         {isOpen ? (
-          <ArrowUpIcon width={ICON_SIZE} />
+          <ArrowUpIcon width={ICON_SIZE} color="black"  />
           ) : (
-          <ArrowDownIcon width={ICON_SIZE} />
+          <ArrowDownIcon width={ICON_SIZE} color="black" />
         )}
       </View>
       {isOpen && (
