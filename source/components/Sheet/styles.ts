@@ -13,11 +13,21 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     paddingHorizontal: 16,
   },
+  handleContainer: {
+    height: 32,
+    alignItems: 'center',
+  },
+  handle:{
+    height: 4,
+    width: 36,
+    borderRadius: 100,
+    marginTop: 8,
+    backgroundColor: COLORS.gray_300,
+  },
   headerContainer: {
-    height: 40,
+    height: 32,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 24,
   },
   headerLabel: {
     flex: 1,
@@ -44,7 +54,7 @@ const styles = StyleSheet.create({
   },
   children: {
     flexGrow: 1,
-    marginTop: 12,
+    marginTop: 16,
   }
 });
 

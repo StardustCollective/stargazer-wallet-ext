@@ -96,6 +96,9 @@ const Sheet: FC<ISheet> = ({
     >
       <View style={{ height }}>
         <View style={styles.sheet}>
+          <View style={styles.handleContainer}>
+            <View style={styles.handle}/>
+          </View>
           <View style={styles.headerContainer}>
             <RenderHeader />
           </View>
