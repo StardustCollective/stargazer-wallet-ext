@@ -8,14 +8,14 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 40,
   },
-  privateKeysContainer: {
+  testnetsContainer: {
     marginTop: 16,
   },
   subtitle: {
     fontWeight: FONT_WEIGHTS.semibold,
     marginBottom: 8,
   },
-  walletWrapper: {
+  chainWrapper: {
     height: 64,
     flexDirection: 'row',
     alignItems: 'center',
@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: COLORS.gray_light_100,
   },
-  walletInfoContainer: {
+  chainInfoContainer: {
     flex: 1,
     flexDirection: 'row',
     marginLeft: 12,
   },
-  walletLabelContainer: {
+  chainLabelContainer: {
     flex: 1,
   },
   checkContainer: {
@@ -47,15 +47,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
   },
-  stargazerIconWrapper: {
-    backgroundColor: '#1C143D',
-    height: 36,
-    width: 36,
-    justifyContent: 'center',
-    alignItems :'center',
-    borderRadius: 18,
-  },
-  assetIconWrapper: {
+  chainIconWrapper: {
     height: 36,
     width: 36,
     borderWidth: 1,
@@ -64,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems :'center',
     borderRadius: 18,
   },
-  assetIcon: {
+  chainIcon: {
     height: 24,
     width: 24,
   }

@@ -40,8 +40,8 @@ const NetworksModal: FC<INetworksModal> = ({
   handleSwitchActiveNetwork,
 }) => {
 
-  const renderCheckIcon = (walletId: string, activeWalletId: string) => {
-    if (walletId !== activeWalletId) {
+  const renderCheckIcon = (chainId: string, currentNetworkId: string) => {
+    if (chainId !== currentNetworkId) {
       return null;
     }
 
@@ -63,20 +63,20 @@ const NetworksModal: FC<INetworksModal> = ({
       </TextV3.Caption>
       {
         ALL_MAINNET_CHAINS.map((chain, i) => {
-          const walletStyles = StyleSheet.flatten([
-            styles.walletWrapper,
+          const chainStyles = StyleSheet.flatten([
+            styles.chainWrapper,
             i === 0 ? styles.firstChild : {},
             i === ALL_MAINNET_CHAINS.length - 1 ? styles.lastChild : {},
           ]);
 
           return (
             <TouchableOpacity key={i} onPress={() => handleSwitchActiveNetwork(chain.id)}>
-              <View style={walletStyles}>
-                <View style={styles.assetIconWrapper}>
-                  <Image source={{ uri: chain.logo }} style={styles.assetIcon} />
+              <View style={chainStyles}>
+                <View style={styles.chainIconWrapper}>
+                  <Image source={{ uri: chain.logo }} style={styles.chainIcon} />
                 </View>
-                <View testID={chain.id} style={styles.walletInfoContainer}>
-                  <View style={styles.walletLabelContainer}>
+                <View testID={chain.id} style={styles.chainInfoContainer}>
+                  <View style={styles.chainLabelContainer}>
                     <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                       {chain.network}
                     </TextV3.CaptionStrong>
@@ -88,26 +88,26 @@ const NetworksModal: FC<INetworksModal> = ({
           )
         })
       }
-      <View style={styles.privateKeysContainer}>
+      <View style={styles.testnetsContainer}>
         <TextV3.Caption color={COLORS_ENUMS.GRAY_100} extraStyles={styles.subtitle}>
           Testnets
         </TextV3.Caption>
         {
           ALL_TESTNETS_CHAINS.map((chain, i) => {
-            const walletStyles = StyleSheet.flatten([
-              styles.walletWrapper,
+            const chainStyles = StyleSheet.flatten([
+              styles.chainWrapper,
               i === 0 ? styles.firstChild : {},
               i === ALL_TESTNETS_CHAINS.length - 1 ? styles.lastChild : {},
             ]);
 
             return (
               <TouchableOpacity key={i} onPress={() => handleSwitchActiveNetwork(chain.id)}>
-                <View style={walletStyles}>
-                  <View style={styles.assetIconWrapper}>
-                    <Image source={{ uri: chain.logo }} style={styles.assetIcon} />
+                <View style={chainStyles}>
+                  <View style={styles.chainIconWrapper}>
+                    <Image source={{ uri: chain.logo }} style={styles.chainIcon} />
                   </View>
-                  <View testID={chain.id} style={styles.walletInfoContainer}>
-                    <View style={styles.walletLabelContainer}>
+                  <View testID={chain.id} style={styles.chainInfoContainer}>
+                    <View style={styles.chainLabelContainer}>
                       <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                         {chain.label}
                       </TextV3.CaptionStrong>
