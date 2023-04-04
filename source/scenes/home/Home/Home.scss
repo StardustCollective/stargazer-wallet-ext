@@ -134,24 +134,27 @@
       font-size: 20px;
       line-height: 28px;
     }
-
-    .bitcoinBalance {
-      font-size: 16px;
-    }
-
-    .bitcoinBalance{
-      opacity: 0.66;
-      margin-top: 8px;
-    }
+    
     .buttons {
       display: flex;
       flex: 1;
       width: 100%;
       flex-direction: row;
-      margin-top: 15px;
+      margin-top: 32px;
       margin-bottom: 24px;
       justify-content: space-evenly;
     }
+  }
+}
+
+.titleContainer {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .titleText {
+    margin-right: 12px;
   }
 }
 

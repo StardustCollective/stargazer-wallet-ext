@@ -2,14 +2,26 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useState, useLayoutEffect } from 'react';
 import clsx from 'clsx';
+
+///////////////////////////
+// Utils
+///////////////////////////
+
+import homeHeader from 'navigation/headers/home';
+import { truncateString } from 'scenes/home/helpers';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
+import WalletsModal from './WalletsModal';
+import Sheet from 'components/Sheet';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up.svg';
+import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down.svg';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import AssetsPanel from './AssetsPanel';
@@ -25,7 +37,7 @@ import styles from './Home.scss';
 ///////////////////////////
 
 import { IHome } from './types';
-
+import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////////
 // constants
@@ -41,13 +53,51 @@ import {
 ///////////////////////////
 
 const Home: FC<IHome> = ({
+  navigation,
+  route,
   activeWallet,
   balanceObject,
-  balance,
+  multiChainWallets,
+  privateKeyWallets,
   onBuyPressed,
   onSwapPressed,
   isDagOnlyWallet,
 }) => {
+
+  const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
+  // const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
+
+  const walletController = getWalletController();
+
+  const renderHeaderTitle = () => {
+    const ArrowIcon = isWalletSelectorOpen ? ArrowUpIcon : ArrowDownIcon;
+    return (
+      <div className={styles.titleContainer} onClick={() => setIsWalletSelectorOpen(true)}>
+        <TextV3.BodyStrong extraStyles={styles.titleText}>{activeWallet ? truncateString(activeWallet.label) : ""}</TextV3.BodyStrong>
+        <img src={`/${ArrowIcon}`} />
+      </div>
+    );
+  }
+
+  const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
+    setIsWalletSelectorOpen(false);
+    await walletController.switchWallet(walletId);
+    const accounts = walletAccounts.map((account) => account.address);
+    await walletController.notifyWalletChange(accounts);
+  };
+
+  // const handleSwitchActiveNetwork = async (chainId: string) => {
+  //   setIsNetworkSelectorOpen(false);
+  //   await walletController.switchActiveNetwork(chainId);
+  // }
+
+  // Sets the header for the home screen.
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      ...homeHeader({ navigation, route }),
+      headerTitle: renderHeaderTitle,
+    });
+  }, [activeWallet, isWalletSelectorOpen]);
 
   ///////////////////////////
   // Render
@@ -76,11 +126,6 @@ const Home: FC<IHome> = ({
                       {balanceObject.name}
                     </TextV3.Body>
                   </div>
-                </div>
-                <div className={styles.bitcoinBalance}>
-                  <TextV3.Body extraStyles={styles.bitcoinBalance}>
-                    {`≈ ₿${balance}`}
-                  </TextV3.Body>
                 </div>
                 <div className={styles.buttons}>
                   <ButtonV3
@@ -114,6 +159,21 @@ const Home: FC<IHome> = ({
           <CircularProgress className={styles.loader} />
         </section>
       )}
+      <Sheet 
+        title={{
+          label: 'Wallets',
+          align: 'left'
+        }}
+        isVisible={isWalletSelectorOpen}
+        onClosePress={() => setIsWalletSelectorOpen(false)}
+      >
+        <WalletsModal 
+          multiChainWallets={multiChainWallets}
+          privateKeyWallets={privateKeyWallets}
+          activeWallet={activeWallet}
+          handleSwitchWallet={handleSwitchWallet}
+        />
+      </Sheet>
     </div>
   );
 };
