@@ -299,6 +299,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         walletLabel: activeWallet.label,
         deviceId,
         bipIndex,
+        chain: StargazerChain.CONSTELLATION,
       };
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(

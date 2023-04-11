@@ -9,7 +9,6 @@ import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
-// import { useAlert } from 'react-alert';
 
 ///////////////////////////
 // Navigation
@@ -45,7 +44,7 @@ import { useFiat } from 'hooks/usePrice';
 import { getNativeToken, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
-import { isError, StargazerChain } from 'scripts/common';
+import { ASSET_ID, isError } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 
 ///////////////////////////
@@ -112,20 +111,20 @@ const ConfirmContainer = () => {
     ) as IAssetInfoState;
 
     if (!activeAsset) {
-      if (!!chain && chain === StargazerChain.CONSTELLATION) {
-        // Set DAG as the activeAsset if 'chain' is provided.
+      if (!!chain) {
         activeAsset = useSelector(
-          (state: RootState) => find(state.assets, { type: AssetType.Constellation })
-        ) as IAssetInfoState;
+          (state: RootState) => find(state.assets, { id: ASSET_ID[chain as string] })
+        );
+
       } else {
         // Set ETH as the default activeAsset if 'chain' is not provided
         activeAsset = useSelector(
-          (state: RootState) => find(state.assets, { type: AssetType.Ethereum })
+          (state: RootState) => find(state.assets, { id: AssetType.Ethereum })
         ) as IAssetInfoState;
       }
     }
 
-    if (!vaultActiveAsset) {
+    if (!vaultActiveAsset || activeAsset.id !== vaultActiveAsset.id) {
       // Update activeAsset so NetworkController doesn't fail
       accountController.updateAccountActiveAsset(activeAsset);
     }
@@ -267,7 +266,7 @@ const ConfirmContainer = () => {
       if (isError(e)) {
         let message = e.message;
         if (e.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
-          message = 'Insufficient ETH to cover gas fee.';
+          message = 'Insufficient funds to cover gas fee.';
         }
 
         if (background) {

@@ -61,7 +61,7 @@ import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChai
 ///////////////////////////
 
 import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO, BSC_LOGO, DAG_NETWORK } from 'constants/index';
-import { StargazerChain } from 'scripts/common';
+import { ASSET_ID, StargazerChain } from 'scripts/common';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -141,10 +141,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     const vaultActiveAsset = vault.activeAsset;
 
     if (!activeAsset) {
-      if (!!chain && chain === StargazerChain.CONSTELLATION) {
-        // Set DAG as the activeAsset if 'chain' is provided.
+      if (!!chain) {
         activeAsset = useSelector((state: RootState) =>
-          find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
+          find(state.vault.activeWallet.assets, { id: ASSET_ID[chain] })
         );
       } else {
         // Set ETH as the default activeAsset
@@ -159,7 +158,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       );
     }
 
-    if (!vaultActiveAsset) {
+    if (!vaultActiveAsset || activeAsset.id !== vaultActiveAsset.id) {
       // Update activeAsset so NetworkController doesn't fail
       accountController.updateAccountActiveAsset(activeAsset);
     }
@@ -172,16 +171,10 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     activeAsset = vault.activeAsset;
     balances = vault.balances;
     assetInfo = assets[activeAsset.id];
-
-    // Sets the header for the send screen
-    // useLayoutEffect(() => {
-    //   navigation.setOptions(sendHeader({ navigation, asset: assetInfo }));
-    // }, []);
   }
 
   const getFiatAmount = useFiat(true, assetInfo);
   const linkTo = useLinkTo();
-  // const alert = useAlert();
 
   const tempTx = accountController.getTempTx();
 
@@ -243,8 +236,6 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const onSubmit = async (data: any) => {
     if (!isValidAddress) {
-      // alert.removeAll();
-      // alert.error('Error: Invalid recipient address');
       return;
     }
     const txConfig: ITransactionInfo = {
@@ -268,8 +259,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       const params = new URLSearchParams();
       params.set('to', txConfig.toAddress);
       params.set('windowId', windowId);
-      if (activeAsset.id === AssetType.Constellation) {
-        params.set('chain', StargazerChain.CONSTELLATION);
+      const CHAINS: { [assetId: string]: string } = {
+        [AssetType.Constellation]: StargazerChain.CONSTELLATION,
+        [AssetType.Ethereum]: StargazerChain.ETHEREUM,
+        [AssetType.Polygon]: StargazerChain.POLYGON,
+      }
+      if (!!activeAsset?.id) {
+        params.set('chain', CHAINS[activeAsset.id]);
       }
       history.push(`/confirmTransaction?${params.toString()}`);
     } else {

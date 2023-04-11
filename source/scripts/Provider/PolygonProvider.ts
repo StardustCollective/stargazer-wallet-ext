@@ -33,7 +33,7 @@ import {
 import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
 import { getChainId, getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
-import { ETH_NETWORK } from 'constants/index';
+import { POLYGON_NETWORK } from 'constants/index';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -43,11 +43,11 @@ const WINDOW_TYPES: Record<string, Windows.CreateType> = {
   normal: 'normal',
 };
 
-export class EthereumProvider implements IRpcChainRequestHandler {
+export class PolygonProvider implements IRpcChainRequestHandler {
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
 
-    return activeNetwork[KeyringNetwork.Ethereum];
+    return activeNetwork['Polygon'];
   }
 
   getChainId() {
@@ -57,9 +57,10 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   }
 
   getAddress() {
-    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    // The address is the same for all EVM networks
+    const ethAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
-    return stargazerAsset && stargazerAsset.address;
+    return ethAsset && ethAsset.address;
   }
 
   getAccounts(): Array<string> {
@@ -102,9 +103,9 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 
-    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const ethAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
-    return stargazerAsset && balances[AssetType.Ethereum];
+    return ethAsset && balances[AssetType.Polygon];
   }
 
   normalizeSignatureRequest(message: string): string {
@@ -130,7 +131,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   signMessage(msg: string) {
     const controller = useController();
     // TODO-349: Check if we need to create Providers for all networks
-    const wallet = controller.wallet.account.networkController.ethereumNetwork.getWallet();
+    const wallet = controller.wallet.account.networkController.polygonNetwork.getWallet();
     const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = hashPersonalMessage(Buffer.from(msg));
@@ -147,7 +148,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     value: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[2]
   ) {
     const controller = useController();
-    const wallet = controller.wallet.account.networkController.ethereumNetwork.getWallet();
+    const wallet = controller.wallet.account.networkController.polygonNetwork.getWallet();
     const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = ethers.utils._TypedDataEncoder.hash(domain, types, value);
@@ -176,7 +177,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     _port: Runtime.Port
   ) {
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const networkInfo = getChainInfo(activeNetwork.Ethereum);
+    const networkInfo = getChainInfo(activeNetwork.Polygon);
     const provider = new ethers.providers.JsonRpcProvider(networkInfo.rpcEndpoint);
 
     return provider.send(request.method, request.params);
@@ -255,12 +256,12 @@ export class EthereumProvider implements IRpcChainRequestHandler {
 
       const signatureData = {
         origin: dappProvider.origin,
-        asset: 'ETH',
+        asset: 'MATIC',
         signatureRequestEncoded,
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
         publicKey: '',
-        chain: StargazerChain.ETHEREUM,
+        chain: StargazerChain.POLYGON,
       };
 
       // If the type of account is Ledger send back the public key so the
@@ -346,7 +347,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
         delete data.types['EIP712Domain'];
       }
 
-      const activeChainId = ETH_NETWORK[activeNetwork.Ethereum].chainId;
+      const activeChainId = POLYGON_NETWORK[activeNetwork.Polygon].chainId;
       if (!!data?.domain?.chainId && activeChainId && parseInt(data.domain.chainId) !== activeChainId) {
         throw new Error('chainId does not match the active network chainId');
       }
@@ -358,7 +359,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
       }
 
       const signatureConsent: TypedSignatureRequest = {
-        chain: StargazerChain.ETHEREUM,
+        chain: StargazerChain.POLYGON,
         signer: address,
         content: JSON.stringify(data.message),
       };
@@ -435,7 +436,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
         route,
         { 
           ...trxData,
-          chain: StargazerChain.ETHEREUM
+          chain: StargazerChain.POLYGON
         }
       );
 

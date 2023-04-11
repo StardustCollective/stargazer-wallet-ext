@@ -22,7 +22,10 @@ import CardLayout from 'scenes/external/Layouts/CardLayout'
 import styles from './index.module.scss';
 
 import walletsSelectors from 'selectors/walletsSelectors'
-import { StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
+import { StargazerProvider, StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
+import { StargazerChain } from 'scripts/common';
+import { EthereumProvider } from 'scripts/Provider/EthereumProvider';
+import { PolygonProvider } from 'scripts/Provider/PolygonProvider';
 
 //////////////////////
 // Component
@@ -38,10 +41,15 @@ const SignatureRequest = () => {
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { signatureRequestEncoded, asset }:
-    { signatureRequestEncoded: string, asset: string } = JSON.parse(stringData as string);
+  const { signatureRequestEncoded, asset, chain }:
+    { signatureRequestEncoded: string, asset: string, chain: string } = JSON.parse(stringData as string);
   // TODO-349: Check how signature should work here
-  const provider = asset === 'DAG' ? controller.stargazerProvider : controller.ethereumProvider;
+  const PROVIDERS: { [chain: string]: StargazerProvider | EthereumProvider | PolygonProvider } = {
+    [StargazerChain.CONSTELLATION]: controller.stargazerProvider,
+    [StargazerChain.ETHEREUM]: controller.ethereumProvider,
+    [StargazerChain.POLYGON]: controller.polygonProvider,
+  }
+  const provider = PROVIDERS[chain];
   const account = provider.getAssetByType(asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum);
   const signatureRequest = JSON.parse(window.atob(signatureRequestEncoded)) as StargazerSignatureRequest;
 
@@ -62,7 +70,8 @@ const SignatureRequest = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    const signature = provider.signMessage(asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content);
+    const message = asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content;
+    const signature = provider.signMessage(message);
 
     const background = await browser.runtime.getBackgroundPage();
 

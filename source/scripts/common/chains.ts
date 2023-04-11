@@ -1,6 +1,15 @@
+import { AssetType } from "state/vault/types";
+
 enum StargazerChain {
   CONSTELLATION = 'constellation',
-  ETHEREUM = 'ethereum'
+  ETHEREUM = 'ethereum',
+  POLYGON = 'polygon',
 }
 
-export { StargazerChain };
+const ASSET_ID: { [chain: string]: string } = {
+  [StargazerChain.CONSTELLATION]: AssetType.Constellation,
+  [StargazerChain.ETHEREUM]: AssetType.Ethereum,
+  [StargazerChain.POLYGON]: AssetType.Polygon,
+}
+
+export { StargazerChain, ASSET_ID };

@@ -12,10 +12,11 @@ import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import { RootState } from 'state/store';
 import { IAssetInfoState } from 'state/assets/types';
-import { AssetType } from 'state/vault/types';
+import { IAssetState } from 'state/vault/types';
 import { ITransactionInfo } from '../../../scripts/types';
-import { isError } from '../../../scripts/common';
-import { usePlatformAlert } from 'utils/alertUtil'
+import { ASSET_ID, isError } from '../../../scripts/common';
+import { usePlatformAlert } from 'utils/alertUtil';
+import walletsSelectors from 'selectors/walletsSelectors';
 
 ///////////////////////
 // Components
@@ -62,20 +63,32 @@ const ApproveSpend = () => {
   /////////////////////
 
   const controller = useController();
-  const showAlert = usePlatformAlert()
+  const showAlert = usePlatformAlert();
+  const vaultActiveAsset = useSelector(walletsSelectors.getActiveAsset)
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { to, from, gas, data } = JSON.parse(stringData as string);
+  const { to, from, gas, data, chain } = JSON.parse(stringData as string);
 
-  let asset = useSelector((state: RootState) =>
+  let asset: IAssetInfoState = useSelector((state: RootState) =>
     find(state.assets, { address: to })
   ) as IAssetInfoState;
 
   if (!asset) {
+    // Filter asset by chain id
     asset = useSelector((state: RootState) =>
-      find(state.assets, { type: AssetType.Ethereum })
+      find(state.assets, { id: ASSET_ID[chain]})
     ) as IAssetInfoState;
+
+    // Get active asset
+    const activeAsset = useSelector((state: RootState) =>
+      find(state.vault.activeWallet.assets, { id: ASSET_ID[chain]})
+    ) as IAssetState;
+
+    if (activeAsset.id !== vaultActiveAsset.id) {
+      // Update active asset in order to get expected gas prices
+      controller.wallet.account.updateAccountActiveAsset(activeAsset);
+    }
   }
 
   let {

@@ -1,6 +1,7 @@
 import { browser, Windows } from 'webextension-polyfill-ts';
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
 import { EthereumProvider } from 'scripts/Provider/EthereumProvider';
+import { PolygonProvider } from 'scripts/Provider/PolygonProvider';
 import WalletController from './WalletController';
 import { IWalletController } from './IWalletController';
 import ControllerUtils, { IControllerUtils } from './ControllerUtils';
@@ -13,6 +14,7 @@ import { DappRegistry } from '../dappRegistry';
 class MasterController {
   #stargazerProvider: StargazerProvider;
   #ethereumProvider: EthereumProvider;
+  #polygonProvider: PolygonProvider;
   #wallet: IWalletController;
   #dapp: DAppController;
   #dappRegistry: DappRegistry;
@@ -22,6 +24,7 @@ class MasterController {
   constructor() {
     this.#stargazerProvider = new StargazerProvider();
     this.#ethereumProvider = new EthereumProvider();
+    this.#polygonProvider = new PolygonProvider();
     this.#wallet = WalletController;
     this.#dapp = new DAppController();
     this.#dappRegistry = new DappRegistry()
@@ -38,6 +41,10 @@ class MasterController {
 
   get ethereumProvider() {
     return this.#ethereumProvider;
+  }
+  
+  get polygonProvider() {
+    return this.#polygonProvider;
   }
 
   get wallet() {
