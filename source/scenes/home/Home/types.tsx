@@ -19,6 +19,7 @@ export interface IHome {
   isDagOnlyWallet: boolean;
   multiChainWallets: KeyringWalletState[];
   privateKeyWallets: KeyringWalletState[];
+  currentNetwork: string;
   onBuyPressed: () => void;
   onSwapPressed: () => void;
 }
