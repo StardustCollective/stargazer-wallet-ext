@@ -198,7 +198,7 @@ export const POLYGON_NETWORK: {
   matic: {
     id: 'matic',
     value: 'matic',
-    label: 'Mainnet',
+    label: 'Polygon Mainnet',
     rpcEndpoint: QUICKNODE_POLYGON_MAINNET,
     explorer: 'https://polygonscan.com/',
     explorerAPI: 'https://api.polygonscan.com',
@@ -210,7 +210,7 @@ export const POLYGON_NETWORK: {
   maticmum: {
     id: 'maticmum',
     value: 'maticmum',
-    label: 'Maticmum Testnet',
+    label: 'Polygon Testnet',
     rpcEndpoint: QUICKNODE_POLYGON_TESTNET,
     explorer: 'https://mumbai.polygonscan.com/',
     explorerAPI: 'https://api-testnet.polygonscan.com',

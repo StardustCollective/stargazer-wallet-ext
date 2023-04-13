@@ -41,13 +41,14 @@ const SignatureRequest = () => {
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { signatureRequestEncoded, asset, chain }:
-    { signatureRequestEncoded: string, asset: string, chain: string } = JSON.parse(stringData as string);
+  const { signatureRequestEncoded, asset, chain, chainLabel }:
+    { signatureRequestEncoded: string, asset: string, chain: string, chainLabel: string } = JSON.parse(stringData as string);
   // TODO-349: Check how signature should work here
   const PROVIDERS: { [chain: string]: StargazerProvider | EthereumProvider | PolygonProvider } = {
     [StargazerChain.CONSTELLATION]: controller.stargazerProvider,
     [StargazerChain.ETHEREUM]: controller.ethereumProvider,
     [StargazerChain.POLYGON]: controller.polygonProvider,
+    [StargazerChain.BSC]: controller.bscProvider,
   }
   const provider = PROVIDERS[chain];
   const account = provider.getAssetByType(asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum);
@@ -121,6 +122,14 @@ const SignatureRequest = () => {
           </label>
           <div>
             {signatureRequest.content}
+          </div>
+        </section>
+        <section className={styles.message}>
+          <label>
+            Network
+          </label>
+          <div>
+            {chainLabel}
           </div>
         </section>
         {Object.keys(signatureRequest.metadata).length > 0 && <section className={styles.metadata}>

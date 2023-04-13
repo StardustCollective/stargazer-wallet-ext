@@ -2,6 +2,7 @@ import { StargazerChain } from './chains';
 import { AvailableMethods } from './availableMethods';
 import { AvailableEthereumChainMethods } from './methods/availableEthereumMethods';
 import { AvailablePolygonChainMethods } from './methods/availablePolygonMethods';
+import { AvailableBSCChainMethods } from './methods/availableBSCMethods';
 import { AvailableConstellationChainMethods } from './methods/availableConstellationMethods';
 
 type AvailableChainMethod = {
@@ -17,6 +18,9 @@ const AvailableChainMethods: AvailableChainMethod[] = [
 
   /* Polygon */
   ...AvailablePolygonChainMethods,
+
+  /* BSC */
+  ...AvailableBSCChainMethods,
 
   /* Constellation */
   ...AvailableConstellationChainMethods

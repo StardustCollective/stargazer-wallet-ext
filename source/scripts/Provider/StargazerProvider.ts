@@ -300,6 +300,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         deviceId,
         bipIndex,
         chain: StargazerChain.CONSTELLATION,
+        chainLabel: 'Constellation'
       };
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(

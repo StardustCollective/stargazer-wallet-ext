@@ -31,6 +31,7 @@ import {
 import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
 import { getChainId, getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { ALL_EVM_CHAINS } from 'constants/index';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -75,6 +76,12 @@ export class EVMProvider implements IRpcChainRequestHandler {
           id: StargazerChain.POLYGON,
           label: 'Polygon',
           token: 'MATIC',
+        };
+      case StargazerChain.BSC:
+        return {
+          id: StargazerChain.BSC,
+          label: 'BSC',
+          token: 'BNB',
         };
     
       default:
@@ -333,6 +340,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
       const signatureRequestEncoded = this.normalizeSignatureRequest(data);
 
+      const chainLabel = Object.values(ALL_EVM_CHAINS).find((chain: any) => chain.chainId === this.getChainId())?.label;
+
       const signatureData = {
         origin: dappProvider.origin,
         asset: this.getNetworkToken(),
@@ -341,6 +350,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         walletLabel: activeWallet.label,
         publicKey: '',
         chain: this.getNetworkId(),
+        chainLabel
       };
 
       // If the type of account is Ledger send back the public key so the
