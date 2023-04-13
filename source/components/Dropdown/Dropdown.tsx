@@ -57,9 +57,9 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
       </div>
       <div>
         {isOpen ? (
-            <img src={`/${ArrowUpIcon}`} className={styles.arrowIcon} />
+            <img src={`/${ArrowUpIcon}`} />
           ) : (
-            <img src={`/${ArrowDownIcon}`} className={styles.arrowIcon} />
+            <img src={`/${ArrowDownIcon}`} />
         )}
       </div>
       {isOpen && (
