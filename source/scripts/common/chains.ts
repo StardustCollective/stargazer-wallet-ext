@@ -5,6 +5,7 @@ enum StargazerChain {
   ETHEREUM = 'ethereum',
   POLYGON = 'polygon',
   BSC = 'bsc',
+  AVALANCHE = 'avalanche',
 }
 
 const ASSET_ID: { [chain: string]: string } = {
@@ -12,6 +13,7 @@ const ASSET_ID: { [chain: string]: string } = {
   [StargazerChain.ETHEREUM]: AssetType.Ethereum,
   [StargazerChain.POLYGON]: AssetType.Polygon,
   [StargazerChain.BSC]: AssetType.BSC,
+  [StargazerChain.AVALANCHE]: AssetType.Avalanche,
 }
 
 export { StargazerChain, ASSET_ID };

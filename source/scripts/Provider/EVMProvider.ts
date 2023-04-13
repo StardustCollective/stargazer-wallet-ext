@@ -83,6 +83,12 @@ export class EVMProvider implements IRpcChainRequestHandler {
           label: 'BSC',
           token: 'BNB',
         };
+      case StargazerChain.AVALANCHE:
+        return {
+          id: StargazerChain.AVALANCHE,
+          label: 'Avalanche',
+          token: 'AVAX',
+        };
     
       default:
         return {

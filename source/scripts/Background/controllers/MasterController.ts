@@ -3,6 +3,7 @@ import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
 import { EthereumProvider } from 'scripts/Provider/EthereumProvider';
 import { PolygonProvider } from 'scripts/Provider/PolygonProvider';
 import { BinanceSmartChainProvider } from 'scripts/Provider/BinanceSmartChainProvider';
+import { AvalancheProvider } from 'scripts/Provider/AvalancheProvider';
 import WalletController from './WalletController';
 import { IWalletController } from './IWalletController';
 import ControllerUtils, { IControllerUtils } from './ControllerUtils';
@@ -17,6 +18,7 @@ class MasterController {
   #ethereumProvider: EthereumProvider;
   #polygonProvider: PolygonProvider;
   #bscProvider: BinanceSmartChainProvider;
+  #avalancheProvider: AvalancheProvider;
   #wallet: IWalletController;
   #dapp: DAppController;
   #dappRegistry: DappRegistry;
@@ -28,6 +30,7 @@ class MasterController {
     this.#ethereumProvider = new EthereumProvider();
     this.#polygonProvider = new PolygonProvider();
     this.#bscProvider = new BinanceSmartChainProvider();
+    this.#avalancheProvider = new AvalancheProvider();
     this.#wallet = WalletController;
     this.#dapp = new DAppController();
     this.#dappRegistry = new DappRegistry()
@@ -52,6 +55,10 @@ class MasterController {
 
   get bscProvider() {
     return this.#bscProvider;
+  }
+
+  get avalancheProvider() {
+    return this.#avalancheProvider;
   }
 
   get wallet() {

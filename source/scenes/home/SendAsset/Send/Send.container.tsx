@@ -264,6 +264,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         [AssetType.Ethereum]: StargazerChain.ETHEREUM,
         [AssetType.Polygon]: StargazerChain.POLYGON,
         [AssetType.BSC]: StargazerChain.BSC,
+        [AssetType.Avalanche]: StargazerChain.AVALANCHE,
       }
       if (!!activeAsset?.id) {
         params.set('chain', CHAINS[activeAsset.id]);

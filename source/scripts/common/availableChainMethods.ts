@@ -3,6 +3,7 @@ import { AvailableMethods } from './availableMethods';
 import { AvailableEthereumChainMethods } from './methods/availableEthereumMethods';
 import { AvailablePolygonChainMethods } from './methods/availablePolygonMethods';
 import { AvailableBSCChainMethods } from './methods/availableBSCMethods';
+import { AvailableAvalancheChainMethods } from './methods/availableAvalancheMethods';
 import { AvailableConstellationChainMethods } from './methods/availableConstellationMethods';
 
 type AvailableChainMethod = {
@@ -21,6 +22,9 @@ const AvailableChainMethods: AvailableChainMethod[] = [
 
   /* BSC */
   ...AvailableBSCChainMethods,
+
+  /* Avalanche */
+  ...AvailableAvalancheChainMethods,
 
   /* Constellation */
   ...AvailableConstellationChainMethods
