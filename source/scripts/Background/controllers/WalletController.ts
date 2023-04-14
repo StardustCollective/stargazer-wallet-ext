@@ -12,7 +12,7 @@ import {
   addCustomNetwork
 } from 'state/vault';
 import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types'
-import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
+import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
@@ -373,21 +373,45 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.ETHEREUM,
           AvailableEvents.chainChanged,
-          [ETH_NETWORK[chainId].chainId.toString(16)]
+          [ETH_NETWORK[chainId].chainId]
         );
       }
     }
     // 349: New network should be added here.
     if (network === 'Avalanche') {
       this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
+      if (!isNative) {
+        getDappRegistry().sendOriginChainEvent(
+          '*',
+          StargazerChain.AVALANCHE,
+          AvailableEvents.chainChanged,
+          [AVALANCHE_NETWORK[chainId].chainId]
+        );
+      }
     }
     
     if (network === 'BSC') {
       this.account.networkController.switchBSCChain(chainId as BSCChainId);
+      if (!isNative) {
+        getDappRegistry().sendOriginChainEvent(
+          '*',
+          StargazerChain.BSC,
+          AvailableEvents.chainChanged,
+          [BSC_NETWORK[chainId].chainId]
+        );
+      }
     }
 
     if (network === 'Polygon') {
       this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
+      if (!isNative) {
+        getDappRegistry().sendOriginChainEvent(
+          '*',
+          StargazerChain.POLYGON,
+          AvailableEvents.chainChanged,
+          [POLYGON_NETWORK[chainId].chainId]
+        );
+      }
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
