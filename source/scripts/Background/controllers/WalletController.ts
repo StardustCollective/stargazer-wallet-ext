@@ -361,7 +361,7 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.CONSTELLATION,
           AvailableEvents.chainChanged,
-          [DAG_NETWORK[chainId].chainId]
+          [`0x${DAG_NETWORK[chainId].chainId.toString(16)}`]
         );
       }
     }
@@ -373,7 +373,7 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.ETHEREUM,
           AvailableEvents.chainChanged,
-          [ETH_NETWORK[chainId].chainId]
+          [`0x${ETH_NETWORK[chainId].chainId.toString(16)}`]
         );
       }
     }
@@ -385,7 +385,7 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.AVALANCHE,
           AvailableEvents.chainChanged,
-          [AVALANCHE_NETWORK[chainId].chainId]
+          [`0x${AVALANCHE_NETWORK[chainId].chainId.toString(16)}`]
         );
       }
     }
@@ -397,7 +397,7 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.BSC,
           AvailableEvents.chainChanged,
-          [BSC_NETWORK[chainId].chainId]
+          [`0x${BSC_NETWORK[chainId].chainId.toString(16)}`]
         );
       }
     }
@@ -409,7 +409,7 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.POLYGON,
           AvailableEvents.chainChanged,
-          [POLYGON_NETWORK[chainId].chainId]
+          [`0x${POLYGON_NETWORK[chainId].chainId.toString(16)}`]
         );
       }
     }

@@ -28,7 +28,7 @@ const handleRpcRequest: DappProviderExternalImplementation<'onRpcRequest', []> =
   }
 
   const chain = dappProvider.getChainProviderDataByPort(port).chain;
-  const chainProvider = CHAIN_PROVIDERS[chain] || null;
+  const chainProvider = CHAIN_PROVIDERS[chain] ?? null;
 
   if (!chainProvider) {
     throw new Error('Unable to find provider for request');

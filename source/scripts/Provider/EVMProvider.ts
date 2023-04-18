@@ -47,15 +47,11 @@ type NetworkInfo = {
   token: string;
 }
 
-export class EVMProvider implements IRpcChainRequestHandler {
+export abstract class EVMProvider implements IRpcChainRequestHandler {
 
   #network: NetworkInfo;
 
   constructor(network: string) {
-    if (this.constructor === EVMProvider) {
-      throw new Error("Abstract classes can't be instantiated.");
-    }
-    
     this.#network = this.initNetworkInfo(network);
   }
 
@@ -187,10 +183,6 @@ export class EVMProvider implements IRpcChainRequestHandler {
       activeAddress?.address,
       ...ethAddresses.filter((address) => address !== activeAddress?.address),
     ].filter(Boolean); // if no active address, remove
-  }
-
-  getBlockNumber() {
-    return 1;
   }
 
   getBalance() {
@@ -519,6 +511,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
         console.log('EVMProvider:eth_sendTransaction', e);
       }
 
+      const chainLabel = Object.values(ALL_EVM_CHAINS).find((chain: any) => chain.chainId === this.getChainId())?.label;
+
       if (decodedContractCall?.method === 'approve') {
         eventType = 'spendApproved';
         route = 'approveSpend';
@@ -531,7 +525,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
         route,
         { 
           ...trxData,
-          chain: this.getNetworkId()
+          chain: this.getNetworkId(),
+          chainLabel
         }
       );
 

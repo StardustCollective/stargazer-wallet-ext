@@ -28,7 +28,7 @@ import PurpleSlider from 'components/PurpleSlider';
 // Common Layouts
 /////////////////////
 
-import CardLayout from 'scenes/external/Layouts/CardLayout';
+import CardLayoutV2 from 'scenes/external/Layouts/CardLayoutV2';
 
 ///////////////////////
 // Hooks
@@ -63,14 +63,16 @@ const ApproveSpend = () => {
   /////////////////////
 
   const controller = useController();
+  const current = controller.dapp.getCurrent();
+  const origin = current && current.origin;
   const showAlert = usePlatformAlert();
   const vaultActiveAsset = useSelector(walletsSelectors.getActiveAsset)
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { to, from, gas, data, chain } = JSON.parse(stringData as string);
+  const { to, from, gas, data, chain, chainLabel } = JSON.parse(stringData as string);
 
-  let asset: IAssetInfoState = useSelector((state: RootState) =>
+  let asset = useSelector((state: RootState) =>
     find(state.assets, { address: to })
   ) as IAssetInfoState;
 
@@ -106,7 +108,7 @@ const ApproveSpend = () => {
     gas,
   });
 
-  const getFiatAmount = useFiat(true, asset);
+  const getFiatAmount = useFiat();
 
   useEffect(() => {
     if (gas) {
@@ -182,15 +184,37 @@ const ApproveSpend = () => {
     estimateGasFee(value as number);
   };
 
+  const renderHeaderInfo = () => {
+
+    if (!origin || !chainLabel) return null;
+
+    return (
+      <div className={styles.headerContainer}>
+        {!!origin && (
+          <div className={styles.row}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoTitle}>URL</TextV3.CaptionStrong>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoValue}>{origin}</TextV3.CaptionRegular>
+          </div>
+        )}
+        {!!chainLabel && (
+          <div className={styles.row}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoTitle}>Chain</TextV3.CaptionStrong>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE}>{chainLabel}</TextV3.CaptionRegular>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   //////////////////////
   // Renders
   /////////////////////
 
   return (
-    <CardLayout
+    <CardLayoutV2
       stepLabel={``}
-      originDescriptionLabel={'Grant permissions to:'}
       headerLabel={'Grant Permissions'}
+      headerInfo={renderHeaderInfo()}
       captionLabel={''}
       negativeButtonLabel={'Reject'}
       onNegativeButtonClick={onNegativeButtonClick}
@@ -229,7 +253,7 @@ const ApproveSpend = () => {
               <div className={styles.sliderLabel}>
                 <div>
                   <span>
-                    {FEE_STRING} {getFiatAmount(gasFee, 2, 'ethereum')}
+                    {FEE_STRING} {getFiatAmount(gasFee, 4)}
                   </span>
                 </div>
                 <div>
@@ -242,7 +266,7 @@ const ApproveSpend = () => {
           </div>
         </div>
       </div>
-    </CardLayout>
+    </CardLayoutV2>
   );
 };
 
