@@ -17,6 +17,22 @@ import {
 
 export const STORE_PORT = 'STARGAZER';
 
+export const CONSTELLATION_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
+export const ETHEREUM_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
+export const ETHEREUM_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
+export const AVALANCHE_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-default-logo.png';
+export const BSC_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
+export const POLYGON_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-default-logo.png';
+export const AVALANCHE_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png';
+export const BSC_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
+export const POLYGON_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png';
+export const LATTICE_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/lattice-logo.png';
+export const VE_LTX_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ve-ltx-logo.png';
+export const ALKIMI_LOGO = 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
+export const DODI_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png';
+export const GEOJAM_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png';
+export const SIMPLEX_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
+
 export const DAG_NETWORK: {
   [networkId: string]: {
     id: string;
@@ -25,6 +41,8 @@ export const DAG_NETWORK: {
     testnet: boolean;
     explorer: string;
     chainId: number;
+    logo: string;
+    network: string;
     config: {
       beUrl: string;  // 1.0 and 2.0
       lbUrl?: string; // 1.0
@@ -40,6 +58,8 @@ export const DAG_NETWORK: {
     testnet: false,
     explorer: 'https://mainnet.dagexplorer.io',
     chainId: 1,
+    logo: CONSTELLATION_LOGO,
+    network: 'Constellation',
     config: {
       beUrl: 'https://be-mainnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',
@@ -53,6 +73,8 @@ export const DAG_NETWORK: {
     testnet: true,
     explorer: 'https://testnet.dagexplorer.io',
     chainId: 3,
+    logo: CONSTELLATION_LOGO,
+    network: 'Constellation',
     config: {
       beUrl: 'https://be-testnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-testnet.constellationnetwork.io',
@@ -73,6 +95,7 @@ export const ETH_NETWORK: {
     nativeToken: string;
     mainnet: string;
     network: string;
+    logo: string;
   };
 } = {
   mainnet: {
@@ -86,6 +109,7 @@ export const ETH_NETWORK: {
     nativeToken: 'ETH',
     mainnet: 'mainnet',
     network: 'Ethereum',
+    logo: ETHEREUM_LOGO,
   },
   goerli: {
     id: 'goerli',
@@ -98,6 +122,7 @@ export const ETH_NETWORK: {
     nativeToken: 'ETH',
     mainnet: 'mainnet',
     network: 'Ethereum',
+    logo: ETHEREUM_LOGO,
   },
 };
 
@@ -113,6 +138,7 @@ export const AVALANCHE_NETWORK: {
     nativeToken: string;
     mainnet: string;
     network: string;
+    logo: string;
   };
 } = {
   ['avalanche-mainnet']: {
@@ -126,6 +152,7 @@ export const AVALANCHE_NETWORK: {
     nativeToken: 'AVAX',
     mainnet: 'avalanche-mainnet',
     network: 'Avalanche',
+    logo: AVALANCHE_LOGO,
   },
   ['avalanche-testnet']: {
     id: 'avalanche-testnet',
@@ -138,6 +165,7 @@ export const AVALANCHE_NETWORK: {
     nativeToken: 'AVAX',
     mainnet: 'avalanche-mainnet',
     network: 'Avalanche',
+    logo: AVALANCHE_LOGO,
   },
 };
 
@@ -153,6 +181,7 @@ export const BSC_NETWORK: {
     nativeToken: string;
     mainnet: string;
     network: string;
+    logo: string;
   };
 } = {
   bsc: {
@@ -166,6 +195,7 @@ export const BSC_NETWORK: {
     nativeToken: 'BNB',
     mainnet: 'bsc',
     network: 'BSC',
+    logo: BSC_LOGO,
   },
   ['bsc-testnet']: {
     id: 'bsc-testnet',
@@ -178,6 +208,7 @@ export const BSC_NETWORK: {
     nativeToken: 'BNB',
     mainnet: 'bsc',
     network: 'BSC',
+    logo: BSC_LOGO,
   },
 };
 
@@ -193,6 +224,7 @@ export const POLYGON_NETWORK: {
     nativeToken: string;
     mainnet: string;
     network: string;
+    logo: string;
   };
 } = {
   matic: {
@@ -206,6 +238,7 @@ export const POLYGON_NETWORK: {
     nativeToken: 'MATIC',
     mainnet: 'matic',
     network: 'Polygon',
+    logo: POLYGON_LOGO,
   },
   maticmum: {
     id: 'maticmum',
@@ -218,8 +251,27 @@ export const POLYGON_NETWORK: {
     nativeToken: 'MATIC',
     mainnet: 'matic',
     network: 'Polygon',
+    logo: POLYGON_LOGO,
   },
 };
+
+export const ALL_MAINNET_CHAINS = [
+  DAG_NETWORK.main2,
+  ETH_NETWORK.mainnet,
+  AVALANCHE_NETWORK['avalanche-mainnet'],
+  BSC_NETWORK.bsc,
+  POLYGON_NETWORK.matic,
+];
+
+export const ALL_TESTNETS_CHAINS = [
+  DAG_NETWORK.test2,
+  ETH_NETWORK.goerli,
+  AVALANCHE_NETWORK['avalanche-testnet'],
+  BSC_NETWORK['bsc-testnet'],
+  POLYGON_NETWORK.maticmum,
+];
+
+export const ALL_CHAINS = [...ALL_MAINNET_CHAINS, ...ALL_TESTNETS_CHAINS];
 
 export const ALL_EVM_CHAINS = {
   ...ETH_NETWORK,
@@ -240,22 +292,6 @@ export const SEARCH_API =
 export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
 export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
-
-export const CONSTELLATION_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
-export const ETHEREUM_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
-export const ETHEREUM_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
-export const AVALANCHE_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-default-logo.png';
-export const BSC_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
-export const POLYGON_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-default-logo.png';
-export const AVALANCHE_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png';
-export const BSC_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
-export const POLYGON_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png';
-export const LATTICE_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/lattice-logo.png';
-export const VE_LTX_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ve-ltx-logo.png';
-export const ALKIMI_LOGO = 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
-export const DODI_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png';
-export const GEOJAM_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png';
-export const SIMPLEX_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
 
 export const PRICE_DAG_ID = 'constellation-labs';
 export const PRICE_BTC_ID = 'bitcoin';

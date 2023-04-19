@@ -1,3 +1,4 @@
+import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
 import { IBalanceObject } from 'hooks/usePrice';
 import { IWalletState } from 'state/vault/types';
 
@@ -11,10 +12,14 @@ export interface Asset {
 }
 
 export interface IHome {
+  navigation: any;
+  route: any;
   activeWallet: IWalletState;
   balanceObject: IBalanceObject;
-  balance: string;
   isDagOnlyWallet: boolean;
+  multiChainWallets: KeyringWalletState[];
+  privateKeyWallets: KeyringWalletState[];
+  currentNetwork: string;
   onBuyPressed: () => void;
   onSwapPressed: () => void;
 }

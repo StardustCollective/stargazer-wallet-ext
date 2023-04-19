@@ -9,7 +9,8 @@ import {
   addLedgerWallet, 
   updateWallets, 
   addBitfiWallet, 
-  addCustomNetwork
+  addCustomNetwork,
+  changeCurrentNetwork
 } from 'state/vault';
 import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types'
 import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
@@ -426,6 +427,10 @@ class WalletController implements IWalletController {
 
     // restart monitor with different network
     await this.account.assetsBalanceMonitor.start();
+  }
+
+  async switchActiveNetwork(chainId: string) {
+    store.dispatch(changeCurrentNetwork(chainId));
   }
 
   async addNetwork(network: string, data: any) {

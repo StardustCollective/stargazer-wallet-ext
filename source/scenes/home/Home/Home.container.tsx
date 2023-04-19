@@ -2,7 +2,7 @@
 // Imports
 ///////////////////////////
 
-import React, { FC, useLayoutEffect, useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -11,7 +11,6 @@ import { useLinkTo } from '@react-navigation/native';
 ///////////////////////////
 
 import Container from 'components/Container';
-import homeHeader from 'navigation/headers/home';
 
 ///////////////////////////
 // Hooks
@@ -34,7 +33,7 @@ import IVaultState from 'state/vault/types';
 import IProvidersState from 'state/providers/types';
 import { getAccountController } from 'utils/controllersUtils';
 import { AssetType } from 'state/vault/types';
-import { truncateString } from 'scenes/home/helpers';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IHome {
   navigation: any,
@@ -51,13 +50,19 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   // Hooks
   ///////////////////////////
 
-  const [balanceObject, balance] = useTotalBalance();
+  const [balanceObject] = useTotalBalance();
 
   const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
-  const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { activeWallet, wallets, currentNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const linkTo = useLinkTo();
   const accountController = getAccountController();
   const isDagOnlyWallet = (activeWallet?.assets?.length === 1 && activeWallet?.assets[0]?.type === AssetType.Constellation);
+  const multiChainWallets = wallets.local.filter(
+    (w) => w.type === KeyringWalletType.MultiChainWallet
+  );
+  const privateKeyWallets = wallets.local.filter(
+    (w) => w.type === KeyringWalletType.SingleAccountWallet
+  );
 
   useEffect(() => {
     const getAssets = async () => {
@@ -68,14 +73,6 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
       getAssets();
     }
   }, []);
-
-  // Sets the header for the home screen.
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      ...homeHeader({ navigation, route }),
-      title: activeWallet ? truncateString(activeWallet.label) : "",
-    });
-  }, [activeWallet]);
 
   const onBuyPressed = () => {
     linkTo('/buyList');
@@ -92,12 +89,16 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   return (
     <Container safeArea={false}>
       <Home
+        navigation={navigation}
+        route={route}
         activeWallet={activeWallet}
         balanceObject={balanceObject}
-        balance={balance}
         onBuyPressed={onBuyPressed}
         onSwapPressed={onSwapPressed}
         isDagOnlyWallet={isDagOnlyWallet}
+        multiChainWallets={multiChainWallets}
+        privateKeyWallets={privateKeyWallets}
+        currentNetwork={currentNetwork}
       />
     </Container>
   );
