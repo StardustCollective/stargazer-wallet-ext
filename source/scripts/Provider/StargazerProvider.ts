@@ -63,6 +63,12 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     return stargazerAsset && stargazerAsset.address;
   }
 
+  private updateActiveNetwork() {
+    const controller = useController();
+    const activeNetwork = this.getNetwork();
+    controller.wallet.switchActiveNetwork(activeNetwork);
+  }
+
   getPublicKey() {
     const { dapp, vault } = store.getState();
     const { whitelist }: IDAppState = dapp;
@@ -322,6 +328,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
+      this.updateActiveNetwork();
       return signatureEvent.detail.signature.hex;
     }
 
@@ -433,6 +440,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
+      this.updateActiveNetwork();
       return sentTransactionEvent.detail.result;
     }
 

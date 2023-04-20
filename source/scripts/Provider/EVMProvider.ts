@@ -128,6 +128,12 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
     return hash.startsWith('0x') ? hash : `0x${hash}`;
   }
 
+  private updateActiveNetwork() {
+    const controller = useController();
+    const activeNetwork = this.getNetwork();
+    controller.wallet.switchActiveNetwork(activeNetwork);
+  }
+
   //////////////////////
   // Public methods
   //////////////////////
@@ -381,6 +387,7 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
+      this.updateActiveNetwork();
       return signatureEvent.detail.signature.hex;
     }
 
@@ -492,6 +499,7 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
 
       const signature = this.signTypedData(data.domain, data.types, data.message);
 
+      this.updateActiveNetwork();
       return signature;
     }
 
@@ -542,6 +550,7 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
+      this.updateActiveNetwork();
       return event.detail.result;
     }
 
