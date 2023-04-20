@@ -12,11 +12,12 @@ import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import { RootState } from 'state/store';
 import { IAssetInfoState } from 'state/assets/types';
-import { IAssetState } from 'state/vault/types';
+import { AssetType, IAssetState } from 'state/vault/types';
 import { ITransactionInfo } from '../../../scripts/types';
-import { ASSET_ID, isError } from '../../../scripts/common';
+import { isError, StargazerChain } from '../../../scripts/common';
 import { usePlatformAlert } from 'utils/alertUtil';
 import walletsSelectors from 'selectors/walletsSelectors';
+import { CHAIN_FULL_ASSET, CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
 
 ///////////////////////
 // Components
@@ -77,19 +78,28 @@ const ApproveSpend = () => {
   ) as IAssetInfoState;
 
   if (!asset) {
-    // Filter asset by chain id
-    asset = useSelector((state: RootState) =>
-      find(state.assets, { id: ASSET_ID[chain]})
-    ) as IAssetInfoState;
+    if (!!chain) {
+      asset = CHAIN_FULL_ASSET[chain as StargazerChain];
+      let activeAsset: IAssetState;
 
-    // Get active asset
-    const activeAsset = useSelector((state: RootState) =>
-      find(state.vault.activeWallet.assets, { id: ASSET_ID[chain]})
-    ) as IAssetState;
+      if (chain === StargazerChain.CONSTELLATION) {
+        activeAsset = useSelector((state: RootState) =>
+          find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
+        );
+      } else {
+        activeAsset = useSelector((state: RootState) =>
+          find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
+        );
+        activeAsset = {
+          ...activeAsset,
+          ...CHAIN_WALLET_ASSET[chain as keyof typeof CHAIN_WALLET_ASSET]
+        }
+      }
 
-    if (activeAsset.id !== vaultActiveAsset.id) {
-      // Update active asset in order to get expected gas prices
-      controller.wallet.account.updateAccountActiveAsset(activeAsset);
+      if (activeAsset.id !== vaultActiveAsset.id) {
+        // Update active asset in order to get expected gas prices
+        controller.wallet.account.updateAccountActiveAsset(activeAsset);
+      }
     }
   }
 
@@ -108,7 +118,7 @@ const ApproveSpend = () => {
     gas,
   });
 
-  const getFiatAmount = useFiat();
+  const getFiatAmount = useFiat(true, asset);
 
   useEffect(() => {
     if (gas) {

@@ -26,6 +26,7 @@ import { checkOneDecimalPoint, getChangeAmount } from 'utils/sendUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { cancelEvent } from 'utils/backgroundUtils';
 import { removeEthereumPrefix } from 'utils/addressUtil';
+import { CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
 
 ///////////////////////////
 // Types
@@ -61,7 +62,8 @@ import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChai
 ///////////////////////////
 
 import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO, BSC_LOGO, DAG_NETWORK } from 'constants/index';
-import { ASSET_ID, StargazerChain } from 'scripts/common';
+import { StargazerChain } from 'scripts/common';
+import { initialState as initialStateAssets } from 'state/assets';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -142,9 +144,20 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
     if (!activeAsset) {
       if (!!chain) {
-        activeAsset = useSelector((state: RootState) =>
-          find(state.vault.activeWallet.assets, { id: ASSET_ID[chain] })
-        );
+        if (chain === StargazerChain.CONSTELLATION) {
+          activeAsset = useSelector((state: RootState) =>
+            find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
+          );
+        } else {
+          activeAsset = useSelector((state: RootState) =>
+            find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
+          );
+
+          activeAsset = {
+            ...activeAsset,
+            ...CHAIN_WALLET_ASSET[chain as keyof typeof CHAIN_WALLET_ASSET]
+          }
+        }
       } else {
         // Set ETH as the default activeAsset
         activeAsset = useSelector((state: RootState) =>
@@ -163,7 +176,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       accountController.updateAccountActiveAsset(activeAsset);
     }
 
-    assetInfo = assets[activeAsset.id];
+    assetInfo = assets[activeAsset.id] || initialStateAssets[activeAsset.id];
 
     from = activeAsset.address;
   } else {
@@ -452,7 +465,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     labelRight: tokenChainLabel,
   }
 
-  const assetNetwork = assets[activeAsset?.id]?.network;
+  const assetNetwork = assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
   const nativeToken = getNativeToken(assetNetwork);
   const basePriceId = getPriceId(assetNetwork);
 

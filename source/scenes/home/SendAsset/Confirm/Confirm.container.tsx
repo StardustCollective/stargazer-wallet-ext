@@ -44,8 +44,9 @@ import { useFiat } from 'hooks/usePrice';
 import { getNativeToken, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
-import { ASSET_ID, isError } from 'scripts/common';
+import { isError } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
+import { CHAIN_FULL_ASSET } from 'utils/assetsUtil';
 
 ///////////////////////////
 // Selectors
@@ -63,6 +64,7 @@ import Confirm from './Confirm';
 // Constants
 ///////////////////////////
 
+import { initialState as initialStateAssets } from 'state/assets';
 const BITFI_PAGE  = "bitfi";
 const LEDGER_PAGE = "ledger";
 
@@ -112,10 +114,7 @@ const ConfirmContainer = () => {
 
     if (!activeAsset) {
       if (!!chain) {
-        activeAsset = useSelector(
-          (state: RootState) => find(state.assets, { id: ASSET_ID[chain as string] })
-        );
-
+        activeAsset = CHAIN_FULL_ASSET[chain as keyof typeof CHAIN_FULL_ASSET];
       } else {
         // Set ETH as the default activeAsset if 'chain' is not provided
         activeAsset = useSelector(
@@ -130,7 +129,7 @@ const ConfirmContainer = () => {
     }
 
     activeWallet = vault.activeWallet;
-    assetInfo = assets[activeAsset.id];
+    assetInfo = assets[activeAsset.id] || initialStateAssets[activeAsset.id];
 
     history = useHistory();
 
@@ -149,7 +148,7 @@ const ConfirmContainer = () => {
 
   const getFiatAmount = useFiat(false, assetInfo);
 
-  const assetNetwork = assets[activeAsset?.id]?.network;
+  const assetNetwork = assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
   const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
 
   const tempTx = accountController.getTempTx();
