@@ -3,8 +3,10 @@
 ///////////////////////////
 
 import React, { FC, useEffect, useState, useLayoutEffect } from 'react';
-import { View, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ActivityIndicator, ScrollView, TouchableOpacity, AppState } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import { useLinkTo } from '@react-navigation/native';
+import BackgroundTimer from 'react-native-background-timer';
 
 ///////////////////////////
 // Components
@@ -53,6 +55,7 @@ import { ALL_MAINNET_CHAINS, ALL_TESTNETS_CHAINS, ALL_CHAINS } from 'constants/i
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
+const LOGOUT_TIMEOUT = 1000 * 60 * 5; // 5 minutes
 const ICON_SIZE = 14;
 let lastIsConnected: boolean = true;
 
@@ -78,6 +81,7 @@ const Home: FC<IHome> = ({
 
   const accountController = getAccountController();
   const walletController = getWalletController();
+  const linkTo = useLinkTo();
 
   const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
     setIsWalletSelectorOpen(false);
@@ -124,6 +128,32 @@ const Home: FC<IHome> = ({
       unsubscribeNetInfo();
     }
   }, []);
+
+  useEffect(() => {
+    // Start timer when app is in background (or inactive for iOS)
+    if (['background', 'inactive'].includes(AppState.currentState)) {
+      BackgroundTimer.runBackgroundTimer(async () => {
+        // Check if the app is still in background
+        if (AppState.currentState === 'background') {
+          // Check if the user is logged in
+          const isLoggedIn = await walletController.isUnlocked();
+          if (isLoggedIn) {
+            // Logout the user and navigate to the log in screen
+            await walletController.logOut();
+            linkTo('/authRoot');
+          }
+        } 
+
+        // Reset the timer
+        BackgroundTimer.stopBackgroundTimer();
+      }, LOGOUT_TIMEOUT); // 5 minutes
+    }
+
+    // Timer should be resetted when app is in foreground
+    if (AppState.currentState === 'active') {
+      BackgroundTimer.stopBackgroundTimer();
+    }
+  }, [AppState.currentState]);
 
   const networkTitle = ALL_MAINNET_CHAINS?.find((chain) => chain.id === currentNetwork)?.network || ALL_TESTNETS_CHAINS?.find((chain) => chain.id === currentNetwork)?.label;
   const networkLogo = ALL_CHAINS.find((chain) => chain.id === currentNetwork)?.logo;
