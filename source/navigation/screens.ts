@@ -15,6 +15,17 @@ export default {
   },
 
   ////////////////////////////
+  // Tabs
+  ////////////////////////////
+
+  tabs: {
+    root: 'tabs-root',
+    home: 'tabs-home',
+    browser: 'tabs-browser',
+    settings: 'tabs-settings',
+  },
+
+  ////////////////////////////
   // Authorized
   ////////////////////////////
 
@@ -31,6 +42,7 @@ export default {
     buyList: 'auth-buyList',
     buyAsset: 'auth-buyAsset',
     singleSelect: 'auth-singleSelect',
+    browser: 'auth-browser',
   },
   
   ////////////////////////////
