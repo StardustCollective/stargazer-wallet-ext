@@ -1,10 +1,10 @@
 import { EVMProvider } from './EVMProvider';
 import { StargazerChain } from '../common';
 
-export class EthereumProvider extends EVMProvider {
+export class AvalancheProvider extends EVMProvider {
 
   constructor() {
-    super(StargazerChain.ETHEREUM);
+    super(StargazerChain.AVALANCHE);
   }
   
 }

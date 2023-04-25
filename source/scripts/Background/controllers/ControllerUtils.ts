@@ -23,10 +23,22 @@ const ControllerUtils = (): IControllerUtils => {
     try {
       const { activeWallet }: IVaultState = store.getState().vault;
       const assets: IAssetListState = store.getState().assets;
-      const assetIds = activeWallet.assets
+      let assetIds = activeWallet.assets
         .filter(a => !!assets[a.id]?.priceId)
         .map(a => assets[a.id]?.priceId)
         .join(',');
+
+      // Always fetch price of BNB, MATIC and AVAX
+      if (!assetIds.includes('binancecoin')) {
+        assetIds = assetIds.concat(',binancecoin');
+      }
+      if (!assetIds.includes('avalanche-2')) {
+        assetIds = assetIds.concat(',avalanche-2');
+      }
+      if (!assetIds.includes('matic-network')) {
+        assetIds = assetIds.concat(',matic-network');
+      }
+      
       const data = await (
         await fetch(
           `${ASSET_PRICE_API}?ids=${assetIds},bitcoin&vs_currencies=${currency}&include_24hr_change=true&${COINGECKO_API_KEY_PARAM}`
