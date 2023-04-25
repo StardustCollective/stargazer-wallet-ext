@@ -6,6 +6,7 @@ import store from 'state/store';
 import { TxHistoryParams } from './ChainsController';
 import { getNetworkFromChainId } from './EVMChainController/utils';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { initialState as initialStateAssets } from 'state/assets';
 
 class NetworkController {
 
@@ -70,7 +71,7 @@ class NetworkController {
     const assets = store.getState().assets;
     const { activeAsset } = store.getState().vault;
     if (!activeAsset) throw new Error('No active asset');
-    const activeAssetInfo = assets[activeAsset.id];
+    const activeAssetInfo = assets[activeAsset.id] || initialStateAssets[activeAsset.id];
     const network = getNetworkFromChainId(activeAssetInfo.network);
     const networkToProvider = {
       [KeyringNetwork.Ethereum]: this.#ethereumNetwork,

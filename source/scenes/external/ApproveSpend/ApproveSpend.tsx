@@ -12,10 +12,12 @@ import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import { RootState } from 'state/store';
 import { IAssetInfoState } from 'state/assets/types';
-import { AssetType } from 'state/vault/types';
+import { AssetType, IAssetState } from 'state/vault/types';
 import { ITransactionInfo } from '../../../scripts/types';
-import { isError } from '../../../scripts/common';
-import { usePlatformAlert } from 'utils/alertUtil'
+import { isError, StargazerChain } from '../../../scripts/common';
+import { usePlatformAlert } from 'utils/alertUtil';
+import walletsSelectors from 'selectors/walletsSelectors';
+import { CHAIN_FULL_ASSET, CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
 
 ///////////////////////
 // Components
@@ -27,7 +29,7 @@ import PurpleSlider from 'components/PurpleSlider';
 // Common Layouts
 /////////////////////
 
-import CardLayout from 'scenes/external/Layouts/CardLayout';
+import CardLayoutV2 from 'scenes/external/Layouts/CardLayoutV2';
 
 ///////////////////////
 // Hooks
@@ -62,20 +64,43 @@ const ApproveSpend = () => {
   /////////////////////
 
   const controller = useController();
-  const showAlert = usePlatformAlert()
+  const current = controller.dapp.getCurrent();
+  const origin = current && current.origin;
+  const showAlert = usePlatformAlert();
+  const vaultActiveAsset = useSelector(walletsSelectors.getActiveAsset)
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { to, from, gas, data } = JSON.parse(stringData as string);
+  const { to, from, gas, data, chain, chainLabel } = JSON.parse(stringData as string);
 
   let asset = useSelector((state: RootState) =>
     find(state.assets, { address: to })
   ) as IAssetInfoState;
 
   if (!asset) {
-    asset = useSelector((state: RootState) =>
-      find(state.assets, { type: AssetType.Ethereum })
-    ) as IAssetInfoState;
+    if (!!chain) {
+      asset = CHAIN_FULL_ASSET[chain as StargazerChain];
+      let activeAsset: IAssetState;
+
+      if (chain === StargazerChain.CONSTELLATION) {
+        activeAsset = useSelector((state: RootState) =>
+          find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
+        );
+      } else {
+        activeAsset = useSelector((state: RootState) =>
+          find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
+        );
+        activeAsset = {
+          ...activeAsset,
+          ...CHAIN_WALLET_ASSET[chain as keyof typeof CHAIN_WALLET_ASSET]
+        }
+      }
+
+      if (activeAsset.id !== vaultActiveAsset.id) {
+        // Update active asset in order to get expected gas prices
+        controller.wallet.account.updateAccountActiveAsset(activeAsset);
+      }
+    }
   }
 
   let {
@@ -169,15 +194,37 @@ const ApproveSpend = () => {
     estimateGasFee(value as number);
   };
 
+  const renderHeaderInfo = () => {
+
+    if (!origin || !chainLabel) return null;
+
+    return (
+      <div className={styles.headerContainer}>
+        {!!origin && (
+          <div className={styles.row}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoTitle}>URL</TextV3.CaptionStrong>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoValue}>{origin}</TextV3.CaptionRegular>
+          </div>
+        )}
+        {!!chainLabel && (
+          <div className={styles.row}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoTitle}>Chain</TextV3.CaptionStrong>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE}>{chainLabel}</TextV3.CaptionRegular>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   //////////////////////
   // Renders
   /////////////////////
 
   return (
-    <CardLayout
+    <CardLayoutV2
       stepLabel={``}
-      originDescriptionLabel={'Grant permissions to:'}
       headerLabel={'Grant Permissions'}
+      headerInfo={renderHeaderInfo()}
       captionLabel={''}
       negativeButtonLabel={'Reject'}
       onNegativeButtonClick={onNegativeButtonClick}
@@ -216,7 +263,7 @@ const ApproveSpend = () => {
               <div className={styles.sliderLabel}>
                 <div>
                   <span>
-                    {FEE_STRING} {getFiatAmount(gasFee, 2, 'ethereum')}
+                    {FEE_STRING} {getFiatAmount(gasFee, 4)}
                   </span>
                 </div>
                 <div>
@@ -229,7 +276,7 @@ const ApproveSpend = () => {
           </div>
         </div>
       </div>
-    </CardLayout>
+    </CardLayoutV2>
   );
 };
 

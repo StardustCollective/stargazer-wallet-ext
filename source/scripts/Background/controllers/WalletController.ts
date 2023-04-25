@@ -9,10 +9,11 @@ import {
   addLedgerWallet, 
   updateWallets, 
   addBitfiWallet, 
-  addCustomNetwork
+  addCustomNetwork,
+  changeCurrentNetwork
 } from 'state/vault';
 import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types'
-import { DAG_NETWORK, ETH_NETWORK } from 'constants/index';
+import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
@@ -361,7 +362,7 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.CONSTELLATION,
           AvailableEvents.chainChanged,
-          [DAG_NETWORK[chainId].chainId]
+          [`0x${DAG_NETWORK[chainId].chainId.toString(16)}`]
         );
       }
     }
@@ -373,21 +374,45 @@ class WalletController implements IWalletController {
           '*',
           StargazerChain.ETHEREUM,
           AvailableEvents.chainChanged,
-          [ETH_NETWORK[chainId].chainId.toString(16)]
+          [`0x${ETH_NETWORK[chainId].chainId.toString(16)}`]
         );
       }
     }
     // 349: New network should be added here.
     if (network === 'Avalanche') {
       this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
+      if (!isNative) {
+        getDappRegistry().sendOriginChainEvent(
+          '*',
+          StargazerChain.AVALANCHE,
+          AvailableEvents.chainChanged,
+          [`0x${AVALANCHE_NETWORK[chainId].chainId.toString(16)}`]
+        );
+      }
     }
     
     if (network === 'BSC') {
       this.account.networkController.switchBSCChain(chainId as BSCChainId);
+      if (!isNative) {
+        getDappRegistry().sendOriginChainEvent(
+          '*',
+          StargazerChain.BSC,
+          AvailableEvents.chainChanged,
+          [`0x${BSC_NETWORK[chainId].chainId.toString(16)}`]
+        );
+      }
     }
 
     if (network === 'Polygon') {
       this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
+      if (!isNative) {
+        getDappRegistry().sendOriginChainEvent(
+          '*',
+          StargazerChain.POLYGON,
+          AvailableEvents.chainChanged,
+          [`0x${POLYGON_NETWORK[chainId].chainId.toString(16)}`]
+        );
+      }
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
@@ -402,6 +427,10 @@ class WalletController implements IWalletController {
 
     // restart monitor with different network
     await this.account.assetsBalanceMonitor.start();
+  }
+
+  async switchActiveNetwork(chainId: string) {
+    store.dispatch(changeCurrentNetwork(chainId));
   }
 
   async addNetwork(network: string, data: any) {
