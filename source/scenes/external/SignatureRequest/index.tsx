@@ -24,10 +24,7 @@ import styles from './index.module.scss';
 import walletsSelectors from 'selectors/walletsSelectors'
 import { StargazerProvider, StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
 import { StargazerChain } from 'scripts/common';
-import { EthereumProvider } from 'scripts/Provider/EthereumProvider';
-import { PolygonProvider } from 'scripts/Provider/PolygonProvider';
-import { BinanceSmartChainProvider } from 'scripts/Provider/BinanceSmartChainProvider';
-import { AvalancheProvider } from 'scripts/Provider/AvalancheProvider';
+import { EVMProvider } from 'scripts/Provider/EVMProvider';
 
 //////////////////////
 // Component
@@ -46,12 +43,9 @@ const SignatureRequest = () => {
   const { signatureRequestEncoded, asset, chain, chainLabel }:
     { signatureRequestEncoded: string, asset: string, chain: string, chainLabel: string } = JSON.parse(stringData as string);
   // TODO-349: Check how signature should work here
-  const PROVIDERS: { [chain: string]: StargazerProvider | EthereumProvider | PolygonProvider | BinanceSmartChainProvider | AvalancheProvider } = {
+  const PROVIDERS: { [chain: string]: StargazerProvider | EVMProvider } = {
     [StargazerChain.CONSTELLATION]: controller.stargazerProvider,
     [StargazerChain.ETHEREUM]: controller.ethereumProvider,
-    [StargazerChain.POLYGON]: controller.polygonProvider,
-    [StargazerChain.BSC]: controller.bscProvider,
-    [StargazerChain.AVALANCHE]: controller.avalancheProvider,
   }
   const provider = PROVIDERS[chain];
   const account = provider.getAssetByType(asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum);

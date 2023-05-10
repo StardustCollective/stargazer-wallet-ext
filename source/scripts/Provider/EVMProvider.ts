@@ -47,7 +47,7 @@ type NetworkInfo = {
   token: string;
 }
 
-export abstract class EVMProvider implements IRpcChainRequestHandler {
+export class EVMProvider implements IRpcChainRequestHandler {
 
   #network: NetworkInfo;
 
@@ -115,6 +115,10 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
       return controller.wallet.account.networkController.ethereumNetwork.getWallet();
     } else if (networkId === StargazerChain.POLYGON) {
       return controller.wallet.account.networkController.polygonNetwork.getWallet();
+    } else if (networkId === StargazerChain.BSC) {
+      return controller.wallet.account.networkController.bscNetwork.getWallet();
+    } else if (networkId === StargazerChain.AVALANCHE) {
+      return controller.wallet.account.networkController.avalancheNetwork.getWallet();
     }
 
     return controller.wallet.account.networkController.ethereumNetwork.getWallet();
@@ -128,15 +132,13 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
     return hash.startsWith('0x') ? hash : `0x${hash}`;
   }
 
-  private updateActiveNetwork() {
-    const controller = useController();
-    const activeNetwork = this.getNetwork();
-    controller.wallet.switchActiveNetwork(activeNetwork);
-  }
-
   //////////////////////
   // Public methods
   //////////////////////
+
+  switchProvider(network: string) {
+    this.#network = this.initNetworkInfo(network);
+  }
 
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
@@ -353,7 +355,7 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
         publicKey: '',
-        chain: this.getNetworkId(),
+        chain: StargazerChain.ETHEREUM,
         chainLabel
       };
 
@@ -387,7 +389,6 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
-      this.updateActiveNetwork();
       return signatureEvent.detail.signature.hex;
     }
 
@@ -499,16 +500,32 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
 
       const signature = this.signTypedData(data.domain, data.types, data.message);
 
-      this.updateActiveNetwork();
       return signature;
     }
 
     if (request.method === AvailableMethods.eth_sendTransaction) {
-      const [trxData] = request.params as [ethers.Transaction];
+      const [trxData] = request.params;
 
       let decodedContractCall: ContractInputData | null = null;
       let eventType: string = 'transactionSent';
       let route: string = 'sendTransaction';
+
+      // chainId should match the current active network if chainId property is provided.
+      if (!!trxData?.chainId) {
+        const chainId = this.getChainId();
+
+        if (typeof trxData.chainId === 'number') {
+          if (trxData.chainId !== chainId) {
+            throw new Error('chainId does not match the active network chainId');
+          }
+        }
+
+        if (typeof trxData.chainId === 'string') {
+          if (parseInt(trxData.chainId) !== chainId) {
+            throw new Error('chainId does not match the active network chainId');
+          }
+        }
+      }
 
       try {
         decodedContractCall =
@@ -550,7 +567,6 @@ export abstract class EVMProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
-      this.updateActiveNetwork();
       return event.detail.result;
     }
 

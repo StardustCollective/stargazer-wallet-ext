@@ -1,24 +1,18 @@
 import { browser, Windows } from 'webextension-polyfill-ts';
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
-import { EthereumProvider } from 'scripts/Provider/EthereumProvider';
-import { PolygonProvider } from 'scripts/Provider/PolygonProvider';
-import { BinanceSmartChainProvider } from 'scripts/Provider/BinanceSmartChainProvider';
-import { AvalancheProvider } from 'scripts/Provider/AvalancheProvider';
 import WalletController from './WalletController';
 import { IWalletController } from './IWalletController';
 import ControllerUtils, { IControllerUtils } from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
 import MigrationController from './MigrationController';
-
 import { DAppController } from './DAppController';
 import { DappRegistry } from '../dappRegistry';
+import { EVMProvider } from 'scripts/Provider/EVMProvider';
+import { StargazerChain } from 'scripts/common';
 
 class MasterController {
   #stargazerProvider: StargazerProvider;
-  #ethereumProvider: EthereumProvider;
-  #polygonProvider: PolygonProvider;
-  #bscProvider: BinanceSmartChainProvider;
-  #avalancheProvider: AvalancheProvider;
+  #ethereumProvider: EVMProvider;
   #wallet: IWalletController;
   #dapp: DAppController;
   #dappRegistry: DappRegistry;
@@ -27,10 +21,7 @@ class MasterController {
 
   constructor() {
     this.#stargazerProvider = new StargazerProvider();
-    this.#ethereumProvider = new EthereumProvider();
-    this.#polygonProvider = new PolygonProvider();
-    this.#bscProvider = new BinanceSmartChainProvider();
-    this.#avalancheProvider = new AvalancheProvider();
+    this.#ethereumProvider = new EVMProvider(StargazerChain.ETHEREUM);
     this.#wallet = WalletController;
     this.#dapp = new DAppController();
     this.#dappRegistry = new DappRegistry()
@@ -47,18 +38,6 @@ class MasterController {
 
   get ethereumProvider() {
     return this.#ethereumProvider;
-  }
-  
-  get polygonProvider() {
-    return this.#polygonProvider;
-  }
-
-  get bscProvider() {
-    return this.#bscProvider;
-  }
-
-  get avalancheProvider() {
-    return this.#avalancheProvider;
   }
 
   get wallet() {

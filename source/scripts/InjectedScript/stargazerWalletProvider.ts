@@ -1,4 +1,4 @@
-import { readOnlyProxy, StargazerChain } from '../common';
+import { readOnlyProxy, StargazerProvider } from '../common';
 
 import { StargazerChainProvider } from './stargazerChainProvider';
 import {
@@ -16,7 +16,7 @@ import {
  * + Provides wallet version.
  */
 class StargazerWalletProvider {
-  #cacheChainProviders: Map<StargazerChain, StargazerChainProvider>;
+  #cacheChainProviders: Map<StargazerProvider, StargazerChainProvider>;
 
   constructor() {
     this.#cacheChainProviders = new Map();
@@ -35,8 +35,8 @@ class StargazerWalletProvider {
     };
   }
 
-  getProvider(chain: StargazerChain) {
-    if (!Object.values(StargazerChain).includes(chain)) {
+  getProvider(chain: StargazerProvider) {
+    if (!Object.values(StargazerProvider).includes(chain)) {
       throw new StargazerWalletProviderError(`Unsupported chain '${chain}'`);
     }
 

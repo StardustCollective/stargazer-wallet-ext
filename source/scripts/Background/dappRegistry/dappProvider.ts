@@ -2,7 +2,6 @@ import { browser, Runtime, Windows } from 'webextension-polyfill-ts';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-  StargazerChain,
   StargazerProxyEvent,
   StargazerProxyRequest,
   StargazerProxyResponse,
@@ -11,6 +10,7 @@ import {
   StargazerEncodedProxyResponse,
   isCustomEvent,
   AvailableEvents,
+  StargazerProvider,
 } from '../../common';
 
 import {
@@ -23,7 +23,7 @@ import {
 type ChainProviderData = {
   proxyId: string;
   providerId: string;
-  chain: StargazerChain;
+  chain: StargazerProvider;
   title: string;
 };
 
@@ -333,7 +333,7 @@ class DappProvider {
     event: AvailableEvents,
     data: any[] = [],
     ...filters: ((
-      chain: StargazerChain,
+      chain: StargazerProvider,
       listenerId: string,
       chainData: ChainProviderData
     ) => boolean)[]

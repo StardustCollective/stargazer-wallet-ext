@@ -17,9 +17,9 @@ const NetworksContainer: FC = () => {
   const { activeNetwork, customNetworks }: IVaultState = useSelector((state: RootState) => state.vault);
   const linkTo = useLinkTo();
 
-  const handleChangeNetwork = (networkType: string, networkId: string) => {
+  const handleChangeNetwork = async (networkType: string, networkId: string) => {
     if (activeNetwork[networkType as keyof ActiveNetwork] !== networkId) {
-      walletController.switchNetwork(networkType, networkId);
+      await walletController.switchActiveNetwork(networkId);
     }
   };
 

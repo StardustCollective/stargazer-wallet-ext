@@ -3,10 +3,10 @@ import debugFn from 'debug';
 import {
   RequestArguments,
   EIPChainProvider,
-  StargazerChain,
   generateNamespaceId,
   StargazerProxyEvent,
   AvailableEvents,
+  StargazerProvider,
 } from '../common';
 
 import { StargazerChainProviderProxy } from './stargazerChainProviderProxy';
@@ -26,9 +26,9 @@ class StargazerChainProvider extends EIPChainProvider {
   #proxy: StargazerChainProviderProxy;
   #listeners: Map<Function, string>;
   #providerId: string;
-  #chain: StargazerChain;
+  #chain: StargazerProvider;
 
-  constructor(chain: StargazerChain) {
+  constructor(chain: StargazerProvider) {
     super();
     this.#proxy = new StargazerChainProviderProxy(
       this,

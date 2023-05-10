@@ -33,6 +33,7 @@ export type StargazerTransactionRequest = {
   destination: string;
   amount: number; // In DATUM, 1 DATUM = 0.00000001 DAG
   fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
+  chainId?: string | number;
 };
 
 // Constants
@@ -61,12 +62,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && stargazerAsset.address;
-  }
-
-  private updateActiveNetwork() {
-    const controller = useController();
-    const activeNetwork = this.getNetwork();
-    controller.wallet.switchActiveNetwork(activeNetwork);
   }
 
   getPublicKey() {
@@ -297,6 +292,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       const signatureRequestEncoded = this.normalizeSignatureRequest(signatureRequest);
 
+      const chainLabel = this.getChainId() === 1 ? 'Constellation' : 'Constellation Testnet 2.0';
+
       const signatureData = {
         origin: dappProvider.origin,
         asset: 'DAG',
@@ -306,7 +303,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         deviceId,
         bipIndex,
         chain: StargazerChain.CONSTELLATION,
-        chainLabel: 'Constellation'
+        chainLabel
       };
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
@@ -328,7 +325,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
-      this.updateActiveNetwork();
       return signatureEvent.detail.signature.hex;
     }
 
@@ -377,6 +373,24 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       const txDestination = txData?.destination;
       const txAmount = txData?.amount;
       const txFee = txData?.fee || 0;
+      const txChainId = txData?.chainId || null;
+
+      // chainId should match the current active network if chainId property is provided.
+      if (!!txChainId) {
+        const chainId = this.getChainId();
+
+        if (typeof txChainId === 'number') {
+          if (txChainId !== chainId) {
+            throw new Error('chainId does not match the active network chainId');
+          }
+        }
+
+        if (typeof txChainId === 'string') {
+          if (parseInt(txChainId) !== chainId) {
+            throw new Error('chainId does not match the active network chainId');
+          }
+        }
+      }
 
       if (typeof txSource !== 'string') {
         throw new Error("Bad argument 'source'");
@@ -440,7 +454,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
-      this.updateActiveNetwork();
       return sentTransactionEvent.detail.result;
     }
 

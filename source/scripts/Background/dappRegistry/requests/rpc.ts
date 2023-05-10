@@ -21,10 +21,7 @@ const handleRpcRequest: DappProviderExternalImplementation<'onRpcRequest', []> =
 
   const CHAIN_PROVIDERS = {
     [StargazerChain.CONSTELLATION]: window.controller.stargazerProvider,
-    [StargazerChain.ETHEREUM]: window.controller.ethereumProvider,
-    [StargazerChain.POLYGON]: window.controller.polygonProvider,
-    [StargazerChain.BSC]: window.controller.bscProvider,
-    [StargazerChain.AVALANCHE]: window.controller.avalancheProvider,
+    [StargazerChain.ETHEREUM]: window.controller.ethereumProvider
   }
 
   const chain = dappProvider.getChainProviderDataByPort(port).chain;
