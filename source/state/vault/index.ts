@@ -36,6 +36,7 @@ const initialState: IVaultState = {
     'BSC': BSC_NETWORK.bsc.id,
     'Polygon': POLYGON_NETWORK.matic.id,
   },
+  currentNetwork: DAG_NETWORK.main2.id,
   customNetworks: {
     constellation: {},
     ethereum: {},
@@ -174,6 +175,9 @@ const VaultState = createSlice({
         [action.payload.network]: action.payload.chainId,
       };
     },
+    changeCurrentNetwork(state: IVaultState, action: PayloadAction<string>) {
+      state.currentNetwork = action.payload;
+    },
     changeActiveAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
       state.activeAsset = { transactions: [], ...action.payload };
     },
@@ -244,6 +248,7 @@ export const {
   changeActiveWallet,
   changeActiveNetwork,
   changeActiveAsset,
+  changeCurrentNetwork,
   // updateAccount,
   updateWalletAssets,
   updateWalletLabel,

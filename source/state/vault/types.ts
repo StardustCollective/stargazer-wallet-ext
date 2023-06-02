@@ -136,4 +136,5 @@ export default interface IVaultState {
   migrateWallet?: any;
   customNetworks: ICustomNetworks;
   customAssets: IAssetInfoState[];
+  currentNetwork: string;
 }

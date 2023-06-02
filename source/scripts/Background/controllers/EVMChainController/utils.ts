@@ -101,7 +101,7 @@ export const getNetworkLabel = (network: string): string => {
     case 'matic':
       return 'Polygon';
     case 'maticmum':
-      return 'Maticmum Testnet';
+      return 'Polygon Testnet';
       
     default:
       return 'ERC-20';
