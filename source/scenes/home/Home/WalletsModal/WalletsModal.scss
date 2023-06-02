@@ -1,0 +1,89 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  .privateWalletsContainer {
+    margin-top: 16px;
+  }
+
+  .subtitle {
+    font-weight: $semibold;
+  }
+
+  .walletWrapper {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid $gray_light_100;
+    background-color: $white;
+    border-top-width: 0px;
+
+    .walletInfoContainer {
+      display: flex;
+      flex-direction: row;
+      margin-left: 12px;
+      flex-grow: 1;
+
+      .walletLabelContainer {
+        flex-grow: 1;
+      }
+    }
+  }
+
+  .firstChild {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-top-width: 1px;
+    margin-top: 8px;
+  }
+
+  .lastChild {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  .stargazerIconWrapper {
+    background-color: #1C143D;
+    height: 36px;
+    width: 36px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .stargazerIcon {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  .assetIconWrapper {
+    height: 36px;
+    width: 36px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $gray_light_100;
+
+    .assetIcon {
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  .checkContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .checkIcon {
+      height: 18px;
+      width: 18px;
+    }
+  }
+}

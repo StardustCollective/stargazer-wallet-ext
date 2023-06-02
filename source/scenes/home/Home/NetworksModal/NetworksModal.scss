@@ -1,0 +1,74 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  .testnetsContainer {
+    margin-top: 16px;
+  }
+
+  .subtitle {
+    font-weight: $semibold;
+  }
+
+  .chainWrapper {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid $gray_light_100;
+    background-color: $white;
+    border-top-width: 0px;
+
+    .chainInfoContainer {
+      display: flex;
+      flex-direction: row;
+      margin-left: 12px;
+      flex-grow: 1;
+
+      .chainLabelContainer {
+        flex-grow: 1;
+      }
+    }
+  }
+
+  .firstChild {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-top-width: 1px;
+    margin-top: 8px;
+  }
+
+  .lastChild {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  .logoContainer {
+    height: 36px;
+    width: 36px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $gray_light_100;
+
+    .logo {
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  .checkIconContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .checkIcon {
+      height: 18px;
+      width: 18px;
+    }
+  }
+}
