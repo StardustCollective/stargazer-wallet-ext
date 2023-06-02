@@ -9,6 +9,13 @@
   width: 100%;
   height: 520px;
 
+  .networkPickerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
   .mask {
     transition: all 0.3s;
     display: flex;
@@ -115,14 +122,16 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
     .price {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 16px;
+
       .balance {
         margin-left: 8px;
         margin-right: 8px;
+
         .balanceText{
           overflow: hidden;
           max-width: 280px;
@@ -134,24 +143,27 @@
       font-size: 20px;
       line-height: 28px;
     }
-
-    .bitcoinBalance {
-      font-size: 16px;
-    }
-
-    .bitcoinBalance{
-      opacity: 0.66;
-      margin-top: 8px;
-    }
+    
     .buttons {
       display: flex;
       flex: 1;
       width: 100%;
       flex-direction: row;
-      margin-top: 15px;
+      margin-top: 32px;
       margin-bottom: 24px;
       justify-content: space-evenly;
     }
+  }
+}
+
+.titleContainer {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .titleText {
+    margin-right: 12px;
   }
 }
 

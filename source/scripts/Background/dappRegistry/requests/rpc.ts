@@ -19,15 +19,18 @@ const handleRpcRequest: DappProviderExternalImplementation<'onRpcRequest', []> =
     throw new Error('Wallet must be unlocked');
   }
 
-  const chain = dappProvider.getChainProviderDataByPort(port).chain;
-  const chainProvider =
-    chain === StargazerChain.CONSTELLATION
-      ? window.controller.stargazerProvider
-      : chain === StargazerChain.ETHEREUM
-      ? window.controller.ethereumProvider
-      : null;
+  const CHAIN_PROVIDERS = {
+    [StargazerChain.CONSTELLATION]: window.controller.stargazerProvider,
+    [StargazerChain.ETHEREUM]: window.controller.ethereumProvider,
+    [StargazerChain.POLYGON]: window.controller.polygonProvider,
+    [StargazerChain.BSC]: window.controller.bscProvider,
+    [StargazerChain.AVALANCHE]: window.controller.avalancheProvider,
+  }
 
-  if (chainProvider === null) {
+  const chain = dappProvider.getChainProviderDataByPort(port).chain;
+  const chainProvider = CHAIN_PROVIDERS[chain] ?? null;
+
+  if (!chainProvider) {
     throw new Error('Unable to find provider for request');
   }
 

@@ -32,9 +32,16 @@ const Main: FC<IMainSettings> = ({
 }) => {
   const { available } = useSelector((state: RootState) => state.biometrics);
 
-  const RenderSettingsItem = React.memo(({ label, IconImageOrComponent, onClick }: IRenderSettingsItemProps) => {
+  const RenderSettingsItem = React.memo(({ label, IconImageOrComponent, onClick, disabled }: IRenderSettingsItemProps) => {
+    const disabledStyle = disabled ? styles.disabled : {};
     return (
-      <Card id={`settings-${label.toLowerCase()}`} onClick={onClick} style={styles.card}>
+      <Card 
+        id={`settings-${label.toLowerCase()}`} 
+        onClick={onClick} 
+        disabled={disabled} 
+        disabledStyle={disabledStyle} 
+        style={styles.card}
+      >
         <View style={styles.settingsItemIconWrapper}>
           <View style={styles.iconCircle}>
             <IconImageOrComponent />
@@ -76,7 +83,7 @@ const Main: FC<IMainSettings> = ({
       key: 'Security',
       IconImageOrComponent: SecurityIcon,
       onClick: onSecurityLinkClicked,
-      hide: !available
+      disabled: !available
     },
   ];
 
@@ -85,7 +92,6 @@ const Main: FC<IMainSettings> = ({
       <View style={styles.box}>
         <View style={styles.content}>
           {SETTINGS_MAP.map((sectionProps) => {
-            if (sectionProps.hide) return null;
             return <RenderSettingsItem {...sectionProps} />; // eslint-disable-line
           })}
         </View>
