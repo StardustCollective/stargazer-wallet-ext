@@ -17,7 +17,7 @@ import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 
 const FIVE_SECONDS = 5 * 1000;
-const DAG_DECIMALS = 1e-8;
+const DAG_DECIMAL_FACTOR = 1e-8;
 
 export type AccountTrackerList = {
   [network: string]: AccountTracker;
