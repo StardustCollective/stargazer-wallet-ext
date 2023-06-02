@@ -17,6 +17,7 @@ import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 
 const FIVE_SECONDS = 5 * 1000;
+const DAG_DECIMAL_FACTOR = 1e-8;
 
 export type AccountTrackerList = {
   [network: string]: AccountTracker;
@@ -123,13 +124,17 @@ export class AssetsBalanceMonitor {
     );
     const { balances } = store.getState().vault;
     try {
-      const bal = (await dag4.account.getBalance()) ?? 0;
+      // Hotfix: Use block explorer API directly.
+      const address = dag4.account.address;
+      const addressBalance: number = (await dag4.network.blockExplorerV2Api.getAddressBalance(address) as any)?.data?.balance ?? 0;
+      const balanceNumber = addressBalance * DAG_DECIMALS;
+
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;
       store.dispatch(
         updateBalances({
           ...balances,
-          [AssetType.Constellation]: String(bal) || '-',
+          [AssetType.Constellation]: String(balanceNumber) || '-',
           pending,
         })
       );
