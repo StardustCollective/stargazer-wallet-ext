@@ -127,7 +127,7 @@ export class AssetsBalanceMonitor {
       // Hotfix: Use block explorer API directly.
       const address = dag4.account.address;
       const addressBalance: number = (await dag4.network.blockExplorerV2Api.getAddressBalance(address) as any)?.data?.balance ?? 0;
-      const balanceNumber = addressBalance * DAG_DECIMALS;
+      const balanceNumber = addressBalance * DAG_DECIMAL_FACTOR;
 
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;

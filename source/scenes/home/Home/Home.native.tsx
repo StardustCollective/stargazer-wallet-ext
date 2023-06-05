@@ -13,9 +13,9 @@ import BackgroundTimer from 'react-native-background-timer';
 ///////////////////////////
 
 import WalletsModal from './WalletsModal';
-import NetworksModal from './NetworksModal';
+// import NetworksModal from './NetworksModal';
 import Sheet from 'components/Sheet';
-import NetworkPicker from 'components/NetworkPicker';
+// import NetworkPicker from 'components/NetworkPicker';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import AssetsPanel from './AssetsPanel';
@@ -51,7 +51,7 @@ import {
   BUY_STRING,
   SWAP_STRING
 } from './constants';
-import { ALL_MAINNET_CHAINS, ALL_TESTNETS_CHAINS, ALL_CHAINS } from 'constants/index';
+// import { ALL_MAINNET_CHAINS, ALL_TESTNETS_CHAINS, ALL_CHAINS } from 'constants/index';
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
@@ -77,7 +77,7 @@ const Home: FC<IHome> = ({
 }) => {
 
   const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
-  const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
+  // const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
 
   const accountController = getAccountController();
   const walletController = getWalletController();
@@ -90,10 +90,10 @@ const Home: FC<IHome> = ({
     await walletController.notifyWalletChange(accounts);
   };
 
-  const handleSwitchActiveNetwork = async (chainId: string) => {
-    setIsNetworkSelectorOpen(false);
-    await walletController.switchActiveNetwork(chainId);
-  }
+  // const handleSwitchActiveNetwork = async (chainId: string) => {
+  //   setIsNetworkSelectorOpen(false);
+  //   await walletController.switchActiveNetwork(chainId);
+  // }
 
   const renderHeaderTitle = () => {
     const ArrowIcon = isWalletSelectorOpen ? ArrowUpIcon : ArrowDownIcon;
@@ -155,22 +155,22 @@ const Home: FC<IHome> = ({
     }
   }, [AppState.currentState]);
 
-  const networkTitle = ALL_MAINNET_CHAINS?.find((chain) => chain.id === currentNetwork)?.network || ALL_TESTNETS_CHAINS?.find((chain) => chain.id === currentNetwork)?.label;
-  const networkLogo = ALL_CHAINS.find((chain) => chain.id === currentNetwork)?.logo;
+  // const networkTitle = ALL_MAINNET_CHAINS?.find((chain) => chain.id === currentNetwork)?.network || ALL_TESTNETS_CHAINS?.find((chain) => chain.id === currentNetwork)?.label;
+  // const networkLogo = ALL_CHAINS.find((chain) => chain.id === currentNetwork)?.logo;
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
         {activeWallet ? (
           <>
-            <View style={styles.networkPickerContainer}>
+            {/* <View style={styles.networkPickerContainer}>
               <NetworkPicker 
                 title={networkTitle}
                 icon={networkLogo}
                 onPress={() => setIsNetworkSelectorOpen(true)}
                 isOpen={isNetworkSelectorOpen}
               />
-            </View>
+            </View> */}
             <View style={styles.fiatBalanceContainer}>
               <View style={styles.fiatBalance}>
                 <TextV3.Body extraStyles={styles.fiatType}>{balanceObject.symbol}</TextV3.Body>
@@ -224,7 +224,7 @@ const Home: FC<IHome> = ({
           handleSwitchWallet={handleSwitchWallet}
         />
       </Sheet>
-      <Sheet 
+      {/* <Sheet 
         isVisible={isNetworkSelectorOpen}
         onClosePress={() => setIsNetworkSelectorOpen(false)}
         height='65%'
@@ -237,7 +237,7 @@ const Home: FC<IHome> = ({
           currentNetwork={currentNetwork}
           handleSwitchActiveNetwork={handleSwitchActiveNetwork}
         />
-      </Sheet>
+      </Sheet> */}
     </View>
   );
 };
