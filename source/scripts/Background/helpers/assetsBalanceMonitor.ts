@@ -15,6 +15,7 @@ import IVaultState, {
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
+import { BigNumber } from 'bignumber.js';
 
 const FIVE_SECONDS = 5 * 1000;
 const DAG_DECIMAL_FACTOR = 1e-8;
@@ -127,7 +128,7 @@ export class AssetsBalanceMonitor {
       // Hotfix: Use block explorer API directly.
       const address = dag4.account.address;
       const addressBalance: number = (await dag4.network.blockExplorerV2Api.getAddressBalance(address) as any)?.data?.balance ?? 0;
-      const balanceNumber = addressBalance * DAG_DECIMAL_FACTOR;
+      const balanceNumber = new BigNumber(addressBalance).multipliedBy(DAG_DECIMAL_FACTOR).toNumber();
 
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;
