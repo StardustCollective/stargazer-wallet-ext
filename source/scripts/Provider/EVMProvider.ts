@@ -37,80 +37,49 @@ import { ALL_EVM_CHAINS } from 'constants/index';
 // Constants
 const LEDGER_URL = '/ledger.html';
 const EXTERNAL_URL = '/external.html';
+const SUPPORTED_HEX_CHAINS = ['0x1', '0x5', '0xa86a', '0xa869', '0x89', '0x13881', '0x38', '0x61'];
 const WINDOW_TYPES: Record<string, Windows.CreateType> = {
   popup: 'popup',
   normal: 'normal',
 };
 
-type NetworkInfo = {
-  id: string;
-  label: string;
-  token: string;
+interface SwitchEthereumChainParameter {
+  chainId: string;
 }
 
 export class EVMProvider implements IRpcChainRequestHandler {
-
-  #network: NetworkInfo;
-
-  constructor(network: string) {
-    this.#network = this.initNetworkInfo(network);
-  }
 
   //////////////////////
   // Private methods
   //////////////////////
 
-  private initNetworkInfo(network: string) {
-    switch (network) {
-      case StargazerChain.ETHEREUM:
-        return {
-          id: StargazerChain.ETHEREUM,
-          label: KeyringNetwork.Ethereum,
-          token: 'ETH',
-        };
-      case StargazerChain.POLYGON:
-        return {
-          id: StargazerChain.POLYGON,
-          label: 'Polygon',
-          token: 'MATIC',
-        };
-      case StargazerChain.BSC:
-        return {
-          id: StargazerChain.BSC,
-          label: 'BSC',
-          token: 'BNB',
-        };
-      case StargazerChain.AVALANCHE:
-        return {
-          id: StargazerChain.AVALANCHE,
-          label: 'Avalanche',
-          token: 'AVAX',
-        };
-    
-      default:
-        return {
-          id: StargazerChain.ETHEREUM,
-          label: KeyringNetwork.Ethereum,
-          token: 'ETH',
-        };
-    }
+  private getNetworkInfo() {
+    const { currentEVMNetwork }: IVaultState = store.getState().vault;
+    const networkInfo = Object.values(ALL_EVM_CHAINS).find(chain => chain.id === currentEVMNetwork);
+
+    if (!networkInfo) throw new Error('Network not found');
+
+    return networkInfo;
   }
 
   private getNetworkLabel() {
-    return this.#network.label;
+    const network = this.getNetworkInfo();
+    return network.network;
   }
 
   private getNetworkId() {
-    return this.#network.id;
+    const network = this.getNetworkInfo();
+    return network.networkId;
   }
 
   private getNetworkToken() {
-    return this.#network.token;
+    const network = this.getNetworkInfo();
+    return network.nativeToken;
   }
 
   private getWallet() {
     const controller = useController();
-    const networkId = this.#network.id;
+    const networkId = this.getNetworkId();
 
     if (networkId === StargazerChain.ETHEREUM) {
       return controller.wallet.account.networkController.ethereumNetwork.getWallet();
@@ -136,10 +105,6 @@ export class EVMProvider implements IRpcChainRequestHandler {
   //////////////////////
   // Public methods
   //////////////////////
-
-  switchProvider(network: string) {
-    this.#network = this.initNetworkInfo(network);
-  }
 
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
@@ -573,6 +538,41 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
     if (request.method === AvailableMethods.web3_sha3) {
       return ethers.utils.keccak256(request.params[0]);
+    }
+
+    if (request.method === AvailableMethods.wallet_switchEthereumChain) {
+      const [chainData] = request?.params as [SwitchEthereumChainParameter] || [];
+
+      if (!chainData || !chainData?.chainId) {
+        throw new Error('chainId not provided');
+      }
+
+      const { chainId } = chainData;
+
+      if (typeof chainId !== 'string'){
+        throw new Error('chainId must be a string');
+      }
+
+      if (!chainId.startsWith('0x')) {
+        throw new Error('chainId must specify the integer ID of the chain as a hexadecimal string');
+      }
+
+      if (!SUPPORTED_HEX_CHAINS.includes(chainId)) {
+        // Show network not supported popup
+        throw new Error('chainId not supported');
+      }
+
+      const controller = useController();
+      const chainInfo = Object.values(ALL_EVM_CHAINS).find(chain => chain.hexChainId === chainId);
+
+      try {
+        await controller.wallet.switchNetwork(chainInfo.network, chainInfo.id);
+      } catch (e) {
+        throw new Error('There was an error switching the Ethereum chain');
+      }
+
+      // https://eips.ethereum.org/EIPS/eip-3326#returns
+      return null;
     }
 
     throw new Error('Unsupported non-proxied method');

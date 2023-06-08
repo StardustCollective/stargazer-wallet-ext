@@ -41,6 +41,12 @@ const AvailableEthereumChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.ETHEREUM,
+    method: AvailableMethods.wallet_switchEthereumChain,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.ETHEREUM,
     method: AvailableMethods.net_version,
     proxied: true,
     permissions: [],

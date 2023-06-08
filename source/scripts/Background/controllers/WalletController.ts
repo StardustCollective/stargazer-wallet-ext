@@ -10,7 +10,7 @@ import {
   updateWallets, 
   addBitfiWallet, 
   addCustomNetwork,
-  changeCurrentNetwork
+  changeCurrentEVMNetwork
 } from 'state/vault';
 import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types'
 import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
@@ -39,7 +39,6 @@ import { generateId } from './EVMChainController/utils';
 import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
-import { ALL_CHAINS } from 'constants/index';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -359,7 +358,7 @@ class WalletController implements IWalletController {
       }, false);
 
       if (!isNative) {
-        const hexChainId = `0x${DAG_NETWORK[chainId].chainId.toString(16)}`;
+        const { hexChainId } = DAG_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
           ProtocolProvider.CONSTELLATION,
@@ -371,8 +370,9 @@ class WalletController implements IWalletController {
 
     if (network === KeyringNetwork.Ethereum) {
       this.account.networkController.switchEthereumChain(chainId as EthChainId);
+      store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        const hexChainId = `0x${ETH_NETWORK[chainId].chainId.toString(16)}`;
+        const { hexChainId } = ETH_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
           ProtocolProvider.ETHEREUM,
@@ -384,8 +384,9 @@ class WalletController implements IWalletController {
     // 349: New network should be added here.
     if (network === 'Avalanche') {
       this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
+      store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        const hexChainId = `0x${AVALANCHE_NETWORK[chainId].chainId.toString(16)}`;
+        const { hexChainId } = AVALANCHE_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
           ProtocolProvider.ETHEREUM,
@@ -397,8 +398,9 @@ class WalletController implements IWalletController {
     
     if (network === 'BSC') {
       this.account.networkController.switchBSCChain(chainId as BSCChainId);
+      store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        const hexChainId = `0x${BSC_NETWORK[chainId].chainId.toString(16)}`;
+        const { hexChainId } = BSC_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
           ProtocolProvider.ETHEREUM,
@@ -410,8 +412,9 @@ class WalletController implements IWalletController {
 
     if (network === 'Polygon') {
       this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
+      store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        const hexChainId = `0x${POLYGON_NETWORK[chainId].chainId.toString(16)}`;
+        const { hexChainId } = POLYGON_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
           ProtocolProvider.ETHEREUM,
@@ -433,12 +436,6 @@ class WalletController implements IWalletController {
 
     // restart monitor with different network
     await this.account.assetsBalanceMonitor.start();
-  }
-
-  async switchActiveNetwork(chainId: string) {
-    store.dispatch(changeCurrentNetwork(chainId));
-    const network = ALL_CHAINS.find(chain => chain.id === chainId).network;
-    await this.switchNetwork(network, chainId);
   }
 
   async addNetwork(network: string, data: any) {
