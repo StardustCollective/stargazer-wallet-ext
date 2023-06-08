@@ -27,6 +27,7 @@ import {
   StargazerProxyRequest,
   EIPRpcError,
   StargazerChain,
+  ProtocolProvider,
 } from '../common';
 import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
@@ -121,7 +122,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
       return controller.wallet.account.networkController.avalancheNetwork.getWallet();
     }
 
-    return controller.wallet.account.networkController.ethereumNetwork.getWallet();
+    throw new Error('Wallet not found');
   }
 
   private remove0x(hash: string) {
@@ -355,7 +356,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
         publicKey: '',
-        chain: StargazerChain.ETHEREUM,
+        provider: ProtocolProvider.ETHEREUM,
         chainLabel
       };
 

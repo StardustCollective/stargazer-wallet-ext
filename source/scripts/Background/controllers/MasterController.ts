@@ -8,7 +8,7 @@ import MigrationController from './MigrationController';
 import { DAppController } from './DAppController';
 import { DappRegistry } from '../dappRegistry';
 import { EVMProvider } from 'scripts/Provider/EVMProvider';
-import { StargazerChain } from 'scripts/common';
+import { ProtocolProvider } from 'scripts/common';
 
 class MasterController {
   #stargazerProvider: StargazerProvider;
@@ -21,7 +21,7 @@ class MasterController {
 
   constructor() {
     this.#stargazerProvider = new StargazerProvider();
-    this.#ethereumProvider = new EVMProvider(StargazerChain.ETHEREUM);
+    this.#ethereumProvider = new EVMProvider(ProtocolProvider.ETHEREUM);
     this.#wallet = WalletController;
     this.#dapp = new DAppController();
     this.#dappRegistry = new DappRegistry()

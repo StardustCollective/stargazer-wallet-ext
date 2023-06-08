@@ -19,7 +19,7 @@ const NetworksContainer: FC = () => {
 
   const handleChangeNetwork = async (networkType: string, networkId: string) => {
     if (activeNetwork[networkType as keyof ActiveNetwork] !== networkId) {
-      await walletController.switchActiveNetwork(networkId);
+      walletController.switchActiveNetwork(networkId);
     }
   };
 

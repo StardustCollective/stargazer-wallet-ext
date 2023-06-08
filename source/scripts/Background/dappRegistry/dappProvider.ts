@@ -10,7 +10,7 @@ import {
   StargazerEncodedProxyResponse,
   isCustomEvent,
   AvailableEvents,
-  StargazerProvider,
+  ProtocolProvider,
 } from '../../common';
 
 import {
@@ -23,7 +23,7 @@ import {
 type ChainProviderData = {
   proxyId: string;
   providerId: string;
-  chain: StargazerProvider;
+  chain: ProtocolProvider;
   title: string;
 };
 
@@ -333,7 +333,7 @@ class DappProvider {
     event: AvailableEvents,
     data: any[] = [],
     ...filters: ((
-      chain: StargazerProvider,
+      chain: ProtocolProvider,
       listenerId: string,
       chainData: ChainProviderData
     ) => boolean)[]

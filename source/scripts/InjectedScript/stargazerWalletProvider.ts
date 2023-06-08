@@ -1,4 +1,4 @@
-import { readOnlyProxy, StargazerProvider } from '../common';
+import { readOnlyProxy, ProtocolProvider, StargazerChain } from '../common';
 
 import { StargazerChainProvider } from './stargazerChainProvider';
 import {
@@ -16,7 +16,7 @@ import {
  * + Provides wallet version.
  */
 class StargazerWalletProvider {
-  #cacheChainProviders: Map<StargazerProvider, StargazerChainProvider>;
+  #cacheChainProviders: Map<ProtocolProvider, StargazerChainProvider>;
 
   constructor() {
     this.#cacheChainProviders = new Map();
@@ -35,8 +35,26 @@ class StargazerWalletProvider {
     };
   }
 
-  getProvider(chain: StargazerProvider) {
-    if (!Object.values(StargazerProvider).includes(chain)) {
+  getProvider(chainValue: StargazerChain) {
+    if (typeof chainValue !== 'string') {
+      throw new StargazerWalletProviderError('Chain value must be a string');
+    }
+    
+    if (!chainValue) {
+      throw new StargazerWalletProviderError('Chain value not provided');
+    }
+
+    const MAP_CHAIN_TO_PROTOCOL = {
+      [StargazerChain.CONSTELLATION]: ProtocolProvider.CONSTELLATION,
+      [StargazerChain.ETHEREUM]: ProtocolProvider.ETHEREUM,
+      [StargazerChain.AVALANCHE]: ProtocolProvider.ETHEREUM,
+      [StargazerChain.POLYGON]: ProtocolProvider.ETHEREUM,
+      [StargazerChain.BSC]: ProtocolProvider.ETHEREUM,
+    }
+
+    const chain: ProtocolProvider = MAP_CHAIN_TO_PROTOCOL[chainValue];
+
+    if (!Object.values(ProtocolProvider).includes(chain)) {
       throw new StargazerWalletProviderError(`Unsupported chain '${chain}'`);
     }
 

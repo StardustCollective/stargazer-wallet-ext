@@ -6,7 +6,7 @@ import {
   generateNamespaceId,
   StargazerProxyEvent,
   AvailableEvents,
-  StargazerProvider,
+  ProtocolProvider,
 } from '../common';
 
 import { StargazerChainProviderProxy } from './stargazerChainProviderProxy';
@@ -26,9 +26,9 @@ class StargazerChainProvider extends EIPChainProvider {
   #proxy: StargazerChainProviderProxy;
   #listeners: Map<Function, string>;
   #providerId: string;
-  #chain: StargazerProvider;
+  #chain: ProtocolProvider;
 
-  constructor(chain: StargazerProvider) {
+  constructor(chain: ProtocolProvider) {
     super();
     this.#proxy = new StargazerChainProviderProxy(
       this,

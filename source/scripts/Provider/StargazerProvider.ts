@@ -20,7 +20,7 @@ import {
   StargazerProxyRequest,
   AvailableMethods,
   EIPRpcError,
-  StargazerChain,
+  ProtocolProvider,
 } from '../common';
 
 export type StargazerSignatureRequest = {
@@ -33,7 +33,6 @@ export type StargazerTransactionRequest = {
   destination: string;
   amount: number; // In DATUM, 1 DATUM = 0.00000001 DAG
   fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
-  chainId?: string | number;
 };
 
 // Constants
@@ -302,7 +301,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         walletLabel: activeWallet.label,
         deviceId,
         bipIndex,
-        chain: StargazerChain.CONSTELLATION,
+        provider: ProtocolProvider.CONSTELLATION,
         chainLabel
       };
 
@@ -373,24 +372,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       const txDestination = txData?.destination;
       const txAmount = txData?.amount;
       const txFee = txData?.fee || 0;
-      const txChainId = txData?.chainId || null;
-
-      // chainId should match the current active network if chainId property is provided.
-      if (!!txChainId) {
-        const chainId = this.getChainId();
-
-        if (typeof txChainId === 'number') {
-          if (txChainId !== chainId) {
-            throw new Error('chainId does not match the active network chainId');
-          }
-        }
-
-        if (typeof txChainId === 'string') {
-          if (parseInt(txChainId) !== chainId) {
-            throw new Error('chainId does not match the active network chainId');
-          }
-        }
-      }
 
       if (typeof txSource !== 'string') {
         throw new Error("Bad argument 'source'");
@@ -428,7 +409,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         to: txDestination,
         value: txAmount / 1e8, // DATUM to DAG
         fee: txFee / 1e8, // DATUM to DAG
-        chain: StargazerChain.CONSTELLATION
+        chain: ProtocolProvider.CONSTELLATION
       };
 
       const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(

@@ -31,12 +31,12 @@ import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { AccountController } from './AccountController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
-import { getController, getDappController, getDappRegistry } from 'utils/controllersUtils';
+import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
 import { generateId } from './EVMChainController/utils';
-import { AvailableEvents, StargazerChain } from 'scripts/common';
+import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
 import { ALL_CHAINS } from 'constants/index';
@@ -345,7 +345,6 @@ class WalletController implements IWalletController {
   }
 
   async switchNetwork(network: string, chainId: string) {
-    const masterController = getController();
     store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
@@ -363,7 +362,7 @@ class WalletController implements IWalletController {
         const hexChainId = `0x${DAG_NETWORK[chainId].chainId.toString(16)}`;
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.CONSTELLATION,
+          ProtocolProvider.CONSTELLATION,
           AvailableEvents.chainChanged,
           [hexChainId]
         );
@@ -372,12 +371,11 @@ class WalletController implements IWalletController {
 
     if (network === KeyringNetwork.Ethereum) {
       this.account.networkController.switchEthereumChain(chainId as EthChainId);
-      masterController.ethereumProvider.switchProvider(StargazerChain.ETHEREUM);
       if (!isNative) {
         const hexChainId = `0x${ETH_NETWORK[chainId].chainId.toString(16)}`;
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.ETHEREUM,
+          ProtocolProvider.ETHEREUM,
           AvailableEvents.chainChanged,
           [hexChainId]
         );
@@ -386,12 +384,11 @@ class WalletController implements IWalletController {
     // 349: New network should be added here.
     if (network === 'Avalanche') {
       this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
-      masterController.ethereumProvider.switchProvider(StargazerChain.AVALANCHE);
       if (!isNative) {
         const hexChainId = `0x${AVALANCHE_NETWORK[chainId].chainId.toString(16)}`;
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.ETHEREUM,
+          ProtocolProvider.ETHEREUM,
           AvailableEvents.chainChanged,
           [hexChainId]
         );
@@ -400,12 +397,11 @@ class WalletController implements IWalletController {
     
     if (network === 'BSC') {
       this.account.networkController.switchBSCChain(chainId as BSCChainId);
-      masterController.ethereumProvider.switchProvider(StargazerChain.BSC);
       if (!isNative) {
         const hexChainId = `0x${BSC_NETWORK[chainId].chainId.toString(16)}`;
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.ETHEREUM,
+          ProtocolProvider.ETHEREUM,
           AvailableEvents.chainChanged,
           [hexChainId]
         );
@@ -414,12 +410,11 @@ class WalletController implements IWalletController {
 
     if (network === 'Polygon') {
       this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
-      masterController.ethereumProvider.switchProvider(StargazerChain.POLYGON);
       if (!isNative) {
         const hexChainId = `0x${POLYGON_NETWORK[chainId].chainId.toString(16)}`;
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.ETHEREUM,
+          ProtocolProvider.ETHEREUM,
           AvailableEvents.chainChanged,
           [hexChainId]
         );
