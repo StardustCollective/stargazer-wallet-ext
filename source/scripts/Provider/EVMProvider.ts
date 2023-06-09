@@ -32,12 +32,11 @@ import {
 import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
 import { getChainId, getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
-import { ALL_EVM_CHAINS } from 'constants/index';
+import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
 const EXTERNAL_URL = '/external.html';
-const SUPPORTED_HEX_CHAINS = ['0x1', '0x5', '0xa86a', '0xa869', '0x89', '0x13881', '0x38', '0x61'];
 const WINDOW_TYPES: Record<string, Windows.CreateType> = {
   popup: 'popup',
   normal: 'normal',
@@ -471,6 +470,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
     if (request.method === AvailableMethods.eth_sendTransaction) {
       const [trxData] = request.params;
+      console.log('trxData', trxData);
 
       let decodedContractCall: ContractInputData | null = null;
       let eventType: string = 'transactionSent';

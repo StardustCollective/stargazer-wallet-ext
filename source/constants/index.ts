@@ -308,6 +308,8 @@ export const ALL_EVM_CHAINS = {
   ...POLYGON_NETWORK
 };
 
+export const SUPPORTED_HEX_CHAINS = ['0x1', '0x5', '0xa86a', '0xa869', '0x89', '0x13881', '0x38', '0x61'];
+
 export const ASSET_PRICE_API = 'https://pro-api.coingecko.com/api/v3/simple/price';
 export const TOKEN_INFO_API =
   'https://pro-api.coingecko.com/api/v3/coins';
