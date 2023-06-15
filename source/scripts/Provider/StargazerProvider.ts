@@ -20,7 +20,7 @@ import {
   StargazerProxyRequest,
   AvailableMethods,
   EIPRpcError,
-  StargazerChain,
+  ProtocolProvider,
 } from '../common';
 
 export type StargazerSignatureRequest = {
@@ -61,12 +61,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && stargazerAsset.address;
-  }
-
-  private updateActiveNetwork() {
-    const controller = useController();
-    const activeNetwork = this.getNetwork();
-    controller.wallet.switchActiveNetwork(activeNetwork);
   }
 
   getPublicKey() {
@@ -297,6 +291,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       const signatureRequestEncoded = this.normalizeSignatureRequest(signatureRequest);
 
+      const chainLabel = this.getChainId() === 1 ? 'Constellation' : 'Constellation Testnet 2.0';
+
       const signatureData = {
         origin: dappProvider.origin,
         asset: 'DAG',
@@ -305,8 +301,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         walletLabel: activeWallet.label,
         deviceId,
         bipIndex,
-        chain: StargazerChain.CONSTELLATION,
-        chainLabel: 'Constellation'
+        provider: ProtocolProvider.CONSTELLATION,
+        chainLabel
       };
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
@@ -328,7 +324,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
-      this.updateActiveNetwork();
       return signatureEvent.detail.signature.hex;
     }
 
@@ -414,7 +409,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         to: txDestination,
         value: txAmount / 1e8, // DATUM to DAG
         fee: txFee / 1e8, // DATUM to DAG
-        chain: StargazerChain.CONSTELLATION
+        chain: ProtocolProvider.CONSTELLATION
       };
 
       const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
@@ -440,7 +435,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
-      this.updateActiveNetwork();
       return sentTransactionEvent.detail.result;
     }
 

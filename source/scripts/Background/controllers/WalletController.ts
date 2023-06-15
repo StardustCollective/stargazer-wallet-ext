@@ -10,7 +10,7 @@ import {
   updateWallets, 
   addBitfiWallet, 
   addCustomNetwork,
-  changeCurrentNetwork
+  changeCurrentEVMNetwork
 } from 'state/vault';
 import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types'
 import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
@@ -36,7 +36,7 @@ import { AccountItem } from 'scripts/types';
 import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
 import filter from 'lodash/filter';
 import { generateId } from './EVMChainController/utils';
-import { AvailableEvents, StargazerChain } from 'scripts/common';
+import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
 
@@ -358,59 +358,68 @@ class WalletController implements IWalletController {
       }, false);
 
       if (!isNative) {
+        const { hexChainId } = DAG_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.CONSTELLATION,
+          ProtocolProvider.CONSTELLATION,
           AvailableEvents.chainChanged,
-          [`0x${DAG_NETWORK[chainId].chainId.toString(16)}`]
+          [hexChainId]
         );
       }
     }
 
     if (network === KeyringNetwork.Ethereum) {
       this.account.networkController.switchEthereumChain(chainId as EthChainId);
+      store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
+        const { hexChainId } = ETH_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.ETHEREUM,
+          ProtocolProvider.ETHEREUM,
           AvailableEvents.chainChanged,
-          [`0x${ETH_NETWORK[chainId].chainId.toString(16)}`]
+          [hexChainId]
         );
       }
     }
     // 349: New network should be added here.
     if (network === 'Avalanche') {
       this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
+      store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
+        const { hexChainId } = AVALANCHE_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.AVALANCHE,
+          ProtocolProvider.ETHEREUM,
           AvailableEvents.chainChanged,
-          [`0x${AVALANCHE_NETWORK[chainId].chainId.toString(16)}`]
+          [hexChainId]
         );
       }
     }
     
     if (network === 'BSC') {
       this.account.networkController.switchBSCChain(chainId as BSCChainId);
+      store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
+        const { hexChainId } = BSC_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.BSC,
+          ProtocolProvider.ETHEREUM,
           AvailableEvents.chainChanged,
-          [`0x${BSC_NETWORK[chainId].chainId.toString(16)}`]
+          [hexChainId]
         );
       }
     }
 
     if (network === 'Polygon') {
       this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
+      store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
+        const { hexChainId } = POLYGON_NETWORK[chainId];
         getDappRegistry().sendOriginChainEvent(
           '*',
-          StargazerChain.POLYGON,
+          ProtocolProvider.ETHEREUM,
           AvailableEvents.chainChanged,
-          [`0x${POLYGON_NETWORK[chainId].chainId.toString(16)}`]
+          [hexChainId]
         );
       }
     }
@@ -427,10 +436,6 @@ class WalletController implements IWalletController {
 
     // restart monitor with different network
     await this.account.assetsBalanceMonitor.start();
-  }
-
-  async switchActiveNetwork(chainId: string) {
-    store.dispatch(changeCurrentNetwork(chainId));
   }
 
   async addNetwork(network: string, data: any) {

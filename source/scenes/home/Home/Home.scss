@@ -9,13 +9,6 @@
   width: 100%;
   height: 520px;
 
-  .networkPickerContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 24px;
-  }
-
   .mask {
     transition: all 0.3s;
     display: flex;
@@ -118,10 +111,10 @@
   section.center {
     display: flex;
     width: 100%;
-    height: 160px;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    margin-top: 24px;
 
     .price {
       display: flex;
