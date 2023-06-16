@@ -37,8 +37,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     return Number((activeAsset && balances[activeAsset.id]) || 0);
   }, [activeAsset, balances]);
 
-  const { id } = accountController.networkController?.getNetwork() || {};
-  const network = getNetworkFromChainId(id);
+  let network = '';
+  if (activeAsset.type !== AssetType.Constellation) {
+    const { id } = accountController?.networkController?.getNetwork() || {};
+    network = getNetworkFromChainId(id);
+  }
 
   const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);

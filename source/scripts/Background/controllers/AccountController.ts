@@ -75,15 +75,14 @@ export class AccountController implements IAccountController {
     let privateKey = undefined;
     let publicKey = undefined;
 
-    // Excludes bitfi and ledger accounts since we do not have access 
+    // Excludes bitfi and ledger accounts since we do not have access
     // to the private key.
-    if(walletInfo.type !== KeyringWalletType.LedgerAccountWallet && 
-        walletInfo.type !== KeyringWalletType.BitfiAccountWallet
-      ){
-      privateKey = this.keyringManager.exportAccountPrivateKey(
-        account.address
-      );
-    }else {
+    if (
+      walletInfo.type !== KeyringWalletType.LedgerAccountWallet &&
+      walletInfo.type !== KeyringWalletType.BitfiAccountWallet
+    ) {
+      privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
+    } else {
       publicKey = account.publicKey;
     }
 
@@ -94,17 +93,23 @@ export class AccountController implements IAccountController {
         dag4.account.loginPublicKey(publicKey);
       }
 
-      return [
-        {
-          id: AssetType.Constellation,
-          type:
-            walletInfo.type === KeyringWalletType.LedgerAccountWallet
-              ? AssetType.LedgerConstellation
-              : AssetType.Constellation,
-          label: 'Constellation',
-          address: account.address,
-        },
-      ];
+      const dagAsset = {
+        id: AssetType.Constellation,
+        type:
+          walletInfo.type === KeyringWalletType.LedgerAccountWallet
+            ? AssetType.LedgerConstellation
+            : AssetType.Constellation,
+        label: 'Constellation',
+        address: account.address,
+      };
+
+      const L0_TOKENS = Object.values(assets)
+        .filter((token) => token.type === AssetType.Constellation && !!token.l0endpoint)
+        .map((token) => token.id);
+
+      const l0tokens = this.buildAccountL0Tokens(L0_TOKENS);
+
+      return [dagAsset, ...l0tokens];
     }
 
     // TODO-349: Check if we need to add logic for all networks here
@@ -117,19 +122,26 @@ export class AccountController implements IAccountController {
         label: 'Ethereum',
         address: account.address,
       };
-      
+
       const ERC_20_TOKENS = Object.values(assets)
-                                .filter((token) => token.type === AssetType.ERC20)
-                                .map((token) => token.id);
+        .filter((token) => token.type === AssetType.ERC20)
+        .map((token) => token.id);
 
       // 349: New network should be added here.
       const NETWORK_TOKENS = Object.values(assets)
-                                .filter((token) => [AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(token.symbol as AssetSymbol))
-                                .map((token) => token.id);
+        .filter((token) =>
+          [AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
+            token.symbol as AssetSymbol
+          )
+        )
+        .map((token) => token.id);
 
-      const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);                          
+      const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);
 
-      const erc20Assets = await this.buildAccountERC20Tokens(account.address, ERC_20_TOKENS);
+      const erc20Assets = await this.buildAccountERC20Tokens(
+        account.address,
+        ERC_20_TOKENS
+      );
 
       const erc721Assets = await this.buildAccountERC721Tokens(account.address);
 
@@ -140,9 +152,29 @@ export class AccountController implements IAccountController {
     return [];
   }
 
+  buildAccountL0Tokens(tokens: string[]): IAssetState[] {
+    const assets: IAssetListState = store.getState().assets;
+
+    if (!tokens?.length) return [];
+
+    const assetList: IAssetState[] = tokens
+      .filter((token) => !!assets[token])
+      .map((token) => {
+        const tokenInfo = assets[token];
+        return {
+          id: tokenInfo.id,
+          type: AssetType.Constellation,
+          label: tokenInfo.label,
+          address: tokenInfo.address,
+        };
+      });
+
+    return assetList;
+  }
+
   buildNetworkAssets(address: string, tokens: string[]): IAssetState[] {
     const networkAssets = [];
-    
+
     // 349: New network should be added here.
     const avaxAsset = {
       id: AssetType.Avalanche,
@@ -209,7 +241,7 @@ export class AccountController implements IAccountController {
     };
 
     // Ledger wallet will contain a bipIndex.
-    if(walletInfo?.bipIndex !== undefined){
+    if (walletInfo?.bipIndex !== undefined) {
       activeWallet.bipIndex = walletInfo.bipIndex;
     }
 
@@ -274,15 +306,15 @@ export class AccountController implements IAccountController {
 
     if (!activeAsset) return;
 
-    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
+    if (
+      activeAsset.type === AssetType.Constellation ||
+      activeAsset.type === AssetType.LedgerConstellation
+    ) {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
       let txsV1: any = [];
       try {
-        txsV2 = await dag4.monitor.getLatestTransactions(
-          activeAsset.address,
-          TXS_LIMIT
-        );
+        txsV2 = await dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT);
       } catch (err) {
         console.log('Error: getLatestTransactions', err);
         txsV2 = [];
@@ -314,9 +346,10 @@ export class AccountController implements IAccountController {
   }
 
   updateWalletLabel(wallet: KeyringWalletState, label: string) {
-
-    if (wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-      wallet.type !== KeyringWalletType.BitfiAccountWallet) {
+    if (
+      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+      wallet.type !== KeyringWalletType.BitfiAccountWallet
+    ) {
       this.keyringManager.setWalletLabel(wallet.id, label);
     } else {
       // Hardware wallet label update:
@@ -334,6 +367,7 @@ export class AccountController implements IAccountController {
   }
 
   async updateAccountActiveAsset(asset: IAssetState) {
+    console.log('updateAccountActiveAsset', asset);
     store.dispatch(changeActiveAsset(asset));
     await this.getLatestTxUpdate();
   }
@@ -390,9 +424,9 @@ export class AccountController implements IAccountController {
       ),
       gasPrice: gasPrice
         ? utils.baseAmount(
-          ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-          9
-        )
+            ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+            9
+          )
         : undefined,
       gasLimit: BigNumber.from(gasLimit),
       nonce: tx.nonce,
@@ -400,7 +434,8 @@ export class AccountController implements IAccountController {
 
     if (activeAsset.type !== AssetType.Ethereum) {
       txOptions.asset = utils.assetFromString(
-        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address
+        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
+          assets[activeAsset.id].address
         }`
       );
     }
@@ -471,9 +506,9 @@ export class AccountController implements IAccountController {
         ),
         gasPrice: gasPrice
           ? utils.baseAmount(
-            ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-            9
-          )
+              ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
+              9
+            )
           : undefined,
         gasLimit: gasLimit && BigNumber.from(gasLimit),
         nonce,
@@ -481,11 +516,12 @@ export class AccountController implements IAccountController {
       // TODO-349: Check how this works for ERC-20 tokens in Polygon, Avalanche, etc.
       if (activeAsset.type !== AssetType.Ethereum) {
         txOptions.asset = utils.assetFromString(
-          `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address
+          `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
+            assets[activeAsset.id].address
           }`
         );
       }
-      
+
       const newTx: TransactionResponse = await this.networkController.transfer(txOptions);
       const { id: networkId } = this.networkController.getNetwork();
 
@@ -588,12 +624,14 @@ export class AccountController implements IAccountController {
       console.log('Error: Unable to fetch token info');
     }
     if (info) {
-      store.dispatch(setCustomAsset({
-        tokenAddress: info.address || '',
-        tokenName: info.name || '',
-        tokenSymbol: info.symbol || '',
-        tokenDecimals: info.decimals?.toString() || '',
-      }))
+      store.dispatch(
+        setCustomAsset({
+          tokenAddress: info.address || '',
+          tokenName: info.name || '',
+          tokenSymbol: info.symbol || '',
+          tokenDecimals: info.decimals?.toString() || '',
+        })
+      );
     }
   }
 

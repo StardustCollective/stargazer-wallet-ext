@@ -442,7 +442,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     handleAmountChange(formattedUnits);
   };
 
-  const isDAG = assetInfo.symbol === AssetSymbol.DAG;
+  const isDAG = assetInfo.type === AssetType.Constellation;
 
   const networkLabel = getNetworkFromChainId(assetInfo?.network);
   const chainValue = activeNetwork[networkLabel as keyof ActiveNetwork];

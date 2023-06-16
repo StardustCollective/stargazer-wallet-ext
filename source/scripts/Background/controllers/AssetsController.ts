@@ -15,12 +15,14 @@ import { addAsset, removeAsset, addCustomAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
 import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
 import { getAccountController } from 'utils/controllersUtils';
+import { CONSTELLATION_LOGO } from 'constants/index';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
 
 // Default logos
 const DEFAULT_LOGOS = {
+  'Constellation': CONSTELLATION_LOGO,
   'Ethereum': ETHEREUM_DEFAULT_LOGO,
   'Avalanche': AVALANCHE_DEFAULT_LOGO,
   'BSC': BSC_DEFAULT_LOGO,
@@ -30,10 +32,12 @@ const DEFAULT_LOGOS = {
 // DTM and Alkimi NFTs should appear on top by default
 const DTM_STRINGS = ['DTM', 'Dor Traffic', 'Dor Foot Traffic'];
 const ALKIMI_STRING = 'alkimi';
+const DEFAULT_DAG_DECIMALS = 8;
 
 export interface IAssetsController {
   clearCustomToken: () => void;
   addCustomERC20Asset: (networkType: string, address: string, name: string, symbol: string, decimals: string) => Promise<void>;
+  addCustomL0Token: (l0endpoint: string, l1endpoint:string, address: string, name: string, symbol: string) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
   fetchWalletNFTInfo: (address: string) => Promise<void>;
   fetchSupportedAssets: () => Promise<void>;
@@ -168,6 +172,43 @@ const AssetsController = (): IAssetsController => {
     store.dispatch(clearSearch());
   }
 
+  const addCustomL0Token = async (l0endpoint: string, l1endpoint: string, address: string, name: string, symbol: string): Promise<void> => {
+    const accountController = getAccountController();
+    const { activeNetwork } = store.getState().vault;
+    const assets = store.getState().assets;
+
+    const network = activeNetwork[KeyringNetwork.Constellation];
+    const deafultLogo = DEFAULT_LOGOS[KeyringNetwork.Constellation];
+
+    const newL0Asset: IAssetInfoState = {
+      id: `${address}-${network}`,
+      address,
+      label: name,
+      symbol,
+      decimals: DEFAULT_DAG_DECIMALS,
+      type: AssetType.Constellation,
+      logo: deafultLogo,
+      network,
+      l0endpoint,
+      l1endpoint,
+      custom: true,
+    }
+
+    const asset = Object.keys(assets).find(assetId => assetId === newL0Asset.id);
+    if (!asset) {
+      store.dispatch(addCustomAsset(newL0Asset));
+      store.dispatch(addERC20Asset(newL0Asset));
+      store.dispatch(addAsset({
+        id: newL0Asset.id,
+        type: newL0Asset.type,
+        label: newL0Asset.label,
+        address: newL0Asset.address,
+        contractAddress: newL0Asset.address,
+      }));
+      await accountController.assetsBalanceMonitor.start();
+    }
+  }
+
   const addCustomERC20Asset = async (networkType: string, address: string, name: string, symbol: string, decimals: string): Promise<void> => {
     if (!validateAddress(address)) return;
 
@@ -264,6 +305,7 @@ const AssetsController = (): IAssetsController => {
   return { 
      clearCustomToken,
      addCustomERC20Asset,
+     addCustomL0Token,
      removeCustomERC20Asset,
      fetchWalletNFTInfo,
      fetchSupportedAssets,

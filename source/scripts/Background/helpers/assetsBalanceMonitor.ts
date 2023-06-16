@@ -16,6 +16,7 @@ import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { BigNumber } from 'bignumber.js';
+import { IAssetInfoState } from 'state/assets/types';
 
 const FIVE_SECONDS = 5 * 1000;
 const DAG_DECIMAL_FACTOR = 1e-8;
@@ -119,11 +120,26 @@ export class AssetsBalanceMonitor {
     }
   }
 
+  async refreshL0balances(l0assets: IAssetInfoState[]) {
+    let l0balances = {};
+    for (const l0asset of l0assets) {
+      const metagraphClient = dag4.account.createMetagraphTokenClient({
+        id: '',
+        l0Url: l0asset.l0endpoint,
+        l1Url: l0asset.l1endpoint
+      });
+    }
+
+    return l0balances;
+  }
+
   async refreshDagBalance() {
     store.dispatch(
       updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS })
     );
     const { balances } = store.getState().vault;
+    const assets = store.getState().assets;
+
     try {
       // Hotfix: Use block explorer API directly.
       const address = dag4.account.address;
@@ -132,9 +148,12 @@ export class AssetsBalanceMonitor {
 
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;
+      const l0assets = Object.values(assets).filter(asset => !!asset?.l0endpoint && !!asset?.l1endpoint)
+      const l0balances = await this.refreshL0balances(l0assets);
       store.dispatch(
         updateBalances({
           ...balances,
+          ...l0balances,
           [AssetType.Constellation]: String(balanceNumber) || '-',
           pending,
         })
