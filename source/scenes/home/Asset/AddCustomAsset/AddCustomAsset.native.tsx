@@ -59,6 +59,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   onSubmit,
   errors,
   buttonDisabled,
+  buttonLoading
 }) => {
   const [cameraOpen, setCameraOpen] = useState(false);
 
@@ -79,8 +80,6 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   const tokenAddressPlaceholder = isL0Token ? 'DAG...': '0x...';
   const tokenNamePlaceholder = isL0Token ? 'Enter token name' : 'Ethereum';
   const tokenSymbolPlaceholder = isL0Token ? 'Enter token symbol' : 'ETH';
-
-  console.log('isL0Token', isL0Token);
 
   ///////////////////////////
   // Render
@@ -220,6 +219,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
             size={BUTTON_SIZES_ENUM.LARGE}
             title="Add Token"
             disabled={buttonDisabled}
+            loading={buttonLoading}
             onPress={handleSubmit((data) => {
               onSubmit(data);
             })}

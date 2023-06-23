@@ -23,4 +23,5 @@ export default interface IAddCustomAsset {
   onSubmit: (asset: ICustomAssetForm) => Promise<void>;
   errors: NestDataObject<FieldValues, FieldError>;
   buttonDisabled: boolean;
+  buttonLoading: boolean;
 }

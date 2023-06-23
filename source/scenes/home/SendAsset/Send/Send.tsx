@@ -153,9 +153,11 @@ const WalletSend: FC<IWalletSend> = ({
             )}
           </ul>
           <div className={styles.status}>
-            <span className={styles.equalAmount}>
-              ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
-            </span>
+            {!assetInfo?.l0endpoint &&
+              <span className={styles.equalAmount}>
+                ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
+              </span>
+            }
             {!!Object.values(errors).length && (
               <span className={styles.error}>
                 {Object.values(errors)[0].message as any}
@@ -164,7 +166,7 @@ const WalletSend: FC<IWalletSend> = ({
           </div>
           {(activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) && (
             <div className={styles.description}>
-              {`With current network conditions we recommend a fee of ${recommend} DAG.`}
+              {`With current network conditions we recommend a fee of ${recommend} ${nativeToken}.`}
             </div>
           )}
         </section>

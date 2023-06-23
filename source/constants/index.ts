@@ -19,6 +19,7 @@ import {
 export const STORE_PORT = 'STARGAZER';
 
 export const CONSTELLATION_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
+export const CONSTELLATION_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-default-logo.png';
 export const ETHEREUM_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
 export const ETHEREUM_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
 export const AVALANCHE_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-default-logo.png';
@@ -336,6 +337,8 @@ export const DEFAULT_CURRENCY = {
   symbol: '$',
   name: 'USD',
 };
+
+export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
 const PROVIDERS_BASE_URL = isProd ? STARGAZER_PROVIDERS_BASE_URL_PROD : STARGAZER_PROVIDERS_BASE_URL;

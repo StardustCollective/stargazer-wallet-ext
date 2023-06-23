@@ -17,6 +17,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
   const { activeAsset, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const accountController = getAccountController();
+  const isL0token = !!assets[activeAsset?.id]?.l0endpoint;
 
   const isETH = activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
 
@@ -45,9 +46,12 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     }
     const DAG_EXPLORER_TX = `${DAG_EXPLORER}/transactions`;
 
-    if (!accountController?.networkController) return '';
-    const explorerURL = accountController?.networkController?.getExplorerURL();
-    if (!explorerURL) return '';
+    let explorerURL = '';
+    if (isETH) {
+      if (!accountController?.networkController) return '';
+      explorerURL = accountController?.networkController?.getExplorerURL();
+      if (!explorerURL) return '';
+    }
     return isETH ? `${explorerURL}tx/${txHash}` : `${DAG_EXPLORER_TX}/${txHash}`;
   };
 
@@ -89,6 +93,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
         currencySymbol={assets[activeAsset?.id]?.symbol}
         amount={amountString}
         fiatAmount={fiatAmount}
+        isL0token={isL0token}
       />
     );
   };

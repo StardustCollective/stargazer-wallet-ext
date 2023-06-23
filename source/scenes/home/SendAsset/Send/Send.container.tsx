@@ -34,7 +34,7 @@ import { CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
 
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
-import IVaultState, { AssetType, IActiveAssetState, IAssetState, AssetBalances, AssetSymbol, ActiveNetwork } from 'state/vault/types';
+import IVaultState, { AssetType, IActiveAssetState, IAssetState, AssetBalances, ActiveNetwork } from 'state/vault/types';
 import { RootState } from 'state/store';
 
 ///////////////////////////
@@ -466,7 +466,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   }
 
   const assetNetwork = assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
-  const nativeToken = getNativeToken(assetNetwork);
+  const nativeToken = isDAG ? assetInfo.symbol : getNativeToken(assetNetwork);
   const basePriceId = getPriceId(assetNetwork);
 
   return (

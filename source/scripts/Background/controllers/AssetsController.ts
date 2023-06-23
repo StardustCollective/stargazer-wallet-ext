@@ -3,7 +3,7 @@ import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
-import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO, AVALANCHE_DEFAULT_LOGO, BSC_DEFAULT_LOGO, POLYGON_DEFAULT_LOGO, COINGECKO_API_KEY_PARAM } from 'constants/index';
+import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO, AVALANCHE_DEFAULT_LOGO, BSC_DEFAULT_LOGO, POLYGON_DEFAULT_LOGO, COINGECKO_API_KEY_PARAM, CONSTELLATION_DEFAULT_LOGO } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
@@ -15,14 +15,13 @@ import { addAsset, removeAsset, addCustomAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
 import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
 import { getAccountController } from 'utils/controllersUtils';
-import { CONSTELLATION_LOGO } from 'constants/index';
 
 // Batch size for OpenSea API requests (max 50)
 const BATCH_SIZE = 50;
 
 // Default logos
 const DEFAULT_LOGOS = {
-  'Constellation': CONSTELLATION_LOGO,
+  'Constellation': CONSTELLATION_DEFAULT_LOGO,
   'Ethereum': ETHEREUM_DEFAULT_LOGO,
   'Avalanche': AVALANCHE_DEFAULT_LOGO,
   'BSC': BSC_DEFAULT_LOGO,
@@ -174,7 +173,7 @@ const AssetsController = (): IAssetsController => {
 
   const addCustomL0Token = async (l0endpoint: string, l1endpoint: string, address: string, name: string, symbol: string): Promise<void> => {
     const accountController = getAccountController();
-    const { activeNetwork } = store.getState().vault;
+    const { activeNetwork, activeWallet } = store.getState().vault;
     const assets = store.getState().assets;
 
     const network = activeNetwork[KeyringNetwork.Constellation];
@@ -195,6 +194,7 @@ const AssetsController = (): IAssetsController => {
     }
 
     const asset = Object.keys(assets).find(assetId => assetId === newL0Asset.id);
+    const dagAddress = activeWallet?.assets?.find(asset => asset.id === AssetType.Constellation)?.address;
     if (!asset) {
       store.dispatch(addCustomAsset(newL0Asset));
       store.dispatch(addERC20Asset(newL0Asset));
@@ -202,7 +202,7 @@ const AssetsController = (): IAssetsController => {
         id: newL0Asset.id,
         type: newL0Asset.type,
         label: newL0Asset.label,
-        address: newL0Asset.address,
+        address: dagAddress,
         contractAddress: newL0Asset.address,
       }));
       await accountController.assetsBalanceMonitor.start();

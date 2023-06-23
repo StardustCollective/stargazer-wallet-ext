@@ -162,6 +162,7 @@ const Send: FC<IWalletSend> = ({
             placeholder="Enter transaction fee"
             label="TRANSACTION FEE"
             control={control}
+            inputContainerStyle={{ marginBottom: 0 }}
             onChange={(text) => {
               handleFeeChange({ target: { value: text } });
             }}
@@ -171,19 +172,21 @@ const Send: FC<IWalletSend> = ({
             rightIcon={<InputRightButton label="RECOMMENDED" onPress={handleGetDAGTxFee} />}
           />
         )}
-        <View style={styles.estimate}>
-          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-            ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
-          </TextV3.Caption>
-        </View>
         {!!Object.values(errors).length && (
           <View style={styles.error}>
             <TextV3.Caption color={COLORS_ENUMS.RED}>{Object.values(errors)[0].message}</TextV3.Caption>
           </View>
         )}
+        {!assetInfo?.l0endpoint && 
+          <View style={styles.estimate}>
+            <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
+              ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
+            </TextV3.Caption>
+          </View>
+        }
         {activeAsset.type === AssetType.Constellation && (
           <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-            {`With current network conditions we recommend a fee of ${recommend} DAG.`}
+            {`With current network conditions we recommend a fee of ${recommend} ${nativeToken}.`}
           </TextV3.Caption>
         )}
         {activeAsset.type !== AssetType.Constellation && !!gasPrices.length && (

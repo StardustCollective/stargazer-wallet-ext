@@ -92,7 +92,7 @@ class NetworkController {
       console.log('Error: getNetwork - provider not found.');
       return null;
     }
-    return provider.getNetwork();
+    return provider?.getNetwork();
   }
 
   public getExplorerURL() { 
@@ -102,7 +102,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: getExplorerUrl - provider not found.');
     }
-    return provider.getExplorerUrl();
+    return provider?.getExplorerUrl();
   }
 
   public getAddress(): string {
@@ -112,7 +112,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: getAddress - provider not found.');
     }
-    return provider.getAddress();
+    return provider?.getAddress();
   }
 
   public getWallet(): Wallet {
@@ -122,7 +122,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: getWallet - provider not found.');
     }
-    return provider.getWallet();
+    return provider?.getWallet();
   }
 
   validateAddress(address: string): boolean {
@@ -136,7 +136,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: createERC20Contract - provider not found.');
     }
-    return provider.createERC20Contract(address);
+    return provider?.createERC20Contract(address);
   }
 
   async estimateGas(from: string, to: string, data: string) {
@@ -146,7 +146,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: estimateGas - provider not found.');
     }
-    return provider.estimateGas(from, to, data);
+    return provider?.estimateGas(from, to, data);
   }
 
   public async getTokenInfo(address: string, chainId?: string) {
@@ -166,7 +166,7 @@ class NetworkController {
       }
       provider = networkToProvider[network as keyof typeof networkToProvider];
     }
-    return provider.getTokenInfo(address);
+    return provider?.getTokenInfo(address);
   }
 
   async estimateGasPrices() {
@@ -176,7 +176,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: estimateGasPrices - provider not found.');
     }
-    return provider.estimateGasPrices();
+    return provider?.estimateGasPrices();
   }
 
   async getTransactions(params?: TxHistoryParams) {
@@ -186,7 +186,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: getTransactions - provider not found.');
     }
-    return provider.getTransactions(params);
+    return provider?.getTransactions(params);
   }
 
   async waitForTransaction(hash: string) {
@@ -196,7 +196,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: waitForTransaction - provider not found.');
     }
-    return provider.waitForTransaction(hash);
+    return provider?.waitForTransaction(hash);
   }
 
   async estimateTokenTransferGasLimit(recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) {
@@ -206,7 +206,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: estimateTokenTransferGasLimit - provider not found.');
     }
-    return provider.estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
+    return provider?.estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
   }
 
   async transfer(txOptions: any) {
@@ -216,7 +216,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: transfer - provider not found.');
     }
-    return provider.transfer(txOptions);
+    return provider?.transfer(txOptions);
   }
 
 }

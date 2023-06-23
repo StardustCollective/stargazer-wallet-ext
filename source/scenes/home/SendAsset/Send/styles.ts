@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     color: 'orange'
   },
   estimate: {
-    marginVertical: 20,
+    marginBottom: 20,
   },
   error: {
     marginBottom: 20,

@@ -149,11 +149,12 @@ const ConfirmContainer = () => {
   const getFiatAmount = useFiat(false, assetInfo);
 
   const assetNetwork = assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
-  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
+  const feeUnit = assetInfo.type === AssetType.Constellation ? assetInfo.symbol : getNativeToken(assetNetwork);
 
   const tempTx = accountController.getTempTx();
   const [confirmed, setConfirmed ] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const isL0token = !!assetInfo?.l0endpoint;
 
 
   const getSendAmount = () => {
@@ -179,6 +180,11 @@ const ConfirmContainer = () => {
   }
 
   const getTotalAmount = () => {
+
+    if (isL0token) {
+      const amount = Number(tempTx?.amount || 0) + Number(tempTx?.fee || 0);
+      return amount.toFixed(2);
+    }
 
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
     amount += getFeeAmount();
@@ -297,6 +303,7 @@ const ConfirmContainer = () => {
         handleCancel={handleCancel}
         handleConfirm={handleConfirm}
         disabled={disabled}
+        isL0token={isL0token}
       />
     </Container>
   );

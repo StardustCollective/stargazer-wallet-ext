@@ -40,6 +40,7 @@ import {
   CONSTELLATION_LOGO,
   ETHEREUM_LOGO,
   POLYGON_LOGO,
+  URL_REGEX_PATTERN,
 } from 'constants/index';
 
 const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
@@ -55,39 +56,33 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   const [tokenSymbol, setTokenSymbol] = useState<string>('');
   const [tokenDecimals, setTokenDecimals] = useState<string>('');
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const accountController = getAccountController();
   const linkTo = useLinkTo();
 
   const isL0Token = ['main2', 'test2'].includes(networkType);
 
-  let {
-    control,
-    handleSubmit,
-    register,
-    setValue,
-    setError,
-    triggerValidation,
-    errors,
-  } = useForm({
-    validationSchema: yup.object().shape({
-      tokenAddress: yup
-        .string()
-        .test('valid', 'Invalid token address', (val) => validateAddress(val))
-        .required('Token address is required'),
-      tokenName: yup.string().required('Token name is required'),
-      tokenSymbol: yup
-        .string()
-        .test('len', 'Symbol must be 11 characters or fewer', (val) => val.length <= 11)
-        .required('Token symbol is required'),
-      tokenDecimals: yup
-        .string()
-        .test('decimals', 'Decimals must be at least 0, and not over 36', (val) => {
-          const numVal = parseInt(val);
-          return !isNaN(numVal) && numVal >= 0 && numVal <= 36;
-        })
-        .required('Token decimals is required'),
-    }),
-  });
+  let { control, handleSubmit, register, setValue, setError, triggerValidation, errors } =
+    useForm({
+      validationSchema: yup.object().shape({
+        tokenAddress: yup
+          .string()
+          .test('valid', 'Invalid token address', (val) => validateAddress(val))
+          .required('Token address is required'),
+        tokenName: yup.string().required('Token name is required'),
+        tokenSymbol: yup
+          .string()
+          .test('len', 'Symbol must be 11 characters or fewer', (val) => val.length <= 11)
+          .required('Token symbol is required'),
+        tokenDecimals: yup
+          .string()
+          .test('decimals', 'Decimals must be at least 0, and not over 36', (val) => {
+            const numVal = parseInt(val);
+            return !isNaN(numVal) && numVal >= 0 && numVal <= 36;
+          })
+          .required('Token decimals is required'),
+      }),
+    });
 
   const {
     control: controlDAG,
@@ -101,10 +96,32 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     validationSchema: yup.object().shape({
       tokenAddress: yup
         .string()
-        .test('valid', 'Invalid L0 token address', async (val) => { return accountController.isValidDAGAddress(val) })
+        .test('valid', 'Invalid L0 token address', async (val) => {
+          return accountController.isValidDAGAddress(val);
+        })
+        .test('validMetagraph', 'Metagraph address not found', async (val) => {
+          console.log('entre a validMetagraph', val);
+          if (val?.length === 40) {
+            return accountController.isValidMetagraphAddress(val);
+          }
+
+          return true;
+        })
         .required('Token address is required'),
-      l0endpoint: yup.string().required('L0 endpoint is required'),
-      l1endpoint: yup.string().required('L1 endpoint is required'),
+      l0endpoint: yup
+        .string()
+        .test('validURL', 'Please enter a valid URL', (val) => {
+          const regex = new RegExp(URL_REGEX_PATTERN);
+          return regex.test(val);
+        })
+        .required('L0 endpoint is required'),
+      l1endpoint: yup
+        .string()
+        .test('validURL', 'Please enter a valid URL', (val) => {
+          const regex = new RegExp(URL_REGEX_PATTERN);
+          return regex.test(val);
+        })
+        .required('L1 endpoint is required'),
       tokenName: yup.string().required('Token name is required'),
       tokenSymbol: yup
         .string()
@@ -148,7 +165,9 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
   useEffect(() => {
     const hasErrors = !!Object.keys(errors)?.length;
-    const otherChecks = isL0Token ? l0endpoint === '' || l1endpoint === '' : tokenDecimals === '';
+    const otherChecks = isL0Token
+      ? l0endpoint === '' || l1endpoint === ''
+      : tokenDecimals === '';
     const disabled =
       hasErrors ||
       tokenAddress === '' ||
@@ -156,7 +175,15 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       tokenSymbol === '' ||
       otherChecks;
     setButtonDisabled(disabled);
-  }, [Object.keys(errors), tokenAddress, l0endpoint, l1endpoint, tokenName, tokenSymbol, tokenDecimals]);
+  }, [
+    Object.keys(errors),
+    tokenAddress,
+    l0endpoint,
+    l1endpoint,
+    tokenName,
+    tokenSymbol,
+    tokenDecimals,
+  ]);
 
   const handleAddressChange = async (value: string) => {
     setValue('tokenAddress', value);
@@ -202,8 +229,29 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     await handleAddressChange(filteredAddress);
   };
 
+  const removeSlash = (value: string) => {
+    let returnString = value;
+    if (!!value){
+      const lastChar = value.charAt(value.length - 1);
+      if (lastChar === '/') {
+        returnString = value.slice(0, -1);
+      }
+    }
+    return returnString;
+  }
+
   const onSubmit = async (asset: ICustomAssetForm): Promise<void> => {
-    const { tokenAddress, tokenName, tokenSymbol, tokenDecimals, l0endpoint, l1endpoint } = asset;
+    const {
+      tokenAddress,
+      tokenName,
+      tokenSymbol,
+      tokenDecimals,
+      l0endpoint,
+      l1endpoint,
+    } = asset;
+
+    setButtonLoading(true);
+    setButtonDisabled(true);
 
     if (!isL0Token) {
       if (!validateAddress(tokenAddress)) {
@@ -220,14 +268,23 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       );
     } else {
       const isValidDagAddress = await accountController.isValidDAGAddress(tokenAddress);
+      const isValidMetagraphAddress = await accountController.isValidMetagraphAddress(tokenAddress);
       if (!isValidDagAddress) {
         setError('tokenAddress', 'invalidAddress', 'Invalid L0 token address');
         return;
       }
 
+      if (!isValidMetagraphAddress) {
+        setError('tokenAddress', 'invalidAddress', 'Metagraph address not found');
+        return;
+      }
+
+      const formattedL0endpoint = removeSlash(l0endpoint);
+      const formattedL1endpoint = removeSlash(l1endpoint);
+
       await accountController.assetsController.addCustomL0Token(
-        l0endpoint, 
-        l1endpoint,
+        formattedL0endpoint,
+        formattedL1endpoint,
         tokenAddress,
         tokenName,
         tokenSymbol
@@ -263,7 +320,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   };
 
   const networkTypeOptions = {
-    title: 'Network Type',
+    title: 'Network type',
     value: networkType,
     items: [
       // 349: New network should be added here.
@@ -303,6 +360,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       onSubmit={onSubmit}
       errors={errors}
       buttonDisabled={buttonDisabled}
+      buttonLoading={buttonLoading}
     />
   );
 };

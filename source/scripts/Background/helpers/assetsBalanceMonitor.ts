@@ -120,14 +120,16 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  async refreshL0balances(l0assets: IAssetInfoState[]) {
+  async refreshL0balances(l0assets: IAssetInfoState[], dagAddress: string) {
     let l0balances = {};
     for (const l0asset of l0assets) {
-      const metagraphClient = dag4.account.createMetagraphTokenClient({
-        id: '',
-        l0Url: l0asset.l0endpoint,
-        l1Url: l0asset.l1endpoint
-      });
+      const balance = (await dag4.network.blockExplorerV2Api.getCurrencyAddressBalance(l0asset.address, dagAddress) as any )?.data?.balance ?? 0;
+      const balanceNumber = new BigNumber(balance).multipliedBy(DAG_DECIMAL_FACTOR).toNumber();
+
+      l0balances = {
+        ...l0balances,
+        [`${l0asset.id}`]: String(balanceNumber) || '-',
+      };
     }
 
     return l0balances;
@@ -149,7 +151,7 @@ export class AssetsBalanceMonitor {
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;
       const l0assets = Object.values(assets).filter(asset => !!asset?.l0endpoint && !!asset?.l1endpoint)
-      const l0balances = await this.refreshL0balances(l0assets);
+      const l0balances = await this.refreshL0balances(l0assets, address);
       store.dispatch(
         updateBalances({
           ...balances,
