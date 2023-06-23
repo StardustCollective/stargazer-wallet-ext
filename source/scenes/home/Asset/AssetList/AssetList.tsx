@@ -26,7 +26,7 @@ import { getNetworkFromChainId, getNetworkLabel } from 'scripts/Background/contr
 
 import { IAssetList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
-import { ActiveNetwork, AssetSymbol } from 'state/vault/types';
+import { ActiveNetwork, AssetSymbol, AssetType } from 'state/vault/types';
 
 ///////////////////////////
 // Styles
@@ -53,7 +53,7 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
             const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(item?.symbol as AssetSymbol);
             const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
             const itemChainId = item?.network;
-            const itemNetwork = item?.symbol === AssetSymbol.DAG ? KeyringNetwork.Constellation : getNetworkFromChainId(itemChainId);
+            const itemNetwork = item?.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(itemChainId);
             const currentActiveNetwork = activeNetwork[itemNetwork as keyof ActiveNetwork];
             const network = getNetworkLabel(currentActiveNetwork);
             // 349: New network should be added here.
@@ -63,6 +63,7 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
             const hideToken = itemChainId !== 'both' && !isMATIC && !isAVAX && !isBNB && currentActiveNetwork !== itemChainId;
             if (!isAssetSupported || hideToken) return null;
             return <AssetWithToggle 
+                      key={item?.id}
                       id={item?.id}
                       symbol={item?.symbol} 
                       network={network}

@@ -44,7 +44,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   if ([AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(asset?.symbol)) {
     const currentNetwork = getNetworkFromChainId(network);
     network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
-  } else if (AssetType.Constellation === asset?.type) {
+  } else if (AssetSymbol.DAG === asset?.symbol) {
     network = activeNetwork.Constellation;
   }
   

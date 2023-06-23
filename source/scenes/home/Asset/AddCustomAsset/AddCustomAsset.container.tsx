@@ -100,7 +100,6 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
           return accountController.isValidDAGAddress(val);
         })
         .test('validMetagraph', 'Metagraph address not found', async (val) => {
-          console.log('entre a validMetagraph', val);
           if (val?.length === 40) {
             return accountController.isValidMetagraphAddress(val);
           }
@@ -114,12 +113,26 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
           const regex = new RegExp(URL_REGEX_PATTERN);
           return regex.test(val);
         })
+        .test('validNode', 'L0 endpoint not found', (val) => {
+          if (!!val) {
+            return accountController.isValidNode(val);
+          }
+
+          return true;
+        })
         .required('L0 endpoint is required'),
       l1endpoint: yup
         .string()
         .test('validURL', 'Please enter a valid URL', (val) => {
           const regex = new RegExp(URL_REGEX_PATTERN);
           return regex.test(val);
+        })
+        .test('validNode', 'L1 endpoint not found', (val) => {
+          if (!!val) {
+            return accountController.isValidNode(val);
+          }
+
+          return true;
         })
         .required('L1 endpoint is required'),
       tokenName: yup.string().required('Token name is required'),
@@ -229,17 +242,6 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     await handleAddressChange(filteredAddress);
   };
 
-  const removeSlash = (value: string) => {
-    let returnString = value;
-    if (!!value){
-      const lastChar = value.charAt(value.length - 1);
-      if (lastChar === '/') {
-        returnString = value.slice(0, -1);
-      }
-    }
-    return returnString;
-  }
-
   const onSubmit = async (asset: ICustomAssetForm): Promise<void> => {
     const {
       tokenAddress,
@@ -279,12 +281,9 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
         return;
       }
 
-      const formattedL0endpoint = removeSlash(l0endpoint);
-      const formattedL1endpoint = removeSlash(l1endpoint);
-
       await accountController.assetsController.addCustomL0Token(
-        formattedL0endpoint,
-        formattedL1endpoint,
+        l0endpoint,
+        l1endpoint,
         tokenAddress,
         tokenName,
         tokenSymbol

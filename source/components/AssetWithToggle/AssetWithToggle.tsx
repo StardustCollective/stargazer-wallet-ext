@@ -43,7 +43,7 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, network, logo, sele
   ///////////////////////
 
   return (
-    <Card id={`AssetWithToggle-${id}-${network}`} disabled style={styles.cardContainer}>
+    <Card key={`AssetWithToggle-${id}-${network}`} id={`AssetWithToggle-${id}-${network}`} disabled style={styles.cardContainer}>
       <div className={styles.container}>
         <div className={styles.assetIcon}>
           <img className={iconStyle} src={logo} />

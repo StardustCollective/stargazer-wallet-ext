@@ -660,8 +660,19 @@ export class AccountController implements IAccountController {
     const response: any = await (await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)).json();
     return !!response?.data?.hash;
   }
- 
 
+  async isValidNode(url: string) {
+    let response;
+
+    try {
+      response = await (await fetch(`${url}/cluster/info`)).json();
+    } catch (err) {
+      return false;
+    }
+
+    return !!response?.length && !!response[0]?.id;
+  }
+ 
   isValidERC20Address(address: string) {
     if (!this.networkController) {
       return false;

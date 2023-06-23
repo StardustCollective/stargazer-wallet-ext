@@ -20,6 +20,7 @@ export interface IAccountController {
   confirmTempTx: () => Promise<string>;
   isValidDAGAddress: (address: string) => boolean;
   isValidMetagraphAddress: (address: string) => Promise<boolean>;
+  isValidNode: (url: string) => Promise<boolean>;
   isValidERC20Address: (address: string) => boolean;
   // subscribeAccount: (id: string, label?: string) => Promise<string | null>;
   // unsubscribeAccount: (index: number, pwd: string) => boolean;
