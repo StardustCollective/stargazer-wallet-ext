@@ -294,19 +294,22 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   };
 
   const handleNetworkTypeChange = (value: string) => {
-    setNetworkType(value);
-    setValue('tokenAddress', '');
-    setValue('l0endpoint', '');
-    setValue('l1endpoint', '');
-    setValue('tokenName', '');
-    setValue('tokenSymbol', '');
-    setValue('tokenDecimals', '');
-    setTokenAddress('');
-    setTokenName('');
-    setL0endpoint('');
-    setL1endpoint('');
-    setTokenSymbol('');
-    setTokenDecimals('');
+    if (value !== networkType) {
+      navigation.goBack();
+      setNetworkType(value);
+      setValue('tokenAddress', '');
+      setValue('l0endpoint', '');
+      setValue('l1endpoint', '');
+      setValue('tokenName', '');
+      setValue('tokenSymbol', '');
+      setValue('tokenDecimals', '');
+      setTokenAddress('');
+      setTokenName('');
+      setL0endpoint('');
+      setL1endpoint('');
+      setTokenSymbol('');
+      setTokenDecimals('');
+    }
   };
 
   const navigateToSingleSelect = () => {
