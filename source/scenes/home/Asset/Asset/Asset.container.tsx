@@ -78,6 +78,8 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
 
   useFocusEffect(
     useCallback(() => {
+      if (!activeAsset) return;
+      
       const fetchTxs = async () => {
         if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
           return activeAsset.transactions;

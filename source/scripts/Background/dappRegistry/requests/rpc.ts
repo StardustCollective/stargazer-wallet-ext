@@ -1,7 +1,7 @@
 import {
-  StargazerChain,
   AvailableChainMethods,
   AvailableChainMethod,
+  ProtocolProvider,
 } from '../../../common';
 
 import type { DappProviderExternalImplementation } from '../dappProvider';
@@ -19,15 +19,15 @@ const handleRpcRequest: DappProviderExternalImplementation<'onRpcRequest', []> =
     throw new Error('Wallet must be unlocked');
   }
 
-  const chain = dappProvider.getChainProviderDataByPort(port).chain;
-  const chainProvider =
-    chain === StargazerChain.CONSTELLATION
-      ? window.controller.stargazerProvider
-      : chain === StargazerChain.ETHEREUM
-      ? window.controller.ethereumProvider
-      : null;
+  const CHAIN_PROVIDERS = {
+    [ProtocolProvider.CONSTELLATION]: window.controller.stargazerProvider,
+    [ProtocolProvider.ETHEREUM]: window.controller.ethereumProvider,
+  }
 
-  if (chainProvider === null) {
+  const chain = dappProvider.getChainProviderDataByPort(port).chain;
+  const chainProvider = CHAIN_PROVIDERS[chain] ?? null;
+
+  if (!chainProvider) {
     throw new Error('Unable to find provider for request');
   }
 

@@ -20,7 +20,6 @@ import { IDAppState } from 'state/dapp/types';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { getERC20DataDecoder } from 'utils/ethUtil';
-
 import type { DappProvider } from '../Background/dappRegistry';
 import {
   AvailableMethods,
@@ -28,12 +27,12 @@ import {
   StargazerProxyRequest,
   EIPRpcError,
   StargazerChain,
+  ProtocolProvider,
 } from '../common';
-
 import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
 import { getChainId, getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
-import { ETH_NETWORK } from 'constants/index';
+import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -43,11 +42,74 @@ const WINDOW_TYPES: Record<string, Windows.CreateType> = {
   normal: 'normal',
 };
 
-export class EthereumProvider implements IRpcChainRequestHandler {
+interface SwitchEthereumChainParameter {
+  chainId: string;
+}
+
+export class EVMProvider implements IRpcChainRequestHandler {
+
+  //////////////////////
+  // Private methods
+  //////////////////////
+
+  private getNetworkInfo() {
+    const { currentEVMNetwork }: IVaultState = store.getState().vault;
+    const networkInfo = Object.values(ALL_EVM_CHAINS).find(chain => chain.id === currentEVMNetwork);
+
+    if (!networkInfo) throw new Error('Network not found');
+
+    return networkInfo;
+  }
+
+  private getNetworkLabel() {
+    const network = this.getNetworkInfo();
+    return network.network;
+  }
+
+  private getNetworkId() {
+    const network = this.getNetworkInfo();
+    return network.networkId;
+  }
+
+  private getNetworkToken() {
+    const network = this.getNetworkInfo();
+    return network.nativeToken;
+  }
+
+  private getWallet() {
+    const controller = useController();
+    const networkId = this.getNetworkId();
+
+    if (networkId === StargazerChain.ETHEREUM) {
+      return controller.wallet.account.networkController.ethereumNetwork.getWallet();
+    } else if (networkId === StargazerChain.POLYGON) {
+      return controller.wallet.account.networkController.polygonNetwork.getWallet();
+    } else if (networkId === StargazerChain.BSC) {
+      return controller.wallet.account.networkController.bscNetwork.getWallet();
+    } else if (networkId === StargazerChain.AVALANCHE) {
+      return controller.wallet.account.networkController.avalancheNetwork.getWallet();
+    }
+
+    throw new Error('Wallet not found');
+  }
+
+  private remove0x(hash: string) {
+    return hash.startsWith('0x') ? hash.slice(2) : hash;
+  }
+
+  private preserve0x(hash: string) {
+    return hash.startsWith('0x') ? hash : `0x${hash}`;
+  }
+
+  //////////////////////
+  // Public methods
+  //////////////////////
+
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
+    const networkLabel = this.getNetworkLabel();
 
-    return activeNetwork[KeyringNetwork.Ethereum];
+    return activeNetwork[networkLabel as keyof typeof activeNetwork];
   }
 
   getChainId() {
@@ -57,9 +119,10 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   }
 
   getAddress() {
-    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    // It's ok to return the ETH address for all EVM networks
+    const asset: IAssetState = this.getAssetByType(AssetType.Ethereum);
 
-    return stargazerAsset && stargazerAsset.address;
+    return asset && asset.address;
   }
 
   getAccounts(): Array<string> {
@@ -95,16 +158,13 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     ].filter(Boolean); // if no active address, remove
   }
 
-  getBlockNumber() {
-    return 1;
-  }
-
   getBalance() {
     const { balances }: IVaultState = store.getState().vault;
 
-    const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const asset: IAssetState = this.getAssetByType(AssetType.Ethereum);
+    const networkId = this.getNetworkId();
 
-    return stargazerAsset && balances[AssetType.Ethereum];
+    return asset && balances[networkId];
   }
 
   normalizeSignatureRequest(message: string): string {
@@ -128,9 +188,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   }
 
   signMessage(msg: string) {
-    const controller = useController();
-    // TODO-349: Check if we need to create Providers for all networks
-    const wallet = controller.wallet.account.networkController.ethereumNetwork.getWallet();
+    const wallet = this.getWallet();
     const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = hashPersonalMessage(Buffer.from(msg));
@@ -146,8 +204,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     types: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[1],
     value: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[2]
   ) {
-    const controller = useController();
-    const wallet = controller.wallet.account.networkController.ethereumNetwork.getWallet();
+    const wallet = this.getWallet();
     const privateKeyHex = this.remove0x(wallet.privateKey);
     const privateKey = Buffer.from(privateKeyHex, 'hex');
     const msgHash = ethers.utils._TypedDataEncoder.hash(domain, types, value);
@@ -161,13 +218,13 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   getAssetByType(type: AssetType) {
     const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
 
-    let stargazerAsset: IAssetState = activeAsset as IAssetState;
+    let asset: IAssetState = activeAsset as IAssetState;
 
     if (!activeAsset || activeAsset.type !== type) {
-      stargazerAsset = activeWallet.assets.find((a) => a.type === type);
+      asset = activeWallet.assets.find((a) => a.type === type);
     }
 
-    return stargazerAsset;
+    return asset;
   }
 
   async handleProxiedRequest(
@@ -176,7 +233,9 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     _port: Runtime.Port
   ) {
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const networkInfo = getChainInfo(activeNetwork.Ethereum);
+    const networkLabel =  this.getNetworkLabel();
+    const chainId = activeNetwork[`${networkLabel as keyof typeof activeNetwork}`]
+    const networkInfo = getChainInfo(chainId);
     const provider = new ethers.providers.JsonRpcProvider(networkInfo.rpcEndpoint);
 
     return provider.send(request.method, request.params);
@@ -189,7 +248,6 @@ export class EthereumProvider implements IRpcChainRequestHandler {
   ) {
     const { vault } = store.getState();
 
-    const { activeNetwork } = vault;
     const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
@@ -253,13 +311,17 @@ export class EthereumProvider implements IRpcChainRequestHandler {
 
       const signatureRequestEncoded = this.normalizeSignatureRequest(data);
 
+      const chainLabel = Object.values(ALL_EVM_CHAINS).find((chain: any) => chain.chainId === this.getChainId())?.label;
+
       const signatureData = {
         origin: dappProvider.origin,
-        asset: 'ETH',
+        asset: this.getNetworkToken(),
         signatureRequestEncoded,
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
         publicKey: '',
+        provider: ProtocolProvider.ETHEREUM,
+        chainLabel
       };
 
       // If the type of account is Ledger send back the public key so the
@@ -345,8 +407,8 @@ export class EthereumProvider implements IRpcChainRequestHandler {
         delete data.types['EIP712Domain'];
       }
 
-      const activeChainId = ETH_NETWORK[activeNetwork.Ethereum].chainId;
-      if (!!data?.domain?.chainId && activeChainId && parseInt(data.domain.chainId, 16) !== activeChainId) {
+      const activeChainId = this.getChainId();
+      if (!!data?.domain?.chainId && activeChainId && parseInt(data.domain.chainId) !== activeChainId) {
         throw new Error('chainId does not match the active network chainId');
       }
 
@@ -357,7 +419,7 @@ export class EthereumProvider implements IRpcChainRequestHandler {
       }
 
       const signatureConsent: TypedSignatureRequest = {
-        chain: StargazerChain.ETHEREUM,
+        chain: this.getNetworkId() as StargazerChain,
         signer: address,
         content: JSON.stringify(data.message),
       };
@@ -407,8 +469,29 @@ export class EthereumProvider implements IRpcChainRequestHandler {
     }
 
     if (request.method === AvailableMethods.eth_sendTransaction) {
-      const [trxData] = request.params as [ethers.Transaction];
+      const [trxData] = request.params;
+      console.log('trxData', trxData);
+
       let decodedContractCall: ContractInputData | null = null;
+      let eventType: string = 'transactionSent';
+      let route: string = 'sendTransaction';
+
+      // chainId should match the current active network if chainId property is provided.
+      if (!!trxData?.chainId) {
+        const chainId = this.getChainId();
+
+        if (typeof trxData.chainId === 'number') {
+          if (trxData.chainId !== chainId) {
+            throw new Error('chainId does not match the active network chainId');
+          }
+        }
+
+        if (typeof trxData.chainId === 'string') {
+          if (parseInt(trxData.chainId) !== chainId) {
+            throw new Error('chainId does not match the active network chainId');
+          }
+        }
+      }
 
       try {
         decodedContractCall =
@@ -416,69 +499,82 @@ export class EthereumProvider implements IRpcChainRequestHandler {
             ? getERC20DataDecoder().decodeData(trxData.data)
             : null;
       } catch (e) {
-        console.log('EthereumProvider:eth_sendTransaction', e);
+        console.log('EVMProvider:eth_sendTransaction', e);
       }
+
+      const chainLabel = Object.values(ALL_EVM_CHAINS).find((chain: any) => chain.chainId === this.getChainId())?.label;
 
       if (decodedContractCall?.method === 'approve') {
-        // special case transaction
-        const spendEvent = await dappProvider.createPopupAndWaitForEvent(
-          port,
-          'spendApproved',
-          undefined,
-          'approveSpend',
-          { ...trxData }
-        );
-
-        if (spendEvent === null) {
-          throw new EIPRpcError('User Rejected Request', 4001);
-        }
-
-        if (spendEvent.detail.error) {
-          throw new EIPRpcError(spendEvent.detail.error, 4002);
-        }
-
-        if (!spendEvent.detail.result) {
-          throw new EIPRpcError('User Rejected Request', 4001);
-        }
-
-        return spendEvent.detail.result;
-      } else {
-        const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
-          port,
-          'transactionSent',
-          undefined,
-          'sendTransaction',
-          { ...trxData }
-        );
-
-        if (sentTransactionEvent === null) {
-          throw new EIPRpcError('User Rejected Request', 4001);
-        }
-
-        if (sentTransactionEvent.detail.error) {
-          throw new EIPRpcError(sentTransactionEvent.detail.error, 4002);
-        }
-
-        if (!sentTransactionEvent.detail.result) {
-          throw new EIPRpcError('User Rejected Request', 4001);
-        }
-
-        return sentTransactionEvent.detail.result;
+        eventType = 'spendApproved';
+        route = 'approveSpend';
       }
+
+      const event = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        eventType,
+        undefined,
+        route,
+        { 
+          ...trxData,
+          chain: this.getNetworkId(),
+          chainLabel
+        }
+      );
+
+      if (event === null) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      if (event.detail.error) {
+        throw new EIPRpcError(event.detail.error, 4002);
+      }
+
+      if (!event.detail.result) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      return event.detail.result;
     }
 
     if (request.method === AvailableMethods.web3_sha3) {
       return ethers.utils.keccak256(request.params[0]);
     }
 
+    if (request.method === AvailableMethods.wallet_switchEthereumChain) {
+      const [chainData] = request?.params as [SwitchEthereumChainParameter] || [];
+
+      if (!chainData || !chainData?.chainId) {
+        throw new Error('chainId not provided');
+      }
+
+      const { chainId } = chainData;
+
+      if (typeof chainId !== 'string'){
+        throw new Error('chainId must be a string');
+      }
+
+      if (!chainId.startsWith('0x')) {
+        throw new Error('chainId must specify the integer ID of the chain as a hexadecimal string');
+      }
+
+      if (!SUPPORTED_HEX_CHAINS.includes(chainId)) {
+        // Show network not supported popup
+        throw new Error('chainId not supported');
+      }
+
+      const controller = useController();
+      const chainInfo = Object.values(ALL_EVM_CHAINS).find(chain => chain.hexChainId === chainId);
+
+      try {
+        await controller.wallet.switchNetwork(chainInfo.network, chainInfo.id);
+      } catch (e) {
+        throw new Error('There was an error switching the Ethereum chain');
+      }
+
+      // https://eips.ethereum.org/EIPS/eip-3326#returns
+      return null;
+    }
+
     throw new Error('Unsupported non-proxied method');
-  }
-
-  private remove0x(hash: string) {
-    return hash.startsWith('0x') ? hash.slice(2) : hash;
-  }
-
-  private preserve0x(hash: string) {
-    return hash.startsWith('0x') ? hash : `0x${hash}`;
   }
 }

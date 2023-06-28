@@ -13,14 +13,10 @@ const styles = StyleSheet.create({
   },
   fiatBalanceContainer: {
     width: '100%',
+    marginTop: 24,
     // height: 193, // do not use percentages messes up scrollview
     alignItems: 'center',
-  },
-  networkPickerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-    marginTop: 24,
+    marginTop: 24
   },
   fiatBalance: {
     maxWidth: '80%',

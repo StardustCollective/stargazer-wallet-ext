@@ -22,7 +22,9 @@ import CardLayout from 'scenes/external/Layouts/CardLayout'
 import styles from './index.module.scss';
 
 import walletsSelectors from 'selectors/walletsSelectors'
-import { StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
+import { StargazerProvider, StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
+import { ProtocolProvider } from 'scripts/common';
+import { EVMProvider } from 'scripts/Provider/EVMProvider';
 
 //////////////////////
 // Component
@@ -38,11 +40,15 @@ const SignatureRequest = () => {
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { signatureRequestEncoded, asset }:
-    { signatureRequestEncoded: string, asset: string } = JSON.parse(stringData as string);
+  const { signatureRequestEncoded, asset, provider, chainLabel }:
+    { signatureRequestEncoded: string, asset: string, provider: string, chainLabel: string } = JSON.parse(stringData as string);
   // TODO-349: Check how signature should work here
-  const provider = asset === 'DAG' ? controller.stargazerProvider : controller.ethereumProvider;
-  const account = provider.getAssetByType(asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum);
+  const PROVIDERS: { [provider: string]: StargazerProvider | EVMProvider } = {
+    [ProtocolProvider.CONSTELLATION]: controller.stargazerProvider,
+    [ProtocolProvider.ETHEREUM]: controller.ethereumProvider,
+  }
+  const providerInstance = PROVIDERS[provider];
+  const account = providerInstance.getAssetByType(asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum);
   const signatureRequest = JSON.parse(window.atob(signatureRequestEncoded)) as StargazerSignatureRequest;
 
 
@@ -62,7 +68,8 @@ const SignatureRequest = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    const signature = provider.signMessage(asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content);
+    const message = asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content;
+    const signature = providerInstance.signMessage(message);
 
     const background = await browser.runtime.getBackgroundPage();
 
@@ -112,6 +119,14 @@ const SignatureRequest = () => {
           </label>
           <div>
             {signatureRequest.content}
+          </div>
+        </section>
+        <section className={styles.message}>
+          <label>
+            Network
+          </label>
+          <div>
+            {chainLabel}
           </div>
         </section>
         {Object.keys(signatureRequest.metadata).length > 0 && <section className={styles.metadata}>

@@ -1,5 +1,29 @@
 @import "~assets/styles/variables";
 
+.headerContainer {
+  display: flex;
+  flex-direction: column;
+  padding-left: 8px;
+  padding-right: 8px;
+  
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 4px;
+
+    .headerInfoTitle {
+      font-weight: $semibold;
+      padding-right: 8px;
+    }
+
+    .headerInfoValue {
+      text-align: right;
+      word-wrap: break-word;
+    }
+  }
+}
+
 .content {
   margin: 10px;
   text-align: center;

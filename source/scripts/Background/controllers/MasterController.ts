@@ -1,18 +1,17 @@
 import { browser, Windows } from 'webextension-polyfill-ts';
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
-import { EthereumProvider } from 'scripts/Provider/EthereumProvider';
 import WalletController from './WalletController';
 import { IWalletController } from './IWalletController';
 import ControllerUtils, { IControllerUtils } from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
 import MigrationController from './MigrationController';
-
 import { DAppController } from './DAppController';
 import { DappRegistry } from '../dappRegistry';
+import { EVMProvider } from 'scripts/Provider/EVMProvider';
 
 class MasterController {
   #stargazerProvider: StargazerProvider;
-  #ethereumProvider: EthereumProvider;
+  #ethereumProvider: EVMProvider;
   #wallet: IWalletController;
   #dapp: DAppController;
   #dappRegistry: DappRegistry;
@@ -21,7 +20,7 @@ class MasterController {
 
   constructor() {
     this.#stargazerProvider = new StargazerProvider();
-    this.#ethereumProvider = new EthereumProvider();
+    this.#ethereumProvider = new EVMProvider();
     this.#wallet = WalletController;
     this.#dapp = new DAppController();
     this.#dappRegistry = new DappRegistry()

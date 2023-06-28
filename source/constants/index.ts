@@ -1,4 +1,5 @@
 import { AvalancheChainId, AvalancheChainValue, BSCChainId, BSCChainValue, EthChainId, EthChainValue, PolygonChainId, PolygonChainValue } from 'scripts/Background/controllers/EVMChainController/types';
+import { StargazerChain } from 'scripts/common';
 import { 
   isProd,
   isNative, 
@@ -41,6 +42,7 @@ export const DAG_NETWORK: {
     testnet: boolean;
     explorer: string;
     chainId: number;
+    hexChainId: string;
     logo: string;
     network: string;
     config: {
@@ -58,6 +60,7 @@ export const DAG_NETWORK: {
     testnet: false,
     explorer: 'https://mainnet.dagexplorer.io',
     chainId: 1,
+    hexChainId: '0x1',
     logo: CONSTELLATION_LOGO,
     network: 'Constellation',
     config: {
@@ -73,6 +76,7 @@ export const DAG_NETWORK: {
     testnet: true,
     explorer: 'https://testnet.dagexplorer.io',
     chainId: 3,
+    hexChainId: '0x3',
     logo: CONSTELLATION_LOGO,
     network: 'Constellation',
     config: {
@@ -90,11 +94,13 @@ export const ETH_NETWORK: {
     label: string;
     explorer: string;
     chainId: number;
+    hexChainId: string;
     rpcEndpoint: string;
     explorerAPI: string;
     nativeToken: string;
     mainnet: string;
     network: string;
+    networkId: string;
     logo: string;
   };
 } = {
@@ -106,9 +112,11 @@ export const ETH_NETWORK: {
     explorer: 'https://etherscan.io/',
     explorerAPI: 'https://api.etherscan.io',
     chainId: 1,
+    hexChainId: '0x1',
     nativeToken: 'ETH',
     mainnet: 'mainnet',
     network: 'Ethereum',
+    networkId: StargazerChain.ETHEREUM,
     logo: ETHEREUM_LOGO,
   },
   goerli: {
@@ -119,9 +127,11 @@ export const ETH_NETWORK: {
     explorer: 'https://goerli.etherscan.io/',
     explorerAPI: 'https://api-goerli.etherscan.io',
     chainId: 5,
+    hexChainId: '0x5',
     nativeToken: 'ETH',
     mainnet: 'mainnet',
     network: 'Ethereum',
+    networkId: StargazerChain.ETHEREUM,
     logo: ETHEREUM_LOGO,
   },
 };
@@ -133,11 +143,13 @@ export const AVALANCHE_NETWORK: {
     label: string;
     explorer: string;
     chainId: number;
+    hexChainId: string;
     rpcEndpoint: string;
     explorerAPI: string;
     nativeToken: string;
     mainnet: string;
     network: string;
+    networkId: string;
     logo: string;
   };
 } = {
@@ -149,9 +161,11 @@ export const AVALANCHE_NETWORK: {
     explorer: 'https://snowtrace.io/',
     explorerAPI: 'https://api.snowtrace.io',
     chainId: 43114,
+    hexChainId: '0xa86a',
     nativeToken: 'AVAX',
     mainnet: 'avalanche-mainnet',
     network: 'Avalanche',
+    networkId: StargazerChain.AVALANCHE,
     logo: AVALANCHE_LOGO,
   },
   ['avalanche-testnet']: {
@@ -162,9 +176,11 @@ export const AVALANCHE_NETWORK: {
     explorer: 'https://testnet.snowtrace.io/',
     explorerAPI: 'https://api-testnet.snowtrace.io',
     chainId: 43113,
+    hexChainId: '0xa869',
     nativeToken: 'AVAX',
     mainnet: 'avalanche-mainnet',
     network: 'Avalanche',
+    networkId: StargazerChain.AVALANCHE,
     logo: AVALANCHE_LOGO,
   },
 };
@@ -176,11 +192,13 @@ export const BSC_NETWORK: {
     label: string;
     explorer: string;
     chainId: number;
+    hexChainId: string;
     rpcEndpoint: string;
     explorerAPI: string;
     nativeToken: string;
     mainnet: string;
     network: string;
+    networkId: string;
     logo: string;
   };
 } = {
@@ -192,9 +210,11 @@ export const BSC_NETWORK: {
     explorer: 'https://bscscan.com/',
     explorerAPI: 'https://api.bscscan.com',
     chainId: 56,
+    hexChainId: '0x38',
     nativeToken: 'BNB',
     mainnet: 'bsc',
     network: 'BSC',
+    networkId: StargazerChain.BSC,
     logo: BSC_LOGO,
   },
   ['bsc-testnet']: {
@@ -205,9 +225,11 @@ export const BSC_NETWORK: {
     explorer: 'https://testnet.bscscan.com/',
     explorerAPI: 'https://api-testnet.bscscan.com',
     chainId: 97,
+    hexChainId: '0x61',
     nativeToken: 'BNB',
     mainnet: 'bsc',
     network: 'BSC',
+    networkId: StargazerChain.BSC,
     logo: BSC_LOGO,
   },
 };
@@ -219,38 +241,44 @@ export const POLYGON_NETWORK: {
     label: string;
     explorer: string;
     chainId: number;
+    hexChainId: string;
     rpcEndpoint: string;
     explorerAPI: string;
     nativeToken: string;
     mainnet: string;
     network: string;
+    networkId: string;
     logo: string;
   };
 } = {
   matic: {
     id: 'matic',
     value: 'matic',
-    label: 'Mainnet',
+    label: 'Polygon Mainnet',
     rpcEndpoint: QUICKNODE_POLYGON_MAINNET,
     explorer: 'https://polygonscan.com/',
     explorerAPI: 'https://api.polygonscan.com',
     chainId: 137,
+    hexChainId: '0x89',
     nativeToken: 'MATIC',
     mainnet: 'matic',
     network: 'Polygon',
+    networkId: StargazerChain.POLYGON,
     logo: POLYGON_LOGO,
   },
   maticmum: {
     id: 'maticmum',
     value: 'maticmum',
-    label: 'Maticmum Testnet',
+    label: 'Polygon Testnet',
     rpcEndpoint: QUICKNODE_POLYGON_TESTNET,
     explorer: 'https://mumbai.polygonscan.com/',
     explorerAPI: 'https://api-testnet.polygonscan.com',
     chainId: 80001,
+    hexChainId: '0x13881',
     nativeToken: 'MATIC',
     mainnet: 'matic',
     network: 'Polygon',
+    networkId: StargazerChain.POLYGON,
     logo: POLYGON_LOGO,
   },
 };
@@ -279,6 +307,8 @@ export const ALL_EVM_CHAINS = {
   ...BSC_NETWORK,
   ...POLYGON_NETWORK
 };
+
+export const SUPPORTED_HEX_CHAINS = ['0x1', '0x5', '0xa86a', '0xa869', '0x89', '0x13881', '0x38', '0x61'];
 
 export const ASSET_PRICE_API = 'https://pro-api.coingecko.com/api/v3/simple/price';
 export const TOKEN_INFO_API =

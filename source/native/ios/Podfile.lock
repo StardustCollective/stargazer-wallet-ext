@@ -274,6 +274,8 @@ PODS:
   - React-jsinspector (0.66.1)
   - React-logger (0.66.1):
     - glog
+  - react-native-background-timer (2.4.1):
+    - React-Core
   - react-native-biometrics (3.0.1):
     - React-Core
   - react-native-camera (4.2.1):
@@ -469,6 +471,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-background-timer (from `../../../node_modules/react-native-background-timer`)
   - react-native-biometrics (from `../../../node_modules/react-native-biometrics`)
   - react-native-camera (from `../../../node_modules/react-native-camera`)
   - react-native-document-picker (from `../../../node_modules/react-native-document-picker`)
@@ -562,6 +565,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-background-timer:
+    :path: "../../../node_modules/react-native-background-timer"
   react-native-biometrics:
     :path: "../../../node_modules/react-native-biometrics"
   react-native-camera:
@@ -669,6 +674,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: db2f6e22a534d466fc0e34e622df47d9d20bab2f
   React-jsinspector: 8c0517dee5e8c70cd6c3066f20213ff7ce54f176
   React-logger: bfddd3418dc1d45b77b822958f3e31422e2c179b
+  react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
   react-native-biometrics: 352e5a794bfffc46a0c86725ea7dc62deb085bdc
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-document-picker: ec07866a30707f23660c0f3ae591d669d3e89096
