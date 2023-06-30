@@ -49,6 +49,7 @@ const WalletSend: FC<IWalletSend> = ({
 
   const addressInputClass = clsx(styles.input, styles.address, {
     [styles.verified]: isValidAddress,
+    [styles.addressPadding]: !isExternalRequest
   });
   const statusIconClass = clsx(styles.statusIcon, {
     [styles.hide]: !isValidAddress,
@@ -100,13 +101,15 @@ const WalletSend: FC<IWalletSend> = ({
                 disabled={isExternalRequest}
                 variant={addressInputClass}
               />
-              <Button
-                type="button"
-                variant={styles.textBtn}
-                onClick={() => setModalOpen(true)}
-              >
-                Contacts
-              </Button>
+              {!isExternalRequest && 
+                <Button
+                  type="button"
+                  variant={styles.textBtn}
+                  onClick={() => setModalOpen(true)}
+                >
+                  Contacts
+                </Button>
+              }
             </li>
             <li>
               <label>{`${assetInfo.symbol} Amount`} </label>
@@ -121,13 +124,15 @@ const WalletSend: FC<IWalletSend> = ({
                 disabled={isExternalRequest}
                 variant={clsx(styles.input, styles.amount)}
               />
-              <Button
-                type="button"
-                variant={styles.textBtn}
-                onClick={handleSetMax}
-              >
-                Max
-              </Button>
+              {!isExternalRequest && 
+                <Button
+                  type="button"
+                  variant={styles.textBtn}
+                  onClick={handleSetMax}
+                >
+                  Max
+                </Button>
+              }
             </li>
             {(activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) && (
               <li>
@@ -139,16 +144,19 @@ const WalletSend: FC<IWalletSend> = ({
                   inputRef={register}
                   name="fee"
                   onChange={handleFeeChange}
+                  disabled={isExternalRequest}
                   value={fee}
                   variant={clsx(styles.input, styles.fee)}
                 />
-                <Button
-                  type="button"
-                  variant={styles.textBtn}
-                  onClick={handleGetDAGTxFee}
-                >
-                  Recommend
-                </Button>
+                {!isExternalRequest &&
+                  <Button
+                    type="button"
+                    variant={styles.textBtn}
+                    onClick={handleGetDAGTxFee}
+                  >
+                    Recommend
+                  </Button>
+                  }
               </li>
             )}
           </ul>

@@ -87,8 +87,10 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   let to: string;
   let from: string;
   let value: string;
+  let feeAmount: string;
   let gas: string;
   let memo: string;
+  let tokenAddress: string;
   let history;
   let windowId: string;
   let assetInfo: IAssetInfoState;
@@ -107,6 +109,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       gas = params.gas || 0;
       memo = params.data;
       chain = params.chain;
+      feeAmount = params.fee;
+      tokenAddress = params.tokenAddress;
     }
 
     useEffect(() => {
@@ -145,9 +149,15 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     if (!activeAsset) {
       if (!!chain) {
         if (chain === StargazerChain.CONSTELLATION) {
-          activeAsset = useSelector((state: RootState) =>
-            find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
-          );
+          if (!!tokenAddress) {
+            activeAsset = useSelector((state: RootState) =>
+              find(state.vault.activeWallet.assets, { contractAddress: tokenAddress })
+            );
+          } else {
+            activeAsset = useSelector((state: RootState) =>
+              find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
+            );
+          }
         } else {
           activeAsset = useSelector((state: RootState) =>
             find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
@@ -218,7 +228,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const [amount, setAmount] = useState<number | string>(tempTx?.amount ? Number(tempTx?.amount) : 0);
   const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
-  const [fee, setFee] = useState('0');
+  const [fee, setFee] = useState(feeAmount || '0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
   const [decimalPointOnAmount, setDecimalPointOnAmount] = useState<boolean>(false);
@@ -280,7 +290,14 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         [AssetType.Avalanche]: StargazerChain.AVALANCHE,
       }
       if (!!activeAsset?.id) {
-        params.set('chain', CHAINS[activeAsset.id]);
+        if (activeAsset.type === AssetType.Constellation) {
+          params.set('chain', StargazerChain.CONSTELLATION);
+        } else {
+          params.set('chain', CHAINS[activeAsset.id]);
+        }
+      }
+      if (!!tokenAddress) {
+        params.set('tokenAddress', tokenAddress);
       }
       history.push(`/confirmTransaction?${params.toString()}`);
     } else {

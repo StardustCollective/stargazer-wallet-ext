@@ -35,6 +35,14 @@ export type StargazerTransactionRequest = {
   fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
 };
 
+export type StargazerL0TransactionRequest = {
+  tokenAddress: string;
+  source: string;
+  destination: string;
+  amount: number; // In DATUM, 1 DATUM = 0.00000001 DAG
+  fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
+};
+
 // Constants
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
@@ -211,7 +219,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     port: Runtime.Port
   ) {
 
-    const { vault } = store.getState();
+    const { vault, assets } = store.getState();
+    const { activeNetwork } = vault;
     let windowUrl = EXTERNAL_URL;
     let deviceId = "";
     let bipIndex;
@@ -406,6 +415,113 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       const txObject = {
+        to: txDestination,
+        value: txAmount / 1e8, // DATUM to DAG
+        fee: txFee / 1e8, // DATUM to DAG
+        chain: ProtocolProvider.CONSTELLATION
+      };
+
+      const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'transactionSent',
+        undefined,
+        'sendTransaction',
+        txObject,
+        windowType,
+        windowUrl,
+        windowSize
+      );
+
+      if (sentTransactionEvent === null) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      if (sentTransactionEvent.detail.error) {
+        throw new EIPRpcError(sentTransactionEvent.detail.error, 4002);
+      }
+
+      if (!sentTransactionEvent.detail.result) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      return sentTransactionEvent.detail.result;
+    }
+
+    if (request.method === AvailableMethods.dag_sendL0Transaction) {
+      if (!activeWallet) {
+        throw new Error('There is no active wallet');
+      }
+
+      const assetAccount = activeWallet.accounts.find(
+        (account) => account.network === KeyringNetwork.Constellation
+      );      
+
+      if (!assetAccount) {
+        throw new Error('No active account for the request asset type');
+      }
+
+      const [txData] = request.params as [StargazerL0TransactionRequest];
+
+      const txTokenAddress = txData?.tokenAddress;
+      const txSource = txData?.source;
+      const txDestination = txData?.destination;
+      const txAmount = txData?.amount;
+      const txFee = txData?.fee || 0;
+
+      if (!txTokenAddress) {
+        throw new Error("'tokenAddress' is required");
+      }
+
+      if (typeof txTokenAddress !== 'string') {
+        throw new Error("Bad argument 'tokenAddress'");
+      }
+
+      const l0token = vault?.activeWallet?.assets?.find((asset) => 
+        asset.contractAddress === txTokenAddress && activeNetwork.Constellation === assets[asset?.id]?.network
+      );
+
+      if (!l0token) {
+        throw new Error("'tokenAddress' not found in wallet");
+      }
+
+      if (typeof txSource !== 'string') {
+        throw new Error("Bad argument 'source'");
+      }
+
+      if (typeof txDestination !== 'string') {
+        throw new Error("Bad argument 'destination'");
+      }
+
+      if (typeof txAmount !== 'number') {
+        throw new Error("Bad argument 'amount'");
+      }
+
+      if (!!txFee && typeof txFee !== 'number') {
+        throw new Error("Bad argument 'fee'");
+      }
+
+      if (!dag4.account.validateDagAddress(txSource)) {
+        throw new Error("Invalid address 'source'");
+      }
+
+      if (!dag4.account.validateDagAddress(txDestination)) {
+        throw new Error("Invaid address 'destination'");
+      }
+
+      if (!dag4.account.validateDagAddress(txTokenAddress)) {
+        throw new Error("Invaid address 'tokenAddress'");
+      }
+
+      if (txAmount <= 0) {
+        throw new Error("'amount' should be greater than 0");
+      }
+
+      if (assetAccount.address !== txSource) {
+        throw new Error('The active account is invalid');
+      }
+
+      const txObject = {
+        tokenAddress: txTokenAddress,
         to: txDestination,
         value: txAmount / 1e8, // DATUM to DAG
         fee: txFee / 1e8, // DATUM to DAG

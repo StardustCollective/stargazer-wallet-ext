@@ -45,6 +45,7 @@ enum AvailableMethods {
   dag_signMessage = 'dag_signMessage',
   dag_getPublicKey = 'dag_getPublicKey',
   dag_sendTransaction = 'dag_sendTransaction',
+  dag_sendL0Transaction = 'dag_sendL0Transaction',
   dag_getPendingTransaction = 'dag_getPendingTransaction',
   dag_getTransaction = 'dag_getTransaction',
 }

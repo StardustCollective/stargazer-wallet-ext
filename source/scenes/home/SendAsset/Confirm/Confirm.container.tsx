@@ -44,7 +44,7 @@ import { useFiat } from 'hooks/usePrice';
 import { getNativeToken, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
-import { isError } from 'scripts/common';
+import { StargazerChain, isError } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 import { CHAIN_FULL_ASSET } from 'utils/assetsUtil';
 
@@ -104,7 +104,8 @@ const ConfirmContainer = () => {
   if (isExternalRequest) {
     const {
       to,
-      chain
+      chain,
+      tokenAddress,
     } = queryString.parse(location.search);
 
 
@@ -114,7 +115,13 @@ const ConfirmContainer = () => {
 
     if (!activeAsset) {
       if (!!chain) {
-        activeAsset = CHAIN_FULL_ASSET[chain as keyof typeof CHAIN_FULL_ASSET];
+        if (chain === StargazerChain.CONSTELLATION && !!tokenAddress) {
+          activeAsset = useSelector(
+            (state: RootState) => find(state.assets, { address: tokenAddress as string })
+          ) as IAssetInfoState;
+        } else {
+          activeAsset = CHAIN_FULL_ASSET[chain as keyof typeof CHAIN_FULL_ASSET];
+        }
       } else {
         // Set ETH as the default activeAsset if 'chain' is not provided
         activeAsset = useSelector(
@@ -213,7 +220,7 @@ const ConfirmContainer = () => {
     try {
       if (isExternalRequest) {
         let trxHash: string;
-        if (activeAsset.id === AssetType.Constellation) {
+        if (activeAsset.type === AssetType.Constellation) {
           trxHash = await accountController.confirmTempTx();
           setConfirmed(true);
         } else {
@@ -241,7 +248,7 @@ const ConfirmContainer = () => {
         }
       } else {
         if (activeWallet.type === KeyringWalletType.LedgerAccountWallet || 
-            activeWallet.type === KeyringWalletType.BitfiAccountWallet ) {
+            activeWallet.type === KeyringWalletType.BitfiAccountWallet) {
 
           const page = activeWallet.type === KeyringWalletType.LedgerAccountWallet ? LEDGER_PAGE : BITFI_PAGE;
 

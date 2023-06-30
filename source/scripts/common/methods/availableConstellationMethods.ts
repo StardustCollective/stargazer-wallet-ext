@@ -41,6 +41,12 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_sendL0Transaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_getPendingTransaction,
     proxied: false,
     permissions: [],
