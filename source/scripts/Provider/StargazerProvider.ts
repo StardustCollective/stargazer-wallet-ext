@@ -35,7 +35,7 @@ export type StargazerTransactionRequest = {
   fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
 };
 
-export type StargazerL0TransactionRequest = {
+export type StargazerMetagraphTransactionRequest = {
   tokenAddress: string;
   source: string;
   destination: string;
@@ -141,12 +141,47 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     return 0;
   }
 
-  getBalance() {
+  getBalance(): string {
     const { balances }: IVaultState = store.getState().vault;
 
     const stargazerAsset: IAssetState = this.getAssetByType(AssetType.Constellation);
 
     return stargazerAsset && balances[AssetType.Constellation];
+  }
+
+  getMetagraphBalance(address: string): string {
+    const { balances }: IVaultState = store.getState().vault;
+
+    const metagraphAsset: IAssetState = this.getAssetByContractAddress(address);
+
+    return metagraphAsset && balances[metagraphAsset.id];
+  }
+
+  validateMetagraphToken(address: string): void {
+    const { vault, assets } = store.getState();
+    const { activeNetwork } = vault;
+
+    if (!address) {
+      throw new Error("'tokenAddress' is required");
+    }
+
+    if (typeof address !== 'string') {
+      throw new Error("Bad argument 'tokenAddress'");
+    }
+
+    if (!dag4.account.validateDagAddress(address)) {
+      throw new Error("Invaid address 'tokenAddress'");
+    }
+
+    const metagraphToken = vault?.activeWallet?.assets?.find(
+      (asset) =>
+        asset.contractAddress === address &&
+        activeNetwork.Constellation === assets[asset?.id]?.network
+    );
+
+    if (!metagraphToken) {
+      throw new Error("'tokenAddress' not found in wallet");
+    }
   }
 
   normalizeSignatureRequest(encodedSignatureRequest: string): string {
@@ -205,6 +240,18 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     return stargazerAsset;
   }
 
+  getAssetByContractAddress(address: string) {
+    const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
+
+    let metagraphAsset: IAssetState = activeAsset as IAssetState;
+
+    if (!activeAsset || activeAsset?.contractAddress !== address) {
+      metagraphAsset = activeWallet.assets.find((a) => a?.contractAddress === address);
+    }
+
+    return metagraphAsset;
+  }
+
   async handleProxiedRequest(
     _request: StargazerProxyRequest & { type: 'rpc' },
     _dappProvider: DappProvider,
@@ -218,23 +265,25 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     dappProvider: DappProvider,
     port: Runtime.Port
   ) {
-
-    const { vault, assets } = store.getState();
-    const { activeNetwork } = vault;
+    const { vault } = store.getState();
     let windowUrl = EXTERNAL_URL;
-    let deviceId = "";
+    let deviceId = '';
     let bipIndex;
-    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
+    const allWallets = [
+      ...vault.wallets.local,
+      ...vault.wallets.ledger,
+      ...vault.wallets.bitfi,
+    ];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
-    if(activeWallet.type === KeyringWalletType.LedgerAccountWallet){
+    if (activeWallet.type === KeyringWalletType.LedgerAccountWallet) {
       windowUrl = LEDGER_URL;
-      bipIndex =  activeWallet.bipIndex;
-    }else if(activeWallet.type === KeyringWalletType.BitfiAccountWallet){
+      bipIndex = activeWallet.bipIndex;
+    } else if (activeWallet.type === KeyringWalletType.BitfiAccountWallet) {
       windowUrl = BITFI_URL;
-      deviceId =  activeWallet.accounts[0].deviceId;
+      deviceId = activeWallet.accounts[0].deviceId;
     }
     const windowType =
       activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
@@ -242,7 +291,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         ? WINDOW_TYPES.normal
         : WINDOW_TYPES.popup;
     const windowSize =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet||
+      activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
       activeWallet.type === KeyringWalletType.BitfiAccountWallet
         ? { width: 600, height: 1000 }
         : { width: 372, height: 600 };
@@ -300,7 +349,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       const signatureRequestEncoded = this.normalizeSignatureRequest(signatureRequest);
 
-      const chainLabel = this.getChainId() === 1 ? 'Constellation' : 'Constellation Testnet 2.0';
+      const chainLabel =
+        this.getChainId() === 1 ? 'Constellation' : 'Constellation Testnet 2.0';
 
       const signatureData = {
         origin: dappProvider.origin,
@@ -311,7 +361,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         deviceId,
         bipIndex,
         provider: ProtocolProvider.CONSTELLATION,
-        chainLabel
+        chainLabel,
       };
 
       const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
@@ -418,114 +468,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         to: txDestination,
         value: txAmount / 1e8, // DATUM to DAG
         fee: txFee / 1e8, // DATUM to DAG
-        chain: ProtocolProvider.CONSTELLATION
-      };
-
-      const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
-        port,
-        'transactionSent',
-        undefined,
-        'sendTransaction',
-        txObject,
-        windowType,
-        windowUrl,
-        windowSize
-      );
-
-      if (sentTransactionEvent === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      if (sentTransactionEvent.detail.error) {
-        throw new EIPRpcError(sentTransactionEvent.detail.error, 4002);
-      }
-
-      if (!sentTransactionEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      return sentTransactionEvent.detail.result;
-    }
-
-    if (request.method === AvailableMethods.dag_sendL0Transaction) {
-      if (!activeWallet) {
-        throw new Error('There is no active wallet');
-      }
-
-      const assetAccount = activeWallet.accounts.find(
-        (account) => account.network === KeyringNetwork.Constellation
-      );      
-
-      if (!assetAccount) {
-        throw new Error('No active account for the request asset type');
-      }
-
-      const [txData] = request.params as [StargazerL0TransactionRequest];
-
-      const txTokenAddress = txData?.tokenAddress;
-      const txSource = txData?.source;
-      const txDestination = txData?.destination;
-      const txAmount = txData?.amount;
-      const txFee = txData?.fee || 0;
-
-      if (!txTokenAddress) {
-        throw new Error("'tokenAddress' is required");
-      }
-
-      if (typeof txTokenAddress !== 'string') {
-        throw new Error("Bad argument 'tokenAddress'");
-      }
-
-      const l0token = vault?.activeWallet?.assets?.find((asset) => 
-        asset.contractAddress === txTokenAddress && activeNetwork.Constellation === assets[asset?.id]?.network
-      );
-
-      if (!l0token) {
-        throw new Error("'tokenAddress' not found in wallet");
-      }
-
-      if (typeof txSource !== 'string') {
-        throw new Error("Bad argument 'source'");
-      }
-
-      if (typeof txDestination !== 'string') {
-        throw new Error("Bad argument 'destination'");
-      }
-
-      if (typeof txAmount !== 'number') {
-        throw new Error("Bad argument 'amount'");
-      }
-
-      if (!!txFee && typeof txFee !== 'number') {
-        throw new Error("Bad argument 'fee'");
-      }
-
-      if (!dag4.account.validateDagAddress(txSource)) {
-        throw new Error("Invalid address 'source'");
-      }
-
-      if (!dag4.account.validateDagAddress(txDestination)) {
-        throw new Error("Invaid address 'destination'");
-      }
-
-      if (!dag4.account.validateDagAddress(txTokenAddress)) {
-        throw new Error("Invaid address 'tokenAddress'");
-      }
-
-      if (txAmount <= 0) {
-        throw new Error("'amount' should be greater than 0");
-      }
-
-      if (assetAccount.address !== txSource) {
-        throw new Error('The active account is invalid');
-      }
-
-      const txObject = {
-        tokenAddress: txTokenAddress,
-        to: txDestination,
-        value: txAmount / 1e8, // DATUM to DAG
-        fee: txFee / 1e8, // DATUM to DAG
-        chain: ProtocolProvider.CONSTELLATION
+        chain: ProtocolProvider.CONSTELLATION,
       };
 
       const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
@@ -590,6 +533,103 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         console.error('dag_getTransaction:', e);
         return null;
       }
+    }
+
+    if (request.method === AvailableMethods.dag_getMetagraphBalance) {
+      const [address] = request.params as [string];
+
+      this.validateMetagraphToken(address);
+
+      return this.getMetagraphBalance(address);
+    }
+
+    if (request.method === AvailableMethods.dag_sendMetagraphTransaction) {
+      if (!activeWallet) {
+        throw new Error('There is no active wallet');
+      }
+
+      const assetAccount = activeWallet.accounts.find(
+        (account) => account.network === KeyringNetwork.Constellation
+      );
+
+      if (!assetAccount) {
+        throw new Error('No active account for the request asset type');
+      }
+
+      const [txData] = request.params as [StargazerMetagraphTransactionRequest];
+
+      const txTokenAddress = txData?.tokenAddress;
+      const txSource = txData?.source;
+      const txDestination = txData?.destination;
+      const txAmount = txData?.amount;
+      const txFee = txData?.fee || 0;
+
+      this.validateMetagraphToken(txTokenAddress);
+
+      if (typeof txSource !== 'string') {
+        throw new Error("Bad argument 'source'");
+      }
+
+      if (typeof txDestination !== 'string') {
+        throw new Error("Bad argument 'destination'");
+      }
+
+      if (typeof txAmount !== 'number') {
+        throw new Error("Bad argument 'amount'");
+      }
+
+      if (!!txFee && typeof txFee !== 'number') {
+        throw new Error("Bad argument 'fee'");
+      }
+
+      if (!dag4.account.validateDagAddress(txSource)) {
+        throw new Error("Invalid address 'source'");
+      }
+
+      if (!dag4.account.validateDagAddress(txDestination)) {
+        throw new Error("Invaid address 'destination'");
+      }
+
+      if (txAmount <= 0) {
+        throw new Error("'amount' should be greater than 0");
+      }
+
+      if (assetAccount.address !== txSource) {
+        throw new Error('The active account is invalid');
+      }
+
+      const txObject = {
+        tokenAddress: txTokenAddress,
+        to: txDestination,
+        value: txAmount / 1e8, // DATUM to DAG
+        fee: txFee / 1e8, // DATUM to DAG
+        chain: ProtocolProvider.CONSTELLATION,
+      };
+
+      const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'transactionSent',
+        undefined,
+        'sendTransaction',
+        txObject,
+        windowType,
+        windowUrl,
+        windowSize
+      );
+
+      if (sentTransactionEvent === null) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      if (sentTransactionEvent.detail.error) {
+        throw new EIPRpcError(sentTransactionEvent.detail.error, 4002);
+      }
+
+      if (!sentTransactionEvent.detail.result) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      return sentTransactionEvent.detail.result;
     }
 
     throw new Error('Unsupported non-proxied method');

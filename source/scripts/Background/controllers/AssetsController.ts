@@ -3,13 +3,32 @@ import { addNFTAsset, resetNFTState } from 'state/nfts';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
-import { TOKEN_INFO_API, NFT_MAINNET_API, NFT_TESTNET_API, ETHEREUM_DEFAULT_LOGO, AVALANCHE_DEFAULT_LOGO, BSC_DEFAULT_LOGO, POLYGON_DEFAULT_LOGO, COINGECKO_API_KEY_PARAM, CONSTELLATION_DEFAULT_LOGO } from 'constants/index';
+import {
+  TOKEN_INFO_API,
+  NFT_MAINNET_API,
+  NFT_TESTNET_API,
+  ETHEREUM_DEFAULT_LOGO,
+  AVALANCHE_DEFAULT_LOGO,
+  BSC_DEFAULT_LOGO,
+  POLYGON_DEFAULT_LOGO,
+  COINGECKO_API_KEY_PARAM,
+  CONSTELLATION_DEFAULT_LOGO,
+} from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { clearErrors as clearErrorsDispatch, clearPaymentRequest as clearPaymentRequestDispatch, setRequestId as setRequestIdDispatch} from 'state/providers';
+import {
+  clearErrors as clearErrorsDispatch,
+  clearPaymentRequest as clearPaymentRequestDispatch,
+  setRequestId as setRequestIdDispatch,
+} from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
 import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
 import { EthChainId } from './EVMChainController/types';
-import { getNetworkFromChainId, getPlatformFromMainnet, isTestnet, validateAddress } from './EVMChainController/utils';
+import {
+  getNetworkFromChainId,
+  getPlatformFromMainnet,
+  isTestnet,
+  validateAddress,
+} from './EVMChainController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
 import { addAsset, removeAsset, addCustomAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
@@ -21,12 +40,12 @@ const BATCH_SIZE = 50;
 
 // Default logos
 const DEFAULT_LOGOS = {
-  'Constellation': CONSTELLATION_DEFAULT_LOGO,
-  'Ethereum': ETHEREUM_DEFAULT_LOGO,
-  'Avalanche': AVALANCHE_DEFAULT_LOGO,
-  'BSC': BSC_DEFAULT_LOGO,
-  'Polygon': POLYGON_DEFAULT_LOGO,
-}
+  Constellation: CONSTELLATION_DEFAULT_LOGO,
+  Ethereum: ETHEREUM_DEFAULT_LOGO,
+  Avalanche: AVALANCHE_DEFAULT_LOGO,
+  BSC: BSC_DEFAULT_LOGO,
+  Polygon: POLYGON_DEFAULT_LOGO,
+};
 
 // DTM and Alkimi NFTs should appear on top by default
 const DTM_STRINGS = ['DTM', 'Dor Traffic', 'Dor Foot Traffic'];
@@ -35,10 +54,22 @@ const DEFAULT_DAG_DECIMALS = 8;
 
 export interface IAssetsController {
   clearCustomToken: () => void;
-  addCustomERC20Asset: (networkType: string, address: string, name: string, symbol: string, decimals: string) => Promise<void>;
-  addCustomL0Token: (l0endpoint: string, l1endpoint:string, address: string, name: string, symbol: string) => Promise<void>;
+  addCustomERC20Asset: (
+    networkType: string,
+    address: string,
+    name: string,
+    symbol: string,
+    decimals: string
+  ) => Promise<void>;
+  addCustomL0Token: (
+    l0endpoint: string,
+    l1endpoint: string,
+    address: string,
+    name: string,
+    symbol: string
+  ) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
-  fetchWalletNFTInfo: (address: string) => Promise<void>;
+  fetchWalletNFTInfo: (address: string) => Promise<any[]>;
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
   searchERC20Assets: (value: string) => Promise<void>;
@@ -56,12 +87,12 @@ const AssetsController = (): IAssetsController => {
   let { activeNetwork }: IVaultState = store.getState().vault;
 
   if (!activeNetwork) return undefined;
-  
+
   const clearCustomToken = (): void => {
     store.dispatch(clearCustomAsset());
-  }
+  };
 
-  const fetchNFTBatch = async (walletAddress: string, offset = 0) => {
+  const fetchNFTBatch = async (walletAddress: string, offset = 0): Promise<any> => {
     const activeNetwork = store.getState().vault.activeNetwork;
     // OpenSea only supports Ethereum on v1 so it's fine to check activeNetwork on Ethereum here.
     const network = activeNetwork[KeyringNetwork.Ethereum] as EthChainId;
@@ -71,18 +102,20 @@ const AssetsController = (): IAssetsController => {
     // We should update this logic to display NFTs when OpenSea fixes the testnets API.
     if (isTestnet(network)) {
       return {
-        assets: []
-      }
+        assets: [],
+      };
     }
 
     const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}`;
-    const headers = isTestnet(network) ? undefined : { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
+    const headers = isTestnet(network)
+      ? undefined
+      : { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
     const response = await fetch(apiEndpoint, headers);
 
     return response.json();
   };
 
-  const fetchWalletNFTInfo = async (walletAddress: string): Promise<any> => {
+  const fetchWalletNFTInfo = async (walletAddress: string): Promise<any[]> => {
     let nfts: IOpenSeaNFT[] = [];
     try {
       const { assets } = await fetchNFTBatch(walletAddress, 0);
@@ -121,8 +154,12 @@ const AssetsController = (): IAssetsController => {
       .filter((nft) => nft.name && nft.name.length > 0)
       .sort((a: any, b: any) => {
         // Move DTM and Alkimi tokens to the top
-        const aIsDTM = DTM_STRINGS.some((str: string) => a.name.toLowerCase().includes(str.toLowerCase()));
-        const bIsDTM = DTM_STRINGS.some((str: string) => b.name.toLowerCase().includes(str.toLowerCase()));
+        const aIsDTM = DTM_STRINGS.some((str: string) =>
+          a.name.toLowerCase().includes(str.toLowerCase())
+        );
+        const bIsDTM = DTM_STRINGS.some((str: string) =>
+          b.name.toLowerCase().includes(str.toLowerCase())
+        );
         const aIsAlkimi = a.name.toLowerCase().includes(ALKIMI_STRING);
         const bIsAlkimi = b.name.toLowerCase().includes(ALKIMI_STRING);
 
@@ -161,17 +198,23 @@ const AssetsController = (): IAssetsController => {
 
   const fetchERC20Assets = async (): Promise<void> => {
     await store.dispatch<any>(getERC20Assets());
-  }
+  };
 
   const searchERC20Assets = async (value: string): Promise<void> => {
     await store.dispatch<any>(search(value));
-  }
+  };
 
   const clearSearchAssets = (): void => {
     store.dispatch(clearSearch());
-  }
+  };
 
-  const addCustomL0Token = async (l0endpoint: string, l1endpoint: string, address: string, name: string, symbol: string): Promise<void> => {
+  const addCustomL0Token = async (
+    l0endpoint: string,
+    l1endpoint: string,
+    address: string,
+    name: string,
+    symbol: string
+  ): Promise<void> => {
     const accountController = getAccountController();
     const { activeNetwork, activeWallet } = store.getState().vault;
     const assets = store.getState().assets;
@@ -191,25 +234,35 @@ const AssetsController = (): IAssetsController => {
       l0endpoint,
       l1endpoint,
       custom: true,
-    }
+    };
 
-    const asset = Object.keys(assets).find(assetId => assetId === newL0Asset.id);
-    const dagAddress = activeWallet?.assets?.find(asset => asset.id === AssetType.Constellation)?.address;
+    const asset = Object.keys(assets).find((assetId) => assetId === newL0Asset.id);
+    const dagAddress = activeWallet?.assets?.find(
+      (asset) => asset.id === AssetType.Constellation
+    )?.address;
     if (!asset) {
       store.dispatch(addCustomAsset(newL0Asset));
       store.dispatch(addERC20Asset(newL0Asset));
-      store.dispatch(addAsset({
-        id: newL0Asset.id,
-        type: newL0Asset.type,
-        label: newL0Asset.label,
-        address: dagAddress,
-        contractAddress: newL0Asset.address,
-      }));
+      store.dispatch(
+        addAsset({
+          id: newL0Asset.id,
+          type: newL0Asset.type,
+          label: newL0Asset.label,
+          address: dagAddress,
+          contractAddress: newL0Asset.address,
+        })
+      );
       await accountController.assetsBalanceMonitor.start();
     }
-  }
+  };
 
-  const addCustomERC20Asset = async (networkType: string, address: string, name: string, symbol: string, decimals: string): Promise<void> => {
+  const addCustomERC20Asset = async (
+    networkType: string,
+    address: string,
+    name: string,
+    symbol: string,
+    decimals: string
+  ): Promise<void> => {
     if (!validateAddress(address)) return;
 
     const { activeNetwork } = store.getState().vault;
@@ -221,7 +274,11 @@ const AssetsController = (): IAssetsController => {
     const platform = getPlatformFromMainnet(networkType);
 
     try {
-      tokenData = await (await fetch(`${TOKEN_INFO_API}/${platform}/contract/${address}?${COINGECKO_API_KEY_PARAM}`)).json();
+      tokenData = await (
+        await fetch(
+          `${TOKEN_INFO_API}/${platform}/contract/${address}?${COINGECKO_API_KEY_PARAM}`
+        )
+      ).json();
     } catch (err) {
       console.log('Token Error:', err);
     }
@@ -241,84 +298,93 @@ const AssetsController = (): IAssetsController => {
       logo,
       network,
       custom: true,
-    }
+    };
 
-    const asset = Object.keys(assets).find(assetId => assetId === newAsset.id);
+    const asset = Object.keys(assets).find((assetId) => assetId === newAsset.id);
     if (!asset) {
       store.dispatch(addCustomAsset(newAsset));
       addERC20AssetFn(newAsset);
     }
-  }
+  };
 
   const removeCustomERC20Asset = (asset: IAssetInfoState): void => {
     removeERC20AssetFn(asset);
-  }
+  };
 
   const addERC20AssetFn = async (asset: IAssetInfoState): Promise<void> => {
     const accountController = getAccountController();
     const { activeWallet } = store.getState().vault;
-    const ethAddress = activeWallet?.assets?.find(asset => asset.type === AssetType.Ethereum)?.address;
+    const ethAddress = activeWallet?.assets?.find(
+      (asset) => asset.type === AssetType.Ethereum
+    )?.address;
     store.dispatch(addERC20Asset(asset));
-    store.dispatch(addAsset({
-      id: asset.id,
-      type: asset.type,
-      label: asset.label,
-      address: ethAddress,
-      contractAddress: asset.address,
-    }));
-    const assetInfo = await accountController.networkController.getTokenInfo(asset.address, asset.network);
+    store.dispatch(
+      addAsset({
+        id: asset.id,
+        type: asset.type,
+        label: asset.label,
+        address: ethAddress,
+        contractAddress: asset.address,
+      })
+    );
+    const assetInfo = await accountController.networkController.getTokenInfo(
+      asset.address,
+      asset.network
+    );
     if (assetInfo && assetInfo.decimals !== asset.decimals) {
-      store.dispatch(updateAssetDecimals({ assetId: asset.id, decimals: assetInfo.decimals }));
+      store.dispatch(
+        updateAssetDecimals({ assetId: asset.id, decimals: assetInfo.decimals })
+      );
     }
     await accountController.assetsBalanceMonitor.start();
-  }
+  };
 
   const removeERC20AssetFn = (asset: IAssetInfoState): void => {
     store.dispatch(removeAsset(asset));
     store.dispatch(removeERC20Asset(asset));
-  }
+  };
 
   const fetchSupportedAssets = async (): Promise<void> => {
     await store.dispatch<any>(getSupportedAssets());
-  }
+  };
 
   const fetchQuote = async (data: GetQuoteRequest): Promise<void> => {
     await store.dispatch<any>(getQuote(data));
-  }
+  };
 
   const fetchPaymentRequest = async (data: PaymentRequestBody): Promise<void> => {
     await store.dispatch<any>(paymentRequest(data));
-  }
+  };
 
   const setRequestId = (value: string): void => {
     store.dispatch(setRequestIdDispatch(value));
-  }
+  };
 
   const clearErrors = (): void => {
     store.dispatch(clearErrorsDispatch());
-  }
+  };
 
   const clearPaymentRequest = (): void => {
     store.dispatch(clearPaymentRequestDispatch());
-  }
+  };
 
-  return { 
-     clearCustomToken,
-     addCustomERC20Asset,
-     addCustomL0Token,
-     removeCustomERC20Asset,
-     fetchWalletNFTInfo,
-     fetchSupportedAssets,
-     searchERC20Assets,
-     clearSearchAssets,
-     fetchERC20Assets,
-     addERC20AssetFn,
-     removeERC20AssetFn,
-     fetchQuote,
-     fetchPaymentRequest,
-     setRequestId,
-     clearErrors,
-     clearPaymentRequest
+  return {
+    clearCustomToken,
+    addCustomERC20Asset,
+    addCustomL0Token,
+    removeCustomERC20Asset,
+    fetchWalletNFTInfo,
+    fetchSupportedAssets,
+    searchERC20Assets,
+    clearSearchAssets,
+    fetchERC20Assets,
+    addERC20AssetFn,
+    removeERC20AssetFn,
+    fetchQuote,
+    fetchPaymentRequest,
+    setRequestId,
+    clearErrors,
+    clearPaymentRequest,
   };
 };
 

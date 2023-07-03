@@ -9,7 +9,6 @@ import {
   changeActiveWallet,
   updateStatus,
   updateTransactions,
-  updateWalletAssets,
   updateActiveWalletLabel,
   updateWalletLabel,
 } from 'state/vault';
@@ -31,8 +30,6 @@ import {
 } from '@stardust-collective/dag4-keyring';
 import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { EthTransactionController } from './EthTransactionController';
-
-import { IAccountController } from './IAccountController';
 import AssetsController, { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { utils } from './EVMChainController';
@@ -43,7 +40,7 @@ import { DAG_NETWORK } from 'constants/index';
 // limit number of txs
 const TXS_LIMIT = 10;
 
-export class AccountController implements IAccountController {
+export class AccountController {
   tempTx: ITransactionInfo | null;
 
   networkController: NetworkController;
@@ -67,7 +64,7 @@ export class AccountController implements IAccountController {
     return true;
   }
 
-  async buildAccountAssetList(
+  private async buildAccountAssetList(
     walletInfo: KeyringWalletState,
     account: KeyringWalletAccountState
   ): Promise<IAssetState[]> {
@@ -152,7 +149,7 @@ export class AccountController implements IAccountController {
     return [];
   }
 
-  buildAccountL0Tokens(dagAddress: string, tokens: string[]): IAssetState[] {
+  private buildAccountL0Tokens(dagAddress: string, tokens: string[]): IAssetState[] {
     const assets: IAssetListState = store.getState().assets;
 
     if (!tokens?.length) return [];
@@ -173,7 +170,7 @@ export class AccountController implements IAccountController {
     return assetList;
   }
 
-  buildNetworkAssets(address: string, tokens: string[]): IAssetState[] {
+  private buildNetworkAssets(address: string, tokens: string[]): IAssetState[] {
     const networkAssets = [];
 
     // 349: New network should be added here.
@@ -249,7 +246,7 @@ export class AccountController implements IAccountController {
     store.dispatch(changeActiveWallet(activeWallet));
   }
 
-  async buildAccountERC20Tokens(address: string, accountTokens: string[]) {
+  private async buildAccountERC20Tokens(address: string, accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
     const resolveTokens = accountTokens.map(async (address) => {
@@ -277,7 +274,7 @@ export class AccountController implements IAccountController {
     return assetList;
   }
 
-  async buildAccountERC721Tokens(address: string) {
+  private async buildAccountERC721Tokens(address: string) {
     let nfts: any;
     try {
       nfts = await this.assetsController.fetchWalletNFTInfo(address);
@@ -300,7 +297,7 @@ export class AccountController implements IAccountController {
     return assetList;
   }
 
-  async getLatestTxUpdate() {
+  async getLatestTxUpdate(): Promise<void> {
     const state = store.getState();
     const { activeAsset, activeNetwork }: IVaultState = state.vault;
     const { assets } = state;
@@ -315,41 +312,45 @@ export class AccountController implements IAccountController {
       let txsV2: any = [];
       let txsV1: any = [];
       const assetInfo = assets[activeAsset?.id];
-      const isL0token = !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
+      const isL0token =
+        !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
 
       if (isL0token) {
-        const beUrl = DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config.beUrl;
+        const beUrl =
+          DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config.beUrl;
 
         const metagraphClient = dag4.account.createMetagraphTokenClient({
           metagraphId: assetInfo.address,
           id: assetInfo.address,
           l0Url: assetInfo.l0endpoint,
           l1Url: assetInfo.l1endpoint,
-          beUrl
+          beUrl,
         });
 
         try {
-          txsV2 = await metagraphClient.getTransactions(TXS_LIMIT) || [];
+          txsV2 = (await metagraphClient.getTransactions(TXS_LIMIT)) || [];
         } catch (err) {
           console.log('Error: getTransactions', err);
           txsV2 = [];
         }
-
       } else {
         try {
-          txsV2 = await dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT);
+          txsV2 = await dag4.monitor.getLatestTransactions(
+            activeAsset.address,
+            TXS_LIMIT
+          );
         } catch (err) {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
         }
-  
+
         if (txsV2.length < TXS_LIMIT) {
           const LIMIT_V1 = TXS_LIMIT - txsV2.length;
           const TRANSACTIONS_V1_URL = `https://block-explorer.constellationnetwork.io/address/${activeAsset.address}/transaction?limit=${LIMIT_V1}`;
           txsV1 = await (await fetch(TRANSACTIONS_V1_URL)).json();
         }
       }
-      
+
       store.dispatch(updateTransactions({ txs: [...txsV2, ...txsV1] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
       const txs: any = await this.txController.getTransactionHistory(
@@ -369,7 +370,7 @@ export class AccountController implements IAccountController {
     }
   }
 
-  updateWalletLabel(wallet: KeyringWalletState, label: string) {
+  updateWalletLabel(wallet: KeyringWalletState, label: string): void {
     if (
       wallet.type !== KeyringWalletType.LedgerAccountWallet &&
       wallet.type !== KeyringWalletType.BitfiAccountWallet
@@ -390,44 +391,16 @@ export class AccountController implements IAccountController {
     }
   }
 
-  async updateAccountActiveAsset(asset: IAssetState) {
+  async updateAccountActiveAsset(asset: IAssetState): Promise<void> {
     store.dispatch(changeActiveAsset(asset));
     await this.getLatestTxUpdate();
   }
 
-  async addNewToken(address: string) {
-    const { activeWallet }: IVaultState = store.getState().vault;
-    const account = this.keyringManager.addTokenToAccount(
-      activeWallet.id,
-      this.networkController.getAddress(),
-      address
-    );
-    const tokenAssets = await this.buildAccountERC20Tokens(address, account.getTokens());
-    const newToken = tokenAssets.find((t) => t.address === address);
-    store.dispatch(updateWalletAssets(activeWallet.assets.concat([newToken])));
-
-    // restart monitor to include new token
-    this.assetsBalanceMonitor.start();
-  }
-
-  async updateTxs(limit = 10, searchAfter?: string) {
-    /* eslint-disable-line default-param-last */
-    const { activeAsset }: IVaultState = store.getState().vault;
-    if (!activeAsset) return;
-    // TODO-421: Update getTransactions to support TransactionV2
-    const newTxs = await dag4.account.getTransactions(limit, searchAfter);
-    store.dispatch(
-      updateTransactions({
-        txs: [...activeAsset.transactions, ...newTxs],
-      })
-    );
-  }
-
-  getTempTx() {
+  getTempTx(): ITransactionInfo | null {
     return dag4.account.isActive() ? this.tempTx : null;
   }
 
-  updateTempTx(tx: ITransactionInfo) {
+  updateTempTx(tx: ITransactionInfo): void {
     if (dag4.account.isActive()) {
       this.tempTx = { ...this.tempTx, ...tx };
       this.tempTx.fromAddress = this.tempTx.fromAddress.trim();
@@ -435,7 +408,11 @@ export class AccountController implements IAccountController {
     }
   }
 
-  async updatePendingTx(tx: IETHPendingTx, gasPrice: number, gasLimit: number) {
+  async updatePendingTx(
+    tx: IETHPendingTx,
+    gasPrice: number,
+    gasLimit: number
+  ): Promise<void> {
     const { activeAsset }: IVaultState = store.getState().vault;
     const { assets } = store.getState();
 
@@ -479,7 +456,7 @@ export class AccountController implements IAccountController {
     tx = null;
   }
 
-  async confirmTempTx() {
+  async confirmTempTx(): Promise<string> {
     if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
@@ -499,21 +476,27 @@ export class AccountController implements IAccountController {
 
     if (activeAsset.type === AssetType.Constellation) {
       const assetInfo = assets[activeAsset?.id];
-      const isL0token = !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
+      const isL0token =
+        !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
       let pendingTx = null;
 
       if (isL0token) {
-        const beUrl = DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config.beUrl;
+        const beUrl =
+          DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config.beUrl;
 
         const metagraphClient = dag4.account.createMetagraphTokenClient({
           metagraphId: assetInfo.address,
           id: assetInfo.address,
           l0Url: assetInfo.l0endpoint,
           l1Url: assetInfo.l1endpoint,
-          beUrl
+          beUrl,
         });
 
-        pendingTx = await metagraphClient.transfer(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee);
+        pendingTx = await metagraphClient.transfer(
+          this.tempTx.toAddress,
+          Number(this.tempTx.amount),
+          this.tempTx.fee
+        );
       } else {
         pendingTx = await dag4.account.transferDag(
           this.tempTx.toAddress,
@@ -521,7 +504,7 @@ export class AccountController implements IAccountController {
           this.tempTx.fee
         );
       }
-      
+
       // Convert the amount from DAG to DATUM
       pendingTx.amount = Number(this.tempTx.amount) * 1e8;
       const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
@@ -588,7 +571,9 @@ export class AccountController implements IAccountController {
     return trxHash;
   }
 
-  async confirmContractTempTx(activeAsset: IAssetInfoState | IActiveAssetState) {
+  async confirmContractTempTx(
+    activeAsset: IAssetInfoState | IActiveAssetState
+  ): Promise<string> {
     if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
@@ -646,22 +631,23 @@ export class AccountController implements IAccountController {
   }
 
   // Other
-  isValidDAGAddress(address: string) {
+  isValidDAGAddress(address: string): boolean {
     return dag4.account.validateDagAddress(address);
   }
 
-  async isValidMetagraphAddress(address: string) {
-
+  async isValidMetagraphAddress(address: string): Promise<boolean> {
     if (!this.isValidDAGAddress(address)) return false;
 
     const { activeNetwork }: IVaultState = store.getState().vault;
     const activeChain = activeNetwork[KeyringNetwork.Constellation];
     const BE_URL = DAG_NETWORK[activeChain].config.beUrl;
-    const response: any = await (await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)).json();
+    const response: any = await (
+      await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)
+    ).json();
     return !!response?.data?.hash;
   }
 
-  async isValidNode(url: string) {
+  async isValidNode(url: string): Promise<boolean> {
     let response;
 
     try {
@@ -672,15 +658,15 @@ export class AccountController implements IAccountController {
 
     return !!response?.length && !!response[0]?.id;
   }
- 
-  isValidERC20Address(address: string) {
+
+  isValidERC20Address(address: string): boolean {
     if (!this.networkController) {
       return false;
     }
     return this.networkController?.validateAddress(address);
   }
 
-  async fetchCustomToken(address: string, chainId: string) {
+  async fetchCustomToken(address: string, chainId: string): Promise<void> {
     let info = null;
     try {
       info = await this.networkController.getTokenInfo(address, chainId);
@@ -699,11 +685,11 @@ export class AccountController implements IAccountController {
     }
   }
 
-  async getRecommendFee() {
+  async getRecommendFee(): Promise<number> {
     return await dag4.account.getFeeRecommendation();
   }
 
-  async getLatestGasPrices() {
+  async getLatestGasPrices(): Promise<number[]> {
     const gasPrices = await this.networkController.estimateGasPrices();
     const results = Object.values(gasPrices).map((gas) =>
       Math.round(Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei')))
@@ -711,84 +697,7 @@ export class AccountController implements IAccountController {
     return results;
   }
 
-  async getRecommendETHTxConfig() {
-    const txHistory = await this.networkController.getTransactions();
-    const nonce = txHistory.txs.length;
-    const gasPrices = await this.getLatestGasPrices();
-
-    const recommendConfig = {
-      nonce,
-      gasPrice: Math.floor((gasPrices[1] + gasPrices[2]) / 2),
-    };
-
-    // console.log('getRecommendETHTxConfig', gasPrices, recommendConfig.gasPrice);
-
-    if (!this.tempTx) {
-      this.tempTx = {
-        fromAddress: '',
-        toAddress: '',
-        amount: '0',
-        timestamp: Date.now(),
-      };
-      this.tempTx.ethConfig = recommendConfig;
-    }
-
-    return recommendConfig;
-  }
-
-  updateETHTxConfig({
-    nonce,
-    gas,
-    gasLimit,
-  }: {
-    gas?: number;
-    gasLimit?: number;
-    nonce?: number;
-    txData?: string;
-  }) {
-    if (!this.tempTx || !this.tempTx.ethConfig) return;
-    this.tempTx.ethConfig = {
-      ...this.tempTx.ethConfig,
-      nonce: nonce || this.tempTx.ethConfig.nonce,
-      gasPrice: gas || this.tempTx.ethConfig.gasPrice,
-      gasLimit: gasLimit || this.tempTx.ethConfig.gasLimit,
-    };
-  }
-
-  async estimateTotalGasFee(
-    recipient: string,
-    amount: string,
-    gas: number,
-    gasLimit: number
-  ) {
-    if (!gasLimit || true) {
-      const state = store.getState();
-      const { activeAsset }: IVaultState = state.vault;
-      const assetInfo = (state.assets as IAssetListState)[activeAsset.id];
-      // const contractAddress = assetInfo.contractAddress;
-      // const ticker = assetInfo.symbol;
-      // const symbol = ticker + ':' + contractAddress;
-      // const asset: any = { chain: 'ETH', symbol, ticker: symbol }
-      // // const recipient = '0x0000000000000000000000000000000000000000';
-      // const amount: any  = { amount: () => ({ toFixed: () => this.tempTx.amount }) };
-      // const gasLimit0 = (await this.networkController.estimateGasLimit({asset, recipient, amount})).toNumber();
-      gasLimit = await this.networkController.estimateTokenTransferGasLimit(
-        recipient,
-        assetInfo.address,
-        ethers.utils.parseUnits(amount, assetInfo.decimals)
-      );
-      console.log('networkController.estimateGasLimit2', gasLimit);
-    }
-    const fee = ethers.utils
-      .parseUnits(gas.toString(), 'gwei')
-      .mul(BigNumber.from(gasLimit));
-
-    console.log('estimateTotalGasFee3', gas, gasLimit);
-
-    return Number(ethers.utils.formatEther(fee).toString());
-  }
-
-  async getFullETHTxs() {
+  async getFullETHTxs(): Promise<ITransactionInfo[]> {
     return this.txController.getFullTxs();
   }
 }

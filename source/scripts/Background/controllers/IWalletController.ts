@@ -1,15 +1,15 @@
-import { IAccountController } from './IAccountController';
+import { AccountController } from './AccountController';
 import { ISwapController } from './SwapController';
 import {
   KeyringManager,
   KeyringNetwork,
-  KeyringWalletState
+  KeyringWalletState,
 } from '@stardust-collective/dag4-keyring';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { AccountItem } from 'scripts/types';
 
 export interface IWalletController {
-  account: Readonly<IAccountController>;
+  account: Readonly<AccountController>;
   onboardHelper: Readonly<OnboardWalletHelper>;
   keyringManager: Readonly<KeyringManager>;
   swap: Readonly<ISwapController>;
@@ -19,16 +19,9 @@ export interface IWalletController {
     privateKey: string,
     silent?: boolean
   ) => Promise<string>;
-  createWallet: (
-    label: string,
-    phrase?: string,
-    resetAll?: boolean
-  ) => Promise<string>;
+  createWallet: (label: string, phrase?: string, resetAll?: boolean) => Promise<string>;
   deleteWallet: (walletId: KeyringWalletState, password: string) => Promise<boolean>;
-  importHardwareWalletAccounts: (
-    addresses: AccountItem[],
-    deviceId?: string
-  ) => void;
+  importHardwareWalletAccounts: (addresses: AccountItem[], deviceId?: string) => void;
   switchWallet: (walletId: string) => Promise<void>;
   switchNetwork: (networkType: string, networkId: string) => void;
   addNetwork: (network: string, data: any) => void;

@@ -41,12 +41,6 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.CONSTELLATION,
-    method: AvailableMethods.dag_sendL0Transaction,
-    proxied: false,
-    permissions: [],
-  },
-  {
-    chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_getPendingTransaction,
     proxied: false,
     permissions: [],
@@ -54,6 +48,30 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   {
     chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_getTransaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_getMetagraphBalance,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_sendMetagraphTransaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_getMetagraphPendingTransaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_getMetagraphTransaction,
     proxied: false,
     permissions: [],
   },

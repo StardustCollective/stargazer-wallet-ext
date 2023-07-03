@@ -14,17 +14,22 @@ import { getAccountController } from 'utils/controllersUtils';
 
 const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
   const getFiatAmount = useFiat();
-  const { activeAsset, activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { activeAsset, activeNetwork }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const accountController = getAccountController();
   const isL0token = !!assets[activeAsset?.id]?.l0endpoint;
 
-  const isETH = activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
+  const isETH =
+    activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
 
   const isShowedGroupBar = useCallback(
     (tx: Transaction, idx: number) => {
       return (
-        idx === 0 || new Date(tx.timestamp).toDateString() !== new Date(transactions[idx - 1].timestamp).toDateString()
+        idx === 0 ||
+        new Date(tx.timestamp).toDateString() !==
+          new Date(transactions[idx - 1].timestamp).toDateString()
       );
     },
     [transactions]
@@ -48,7 +53,9 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
 
     let explorerURL = '';
     if (isETH) {
-      if (!accountController?.networkController) return '';
+      if (!accountController?.networkController) {
+        return '';
+      }
       explorerURL = accountController?.networkController?.getExplorerURL();
       if (!explorerURL) return '';
     }
@@ -63,17 +70,27 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     const dagTxReceiver = tx.receiver ? tx.receiver : tx.destination;
     const isReceived =
       (!isETH && [tx.receiver, tx.destination].includes(address)) ||
-      (isETH && !tx.assetId && tx.to && tx.to[0].to.toLowerCase() === address.toLowerCase()) ||
+      (isETH &&
+        !tx.assetId &&
+        tx.to &&
+        tx.to[0].to.toLowerCase() === address.toLowerCase()) ||
       (isETHPending && tx.toAddress.toLowerCase() === address.toLowerCase());
     const isSent =
       (!isETH && [tx.sender, tx.source].includes(address)) ||
-      (isETH && !tx.assetId && tx.from && tx.from[0].from.toLowerCase() === address.toLowerCase()) ||
+      (isETH &&
+        !tx.assetId &&
+        tx.from &&
+        tx.from[0].from.toLowerCase() === address.toLowerCase()) ||
       (isETHPending && tx.fromAddress.toLowerCase() === address.toLowerCase());
     const isSelf = isSent && isReceived;
     const txTypeLabel = isReceived
-      ? `${isETHPending ? tx.fromAddress : isETH ? tx.from && tx.from[0].from : dagTxSender}`
+      ? `${
+          isETHPending ? tx.fromAddress : isETH ? tx.from && tx.from[0].from : dagTxSender
+        }`
       : `${isETHPending ? tx.toAddress : isETH ? tx.to && tx.to[0].to : dagTxReceiver}`;
-    const amount = isETH ? Number(isETHPending ? tx.amount : tx.balance) : tx.amount / 1e8;
+    const amount = isETH
+      ? Number(isETHPending ? tx.amount : tx.balance)
+      : tx.amount / 1e8;
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = isETH
       ? getFiatAmount(Number(isETHPending ? tx.amount : tx.balance), 2)

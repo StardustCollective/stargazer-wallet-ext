@@ -18,7 +18,10 @@ import SearchInput from 'components/SearchInput';
 ///////////////////////////
 
 import { getKeyringAssetType } from 'utils/keyringUtil';
-import { getNetworkFromChainId, getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
+import {
+  getNetworkFromChainId,
+  getNetworkLabel,
+} from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Types
@@ -40,42 +43,64 @@ import styles from './AssetList.scss';
 
 const CIRCULAR_PROGRESS_SIZE = 18;
 
-const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem, searchValue, onSearch, activeWallet, activeNetwork }) => {
-
+const AssetList: FC<IAssetList> = ({
+  assets,
+  allAssets,
+  loading,
+  toggleAssetItem,
+  searchValue,
+  onSearch,
+  activeWallet,
+  activeNetwork,
+}) => {
   const renderAssetList = () => {
-
     return (
       <div className={styles.listContainer}>
-        {
-          allAssets.map((item: IAssetInfoState) => {
-            const selected = !!assets[item?.id];
-            const itemType = getKeyringAssetType(item?.type);
-            const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(item?.symbol as AssetSymbol);
-            const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
-            const itemChainId = item?.network;
-            const itemNetwork = item?.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(itemChainId);
-            const currentActiveNetwork = activeNetwork[itemNetwork as keyof ActiveNetwork];
-            const network = getNetworkLabel(currentActiveNetwork);
-            // 349: New network should be added here.
-            const isMATIC = item?.symbol === AssetSymbol.MATIC && itemChainId === 'matic';
-            const isAVAX = item?.symbol === AssetSymbol.AVAX && itemChainId === 'avalanche-mainnet';
-            const isBNB = item?.symbol === AssetSymbol.BNB && itemChainId === 'bsc';
-            const hideToken = itemChainId !== 'both' && !isMATIC && !isAVAX && !isBNB && currentActiveNetwork !== itemChainId;
-            if (!isAssetSupported || hideToken) return null;
-            return <AssetWithToggle 
-                      key={item?.id}
-                      id={item?.id}
-                      symbol={item?.symbol} 
-                      network={network}
-                      logo={item?.logo} 
-                      label={item?.label} 
-                      selected={selected} 
-                      disabled={disabled}
-                      toggleItem={(value) => toggleAssetItem(item, value)} />;
-          })
-        }
-      </div>);
-  }
+        {allAssets.map((item: IAssetInfoState) => {
+          const selected = !!assets[item?.id];
+          const itemType = getKeyringAssetType(item?.type);
+          const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(
+            item?.symbol as AssetSymbol
+          );
+          const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
+          const itemChainId = item?.network;
+          const itemNetwork =
+            item?.type === AssetType.Constellation
+              ? KeyringNetwork.Constellation
+              : getNetworkFromChainId(itemChainId);
+          const currentActiveNetwork = activeNetwork[itemNetwork as keyof ActiveNetwork];
+          const network = getNetworkLabel(currentActiveNetwork);
+          // 349: New network should be added here.
+          const isMATIC = item?.symbol === AssetSymbol.MATIC && itemChainId === 'matic';
+          const isAVAX =
+            item?.symbol === AssetSymbol.AVAX && itemChainId === 'avalanche-mainnet';
+          const isBNB = item?.symbol === AssetSymbol.BNB && itemChainId === 'bsc';
+          const hideToken =
+            itemChainId !== 'both' &&
+            !isMATIC &&
+            !isAVAX &&
+            !isBNB &&
+            currentActiveNetwork !== itemChainId;
+          if (!isAssetSupported || hideToken) {
+            return null;
+          }
+          return (
+            <AssetWithToggle
+              key={item?.id}
+              id={item?.id}
+              symbol={item?.symbol}
+              network={network}
+              logo={item?.logo}
+              label={item?.label}
+              selected={selected}
+              disabled={disabled}
+              toggleItem={(value) => toggleAssetItem(item, value)}
+            />
+          );
+        })}
+      </div>
+    );
+  };
 
   ///////////////////////////
   // Render
@@ -86,11 +111,13 @@ const AssetList: FC<IAssetList> = ({ assets, allAssets, loading, toggleAssetItem
       <div className={styles.searchContainer}>
         <SearchInput value={searchValue} onChange={onSearch} />
       </div>
-      {
-        loading ? 
-        <div className={styles.progressContainer}><CircularProgress size={CIRCULAR_PROGRESS_SIZE} /></div> : 
+      {loading ? (
+        <div className={styles.progressContainer}>
+          <CircularProgress size={CIRCULAR_PROGRESS_SIZE} />
+        </div>
+      ) : (
         <div className={styles.assetList}>{renderAssetList()}</div>
-      }
+      )}
     </div>
   );
 };
