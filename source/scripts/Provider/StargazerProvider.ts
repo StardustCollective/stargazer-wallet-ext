@@ -157,7 +157,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     return metagraphAsset && balances[metagraphAsset.id];
   }
 
-  validateMetagraphToken(address: string): void {
+  validateMetagraphToken(address: unknown): void {
     const { vault, assets } = store.getState();
     const { activeNetwork } = vault;
 
@@ -536,11 +536,11 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     }
 
     if (request.method === AvailableMethods.dag_getMetagraphBalance) {
-      const [address] = request.params as [string];
+      const [address] = request.params as [unknown];
 
       this.validateMetagraphToken(address);
 
-      return this.getMetagraphBalance(address);
+      return this.getMetagraphBalance(address as string);
     }
 
     if (request.method === AvailableMethods.dag_sendMetagraphTransaction) {
