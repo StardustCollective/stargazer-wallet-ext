@@ -11,14 +11,14 @@ export const DOT_INDICATOR_COLOR = '#473194';
 export const CURRENCY_INPUT_ZERO_PLACEHOLDER = '0';
 export const TO_CURRENCY_INPUT_EDITABLE = false;
 export const LTX_DEFAULT_CURRENCY = {
-  code: "LTX",
-  name: "Lattice Token",
-  icon: "https://exolix.com/icons/coins/LTX.png",
-  notes: "",
+  code: 'LTX',
+  name: 'Lattice Token',
+  icon: 'https://exolix.com/icons/coins/LTX.png',
+  notes: '',
   networks: [
     {
       network: 'ETH',
-      name: 'Ethereum (ERC20)',
+      name: 'Ethereum',
       shortName: 'ERC20',
       notes: '',
       addressRegex: '^(0x)[0-9A-Fa-f]{40}$',
@@ -26,15 +26,15 @@ export const LTX_DEFAULT_CURRENCY = {
       depositMinAmount: null as any,
       memoNeeded: false,
       memoName: '',
-      precision: 6
-    }
+      precision: 6,
+    },
   ],
-}
+};
 export const DAG_DEFAULT_CURRENCY = {
   code: 'DAG',
   name: 'Constellation',
   icon: 'https://exolix.com/icons/coins/DAG.png',
-  notes: "",
+  notes: '',
   networks: [
     {
       network: 'DAG',
@@ -45,7 +45,7 @@ export const DAG_DEFAULT_CURRENCY = {
       isDefault: true,
       depositMinAmount: null as any,
       memoNeeded: false,
-      precision: 8
-    }
+      precision: 8,
+    },
   ],
-}
+};
