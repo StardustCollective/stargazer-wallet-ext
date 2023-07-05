@@ -22,7 +22,7 @@ export const initialState: ISwapState = {
       networks: [
         {
           network: 'ETH',
-          name: 'Ethereum (ERC20)',
+          name: 'Ethereum',
           shortName: 'ERC20',
           notes: '',
           addressRegex: '^(0x)[0-9A-Fa-f]{40}$',
@@ -30,14 +30,13 @@ export const initialState: ISwapState = {
           depositMinAmount: null,
           memoNeeded: false,
           memoName: '',
-          precision: 6
-        }
+          precision: 6,
+        },
       ],
-
     },
     network: {
       network: 'ETH',
-      name: 'Ethereum (ERC20)',
+      name: 'Ethereum',
       shortName: 'ERC20',
       notes: '',
       addressRegex: '^(0x)[0-9A-Fa-f]{40}$',
@@ -45,7 +44,7 @@ export const initialState: ISwapState = {
       depositMinAmount: null,
       memoNeeded: false,
       memoName: '',
-      precision: 6
+      precision: 6,
     },
   },
   swapTo: {
@@ -64,20 +63,20 @@ export const initialState: ISwapState = {
           isDefault: true,
           depositMinAmount: null,
           memoNeeded: false,
-          precision: 8
-        }
+          precision: 8,
+        },
       ],
     },
     network: {
-      network: "DAG",
-      name: "Constellation",
-      shortName: "",
-      notes: "",
-      addressRegex: "^(DAG)[0-9A-Za-z]{30,70}$",
+      network: 'DAG',
+      name: 'Constellation',
+      shortName: '',
+      notes: '',
+      addressRegex: '^(DAG)[0-9A-Za-z]{30,70}$',
       isDefault: true,
       depositMinAmount: null,
       memoNeeded: false,
-      precision: 8
+      precision: 8,
     },
   },
   supportedAssets: null,
@@ -99,10 +98,7 @@ const SwappingState = createSlice({
       // txIds is the only key/values that are presisted for the swap state.
       return {
         ...state,
-        txIds: [
-          ...state.txIds,
-          ...action.payload.txIds,
-        ],
+        txIds: [...state.txIds, ...action.payload.txIds],
       };
     },
     setSwapFrom(state: ISwapState, action: PayloadAction<ISelectedCurrency>) {
@@ -117,15 +113,12 @@ const SwappingState = createSlice({
       state.selectedTransaction = action.payload;
     },
     addTxId(state: ISwapState, action: PayloadAction<string>) {
-      state.txIds = [
-        ...state.txIds,
-        action.payload,
-      ];
+      state.txIds = [...state.txIds, action.payload];
     },
     clearPendingSwap(state: ISwapState) {
       state.pendingSwap = null;
     },
-    clearCurrencyRate(state: ISwapState){
+    clearCurrencyRate(state: ISwapState) {
       state.currencyRate.rate = null;
     },
   },
@@ -205,17 +198,17 @@ const SwappingState = createSlice({
       state.error = action.payload;
       state.pendingSwap = null;
     });
-  }
+  },
 });
 
-export const { 
-  setSwapFrom, 
-  setSwapTo, 
+export const {
+  setSwapFrom,
+  setSwapTo,
   clearPendingSwap,
   clearCurrencyRate,
-  addTxId, 
-  rehydrate, 
-  setSelectedTransaction 
+  addTxId,
+  rehydrate,
+  setSelectedTransaction,
 } = SwappingState.actions;
 
 export default SwappingState.reducer;

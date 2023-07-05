@@ -1,5 +1,5 @@
 import debugFn from 'debug';
-import { AvailableEvents, StargazerChain } from 'scripts/common';
+import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { browser, Runtime } from 'webextension-polyfill-ts';
 
 import { DappProvider } from './dappProvider';
@@ -61,7 +61,7 @@ class DappRegistry {
 
   sendOriginChainEvent(
     origin: '*' | string,
-    chain: '*' | StargazerChain,
+    chain: '*' | ProtocolProvider,
     event: AvailableEvents,
     data: any[] = []
   ) {

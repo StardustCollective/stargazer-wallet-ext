@@ -3,7 +3,7 @@ import filter from 'lodash/filter';
 import { listNewDapp, unlistDapp } from 'state/dapp';
 import { IDAppInfo } from 'state/dapp/types';
 import store from 'state/store';
-import { AvailableEvents, StargazerChain } from 'scripts/common';
+import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { getDappRegistry } from 'utils/controllersUtils';
 
 type ISigRequest = {
@@ -80,13 +80,13 @@ class DAppController {
 
       getDappRegistry().sendOriginChainEvent(
         origin,
-        StargazerChain.CONSTELLATION,
+        ProtocolProvider.CONSTELLATION,
         AvailableEvents.accountsChanged,
         [dagAccounts]
       );
       getDappRegistry().sendOriginChainEvent(
         origin,
-        StargazerChain.ETHEREUM,
+        ProtocolProvider.ETHEREUM,
         AvailableEvents.accountsChanged,
         [ethAccounts]
       );

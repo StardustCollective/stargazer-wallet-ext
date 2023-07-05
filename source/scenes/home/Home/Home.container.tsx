@@ -53,7 +53,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   const [balanceObject] = useTotalBalance();
 
   const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
-  const { activeWallet, wallets, currentNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { activeWallet, wallets }: IVaultState = useSelector((state: RootState) => state.vault);
   const linkTo = useLinkTo();
   const accountController = getAccountController();
   const isDagOnlyWallet = (activeWallet?.assets?.length === 1 && activeWallet?.assets[0]?.type === AssetType.Constellation);
@@ -98,7 +98,6 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
         isDagOnlyWallet={isDagOnlyWallet}
         multiChainWallets={multiChainWallets}
         privateKeyWallets={privateKeyWallets}
-        currentNetwork={currentNetwork}
       />
     </Container>
   );
