@@ -51,10 +51,9 @@ const getCurrencyRateLoading = (state: RootState) => state.swap.currencyRate.loa
  */
 const getPendingSwap = (state: RootState) => state.swap.pendingSwap;
 
-
-/** 
+/**
  * Returns the filtered currency data by supported network
-*/
+ */
 
 const selectSupportedCurrencyData = (excludeDag: boolean = false) => {
   return createSelector(
@@ -62,28 +61,30 @@ const selectSupportedCurrencyData = (excludeDag: boolean = false) => {
     (currencyData: ISearchCurrency[]): ISearchCurrency[] => {
       const currencyDataReduced = currencyData?.map((currency) => {
         let networks = currency?.networks?.filter((network) => {
-          return network.name === SupportedExolixSwapNetworks.AVALANCHE ||
-            network.name === SupportedExolixSwapNetworks.BINANCE_SMART_CHAIN ||
-            network.name === SupportedExolixSwapNetworks.ETHEREUM ||
-            network.name === SupportedExolixSwapNetworks.POLYGON ||
-            (!excludeDag && network.name === SupportedExolixSwapNetworks.CONSTELLATION)
+          return (
+            network.network === SupportedExolixSwapNetworks.AVALANCHE ||
+            network.network === SupportedExolixSwapNetworks.BINANCE_SMART_CHAIN ||
+            network.network === SupportedExolixSwapNetworks.ETHEREUM ||
+            network.network === SupportedExolixSwapNetworks.POLYGON ||
+            (!excludeDag && network.network === SupportedExolixSwapNetworks.CONSTELLATION)
+          );
         });
 
         return {
           code: currency.code,
           name: currency.name,
           icon: currency.icon,
-          networks
+          networks,
         };
       });
 
       // Return only the currencies with supported networks.
-      return currencyDataReduced?.filter(currency => currency?.networks?.length > 0) as ISearchCurrency[];
+      return currencyDataReduced?.filter(
+        (currency) => currency?.networks?.length > 0
+      ) as ISearchCurrency[];
     }
   );
-}
-
-
+};
 
 export default {
   getPendingSwap,

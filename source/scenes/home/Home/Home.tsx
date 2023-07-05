@@ -18,9 +18,7 @@ import { getWalletController } from 'utils/controllersUtils';
 ///////////////////////////
 
 import WalletsModal from './WalletsModal';
-import NetworksModal from './NetworksModal';
 import Sheet from 'components/Sheet';
-import NetworkPicker from 'components/NetworkPicker';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up-white.svg';
 import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down-white.svg';
@@ -49,7 +47,6 @@ import {
   BUY_STRING,
   SWAP_STRING
 } from './constants';
-import { ALL_MAINNET_CHAINS, ALL_TESTNETS_CHAINS, ALL_CHAINS } from 'constants/index';
 
 ///////////////////////////
 // Scene
@@ -62,14 +59,12 @@ const Home: FC<IHome> = ({
   balanceObject,
   multiChainWallets,
   privateKeyWallets,
-  currentNetwork,
   onBuyPressed,
   onSwapPressed,
   isDagOnlyWallet,
 }) => {
 
   const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
-  const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
 
   const walletController = getWalletController();
 
@@ -90,11 +85,6 @@ const Home: FC<IHome> = ({
     await walletController.notifyWalletChange(accounts);
   };
 
-  const handleSwitchActiveNetwork = async (chainId: string) => {
-    setIsNetworkSelectorOpen(false);
-    await walletController.switchActiveNetwork(chainId);
-  }
-
   // Sets the header for the home screen.
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -107,23 +97,12 @@ const Home: FC<IHome> = ({
   // Render
   ///////////////////////////
 
-  const networkTitle = ALL_MAINNET_CHAINS?.find((chain) => chain.id === currentNetwork)?.network || ALL_TESTNETS_CHAINS?.find((chain) => chain.id === currentNetwork)?.label;
-  const networkLogo = ALL_CHAINS.find((chain) => chain.id === currentNetwork)?.logo;
-
   return (
     <div id={'home-scene'} className={styles.wrapper}>
       {activeWallet ? (
         <>
           {
             <>
-              <div className={styles.networkPickerContainer}>
-                <NetworkPicker 
-                  title={networkTitle}
-                  icon={networkLogo}
-                  onPress={() => setIsNetworkSelectorOpen(true)}
-                  isOpen={isNetworkSelectorOpen}
-                />
-              </div>
               <section className={styles.center}>
                 <div className={styles.price}>
                   <div className={styles.symbol}>
@@ -187,19 +166,6 @@ const Home: FC<IHome> = ({
           privateKeyWallets={privateKeyWallets}
           activeWallet={activeWallet}
           handleSwitchWallet={handleSwitchWallet}
-        />
-      </Sheet>
-      <Sheet 
-        title={{
-          label: 'Switch network',
-          align: 'left'
-        }}
-        isVisible={isNetworkSelectorOpen}
-        onClosePress={() => setIsNetworkSelectorOpen(false)}
-      >
-        <NetworksModal 
-          currentNetwork={currentNetwork}
-          handleSwitchActiveNetwork={handleSwitchActiveNetwork}
         />
       </Sheet>
     </div>
