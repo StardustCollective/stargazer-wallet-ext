@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Stargazer Wallet",
-  "version": "3.13.3",
+  "version": "3.13.4",
   "icons": {
     "16": "assets/icons/favicon-16.png",
     "32": "assets/icons/favicon-32.png",
@@ -51,25 +51,16 @@
     "__chrome__chrome_style": false
   },
   "background": {
-    "scripts": [
-      "js/background.bundle.js"
-    ],
+    "scripts": ["js/background.bundle.js"],
     "__chrome__persistent": true
   },
   "content_scripts": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": [
-        "js/contentScript.bundle.js"
-      ],
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["js/contentScript.bundle.js"],
       "run_at": "document_start",
       "all_frames": false
     }
   ],
-  "web_accessible_resources": [
-    "js/injectedScript.bundle.js"
-  ]
+  "web_accessible_resources": ["js/injectedScript.bundle.js"]
 }
