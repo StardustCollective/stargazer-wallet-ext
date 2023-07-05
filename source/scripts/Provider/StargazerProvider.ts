@@ -22,6 +22,7 @@ import {
   EIPRpcError,
   ProtocolProvider,
 } from '../common';
+import { DAG_NETWORK } from 'constants/index';
 
 export type StargazerSignatureRequest = {
   content: string;
@@ -36,11 +37,16 @@ export type StargazerTransactionRequest = {
 };
 
 export type StargazerMetagraphTransactionRequest = {
-  tokenAddress: string;
+  metagraphAddress: string;
   source: string;
   destination: string;
   amount: number; // In DATUM, 1 DATUM = 0.00000001 DAG
   fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
+};
+
+export type StargazerMetagraphGetTransactionRequest = {
+  metagraphAddress: string;
+  hash: string;
 };
 
 // Constants
@@ -157,20 +163,20 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     return metagraphAsset && balances[metagraphAsset.id];
   }
 
-  validateMetagraphToken(address: unknown): void {
+  validateMetagraphAddress(address: unknown): IAssetState {
     const { vault, assets } = store.getState();
     const { activeNetwork } = vault;
 
     if (!address) {
-      throw new Error("'tokenAddress' is required");
+      throw new Error("'metagraphAddress' is required");
     }
 
     if (typeof address !== 'string') {
-      throw new Error("Bad argument 'tokenAddress'");
+      throw new Error("Bad argument 'metagraphAddress'");
     }
 
     if (!dag4.account.validateDagAddress(address)) {
-      throw new Error("Invaid address 'tokenAddress'");
+      throw new Error("Invaid address 'metagraphAddress'");
     }
 
     const metagraphToken = vault?.activeWallet?.assets?.find(
@@ -180,8 +186,10 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     );
 
     if (!metagraphToken) {
-      throw new Error("'tokenAddress' not found in wallet");
+      throw new Error("'metagraphAddress' not found in wallet");
     }
+
+    return metagraphToken;
   }
 
   normalizeSignatureRequest(encodedSignatureRequest: string): string {
@@ -265,7 +273,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     dappProvider: DappProvider,
     port: Runtime.Port
   ) {
-    const { vault } = store.getState();
+    const { vault, assets } = store.getState();
     let windowUrl = EXTERNAL_URL;
     let deviceId = '';
     let bipIndex;
@@ -538,7 +546,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     if (request.method === AvailableMethods.dag_getMetagraphBalance) {
       const [address] = request.params as [unknown];
 
-      this.validateMetagraphToken(address);
+      this.validateMetagraphAddress(address);
 
       return this.getMetagraphBalance(address as string);
     }
@@ -558,13 +566,13 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       const [txData] = request.params as [StargazerMetagraphTransactionRequest];
 
-      const txTokenAddress = txData?.tokenAddress;
+      const txMetagraphAddress = txData?.metagraphAddress;
       const txSource = txData?.source;
       const txDestination = txData?.destination;
       const txAmount = txData?.amount;
       const txFee = txData?.fee || 0;
 
-      this.validateMetagraphToken(txTokenAddress);
+      this.validateMetagraphAddress(txMetagraphAddress);
 
       if (typeof txSource !== 'string') {
         throw new Error("Bad argument 'source'");
@@ -599,7 +607,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       const txObject = {
-        tokenAddress: txTokenAddress,
+        metagraphAddress: txMetagraphAddress,
         to: txDestination,
         value: txAmount / 1e8, // DATUM to DAG
         fee: txFee / 1e8, // DATUM to DAG
@@ -630,6 +638,99 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       return sentTransactionEvent.detail.result;
+    }
+
+    if (request.method === AvailableMethods.dag_getMetagraphTransaction) {
+      const [txData] = request.params as [StargazerMetagraphGetTransactionRequest];
+
+      const txMetagraphAddress = txData.metagraphAddress;
+      const txHash = txData.hash;
+
+      if (!txMetagraphAddress) {
+        throw new Error("'metagraphAddress' is required");
+      }
+
+      if (!txHash) {
+        throw new Error("'hash' is required");
+      }
+
+      if (typeof txMetagraphAddress !== 'string') {
+        throw new Error("Bad argument 'metagraphAddress' -> not a string");
+      }
+
+      if (typeof txHash !== 'string') {
+        throw new Error("Bad argument 'hash' -> not a string");
+      }
+
+      if (!ethers.utils.isHexString('0x' + txHash, 32)) {
+        throw new Error("Bad argument 'hash' -> invalid 32 byte hex value");
+      }
+
+      this.validateMetagraphAddress(txMetagraphAddress);
+
+      try {
+        const response =
+          await dag4.account.networkInstance.blockExplorerV2Api.getCurrencyTransaction(
+            txMetagraphAddress,
+            txHash
+          );
+        return !!response?.data ? response.data : null;
+      } catch (e) {
+        console.error('dag_getMetagraphTransaction:', e);
+        return null;
+      }
+    }
+
+    if (request.method === AvailableMethods.dag_getMetagraphPendingTransaction) {
+      const [txData] = request.params as [StargazerMetagraphGetTransactionRequest];
+
+      const txMetagraphAddress = txData.metagraphAddress;
+      const txHash = txData.hash;
+
+      if (!txMetagraphAddress) {
+        throw new Error("'metagraphAddress' is required");
+      }
+
+      if (!txHash) {
+        throw new Error("'hash' is required");
+      }
+
+      if (typeof txMetagraphAddress !== 'string') {
+        throw new Error("Bad argument 'metagraphAddress' -> not a string");
+      }
+
+      if (typeof txHash !== 'string') {
+        throw new Error("Bad argument 'hash' -> not a string");
+      }
+
+      if (!ethers.utils.isHexString('0x' + txHash, 32)) {
+        throw new Error("Bad argument 'hash' -> invalid 32 byte hex value");
+      }
+
+      const metagraphToken = this.validateMetagraphAddress(txMetagraphAddress);
+
+      const metagraphTokenInfo = assets[metagraphToken?.id];
+
+      if (!metagraphTokenInfo) {
+        throw new Error("'metagraphAddress' not found in wallet");
+      }
+
+      const { address, l0endpoint, l1endpoint } = metagraphTokenInfo;
+      const beUrl = DAG_NETWORK[vault.activeNetwork.Constellation].config.beUrl;
+      const metagraphClient = dag4.account.createMetagraphTokenClient({
+        id: address,
+        metagraphId: address,
+        l0Url: l0endpoint,
+        l1Url: l1endpoint,
+        beUrl,
+      });
+
+      try {
+        return metagraphClient.networkInstance.getPendingTransaction(txHash);
+      } catch (e) {
+        console.error('dag_getMetagraphPendingTransaction:', e);
+        return null;
+      }
     }
 
     throw new Error('Unsupported non-proxied method');
