@@ -38,6 +38,7 @@ import {
   AVALANCHE_LOGO,
   BSC_LOGO,
   CONSTELLATION_LOGO,
+  DAG_NETWORK,
   ETHEREUM_LOGO,
   POLYGON_LOGO,
   URL_REGEX_PATTERN,
@@ -60,7 +61,11 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   const accountController = getAccountController();
   const linkTo = useLinkTo();
 
-  const isL0Token = ['main2', 'test2'].includes(networkType);
+  const isL0Token = [
+    DAG_NETWORK.main2.id,
+    DAG_NETWORK.test2.id,
+    DAG_NETWORK.integration2.id,
+  ].includes(networkType);
 
   let { control, handleSubmit, register, setValue, setError, triggerValidation, errors } =
     useForm({
@@ -270,7 +275,9 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       );
     } else {
       const isValidDagAddress = await accountController.isValidDAGAddress(tokenAddress);
-      const isValidMetagraphAddress = await accountController.isValidMetagraphAddress(tokenAddress);
+      const isValidMetagraphAddress = await accountController.isValidMetagraphAddress(
+        tokenAddress
+      );
       if (!isValidDagAddress) {
         setError('tokenAddress', 'invalidAddress', 'Invalid L0 token address');
         return;

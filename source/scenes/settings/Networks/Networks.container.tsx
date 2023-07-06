@@ -7,14 +7,27 @@ import { getWalletController } from 'utils/controllersUtils';
 
 import { RootState } from 'state/store';
 import IVaultState, { ActiveNetwork } from 'state/vault/types';
-import { AVALANCHE_LOGO, AVALANCHE_NETWORK, BSC_LOGO, BSC_NETWORK, CONSTELLATION_LOGO, DAG_NETWORK, ETHEREUM_LOGO, ETH_NETWORK, POLYGON_LOGO, POLYGON_NETWORK } from 'constants/index';
+import {
+  AVALANCHE_LOGO,
+  AVALANCHE_NETWORK,
+  BSC_LOGO,
+  BSC_NETWORK,
+  CONSTELLATION_LOGO,
+  DAG_NETWORK,
+  ETHEREUM_LOGO,
+  ETH_NETWORK,
+  POLYGON_LOGO,
+  POLYGON_NETWORK,
+} from 'constants/index';
 
 import Container from 'components/Container';
 import Networks from './Networks';
 
 const NetworksContainer: FC = () => {
   const walletController = getWalletController();
-  const { activeNetwork, customNetworks }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { activeNetwork, customNetworks }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const linkTo = useLinkTo();
 
   const handleChangeNetwork = (networkType: string, networkId: string) => {
@@ -25,35 +38,43 @@ const NetworksContainer: FC = () => {
 
   const handleAddNetwork = () => {
     linkTo('/settings/networks/add');
-  }
+  };
 
   const generateConstellationChains = () => {
     const constellationChains = customNetworks['constellation'];
     const items = [
       { value: DAG_NETWORK.main2.id, label: DAG_NETWORK.main2.label },
       { value: DAG_NETWORK.test2.id, label: DAG_NETWORK.test2.label },
+      { value: DAG_NETWORK.integration2.id, label: DAG_NETWORK.integration2.label },
     ];
     const constellationObject = Object.keys(constellationChains);
     if (constellationObject.length) {
-      const customItems = constellationObject.map((item: string) =>  { return { value: constellationChains[item].id, label: constellationChains[item].label }});
+      const customItems = constellationObject.map((item: string) => {
+        return {
+          value: constellationChains[item].id,
+          label: constellationChains[item].label,
+        };
+      });
       return items.concat(customItems);
     }
     return items;
-  }
+  };
 
   const generateEthereumChains = () => {
     const ethChains = customNetworks['ethereum'];
     const items = [
-      { value: ETH_NETWORK.mainnet.id as string, label: ETH_NETWORK.mainnet.label  },
+      { value: ETH_NETWORK.mainnet.id as string, label: ETH_NETWORK.mainnet.label },
       { value: ETH_NETWORK.goerli.id as string, label: ETH_NETWORK.goerli.label },
     ];
     const ethObjects = Object.keys(ethChains);
     if (ethObjects.length) {
-      const customItems = ethObjects.map((item: string) =>  { return { value: ethChains[item].id, label: ethChains[item].label }});
+      const customItems = ethObjects.map((item: string) => {
+        return { value: ethChains[item].id, label: ethChains[item].label };
+      });
       return items.concat(customItems);
     }
     return items;
-  }
+  };
 
   // 349: New network should be added here.
   const networkOptions = [
@@ -95,8 +116,14 @@ const NetworksContainer: FC = () => {
         zIndex: 8000,
       },
       items: [
-        { value: AVALANCHE_NETWORK['avalanche-mainnet'].id, label: AVALANCHE_NETWORK['avalanche-mainnet'].label  },
-        { value: AVALANCHE_NETWORK['avalanche-testnet'].id, label: AVALANCHE_NETWORK['avalanche-testnet'].label },
+        {
+          value: AVALANCHE_NETWORK['avalanche-mainnet'].id,
+          label: AVALANCHE_NETWORK['avalanche-mainnet'].label,
+        },
+        {
+          value: AVALANCHE_NETWORK['avalanche-testnet'].id,
+          label: AVALANCHE_NETWORK['avalanche-testnet'].label,
+        },
       ],
     },
     {
@@ -111,7 +138,7 @@ const NetworksContainer: FC = () => {
         zIndex: 7000,
       },
       items: [
-        { value: BSC_NETWORK.bsc.id, label: BSC_NETWORK.bsc.label  },
+        { value: BSC_NETWORK.bsc.id, label: BSC_NETWORK.bsc.label },
         { value: BSC_NETWORK['bsc-testnet'].id, label: BSC_NETWORK['bsc-testnet'].label },
       ],
     },
@@ -127,7 +154,7 @@ const NetworksContainer: FC = () => {
         zIndex: 6000,
       },
       items: [
-        { value: POLYGON_NETWORK.matic.id, label: POLYGON_NETWORK.matic.label  },
+        { value: POLYGON_NETWORK.matic.id, label: POLYGON_NETWORK.matic.label },
         { value: POLYGON_NETWORK.maticmum.id, label: POLYGON_NETWORK.maticmum.label },
       ],
     },
@@ -135,10 +162,7 @@ const NetworksContainer: FC = () => {
 
   return (
     <Container safeArea={false}>
-      <Networks 
-        networkOptions={networkOptions} 
-        handleAddNetwork={handleAddNetwork}
-      />
+      <Networks networkOptions={networkOptions} handleAddNetwork={handleAddNetwork} />
     </Container>
   );
 };
