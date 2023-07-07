@@ -111,19 +111,19 @@ const ConfirmContainer = () => {
     ) as IAssetInfoState;
 
     if (!activeAsset) {
-      if (!!chain) {
-        if (chain === StargazerChain.CONSTELLATION && !!metagraphAddress) {
-          activeAsset = useSelector((state: RootState) =>
-            find(state.assets, { address: metagraphAddress as string })
-          ) as IAssetInfoState;
-        } else {
-          activeAsset = CHAIN_FULL_ASSET[chain as keyof typeof CHAIN_FULL_ASSET];
-        }
-      } else {
+      if (!chain) {
         // Set ETH as the default activeAsset if 'chain' is not provided
         activeAsset = useSelector((state: RootState) =>
           find(state.assets, { id: AssetType.Ethereum })
         ) as IAssetInfoState;
+      }
+
+      if (chain === StargazerChain.CONSTELLATION && !!metagraphAddress) {
+        activeAsset = useSelector((state: RootState) =>
+          find(state.assets, { address: metagraphAddress as string })
+        ) as IAssetInfoState;
+      } else {
+        activeAsset = CHAIN_FULL_ASSET[chain as keyof typeof CHAIN_FULL_ASSET];
       }
     }
 
@@ -139,12 +139,7 @@ const ConfirmContainer = () => {
   } else {
     activeAsset = vault.activeAsset;
     activeWallet = vault.activeWallet;
-
     assetInfo = assets[activeAsset.id];
-    // Sets the header for the confirm screen.
-    // useLayoutEffect(() => {
-    //   navigation.setOptions(confirmHeader({ navigation, asset: assetInfo }));
-    // }, []);
   }
 
   const getFiatAmount = useFiat(false, assetInfo);
