@@ -49,7 +49,12 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     if (tx.sender) {
       DAG_EXPLORER = 'https://mainnet1.dagexplorer.io';
     }
-    const DAG_EXPLORER_TX = `${DAG_EXPLORER}/transactions`;
+    let DAG_EXPLORER_TX = `${DAG_EXPLORER}/transactions`;
+
+    if (isL0token) {
+      const assetAddress = activeAsset.contractAddress;
+      DAG_EXPLORER_TX = `${DAG_EXPLORER}/metagraphs/${assetAddress}/transactions`;
+    }
 
     let explorerURL = '';
     if (isETH) {
