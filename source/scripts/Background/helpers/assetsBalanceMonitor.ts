@@ -120,19 +120,41 @@ export class AssetsBalanceMonitor {
     }
   }
 
+  private async getCurrencyAddressBlockExplorerBalance(
+    metagraphAddress: string,
+    dagAddress: string
+  ): Promise<number> {
+    const balance =
+      (
+        (await dag4.network.blockExplorerV2Api.getCurrencyAddressBalance(
+          metagraphAddress,
+          dagAddress
+        )) as any
+      )?.data?.balance ?? 0;
+    const balanceNumber = new BigNumber(balance)
+      .multipliedBy(DAG_DECIMAL_FACTOR)
+      .toNumber();
+    return balanceNumber;
+  }
+
+  private async getAddressBlockExplorerBalance(address: string): Promise<number> {
+    const balance: number =
+      ((await dag4.network.blockExplorerV2Api.getAddressBalance(address)) as any)?.data
+        ?.balance ?? 0;
+    const balanceNumber = new BigNumber(balance)
+      .multipliedBy(DAG_DECIMAL_FACTOR)
+      .toNumber();
+
+    return balanceNumber;
+  }
+
   async refreshL0balances(l0assets: IAssetInfoState[], dagAddress: string) {
     let l0balances = {};
     for (const l0asset of l0assets) {
-      const balance =
-        (
-          (await dag4.network.blockExplorerV2Api.getCurrencyAddressBalance(
-            l0asset.address,
-            dagAddress
-          )) as any
-        )?.data?.balance ?? 0;
-      const balanceNumber = new BigNumber(balance)
-        .multipliedBy(DAG_DECIMAL_FACTOR)
-        .toNumber();
+      const balanceNumber = await this.getCurrencyAddressBlockExplorerBalance(
+        l0asset.address,
+        dagAddress
+      );
 
       l0balances = {
         ...l0balances,
@@ -153,12 +175,7 @@ export class AssetsBalanceMonitor {
     try {
       // Hotfix: Use block explorer API directly.
       const address = dag4.account.address;
-      const addressBalance: number =
-        ((await dag4.network.blockExplorerV2Api.getAddressBalance(address)) as any)?.data
-          ?.balance ?? 0;
-      const balanceNumber = new BigNumber(addressBalance)
-        .multipliedBy(DAG_DECIMAL_FACTOR)
-        .toNumber();
+      const balanceNumber = await this.getAddressBlockExplorerBalance(address);
 
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;

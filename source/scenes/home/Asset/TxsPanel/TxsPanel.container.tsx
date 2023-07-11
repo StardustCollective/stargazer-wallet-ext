@@ -62,7 +62,9 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
         return '';
       }
       explorerURL = accountController?.networkController?.getExplorerURL();
-      if (!explorerURL) return '';
+      if (!explorerURL) {
+        return '';
+      }
     }
     return isETH ? `${explorerURL}tx/${txHash}` : `${DAG_EXPLORER_TX}/${txHash}`;
   };
