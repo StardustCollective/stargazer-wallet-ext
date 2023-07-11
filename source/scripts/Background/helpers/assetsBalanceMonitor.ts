@@ -169,7 +169,7 @@ export class AssetsBalanceMonitor {
     store.dispatch(
       updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS })
     );
-    const { balances } = store.getState().vault;
+    const { balances, activeNetwork } = store.getState().vault;
     const assets = store.getState().assets;
 
     try {
@@ -180,7 +180,10 @@ export class AssetsBalanceMonitor {
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;
       const l0assets = Object.values(assets).filter(
-        (asset) => !!asset?.l0endpoint && !!asset?.l1endpoint
+        (asset) =>
+          !!asset?.l0endpoint &&
+          !!asset?.l1endpoint &&
+          asset?.network === activeNetwork.Constellation
       );
       const l0balances = await this.refreshL0balances(l0assets, address);
       store.dispatch(
