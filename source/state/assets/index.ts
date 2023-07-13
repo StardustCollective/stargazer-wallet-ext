@@ -1,5 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ALKIMI_LOGO, AVALANCHE_LOGO, BSC_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO, VE_LTX_LOGO } from 'constants/index';
+import {
+  ALKIMI_LOGO,
+  AVALANCHE_LOGO,
+  BSC_LOGO,
+  CONSTELLATION_LOGO,
+  ETHEREUM_LOGO,
+  GEOJAM_LOGO,
+  LATTICE_LOGO,
+  POLYGON_LOGO,
+  VE_LTX_LOGO,
+} from 'constants/index';
 import { AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from './types';
 
@@ -95,17 +105,6 @@ export const initialState: IAssetListState = {
     logo: ALKIMI_LOGO,
     decimals: 18,
   },
-  '0x4e08f03079c5cd3083ea331ec61bcc87538b7665-mainnet': {
-    id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665-mainnet',
-    address: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
-    label: 'DoubleDice',
-    symbol: 'DODI',
-    type: AssetType.ERC20,
-    priceId: 'doubledice-token',
-    network: 'mainnet',
-    logo: DODI_LOGO,
-    decimals: 18,
-  },
   '0x23894dc9da6c94ecb439911caf7d337746575a72-mainnet': {
     id: '0x23894dc9da6c94ecb439911caf7d337746575a72-mainnet',
     address: '0x23894dc9da6c94ecb439911caf7d337746575a72',
@@ -137,7 +136,10 @@ const AssetListState = createSlice({
         delete state[action.payload.id];
       }
     },
-    updateAssetDecimals(state: IAssetListState, action: PayloadAction<{ assetId: string, decimals: number}>) {
+    updateAssetDecimals(
+      state: IAssetListState,
+      action: PayloadAction<{ assetId: string; decimals: number }>
+    ) {
       if (action.payload.assetId && action.payload.decimals) {
         state[action.payload.assetId].decimals = action.payload.decimals;
       }
@@ -145,6 +147,7 @@ const AssetListState = createSlice({
   },
 });
 
-export const { addERC20Asset, removeERC20Asset, updateAssetDecimals, rehydrate } = AssetListState.actions;
+export const { addERC20Asset, removeERC20Asset, updateAssetDecimals, rehydrate } =
+  AssetListState.actions;
 
 export default AssetListState.reducer;

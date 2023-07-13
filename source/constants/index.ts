@@ -1,11 +1,20 @@
-import { AvalancheChainId, AvalancheChainValue, BSCChainId, BSCChainValue, EthChainId, EthChainValue, PolygonChainId, PolygonChainValue } from 'scripts/Background/controllers/EVMChainController/types';
+import {
+  AvalancheChainId,
+  AvalancheChainValue,
+  BSCChainId,
+  BSCChainValue,
+  EthChainId,
+  EthChainValue,
+  PolygonChainId,
+  PolygonChainValue,
+} from 'scripts/Background/controllers/EVMChainController/types';
 import { StargazerChain } from 'scripts/common';
-import { 
+import {
   isProd,
-  isNative, 
+  isNative,
   COINGECKO_API_KEY,
-  STARGAZER_PROVIDERS_BASE_URL, 
-  STARGAZER_PROVIDERS_BASE_URL_PROD, 
+  STARGAZER_PROVIDERS_BASE_URL,
+  STARGAZER_PROVIDERS_BASE_URL_PROD,
   QUICKNODE_ETHEREUM_MAINNET,
   QUICKNODE_ETHEREUM_GOERLI,
   QUICKNODE_AVALANCHE_MAINNET,
@@ -18,21 +27,33 @@ import {
 
 export const STORE_PORT = 'STARGAZER';
 
-export const CONSTELLATION_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
-export const ETHEREUM_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
-export const ETHEREUM_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
-export const AVALANCHE_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-default-logo.png';
-export const BSC_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
-export const POLYGON_DEFAULT_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-default-logo.png';
-export const AVALANCHE_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png';
-export const BSC_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
-export const POLYGON_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png';
-export const LATTICE_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/lattice-logo.png';
-export const VE_LTX_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ve-ltx-logo.png';
-export const ALKIMI_LOGO = 'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
-export const DODI_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png';
+export const CONSTELLATION_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
+export const ETHEREUM_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
+export const ETHEREUM_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
+export const AVALANCHE_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-default-logo.png';
+export const BSC_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
+export const POLYGON_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-default-logo.png';
+export const AVALANCHE_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png';
+export const BSC_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
+export const POLYGON_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png';
+export const LATTICE_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/lattice-logo.png';
+export const VE_LTX_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ve-ltx-logo.png';
+export const ALKIMI_LOGO =
+  'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
 export const GEOJAM_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png';
-export const SIMPLEX_LOGO = 'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
+export const SIMPLEX_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
 
 export const DAG_NETWORK: {
   [networkId: string]: {
@@ -46,7 +67,7 @@ export const DAG_NETWORK: {
     logo: string;
     network: string;
     config: {
-      beUrl: string;  // 1.0 and 2.0
+      beUrl: string; // 1.0 and 2.0
       lbUrl?: string; // 1.0
       l0Url?: string; // 2.0
       l1Url?: string; // 2.0
@@ -66,8 +87,8 @@ export const DAG_NETWORK: {
     config: {
       beUrl: 'https://be-mainnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-mainnet.constellationnetwork.io',
-      l1Url: 'https://l1-lb-mainnet.constellationnetwork.io'
-    }
+      l1Url: 'https://l1-lb-mainnet.constellationnetwork.io',
+    },
   },
   test2: {
     id: 'test2',
@@ -82,9 +103,9 @@ export const DAG_NETWORK: {
     config: {
       beUrl: 'https://be-testnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-testnet.constellationnetwork.io',
-      l1Url: 'https://l1-lb-testnet.constellationnetwork.io'
-    }
-  }
+      l1Url: 'https://l1-lb-testnet.constellationnetwork.io',
+    },
+  },
 };
 
 export const ETH_NETWORK: {
@@ -305,21 +326,28 @@ export const ALL_EVM_CHAINS = {
   ...ETH_NETWORK,
   ...AVALANCHE_NETWORK,
   ...BSC_NETWORK,
-  ...POLYGON_NETWORK
+  ...POLYGON_NETWORK,
 };
 
-export const SUPPORTED_HEX_CHAINS = ['0x1', '0x5', '0xa86a', '0xa869', '0x89', '0x13881', '0x38', '0x61'];
+export const SUPPORTED_HEX_CHAINS = [
+  '0x1',
+  '0x5',
+  '0xa86a',
+  '0xa869',
+  '0x89',
+  '0x13881',
+  '0x38',
+  '0x61',
+];
 
 export const ASSET_PRICE_API = 'https://pro-api.coingecko.com/api/v3/simple/price';
-export const TOKEN_INFO_API =
-  'https://pro-api.coingecko.com/api/v3/coins';
+export const TOKEN_INFO_API = 'https://pro-api.coingecko.com/api/v3/coins';
 export const ERC20_TOKENS_API =
   'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=ethereum-ecosystem';
 export const ERC20_TOKENS_WITH_ADDRESS_API =
   'https://pro-api.coingecko.com/api/v3/coins/list?include_platform=true';
-export const SEARCH_API =
-  'https://pro-api.coingecko.com/api/v3/search?query=';
-export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`
+export const SEARCH_API = 'https://pro-api.coingecko.com/api/v3/search?query=';
+export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`;
 export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
 export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
 
@@ -338,12 +366,20 @@ export const DEFAULT_CURRENCY = {
 };
 
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
-const PROVIDERS_BASE_URL = isProd ? STARGAZER_PROVIDERS_BASE_URL_PROD : STARGAZER_PROVIDERS_BASE_URL;
+const PROVIDERS_BASE_URL = isProd
+  ? STARGAZER_PROVIDERS_BASE_URL_PROD
+  : STARGAZER_PROVIDERS_BASE_URL;
 
 export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/quote`;
 export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;
 export const GET_SUPPORTED_ASSETS_API = `${PROVIDERS_BASE_URL}/v2/supported-assets`;
 const SIMPLEX_FORM_BASE_URL = 'https://stargazer-assets.s3.us-east-2.amazonaws.com';
-const SIMPLEX_FORM_SUBMISSION_URL_WEB = isProd ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.html?payment_id=` : `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.staging.html?payment_id=`;
-const SIMPLEX_FORM_SUBMISSION_URL_NATIVE = isProd ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.html?payment_id=` : `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.staging.html?payment_id=`;
-export const SIMPLEX_FORM_SUBMISSION_URL = isNative ? SIMPLEX_FORM_SUBMISSION_URL_NATIVE : SIMPLEX_FORM_SUBMISSION_URL_WEB;
+const SIMPLEX_FORM_SUBMISSION_URL_WEB = isProd
+  ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.html?payment_id=`
+  : `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.staging.html?payment_id=`;
+const SIMPLEX_FORM_SUBMISSION_URL_NATIVE = isProd
+  ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.html?payment_id=`
+  : `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.staging.html?payment_id=`;
+export const SIMPLEX_FORM_SUBMISSION_URL = isNative
+  ? SIMPLEX_FORM_SUBMISSION_URL_NATIVE
+  : SIMPLEX_FORM_SUBMISSION_URL_WEB;

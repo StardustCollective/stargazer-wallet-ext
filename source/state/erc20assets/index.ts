@@ -1,5 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ALKIMI_LOGO, AVALANCHE_LOGO, BSC_LOGO, CONSTELLATION_LOGO, DODI_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, LATTICE_LOGO, POLYGON_LOGO, VE_LTX_LOGO } from 'constants/index';
+import {
+  ALKIMI_LOGO,
+  AVALANCHE_LOGO,
+  BSC_LOGO,
+  CONSTELLATION_LOGO,
+  ETHEREUM_LOGO,
+  GEOJAM_LOGO,
+  LATTICE_LOGO,
+  POLYGON_LOGO,
+  VE_LTX_LOGO,
+} from 'constants/index';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetType } from 'state/vault/types';
 import { getERC20Assets, search } from './api';
@@ -64,17 +74,6 @@ export const constellationInitialValues: IAssetInfoState[] = [
     decimals: 18,
   },
   {
-    id: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665-mainnet',
-    address: '0x4e08f03079c5cd3083ea331ec61bcc87538b7665',
-    label: 'DoubleDice',
-    symbol: 'DODI',
-    type: AssetType.ERC20,
-    priceId: 'doubledice-token',
-    network: 'mainnet',
-    logo: DODI_LOGO,
-    decimals: 18,
-  },
-  {
     id: '0x23894dc9da6c94ecb439911caf7d337746575a72-mainnet',
     address: '0x23894dc9da6c94ecb439911caf7d337746575a72',
     label: 'Geojam',
@@ -132,7 +131,7 @@ export const initialState: IERC20AssetsListState = {
     tokenName: '',
     tokenSymbol: '',
     tokenDecimals: '',
-  }
+  },
 };
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
@@ -144,7 +143,10 @@ const ERC20AssetsListState = createSlice({
       state.loading = false;
       state.searchAssets = [];
     },
-    setCustomAsset(state: IERC20AssetsListState, action: PayloadAction<ICustomAssetForm>) {
+    setCustomAsset(
+      state: IERC20AssetsListState,
+      action: PayloadAction<ICustomAssetForm>
+    ) {
       state.customAssetForm.tokenAddress = action.payload.tokenAddress;
       state.customAssetForm.tokenName = action.payload.tokenName;
       state.customAssetForm.tokenSymbol = action.payload.tokenSymbol;
@@ -188,9 +190,10 @@ const ERC20AssetsListState = createSlice({
       state.error = action.payload;
       state.searchAssets = null;
     });
-  }
+  },
 });
 
-export const { clearSearchAssets, setCustomAsset, clearCustomAsset } = ERC20AssetsListState.actions;
+export const { clearSearchAssets, setCustomAsset, clearCustomAsset } =
+  ERC20AssetsListState.actions;
 
 export default ERC20AssetsListState.reducer;
