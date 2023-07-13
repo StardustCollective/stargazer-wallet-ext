@@ -27,7 +27,7 @@ import { getNetworkFromChainId, getNetworkLabel, getNetworkLogo } from 'scripts/
 ///////////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { AssetSymbol } from 'state/vault/types';
+import { AssetSymbol, AssetType } from 'state/vault/types';
 import { IQRCodeModal } from './types';
 
 ///////////////////////////
@@ -56,7 +56,7 @@ const QRCodeModal: FC<IQRCodeModal> = ({ open, address, asset, onClose, copyAddr
     network = activeNetwork.Constellation;
   }
   const networkLabel = getNetworkLabel(network);
-  const networkLogo = asset?.symbol === 'DAG' ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
+  const networkLogo = asset?.type === AssetType.Constellation ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
   return (
     <Portal>
       <div className={clsx(styles.mask, { [styles.open]: open })}>

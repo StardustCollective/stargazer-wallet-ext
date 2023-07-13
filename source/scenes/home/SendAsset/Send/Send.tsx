@@ -12,7 +12,7 @@ import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import { IWalletSend } from './types';
 import styles from './Send.scss';
 
-const WalletSend: FC<IWalletSend> = ({ 
+const WalletSend: FC<IWalletSend> = ({
   modalOpened,
   setModalOpen,
   handleSelectContact,
@@ -45,17 +45,17 @@ const WalletSend: FC<IWalletSend> = ({
   gasSpeedLabel,
   networkTypeOptions,
   basePriceId,
- }) => {
-
+}) => {
   const addressInputClass = clsx(styles.input, styles.address, {
     [styles.verified]: isValidAddress,
+    [styles.addressPadding]: !isExternalRequest,
   });
   const statusIconClass = clsx(styles.statusIcon, {
     [styles.hide]: !isValidAddress,
   });
   const errorIconClass = clsx(styles.statusIcon, {
     [styles.hide]: isValidAddress,
-  }); 
+  });
 
   return (
     <div className={styles.wrapper}>
@@ -65,31 +65,32 @@ const WalletSend: FC<IWalletSend> = ({
         onChange={handleSelectContact}
       />
       <form onSubmit={handleSubmit(onSubmit)} className={styles.bodywrapper}>
-        {!isExternalRequest &&
+        {!isExternalRequest && (
           <section className={styles.balance}>
             <div>
-              Balance: <span>{formatStringDecimal(formatNumber(Number(balances[activeAsset.id]), 16, 20), 4)}</span>{' '}
+              Balance:{' '}
+              <span>
+                {formatStringDecimal(
+                  formatNumber(Number(balances[activeAsset.id]), 16, 20),
+                  4
+                )}
+              </span>{' '}
               {assetInfo.symbol}
             </div>
           </section>
-        }
+        )}
         <div className={styles.networkContainer}>
-          <InputClickable options={networkTypeOptions} titleStyles={styles.networkTitle} />
+          <InputClickable
+            options={networkTypeOptions}
+            titleStyles={styles.networkTitle}
+          />
         </div>
         <section className={styles.content}>
           <ul className={styles.form}>
             <li>
               <label>Recipient Address</label>
-              <img
-                src={`/${VerifiedIcon}`}
-                alt="checked"
-                className={statusIconClass}
-              />
-              <img
-                src={`/${ErrorIcon}`}
-                alt="error"
-                className={errorIconClass}
-              />
+              <img src={`/${VerifiedIcon}`} alt="checked" className={statusIconClass} />
+              <img src={`/${ErrorIcon}`} alt="error" className={errorIconClass} />
               <TextInput
                 placeholder={`Enter a valid ${assetInfo.symbol} address`}
                 fullWidth
@@ -100,13 +101,15 @@ const WalletSend: FC<IWalletSend> = ({
                 disabled={isExternalRequest}
                 variant={addressInputClass}
               />
-              <Button
-                type="button"
-                variant={styles.textBtn}
-                onClick={() => setModalOpen(true)}
-              >
-                Contacts
-              </Button>
+              {!isExternalRequest && (
+                <Button
+                  type="button"
+                  variant={styles.textBtn}
+                  onClick={() => setModalOpen(true)}
+                >
+                  Contacts
+                </Button>
+              )}
             </li>
             <li>
               <label>{`${assetInfo.symbol} Amount`} </label>
@@ -121,15 +124,14 @@ const WalletSend: FC<IWalletSend> = ({
                 disabled={isExternalRequest}
                 variant={clsx(styles.input, styles.amount)}
               />
-              <Button
-                type="button"
-                variant={styles.textBtn}
-                onClick={handleSetMax}
-              >
-                Max
-              </Button>
+              {!isExternalRequest && (
+                <Button type="button" variant={styles.textBtn} onClick={handleSetMax}>
+                  Max
+                </Button>
+              )}
             </li>
-            {(activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) && (
+            {(activeAsset.type === AssetType.Constellation ||
+              activeAsset.type === AssetType.LedgerConstellation) && (
               <li>
                 <label>Transaction Fee</label>
                 <TextInput
@@ -139,86 +141,96 @@ const WalletSend: FC<IWalletSend> = ({
                   inputRef={register}
                   name="fee"
                   onChange={handleFeeChange}
+                  disabled={isExternalRequest}
                   value={fee}
                   variant={clsx(styles.input, styles.fee)}
                 />
-                <Button
-                  type="button"
-                  variant={styles.textBtn}
-                  onClick={handleGetDAGTxFee}
-                >
-                  Recommend
-                </Button>
+                {!isExternalRequest && (
+                  <Button
+                    type="button"
+                    variant={styles.textBtn}
+                    onClick={handleGetDAGTxFee}
+                  >
+                    Recommend
+                  </Button>
+                )}
               </li>
             )}
           </ul>
           <div className={styles.status}>
-            <span className={styles.equalAmount}>
-              ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
-            </span>
+            {!assetInfo?.l0endpoint && (
+              <span className={styles.equalAmount}>
+                ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
+              </span>
+            )}
             {!!Object.values(errors).length && (
               <span className={styles.error}>
                 {Object.values(errors)[0].message as any}
               </span>
             )}
           </div>
-          {(activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) && (
+          {(activeAsset.type === AssetType.Constellation ||
+            activeAsset.type === AssetType.LedgerConstellation) && (
             <div className={styles.description}>
-              {`With current network conditions we recommend a fee of ${recommend} DAG.`}
+              With current network conditions we recommend a fee of {recommend}{' '}
+              {nativeToken}.
             </div>
           )}
         </section>
-        {activeAsset.type !== AssetType.Constellation && activeAsset.type !== AssetType.LedgerConstellation &&(
-          <section
-            className={clsx(styles.transactionFee, {
-              [styles.hide]: !gasPrices.length,
-            })}
-          >
-            <div className={styles.gasRow}>
-              <span>Gas Price (In Gwei)</span>
-              <Slider
-                classes={{
-                  root: clsx(styles.sliderCustom, {
-                    [styles.disabled]:
-                      gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
-                  }),
-                  thumb: styles.thumb,
-                  mark: styles.mark,
-                  track: styles.sliderTrack,
-                  rail: styles.sliderRail,
-                }}
-                value={gasPrice}
-                min={gasPrices[0]}
-                max={gasPrices[2]}
-                scale={(x) => x * 2}
-                aria-labelledby="discrete-slider-restrict"
-                step={1}
-                marks={[
-                  { value: gasPrices[0] },
-                  {
-                    value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
-                  },
-                  { value: gasPrices[2] },
-                ]}
-                onChange={handleGasPriceChange}
-              />
-              <TextInput
-                type="number"
-                value={gasPrice}
-                variant={styles.gasInput}
-                onChange={(ev) => handleGasPriceChange(null, Number(ev.target.value))}
-              />
-              <div className={styles.gasLevel}>
-                {gasSpeedLabel}
+        {activeAsset.type !== AssetType.Constellation &&
+          activeAsset.type !== AssetType.LedgerConstellation && (
+            <section
+              className={clsx(styles.transactionFee, {
+                [styles.hide]: !gasPrices.length,
+              })}
+            >
+              <div className={styles.gasRow}>
+                <span>Gas Price (In Gwei)</span>
+                <Slider
+                  classes={{
+                    root: clsx(styles.sliderCustom, {
+                      [styles.disabled]:
+                        gasPrice < gasPrices[0] || gasPrice > gasPrices[2],
+                    }),
+                    thumb: styles.thumb,
+                    mark: styles.mark,
+                    track: styles.sliderTrack,
+                    rail: styles.sliderRail,
+                  }}
+                  value={gasPrice}
+                  min={gasPrices[0]}
+                  max={gasPrices[2]}
+                  scale={(x) => x * 2}
+                  aria-labelledby="discrete-slider-restrict"
+                  step={1}
+                  marks={[
+                    { value: gasPrices[0] },
+                    {
+                      value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
+                    },
+                    { value: gasPrices[2] },
+                  ]}
+                  onChange={handleGasPriceChange}
+                />
+                <TextInput
+                  type="number"
+                  value={gasPrice}
+                  variant={styles.gasInput}
+                  onChange={(ev) => handleGasPriceChange(null, Number(ev.target.value))}
+                />
+                <div className={styles.gasLevel}>{gasSpeedLabel}</div>
               </div>
-            </div>
-            <div className={styles.status}>
-              <span
-                className={styles.equalAmount}
-              >{`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2, basePriceId)})`}</span>
-            </div>
-          </section>
-        )}
+              <div className={styles.status}>
+                <span
+                  className={styles.equalAmount}
+                >{`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(
+                  gasFee,
+                  2,
+                  basePriceId
+                )})`}</span>
+              </div>
+            </section>
+          )}
         <section className={styles.actionGroup}>
           <div className={styles.actions}>
             <Button

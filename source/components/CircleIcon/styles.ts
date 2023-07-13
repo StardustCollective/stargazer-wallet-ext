@@ -9,12 +9,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.gray_light,
     backgroundColor: COLORS.white,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
   logoIcon: {
-    height: 23,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

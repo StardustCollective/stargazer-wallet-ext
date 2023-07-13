@@ -28,6 +28,7 @@ const TxItemContainer: FC<ITxItem> = ({
   amount,
   fiatAmount,
   getLinkUrl,
+  isL0token,
 }) => {
   const accountController = getAccountController();
   const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.1 : 0;
@@ -131,6 +132,7 @@ const TxItemContainer: FC<ITxItem> = ({
       receivedOrSentText={receivedOrSentText}
       formattedDistanceDate={formattedDistanceDate}
       renderGasSettings={renderGasSettings}
+      isL0token={isL0token}
     />
   );
 };

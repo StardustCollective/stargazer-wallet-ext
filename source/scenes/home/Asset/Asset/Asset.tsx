@@ -33,6 +33,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   assets,
   isAddressCopied,
   copyAddress,
+  showFiatAmount,
 }) => {
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
   return (
@@ -46,9 +47,11 @@ const AssetDetail: FC<IAssetSettings> = ({
               </TextV3.HeaderDisplay>
               <TextV3.Body extraStyles={styles.symbolText}>{assets[activeAsset?.id]?.symbol}</TextV3.Body>
             </div>
-            <div className={styles.fiatBalance}>
-              <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
-            </div>
+            {showFiatAmount &&
+              <div className={styles.fiatBalance}>
+                <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
+              </div>
+            }
             <div className={styles.actions}>
               <AssetButtons setShowQrCode={setShowQrCode} onSendClick={onSendClick} assetId={activeAsset?.id} />
             </div>

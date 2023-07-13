@@ -46,6 +46,8 @@ export interface SearchAsset {
   large: string;
 }
 export interface ICustomAssetForm {
+  l0endpoint?: string;
+  l1endpoint?: string;
   tokenAddress: string;
   tokenName: string;
   tokenSymbol: string;

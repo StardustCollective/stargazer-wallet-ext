@@ -14,6 +14,8 @@ export interface IAssetInfoState {
   decimals: number;
   address: string;
   custom?: boolean;
+  l0endpoint?: string;
+  l1endpoint?: string;
   // contractAddress?: string;
 }
 

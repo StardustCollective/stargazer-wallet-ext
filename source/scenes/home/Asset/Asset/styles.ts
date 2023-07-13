@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
   },
   fiatBalance: {
     marginTop: 8,
-    marginBottom: 32,
   },
   fiatText: {
     fontSize: 16,
@@ -118,6 +117,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     marginBottom: 24,
+    marginTop: 32,
   },
   activity: {
     backgroundColor: COLORS.gray_light,

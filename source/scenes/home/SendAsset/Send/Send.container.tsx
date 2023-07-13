@@ -34,7 +34,13 @@ import { CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
 
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
-import IVaultState, { AssetType, IActiveAssetState, IAssetState, AssetBalances, AssetSymbol, ActiveNetwork } from 'state/vault/types';
+import IVaultState, {
+  AssetType,
+  IActiveAssetState,
+  IAssetState,
+  AssetBalances,
+  ActiveNetwork,
+} from 'state/vault/types';
 import { RootState } from 'state/store';
 
 ///////////////////////////
@@ -55,13 +61,26 @@ import useGasEstimate from 'hooks/useGasEstimate';
 ///////////////////////////
 
 import Send from './Send';
-import { getChainInfo, getMainnetFromTestnet, getNativeToken, getNetworkFromChainId, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
+import {
+  getChainInfo,
+  getMainnetFromTestnet,
+  getNativeToken,
+  getNetworkFromChainId,
+  getPriceId,
+} from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
-import { ETHEREUM_LOGO, POLYGON_LOGO, CONSTELLATION_LOGO, AVALANCHE_LOGO, BSC_LOGO, DAG_NETWORK } from 'constants/index';
+import {
+  ETHEREUM_LOGO,
+  POLYGON_LOGO,
+  CONSTELLATION_LOGO,
+  AVALANCHE_LOGO,
+  BSC_LOGO,
+  DAG_NETWORK,
+} from 'constants/index';
 import { StargazerChain } from 'scripts/common';
 import { initialState as initialStateAssets } from 'state/assets';
 
@@ -87,8 +106,10 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   let to: string;
   let from: string;
   let value: string;
+  let feeAmount: string;
   let gas: string;
   let memo: string;
+  let metagraphAddress: string;
   let history;
   let windowId: string;
   let assetInfo: IAssetInfoState;
@@ -96,7 +117,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
   if (isExternalRequest) {
-    const { data: dataJsonString, windowId: _windowId } = queryString.parse(location.search);
+    const { data: dataJsonString, windowId: _windowId } = queryString.parse(
+      location.search
+    );
 
     windowId = _windowId as string;
 
@@ -107,6 +130,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       gas = params.gas || 0;
       memo = params.data;
       chain = params.chain;
+      feeAmount = params.fee;
+      metagraphAddress = params.metagraphAddress;
     }
 
     useEffect(() => {
@@ -138,16 +163,24 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
     history = useHistory();
 
-    activeAsset = useSelector((state: RootState) => find(state.assets, { address: to })) as IAssetInfoState;
+    activeAsset = useSelector((state: RootState) =>
+      find(state.assets, { address: to })
+    ) as IAssetInfoState;
     const vault = useSelector((state: RootState) => state.vault);
     const vaultActiveAsset = vault.activeAsset;
 
     if (!activeAsset) {
       if (!!chain) {
         if (chain === StargazerChain.CONSTELLATION) {
-          activeAsset = useSelector((state: RootState) =>
-            find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
-          );
+          if (!!metagraphAddress) {
+            activeAsset = useSelector((state: RootState) =>
+              find(state.vault.activeWallet.assets, { contractAddress: metagraphAddress })
+            );
+          } else {
+            activeAsset = useSelector((state: RootState) =>
+              find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
+            );
+          }
         } else {
           activeAsset = useSelector((state: RootState) =>
             find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
@@ -155,8 +188,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
           activeAsset = {
             ...activeAsset,
-            ...CHAIN_WALLET_ASSET[chain as keyof typeof CHAIN_WALLET_ASSET]
-          }
+            ...CHAIN_WALLET_ASSET[chain as keyof typeof CHAIN_WALLET_ASSET],
+          };
         }
       } else {
         // Set ETH as the default activeAsset
@@ -191,41 +224,59 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const tempTx = accountController.getTempTx();
 
-  const { setValue, control, handleSubmit, register, errors, setError, clearError } = useForm({
-    validationSchema: yup.object().shape({
-      address: yup.string().required('Error: Invalid address'),
-      amount: !isExternalRequest ? yup.mixed().transform(value => {
-        const formattedValue = value.replace(/,/g, '.');
-        if (isNaN(formattedValue)) return undefined;
-        const floatNumber = parseFloat(formattedValue);
-        return isNaN(floatNumber) || floatNumber <= 0 ? undefined : floatNumber;
-      }).required('Error: Invalid amount') : null,
-      fee:
-        (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation)
-          ? yup.mixed().transform(value => {
-            const formattedValue = value.replace(/,/g, '.');
-            if (isNaN(formattedValue)) return undefined;
-            const floatNumber = parseFloat(formattedValue);
-            return isNaN(floatNumber) ? undefined : floatNumber;
-          }).required('Error: Invalid transaction fee')
-          : yup.mixed(),
-    }),
-  });
+  const { setValue, control, handleSubmit, register, errors, setError, clearError } =
+    useForm({
+      validationSchema: yup.object().shape({
+        address: yup.string().required('Error: Invalid address'),
+        amount: !isExternalRequest
+          ? yup
+              .mixed()
+              .transform((value) => {
+                const formattedValue = value.replace(/,/g, '.');
+                if (isNaN(formattedValue)) return undefined;
+                const floatNumber = parseFloat(formattedValue);
+                return isNaN(floatNumber) || floatNumber <= 0 ? undefined : floatNumber;
+              })
+              .required('Error: Invalid amount')
+          : null,
+        fee:
+          activeAsset.type === AssetType.Constellation ||
+          activeAsset.type === AssetType.LedgerConstellation
+            ? yup
+                .mixed()
+                .transform((value) => {
+                  const formattedValue = value.replace(/,/g, '.');
+                  if (isNaN(formattedValue)) return undefined;
+                  const floatNumber = parseFloat(formattedValue);
+                  return isNaN(floatNumber) ? undefined : floatNumber;
+                })
+                .required('Error: Invalid transaction fee')
+            : yup.mixed(),
+      }),
+    });
 
   const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
 
   const [address, setAddress] = useState(initAddress || tempTx?.toAddress || to || '');
 
-  const [amount, setAmount] = useState<number | string>(tempTx?.amount ? Number(tempTx?.amount) : 0);
-  const [amountBN, setAmountBN] = useState(ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals));
-  const [fee, setFee] = useState('0');
+  const [amount, setAmount] = useState<number | string>(
+    tempTx?.amount ? Number(tempTx?.amount) : 0
+  );
+  const [amountBN, setAmountBN] = useState(
+    ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals)
+  );
+  const [fee, setFee] = useState(feeAmount || '0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
   const [decimalPointOnAmount, setDecimalPointOnAmount] = useState<boolean>(false);
   const [decimalPointOnFee, setDecimalPointOnFee] = useState<boolean>(false);
 
   const isValidAddress = useMemo(() => {
-    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) return accountController.isValidDAGAddress(address);
+    if (
+      activeAsset.type === AssetType.Constellation ||
+      activeAsset.type === AssetType.LedgerConstellation
+    )
+      return accountController.isValidDAGAddress(address);
     return accountController.isValidERC20Address(address);
   }, [address]);
 
@@ -265,9 +316,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         memo,
       };
     }
-    
+
     accountController.updateTempTx(txConfig);
-    
+
     if (isExternalRequest) {
       const params = new URLSearchParams();
       params.set('to', txConfig.toAddress);
@@ -278,9 +329,16 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         [AssetType.Polygon]: StargazerChain.POLYGON,
         [AssetType.BSC]: StargazerChain.BSC,
         [AssetType.Avalanche]: StargazerChain.AVALANCHE,
-      }
+      };
       if (!!activeAsset?.id) {
-        params.set('chain', CHAINS[activeAsset.id]);
+        if (activeAsset.type === AssetType.Constellation) {
+          params.set('chain', StargazerChain.CONSTELLATION);
+        } else {
+          params.set('chain', CHAINS[activeAsset.id]);
+        }
+      }
+      if (!!metagraphAddress) {
+        params.set('metagraphAddress', metagraphAddress);
       }
       history.push(`/confirmTransaction?${params.toString()}`);
     } else {
@@ -310,7 +368,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       }
 
       txFee =
-        activeAsset.id === AssetType.Constellation || activeAsset.id === AssetType.LedgerConstellation
+        activeAsset.id === AssetType.Constellation ||
+        activeAsset.id === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee, assetInfo.decimals)
           : ethers.utils.parseEther(gasFee.toString());
 
@@ -343,10 +402,11 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     } else {
       formattedAmount = amount;
     }
-    
+
     if (isNaN(formattedAmount)) return true;
-    
-    return !isValidAddress ||
+
+    return (
+      !isValidAddress ||
       !amount ||
       !fee ||
       !address ||
@@ -354,7 +414,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       !computedAmount ||
       !!Object.values(errors).length ||
       balance.lt(0) ||
-      computedAmount.gt(balance);
+      computedAmount.gt(balance)
+    );
   }, [amountBN, address, fee, gasFee, errors, amount]);
 
   const handleAmountChange = useCallback(
@@ -362,7 +423,11 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       const formattedValue = changeVal.replace(/,/g, '.');
       const decimalPointEntered = checkOneDecimalPoint(formattedValue);
       setDecimalPointOnAmount(decimalPointEntered);
-      const changeAmount = getChangeAmount(formattedValue, MAX_AMOUNT_NUMBER, assetInfo.decimals);
+      const changeAmount = getChangeAmount(
+        formattedValue,
+        MAX_AMOUNT_NUMBER,
+        assetInfo.decimals
+      );
       if (changeAmount === null) return;
 
       setAmount(changeAmount);
@@ -384,23 +449,32 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     [address, gasLimit]
   );
 
-  const handleFeeChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const val = ev.target.value;
-    const formattedValue = val.replace(/,/g, '.');
-    const decimalPointEntered = checkOneDecimalPoint(formattedValue);
-    setDecimalPointOnFee(decimalPointEntered);
-    if (!isNaN(parseFloat(formattedValue)) && (parseFloat(formattedValue) === 0 || parseFloat(formattedValue) >= 0.00000001)) {
-      setFee(formattedValue);
-      estimateGasFee(gasPrice);
-    }
-  }, []);
+  const handleFeeChange = useCallback(
+    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const val = ev.target.value;
+      const formattedValue = val.replace(/,/g, '.');
+      const decimalPointEntered = checkOneDecimalPoint(formattedValue);
+      setDecimalPointOnFee(decimalPointEntered);
+      if (
+        !isNaN(parseFloat(formattedValue)) &&
+        (parseFloat(formattedValue) === 0 || parseFloat(formattedValue) >= 0.00000001)
+      ) {
+        setFee(formattedValue);
+        estimateGasFee(gasPrice);
+      }
+    },
+    []
+  );
 
-  const handleAddressChange = useCallback((ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const toAddress = ev.target.value.trim();
-    setAddress(toAddress);
-    setToEthAddress(toAddress);
-    estimateGasFee(gasPrice);
-  }, []);
+  const handleAddressChange = useCallback(
+    (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const toAddress = ev.target.value.trim();
+      setAddress(toAddress);
+      setToEthAddress(toAddress);
+      estimateGasFee(gasPrice);
+    },
+    []
+  );
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
     val = Number(val) || 1;
@@ -442,7 +516,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     handleAmountChange(formattedUnits);
   };
 
-  const isDAG = assetInfo.symbol === AssetSymbol.DAG;
+  const isDAG = assetInfo.type === AssetType.Constellation;
 
   const networkLabel = getNetworkFromChainId(assetInfo?.network);
   const chainValue = activeNetwork[networkLabel as keyof ActiveNetwork];
@@ -455,18 +529,19 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     value: tokenMainnet,
     items: [
       // 349: New network should be added here.
-      { value: 'main2', label: 'Constellation', icon: CONSTELLATION_LOGO },  
-      { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },   
+      { value: 'main2', label: 'Constellation', icon: CONSTELLATION_LOGO },
+      { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
-      { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO }, 
-      { value: 'bsc', label: 'BSC', icon: BSC_LOGO }, 
+      { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO },
+      { value: 'bsc', label: 'BSC', icon: BSC_LOGO },
     ],
     disabled: true,
     labelRight: tokenChainLabel,
-  }
+  };
 
-  const assetNetwork = assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
-  const nativeToken = getNativeToken(assetNetwork);
+  const assetNetwork =
+    assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
+  const nativeToken = isDAG ? assetInfo.symbol : getNativeToken(assetNetwork);
   const basePriceId = getPriceId(assetNetwork);
 
   return (
