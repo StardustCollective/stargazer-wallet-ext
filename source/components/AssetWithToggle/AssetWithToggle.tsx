@@ -36,14 +36,14 @@ import styles from './AssetWithToggle.scss';
 
 const AssetWithToggle: FC<IAssetWithToggle> = ({ id, symbol, network, logo, selected, disabled = false, toggleItem }: IAssetWithToggle) => {
 
-  const iconStyle = logo?.includes('constellation-logo') ? styles.dagIcon : styles.imageIcon;
+  const iconStyle = logo?.includes('constellation') ? styles.dagIcon : styles.imageIcon;
 
   ///////////////////////
   // Render
   ///////////////////////
 
   return (
-    <Card id={`AssetWithToggle-${id}-${network}`} disabled style={styles.cardContainer}>
+    <Card key={`AssetWithToggle-${id}-${network}`} id={`AssetWithToggle-${id}-${network}`} disabled style={styles.cardContainer}>
       <div className={styles.container}>
         <div className={styles.assetIcon}>
           <img className={iconStyle} src={logo} />

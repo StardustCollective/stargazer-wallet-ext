@@ -3,23 +3,29 @@ import { parseUnits } from 'ethers/lib/utils';
 import { Address, Tx } from '../ChainsController';
 import { ETHTransactionInfo, TokenTransactionInfo } from './etherscanApi.types';
 import { FeesWithGasPricesAndLimits, GasPrices, testnets, AllChainsIds } from './types';
-import { 
-  Asset, 
-  BaseAmount, 
-  AssetETH, 
-  ETHChain, 
-  baseAmount, 
-  assetFromString, 
-  assetToString 
+import {
+  Asset,
+  BaseAmount,
+  AssetETH,
+  ETHChain,
+  baseAmount,
+  assetFromString,
+  assetToString,
 } from '@xchainjs/xchain-util';
-import { 
-  BASE_TOKEN_GAS_COST, 
-  DEFAULT_GAS_PRICE, 
-  ETH_DECIMAL, 
-  SIMPLE_GAS_COST ,
-  ETHAddress 
+import {
+  BASE_TOKEN_GAS_COST,
+  DEFAULT_GAS_PRICE,
+  ETH_DECIMAL,
+  SIMPLE_GAS_COST,
+  ETHAddress,
 } from './constants';
-import { ALL_EVM_CHAINS, AVALANCHE_LOGO, BSC_LOGO, ETHEREUM_LOGO, POLYGON_LOGO } from 'constants/index';
+import {
+  ALL_EVM_CHAINS,
+  AVALANCHE_LOGO,
+  BSC_LOGO,
+  ETHEREUM_LOGO,
+  POLYGON_LOGO,
+} from 'constants/index';
 import store from 'state/store';
 
 export const isTestnet = (network: AllChainsIds | string) => {
@@ -41,11 +47,11 @@ export const getNetworkLogo = (network: string) => {
     case 'matic':
     case 'maticmum':
       return POLYGON_LOGO;
-  
+
     default:
       return ETHEREUM_LOGO;
   }
-}
+};
 
 export const getMainnetFromPlatform = (platform: string): string => {
   switch (platform) {
@@ -57,11 +63,11 @@ export const getMainnetFromPlatform = (platform: string): string => {
       return 'bsc';
     case 'polygon-pos':
       return 'matic';
-      
+
     default:
       return 'mainnet';
   }
-}
+};
 
 export const getPlatformFromMainnet = (network: string): string => {
   switch (network) {
@@ -73,19 +79,20 @@ export const getPlatformFromMainnet = (network: string): string => {
       return 'binance-smart-chain';
     case 'matic':
       return 'polygon-pos';
-      
+
     default:
       return 'mainnet';
   }
-}
+};
 
 export const getNetworkLabel = (network: string): string => {
-
   switch (network) {
     case 'main2':
       return 'Constellation';
     case 'test2':
       return 'Constellation Testnet';
+    case 'integration2':
+      return 'IntegrationNet';
     case 'mainnet':
       return 'Ethereum';
     case 'goerli':
@@ -102,12 +109,11 @@ export const getNetworkLabel = (network: string): string => {
       return 'Polygon';
     case 'maticmum':
       return 'Polygon Testnet';
-      
+
     default:
       return 'ERC-20';
   }
-}
-
+};
 
 export const getAllEVMChains = () => {
   const { customNetworks } = store.getState().vault;
@@ -115,11 +121,11 @@ export const getAllEVMChains = () => {
     ...ALL_EVM_CHAINS,
     ...customNetworks['ethereum'],
   };
-}
+};
 
 export const generateId = (value: string): string => {
   return value.toLocaleLowerCase().replace(/[^a-zA-Z0-9]+/g, '-');
-}
+};
 
 export const getPriceId = (network: string): string => {
   // 349: New network should be added here.
@@ -136,53 +142,56 @@ export const getPriceId = (network: string): string => {
     case 'bsc':
     case 'bsc-testnet':
       return 'binancecoin';
-  
+
     default:
       return 'ethereum';
   }
-}
+};
 
 export const getMainnetFromTestnet = (chainId: AllChainsIds | string) => {
   const EVM_CHAINS = getAllEVMChains();
   if (chainId === 'both') return 'mainnet';
   return EVM_CHAINS[chainId]?.mainnet;
-}
+};
 
 export const getNetworkFromChainId = (chainId: AllChainsIds | 'both' | string) => {
   const EVM_CHAINS = getAllEVMChains();
   if (chainId === 'both') return 'Ethereum';
   return EVM_CHAINS[chainId]?.network;
-}
+};
 
 export const getNativeToken = (chainId: AllChainsIds | 'both' | string) => {
   const EVM_CHAINS = getAllEVMChains();
   if (chainId === 'both') return 'ETH';
   return EVM_CHAINS[chainId]?.nativeToken;
-}
+};
 
 export const getChainId = (network: AllChainsIds | string): number => {
   const EVM_CHAINS = getAllEVMChains();
   return EVM_CHAINS[network]?.chainId;
-}
+};
 
 export const getChainInfo = (chainId: string) => {
   const EVM_CHAINS = getAllEVMChains();
   return EVM_CHAINS[chainId];
-}
+};
 
-export const filterSelfTxs = <T extends { from: string; to: string; hash: string }>(txs: T[]): T[] => {
-  const filterTxs = txs.filter((tx) => tx.from !== tx.to)
-  let selfTxs = txs.filter((tx) => tx.from === tx.to)
+export const filterSelfTxs = <T extends { from: string; to: string; hash: string }>(
+  txs: T[]
+): T[] => {
+  const filterTxs = txs.filter((tx) => tx.from !== tx.to);
+  let selfTxs = txs.filter((tx) => tx.from === tx.to);
   while (selfTxs.length) {
-    const selfTx = selfTxs[0]
-    filterTxs.push(selfTx)
-    selfTxs = selfTxs.filter((tx) => tx.hash !== selfTx.hash)
+    const selfTx = selfTxs[0];
+    filterTxs.push(selfTx);
+    selfTxs = selfTxs.filter((tx) => tx.hash !== selfTx.hash);
   }
 
-  return filterTxs
-}
+  return filterTxs;
+};
 
-export const validateSymbol = (symbol?: string | null): boolean => (symbol ? symbol.length >= 3 : false);
+export const validateSymbol = (symbol?: string | null): boolean =>
+  symbol ? symbol.length >= 3 : false;
 
 export const validateAddress = (address: Address): boolean => {
   try {
@@ -191,7 +200,7 @@ export const validateAddress = (address: Address): boolean => {
   } catch (error) {
     return false;
   }
-}
+};
 
 export const getTxFromTokenTransaction = (tx: TokenTransactionInfo): Tx | null => {
   const decimals = parseInt(tx.tokenDecimal) || ETH_DECIMAL;
@@ -217,12 +226,12 @@ export const getTxFromTokenTransaction = (tx: TokenTransactionInfo): Tx | null =
         date: new Date(parseInt(tx.timeStamp) * 1000),
         type: 'transfer',
         hash: tx.hash,
-      }
+      };
     }
   }
 
   return null;
-}
+};
 
 export const getTxFromEthTransaction = (tx: ETHTransactionInfo): Tx => {
   return {
@@ -242,39 +251,57 @@ export const getTxFromEthTransaction = (tx: ETHTransactionInfo): Tx => {
     date: new Date(parseInt(tx.timeStamp) * 1000),
     type: 'transfer',
     hash: tx.hash,
-  }
-}
+  };
+};
 
 export const getTokenAddress = (asset: Asset): string | null => {
   try {
     // strip 0X only - 0x is still valid
-    return ethers.utils.getAddress(asset.symbol.slice(asset.ticker.length + 1).replace(/^0X/, ''));
+    return ethers.utils.getAddress(
+      asset.symbol.slice(asset.ticker.length + 1).replace(/^0X/, '')
+    );
   } catch (err) {
     return null;
   }
-}
+};
 
-export const getFee = ({ gasPrice, gasLimit }: { gasPrice: BaseAmount; gasLimit: BigNumber }) =>
-  baseAmount(gasPrice.amount().multipliedBy(gasLimit.toString()), ETH_DECIMAL);
+export const getFee = ({
+  gasPrice,
+  gasLimit,
+}: {
+  gasPrice: BaseAmount;
+  gasLimit: BigNumber;
+}) => baseAmount(gasPrice.amount().multipliedBy(gasLimit.toString()), ETH_DECIMAL);
 
-export const estimateDefaultFeesWithGasPricesAndLimits = (asset?: Asset): FeesWithGasPricesAndLimits => {
+export const estimateDefaultFeesWithGasPricesAndLimits = (
+  asset?: Asset
+): FeesWithGasPricesAndLimits => {
   const gasPrices = {
-    average: baseAmount(parseUnits(DEFAULT_GAS_PRICE.toString(), 'gwei').toString(), ETH_DECIMAL),
-    fast: baseAmount(parseUnits((DEFAULT_GAS_PRICE * 2).toString(), 'gwei').toString(), ETH_DECIMAL),
-    fastest: baseAmount(parseUnits((DEFAULT_GAS_PRICE * 3).toString(), 'gwei').toString(), ETH_DECIMAL),
-  }
-  const { fast: fastGP, fastest: fastestGP, average: averageGP } = gasPrices
+    average: baseAmount(
+      parseUnits(DEFAULT_GAS_PRICE.toString(), 'gwei').toString(),
+      ETH_DECIMAL
+    ),
+    fast: baseAmount(
+      parseUnits((DEFAULT_GAS_PRICE * 2).toString(), 'gwei').toString(),
+      ETH_DECIMAL
+    ),
+    fastest: baseAmount(
+      parseUnits((DEFAULT_GAS_PRICE * 3).toString(), 'gwei').toString(),
+      ETH_DECIMAL
+    ),
+  };
+  const { fast: fastGP, fastest: fastestGP, average: averageGP } = gasPrices;
 
-  let assetAddress
+  let assetAddress;
   if (asset && assetToString(asset) !== assetToString(AssetETH)) {
-    assetAddress = getTokenAddress(asset)
+    assetAddress = getTokenAddress(asset);
   }
 
-  let gasLimit
+  let gasLimit;
   if (assetAddress && assetAddress !== ETHAddress) {
-    gasLimit = BigNumber.from(BASE_TOKEN_GAS_COST)
+    gasLimit = BigNumber.from(BASE_TOKEN_GAS_COST);
   } else {
-    gasLimit = BigNumber.from(SIMPLE_GAS_COST)
+    gasLimit = BigNumber.from(SIMPLE_GAS_COST);
   }
 
   return {
@@ -286,10 +313,10 @@ export const estimateDefaultFeesWithGasPricesAndLimits = (asset?: Asset): FeesWi
       fast: getFee({ gasPrice: fastGP, gasLimit }),
       fastest: getFee({ gasPrice: fastestGP, gasLimit }),
     },
-  }
-}
+  };
+};
 
 export const getDefaultGasPrices = (asset?: Asset): GasPrices => {
-  const { gasPrices } = estimateDefaultFeesWithGasPricesAndLimits(asset)
-  return gasPrices
-}
+  const { gasPrices } = estimateDefaultFeesWithGasPricesAndLimits(asset);
+  return gasPrices;
+};

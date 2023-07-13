@@ -44,6 +44,7 @@ const TxItem: FC<ITxItemSettings> = ({
   receivedOrSentText,
   formattedDistanceDate,
   renderGasSettings,
+  isL0token,
 }) => {
   return (
     <TouchableOpacity onPress={(e) => {
@@ -80,9 +81,11 @@ const TxItem: FC<ITxItemSettings> = ({
             <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK}>
               {amount}
             </TextV3.CaptionRegular>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText} numberOfLines={1}>
-              ≈ {fiatAmount}
-            </TextV3.Caption>
+            {!isL0token &&
+              <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText} numberOfLines={1}>
+                ≈ {fiatAmount}
+              </TextV3.Caption>
+            }
           </View>
         </View>
         {isGasSettingsVisible && <View style={styles.gasSettings}>{renderGasSettings()}</View>}
