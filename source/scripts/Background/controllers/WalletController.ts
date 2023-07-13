@@ -57,7 +57,7 @@ const LEDGER_WALLET_LABEL = 'Ledger';
 const BITFI_WALLET_LABEL = 'Bitfi';
 const ACCOUNT_ITEMS_FIRST_INDEX = 0;
 
-export class WalletController {
+class WalletController {
   account: AccountController;
 
   keyringManager: KeyringManager;
@@ -505,3 +505,5 @@ export class WalletController {
     store.dispatch(setAutoLogin(false));
   }
 }
+
+export default new WalletController();

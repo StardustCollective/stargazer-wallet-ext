@@ -49,7 +49,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     (state: RootState) => state.erc20assets
   );
 
-  const [networkType, setNetworkType] = useState<string>('mainnet');
+  const [networkType, setNetworkType] = useState<string>('main2');
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [l0endpoint, setL0endpoint] = useState<string>('');
   const [l1endpoint, setL1endpoint] = useState<string>('');
@@ -333,11 +333,11 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     value: networkType,
     items: [
       // 349: New network should be added here.
+      { value: 'main2', label: 'Constellation', icon: CONSTELLATION_LOGO },
       { value: 'mainnet', label: 'Ethereum', icon: ETHEREUM_LOGO },
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO },
       { value: 'bsc', label: 'Binance Smart Chain', icon: BSC_LOGO },
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
-      { value: 'main2', label: 'Constellation', icon: CONSTELLATION_LOGO },
     ],
     onClick: navigateToSingleSelect,
   };
