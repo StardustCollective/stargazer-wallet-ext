@@ -310,7 +310,6 @@ export class AccountController {
     ) {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
-      let txsV1: any = [];
       const assetInfo = assets[activeAsset?.id];
       const isL0token =
         !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
@@ -343,15 +342,9 @@ export class AccountController {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
         }
-
-        if (txsV2.length < TXS_LIMIT) {
-          const LIMIT_V1 = TXS_LIMIT - txsV2.length;
-          const TRANSACTIONS_V1_URL = `https://block-explorer.constellationnetwork.io/address/${activeAsset.address}/transaction?limit=${LIMIT_V1}`;
-          txsV1 = await (await fetch(TRANSACTIONS_V1_URL)).json();
-        }
       }
 
-      store.dispatch(updateTransactions({ txs: [...txsV2, ...txsV1] }));
+      store.dispatch(updateTransactions({ txs: [...txsV2] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
       const txs: any = await this.txController.getTransactionHistory(
         activeAsset.address,
