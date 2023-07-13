@@ -16,13 +16,14 @@ import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { BigNumber } from 'bignumber.js';
+import { IAssetInfoState } from 'state/assets/types';
 
 const FIVE_SECONDS = 5 * 1000;
 const DAG_DECIMAL_FACTOR = 1e-8;
 
 export type AccountTrackerList = {
   [network: string]: AccountTracker;
-}
+};
 
 export class AssetsBalanceMonitor {
   private priceIntervalId: any;
@@ -44,10 +45,10 @@ export class AssetsBalanceMonitor {
     this.accountTrackerList = {
       [KeyringNetwork.Constellation]: new AccountTracker(),
       [KeyringNetwork.Ethereum]: new AccountTracker(),
-      'Polygon': new AccountTracker(),
-      'Avalanche': new AccountTracker(),
-      'BSC': new AccountTracker(),
-    }
+      Polygon: new AccountTracker(),
+      Avalanche: new AccountTracker(),
+      BSC: new AccountTracker(),
+    };
   }
 
   async start() {
@@ -107,7 +108,7 @@ export class AssetsBalanceMonitor {
     }
     this.priceIntervalId = null;
     this.dagBalIntervalId = null;
-    for(let i = 0; i < networksList.length; i++) {
+    for (let i = 0; i < networksList.length; i++) {
       const networkId = networksList[i];
       this.accountTrackerList[networkId].config(null, null, null, null, null);
     }
@@ -119,22 +120,76 @@ export class AssetsBalanceMonitor {
     }
   }
 
+  private async getCurrencyAddressBlockExplorerBalance(
+    metagraphAddress: string,
+    dagAddress: string
+  ): Promise<number> {
+    const balance =
+      (
+        (await dag4.network.blockExplorerV2Api.getCurrencyAddressBalance(
+          metagraphAddress,
+          dagAddress
+        )) as any
+      )?.data?.balance ?? 0;
+    const balanceNumber = new BigNumber(balance)
+      .multipliedBy(DAG_DECIMAL_FACTOR)
+      .toNumber();
+    return balanceNumber;
+  }
+
+  private async getAddressBlockExplorerBalance(address: string): Promise<number> {
+    const balance: number =
+      ((await dag4.network.blockExplorerV2Api.getAddressBalance(address)) as any)?.data
+        ?.balance ?? 0;
+    const balanceNumber = new BigNumber(balance)
+      .multipliedBy(DAG_DECIMAL_FACTOR)
+      .toNumber();
+
+    return balanceNumber;
+  }
+
+  async refreshL0balances(l0assets: IAssetInfoState[], dagAddress: string) {
+    let l0balances = {};
+    for (const l0asset of l0assets) {
+      const balanceNumber = await this.getCurrencyAddressBlockExplorerBalance(
+        l0asset.address,
+        dagAddress
+      );
+
+      l0balances = {
+        ...l0balances,
+        [l0asset.id]: String(balanceNumber) || '-',
+      };
+    }
+
+    return l0balances;
+  }
+
   async refreshDagBalance() {
     store.dispatch(
       updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS })
     );
-    const { balances } = store.getState().vault;
+    const { balances, activeNetwork } = store.getState().vault;
+    const assets = store.getState().assets;
+
     try {
       // Hotfix: Use block explorer API directly.
       const address = dag4.account.address;
-      const addressBalance: number = (await dag4.network.blockExplorerV2Api.getAddressBalance(address) as any)?.data?.balance ?? 0;
-      const balanceNumber = new BigNumber(addressBalance).multipliedBy(DAG_DECIMAL_FACTOR).toNumber();
+      const balanceNumber = await this.getAddressBlockExplorerBalance(address);
 
       this.hasDAGPending = false;
       const pending = this.hasETHPending ? 'true' : undefined;
+      const l0assets = Object.values(assets).filter(
+        (asset) =>
+          !!asset?.l0endpoint &&
+          !!asset?.l1endpoint &&
+          asset?.network === activeNetwork.Constellation
+      );
+      const l0balances = await this.refreshL0balances(l0assets, address);
       store.dispatch(
         updateBalances({
           ...balances,
+          ...l0balances,
           [AssetType.Constellation]: String(balanceNumber) || '-',
           pending,
         })
@@ -163,7 +218,7 @@ export class AssetsBalanceMonitor {
         return AssetType.BSC;
       case 'Polygon':
         return AssetType.Polygon;
-    
+
       default:
         return AssetType.Constellation;
     }
@@ -179,14 +234,14 @@ export class AssetsBalanceMonitor {
     networksList.shift();
     chainsList.shift();
 
-    for(let i = 0; i < chainsList.length; i++) {
+    for (let i = 0; i < chainsList.length; i++) {
       const chainId = chainsList[i];
       const networkId = networksList[i];
       const chainInfo = EVM_CHAINS[chainId];
 
       // TODO-349: Check if tokens are filtered correctly
       const chainTokens = activeWallet.assets
-        .filter((a) =>  {
+        .filter((a) => {
           return a.type === AssetType.ERC20 && assets[a.id]?.network === chainId;
         })
         .map((a) => {

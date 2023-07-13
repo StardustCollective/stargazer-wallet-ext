@@ -51,6 +51,30 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
     proxied: false,
     permissions: [],
   },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_getMetagraphBalance,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_sendMetagraphTransaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_getMetagraphPendingTransaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_getMetagraphTransaction,
+    proxied: false,
+    permissions: [],
+  },
 ];
 
 export type { AvailableChainMethod };

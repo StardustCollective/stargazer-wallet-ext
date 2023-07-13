@@ -1,6 +1,17 @@
 import EVMChainController from './EVMChainController';
-import { BSCSCAN_API_KEY, ETHERSCAN_API_KEY, POLYGONSCAN_API_KEY, SNOWTRACE_API_KEY } from 'utils/envUtil';
-import { AllChainsIds, AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
+import {
+  BSCSCAN_API_KEY,
+  ETHERSCAN_API_KEY,
+  POLYGONSCAN_API_KEY,
+  SNOWTRACE_API_KEY,
+} from 'utils/envUtil';
+import {
+  AllChainsIds,
+  AvalancheChainId,
+  BSCChainId,
+  EthChainId,
+  PolygonChainId,
+} from './EVMChainController/types';
 import { BigNumber, Wallet } from 'ethers';
 import store from 'state/store';
 import { TxHistoryParams } from './ChainsController';
@@ -9,9 +20,8 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { initialState as initialStateAssets } from 'state/assets';
 
 class NetworkController {
-
   private privateKey: string;
-  
+
   // 349: New network should be added here.
   #ethereumNetwork: EVMChainController;
   #polygonNetwork: EVMChainController;
@@ -21,17 +31,26 @@ class NetworkController {
   constructor(privateKey: string) {
     const { activeNetwork } = store.getState().vault;
     this.privateKey = privateKey;
-    this.#ethereumNetwork = this.createEVMController(activeNetwork.Ethereum, ETHERSCAN_API_KEY);
-    this.#polygonNetwork = this.createEVMController(activeNetwork.Polygon, POLYGONSCAN_API_KEY);
+    this.#ethereumNetwork = this.createEVMController(
+      activeNetwork.Ethereum,
+      ETHERSCAN_API_KEY
+    );
+    this.#polygonNetwork = this.createEVMController(
+      activeNetwork.Polygon,
+      POLYGONSCAN_API_KEY
+    );
     this.#bscNetwork = this.createEVMController(activeNetwork.BSC, BSCSCAN_API_KEY);
-    this.#avalancheNetwork = this.createEVMController(activeNetwork.Avalanche, SNOWTRACE_API_KEY);
+    this.#avalancheNetwork = this.createEVMController(
+      activeNetwork.Avalanche,
+      SNOWTRACE_API_KEY
+    );
   }
 
   private createEVMController(chain: AllChainsIds, apiKey: string) {
-    return new EVMChainController({ 
-      chain, 
-      privateKey: this.privateKey, 
-      etherscanApiKey: apiKey
+    return new EVMChainController({
+      chain,
+      privateKey: this.privateKey,
+      etherscanApiKey: apiKey,
     });
   }
 
@@ -75,10 +94,10 @@ class NetworkController {
     const network = getNetworkFromChainId(activeAssetInfo.network);
     const networkToProvider = {
       [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
-      'Polygon': this.#polygonNetwork,
-      'BSC': this.#bscNetwork,
-      'Avalanche': this.#avalancheNetwork,
-    }
+      Polygon: this.#polygonNetwork,
+      BSC: this.#bscNetwork,
+      Avalanche: this.#avalancheNetwork,
+    };
     return networkToProvider[network as keyof typeof networkToProvider];
   }
 
@@ -95,7 +114,7 @@ class NetworkController {
     return provider.getNetwork();
   }
 
-  public getExplorerURL() { 
+  public getExplorerURL() {
     let provider;
     try {
       provider = this.getProviderByActiveAsset();
@@ -160,10 +179,10 @@ class NetworkController {
       const network = getNetworkFromChainId(chainId);
       const networkToProvider = {
         [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
-        'Polygon': this.#polygonNetwork,
-        'BSC': this.#bscNetwork,
-        'Avalanche': this.#avalancheNetwork,
-      }
+        Polygon: this.#polygonNetwork,
+        BSC: this.#bscNetwork,
+        Avalanche: this.#avalancheNetwork,
+      };
       provider = networkToProvider[network as keyof typeof networkToProvider];
     }
     return provider.getTokenInfo(address);
@@ -199,14 +218,24 @@ class NetworkController {
     return provider.waitForTransaction(hash);
   }
 
-  async estimateTokenTransferGasLimit(recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) {
+  async estimateTokenTransferGasLimit(
+    recipient: string,
+    contractAddress: string,
+    txAmount: BigNumber,
+    defaultValue?: number
+  ) {
     let provider;
     try {
       provider = this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: estimateTokenTransferGasLimit - provider not found.');
     }
-    return provider.estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
+    return provider.estimateTokenTransferGasLimit(
+      recipient,
+      contractAddress,
+      txAmount,
+      defaultValue
+    );
   }
 
   async transfer(txOptions: any) {
@@ -218,7 +247,6 @@ class NetworkController {
     }
     return provider.transfer(txOptions);
   }
-
 }
 
 export default NetworkController;

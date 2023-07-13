@@ -56,6 +56,7 @@ type ITxItem = {
   receivedOrSentText?: string;
   formattedDistanceDate?: string;
   renderGasSettings?: () => JSX.Element;
+  isL0token: boolean;
 };
 
 ///////////////////////
@@ -75,6 +76,7 @@ const TxItem: FC<ITxItem> = ({
   receivedOrSentText,
   formattedDistanceDate,
   renderGasSettings,
+  isL0token
 }) => {
   /////////////////////////
   // Renders
@@ -147,9 +149,11 @@ const TxItem: FC<ITxItem> = ({
           <TextV3.CaptionRegular dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountText}>
             {amount}
           </TextV3.CaptionRegular>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText}>
-            ≈ {fiatAmount}
-          </TextV3.Caption>
+         {!isL0token &&
+            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText}>
+                ≈ {fiatAmount}
+            </TextV3.Caption>
+          }
         </div>
       </div>
       {isGasSettingsVisible && <div className={styles.gasSettings}>{renderGasSettings()}</div>}

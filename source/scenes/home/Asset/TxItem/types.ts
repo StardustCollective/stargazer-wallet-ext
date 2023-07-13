@@ -18,6 +18,7 @@ export type ITxItem = {
   currencySymbol: string;
   amount: string;
   fiatAmount: string;
+  isL0token: boolean;
 };
 
 export default interface ITxItemSettings extends ITxItem {

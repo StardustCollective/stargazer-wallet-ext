@@ -18,7 +18,7 @@ import TxsPanel from '../TxsPanel';
 import IAssetSettings from './types';
 import AssetButtons from '../AssetButtons';
 import styles from './styles';
-import { AssetSymbol } from 'state/vault/types';
+import { AssetSymbol, AssetType } from 'state/vault/types';
 
 const QR_CODE_SIZE = 240;
 
@@ -35,6 +35,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   setShowQrCode,
   isAddressCopied,
   copyAddress,
+  showFiatAmount,
 }) => {
   const activeAssetStyle = StyleSheet.flatten([styles.mask, activeAsset && activeWallet ? styles.loaderHide : {}]);
   const asset = assets[activeAsset?.id];
@@ -48,7 +49,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   }
   
   const networkLabel = getNetworkLabel(network);
-  const networkLogo = asset?.symbol === 'DAG' ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
+  const networkLogo = asset?.type === AssetType.Constellation ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
 
   if (activeWallet && activeAsset) {
     return (
@@ -61,9 +62,11 @@ const AssetDetail: FC<IAssetSettings> = ({
               </TextV3.HeaderDisplay>
               <TextV3.Body color={COLORS_ENUMS.WHITE} extraStyles={styles.symbolText}>{assets[activeAsset.id].symbol}</TextV3.Body>
             </View>
-            <View style={styles.fiatBalance}>
-              <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
-            </View>
+            {showFiatAmount && 
+              <View style={styles.fiatBalance}>
+                <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
+              </View>
+            }
             <View style={styles.actions}>
               <AssetButtons setShowQrCode={setShowQrCode} onSendClick={onSendClick} assetId={activeAsset?.id} />
             </View>
