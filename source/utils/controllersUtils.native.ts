@@ -3,17 +3,17 @@ import ContactsController from 'scripts/Background/controllers/ContactsControlle
 
 export const getWalletController = () => {
   return WalletController;
-}
+};
 
 export const getAccountController = () => {
   return WalletController.account;
-}
+};
 
-// There are no Dapp features on mobile 
+// There are no Dapp features on mobile
 export const getDappController = () => {
   return null;
-}
+};
 
 export const getContactsController = () => {
   return new ContactsController();
-}
+};

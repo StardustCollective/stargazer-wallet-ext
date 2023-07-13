@@ -26,6 +26,7 @@ interface ISendConfirm {
   handleCancel: () => void;
   handleConfirm: (browserObject: any) => void;
   disabled: boolean;
+  isL0token: boolean;
 }
 
 const SendConfirm = ({ 
@@ -41,6 +42,7 @@ const SendConfirm = ({
   handleCancel,
   handleConfirm,
   disabled,
+  isL0token,
  }: ISendConfirm) => {
 
   return confirmed ? (
@@ -62,10 +64,12 @@ const SendConfirm = ({
           </div>
           {tempTx?.amount}{' '}
           {assetInfo.symbol}
-          <small>
-            (≈
-            {getSendAmount()})
-          </small>
+          {!isL0token && 
+            <small>
+              (≈
+              {getSendAmount()})
+            </small>
+          }
         </section>
       }
       <section className={styles.transaction}>
@@ -82,14 +86,14 @@ const SendConfirm = ({
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {`${tempTx?.fee} ${feeUnit} (≈ ${getFeeAmount()})`}
+            {`${tempTx?.fee} ${feeUnit} ${isL0token ? '' : `(≈ ${getFeeAmount()})`}`}
           </span>
         </div>
       </section>
       <section className={styles.confirm}>
         <div className={styles.row}>
           Max Total
-          <span>{`$${getTotalAmount()}`}</span>
+          <span>{isL0token ? `${getTotalAmount()} ${assetInfo.symbol}` : `$${getTotalAmount()}`}</span>
         </div>
         <div className={styles.actions}>
           <Button
