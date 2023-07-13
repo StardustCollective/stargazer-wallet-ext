@@ -1,1 +1,1 @@
-export { default } from './Browser.native';
+export { default } from './Browser';

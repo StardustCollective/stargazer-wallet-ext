@@ -10,7 +10,6 @@ import { WebView } from 'react-native-webview';
 // Components
 ///////////////////////////
 
-
 ///////////////////////////
 // Types
 ///////////////////////////
@@ -22,44 +21,30 @@ import { IBrowser } from './types';
 ///////////////////////////
 
 import styles from './styles';
-// import { readOnlyProxy } from 'scripts/common';
-import { StargazerWalletProvider } from 'scripts/InjectedScript/stargazerWalletProvider';
-
+import { test } from './injectedScript';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
 const Browser: FC<IBrowser> = () => {
-
   ///////////////////////////
   // Render
-  ///////////////////////////
-  let provider = null;
-  try {
-    provider = new StargazerWalletProvider();
-  } catch (err) {
-    console.log('err', err);
-  }
-  
-  console.log('StargazerWalletProvider', provider)
-  const customJs = `
-    window.stargazer = new Object();
-    window.
-  `;
+  ///////////////////////////=
+
+  // const customJs = `
+  //   window.stargazer = 'testing value';
+  //   console.log(window.stargazer);
+  //   window.ReactNativeWebView.postMessage(window.stargazer)
+  // `;
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-
-      </View>
+      <View style={styles.header}></View>
       <View style={styles.content}>
-        <WebView 
-          source={{ uri: 'http://localhost:3006/dashboard' }}
-          // originWhitelist={['*']}
-          useWebView2={true}
-          injectedJavaScript={customJs}
-          // javaScriptCanOpenWindowsAutomatically={true}
+        <WebView
+          source={{ uri: 'https://lattice.is' }}
+          injectedJavaScript={test}
           onMessage={(message) => console.log('onMessage', message.nativeEvent.data)}
           onError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;
