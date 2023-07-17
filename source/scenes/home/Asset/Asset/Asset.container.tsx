@@ -34,11 +34,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
   const balance = useMemo(() => {
-    return Number((activeAsset && balances[activeAsset.id]) || 0);
+    return Number((activeAsset && balances[activeAsset?.id]) || 0);
   }, [activeAsset, balances]);
 
   let network = '';
-  if (activeAsset.type !== AssetType.Constellation) {
+  if (activeAsset?.type !== AssetType.Constellation) {
     const { id } = accountController?.networkController?.getNetwork() || {};
     network = getNetworkFromChainId(id);
   }
@@ -59,11 +59,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     navigation.setOptions(
       assetHeader({
         navigation,
-        asset: assets[activeAsset.id],
+        asset: assets[activeAsset?.id],
         addressUrl: getAddressURL(
-          activeAsset.address,
-          activeAsset.contractAddress,
-          activeAsset.type,
+          activeAsset?.address,
+          activeAsset?.contractAddress,
+          activeAsset?.type,
           activeNetwork[networkId as keyof ActiveNetwork]
         ),
       })
@@ -82,12 +82,17 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   useFocusEffect(
     useCallback(() => {
       if (!activeAsset) return;
-      
+
       const fetchTxs = async () => {
-        if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
-          return activeAsset.transactions;
+        if (
+          activeAsset?.type === AssetType.Constellation ||
+          activeAsset?.type === AssetType.LedgerConstellation
+        ) {
+          return activeAsset?.transactions;
         }
-        return (await accountController.getFullETHTxs()).sort((a, b) => b.timestamp - a.timestamp);
+        return (await accountController.getFullETHTxs()).sort(
+          (a, b) => b.timestamp - a.timestamp
+        );
       };
 
       fetchTxs().then((txns: any[]) => {
