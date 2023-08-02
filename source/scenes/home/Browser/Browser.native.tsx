@@ -2,9 +2,10 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { WebView } from 'react-native-webview';
+import EntryScriptWeb3 from 'source/native/EntryScriptWeb3.js';
 
 ///////////////////////////
 // Components
@@ -21,7 +22,6 @@ import { IBrowser } from './types';
 ///////////////////////////
 
 import styles from './styles';
-import { test } from './injectedScript';
 
 ///////////////////////////
 // Constants
@@ -30,7 +30,9 @@ import { test } from './injectedScript';
 const Browser: FC<IBrowser> = () => {
   ///////////////////////////
   // Render
-  ///////////////////////////=
+  ///////////////////////////
+
+  const [entryScriptWeb3, setEntryScriptWeb3] = useState('');
 
   // const customJs = `
   //   window.stargazer = 'testing value';
@@ -38,13 +40,22 @@ const Browser: FC<IBrowser> = () => {
   //   window.ReactNativeWebView.postMessage(window.stargazer)
   // `;
 
+  useEffect(() => {
+    const getEntryScriptWeb3 = async () => {
+      const entryScriptWeb3 = await EntryScriptWeb3.get();
+      setEntryScriptWeb3(entryScriptWeb3);
+    };
+
+    getEntryScriptWeb3();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}></View>
       <View style={styles.content}>
         <WebView
           source={{ uri: 'https://lattice.is' }}
-          injectedJavaScript={test}
+          injectedJavaScript={entryScriptWeb3}
           onMessage={(message) => console.log('onMessage', message.nativeEvent.data)}
           onError={(syntheticEvent) => {
             const { nativeEvent } = syntheticEvent;
