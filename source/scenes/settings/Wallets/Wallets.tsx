@@ -1,34 +1,26 @@
 import React, { FC } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
-import CheckIcon from '@material-ui/icons/CheckCircleRounded';
 import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-
 import Icon from 'components/Icon';
-
 import { AssetType } from 'state/vault/types';
-
-import StargazerIcon from 'assets/images/logo-s.svg';
-
+import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
+import LockIcon from 'assets/images/svg/lock-icon.svg';
+import ChevronRight from 'assets/images/svg/arrow-rounded-right.svg';
 import IWalletSettings from './types';
-
-import styles from './Wallets.scss';
 import { ellipsis, truncateString } from 'scenes/home/helpers';
+import styles from './Wallets.scss';
 
 const WalletsComponent: FC<IWalletSettings> = ({
   wallets,
-  activeWallet,
   privKeyAccounts,
   hardwareWalletAccounts,
   assets,
-  handleSwitchWallet,
   handleManageWallet,
 }) => {
   return (
     <div className={styles.wallets}>
       {!!wallets.length && (
         <>
-          <label>Multi chain wallets</label>
+          <label>Multi Chain Wallets</label>
           <div className={styles.group}>
             {wallets
               .filter((w) => w.type === KeyringWalletType.MultiChainWallet)
@@ -36,77 +28,73 @@ const WalletsComponent: FC<IWalletSettings> = ({
                 <section
                   className={styles.wallet}
                   key={wallet.id}
-                  onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                  onClick={() => handleManageWallet(wallet.id)}
                 >
-                  {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-                  <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
+                  <Icon width={40} Component={StargazerIcon} />
                   <span id={wallet.label}>
                     {truncateString(wallet.label)}
                     <small>Multi Chain Wallet</small>
                   </span>
-                  <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
-                    <InfoIcon />
-                  </IconButton>
+                  <img src={`/${ChevronRight}`} height={14} width={14} />
                 </section>
               ))}
           </div>
         </>
       )}
       {!!privKeyAccounts.length && (
-        <>
-          <label>Private key wallets</label>
+        <div className={styles.section}>
+          <label>Private Key Wallets</label>
           <div className={styles.group}>
             {privKeyAccounts.map((wallet) => (
               <section
                 className={styles.wallet}
                 key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                onClick={() => handleManageWallet(wallet.id)}
               >
-                {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
                 {
                   <div className={styles.walletIcon}>
-                    <img src={`${assets[
-                      wallet.supportedAssets.includes(KeyringAssetType.ETH)
-                        ? AssetType.Ethereum
-                        : AssetType.Constellation
-                    ].logo}`} width={24} />
+                    <img
+                      src={`${
+                        assets[
+                          wallet.supportedAssets.includes(KeyringAssetType.ETH)
+                            ? AssetType.Ethereum
+                            : AssetType.Constellation
+                        ].logo
+                      }`}
+                      width={24}
+                    />
                   </div>
                 }
                 <span>
                   {truncateString(wallet.label)}
                   <small>{ellipsis(wallet.accounts[0].address)}</small>
                 </span>
-                <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
-                  <InfoIcon />
-                </IconButton>
+                <img src={`/${ChevronRight}`} height={14} width={14} />
               </section>
             ))}
           </div>
-        </>
+        </div>
       )}
       {!!hardwareWalletAccounts.length && (
-        <>
+        <div className={styles.section}>
           <label>Hardware Wallets</label>
           <div className={styles.group}>
             {hardwareWalletAccounts.map((wallet) => (
               <section
                 className={styles.wallet}
                 key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                onClick={() => handleManageWallet(wallet.id)}
               >
-                {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-                <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
+                <Icon width={40} Component={LockIcon} />
                 <span>
                   {truncateString(wallet.label)}
-                  <small>{wallet.accounts[0].address}</small>
+                  <small>{ellipsis(wallet.accounts[0].address)}</small>
                 </span>
-                <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
-                  <InfoIcon />
-                </IconButton>
+                <img src={`/${ChevronRight}`} height={14} width={14} />
               </section>
             ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   );

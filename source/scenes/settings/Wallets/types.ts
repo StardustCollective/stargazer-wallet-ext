@@ -1,5 +1,5 @@
 import { IWalletState } from 'state/vault/types';
-import { KeyringWalletAccountState, KeyringWalletState } from '@stardust-collective/dag4-keyring';
+import { KeyringWalletState } from '@stardust-collective/dag4-keyring';
 import IAssetListState from 'state/assets/types';
 
 export type IWalletsView = {
@@ -13,6 +13,5 @@ export default interface IWalletSettings {
   assets: IAssetListState;
   privKeyAccounts: Array<any>;
   hardwareWalletAccounts: Array<any>;
-  handleSwitchWallet: (walletId: string, accounts: KeyringWalletAccountState[]) => void;
-  handleManageWallet: (ev: any, walletId: string) => void;
+  handleManageWallet: (walletId: string) => void;
 }

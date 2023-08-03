@@ -54,6 +54,12 @@ export const COLORS = {
   orange: '#DC6803',
 };
 
+export const NEW_COLORS = {
+  gray_50: '#F9FAFB',
+  gray_300: '#D1D5DB',
+  secondary_text: '#5A5D6B',
+};
+
 export const FONT_WEIGHTS = {
   light: '300',
   regular: '400',

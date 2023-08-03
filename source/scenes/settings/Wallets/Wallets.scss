@@ -2,46 +2,49 @@
 
 .wallets {
   width: 100%;
-  padding: 24px;
+  padding: 16px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  height: 468px;
-  padding-bottom: 24px;
+  background-color: $gray-50;
+  height: 520px;
   overflow: auto;
 
   label {
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 500;
-    margin-top: 24px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     display: block;
-    text-transform: uppercase;
+    color: $secondary-text;
     font-family: $inter;
+  }
+
+  .section {
+    margin-top: 20px;
   }
 
   .group {
     .wallet {
       font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
+      font-size: 14px;
+      line-height: 20px;
       font-family: $inter;
       color: $gray-dark;
-      height: 24px;
       display: flex;
-      padding: 0 12px;
-      height: 60px;
+      padding: 0 16px;
+      height: 62px;
       align-items: center;
       transition: all 0.3s;
       background-color: $white;
       cursor: pointer;
-      border-bottom: 1px solid $gray-light;
+      border: 1px solid $gray-300;
+      border-bottom-width: 0px;
       position: relative;
 
       .walletIcon {
         display: flex;
-        height: 36px;
-        width: 36px;
+        height: 40px;
+        width: 40px;
         margin-right: 12px;
         background-color: $gray-light;
         border-radius: 50%;
@@ -54,6 +57,7 @@
         display: flex;
         flex-direction: column;
         line-height: 20px;
+        color: $black;
         font-family: $inter;
 
         small {
@@ -65,10 +69,6 @@
           text-overflow: ellipsis;
           font-family: $inter;
         }
-      }
-
-      .icon {
-        background-color: $primary;
       }
 
       & > svg {
@@ -87,25 +87,19 @@
       }
 
       &:first-child {
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
       }
 
       &:last-child {
-        border-bottom-left-radius: 6px;
-        border-bottom-right-radius: 6px;
-        border-bottom: 0;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-bottom-width: 1px;
       }
 
       &:hover {
         background: $gray-light-100;
       }
     }
-  }
-
-  .details {
-    width: 32px;
-    height: 32px;
-    color: $gray-100;
   }
 }
