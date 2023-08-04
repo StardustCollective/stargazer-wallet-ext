@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
-import IAssetListState from 'state/assets/types';
 import addHeader from 'navigation/headers/add';
 import { useLinkTo } from '@react-navigation/native';
 import Container, { CONTAINER_COLOR } from 'components/Container';
@@ -15,7 +14,6 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   const { wallets, activeWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
-  const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const ledgerWallets = !!wallets?.ledger ? wallets.ledger : [];
   const bitfiWallets = !!wallets?.bitfi ? wallets.bitfi : [];
   const hardwareWalletAccounts = [...ledgerWallets, ...bitfiWallets];
@@ -42,11 +40,10 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <Wallets
-        wallets={multiChainAccounts}
+        multiChainAccounts={multiChainAccounts}
         activeWallet={activeWallet}
         privKeyAccounts={privKeyAccounts}
         hardwareWalletAccounts={hardwareWalletAccounts}
-        assets={assets}
         handleManageWallet={handleManageWallet}
       />
     </Container>

@@ -1,20 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import clsx from 'clsx';
-
-import SeedIcon from '@material-ui/icons/Description';
-import PrivKeyIcon from '@material-ui/icons/VpnKey';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
-
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
-
-import Icon from 'components/Icon';
-import Button from 'components/Button';
+import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import TextInput from 'components/TextInput';
-
-import styles from './ManageWallet.scss';
-
+import Menu from 'components/Menu';
 import IManageWalletSettings from './types';
+import styles from './ManageWallet.scss';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
   handleSubmit,
@@ -26,7 +17,36 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   onShowRecoveryPhraseClicked,
   onDeleteWalletClicked,
   onShowPrivateKeyClicked,
+  watch,
 }) => {
+  const [label, setLabel] = useState();
+  const isButtonDisabled = label === wallet.label;
+
+  useEffect(() => {
+    if (watch('name')) {
+      setLabel(watch('name'));
+    }
+  }, [watch('name')]);
+
+  const menuItems =
+    wallet.type === KeyringWalletType.MultiChainWallet
+      ? [
+          {
+            title: 'Show Recovery Phrase',
+            onClick: onShowRecoveryPhraseClicked,
+          },
+          {
+            title: 'Show Private Key',
+            onClick: onShowPrivateKeyClicked,
+          },
+        ]
+      : [
+          {
+            title: 'Show Private Key',
+            onClick: onShowPrivateKeyClicked,
+          },
+        ];
+
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
       <label>Name</label>
@@ -35,39 +55,43 @@ const ManageWallet: FC<IManageWalletSettings> = ({
         name="name"
         visiblePassword
         fullWidth
-        variant={styles.input}
         defaultValue={wallet.label}
         inputRef={register({ required: true })}
       />
-      <label>Backup Options</label>
-      {wallet.type === KeyringWalletType.MultiChainWallet ? (
-        <section className={styles.menu} onClick={onShowRecoveryPhraseClicked}>
-          <Icon Component={SeedIcon} />
-          <span>Show Recovery Phrase</span>
-          <ArrowIcon />
-        </section>
-      ) : wallet.type !== KeyringWalletType.LedgerAccountWallet ? (
-        <section className={styles.menu} onClick={onShowPrivateKeyClicked}>
-          <Icon Component={PrivKeyIcon} />
-          <span>Export private key</span>
-          <ArrowIcon />
-        </section>
-      ): null}
+      <Menu
+        title="Backup Options"
+        items={menuItems}
+        containerStyle={styles.menuContainer}
+      />
+      <Menu
+        items={[
+          {
+            title: 'Remove Wallet',
+            onClick: onDeleteWalletClicked,
+            titleStyles: styles.removeText,
+          },
+        ]}
+      />
 
-      <span>If you lose access to this wallet, your funds will be lost, unless you back up!</span>
-      <section className={styles.menu} onClick={onDeleteWalletClicked}>
-        <Icon Component={DeleteIcon} />
-        <span>Delete Wallet</span>
-        <ArrowIcon />
-      </section>
       <section className={styles.actions}>
         <div className={styles.buttons}>
-          <Button type="button" variant={clsx(styles.button, styles.cancel)} onClick={onCancelClicked}>
-            Cancel
-          </Button>
-          <Button type="submit" variant={clsx(styles.button, styles.save)}>
-            Save
-          </Button>
+          <ButtonV3
+            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            label="Cancel"
+            extraStyle={clsx(styles.button, styles.cancel)}
+            onClick={onCancelClicked}
+          />
+          <ButtonV3
+            type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            label="Save"
+            disabled={isButtonDisabled}
+            extraStyle={clsx(styles.button, styles.save)}
+            onClick={handleSubmit((data) => {
+              onSubmit(data);
+            })}
+          />
         </div>
       </section>
     </form>

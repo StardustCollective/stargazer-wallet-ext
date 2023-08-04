@@ -1,0 +1,88 @@
+@import '~assets/styles/variables';
+
+.container {
+  width: 100%;
+  margin-bottom: 20px;
+
+  .title {
+    color: $secondary_text;
+    font-weight: $medium;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .itemContainer {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    background-color: $white;
+    padding-left: 16px;
+    padding-right: 8px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    border: 1px solid $gray-300;
+    border-bottom-width: 0px;
+
+    .walletIcon {
+      display: flex;
+      height: 40px;
+      width: 40px;
+      margin-right: 12px;
+      border: 1px solid $gray-300;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .firstChild {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .lastChild {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-width: 1px;
+  }
+
+  .contentContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex-grow: 1;
+
+    .smallTitle {
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: $medium;
+    }
+
+    .largeTitle {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: $medium;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: $medium;
+      color: $secondary-text;
+    }
+  }
+
+  .labelRight {
+    color: $secondary-text;
+    margin-right: 8px;
+    align-self: center;
+  }
+
+  .arrowContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+  }
+}

@@ -55,6 +55,7 @@ export const COLORS = {
 };
 
 export const NEW_COLORS = {
+  primary: '#5925A7',
   gray_50: '#F9FAFB',
   gray_300: '#D1D5DB',
   secondary_text: '#5A5D6B',

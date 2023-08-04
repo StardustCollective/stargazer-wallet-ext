@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {},
   disabled: {
-    opacity: 0.3,
+    opacity: 0.5,
   },
   disabledTitle: {
     color: COLORS.white,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   primaryOutlineTitle: {
-    color: COLORS.primary_lighter_1
+    color: COLORS.primary_lighter_1,
   },
   secondaryButton: {
     backgroundColor: COLORS.primary_lighter_1,

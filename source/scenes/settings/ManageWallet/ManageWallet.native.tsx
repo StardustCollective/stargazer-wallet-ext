@@ -1,12 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { TouchableOpacity, View } from 'react-native';
-import Icon from 'components/Icon';
+import { View } from 'react-native';
+import { ellipsis } from 'scenes/home/helpers';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import TextInput from 'components/TextInput';
+import Menu from 'components/Menu';
+import CopyIcon from 'assets/images/svg/copy.svg';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { COLORS_ENUMS } from 'assets/styles/colors';
 import IManageWalletSettings from './types';
 import styles from './styles';
 
@@ -20,65 +21,87 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   onShowRecoveryPhraseClicked,
   onDeleteWalletClicked,
   onShowPrivateKeyClicked,
+  watch,
+  isCopied,
+  copyText,
 }) => {
   const cancelButtonStyles = StyleSheet.flatten([styles.button, styles.cancel]);
   const submitButtonStyles = StyleSheet.flatten([styles.button]);
+  const [label, setLabel] = useState();
+  const isButtonDisabled = label === wallet.label;
+
+  useEffect(() => {
+    if (watch('name')) {
+      setLabel(watch('name'));
+    }
+  }, [watch('name')]);
+
+  const menuItems =
+    wallet.type === KeyringWalletType.MultiChainWallet
+      ? [
+          {
+            title: 'Show Recovery Phrase',
+            onClick: onShowRecoveryPhraseClicked,
+          },
+          {
+            title: 'Show Private Key',
+            onClick: onShowPrivateKeyClicked,
+          },
+        ]
+      : [
+          {
+            title: 'Show Private Key',
+            onClick: onShowPrivateKeyClicked,
+          },
+        ];
+
+  const walletAddressesItems =
+    wallet.type === KeyringWalletType.MultiChainWallet
+      ? [
+          {
+            title: 'Wallet Addresses',
+            onClick: () => console.log('test'),
+            labelRight: 5,
+          },
+        ]
+      : [
+          {
+            title: ellipsis(wallet.accounts[0].address, 17, 6),
+            titleStyles: styles.titleAddress,
+            onClick: () => copyText(wallet.accounts[0].address),
+            showArrow: false,
+            rightIcon: <CopyIcon height={20} width={20} />,
+          },
+        ];
+
   return (
     <View style={styles.wrapper}>
-      <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
-        Name
-      </TextV3.Caption>
+      <TextV3.Caption extraStyles={styles.label}>Wallet</TextV3.Caption>
       <TextInput
         control={control}
         name="name"
         visiblePassword
         fullWidth
         inputContainerStyle={styles.inputContainer}
-        inputStyle={styles.input}
         defaultValue={wallet.label}
         inputRef={register({ required: true })}
       />
-      <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
-        Backup Options
-      </TextV3.Caption>
-      {wallet.type === KeyringWalletType.MultiChainWallet ? (
-        <TouchableOpacity onPress={onShowRecoveryPhraseClicked}>
-          <View style={styles.menu}>
-            <Icon
-              type="material"
-              name="description"
-              iconStyles={styles.icon}
-              iconContainerStyles={{ marginLeft: 12 }}
-            />
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
-              Show Recovery Phrase
-            </TextV3.Caption>
-            <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
-          </View>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={onShowPrivateKeyClicked}>
-          <View style={styles.menu}>
-            <Icon name="lock" type="material" iconStyles={styles.icon} iconContainerStyles={{ marginLeft: 12 }} />
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
-              Export private key
-            </TextV3.Caption>
-            <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
-          </View>
-        </TouchableOpacity>
-      )}
-      <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.text}>
-        If you lose access to this wallet, your funds will be lost, unless you back up!
-      </TextV3.Body>
-      <TouchableOpacity onPress={onDeleteWalletClicked}>
-        <View style={styles.menu}>
-          <Icon name="delete" type="font_awesome" iconStyles={styles.icon} iconContainerStyles={{ marginLeft: 12 }} />
-          <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
-            Delete Wallet
-          </TextV3.Body>
-          <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
-        </View>
-      </TouchableOpacity>
+      <Menu items={walletAddressesItems} containerStyle={styles.menuContainer} />
+      <Menu
+        title="Backup Options"
+        items={menuItems}
+        containerStyle={styles.menuContainer}
+      />
+
+      <Menu
+        items={[
+          {
+            title: 'Remove Wallet',
+            onClick: onDeleteWalletClicked,
+            titleStyles: styles.removeText,
+          },
+        ]}
+      />
       <View style={styles.actions}>
         <View style={styles.buttons}>
           <ButtonV3
@@ -93,6 +116,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
             type={BUTTON_TYPES_ENUM.PRIMARY}
             size={BUTTON_SIZES_ENUM.LARGE}
             title="Save"
+            disabled={isButtonDisabled}
             submit
             extraStyles={submitButtonStyles}
             onPress={handleSubmit((data) => {

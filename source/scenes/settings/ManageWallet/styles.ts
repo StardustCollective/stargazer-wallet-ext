@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from 'assets/styles/_variables';
+import { COLORS, FONTS, NEW_COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -7,59 +7,29 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     overflow: 'scroll',
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    backgroundColor: COLORS.gray_light_100,
+    paddingHorizontal: 16,
+    paddingBottom: 24,
     flexGrow: 1,
   },
   label: {
     fontFamily: FONTS.inter,
-    fontSize: 10,
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: '500',
+    color: NEW_COLORS.secondary_text,
+    marginBottom: 8,
     marginTop: 24,
-    marginBottom: 12,
-    textTransform: 'uppercase',
   },
   inputContainer: {
-    border: `1px solid ${COLORS.gray_200}`,
     marginHorizontal: -10, // compensate for View container at 10px padding
-    marginBottom: 0,
+    marginBottom: -20,
     position: 'relative',
     lineHeight: 24,
+    height: 50,
+    paddingHorizontal: 16,
   },
-  text: {
-    marginTop: 12,
-    marginBottom: 24,
-    fontSize: 12,
-    fontWeight: '500',
-    fontFamily: FONTS.inter,
-    lineHeight: 16,
-  },
-  menu: {
-    display: 'flex',
-    paddingHorizontal: 0,
-    paddingVertical: 12,
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderBottom: `1px solid ${COLORS.gray_light}`,
-    borderRadius: 6,
-  },
-  menuText: {
-    lineHeight: 24,
-    color: COLORS.gray_dark,
-    fontWeight: '500',
-    fontSize: 16,
-    flexGrow: 1,
-    fontFamily: FONTS.inter,
-  },
-  icon: {
-    fontSize: 24,
-    color: COLORS.gray,
-  },
-  iconWrapper: {
-    backgroundColor: 'transparent',
+  menuContainer: {
+    marginTop: 20,
   },
   actions: {
     marginTop: 24,
@@ -68,20 +38,26 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   cancel: {
-    backgroundColor: COLORS.gray_light,
-    color: COLORS.gray_dark,
+    backgroundColor: NEW_COLORS.gray_300,
   },
   buttonCancelText: {
-    color: COLORS.gray_dark,
+    color: COLORS.black,
   },
   buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
   },
   button: {
-    marginRight: 10,
-    marginBottom: 20,
-    width: 144,
+    marginHorizontal: 6,
+    width: 170,
+    backgroundColor: NEW_COLORS.primary,
+  },
+  removeText: {
+    color: COLORS.red,
+  },
+  titleAddress: {
+    fontWeight: FONT_WEIGHTS.regular,
+    color: NEW_COLORS.secondary_text,
   },
 });
 

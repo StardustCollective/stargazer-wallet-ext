@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
+import { FONTS, FONT_WEIGHTS, COLORS, NEW_COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   input: {
@@ -12,11 +12,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderWidth: 1,
     borderRadius: 6,
-    paddingLeft: 10,
-    borderColor: 'rgba(0, 0, 0, 0.12)',
+    paddingLeft: 16,
+    borderColor: NEW_COLORS.gray_300,
     borderStyle: 'solid',
     marginBottom: -24,
     marginHorizontal: -24,
+  },
+  inputFocused: {
+    borderColor: COLORS.primary_lighter_1,
+  },
+  inputNotFocused: {
+    borderColor: 'red',
   },
   fullWidth: {
     paddingHorizontal: 0,
@@ -33,7 +39,7 @@ const styles = StyleSheet.create({
   },
   error: {
     borderColor: COLORS.red,
-  }
+  },
 });
 
 export default styles;

@@ -63,11 +63,13 @@
         small {
           font-size: 12px;
           font-weight: 500;
-          color: $gray;
+          line-height: 18px;
+          color: $secondary-text;
           width: 204px;
           overflow: hidden;
           text-overflow: ellipsis;
           font-family: $inter;
+          opacity: 0.88;
         }
       }
 

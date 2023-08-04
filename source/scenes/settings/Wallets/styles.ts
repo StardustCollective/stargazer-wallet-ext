@@ -37,18 +37,20 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: '500',
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 14,
+    lineHeight: 20,
     fontFamily: FONTS.inter,
     color: COLORS.black,
   },
   walletLabel: {},
   textSmall: {
     fontSize: 12,
+    lineHeight: 18,
     fontWeight: '500',
-    color: COLORS.gray_100,
+    color: NEW_COLORS.secondary_text,
     overflow: 'hidden',
     fontFamily: FONTS.inter,
+    opacity: 0.88,
   },
   stargazerIconWrapper: {
     backgroundColor: COLORS.primary,

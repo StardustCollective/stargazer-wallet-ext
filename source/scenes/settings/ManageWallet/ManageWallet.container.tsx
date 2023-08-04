@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import { useForm } from 'react-hook-form';
-
+import { useCopyClipboard } from 'hooks/index';
 import { getAccountController } from 'utils/controllersUtils';
 
 import { useSelector } from 'react-redux';
@@ -15,10 +15,11 @@ import { IManageWalletView } from './types';
 
 const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => {
   const accountController = getAccountController();
+  const [isCopied, copyText] = useCopyClipboard();
   const linkTo = useLinkTo();
   const { id } = route.params;
 
-  const { handleSubmit, register, control } = useForm();
+  const { handleSubmit, register, control, watch } = useForm();
   const allWallets = useSelector(walletsSelector.selectAllWallets);
   const wallet = allWallets.find((w) => w.id === id);
 
@@ -54,9 +55,12 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
         walletId={id}
         handleSubmit={handleSubmit}
         register={register}
+        watch={watch}
         control={control}
         wallet={wallet}
         onSubmit={onSubmit}
+        isCopied={isCopied}
+        copyText={copyText}
         onCancelClicked={onCancelClicked}
         onShowRecoveryPhraseClicked={onShowRecoveryPhraseClicked}
         onDeleteWalletClicked={onDeleteWalletClicked}

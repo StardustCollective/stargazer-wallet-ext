@@ -2,6 +2,7 @@ import React, { FC, useState, MouseEvent, ReactNode } from 'react';
 import { Input as RNEInput } from 'react-native-elements';
 import { KeyboardType, StyleSheet } from 'react-native';
 import { Controller } from 'react-hook-form';
+import { COLORS } from 'assets/styles/_variables';
 
 import styles from './styles';
 
@@ -49,11 +50,13 @@ const TextInput: FC<ITextInput> = ({
   if (type === 'number') {
     keyboardType = 'numeric';
   }
+  const [focused, setFocused] = useState(false);
 
   const inputContainerStyles = StyleSheet.flatten([
     styles.inputContainer,
     fullWidth ? styles.fullWidth : null,
     error ? styles.error : null,
+    focused ? styles.inputFocused : null,
     inputContainerStyle,
   ]);
   const inputComposedStyles = StyleSheet.flatten([styles.input, inputStyle]);
@@ -63,6 +66,14 @@ const TextInput: FC<ITextInput> = ({
 
   const handleClickShowPassword = () => {
     setShowed(!showed);
+  };
+
+  const handleOnFocus = () => {
+    setFocused(true);
+  };
+
+  const handleOnBlur = () => {
+    setFocused(false);
   };
 
   const passwordProps =
@@ -83,6 +94,7 @@ const TextInput: FC<ITextInput> = ({
   return (
     <Controller
       control={control}
+      onBlur={handleOnBlur}
       as={
         <RNEInput
           placeholder={placeholder}
@@ -95,6 +107,8 @@ const TextInput: FC<ITextInput> = ({
           multiline={multiline}
           returnKeyType={returnKeyType}
           blurOnSubmit={blurOnSubmit}
+          selectionColor={COLORS.primary_lighter_1}
+          onFocus={handleOnFocus}
           {...passwordProps} // eslint-disable-line
           {...otherProps} // eslint-disable-line
         />
