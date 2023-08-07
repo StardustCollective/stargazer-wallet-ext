@@ -56,6 +56,7 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
             icon,
             subtitle,
             labelRight,
+            labelRightStyles,
             showArrow = true,
             data,
             rightIcon,
@@ -103,7 +104,9 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
                 </View>
               )}
               {!!labelRight && (
-                <TextV3.LabelSemiStrong extraStyles={styles.labelRight}>
+                <TextV3.LabelSemiStrong
+                  extraStyles={[styles.labelRight, labelRightStyles]}
+                >
                   {labelRight}
                 </TextV3.LabelSemiStrong>
               )}

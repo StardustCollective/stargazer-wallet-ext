@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -24,
   },
   inputFocused: {
-    borderColor: COLORS.primary_lighter_1,
+    borderColor: NEW_COLORS.primary_lighter_2,
   },
   inputNotFocused: {
     borderColor: 'red',

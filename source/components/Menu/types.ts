@@ -6,6 +6,7 @@ export type IMenuItem = {
   data?: any;
   disabled?: boolean;
   labelRight?: string;
+  labelRightStyles?: any;
   titleStyles?: any;
   subtitleStyles?: any;
   showArrow?: boolean;

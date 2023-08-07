@@ -53,18 +53,6 @@
     align-items: flex-start;
     flex-grow: 1;
 
-    .smallTitle {
-      font-size: 14px;
-      line-height: 20px;
-      font-weight: $medium;
-    }
-
-    .largeTitle {
-      font-size: 16px;
-      line-height: 24px;
-      font-weight: $medium;
-    }
-
     .subtitle {
       font-size: 12px;
       line-height: 18px;
@@ -73,10 +61,24 @@
     }
   }
 
+  .smallTitle {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: $medium;
+  }
+
+  .largeTitle {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: $medium;
+  }
+
   .labelRight {
     color: $secondary-text;
-    margin-right: 8px;
+    margin-right: 4px;
     align-self: center;
+    line-height: 24px;
+    font-weight: $regular;
   }
 
   .arrowContainer {
@@ -84,5 +86,11 @@
     justify-content: center;
     align-items: center;
     width: 20px;
+  }
+  .iconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 4px;
   }
 }

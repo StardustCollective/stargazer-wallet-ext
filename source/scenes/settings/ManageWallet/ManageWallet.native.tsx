@@ -8,6 +8,7 @@ import TextInput from 'components/TextInput';
 import Menu from 'components/Menu';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { COLORS_ENUMS } from 'assets/styles/colors';
 import IManageWalletSettings from './types';
 import styles from './styles';
 
@@ -28,12 +29,10 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   const cancelButtonStyles = StyleSheet.flatten([styles.button, styles.cancel]);
   const submitButtonStyles = StyleSheet.flatten([styles.button]);
   const [label, setLabel] = useState();
-  const isButtonDisabled = label === wallet.label;
+  const isButtonDisabled = label === wallet.label || label === '' || !label;
 
   useEffect(() => {
-    if (watch('name')) {
-      setLabel(watch('name'));
-    }
+    setLabel(watch('name'));
   }, [watch('name')]);
 
   const menuItems =
@@ -61,7 +60,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           {
             title: 'Wallet Addresses',
             onClick: () => console.log('test'),
-            labelRight: 5,
+            labelRight: '5',
           },
         ]
       : [
@@ -70,7 +69,9 @@ const ManageWallet: FC<IManageWalletSettings> = ({
             titleStyles: styles.titleAddress,
             onClick: () => copyText(wallet.accounts[0].address),
             showArrow: false,
-            rightIcon: <CopyIcon height={20} width={20} />,
+            rightIcon: !isCopied && <CopyIcon height={20} width={30} />,
+            labelRight: isCopied ? 'Copied!' : '',
+            labelRightStyles: styles.copiedLabel,
           },
         ];
 
@@ -83,17 +84,23 @@ const ManageWallet: FC<IManageWalletSettings> = ({
         visiblePassword
         fullWidth
         inputContainerStyle={styles.inputContainer}
+        inputStyle={styles.input}
         defaultValue={wallet.label}
         inputRef={register({ required: true })}
+        leftIcon={
+          <TextV3.LabelSemiStrong
+            color={COLORS_ENUMS.BLACK}
+            extraStyles={styles.inputLabel}
+          >
+            Wallet Name
+          </TextV3.LabelSemiStrong>
+        }
       />
-      <Menu items={walletAddressesItems} containerStyle={styles.menuContainer} />
-      <Menu
-        title="Backup Options"
-        items={menuItems}
-        containerStyle={styles.menuContainer}
-      />
+      <Menu items={walletAddressesItems} containerStyle={styles.addressesContainer} />
+      <Menu title="Backup Options" items={menuItems} />
 
       <Menu
+        containerStyle={styles.removeWalletContainer}
         items={[
           {
             title: 'Remove Wallet',

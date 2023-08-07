@@ -9,6 +9,18 @@
   box-sizing: border-box;
   background-color: $gray-50;
 
+  .inputContainer {
+    height: 56px;
+  }
+
+  .input {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: $regular;
+    text-align: right;
+    color: $secondary-text;
+  }
+
   label {
     font-family: $inter;
     font-size: 14px;
@@ -19,12 +31,35 @@
     display: block;
   }
 
+  .inputLabel {
+    min-width: 130px;
+  }
+
+  .inputTitle {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: $medium;
+  }
+
   .menuContainer {
-    margin-top: 20px;
+    margin-top: 12px;
   }
 
   .removeText {
     color: $red;
+  }
+
+  .removeWalletContainer {
+    margin-top: -8px;
+  }
+
+  .titleAddress {
+    font-weight: $regular;
+    color: $secondary-text;
+  }
+
+  .copiedLabel {
+    color: $new_primary_lighter_1;
   }
 
   & > span {

@@ -18,18 +18,36 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: NEW_COLORS.secondary_text,
     marginBottom: 8,
-    marginTop: 24,
+    marginTop: 16,
+  },
+  inputLabel: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: FONT_WEIGHTS.medium,
   },
   inputContainer: {
     marginHorizontal: -10, // compensate for View container at 10px padding
     marginBottom: -20,
     position: 'relative',
     lineHeight: 24,
-    height: 50,
+    height: 56,
+    paddingVertical: 28,
     paddingHorizontal: 16,
+  },
+  input: {
+    color: NEW_COLORS.secondary_text,
+    fontSize: 16,
+    fontWeight: FONT_WEIGHTS.regular,
+    textAlign: 'right',
   },
   menuContainer: {
     marginTop: 20,
+  },
+  addressesContainer: {
+    marginTop: 12,
+  },
+  removeWalletContainer: {
+    marginTop: -8,
   },
   actions: {
     marginTop: 24,
@@ -39,6 +57,9 @@ const styles = StyleSheet.create({
   },
   cancel: {
     backgroundColor: NEW_COLORS.gray_300,
+  },
+  copiedLabel: {
+    color: NEW_COLORS.primary_lighter_1,
   },
   buttonCancelText: {
     color: COLORS.black,

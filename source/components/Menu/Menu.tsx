@@ -51,7 +51,18 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
       )}
       {!!items.length &&
         items.map((item, i) => {
-          const { onClick, title, disabled, icon, subtitle, labelRight, data } = item;
+          const {
+            onClick,
+            title,
+            disabled,
+            icon,
+            subtitle,
+            labelRight,
+            data,
+            showArrow = true,
+            labelRightStyles,
+            rightIcon,
+          } = item;
 
           const titleTextStyle = !!subtitle ? styles.smallTitle : styles.largeTitle;
 
@@ -92,15 +103,19 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
                   )}
                 </div>
               )}
-              {!!labelRight ? (
-                <TextV3.Caption extraStyles={styles.labelRight}>
+              {!!labelRight && (
+                <TextV3.LabelSemiStrong
+                  extraStyles={clsx(styles.labelRight, labelRightStyles)}
+                >
                   {labelRight}
-                </TextV3.Caption>
-              ) : (
+                </TextV3.LabelSemiStrong>
+              )}
+              {!!showArrow && (
                 <div className={styles.arrowContainer}>
                   <img src={`/${ChevronRight}`} height={ICON_SIZE} width={ICON_SIZE} />
                 </div>
               )}
+              {!!rightIcon && <div className={styles.iconContainer}>{rightIcon}</div>}
             </div>
           );
         })}
