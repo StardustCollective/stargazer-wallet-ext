@@ -107,9 +107,9 @@ class WalletController {
     return this.keyringManager.exportWalletSecretKeyOrPhrase(walletId);
   }
 
-  getPrivateKey(walletId: string, password: string): string {
+  getPrivateKey(address: string, password: string): string {
     if (!this.checkPassword(password)) return null;
-    return this.keyringManager.exportWalletSecretKeyOrPhrase(walletId);
+    return this.keyringManager.exportAccountPrivateKey(address);
   }
 
   async unLock(password: string): Promise<boolean> {

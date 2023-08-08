@@ -32,7 +32,7 @@ export default {
     buyAsset: 'auth-buyAsset',
     singleSelect: 'auth-singleSelect',
   },
-  
+
   ////////////////////////////
   // swap
   ////////////////////////////
@@ -63,6 +63,7 @@ export default {
     addWallet: 'settings-add-wallet',
     createWallet: 'settings-create-wallet',
     walletPhrase: 'settings-wallet-phrase',
+    checkPassword: 'settings-wallet-check-password',
     manageWallet: 'settings-wallet-manage',
     removeWallet: 'settings-wallet-remove',
     privateKey: 'settings-wallet-private-key',

@@ -33,7 +33,8 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   };
 
   const onShowRecoveryPhraseClicked = () => {
-    linkTo(`/settings/wallets/phrase?id=${id}`);
+    const type = 'phrase';
+    linkTo(`/settings/wallets/checkPassword?type=${type}&id=${id}`);
   };
 
   const onDeleteWalletClicked = () => {
@@ -41,7 +42,8 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   };
 
   const onShowPrivateKeyClicked = () => {
-    linkTo(`/settings/wallets/privateKey?id=${id}`);
+    const type = 'privatekey';
+    linkTo(`/settings/wallets/checkPassword?type=${type}&id=${id}`);
   };
 
   if (!wallet) {

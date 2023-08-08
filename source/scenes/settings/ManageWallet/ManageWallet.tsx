@@ -27,6 +27,10 @@ const ManageWallet: FC<IManageWalletSettings> = ({
 }) => {
   const [label, setLabel] = useState();
   const isButtonDisabled = label === wallet.label || label === '' || !label;
+  const isHardwareWallet = [
+    KeyringWalletType.BitfiAccountWallet,
+    KeyringWalletType.LedgerAccountWallet,
+  ].includes(wallet.type);
 
   useEffect(() => {
     setLabel(watch('name'));
@@ -96,7 +100,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
         }
       />
       <Menu items={walletAddressesItems} containerStyle={styles.menuContainer} />
-      <Menu title="Backup Options" items={menuItems} />
+      {!isHardwareWallet && <Menu title="Backup Options" items={menuItems} />}
       <Menu
         containerStyle={styles.removeWalletContainer}
         items={[

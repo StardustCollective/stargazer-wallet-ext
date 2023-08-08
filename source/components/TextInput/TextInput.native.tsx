@@ -2,7 +2,7 @@ import React, { FC, useState, MouseEvent, ReactNode } from 'react';
 import { Input as RNEInput } from 'react-native-elements';
 import { KeyboardType, StyleSheet } from 'react-native';
 import { Controller } from 'react-hook-form';
-import { NEW_COLORS } from 'assets/styles/_variables';
+import { NEW_COLORS, COLORS } from 'assets/styles/_variables';
 
 import styles from './styles';
 
@@ -55,8 +55,8 @@ const TextInput: FC<ITextInput> = ({
   const inputContainerStyles = StyleSheet.flatten([
     styles.inputContainer,
     fullWidth ? styles.fullWidth : null,
-    error ? styles.error : null,
     focused ? styles.inputFocused : null,
+    error ? styles.error : null,
     inputContainerStyle,
   ]);
   const inputComposedStyles = StyleSheet.flatten([styles.input, inputStyle]);
@@ -107,7 +107,7 @@ const TextInput: FC<ITextInput> = ({
           multiline={multiline}
           returnKeyType={returnKeyType}
           blurOnSubmit={blurOnSubmit}
-          selectionColor={NEW_COLORS.primary_lighter_2}
+          selectionColor={!!error ? COLORS.red : NEW_COLORS.primary_lighter_2}
           onFocus={handleOnFocus}
           {...passwordProps} // eslint-disable-line
           {...otherProps} // eslint-disable-line

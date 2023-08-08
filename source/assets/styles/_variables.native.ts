@@ -61,6 +61,10 @@ export const NEW_COLORS = {
   gray_50: '#F9FAFB',
   gray_300: '#D1D5DB',
   secondary_text: '#5A5D6B',
+  warning_background: '#FFFBEB',
+  warning_border: '#FCD34D',
+  warning_text: '#451A03',
+  indigo_50: '#EEF2FF',
 };
 
 export const FONT_WEIGHTS = {
