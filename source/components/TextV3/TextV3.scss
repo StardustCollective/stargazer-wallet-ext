@@ -87,7 +87,6 @@
   text-align: right;
 }
 
-
 /*
 * Text Colors
 */
@@ -99,7 +98,6 @@
 .textWhite {
   color: $white;
 }
-
 
 .textPrimary {
   color: $primary;
@@ -127,4 +125,8 @@
 
 .textLinkBlue {
   color: $link-blue;
+}
+
+.textSecondary {
+  color: $secondary-text;
 }

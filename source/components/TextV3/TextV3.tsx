@@ -63,13 +63,15 @@ const TextV3 = {
     } else if (color === COLORS_ENUMS.PRIMARY) {
       colorStyle = styles.textPrimary;
     } else if (color === COLORS_ENUMS.PRIMARY_LIGHTER_1) {
-      colorStyle = styles.textPrimaryLighter1
+      colorStyle = styles.textPrimaryLighter1;
     } else if (color === COLORS_ENUMS.RED) {
       colorStyle = styles.textRed;
     } else if (color === COLORS_ENUMS.PURPLE_DARK) {
       colorStyle = styles.textPurpleDark;
     } else if (color === COLORS_ENUMS.LINK_BLUE) {
       colorStyle = styles.textLinkBlue;
+    } else if (color === COLORS_ENUMS.SECONDARY_TEXT) {
+      colorStyle = styles.textSecondary;
     }
 
     //Alignment
@@ -84,7 +86,9 @@ const TextV3 = {
     const ParentComponent = dynamic ? 'div' : 'span';
 
     return (
-      <ParentComponent className={clsx([styles.base, colorStyle, alignStyle, textStyle, extraStyles])}>
+      <ParentComponent
+        className={clsx([styles.base, colorStyle, alignStyle, textStyle, extraStyles])}
+      >
         {dynamic ? <DynamicFont content={children as string} /> : [children]}
       </ParentComponent>
     );
@@ -130,14 +134,26 @@ const TextV3 = {
   },
   Header: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.header} align={align} extraStyles={extraStyles}>
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.header}
+        align={align}
+        extraStyles={extraStyles}
+      >
         {children}
       </TextV3.base>
     );
   },
   Body: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.body} align={align} extraStyles={extraStyles}>
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.body}
+        align={align}
+        extraStyles={extraStyles}
+      >
         {children}
       </TextV3.base>
     );
@@ -157,7 +173,13 @@ const TextV3 = {
   },
   Caption: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.caption} align={align} extraStyles={extraStyles}>
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.caption}
+        align={align}
+        extraStyles={extraStyles}
+      >
         {children}
       </TextV3.base>
     );
@@ -190,14 +212,26 @@ const TextV3 = {
   },
   LabelSemiStrong: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.labelSemiStrong} align={align} extraStyles={extraStyles}>
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.labelSemiStrong}
+        align={align}
+        extraStyles={extraStyles}
+      >
         {children}
       </TextV3.base>
     );
   },
   Label: ({ children, dynamic, color, align, extraStyles }: ITextProps) => {
     return (
-      <TextV3.base dynamic={dynamic} color={color} textStyle={styles.label} align={align} extraStyles={extraStyles}>
+      <TextV3.base
+        dynamic={dynamic}
+        color={color}
+        textStyle={styles.label}
+        align={align}
+        extraStyles={extraStyles}
+      >
         {children}
       </TextV3.base>
     );

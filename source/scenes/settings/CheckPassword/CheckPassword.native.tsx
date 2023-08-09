@@ -7,7 +7,6 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import WarningMessage from 'components/WarningMessage';
 import Dropdown from 'components/Dropdown';
 import CopyIcon from 'assets/images/svg/copy.svg';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { ICheckPassword } from './types';
 import styles from './styles';
 
@@ -118,7 +117,6 @@ const PrivateKey = ({
   wallet,
   ...props
 }) => {
-  const isMCW = wallet.type === KeyringWalletType.MultiChainWallet;
   return (
     <View style={styles.recoveryContainer}>
       <TextV3.CaptionStrong color={COLORS_ENUMS.SECONDARY_TEXT}>
