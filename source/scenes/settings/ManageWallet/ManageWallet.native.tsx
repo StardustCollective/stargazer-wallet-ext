@@ -222,13 +222,13 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       <Sheet
         isVisible={isWalletAddressesOpen}
         onClosePress={() => setIsWalletAddressesOpen(false)}
-        height="60%"
+        height="65%"
         title={{
           label: wallet.label,
           align: 'left',
         }}
       >
-        <Menu items={walletAddresesContent} />
+        <Menu title="Wallet Addresses" items={walletAddresesContent} />
       </Sheet>
     </View>
   );

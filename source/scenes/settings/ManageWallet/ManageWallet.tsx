@@ -228,7 +228,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           align: 'left',
         }}
       >
-        <Menu items={walletAddresesContent} />
+        <Menu title="Wallet Addresses" items={walletAddresesContent} />
       </Sheet>
     </form>
   );

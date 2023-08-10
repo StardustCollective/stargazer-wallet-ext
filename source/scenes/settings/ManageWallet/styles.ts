@@ -7,8 +7,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     overflow: 'scroll',
-    paddingHorizontal: 16,
-    paddingBottom: 24,
+    padding: 16,
+    marginBottom: 24,
     flexGrow: 1,
   },
   label: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: NEW_COLORS.primary,
   },
   removeText: {
-    color: COLORS.red,
+    color: NEW_COLORS.red_700,
   },
   titleAddress: {
     fontWeight: FONT_WEIGHTS.regular,

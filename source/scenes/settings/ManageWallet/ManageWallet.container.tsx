@@ -24,10 +24,10 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   const allWallets = useSelector(walletsSelector.selectAllWallets);
   const wallet = allWallets.find((w) => w.id === id);
   const dagAddress =
-    wallet.accounts.find((account) => account.network === KeyringNetwork.Constellation)
+    wallet?.accounts?.find((account) => account.network === KeyringNetwork.Constellation)
       ?.address || '';
   const ethAddress =
-    wallet.accounts.find((account) => account.network === KeyringNetwork.Ethereum)
+    wallet?.accounts?.find((account) => account.network === KeyringNetwork.Ethereum)
       ?.address || '';
 
   const onSubmit = (data: any) => {
@@ -59,7 +59,7 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   }
 
   return (
-    <Container color={CONTAINER_COLOR.LIGHT}>
+    <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <ManageWallet
         walletId={id}
         handleSubmit={handleSubmit}

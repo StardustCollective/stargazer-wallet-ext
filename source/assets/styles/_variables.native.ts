@@ -65,6 +65,7 @@ export const NEW_COLORS = {
   warning_border: '#FCD34D',
   warning_text: '#451A03',
   indigo_50: '#EEF2FF',
+  red_700: '#B91C1C',
 };
 
 export const FONT_WEIGHTS = {

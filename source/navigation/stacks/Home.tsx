@@ -96,7 +96,7 @@ const SCREEN_DEFAULT_TITLE_STRINGS = {
   walletPhrase: 'Wallet Phrase',
   checkPassword: 'Wallet Phrase',
   manageWallet: 'Manage Wallet',
-  removeWallet: 'Delete Wallet',
+  removeWallet: 'Remove Wallet',
   privateKey: 'Private Key',
   importWallet: 'Import Wallet',
   importAccount: 'Import Account',
