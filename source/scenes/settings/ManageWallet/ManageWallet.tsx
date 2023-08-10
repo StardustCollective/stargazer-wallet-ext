@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import Sheet from 'components/Sheet';
 import TextInput from 'components/TextInput';
 import TextV3 from 'components/TextV3';
 import Menu from 'components/Menu';
@@ -10,6 +11,13 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import { ellipsis } from 'scenes/home/helpers';
 import styles from './ManageWallet.scss';
+import {
+  DAG_NETWORK,
+  ETH_NETWORK,
+  AVALANCHE_NETWORK,
+  BSC_NETWORK,
+  POLYGON_NETWORK,
+} from 'constants/index';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
   handleSubmit,
@@ -24,8 +32,12 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   watch,
   copyText,
   isCopied,
+  dagAddress,
+  ethAddress,
 }) => {
   const [label, setLabel] = useState();
+  const [isWalletAddressesOpen, setIsWalletAddressesOpen] = useState(false);
+  const [itemCopied, setItemCopied] = useState('');
   const isButtonDisabled = label === wallet.label || label === '' || !label;
   const isHardwareWallet = [
     KeyringWalletType.BitfiAccountWallet,
@@ -35,6 +47,11 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   useEffect(() => {
     setLabel(watch('name'));
   }, [watch('name')]);
+
+  const handleCopy = (id: string, text: string) => {
+    setItemCopied(id);
+    copyText(text);
+  };
 
   const menuItems =
     wallet.type === KeyringWalletType.MultiChainWallet
@@ -60,7 +77,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       ? [
           {
             title: 'Wallet Addresses',
-            onClick: () => console.log('test'),
+            onClick: () => setIsWalletAddressesOpen(true),
             labelRight: '5',
           },
         ]
@@ -75,6 +92,75 @@ const ManageWallet: FC<IManageWalletSettings> = ({
             labelRightStyles: styles.copiedLabel,
           },
         ];
+
+  const walletAddresesContent = [
+    {
+      title: DAG_NETWORK.main2.network,
+      subtitle: ellipsis(dagAddress),
+      onClick: () => handleCopy(DAG_NETWORK.main2.network, dagAddress),
+      rightIcon: (!isCopied || itemCopied !== DAG_NETWORK.main2.network) && (
+        <img src={`/${CopyIcon}`} alt="copy" />
+      ),
+      labelRight: isCopied && itemCopied === DAG_NETWORK.main2.network ? 'Copied!' : '',
+      icon: DAG_NETWORK.main2.logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+    {
+      title: ETH_NETWORK.mainnet.network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(ETH_NETWORK.mainnet.network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== ETH_NETWORK.mainnet.network) && (
+        <img src={`/${CopyIcon}`} alt="copy" />
+      ),
+      labelRight: isCopied && itemCopied === ETH_NETWORK.mainnet.network ? 'Copied!' : '',
+      icon: ETH_NETWORK.mainnet.logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+    {
+      title: AVALANCHE_NETWORK['avalanche-mainnet'].network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () =>
+        handleCopy(AVALANCHE_NETWORK['avalanche-mainnet'].network, ethAddress),
+      rightIcon: (!isCopied ||
+        itemCopied !== AVALANCHE_NETWORK['avalanche-mainnet'].network) && (
+        <img src={`/${CopyIcon}`} alt="copy" />
+      ),
+      labelRight:
+        isCopied && itemCopied === AVALANCHE_NETWORK['avalanche-mainnet'].network
+          ? 'Copied!'
+          : '',
+      icon: AVALANCHE_NETWORK['avalanche-mainnet'].logo,
+      showArrow: false,
+      labelRightStyles: clsx(styles.copiedLabel),
+    },
+    {
+      title: BSC_NETWORK.bsc.network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(BSC_NETWORK.bsc.network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== BSC_NETWORK.bsc.network) && (
+        <img src={`/${CopyIcon}`} alt="copy" />
+      ),
+      labelRight: isCopied && itemCopied === BSC_NETWORK.bsc.network ? 'Copied!' : '',
+      icon: BSC_NETWORK.bsc.logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+    {
+      title: POLYGON_NETWORK.matic.network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(POLYGON_NETWORK.matic.network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== POLYGON_NETWORK.matic.network) && (
+        <img src={`/${CopyIcon}`} alt="copy" />
+      ),
+      labelRight:
+        isCopied && itemCopied === POLYGON_NETWORK.matic.network ? 'Copied!' : '',
+      icon: POLYGON_NETWORK.matic.logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+  ];
 
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
@@ -133,6 +219,17 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           />
         </div>
       </section>
+      <Sheet
+        isVisible={isWalletAddressesOpen}
+        onClosePress={() => setIsWalletAddressesOpen(false)}
+        height="70%"
+        title={{
+          label: wallet.label,
+          align: 'left',
+        }}
+      >
+        <Menu items={walletAddresesContent} />
+      </Sheet>
     </form>
   );
 };

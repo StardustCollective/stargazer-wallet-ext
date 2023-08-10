@@ -23,4 +23,6 @@ export default interface IManageWalletSettings {
   watch: any;
   isCopied: boolean;
   copyText: (text: string) => void;
+  dagAddress: string;
+  ethAddress: string;
 }

@@ -1,5 +1,9 @@
 @import '~assets/styles/variables';
 
+.copiedLabel {
+  color: $new_primary_lighter_1 !important;
+}
+
 .wrapper {
   display: flex;
   flex: 1;
@@ -49,6 +53,10 @@
     color: $red;
   }
 
+  .copiedLabel {
+    color: $new_primary_lighter_1;
+  }
+
   .removeWalletContainer {
     margin-top: -8px;
   }
@@ -56,10 +64,6 @@
   .titleAddress {
     font-weight: $regular;
     color: $secondary-text;
-  }
-
-  .copiedLabel {
-    color: $new_primary_lighter_1;
   }
 
   & > span {

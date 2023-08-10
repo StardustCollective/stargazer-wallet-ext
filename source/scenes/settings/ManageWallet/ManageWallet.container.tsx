@@ -12,6 +12,7 @@ import walletsSelector from 'selectors/walletsSelectors';
 import ManageWallet from './ManageWallet';
 
 import { IManageWalletView } from './types';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => {
   const accountController = getAccountController();
@@ -22,6 +23,12 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   const { handleSubmit, register, control, watch } = useForm();
   const allWallets = useSelector(walletsSelector.selectAllWallets);
   const wallet = allWallets.find((w) => w.id === id);
+  const dagAddress =
+    wallet.accounts.find((account) => account.network === KeyringNetwork.Constellation)
+      ?.address || '';
+  const ethAddress =
+    wallet.accounts.find((account) => account.network === KeyringNetwork.Ethereum)
+      ?.address || '';
 
   const onSubmit = (data: any) => {
     accountController.updateWalletLabel(wallet, data.name);
@@ -67,6 +74,8 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
         onShowRecoveryPhraseClicked={onShowRecoveryPhraseClicked}
         onDeleteWalletClicked={onDeleteWalletClicked}
         onShowPrivateKeyClicked={onShowPrivateKeyClicked}
+        dagAddress={dagAddress}
+        ethAddress={ethAddress}
       />
     </Container>
   );
