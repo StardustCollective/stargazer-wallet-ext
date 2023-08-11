@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import TextInput from 'components/TextInput';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
@@ -7,6 +7,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import WarningMessage from 'components/WarningMessage';
 import Dropdown from 'components/Dropdown';
 import CopyIcon from 'assets/images/svg/copy.svg';
+import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
 import { ICheckPassword } from './types';
 import styles from './styles';
 
@@ -161,20 +162,63 @@ const PrivateKey = ({
   );
 };
 
-const CheckPassword: FC<ICheckPassword> = ({
-  walletPhrase,
-  privateKey,
-  warningMessage,
-  ...props
-}) => {
+const CheckPassword: FC<ICheckPassword> = (props) => {
+  const { walletPhrase, privateKey, warningMessage, handleOnSubmit, isBiometricEnabled } =
+    props;
   const showRecoveryPhrase = !!walletPhrase && !!walletPhrase.length;
   const showPrivateKey = !!privateKey && !!privateKey.length;
   const showEnterPassword = !showRecoveryPhrase && !showPrivateKey;
+
+  useEffect(() => {
+    const authBiometrics = async () => {
+      await authWithBiometrics();
+    };
+
+    authBiometrics();
+  }, []);
+
+  const authWithBiometrics = async () => {
+    const biometryType = await Biometrics.getBiometryType();
+    if (!!biometryType) {
+      if (!!isBiometricEnabled) {
+        const keyExist = await Biometrics.keyExists();
+        if (!!keyExist) {
+          try {
+            const { success, signature, secret } = await Biometrics.createSignature(
+              PROMPT_TITLES.auth
+            );
+            const publicKey = await Biometrics.getPublicKeyFromKeychain();
+            if (success && signature && secret && publicKey) {
+              const verified = await Biometrics.verifySignature(
+                signature,
+                secret,
+                publicKey
+              );
+              if (verified) {
+                let password = await Biometrics.getUserPasswordFromKeychain();
+                if (password) {
+                  handleOnSubmit({ password });
+                }
+                password = null;
+              }
+            }
+          } catch (err) {
+            console.log('Biometric login failed', err);
+          }
+        }
+      } else {
+        console.log('Biometric is disabled.');
+      }
+    } else {
+      console.log('Biometric is not available.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <WarningMessage message={warningMessage} />
-      {showRecoveryPhrase && <RecoveryPhrase walletPhrase={walletPhrase} {...props} />}
-      {showPrivateKey && <PrivateKey privateKey={privateKey} {...props} />}
+      {showRecoveryPhrase && <RecoveryPhrase {...props} />}
+      {showPrivateKey && <PrivateKey {...props} />}
       {showEnterPassword && <EnterPassword {...props} />}
     </View>
   );

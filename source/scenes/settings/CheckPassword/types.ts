@@ -28,4 +28,5 @@ export interface ICheckPassword {
   copyText: (txt: string) => void;
   updatePrivateKey: (address: string) => void;
   networkOptions: IDropdownOptions;
+  isBiometricEnabled: boolean;
 }

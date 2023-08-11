@@ -16,6 +16,7 @@ import {
 } from '@stardust-collective/dag4-keyring';
 import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
 import { ellipsis } from 'scenes/home/helpers';
+import { RootState } from 'state/store';
 
 const RECOVERY_MESSAGE =
   'Do not share your recovery phrase with anyone. Anyone with your recovery phrase can steal your funds.';
@@ -28,6 +29,9 @@ const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
   const walletController = getWalletController();
   const [isCopied, copyText] = useCopyClipboard();
 
+  const { enabled: isBiometricEnabled } = useSelector(
+    (state: RootState) => state.biometrics
+  );
   const allWallets = useSelector(walletsSelector.selectAllWallets);
   const wallet = allWallets.find((w) => w.id === id);
   const initialNetwork = wallet.supportedAssets.includes(KeyringAssetType.DAG)
@@ -157,6 +161,7 @@ const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
         errors={errors}
         isCopied={isCopied}
         copyText={copyText}
+        isBiometricEnabled={isBiometricEnabled}
       />
     </Container>
   );
