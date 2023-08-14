@@ -45,6 +45,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
     onChange,
     disabled = false,
     showArrow = true,
+    displayValue = false,
   } = options;
 
   const selectedValue = items.find((item) => item.value === value);
@@ -52,6 +53,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
   const TextColor = !!title ? COLORS_ENUMS.GRAY_100 : COLORS_ENUMS.BLACK;
 
   const ArrowIcon = isOpen ? ArrowUpIcon : ArrowDownIcon;
+  const subtitle = displayValue ? selectedValue?.value : selectedValue?.label;
 
   ///////////////////////
   // Render
@@ -68,7 +70,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
         {!!title && (
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{title}</TextV3.CaptionStrong>
         )}
-        <TextComponent color={TextColor}>{selectedValue?.label}</TextComponent>
+        <TextComponent color={TextColor}>{subtitle}</TextComponent>
       </View>
       <View>{!!showArrow && <ArrowIcon width={ICON_SIZE} color="#6B7280" />}</View>
       {isOpen && (

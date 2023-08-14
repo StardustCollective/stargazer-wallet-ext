@@ -115,7 +115,8 @@ const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
   const networkOptions: IDropdownOptions = {
     icon: isDAGNetwork ? CONSTELLATION_LOGO : ETHEREUM_LOGO,
     title: isDAGNetwork ? 'Constellation Network' : 'EVM Networks',
-    value: isDAGNetwork ? DAGAddress : ETHAddress,
+    value: isDAGNetwork ? ellipsis(DAGAddress) : ellipsis(ETHAddress),
+    displayValue: true,
     isOpen: isDropdownOpen,
     containerStyle: {
       zIndex: 8000,
@@ -126,18 +127,19 @@ const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
     onChange: (address: string) => {
       const isEth = address.startsWith('0x');
       const network = isEth ? KeyringNetwork.Ethereum : KeyringNetwork.Constellation;
+      const fullAddress = isEth ? ETHAddress : DAGAddress;
       setSelectedNetwork(network as KeyringNetwork);
-      updatePrivateKey(address);
+      updatePrivateKey(fullAddress);
       toggleDropdown();
     },
     items: [
       {
-        value: DAGAddress,
-        label: ellipsis(DAGAddress),
+        value: ellipsis(DAGAddress),
+        label: 'Constellation Network',
       },
       {
-        value: ETHAddress,
-        label: ellipsis(ETHAddress),
+        value: ellipsis(ETHAddress),
+        label: 'EVM Networks',
       },
     ],
   };

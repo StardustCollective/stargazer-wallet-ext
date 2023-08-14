@@ -45,12 +45,14 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
     onChange,
     disabled = false,
     showArrow = true,
+    displayValue = false,
   } = options;
 
   const selectedValue = items.find((item) => item.value === value);
   const scrollContainer = items?.length > MAX_ITEMS ? styles.itemScrollable : {};
 
   const ArrowIcon = isOpen ? ArrowUpIcon : ArrowDownIcon;
+  const subtitle = displayValue ? selectedValue?.value : selectedValue?.label;
 
   ///////////////////////
   // Render
@@ -65,9 +67,7 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
       )}
       <div className={styles.titleContainer}>
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{title}</TextV3.CaptionStrong>
-        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-          {selectedValue?.label}
-        </TextV3.Caption>
+        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{subtitle}</TextV3.Caption>
       </div>
       <div>
         <div>{!!showArrow && <img src={`/${ArrowIcon}`} />}</div>

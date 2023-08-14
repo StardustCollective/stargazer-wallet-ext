@@ -11,6 +11,7 @@ export type IDropdownOptions = {
   toggleItem: () => void;
   disabled?: boolean;
   showArrow?: boolean;
+  displayValue?: boolean;
 };
 
 export default interface IDropdown {
