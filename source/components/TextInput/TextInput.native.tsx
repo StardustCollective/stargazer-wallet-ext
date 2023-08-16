@@ -68,14 +68,6 @@ const TextInput: FC<ITextInput> = ({
     setShowed(!showed);
   };
 
-  const handleOnFocus = () => {
-    setFocused(true);
-  };
-
-  const handleOnBlur = () => {
-    setFocused(false);
-  };
-
   const passwordProps =
     type === 'password' && visiblePassword
       ? {
@@ -94,7 +86,7 @@ const TextInput: FC<ITextInput> = ({
   return (
     <Controller
       control={control}
-      onBlur={handleOnBlur}
+      onBlur={() => setFocused(false)}
       as={
         <RNEInput
           placeholder={placeholder}
@@ -108,7 +100,7 @@ const TextInput: FC<ITextInput> = ({
           returnKeyType={returnKeyType}
           blurOnSubmit={blurOnSubmit}
           selectionColor={!!error ? COLORS.red : NEW_COLORS.primary_lighter_2}
-          onFocus={handleOnFocus}
+          onFocus={() => setFocused(true)}
           {...passwordProps} // eslint-disable-line
           {...otherProps} // eslint-disable-line
         />

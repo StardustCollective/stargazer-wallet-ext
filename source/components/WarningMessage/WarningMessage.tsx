@@ -10,9 +10,6 @@ const WarningMessage: FC<IWarningMessage> = ({ message }) => {
     <div className={styles.container}>
       <img src={`/${WarningIcon}`} className={styles.warningIcon} />
       <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.warningText}>
-        <TextV3.CaptionRegular extraStyles={styles.warningStrong}>
-          {`Warning: `}
-        </TextV3.CaptionRegular>
         {message}
       </TextV3.CaptionRegular>
     </div>

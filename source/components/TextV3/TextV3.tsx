@@ -39,6 +39,26 @@ type ITextProps = {
  * the extraStyles prop.
  */
 
+const COLOR_STYLES: { [value: number]: string } = {
+  [COLORS_ENUMS.BLACK]: styles.textBlack,
+  [COLORS_ENUMS.WHITE]: styles.textWhite,
+  [COLORS_ENUMS.GRAY_100]: styles.textGray100,
+  [COLORS_ENUMS.DARK_GRAY_200]: styles.textDarkGray200,
+  [COLORS_ENUMS.PRIMARY]: styles.textPrimary,
+  [COLORS_ENUMS.DARK_GRAY]: styles.textGrayDark,
+  [COLORS_ENUMS.PRIMARY_LIGHTER_1]: styles.textPrimaryLighter1,
+  [COLORS_ENUMS.RED]: styles.textRed,
+  [COLORS_ENUMS.PURPLE_DARK]: styles.textPurpleDark,
+  [COLORS_ENUMS.LINK_BLUE]: styles.textLinkBlue,
+  [COLORS_ENUMS.SECONDARY_TEXT]: styles.textSecondary,
+};
+
+const ALIGN_STYLES: { [value: number]: string } = {
+  [TEXT_ALIGN_ENUM.LEFT]: 't-alignLeft',
+  [TEXT_ALIGN_ENUM.CENTER]: 't-alignCenter',
+  [TEXT_ALIGN_ENUM.RIGHT]: 't-alignRight',
+};
+
 const TextV3 = {
   base: ({
     children,
@@ -48,40 +68,8 @@ const TextV3 = {
     textStyle = '',
     extraStyles = '',
   }: ITextProps) => {
-    let colorStyle = '';
-    let alignStyle = '';
-
-    // Colors
-    if (color === COLORS_ENUMS.BLACK) {
-      colorStyle = styles.textBlack;
-    } else if (color === COLORS_ENUMS.WHITE) {
-      colorStyle = styles.textWhite;
-    } else if (color === COLORS_ENUMS.GRAY_100) {
-      colorStyle = styles.textGray100;
-    } else if (color === COLORS_ENUMS.DARK_GRAY_200) {
-      colorStyle = styles.textDarkGray200;
-    } else if (color === COLORS_ENUMS.PRIMARY) {
-      colorStyle = styles.textPrimary;
-    } else if (color === COLORS_ENUMS.PRIMARY_LIGHTER_1) {
-      colorStyle = styles.textPrimaryLighter1;
-    } else if (color === COLORS_ENUMS.RED) {
-      colorStyle = styles.textRed;
-    } else if (color === COLORS_ENUMS.PURPLE_DARK) {
-      colorStyle = styles.textPurpleDark;
-    } else if (color === COLORS_ENUMS.LINK_BLUE) {
-      colorStyle = styles.textLinkBlue;
-    } else if (color === COLORS_ENUMS.SECONDARY_TEXT) {
-      colorStyle = styles.textSecondary;
-    }
-
-    //Alignment
-    if (align === TEXT_ALIGN_ENUM.LEFT) {
-      alignStyle = 't-alignLeft';
-    } else if (align === TEXT_ALIGN_ENUM.CENTER) {
-      alignStyle = 't-alignCenter';
-    } else if (align === TEXT_ALIGN_ENUM.RIGHT) {
-      alignStyle = 't-alignRight';
-    }
+    const colorStyle = COLOR_STYLES[color];
+    const alignStyle = ALIGN_STYLES[align];
 
     const ParentComponent = dynamic ? 'div' : 'span';
 

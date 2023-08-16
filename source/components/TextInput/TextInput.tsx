@@ -42,14 +42,6 @@ const TextInput: FC<ITextInput> = ({
     event.preventDefault();
   };
 
-  const handleOnFocus = () => {
-    setFocused(true);
-  };
-
-  const handleOnBlur = () => {
-    setFocused(false);
-  };
-
   return (
     <MUITextInput
       id={id}
@@ -58,8 +50,8 @@ const TextInput: FC<ITextInput> = ({
       type={inputType}
       error={error}
       {...otherProps}
-      onBlur={handleOnBlur}
-      onFocus={handleOnFocus}
+      onBlur={() => setFocused(false)}
+      onFocus={() => setFocused(true)}
       endAdornment={
         endAdornment ||
         (type === 'password' && visiblePassword ? (

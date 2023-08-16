@@ -11,9 +11,6 @@ const WarningMessage: FC<IWarningMessage> = ({ message }) => {
     <View style={styles.container}>
       <WarningIcon width={24} height={24} style={styles.warningIcon} />
       <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.warningText}>
-        <TextV3.CaptionRegular extraStyles={styles.warningStrong}>
-          {`Warning: `}
-        </TextV3.CaptionRegular>
         {message}
       </TextV3.CaptionRegular>
     </View>

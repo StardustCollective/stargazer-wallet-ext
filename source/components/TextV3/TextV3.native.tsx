@@ -43,6 +43,26 @@ type ITextProps = {
 // Components
 /////////////////////
 
+const COLOR_STYLES: { [value: number]: object } = {
+  [COLORS_ENUMS.BLACK]: styles.blackFont,
+  [COLORS_ENUMS.WHITE]: styles.whiteFont,
+  [COLORS_ENUMS.GRAY_100]: styles.gray100Font,
+  [COLORS_ENUMS.DARK_GRAY_200]: styles.greyDark200Font,
+  [COLORS_ENUMS.PRIMARY]: styles.primary,
+  [COLORS_ENUMS.DARK_GRAY]: styles.grayDarkFont,
+  [COLORS_ENUMS.PRIMARY_LIGHTER_1]: styles.primaryLighter1,
+  [COLORS_ENUMS.RED]: styles.redFont,
+  [COLORS_ENUMS.PURPLE_DARK]: styles.purpleDarkFont,
+  [COLORS_ENUMS.LINK_BLUE]: styles.linkBlueFont,
+  [COLORS_ENUMS.SECONDARY_TEXT]: styles.secondaryTextFont,
+};
+
+const ALIGN_STYLES: { [value: number]: object } = {
+  [TEXT_ALIGN_ENUM.LEFT]: styles.alignLeft,
+  [TEXT_ALIGN_ENUM.CENTER]: styles.alignCenter,
+  [TEXT_ALIGN_ENUM.RIGHT]: styles.alignRight,
+};
+
 const TextV3 = {
   base: ({
     children,
@@ -56,44 +76,13 @@ const TextV3 = {
     margin = true,
     numberOfLines,
   }: ITextProps) => {
-    let colorStyle = {};
-    let alignStyle = {};
+    let colorStyle = COLOR_STYLES[color];
+    let alignStyle = ALIGN_STYLES[align];
+
     let dynamicProps: { numberOfLines: number | null; adjustsFontSizeToFit: boolean } = {
       numberOfLines: null,
       adjustsFontSizeToFit: false,
     };
-
-    //Colors
-    if (color === COLORS_ENUMS.BLACK) {
-      colorStyle = styles.blackFont;
-    } else if (color === COLORS_ENUMS.WHITE) {
-      colorStyle = styles.whiteFont;
-    } else if (color === COLORS_ENUMS.RED) {
-      colorStyle = styles.redFont;
-    } else if (color === COLORS_ENUMS.DARK_GRAY) {
-      colorStyle = styles.greyDarkFont;
-    } else if (color === COLORS_ENUMS.DARK_GRAY_200) {
-      colorStyle = styles.greyDark200Font;
-    } else if (color === COLORS_ENUMS.GRAY_100) {
-      colorStyle = styles.gray100Font;
-    } else if (color === COLORS_ENUMS.PRIMARY) {
-      colorStyle = styles.primary;
-    } else if (color === COLORS_ENUMS.PURPLE_DARK) {
-      colorStyle = styles.purpleDarkFont;
-    } else if (color === COLORS_ENUMS.LINK_BLUE) {
-      colorStyle = styles.linkBlueFont;
-    } else if (color === COLORS_ENUMS.SECONDARY_TEXT) {
-      colorStyle = styles.secondaryTextFont;
-    }
-
-    //Alignment
-    if (align === TEXT_ALIGN_ENUM.LEFT) {
-      alignStyle = styles.alignLeft;
-    } else if (align === TEXT_ALIGN_ENUM.CENTER) {
-      alignStyle = styles.alignCenter;
-    } else if (align === TEXT_ALIGN_ENUM.RIGHT) {
-      alignStyle = styles.alignRight;
-    }
 
     const flatStyles = StyleSheet.flatten([
       styles.base,

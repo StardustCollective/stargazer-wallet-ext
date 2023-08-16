@@ -18,10 +18,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: NEW_COLORS.warning_text,
   },
-  warningStrong: {
-    fontWeight: FONT_WEIGHTS.medium,
-    color: NEW_COLORS.warning_text,
-  },
 });
 
 export default styles;

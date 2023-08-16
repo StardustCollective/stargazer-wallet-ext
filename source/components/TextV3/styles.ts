@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   redFont: {
     color: COLORS.red,
   },
-  greyDarkFont: {
+  grayDarkFont: {
     color: COLORS.grey_dark,
   },
   greyDark200Font: {
@@ -94,6 +94,9 @@ const styles = StyleSheet.create({
   },
   secondaryTextFont: {
     color: NEW_COLORS.secondary_text,
+  },
+  primaryLighter1: {
+    color: NEW_COLORS.primary_lighter_1,
   },
   label: {
     fontWeight: FONT_WEIGHTS.medium,

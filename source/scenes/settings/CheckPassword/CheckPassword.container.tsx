@@ -1,4 +1,4 @@
-import React, { FC, useLayoutEffect, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import Container, { CONTAINER_COLOR } from 'components/Container';
@@ -62,11 +62,13 @@ const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
     }),
   });
 
-  useEffect(() => {
-    setPasswordText(watch('password'));
-  }, [watch('password')]);
+  const passwordValue = watch('password');
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    setPasswordText(passwordValue);
+  }, [passwordValue]);
+
+  useEffect(() => {
     const title = isRecoveryPhrase ? 'Your Recovery Phrase' : 'Your Private Key';
     navigation.setOptions({ title });
     () => {
