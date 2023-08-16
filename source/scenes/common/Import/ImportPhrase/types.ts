@@ -1,10 +1,10 @@
-import { Ref } from 'react';
-
 export default interface IImportPhrase {
-  handleSubmit: any;
-  register: Ref<any>;
   onSubmit: (data: any) => void;
-  isInvalid: boolean;
+  handleInputChange: (text: string, index: number) => void;
+  title: string;
+  buttonTitle: string;
   isDisabled: boolean;
-  control: any;
+  isInvalidPhrase: boolean;
+  phraseOptions: any;
+  phraseValues: string[];
 }

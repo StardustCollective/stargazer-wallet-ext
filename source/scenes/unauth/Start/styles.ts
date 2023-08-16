@@ -15,20 +15,25 @@ const styles = StyleSheet.create({
     width: 192,
     height: 166,
   },
-  recoverContainer: {
-    position: 'absolute', 
-    bottom: 10,
+  restoreButton: {
+    width: 264,
+    borderWidth: 2,
+    marginTop: 16,
   },
-  recoveryButton: {
-    paddingVertical: 14,
-    paddingHorizontal: 30,
-    fontSize: getDeviceId().includes('iPod') ? 12 : 16,
-  },
-  unlockTitle: {
+  restoreButtonText: {
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: 16,
     lineHeight: 24,
-  }
+    color: COLORS.white,
+  },
+  createWalletButton: {
+    width: 264,
+  },
+  createWalletButtonText: {
+    fontWeight: FONT_WEIGHTS.semibold,
+    fontSize: 16,
+    lineHeight: 24,
+  },
 });
 
 export default styles;

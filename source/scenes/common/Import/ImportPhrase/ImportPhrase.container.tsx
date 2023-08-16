@@ -3,9 +3,6 @@
 ///////////////////////////
 
 import React, { FC, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
-
 ///////////////////////////
 // Controllers
 ///////////////////////////
@@ -23,64 +20,116 @@ import Container, { CONTAINER_COLOR } from 'components/Container';
 ///////////////////////////
 
 import ImportPhrase from './ImportPhrase';
+import { IDropdownOptions } from 'components/Dropdown/types';
 
 ///////////////////////////
 // Types
 ///////////////////////////
 
 interface IImportPhraseContainer {
-  onRegister: () => void;
+  title: string;
+  buttonTitle: string;
+  onButtonPress: () => void;
 }
 
 ///////////////////////////
 // Container
 ///////////////////////////
 
-const ImportPhraseContainer: FC<IImportPhraseContainer>= ({
-  onRegister,
+const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
+  buttonTitle,
+  title,
+  onButtonPress,
 }) => {
-
   ///////////////////////////
   // Hooks
   ///////////////////////////
+  const walletController = getWalletController();
 
-  const [isInvalid, setInvalid] = useState(false);
-
-  const { control, handleSubmit, register, watch } = useForm({
-    validationSchema: yup.object().shape({
-      phrase: yup.string().required(),
-    }),
-  });
+  const [phraseLength, setPhraseLength] = useState('12');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isInvalidPhrase, setIsInvalidPhrase] = useState(false);
+  const [phraseValues, setPhraseValues] = useState<string[]>(
+    Array(parseInt(phraseLength)).fill('')
+  );
 
   const isDisabled = useMemo(() => {
-    const phrase: string = watch('phrase');
-    if (!phrase) return true;
-    const len = phrase.trim().split(' ').length;
-    // console.log(len, (len % 3), (len < 12 || len > 24 || (len % 3 > 0)))
-    const result = len < 12 || len > 24 || (len % 3 > 0);
+    if (!phraseValues) return true;
+    let result = false;
 
-    //Reset invalid if phrase has changed and no longer disabled.
-    if (isInvalid && !result) {
-      setInvalid(false);
+    for (let phrase of phraseValues) {
+      if (!phrase.trim()) {
+        result = true;
+        break;
+      }
+    }
+
+    // Reset invalid if phrase has changed and no longer disabled.
+    if (isInvalidPhrase && !result) {
+      setIsInvalidPhrase(false);
     }
 
     return result;
-  }, [watch('phrase')]);
+  }, [phraseValues]);
 
   ///////////////////////////
   // Callbacks
   ///////////////////////////
 
-  const onSubmit = (data: any) => {
-    const phrase = data.phrase.trim();
+  const handleInputChange = (value: string, index: number) => {
+    const newInput = [...phraseValues];
+    newInput[index] = value.trim();
+    setPhraseValues(newInput);
+  };
 
-    if (getWalletController().onboardHelper.importAndValidateSeedPhrase(phrase)
-    ) {
-      onRegister();
+  const onSubmit = (phraseArray: string[]) => {
+    const phrase = phraseArray.join(' ');
+
+    if (walletController.onboardHelper.importAndValidateSeedPhrase(phrase)) {
+      // onButtonPress();
+    } else {
+      setIsInvalidPhrase(true);
     }
-    else {
-      setInvalid(true)
-    }
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const phraseOptions: IDropdownOptions = {
+    isOpen: isDropdownOpen,
+    toggleItem: toggleDropdown,
+    value: phraseLength,
+    onChange: (value: string) => {
+      setPhraseLength(value);
+      setPhraseValues(Array(parseInt(value)).fill(''));
+      toggleDropdown();
+    },
+    containerStyle: {
+      zIndex: 8000,
+    },
+    items: [
+      {
+        value: '12',
+        label: '12-word phrase',
+      },
+      {
+        value: '15',
+        label: '15-word phrase',
+      },
+      {
+        value: '18',
+        label: '18-word phrase',
+      },
+      {
+        value: '21',
+        label: '21-word phrase',
+      },
+      {
+        value: '24',
+        label: '24-word phrase',
+      },
+    ],
   };
 
   ///////////////////////////
@@ -88,18 +137,19 @@ const ImportPhraseContainer: FC<IImportPhraseContainer>= ({
   ///////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} safeArea={false}>
       <ImportPhrase
-        control={control}
-        handleSubmit={handleSubmit}
-        register={register}
+        title={title}
+        buttonTitle={buttonTitle}
         onSubmit={onSubmit}
-        isInvalid={isInvalid}
         isDisabled={isDisabled}
+        isInvalidPhrase={isInvalidPhrase}
+        phraseOptions={phraseOptions}
+        phraseValues={phraseValues}
+        handleInputChange={handleInputChange}
       />
     </Container>
-  )
-
-}
+  );
+};
 
 export default ImportPhraseContainer;

@@ -7,7 +7,6 @@ import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-import Link from 'components/Link';
 import store, { RootState } from 'state/store';
 
 ///////////////////////////
@@ -16,7 +15,12 @@ import store, { RootState } from 'state/store';
 
 import { iosPlatform } from 'utils/platform';
 import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
-import { setBiometryType, setBiometryAvailable, setBiometryEnabled, setInitialCheck } from 'state/biometrics';
+import {
+  setBiometryType,
+  setBiometryAvailable,
+  setBiometryEnabled,
+  setInitialCheck,
+} from 'state/biometrics';
 
 ///////////////////////////
 // Images
@@ -55,7 +59,9 @@ const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
     const createSignatureAndVerify = async () => {
       try {
         await Biometrics.createKeys();
-        const { success, signature, secret } = await Biometrics.createSignature(PROMPT_TITLES.auth);
+        const { success, signature, secret } = await Biometrics.createSignature(
+          PROMPT_TITLES.auth
+        );
         const publicKey = await Biometrics.getPublicKeyFromKeychain();
         if (success && signature && secret && publicKey) {
           const verified = await Biometrics.verifySignature(signature, secret, publicKey);
@@ -66,7 +72,7 @@ const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
       } catch (err) {
         console.log('Biometric signature verification failed', err);
       }
-    }
+    };
     if (iosPlatform() && initialCheck) {
       store.dispatch(setInitialCheck(false));
       createSignatureAndVerify();
@@ -81,30 +87,33 @@ const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
       const type = !!bioType ? bioType : null;
       store.dispatch(setBiometryAvailable(isAvailable));
       store.dispatch(setBiometryType(type));
-    }
-    
+    };
+
     checkBiometrics();
   }, []);
 
   return (
     <View style={styles.layout}>
-      <TextV3.HeaderLargeRegular align={TEXT_ALIGN_ENUM.CENTER}>Welcome to {'\n'} <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge></TextV3.HeaderLargeRegular>
+      <TextV3.HeaderLargeRegular align={TEXT_ALIGN_ENUM.CENTER}>
+        Welcome to {'\n'} <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge>
+      </TextV3.HeaderLargeRegular>
       <Logo width={LOGO_IMAGE_WIDTH} height={LOGO_IMAGE_HEIGHT} style={styles.logo} />
       <ButtonV3
         type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
-        extraTitleStyles={styles.unlockTitle}
-        title={'Get Started'}
+        extraStyles={styles.createWalletButton}
+        extraTitleStyles={styles.createWalletButtonText}
+        title="Create new wallet"
         onPress={onGetStartedClicked}
       />
-      <View style={styles.recoverContainer}>
-        <Link 
-          color="monotoneOne" 
-          title="Recover from seed phrase" 
-          extraStyles={styles.recoveryButton} 
-          onPress={onImportClicked} 
-        />
-      </View>
+      <ButtonV3
+        type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+        size={BUTTON_SIZES_ENUM.LARGE}
+        extraStyles={styles.restoreButton}
+        extraTitleStyles={styles.restoreButtonText}
+        title="Restore Stargazer wallet"
+        onPress={onImportClicked}
+      />
     </View>
   );
 };

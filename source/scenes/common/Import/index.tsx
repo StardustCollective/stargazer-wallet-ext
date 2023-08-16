@@ -8,7 +8,11 @@ const Import = () => {
   return registered ? (
     <CreatePass />
   ) : (
-    <ImportPhrase onRegister={() => setRegistered(true)} />
+    <ImportPhrase
+      title="Restore Stargazer Wallet"
+      buttonTitle="Restore"
+      onButtonPress={() => setRegistered(true)}
+    />
   );
 };
 

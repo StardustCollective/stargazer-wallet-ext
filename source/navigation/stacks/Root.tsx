@@ -30,7 +30,7 @@ import screens from '../screens';
 ///////////////////////////
 
 import { createStackNavigator } from '@react-navigation/stack';
-import defaultHeader from 'navigation/headers/default'
+import defaultHeader from 'navigation/headers/default';
 
 ///////////////////////////
 // Constants
@@ -39,25 +39,39 @@ import defaultHeader from 'navigation/headers/default'
 const Stack = createStackNavigator();
 
 const Root = () => {
-
   let initialRoute = screens.unAuthorized.root;
 
   const { wallets, hasEncryptedVault, migrateWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
 
-  if(migrateWallet || (wallets.local && Object.values(wallets.local).length > 0) || hasEncryptedVault ){
+  if (
+    migrateWallet ||
+    (wallets.local && Object.values(wallets.local).length > 0) ||
+    hasEncryptedVault
+  ) {
     initialRoute = screens.authorized.root;
-  }  
-  
+  }
+
+  initialRoute = screens.unAuthorized.root;
+
   return (
     <Stack.Navigator
       screenOptions={(navigation) => ({
         ...defaultHeader(navigation),
       })}
-      initialRouteName={initialRoute}>
-        <Stack.Screen options={{ headerShown: false }} name={screens.unAuthorized.root} component={UnAuthStack} />
-        <Stack.Screen options={{ headerShown: false }} name={screens.authorized.root} component={HomeStack} />
+      initialRouteName={initialRoute}
+    >
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name={screens.unAuthorized.root}
+        component={UnAuthStack}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name={screens.authorized.root}
+        component={HomeStack}
+      />
     </Stack.Navigator>
   );
 };
