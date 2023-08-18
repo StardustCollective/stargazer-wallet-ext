@@ -1,75 +1,60 @@
-import { StyleSheet, Platform } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { StyleSheet } from 'react-native';
+import { COLORS, NEW_COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
-  removeAccount: {
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: 0,
-    paddingHorizontal: 24,
-    width: '100%',
-    position: 'relative',
-    backgroundColor: COLORS.gray_light_100,
-    flexGrow: 1,
-  },
-  wrapper: {
-    flexGrow: 1,
-  },
-  subheading: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: 16,
-    width: '100%',
-    padding: 0,
-    alignItems: 'flex-start',
-  },
-  accountNameWrapper: {
-    backgroundColor: COLORS.white,
-    borderWidth: 1,
-    borderColor: COLORS.gray_200,
-    borderStyle: 'solid',
-    borderRadius: 6,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: 36,
-  },
-  accountName: {
-    fontWeight: '500',
-    fontSize: 14,
-    lineHeight: 36,
-    letterSpacing: 0.03,
-    color: COLORS.gray_dark,
-  },
-  formText: {
-    marginTop: 24,
-    marginHorizontal: 0,
-  },
-  bold: {
-    fontWeight: '500',
-    color: COLORS.red_100,
-  },
-  inputWrapper: {
-    marginTop: 0,
-    marginBottom: -24,
-  },
-  input: {
-    width: '100%',
-  },
-  actions: {
-    position: 'relative',
-    bottom: 24,
-    marginTop: 50,
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+  container: {
     flex: 1,
-    justifyContent: 'space-evenly',
+    padding: 16,
+    marginBottom: 24,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    marginBottom: 64,
+  },
+  walletContainer: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  iconComponent: {
+    alignItems: 'center',
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 64,
+    width: 64,
+    borderRadius: 32,
+    borderWidth: 1,
+    borderColor: NEW_COLORS.gray_300,
+    backgroundColor: COLORS.white,
+  },
+  icon: {
+    width: 38,
+    height: 38,
+  },
+  walletLabel: {
+    marginTop: 12,
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 20,
+    lineHeight: 28,
+    marginBottom: 8,
+    color: NEW_COLORS.red_700,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   button: {
-    marginHorizontal: Platform.OS === 'android' ? 16 : 0,
+    width: 170,
+    marginHorizontal: 6,
+  },
+  removeButton: {
+    backgroundColor: NEW_COLORS.red_700,
   },
 });
 

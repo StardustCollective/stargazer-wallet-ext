@@ -1,0 +1,21 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid $warning_border;
+  background-color: $warning_background;
+
+  .warningIcon {
+    height: 24px;
+    width: 24px;
+    margin-top: 4px;
+    margin-right: 12px;
+  }
+
+  .warningText {
+    color: $warning_text;
+  }
+}

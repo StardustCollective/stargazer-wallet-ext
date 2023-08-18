@@ -3,7 +3,13 @@
 ///////////////////////////
 
 import React, { FC, useEffect, useState, useLayoutEffect } from 'react';
-import { View, ActivityIndicator, ScrollView, TouchableOpacity, AppState } from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+  AppState,
+} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { useLinkTo } from '@react-navigation/native';
 import BackgroundTimer from 'react-native-background-timer';
@@ -17,8 +23,8 @@ import Sheet from 'components/Sheet';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import AssetsPanel from './AssetsPanel';
-import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up.svg';
-import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down.svg';
+import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up-white.svg';
+import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down-white.svg';
 
 ///////////////////////////
 // Utils
@@ -45,10 +51,7 @@ import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
 // Constants
 ///////////////////////////
 
-import {
-  BUY_STRING,
-  SWAP_STRING
-} from './constants';
+import { BUY_STRING, SWAP_STRING } from './constants';
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
@@ -60,7 +63,7 @@ let lastIsConnected: boolean = true;
 // Scene
 ///////////////////////////
 
-const Home: FC<IHome> = ({ 
+const Home: FC<IHome> = ({
   navigation,
   route,
   activeWallet,
@@ -69,16 +72,18 @@ const Home: FC<IHome> = ({
   multiChainWallets,
   privateKeyWallets,
   onBuyPressed,
-  onSwapPressed
+  onSwapPressed,
 }) => {
-
   const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
 
   const accountController = getAccountController();
   const walletController = getWalletController();
   const linkTo = useLinkTo();
 
-  const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
+  const handleSwitchWallet = async (
+    walletId: string,
+    walletAccounts: KeyringWalletAccountState[]
+  ) => {
     setIsWalletSelectorOpen(false);
     await walletController.switchWallet(walletId);
     const accounts = walletAccounts.map((account) => account.address);
@@ -88,12 +93,17 @@ const Home: FC<IHome> = ({
   const renderHeaderTitle = () => {
     const ArrowIcon = isWalletSelectorOpen ? ArrowUpIcon : ArrowDownIcon;
     return (
-      <TouchableOpacity style={styles.headerTitleContainer} onPress={() => setIsWalletSelectorOpen(true)}>
-        <TextV3.BodyStrong extraStyles={styles.headerTitle}>{activeWallet ? truncateString(activeWallet.label) : ""}</TextV3.BodyStrong>
+      <TouchableOpacity
+        style={styles.headerTitleContainer}
+        onPress={() => setIsWalletSelectorOpen(true)}
+      >
+        <TextV3.BodyStrong extraStyles={styles.headerTitle}>
+          {activeWallet ? truncateString(activeWallet.label) : ''}
+        </TextV3.BodyStrong>
         <ArrowIcon width={ICON_SIZE} height={ICON_SIZE} color="white" />
       </TouchableOpacity>
     );
-  }
+  };
 
   // Sets the header for the home screen.
   useLayoutEffect(() => {
@@ -116,7 +126,7 @@ const Home: FC<IHome> = ({
 
     return () => {
       unsubscribeNetInfo();
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -132,7 +142,7 @@ const Home: FC<IHome> = ({
             await walletController.logOut();
             linkTo('/authRoot');
           }
-        } 
+        }
 
         // Reset the timer
         BackgroundTimer.stopBackgroundTimer();
@@ -147,16 +157,23 @@ const Home: FC<IHome> = ({
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContentContainer}
+      >
         {activeWallet ? (
           <>
             <View style={styles.fiatBalanceContainer}>
               <View style={styles.fiatBalance}>
-                <TextV3.Body extraStyles={styles.fiatType}>{balanceObject.symbol}</TextV3.Body>
+                <TextV3.Body extraStyles={styles.fiatType}>
+                  {balanceObject.symbol}
+                </TextV3.Body>
                 <TextV3.HeaderDisplay dynamic extraStyles={styles.fiatBalanceLabel}>
                   {balanceObject.balance}
                 </TextV3.HeaderDisplay>
-                <TextV3.Body extraStyles={styles.fiatType}>{balanceObject.name}</TextV3.Body>
+                <TextV3.Body extraStyles={styles.fiatType}>
+                  {balanceObject.name}
+                </TextV3.Body>
               </View>
               <View style={styles.buttons}>
                 <ButtonV3
@@ -183,20 +200,23 @@ const Home: FC<IHome> = ({
           </>
         ) : (
           <View style={styles.activityIndicator}>
-            <ActivityIndicator size={ACTIVITY_INDICATOR_SIZE} color={ACTIVITY_INDICATOR_COLOR} />
+            <ActivityIndicator
+              size={ACTIVITY_INDICATOR_SIZE}
+              color={ACTIVITY_INDICATOR_COLOR}
+            />
           </View>
         )}
       </ScrollView>
-      <Sheet 
+      <Sheet
         isVisible={isWalletSelectorOpen}
         onClosePress={() => setIsWalletSelectorOpen(false)}
-        height='65%'
+        height="65%"
         title={{
           label: 'Wallets',
           align: 'left',
         }}
       >
-        <WalletsModal 
+        <WalletsModal
           multiChainWallets={multiChainWallets}
           privateKeyWallets={privateKeyWallets}
           activeWallet={activeWallet}

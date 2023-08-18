@@ -1,4 +1,3 @@
-
 ///////////////////////////
 // Screens
 ///////////////////////////
@@ -38,7 +37,7 @@ export default {
   [screens.swap.confirmDetails]: '/confirmDetails',
   [screens.swap.confirmation]: '/confirmation',
   [screens.swap.swapHistory]: '/swapHistory',
-  [screens.swap.transactionDetails] : '/transactionDetails',
+  [screens.swap.transactionDetails]: '/transactionDetails',
   [screens.swap.tokenList]: '/tokenList',
   // Settings Stack
   [screens.settings.main]: '/settings',
@@ -52,6 +51,7 @@ export default {
   [screens.settings.addWallet]: '/settings/wallets/add',
   [screens.settings.createWallet]: '/settings/wallets/create',
   [screens.settings.walletPhrase]: '/settings/wallets/phrase',
+  [screens.settings.checkPassword]: '/settings/wallets/checkPassword',
   [screens.settings.manageWallet]: '/settings/wallets/manage',
   [screens.settings.removeWallet]: '/settings/wallets/remove',
   [screens.settings.privateKey]: '/settings/wallets/privateKey',
@@ -60,5 +60,4 @@ export default {
   [screens.settings.importPhrase]: '/settings/wallets/import/phrase',
   [screens.settings.connectedSites]: '/settings/connectedSites',
   [screens.settings.security]: '/settings/security',
-
 };

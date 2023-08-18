@@ -1,91 +1,71 @@
 @import '~assets/styles/variables';
 
-body {
-  .removeAccount {
+.container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 24px;
+  background-color: $gray-50;
+
+  .contentContainer {
     display: flex;
     flex-direction: column;
-    padding: 0 36px;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    font-weight: 500;
-    font-family: $inter;
-    font-size: 12px;
-    line-height: 18px;
-    color: $gray-dark;
+    justify-content: center;
+    flex-grow: 1;
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-bottom: 64px;
 
-    .subheading {
+    .titleContainer {
+      display: flex;
+      margin-bottom: 8px;
+
+      .title {
+        font-size: 20px;
+        line-height: 28px;
+        color: $red_700;
+      }
+    }
+
+    .subtitleContainer {
+      display: flex;
+    }
+
+    .walletContainer {
       display: flex;
       flex-direction: column;
-      margin-top: 24px;
-      width: 100%;
-      padding: 0;
-      box-sizing: border-box;
-      align-items: flex-start;
-
-      div {
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 18px;
-        margin-bottom: 24px;
-        color: $gray-dark;
-      }
-
-      .accountName {
-        width: 100%;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: $white;
-        border: 1px solid $gray-200;
-        box-sizing: border-box;
-        border-radius: 6px;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 24px;
-        letter-spacing: 0.03em;
-        color: $gray-dark;
-        user-select: none;
-        transition: all 0.3s;
-      }
-    }
-
-    & > form > span {
-      margin: 24px 0;
-      display: inline-block;
-
-      b {
-        font-weight: 500;
-        color: $red-100;
-      }
-    }
-
-    .input {
-      border: 1px solid $gray-200 !important;
-    }
-
-    .actions {
-      position: absolute;
-      bottom: 24px;
-      // width: calc(100% - 72px);
-      display: flex;
-      flex-direction: row;
       align-items: center;
-      justify-content: space-between;
+      margin-bottom: 32px;
 
-      .close,
-      .close:hover {
-        background: $gray-light;
-        color: $gray-dark;
+      .iconContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 64px;
+        width: 64px;
+        border-radius: 32px;
+        border: 1px solid $gray_300;
+        background-color: $white;
       }
 
-      .button {
-        width: 144px;
-        margin-left: 10px;
-        margin-right: 10px;
+      .walletLabel {
+        margin-top: 12px;
+        font-size: 16px;
       }
+    }
+  }
+
+  .buttonsContainer {
+    display: flex;
+    justify-content: center;
+
+    .button {
+      margin-left: 6px;
+      margin-right: 6px;
+    }
+
+    .removeButton {
+      background-color: $red_700;
     }
   }
 }

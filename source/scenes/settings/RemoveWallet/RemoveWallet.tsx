@@ -1,60 +1,91 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
-
-import TextInput from 'components/TextInput';
-import Button from 'components/Button';
-
-import styles from './RemoveWallet.scss';
+import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
+import { COLORS_ENUMS } from 'assets/styles/colors';
+import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
+import LockIcon from 'assets/images/svg/lock-icon.svg';
 import IRemoveWalletSettings from './types';
+import styles from './RemoveWallet.scss';
+import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { ETHEREUM_LOGO, CONSTELLATION_LOGO } from 'constants/index';
+
+const ICON_SIZE = 40;
+const TITLE = 'Are you sure that you want to remove this wallet?';
+const SUBTITLE =
+  'You will not be able to restore this wallet without your recovery phrase or private key in the future. Please, make sure you have them saved in a safe place.';
 
 const RemoveWallet: FC<IRemoveWalletSettings> = ({
-  goBack,
   wallet,
-  isSeedWallet,
-  handleSubmit,
-  register,
-  onSubmit,
+  handleCancel,
+  handleRemoveWallet,
 }) => {
-  return (
-    <div className={styles.removeAccount}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {wallet && (
-          <div className={styles.subheading}>
-            <div>Account name:</div>
-            <span className={styles.accountName}>{wallet.label}</span>
-          </div>
-        )}
+  const isMCW = wallet?.type === KeyringWalletType.MultiChainWallet;
+  const isHardware = [
+    KeyringWalletType.BitfiAccountWallet,
+    KeyringWalletType.LedgerAccountWallet,
+  ].includes(wallet?.type);
+  const isETH =
+    wallet?.type === KeyringWalletType.SingleAccountWallet &&
+    wallet?.supportedAssets?.includes(KeyringAssetType.ETH);
 
-        <span>Please enter your wallet password:</span>
-        <TextInput
-          type="password"
-          name="password"
-          visiblePassword
-          fullWidth
-          inputRef={register}
-          variant={styles.input}
-        />
-        <div className={styles.actions}>
-          <Button type="button" theme="secondary" variant={clsx(styles.button, styles.close)} onClick={goBack}>
-            Cancel
-          </Button>
-          <Button type="submit" variant={styles.button}>
-            Confirm
-          </Button>
+  const ICON = isMCW
+    ? StargazerIcon
+    : isHardware
+    ? LockIcon
+    : isETH
+    ? ETHEREUM_LOGO
+    : CONSTELLATION_LOGO;
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.contentContainer}>
+        <div className={styles.walletContainer}>
+          {typeof ICON === 'string' && ICON.startsWith('http') ? (
+            <div className={styles.iconContainer}>
+              <img src={ICON} width={ICON_SIZE} height={ICON_SIZE} />
+            </div>
+          ) : (
+            <img src={`/${ICON}`} width={64} />
+          )}
+          <TextV3.BodyStrong extraStyles={styles.walletLabel} color={COLORS_ENUMS.BLACK}>
+            {wallet?.label}
+          </TextV3.BodyStrong>
         </div>
-        <span>
-          {isSeedWallet && (
-            <span>
-              Are you sure you want to delete this wallet? It will be permanently deleted unless you have a backup saved.
-            </span>
-          )}
-          {!isSeedWallet && (
-            <span>
-              Are you sure you want to delete this account? It will be permanently deleted unless you have a backup saved.
-            </span>
-          )}
-        </span>
-      </form>
+        <div className={styles.titleContainer}>
+          <TextV3.Header
+            extraStyles={styles.title}
+            color={COLORS_ENUMS.BLACK}
+            align={TEXT_ALIGN_ENUM.CENTER}
+          >
+            {TITLE}
+          </TextV3.Header>
+        </div>
+        <div className={styles.subtitleContainer}>
+          <TextV3.CaptionRegular
+            color={COLORS_ENUMS.SECONDARY_TEXT}
+            align={TEXT_ALIGN_ENUM.CENTER}
+          >
+            {SUBTITLE}
+          </TextV3.CaptionRegular>
+        </div>
+      </div>
+      <div className={styles.buttonsContainer}>
+        <ButtonV3
+          type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+          size={BUTTON_SIZES_ENUM.LARGE}
+          label="Cancel"
+          extraStyle={styles.button}
+          onClick={handleCancel}
+        />
+        <ButtonV3
+          type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+          size={BUTTON_SIZES_ENUM.LARGE}
+          label="Remove"
+          extraStyle={clsx(styles.button, styles.removeButton)}
+          onClick={handleRemoveWallet}
+        />
+      </div>
     </div>
   );
 };

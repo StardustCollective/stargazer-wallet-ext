@@ -1,0 +1,56 @@
+@import '~assets/styles/variables';
+
+.recoveryContainer {
+  margin-top: 32px;
+}
+
+.phraseContainer {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 18px 12px;
+  border: 1px solid $gray_300;
+  border-radius: 8px;
+  background-color: $white;
+  margin-top: 8px;
+  width: 328px;
+}
+
+.phraseItem {
+  background-color: $indigo_50;
+  margin: 6px 4px;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.phraseText {
+  font-weight: $medium;
+}
+
+.privateKeyText {
+  word-break: break-all;
+}
+
+.copyContainer {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 24px 0px;
+}
+
+.copyText {
+  color: $new_primary_lighter_1;
+}
+
+.buttonContainer {
+  display: flex;
+  margin-top: 20px;
+}
+
+.doneButton {
+  background-color: $new-primary;
+  width: 100%;
+}

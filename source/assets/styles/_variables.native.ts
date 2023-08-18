@@ -54,6 +54,20 @@ export const COLORS = {
   orange: '#DC6803',
 };
 
+export const NEW_COLORS = {
+  primary: '#5925A7',
+  primary_lighter_1: '#7C5BF3',
+  primary_lighter_2: '#7A56F0',
+  gray_50: '#F9FAFB',
+  gray_300: '#D1D5DB',
+  secondary_text: '#5A5D6B',
+  warning_background: '#FFFBEB',
+  warning_border: '#FCD34D',
+  warning_text: '#451A03',
+  indigo_50: '#EEF2FF',
+  red_700: '#B91C1C',
+};
+
 export const FONT_WEIGHTS = {
   light: '300',
   regular: '400',

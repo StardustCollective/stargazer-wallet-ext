@@ -35,48 +35,65 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 const MAX_ITEMS = 3;
 
 const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
-  const { icon, title, value, items, isOpen, toggleItem, onChange } = options;
+  const {
+    icon,
+    title,
+    value,
+    items,
+    isOpen,
+    toggleItem,
+    onChange,
+    disabled = false,
+    showArrow = true,
+    displayValue = false,
+  } = options;
 
-  const selectedValue = items.find(item => item.value === value);
+  const selectedValue = items.find((item) => item.value === value);
   const scrollContainer = items?.length > MAX_ITEMS ? styles.itemScrollable : {};
+
+  const ArrowIcon = isOpen ? ArrowUpIcon : ArrowDownIcon;
+  const subtitle = displayValue ? selectedValue?.value : selectedValue?.label;
 
   ///////////////////////
   // Render
   ///////////////////////
 
   return (
-    <div onClick={toggleItem} className={styles.container}>
-      {!!icon && 
+    <div onClick={!!disabled ? null : toggleItem} className={styles.container}>
+      {!!icon && (
         <div className={styles.iconContainer}>
-          <img className={styles.icon} src={icon}/>
+          <img className={styles.icon} src={icon} />
         </div>
-      }
+      )}
       <div className={styles.titleContainer}>
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{title}</TextV3.CaptionStrong>
-        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{selectedValue?.label}</TextV3.Caption>
+        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{subtitle}</TextV3.Caption>
       </div>
       <div>
-        {isOpen ? (
-            <img src={`/${ArrowUpIcon}`} />
-          ) : (
-            <img src={`/${ArrowDownIcon}`} />
-        )}
+        <div>{!!showArrow && <img src={`/${ArrowIcon}`} />}</div>
       </div>
       {isOpen && (
         <div className={clsx(styles.listContainer, scrollContainer)}>
-          {!!items && items.map((item) => {
-            const selected = item.value === value;
-            const selectedStyle = selected ? styles.selectedItem : {};
-            const TextComponent = selected ? TextV3.CaptionStrong : TextV3.CaptionRegular;
-            return (
-              <div key={item.value} className={clsx(styles.itemContainer, selectedStyle)} onClick={() => onChange(item.value)}>
-                <TextComponent color={COLORS_ENUMS.BLACK}>
-                  {item.label}  
-                </TextComponent>
-                {!!selected && <img src={`/${CheckIcon}`} className={styles.checkIcon} />}
-              </div>
-            )})
-          }
+          {!!items &&
+            items.map((item) => {
+              const selected = item.value === value;
+              const selectedStyle = selected ? styles.selectedItem : {};
+              const TextComponent = selected
+                ? TextV3.CaptionStrong
+                : TextV3.CaptionRegular;
+              return (
+                <div
+                  key={item.value}
+                  className={clsx(styles.itemContainer, selectedStyle)}
+                  onClick={() => onChange(item.value)}
+                >
+                  <TextComponent color={COLORS_ENUMS.BLACK}>{item.label}</TextComponent>
+                  {!!selected && (
+                    <img src={`/${CheckIcon}`} className={styles.checkIcon} />
+                  )}
+                </div>
+              );
+            })}
         </div>
       )}
     </div>
