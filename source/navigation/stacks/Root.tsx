@@ -53,8 +53,6 @@ const Root = () => {
     initialRoute = screens.authorized.root;
   }
 
-  initialRoute = screens.unAuthorized.root;
-
   return (
     <Stack.Navigator
       screenOptions={(navigation) => ({
