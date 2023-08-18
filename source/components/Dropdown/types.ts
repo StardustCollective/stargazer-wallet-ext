@@ -6,9 +6,12 @@ export type IDropdownOptions = {
   value: string;
   items: IItem[];
   isOpen: boolean;
-  containerStyle: object;
+  containerStyle?: object;
   onChange: (value: string) => void;
   toggleItem: () => void;
+  disabled?: boolean;
+  showArrow?: boolean;
+  displayValue?: boolean;
 };
 
 export default interface IDropdown {

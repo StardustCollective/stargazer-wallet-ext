@@ -31,6 +31,7 @@ const TextInput: FC<ITextInput> = ({
   ...otherProps
 }) => {
   const [showed, setShowed] = useState(false);
+  const [focused, setFocused] = useState(false);
   const inputType = showed && type === 'password' ? 'text' : type;
 
   const handleClickShowPassword = () => {
@@ -44,11 +45,13 @@ const TextInput: FC<ITextInput> = ({
   return (
     <MUITextInput
       id={id}
-      className={clsx(styles.textInput, variant)}
+      className={clsx(styles.textInput, variant, focused && styles.focusedInput)}
       classes={classes}
       type={inputType}
       error={error}
       {...otherProps}
+      onBlur={() => setFocused(false)}
+      onFocus={() => setFocused(true)}
       endAdornment={
         endAdornment ||
         (type === 'password' && visiblePassword ? (

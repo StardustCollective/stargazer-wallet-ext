@@ -35,19 +35,33 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 const MAX_ITEMS = 3;
 
 const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
-  const { icon, title, value, items, isOpen, toggleItem, onChange } = options;
+  const {
+    icon,
+    title,
+    value,
+    items,
+    isOpen,
+    toggleItem,
+    onChange,
+    disabled = false,
+    showArrow = true,
+    displayValue = false,
+  } = options;
 
   const selectedValue = items.find((item) => item.value === value);
   const scrollContainer = items?.length > MAX_ITEMS ? styles.itemScrollable : {};
   const TextComponent = !!title ? TextV3.Caption : TextV3.CaptionStrong;
   const TextColor = !!title ? COLORS_ENUMS.GRAY_100 : COLORS_ENUMS.BLACK;
 
+  const ArrowIcon = isOpen ? ArrowUpIcon : ArrowDownIcon;
+  const subtitle = displayValue ? selectedValue?.value : selectedValue?.label;
+
   ///////////////////////
   // Render
   ///////////////////////
 
   return (
-    <div onClick={toggleItem} className={styles.container}>
+    <div onClick={!!disabled ? null : toggleItem} className={styles.container}>
       {!!icon && (
         <div className={styles.iconContainer}>
           <img className={styles.icon} src={icon} />
@@ -57,10 +71,10 @@ const Dropdown: FC<IDropdown> = ({ options }): JSX.Element => {
         {!!title && (
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{title}</TextV3.CaptionStrong>
         )}
-        <TextComponent color={TextColor}>{selectedValue?.label}</TextComponent>
+        <TextComponent color={TextColor}>{subtitle}</TextComponent>
       </div>
       <div>
-        {isOpen ? <img src={`/${ArrowUpIcon}`} /> : <img src={`/${ArrowDownIcon}`} />}
+        <div>{!!showArrow && <img src={`/${ArrowIcon}`} />}</div>
       </div>
       {isOpen && (
         <div className={clsx(styles.listContainer, scrollContainer)}>

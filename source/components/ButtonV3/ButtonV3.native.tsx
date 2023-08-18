@@ -24,6 +24,7 @@ export enum BUTTON_TYPES_ENUM {
   PRIMARY_OUTLINE,
   ACCENT_ONE_OUTLINE,
   SECONDARY_OUTLINE,
+  TERTIARY_SOLID,
 }
 
 export enum BUTTON_SIZES_ENUM {
@@ -78,8 +79,8 @@ const ButtonV3: FC<IButtonV3Props> = ({
     buttonSizeStyle = styles.buttonSmall;
     titleStyle = styles.titleSmall;
   } else if (size === BUTTON_SIZES_ENUM.MEDIUM) {
-      buttonSizeStyle = styles.buttonMedium;
-      titleStyle = styles.titleMedium;
+    buttonSizeStyle = styles.buttonMedium;
+    titleStyle = styles.titleMedium;
   } else if (size === BUTTON_SIZES_ENUM.LARGE) {
     buttonSizeStyle = styles.buttonLarge;
     titleStyle = styles.titleLarge;
@@ -100,13 +101,23 @@ const ButtonV3: FC<IButtonV3Props> = ({
   } else if (type === BUTTON_TYPES_ENUM.SECONDARY_OUTLINE) {
     buttonColorStyle = styles.secondaryOutline;
     titleStyle = { ...titleStyle, ...styles.secondaryOutlineTitle };
+  } else if (type === BUTTON_TYPES_ENUM.TERTIARY_SOLID) {
+    buttonColorStyle = styles.tertiarySolid;
+    titleStyle = { ...titleStyle, ...styles.tertiarySolidTitle };
   }
 
-  const flatButtonStyles = StyleSheet.flatten([styles.base, buttonSizeStyle, buttonColorStyle]);
+  const flatButtonStyles = StyleSheet.flatten([
+    styles.base,
+    buttonSizeStyle,
+    buttonColorStyle,
+  ]);
 
   const composedButtonStyles = StyleSheet.compose(flatButtonStyles, extraStyles);
   const composedTitleStyles = StyleSheet.compose(titleStyle, extraTitleStyles);
-  const composedContainerStyles = StyleSheet.compose(styles.containerStyle, extraContainerStyles);
+  const composedContainerStyles = StyleSheet.compose(
+    styles.containerStyle,
+    extraContainerStyles
+  );
   const composedDisabledStyles = StyleSheet.compose(buttonColorStyle, styles.disabled);
 
   return (

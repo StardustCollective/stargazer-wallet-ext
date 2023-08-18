@@ -32,6 +32,7 @@ export enum BUTTON_TYPES_ENUM {
   PRIMARY_OUTLINE,
   ACCENT_ONE_OUTLINE,
   SECONDARY_OUTLINE,
+  TERTIARY_SOLID,
 }
 
 export enum BUTTON_SIZES_ENUM {
@@ -114,6 +115,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {
     buttonColorStyle = styles.accentOneButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
+  } else if (type === BUTTON_TYPES_ENUM.TERTIARY_SOLID) {
+    buttonColorStyle = styles.tertiarySolid;
+    buttonTextColor = COLORS_ENUMS.BLACK;
   }
 
   if (disabled) {

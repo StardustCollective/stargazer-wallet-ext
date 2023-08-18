@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, NEW_COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: COLORS.gray_200,
+    borderColor: NEW_COLORS.gray_300,
     alignItems: 'center',
     backgroundColor: COLORS.white,
   },
@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     width: 32,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: COLORS.gray_200,
+    borderColor: NEW_COLORS.gray_300,
+    backgroundColor: '#FAFAFA',
     marginRight: 12,
   },
   titleContainer: {
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     right: -1,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: COLORS.gray_200,
+    borderColor: NEW_COLORS.gray_300,
     paddingHorizontal: 8,
     paddingBottom: 8,
     backgroundColor: COLORS.white,
