@@ -8,9 +8,15 @@ import { COLORS } from 'assets/styles/_variables';
 import { IPhraseInput } from './types';
 import styles from './styles';
 
-const PhraseInput: FC<IPhraseInput> = ({ value, index, hasError, onChangeText }) => {
+const PhraseInput: FC<IPhraseInput> = ({
+  value,
+  index,
+  hasError,
+  showPassword,
+  togglePassword,
+  onChangeText,
+}) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const focusedStyles = isFocused && styles.inputFocused;
   const errorStyles = hasError && styles.inputError;
   const inputContainerStyle = StyleSheet.flatten([
@@ -19,10 +25,6 @@ const PhraseInput: FC<IPhraseInput> = ({ value, index, hasError, onChangeText })
     errorStyles,
   ]);
   const ViewIcon = showPassword ? ViewOn : ViewOff;
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
 
   return (
     <View style={inputContainerStyle}>
@@ -36,12 +38,13 @@ const PhraseInput: FC<IPhraseInput> = ({ value, index, hasError, onChangeText })
         onFocus={() => setIsFocused(true)}
         selectionColor={COLORS.primary_lighter_1}
         value={value}
+        autoCapitalize="none"
         onChangeText={(text) => {
           onChangeText(text, index);
         }}
         returnKeyType="done"
       />
-      <TouchableOpacity style={styles.passwordIcon} onPress={toggleShowPassword}>
+      <TouchableOpacity style={styles.passwordIcon} onPress={() => togglePassword(index)}>
         <ViewIcon />
       </TouchableOpacity>
     </View>

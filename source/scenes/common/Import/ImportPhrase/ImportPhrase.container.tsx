@@ -31,6 +31,9 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
   const [phraseValues, setPhraseValues] = useState<string[]>(
     Array(parseInt(phraseLength)).fill('')
   );
+  const [showPasswordArray, setShowPasswordArray] = useState<boolean[]>(
+    Array(parseInt(phraseLength)).fill(false)
+  );
 
   const isDisabled = useMemo(() => {
     if (!phraseValues) return true;
@@ -77,6 +80,12 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
         setIsInvalidPhrase(true);
       }
     }
+  };
+
+  const togglePassword = (index: number) => {
+    const newShowPasswordArray: boolean[] = Array(parseInt(phraseLength)).fill(false);
+    newShowPasswordArray[index] = !showPasswordArray[index];
+    setShowPasswordArray(newShowPasswordArray);
   };
 
   const toggleDropdown = () => {
@@ -129,7 +138,9 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
         isInvalidPhrase={isInvalidPhrase}
         phraseOptions={phraseOptions}
         phraseValues={phraseValues}
+        showPasswordArray={showPasswordArray}
         handleInputChange={handleInputChange}
+        togglePassword={togglePassword}
       />
     </Container>
   );

@@ -101,6 +101,7 @@ const TextInput: FC<ITextInput> = ({
           blurOnSubmit={blurOnSubmit}
           selectionColor={!!error ? COLORS.red : NEW_COLORS.primary_lighter_2}
           onFocus={() => setFocused(true)}
+          autoCapitalize="none"
           {...passwordProps} // eslint-disable-line
           {...otherProps} // eslint-disable-line
         />

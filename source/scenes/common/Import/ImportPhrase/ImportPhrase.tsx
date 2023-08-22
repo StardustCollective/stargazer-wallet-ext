@@ -14,7 +14,9 @@ const ImportPhrase: FC<IImportPhrase> = ({
   isInvalidPhrase,
   phraseOptions,
   phraseValues,
+  showPasswordArray,
   handleInputChange,
+  togglePassword,
   onSubmit,
 }) => {
   return (
@@ -35,6 +37,8 @@ const ImportPhrase: FC<IImportPhrase> = ({
                   index={index}
                   value={value}
                   hasError={isInvalidPhrase}
+                  showPassword={showPasswordArray[index]}
+                  togglePassword={togglePassword}
                   onChangeText={handleInputChange}
                 />
               </div>

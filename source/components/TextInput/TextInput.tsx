@@ -14,6 +14,7 @@ interface ITextInput extends Partial<OutlinedInputProps> {
   endAdornment?: ReactNode;
   type?: 'text' | 'password' | 'number';
   variant?: string;
+  showPassword?: boolean;
   visiblePassword?: boolean;
   error?: boolean;
   control?: Control<FieldValues>;
@@ -24,6 +25,7 @@ const TextInput: FC<ITextInput> = ({
   id,
   type = 'text',
   visiblePassword = false,
+  showPassword = false,
   variant = '',
   error = false,
   endAdornment,
@@ -32,7 +34,7 @@ const TextInput: FC<ITextInput> = ({
 }) => {
   const [showed, setShowed] = useState(false);
   const [focused, setFocused] = useState(false);
-  const inputType = showed && type === 'password' ? 'text' : type;
+  const inputType = (showed || showPassword) && type === 'password' ? 'text' : type;
 
   const handleClickShowPassword = () => {
     setShowed(!showed);
