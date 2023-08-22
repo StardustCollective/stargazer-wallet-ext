@@ -44,10 +44,11 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
     }
 
     // Reset invalid if phrase has changed and no longer disabled.
-    if (isInvalidPhrase && !disableButton) {
+    if (isInvalidPhrase) {
       setIsInvalidPhrase(false);
     }
 
+    setIsDisabled(disableButton);
     return disableButton;
   }, [phraseValues]);
 
