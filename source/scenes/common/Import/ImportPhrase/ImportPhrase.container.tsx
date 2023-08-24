@@ -1,105 +1,149 @@
-///////////////////////////
-// Controllers
-///////////////////////////
-
 import React, { FC, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
-
-///////////////////////////
-// Controllers
-///////////////////////////
-
 import { getWalletController } from 'utils/controllersUtils';
-
-///////////////////////////
-// Components
-///////////////////////////
-
 import Container, { CONTAINER_COLOR } from 'components/Container';
-
-///////////////////////////
-// Scene
-///////////////////////////
-
 import ImportPhrase from './ImportPhrase';
-
-///////////////////////////
-// Types
-///////////////////////////
+import { IDropdownOptions } from 'components/Dropdown/types';
 
 interface IImportPhraseContainer {
-  onRegister: () => void;
+  type: IMPORT_TYPE;
+  title: string;
+  buttonTitle: string;
+  onButtonPress: () => void;
 }
 
-///////////////////////////
-// Container
-///////////////////////////
+export enum IMPORT_TYPE {
+  IMPORT = 0,
+  RESTORE,
+}
 
-const ImportPhraseContainer: FC<IImportPhraseContainer>= ({
-  onRegister,
+const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
+  type,
+  buttonTitle,
+  title,
+  onButtonPress,
 }) => {
+  const walletController = getWalletController();
 
-  ///////////////////////////
-  // Hooks
-  ///////////////////////////
-
-  const [isInvalid, setInvalid] = useState(false);
-
-  const { control, handleSubmit, register, watch } = useForm({
-    validationSchema: yup.object().shape({
-      phrase: yup.string().required(),
-    }),
-  });
+  const [phraseLength, setPhraseLength] = useState('12');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isInvalidPhrase, setIsInvalidPhrase] = useState(false);
+  const [isButtonDisabled, setIsDisabled] = useState(false);
+  const [phraseValues, setPhraseValues] = useState<string[]>(
+    Array(parseInt(phraseLength)).fill('')
+  );
+  const [showPasswordArray, setShowPasswordArray] = useState<boolean[]>(
+    Array(parseInt(phraseLength)).fill(false)
+  );
 
   const isDisabled = useMemo(() => {
-    const phrase: string = watch('phrase');
-    if (!phrase) return true;
-    const len = phrase.trim().split(' ').length;
-    // console.log(len, (len % 3), (len < 12 || len > 24 || (len % 3 > 0)))
-    const result = len < 12 || len > 24 || (len % 3 > 0);
+    if (!phraseValues) return true;
+    let disableButton = false;
 
-    //Reset invalid if phrase has changed and no longer disabled.
-    if (isInvalid && !result) {
-      setInvalid(false);
+    for (let phrase of phraseValues) {
+      if (!phrase.trim()) {
+        disableButton = true;
+        break;
+      }
     }
 
-    return result;
-  }, [watch('phrase')]);
-
-  ///////////////////////////
-  // Callbacks
-  ///////////////////////////
-
-  const onSubmit = (data: any) => {
-    const phrase = data.phrase.trim();
-
-    if (getWalletController().onboardHelper.importAndValidateSeedPhrase(phrase)
-    ) {
-      onRegister();
+    // Reset invalid if phrase has changed and no longer disabled.
+    if (isInvalidPhrase) {
+      setIsInvalidPhrase(false);
     }
-    else {
-      setInvalid(true)
+
+    setIsDisabled(disableButton);
+    return disableButton;
+  }, [phraseValues]);
+
+  const handleInputChange = (value: string, index: number) => {
+    const newInput = [...phraseValues];
+    newInput[index] = value.trim();
+    setPhraseValues(newInput);
+  };
+
+  const onSubmit = async (phraseArray: string[]) => {
+    setIsDisabled(true);
+    const phrase = phraseArray.join(' ');
+
+    if (type === IMPORT_TYPE.RESTORE) {
+      if (walletController.onboardHelper.importAndValidateSeedPhrase(phrase)) {
+        onButtonPress();
+      } else {
+        setIsInvalidPhrase(true);
+      }
+    } else {
+      try {
+        await walletController.createWallet(null, phrase);
+        onButtonPress();
+      } catch (error) {
+        console.log(error);
+        setIsInvalidPhrase(true);
+      }
     }
   };
 
-  ///////////////////////////
-  // Renders
-  ///////////////////////////
+  const togglePassword = (index: number) => {
+    const newShowPasswordArray: boolean[] = Array(parseInt(phraseLength)).fill(false);
+    newShowPasswordArray[index] = !showPasswordArray[index];
+    setShowPasswordArray(newShowPasswordArray);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const phraseOptions: IDropdownOptions = {
+    isOpen: isDropdownOpen,
+    toggleItem: toggleDropdown,
+    value: phraseLength,
+    onChange: (value: string) => {
+      setPhraseLength(value);
+      setPhraseValues(Array(parseInt(value)).fill(''));
+      toggleDropdown();
+    },
+    containerStyle: {
+      zIndex: 8000,
+    },
+    items: [
+      {
+        value: '12',
+        label: '12-word phrase',
+      },
+      {
+        value: '15',
+        label: '15-word phrase',
+      },
+      {
+        value: '18',
+        label: '18-word phrase',
+      },
+      {
+        value: '21',
+        label: '21-word phrase',
+      },
+      {
+        value: '24',
+        label: '24-word phrase',
+      },
+    ],
+  };
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} safeArea={false}>
       <ImportPhrase
-        control={control}
-        handleSubmit={handleSubmit}
-        register={register}
+        title={title}
+        buttonTitle={buttonTitle}
         onSubmit={onSubmit}
-        isInvalid={isInvalid}
-        isDisabled={isDisabled}
+        isDisabled={isDisabled || isButtonDisabled}
+        isInvalidPhrase={isInvalidPhrase}
+        phraseOptions={phraseOptions}
+        phraseValues={phraseValues}
+        showPasswordArray={showPasswordArray}
+        handleInputChange={handleInputChange}
+        togglePassword={togglePassword}
       />
     </Container>
-  )
-
-}
+  );
+};
 
 export default ImportPhraseContainer;

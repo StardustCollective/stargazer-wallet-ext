@@ -87,7 +87,6 @@
   text-align: right;
 }
 
-
 /*
 * Text Colors
 */
@@ -100,13 +99,16 @@
   color: $white;
 }
 
-
 .textPrimary {
   color: $primary;
 }
 
 .textGray100 {
   color: $gray-100;
+}
+
+.textGrayDark {
+  color: $gray-dark;
 }
 
 .textDarkGray200 {
@@ -127,4 +129,8 @@
 
 .textLinkBlue {
   color: $link-blue;
+}
+
+.textSecondary {
+  color: $secondary-text;
 }

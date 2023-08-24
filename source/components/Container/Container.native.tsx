@@ -16,7 +16,7 @@ import IContainer from './types';
 ///////////////////////////
 
 import styles from './styles';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, NEW_COLORS } from 'assets/styles/_variables';
 
 ///////////////////////////
 // Enums
@@ -28,43 +28,38 @@ import { CONTAINER_COLOR } from './enum';
 // Component
 ///////////////////////////
 
-const Container: FC<IContainer> = (
-  {
-    children,
-    safeArea = true,
-    color = CONTAINER_COLOR.DARK,
-  }
-) => {
-
+const Container: FC<IContainer> = ({
+  children,
+  safeArea = true,
+  color = CONTAINER_COLOR.DARK,
+}) => {
   const AreaView = safeArea ? SafeAreaView : View;
 
   let extraSafeAreaStyles = {};
 
   if (color === CONTAINER_COLOR.LIGHT) {
     extraSafeAreaStyles = {
-      backgroundColor: COLORS.gray_light_100
-    }
+      backgroundColor: NEW_COLORS.gray_50,
+    };
   } else if (color === CONTAINER_COLOR.DARK) {
     extraSafeAreaStyles = {
-      backgroundColor: COLORS.primary
-    }
-  }else if (color === CONTAINER_COLOR.EXTRA_LIGHT) { 
+      backgroundColor: COLORS.primary,
+    };
+  } else if (color === CONTAINER_COLOR.EXTRA_LIGHT) {
     extraSafeAreaStyles = {
-      backgroundColor: COLORS.white
-    }
-  }else if (color === CONTAINER_COLOR.GRAY_LIGHT_300){
+      backgroundColor: COLORS.white,
+    };
+  } else if (color === CONTAINER_COLOR.GRAY_LIGHT_300) {
     extraSafeAreaStyles = {
-      backgroundColor: COLORS.gray_light_300
-    }
-  };
+      backgroundColor: COLORS.gray_light_300,
+    };
+  }
 
   return (
     <View style={[styles.container]}>
-      <AreaView style={[styles.safeArea, extraSafeAreaStyles]}>
-        {children}
-      </AreaView>
+      <AreaView style={[styles.safeArea, extraSafeAreaStyles]}>{children}</AreaView>
     </View>
-  )
-}
+  );
+};
 
 export default Container;

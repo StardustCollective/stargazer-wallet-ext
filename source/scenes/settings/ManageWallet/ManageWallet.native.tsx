@@ -1,13 +1,23 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { TouchableOpacity, View } from 'react-native';
-import Icon from 'components/Icon';
+import { View } from 'react-native';
+import { ellipsis } from 'scenes/home/helpers';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import Sheet from 'components/Sheet';
 import TextV3 from 'components/TextV3';
 import TextInput from 'components/TextInput';
+import Menu from 'components/Menu';
+import CopyIcon from 'assets/images/svg/copy.svg';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import IManageWalletSettings from './types';
+import {
+  DAG_NETWORK,
+  ETH_NETWORK,
+  AVALANCHE_NETWORK,
+  BSC_NETWORK,
+  POLYGON_NETWORK,
+} from 'constants/index';
 import styles from './styles';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
@@ -20,14 +30,141 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   onShowRecoveryPhraseClicked,
   onDeleteWalletClicked,
   onShowPrivateKeyClicked,
+  watch,
+  isCopied,
+  copyText,
+  dagAddress,
+  ethAddress,
 }) => {
+  const [isWalletAddressesOpen, setIsWalletAddressesOpen] = useState(false);
+  const [itemCopied, setItemCopied] = useState('');
+
   const cancelButtonStyles = StyleSheet.flatten([styles.button, styles.cancel]);
   const submitButtonStyles = StyleSheet.flatten([styles.button]);
+  const [label, setLabel] = useState();
+  const isButtonDisabled = label === wallet.label || label === '' || !label;
+
+  useEffect(() => {
+    setLabel(watch('name'));
+  }, [watch('name')]);
+
+  const handleCopy = (id: string, text: string) => {
+    setItemCopied(id);
+    copyText(text);
+  };
+
+  const menuItems =
+    wallet.type === KeyringWalletType.MultiChainWallet
+      ? [
+          {
+            title: 'Show Recovery Phrase',
+            onClick: onShowRecoveryPhraseClicked,
+          },
+          {
+            title: 'Show Private Key',
+            onClick: onShowPrivateKeyClicked,
+          },
+        ]
+      : [
+          {
+            title: 'Show Private Key',
+            onClick: onShowPrivateKeyClicked,
+          },
+        ];
+
+  const walletAddressesItems =
+    wallet.type === KeyringWalletType.MultiChainWallet
+      ? [
+          {
+            title: 'Wallet Addresses',
+            onClick: () => setIsWalletAddressesOpen(true),
+            labelRight: '5',
+          },
+        ]
+      : [
+          {
+            title: ellipsis(wallet.accounts[0].address, 17, 6),
+            titleStyles: styles.titleAddress,
+            onClick: () => copyText(wallet.accounts[0].address),
+            showArrow: false,
+            rightIcon: !isCopied && <CopyIcon height={20} width={30} />,
+            labelRight: isCopied ? 'Copied!' : '',
+            labelRightStyles: styles.copiedLabel,
+          },
+        ];
+
+  const walletAddresesContent = [
+    {
+      title: DAG_NETWORK.main2.network,
+      subtitle: ellipsis(dagAddress),
+      onClick: () => handleCopy(DAG_NETWORK.main2.network, dagAddress),
+      rightIcon: (!isCopied || itemCopied !== DAG_NETWORK.main2.network) && (
+        <CopyIcon height={20} width={30} />
+      ),
+      labelRight: isCopied && itemCopied === DAG_NETWORK.main2.network ? 'Copied!' : '',
+      icon: DAG_NETWORK.main2.logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+    {
+      title: ETH_NETWORK.mainnet.network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(ETH_NETWORK.mainnet.network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== ETH_NETWORK.mainnet.network) && (
+        <CopyIcon height={20} width={30} />
+      ),
+      labelRight: isCopied && itemCopied === ETH_NETWORK.mainnet.network ? 'Copied!' : '',
+      icon: ETH_NETWORK.mainnet.logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+    {
+      title: AVALANCHE_NETWORK['avalanche-mainnet'].network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () =>
+        handleCopy(AVALANCHE_NETWORK['avalanche-mainnet'].network, ethAddress),
+      rightIcon: (!isCopied ||
+        itemCopied !== AVALANCHE_NETWORK['avalanche-mainnet'].network) && (
+        <CopyIcon height={20} width={30} />
+      ),
+      labelRight:
+        isCopied && itemCopied === AVALANCHE_NETWORK['avalanche-mainnet'].network
+          ? 'Copied!'
+          : '',
+      icon: AVALANCHE_NETWORK['avalanche-mainnet'].logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+    {
+      title: BSC_NETWORK.bsc.network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(BSC_NETWORK.bsc.network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== BSC_NETWORK.bsc.network) && (
+        <CopyIcon height={20} width={30} />
+      ),
+      labelRight: isCopied && itemCopied === BSC_NETWORK.bsc.network ? 'Copied!' : '',
+      icon: BSC_NETWORK.bsc.logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+    {
+      title: POLYGON_NETWORK.matic.network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(POLYGON_NETWORK.matic.network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== POLYGON_NETWORK.matic.network) && (
+        <CopyIcon height={20} width={30} />
+      ),
+      labelRight:
+        isCopied && itemCopied === POLYGON_NETWORK.matic.network ? 'Copied!' : '',
+      icon: POLYGON_NETWORK.matic.logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+  ];
+
   return (
     <View style={styles.wrapper}>
-      <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
-        Name
-      </TextV3.Caption>
+      <TextV3.Caption extraStyles={styles.label}>Wallet</TextV3.Caption>
       <TextInput
         control={control}
         name="name"
@@ -37,48 +174,28 @@ const ManageWallet: FC<IManageWalletSettings> = ({
         inputStyle={styles.input}
         defaultValue={wallet.label}
         inputRef={register({ required: true })}
+        leftIcon={
+          <TextV3.LabelSemiStrong
+            color={COLORS_ENUMS.BLACK}
+            extraStyles={styles.inputLabel}
+          >
+            Wallet Name
+          </TextV3.LabelSemiStrong>
+        }
       />
-      <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
-        Backup Options
-      </TextV3.Caption>
-      {wallet.type === KeyringWalletType.MultiChainWallet ? (
-        <TouchableOpacity onPress={onShowRecoveryPhraseClicked}>
-          <View style={styles.menu}>
-            <Icon
-              type="material"
-              name="description"
-              iconStyles={styles.icon}
-              iconContainerStyles={{ marginLeft: 12 }}
-            />
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
-              Show Recovery Phrase
-            </TextV3.Caption>
-            <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
-          </View>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={onShowPrivateKeyClicked}>
-          <View style={styles.menu}>
-            <Icon name="lock" type="material" iconStyles={styles.icon} iconContainerStyles={{ marginLeft: 12 }} />
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
-              Export private key
-            </TextV3.Caption>
-            <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
-          </View>
-        </TouchableOpacity>
-      )}
-      <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.text}>
-        If you lose access to this wallet, your funds will be lost, unless you back up!
-      </TextV3.Body>
-      <TouchableOpacity onPress={onDeleteWalletClicked}>
-        <View style={styles.menu}>
-          <Icon name="delete" type="font_awesome" iconStyles={styles.icon} iconContainerStyles={{ marginLeft: 12 }} />
-          <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
-            Delete Wallet
-          </TextV3.Body>
-          <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
-        </View>
-      </TouchableOpacity>
+      <Menu items={walletAddressesItems} containerStyle={styles.addressesContainer} />
+      <Menu title="Backup Options" items={menuItems} />
+
+      <Menu
+        containerStyle={styles.removeWalletContainer}
+        items={[
+          {
+            title: 'Remove Wallet',
+            onClick: onDeleteWalletClicked,
+            titleStyles: styles.removeText,
+          },
+        ]}
+      />
       <View style={styles.actions}>
         <View style={styles.buttons}>
           <ButtonV3
@@ -93,6 +210,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
             type={BUTTON_TYPES_ENUM.PRIMARY}
             size={BUTTON_SIZES_ENUM.LARGE}
             title="Save"
+            disabled={isButtonDisabled}
             submit
             extraStyles={submitButtonStyles}
             onPress={handleSubmit((data) => {
@@ -101,6 +219,17 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           />
         </View>
       </View>
+      <Sheet
+        isVisible={isWalletAddressesOpen}
+        onClosePress={() => setIsWalletAddressesOpen(false)}
+        height="65%"
+        title={{
+          label: wallet.label,
+          align: 'left',
+        }}
+      >
+        <Menu title="Wallet Addresses" items={walletAddresesContent} />
+      </Sheet>
     </View>
   );
 };
