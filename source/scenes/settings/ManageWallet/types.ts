@@ -9,7 +9,9 @@ export type IManageWalletView = {
 
 export default interface IManageWalletSettings {
   walletId: string;
-  handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
+  handleSubmit: (
+    callback: OnSubmit<FieldValues>
+  ) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
   register: (options: ValidationOptions) => Ref<any>;
   control: Control<FieldValues>;
   wallet: KeyringWalletState;
@@ -18,4 +20,9 @@ export default interface IManageWalletSettings {
   onShowRecoveryPhraseClicked: () => void;
   onDeleteWalletClicked: () => void;
   onShowPrivateKeyClicked: () => void;
+  watch: any;
+  isCopied: boolean;
+  copyText: (text: string) => void;
+  dagAddress: string;
+  ethAddress: string;
 }

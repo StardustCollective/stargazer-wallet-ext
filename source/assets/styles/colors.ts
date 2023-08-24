@@ -1,4 +1,4 @@
-/* 
+/*
  * Defines global colors enums.
  */
 
@@ -15,4 +15,5 @@ export enum COLORS_ENUMS {
   DARK_GRAY_200,
   PURPLE_DARK,
   LINK_BLUE,
+  SECONDARY_TEXT,
 }

@@ -107,9 +107,9 @@ class WalletController {
     return this.keyringManager.exportWalletSecretKeyOrPhrase(walletId);
   }
 
-  getPrivateKey(walletId: string, password: string): string {
+  getPrivateKey(address: string, password: string): string {
     if (!this.checkPassword(password)) return null;
-    return this.keyringManager.exportWalletSecretKeyOrPhrase(walletId);
+    return this.keyringManager.exportAccountPrivateKey(address);
   }
 
   async unLock(password: string): Promise<boolean> {
@@ -280,60 +280,55 @@ class WalletController {
     }
   }
 
-  async deleteWallet(wallet: KeyringWalletState, password: string): Promise<boolean> {
-    if (this.checkPassword(password)) {
-      const { vault } = store.getState();
-      const { wallets } = vault;
-      const { local, bitfi, ledger } = wallets;
+  async deleteWallet(wallet: KeyringWalletState): Promise<void> {
+    const { vault } = store.getState();
+    const { wallets } = vault;
+    const { local, bitfi, ledger } = wallets;
 
-      let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: [] };
-      let newLocalState = [...local];
-      let newLedgerState = [...ledger];
-      let newBitfiState = [...bitfi];
+    let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: [] };
+    let newLocalState = [...local];
+    let newLedgerState = [...ledger];
+    let newBitfiState = [...bitfi];
 
-      if (
-        wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-        wallet.type !== KeyringWalletType.BitfiAccountWallet
-      ) {
-        newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
-      } else {
-        if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
-          newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
-        } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
-          newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
-        }
+    if (
+      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+      wallet.type !== KeyringWalletType.BitfiAccountWallet
+    ) {
+      newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
+    } else {
+      if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
+        newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
+      } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
+        newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
       }
-
-      newWalletState = {
-        local: [...newLocalState],
-        ledger: [...newLedgerState],
-        bitfi: [...newBitfiState],
-      };
-
-      const newAllWallets = [
-        ...newWalletState.local,
-        ...newWalletState.ledger,
-        ...newWalletState.bitfi,
-      ];
-
-      if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
-        if (newAllWallets.length) {
-          this.switchWallet(newAllWallets[0].id);
-        }
-      }
-
-      store.dispatch(updateWallets({ wallets: newWalletState }));
-
-      if (
-        wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-        wallet.type !== KeyringWalletType.BitfiAccountWallet
-      ) {
-        await this.keyringManager.removeWalletById(wallet.id);
-      }
-
-      return true;
     }
-    return false;
+
+    newWalletState = {
+      local: [...newLocalState],
+      ledger: [...newLedgerState],
+      bitfi: [...newBitfiState],
+    };
+
+    const newAllWallets = [
+      ...newWalletState.local,
+      ...newWalletState.ledger,
+      ...newWalletState.bitfi,
+    ];
+
+    if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
+      if (newAllWallets.length) {
+        await this.switchWallet(newAllWallets[0].id);
+      }
+    }
+
+    store.dispatch(updateWallets({ wallets: newWalletState }));
+
+    if (
+      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+      wallet.type !== KeyringWalletType.BitfiAccountWallet
+    ) {
+      await this.keyringManager.removeWalletById(wallet.id);
+    }
   }
 
   async switchWallet(id: string, label?: string): Promise<void> {

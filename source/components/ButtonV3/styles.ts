@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
+import { FONT_WEIGHTS, COLORS, NEW_COLORS } from 'assets/styles/_variables';
 import { getDeviceId } from 'react-native-device-info';
 
 const styles = StyleSheet.create({
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
   containerStyle: {},
   disabled: {
-    opacity: 0.3,
+    opacity: 0.5,
   },
   disabledTitle: {
     color: COLORS.white,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   primaryOutlineTitle: {
-    color: COLORS.primary_lighter_1
+    color: COLORS.primary_lighter_1,
   },
   secondaryButton: {
     backgroundColor: COLORS.primary_lighter_1,
@@ -76,6 +76,12 @@ const styles = StyleSheet.create({
   },
   secondaryOutlineTitle: {
     color: COLORS.primary_lighter_1,
+  },
+  tertiarySolid: {
+    backgroundColor: NEW_COLORS.gray_300,
+  },
+  tertiarySolidTitle: {
+    color: COLORS.black,
   },
 });
 
