@@ -53,6 +53,7 @@ interface IButtonV3Props {
   loading?: boolean;
   label: string;
   extraStyle?: string;
+  extraTitleStyles?: string;
   onClick?: (ev: any) => void;
   submit?: boolean;
   disabled?: boolean;
@@ -71,6 +72,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   loading = false,
   label = '',
   extraStyle = '',
+  extraTitleStyles = '',
   onClick = () => {},
   submit = false,
   disabled = false,
@@ -141,7 +143,11 @@ const ButtonV3: FC<IButtonV3Props> = ({
       {!loading ? (
         <div className={styles.textContainer}>
           {!!leftIcon && <div className={styles.iconLeft}>{leftIcon}</div>}
-          <TextComponent color={buttonTextColor} align={TEXT_ALIGN_ENUM.CENTER}>
+          <TextComponent
+            color={buttonTextColor}
+            extraStyles={extraTitleStyles}
+            align={TEXT_ALIGN_ENUM.CENTER}
+          >
             {label}
           </TextComponent>
           {!!rightIcon && <div className={styles.iconRight}>{rightIcon}</div>}

@@ -1,61 +1,44 @@
 @import '~assets/styles/variables';
 
-.importForm {
-  display: flex;
+.container {
   flex-direction: column;
-  position: relative;
-  height: 100%;
-  margin: -12px 0;
+  padding: 24px 16px;
+  overflow: auto;
+  height: 472px;
+}
 
-  & > span {
-    margin: 24px 0;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 18px;
-    color: $gray-dark;
-    display: block;
+.title {
+  font-size: 20px;
+}
 
-    &.password {
-      margin-top: 0;
-    }
-  }
+.buttonContainer {
+  margin-top: 24px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
 
-  .input {
-    textarea {
-      text-align: center;
-      word-wrap: break-word;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 24px;
-    }
-  }
+.dropdownContainer {
+  margin-top: 12px;
+}
 
-  .important {
-    color: darkred;
-    margin-top: 20px;
-    font-size: 12px;
-    width: 100%
-  }
+.itemContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 16px;
+}
 
-  .error {
-    color: darkred;
-    margin-top: 20px;
-    font-size: 12px;
-    position: absolute;
-    width: 100%
-  }
+.button {
+  width: 358px;
+}
 
-  .actions {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+.errorLabel {
+  margin-top: 20px;
+}
 
-    .button {
-      width: 144px;
-    }
-  }
+.phraseInputContainer {
+  margin-bottom: 8px;
 }

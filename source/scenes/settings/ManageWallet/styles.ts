@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: NEW_COLORS.secondary_text,
     marginBottom: 8,
-    marginTop: 16,
   },
   inputLabel: {
     fontSize: 16,

@@ -23,10 +23,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: NEW_COLORS.gray_300,
     backgroundColor: '#FAFAFA',
+    marginRight: 12,
   },
   titleContainer: {
     flex: 1,
-    marginHorizontal: 12,
+    marginRight: 12,
   },
   listContainer: {
     position: 'absolute',
