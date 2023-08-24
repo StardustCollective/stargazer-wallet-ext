@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONTS, FONT_WEIGHTS, COLORS } from 'assets/styles/_variables';
+import { FONTS, FONT_WEIGHTS, COLORS, NEW_COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   base: {
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   redFont: {
     color: COLORS.red,
   },
-  greyDarkFont: {
+  grayDarkFont: {
     color: COLORS.grey_dark,
   },
   greyDark200Font: {
@@ -91,6 +91,12 @@ const styles = StyleSheet.create({
   },
   linkBlueFont: {
     color: COLORS.link_blue,
+  },
+  secondaryTextFont: {
+    color: NEW_COLORS.secondary_text,
+  },
+  primaryLighter1: {
+    color: NEW_COLORS.primary_lighter_1,
   },
   label: {
     fontWeight: FONT_WEIGHTS.medium,

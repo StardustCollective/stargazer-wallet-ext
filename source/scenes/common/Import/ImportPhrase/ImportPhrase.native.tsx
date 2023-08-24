@@ -1,95 +1,77 @@
-///////////////////////////
-// Modules
-///////////////////////////
-
 import React, { FC } from 'react';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { scale } from 'react-native-size-matters';
-
-///////////////////////////
-// Components
-///////////////////////////
-
 import TextV3 from 'components/TextV3';
-import TextInput from 'components/TextInput';
+import Dropdown from 'components/Dropdown';
+import PhraseInput from './PhraseInput';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-
-///////////////////////////
-// Types
-///////////////////////////
-
 import IImportPhrase from './types';
-
-///////////////////////////
-// Styles
-///////////////////////////
-
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
-
-///////////////////////////
-// Scene
-///////////////////////////
-
-import Layout from 'scenes/common/Layout';
-
-///////////////////////////
-// Constants
-///////////////////////////
 
 const EXTRA_SCROLL_HEIGHT = scale(25);
 
 const ImportPhrase: FC<IImportPhrase> = ({
-  control,
-  handleSubmit,
-  register,
-  onSubmit,
-  isInvalid,
+  title,
+  buttonTitle,
   isDisabled,
+  isInvalidPhrase,
+  phraseOptions,
+  phraseValues,
+  showPasswordArray,
+  handleInputChange,
+  togglePassword,
+  onSubmit,
 }) => {
-  ///////////////////////////
-  // Render
-  ///////////////////////////
-
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={styles.container}
-      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
-      <Layout title="Let's import your wallet">
-        <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-          Paste your recovery seed phrase below:
-        </TextV3.Caption>
-        <TextInput
-          name="phrase"
-          type="text"
-          autoCapitalize="none"
-          returnKeyType="done"
-          autoCorrect={false} 
-          control={control}
-          keyboardType='web-search'
-          inputContainerStyle={styles.phraseInput}
-          multiline
-          fullWidth
-          blurOnSubmit
-        />
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-          The phrase can be 12, 15, 18, 21 or 24 words with a single space between.
-        </TextV3.CaptionStrong>
-        {isInvalid && (
-          <TextV3.Caption extraStyles={styles.errorLabel}color={COLORS_ENUMS.RED}>Invalid recovery seed phrase</TextV3.Caption>
-        )}
-        <View style={styles.buttonContainer}>
-          <ButtonV3
-            type={BUTTON_TYPES_ENUM.PRIMARY}
-            size={BUTTON_SIZES_ENUM.LARGE}
-            title={'Import'}
-            disabled={isDisabled}
-            onPress={handleSubmit(data => { onSubmit(data) })}
-          />
+    <>
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.container}
+        extraScrollHeight={EXTRA_SCROLL_HEIGHT}
+        showsVerticalScrollIndicator={true}
+      >
+        <TextV3.Header color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
+          {title}
+        </TextV3.Header>
+        <View style={styles.dropdownContainer}>
+          <Dropdown options={phraseOptions} />
         </View>
-      </Layout>
-    </KeyboardAwareScrollView>
+        <View style={styles.itemContainer}>
+          {!!phraseValues &&
+            phraseValues.length &&
+            phraseValues.map((value, index) => {
+              return (
+                <View key={index} style={styles.phraseInputContainer}>
+                  <PhraseInput
+                    index={index}
+                    value={value}
+                    hasError={isInvalidPhrase}
+                    onChangeText={handleInputChange}
+                    showPassword={showPasswordArray[index]}
+                    togglePassword={togglePassword}
+                  />
+                </View>
+              );
+            })}
+        </View>
+        <View>
+          {isInvalidPhrase && (
+            <TextV3.Caption color={COLORS_ENUMS.RED}>Invalid phrase</TextV3.Caption>
+          )}
+        </View>
+      </KeyboardAwareScrollView>
+      <View style={styles.buttonContainer}>
+        <ButtonV3
+          type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+          size={BUTTON_SIZES_ENUM.LARGE}
+          title={buttonTitle}
+          extraStyles={styles.button}
+          disabled={isDisabled}
+          onPress={() => onSubmit(phraseValues)}
+        />
+      </View>
+    </>
   );
 };
 

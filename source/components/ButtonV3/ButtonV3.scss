@@ -47,7 +47,7 @@
 }
 
 .disabled {
-  opacity: 0.3;
+  opacity: 0.5;
   pointer-events: none;
 }
 
@@ -57,23 +57,23 @@
 
 .buttonSmall {
   height: 32px;
-  border-radius: 20px
+  border-radius: 20px;
 }
 
 .buttonMedium {
   height: 40px;
-  border-radius: 22px
+  border-radius: 22px;
 }
 
 .buttonLarge {
   height: 48px;
-  border-radius: 24px
+  border-radius: 24px;
 }
 
 .buttonFillWidth {
   height: 48px;
   width: 100%;
-  border-radius: 24px
+  border-radius: 24px;
 }
 
 /* 
@@ -99,6 +99,10 @@
 
 .accentOneButton {
   background-color: $accent_1;
+}
+
+.tertiarySolid {
+  background-color: $gray-300;
 }
 
 .loader {

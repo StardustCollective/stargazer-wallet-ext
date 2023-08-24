@@ -1,0 +1,31 @@
+@import '~assets/styles/variables';
+
+.inputContainer {
+  height: 48px !important;
+  width: 162px;
+}
+
+.inputError {
+  border-color: $red;
+}
+
+.indexText {
+  align-self: center;
+  min-width: 24px;
+}
+
+.phraseInput {
+  flex: 1;
+  font-family: 'Inter';
+  font-weight: '400';
+  font-size: 14px;
+  padding-left: 8px;
+  padding-right: 8px;
+  line-height: 16px;
+}
+
+.passwordIcon {
+  width: 40px;
+  justify-content: center;
+  align-items: center;
+}
