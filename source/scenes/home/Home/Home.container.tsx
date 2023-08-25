@@ -36,8 +36,8 @@ import { AssetType } from 'state/vault/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 interface IHome {
-  navigation: any,
-  route: any,
+  navigation: any;
+  route: any;
 }
 
 ///////////////////////////
@@ -45,18 +45,26 @@ interface IHome {
 ///////////////////////////
 
 const HomeContainer: FC<IHome> = ({ navigation, route }) => {
-
   ///////////////////////////
   // Hooks
   ///////////////////////////
 
   const [balanceObject] = useTotalBalance();
 
-  const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
-  const { activeWallet, wallets }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { supportedAssets }: IProvidersState = useSelector(
+    (state: RootState) => state.providers
+  );
+  const { activeWallet, wallets }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const linkTo = useLinkTo();
   const accountController = getAccountController();
-  const isDagOnlyWallet = (activeWallet?.assets?.length === 1 && activeWallet?.assets[0]?.type === AssetType.Constellation);
+  const isDagOnlyWallet =
+    activeWallet?.assets?.length === 1 &&
+    activeWallet?.assets[0]?.type === AssetType.Constellation;
+  const ledgerWallets = !!wallets?.ledger ? wallets.ledger : [];
+  const bitfiWallets = !!wallets?.bitfi ? wallets.bitfi : [];
+  const hardwareWallets = [...ledgerWallets, ...bitfiWallets];
   const multiChainWallets = wallets.local.filter(
     (w) => w.type === KeyringWalletType.MultiChainWallet
   );
@@ -68,7 +76,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     const getAssets = async () => {
       await accountController.assetsController.fetchSupportedAssets();
       await accountController.assetsController.fetchERC20Assets();
-    }
+    };
     if (!supportedAssets.data) {
       getAssets();
     }
@@ -78,9 +86,9 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     linkTo('/buyList');
   };
 
-   const onSwapPressed = () => {
+  const onSwapPressed = () => {
     linkTo('/swapTokens');
-   }
+  };
 
   ///////////////////////////
   // Render
@@ -98,10 +106,10 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
         isDagOnlyWallet={isDagOnlyWallet}
         multiChainWallets={multiChainWallets}
         privateKeyWallets={privateKeyWallets}
+        hardwareWallets={hardwareWallets}
       />
     </Container>
   );
-
-}
+};
 
 export default HomeContainer;
