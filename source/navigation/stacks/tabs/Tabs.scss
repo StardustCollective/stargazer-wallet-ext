@@ -1,0 +1,17 @@
+@import '~assets/styles/variables';
+
+.tabItemContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .tabActiveItemLine {
+    height: 3px;
+    width: 80px;
+    position: absolute;
+    top: 0;
+    background-color: $primary_lighter_2;
+    border-radius: 24px;
+  }
+}

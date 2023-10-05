@@ -60,6 +60,7 @@ export const NEW_COLORS = {
   primary_lighter_2: '#7A56F0',
   gray_50: '#F9FAFB',
   gray_300: '#D1D5DB',
+  gray_400: '#9CA3AF',
   secondary_text: '#5A5D6B',
   warning_background: '#FFFBEB',
   warning_border: '#FCD34D',

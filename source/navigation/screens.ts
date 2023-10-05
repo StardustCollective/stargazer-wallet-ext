@@ -15,6 +15,17 @@ export default {
   },
 
   ////////////////////////////
+  // Tabs
+  ////////////////////////////
+
+  tabs: {
+    root: 'tabs-root',
+    home: 'tabs-home',
+    nfts: 'tabs-nfts',
+    settings: 'tabs-settings',
+  },
+
+  ////////////////////////////
   // Authorized
   ////////////////////////////
 
@@ -31,6 +42,7 @@ export default {
     buyList: 'auth-buyList',
     buyAsset: 'auth-buyAsset',
     singleSelect: 'auth-singleSelect',
+    nfts: 'auth-nfts',
   },
 
   ////////////////////////////

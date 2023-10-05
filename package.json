@@ -34,6 +34,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@reach/portal": "^0.12.1",
     "@react-native-community/masked-view": "^0.1.11",
+    "@react-navigation/bottom-tabs": "^5.x",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
     "@reduxjs/toolkit": "^1.4.0",

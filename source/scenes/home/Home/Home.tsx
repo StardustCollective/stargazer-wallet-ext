@@ -93,7 +93,7 @@ const Home: FC<IHome> = ({
   // Sets the header for the home screen.
   useLayoutEffect(() => {
     navigation.setOptions({
-      ...homeHeader({ navigation, route }),
+      ...homeHeader(),
       headerTitle: renderHeaderTitle,
     });
   }, [activeWallet, isWalletSelectorOpen]);

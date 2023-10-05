@@ -4,13 +4,8 @@
 
 import React from 'react';
 import config from '../config';
-import {
-  View,
-  HamburgerIcon,
-  Pressable,
-} from "native-base"
+import { View } from 'native-base';
 import { scale } from 'react-native-size-matters';
-
 
 ///////////////////////////
 // Images
@@ -25,55 +20,18 @@ import LogoImage from 'assets/images/logo.svg';
 import styles from './styles';
 
 ///////////////////////////
-// Screens
-///////////////////////////
-
-import screens from 'navigation/screens';
-
-///////////////////////////
-// Interfaces
-///////////////////////////
-
-interface IHomeHeader {
-  navigation: any;
-}
-
-///////////////////////////
 // Header
 ///////////////////////////
 
-const homeHeader = ({
-  navigation
-}: IHomeHeader) => {
-
-  const onMenuButtonClicked = () => {
-    navigation.navigate(screens.settings.main)
-  }
-
-  const renderHeaderRight = () => {
-
-    return (
-      <Pressable
-        onPress={onMenuButtonClicked}
-        mr="5"
-      >
-        <HamburgerIcon testId="header-moreButton" size={scale(26)} color="white" />
-      </Pressable>
-    );
-
-
-  }
-
+const homeHeader = () => {
   return {
     ...config,
     headerLeft: () => (
       <View style={styles.logo}>
         <LogoImage width={scale(30)} height={scale(30)} />
       </View>
-
     ),
-    headerRight: () => renderHeaderRight(),
-  }
+  };
 };
 
 export default homeHeader;
