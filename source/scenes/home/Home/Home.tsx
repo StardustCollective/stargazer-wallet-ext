@@ -43,10 +43,7 @@ import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
 // constants
 ///////////////////////////
 
-import {
-  BUY_STRING,
-  SWAP_STRING
-} from './constants';
+import { BUY_STRING, SWAP_STRING } from './constants';
 
 ///////////////////////////
 // Scene
@@ -59,11 +56,11 @@ const Home: FC<IHome> = ({
   balanceObject,
   multiChainWallets,
   privateKeyWallets,
+  hardwareWallets,
   onBuyPressed,
   onSwapPressed,
   isDagOnlyWallet,
 }) => {
-
   const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
 
   const walletController = getWalletController();
@@ -71,14 +68,22 @@ const Home: FC<IHome> = ({
   const renderHeaderTitle = () => {
     const ArrowIcon = isWalletSelectorOpen ? ArrowUpIcon : ArrowDownIcon;
     return (
-      <div className={styles.titleContainer} onClick={() => setIsWalletSelectorOpen(true)}>
-        <TextV3.BodyStrong extraStyles={styles.titleText}>{activeWallet ? truncateString(activeWallet.label) : ""}</TextV3.BodyStrong>
+      <div
+        className={styles.titleContainer}
+        onClick={() => setIsWalletSelectorOpen(true)}
+      >
+        <TextV3.BodyStrong extraStyles={styles.titleText}>
+          {activeWallet ? truncateString(activeWallet.label) : ''}
+        </TextV3.BodyStrong>
         <img src={`/${ArrowIcon}`} />
       </div>
     );
-  }
+  };
 
-  const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
+  const handleSwitchWallet = async (
+    walletId: string,
+    walletAccounts: KeyringWalletAccountState[]
+  ) => {
     setIsWalletSelectorOpen(false);
     await walletController.switchWallet(walletId);
     const accounts = walletAccounts.map((account) => account.address);
@@ -153,17 +158,18 @@ const Home: FC<IHome> = ({
           <CircularProgress className={styles.loader} />
         </section>
       )}
-      <Sheet 
+      <Sheet
         title={{
           label: 'Wallets',
-          align: 'left'
+          align: 'left',
         }}
         isVisible={isWalletSelectorOpen}
         onClosePress={() => setIsWalletSelectorOpen(false)}
       >
-        <WalletsModal 
+        <WalletsModal
           multiChainWallets={multiChainWallets}
           privateKeyWallets={privateKeyWallets}
+          hardwareWallets={hardwareWallets}
           activeWallet={activeWallet}
           handleSwitchWallet={handleSwitchWallet}
         />

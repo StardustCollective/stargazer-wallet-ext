@@ -26,7 +26,7 @@ import { getNetworkFromChainId, getNetworkLabel } from 'scripts/Background/contr
 
 import { IAssetList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
-import { AssetSymbol } from 'state/vault/types';
+import { AssetSymbol, AssetType } from 'state/vault/types';
 
 ///////////////////////////
 // Styles
@@ -48,7 +48,7 @@ const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, to
     const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(item?.symbol);
     const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
     const itemChainId = item?.network;
-    const itemNetwork = item?.symbol === AssetSymbol.DAG ? KeyringNetwork.Constellation : getNetworkFromChainId(itemChainId);
+    const itemNetwork = item?.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(itemChainId);
     const currentActiveNetwork = activeNetwork[itemNetwork];
     const network = getNetworkLabel(currentActiveNetwork);
     // 349: New network should be added here.

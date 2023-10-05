@@ -12,17 +12,34 @@
   flex-direction: column;
   padding: 32px;
   box-sizing: border-box;
-  .headerText {
-    font-weight: $regular;
-  }
+
   .logo {
     margin-top: 48px;
     margin-bottom: 56px;
     width: 192px;
     height: 166px;
   }
-  .recoverContainer {
-    position: absolute;
-    bottom: 32px;
+
+  .createWalletButton {
+    width: 264px;
+  }
+
+  .createWalletButtonText {
+    font-weight: $semibold;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .restoreButton {
+    width: 264px;
+    border-width: 2px;
+    margin-top: 16px;
+  }
+
+  .restoreButtonText {
+    font-weight: $semibold;
+    font-size: 16px;
+    line-height: 24px;
+    color: $white;
   }
 }

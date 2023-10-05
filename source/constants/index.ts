@@ -29,6 +29,8 @@ export const STORE_PORT = 'STARGAZER';
 
 export const CONSTELLATION_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
+export const CONSTELLATION_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-default-logo.png';
 export const ETHEREUM_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
 export const ETHEREUM_DEFAULT_LOGO =
@@ -104,6 +106,22 @@ export const DAG_NETWORK: {
       beUrl: 'https://be-testnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-testnet.constellationnetwork.io',
       l1Url: 'https://l1-lb-testnet.constellationnetwork.io',
+    },
+  },
+  integration2: {
+    id: 'integration2',
+    label: 'IntegrationNet 2.0',
+    version: '2.0',
+    testnet: true,
+    explorer: 'https://integrationnet.dagexplorer.io',
+    chainId: 4,
+    hexChainId: '0x4',
+    logo: CONSTELLATION_LOGO,
+    network: 'Constellation',
+    config: {
+      beUrl: 'https://be-integrationnet.constellationnetwork.io',
+      l0Url: 'https://l0-lb-integrationnet.constellationnetwork.io',
+      l1Url: 'https://l1-lb-integrationnet.constellationnetwork.io',
     },
   },
 };
@@ -314,6 +332,7 @@ export const ALL_MAINNET_CHAINS = [
 
 export const ALL_TESTNETS_CHAINS = [
   DAG_NETWORK.test2,
+  DAG_NETWORK.integration2,
   ETH_NETWORK.goerli,
   AVALANCHE_NETWORK['avalanche-testnet'],
   BSC_NETWORK['bsc-testnet'],
@@ -364,6 +383,8 @@ export const DEFAULT_CURRENCY = {
   symbol: '$',
   name: 'USD',
 };
+
+export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
 const PROVIDERS_BASE_URL = isProd

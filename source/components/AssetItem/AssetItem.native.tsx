@@ -134,7 +134,7 @@ const AssetItem: FC<IAssetItem> = ({ id, asset, assetInfo, balances, fiat, isNFT
 
     if (typeof logo === 'string' && logo.startsWith('http')) {
       let iconStyle = isNFT ? styles.imageNFTIcon : styles.imageIcon;
-      iconStyle = logo.includes('constellation-logo') ? styles.dagIcon : iconStyle;
+      iconStyle = logo.includes('constellation') ? styles.dagIcon : iconStyle;
       return <Image style={iconStyle} source={{ uri: logo }}/>;
     }
 

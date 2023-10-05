@@ -1,19 +1,25 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
 import * as ethers from 'ethers';
-import { 
-  changeActiveNetwork, 
-  changeActiveWallet, 
-  setVaultInfo, 
+import {
+  changeActiveNetwork,
+  changeActiveWallet,
+  setVaultInfo,
   updateBalances,
-  addLedgerWallet, 
-  updateWallets, 
-  addBitfiWallet, 
+  addLedgerWallet,
+  updateWallets,
+  addBitfiWallet,
   addCustomNetwork,
-  changeCurrentEVMNetwork
+  changeCurrentEVMNetwork,
 } from 'state/vault';
-import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types'
-import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types';
+import {
+  AVALANCHE_NETWORK,
+  BSC_NETWORK,
+  DAG_NETWORK,
+  ETH_NETWORK,
+  POLYGON_NETWORK,
+} from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
@@ -25,7 +31,6 @@ import {
   KeyringVaultState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { IWalletController } from './IWalletController';
 import SwapController, { ISwapController } from './SwapController';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
@@ -33,7 +38,12 @@ import { AccountController } from './AccountController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
-import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
+import {
+  AvalancheChainId,
+  BSCChainId,
+  EthChainId,
+  PolygonChainId,
+} from './EVMChainController/types';
 import filter from 'lodash/filter';
 import { generateId } from './EVMChainController/utils';
 import { AvailableEvents, ProtocolProvider } from 'scripts/common';
@@ -47,7 +57,7 @@ const LEDGER_WALLET_LABEL = 'Ledger';
 const BITFI_WALLET_LABEL = 'Bitfi';
 const ACCOUNT_ITEMS_FIRST_INDEX = 0;
 
-class WalletController implements IWalletController {
+class WalletController {
   account: AccountController;
 
   keyringManager: KeyringManager;
@@ -81,25 +91,25 @@ class WalletController implements IWalletController {
     });
 
     this.account = new AccountController(this.keyringManager);
-    this.swap    = new SwapController();
+    this.swap = new SwapController();
   }
 
-  checkPassword(password: string) {
+  checkPassword(password: string): boolean {
     return this.keyringManager.checkPassword(password);
   }
 
-  isUnlocked() {
+  isUnlocked(): boolean {
     return this.keyringManager.isUnlocked();
   }
 
-  getPhrase(walletId: string, password: string) {
+  getPhrase(walletId: string, password: string): string {
     if (!this.checkPassword(password)) return null;
     return this.keyringManager.exportWalletSecretKeyOrPhrase(walletId);
   }
 
-  getPrivateKey(walletId: string, password: string) {
+  getPrivateKey(address: string, password: string): string {
     if (!this.checkPassword(password)) return null;
-    return this.keyringManager.exportWalletSecretKeyOrPhrase(walletId);
+    return this.keyringManager.exportAccountPrivateKey(address);
   }
 
   async unLock(password: string): Promise<boolean> {
@@ -128,7 +138,7 @@ class WalletController implements IWalletController {
     network: KeyringNetwork,
     privateKey: string,
     silent?: boolean
-  ) {
+  ): Promise<string> {
     const wallet = await this.keyringManager.createSingleAccountWallet(
       label,
       network,
@@ -137,7 +147,7 @@ class WalletController implements IWalletController {
 
     if (!silent) {
       // The createSingleAccountWallet sends an "update" event which executes the switchWallet function
-      // with an old wallet. This issue is reproducible when importing a DAG wallet with private key. 
+      // with an old wallet. This issue is reproducible when importing a DAG wallet with private key.
       // This is a workaround to fix that race conditon.
       setTimeout(async () => {
         await this.switchWallet(wallet.id);
@@ -146,7 +156,7 @@ class WalletController implements IWalletController {
     return wallet.getLabel();
   }
 
-  async createWallet(label: string, phrase?: string, resetAll = false) {
+  async createWallet(label: string, phrase?: string, resetAll = false): Promise<string> {
     let wallet;
     try {
       if (resetAll) {
@@ -165,7 +175,7 @@ class WalletController implements IWalletController {
     return wallet.id;
   }
 
-  private checkForDuplicateWallet(address: string) {
+  private checkForDuplicateWallet(address: string): boolean {
     const state = store.getState();
     const { vault } = state;
     const { wallets } = vault;
@@ -182,7 +192,7 @@ class WalletController implements IWalletController {
     return false;
   }
 
-  private getNextHardwareWaletAccountId = (wallets: any, prefix: string) => {
+  private getNextHardwareWaletAccountId = (wallets: any, prefix: string): number => {
     // If no wallets exist return 1 as the first ID.
     if (wallets.length === 0) {
       return 1;
@@ -205,7 +215,10 @@ class WalletController implements IWalletController {
     );
   };
 
-  async importHardwareWalletAccounts(accountItems: AccountItem[], deviceId?: string) {
+  async importHardwareWalletAccounts(
+    accountItems: AccountItem[],
+    deviceId?: string
+  ): Promise<void> {
     for (let i = 0; i < accountItems.length; i++) {
       const state = store.getState();
       const { vault } = state;
@@ -267,63 +280,58 @@ class WalletController implements IWalletController {
     }
   }
 
-  async deleteWallet(wallet: KeyringWalletState, password: string) {
-    if (this.checkPassword(password)) {
-      const { vault } = store.getState();
-      const { wallets } = vault;
-      const { local, bitfi, ledger } = wallets;
+  async deleteWallet(wallet: KeyringWalletState): Promise<void> {
+    const { vault } = store.getState();
+    const { wallets } = vault;
+    const { local, bitfi, ledger } = wallets;
 
-      let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: [] };
-      let newLocalState = [...local];
-      let newLedgerState = [...ledger];
-      let newBitfiState = [...bitfi];
+    let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: [] };
+    let newLocalState = [...local];
+    let newLedgerState = [...ledger];
+    let newBitfiState = [...bitfi];
 
-      if (
-        wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-        wallet.type !== KeyringWalletType.BitfiAccountWallet
-      ) {
-        newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
-      } else {
-        if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
-          newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
-        } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
-          newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
-        }
+    if (
+      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+      wallet.type !== KeyringWalletType.BitfiAccountWallet
+    ) {
+      newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
+    } else {
+      if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
+        newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
+      } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
+        newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
       }
-
-      newWalletState = {
-        local: [...newLocalState],
-        ledger: [...newLedgerState],
-        bitfi: [...newBitfiState],
-      };
-
-      const newAllWallets = [
-        ...newWalletState.local,
-        ...newWalletState.ledger,
-        ...newWalletState.bitfi,
-      ];
-
-      if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
-        if (newAllWallets.length) {
-          this.switchWallet(newAllWallets[0].id);
-        }
-      }
-
-      store.dispatch(updateWallets({ wallets: newWalletState }));
-
-      if (
-        wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-        wallet.type !== KeyringWalletType.BitfiAccountWallet
-      ) {
-        await this.keyringManager.removeWalletById(wallet.id);
-      }
-
-      return true;
     }
-    return false;
+
+    newWalletState = {
+      local: [...newLocalState],
+      ledger: [...newLedgerState],
+      bitfi: [...newBitfiState],
+    };
+
+    const newAllWallets = [
+      ...newWalletState.local,
+      ...newWalletState.ledger,
+      ...newWalletState.bitfi,
+    ];
+
+    if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
+      if (newAllWallets.length) {
+        await this.switchWallet(newAllWallets[0].id);
+      }
+    }
+
+    store.dispatch(updateWallets({ wallets: newWalletState }));
+
+    if (
+      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
+      wallet.type !== KeyringWalletType.BitfiAccountWallet
+    ) {
+      await this.keyringManager.removeWalletById(wallet.id);
+    }
   }
 
-  async switchWallet(id: string, label?: string) {
+  async switchWallet(id: string, label?: string): Promise<void> {
     store.dispatch(updateBalances({ pending: 'true' }));
 
     await this.account.buildAccountAssetInfo(id, label);
@@ -332,7 +340,7 @@ class WalletController implements IWalletController {
     await this.account.txController.startMonitor();
   }
 
-  async notifyWalletChange(accounts: string[]) {
+  notifyWalletChange(accounts: string[]): void {
     const dappController = getDappController();
 
     // No Dapp controller on mobile
@@ -343,7 +351,7 @@ class WalletController implements IWalletController {
     return dappController.notifyAccountsChanged(accounts);
   }
 
-  async switchNetwork(network: string, chainId: string) {
+  async switchNetwork(network: string, chainId: string): Promise<void> {
     store.dispatch(updateBalances({ pending: 'true' }));
 
     const { activeAsset }: IVaultState = store.getState().vault;
@@ -351,11 +359,14 @@ class WalletController implements IWalletController {
     console.log(`${network} - ${chainId}`);
 
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
-      dag4.account.connect({
-        id: DAG_NETWORK[chainId].id,
-        networkVersion: DAG_NETWORK[chainId].version,
-        ...DAG_NETWORK[chainId].config,
-      }, false);
+      dag4.account.connect(
+        {
+          id: DAG_NETWORK[chainId].id,
+          networkVersion: DAG_NETWORK[chainId].version,
+          ...DAG_NETWORK[chainId].config,
+        },
+        false
+      );
 
       if (!isNative) {
         const { hexChainId } = DAG_NETWORK[chainId];
@@ -395,7 +406,7 @@ class WalletController implements IWalletController {
         );
       }
     }
-    
+
     if (network === 'BSC') {
       this.account.networkController.switchBSCChain(chainId as BSCChainId);
       store.dispatch(changeCurrentEVMNetwork(chainId));
@@ -438,8 +449,7 @@ class WalletController implements IWalletController {
     await this.account.assetsBalanceMonitor.start();
   }
 
-  async addNetwork(network: string, data: any) {
-
+  async addNetwork(network: string, data: any): Promise<void> {
     if (network === 'constellation') {
       // Add chain in Constellation dropdown.
       console.log('Constellation', data);
@@ -468,7 +478,7 @@ class WalletController implements IWalletController {
         nativeToken: 'ETH',
         mainnet: 'mainnet',
         network: 'Ethereum',
-      }
+      };
       console.log('customNetwork', customNetwork);
 
       store.dispatch(addCustomNetwork({ network, data: customNetwork }));
@@ -479,11 +489,11 @@ class WalletController implements IWalletController {
     }
   }
 
-  setWalletPassword(password: string) {
+  setWalletPassword(password: string): void {
     this.keyringManager.setPassword(password);
   }
 
-  async logOut() {
+  logOut(): void {
     this.keyringManager.logout();
     this.account.networkController = undefined;
     store.dispatch(changeActiveWallet(undefined));

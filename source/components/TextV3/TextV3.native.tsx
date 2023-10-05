@@ -36,12 +36,32 @@ type ITextProps = {
   uppercase?: boolean;
   selectable?: boolean;
   margin?: boolean;
-  numberOfLines?: number
+  numberOfLines?: number;
 };
 
 //////////////////////
 // Components
 /////////////////////
+
+const COLOR_STYLES: { [value: number]: object } = {
+  [COLORS_ENUMS.BLACK]: styles.blackFont,
+  [COLORS_ENUMS.WHITE]: styles.whiteFont,
+  [COLORS_ENUMS.GRAY_100]: styles.gray100Font,
+  [COLORS_ENUMS.DARK_GRAY_200]: styles.greyDark200Font,
+  [COLORS_ENUMS.PRIMARY]: styles.primary,
+  [COLORS_ENUMS.DARK_GRAY]: styles.grayDarkFont,
+  [COLORS_ENUMS.PRIMARY_LIGHTER_1]: styles.primaryLighter1,
+  [COLORS_ENUMS.RED]: styles.redFont,
+  [COLORS_ENUMS.PURPLE_DARK]: styles.purpleDarkFont,
+  [COLORS_ENUMS.LINK_BLUE]: styles.linkBlueFont,
+  [COLORS_ENUMS.SECONDARY_TEXT]: styles.secondaryTextFont,
+};
+
+const ALIGN_STYLES: { [value: number]: object } = {
+  [TEXT_ALIGN_ENUM.LEFT]: styles.alignLeft,
+  [TEXT_ALIGN_ENUM.CENTER]: styles.alignCenter,
+  [TEXT_ALIGN_ENUM.RIGHT]: styles.alignRight,
+};
 
 const TextV3 = {
   base: ({
@@ -56,39 +76,13 @@ const TextV3 = {
     margin = true,
     numberOfLines,
   }: ITextProps) => {
-    let colorStyle = {};
-    let alignStyle = {};
-    let dynamicProps: { numberOfLines: number | null, adjustsFontSizeToFit: boolean} = { numberOfLines: null, adjustsFontSizeToFit: false };
+    let colorStyle = COLOR_STYLES[color];
+    let alignStyle = ALIGN_STYLES[align];
 
-    //Colors
-    if (color === COLORS_ENUMS.BLACK) {
-      colorStyle = styles.blackFont;
-    } else if (color === COLORS_ENUMS.WHITE) {
-      colorStyle = styles.whiteFont;
-    } else if (color === COLORS_ENUMS.RED) {
-      colorStyle = styles.redFont;
-    } else if (color === COLORS_ENUMS.DARK_GRAY) {
-      colorStyle = styles.greyDarkFont;
-    } else if (color === COLORS_ENUMS.DARK_GRAY_200) {
-      colorStyle = styles.greyDark200Font;
-    } else if (color === COLORS_ENUMS.GRAY_100) {
-      colorStyle = styles.gray100Font;
-    }else if (color === COLORS_ENUMS.PRIMARY) {
-      colorStyle = styles.primary;
-    } else if (color === COLORS_ENUMS.PURPLE_DARK){
-      colorStyle = styles.purpleDarkFont
-    } else if (color === COLORS_ENUMS.LINK_BLUE){
-      colorStyle = styles.linkBlueFont
-    }
-
-    //Alignment
-    if (align === TEXT_ALIGN_ENUM.LEFT) {
-      alignStyle = styles.alignLeft;
-    } else if (align === TEXT_ALIGN_ENUM.CENTER) {
-      alignStyle = styles.alignCenter;
-    } else if (align === TEXT_ALIGN_ENUM.RIGHT) {
-      alignStyle = styles.alignRight;
-    }
+    let dynamicProps: { numberOfLines: number | null; adjustsFontSizeToFit: boolean } = {
+      numberOfLines: null,
+      adjustsFontSizeToFit: false,
+    };
 
     const flatStyles = StyleSheet.flatten([
       styles.base,
@@ -107,16 +101,27 @@ const TextV3 = {
     }
 
     return (
-      <Text style={composedStyle}
+      <Text
+        style={composedStyle}
         numberOfLines={dynamicProps.numberOfLines || numberOfLines}
-        adjustsFontSizeToFit={dynamicProps.adjustsFontSizeToFit} 
+        adjustsFontSizeToFit={dynamicProps.adjustsFontSizeToFit}
         selectable={selectable}
       >
         {children}
       </Text>
     );
   },
-  HeaderDisplay: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  HeaderDisplay: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -133,7 +138,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  HeaderLarge: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  HeaderLarge: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -150,7 +165,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  HeaderLargeRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  HeaderLargeRegular: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -167,7 +192,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  Header: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  Header: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -184,7 +219,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  Body: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  Body: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -201,7 +246,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  BodyStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  BodyStrong: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -218,7 +273,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  LabelSemiStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  LabelSemiStrong: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -235,7 +300,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  Caption: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  Caption: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -252,7 +327,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  CaptionRegular: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  CaptionRegular: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -269,7 +354,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  CaptionStrong: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  CaptionStrong: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -286,7 +381,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  Label: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  Label: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}
@@ -303,7 +408,17 @@ const TextV3 = {
       </TextV3.base>
     );
   },
-  Description: ({ children, dynamic, color, align, extraStyles, uppercase, selectable, margin, numberOfLines }: ITextProps) => {
+  Description: ({
+    children,
+    dynamic,
+    color,
+    align,
+    extraStyles,
+    uppercase,
+    selectable,
+    margin,
+    numberOfLines,
+  }: ITextProps) => {
     return (
       <TextV3.base
         dynamic={dynamic}

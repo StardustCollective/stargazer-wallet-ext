@@ -32,6 +32,7 @@ export enum BUTTON_TYPES_ENUM {
   PRIMARY_OUTLINE,
   ACCENT_ONE_OUTLINE,
   SECONDARY_OUTLINE,
+  TERTIARY_SOLID,
 }
 
 export enum BUTTON_SIZES_ENUM {
@@ -52,6 +53,7 @@ interface IButtonV3Props {
   loading?: boolean;
   label: string;
   extraStyle?: string;
+  extraTitleStyles?: string;
   onClick?: (ev: any) => void;
   submit?: boolean;
   disabled?: boolean;
@@ -70,6 +72,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   loading = false,
   label = '',
   extraStyle = '',
+  extraTitleStyles = '',
   onClick = () => {},
   submit = false,
   disabled = false,
@@ -86,7 +89,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   if (size === BUTTON_SIZES_ENUM.SMALL) {
     buttonSizeStyle = styles.buttonSmall;
     TextComponent = TextV3.CaptionStrong;
-  } else if(size === BUTTON_SIZES_ENUM.MEDIUM){
+  } else if (size === BUTTON_SIZES_ENUM.MEDIUM) {
     buttonSizeStyle = styles.buttonMedium;
     TextComponent = TextV3.CaptionStrong;
   } else if (size === BUTTON_SIZES_ENUM.LARGE) {
@@ -112,6 +115,9 @@ const ButtonV3: FC<IButtonV3Props> = ({
   } else if (type === BUTTON_TYPES_ENUM.ACCENT_ONE_SOLID) {
     buttonColorStyle = styles.accentOneButton;
     buttonTextColor = COLORS_ENUMS.WHITE;
+  } else if (type === BUTTON_TYPES_ENUM.TERTIARY_SOLID) {
+    buttonColorStyle = styles.tertiarySolid;
+    buttonTextColor = COLORS_ENUMS.BLACK;
   }
 
   if (disabled) {
@@ -123,22 +129,34 @@ const ButtonV3: FC<IButtonV3Props> = ({
       id={id}
       disabled={disabled || loading}
       type={submit ? 'submit' : 'button'}
-      className={clsx([styles.base, buttonColorStyle, buttonTextColor, buttonSizeStyle, buttonBorderStyle, extraStyle, disabledStyles])}
+      className={clsx([
+        styles.base,
+        buttonColorStyle,
+        buttonTextColor,
+        buttonSizeStyle,
+        buttonBorderStyle,
+        extraStyle,
+        disabledStyles,
+      ])}
       onClick={onClick}
     >
       {!loading ? (
         <div className={styles.textContainer}>
-          { !!leftIcon && <div className={styles.iconLeft}>{leftIcon}</div>}
-          <TextComponent color={buttonTextColor} align={TEXT_ALIGN_ENUM.CENTER}>{label}</TextComponent> 
-          { !!rightIcon && <div className={styles.iconRight}>{rightIcon}</div>}
+          {!!leftIcon && <div className={styles.iconLeft}>{leftIcon}</div>}
+          <TextComponent
+            color={buttonTextColor}
+            extraStyles={extraTitleStyles}
+            align={TEXT_ALIGN_ENUM.CENTER}
+          >
+            {label}
+          </TextComponent>
+          {!!rightIcon && <div className={styles.iconRight}>{rightIcon}</div>}
         </div>
-      )
-        : 
+      ) : (
         <div className={styles.loader}>
-          <CircularProgress size={24}/>
+          <CircularProgress size={24} />
         </div>
-      }
-      
+      )}
     </button>
   );
 };

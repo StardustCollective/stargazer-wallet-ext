@@ -4,7 +4,7 @@
 
 import React from 'react';
 import config from '../config';
-import { fade } from 'navigation/animations';
+import { CardStyleInterpolators } from '@react-navigation/stack';
 
 ///////////////////////////
 // Styles
@@ -24,25 +24,20 @@ import commonStyles from './../styles.scss';
 // Interfaces
 ///////////////////////////
 interface IDefaultHeader {
-  navigation: any,
-  onBackPressed?: () => void
+  navigation: any;
+  onBackPressed?: () => void;
 }
 
 ///////////////////////////
 // Header
 ///////////////////////////
 
-const defaultHeader = ({
-  navigation,
-  onBackPressed,
-}: IDefaultHeader) => {
-
+const defaultHeader = ({ navigation, onBackPressed }: IDefaultHeader) => {
   const onBackButtonClicked = () => {
     navigation.goBack();
-  }
+  };
 
   const renderHeaderLeft = () => {
-
     return (
       <IconButton
         id={'header-backButton'}
@@ -51,19 +46,16 @@ const defaultHeader = ({
       >
         <img src={`/${ArrowLeftIcon}`} />
       </IconButton>
-    )
-
-  }
+    );
+  };
 
   return {
     ...config,
     headerLeft: () => renderHeaderLeft(),
-    headerRight: () => (
-      <div className={commonStyles.emptyDiv}></div>
-    ),
+    headerRight: () => <div className={commonStyles.emptyDiv}></div>,
     animationEnabled: true,
-    cardStyleInterpolator: fade
-  }
+    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+  };
 };
 
 export default defaultHeader;

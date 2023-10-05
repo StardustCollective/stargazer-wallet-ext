@@ -23,7 +23,8 @@ const Confirm = ({
   getTotalAmount,
   handleCancel,
   handleConfirm,
-  disabled
+  disabled,
+  isL0token,
 }) => {
 
   const linkTo = useLinkTo();
@@ -73,10 +74,12 @@ const Confirm = ({
                       <TextV3.BodyStrong color={COLORS_ENUMS.DARK_GRAY}>
                         {tempTx?.amount}{' '}
                         {assetInfo.symbol}
-                        <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-                          {' '}(≈
-                          {getSendAmount()})
-                        </TextV3.Caption>
+                        {!isL0token && 
+                          <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
+                            {' '}(≈
+                            {getSendAmount()})
+                          </TextV3.Caption>
+                        }
                       </TextV3.BodyStrong>
                     </View>
                     <View style={styles.section}>
@@ -99,7 +102,7 @@ const Confirm = ({
                       <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
                         Transaction Fee
                         <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-                          {'    '}{`${tempTx?.fee} ${feeUnit} (≈ ${getFeeAmount()})`}
+                          {'    '}{`${tempTx?.fee} ${feeUnit} ${isL0token ? '' : `(≈ ${getFeeAmount()})`}`}
                         </TextV3.Caption>
                       </TextV3.BodyStrong>
                     </View>
@@ -111,7 +114,7 @@ const Confirm = ({
                       </View>
                       <View style={styles.total}>
                         <TextV3.BodyStrong color={COLORS_ENUMS.DARK_GRAY}>
-                          {`$${getTotalAmount()}`}
+                          {isL0token ? `${getTotalAmount()} ${assetInfo.symbol}` : `$${getTotalAmount()}`}
                         </TextV3.BodyStrong>
                       </View>
                     </View>

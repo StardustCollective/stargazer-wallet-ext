@@ -4,6 +4,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingTop: 8,
+    paddingBottom: 40
   },
   label: {
     marginTop: 0,
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-    marginTop: 12,
+    marginTop: 32,
     alignSelf: 'center',
   },
   errorMessage: {

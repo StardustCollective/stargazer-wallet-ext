@@ -31,11 +31,16 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 const AddCustomAsset: FC<IAddCustomAsset> = ({
   register,
   tokenAddress,
+  l0endpoint,
+  l1endpoint,
   tokenName,
   tokenSymbol,
   tokenDecimals,
   networkTypeOptions,
+  isL0Token,
   handleAddressChange,
+  handleL0endpointChange,
+  handleL1endpointChange,
   handleNameChange,
   handleSymbolChange,
   handleDecimalsChange,
@@ -43,9 +48,15 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   onSubmit,
   errors,
   buttonDisabled,
+  buttonLoading,
 }) => {
   
   const inputClass = clsx(styles.input, styles.address);
+
+  const tokenAddressLabel = isL0Token ? 'Metagraph address': 'Token address';
+  const tokenAddressPlaceholder = isL0Token ? 'DAG...': '0x...';
+  const tokenNamePlaceholder = isL0Token ? 'Enter token name' : 'Ethereum';
+  const tokenSymbolPlaceholder = isL0Token ? 'Enter token symbol' : 'ETH';
 
   ///////////////////////////
   // Render
@@ -59,9 +70,9 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
             <InputClickable options={networkTypeOptions} />
           </li>
           <li>
-            <label>Token Address</label>
+            <label>{tokenAddressLabel}</label>
             <TextInput
-              placeholder="0x..."
+              placeholder={tokenAddressPlaceholder}
               fullWidth
               inputRef={register}
               id="tokenAddress"
@@ -78,10 +89,54 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
                   {!!errors?.tokenAddress ? errors?.tokenAddress?.message: ' '}
               </TextV3.Caption>
           </li>
+          {isL0Token &&
+            <>
+              <li>
+                <label>L0 endpoint</label>
+                <TextInput
+                  placeholder='Enter endpoint URL'
+                  fullWidth
+                  inputRef={register}
+                  id="l0endpoint"
+                  name="l0endpoint"
+                  value={l0endpoint}
+                  onChange={(ev) => handleL0endpointChange(ev.target.value)}
+                  disabled={false}
+                  error={!!errors?.l0endpoint}
+                  variant={inputClass}
+                  />
+                  <TextV3.Caption 
+                    color={COLORS_ENUMS.RED} 
+                    extraStyles={styles.errorMessage}>
+                      {!!errors?.l0endpoint ? errors?.l0endpoint?.message: ' '}
+                  </TextV3.Caption>
+              </li>
+              <li>
+                <label>L1 endpoint</label>
+                <TextInput
+                  placeholder='Enter endpoint URL'
+                  fullWidth
+                  inputRef={register}
+                  id="l1endpoint"
+                  name="l1endpoint"
+                  value={l1endpoint}
+                  onChange={(ev) => handleL1endpointChange(ev.target.value)}
+                  disabled={false}
+                  error={!!errors?.l1endpoint}
+                  variant={inputClass}
+                  />
+                  <TextV3.Caption 
+                    color={COLORS_ENUMS.RED} 
+                    extraStyles={styles.errorMessage}>
+                      {!!errors?.l1endpoint ? errors?.l1endpoint?.message: ' '}
+                  </TextV3.Caption>
+              </li>
+            </>
+          }
           <li>
-            <label>Token Name</label>
+            <label>Token name</label>
             <TextInput
-              placeholder="Ethereum"
+              placeholder={tokenNamePlaceholder}
               fullWidth
               inputRef={register}
               id="tokenName"
@@ -99,9 +154,9 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
               </TextV3.Caption>
           </li>
           <li>
-            <label>Token Symbol</label>
+            <label>Token symbol</label>
             <TextInput
-              placeholder="ETH"
+              placeholder={tokenSymbolPlaceholder}
               fullWidth
               inputRef={register}
               id="tokenSymbol"
@@ -118,27 +173,29 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
                   {!!errors?.tokenSymbol ? errors?.tokenSymbol?.message: ' '}
               </TextV3.Caption>
           </li>
-          <li>
-            <label>Decimals</label>
-            <TextInput
-              type="number"
-              placeholder="18"
-              fullWidth
-              inputRef={register}
-              id="tokenDecimals"
-              name="tokenDecimals"
-              value={tokenDecimals}
-              onChange={(ev) => handleDecimalsChange(ev.target.value)}
-              disabled={false}
-              error={!!errors?.tokenDecimals}
-              variant={inputClass}
-              />
-              <TextV3.Caption 
-                color={COLORS_ENUMS.RED} 
-                extraStyles={styles.errorMessage}>
-                  {!!errors?.tokenDecimals ? errors?.tokenDecimals?.message: ' '}
-              </TextV3.Caption>
-          </li>
+          {!isL0Token &&
+            <li>
+              <label>Decimals</label>
+              <TextInput
+                type="number"
+                placeholder="18"
+                fullWidth
+                inputRef={register}
+                id="tokenDecimals"
+                name="tokenDecimals"
+                value={tokenDecimals}
+                onChange={(ev) => handleDecimalsChange(ev.target.value)}
+                disabled={false}
+                error={!!errors?.tokenDecimals}
+                variant={inputClass}
+                />
+                <TextV3.Caption 
+                  color={COLORS_ENUMS.RED} 
+                  extraStyles={styles.errorMessage}>
+                    {!!errors?.tokenDecimals ? errors?.tokenDecimals?.message: ' '}
+                </TextV3.Caption>
+            </li>
+          }
         </ul>
         <div className={styles.warningContainer}>
           <img src={`/${WarningIcon}`} color="white" height={20} width={20} alt="warning" />
@@ -152,6 +209,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
             size={BUTTON_SIZES_ENUM.LARGE}
             label="Add Token"
             disabled={buttonDisabled}
+            loading={buttonLoading}
             extraStyle={styles.button}
             onClick={handleSubmit((data: any) => {
               onSubmit(data);

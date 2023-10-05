@@ -1,78 +1,82 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-
-import TextInput from 'components/TextInput';
+import { View, Image } from 'react-native';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-import TextV3 from 'components/TextV3';
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-
-import styles from './styles';
-
+import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
 import IRemoveWalletSettings from './types';
+import styles from './styles';
+import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { ETHEREUM_LOGO, CONSTELLATION_LOGO } from 'constants/index';
+
+const ICON_SIZE = 64;
+const TITLE = 'Are you sure that you want to remove this wallet?';
+const SUBTITLE =
+  'You will not be able to restore this wallet without your recovery phrase or private key in the future. Please, make sure you have them saved in a safe place.';
 
 const RemoveWallet: FC<IRemoveWalletSettings> = ({
-  goBack,
   wallet,
-  isSeedWallet,
-  handleSubmit,
-  register,
-  control,
-  onSubmit,
+  handleCancel,
+  handleRemoveWallet,
 }) => {
-  return (
-    <View style={styles.removeAccount}>
-      {wallet && (
-        <View style={styles.subheading}>
-          <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.subheadingText}>
-            Account name:
-          </TextV3.Description>
-          <View style={styles.accountNameWrapper}>
-            <Text style={styles.accountName}>{wallet.label}</Text>
-          </View>
-        </View>
-      )}
+  const isMCW = wallet?.type === KeyringWalletType.MultiChainWallet;
+  const isETH =
+    wallet?.type === KeyringWalletType.SingleAccountWallet &&
+    wallet?.supportedAssets?.includes(KeyringAssetType.ETH);
 
-      <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={StyleSheet.compose(styles.text, styles.formText)}>
-        Please enter your wallet password:
-      </TextV3.Description>
-      <TextInput
-        control={control}
-        type="password"
-        name="password"
-        visiblePassword
-        fullWidth
-        inputRef={register}
-        inputStyles={styles.input}
-        inputContainerStyle={styles.inputWrapper}
-      />
-      <View>
-        {isSeedWallet && (
-          <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.formText} å>
-            Are you sure you want to delete this wallet? It will be permanently deleted unless you have a backup saved.
-          </TextV3.Description>
-        )}
-        {!isSeedWallet && (
-          <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} ç>
-            Are you sure you want to delete this account? It will be permanently deleted unless you have a backup saved.
-          </TextV3.Description>
-        )}
+  const ICON = isMCW ? (
+    <StargazerIcon width={ICON_SIZE} height={ICON_SIZE} />
+  ) : isETH ? (
+    ETHEREUM_LOGO
+  ) : (
+    CONSTELLATION_LOGO
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.contentContainer}>
+        <View style={styles.walletContainer}>
+          {typeof ICON === 'string' && ICON.startsWith('http') ? (
+            <View style={styles.iconContainer}>
+              <Image style={styles.icon} source={{ uri: ICON }} />
+            </View>
+          ) : (
+            <View style={styles.iconComponent}>{ICON}</View>
+          )}
+          <TextV3.BodyStrong extraStyles={styles.walletLabel} color={COLORS_ENUMS.BLACK}>
+            {wallet?.label}
+          </TextV3.BodyStrong>
+        </View>
+        <View>
+          <TextV3.Header
+            extraStyles={styles.title}
+            color={COLORS_ENUMS.BLACK}
+            align={TEXT_ALIGN_ENUM.CENTER}
+          >
+            {TITLE}
+          </TextV3.Header>
+          <TextV3.CaptionRegular
+            color={COLORS_ENUMS.SECONDARY_TEXT}
+            align={TEXT_ALIGN_ENUM.CENTER}
+          >
+            {SUBTITLE}
+          </TextV3.CaptionRegular>
+        </View>
       </View>
-      <View style={styles.actions}>
+      <View style={styles.buttonsContainer}>
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
+          type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           title="Cancel"
           extraStyles={styles.button}
-          onPress={goBack}
+          onPress={handleCancel}
         />
         <ButtonV3
           type={BUTTON_TYPES_ENUM.PRIMARY}
           size={BUTTON_SIZES_ENUM.LARGE}
-          title="Confirm"
-          extraStyles={styles.button}
-          onPress={handleSubmit((data) => {
-            onSubmit(data);
-          })}
+          title="Remove"
+          extraStyles={[styles.button, styles.removeButton]}
+          onPress={handleRemoveWallet}
         />
       </View>
     </View>

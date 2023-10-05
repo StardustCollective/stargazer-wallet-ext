@@ -112,9 +112,10 @@ const Send: FC<IWalletSend> = ({
   ///////////////////////////
 
   return (
-    <KeyboardAwareScrollView 
-      contentContainerStyle={styles.layout} 
-      extraScrollHeight={EXTRA_SCROLL_HEIGHT}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.layout}
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
+    >
       <View style={styles.content}>
         <View>{/* Contacts Goes here */}</View>
         <View style={styles.balance}>
@@ -122,7 +123,10 @@ const Send: FC<IWalletSend> = ({
             Balance:
             <TextV3.Body color={COLORS_ENUMS.BLACK}>
               {' '}
-              {formatStringDecimal(formatNumber(Number(balances[activeAsset.id]), 16, 20), 4)}{' '}
+              {formatStringDecimal(
+                formatNumber(Number(balances[activeAsset.id]), 16, 20),
+                4
+              )}{' '}
             </TextV3.Body>
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>{assetInfo.symbol}</TextV3.Caption>
           </TextV3.Caption>
@@ -162,28 +166,36 @@ const Send: FC<IWalletSend> = ({
             placeholder="Enter transaction fee"
             label="TRANSACTION FEE"
             control={control}
+            inputContainerStyle={{ marginBottom: 0 }}
             onChange={(text) => {
               handleFeeChange({ target: { value: text } });
             }}
             rightIconContainerStyle={styles.inputRightIcon}
             keyboardType={decimalPointOnFee ? 'number-pad' : 'decimal-pad'}
             returnKeyType="done"
-            rightIcon={<InputRightButton label="RECOMMENDED" onPress={handleGetDAGTxFee} />}
+            rightIcon={
+              <InputRightButton label="RECOMMENDED" onPress={handleGetDAGTxFee} />
+            }
           />
         )}
-        <View style={styles.estimate}>
-          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-            ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
-          </TextV3.Caption>
-        </View>
         {!!Object.values(errors).length && (
           <View style={styles.error}>
-            <TextV3.Caption color={COLORS_ENUMS.RED}>{Object.values(errors)[0].message}</TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.RED}>
+              {Object.values(errors)[0].message}
+            </TextV3.Caption>
+          </View>
+        )}
+        {!assetInfo?.l0endpoint && (
+          <View style={styles.estimate}>
+            <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
+              ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
+            </TextV3.Caption>
           </View>
         )}
         {activeAsset.type === AssetType.Constellation && (
           <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-            {`With current network conditions we recommend a fee of ${recommend} DAG.`}
+            With current network conditions we recommend a fee of {recommend}{' '}
+            {nativeToken}.
           </TextV3.Caption>
         )}
         {activeAsset.type !== AssetType.Constellation && !!gasPrices.length && (
@@ -191,16 +203,25 @@ const Send: FC<IWalletSend> = ({
             <View style={styles.gasSettings}>
               <View style={styles.gasSettingsLabel}>
                 <View style={styles.gasSettingLabelLeft}>
-                  <TextV3.Caption color={COLORS_ENUMS.BLACK}>GAS PRICE (IN GWEI)</TextV3.Caption>
+                  <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+                    GAS PRICE (IN GWEI)
+                  </TextV3.Caption>
                 </View>
                 <View style={styles.gasSettingLabelRight}>
                   <Input
                     defaultValue={gasPrice.toString()}
                     keyboardType="number-pad"
-                    onChange={(event) => handleGasPriceChange(null, Number(event.nativeEvent.text))}
+                    onChange={(event) =>
+                      handleGasPriceChange(null, Number(event.nativeEvent.text))
+                    }
                     inputStyle={styles.gasSettingInputText}
                     inputContainerStyle={styles.gasSettingInputContainer}
-                    rightIcon={<InputRightButton label={gasSpeedLabel} onPress={handleGetDAGTxFee} />}
+                    rightIcon={
+                      <InputRightButton
+                        label={gasSpeedLabel}
+                        onPress={handleGetDAGTxFee}
+                      />
+                    }
                   />
                 </View>
               </View>
@@ -216,7 +237,11 @@ const Send: FC<IWalletSend> = ({
             </View>
             <View style={styles.gasSettingsEstimate}>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                {`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(gasFee, 2, basePriceId)})`}
+                {`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(
+                  gasFee,
+                  2,
+                  basePriceId
+                )})`}
               </TextV3.Caption>
             </View>
           </>

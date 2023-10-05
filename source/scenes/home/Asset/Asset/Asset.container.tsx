@@ -37,8 +37,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     return Number((activeAsset && balances[activeAsset.id]) || 0);
   }, [activeAsset, balances]);
 
-  const { id } = accountController.networkController?.getNetwork() || {};
-  const network = getNetworkFromChainId(id);
+  let network = '';
+  if (activeAsset.type !== AssetType.Constellation) {
+    const { id } = accountController?.networkController?.getNetwork() || {};
+    network = getNetworkFromChainId(id);
+  }
 
   const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);
@@ -99,6 +102,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
 
   const BALANCE_TEXT = formatStringDecimal(formatNumber(balance, 16, 20), 4);
   const FIAT_AMOUNT = getFiatAmount(balance, balance >= 0.01 ? 2 : 4);
+  const showFiatAmount = !assets[activeAsset?.id]?.l0endpoint;
 
   return (
     <Container safeArea={false}>
@@ -115,6 +119,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
         setShowQrCode={setShowQrCode}
         isAddressCopied={isAddressCopied}
         copyAddress={copyAddress}
+        showFiatAmount={showFiatAmount}
       />
     </Container>
   );

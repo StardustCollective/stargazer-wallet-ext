@@ -37,7 +37,6 @@ enum AvailableMethods {
   eth_signTypedData_v4 = 'eth_signTypedData_v4', // Alias of eth_signTypedData
   wallet_switchEthereumChain = 'wallet_switchEthereumChain',
 
-
   /* Constellation */
   dag_chainId = 'dag_chainId',
   dag_accounts = 'dag_accounts',
@@ -47,6 +46,12 @@ enum AvailableMethods {
   dag_sendTransaction = 'dag_sendTransaction',
   dag_getPendingTransaction = 'dag_getPendingTransaction',
   dag_getTransaction = 'dag_getTransaction',
+
+  /* Metagraph */
+  dag_getMetagraphBalance = 'dag_getMetagraphBalance',
+  dag_sendMetagraphTransaction = 'dag_sendMetagraphTransaction',
+  dag_getMetagraphPendingTransaction = 'dag_getMetagraphPendingTransaction',
+  dag_getMetagraphTransaction = 'dag_getMetagraphTransaction',
 }
 
 export { AvailableMethods };

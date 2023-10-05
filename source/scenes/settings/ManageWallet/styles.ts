@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS } from 'assets/styles/_variables';
+import { COLORS, FONTS, NEW_COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -7,59 +7,46 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     overflow: 'scroll',
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    backgroundColor: COLORS.gray_light_100,
+    padding: 16,
+    marginBottom: 24,
     flexGrow: 1,
   },
   label: {
     fontFamily: FONTS.inter,
-    fontSize: 10,
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: '500',
-    marginTop: 24,
-    marginBottom: 12,
-    textTransform: 'uppercase',
+    color: NEW_COLORS.secondary_text,
+    marginBottom: 8,
+  },
+  inputLabel: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: FONT_WEIGHTS.medium,
   },
   inputContainer: {
-    border: `1px solid ${COLORS.gray_200}`,
     marginHorizontal: -10, // compensate for View container at 10px padding
-    marginBottom: 0,
+    marginBottom: -20,
     position: 'relative',
     lineHeight: 24,
+    height: 56,
+    paddingVertical: 28,
+    paddingHorizontal: 16,
   },
-  text: {
-    marginTop: 12,
-    marginBottom: 24,
-    fontSize: 12,
-    fontWeight: '500',
-    fontFamily: FONTS.inter,
-    lineHeight: 16,
-  },
-  menu: {
-    display: 'flex',
-    paddingHorizontal: 0,
-    paddingVertical: 12,
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderBottom: `1px solid ${COLORS.gray_light}`,
-    borderRadius: 6,
-  },
-  menuText: {
-    lineHeight: 24,
-    color: COLORS.gray_dark,
-    fontWeight: '500',
+  input: {
+    color: NEW_COLORS.secondary_text,
     fontSize: 16,
-    flexGrow: 1,
-    fontFamily: FONTS.inter,
+    fontWeight: FONT_WEIGHTS.regular,
+    textAlign: 'right',
   },
-  icon: {
-    fontSize: 24,
-    color: COLORS.gray,
+  menuContainer: {
+    marginTop: 20,
   },
-  iconWrapper: {
-    backgroundColor: 'transparent',
+  addressesContainer: {
+    marginTop: 12,
+  },
+  removeWalletContainer: {
+    marginTop: -8,
   },
   actions: {
     marginTop: 24,
@@ -68,20 +55,29 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   cancel: {
-    backgroundColor: COLORS.gray_light,
-    color: COLORS.gray_dark,
+    backgroundColor: NEW_COLORS.gray_300,
+  },
+  copiedLabel: {
+    color: NEW_COLORS.primary_lighter_1,
   },
   buttonCancelText: {
-    color: COLORS.gray_dark,
+    color: COLORS.black,
   },
   buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
   },
   button: {
-    marginRight: 10,
-    marginBottom: 20,
-    width: 144,
+    marginHorizontal: 6,
+    width: 170,
+    backgroundColor: NEW_COLORS.primary,
+  },
+  removeText: {
+    color: NEW_COLORS.red_700,
+  },
+  titleAddress: {
+    fontWeight: FONT_WEIGHTS.regular,
+    color: NEW_COLORS.secondary_text,
   },
 });
 

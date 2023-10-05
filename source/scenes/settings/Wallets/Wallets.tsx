@@ -1,112 +1,57 @@
 import React, { FC } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/InfoOutlined';
-import CheckIcon from '@material-ui/icons/CheckCircleRounded';
-import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-
-import Icon from 'components/Icon';
-
-import { AssetType } from 'state/vault/types';
-
-import StargazerIcon from 'assets/images/logo-s.svg';
-
+import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
+import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
+import LockIcon from 'assets/images/svg/lock-icon.svg';
 import IWalletSettings from './types';
-
+import { ellipsis } from 'scenes/home/helpers';
 import styles from './Wallets.scss';
-import { ellipsis, truncateString } from 'scenes/home/helpers';
+import Menu from 'components/Menu';
+import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
 
 const WalletsComponent: FC<IWalletSettings> = ({
-  wallets,
-  activeWallet,
+  multiChainAccounts,
   privKeyAccounts,
   hardwareWalletAccounts,
-  assets,
-  handleSwitchWallet,
   handleManageWallet,
 }) => {
+  const multiChainItems =
+    !!multiChainAccounts.length &&
+    multiChainAccounts.map((item) => ({
+      title: item.label,
+      subtitle: 'Multi-chain',
+      onClick: handleManageWallet,
+      data: item.id,
+      icon: StargazerIcon,
+    }));
+
+  const privateKeyItems =
+    !!privKeyAccounts.length &&
+    privKeyAccounts.map((item) => ({
+      title: item.label,
+      subtitle: ellipsis(item.accounts[0].address),
+      onClick: handleManageWallet,
+      data: item.id,
+      icon: item.supportedAssets.includes(KeyringAssetType.ETH)
+        ? ETHEREUM_LOGO
+        : CONSTELLATION_LOGO,
+    }));
+
+  const hardwareWalletsItems =
+    !!hardwareWalletAccounts.length &&
+    hardwareWalletAccounts.map((item) => ({
+      title: item.label,
+      subtitle: ellipsis(item.accounts[0].address),
+      onClick: handleManageWallet,
+      data: item.id,
+      icon: LockIcon,
+    }));
+
   return (
     <div className={styles.wallets}>
-      {!!wallets.length && (
-        <>
-          <label>Multi chain wallets</label>
-          <div className={styles.group}>
-            {wallets
-              .filter((w) => w.type === KeyringWalletType.MultiChainWallet)
-              .map((wallet) => (
-                <section
-                  className={styles.wallet}
-                  key={wallet.id}
-                  onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
-                >
-                  {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-                  <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
-                  <span id={wallet.label}>
-                    {truncateString(wallet.label)}
-                    <small>Multi Chain Wallet</small>
-                  </span>
-                  <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
-                    <InfoIcon />
-                  </IconButton>
-                </section>
-              ))}
-          </div>
-        </>
-      )}
-      {!!privKeyAccounts.length && (
-        <>
-          <label>Private key wallets</label>
-          <div className={styles.group}>
-            {privKeyAccounts.map((wallet) => (
-              <section
-                className={styles.wallet}
-                key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
-              >
-                {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-                {
-                  <div className={styles.walletIcon}>
-                    <img src={`${assets[
-                      wallet.supportedAssets.includes(KeyringAssetType.ETH)
-                        ? AssetType.Ethereum
-                        : AssetType.Constellation
-                    ].logo}`} width={24} />
-                  </div>
-                }
-                <span>
-                  {truncateString(wallet.label)}
-                  <small>{ellipsis(wallet.accounts[0].address)}</small>
-                </span>
-                <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
-                  <InfoIcon />
-                </IconButton>
-              </section>
-            ))}
-          </div>
-        </>
-      )}
-      {!!hardwareWalletAccounts.length && (
-        <>
-          <label>Hardware Wallets</label>
-          <div className={styles.group}>
-            {hardwareWalletAccounts.map((wallet) => (
-              <section
-                className={styles.wallet}
-                key={wallet.id}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
-              >
-                {wallet.id === activeWallet?.id && <CheckIcon className={styles.check} />}
-                <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
-                <span>
-                  {truncateString(wallet.label)}
-                  <small>{wallet.accounts[0].address}</small>
-                </span>
-                <IconButton className={styles.details} onClick={(ev) => handleManageWallet(ev, wallet.id)}>
-                  <InfoIcon />
-                </IconButton>
-              </section>
-            ))}
-          </div>
-        </>
+      {!!multiChainItems && <Menu title="Multi-Chain Wallets" items={multiChainItems} />}
+      {!!privateKeyItems && <Menu title="Private Key Wallets" items={privateKeyItems} />}
+      {!!hardwareWalletsItems && (
+        <Menu title="Hardware Wallets" items={hardwareWalletsItems} />
       )}
     </div>
   );
