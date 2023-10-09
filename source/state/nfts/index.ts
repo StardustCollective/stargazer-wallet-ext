@@ -1,30 +1,45 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { INFTListState, INFTInfoState } from './types';
+import { INFTListState, ICollectionData, IOpenSeaDetailedNFT } from './types';
 
-const initialState: INFTListState = {};
+const initialState: INFTListState = {
+  collections: {
+    loading: false,
+    error: null,
+    data: null,
+  },
+  selectedNFT: null,
+};
 
 const NFTListState = createSlice({
   name: 'nfts',
   initialState,
   reducers: {
-    rehydrate(state: INFTListState, action: PayloadAction<INFTListState>) {
-      return {
-        ...state,
-        ...action.payload,
-      };
+    setCollectionsLoading(state: INFTListState, action: PayloadAction<boolean>) {
+      state.collections.loading = action.payload;
     },
-    addNFTAsset(state: INFTListState, action: PayloadAction<INFTInfoState>) {
-      if (action.payload.id) {
-        state[action.payload.id] = action.payload;
-      }
-      return state;
+    setCollections(state: INFTListState, action: PayloadAction<ICollectionData>) {
+      state.collections.data = action.payload;
     },
-    resetNFTState() {
-      return initialState;
+    setSelectedNFT(state: INFTListState, action: PayloadAction<IOpenSeaDetailedNFT>) {
+      state.selectedNFT = action.payload;
+    },
+    clearCollections(state: INFTListState) {
+      state.collections.loading = false;
+      state.collections.data = null;
+      state.collections.error = null;
+    },
+    clearSelectedNFT(state: INFTListState) {
+      state.selectedNFT = null;
     },
   },
 });
 
-export const { addNFTAsset, resetNFTState, rehydrate } = NFTListState.actions;
+export const {
+  setCollectionsLoading,
+  setCollections,
+  setSelectedNFT,
+  clearCollections,
+  clearSelectedNFT,
+} = NFTListState.actions;
 
 export default NFTListState.reducer;

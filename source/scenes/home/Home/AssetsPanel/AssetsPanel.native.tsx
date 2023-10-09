@@ -16,14 +16,13 @@ import SlidersIcon from 'assets/images/svg/sliders.svg';
 ///////////////////////
 // Types
 ///////////////////////
-import { INFTInfoState } from 'state/nfts/types';
+
 import IAssetState from './types';
 
 ///////////////////////
 // Styles
 ///////////////////////
 
-import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
 
 ///////////////////////
@@ -35,14 +34,8 @@ const AssetsPanel: FC<IAssetState> = ({
   handleSelectAsset,
   handleAddTokens,
   assets,
-  activeNFTAssets,
-  nfts,
   activeWallet,
 }) => {
-  const handleSelectNFT = (nft: INFTInfoState) => {
-    Linking.openURL(nft.link);
-  };
-
   const renderAssetList = () => {
     ///////////////////////
     // Render
@@ -62,17 +55,6 @@ const AssetsPanel: FC<IAssetState> = ({
             />
           );
         })}
-        {activeNFTAssets.map((nft: any) => {
-            return (
-              <AssetItem
-                id={nft.id}
-                key={nft.id}
-                asset={nft}
-                assetInfo={nfts[nft.id]}
-                itemClicked={() => handleSelectNFT(nfts[nft.id])}
-              />
-            );
-        })}
       </>
     );
   };
@@ -80,14 +62,12 @@ const AssetsPanel: FC<IAssetState> = ({
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {Object.keys(activeWallet.assets).length && (
-          <>{renderAssetList()}</>
-        )}
-        <ButtonV3 
-          title="Manage Tokens" 
+        {Object.keys(activeWallet.assets).length && <>{renderAssetList()}</>}
+        <ButtonV3
+          title="Manage Tokens"
           size={BUTTON_SIZES_ENUM.LARGE}
           type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
-          onPress={handleAddTokens} 
+          onPress={handleAddTokens}
           icon={<SlidersIcon width={24} height={24} />}
           iconPosition="left"
           extraStyles={styles.buttonContainer}

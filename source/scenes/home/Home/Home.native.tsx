@@ -65,7 +65,6 @@ let lastIsConnected: boolean = true;
 
 const Home: FC<IHome> = ({
   navigation,
-  route,
   activeWallet,
   balanceObject,
   isDagOnlyWallet,

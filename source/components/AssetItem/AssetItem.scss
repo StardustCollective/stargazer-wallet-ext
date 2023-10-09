@@ -66,17 +66,4 @@ div.assetItem {
       letter-spacing: -0.3px;
     }
   }
-
-  &.nft {
-    .assetIcon {
-      clip-path: circle(40%);
-      width: 56px;
-      height: 56px;
-      margin-left: $icon-margin-left - 4px;
-
-      img {
-        width: 64px;  
-      }
-    }
-  }
 }

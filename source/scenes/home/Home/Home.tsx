@@ -51,7 +51,6 @@ import { BUY_STRING, SWAP_STRING } from './constants';
 
 const Home: FC<IHome> = ({
   navigation,
-  route,
   activeWallet,
   balanceObject,
   multiChainWallets,

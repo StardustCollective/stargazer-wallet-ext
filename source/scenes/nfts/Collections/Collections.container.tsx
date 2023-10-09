@@ -3,7 +3,7 @@ import Container, { CONTAINER_COLOR } from 'components/Container';
 import Collections from './Collections';
 import { ICollections } from './types';
 
-const CollectionsContainer: FC<ICollections> = ({ navigation }) => {
+const CollectionsContainer: FC<ICollections> = ({}) => {
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <Collections />

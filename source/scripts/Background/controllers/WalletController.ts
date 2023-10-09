@@ -436,6 +436,8 @@ class WalletController {
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
+    // Update NFTs list if any EVM chain has changed.
+    await this.account.assetsController.fetchAllNfts();
 
     if (activeAsset) {
       if (assets[activeAsset.id].network !== chainId) {

@@ -175,12 +175,11 @@ const NftsTab = () => {
     <Stack.Navigator
       screenOptions={(navigation) => ({
         ...defaultHeader(navigation),
-        headerLeft: null,
       })}
     >
       {/* NFTs Stack */}
       <Stack.Screen
-        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.nfts }}
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.nfts, headerLeft: null }}
         name={screens.authorized.nfts}
         component={Collections}
       />
