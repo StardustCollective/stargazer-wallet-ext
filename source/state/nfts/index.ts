@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { INFTListState, ICollectionData, IOpenSeaDetailedNFT } from './types';
+import { INFTListState, ICollectionData, IOpenSeaNFT } from './types';
 
 const initialState: INFTListState = {
   collections: {
@@ -20,7 +20,7 @@ const NFTListState = createSlice({
     setCollections(state: INFTListState, action: PayloadAction<ICollectionData>) {
       state.collections.data = action.payload;
     },
-    setSelectedNFT(state: INFTListState, action: PayloadAction<IOpenSeaDetailedNFT>) {
+    setSelectedNFT(state: INFTListState, action: PayloadAction<IOpenSeaNFT>) {
       state.selectedNFT = action.payload;
     },
     clearCollections(state: INFTListState) {

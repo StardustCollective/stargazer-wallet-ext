@@ -6,24 +6,19 @@ import { AssetType } from 'state/vault/types';
 const MAX_LENGTH = 20;
 
 export const ellipsis = (str: string, start?: number, end?: number) => {
-  if (str.substring(0,3) === 'DAG') {
+  if (str.substring(0, 3) === 'DAG') {
     start = start || 5;
     end = end || 5;
-  }
-  else if (str.substring(0,2) === '0x') {
+  } else if (str.substring(0, 2) === '0x') {
     start = start || 6;
     end = end || 4;
   }
-  return (
-    str.substring(0, start) +
-    '...' +
-    str.substring(str.length - end, str.length)
-  );
+  return str.substring(0, start) + '...' + str.substring(str.length - end, str.length);
 };
 
-export const truncateString = (str: string) => {
-  return str.length > MAX_LENGTH ? str.slice(0, MAX_LENGTH) + '...' : str;
-}
+export const truncateString = (str: string, maxLength = MAX_LENGTH) => {
+  return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
+};
 
 const getYesterday = () => {
   const d = new Date();
@@ -33,10 +28,8 @@ const getYesterday = () => {
 
 const getDecimalSeparatorByLocale = (locale: string) => {
   const numberWithDecimalSeparator = 1.1;
-  return numberWithDecimalSeparator
-      .toLocaleString(locale)
-      .substring(1, 2);
-}
+  return numberWithDecimalSeparator.toLocaleString(locale).substring(1, 2);
+};
 
 export const formatDistanceDate = (timestamp: number) => {
   const formatStyle = 'M-d-yyyy';
@@ -56,7 +49,7 @@ export const formatDistanceDate = (timestamp: number) => {
 export const formatNumber = (num: number, min: number, max: number, maxSig?: number) => {
   const options: Intl.NumberFormatOptions = {
     minimumFractionDigits: min,
-    maximumFractionDigits: max
+    maximumFractionDigits: max,
   };
 
   if (maxSig) {
@@ -64,19 +57,18 @@ export const formatNumber = (num: number, min: number, max: number, maxSig?: num
   }
 
   if (isNaN(num)) return '-';
-  
+
   return (num || 0).toLocaleString(navigator.language, options);
 };
 
 export const formatStringDecimal = (numberString: string, decimalPlaces: number) => {
-
   if (numberString === '-') return '-';
 
   const decimalSeparator = getDecimalSeparatorByLocale(navigator.language);
   const [whole, fractional] = numberString.split(decimalSeparator);
 
   return `${whole}${decimalSeparator}${fractional.substring(0, decimalPlaces)}`;
-}
+};
 
 export const formatPrice = (num: number, round = 2) => {
   num = Number(num || 0);
@@ -96,7 +88,7 @@ export const getAddressURL = (
 ) => {
   const EVM_CHAINS = getAllEVMChains();
   if (!networkId) return '';
-  
+
   if (type === AssetType.Constellation || type === AssetType.LedgerConstellation) {
     if (!DAG_NETWORK[networkId]) return '';
 
@@ -107,7 +99,7 @@ export const getAddressURL = (
 
   if (type === AssetType.ERC20) {
     //token/0xdac17f958d2ee523a2206206994597c13d831ec7?a=
-    return `${EVM_CHAINS[networkId]?.explorer}token/${contractAddress}?a=${address}`
+    return `${EVM_CHAINS[networkId]?.explorer}token/${contractAddress}?a=${address}`;
   }
   return `${EVM_CHAINS[networkId]?.explorer}address/${address}`;
 };

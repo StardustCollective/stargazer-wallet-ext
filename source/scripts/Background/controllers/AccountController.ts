@@ -242,9 +242,6 @@ export class AccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
-
-    // Fetch NFTs after the active wallet is updated.
-    await this.assetsController.fetchAllNfts();
   }
 
   private async buildAccountERC20Tokens(address: string, accountTokens: string[]) {

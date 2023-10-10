@@ -1,15 +1,8 @@
 import { addERC20Asset, removeERC20Asset, updateAssetDecimals } from 'state/assets';
-import {
-  ICollectionData,
-  IOpenSeaCollection,
-  IOpenSeaNFT,
-  OpenSeaSupportedChains,
-} from 'state/nfts/types';
 import store from 'state/store';
-import IVaultState, { ActiveNetwork, AssetType, Network } from 'state/vault/types';
+import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import {
   TOKEN_INFO_API,
-  OPENSEA_API_V2,
   ETHEREUM_DEFAULT_LOGO,
   AVALANCHE_DEFAULT_LOGO,
   BSC_DEFAULT_LOGO,
@@ -17,7 +10,7 @@ import {
   COINGECKO_API_KEY_PARAM,
   CONSTELLATION_DEFAULT_LOGO,
 } from 'constants/index';
-import { KeyringAssetType, KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import {
   clearErrors as clearErrorsDispatch,
   clearPaymentRequest as clearPaymentRequestDispatch,
@@ -35,8 +28,6 @@ import { addAsset, removeAsset, addCustomAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
 import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
 import { getAccountController } from 'utils/controllersUtils';
-import { OPENSEA_CHAINS_MAP } from 'utils/opensea';
-import { setCollections, setCollectionsLoading } from 'state/nfts';
 
 // Default logos
 const DEFAULT_LOGOS = {
@@ -66,11 +57,6 @@ export interface IAssetsController {
     symbol: string
   ) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
-  fetchNftsByChain: (
-    address: string,
-    chain: OpenSeaSupportedChains
-  ) => Promise<IOpenSeaNFT[]>;
-  fetchAllNfts: () => Promise<void>;
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
   searchERC20Assets: (value: string) => Promise<void>;
@@ -91,133 +77,6 @@ const AssetsController = (): IAssetsController => {
 
   const clearCustomToken = (): void => {
     store.dispatch(clearCustomAsset());
-  };
-
-  const fetchNftsByChain = async (
-    walletAddress: string,
-    chain: OpenSeaSupportedChains
-  ): Promise<IOpenSeaNFT[]> => {
-    try {
-      let accumulatedData: IOpenSeaNFT[] = [];
-
-      const endpointBase = `${OPENSEA_API_V2}/chain/${chain}/account/${walletAddress}/nfts`;
-
-      const recursiveFetch = async (url: string): Promise<void> => {
-        const headers = { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
-        const response = await fetch(url, headers);
-        const responseJson = await response.json();
-        const nfts = !!responseJson?.nfts ? responseJson.nfts : [];
-        accumulatedData = accumulatedData.concat(nfts);
-
-        // OpenSea has a limit of 50 nfts per request. https://docs.opensea.io/reference/list_nfts_by_account
-        // If "next" is included in the response, it means that there're more records to fetch.
-        if (!!responseJson?.next) {
-          const urlWithNext = `${endpointBase}?next=${responseJson.next}`;
-          await recursiveFetch(urlWithNext);
-        }
-      };
-
-      await recursiveFetch(endpointBase);
-
-      return accumulatedData;
-    } catch (error) {
-      console.log('ERROR: fetchNftsByChain', error);
-      return [];
-    }
-  };
-
-  const fetchCollection = async (collectionId: string): Promise<IOpenSeaCollection> => {
-    try {
-      const endpointBase = `${OPENSEA_API_V2}/collections/${collectionId}`;
-      const headers = { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
-      const response = await fetch(endpointBase, headers);
-      const responseJson = await response.json();
-      return responseJson;
-    } catch (error) {
-      console.log('ERROR: fetchCollection', error);
-      return null;
-    }
-  };
-
-  const groupNftsByCollection = (
-    items: IOpenSeaNFT[]
-  ): { [id: string]: IOpenSeaNFT[] } => {
-    const groups = items.reduce((result: { [id: string]: IOpenSeaNFT[] }, object) => {
-      const { collection } = object;
-
-      if (!result[collection]) {
-        result[collection] = [];
-      }
-
-      result[collection].push(object);
-
-      return result;
-    }, {});
-
-    return groups;
-  };
-
-  const buildCollectionsData = async (
-    allNfts: { chain: OpenSeaSupportedChains; items: IOpenSeaNFT[] }[]
-  ) => {
-    let collections: ICollectionData = {};
-
-    for (const nftsData of allNfts) {
-      if (nftsData.items.length) {
-        // Group NFTs by collection
-        const nftsByCollection = groupNftsByCollection(nftsData.items);
-        for (const collectionId of Object.keys(nftsByCollection)) {
-          // Fetch collection info
-          const collectionData = await fetchCollection(collectionId);
-          // Add "chain" and "nfts" for each collection
-          collections[collectionId] = {
-            ...collectionData,
-            chain: nftsData.chain,
-            nfts: nftsByCollection[collectionId],
-          };
-        }
-      }
-    }
-
-    return collections;
-  };
-
-  const fetchAllNfts = async (): Promise<void> => {
-    const { activeNetwork, activeWallet } = store.getState().vault;
-    const { supportedAssets, assets } = activeWallet;
-
-    const supportsEth = supportedAssets?.includes(KeyringAssetType.ETH);
-    const ethAddress = assets?.find((asset) => asset?.id === AssetType.Ethereum)?.address;
-
-    if (supportsEth && ethAddress) {
-      const ethNetwork = OPENSEA_CHAINS_MAP[activeNetwork[KeyringNetwork.Ethereum]];
-      const polygonNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.Polygon]];
-      const avalancheNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.Avalanche]];
-      const bscNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.BSC]];
-
-      const openSeaChains = [ethNetwork, polygonNetwork, avalancheNetwork, bscNetwork];
-
-      let allNfts: { chain: OpenSeaSupportedChains; items: IOpenSeaNFT[] }[] = [];
-
-      store.dispatch(setCollectionsLoading(true));
-
-      // Fetch NFTs for each active chain
-      await Promise.all(
-        openSeaChains.map(async (openSeaChain) => {
-          const nftsResponse = await fetchNftsByChain(ethAddress, openSeaChain);
-          const chainNfts = {
-            chain: openSeaChain,
-            items: nftsResponse,
-          };
-          allNfts.push(chainNfts);
-        })
-      );
-
-      // Build collections object
-      const collections = await buildCollectionsData(allNfts);
-      store.dispatch(setCollections(collections));
-      store.dispatch(setCollectionsLoading(false));
-    }
   };
 
   const fetchERC20Assets = async (): Promise<void> => {
@@ -397,8 +256,6 @@ const AssetsController = (): IAssetsController => {
     addCustomERC20Asset,
     addCustomL0Token,
     removeCustomERC20Asset,
-    fetchNftsByChain,
-    fetchAllNfts,
     fetchSupportedAssets,
     searchERC20Assets,
     clearSearchAssets,
