@@ -28,7 +28,7 @@ const homeHeader = () => {
     ...config,
     headerLeft: () => (
       <View style={styles.logo}>
-        <LogoImage width={scale(30)} height={scale(30)} />
+        <LogoImage width={scale(28)} height={scale(28)} />
       </View>
     ),
   };

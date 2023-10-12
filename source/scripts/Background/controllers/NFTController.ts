@@ -1,15 +1,19 @@
 import store from 'state/store';
 import {
   clearCollections,
+  clearSelectedCollection,
   clearSelectedNFT,
   setCollections,
   setCollectionsLoading,
+  setSelectedCollection,
   setSelectedNFT,
+  setSelectedNFTLoading,
 } from 'state/nfts';
 import {
   ICollectionData,
   IOpenSeaCollection,
   IOpenSeaCollectionWithChain,
+  IOpenSeaDetailedNFT,
   IOpenSeaNFT,
   OpenSeaSupportedChains,
 } from 'state/nfts/types';
@@ -21,10 +25,18 @@ import { OPENSEA_CHAINS_MAP } from 'utils/opensea';
 export interface INFTController {
   setCollectionsLoading: (loading: boolean) => void;
   setCollections: (collections: ICollectionData) => void;
-  setSelectedNFT: (nft: IOpenSeaNFT) => void;
+  setSelectedNFTLoading: (loading: boolean) => void;
+  setSelectedNFT: (nft: IOpenSeaDetailedNFT) => void;
+  setSelectedCollection: (collection: IOpenSeaCollectionWithChain) => void;
   clearSelectedNFT: () => void;
+  clearSelectedCollection: () => void;
   clearCollections: () => void;
   fetchAllNfts: () => Promise<void>;
+  fetchNFTDetails: (
+    chain: OpenSeaSupportedChains,
+    address: string,
+    id: string
+  ) => Promise<void>;
 }
 
 class NFTController implements INFTController {
@@ -36,12 +48,24 @@ class NFTController implements INFTController {
     store.dispatch(setCollections(collections));
   }
 
-  setSelectedNFT(nft: IOpenSeaNFT) {
+  setSelectedNFTLoading(loading: boolean) {
+    store.dispatch(setSelectedNFTLoading(loading));
+  }
+
+  setSelectedNFT(nft: IOpenSeaDetailedNFT) {
     store.dispatch(setSelectedNFT(nft));
+  }
+
+  setSelectedCollection(collection: IOpenSeaCollectionWithChain) {
+    store.dispatch(setSelectedCollection(collection));
   }
 
   clearSelectedNFT() {
     store.dispatch(clearSelectedNFT());
+  }
+
+  clearSelectedCollection() {
+    store.dispatch(clearSelectedCollection());
   }
 
   clearCollections() {
@@ -154,6 +178,7 @@ class NFTController implements INFTController {
     const ethAddress = assets?.find((asset) => asset?.id === AssetType.Ethereum)?.address;
 
     if (supportsEth && ethAddress) {
+      // Map Stargazer chains to OpenSea chains
       const ethNetwork = OPENSEA_CHAINS_MAP[activeNetwork[KeyringNetwork.Ethereum]];
       const polygonNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.Polygon]];
       const avalancheNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.Avalanche]];
@@ -184,6 +209,32 @@ class NFTController implements INFTController {
       this.setCollections(collections);
       this.setCollectionsLoading(false);
     }
+  }
+
+  async fetchNFTDetails(
+    chain: OpenSeaSupportedChains,
+    address: string,
+    id: string
+  ): Promise<void> {
+    this.setSelectedNFTLoading(true);
+
+    try {
+      const endpointBase = `${OPENSEA_API_V2}/chain/${chain}/contract/${address}/nfts/${id}`;
+      const headers = { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
+      const response = await fetch(endpointBase, headers);
+      const responseJson = await response.json();
+      const nftData = !!responseJson?.nft ? responseJson.nft : null;
+
+      if (!!nftData) {
+        // Store NFT data
+        this.setSelectedNFT(nftData);
+      }
+    } catch (err) {
+      console.log('ERROR fetchNFTDetails:', err);
+      this.clearSelectedNFT();
+    }
+
+    this.setSelectedNFTLoading(false);
   }
 }
 

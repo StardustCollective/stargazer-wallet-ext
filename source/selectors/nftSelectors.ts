@@ -10,8 +10,10 @@ import { RootState } from 'state/store';
 
 const getNftsCollections = (state: RootState) => state.nfts.collections;
 const getSelectedNft = (state: RootState) => state.nfts.selectedNFT;
+const getSelectedCollection = (state: RootState) => state.nfts.selectedCollection;
 
 export default {
   getNftsCollections,
   getSelectedNft,
+  getSelectedCollection,
 };

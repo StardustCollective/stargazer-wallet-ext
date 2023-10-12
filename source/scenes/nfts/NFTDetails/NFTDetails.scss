@@ -1,0 +1,10 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  padding: 16px;
+  flex-direction: column;
+  overflow: auto;
+}

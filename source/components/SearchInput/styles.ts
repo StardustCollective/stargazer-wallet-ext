@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT_WEIGHTS, FONTS } from 'assets/styles/_variables';
+import { COLORS, FONT_WEIGHTS, FONTS, NEW_COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   container: {
@@ -7,9 +7,12 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     borderRadius: 8,
-    borderWidth: 2,
+    borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#4F3A9C',
+    borderColor: NEW_COLORS.gray_300,
+  },
+  focused: {
+    borderColor: NEW_COLORS.primary_lighter_1,
   },
   icon: {
     marginLeft: 12,
@@ -25,8 +28,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.regular,
     fontSize: 16,
-    lineHeight: 22,
-  }
+  },
 });
 
 export default styles;

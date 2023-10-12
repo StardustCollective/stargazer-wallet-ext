@@ -34,6 +34,8 @@ import SingleSelect from 'scenes/home/SingleSelect';
 
 // NFTs
 import Collections from 'scenes/nfts/Collections';
+import NFTList from 'scenes/nfts/NFTList';
+import NFTDetails from 'scenes/nfts/NFTDetails';
 
 // Settings
 import Main from 'scenes/settings/Main';
@@ -182,9 +184,11 @@ const NftsTab = () => {
       {/* NFTs Stack */}
       <Stack.Screen
         options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.nfts }}
-        name={screens.authorized.nfts}
+        name={screens.nfts.collections}
         component={Collections}
       />
+      <Stack.Screen name={screens.nfts.nftsList} component={NFTList} />
+      <Stack.Screen name={screens.nfts.nftsDetail} component={NFTDetails} />
     </Stack.Navigator>
   );
 };

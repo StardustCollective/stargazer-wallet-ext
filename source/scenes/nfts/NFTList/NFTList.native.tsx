@@ -1,42 +1,40 @@
 import React, { FC } from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
-import { CollectionsProps } from './types';
+import { NFTListProps } from './types';
 import TextV3 from 'components/TextV3';
 import SearchInput from 'components/SearchInput';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import CardNFT from 'components/CardNFT';
-import { IOpenSeaCollectionWithChain } from 'state/nfts/types';
+import { IOpenSeaNFT } from 'state/nfts/types';
 import { COLORS } from 'assets/styles/_variables';
-import styles from './styles';
 import { NEW_COLORS } from 'assets/styles/_variables.native';
+import styles from './styles';
 
-const NFTS_NOT_FOUND = 'No NFTs found';
-const SEARCH_PLACEHOLDER = 'Search by collection name';
+const NO_NFTS_FOUND = 'No NFTs found';
+const SEARCH_PLACEHOLDER = 'Search by item name';
 
-const Collections: FC<CollectionsProps> = ({
-  collections,
-  onPressCollection,
-  searchValue,
-  onSearch,
+const NFTList: FC<NFTListProps> = ({
+  selectedCollection,
+  data,
   hasItems,
+  searchValue,
+  onPressNFT,
+  onSearch,
 }) => {
-  const { data, error, loading } = collections;
+  const showLoading = false;
+  const showEmptyList = !data.length && !hasItems;
+  const showNFTList = !!data?.length || hasItems;
 
-  const showLoading = loading;
-  const showEmptyList = (!!data && !Object.keys(data).length && !hasItems) || !!error;
-  const showCollectionList = (!!data && Object.keys(data).length) || hasItems;
-
-  const renderCollectionItem = ({ item }: { item: IOpenSeaCollectionWithChain }) => {
-    const collectionLogo = !!item.image_url ? item.image_url : item.nfts[0].image_url;
-
+  const renderNftItem = ({ item }: { item: IOpenSeaNFT }) => {
+    const nftLogo = !!item.image_url ? item.image_url : selectedCollection.image_url;
     return (
       <CardNFT
         title={item.name}
-        subtitle={item.nfts.length}
-        logo={collectionLogo}
-        chain={item.chain}
-        onPress={() => onPressCollection(item)}
+        subtitle={'1'}
+        logo={nftLogo}
+        chain={selectedCollection.chain}
+        onPress={() => onPressNFT(item)}
       />
     );
   };
@@ -46,7 +44,7 @@ const Collections: FC<CollectionsProps> = ({
       <View style={styles.noDataContainer}>
         <StargazerCard height={72} />
         <TextV3.BodyStrong color={COLORS_ENUMS.GRAY_100} extraStyles={styles.noFoundText}>
-          {NFTS_NOT_FOUND}
+          {NO_NFTS_FOUND}
         </TextV3.BodyStrong>
       </View>
     );
@@ -64,8 +62,7 @@ const Collections: FC<CollectionsProps> = ({
     return <>{renderNoNfts()}</>;
   }
 
-  if (showCollectionList) {
-    const hasItems = !!Object.values(data).length;
+  if (showNFTList) {
     return (
       <View style={styles.container}>
         <View style={styles.searchContainer}>
@@ -78,13 +75,13 @@ const Collections: FC<CollectionsProps> = ({
             extraInputStyles={styles.searchInput}
           />
         </View>
-        {hasItems ? (
+        {!!data?.length ? (
           <FlatList
-            data={Object.values(data)}
-            renderItem={renderCollectionItem}
+            data={data}
+            renderItem={renderNftItem}
             numColumns={2}
             contentContainerStyle={styles.contentContainer}
-            keyExtractor={(item: IOpenSeaCollectionWithChain) => item.collection}
+            keyExtractor={(item: IOpenSeaNFT) => item.identifier}
             columnWrapperStyle={styles.columnWrapper}
           />
         ) : (
@@ -97,4 +94,4 @@ const Collections: FC<CollectionsProps> = ({
   return null;
 };
 
-export default Collections;
+export default NFTList;

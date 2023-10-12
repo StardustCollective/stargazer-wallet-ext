@@ -62,7 +62,12 @@ export interface INFTListState {
     error: any;
     data: ICollectionData | null;
   };
-  selectedNFT: IOpenSeaNFT | null;
+  selectedNFT: {
+    loading: boolean;
+    error: any;
+    data: IOpenSeaDetailedNFT | null;
+  };
+  selectedCollection: IOpenSeaCollectionWithChain | null;
 }
 
 interface IOpenSeaFees {

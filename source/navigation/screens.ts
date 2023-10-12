@@ -42,7 +42,12 @@ export default {
     buyList: 'auth-buyList',
     buyAsset: 'auth-buyAsset',
     singleSelect: 'auth-singleSelect',
-    nfts: 'auth-nfts',
+  },
+
+  nfts: {
+    collections: 'nfts-collections',
+    nftsList: 'nfts-list',
+    nftsDetail: 'nfts-details',
   },
 
   ////////////////////////////

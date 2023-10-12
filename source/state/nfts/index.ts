@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { INFTListState, ICollectionData, IOpenSeaNFT } from './types';
+import {
+  INFTListState,
+  ICollectionData,
+  IOpenSeaCollectionWithChain,
+  IOpenSeaDetailedNFT,
+} from './types';
 
 const initialState: INFTListState = {
   collections: {
@@ -7,7 +12,12 @@ const initialState: INFTListState = {
     error: null,
     data: null,
   },
-  selectedNFT: null,
+  selectedNFT: {
+    loading: false,
+    error: null,
+    data: null,
+  },
+  selectedCollection: null,
 };
 
 const NFTListState = createSlice({
@@ -20,8 +30,17 @@ const NFTListState = createSlice({
     setCollections(state: INFTListState, action: PayloadAction<ICollectionData>) {
       state.collections.data = action.payload;
     },
-    setSelectedNFT(state: INFTListState, action: PayloadAction<IOpenSeaNFT>) {
-      state.selectedNFT = action.payload;
+    setSelectedCollection(
+      state: INFTListState,
+      action: PayloadAction<IOpenSeaCollectionWithChain>
+    ) {
+      state.selectedCollection = action.payload;
+    },
+    setSelectedNFTLoading(state: INFTListState, action: PayloadAction<boolean>) {
+      state.selectedNFT.loading = action.payload;
+    },
+    setSelectedNFT(state: INFTListState, action: PayloadAction<IOpenSeaDetailedNFT>) {
+      state.selectedNFT.data = action.payload;
     },
     clearCollections(state: INFTListState) {
       state.collections.loading = false;
@@ -29,7 +48,12 @@ const NFTListState = createSlice({
       state.collections.error = null;
     },
     clearSelectedNFT(state: INFTListState) {
-      state.selectedNFT = null;
+      state.selectedNFT.loading = false;
+      state.selectedNFT.error = null;
+      state.selectedNFT.data = null;
+    },
+    clearSelectedCollection(state: INFTListState) {
+      state.selectedCollection = null;
     },
   },
 });
@@ -37,9 +61,12 @@ const NFTListState = createSlice({
 export const {
   setCollectionsLoading,
   setCollections,
+  setSelectedNFTLoading,
   setSelectedNFT,
+  setSelectedCollection,
   clearCollections,
   clearSelectedNFT,
+  clearSelectedCollection,
 } = NFTListState.actions;
 
 export default NFTListState.reducer;

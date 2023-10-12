@@ -1,4 +1,4 @@
-import { ICollectionData, IOpenSeaNFT } from 'state/nfts/types';
+import { ICollectionData, IOpenSeaCollectionWithChain } from 'state/nfts/types';
 
 export type ICollections = {
   navigation: any;
@@ -10,5 +10,8 @@ export type CollectionsProps = {
     error: any;
     data: ICollectionData;
   };
-  onPressCollection: (nft: IOpenSeaNFT) => void;
+  onPressCollection: (collection: IOpenSeaCollectionWithChain) => void;
+  onSearch: (text: string) => void;
+  searchValue: string;
+  hasItems: boolean;
 };
