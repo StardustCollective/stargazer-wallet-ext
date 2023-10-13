@@ -111,9 +111,9 @@ export interface IOpenSeaNFT {
   collection: string;
   contract: string;
   token_standard: string;
-  name: string;
-  description: string;
-  image_url: string;
+  name: string | null;
+  description: string | null;
+  image_url: string | null;
   metadata_url: string | null;
   created_at: string;
   updated_at: string;

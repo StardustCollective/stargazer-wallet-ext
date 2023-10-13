@@ -31,3 +31,12 @@ export const OPENSEA_LOGOS_MAP: { [chain: string]: string } = {
   [OpenSeaSupportedChains.BSC]: BSC_LOGO,
   [OpenSeaSupportedChains.BSC_TESTNET]: BSC_LOGO,
 };
+
+export const isOpenSeaTestnet = (chain: OpenSeaSupportedChains): boolean => {
+  return [
+    OpenSeaSupportedChains.GOERLI,
+    OpenSeaSupportedChains.POLYGON_MUMBAI,
+    OpenSeaSupportedChains.BSC_TESTNET,
+    OpenSeaSupportedChains.AVALANCHE_FUJI,
+  ].includes(chain);
+};

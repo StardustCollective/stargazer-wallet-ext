@@ -47,7 +47,7 @@ const CardNFT: FC<ICardNFT> = ({
           color={COLORS_ENUMS.PRIMARY_LIGHTER_1}
           extraStyles={styles.title}
         >
-          {truncateString(title, MAX_LENGTH)}
+          {truncateString(title || '-', MAX_LENGTH)}
         </TextV3.CaptionStrong>
         <View style={styles.itemsContainer}>
           <TextV3.Caption

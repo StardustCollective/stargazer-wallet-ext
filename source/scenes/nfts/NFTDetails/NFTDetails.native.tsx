@@ -8,10 +8,12 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import LaunchIcon from 'assets/images/svg/launch.svg';
 import { COLORS } from 'assets/styles/_variables';
+import { isOpenSeaTestnet } from 'utils/opensea';
 import { NFTDetailsProps } from './types';
 import styles from './styles';
 
 const OPENSEA_ASSET_URL = 'https://opensea.io/assets';
+const OPENSEA_TESTNETS_ASSET_URL = 'https://testnets.opensea.io/assets';
 const DESCRIPTION = 'Description';
 const ATTRIBUTES = 'Attributes';
 const NFT_NOT_FOUND = 'NFT not found';
@@ -31,8 +33,11 @@ const NFTDetails: FC<NFTDetailsProps> = ({
   const showNFTDetails = !!data;
 
   const onPressViewOpenSea = () => {
+    const BASE_URL = isOpenSeaTestnet(selectedCollection.chain)
+      ? OPENSEA_TESTNETS_ASSET_URL
+      : OPENSEA_ASSET_URL;
     Linking.openURL(
-      `${OPENSEA_ASSET_URL}/${selectedCollection.chain}/${selectedNFT.data.contract}/${selectedNFT.data.identifier}`
+      `${BASE_URL}/${selectedCollection.chain}/${selectedNFT.data.contract}/${selectedNFT.data.identifier}`
     );
   };
 
@@ -70,7 +75,7 @@ const NFTDetails: FC<NFTDetailsProps> = ({
         <Image source={{ uri: logoURL }} style={styles.image} />
         <View style={styles.titleContainer}>
           <TextV3.Header color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
-            {data.name}
+            {data?.name || '-'}
           </TextV3.Header>
           <TextV3.Body color={COLORS_ENUMS.SECONDARY_TEXT}>Items: 1</TextV3.Body>
         </View>

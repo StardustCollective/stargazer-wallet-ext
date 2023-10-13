@@ -17,10 +17,10 @@ import {
   IOpenSeaNFT,
   OpenSeaSupportedChains,
 } from 'state/nfts/types';
-import { OPENSEA_API_V2 } from 'constants/index';
+import { OPENSEA_API_TESTNETS_V2, OPENSEA_API_V2 } from 'constants/index';
 import { KeyringAssetType, KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { AssetType, Network } from 'state/vault/types';
-import { OPENSEA_CHAINS_MAP } from 'utils/opensea';
+import { OPENSEA_CHAINS_MAP, isOpenSeaTestnet } from 'utils/opensea';
 
 export interface INFTController {
   setCollectionsLoading: (loading: boolean) => void;
@@ -78,11 +78,15 @@ class NFTController implements INFTController {
   ): Promise<IOpenSeaNFT[]> {
     try {
       let accumulatedData: IOpenSeaNFT[] = [];
+      const isTestnet = isOpenSeaTestnet(chain);
 
-      const endpointBase = `${OPENSEA_API_V2}/chain/${chain}/account/${walletAddress}/nfts`;
+      const BASE_URL = isTestnet ? OPENSEA_API_TESTNETS_V2 : OPENSEA_API_V2;
+      const endpointBase = `${BASE_URL}/chain/${chain}/account/${walletAddress}/nfts`;
 
       const recursiveFetch = async (url: string): Promise<void> => {
-        const headers = { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
+        const headers = isTestnet
+          ? {}
+          : { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
         const response = await fetch(url, headers);
         const responseJson = await response.json();
         const nfts = !!responseJson?.nfts ? responseJson.nfts : [];
@@ -105,10 +109,17 @@ class NFTController implements INFTController {
     }
   }
 
-  private async fetchCollection(collectionId: string): Promise<IOpenSeaCollection> {
+  private async fetchCollection(
+    collectionId: string,
+    chain: OpenSeaSupportedChains
+  ): Promise<IOpenSeaCollection> {
     try {
-      const endpointBase = `${OPENSEA_API_V2}/collections/${collectionId}`;
-      const headers = { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
+      const isTestnet = isOpenSeaTestnet(chain);
+      const BASE_URL = isTestnet ? OPENSEA_API_TESTNETS_V2 : OPENSEA_API_V2;
+      const endpointBase = `${BASE_URL}/collections/${collectionId}`;
+      const headers = isTestnet
+        ? {}
+        : { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
       const response = await fetch(endpointBase, headers);
       const responseJson = await response.json();
       return responseJson;
@@ -145,7 +156,7 @@ class NFTController implements INFTController {
         const nftsByCollection = this.groupNftsByCollection(nftsData.items);
         for (const collectionId of Object.keys(nftsByCollection)) {
           // Fetch collection info
-          const collectionData = await this.fetchCollection(collectionId);
+          const collectionData = await this.fetchCollection(collectionId, nftsData.chain);
           // Add "chain" and "nfts" for each collection
           collections[collectionId] = {
             ...collectionData,
@@ -219,8 +230,12 @@ class NFTController implements INFTController {
     this.setSelectedNFTLoading(true);
 
     try {
-      const endpointBase = `${OPENSEA_API_V2}/chain/${chain}/contract/${address}/nfts/${id}`;
-      const headers = { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
+      const isTestnet = isOpenSeaTestnet(chain);
+      const BASE_URL = isTestnet ? OPENSEA_API_TESTNETS_V2 : OPENSEA_API_V2;
+      const endpointBase = `${BASE_URL}/chain/${chain}/contract/${address}/nfts/${id}`;
+      const headers = isTestnet
+        ? {}
+        : { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
       const response = await fetch(endpointBase, headers);
       const responseJson = await response.json();
       const nftData = !!responseJson?.nft ? responseJson.nft : null;

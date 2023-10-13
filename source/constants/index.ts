@@ -368,6 +368,7 @@ export const ERC20_TOKENS_WITH_ADDRESS_API =
 export const SEARCH_API = 'https://pro-api.coingecko.com/api/v3/search?query=';
 export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`;
 export const OPENSEA_API_V2 = 'https://api.opensea.io/api/v2';
+export const OPENSEA_API_TESTNETS_V2 = 'https://testnets-api.opensea.io/api/v2';
 
 export const PRICE_DAG_ID = 'constellation-labs';
 export const PRICE_BTC_ID = 'bitcoin';
