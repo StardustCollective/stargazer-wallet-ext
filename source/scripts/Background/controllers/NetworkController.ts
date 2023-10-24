@@ -18,6 +18,7 @@ import { TxHistoryParams } from './ChainsController';
 import { getNetworkFromChainId } from './EVMChainController/utils';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { initialState as initialStateAssets } from 'state/assets';
+import { ITempNFTInfo } from 'state/nfts/types';
 
 class NetworkController {
   private privateKey: string;
@@ -86,19 +87,29 @@ class NetworkController {
     this.#avalancheNetwork.setChain(chain);
   }
 
+  public getProviderByNetwork(network: string): EVMChainController {
+    const networkToProvider: { [net: string]: EVMChainController } = {
+      Ethereum: this.#ethereumNetwork,
+      Polygon: this.#polygonNetwork,
+      BSC: this.#bscNetwork,
+      Avalanche: this.#avalancheNetwork,
+    };
+    return networkToProvider[network];
+  }
+
   private getProviderByActiveAsset(): EVMChainController {
     const assets = store.getState().assets;
     const { activeAsset } = store.getState().vault;
     if (!activeAsset) throw new Error('No active asset');
     const activeAssetInfo = assets[activeAsset.id] || initialStateAssets[activeAsset.id];
     const network = getNetworkFromChainId(activeAssetInfo.network);
-    const networkToProvider = {
-      [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
+    const networkToProvider: { [net: string]: EVMChainController } = {
+      Ethereum: this.#ethereumNetwork,
       Polygon: this.#polygonNetwork,
       BSC: this.#bscNetwork,
       Avalanche: this.#avalancheNetwork,
     };
-    return networkToProvider[network as keyof typeof networkToProvider];
+    return networkToProvider[network];
   }
 
   // TODO-349: Check if getProviderByActiveAsset is fine in all scenarios
@@ -158,6 +169,36 @@ class NetworkController {
     return provider.createERC20Contract(address);
   }
 
+  transferNFT(nft: ITempNFTInfo, network: string) {
+    let provider;
+    try {
+      provider = this.getProviderByNetwork(network);
+    } catch (err) {
+      console.log('Error: transferNFT - provider not found.');
+    }
+    return provider.transferNFT(nft);
+  }
+
+  createERC721Contract(address: string, network: string) {
+    let provider;
+    try {
+      provider = this.getProviderByNetwork(network);
+    } catch (err) {
+      console.log('Error: createERC721Contract - provider not found.');
+    }
+    return provider.createERC721Contract(address);
+  }
+
+  createERC1155Contract(address: string, network: string) {
+    let provider;
+    try {
+      provider = this.getProviderByNetwork(network);
+    } catch (err) {
+      console.log('Error: createERC1155Contract - provider not found.');
+    }
+    return provider.createERC1155Contract(address);
+  }
+
   async estimateGas(from: string, to: string, data: string) {
     let provider;
     try {
@@ -188,10 +229,12 @@ class NetworkController {
     return provider.getTokenInfo(address);
   }
 
-  async estimateGasPrices() {
+  async estimateGasPrices(network?: string) {
     let provider;
     try {
-      provider = this.getProviderByActiveAsset();
+      provider = !!network
+        ? this.getProviderByNetwork(network)
+        : this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: estimateGasPrices - provider not found.');
     }

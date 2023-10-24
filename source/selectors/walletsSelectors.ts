@@ -213,6 +213,7 @@ const selectActiveNetworkAssetIds = createSelector(
 
 export default {
   getActiveAsset,
+  getActiveWallet,
   selectAllAccounts,
   selectAllDagAccounts,
   selectAllEthAccounts,

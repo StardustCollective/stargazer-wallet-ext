@@ -32,6 +32,28 @@ export const OPENSEA_LOGOS_MAP: { [chain: string]: string } = {
   [OpenSeaSupportedChains.BSC_TESTNET]: BSC_LOGO,
 };
 
+export const OPENSEA_NETWORK_MAP: { [chain: string]: string } = {
+  [OpenSeaSupportedChains.ETHEREUM]: 'Ethereum',
+  [OpenSeaSupportedChains.GOERLI]: 'Ethereum',
+  [OpenSeaSupportedChains.POLYGON]: 'Polygon',
+  [OpenSeaSupportedChains.POLYGON_MUMBAI]: 'Polygon',
+  [OpenSeaSupportedChains.AVALANCHE]: 'Avalanche',
+  [OpenSeaSupportedChains.AVALANCHE_FUJI]: 'Avalanche',
+  [OpenSeaSupportedChains.BSC]: 'BSC',
+  [OpenSeaSupportedChains.BSC_TESTNET]: 'BSC',
+};
+
+export const OPENSEA_EXPLORER_MAP: { [chain: string]: string } = {
+  [OpenSeaSupportedChains.ETHEREUM]: 'https://etherscan.io/',
+  [OpenSeaSupportedChains.GOERLI]: 'https://goerli.etherscan.io/',
+  [OpenSeaSupportedChains.POLYGON]: 'https://polygonscan.com/',
+  [OpenSeaSupportedChains.POLYGON_MUMBAI]: 'https://mumbai.polygonscan.com/',
+  [OpenSeaSupportedChains.AVALANCHE]: 'https://snowtrace.io/',
+  [OpenSeaSupportedChains.AVALANCHE_FUJI]: 'https://testnet.snowtrace.io/',
+  [OpenSeaSupportedChains.BSC]: 'https://bscscan.com/',
+  [OpenSeaSupportedChains.BSC_TESTNET]: 'https://testnet.bscscan.com/',
+};
+
 export const isOpenSeaTestnet = (chain: OpenSeaSupportedChains): boolean => {
   return [
     OpenSeaSupportedChains.GOERLI,

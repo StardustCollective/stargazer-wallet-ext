@@ -48,6 +48,9 @@ export default {
     collections: 'nfts-collections',
     nftsList: 'nfts-list',
     nftsDetail: 'nfts-details',
+    nftsSend: 'nfts-send',
+    nftsSendConfirm: 'nfts-send-confirm',
+    nftsSendCompleted: 'nfts-send-completed',
   },
 
   ////////////////////////////

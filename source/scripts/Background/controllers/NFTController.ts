@@ -3,11 +3,17 @@ import {
   clearCollections,
   clearSelectedCollection,
   clearSelectedNFT,
+  clearTempoNFTInfo,
+  clearTransferNFT,
   setCollections,
   setCollectionsLoading,
   setSelectedCollection,
   setSelectedNFT,
   setSelectedNFTLoading,
+  setTempNFTInfo,
+  setTransferNFTData,
+  setTransferNFTError,
+  setTransferNFTLoading,
 } from 'state/nfts';
 import {
   ICollectionData,
@@ -15,12 +21,14 @@ import {
   IOpenSeaCollectionWithChain,
   IOpenSeaDetailedNFT,
   IOpenSeaNFT,
+  ITempNFTInfo,
   OpenSeaSupportedChains,
 } from 'state/nfts/types';
 import { OPENSEA_API_TESTNETS_V2, OPENSEA_API_V2 } from 'constants/index';
 import { KeyringAssetType, KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { AssetType, Network } from 'state/vault/types';
 import { OPENSEA_CHAINS_MAP, isOpenSeaTestnet } from 'utils/opensea';
+import { AccountController } from './AccountController';
 
 export interface INFTController {
   setCollectionsLoading: (loading: boolean) => void;
@@ -28,9 +36,13 @@ export interface INFTController {
   setSelectedNFTLoading: (loading: boolean) => void;
   setSelectedNFT: (nft: IOpenSeaDetailedNFT) => void;
   setSelectedCollection: (collection: IOpenSeaCollectionWithChain) => void;
+  setTempNFTInfo: (tempInfo: ITempNFTInfo) => void;
   clearSelectedNFT: () => void;
   clearSelectedCollection: () => void;
   clearCollections: () => void;
+  clearTempNFTInfo: () => void;
+  clearTransferNFT: () => void;
+  transferNFT: (nft: ITempNFTInfo, network: string) => Promise<void>;
   fetchAllNfts: () => Promise<void>;
   fetchNFTDetails: (
     chain: OpenSeaSupportedChains,
@@ -40,6 +52,8 @@ export interface INFTController {
 }
 
 class NFTController implements INFTController {
+  constructor(private accountController: Readonly<AccountController>) {}
+
   setCollectionsLoading(loading: boolean) {
     store.dispatch(setCollectionsLoading(loading));
   }
@@ -60,6 +74,10 @@ class NFTController implements INFTController {
     store.dispatch(setSelectedCollection(collection));
   }
 
+  setTempNFTInfo(tempNFTInfo: ITempNFTInfo) {
+    store.dispatch(setTempNFTInfo(tempNFTInfo));
+  }
+
   clearSelectedNFT() {
     store.dispatch(clearSelectedNFT());
   }
@@ -70,6 +88,31 @@ class NFTController implements INFTController {
 
   clearCollections() {
     store.dispatch(clearCollections());
+  }
+
+  clearTempNFTInfo() {
+    store.dispatch(clearTempoNFTInfo());
+  }
+
+  clearTransferNFT() {
+    store.dispatch(clearTransferNFT());
+  }
+
+  async transferNFT(nft: ITempNFTInfo, network: string) {
+    store.dispatch(setTransferNFTLoading(true));
+    try {
+      const txHash = await this.accountController.networkController.transferNFT(
+        nft,
+        network
+      );
+      store.dispatch(setTransferNFTData(txHash));
+    } catch (err) {
+      console.log('Error: transferNFT', err);
+      store.dispatch(setTransferNFTError(err));
+      store.dispatch(setTransferNFTLoading(false));
+    }
+
+    store.dispatch(setTransferNFTLoading(false));
   }
 
   private async fetchNftsByChain(

@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontSize: 16,
+    marginHorizontal: 16,
   },
 });
 

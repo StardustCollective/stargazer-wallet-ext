@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -10, // container has 10 padding to compensate you cant change
   },
   label: {
-    paddingBottom: 10,
+    paddingBottom: 8,
     fontSize: 12,
     color: COLORS.black,
     lineHeight: 20,

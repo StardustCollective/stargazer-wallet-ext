@@ -33,6 +33,10 @@ import {
 } from './etherscanApi';
 import { GasOracleResponse } from './etherscanApi.types';
 import erc20abi from 'utils/erc20.json';
+import erc721abi from 'utils/erc721.json';
+import erc1155abi from 'utils/erc1155.json';
+import { ITempNFTInfo } from 'state/nfts/types';
+import { AssetType } from 'state/vault/types';
 
 class EVMChainController implements IEVMChainController {
   private chain: IChain;
@@ -41,11 +45,7 @@ class EVMChainController implements IEVMChainController {
   private provider: ethers.providers.JsonRpcProvider;
   private etherscanApiKey?: string;
 
-  constructor({
-    chain,
-    privateKey,
-    etherscanApiKey
-  }: EVMChainControllerParams) {
+  constructor({ chain, privateKey, etherscanApiKey }: EVMChainControllerParams) {
     this.etherscanApiKey = etherscanApiKey;
     this.chain = getChainInfo(chain);
     this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
@@ -88,9 +88,9 @@ class EVMChainController implements IEVMChainController {
     if (!chain) {
       throw new Error('Chain must be provided');
     } else {
-        this.chain = getChainInfo(chain);
-        this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
-        this.wallet = this.wallet.connect(this.provider);
+      this.chain = getChainInfo(chain);
+      this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
+      this.wallet = this.wallet.connect(this.provider);
     }
   }
 
@@ -100,6 +100,51 @@ class EVMChainController implements IEVMChainController {
 
   createERC20Contract(address: Address) {
     return new ethers.Contract(address, erc20abi, this.provider);
+  }
+
+  createERC721Contract(address: Address) {
+    return new ethers.Contract(address, erc721abi, this.provider).connect(
+      this.getWallet()
+    );
+  }
+
+  createERC1155Contract(address: Address) {
+    return new ethers.Contract(address, erc1155abi, this.provider).connect(
+      this.getWallet()
+    );
+  }
+
+  async transferNFT(tempNFT: ITempNFTInfo): Promise<string> {
+    const { nft } = tempNFT;
+    const isERC721 = nft.token_standard === AssetType.ERC721;
+    const nftContract = tempNFT.nft.contract;
+    const fromAddress = tempNFT.from.address;
+    const toAddress = tempNFT.to;
+    const tokenId = tempNFT.nft.identifier;
+    const amount = tempNFT.quantity;
+
+    try {
+      const tx = isERC721
+        ? await this.call<TransactionResponse>(nftContract, erc721abi, 'transferFrom', [
+            fromAddress,
+            toAddress,
+            tokenId,
+          ])
+        : await this.call<TransactionResponse>(
+            nftContract,
+            erc1155abi,
+            'safeTransferFrom',
+            [fromAddress, toAddress, tokenId, amount, '0x']
+          );
+
+      // Wait for 5 confirmations
+      const CONFIRMATIONS = 5;
+      await tx.wait(CONFIRMATIONS);
+      return tx.hash;
+    } catch (err) {
+      console.log('transferNFT ERROR:', err);
+      return null;
+    }
   }
 
   async transfer({

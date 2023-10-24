@@ -657,8 +657,8 @@ export class AccountController {
     return await dag4.account.getFeeRecommendation();
   }
 
-  async getLatestGasPrices(): Promise<number[]> {
-    const gasPrices = await this.networkController.estimateGasPrices();
+  async getLatestGasPrices(network?: string): Promise<number[]> {
+    const gasPrices = await this.networkController.estimateGasPrices(network);
     const results = Object.values(gasPrices).map((gas) =>
       Math.round(Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei')))
     );

@@ -4,6 +4,7 @@ import {
   ICollectionData,
   IOpenSeaCollectionWithChain,
   IOpenSeaDetailedNFT,
+  ITempNFTInfo,
 } from './types';
 
 const initialState: INFTListState = {
@@ -17,6 +18,12 @@ const initialState: INFTListState = {
     error: null,
     data: null,
   },
+  transferNFT: {
+    loading: false,
+    error: null,
+    data: null,
+  },
+  tempNFTInfo: null,
   selectedCollection: null,
 };
 
@@ -42,6 +49,23 @@ const NFTListState = createSlice({
     setSelectedNFT(state: INFTListState, action: PayloadAction<IOpenSeaDetailedNFT>) {
       state.selectedNFT.data = action.payload;
     },
+    setTempNFTInfo(state: INFTListState, action: PayloadAction<ITempNFTInfo>) {
+      state.tempNFTInfo = action.payload;
+    },
+    setTransferNFTLoading(state: INFTListState, action: PayloadAction<boolean>) {
+      state.transferNFT.loading = action.payload;
+    },
+    setTransferNFTData(state: INFTListState, action: PayloadAction<string>) {
+      state.transferNFT.data = action.payload;
+    },
+    setTransferNFTError(state: INFTListState, action: PayloadAction<any>) {
+      state.transferNFT.error = action.payload;
+    },
+    clearTransferNFT(state: INFTListState) {
+      state.transferNFT.loading = false;
+      state.transferNFT.error = null;
+      state.transferNFT.data = null;
+    },
     clearCollections(state: INFTListState) {
       state.collections.loading = false;
       state.collections.data = null;
@@ -55,6 +79,9 @@ const NFTListState = createSlice({
     clearSelectedCollection(state: INFTListState) {
       state.selectedCollection = null;
     },
+    clearTempoNFTInfo(state: INFTListState) {
+      state.tempNFTInfo = null;
+    },
   },
 });
 
@@ -64,9 +91,15 @@ export const {
   setSelectedNFTLoading,
   setSelectedNFT,
   setSelectedCollection,
+  setTempNFTInfo,
+  setTransferNFTLoading,
+  setTransferNFTError,
+  setTransferNFTData,
+  clearTransferNFT,
   clearCollections,
   clearSelectedNFT,
   clearSelectedCollection,
+  clearTempoNFTInfo,
 } = NFTListState.actions;
 
 export default NFTListState.reducer;

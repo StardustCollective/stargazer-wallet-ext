@@ -10,9 +10,7 @@ import { IOpenSeaCollectionWithChain } from 'state/nfts/types';
 import { COLORS } from 'assets/styles/_variables';
 import styles from './styles';
 import { NEW_COLORS } from 'assets/styles/_variables.native';
-
-const NFTS_NOT_FOUND = 'No NFTs found';
-const SEARCH_PLACEHOLDER = 'Search by collection name';
+import { NFTS_NOT_FOUND, SEARCH_PLACEHOLDER } from './constants';
 
 const Collections: FC<CollectionsProps> = ({
   collections,

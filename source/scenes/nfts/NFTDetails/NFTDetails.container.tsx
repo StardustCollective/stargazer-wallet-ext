@@ -5,6 +5,7 @@ import { INFTDetails } from './types';
 import { useSelector } from 'react-redux';
 import nftSelectors from 'selectors/nftSelectors';
 import { getWalletController } from 'utils/controllersUtils';
+import screens from 'navigation/screens';
 
 const NFTDetailsContainer: FC<INFTDetails> = ({ navigation, route }) => {
   const { title, logo } = route?.params || {};
@@ -22,7 +23,7 @@ const NFTDetailsContainer: FC<INFTDetails> = ({ navigation, route }) => {
   }, []);
 
   const onPressSendNFT = () => {
-    console.log('Send NFT');
+    navigation.navigate(screens.nfts.nftsSend);
   };
 
   return (

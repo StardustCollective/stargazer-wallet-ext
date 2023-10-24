@@ -67,7 +67,28 @@ export interface INFTListState {
     error: any;
     data: IOpenSeaDetailedNFT | null;
   };
+  transferNFT: {
+    loading: boolean;
+    error: any;
+    data: string | null;
+  };
+  tempNFTInfo: ITempNFTInfo;
   selectedCollection: IOpenSeaCollectionWithChain | null;
+}
+
+export interface ITempNFTInfo {
+  nft: IOpenSeaDetailedNFT;
+  quantity: number;
+  from: {
+    address: string;
+    label: string;
+  };
+  to: string;
+  gas: {
+    fee: number;
+    symbol: string;
+    price: string;
+  };
 }
 
 interface IOpenSeaFees {

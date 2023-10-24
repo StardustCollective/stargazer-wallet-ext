@@ -28,6 +28,7 @@ import defaultHeader from 'navigation/headers/default';
 import screens from '../screens';
 export const Stack = createStackNavigator();
 export const SCREEN_DEFAULT_TITLE_STRINGS = {
+  blank: '',
   wallet: 'Wallet',
   import: 'Import',
   addAsset: 'Manage Tokens',
@@ -39,6 +40,7 @@ export const SCREEN_DEFAULT_TITLE_STRINGS = {
   gasSettings: 'Gas Settings',
   // NFTs
   nfts: 'My NFTs',
+  nftsSend: 'Transfer details',
   // Settings
   settings: 'Settings',
   about: 'About',

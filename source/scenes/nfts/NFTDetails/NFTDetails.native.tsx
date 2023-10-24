@@ -11,14 +11,15 @@ import { COLORS } from 'assets/styles/_variables';
 import { isOpenSeaTestnet } from 'utils/opensea';
 import { NFTDetailsProps } from './types';
 import styles from './styles';
-
-const OPENSEA_ASSET_URL = 'https://opensea.io/assets';
-const OPENSEA_TESTNETS_ASSET_URL = 'https://testnets.opensea.io/assets';
-const DESCRIPTION = 'Description';
-const ATTRIBUTES = 'Attributes';
-const NFT_NOT_FOUND = 'NFT not found';
-const SEND_NFT = 'Send NFT';
-const VIEW_ON_OPENSEA = 'View on OpenSea';
+import {
+  ATTRIBUTES,
+  DESCRIPTION,
+  NFT_NOT_FOUND,
+  OPENSEA_ASSET_URL,
+  OPENSEA_TESTNETS_ASSET_URL,
+  SEND_NFT,
+  VIEW_ON_OPENSEA,
+} from './constants';
 
 const NFTDetails: FC<NFTDetailsProps> = ({
   logo,

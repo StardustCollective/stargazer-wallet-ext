@@ -34,6 +34,9 @@ import SingleSelect from 'scenes/home/SingleSelect';
 import Collections from 'scenes/nfts/Collections';
 import NFTList from 'scenes/nfts/NFTList';
 import NFTDetails from 'scenes/nfts/NFTDetails';
+import NFTSend from 'scenes/nfts/NFTSend';
+import NFTSendConfirm from 'scenes/nfts/NFTSendConfirm';
+import NFTSendCompleted from 'scenes/nfts/NFTSendCompleted';
 
 // Settings
 import Main from 'scenes/settings/Main';
@@ -187,6 +190,21 @@ const NftsTab = () => {
       />
       <Stack.Screen name={screens.nfts.nftsList} component={NFTList} />
       <Stack.Screen name={screens.nfts.nftsDetail} component={NFTDetails} />
+      <Stack.Screen
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.nftsSend }}
+        name={screens.nfts.nftsSend}
+        component={NFTSend}
+      />
+      <Stack.Screen
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.nftsSend }}
+        name={screens.nfts.nftsSendConfirm}
+        component={NFTSendConfirm}
+      />
+      <Stack.Screen
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.blank, headerLeft: null }}
+        name={screens.nfts.nftsSendCompleted}
+        component={NFTSendCompleted}
+      />
     </Stack.Navigator>
   );
 };

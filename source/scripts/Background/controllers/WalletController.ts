@@ -95,7 +95,7 @@ class WalletController {
 
     this.account = new AccountController(this.keyringManager);
     this.swap = new SwapController();
-    this.nfts = new NFTController();
+    this.nfts = new NFTController(this.account);
   }
 
   checkPassword(password: string): boolean {
