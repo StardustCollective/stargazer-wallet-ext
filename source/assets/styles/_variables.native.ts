@@ -58,6 +58,7 @@ export const NEW_COLORS = {
   primary: '#5925A7',
   primary_lighter_1: '#7C5BF3',
   primary_lighter_2: '#7A56F0',
+  light_gray: '#EBEBEB',
   gray_50: '#F9FAFB',
   gray_300: '#D1D5DB',
   gray_400: '#9CA3AF',

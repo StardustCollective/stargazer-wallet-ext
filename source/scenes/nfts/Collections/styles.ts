@@ -8,11 +8,6 @@ const styles = StyleSheet.create({
   searchContainer: {
     padding: 16,
   },
-  noDataContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   noFoundText: {
     fontSize: 16,
     marginTop: 16,

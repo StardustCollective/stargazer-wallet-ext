@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { NFTListProps } from './types';
 import TextV3 from 'components/TextV3';
 import SearchInput from 'components/SearchInput';
+import LoadingList from '../LoadingList';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import CardNFT from 'components/CardNFT';
 import { IOpenSeaNFT } from 'state/nfts/types';
-import { COLORS } from 'assets/styles/_variables';
 import { NEW_COLORS } from 'assets/styles/_variables.native';
 import styles from './styles';
 import { NO_NFTS_FOUND, SEARCH_PLACEHOLDER } from './constants';
@@ -50,8 +50,15 @@ const NFTList: FC<NFTListProps> = ({
 
   if (showLoading) {
     return (
-      <View style={styles.noDataContainer}>
-        <ActivityIndicator color={COLORS.purple_medium} size="large" />
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <SearchInput
+            placeholder={SEARCH_PLACEHOLDER}
+            extraStyles={styles.searchInputContainer}
+            editable={false}
+          />
+        </View>
+        <LoadingList />
       </View>
     );
   }

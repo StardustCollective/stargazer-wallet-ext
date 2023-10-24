@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
-import { View, ScrollView, ActivityIndicator, Image, Linking } from 'react-native';
+import { View, ScrollView, Image, Linking } from 'react-native';
 import TextV3 from 'components/TextV3';
 import ButtonV3 from 'components/ButtonV3';
 import AttributeItem from 'components/AttributeItem';
+import LoadingDetails from '../LoadingDetails';
 import { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import LaunchIcon from 'assets/images/svg/launch.svg';
-import { COLORS } from 'assets/styles/_variables';
 import { isOpenSeaTestnet } from 'utils/opensea';
 import { NFTDetailsProps } from './types';
 import styles from './styles';
@@ -44,8 +44,8 @@ const NFTDetails: FC<NFTDetailsProps> = ({
 
   if (showLoading) {
     return (
-      <View style={styles.noDataContainer}>
-        <ActivityIndicator color={COLORS.purple_medium} size="large" />
+      <View style={[styles.container, styles.contentContainer]}>
+        <LoadingDetails />
       </View>
     );
   }

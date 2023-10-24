@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { CollectionsProps } from './types';
 import TextV3 from 'components/TextV3';
 import SearchInput from 'components/SearchInput';
+import LoadingList from '../LoadingList';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import CardNFT from 'components/CardNFT';
 import { IOpenSeaCollectionWithChain } from 'state/nfts/types';
-import { COLORS } from 'assets/styles/_variables';
-import styles from './styles';
 import { NEW_COLORS } from 'assets/styles/_variables.native';
 import { NFTS_NOT_FOUND, SEARCH_PLACEHOLDER } from './constants';
+import styles from './styles';
 
 const Collections: FC<CollectionsProps> = ({
   collections,
@@ -41,7 +41,7 @@ const Collections: FC<CollectionsProps> = ({
 
   const renderNoNfts = () => {
     return (
-      <View style={styles.noDataContainer}>
+      <View style={styles.container}>
         <StargazerCard height={72} />
         <TextV3.BodyStrong color={COLORS_ENUMS.GRAY_100} extraStyles={styles.noFoundText}>
           {NFTS_NOT_FOUND}
@@ -52,8 +52,15 @@ const Collections: FC<CollectionsProps> = ({
 
   if (showLoading) {
     return (
-      <View style={styles.noDataContainer}>
-        <ActivityIndicator color={COLORS.purple_medium} size="large" />
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <SearchInput
+            placeholder={SEARCH_PLACEHOLDER}
+            extraStyles={styles.searchInputContainer}
+            editable={false}
+          />
+        </View>
+        <LoadingList />
       </View>
     );
   }
