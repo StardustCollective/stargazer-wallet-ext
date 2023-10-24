@@ -41,7 +41,7 @@ const Collections: FC<CollectionsProps> = ({
 
   const renderNoNfts = () => {
     return (
-      <View style={styles.container}>
+      <View style={styles.noDataContainer}>
         <StargazerCard height={72} />
         <TextV3.BodyStrong color={COLORS_ENUMS.GRAY_100} extraStyles={styles.noFoundText}>
           {NFTS_NOT_FOUND}

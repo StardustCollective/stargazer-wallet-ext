@@ -5,6 +5,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   searchContainer: {
     padding: 16,
   },
