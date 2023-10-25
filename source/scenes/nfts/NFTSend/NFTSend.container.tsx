@@ -17,15 +17,18 @@ import { getWalletController } from 'utils/controllersUtils';
 import { ITempNFTInfo } from 'state/nfts/types';
 import walletsSelectors from 'selectors/walletsSelectors';
 import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
+import { formatNumber } from 'scenes/home/helpers';
 import {
   ADDRESS_REQUIRED,
   INVALID_ADDRESS,
   OWN_ADDRESS,
   QUANTITY_GREATER_ZERO,
+  QUANTITY_LESS_MAX,
   QUANTITY_REQUIRED,
 } from './constants';
 
-const NFTSendContainer: FC<INFTSend> = ({ navigation }) => {
+const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
+  const { amount } = route.params || {};
   const walletController = getWalletController();
 
   const activeWallet = useSelector(walletsSelectors.getActiveWallet);
@@ -56,6 +59,12 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation }) => {
           .test('valid', QUANTITY_GREATER_ZERO, (val) => {
             if (!!val) {
               return Number(val) > 0;
+            }
+            return true;
+          })
+          .test('max', `${QUANTITY_LESS_MAX} ${formatNumber(amount, 0, 0)}`, (val) => {
+            if (!!val && !!amount) {
+              return Number(val) <= amount;
             }
             return true;
           })
@@ -156,6 +165,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation }) => {
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <NFTSend
+        amount={amount}
         selectedNFT={selectedNFTData}
         isERC721={isERC721}
         quantity={quantity}

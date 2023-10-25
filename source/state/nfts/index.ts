@@ -24,7 +24,10 @@ const initialState: INFTListState = {
     data: null,
   },
   tempNFTInfo: null,
-  selectedCollection: null,
+  selectedCollection: {
+    loading: false,
+    data: null,
+  },
 };
 
 const NFTListState = createSlice({
@@ -37,11 +40,14 @@ const NFTListState = createSlice({
     setCollections(state: INFTListState, action: PayloadAction<ICollectionData>) {
       state.collections.data = action.payload;
     },
+    setSelectedCollectionLoading(state: INFTListState, action: PayloadAction<boolean>) {
+      state.selectedCollection.loading = action.payload;
+    },
     setSelectedCollection(
       state: INFTListState,
       action: PayloadAction<IOpenSeaCollectionWithChain>
     ) {
-      state.selectedCollection = action.payload;
+      state.selectedCollection.data = action.payload;
     },
     setSelectedNFTLoading(state: INFTListState, action: PayloadAction<boolean>) {
       state.selectedNFT.loading = action.payload;
@@ -77,7 +83,8 @@ const NFTListState = createSlice({
       state.selectedNFT.data = null;
     },
     clearSelectedCollection(state: INFTListState) {
-      state.selectedCollection = null;
+      state.selectedCollection.data = null;
+      state.selectedCollection.loading = false;
     },
     clearTempoNFTInfo(state: INFTListState) {
       state.tempNFTInfo = null;
@@ -91,6 +98,7 @@ export const {
   setSelectedNFTLoading,
   setSelectedNFT,
   setSelectedCollection,
+  setSelectedCollectionLoading,
   setTempNFTInfo,
   setTransferNFTLoading,
   setTransferNFTError,

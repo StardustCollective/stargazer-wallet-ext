@@ -179,6 +179,21 @@ class NetworkController {
     return provider.transferNFT(nft);
   }
 
+  getERC1155Balance(
+    contractAddress: string,
+    userAddress: string,
+    tokenId: string,
+    network: string
+  ) {
+    let provider;
+    try {
+      provider = this.getProviderByNetwork(network);
+    } catch (err) {
+      console.log('Error: createERC721Contract - provider not found.');
+    }
+    return provider.getERC1155Balance(contractAddress, userAddress, tokenId);
+  }
+
   createERC721Contract(address: string, network: string) {
     let provider;
     try {

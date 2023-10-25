@@ -6,6 +6,7 @@ export type INFTDetails = {
 };
 
 export type NFTDetailsProps = {
+  quantity: number;
   logo: string;
   selectedCollection: IOpenSeaCollectionWithChain;
   selectedNFT: {

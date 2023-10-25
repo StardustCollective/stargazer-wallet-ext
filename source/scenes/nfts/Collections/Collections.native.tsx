@@ -10,6 +10,7 @@ import CardNFT from 'components/CardNFT';
 import { IOpenSeaCollectionWithChain } from 'state/nfts/types';
 import { NEW_COLORS } from 'assets/styles/_variables.native';
 import { NFTS_NOT_FOUND, SEARCH_PLACEHOLDER } from './constants';
+import { PLACEHOLDER_IMAGE } from 'constants/index';
 import styles from './styles';
 
 const Collections: FC<CollectionsProps> = ({
@@ -26,7 +27,11 @@ const Collections: FC<CollectionsProps> = ({
   const showCollectionList = (!!data && Object.keys(data).length) || hasItems;
 
   const renderCollectionItem = ({ item }: { item: IOpenSeaCollectionWithChain }) => {
-    const collectionLogo = !!item.image_url ? item.image_url : item.nfts[0].image_url;
+    const collectionLogo = !!item?.image_url
+      ? item.image_url
+      : !!item?.nfts[0]?.image_url
+      ? item.nfts[0].image_url
+      : PLACEHOLDER_IMAGE;
 
     return (
       <CardNFT

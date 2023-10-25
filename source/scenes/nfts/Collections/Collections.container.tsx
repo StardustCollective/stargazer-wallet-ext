@@ -17,7 +17,9 @@ const CollectionsContainer: FC<ICollections> = ({ navigation }) => {
 
   const onPressCollection = (collection: IOpenSeaCollectionWithChain) => {
     walletController.nfts.setSelectedCollection(collection);
-    navigation.navigate(screens.nfts.nftsList);
+    navigation.navigate(screens.nfts.nftsList, {
+      title: collection.name,
+    });
   };
 
   useLayoutEffect(() => {

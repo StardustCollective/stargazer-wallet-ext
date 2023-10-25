@@ -9,10 +9,13 @@ import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import CardNFT from 'components/CardNFT';
 import { IOpenSeaNFT } from 'state/nfts/types';
 import { NEW_COLORS } from 'assets/styles/_variables.native';
+import { formatNumber } from 'scenes/home/helpers';
 import styles from './styles';
 import { NO_NFTS_FOUND, SEARCH_PLACEHOLDER } from './constants';
+import { PLACEHOLDER_IMAGE } from 'constants/index';
 
 const NFTList: FC<NFTListProps> = ({
+  loading,
   selectedCollection,
   data,
   hasItems,
@@ -20,16 +23,17 @@ const NFTList: FC<NFTListProps> = ({
   onPressNFT,
   onSearch,
 }) => {
-  const showLoading = false;
-  const showEmptyList = !data.length && !hasItems;
+  const showLoading = loading;
+  const showEmptyList = !data?.length && !hasItems;
   const showNFTList = !!data?.length || hasItems;
 
   const renderNftItem = ({ item }: { item: IOpenSeaNFT }) => {
-    const nftLogo = !!item.image_url ? item.image_url : selectedCollection.image_url;
+    const nftLogo = !!item?.image_url ? item.image_url : PLACEHOLDER_IMAGE;
+    const quantity = !isNaN(item.quantity) ? formatNumber(item.quantity, 0, 0) : '1';
     return (
       <CardNFT
         title={item.name}
-        subtitle={'1'}
+        subtitle={quantity}
         logo={nftLogo}
         chain={selectedCollection.chain}
         onPress={() => onPressNFT(item)}

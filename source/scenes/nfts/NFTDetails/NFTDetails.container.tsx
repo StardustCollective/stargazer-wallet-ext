@@ -8,7 +8,7 @@ import { getWalletController } from 'utils/controllersUtils';
 import screens from 'navigation/screens';
 
 const NFTDetailsContainer: FC<INFTDetails> = ({ navigation, route }) => {
-  const { title, logo } = route?.params || {};
+  const { title, logo, quantity } = route?.params || {};
 
   const walletController = getWalletController();
   const selectedCollection = useSelector(nftSelectors.getSelectedCollection);
@@ -23,13 +23,16 @@ const NFTDetailsContainer: FC<INFTDetails> = ({ navigation, route }) => {
   }, []);
 
   const onPressSendNFT = () => {
-    navigation.navigate(screens.nfts.nftsSend);
+    navigation.navigate(screens.nfts.nftsSend, {
+      amount: quantity,
+    });
   };
 
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <NFTDetails
         logo={logo}
+        quantity={quantity}
         selectedCollection={selectedCollection}
         selectedNFT={selectedNFT}
         onPressSendNFT={onPressSendNFT}

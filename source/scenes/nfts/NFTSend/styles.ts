@@ -29,6 +29,15 @@ const styles = StyleSheet.create({
   checkGreenContainer: {
     marginRight: 4,
   },
+  quantityLabelContainer: {
+    marginHorizontal: -10,
+    paddingBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  quantityTitle: {
+    fontWeight: FONT_WEIGHTS.medium,
+  },
   quantityButtonsContainer: {
     flexDirection: 'row',
     height: '100%',

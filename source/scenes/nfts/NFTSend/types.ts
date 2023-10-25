@@ -17,6 +17,7 @@ export type NFTSendProps = {
   errors: any;
   buttonDisabled: boolean;
   isValidAddress: boolean;
+  amount?: number;
   handleQRscan: (data: string) => void;
   onButtonPress: () => void;
   register: () => void;

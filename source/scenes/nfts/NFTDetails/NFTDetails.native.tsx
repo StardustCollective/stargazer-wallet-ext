@@ -9,6 +9,8 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import LaunchIcon from 'assets/images/svg/launch.svg';
 import { isOpenSeaTestnet } from 'utils/opensea';
+import { formatNumber } from 'scenes/home/helpers';
+import { PLACEHOLDER_IMAGE } from 'constants/index';
 import { NFTDetailsProps } from './types';
 import styles from './styles';
 import {
@@ -23,6 +25,7 @@ import {
 
 const NFTDetails: FC<NFTDetailsProps> = ({
   logo,
+  quantity,
   selectedCollection,
   selectedNFT,
   onPressSendNFT,
@@ -62,11 +65,12 @@ const NFTDetails: FC<NFTDetailsProps> = ({
   }
 
   if (showNFTDetails) {
-    const logoURL = !!data?.image_url
-      ? data.image_url
-      : !!logo
+    const logoURL = !!logo
       ? logo
-      : selectedCollection.image_url;
+      : !!data?.image_url
+      ? data.image_url
+      : PLACEHOLDER_IMAGE;
+    const quantityLabel = !isNaN(quantity) ? formatNumber(quantity, 0, 0) : '1';
 
     return (
       <ScrollView
@@ -78,7 +82,9 @@ const NFTDetails: FC<NFTDetailsProps> = ({
           <TextV3.Header color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
             {data?.name || '-'}
           </TextV3.Header>
-          <TextV3.Body color={COLORS_ENUMS.SECONDARY_TEXT}>Items: 1</TextV3.Body>
+          <TextV3.Body color={COLORS_ENUMS.SECONDARY_TEXT}>
+            Items: {quantityLabel}
+          </TextV3.Body>
         </View>
         <ButtonV3
           type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}

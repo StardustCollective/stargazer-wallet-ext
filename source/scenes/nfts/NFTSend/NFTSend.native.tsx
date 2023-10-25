@@ -11,7 +11,9 @@ import TextInput from 'components/TextInput';
 import PurpleSlider from 'components/PurpleSlider';
 import QRCodeButton from 'components/QRCodeButton';
 import QRCodeScanner from 'components/QRCodeScanner';
+import { formatNumber } from 'scenes/home/helpers';
 import { NFTSendProps } from './types';
+import { PLACEHOLDER_IMAGE } from 'constants/index';
 import styles from './styles';
 import {
   QUANTITY,
@@ -22,6 +24,7 @@ import {
 } from './constants';
 
 const NFTSend: FC<NFTSendProps> = ({
+  amount,
   selectedNFT,
   isERC721,
   control,
@@ -42,6 +45,20 @@ const NFTSend: FC<NFTSendProps> = ({
   const [cameraOpen, setCameraOpen] = useState(false);
   const showGasSlider = gas.prices.length > 0 && !buttonDisabled;
   const numberQuantity = Number(quantity);
+  const logoURL = !!selectedNFT?.image_url ? selectedNFT.image_url : PLACEHOLDER_IMAGE;
+
+  const RenderQuantityLabel = () => {
+    return (
+      <View style={styles.quantityLabelContainer}>
+        <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.quantityTitle}>
+          {QUANTITY}
+        </TextV3.Caption>
+        <TextV3.Caption color={COLORS_ENUMS.SECONDARY_TEXT}>
+          x{formatNumber(amount, 0, 0)}
+        </TextV3.Caption>
+      </View>
+    );
+  };
   const RenderQuantityButtons = () => {
     const onSubstract = () => {
       if (numberQuantity > 0) {
@@ -69,7 +86,7 @@ const NFTSend: FC<NFTSendProps> = ({
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.imageContainer}>
-        <Image source={{ uri: selectedNFT.image_url }} style={styles.image} />
+        <Image source={{ uri: logoURL }} style={styles.image} />
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
           {selectedNFT.name}
         </TextV3.CaptionStrong>
@@ -80,7 +97,7 @@ const NFTSend: FC<NFTSendProps> = ({
             keyboardType="number-pad"
             name="quantity"
             value={quantity}
-            label={QUANTITY}
+            label={<RenderQuantityLabel />}
             control={control}
             onChange={(amount) => {
               handleQuantityChange(amount);

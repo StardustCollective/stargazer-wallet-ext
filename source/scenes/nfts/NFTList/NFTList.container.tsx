@@ -8,14 +8,19 @@ import { IOpenSeaNFT } from 'state/nfts/types';
 import { getWalletController } from 'utils/controllersUtils';
 import screens from 'navigation/screens';
 
-const NFTListContainer: FC<INFTList> = ({ navigation }) => {
+const NFTListContainer: FC<INFTList> = ({ navigation, route }) => {
+  const { title } = route.params || {};
+
   const walletController = getWalletController();
   const selectedCollection = useSelector(nftSelectors.getSelectedCollection);
-  const [nftsList, setNftsList] = useState(selectedCollection.nfts);
+  const selectedCollectionLoading = useSelector(
+    nftSelectors.getSelectedCollectionLoading
+  );
+  const [nftsList, setNftsList] = useState(selectedCollection?.nfts);
   const [searchValue, setSearchValue] = useState('');
 
   useLayoutEffect(() => {
-    navigation.setOptions({ title: selectedCollection.name });
+    navigation.setOptions({ title });
 
     return () => {
       walletController.nfts.clearSelectedCollection();
@@ -23,15 +28,15 @@ const NFTListContainer: FC<INFTList> = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (searchValue) {
+    if (searchValue && !!selectedCollection?.nfts) {
       const newNftsList = selectedCollection.nfts.filter((nft) =>
         nft.name.toLowerCase().includes(searchValue.toLowerCase())
       );
       setNftsList(newNftsList);
     } else {
-      setNftsList(selectedCollection.nfts);
+      setNftsList(selectedCollection?.nfts);
     }
-  }, [searchValue, selectedCollection.nfts]);
+  }, [searchValue, selectedCollection?.nfts]);
 
   const onSearch = (text: string) => {
     setSearchValue(text);
@@ -46,6 +51,7 @@ const NFTListContainer: FC<INFTList> = ({ navigation }) => {
     navigation.navigate(screens.nfts.nftsDetail, {
       title: nft.name,
       logo: nft.image_url,
+      quantity: nft.quantity,
     });
   };
 
@@ -53,6 +59,7 @@ const NFTListContainer: FC<INFTList> = ({ navigation }) => {
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <NFTList
         selectedCollection={selectedCollection}
+        loading={selectedCollectionLoading}
         data={nftsList}
         onPressNFT={onPressNFT}
         searchValue={searchValue}

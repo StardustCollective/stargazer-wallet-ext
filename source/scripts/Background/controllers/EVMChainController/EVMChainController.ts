@@ -108,6 +108,26 @@ class EVMChainController implements IEVMChainController {
     );
   }
 
+  async getERC1155Balance(
+    contractAddress: string,
+    userAddress: string,
+    tokenId: string
+  ): Promise<number> {
+    try {
+      const balance = await this.call<BigNumber>(
+        contractAddress,
+        erc1155abi,
+        'balanceOf',
+        [userAddress, tokenId]
+      );
+
+      return balance.toNumber();
+    } catch (err) {
+      console.log('ERROR: getERC1155Balance', err);
+      return null;
+    }
+  }
+
   createERC1155Contract(address: Address) {
     return new ethers.Contract(address, erc1155abi, this.provider).connect(
       this.getWallet()

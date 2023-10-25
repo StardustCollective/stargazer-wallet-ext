@@ -73,7 +73,12 @@ export interface INFTListState {
     data: string | null;
   };
   tempNFTInfo: ITempNFTInfo;
-  selectedCollection: IOpenSeaCollectionWithChain | null;
+  selectedCollection: ISelectedCollection;
+}
+
+interface ISelectedCollection {
+  data: IOpenSeaCollectionWithChain | null;
+  loading: boolean;
 }
 
 export interface ITempNFTInfo {
@@ -140,6 +145,7 @@ export interface IOpenSeaNFT {
   updated_at: string;
   is_disabled: boolean;
   is_nsfw: boolean;
+  quantity?: number;
 }
 
 export interface IOpenSeaDetailedNFT extends IOpenSeaNFT {
