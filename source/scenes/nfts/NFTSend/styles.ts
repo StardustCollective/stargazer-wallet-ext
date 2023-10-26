@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   gasPriceHeaderRight: {
-    flex: 1,
     alignItems: 'flex-end',
     justifyContent: 'center',
   },

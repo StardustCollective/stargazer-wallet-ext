@@ -329,6 +329,7 @@ const Tabs = () => {
     <Tab.Navigator
       tabBarOptions={{
         showLabel: false,
+        style: styles.bottomTab,
       }}
     >
       <Tab.Screen

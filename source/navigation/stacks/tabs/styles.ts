@@ -1,7 +1,11 @@
 import { StyleSheet } from 'react-native';
 import { NEW_COLORS } from 'assets/styles/_variables';
+import { iosPlatform } from 'utils/platform';
 
 const styles = StyleSheet.create({
+  bottomTab: {
+    height: iosPlatform() ? 80 : 56,
+  },
   tabItemContainer: {
     height: '100%',
     width: '70%',

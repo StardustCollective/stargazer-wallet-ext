@@ -11,7 +11,7 @@ import { OpenSeaSupportedChains } from 'state/nfts/types';
 import { truncateString } from 'scenes/home/helpers';
 import styles from './styles';
 
-const MAX_LENGTH = 16;
+const MAX_LENGTH = 14;
 const ICON_SIZE = 16;
 
 export const OPENSEA_LOGOS_MAP: { [chain: string]: string } = {

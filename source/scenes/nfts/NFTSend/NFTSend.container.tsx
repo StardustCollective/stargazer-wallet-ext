@@ -20,10 +20,12 @@ import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 import { formatNumber } from 'scenes/home/helpers';
 import {
   ADDRESS_REQUIRED,
+  INTEGER_REGEX_PATTERN,
   INVALID_ADDRESS,
   OWN_ADDRESS,
   QUANTITY_GREATER_ZERO,
   QUANTITY_LESS_MAX,
+  QUANTITY_MUST_NUMBER,
   QUANTITY_REQUIRED,
 } from './constants';
 
@@ -56,6 +58,13 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
       validationSchema: yup.object().shape({
         quantity: yup
           .string()
+          .test('number', QUANTITY_MUST_NUMBER, (val) => {
+            if (!!val) {
+              const regex = new RegExp(INTEGER_REGEX_PATTERN);
+              return regex.test(val);
+            }
+            return true;
+          })
           .test('valid', QUANTITY_GREATER_ZERO, (val) => {
             if (!!val) {
               return Number(val) > 0;

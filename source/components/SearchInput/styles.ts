@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontFamily: FONTS.inter,
     fontWeight: FONT_WEIGHTS.regular,
-    fontSize: 16,
   },
 });
 
