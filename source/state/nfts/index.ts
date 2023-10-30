@@ -5,6 +5,7 @@ import {
   IOpenSeaCollectionWithChain,
   IOpenSeaDetailedNFT,
   ITempNFTInfo,
+  IUpdateCollectionData,
 } from './types';
 
 const initialState: INFTListState = {
@@ -39,6 +40,12 @@ const NFTListState = createSlice({
     },
     setCollections(state: INFTListState, action: PayloadAction<ICollectionData>) {
       state.collections.data = action.payload;
+    },
+    setCollection(state: INFTListState, action: PayloadAction<IUpdateCollectionData>) {
+      const { id, data } = action.payload;
+      if (!!id && !!state?.collections?.data) {
+        state.collections.data[id] = data;
+      }
     },
     setSelectedCollectionLoading(state: INFTListState, action: PayloadAction<boolean>) {
       state.selectedCollection.loading = action.payload;
@@ -95,6 +102,7 @@ const NFTListState = createSlice({
 export const {
   setCollectionsLoading,
   setCollections,
+  setCollection,
   setSelectedNFTLoading,
   setSelectedNFT,
   setSelectedCollection,

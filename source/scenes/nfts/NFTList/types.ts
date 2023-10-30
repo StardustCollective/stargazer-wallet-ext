@@ -11,6 +11,7 @@ export type NFTListProps = {
   data: IOpenSeaNFT[];
   onPressNFT: (nft: IOpenSeaNFT) => void;
   onSearch: (text: string) => void;
+  onRefresh: () => void;
   searchValue: string;
   hasItems: boolean;
 };

@@ -23,9 +23,10 @@ import styles from './styles.scss';
 
 interface INftsHeader {
   onRefresh: () => void;
+  showLogo?: boolean;
 }
 
-const nftsHeader = ({ onRefresh }: INftsHeader) => {
+const nftsHeader = ({ onRefresh, showLogo = true }: INftsHeader) => {
   return {
     ...config,
     headerLeft: () => (

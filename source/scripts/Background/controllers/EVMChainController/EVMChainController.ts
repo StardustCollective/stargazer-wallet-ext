@@ -111,20 +111,21 @@ class EVMChainController implements IEVMChainController {
   async getERC1155Balance(
     contractAddress: string,
     userAddress: string,
-    tokenId: string
-  ): Promise<number> {
+    tokenIds: string[]
+  ): Promise<number[]> {
     try {
-      const balance = await this.call<BigNumber>(
+      const userAddresses: string[] = new Array(tokenIds.length).fill(userAddress);
+      const balances = await this.call<BigNumber[]>(
         contractAddress,
         erc1155abi,
-        'balanceOf',
-        [userAddress, tokenId]
+        'balanceOfBatch',
+        [userAddresses, tokenIds]
       );
 
-      return balance.toNumber();
+      return balances.map((balance) => balance.toNumber());
     } catch (err) {
       console.log('ERROR: getERC1155Balance', err);
-      return null;
+      return [];
     }
   }
 

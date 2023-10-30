@@ -182,7 +182,7 @@ class NetworkController {
   getERC1155Balance(
     contractAddress: string,
     userAddress: string,
-    tokenId: string,
+    tokenIds: string[],
     network: string
   ) {
     let provider;
@@ -191,7 +191,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: createERC721Contract - provider not found.');
     }
-    return provider.getERC1155Balance(contractAddress, userAddress, tokenId);
+    return provider.getERC1155Balance(contractAddress, userAddress, tokenIds);
   }
 
   createERC721Contract(address: string, network: string) {

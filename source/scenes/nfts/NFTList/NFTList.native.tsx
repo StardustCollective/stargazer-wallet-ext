@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { View, FlatList } from 'react-native';
+import React, { FC, useState } from 'react';
+import { View, FlatList, RefreshControl } from 'react-native';
 import { NFTListProps } from './types';
 import TextV3 from 'components/TextV3';
 import SearchInput from 'components/SearchInput';
@@ -22,10 +22,19 @@ const NFTList: FC<NFTListProps> = ({
   searchValue,
   onPressNFT,
   onSearch,
+  onRefresh,
 }) => {
-  const showLoading = loading;
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const showLoading = loading && !isRefreshing;
   const showEmptyList = !data?.length && !hasItems;
   const showNFTList = !!data?.length || hasItems;
+
+  const onPullRefresh = async () => {
+    setIsRefreshing(true);
+    await onRefresh();
+    setIsRefreshing(false);
+  };
 
   const renderNftItem = ({ item }: { item: IOpenSeaNFT }) => {
     const nftLogo = !!item?.image_url ? item.image_url : PLACEHOLDER_IMAGE;
@@ -35,7 +44,7 @@ const NFTList: FC<NFTListProps> = ({
         title={item.name}
         subtitle={quantity}
         logo={nftLogo}
-        chain={selectedCollection.chain}
+        chain={selectedCollection?.chain}
         onPress={() => onPressNFT(item)}
       />
     );
@@ -87,6 +96,14 @@ const NFTList: FC<NFTListProps> = ({
         </View>
         {!!data?.length ? (
           <FlatList
+            refreshControl={
+              <RefreshControl
+                tintColor={NEW_COLORS.primary_lighter_1}
+                colors={[NEW_COLORS.primary_lighter_1]}
+                refreshing={loading || isRefreshing}
+                onRefresh={onPullRefresh}
+              />
+            }
             data={data}
             renderItem={renderNftItem}
             numColumns={2}

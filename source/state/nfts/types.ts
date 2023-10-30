@@ -56,6 +56,11 @@ export interface ICollectionData {
   [id: string]: IOpenSeaCollectionWithChain;
 }
 
+export interface IUpdateCollectionData {
+  id: string;
+  data: IOpenSeaCollectionWithChain;
+}
+
 export interface INFTListState {
   collections: {
     loading: boolean;

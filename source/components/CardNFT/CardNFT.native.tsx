@@ -25,13 +25,9 @@ export const OPENSEA_LOGOS_MAP: { [chain: string]: string } = {
   [OpenSeaSupportedChains.BSC_TESTNET]: BscLogo,
 };
 
-const CardNFT: FC<ICardNFT> = ({
-  title,
-  subtitle,
-  logo,
-  chain,
-  onPress,
-}): JSX.Element => {
+const CardNFT: FC<ICardNFT> = ({ title, subtitle, logo, chain, onPress }) => {
+  if (!chain) return null;
+
   const NetworkIcon = OPENSEA_LOGOS_MAP[chain];
 
   return (

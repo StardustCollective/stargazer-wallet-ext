@@ -5,6 +5,7 @@ import {
   clearSelectedNFT,
   clearTempoNFTInfo,
   clearTransferNFT,
+  setCollection,
   setCollections,
   setCollectionsLoading,
   setSelectedCollection,
@@ -45,6 +46,7 @@ export interface INFTController {
   clearTransferNFT: () => void;
   transferNFT: (nft: ITempNFTInfo, network: string) => Promise<void>;
   fetchAllNfts: () => Promise<void>;
+  refreshCollection: (collectionId: string) => Promise<void>;
   fetchNFTDetails: (
     chain: OpenSeaSupportedChains,
     address: string,
@@ -53,6 +55,7 @@ export interface INFTController {
 }
 
 const API_KEY_HEADER = 'X-API-KEY';
+const NFT_FETCH_LIMIT = 200;
 
 class NFTController implements INFTController {
   constructor(private accountController: Readonly<AccountController>) {}
@@ -86,22 +89,25 @@ class NFTController implements INFTController {
     const network = OPENSEA_NETWORK_MAP[chain];
 
     if (!!ethAddress) {
-      for (const nft of collection.nfts) {
-        // Fetch balance from contract
-        const balance = await this.accountController.networkController.getERC1155Balance(
-          contractAddress,
-          ethAddress,
-          nft.identifier,
-          network
-        );
-        // Add quantity property with balance
-        const nftWithBalance = {
-          ...nft,
-          quantity: balance,
-        };
-        nftsWithQuantity.push(nftWithBalance);
+      const allIds = collection.nfts.map((nft) => nft.identifier);
+      const balances = await this.accountController.networkController.getERC1155Balance(
+        contractAddress,
+        ethAddress,
+        allIds,
+        network
+      );
+
+      if (allIds.length === balances.length) {
+        for (let i = 0; i < allIds.length; i++) {
+          const balance = balances[i];
+          const nftWithBalance = {
+            ...collection.nfts[i],
+            quantity: balance,
+          };
+          nftsWithQuantity.push(nftWithBalance);
+        }
+        collectionUpdated.nfts = nftsWithQuantity;
       }
-      collectionUpdated.nfts = nftsWithQuantity;
     }
     return collectionUpdated;
   }
@@ -165,16 +171,43 @@ class NFTController implements INFTController {
     store.dispatch(setTransferNFTLoading(false));
   }
 
+  async refreshCollection(collectionId: string): Promise<void> {
+    const { collections } = store.getState().nfts;
+    const { activeWallet } = store.getState().vault;
+    const { assets } = activeWallet;
+
+    const ethAddress = assets?.find((asset) => asset?.id === AssetType.Ethereum)?.address;
+    const collectionData = collections.data[collectionId];
+    if (!!ethAddress && !!collectionId) {
+      store.dispatch(setSelectedCollectionLoading(true));
+      const nftsResponse = await this.fetchNftsByChain(
+        ethAddress,
+        collectionData.chain,
+        collectionId
+      );
+      const updatedCollection: IOpenSeaCollectionWithChain = {
+        ...collectionData,
+        nfts: nftsResponse,
+      };
+      store.dispatch(setCollection({ id: collectionId, data: updatedCollection }));
+      await this.setSelectedCollection(updatedCollection);
+    }
+  }
+
   private async fetchNftsByChain(
     walletAddress: string,
-    chain: OpenSeaSupportedChains
+    chain: OpenSeaSupportedChains,
+    collectionId?: string
   ): Promise<IOpenSeaNFT[]> {
     try {
       let accumulatedData: IOpenSeaNFT[] = [];
       const isTestnet = isOpenSeaTestnet(chain);
 
       const BASE_URL = isTestnet ? OPENSEA_API_TESTNETS_V2 : OPENSEA_API_V2;
-      const endpointBase = `${BASE_URL}/chain/${chain}/account/${walletAddress}/nfts`;
+      let endpointBase = `${BASE_URL}/chain/${chain}/account/${walletAddress}/nfts?limit=${NFT_FETCH_LIMIT}`;
+      if (collectionId) {
+        endpointBase += `&collection=${collectionId}`;
+      }
 
       const recursiveFetch = async (url: string): Promise<void> => {
         const headers = isTestnet
@@ -185,10 +218,10 @@ class NFTController implements INFTController {
         const nfts = !!responseJson?.nfts ? responseJson.nfts : [];
         accumulatedData = accumulatedData.concat(nfts);
 
-        // OpenSea has a limit of 50 nfts per request. https://docs.opensea.io/reference/list_nfts_by_account
+        // OpenSea has a limit of 200 nfts per request. https://docs.opensea.io/reference/list_nfts_by_account
         // If "next" is included in the response, it means that there're more records to fetch.
         if (!!responseJson?.next) {
-          const urlWithNext = `${endpointBase}?next=${responseJson.next}`;
+          const urlWithNext = `${endpointBase}&next=${responseJson.next}`;
           await recursiveFetch(urlWithNext);
         }
       };

@@ -27,9 +27,10 @@ import styles from './styles';
 
 interface INftsHeader {
   onRefresh: () => void;
+  showLogo?: boolean;
 }
 
-const nftsHeader = ({ onRefresh }: INftsHeader) => {
+const nftsHeader = ({ onRefresh, showLogo = true }: INftsHeader) => {
   const renderHeaderRight = () => {
     return (
       <TouchableOpacity style={styles.rightIconContainer} onPress={onRefresh}>
@@ -37,14 +38,17 @@ const nftsHeader = ({ onRefresh }: INftsHeader) => {
       </TouchableOpacity>
     );
   };
-
-  return {
-    ...config,
-    headerLeft: () => (
+  const renderHeaderLeft = () => {
+    return (
       <View style={styles.logo}>
         <LogoImage width={scale(28)} height={scale(28)} />
       </View>
-    ),
+    );
+  };
+
+  return {
+    ...config,
+    ...(showLogo && { headerLeft: renderHeaderLeft }),
     headerRight: renderHeaderRight,
   };
 };
