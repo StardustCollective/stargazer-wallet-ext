@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import nftSelectors from 'selectors/nftSelectors';
 import { IOpenSeaCollectionWithChain } from 'state/nfts/types';
 import { getWalletController } from 'utils/controllersUtils';
-import homeHeader from 'navigation/headers/home';
+import nftsHeader from 'navigation/headers/nfts';
 import screens from 'navigation/screens';
 
 const CollectionsContainer: FC<ICollections> = ({ navigation }) => {
@@ -22,9 +22,13 @@ const CollectionsContainer: FC<ICollections> = ({ navigation }) => {
     });
   };
 
+  const onRefresh = async () => {
+    await walletController.nfts.fetchAllNfts();
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      ...homeHeader(),
+      ...nftsHeader({ onRefresh }),
     });
   }, []);
 
@@ -63,6 +67,7 @@ const CollectionsContainer: FC<ICollections> = ({ navigation }) => {
         onPressCollection={onPressCollection}
         searchValue={searchValue}
         onSearch={onSearch}
+        onRefresh={onRefresh}
       />
     </Container>
   );

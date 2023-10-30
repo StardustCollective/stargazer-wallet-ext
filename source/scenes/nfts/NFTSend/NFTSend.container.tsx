@@ -111,6 +111,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
     setGasPrice,
     gasPrices,
     gasPrice,
+    gasLimit,
   } = useGasNftEstimate({
     chain: selectedCollection.chain,
     contractAddress: selectedNFTData.contract,
@@ -153,9 +154,11 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
           address: ethAddress,
         },
         gas: {
+          price: gasPrice,
+          limit: gasLimit,
           fee: gasFee,
           symbol: mainAsset.symbol,
-          price: `${getFiatAmount(gasFee, 2, mainAsset.priceId)}`,
+          fiatAmount: `${getFiatAmount(gasFee, 2, mainAsset.priceId)}`,
         },
       };
 

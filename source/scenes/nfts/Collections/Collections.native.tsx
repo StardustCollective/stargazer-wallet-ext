@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { View, FlatList } from 'react-native';
+import React, { FC, useState } from 'react';
+import { View, FlatList, RefreshControl } from 'react-native';
 import { CollectionsProps } from './types';
 import TextV3 from 'components/TextV3';
 import SearchInput from 'components/SearchInput';
@@ -18,13 +18,22 @@ const Collections: FC<CollectionsProps> = ({
   onPressCollection,
   searchValue,
   onSearch,
+  onRefresh,
   hasItems,
 }) => {
   const { data, error, loading } = collections;
 
-  const showLoading = loading;
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const showLoading = loading && !isRefreshing;
   const showEmptyList = (!!data && !Object.keys(data).length && !hasItems) || !!error;
   const showCollectionList = (!!data && Object.keys(data).length) || hasItems;
+
+  const onPullRefresh = async () => {
+    setIsRefreshing(true);
+    await onRefresh();
+    setIsRefreshing(false);
+  };
 
   const renderCollectionItem = ({ item }: { item: IOpenSeaCollectionWithChain }) => {
     const collectionLogo = !!item?.image_url
@@ -86,10 +95,19 @@ const Collections: FC<CollectionsProps> = ({
             extraStyles={styles.searchInputContainer}
             selectionColor={NEW_COLORS.primary_lighter_1}
             extraInputStyles={styles.searchInput}
+            editable={true}
           />
         </View>
         {hasItems ? (
           <FlatList
+            refreshControl={
+              <RefreshControl
+                tintColor={NEW_COLORS.primary_lighter_1}
+                colors={[NEW_COLORS.primary_lighter_1]}
+                refreshing={loading || isRefreshing}
+                onRefresh={onPullRefresh}
+              />
+            }
             data={Object.values(data)}
             renderItem={renderCollectionItem}
             numColumns={2}

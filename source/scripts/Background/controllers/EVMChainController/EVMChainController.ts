@@ -142,6 +142,21 @@ class EVMChainController implements IEVMChainController {
     const toAddress = tempNFT.to;
     const tokenId = tempNFT.nft.identifier;
     const amount = tempNFT.quantity;
+    const { price, limit } = tempNFT.gas;
+    let overrides: TxOverrides = {
+      gasLimit: BASE_TOKEN_GAS_COST,
+    };
+
+    if (!!price && !!limit) {
+      // Increase gas limit by 30%
+      const gasLimit = BigNumber.from(Math.floor(limit * 1.3));
+      const gasPrice = ethers.utils.parseUnits(price.toString(), 'gwei');
+
+      overrides = {
+        gasLimit,
+        gasPrice,
+      };
+    }
 
     try {
       const tx = isERC721
@@ -149,12 +164,13 @@ class EVMChainController implements IEVMChainController {
             fromAddress,
             toAddress,
             tokenId,
+            { ...overrides },
           ])
         : await this.call<TransactionResponse>(
             nftContract,
             erc1155abi,
             'safeTransferFrom',
-            [fromAddress, toAddress, tokenId, amount, '0x']
+            [fromAddress, toAddress, tokenId, amount, '0x', { ...overrides }]
           );
 
       // Wait for 5 confirmations

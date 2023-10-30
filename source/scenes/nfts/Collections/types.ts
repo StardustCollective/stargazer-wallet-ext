@@ -12,6 +12,7 @@ export type CollectionsProps = {
   };
   onPressCollection: (collection: IOpenSeaCollectionWithChain) => void;
   onSearch: (text: string) => void;
+  onRefresh: () => void;
   searchValue: string;
   hasItems: boolean;
 };

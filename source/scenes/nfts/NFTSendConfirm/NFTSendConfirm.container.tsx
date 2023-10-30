@@ -36,7 +36,7 @@ const NFTSendConfirmContainer: FC<INFTSendConfirm> = ({ navigation }) => {
     quantity: tempNFTInfo.quantity,
     sendFrom: `${tempNFTInfo.from.label} (${ellipsis(tempNFTInfo.from.address)})`,
     sendTo: `${ellipsis(tempNFTInfo.to)}`,
-    transactionFee: `${tempNFTInfo.gas.fee} ${tempNFTInfo.gas.symbol} (${tempNFTInfo.gas.price})`,
+    transactionFee: `${tempNFTInfo.gas.fee} ${tempNFTInfo.gas.symbol} (${tempNFTInfo.gas.fiatAmount})`,
     maxTotal: `${tempNFTInfo.gas.fee} ${tempNFTInfo.gas.symbol}`,
     nftLogo: selectedNFT.image_url,
     nftName: selectedNFT.name,

@@ -82,6 +82,7 @@ const NFTList: FC<NFTListProps> = ({
             extraStyles={styles.searchInputContainer}
             selectionColor={NEW_COLORS.primary_lighter_1}
             extraInputStyles={styles.searchInput}
+            editable={true}
           />
         </View>
         {!!data?.length ? (

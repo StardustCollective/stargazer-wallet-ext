@@ -90,9 +90,11 @@ export interface ITempNFTInfo {
   };
   to: string;
   gas: {
+    fiatAmount: string;
+    limit: number;
     fee: number;
     symbol: string;
-    price: string;
+    price: number;
   };
 }
 

@@ -1,0 +1,10 @@
+.logo {
+  width: 40px;
+  margin: 0 16px;
+}
+.buttonRight {
+  color: white;
+  &.more {
+    margin-right: 10px;
+  }
+}
