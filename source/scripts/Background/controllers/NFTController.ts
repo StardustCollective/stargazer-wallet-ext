@@ -31,6 +31,7 @@ import { KeyringAssetType, KeyringNetwork } from '@stardust-collective/dag4-keyr
 import { AssetType, Network } from 'state/vault/types';
 import { OPENSEA_CHAINS_MAP, OPENSEA_NETWORK_MAP, isOpenSeaTestnet } from 'utils/opensea';
 import { AccountController } from './AccountController';
+import { getNetworkNativeToken } from './EVMChainController/utils';
 
 export interface INFTController {
   setCollectionsLoading: (loading: boolean) => void;
@@ -39,6 +40,8 @@ export interface INFTController {
   setSelectedNFT: (nft: IOpenSeaDetailedNFT) => void;
   setSelectedCollection: (collection: IOpenSeaCollectionWithChain) => void;
   setTempNFTInfo: (tempInfo: ITempNFTInfo) => void;
+  setTransferNFTError: (error: any) => void;
+  setTransferNFTLoading: (loading: boolean) => void;
   clearSelectedNFT: () => void;
   clearSelectedCollection: () => void;
   clearCollections: () => void;
@@ -55,6 +58,9 @@ export interface INFTController {
 }
 
 const API_KEY_HEADER = 'X-API-KEY';
+const INSUFICIENT_FUNDS = 'insufficient funds';
+const DEFAULT_ERROR_MESSAGE =
+  'There was an error with your token transfer. Please try again later.';
 const NFT_FETCH_LIMIT = 200;
 
 class NFTController implements INFTController {
@@ -134,6 +140,14 @@ class NFTController implements INFTController {
     store.dispatch(setTempNFTInfo(tempNFTInfo));
   }
 
+  setTransferNFTError(error: any) {
+    store.dispatch(setTransferNFTError(error));
+  }
+
+  setTransferNFTLoading(loading: boolean) {
+    store.dispatch(setTransferNFTLoading(loading));
+  }
+
   clearSelectedNFT() {
     store.dispatch(clearSelectedNFT());
   }
@@ -155,20 +169,28 @@ class NFTController implements INFTController {
   }
 
   async transferNFT(nft: ITempNFTInfo, network: string) {
-    store.dispatch(setTransferNFTLoading(true));
+    this.setTransferNFTLoading(true);
     try {
       const txHash = await this.accountController.networkController.transferNFT(
         nft,
         network
       );
-      store.dispatch(setTransferNFTData(txHash));
+      if (!!txHash) {
+        store.dispatch(setTransferNFTData(txHash));
+      } else {
+        this.setTransferNFTError(DEFAULT_ERROR_MESSAGE);
+      }
     } catch (err) {
-      console.log('Error: transferNFT', err);
-      store.dispatch(setTransferNFTError(err));
-      store.dispatch(setTransferNFTLoading(false));
+      let message = err?.message || DEFAULT_ERROR_MESSAGE;
+      if (err?.message?.includes(INSUFICIENT_FUNDS)) {
+        const nativeToken = getNetworkNativeToken(network);
+        message = `Balance is too low to cover gas fees. Add ${nativeToken} to your wallet to complete this transaction.`;
+      }
+      this.setTransferNFTError(message);
+      this.setTransferNFTLoading(false);
     }
 
-    store.dispatch(setTransferNFTLoading(false));
+    this.setTransferNFTLoading(false);
   }
 
   async refreshCollection(collectionId: string): Promise<void> {

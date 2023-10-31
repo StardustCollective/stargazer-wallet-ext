@@ -5,12 +5,14 @@ import { INFTSendConfirm } from './types';
 import { useSelector } from 'react-redux';
 import nftSelectors from 'selectors/nftSelectors';
 import { getWalletController } from 'utils/controllersUtils';
+import { usePlatformAlert } from 'utils/alertUtil';
 import { OPENSEA_NETWORK_MAP } from 'utils/opensea';
 import screens from 'navigation/screens';
 import { ellipsis } from 'scenes/home/helpers';
 import { AssetType } from 'state/vault/types';
 
 const NFTSendConfirmContainer: FC<INFTSendConfirm> = ({ navigation }) => {
+  const showAlert = usePlatformAlert();
   const walletController = getWalletController();
   const selectedCollection = useSelector(nftSelectors.getSelectedCollection);
   const selectedNFT = useSelector(nftSelectors.getSelectedNftData);
@@ -26,6 +28,15 @@ const NFTSendConfirmContainer: FC<INFTSendConfirm> = ({ navigation }) => {
       });
     }
   }, [transferNFT.data]);
+
+  useEffect(() => {
+    if (transferNFT.error) {
+      const message = transferNFT.error;
+      walletController.nfts.setTransferNFTError(null);
+      walletController.nfts.setTransferNFTLoading(false);
+      showAlert(message, 'danger');
+    }
+  }, [transferNFT.error]);
 
   const onButtonPress = () => {
     const network = OPENSEA_NETWORK_MAP[selectedCollection.chain];

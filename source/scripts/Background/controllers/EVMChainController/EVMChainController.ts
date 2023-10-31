@@ -159,29 +159,25 @@ class EVMChainController implements IEVMChainController {
       };
     }
 
-    try {
-      const tx = isERC721
-        ? await this.call<TransactionResponse>(nftContract, erc721abi, 'transferFrom', [
-            fromAddress,
-            toAddress,
-            tokenId,
-            { ...overrides },
-          ])
-        : await this.call<TransactionResponse>(
-            nftContract,
-            erc1155abi,
-            'safeTransferFrom',
-            [fromAddress, toAddress, tokenId, amount, '0x', { ...overrides }]
-          );
+    const tx = isERC721
+      ? await this.call<TransactionResponse>(nftContract, erc721abi, 'transferFrom', [
+          fromAddress,
+          toAddress,
+          tokenId,
+          { ...overrides },
+        ])
+      : await this.call<TransactionResponse>(
+          nftContract,
+          erc1155abi,
+          'safeTransferFrom',
+          [fromAddress, toAddress, tokenId, amount, '0x', { ...overrides }]
+        );
 
-      // Wait for 5 confirmations
-      const CONFIRMATIONS = 5;
-      await tx.wait(CONFIRMATIONS);
-      return tx.hash;
-    } catch (err) {
-      console.log('transferNFT ERROR:', err);
-      return null;
-    }
+    // Wait for 5 confirmations
+    const CONFIRMATIONS = 5;
+    await tx.wait(CONFIRMATIONS);
+
+    return tx.hash;
   }
 
   async transfer({
