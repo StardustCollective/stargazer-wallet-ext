@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import TextV3 from 'components/TextV3';
 import { NFTSendCompletedProps } from './types';
-import styles from './NFTSend.scss';
 import { COLORS_ENUMS } from 'assets/styles/colors';
+import styles from './NFTSendCompleted.scss';
 
 const NFTSendCompleted: FC<NFTSendCompletedProps> = ({}) => {
   return (

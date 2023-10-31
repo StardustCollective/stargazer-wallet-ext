@@ -27,6 +27,7 @@ interface INftsHeader {
 }
 
 const nftsHeader = ({ onRefresh, showLogo = true }: INftsHeader) => {
+  console.log({ onRefresh, showLogo });
   return {
     ...config,
     headerLeft: () => (

@@ -180,8 +180,8 @@ class NFTController implements INFTController {
       } else {
         this.setTransferNFTError(DEFAULT_ERROR_MESSAGE);
       }
-    } catch (err) {
-      let message = err?.message || DEFAULT_ERROR_MESSAGE;
+    } catch (err: any) {
+      let message: string = err?.message || DEFAULT_ERROR_MESSAGE;
       if (err?.message?.includes(INSUFICIENT_FUNDS)) {
         const nativeToken = getNetworkNativeToken(network);
         message = `Balance is too low to cover gas fees. Add ${nativeToken} to your wallet to complete this transaction.`;

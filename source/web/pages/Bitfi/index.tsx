@@ -33,11 +33,13 @@ const options = {
 
 store.ready().then(() => {
   ReactDOM.render(
-    <Provider store={store}>
-      <AlertProvider template={ToastAlert} {...options}>
-        <BitfiPage />
-      </AlertProvider>
-    </Provider>,
+    (
+      <Provider store={store}>
+        <AlertProvider template={ToastAlert} {...options}>
+          <BitfiPage />
+        </AlertProvider>
+      </Provider>
+    ) as any,
     app
   );
 });
