@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, ScrollView, Image, Linking } from 'react-native';
+import { View, ScrollView, Image } from 'react-native';
 import TextV3 from 'components/TextV3';
 import ButtonV3 from 'components/ButtonV3';
 import AttributeItem from 'components/AttributeItem';
@@ -8,17 +8,13 @@ import { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import LaunchIcon from 'assets/images/svg/launch.svg';
-import { isOpenSeaTestnet } from 'utils/opensea';
 import { formatNumber } from 'scenes/home/helpers';
-import { PLACEHOLDER_IMAGE } from 'constants/index';
 import { NFTDetailsProps } from './types';
 import styles from './styles';
 import {
   ATTRIBUTES,
   DESCRIPTION,
   NFT_NOT_FOUND,
-  OPENSEA_ASSET_URL,
-  OPENSEA_TESTNETS_ASSET_URL,
   SEND_NFT,
   VIEW_ON_OPENSEA,
 } from './constants';
@@ -26,24 +22,15 @@ import {
 const NFTDetails: FC<NFTDetailsProps> = ({
   logo,
   quantity,
-  selectedCollection,
   selectedNFT,
   onPressSendNFT,
+  onPressViewOpenSea,
 }) => {
   const { data, error, loading } = selectedNFT;
 
   const showLoading = loading;
   const showNotFound = !data || !!error;
   const showNFTDetails = !!data;
-
-  const onPressViewOpenSea = () => {
-    const BASE_URL = isOpenSeaTestnet(selectedCollection.chain)
-      ? OPENSEA_TESTNETS_ASSET_URL
-      : OPENSEA_ASSET_URL;
-    Linking.openURL(
-      `${BASE_URL}/${selectedCollection.chain}/${selectedNFT.data.contract}/${selectedNFT.data.identifier}`
-    );
-  };
 
   if (showLoading) {
     return (
@@ -65,11 +52,6 @@ const NFTDetails: FC<NFTDetailsProps> = ({
   }
 
   if (showNFTDetails) {
-    const logoURL = !!logo
-      ? logo
-      : !!data?.image_url
-      ? data.image_url
-      : PLACEHOLDER_IMAGE;
     const quantityLabel = !isNaN(quantity) ? formatNumber(quantity, 0, 0) : '1';
 
     return (
@@ -77,7 +59,7 @@ const NFTDetails: FC<NFTDetailsProps> = ({
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        <Image source={{ uri: logoURL }} style={styles.image} />
+        <Image source={{ uri: logo }} style={styles.image} />
         <View style={styles.titleContainer}>
           <TextV3.Header color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
             {data?.name || '-'}

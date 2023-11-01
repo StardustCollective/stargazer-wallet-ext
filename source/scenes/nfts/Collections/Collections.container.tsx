@@ -28,12 +28,12 @@ const CollectionsContainer: FC<ICollections> = ({ navigation }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      ...nftsHeader({ onRefresh }),
+      ...nftsHeader({ onRefresh, navigation }),
     });
   }, []);
 
   useEffect(() => {
-    if (searchValue) {
+    if (searchValue && !!nftsCollections.data) {
       const newCollectionsData = {
         ...nftsCollections,
         data: {},

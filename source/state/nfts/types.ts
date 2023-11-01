@@ -29,6 +29,7 @@ export interface IOpenSeaCollection {
   collection: string;
   name: string;
   description: string;
+  image_url: string;
   owner: string;
   safelist_status: string;
   category: string;

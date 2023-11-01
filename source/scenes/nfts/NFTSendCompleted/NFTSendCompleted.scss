@@ -2,9 +2,37 @@
 
 .container {
   display: flex;
-  flex-grow: 1;
-  width: 100%;
-  padding: 16px;
   flex-direction: column;
   overflow: auto;
+  height: 430px;
+  width: 100%;
+  padding: 16px;
+}
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.title {
+  margin-top: 48px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 16px;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.viewTxButton {
+  margin-bottom: 16px;
 }

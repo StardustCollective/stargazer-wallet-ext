@@ -7,6 +7,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import { NFTSendConfirmProps } from './types';
 import {
   MAX_TOTAL,
+  NETWORK,
   QUANTITY,
   SEND_FROM,
   SEND_TO,
@@ -16,6 +17,7 @@ import {
 import styles from './styles';
 
 const NFTSendConfirm: FC<NFTSendConfirmProps> = ({
+  network,
   quantity,
   sendFrom,
   sendTo,
@@ -36,6 +38,14 @@ const NFTSendConfirm: FC<NFTSendConfirmProps> = ({
         </TextV3.CaptionStrong>
       </View>
       <View style={styles.detailsContainer}>
+        <View style={styles.detailRow}>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+            {NETWORK}
+          </TextV3.CaptionStrong>
+          <TextV3.CaptionRegular color={COLORS_ENUMS.SECONDARY_TEXT}>
+            {network}
+          </TextV3.CaptionRegular>
+        </View>
         {!isERC721 && (
           <View style={styles.detailRow}>
             <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>

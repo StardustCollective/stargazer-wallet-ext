@@ -2,9 +2,150 @@
 
 .container {
   display: flex;
-  flex-grow: 1;
+  overflow: auto;
+  height: 430px;
+  flex-direction: column;
   width: 100%;
   padding: 16px;
+}
+
+.imageContainer {
+  display: flex;
   flex-direction: column;
-  overflow: auto;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.image {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.title {
+  font-weight: $semibold;
+  margin-top: 8px;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0px;
+
+  .checkIcon {
+    padding-right: 8px;
+  }
+}
+
+.quantityLabelContainer {
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-bottom: 8px;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.quantityTitle {
+  font-weight: $medium;
+}
+
+.quantityButtonsContainer {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-right: -16px;
+}
+
+.quantityButton {
+  cursor: pointer;
+  display: flex;
+  width: 60px;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.quantityButtonDivider {
+  width: 1px;
+  height: 24px;
+  background-color: $gray-300;
+}
+
+.sliderContainer {
+  min-height: 150px;
+
+  .gasEstimateLabel {
+    margin-top: 6px;
+  }
+}
+
+.gasPriceContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 120px;
+  background-color: $white;
+  border: 1px solid $gray-300;
+  border-radius: 6px;
+
+  .gasPriceHeader {
+    display: flex;
+    flex-direction: row;
+    margin: 0px 16px 0px 16px;
+    align-items: center;
+
+    .gasPriceHeaderLeft {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .gasPriceHeaderRight {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 10px;
+
+      .gasSpeedBox {
+        display: flex;
+        height: 35px;
+        border: 1px solid $gray-300;
+        flex-direction: row;
+        border-radius: 20px;
+        align-items: center;
+
+        .gasSpeedBoxRight {
+          margin-right: 15px;
+        }
+
+        .gasSpeedBoxLeft {
+          margin-left: 15px;
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .gasLoadingIndicator {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gasPriceFooter {
+    margin: 16px 24px 16px 16px;
+  }
+}
+
+.buttonContainer {
+  display: flex;
+  flex-grow: 1;
+  margin-top: 12px;
+  align-items: flex-end;
 }

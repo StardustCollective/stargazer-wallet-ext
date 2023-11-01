@@ -4,6 +4,7 @@ export type INFTSendConfirm = {
 };
 
 export type NFTSendConfirmProps = {
+  network: string;
   quantity: number;
   sendFrom: string;
   sendTo: string;

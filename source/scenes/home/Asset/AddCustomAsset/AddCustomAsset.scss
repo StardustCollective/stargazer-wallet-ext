@@ -1,8 +1,8 @@
 @import '~assets/styles/_variables';
 
 .container {
-  overflow: scroll;
-  height: 488px;
+  overflow: auto;
+  height: 430px;
   padding: 16px;
 }
 
@@ -88,8 +88,8 @@ ul.form {
   padding: 12px;
   margin-top: 8px;
   border-radius: 8px;
-  border: 1px solid #FDB022; 
-  background-color: #FFFCF5;
+  border: 1px solid #fdb022;
+  background-color: #fffcf5;
   flex-direction: row;
 }
 

@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useLayoutEffect } from 'react';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -17,6 +17,7 @@ import { getWalletController } from 'utils/controllersUtils';
 import { ITempNFTInfo } from 'state/nfts/types';
 import walletsSelectors from 'selectors/walletsSelectors';
 import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
+import nftsHeader from 'navigation/headers/nfts';
 import { formatNumber } from 'scenes/home/helpers';
 import {
   ADDRESS_REQUIRED,
@@ -30,7 +31,7 @@ import {
 } from './constants';
 
 const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
-  const { amount } = route.params || {};
+  const { amount, logo } = route.params || {};
   const walletController = getWalletController();
 
   const activeWallet = useSelector(walletsSelectors.getActiveWallet);
@@ -48,6 +49,12 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
   )?.address;
 
   const getFiatAmount = useFiat(true, mainAsset);
+
+  useLayoutEffect(() => {
+    navigation.setOptions(
+      nftsHeader({ navigation, showLogo: false, showRefresh: false })
+    );
+  }, []);
 
   const { handleSubmit, register, control, errors, setValue, triggerValidation } =
     useForm({
@@ -100,7 +107,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
     const hasErrors = !!errors?.address || !!errors?.quantity;
     const isDisabled = !toAddress?.length || !quantity || hasErrors;
     setButtonDisabled(isDisabled);
-  }, [errors, toAddress, quantity]);
+  }, [errors.address, errors.quantity, toAddress, quantity]);
 
   const {
     setSendAmount,
@@ -163,7 +170,9 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
       };
 
       walletController.nfts.setTempNFTInfo(tempNFTInfo);
-      navigation.navigate(screens.nfts.nftsSendConfirm);
+      navigation.navigate(screens.nfts.nftsSendConfirm, {
+        logo,
+      });
     }
   };
 
@@ -177,6 +186,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <NFTSend
+        logo={logo}
         amount={amount}
         selectedNFT={selectedNFTData}
         isERC721={isERC721}

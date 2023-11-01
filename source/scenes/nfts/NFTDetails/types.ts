@@ -1,4 +1,4 @@
-import { IOpenSeaCollectionWithChain, IOpenSeaDetailedNFT } from 'state/nfts/types';
+import { IOpenSeaDetailedNFT } from 'state/nfts/types';
 
 export type INFTDetails = {
   navigation: any;
@@ -8,11 +8,11 @@ export type INFTDetails = {
 export type NFTDetailsProps = {
   quantity: number;
   logo: string;
-  selectedCollection: IOpenSeaCollectionWithChain;
   selectedNFT: {
     loading: boolean;
     error: any;
     data: IOpenSeaDetailedNFT;
   };
   onPressSendNFT: () => void;
+  onPressViewOpenSea: () => void;
 };

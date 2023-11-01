@@ -2,20 +2,23 @@
 
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 170px;
   padding: 16px;
+  border: 1px solid $gray-300;
   border-radius: 8px;
-  border: 1px solid $warning_border;
-  background-color: $warning_background;
 
-  .warningIcon {
-    height: 24px;
-    width: 24px;
-    margin-top: 4px;
-    margin-right: 12px;
+  .typeText {
+    font-weight: 600;
+    margin-bottom: 4px;
   }
 
-  .warningText {
-    color: $warning_text;
+  .valueText {
+    font-size: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+    text-align: center;
   }
 }

@@ -1,3 +1,4 @@
+export const NETWORK = 'Network';
 export const QUANTITY = 'Quantity';
 export const SEND_FROM = 'Send From';
 export const SEND_TO = 'Send To';

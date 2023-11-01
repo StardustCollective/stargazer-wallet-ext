@@ -8,6 +8,7 @@ import { IOpenSeaNFT } from 'state/nfts/types';
 import { getWalletController } from 'utils/controllersUtils';
 import nftsHeader from 'navigation/headers/nfts';
 import screens from 'navigation/screens';
+import { PLACEHOLDER_IMAGE } from 'constants/index';
 
 const NFTListContainer: FC<INFTList> = ({ navigation, route }) => {
   const { title } = route.params || {};
@@ -25,7 +26,10 @@ const NFTListContainer: FC<INFTList> = ({ navigation, route }) => {
   };
 
   useLayoutEffect(() => {
-    navigation.setOptions({ ...nftsHeader({ onRefresh, showLogo: false }), title });
+    navigation.setOptions({
+      ...nftsHeader({ navigation, onRefresh, showLogo: false }),
+      title,
+    });
   }, [selectedCollection]);
 
   useEffect(() => {
@@ -51,7 +55,7 @@ const NFTListContainer: FC<INFTList> = ({ navigation, route }) => {
     );
     navigation.navigate(screens.nfts.nftsDetail, {
       title: nft.name,
-      logo: nft.image_url,
+      logo: !!nft?.image_url ? nft.image_url : PLACEHOLDER_IMAGE,
       quantity: nft.quantity,
     });
   };

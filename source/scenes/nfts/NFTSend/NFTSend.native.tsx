@@ -13,7 +13,6 @@ import QRCodeButton from 'components/QRCodeButton';
 import QRCodeScanner from 'components/QRCodeScanner';
 import { formatNumber } from 'scenes/home/helpers';
 import { NFTSendProps } from './types';
-import { PLACEHOLDER_IMAGE } from 'constants/index';
 import styles from './styles';
 import {
   QUANTITY,
@@ -24,6 +23,7 @@ import {
 } from './constants';
 
 const NFTSend: FC<NFTSendProps> = ({
+  logo,
   amount,
   selectedNFT,
   isERC721,
@@ -45,7 +45,6 @@ const NFTSend: FC<NFTSendProps> = ({
   const [cameraOpen, setCameraOpen] = useState(false);
   const showGasSlider = gas.prices.length > 0 && !buttonDisabled;
   const numberQuantity = Number(quantity);
-  const logoURL = !!selectedNFT?.image_url ? selectedNFT.image_url : PLACEHOLDER_IMAGE;
 
   const RenderQuantityLabel = () => {
     return (
@@ -86,7 +85,7 @@ const NFTSend: FC<NFTSendProps> = ({
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.imageContainer}>
-        <Image source={{ uri: logoURL }} style={styles.image} />
+        <Image source={{ uri: logo }} style={styles.image} />
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
           {selectedNFT.name}
         </TextV3.CaptionStrong>

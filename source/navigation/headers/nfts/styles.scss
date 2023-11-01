@@ -1,10 +1,37 @@
-.logo {
-  width: 40px;
-  margin: 0 16px;
+.leftIconContainer {
+  margin-left: 16px;
+
+  .logo {
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
-.buttonRight {
-  color: white;
-  &.more {
-    margin-right: 10px;
+
+.arrowIconContainer {
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+
+  .arrowIcon {
+    height: 24px;
+    width: 24px;
+  }
+}
+
+.rightIconContainer {
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+
+  .refresh {
+    height: 24px;
   }
 }

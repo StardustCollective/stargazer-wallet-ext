@@ -1,5 +1,4 @@
 import React, { FC, useLayoutEffect } from 'react';
-import { Linking } from 'react-native';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import NFTSendCompleted from './NFTSendCompleted';
 import { INFTSendCompleted } from './types';
@@ -7,6 +6,7 @@ import { useSelector } from 'react-redux';
 import nftSelectors from 'selectors/nftSelectors';
 import { getWalletController } from 'utils/controllersUtils';
 import { OPENSEA_EXPLORER_MAP } from 'utils/opensea';
+import { open } from 'utils/browser';
 
 const NFTSendCompletedContainer: FC<INFTSendCompleted> = ({ navigation, route }) => {
   const { hash } = route?.params || {};
@@ -22,7 +22,7 @@ const NFTSendCompletedContainer: FC<INFTSendCompleted> = ({ navigation, route })
 
   const onViewTransactionPress = () => {
     const BASE_URL = OPENSEA_EXPLORER_MAP[selectedCollection.chain];
-    Linking.openURL(`${BASE_URL}/tx/${hash}`);
+    open(`${BASE_URL}/tx/${hash}`);
   };
 
   const onButtonPress = () => {

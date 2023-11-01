@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useLayoutEffect } from 'react';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import NFTSendConfirm from './NFTSendConfirm';
 import { INFTSendConfirm } from './types';
@@ -6,18 +6,26 @@ import { useSelector } from 'react-redux';
 import nftSelectors from 'selectors/nftSelectors';
 import { getWalletController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
-import { OPENSEA_NETWORK_MAP } from 'utils/opensea';
+import { OPENSEA_CHAIN_MAP, OPENSEA_NETWORK_MAP } from 'utils/opensea';
 import screens from 'navigation/screens';
 import { ellipsis } from 'scenes/home/helpers';
 import { AssetType } from 'state/vault/types';
+import nftsHeader from 'navigation/headers/nfts';
 
-const NFTSendConfirmContainer: FC<INFTSendConfirm> = ({ navigation }) => {
+const NFTSendConfirmContainer: FC<INFTSendConfirm> = ({ navigation, route }) => {
+  const { logo } = route?.params || {};
   const showAlert = usePlatformAlert();
   const walletController = getWalletController();
   const selectedCollection = useSelector(nftSelectors.getSelectedCollection);
   const selectedNFT = useSelector(nftSelectors.getSelectedNftData);
   const tempNFTInfo = useSelector(nftSelectors.getTempNFTInfo);
   const transferNFT = useSelector(nftSelectors.getTransferNFT);
+
+  useLayoutEffect(() => {
+    navigation.setOptions(
+      nftsHeader({ navigation, showLogo: false, showRefresh: false })
+    );
+  }, []);
 
   useEffect(() => {
     if (transferNFT.data) {
@@ -44,12 +52,15 @@ const NFTSendConfirmContainer: FC<INFTSendConfirm> = ({ navigation }) => {
   };
 
   const props = {
-    quantity: tempNFTInfo.quantity,
-    sendFrom: `${tempNFTInfo.from.label} (${ellipsis(tempNFTInfo.from.address)})`,
-    sendTo: `${ellipsis(tempNFTInfo.to)}`,
-    transactionFee: `${tempNFTInfo.gas.fee} ${tempNFTInfo.gas.symbol} (${tempNFTInfo.gas.fiatAmount})`,
-    maxTotal: `${tempNFTInfo.gas.fee} ${tempNFTInfo.gas.symbol}`,
-    nftLogo: selectedNFT.image_url,
+    network: OPENSEA_CHAIN_MAP[selectedCollection.chain],
+    quantity: tempNFTInfo?.quantity,
+    sendFrom: `${tempNFTInfo?.from?.label} (${ellipsis(
+      tempNFTInfo?.from?.address || ''
+    )})`,
+    sendTo: `${ellipsis(tempNFTInfo?.to || '')}`,
+    transactionFee: `${tempNFTInfo?.gas?.fee} ${tempNFTInfo?.gas?.symbol} (${tempNFTInfo?.gas?.fiatAmount})`,
+    maxTotal: `${tempNFTInfo?.gas?.fee} ${tempNFTInfo?.gas?.symbol}`,
+    nftLogo: logo,
     nftName: selectedNFT.name,
     loading: transferNFT.loading,
     isERC721: selectedNFT.token_standard === AssetType.ERC721,

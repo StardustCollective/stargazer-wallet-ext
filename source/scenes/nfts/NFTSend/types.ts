@@ -8,6 +8,7 @@ export type INFTSend = {
 };
 
 export type NFTSendProps = {
+  logo: string;
   address: string;
   quantity: string;
   isERC721: boolean;

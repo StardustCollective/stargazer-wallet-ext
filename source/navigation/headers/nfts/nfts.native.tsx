@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import config from '../config';
 import { View } from 'native-base';
