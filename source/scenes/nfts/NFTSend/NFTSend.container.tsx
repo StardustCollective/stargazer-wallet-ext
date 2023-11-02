@@ -143,9 +143,9 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
 
   const handleQuantityChange = (value: string) => {
     setValue('quantity', value);
-    triggerValidation('quantity');
     setQuantity(value);
     setSendAmount(Number(value));
+    triggerValidation('quantity');
   };
 
   const onButtonPress = () => {

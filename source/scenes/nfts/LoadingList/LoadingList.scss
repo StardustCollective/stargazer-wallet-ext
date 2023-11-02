@@ -1,10 +1,8 @@
 @import '~assets/styles/variables';
 
 .container {
-  display: flex;
-  flex-grow: 1;
-  width: 100%;
-  padding: 16px;
-  flex-direction: column;
-  overflow: auto;
+  padding-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 170px);
+  gap: 10px; /* Spacing between grid items */
 }

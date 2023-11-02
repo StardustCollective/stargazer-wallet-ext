@@ -1,13 +1,16 @@
 import React from 'react';
-import TextV3 from 'components/TextV3';
 import styles from './LoadingList.scss';
-import { COLORS_ENUMS } from 'assets/styles/colors';
+import LoadingCardNFT from 'components/LoadingCardNFT';
 
-const LoadingList = ({}) => {
+const DATA = [1, 2, 3, 4, 5, 6, 7, 8];
+
+const LoadingList = () => {
+  const renderLoadingItem = (item: number) => {
+    return <LoadingCardNFT key={item} />;
+  };
+
   return (
-    <div className={styles.container}>
-      <TextV3.Header color={COLORS_ENUMS.BLACK}>My NFTs</TextV3.Header>
-    </div>
+    <div className={styles.container}>{DATA.map((item) => renderLoadingItem(item))}</div>
   );
 };
 
