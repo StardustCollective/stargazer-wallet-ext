@@ -13,7 +13,7 @@ import * as yup from 'yup';
 ///////////////////////////
 
 import AddCustomAsset from './AddCustomAsset';
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Types
@@ -348,7 +348,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   ///////////////////////////
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
       <AddCustomAsset
         control={control}
         register={register}
