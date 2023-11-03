@@ -3,7 +3,6 @@
 .container {
   display: flex;
   overflow: auto;
-  height: 430px;
   flex-direction: column;
   width: 100%;
   padding: 16px;
@@ -75,7 +74,7 @@
 }
 
 .sliderContainer {
-  min-height: 150px;
+  // min-height: 150px;
 
   .gasEstimateLabel {
     margin-top: 6px;

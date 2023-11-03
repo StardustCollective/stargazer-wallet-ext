@@ -28,6 +28,10 @@
   .searchContainer {
     background-color: $primary;
     padding: 0px 16px 16px 16px;
+
+    .searchInput {
+      border-color: $primary_lighter_1;
+    }
   }
 }
 

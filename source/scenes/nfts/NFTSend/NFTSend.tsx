@@ -42,18 +42,6 @@ const NFTSend: FC<NFTSendProps> = ({
   const showGasSlider = gas.prices.length > 0 && !buttonDisabled;
   const numberQuantity = Number(quantity);
 
-  const RenderQuantityLabel = () => {
-    return (
-      <div className={styles.quantityLabelContainer}>
-        <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.quantityTitle}>
-          {QUANTITY}
-        </TextV3.Caption>
-        <TextV3.Caption color={COLORS_ENUMS.SECONDARY_TEXT}>
-          x{formatNumber(amount, 0, 0)}
-        </TextV3.Caption>
-      </div>
-    );
-  };
   const RenderQuantityButtons = () => {
     const onSubstract = () => {
       if (numberQuantity > 0) {
@@ -93,13 +81,14 @@ const NFTSend: FC<NFTSendProps> = ({
             name="quantity"
             inputRef={register}
             value={quantity}
-            label={<RenderQuantityLabel />}
+            label={QUANTITY}
             control={control}
             onChange={(amount) => {
               handleQuantityChange(amount.target.value);
             }}
             error={!!errors?.quantity}
             endAdornment={<RenderQuantityButtons />}
+            labelRight={`x${formatNumber(amount, 0, 0)}`}
           />
           <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
             {!!errors?.quantity ? errors?.quantity?.message : ' '}

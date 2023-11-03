@@ -6,8 +6,10 @@
   flex-direction: column;
   width: 100%;
   margin: 16px;
+  height: 500px;
 
-  .dataRow {}
+  .dataRow {
+  }
 
   .dataValue {
     display: flex;
@@ -44,7 +46,7 @@
       font-size: 14px;
       font-weight: 400;
       height: 40px;
-      border: 0px solid $gray-200  !important;
+      border: 0px solid $gray-200 !important;
       outline-width: 0px !important;
     }
   }
@@ -62,7 +64,6 @@
     align-items: center;
     margin-right: 16px;
   }
-
 
   .nextButton {
     display: flex;
