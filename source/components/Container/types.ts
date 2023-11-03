@@ -5,4 +5,5 @@ export default interface IContainer {
   children: FC[] | ReactNode;
   safeArea?: boolean;
   color?: CONTAINER_COLOR;
+  maxHeight?: boolean;
 }

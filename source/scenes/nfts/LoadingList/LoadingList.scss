@@ -4,5 +4,6 @@
   padding-top: 16px;
   display: grid;
   grid-template-columns: repeat(auto-fill, 170px);
-  gap: 10px; /* Spacing between grid items */
+  justify-content: center;
+  gap: 8px; /* Spacing between grid items */
 }

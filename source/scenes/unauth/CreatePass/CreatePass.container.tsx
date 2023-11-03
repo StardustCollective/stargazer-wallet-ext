@@ -64,7 +64,7 @@ const CreatePassContainer = () => {
   ///////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={false}>
       <CreatePass
         control={control}
         onSubmit={onSubmit}
