@@ -31,7 +31,6 @@ import walletSelectors from 'selectors/walletsSelectors';
 ///////////////////////
 
 import useGasEstimate from 'hooks/useGasEstimate';
-import { useFiat } from 'hooks/usePrice';
 
 ///////////////////////
 // Selectors
@@ -48,9 +47,7 @@ import { ITransactionInfo } from 'scripts/types';
 import { AssetType, AssetBalances } from 'state/vault/types';
 import { IAssetInfoState } from 'state/assets/types';
 import { ISelectedCurrency, IPendingTransaction } from 'state/swap/types';
-import {
-  ISwapTokensContainer
-} from './types';
+import { ISwapTokensContainer } from './types';
 import { CONTAINER_COLOR } from 'components/Container/enum';
 
 ///////////////////////////
@@ -72,11 +69,11 @@ import { getAccountController } from 'utils/controllersUtils';
 ///////////////////////////
 
 const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
-
   const linkTo = useLinkTo();
   const alert = usePlatformAlert();
   const walletController = getWalletController();
-  const { swapFrom, swapTo }: { swapTo: ISelectedCurrency, swapFrom: ISelectedCurrency } = useSelector((state: RootState) => state.swap);
+  const { swapFrom, swapTo }: { swapTo: ISelectedCurrency; swapFrom: ISelectedCurrency } =
+    useSelector((state: RootState) => state.swap);
   const assets = useSelector((state: RootState) => state.assets);
   const activeAsset = useSelector(walletSelectors.getActiveAsset);
   const vault = useSelector((state: RootState) => state.vault);
@@ -85,25 +82,33 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
   const balances: AssetBalances = vault.balances;
   const basePriceId = getPriceId(asset.network);
   const accountController = getAccountController();
-  const feeUnit = asset.type === AssetType.Constellation ? 'DAG' : getNativeToken(asset.network);
+  const feeUnit =
+    asset.type === AssetType.Constellation ? 'DAG' : getNativeToken(asset.network);
   const [fee, setFee] = useState<number>(0);
-  const getFiatAmount = useFiat(true, asset);
   let gas: string;
 
-  const { setSendAmount, estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice, gasLimit } = useGasEstimate({
+  const {
+    setSendAmount,
+    estimateGasFee,
+    gasSpeedLabel,
+    gasFee,
+    setGasPrice,
+    gasPrices,
+    gasPrice,
+    gasLimit,
+  } = useGasEstimate({
     toAddress: pendingSwap?.depositAddress,
     fromAddress: asset?.address,
     asset,
     gas,
   });
 
-
   useEffect(() => {
     setSendAmount(pendingSwap?.amount.toString());
     return () => {
       walletController.swap.clearPendingSwap();
-    }
-  }, [])
+    };
+  }, []);
 
   const onGasPriceChange = (_: any, val: number | number[]) => {
     val = Number(val) || 1;
@@ -122,20 +127,21 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
       }
 
       txFee =
-        activeAsset.id === AssetType.Constellation || activeAsset.id === AssetType.LedgerConstellation
+        activeAsset.id === AssetType.Constellation ||
+        activeAsset.id === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee.toString(), asset.decimals)
           : ethers.utils.parseEther(gasFee.toString());
-    } catch (err) {
-    }
+    } catch (err) {}
 
     return { balance: balanceBN, txFee };
   };
 
-
   const overBalanceError = (): boolean => {
-
     let computedAmount: BigNumber;
-    const amountBN = ethers.utils.parseUnits(String(pendingSwap?.amount || 0), asset.decimals)
+    const amountBN = ethers.utils.parseUnits(
+      String(pendingSwap?.amount || 0),
+      asset.decimals
+    );
 
     const { balance, txFee } = getBalanceAndFees();
 
@@ -146,12 +152,14 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
     }
 
     return computedAmount.gt(balance);
-  }
-
+  };
 
   const onNextPressed = () => {
-    if(overBalanceError()){
-      alert(`Error: Balance is too low to cover gas. Add ${feeUnit} to your wallet to complete the transaction.`, 'danger');
+    if (overBalanceError()) {
+      alert(
+        `Error: Balance is too low to cover gas. Add ${feeUnit} to your wallet to complete the transaction.`,
+        'danger'
+      );
       return;
     }
     const txConfig: ITransactionInfo = {
@@ -164,28 +172,27 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
     if (asset.type === AssetType.Ethereum || asset.type === AssetType.ERC20) {
       txConfig.ethConfig = {
         gasPrice,
-        gasLimit
+        gasLimit,
       };
     }
     accountController.updateTempTx(txConfig);
     linkTo('/confirmDetails');
-  }
+  };
 
-  const onRecommendedPress = () => {
-
-  }
+  const onRecommendedPress = () => {};
 
   const onTransactionFeeChange = (fee: string) => {
     setFee(parseFloat(fee === '' ? '0' : fee));
-  }
+  };
 
   return (
     <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
       <TransferInfo
+        asset={asset}
         depositAddress={pendingSwap?.depositAddress}
         from={{
           code: swapFrom?.currency.code,
-          amount: pendingSwap?.amount
+          amount: pendingSwap?.amount,
         }}
         to={{
           code: swapTo?.currency.code,
@@ -196,9 +203,8 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
           price: gasPrice,
           fee: gasFee,
           speedLabel: gasSpeedLabel,
-          basePriceId: basePriceId
+          basePriceId: basePriceId,
         }}
-        getFiatAmount={getFiatAmount}
         onGasPriceChange={onGasPriceChange}
         onNextPressed={onNextPressed}
         onRecommendedPress={onRecommendedPress}

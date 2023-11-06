@@ -1,7 +1,6 @@
 export const QUANTITY = 'Quantity';
 export const RECIPIENT_ADDRESS = 'Recipient Address';
 export const RECIPIENT_ADDRESS_PLACEHOLDER = '0x...';
-export const GAS_IN_GWEI = 'Gas Price (in GWEI)';
 export const CONTINUE = 'Continue';
 export const QUANTITY_MUST_NUMBER = 'Quantity must be an integer';
 export const QUANTITY_GREATER_ZERO = 'Quantity must be greater than 0';

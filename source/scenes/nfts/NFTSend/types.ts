@@ -35,5 +35,4 @@ export type NFTSendProps = {
     basePriceId: string;
   };
   onGasPriceChange: (_: any, val: number | number[]) => void;
-  getFiatAmount: (amount: number, fraction?: number, basePriceId?: string) => string;
 };

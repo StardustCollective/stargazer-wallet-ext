@@ -199,7 +199,6 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
         onButtonPress={onButtonPress}
         register={register}
         handleSubmit={handleSubmit}
-        getFiatAmount={getFiatAmount}
         onGasPriceChange={onGasPriceChange}
         handleAddressChange={handleAddressChange}
         handleQuantityChange={handleQuantityChange}

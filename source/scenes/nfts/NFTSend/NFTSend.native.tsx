@@ -8,7 +8,7 @@ import CheckGreen from 'assets/images/svg/check-green.svg';
 import SubstractIcon from 'assets/images/svg/subtract.svg';
 import AddIcon from 'assets/images/svg/add.svg';
 import TextInput from 'components/TextInput';
-import PurpleSlider from 'components/PurpleSlider';
+import GasSlider from 'components/GasSlider';
 import QRCodeButton from 'components/QRCodeButton';
 import QRCodeScanner from 'components/QRCodeScanner';
 import { formatNumber } from 'scenes/home/helpers';
@@ -17,7 +17,6 @@ import styles from './styles';
 import {
   QUANTITY,
   CONTINUE,
-  GAS_IN_GWEI,
   RECIPIENT_ADDRESS,
   RECIPIENT_ADDRESS_PLACEHOLDER,
 } from './constants';
@@ -40,7 +39,6 @@ const NFTSend: FC<NFTSendProps> = ({
   onGasPriceChange,
   handleAddressChange,
   handleQuantityChange,
-  getFiatAmount,
 }) => {
   const [cameraOpen, setCameraOpen] = useState(false);
   const showGasSlider = gas.prices.length > 0 && !buttonDisabled;
@@ -139,52 +137,7 @@ const NFTSend: FC<NFTSendProps> = ({
         </TextV3.Caption>
       </View>
       {showGasSlider && (
-        <>
-          <View style={styles.gasPriceContainer}>
-            <View style={styles.gasPriceHeader}>
-              <View style={styles.gasPriceHeaderLeft}>
-                <TextV3.LabelSemiStrong color={COLORS_ENUMS.BLACK}>
-                  {GAS_IN_GWEI}
-                </TextV3.LabelSemiStrong>
-              </View>
-              <View style={styles.gasPriceHeaderRight}>
-                <View style={styles.gasSpeedBox}>
-                  <View style={styles.gasSpeedBoxLeft}>
-                    <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK}>
-                      {gas.price.toString()}
-                    </TextV3.CaptionRegular>
-                  </View>
-                  <View style={styles.gasSpeedBoxRight}>
-                    <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-                      {gas.speedLabel}
-                    </TextV3.CaptionStrong>
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={styles.gasPriceFooter}>
-              <View style={styles.sliderContainer}>
-                <PurpleSlider
-                  onChange={onGasPriceChange}
-                  min={gas.prices[0]}
-                  max={gas.prices[2]}
-                  value={gas.price}
-                  step={1}
-                />
-              </View>
-            </View>
-          </View>
-          <TextV3.CaptionRegular
-            extraStyles={styles.gasEstimateLabel}
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
-            {`${gas.price} GWEI, ${gas.fee} ${mainAsset.symbol} (≈ ${getFiatAmount(
-              gas.fee,
-              2,
-              gas.basePriceId
-            )})`}
-          </TextV3.CaptionRegular>
-        </>
+        <GasSlider gas={gas} asset={mainAsset} onGasPriceChange={onGasPriceChange} />
       )}
       <View style={styles.buttonContainer}>
         <ButtonV3
