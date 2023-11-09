@@ -35,7 +35,6 @@ enum AvailableMethods {
   eth_uninstallFilter = 'eth_uninstallFilter',
   eth_signTypedData = 'eth_signTypedData',
   eth_signTypedData_v4 = 'eth_signTypedData_v4', // Alias of eth_signTypedData
-  wallet_switchEthereumChain = 'wallet_switchEthereumChain',
 
   /* Constellation */
   dag_chainId = 'dag_chainId',
@@ -46,6 +45,10 @@ enum AvailableMethods {
   dag_sendTransaction = 'dag_sendTransaction',
   dag_getPendingTransaction = 'dag_getPendingTransaction',
   dag_getTransaction = 'dag_getTransaction',
+
+  /* Wallet */
+  wallet_switchEthereumChain = 'wallet_switchEthereumChain',
+  wallet_watchAsset = 'wallet_watchAsset',
 
   /* Metagraph */
   dag_getMetagraphBalance = 'dag_getMetagraphBalance',

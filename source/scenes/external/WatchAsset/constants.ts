@@ -1,0 +1,11 @@
+export const ADD_TO_STARGAZER = 'Add token to Stargazer Wallet';
+export const ARE_YOU_SURE = `Are you sure that you'd like to add this token?`;
+export const YOU_CAN_DELETE = `You can delete it from your wallet any time.`;
+export const NETWORK = 'Network';
+export const TOKEN = 'Token';
+export const BALANCE = 'Balance';
+export const METAGRAPH_ADDRESS = 'Metagraph Address';
+export const L0_ENDPOINT = 'L0 Endpoint';
+export const L1_ENDPOINT = 'L1 Endpoint';
+export const CANCEL = 'Cancel';
+export const ADD_TOKEN = 'Add token';

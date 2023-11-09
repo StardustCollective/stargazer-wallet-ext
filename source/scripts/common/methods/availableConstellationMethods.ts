@@ -75,6 +75,12 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
     proxied: false,
     permissions: [],
   },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.wallet_watchAsset,
+    proxied: false,
+    permissions: [],
+  },
 ];
 
 export type { AvailableChainMethod };

@@ -66,7 +66,9 @@ export interface IAssetsController {
     l1endpoint: string,
     address: string,
     name: string,
-    symbol: string
+    symbol: string,
+    chainId?: string,
+    logo?: string
   ) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
   fetchWalletNFTInfo: (address: string) => Promise<any[]>;
@@ -213,14 +215,16 @@ const AssetsController = (): IAssetsController => {
     l1endpoint: string,
     address: string,
     name: string,
-    symbol: string
+    symbol: string,
+    chainId?: string,
+    logo?: string
   ): Promise<void> => {
     const accountController = getAccountController();
     const { activeNetwork, activeWallet } = store.getState().vault;
     const assets = store.getState().assets;
 
-    const network = activeNetwork[KeyringNetwork.Constellation];
-    const deafultLogo = DEFAULT_LOGOS[KeyringNetwork.Constellation];
+    const network = !!chainId ? chainId : activeNetwork[KeyringNetwork.Constellation];
+    const deafultLogo = !!logo ? logo : DEFAULT_LOGOS[KeyringNetwork.Constellation];
 
     const newL0Asset: IAssetInfoState = {
       id: `${address}-${network}`,
