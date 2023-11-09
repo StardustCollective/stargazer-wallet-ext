@@ -889,7 +889,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       const { l0, l1, address, name, symbol, logo } = params.options;
-      await controller.wallet.account.assetsController.addCustomL0Token(
+      controller.wallet.account.assetsController.addCustomL0Token(
         l0,
         l1,
         address,
@@ -898,6 +898,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         selectedNetwork.id,
         logo
       );
+
+      return true;
     }
 
     throw new Error('Unsupported non-proxied method');
