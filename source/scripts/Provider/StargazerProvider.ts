@@ -357,11 +357,11 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       );
     }
 
-    if (isValidL0) {
+    if (!isValidL0) {
       throw new Error('Argument "l0" is invalid -> node not found');
     }
 
-    if (isValidL1) {
+    if (!isValidL1) {
       throw new Error('Argument "l1" is invalid -> node not found');
     }
   }
@@ -856,7 +856,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       const selectedNetwork = Object.values(DAG_NETWORK).find(
-        (network) => network.chainId === chainId
+        (network) => network.chainId === params.options.chainId
       );
 
       const balance = await this.fetchMetagraphBalance(
@@ -888,7 +888,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User Rejected Request', 4001);
       }
 
-      const { l0, l1, address, name, symbol, chainId, logo } = params.options;
+      const { l0, l1, address, name, symbol, logo } = params.options;
       await controller.wallet.account.assetsController.addCustomL0Token(
         l0,
         l1,
