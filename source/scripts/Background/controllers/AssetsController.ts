@@ -220,7 +220,7 @@ const AssetsController = (): IAssetsController => {
     logo?: string
   ): Promise<void> => {
     const accountController = getAccountController();
-    const { activeNetwork, activeWallet } = store.getState().vault;
+    const { activeNetwork, activeWallet, customAssets } = store.getState().vault;
     const assets = store.getState().assets;
 
     const network = !!chainId ? chainId : activeNetwork[KeyringNetwork.Constellation];
@@ -241,10 +241,11 @@ const AssetsController = (): IAssetsController => {
     };
 
     const asset = Object.keys(assets).find((assetId) => assetId === newL0Asset.id);
+    const assetCustom = customAssets.find((asset) => asset.id === newL0Asset.id);
     const dagAddress = activeWallet?.assets?.find(
       (asset) => asset.id === AssetType.Constellation
     )?.address;
-    if (!asset) {
+    if (!asset && !assetCustom) {
       store.dispatch(addCustomAsset(newL0Asset));
       store.dispatch(addERC20Asset(newL0Asset));
       store.dispatch(
@@ -257,6 +258,8 @@ const AssetsController = (): IAssetsController => {
         })
       );
       await accountController.assetsBalanceMonitor.start();
+    } else {
+      throw new Error(`Asset with address ${address} already exists`);
     }
   };
 

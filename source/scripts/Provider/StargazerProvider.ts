@@ -889,7 +889,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       const { l0, l1, address, name, symbol, logo } = params.options;
-      controller.wallet.account.assetsController.addCustomL0Token(
+      await controller.wallet.account.assetsController.addCustomL0Token(
         l0,
         l1,
         address,
