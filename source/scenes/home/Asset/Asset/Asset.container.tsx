@@ -21,6 +21,7 @@ import AssetDetail from './Asset';
 
 import { IAssetDetail } from './types';
 import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { IChain } from 'scripts/Background/controllers/EVMChainController/types';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const accountController = getAccountController();
@@ -37,18 +38,23 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     return Number((activeAsset && balances[activeAsset.id]) || 0);
   }, [activeAsset, balances]);
 
-  let network = '';
-  if (activeAsset.type !== AssetType.Constellation) {
-    const { id } = accountController?.networkController?.getNetwork() || {};
-    network = getNetworkFromChainId(id);
-  }
-
   const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);
 
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
     if (!activeAsset) return;
+
+    let network = '';
+
+    if (!!activeAsset?.type && activeAsset?.type !== AssetType.Constellation) {
+      const chain: IChain = !!accountController?.networkController
+        ? accountController?.networkController?.getNetwork()
+        : null;
+      if (!!chain) {
+        network = getNetworkFromChainId(chain.id);
+      }
+    }
 
     const networkId =
       activeAsset?.type === AssetType.Constellation ||
@@ -82,12 +88,17 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   useFocusEffect(
     useCallback(() => {
       if (!activeAsset) return;
-      
+
       const fetchTxs = async () => {
-        if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
+        if (
+          activeAsset.type === AssetType.Constellation ||
+          activeAsset.type === AssetType.LedgerConstellation
+        ) {
           return activeAsset.transactions;
         }
-        return (await accountController.getFullETHTxs()).sort((a, b) => b.timestamp - a.timestamp);
+        return (await accountController.getFullETHTxs()).sort(
+          (a, b) => b.timestamp - a.timestamp
+        );
       };
 
       fetchTxs().then((txns: any[]) => {

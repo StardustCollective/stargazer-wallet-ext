@@ -4,6 +4,7 @@ import {
   AVALANCHE_LOGO,
   BSC_LOGO,
   CONSTELLATION_LOGO,
+  DOR_LOGO,
   ETHEREUM_LOGO,
   GEOJAM_LOGO,
   LATTICE_LOGO,
@@ -37,6 +38,18 @@ export const initialState: IAssetListState = {
     logo: CONSTELLATION_LOGO,
     priceId: 'constellation-labs',
     decimals: 8,
+  },
+  'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2': {
+    id: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2',
+    address: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM',
+    label: 'DOR',
+    symbol: 'DOR',
+    decimals: 8,
+    type: AssetType.Constellation,
+    logo: DOR_LOGO,
+    network: 'main2',
+    l0endpoint: 'http://54.191.143.191:7000',
+    l1endpoint: 'http://54.191.143.191:8000',
   },
   // 349: New network should be added here.
   [AssetType.Avalanche]: {
