@@ -24,7 +24,7 @@ const App: FC = () => {
 
   return (
     <section id="App" style={{ minHeight: '300px', height: '100%' }}>
-      <Container>
+      <Container showHeight={false}>
         <Router>
           <Switch>
             <Route path="/login" component={Login} />

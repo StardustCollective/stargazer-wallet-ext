@@ -326,13 +326,10 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     this.checkArguments(args);
 
     const controller = useController();
-    const { isValidDAGAddress, isValidMetagraphAddress, isValidNode } =
-      controller.wallet.account;
+    const { isValidDAGAddress, isValidMetagraphAddress } = controller.wallet.account;
     const isValidType = SUPPORTED_TYPES.includes(type);
     const isValidChainId = SUPPORTED_CHAINS.includes(chainId);
     const isValidAddress = isValidDAGAddress(address);
-    const isValidL0 = await isValidNode(l0);
-    const isValidL1 = await isValidNode(l1);
 
     if (!isValidType) {
       throw new Error('Argument "type" is not supported');
@@ -355,14 +352,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       throw new Error(
         'Argument "address" or "chainId" are invalid -> metagraph not found'
       );
-    }
-
-    if (!isValidL0) {
-      throw new Error('Argument "l0" is invalid -> node not found');
-    }
-
-    if (!isValidL1) {
-      throw new Error('Argument "l1" is invalid -> node not found');
     }
   }
 
