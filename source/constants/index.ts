@@ -58,6 +58,8 @@ export const JENNYCO_LOGO =
 export const GEOJAM_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png';
 export const SIMPLEX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
+export const DOR_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor-logo.png';
 
 export const DAG_NETWORK: {
   [networkId: string]: {
