@@ -19,6 +19,7 @@ import { getNetworkFromChainId } from './EVMChainController/utils';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { initialState as initialStateAssets } from 'state/assets';
 import { ITempNFTInfo } from 'state/nfts/types';
+import { AssetType } from 'state/vault/types';
 
 class NetworkController {
   private privateKey: string;
@@ -100,7 +101,9 @@ class NetworkController {
   private getProviderByActiveAsset(): EVMChainController {
     const assets = store.getState().assets;
     const { activeAsset } = store.getState().vault;
-    if (!activeAsset) throw new Error('No active asset');
+    const UNSUPPORTED_TYPES = [AssetType.Constellation];
+    if (!activeAsset || UNSUPPORTED_TYPES.includes(activeAsset.type))
+      throw new Error('No active asset');
     const activeAssetInfo = assets[activeAsset.id] || initialStateAssets[activeAsset.id];
     const network = getNetworkFromChainId(activeAssetInfo.network);
     const networkToProvider: { [net: string]: EVMChainController } = {

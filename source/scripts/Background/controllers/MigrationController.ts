@@ -104,6 +104,22 @@ const MigrationController = async () => {
     const v3_11_1 = require('../migration/v3_11_1');
     await v3_11_1.default(state);
   }
+
+  /**
+   * version < 4_0_0
+   */
+  if (compareVersions(state.vault.version, '4.0.0') < 0) {
+    const v4_0_0 = require('../migration/v4_0_0');
+    await v4_0_0.default(state);
+  }
+
+  /**
+   * version < 4_0_1
+   */
+  if (compareVersions(state.vault.version, '4.0.1') < 0) {
+    const v4_0_1 = require('../migration/v4_0_1');
+    await v4_0_1.default(state);
+  }
 };
 
 export default MigrationController;

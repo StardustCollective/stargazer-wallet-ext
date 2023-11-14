@@ -286,8 +286,7 @@ export class AccountController {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
       const assetInfo = assets[activeAsset?.id];
-      const isL0token =
-        !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
+      const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
 
       if (isL0token) {
         const beUrl =
@@ -444,8 +443,7 @@ export class AccountController {
 
     if (activeAsset.type === AssetType.Constellation) {
       const assetInfo = assets[activeAsset?.id];
-      const isL0token =
-        !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
+      const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
       let pendingTx = null;
 
       if (isL0token) {

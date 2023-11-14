@@ -53,11 +53,15 @@ export const VE_LTX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ve-ltx-logo.png';
 export const ALKIMI_LOGO =
   'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
+export const JENNYCO_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/jennyco-logo.png';
 export const GEOJAM_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png';
 export const SIMPLEX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
 export const PLACEHOLDER_IMAGE =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/placeholder.png';
+export const DOR_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor-logo.png';
 
 export const DAG_NETWORK: {
   [networkId: string]: {
