@@ -12,10 +12,10 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [16.x]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -23,13 +23,13 @@ jobs:
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
-        with: 
+        with:
           node-version: ${{ matrix.node-version }}
-        # install and cache 
+        # install and cache
       - uses: nanasess/setup-chromedriver@master
         # with:
-          # Optional: do not specify to match Chrome's version
-          # chromedriver-version: '88.0.4324.96'
+        # Optional: do not specify to match Chrome's version
+        # chromedriver-version: '88.0.4324.96'
       - run: |
           export DISPLAY=:99
           chromedriver --url-base=/wd/hub &
