@@ -601,11 +601,11 @@ export class AccountController {
     return dag4.account.validateDagAddress(address);
   }
 
-  async isValidMetagraphAddress(address: string): Promise<boolean> {
-    if (!this.isValidDAGAddress(address)) return false;
+  async isValidMetagraphAddress(address: string, chainId?: string): Promise<boolean> {
+    if (!dag4.account.validateDagAddress(address)) return false;
 
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const activeChain = activeNetwork[KeyringNetwork.Constellation];
+    const activeChain = !!chainId ? chainId : activeNetwork[KeyringNetwork.Constellation];
     const BE_URL = DAG_NETWORK[activeChain].config.beUrl;
     const response: any = await (
       await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)

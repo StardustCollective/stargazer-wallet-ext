@@ -6,4 +6,5 @@ export default interface IContainer {
   safeArea?: boolean;
   color?: CONTAINER_COLOR;
   maxHeight?: boolean;
+  showHeight?: boolean;
 }
