@@ -1,0 +1,106 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  padding: 16px;
+
+  .headerContainer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+
+    .titleContainer {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 12px;
+      margin-bottom: 16px;
+
+      .title {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+    }
+  }
+
+  .contentContainer {
+    display: flex;
+    width: 100%;
+    flex-grow: 1;
+    align-items: center;
+    flex-direction: column;
+
+    .content {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      border: 1px solid $gray-300;
+      border-radius: 8px;
+
+      &:last-child {
+        padding-bottom: 16px;
+      }
+
+      &:first-child {
+        padding-top: 4px;
+      }
+
+      .rowItem {
+        display: flex;
+        flex-direction: column;
+        padding: 12px 16px 0px 16px;
+
+        .logoContainer {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          .logo {
+            height: 16px;
+            width: 16px;
+            border-radius: 8px;
+            margin-right: 6px;
+          }
+        }
+
+        .metagraphAddress {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+
+          .copyIcon {
+            margin-left: 8px;
+            height: 20px;
+            width: 20px;
+            align-self: center;
+          }
+        }
+
+        .itemTitle {
+          font-weight: 600;
+        }
+
+        .itemValue {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .buttonsContainer {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    flex-direction: row;
+
+    .button {
+      margin-left: 4px;
+      margin-right: 4px;
+    }
+  }
+}
