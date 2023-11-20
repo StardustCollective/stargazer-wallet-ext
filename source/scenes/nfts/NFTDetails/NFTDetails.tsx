@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import clsx from 'clsx';
 import TextV3 from 'components/TextV3';
 import ButtonV3 from 'components/ButtonV3';
-import AttributeItem from 'components/AttributeItem';
+import NFTAttributeItem from 'components/NFTAttributeItem';
 import LoadingDetails from '../LoadingDetails';
 import { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -91,7 +91,7 @@ const NFTDetails: FC<NFTDetailsProps> = ({
             </div>
             <div className={styles.attributesItemsContainer}>
               {data.traits.map((trait) => (
-                <AttributeItem
+                <NFTAttributeItem
                   key={trait.trait_type}
                   type={trait.trait_type}
                   value={trait.value}
