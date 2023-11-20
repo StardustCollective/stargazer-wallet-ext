@@ -53,6 +53,7 @@ const ConfirmPhraseContainer = ({ route }: { route: any }) => {
   const [passed, setPassed] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const title = passed ? `Your Wallet is ready` : `Verify your recovery\nphrase`;
+  const showMaxHeight = !!walletName && walletName !== 'undefined';
 
   const isNotEqualArrays = useMemo((): boolean => {
     if (!phrases) return true;
@@ -105,7 +106,7 @@ const ConfirmPhraseContainer = ({ route }: { route: any }) => {
   ///////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={false}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={showMaxHeight}>
       <ConfirmPhrase
         title={title}
         isButtonDisabled={isButtonDisabled || isNotEqualArrays}

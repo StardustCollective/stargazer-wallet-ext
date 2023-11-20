@@ -44,6 +44,7 @@ const CreatePhraseContainer = ({ route }: { route: any }) => {
   const [passed, setPassed] = useState(false);
   const walletController = getWalletController();
   const phrases = walletController.onboardHelper.getSeedPhrase();
+  const showMaxHeight = !!walletName && walletName !== 'undefined';
 
   useEffect(() => {
     return () => {
@@ -77,7 +78,7 @@ const CreatePhraseContainer = ({ route }: { route: any }) => {
   ///////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={false}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={showMaxHeight}>
       <CreatePhrase
         title={title}
         description={description}
