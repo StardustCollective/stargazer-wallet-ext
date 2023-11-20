@@ -92,7 +92,7 @@ class NFTController implements INFTController {
     const ethAddress = assets?.find((asset) => asset?.id === AssetType.Ethereum)?.address;
     const nftsWithQuantity = [];
     const chain = collection.chain;
-    const network = OPENSEA_NETWORK_MAP[chain];
+    const network = OPENSEA_NETWORK_MAP[chain].network;
 
     if (!!ethAddress) {
       const allIds = collection.nfts.map((nft) => nft.identifier);

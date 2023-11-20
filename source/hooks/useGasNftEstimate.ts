@@ -52,7 +52,7 @@ function useGasNftEstimate({
   };
 
   const handleGetTxFee = async () => {
-    const network = OPENSEA_NETWORK_MAP[chain];
+    const network = OPENSEA_NETWORK_MAP[chain].network;
     const gas = await accountController.getLatestGasPrices(network);
     let gasPrices: number[] = [...gas];
     let uniquePrices = [...new Set(gas)].length;
@@ -69,7 +69,7 @@ function useGasNftEstimate({
     let gasLimit;
     try {
       if (!!toAddress && toAddress.length === ETH_ADDRESS_LENGTH) {
-        const network = OPENSEA_NETWORK_MAP[chain];
+        const network = OPENSEA_NETWORK_MAP[chain].network;
         gasLimit = await estimateNftGasLimit({
           contractAddress,
           tokenId,

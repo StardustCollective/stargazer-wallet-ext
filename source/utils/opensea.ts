@@ -1,11 +1,7 @@
 import {
-  AVALANCHE_LOGO,
   AVALANCHE_NETWORK,
-  BSC_LOGO,
   BSC_NETWORK,
-  ETHEREUM_LOGO,
   ETH_NETWORK,
-  POLYGON_LOGO,
   POLYGON_NETWORK,
 } from 'constants/index';
 import { OpenSeaSupportedChains } from 'state/nfts/types';
@@ -21,48 +17,15 @@ export const OPENSEA_CHAINS_MAP: { [network: string]: OpenSeaSupportedChains } =
   [BSC_NETWORK['bsc-testnet'].id]: OpenSeaSupportedChains.BSC_TESTNET,
 };
 
-export const OPENSEA_LOGOS_MAP: { [chain: string]: string } = {
-  [OpenSeaSupportedChains.ETHEREUM]: ETHEREUM_LOGO,
-  [OpenSeaSupportedChains.GOERLI]: ETHEREUM_LOGO,
-  [OpenSeaSupportedChains.POLYGON]: POLYGON_LOGO,
-  [OpenSeaSupportedChains.POLYGON_MUMBAI]: POLYGON_LOGO,
-  [OpenSeaSupportedChains.AVALANCHE]: AVALANCHE_LOGO,
-  [OpenSeaSupportedChains.AVALANCHE_FUJI]: AVALANCHE_LOGO,
-  [OpenSeaSupportedChains.BSC]: BSC_LOGO,
-  [OpenSeaSupportedChains.BSC_TESTNET]: BSC_LOGO,
-};
-
-export const OPENSEA_NETWORK_MAP: { [chain: string]: string } = {
-  [OpenSeaSupportedChains.ETHEREUM]: 'Ethereum',
-  [OpenSeaSupportedChains.GOERLI]: 'Ethereum',
-  [OpenSeaSupportedChains.POLYGON]: 'Polygon',
-  [OpenSeaSupportedChains.POLYGON_MUMBAI]: 'Polygon',
-  [OpenSeaSupportedChains.AVALANCHE]: 'Avalanche',
-  [OpenSeaSupportedChains.AVALANCHE_FUJI]: 'Avalanche',
-  [OpenSeaSupportedChains.BSC]: 'BSC',
-  [OpenSeaSupportedChains.BSC_TESTNET]: 'BSC',
-};
-
-export const OPENSEA_CHAIN_MAP: { [chain: string]: string } = {
-  [OpenSeaSupportedChains.ETHEREUM]: 'Ethereum Mainnet',
-  [OpenSeaSupportedChains.GOERLI]: 'Ethereum Goerli',
-  [OpenSeaSupportedChains.POLYGON]: 'Polygon Mainnet',
-  [OpenSeaSupportedChains.POLYGON_MUMBAI]: 'Polygon Mumbai',
-  [OpenSeaSupportedChains.AVALANCHE]: 'Avalanche C-Chain',
-  [OpenSeaSupportedChains.AVALANCHE_FUJI]: 'Avalanche Fuji',
-  [OpenSeaSupportedChains.BSC]: 'BSC Mainnet',
-  [OpenSeaSupportedChains.BSC_TESTNET]: 'BSC Testnet',
-};
-
-export const OPENSEA_EXPLORER_MAP: { [chain: string]: string } = {
-  [OpenSeaSupportedChains.ETHEREUM]: 'https://etherscan.io',
-  [OpenSeaSupportedChains.GOERLI]: 'https://goerli.etherscan.io',
-  [OpenSeaSupportedChains.POLYGON]: 'https://polygonscan.com',
-  [OpenSeaSupportedChains.POLYGON_MUMBAI]: 'https://mumbai.polygonscan.com',
-  [OpenSeaSupportedChains.AVALANCHE]: 'https://snowtrace.io',
-  [OpenSeaSupportedChains.AVALANCHE_FUJI]: 'https://testnet.snowtrace.io',
-  [OpenSeaSupportedChains.BSC]: 'https://bscscan.com',
-  [OpenSeaSupportedChains.BSC_TESTNET]: 'https://testnet.bscscan.com',
+export const OPENSEA_NETWORK_MAP: { [chain: string]: any } = {
+  [OpenSeaSupportedChains.ETHEREUM]: ETH_NETWORK.mainnet,
+  [OpenSeaSupportedChains.GOERLI]: ETH_NETWORK.goerli,
+  [OpenSeaSupportedChains.POLYGON]: POLYGON_NETWORK.matic,
+  [OpenSeaSupportedChains.POLYGON_MUMBAI]: POLYGON_NETWORK.maticmum,
+  [OpenSeaSupportedChains.AVALANCHE]: AVALANCHE_NETWORK['avalanche-mainnet'],
+  [OpenSeaSupportedChains.AVALANCHE_FUJI]: AVALANCHE_NETWORK['avalanche-testnet'],
+  [OpenSeaSupportedChains.BSC]: BSC_NETWORK.bsc,
+  [OpenSeaSupportedChains.BSC_TESTNET]: BSC_NETWORK['bsc-testnet'],
 };
 
 export const isOpenSeaTestnet = (chain: OpenSeaSupportedChains): boolean => {
