@@ -85,7 +85,7 @@ const NFTSend: FC<NFTSendProps> = ({
       <View style={styles.imageContainer}>
         <Image source={{ uri: logo }} style={styles.image} />
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
-          {selectedNFT.name}
+          {selectedNFT?.name}
         </TextV3.CaptionStrong>
       </View>
       {!isERC721 && (

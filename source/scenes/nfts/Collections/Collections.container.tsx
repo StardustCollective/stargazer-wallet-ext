@@ -8,6 +8,9 @@ import { IOpenSeaCollectionWithChain } from 'state/nfts/types';
 import { getWalletController } from 'utils/controllersUtils';
 import nftsHeader from 'navigation/headers/nfts';
 import screens from 'navigation/screens';
+import EventEmitter from 'utils/EventEmitter';
+import { CommonActions } from '@react-navigation/native';
+import { NavigationEvents } from 'constants/events';
 
 const CollectionsContainer: FC<ICollections> = ({ navigation }) => {
   const walletController = getWalletController();
@@ -25,6 +28,22 @@ const CollectionsContainer: FC<ICollections> = ({ navigation }) => {
   const onRefresh = async () => {
     await walletController.nfts.fetchAllNfts();
   };
+
+  useEffect(() => {
+    const resetTab = () => {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: screens.nfts.collections }],
+        })
+      );
+    };
+    EventEmitter.addListener(NavigationEvents.RESET_NFTS_TAB, resetTab);
+
+    return () => {
+      EventEmitter.removeListener(NavigationEvents.RESET_NFTS_TAB, resetTab);
+    };
+  }, [navigation]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
