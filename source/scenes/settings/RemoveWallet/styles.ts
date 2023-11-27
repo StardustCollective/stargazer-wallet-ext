@@ -2,10 +2,13 @@ import { StyleSheet } from 'react-native';
 import { COLORS, NEW_COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
+  },
+  scrollViewContentContainer: {
     padding: 16,
     marginBottom: 24,
+    flexGrow: 1,
   },
   contentContainer: {
     flex: 1,

@@ -4,4 +4,13 @@
   display: flex;
   flex-grow: 1;
   height: 100%;
+  overflow: auto;
+}
+
+.maxHeightBottomBar {
+  max-height: 460px;
+}
+
+.maxHeight {
+  max-height: 520px;
 }

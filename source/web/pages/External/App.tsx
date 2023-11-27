@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import queryString from 'query-string';
 
 import Container from 'components/Container';
@@ -14,8 +14,7 @@ import WatchAsset from 'scenes/external/WatchAsset';
 import 'assets/styles/global.scss';
 import { useController } from 'hooks/index';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-
-const App: FC = () => {
+const App = () => {
   const controller = useController();
 
   // const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);

@@ -1,53 +1,50 @@
 ///////////////////////////
-// Modules  
+// Modules
 ///////////////////////////
 
 import React from 'react';
 import { useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
-// Components  
+// Components
 ///////////////////////////
 
 import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
-// Scene  
+// Scene
 ///////////////////////////
 
 import RemindPhrase from './RemindPhrase';
 
 ///////////////////////////
-// Container  
+// Container
 ///////////////////////////
 
 const RemindPhraseContainer = () => {
-
   ///////////////////////////
-  // Hooks  
+  // Hooks
   ///////////////////////////
 
   const linkTo = useLinkTo();
 
   ///////////////////////////
-  // Callbacks  
+  // Callbacks
   ///////////////////////////
 
   const nextHandler = () => {
     linkTo('/create/phrase/generated');
-  }
+  };
 
   ///////////////////////////
-  // Render  
+  // Render
   ///////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
-      <RemindPhrase
-        nextHandler={nextHandler}
-      />
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={false}>
+      <RemindPhrase nextHandler={nextHandler} />
     </Container>
-  )
-}
+  );
+};
 
 export default RemindPhraseContainer;

@@ -1,11 +1,11 @@
-@import "~assets/styles/variables";
+@import '~assets/styles/variables';
 
 .wrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
   overflow: auto;
-  max-height: 520px;
+  max-height: 460px;
   background-color: $primary;
 
   .maskQrCode {
@@ -22,7 +22,7 @@
     opacity: 0;
     backdrop-filter: blur(10px);
     pointer-events: none;
-  
+
     .modalQrCode {
       width: 100vw;
       height: 100vh;
@@ -33,11 +33,11 @@
       box-sizing: border-box;
       opacity: 0;
     }
-  
+
     &.showQrCode {
       opacity: 1;
       pointer-events: initial;
-  
+
       .modalQrCode {
         opacity: 1;
         transform: translateX(0);
@@ -139,7 +139,7 @@
       .balanceText {
         max-width: 280px;
         overflow: hidden;
-        margin-right: 8px
+        margin-right: 8px;
       }
 
       .symbolText {
@@ -493,6 +493,6 @@
   }
 }
 
-:global([data-scrollbar="true"]) {
+:global([data-scrollbar='true']) {
   width: 100%;
 }

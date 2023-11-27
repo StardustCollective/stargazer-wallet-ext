@@ -2,10 +2,10 @@
 // Module Imports
 /////////////////////////
 
-import React, { FC, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles';
 import { LedgerBridgeUtil } from '../../utils/ledgerBridge';
 import queryString from 'query-string';
 import _ from 'lodash';
@@ -45,19 +45,21 @@ import { dag4 } from '@stardust-collective/dag4';
 const ROUTES = {
   SIGN_TRANSACTION: 'signTransaction',
   SIGN_MESSAGE: 'signMessage',
-}
+};
 
 const LEDGER_ERROR_STRINGS = {
   CONNECTION_CANCELED: 'Cannot read property',
   APP_CLOSED: '6E01',
   PIN_OR_NOT_CONNECTED: 'No USB device found',
-}
+};
 const ALERT_MESSAGES_STRINGS = {
   DEFAULT: 'Error: Please contact support',
-  CONNECTION_CANCELED: 'Connection Canceled: Please connect to unlock wallet with Ledger.',
+  CONNECTION_CANCELED:
+    'Connection Canceled: Please connect to unlock wallet with Ledger.',
   OPEN_CONSTELLATION_APP: 'Open App: Please open the Constellation App on your Ledger',
-  PIN_OR_CONNECTION: 'Connection or Pin: Ledger device USB is disconnected or is awaiting pin input',
-}
+  PIN_OR_CONNECTION:
+    'Connection or Pin: Ledger device USB is disconnected or is awaiting pin input',
+};
 
 // States
 enum ALERT_SEVERITY_STATE {
@@ -98,7 +100,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     width: 380,
     height: 570,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     borderRadius: 6,
   },
 });
@@ -107,14 +109,15 @@ const useStyles = makeStyles({
 // Page
 /////////////////////////
 
-const LedgerPage: FC = () => {
-
+const LedgerPage = () => {
   /////////////////////////
   // Hooks
   /////////////////////////
 
   const classes = useStyles();
-  const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(WALLET_STATE_ENUM.LOCKED);
+  const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(
+    WALLET_STATE_ENUM.LOCKED
+  );
   const [accountData, setAccountData] = useState<LedgerAccount[]>([]);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [selectedAccounts, setSelectedAccounts] = useState<LedgerAccount[]>([]);
@@ -127,25 +130,19 @@ const LedgerPage: FC = () => {
   const [waitingForLedger, setWaitingForLedger] = useState<boolean>(false);
   const [transactionSigned, setTransactionSigned] = useState<boolean>(false);
 
-
   useEffect(() => {
     LedgerBridgeUtil.setOnProgressUpdate(onProgressUpdate);
   }, []);
 
   useEffect(() => {
-
-    const {
-      route,
-    } = queryString.parse(location.search);
+    const { route } = queryString.parse(location.search);
 
     if (route === ROUTES.SIGN_TRANSACTION) {
       setWalletState(WALLET_STATE_ENUM.SIGN);
     } else if (route === ROUTES.SIGN_MESSAGE) {
       setWalletState(WALLET_STATE_ENUM.MESSAGE_SIGNING);
     }
-
   }, []);
-
 
   /////////////////////////
   // Helper
@@ -181,22 +178,22 @@ const LedgerPage: FC = () => {
     }
     setFetchingPage(false);
     setAccountsLoadProgress(0);
-  }
+  };
 
   const showAlert = (error: any): void => {
     let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
     let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
     if (error.message.includes(LEDGER_ERROR_STRINGS.CONNECTION_CANCELED)) {
-      errorMessage = ALERT_MESSAGES_STRINGS.CONNECTION_CANCELED
+      errorMessage = ALERT_MESSAGES_STRINGS.CONNECTION_CANCELED;
     } else if (error.message.includes(LEDGER_ERROR_STRINGS.APP_CLOSED)) {
-      errorMessage = ALERT_MESSAGES_STRINGS.OPEN_CONSTELLATION_APP
+      errorMessage = ALERT_MESSAGES_STRINGS.OPEN_CONSTELLATION_APP;
     } else if (error.message.includes(LEDGER_ERROR_STRINGS.PIN_OR_NOT_CONNECTED)) {
-      errorMessage = ALERT_MESSAGES_STRINGS.PIN_OR_CONNECTION
+      errorMessage = ALERT_MESSAGES_STRINGS.PIN_OR_CONNECTION;
     }
     setAlertSeverity(errorSeverity);
     setAlertMessage(errorMessage);
     setOpenAlert(true);
-  }
+  };
 
   /////////////////////////
   // Callbacks
@@ -206,7 +203,7 @@ const LedgerPage: FC = () => {
   const onProgressUpdate = (loadProgress: number) => {
     let progress = loadProgress * 100;
     setAccountsLoadProgress(progress);
-  }
+  };
 
   // Handles the click to the Connect with Ledger Button
   const onConnectClick = async () => {
@@ -221,64 +218,67 @@ const LedgerPage: FC = () => {
 
     // Get the initial page of the account data
     await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
-  }
+  };
 
   // Updates the alert bar state
   const onAlertBarClose = () => {
     setOpenAlert(false);
-  }
+  };
 
   const onPreviousClick = async () => {
     await getAccountData(PAGING_ACTIONS_ENUM.PREVIOUS);
-  }
+  };
 
   const onNextClick = async () => {
     await getAccountData(PAGING_ACTIONS_ENUM.NEXT);
-  }
+  };
 
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
       setSelectedAccounts((state) => {
-        return [...state, {
-          bipIndex: key - 1, 
-          type: KeyringWalletType.LedgerAccountWallet,
-          publicKey: account.publicKey, 
-          address: account.address, 
-          balance: '' 
-        }];
-      })
+        return [
+          ...state,
+          {
+            bipIndex: key - 1,
+            type: KeyringWalletType.LedgerAccountWallet,
+            publicKey: account.publicKey,
+            address: account.address,
+            balance: '',
+          },
+        ];
+      });
     } else {
       setSelectedAccounts((state) => {
-        _.remove(state, { address: account.address })
+        _.remove(state, { address: account.address });
         return [...state];
-      })
+      });
     }
     setCheckBoxesState((state: boolean[]) => {
       state[key] = checked;
       return [...state];
-    })
-  }
+    });
+  };
 
   const onImportClick = async () => {
     setFetchingPage(true);
     const background = await browser.runtime.getBackgroundPage();
-    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any)
+    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any);
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     LedgerBridgeUtil.closeConnection();
-  }
+  };
 
   const postTransactionResult = async (hash: string) => {
-    const {
-      windowId,
-    } = queryString.parse(location.search);
+    const { windowId } = queryString.parse(location.search);
 
     const background = await browser.runtime.getBackgroundPage();
 
-    background.dispatchEvent(new CustomEvent('transactionSent', {
-      detail: { windowId, approved: true, result: hash },
-    }));
-  }
+    background.dispatchEvent(
+      new CustomEvent('transactionSent', {
+        detail: { windowId, approved: true, result: hash },
+      })
+    );
+  };
 
   const onCancelClick = () => {
     // Close any existing connections
@@ -287,23 +287,24 @@ const LedgerPage: FC = () => {
     setAccountsLoadProgress(0);
     // Transition to the locked state
     setWalletState(WALLET_STATE_ENUM.LOCKED);
-  }
+  };
 
   const onSignPress = async () => {
-
-    const {
-      amount,
-      publicKey,
-      from,
-      to,
-      bipIndex,
-    } = queryString.parse(location.search) as any;
+    const { amount, publicKey, from, to, bipIndex } = queryString.parse(
+      location.search
+    ) as any;
 
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
       // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2
-      const signedTX = await LedgerBridgeUtil.buildTransaction(amount, publicKey, Number(bipIndex), from, to);
+      const signedTX = await LedgerBridgeUtil.buildTransaction(
+        amount,
+        publicKey,
+        Number(bipIndex),
+        from,
+        to
+      );
       const hash = await dag4.network.postTransaction(signedTX);
       if (hash) {
         postTransactionResult(hash);
@@ -316,14 +317,10 @@ const LedgerPage: FC = () => {
       setWaitingForLedger(false);
       LedgerBridgeUtil.closeConnection();
     }
-  }
+  };
 
   const onSignMessagePress = async () => {
-
-    const {
-      data,
-      windowId
-    } = queryString.parse(location.search) as any;
+    const { data, windowId } = queryString.parse(location.search) as any;
 
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
@@ -336,11 +333,13 @@ const LedgerPage: FC = () => {
       LedgerBridgeUtil.closeConnection();
       const signatureEvent = new CustomEvent('messageSigned', {
         detail: {
-          windowId, result: true, signature: {
+          windowId,
+          result: true,
+          signature: {
             hex: signature,
             requestEncoded: message,
-          }
-        }
+          },
+        },
       });
 
       background.dispatchEvent(signatureEvent);
@@ -349,7 +348,7 @@ const LedgerPage: FC = () => {
       setWaitingForLedger(false);
       LedgerBridgeUtil.closeConnection();
     }
-  }
+  };
 
   /////////////////////////
   // Renders
@@ -391,13 +390,7 @@ const LedgerPage: FC = () => {
         </>
       );
     } else if (walletState === WALLET_STATE_ENUM.SIGN) {
-
-      const {
-        amount,
-        fee,
-        from,
-        to,
-      } = queryString.parse(location.search) as any;
+      const { amount, fee, from, to } = queryString.parse(location.search) as any;
 
       return (
         <>
@@ -413,10 +406,7 @@ const LedgerPage: FC = () => {
         </>
       );
     } else if (walletState === WALLET_STATE_ENUM.MESSAGE_SIGNING) {
-
-      const {
-        data,
-      } = queryString.parse(location.search) as any;
+      const { data } = queryString.parse(location.search) as any;
 
       const parsedData = JSON.parse(data);
       const message = JSON.parse(window.atob(parsedData.signatureRequestEncoded));
@@ -431,9 +421,7 @@ const LedgerPage: FC = () => {
             messageSigned={transactionSigned}
           />
         </>
-      )
-
-
+      );
     }
 
     return null;

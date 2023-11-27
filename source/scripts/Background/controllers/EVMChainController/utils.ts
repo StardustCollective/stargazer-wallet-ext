@@ -115,6 +115,22 @@ export const getNetworkLabel = (network: string): string => {
   }
 };
 
+export const getNetworkNativeToken = (network: string): string => {
+  switch (network) {
+    case 'Ethereum':
+      return 'ETH';
+    case 'Polygon':
+      return 'MATIC';
+    case 'Avalanche':
+      return 'AVAX';
+    case 'BSC':
+      return 'BNB';
+
+    default:
+      return 'ETH';
+  }
+};
+
 export const getAllEVMChains = () => {
   const { customNetworks } = store.getState().vault;
   return {

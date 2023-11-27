@@ -1,12 +1,11 @@
 @import '~assets/styles/variables';
 
 .container {
-  height: 520px;
+  height: 460px;
   width: 100%;
 
   .assetList {
     overflow: auto;
-    height: 450px;
   }
 
   .listContainer {
@@ -28,6 +27,10 @@
   .searchContainer {
     background-color: $primary;
     padding: 0px 16px 16px 16px;
+
+    .searchInput {
+      border-color: $primary_lighter_1;
+    }
   }
 }
 

@@ -15,6 +15,17 @@ export default {
   },
 
   ////////////////////////////
+  // Tabs
+  ////////////////////////////
+
+  tabs: {
+    root: 'tabs-root',
+    home: 'tabs-home',
+    nfts: 'tabs-nfts',
+    settings: 'tabs-settings',
+  },
+
+  ////////////////////////////
   // Authorized
   ////////////////////////////
 
@@ -31,6 +42,15 @@ export default {
     buyList: 'auth-buyList',
     buyAsset: 'auth-buyAsset',
     singleSelect: 'auth-singleSelect',
+  },
+
+  nfts: {
+    collections: 'nfts-collections',
+    nftsList: 'nfts-list',
+    nftsDetail: 'nfts-details',
+    nftsSend: 'nfts-send',
+    nftsSendConfirm: 'nfts-send-confirm',
+    nftsSendCompleted: 'nfts-send-completed',
   },
 
   ////////////////////////////

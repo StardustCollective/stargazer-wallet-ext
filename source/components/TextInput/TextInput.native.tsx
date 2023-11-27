@@ -1,4 +1,4 @@
-import React, { FC, useState, MouseEvent, ReactNode } from 'react';
+import React, { FC, useState } from 'react';
 import { Input as RNEInput } from 'react-native-elements';
 import { KeyboardType, StyleSheet } from 'react-native';
 import { Controller } from 'react-hook-form';

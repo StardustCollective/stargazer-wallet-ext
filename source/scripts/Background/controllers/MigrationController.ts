@@ -36,10 +36,10 @@ const MigrationController = async () => {
   /**
    * version < 3.3.0
    */
-  if (!state.nfts) {
-    const NFTMigration = require('../migration/v3_3');
-    await NFTMigration.default(state);
-  }
+  // if (!state.nfts) {
+  //   const NFTMigration = require('../migration/v3_3');
+  //   await NFTMigration.default(state);
+  // }
 
   /**
    * version < 3_5_0

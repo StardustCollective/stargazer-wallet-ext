@@ -1,0 +1,81 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+  width: 100%;
+  padding: 16px;
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.image {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.title {
+  font-weight: $semibold;
+  margin-top: 8px;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0px;
+
+  .checkIcon {
+    padding-right: 8px;
+  }
+}
+
+.quantityLabelContainer {
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-bottom: 8px;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.quantityTitle {
+  font-weight: $medium;
+}
+
+.quantityButtonsContainer {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-right: -16px;
+}
+
+.quantityButton {
+  cursor: pointer;
+  display: flex;
+  width: 60px;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.quantityButtonDivider {
+  width: 1px;
+  height: 24px;
+  background-color: $gray-300;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-grow: 1;
+  margin-top: 12px;
+  align-items: flex-end;
+}

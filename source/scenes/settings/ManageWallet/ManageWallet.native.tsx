@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { View } from 'react-native';
 import { ellipsis } from 'scenes/home/helpers';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -163,7 +163,10 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   ];
 
   return (
-    <View style={styles.wrapper}>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollViewContentContainer}
+    >
       <TextV3.Caption extraStyles={styles.label}>Wallet</TextV3.Caption>
       <TextInput
         control={control}
@@ -222,7 +225,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       <Sheet
         isVisible={isWalletAddressesOpen}
         onClosePress={() => setIsWalletAddressesOpen(false)}
-        height="65%"
+        height={520}
         title={{
           label: wallet.label,
           align: 'left',
@@ -230,7 +233,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       >
         <Menu title="Wallet Addresses" items={walletAddresesContent} />
       </Sheet>
-    </View>
+    </ScrollView>
   );
 };
 

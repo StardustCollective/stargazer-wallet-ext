@@ -129,7 +129,11 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
   };
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} safeArea={false}>
+    <Container
+      color={CONTAINER_COLOR.EXTRA_LIGHT}
+      safeArea={false}
+      maxHeight={type === IMPORT_TYPE.IMPORT}
+    >
       <ImportPhrase
         title={title}
         buttonTitle={buttonTitle}

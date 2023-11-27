@@ -8,7 +8,7 @@ export interface IWalletsModal {
   activeWallet: IWalletState;
   multiChainWallets: KeyringWalletState[];
   privateKeyWallets: KeyringWalletState[];
-  hardwareWallets: KeyringWalletState[];
+  hardwareWallets?: KeyringWalletState[];
   handleSwitchWallet: (
     walletId: string,
     walletAccounts: KeyringWalletAccountState[]

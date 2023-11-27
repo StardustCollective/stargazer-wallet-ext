@@ -140,9 +140,7 @@ export class AccountController {
         ERC_20_TOKENS
       );
 
-      const erc721Assets = await this.buildAccountERC721Tokens(account.address);
-
-      return [ethAsset, ...networkAssets, ...erc20Assets, ...erc721Assets];
+      return [ethAsset, ...networkAssets, ...erc20Assets];
     }
 
     console.log('Unknown account network: cannot build asset list');
@@ -268,29 +266,6 @@ export class AccountController {
       type: AssetType.ERC20,
       label: t.label,
       contractAddress: t.address,
-      address,
-    }));
-
-    return assetList;
-  }
-
-  private async buildAccountERC721Tokens(address: string) {
-    let nfts: any;
-    try {
-      nfts = await this.assetsController.fetchWalletNFTInfo(address);
-    } catch (err: any) {
-      return [];
-    }
-
-    if (!nfts.length) {
-      return [];
-    }
-
-    const assetList: IAssetState[] = nfts.map((nft: any) => ({
-      id: nft.id,
-      type: nft.type,
-      label: nft.name,
-      contractAddress: nft.address,
       address,
     }));
 
@@ -680,8 +655,8 @@ export class AccountController {
     return await dag4.account.getFeeRecommendation();
   }
 
-  async getLatestGasPrices(): Promise<number[]> {
-    const gasPrices = await this.networkController.estimateGasPrices();
+  async getLatestGasPrices(network?: string): Promise<number[]> {
+    const gasPrices = await this.networkController.estimateGasPrices(network);
     const results = Object.values(gasPrices).map((gas) =>
       Math.round(Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei')))
     );

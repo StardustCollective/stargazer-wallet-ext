@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import homeHeader from 'navigation/headers/home';
 import { truncateString } from 'scenes/home/helpers';
 import { getWalletController } from 'utils/controllersUtils';
+import EventEmitter from 'utils/EventEmitter';
 
 ///////////////////////////
 // Components
@@ -44,6 +45,7 @@ import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
 ///////////////////////////
 
 import { BUY_STRING, SWAP_STRING } from './constants';
+import { NavigationEvents } from 'constants/events';
 
 ///////////////////////////
 // Scene
@@ -51,7 +53,6 @@ import { BUY_STRING, SWAP_STRING } from './constants';
 
 const Home: FC<IHome> = ({
   navigation,
-  route,
   activeWallet,
   balanceObject,
   multiChainWallets,
@@ -85,6 +86,7 @@ const Home: FC<IHome> = ({
     walletAccounts: KeyringWalletAccountState[]
   ) => {
     setIsWalletSelectorOpen(false);
+    EventEmitter.emit(NavigationEvents.RESET_NFTS_TAB);
     await walletController.switchWallet(walletId);
     const accounts = walletAccounts.map((account) => account.address);
     await walletController.notifyWalletChange(accounts);
@@ -93,7 +95,7 @@ const Home: FC<IHome> = ({
   // Sets the header for the home screen.
   useLayoutEffect(() => {
     navigation.setOptions({
-      ...homeHeader({ navigation, route }),
+      ...homeHeader(),
       headerTitle: renderHeaderTitle,
     });
   }, [activeWallet, isWalletSelectorOpen]);
