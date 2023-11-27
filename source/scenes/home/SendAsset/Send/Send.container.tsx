@@ -388,11 +388,16 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     const { balance, txFee } = getBalanceAndFees();
 
     let computedAmount: BigNumber;
+    let checkGasPrices: boolean = false;
 
     if (assetInfo.type === AssetType.ERC20) {
       computedAmount = amountBN;
     } else if (txFee) {
       computedAmount = amountBN.add(txFee);
+    }
+
+    if ([AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
+      checkGasPrices = !gasPrices?.length;
     }
 
     if (isExternalRequest) {
@@ -414,12 +419,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       !fee ||
       !address ||
       !balance ||
+      checkGasPrices ||
       !computedAmount ||
       !!Object.values(errors).length ||
       balance.lt(0) ||
       computedAmount.gt(balance)
     );
-  }, [amountBN, address, fee, gasFee, errors, amount]);
+  }, [amountBN, address, fee, gasFee, gasPrices, errors, amount]);
 
   const handleAmountChange = useCallback(
     (changeVal: string) => {

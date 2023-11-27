@@ -61,9 +61,9 @@ const NFTSendConfirmContainer: FC<INFTSendConfirm> = ({ navigation, route }) => 
     transactionFee: `${tempNFTInfo?.gas?.fee} ${tempNFTInfo?.gas?.symbol} (${tempNFTInfo?.gas?.fiatAmount})`,
     maxTotal: `${tempNFTInfo?.gas?.fee} ${tempNFTInfo?.gas?.symbol}`,
     nftLogo: logo,
-    nftName: selectedNFT.name,
+    nftName: selectedNFT?.name,
     loading: transferNFT.loading,
-    isERC721: selectedNFT.token_standard === AssetType.ERC721,
+    isERC721: selectedNFT?.token_standard === AssetType.ERC721,
   };
 
   return (

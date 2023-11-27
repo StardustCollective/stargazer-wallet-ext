@@ -70,7 +70,7 @@ const NFTSend: FC<NFTSendProps> = ({
       <div className={styles.imageContainer}>
         <img src={logo} className={styles.image} />
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
-          {selectedNFT.name}
+          {selectedNFT?.name}
         </TextV3.CaptionStrong>
       </div>
       {!isERC721 && (

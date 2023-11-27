@@ -33,6 +33,7 @@ import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down-white.svg';
 import { getAccountController, getWalletController } from 'utils/controllersUtils';
 import homeHeader from 'navigation/headers/home';
 import { truncateString } from 'scenes/home/helpers';
+import EventEmitter from 'utils/EventEmitter';
 
 ///////////////////////////
 // Styles
@@ -52,6 +53,7 @@ import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
 ///////////////////////////
 
 import { BUY_STRING, SWAP_STRING } from './constants';
+import { NavigationEvents } from 'constants/events';
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
@@ -84,6 +86,7 @@ const Home: FC<IHome> = ({
     walletAccounts: KeyringWalletAccountState[]
   ) => {
     setIsWalletSelectorOpen(false);
+    EventEmitter.emit(NavigationEvents.RESET_NFTS_TAB);
     await walletController.switchWallet(walletId);
     const accounts = walletAccounts.map((account) => account.address);
     await walletController.notifyWalletChange(accounts);
