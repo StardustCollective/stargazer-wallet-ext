@@ -124,12 +124,12 @@ const MigrationController = async () => {
   }
 
   /**
-   * version < 4_0_2
+   * version < 4_0_3
    * Description: Adds priceId "dor" to the DOR token
    */
-  if (compareVersions(state.vault.version, '4.0.2') < 0) {
-    const v4_0_2 = require('../migration/v4_0_2');
-    await v4_0_2.default(state);
+  if (compareVersions(state.vault.version, '4.0.3') < 0) {
+    const v4_0_3 = require('../migration/v4_0_3');
+    await v4_0_3.default(state);
   }
 };
 

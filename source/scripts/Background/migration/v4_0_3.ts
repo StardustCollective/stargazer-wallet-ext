@@ -51,14 +51,14 @@ const MigrateRunner = async (oldState: any) => {
       assets: assetsUpdated,
       vault: {
         ...oldState.vault,
-        version: '4.0.2',
+        version: '4.0.3',
       },
     };
     await saveState(newState);
-    console.log('Migrate to <v4.0.2> successfully!');
+    console.log('Migrate to <v4.0.3> successfully!');
     reload();
   } catch (error) {
-    console.log('<v4.0.2> Migration Error');
+    console.log('<v4.0.3> Migration Error');
     console.log(error);
   }
 };
