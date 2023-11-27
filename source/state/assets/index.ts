@@ -51,6 +51,7 @@ export const initialState: IAssetListState = {
     network: 'main2',
     l0endpoint: 'http://54.191.143.191:7000',
     l1endpoint: 'http://54.191.143.191:8000',
+    priceId: 'dor',
   },
   // 349: New network should be added here.
   [AssetType.Avalanche]: {

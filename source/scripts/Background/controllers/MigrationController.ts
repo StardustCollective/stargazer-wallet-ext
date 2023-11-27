@@ -107,6 +107,7 @@ const MigrationController = async () => {
 
   /**
    * version < 4_0_0
+   * Description: Adds JennyCo token
    */
   if (compareVersions(state.vault.version, '4.0.0') < 0) {
     const v4_0_0 = require('../migration/v4_0_0');
@@ -115,10 +116,20 @@ const MigrationController = async () => {
 
   /**
    * version < 4_0_1
+   * Description: Adds DOR token
    */
   if (compareVersions(state.vault.version, '4.0.1') < 0) {
     const v4_0_1 = require('../migration/v4_0_1');
     await v4_0_1.default(state);
+  }
+
+  /**
+   * version < 4_0_2
+   * Description: Adds priceId "dor" to the DOR token
+   */
+  if (compareVersions(state.vault.version, '4.0.2') < 0) {
+    const v4_0_2 = require('../migration/v4_0_2');
+    await v4_0_2.default(state);
   }
 };
 

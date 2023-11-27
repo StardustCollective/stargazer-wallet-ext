@@ -41,6 +41,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     network: 'main2',
     l0endpoint: 'http://54.191.143.191:7000',
     l1endpoint: 'http://54.191.143.191:8000',
+    priceId: 'dor',
   },
   {
     id: AssetType.Ethereum,

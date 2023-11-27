@@ -28,7 +28,6 @@ const TxItemContainer: FC<ITxItem> = ({
   amount,
   fiatAmount,
   getLinkUrl,
-  isL0token,
 }) => {
   const accountController = getAccountController();
   const minGasPrice = tx.gasPrice ? tx.gasPrice * 1.1 : 0;
@@ -37,12 +36,13 @@ const TxItemContainer: FC<ITxItem> = ({
 
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
-  const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice } = useGasEstimate({
-    toAddress: tx.toAddress,
-    asset: assets[activeAsset.id],
-    data: tx.data,
-    gas: tx.gas,
-  });
+  const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice } =
+    useGasEstimate({
+      toAddress: tx.toAddress,
+      asset: assets[activeAsset.id],
+      data: tx.data,
+      gas: tx.gas,
+    });
 
   const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
     setGasPrice(value as number);
@@ -93,7 +93,9 @@ const TxItemContainer: FC<ITxItem> = ({
     }
   };
 
-  const receivedOrSentText = `${isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'} ${currencySymbol}`;
+  const receivedOrSentText = `${
+    isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'
+  } ${currencySymbol}`;
   const formattedDistanceDate = formatDistanceDate(tx.timestamp);
 
   const renderGasSettings = () => {
@@ -132,7 +134,6 @@ const TxItemContainer: FC<ITxItem> = ({
       receivedOrSentText={receivedOrSentText}
       formattedDistanceDate={formattedDistanceDate}
       renderGasSettings={renderGasSettings}
-      isL0token={isL0token}
     />
   );
 };

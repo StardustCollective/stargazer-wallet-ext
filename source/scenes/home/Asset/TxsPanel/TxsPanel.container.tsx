@@ -117,7 +117,6 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
         currencySymbol={assets[activeAsset?.id]?.symbol}
         amount={amountString}
         fiatAmount={fiatAmount}
-        isL0token={isL0token}
       />
     );
   };
