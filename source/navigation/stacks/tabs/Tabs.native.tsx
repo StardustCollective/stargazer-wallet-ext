@@ -77,6 +77,7 @@ import TransactionDetails from 'scenes/swap/TransactionDetails';
 
 import { NEW_COLORS } from 'assets/styles/_variables';
 import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../Home';
+import { iosPlatform } from 'utils/platform';
 import screens from '../../screens';
 import styles from './styles';
 
@@ -329,7 +330,7 @@ const Tabs = () => {
     <Tab.Navigator
       tabBarOptions={{
         showLabel: false,
-        style: styles.bottomTab,
+        style: !iosPlatform() ? styles.bottomTab : {},
       }}
     >
       <Tab.Screen

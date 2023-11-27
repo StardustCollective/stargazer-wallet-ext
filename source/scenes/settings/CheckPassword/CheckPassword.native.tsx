@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { View } from 'react-native';
+import { ScrollView } from 'react-native';
 import WarningMessage from 'components/WarningMessage';
 import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
 import EnterPassword from './EnterPassword';
@@ -71,7 +71,10 @@ const CheckPassword: FC<ICheckPassword> = (props) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollViewContentContainer}
+    >
       <WarningMessage message={warningMessage} />
       {showRecoveryPhrase && (
         <RecoveryPhrase
@@ -101,7 +104,7 @@ const CheckPassword: FC<ICheckPassword> = (props) => {
           errors={errors}
         />
       )}
-    </View>
+    </ScrollView>
   );
 };
 

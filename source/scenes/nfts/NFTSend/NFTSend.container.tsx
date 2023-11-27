@@ -38,7 +38,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
   const selectedCollection = useSelector(nftSelectors.getSelectedCollection);
   const selectedNFTData = useSelector(nftSelectors.getSelectedNftData);
   const mainAsset = OPENSEA_ASSET_MAP[selectedCollection.chain];
-  const isERC721 = selectedNFTData.token_standard === AssetType.ERC721;
+  const isERC721 = selectedNFTData?.token_standard === AssetType.ERC721;
 
   const [toAddress, setToAddress] = useState('');
   const [quantity, setQuantity] = useState('1');
@@ -121,10 +121,10 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
     gasLimit,
   } = useGasNftEstimate({
     chain: selectedCollection.chain,
-    contractAddress: selectedNFTData.contract,
+    contractAddress: selectedNFTData?.contract,
     isERC721,
     toAddress: toAddress,
-    tokenId: selectedNFTData.identifier,
+    tokenId: selectedNFTData?.identifier,
     amount: Number(quantity),
   });
 
