@@ -21,6 +21,7 @@ import AssetDetail from './Asset';
 
 import { IAssetDetail } from './types';
 import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { IChain } from 'scripts/Background/controllers/EVMChainController/types';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const accountController = getAccountController();
@@ -34,14 +35,8 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
   const balance = useMemo(() => {
-    return Number((activeAsset && balances[activeAsset.id]) || 0);
+    return Number((activeAsset && balances[activeAsset?.id]) || 0);
   }, [activeAsset, balances]);
-
-  let network = '';
-  if (activeAsset.type !== AssetType.Constellation) {
-    const { id } = accountController?.networkController?.getNetwork() || {};
-    network = getNetworkFromChainId(id);
-  }
 
   const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);
@@ -49,6 +44,17 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
     if (!activeAsset) return;
+
+    let network = '';
+
+    if (!!activeAsset?.type && activeAsset?.type !== AssetType.Constellation) {
+      const chain: IChain = !!accountController?.networkController
+        ? accountController?.networkController?.getNetwork()
+        : null;
+      if (!!chain) {
+        network = getNetworkFromChainId(chain.id);
+      }
+    }
 
     const networkId =
       activeAsset?.type === AssetType.Constellation ||
@@ -59,11 +65,11 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     navigation.setOptions(
       assetHeader({
         navigation,
-        asset: assets[activeAsset.id],
+        asset: assets[activeAsset?.id],
         addressUrl: getAddressURL(
-          activeAsset.address,
-          activeAsset.contractAddress,
-          activeAsset.type,
+          activeAsset?.address,
+          activeAsset?.contractAddress,
+          activeAsset?.type,
           activeNetwork[networkId as keyof ActiveNetwork]
         ),
       })
@@ -82,12 +88,17 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   useFocusEffect(
     useCallback(() => {
       if (!activeAsset) return;
-      
+
       const fetchTxs = async () => {
-        if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
-          return activeAsset.transactions;
+        if (
+          activeAsset?.type === AssetType.Constellation ||
+          activeAsset?.type === AssetType.LedgerConstellation
+        ) {
+          return activeAsset?.transactions;
         }
-        return (await accountController.getFullETHTxs()).sort((a, b) => b.timestamp - a.timestamp);
+        return (await accountController.getFullETHTxs()).sort(
+          (a, b) => b.timestamp - a.timestamp
+        );
       };
 
       fetchTxs().then((txns: any[]) => {
@@ -102,7 +113,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
 
   const BALANCE_TEXT = formatStringDecimal(formatNumber(balance, 16, 20), 4);
   const FIAT_AMOUNT = getFiatAmount(balance, balance >= 0.01 ? 2 : 4);
-  const showFiatAmount = !assets[activeAsset?.id]?.l0endpoint;
+  const showFiatAmount = !!assets[activeAsset?.id]?.priceId;
 
   return (
     <Container safeArea={false}>

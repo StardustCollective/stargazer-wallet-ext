@@ -25,12 +25,14 @@ store.subscribe(
   })
 );
 
-if(!process.env.ETHERSCAN_API_KEY ||
-    !process.env.POLYGONSCAN_API_KEY ||
-    !process.env.BSCSCAN_API_KEY ||
-    !process.env.SNOWTRACE_API_KEY ||
-    !process.env.TEST_PRIVATE_KEY){
-    throw 'Missing .env file or missing definition';
+if (
+  !process.env.ETHERSCAN_API_KEY ||
+  !process.env.POLYGONSCAN_API_KEY ||
+  !process.env.BSCSCAN_API_KEY ||
+  !process.env.SNOWTRACE_API_KEY ||
+  !process.env.TEST_PRIVATE_KEY
+) {
+  throw 'Missing .env file or missing definition';
 }
 
 const options = {
@@ -44,11 +46,13 @@ const options = {
 
 store.ready().then(() => {
   ReactDOM.render(
-    <Provider store={store}>
-      <AlertProvider template={ToastAlert} {...options}>
-        <App />
-      </AlertProvider>
-    </Provider>,
+    (
+      <Provider store={store}>
+        <AlertProvider template={ToastAlert} {...options}>
+          <App />
+        </AlertProvider>
+      </Provider>
+    ) as any,
     app
   );
 });

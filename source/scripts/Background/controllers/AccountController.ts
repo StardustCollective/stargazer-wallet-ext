@@ -140,9 +140,7 @@ export class AccountController {
         ERC_20_TOKENS
       );
 
-      const erc721Assets = await this.buildAccountERC721Tokens(account.address);
-
-      return [ethAsset, ...networkAssets, ...erc20Assets, ...erc721Assets];
+      return [ethAsset, ...networkAssets, ...erc20Assets];
     }
 
     console.log('Unknown account network: cannot build asset list');
@@ -274,29 +272,6 @@ export class AccountController {
     return assetList;
   }
 
-  private async buildAccountERC721Tokens(address: string) {
-    let nfts: any;
-    try {
-      nfts = await this.assetsController.fetchWalletNFTInfo(address);
-    } catch (err: any) {
-      return [];
-    }
-
-    if (!nfts.length) {
-      return [];
-    }
-
-    const assetList: IAssetState[] = nfts.map((nft: any) => ({
-      id: nft.id,
-      type: nft.type,
-      label: nft.name,
-      contractAddress: nft.address,
-      address,
-    }));
-
-    return assetList;
-  }
-
   async getLatestTxUpdate(): Promise<void> {
     const state = store.getState();
     const { activeAsset, activeNetwork }: IVaultState = state.vault;
@@ -311,8 +286,7 @@ export class AccountController {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
       const assetInfo = assets[activeAsset?.id];
-      const isL0token =
-        !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
+      const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
 
       if (isL0token) {
         const beUrl =
@@ -469,8 +443,7 @@ export class AccountController {
 
     if (activeAsset.type === AssetType.Constellation) {
       const assetInfo = assets[activeAsset?.id];
-      const isL0token =
-        !!assetInfo?.custom && !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
+      const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
       let pendingTx = null;
 
       if (isL0token) {
@@ -628,11 +601,11 @@ export class AccountController {
     return dag4.account.validateDagAddress(address);
   }
 
-  async isValidMetagraphAddress(address: string): Promise<boolean> {
-    if (!this.isValidDAGAddress(address)) return false;
+  async isValidMetagraphAddress(address: string, chainId?: string): Promise<boolean> {
+    if (!dag4.account.validateDagAddress(address)) return false;
 
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const activeChain = activeNetwork[KeyringNetwork.Constellation];
+    const activeChain = !!chainId ? chainId : activeNetwork[KeyringNetwork.Constellation];
     const BE_URL = DAG_NETWORK[activeChain].config.beUrl;
     const response: any = await (
       await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)
@@ -682,8 +655,8 @@ export class AccountController {
     return await dag4.account.getFeeRecommendation();
   }
 
-  async getLatestGasPrices(): Promise<number[]> {
-    const gasPrices = await this.networkController.estimateGasPrices();
+  async getLatestGasPrices(network?: string): Promise<number[]> {
+    const gasPrices = await this.networkController.estimateGasPrices(network);
     const results = Object.values(gasPrices).map((gas) =>
       Math.round(Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei')))
     );

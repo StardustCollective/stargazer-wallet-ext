@@ -6,8 +6,7 @@
   flex-direction: column;
   width: 100%;
   margin: 16px;
-
-  .dataRow {}
+  height: 500px;
 
   .dataValue {
     display: flex;
@@ -44,7 +43,7 @@
       font-size: 14px;
       font-weight: 400;
       height: 40px;
-      border: 0px solid $gray-200  !important;
+      border: 0px solid $gray-200 !important;
       outline-width: 0px !important;
     }
   }
@@ -63,75 +62,9 @@
     margin-right: 16px;
   }
 
-
   .nextButton {
     display: flex;
     flex: 1;
     align-items: flex-end;
-  }
-
-  .gasPriceContainer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 120px;
-    background-color: $white;
-    border: 1px solid $gray-200;
-    border-radius: 6px;
-
-    .gasPriceHeader {
-      display: flex;
-      flex-direction: row;
-      margin: 0px 16px 0px 16px;
-      align-items: center;
-
-      .gasPriceHeaderLeft {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        margin-top: 10px;
-      }
-
-      .gasPriceHeaderRight {
-        display: flex;
-        flex: 1;
-        justify-content: flex-end;
-        align-items: center;
-        margin-top: 10px;
-
-        .gasSpeedBox {
-          display: flex;
-          height: 35px;
-          border: 1px solid $gray-300;
-          flex-direction: row;
-          border-radius: 8px;
-          align-items: center;
-
-          .gasSpeedBoxRight {
-            margin-right: 15px;
-          }
-
-          .gasSpeedBoxLeft {
-            margin-left: 15px;
-            margin-right: 8px;
-          }
-        }
-      }
-    }
-
-    .gasLoadingIndicator {
-      display: flex;
-      flex: 1;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .gasPriceFooter {
-      margin: 25px 30px 0px 30px;
-    }
-  }
-
-  .gasEstimateLabel {
-    margin-top: 7px;
   }
 }

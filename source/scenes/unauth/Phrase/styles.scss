@@ -3,8 +3,7 @@
 body {
   .start {
     width: 156px;
-    position: absolute;
-    bottom: 24px;
+    margin-top: 16px;
   }
 
   ul.generated {
@@ -30,11 +29,16 @@ body {
     }
   }
 
+  .buttonContainer {
+    display: flex;
+    flex-grow: 1;
+    align-items: flex-end;
+  }
+
   .written {
     padding: 8px;
     width: 228px;
-    position: absolute;
-    bottom: 24px;
+    margin-top: 16px;
 
     &.passed {
       width: 144px;
@@ -116,8 +120,7 @@ body {
   }
 
   .validate {
-    position: absolute;
-    bottom: 23px;
+    margin-top: 12px;
     width: 156px;
   }
 

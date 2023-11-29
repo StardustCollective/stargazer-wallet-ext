@@ -200,23 +200,23 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     } else {
       // Get activeAsset from wallet assets
       activeAsset = useSelector((state: RootState) =>
-        find(state.vault.activeWallet.assets, { id: activeAsset.id })
+        find(state.vault.activeWallet.assets, { id: activeAsset?.id })
       );
     }
 
-    if (!vaultActiveAsset || activeAsset.id !== vaultActiveAsset.id) {
+    if (!vaultActiveAsset || activeAsset?.id !== vaultActiveAsset.id) {
       // Update activeAsset so NetworkController doesn't fail
       accountController.updateAccountActiveAsset(activeAsset);
     }
 
-    assetInfo = assets[activeAsset.id] || initialStateAssets[activeAsset.id];
+    assetInfo = assets[activeAsset?.id] || initialStateAssets[activeAsset?.id];
 
-    from = activeAsset.address;
+    from = activeAsset?.address;
   } else {
     const vault: IVaultState = useSelector((state: RootState) => state.vault);
     activeAsset = vault.activeAsset;
     balances = vault.balances;
-    assetInfo = assets[activeAsset.id];
+    assetInfo = assets[activeAsset?.id];
   }
 
   const getFiatAmount = useFiat(true, assetInfo);
@@ -240,8 +240,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
               .required('Error: Invalid amount')
           : null,
         fee:
-          activeAsset.type === AssetType.Constellation ||
-          activeAsset.type === AssetType.LedgerConstellation
+          activeAsset?.type === AssetType.Constellation ||
+          activeAsset?.type === AssetType.LedgerConstellation
             ? yup
                 .mixed()
                 .transform((value) => {
@@ -273,8 +273,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const isValidAddress = useMemo(() => {
     if (
-      activeAsset.type === AssetType.Constellation ||
-      activeAsset.type === AssetType.LedgerConstellation
+      activeAsset?.type === AssetType.Constellation ||
+      activeAsset?.type === AssetType.LedgerConstellation
     )
       return accountController.isValidDAGAddress(address);
     return accountController.isValidERC20Address(address);
@@ -292,7 +292,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     gasPrices,
   } = useGasEstimate({
     toAddress: tempTx?.toAddress || to,
-    fromAddress: activeAsset.address,
+    fromAddress: activeAsset?.address,
     asset: assetInfo,
     data: memo,
     gas,
@@ -303,13 +303,16 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       return;
     }
     const txConfig: ITransactionInfo = {
-      fromAddress: activeAsset.address || from,
+      fromAddress: activeAsset?.address || from,
       toAddress: data.address || to,
       timestamp: Date.now(),
       amount: String(amount) || '0',
       fee: data.fee || gasFee,
     };
-    if (activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20) {
+    if (
+      activeAsset?.type === AssetType.Ethereum ||
+      activeAsset?.type === AssetType.ERC20
+    ) {
       txConfig.ethConfig = {
         gasPrice,
         gasLimit,
@@ -331,10 +334,10 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         [AssetType.Avalanche]: StargazerChain.AVALANCHE,
       };
       if (!!activeAsset?.id) {
-        if (activeAsset.type === AssetType.Constellation) {
+        if (activeAsset?.type === AssetType.Constellation) {
           params.set('chain', StargazerChain.CONSTELLATION);
         } else {
-          params.set('chain', CHAINS[activeAsset.id]);
+          params.set('chain', CHAINS[activeAsset?.id]);
         }
       }
       if (!!metagraphAddress) {
@@ -363,13 +366,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     let txFee;
     try {
       if (balances) {
-        balance = balances[activeAsset.id] || '0';
+        balance = balances[activeAsset?.id] || '0';
         balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
       }
 
       txFee =
-        activeAsset.id === AssetType.Constellation ||
-        activeAsset.id === AssetType.LedgerConstellation
+        activeAsset?.id === AssetType.Constellation ||
+        activeAsset?.id === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee, assetInfo.decimals)
           : ethers.utils.parseEther(gasFee.toString());
 
@@ -385,11 +388,16 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     const { balance, txFee } = getBalanceAndFees();
 
     let computedAmount: BigNumber;
+    let checkGasPrices: boolean = false;
 
     if (assetInfo.type === AssetType.ERC20) {
       computedAmount = amountBN;
     } else if (txFee) {
       computedAmount = amountBN.add(txFee);
+    }
+
+    if ([AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
+      checkGasPrices = !gasPrices?.length;
     }
 
     if (isExternalRequest) {
@@ -411,12 +419,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       !fee ||
       !address ||
       !balance ||
+      checkGasPrices ||
       !computedAmount ||
       !!Object.values(errors).length ||
       balance.lt(0) ||
       computedAmount.gt(balance)
     );
-  }, [amountBN, address, fee, gasFee, errors, amount]);
+  }, [amountBN, address, fee, gasFee, gasPrices, errors, amount]);
 
   const handleAmountChange = useCallback(
     (changeVal: string) => {

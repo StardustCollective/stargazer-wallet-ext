@@ -1,0 +1,9 @@
+@import '~assets/styles/variables';
+
+.container {
+  padding-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 170px);
+  justify-content: center;
+  gap: 8px; /* Spacing between grid items */
+}

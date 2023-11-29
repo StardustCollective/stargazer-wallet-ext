@@ -2,9 +2,8 @@
 // Imports
 ///////////////////////
 
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { View, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { DotIndicator } from 'react-native-indicators';
 
 ///////////////////////
 // Components
@@ -12,7 +11,8 @@ import { DotIndicator } from 'react-native-indicators';
 
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-import PurpleSlider from 'components/PurpleSlider';
+import GasSlider from 'components/GasSlider';
+
 ///////////////////////
 // Types
 ///////////////////////
@@ -40,31 +40,29 @@ import {
   TRANSACTION_FEE_STRING,
   RECOMMENDED_STRING,
   NEXT_BUTTON_STRING,
-  GAS_PRICE_IN_GWEI_STRING,
-  GAS_SLIDER_STEP,
   DAG_CODE,
   TRANSACTION_FEE_DEFAULT_VALUE,
 } from './constants';
 
 const SwapTokens: FC<ITransferInfo> = ({
   onNextPressed,
+  asset,
   to,
   from,
   depositAddress,
   gas,
   onGasPriceChange,
-  getFiatAmount,
   onRecommendedPress,
-  onTransactionFeeChange
+  onTransactionFeeChange,
 }) => {
-
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContentContainer}
+      >
         <View style={styles.dataRow}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
             {DEPOSIT_ADDRESS_STRING}
           </TextV3.CaptionStrong>
           <View style={styles.dataValue}>
@@ -78,9 +76,7 @@ const SwapTokens: FC<ITransferInfo> = ({
           </View>
         </View>
         <View style={styles.dataRow}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
             {SWAP_FROM_STRING}
           </TextV3.CaptionStrong>
           <View style={styles.dataValue}>
@@ -93,9 +89,7 @@ const SwapTokens: FC<ITransferInfo> = ({
           </View>
         </View>
         <View style={styles.dataRow}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
             {SWAP_TO_STRING}
           </TextV3.CaptionStrong>
           <View style={styles.dataValue}>
@@ -109,65 +103,35 @@ const SwapTokens: FC<ITransferInfo> = ({
         </View>
         {from.code === DAG_CODE ? (
           <View style={styles.dataRow}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.DARK_GRAY_200}
-            >
+            <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
               {TRANSACTION_FEE_STRING}
             </TextV3.CaptionStrong>
             <View style={[styles.dataValue, styles.trasnsactionFee]}>
               <View style={styles.transactionFeeInput}>
-                <TextInput onChangeText={onTransactionFeeChange} defaultValue={TRANSACTION_FEE_DEFAULT_VALUE} keyboardType={TRANSACTION_FEE_KEYBOARD_TYPE} style={styles.transactionFeeTextField} />
+                <TextInput
+                  onChangeText={onTransactionFeeChange}
+                  defaultValue={TRANSACTION_FEE_DEFAULT_VALUE}
+                  keyboardType={TRANSACTION_FEE_KEYBOARD_TYPE}
+                  style={styles.transactionFeeTextField}
+                />
               </View>
               <View style={styles.transactionFeeRecommend}>
                 <TouchableOpacity onPress={onRecommendedPress}>
-                  <TextV3.Caption color={COLORS_ENUMS.PRIMARY}>{RECOMMENDED_STRING}</TextV3.Caption>
+                  <TextV3.Caption color={COLORS_ENUMS.PRIMARY}>
+                    {RECOMMENDED_STRING}
+                  </TextV3.Caption>
                 </TouchableOpacity>
               </View>
             </View>
             <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
               With current network conditions we recommend a fee of &nbsp;
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                0 DAG
-              </TextV3.Caption>
+              <TextV3.Caption color={COLORS_ENUMS.BLACK}>0 DAG</TextV3.Caption>
             </TextV3.Caption>
           </View>
         ) : (
           <>
             {gas.prices.length > 0 && (
-              <>
-                <View style={styles.gasPriceContainer}>
-                  <View style={styles.gasPriceHeader}>
-                    <View style={styles.gasPriceHeaderLeft}>
-                      <TextV3.LabelSemiStrong color={COLORS_ENUMS.BLACK}>{GAS_PRICE_IN_GWEI_STRING}</TextV3.LabelSemiStrong>
-                    </View>
-                    <View style={styles.gasPriceHeaderRight}>
-                      <View style={styles.gasSpeedBox}>
-                        <View style={styles.gasSpeedBoxLeft}>
-                          <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK}>{gas.price.toString()}</TextV3.CaptionRegular>
-                        </View>
-                        <View style={styles.gasSpeedBoxRight}>
-                          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{gas.speedLabel}</TextV3.CaptionStrong>
-                        </View>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.gasPriceFooter}>
-                    <View style={styles.sliderContainer}>
-                      <PurpleSlider
-                        onChange={onGasPriceChange}
-                        min={gas.prices[0]}
-                        max={gas.prices[2]}
-                        value={gas.price}
-                        step={GAS_SLIDER_STEP}
-                      />
-                    </View>
-                  </View>
-
-                </View>
-                <TextV3.CaptionRegular extraStyles={styles.gasEstimateLabel} color={COLORS_ENUMS.DARK_GRAY_200}>
-                  {`${gas.price} GWEI, ${gas.fee} ${from.code} (≈ ${getFiatAmount(gas.fee, 2, gas.basePriceId)})`}
-                </TextV3.CaptionRegular>
-              </>
+              <GasSlider gas={gas} asset={asset} onGasPriceChange={onGasPriceChange} />
             )}
           </>
         )}
@@ -180,7 +144,7 @@ const SwapTokens: FC<ITransferInfo> = ({
           />
         </View>
       </ScrollView>
-    </View >
+    </View>
   );
 };
 

@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import homeHeader from 'navigation/headers/home';
 import { truncateString } from 'scenes/home/helpers';
 import { getWalletController } from 'utils/controllersUtils';
+import EventEmitter from 'utils/EventEmitter';
 
 ///////////////////////////
 // Components
@@ -43,10 +44,8 @@ import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
 // constants
 ///////////////////////////
 
-import {
-  BUY_STRING,
-  SWAP_STRING
-} from './constants';
+import { BUY_STRING, SWAP_STRING } from './constants';
+import { NavigationEvents } from 'constants/events';
 
 ///////////////////////////
 // Scene
@@ -54,16 +53,15 @@ import {
 
 const Home: FC<IHome> = ({
   navigation,
-  route,
   activeWallet,
   balanceObject,
   multiChainWallets,
   privateKeyWallets,
+  hardwareWallets,
   onBuyPressed,
   onSwapPressed,
   isDagOnlyWallet,
 }) => {
-
   const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
 
   const walletController = getWalletController();
@@ -71,15 +69,24 @@ const Home: FC<IHome> = ({
   const renderHeaderTitle = () => {
     const ArrowIcon = isWalletSelectorOpen ? ArrowUpIcon : ArrowDownIcon;
     return (
-      <div className={styles.titleContainer} onClick={() => setIsWalletSelectorOpen(true)}>
-        <TextV3.BodyStrong extraStyles={styles.titleText}>{activeWallet ? truncateString(activeWallet.label) : ""}</TextV3.BodyStrong>
+      <div
+        className={styles.titleContainer}
+        onClick={() => setIsWalletSelectorOpen(true)}
+      >
+        <TextV3.BodyStrong extraStyles={styles.titleText}>
+          {activeWallet ? truncateString(activeWallet.label) : ''}
+        </TextV3.BodyStrong>
         <img src={`/${ArrowIcon}`} />
       </div>
     );
-  }
+  };
 
-  const handleSwitchWallet = async (walletId: string, walletAccounts: KeyringWalletAccountState[]) => {
+  const handleSwitchWallet = async (
+    walletId: string,
+    walletAccounts: KeyringWalletAccountState[]
+  ) => {
     setIsWalletSelectorOpen(false);
+    EventEmitter.emit(NavigationEvents.RESET_NFTS_TAB);
     await walletController.switchWallet(walletId);
     const accounts = walletAccounts.map((account) => account.address);
     await walletController.notifyWalletChange(accounts);
@@ -88,7 +95,7 @@ const Home: FC<IHome> = ({
   // Sets the header for the home screen.
   useLayoutEffect(() => {
     navigation.setOptions({
-      ...homeHeader({ navigation, route }),
+      ...homeHeader(),
       headerTitle: renderHeaderTitle,
     });
   }, [activeWallet, isWalletSelectorOpen]);
@@ -153,17 +160,18 @@ const Home: FC<IHome> = ({
           <CircularProgress className={styles.loader} />
         </section>
       )}
-      <Sheet 
+      <Sheet
         title={{
           label: 'Wallets',
-          align: 'left'
+          align: 'left',
         }}
         isVisible={isWalletSelectorOpen}
         onClosePress={() => setIsWalletSelectorOpen(false)}
       >
-        <WalletsModal 
+        <WalletsModal
           multiChainWallets={multiChainWallets}
           privateKeyWallets={privateKeyWallets}
+          hardwareWallets={hardwareWallets}
           activeWallet={activeWallet}
           handleSwitchWallet={handleSwitchWallet}
         />

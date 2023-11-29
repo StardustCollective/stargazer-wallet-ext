@@ -1,5 +1,5 @@
 ///////////////////////////
-// Modules  
+// Modules
 ///////////////////////////
 
 import React, { useState } from 'react';
@@ -13,38 +13,37 @@ import { useForm } from 'react-hook-form';
 import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
-// Components  
+// Components
 ///////////////////////////
 
 import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
-// Scene  
+// Scene
 //////////////////////////
 
 import CreatePass from './CreatePass';
 
 ///////////////////////////
-// Navigation  
+// Navigation
 //////////////////////////
 
 import navigationUtil from 'navigation/util';
 import screens from 'navigation/screens';
 
 ///////////////////////////
-// Contants  
+// Contants
 //////////////////////////
 
 import * as consts from './../consts';
 
 ///////////////////////////
-// Container  
+// Container
 //////////////////////////
 
 const CreatePassContainer = () => {
-
   ///////////////////////////
-  // Hooks  
+  // Hooks
   //////////////////////////
 
   const navigation = useNavigation();
@@ -53,12 +52,10 @@ const CreatePassContainer = () => {
     validationSchema: consts.schema,
   });
   const title = passed ? consts.CREATE_PASS_TITLE2 : consts.CREATE_PASS_TITLE1;
-  const comment = passed
-    ? consts.CREATE_PASS_COMMENT2
-    : consts.CREATE_PASS_COMMENT1;
+  const comment = passed ? consts.CREATE_PASS_COMMENT2 : consts.CREATE_PASS_COMMENT1;
 
   ///////////////////////////
-  // Callbacks  
+  // Callbacks
   //////////////////////////
 
   const nextHandler = async () => {
@@ -76,11 +73,11 @@ const CreatePassContainer = () => {
   };
 
   ///////////////////////////
-  // Render  
+  // Render
   //////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={false}>
       <CreatePass
         title={title}
         passed={passed}
@@ -93,8 +90,7 @@ const CreatePassContainer = () => {
         control={control}
       />
     </Container>
-  )
-
-}
+  );
+};
 
 export default CreatePassContainer;
