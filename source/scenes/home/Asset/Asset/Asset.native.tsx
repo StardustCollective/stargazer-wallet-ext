@@ -1,5 +1,12 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, Image, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Modal,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 
 import * as Progress from 'react-native-progress';
 import TextV3 from 'components/TextV3';
@@ -11,7 +18,11 @@ import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
 
-import { getNetworkLabel, getNetworkLogo, getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import {
+  getNetworkLabel,
+  getNetworkLogo,
+  getNetworkFromChainId,
+} from 'scripts/Background/controllers/EVMChainController/utils';
 import { CONSTELLATION_LOGO } from 'constants/index';
 
 import TxsPanel from '../TxsPanel';
@@ -37,38 +48,61 @@ const AssetDetail: FC<IAssetSettings> = ({
   copyAddress,
   showFiatAmount,
 }) => {
-  const activeAssetStyle = StyleSheet.flatten([styles.mask, activeAsset && activeWallet ? styles.loaderHide : {}]);
+  const activeAssetStyle = StyleSheet.flatten([
+    styles.mask,
+    !!activeAsset && !!activeWallet ? styles.loaderHide : {},
+  ]);
   const asset = assets[activeAsset?.id];
   let network = asset?.network;
   // 349: New network should be added here.
-  if ([AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(asset?.symbol)) {
+  if (
+    [AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
+      asset?.symbol
+    )
+  ) {
     const currentNetwork = getNetworkFromChainId(network);
     network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
   } else if (AssetSymbol.DAG === asset?.symbol) {
     network = activeNetwork.Constellation;
   }
-  
-  const networkLabel = getNetworkLabel(network);
-  const networkLogo = asset?.type === AssetType.Constellation ? CONSTELLATION_LOGO : getNetworkLogo(asset?.network);
 
-  if (activeWallet && activeAsset) {
+  const networkLabel = getNetworkLabel(network);
+  const networkLogo =
+    asset?.type === AssetType.Constellation
+      ? CONSTELLATION_LOGO
+      : getNetworkLogo(asset?.network);
+
+  if (!!activeWallet && !!activeAsset) {
     return (
       <>
-        <ScrollView style={styles.wrapper} contentContainerStyle={styles.assetContentContainer}>
+        <ScrollView
+          style={styles.wrapper}
+          contentContainerStyle={styles.assetContentContainer}
+        >
           <View style={styles.center}>
             <View style={styles.balance}>
-              <TextV3.HeaderDisplay color={COLORS_ENUMS.WHITE} dynamic extraStyles={styles.balanceText}>
+              <TextV3.HeaderDisplay
+                color={COLORS_ENUMS.WHITE}
+                dynamic
+                extraStyles={styles.balanceText}
+              >
                 {balanceText}
               </TextV3.HeaderDisplay>
-              <TextV3.Body color={COLORS_ENUMS.WHITE} extraStyles={styles.symbolText}>{assets[activeAsset.id].symbol}</TextV3.Body>
+              <TextV3.Body color={COLORS_ENUMS.WHITE} extraStyles={styles.symbolText}>
+                {assets[activeAsset.id].symbol}
+              </TextV3.Body>
             </View>
-            {showFiatAmount && 
+            {showFiatAmount && (
               <View style={styles.fiatBalance}>
                 <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
               </View>
-            }
+            )}
             <View style={styles.actions}>
-              <AssetButtons setShowQrCode={setShowQrCode} onSendClick={onSendClick} assetId={activeAsset?.id} />
+              <AssetButtons
+                setShowQrCode={setShowQrCode}
+                onSendClick={onSendClick}
+                assetId={activeAsset?.id}
+              />
             </View>
           </View>
           <TxsPanel address={activeAsset.address} transactions={transactions} />
@@ -105,8 +139,15 @@ const AssetDetail: FC<IAssetSettings> = ({
                     size={QR_CODE_SIZE}
                   />
                   <View style={styles.addressContainer}>
-                    <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.qrCodeAddressText}>
-                      {activeAsset.address.substring(0, 10)}...{activeAsset.address.substring(activeAsset.address.length - 10, activeAsset.address.length)}
+                    <TextV3.Caption
+                      color={COLORS_ENUMS.BLACK}
+                      extraStyles={styles.qrCodeAddressText}
+                    >
+                      {activeAsset.address.substring(0, 10)}...
+                      {activeAsset.address.substring(
+                        activeAsset.address.length - 10,
+                        activeAsset.address.length
+                      )}
                     </TextV3.Caption>
                     <CopyIcon height={20} width={20} />
                   </View>

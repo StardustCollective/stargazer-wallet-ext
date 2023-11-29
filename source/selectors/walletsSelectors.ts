@@ -19,7 +19,6 @@ import {
   IVaultWalletsStoreState,
   AssetSymbol,
 } from 'state/vault/types';
-import { getNfts } from './nftSelectors';
 import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
 /// //////////////////////
@@ -132,7 +131,7 @@ const selectActiveAssetPublicKey = createSelector(
  * Return the deviceId of the active asset
  */
 
- const selectActiveAssetDeviceId = createSelector(
+const selectActiveAssetDeviceId = createSelector(
   selectAllWallets,
   getActiveAsset,
   (wallets, activeAsset) => {
@@ -182,31 +181,28 @@ const selectActiveNetworkAssets = createSelector(
       const assetInfo = assets[asset.id];
       const assetNetwork = assetInfo?.network;
       const assetSymbol = assetInfo?.symbol;
-      let assetNetworkType: string = asset.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(assetNetwork);
+      let assetNetworkType: string =
+        asset.type === AssetType.Constellation
+          ? KeyringNetwork.Constellation
+          : getNetworkFromChainId(assetNetwork);
       // 349: New network should be added here.
       const isDAG = assetSymbol === AssetSymbol.DAG && assetNetwork === 'both';
       const isETH = assetSymbol === AssetSymbol.ETH && assetNetwork === 'both';
       const isMATIC = assetSymbol === AssetSymbol.MATIC && assetNetwork === 'matic';
-      const isAVAX = assetSymbol === AssetSymbol.AVAX && assetNetwork === 'avalanche-mainnet';
+      const isAVAX =
+        assetSymbol === AssetSymbol.AVAX && assetNetwork === 'avalanche-mainnet';
       const isBNB = assetSymbol === AssetSymbol.BNB && assetNetwork === 'bsc';
-      return isDAG || isETH || isMATIC || isAVAX || isBNB || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
+      return (
+        isDAG ||
+        isETH ||
+        isMATIC ||
+        isAVAX ||
+        isBNB ||
+        assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork]
+      );
     });
   }
 );
-
-/**
- * Returns NFT assets
- * NFTs are fetched for the active network only so no activeNetwork checks are needed
- */
-const selectNFTAssets = createSelector(getActiveWallet, getNfts, (activeWallet, nfts) => {
-  if (!activeWallet?.assets) {
-    return [];
-  }
-
-  return activeWallet.assets.filter((asset: IAssetState) => {
-    return asset.type === AssetType.ERC721 && nfts[asset.id as any];
-  });
-});
 
 const selectActiveNetworkAssetIds = createSelector(
   selectActiveNetworkAssets,
@@ -217,13 +213,13 @@ const selectActiveNetworkAssetIds = createSelector(
 
 export default {
   getActiveAsset,
+  getActiveWallet,
   selectAllAccounts,
   selectAllDagAccounts,
   selectAllEthAccounts,
   selectAllWallets,
   selectActiveNetworkAssets,
   selectActiveNetworkAssetIds,
-  selectNFTAssets,
   selectActiveAssetPublicKey,
   selectActiveAssetDeviceId,
 };

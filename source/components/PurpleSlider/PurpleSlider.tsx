@@ -13,7 +13,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 const PSlider = withStyles({
   root: {
-    color: '#2B1D52',
+    color: '#473194',
     height: 4,
   },
   thumb: {
@@ -46,12 +46,12 @@ const PSlider = withStyles({
 /// ////////////////////
 
 type IPurpleSliderProps = {
-  defaultValue: number,
-  max: number,
-  min: number,
-  onChange: (_event: ChangeEvent<{}>, value: number | number[]) => void,
-  step: number,
-  value: number,
+  defaultValue: number;
+  max: number;
+  min: number;
+  onChange: (_event: ChangeEvent<{}>, value: number | number[]) => void;
+  step: number;
+  value: number;
 };
 
 /// ////////////////////
@@ -74,7 +74,9 @@ const PurpleSlider: FC<IPurpleSliderProps> = ({
 }) => {
   return (
     <PSlider
-      onClick={(ev) => {ev.stopPropagation()}}
+      onClick={(ev) => {
+        ev.stopPropagation();
+      }}
       onChange={onChange}
       min={min}
       max={max}

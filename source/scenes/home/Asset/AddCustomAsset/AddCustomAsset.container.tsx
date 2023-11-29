@@ -13,6 +13,7 @@ import * as yup from 'yup';
 ///////////////////////////
 
 import AddCustomAsset from './AddCustomAsset';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Types
@@ -347,30 +348,32 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   ///////////////////////////
 
   return (
-    <AddCustomAsset
-      control={control}
-      register={register}
-      tokenAddress={tokenAddress}
-      l0endpoint={l0endpoint}
-      l1endpoint={l1endpoint}
-      tokenName={tokenName}
-      tokenSymbol={tokenSymbol}
-      tokenDecimals={tokenDecimals}
-      isL0Token={isL0Token}
-      networkTypeOptions={networkTypeOptions}
-      handleAddressScan={handleAddressScan}
-      handleAddressChange={handleAddressChange}
-      handleL0endpointChange={handleL0endpointChange}
-      handleL1endpointChange={handleL1endpointChange}
-      handleNameChange={handleNameChange}
-      handleSymbolChange={handleSymbolChange}
-      handleDecimalsChange={handleDecimalsChange}
-      handleSubmit={handleSubmit}
-      onSubmit={onSubmit}
-      errors={errors}
-      buttonDisabled={buttonDisabled}
-      buttonLoading={buttonLoading}
-    />
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
+      <AddCustomAsset
+        control={control}
+        register={register}
+        tokenAddress={tokenAddress}
+        l0endpoint={l0endpoint}
+        l1endpoint={l1endpoint}
+        tokenName={tokenName}
+        tokenSymbol={tokenSymbol}
+        tokenDecimals={tokenDecimals}
+        isL0Token={isL0Token}
+        networkTypeOptions={networkTypeOptions}
+        handleAddressScan={handleAddressScan}
+        handleAddressChange={handleAddressChange}
+        handleL0endpointChange={handleL0endpointChange}
+        handleL1endpointChange={handleL1endpointChange}
+        handleNameChange={handleNameChange}
+        handleSymbolChange={handleSymbolChange}
+        handleDecimalsChange={handleDecimalsChange}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        errors={errors}
+        buttonDisabled={buttonDisabled}
+        buttonLoading={buttonLoading}
+      />
+    </Container>
   );
 };
 

@@ -1,0 +1,41 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  padding: 16px;
+  flex-direction: column;
+  overflow: auto;
+
+  .searchInputContainer {
+    background-color: white;
+  }
+
+  .searchInput {
+    color: black;
+  }
+
+  .itemsContainer {
+    padding-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 170px);
+    justify-content: center;
+    gap: 8px; /* Spacing between grid items */
+  }
+}
+
+.noDataContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .noFoundText {
+    font-size: 16px;
+    margin-top: 16px;
+    color: #000000a8;
+  }
+}

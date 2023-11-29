@@ -1,0 +1,78 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 16px;
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.contentContainer {
+  padding: 16px;
+}
+
+.image {
+  width: 100%;
+  object-fit: cover;
+  height: 358px;
+  border-radius: 8px;
+}
+
+.noDataContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.noFoundText {
+  font-size: 16px;
+  margin-top: 16px;
+  color: #000000a8;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.title {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.buttonContainer {
+  margin-bottom: 24px;
+}
+
+.sendButton {
+  width: 100%;
+}
+
+.sendTitleButton {
+  margin-right: 8px;
+}
+
+.descriptionContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.attributesContainer {
+  margin-bottom: 24px;
+}
+
+.attributesItemsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: center;
+  gap: 8px;
+}
+
+.subtitle {
+  margin-bottom: 12px;
+}

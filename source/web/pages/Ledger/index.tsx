@@ -36,11 +36,13 @@ const options = {
 
 store.ready().then(() => {
   ReactDOM.render(
-    <Provider store={store}>
-      <AlertProvider template={ToastAlert} {...options}>
-        <LedgerPage />
-      </AlertProvider>
-    </Provider>,
+    (
+      <Provider store={store}>
+        <AlertProvider template={ToastAlert} {...options}>
+          <LedgerPage />
+        </AlertProvider>
+      </Provider>
+    ) as any,
     app
   );
 });

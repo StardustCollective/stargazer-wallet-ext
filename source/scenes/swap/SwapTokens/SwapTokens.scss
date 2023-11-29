@@ -5,7 +5,9 @@
   flex: 1;
   flex-direction: column;
   width: 100%;
-  margin: 16px;
+  overflow: auto;
+  height: 480px;
+  padding: 16px;
 
   .provider {
     display: flex;

@@ -1,7 +1,7 @@
 // Place holder file for Web.
 import React, { FC } from 'react';
 import { TouchableOpacity } from 'react-native';
-import QRCodeIcon from 'assets/images/svg/qrcode.svg';
+import QRCodeIcon from 'assets/images/svg/qr-code.svg';
 import { COLORS } from 'assets/styles/_variables';
 import IQRCodeButton from './types';
 

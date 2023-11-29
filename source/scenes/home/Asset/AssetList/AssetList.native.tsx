@@ -18,7 +18,10 @@ import SearchInput from 'components/SearchInput';
 ///////////////////////////
 
 import { getKeyringAssetType } from 'utils/keyringUtil';
-import { getNetworkFromChainId, getNetworkLabel } from 'scripts/Background/controllers/EVMChainController/utils';
+import {
+  getNetworkFromChainId,
+  getNetworkLabel,
+} from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Types
@@ -33,6 +36,7 @@ import { AssetSymbol, AssetType } from 'state/vault/types';
 ///////////////////////////
 
 import styles from './styles';
+import { NEW_COLORS } from '../../../../assets/styles/_variables.native';
 
 ///////////////////////////
 // Constants
@@ -40,32 +44,52 @@ import styles from './styles';
 
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
-const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, toggleAssetItem, searchValue, onSearch, activeWallet, activeNetwork }) => {
-
+const AssetList: FC<IAssetList> = ({
+  activeNetworkAssets,
+  allAssets,
+  loading,
+  toggleAssetItem,
+  searchValue,
+  onSearch,
+  activeWallet,
+  activeNetwork,
+}) => {
   const renderAssetItem = ({ item }: { item: IAssetInfoState }) => {
-    const selected = !!activeNetworkAssets?.find(asset => asset?.id === item?.id);
+    const selected = !!activeNetworkAssets?.find((asset) => asset?.id === item?.id);
     const itemType = getKeyringAssetType(item?.type);
     const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(item?.symbol);
     const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
     const itemChainId = item?.network;
-    const itemNetwork = item?.type === AssetType.Constellation ? KeyringNetwork.Constellation : getNetworkFromChainId(itemChainId);
+    const itemNetwork =
+      item?.type === AssetType.Constellation
+        ? KeyringNetwork.Constellation
+        : getNetworkFromChainId(itemChainId);
     const currentActiveNetwork = activeNetwork[itemNetwork];
     const network = getNetworkLabel(currentActiveNetwork);
     // 349: New network should be added here.
     const isMATIC = item?.symbol === AssetSymbol.MATIC && itemChainId === 'matic';
-    const isAVAX = item?.symbol === AssetSymbol.AVAX && itemChainId === 'avalanche-mainnet';
+    const isAVAX =
+      item?.symbol === AssetSymbol.AVAX && itemChainId === 'avalanche-mainnet';
     const isBNB = item?.symbol === AssetSymbol.BNB && itemChainId === 'bsc';
-    const hideToken = itemChainId !== 'both' && !isMATIC && !isAVAX && !isBNB && currentActiveNetwork !== itemChainId;
+    const hideToken =
+      itemChainId !== 'both' &&
+      !isMATIC &&
+      !isAVAX &&
+      !isBNB &&
+      currentActiveNetwork !== itemChainId;
     if (!isAssetSupported || hideToken) return null;
-    return <AssetWithToggle 
-              id={item?.id}
-              symbol={item?.symbol} 
-              network={network}
-              logo={item?.logo} 
-              label={item?.label} 
-              selected={selected} 
-              disabled={disabled}
-              toggleItem={(value) => toggleAssetItem(item, value)} />;
+    return (
+      <AssetWithToggle
+        id={item?.id}
+        symbol={item?.symbol}
+        network={network}
+        logo={item?.logo}
+        label={item?.label}
+        selected={selected}
+        disabled={disabled}
+        toggleItem={(value) => toggleAssetItem(item, value)}
+      />
+    );
   };
 
   ///////////////////////////
@@ -75,12 +99,19 @@ const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, to
   return (
     <>
       <View style={styles.searchContainer}>
-        <SearchInput value={searchValue} onChange={onSearch} />
+        <SearchInput
+          value={searchValue}
+          onChange={onSearch}
+          extraStyles={{ borderColor: NEW_COLORS.primary_lighter_1 }}
+        />
       </View>
-      {
-        loading ? 
-        <ActivityIndicator style={styles.loadingContainer} size={ACTIVITY_INDICATOR_SIZE} /> : 
-        <FlatList 
+      {loading ? (
+        <ActivityIndicator
+          style={styles.loadingContainer}
+          size={ACTIVITY_INDICATOR_SIZE}
+        />
+      ) : (
+        <FlatList
           style={styles.scrollView}
           contentContainerStyle={styles.scrollViewContentContainer}
           data={allAssets}
@@ -88,7 +119,7 @@ const AssetList: FC<IAssetList> = ({ activeNetworkAssets, allAssets, loading, to
           renderItem={renderAssetItem}
           initialNumToRender={20}
         />
-      }
+      )}
     </>
   );
 };

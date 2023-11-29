@@ -1,0 +1,15 @@
+@import '~assets/styles/variables';
+
+.container {
+  width: 170px;
+  height: 215px;
+  border-radius: 8px;
+  border: 1px solid $gray-300;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background-color: $white;
+
+  .textContainer {
+    margin: 12px 16px;
+  }
+}

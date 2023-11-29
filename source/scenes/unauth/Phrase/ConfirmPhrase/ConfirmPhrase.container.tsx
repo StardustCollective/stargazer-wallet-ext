@@ -36,8 +36,7 @@ import ConfirmPhrase from './ConfirmPhrase';
 // Container
 ///////////////////////////
 
-const ConfirmPhraseContainer = ({ route } : { route: any }) => {
-
+const ConfirmPhraseContainer = ({ route }: { route: any }) => {
   const { walletName = 'Main Wallet', resetAll = true } = route.params || {};
 
   ///////////////////////////
@@ -54,6 +53,7 @@ const ConfirmPhraseContainer = ({ route } : { route: any }) => {
   const [passed, setPassed] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const title = passed ? `Your Wallet is ready` : `Verify your recovery\nphrase`;
+  const showMaxHeight = !!walletName && walletName !== 'undefined';
 
   const isNotEqualArrays = useMemo((): boolean => {
     if (!phrases) return true;
@@ -93,7 +93,8 @@ const ConfirmPhraseContainer = ({ route } : { route: any }) => {
     } else {
       setIsButtonDisabled(true);
       const resetAllValue = resetAll === 'false' || resetAll === false ? false : true;
-      const walletNameValue = walletName === 'undefined' || !walletName ? 'Main Wallet' : walletName;
+      const walletNameValue =
+        walletName === 'undefined' || !walletName ? 'Main Wallet' : walletName;
       await walletController.createWallet(walletNameValue, phrases, resetAllValue);
       walletController.onboardHelper.reset();
       navigationUtil.replace(navigation, screens.authorized.root);
@@ -105,7 +106,7 @@ const ConfirmPhraseContainer = ({ route } : { route: any }) => {
   ///////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={showMaxHeight}>
       <ConfirmPhrase
         title={title}
         isButtonDisabled={isButtonDisabled || isNotEqualArrays}

@@ -1,12 +1,8 @@
 import { addERC20Asset, removeERC20Asset, updateAssetDecimals } from 'state/assets';
-import { addNFTAsset, resetNFTState } from 'state/nfts';
-import { IOpenSeaNFT } from 'state/nfts/types';
 import store from 'state/store';
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import {
   TOKEN_INFO_API,
-  NFT_MAINNET_API,
-  NFT_TESTNET_API,
   ETHEREUM_DEFAULT_LOGO,
   AVALANCHE_DEFAULT_LOGO,
   BSC_DEFAULT_LOGO,
@@ -22,11 +18,9 @@ import {
 } from 'state/providers';
 import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
 import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
-import { EthChainId } from './EVMChainController/types';
 import {
   getNetworkFromChainId,
   getPlatformFromMainnet,
-  isTestnet,
   validateAddress,
 } from './EVMChainController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
@@ -34,9 +28,6 @@ import { addAsset, removeAsset, addCustomAsset } from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
 import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
 import { getAccountController } from 'utils/controllersUtils';
-
-// Batch size for OpenSea API requests (max 50)
-const BATCH_SIZE = 50;
 
 // Default logos
 const DEFAULT_LOGOS = {
@@ -47,9 +38,6 @@ const DEFAULT_LOGOS = {
   Polygon: POLYGON_DEFAULT_LOGO,
 };
 
-// DTM and Alkimi NFTs should appear on top by default
-const DTM_STRINGS = ['DTM', 'Dor Traffic', 'Dor Foot Traffic'];
-const ALKIMI_STRING = 'alkimi';
 const DEFAULT_DAG_DECIMALS = 8;
 
 export interface IAssetsController {
@@ -66,10 +54,11 @@ export interface IAssetsController {
     l1endpoint: string,
     address: string,
     name: string,
-    symbol: string
+    symbol: string,
+    chainId?: string,
+    logo?: string
   ) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
-  fetchWalletNFTInfo: (address: string) => Promise<any[]>;
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
   searchERC20Assets: (value: string) => Promise<void>;
@@ -92,110 +81,6 @@ const AssetsController = (): IAssetsController => {
     store.dispatch(clearCustomAsset());
   };
 
-  const fetchNFTBatch = async (walletAddress: string, offset = 0): Promise<any> => {
-    const activeNetwork = store.getState().vault.activeNetwork;
-    // OpenSea only supports Ethereum on v1 so it's fine to check activeNetwork on Ethereum here.
-    const network = activeNetwork[KeyringNetwork.Ethereum] as EthChainId;
-    const apiBase = isTestnet(network) ? NFT_TESTNET_API : NFT_MAINNET_API;
-
-    // OpenSea testnets API call is failing or taking a long time to respond.
-    // We should update this logic to display NFTs when OpenSea fixes the testnets API.
-    if (isTestnet(network)) {
-      return {
-        assets: [],
-      };
-    }
-
-    const apiEndpoint = `${apiBase}assets?owner=${walletAddress}&limit=${BATCH_SIZE}&offset=${offset}`;
-    const headers = isTestnet(network)
-      ? undefined
-      : { headers: { 'X-API-KEY': process.env.OPENSEA_API_KEY } };
-    const response = await fetch(apiEndpoint, headers);
-
-    return response.json();
-  };
-
-  const fetchWalletNFTInfo = async (walletAddress: string): Promise<any[]> => {
-    let nfts: IOpenSeaNFT[] = [];
-    try {
-      const { assets } = await fetchNFTBatch(walletAddress, 0);
-      nfts = assets;
-
-      // Fetch up to 100 NFTs
-      if (nfts.length === BATCH_SIZE) {
-        const { assets: b2Assets } = await fetchNFTBatch(walletAddress, BATCH_SIZE);
-
-        nfts = nfts.concat(b2Assets);
-      }
-
-      // Clear out previous NFT state to be fully replaced
-      store.dispatch(resetNFTState());
-    } catch (err) {
-      // NOOP
-      console.log('fetchNFTBatch err: ', err);
-    }
-
-    const groupedNFTs = nfts.reduce((carry: Record<string, any>, nft: any) => {
-      const { address, schema_name: schemaName } = nft.asset_contract; // eslint-disable-line camelcase
-
-      // Group ERC1155s by contract but separate each ERC721 individually
-      const key = schemaName === 'ERC1155' ? address : `${address}-${nft.token_id}`;
-
-      if (!carry[key]) {
-        carry[key] = { ...nft, quantity: 1 };
-      } else {
-        carry[key].quantity += 1;
-      }
-
-      return carry;
-    }, {});
-
-    const retNFTs: any[] = Object.values(groupedNFTs)
-      .filter((nft) => nft.name && nft.name.length > 0)
-      .sort((a: any, b: any) => {
-        // Move DTM and Alkimi tokens to the top
-        const aIsDTM = DTM_STRINGS.some((str: string) =>
-          a.name.toLowerCase().includes(str.toLowerCase())
-        );
-        const bIsDTM = DTM_STRINGS.some((str: string) =>
-          b.name.toLowerCase().includes(str.toLowerCase())
-        );
-        const aIsAlkimi = a.name.toLowerCase().includes(ALKIMI_STRING);
-        const bIsAlkimi = b.name.toLowerCase().includes(ALKIMI_STRING);
-
-        if (aIsDTM && bIsDTM) return 0;
-        if (aIsDTM && !bIsDTM) return -1;
-        if (!aIsDTM && bIsDTM) return 1;
-        if (aIsAlkimi && bIsAlkimi) return 0;
-        if (aIsAlkimi && !bIsAlkimi) return -1;
-        if (!aIsAlkimi && bIsAlkimi) return 1;
-
-        return -1;
-      })
-      .map((nft: any) => {
-        const { address, schema_name: schemaName } = nft.asset_contract; // eslint-disable-line camelcase
-        const isERC721 = schemaName === 'ERC721' ? AssetType.ERC721 : AssetType.ERC1155;
-
-        const id = isERC721 ? `${address}-${nft.token_id}` : address;
-
-        const nftData = {
-          id,
-          type: isERC721 ? AssetType.ERC721 : AssetType.ERC1155,
-          label: nft.name,
-          address: nft.asset_contract.address,
-          quantity: nft.quantity,
-          link: nft.permalink,
-          logo: nft.image_thumbnail_url || '',
-        };
-
-        store.dispatch(addNFTAsset(nftData));
-
-        return nftData;
-      });
-
-    return retNFTs;
-  };
-
   const fetchERC20Assets = async (): Promise<void> => {
     await store.dispatch<any>(getERC20Assets());
   };
@@ -213,14 +98,16 @@ const AssetsController = (): IAssetsController => {
     l1endpoint: string,
     address: string,
     name: string,
-    symbol: string
+    symbol: string,
+    chainId?: string,
+    logo?: string
   ): Promise<void> => {
     const accountController = getAccountController();
-    const { activeNetwork, activeWallet } = store.getState().vault;
+    const { activeNetwork, activeWallet, customAssets } = store.getState().vault;
     const assets = store.getState().assets;
 
-    const network = activeNetwork[KeyringNetwork.Constellation];
-    const deafultLogo = DEFAULT_LOGOS[KeyringNetwork.Constellation];
+    const network = !!chainId ? chainId : activeNetwork[KeyringNetwork.Constellation];
+    const deafultLogo = !!logo ? logo : DEFAULT_LOGOS[KeyringNetwork.Constellation];
 
     const newL0Asset: IAssetInfoState = {
       id: `${address}-${network}`,
@@ -237,10 +124,11 @@ const AssetsController = (): IAssetsController => {
     };
 
     const asset = Object.keys(assets).find((assetId) => assetId === newL0Asset.id);
+    const assetCustom = customAssets.find((asset) => asset.id === newL0Asset.id);
     const dagAddress = activeWallet?.assets?.find(
       (asset) => asset.id === AssetType.Constellation
     )?.address;
-    if (!asset) {
+    if (!asset && !assetCustom) {
       store.dispatch(addCustomAsset(newL0Asset));
       store.dispatch(addERC20Asset(newL0Asset));
       store.dispatch(
@@ -253,6 +141,8 @@ const AssetsController = (): IAssetsController => {
         })
       );
       await accountController.assetsBalanceMonitor.start();
+    } else {
+      throw new Error(`Asset with address ${address} already exists`);
     }
   };
 
@@ -373,7 +263,6 @@ const AssetsController = (): IAssetsController => {
     addCustomERC20Asset,
     addCustomL0Token,
     removeCustomERC20Asset,
-    fetchWalletNFTInfo,
     fetchSupportedAssets,
     searchERC20Assets,
     clearSearchAssets,

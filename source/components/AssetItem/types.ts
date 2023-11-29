@@ -4,7 +4,6 @@
 
 import { IAssetState, AssetBalances, ActiveNetwork } from 'state/vault/types';
 import { IAssetInfoState } from 'state/assets/types';
-import { INFTInfoState } from 'state/nfts/types';
 import { IFiatState } from 'state/price/types';
 
 export type IAssetLogo = {
@@ -17,11 +16,10 @@ export type IAssetLogo = {
 export default interface IAssetItem {
   id?: string;
   asset: IAssetState;
-  assetInfo: IAssetInfoState | INFTInfoState;
+  assetInfo: IAssetInfoState;
   itemClicked: () => void;
   balances?: AssetBalances;
   fiat?: IFiatState;
-  isNFT?: boolean;
   showNetwork?: boolean;
   activeNetwork?: ActiveNetwork;
 }

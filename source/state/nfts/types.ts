@@ -12,82 +12,154 @@ export interface INFTInfoState {
   logo?: string;
 }
 
-export interface INFTListState {
-  [id: string]: INFTInfoState;
+export enum OpenSeaSupportedChains {
+  // Mainnets
+  ETHEREUM = 'ethereum',
+  POLYGON = 'matic',
+  AVALANCHE = 'avalanche',
+  BSC = 'bsc',
+  // Testnets
+  GOERLI = 'goerli',
+  POLYGON_MUMBAI = 'mumbai',
+  AVALANCHE_FUJI = 'avalanche_fuji',
+  BSC_TESTNET = 'bsctestnet',
 }
 
-interface IOpenSeaAssetContract {
-  address: string;
-  asset_contract_type: string;
-  buyer_fee_basis_points: number;
-  created_date: string;
-  default_to_fiat: boolean;
-  description: string | null;
-  dev_buyer_fee_basis_points: number;
-  dev_seller_fee_basis_points: number;
-  external_link: string | null;
-  image_url: string | null;
+export interface IOpenSeaCollection {
+  collection: string;
   name: string;
-  nft_version: string | null;
-  only_proxied_transfers: boolean;
-  opensea_buyer_fee_basis_points: number;
-  opensea_seller_fee_basis_points: number;
-  opensea_version: string;
-  owner: number;
-  payout_address: string | null;
-  schema_name: string;
-  seller_fee_basis_points: number;
-  symbol: string;
-  total_supply: null | number;
+  description: string;
+  image_url: string;
+  owner: string;
+  safelist_status: string;
+  category: string;
+  is_disabled: boolean;
+  is_nsfw: boolean;
+  trait_offers_enabled: boolean;
+  opensea_url: string;
+  project_url: string;
+  wiki_url: string;
+  discord_url: string;
+  telegram_url: string;
+  twitter_username: string;
+  instagram_username: string;
+  contracts: IOpenSeaContract[];
+  editors: string[];
+  fees: IOpenSeaFees;
 }
 
-// TODO: add keys
-interface IOpenSeaCollection {
-  [id: string]: any;
+export interface IOpenSeaCollectionWithChain extends IOpenSeaCollection {
+  chain: OpenSeaSupportedChains;
+  nfts: IOpenSeaNFT[];
 }
 
-// TODO: add keys
-interface IOpenSeaCreator {
-  [id: string]: any;
+export interface ICollectionData {
+  [id: string]: IOpenSeaCollectionWithChain;
 }
 
-// TODO: add keys
-interface IOpenSeaSale {
-  [id: string]: any;
+export interface IUpdateCollectionData {
+  id: string;
+  data: IOpenSeaCollectionWithChain;
 }
 
-// TODO: add keys
+export interface INFTListState {
+  collections: {
+    loading: boolean;
+    error: any;
+    data: ICollectionData | null;
+  };
+  selectedNFT: {
+    loading: boolean;
+    error: any;
+    data: IOpenSeaDetailedNFT | null;
+  };
+  transferNFT: {
+    loading: boolean;
+    error: any;
+    data: string | null;
+  };
+  tempNFTInfo: ITempNFTInfo;
+  selectedCollection: ISelectedCollection;
+}
+
+interface ISelectedCollection {
+  data: IOpenSeaCollectionWithChain | null;
+  loading: boolean;
+}
+
+export interface ITempNFTInfo {
+  nft: IOpenSeaDetailedNFT;
+  quantity: number;
+  from: {
+    address: string;
+    label: string;
+  };
+  to: string;
+  gas: {
+    fiatAmount: string;
+    limit: number;
+    fee: number;
+    symbol: string;
+    price: number;
+  };
+}
+
+interface IOpenSeaFees {
+  fee: number;
+  recipient: string;
+  required: boolean;
+}
+
+interface IOpenSeaContract {
+  address: string;
+  chain: OpenSeaSupportedChains;
+}
+
 interface IOpenSeaOwner {
-  [id: string]: any;
+  address: string;
+  quantity: number;
+}
+
+interface IOpenSeaRarity {
+  strategy_id: any;
+  strategy_version: any;
+  rank: number;
+  score: any;
+  calculated_at: any;
+  max_rank: number;
+  tokens_scored: any;
+  ranking_features: any;
+}
+
+interface IOpenSeaTraits {
+  trait_type: string;
+  display_type: any;
+  max_value: any;
+  trait_count: number;
+  order: any;
+  value: string;
 }
 
 export interface IOpenSeaNFT {
-  id: number;
-  name: string;
-  description: string;
-  permalink: string;
-  token_id: string;
-  num_sales: number;
-  background_color: string | null;
-  image_url: string;
-  animation_original_url: string | null;
-  animation_url: string | null;
-  asset_contract: IOpenSeaAssetContract;
-  collection: IOpenSeaCollection;
-  creator: IOpenSeaCreator;
-  decimals: number | null;
-  external_link: string | null;
-  image_original_url: string | null;
-  image_preview_url: string | null;
-  image_thumbnail_url: string | null;
-  is_presale: boolean;
-  last_sale: IOpenSeaSale;
-  listing_date: string | null;
-  owner: IOpenSeaOwner;
-  sell_orders: any[];
-  token_metadata: Record<string, any>;
-  top_bid: any;
-  traits: Record<string, any>[];
-  transfer_fee: number | null;
-  transfer_fee_payment_token: null;
+  identifier: string;
+  collection: string;
+  contract: string;
+  token_standard: string;
+  name: string | null;
+  description: string | null;
+  image_url: string | null;
+  metadata_url: string | null;
+  created_at: string;
+  updated_at: string;
+  is_disabled: boolean;
+  is_nsfw: boolean;
+  quantity?: number;
+}
+
+export interface IOpenSeaDetailedNFT extends IOpenSeaNFT {
+  is_suspicious: boolean;
+  owners: IOpenSeaOwner[] | null;
+  creator: string;
+  traits: IOpenSeaTraits[] | null;
+  rarity: IOpenSeaRarity | null;
 }

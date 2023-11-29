@@ -1,0 +1,52 @@
+@import '~assets/styles/variables';
+
+.container {
+  cursor: pointer;
+  position: relative;
+  width: 170px;
+  height: 215px;
+  border-radius: 8px;
+  border: 1px solid $gray-300;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background-color: $white;
+
+  .networkContainer {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    height: 24px;
+    width: 24px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(156, 163, 175, 0.66);
+  }
+
+  .image {
+    height: 148px;
+    width: 100%;
+    object-fit: cover;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+  }
+
+  .textContainer {
+    margin: 12px 16px;
+  }
+
+  .title {
+    margin-bottom: 4px;
+  }
+
+  .itemsContainer {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .subtitle {
+    margin-right: 4px;
+    font-weight: 500;
+  }
+}

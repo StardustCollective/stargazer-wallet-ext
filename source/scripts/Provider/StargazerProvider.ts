@@ -22,6 +22,7 @@ import {
   EIPRpcError,
   ProtocolProvider,
 } from '../common';
+import { BigNumber } from 'bignumber.js';
 import { DAG_NETWORK } from 'constants/index';
 
 export type StargazerSignatureRequest = {
@@ -49,6 +50,21 @@ export type StargazerMetagraphGetTransactionRequest = {
   hash: string;
 };
 
+export type WatchAssetOptions = {
+  chainId: number; // The chain ID of the asset. 1 (mainnet), 3 (testnet), 4 (integrationnet)
+  address: string; // Metagraph address
+  l0: string; // L0 endpoint
+  l1: string; // L1 endpoint
+  name: string; // Name of the asset
+  symbol: string; // Symbol of the asset
+  logo: string; // Logo of the token
+};
+
+export type WatchAssetParameters = {
+  type: string; // The asset's interface, e.g. 'L0'
+  options: WatchAssetOptions;
+};
+
 // Constants
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
@@ -57,6 +73,8 @@ const WINDOW_TYPES: Record<string, Windows.CreateType> = {
   popup: 'popup',
   normal: 'normal',
 };
+const DAG_DECIMAL_FACTOR = 1e-8;
+
 export class StargazerProvider implements IRpcChainRequestHandler {
   getNetwork() {
     const { activeNetwork }: IVaultState = store.getState().vault;
@@ -258,6 +276,83 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     }
 
     return metagraphAsset;
+  }
+
+  private async fetchMetagraphBalance(
+    url: string,
+    metagraphAddress: string,
+    dagAddress: string
+  ): Promise<number> {
+    const responseJson = await (
+      await fetch(`${url}/currency/${metagraphAddress}/addresses/${dagAddress}/balance`)
+    ).json();
+    const balance = responseJson?.data?.balance ?? 0;
+    const balanceNumber = new BigNumber(balance)
+      .multipliedBy(DAG_DECIMAL_FACTOR)
+      .toNumber();
+
+    return balanceNumber;
+  }
+
+  private checkArguments(args: { type: string; value: any; name: string }[]) {
+    if (!!args.length) {
+      for (let arg of args) {
+        if (!arg.value) {
+          throw new Error(`Argument "${arg.name}" is required`);
+        }
+
+        if (typeof arg.value !== arg.type) {
+          throw new Error(`Bad argument "${arg.name}" -> not a "${arg.type}"`);
+        }
+      }
+    }
+  }
+
+  private async checkWatchAssetParams({ type, options }: WatchAssetParameters) {
+    const { chainId, address, l0, l1, name, symbol, logo } = options;
+    const SUPPORTED_TYPES = ['L0'];
+    const SUPPORTED_CHAINS = Object.values(DAG_NETWORK).map((network) => network.chainId);
+    const args = [
+      { type: 'string', value: type, name: 'type' },
+      { type: 'number', value: chainId, name: 'chainId' },
+      { type: 'string', value: address, name: 'address' },
+      { type: 'string', value: l0, name: 'l0' },
+      { type: 'string', value: l1, name: 'l1' },
+      { type: 'string', value: name, name: 'name' },
+      { type: 'string', value: symbol, name: 'symbol' },
+      { type: 'string', value: logo, name: 'logo' },
+    ];
+
+    this.checkArguments(args);
+
+    const controller = useController();
+    const { isValidDAGAddress, isValidMetagraphAddress } = controller.wallet.account;
+    const isValidType = SUPPORTED_TYPES.includes(type);
+    const isValidChainId = SUPPORTED_CHAINS.includes(chainId);
+    const isValidAddress = isValidDAGAddress(address);
+
+    if (!isValidType) {
+      throw new Error('Argument "type" is not supported');
+    }
+
+    if (!isValidChainId) {
+      throw new Error('Argument "chainId" is not supported');
+    }
+
+    const selectedNetwork = Object.values(DAG_NETWORK).find(
+      (network) => network.chainId === chainId
+    );
+    const isValidMetagraph = await isValidMetagraphAddress(address, selectedNetwork.id);
+
+    if (!isValidAddress) {
+      throw new Error('Argument "address" is invalid -> not a DAG address');
+    }
+
+    if (!isValidMetagraph) {
+      throw new Error(
+        'Argument "address" or "chainId" are invalid -> metagraph not found'
+      );
+    }
   }
 
   async handleProxiedRequest(
@@ -731,6 +826,69 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         console.error('dag_getMetagraphPendingTransaction:', e);
         return null;
       }
+    }
+
+    if (request.method === AvailableMethods.wallet_watchAsset) {
+      const [params] = request.params as [WatchAssetParameters];
+      const { activeWallet }: IVaultState = store.getState().vault;
+
+      await this.checkWatchAssetParams(params);
+
+      const controller = useController();
+      const metagraphAddress = params.options.address;
+      const dagAddress = activeWallet?.assets?.find(
+        (asset) => asset?.id === AssetType.Constellation
+      )?.address;
+
+      if (!dagAddress) {
+        throw new Error('DAG address not found');
+      }
+
+      const selectedNetwork = Object.values(DAG_NETWORK).find(
+        (network) => network.chainId === params.options.chainId
+      );
+
+      const balance = await this.fetchMetagraphBalance(
+        selectedNetwork.config.beUrl,
+        metagraphAddress,
+        dagAddress
+      );
+
+      const watchAssetEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'watchAssetResult',
+        undefined,
+        'watchAsset',
+        { ...params, balance },
+        windowType,
+        windowUrl,
+        windowSize
+      );
+
+      if (watchAssetEvent === null) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      if (watchAssetEvent.detail.error) {
+        throw new EIPRpcError(watchAssetEvent.detail.error, 4002);
+      }
+
+      if (!watchAssetEvent.detail.result) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      const { l0, l1, address, name, symbol, logo } = params.options;
+      await controller.wallet.account.assetsController.addCustomL0Token(
+        l0,
+        l1,
+        address,
+        name,
+        symbol,
+        selectedNetwork.id,
+        logo
+      );
+
+      return true;
     }
 
     throw new Error('Unsupported non-proxied method');

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=500" />
-    <meta name="Cr">
+    <meta name="Cr" />
     <title>App</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
@@ -13,16 +13,33 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet"> 
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-      html, body { height: 100%; }
-      body { overflow: hidden; }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        overflow: hidden;
+      }
       #app-root {
         width: 384px;
         height: 600px;
-        display:flex; 
+        display: flex;
         overflow: hidden;
+      }
+      /* This will hide the scrollbar for any element with overflow set to scroll or auto */
+      * {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+
+      *::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
       }
     </style>
   </head>

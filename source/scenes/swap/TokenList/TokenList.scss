@@ -34,10 +34,9 @@
         font-size: 16px;
         font-weight: 400;
         height: 40px;
-        border: 0px solid $gray-200  !important;
+        border: 0px solid $gray-200 !important;
         outline: 0px !important;
       }
-
     }
   }
 
@@ -50,24 +49,19 @@
   }
 
   .list {
-    background-color:'purple';
     flex-direction: column;
     overflow: auto;
-    height: 445px;
-
-    &:last-child{
-      margin-bottom: 40px;
-    }
+    padding-bottom: 8px;
 
     .tokenCell {
       display: flex;
       background-color: $white;
       border-radius: 8px;
       margin: 8px 16px 0px 16px;
-      overflow: hidden; 
+      overflow: hidden;
       border: 1px solid $gray-600;
 
-      .tokenCellLeft{
+      .tokenCellLeft {
         display: flex;
         flex: 1;
         flex-direction: row;
@@ -81,11 +75,11 @@
           width: 30px;
           height: 30px;
           border-radius: 30px;
-          overflow: hidden; 
+          overflow: hidden;
           border: 1px solid $gray-700;
           justify-items: center;
         }
-        
+
         .tokenCellLeftText {
           display: flex;
           flex-direction: column;
@@ -94,7 +88,7 @@
         }
       }
 
-      .tokenCellRight{
+      .tokenCellRight {
         display: flex;
         flex: 1;
         flex-direction: column;
@@ -104,7 +98,7 @@
         align-items: flex-end;
         justify-content: center;
 
-        .currencyName{
+        .currencyName {
           white-space: nowrap;
           text-overflow: ellipsis;
         }
@@ -112,4 +106,3 @@
     }
   }
 }
-
