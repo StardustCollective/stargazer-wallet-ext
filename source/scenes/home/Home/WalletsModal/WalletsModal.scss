@@ -47,7 +47,7 @@
   }
 
   .stargazerIconWrapper {
-    background-color: #1C143D;
+    background-color: #1c143d;
     height: 36px;
     width: 36px;
     border-radius: 18px;
@@ -58,6 +58,20 @@
     .stargazerIcon {
       height: 20px;
       width: 20px;
+    }
+  }
+
+  .hardwareIconWrapper {
+    height: 36px;
+    width: 36px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .hardwareIcon {
+      height: 36px;
+      width: 36px;
     }
   }
 

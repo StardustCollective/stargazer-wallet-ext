@@ -19,18 +19,13 @@ const styles = StyleSheet.create({
     width: 20,
     height: 23,
   },
-  imageNFTIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-  },
   componentIcon: {
     width: 20,
     height: 20,
   },
   labelText: {
     fontWeight: FONT_WEIGHTS.semibold,
-    letterSpacing: -0.3
+    letterSpacing: -0.3,
   },
   balanceText: {
     letterSpacing: -0.3,

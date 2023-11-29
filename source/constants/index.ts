@@ -53,10 +53,15 @@ export const VE_LTX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ve-ltx-logo.png';
 export const ALKIMI_LOGO =
   'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
-export const DODI_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png';
+export const JENNYCO_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/jennyco-logo.png';
 export const GEOJAM_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png';
 export const SIMPLEX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
+export const PLACEHOLDER_IMAGE =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/placeholder.png';
+export const DOR_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor-logo.png';
 
 export const DAG_NETWORK: {
   [networkId: string]: {
@@ -368,8 +373,8 @@ export const ERC20_TOKENS_WITH_ADDRESS_API =
   'https://pro-api.coingecko.com/api/v3/coins/list?include_platform=true';
 export const SEARCH_API = 'https://pro-api.coingecko.com/api/v3/search?query=';
 export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`;
-export const NFT_MAINNET_API = 'https://api.opensea.io/api/v1/';
-export const NFT_TESTNET_API = 'https://testnets-api.opensea.io/api/v1/';
+export const OPENSEA_API_V2 = 'https://api.opensea.io/api/v2';
+export const OPENSEA_API_TESTNETS_V2 = 'https://testnets-api.opensea.io/api/v2';
 
 export const PRICE_DAG_ID = 'constellation-labs';
 export const PRICE_BTC_ID = 'bitcoin';

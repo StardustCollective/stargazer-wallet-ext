@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, ScrollView } from 'react-native';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -33,7 +33,10 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
   );
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollViewContentContainer}
+    >
       <View style={styles.contentContainer}>
         <View style={styles.walletContainer}>
           {typeof ICON === 'string' && ICON.startsWith('http') ? (
@@ -79,7 +82,7 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
           onPress={handleRemoveWallet}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

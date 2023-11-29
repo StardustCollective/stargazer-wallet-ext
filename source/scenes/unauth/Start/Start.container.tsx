@@ -17,19 +17,16 @@ import Container from 'components/Container';
 
 import Start from './Start';
 
-
 ///////////////////////////
 // Container
 ///////////////////////////
 
 const StartContainer = () => {
-
   ///////////////////////////
   // Hooks
   ///////////////////////////
 
   const linkTo = useLinkTo();
-
 
   ///////////////////////////
   // Callbacks
@@ -37,24 +34,24 @@ const StartContainer = () => {
 
   const onImportClicked = () => {
     linkTo('/import');
-  }
+  };
 
   const onGetStartedClicked = () => {
     linkTo('/create/pass');
-  }
+  };
 
   ///////////////////////////
   // Render
   ///////////////////////////
 
   return (
-    <Container>
+    <Container maxHeight={false}>
       <Start
         onImportClicked={onImportClicked}
         onGetStartedClicked={onGetStartedClicked}
       />
     </Container>
   );
-}
+};
 
 export default StartContainer;

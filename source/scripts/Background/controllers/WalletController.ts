@@ -49,6 +49,7 @@ import { generateId } from './EVMChainController/utils';
 import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
+import NFTController, { INFTController } from './NFTController';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -63,6 +64,8 @@ class WalletController {
   keyringManager: KeyringManager;
 
   swap: ISwapController;
+
+  nfts: INFTController;
 
   onboardHelper: OnboardWalletHelper;
 
@@ -92,6 +95,7 @@ class WalletController {
 
     this.account = new AccountController(this.keyringManager);
     this.swap = new SwapController();
+    this.nfts = new NFTController(this.account);
   }
 
   checkPassword(password: string): boolean {
@@ -338,6 +342,7 @@ class WalletController {
     await this.account.getLatestTxUpdate();
     await this.account.assetsBalanceMonitor.start();
     await this.account.txController.startMonitor();
+    await this.nfts.fetchAllNfts();
   }
 
   notifyWalletChange(accounts: string[]): void {
@@ -436,6 +441,8 @@ class WalletController {
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
+    // Update NFTs list if any EVM chain has changed.
+    await this.nfts.fetchAllNfts();
 
     if (activeAsset) {
       if (assets[activeAsset.id].network !== chainId) {

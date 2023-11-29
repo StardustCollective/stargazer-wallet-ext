@@ -24,7 +24,6 @@ import { getAccountController } from 'utils/controllersUtils';
 
 import { RootState } from 'state/store';
 import IVaultState, { IAssetState } from 'state/vault/types';
-import { INFTListState } from 'state/nfts/types';
 import IAssetListState from 'state/assets/types';
 
 ///////////////////////
@@ -47,10 +46,8 @@ const AssetsPanelContainer: FC = () => {
   const linkTo = useLinkTo();
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-  const nfts: INFTListState = useSelector((state: RootState) => state.nfts);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
-  const activeNFTAssets = useSelector(walletSelectors.selectNFTAssets);
-  
+
   ///////////////////////
   // Callbacks
   ///////////////////////
@@ -72,8 +69,6 @@ const AssetsPanelContainer: FC = () => {
     <AssetsPanel
       activeNetworkAssets={activeNetworkAssets}
       assets={assets}
-      activeNFTAssets={activeNFTAssets}
-      nfts={nfts}
       activeWallet={activeWallet}
       handleSelectAsset={handleSelectAsset}
       handleAddTokens={handleAddTokens}

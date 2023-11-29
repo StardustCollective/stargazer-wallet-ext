@@ -1,0 +1,50 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+
+  width: 100%;
+  padding: 16px;
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.image {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.title {
+  font-weight: $semibold;
+  margin-top: 8px;
+}
+
+.detailsContainer {
+  border-bottom: 1px solid $gray-300;
+}
+
+.detailRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-top: 1px solid $gray-300;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  flex-grow: 1;
+  justify-content: flex-end;
+}

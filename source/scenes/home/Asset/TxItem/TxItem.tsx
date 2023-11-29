@@ -56,7 +56,6 @@ type ITxItem = {
   receivedOrSentText?: string;
   formattedDistanceDate?: string;
   renderGasSettings?: () => JSX.Element;
-  isL0token: boolean;
 };
 
 ///////////////////////
@@ -76,7 +75,6 @@ const TxItem: FC<ITxItem> = ({
   receivedOrSentText,
   formattedDistanceDate,
   renderGasSettings,
-  isL0token
 }) => {
   /////////////////////////
   // Renders
@@ -86,7 +84,7 @@ const TxItem: FC<ITxItem> = ({
     if (!isETH) {
       return (
         <>
-          {(tx.checkpointBlock || tx.blockHash) ? (
+          {tx.checkpointBlock || tx.blockHash ? (
             isReceived ? (
               <img src={'/' + TxIcon} className={styles.recvIcon} />
             ) : (
@@ -128,7 +126,9 @@ const TxItem: FC<ITxItem> = ({
     >
       {showGroupBar && (
         <div className={styles.groupBar}>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.groupBarText}>{formattedDistanceDate}</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.groupBarText}>
+            {formattedDistanceDate}
+          </TextV3.Caption>
         </div>
       )}
       <div className={styles.content}>
@@ -139,24 +139,38 @@ const TxItem: FC<ITxItem> = ({
         </div>
         <div className={styles.txInfo}>
           <div>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.statusText}>{receivedOrSentText}</TextV3.CaptionStrong>
+            <TextV3.CaptionStrong
+              color={COLORS_ENUMS.BLACK}
+              extraStyles={styles.statusText}
+            >
+              {receivedOrSentText}
+            </TextV3.CaptionStrong>
           </div>
           <div>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAddress}>{ellipsis(txTypeLabel)}</TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAddress}>
+              {ellipsis(txTypeLabel)}
+            </TextV3.Caption>
           </div>
         </div>
         <div className={styles.txAmount}>
-          <TextV3.CaptionRegular dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountText}>
+          <TextV3.CaptionRegular
+            dynamic
+            color={COLORS_ENUMS.BLACK}
+            extraStyles={styles.txAmountText}
+          >
             {amount}
           </TextV3.CaptionRegular>
-         {!isL0token &&
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText}>
-                ≈ {fiatAmount}
-            </TextV3.Caption>
-          }
+          <TextV3.Caption
+            color={COLORS_ENUMS.BLACK}
+            extraStyles={styles.txAmountFiatText}
+          >
+            ≈ {fiatAmount}
+          </TextV3.Caption>
         </div>
       </div>
-      {isGasSettingsVisible && <div className={styles.gasSettings}>{renderGasSettings()}</div>}
+      {isGasSettingsVisible && (
+        <div className={styles.gasSettings}>{renderGasSettings()}</div>
+      )}
     </div>
   );
 };

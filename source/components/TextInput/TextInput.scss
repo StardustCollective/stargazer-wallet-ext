@@ -1,6 +1,17 @@
 @import '~assets/styles/variables';
 
 body {
+  .labelContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 8px;
+
+    .label {
+      font-weight: $semibold;
+    }
+  }
+
   .textInput {
     background: $white;
     line-height: 18px;

@@ -35,7 +35,6 @@ const CreatePhrase: FC<ICreatePhrase> = ({
   phrases,
   passed,
 }) => {
-
   ///////////////////////////
   // Render
   ///////////////////////////
@@ -47,24 +46,22 @@ const CreatePhrase: FC<ICreatePhrase> = ({
         <ul className={styles.generated}>
           {phrases.split(' ').map((phrase: string, index: number) => (
             <li key={phrase}>
-              <span className="t-gray-medium">
-                {String(index + 1).padStart(2, '0')}.
-              </span>
-              <span id="createPhrase-phrase" >
-                {phrase}
-              </span>
+              <span className="t-gray-medium">{String(index + 1).padStart(2, '0')}.</span>
+              <span id="createPhrase-phrase">{phrase}</span>
             </li>
           ))}
         </ul>
       )}
-      <Button
-        id="createPhrase-confirmButton"
-        type="button"
-        onClick={nextHandler}
-        variant={clsx(styles.written, { [styles.passed]: passed })}
-      >
-        {passed ? "Let's do it" : "I've written it down"}
-      </Button>
+      <div className={styles.buttonContainer}>
+        <Button
+          id="createPhrase-confirmButton"
+          type="button"
+          onClick={nextHandler}
+          variant={clsx(styles.written, { [styles.passed]: passed })}
+        >
+          {passed ? "Let's do it" : "I've written it down"}
+        </Button>
+      </div>
     </Layout>
   );
 };

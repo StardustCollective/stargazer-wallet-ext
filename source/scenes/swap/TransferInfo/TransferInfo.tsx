@@ -12,7 +12,7 @@ import clsx from 'clsx';
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import MUITextField from '@material-ui/core/TextField';
-import PurpleSlider from 'components/PurpleSlider';
+import GasSlider from 'components/GasSlider';
 
 ///////////////////////
 // Types
@@ -38,9 +38,7 @@ import {
   TRANSACTION_FEE_STRING,
   RECOMMENDED_STRING,
   NEXT_BUTTON_STRING,
-  GAS_PRICE_IN_GWEI_STRING,
   DAG_CODE,
-  GAS_SLIDER_STEP,
   TRANSACTION_FEE_DEFAULT_VALUE,
 } from './constants';
 
@@ -50,19 +48,16 @@ const SwapTokens: FC<ITransferInfo> = ({
   from,
   depositAddress,
   gas,
+  asset,
   onGasPriceChange,
-  getFiatAmount,
   onRecommendedPress,
   onTransactionFeeChange,
   fee,
 }) => {
-
   return (
     <div className={styles.container}>
       <div className={styles.dataRow}>
-        <TextV3.CaptionStrong
-          color={COLORS_ENUMS.DARK_GRAY_200}
-        >
+        <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
           {DEPOSIT_ADDRESS_STRING}
         </TextV3.CaptionStrong>
         <div className={styles.dataValue}>
@@ -75,9 +70,7 @@ const SwapTokens: FC<ITransferInfo> = ({
         </div>
       </div>
       <div className={styles.dataRow}>
-        <TextV3.CaptionStrong
-          color={COLORS_ENUMS.DARK_GRAY_200}
-        >
+        <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
           {SWAP_FROM_STRING}
         </TextV3.CaptionStrong>
         <div className={styles.dataValue}>
@@ -90,9 +83,7 @@ const SwapTokens: FC<ITransferInfo> = ({
         </div>
       </div>
       <div className={styles.dataRow}>
-        <TextV3.CaptionStrong
-          color={COLORS_ENUMS.DARK_GRAY_200}
-        >
+        <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
           {SWAP_TO_STRING}
         </TextV3.CaptionStrong>
         <div className={styles.dataValue}>
@@ -106,9 +97,7 @@ const SwapTokens: FC<ITransferInfo> = ({
       </div>
       {from.code === DAG_CODE ? (
         <div className={styles.dataRow}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
             {TRANSACTION_FEE_STRING}
           </TextV3.CaptionStrong>
           <div className={clsx(styles.dataValue, styles.trasnsactionFee)}>
@@ -116,7 +105,7 @@ const SwapTokens: FC<ITransferInfo> = ({
               <MUITextField
                 id="recommended-fee-input"
                 name="recommended-fee-input"
-                type='number'
+                type="number"
                 value={fee.toString()}
                 placeholder={TRANSACTION_FEE_DEFAULT_VALUE}
                 onChange={(e: any) => onTransactionFeeChange(e.target.value)}
@@ -124,58 +113,25 @@ const SwapTokens: FC<ITransferInfo> = ({
                   disableUnderline: true,
                   classes: {
                     root: styles.recommendedFeeInput,
-                  }
+                  },
                 }}
               />
             </div>
             <div onClick={onRecommendedPress} className={styles.transactionFeeRecommend}>
-              <TextV3.Caption color={COLORS_ENUMS.PRIMARY}>{RECOMMENDED_STRING}</TextV3.Caption>
+              <TextV3.Caption color={COLORS_ENUMS.PRIMARY}>
+                {RECOMMENDED_STRING}
+              </TextV3.Caption>
             </div>
           </div>
           <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
             With current network conditions we recommend a fee of &nbsp;
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-              0 DAG
-            </TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>0 DAG</TextV3.Caption>
           </TextV3.Caption>
         </div>
       ) : (
         <>
           {gas.prices.length > 0 && (
-            <>
-              <div className={styles.gasPriceContainer}>
-                <div className={styles.gasPriceHeader}>
-                  <div className={styles.gasPriceHeaderLeft}>
-                    <TextV3.LabelSemiStrong color={COLORS_ENUMS.BLACK}>{GAS_PRICE_IN_GWEI_STRING}</TextV3.LabelSemiStrong>
-                  </div>
-                  <div className={styles.gasPriceHeaderRight}>
-                    <div className={styles.gasSpeedBox}>
-                      <div className={styles.gasSpeedBoxLeft}>
-                        <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK}>{gas.price.toString()}</TextV3.CaptionRegular>
-                      </div>
-                      <div className={styles.gasSpeedBoxRight}>
-                        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{gas.speedLabel}</TextV3.CaptionStrong>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className={styles.gasPriceFooter}>
-                  <div className={styles.sliderContainer}>
-                    <PurpleSlider
-                      onChange={onGasPriceChange}
-                      min={gas.prices[0]}
-                      max={gas.prices[2]}
-                      defaultValue={gas.price}
-                      value={gas.price}
-                      step={GAS_SLIDER_STEP}
-                    />
-                  </div>
-                </div>
-              </div>
-              <TextV3.CaptionRegular extraStyles={styles.gasEstimateLabel} color={COLORS_ENUMS.DARK_GRAY_200}>
-                {`${gas.price} GWEI, ${gas.fee} ${from.code} (≈ ${getFiatAmount(gas.fee, 2, gas.basePriceId)})`}
-              </TextV3.CaptionRegular>
-            </>
+            <GasSlider gas={gas} asset={asset} onGasPriceChange={onGasPriceChange} />
           )}
         </>
       )}
@@ -188,8 +144,8 @@ const SwapTokens: FC<ITransferInfo> = ({
           extraStyle={styles.buttonNormal}
         />
       </div>
-    </div >
+    </div>
   );
-}
+};
 
 export default SwapTokens;

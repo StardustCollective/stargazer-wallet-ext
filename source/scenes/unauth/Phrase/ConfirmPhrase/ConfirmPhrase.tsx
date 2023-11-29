@@ -1,12 +1,12 @@
 ///////////////////////////
-// Imports  
+// Imports
 ///////////////////////////
 
 import React, { FC, useEffect } from 'react';
 import clsx from 'clsx';
 
 ///////////////////////////
-// Components  
+// Components
 ///////////////////////////
 
 import Button from 'components/Button';
@@ -14,19 +14,19 @@ import CheckIcon from '@material-ui/icons/CheckCircle';
 import Layout from 'scenes/common/Layout';
 
 ///////////////////////////
-// Styles  
+// Styles
 ///////////////////////////
 
 import styles from '../styles.scss';
 
 ///////////////////////////
-// Types  
+// Types
 ///////////////////////////
 
 import IConfirmPhrase from './types';
 
 ///////////////////////////
-// Scene  
+// Scene
 ///////////////////////////
 
 const ConfirmPhrase: FC<IConfirmPhrase> = ({
@@ -40,9 +40,8 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
   handleNewPhrase,
   handleConfirm,
 }) => {
-
   ///////////////////////////
-  // Callbacks  
+  // Callbacks
   ///////////////////////////
 
   const handleKeydown = (ev: KeyboardEvent) => {
@@ -51,9 +50,8 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
     }
   };
 
-
   ///////////////////////////
-  // Hooks  
+  // Hooks
   ///////////////////////////
 
   useEffect(() => {
@@ -65,7 +63,7 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
   }, [passed]);
 
   ///////////////////////////
-  // Renders  
+  // Renders
   ///////////////////////////
 
   return (
@@ -108,15 +106,17 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
           </section>
         </>
       )}
-      <Button
-        id="confirmPhrase-confirmButton"
-        type="button"
-        variant={passed ? styles.start : styles.validate}
-        disabled={isButtonDisabled}
-        onClick={handleConfirm}
-      >
-        {passed ? 'Next' : 'Validate'}
-      </Button>
+      <div className={styles.buttonContainer}>
+        <Button
+          id="confirmPhrase-confirmButton"
+          type="button"
+          variant={passed ? styles.start : styles.validate}
+          disabled={isButtonDisabled}
+          onClick={handleConfirm}
+        >
+          {passed ? 'Next' : 'Validate'}
+        </Button>
+      </div>
     </Layout>
   );
 };

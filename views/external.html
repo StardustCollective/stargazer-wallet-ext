@@ -12,7 +12,10 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet"> 
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       #external-root {
         width: 100%;
@@ -30,8 +33,14 @@
         scrollbar-width: none; /* Firefox */
         overflow: hidden;
       }
-      body::-webkit-scrollbar {
-        display: none;
+      /* This will hide the scrollbar for any element with overflow set to scroll or auto */
+      * {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+
+      *::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
       }
     </style>
   </head>

@@ -109,7 +109,11 @@ const AssetList: FC<IAssetList> = ({
   return (
     <div className={styles.container}>
       <div className={styles.searchContainer}>
-        <SearchInput value={searchValue} onChange={onSearch} />
+        <SearchInput
+          value={searchValue}
+          onChange={onSearch}
+          extraStyles={styles.searchInput}
+        />
       </div>
       {loading ? (
         <div className={styles.progressContainer}>

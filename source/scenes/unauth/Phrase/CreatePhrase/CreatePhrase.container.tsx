@@ -33,8 +33,7 @@ import * as consts from '../consts';
 // Container
 ///////////////////////////
 
-const CreatePhraseContainer = ({ route } : { route: any }) => {
-
+const CreatePhraseContainer = ({ route }: { route: any }) => {
   const { walletName, resetAll } = route.params || {};
 
   ///////////////////////////
@@ -45,19 +44,22 @@ const CreatePhraseContainer = ({ route } : { route: any }) => {
   const [passed, setPassed] = useState(false);
   const walletController = getWalletController();
   const phrases = walletController.onboardHelper.getSeedPhrase();
+  const showMaxHeight = !!walletName && walletName !== 'undefined';
 
   useEffect(() => {
     return () => {
       walletController.onboardHelper.reset();
-    }
-  }, [])
-  
+    };
+  }, []);
+
   ///////////////////////////
   // Strings
   ///////////////////////////
 
   const title = passed ? consts.CREATE_PHRASE_TITLE2 : consts.CREATE_PHRASE_TITLE1;
-  const description = passed ? consts.CREATE_PHRASE_DESCRIPTION2 : consts.CREATE_PHRASE_DESCRIPTION1;
+  const description = passed
+    ? consts.CREATE_PHRASE_DESCRIPTION2
+    : consts.CREATE_PHRASE_DESCRIPTION1;
 
   ///////////////////////////
   // Callbacks
@@ -76,7 +78,7 @@ const CreatePhraseContainer = ({ route } : { route: any }) => {
   ///////////////////////////
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} maxHeight={showMaxHeight}>
       <CreatePhrase
         title={title}
         description={description}

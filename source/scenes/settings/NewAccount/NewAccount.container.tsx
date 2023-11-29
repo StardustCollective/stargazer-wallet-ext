@@ -44,7 +44,7 @@ const NewAccountContainer: FC<INewAccountView> = ({ navigation }) => {
   };
 
   return (
-    <Container color={CONTAINER_COLOR.LIGHT}>
+    <Container color={CONTAINER_COLOR.LIGHT} maxHeight>
       <NewAccount
         onClickResetStack={onClickResetStack}
         onSubmit={onSubmit}

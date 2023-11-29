@@ -185,7 +185,7 @@ const Send: FC<IWalletSend> = ({
             </TextV3.Caption>
           </View>
         )}
-        {!assetInfo?.l0endpoint && (
+        {!!assetInfo?.priceId && (
           <View style={styles.estimate}>
             <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
               ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
