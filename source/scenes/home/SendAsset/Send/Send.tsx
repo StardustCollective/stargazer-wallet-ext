@@ -158,7 +158,7 @@ const WalletSend: FC<IWalletSend> = ({
             )}
           </ul>
           <div className={styles.status}>
-            {!assetInfo?.l0endpoint && (
+            {!!assetInfo?.priceId && (
               <span className={styles.equalAmount}>
                 ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
               </span>

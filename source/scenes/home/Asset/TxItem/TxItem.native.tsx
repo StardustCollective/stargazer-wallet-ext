@@ -44,19 +44,20 @@ const TxItem: FC<ITxItemSettings> = ({
   receivedOrSentText,
   formattedDistanceDate,
   renderGasSettings,
-  isL0token,
 }) => {
   return (
-    <TouchableOpacity onPress={(e) => {
-      e.stopPropagation();
-      const url = getLinkUrl(tx);
+    <TouchableOpacity
+      onPress={(e) => {
+        e.stopPropagation();
+        const url = getLinkUrl(tx);
 
-      if (!url) {
-        return;
-      }
+        if (!url) {
+          return;
+        }
 
-      Linking.openURL(url);
-    }}>
+        Linking.openURL(url);
+      }}
+    >
       <View style={styles.txItem}>
         {showGroupBar && (
           <View style={styles.groupBar}>
@@ -71,7 +72,12 @@ const TxItem: FC<ITxItemSettings> = ({
               <RenderIcon tx={tx} isETH={isETH} />
             </View>
             <View style={styles.txInfoWrapper}>
-              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.statusText}>{receivedOrSentText}</TextV3.CaptionStrong>
+              <TextV3.CaptionStrong
+                color={COLORS_ENUMS.BLACK}
+                extraStyles={styles.statusText}
+              >
+                {receivedOrSentText}
+              </TextV3.CaptionStrong>
               <TextV3.Caption extraStyles={styles.txAddress}>
                 {ellipsis(txTypeLabel)}
               </TextV3.Caption>
@@ -81,14 +87,18 @@ const TxItem: FC<ITxItemSettings> = ({
             <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK}>
               {amount}
             </TextV3.CaptionRegular>
-            {!isL0token &&
-              <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.txAmountFiatText} numberOfLines={1}>
-                ≈ {fiatAmount}
-              </TextV3.Caption>
-            }
+            <TextV3.Caption
+              color={COLORS_ENUMS.BLACK}
+              extraStyles={styles.txAmountFiatText}
+              numberOfLines={1}
+            >
+              ≈ {fiatAmount}
+            </TextV3.Caption>
           </View>
         </View>
-        {isGasSettingsVisible && <View style={styles.gasSettings}>{renderGasSettings()}</View>}
+        {isGasSettingsVisible && (
+          <View style={styles.gasSettings}>{renderGasSettings()}</View>
+        )}
       </View>
     </TouchableOpacity>
   );
