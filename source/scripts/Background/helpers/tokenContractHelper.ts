@@ -6,11 +6,11 @@ type Provider = ethers.providers.Provider;
 
 type BalanceMap = {
   [tokenAddress: string]: string;
-}
+};
 
 type AddressBalanceMap = {
   [address: string]: BalanceMap;
-}
+};
 
 // This contract address is taken from https://github.com/wbobeirne/eth-balance-checker
 const NETWORK_TO_CONTRACT_MAP = {
@@ -22,11 +22,10 @@ const NETWORK_TO_CONTRACT_MAP = {
   97: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // BSC testnet
   43114: '0xD023D153a0DFa485130ECFdE2FAA7e612EF94818', // AVAX mainnet
   43113: '0xaaEe9Ece50e5a5A1b125cf9300b6a8AdC72cDE40', // AVAX testnet (this contract was deployed by us)
-}
+};
 
 export class TokenContractHelper {
-
-  formatAddressBalances (values: string[], addresses: string[], tokens: string[]) {
+  formatAddressBalances(values: string[], addresses: string[], tokens: string[]) {
     const balances: AddressBalanceMap = {};
     addresses.forEach((addr, addrIdx) => {
       balances[addr] = {};
@@ -38,9 +37,12 @@ export class TokenContractHelper {
     return balances;
   }
 
-
-  async getAddressBalances (provider: Provider | Signer, ethAddress: string, tokenContractAddress: string[], chainId = 1) {
-    
+  async getAddressBalances(
+    provider: Provider | Signer,
+    ethAddress: string,
+    tokenContractAddress: string[],
+    chainId = 1
+  ) {
     const contract = new Contract(
       NETWORK_TO_CONTRACT_MAP[chainId as keyof typeof NETWORK_TO_CONTRACT_MAP],
       SINGLE_CALL_BALANCES_ABI,
@@ -49,10 +51,17 @@ export class TokenContractHelper {
 
     const balances = await contract.balances([ethAddress], tokenContractAddress);
 
-    return this.formatAddressBalances(balances, [ethAddress], tokenContractAddress)[ethAddress];
+    return this.formatAddressBalances(balances, [ethAddress], tokenContractAddress)[
+      ethAddress
+    ];
   }
 
-  async getTokenBalance(provider: Provider | Signer, ethAddress: string, tokenContractAddress: string, chainId = 1) {
+  async getTokenBalance(
+    provider: Provider | Signer,
+    ethAddress: string,
+    tokenContractAddress: string,
+    chainId = 1
+  ) {
     const contract = new Contract(
       NETWORK_TO_CONTRACT_MAP[chainId as keyof typeof NETWORK_TO_CONTRACT_MAP],
       SINGLE_CALL_BALANCES_ABI,
@@ -61,15 +70,15 @@ export class TokenContractHelper {
 
     const balances = await contract.balances([ethAddress], [tokenContractAddress]);
 
-    return this.formatAddressBalances(balances, [ethAddress], [tokenContractAddress])[ethAddress];
+    return this.formatAddressBalances(balances, [ethAddress], [tokenContractAddress])[
+      ethAddress
+    ];
   }
 
-
-  async getTokenInfo (
-    provider: Provider | Signer,
-    tokenContractAddress: string
-  ) {
-    let name = '', decimals, symbol;
+  async getTokenInfo(provider: Provider | Signer, tokenContractAddress: string) {
+    let name = '',
+      decimals,
+      symbol;
     const contract = new Contract(tokenContractAddress, ERC_20_ABI as any, provider);
 
     try {
@@ -84,10 +93,9 @@ export class TokenContractHelper {
       address: tokenContractAddress,
       decimals,
       symbol,
-      name
-    }
+      name,
+    };
   }
 }
-
 
 export const tokenContractHelper = new TokenContractHelper();

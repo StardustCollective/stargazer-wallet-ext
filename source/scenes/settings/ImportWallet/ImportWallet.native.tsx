@@ -28,10 +28,16 @@ const _renderIcon = (
   );
 };
 
-const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseView }) => {
+const ImportWallet: FC<IImportWalletSettings> = ({
+  handleImport,
+  onImportPhraseView,
+}) => {
   return (
     <View style={styles.wrapper}>
-      <TouchableOpacity testID="importWallet-multiChainWallet" onPress={onImportPhraseView}>
+      <TouchableOpacity
+        testID="importWallet-multiChainWallet"
+        onPress={onImportPhraseView}
+      >
         <View style={StyleSheet.flatten([styles.menu, styles.firstChild])}>
           <View style={styles.menuIconSection}>
             {_renderIcon(StargazerIcon, 24, 24, styles.iconContainer)}
@@ -47,10 +53,19 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
           />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity testID="importWallet-ethereum" onPress={handleImport(KeyringNetwork.Ethereum)}>
+      <TouchableOpacity
+        testID="importWallet-ethereum"
+        onPress={handleImport(KeyringNetwork.Ethereum)}
+      >
         <View style={StyleSheet.flatten([styles.menu, styles.secondChild])}>
           <View style={styles.menuIconSection}>
-            {_renderIcon(EthereumIcon, 24, 24, { ...styles.iconContainer, ...styles.iconETHWrapper }, styles.iconETH)}
+            {_renderIcon(
+              EthereumIcon,
+              24,
+              24,
+              { ...styles.iconContainer, ...styles.iconETHWrapper },
+              styles.iconETH
+            )}
             <TextV3.Label color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
               Ethereum
             </TextV3.Label>
@@ -63,10 +78,16 @@ const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseV
           />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity testID="importWallet-constellation" onPress={handleImport(KeyringNetwork.Constellation)}>
+      <TouchableOpacity
+        testID="importWallet-constellation"
+        onPress={handleImport(KeyringNetwork.Constellation)}
+      >
         <View style={StyleSheet.flatten([styles.menu, styles.lastChild])}>
           <View style={styles.menuIconSection}>
-            {_renderIcon(ConstellationIcon, 24, 24, { ...styles.iconContainer, ...styles.iconDAGWrapper })}
+            {_renderIcon(ConstellationIcon, 24, 24, {
+              ...styles.iconContainer,
+              ...styles.iconDAGWrapper,
+            })}
             <TextV3.Label color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
               Constellation
             </TextV3.Label>

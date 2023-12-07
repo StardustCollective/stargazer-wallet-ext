@@ -1,13 +1,13 @@
 //////////////////////
 // Modules Imports
-///////////////////// 
+/////////////////////
 
 import React, { FC } from 'react';
 import clsx from 'clsx';
 
 //////////////////////
 // Component Imports
-///////////////////// 
+/////////////////////
 
 import TextInput from 'components/TextInput';
 import Link from 'components/Link';
@@ -21,13 +21,13 @@ const LOGIN_ERROR_STRING = 'Error: Invalid password';
 
 //////////////////////
 // Images Imports
-///////////////////// 
+/////////////////////
 
 import LogoImage from 'assets/images/logo.svg';
 
 //////////////////////
 // Styles Imports
-///////////////////// 
+/////////////////////
 
 import styles from './styles.scss';
 
@@ -49,19 +49,16 @@ const Login: FC<ILogin> = ({
   register,
   isInvalid,
 }) => {
-
   const errorClass = clsx(styles.error, {
     [styles.confirm]: location.pathname.includes('confirm.html'),
   });
 
   return (
     <div className={styles.home}>
-      <TextV3.HeaderLargeRegular
-        align={TEXT_ALIGN_ENUM.CENTER}
-      >
+      <TextV3.HeaderLargeRegular align={TEXT_ALIGN_ENUM.CENTER}>
         Welcome to <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge>
       </TextV3.HeaderLargeRegular>
-      <img src={'/'+LogoImage} className={styles.logo} alt="Stargazer" />
+      <img src={'/' + LogoImage} className={styles.logo} alt="Stargazer" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.inputWrapper}>
           <TextInput
@@ -77,9 +74,7 @@ const Login: FC<ILogin> = ({
             {errors.password ? (
               <span className={errorClass}>{errors.password.message}</span>
             ) : (
-              isInvalid && (
-                <span className={errorClass}>{LOGIN_ERROR_STRING}</span>
-              )
+              isInvalid && <span className={errorClass}>{LOGIN_ERROR_STRING}</span>
             )}
           </div>
         </div>
@@ -94,13 +89,17 @@ const Login: FC<ILogin> = ({
       </form>
       {!location.pathname.includes('login') && (
         <div className={styles.recoverContainer}>
-          <Link extraStyles={styles.restoreFromSeedLink} color="monotoneOne" onClick={importClicked}>
+          <Link
+            extraStyles={styles.restoreFromSeedLink}
+            color="monotoneOne"
+            onClick={importClicked}
+          >
             Recover from seed phrase
           </Link>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default Login;

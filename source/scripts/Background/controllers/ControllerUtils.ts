@@ -1,8 +1,12 @@
 import store from 'state/store';
 import { updateFiatPrices } from 'state/price';
-import { ASSET_PRICE_API, COINGECKO_API_KEY_PARAM, DEFAULT_CURRENCY } from 'constants/index';
+import {
+  ASSET_PRICE_API,
+  COINGECKO_API_KEY_PARAM,
+  DEFAULT_CURRENCY,
+} from 'constants/index';
 import IAssetListState from 'state/assets/types';
-import IVaultState  from '../../../state/vault/types';
+import IVaultState from '../../../state/vault/types';
 
 export interface IControllerUtils {
   appRoute: (newRoute?: string) => string;
@@ -25,10 +29,10 @@ const ControllerUtils = (): IControllerUtils => {
       const assets: IAssetListState = store.getState().assets;
       if (activeWallet && assets) {
         let assetIds = activeWallet.assets
-          .filter(a => !!assets[a.id]?.priceId)
-          .map(a => assets[a.id]?.priceId)
+          .filter((a) => !!assets[a.id]?.priceId)
+          .map((a) => assets[a.id]?.priceId)
           .join(',');
-  
+
         // Always fetch price of BNB, MATIC and AVAX
         if (!assetIds.includes('binancecoin')) {
           assetIds = assetIds.concat(',binancecoin');
@@ -39,7 +43,7 @@ const ControllerUtils = (): IControllerUtils => {
         if (!assetIds.includes('matic-network')) {
           assetIds = assetIds.concat(',matic-network');
         }
-        
+
         const data = await (
           await fetch(
             `${ASSET_PRICE_API}?ids=${assetIds},bitcoin&vs_currencies=${currency}&include_24hr_change=true&${COINGECKO_API_KEY_PARAM}`

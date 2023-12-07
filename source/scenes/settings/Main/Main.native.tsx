@@ -32,32 +32,36 @@ const Main: FC<IMainSettings> = ({
 }) => {
   const { available } = useSelector((state: RootState) => state.biometrics);
 
-  const RenderSettingsItem = React.memo(({ label, IconImageOrComponent, onClick, disabled }: IRenderSettingsItemProps) => {
-    const disabledStyle = disabled ? styles.disabled : {};
-    return (
-      <Card 
-        id={`settings-${label.toLowerCase()}`} 
-        onClick={onClick} 
-        disabled={disabled} 
-        disabledStyle={disabledStyle} 
-        style={styles.card}
-      >
-        <View style={styles.settingsItemIconWrapper}>
-          <View style={styles.iconCircle}>
-            <IconImageOrComponent />
+  const RenderSettingsItem = React.memo(
+    ({ label, IconImageOrComponent, onClick, disabled }: IRenderSettingsItemProps) => {
+      const disabledStyle = disabled ? styles.disabled : {};
+      return (
+        <Card
+          id={`settings-${label.toLowerCase()}`}
+          onClick={onClick}
+          disabled={disabled}
+          disabledStyle={disabledStyle}
+          style={styles.card}
+        >
+          <View style={styles.settingsItemIconWrapper}>
+            <View style={styles.iconCircle}>
+              <IconImageOrComponent />
+            </View>
           </View>
-        </View>
-        <View style={styles.infoContainer}> 
-          <View style={styles.settingsItemLabelWrapper}>
-            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>{label}</TextV3.BodyStrong>
+          <View style={styles.infoContainer}>
+            <View style={styles.settingsItemLabelWrapper}>
+              <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
+                {label}
+              </TextV3.BodyStrong>
+            </View>
+            <View style={styles.arrowRightContainer}>
+              <ArrowRightIcon width={24} />
+            </View>
           </View>
-          <View style={styles.arrowRightContainer}>
-            <ArrowRightIcon width={24} />
-          </View>
-        </View>
-      </Card>
-    );
-  });
+        </Card>
+      );
+    }
+  );
 
   const SETTINGS_MAP = [
     {
@@ -83,7 +87,7 @@ const Main: FC<IMainSettings> = ({
       key: 'Security',
       IconImageOrComponent: SecurityIcon,
       onClick: onSecurityLinkClicked,
-      disabled: !available
+      disabled: !available,
     },
   ];
 
@@ -101,7 +105,9 @@ const Main: FC<IMainSettings> = ({
           <TouchableOpacity onPress={onAboutLinkClicked}>
             <View style={styles.footer__left}>
               <InfoIcon style={styles.footer__left_img} />
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>Stargazer Wallet {version}</TextV3.Caption>
+              <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+                Stargazer Wallet {version}
+              </TextV3.Caption>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout}>

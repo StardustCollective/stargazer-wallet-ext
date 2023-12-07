@@ -33,7 +33,11 @@ const ContactsContainer: FC<IContactsView> = ({ navigation }) => {
 
   return (
     <Container safeArea={false}>
-      <Contacts contacts={contacts} handleSelect={handleSelect} addContactLabel={addContactLabel} />
+      <Contacts
+        contacts={contacts}
+        handleSelect={handleSelect}
+        addContactLabel={addContactLabel}
+      />
     </Container>
   );
 };

@@ -5,7 +5,7 @@
  */
 
 const ConnectedSites = () => {
-    return(<></>);
-}
+  return <></>;
+};
 
 export default ConnectedSites;

@@ -15,7 +15,7 @@ const AvailableChainMethods: AvailableChainMethod[] = [
   ...AvailableEthereumChainMethods,
 
   /* Constellation */
-  ...AvailableConstellationChainMethods
+  ...AvailableConstellationChainMethods,
 ];
 
 export type { AvailableChainMethod };

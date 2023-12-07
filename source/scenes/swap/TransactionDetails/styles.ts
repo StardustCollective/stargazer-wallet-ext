@@ -19,16 +19,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray_200
+    borderBottomColor: COLORS.gray_200,
   },
   currencyIcon: {
-    borderRadius: 100, 
-    width: 32, 
+    borderRadius: 100,
+    width: 32,
     height: 32,
     marginRight: 8,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor:  COLORS.gray_200,
+    borderColor: COLORS.gray_200,
   },
   detailRow: {
     borderBottomWidth: 1,
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginTop: 20,
-  }
+  },
 });
 
 export default styles;

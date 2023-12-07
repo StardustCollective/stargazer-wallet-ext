@@ -27,7 +27,6 @@ import IConfirmPhrase from './types';
 
 import styles from './styles';
 
-
 ///////////////////////////
 // Scene
 ///////////////////////////
@@ -80,7 +79,9 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
                     !checkList[idx] && styles.wordButtonPurpleLight,
                     checkList[idx] && styles.wordButtonPressed,
                   ]}
-                  extraTitleStyles={[!checkList[idx] ? styles.wordButtonTitle : styles.wordButtonTitleIdle]}
+                  extraTitleStyles={[
+                    !checkList[idx] ? styles.wordButtonTitle : styles.wordButtonTitleIdle,
+                  ]}
                   onPress={() => handleOrgPhrase(idx)}
                 />
               ))}

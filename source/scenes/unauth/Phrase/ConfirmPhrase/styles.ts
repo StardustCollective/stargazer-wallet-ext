@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   wordButtonPurpleLight: {
     backgroundColor: COLORS.purple_light,
   },
-  wordButtonTitleIdle:{
+  wordButtonTitleIdle: {
     fontSize: BUTTON_TITLE_FONT_SIZE,
   },
   wordButtonTitle: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     marginTop: 30,
-  }
+  },
 });
 
 export default styles;

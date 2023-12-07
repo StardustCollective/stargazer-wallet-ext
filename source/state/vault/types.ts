@@ -1,12 +1,24 @@
-import { V3Keystore, KDFParamsPhrase, KDFParamsPrivateKey } from '@stardust-collective/dag4-keystore';
-import { Transaction as DAGTransaction, TransactionV2 as DAGTransactionV2 } from '@stardust-collective/dag4-network';
+import {
+  V3Keystore,
+  KDFParamsPhrase,
+  KDFParamsPrivateKey,
+} from '@stardust-collective/dag4-keystore';
+import {
+  Transaction as DAGTransaction,
+  TransactionV2 as DAGTransactionV2,
+} from '@stardust-collective/dag4-network';
 import {
   KeyringAssetType,
   KeyringNetwork,
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { AvalancheChainId, BSCChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
+import {
+  AvalancheChainId,
+  BSCChainId,
+  EthChainId,
+  PolygonChainId,
+} from 'scripts/Background/controllers/EVMChainController/types';
 import { IAssetInfoState } from 'state/assets/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
@@ -69,9 +81,9 @@ export type AssetBalances = {
   // 349: New network should be added here.
   [AssetType.Ethereum]?: string;
   [AssetType.Constellation]?: string;
-  'avalanche'?: string;
-  'bsc'?: string;
-  'polygon'?: string;
+  avalanche?: string;
+  bsc?: string;
+  polygon?: string;
   [contractAddress: string]: string;
 };
 

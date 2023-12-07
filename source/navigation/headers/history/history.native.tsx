@@ -4,17 +4,13 @@
 
 import React from 'react';
 import defaultHeader from '../default';
-import { 
-  Pressable,
-  AddIcon
-} from "native-base"
+import { Pressable, AddIcon } from 'native-base';
 
 ///////////////////////
 // Images
 ///////////////////////
 
-import Clipboard from 'assets/images/svg/clipboard.svg'
-
+import Clipboard from 'assets/images/svg/clipboard.svg';
 
 ///////////////////////////
 // Interface
@@ -29,22 +25,15 @@ interface IAddHeader {
 // Header
 ///////////////////////////
 
-const addHeader = ({
-  navigation,
-  onRightIconClick,
-}: IAddHeader) => {
-
+const addHeader = ({ navigation, onRightIconClick }: IAddHeader) => {
   return {
     ...defaultHeader({ navigation }),
     headerRight: () => (
-      <Pressable
-        onPress={onRightIconClick}
-        mr="5"
-      >
+      <Pressable onPress={onRightIconClick} mr="5">
         <Clipboard />
       </Pressable>
     ),
-  }
+  };
 };
 
 export default addHeader;

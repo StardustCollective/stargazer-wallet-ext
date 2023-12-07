@@ -29,20 +29,25 @@ import styles from './AssetButtons.scss';
 // Constants
 ///////////////////////////
 
-const AssetButtons: FC<IAssetButtons> = ({ onBuyPressed, onSendPressed, onReceivePressed, assetBuyable }) => {
+const AssetButtons: FC<IAssetButtons> = ({
+  onBuyPressed,
+  onSendPressed,
+  onReceivePressed,
+  assetBuyable,
+}) => {
   ///////////////////////////
   // Render
   ///////////////////////////
   return (
     <div className={styles.container}>
-      {assetBuyable && 
+      {assetBuyable && (
         <div className={styles.buttonContainer} onClick={onBuyPressed}>
           <div className={styles.icon}>
             <img src={`/${DollarIcon}`} alt="dollar-icon" />
           </div>
           <TextV3.CaptionStrong extraStyles={styles.label}>Buy</TextV3.CaptionStrong>
         </div>
-      }
+      )}
       <div className={styles.buttonContainer} onClick={onSendPressed}>
         <div className={styles.icon}>
           <img src={`/${ArrowUpIcon}`} alt="arrow-up-icon" />

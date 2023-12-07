@@ -1,4 +1,4 @@
-import { ISupportedAssetsFiltered } from "state/providers/types";
+import { ISupportedAssetsFiltered } from 'state/providers/types';
 
 export interface IBuyList {
   supportedAssets: ISupportedAssetsFiltered;

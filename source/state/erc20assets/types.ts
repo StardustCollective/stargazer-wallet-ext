@@ -1,5 +1,4 @@
-import { IAssetInfoState } from "state/assets/types";
-
+import { IAssetInfoState } from 'state/assets/types';
 
 export interface ERC20Asset {
   id: string;
@@ -61,4 +60,4 @@ export default interface IERC20AssetsListState {
   constellationAssets: IAssetInfoState[];
   searchAssets: IAssetInfoState[];
   customAssetForm: ICustomAssetForm;
-};
+}

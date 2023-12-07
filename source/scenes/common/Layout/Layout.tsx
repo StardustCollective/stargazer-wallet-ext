@@ -3,10 +3,7 @@ import React, { FC } from 'react';
 import styles from './Layout.scss';
 import ILayout from './types';
 
-const Layout: FC<ILayout> = ({
-  title,
-  children,
-}) => {
+const Layout: FC<ILayout> = ({ title, children }) => {
   return (
     <>
       <div className={styles.layout}>

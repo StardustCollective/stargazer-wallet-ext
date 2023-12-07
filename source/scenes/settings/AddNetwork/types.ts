@@ -1,4 +1,3 @@
-
 export default interface IAddNetwork {
   register: any;
   control: any;

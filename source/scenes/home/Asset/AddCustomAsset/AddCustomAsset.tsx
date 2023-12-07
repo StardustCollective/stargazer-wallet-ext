@@ -50,11 +50,10 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   buttonDisabled,
   buttonLoading,
 }) => {
-  
   const inputClass = clsx(styles.input, styles.address);
 
-  const tokenAddressLabel = isL0Token ? 'Metagraph address': 'Token address';
-  const tokenAddressPlaceholder = isL0Token ? 'DAG...': '0x...';
+  const tokenAddressLabel = isL0Token ? 'Metagraph address' : 'Token address';
+  const tokenAddressPlaceholder = isL0Token ? 'DAG...' : '0x...';
   const tokenNamePlaceholder = isL0Token ? 'Enter token name' : 'Ethereum';
   const tokenSymbolPlaceholder = isL0Token ? 'Enter token symbol' : 'ETH';
 
@@ -82,19 +81,17 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
               disabled={false}
               error={!!errors?.tokenAddress}
               variant={inputClass}
-              />
-              <TextV3.Caption 
-                color={COLORS_ENUMS.RED} 
-                extraStyles={styles.errorMessage}>
-                  {!!errors?.tokenAddress ? errors?.tokenAddress?.message: ' '}
-              </TextV3.Caption>
+            />
+            <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+              {!!errors?.tokenAddress ? errors?.tokenAddress?.message : ' '}
+            </TextV3.Caption>
           </li>
-          {isL0Token &&
+          {isL0Token && (
             <>
               <li>
                 <label>L0 endpoint</label>
                 <TextInput
-                  placeholder='Enter endpoint URL'
+                  placeholder="Enter endpoint URL"
                   fullWidth
                   inputRef={register}
                   id="l0endpoint"
@@ -104,17 +101,18 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
                   disabled={false}
                   error={!!errors?.l0endpoint}
                   variant={inputClass}
-                  />
-                  <TextV3.Caption 
-                    color={COLORS_ENUMS.RED} 
-                    extraStyles={styles.errorMessage}>
-                      {!!errors?.l0endpoint ? errors?.l0endpoint?.message: ' '}
-                  </TextV3.Caption>
+                />
+                <TextV3.Caption
+                  color={COLORS_ENUMS.RED}
+                  extraStyles={styles.errorMessage}
+                >
+                  {!!errors?.l0endpoint ? errors?.l0endpoint?.message : ' '}
+                </TextV3.Caption>
               </li>
               <li>
                 <label>L1 endpoint</label>
                 <TextInput
-                  placeholder='Enter endpoint URL'
+                  placeholder="Enter endpoint URL"
                   fullWidth
                   inputRef={register}
                   id="l1endpoint"
@@ -124,15 +122,16 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
                   disabled={false}
                   error={!!errors?.l1endpoint}
                   variant={inputClass}
-                  />
-                  <TextV3.Caption 
-                    color={COLORS_ENUMS.RED} 
-                    extraStyles={styles.errorMessage}>
-                      {!!errors?.l1endpoint ? errors?.l1endpoint?.message: ' '}
-                  </TextV3.Caption>
+                />
+                <TextV3.Caption
+                  color={COLORS_ENUMS.RED}
+                  extraStyles={styles.errorMessage}
+                >
+                  {!!errors?.l1endpoint ? errors?.l1endpoint?.message : ' '}
+                </TextV3.Caption>
               </li>
             </>
-          }
+          )}
           <li>
             <label>Token name</label>
             <TextInput
@@ -146,12 +145,10 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
               disabled={false}
               error={!!errors?.tokenName}
               variant={inputClass}
-              />
-              <TextV3.Caption 
-                color={COLORS_ENUMS.RED} 
-                extraStyles={styles.errorMessage}>
-                  {!!errors?.tokenName ? errors?.tokenName?.message: ' '}
-              </TextV3.Caption>
+            />
+            <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+              {!!errors?.tokenName ? errors?.tokenName?.message : ' '}
+            </TextV3.Caption>
           </li>
           <li>
             <label>Token symbol</label>
@@ -166,14 +163,12 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
               disabled={false}
               error={!!errors?.tokenSymbol}
               variant={inputClass}
-              />
-              <TextV3.Caption 
-                color={COLORS_ENUMS.RED} 
-                extraStyles={styles.errorMessage}>
-                  {!!errors?.tokenSymbol ? errors?.tokenSymbol?.message: ' '}
-              </TextV3.Caption>
+            />
+            <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+              {!!errors?.tokenSymbol ? errors?.tokenSymbol?.message : ' '}
+            </TextV3.Caption>
           </li>
-          {!isL0Token &&
+          {!isL0Token && (
             <li>
               <label>Decimals</label>
               <TextInput
@@ -188,19 +183,24 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
                 disabled={false}
                 error={!!errors?.tokenDecimals}
                 variant={inputClass}
-                />
-                <TextV3.Caption 
-                  color={COLORS_ENUMS.RED} 
-                  extraStyles={styles.errorMessage}>
-                    {!!errors?.tokenDecimals ? errors?.tokenDecimals?.message: ' '}
-                </TextV3.Caption>
+              />
+              <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+                {!!errors?.tokenDecimals ? errors?.tokenDecimals?.message : ' '}
+              </TextV3.Caption>
             </li>
-          }
+          )}
         </ul>
         <div className={styles.warningContainer}>
-          <img src={`/${WarningIcon}`} color="white" height={20} width={20} alt="warning" />
+          <img
+            src={`/${WarningIcon}`}
+            color="white"
+            height={20}
+            width={20}
+            alt="warning"
+          />
           <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.warningText}>
-            Anyone can create a custom token, including fake versions of existing tokens. To avoid security risks, make sure the token you are importing is verified.
+            Anyone can create a custom token, including fake versions of existing tokens.
+            To avoid security risks, make sure the token you are importing is verified.
           </TextV3.Caption>
         </div>
         <div className={styles.buttonContainer}>

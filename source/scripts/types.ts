@@ -2,13 +2,13 @@ import { IActiveAssetState } from 'state/vault/types';
 import { AllChainsIds } from './Background/controllers/EVMChainController/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
-export interface AccountItem  {
+export interface AccountItem {
   id?: number;
   bipIndex?: number | null;
   type: KeyringWalletType;
   address: string;
   publicKey: string;
-};
+}
 
 export interface IAccountInfo {
   assets: {
@@ -35,7 +35,7 @@ export interface IETHPendingTx {
   nonce?: number;
   gasPrice: number;
   data?: string;
-  onConfirmed?: () => void
+  onConfirmed?: () => void;
 }
 
 export interface ITransactionInfo {
@@ -46,5 +46,5 @@ export interface ITransactionInfo {
   fee?: number;
   ethConfig?: IETHTxConfig;
   nonce?: number;
-  onConfirmed?: () => void
+  onConfirmed?: () => void;
 }

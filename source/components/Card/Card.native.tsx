@@ -27,7 +27,14 @@ interface ICardProps {
 // Component
 /// ////////////////////
 
-const CardComponent = ({ id, children, onClick, style = {}, disabled = false, disabledStyle = {} }: ICardProps) => {
+const CardComponent = ({
+  id,
+  children,
+  onClick,
+  style = {},
+  disabled = false,
+  disabledStyle = {},
+}: ICardProps) => {
   const wrapperStyle = StyleSheet.flatten([styles.wrapperStyle, style]);
   const containerStyle = StyleSheet.flatten([styles.containerStyle, disabledStyle]);
 

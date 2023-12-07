@@ -25,7 +25,7 @@ import TxIcon from 'assets/images/svg/txIcon.svg';
 ///////////////////////
 
 import ISwapHistory from './types';
-import { IExolixTransaction, ExolixTransactionStatuses } from 'state/swap/types'
+import { IExolixTransaction, ExolixTransactionStatuses } from 'state/swap/types';
 
 ///////////////////////
 // Styles
@@ -41,26 +41,39 @@ import styles from './styles';
 const CHEVRON_WIDTH = 7;
 const MATERIAL_ACTIVITY_INDICATOR_SIZE = 17;
 const ACTIVITY_INDICATOR_SIZE = 'large';
-const ACTIVITY_INDICATOR_COLOR = "rgb(255, 255, 255)";
+const ACTIVITY_INDICATOR_COLOR = 'rgb(255, 255, 255)';
 
 import {
   PROCESSING_STRING,
   SWAP_STRING,
   TO_STRING,
   DATE_FORMAT,
-  NO_TRANSACTIONS
+  NO_TRANSACTIONS,
 } from './constants';
 
 const ConfirmDetails: FC<ISwapHistory> = ({
   transactionHistoryData,
   onTransactionCellPressed,
-  isLoading
+  isLoading,
 }) => {
-
-
-  const RenderHistoryCell = ({ swapFromTicker, swapToTicker, amount, date, isProcessing = false, onPress }: { swapFromTicker: string, swapToTicker: string, amount: string, date?: string, isProcessing?: boolean, onPress: () => void }) => {
-
-    const cellStateStyle = isProcessing ? styles.historyCellProcessing : styles.historyCellSettled;
+  const RenderHistoryCell = ({
+    swapFromTicker,
+    swapToTicker,
+    amount,
+    date,
+    isProcessing = false,
+    onPress,
+  }: {
+    swapFromTicker: string;
+    swapToTicker: string;
+    amount: string;
+    date?: string;
+    isProcessing?: boolean;
+    onPress: () => void;
+  }) => {
+    const cellStateStyle = isProcessing
+      ? styles.historyCellProcessing
+      : styles.historyCellSettled;
 
     return (
       <TouchableOpacity onPress={onPress} style={[styles.historyCell, cellStateStyle]}>
@@ -68,7 +81,10 @@ const ConfirmDetails: FC<ISwapHistory> = ({
           {isProcessing && (
             <>
               <View style={styles.activityIndicator}>
-                <MaterialIndicator size={MATERIAL_ACTIVITY_INDICATOR_SIZE} color={ACTIVITY_INDICATOR_COLOR} />
+                <MaterialIndicator
+                  size={MATERIAL_ACTIVITY_INDICATOR_SIZE}
+                  color={ACTIVITY_INDICATOR_COLOR}
+                />
               </View>
               <TextV3.CaptionStrong
                 color={COLORS_ENUMS.BLACK}
@@ -103,7 +119,7 @@ const ConfirmDetails: FC<ISwapHistory> = ({
         </View>
       </TouchableOpacity>
     );
-  }
+  };
 
   const RenderTransaction = ({ item }: { item: IExolixTransaction }) => {
     return (
@@ -113,12 +129,12 @@ const ConfirmDetails: FC<ISwapHistory> = ({
           swapToTicker={item?.coinTo.coinCode}
           amount={item?.amount}
           date={item?.createdAt}
-          isProcessing={(item?.status !== ExolixTransactionStatuses.SUCCESS)}
+          isProcessing={item?.status !== ExolixTransactionStatuses.SUCCESS}
           onPress={() => onTransactionCellPressed(item)}
         />
       </>
     );
-  }
+  };
 
   const ListEmptyComponent = () => {
     return (
@@ -133,8 +149,8 @@ const ConfirmDetails: FC<ISwapHistory> = ({
           </>
         )}
       </View>
-    )
-  }
+    );
+  };
 
   return (
     <View style={styles.container}>

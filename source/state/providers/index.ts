@@ -133,6 +133,7 @@ const ProviderListState = createSlice({
   },
 });
 
-export const { rehydrate, clearErrors, setRequestId, clearPaymentRequest } = ProviderListState.actions;
+export const { rehydrate, clearErrors, setRequestId, clearPaymentRequest } =
+  ProviderListState.actions;
 
 export default ProviderListState.reducer;

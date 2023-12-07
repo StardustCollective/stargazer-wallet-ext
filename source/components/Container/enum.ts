@@ -2,5 +2,5 @@ export enum CONTAINER_COLOR {
   LIGHT = 0,
   DARK,
   EXTRA_LIGHT,
-  GRAY_LIGHT_300
+  GRAY_LIGHT_300,
 }

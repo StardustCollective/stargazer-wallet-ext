@@ -12,7 +12,9 @@ export type HardwareWallet = {
 };
 
 export default interface IImportAccountSettings {
-  handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<any>;
+  handleSubmit: (
+    callback: OnSubmit<FieldValues>
+  ) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<any>;
   control: any;
   register: Ref<any>;
   handleImportPrivKey: (privKey: string, label: string) => void;

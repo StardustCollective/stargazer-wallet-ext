@@ -3,7 +3,7 @@
 /////////////////////////
 
 import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles';
 
 /////////////////////////
 // Components Imports
@@ -43,8 +43,8 @@ const BITFI_LOGO_HEIGHT = 200;
 /////////////////////////
 
 interface IConnectProps {
-  onConnectClick: (deviceId: string) => void,
-  onConnectError: (error: string) => void
+  onConnectClick: (deviceId: string) => void;
+  onConnectError: (error: string) => void;
 }
 
 /////////////////////////
@@ -52,8 +52,7 @@ interface IConnectProps {
 /////////////////////////
 
 function Connect(props: IConnectProps) {
-
-  const [deviceId, setDeviceId] = useState<string>('')
+  const [deviceId, setDeviceId] = useState<string>('');
 
   /////////////////////////
   // Callbacks
@@ -62,20 +61,17 @@ function Connect(props: IConnectProps) {
   const onClick = () => {
     try {
       if (Buffer.from(deviceId, 'hex').length !== 3) {
-        throw new Error('Invalid device ID')
+        throw new Error('Invalid device ID');
       }
 
       if (props.onConnectClick) {
         props.onConnectClick(deviceId);
       }
-
-    }
-    catch (exc: any) {
+    } catch (exc: any) {
       if (props.onConnectError) {
         props.onConnectError(JSON.stringify(exc.message || exc));
       }
     }
-
   };
 
   /////////////////////////
@@ -97,12 +93,19 @@ function Connect(props: IConnectProps) {
       <div className={styles.wrapper}>
         <div className={styles.connect}>
           <div className={styles.logo} style={{ marginBottom: '0px' }}>
-            <img src={BitfiLogo} alt="bitfi_logo" width={BITFI_LOGO_WIDTH} height={BITFI_LOGO_HEIGHT} />
+            <img
+              src={BitfiLogo}
+              alt="bitfi_logo"
+              width={BITFI_LOGO_WIDTH}
+              height={BITFI_LOGO_HEIGHT}
+            />
           </div>
           <div className={styles.instructions}>
             <span className={styles.text}>
-              1. Connect your Bitfi device to WiFi.<br />
-              2. Enter your Device ID below.<br />
+              1. Connect your Bitfi device to WiFi.
+              <br />
+              2. Enter your Device ID below.
+              <br />
               3. Click "Connect to Bitfi" button.
             </span>
           </div>
@@ -111,7 +114,7 @@ function Connect(props: IConnectProps) {
               className={styles.input}
               value={deviceId}
               onChange={(e) => setDeviceId(e.target.value)}
-              placeholder='Device ID'
+              placeholder="Device ID"
             />
           </div>
         </div>
@@ -122,7 +125,8 @@ function Connect(props: IConnectProps) {
             className={styles.button}
             size={BUTTON_SIZE_PROP}
             variant={BUTTON_VARIANT_PROP}
-            color={BUTTON_COLOR_PROP}>
+            color={BUTTON_COLOR_PROP}
+          >
             {CONNECT_TO_LEDGER_STRING}
           </BlueButton>
         </div>

@@ -7,7 +7,11 @@ import styles from './TxsPanel.scss';
 
 import ITxPanelSettings from './types';
 
-const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription }) => {
+const TxsPanel: FC<ITxPanelSettings> = ({
+  transactions,
+  renderTxItem,
+  transactionDescription,
+}) => {
   return (
     <div className={styles.activity}>
       {transactions.length ? (
@@ -18,7 +22,9 @@ const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactio
         </div>
       ) : (
         <div className={styles.noTx}>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK}>{transactionDescription}</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+            {transactionDescription}
+          </TextV3.Caption>
         </div>
       )}
     </div>

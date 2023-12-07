@@ -24,7 +24,7 @@ import TextV3 from 'components/TextV3';
 // Styles
 ///////////////////////
 
-import styles from './styles'; 
+import styles from './styles';
 
 ///////////////////////
 // Constants
@@ -46,7 +46,9 @@ const Security = () => {
       store.dispatch(setBiometryEnabled(true));
       try {
         await Biometrics.createKeys();
-        const { success, signature, secret } = await Biometrics.createSignature(PROMPT_TITLES.auth);
+        const { success, signature, secret } = await Biometrics.createSignature(
+          PROMPT_TITLES.auth
+        );
         const publicKey = await Biometrics.getPublicKeyFromKeychain();
         if (success && signature && secret && publicKey) {
           const verified = await Biometrics.verifySignature(signature, secret, publicKey);
@@ -60,17 +62,19 @@ const Security = () => {
         store.dispatch(setBiometryEnabled(false));
       }
     }
-  }
+  };
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.cardContainer}>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>Allow {biometryType}</TextV3.CaptionStrong>
-        <Switch 
-          value={enabled} 
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+          Allow {biometryType}
+        </TextV3.CaptionStrong>
+        <Switch
+          value={enabled}
           thumbColor={COLORS.white}
           ios_backgroundColor={COLORS.purple_light}
-          trackColor={{ true: COLORS.primary_lighter_1 , false: COLORS.purple_light }}
+          trackColor={{ true: COLORS.primary_lighter_1, false: COLORS.purple_light }}
           onValueChange={toggleBiometrics}
         />
       </View>

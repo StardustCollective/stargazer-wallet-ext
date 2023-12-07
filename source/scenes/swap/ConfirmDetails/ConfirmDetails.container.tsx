@@ -34,7 +34,10 @@ import swapSelectors from 'selectors/swapSelectors';
 // Utils
 ///////////////////////////
 
-import { getNativeToken, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
+import {
+  getNativeToken,
+  getPriceId,
+} from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { getWalletController } from 'utils/controllersUtils';
 import NavUtils from 'navigation/util';
@@ -51,7 +54,6 @@ import Container from 'components/Container';
 ///////////////////////////
 
 const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
-
   const accountController = getAccountController();
   const walletController = getWalletController();
   const tempTx = accountController.getTempTx();
@@ -63,18 +65,20 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const getFiatAmount = useFiat(false, assetInfo);
   const assetNetwork = assets[activeAsset?.id]?.network;
   const linkTo = useLinkTo();
-  const feeUnit = assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
-  const [isSwapButtonLoading, setIsSwapButtonLoading ] = useState<boolean>(false);
+  const feeUnit =
+    assetInfo.type === AssetType.Constellation ? 'DAG' : getNativeToken(assetNetwork);
+  const [isSwapButtonLoading, setIsSwapButtonLoading] = useState<boolean>(false);
 
   const getSendAmount = () => {
-    const fiatAmount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8, assetInfo.priceId));
+    const fiatAmount = Number(
+      getFiatAmount(Number(tempTx?.amount || 0), 8, assetInfo.priceId)
+    );
 
-    return (fiatAmount).toLocaleString(navigator.language, {
+    return fiatAmount.toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
     });
-
-  }
+  };
 
   const getFeeAmount = () => {
     let priceId = assetInfo.priceId;
@@ -84,28 +88,28 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     }
 
     return Number(getFiatAmount(Number(tempTx?.fee || 0), 8, priceId));
-  }
+  };
 
   const getTotalAmount = () => {
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
     amount += getFeeAmount();
 
-    return (amount).toLocaleString(navigator.language, {
+    return amount.toLocaleString(navigator.language, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
     });
   };
 
-  const onSwapPressed =  async () => {
+  const onSwapPressed = async () => {
     setIsSwapButtonLoading(true);
     await accountController.confirmTempTx();
     walletController.swap.addTxId(pendingSwap.id);
-    linkTo('/confirmation')
-  }
+    linkTo('/confirmation');
+  };
 
   const onCancelPressed = () => {
     NavUtils.popToTop(navigation);
-  }
+  };
 
   return (
     <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>
@@ -121,7 +125,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
         onSwapPressed={onSwapPressed}
         onCancelPressed={onCancelPressed}
         isSwapButtonLoading={isSwapButtonLoading}
-        />
+      />
     </Container>
   );
 };

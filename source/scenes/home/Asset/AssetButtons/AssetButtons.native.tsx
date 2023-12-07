@@ -31,32 +31,32 @@ import styles from './styles';
 // Constants
 ///////////////////////////
 
-import {
-  BUY_STRING,
-  SWAP_STRING,
-  SEND_STRING,
-  RECEIVE_STRING
-} from './constants';
+import { BUY_STRING, SWAP_STRING, SEND_STRING, RECEIVE_STRING } from './constants';
 
 const BUTTON_SIZE_WIDTH = 24;
 const BUTTON_SIZE_HEIGHT = 24;
 
-const AssetButtons: FC<IAssetButtons> = ({ assetBuyable, onBuyPressed, onSendPressed, onReceivePressed, onSwapPressed }) => {
-
+const AssetButtons: FC<IAssetButtons> = ({
+  assetBuyable,
+  onBuyPressed,
+  onSendPressed,
+  onReceivePressed,
+  onSwapPressed,
+}) => {
   ///////////////////////////
   // Render
   ///////////////////////////
 
   return (
     <View style={styles.container}>
-      {assetBuyable &&
+      {assetBuyable && (
         <TouchableOpacity onPress={onBuyPressed} style={styles.buttonContainer}>
           <View style={styles.icon}>
             <DollarIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />
           </View>
           <TextV3.CaptionStrong extraStyles={styles.label}>Buy</TextV3.CaptionStrong>
         </TouchableOpacity>
-      }
+      )}
       <TouchableOpacity onPress={onSendPressed} style={styles.buttonContainer}>
         <View style={styles.icon}>
           <ArrowUpIcon height={BUTTON_SIZE_HEIGHT} width={BUTTON_SIZE_WIDTH} />

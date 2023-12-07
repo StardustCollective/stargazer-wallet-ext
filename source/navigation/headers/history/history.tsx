@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 // Images
 ///////////////////////
 
-import Clipboard from 'assets/images/svg/clipboard.svg'
+import Clipboard from 'assets/images/svg/clipboard.svg';
 
 ///////////////////////////
 // Styles
@@ -31,11 +31,7 @@ interface IAddHeader {
 // Header
 ///////////////////////////
 
-const addHeader = ({
-  navigation,
-  onRightIconClick,
-}: IAddHeader) => {
-
+const addHeader = ({ navigation, onRightIconClick }: IAddHeader) => {
   return {
     ...defaultHeader({ navigation }),
     headerRight: () => (
@@ -47,7 +43,7 @@ const addHeader = ({
         <img src={`/${Clipboard}`} />
       </IconButton>
     ),
-  }
+  };
 };
 
 export default addHeader;

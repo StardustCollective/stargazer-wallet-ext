@@ -67,7 +67,7 @@ const ApproveSpend = () => {
   const current = controller.dapp.getCurrent();
   const origin = current && current.origin;
   const showAlert = usePlatformAlert();
-  const vaultActiveAsset = useSelector(walletsSelectors.getActiveAsset)
+  const vaultActiveAsset = useSelector(walletsSelectors.getActiveAsset);
 
   const { data: stringData } = queryString.parse(location.search);
 
@@ -92,8 +92,8 @@ const ApproveSpend = () => {
         );
         activeAsset = {
           ...activeAsset,
-          ...CHAIN_WALLET_ASSET[chain as keyof typeof CHAIN_WALLET_ASSET]
-        }
+          ...CHAIN_WALLET_ASSET[chain as keyof typeof CHAIN_WALLET_ASSET],
+        };
       }
 
       if (activeAsset.id !== vaultActiveAsset.id) {
@@ -110,7 +110,7 @@ const ApproveSpend = () => {
     gasLimit,
     setGasPrice,
     gasPrice,
-    gasPrices
+    gasPrices,
   } = useGasEstimate({
     toAddress: to as string,
     asset,
@@ -123,8 +123,9 @@ const ApproveSpend = () => {
   useEffect(() => {
     if (gas) {
       // Gas sent in wei, convert to gwei
-      let initialGas = parseInt((parseFloat(ethers.utils.formatEther(gas)) *
-        10e8) as any);
+      let initialGas = parseInt(
+        (parseFloat(ethers.utils.formatEther(gas)) * 10e8) as any
+      );
 
       setGasPrice(initialGas);
       estimateGasFee(initialGas);
@@ -139,7 +140,7 @@ const ApproveSpend = () => {
     const background = await browser.runtime.getBackgroundPage();
     const { windowId } = queryString.parse(window.location.search);
     const cancelEvent = new CustomEvent('spendApproved', {
-      detail: { windowId, approved: true, result: false }
+      detail: { windowId, approved: true, result: false },
     });
 
     background.dispatchEvent(cancelEvent);
@@ -160,24 +161,28 @@ const ApproveSpend = () => {
         ethConfig: {
           gasPrice,
           gasLimit,
-          memo: data
+          memo: data,
         },
         onConfirmed: () => {
           // NOOP
-        }
+        },
       };
 
       controller.wallet.account.updateTempTx(txConfig);
       const trxHash = await controller.wallet.account.confirmContractTempTx(asset);
 
-      background.dispatchEvent(new CustomEvent('spendApproved', {
-        detail: { windowId, approved: true, result: trxHash }
-      }));
+      background.dispatchEvent(
+        new CustomEvent('spendApproved', {
+          detail: { windowId, approved: true, result: trxHash },
+        })
+      );
     } catch (e) {
       if (isError(e)) {
-        background.dispatchEvent(new CustomEvent('spendApproved', {
-          detail: { windowId, approved: false, error: e.message },
-        }));
+        background.dispatchEvent(
+          new CustomEvent('spendApproved', {
+            detail: { windowId, approved: false, error: e.message },
+          })
+        );
 
         showAlert(e.message, 'danger');
       }
@@ -186,35 +191,48 @@ const ApproveSpend = () => {
     window.close();
   };
 
-  const onGasPriceChanged = (
-    _event: ChangeEvent<{}>,
-    value: number | number[]
-  ) => {
+  const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
     setGasPrice(value as number);
     estimateGasFee(value as number);
   };
 
   const renderHeaderInfo = () => {
-
     if (!origin || !chainLabel) return null;
 
     return (
       <div className={styles.headerContainer}>
         {!!origin && (
           <div className={styles.row}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoTitle}>URL</TextV3.CaptionStrong>
-            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoValue}>{origin}</TextV3.CaptionRegular>
+            <TextV3.CaptionStrong
+              color={COLORS_ENUMS.WHITE}
+              extraStyles={styles.headerInfoTitle}
+            >
+              URL
+            </TextV3.CaptionStrong>
+            <TextV3.CaptionRegular
+              color={COLORS_ENUMS.WHITE}
+              extraStyles={styles.headerInfoValue}
+            >
+              {origin}
+            </TextV3.CaptionRegular>
           </div>
         )}
         {!!chainLabel && (
           <div className={styles.row}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.WHITE} extraStyles={styles.headerInfoTitle}>Chain</TextV3.CaptionStrong>
-            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE}>{chainLabel}</TextV3.CaptionRegular>
+            <TextV3.CaptionStrong
+              color={COLORS_ENUMS.WHITE}
+              extraStyles={styles.headerInfoTitle}
+            >
+              Chain
+            </TextV3.CaptionStrong>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE}>
+              {chainLabel}
+            </TextV3.CaptionRegular>
           </div>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   //////////////////////
   // Renders
@@ -233,8 +251,8 @@ const ApproveSpend = () => {
     >
       <div className={styles.content}>
         <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-          Do you trust this site? By granting permissions you're allowing this
-          site to withdraw your tokens and automate transactions for you.
+          Do you trust this site? By granting permissions you're allowing this site to
+          withdraw your tokens and automate transactions for you.
         </TextV3.Caption>
         <div className={styles.gasFees}>
           <div className={styles.box}>

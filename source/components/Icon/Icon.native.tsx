@@ -35,7 +35,11 @@ const IconComponent: FC<IIcon> = ({
     spaced ? styles.spaced : {},
   ]);
 
-  const composedIconStyles = StyleSheet.flatten([styles.icon, iconStyles, width ? { width } : {}]);
+  const composedIconStyles = StyleSheet.flatten([
+    styles.icon,
+    iconStyles,
+    width ? { width } : {},
+  ]);
 
   if (typeof Component === 'string') {
     return (

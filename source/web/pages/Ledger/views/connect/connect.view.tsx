@@ -3,7 +3,7 @@
 /////////////////////////
 
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles';
 
 /////////////////////////
 // Components Imports
@@ -16,7 +16,6 @@ import Button from '@material-ui/core/Button';
 /////////////////////////
 
 import LedgerIcon from 'assets/images/svg/ledger.svg';
-
 
 /////////////////////////
 // Styles Imports
@@ -41,7 +40,7 @@ const CONNECT_TO_LEDGER_STRING = 'Connect to Ledger';
 /////////////////////////
 
 interface IConnectProps {
-  onConnectClick: React.MouseEventHandler<HTMLButtonElement>
+  onConnectClick: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 /////////////////////////
@@ -49,18 +48,14 @@ interface IConnectProps {
 /////////////////////////
 
 function Connect(props: IConnectProps) {
-
-
   /////////////////////////
   // Callbacks
   /////////////////////////
 
   const onClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-
     if (props.onConnectClick) {
       props.onConnectClick(event);
     }
-
   };
 
   /////////////////////////
@@ -83,17 +78,19 @@ function Connect(props: IConnectProps) {
         <div className={styles.instructions}>
           <img src={LedgerIcon} alt="ledger_icon" width={183} height={45} />
           <span>
-            Connect your hardware device and click the <br/>"Connect to Ledger" button below.
+            Connect your hardware device and click the <br />
+            "Connect to Ledger" button below.
           </span>
         </div>
         <div>
           <BlueButton
-            style={{textTransform: 'none'}}
+            style={{ textTransform: 'none' }}
             onClick={onClick}
             className={styles.button}
             size={BUTTON_SIZE_PROP}
             variant={BUTTON_VARIANT_PROP}
-            color={BUTTON_COLOR_PROP}>
+            color={BUTTON_COLOR_PROP}
+          >
             {CONNECT_TO_LEDGER_STRING}
           </BlueButton>
         </div>

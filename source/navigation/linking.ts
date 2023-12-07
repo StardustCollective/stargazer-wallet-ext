@@ -1,7 +1,7 @@
 ///////////////////////////
 // Routes
 ///////////////////////////
- 
+
 import routes from './routes';
 
 ///////////////////////////
@@ -9,12 +9,12 @@ import routes from './routes';
 ///////////////////////////
 
 const config = {
-    screens: routes
+  screens: routes,
 };
-  
+
 const linking = {
-    prefixes: ['https://', 'http://', 'stargazer://'],
-    config,
+  prefixes: ['https://', 'http://', 'stargazer://'],
+  config,
 };
 
 export default linking;

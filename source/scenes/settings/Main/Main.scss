@@ -1,4 +1,4 @@
-@import "~assets/styles/variables";
+@import '~assets/styles/variables';
 
 .main {
   display: flex;
@@ -22,8 +22,6 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-
-        
 
         .iconCircle {
           display: flex;

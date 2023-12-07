@@ -1,11 +1,11 @@
 ///////////////////////////
-// Modules  
+// Modules
 ///////////////////////////
 
 import React, { FC, useEffect } from 'react';
 
 ///////////////////////////
-// Components  
+// Components
 ///////////////////////////
 
 import Layout from 'scenes/common/Layout';
@@ -14,19 +14,19 @@ import Button from 'components/Button';
 import TextInput from 'components/TextInput';
 
 ///////////////////////////
-// Styles  
+// Styles
 ///////////////////////////
 
 import styles from './CreatePass.scss';
 
 ///////////////////////////
-// Types  
+// Types
 ///////////////////////////
 
 import ICreatePass from './types';
 
 ///////////////////////////
-// Scene  
+// Scene
 ///////////////////////////
 
 const CreatePass: FC<ICreatePass> = ({
@@ -39,9 +39,8 @@ const CreatePass: FC<ICreatePass> = ({
   handleSubmit,
   nextHandler,
 }) => {
-
   ///////////////////////////
-  // Callbacks  
+  // Callbacks
   ///////////////////////////
 
   const handleKeydown = (ev: KeyboardEvent) => {
@@ -51,7 +50,7 @@ const CreatePass: FC<ICreatePass> = ({
   };
 
   ///////////////////////////
-  // Hooks  
+  // Hooks
   ///////////////////////////
 
   useEffect(() => {
@@ -63,7 +62,7 @@ const CreatePass: FC<ICreatePass> = ({
   }, [passed]);
 
   ///////////////////////////
-  // Render  
+  // Render
   ///////////////////////////
 
   return (
@@ -94,14 +93,12 @@ const CreatePass: FC<ICreatePass> = ({
               variant={styles.repass}
             />
             <span className={styles.warning}>
-              At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1
-              special character.
+              At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1 special
+              character.
             </span>
             {(errors.password || errors.repassword) && (
-              <span id='passwordError' className={styles.error}>
-                {errors.password
-                  ? errors.password.message
-                  : errors.repassword.message}
+              <span id="passwordError" className={styles.error}>
+                {errors.password ? errors.password.message : errors.repassword.message}
               </span>
             )}
           </>

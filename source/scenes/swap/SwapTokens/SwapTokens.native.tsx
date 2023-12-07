@@ -79,10 +79,9 @@ const SwapTokens: FC<ISwapTokens> = ({
   toAmount,
   isNextButtonLoading,
 }) => {
-
   const [fromInputValue, setFromInputValue] = useState('');
 
-  const fromoOnChangeText = text => {
+  const fromoOnChangeText = (text) => {
     setFromInputValue(text);
     if (onFromChangeText) {
       onFromChangeText(text);
@@ -91,30 +90,34 @@ const SwapTokens: FC<ISwapTokens> = ({
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContentContainer}
+      >
         <View style={styles.provider}>
           <View style={styles.thirdPartyTextView}>
-            <TextV3.LabelSemiStrong color={COLORS_ENUMS.DARK_GRAY_200}>Third Party Provider</TextV3.LabelSemiStrong>
+            <TextV3.LabelSemiStrong color={COLORS_ENUMS.DARK_GRAY_200}>
+              Third Party Provider
+            </TextV3.LabelSemiStrong>
           </View>
           <View style={styles.exolixTextView}>
-            <Image
-              style={styles.exolixLogoImage}
-              source={exolixLogo}
-            />
+            <Image style={styles.exolixLogoImage} source={exolixLogo} />
           </View>
         </View>
         <View>
           <View style={styles.fromInputLabels}>
             <View style={styles.fromInputSwapFromLabel}>
-              <TextV3.CaptionStrong
-                color={COLORS_ENUMS.DARK_GRAY_200}
-              >
+              <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
                 {SWAP_FROM_STRING}
               </TextV3.CaptionStrong>
             </View>
             <View style={styles.fromInputBalanceLabel}>
-              <TextV3.Caption color={isBalanceError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}>
-                {BALANCE_STRING} {`${formatStringDecimal(formatNumber(Number(fromBalance), 16, 20), 4)}`} {selectedCurrencySwapFrom.code}
+              <TextV3.Caption
+                color={isBalanceError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}
+              >
+                {BALANCE_STRING}{' '}
+                {`${formatStringDecimal(formatNumber(Number(fromBalance), 16, 20), 4)}`}{' '}
+                {selectedCurrencySwapFrom.code}
               </TextV3.Caption>
             </View>
           </View>
@@ -123,7 +126,11 @@ const SwapTokens: FC<ISwapTokens> = ({
             tickerValue={selectedCurrencySwapFrom.code}
             onPress={onSwapFromTokenListPressed}
             onChangeText={fromoOnChangeText}
-            style={isBalanceError || isRateError ? styles.fromCurrencyInputError : styles.fromCurrencyInput}
+            style={
+              isBalanceError || isRateError
+                ? styles.fromCurrencyInputError
+                : styles.fromCurrencyInput
+            }
             placeholder={CURRENCY_INPUT_ZERO_PLACEHOLDER}
             value={fromInputValue}
           />
@@ -131,9 +138,7 @@ const SwapTokens: FC<ISwapTokens> = ({
         <View>
           <View style={styles.toInputLabels}>
             <View style={styles.toInputSwapFromLabel}>
-              <TextV3.CaptionStrong
-                color={COLORS_ENUMS.DARK_GRAY_200}
-              >
+              <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
                 {SWAP_TO_STRING}
               </TextV3.CaptionStrong>
             </View>
@@ -155,42 +160,53 @@ const SwapTokens: FC<ISwapTokens> = ({
         </View>
         <View style={styles.rate}>
           <View style={styles.rateLabel}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.DARK_GRAY_200}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
               {RATE_STRING}
             </TextV3.CaptionStrong>
           </View>
           <View style={styles.rateValue}>
             {isCurrencyRateLoading ? (
               <>
-                <DotIndicator size={DOT_INDICATOR_SIZE} count={DOT_INDICATOR_COUNT} color={DOT_INDICATOR_COLOR}/>
+                <DotIndicator
+                  size={DOT_INDICATOR_SIZE}
+                  count={DOT_INDICATOR_COUNT}
+                  color={DOT_INDICATOR_COLOR}
+                />
               </>
             ) : !isRateError && currencyRate?.rate !== undefined ? (
-              <TextV3.Caption
-                color={COLORS_ENUMS.DARK_GRAY_200}>
-                {EXCHANGE_RATE_ONE} {selectedCurrencySwapFrom?.code} ≈ {currencyRate?.rate} {selectedCurrencySwapTo?.code}
+              <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY_200}>
+                {EXCHANGE_RATE_ONE} {selectedCurrencySwapFrom?.code} ≈{' '}
+                {currencyRate?.rate} {selectedCurrencySwapTo?.code}
               </TextV3.Caption>
-            ): (<></>)}
+            ) : (
+              <></>
+            )}
           </View>
         </View>
         <View style={styles.minimumAmount}>
           <View style={styles.minimumAmountLabel}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.DARK_GRAY_200}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
               {MINIMUM_AMOUNT_STRING}
             </TextV3.CaptionStrong>
           </View>
           <View style={styles.minimumAmountValue}>
             {isCurrencyRateLoading ? (
               <>
-                <DotIndicator size={DOT_INDICATOR_SIZE} count={DOT_INDICATOR_COUNT} color={DOT_INDICATOR_COLOR}/>
+                <DotIndicator
+                  size={DOT_INDICATOR_SIZE}
+                  count={DOT_INDICATOR_COUNT}
+                  color={DOT_INDICATOR_COLOR}
+                />
               </>
             ) : currencyRate?.minAmount !== undefined ? (
               <TextV3.Caption
-                color={isRateError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}>
+                color={isRateError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}
+              >
                 {currencyRate?.minAmount} {selectedCurrencySwapFrom?.code}
               </TextV3.Caption>
-            ): (<></>)}
+            ) : (
+              <></>
+            )}
           </View>
         </View>
         <View style={styles.nextButton}>

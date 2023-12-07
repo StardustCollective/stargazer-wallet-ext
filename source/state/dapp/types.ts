@@ -14,8 +14,7 @@ export interface IDAppState {
    * A list of sites that have been granted permissions to access a user's
    * account information.
    */
-   whitelist: {
+  whitelist: {
     [dappId: string]: IDAppInfo;
-  }
-
+  };
 }

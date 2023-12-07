@@ -48,22 +48,27 @@ const CurrencyInput: FC<ICurrencyInput> = ({
   tickerValue,
   editable = true,
 }) => {
-
   return (
     <View style={[styles.swapInput, style]}>
       <View style={styles.swapInputLeftBlock}>
-        <TextInput 
-          value={value} 
-          onChangeText={onChangeText} 
-          placeholder={placeholder} 
-          keyboardType={TEXT_INPUT_KEYBOARD_TYPE} 
+        <TextInput
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          keyboardType={TEXT_INPUT_KEYBOARD_TYPE}
           style={styles.swapInputTextInput}
           editable={editable}
         />
       </View>
       <TouchableOpacity onPress={onPress} style={styles.swapInputRightBlock}>
-        <Image source={source} defaultSource={imagePlaceholder} style={styles.currencyIcon} />
-        <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>{tickerValue}</TextV3.Body>
+        <Image
+          source={source}
+          defaultSource={imagePlaceholder}
+          style={styles.currencyIcon}
+        />
+        <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>
+          {tickerValue}
+        </TextV3.Body>
         <ChevronRight width={CHEVRON_WIDTH} style={styles.swapInputChevron} />
       </TouchableOpacity>
     </View>
