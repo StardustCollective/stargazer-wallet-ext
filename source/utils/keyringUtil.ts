@@ -1,5 +1,5 @@
-import { KeyringAssetType } from "@stardust-collective/dag4-keyring";
-import { AssetType } from "state/vault/types";
+import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
+import { AssetType } from 'state/vault/types';
 
 export const getKeyringAssetType = (type: AssetType): KeyringAssetType => {
   switch (type) {
@@ -10,4 +10,4 @@ export const getKeyringAssetType = (type: AssetType): KeyringAssetType => {
     default:
       return KeyringAssetType.ERC20;
   }
-}
+};

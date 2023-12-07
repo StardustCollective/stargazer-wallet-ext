@@ -6,22 +6,21 @@ import IVaultState from 'state/vault/types';
 import { saveState } from 'state/localStorage';
 
 export type V2WalletState = {
-  assets: IAssetListState
-  contacts: IContactBookState,
-  dapp: {},
-  price: IPriceState,
-  vault:  IVaultState
-}
+  assets: IAssetListState;
+  contacts: IContactBookState;
+  dapp: {};
+  price: IPriceState;
+  vault: IVaultState;
+};
 
 const MigrateRunner = async (oldState: V2WalletState) => {
   try {
-
     const newState = {
       ...oldState,
       dapp: {
         whitelist: {},
         listening: {},
-      }
+      },
     };
 
     await saveState(newState);

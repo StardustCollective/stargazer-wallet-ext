@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import { IAssetInfoState } from "state/assets/types";
+import { IAssetInfoState } from 'state/assets/types';
 
 export interface IProviderInfoState {
   id: string;
@@ -88,9 +88,9 @@ export type SupportedAssetSimplex = {
   name: string;
   ticker_symbol: string;
   'memo/tag_field': string;
-  fixed_min_amount?: any,
+  fixed_min_amount?: any;
   networks: string[];
-}
+};
 
 export type GetSupportedAssetsResponse = {
   data: SupportedAssetSimplex[];

@@ -47,7 +47,7 @@ import {
   TRANSACTION_ID_STRING,
   MAX_TOTAL_STRING,
   SWAP_BUTTON_STRING,
-  CANCEL_BUTTON_STRING
+  CANCEL_BUTTON_STRING,
 } from './constants';
 
 const ConfirmDetails: FC<ITransferInfo> = ({
@@ -63,17 +63,17 @@ const ConfirmDetails: FC<ITransferInfo> = ({
   onSwapPressed,
   onCancelPressed,
 }) => {
-
   return (
     <div className={styles.container}>
       <div className={styles.amount}>
-      <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
-            {tempTx?.amount}{' '}{assetInfo.symbol}
-            <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-              {' '}(≈
-              {getSendAmount()})
-            </TextV3.Caption>
-          </TextV3.BodyStrong>
+        <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+          {tempTx?.amount} {assetInfo.symbol}
+          <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
+            {' '}
+            (≈
+            {getSendAmount()})
+          </TextV3.Caption>
+        </TextV3.BodyStrong>
       </div>
       <div className={styles.detailRow}>
         <TextV3.CaptionStrong
@@ -86,7 +86,7 @@ const ConfirmDetails: FC<ITransferInfo> = ({
           color={COLORS_ENUMS.DARK_GRAY_200}
           extraStyles={styles.detailValue}
         >
-          {activeWallet?.label || ''} ({ellipsis(tempTx?.fromAddress || "")})
+          {activeWallet?.label || ''} ({ellipsis(tempTx?.fromAddress || '')})
         </TextV3.CaptionRegular>
       </div>
       <div className={styles.detailRow}>
@@ -133,26 +133,20 @@ const ConfirmDetails: FC<ITransferInfo> = ({
       </div>
       <div className={styles.detailRowMaxTotal}>
         <div className={styles.detailRowLeft}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY}
-          >
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY}>
             {MAX_TOTAL_STRING}
           </TextV3.CaptionStrong>
         </div>
         <div className={styles.detailRowRight}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
-            {tempTx?.amount}{' '}{assetInfo.symbol}
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
+            {tempTx?.amount} {assetInfo.symbol}
           </TextV3.CaptionStrong>
-          <TextV3.Caption
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
+          <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY_200}>
             ≈ {`$${getTotalAmount()}`}
           </TextV3.Caption>
         </div>
       </div>
-      <div className={styles.nextButton} >
+      <div className={styles.nextButton}>
         <ButtonV3
           label={CANCEL_BUTTON_STRING}
           size={BUTTON_SIZES_ENUM.LARGE}
@@ -170,6 +164,6 @@ const ConfirmDetails: FC<ITransferInfo> = ({
       </div>
     </div>
   );
-}
+};
 
 export default ConfirmDetails;

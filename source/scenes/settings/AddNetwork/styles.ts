@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     paddingLeft: 10,
     paddingTop: 6,
-  }
+  },
 });
 
 export default styles;

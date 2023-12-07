@@ -17,12 +17,7 @@ interface IAccountSelect {
   onChange: (value: string) => void;
 }
 
-const AccountSelect: FC<IAccountSelect> = ({
-  options,
-  label,
-  value,
-  onChange,
-}) => {
+const AccountSelect: FC<IAccountSelect> = ({ options, label, value, onChange }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (

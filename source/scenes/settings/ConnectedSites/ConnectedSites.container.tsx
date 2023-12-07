@@ -26,7 +26,6 @@ import { RootState } from 'state/store';
 import { IConnectedSitesContainerProps } from './types';
 
 const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = () => {
-
   const connectedSites = useSelector((state: RootState) => state.dapp.whitelist);
   const DAppController = getDappController();
 
@@ -42,7 +41,10 @@ const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = () => {
 
   return (
     <Container safeArea={false}>
-      <ConnectedSites onDeleteSiteClicked={onDeleteSiteClicked} connectedSites={connectedSites} />
+      <ConnectedSites
+        onDeleteSiteClicked={onDeleteSiteClicked}
+        connectedSites={connectedSites}
+      />
     </Container>
   );
 };

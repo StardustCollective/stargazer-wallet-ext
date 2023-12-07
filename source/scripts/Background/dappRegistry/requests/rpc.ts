@@ -22,7 +22,7 @@ const handleRpcRequest: DappProviderExternalImplementation<'onRpcRequest', []> =
   const CHAIN_PROVIDERS = {
     [ProtocolProvider.CONSTELLATION]: window.controller.stargazerProvider,
     [ProtocolProvider.ETHEREUM]: window.controller.ethereumProvider,
-  }
+  };
 
   const chain = dappProvider.getChainProviderDataByPort(port).chain;
   const chainProvider = CHAIN_PROVIDERS[chain] ?? null;

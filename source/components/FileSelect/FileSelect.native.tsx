@@ -3,7 +3,11 @@ import RNFS from 'react-native-fs';
 import Button from 'components/ButtonV3';
 
 import { View, Text } from 'react-native';
-import DocumentPicker, { DocumentPickerResponse, isInProgress, types } from 'react-native-document-picker';
+import DocumentPicker, {
+  DocumentPickerResponse,
+  isInProgress,
+  types,
+} from 'react-native-document-picker';
 
 import styles from './styles';
 

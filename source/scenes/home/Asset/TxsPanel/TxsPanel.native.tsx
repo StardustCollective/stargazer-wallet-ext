@@ -6,7 +6,11 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
 import ITxPanelSettings from './types';
 
-const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactionDescription }) => {
+const TxsPanel: FC<ITxPanelSettings> = ({
+  transactions,
+  renderTxItem,
+  transactionDescription,
+}) => {
   return (
     <View style={styles.activity}>
       <View style={styles.activityScrollView}>
@@ -16,7 +20,9 @@ const TxsPanel: FC<ITxPanelSettings> = ({ transactions, renderTxItem, transactio
           })
         ) : (
           <View style={styles.noTx}>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>{transactionDescription}</TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+              {transactionDescription}
+            </TextV3.Caption>
           </View>
         )}
       </View>

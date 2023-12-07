@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray_light_100,
     justifyContent: 'center',
-    alignItems :'center',
+    alignItems: 'center',
     borderRadius: 18,
   },
   chainIcon: {
     height: 24,
     width: 24,
-  }
+  },
 });
 
 export default styles;

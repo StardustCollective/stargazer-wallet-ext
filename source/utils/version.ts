@@ -1,4 +1,3 @@
-
 // This function compares two versions. The format should be {major}.{minor}.{patch}
 // The function returns -1 if the first version (v1) is less than the second (v2), 1 if the first version (v1) is greater than the second (v2), and 0 if they are equal.
 export const compareVersions = (v1: string, v2: string): number => {
@@ -14,4 +13,4 @@ export const compareVersions = (v1: string, v2: string): number => {
   }
 
   return 0;
-}
+};

@@ -2,8 +2,8 @@
 // Imports
 ///////////////////////
 
-import React, { FC, } from 'react';
-import { View, ScrollView, TouchableOpacity} from 'react-native';
+import React, { FC } from 'react';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import dayjs from 'dayjs';
 
 ///////////////////////
@@ -38,21 +38,20 @@ import {
   TRANSACTION_ID,
   DEPOSIT_ADDRESS,
   NEED_HELP_CONTACT,
-  EXOLIX_EMAIL
+  EXOLIX_EMAIL,
 } from './constants';
 const NUMBER_OF_LINES = 1;
 
-const TransactionDetails: FC<ITransferInfo> = ({
-  transaction,
-  onSupportLinkPress
-}) => {
-
+const TransactionDetails: FC<ITransferInfo> = ({ transaction, onSupportLinkPress }) => {
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContentContainer}
+      >
         <View style={styles.amount}>
           <TextV3.BodyStrong numberOfLines={1} color={COLORS_ENUMS.BLACK}>
-            {transaction?.amountTo}{' '}{transaction?.coinTo.coinCode}
+            {transaction?.amountTo} {transaction?.coinTo.coinCode}
           </TextV3.BodyStrong>
         </View>
         <View style={styles.detailRow}>
@@ -90,7 +89,8 @@ const TransactionDetails: FC<ITransferInfo> = ({
           >
             {SWAP_FROM}
           </TextV3.CaptionStrong>
-          <TextV3.CaptionRegular numberOfLines={NUMBER_OF_LINES}
+          <TextV3.CaptionRegular
+            numberOfLines={NUMBER_OF_LINES}
             color={COLORS_ENUMS.DARK_GRAY_200}
             extraStyles={styles.detailValue}
           >
@@ -104,7 +104,8 @@ const TransactionDetails: FC<ITransferInfo> = ({
           >
             {DEPOSIT_ADDRESS}
           </TextV3.CaptionStrong>
-          <TextV3.CaptionRegular numberOfLines={NUMBER_OF_LINES}
+          <TextV3.CaptionRegular
+            numberOfLines={NUMBER_OF_LINES}
             color={COLORS_ENUMS.DARK_GRAY_200}
             extraStyles={styles.detailValue}
           >
@@ -118,7 +119,8 @@ const TransactionDetails: FC<ITransferInfo> = ({
           >
             {SWAP_FROM_AMOUNT}
           </TextV3.CaptionStrong>
-          <TextV3.CaptionRegular numberOfLines={NUMBER_OF_LINES}
+          <TextV3.CaptionRegular
+            numberOfLines={NUMBER_OF_LINES}
             color={COLORS_ENUMS.DARK_GRAY_200}
             extraStyles={styles.detailValue}
           >
@@ -132,7 +134,8 @@ const TransactionDetails: FC<ITransferInfo> = ({
           >
             {SWAP_TO_AMOUNT}
           </TextV3.CaptionStrong>
-          <TextV3.CaptionRegular numberOfLines={NUMBER_OF_LINES}
+          <TextV3.CaptionRegular
+            numberOfLines={NUMBER_OF_LINES}
             color={COLORS_ENUMS.DARK_GRAY_200}
             extraStyles={styles.detailValue}
           >
@@ -146,7 +149,8 @@ const TransactionDetails: FC<ITransferInfo> = ({
           >
             {TRANSACTION_ID}
           </TextV3.CaptionStrong>
-          <TextV3.CaptionRegular numberOfLines={NUMBER_OF_LINES}
+          <TextV3.CaptionRegular
+            numberOfLines={NUMBER_OF_LINES}
             color={COLORS_ENUMS.DARK_GRAY_200}
             extraStyles={styles.detailValue}
           >

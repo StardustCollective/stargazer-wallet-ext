@@ -9,12 +9,7 @@ interface IAlertTemplate {
   style: object;
 }
 
-const ToastAlert: FC<IAlertTemplate> = ({
-  message,
-  options = {},
-  style = {},
-  close,
-}) => {
+const ToastAlert: FC<IAlertTemplate> = ({ message, options = {}, style = {}, close }) => {
   const _styles = StyleSheet.flatten([
     styles.toast,
     options.type === 'error' ? styles.toastError : {},
@@ -23,7 +18,7 @@ const ToastAlert: FC<IAlertTemplate> = ({
       marginBottom: 80,
       width: 300,
     },
-    styles.alert
+    styles.alert,
   ]);
 
   return (

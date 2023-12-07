@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginLeft: 16,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   activityIndicator: {
     backgroundColor: COLORS.purple_dark_2,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginRight: 24,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   amountText: {
     marginRight: 13,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });
 
 export default styles;

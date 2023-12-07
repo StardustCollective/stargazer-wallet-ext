@@ -6,13 +6,13 @@ import { KeyringWalletState } from '../helpers/keystoreToKeyringHelper';
 import { saveState } from 'state/localStorage';
 
 export type V1WalletState = {
-  'wallet': KeyringWalletState,
-  'price': { 'fiat': { 'constellation-labs': number } },
-  'contacts': {
-    [id: string]: { 'id': string, 'name': string, 'address': string, 'memo': string }
-  },
-  'dapp': {}
-}
+  wallet: KeyringWalletState;
+  price: { fiat: { 'constellation-labs': number } };
+  contacts: {
+    [id: string]: { id: string; name: string; address: string; memo: string };
+  };
+  dapp: {};
+};
 
 const MigrateRunner = async (oldState: V1WalletState) => {
   try {
@@ -47,7 +47,7 @@ const MigrateRunner = async (oldState: V1WalletState) => {
 
     const newState = {
       vault,
-      contacts: oldState.contacts
+      contacts: oldState.contacts,
     };
 
     // update wallet state
@@ -60,8 +60,8 @@ const MigrateRunner = async (oldState: V1WalletState) => {
       vault.migrateWallet = {
         keystores,
         seedKeystoreId,
-        accounts: {} as any
-      }
+        accounts: {} as any,
+      };
 
       for (let i = 0; i < accountList.length; i++) {
         const { id, label, address, type } = accountList[i];

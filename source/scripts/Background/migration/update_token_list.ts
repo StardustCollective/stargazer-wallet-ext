@@ -6,16 +6,15 @@ import IVaultState from 'state/vault/types';
 import { saveState } from 'state/localStorage';
 
 export type V2WalletState = {
-  assets: IAssetListState
-  contacts: IContactBookState,
-  dapp: {},
-  price: IPriceState,
-  vault: IVaultState
-}
+  assets: IAssetListState;
+  contacts: IContactBookState;
+  dapp: {};
+  price: IPriceState;
+  vault: IVaultState;
+};
 
 const MigrateRunner = async (oldState: any): Promise<boolean> => {
   try {
-
     const newState = {
       ...oldState,
       assets: oldState.assets,
@@ -24,8 +23,8 @@ const MigrateRunner = async (oldState: any): Promise<boolean> => {
         activeWallet: {
           ...oldState.vault.activeWallet,
           assets: oldState.vault.activeWallet.assets,
-        }
-      }
+        },
+      },
     };
 
     await saveState(newState);

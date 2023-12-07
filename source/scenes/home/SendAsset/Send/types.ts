@@ -1,6 +1,12 @@
 import { IInputClickableOptions } from 'components/InputClickable/types';
 import { ChangeEvent } from 'react';
-import { Control, FieldError, FieldValues, NestDataObject, OnSubmit } from 'react-hook-form';
+import {
+  Control,
+  FieldError,
+  FieldValues,
+  NestDataObject,
+  OnSubmit,
+} from 'react-hook-form';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetBalances, IActiveAssetState, IAssetState } from 'state/vault/types';
 
@@ -9,7 +15,9 @@ export interface IWalletSend {
   modalOpened: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleSelectContact: (val: string) => void;
-  handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
+  handleSubmit: (
+    callback: OnSubmit<FieldValues>
+  ) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
   handleAddressChange: (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleAmountChange: (val: string) => void;
   handleSetMax: () => void;

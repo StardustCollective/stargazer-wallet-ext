@@ -1,5 +1,12 @@
 import React, { FC, useState } from 'react';
-import { Text, Modal, View, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import {
+  Text,
+  Modal,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { Avatar } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
 
@@ -26,7 +33,9 @@ const ContactInfo: FC<IContactInfoSettings> = ({
   handleDelete,
   handleEdit,
 }) => {
-  const qrCodeStyle = codeOpened ? styles.qrCode : StyleSheet.flatten([styles.qrCode, styles.qrCodeHide]);
+  const qrCodeStyle = codeOpened
+    ? styles.qrCode
+    : StyleSheet.flatten([styles.qrCode, styles.qrCodeHide]);
   const [tooltipVisible, toggleTooltipVisibility] = useState(false);
 
   const tooltipTitle = isCopied ? 'Copied' : 'Copy Address';
@@ -58,7 +67,12 @@ const ContactInfo: FC<IContactInfoSettings> = ({
             <Text style={styles.text}>{ellipsis(contact?.address || '')}</Text>
             <View style={{ flexDirection: 'row' }}>
               {/* need to add copyText function to Tooltip so it also copies when user clicks in tooltip area */}
-              <Tooltip body={tooltipTitle} arrow visible={tooltipVisible} onOpen={onClickCopyText}>
+              <Tooltip
+                body={tooltipTitle}
+                arrow
+                visible={tooltipVisible}
+                onOpen={onClickCopyText}
+              >
                 <Button
                   icon={{
                     name: 'copy',
@@ -104,11 +118,16 @@ const ContactInfo: FC<IContactInfoSettings> = ({
           />
         </View>
       </View>
-      <Modal animationType='fade' transparent visible={codeOpened}>
+      <Modal animationType="fade" transparent visible={codeOpened}>
         <TouchableWithoutFeedback onPress={onClickOpenCode}>
           <View style={styles.qrCodeContainer}>
             <View style={qrCodeStyle}>
-              <QRCode value={contact?.address} backgroundColor={COLORS.white} color={COLORS.black} size={180} />
+              <QRCode
+                value={contact?.address}
+                backgroundColor={COLORS.white}
+                color={COLORS.black}
+                size={180}
+              />
               <Text style={styles.codeText}>{ellipsis(contact?.address || '')}</Text>
             </View>
           </View>

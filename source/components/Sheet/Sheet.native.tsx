@@ -35,7 +35,7 @@ const ICON_SIZE = 16;
 export const TITLE_ALIGNMENT = {
   LEFT: 'left',
   CENTER: 'center',
-}
+};
 
 ///////////////////////////
 // Component
@@ -51,25 +51,28 @@ const Sheet: FC<ISheet> = ({
   isVisible,
   onClosePress,
 }) => {
- 
   const RenderHeader = () => {
     if (title.align === TITLE_ALIGNMENT.LEFT) {
       return (
         <>
           <View style={styles.headerLabel}>
-            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{title.label}</TextV3.BodyStrong>
+            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+              {title.label}
+            </TextV3.BodyStrong>
           </View>
           <TouchableOpacity onPress={onClosePress} style={styles.headerCloseButton}>
             <CloseIcon width={ICON_SIZE} height={ICON_SIZE} />
           </TouchableOpacity>
         </>
-      )
+      );
     } else if (title.align === TITLE_ALIGNMENT.CENTER) {
       return (
         <>
           <View style={styles.headerColumnOne}></View>
           <View style={styles.headerColumnTwo}>
-            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{title.label}</TextV3.BodyStrong>
+            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+              {title.label}
+            </TextV3.BodyStrong>
           </View>
           <TouchableOpacity onPress={onClosePress} style={styles.headerColumnThree}>
             <CloseIcon width={ICON_SIZE} height={ICON_SIZE} />
@@ -79,8 +82,7 @@ const Sheet: FC<ISheet> = ({
     }
 
     return null;
-
-  }
+  };
 
   return (
     <Modal
@@ -97,19 +99,16 @@ const Sheet: FC<ISheet> = ({
       <View style={{ height }}>
         <View style={styles.sheet}>
           <View style={styles.handleContainer}>
-            <View style={styles.handle}/>
+            <View style={styles.handle} />
           </View>
           <View style={styles.headerContainer}>
             <RenderHeader />
           </View>
-          <View style={styles.children}>
-            {children}
-          </View>
+          <View style={styles.children}>{children}</View>
         </View>
       </View>
     </Modal>
   );
-
-}
+};
 
 export default Sheet;

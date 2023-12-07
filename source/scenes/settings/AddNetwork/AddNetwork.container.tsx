@@ -28,7 +28,6 @@ import screens from 'navigation/screens';
 import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
 
 const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
-
   const { control, register, setValue, triggerValidation, errors } = useForm({
     validationSchema: yup.object().shape({
       networkType: yup.string(),
@@ -51,39 +50,50 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
   useEffect(() => {
     const hasErrors = !!Object.keys(errors)?.length;
-    const disabled = hasErrors || networkType === '' || chainName === '' || rpcUrl === '' || (networkType === 'ethereum' && chainId === '') || blockExplorerUrl === '';
+    const disabled =
+      hasErrors ||
+      networkType === '' ||
+      chainName === '' ||
+      rpcUrl === '' ||
+      (networkType === 'ethereum' && chainId === '') ||
+      blockExplorerUrl === '';
     setSaveDisabled(disabled);
   }, [Object.keys(errors), networkType, chainName, rpcUrl, chainId, blockExplorerUrl]);
 
   const handleSave = async () => {
     try {
-      await walletController.addNetwork(networkType, { chainName, rpcUrl, chainId, blockExplorerUrl })
+      await walletController.addNetwork(networkType, {
+        chainName,
+        rpcUrl,
+        chainId,
+        blockExplorerUrl,
+      });
     } catch (err) {
       showAlert('Unable to connect to RPC provider', 'danger');
     }
-  }
+  };
 
   const handleChainNameChange = (value: string) => {
     setChainName(value);
     setValue('chainName', value);
     triggerValidation('chainName');
-  }
-  
+  };
+
   const handleRpcUrlChange = (value: string) => {
     setRpcUrl(value);
     setValue('rpcUrl', value);
     triggerValidation('rpcUrl');
-  }
+  };
   const handleChainIdChange = (value: string) => {
     setChainId(value);
     setValue('chainId', value);
     triggerValidation('chainId');
-  }
+  };
   const handleBlockExplorerUrlChange = (value: string) => {
     setBlockExplorerUrl(value);
     setValue('blockExplorerUrl', value);
     triggerValidation('blockExplorerUrl');
-  }
+  };
 
   const handleNetworkTypeChange = (value: string) => {
     setNetworkType(value);
@@ -95,26 +105,26 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
     setRpcUrl('');
     setChainId('');
     setBlockExplorerUrl('');
-  }
+  };
 
   const navigateToSingleSelect = () => {
-    navigation.navigate(screens.authorized.singleSelect, { 
-      title: 'Select Network Type', 
-      data: networkTypeOptions.items, 
+    navigation.navigate(screens.authorized.singleSelect, {
+      title: 'Select Network Type',
+      data: networkTypeOptions.items,
       selected: networkType,
-      onSelect: handleNetworkTypeChange
+      onSelect: handleNetworkTypeChange,
     });
-  }
+  };
 
   const networkTypeOptions = {
     title: 'Network Type',
     value: networkType,
     items: [
-      { value: 'constellation', label: 'Constellation', icon: CONSTELLATION_LOGO }, 
-      { value: 'ethereum', label: 'Ethereum', icon: ETHEREUM_LOGO }, 
+      { value: 'constellation', label: 'Constellation', icon: CONSTELLATION_LOGO },
+      { value: 'ethereum', label: 'Ethereum', icon: ETHEREUM_LOGO },
     ],
     onClick: navigateToSingleSelect,
-  }
+  };
 
   ///////////////////////
   // Render
@@ -122,7 +132,7 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
   return (
     <Container safeArea={false}>
-      <AddNetwork 
+      <AddNetwork
         register={register}
         control={control}
         errors={errors}
@@ -136,7 +146,7 @@ const AddNetorkContainer: FC<{ navigation: any }> = ({ navigation }) => {
         handleRpcUrlChange={handleRpcUrlChange}
         handleChainIdChange={handleChainIdChange}
         handleBlockExplorerUrlChange={handleBlockExplorerUrlChange}
-        handleSave={handleSave} 
+        handleSave={handleSave}
       />
     </Container>
   );

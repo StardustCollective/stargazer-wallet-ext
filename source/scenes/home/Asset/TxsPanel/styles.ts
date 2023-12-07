@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray_light,
     overflow: 'hidden',
   },
-  activityScrollView:{
-    flex: 1
+  activityScrollView: {
+    flex: 1,
   },
   spinner: {
     color: COLORS.primary,

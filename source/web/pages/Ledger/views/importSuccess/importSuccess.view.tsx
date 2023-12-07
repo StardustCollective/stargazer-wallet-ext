@@ -21,14 +21,14 @@ import styles from './styles.module.scss';
 /////////////////////////
 
 function ImportSuccess() {
-
   return (
     <div className={styles.content}>
       <div className={styles.wrapper}>
         <div className={styles.instructions}>
           <img src={LargeCheckMark} alt="ledger_icon" width={84} height={84} />
           <span>
-          Success! You can now close this tab <br/>and continue in the wallet
+            Success! You can now close this tab <br />
+            and continue in the wallet
           </span>
         </div>
       </div>

@@ -47,7 +47,10 @@ const PrivateKey: FC<IPrivateKeySettings> = ({
             <div className={privKeyClass} onClick={handleCopyPrivKey}>
               {privKey}
             </div>
-            <span>Warning: Keep your keys secret! Anyone with your private keys can steal your assets .</span>
+            <span>
+              Warning: Keep your keys secret! Anyone with your private keys can steal your
+              assets .
+            </span>
           </div>
         </>
       )}

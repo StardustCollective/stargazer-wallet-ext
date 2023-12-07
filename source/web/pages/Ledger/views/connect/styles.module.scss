@@ -6,7 +6,7 @@
   flex: 1 1 auto;
   justify-content: flex-end;
   flex-direction: column;
-  .wrapper{
+  .wrapper {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
@@ -15,7 +15,7 @@
       background-color: $primary;
       flex: 0 1 auto;
     }
-    .instructions{
+    .instructions {
       display: flex;
       flex: 1 1 auto;
       flex-direction: column;
@@ -29,4 +29,3 @@
     }
   }
 }
-

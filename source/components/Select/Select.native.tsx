@@ -21,7 +21,14 @@ interface ISelect {
   extraProps: object;
 }
 
-const Select: FC<ISelect> = ({ id, options, value, onChange, disabled = false, extraProps = {} }) => {
+const Select: FC<ISelect> = ({
+  id,
+  options,
+  value,
+  onChange,
+  disabled = false,
+  extraProps = {},
+}) => {
   const _options = options.map((option) => {
     const optionValue = Object.keys(option)[0];
     const label = option[optionValue];

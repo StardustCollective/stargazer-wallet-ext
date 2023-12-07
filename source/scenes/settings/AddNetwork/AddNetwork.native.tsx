@@ -32,8 +32,7 @@ import styles from './styles';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
-
-const AddNetwork: FC<IAddNetwork> = ({ 
+const AddNetwork: FC<IAddNetwork> = ({
   control,
   errors,
   saveDisabled,
@@ -46,9 +45,8 @@ const AddNetwork: FC<IAddNetwork> = ({
   handleRpcUrlChange,
   handleChainIdChange,
   handleBlockExplorerUrlChange,
-  handleSave
- }) => {
-
+  handleSave,
+}) => {
   const isChainIdVisible = networkTypeOptions.value === 'ethereum';
 
   ///////////////////////
@@ -70,10 +68,8 @@ const AddNetwork: FC<IAddNetwork> = ({
         error={!!errors?.chainName}
         returnKeyType="done"
       />
-      <TextV3.Caption 
-        color={COLORS_ENUMS.RED} 
-        extraStyles={styles.errorMessage}>
-          {!!errors?.chainName ? errors?.chainName?.message: ' '}
+      <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+        {!!errors?.chainName ? errors?.chainName?.message : ' '}
       </TextV3.Caption>
       <TextInput
         name="rpcUrl"
@@ -87,12 +83,10 @@ const AddNetwork: FC<IAddNetwork> = ({
         error={!!errors?.rpcUrl}
         returnKeyType="done"
       />
-      <TextV3.Caption 
-        color={COLORS_ENUMS.RED} 
-        extraStyles={styles.errorMessage}>
-          {!!errors?.rpcUrl ? errors?.rpcUrl?.message: ' '}
+      <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+        {!!errors?.rpcUrl ? errors?.rpcUrl?.message : ' '}
       </TextV3.Caption>
-      {!!isChainIdVisible && 
+      {!!isChainIdVisible && (
         <>
           <TextInput
             type="number"
@@ -107,13 +101,11 @@ const AddNetwork: FC<IAddNetwork> = ({
             error={!!errors?.chainId}
             returnKeyType="done"
           />
-          <TextV3.Caption 
-            color={COLORS_ENUMS.RED} 
-            extraStyles={styles.errorMessage}>
-              {!!errors?.chainId ? errors?.chainId?.message: ' '}
+          <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+            {!!errors?.chainId ? errors?.chainId?.message : ' '}
           </TextV3.Caption>
         </>
-      }
+      )}
       <TextInput
         name="blockExplorerUrl"
         defaultValue={blockExplorerUrl}
@@ -126,13 +118,11 @@ const AddNetwork: FC<IAddNetwork> = ({
         error={!!errors?.blockExplorerUrl}
         returnKeyType="done"
       />
-      <TextV3.Caption 
-        color={COLORS_ENUMS.RED} 
-        extraStyles={styles.errorMessage}>
-          {!!errors?.blockExplorerUrl ? errors?.blockExplorerUrl?.message: ' '}
+      <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+        {!!errors?.blockExplorerUrl ? errors?.blockExplorerUrl?.message : ' '}
       </TextV3.Caption>
       <View style={styles.buttonContainer}>
-        <ButtonV3 
+        <ButtonV3
           title="Save"
           type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}

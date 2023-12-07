@@ -10,7 +10,10 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
 import AddWalletSettings from './types';
 
-const AddWallet: FC<AddWalletSettings> = ({ onCreateNewWalletClicked, onImportWalletClicked }) => {
+const AddWallet: FC<AddWalletSettings> = ({
+  onCreateNewWalletClicked,
+  onImportWalletClicked,
+}) => {
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity onPress={onCreateNewWalletClicked}>
@@ -21,7 +24,11 @@ const AddWallet: FC<AddWalletSettings> = ({ onCreateNewWalletClicked, onImportWa
           <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
             Create New Wallet
           </TextV3.Body>
-          <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
+          <Icon
+            type="font_awesome"
+            name="chevron-right"
+            iconContainerStyles={styles.iconWrapper}
+          />
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={onImportWalletClicked}>
@@ -32,7 +39,11 @@ const AddWallet: FC<AddWalletSettings> = ({ onCreateNewWalletClicked, onImportWa
           <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
             Import Wallet
           </TextV3.Body>
-          <Icon type="font_awesome" name="chevron-right" iconContainerStyles={styles.iconWrapper} />
+          <Icon
+            type="font_awesome"
+            name="chevron-right"
+            iconContainerStyles={styles.iconWrapper}
+          />
         </View>
       </TouchableOpacity>
     </View>

@@ -41,11 +41,10 @@ import {
   TRANSACTION_ID_STRING,
   MAX_TOTAL_STRING,
   SWAP_BUTTON_STRING,
-  CANCEL_BUTTON_STRING
+  CANCEL_BUTTON_STRING,
 } from './constants';
 
 const SEND_TO_ADDRESS_NUMBER_OF_LINES = 1;
-
 
 const ConfirmDetails: FC<ITransferInfo> = ({
   tempTx,
@@ -60,15 +59,18 @@ const ConfirmDetails: FC<ITransferInfo> = ({
   onSwapPressed,
   onCancelPressed,
 }) => {
-
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContentContainer}
+      >
         <View style={styles.amount}>
           <TextV3.BodyStrong numberOfLines={1} color={COLORS_ENUMS.BLACK}>
-            {tempTx?.amount}{' '}{assetInfo.symbol}
+            {tempTx?.amount} {assetInfo.symbol}
             <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-              {' '}(≈
+              {' '}
+              (≈
               {getSendAmount()})
             </TextV3.Caption>
           </TextV3.BodyStrong>
@@ -84,7 +86,7 @@ const ConfirmDetails: FC<ITransferInfo> = ({
             color={COLORS_ENUMS.DARK_GRAY_200}
             extraStyles={styles.detailValue}
           >
-          {activeWallet?.label || ''} ({ellipsis(tempTx?.fromAddress || "")})
+            {activeWallet?.label || ''} ({ellipsis(tempTx?.fromAddress || '')})
           </TextV3.CaptionRegular>
         </View>
         <View style={styles.detailRow}>
@@ -132,21 +134,15 @@ const ConfirmDetails: FC<ITransferInfo> = ({
         </View>
         <View style={styles.detailRowMaxTotal}>
           <View style={styles.detailRowLeft}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.DARK_GRAY}
-            >
+            <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY}>
               {MAX_TOTAL_STRING}
             </TextV3.CaptionStrong>
           </View>
           <View style={styles.detailRowRight}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.DARK_GRAY_200}
-            >
-              {tempTx?.amount}{' '}{assetInfo.symbol}
+            <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
+              {tempTx?.amount} {assetInfo.symbol}
             </TextV3.CaptionStrong>
-            <TextV3.Caption
-              color={COLORS_ENUMS.DARK_GRAY_200}
-            >
+            <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY_200}>
               ≈ {`$${getTotalAmount()}`}
             </TextV3.Caption>
           </View>

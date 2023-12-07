@@ -31,7 +31,10 @@ import {
 } from '../common';
 import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
-import { getChainId, getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
+import {
+  getChainId,
+  getChainInfo,
+} from 'scripts/Background/controllers/EVMChainController/utils';
 import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
 
 // Constants
@@ -47,14 +50,15 @@ interface SwitchEthereumChainParameter {
 }
 
 export class EVMProvider implements IRpcChainRequestHandler {
-
   //////////////////////
   // Private methods
   //////////////////////
 
   private getNetworkInfo() {
     const { currentEVMNetwork }: IVaultState = store.getState().vault;
-    const networkInfo = Object.values(ALL_EVM_CHAINS).find(chain => chain.id === currentEVMNetwork);
+    const networkInfo = Object.values(ALL_EVM_CHAINS).find(
+      (chain) => chain.id === currentEVMNetwork
+    );
 
     if (!networkInfo) throw new Error('Network not found');
 
@@ -233,8 +237,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
     _port: Runtime.Port
   ) {
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const networkLabel =  this.getNetworkLabel();
-    const chainId = activeNetwork[`${networkLabel as keyof typeof activeNetwork}`]
+    const networkLabel = this.getNetworkLabel();
+    const chainId = activeNetwork[`${networkLabel as keyof typeof activeNetwork}`];
     const networkInfo = getChainInfo(chainId);
     const provider = new ethers.providers.JsonRpcProvider(networkInfo.rpcEndpoint);
 
@@ -248,7 +252,11 @@ export class EVMProvider implements IRpcChainRequestHandler {
   ) {
     const { vault } = store.getState();
 
-    const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi];
+    const allWallets = [
+      ...vault.wallets.local,
+      ...vault.wallets.ledger,
+      ...vault.wallets.bitfi,
+    ];
     const activeWallet = vault?.activeWallet
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
@@ -311,7 +319,9 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
       const signatureRequestEncoded = this.normalizeSignatureRequest(data);
 
-      const chainLabel = Object.values(ALL_EVM_CHAINS).find((chain: any) => chain.chainId === this.getChainId())?.label;
+      const chainLabel = Object.values(ALL_EVM_CHAINS).find(
+        (chain: any) => chain.chainId === this.getChainId()
+      )?.label;
 
       const signatureData = {
         origin: dappProvider.origin,
@@ -321,7 +331,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         walletLabel: activeWallet.label,
         publicKey: '',
         provider: ProtocolProvider.ETHEREUM,
-        chainLabel
+        chainLabel,
       };
 
       // If the type of account is Ledger send back the public key so the
@@ -408,7 +418,11 @@ export class EVMProvider implements IRpcChainRequestHandler {
       }
 
       const activeChainId = this.getChainId();
-      if (!!data?.domain?.chainId && activeChainId && parseInt(data.domain.chainId) !== activeChainId) {
+      if (
+        !!data?.domain?.chainId &&
+        activeChainId &&
+        parseInt(data.domain.chainId) !== activeChainId
+      ) {
         throw new Error('chainId does not match the active network chainId');
       }
 
@@ -502,7 +516,9 @@ export class EVMProvider implements IRpcChainRequestHandler {
         console.log('EVMProvider:eth_sendTransaction', e);
       }
 
-      const chainLabel = Object.values(ALL_EVM_CHAINS).find((chain: any) => chain.chainId === this.getChainId())?.label;
+      const chainLabel = Object.values(ALL_EVM_CHAINS).find(
+        (chain: any) => chain.chainId === this.getChainId()
+      )?.label;
 
       if (decodedContractCall?.method === 'approve') {
         eventType = 'spendApproved';
@@ -514,10 +530,10 @@ export class EVMProvider implements IRpcChainRequestHandler {
         eventType,
         undefined,
         route,
-        { 
+        {
           ...trxData,
           chain: this.getNetworkId(),
-          chainLabel
+          chainLabel,
         }
       );
 
@@ -541,7 +557,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     }
 
     if (request.method === AvailableMethods.wallet_switchEthereumChain) {
-      const [chainData] = request?.params as [SwitchEthereumChainParameter] || [];
+      const [chainData] = (request?.params as [SwitchEthereumChainParameter]) || [];
 
       if (!chainData || !chainData?.chainId) {
         throw new Error('chainId not provided');
@@ -549,12 +565,14 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
       const { chainId } = chainData;
 
-      if (typeof chainId !== 'string'){
+      if (typeof chainId !== 'string') {
         throw new Error('chainId must be a string');
       }
 
       if (!chainId.startsWith('0x')) {
-        throw new Error('chainId must specify the integer ID of the chain as a hexadecimal string');
+        throw new Error(
+          'chainId must specify the integer ID of the chain as a hexadecimal string'
+        );
       }
 
       if (!SUPPORTED_HEX_CHAINS.includes(chainId)) {
@@ -563,7 +581,9 @@ export class EVMProvider implements IRpcChainRequestHandler {
       }
 
       const controller = useController();
-      const chainInfo = Object.values(ALL_EVM_CHAINS).find(chain => chain.hexChainId === chainId);
+      const chainInfo = Object.values(ALL_EVM_CHAINS).find(
+        (chain) => chain.hexChainId === chainId
+      );
 
       try {
         await controller.wallet.switchNetwork(chainInfo.network, chainInfo.id);

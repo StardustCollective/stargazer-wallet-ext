@@ -22,21 +22,37 @@ import { IAssetButtonsContainer } from './types';
 import IAssetListState from 'state/assets/types';
 import IVaultState from 'state/vault/types';
 
-const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({ setShowQrCode, onSendClick, assetId }) => {
+const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({
+  setShowQrCode,
+  onSendClick,
+  assetId,
+}) => {
   ///////////////////////////
   // Hooks
   ///////////////////////////
 
   const linkTo = useLinkTo();
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
-  const { supportedAssets }: IProvidersState = useSelector((state: RootState) => state.providers);
+  const { supportedAssets }: IProvidersState = useSelector(
+    (state: RootState) => state.providers
+  );
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const supportedAssetsArray = supportedAssets?.data;
-  const assetsFiltered = assets && supportedAssetsArray && Array.isArray(supportedAssetsArray) ? Object.values(assets)
-    .filter((assetValues) => 
-        !!activeWallet?.assets?.find(asset => asset?.id === assetValues?.id && ['both', 'mainnet'].includes(assetValues?.network)) && 
-        !!supportedAssetsArray?.find(simplexItem => simplexItem?.ticker_symbol === assetValues?.symbol)) : [];
-  const assetSupported = !!assetsFiltered?.find(asset => asset?.id === assetId);
+  const assetsFiltered =
+    assets && supportedAssetsArray && Array.isArray(supportedAssetsArray)
+      ? Object.values(assets).filter(
+          (assetValues) =>
+            !!activeWallet?.assets?.find(
+              (asset) =>
+                asset?.id === assetValues?.id &&
+                ['both', 'mainnet'].includes(assetValues?.network)
+            ) &&
+            !!supportedAssetsArray?.find(
+              (simplexItem) => simplexItem?.ticker_symbol === assetValues?.symbol
+            )
+        )
+      : [];
+  const assetSupported = !!assetsFiltered?.find((asset) => asset?.id === assetId);
 
   ///////////////////////////
   // Render
@@ -56,7 +72,14 @@ const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({ setShowQrCode, onSe
     setShowQrCode(true);
   };
 
-  return <AssetButtons assetBuyable={assetSupported} onBuyPressed={onBuyPressed} onSendPressed={onSendPressed} onReceivePressed={onReceivePressed} />;
+  return (
+    <AssetButtons
+      assetBuyable={assetSupported}
+      onBuyPressed={onBuyPressed}
+      onSendPressed={onSendPressed}
+      onReceivePressed={onReceivePressed}
+    />
+  );
 };
 
 export default AssetButtonsContainer;

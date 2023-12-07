@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   inputRightIcon: {
     marginHorizontal: 15,
-    color: 'orange'
+    color: 'orange',
   },
   estimate: {
     marginBottom: 20,
@@ -57,8 +57,7 @@ const styles = StyleSheet.create({
   gasSettingLabelRight: {
     paddingTop: 10,
   },
-  gasSettingsSlider: {
-  },
+  gasSettingsSlider: {},
   gasSettingsEstimate: {
     marginTop: 20,
   },
@@ -70,19 +69,18 @@ const styles = StyleSheet.create({
   footerButtons: {
     flexDirection: 'row',
     marginVertical: 24,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   button: {
-    marginRight: 10
+    marginRight: 10,
   },
   qrCodeButton: {
-    marginLeft: 10
+    marginLeft: 10,
   },
-  recipientButtons:{
-    flexDirection: 'row', 
-    alignItems: 'center'
+  recipientButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-
 });
 
 export default styles;

@@ -1,4 +1,4 @@
-@import "~assets/styles/variables";
+@import '~assets/styles/variables';
 
 .tableContainer {
   display: flex;
@@ -20,7 +20,7 @@
     }
   }
 
-  .progressWrapper{
+  .progressWrapper {
     position: absolute;
     left: 0;
     top: 0;
@@ -61,7 +61,7 @@
     align-items: flex-end;
     justify-content: center;
     flex-direction: row;
-    .buttonWrapper {  
+    .buttonWrapper {
       display: flex;
       flex-grow: 1;
       justify-content: center;
@@ -75,5 +75,4 @@
       }
     }
   }
-
 }

@@ -1,6 +1,6 @@
 /*
-* Transition Animations
-*/
+ * Transition Animations
+ */
 
 export const fade = ({ current }: { current: any }) => ({
   cardStyle: {

@@ -21,8 +21,7 @@ describe('SendUtil Test', () => {
     test('should return number of decimal places', () => {
       const value = getDecimalPlaces('10.00001');
       expect(value).toBe(5);
-    })
-
+    });
 
     ////////////////////////
     // Negative Test
@@ -32,8 +31,6 @@ describe('SendUtil Test', () => {
       const value = getDecimalPlaces('abc');
       expect(value).toBe(null);
     });
-
-
   });
 
   describe('inputValToString', () => {
@@ -62,11 +59,7 @@ describe('SendUtil Test', () => {
     ////////////////////////
 
     test('should handle no decimal place', () => {
-      const changeAmount = getChangeAmount(
-        '1',
-        MAX_AMOUNT_NUMBER,
-        EIGHT_ASSET_DECINALS
-      );
+      const changeAmount = getChangeAmount('1', MAX_AMOUNT_NUMBER, EIGHT_ASSET_DECINALS);
       expect(changeAmount).toBe('1');
     });
 

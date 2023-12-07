@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   selected: {
     height: 36,
     display: 'flex',
-    alignItems: 'center', 
+    alignItems: 'center',
     justifyContent: 'center',
   },
   headerSection: {

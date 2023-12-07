@@ -25,7 +25,7 @@ import TxIcon from 'assets/images/svg/txIcon.svg';
 ///////////////////////
 
 import ISwapHistory from './types';
-import { IExolixTransaction, ExolixTransactionStatuses } from 'state/swap/types'
+import { IExolixTransaction, ExolixTransactionStatuses } from 'state/swap/types';
 
 ///////////////////////
 // Styles
@@ -54,10 +54,24 @@ const ConfirmDetails: FC<ISwapHistory> = ({
   onTransactionCellPressed,
   isLoading,
 }) => {
-
-  const RenderHistoryCell = ({ swapFromTicker, swapToTicker, amount, date, isProcessing = false, onPress }: { swapFromTicker: string, swapToTicker: string, amount: string, date?: string, isProcessing?: boolean, onPress: () => void }) => {
-
-    const cellStateStyle = isProcessing ? styles.historyCellProcessing : styles.historyCellSettled;
+  const RenderHistoryCell = ({
+    swapFromTicker,
+    swapToTicker,
+    amount,
+    date,
+    isProcessing = false,
+    onPress,
+  }: {
+    swapFromTicker: string;
+    swapToTicker: string;
+    amount: string;
+    date?: string;
+    isProcessing?: boolean;
+    onPress: () => void;
+  }) => {
+    const cellStateStyle = isProcessing
+      ? styles.historyCellProcessing
+      : styles.historyCellSettled;
 
     return (
       <div onClick={onPress} className={clsx(styles.historyCell, cellStateStyle)}>
@@ -65,7 +79,10 @@ const ConfirmDetails: FC<ISwapHistory> = ({
           {isProcessing ? (
             <>
               <div className={styles.activityIndicator}>
-                <CircularProgress size={CIRCULAR_PROGRESS_SIZE} style={{ color: CIRCULAR_PROGRESS_COLOR_WHITE }} />
+                <CircularProgress
+                  size={CIRCULAR_PROGRESS_SIZE}
+                  style={{ color: CIRCULAR_PROGRESS_COLOR_WHITE }}
+                />
               </div>
               <TextV3.CaptionStrong
                 color={COLORS_ENUMS.BLACK}
@@ -99,10 +116,9 @@ const ConfirmDetails: FC<ISwapHistory> = ({
         </div>
       </div>
     );
-  }
+  };
 
   const RenderCells = (transactionHistoryData: IExolixTransaction[]) => {
-
     return transactionHistoryData.map((item: IExolixTransaction) => (
       <>
         <RenderHistoryCell
@@ -110,13 +126,12 @@ const ConfirmDetails: FC<ISwapHistory> = ({
           swapToTicker={item?.coinTo.coinCode}
           amount={item?.amount.toString()}
           date={item?.createdAt}
-          isProcessing={(item?.status !== ExolixTransactionStatuses.SUCCESS)}
+          isProcessing={item?.status !== ExolixTransactionStatuses.SUCCESS}
           onPress={() => onTransactionCellPressed(item)}
         />
       </>
-    ))
-
-  }
+    ));
+  };
 
   const ListEmptyComponent = () => (
     <div className={styles.listEmpty}>
@@ -130,17 +145,16 @@ const ConfirmDetails: FC<ISwapHistory> = ({
         <div className={styles.listEmpty}>
           <CircularProgress />
         </div>
-      ) : (transactionHistoryData === null || transactionHistoryData.length === 0) ? (
+      ) : transactionHistoryData === null || transactionHistoryData.length === 0 ? (
         <>
-          <ListEmptyComponent/>
+          <ListEmptyComponent />
         </>
       ) : (
-        <div className={styles.container}>
-          {RenderCells(transactionHistoryData)}
-        </div>
-      )};
+        <div className={styles.container}>{RenderCells(transactionHistoryData)}</div>
+      )}
+      ;
     </>
   );
-}
+};
 
 export default ConfirmDetails;

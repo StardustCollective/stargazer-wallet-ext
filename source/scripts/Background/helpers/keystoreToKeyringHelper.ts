@@ -1,17 +1,22 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { Transaction } from '@stardust-collective/dag4-network';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { KDFParamsPhrase, KDFParamsPrivateKey, V3Keystore } from '@stardust-collective/dag4-keystore';
+import {
+  KDFParamsPhrase,
+  KDFParamsPrivateKey,
+  V3Keystore,
+} from '@stardust-collective/dag4-keystore';
 import store from '../../../state/store';
 import { migrateWalletComplete } from '../../../state/vault';
 
 export class KeystoreToKeyringHelper {
-
-  static async migrate (migrateWallet: KeyringWalletState, password: string) {
-
+  static async migrate(migrateWallet: KeyringWalletState, password: string) {
     const { keystores, accounts, seedKeystoreId } = migrateWallet;
 
-    const seedPhrase = await V3Keystore.decryptPhrase(keystores[seedKeystoreId] as V3Keystore<KDFParamsPhrase>, password);
+    const seedPhrase = await V3Keystore.decryptPhrase(
+      keystores[seedKeystoreId] as V3Keystore<KDFParamsPhrase>,
+      password
+    );
     const rootKey = dag4.keyStore.getMasterKeyFromMnemonic(seedPhrase);
     const seedAccount = accounts['0'];
 
@@ -33,32 +38,51 @@ export class KeystoreToKeyringHelper {
           try {
             const pKey = dag4.keyStore.deriveAccountFromMaster(rootKey, index);
 
-            await window.controller.wallet.importSingleAccount(label, KeyringNetwork.Constellation, pKey, true);
-          }
-          catch(e) {
-            console.log('ERROR - Unable to migrate seed account - ', id, label, address, e.toString());
+            await window.controller.wallet.importSingleAccount(
+              label,
+              KeyringNetwork.Constellation,
+              pKey,
+              true
+            );
+          } catch (e) {
+            console.log(
+              'ERROR - Unable to migrate seed account - ',
+              id,
+              label,
+              address,
+              e.toString()
+            );
           }
         }
-      }
-      else {
+      } else {
         const keyStorePrivateKey = keystores[id] as V3Keystore<KDFParamsPrivateKey>;
 
         if (!keyStorePrivateKey) {
           console.log('ERROR - Unable to migrate import account - ', id, label, address);
-        }
-        else {
-
+        } else {
           try {
-            const pKey = await dag4.keyStore.decryptPrivateKey(keyStorePrivateKey, password);
+            const pKey = await dag4.keyStore.decryptPrivateKey(
+              keyStorePrivateKey,
+              password
+            );
 
-            await window.controller.wallet.importSingleAccount(label, KeyringNetwork.Constellation, pKey, true);
-          }
-          catch(e) {
-            console.log('ERROR - Unable to migrate import account - ', id, label, address, e.toString());
+            await window.controller.wallet.importSingleAccount(
+              label,
+              KeyringNetwork.Constellation,
+              pKey,
+              true
+            );
+          } catch (e) {
+            console.log(
+              'ERROR - Unable to migrate import account - ',
+              id,
+              label,
+              address,
+              e.toString()
+            );
           }
         }
       }
-
     }
 
     store.dispatch(migrateWalletComplete());
@@ -66,21 +90,21 @@ export class KeystoreToKeyringHelper {
 }
 
 export type KeyringWalletState = {
-  'keystores': {
-    [id: string]: V3Keystore<KDFParamsPrivateKey|KDFParamsPhrase>,
-  },
-  'status': number,
-  'accounts': {
+  keystores: {
+    [id: string]: V3Keystore<KDFParamsPrivateKey | KDFParamsPhrase>;
+  };
+  status: number;
+  accounts: {
     [id: string]: {
-      'id': string, //Seed Index or Keystore Id
-      'label': string,
-      'address': { 'constellation': string },
-      'balance': number,
-      'transactions': Transaction[],
-      'type': 0 | 1
-    }
-  },
-  'activeAccountId': string,
-  'seedKeystoreId': string,
-  'activeNetwork': 'main'
-}
+      id: string; //Seed Index or Keystore Id
+      label: string;
+      address: { constellation: string };
+      balance: number;
+      transactions: Transaction[];
+      type: 0 | 1;
+    };
+  };
+  activeAccountId: string;
+  seedKeystoreId: string;
+  activeNetwork: 'main';
+};

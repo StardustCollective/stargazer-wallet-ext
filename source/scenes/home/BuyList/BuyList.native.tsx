@@ -33,23 +33,30 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
 const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
-
   const renderAssetList = () => {
     const assets = supportedAssets?.data;
 
     return (
       <>
-        {assets ? assets.map((asset: IAssetInfoState) => {
-          return (
-            <AssetItem
-              id={asset.id}
-              key={asset.id}
-              asset={asset}
-              assetInfo={asset}
-              itemClicked={() => handleSelectAsset(asset.id)}
-            />
-          );
-        }) : <View style={styles.errorContainer}><TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>There was an error loading assets. Please try again later.</TextV3.Caption></View>}
+        {assets ? (
+          assets.map((asset: IAssetInfoState) => {
+            return (
+              <AssetItem
+                id={asset.id}
+                key={asset.id}
+                asset={asset}
+                assetInfo={asset}
+                itemClicked={() => handleSelectAsset(asset.id)}
+              />
+            );
+          })
+        ) : (
+          <View style={styles.errorContainer}>
+            <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
+              There was an error loading assets. Please try again later.
+            </TextV3.Caption>
+          </View>
+        )}
       </>
     );
   };
@@ -58,8 +65,18 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
   ///////////////////////////
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
-      {supportedAssets?.loading ? <ActivityIndicator style={styles.loadingContainer} size={ACTIVITY_INDICATOR_SIZE} /> : renderAssetList()}
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollViewContentContainer}
+    >
+      {supportedAssets?.loading ? (
+        <ActivityIndicator
+          style={styles.loadingContainer}
+          size={ACTIVITY_INDICATOR_SIZE}
+        />
+      ) : (
+        renderAssetList()
+      )}
     </ScrollView>
   );
 };

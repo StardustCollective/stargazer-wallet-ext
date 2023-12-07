@@ -27,7 +27,6 @@ import { ISingleSelectContainer } from './types';
 ///////////////////////////
 
 const SingleSelectContainer: FC<ISingleSelectContainer> = ({ navigation, route }) => {
-
   const { title, data, selected, onSelect } = route.params;
 
   ///////////////////////////
@@ -47,7 +46,6 @@ const SingleSelectContainer: FC<ISingleSelectContainer> = ({ navigation, route }
       <SingleSelect data={data} selected={selected} onSelect={onSelect} />
     </Container>
   );
-
-}
+};
 
 export default SingleSelectContainer;

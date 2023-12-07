@@ -57,7 +57,7 @@ const BuyAsset: FC<IBuyAsset> = ({
   }, [error]);
 
   const ProviderIcon = React.memo(() => {
-    return <Image source={{ uri: provider.logo }} style={styles.providerIcon} />
+    return <Image source={{ uri: provider.logo }} style={styles.providerIcon} />;
   });
 
   ///////////////////////////
@@ -71,7 +71,11 @@ const BuyAsset: FC<IBuyAsset> = ({
           <TextV3.Body dynamic color={COLORS_ENUMS.BLACK}>
             $
           </TextV3.Body>
-          <TextV3.HeaderDisplay dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.amountText}>
+          <TextV3.HeaderDisplay
+            dynamic
+            color={COLORS_ENUMS.BLACK}
+            extraStyles={styles.amountText}
+          >
             {amount}
           </TextV3.HeaderDisplay>
           <TextV3.Body dynamic color={COLORS_ENUMS.BLACK}>
@@ -87,7 +91,10 @@ const BuyAsset: FC<IBuyAsset> = ({
         </View>
       </View>
       <View style={styles.providerContainer}>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.providerTitle}>
+        <TextV3.CaptionStrong
+          color={COLORS_ENUMS.BLACK}
+          extraStyles={styles.providerTitle}
+        >
           Third Party Provider
         </TextV3.CaptionStrong>
         <TouchableOpacity style={styles.providerCard} disabled>
@@ -99,7 +106,11 @@ const BuyAsset: FC<IBuyAsset> = ({
       </View>
       <View style={styles.numpadContainer}>
         {padList.map((item) => (
-          <TouchableOpacity onPress={() => handleItemClick(item)} key={item} style={styles.numPadItem}>
+          <TouchableOpacity
+            onPress={() => handleItemClick(item)}
+            key={item}
+            style={styles.numPadItem}
+          >
             {item === 'del' ? (
               <ArrowIcon height={24} width={24} />
             ) : (

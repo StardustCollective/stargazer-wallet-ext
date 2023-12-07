@@ -26,23 +26,36 @@ const PrivateKey: FC<IPrivateKeySettings> = ({
     !checked ? styles.notAllowed : {},
   ]);
 
-  const privKeyTextClass = StyleSheet.flatten([styles.privKeyText, isCopied ? styles.privKeyTextCopied : {}]);
+  const privKeyTextClass = StyleSheet.flatten([
+    styles.privKeyText,
+    isCopied ? styles.privKeyTextCopied : {},
+  ]);
   return (
     <View style={styles.wrapper}>
       {wallet && (
         <>
           <View style={styles.heading}>
-            <TextV3.Label color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.text} uppercase>
+            <TextV3.Label
+              color={COLORS_ENUMS.DARK_GRAY}
+              extraStyles={styles.text}
+              uppercase
+            >
               Account name:
             </TextV3.Label>
             <View style={styles.accountNameWrapper}>
-              <TextV3.Label color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.accountName}>
+              <TextV3.Label
+                color={COLORS_ENUMS.DARK_GRAY}
+                extraStyles={styles.accountName}
+              >
                 {wallet.label}
               </TextV3.Label>
             </View>
           </View>
           <View style={styles.content}>
-            <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.contentText}>
+            <TextV3.Description
+              color={COLORS_ENUMS.DARK_GRAY}
+              extraStyles={styles.contentText}
+            >
               Please input your wallet password and press enter:
             </TextV3.Description>
             <TextInput
@@ -62,18 +75,26 @@ const PrivateKey: FC<IPrivateKeySettings> = ({
                 onPress={handleSubmit((data) => onSubmit(data))}
               />
             </View>
-            <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.contentText}>
+            <TextV3.Description
+              color={COLORS_ENUMS.DARK_GRAY}
+              extraStyles={styles.contentText}
+            >
               Click to copy your private key:
             </TextV3.Description>
             <TouchableOpacity onPress={handleCopyPrivKey}>
               <View style={privKeyClass}>
-                <TextV3.Label margin={false} extraStyles={privKeyTextClass} color={COLORS_ENUMS.DARK_GRAY}>
+                <TextV3.Label
+                  margin={false}
+                  extraStyles={privKeyTextClass}
+                  color={COLORS_ENUMS.DARK_GRAY}
+                >
                   {privKey}
                 </TextV3.Label>
               </View>
             </TouchableOpacity>
             <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>
-              Warning: Keep your keys secret! Anyone with your private keys can steal your assets .
+              Warning: Keep your keys secret! Anyone with your private keys can steal your
+              assets .
             </TextV3.Description>
           </View>
         </>
