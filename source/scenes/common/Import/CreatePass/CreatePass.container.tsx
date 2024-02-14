@@ -48,6 +48,7 @@ const CreatePassContainer = () => {
 
   const navigation = useNavigation();
   const [passed, setPassed] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const { control, handleSubmit, register, errors } = useForm({
     validationSchema: consts.schema,
   });
@@ -60,10 +61,12 @@ const CreatePassContainer = () => {
 
   const nextHandler = async () => {
     if (passed) {
+      setButtonLoading(true);
       const phrase = getWalletController().onboardHelper.getSeedPhrase();
       await getWalletController().createWallet('Main Wallet', phrase, true);
       getWalletController().onboardHelper.reset();
       navigationUtil.replace(navigation, screens.authorized.root);
+      setButtonLoading(false);
     }
   };
 
@@ -87,6 +90,7 @@ const CreatePassContainer = () => {
         onSubmit={onSubmit}
         handleSubmit={handleSubmit}
         nextHandler={nextHandler}
+        buttonLoading={buttonLoading}
         control={control}
       />
     </Container>

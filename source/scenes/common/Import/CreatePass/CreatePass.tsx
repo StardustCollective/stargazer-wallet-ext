@@ -35,6 +35,7 @@ const CreatePass: FC<ICreatePass> = ({
   register,
   errors,
   comment,
+  buttonLoading,
   onSubmit,
   handleSubmit,
   nextHandler,
@@ -109,6 +110,7 @@ const CreatePass: FC<ICreatePass> = ({
           type={passed ? 'button' : 'submit'}
           variant={styles.next}
           onClick={nextHandler}
+          loading={buttonLoading}
         >
           Next
         </Button>

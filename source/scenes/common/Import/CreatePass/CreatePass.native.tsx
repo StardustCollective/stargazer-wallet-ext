@@ -44,6 +44,7 @@ const EXTRA_SCROLL_HEIGHT = scale(25);
 
 const CreatePass: FC<ICreatePass> = ({
   control,
+  buttonLoading,
   onSubmit,
   handleSubmit,
   nextHandler,
@@ -115,6 +116,7 @@ const CreatePass: FC<ICreatePass> = ({
             size={BUTTON_SIZES_ENUM.LARGE}
             title="Next"
             extraStyle={styles.button}
+            loading={buttonLoading}
             onPress={
               passed
                 ? nextHandler
