@@ -66,7 +66,6 @@ const CreatePassContainer = () => {
       await getWalletController().createWallet('Main Wallet', phrase, true);
       getWalletController().onboardHelper.reset();
       navigationUtil.replace(navigation, screens.authorized.root);
-      setButtonLoading(false);
     }
   };
 

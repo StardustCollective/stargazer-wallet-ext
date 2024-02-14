@@ -116,6 +116,7 @@ const CreatePass: FC<ICreatePass> = ({
             size={BUTTON_SIZES_ENUM.LARGE}
             title="Next"
             extraStyle={styles.button}
+            disabled={buttonLoading}
             loading={buttonLoading}
             onPress={
               passed
