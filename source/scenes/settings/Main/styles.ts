@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   disabled: {
     backgroundColor: COLORS.grey_100,
-  }
+  },
 });
 
 export default styles;

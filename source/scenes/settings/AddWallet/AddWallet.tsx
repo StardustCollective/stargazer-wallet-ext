@@ -6,15 +6,26 @@ import StargazerIcon from 'assets/images/logo-s.svg';
 import styles from './AddWallet.scss';
 
 import IAddWalletSettings from './types';
-const AddWallet: FC<IAddWalletSettings> = ({ onCreateNewWalletClicked, onImportWalletClicked }) => {
+const AddWallet: FC<IAddWalletSettings> = ({
+  onCreateNewWalletClicked,
+  onImportWalletClicked,
+}) => {
   return (
     <div className={styles.wrapper}>
-      <section id="addWallet-createNewWallet" className={styles.menu} onClick={onCreateNewWalletClicked}>
+      <section
+        id="addWallet-createNewWallet"
+        className={styles.menu}
+        onClick={onCreateNewWalletClicked}
+      >
         <Icon width={24} Component={StargazerIcon} iconStyles={styles.icon} />
         <span>Create New Wallet</span>
         <ArrowIcon />
       </section>
-      <section id="addWallet-importWallet" className={styles.menu} onClick={onImportWalletClicked}>
+      <section
+        id="addWallet-importWallet"
+        className={styles.menu}
+        onClick={onImportWalletClicked}
+      >
         <Icon width={24} Component={StargazerIcon} iconStyles={styles.icon} />
         <span>Import Wallet</span>
         <ArrowIcon />

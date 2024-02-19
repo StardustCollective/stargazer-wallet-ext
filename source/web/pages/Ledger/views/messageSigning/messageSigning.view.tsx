@@ -28,19 +28,19 @@ interface IMessageSignViewProps {
   // fee: string,
   // fromAddress: string,
   // toAddress: string,
-  waiting: boolean,
+  waiting: boolean;
   // transactionSigned: boolean
-  messageSigned: boolean,
-  walletLabel: string,
+  messageSigned: boolean;
+  walletLabel: string;
   message: {
-    content: string,
+    content: string;
     metadata: {
-      projectId: string,
-      nodes: number,
-      fee: number
-    }
-  },
-  onSignMessagePress: () => void,
+      projectId: string;
+      nodes: number;
+      fee: number;
+    };
+  };
+  onSignMessagePress: () => void;
 }
 
 /////////////////////////
@@ -56,9 +56,8 @@ const SignMessageView = ({
   messageSigned,
   walletLabel,
   message,
-  onSignMessagePress
+  onSignMessagePress,
 }: IMessageSignViewProps) => {
-
   return messageSigned ? (
     <div className={styles.layout}>
       <section className={styles.heading}>
@@ -77,40 +76,42 @@ const SignMessageView = ({
         <section className={styles.subheading}>Ledger - Signature Request</section>
         <section className={styles.account}>
           <div className={styles.row}>
-            Account: 
-            <span>
-              {walletLabel}
-            </span>
+            Account:
+            <span>{walletLabel}</span>
           </div>
         </section>
         <section className={styles.message}>
           <div className={styles.messageBox}>
             <div className={styles.messageContent}>
-              <span className={styles.key}>Message:</span><br/>
+              <span className={styles.key}>Message:</span>
+              <br />
               <p>{message.content}</p>
             </div>
             <div className={styles.messageContent}>
-              <span className={styles.key}>Meta Data:</span><br/>
+              <span className={styles.key}>Meta Data:</span>
+              <br />
               <p>
-                projectId = {message.metadata.projectId}<br/>
-                nodes = {message.metadata.nodes}<br/>
+                projectId = {message.metadata.projectId}
+                <br />
+                nodes = {message.metadata.nodes}
+                <br />
                 fee = {message.metadata.fee}
               </p>
             </div>
           </div>
         </section>
         <section className={styles.instruction}>
-            <span>
-              Please connect your Ledger device and open the Constellation app to sign the message.
-              Only sign messages on sites you trust.
-            </span>
-          </section>
-          <div className={styles.actions}>
-            <Button type="submit" variant={styles.button} onClick={onSignMessagePress}>
-              Sign
-            </Button>
-          </div>
-        {waiting &&
+          <span>
+            Please connect your Ledger device and open the Constellation app to sign the
+            message. Only sign messages on sites you trust.
+          </span>
+        </section>
+        <div className={styles.actions}>
+          <Button type="submit" variant={styles.button} onClick={onSignMessagePress}>
+            Sign
+          </Button>
+        </div>
+        {waiting && (
           <div className={styles.progressWrapper}>
             <div className={styles.progress}>
               <div>
@@ -121,11 +122,10 @@ const SignMessageView = ({
               </div>
             </div>
           </div>
-        }
+        )}
       </div>
     </>
   );
-
-}
+};
 
 export default SignMessageView;

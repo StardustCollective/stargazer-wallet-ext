@@ -1,7 +1,5 @@
 @import '~assets/styles/variables';
 
-
-
 .fullselect {
   position: relative;
   width: 100%;
@@ -11,7 +9,6 @@
   flex-direction: column;
   height: 60px;
   transition: all 300ms;
-
 
   .selected {
     width: 100%;
@@ -31,7 +28,7 @@
       .assetLogo {
         margin-right: 8px;
       }
-      
+
       .address {
         display: flex;
         flex-direction: column;
@@ -40,7 +37,7 @@
         width: 100%;
         font-family: $inter;
         font-weight: bold;
-        font-size: 18px;  
+        font-size: 18px;
         line-height: 24px;
         color: $white;
         transition: all 0.3s;

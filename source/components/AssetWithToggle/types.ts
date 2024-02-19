@@ -1,5 +1,3 @@
-
-
 export default interface IAssetWithToggle {
   id?: string;
   logo: string;

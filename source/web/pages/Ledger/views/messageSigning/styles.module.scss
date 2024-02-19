@@ -64,14 +64,14 @@
   }
 
   section.message {
-    .messageBox{
+    .messageBox {
       height: 180px;
       padding: 10px;
       margin: 25px 25px 10px 25px;
       border-radius: 5px;
       border: 1px solid $gray-100;
       overflow: scroll;
-      span{
+      span {
         font-size: 17px;
       }
       p {
@@ -79,8 +79,6 @@
         font-size: 14px;
         display: inline-block;
       }
-
-      
     }
   }
 
@@ -121,7 +119,7 @@
     flex-direction: row;
     align-items: center;
     // justify-content: center;
-  
+
     font-weight: 500;
     font-size: 18px;
     line-height: 24px;

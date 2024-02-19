@@ -3,7 +3,7 @@
 /////////////////////////
 
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 
@@ -23,10 +23,9 @@ import MUITableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Checkbox, /*Link*/ } from '@material-ui/core';
+import { Checkbox /*Link*/ } from '@material-ui/core';
 import Button from 'components/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 
 /////////////////////////
 // Styles
@@ -36,18 +35,17 @@ import styles from './styles.module.scss';
 
 const TableCell = withStyles({
   root: {
-    borderBottom: "none",
+    borderBottom: 'none',
     fontWeight: 600,
     fontFamily: 'Inter',
-  }
+  },
 })(MUITableCell);
 
 const Table = withStyles({
   root: {
-    backgroundColor: "#F5F5F5",
-  }
+    backgroundColor: '#F5F5F5',
+  },
 })(MUITable);
-
 
 /////////////////////////
 // Interfaces
@@ -56,7 +54,7 @@ interface IAccountsProps {
   accountData: LedgerAccount[];
   onCancelClick: () => void;
   onImportClick: () => void;
-  onCheckboxChange: (account: LedgerAccount, checked: boolean, key: number) => void
+  onCheckboxChange: (account: LedgerAccount, checked: boolean, key: number) => void;
   // onNextClick: () => void;
   // onPreviousClick: () => void;
   checkBoxesState: boolean[];
@@ -65,7 +63,7 @@ interface IAccountsProps {
 }
 interface IUiTableCell {
   children: React.ReactNode;
-};
+}
 
 /////////////////////////
 // Constants
@@ -85,7 +83,7 @@ const CHECKBOX_COLOR_PROP = 'primary';
 const CANCEL_BUTTON_TYPE_PROP = 'button';
 const CANCEL_BUTTON_THEME_PROP = 'secondary';
 const IMPORT_BUTTON_TYPE_PROP = 'submit';
-const TABLE_ARIA_LABEL_PROP = 'simple table'
+const TABLE_ARIA_LABEL_PROP = 'simple table';
 const TABLE_CELL_PADDING_PROP = 'none';
 const TABLE_CELL_SIZE_PROP = 'small';
 const TABLE_CELL_ALIGN_PROP = 'center';
@@ -105,7 +103,6 @@ let Accounts = ({
   fetchingPage,
   startIndex,
 }: IAccountsProps) => {
-
   /////////////////////////
   // Callback
   /////////////////////////
@@ -120,21 +117,25 @@ let Accounts = ({
   // Render
   /////////////////////////
 
-  const UITableCell = ({ children }: IUiTableCell): JSX.Element =>
+  const UITableCell = ({ children }: IUiTableCell): JSX.Element => (
     <>
       <TableCell
         padding={TABLE_CELL_PADDING_PROP}
         size={TABLE_CELL_SIZE_PROP}
-        align={TABLE_CELL_ALIGN_PROP}>
+        align={TABLE_CELL_ALIGN_PROP}
+      >
         {children as any}
       </TableCell>
     </>
-    ;
-
+  );
   return (
     <div className={styles.tableContainer}>
       <span className={styles.selectAccount}>Please select an account:</span>
-      <TableContainer elevation={TABLE_ELEVATION_PROP} className={styles.table} component={Paper}>
+      <TableContainer
+        elevation={TABLE_ELEVATION_PROP}
+        className={styles.table}
+        component={Paper}
+      >
         {fetchingPage && (
           <div className={styles.progressWrapper}>
             <div className={styles.progress}>
@@ -149,15 +150,33 @@ let Accounts = ({
               return (
                 <TableRow key={itemKey}>
                   <UITableCell>
-                    <Checkbox checked={(checkBoxesState[key])} onChange={(_, checked) => { _onCheckboxChange(item, checked, key) }} color={CHECKBOX_COLOR_PROP} />
+                    <Checkbox
+                      checked={checkBoxesState[key]}
+                      onChange={(_, checked) => {
+                        _onCheckboxChange(item, checked, key);
+                      }}
+                      color={CHECKBOX_COLOR_PROP}
+                    />
                   </UITableCell>
                   <UITableCell>
                     <span>{key}</span>
                   </UITableCell>
-                  <UITableCell><span>{ellipsis(item.address, PREVIEW_CHARACTERS_NUMBER, PREVIEW_CHARACTERS_NUMBER)}</span></UITableCell>
-                  <UITableCell><span>{item.balance} {DAG_STRING}</span></UITableCell>
+                  <UITableCell>
+                    <span>
+                      {ellipsis(
+                        item.address,
+                        PREVIEW_CHARACTERS_NUMBER,
+                        PREVIEW_CHARACTERS_NUMBER
+                      )}
+                    </span>
+                  </UITableCell>
+                  <UITableCell>
+                    <span>
+                      {item.balance} {DAG_STRING}
+                    </span>
+                  </UITableCell>
                 </TableRow>
-              )
+              );
             })}
           </TableBody>
         </Table>
@@ -211,6 +230,6 @@ let Accounts = ({
       </section>
     </div>
   );
-}
+};
 
 export default Accounts;

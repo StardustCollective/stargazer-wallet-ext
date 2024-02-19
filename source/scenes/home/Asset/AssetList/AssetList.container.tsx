@@ -39,26 +39,39 @@ import walletsSelectors from 'selectors/walletsSelectors';
 import IERC20AssetsListState from 'state/erc20assets/types';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
-import  { IAssetListContainer } from './types';
+import { IAssetListContainer } from './types';
 import IVaultState from 'state/vault/types';
 
 const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
-
   const linkTo = useLinkTo();
-  const { constellationAssets, erc20assets, searchAssets, loading }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
-  const { activeWallet, activeNetwork, customAssets }: IVaultState = useSelector((state: RootState) => state.vault);
+  const {
+    constellationAssets,
+    erc20assets,
+    searchAssets,
+    loading,
+  }: IERC20AssetsListState = useSelector((state: RootState) => state.erc20assets);
+  const { activeWallet, activeNetwork, customAssets }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
   const activeNetworkAssets = useSelector(walletsSelectors.selectActiveNetworkAssets);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-  
+
   const [allAssets, setAllAssets] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [customLoading, setCustomLoading] = useState(false);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
   const accountController = getAccountController();
 
-  const filterArrayByValue = (array: IAssetInfoState[], value: string): IAssetInfoState[] => {
-    return array?.filter(item => item?.label?.toLowerCase()?.includes(value) || item?.symbol?.toLowerCase()?.includes(value));
-  }
+  const filterArrayByValue = (
+    array: IAssetInfoState[],
+    value: string
+  ): IAssetInfoState[] => {
+    return array?.filter(
+      (item) =>
+        item?.label?.toLowerCase()?.includes(value) ||
+        item?.symbol?.toLowerCase()?.includes(value)
+    );
+  };
 
   useLayoutEffect(() => {
     const onRightIconClick = () => {
@@ -79,7 +92,6 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     let search = searchAssets;
     let all: IAssetInfoState[] = [];
 
-
     if (searchValue) {
       const searchLowerCase = searchValue?.toLocaleLowerCase();
       constellation = constellation.concat(customAssets);
@@ -97,12 +109,12 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     }
 
     setAllAssets(all);
-  }, [erc20assets?.length, searchAssets?.length, searchValue])
+  }, [erc20assets?.length, searchAssets?.length, searchValue]);
 
   useEffect(() => {
     const searchAssets = async (value: string) => {
       await accountController.assetsController.searchERC20Assets(value);
-    }
+    };
     if (debouncedSearchTerm) {
       searchAssets(debouncedSearchTerm);
     }
@@ -112,8 +124,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     const isLoading = !!text;
     setCustomLoading(isLoading);
     setSearchValue(text);
-  }
-  
+  };
 
   const toggleAssetItem = async (assetInfo: IAssetInfoState, value: boolean) => {
     const assetId = assetInfo.id;
@@ -129,7 +140,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
         accountController.assetsController.removeERC20AssetFn(assetInfo);
       }
     }
-  } 
+  };
 
   ///////////////////////////
   // Render
@@ -137,7 +148,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
 
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
-      <AssetList 
+      <AssetList
         assets={assets}
         allAssets={allAssets}
         loading={loading || customLoading}

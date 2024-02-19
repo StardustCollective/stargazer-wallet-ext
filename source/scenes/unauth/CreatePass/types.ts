@@ -1,9 +1,5 @@
 import { Ref } from 'react';
-import { 
-  NestDataObject, 
-  FieldValues, 
-  FieldError,
-} from 'react-hook-form';
+import { NestDataObject, FieldValues, FieldError } from 'react-hook-form';
 
 export default interface ICreatePass {
   onSubmit: (data: any) => void;
@@ -14,5 +10,5 @@ export default interface ICreatePass {
   register: Ref<any>;
   errors: NestDataObject<FieldValues, FieldError>;
   comment: string;
-  title: string
+  title: string;
 }

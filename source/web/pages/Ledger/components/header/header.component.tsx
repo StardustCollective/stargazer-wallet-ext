@@ -1,4 +1,3 @@
-
 /////////////////////////
 // Module Imports
 /////////////////////////
@@ -30,7 +29,6 @@ const WALLET_RIGHT_HEADER_STRING = 'Stargazer Wallet';
 /////////////////////////
 
 const Header = () => {
-
   /////////////////////////
   // Render
   /////////////////////////
@@ -42,8 +40,7 @@ const Header = () => {
         {WALLET_RIGHT_HEADER_STRING}
       </div>
     </div>
-  );    
-
-}
+  );
+};
 
 export default Header;

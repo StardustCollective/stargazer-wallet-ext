@@ -1,8 +1,7 @@
-
 export type IItem = {
   value: string;
   label: string;
-}
+};
 
 export type INetworkOptions = {
   icon: string;

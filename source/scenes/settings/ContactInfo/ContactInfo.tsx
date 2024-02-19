@@ -30,7 +30,13 @@ const ContactInfo: FC<IContactInfoSettings> = ({
     <div className={styles.wrapper}>
       {contact && (
         <div className={clsx(styles.qrcode, { [styles.hide]: !codeOpened })}>
-          <QRCode value={contact?.address} bgColor="#fff" fgColor="#000" className={styles.code} size={180} />
+          <QRCode
+            value={contact?.address}
+            bgColor="#fff"
+            fgColor="#000"
+            className={styles.code}
+            size={180}
+          />
           {contact?.address}
         </div>
       )}
@@ -46,12 +52,22 @@ const ContactInfo: FC<IContactInfoSettings> = ({
         <div className={styles.address}>
           {ellipsis(contact?.address || '')}
           <div className={styles.controls}>
-            <Tooltip title={isCopied ? 'Copied' : 'Copy Address'} placement="bottom" arrow>
-              <IconButton className={styles.iconButton} onClick={() => copyText(contact?.address || '')}>
+            <Tooltip
+              title={isCopied ? 'Copied' : 'Copy Address'}
+              placement="bottom"
+              arrow
+            >
+              <IconButton
+                className={styles.iconButton}
+                onClick={() => copyText(contact?.address || '')}
+              >
                 <CopyIcon />
               </IconButton>
             </Tooltip>
-            <IconButton className={styles.iconButton} onClick={() => setCodeOpened(!codeOpened)}>
+            <IconButton
+              className={styles.iconButton}
+              onClick={() => setCodeOpened(!codeOpened)}
+            >
               <img src={`/${QRCodeIcon}`} alt="qrcode" />
             </IconButton>
           </div>

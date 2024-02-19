@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: COLORS.white,
   },
-  dataValueText:{
+  dataValueText: {
     marginHorizontal: 16,
   },
   transactionFeeInput: {
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   gasPriceHeader: {
     flex: 1,
     marginHorizontal: 16,
-    flexDirection:'row',
+    flexDirection: 'row',
   },
   gasPriceHeaderLeft: {
     flex: 1,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   gasPriceHeaderRight: {
     flex: 1,
-    alignItems:'flex-end',
+    alignItems: 'flex-end',
     justifyContent: 'center',
   },
   gasSpeedBox: {
@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
   gasPriceFooter: {
     flex: 1,
   },
-  sliderContainer:{
-    marginHorizontal: 30
+  sliderContainer: {
+    marginHorizontal: 30,
   },
   gasEstimateLabel: {
     marginTop: 16,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
 });
 
 export default styles;

@@ -32,6 +32,6 @@ const styles = StyleSheet.create({
   qrCodeIcon: {
     marginRight: 20,
   },
-})
+});
 
 export default styles;

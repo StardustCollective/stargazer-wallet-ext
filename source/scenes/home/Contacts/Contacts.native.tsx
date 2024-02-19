@@ -8,7 +8,13 @@ import styles from './styles';
 
 import IWalletContacts from './types';
 
-const Contacts: FC<IWalletContacts> = ({ open, onClose, onChange, contacts, isValidContact }) => {
+const Contacts: FC<IWalletContacts> = ({
+  open,
+  onClose,
+  onChange,
+  contacts,
+  isValidContact,
+}) => {
   return (
     <View style={styles.content}>
       <View style={styles.header}>
@@ -22,7 +28,10 @@ const Contacts: FC<IWalletContacts> = ({ open, onClose, onChange, contacts, isVa
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView style={styles.contacts} contentContainerStyle={styles.contactsContentContainer}>
+      <ScrollView
+        style={styles.contacts}
+        contentContainerStyle={styles.contactsContentContainer}
+      >
         <View style={styles.list}>
           {Object.values(contacts).map((contact: IContactState) => (
             <TouchableOpacity onPress={() => onChange(contact.address)} key={contact.id}>

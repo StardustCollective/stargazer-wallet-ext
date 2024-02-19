@@ -6,7 +6,10 @@ class StargazerWalletProviderError extends StargazerError {}
 
 class StargazerChainProviderError extends StargazerError {}
 
-class StargazerChainProviderRpcError extends StargazerChainProviderError implements ProviderRpcError {
+class StargazerChainProviderRpcError
+  extends StargazerChainProviderError
+  implements ProviderRpcError
+{
   code: number;
   data?: unknown;
 
@@ -17,4 +20,9 @@ class StargazerChainProviderRpcError extends StargazerChainProviderError impleme
   }
 }
 
-export { StargazerError, StargazerWalletProviderError, StargazerChainProviderError, StargazerChainProviderRpcError };
+export {
+  StargazerError,
+  StargazerWalletProviderError,
+  StargazerChainProviderError,
+  StargazerChainProviderRpcError,
+};

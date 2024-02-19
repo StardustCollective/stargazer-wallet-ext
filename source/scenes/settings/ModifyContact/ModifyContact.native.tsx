@@ -1,4 +1,4 @@
-import React, { FC, useState} from 'react';
+import React, { FC, useState } from 'react';
 import { View } from 'react-native';
 import VerifiedIcon from 'assets/images/svg/check-green.svg';
 import TextInput from 'components/TextInput';
@@ -50,13 +50,20 @@ const ModifyContact: FC<IModifyContactSettings> = ({
         defaultValue={address}
         onChange={(text) => handleAddressChange({ nativeEvent: { text } })}
         inputRef={register}
-        leftIcon={!hideStatusIcon && (
-          <View style={verifiedStyle}>
-            <VerifiedIcon height={15} width={15} lineHeight={0} />
-          </View>
-        )}
+        leftIcon={
+          !hideStatusIcon && (
+            <View style={verifiedStyle}>
+              <VerifiedIcon height={15} width={15} lineHeight={0} />
+            </View>
+          )
+        }
         rightIcon={
-          <QRCodeButton onPress={() => { setShowCamera(true) }} style={styles.qrCodeButton} />
+          <QRCodeButton
+            onPress={() => {
+              setShowCamera(true);
+            }}
+            style={styles.qrCodeButton}
+          />
         }
       />
       <TextInput
@@ -90,14 +97,14 @@ const ModifyContact: FC<IModifyContactSettings> = ({
           })}
         />
       </View>
-      <QRCodeScanner 
+      <QRCodeScanner
         visble={showCamera}
         onRead={(event) => {
           handleAddressChange({ nativeEvent: { text: event.data } });
           setShowCamera(false);
         }}
         onClosePress={() => {
-          setShowCamera(false) 
+          setShowCamera(false);
         }}
       />
     </View>

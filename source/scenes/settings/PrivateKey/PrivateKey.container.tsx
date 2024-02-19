@@ -29,7 +29,9 @@ const PrivateKeyContainer: FC<IPrivateKeyView> = ({ route }) => {
 
   const [isCopied, copyText] = useCopyClipboard();
   const [checked, setChecked] = useState(false);
-  const [privKey, setPrivKey] = useState<string>('*************************************************************');
+  const [privKey, setPrivKey] = useState<string>(
+    '*************************************************************'
+  );
 
   const onSubmit = async (data: any) => {
     const res = await walletController.getPrivateKey(id, data.password);

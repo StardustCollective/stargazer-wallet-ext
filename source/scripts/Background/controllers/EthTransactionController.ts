@@ -25,7 +25,6 @@ type ITransactionListeners = {
 const TX_STORE = 'ETH_PENDING';
 
 export class EthTransactionController implements IEthTransactionController {
-
   accountController: AccountController;
 
   constructor(accountController: AccountController) {
@@ -97,14 +96,19 @@ export class EthTransactionController implements IEthTransactionController {
     const pendingData = await this._getPendingData();
 
     Object.values(pendingData).forEach((pendingTx: IETHPendingTx) => {
-      this.accountController.networkController.waitForTransaction(pendingTx.txHash).then(() => {
-        console.log('removing pending tx');
-        if (this._transactionListeners[pendingTx.txHash] && this._transactionListeners[pendingTx.txHash].onConfirmed) {
-          this._transactionListeners[pendingTx.txHash].onConfirmed();
-        }
+      this.accountController.networkController
+        .waitForTransaction(pendingTx.txHash)
+        .then(() => {
+          console.log('removing pending tx');
+          if (
+            this._transactionListeners[pendingTx.txHash] &&
+            this._transactionListeners[pendingTx.txHash].onConfirmed
+          ) {
+            this._transactionListeners[pendingTx.txHash].onConfirmed();
+          }
 
-        return this.removePendingTxHash(pendingTx.txHash);
-      });
+          return this.removePendingTxHash(pendingTx.txHash);
+        });
     });
   }
 
@@ -123,7 +127,11 @@ export class EthTransactionController implements IEthTransactionController {
     };
   }
 
-  async getTokenTransactionHistory(ethAddress: string, asset: IAssetInfoState, limit: number) {
+  async getTokenTransactionHistory(
+    ethAddress: string,
+    asset: IAssetInfoState,
+    limit: number
+  ) {
     const transactions = await this.accountController.networkController.getTransactions({
       address: ethAddress,
       limit,
@@ -134,7 +142,10 @@ export class EthTransactionController implements IEthTransactionController {
       transactions: transactions.txs.map((tx) => ({
         ...tx,
         timestamp: tx.date.valueOf(),
-        balance: ethers.utils.formatUnits(tx.from[0].amount.amount().toFixed(), asset.decimals || 18),
+        balance: ethers.utils.formatUnits(
+          tx.from[0].amount.amount().toFixed(),
+          asset.decimals || 18
+        ),
       })),
     };
   }

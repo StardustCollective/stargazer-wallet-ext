@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
     bottom: 40,
-  }
+  },
 });
 
 export default styles;

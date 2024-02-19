@@ -34,14 +34,13 @@ type ICardLayoutV2Props = {
   headerInfo?: React.ReactChild | React.ReactChild[];
   footerLabel?: string;
   captionLabel: string;
-  negativeButtonLabel: string,
-  onNegativeButtonClick: () => void,
-  positiveButtonLabel: string,
-  onPositiveButtonClick: () => void,
-  isPositiveButtonDisabled?: boolean,
-  children: | React.ReactChild
-  | React.ReactChild[],
-}
+  negativeButtonLabel: string;
+  onNegativeButtonClick: () => void;
+  positiveButtonLabel: string;
+  onPositiveButtonClick: () => void;
+  isPositiveButtonDisabled?: boolean;
+  children: React.ReactChild | React.ReactChild[];
+};
 
 ///////////////////////////
 // View
@@ -51,7 +50,7 @@ const CardLayoutV2: FC<ICardLayoutV2Props> = ({
   stepLabel,
   headerLabel,
   headerInfo,
-  footerLabel='Only connect with sites you trust.',
+  footerLabel = 'Only connect with sites you trust.',
   captionLabel,
   negativeButtonLabel,
   onNegativeButtonClick,
@@ -60,7 +59,6 @@ const CardLayoutV2: FC<ICardLayoutV2Props> = ({
   isPositiveButtonDisabled,
   children,
 }) => {
-
   ///////////////////////////
   // Hooks
   ///////////////////////////
@@ -80,28 +78,24 @@ const CardLayoutV2: FC<ICardLayoutV2Props> = ({
         </div>
         <img className={styles.headerLogo} src={current.logo} />
         <div className={styles.headerTitle}>
-          <TextV3.Header color={COLORS_ENUMS.WHITE}>
-            {headerLabel}
-          </TextV3.Header>
-          <TextV3.Caption color={COLORS_ENUMS.WHITE}>
-            {captionLabel}
-          </TextV3.Caption>
+          <TextV3.Header color={COLORS_ENUMS.WHITE}>{headerLabel}</TextV3.Header>
+          <TextV3.Caption color={COLORS_ENUMS.WHITE}>{captionLabel}</TextV3.Caption>
         </div>
-        <div className={styles.headerContent}>
-          {headerInfo}
-        </div>
+        <div className={styles.headerContent}>{headerInfo}</div>
       </div>
       <div className={styles.content}>
         <div className={styles.card}>
-          <div className={styles.cardBody}>
-            {children}
-          </div>
+          <div className={styles.cardBody}>{children}</div>
         </div>
         <div className={styles.footerLabel}>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK} align={TEXT_ALIGN_ENUM.CENTER} extraStyles={styles.footerText}>
+          <TextV3.Caption
+            color={COLORS_ENUMS.BLACK}
+            align={TEXT_ALIGN_ENUM.CENTER}
+            extraStyles={styles.footerText}
+          >
             {footerLabel}
           </TextV3.Caption>
-      </div>
+        </div>
       </div>
       <div className={styles.actions}>
         <ButtonV3
@@ -111,7 +105,7 @@ const CardLayoutV2: FC<ICardLayoutV2Props> = ({
           label={negativeButtonLabel}
           onClick={onNegativeButtonClick}
         />
-        <ButtonV3 
+        <ButtonV3
           type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
           size={BUTTON_SIZES_ENUM.MEDIUM}
           label={positiveButtonLabel}
@@ -119,9 +113,8 @@ const CardLayoutV2: FC<ICardLayoutV2Props> = ({
           disabled={isPositiveButtonDisabled}
         />
       </div>
-    </div >
+    </div>
   );
-
 };
 
 export default CardLayoutV2;

@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     marginLeft: 8,
-  }
+  },
 });
 
 export default styles;

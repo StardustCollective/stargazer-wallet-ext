@@ -29,7 +29,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 export const TITLE_ALIGNMENT = {
   LEFT: 'left',
   CENTER: 'center',
-}
+};
 
 const Sheet: FC<ISheet> = ({
   children,
@@ -40,37 +40,32 @@ const Sheet: FC<ISheet> = ({
   isVisible,
   onClosePress,
 }) => {
-
   const RenderHeader = () => {
     if (title.align === TITLE_ALIGNMENT.LEFT) {
       return (
         <>
           <div>
-            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>{title.label}</TextV3.BodyStrong>
+            <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+              {title.label}
+            </TextV3.BodyStrong>
           </div>
           <div onClick={onClosePress} className={styles.headerCloseButton}>
             <img src={`/${CloseIcon}`} className={styles.closeIcon} />
           </div>
         </>
-      )
+      );
     }
 
     return null;
-  }
+  };
 
   return (
-    <BottomSheet 
-      open={isVisible}
-      onDismiss={onClosePress}
-      snapPoints={() => [300, 500]}
-    >
+    <BottomSheet open={isVisible} onDismiss={onClosePress} snapPoints={() => [300, 500]}>
       <div className={styles.sheetContainer}>
         <div className={styles.sheetHeader}>
           <RenderHeader />
         </div>
-        <div className={styles.sheetContent}>
-          {children}
-        </div>
+        <div className={styles.sheetContent}>{children}</div>
       </div>
     </BottomSheet>
   );

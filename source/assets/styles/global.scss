@@ -1,7 +1,6 @@
 @import './variables';
 
 :global body {
-
   margin: 0px;
   padding: 0px;
   font-family: $inter !important;
@@ -116,16 +115,14 @@
     margin-right: 30px;
   }
 
-
   /*************************************
   * V3.0 Global Styles
   **************************************/
 
-
   /*
   * Text Color Styles
   */
-  
+
   .t-white {
     color: $white;
   }
@@ -133,23 +130,23 @@
     color: $black;
   }
 
- /*
+  /*
   * Text Alignment Styles
   */
 
   .t-alignLeft {
     text-align: left;
   }
-  
+
   .t-alignCenter {
     text-align: center;
   }
-  
+
   .t-alignRight {
     text-align: right;
   }
-  
- /*
+
+  /*
   * Background Styles
   */
 
@@ -160,6 +157,4 @@
   .b-accentOne {
     background-color: $accent_1;
   }
-
-
 }

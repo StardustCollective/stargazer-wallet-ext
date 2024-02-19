@@ -9,7 +9,9 @@ export type IModifyContactView = {
 };
 
 export default interface IModifyContactSettings {
-  handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
+  handleSubmit: (
+    callback: OnSubmit<FieldValues>
+  ) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
   onSubmit: (arg0: any) => void;
   handleAddressChange: (arg0: any) => void;
   selected: string;

@@ -64,7 +64,7 @@ const Button: FC<IButton> = ({
       {...otherProps}
     >
       {loading && <Spinner classes={{ root: styles.spinner }} />}
-      {children}
+      {!loading && children}
     </MUIButton>
   );
 };

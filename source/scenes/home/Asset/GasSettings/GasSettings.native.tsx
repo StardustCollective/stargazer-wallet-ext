@@ -37,14 +37,14 @@ const GasSettings: FC<IGasSettings> = ({
     <View style={styles.gasSettings}>
       {viewState === GAS_SETTINGS_STATE_ENUM.OPTIONS && (
         <View style={styles.options}>
-          <ButtonV3 
+          <ButtonV3
             type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
             title={constants.CANCEL_BUTTON_STRING}
             onPress={onCancelButtonClick}
             extraStyles={styles.buttonContainer}
             extraTitleStyles={styles.buttonText}
           />
-          <ButtonV3 
+          <ButtonV3
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             title={constants.SPEED_UP_BUTTON_STRING}
             onPress={onSpeedUpButtonClick}
@@ -61,8 +61,12 @@ const GasSettings: FC<IGasSettings> = ({
                 <TextV3.Label extraStyles={styles.headerLeftText}>Gas Price</TextV3.Label>
                 <View style={styles.headerRight}>
                   <View style={styles.headerRightWrapper}>
-                    <TextV3.Description extraStyles={styles.headerText}>{gasPrice}</TextV3.Description>
-                    <TextV3.Description extraStyles={styles.headerTextLast}>{constants.GWEI_STRING}</TextV3.Description>
+                    <TextV3.Description extraStyles={styles.headerText}>
+                      {gasPrice}
+                    </TextV3.Description>
+                    <TextV3.Description extraStyles={styles.headerTextLast}>
+                      {constants.GWEI_STRING}
+                    </TextV3.Description>
                   </View>
                 </View>
               </View>
@@ -75,32 +79,38 @@ const GasSettings: FC<IGasSettings> = ({
                 step={constants.SLIDER_STEP_PROP}
               />
               <View style={styles.bodySlideLabel}>
-                <TextV3.Description color={COLORS_ENUMS.BLACK} extraStyles={styles.bodySlideText}>
+                <TextV3.Description
+                  color={COLORS_ENUMS.BLACK}
+                  extraStyles={styles.bodySlideText}
+                >
                   {constants.FEE_STRING}
                   {FEE_STRING_VALUE}
                 </TextV3.Description>
                 <TextV3.Description
                   color={COLORS_ENUMS.BLACK}
-                  extraStyles={StyleSheet.flatten([styles.bodySlideText, styles.bodySlideSpeedText])}
+                  extraStyles={StyleSheet.flatten([
+                    styles.bodySlideText,
+                    styles.bodySlideSpeedText,
+                  ])}
                 >
                   {constants.SPEED_STRING} {speedLabel}
                 </TextV3.Description>
               </View>
               <View style={styles.settingsFooter}>
-                  <ButtonV3 
-                    type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
-                    title={constants.CANCEL_BUTTON_STRING}
-                    onPress={onSettingCancelButtonClick}
-                    extraStyles={styles.buttonContainer}
-                    extraTitleStyles={styles.buttonText}
-                  />
-                  <ButtonV3 
-                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                    title={constants.SPEED_UP_BUTTON_STRING}
-                    onPress={onSpeedUpConfirmButtonClicked}
-                    extraStyles={styles.buttonContainer}
-                    extraTitleStyles={styles.buttonText}
-                  />
+                <ButtonV3
+                  type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
+                  title={constants.CANCEL_BUTTON_STRING}
+                  onPress={onSettingCancelButtonClick}
+                  extraStyles={styles.buttonContainer}
+                  extraTitleStyles={styles.buttonText}
+                />
+                <ButtonV3
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                  title={constants.SPEED_UP_BUTTON_STRING}
+                  onPress={onSpeedUpConfirmButtonClicked}
+                  extraStyles={styles.buttonContainer}
+                  extraTitleStyles={styles.buttonText}
+                />
               </View>
             </View>
           </View>
@@ -127,17 +137,17 @@ const GasSettings: FC<IGasSettings> = ({
           <View style={styles.cancelBox}>
             <View style={styles.cancelBoxContent}>
               <View style={styles.cancelHeader}>
-                <TextV3.CaptionStrong 
-                  margin={false} 
-                  color={COLORS_ENUMS.BLACK} 
+                <TextV3.CaptionStrong
+                  margin={false}
+                  color={COLORS_ENUMS.BLACK}
                   extraStyles={styles.cancelBodyTitle}
                 >
                   {constants.CANCEL_TRANSACTION_STRING}?
                 </TextV3.CaptionStrong>
               </View>
-              <TextV3.Caption 
-                margin={false} 
-                color={COLORS_ENUMS.DARK_GRAY_200} 
+              <TextV3.Caption
+                margin={false}
+                color={COLORS_ENUMS.DARK_GRAY_200}
                 extraStyles={styles.cancelBodyText}
               >
                 {constants.CANCEL_TRANSACTION_PROMPT_STRING}

@@ -9,11 +9,7 @@ interface ISlider extends Partial<SliderProps> {
 
 const Slider: FC<ISlider> = ({ variant, ...otherProps }) => {
   return (
-    <MUISlider
-      className={variant}
-      classes={{ thumb: styles.thumb }}
-      {...otherProps}
-    />
+    <MUISlider className={variant} classes={{ thumb: styles.thumb }} {...otherProps} />
   );
 };
 

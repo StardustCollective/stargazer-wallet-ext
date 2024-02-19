@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 ///////////////////////
 
 import TextV3 from 'components/TextV3';
-import CurrencyImport from 'components/CurrencyInput'
+import CurrencyImport from 'components/CurrencyInput';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
@@ -59,7 +59,6 @@ const CIRCULAR_PROGRESS_SIZE = 20;
 const EXOLIX_LOGO_WIDTH = 80;
 const EXOLIX_LOGO_HEIGHT = 32;
 
-
 const SwapTokens: FC<ISwapTokens> = ({
   onNextPressed,
   selectedCurrencySwapFrom,
@@ -76,7 +75,6 @@ const SwapTokens: FC<ISwapTokens> = ({
   toAmount,
   isNextButtonLoading,
 }) => {
-
   const [fromInputValue, setFromInputValue] = useState('');
 
   const fromOnChangeText = (e: any) => {
@@ -91,23 +89,32 @@ const SwapTokens: FC<ISwapTokens> = ({
     <div className={styles.container}>
       <div className={styles.provider}>
         <div className={styles.thirdPartyTextView}>
-          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>Third Party Provider</TextV3.CaptionStrong>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
+            Third Party Provider
+          </TextV3.CaptionStrong>
         </div>
         <div className={styles.exolixTextView}>
-          <img src={`/${ExolixLogo}`} alt="exolix" width={EXOLIX_LOGO_WIDTH} height={EXOLIX_LOGO_HEIGHT} />
+          <img
+            src={`/${ExolixLogo}`}
+            alt="exolix"
+            width={EXOLIX_LOGO_WIDTH}
+            height={EXOLIX_LOGO_HEIGHT}
+          />
         </div>
       </div>
       <div className={styles.fromInputLabels}>
         <div className={styles.fromInputSwapFromLabel}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
             {SWAP_FROM_STRING}
           </TextV3.CaptionStrong>
         </div>
         <div className={styles.fromInputBalanceLabel}>
-          <TextV3.Caption color={isBalanceError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}>
-            {BALANCE_STRING} {`${formatStringDecimal(formatNumber(Number(fromBalance), 16, 20), 4)}`} {selectedCurrencySwapFrom.code}
+          <TextV3.Caption
+            color={isBalanceError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}
+          >
+            {BALANCE_STRING}{' '}
+            {`${formatStringDecimal(formatNumber(Number(fromBalance), 16, 20), 4)}`}{' '}
+            {selectedCurrencySwapFrom.code}
           </TextV3.Caption>
         </div>
       </div>
@@ -123,9 +130,7 @@ const SwapTokens: FC<ISwapTokens> = ({
       />
       <div className={styles.toInputLabels}>
         <div className={styles.toInputSwapLabel}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}
-          >
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
             {SWAP_TO_STRING}
           </TextV3.CaptionStrong>
         </div>
@@ -142,12 +147,11 @@ const SwapTokens: FC<ISwapTokens> = ({
         containerStyle={styles.toCurrencyInputContainer}
         placeholder={CURRENCY_INPUT_ZERO_PLACEHOLDER}
         value={toAmount?.toString()}
-        onChangeText={() => { }}
+        onChangeText={() => {}}
       />
       <div className={styles.rate}>
         <div className={styles.rateLabel}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
             {RATE_STRING}
           </TextV3.CaptionStrong>
         </div>
@@ -158,18 +162,19 @@ const SwapTokens: FC<ISwapTokens> = ({
             </>
           ) : !isRateError && currencyRate?.rate !== undefined ? (
             <>
-              <TextV3.Caption
-                color={COLORS_ENUMS.DARK_GRAY_200}>
-                {EXCHANGE_RATE_ONE} {selectedCurrencySwapFrom?.code} ≈ {currencyRate?.rate} {selectedCurrencySwapTo?.code}
+              <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY_200}>
+                {EXCHANGE_RATE_ONE} {selectedCurrencySwapFrom?.code} ≈{' '}
+                {currencyRate?.rate} {selectedCurrencySwapTo?.code}
               </TextV3.Caption>
             </>
-          ) : (<></>)}
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div className={styles.minimumAmount}>
         <div className={styles.minimumAmountLabel}>
-          <TextV3.CaptionStrong
-            color={COLORS_ENUMS.DARK_GRAY_200}>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.DARK_GRAY_200}>
             {MINIMUM_AMOUNT_STRING}
           </TextV3.CaptionStrong>
         </div>
@@ -180,10 +185,13 @@ const SwapTokens: FC<ISwapTokens> = ({
             </>
           ) : currencyRate?.minAmount !== undefined ? (
             <TextV3.Caption
-              color={isRateError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}>
+              color={isRateError ? COLORS_ENUMS.RED : COLORS_ENUMS.DARK_GRAY_200}
+            >
               {currencyRate?.minAmount?.toString()} {selectedCurrencySwapFrom?.code}
             </TextV3.Caption>
-          ): (<></>)}
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <div className={styles.nextButton}>
@@ -199,6 +207,6 @@ const SwapTokens: FC<ISwapTokens> = ({
       </div>
     </div>
   );
-}
+};
 
 export default SwapTokens;

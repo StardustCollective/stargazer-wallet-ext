@@ -17,15 +17,13 @@ import swapSelectors from 'selectors/swapSelectors';
 ///////////////////////////
 
 import { RootState } from 'state/store';
-import { ISearchCurrency, ICurrencyNetwork, } from 'state/swap/types';
+import { ISearchCurrency, ICurrencyNetwork } from 'state/swap/types';
 
 ///////////////////////////
 // Types
 ///////////////////////////
 
-import {
-  ITokenListContainer
-} from './types';
+import { ITokenListContainer } from './types';
 import { CONTAINER_COLOR } from 'components/Container/enum';
 import IVaultState from 'state/vault/types';
 import { AssetType } from 'state/vault/types';
@@ -51,26 +49,25 @@ import { SWAP_ACTIONS } from 'scenes/swap/constants';
 const SWAP_FROM_TITLE = 'Swap From';
 const SWAP_TO_TITLE = 'Swap To';
 
-
 ///////////////////////////
 // Container
 ///////////////////////////
 
 const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
-
   const walletController = getWalletController();
-  const { action } = route.params
-  const { balances, activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
-  const excludeDag = !some(activeWallet.assets, { 'type': AssetType.Constellation });
+  const { action } = route.params;
+  const { balances, activeWallet }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
+  const excludeDag = !some(activeWallet.assets, { type: AssetType.Constellation });
   const currencyData: ISearchCurrency[] =
-    action === SWAP_ACTIONS.FROM ?
-      useSelector((state: RootState) => state.swap.supportedAssets) :
-      excludeDag ?
-        useSelector(swapSelectors.selectSupportedCurrencyData(excludeDag)) :
-        useSelector(swapSelectors.selectSupportedCurrencyData());
+    action === SWAP_ACTIONS.FROM
+      ? useSelector((state: RootState) => state.swap.supportedAssets)
+      : excludeDag
+      ? useSelector(swapSelectors.selectSupportedCurrencyData(excludeDag))
+      : useSelector(swapSelectors.selectSupportedCurrencyData());
   const { loading }: { loading: boolean } = useSelector((state: RootState) => state.swap);
   const [searchValue, setSearchValue] = useState<string>('');
-
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -85,7 +82,7 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    if (action === SWAP_ACTIONS.TO){
+    if (action === SWAP_ACTIONS.TO) {
       walletController.swap.getCurrencyData(searchValue);
     }
   }, []);
@@ -95,9 +92,9 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
     if (action === SWAP_ACTIONS.TO && searchValue !== '') {
       delayDebounceFn = setTimeout(() => {
         walletController.swap.getCurrencyData(searchValue);
-      }, 500)
+      }, 500);
     }
-    return () => clearTimeout(delayDebounceFn)
+    return () => clearTimeout(delayDebounceFn);
   }, [searchValue]);
 
   const onTokenCellPressed = (currency: ISearchCurrency, network: ICurrencyNetwork) => {
@@ -107,7 +104,7 @@ const TokenListContainer: FC<ITokenListContainer> = ({ navigation, route }) => {
       walletController.swap.setSwapTo(currency, network);
     }
     navigation.pop();
-  }
+  };
 
   return (
     <Container color={CONTAINER_COLOR.GRAY_LIGHT_300}>

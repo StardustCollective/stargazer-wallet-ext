@@ -13,7 +13,7 @@ import { AssetType } from 'state/vault/types';
 // Common Layouts
 /////////////////////
 
-import CardLayout from 'scenes/external/Layouts/CardLayout'
+import CardLayout from 'scenes/external/Layouts/CardLayout';
 
 ///////////////////////////
 // Styles
@@ -21,8 +21,11 @@ import CardLayout from 'scenes/external/Layouts/CardLayout'
 
 import styles from './index.module.scss';
 
-import walletsSelectors from 'selectors/walletsSelectors'
-import { StargazerProvider, StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
+import walletsSelectors from 'selectors/walletsSelectors';
+import {
+  StargazerProvider,
+  StargazerSignatureRequest,
+} from 'scripts/Provider/StargazerProvider';
 import { ProtocolProvider } from 'scripts/common';
 import { EVMProvider } from 'scripts/Provider/EVMProvider';
 
@@ -40,17 +43,29 @@ const SignatureRequest = () => {
 
   const { data: stringData } = queryString.parse(location.search);
 
-  const { signatureRequestEncoded, asset, provider, chainLabel }:
-    { signatureRequestEncoded: string, asset: string, provider: string, chainLabel: string } = JSON.parse(stringData as string);
+  const {
+    signatureRequestEncoded,
+    asset,
+    provider,
+    chainLabel,
+  }: {
+    signatureRequestEncoded: string;
+    asset: string;
+    provider: string;
+    chainLabel: string;
+  } = JSON.parse(stringData as string);
   // TODO-349: Check how signature should work here
   const PROVIDERS: { [provider: string]: StargazerProvider | EVMProvider } = {
     [ProtocolProvider.CONSTELLATION]: controller.stargazerProvider,
     [ProtocolProvider.ETHEREUM]: controller.ethereumProvider,
-  }
+  };
   const providerInstance = PROVIDERS[provider];
-  const account = providerInstance.getAssetByType(asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum);
-  const signatureRequest = JSON.parse(window.atob(signatureRequestEncoded)) as StargazerSignatureRequest;
-
+  const account = providerInstance.getAssetByType(
+    asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum
+  );
+  const signatureRequest = JSON.parse(
+    window.atob(signatureRequestEncoded)
+  ) as StargazerSignatureRequest;
 
   //////////////////////
   // Callbacks
@@ -60,7 +75,7 @@ const SignatureRequest = () => {
     const background = await browser.runtime.getBackgroundPage();
     const { windowId } = queryString.parse(window.location.search);
     const cancelEvent = new CustomEvent('messageSigned', {
-      detail: { windowId, result: false }
+      detail: { windowId, result: false },
     });
 
     background.dispatchEvent(cancelEvent);
@@ -77,11 +92,13 @@ const SignatureRequest = () => {
 
     const signatureEvent = new CustomEvent('messageSigned', {
       detail: {
-        windowId, result: true, signature: {
+        windowId,
+        result: true,
+        signature: {
           hex: signature,
-          requestEncoded: signatureRequestEncoded
-        }
-      }
+          requestEncoded: signatureRequestEncoded,
+        },
+      },
     });
 
     background.dispatchEvent(signatureEvent);
@@ -97,7 +114,9 @@ const SignatureRequest = () => {
       stepLabel={``}
       originDescriptionLabel={'Requested by:'}
       headerLabel={'Signature Request'}
-      footerLabel={'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'}
+      footerLabel={
+        'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'
+      }
       captionLabel={''}
       negativeButtonLabel={'Reject'}
       onNegativeButtonClick={onNegativeButtonClick}
@@ -106,39 +125,31 @@ const SignatureRequest = () => {
     >
       <div className={styles.content}>
         <section>
-          <label>
-            Account
-          </label>
+          <label>Account</label>
           <div>
-            {wallets.find(w => w.address === account.address)?.label ?? account.address}
+            {wallets.find((w) => w.address === account.address)?.label ?? account.address}
           </div>
         </section>
         <section className={styles.message}>
-          <label>
-            Message
-          </label>
-          <div>
-            {signatureRequest.content}
-          </div>
+          <label>Message</label>
+          <div>{signatureRequest.content}</div>
         </section>
         <section className={styles.message}>
-          <label>
-            Network
-          </label>
-          <div>
-            {chainLabel}
-          </div>
+          <label>Network</label>
+          <div>{chainLabel}</div>
         </section>
-        {Object.keys(signatureRequest.metadata).length > 0 && <section className={styles.metadata}>
-          <label>
-            Metadata
-          </label>
-          <div>
-            {Object.entries(signatureRequest.metadata).map(
-              ([key, value]) => (<small>{key} = {value}</small>)
-            )}
-          </div>
-        </section>}
+        {Object.keys(signatureRequest.metadata).length > 0 && (
+          <section className={styles.metadata}>
+            <label>Metadata</label>
+            <div>
+              {Object.entries(signatureRequest.metadata).map(([key, value]) => (
+                <small>
+                  {key} = {value}
+                </small>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </CardLayout>
   );

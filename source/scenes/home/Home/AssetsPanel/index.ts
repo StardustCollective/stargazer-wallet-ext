@@ -1,1 +1,1 @@
-export { default } from './AssetsPanel.container'; 
+export { default } from './AssetsPanel.container';

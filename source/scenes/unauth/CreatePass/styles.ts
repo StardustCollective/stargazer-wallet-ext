@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: {
-    flexGrow: 1
-  }
+    flexGrow: 1,
+  },
 });
 
 export default styles;

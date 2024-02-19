@@ -39,7 +39,7 @@ class StargazerWalletProvider {
     if (typeof chainValue !== 'string') {
       throw new StargazerWalletProviderError('Chain value must be a string');
     }
-    
+
     if (!chainValue) {
       throw new StargazerWalletProviderError('Chain value not provided');
     }
@@ -50,7 +50,7 @@ class StargazerWalletProvider {
       [StargazerChain.AVALANCHE]: ProtocolProvider.ETHEREUM,
       [StargazerChain.POLYGON]: ProtocolProvider.ETHEREUM,
       [StargazerChain.BSC]: ProtocolProvider.ETHEREUM,
-    }
+    };
 
     const chain: ProtocolProvider = MAP_CHAIN_TO_PROTOCOL[chainValue];
 

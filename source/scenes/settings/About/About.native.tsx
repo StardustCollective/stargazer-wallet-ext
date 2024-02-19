@@ -18,7 +18,11 @@ const About: FC<IAboutSettings> = ({
 }) => {
   const termsAndPrivacyStyles = StyleSheet.flatten([styles.text, styles.termsAndPrivacy]);
 
-  const privacyStyles = StyleSheet.flatten([styles.text, styles.termsAndPrivacy, styles.privacy]);
+  const privacyStyles = StyleSheet.flatten([
+    styles.text,
+    styles.termsAndPrivacy,
+    styles.privacy,
+  ]);
   return (
     <View style={styles.about}>
       <Text style={styles.text}>Stargazer Wallet v{versionMajorMinor}</Text>

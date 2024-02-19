@@ -5,9 +5,8 @@ import { ProcessStates } from './enums';
 
 const initialState: IProcessState = {
   login: ProcessStates.IDLE,
-  fetchDagBalance: ProcessStates.IDLE
+  fetchDagBalance: ProcessStates.IDLE,
 };
-
 
 const ProcessState = createSlice({
   name: 'process',
@@ -15,21 +14,21 @@ const ProcessState = createSlice({
   reducers: {
     updateLoginState(
       state: IProcessState,
-      action: PayloadAction<{ processState: ProcessStates; }>
+      action: PayloadAction<{ processState: ProcessStates }>
     ) {
       return {
         ...state,
         login: action.payload.processState,
-      }
+      };
     },
     updatefetchDagBalanceState(
       state: IProcessState,
-      action: PayloadAction<{ processState: ProcessStates; }>
+      action: PayloadAction<{ processState: ProcessStates }>
     ) {
       return {
         ...state,
         fetchDagBalance: action.payload.processState,
-      }
+      };
     },
   },
 });

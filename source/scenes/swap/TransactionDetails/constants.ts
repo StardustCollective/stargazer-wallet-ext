@@ -9,4 +9,4 @@ export const DATE_FORMAT = 'DD MMM YYYY HH:mm:ss';
 export const DEPOSIT_ADDRESS = 'Deposit Address';
 export const NEED_HELP_CONTACT = 'Need help? Contact ';
 export const EXOLIX_EMAIL = 'support@exolix.com';
-export const PLATFORM     = { web: 'web', mobile: 'mobile'};
+export const PLATFORM = { web: 'web', mobile: 'mobile' };

@@ -1,41 +1,36 @@
 ///////////////////////////
-// Modules 
+// Modules
 ///////////////////////////
 
 import React, { FC } from 'react';
 import { View } from 'react-native';
 
 ///////////////////////////
-// Components  
+// Components
 ///////////////////////////
 
 import TextV3 from 'components/TextV3';
 
-
 ///////////////////////////
-// Types  
+// Types
 ///////////////////////////
 
 import ILayout from './types';
 
 ///////////////////////////
-// Styles  
+// Styles
 ///////////////////////////
 
 import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////////
-// Component  
+// Component
 ///////////////////////////
 
-const Layout: FC<ILayout> = ({
-  title,
-  children,
-}) => {
-
+const Layout: FC<ILayout> = ({ title, children }) => {
   ///////////////////////////
-  // Render  
+  // Render
   ///////////////////////////
 
   return (
@@ -45,12 +40,9 @@ const Layout: FC<ILayout> = ({
           {title}
         </TextV3.HeaderLargeRegular>
       </View>
-      <View style={styles.content}>
-        {children}
-      </View>
+      <View style={styles.content}>{children}</View>
     </View>
-  )
-
-}
+  );
+};
 
 export default Layout;

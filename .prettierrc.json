@@ -1,6 +1,4 @@
 {
-  "editor.formatOnPaste": true,
-  "editor.formatOnSave": true,
   "singleQuote": true,
   "printWidth": 90,
   "tabWidth": 2,
