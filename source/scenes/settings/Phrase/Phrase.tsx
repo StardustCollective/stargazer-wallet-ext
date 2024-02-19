@@ -37,12 +37,12 @@ const Phrase: FC<IPhraseSettings> = ({
         />
       </form>
       <span>Click to copy your seed phrase:</span>
-      <div id='phrase-recoveryPhrase' className={seedClass} onClick={handleCopySeed}>
+      <div id="phrase-recoveryPhrase" className={seedClass} onClick={handleCopySeed}>
         {phrase}
       </div>
       <span>
-        Warning: Keep your seed phrase secret! Anyone with your seed phrase can access any account connected to this
-        wallet and steal your assets.
+        Warning: Keep your seed phrase secret! Anyone with your seed phrase can access any
+        account connected to this wallet and steal your assets.
       </span>
     </div>
   );

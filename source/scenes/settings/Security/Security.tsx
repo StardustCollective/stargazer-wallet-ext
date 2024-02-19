@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Note: Security section does not apply for Web yet. 
+// Note: Security section does not apply for Web yet.
 
 const Security = () => {
   return <div />;

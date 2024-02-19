@@ -4,7 +4,7 @@ export enum GAS_SETTINGS_STATE_ENUM {
   SETTINGS,
   CANCEL,
   UPDATED,
-  ERROR
+  ERROR,
 }
 
 export default {

@@ -9,7 +9,9 @@ export type INewAccountView = {
 export default interface INewAccountSettings {
   onClickResetStack: () => void;
   onSubmit: (data: any) => Promise<void>;
-  handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
+  handleSubmit: (
+    callback: OnSubmit<FieldValues>
+  ) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
   register: Ref<any>;
   control: any;
 }

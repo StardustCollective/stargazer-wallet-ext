@@ -12,15 +12,26 @@ import styles from './ImportWallet.scss';
 
 import IImportWalletSettings from './types';
 
-const ImportWallet: FC<IImportWalletSettings> = ({ handleImport, onImportPhraseView }) => {
+const ImportWallet: FC<IImportWalletSettings> = ({
+  handleImport,
+  onImportPhraseView,
+}) => {
   return (
     <div className={styles.wrapper}>
-      <section id="importWallet-multiChainWallet" className={styles.menu} onClick={onImportPhraseView}>
+      <section
+        id="importWallet-multiChainWallet"
+        className={styles.menu}
+        onClick={onImportPhraseView}
+      >
         <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
         <span>Multi Chain Wallet</span>
         <ArrowIcon />
       </section>
-      <section id="importWallet-ethereum" className={styles.menu} onClick={handleImport(KeyringNetwork.Ethereum)}>
+      <section
+        id="importWallet-ethereum"
+        className={styles.menu}
+        onClick={handleImport(KeyringNetwork.Ethereum)}
+      >
         <Icon width={25} Component={EthereumIcon} />
         <span>Ethereum</span>
         <ArrowIcon />

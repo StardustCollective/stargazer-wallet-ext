@@ -1,3 +1,3 @@
 export interface IOption {
-    [key: string]: string;
+  [key: string]: string;
 }

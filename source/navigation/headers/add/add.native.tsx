@@ -4,10 +4,7 @@
 
 import React from 'react';
 import defaultHeader from '../default';
-import { 
-  Pressable,
-  AddIcon
-} from "native-base"
+import { Pressable, AddIcon } from 'native-base';
 
 ///////////////////////////
 // Interface
@@ -22,26 +19,15 @@ interface IAddHeader {
 // Header
 ///////////////////////////
 
-const addHeader = ({
-  navigation,
-  onRightIconClick,
-}: IAddHeader) => {
-
+const addHeader = ({ navigation, onRightIconClick }: IAddHeader) => {
   return {
     ...defaultHeader({ navigation }),
     headerRight: () => (
-      <Pressable
-        onPress={onRightIconClick}
-        mr="5"
-      >
-        <AddIcon
-          size="6"
-          color="white" 
-          testId={'header-addButton'} 
-        />
+      <Pressable onPress={onRightIconClick} mr="5">
+        <AddIcon size="6" color="white" testId={'header-addButton'} />
       </Pressable>
     ),
-  }
+  };
 };
 
 export default addHeader;

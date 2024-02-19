@@ -70,11 +70,15 @@ const CreatePass: FC<ICreatePass> = ({
               inputContainerStyle={styles.passwordContainer}
             />
             <TextV3.Description color={COLORS_ENUMS.GRAY_100} extraStyle={styles.warning}>
-              At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1 special character.
+              At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1 special
+              character.
             </TextV3.Description>
             {(errors.password || errors.repassword) && (
               <View style={styles.errors}>
-                <TextV3.Description color={COLORS_ENUMS.RED} extraStyle={styles.errorText}>
+                <TextV3.Description
+                  color={COLORS_ENUMS.RED}
+                  extraStyle={styles.errorText}
+                >
                   {errors.password ? errors.password.message : errors.repassword.message}
                 </TextV3.Description>
               </View>
@@ -82,7 +86,11 @@ const CreatePass: FC<ICreatePass> = ({
           </>
         )}
         <View style={styles.savePasswordWarning}>
-          <TextV3.CaptionStrong margin={false} color={COLORS_ENUMS.DARK_GRAY} extraStyle={styles.comment}>
+          <TextV3.CaptionStrong
+            margin={false}
+            color={COLORS_ENUMS.DARK_GRAY}
+            extraStyle={styles.comment}
+          >
             {comment}
           </TextV3.CaptionStrong>
         </View>
@@ -96,9 +104,9 @@ const CreatePass: FC<ICreatePass> = ({
               passed
                 ? nextHandler
                 : handleSubmit(async (data) => {
-                  await Biometrics.setUserPasswordInKeychain(data.password);
-                  onSubmit(data);
-                })
+                    await Biometrics.setUserPasswordInKeychain(data.password);
+                    onSubmit(data);
+                  })
             }
           />
         </View>

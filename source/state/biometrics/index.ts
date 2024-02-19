@@ -44,7 +44,7 @@ const BiometricsState = createSlice({
   },
 });
 
-export const { 
+export const {
   rehydrate,
   setBiometryAvailable,
   setBiometryEnabled,

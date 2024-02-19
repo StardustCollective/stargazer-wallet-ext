@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  dagIcon: { 
+  dagIcon: {
     width: 20,
     height: 23,
   },
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   symbolLabel: {
     fontWeight: FONT_WEIGHTS.semibold,
-  }
+  },
 });
 
 export default styles;

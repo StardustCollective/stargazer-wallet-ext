@@ -11,7 +11,7 @@ import {
   TextInput,
   ActivityIndicator,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 ///////////////////////////
@@ -30,14 +30,13 @@ import TextV3 from 'components/TextV3';
 // Images
 ///////////////////////
 
-import SearchIcon from 'assets/images/svg/search.svg'
+import SearchIcon from 'assets/images/svg/search.svg';
 
 ///////////////////////
 // Types
 ///////////////////////
 
 import ITokenList from './types';
-
 
 ///////////////////////
 // Styles
@@ -50,13 +49,12 @@ import styles from './styles';
 // constants
 ///////////////////////
 
-
 import { SWAP_ACTIONS } from 'scenes/swap/constants';
 import {
   SEARCH_STRING,
   NO_COINS_FOUND,
   NO_COINS_AVAILABLE,
-  PLEASE_ADD_FUNDS
+  PLEASE_ADD_FUNDS,
 } from './constants';
 
 const SEARCH_ICON_SIZE = 16;
@@ -78,65 +76,80 @@ const ConfirmDetails: FC<ITokenList> = ({
   action,
   balances,
 }) => {
-
   const RenderFromItem = ({ item }) => {
     return (
       <View key={item?.code}>
-        <TouchableOpacity style={styles.tokenCell} onPress={() => onTokenCellPressed(item, item.networks[0])} >
+        <TouchableOpacity
+          style={styles.tokenCell}
+          onPress={() => onTokenCellPressed(item, item.networks[0])}
+        >
           <View style={styles.tokenCellLeft}>
             <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
             <View>
-              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{item?.code}</TextV3.CaptionStrong>
+              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+                {item?.code}
+              </TextV3.CaptionStrong>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item?.name}</TextV3.Caption>
             </View>
           </View>
           <View style={styles.tokenCellRight}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(formatNumber(Number(balances[item?.id]), 16, 20), 4)}`}</TextV3.CaptionStrong>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item.networks[0].name}</TextV3.Caption>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{`${formatStringDecimal(
+              formatNumber(Number(balances[item?.id]), 16, 20),
+              4
+            )}`}</TextV3.CaptionStrong>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+              {item.networks[0].name}
+            </TextV3.Caption>
           </View>
         </TouchableOpacity>
       </View>
-    )
-  }
+    );
+  };
 
   const RenderToItem = ({ item }) => {
     return item?.networks.map((network) => {
       return (
         <View key={item?.code + network?.name}>
-          <TouchableOpacity style={styles.tokenCell} onPress={() => onTokenCellPressed(item, network)} >
+          <TouchableOpacity
+            style={styles.tokenCell}
+            onPress={() => onTokenCellPressed(item, network)}
+          >
             <View style={styles.tokenCellLeft}>
               <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
               <View>
-                <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{item?.code}</TextV3.CaptionStrong>
+                <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+                  {item?.code}
+                </TextV3.CaptionStrong>
                 <TextV3.Caption color={COLORS_ENUMS.BLACK}>{item?.name}</TextV3.Caption>
               </View>
             </View>
             <View style={styles.tokenCellRight}>
-              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{network?.network}</TextV3.CaptionStrong>
+              <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+                {network?.network}
+              </TextV3.CaptionStrong>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>{network?.name}</TextV3.Caption>
             </View>
           </TouchableOpacity>
         </View>
-      )
-    })
-  }
+      );
+    });
+  };
 
   const ListEmptyComponent = () => {
     return (
       <View style={styles.listEmptyContainer}>
         {isLoading ? (
           <ActivityIndicator size={ACTIVITY_INDICATOR_SIZE} />
-        ) : action === SWAP_ACTIONS.TO ?
-          (
-            <>
-              <TextV3.Body color={COLORS_ENUMS.BLACK}>{NO_COINS_FOUND}</TextV3.Body>
-            </>
-          ) : (
-            <>
-              <TextV3.Body color={COLORS_ENUMS.BLACK}>{NO_COINS_AVAILABLE}</TextV3.Body>
-              <TextV3.Body color={COLORS_ENUMS.BLACK}>{PLEASE_ADD_FUNDS}</TextV3.Body>
-            </>
-          )}
+        ) : action === SWAP_ACTIONS.TO ? (
+          <>
+            <TextV3.Body color={COLORS_ENUMS.BLACK}>{NO_COINS_FOUND}</TextV3.Body>
+          </>
+        ) : (
+          <>
+            <TextV3.Body color={COLORS_ENUMS.BLACK}>{NO_COINS_AVAILABLE}</TextV3.Body>
+            <TextV3.Body color={COLORS_ENUMS.BLACK}>{PLEASE_ADD_FUNDS}</TextV3.Body>
+          </>
+        )}
       </View>
     );
   };
@@ -147,7 +160,11 @@ const ConfirmDetails: FC<ITokenList> = ({
         <View style={styles.header}>
           <View style={styles.search}>
             <View style={styles.searchIcon}>
-              <SearchIcon width={SEARCH_ICON_SIZE} height={SEARCH_ICON_SIZE} fill={SEARCH_ICON_COLOR} />
+              <SearchIcon
+                width={SEARCH_ICON_SIZE}
+                height={SEARCH_ICON_SIZE}
+                fill={SEARCH_ICON_COLOR}
+              />
             </View>
             <TextInput
               style={styles.searchInput}
@@ -155,7 +172,7 @@ const ConfirmDetails: FC<ITokenList> = ({
               placeholder={SEARCH_STRING}
               placeholderTextColor={SEARCH_BAR_PLACEHOLDER_TEXT_COLOR}
               selectionColor={SEARCH_BAR_SELECTION_COLOR}
-              returnKeyType='done'
+              returnKeyType="done"
               onChange={(e) => onSearchChange(e.nativeEvent.text)}
             />
           </View>

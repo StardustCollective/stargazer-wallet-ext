@@ -21,9 +21,12 @@ const WalletsContainer: FC<IAddWalletView> = () => {
 
   return (
     <Container safeArea={false}>
-      <Wallets onCreateNewWalletClicked={onCreateNewWalletClicked} onImportWalletClicked={onImportWalletClicked} />
+      <Wallets
+        onCreateNewWalletClicked={onCreateNewWalletClicked}
+        onImportWalletClicked={onImportWalletClicked}
+      />
     </Container>
-);
+  );
 };
 
 export default WalletsContainer;

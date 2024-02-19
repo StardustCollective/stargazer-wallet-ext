@@ -27,26 +27,32 @@ import styles from './styles';
 const NetworksComponent: FC<INetworkSettings> = ({ networkOptions }) => {
   // Logic used to not have multiple dropdowns open at the same time
   // 349: New network should be added here.
-  const [itemsOpenArray, setItemsOpenArray] = useState([false, false, false, false, false]);
+  const [itemsOpenArray, setItemsOpenArray] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   const toggleItem = (i) => {
     const value = itemsOpenArray[i];
     let newItemsOpenArray = [false, false, false, false, false];
     newItemsOpenArray[i] = !value;
     setItemsOpenArray(newItemsOpenArray);
-  }
+  };
 
   return (
     <View style={styles.wrapper}>
       {networkOptions.map((options, i) => {
         return (
           <View key={options.key} style={[styles.containerBase, options.containerStyle]}>
-            <Dropdown 
+            <Dropdown
               options={{
-                ...options, 
-                isOpen: itemsOpenArray[i], 
-                toggleItem: () => toggleItem(i) 
-              }} 
+                ...options,
+                isOpen: itemsOpenArray[i],
+                toggleItem: () => toggleItem(i),
+              }}
             />
           </View>
         );

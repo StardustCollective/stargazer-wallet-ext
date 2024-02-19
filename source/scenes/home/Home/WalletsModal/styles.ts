@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     height: 36,
     width: 36,
     justifyContent: 'center',
-    alignItems :'center',
+    alignItems: 'center',
     borderRadius: 18,
   },
   assetIconWrapper: {
@@ -61,13 +61,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray_light_100,
     justifyContent: 'center',
-    alignItems :'center',
+    alignItems: 'center',
     borderRadius: 18,
   },
   assetIcon: {
     height: 24,
     width: 24,
-  }
+  },
 });
 
 export default styles;

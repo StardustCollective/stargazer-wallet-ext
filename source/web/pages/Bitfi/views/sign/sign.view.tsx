@@ -26,16 +26,16 @@ import 'assets/styles/global.scss';
 /////////////////////////
 
 interface ISignViewProps {
-  amount: string,
-  fee: string,
-  code: string,
-  deviceId: string,
-  fromAddress: string,
-  toAddress: string,
-  waiting: boolean,
-  waitingMessage: string,
-  transactionSigned: boolean
-  onSignPress: () => {},
+  amount: string;
+  fee: string;
+  code: string;
+  deviceId: string;
+  fromAddress: string;
+  toAddress: string;
+  waiting: boolean;
+  waitingMessage: string;
+  transactionSigned: boolean;
+  onSignPress: () => {};
 }
 
 /////////////////////////
@@ -52,12 +52,9 @@ const SignView = ({
   code,
   waitingMessage,
   transactionSigned,
-  onSignPress
+  onSignPress,
 }: ISignViewProps) => {
-
   const getFiatAmount = useFiat();
-
-
 
   return transactionSigned ? (
     <div className={styles.layout}>
@@ -75,7 +72,7 @@ const SignView = ({
     <>
       <div className={styles.wrapper}>
         <section className={styles.subheading}>
-          Bitfi - Sign Transaction <br/> 
+          Bitfi - Sign Transaction <br />
           Device ID: {deviceId.toUpperCase()}
         </section>
         <section className={styles.txAmount}>
@@ -85,19 +82,13 @@ const SignView = ({
           {Number(amount || 0) + Number(fee || 0)} DAG
           <small>
             (≈
-            {getFiatAmount(
-              Number(amount || 0) + Number(fee || 0),
-              8
-            )}
-            )
+            {getFiatAmount(Number(amount || 0) + Number(fee || 0), 8)})
           </small>
         </section>
         <section className={styles.transaction}>
           <div className={styles.row}>
             From
-            <span>
-              {fromAddress}
-            </span>
+            <span>{fromAddress}</span>
           </div>
           <div className={styles.row}>
             To
@@ -113,25 +104,18 @@ const SignView = ({
         <section className={styles.confirm}>
           <div className={styles.row}>
             Max Total
-            <span>
-              {getFiatAmount(
-                Number(amount || 0) + Number(fee || 0),
-                8
-              )}
-            </span>
+            <span>{getFiatAmount(Number(amount || 0) + Number(fee || 0), 8)}</span>
           </div>
         </section>
         <section className={styles.instruction}>
-            <span>
-              Please connect your Bitfi device to WiFi to sign the transaction.
-            </span>
-          </section>
-          <div className={styles.actions}>
-            <Button type="submit" variant={styles.button} onClick={onSignPress}>
-              Sign
-            </Button>
-          </div>
-        {waiting &&
+          <span>Please connect your Bitfi device to WiFi to sign the transaction.</span>
+        </section>
+        <div className={styles.actions}>
+          <Button type="submit" variant={styles.button} onClick={onSignPress}>
+            Sign
+          </Button>
+        </div>
+        {waiting && (
           <div className={styles.progressWrapper}>
             <div className={styles.progress}>
               <div>
@@ -143,11 +127,10 @@ const SignView = ({
               </div>
             </div>
           </div>
-        }
+        )}
       </div>
     </>
   );
-
-}
+};
 
 export default SignView;

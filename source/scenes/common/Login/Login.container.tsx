@@ -50,7 +50,11 @@ type ILoginProps = {
 // Container
 ///////////////////////
 
-const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImportClicked }) => {
+const LoginContainer: FC<ILoginProps> = ({
+  onLoginSuccess,
+  onLoginError,
+  onImportClicked,
+}) => {
   const { control, handleSubmit, register, errors } = useForm({
     validationSchema: schema,
   });
@@ -59,7 +63,11 @@ const LoginContainer: FC<ILoginProps> = ({ onLoginSuccess, onLoginError, onImpor
   const [bioLoginLoading, setBioLoginLoading] = useState(false);
   const { available } = useSelector((state: RootState) => state.biometrics);
 
-  const onSubmit = (data: any, bioLogin: boolean = false, callback: (password: string) => void = null) => {
+  const onSubmit = (
+    data: any,
+    bioLogin: boolean = false,
+    callback: (password: string) => void = null
+  ) => {
     if (bioLogin) {
       setBioLoginLoading(true);
     } else {

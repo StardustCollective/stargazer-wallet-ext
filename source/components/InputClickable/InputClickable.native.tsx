@@ -35,7 +35,7 @@ const ICON_SIZE = 16;
 const InputClickable: FC<IInputClickable> = ({ options }): JSX.Element => {
   const { title, value, items, onClick, disabled = false, labelRight = '' } = options;
 
-  const selectedItem = items.find(item => item.value === value);
+  const selectedItem = items.find((item) => item.value === value);
 
   ///////////////////////
   // Render
@@ -43,22 +43,31 @@ const InputClickable: FC<IInputClickable> = ({ options }): JSX.Element => {
 
   return (
     <View style={styles.container}>
-      <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>{title}</TextV3.Caption>
-      <TouchableOpacity disabled={disabled} onPress={onClick} style={styles.inputContainer}>
-        {
-          !!selectedItem?.icon && 
+      <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
+        {title}
+      </TextV3.Caption>
+      <TouchableOpacity
+        disabled={disabled}
+        onPress={onClick}
+        style={styles.inputContainer}
+      >
+        {!!selectedItem?.icon && (
           <View style={styles.iconContainer}>
-            <Image style={styles.icon} source={{ uri: selectedItem.icon }}/>
+            <Image style={styles.icon} source={{ uri: selectedItem.icon }} />
           </View>
-        }
+        )}
         <View style={styles.titleContainer}>
-          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{selectedItem?.label}</TextV3.CaptionStrong>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+            {selectedItem?.label}
+          </TextV3.CaptionStrong>
         </View>
-        {
-          !!labelRight ? 
-          <TextV3.CaptionRegular extraStyles={styles.labelRight}>{labelRight}</TextV3.CaptionRegular> :
+        {!!labelRight ? (
+          <TextV3.CaptionRegular extraStyles={styles.labelRight}>
+            {labelRight}
+          </TextV3.CaptionRegular>
+        ) : (
           <ArrowRightIcon width={ICON_SIZE} />
-        }
+        )}
       </TouchableOpacity>
     </View>
   );

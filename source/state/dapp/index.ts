@@ -61,10 +61,6 @@ const DAppState = createSlice({
   },
 });
 
-export const {
-  listNewDapp,
-  unlistDapp,
-  rehydrate,
-} = DAppState.actions;
+export const { listNewDapp, unlistDapp, rehydrate } = DAppState.actions;
 
 export default DAppState.reducer;

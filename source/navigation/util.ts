@@ -20,7 +20,7 @@ const replace = (navigation: any, route: string) => {
 // Exports
 ///////////////////////////
 
-export default { 
+export default {
   popToTop,
-  replace
+  replace,
 };

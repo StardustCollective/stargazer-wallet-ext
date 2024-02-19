@@ -34,32 +34,32 @@ const styles = StyleSheet.create({
     fontSize: getDeviceId().includes('iPod') ? 12 : 16,
   },
   errorContainer: {
-    height: 20, 
+    height: 20,
     marginVertical: 2,
   },
-  iconContainer: { 
+  iconContainer: {
     height: '100%',
     width: 40,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   modalContainer: {
     flex: 1,
     backgroundColor: COLORS.black,
     justifyContent: 'center',
     alignItems: 'center',
-    opacity: 0.5
+    opacity: 0.5,
   },
   recoverContainer: {
     position: 'absolute',
     bottom: 10,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   unlockTitle: {
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: 16,
     lineHeight: 24,
-  }
+  },
 });
 
 export default styles;

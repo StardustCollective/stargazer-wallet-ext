@@ -15,7 +15,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from './styles.module.scss';
 
 const ProgressStyles = () => ({
-  root:{
+  root: {
     marginBottom: '20px',
   },
   colorPrimary: {
@@ -23,7 +23,7 @@ const ProgressStyles = () => ({
   },
   barColorPrimary: {
     backgroundColor: '#2b1d52',
-  }
+  },
 });
 
 const PurpleLinearProgress = withStyles(ProgressStyles)(LinearProgress);
@@ -56,19 +56,21 @@ interface IFetchingProps {
 /////////////////////////
 
 const FetchingProgress = (props: IFetchingProps) => {
-
-  let {
-    accountsLoadProgress
-  } = props;
+  let { accountsLoadProgress } = props;
 
   function LinearProgressWithLabel(props: ILabelProps) {
     return (
       <>
-          <span>
-            {`${Math.round(props.value)}`}<span className={styles.percentage}>%</span>
-          </span>
+        <span>
+          {`${Math.round(props.value)}`}
+          <span className={styles.percentage}>%</span>
+        </span>
         <Box width={LINEAR_PROGRESS_BOX_WIDTH} mr={LINEAR_PROGRESS_BOX_MR}>
-          <PurpleLinearProgress className={styles.progress} variant={LINEAR_PROGRESS_VARIANT_PROP} {...props} />
+          <PurpleLinearProgress
+            className={styles.progress}
+            variant={LINEAR_PROGRESS_VARIANT_PROP}
+            {...props}
+          />
         </Box>
       </>
     );
@@ -80,7 +82,6 @@ const FetchingProgress = (props: IFetchingProps) => {
       <Typography>{FETCHING_VIEW_LABEL_STRING}</Typography>
     </div>
   );
-
-}
+};
 
 export default FetchingProgress;

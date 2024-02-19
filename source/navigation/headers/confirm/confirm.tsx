@@ -18,19 +18,15 @@ import styles from './styles.scss';
 ///////////////////////////
 
 interface ISendHeader {
-  navigation: any,
-  asset: IAssetInfoState,
+  navigation: any;
+  asset: IAssetInfoState;
 }
 
 ///////////////////////////
 // Header
 ///////////////////////////
 
-const sendHeader = ({
-  navigation,
-  asset
-}: ISendHeader) => {
-
+const sendHeader = ({ navigation, asset }: ISendHeader) => {
   return {
     ...defaultHeader({ navigation }),
     headerTitle: () => (
@@ -38,8 +34,8 @@ const sendHeader = ({
         <CircleIcon logo={asset.logo} label={asset.label} />
         <span>Confirm</span>
       </div>
-    )
-  }
+    ),
+  };
 };
 
 export default sendHeader;

@@ -26,7 +26,10 @@ import { open } from 'utils/browser';
 
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
-import IProvidersState, { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
+import IProvidersState, {
+  GetQuoteRequest,
+  PaymentRequestBody,
+} from 'state/providers/types';
 import { IBuyAssetContainer } from './types';
 import { SIMPLEX_FORM_SUBMISSION_URL } from 'constants/index';
 import IVaultState from 'state/vault/types';
@@ -47,7 +50,9 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const assetId = route.params.selected;
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
-  const { response, selected, paymentRequest }: IProvidersState = useSelector((state: RootState) => state.providers);
+  const { response, selected, paymentRequest }: IProvidersState = useSelector(
+    (state: RootState) => state.providers
+  );
   const selectedAsset = assets[assetId];
   const [amount, setAmount] = useState<string>(INITIAL_AMOUNT);
   const [message, setMessage] = useState<string>('');
@@ -59,7 +64,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const getActiveAddress = (): string | undefined => {
     const currentAsset = activeWallet.assets.find((asset) => asset.id === assetId);
     return currentAsset?.address;
-  }
+  };
 
   useEffect(() => {
     navigation.setOptions({ title: `Buy ${selectedAsset.symbol}` });
@@ -70,11 +75,11 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
     const dispatchActions = async () => {
       const randomId = uuid();
       const quoteData: GetQuoteRequest = {
-        id: randomId, 
-        provider: selected.id, 
-        requested_amount: floatAmount, 
-        digital_currency: selectedAsset.symbol
-      }
+        id: randomId,
+        provider: selected.id,
+        requested_amount: floatAmount,
+        digital_currency: selectedAsset.symbol,
+      };
       accountController.assetsController.setRequestId(randomId);
       await accountController.assetsController.fetchQuote(quoteData);
     };
@@ -114,10 +119,10 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
     const openBrowser = async (url: string): Promise<void> => {
       await open(url);
       accountController.assetsController.clearPaymentRequest();
-    }
+    };
 
     if (payment_id) {
-      openBrowser(`${SIMPLEX_FORM_SUBMISSION_URL}${payment_id}`)
+      openBrowser(`${SIMPLEX_FORM_SUBMISSION_URL}${payment_id}`);
     }
   }, [paymentRequest?.data]);
 

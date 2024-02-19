@@ -1,5 +1,5 @@
-import IAssetListState, { IAssetInfoState } from "state/assets/types";
-import { ActiveNetwork, IAssetState, IWalletState } from "state/vault/types";
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
+import { ActiveNetwork, IAssetState, IWalletState } from 'state/vault/types';
 
 export interface IAssetList {
   assets: IAssetListState;
@@ -15,4 +15,4 @@ export interface IAssetList {
 
 export interface IAssetListContainer {
   navigation: any;
-};
+}

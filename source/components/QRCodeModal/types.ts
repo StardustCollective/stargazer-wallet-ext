@@ -1,5 +1,5 @@
-import { IAssetInfoState } from "state/assets/types";
-import { ActiveNetwork } from "state/vault/types";
+import { IAssetInfoState } from 'state/assets/types';
+import { ActiveNetwork } from 'state/vault/types';
 
 export interface IQRCodeModal {
   address: string;

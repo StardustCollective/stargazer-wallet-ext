@@ -11,7 +11,12 @@ interface ICircleIcon {
   iconStyle: object;
 }
 
-const CircleIcon: FC<ICircleIcon> = ({ logo, label, containerStyle = {}, iconStyle = {} }) => {
+const CircleIcon: FC<ICircleIcon> = ({
+  logo,
+  label,
+  containerStyle = {},
+  iconStyle = {},
+}) => {
   const containerComposedStyles = StyleSheet.compose(styles.logoWrapper, containerStyle);
   const iconComposedStyles = StyleSheet.compose(styles.logoIcon, iconStyle);
 
@@ -23,7 +28,7 @@ const CircleIcon: FC<ICircleIcon> = ({ logo, label, containerStyle = {}, iconSty
         accessible
         accessibilityLabel={label}
         source={{ uri, height: 23, width: 23 }}
-        resizeMode='contain'
+        resizeMode="contain"
       />
     );
   }

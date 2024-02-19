@@ -69,7 +69,11 @@ const BuyAsset: FC<IBuyAsset> = ({
           <TextV3.Body dynamic color={COLORS_ENUMS.BLACK}>
             $
           </TextV3.Body>
-          <TextV3.HeaderDisplay dynamic color={COLORS_ENUMS.BLACK} extraStyles={styles.amountText}>
+          <TextV3.HeaderDisplay
+            dynamic
+            color={COLORS_ENUMS.BLACK}
+            extraStyles={styles.amountText}
+          >
             {amount}
           </TextV3.HeaderDisplay>
           <TextV3.Body dynamic color={COLORS_ENUMS.BLACK}>
@@ -85,7 +89,9 @@ const BuyAsset: FC<IBuyAsset> = ({
         </div>
       </div>
       <div className={styles.providerContainer}>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>Third Party Provider</TextV3.CaptionStrong>
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+          Third Party Provider
+        </TextV3.CaptionStrong>
         <div className={styles.providerCard}>
           <ProviderIcon />
           <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.providerText}>
@@ -95,7 +101,11 @@ const BuyAsset: FC<IBuyAsset> = ({
       </div>
       <div className={styles.numpadContainer}>
         {padList.map((item) => (
-          <div onClick={() => handleItemClick(item)} key={item} className={styles.numPadItem}>
+          <div
+            onClick={() => handleItemClick(item)}
+            key={item}
+            className={styles.numPadItem}
+          >
             {item === 'del' ? (
               <img src={`/${ArrowIcon}`} alt="arrow-icon" />
             ) : (

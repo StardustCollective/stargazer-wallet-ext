@@ -9,17 +9,12 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import { getAccountController } from 'utils/controllersUtils';
 import IWalletContacts from './types';
 
-const ContactContainer: FC<IWalletContacts> = ({open, onClose, onChange}) => {
+const ContactContainer: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
+  const accountController = getAccountController();
 
-  const accountController = getAccountController(); 
+  const { activeAsset }: IVaultState = useSelector((state: RootState) => state.vault);
 
-  const { activeAsset }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-
-  const contacts: IContactBookState = useSelector(
-    (state: RootState) => state.contacts
-  );
+  const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
 
   const isDAGAddress = (address: string) => {
     return accountController.isValidDAGAddress(address);
@@ -27,16 +22,14 @@ const ContactContainer: FC<IWalletContacts> = ({open, onClose, onChange}) => {
 
   const isValidContact = (contact: IContactState) => {
     return (
-      (activeAsset.type === AssetType.Constellation &&
-        isDAGAddress(contact.address)) ||
-      (activeAsset.type !== AssetType.Constellation &&
-        !isDAGAddress(contact.address))
+      (activeAsset.type === AssetType.Constellation && isDAGAddress(contact.address)) ||
+      (activeAsset.type !== AssetType.Constellation && !isDAGAddress(contact.address))
     );
   };
 
   return (
     <Container>
-      <Contacts 
+      <Contacts
         open={open}
         onClose={onClose}
         onChange={onChange}
@@ -45,7 +38,6 @@ const ContactContainer: FC<IWalletContacts> = ({open, onClose, onChange}) => {
       />
     </Container>
   );
-
-}
+};
 
 export default ContactContainer;

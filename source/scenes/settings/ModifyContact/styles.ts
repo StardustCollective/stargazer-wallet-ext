@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingHorizontal: 0,
     position: 'relative',
-
   },
   input: {
     marginBottom: 0,
@@ -28,8 +27,7 @@ const styles = StyleSheet.create({
     color: COLORS.purple,
     fontSize: 15,
   },
-  statusIcon: {
-  },
+  statusIcon: {},
   hide: {
     opacity: 0,
   },

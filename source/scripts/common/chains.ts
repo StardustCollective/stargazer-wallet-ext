@@ -1,4 +1,4 @@
-import { AssetType } from "state/vault/types";
+import { AssetType } from 'state/vault/types';
 
 enum ProtocolProvider {
   CONSTELLATION = 'constellation',
@@ -19,6 +19,6 @@ const ASSET_ID: { [chain: string]: string } = {
   [StargazerChain.POLYGON]: AssetType.Polygon,
   [StargazerChain.BSC]: AssetType.BSC,
   [StargazerChain.AVALANCHE]: AssetType.Avalanche,
-}
+};
 
 export { StargazerChain, ProtocolProvider, ASSET_ID };

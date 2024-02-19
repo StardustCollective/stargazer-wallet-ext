@@ -39,18 +39,19 @@ import {
   YOUR_TOKEN_SWAP_STRING,
   STATUS_OF_YOUR_TRASACTION_STRING,
   VIEW_SWAP_HISTORY_STRING,
-  DONE_STRING
+  DONE_STRING,
 } from './constants';
-
 
 const ConfirmDetails: FC<IConfirmationInfo> = ({
   onViewSwapHistoryPressed,
   onDonePressed,
 }) => {
-
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContentContainer}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContentContainer}
+      >
         <View style={styles.content}>
           <CheckCircle />
           <TextV3.Header

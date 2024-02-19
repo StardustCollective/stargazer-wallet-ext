@@ -58,7 +58,7 @@ const TooltipComponent: FC<ITooltip> = ({
       popover={tooltipBody}
       withPointer={arrow}
       backgroundColor={backgroundColor}
-      overlayColor='transparent'
+      overlayColor="transparent"
       onOpen={onOpen}
       {...otherProps}
       {...others}

@@ -31,7 +31,7 @@ import styles from './AddNetwork.scss';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
-const AddNetwork: FC<IAddNetwork> = ({ 
+const AddNetwork: FC<IAddNetwork> = ({
   register,
   control,
   errors,
@@ -45,9 +45,8 @@ const AddNetwork: FC<IAddNetwork> = ({
   handleRpcUrlChange,
   handleChainIdChange,
   handleBlockExplorerUrlChange,
-  handleSave
- }) => {
-
+  handleSave,
+}) => {
   const isChainIdVisible = networkTypeOptions.value === 'ethereum';
 
   ///////////////////////
@@ -57,7 +56,9 @@ const AddNetwork: FC<IAddNetwork> = ({
   return (
     <div className={styles.container}>
       <InputClickable options={networkTypeOptions} />
-      <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>Chain Name</TextV3.CaptionStrong>
+      <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
+        Chain Name
+      </TextV3.CaptionStrong>
       <TextInput
         inputRef={register}
         name="chainName"
@@ -71,12 +72,12 @@ const AddNetwork: FC<IAddNetwork> = ({
         }}
         error={!!errors?.chainName}
       />
-      <TextV3.Caption 
-        color={COLORS_ENUMS.RED} 
-        extraStyles={styles.errorMessage}>
-          {!!errors?.chainName ? errors?.chainName?.message: ' '}
+      <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+        {!!errors?.chainName ? errors?.chainName?.message : ' '}
       </TextV3.Caption>
-      <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>RPC URL</TextV3.CaptionStrong>
+      <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
+        RPC URL
+      </TextV3.CaptionStrong>
       <TextInput
         inputRef={register}
         name="rpcUrl"
@@ -90,14 +91,14 @@ const AddNetwork: FC<IAddNetwork> = ({
         }}
         error={!!errors?.rpcUrl}
       />
-      <TextV3.Caption 
-        color={COLORS_ENUMS.RED} 
-        extraStyles={styles.errorMessage}>
-          {!!errors?.rpcUrl ? errors?.rpcUrl?.message: ' '}
+      <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+        {!!errors?.rpcUrl ? errors?.rpcUrl?.message : ' '}
       </TextV3.Caption>
-      {!!isChainIdVisible && 
+      {!!isChainIdVisible && (
         <>
-          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>Chain ID</TextV3.CaptionStrong>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
+            Chain ID
+          </TextV3.CaptionStrong>
           <TextInput
             inputRef={register}
             type="number"
@@ -112,16 +113,16 @@ const AddNetwork: FC<IAddNetwork> = ({
             }}
             error={!!errors?.chainId}
           />
-          <TextV3.Caption 
-            color={COLORS_ENUMS.RED} 
-            extraStyles={styles.errorMessage}>
-              {!!errors?.chainId ? errors?.chainId?.message: ' '}
+          <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+            {!!errors?.chainId ? errors?.chainId?.message : ' '}
           </TextV3.Caption>
         </>
-      }
-      <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>Block Explorer URL</TextV3.CaptionStrong>
+      )}
+      <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.label}>
+        Block Explorer URL
+      </TextV3.CaptionStrong>
       <TextInput
-        inputRef={register} 
+        inputRef={register}
         name="blockExplorerUrl"
         id="blockExplorerUrl"
         value={blockExplorerUrl}
@@ -133,13 +134,11 @@ const AddNetwork: FC<IAddNetwork> = ({
         }}
         error={!!errors?.blockExplorerUrl}
       />
-      <TextV3.Caption 
-        color={COLORS_ENUMS.RED} 
-        extraStyles={styles.errorMessage}>
-          {!!errors?.blockExplorerUrl ? errors?.blockExplorerUrl?.message: ' '}
+      <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+        {!!errors?.blockExplorerUrl ? errors?.blockExplorerUrl?.message : ' '}
       </TextV3.Caption>
       <div className={styles.buttonContainer}>
-        <ButtonV3 
+        <ButtonV3
           label="Save"
           type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}

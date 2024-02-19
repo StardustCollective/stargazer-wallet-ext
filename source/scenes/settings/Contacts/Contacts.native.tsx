@@ -9,7 +9,7 @@ import styles from './styles';
 import IContactSettings from './types';
 
 const Contacts: FC<IContactSettings> = ({ contacts, handleSelect, addContactLabel }) => {
-   if (Object.keys(contacts).length === 0) {
+  if (Object.keys(contacts).length === 0) {
     return (
       <ScrollView stickyHeaderIndices={[1]} style={styles.wrapper}>
         <View style={styles.addContactLabel}>
@@ -20,7 +20,10 @@ const Contacts: FC<IContactSettings> = ({ contacts, handleSelect, addContactLabe
   }
 
   return (
-    <ScrollView style={styles.contacts} contentContainerStyle={styles.contactsContentContainer}>
+    <ScrollView
+      style={styles.contacts}
+      contentContainerStyle={styles.contactsContentContainer}
+    >
       <View style={styles.list}>
         {Object.values(contacts).map((contact: IContactState) => (
           <TouchableOpacity onPress={() => handleSelect(contact.id)} key={contact.id}>

@@ -31,7 +31,6 @@ import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 const SingleSelect: FC<ISingleSelect> = ({ data, selected, onSelect }) => {
-
   ///////////////////////////
   // Hooks
   ///////////////////////////
@@ -41,7 +40,7 @@ const SingleSelect: FC<ISingleSelect> = ({ data, selected, onSelect }) => {
   const changeSelectedValue = (value: string) => {
     setLocalSelected(value);
     onSelect(value);
-  }
+  };
 
   ///////////////////////////
   // Render
@@ -51,24 +50,26 @@ const SingleSelect: FC<ISingleSelect> = ({ data, selected, onSelect }) => {
     const isSelected = item.value === localSelected;
     const selectedStyle = !!isSelected ? styles.selectedBorder : {};
     return (
-      <TouchableOpacity onPress={() => changeSelectedValue(item.value)} style={[styles.itemContainer, selectedStyle]}>
+      <TouchableOpacity
+        onPress={() => changeSelectedValue(item.value)}
+        style={[styles.itemContainer, selectedStyle]}
+      >
         <View style={styles.iconContainer}>
-          <Image style={styles.icon} source={{ uri: item.icon }}/>
+          <Image style={styles.icon} source={{ uri: item.icon }} />
         </View>
         <View style={styles.titleContainer}>
-          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{item.label}</TextV3.CaptionStrong>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+            {item.label}
+          </TextV3.CaptionStrong>
         </View>
-        { !!isSelected && <CheckIcon width={16} /> }
+        {!!isSelected && <CheckIcon width={16} />}
       </TouchableOpacity>
     );
-  }
+  };
 
   return (
-    <View style={styles.container}>
-      {!!data && data.map(item => renderItem(item))}
-    </View>
+    <View style={styles.container}>{!!data && data.map((item) => renderItem(item))}</View>
   );
-
-}
+};
 
 export default SingleSelect;

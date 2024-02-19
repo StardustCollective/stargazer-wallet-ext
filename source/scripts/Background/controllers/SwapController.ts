@@ -4,10 +4,23 @@ import {
   getSupportedAssets,
   getCurrencyRate,
   getTransactionHistory,
-  stageTransaction
+  stageTransaction,
 } from 'state/swap/api';
-import { setSelectedTransaction, setSwapFrom, setSwapTo, clearPendingSwap, addTxId, clearCurrencyRate } from 'state/swap';
-import { ISearchCurrency, ICurrencyNetwork, IStageTransaction, IExolixTransaction, ICurrencyRateParams } from 'state/swap/types';
+import {
+  setSelectedTransaction,
+  setSwapFrom,
+  setSwapTo,
+  clearPendingSwap,
+  addTxId,
+  clearCurrencyRate,
+} from 'state/swap';
+import {
+  ISearchCurrency,
+  ICurrencyNetwork,
+  IStageTransaction,
+  IExolixTransaction,
+  ICurrencyRateParams,
+} from 'state/swap/types';
 
 export interface ISwapController {
   getSupportedAssets: () => void;
@@ -24,7 +37,6 @@ export interface ISwapController {
 }
 
 class SwapController implements ISwapController {
-
   setSwapFrom(currency: ISearchCurrency, network: ICurrencyNetwork) {
     store.dispatch(setSwapFrom({ currency, network }));
   }
@@ -33,16 +45,16 @@ class SwapController implements ISwapController {
     store.dispatch(setSwapTo({ currency, network }));
   }
 
-  setSelectedTrasaction(transaction: IExolixTransaction){
+  setSelectedTrasaction(transaction: IExolixTransaction) {
     store.dispatch(setSelectedTransaction(transaction));
   }
 
-  clearPendingSwap(){
+  clearPendingSwap() {
     store.dispatch(clearPendingSwap());
   }
 
   clearCurrencyRate() {
-    store.dispatch(clearCurrencyRate())
+    store.dispatch(clearCurrencyRate());
   }
 
   getTransactionHistory() {
@@ -57,32 +69,41 @@ class SwapController implements ISwapController {
     store.dispatch<any>(getCurrencyData(searchQuery));
   }
 
-  getCurrencyRate({ coinFromCode, coinFromNetwork, coinToCode, coinToNetwork, amount }: ICurrencyRateParams) {
-    store.dispatch<any>(getCurrencyRate({
-      coinFrom: coinFromCode,
-      coinFromNetwork: coinFromNetwork,
-      coinTo: coinToCode,
-      coinToNetwork: coinToNetwork,
-      amount: amount,
-    }));
+  getCurrencyRate({
+    coinFromCode,
+    coinFromNetwork,
+    coinToCode,
+    coinToNetwork,
+    amount,
+  }: ICurrencyRateParams) {
+    store.dispatch<any>(
+      getCurrencyRate({
+        coinFrom: coinFromCode,
+        coinFromNetwork: coinFromNetwork,
+        coinTo: coinToCode,
+        coinToNetwork: coinToNetwork,
+        amount: amount,
+      })
+    );
   }
 
   stageTransaction(params: IStageTransaction) {
-    store.dispatch<any>(stageTransaction({
-      coinFrom: params.coinFrom,
-      networkFrom: params.networkFrom,
-      coinTo: params.coinTo,
-      networkTo: params.networkTo,
-      amount: params.amount,  
-      withdrawalAddress: params.withdrawalAddress,
-      refundAddress: params.withdrawalAddress
-    }));
+    store.dispatch<any>(
+      stageTransaction({
+        coinFrom: params.coinFrom,
+        networkFrom: params.networkFrom,
+        coinTo: params.coinTo,
+        networkTo: params.networkTo,
+        amount: params.amount,
+        withdrawalAddress: params.withdrawalAddress,
+        refundAddress: params.withdrawalAddress,
+      })
+    );
   }
 
-  addTxId(txId: string){
+  addTxId(txId: string) {
     store.dispatch<any>(addTxId(txId));
   }
-
 }
 
 export default SwapController;

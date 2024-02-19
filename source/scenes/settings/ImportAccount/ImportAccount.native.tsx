@@ -61,7 +61,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 handleImportPrivKey(privKey, data.label);
               })
               .catch(() => {
-                showErrorAlert('Error: Invalid password to decrypt private key json file');
+                showErrorAlert(
+                  'Error: Invalid password to decrypt private key json file'
+                );
                 setLoading(false);
               });
           } catch (err) {
@@ -104,7 +106,10 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   const renderPrivateKey = () => {
     return (
       <>
-        <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.descriptionText}>
+        <TextV3.Description
+          color={COLORS_ENUMS.DARK_GRAY}
+          extraStyles={styles.descriptionText}
+        >
           Paste your private key string here:
         </TextV3.Description>
         <TextInput
@@ -125,8 +130,15 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     // do not memoize as this causes issues in JSON file select
     return (
       <>
-        <FileSelect id="importAccount-fileInput" onChange={setJsonFile} disabled={loading} />
-        <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyle={styles.descriptionText}>
+        <FileSelect
+          id="importAccount-fileInput"
+          onChange={setJsonFile}
+          disabled={loading}
+        />
+        <TextV3.Description
+          color={COLORS_ENUMS.DARK_GRAY}
+          extraStyle={styles.descriptionText}
+        >
           Please enter your JSON file password:
         </TextV3.Description>
         <TextInput
@@ -147,10 +159,16 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     return (
       <View style={styles.import}>
         <View style={styles.generated}>
-          <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyle={styles.descriptionText}>
+          <TextV3.Description
+            color={COLORS_ENUMS.DARK_GRAY}
+            extraStyle={styles.descriptionText}
+          >
             Your new private key account has been imported.
           </TextV3.Description>
-          <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyle={styles.descriptionText}>
+          <TextV3.Description
+            color={COLORS_ENUMS.DARK_GRAY}
+            extraStyle={styles.descriptionText}
+          >
             You can view the public address in the asset view.
           </TextV3.Description>
           <ButtonV3
@@ -169,7 +187,10 @@ const ImportAccount: FC<IImportAccountSettings> = ({
     <View style={styles.import}>
       <View style={styles.content}>
         <View style={styles.select}>
-          <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.selectText}>
+          <TextV3.Description
+            color={COLORS_ENUMS.DARK_GRAY}
+            extraStyles={styles.selectText}
+          >
             Select Type:
           </TextV3.Description>
           <View style={styles.inner}>
@@ -206,19 +227,29 @@ const ImportAccount: FC<IImportAccountSettings> = ({
             )}
             {hardwareStep === 2 && (
               <>
-                <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>Please select an account:</TextV3.Description>
-                <View style={StyleSheet.flatten([styles.walletList, loadingWalletList ? styles.loading : {}])}>
+                <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>
+                  Please select an account:
+                </TextV3.Description>
+                <View
+                  style={StyleSheet.flatten([
+                    styles.walletList,
+                    loadingWalletList ? styles.loading : {},
+                  ])}
+                >
                   {loadingWalletList ? (
                     <>
                       <Icon name="cached" color="#474747" />
-                      <TextV3.Label color={COLORS_ENUMS.DARK_GRAY}>Loading your Hardware Wallet</TextV3.Label>
+                      <TextV3.Label color={COLORS_ENUMS.DARK_GRAY}>
+                        Loading your Hardware Wallet
+                      </TextV3.Label>
                     </>
                   ) : (
                     <>
                       <View style={styles.wallet}>
                         <Table>
-                          {hardwareWalletList.map((hwItem: HardwareWallet, index: number) =>
-                            renderWallet(hwItem, index)
+                          {hardwareWalletList.map(
+                            (hwItem: HardwareWallet, index: number) =>
+                              renderWallet(hwItem, index)
                           )}
                         </Table>
                       </View>
@@ -227,10 +258,15 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 </View>
                 {!loadingWalletList && (
                   <View style={styles.pagination}>
-                    <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.previous}>
+                    <TextV3.Description
+                      color={COLORS_ENUMS.DARK_GRAY}
+                      extraStyles={styles.previous}
+                    >
                       Previous
                     </TextV3.Description>
-                    <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>Next</TextV3.Description>
+                    <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>
+                      Next
+                    </TextV3.Description>
                   </View>
                 )}
               </>
@@ -240,7 +276,10 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         {hardwareStep === 1 && (
           <>
             <View>
-              <TextV3.Description color={COLORS_ENUMS.DARK_GRAY} extraStyles={styles.descriptionText}>
+              <TextV3.Description
+                color={COLORS_ENUMS.DARK_GRAY}
+                extraStyles={styles.descriptionText}
+              >
                 {importType === 'hardware'
                   ? 'Connect to your ledger hardware wallet to import accounts'
                   : 'Please name your new account:'}

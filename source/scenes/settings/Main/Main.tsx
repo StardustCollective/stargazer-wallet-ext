@@ -51,7 +51,7 @@ const Main: FC<IMainSettings> = ({
   onAboutLinkClicked,
   onContactsLinkClicked,
   onConnectedSitesClicked,
-  version
+  version,
 }) => {
   const RenderSettingsItem = ({
     label,
@@ -83,7 +83,7 @@ const Main: FC<IMainSettings> = ({
     );
   };
 
-    const SETTINGS_MAP = [
+  const SETTINGS_MAP = [
     {
       label: 'Wallets',
       key: 'Wallets',
@@ -108,7 +108,8 @@ const Main: FC<IMainSettings> = ({
       IconImageOrComponent: linkedApps,
       onClick: onConnectedSitesClicked,
       imageStyles: styles.linkedIconImage,
-    }];
+    },
+  ];
 
   return (
     <div className={styles.main}>
@@ -122,7 +123,9 @@ const Main: FC<IMainSettings> = ({
       <div className={styles.footer}>
         <div onClick={onAboutLinkClicked} className={styles.footer__left}>
           <img src={'/' + infoIcon} />
-          <TextV3.Caption color={COLORS_ENUMS.BLACK}>Stargazer Wallet {version}</TextV3.Caption>
+          <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+            Stargazer Wallet {version}
+          </TextV3.Caption>
         </div>
         <div
           id={'wallet-logoutButton'}

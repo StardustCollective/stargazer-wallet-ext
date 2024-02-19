@@ -29,7 +29,7 @@ interface ISendConfirm {
   isL0token: boolean;
 }
 
-const SendConfirm = ({ 
+const SendConfirm = ({
   isExternalRequest,
   confirmed,
   tempTx,
@@ -43,8 +43,7 @@ const SendConfirm = ({
   handleConfirm,
   disabled,
   isL0token,
- }: ISendConfirm) => {
-
+}: ISendConfirm) => {
   return confirmed ? (
     <Layout title="Your transaction is underway">
       <CheckIcon className={styles.checked} />
@@ -57,21 +56,20 @@ const SendConfirm = ({
     </Layout>
   ) : (
     <div className={styles.wrapper}>
-      {!isExternalRequest &&
-        < section className={styles.txAmount}>
+      {!isExternalRequest && (
+        <section className={styles.txAmount}>
           <div className={styles.iconWrapper}>
             <UpArrowIcon />
           </div>
-          {tempTx?.amount}{' '}
-          {assetInfo.symbol}
-          {!isL0token && 
+          {tempTx?.amount} {assetInfo.symbol}
+          {!isL0token && (
             <small>
               (≈
               {getSendAmount()})
             </small>
-          }
+          )}
         </section>
-      }
+      )}
       <section className={styles.transaction}>
         <div className={styles.row}>
           From
@@ -93,7 +91,11 @@ const SendConfirm = ({
       <section className={styles.confirm}>
         <div className={styles.row}>
           Max Total
-          <span>{isL0token ? `${getTotalAmount()} ${assetInfo.symbol}` : `$${getTotalAmount()}`}</span>
+          <span>
+            {isL0token
+              ? `${getTotalAmount()} ${assetInfo.symbol}`
+              : `$${getTotalAmount()}`}
+          </span>
         </div>
         <div className={styles.actions}>
           <Button
@@ -104,10 +106,16 @@ const SendConfirm = ({
           >
             Cancel
           </Button>
-          <Button type="submit" variant={styles.button} onClick={() => handleConfirm(browser)} disabled={disabled}>
+          <Button
+            type="submit"
+            variant={styles.button}
+            onClick={() => handleConfirm(browser)}
+            disabled={disabled}
+          >
             {activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-             activeWallet.type === KeyringWalletType.BitfiAccountWallet
-            ? 'Next' : 'Confirm'}
+            activeWallet.type === KeyringWalletType.BitfiAccountWallet
+              ? 'Next'
+              : 'Confirm'}
           </Button>
         </div>
       </section>

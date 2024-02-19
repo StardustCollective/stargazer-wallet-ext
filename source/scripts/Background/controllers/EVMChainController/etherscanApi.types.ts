@@ -3,7 +3,7 @@ export type GasOracleResponse = {
   SafeGasPrice: string;
   ProposeGasPrice: string;
   FastGasPrice: string;
-}
+};
 
 export type TransactionHistoryParam = {
   address?: string;
@@ -12,7 +12,7 @@ export type TransactionHistoryParam = {
   offset?: number;
   startblock?: number;
   endblock?: number;
-}
+};
 
 export type TokenTransactionInfo = {
   blockNumber: string;
@@ -34,7 +34,7 @@ export type TokenTransactionInfo = {
   cumulativeGasUsed: string;
   input: string;
   confirmations: string;
-}
+};
 
 export type ETHTransactionInfo = {
   blockNumber: string;
@@ -52,4 +52,4 @@ export type ETHTransactionInfo = {
   isError: string;
   errCode: string;
   nonce: string;
-}
+};
