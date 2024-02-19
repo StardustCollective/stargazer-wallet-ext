@@ -11,4 +11,5 @@ export default interface ICreatePass {
   errors: NestDataObject<FieldValues, FieldError>;
   comment: string;
   title: string;
+  buttonLoading: boolean;
 }
