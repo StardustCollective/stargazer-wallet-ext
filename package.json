@@ -25,7 +25,11 @@
     "clean": "npx rimraf ./node_modules && cd source/native && rm -rf ./node_modules && cd .. && cd web && rm -rf ./node_modules",
     "clean:pods": "cd source/native/ios && rm -rf Pods",
     "install:pods": "cd source/native/ios && pod install",
-    "postinstall": "npx patch-package && npx rimraf ./source/web/node_modules/react && cd source/native && npx patch-package"
+    "postinstall": "npx patch-package && npx rimraf ./source/web/node_modules/react && cd source/native && npx patch-package",
+    "increment:version": "yarn workspace native increment:version",
+    "increment:patch": "yarn workspace native increment:patch",
+    "increment:minor": "yarn workspace native increment:minor",
+    "increment:major": "yarn workspace native increment:major"
   },
   "dependencies": {
     "@devneser/gradient-avatar": "^1.1.1",
