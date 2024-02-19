@@ -36,21 +36,13 @@ const About: FC<IAboutSettings> = ({
       </span>
       <span>
         Terms and Conditions:
-        <a
-          className={clsx(styles.link, styles.terms)}
-          href={termsLink}
-          target="_blank"
-        >
+        <a className={clsx(styles.link, styles.terms)} href={termsLink} target="_blank">
           {termsLabel}
         </a>
       </span>
       <span>
         Privacy:
-        <a
-          className={clsx(styles.link, styles.terms)}
-          href={privacyLink}
-          target="_blank"
-        >
+        <a className={clsx(styles.link, styles.terms)} href={privacyLink} target="_blank">
           {privacyLabel}
         </a>
       </span>

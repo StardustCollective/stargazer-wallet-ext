@@ -43,19 +43,19 @@ const styles = StyleSheet.create({
   },
   fromInputSwapFromLabel: {
     flex: 1,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   fromInputBalanceLabel: {
     flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   fromCurrencyInput: {
     marginBottom: 16,
   },
   fromCurrencyInputError: {
     marginBottom: 16,
-    borderColor: COLORS.red
+    borderColor: COLORS.red,
   },
   toInputLabels: {
     flexDirection: 'row',
@@ -63,17 +63,17 @@ const styles = StyleSheet.create({
   },
   toInputSwapLabel: {
     flex: 1,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   toBlank: {
     flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   toCurrencyInput: {
     marginBottom: 24,
   },
-  toInputSwapFromLabel:{
+  toInputSwapFromLabel: {
     flex: 1,
   },
   swapIcon: {
@@ -86,14 +86,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 44,
     borderTopWidth: 1,
-    borderTopColor: COLORS.gray_200
+    borderTopColor: COLORS.gray_200,
   },
   rateLabel: {
     flex: 1,
   },
   rateValue: {
     flex: 1,
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   minimumAmount: {
     flexDirection: 'row',
@@ -101,19 +101,19 @@ const styles = StyleSheet.create({
     height: 44,
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: COLORS.gray_200
+    borderColor: COLORS.gray_200,
   },
   minimumAmountLabel: {
     flex: 1,
   },
   minimumAmountValue: {
     flex: 1,
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   nextButton: {
     flexGrow: 1,
     justifyContent: 'flex-end',
-  }
+  },
 });
 
 export default styles;

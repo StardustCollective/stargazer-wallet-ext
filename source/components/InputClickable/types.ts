@@ -12,7 +12,7 @@ export type IInputClickableOptions = {
   onClick?: () => void;
   disabled?: boolean;
   labelRight?: string;
-}
+};
 
 export default interface IInputClickable {
   options: IInputClickableOptions;

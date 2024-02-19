@@ -48,22 +48,32 @@ const CurrencyInput: FC<ICurrencyInput> = ({
   isError = false,
   onChangeText,
 }) => {
-
   return (
-    <div className={clsx(styles.swapInput, containerStyle, isError && styles.swapInputError)}>
+    <div
+      className={clsx(styles.swapInput, containerStyle, isError && styles.swapInputError)}
+    >
       <div className={styles.swapInputLeftBlock}>
         <TextInput
           type="number"
           value={value}
           placeholder={placeholder}
-          classes={{ root: clsx(styles.swapTextField, isError && styles.swapTextFieldError) }}
+          classes={{
+            root: clsx(styles.swapTextField, isError && styles.swapTextFieldError),
+          }}
           onChange={onChangeText}
         />
       </div>
       <div onClick={() => onPress()} className={styles.swapInputRightBlock}>
         <img src={source} className={styles.currencyIcon} />
-        <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>{tickerValue}</TextV3.Body>
-        <img src={`/${ChevronRight}`} className={styles.swapInputChevron} alt="chevron_right" width={CHEVRON_WIDTH} />
+        <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>
+          {tickerValue}
+        </TextV3.Body>
+        <img
+          src={`/${ChevronRight}`}
+          className={styles.swapInputChevron}
+          alt="chevron_right"
+          width={CHEVRON_WIDTH}
+        />
       </div>
     </div>
   );

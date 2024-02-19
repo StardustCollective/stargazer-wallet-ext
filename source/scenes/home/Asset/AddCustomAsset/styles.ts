@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   label: {
     marginTop: 0,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     paddingLeft: 10,
     paddingTop: 4,
-  }
+  },
 });
 
 export default styles;

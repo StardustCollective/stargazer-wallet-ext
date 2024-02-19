@@ -11,7 +11,6 @@ import React, { FC } from 'react';
 import Container from 'components/Container';
 import Security from './Security';
 
-
 const SecurityContainer: FC = () => {
   return (
     <Container safeArea={false}>

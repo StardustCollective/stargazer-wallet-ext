@@ -2,7 +2,7 @@
 import React from 'react';
 
 const QRCodeButton = () => {
-    return(<div></div>);
-}
+  return <div></div>;
+};
 
 export default QRCodeButton;

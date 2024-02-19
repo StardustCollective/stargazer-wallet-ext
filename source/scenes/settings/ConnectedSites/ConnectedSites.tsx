@@ -8,7 +8,10 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './ConnectedSites.scss';
 import IConnectedSitesSettings from './types';
 
-const ConnectedSites: FC<IConnectedSitesSettings> = ({ onDeleteSiteClicked, connectedSites }) => {
+const ConnectedSites: FC<IConnectedSitesSettings> = ({
+  onDeleteSiteClicked,
+  connectedSites,
+}) => {
   return (
     <div className={styles.wallets}>
       {Object.values(connectedSites).length > 0 && (
@@ -20,7 +23,10 @@ const ConnectedSites: FC<IConnectedSitesSettings> = ({ onDeleteSiteClicked, conn
             <img width={25} src={site.logo} className={styles.icon} />
             <TextV3.Body color={COLORS_ENUMS.BLACK}>{site.origin}</TextV3.Body>
             <div className={styles.iconContainer}>
-              <IconButton className={styles.details} onClick={() => onDeleteSiteClicked(site.id)}>
+              <IconButton
+                className={styles.details}
+                onClick={() => onDeleteSiteClicked(site.id)}
+              >
                 <DeleteForever />
               </IconButton>
             </div>
@@ -28,7 +34,9 @@ const ConnectedSites: FC<IConnectedSitesSettings> = ({ onDeleteSiteClicked, conn
         ))}
         {Object.values(connectedSites).length <= 0 && (
           <div className={styles.noSitesConnected}>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>This account is not connected to any sites.</TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+              This account is not connected to any sites.
+            </TextV3.Caption>
           </div>
         )}
       </div>

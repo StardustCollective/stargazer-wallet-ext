@@ -20,9 +20,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
   const toLink = useLinkTo();
   const navigation = useNavigation();
   const [showed, showSettings] = useState(false);
-  const { wallets }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
+  const { wallets }: IVaultState = useSelector((state: RootState) => state.vault);
   const hasMainAccount =
     wallets.local.length &&
     wallets.local.some((w: any) => w.type === KeyringWalletType.MultiChainWallet);
@@ -49,10 +47,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
           <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
         </Link>
       ) : (
-        <IconButton
-          className={`${styles.button} ${styles.back}`}
-          onClick={handleBack}
-        >
+        <IconButton className={`${styles.button} ${styles.back}`} onClick={handleBack}>
           <ArrowBackIcon />
         </IconButton>
       )}
@@ -60,9 +55,7 @@ const Header: FC<IHeader> = ({ showLogo = false, backLink = '#' }) => {
       {hasMainAccount ? (
         <IconButton
           className={`${styles.button} ${styles.more}`}
-          onClick={() =>
-            showed ? handleCloseSettings() : showSettings(!showed)
-          }
+          onClick={() => (showed ? handleCloseSettings() : showSettings(!showed))}
         >
           <MoreVertIcon />
         </IconButton>

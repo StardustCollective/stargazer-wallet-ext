@@ -19,7 +19,7 @@ const assetHeader = ({ navigation, asset, addressUrl }: IAssetHeader) => {
             e.stopPropagation();
 
             if (!addressUrl) return;
-            
+
             Linking.openURL(addressUrl);
           }}
           style={styles.linkIcon}

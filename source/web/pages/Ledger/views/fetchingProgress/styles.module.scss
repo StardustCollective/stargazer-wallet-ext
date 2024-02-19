@@ -1,4 +1,4 @@
-@import "~assets/styles/variables";
+@import '~assets/styles/variables';
 
 .content {
   display: flex;
@@ -13,7 +13,7 @@
   span {
     color: $primary;
     font-size: 80px;
-    .percentage{
+    .percentage {
       font-size: 40px;
     }
   }

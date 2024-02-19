@@ -21,19 +21,19 @@ const styles = StyleSheet.create({
   },
   tokenSwapText: {
     marginTop: 41,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   statusText: {
     marginTop: 12,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   buttons: {
     flex: 1,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   viewHistoryButton: {
     marginBottom: 20,
-  }
+  },
 });
 
 export default styles;

@@ -1,4 +1,4 @@
-import { IExolixTransaction } from 'state/swap/types'
+import { IExolixTransaction } from 'state/swap/types';
 
 export interface ISwapTokensContainer {
   navigation: any;
@@ -6,6 +6,6 @@ export interface ISwapTokensContainer {
 }
 
 export default interface ITransferInfo {
-  transaction: IExolixTransaction,
-  onSupportLinkPress: () => void,
+  transaction: IExolixTransaction;
+  onSupportLinkPress: () => void;
 }

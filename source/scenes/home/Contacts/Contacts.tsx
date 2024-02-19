@@ -10,14 +10,13 @@ import styles from './Contacts.scss';
 
 import IWalletContacts from './types';
 
-const WalletContacts: FC<IWalletContacts> = ({ 
-  open, 
-  onClose, 
+const WalletContacts: FC<IWalletContacts> = ({
+  open,
+  onClose,
   onChange,
   contacts,
   isValidContact,
 }) => {
-
   let isExternalRequest = false;
 
   if (!!location) {
@@ -26,7 +25,12 @@ const WalletContacts: FC<IWalletContacts> = ({
 
   return (
     <Portal>
-      <div className={clsx(styles.mask, { [styles.open]: open, [styles.removeTop]: isExternalRequest })}>
+      <div
+        className={clsx(styles.mask, {
+          [styles.open]: open,
+          [styles.removeTop]: isExternalRequest,
+        })}
+      >
         <div className={styles.modal}>
           <section className={styles.heading}>
             <span className={styles.title}>Contacts</span>
@@ -42,10 +46,7 @@ const WalletContacts: FC<IWalletContacts> = ({
               {Object.values(contacts)
                 .filter(isValidContact)
                 .map((contact: IContactState) => (
-                  <li
-                    key={contact.address}
-                    onClick={() => onChange(contact.address)}
-                  >
+                  <li key={contact.address} onClick={() => onChange(contact.address)}>
                     <div className={styles.contact}>
                       <span className={styles.info}>
                         {/* <Icon Component={UserIcon} /> */}

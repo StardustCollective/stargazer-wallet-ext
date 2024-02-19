@@ -124,7 +124,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
     <Button
       testID={id}
       title={title}
-      disabled={disabled}
+      disabled={disabled || loading}
       disabledTitleStyle={styles.disabledTitle}
       disabledStyle={composedDisabledStyles}
       loading={loading}

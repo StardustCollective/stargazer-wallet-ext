@@ -11,12 +11,12 @@ const styles = StyleSheet.create({
     margin: 16,
   },
   loadingContainer: {
-    flex: 1
+    flex: 1,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
-  }
+  },
 });
 
 export default styles;

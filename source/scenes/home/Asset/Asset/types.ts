@@ -1,4 +1,9 @@
-import { ActiveNetwork, IActiveAssetState, IWalletState, Transaction } from 'state/vault/types';
+import {
+  ActiveNetwork,
+  IActiveAssetState,
+  IWalletState,
+  Transaction,
+} from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 
 export type IAssetDetail = {

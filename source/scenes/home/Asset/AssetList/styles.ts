@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   loadingContainer: {
-    flex: 1
+    flex: 1,
   },
   searchContainer: {
     paddingHorizontal: 16,
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   subtitle: {
     marginBottom: 16,
     marginTop: 8,
-  }
+  },
 });
 
 export default styles;

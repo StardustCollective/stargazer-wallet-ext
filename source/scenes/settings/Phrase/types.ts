@@ -7,7 +7,9 @@ export type IPhraseView = {
 };
 
 export default interface IPhraseSettings {
-  handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
+  handleSubmit: (
+    callback: OnSubmit<FieldValues>
+  ) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
   register: Ref<any>;
   control: any;
   onSubmit: (data: any) => void;

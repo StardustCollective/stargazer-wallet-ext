@@ -17,29 +17,29 @@ const styles = StyleSheet.create({
   swapInputRightBlock: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   swapInputTextInput: {
     marginLeft: 16,
     marginRight: 16,
     fontSize: 20,
-    color: COLORS.black
+    color: COLORS.black,
   },
   swapInputChevron: {
-    marginRight: 16
+    marginRight: 16,
   },
   swapInputTickerText: {
     marginRight: 17,
-    marginLeft: 17
+    marginLeft: 17,
   },
   currencyIcon: {
-    borderRadius: 100, 
-    width: 30, 
-    height: 30, 
+    borderRadius: 100,
+    width: 30,
+    height: 30,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor:  COLORS.gray_200,
-  }
+    borderColor: COLORS.gray_200,
+  },
 });
 
 export default styles;

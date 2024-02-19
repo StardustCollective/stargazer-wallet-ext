@@ -24,7 +24,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const accountController = getAccountController();
   const { type } = route.params;
   const { selected } = route.params;
-  
+
   const contactsController = getContactsController();
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const contacts: IContactBookState = useSelector((state: RootState) => state.contacts);
@@ -38,7 +38,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   });
 
   const [address, setAddress] = useState('');
-  
+
   useEffect(() => {
     if (selected && contacts[selected].address) {
       const { address: contactAddress } = contacts[selected];
@@ -50,7 +50,10 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
   const isValidAddress = useMemo(() => {
     if (address) {
       if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
-        return accountController.isValidDAGAddress(address) || accountController.isValidERC20Address(address);
+        return (
+          accountController.isValidDAGAddress(address) ||
+          accountController.isValidERC20Address(address)
+        );
       }
       const asset = activeWallet.assets[0];
       if (asset.type === AssetType.Constellation) {
@@ -63,21 +66,18 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
 
   const hideStatusIcon = !isValidAddress;
 
-  const handleAddressChange = useCallback(
-    (ev: any) => {
-      if (ev.nativeEvent?.text) {
-        const addressValue = ev.nativeEvent.text.trim();
-        const filteredAddress = removeEthereumPrefix(addressValue);
-        setAddress(filteredAddress);
-        setValue('address', filteredAddress);
-      } else if (ev.target) {
-        const addressValue = ev.target.value.trim();
-        const filteredAddress = removeEthereumPrefix(addressValue);
-        setAddress(filteredAddress);
-      }
-    },
-    []
-  );
+  const handleAddressChange = useCallback((ev: any) => {
+    if (ev.nativeEvent?.text) {
+      const addressValue = ev.nativeEvent.text.trim();
+      const filteredAddress = removeEthereumPrefix(addressValue);
+      setAddress(filteredAddress);
+      setValue('address', filteredAddress);
+    } else if (ev.target) {
+      const addressValue = ev.target.value.trim();
+      const filteredAddress = removeEthereumPrefix(addressValue);
+      setAddress(filteredAddress);
+    }
+  }, []);
 
   const onSubmit = (data: any) => {
     if (!isValidAddress) {
@@ -87,7 +87,13 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
       });
       return;
     }
-    contactsController.modifyContact(type, data.name, data.address.trim(), data.memo, selected);
+    contactsController.modifyContact(
+      type,
+      data.name,
+      data.address.trim(),
+      data.memo,
+      selected
+    );
     navigation.goBack();
   };
 

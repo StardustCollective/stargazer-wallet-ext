@@ -34,27 +34,29 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 const ICON_WIDTH = 12;
 const ICON_HEIGHT = 6;
 
-const NetworkPicker: FC<INetworkPicker> = ({ title, isOpen, onPress, icon = null }): JSX.Element => {
+const NetworkPicker: FC<INetworkPicker> = ({
+  title,
+  isOpen,
+  onPress,
+  icon = null,
+}): JSX.Element => {
   const logoExtraStyle = icon?.includes('constellation') ? styles.constellationLogo : {};
-  const iconStyle = StyleSheet.flatten([
-    styles.icon,
-    logoExtraStyle
-  ]);
+  const iconStyle = StyleSheet.flatten([styles.icon, logoExtraStyle]);
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
-      {!!icon && 
+      {!!icon && (
         <View style={styles.iconContainer}>
-          <Image style={iconStyle} source={{ uri: icon }}/>
+          <Image style={iconStyle} source={{ uri: icon }} />
         </View>
-      }
+      )}
       <View style={styles.titleContainer}>
         <TextV3.CaptionStrong color={COLORS_ENUMS.WHITE}>{title}</TextV3.CaptionStrong>
       </View>
       <View>
         {isOpen ? (
-          <ArrowUpIcon width={ICON_WIDTH} height={ICON_HEIGHT} color="white"  />
-          ) : (
+          <ArrowUpIcon width={ICON_WIDTH} height={ICON_HEIGHT} color="white" />
+        ) : (
           <ArrowDownIcon width={ICON_WIDTH} height={ICON_HEIGHT} color="white" />
         )}
       </View>

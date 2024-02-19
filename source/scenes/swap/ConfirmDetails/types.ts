@@ -8,12 +8,12 @@ export interface ISwapTokensContainer {
 }
 
 export default interface ITransferInfo {
-  tempTx: ITransactionInfo,
-  assetInfo: IAssetInfoState,
-  activeWallet: IWalletState,
-  feeUnit: string,
-  transactionId: string,
-  isSwapButtonLoading: boolean,
+  tempTx: ITransactionInfo;
+  assetInfo: IAssetInfoState;
+  activeWallet: IWalletState;
+  feeUnit: string;
+  transactionId: string;
+  isSwapButtonLoading: boolean;
   getSendAmount: () => string;
   getFeeAmount: () => number;
   getTotalAmount: () => string;

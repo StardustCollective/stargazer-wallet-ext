@@ -16,7 +16,6 @@ const CreatePass: FC<ICreatePass> = ({
   comment,
   title,
 }) => {
-
   return (
     <Layout title={title}>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
@@ -45,14 +44,12 @@ const CreatePass: FC<ICreatePass> = ({
               variant={styles.repass}
             />
             <span className={styles.warning}>
-              At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1
-              special character.
+              At least 8 characters, 1 lower-case, 1 upper-case, 1 numeral and 1 special
+              character.
             </span>
             {(errors.password || errors.repassword) && (
               <span id="createPass-passwordError" className={styles.error}>
-                {errors.password
-                  ? errors.password.message
-                  : errors.repassword.message}
+                {errors.password ? errors.password.message : errors.repassword.message}
               </span>
             )}
           </>

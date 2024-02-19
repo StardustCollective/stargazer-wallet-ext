@@ -27,23 +27,28 @@ import { IBuyList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
 
 const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
-
   const renderAssetList = () => {
     const assets = supportedAssets?.data;
 
     return (
       <>
-        {assets ? assets.map((asset: IAssetInfoState) => {
-          return (
-            <AssetItem
-              id={asset.id}
-              key={asset.id}
-              asset={asset}
-              assetInfo={asset}
-              itemClicked={() => handleSelectAsset(asset.id)}
-            />
-          );
-        }) : <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>There was an error loading assets. Please try again later.</TextV3.Caption>}
+        {assets ? (
+          assets.map((asset: IAssetInfoState) => {
+            return (
+              <AssetItem
+                id={asset.id}
+                key={asset.id}
+                asset={asset}
+                assetInfo={asset}
+                itemClicked={() => handleSelectAsset(asset.id)}
+              />
+            );
+          })
+        ) : (
+          <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
+            There was an error loading assets. Please try again later.
+          </TextV3.Caption>
+        )}
       </>
     );
   };
@@ -54,7 +59,13 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
 
   return (
     <div className={styles.container}>
-      {supportedAssets?.loading ? <div className={styles.loaderContainer}><CircularProgress size={18} /></div> : renderAssetList()}
+      {supportedAssets?.loading ? (
+        <div className={styles.loaderContainer}>
+          <CircularProgress size={18} />
+        </div>
+      ) : (
+        renderAssetList()
+      )}
     </div>
   );
 };

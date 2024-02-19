@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: FONT_WEIGHTS.semibold,
-  }
+  },
 });
 
 export default styles;

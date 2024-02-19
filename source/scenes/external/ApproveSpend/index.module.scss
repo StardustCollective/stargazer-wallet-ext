@@ -1,11 +1,11 @@
-@import "~assets/styles/variables";
+@import '~assets/styles/variables';
 
 .headerContainer {
   display: flex;
   flex-direction: column;
   padding-left: 8px;
   padding-right: 8px;
-  
+
   .row {
     display: flex;
     flex-direction: row;

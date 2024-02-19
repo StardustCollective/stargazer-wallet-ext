@@ -1,13 +1,12 @@
 ///////////////////////////
-// Modules  
+// Modules
 ///////////////////////////
 
 import React, { FC } from 'react';
 import { View } from 'react-native';
 
-
 ///////////////////////////
-// Components  
+// Components
 ///////////////////////////
 
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -15,36 +14,33 @@ import Layout from 'scenes/common/Layout';
 import TextV3 from 'components/TextV3';
 
 ///////////////////////////
-// Styles  
+// Styles
 ///////////////////////////
 
 import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 ///////////////////////////
-// Types  
+// Types
 ///////////////////////////
 
 import IRemindPhrase from './types';
 
 ///////////////////////////
-// Scenes  
+// Scenes
 ///////////////////////////
 
-const RemindPhrase: FC<IRemindPhrase> = ({
-  nextHandler
-}) => {
-
+const RemindPhrase: FC<IRemindPhrase> = ({ nextHandler }) => {
   ///////////////////////////
-  // Render  
+  // Render
   ///////////////////////////
 
   return (
     <Layout title={`Let's create your\nrecovery phrase`}>
       <TextV3.BodyStrong color={COLORS_ENUMS.DARK_GRAY}>
         A recovery phrase is a series of 12 words in a specific order. This word
-        combination is unique to your wallet. Make sure to have pen and paper
-        ready so you can write it down.
+        combination is unique to your wallet. Make sure to have pen and paper ready so you
+        can write it down.
       </TextV3.BodyStrong>
       <View style={styles.buttonContainer}>
         <ButtonV3

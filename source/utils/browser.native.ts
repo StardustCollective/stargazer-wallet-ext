@@ -31,14 +31,14 @@ export const open = async (url: string) => {
           startEnter: 'slide_in_bottom',
           startExit: 'slide_out_top',
           endEnter: 'slide_in_top',
-          endExit: 'slide_out_bottom'
+          endExit: 'slide_out_bottom',
         },
-      })
-    } else Linking.openURL(url)
+      });
+    } else Linking.openURL(url);
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 export const reload = () => {
   // We don't need to reload for React Native

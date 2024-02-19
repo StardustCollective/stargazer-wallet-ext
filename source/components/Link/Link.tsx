@@ -2,7 +2,7 @@ import React, { ReactNode, FC } from 'react';
 import clsx from 'clsx';
 // import { Link as RouterLink } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import  MULink from '@material-ui/core/Link';
+import MULink from '@material-ui/core/Link';
 
 import styles from './Link.scss';
 
@@ -22,7 +22,6 @@ const Link: FC<ILink> = ({
   noUnderline = false,
   onClick,
   extraStyles,
-
 }) => {
   const classes = clsx(styles.link, extraStyles, styles[color], {
     [styles.noUnderline]: noUnderline,

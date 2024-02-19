@@ -42,16 +42,12 @@ import {
   EXOLIX_EMAIL,
 } from './constants';
 
-const TransactionDetails: FC<ITransferInfo> = ({
-  transaction,
-  onSupportLinkPress
-}) => {
-
+const TransactionDetails: FC<ITransferInfo> = ({ transaction, onSupportLinkPress }) => {
   return (
     <div className={styles.container}>
       <div className={styles.amount}>
         <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
-          {transaction?.amountTo}{' '}{transaction?.coinTo.coinCode}
+          {transaction?.amountTo} {transaction?.coinTo.coinCode}
         </TextV3.BodyStrong>
       </div>
       <div className={styles.detailRow}>
@@ -152,7 +148,7 @@ const TransactionDetails: FC<ITransferInfo> = ({
           {transaction?.id}
         </TextV3.CaptionRegular>
       </div>
-      <ButtonBase classes={{root: styles.supportEmail}} onClick={onSupportLinkPress}>
+      <ButtonBase classes={{ root: styles.supportEmail }} onClick={onSupportLinkPress}>
         <TextV3.Caption color={COLORS_ENUMS.BLACK}>
           {NEED_HELP_CONTACT}
           <TextV3.Caption color={COLORS_ENUMS.LINK_BLUE}>{EXOLIX_EMAIL}</TextV3.Caption>
@@ -160,6 +156,6 @@ const TransactionDetails: FC<ITransferInfo> = ({
       </ButtonBase>
     </div>
   );
-}
+};
 
 export default TransactionDetails;

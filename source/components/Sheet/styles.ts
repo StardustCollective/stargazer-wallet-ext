@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     height: 32,
     alignItems: 'center',
   },
-  handle:{
+  handle: {
     height: 4,
     width: 36,
     borderRadius: 100,
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   children: {
     flexGrow: 1,
     marginTop: 16,
-  }
+  },
 });
 
 export default styles;

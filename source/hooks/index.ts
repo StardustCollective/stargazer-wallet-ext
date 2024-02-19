@@ -15,9 +15,7 @@ export function useSettingsView() {
   }, []);
 }
 
-export function useCopyClipboard(
-  timeout = 1000
-): [boolean, (toCopy: string) => void] {
+export function useCopyClipboard(timeout = 1000): [boolean, (toCopy: string) => void] {
   const [isCopied, setIsCopied] = useState(false);
 
   const staticCopy = useCallback(async (text: any) => {

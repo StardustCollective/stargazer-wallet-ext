@@ -1,4 +1,4 @@
-@import "~assets/styles/variables";
+@import '~assets/styles/variables';
 
 .wrapper {
   display: flex;
@@ -56,7 +56,7 @@
       top: -44px;
       width: 100%;
       border-radius: 8px;
-      border: 1px solid #0000003D;
+      border: 1px solid #0000003d;
       background-color: $white;
       z-index: 1;
       height: 200px;
@@ -67,7 +67,7 @@
       top: -44px;
       margin-top: 8px;
       align-self: center;
-      
+
       .footerText {
         font-size: 10px;
         line-height: 16px;
@@ -86,13 +86,13 @@
     justify-content: center;
     align-items: center;
 
-    button:first-child{
+    button:first-child {
       margin-right: 8px;
       div > span {
         font-weight: $semibold;
       }
     }
-    button:last-child{
+    button:last-child {
       margin-left: 8px;
       div > span {
         font-weight: $semibold;

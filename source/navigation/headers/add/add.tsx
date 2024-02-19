@@ -26,11 +26,7 @@ interface IAddHeader {
 // Header
 ///////////////////////////
 
-const addHeader = ({
-  navigation,
-  onRightIconClick,
-}: IAddHeader) => {
-
+const addHeader = ({ navigation, onRightIconClick }: IAddHeader) => {
   return {
     ...defaultHeader({ navigation }),
     headerRight: () => (
@@ -42,7 +38,7 @@ const addHeader = ({
         <AddIcon className={styles.buttonRight} />
       </IconButton>
     ),
-  }
+  };
 };
 
 export default addHeader;

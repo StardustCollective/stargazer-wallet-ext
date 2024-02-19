@@ -32,21 +32,21 @@ const GasSettings: FC<IGasSettings> = ({
     <div className={styles.gasSettings} onClick={null}>
       {viewState === constants.GAS_SETTINGS_STATE_ENUM.OPTIONS && (
         <div className={styles.options}>
-          <ButtonV3 
+          <ButtonV3
             type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
             label={constants.CANCEL_BUTTON_STRING}
-            onClick={(ev: any) =>  {
+            onClick={(ev: any) => {
               ev.stopPropagation();
-              onCancelButtonClick()
+              onCancelButtonClick();
             }}
             extraStyle={styles.buttonContainer}
           />
-          <ButtonV3 
+          <ButtonV3
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             label={constants.SPEED_UP_BUTTON_STRING}
-            onClick={(ev: any) =>  {
+            onClick={(ev: any) => {
               ev.stopPropagation();
-              onSpeedUpButtonClick()
+              onSpeedUpButtonClick();
             }}
             extraStyle={styles.buttonContainer}
           />
@@ -94,21 +94,21 @@ const GasSettings: FC<IGasSettings> = ({
                 </div>
               </div>
               <div className={styles.footer}>
-                <ButtonV3 
+                <ButtonV3
                   type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
                   label={constants.CANCEL_BUTTON_STRING}
-                  onClick={(ev: any) =>  {
+                  onClick={(ev: any) => {
                     ev.stopPropagation();
-                    onSettingCancelButtonClick()
+                    onSettingCancelButtonClick();
                   }}
                   extraStyle={styles.buttonContainer}
                 />
-                <ButtonV3 
+                <ButtonV3
                   type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                   label={constants.SPEED_UP_BUTTON_STRING}
-                  onClick={(ev: any) =>  {
+                  onClick={(ev: any) => {
                     ev.stopPropagation();
-                    onSpeedUpConfirmButtonClicked()
+                    onSpeedUpConfirmButtonClicked();
                   }}
                   extraStyle={styles.buttonContainer}
                 />
@@ -130,37 +130,37 @@ const GasSettings: FC<IGasSettings> = ({
           <div className={styles.box}>
             <div className={styles.content}>
               <div className={styles.header}>
-                <TextV3.CaptionStrong 
-                  color={COLORS_ENUMS.BLACK} 
+                <TextV3.CaptionStrong
+                  color={COLORS_ENUMS.BLACK}
                   extraStyles={styles.cancelBodyTitle}
-                > 
+                >
                   {constants.CANCEL_TRANSACTION_STRING}?
                 </TextV3.CaptionStrong>
               </div>
               <div className={styles.body}>
-                <TextV3.Caption 
-                  color={COLORS_ENUMS.DARK_GRAY_200} 
+                <TextV3.Caption
+                  color={COLORS_ENUMS.DARK_GRAY_200}
                   extraStyles={styles.cancelBodyText}
                 >
                   {constants.CANCEL_TRANSACTION_PROMPT_STRING}
                 </TextV3.Caption>
               </div>
               <div className={styles.footer}>
-                <ButtonV3 
+                <ButtonV3
                   type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
                   label={constants.CANCEL_TRANSACTION_STRING}
-                  onClick={(ev: any) =>  {
+                  onClick={(ev: any) => {
                     ev.stopPropagation();
-                    onCancelTransactionButtonClicked()
+                    onCancelTransactionButtonClicked();
                   }}
                   extraStyle={styles.buttonContainer}
                 />
-                <ButtonV3 
+                <ButtonV3
                   type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                   label={constants.KEEP_STRING}
-                  onClick={(ev: any) =>  {
+                  onClick={(ev: any) => {
                     ev.stopPropagation();
-                    onKeepButtonClicked()
+                    onKeepButtonClicked();
                   }}
                   extraStyle={styles.buttonContainer}
                 />

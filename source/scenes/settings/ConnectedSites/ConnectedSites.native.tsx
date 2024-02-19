@@ -11,7 +11,10 @@ import styles from './styles';
 
 import IConnectedSitesSettings from './types';
 
-const ConnectedSites: FC<IConnectedSitesSettings> = ({ onDeleteSiteClicked, connectedSites }) => {
+const ConnectedSites: FC<IConnectedSitesSettings> = ({
+  onDeleteSiteClicked,
+  connectedSites,
+}) => {
   return (
     <View style={styles.wallets}>
       {Object.values(connectedSites).length > 0 && (
@@ -27,13 +30,19 @@ const ConnectedSites: FC<IConnectedSitesSettings> = ({ onDeleteSiteClicked, conn
               {site.origin}
             </TextV3.Body>
             <View style={styles.iconContainer}>
-              <Icon name="delete-forever" iconStyles={styles.details} onPress={onDeleteSiteClicked(site.id)} />
+              <Icon
+                name="delete-forever"
+                iconStyles={styles.details}
+                onPress={onDeleteSiteClicked(site.id)}
+              />
             </View>
           </View>
         ))}
         {Object.values(connectedSites).length <= 0 && (
           <View style={styles.noSitesConnected}>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>This account is not connected to any sites.</TextV3.Caption>
+            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+              This account is not connected to any sites.
+            </TextV3.Caption>
           </View>
         )}
       </View>

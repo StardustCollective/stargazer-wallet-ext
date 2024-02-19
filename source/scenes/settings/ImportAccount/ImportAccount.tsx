@@ -16,7 +16,7 @@ import FileSelect from 'components/FileSelect';
 // import LedgerIcon from 'assets/images/svg/ledger.svg';
 import BitfiIcon from 'assets/images/svg/bitfi.svg';
 import styles from './ImportAccount.scss';
-import { useAlert } from 'react-alert'
+import { useAlert } from 'react-alert';
 
 import IImportAccountSettings, { HardwareWallet } from './types';
 
@@ -45,15 +45,15 @@ const ImportAccount: FC<IImportAccountSettings> = ({
 }) => {
   const alert = useAlert();
   let [hardwareWallet, setHardwareWallet] = useState(HARDWARE_WALLET.none);
-  let [dropDownMenuOptions, setDropDownMenuOptions] = useState<Array<IOption>>([{ priv: 'Private key' }, { json: 'JSON file' }]);
+  let [dropDownMenuOptions, setDropDownMenuOptions] = useState<Array<IOption>>([
+    { priv: 'Private key' },
+    { json: 'JSON file' },
+  ]);
 
   useEffect(() => {
     // Display a hardware type in drop down for constenllation wallet imports
     if (network === KeyringNetwork.Constellation) {
-      let newDropDownState = [
-        ...dropDownMenuOptions,
-        { hardware: 'Hardware wallet' }
-      ]
+      let newDropDownState = [...dropDownMenuOptions, { hardware: 'Hardware wallet' }];
       setDropDownMenuOptions(newDropDownState);
     }
   }, []);
@@ -120,7 +120,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
 
   const onHardwareTypeClick = (hardwareType: HARDWARE_WALLET) => {
     setHardwareWallet(hardwareType);
-  }
+  };
 
   return (
     <form className={styles.import} onSubmit={handleSubmit(onSubmit)}>
@@ -171,7 +171,11 @@ const ImportAccount: FC<IImportAccountSettings> = ({
               </>
             ) : importType === 'json' ? (
               <>
-                <FileSelect id="importAccount-fileInput" onChange={(val) => setJsonFile(val)} disabled={loading} />
+                <FileSelect
+                  id="importAccount-fileInput"
+                  onChange={(val) => setJsonFile(val)}
+                  disabled={loading}
+                />
                 <span>Please enter your JSON file password:</span>
                 <TextInput
                   id="importAccount-jsonPasswordInput"
@@ -201,7 +205,15 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                         <img src={`/${LedgerIcon}`} alt="ledger_icon" />
                       </div>
                       &nbsp; */}
-                      <div onClick={() => onHardwareTypeClick(HARDWARE_WALLET.bitfi)} className={clsx([styles.walletModel, hardwareWallet === HARDWARE_WALLET.bitfi ? styles.walletModelSelected : null])}>
+                      <div
+                        onClick={() => onHardwareTypeClick(HARDWARE_WALLET.bitfi)}
+                        className={clsx([
+                          styles.walletModel,
+                          hardwareWallet === HARDWARE_WALLET.bitfi
+                            ? styles.walletModelSelected
+                            : null,
+                        ])}
+                      >
                         <img src={`/${BitfiIcon}`} alt="bitfi_icon" />
                       </div>
                     </div>
@@ -225,8 +237,9 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                           <div className={styles.wallet}>
                             <table>
                               <tbody>
-                                {hardwareWalletList.map((hwItem: HardwareWallet, index: number) =>
-                                  renderWallet(hwItem, index)
+                                {hardwareWalletList.map(
+                                  (hwItem: HardwareWallet, index: number) =>
+                                    renderWallet(hwItem, index)
                                 )}
                               </tbody>
                             </table>
@@ -246,9 +259,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
             )}
             {importType !== 'hardware' && (
               <>
-                <span>
-                  Please name your new account:
-                </span>
+                <span>Please name your new account:</span>
                 <TextInput
                   id="importAccount-accountNameInput"
                   fullWidth
@@ -268,7 +279,19 @@ const ImportAccount: FC<IImportAccountSettings> = ({
             >
               Cancel
             </Button>
-            <Button disabled={importType === 'hardware' ? hardwareWallet === HARDWARE_WALLET.none ? true : false : false} id="importAccount-confirmNextButton" type="submit" variant={styles.button} loading={loading}>
+            <Button
+              disabled={
+                importType === 'hardware'
+                  ? hardwareWallet === HARDWARE_WALLET.none
+                    ? true
+                    : false
+                  : false
+              }
+              id="importAccount-confirmNextButton"
+              type="submit"
+              variant={styles.button}
+              loading={loading}
+            >
               {importType === 'hardware' ? 'Next' : 'Import'}
             </Button>
           </section>

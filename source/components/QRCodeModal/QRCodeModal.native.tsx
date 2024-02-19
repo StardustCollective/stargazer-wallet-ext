@@ -21,7 +21,13 @@ import { IQRCodeModal } from './types';
 
 import styles from './styles';
 
-const QRCodeModal: FC<IQRCodeModal> = ({ open, address, onClose, copyAddress, textTooltip }) => {
+const QRCodeModal: FC<IQRCodeModal> = ({
+  open,
+  address,
+  onClose,
+  copyAddress,
+  textTooltip,
+}) => {
   ///////////////////////////
   // Render
   ///////////////////////////

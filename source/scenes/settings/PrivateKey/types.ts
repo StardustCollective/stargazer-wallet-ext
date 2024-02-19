@@ -7,7 +7,9 @@ export type IPrivateKeyView = {
 };
 
 export default interface IPrivateKeySettings {
-  handleSubmit: (callback: OnSubmit<FieldValues>) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
+  handleSubmit: (
+    callback: OnSubmit<FieldValues>
+  ) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
   register: Ref<any>;
   control: any;
   handleCopyPrivKey: () => void;

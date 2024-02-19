@@ -9,4 +9,4 @@ enum AvailableEvents {
   message = 'message',
 }
 
-export {AvailableEvents}
+export { AvailableEvents };

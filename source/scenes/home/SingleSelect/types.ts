@@ -5,6 +5,6 @@ export interface ISingleSelect {
 }
 
 export interface ISingleSelectContainer {
-  navigation: any,
-  route: any,
+  navigation: any;
+  route: any;
 }

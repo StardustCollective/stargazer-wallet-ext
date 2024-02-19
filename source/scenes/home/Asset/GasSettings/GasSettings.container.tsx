@@ -18,7 +18,9 @@ const GasSettingsContainer: FC<IGasSettingsProps> = ({
   onSpeedUpClick,
   onCancelClick,
 }) => {
-  const [viewState, setViewState] = useState<GAS_SETTINGS_STATE_ENUM>(GAS_SETTINGS_STATE_ENUM.OPTIONS);
+  const [viewState, setViewState] = useState<GAS_SETTINGS_STATE_ENUM>(
+    GAS_SETTINGS_STATE_ENUM.OPTIONS
+  );
   const getFiatAmount = useFiat();
 
   useEffect(() => {
@@ -27,8 +29,7 @@ const GasSettingsContainer: FC<IGasSettingsProps> = ({
       // What should happen if the transaction is not cancelled?
       // setViewState(GAS_SETTINGS_STATE_ENUM.ERROR);
     }
-  }, [cancelError])
-  
+  }, [cancelError]);
 
   const onSpeedUpButtonClick = () => {
     setViewState(GAS_SETTINGS_STATE_ENUM.SETTINGS);

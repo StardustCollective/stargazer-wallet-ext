@@ -55,7 +55,6 @@ class LedgerBridgeUtil {
   /////////////////////////////
 
   constructor() {
-
     // Initialize required dependencies
     this.initialize();
   }
@@ -68,16 +67,17 @@ class LedgerBridgeUtil {
     // Configure Dag4 network
     const { activeNetwork } = store.getState().vault;
     const dagNetworkValue = activeNetwork.Constellation;
-    dag4.account.connect({
-      id: DAG_NETWORK[dagNetworkValue].id,
-      networkVersion: DAG_NETWORK[dagNetworkValue].version,
-      ...DAG_NETWORK[dagNetworkValue].config,
-    }, false);
+    dag4.account.connect(
+      {
+        id: DAG_NETWORK[dagNetworkValue].id,
+        networkVersion: DAG_NETWORK[dagNetworkValue].version,
+        ...DAG_NETWORK[dagNetworkValue].config,
+      },
+      false
+    );
   };
 
-  private getAccountData = async (
-    startIndex: number
-  ): Promise<LedgerAccount[]> => {
+  private getAccountData = async (startIndex: number): Promise<LedgerAccount[]> => {
     // Close any existing connection before creating a new one.
     this.transport.close();
     // Begins requesting public keys from ledger
@@ -86,9 +86,7 @@ class LedgerBridgeUtil {
       this.NUMBER_OF_ACCOUNTS,
       this.onProgressUpdate
     );
-    const accountData = await this.ledgerBridge.getAccountInfoForPublicKeys(
-      publicKeys
-    );
+    const accountData = await this.ledgerBridge.getAccountInfoForPublicKeys(publicKeys);
     return accountData.map((d: LedgerAccount) => ({
       ...d,
       balance: Number(d.balance).toFixed(2).toString(),
@@ -99,13 +97,25 @@ class LedgerBridgeUtil {
   // Public Methods
   /////////////////////////////
 
-  public buildTransaction = (amount: number, publicKey: string, bip44Index: number, fromAddress: string, toAddress: string) => {
-    return this.ledgerBridge.buildTx(amount, publicKey, bip44Index, fromAddress, toAddress);
+  public buildTransaction = (
+    amount: number,
+    publicKey: string,
+    bip44Index: number,
+    fromAddress: string,
+    toAddress: string
+  ) => {
+    return this.ledgerBridge.buildTx(
+      amount,
+      publicKey,
+      bip44Index,
+      fromAddress,
+      toAddress
+    );
   };
 
   public signMessage = (message: string, bip44Index: number) => {
     return this.ledgerBridge.signMessage(message, bip44Index);
-  }
+  };
 
   /**
    * Closes any existing transport connections
@@ -113,7 +123,7 @@ class LedgerBridgeUtil {
   public closeConnection = () => {
     // Close any existing connection before creating a new one.
     this.transport.close();
-  };     
+  };
 
   /**
    * Requests permission to access the Ledger device via USB.
@@ -123,7 +133,7 @@ class LedgerBridgeUtil {
     // Instantiate the ledger transport
     this.transport = await webHidTransport.create();
     // Close any existing connections;
-    if(this.transport.device){
+    if (this.transport.device) {
       this.transport.close();
     }
     // Instantiate the ledger bridge

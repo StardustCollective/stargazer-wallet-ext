@@ -1,4 +1,3 @@
-
 import { ISearchCurrency, ICurrencyRate } from 'state/swap/types';
 
 export interface ISwapTokensContainer {
@@ -13,7 +12,7 @@ export default interface ISwapTokens {
   onSwapFromTokenListPressed: () => void;
   onSwapToTokenListPressed: () => void;
   fromBalance: string;
-  onFromChangeText: ( text: string) => void;
+  onFromChangeText: (text: string) => void;
   isBalanceError: boolean;
   isNextButtonDisabled: boolean;
   isRateError: boolean;

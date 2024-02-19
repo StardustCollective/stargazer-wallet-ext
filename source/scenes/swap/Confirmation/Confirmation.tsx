@@ -38,7 +38,7 @@ import {
   YOUR_TOKEN_SWAP_STRING,
   STATUS_OF_YOUR_TRASACTION_STRING,
   VIEW_SWAP_HISTORY_STRING,
-  DONE_STRING
+  DONE_STRING,
 } from './constants';
 
 const CHECK_CIRCLE_WIDTH = 78;
@@ -47,7 +47,6 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
   onViewSwapHistoryPressed,
   onDonePressed,
 }) => {
-
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -82,6 +81,6 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
       </div>
     </div>
   );
-}
+};
 
 export default ConfirmDetails;

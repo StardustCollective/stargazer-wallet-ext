@@ -1,4 +1,3 @@
-
 export interface ISignature {
   key: string;
   token: string;

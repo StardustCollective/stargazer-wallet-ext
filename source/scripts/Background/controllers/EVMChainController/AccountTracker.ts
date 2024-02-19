@@ -3,37 +3,45 @@ import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHel
 
 type TokenBalances = {
   [address: string]: string;
-}
+};
 
 type TokenInfo = {
-  contractAddress: string,
-  decimals: number,
-  balance?: string,
-  chain: string,
-}
+  contractAddress: string;
+  decimals: number;
+  balance?: string;
+  chain: string;
+};
 
 export class AccountTracker {
-
   private chainId: number;
   private isRunning = false;
   private accounts: TokenInfo[];
   private provider: ethers.providers.JsonRpcProvider;
-  private callback: (e: string, t:TokenBalances) => void;
+  private callback: (e: string, t: TokenBalances) => void;
   private ethAddress: string;
   private debounceTimeSec: number;
   private timeoutId: any;
   private lastBlock: number;
 
-  config(ethAddress: string, rpcProviderURL: string, accounts: TokenInfo[], chainId = 1, callback: (e: string, t: TokenBalances) => void, debounceTimeSec = 1) {
+  config(
+    ethAddress: string,
+    rpcProviderURL: string,
+    accounts: TokenInfo[],
+    chainId = 1,
+    callback: (e: string, t: TokenBalances) => void,
+    debounceTimeSec = 1
+  ) {
     if (this.isRunning) {
       this.stop();
     }
     this.ethAddress = ethAddress;
     this.accounts = accounts;
     this.chainId = chainId;
-    this.provider = rpcProviderURL ? new ethers.providers.JsonRpcProvider(rpcProviderURL) : null;
+    this.provider = rpcProviderURL
+      ? new ethers.providers.JsonRpcProvider(rpcProviderURL)
+      : null;
     this.callback = callback;
-    this.debounceTimeSec = debounceTimeSec > 0.1 ? debounceTimeSec : 1
+    this.debounceTimeSec = debounceTimeSec > 0.1 ? debounceTimeSec : 1;
 
     if (!!this.ethAddress) {
       this.start();
@@ -44,15 +52,22 @@ export class AccountTracker {
 
   async getTokenBalances() {
     if (!!this.provider) {
-      const tokenAddresses = this.accounts.map(t => t.contractAddress);
+      const tokenAddresses = this.accounts.map((t) => t.contractAddress);
       const mainTokenBalance = await this.provider.getBalance(this.ethAddress);
       const mainTokenBalanceNum = ethers.utils.formatEther(mainTokenBalance) || '-';
       const tokenBalances: TokenBalances = {};
       if (tokenAddresses?.length) {
-        const rawTokenBalances = await tokenContractHelper.getAddressBalances(this.provider, this.ethAddress, tokenAddresses, this.chainId);
-        this.accounts.forEach(t => {
-          tokenBalances[`${t.contractAddress}-${t.chain}`] = ethers.utils.formatUnits(rawTokenBalances[t.contractAddress], t.decimals) || '-';
-        })
+        const rawTokenBalances = await tokenContractHelper.getAddressBalances(
+          this.provider,
+          this.ethAddress,
+          tokenAddresses,
+          this.chainId
+        );
+        this.accounts.forEach((t) => {
+          tokenBalances[`${t.contractAddress}-${t.chain}`] =
+            ethers.utils.formatUnits(rawTokenBalances[t.contractAddress], t.decimals) ||
+            '-';
+        });
       }
       this.callback(mainTokenBalanceNum, tokenBalances);
     }
@@ -73,7 +88,10 @@ export class AccountTracker {
           this.lastBlock = block;
         }
 
-        this.timeoutId = setTimeout(() => this.runInterval(), this.debounceTimeSec * 1000);
+        this.timeoutId = setTimeout(
+          () => this.runInterval(),
+          this.debounceTimeSec * 1000
+        );
       } catch (e) {
         // Wait 30 seconds
         this.timeoutId = setTimeout(() => this.runInterval(), 30 * 1000);
