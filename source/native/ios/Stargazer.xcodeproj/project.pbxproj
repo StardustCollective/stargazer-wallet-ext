@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1E2FE09827F62384002BAE26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2FE09727F62384002BAE26 /* LaunchScreen.storyboard */; };
+		1E5737A22B83941C00F52B5B /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1E5737A12B83941C00F52B5B /* AppCenter-Config.plist */; };
 		26343C94D6BF485C88B9FFA3 /* Rubik.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CB947F12DA1438EA7989B2A /* Rubik.ttf */; };
 		722F3CBD5DF5AA385D8EBFF8 /* libPods-Stargazer-StargazerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28B3D412B4B748BCE8796E7A /* libPods-Stargazer-StargazerTests.a */; };
 		94AA58ADD20B4844B07EF299 /* Inter-SansSerif.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71AE7215BA994DFD9ADA3726 /* Inter-SansSerif.ttf */; };
@@ -39,6 +40,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Stargazer/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Stargazer/main.m; sourceTree = "<group>"; };
 		1E2FE09727F62384002BAE26 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1E5737A12B83941C00F52B5B /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "Stargazer/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		24FC348AE109A6CB5166C46F /* Pods-Stargazer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer.debug.xcconfig"; path = "Target Support Files/Pods-Stargazer/Pods-Stargazer.debug.xcconfig"; sourceTree = "<group>"; };
 		28B3D412B4B748BCE8796E7A /* libPods-Stargazer-StargazerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stargazer-StargazerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB947F12DA1438EA7989B2A /* Rubik.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Rubik.ttf; path = ../fonts/Rubik.ttf; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 		13B07FAE1A68108700A75B9A /* Stargazer */ = {
 			isa = PBXGroup;
 			children = (
+				1E5737A12B83941C00F52B5B /* AppCenter-Config.plist */,
 				DBA7691027975BBE0038EE92 /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -266,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				1E5737A22B83941C00F52B5B /* AppCenter-Config.plist in Resources */,
 				1E2FE09827F62384002BAE26 /* LaunchScreen.storyboard in Resources */,
 				26343C94D6BF485C88B9FFA3 /* Rubik.ttf in Resources */,
 				94AA58ADD20B4844B07EF299 /* Inter-SansSerif.ttf in Resources */,
