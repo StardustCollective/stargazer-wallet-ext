@@ -51,10 +51,12 @@ cat $APP_CENTER_TRACKING_JSON_FILE
 
 # Navigate to the ios/android root folder
 cd $APPCENTER_SOURCE_DIRECTORY/source/native/$APP_CENTER_CURRENT_PLATFORM
+echo "PATH1=$APPCENTER_SOURCE_DIRECTORY/source/native/$APP_CENTER_CURRENT_PLATFORM"
 # Creates a sentry.properties file
 touch sentry.properties
 # Generates path to sentry.properties file
 SENTRY_PROPERTIES_PATH=$APPCENTER_SOURCE_DIRECTORY/source/native/$APP_CENTER_CURRENT_PLATFORM/sentry.properties
+echo "PATH2=$SENTRY_PROPERTIES_PATH"
 echo "Updating sentry.properties"
 # Adds content to the file
 echo "$SENTRY_DATA" > $SENTRY_PROPERTIES_PATH
