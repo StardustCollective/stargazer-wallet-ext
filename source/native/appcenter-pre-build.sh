@@ -23,12 +23,12 @@ fi
 if [ "$APP_CENTER_CURRENT_PLATFORM" == "android" ]
 then
     CONFIG_FILE="appcenter-config.json"
-    APP_CENTER_TRACKING_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/android/app/src/main/assets/$CONFIG_FILE
+    APP_CENTER_TRACKING_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/source/native/android/app/src/main/assets/$CONFIG_FILE
 else
     #iOS
     CONFIG_FILE="AppCenter-Config.plist"
     APP_NAME="Stargazer"
-    APP_CENTER_TRACKING_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/ios/$APP_NAME/$CONFIG_FILE
+    APP_CENTER_TRACKING_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/source/native/ios/$APP_NAME/$CONFIG_FILE
 fi
 
 
