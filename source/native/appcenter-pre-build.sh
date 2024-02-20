@@ -63,4 +63,4 @@ echo "$SENTRY_DATA" > $SENTRY_PROPERTIES_PATH
 # sed -i -e 's/\\"/'\"'/g' $SENTRY_PROPERTIES_PATH
 
 echo "File content:"
-cat $SENTRY_DATA
+cat $SENTRY_PROPERTIES_PATH
