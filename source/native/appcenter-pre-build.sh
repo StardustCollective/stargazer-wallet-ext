@@ -58,7 +58,7 @@ SENTRY_PROPERTIES_PATH=$APPCENTER_SOURCE_DIRECTORY/source/native/$APP_CENTER_CUR
 echo "Updating sentry.properties"
 # Adds content to the file
 echo "$SENTRY_DATA" > $SENTRY_PROPERTIES_PATH
-sed -i -e 's/\\"/'\"'/g' $SENTRY_PROPERTIES_PATH
+# sed -i -e 's/\\"/'\"'/g' $SENTRY_PROPERTIES_PATH
 
 echo "File content:"
 cat $SENTRY_DATA
