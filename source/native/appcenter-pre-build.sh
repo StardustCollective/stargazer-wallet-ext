@@ -18,6 +18,12 @@ then
     exit
 fi
 
+if [ -z "$SENTRY_DATA" ]
+then
+    echo "You need define the SENTRY_DATA variable in App Center"
+    exit
+fi
+
 # This is the path to the appcenter-config.json file
 
 if [ "$APP_CENTER_CURRENT_PLATFORM" == "android" ]
@@ -39,3 +45,20 @@ sed -i -e 's/\\"/'\"'/g' $APP_CENTER_TRACKING_JSON_FILE
 
 echo "File content:"
 cat $APP_CENTER_TRACKING_JSON_FILE
+
+
+# Creates and adds content to the sentry.properties file
+
+# Navigate to the ios/android root folder
+cd $APPCENTER_SOURCE_DIRECTORY/source/native/$APP_CENTER_CURRENT_PLATFORM
+# Creates a sentry.properties file
+touch sentry.properties
+# Generates path to sentry.properties file
+SENTRY_PROPERTIES_PATH=$APPCENTER_SOURCE_DIRECTORY/source/native/$APP_CENTER_CURRENT_PLATFORM/sentry.properties
+echo "Updating sentry.properties"
+# Adds content to the file
+echo "$SENTRY_DATA" > $SENTRY_PROPERTIES_PATH
+sed -i -e 's/\\"/'\"'/g' $SENTRY_PROPERTIES_PATH
+
+echo "File content:"
+cat $SENTRY_DATA
