@@ -135,7 +135,7 @@ android {
         applicationId "com.stargazer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 64
+        versionCode 65
         versionName "2.0.4"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
