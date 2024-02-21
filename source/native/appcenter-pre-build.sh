@@ -18,17 +18,23 @@ then
     exit
 fi
 
+if [ -z "$SENTRY_DATA" ]
+then
+    echo "You need define the SENTRY_DATA variable in App Center"
+    exit
+fi
+
 # This is the path to the appcenter-config.json file
 
 if [ "$APP_CENTER_CURRENT_PLATFORM" == "android" ]
 then
     CONFIG_FILE="appcenter-config.json"
-    APP_CENTER_TRACKING_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/android/app/src/main/assets/$CONFIG_FILE
+    APP_CENTER_TRACKING_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/source/native/android/app/src/main/assets/$CONFIG_FILE
 else
     #iOS
     CONFIG_FILE="AppCenter-Config.plist"
     APP_NAME="Stargazer"
-    APP_CENTER_TRACKING_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/ios/$APP_NAME/$CONFIG_FILE
+    APP_CENTER_TRACKING_JSON_FILE=$APPCENTER_SOURCE_DIRECTORY/source/native/ios/$APP_NAME/$CONFIG_FILE
 fi
 
 
@@ -39,3 +45,23 @@ sed -i -e 's/\\"/'\"'/g' $APP_CENTER_TRACKING_JSON_FILE
 
 echo "File content:"
 cat $APP_CENTER_TRACKING_JSON_FILE
+
+
+# Creates and adds content to the sentry.properties file
+
+# Navigate to the ios/android root folder
+cd $APPCENTER_SOURCE_DIRECTORY/source/native/$APP_CENTER_CURRENT_PLATFORM
+
+# Creates a sentry.properties file
+touch sentry.properties
+
+# Generates path to sentry.properties file
+SENTRY_PROPERTIES_PATH=$APPCENTER_SOURCE_DIRECTORY/source/native/$APP_CENTER_CURRENT_PLATFORM/sentry.properties
+
+echo "Updating sentry.properties"
+
+# Adds content to the file
+echo -e "$SENTRY_DATA" >> $SENTRY_PROPERTIES_PATH
+
+echo "File content:"
+cat $SENTRY_PROPERTIES_PATH
