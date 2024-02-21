@@ -8,6 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "postinstall": "npx patch-package",
     "increment:version": "node increment-versions.js android && node increment-versions.js ios",
     "increment:patch": "node increment-versions.js android patch && node increment-versions.js ios patch",
     "increment:minor": "node increment-versions.js android minor && node increment-versions.js ios minor",
