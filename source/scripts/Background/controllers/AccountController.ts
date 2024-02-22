@@ -11,6 +11,7 @@ import {
   updateTransactions,
   updateActiveWalletLabel,
   updateWalletLabel,
+  updateRewards,
 } from 'state/vault';
 
 import IVaultState, {
@@ -19,6 +20,7 @@ import IVaultState, {
   IWalletState,
   IActiveAssetState,
   AssetSymbol,
+  Reward,
 } from 'state/vault/types';
 
 import {
@@ -35,7 +37,7 @@ import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { utils } from './EVMChainController';
 import NetworkController from './NetworkController';
 import { setCustomAsset } from 'state/erc20assets';
-import { DAG_NETWORK } from 'constants/index';
+import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -272,6 +274,23 @@ export class AccountController {
     return assetList;
   }
 
+  async getMetagraphRewards(
+    network: string,
+    walletAddress: string,
+    metagraphId: string
+  ): Promise<Reward[]> {
+    const MAP_NETWORK: { [net: string]: string } = {
+      main2: 'mainnet',
+      test2: 'testnet',
+      integration2: 'integrationnet',
+    };
+    const net = MAP_NETWORK[network];
+    const URL = `${DAG_EXPLORER_API_URL}/${net}/addresses/${walletAddress}/metagraphs/${metagraphId}/rewards`;
+
+    const response = await (await fetch(URL)).json();
+    return response?.data ?? [];
+  }
+
   async getLatestTxUpdate(): Promise<void> {
     const state = store.getState();
     const { activeAsset, activeNetwork }: IVaultState = state.vault;
@@ -285,6 +304,7 @@ export class AccountController {
     ) {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
+      let rewards: Reward[] = [];
       const assetInfo = assets[activeAsset?.id];
       const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
 
@@ -306,6 +326,12 @@ export class AccountController {
           console.log('Error: getTransactions', err);
           txsV2 = [];
         }
+
+        rewards = await this.getMetagraphRewards(
+          assetInfo.network,
+          activeAsset.address,
+          assetInfo.address
+        );
       } else {
         try {
           txsV2 = await dag4.monitor.getLatestTransactions(
@@ -318,6 +344,7 @@ export class AccountController {
         }
       }
 
+      store.dispatch(updateRewards({ txs: rewards }));
       store.dispatch(updateTransactions({ txs: [...txsV2] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
       const txs: any = await this.txController.getTransactionHistory(

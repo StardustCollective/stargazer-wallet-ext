@@ -392,6 +392,8 @@ export const DEFAULT_CURRENCY = {
 
 export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 
+export const DAG_EXPLORER_API_URL = 'https://dyzt5u1o3ld0z.cloudfront.net';
+
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
 const PROVIDERS_BASE_URL = isProd
   ? STARGAZER_PROVIDERS_BASE_URL_PROD

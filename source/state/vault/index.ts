@@ -19,6 +19,7 @@ import IVaultState, {
   ICustomNetworkObject,
   ICustomNetworks,
   Transaction,
+  Reward,
 } from './types';
 import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { IAssetInfoState } from 'state/assets/types';
@@ -214,6 +215,9 @@ const VaultState = createSlice({
     ) {
       state.activeAsset.transactions = action.payload.txs;
     },
+    updateRewards(state: IVaultState, action: PayloadAction<{ txs: Reward[] }>) {
+      state.activeAsset.rewards = action.payload.txs;
+    },
     updateBalances(state: IVaultState, action: PayloadAction<AssetBalances>) {
       state.balances = action.payload;
     },
@@ -285,6 +289,7 @@ export const {
   updateWalletLabel,
   updateActiveWalletLabel,
   updateTransactions,
+  updateRewards,
   updateBalances,
   // updateLabel,
   addAsset,
