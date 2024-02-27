@@ -1,9 +1,4 @@
-import {
-  ActiveNetwork,
-  IActiveAssetState,
-  IWalletState,
-  Transaction,
-} from 'state/vault/types';
+import { ActiveNetwork, IActiveAssetState, IWalletState } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 
 export type IAssetDetail = {
@@ -16,12 +11,11 @@ export default interface IAssetSettings {
   activeNetwork: ActiveNetwork;
   balanceText: string;
   fiatAmount: string;
-  transactions: Transaction[];
-  onSendClick: () => void;
   assets: IAssetListState;
   showQrCode?: boolean;
-  setShowQrCode?: (isVisible: boolean) => void;
   isAddressCopied: boolean;
-  copyAddress: (address: string) => void;
   showFiatAmount: boolean;
+  onSendClick: () => void;
+  setShowQrCode?: (isVisible: boolean) => void;
+  copyAddress: (address: string) => void;
 }

@@ -8,11 +8,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.primary,
   },
-  assetContentContainer: {
-    // paddingBottom: 50,
-    backgroudColor: 'white',
-    flexGrow: 1,
-  },
   mask: {
     flexGrow: 1,
     display: 'flex',
@@ -327,6 +322,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  tabLabel: {
+    fontWeight: '500',
+    lineHeight: 24,
+  },
+  labelFocused: {
+    fontWeight: '600',
+    lineHeight: 24,
+  },
+  tabBar: {
+    backgroundColor: COLORS.primary,
+    height: 50,
+  },
+  tabBarLabel: {
+    color: COLORS.gray_300,
+  },
+  tabBarIndicator: {
+    backgroundColor: COLORS.primary_lighter_1,
+    height: 6,
   },
 });
 

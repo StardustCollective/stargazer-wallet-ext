@@ -3,9 +3,7 @@
 .activity {
   background: $gray-light;
   width: 100%;
-  height: 2000px;
-  border-radius: 8px 8px 0px 0px;
-  box-sizing: border-box;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
 

@@ -1,27 +1,20 @@
-import React, { useState, useEffect, useMemo, useLayoutEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-
 import Container from 'components/Container';
-
 import { getAccountController } from 'utils/controllersUtils';
 import { useFiat } from 'hooks/usePrice';
-
 import { RootState } from 'state/store';
-
 import assetHeader from 'navigation/headers/asset';
-import { useFocusEffect, useLinkTo } from '@react-navigation/native';
-
+import { useLinkTo } from '@react-navigation/native';
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
 import { useCopyClipboard } from 'hooks';
-import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers';
-
-import AssetDetail from './Asset';
-
-import { IAssetDetail } from './types';
-import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 import { IChain } from 'scripts/Background/controllers/EVMChainController/types';
+import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers';
+import AssetDetail from './Asset';
+import { IAssetDetail } from './types';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const accountController = getAccountController();
@@ -38,7 +31,6 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     return Number((activeAsset && balances[activeAsset?.id]) || 0);
   }, [activeAsset, balances]);
 
-  const [transactions, setTransactions] = useState([]);
   const [showQrCode, setShowQrCode] = useState(false);
 
   // Sets the header for the asset screen.
@@ -48,10 +40,10 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     let network = '';
 
     if (!!activeAsset?.type && activeAsset?.type !== AssetType.Constellation) {
-      const chain: IChain = !!accountController?.networkController
+      const chain: IChain = accountController?.networkController
         ? accountController?.networkController?.getNetwork()
         : null;
-      if (!!chain) {
+      if (chain) {
         network = getNetworkFromChainId(chain.id);
       }
     }
@@ -85,28 +77,6 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     });
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!activeAsset) return;
-
-      const fetchTxs = async () => {
-        if (
-          activeAsset?.type === AssetType.Constellation ||
-          activeAsset?.type === AssetType.LedgerConstellation
-        ) {
-          return activeAsset?.transactions;
-        }
-        return (await accountController.getFullETHTxs()).sort(
-          (a, b) => b.timestamp - a.timestamp
-        );
-      };
-
-      fetchTxs().then((txns: any[]) => {
-        setTransactions(txns);
-      });
-    }, [activeAsset])
-  );
-
   const onSendClick = () => {
     linkTo('/send');
   };
@@ -123,7 +93,6 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
         activeNetwork={activeNetwork}
         balanceText={BALANCE_TEXT}
         fiatAmount={FIAT_AMOUNT}
-        transactions={transactions}
         onSendClick={onSendClick}
         assets={assets}
         showQrCode={showQrCode}

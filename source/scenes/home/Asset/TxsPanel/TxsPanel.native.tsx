@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { Transaction } from 'state/vault/types';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -12,9 +12,9 @@ const TxsPanel: FC<ITxPanelSettings> = ({
   transactionDescription,
 }) => {
   return (
-    <View style={styles.activity}>
+    <ScrollView style={styles.activity}>
       <View style={styles.activityScrollView}>
-        {transactions.length ? (
+        {transactions?.length ? (
           transactions.map((tx: Transaction, idx: number) => {
             return renderTxItem(tx, idx);
           })
@@ -26,7 +26,7 @@ const TxsPanel: FC<ITxPanelSettings> = ({
           </View>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

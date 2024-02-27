@@ -1,8 +1,7 @@
 import { Transaction } from 'state/vault/types';
 
 export type ITxsPanel = {
-  address: string;
-  transactions: Transaction[];
+  route: string;
 };
 
 export type ITxItemSettings = {

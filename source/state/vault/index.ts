@@ -8,8 +8,14 @@ import {
   POLYGON_NETWORK,
 } from 'constants/index';
 
-import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
+import {
+  KeyringNetwork,
+  KeyringVaultState,
+  KeyringWalletState,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
+import { IAssetInfoState } from 'state/assets/types';
 import IVaultState, {
   AssetBalances,
   AssetType,
@@ -21,8 +27,6 @@ import IVaultState, {
   Transaction,
   Reward,
 } from './types';
-import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { IAssetInfoState } from 'state/assets/types';
 
 const initialState: IVaultState = {
   status: 0,
@@ -181,7 +185,11 @@ const VaultState = createSlice({
       state.activeWallet = action.payload;
       if (state.activeWallet) {
         if (state.activeAsset) {
-          state.activeAsset = { transactions: [], ...state.activeWallet.assets[0] };
+          state.activeAsset = {
+            transactions: [],
+            rewards: [],
+            ...state.activeWallet.assets[0],
+          };
         }
       } else {
         delete state.activeWallet;
@@ -201,7 +209,7 @@ const VaultState = createSlice({
       state.currentEVMNetwork = action.payload;
     },
     changeActiveAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
-      state.activeAsset = { transactions: [], ...action.payload };
+      state.activeAsset = { transactions: [], rewards: [], ...action.payload };
     },
     updateWalletAssets(state: IVaultState, action: PayloadAction<IAssetState[]>) {
       state.activeWallet.assets = action.payload;

@@ -1,13 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import {
   View,
   StyleSheet,
   Image,
   Modal,
   TouchableOpacity,
-  ScrollView,
+  Dimensions,
 } from 'react-native';
-
+import { TabView, TabBar } from 'react-native-tab-view';
 import * as Progress from 'react-native-progress';
 import TextV3 from 'components/TextV3';
 import QRCode from 'react-native-qrcode-svg';
@@ -17,29 +17,40 @@ import Container from 'components/Container';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
-
 import {
   getNetworkLabel,
   getNetworkLogo,
   getNetworkFromChainId,
 } from 'scripts/Background/controllers/EVMChainController/utils';
 import { CONSTELLATION_LOGO } from 'constants/index';
-
+import { AssetSymbol, AssetType } from 'state/vault/types';
 import TxsPanel from '../TxsPanel';
 import IAssetSettings from './types';
 import AssetButtons from '../AssetButtons';
 import styles from './styles';
-import { AssetSymbol, AssetType } from 'state/vault/types';
 
 const QR_CODE_SIZE = 240;
 
+const TransactionsRoute = ({ route }: { route: string }) => <TxsPanel route={route} />;
+
+const RewardsRoute = ({ route }: { route: string }) => <TxsPanel route={route} />;
+
+const renderScene = ({ route }) => {
+  switch (route.key) {
+    case 'transactions':
+      return <TransactionsRoute route={route.key} />;
+    case 'rewards':
+      return <RewardsRoute route={route.key} />;
+    default:
+      return null;
+  }
+};
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
   activeAsset,
   activeNetwork,
   balanceText,
   fiatAmount,
-  transactions,
   onSendClick,
   assets,
   showQrCode,
@@ -48,11 +59,17 @@ const AssetDetail: FC<IAssetSettings> = ({
   copyAddress,
   showFiatAmount,
 }) => {
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'transactions', title: 'Transactions' },
+    { key: 'rewards', title: 'Rewards' },
+  ]);
   const activeAssetStyle = StyleSheet.flatten([
     styles.mask,
     !!activeAsset && !!activeWallet ? styles.loaderHide : {},
   ]);
   const asset = assets[activeAsset?.id];
+  const showRewardsTab = activeAsset?.type === AssetType.Constellation;
   let network = asset?.network;
   // 349: New network should be added here.
   if (
@@ -66,6 +83,29 @@ const AssetDetail: FC<IAssetSettings> = ({
     network = activeNetwork.Constellation;
   }
 
+  const renderTabLabel = ({ route, focused }) => {
+    const focusedStyle = focused && styles.labelFocused;
+    return (
+      <TextV3.LabelSemiStrong
+        color={focused ? COLORS_ENUMS.WHITE : COLORS_ENUMS.SECONDARY_TEXT}
+        extraStyles={[styles.tabLabel, focusedStyle]}
+      >
+        {route.title}
+      </TextV3.LabelSemiStrong>
+    );
+  };
+
+  const renderTabBar = (props) => (
+    <TabBar
+      {...props}
+      renderLabel={renderTabLabel}
+      style={styles.tabBar}
+      labelStyle={styles.tabBarLabel}
+      activeColor={COLORS.white}
+      indicatorStyle={styles.tabBarIndicator}
+    />
+  );
+
   const networkLabel = getNetworkLabel(network);
   const networkLogo =
     asset?.type === AssetType.Constellation
@@ -75,10 +115,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   if (!!activeWallet && !!activeAsset) {
     return (
       <>
-        <ScrollView
-          style={styles.wrapper}
-          contentContainerStyle={styles.assetContentContainer}
-        >
+        <View style={styles.wrapper}>
           <View style={styles.center}>
             <View style={styles.balance}>
               <TextV3.HeaderDisplay
@@ -105,8 +142,18 @@ const AssetDetail: FC<IAssetSettings> = ({
               />
             </View>
           </View>
-          <TxsPanel address={activeAsset.address} transactions={transactions} />
-        </ScrollView>
+          {showRewardsTab ? (
+            <TabView
+              navigationState={{ index, routes }}
+              renderScene={renderScene}
+              renderTabBar={renderTabBar}
+              onIndexChange={setIndex}
+              initialLayout={{ width: Dimensions.get('window').width }}
+            />
+          ) : (
+            <TxsPanel route="transactions" />
+          )}
+        </View>
         <Modal animationType="slide" transparent={false} visible={showQrCode}>
           <Container>
             <View style={styles.qrCodeCloseButton}>

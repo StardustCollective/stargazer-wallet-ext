@@ -1,24 +1,61 @@
-/// ////////////////////
-// Modules
-/// ////////////////////
-
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import clsx from 'clsx';
-
-/// ////////////////////
-// Components
-/// ////////////////////
-
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import QRCodeModal from 'components/QRCodeModal';
 import TextV3 from 'components/TextV3';
-
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import { AssetType } from 'state/vault/types';
 import TxsPanel from '../TxsPanel';
-
 import styles from './Asset.scss';
-
 import IAssetSettings from './types';
 import AssetButtons from '../AssetButtons';
+
+const TabPanel: FC<any> = (props) => {
+  const { children, value, index } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`nav-tabpanel-${index}`}
+      aria-labelledby={`nav-tab-${index}`}
+    >
+      {value === index && <div>{children}</div>}
+    </div>
+  );
+};
+
+const StyledTabs = withStyles({
+  indicator: {
+    display: 'flex',
+    justifyContent: 'center',
+    height: 6,
+    backgroundColor: 'transparent',
+    '& > span': {
+      width: '100%',
+      backgroundColor: '#473194',
+    },
+  },
+})((props: any) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
+
+const StyledTab = withStyles(() =>
+  createStyles({
+    root: {
+      textTransform: 'none',
+      color: '#A3A3A3',
+      fontFamily: 'Inter',
+      fontSize: 14,
+      fontWeight: 500,
+      height: 50,
+    },
+    selected: {
+      color: '#fff',
+      fontWeight: 600,
+    },
+  })
+)((props: any) => <Tab disableRipple {...props} />);
 
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
@@ -26,7 +63,6 @@ const AssetDetail: FC<IAssetSettings> = ({
   activeNetwork,
   balanceText,
   fiatAmount,
-  transactions,
   showQrCode,
   onSendClick,
   setShowQrCode,
@@ -35,7 +71,14 @@ const AssetDetail: FC<IAssetSettings> = ({
   copyAddress,
   showFiatAmount,
 }) => {
+  const [value, setValue] = useState(0);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
+  const showRewardsTab = activeAsset?.type === AssetType.Constellation;
+
+  const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <div className={styles.wrapper}>
       {!!activeWallet && !!activeAsset ? (
@@ -51,7 +94,7 @@ const AssetDetail: FC<IAssetSettings> = ({
             </div>
             {showFiatAmount && (
               <div className={styles.fiatBalance}>
-                <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
+                <TextV3.Body extraStyles={styles.fiatText}>{fiatAmount}</TextV3.Body>
               </div>
             )}
             <div className={styles.actions}>
@@ -71,7 +114,27 @@ const AssetDetail: FC<IAssetSettings> = ({
             copyAddress={copyAddress}
             activeNetwork={activeNetwork}
           />
-          <TxsPanel address={activeAsset.address} transactions={transactions} />
+          {showRewardsTab ? (
+            <>
+              <StyledTabs
+                value={value}
+                onChange={handleChange}
+                variant="fullWidth"
+                aria-label="full width tabs"
+              >
+                <StyledTab label="Transactions" />
+                <StyledTab label="Rewards" />
+              </StyledTabs>
+              <TabPanel value={value} index={0}>
+                <TxsPanel route="transactions" />
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                <TxsPanel route="rewards" />
+              </TabPanel>
+            </>
+          ) : (
+            <TxsPanel route="transactions" />
+          )}
         </>
       ) : (
         <section

@@ -1,9 +1,10 @@
-import { FC } from 'react';
 import { Transaction } from 'state/vault/types';
 
 export type RenderIconProps = {
   tx: Transaction;
   isETH: boolean;
+  isReceived: boolean;
+  isRewardsTab?: boolean;
 };
 
 export type ITxItem = {
@@ -11,6 +12,7 @@ export type ITxItem = {
   isSelf: boolean;
   isReceived: boolean;
   isETH: boolean;
+  isRewardsTab?: boolean;
   isGasSettingsVisible: boolean;
   getLinkUrl: (hash: string) => string;
   showGroupBar: boolean;
@@ -18,13 +20,11 @@ export type ITxItem = {
   currencySymbol: string;
   amount: string;
   fiatAmount: string;
+  logo?: string;
 };
 
 export default interface ITxItemSettings extends ITxItem {
-  onSpeedUpClick: () => void;
-  onGasPriceChanged: () => void;
-  minGasPrice: number;
   receivedOrSentText: string;
   formattedDistanceDate: string;
-  renderGasSettings: () => FC;
+  renderGasSettings: () => JSX.Element;
 }

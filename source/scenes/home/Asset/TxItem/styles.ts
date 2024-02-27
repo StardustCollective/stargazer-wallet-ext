@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
   txItem: {
     display: 'flex',
     backgroundColor: COLORS.white,
-    flex: 1,
     flexDirection: 'column',
     width: '100%',
   },
@@ -49,14 +48,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconCircle: {
-    display: 'flex',
-    width: 40,
-    height: 40,
     marginRight: 12,
-    borderRadius: 20,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
+    width: 38,
     justifyContent: 'center',
+  },
+  logoContainer: {
+    position: 'absolute',
+    height: 32,
+    width: 38,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+  },
+  logo: {
+    height: 16,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.white,
+    borderRadius: 8,
+    width: 16,
   },
   txInfoWrapper: {
     display: 'flex',
@@ -64,10 +73,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-start',
-  },
-  statusText: {
-    fontWeight: FONT_WEIGHTS.semibold,
-    letterSpacing: -0.3,
   },
   txAddress: {
     color: '#575757',
