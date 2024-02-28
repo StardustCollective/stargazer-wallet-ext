@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import { updatefetchDagBalanceState } from 'state/process';
 import { ProcessStates } from 'state/process/enums';
 import { getAccountController } from 'utils/controllersUtils';
+import { BigNumber } from 'bignumber.js';
+import { IAssetInfoState } from 'state/assets/types';
 import store from '../../../state/store';
 import { updateBalances } from '../../../state/vault';
 import IVaultState, {
@@ -15,10 +17,8 @@ import IVaultState, {
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
-import { BigNumber } from 'bignumber.js';
-import { IAssetInfoState } from 'state/assets/types';
 
-const FIVE_SECONDS = 5 * 1000;
+const THIRTY_SECONDS = 30 * 1000;
 const DAG_DECIMAL_FACTOR = 1e-8;
 
 export type AccountTrackerList = {
@@ -79,7 +79,10 @@ export class AssetsBalanceMonitor {
 
         this.hasDAGPending = true;
 
-        this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), FIVE_SECONDS);
+        this.dagBalIntervalId = setInterval(
+          () => this.refreshDagBalance(),
+          THIRTY_SECONDS
+        );
         await this.refreshDagBalance();
       }
 
@@ -93,7 +96,7 @@ export class AssetsBalanceMonitor {
       }
 
       this.utils.updateFiat();
-      this.priceIntervalId = setInterval(this.utils.updateFiat, FIVE_SECONDS);
+      this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
     }
   }
 
@@ -178,11 +181,11 @@ export class AssetsBalanceMonitor {
       updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS })
     );
     const { balances, activeNetwork } = store.getState().vault;
-    const assets = store.getState().assets;
+    const { assets } = store.getState();
 
     try {
       // Hotfix: Use block explorer API directly.
-      const address = dag4.account.address;
+      const { address } = dag4.account;
       const balanceString = await this.getAddressBlockExplorerBalance(address);
 
       this.hasDAGPending = false;
@@ -209,7 +212,6 @@ export class AssetsBalanceMonitor {
       } else {
         console.log(e);
       }
-      return;
     }
   }
 
@@ -282,7 +284,7 @@ export class AssetsBalanceMonitor {
               })
             );
           },
-          10
+          30
         );
       } else {
         console.log(`Error: Unable to configure ${networkId}`);
