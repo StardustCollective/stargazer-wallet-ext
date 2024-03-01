@@ -7,6 +7,7 @@ export type IRemoveWalletView = {
 
 export default interface IRemoveWalletSettings {
   wallet: KeyringWalletState;
+  loading: boolean;
   handleCancel: () => void;
   handleRemoveWallet: () => Promise<void>;
 }

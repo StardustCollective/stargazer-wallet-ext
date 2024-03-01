@@ -18,6 +18,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     justifyContent: 'center',
   },
+  extraPhraseContainer: {
+    minHeight: 200,
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+  },
   phraseItem: {
     borderRadius: 4,
     paddingHorizontal: 12,
@@ -37,10 +42,19 @@ const styles = StyleSheet.create({
   copyText: {
     color: NEW_COLORS.primary_lighter_1,
   },
+  extraButtonStyles: {
+    width: 170,
+    marginHorizontal: 6,
+  },
   buttonContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     paddingBottom: 32,
+  },
+  extraButtonContainer: {
+    width: '100%',
   },
   doneButton: {
     backgroundColor: NEW_COLORS.primary,

@@ -18,6 +18,11 @@
   width: 328px;
 }
 
+.extraPhraseContainer {
+  min-height: 170px;
+  align-items: center;
+}
+
 .phraseItem {
   background-color: $indigo_50;
   margin: 6px 4px;
@@ -47,10 +52,15 @@
 
 .buttonContainer {
   display: flex;
-  margin-top: 20px;
+  justify-content: center;
+  margin-top: 32px;
 }
 
 .doneButton {
-  background-color: $new-primary;
   width: 100%;
+}
+
+.button {
+  margin-left: 6px;
+  margin-right: 6px;
 }

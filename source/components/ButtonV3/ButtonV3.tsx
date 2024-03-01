@@ -16,13 +16,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 // Styles
 /////////////////////
 
+import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './ButtonV3.scss';
 
 //////////////////////
 // Enums
 /////////////////////
-
-import { COLORS_ENUMS } from 'assets/styles/colors';
 
 export enum BUTTON_TYPES_ENUM {
   PRIMARY_SOLID = 0,
@@ -33,6 +32,8 @@ export enum BUTTON_TYPES_ENUM {
   ACCENT_ONE_OUTLINE,
   SECONDARY_OUTLINE,
   TERTIARY_SOLID,
+  NEW_PRIMARY_SOLID,
+  ERROR_SOLID,
 }
 
 export enum BUTTON_SIZES_ENUM {
@@ -51,6 +52,7 @@ interface IButtonV3Props {
   type?: BUTTON_TYPES_ENUM;
   size?: BUTTON_SIZES_ENUM;
   loading?: boolean;
+  loadingColor?: 'inherit' | 'primary' | 'secondary';
   label: string;
   extraStyle?: string;
   extraTitleStyles?: string;
@@ -70,6 +72,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   type = BUTTON_TYPES_ENUM.PRIMARY_SOLID,
   size = BUTTON_SIZES_ENUM.SMALL,
   loading = false,
+  loadingColor = 'inherit',
   label = '',
   extraStyle = '',
   extraTitleStyles = '',
@@ -82,7 +85,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   let buttonSizeStyle = '';
   let buttonColorStyle = '';
   let buttonTextColor = null;
-  let buttonBorderStyle = '';
+  const buttonBorderStyle = '';
   let TextComponent = null;
   let disabledStyles = '';
 
@@ -118,6 +121,12 @@ const ButtonV3: FC<IButtonV3Props> = ({
   } else if (type === BUTTON_TYPES_ENUM.TERTIARY_SOLID) {
     buttonColorStyle = styles.tertiarySolid;
     buttonTextColor = COLORS_ENUMS.BLACK;
+  } else if (type === BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID) {
+    buttonColorStyle = styles.newPrimarySolid;
+    buttonTextColor = COLORS_ENUMS.WHITE;
+  } else if (type === BUTTON_TYPES_ENUM.ERROR_SOLID) {
+    buttonColorStyle = styles.errorSolid;
+    buttonTextColor = COLORS_ENUMS.WHITE;
   }
 
   if (disabled) {
@@ -154,7 +163,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
         </div>
       ) : (
         <div className={styles.loader}>
-          <CircularProgress size={24} />
+          <CircularProgress size={24} color={loadingColor} />
         </div>
       )}
     </button>

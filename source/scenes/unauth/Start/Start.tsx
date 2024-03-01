@@ -1,11 +1,23 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import LogoImage from 'assets/images/logo.svg';
-import styles from './Start.scss';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import styles from './Start.scss';
 import IStart from './types';
 
-const Start: FC<IStart> = ({ onImportClicked, onGetStartedClicked }) => {
+const Start: FC<IStart> = ({ navigation, onImportClicked, onGetStartedClicked }) => {
+  useEffect(() => {
+    // This is set only for the scenario where an user deletes the last wallet.
+    // In that case we're navigating to this screen and we should disable the swipe back functionality.
+    navigation.setOptions({ gestureEnabled: false });
+    navigation.getParent()?.setOptions({ gestureEnabled: false });
+
+    return () => {
+      navigation.setOptions({ gestureEnabled: true });
+      navigation.getParent()?.setOptions({ gestureEnabled: true });
+    };
+  }, [navigation]);
+
   return (
     <div className={styles.home}>
       <TextV3.HeaderLargeRegular align={TEXT_ALIGN_ENUM.CENTER}>

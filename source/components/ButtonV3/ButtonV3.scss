@@ -105,6 +105,14 @@
   background-color: $gray-300;
 }
 
+.newPrimarySolid {
+  background-color: $new-primary;
+}
+
+.errorSolid {
+  background-color: $red-700;
+}
+
 .loader {
   width: 100%;
   align-self: center;

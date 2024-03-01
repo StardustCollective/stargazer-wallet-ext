@@ -1,44 +1,47 @@
 import React, { FC, useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import WarningMessage from 'components/WarningMessage';
+import RemoveWalletHeader from 'scenes/settings/RemoveWallet/RemoveWalletHeader';
 import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
 import EnterPassword from './EnterPassword';
 import PrivateKey from './PrivateKey';
 import RecoveryPhrase from './RecoveryPhrase';
 import { ICheckPassword } from './types';
+import { TITLE, SUBTITLE } from './constants';
 import styles from './styles';
 
-const CheckPassword: FC<ICheckPassword> = (props) => {
-  const {
-    control,
-    walletPhrase,
-    privateKey,
-    warningMessage,
-    isCopied,
-    errors,
-    isSubmitDisabled,
-    isBiometricEnabled,
-    networkOptions,
-    register,
-    handleSubmit,
-    copyText,
-    handleOnSubmit,
-    handleOnCancel,
-  } = props;
+const CheckPassword: FC<ICheckPassword> = ({
+  control,
+  wallet,
+  walletPhrase,
+  privateKey,
+  warningMessage,
+  isCopied,
+  errors,
+  isSubmitDisabled,
+  isBiometricEnabled,
+  isRemoveWallet,
+  networkOptions,
+  register,
+  handleSubmit,
+  copyText,
+  handleOnSubmit,
+  handleOnContinue,
+  handleOnCancel,
+}) => {
   const showRecoveryPhrase = !!walletPhrase && !!walletPhrase.length;
   const showPrivateKey = !!privateKey && !!privateKey.length;
   const showEnterPassword = !showRecoveryPhrase && !showPrivateKey;
-
-  useEffect(() => {
-    authWithBiometrics();
-  }, []);
+  const showWarningMessage = !isRemoveWallet || showRecoveryPhrase;
+  const showRemoveWalletHeader = isRemoveWallet && !showRecoveryPhrase;
+  const onPressDone = isRemoveWallet ? handleOnContinue : handleOnCancel;
 
   const authWithBiometrics = async () => {
     const biometryType = await Biometrics.getBiometryType();
-    if (!!biometryType) {
-      if (!!isBiometricEnabled) {
+    if (biometryType) {
+      if (isBiometricEnabled) {
         const keyExist = await Biometrics.keyExists();
-        if (!!keyExist) {
+        if (keyExist) {
           try {
             const { success, signature, secret } = await Biometrics.createSignature(
               PROMPT_TITLES.auth
@@ -70,18 +73,27 @@ const CheckPassword: FC<ICheckPassword> = (props) => {
     }
   };
 
+  useEffect(() => {
+    authWithBiometrics();
+  }, []);
+
   return (
     <ScrollView
       style={styles.scrollView}
       contentContainerStyle={styles.scrollViewContentContainer}
     >
-      <WarningMessage message={warningMessage} />
+      {showRemoveWalletHeader && (
+        <RemoveWalletHeader wallet={wallet} title={TITLE} subtitle={SUBTITLE} />
+      )}
+      {showWarningMessage && <WarningMessage message={warningMessage} />}
       {showRecoveryPhrase && (
         <RecoveryPhrase
           walletPhrase={walletPhrase}
           isCopied={isCopied}
           copyText={copyText}
-          onPressDone={handleOnCancel}
+          isRemoveWallet={isRemoveWallet}
+          onPressDone={onPressDone}
+          onPressCancel={handleOnCancel}
         />
       )}
       {showPrivateKey && (
@@ -101,6 +113,7 @@ const CheckPassword: FC<ICheckPassword> = (props) => {
           handleOnSubmit={handleOnSubmit}
           handleOnCancel={handleOnCancel}
           isSubmitDisabled={isSubmitDisabled}
+          isRemoveWallet={isRemoveWallet}
           errors={errors}
         />
       )}
