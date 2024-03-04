@@ -25,6 +25,11 @@ const PrivateKey: FC<IPrivateKey> = ({
 }) => {
   const [showPrivateKey, setShowPrivateKey] = useState(false);
 
+  const privateKeyContainerStyles = clsx(
+    styles.keyContainer,
+    !showPrivateKey && styles.extraKeyContainer
+  );
+
   return (
     <div className={styles.privateKeyContainer}>
       <TextV3.CaptionStrong color={COLORS_ENUMS.SECONDARY_TEXT}>
@@ -42,7 +47,7 @@ const PrivateKey: FC<IPrivateKey> = ({
       </TextV3.CaptionStrong>
       <div
         onClick={showPrivateKey ? () => copyText(privateKey) : null}
-        className={styles.phraseContainer}
+        className={privateKeyContainerStyles}
       >
         {!showPrivateKey && (
           <ButtonV3
@@ -61,21 +66,17 @@ const PrivateKey: FC<IPrivateKey> = ({
           </TextV3.CaptionRegular>
         )}
       </div>
-      <div
-        onClick={showPrivateKey ? () => copyText(privateKey) : null}
-        className={styles.copyContainer}
-      >
-        {showPrivateKey && (
-          <>
-            <TextV3.CaptionStrong extraStyles={styles.copyText}>
-              {isCopied ? COPIED : COPY_CLIPBOARD}
-            </TextV3.CaptionStrong>
-            {!isCopied && (
-              <img src={`/${CopyIcon}`} height={20} width={32} alt="Copy icon" />
-            )}
-          </>
-        )}
-      </div>
+      {showPrivateKey && (
+        <div onClick={() => copyText(privateKey)} className={styles.copyContainer}>
+          <TextV3.CaptionStrong extraStyles={styles.copyText}>
+            {isCopied ? COPIED : COPY_CLIPBOARD}
+          </TextV3.CaptionStrong>
+          {!isCopied && (
+            <img src={`/${CopyIcon}`} height={20} width={32} alt="Copy icon" />
+          )}
+        </div>
+      )}
+      {!showPrivateKey && <div className={styles.copyContainerBlank} />}
       <div className={styles.buttonContainer}>
         <ButtonV3
           type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}

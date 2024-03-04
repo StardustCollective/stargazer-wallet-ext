@@ -63,21 +63,17 @@ const RecoveryPhrase: FC<IRecoveryPhrase> = ({
             </div>
           ))}
       </div>
-      <div
-        onClick={showPhrase ? () => copyText(walletPhrase) : null}
-        className={styles.copyContainer}
-      >
-        {showPhrase && (
-          <>
-            <TextV3.CaptionStrong extraStyles={styles.copyText}>
-              {isCopied ? COPIED : COPY_CLIPBOARD}
-            </TextV3.CaptionStrong>
-            {!isCopied && (
-              <img src={`/${CopyIcon}`} height={20} width={32} alt="Copy icon" />
-            )}
-          </>
-        )}
-      </div>
+      {showPhrase && (
+        <div onClick={() => copyText(walletPhrase)} className={styles.copyContainer}>
+          <TextV3.CaptionStrong extraStyles={styles.copyText}>
+            {isCopied ? COPIED : COPY_CLIPBOARD}
+          </TextV3.CaptionStrong>
+          {!isCopied && (
+            <img src={`/${CopyIcon}`} height={20} width={32} alt="Copy icon" />
+          )}
+        </div>
+      )}
+      {!showPhrase && <div className={styles.copyContainerBlank} />}
       <div className={styles.buttonContainer}>
         {isRemoveWallet && (
           <ButtonV3

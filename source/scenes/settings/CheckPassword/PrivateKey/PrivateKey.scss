@@ -1,16 +1,16 @@
 @import '~assets/styles/variables';
 
 .privateKeyContainer {
-  margin-top: 32px;
+  margin-top: 20px;
 }
 
 .dropdownContainer {
   height: 64px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   margin-top: 8px;
 }
 
-.phraseContainer {
+.keyContainer {
   cursor: pointer;
   display: flex;
   flex-direction: row;
@@ -22,6 +22,11 @@
   background-color: $white;
   margin-top: 8px;
   width: 328px;
+}
+
+.extraKeyContainer {
+  min-height: 40px;
+  align-items: center;
 }
 
 .privateKeyText {
@@ -37,8 +42,11 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 24px 0px;
-  margin-bottom: 20px;
+  padding: 16px 0px;
+}
+
+.copyContainerBlank {
+  height: 52px;
 }
 
 .copyText {
