@@ -1,5 +1,6 @@
 import React, { FC, useEffect } from 'react';
-import { ScrollView } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { scale } from 'react-native-size-matters';
 import WarningMessage from 'components/WarningMessage';
 import RemoveWalletHeader from 'scenes/settings/RemoveWallet/RemoveWalletHeader';
 import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
@@ -9,6 +10,8 @@ import RecoveryPhrase from './RecoveryPhrase';
 import { ICheckPassword } from './types';
 import { TITLE, SUBTITLE } from './constants';
 import styles from './styles';
+
+const EXTRA_SCROLL_HEIGHT = scale(25);
 
 const CheckPassword: FC<ICheckPassword> = ({
   control,
@@ -78,9 +81,9 @@ const CheckPassword: FC<ICheckPassword> = ({
   }, []);
 
   return (
-    <ScrollView
-      style={styles.scrollView}
+    <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollViewContentContainer}
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
     >
       {showRemoveWalletHeader && (
         <RemoveWalletHeader wallet={wallet} title={TITLE} subtitle={SUBTITLE} />
@@ -117,7 +120,7 @@ const CheckPassword: FC<ICheckPassword> = ({
           errors={errors}
         />
       )}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
