@@ -1,11 +1,13 @@
 import React, { FC, useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import TextV3 from 'components/TextV3';
 import Dropdown from 'components/Dropdown';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import {
+  CANCEL,
+  CONTINUE,
   COPIED,
   COPY_CLIPBOARD,
   DONE,
@@ -18,12 +20,23 @@ import styles from './styles';
 
 const PrivateKey: FC<IPrivateKey> = ({
   privateKey,
+  isRemoveWallet,
   isCopied,
-  copyText,
   networkOptions,
+  copyText,
   onPressDone,
+  onPressCancel,
 }) => {
   const [showPrivateKey, setShowPrivateKey] = useState(false);
+
+  const primaryButtonType = isRemoveWallet
+    ? BUTTON_TYPES_ENUM.ERROR_SOLID
+    : BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID;
+  const primaryButtonTitle = isRemoveWallet ? CONTINUE : DONE;
+  const primaryButtonStyles = StyleSheet.flatten([
+    isRemoveWallet && styles.extraButtonStyles,
+  ]);
+  const extraContainerStyles = !isRemoveWallet && styles.extraButtonContainer;
 
   return (
     <View style={styles.privateKeyContainer}>
@@ -69,12 +82,22 @@ const PrivateKey: FC<IPrivateKey> = ({
         </TouchableOpacity>
       )}
       <View style={styles.buttonContainer}>
+        {isRemoveWallet && (
+          <ButtonV3
+            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            extraStyles={styles.extraButtonStyles}
+            title={CANCEL}
+            onPress={onPressCancel}
+          />
+        )}
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.PRIMARY}
+          type={primaryButtonType}
           size={BUTTON_SIZES_ENUM.LARGE}
-          title={DONE}
+          title={primaryButtonTitle}
           submit
-          extraStyles={styles.doneButton}
+          extraContainerStyles={extraContainerStyles}
+          extraStyles={primaryButtonStyles}
           onPress={onPressDone}
         />
       </View>

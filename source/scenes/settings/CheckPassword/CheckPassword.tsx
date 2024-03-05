@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
 import WarningMessage from 'components/WarningMessage';
 import RemoveWalletHeader from 'scenes/settings/RemoveWallet/RemoveWalletHeader';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import EnterPassword from './EnterPassword';
 import PrivateKey from './PrivateKey';
 import RecoveryPhrase from './RecoveryPhrase';
 import { ICheckPassword } from './types';
 import styles from './CheckPassword.scss';
-import { SUBTITLE, TITLE } from './constants';
+import { TITLE, SUBTITLE_PHRASE, SUBTITLE_KEY } from './constants';
 
 const CheckPassword: FC<ICheckPassword> = ({
   control,
@@ -29,14 +30,16 @@ const CheckPassword: FC<ICheckPassword> = ({
   const showRecoveryPhrase = !!walletPhrase && !!walletPhrase.length;
   const showPrivateKey = !!privateKey && !!privateKey.length;
   const showEnterPassword = !showRecoveryPhrase && !showPrivateKey;
-  const showWarningMessage = !isRemoveWallet || showRecoveryPhrase;
-  const showRemoveWalletHeader = isRemoveWallet && !showRecoveryPhrase;
+  const showWarningMessage = !isRemoveWallet || showRecoveryPhrase || showPrivateKey;
+  const showRemoveWalletHeader = isRemoveWallet && !showRecoveryPhrase && !showPrivateKey;
+  const hasRecoveryPhrase = wallet?.type === KeyringWalletType.MultiChainWallet;
+  const headerSubtitle = hasRecoveryPhrase ? SUBTITLE_PHRASE : SUBTITLE_KEY;
   const onPressDone = isRemoveWallet ? handleOnContinue : handleOnCancel;
 
   return (
     <div className={styles.container}>
       {showRemoveWalletHeader && (
-        <RemoveWalletHeader wallet={wallet} title={TITLE} subtitle={SUBTITLE} />
+        <RemoveWalletHeader wallet={wallet} title={TITLE} subtitle={headerSubtitle} />
       )}
       {showWarningMessage && <WarningMessage message={warningMessage} />}
       {showRecoveryPhrase && (
@@ -51,11 +54,13 @@ const CheckPassword: FC<ICheckPassword> = ({
       )}
       {showPrivateKey && (
         <PrivateKey
+          isRemoveWallet={isRemoveWallet}
           networkOptions={networkOptions}
           privateKey={privateKey}
           isCopied={isCopied}
           copyText={copyText}
-          onPressDone={handleOnCancel}
+          onPressCancel={handleOnCancel}
+          onPressDone={onPressDone}
         />
       )}
       {showEnterPassword && (

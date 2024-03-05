@@ -55,9 +55,14 @@
 
 .buttonContainer {
   display: flex;
+  justify-content: center;
 }
 
 .doneButton {
-  background-color: $new-primary;
   width: 100%;
+}
+
+.button {
+  margin-left: 6px;
+  margin-right: 6px;
 }

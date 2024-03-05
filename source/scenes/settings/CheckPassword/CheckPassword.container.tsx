@@ -23,8 +23,8 @@ const RECOVERY_MESSAGE =
   'Do not share your recovery phrase with anyone. Anyone with your recovery phrase can steal your funds.';
 const PRIVATE_KEY_MESSAGE =
   'Do not share your private key with anyone. Anyone with your private key can steal your funds.';
-const REMOVE_WALLET_MESSAGE =
-  'Double check that the recovery phrase is the same one that you have saved in a safe place.';
+const REMOVE_WALLET_MESSAGE_1 = 'Double check that the';
+const REMOVE_WALLET_MESSAGE_2 = 'is the same one that you have saved in a safe place.';
 
 const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
   const { id, type } = route?.params || {};
@@ -59,8 +59,10 @@ const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
   const isSubmitDisabled = !passwordText;
   const isRecoveryPhrase = type === 'phrase';
   const isRemoveWallet = type === 'remove';
+  const hasRecoveryPhrase = wallet?.type === KeyringWalletType.MultiChainWallet;
+  const walletType = hasRecoveryPhrase ? 'recovery phrase' : 'private key';
   const warningMessage = isRemoveWallet
-    ? REMOVE_WALLET_MESSAGE
+    ? `${REMOVE_WALLET_MESSAGE_1} ${walletType} ${REMOVE_WALLET_MESSAGE_2}`
     : isRecoveryPhrase
     ? RECOVERY_MESSAGE
     : PRIVATE_KEY_MESSAGE;
@@ -107,7 +109,7 @@ const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
     const { password } = data;
     let phrase;
     let privateKey;
-    if (isRecoveryPhrase || isRemoveWallet) {
+    if (isRecoveryPhrase || (isRemoveWallet && hasRecoveryPhrase)) {
       phrase = await walletController.getPhrase(id, password);
     } else {
       // For Multi-chain wallets, the first account is the Constellation account

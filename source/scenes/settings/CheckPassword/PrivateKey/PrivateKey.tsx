@@ -12,19 +12,27 @@ import {
   COPY_CLIPBOARD,
   DONE,
   REVEAL_PRIVATE_KEY,
+  CANCEL,
+  CONTINUE,
 } from './constants';
 import { IPrivateKey } from './types';
 import styles from './PrivateKey.scss';
 
 const PrivateKey: FC<IPrivateKey> = ({
   privateKey,
+  isRemoveWallet,
   isCopied,
   copyText,
   networkOptions,
   onPressDone,
+  onPressCancel,
 }) => {
   const [showPrivateKey, setShowPrivateKey] = useState(false);
-
+  const primaryButtonType = isRemoveWallet
+    ? BUTTON_TYPES_ENUM.ERROR_SOLID
+    : BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID;
+  const primaryButtonTitle = isRemoveWallet ? CONTINUE : DONE;
+  const primaryButtonStyles = isRemoveWallet ? styles.button : styles.doneButton;
   const privateKeyContainerStyles = clsx(
     styles.keyContainer,
     !showPrivateKey && styles.extraKeyContainer
@@ -78,12 +86,21 @@ const PrivateKey: FC<IPrivateKey> = ({
       )}
       {!showPrivateKey && <div className={styles.copyContainerBlank} />}
       <div className={styles.buttonContainer}>
+        {isRemoveWallet && (
+          <ButtonV3
+            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            extraStyle={styles.button}
+            label={CANCEL}
+            onClick={onPressCancel}
+          />
+        )}
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+          type={primaryButtonType}
           size={BUTTON_SIZES_ENUM.LARGE}
-          label={DONE}
+          label={primaryButtonTitle}
           submit
-          extraStyle={styles.doneButton}
+          extraStyle={primaryButtonStyles}
           onClick={onPressDone}
         />
       </div>

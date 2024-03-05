@@ -56,9 +56,6 @@ const styles = StyleSheet.create({
   extraButtonContainer: {
     width: '100%',
   },
-  doneButton: {
-    backgroundColor: NEW_COLORS.primary,
-  },
 });
 
 export default styles;
