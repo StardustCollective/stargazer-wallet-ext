@@ -2,17 +2,17 @@ import React, { FC } from 'react';
 import TextV3 from 'components/TextV3';
 import TextInput from 'components/TextInput';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { IPhraseInput } from './types';
-import styles from './PhraseInput.scss';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import ViewOn from 'assets/images/svg/view-on.svg';
 import ViewOff from 'assets/images/svg/view-off.svg';
+import styles from './PhraseInput.scss';
+import { IPhraseInput } from './types';
 
 const PhraseInput: FC<IPhraseInput> = ({
   value,
   index,
-  hasError,
+  hasError = false,
   showPassword,
   togglePassword,
   onChangeText,

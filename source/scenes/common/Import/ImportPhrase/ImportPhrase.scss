@@ -40,3 +40,29 @@
 .phraseInputContainer {
   margin-bottom: 8px;
 }
+
+.checkboxContainer {
+  cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: row;
+}
+
+.checkboxTextContainer {
+  margin-left: 8px;
+}
+
+.checkboxText {
+  font-weight: 500;
+}
+
+.modalTitle {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.modalButton {
+  width: 100%;
+  margin-top: 12px;
+}

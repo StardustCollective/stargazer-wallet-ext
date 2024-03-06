@@ -4,6 +4,7 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: 40,
     flexGrow: 1,
+    minHeight: '90%',
     marginHorizontal: 16,
     marginTop: 24,
   },
@@ -13,8 +14,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginVertical: 40,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    alignSelf: 'center',
   },
   dropdownContainer: {
     height: 60,
@@ -30,11 +30,31 @@ const styles = StyleSheet.create({
   button: {
     width: 358,
   },
+  modalButton: {
+    marginTop: 12,
+  },
   errorLabel: {
     marginTop: 20,
   },
   phraseInputContainer: {
     marginBottom: 8,
+  },
+  checkboxContainer: {
+    marginTop: 20,
+    marginBottom: 12,
+    flexDirection: 'row',
+  },
+  checkboxTextContainer: {
+    flex: 1,
+    marginTop: -2,
+  },
+  checkboxText: {
+    marginLeft: 8,
+    fontWeight: '500',
+  },
+  modalTitle: {
+    fontSize: 16,
+    marginBottom: 4,
   },
 });
 
