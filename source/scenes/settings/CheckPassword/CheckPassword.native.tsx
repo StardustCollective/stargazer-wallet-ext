@@ -44,38 +44,35 @@ const CheckPassword: FC<ICheckPassword> = ({
 
   const authWithBiometrics = async () => {
     const biometryType = await Biometrics.getBiometryType();
-    if (biometryType) {
-      if (isBiometricEnabled) {
-        const keyExist = await Biometrics.keyExists();
-        if (keyExist) {
-          try {
-            const { success, signature, secret } = await Biometrics.createSignature(
-              PROMPT_TITLES.auth
-            );
-            const publicKey = await Biometrics.getPublicKeyFromKeychain();
-            if (success && signature && secret && publicKey) {
-              const verified = await Biometrics.verifySignature(
-                signature,
-                secret,
-                publicKey
-              );
-              if (verified) {
-                let password = await Biometrics.getUserPasswordFromKeychain();
-                if (password) {
-                  handleOnSubmit({ password });
-                }
-                password = null;
-              }
-            }
-          } catch (err) {
-            console.log('Biometric login failed', err);
-          }
-        }
-      } else {
-        console.log('Biometric is disabled.');
+
+    if (!biometryType) return;
+    if (!isBiometricEnabled) return;
+
+    const keyExist = await Biometrics.keyExists();
+
+    if (!keyExist) return;
+
+    try {
+      const { success, signature, secret } = await Biometrics.createSignature(
+        PROMPT_TITLES.auth
+      );
+      const publicKey = await Biometrics.getPublicKeyFromKeychain();
+
+      if (!success || !signature || !secret || !publicKey) {
+        return;
       }
-    } else {
-      console.log('Biometric is not available.');
+
+      const verified = await Biometrics.verifySignature(signature, secret, publicKey);
+
+      if (!verified) return;
+
+      let password = await Biometrics.getUserPasswordFromKeychain();
+      if (password) {
+        handleOnSubmit({ password });
+      }
+      password = null;
+    } catch (err) {
+      console.log('Biometric login failed', err);
     }
   };
 

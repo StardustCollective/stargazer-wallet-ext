@@ -1,5 +1,7 @@
+import { NavigationProp } from 'navigation/types';
+
 export default interface IStart {
-  navigation: any;
+  navigation: NavigationProp;
   onImportClicked: () => void;
   onGetStartedClicked: () => void;
 }

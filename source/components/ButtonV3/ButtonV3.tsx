@@ -85,7 +85,6 @@ const ButtonV3: FC<IButtonV3Props> = ({
   let buttonSizeStyle = '';
   let buttonColorStyle = '';
   let buttonTextColor = null;
-  const buttonBorderStyle = '';
   let TextComponent = null;
   let disabledStyles = '';
 
@@ -143,7 +142,6 @@ const ButtonV3: FC<IButtonV3Props> = ({
         buttonColorStyle,
         buttonTextColor,
         buttonSizeStyle,
-        buttonBorderStyle,
         extraStyle,
         disabledStyles,
       ])}
