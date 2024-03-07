@@ -9,7 +9,7 @@ interface IImportPhraseContainer {
   type: IMPORT_TYPE;
   title: string;
   buttonTitle: string;
-  onButtonPress: () => void;
+  onImportPhraseSuccess: () => void;
 }
 
 export enum IMPORT_TYPE {
@@ -21,7 +21,7 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
   type,
   buttonTitle,
   title,
-  onButtonPress,
+  onImportPhraseSuccess,
 }) => {
   const walletController = getWalletController();
 
@@ -50,11 +50,6 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
       }
     }
 
-    // Reset invalid if phrase has changed and no longer disabled.
-    if (showPhraseModal) {
-      setShowPhraseModal(false);
-    }
-
     setIsDisabled(disableButton);
     return disableButton;
   }, [phraseValues]);
@@ -71,7 +66,7 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
 
     if (type === IMPORT_TYPE.RESTORE) {
       if (walletController.onboardHelper.importAndValidateSeedPhrase(phrase)) {
-        onButtonPress();
+        onImportPhraseSuccess();
       } else {
         setShowPhraseModal(true);
         setIsLoading(false);
@@ -81,7 +76,7 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
         const isValidPhrase = walletController.onboardHelper.validateSeedPhrase(phrase);
         if (isValidPhrase) {
           await walletController.createWallet(null, phrase);
-          onButtonPress();
+          onImportPhraseSuccess();
         } else {
           setShowPhraseModal(true);
           setIsLoading(false);
@@ -103,7 +98,7 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
       await walletController.createWallet(null, phrase);
     }
 
-    onButtonPress();
+    onImportPhraseSuccess();
   };
 
   const closePhraseModal = () => {
