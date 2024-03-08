@@ -83,7 +83,7 @@ const ImportPhrase: FC<IImportPhrase> = ({
           </div>
         </div>
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+          type={BUTTON_TYPES_ENUM.ERROR_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           label={buttonTitle}
           extraStyle={styles.modalButton}

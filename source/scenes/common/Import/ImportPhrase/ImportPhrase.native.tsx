@@ -96,7 +96,7 @@ const ImportPhrase: FC<IImportPhrase> = ({
           </View>
         </TouchableOpacity>
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+          type={BUTTON_TYPES_ENUM.ERROR_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           title={buttonTitle}
           extraStyles={styles.modalButton}
