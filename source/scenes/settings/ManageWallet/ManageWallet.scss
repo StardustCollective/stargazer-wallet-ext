@@ -46,11 +46,11 @@
   }
 
   .menuContainer {
-    margin-top: 12px;
+    margin-top: 8px;
   }
 
   .removeText {
-    color: $red;
+    color: $red_700;
   }
 
   .copiedLabel {
@@ -79,7 +79,6 @@
     display: flex;
     flex: 1;
     align-items: flex-end;
-    padding-bottom: 8px;
 
     .buttons {
       display: flex;

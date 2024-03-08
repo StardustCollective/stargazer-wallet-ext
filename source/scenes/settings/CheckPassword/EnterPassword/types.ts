@@ -10,5 +10,6 @@ export interface IEnterPassword {
   handleOnCancel: () => void;
   handleOnSubmit: (data: any) => void;
   isSubmitDisabled: boolean;
+  isRemoveWallet: boolean;
   errors: any;
 }

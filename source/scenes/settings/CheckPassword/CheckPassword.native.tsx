@@ -1,96 +1,113 @@
 import React, { FC, useEffect } from 'react';
-import { ScrollView } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { scale } from 'react-native-size-matters';
 import WarningMessage from 'components/WarningMessage';
+import RemoveWalletHeader from 'scenes/settings/RemoveWallet/RemoveWalletHeader';
 import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import EnterPassword from './EnterPassword';
 import PrivateKey from './PrivateKey';
 import RecoveryPhrase from './RecoveryPhrase';
 import { ICheckPassword } from './types';
+import { TITLE, SUBTITLE_PHRASE, SUBTITLE_KEY } from './constants';
 import styles from './styles';
 
-const CheckPassword: FC<ICheckPassword> = (props) => {
-  const {
-    control,
-    walletPhrase,
-    privateKey,
-    warningMessage,
-    isCopied,
-    errors,
-    isSubmitDisabled,
-    isBiometricEnabled,
-    networkOptions,
-    register,
-    handleSubmit,
-    copyText,
-    handleOnSubmit,
-    handleOnCancel,
-  } = props;
+const EXTRA_SCROLL_HEIGHT = scale(25);
+
+const CheckPassword: FC<ICheckPassword> = ({
+  control,
+  wallet,
+  walletPhrase,
+  privateKey,
+  warningMessage,
+  isCopied,
+  errors,
+  isSubmitDisabled,
+  isBiometricEnabled,
+  isRemoveWallet,
+  networkOptions,
+  register,
+  handleSubmit,
+  copyText,
+  handleOnSubmit,
+  handleOnContinue,
+  handleOnCancel,
+}) => {
   const showRecoveryPhrase = !!walletPhrase && !!walletPhrase.length;
   const showPrivateKey = !!privateKey && !!privateKey.length;
   const showEnterPassword = !showRecoveryPhrase && !showPrivateKey;
+  const showWarningMessage = !isRemoveWallet || showRecoveryPhrase || showPrivateKey;
+  const showRemoveWalletHeader = isRemoveWallet && !showRecoveryPhrase && !showPrivateKey;
+  const hasRecoveryPhrase = wallet?.type === KeyringWalletType.MultiChainWallet;
+  const headerSubtitle = hasRecoveryPhrase ? SUBTITLE_PHRASE : SUBTITLE_KEY;
+  const onPressDone = isRemoveWallet ? handleOnContinue : handleOnCancel;
+
+  const authWithBiometrics = async () => {
+    const biometryType = await Biometrics.getBiometryType();
+
+    if (!biometryType) return;
+    if (!isBiometricEnabled) return;
+
+    const keyExist = await Biometrics.keyExists();
+
+    if (!keyExist) return;
+
+    try {
+      const { success, signature, secret } = await Biometrics.createSignature(
+        PROMPT_TITLES.auth
+      );
+      const publicKey = await Biometrics.getPublicKeyFromKeychain();
+
+      if (!success || !signature || !secret || !publicKey) {
+        return;
+      }
+
+      const verified = await Biometrics.verifySignature(signature, secret, publicKey);
+
+      if (!verified) return;
+
+      let password = await Biometrics.getUserPasswordFromKeychain();
+      if (password) {
+        handleOnSubmit({ password });
+      }
+      password = null;
+    } catch (err) {
+      console.log('Biometric login failed', err);
+    }
+  };
 
   useEffect(() => {
     authWithBiometrics();
   }, []);
 
-  const authWithBiometrics = async () => {
-    const biometryType = await Biometrics.getBiometryType();
-    if (!!biometryType) {
-      if (!!isBiometricEnabled) {
-        const keyExist = await Biometrics.keyExists();
-        if (!!keyExist) {
-          try {
-            const { success, signature, secret } = await Biometrics.createSignature(
-              PROMPT_TITLES.auth
-            );
-            const publicKey = await Biometrics.getPublicKeyFromKeychain();
-            if (success && signature && secret && publicKey) {
-              const verified = await Biometrics.verifySignature(
-                signature,
-                secret,
-                publicKey
-              );
-              if (verified) {
-                let password = await Biometrics.getUserPasswordFromKeychain();
-                if (password) {
-                  handleOnSubmit({ password });
-                }
-                password = null;
-              }
-            }
-          } catch (err) {
-            console.log('Biometric login failed', err);
-          }
-        }
-      } else {
-        console.log('Biometric is disabled.');
-      }
-    } else {
-      console.log('Biometric is not available.');
-    }
-  };
-
   return (
-    <ScrollView
-      style={styles.scrollView}
+    <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollViewContentContainer}
+      extraScrollHeight={EXTRA_SCROLL_HEIGHT}
     >
-      <WarningMessage message={warningMessage} />
+      {showRemoveWalletHeader && (
+        <RemoveWalletHeader wallet={wallet} title={TITLE} subtitle={headerSubtitle} />
+      )}
+      {showWarningMessage && <WarningMessage message={warningMessage} />}
       {showRecoveryPhrase && (
         <RecoveryPhrase
           walletPhrase={walletPhrase}
           isCopied={isCopied}
           copyText={copyText}
-          onPressDone={handleOnCancel}
+          isRemoveWallet={isRemoveWallet}
+          onPressDone={onPressDone}
+          onPressCancel={handleOnCancel}
         />
       )}
       {showPrivateKey && (
         <PrivateKey
           networkOptions={networkOptions}
+          isRemoveWallet={isRemoveWallet}
           privateKey={privateKey}
           isCopied={isCopied}
           copyText={copyText}
-          onPressDone={handleOnCancel}
+          onPressCancel={handleOnCancel}
+          onPressDone={onPressDone}
         />
       )}
       {showEnterPassword && (
@@ -101,10 +118,11 @@ const CheckPassword: FC<ICheckPassword> = (props) => {
           handleOnSubmit={handleOnSubmit}
           handleOnCancel={handleOnCancel}
           isSubmitDisabled={isSubmitDisabled}
+          isRemoveWallet={isRemoveWallet}
           errors={errors}
         />
       )}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
