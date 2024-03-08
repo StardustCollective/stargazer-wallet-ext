@@ -83,6 +83,12 @@ const styles = StyleSheet.create({
   tertiarySolidTitle: {
     color: COLORS.black,
   },
+  errorSolid: {
+    backgroundColor: NEW_COLORS.red_700,
+  },
+  newPrimarySolid: {
+    backgroundColor: NEW_COLORS.primary,
+  },
 });
 
 export default styles;

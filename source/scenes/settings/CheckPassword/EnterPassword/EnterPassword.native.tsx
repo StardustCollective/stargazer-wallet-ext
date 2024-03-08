@@ -4,7 +4,7 @@ import TextV3 from 'components/TextV3';
 import TextInput from 'components/TextInput';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { CANCEL, ENTER_PASSWORD, SUBMIT, WRONG_PASSWORD } from './constants';
+import { CANCEL, CONTINUE, ENTER_PASSWORD, SUBMIT, WRONG_PASSWORD } from './constants';
 import { IEnterPassword } from './types';
 import styles from './styles';
 
@@ -15,8 +15,13 @@ const EnterPassword: FC<IEnterPassword> = ({
   handleOnSubmit,
   handleOnCancel,
   isSubmitDisabled,
+  isRemoveWallet,
   errors,
 }) => {
+  const primaryButtonText = isRemoveWallet ? CONTINUE : SUBMIT;
+  const primaryButtonType = isRemoveWallet
+    ? BUTTON_TYPES_ENUM.ERROR_SOLID
+    : BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID;
   return (
     <>
       <View style={styles.inputContainer}>
@@ -49,11 +54,11 @@ const EnterPassword: FC<IEnterPassword> = ({
           onPress={handleOnCancel}
         />
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.PRIMARY}
+          type={primaryButtonType}
           size={BUTTON_SIZES_ENUM.LARGE}
-          title={SUBMIT}
+          title={primaryButtonText}
           disabled={isSubmitDisabled}
-          extraStyles={[styles.button, styles.submit]}
+          extraStyles={styles.button}
           onPress={handleSubmit((data) => {
             handleOnSubmit(data);
           })}

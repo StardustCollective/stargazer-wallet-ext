@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { NEW_COLORS, COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   inputContainer: {
@@ -16,14 +15,14 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: 'row',
+    flex: 1,
+    alignItems: 'flex-end',
     justifyContent: 'center',
+    paddingBottom: 32,
   },
   button: {
     marginHorizontal: 6,
     width: 170,
-  },
-  submit: {
-    backgroundColor: NEW_COLORS.primary,
   },
 });
 

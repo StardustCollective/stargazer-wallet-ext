@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
-import clsx from 'clsx';
 import TextInput from 'components/TextInput';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { ENTER_PASSWORD, WRONG_PASSWORD, CANCEL, SUBMIT } from './constants';
+import { ENTER_PASSWORD, WRONG_PASSWORD, CANCEL, SUBMIT, CONTINUE } from './constants';
 import { IEnterPassword } from './types';
 import styles from './EnterPassword.scss';
 
@@ -15,8 +14,13 @@ const EnterPassword: FC<IEnterPassword> = ({
   handleOnSubmit,
   handleOnCancel,
   isSubmitDisabled,
+  isRemoveWallet,
   errors,
 }) => {
+  const primaryButtonText = isRemoveWallet ? CONTINUE : SUBMIT;
+  const primaryButtonType = isRemoveWallet
+    ? BUTTON_TYPES_ENUM.ERROR_SOLID
+    : BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID;
   return (
     <>
       <div className={styles.inputContainer}>
@@ -49,11 +53,11 @@ const EnterPassword: FC<IEnterPassword> = ({
           onClick={handleOnCancel}
         />
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+          type={primaryButtonType}
           size={BUTTON_SIZES_ENUM.LARGE}
-          label={SUBMIT}
+          label={primaryButtonText}
           disabled={isSubmitDisabled}
-          extraStyle={clsx(styles.button, styles.submit)}
+          extraStyle={styles.button}
           onClick={handleSubmit((data: any) => {
             handleOnSubmit(data);
           })}

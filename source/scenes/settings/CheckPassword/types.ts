@@ -22,6 +22,7 @@ export interface ICheckPassword {
   ) => (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
   handleOnCancel: () => void;
   handleOnSubmit: (data: any) => void;
+  handleOnContinue: () => void;
   isSubmitDisabled: boolean;
   errors: any;
   isCopied: boolean;
@@ -29,4 +30,5 @@ export interface ICheckPassword {
   updatePrivateKey: (address: string) => void;
   networkOptions: IDropdownOptions;
   isBiometricEnabled: boolean;
+  isRemoveWallet: boolean;
 }
