@@ -13,7 +13,7 @@ const Import = () => {
       type={IMPORT_TYPE.RESTORE}
       title="Restore Stargazer Wallet"
       buttonTitle="Restore"
-      onButtonPress={() => setRegistered(true)}
+      onImportPhraseSuccess={() => setRegistered(true)}
     />
   );
 };

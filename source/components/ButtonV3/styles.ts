@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
   },
   errorSolid: {
     backgroundColor: NEW_COLORS.red_700,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.08)',
   },
   newPrimarySolid: {
     backgroundColor: NEW_COLORS.primary,

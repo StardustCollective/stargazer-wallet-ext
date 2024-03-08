@@ -43,7 +43,8 @@
     ],
     "react/jsx-filename-extension": ["warn", { "extensions": [".jsx", ".tsx"] }],
     "react/jsx-props-no-spreading": "off",
-    "no-nested-ternary": "off"
+    "no-nested-ternary": "off",
+    "no-restricted-exports": "off"
   },
   "globals": {
     "it": "readonly",
