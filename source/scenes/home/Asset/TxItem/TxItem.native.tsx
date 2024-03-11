@@ -7,6 +7,7 @@ import TxSentIcon from 'assets/images/svg/tx-sent.svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { ellipsis } from 'scenes/home/helpers';
 import styles from './styles';
+import { DAILY_TX } from './constants';
 import ITxItemSettings, { RenderIconProps } from './types';
 
 const RenderIcon: FC<RenderIconProps> = ({ tx, isETH, isReceived, isRewardsTab }) => {
@@ -36,6 +37,7 @@ const TxItem: FC<ITxItemSettings> = ({
   txTypeLabel,
   amount,
   fiatAmount,
+  rewardsCount,
   getLinkUrl,
   receivedOrSentText,
   formattedDistanceDate,
@@ -58,6 +60,24 @@ const TxItem: FC<ITxItemSettings> = ({
     }
 
     Linking.openURL(url);
+  };
+
+  const renderSubtitleContent = () => {
+    if (!rewardsCount && !txTypeLabel) {
+      return null;
+    }
+
+    let content = '';
+
+    if (txTypeLabel) {
+      content = ellipsis(txTypeLabel);
+    }
+
+    if (rewardsCount) {
+      content = `${DAILY_TX} ${rewardsCount}`;
+    }
+
+    return <TextV3.Caption extraStyles={styles.txAddress}>{content}</TextV3.Caption>;
   };
 
   return (
@@ -87,11 +107,7 @@ const TxItem: FC<ITxItemSettings> = ({
               <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                 {receivedOrSentText}
               </TextV3.CaptionStrong>
-              {!!txTypeLabel && (
-                <TextV3.Caption extraStyles={styles.txAddress}>
-                  {ellipsis(txTypeLabel)}
-                </TextV3.Caption>
-              )}
+              {renderSubtitleContent()}
             </View>
           </View>
           <View style={styles.txAmountWrapper}>

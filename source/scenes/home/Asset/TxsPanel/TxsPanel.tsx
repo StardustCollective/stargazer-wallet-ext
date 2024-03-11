@@ -14,7 +14,7 @@ const TxsPanel: FC<ITxPanelSettings> = ({
 }) => {
   return (
     <div className={styles.activity}>
-      {transactions.length ? (
+      {transactions?.length ? (
         <div>
           {transactions.map((tx: Transaction, idx: number) => {
             return renderTxItem(tx, idx);

@@ -24,6 +24,7 @@ const TxItemContainer: FC<ITxItem> = ({
   txTypeLabel,
   currencySymbol,
   amount,
+  rewardsCount,
   fiatAmount,
   getLinkUrl,
 }) => {
@@ -135,6 +136,7 @@ const TxItemContainer: FC<ITxItem> = ({
       formattedDistanceDate={formattedDistanceDate}
       renderGasSettings={renderGasSettings}
       logo={assets[activeAsset.id]?.logo}
+      rewardsCount={rewardsCount}
     />
   );
 };

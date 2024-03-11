@@ -21,6 +21,7 @@ export type ITxItem = {
   amount: string;
   fiatAmount: string;
   logo?: string;
+  rewardsCount?: number;
 };
 
 export default interface ITxItemSettings extends ITxItem {

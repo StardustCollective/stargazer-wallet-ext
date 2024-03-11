@@ -12,11 +12,13 @@ import * as Progress from 'react-native-progress';
 import TextV3 from 'components/TextV3';
 import QRCode from 'react-native-qrcode-svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, NEW_COLORS } from 'assets/styles/_variables';
 import Container from 'components/Container';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
+import ArrowsIcon from 'assets/images/svg/arrows.svg';
+import GiftIcon from 'assets/images/svg/gift.svg';
 import {
   getNetworkLabel,
   getNetworkLogo,
@@ -85,13 +87,18 @@ const AssetDetail: FC<IAssetSettings> = ({
 
   const renderTabLabel = ({ route, focused }) => {
     const focusedStyle = focused && styles.labelFocused;
+    const isRewards = route.key === 'rewards';
+    const iconColor = focused ? COLORS.white : NEW_COLORS.secondary_text;
     return (
-      <TextV3.LabelSemiStrong
-        color={focused ? COLORS_ENUMS.WHITE : COLORS_ENUMS.SECONDARY_TEXT}
-        extraStyles={[styles.tabLabel, focusedStyle]}
-      >
-        {route.title}
-      </TextV3.LabelSemiStrong>
+      <View style={styles.labelContainer}>
+        {isRewards ? <GiftIcon color={iconColor} /> : <ArrowsIcon color={iconColor} />}
+        <TextV3.LabelSemiStrong
+          color={focused ? COLORS_ENUMS.WHITE : COLORS_ENUMS.SECONDARY_TEXT}
+          extraStyles={[styles.tabLabel, focusedStyle]}
+        >
+          {route.title}
+        </TextV3.LabelSemiStrong>
+      </View>
     );
   };
 

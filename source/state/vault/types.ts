@@ -61,6 +61,7 @@ export type Reward = {
   accruedAt: string;
   ordinal: number;
   metagraphId: string;
+  rewardsCount?: number;
 };
 
 export type ActiveNetwork = {

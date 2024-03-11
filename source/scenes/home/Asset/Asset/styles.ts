@@ -326,10 +326,16 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontWeight: '500',
     lineHeight: 24,
+    marginLeft: 8,
   },
   labelFocused: {
     fontWeight: '600',
     lineHeight: 24,
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   tabBar: {
     backgroundColor: COLORS.primary,

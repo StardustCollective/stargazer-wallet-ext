@@ -6,6 +6,10 @@ import QRCodeModal from 'components/QRCodeModal';
 import TextV3 from 'components/TextV3';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import ArrowsActiveIcon from 'assets/images/svg/arrows-active.svg';
+import ArrowsInactiveIcon from 'assets/images/svg/arrows-inactive.svg';
+import GiftActiveIcon from 'assets/images/svg/gift-active.svg';
+import GiftInactiveIcon from 'assets/images/svg/gift-inactive.svg';
 import { AssetType } from 'state/vault/types';
 import TxsPanel from '../TxsPanel';
 import styles from './Asset.scss';
@@ -48,7 +52,18 @@ const StyledTab = withStyles(() =>
       fontFamily: 'Inter',
       fontSize: 14,
       fontWeight: 500,
-      height: 50,
+      height: 48,
+    },
+    wrapper: {
+      flexDirection: 'row',
+      '& > img': {
+        marginTop: 6,
+        marginRight: 8,
+      },
+    },
+    labelIcon: {
+      paddingTop: 0,
+      minHeight: 0,
     },
     selected: {
       color: '#fff',
@@ -122,8 +137,24 @@ const AssetDetail: FC<IAssetSettings> = ({
                 variant="fullWidth"
                 aria-label="full width tabs"
               >
-                <StyledTab label="Transactions" />
-                <StyledTab label="Rewards" />
+                <StyledTab
+                  label="Transactions"
+                  icon={
+                    <img
+                      src={`/${value === 0 ? ArrowsActiveIcon : ArrowsInactiveIcon}`}
+                      alt="arrows"
+                    />
+                  }
+                />
+                <StyledTab
+                  label="Rewards"
+                  icon={
+                    <img
+                      src={`/${value === 1 ? GiftActiveIcon : GiftInactiveIcon}`}
+                      alt="gift"
+                    />
+                  }
+                />
               </StyledTabs>
               <TabPanel value={value} index={0}>
                 <TxsPanel route="transactions" />

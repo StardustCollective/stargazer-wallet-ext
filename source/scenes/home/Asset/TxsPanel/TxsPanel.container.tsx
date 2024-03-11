@@ -156,6 +156,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
     const amount = tx.amount / 1e8;
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = getFiatAmount(amount, 4);
+    const rewardsCount = tx?.rewardsCount ? tx.rewardsCount : null;
     return (
       <TxItem
         key={idx}
@@ -171,6 +172,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
         currencySymbol={assets[activeAsset?.id]?.symbol}
         amount={amountString}
         fiatAmount={fiatAmount}
+        rewardsCount={rewardsCount}
       />
     );
   };
