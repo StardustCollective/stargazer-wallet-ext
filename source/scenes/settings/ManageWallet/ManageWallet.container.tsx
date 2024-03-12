@@ -9,10 +9,10 @@ import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 import walletsSelector from 'selectors/walletsSelectors';
 
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import ManageWallet from './ManageWallet';
 
 import { IManageWalletView } from './types';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => {
   const accountController = getAccountController();
@@ -45,7 +45,8 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   };
 
   const onDeleteWalletClicked = () => {
-    linkTo(`/settings/wallets/remove?id=${id}`);
+    const type = 'remove';
+    linkTo(`/settings/wallets/checkPassword?type=${type}&id=${id}`);
   };
 
   const onShowPrivateKeyClicked = () => {

@@ -37,6 +37,9 @@ target 'Stargazer' do
       if target.name == "React-Core-AccessibilityResources"
         target.remove_from_project
       end
+      target.build_configurations.each do |config|
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
+      end
     end
   end
 end

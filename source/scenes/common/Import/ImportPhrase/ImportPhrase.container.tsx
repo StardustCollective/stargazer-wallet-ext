@@ -1,14 +1,15 @@
 import React, { FC, useMemo, useState } from 'react';
 import { getWalletController } from 'utils/controllersUtils';
 import Container, { CONTAINER_COLOR } from 'components/Container';
-import ImportPhrase from './ImportPhrase';
 import { IDropdownOptions } from 'components/Dropdown/types';
+import ImportPhrase from './ImportPhrase';
+import { MODAL_DESCRIPTION_IMPORT, MODAL_DESCRIPTION_RESTORE } from './constants';
 
 interface IImportPhraseContainer {
   type: IMPORT_TYPE;
   title: string;
   buttonTitle: string;
-  onButtonPress: () => void;
+  onImportPhraseSuccess: () => void;
 }
 
 export enum IMPORT_TYPE {
@@ -20,14 +21,17 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
   type,
   buttonTitle,
   title,
-  onButtonPress,
+  onImportPhraseSuccess,
 }) => {
   const walletController = getWalletController();
 
   const [phraseLength, setPhraseLength] = useState('12');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isInvalidPhrase, setIsInvalidPhrase] = useState(false);
+  const [showPhraseModal, setShowPhraseModal] = useState(false);
   const [isButtonDisabled, setIsDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalLoading, setIsModalLoading] = useState(false);
+  const [isCheckboxActive, setIsCheckboxActive] = useState(false);
   const [phraseValues, setPhraseValues] = useState<string[]>(
     Array(parseInt(phraseLength)).fill('')
   );
@@ -39,16 +43,11 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
     if (!phraseValues) return true;
     let disableButton = false;
 
-    for (let phrase of phraseValues) {
+    for (const phrase of phraseValues) {
       if (!phrase.trim()) {
         disableButton = true;
         break;
       }
-    }
-
-    // Reset invalid if phrase has changed and no longer disabled.
-    if (isInvalidPhrase) {
-      setIsInvalidPhrase(false);
     }
 
     setIsDisabled(disableButton);
@@ -62,30 +61,59 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
   };
 
   const onSubmit = async (phraseArray: string[]) => {
-    setIsDisabled(true);
+    setIsLoading(true);
     const phrase = phraseArray.join(' ');
 
     if (type === IMPORT_TYPE.RESTORE) {
       if (walletController.onboardHelper.importAndValidateSeedPhrase(phrase)) {
-        onButtonPress();
+        onImportPhraseSuccess();
       } else {
-        setIsInvalidPhrase(true);
+        setShowPhraseModal(true);
+        setIsLoading(false);
       }
     } else {
       try {
-        await walletController.createWallet(null, phrase);
-        onButtonPress();
+        const isValidPhrase = walletController.onboardHelper.validateSeedPhrase(phrase);
+        if (isValidPhrase) {
+          await walletController.createWallet(null, phrase);
+          onImportPhraseSuccess();
+        } else {
+          setShowPhraseModal(true);
+          setIsLoading(false);
+        }
       } catch (error) {
         console.log(error);
-        setIsInvalidPhrase(true);
+        setIsLoading(false);
       }
     }
+  };
+
+  const onSubmitConfirm = async (phraseArray: string[]) => {
+    setIsModalLoading(true);
+    const phrase = phraseArray.join(' ');
+
+    if (type === IMPORT_TYPE.RESTORE) {
+      walletController.onboardHelper.setSeedPhrase(phrase);
+    } else {
+      await walletController.createWallet(null, phrase);
+    }
+
+    onImportPhraseSuccess();
+  };
+
+  const closePhraseModal = () => {
+    setShowPhraseModal(false);
+    setIsCheckboxActive(false);
   };
 
   const togglePassword = (index: number) => {
     const newShowPasswordArray: boolean[] = Array(parseInt(phraseLength)).fill(false);
     newShowPasswordArray[index] = !showPasswordArray[index];
     setShowPasswordArray(newShowPasswordArray);
+  };
+
+  const toggleCheckbox = () => {
+    setIsCheckboxActive(!isCheckboxActive);
   };
 
   const toggleDropdown = () => {
@@ -128,6 +156,9 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
     ],
   };
 
+  const modalDescription =
+    type === IMPORT_TYPE.RESTORE ? MODAL_DESCRIPTION_RESTORE : MODAL_DESCRIPTION_IMPORT;
+
   return (
     <Container
       color={CONTAINER_COLOR.EXTRA_LIGHT}
@@ -136,15 +167,22 @@ const ImportPhraseContainer: FC<IImportPhraseContainer> = ({
     >
       <ImportPhrase
         title={title}
+        modalDescription={modalDescription}
         buttonTitle={buttonTitle}
-        onSubmit={onSubmit}
         isDisabled={isDisabled || isButtonDisabled}
-        isInvalidPhrase={isInvalidPhrase}
+        isLoading={isLoading}
+        isModalLoading={isModalLoading}
+        showPhraseModal={showPhraseModal}
         phraseOptions={phraseOptions}
         phraseValues={phraseValues}
         showPasswordArray={showPasswordArray}
+        isCheckboxActive={isCheckboxActive}
+        onSubmit={onSubmit}
+        toggleCheckbox={toggleCheckbox}
         handleInputChange={handleInputChange}
         togglePassword={togglePassword}
+        closePhraseModal={closePhraseModal}
+        onSubmitConfirm={onSubmitConfirm}
       />
     </Container>
   );

@@ -11,7 +11,7 @@ import styles from './styles';
 const PhraseInput: FC<IPhraseInput> = ({
   value,
   index,
-  hasError,
+  hasError = false,
   showPassword,
   togglePassword,
   onChangeText,

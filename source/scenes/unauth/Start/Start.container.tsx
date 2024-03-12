@@ -21,7 +21,7 @@ import Start from './Start';
 // Container
 ///////////////////////////
 
-const StartContainer = () => {
+const StartContainer = ({ navigation }: { navigation: any }) => {
   ///////////////////////////
   // Hooks
   ///////////////////////////
@@ -47,6 +47,7 @@ const StartContainer = () => {
   return (
     <Container maxHeight={false}>
       <Start
+        navigation={navigation}
         onImportClicked={onImportClicked}
         onGetStartedClicked={onGetStartedClicked}
       />

@@ -1,0 +1,19 @@
+@import '~assets/styles/variables';
+
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  border: 1px solid $gray-500;
+  background-color: $white;
+  width: 302px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  border-radius: 8px;
+}

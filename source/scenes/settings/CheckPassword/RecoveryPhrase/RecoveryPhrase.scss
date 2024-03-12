@@ -18,6 +18,11 @@
   width: 328px;
 }
 
+.extraPhraseContainer {
+  min-height: 132px;
+  align-items: center;
+}
+
 .phraseItem {
   background-color: $indigo_50;
   margin: 6px 4px;
@@ -38,7 +43,11 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 24px 0px;
+  padding: 16px 0px;
+}
+
+.copyContainerBlank {
+  height: 52px;
 }
 
 .copyText {
@@ -47,10 +56,15 @@
 
 .buttonContainer {
   display: flex;
-  margin-top: 20px;
+  justify-content: center;
+  margin-top: 4px;
 }
 
 .doneButton {
-  background-color: $new-primary;
   width: 100%;
+}
+
+.button {
+  margin-left: 6px;
+  margin-right: 6px;
 }

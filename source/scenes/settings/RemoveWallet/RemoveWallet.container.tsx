@@ -1,10 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 import { getWalletController } from 'utils/controllersUtils';
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
-import navigationUtil from 'navigation/util';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import RemoveWallet from './RemoveWallet';
 import { IRemoveWalletView } from './types';
@@ -16,19 +15,26 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
   const allWallets = [...wallets.local, ...wallets.bitfi, ...wallets.ledger];
   const wallet = allWallets.find((w) => w.id === id);
   const linkTo = useLinkTo();
+  const [loading, setLoading] = useState(false);
 
   const handleRemoveWallet = async () => {
+    setLoading(true);
     await walletController.deleteWallet(wallet);
     if (allWallets.length === 1) {
       await walletController.logOut();
+      await localStorage.removeItem('stargazer-vault');
+      walletController.getEncryptedVault();
       walletController.onboardHelper.reset();
       linkTo('/unAuthRoot');
     } else {
-      navigationUtil.popToTop(navigation);
+      navigation.goBack();
+      navigation.goBack();
+      navigation.goBack();
     }
   };
 
   const handleCancel = () => {
+    navigation.goBack();
     navigation.goBack();
   };
 
@@ -36,6 +42,7 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
       <RemoveWallet
         wallet={wallet}
+        loading={loading}
         handleCancel={handleCancel}
         handleRemoveWallet={handleRemoveWallet}
       />

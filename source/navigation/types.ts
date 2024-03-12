@@ -1,7 +1,6 @@
-import { RouteComponentProps } from 'react-router-dom';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-interface SendMatchParams {
-  address: string;
-}
+// The NavigationProp type should be used as a "general" type for the
+// navigation object when there're no params needed for a screen.
 
-export type SendMatchProps = RouteComponentProps<SendMatchParams>;
+export type NavigationProp = NativeStackNavigationProp<any, any>;

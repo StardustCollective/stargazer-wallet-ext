@@ -18,11 +18,9 @@ import BackgroundTimer from 'react-native-background-timer';
 // Components
 ///////////////////////////
 
-import WalletsModal from './WalletsModal';
 import Sheet from 'components/Sheet';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
-import AssetsPanel from './AssetsPanel';
 import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up-white.svg';
 import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down-white.svg';
 
@@ -30,7 +28,7 @@ import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down-white.svg';
 // Utils
 ///////////////////////////
 
-import { getAccountController, getWalletController } from 'utils/controllersUtils';
+import { getWalletController } from 'utils/controllersUtils';
 import homeHeader from 'navigation/headers/home';
 import { truncateString } from 'scenes/home/helpers';
 import EventEmitter from 'utils/EventEmitter';
@@ -39,6 +37,8 @@ import EventEmitter from 'utils/EventEmitter';
 // Styles
 ///////////////////////////
 
+import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
+import { NavigationEvents } from 'constants/events';
 import styles from './styles';
 
 ///////////////////////////
@@ -46,20 +46,20 @@ import styles from './styles';
 ///////////////////////////
 
 import { IHome } from './types';
-import { KeyringWalletAccountState } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
 import { BUY_STRING, SWAP_STRING } from './constants';
-import { NavigationEvents } from 'constants/events';
+import AssetsPanel from './AssetsPanel';
+import WalletsModal from './WalletsModal';
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
 const LOGOUT_TIMEOUT = 1000 * 60 * 5; // 5 minutes
 const ICON_SIZE = 14;
-let lastIsConnected: boolean = true;
+let lastIsConnected = true;
 
 ///////////////////////////
 // Scene
@@ -77,7 +77,6 @@ const Home: FC<IHome> = ({
 }) => {
   const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
 
-  const accountController = getAccountController();
   const walletController = getWalletController();
   const linkTo = useLinkTo();
 
@@ -120,7 +119,6 @@ const Home: FC<IHome> = ({
     const unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
       if (state.isConnected && !lastIsConnected) {
         lastIsConnected = true;
-        await accountController.assetsBalanceMonitor.start();
       } else {
         lastIsConnected = false;
       }
@@ -186,15 +184,13 @@ const Home: FC<IHome> = ({
                   extraStyles={styles.buttonNormal}
                 />
                 {!isDagOnlyWallet && (
-                  <>
-                    <ButtonV3
-                      title={SWAP_STRING}
-                      size={BUTTON_SIZES_ENUM.LARGE}
-                      type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                      onPress={onSwapPressed}
-                      extraStyles={styles.buttonNormal}
-                    />
-                  </>
+                  <ButtonV3
+                    title={SWAP_STRING}
+                    size={BUTTON_SIZES_ENUM.LARGE}
+                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                    onPress={onSwapPressed}
+                    extraStyles={styles.buttonNormal}
+                  />
                 )}
               </View>
             </View>

@@ -11,8 +11,12 @@ import {
   addBitfiWallet,
   addCustomNetwork,
   changeCurrentEVMNetwork,
+  getHasEncryptedVault,
 } from 'state/vault';
-import { ICustomNetworkObject, IVaultWalletsStoreState } from 'state/vault/types';
+import IVaultState, {
+  ICustomNetworkObject,
+  IVaultWalletsStoreState,
+} from 'state/vault/types';
 import {
   AVALANCHE_NETWORK,
   BSC_NETWORK,
@@ -20,7 +24,6 @@ import {
   ETH_NETWORK,
   POLYGON_NETWORK,
 } from 'constants/index';
-import IVaultState from 'state/vault/types';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
 import {
@@ -31,24 +34,24 @@ import {
   KeyringVaultState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import SwapController, { ISwapController } from './SwapController';
-import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
-import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
-import { AccountController } from './AccountController';
 import { getEncryptor } from 'utils/keyringManagerUtils';
 import { getDappController, getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
+import filter from 'lodash/filter';
+import { AvailableEvents, ProtocolProvider } from 'scripts/common';
+import { isNative } from 'utils/envUtil';
+import { setAutoLogin } from 'state/biometrics';
+import { generateId } from './EVMChainController/utils';
 import {
   AvalancheChainId,
   BSCChainId,
   EthChainId,
   PolygonChainId,
 } from './EVMChainController/types';
-import filter from 'lodash/filter';
-import { generateId } from './EVMChainController/utils';
-import { AvailableEvents, ProtocolProvider } from 'scripts/common';
-import { isNative } from 'utils/envUtil';
-import { setAutoLogin } from 'state/biometrics';
+import { AccountController } from './AccountController';
+import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
+import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
+import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
 
 // Constants
@@ -186,9 +189,9 @@ class WalletController {
     const allWallets = [...wallets.local, ...wallets.ledger, ...wallets.bitfi];
 
     for (let i = 0; i < allWallets.length; i++) {
-      let accounts = allWallets[i].accounts;
+      const { accounts } = allWallets[i];
       for (let j = 0; j < accounts.length; j++) {
-        let account = accounts[j];
+        const account = accounts[j];
         if (account.address === address) return true;
       }
     }
@@ -202,7 +205,7 @@ class WalletController {
       return 1;
     }
 
-    let walletIds = [];
+    const walletIds = [];
 
     // Move all the existing IDs the walletIds array.
     for (let i = 0; i < wallets.length; i++) {
@@ -299,12 +302,10 @@ class WalletController {
       wallet.type !== KeyringWalletType.BitfiAccountWallet
     ) {
       newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
-    } else {
-      if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
-        newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
-      } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
-        newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
-      }
+    } else if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
+      newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
+    } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
+      newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
     }
 
     newWalletState = {
@@ -498,6 +499,10 @@ class WalletController {
 
   setWalletPassword(password: string): void {
     this.keyringManager.setPassword(password);
+  }
+
+  getEncryptedVault() {
+    store.dispatch<any>(getHasEncryptedVault());
   }
 
   logOut(): void {

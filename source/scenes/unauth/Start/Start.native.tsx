@@ -3,7 +3,7 @@
 ///////////////////////////
 
 import React, { FC, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, BackHandler } from 'react-native';
 import { useSelector } from 'react-redux';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -35,6 +35,12 @@ import Logo from 'assets/images/logo';
 import styles from './styles';
 
 ///////////////////////////
+// Types
+///////////////////////////
+
+import IStart from './types';
+
+///////////////////////////
 // Constants
 ///////////////////////////
 
@@ -42,17 +48,33 @@ const LOGO_IMAGE_WIDTH = 192;
 const LOGO_IMAGE_HEIGHT = 166;
 
 ///////////////////////////
-// Types
-///////////////////////////
-
-import IStart from './types';
-
-///////////////////////////
 // Scene
 ///////////////////////////
 
-const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
+const Start: FC<IStart> = ({ navigation, onGetStartedClicked, onImportClicked }) => {
   const { initialCheck } = useSelector((state: RootState) => state.biometrics);
+
+  useEffect(() => {
+    // This is set only for the scenario where an user deletes the last wallet.
+    // In that case we're navigating to this screen and we should disable the swipe back functionality.
+    navigation.setOptions({ gestureEnabled: false });
+    navigation.getParent()?.setOptions({ gestureEnabled: false });
+
+    // Android back button handler
+    const hardwareBackPressHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        // Prevent default behavior of leaving the screen
+        return true;
+      }
+    );
+
+    return () => {
+      navigation.setOptions({ gestureEnabled: true });
+      navigation.getParent()?.setOptions({ gestureEnabled: true });
+      hardwareBackPressHandler.remove();
+    };
+  }, [navigation]);
 
   // Initial signature to show permission dialog
   useEffect(() => {
@@ -84,7 +106,7 @@ const Start: FC<IStart> = ({ onGetStartedClicked, onImportClicked }) => {
     const checkBiometrics = async () => {
       const bioType = await Biometrics.getBiometryType();
       const isAvailable = !!bioType;
-      const type = !!bioType ? bioType : null;
+      const type = bioType || null;
       store.dispatch(setBiometryAvailable(isAvailable));
       store.dispatch(setBiometryType(type));
     };

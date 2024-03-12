@@ -62,6 +62,7 @@ export const NEW_COLORS = {
   gray_50: '#F9FAFB',
   gray_300: '#D1D5DB',
   gray_400: '#9CA3AF',
+  gray_500: '#6B7280',
   secondary_text: '#5A5D6B',
   warning_background: '#FFFBEB',
   warning_border: '#FCD34D',

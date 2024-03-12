@@ -33,11 +33,17 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     paddingBottom: 32,
   },
-  doneButton: {
-    backgroundColor: NEW_COLORS.primary,
+  extraButtonContainer: {
+    width: '100%',
+  },
+  extraButtonStyles: {
+    width: 170,
+    marginHorizontal: 6,
   },
 });
 

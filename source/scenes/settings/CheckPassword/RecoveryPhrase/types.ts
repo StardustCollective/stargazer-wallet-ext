@@ -3,4 +3,6 @@ export interface IRecoveryPhrase {
   isCopied: boolean;
   copyText: (txt: string) => void;
   onPressDone: () => void;
+  onPressCancel: () => void;
+  isRemoveWallet: boolean;
 }

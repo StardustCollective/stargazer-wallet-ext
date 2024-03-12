@@ -1,20 +1,45 @@
-import React, { FC } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import React, { FC, useState } from 'react';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import TextV3 from 'components/TextV3';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { IRecoveryPhrase } from './types';
-import { COPIED, COPY_CLIPBOARD, DONE, RECOVERY_PHRASE } from './constants';
+import {
+  CANCEL,
+  CONTINUE,
+  COPIED,
+  COPY_CLIPBOARD,
+  DONE,
+  RECOVERY_PHRASE,
+  REVEAL_PHRASE,
+} from './constants';
 import styles from './styles';
 
 const RecoveryPhrase: FC<IRecoveryPhrase> = ({
   walletPhrase,
   isCopied,
+  isRemoveWallet,
   copyText,
   onPressDone,
+  onPressCancel,
 }) => {
+  const [showPhrase, setShowPhrase] = useState(false);
   const phraseArray = walletPhrase.split(' ');
+  const primaryButtonType = isRemoveWallet
+    ? BUTTON_TYPES_ENUM.ERROR_SOLID
+    : BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID;
+  const primaryButtonTitle = isRemoveWallet ? CONTINUE : DONE;
+  const primaryButtonStyles = StyleSheet.flatten([
+    isRemoveWallet && styles.extraButtonStyles,
+  ]);
+  const extraContainerStyles = !isRemoveWallet && styles.extraButtonContainer;
+
+  const phraseContainerStyles = StyleSheet.flatten([
+    styles.phraseContainer,
+    !showPhrase && styles.extraPhraseContainer,
+  ]);
+
   return (
     <View style={styles.recoveryContainer}>
       <TextV3.CaptionStrong color={COLORS_ENUMS.SECONDARY_TEXT}>
@@ -22,34 +47,56 @@ const RecoveryPhrase: FC<IRecoveryPhrase> = ({
       </TextV3.CaptionStrong>
       <TouchableOpacity
         activeOpacity={0.5}
+        disabled={!showPhrase}
         onPress={() => copyText(walletPhrase)}
-        style={styles.phraseContainer}
+        style={phraseContainerStyles}
       >
-        {phraseArray.map((phraseItem: string) => (
-          <View key={phraseItem} style={styles.phraseItem}>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.phraseText}>
-              {phraseItem}
-            </TextV3.Caption>
-          </View>
-        ))}
+        {!showPhrase && (
+          <ButtonV3
+            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            size={BUTTON_SIZES_ENUM.SMALL}
+            title={REVEAL_PHRASE}
+            onPress={() => setShowPhrase(true)}
+          />
+        )}
+        {showPhrase &&
+          phraseArray.map((phraseItem: string) => (
+            <View key={phraseItem} style={styles.phraseItem}>
+              <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.phraseText}>
+                {phraseItem}
+              </TextV3.Caption>
+            </View>
+          ))}
       </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.5}
-        onPress={() => copyText(walletPhrase)}
-        style={styles.copyContainer}
-      >
-        <TextV3.CaptionStrong extraStyles={styles.copyText}>
-          {isCopied ? COPIED : COPY_CLIPBOARD}
-        </TextV3.CaptionStrong>
-        {!isCopied && <CopyIcon height={20} width={32} />}
-      </TouchableOpacity>
+      {showPhrase && (
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => copyText(walletPhrase)}
+          style={styles.copyContainer}
+        >
+          <TextV3.CaptionStrong extraStyles={styles.copyText}>
+            {isCopied ? COPIED : COPY_CLIPBOARD}
+          </TextV3.CaptionStrong>
+          {!isCopied && <CopyIcon height={20} width={32} />}
+        </TouchableOpacity>
+      )}
       <View style={styles.buttonContainer}>
+        {isRemoveWallet && (
+          <ButtonV3
+            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            size={BUTTON_SIZES_ENUM.LARGE}
+            extraStyles={styles.extraButtonStyles}
+            title={CANCEL}
+            onPress={onPressCancel}
+          />
+        )}
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.PRIMARY}
+          type={primaryButtonType}
           size={BUTTON_SIZES_ENUM.LARGE}
-          title={DONE}
+          title={primaryButtonTitle}
+          extraContainerStyles={extraContainerStyles}
           submit
-          extraStyles={styles.doneButton}
+          extraStyles={primaryButtonStyles}
           onPress={onPressDone}
         />
       </View>

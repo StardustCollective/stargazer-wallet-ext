@@ -21,10 +21,12 @@ export enum BUTTON_TYPES_ENUM {
   SECONDARY_SOLID,
   ACCENT_ONE_SOLID,
   MONOTONE_ONE_SOLID,
+  ERROR_SOLID,
   PRIMARY_OUTLINE,
   ACCENT_ONE_OUTLINE,
   SECONDARY_OUTLINE,
   TERTIARY_SOLID,
+  NEW_PRIMARY_SOLID,
 }
 
 export enum BUTTON_SIZES_ENUM {
@@ -71,8 +73,6 @@ const ButtonV3: FC<IButtonV3Props> = ({
 }) => {
   let buttonSizeStyle = {};
   let buttonColorStyle = {};
-  let buttonTextColor = null;
-  let buttonBorderStyle = '';
   let titleStyle = {};
 
   if (size === BUTTON_SIZES_ENUM.SMALL) {
@@ -104,6 +104,10 @@ const ButtonV3: FC<IButtonV3Props> = ({
   } else if (type === BUTTON_TYPES_ENUM.TERTIARY_SOLID) {
     buttonColorStyle = styles.tertiarySolid;
     titleStyle = { ...titleStyle, ...styles.tertiarySolidTitle };
+  } else if (type === BUTTON_TYPES_ENUM.ERROR_SOLID) {
+    buttonColorStyle = styles.errorSolid;
+  } else if (type === BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID) {
+    buttonColorStyle = styles.newPrimarySolid;
   }
 
   const flatButtonStyles = StyleSheet.flatten([

@@ -11,6 +11,10 @@ export class OnboardWalletHelper {
     return this.phrase || this.generateSeedPhrase();
   }
 
+  setSeedPhrase(phrase: string) {
+    this.phrase = phrase;
+  }
+
   generateSeedPhrase() {
     this.phrase = Bip39Helper.generateMnemonic();
     return this.phrase;
@@ -22,5 +26,9 @@ export class OnboardWalletHelper {
       return true;
     }
     return false;
+  }
+
+  validateSeedPhrase(phrase: string) {
+    return Bip39Helper.validateMnemonic(phrase);
   }
 }
