@@ -15,9 +15,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
-  button: {
-    width: 170,
-    marginHorizontal: 6,
+  buttonContainer: {
+    width: '50%',
+  },
+  cancel: {
+    marginRight: 6,
+  },
+  primary: {
+    marginLeft: 6,
   },
 });
 

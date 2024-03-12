@@ -53,23 +53,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
-  cancel: {
-    backgroundColor: NEW_COLORS.gray_300,
-  },
   copiedLabel: {
     color: NEW_COLORS.primary_lighter_1,
-  },
-  buttonCancelText: {
-    color: COLORS.black,
   },
   buttons: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  button: {
-    marginHorizontal: 6,
-    width: 170,
-    backgroundColor: NEW_COLORS.primary,
+  buttonContainer: {
+    width: '50%',
+  },
+  cancel: {
+    marginRight: 6,
+  },
+  save: {
+    marginLeft: 6,
   },
   removeText: {
     color: NEW_COLORS.red_700,

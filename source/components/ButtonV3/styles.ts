@@ -80,6 +80,9 @@ const styles = StyleSheet.create({
   tertiarySolid: {
     backgroundColor: NEW_COLORS.gray_300,
   },
+  graySolid: {
+    backgroundColor: NEW_COLORS.gray_500,
+  },
   tertiarySolidTitle: {
     color: COLORS.black,
   },

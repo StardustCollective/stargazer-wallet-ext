@@ -6,11 +6,9 @@ import Sheet from 'components/Sheet';
 import TextInput from 'components/TextInput';
 import TextV3 from 'components/TextV3';
 import Menu from 'components/Menu';
-import IManageWalletSettings from './types';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import { ellipsis } from 'scenes/home/helpers';
-import styles from './ManageWallet.scss';
 import {
   DAG_NETWORK,
   ETH_NETWORK,
@@ -18,6 +16,8 @@ import {
   BSC_NETWORK,
   POLYGON_NETWORK,
 } from 'constants/index';
+import styles from './ManageWallet.scss';
+import IManageWalletSettings from './types';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
   handleSubmit,
@@ -201,14 +201,14 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       <section className={styles.actions}>
         <div className={styles.buttons}>
           <ButtonV3
-            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            type={BUTTON_TYPES_ENUM.GRAY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             label="Cancel"
             extraStyle={clsx(styles.button, styles.cancel)}
             onClick={onCancelClicked}
           />
           <ButtonV3
-            type={BUTTON_TYPES_ENUM.PRIMARY_SOLID}
+            type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             label="Save"
             disabled={isButtonDisabled}
