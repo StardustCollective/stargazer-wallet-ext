@@ -30,14 +30,14 @@ import {
   KeyringWalletAccountState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
+import { setCustomAsset } from 'state/erc20assets';
+import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
 import { ITransactionInfo, IETHPendingTx } from '../../types';
 import { EthTransactionController } from './EthTransactionController';
 import AssetsController, { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { utils } from './EVMChainController';
 import NetworkController from './NetworkController';
-import { setCustomAsset } from 'state/erc20assets';
-import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -70,10 +70,10 @@ export class AccountController {
     walletInfo: KeyringWalletState,
     account: KeyringWalletAccountState
   ): Promise<IAssetState[]> {
-    const assets: IAssetListState = store.getState().assets;
+    const { assets } = store.getState();
 
-    let privateKey = undefined;
-    let publicKey = undefined;
+    let privateKey;
+    let publicKey;
 
     // Excludes bitfi and ledger accounts since we do not have access
     // to the private key.
@@ -150,7 +150,7 @@ export class AccountController {
   }
 
   private buildAccountL0Tokens(dagAddress: string, tokens: string[]): IAssetState[] {
-    const assets: IAssetListState = store.getState().assets;
+    const { assets } = store.getState();
 
     if (!tokens?.length) return [];
 
@@ -230,7 +230,7 @@ export class AccountController {
       assetList = assetList.concat(accountAssetList);
     }
 
-    let activeWallet: IWalletState = {
+    const activeWallet: IWalletState = {
       id: walletInfo.id,
       type: walletInfo.type,
       label: walletInfo.label,
@@ -285,7 +285,20 @@ export class AccountController {
       integration2: 'integrationnet',
     };
     const net = MAP_NETWORK[network];
-    const URL = `${DAG_EXPLORER_API_URL}/${net}/addresses/${walletAddress}/metagraphs/${metagraphId}/rewards`;
+    const URL = `${DAG_EXPLORER_API_URL}/${net}/addresses/${walletAddress}/metagraphs/${metagraphId}/rewards?groupingMode=day`;
+
+    const response = await (await fetch(URL)).json();
+    return response?.data ?? [];
+  }
+
+  async getDagRewards(network: string, walletAddress: string): Promise<Reward[]> {
+    const MAP_NETWORK: { [net: string]: string } = {
+      main2: 'mainnet',
+      test2: 'testnet',
+      integration2: 'integrationnet',
+    };
+    const net = MAP_NETWORK[network];
+    const URL = `${DAG_EXPLORER_API_URL}/${net}/addresses/${walletAddress}/rewards?groupingMode=day`;
 
     const response = await (await fetch(URL)).json();
     return response?.data ?? [];
@@ -309,8 +322,7 @@ export class AccountController {
       const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
 
       if (isL0token) {
-        const beUrl =
-          DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config.beUrl;
+        const { beUrl } = DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config;
 
         const metagraphClient = dag4.account.createMetagraphTokenClient({
           metagraphId: assetInfo.address,
@@ -338,6 +350,9 @@ export class AccountController {
             activeAsset.address,
             TXS_LIMIT
           );
+
+          const { id } = dag4.network.getNetwork();
+          rewards = await this.getDagRewards(id, activeAsset.address);
         } catch (err) {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
@@ -474,8 +489,7 @@ export class AccountController {
       let pendingTx = null;
 
       if (isL0token) {
-        const beUrl =
-          DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config.beUrl;
+        const { beUrl } = DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config;
 
         const metagraphClient = dag4.account.createMetagraphTokenClient({
           metagraphId: assetInfo.address,
@@ -632,7 +646,7 @@ export class AccountController {
     if (!dag4.account.validateDagAddress(address)) return false;
 
     const { activeNetwork }: IVaultState = store.getState().vault;
-    const activeChain = !!chainId ? chainId : activeNetwork[KeyringNetwork.Constellation];
+    const activeChain = chainId || activeNetwork[KeyringNetwork.Constellation];
     const BE_URL = DAG_NETWORK[activeChain].config.beUrl;
     const response: any = await (
       await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)

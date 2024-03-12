@@ -198,7 +198,7 @@ export const AVALANCHE_NETWORK: {
     logo: string;
   };
 } = {
-  ['avalanche-mainnet']: {
+  'avalanche-mainnet': {
     id: 'avalanche-mainnet',
     value: 'avalanche-mainnet',
     label: 'Avalanche C-Chain',
@@ -213,7 +213,7 @@ export const AVALANCHE_NETWORK: {
     networkId: StargazerChain.AVALANCHE,
     logo: AVALANCHE_LOGO,
   },
-  ['avalanche-testnet']: {
+  'avalanche-testnet': {
     id: 'avalanche-testnet',
     value: 'avalanche-testnet',
     label: 'Fuji Testnet',
@@ -262,7 +262,7 @@ export const BSC_NETWORK: {
     networkId: StargazerChain.BSC,
     logo: BSC_LOGO,
   },
-  ['bsc-testnet']: {
+  'bsc-testnet': {
     id: 'bsc-testnet',
     value: 'bsc-testnet',
     label: 'BSC Testnet',
@@ -392,7 +392,7 @@ export const DEFAULT_CURRENCY = {
 
 export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 
-export const DAG_EXPLORER_API_URL = 'https://dyzt5u1o3ld0z.cloudfront.net';
+export const DAG_EXPLORER_API_URL = 'https://d13uswnxs0x35s.cloudfront.net';
 
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
 const PROVIDERS_BASE_URL = isProd
