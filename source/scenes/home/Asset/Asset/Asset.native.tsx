@@ -138,7 +138,7 @@ const AssetDetail: FC<IAssetSettings> = ({
             </View>
             {showFiatAmount && (
               <View style={styles.fiatBalance}>
-                <TextV3.Body extraStyles={styles.fiatText}>≈ {fiatAmount}</TextV3.Body>
+                <TextV3.Body extraStyles={styles.fiatText}>{fiatAmount}</TextV3.Body>
               </View>
             )}
             <View style={styles.actions}>

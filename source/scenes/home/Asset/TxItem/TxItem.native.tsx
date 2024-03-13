@@ -111,10 +111,10 @@ const TxItem: FC<ITxItemSettings> = ({
             </View>
           </View>
           <View style={styles.txAmountWrapper}>
-            <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
               {sign}
               {amount}
-            </TextV3.CaptionRegular>
+            </TextV3.CaptionStrong>
             <TextV3.Caption
               color={COLORS_ENUMS.BLACK}
               extraStyles={styles.txAmountFiatText}

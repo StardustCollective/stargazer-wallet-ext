@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray_300,
   },
   tabBarIndicator: {
-    backgroundColor: COLORS.primary_lighter_1,
+    backgroundColor: '#7070FF',
     height: 6,
   },
 });
