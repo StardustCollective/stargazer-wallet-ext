@@ -84,6 +84,7 @@ const CheckPassword: FC<ICheckPassword> = ({
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollViewContentContainer}
       extraScrollHeight={EXTRA_SCROLL_HEIGHT}
+      enableOnAndroid
     >
       {showRemoveWalletHeader && (
         <RemoveWalletHeader wallet={wallet} title={TITLE} subtitle={headerSubtitle} />
