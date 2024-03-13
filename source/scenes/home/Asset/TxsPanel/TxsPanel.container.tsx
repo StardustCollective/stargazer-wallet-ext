@@ -132,7 +132,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = isETH
       ? getFiatAmount(Number(isETHPending ? tx.amount : tx.balance), 2)
-      : getFiatAmount(tx.amount / 1e8, 4);
+      : getFiatAmount(tx.amount / 1e8, 2);
 
     return (
       <TxItem
@@ -155,7 +155,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
   const renderRewardItem = (tx: Reward, idx: number) => {
     const amount = tx.amount / 1e8;
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
-    const fiatAmount = getFiatAmount(amount, 4);
+    const fiatAmount = getFiatAmount(amount, 2);
     const rewardsCount = tx?.rewardsCount ? tx.rewardsCount : null;
     return (
       <TxItem
