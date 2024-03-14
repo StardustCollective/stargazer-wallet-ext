@@ -85,12 +85,18 @@
       flex: 1;
       justify-content: center;
       flex-direction: row;
+
+      :first-child {
+        margin-right: 6px;
+      }
+
+      :last-child {
+        margin-left: 6px;
+      }
     }
 
     .button {
-      margin-left: 6px;
-      margin-right: 6px;
-      width: 150px;
+      width: 100%;
     }
 
     .save {

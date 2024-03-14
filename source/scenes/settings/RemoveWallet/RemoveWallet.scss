@@ -10,9 +10,16 @@
     display: flex;
     justify-content: center;
 
-    .button {
-      margin-left: 6px;
+    :first-child {
       margin-right: 6px;
+    }
+
+    :last-child {
+      margin-left: 6px;
+    }
+
+    .button {
+      width: 100%;
     }
 
     .removeButton {

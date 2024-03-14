@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { ellipsis } from 'scenes/home/helpers';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import Sheet from 'components/Sheet';
@@ -10,7 +9,6 @@ import Menu from 'components/Menu';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import IManageWalletSettings from './types';
 import {
   DAG_NETWORK,
   ETH_NETWORK,
@@ -18,6 +16,7 @@ import {
   BSC_NETWORK,
   POLYGON_NETWORK,
 } from 'constants/index';
+import IManageWalletSettings from './types';
 import styles from './styles';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
@@ -38,9 +37,6 @@ const ManageWallet: FC<IManageWalletSettings> = ({
 }) => {
   const [isWalletAddressesOpen, setIsWalletAddressesOpen] = useState(false);
   const [itemCopied, setItemCopied] = useState('');
-
-  const cancelButtonStyles = StyleSheet.flatten([styles.button, styles.cancel]);
-  const submitButtonStyles = StyleSheet.flatten([styles.button]);
   const [label, setLabel] = useState();
   const isButtonDisabled = label === wallet.label || label === '' || !label;
 
@@ -202,20 +198,21 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       <View style={styles.actions}>
         <View style={styles.buttons}>
           <ButtonV3
-            type={BUTTON_TYPES_ENUM.ACCENT_ONE_OUTLINE}
+            type={BUTTON_TYPES_ENUM.GRAY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             title="Cancel"
-            extraStyles={cancelButtonStyles}
-            extraTitleStyles={styles.buttonCancelText}
+            extraStyles={styles.cancel}
+            extraContainerStyles={styles.buttonContainer}
             onPress={onCancelClicked}
           />
           <ButtonV3
-            type={BUTTON_TYPES_ENUM.PRIMARY}
+            type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             title="Save"
+            extraContainerStyles={styles.buttonContainer}
             disabled={isButtonDisabled}
             submit
-            extraStyles={submitButtonStyles}
+            extraStyles={styles.save}
             onPress={handleSubmit((data) => {
               onSubmit(data);
             })}

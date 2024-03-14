@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: COLORS.gray_light,
-    overflow: 'hidden',
   },
   activityScrollView: {
     flex: 1,

@@ -58,11 +58,16 @@
   justify-content: center;
 }
 
-.doneButton {
-  width: 100%;
+.extraButtonContainer {
+  :first-child {
+    margin-right: 6px;
+  }
+
+  :last-child {
+    margin-left: 6px;
+  }
 }
 
 .button {
-  margin-left: 6px;
-  margin-right: 6px;
+  width: 100%;
 }

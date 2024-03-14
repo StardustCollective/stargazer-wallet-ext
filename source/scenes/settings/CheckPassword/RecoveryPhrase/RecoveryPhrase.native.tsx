@@ -30,10 +30,10 @@ const RecoveryPhrase: FC<IRecoveryPhrase> = ({
     ? BUTTON_TYPES_ENUM.ERROR_SOLID
     : BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID;
   const primaryButtonTitle = isRemoveWallet ? CONTINUE : DONE;
-  const primaryButtonStyles = StyleSheet.flatten([
-    isRemoveWallet && styles.extraButtonStyles,
-  ]);
-  const extraContainerStyles = !isRemoveWallet && styles.extraButtonContainer;
+  const primaryButtonStyles = StyleSheet.flatten([isRemoveWallet && styles.primary]);
+  const extraContainerStyles = !isRemoveWallet
+    ? styles.extraButtonContainer
+    : styles.buttonContainer;
 
   const phraseContainerStyles = StyleSheet.flatten([
     styles.phraseContainer,
@@ -80,12 +80,13 @@ const RecoveryPhrase: FC<IRecoveryPhrase> = ({
           {!isCopied && <CopyIcon height={20} width={32} />}
         </TouchableOpacity>
       )}
-      <View style={styles.buttonContainer}>
+      <View style={styles.buttonsContainer}>
         {isRemoveWallet && (
           <ButtonV3
-            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            type={BUTTON_TYPES_ENUM.GRAY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
-            extraStyles={styles.extraButtonStyles}
+            extraContainerStyles={styles.buttonContainer}
+            extraStyles={styles.cancel}
             title={CANCEL}
             onPress={onPressCancel}
           />

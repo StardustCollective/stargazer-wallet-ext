@@ -28,7 +28,7 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
       <RemoveWalletHeader wallet={wallet} title={headerTitle} subtitle={headerSubtitle} />
       <div className={styles.buttonsContainer}>
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+          type={BUTTON_TYPES_ENUM.GRAY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           label={CANCEL}
           extraStyle={styles.button}

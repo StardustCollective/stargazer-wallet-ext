@@ -31,19 +31,24 @@ const styles = StyleSheet.create({
   copyText: {
     color: NEW_COLORS.primary_lighter_1,
   },
-  buttonContainer: {
+  buttonsContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingBottom: 32,
   },
+  buttonContainer: {
+    width: '50%',
+  },
   extraButtonContainer: {
     width: '100%',
   },
-  extraButtonStyles: {
-    width: 170,
-    marginHorizontal: 6,
+  cancel: {
+    marginRight: 6,
+  },
+  primary: {
+    marginLeft: 6,
   },
 });
 

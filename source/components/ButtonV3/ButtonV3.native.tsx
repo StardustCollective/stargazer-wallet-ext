@@ -27,6 +27,7 @@ export enum BUTTON_TYPES_ENUM {
   SECONDARY_OUTLINE,
   TERTIARY_SOLID,
   NEW_PRIMARY_SOLID,
+  GRAY_SOLID,
 }
 
 export enum BUTTON_SIZES_ENUM {
@@ -104,6 +105,8 @@ const ButtonV3: FC<IButtonV3Props> = ({
   } else if (type === BUTTON_TYPES_ENUM.TERTIARY_SOLID) {
     buttonColorStyle = styles.tertiarySolid;
     titleStyle = { ...titleStyle, ...styles.tertiarySolidTitle };
+  } else if (type === BUTTON_TYPES_ENUM.GRAY_SOLID) {
+    buttonColorStyle = styles.graySolid;
   } else if (type === BUTTON_TYPES_ENUM.ERROR_SOLID) {
     buttonColorStyle = styles.errorSolid;
   } else if (type === BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID) {
