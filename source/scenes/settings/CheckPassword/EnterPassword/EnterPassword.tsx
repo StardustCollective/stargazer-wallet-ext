@@ -3,7 +3,14 @@ import TextInput from 'components/TextInput';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { ENTER_PASSWORD, WRONG_PASSWORD, CANCEL, SUBMIT, CONTINUE } from './constants';
+import {
+  ENTER_PASSWORD,
+  WRONG_PASSWORD,
+  CANCEL,
+  SUBMIT,
+  CONTINUE,
+  PASSWORD_PLACEHOLDER,
+} from './constants';
 import { IEnterPassword } from './types';
 import styles from './EnterPassword.scss';
 
@@ -31,6 +38,7 @@ const EnterPassword: FC<IEnterPassword> = ({
           type="password"
           control={control}
           name="password"
+          placeholder={PASSWORD_PLACEHOLDER}
           autoFocus
           visiblePassword
           fullWidth
@@ -46,7 +54,7 @@ const EnterPassword: FC<IEnterPassword> = ({
       </div>
       <div className={styles.buttonsContainer}>
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+          type={BUTTON_TYPES_ENUM.GRAY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           label={CANCEL}
           extraStyle={styles.button}

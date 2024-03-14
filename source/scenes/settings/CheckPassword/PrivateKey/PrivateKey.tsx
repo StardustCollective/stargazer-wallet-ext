@@ -32,10 +32,13 @@ const PrivateKey: FC<IPrivateKey> = ({
     ? BUTTON_TYPES_ENUM.ERROR_SOLID
     : BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID;
   const primaryButtonTitle = isRemoveWallet ? CONTINUE : DONE;
-  const primaryButtonStyles = isRemoveWallet ? styles.button : styles.doneButton;
   const privateKeyContainerStyles = clsx(
     styles.keyContainer,
     !showPrivateKey && styles.extraKeyContainer
+  );
+  const buttonsContainerStyles = clsx(
+    styles.buttonContainer,
+    isRemoveWallet && styles.extraButtonContainer
   );
 
   return (
@@ -85,10 +88,10 @@ const PrivateKey: FC<IPrivateKey> = ({
         </div>
       )}
       {!showPrivateKey && <div className={styles.copyContainerBlank} />}
-      <div className={styles.buttonContainer}>
+      <div className={buttonsContainerStyles}>
         {isRemoveWallet && (
           <ButtonV3
-            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            type={BUTTON_TYPES_ENUM.GRAY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             extraStyle={styles.button}
             label={CANCEL}
@@ -100,7 +103,7 @@ const PrivateKey: FC<IPrivateKey> = ({
           size={BUTTON_SIZES_ENUM.LARGE}
           label={primaryButtonTitle}
           submit
-          extraStyle={primaryButtonStyles}
+          extraStyle={styles.button}
           onClick={onPressDone}
         />
       </div>

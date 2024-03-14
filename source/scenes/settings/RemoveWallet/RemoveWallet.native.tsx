@@ -31,10 +31,11 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
       <RemoveWalletHeader wallet={wallet} title={headerTitle} subtitle={headerSubtitle} />
       <View style={styles.buttonsContainer}>
         <ButtonV3
-          type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+          type={BUTTON_TYPES_ENUM.GRAY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           title={CANCEL}
-          extraStyles={styles.button}
+          extraContainerStyles={styles.buttonContainer}
+          extraStyles={styles.cancel}
           onPress={handleCancel}
         />
         <ButtonV3
@@ -42,7 +43,8 @@ const RemoveWallet: FC<IRemoveWalletSettings> = ({
           size={BUTTON_SIZES_ENUM.LARGE}
           title={REMOVE}
           loading={loading}
-          extraStyles={styles.button}
+          extraContainerStyles={styles.buttonContainer}
+          extraStyles={styles.primary}
           onPress={handleRemoveWallet}
         />
       </View>

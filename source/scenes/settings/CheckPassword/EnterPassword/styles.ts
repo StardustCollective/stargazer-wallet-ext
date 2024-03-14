@@ -20,9 +20,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: 32,
   },
-  button: {
-    marginHorizontal: 6,
-    width: 170,
+  buttonContainer: {
+    width: '50%',
+  },
+  cancel: {
+    marginRight: 6,
+  },
+  primary: {
+    marginLeft: 6,
   },
 });
 

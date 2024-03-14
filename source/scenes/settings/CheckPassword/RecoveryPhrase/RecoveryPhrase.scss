@@ -60,11 +60,20 @@
   margin-top: 4px;
 }
 
+.extraButtonContainer {
+  :first-child {
+    margin-right: 6px;
+  }
+
+  :last-child {
+    margin-left: 6px;
+  }
+}
+
 .doneButton {
   width: 100%;
 }
 
 .button {
-  margin-left: 6px;
-  margin-right: 6px;
+  width: 100%;
 }

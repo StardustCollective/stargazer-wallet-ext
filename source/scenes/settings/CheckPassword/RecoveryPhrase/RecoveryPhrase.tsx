@@ -36,6 +36,10 @@ const RecoveryPhrase: FC<IRecoveryPhrase> = ({
     styles.phraseContainer,
     !showPhrase && styles.extraPhraseContainer
   );
+  const buttonsContainerStyles = clsx(
+    styles.buttonContainer,
+    isRemoveWallet && styles.extraButtonContainer
+  );
 
   return (
     <div className={styles.recoveryContainer}>
@@ -74,10 +78,10 @@ const RecoveryPhrase: FC<IRecoveryPhrase> = ({
         </div>
       )}
       {!showPhrase && <div className={styles.copyContainerBlank} />}
-      <div className={styles.buttonContainer}>
+      <div className={buttonsContainerStyles}>
         {isRemoveWallet && (
           <ButtonV3
-            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
+            type={BUTTON_TYPES_ENUM.GRAY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             extraStyle={styles.button}
             label={CANCEL}
