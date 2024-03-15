@@ -8,8 +8,14 @@ import {
   POLYGON_NETWORK,
 } from 'constants/index';
 
-import { KeyringNetwork, KeyringVaultState } from '@stardust-collective/dag4-keyring';
+import {
+  KeyringNetwork,
+  KeyringVaultState,
+  KeyringWalletState,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
 import findIndex from 'lodash/findIndex';
+import { IAssetInfoState } from 'state/assets/types';
 import IVaultState, {
   AssetBalances,
   AssetType,
@@ -20,8 +26,6 @@ import IVaultState, {
   ICustomNetworks,
   Transaction,
 } from './types';
-import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { IAssetInfoState } from 'state/assets/types';
 
 const initialState: IVaultState = {
   status: 0,
@@ -57,7 +61,7 @@ const initialState: IVaultState = {
     ethereum: {},
   },
   customAssets: [],
-  version: '4.0.3',
+  version: '4.1.0',
 };
 
 export const getHasEncryptedVault = createAsyncThunk(
