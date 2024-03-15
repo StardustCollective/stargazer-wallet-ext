@@ -9,10 +9,10 @@ import { useSelector } from 'react-redux';
 // Types
 ///////////////////////
 
-import IAssetItem from './types';
 import { RootState } from 'state/store';
 import IPriceState from 'state/price/types';
 import IVaultState from 'state/vault/types';
+import IAssetItem from './types';
 
 ///////////////////////
 // Scene
@@ -34,6 +34,7 @@ const AssetItemContainer: FC<IAssetItem> = ({
   assetInfo,
   itemClicked,
   showNetwork = false,
+  showPrice = false,
 }) => {
   ///////////////////////
   // Hooks
@@ -57,6 +58,7 @@ const AssetItemContainer: FC<IAssetItem> = ({
       balances={balances}
       fiat={fiat}
       showNetwork={showNetwork}
+      showPrice={showPrice}
       activeNetwork={activeNetwork}
     />
   );

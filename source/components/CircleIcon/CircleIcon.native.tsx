@@ -21,13 +21,13 @@ const CircleIcon: FC<ICircleIcon> = ({
   const iconComposedStyles = StyleSheet.compose(styles.logoIcon, iconStyle);
 
   if (typeof logo === 'string') {
-    const uri = logo.startsWith('http') ? logo : '/' + logo;
+    const uri = logo.startsWith('http') ? logo : `/${logo}`;
     return (
       <Image
         containerStyle={containerComposedStyles}
         accessible
         accessibilityLabel={label}
-        source={{ uri, height: 23, width: 23 }}
+        source={{ uri }}
         resizeMode="contain"
       />
     );
@@ -38,7 +38,7 @@ const CircleIcon: FC<ICircleIcon> = ({
 
   return (
     <View style={containerComposedStyles}>
-      <LogoComponent height={23} width={23} iconStyles={iconComposedStyles} />
+      <LogoComponent height={32} width={32} iconStyles={iconComposedStyles} />
     </View>
   );
 };

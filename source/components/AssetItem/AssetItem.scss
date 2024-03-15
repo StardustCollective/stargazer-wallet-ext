@@ -21,49 +21,46 @@ div.assetItem {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    border: 1px solid $grey-100;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
     margin-left: $icon-margin-left;
-    min-width: 40px;
 
     img {
-      width: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
     }
   }
 
   .assetName {
     margin-left: 8px;
     width: 100%;
+  }
 
-    .labelText {
-      letter-spacing: -0.3px;
-    }
+  .balanceContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-end;
+    justify-content: center;
+    margin-right: 12px;
 
-    span:first-child {
-      margin-bottom: 8px;
-      margin-right: 8px;
-    }
-
-    .red {
-      color: $red-100;
-    }
-    .green {
-      color: $green-100;
+    .assetBalance {
+      .balanceText {
+        overflow: hidden;
+        text-align: right;
+        letter-spacing: -0.3px;
+      }
     }
   }
 
-  .assetBalance {
-    display: flex;
-    width: 100%;
-    justify-content: flex-end;
-    margin-right: 12px;
-
-    .balanceText {
-      overflow: hidden;
-      text-align: right;
-      letter-spacing: -0.3px;
-    }
+  .red {
+    color: $red-100;
+    margin-left: 8px;
+  }
+  .green {
+    color: $green-100;
+    margin-left: 8px;
   }
 }

@@ -28,40 +28,40 @@ import {
 export const STORE_PORT = 'STARGAZER';
 
 export const CONSTELLATION_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag.png';
 export const CONSTELLATION_DEFAULT_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/constellation-default-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag-default.png';
+export const DOR_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor.png';
 export const ETHEREUM_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/eth.png';
 export const ETHEREUM_DEFAULT_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ethereum-default-logo.png';
-export const AVALANCHE_DEFAULT_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-default-logo.png';
-export const BSC_DEFAULT_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
-export const POLYGON_DEFAULT_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-default-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/eth-default.png';
 export const AVALANCHE_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avalanche-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avax.png';
+export const AVALANCHE_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avax-default.png';
 export const BSC_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc.png';
+export const BSC_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/bsc-default.png';
 export const POLYGON_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon.png';
+export const POLYGON_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/polygon-default.png';
 export const LATTICE_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/lattice-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ltx.png';
 export const VE_LTX_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ve-ltx-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/veltx.png';
 export const ALKIMI_LOGO =
   'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
 export const JENNYCO_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/jennyco-logo.png';
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/jco.png';
 export const GEOJAM_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png';
 export const SIMPLEX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
 export const PLACEHOLDER_IMAGE =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/placeholder.png';
-export const DOR_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor-logo.png';
 
 export const DAG_NETWORK: {
   [networkId: string]: {

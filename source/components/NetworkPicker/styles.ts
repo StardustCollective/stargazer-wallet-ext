@@ -15,10 +15,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     marginRight: 8,
   },
-  constellationLogo: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-  },
   titleContainer: {
     marginRight: 10,
   },

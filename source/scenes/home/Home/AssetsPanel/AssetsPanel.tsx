@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import AssetItem from 'components/AssetItem';
-import IAssetPanel from './types';
-import styles from './AssetsPanel.scss';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import SlidersIcon from 'assets/images/svg/sliders.svg';
+import IAssetPanel from './types';
+import styles from './AssetsPanel.scss';
 
 const AssetsPanel: FC<IAssetPanel> = ({
   activeNetworkAssets,
@@ -24,6 +24,7 @@ const AssetsPanel: FC<IAssetPanel> = ({
               assetInfo={assets[asset.id]}
               itemClicked={() => handleSelectAsset(asset)}
               showNetwork
+              showPrice
             />
           );
         })}

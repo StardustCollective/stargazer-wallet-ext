@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLORS, FONTS } from 'assets/styles/_variables';
+
 const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
@@ -32,11 +33,6 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     backgroundColor: 'transparent',
-  },
-  icon: {
-    fontSize: 16,
-    color: COLORS.gray,
-    backgroundColor: 'white',
   },
   text: {
     fontFamily: FONTS.inter,

@@ -32,6 +32,7 @@ import {
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { AssetSymbol, AssetType } from 'state/vault/types';
+import { CONSTELLATION_LOGO } from 'constants/index';
 import { IQRCodeModal } from './types';
 
 ///////////////////////////
@@ -43,8 +44,6 @@ import styles from './QRCodeModal.scss';
 ///////////////////////////
 // Constants
 ///////////////////////////
-
-import { CONSTELLATION_LOGO } from 'constants/index';
 
 const QRCodeModal: FC<IQRCodeModal> = ({
   open,
@@ -103,8 +102,8 @@ const QRCodeModal: FC<IQRCodeModal> = ({
                       <div className={styles.logoContainer}>
                         <img
                           src={networkLogo}
-                          height={18}
-                          width={18}
+                          height={24}
+                          width={24}
                           alt="network-logo"
                         />
                       </div>

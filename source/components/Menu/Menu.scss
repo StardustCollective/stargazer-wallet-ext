@@ -22,14 +22,14 @@
     padding-bottom: 16px;
     border: 1px solid $gray-300;
     border-bottom-width: 0px;
+    align-items: center;
 
     .walletIcon {
       display: flex;
-      height: 40px;
-      width: 40px;
+      height: 36px;
+      width: 36px;
       margin-right: 12px;
-      border: 1px solid $gray-300;
-      border-radius: 50%;
+      border-radius: 18px;
       align-items: center;
       justify-content: center;
     }

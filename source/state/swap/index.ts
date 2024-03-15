@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
 import {
   getCurrencyData,
   getSupportedAssets,
@@ -17,7 +18,7 @@ export const initialState: ISwapState = {
       id: 'ethereum',
       code: 'ETH',
       name: 'Ethereum',
-      icon: 'https://exolix.com/icons/coins/ETH.png',
+      icon: ETHEREUM_LOGO,
       notes: null,
       networks: [
         {
@@ -51,7 +52,7 @@ export const initialState: ISwapState = {
     currency: {
       code: 'DAG',
       name: 'Constellation',
-      icon: 'https://exolix.com/icons/coins/DAG.png',
+      icon: CONSTELLATION_LOGO,
       notes: null,
       networks: [
         {

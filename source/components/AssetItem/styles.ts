@@ -1,27 +1,19 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
+import { NEW_COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
   assetIcon: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: COLORS.gray_100,
   },
   imageIcon: {
-    width: 20,
-    height: 20,
-  },
-  dagIcon: {
-    width: 20,
-    height: 23,
-  },
-  componentIcon: {
-    width: 20,
-    height: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
   labelText: {
     fontWeight: FONT_WEIGHTS.semibold,
@@ -37,20 +29,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   assetName: {
-    width: '40%',
+    flex: 1,
     justifyContent: 'center',
     marginLeft: 8,
   },
   assetPrice: {
     flexDirection: 'row',
   },
+  balanceContainer: {
+    flexDirection: 'column',
+  },
+  assetPriceRight: {
+    alignItems: 'flex-end',
+  },
   green: {
-    color: COLORS.green,
-    paddingLeft: 10,
+    color: NEW_COLORS.green_100,
+    paddingLeft: 8,
   },
   red: {
-    color: COLORS.red,
-    paddingLeft: 10,
+    color: NEW_COLORS.red_100,
+    paddingLeft: 8,
   },
 });
 

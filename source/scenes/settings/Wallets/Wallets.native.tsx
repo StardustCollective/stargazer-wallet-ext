@@ -3,12 +3,12 @@ import { ScrollView } from 'react-native';
 import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 import { ellipsis } from 'scenes/home/helpers';
 import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
-import IWalletsSettings from './types';
-import styles from './styles';
 import Menu from 'components/Menu';
 import { ETHEREUM_LOGO, CONSTELLATION_LOGO } from 'constants/index';
+import IWalletsSettings from './types';
+import styles from './styles';
 
-const ICON_SIZE = 40;
+const ICON_SIZE = 36;
 
 const WalletsComponent: FC<IWalletsSettings> = ({
   multiChainAccounts,

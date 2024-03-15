@@ -23,8 +23,6 @@ const styles = StyleSheet.create({
     height: 32,
     width: 32,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.12)',
   },
   titleContainer: {
     flex: 1,
@@ -34,8 +32,9 @@ const styles = StyleSheet.create({
     borderColor: '#7C5BF3',
   },
   icon: {
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
 });
 
