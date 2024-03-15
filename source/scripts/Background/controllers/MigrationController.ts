@@ -131,6 +131,15 @@ const MigrationController = async () => {
     const v4_0_3 = require('../migration/v4_0_3');
     await v4_0_3.default(state);
   }
+
+  /**
+   * version < 4_1_0
+   * Description: Updates LB endpoints on the DOR token
+   */
+  if (compareVersions(state.vault.version, '4.1.0') < 0) {
+    const v4_1_0 = require('../migration/v4_1_0');
+    await v4_1_0.default(state);
+  }
 };
 
 export default MigrationController;

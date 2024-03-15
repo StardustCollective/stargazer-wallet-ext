@@ -49,8 +49,8 @@ export const initialState: IAssetListState = {
     type: AssetType.Constellation,
     logo: DOR_LOGO,
     network: 'main2',
-    l0endpoint: 'http://54.191.143.191:7000',
-    l1endpoint: 'http://54.191.143.191:8000',
+    l0endpoint: 'http://l0-lb-mainnet.getdor.com:7000',
+    l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
     priceId: 'dor',
   },
   // 349: New network should be added here.
