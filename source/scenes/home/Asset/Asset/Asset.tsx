@@ -86,12 +86,12 @@ const AssetDetail: FC<IAssetSettings> = ({
   copyAddress,
   showFiatAmount,
 }) => {
-  const [value, setValue] = useState(0);
+  const [routeIndex, setRouteIndex] = useState(0);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
   const showRewardsTab = activeAsset?.type === AssetType.Constellation;
 
   const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
+    setRouteIndex(newValue);
   };
 
   return (
@@ -132,7 +132,7 @@ const AssetDetail: FC<IAssetSettings> = ({
           {showRewardsTab ? (
             <>
               <StyledTabs
-                value={value}
+                value={routeIndex}
                 onChange={handleChange}
                 variant="fullWidth"
                 aria-label="full width tabs"
@@ -141,7 +141,7 @@ const AssetDetail: FC<IAssetSettings> = ({
                   label="Transactions"
                   icon={
                     <img
-                      src={`/${value === 0 ? ArrowsActiveIcon : ArrowsInactiveIcon}`}
+                      src={`/${routeIndex === 0 ? ArrowsActiveIcon : ArrowsInactiveIcon}`}
                       alt="arrows"
                     />
                   }
@@ -150,16 +150,16 @@ const AssetDetail: FC<IAssetSettings> = ({
                   label="Rewards"
                   icon={
                     <img
-                      src={`/${value === 1 ? GiftActiveIcon : GiftInactiveIcon}`}
+                      src={`/${routeIndex === 1 ? GiftActiveIcon : GiftInactiveIcon}`}
                       alt="gift"
                     />
                   }
                 />
               </StyledTabs>
-              <TabPanel value={value} index={0}>
+              <TabPanel value={routeIndex} index={0}>
                 <TxsPanel route="transactions" />
               </TabPanel>
-              <TabPanel value={value} index={1}>
+              <TabPanel value={routeIndex} index={1}>
                 <TxsPanel route="rewards" />
               </TabPanel>
             </>

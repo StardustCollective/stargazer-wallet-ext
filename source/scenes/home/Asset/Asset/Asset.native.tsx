@@ -33,20 +33,10 @@ import styles from './styles';
 
 const QR_CODE_SIZE = 240;
 
-const TransactionsRoute = ({ route }: { route: string }) => <TxsPanel route={route} />;
-
-const RewardsRoute = ({ route }: { route: string }) => <TxsPanel route={route} />;
-
 const renderScene = ({ route }) => {
-  switch (route.key) {
-    case 'transactions':
-      return <TransactionsRoute route={route.key} />;
-    case 'rewards':
-      return <RewardsRoute route={route.key} />;
-    default:
-      return null;
-  }
+  return <TxsPanel route={route.key} />;
 };
+
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
   activeAsset,
@@ -61,7 +51,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   copyAddress,
   showFiatAmount,
 }) => {
-  const [index, setIndex] = useState(0);
+  const [routeIndex, setRouteIndex] = useState(0);
   const [routes] = useState([
     { key: 'transactions', title: 'Transactions' },
     { key: 'rewards', title: 'Rewards' },
@@ -151,10 +141,10 @@ const AssetDetail: FC<IAssetSettings> = ({
           </View>
           {showRewardsTab ? (
             <TabView
-              navigationState={{ index, routes }}
+              navigationState={{ index: routeIndex, routes }}
               renderScene={renderScene}
               renderTabBar={renderTabBar}
-              onIndexChange={setIndex}
+              onIndexChange={setRouteIndex}
               initialLayout={{ width: Dimensions.get('window').width }}
             />
           ) : (
