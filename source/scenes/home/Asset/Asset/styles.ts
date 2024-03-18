@@ -31,13 +31,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.12)',
     marginRight: 8,
   },
   logo: {
-    height: 18,
-    width: 18,
+    height: 24,
+    width: 24,
   },
   account: {
     height: 60,

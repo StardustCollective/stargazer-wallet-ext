@@ -43,12 +43,6 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({
   disabled = false,
   toggleItem,
 }: IAssetWithToggle) => {
-  const iconStyle = logo?.includes('constellation') ? styles.dagIcon : styles.imageIcon;
-
-  ///////////////////////
-  // Render
-  ///////////////////////
-
   return (
     <Card
       key={`AssetWithToggle-${id}-${network}`}
@@ -58,7 +52,7 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({
     >
       <div className={styles.container}>
         <div className={styles.assetIcon}>
-          <img className={iconStyle} src={logo} />
+          <img className={styles.imageIcon} src={logo} alt="token icon" />
         </div>
         <div className={styles.assetInfo}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.CaptionStrong>

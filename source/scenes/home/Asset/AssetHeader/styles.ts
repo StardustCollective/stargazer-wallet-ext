@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   assetLogo: {
-    marginRight: 5,
+    marginRight: 8,
   },
   labelText: {
     marginBottom: 0,

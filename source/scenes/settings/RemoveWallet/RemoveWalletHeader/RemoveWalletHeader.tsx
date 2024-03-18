@@ -8,7 +8,7 @@ import { ETHEREUM_LOGO, CONSTELLATION_LOGO } from 'constants/index';
 import IRemoveWalletSettings from './types';
 import styles from './RemoveWalletHeader.scss';
 
-const ICON_SIZE = 40;
+const ICON_SIZE = 64;
 
 const RemoveWalletHeader: FC<IRemoveWalletSettings> = ({ wallet, title, subtitle }) => {
   const isMCW = wallet?.type === KeyringWalletType.MultiChainWallet;

@@ -1,32 +1,15 @@
 import React, { FC } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import Icon from 'components/Icon';
 import TextV3 from 'components/TextV3';
-
-import StargazerIcon from 'assets/images/logo-s.svg';
-import EthereumIcon from 'assets/images/svg/ethereum.svg';
-import ConstellationIcon from 'assets/images/svg/constellation.svg';
+import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
+import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-
-import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-
 import IImportWalletSettings from './types';
+import styles from './styles';
 
-const _renderIcon = (
-  Component: React.Component,
-  width: number,
-  height: number,
-  containerStyles: object,
-  iconStyles: object = {}
-) => {
-  return (
-    <View style={containerStyles}>
-      <Component width={width} height={height} iconStyles={iconStyles} />
-    </View>
-  );
-};
+const ICON_SIZE = 36;
 
 const ImportWallet: FC<IImportWalletSettings> = ({
   handleImport,
@@ -40,7 +23,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({
       >
         <View style={StyleSheet.flatten([styles.menu, styles.firstChild])}>
           <View style={styles.menuIconSection}>
-            {_renderIcon(StargazerIcon, 24, 24, styles.iconContainer)}
+            <StargazerIcon height={ICON_SIZE} width={ICON_SIZE} />
             <TextV3.Label color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
               Multi Chain Wallet
             </TextV3.Label>
@@ -59,13 +42,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({
       >
         <View style={StyleSheet.flatten([styles.menu, styles.secondChild])}>
           <View style={styles.menuIconSection}>
-            {_renderIcon(
-              EthereumIcon,
-              24,
-              24,
-              { ...styles.iconContainer, ...styles.iconETHWrapper },
-              styles.iconETH
-            )}
+            <Image source={{ uri: ETHEREUM_LOGO }} style={styles.icon} />
             <TextV3.Label color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
               Ethereum
             </TextV3.Label>
@@ -84,10 +61,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({
       >
         <View style={StyleSheet.flatten([styles.menu, styles.lastChild])}>
           <View style={styles.menuIconSection}>
-            {_renderIcon(ConstellationIcon, 24, 24, {
-              ...styles.iconContainer,
-              ...styles.iconDAGWrapper,
-            })}
+            <Image source={{ uri: CONSTELLATION_LOGO }} style={styles.icon} />
             <TextV3.Label color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
               Constellation
             </TextV3.Label>

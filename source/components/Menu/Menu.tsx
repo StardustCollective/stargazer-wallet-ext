@@ -17,6 +17,7 @@ import ChevronRight from 'assets/images/svg/arrow-rounded-right.svg';
 // Types
 ///////////////////////
 
+import { COLORS_ENUMS } from 'assets/styles/colors';
 import IMenu from './types';
 
 ///////////////////////
@@ -28,8 +29,6 @@ import styles from './Menu.scss';
 ///////////////////////
 // Constants
 ///////////////////////
-
-import { COLORS_ENUMS } from 'assets/styles/colors';
 
 const ICON_SIZE = 14;
 
@@ -63,7 +62,7 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
             rightIcon,
           } = item;
 
-          const titleTextStyle = !!subtitle ? styles.smallTitle : styles.largeTitle;
+          const titleTextStyle = subtitle ? styles.smallTitle : styles.largeTitle;
 
           return (
             <div
@@ -79,10 +78,10 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
                 typeof icon === 'string' &&
                 (icon.startsWith('http') ? (
                   <div className={styles.walletIcon}>
-                    <img src={icon} width={24} height={24} />
+                    <img src={icon} width={36} height={36} />
                   </div>
                 ) : (
-                  <Icon width={40} Component={icon} />
+                  <Icon width={36} Component={icon} />
                 ))}
               {!!title && (
                 <div className={styles.contentContainer}>

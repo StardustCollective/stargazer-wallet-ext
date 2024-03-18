@@ -3,7 +3,7 @@
 ///////////////////////
 
 import React, { FC } from 'react';
-import { TouchableOpacity, View, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Image } from 'react-native';
 
 ///////////////////////
 // Components
@@ -17,6 +17,7 @@ import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down.svg';
 // Types
 ///////////////////////
 
+import { COLORS_ENUMS } from 'assets/styles/colors';
 import INetworkPicker from './types';
 
 ///////////////////////
@@ -29,8 +30,6 @@ import styles from './styles';
 // Constants
 ///////////////////////
 
-import { COLORS_ENUMS } from 'assets/styles/colors';
-
 const ICON_WIDTH = 12;
 const ICON_HEIGHT = 6;
 
@@ -40,14 +39,11 @@ const NetworkPicker: FC<INetworkPicker> = ({
   onPress,
   icon = null,
 }): JSX.Element => {
-  const logoExtraStyle = icon?.includes('constellation') ? styles.constellationLogo : {};
-  const iconStyle = StyleSheet.flatten([styles.icon, logoExtraStyle]);
-
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       {!!icon && (
         <View style={styles.iconContainer}>
-          <Image style={iconStyle} source={{ uri: icon }} />
+          <Image style={styles.icon} source={{ uri: icon }} />
         </View>
       )}
       <View style={styles.titleContainer}>

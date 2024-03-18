@@ -33,6 +33,7 @@
   }
 
   .swapInputRightBlock {
+    cursor: pointer;
     display: flex;
     flex: 1;
     flex-direction: row;
@@ -45,7 +46,6 @@
       width: 30px;
       height: 30px;
       overflow: hidden;
-      border: 1px solid $gray-200;
     }
 
     .swapInputChevron {

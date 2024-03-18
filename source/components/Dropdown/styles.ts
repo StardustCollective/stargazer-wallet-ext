@@ -20,8 +20,6 @@ const styles = StyleSheet.create({
     height: 32,
     width: 32,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: NEW_COLORS.gray_300,
     backgroundColor: '#FAFAFA',
     marginRight: 12,
   },
@@ -55,8 +53,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
   },
   icon: {
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
 });
 

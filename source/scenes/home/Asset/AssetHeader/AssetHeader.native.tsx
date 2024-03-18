@@ -18,7 +18,6 @@ const AssetHeader: FC<IAssetHeaderSettings> = ({ asset, network }) => {
               logo={asset.logo}
               label={asset.label}
               containerStyle={styles.assetLogo}
-              iconStyle={{ height: 10 }}
             />
           </View>
           <View style={styles.address}>

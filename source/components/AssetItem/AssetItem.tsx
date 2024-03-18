@@ -55,49 +55,51 @@ const AssetItem: FC<IAssetItem> = ({
   itemClicked,
   showNetwork,
   activeNetwork,
+  showPrice,
 }: IAssetItem) => {
   ///////////////////////
   // Render
   ///////////////////////
 
-  const renderAssetPriceSection = (assetInfoData: IAssetInfoState) => {
-    if (showNetwork) {
-      let network = assetInfoData.network;
-      // 349: New network should be added here.
-      if (
-        [AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
-          assetInfoData?.symbol as AssetSymbol
-        )
-      ) {
-        const currentNetwork = getNetworkFromChainId(network);
-        network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
-      } else if (AssetSymbol.DAG === assetInfoData?.symbol) {
-        network = activeNetwork.Constellation;
-      }
-
-      const label = getNetworkLabel(network);
-
-      return (
-        <div>
-          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
-        </div>
-      );
+  const renderAssetNetwork = () => {
+    let { network } = assetInfo;
+    // 349: New network should be added here.
+    if (
+      [AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
+        assetInfo?.symbol as AssetSymbol
+      )
+    ) {
+      const currentNetwork = getNetworkFromChainId(network);
+      network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
+    } else if (AssetSymbol.DAG === assetInfo?.symbol) {
+      network = activeNetwork.Constellation;
     }
-    if (assetInfoData.priceId && fiat[assetInfoData.priceId]?.price) {
+
+    const label = getNetworkLabel(network);
+
+    return (
+      <div>
+        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
+      </div>
+    );
+  };
+
+  const renderAssetPrice = () => {
+    if (assetInfo.priceId && fiat[assetInfo.priceId]?.price) {
       return (
         <div>
-          <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-            {formatPrice(fiat[assetInfoData.priceId].price)}
+          <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
+            {formatPrice(fiat[assetInfo.priceId].price)}
           </TextV3.Caption>
-          {fiat[assetInfoData.priceId]?.priceChange && (
+          {fiat[assetInfo.priceId]?.priceChange && (
             <TextV3.Caption
               color={COLORS_ENUMS.BLACK}
               extraStyles={
-                fiat[assetInfoData.priceId].priceChange > 0 ? styles.green : styles.red
+                fiat[assetInfo.priceId].priceChange > 0 ? styles.green : styles.red
               }
             >
-              {fiat[assetInfoData.priceId].priceChange > 0 ? '+' : ''}
-              {formatNumber(fiat[assetInfoData.priceId].priceChange, 2, 2, 3)}%
+              {fiat[assetInfo.priceId].priceChange > 0 ? '+' : ''}
+              {formatNumber(fiat[assetInfo.priceId].priceChange, 2, 2, 3)}%
             </TextV3.Caption>
           )}
         </div>
@@ -107,7 +109,7 @@ const AssetItem: FC<IAssetItem> = ({
     return null;
   };
 
-  const renderBalance = (assetInfo: IAssetInfoState) => {
+  const renderBalance = () => {
     const balanceValue = formatStringDecimal(
       formatNumber(Number(balances[assetInfo.id]), 16, 20),
       4
@@ -118,9 +120,9 @@ const AssetItem: FC<IAssetItem> = ({
         : '';
 
     return (
-      <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
+      <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
         {`${balanceValue}${balanceSymbol}`}
-      </TextV3.CaptionRegular>
+      </TextV3.CaptionStrong>
     );
   };
 
@@ -132,9 +134,9 @@ const AssetItem: FC<IAssetItem> = ({
         <div className={classes} onClick={() => itemClicked()}>
           <div className={styles.assetIcon}>
             {assetInfo.logo.startsWith('http') ? (
-              <img src={assetInfo.logo} />
+              <img src={assetInfo.logo} alt="asset logo" />
             ) : (
-              <img src={`/${assetInfo.logo}`} />
+              <img src={`/${assetInfo.logo}`} alt="asset logo" />
             )}
           </div>
           <div className={styles.assetName}>
@@ -144,9 +146,12 @@ const AssetItem: FC<IAssetItem> = ({
             >
               {assetInfo.label}
             </TextV3.CaptionStrong>
-            {renderAssetPriceSection(assetInfo as IAssetInfoState)}
+            {showNetwork ? renderAssetNetwork() : renderAssetPrice()}
           </div>
-          <div className={styles.assetBalance}>{renderBalance(assetInfo)}</div>
+          <div className={styles.balanceContainer}>
+            <div className={styles.assetBalance}>{renderBalance()}</div>
+            {showPrice && <div>{renderAssetPrice()}</div>}
+          </div>
         </div>
       </Card>
     </Fragment>

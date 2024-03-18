@@ -3,12 +3,14 @@ import { View, TouchableOpacity } from 'react-native';
 
 import Icon from 'components/Icon';
 import TextV3 from 'components/TextV3';
-import StargazerIcon from 'assets/images/logo-s.svg';
+import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import styles from './styles';
 import AddWalletSettings from './types';
+
+const ICON_SIZE = 36;
 
 const AddWallet: FC<AddWalletSettings> = ({
   onCreateNewWalletClicked,
@@ -19,7 +21,7 @@ const AddWallet: FC<AddWalletSettings> = ({
       <TouchableOpacity onPress={onCreateNewWalletClicked}>
         <View testID="addWallet-createNewWallet" style={styles.menu}>
           <View style={styles.stargazerIconWrapper}>
-            <StargazerIcon width={24} iconStyles={styles.icon} />
+            <StargazerIcon width={ICON_SIZE} height={ICON_SIZE} />
           </View>
           <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
             Create New Wallet
@@ -34,7 +36,7 @@ const AddWallet: FC<AddWalletSettings> = ({
       <TouchableOpacity onPress={onImportWalletClicked}>
         <View testID="addWallet-importWallet" style={styles.menu}>
           <View style={styles.stargazerIconWrapper}>
-            <StargazerIcon width={24} iconStyles={styles.icon} />
+            <StargazerIcon width={ICON_SIZE} height={ICON_SIZE} />
           </View>
           <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.menuText}>
             Import Wallet

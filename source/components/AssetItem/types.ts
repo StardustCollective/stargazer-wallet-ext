@@ -21,5 +21,6 @@ export default interface IAssetItem {
   balances?: AssetBalances;
   fiat?: IFiatState;
   showNetwork?: boolean;
+  showPrice?: boolean;
   activeNetwork?: ActiveNetwork;
 }
