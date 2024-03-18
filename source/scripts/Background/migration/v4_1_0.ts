@@ -81,7 +81,7 @@ function updateCustomAssets(assets: IAssetListState) {
     if (isCustom && hasDefaultLogo) {
       const newDefaultLogo =
         DEFAULT_LOGOS_MAP[assetInfo.logo as keyof typeof DEFAULT_LOGOS_MAP];
-      updatedAssets[key].logo = newDefaultLogo;
+      updatedAssets[key] = { ...updatedAssets[key], logo: newDefaultLogo };
     }
   });
 
