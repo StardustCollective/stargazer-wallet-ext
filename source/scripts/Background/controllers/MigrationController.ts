@@ -134,7 +134,7 @@ const MigrationController = async () => {
 
   /**
    * version < 4_1_0
-   * Description: Updates LB endpoints on the DOR token
+   * Description: Updates LB endpoints on the DOR token and the logo in multiple tokens
    */
   if (compareVersions(state.vault.version, '4.1.0') < 0) {
     const v4_1_0 = require('../migration/v4_1_0');
