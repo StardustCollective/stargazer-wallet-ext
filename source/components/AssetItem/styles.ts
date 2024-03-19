@@ -15,12 +15,7 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 16,
   },
-  labelText: {
-    fontWeight: FONT_WEIGHTS.semibold,
-    letterSpacing: -0.3,
-  },
   balanceText: {
-    letterSpacing: -0.3,
     textAlign: 'right',
   },
   assetBalance: {

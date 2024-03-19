@@ -46,6 +46,7 @@ const AssetsPanel: FC<IAssetPanel> = ({
             }
             onClick={handleAddTokens}
             extraStyle={styles.button}
+            extraTitleStyles={styles.buttonTitle}
           />
         </div>
       </div>

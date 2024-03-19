@@ -140,10 +140,7 @@ const AssetItem: FC<IAssetItem> = ({
             )}
           </div>
           <div className={styles.assetName}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.BLACK}
-              extraStyles={styles.labelText}
-            >
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
               {assetInfo.label}
             </TextV3.CaptionStrong>
             {showNetwork ? renderAssetNetwork() : renderAssetPrice()}

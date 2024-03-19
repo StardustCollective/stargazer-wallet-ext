@@ -163,7 +163,7 @@ const AssetItem: FC<IAssetItem> = ({
         <AssetIcon logo={assetInfo?.logo} />
       </View>
       <View style={styles.assetName}>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.labelText}>
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
           {assetInfo.label}
         </TextV3.CaptionStrong>
         {showNetwork ? renderAssetNetwork() : renderAssetPrice()}
