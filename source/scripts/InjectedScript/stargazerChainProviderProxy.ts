@@ -2,6 +2,8 @@ import {
   StargazerProxyEvent,
   StargazerProxyRequest,
   StargazerEncodedProxyRequest,
+  EIPRpcError,
+  EIPErrorCodes,
 } from '../common';
 
 import { encodeProxyRequest, decodeProxyResponse, decodeProxyEvent } from './utils';
@@ -156,17 +158,19 @@ class StargazerChainProviderProxy {
       request,
       this.handleHandshakeResponse
     );
-    this.#activated = result;
-    return result;
+
+    if (!result) {
+      this.#activated = null;
+      throw new EIPRpcError('User denied provider activation', EIPErrorCodes.Rejected);
+    }
+
+    this.#activated = true;
+    return true;
   }
 
   async request(request: StargazerProxyRequest): Promise<any> {
     if (this.#activated === null) {
       await this.activate();
-    }
-
-    if (this.#activated === false) {
-      throw new StargazerChainProviderError('User denied provider activation');
     }
 
     if (request.type === 'rpc') {

@@ -1,6 +1,7 @@
 enum AvailableMethods {
   /* Ethereum */
   eth_accounts = 'eth_accounts',
+  eth_requestAccounts = 'eth_requestAccounts',
   personal_sign = 'personal_sign',
   eth_sendTransaction = 'eth_sendTransaction',
   web3_sha3 = 'web3_sha3',
