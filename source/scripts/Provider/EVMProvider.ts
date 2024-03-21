@@ -26,6 +26,7 @@ import {
   getChainInfo,
 } from 'scripts/Background/controllers/EVMChainController/utils';
 import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
+import { getDappController } from 'utils/controllersUtils';
 import type { DappProvider } from '../Background/dappRegistry';
 import {
   AvailableMethods,
@@ -256,6 +257,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     port: Runtime.Port
   ) {
     const { vault } = store.getState();
+    const dappController = getDappController();
 
     const allWallets = [
       ...vault.wallets.local,
@@ -279,11 +281,42 @@ export class EVMProvider implements IRpcChainRequestHandler {
         ? { width: 1000, height: 1000 }
         : { width: 386, height: 624 };
 
-    if (
-      [AvailableMethods.eth_accounts, AvailableMethods.eth_requestAccounts].includes(
-        request.method
-      )
-    ) {
+    // eth_requestAccounts is used to activate the provider
+    if (request.method === AvailableMethods.eth_requestAccounts) {
+      // Provider already activated -> return ETH accounts array
+      if (dappProvider.activated) {
+        return this.getAccounts();
+      }
+
+      // Provider not activated -> display popup and wait for user's approval
+      const connectWalletEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'connectWallet',
+        undefined,
+        'selectAccounts'
+      );
+
+      // User rejected activation
+      if (connectWalletEvent === null) {
+        throw new EIPRpcError('User denied provider activation', EIPErrorCodes.Rejected);
+      }
+
+      // Send event to notify the accounts array
+      dappController.notifyAccountsChanged(this.getAccounts());
+
+      // Return ETH accounts array
+      return this.getAccounts();
+    }
+
+    // Provider needs to be activated before calling any other RPC method
+    if (!dappProvider.activated) {
+      throw new EIPRpcError(
+        'Provider is not activated. Call eth_requestAccounts to activate it.',
+        EIPErrorCodes.Unauthorized
+      );
+    }
+
+    if (request.method === AvailableMethods.eth_accounts) {
       return this.getAccounts();
     }
 

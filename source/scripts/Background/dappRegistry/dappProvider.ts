@@ -138,7 +138,6 @@ class DappProvider {
     encodedRequest: StargazerEncodedProxyRequest
   ): Promise<StargazerProxyResponse> {
     try {
-      this.assertProviderIsActivated();
       return await handleEventRequest(this, port, request, encodedRequest);
     } catch (e) {
       console.error('EventRequestError', String(e), e);
@@ -152,7 +151,6 @@ class DappProvider {
     encodedRequest: StargazerEncodedProxyRequest
   ): Promise<StargazerProxyResponse> {
     try {
-      this.assertProviderIsActivated();
       return await handleRpcRequest(this, port, request, encodedRequest);
     } catch (e) {
       console.error('RpcRequestError', String(e), e);
@@ -185,12 +183,6 @@ class DappProvider {
       throw new Error('Unable to retrive ChainProviderData for port');
     }
     return chainData;
-  }
-
-  assertProviderIsActivated() {
-    if (this.activated !== true) {
-      throw new Error('Provider is was not activated');
-    }
   }
 
   sendResponseToPort(
@@ -242,7 +234,7 @@ class DappProvider {
     route?: string,
     data?: Record<any, any>,
     type: Windows.CreateType = 'popup',
-    url: string = '/external.html',
+    url = '/external.html',
     windowSize = { width: 372, height: 600 }
   ): Promise<CustomEvent | null> {
     if (!this.#ports.has(port)) {

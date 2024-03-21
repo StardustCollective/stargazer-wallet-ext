@@ -39,6 +39,7 @@ enum AvailableMethods {
 
   /* Constellation */
   dag_chainId = 'dag_chainId',
+  dag_requestAccounts = 'dag_requestAccounts',
   dag_accounts = 'dag_accounts',
   dag_getBalance = 'dag_getBalance',
   dag_signMessage = 'dag_signMessage',
