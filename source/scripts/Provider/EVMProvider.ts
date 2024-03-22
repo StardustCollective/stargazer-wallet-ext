@@ -282,11 +282,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         : { width: 386, height: 624 };
 
     // eth_requestAccounts is used to activate the provider
-    if (
-      [AvailableMethods.eth_requestAccounts, AvailableMethods.eth_accounts].includes(
-        request.method
-      )
-    ) {
+    if (request.method === AvailableMethods.eth_requestAccounts) {
       // Provider already activated -> return ETH accounts array
       if (dappProvider.activated) {
         return this.getAccounts();
@@ -309,6 +305,10 @@ export class EVMProvider implements IRpcChainRequestHandler {
       dappController.notifyAccountsChanged(this.getAccounts());
 
       // Return ETH accounts array
+      return this.getAccounts();
+    }
+
+    if (request.method === AvailableMethods.eth_accounts) {
       return this.getAccounts();
     }
 
@@ -623,6 +623,10 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
     if (request.method === AvailableMethods.web3_sha3) {
       return ethers.utils.keccak256(request.params[0]);
+    }
+
+    if (request.method === AvailableMethods.web3_clientVersion) {
+      return `Stargazer/v${STARGAZER_WALLET_VERSION}`;
     }
 
     if (request.method === AvailableMethods.wallet_switchEthereumChain) {
