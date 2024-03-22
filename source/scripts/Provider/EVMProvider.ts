@@ -282,7 +282,11 @@ export class EVMProvider implements IRpcChainRequestHandler {
         : { width: 386, height: 624 };
 
     // eth_requestAccounts is used to activate the provider
-    if (request.method === AvailableMethods.eth_requestAccounts) {
+    if (
+      [AvailableMethods.eth_requestAccounts, AvailableMethods.eth_accounts].includes(
+        request.method
+      )
+    ) {
       // Provider already activated -> return ETH accounts array
       if (dappProvider.activated) {
         return this.getAccounts();
@@ -314,10 +318,6 @@ export class EVMProvider implements IRpcChainRequestHandler {
         'Provider is not activated. Call eth_requestAccounts to activate it.',
         EIPErrorCodes.Unauthorized
       );
-    }
-
-    if (request.method === AvailableMethods.eth_accounts) {
-      return this.getAccounts();
     }
 
     if (request.method === AvailableMethods.personal_sign) {

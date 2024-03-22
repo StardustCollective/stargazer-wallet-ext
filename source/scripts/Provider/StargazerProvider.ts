@@ -403,7 +403,11 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         : { width: 372, height: 600 };
 
     // dag_requestAccounts is used to activate the provider
-    if (request.method === AvailableMethods.dag_requestAccounts) {
+    if (
+      [AvailableMethods.dag_requestAccounts, AvailableMethods.dag_accounts].includes(
+        request.method
+      )
+    ) {
       // Provider already activated -> return DAG accounts array
       if (dappProvider.activated) {
         return this.getAccounts();
@@ -438,10 +442,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
     if (request.method === AvailableMethods.dag_chainId) {
       return this.getChainId();
-    }
-
-    if (request.method === AvailableMethods.dag_accounts) {
-      return this.getAccounts();
     }
 
     if (request.method === AvailableMethods.dag_getBalance) {
