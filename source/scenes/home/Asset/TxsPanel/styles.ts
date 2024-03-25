@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { COLORS, NEW_COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   activity: {
@@ -7,8 +7,11 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.gray_light,
   },
+  scrollContentContainer: {
+    flexGrow: 1,
+  },
   activityScrollView: {
-    flex: 1,
+    flexGrow: 1,
   },
   spinner: {
     color: COLORS.primary,
@@ -21,11 +24,18 @@ const styles = StyleSheet.create({
     width: '100%',
     opacity: 0.6,
   },
-  noTx: {
-    display: 'flex',
+  noDataContainer: {
     flex: 1,
-    margin: 20,
     flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 32,
+  },
+  noFoundText: {
+    fontSize: 16,
+    marginTop: 16,
+    color: NEW_COLORS.gray_500,
+    textAlign: 'center',
   },
   heading: {
     display: 'flex',

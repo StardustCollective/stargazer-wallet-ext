@@ -177,10 +177,9 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
     );
   };
 
-  const TRANSACTION_DESCRIPTION = `You have no transaction history, send or receive $${
-    assets[activeAsset?.id]?.symbol
-  } to register your first transaction.`;
-  const REWARDS_DESCRIPTION = `You have no rewards history.`;
+  const TRANSACTION_DESCRIPTION =
+    'You have no transaction history.\nSend or receive tokens to get started';
+  const REWARDS_DESCRIPTION = 'No rewards earned';
   const renderItem = isRewardsTab ? renderRewardItem : renderTxItem;
   const description = isRewardsTab ? REWARDS_DESCRIPTION : TRANSACTION_DESCRIPTION;
 
