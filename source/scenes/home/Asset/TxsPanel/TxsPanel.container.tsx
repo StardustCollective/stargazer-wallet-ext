@@ -1,35 +1,66 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { useFiat } from 'hooks/usePrice';
 import { useSelector } from 'react-redux';
 import { DAG_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
-import IVaultState, { AssetType, Transaction } from 'state/vault/types';
+import IVaultState, { AssetType, Reward, Transaction } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import IAssetListState from 'state/assets/types';
-
+import { getAccountController } from 'utils/controllersUtils';
 import TxsPanel from './TxsPanel';
 import TxItem from '../TxItem';
 import { ITxsPanel } from './types';
-import { getAccountController } from 'utils/controllersUtils';
 
-const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
+const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
   const getFiatAmount = useFiat();
   const { activeAsset, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+  const [transactions, setTransactions] = useState([]);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const accountController = getAccountController();
   const isL0token = !!assets[activeAsset?.id]?.l0endpoint;
+  const address = activeAsset?.address;
+  const isRewardsTab = route === 'rewards';
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!activeAsset) return;
+
+      const fetchTxs = async () => {
+        if (
+          activeAsset?.type === AssetType.Constellation ||
+          activeAsset?.type === AssetType.LedgerConstellation
+        ) {
+          if (isRewardsTab) {
+            return activeAsset?.rewards;
+          }
+          return activeAsset?.transactions;
+        }
+        return (await accountController.getFullETHTxs()).sort(
+          (a, b) => b.timestamp - a.timestamp
+        );
+      };
+
+      fetchTxs().then((txns: any[]) => {
+        setTransactions(txns);
+      });
+    }, [activeAsset])
+  );
 
   const isETH =
     activeAsset.type === AssetType.Ethereum || activeAsset.type === AssetType.ERC20;
 
   const isShowedGroupBar = useCallback(
     (tx: Transaction, idx: number) => {
+      const timestamp = isRewardsTab ? tx.accruedAt : tx.timestamp;
+      const prevTimestamp = isRewardsTab
+        ? transactions[idx - 1]?.accruedAt
+        : transactions[idx - 1]?.timestamp;
       return (
         idx === 0 ||
-        new Date(tx.timestamp).toDateString() !==
-          new Date(transactions[idx - 1].timestamp).toDateString()
+        new Date(timestamp).toDateString() !== new Date(prevTimestamp).toDateString()
       );
     },
     [transactions]
@@ -101,7 +132,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = isETH
       ? getFiatAmount(Number(isETHPending ? tx.amount : tx.balance), 2)
-      : getFiatAmount(tx.amount / 1e8, 4);
+      : getFiatAmount(tx.amount / 1e8, 2);
 
     return (
       <TxItem
@@ -121,15 +152,42 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ address, transactions }) => {
     );
   };
 
-  const TRANSACTION_DESCRIPTION = `You have no transaction history, send or receive $${
-    assets[activeAsset?.id]?.symbol
-  } to register your first transaction.`;
+  const renderRewardItem = (tx: Reward, idx: number) => {
+    const amount = tx.amount / 1e8;
+    const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
+    const fiatAmount = getFiatAmount(amount, 2);
+    const rewardsCount = tx?.rewardsCount ? tx.rewardsCount : null;
+    return (
+      <TxItem
+        key={idx}
+        getLinkUrl={null}
+        tx={tx}
+        isETH={isETH}
+        isSelf={false}
+        isReceived
+        isGasSettingsVisible={false}
+        isRewardsTab={isRewardsTab}
+        showGroupBar={isShowedGroupBar(tx, idx)}
+        txTypeLabel={null}
+        currencySymbol={assets[activeAsset?.id]?.symbol}
+        amount={amountString}
+        fiatAmount={fiatAmount}
+        rewardsCount={rewardsCount}
+      />
+    );
+  };
+
+  const TRANSACTION_DESCRIPTION =
+    'You have no transaction history.\nSend or receive tokens to get started.';
+  const REWARDS_DESCRIPTION = 'No rewards earned';
+  const renderItem = isRewardsTab ? renderRewardItem : renderTxItem;
+  const description = isRewardsTab ? REWARDS_DESCRIPTION : TRANSACTION_DESCRIPTION;
 
   return (
     <TxsPanel
       transactions={transactions}
-      renderTxItem={renderTxItem}
-      transactionDescription={TRANSACTION_DESCRIPTION}
+      renderTxItem={renderItem}
+      transactionDescription={description}
     />
   );
 };

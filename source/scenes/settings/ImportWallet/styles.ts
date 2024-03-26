@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     color: COLORS.gray_dark,
     marginTop: 10,
     marginBottom: 10,
+    marginLeft: 12,
   },
   arrowRightWrapper: {
     backgroundColor: 'transparent',
@@ -49,30 +50,10 @@ const styles = StyleSheet.create({
   arrowRightIcon: {
     color: COLORS.gray_100,
   },
-  iconContainer: {
-    backgroundColor: COLORS.primary,
-    marginRight: 12,
-    borderRadius: 18,
+  icon: {
     height: 36,
     width: 36,
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  icon: {
-    fontSize: 16,
-    color: COLORS.gray,
-  },
-  iconETHWrapper: {
-    backgroundColor: COLORS.gray_light_100,
-  },
-  iconETH: {
-    fontSize: 22,
-    width: 22,
-    height: 22,
-  },
-  iconDAGWrapper: {
-    backgroundColor: COLORS.gray_light_100,
+    borderRadius: 18,
   },
   text: {
     flexGrow: 1,

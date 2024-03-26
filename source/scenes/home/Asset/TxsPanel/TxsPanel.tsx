@@ -1,10 +1,8 @@
 import React, { FC } from 'react';
 import { Transaction } from 'state/vault/types';
 import TextV3 from 'components/TextV3';
-import { COLORS_ENUMS } from 'assets/styles/colors';
-
+import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import styles from './TxsPanel.scss';
-
 import ITxPanelSettings from './types';
 
 const TxsPanel: FC<ITxPanelSettings> = ({
@@ -12,19 +10,24 @@ const TxsPanel: FC<ITxPanelSettings> = ({
   renderTxItem,
   transactionDescription,
 }) => {
+  const showTransactions = !!transactions?.length;
+  const showEmptyList = !transactions?.length;
+
   return (
     <div className={styles.activity}>
-      {transactions.length ? (
+      {showTransactions && (
         <div>
           {transactions.map((tx: Transaction, idx: number) => {
             return renderTxItem(tx, idx);
           })}
         </div>
-      ) : (
-        <div className={styles.noTx}>
-          <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+      )}
+      {showEmptyList && (
+        <div className={styles.noDataContainer}>
+          <img src={`/${StargazerCard}`} height={64} alt="Stargazer card" />
+          <TextV3.BodyStrong extraStyles={styles.noFoundText}>
             {transactionDescription}
-          </TextV3.Caption>
+          </TextV3.BodyStrong>
         </div>
       )}
     </div>

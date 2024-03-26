@@ -3,7 +3,7 @@
 ///////////////////////
 
 import React, { FC } from 'react';
-import { View, Linking } from 'react-native';
+import { View } from 'react-native';
 
 ///////////////////////
 // Components
@@ -52,6 +52,7 @@ const AssetsPanel: FC<IAssetState> = ({
               assetInfo={assets[asset.id]}
               itemClicked={() => handleSelectAsset(asset)}
               showNetwork
+              showPrice
             />
           );
         })}

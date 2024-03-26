@@ -13,9 +13,16 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.16)',
+    borderRadius: 8,
   },
   titleContainer: {
     marginLeft: 8,
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '600',
+    color: '#5B36D3',
   },
 });
 

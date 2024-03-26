@@ -1,15 +1,10 @@
 import React, { FC } from 'react';
 import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
-
 import Icon from 'components/Icon';
-import StargazerIcon from 'assets/images/logo-s.svg';
-import EthereumIcon from 'assets/images/svg/ethereum.svg';
-import ConstellationIcon from 'assets/images/svg/constellation.svg';
-
+import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-
+import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
 import styles from './ImportWallet.scss';
-
 import IImportWalletSettings from './types';
 
 const ImportWallet: FC<IImportWalletSettings> = ({
@@ -23,7 +18,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({
         className={styles.menu}
         onClick={onImportPhraseView}
       >
-        <Icon width={25} Component={StargazerIcon} iconStyles={styles.icon} />
+        <Icon width={36} Component={StargazerIcon} iconStyles={styles.icon} />
         <span>Multi Chain Wallet</span>
         <ArrowIcon />
       </section>
@@ -32,7 +27,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({
         className={styles.menu}
         onClick={handleImport(KeyringNetwork.Ethereum)}
       >
-        <Icon width={25} Component={EthereumIcon} />
+        <img src={ETHEREUM_LOGO} className={styles.logo} />
         <span>Ethereum</span>
         <ArrowIcon />
       </section>
@@ -41,7 +36,7 @@ const ImportWallet: FC<IImportWalletSettings> = ({
         className={styles.menu}
         onClick={handleImport(KeyringNetwork.Constellation)}
       >
-        <Icon width={20} Component={ConstellationIcon} />
+        <img src={CONSTELLATION_LOGO} className={styles.logo} />
         <span>Constellation</span>
         <ArrowIcon />
       </section>

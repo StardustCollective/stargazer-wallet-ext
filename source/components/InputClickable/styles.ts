@@ -19,11 +19,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 32,
-    width: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.12)',
   },
   label: {
     paddingBottom: 10,
@@ -41,8 +36,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
   },
   icon: {
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
 });
 

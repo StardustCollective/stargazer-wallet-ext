@@ -82,11 +82,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid $gray_light_100;
 
     .assetIcon {
-      height: 24px;
-      width: 24px;
+      height: 36px;
+      width: 36px;
+      border-radius: 18px;
     }
   }
 

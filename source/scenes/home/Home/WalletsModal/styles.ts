@@ -56,17 +56,13 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   assetIconWrapper: {
-    height: 36,
-    width: 36,
-    borderWidth: 1,
-    borderColor: COLORS.gray_light_100,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 18,
   },
   assetIcon: {
-    height: 24,
-    width: 24,
+    height: 36,
+    width: 36,
+    borderRadius: 18,
   },
 });
 

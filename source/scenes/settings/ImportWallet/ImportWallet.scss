@@ -21,6 +21,13 @@
     border-bottom: 1px solid $gray-light;
     border-radius: 6px;
 
+    .logo {
+      height: 36px;
+      width: 36px;
+      border-radius: 18px;
+      margin-right: 12px;
+    }
+
     .icon {
       background-color: $primary;
     }

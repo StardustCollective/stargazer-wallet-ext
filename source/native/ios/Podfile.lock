@@ -231,6 +231,8 @@ PODS:
     - React
   - react-native-netinfo (8.3.1):
     - React-Core
+  - react-native-pager-view (6.2.3):
+    - React-Core
   - react-native-randombytes (3.6.1):
     - React-Core
   - react-native-rsa-native (2.0.5):
@@ -392,6 +394,7 @@ DEPENDENCIES:
   - react-native-document-picker (from `../../../node_modules/react-native-document-picker`)
   - react-native-fast-crypto (from `../../../node_modules/react-native-fast-crypto`)
   - "react-native-netinfo (from `../../../node_modules/@react-native-community/netinfo`)"
+  - react-native-pager-view (from `../../../node_modules/react-native-pager-view`)
   - react-native-randombytes (from `../../../node_modules/react-native-randombytes`)
   - react-native-rsa-native (from `../../../node_modules/react-native-rsa-native`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
@@ -480,6 +483,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-fast-crypto"
   react-native-netinfo:
     :path: "../../../node_modules/@react-native-community/netinfo"
+  react-native-pager-view:
+    :path: "../../../node_modules/react-native-pager-view"
   react-native-randombytes:
     :path: "../../../node_modules/react-native-randombytes"
   react-native-rsa-native:
@@ -570,6 +575,7 @@ SPEC CHECKSUMS:
   react-native-document-picker: ec07866a30707f23660c0f3ae591d669d3e89096
   react-native-fast-crypto: 5943c42466b86ad70be60d3a5f64bd22251e5d9e
   react-native-netinfo: 1a6035d3b9780221d407c277ebfb5722ace00658
+  react-native-pager-view: c29d484f19c49ff19525a94105e4ab2c4d4ae273
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-rsa-native: 12132eb627797529fdb1f0d22fd0f8f9678df64a
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9

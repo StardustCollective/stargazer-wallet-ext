@@ -4,14 +4,11 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
 import IAssetListState from 'state/assets/types';
 import { ITransactionInfo } from 'scripts/types';
-
 import { getAccountController } from 'utils/controllersUtils';
 import useGasEstimate from 'hooks/useGasEstimate';
-
 import TxItem from './TxItem';
 import GasSettings from '../GasSettings';
 import { formatDistanceDate } from '../../helpers';
-
 import { ITxItem } from './types';
 
 const MAX_GAS_NUMBER = 200;
@@ -21,11 +18,13 @@ const TxItemContainer: FC<ITxItem> = ({
   isETH,
   isSelf,
   isReceived,
+  isRewardsTab,
   isGasSettingsVisible,
   showGroupBar,
   txTypeLabel,
   currencySymbol,
   amount,
+  rewardsCount,
   fiatAmount,
   getLinkUrl,
 }) => {
@@ -44,7 +43,7 @@ const TxItemContainer: FC<ITxItem> = ({
       gas: tx.gas,
     });
 
-  const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
+  const onGasPriceChanged = (_event: ChangeEvent<any>, value: number | number[]) => {
     setGasPrice(value as number);
     estimateGasFee(value as number);
   };
@@ -96,7 +95,8 @@ const TxItemContainer: FC<ITxItem> = ({
   const receivedOrSentText = `${
     isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'
   } ${currencySymbol}`;
-  const formattedDistanceDate = formatDistanceDate(tx.timestamp);
+  const timestamp = isRewardsTab ? tx.accruedAt : tx.timestamp;
+  const formattedDistanceDate = formatDistanceDate(timestamp);
 
   const renderGasSettings = () => {
     return (
@@ -122,6 +122,7 @@ const TxItemContainer: FC<ITxItem> = ({
     <TxItem
       tx={tx}
       isETH={isETH}
+      isRewardsTab={isRewardsTab}
       isSelf={isSelf}
       isReceived={isReceived}
       isGasSettingsVisible={isGasSettingsVisible}
@@ -134,6 +135,8 @@ const TxItemContainer: FC<ITxItem> = ({
       receivedOrSentText={receivedOrSentText}
       formattedDistanceDate={formattedDistanceDate}
       renderGasSettings={renderGasSettings}
+      logo={assets[activeAsset.id]?.logo}
+      rewardsCount={rewardsCount}
     />
   );
 };

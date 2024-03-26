@@ -21,6 +21,13 @@ section.activity {
 
   .button {
     width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    border-radius: 8px;
+  }
+
+  .buttonTitle {
+    font-size: 14px;
+    color: #5b36d3;
   }
 
   .spinner {
@@ -94,12 +101,7 @@ section.activity {
       .buydagIcon {
         width: 48px;
         height: 48px;
-        // background: url('../../../assets/images/svg/buy-dag-purple.svg');
         transition: all 0.3s;
-
-        &:hover {
-          // background: url('../../../assets/images/svg/buy-dag-green.svg');
-        }
       }
     }
 

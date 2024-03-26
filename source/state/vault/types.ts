@@ -55,6 +55,14 @@ export enum AssetType {
 }
 
 export type Transaction = DAGTransaction | DAGTransactionV2 | any;
+export type Reward = {
+  address: string;
+  amount: number;
+  accruedAt: string;
+  ordinal: number;
+  metagraphId: string;
+  rewardsCount?: number;
+};
 
 export type ActiveNetwork = {
   // 349: New network should be added here.
@@ -75,6 +83,7 @@ export interface IAssetState {
 
 export interface IActiveAssetState extends IAssetState {
   transactions: Transaction[];
+  rewards: Reward[];
 }
 
 export type AssetBalances = {

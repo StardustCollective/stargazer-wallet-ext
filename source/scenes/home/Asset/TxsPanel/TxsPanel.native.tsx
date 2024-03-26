@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { Transaction } from 'state/vault/types';
+import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import TextV3 from 'components/TextV3';
-import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
 import ITxPanelSettings from './types';
 
@@ -11,22 +11,29 @@ const TxsPanel: FC<ITxPanelSettings> = ({
   renderTxItem,
   transactionDescription,
 }) => {
+  const showTransactions = !!transactions?.length;
+  const showEmptyList = !transactions?.length;
+
   return (
-    <View style={styles.activity}>
+    <ScrollView
+      style={styles.activity}
+      contentContainerStyle={styles.scrollContentContainer}
+    >
       <View style={styles.activityScrollView}>
-        {transactions.length ? (
+        {showTransactions &&
           transactions.map((tx: Transaction, idx: number) => {
             return renderTxItem(tx, idx);
-          })
-        ) : (
-          <View style={styles.noTx}>
-            <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+          })}
+        {showEmptyList && (
+          <View style={styles.noDataContainer}>
+            <StargazerCard height={72} />
+            <TextV3.BodyStrong extraStyles={styles.noFoundText}>
               {transactionDescription}
-            </TextV3.Caption>
+            </TextV3.BodyStrong>
           </View>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

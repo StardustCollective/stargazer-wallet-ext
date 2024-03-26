@@ -25,6 +25,8 @@ import { truncateString, ellipsis } from 'scenes/home/helpers';
 ///////////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
+import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
+import { ETHEREUM_LOGO, CONSTELLATION_LOGO } from 'constants/index';
 import styles from './WalletsModal.scss';
 
 ///////////////////////////
@@ -32,13 +34,10 @@ import styles from './WalletsModal.scss';
 ///////////////////////////
 
 import { IWalletsModal } from './types';
-import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
-
-import { ETHEREUM_LOGO, CONSTELLATION_LOGO } from 'constants/index';
 
 const WalletsModal: FC<IWalletsModal> = ({
   multiChainWallets,

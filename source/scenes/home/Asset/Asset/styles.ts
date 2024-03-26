@@ -8,11 +8,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.primary,
   },
-  assetContentContainer: {
-    // paddingBottom: 50,
-    backgroudColor: 'white',
-    flexGrow: 1,
-  },
   mask: {
     flexGrow: 1,
     display: 'flex',
@@ -36,13 +31,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.12)',
     marginRight: 8,
   },
   logo: {
-    height: 18,
-    width: 18,
+    height: 24,
+    width: 24,
   },
   account: {
     height: 60,
@@ -327,6 +320,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  tabLabel: {
+    fontWeight: '500',
+    lineHeight: 24,
+    marginLeft: 8,
+  },
+  labelFocused: {
+    fontWeight: '600',
+    lineHeight: 24,
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tabBar: {
+    backgroundColor: COLORS.primary,
+    height: 50,
+  },
+  tabBarLabel: {
+    color: COLORS.gray_300,
+  },
+  tabBarIndicator: {
+    backgroundColor: '#7070FF',
+    height: 6,
   },
 });
 

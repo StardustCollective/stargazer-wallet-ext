@@ -22,6 +22,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 // Types
 ///////////////////////
 
+import { COLORS } from 'assets/styles/_variables.native';
 import IAssetWithToggle from './types';
 
 ///////////////////////
@@ -29,7 +30,6 @@ import IAssetWithToggle from './types';
 ///////////////////////
 
 import styles from './styles';
-import { COLORS } from 'assets/styles/_variables.native';
 
 ///////////////////////
 // Component
@@ -39,23 +39,18 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({
   id,
   symbol,
   network,
-  label,
   logo,
   selected,
   disabled = false,
   toggleItem,
 }: IAssetWithToggle) => {
-  const iconStyle = logo?.includes('constellation') ? styles.dagIcon : styles.imageIcon;
-
   return (
     <Card style={styles.cardContainer} id={`${id}-${network}`} disabled>
       <View style={styles.assetIcon}>
-        <Image style={iconStyle} source={{ uri: logo }} />
+        <Image style={styles.imageIcon} source={{ uri: logo }} />
       </View>
       <View style={styles.assetInfo}>
-        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.symbolLabel}>
-          {symbol}
-        </TextV3.CaptionStrong>
+        <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.CaptionStrong>
         <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
           {!!network && `${network}`}
         </TextV3.Caption>
@@ -78,4 +73,3 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({
 };
 
 export default AssetWithToggle;
-``;

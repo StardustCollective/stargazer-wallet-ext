@@ -20,13 +20,12 @@ const styles = StyleSheet.create({
     height: 64,
     width: 64,
     borderRadius: 32,
-    borderWidth: 1,
-    borderColor: NEW_COLORS.gray_300,
     backgroundColor: COLORS.white,
   },
   icon: {
-    width: 38,
-    height: 38,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
   },
   walletLabel: {
     marginTop: 12,

@@ -1,3 +1,5 @@
+import { CONSTELLATION_LOGO, LATTICE_LOGO } from 'constants/index';
+
 export const SWAP_FROM_STRING = 'Swap From';
 export const BALANCE_STRING = 'Balance:';
 export const SWAP_TO_STRING = 'Swap To';
@@ -13,7 +15,7 @@ export const TO_CURRENCY_INPUT_EDITABLE = false;
 export const LTX_DEFAULT_CURRENCY = {
   code: 'LTX',
   name: 'Lattice Token',
-  icon: 'https://exolix.com/icons/coins/LTX.png',
+  icon: LATTICE_LOGO,
   notes: '',
   networks: [
     {
@@ -33,7 +35,7 @@ export const LTX_DEFAULT_CURRENCY = {
 export const DAG_DEFAULT_CURRENCY = {
   code: 'DAG',
   name: 'Constellation',
-  icon: 'https://exolix.com/icons/coins/DAG.png',
+  icon: CONSTELLATION_LOGO,
   notes: '',
   networks: [
     {

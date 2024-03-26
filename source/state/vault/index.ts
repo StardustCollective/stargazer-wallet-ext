@@ -25,6 +25,7 @@ import IVaultState, {
   ICustomNetworkObject,
   ICustomNetworks,
   Transaction,
+  Reward,
 } from './types';
 
 const initialState: IVaultState = {
@@ -184,7 +185,11 @@ const VaultState = createSlice({
       state.activeWallet = action.payload;
       if (state.activeWallet) {
         if (state.activeAsset) {
-          state.activeAsset = { transactions: [], ...state.activeWallet.assets[0] };
+          state.activeAsset = {
+            transactions: [],
+            rewards: [],
+            ...state.activeWallet.assets[0],
+          };
         }
       } else {
         delete state.activeWallet;
@@ -204,7 +209,7 @@ const VaultState = createSlice({
       state.currentEVMNetwork = action.payload;
     },
     changeActiveAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
-      state.activeAsset = { transactions: [], ...action.payload };
+      state.activeAsset = { transactions: [], rewards: [], ...action.payload };
     },
     updateWalletAssets(state: IVaultState, action: PayloadAction<IAssetState[]>) {
       state.activeWallet.assets = action.payload;
@@ -217,6 +222,9 @@ const VaultState = createSlice({
       action: PayloadAction<{ txs: Transaction[] }>
     ) {
       state.activeAsset.transactions = action.payload.txs;
+    },
+    updateRewards(state: IVaultState, action: PayloadAction<{ txs: Reward[] }>) {
+      state.activeAsset.rewards = action.payload.txs;
     },
     updateBalances(state: IVaultState, action: PayloadAction<AssetBalances>) {
       state.balances = action.payload;
@@ -289,6 +297,7 @@ export const {
   updateWalletLabel,
   updateActiveWalletLabel,
   updateTransactions,
+  updateRewards,
   updateBalances,
   // updateLabel,
   addAsset,
