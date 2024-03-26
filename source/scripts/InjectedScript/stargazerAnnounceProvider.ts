@@ -27,7 +27,7 @@ const REQUEST_PROVIDER_EVENT = 'eip6963:requestProvider';
 const PROVIDER_UUID = uuid();
 const PROVIDER_NAME = 'Stargazer';
 const PROVIDER_ICON = StargazerIcon;
-const PROVIDER_RDNS = 'io.constellationnetwork';
+const PROVIDER_RDNS = 'io.stargazerwallet';
 
 // Ethereum provider instance
 const provider = readOnlyProxy(new StargazerChainProvider(ProtocolProvider.ETHEREUM));
