@@ -178,7 +178,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
   };
 
   const TRANSACTION_DESCRIPTION =
-    'You have no transaction history.\nSend or receive tokens to get started';
+    'You have no transaction history.\nSend or receive tokens to get started.';
   const REWARDS_DESCRIPTION = 'No rewards earned';
   const renderItem = isRewardsTab ? renderRewardItem : renderTxItem;
   const description = isRewardsTab ? REWARDS_DESCRIPTION : TRANSACTION_DESCRIPTION;
