@@ -2,6 +2,10 @@ import {
   StargazerProxyEvent,
   StargazerProxyRequest,
   StargazerEncodedProxyRequest,
+  EIPRpcError,
+  EIPErrorCodes,
+  ProtocolProvider,
+  AvailableMethods,
 } from '../common';
 
 import { encodeProxyRequest, decodeProxyResponse, decodeProxyEvent } from './utils';
@@ -145,7 +149,7 @@ class StargazerChainProviderProxy {
     this.#providerListenerEventHandler(listenerEvent);
   }
 
-  async activate(title?: string) {
+  private async handshake(title?: string) {
     const request: StargazerProxyRequest = {
       type: 'handshake',
       chain: this.#provider.chain,
@@ -156,17 +160,41 @@ class StargazerChainProviderProxy {
       request,
       this.handleHandshakeResponse
     );
-    this.#activated = result;
-    return result;
+
+    if (!result) {
+      this.#activated = null;
+      throw new EIPRpcError('User denied provider activation', EIPErrorCodes.Rejected);
+    }
+
+    this.#activated = true;
+  }
+
+  async activate(title?: string) {
+    await this.handshake(title);
+
+    const providerChain = this.#provider.chain;
+
+    // Default request for the Ethereum provider.
+    let request: StargazerProxyRequest = {
+      type: 'rpc',
+      method: AvailableMethods.eth_requestAccounts,
+      params: [],
+    };
+
+    if (providerChain === ProtocolProvider.CONSTELLATION) {
+      request = {
+        type: 'rpc',
+        method: AvailableMethods.dag_requestAccounts,
+        params: [],
+      };
+    }
+
+    await this.handlePromisifiedRequestResponse(request, this.handleRpcResponse);
   }
 
   async request(request: StargazerProxyRequest): Promise<any> {
     if (this.#activated === null) {
-      await this.activate();
-    }
-
-    if (this.#activated === false) {
-      throw new StargazerChainProviderError('User denied provider activation');
+      await this.handshake();
     }
 
     if (request.type === 'rpc') {

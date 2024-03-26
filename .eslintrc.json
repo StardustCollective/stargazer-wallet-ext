@@ -44,7 +44,11 @@
     "react/jsx-filename-extension": ["warn", { "extensions": [".jsx", ".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "no-nested-ternary": "off",
-    "no-restricted-exports": "off"
+    "no-restricted-exports": "off",
+    "max-classes-per-file": "off",
+    "lines-between-class-members": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"]
   },
   "globals": {
     "it": "readonly",
