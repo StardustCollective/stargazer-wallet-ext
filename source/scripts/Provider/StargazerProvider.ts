@@ -11,6 +11,8 @@ import { Runtime, Windows } from 'webextension-polyfill-ts';
 import store from 'state/store';
 import { useController } from 'hooks';
 
+import { BigNumber } from 'bignumber.js';
+import { DAG_NETWORK } from 'constants/index';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 
@@ -22,8 +24,6 @@ import {
   EIPRpcError,
   ProtocolProvider,
 } from '../common';
-import { BigNumber } from 'bignumber.js';
-import { DAG_NETWORK } from 'constants/index';
 
 export type StargazerSignatureRequest = {
   content: string;
@@ -229,7 +229,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       throw new Error('SignatureRequest does not match spec');
     }
 
-    let parsedMetadata: Record<string, any> = {};
+    const parsedMetadata: Record<string, any> = {};
     for (const [key, value] of Object.entries(signatureRequest.metadata)) {
       if (['boolean', 'number', 'string'].includes(typeof value) || value === null) {
         parsedMetadata[key] = value;
@@ -247,11 +247,18 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     return newEncodedSignatureRequest;
   }
 
-  signMessage(msg: string) {
+  async signMessage(msg: string) {
     const privateKeyHex = dag4.account.keyTrio.privateKey;
-    const sig = dag4.keyStore.personalSign(privateKeyHex, msg);
+    const signature = await dag4.keyStore.personalSign(privateKeyHex, msg);
 
-    return sig;
+    return signature;
+  }
+
+  async signData(data: string) {
+    const privateKeyHex = dag4.account.keyTrio.privateKey;
+    const signature = await dag4.keyStore.dataSign(privateKeyHex, data);
+
+    return signature;
   }
 
   getAssetByType(type: AssetType) {
@@ -295,8 +302,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
   }
 
   private checkArguments(args: { type: string; value: any; name: string }[]) {
-    if (!!args.length) {
-      for (let arg of args) {
+    if (args.length) {
+      for (const arg of args) {
         if (!arg.value) {
           throw new Error(`Argument "${arg.name}" is required`);
         }
@@ -409,6 +416,72 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
     if (request.method === AvailableMethods.dag_getBalance) {
       return this.getBalance();
+    }
+
+    if (request.method === AvailableMethods.dag_signData) {
+      if (!activeWallet) {
+        throw new Error('There is no active wallet');
+      }
+
+      const assetAccount = activeWallet.accounts.find(
+        (account) => account.network === KeyringNetwork.Constellation
+      );
+
+      if (!assetAccount) {
+        throw new Error('No active account for the request asset type');
+      }
+
+      const [address, dataEncoded] = request.params as [string, string];
+
+      if (typeof dataEncoded !== 'string') {
+        throw new Error("Bad argument 'dataEncoded' -> must be a string");
+      }
+
+      if (typeof address !== 'string') {
+        throw new Error("Bad argument 'address' -> must be a string");
+      }
+
+      if (!dag4.account.validateDagAddress(address)) {
+        throw new Error("Bad argument 'address'");
+      }
+
+      if (assetAccount.address !== address) {
+        throw new Error('The active account is not the requested');
+      }
+
+      const chainLabel =
+        this.getChainId() === 1 ? 'Constellation' : 'Constellation Testnet 2.0';
+
+      const signatureData = {
+        origin: dappProvider.origin,
+        dataEncoded,
+        walletId: activeWallet.id,
+        walletLabel: activeWallet.label,
+        deviceId,
+        bipIndex,
+        chainLabel,
+      };
+
+      const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'dataSigned',
+        undefined,
+        'signData',
+        signatureData,
+        windowType,
+        windowUrl,
+        windowSize
+      );
+
+      if (signatureEvent === null) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      if (!signatureEvent.detail.result) {
+        throw new EIPRpcError('User Rejected Request', 4001);
+      }
+
+      return signatureEvent.detail.signature.hex;
     }
 
     if (request.method === AvailableMethods.dag_signMessage) {
@@ -607,7 +680,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'hash' -> not a string");
       }
 
-      if (!ethers.utils.isHexString('0x' + hash, 32)) {
+      if (!ethers.utils.isHexString(`0x${hash}`, 32)) {
         throw new Error("Bad argument 'hash' -> invalid 32 byte hex value");
       }
 
@@ -626,7 +699,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'hash' -> not a string");
       }
 
-      if (!ethers.utils.isHexString('0x' + hash, 32)) {
+      if (!ethers.utils.isHexString(`0x${hash}`, 32)) {
         throw new Error("Bad argument 'hash' -> invalid 32 byte hex value");
       }
 
@@ -757,7 +830,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'hash' -> not a string");
       }
 
-      if (!ethers.utils.isHexString('0x' + txHash, 32)) {
+      if (!ethers.utils.isHexString(`0x${txHash}`, 32)) {
         throw new Error("Bad argument 'hash' -> invalid 32 byte hex value");
       }
 
@@ -769,7 +842,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
             txMetagraphAddress,
             txHash
           );
-        return !!response?.data ? response.data : null;
+        return response?.data ? response.data : null;
       } catch (e) {
         console.error('dag_getMetagraphTransaction:', e);
         return null;
@@ -798,7 +871,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new Error("Bad argument 'hash' -> not a string");
       }
 
-      if (!ethers.utils.isHexString('0x' + txHash, 32)) {
+      if (!ethers.utils.isHexString(`0x${txHash}`, 32)) {
         throw new Error("Bad argument 'hash' -> invalid 32 byte hex value");
       }
 
@@ -811,7 +884,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       const { address, l0endpoint, l1endpoint } = metagraphTokenInfo;
-      const beUrl = DAG_NETWORK[vault.activeNetwork.Constellation].config.beUrl;
+      const { beUrl } = DAG_NETWORK[vault.activeNetwork.Constellation].config;
       const metagraphClient = dag4.account.createMetagraphTokenClient({
         id: address,
         metagraphId: address,
