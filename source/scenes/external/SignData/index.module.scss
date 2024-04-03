@@ -6,7 +6,7 @@
   width: 100%;
   justify-content: flex-start;
   align-items: center;
-  background-color: #f9f9fb;
+  background-color: $gray-light-300;
   padding: 24px;
   overflow: auto;
 
@@ -17,14 +17,14 @@
 
     .logoContainer {
       .logo {
-        height: 56px;
-        width: 56px;
-        border-radius: 28px;
+        height: 48px;
+        width: 48px;
+        border-radius: 24px;
       }
     }
 
     .siteContainer {
-      margin-top: 8px;
+      margin-top: 12px;
 
       .site {
         color: rgba(0, 0, 0, 0.66);
@@ -33,7 +33,7 @@
 
     .titleContainer {
       margin-top: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
 
       .title {
         color: rgba(0, 0, 0, 0.92);
@@ -49,8 +49,8 @@
     flex-grow: 1;
 
     .infoContainer {
-      .network {
-        margin-top: 4px;
+      .wallet {
+        margin-top: 8px;
       }
 
       .infoItem {
@@ -67,7 +67,8 @@
     .txData {
       flex-direction: column;
       margin-top: 12px;
-      height: 177px;
+      margin-bottom: 12px;
+      height: 307px;
       overflow: auto;
 
       .messageContainer {
@@ -85,7 +86,8 @@
   .box {
     border: 1px solid rgba(0, 0, 0, 0.16);
     border-radius: 8px;
-    padding: 14px 16px;
+    padding: 12px 16px;
+    background-color: $white;
   }
 
   .footer {
@@ -95,13 +97,13 @@
     align-items: center;
 
     .note {
-      margin-top: 12px;
+      margin-top: 24px;
     }
 
     .buttons {
       display: flex;
       flex-direction: row;
-      margin-top: 16px;
+      margin-top: 32px;
 
       .secondary {
         min-width: 145px;

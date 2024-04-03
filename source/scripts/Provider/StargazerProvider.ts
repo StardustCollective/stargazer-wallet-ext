@@ -470,7 +470,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         signatureData,
         windowType,
         windowUrl,
-        windowSize
+        { width: 372, height: 812 }
       );
 
       if (signatureEvent === null) {

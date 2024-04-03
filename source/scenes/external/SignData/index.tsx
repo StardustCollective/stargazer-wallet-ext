@@ -91,18 +91,18 @@ const SignData = () => {
         <div className={clsx(styles.infoContainer, styles.box)}>
           <div className={styles.infoItem}>
             <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-              Wallet:
-            </TextV3.CaptionStrong>
-            <TextV3.CaptionRegular extraStyles={styles.value}>
-              {walletLabel}
-            </TextV3.CaptionRegular>
-          </div>
-          <div className={clsx(styles.infoItem, styles.network)}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
               Network:
             </TextV3.CaptionStrong>
             <TextV3.CaptionRegular extraStyles={styles.value}>
               {chainLabel}
+            </TextV3.CaptionRegular>
+          </div>
+          <div className={clsx(styles.infoItem, styles.wallet)}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+              Wallet:
+            </TextV3.CaptionStrong>
+            <TextV3.CaptionRegular extraStyles={styles.value}>
+              {walletLabel}
             </TextV3.CaptionRegular>
           </div>
         </div>
@@ -115,6 +115,17 @@ const SignData = () => {
           <div className={styles.messageContainer}>
             <TextV3.CaptionRegular extraStyles={styles.message}>
               {message}
+            </TextV3.CaptionRegular>
+          </div>
+        </div>
+        <div className={clsx(styles.infoContainer, styles.box)}>
+          <div className={styles.infoItem}>
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>Fee:</TextV3.CaptionStrong>
+            <TextV3.CaptionRegular color={COLORS_ENUMS.BLACK}>
+              0 DAG {` `}
+              <TextV3.CaptionRegular extraStyles={styles.value}>
+                ≈ $0.00 USD
+              </TextV3.CaptionRegular>
             </TextV3.CaptionRegular>
           </div>
         </div>
