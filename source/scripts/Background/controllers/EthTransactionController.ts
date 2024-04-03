@@ -75,7 +75,9 @@ export class EthTransactionController implements IEthTransactionController {
     if (pendingData[txHash]) {
       delete pendingData[txHash];
       await localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
-      await getAccountController().getLatestTxUpdate();
+      // Wait for 20 seconds before fetching transactions
+      await new Promise((resolve) => setTimeout(resolve, 20000));
+      await getAccountController().getLatestTxUpdate(false);
     }
   }
 

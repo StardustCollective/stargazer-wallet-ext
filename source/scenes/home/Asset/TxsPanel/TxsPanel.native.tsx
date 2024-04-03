@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { View, ScrollView } from 'react-native';
 import { Transaction } from 'state/vault/types';
+import LoadingTxItem from '../LoadingTxItem';
 import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import TextV3 from 'components/TextV3';
 import styles from './styles';
@@ -10,9 +11,11 @@ const TxsPanel: FC<ITxPanelSettings> = ({
   transactions,
   renderTxItem,
   transactionDescription,
+  loading,
 }) => {
-  const showTransactions = !!transactions?.length;
-  const showEmptyList = !transactions?.length;
+  const showLoadingList = loading;
+  const showTransactions = !showLoadingList && !!transactions?.length;
+  const showEmptyList = !showLoadingList && !transactions?.length;
 
   return (
     <ScrollView
@@ -31,6 +34,13 @@ const TxsPanel: FC<ITxPanelSettings> = ({
               {transactionDescription}
             </TextV3.BodyStrong>
           </View>
+        )}
+        {showLoadingList && (
+          <>
+            <LoadingTxItem />
+            <LoadingTxItem />
+            <LoadingTxItem />
+          </>
         )}
       </View>
     </ScrollView>

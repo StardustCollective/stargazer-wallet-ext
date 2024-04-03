@@ -1,0 +1,50 @@
+@import '~assets/styles/variables';
+
+.txItem {
+  display: flex;
+  background-color: $white;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+
+  .groupBar {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    background: $grey-50;
+    color: $black;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-top-color: $grey-100;
+    border-bottom-color: $grey-100;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: row;
+    margin: 16px;
+
+    .txIcon {
+      display: flex;
+      align-items: center;
+    }
+
+    .txInfo {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .txAmount {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      text-align: right;
+      align-items: flex-end;
+      justify-content: center;
+    }
+  }
+}

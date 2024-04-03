@@ -1,7 +1,10 @@
 import { dag4 } from '@stardust-collective/dag4';
+import {
+  MetagraphTokenNetwork,
+  GlobalDagNetwork,
+} from '@stardust-collective/dag4-network';
 import { BigNumber, ethers } from 'ethers';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-
 import store from 'state/store';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import {
@@ -12,6 +15,7 @@ import {
   updateActiveWalletLabel,
   updateWalletLabel,
   updateRewards,
+  setLoadingTransactions,
 } from 'state/vault';
 
 import IVaultState, {
@@ -304,12 +308,16 @@ export class AccountController {
     return response?.data ?? [];
   }
 
-  async getLatestTxUpdate(): Promise<void> {
+  async getLatestTxUpdate(showLoading = true): Promise<void> {
     const state = store.getState();
     const { activeAsset, activeNetwork }: IVaultState = state.vault;
     const { assets } = state;
 
     if (!activeAsset) return;
+
+    if (showLoading) {
+      store.dispatch(setLoadingTransactions(true));
+    }
 
     if (
       activeAsset.type === AssetType.Constellation ||
@@ -377,6 +385,7 @@ export class AccountController {
 
       store.dispatch(updateTransactions({ txs: txs.transactions }));
     }
+    store.dispatch(setLoadingTransactions(false));
   }
 
   updateWalletLabel(wallet: KeyringWalletState, label: string): void {
@@ -465,6 +474,56 @@ export class AccountController {
     tx = null;
   }
 
+  async waitForDagTransaction(
+    txHash: string,
+    oldTransactions: any[],
+    networkInstance: MetagraphTokenNetwork | GlobalDagNetwork
+  ): Promise<void> {
+    const ATTEMPTS = 4;
+    const WAITING_TIME = 20000; // 20 seconds
+
+    let pendingTx = await networkInstance.getPendingTransaction(txHash);
+
+    while (pendingTx !== null) {
+      // Wait for 5 seconds before the next check
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      pendingTx = await networkInstance.getPendingTransaction(txHash);
+    }
+
+    if (pendingTx === null) {
+      let confirmed = false;
+
+      // Attempt to confirm the transaction up to 4 times
+      for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+        const confirmedTx = await networkInstance.getTransaction(txHash);
+
+        if (confirmedTx) {
+          // transaction confirmed, add tx, update store and break the loop.
+          store.dispatch(
+            updateTransactions({
+              txs: [confirmedTx, ...oldTransactions],
+            })
+          );
+          confirmed = true;
+          return; // Exit the function after successful confirmation
+        } else if (attempt < ATTEMPTS) {
+          // If the transaction isn't confirmed and it's not the last attempt, wait for 20 seconds
+          await new Promise((resolve) => setTimeout(resolve, WAITING_TIME));
+        }
+      }
+
+      if (!confirmed) {
+        // transaction not confirmed, remove pending tx and update store.
+        store.dispatch(
+          updateTransactions({
+            txs: [...oldTransactions],
+          })
+        );
+      }
+    }
+  }
+
   async confirmTempTx(): Promise<string> {
     if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
@@ -487,11 +546,12 @@ export class AccountController {
       const assetInfo = assets[activeAsset?.id];
       const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
       let pendingTx = null;
+      let metagraphClient;
 
       if (isL0token) {
         const { beUrl } = DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config;
 
-        const metagraphClient = dag4.account.createMetagraphTokenClient({
+        metagraphClient = dag4.account.createMetagraphTokenClient({
           metagraphId: assetInfo.address,
           id: assetInfo.address,
           l0Url: assetInfo.l0endpoint,
@@ -521,6 +581,9 @@ export class AccountController {
         })
       );
       trxHash = tx.hash;
+
+      const clientInstance = isL0token ? metagraphClient.networkInstance : dag4.network;
+      this.waitForDagTransaction(trxHash, activeAsset.transactions, clientInstance);
     } else {
       if (!this.tempTx.ethConfig) {
         throw new Error('No tempTx.ethConfig present');
