@@ -53,6 +53,9 @@ export const LATTICE_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ltx.png';
 export const VE_LTX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/veltx.png';
+export const DODI_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png';
+export const LEET_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/leet.png';
 export const ALKIMI_LOGO =
   'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
 export const JENNYCO_LOGO =
