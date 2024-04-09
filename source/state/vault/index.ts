@@ -217,6 +217,9 @@ const VaultState = createSlice({
     updateActiveWalletLabel(state: IVaultState, action: PayloadAction<string>) {
       state.activeWallet.label = action.payload;
     },
+    setLoadingTransactions(state: IVaultState, action: PayloadAction<boolean>) {
+      state.activeAsset.loading = action.payload;
+    },
     updateTransactions(
       state: IVaultState,
       action: PayloadAction<{ txs: Transaction[] }>
@@ -297,6 +300,7 @@ export const {
   updateWalletLabel,
   updateActiveWalletLabel,
   updateTransactions,
+  setLoadingTransactions,
   updateRewards,
   updateBalances,
   // updateLabel,

@@ -18,9 +18,10 @@ const RenderIcon: FC<RenderIconProps> = ({ isETH, tx, isReceived, isRewardsTab }
         <img src={`/${TxSentIcon}`} alt="Sent icon" />
       )
     ) : (
-      <Spinner size={16} className={styles.spinner} />
+      <Spinner size={20} />
     );
   }
+
   return !tx.assetId ? (
     isReceived ? (
       <img src={`/${TxReceivedIcon}`} alt="Received icon" />
@@ -28,7 +29,7 @@ const RenderIcon: FC<RenderIconProps> = ({ isETH, tx, isReceived, isRewardsTab }
       <img src={`/${TxSentIcon}`} alt="Sent icon" />
     )
   ) : (
-    <Spinner size={16} className={styles.spinner} />
+    <Spinner size={20} />
   );
 };
 
@@ -50,6 +51,9 @@ const TxItem: FC<ITxItemSettings> = ({
   renderGasSettings,
 }) => {
   const sign = isReceived ? '+' : '-';
+  const showSmallLogo = !isETH
+    ? !!tx?.checkpointBlock || !!tx?.blockHash || isRewardsTab
+    : !tx?.assetId;
 
   const handleOnClick = () => {
     if (!getLinkUrl) {
@@ -105,9 +109,11 @@ const TxItem: FC<ITxItemSettings> = ({
               isRewardsTab={isRewardsTab}
               tx={tx}
             />
-            <div className={styles.logoContainer}>
-              <img src={logo} alt="asset logo" className={styles.logo} />
-            </div>
+            {showSmallLogo && (
+              <div className={styles.logoContainer}>
+                <img src={logo} alt="asset logo" className={styles.logo} />
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.txInfo}>
