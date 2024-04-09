@@ -13,4 +13,5 @@ export default interface ITxPanelSettings {
   transactions: Transaction[];
   renderTxItem: (transaction: Transaction, index: number) => JSX.Element;
   transactionDescription: string;
+  loading: boolean;
 }
