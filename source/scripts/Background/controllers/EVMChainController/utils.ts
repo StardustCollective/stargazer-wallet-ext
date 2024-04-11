@@ -37,6 +37,7 @@ export const getNetworkLogo = (network: string) => {
     case 'both':
     case 'mainnet':
     case 'goerli':
+    case 'sepolia':
       return ETHEREUM_LOGO;
     case 'avalanche-mainnet':
     case 'avalanche-testnet':
@@ -97,6 +98,8 @@ export const getNetworkLabel = (network: string): string => {
       return 'Ethereum';
     case 'goerli':
       return 'Goerli';
+    case 'sepolia':
+      return 'Sepolia';
     case 'avalanche-mainnet':
       return 'Avalanche';
     case 'avalanche-testnet':
@@ -148,6 +151,7 @@ export const getPriceId = (network: string): string => {
   switch (network) {
     case 'mainnet':
     case 'goerli':
+    case 'sepolia':
       return 'ethereum';
     case 'matic':
     case 'maticmum':

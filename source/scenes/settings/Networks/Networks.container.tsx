@@ -65,6 +65,7 @@ const NetworksContainer: FC = () => {
     const items = [
       { value: ETH_NETWORK.mainnet.id as string, label: ETH_NETWORK.mainnet.label },
       { value: ETH_NETWORK.goerli.id as string, label: ETH_NETWORK.goerli.label },
+      { value: ETH_NETWORK.sepolia.id as string, label: ETH_NETWORK.sepolia.label },
     ];
     const ethObjects = Object.keys(ethChains);
     if (ethObjects.length) {

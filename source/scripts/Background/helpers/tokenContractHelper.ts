@@ -16,6 +16,7 @@ type AddressBalanceMap = {
 const NETWORK_TO_CONTRACT_MAP = {
   1: '0xb1f8e55c7f64d203c1400b9d8555d050f94adf39', // ETH mainnet
   5: '0x9788C4E93f9002a7ad8e72633b11E8d1ecd51f9b', // ETH goerli
+  11155111: '0x8ec67c7de63d595eb5f912b39c30d70265915600', // ETH sepolia (this contract was deployed by us)
   137: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // Polygon mainnet
   80001: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // Polygon testnet
   56: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // BSC mainnet
