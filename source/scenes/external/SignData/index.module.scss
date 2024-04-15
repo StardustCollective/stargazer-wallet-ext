@@ -1,0 +1,121 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: $gray-light-300;
+  padding: 24px;
+  overflow: auto;
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .logoContainer {
+      .logo {
+        height: 48px;
+        width: 48px;
+        border-radius: 24px;
+      }
+    }
+
+    .siteContainer {
+      margin-top: 12px;
+
+      .site {
+        color: rgba(0, 0, 0, 0.66);
+      }
+    }
+
+    .titleContainer {
+      margin-top: 16px;
+      margin-bottom: 20px;
+
+      .title {
+        color: rgba(0, 0, 0, 0.92);
+        font-weight: 600;
+      }
+    }
+  }
+
+  .content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .infoContainer {
+      .wallet {
+        margin-top: 8px;
+      }
+
+      .infoItem {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .value {
+          color: rgba(0, 0, 0, 0.66);
+        }
+      }
+    }
+
+    .txData {
+      flex-direction: column;
+      margin-top: 12px;
+      margin-bottom: 12px;
+      height: 307px;
+      overflow: auto;
+
+      .messageContainer {
+        margin-top: 4px;
+      }
+
+      .message {
+        color: rgba(0, 0, 0, 0.66);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+  }
+
+  .box {
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    border-radius: 8px;
+    padding: 12px 16px;
+    background-color: $white;
+  }
+
+  .footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .note {
+      margin-top: 24px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      margin-top: 32px;
+
+      .secondary {
+        min-width: 145px;
+      }
+
+      :first-child {
+        margin-right: 8px;
+      }
+
+      :last-child {
+        margin-left: 8px;
+      }
+    }
+  }
+}

@@ -41,6 +41,7 @@ enum AvailableMethods {
   dag_accounts = 'dag_accounts',
   dag_getBalance = 'dag_getBalance',
   dag_signMessage = 'dag_signMessage',
+  dag_signData = 'dag_signData',
   dag_getPublicKey = 'dag_getPublicKey',
   dag_sendTransaction = 'dag_sendTransaction',
   dag_getPendingTransaction = 'dag_getPendingTransaction',
