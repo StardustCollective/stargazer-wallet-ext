@@ -29,6 +29,12 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_signData,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_getPublicKey,
     proxied: false,
     permissions: [],
