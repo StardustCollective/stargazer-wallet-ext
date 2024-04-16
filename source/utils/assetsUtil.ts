@@ -51,9 +51,8 @@ export const CHAIN_WALLET_ASSET = {
 
 export const OPENSEA_ASSET_MAP: { [chain: string]: IAssetInfoState } = {
   [OpenSeaSupportedChains.ETHEREUM]: ETH_FULL_ASSET,
-  [OpenSeaSupportedChains.GOERLI]: ETH_FULL_ASSET,
+  [OpenSeaSupportedChains.SEPOLIA]: ETH_FULL_ASSET,
   [OpenSeaSupportedChains.POLYGON]: MATIC_FULL_ASSET,
-  [OpenSeaSupportedChains.POLYGON_MUMBAI]: MATIC_FULL_ASSET,
   [OpenSeaSupportedChains.AVALANCHE]: AVAX_FULL_ASSET,
   [OpenSeaSupportedChains.AVALANCHE_FUJI]: AVAX_FULL_ASSET,
   [OpenSeaSupportedChains.BSC]: BNB_FULL_ASSET,

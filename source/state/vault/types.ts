@@ -84,6 +84,7 @@ export interface IAssetState {
 export interface IActiveAssetState extends IAssetState {
   transactions: Transaction[];
   rewards: Reward[];
+  loading?: boolean;
 }
 
 export type AssetBalances = {

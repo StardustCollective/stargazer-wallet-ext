@@ -5,12 +5,13 @@ import { useSelector } from 'react-redux';
 import { DAG_NETWORK } from 'constants/index';
 import { RootState } from 'state/store';
 import IVaultState, { AssetType, Reward, Transaction } from 'state/vault/types';
-import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
+import { formatNumber, formatStringDecimal, getAddressURL } from 'scenes/home/helpers';
 import IAssetListState from 'state/assets/types';
 import { getAccountController } from 'utils/controllersUtils';
 import TxsPanel from './TxsPanel';
 import TxItem from '../TxItem';
 import { ITxsPanel } from './types';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
   const getFiatAmount = useFiat();
@@ -23,6 +24,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
   const isL0token = !!assets[activeAsset?.id]?.l0endpoint;
   const address = activeAsset?.address;
   const isRewardsTab = route === 'rewards';
+  const loading = activeAsset.loading;
 
   useFocusEffect(
     useCallback(() => {
@@ -152,6 +154,15 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
     );
   };
 
+  const getRewardLink = (_?: any) => {
+    return getAddressURL(
+      activeAsset?.address,
+      activeAsset?.contractAddress,
+      activeAsset?.type,
+      activeNetwork[KeyringNetwork.Constellation]
+    );
+  };
+
   const renderRewardItem = (tx: Reward, idx: number) => {
     const amount = tx.amount / 1e8;
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
@@ -160,7 +171,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
     return (
       <TxItem
         key={idx}
-        getLinkUrl={null}
+        getLinkUrl={getRewardLink}
         tx={tx}
         isETH={isETH}
         isSelf={false}
@@ -177,8 +188,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
     );
   };
 
-  const TRANSACTION_DESCRIPTION =
-    'You have no transaction history.\nSend or receive tokens to get started.';
+  const TRANSACTION_DESCRIPTION = 'You don’t have any transactions for this token yet!';
   const REWARDS_DESCRIPTION = 'No rewards earned';
   const renderItem = isRewardsTab ? renderRewardItem : renderTxItem;
   const description = isRewardsTab ? REWARDS_DESCRIPTION : TRANSACTION_DESCRIPTION;
@@ -188,6 +198,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
       transactions={transactions}
       renderTxItem={renderItem}
       transactionDescription={description}
+      loading={loading}
     />
   );
 };

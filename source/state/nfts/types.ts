@@ -19,8 +19,7 @@ export enum OpenSeaSupportedChains {
   AVALANCHE = 'avalanche',
   BSC = 'bsc',
   // Testnets
-  GOERLI = 'goerli',
-  POLYGON_MUMBAI = 'mumbai',
+  SEPOLIA = 'sepolia',
   AVALANCHE_FUJI = 'avalanche_fuji',
   BSC_TESTNET = 'bsctestnet',
 }

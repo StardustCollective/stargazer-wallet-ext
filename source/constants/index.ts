@@ -17,6 +17,7 @@ import {
   STARGAZER_PROVIDERS_BASE_URL_PROD,
   QUICKNODE_ETHEREUM_MAINNET,
   QUICKNODE_ETHEREUM_GOERLI,
+  QUICKNODE_ETHEREUM_SEPOLIA,
   QUICKNODE_AVALANCHE_MAINNET,
   QUICKNODE_AVALANCHE_TESTNET,
   QUICKNODE_BSC_MAINNET,
@@ -53,6 +54,9 @@ export const LATTICE_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ltx.png';
 export const VE_LTX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/veltx.png';
+export const DODI_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/dodi-logo.png';
+export const LEET_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/leet.png';
 export const ALKIMI_LOGO =
   'https://assets.coingecko.com/coins/images/17979/small/alkimi.PNG';
 export const JENNYCO_LOGO =
@@ -173,6 +177,21 @@ export const ETH_NETWORK: {
     explorerAPI: 'https://api-goerli.etherscan.io',
     chainId: 5,
     hexChainId: '0x5',
+    nativeToken: 'ETH',
+    mainnet: 'mainnet',
+    network: 'Ethereum',
+    networkId: StargazerChain.ETHEREUM,
+    logo: ETHEREUM_LOGO,
+  },
+  sepolia: {
+    id: 'sepolia',
+    value: 'sepolia',
+    label: 'Sepolia',
+    rpcEndpoint: QUICKNODE_ETHEREUM_SEPOLIA,
+    explorer: 'https://sepolia.etherscan.io/',
+    explorerAPI: 'https://api-sepolia.etherscan.io',
+    chainId: 11155111,
+    hexChainId: '0xaa36a7',
     nativeToken: 'ETH',
     mainnet: 'mainnet',
     network: 'Ethereum',
@@ -340,6 +359,7 @@ export const ALL_TESTNETS_CHAINS = [
   DAG_NETWORK.test2,
   DAG_NETWORK.integration2,
   ETH_NETWORK.goerli,
+  ETH_NETWORK.sepolia,
   AVALANCHE_NETWORK['avalanche-testnet'],
   BSC_NETWORK['bsc-testnet'],
   POLYGON_NETWORK.maticmum,
@@ -357,6 +377,7 @@ export const ALL_EVM_CHAINS = {
 export const SUPPORTED_HEX_CHAINS = [
   '0x1',
   '0x5',
+  '0xaa36a7',
   '0xa86a',
   '0xa869',
   '0x89',

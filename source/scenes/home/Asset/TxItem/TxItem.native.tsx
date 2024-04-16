@@ -17,14 +17,14 @@ const RenderIcon: FC<RenderIconProps> = ({ tx, isETH, isReceived, isRewardsTab }
     if (checkpointBlock || blockHash || isRewardsTab) {
       return isReceived ? <TxReceivedIcon /> : <TxSentIcon />;
     }
-    return <Progress.Circle size={16} indeterminate />;
+    return <Progress.Circle size={20} indeterminate />;
   }
 
   if (!assetId) {
     return isReceived ? <TxReceivedIcon /> : <TxSentIcon />;
   }
 
-  return <Progress.Circle size={16} indeterminate />;
+  return <Progress.Circle size={20} indeterminate />;
 };
 
 const TxItem: FC<ITxItemSettings> = ({
@@ -45,6 +45,9 @@ const TxItem: FC<ITxItemSettings> = ({
   logo,
 }) => {
   const sign = isReceived ? '+' : '-';
+  const showSmallLogo = !isETH
+    ? !!tx?.checkpointBlock || !!tx?.blockHash || isRewardsTab
+    : !tx?.assetId;
 
   const handleOnPress = (e) => {
     e.stopPropagation();
@@ -81,7 +84,7 @@ const TxItem: FC<ITxItemSettings> = ({
   };
 
   return (
-    <TouchableOpacity disabled={isRewardsTab} onPress={handleOnPress}>
+    <TouchableOpacity onPress={handleOnPress}>
       <View style={styles.txItem}>
         {showGroupBar && (
           <View style={styles.groupBar}>
@@ -99,9 +102,11 @@ const TxItem: FC<ITxItemSettings> = ({
                 isReceived={isReceived}
                 isRewardsTab={isRewardsTab}
               />
-              <View style={styles.logoContainer}>
-                <Image source={{ uri: logo }} style={styles.logo} />
-              </View>
+              {showSmallLogo && (
+                <View style={styles.logoContainer}>
+                  <Image source={{ uri: logo }} style={styles.logo} />
+                </View>
+              )}
             </View>
             <View style={styles.txInfoWrapper}>
               <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
