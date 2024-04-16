@@ -352,12 +352,15 @@ class NFTController implements INFTController {
       // Fetch NFTs for each active chain
       await Promise.all(
         openSeaChains.map(async (openSeaChain) => {
-          const nftsResponse = await this.fetchNftsByChain(ethAddress, openSeaChain);
-          const chainNfts = {
-            chain: openSeaChain,
-            items: nftsResponse,
-          };
-          allNfts.push(chainNfts);
+          // OpenSea API removed support for BSC and Polygon testnets.
+          if (openSeaChain) {
+            const nftsResponse = await this.fetchNftsByChain(ethAddress, openSeaChain);
+            const chainNfts = {
+              chain: openSeaChain,
+              items: nftsResponse,
+            };
+            allNfts.push(chainNfts);
+          }
         })
       );
 

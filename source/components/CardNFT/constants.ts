@@ -9,9 +9,8 @@ export const ICON_SIZE = 16;
 
 export const OPENSEA_LOGOS_MAP: { [chain: string]: string } = {
   [OpenSeaSupportedChains.ETHEREUM]: EthLogo,
-  [OpenSeaSupportedChains.GOERLI]: EthLogo,
+  [OpenSeaSupportedChains.SEPOLIA]: EthLogo,
   [OpenSeaSupportedChains.POLYGON]: PolygonLogo,
-  [OpenSeaSupportedChains.POLYGON_MUMBAI]: PolygonLogo,
   [OpenSeaSupportedChains.AVALANCHE]: AvaxLogo,
   [OpenSeaSupportedChains.AVALANCHE_FUJI]: AvaxLogo,
   [OpenSeaSupportedChains.BSC]: BscLogo,
