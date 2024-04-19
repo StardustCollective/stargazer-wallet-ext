@@ -263,6 +263,7 @@ const LedgerPage = () => {
     // TODO: test Manifest V3 (window object not available)
     // const background = await chrome.runtime.getBackgroundPage();
     // background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any);
+    console.log(selectedAccounts);
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     LedgerBridgeUtil.closeConnection();

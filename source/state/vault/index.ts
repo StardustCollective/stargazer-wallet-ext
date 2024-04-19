@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-
+import localStorage from 'utils/localStorage';
 import {
   AVALANCHE_NETWORK,
   BSC_NETWORK,

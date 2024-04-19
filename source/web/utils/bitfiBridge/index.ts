@@ -2,6 +2,7 @@ import { BitfiDump, BitfiV2, DagLastTxRef, TransferType } from '@bitfi/bitfi.js'
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
 import { dag4 } from '@stardust-collective/dag4';
 import { DAG_NETWORK } from 'constants/index';
+import localStorage from 'utils/localStorage';
 import store from 'state/store';
 
 const SESSION_KEY = 'bitfi_session';
@@ -140,9 +141,9 @@ class BitfiBridgeUtil {
     this.bitfiBridge = null;
   };
 
-  public logOut = () => {
+  public logOut = async () => {
     this.bitfiBridge = null;
-    localStorage.removeItem(SESSION_KEY);
+    await localStorage.removeItem(SESSION_KEY);
   };
 
   private async _signin(
@@ -170,7 +171,7 @@ class BitfiBridgeUtil {
 
       const dump = await this.bitfiBridge.serialize();
       delete dump.deviceId;
-      localStorage.setItem(SESSION_KEY, JSON.stringify(dump));
+      await localStorage.setItem(SESSION_KEY, JSON.stringify(dump));
     } catch (exc) {
       this.bitfiBridge = null;
       throw exc;
@@ -182,7 +183,7 @@ class BitfiBridgeUtil {
     onMessage?: (mes: string) => void,
     onCodeGenerated?: (mes: string) => void
   ) => {
-    const session = localStorage.getItem(SESSION_KEY);
+    const session = await localStorage.getItem(SESSION_KEY);
 
     if (session) {
       const dump = {
@@ -191,7 +192,7 @@ class BitfiBridgeUtil {
       } as BitfiDump;
 
       if (!dump.code || !dump.eckey || !dump.sharedSecretHash) {
-        localStorage.removeItem(SESSION_KEY);
+        await localStorage.removeItem(SESSION_KEY);
         throw new Error('Invalid session format');
       }
 

@@ -5,6 +5,7 @@ import IVaultState from 'state/vault/types';
 import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from '../../../state/assets/types';
 import { AccountController } from './AccountController';
+import localStorage from 'utils/localStorage';
 
 export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => Promise<boolean>;
