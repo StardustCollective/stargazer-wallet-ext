@@ -4,7 +4,6 @@ import {
   getDefaultMiddleware,
   Middleware,
 } from '@reduxjs/toolkit';
-import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 import { dag4 } from '@stardust-collective/dag4';
 import throttle from 'lodash/throttle';
@@ -26,14 +25,11 @@ import biometrics from './biometrics';
 
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
+import localStorage from 'utils/localStorage';
 
 const middleware: Middleware[] = [
   ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
 ];
-
-if (!isProd) {
-  middleware.push(logger);
-}
 
 middleware.push(thunk);
 
@@ -87,9 +83,9 @@ if (isNative) {
     // DAG Config
     const vault = store.getState().vault;
     const networkId = vault && vault.activeNetwork && vault.activeNetwork.Constellation;
-    const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main;
+    const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main2;
 
-    dag4.di.registerStorageClient(localStorage);
+    dag4.di.useLocalStorageClient(localStorage);
     dag4.di.getStateStorageDb().setPrefix('stargazer-');
 
     dag4.account.connect(
@@ -101,14 +97,6 @@ if (isNative) {
       false
     );
   });
-} else {
-  rehydrateStore(store);
-  store.subscribe(
-    throttle(() => {
-      // every second we update store state
-      updateState();
-    }, 1000)
-  );
 }
 
 export type RootState = ReturnType<typeof store.getState>;
