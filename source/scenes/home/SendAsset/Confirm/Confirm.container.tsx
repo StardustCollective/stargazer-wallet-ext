@@ -200,10 +200,10 @@ const ConfirmContainer = () => {
     }
   };
 
-  const handleConfirm = async (browser: any = null) => {
+  const handleConfirm = async (chrome: any = null) => {
     setDisabled(true);
 
-    const background = isNative ? undefined : await browser?.runtime?.getBackgroundPage();
+    const background = isNative ? undefined : await chrome?.runtime?.getBackgroundPage();
     const NON_WINDOW_ID = 'non-window-id';
     const windowId = queryString?.parse(window?.location?.search)?.windowId;
 

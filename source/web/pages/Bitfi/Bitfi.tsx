@@ -35,7 +35,6 @@ import MessageSigning from './views/messageSigning';
 
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
-import { browser } from 'webextension-polyfill-ts';
 import { dag4 } from '@stardust-collective/dag4';
 
 /////////////////////////
@@ -327,15 +326,16 @@ const LedgerPage = () => {
 
   const onImportClick = async () => {
     setFetchingPage(true);
-    const background = await browser.runtime.getBackgroundPage();
+    // TODO: test Manifest V3 (window object not available)
+    // const background = await chrome.runtime.getBackgroundPage();
 
     console.log('Selected Accounts: ');
     console.log(selectedAccounts);
 
-    background.controller.wallet.importHardwareWalletAccounts(
-      selectedAccounts as any,
-      deviceId as string
-    );
+    // background.controller.wallet.importHardwareWalletAccounts(
+    //   selectedAccounts as any,
+    //   deviceId as string
+    // );
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     BitfiBridgeUtil.closeConnection();
@@ -346,7 +346,7 @@ const LedgerPage = () => {
 
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
-    const background = await browser.runtime.getBackgroundPage();
+    const background = await chrome.runtime.getBackgroundPage();
 
     try {
       setWaitingForLedger(true);
@@ -381,7 +381,7 @@ const LedgerPage = () => {
   };
 
   const postTransactionResult = (hash: string) => {
-    let port = browser.runtime.connect(undefined, { name: 'stargazer' });
+    let port = chrome.runtime.connect(undefined, { name: 'stargazer' });
     port.postMessage({
       type: 'CAL_REQUEST',
       data: {

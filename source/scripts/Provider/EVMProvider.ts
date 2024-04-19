@@ -12,7 +12,6 @@ import {
   KeyringWalletAccountState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import { Runtime, Windows } from 'webextension-polyfill-ts';
 import { InputData as ContractInputData } from 'ethereum-input-data-decoder';
 
 import store from 'state/store';
@@ -40,7 +39,7 @@ import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
 // Constants
 const LEDGER_URL = '/ledger.html';
 const EXTERNAL_URL = '/external.html';
-const WINDOW_TYPES: Record<string, Windows.CreateType> = {
+const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
   popup: 'popup',
   normal: 'normal',
 };
@@ -234,7 +233,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
   async handleProxiedRequest(
     request: StargazerProxyRequest & { type: 'rpc' },
     _dappProvider: DappProvider,
-    _port: Runtime.Port
+    _port: chrome.runtime.Port
   ) {
     const { activeNetwork }: IVaultState = store.getState().vault;
     const networkLabel = this.getNetworkLabel();
@@ -248,7 +247,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
   async handleNonProxiedRequest(
     request: StargazerProxyRequest & { type: 'rpc' },
     dappProvider: DappProvider,
-    port: Runtime.Port
+    port: chrome.runtime.Port
   ) {
     const { vault } = store.getState();
 

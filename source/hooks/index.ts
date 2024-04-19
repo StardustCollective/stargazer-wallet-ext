@@ -1,10 +1,15 @@
 import { useHistory } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { browser } from 'webextension-polyfill-ts';
+import { MasterController } from 'scripts/Background/controllers';
+
+let controller: MasterController;
 
 // TODO: refactor this since it's not actually a hook
 export function useController() {
-  return browser.extension.getBackgroundPage().controller;
+  // TODO: test Manifest V3
+  if (controller) return controller;
+  controller = new MasterController();
+  return controller;
 }
 
 export function useSettingsView() {

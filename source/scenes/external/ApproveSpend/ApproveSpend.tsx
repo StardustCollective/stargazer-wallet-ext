@@ -5,7 +5,6 @@
 import React, { ChangeEvent, useEffect } from 'react';
 import queryString from 'query-string';
 import TextV3 from 'components/TextV3';
-import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
 import find from 'lodash/find';
 import { useSelector } from 'react-redux';
@@ -137,7 +136,7 @@ const ApproveSpend = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const background = await browser.runtime.getBackgroundPage();
+    const background = await chrome.runtime.getBackgroundPage();
     const { windowId } = queryString.parse(window.location.search);
     const cancelEvent = new CustomEvent('spendApproved', {
       detail: { windowId, approved: true, result: false },
@@ -148,7 +147,7 @@ const ApproveSpend = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    const background = await browser.runtime.getBackgroundPage();
+    const background = await chrome.runtime.getBackgroundPage();
     const { windowId } = queryString.parse(window.location.search);
 
     try {

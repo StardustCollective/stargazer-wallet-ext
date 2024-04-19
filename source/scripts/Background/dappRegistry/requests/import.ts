@@ -9,7 +9,8 @@ const handleImportRequest: DappProviderExternalImplementation<
   []
 > = async (_dappProvider, _port, request, _encodedRequest) => {
   if (request.provider === 'ledger') {
-    window.controller.wallet.importHardwareWalletAccounts(request.addresses);
+    // TODO: test Manifest V3 (window object not available)
+    // window.controller.wallet.importHardwareWalletAccounts(request.addresses);
   }
 
   return { type: 'import', result: true };

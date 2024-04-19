@@ -1,6 +1,6 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { Transaction } from '@stardust-collective/dag4-network';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+// import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import {
   KDFParamsPhrase,
   KDFParamsPrivateKey,
@@ -20,7 +20,9 @@ export class KeystoreToKeyringHelper {
     const rootKey = dag4.keyStore.getMasterKeyFromMnemonic(seedPhrase);
     const seedAccount = accounts['0'];
 
-    await window.controller.wallet.createWallet(seedAccount.label, seedPhrase, true);
+    // TODO: test Manifest V3 (window object not available)
+    // await window.controller.wallet.createWallet(seedAccount.label, seedPhrase, true);
+    console.log(seedAccount);
 
     const accountList = Object.values(accounts);
 
@@ -38,12 +40,14 @@ export class KeystoreToKeyringHelper {
           try {
             const pKey = dag4.keyStore.deriveAccountFromMaster(rootKey, index);
 
-            await window.controller.wallet.importSingleAccount(
-              label,
-              KeyringNetwork.Constellation,
-              pKey,
-              true
-            );
+            // TODO: test Manifest V3 (window object not available)
+            // await window.controller.wallet.importSingleAccount(
+            //   label,
+            //   KeyringNetwork.Constellation,
+            //   pKey,
+            //   true
+            // );
+            console.log(pKey);
           } catch (e) {
             console.log(
               'ERROR - Unable to migrate seed account - ',
@@ -66,12 +70,14 @@ export class KeystoreToKeyringHelper {
               password
             );
 
-            await window.controller.wallet.importSingleAccount(
-              label,
-              KeyringNetwork.Constellation,
-              pKey,
-              true
-            );
+            // TODO: test Manifest V3 (window object not available)
+            // await window.controller.wallet.importSingleAccount(
+            //   label,
+            //   KeyringNetwork.Constellation,
+            //   pKey,
+            //   true
+            // );
+            console.log(pKey);
           } catch (e) {
             console.log(
               'ERROR - Unable to migrate import account - ',

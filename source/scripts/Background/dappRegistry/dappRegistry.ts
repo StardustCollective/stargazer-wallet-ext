@@ -1,6 +1,5 @@
 import debugFn from 'debug';
 import { AvailableEvents, ProtocolProvider } from 'scripts/common';
-import { browser, Runtime } from 'webextension-polyfill-ts';
 
 import { DappProvider } from './dappProvider';
 
@@ -12,14 +11,14 @@ class DappRegistry {
   constructor() {
     this.#registeredDapps = new Map();
 
-    browser.runtime.onConnect.addListener(this.onPortConnected.bind(this));
+    chrome.runtime.onConnect.addListener(this.onPortConnected.bind(this));
   }
 
   get onlineOrigins() {
     return [...this.#registeredDapps.keys()];
   }
 
-  onPortConnected(port: Runtime.Port) {
+  onPortConnected(port: chrome.runtime.Port) {
     if (!port.name.startsWith('stargazer-provider-proxy:')) {
       // This port seems not to be a content provider proxy port
       return;
@@ -48,7 +47,7 @@ class DappRegistry {
     port.onDisconnect.addListener(() => this.onPortDisconnected(port, registeredDapp));
   }
 
-  onPortDisconnected(port: Runtime.Port, dapp: DappProvider) {
+  onPortDisconnected(port: chrome.runtime.Port, dapp: DappProvider) {
     dapp.deregisterProviderPort(port);
     debug('Port Provider Unregistered', 'portName:', port.name);
 

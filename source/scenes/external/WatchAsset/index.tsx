@@ -1,6 +1,5 @@
 import React from 'react';
 import queryString from 'query-string';
-import { browser } from 'webextension-polyfill-ts';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
@@ -46,7 +45,7 @@ const WatchAsset = () => {
   const origin = current && current.origin;
 
   const onNegativeButtonClick = async () => {
-    const background = await browser.runtime.getBackgroundPage();
+    const background = await chrome.runtime.getBackgroundPage();
 
     const { windowId } = queryString.parse(window.location.search);
 
@@ -59,7 +58,7 @@ const WatchAsset = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    const background = await browser.runtime.getBackgroundPage();
+    const background = await chrome.runtime.getBackgroundPage();
 
     const { windowId } = queryString.parse(window.location.search);
 

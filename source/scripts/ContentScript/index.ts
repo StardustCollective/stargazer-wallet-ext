@@ -1,12 +1,10 @@
-import { browser } from 'webextension-polyfill-ts';
-
 import { generateNamespaceId } from '../common';
-
 import { RequestsProxy } from './requestsProxy';
 
 const initInjectedScript = () => {
   const proxyId = generateNamespaceId('proxy');
-  const scriptSrc = browser.runtime.getURL('js/injectedScript.bundle.js');
+  // TODO: test Manifest V3
+  const scriptSrc = chrome.runtime.getURL('js/injectedScript.bundle.js');
 
   /* init requests proxy */
   const requestsProxy = new RequestsProxy(proxyId);

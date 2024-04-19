@@ -1,7 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
 import queryString from 'query-string';
-import { browser } from 'webextension-polyfill-ts';
 import { useController } from 'hooks/index';
 import styles from './index.module.scss';
 import TextV3 from 'components/TextV3';
@@ -44,7 +43,7 @@ const SignData = () => {
   }
 
   const onNegativeButtonClick = async () => {
-    const background = await browser.runtime.getBackgroundPage();
+    const background = await chrome.runtime.getBackgroundPage();
     const cancelEvent = new CustomEvent('dataSigned', {
       detail: { windowId, result: false },
     });
@@ -55,7 +54,7 @@ const SignData = () => {
 
   const onPositiveButtonClick = async () => {
     const signature = await controller.stargazerProvider.signData(dataEncoded);
-    const background = await browser.runtime.getBackgroundPage();
+    const background = await chrome.runtime.getBackgroundPage();
 
     const signatureEvent = new CustomEvent('dataSigned', {
       detail: {

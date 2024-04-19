@@ -2,7 +2,6 @@
 // Modules
 ///////////////////////////
 import React, { useEffect, useState } from 'react';
-import { browser } from 'webextension-polyfill-ts';
 import { useSelector } from 'react-redux';
 import queryString from 'query-string';
 import {
@@ -137,7 +136,7 @@ const SelectAccounts = () => {
         controller.dapp.fromUserConnectDApp(origin, current, network, accounts);
       }
 
-      const background = await browser.runtime.getBackgroundPage();
+      const background = await chrome.runtime.getBackgroundPage();
 
       const { windowId } = queryString.parse(window.location.search);
 

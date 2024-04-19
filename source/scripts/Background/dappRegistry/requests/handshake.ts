@@ -13,7 +13,10 @@ const handleHandshakeRequest: DappProviderExternalImplementation<
   'onHandshakeRequest',
   [(chainProviderData: ChainProviderData) => void]
 > = async (dappProvider, port, request, encodedRequest, setPortChainProviderData) => {
-  if (dappProvider.activated === true && window.controller.wallet.isUnlocked()) {
+  const isUnlocked = true;
+  // TODO: test Manifest V3 (window object not available)
+  // window.controller.wallet.isUnlocked()
+  if (dappProvider.activated === true && isUnlocked) {
     // This origin provider is already activated from store, add details for port provider
     setPortChainProviderData({
       chain: request.chain,

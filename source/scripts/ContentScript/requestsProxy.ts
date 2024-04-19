@@ -1,5 +1,4 @@
 import debugFn from 'debug';
-import { browser, Runtime } from 'webextension-polyfill-ts';
 
 import {
   StargazerEncodedProxyRequest,
@@ -33,7 +32,7 @@ const isStargazerProxyRequest = (
  */
 class RequestsProxy {
   #proxyId: string;
-  #ports: Map<string, Runtime.Port>;
+  #ports: Map<string, chrome.runtime.Port>;
 
   constructor(proxyId: string) {
     this.#proxyId = proxyId;
@@ -43,7 +42,7 @@ class RequestsProxy {
   getPortByProviderId(providerId: string) {
     let port = this.#ports.get(providerId);
     if (!port) {
-      port = browser.runtime.connect(undefined, {
+      port = chrome.runtime.connect(undefined, {
         name: `stargazer-provider-proxy:${window.btoa(this.#proxyId)}:${providerId}`,
       });
       port.onMessage.addListener(this.onPortMessage.bind(this));

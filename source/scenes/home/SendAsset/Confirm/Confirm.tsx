@@ -5,7 +5,6 @@ import Button from 'components/Button';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import { IActiveAssetState, IWalletState } from 'state/vault/types';
-import { browser } from 'webextension-polyfill-ts';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { ITransactionInfo } from 'scripts/types';
 import { IAssetInfoState } from 'state/assets/types';
@@ -109,7 +108,7 @@ const SendConfirm = ({
           <Button
             type="submit"
             variant={styles.button}
-            onClick={() => handleConfirm(browser)}
+            onClick={() => handleConfirm(chrome)}
             disabled={disabled}
           >
             {activeWallet.type === KeyringWalletType.LedgerAccountWallet ||

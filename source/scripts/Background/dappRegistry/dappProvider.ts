@@ -1,4 +1,3 @@
-import { browser, Runtime, Windows } from 'webextension-polyfill-ts';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -38,9 +37,9 @@ type DappProviderExternalImplementation<
 
 class DappProvider {
   #origin: string;
-  #ports: Map<Runtime.Port, ChainProviderData | null>;
-  #listeners: Map<Runtime.Port, Map<AvailableEvents, Set<string>>>;
-  #pendingPortWindows: Set<Runtime.Port>;
+  #ports: Map<chrome.runtime.Port, ChainProviderData | null>;
+  #listeners: Map<chrome.runtime.Port, Map<AvailableEvents, Set<string>>>;
+  #pendingPortWindows: Set<chrome.runtime.Port>;
 
   constructor(origin: string) {
     this.#origin = origin;
@@ -58,28 +57,31 @@ class DappProvider {
   }
 
   get activated() {
-    return window.controller.dapp.isDAppConnected(this.#origin);
+    // TODO: test Manifest V3 (window object not available)
+    // return window.controller.dapp.isDAppConnected(this.#origin);
+    return true;
   }
 
-  registerProviderPort(port: Runtime.Port) {
+  registerProviderPort(port: chrome.runtime.Port) {
     this.#ports.set(port, null);
     this.#listeners.set(port, new Map());
     port.onMessage.addListener(this.onProviderPortMessage.bind(this, port));
   }
 
-  deregisterProviderPort(port: Runtime.Port) {
+  deregisterProviderPort(port: chrome.runtime.Port) {
     this.#ports.delete(port);
     this.#listeners.delete(port);
   }
 
   async onProviderPortMessage(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     encodedRequest: StargazerEncodedProxyRequest
   ) {
-    window.controller.dapp.fromPageConnectDApp(
-      this.origin,
-      port.sender?.tab?.title ?? ''
-    );
+    // TODO: test Manifest V3
+    // window.controller.dapp.fromPageConnectDApp(
+    //   this.origin,
+    //   port.sender?.tab?.title ?? ''
+    // );
 
     if (encodedRequest.request.type === 'handshake') {
       this.sendResponseToPort(
@@ -112,7 +114,7 @@ class DappProvider {
   }
 
   async onHandshakeRequest(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     request: StargazerProxyRequest & { type: 'handshake' },
     encodedRequest: StargazerEncodedProxyRequest
   ): Promise<StargazerProxyResponse> {
@@ -133,7 +135,7 @@ class DappProvider {
   }
 
   async onEventRequest(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     request: StargazerProxyRequest & { type: 'event' },
     encodedRequest: StargazerEncodedProxyRequest
   ): Promise<StargazerProxyResponse> {
@@ -147,7 +149,7 @@ class DappProvider {
   }
 
   async onRpcRequest(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     request: StargazerProxyRequest & { type: 'rpc' },
     encodedRequest: StargazerEncodedProxyRequest
   ): Promise<StargazerProxyResponse> {
@@ -167,7 +169,7 @@ class DappProvider {
   }
 
   async onImportRequest(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     request: StargazerProxyRequest & { type: 'import' },
     encodedRequest: StargazerEncodedProxyRequest
   ): Promise<StargazerProxyResponse> {
@@ -179,7 +181,7 @@ class DappProvider {
     }
   }
 
-  getChainProviderDataByPort(port: Runtime.Port): ChainProviderData {
+  getChainProviderDataByPort(port: chrome.runtime.Port): ChainProviderData {
     const chainData = this.#ports.get(port);
     if (!chainData) {
       throw new Error('Unable to retrive ChainProviderData for port');
@@ -194,7 +196,7 @@ class DappProvider {
   }
 
   sendResponseToPort(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     encodedRequest: StargazerEncodedProxyRequest,
     response: StargazerProxyResponse
   ) {
@@ -214,7 +216,7 @@ class DappProvider {
   }
 
   sendEventToPort(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     proxyId: string,
     providerId: string,
     listenerId: string,
@@ -236,12 +238,12 @@ class DappProvider {
   }
 
   async createPopupAndWaitForEvent(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     event: string,
     network?: string,
     route?: string,
     data?: Record<any, any>,
-    type: Windows.CreateType = 'popup',
+    type: chrome.windows.createTypeEnum = 'popup',
     url: string = '/external.html',
     windowSize = { width: 372, height: 600 }
   ): Promise<CustomEvent | null> {
@@ -254,15 +256,18 @@ class DappProvider {
     }
 
     const windowId = uuidv4();
-    const popup = await window.controller.createPopup(
-      windowId,
-      network,
-      route,
-      data,
-      type,
-      url,
-      windowSize
-    );
+    // TODO: test Manifest V3 (window object not available)
+    // const popup = await window.controller.createPopup(
+    //   windowId,
+    //   network,
+    //   route,
+    //   data,
+    //   type,
+    //   url,
+    //   windowSize
+    // );
+    const popup: any = null;
+    console.log('popup', { windowId, network, route, data, type, url, windowSize });
 
     this.#pendingPortWindows.add(port);
 
@@ -283,21 +288,28 @@ class DappProvider {
         };
 
         const resolvePopup = (value: CustomEvent | null) => {
-          window.removeEventListener(event, onEvent);
-          browser.windows.onRemoved.removeListener(onRemovedWindow);
+          // TODO: test Manifest V3 (window object not available)
+          console.log(onEvent, event);
+          // window.removeEventListener(event, onEvent);
+          chrome.windows.onRemoved.removeListener(onRemovedWindow);
           resolve(value);
           this.#pendingPortWindows.delete(port);
         };
 
-        window.addEventListener(event, onEvent, { passive: true });
-        browser.windows.onRemoved.addListener(onRemovedWindow);
+        // TODO: test Manifest V3 (window object not available)
+        // window.addEventListener(event, onEvent, { passive: true });
+        chrome.windows.onRemoved.addListener(onRemovedWindow);
       } catch (e) {
         reject(e);
       }
     });
   }
 
-  registerEventListener(port: Runtime.Port, listenerId: string, event: AvailableEvents) {
+  registerEventListener(
+    port: chrome.runtime.Port,
+    listenerId: string,
+    event: AvailableEvents
+  ) {
     const listeners = this.#listeners.get(port);
     if (!listeners) {
       console.warn('Port was unregistered, skipping event register');
@@ -310,7 +322,7 @@ class DappProvider {
   }
 
   deregisterEventListener(
-    port: Runtime.Port,
+    port: chrome.runtime.Port,
     listenerId: string,
     event: AvailableEvents
   ) {

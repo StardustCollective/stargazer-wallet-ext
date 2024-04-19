@@ -1,9 +1,8 @@
-import { browser } from 'webextension-polyfill-ts';
-
 export const open = async (url: string) => {
   window.open(url, '_blank');
 };
 
 export const reload = () => {
-  browser.runtime.reload();
+  // TODO: test Manifest V3
+  chrome.runtime.reload();
 };

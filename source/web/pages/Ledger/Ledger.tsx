@@ -34,7 +34,6 @@ import MessageSigning from './views/messageSigning';
 
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
-import { browser } from 'webextension-polyfill-ts';
 import { dag4 } from '@stardust-collective/dag4';
 
 /////////////////////////
@@ -261,8 +260,9 @@ const LedgerPage = () => {
 
   const onImportClick = async () => {
     setFetchingPage(true);
-    const background = await browser.runtime.getBackgroundPage();
-    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any);
+    // TODO: test Manifest V3 (window object not available)
+    // const background = await chrome.runtime.getBackgroundPage();
+    // background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any);
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     LedgerBridgeUtil.closeConnection();
@@ -271,8 +271,7 @@ const LedgerPage = () => {
   const postTransactionResult = async (hash: string) => {
     const { windowId } = queryString.parse(location.search);
 
-    const background = await browser.runtime.getBackgroundPage();
-
+    const background = await chrome.runtime.getBackgroundPage();
     background.dispatchEvent(
       new CustomEvent('transactionSent', {
         detail: { windowId, approved: true, result: hash },
@@ -325,7 +324,7 @@ const LedgerPage = () => {
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
     const bipIndex = jsonData.bipIndex;
-    const background = await browser.runtime.getBackgroundPage();
+    const background = await chrome.runtime.getBackgroundPage();
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();

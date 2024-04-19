@@ -1,15 +1,21 @@
-import { browser } from 'webextension-polyfill-ts';
+import { MasterController } from 'scripts/Background/controllers';
+import WalletController from 'scripts/Background/controllers/WalletController';
+import ContactsController from 'scripts/Background/controllers/ContactsController';
+
+let controller: MasterController;
 
 export function getController() {
-  return browser.extension.getBackgroundPage().controller;
+  if (controller) return controller;
+  controller = new MasterController();
+  return controller;
 }
 
 export const getWalletController = () => {
-  return getController().wallet;
+  return WalletController;
 };
 
 export const getAccountController = () => {
-  return getController().wallet.account;
+  return getWalletController().account;
 };
 
 export const getDappController = () => {
@@ -21,5 +27,5 @@ export const getDappRegistry = () => {
 };
 
 export const getContactsController = () => {
-  return getController().contacts;
+  return ContactsController();
 };

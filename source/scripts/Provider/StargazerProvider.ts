@@ -6,7 +6,6 @@ import {
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
-import { Runtime, Windows } from 'webextension-polyfill-ts';
 
 import store from 'state/store';
 import { useController } from 'hooks';
@@ -69,7 +68,7 @@ export type WatchAssetParameters = {
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
 const EXTERNAL_URL = '/external.html';
-const WINDOW_TYPES: Record<string, Windows.CreateType> = {
+const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
   popup: 'popup',
   normal: 'normal',
 };
@@ -365,7 +364,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
   async handleProxiedRequest(
     _request: StargazerProxyRequest & { type: 'rpc' },
     _dappProvider: DappProvider,
-    _port: Runtime.Port
+    _port: chrome.runtime.Port
   ) {
     throw new Error('handleProxiedRequest is not available on StargazerProvider');
   }
@@ -373,7 +372,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
   async handleNonProxiedRequest(
     request: StargazerProxyRequest & { type: 'rpc' },
     dappProvider: DappProvider,
-    port: Runtime.Port
+    port: chrome.runtime.Port
   ) {
     const { vault, assets } = store.getState();
     let windowUrl = EXTERNAL_URL;

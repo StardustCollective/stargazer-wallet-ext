@@ -1,4 +1,3 @@
-import { browser, Windows } from 'webextension-polyfill-ts';
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
 import WalletController from './WalletController';
 import ControllerUtils, { IControllerUtils } from './ControllerUtils';
@@ -71,12 +70,13 @@ class MasterController {
     network?: string,
     route?: string,
     data?: Record<any, any>,
-    type: Windows.CreateType = 'popup',
+    type: chrome.windows.createTypeEnum = 'popup',
     url: string = '/external.html',
     windowSize = { width: 372, height: 600 }
   ) {
     const { width = 372, height = 600 } = windowSize;
-    const currentWindow = await browser.windows.getCurrent();
+    // TODO: test Manifest V3
+    const currentWindow = await chrome.windows.getCurrent();
 
     if (!currentWindow || !currentWindow.width) return null;
 
@@ -95,7 +95,7 @@ class MasterController {
     params.set('windowId', windowId);
     url += `?${params.toString()}#${windowId}`;
 
-    return await browser.windows.create({
+    return await chrome.windows.create({
       url,
       width,
       height,

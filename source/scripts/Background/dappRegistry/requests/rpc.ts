@@ -5,6 +5,8 @@ import {
 } from '../../../common';
 
 import type { DappProviderExternalImplementation } from '../dappProvider';
+import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
+import { EVMProvider } from 'scripts/Provider/EVMProvider';
 
 /**
  * Extended implementation of DappProvider.onRpcRequest
@@ -15,13 +17,16 @@ const handleRpcRequest: DappProviderExternalImplementation<'onRpcRequest', []> =
   request,
   _encodedRequest
 ) => {
-  if (!window.controller.wallet.isUnlocked()) {
+  const isLocked = true;
+  // TODO: test Manifest V3 (window object not available)
+  //!window.controller.wallet.isUnlocked()
+  if (isLocked) {
     throw new Error('Wallet must be unlocked');
   }
 
   const CHAIN_PROVIDERS = {
-    [ProtocolProvider.CONSTELLATION]: window.controller.stargazerProvider,
-    [ProtocolProvider.ETHEREUM]: window.controller.ethereumProvider,
+    [ProtocolProvider.CONSTELLATION]: new StargazerProvider(),
+    [ProtocolProvider.ETHEREUM]: new EVMProvider(),
   };
 
   const chain = dappProvider.getChainProviderDataByPort(port).chain;
