@@ -51,7 +51,7 @@ const store = configureStore({
   devTools: !isProd,
 });
 
-function updateState() {
+export function updateState() {
   const state = store.getState();
 
   saveState({

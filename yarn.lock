@@ -11173,11 +11173,6 @@ lodash-es@^4.17.11:
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
-lodash.assignin@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/lodash.assignin/-/lodash.assignin-4.2.0.tgz#ba8df5fb841eb0a3e8044232b0e263a8dc6a28a2"
-  integrity sha512-yX/rx6d/UTVh7sSVWVSIMjfnz95evAgDFdb1ZozC35I9mSFCkmzptOzevxjgbQUsc78NR44LVHWjsoMQXy9FDg==
-
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
@@ -16621,14 +16616,6 @@ webext-base-css@^1.1.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/webext-base-css/-/webext-base-css-1.4.0.tgz#bdf07f0307dd859886c2a97696b2149855eded20"
   integrity sha512-ftOKQmn/okQEo0YrPf/n97Q/fGxSkL+HADW6y1GqlmgRtBSIz67mTgqNIWvh2tV8Ee183xvrrbzCTqnYcJ3Fhg==
-
-webext-redux@^2.1.7:
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/webext-redux/-/webext-redux-2.1.9.tgz#f7fd01ea4b93191d07bcdd0db5966955766ef634"
-  integrity sha512-z7frkQ/avFgnMxUH6Q955hU8SDsHT9Zlq9az3OpY891RXw9nKODOTnUhNo9ZAlDFUPHhX2A+z6j74BCaYwEsfQ==
-  dependencies:
-    lodash.assignin "^4.2.0"
-    lodash.clonedeep "^4.5.0"
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
