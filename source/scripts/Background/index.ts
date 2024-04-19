@@ -1,4 +1,3 @@
-import { browser, Runtime } from 'webextension-polyfill-ts';
 import { wrapStore } from 'webext-redux';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
@@ -15,14 +14,14 @@ declare global {
   }
 }
 
-browser.runtime.onInstalled.addListener((): void => {
+chrome.runtime.onInstalled.addListener((): void => {
   console.emoji('🤩', 'Stargazer extension installed');
 });
 
-browser.runtime.onConnect.addListener((port: Runtime.Port) => {
+chrome.runtime.onConnect.addListener((port: chrome.runtime.Port) => {
   if (
-    port.sender?.url?.includes(browser.runtime.getURL('/app.html')) ||
-    port.sender?.url?.includes(browser.runtime.getURL('/external.html'))
+    port.sender?.url?.includes(chrome.runtime.getURL('/app.html')) ||
+    port.sender?.url?.includes(chrome.runtime.getURL('/external.html'))
   ) {
     const vault = store.getState().vault;
     const networkId =
@@ -41,19 +40,24 @@ browser.runtime.onConnect.addListener((port: Runtime.Port) => {
 
     port.onDisconnect.addListener(() => {
       console.log('onDisconnect');
-      window.controller.wallet.account.assetsBalanceMonitor.stop();
+      // TODO: test Manifest V3 (window object not available)
+      // window.controller.wallet.account.assetsBalanceMonitor.stop();
     });
 
     console.log('onConnect');
-    if (window.controller.wallet.isUnlocked()) {
-      window.controller.wallet.account.assetsBalanceMonitor.start();
-      window.controller.wallet.account.getLatestTxUpdate();
+    const isUnlocked = false;
+    // TODO: test Manifest V3 (window object not available)
+    // const isUnlocked = window.controller.wallet.isUnlocked();
+    if (isUnlocked) {
+      // window.controller.wallet.account.assetsBalanceMonitor.start();
+      // window.controller.wallet.account.getLatestTxUpdate();
     }
   }
 });
 
-if (!window.controller) {
-  window.controller = new MasterController();
-}
+// TODO: test Manifest V3 (window object not available)
+// if (!window.controller) {
+//   window.controller = new MasterController();
+// }
 
 wrapStore(store, { portName: STORE_PORT });
