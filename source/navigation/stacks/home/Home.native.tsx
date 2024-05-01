@@ -11,7 +11,7 @@ import { getWalletController } from 'utils/controllersUtils';
 ///////////////////////////
 
 import Start from 'scenes/home/Start';
-import Tabs from './tabs';
+import Tabs from '../tabs';
 import Import from 'scenes/common/Import';
 
 ///////////////////////////
@@ -25,7 +25,7 @@ import defaultHeader from 'navigation/headers/default';
 // Constants
 ///////////////////////////
 
-import screens from '../screens';
+import screens from '../../screens';
 export const Stack = createStackNavigator();
 export const SCREEN_DEFAULT_TITLE_STRINGS = {
   blank: '',

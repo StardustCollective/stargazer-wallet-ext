@@ -22,6 +22,7 @@ import providers from './providers';
 import erc20assets from './erc20assets';
 import swap from './swap';
 import biometrics from './biometrics';
+import auth from './auth';
 
 import { saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -46,6 +47,7 @@ const store = configureStore({
     erc20assets,
     swap,
     biometrics,
+    auth,
   }),
   middleware,
   devTools: !isProd,

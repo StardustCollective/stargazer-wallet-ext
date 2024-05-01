@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 // Stacks
 ///////////////////////////
 
-import HomeStack from './Home';
+import HomeStack from './home/Home';
 import UnAuthStack from './UnAuth';
 
 ///////////////////////////

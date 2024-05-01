@@ -53,6 +53,7 @@ import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
+import { setUnlocked } from 'state/auth';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -81,6 +82,7 @@ class WalletController {
     });
     this.keyringManager.on('update', async (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
+      store.dispatch(setUnlocked(state.isUnlocked));
       const { vault } = store.getState();
 
       try {

@@ -13,6 +13,7 @@ import TextInput from 'components/TextInput';
 import Link from 'components/Link';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import { getSgw, setSgw } from 'utils/keyring';
 
 // Strings
 const UNLOCK_STRING = 'Unlock';
@@ -53,13 +54,22 @@ const Login: FC<ILogin> = ({
     [styles.confirm]: location.pathname.includes('confirm.html'),
   });
 
+  const storeSgw = async (value: string): Promise<void> => {
+    const storedValue = await getSgw();
+
+    // Value already stored
+    if (storedValue) return;
+
+    await setSgw(value);
+  };
+
   return (
     <div className={styles.home}>
       <TextV3.HeaderLargeRegular align={TEXT_ALIGN_ENUM.CENTER}>
         Welcome to <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge>
       </TextV3.HeaderLargeRegular>
       <img src={'/' + LogoImage} className={styles.logo} alt="Stargazer" />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit((data: any) => onSubmit(data, false, storeSgw))}>
         <div className={styles.inputWrapper}>
           <TextInput
             id={'login-passwordField'}
