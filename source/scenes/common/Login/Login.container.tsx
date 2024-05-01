@@ -85,11 +85,9 @@ const LoginContainer: FC<ILoginProps> = ({
         }
 
         if (res && callback) {
-          // Store user's password in session storage if doesn't exist
           if (!isNative) {
             await callback(data.password);
           }
-          // Store user's password in Keychain if doesn't exist
           if (isNative && available) {
             await callback(data.password);
           }
