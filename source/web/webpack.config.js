@@ -174,7 +174,6 @@ module.exports = {
       STARGAZER_WALLET_VERSION: JSON.stringify(
         JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'))).version
       ),
-      global: {},
     }),
     // delete previous build files
     new CleanWebpackPlugin({

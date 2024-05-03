@@ -12,19 +12,10 @@
   "homepage_url": "https://constellationnetwork.io/",
   "short_name": "stargazer-wallet-ext",
   "permissions": ["tabs", "storage"],
-  "host_permissions": [
-    "https://www.dagexplorer.io/*",
-    "https://*.coingecko.com/*",
-    "https://*.constellationnetwork.io/*",
-    "http://*.constellationnetwork.io:9000/*",
-    "https://assets.coingecko.com/*",
-    "https://*.googleusercontent.com/*",
-    "https://*.opensea.io/*",
-    "https://*.exolix.com/*",
-    "https://*.seadn.io/*",
-    "https://ipfs.io/*",
-    "https://openseauserdata.com/*"
-  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "host_permissions": ["<all_urls>"],
   "__chrome|firefox__author": "Stardust Collective",
   "__firefox__applications": {
     "gecko": {
