@@ -12,6 +12,7 @@ import { useController } from 'hooks';
 
 import { BigNumber } from 'bignumber.js';
 import { DAG_NETWORK } from 'constants/index';
+import { getDappController } from 'utils/controllersUtils';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 
@@ -387,6 +388,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
+    const dappController = getDappController();
+
     if (activeWallet.type === KeyringWalletType.LedgerAccountWallet) {
       windowUrl = LEDGER_URL;
       bipIndex = activeWallet.bipIndex;
@@ -405,12 +408,46 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         ? { width: 600, height: 1000 }
         : { width: 372, height: 600 };
 
-    if (request.method === AvailableMethods.dag_chainId) {
-      return this.getChainId();
+    // dag_requestAccounts is used to activate the provider
+    if (request.method === AvailableMethods.dag_requestAccounts) {
+      // Provider already activated -> return DAG accounts array
+      if (dappProvider.activated) {
+        return this.getAccounts();
+      }
+
+      // Provider not activated -> display popup and wait for user's approval
+      const connectWalletEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'connectWallet',
+        undefined,
+        'selectAccounts'
+      );
+
+      // User rejected activation
+      if (connectWalletEvent === null) {
+        throw new Error('User denied provider activation');
+      }
+
+      // Send event to notify the accounts array
+      dappController.notifyAccountsChanged(this.getAccounts());
+
+      // Return DAG accounts array
+      return this.getAccounts();
     }
 
     if (request.method === AvailableMethods.dag_accounts) {
       return this.getAccounts();
+    }
+
+    // Provider needs to be activated before calling any other RPC method
+    if (!dappProvider.activated) {
+      throw new Error(
+        'Provider is not activated. Call dag_requestAccounts to activate it.'
+      );
+    }
+
+    if (request.method === AvailableMethods.dag_chainId) {
+      return this.getChainId();
     }
 
     if (request.method === AvailableMethods.dag_getBalance) {
@@ -662,7 +699,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       if (sentTransactionEvent.detail.error) {
-        throw new EIPRpcError(sentTransactionEvent.detail.error, 4002);
+        throw new EIPRpcError(sentTransactionEvent.detail.error, 4001);
       }
 
       if (!sentTransactionEvent.detail.result) {
@@ -797,7 +834,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       if (sentTransactionEvent.detail.error) {
-        throw new EIPRpcError(sentTransactionEvent.detail.error, 4002);
+        throw new EIPRpcError(sentTransactionEvent.detail.error, 4001);
       }
 
       if (!sentTransactionEvent.detail.result) {
@@ -942,7 +979,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       if (watchAssetEvent.detail.error) {
-        throw new EIPRpcError(watchAssetEvent.detail.error, 4002);
+        throw new EIPRpcError(watchAssetEvent.detail.error, 4001);
       }
 
       if (!watchAssetEvent.detail.result) {

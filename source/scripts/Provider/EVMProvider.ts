@@ -19,6 +19,13 @@ import { IDAppState } from 'state/dapp/types';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { useController } from 'hooks/index';
 import { getERC20DataDecoder } from 'utils/ethUtil';
+import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
+import {
+  getChainId,
+  getChainInfo,
+} from 'scripts/Background/controllers/EVMChainController/utils';
+import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
+import { getDappController } from 'utils/controllersUtils';
 import type { DappProvider } from '../Background/dappRegistry';
 import {
   AvailableMethods,
@@ -27,14 +34,9 @@ import {
   EIPRpcError,
   StargazerChain,
   ProtocolProvider,
+  EIPErrorCodes,
 } from '../common';
-import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
 import { StargazerSignatureRequest } from './StargazerProvider';
-import {
-  getChainId,
-  getChainInfo,
-} from 'scripts/Background/controllers/EVMChainController/utils';
-import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -59,7 +61,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
       (chain) => chain.id === currentEVMNetwork
     );
 
-    if (!networkInfo) throw new Error('Network not found');
+    if (!networkInfo)
+      throw new EIPRpcError('Network not found', EIPErrorCodes.ChainDisconnected);
 
     return networkInfo;
   }
@@ -85,15 +88,18 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
     if (networkId === StargazerChain.ETHEREUM) {
       return controller.wallet.account.networkController.ethereumNetwork.getWallet();
-    } else if (networkId === StargazerChain.POLYGON) {
+    }
+    if (networkId === StargazerChain.POLYGON) {
       return controller.wallet.account.networkController.polygonNetwork.getWallet();
-    } else if (networkId === StargazerChain.BSC) {
+    }
+    if (networkId === StargazerChain.BSC) {
       return controller.wallet.account.networkController.bscNetwork.getWallet();
-    } else if (networkId === StargazerChain.AVALANCHE) {
+    }
+    if (networkId === StargazerChain.AVALANCHE) {
       return controller.wallet.account.networkController.avalancheNetwork.getWallet();
     }
 
-    throw new Error('Wallet not found');
+    throw new EIPRpcError('Wallet not found', EIPErrorCodes.Unauthorized);
   }
 
   private remove0x(hash: string) {
@@ -250,6 +256,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     port: chrome.runtime.Port
   ) {
     const { vault } = store.getState();
+    const dappController = getDappController();
 
     const allWallets = [
       ...vault.wallets.local,
@@ -273,13 +280,48 @@ export class EVMProvider implements IRpcChainRequestHandler {
         ? { width: 1000, height: 1000 }
         : { width: 386, height: 624 };
 
+    // eth_requestAccounts is used to activate the provider
+    if (request.method === AvailableMethods.eth_requestAccounts) {
+      // Provider already activated -> return ETH accounts array
+      if (dappProvider.activated) {
+        return this.getAccounts();
+      }
+
+      // Provider not activated -> display popup and wait for user's approval
+      const connectWalletEvent = await dappProvider.createPopupAndWaitForEvent(
+        port,
+        'connectWallet',
+        undefined,
+        'selectAccounts'
+      );
+
+      // User rejected activation
+      if (connectWalletEvent === null) {
+        throw new EIPRpcError('User denied provider activation', EIPErrorCodes.Rejected);
+      }
+
+      // Send event to notify the accounts array
+      dappController.notifyAccountsChanged(this.getAccounts());
+
+      // Return ETH accounts array
+      return this.getAccounts();
+    }
+
     if (request.method === AvailableMethods.eth_accounts) {
       return this.getAccounts();
     }
 
+    // Provider needs to be activated before calling any other RPC method
+    if (!dappProvider.activated) {
+      throw new EIPRpcError(
+        'Provider is not activated. Call eth_requestAccounts to activate it.',
+        EIPErrorCodes.Unauthorized
+      );
+    }
+
     if (request.method === AvailableMethods.personal_sign) {
       if (!activeWallet) {
-        throw new Error('There is no active wallet');
+        throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
       }
 
       const assetAccount = activeWallet.accounts.find(
@@ -287,18 +329,21 @@ export class EVMProvider implements IRpcChainRequestHandler {
       );
 
       if (!assetAccount) {
-        throw new Error('No active account for the request asset type');
+        throw new EIPRpcError(
+          'No active account for the request asset type',
+          EIPErrorCodes.Unauthorized
+        );
       }
 
       // Extension 3.6.0+
       let [data, address] = request.params as [string, string];
 
       if (typeof data !== 'string') {
-        throw new Error("Bad argument 'data'");
+        throw new EIPRpcError("Bad argument 'data'", EIPErrorCodes.Unauthorized);
       }
 
       if (typeof address !== 'string') {
-        throw new Error("Bad argument 'address'");
+        throw new EIPRpcError("Bad argument 'address'", EIPErrorCodes.Unauthorized);
       }
 
       /* -- Backwards Compatibility */
@@ -309,11 +354,14 @@ export class EVMProvider implements IRpcChainRequestHandler {
       /* Backwards Compatibility -- */
 
       if (!ethers.utils.isAddress(address)) {
-        throw new Error("Bad argument 'address'");
+        throw new EIPRpcError("Bad argument 'address'", EIPErrorCodes.Unauthorized);
       }
 
       if (assetAccount.address.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
-        throw new Error('The active account is not the requested');
+        throw new EIPRpcError(
+          'The active account is not the requested',
+          EIPErrorCodes.Unauthorized
+        );
       }
 
       const signatureRequestEncoded = this.normalizeSignatureRequest(data);
@@ -335,7 +383,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
       // If the type of account is Ledger send back the public key so the
       // signature can be verified by the requester.
-      let accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
+      const accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
       if (
         activeWallet.type === KeyringWalletType.LedgerAccountWallet &&
         accounts &&
@@ -356,11 +404,11 @@ export class EVMProvider implements IRpcChainRequestHandler {
       );
 
       if (signatureEvent === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
+        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
       }
 
       if (!signatureEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
+        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
       }
 
       return signatureEvent.detail.signature.hex;
@@ -373,7 +421,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
       ].includes(request.method)
     ) {
       if (!activeWallet) {
-        throw new Error('There is no active wallet');
+        throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
       }
 
       const assetAccount = activeWallet.accounts.find(
@@ -381,39 +429,48 @@ export class EVMProvider implements IRpcChainRequestHandler {
       );
 
       if (!assetAccount) {
-        throw new Error('No active account for the request asset type');
+        throw new EIPRpcError(
+          'No active account for the request asset type',
+          EIPErrorCodes.Unauthorized
+        );
       }
 
       // Extension 3.6.0+
       let [address, data] = request.params as [string, Record<string, any>];
 
       if (typeof address !== 'string') {
-        throw new Error("Bad argument 'address'");
+        throw new EIPRpcError("Bad argument 'address'", EIPErrorCodes.Unauthorized);
       }
 
       if (typeof data === 'string') {
         try {
           data = JSON.parse(data);
         } catch (e) {
-          throw new Error("Bad argument 'data' => " + String(e));
+          throw new EIPRpcError(
+            `Bad argument 'data' => ${String(e)}`,
+            EIPErrorCodes.Unauthorized
+          );
         }
       }
 
       if (typeof data !== 'object' || data === null) {
-        throw new Error("Bad argument 'data'");
+        throw new EIPRpcError("Bad argument 'data'", EIPErrorCodes.Unauthorized);
       }
 
       if (!ethers.utils.isAddress(address)) {
-        throw new Error("Bad argument 'address'");
+        throw new EIPRpcError("Bad argument 'address'", EIPErrorCodes.Unauthorized);
       }
 
       if (assetAccount.address.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
-        throw new Error('The active account is not the requested');
+        throw new EIPRpcError(
+          'The active account is not the requested',
+          EIPErrorCodes.Unauthorized
+        );
       }
 
       if ('EIP712Domain' in data.types) {
         // Ethers does not need EIP712Domain type
-        delete data.types['EIP712Domain'];
+        delete data.types.EIP712Domain;
       }
 
       const activeChainId = this.getChainId();
@@ -422,13 +479,19 @@ export class EVMProvider implements IRpcChainRequestHandler {
         activeChainId &&
         parseInt(data.domain.chainId) !== activeChainId
       ) {
-        throw new Error('chainId does not match the active network chainId');
+        throw new EIPRpcError(
+          'chainId does not match the active network chainId',
+          EIPErrorCodes.ChainDisconnected
+        );
       }
 
       try {
         ethers.utils._TypedDataEncoder.hash(data.domain, data.types, data.message);
       } catch (e) {
-        throw new Error("Bad argument 'data' => " + String(e));
+        throw new EIPRpcError(
+          `Bad argument 'data' => ${String(e)}`,
+          EIPErrorCodes.Unauthorized
+        );
       }
 
       const signatureConsent: TypedSignatureRequest = {
@@ -448,7 +511,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
       // If the type of account is Ledger send back the public key so the
       // signature can be verified by the requester.
-      let accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
+      const accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
       if (
         activeWallet.type === KeyringWalletType.LedgerAccountWallet &&
         accounts &&
@@ -469,11 +532,11 @@ export class EVMProvider implements IRpcChainRequestHandler {
       );
 
       if (signatureEvent === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
+        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
       }
 
       if (!signatureEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
+        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
       }
 
       const signature = this.signTypedData(data.domain, data.types, data.message);
@@ -486,22 +549,28 @@ export class EVMProvider implements IRpcChainRequestHandler {
       console.log('trxData', trxData);
 
       let decodedContractCall: ContractInputData | null = null;
-      let eventType: string = 'transactionSent';
-      let route: string = 'sendTransaction';
+      let eventType = 'transactionSent';
+      let route = 'sendTransaction';
 
       // chainId should match the current active network if chainId property is provided.
-      if (!!trxData?.chainId) {
+      if (trxData?.chainId) {
         const chainId = this.getChainId();
 
         if (typeof trxData.chainId === 'number') {
           if (trxData.chainId !== chainId) {
-            throw new Error('chainId does not match the active network chainId');
+            throw new EIPRpcError(
+              'chainId does not match the active network chainId',
+              EIPErrorCodes.ChainDisconnected
+            );
           }
         }
 
         if (typeof trxData.chainId === 'string') {
           if (parseInt(trxData.chainId) !== chainId) {
-            throw new Error('chainId does not match the active network chainId');
+            throw new EIPRpcError(
+              'chainId does not match the active network chainId',
+              EIPErrorCodes.ChainDisconnected
+            );
           }
         }
       }
@@ -537,15 +606,15 @@ export class EVMProvider implements IRpcChainRequestHandler {
       );
 
       if (event === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
+        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
       }
 
       if (event.detail.error) {
-        throw new EIPRpcError(event.detail.error, 4002);
+        throw new EIPRpcError(event.detail.error, EIPErrorCodes.Rejected);
       }
 
       if (!event.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
+        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
       }
 
       return event.detail.result;
@@ -555,28 +624,33 @@ export class EVMProvider implements IRpcChainRequestHandler {
       return ethers.utils.keccak256(request.params[0]);
     }
 
+    if (request.method === AvailableMethods.web3_clientVersion) {
+      return `Stargazer/v${STARGAZER_WALLET_VERSION}`;
+    }
+
     if (request.method === AvailableMethods.wallet_switchEthereumChain) {
       const [chainData] = (request?.params as [SwitchEthereumChainParameter]) || [];
 
       if (!chainData || !chainData?.chainId) {
-        throw new Error('chainId not provided');
+        throw new EIPRpcError('chainId not provided', EIPErrorCodes.Unauthorized);
       }
 
       const { chainId } = chainData;
 
       if (typeof chainId !== 'string') {
-        throw new Error('chainId must be a string');
+        throw new EIPRpcError('chainId must be a string', EIPErrorCodes.Unauthorized);
       }
 
       if (!chainId.startsWith('0x')) {
-        throw new Error(
-          'chainId must specify the integer ID of the chain as a hexadecimal string'
+        throw new EIPRpcError(
+          'chainId must specify the integer ID of the chain as a hexadecimal string',
+          EIPErrorCodes.Unauthorized
         );
       }
 
       if (!SUPPORTED_HEX_CHAINS.includes(chainId)) {
         // Show network not supported popup
-        throw new Error('chainId not supported');
+        throw new EIPRpcError('chainId not supported', EIPErrorCodes.Unauthorized);
       }
 
       const controller = useController();
@@ -587,13 +661,16 @@ export class EVMProvider implements IRpcChainRequestHandler {
       try {
         await controller.wallet.switchNetwork(chainInfo.network, chainInfo.id);
       } catch (e) {
-        throw new Error('There was an error switching the Ethereum chain');
+        throw new EIPRpcError(
+          'There was an error switching the Ethereum chain',
+          EIPErrorCodes.ChainDisconnected
+        );
       }
 
       // https://eips.ethereum.org/EIPS/eip-3326#returns
       return null;
     }
 
-    throw new Error('Unsupported non-proxied method');
+    throw new EIPRpcError('Unsupported non-proxied method', EIPErrorCodes.Unsupported);
   }
 }
