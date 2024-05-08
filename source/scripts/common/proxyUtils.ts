@@ -1,5 +1,3 @@
-import { AccountItem } from '../types';
-
 import { AvailableEvents } from './availableEvents';
 import { AvailableMethods } from './availableMethods';
 import { RequestArguments } from './eipChainProvider';
@@ -39,7 +37,7 @@ type StargazerProxyRequest =
       method: RequestArguments['method'] & AvailableMethods;
       params: RequestArguments['params'];
     }
-  | { type: 'import'; provider: 'ledger'; addresses: AccountItem[] };
+  | { type: 'import'; provider: 'ledger'; addresses: any[] };
 
 type StargazerEncodedProxyEvent = {
   listenerId: string;

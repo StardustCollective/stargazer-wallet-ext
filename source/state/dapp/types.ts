@@ -17,4 +17,5 @@ export interface IDAppState {
   whitelist: {
     [dappId: string]: IDAppInfo;
   };
+  current: IDAppInfo | null;
 }
