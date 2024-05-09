@@ -4,9 +4,9 @@
 
 import React from 'react';
 import queryString from 'query-string';
-import { useController } from 'hooks/index';
-import { useSelector } from 'react-redux';
-import { AssetType } from 'state/vault/types';
+// import { useController } from 'hooks/index';
+// import { useSelector } from 'react-redux';
+// import { AssetType } from 'state/vault/types';
 
 //////////////////////
 // Common Layouts
@@ -20,13 +20,15 @@ import CardLayout from 'scenes/external/Layouts/CardLayout';
 
 import styles from './index.module.scss';
 
-import walletsSelectors from 'selectors/walletsSelectors';
+// import walletsSelectors from 'selectors/walletsSelectors';
 import {
-  StargazerProvider,
+  // StargazerProvider,
   StargazerSignatureRequest,
 } from 'scripts/Provider/StargazerProvider';
-import { ProtocolProvider } from 'scripts/common';
-import { EVMProvider } from 'scripts/Provider/EVMProvider';
+// import { ProtocolProvider } from 'scripts/common';
+// import { EVMProvider } from 'scripts/Provider/EVMProvider';
+import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 //////////////////////
 // Component
@@ -37,15 +39,15 @@ const SignatureRequest = () => {
   // Hooks
   /////////////////////
 
-  const controller = useController();
-  const wallets = useSelector(walletsSelectors.selectAllAccounts);
+  // const controller = useController();
+  // const wallets = useSelector(walletsSelectors.selectAllAccounts);
 
   const { data: stringData } = queryString.parse(location.search);
 
   const {
     signatureRequestEncoded,
-    asset,
-    provider,
+    // asset,
+    // provider,
     chainLabel,
   }: {
     signatureRequestEncoded: string;
@@ -54,14 +56,14 @@ const SignatureRequest = () => {
     chainLabel: string;
   } = JSON.parse(stringData as string);
   // TODO-349: Check how signature should work here
-  const PROVIDERS: { [provider: string]: StargazerProvider | EVMProvider } = {
-    [ProtocolProvider.CONSTELLATION]: controller.stargazerProvider,
-    [ProtocolProvider.ETHEREUM]: controller.ethereumProvider,
-  };
-  const providerInstance = PROVIDERS[provider];
-  const account = providerInstance.getAssetByType(
-    asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum
-  );
+  // const PROVIDERS: { [provider: string]: StargazerProvider | EVMProvider } = {
+  //   [ProtocolProvider.CONSTELLATION]: controller.stargazerProvider,
+  //   [ProtocolProvider.ETHEREUM]: controller.ethereumProvider,
+  // };
+  // const providerInstance = PROVIDERS[provider];
+  // const account = providerInstance.getAssetByType(
+  //   asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum
+  // );
   const signatureRequest = JSON.parse(
     window.atob(signatureRequestEncoded)
   ) as StargazerSignatureRequest;
@@ -71,36 +73,31 @@ const SignatureRequest = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
-    const { windowId } = queryString.parse(window.location.search);
-    const cancelEvent = new CustomEvent('messageSigned', {
-      detail: { windowId, result: false },
+    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
+
+    await sendExternalMessage(ExternalMessageID.messageSigned, {
+      windowId,
+      result: false,
     });
 
-    background.dispatchEvent(cancelEvent);
     window.close();
   };
 
   const onPositiveButtonClick = async () => {
-    const message = asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content;
-    const signature = providerInstance.signMessage(message);
+    // const message = asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content;
+    // const signature = providerInstance.signMessage(message);
 
-    const background = await chrome.runtime.getBackgroundPage();
+    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
 
-    const { windowId } = queryString.parse(window.location.search);
-
-    const signatureEvent = new CustomEvent('messageSigned', {
-      detail: {
-        windowId,
-        result: true,
-        signature: {
-          hex: signature,
-          requestEncoded: signatureRequestEncoded,
-        },
+    await sendExternalMessage(ExternalMessageID.messageSigned, {
+      windowId,
+      result: true,
+      signature: {
+        hex: 'test',
+        requestEncoded: signatureRequestEncoded,
       },
     });
 
-    background.dispatchEvent(signatureEvent);
     window.close();
   };
 
@@ -126,7 +123,8 @@ const SignatureRequest = () => {
         <section>
           <label>Account</label>
           <div>
-            {wallets.find((w) => w.address === account.address)?.label ?? account.address}
+            {/* {wallets.find((w) => w.address === account.address)?.label ?? account.address} */}
+            Account label
           </div>
         </section>
         <section className={styles.message}>

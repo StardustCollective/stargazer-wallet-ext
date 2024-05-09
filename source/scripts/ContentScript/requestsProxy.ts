@@ -24,7 +24,7 @@ const isStargazerProxyRequest = (
  * Transparent Requests Proxy
  *
  * Handles all interaction between the injected
- * script and the background script.
+ * script and the service worker.
  *
  * Each injected provider created is piped throught a different port.
  *
@@ -42,10 +42,11 @@ class RequestsProxy {
   getPortByProviderId(providerId: string) {
     let port = this.#ports.get(providerId);
     if (!port) {
-      port = chrome.runtime.connect(undefined, {
+      port = chrome.runtime.connect({
         name: `stargazer-provider-proxy:${window.btoa(this.#proxyId)}:${providerId}`,
       });
       port.onMessage.addListener(this.onPortMessage.bind(this));
+      port.onDisconnect.addListener(() => this.onPortDisconnect(providerId));
       this.#ports.set(providerId, port);
       debug('Provider port added', providerId);
     }
@@ -71,23 +72,9 @@ class RequestsProxy {
     try {
       const port = this.getPortByProviderId(encodedRequest.providerId);
       port.postMessage(encodedRequest);
-      debug(
-        'Message Sent',
-        'reqId:',
-        encodedRequest.reqId,
-        'providerId:',
-        encodedRequest.providerId
-      );
+      console.log('Message Sent:', encodedRequest);
     } catch (e) {
-      debug(
-        'Message Error',
-        'reqId:',
-        encodedRequest.reqId,
-        'providerId:',
-        encodedRequest.providerId,
-        'error:',
-        e
-      );
+      console.log('Message Error:', { encodedRequest, error: e });
       this.onPortResponse({
         reqId: encodedRequest.reqId,
         providerId: encodedRequest.providerId,
@@ -95,6 +82,10 @@ class RequestsProxy {
         response: { type: 'proxy', error: String(e) },
       });
     }
+  }
+
+  onPortDisconnect(providerId: string) {
+    this.#ports.delete(providerId);
   }
 
   onPortMessage(encoded: StargazerEncodedProxyResponse | StargazerEncodedProxyEvent) {

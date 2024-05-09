@@ -87,8 +87,6 @@ const Home: FC<IHome> = ({
     setIsWalletSelectorOpen(false);
     EventEmitter.emit(NavigationEvents.RESET_NFTS_TAB);
     await walletController.switchWallet(walletId);
-    const accounts = walletAccounts.map((account) => account.address);
-    await walletController.notifyWalletChange(accounts);
   };
 
   const renderHeaderTitle = () => {

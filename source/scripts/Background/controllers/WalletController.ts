@@ -18,11 +18,11 @@ import IVaultState, {
   IVaultWalletsStoreState,
 } from 'state/vault/types';
 import {
-  AVALANCHE_NETWORK,
-  BSC_NETWORK,
+  // AVALANCHE_NETWORK,
+  // BSC_NETWORK,
   DAG_NETWORK,
-  ETH_NETWORK,
-  POLYGON_NETWORK,
+  // ETH_NETWORK,
+  // POLYGON_NETWORK,
 } from 'constants/index';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
@@ -35,10 +35,10 @@ import {
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { getEncryptor } from 'utils/keyringManagerUtils';
-import { getDappController, getDappRegistry } from 'utils/controllersUtils';
+// import { getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import filter from 'lodash/filter';
-import { AvailableEvents, ProtocolProvider } from 'scripts/common';
+// import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
 import { generateId } from './EVMChainController/utils';
@@ -54,6 +54,8 @@ import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
 import { setUnlocked } from 'state/auth';
+import { sendDappMessage } from 'scripts/Background/messaging/messenger';
+import { DappMessageID } from 'scripts/Background/messaging/types';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -348,15 +350,10 @@ class WalletController {
     await this.nfts.fetchAllNfts();
   }
 
-  notifyWalletChange(accounts: string[]): void {
-    const dappController = getDappController();
-
-    // No Dapp controller on mobile
-    if (!dappController) {
-      return;
-    }
-
-    return dappController.notifyAccountsChanged(accounts);
+  async notifyWalletChange(accounts: string[]): Promise<void> {
+    // This method is only used from the Chrome extension.
+    // Send event to service worker
+    await sendDappMessage(DappMessageID.notifyAccounts, { accounts });
   }
 
   async switchNetwork(network: string, chainId: string): Promise<void> {
@@ -377,13 +374,13 @@ class WalletController {
       );
 
       if (!isNative) {
-        const { hexChainId } = DAG_NETWORK[chainId];
-        getDappRegistry().sendOriginChainEvent(
-          '*',
-          ProtocolProvider.CONSTELLATION,
-          AvailableEvents.chainChanged,
-          [hexChainId]
-        );
+        // const { hexChainId } = DAG_NETWORK[chainId];
+        // getDappRegistry().sendOriginChainEvent(
+        //   '*',
+        //   ProtocolProvider.CONSTELLATION,
+        //   AvailableEvents.chainChanged,
+        //   [hexChainId]
+        // );
       }
     }
 
@@ -391,13 +388,13 @@ class WalletController {
       this.account.networkController.switchEthereumChain(chainId as EthChainId);
       store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        const { hexChainId } = ETH_NETWORK[chainId];
-        getDappRegistry().sendOriginChainEvent(
-          '*',
-          ProtocolProvider.ETHEREUM,
-          AvailableEvents.chainChanged,
-          [hexChainId]
-        );
+        // const { hexChainId } = ETH_NETWORK[chainId];
+        // getDappRegistry().sendOriginChainEvent(
+        //   '*',
+        //   ProtocolProvider.ETHEREUM,
+        //   AvailableEvents.chainChanged,
+        //   [hexChainId]
+        // );
       }
     }
     // 349: New network should be added here.
@@ -405,13 +402,13 @@ class WalletController {
       this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
       store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        const { hexChainId } = AVALANCHE_NETWORK[chainId];
-        getDappRegistry().sendOriginChainEvent(
-          '*',
-          ProtocolProvider.ETHEREUM,
-          AvailableEvents.chainChanged,
-          [hexChainId]
-        );
+        // const { hexChainId } = AVALANCHE_NETWORK[chainId];
+        // getDappRegistry().sendOriginChainEvent(
+        //   '*',
+        //   ProtocolProvider.ETHEREUM,
+        //   AvailableEvents.chainChanged,
+        //   [hexChainId]
+        // );
       }
     }
 
@@ -419,13 +416,13 @@ class WalletController {
       this.account.networkController.switchBSCChain(chainId as BSCChainId);
       store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        const { hexChainId } = BSC_NETWORK[chainId];
-        getDappRegistry().sendOriginChainEvent(
-          '*',
-          ProtocolProvider.ETHEREUM,
-          AvailableEvents.chainChanged,
-          [hexChainId]
-        );
+        // const { hexChainId } = BSC_NETWORK[chainId];
+        // getDappRegistry().sendOriginChainEvent(
+        //   '*',
+        //   ProtocolProvider.ETHEREUM,
+        //   AvailableEvents.chainChanged,
+        //   [hexChainId]
+        // );
       }
     }
 
@@ -433,13 +430,13 @@ class WalletController {
       this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
       store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        const { hexChainId } = POLYGON_NETWORK[chainId];
-        getDappRegistry().sendOriginChainEvent(
-          '*',
-          ProtocolProvider.ETHEREUM,
-          AvailableEvents.chainChanged,
-          [hexChainId]
-        );
+        // const { hexChainId } = POLYGON_NETWORK[chainId];
+        // getDappRegistry().sendOriginChainEvent(
+        //   '*',
+        //   ProtocolProvider.ETHEREUM,
+        //   AvailableEvents.chainChanged,
+        //   [hexChainId]
+        // );
       }
     }
 

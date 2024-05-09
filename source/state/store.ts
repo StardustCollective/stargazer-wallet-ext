@@ -53,10 +53,10 @@ const store = configureStore({
   devTools: !isProd,
 });
 
-export function updateState() {
+export async function updateState() {
   const state = store.getState();
 
-  saveState({
+  await saveState({
     vault: state.vault,
     price: state.price,
     contacts: state.contacts,
@@ -76,9 +76,9 @@ if (isNative) {
   MigrationController().then(async () => {
     await rehydrateStore(store);
     store.subscribe(
-      throttle(() => {
+      throttle(async () => {
         // every second we update store state
-        updateState();
+        await updateState();
       }, 1000)
     );
 

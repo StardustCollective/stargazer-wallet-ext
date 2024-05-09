@@ -16,23 +16,23 @@ import ConnectedSites from './ConnectedSites';
 // Utils
 ///////////////////////////
 
-import { getDappController } from 'utils/controllersUtils';
+import { sendDappMessage } from 'scripts/Background/messaging/messenger';
+import { DappMessageID } from 'scripts/Background/messaging/types';
 
 ///////////////////////////
 // Types
 ///////////////////////////
 
-import { RootState } from 'state/store';
+import store, { RootState } from 'state/store';
 import { IConnectedSitesContainerProps } from './types';
+import { removeDapp } from 'state/dapp';
 
 const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = () => {
   const connectedSites = useSelector((state: RootState) => state.dapp.whitelist);
-  const DAppController = getDappController();
 
-  const onDeleteSiteClicked = (id: string) => {
-    if (DAppController) {
-      DAppController.fromUserDisconnectDApp(id);
-    }
+  const onDeleteSiteClicked = async (id: string) => {
+    store.dispatch(removeDapp({ id }));
+    await sendDappMessage(DappMessageID.disconnect, { origin: id });
   };
 
   ///////////////////////////

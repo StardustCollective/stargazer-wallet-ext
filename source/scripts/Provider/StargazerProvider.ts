@@ -12,7 +12,6 @@ import { useController } from 'hooks';
 
 import { BigNumber } from 'bignumber.js';
 import { DAG_NETWORK } from 'constants/index';
-import { getDappController } from 'utils/controllersUtils';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
 
@@ -24,6 +23,7 @@ import {
   EIPRpcError,
   ProtocolProvider,
 } from '../common';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 export type StargazerSignatureRequest = {
   content: string;
@@ -99,8 +99,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     const { dapp, vault } = store.getState();
     const { whitelist }: IDAppState = dapp;
 
-    const controller = useController();
-    const current = controller.dapp.getCurrent();
+    const current = dapp.current;
     const origin = current && current.origin;
 
     if (!origin) {
@@ -126,8 +125,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
     const { dapp, vault } = store.getState();
     const { whitelist }: IDAppState = dapp;
 
-    const controller = useController();
-    const current = controller.dapp.getCurrent();
+    const current = dapp.current;
     const origin = current && current.origin;
 
     if (!origin) {
@@ -213,7 +211,12 @@ export class StargazerProvider implements IRpcChainRequestHandler {
   normalizeSignatureRequest(encodedSignatureRequest: string): string {
     let signatureRequest: StargazerSignatureRequest;
     try {
-      signatureRequest = JSON.parse(window.atob(encodedSignatureRequest));
+      // Test Manifest V3 (window not defined)
+      const stringSignatureDecoded = Buffer.from(
+        encodedSignatureRequest,
+        'base64'
+      ).toString('utf-8');
+      signatureRequest = JSON.parse(stringSignatureDecoded);
     } catch (e) {
       throw new Error('Unable to decode signatureRequest');
     }
@@ -238,7 +241,9 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
     signatureRequest.metadata = parsedMetadata;
 
-    const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
+    // Test Manifest V3 (window not defined)
+    const stringSignature = JSON.stringify(signatureRequest);
+    const newEncodedSignatureRequest = Buffer.from(stringSignature).toString('base64');
 
     if (newEncodedSignatureRequest !== encodedSignatureRequest) {
       throw new Error('SignatureRequest does not match spec (unable to re-normalize)');
@@ -388,23 +393,21 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
-    const dappController = getDappController();
-
-    if (activeWallet.type === KeyringWalletType.LedgerAccountWallet) {
+    if (activeWallet?.type === KeyringWalletType.LedgerAccountWallet) {
       windowUrl = LEDGER_URL;
-      bipIndex = activeWallet.bipIndex;
-    } else if (activeWallet.type === KeyringWalletType.BitfiAccountWallet) {
+      bipIndex = activeWallet?.bipIndex;
+    } else if (activeWallet?.type === KeyringWalletType.BitfiAccountWallet) {
       windowUrl = BITFI_URL;
-      deviceId = activeWallet.accounts[0].deviceId;
+      deviceId = activeWallet?.accounts[0].deviceId;
     }
     const windowType =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-      activeWallet.type === KeyringWalletType.BitfiAccountWallet
+      activeWallet?.type === KeyringWalletType.LedgerAccountWallet ||
+      activeWallet?.type === KeyringWalletType.BitfiAccountWallet
         ? WINDOW_TYPES.normal
         : WINDOW_TYPES.popup;
     const windowSize =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-      activeWallet.type === KeyringWalletType.BitfiAccountWallet
+      activeWallet?.type === KeyringWalletType.LedgerAccountWallet ||
+      activeWallet?.type === KeyringWalletType.BitfiAccountWallet
         ? { width: 600, height: 1000 }
         : { width: 372, height: 600 };
 
@@ -416,9 +419,9 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       // Provider not activated -> display popup and wait for user's approval
-      const connectWalletEvent = await dappProvider.createPopupAndWaitForEvent(
+      const connectWalletEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'connectWallet',
+        ExternalMessageID.connectWallet,
         undefined,
         'selectAccounts'
       );
@@ -428,11 +431,8 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         throw new Error('User denied provider activation');
       }
 
-      // Send event to notify the accounts array
-      dappController.notifyAccountsChanged(this.getAccounts());
-
       // Return DAG accounts array
-      return this.getAccounts();
+      return connectWalletEvent.detail.accounts;
     }
 
     if (request.method === AvailableMethods.dag_accounts) {
@@ -498,9 +498,9 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         chainLabel,
       };
 
-      const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
+      const signatureEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'dataSigned',
+        ExternalMessageID.dataSigned,
         undefined,
         'signData',
         signatureData,
@@ -576,9 +576,9 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         chainLabel,
       };
 
-      const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
+      const signatureEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'messageSigned',
+        ExternalMessageID.messageSigned,
         undefined,
         'signMessage',
         signatureData,
@@ -683,9 +683,9 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         chain: ProtocolProvider.CONSTELLATION,
       };
 
-      const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
+      const sentTransactionEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'transactionSent',
+        ExternalMessageID.transactionSent,
         undefined,
         'sendTransaction',
         txObject,
@@ -818,9 +818,9 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         chain: ProtocolProvider.CONSTELLATION,
       };
 
-      const sentTransactionEvent = await dappProvider.createPopupAndWaitForEvent(
+      const sentTransactionEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'transactionSent',
+        ExternalMessageID.transactionSent,
         undefined,
         'sendTransaction',
         txObject,
@@ -963,9 +963,9 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         dagAddress
       );
 
-      const watchAssetEvent = await dappProvider.createPopupAndWaitForEvent(
+      const watchAssetEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'watchAssetResult',
+        ExternalMessageID.watchAssetResult,
         undefined,
         'watchAsset',
         { ...params, balance },

@@ -52,7 +52,6 @@ import {
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
 import { StargazerChain, isError } from 'scripts/common';
-import { isNative } from 'utils/envUtil';
 import { CHAIN_FULL_ASSET } from 'utils/assetsUtil';
 
 ///////////////////////////
@@ -200,12 +199,15 @@ const ConfirmContainer = () => {
     }
   };
 
-  const handleConfirm = async (chrome: any = null) => {
+  const handleConfirm = async (
+    callbackSuccess: any = null,
+    callbackError: any = null
+  ) => {
     setDisabled(true);
 
-    const background = isNative ? undefined : await chrome?.runtime?.getBackgroundPage();
-    const NON_WINDOW_ID = 'non-window-id';
-    const windowId = queryString?.parse(window?.location?.search)?.windowId;
+    const { windowId }: { windowId?: string } = queryString?.parse(
+      window?.location?.search
+    );
 
     try {
       if (isExternalRequest) {
@@ -229,15 +231,9 @@ const ConfirmContainer = () => {
           trxHash = await accountController.confirmContractTempTx(activeAsset);
         }
 
-        background.dispatchEvent(
-          new CustomEvent('transactionSent', {
-            detail: {
-              windowId: windowId || NON_WINDOW_ID,
-              approved: true,
-              result: trxHash,
-            },
-          })
-        );
+        if (callbackSuccess) {
+          callbackSuccess(windowId, trxHash);
+        }
 
         if (window) {
           window.close();
@@ -284,16 +280,8 @@ const ConfirmContainer = () => {
           message = 'Insufficient funds to cover gas fee.';
         }
 
-        if (background) {
-          background?.dispatchEvent(
-            new CustomEvent('transactionSent', {
-              detail: {
-                windowId: windowId || NON_WINDOW_ID,
-                approved: false,
-                error: e.message,
-              },
-            })
-          );
+        if (callbackError) {
+          callbackError(windowId, e.message);
         }
 
         showAlert(message, 'danger');

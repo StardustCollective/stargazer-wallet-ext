@@ -213,10 +213,8 @@ export const decrypt = async (key: CryptoKey, iv: Uint8Array): Promise<string | 
 export const storeEncryptedData = async (data: any): Promise<boolean> => {
   try {
     const encryptedString = window.btoa(String.fromCharCode.apply(null, data));
-    // const ivString = window.btoa(String.fromCharCode.apply(null, iv));
 
     await sessionStorage.setItem(SGW_KEY, encryptedString);
-    // await sessionStorage.setItem(IV_KEY, ivString);
     return true;
   } catch (err) {
     return false;

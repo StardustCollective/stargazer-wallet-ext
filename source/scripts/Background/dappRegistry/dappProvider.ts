@@ -7,7 +7,6 @@ import {
   StargazerEncodedProxyEvent,
   StargazerEncodedProxyRequest,
   StargazerEncodedProxyResponse,
-  isCustomEvent,
   AvailableEvents,
   ProtocolProvider,
 } from '../../common';
@@ -18,6 +17,13 @@ import {
   handleRpcRequest,
   handleImportRequest,
 } from './requests';
+import {
+  ExternalMessage,
+  ExternalMessageID,
+  MessageType,
+} from 'scripts/Background/messaging/types';
+
+import { isDappConnected, setCurrentDapp } from '../handlers/handleDappMessages';
 
 type ChainProviderData = {
   proxyId: string;
@@ -57,9 +63,7 @@ class DappProvider {
   }
 
   get activated() {
-    // TODO: test Manifest V3 (window object not available)
-    // return window.controller.dapp.isDAppConnected(this.#origin);
-    return true;
+    return isDappConnected(this.origin);
   }
 
   registerProviderPort(port: chrome.runtime.Port) {
@@ -77,11 +81,7 @@ class DappProvider {
     port: chrome.runtime.Port,
     encodedRequest: StargazerEncodedProxyRequest
   ) {
-    // TODO: test Manifest V3
-    // window.controller.dapp.fromPageConnectDApp(
-    //   this.origin,
-    //   port.sender?.tab?.title ?? ''
-    // );
+    setCurrentDapp(this.origin, port?.sender?.tab?.title ?? '');
 
     if (encodedRequest.request.type === 'handshake') {
       this.sendResponseToPort(
@@ -229,16 +229,56 @@ class DappProvider {
     port.postMessage(encodedEvent);
   }
 
-  async createPopupAndWaitForEvent(
-    port: chrome.runtime.Port,
-    event: string,
+  async createPopup(
+    windowId: string,
     network?: string,
     route?: string,
     data?: Record<any, any>,
     type: chrome.windows.createTypeEnum = 'popup',
     url: string = '/external.html',
     windowSize = { width: 372, height: 600 }
-  ): Promise<CustomEvent | null> {
+  ) {
+    const { width = 372, height = 600 } = windowSize;
+
+    const currentWindow = await chrome.windows.getCurrent();
+
+    if (!currentWindow || !currentWindow.width) return null;
+
+    const params = new URLSearchParams();
+    if (route) {
+      params.set('route', route);
+    }
+    if (network) {
+      params.set('network', network);
+    }
+    if (data) {
+      params.set('data', JSON.stringify(data));
+    }
+
+    // This was being passed only in hash value but it gets dropped somethings in routing
+    params.set('windowId', windowId);
+    url += `?${params.toString()}#${windowId}`;
+
+    return await chrome.windows.create({
+      url,
+      width,
+      height,
+      type,
+      top: 0,
+      left: currentWindow.width - 600,
+    });
+  }
+
+  async createPopupAndWaitForMessage(
+    port: chrome.runtime.Port,
+    message: ExternalMessageID,
+    network?: string,
+    route?: string,
+    data?: Record<any, any>,
+    type: chrome.windows.createTypeEnum = 'popup',
+    url: string = '/external.html',
+    windowSize = { width: 372, height: 600 }
+  ): Promise<ExternalMessage | null> {
     if (!this.#ports.has(port)) {
       throw new Error('Provider port is not associated with this DappProvider');
     }
@@ -248,30 +288,21 @@ class DappProvider {
     }
 
     const windowId = uuidv4();
-    // TODO: test Manifest V3 (window object not available)
-    // const popup = await window.controller.createPopup(
-    //   windowId,
-    //   network,
-    //   route,
-    //   data,
-    //   type,
-    //   url,
-    //   windowSize
-    // );
-    const popup: any = null;
-    console.log('popup', { windowId, network, route, data, type, url, windowSize });
+
+    const popup = await this.createPopup(
+      windowId,
+      network,
+      route,
+      data,
+      type,
+      url,
+      windowSize
+    );
 
     this.#pendingPortWindows.add(port);
 
-    return new Promise<CustomEvent | null>((resolve, reject) => {
+    return new Promise<ExternalMessage | null>((resolve, reject) => {
       try {
-        const onEvent = (event: Event) => {
-          if (isCustomEvent(event) && event.detail.windowId === windowId) {
-            // Matching event, resolve to event
-            resolvePopup(event);
-          }
-        };
-
         const onRemovedWindow = (id: number) => {
           if (popup.id === id) {
             // Popup removed, resolve to null
@@ -279,17 +310,27 @@ class DappProvider {
           }
         };
 
-        const resolvePopup = (value: CustomEvent | null) => {
-          // TODO: test Manifest V3 (window object not available)
-          console.log(onEvent, event);
-          // window.removeEventListener(event, onEvent);
+        const resolvePopup = async (value: ExternalMessage | null) => {
+          chrome.runtime.onMessage.removeListener(handleExternalMessage);
           chrome.windows.onRemoved.removeListener(onRemovedWindow);
-          resolve(value);
           this.#pendingPortWindows.delete(port);
+          resolve(value);
         };
 
-        // TODO: test Manifest V3 (window object not available)
-        // window.addEventListener(event, onEvent, { passive: true });
+        const handleExternalMessage = async (msg: ExternalMessage) => {
+          // Check message type
+          if (msg?.type !== MessageType.external) return;
+
+          // Check message id
+          if (msg?.id !== message) return;
+
+          // Check windowId
+          if (msg?.detail?.windowId !== windowId) return;
+
+          await resolvePopup(msg);
+        };
+
+        chrome.runtime.onMessage.addListener(handleExternalMessage);
         chrome.windows.onRemoved.addListener(onRemovedWindow);
       } catch (e) {
         reject(e);

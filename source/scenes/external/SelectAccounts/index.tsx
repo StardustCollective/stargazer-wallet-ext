@@ -54,7 +54,13 @@ import StargazerIcon from 'assets/images/svg/stargazerLogoV3.svg';
 ///////////////////////////
 // Hooks Imports
 ///////////////////////////
-import { useController } from 'hooks/index';
+
+import {
+  sendDappMessage,
+  sendExternalMessage,
+} from 'scripts/Background/messaging/messenger';
+import { DappMessageID, ExternalMessageID } from 'scripts/Background/messaging/types';
+import dappSelectors from 'selectors/dappSelectors';
 
 ///////////////////////////
 // Types
@@ -79,13 +85,13 @@ const SelectAccounts = () => {
   ///////////////////////////
   // Hooks
   ///////////////////////////
+
+  const current = useSelector(dappSelectors.getCurrent);
   const allWallets = useSelector(walletsSelectors.selectAllWallets);
   const [wallets, setWallets] = useState<KeyringWalletState[]>([]);
   const [network, setNetwork] = useState<string>('');
   const [selectedWallets, setSelectedWallets] = useState<KeyringWalletState[]>([]);
   const [sceneState, setSceneState] = useState<SCENE_STATE>(SCENE_STATE.SELECT_ACCOUNTS);
-  const controller = useController();
-  const current = controller.dapp.getCurrent();
   const origin = current && current.origin;
 
   // Set the network based on query string to determine
@@ -120,30 +126,31 @@ const SelectAccounts = () => {
 
       // No specific network selected, connect both
       if (!network) {
-        controller.dapp.fromUserConnectDApp(
+        await sendDappMessage(DappMessageID.connect, {
           origin,
-          current,
-          KeyringNetwork.Ethereum,
-          ethAccounts
-        );
-        controller.dapp.fromUserConnectDApp(
+          dapp: current,
+          network: KeyringNetwork.Ethereum,
+          accounts: ethAccounts,
+        });
+        await sendDappMessage(DappMessageID.connect, {
           origin,
-          current,
-          KeyringNetwork.Constellation,
-          dagAccounts
-        );
+          dapp: current,
+          network: KeyringNetwork.Constellation,
+          accounts: dagAccounts,
+        });
       } else {
-        controller.dapp.fromUserConnectDApp(origin, current, network, accounts);
+        await sendDappMessage(DappMessageID.connect, {
+          origin,
+          dapp: current,
+          network,
+          accounts,
+        });
       }
 
-      const background = await chrome.runtime.getBackgroundPage();
-
-      const { windowId } = queryString.parse(window.location.search);
-
-      background.dispatchEvent(
-        new CustomEvent('connectWallet', { detail: { windowId, accounts: accounts } })
+      const { windowId }: { windowId?: string } = queryString.parse(
+        window.location.search
       );
-
+      await sendExternalMessage(ExternalMessageID.connectWallet, { windowId, accounts });
       window.close();
     }
   };

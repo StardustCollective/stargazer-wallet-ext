@@ -25,7 +25,6 @@ import {
   getChainInfo,
 } from 'scripts/Background/controllers/EVMChainController/utils';
 import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
-import { getDappController } from 'utils/controllersUtils';
 import type { DappProvider } from '../Background/dappRegistry';
 import {
   AvailableMethods,
@@ -37,6 +36,7 @@ import {
   EIPErrorCodes,
 } from '../common';
 import { StargazerSignatureRequest } from './StargazerProvider';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -138,8 +138,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     const { dapp, vault } = store.getState();
     const { whitelist }: IDAppState = dapp;
 
-    const controller = useController();
-    const current = controller.dapp.getCurrent();
+    const current = dapp.current;
     const origin = current && current.origin;
 
     if (!origin) {
@@ -191,7 +190,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
       metadata: {},
     };
 
-    const newEncodedSignatureRequest = window.btoa(JSON.stringify(signatureRequest));
+    const stringSignature = JSON.stringify(signatureRequest);
+    const newEncodedSignatureRequest = Buffer.from(stringSignature).toString('base64');
 
     return newEncodedSignatureRequest;
   }
@@ -256,7 +256,6 @@ export class EVMProvider implements IRpcChainRequestHandler {
     port: chrome.runtime.Port
   ) {
     const { vault } = store.getState();
-    const dappController = getDappController();
 
     const allWallets = [
       ...vault.wallets.local,
@@ -288,9 +287,9 @@ export class EVMProvider implements IRpcChainRequestHandler {
       }
 
       // Provider not activated -> display popup and wait for user's approval
-      const connectWalletEvent = await dappProvider.createPopupAndWaitForEvent(
+      const connectWalletEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'connectWallet',
+        ExternalMessageID.connectWallet,
         undefined,
         'selectAccounts'
       );
@@ -300,11 +299,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
         throw new EIPRpcError('User denied provider activation', EIPErrorCodes.Rejected);
       }
 
-      // Send event to notify the accounts array
-      dappController.notifyAccountsChanged(this.getAccounts());
-
       // Return ETH accounts array
-      return this.getAccounts();
+      return connectWalletEvent.detail.accounts;
     }
 
     if (request.method === AvailableMethods.eth_accounts) {
@@ -392,9 +388,9 @@ export class EVMProvider implements IRpcChainRequestHandler {
         signatureData.publicKey = accounts[0].publicKey;
       }
 
-      const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
+      const signatureEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'messageSigned',
+        ExternalMessageID.messageSigned,
         undefined,
         'signMessage',
         signatureData,
@@ -520,9 +516,9 @@ export class EVMProvider implements IRpcChainRequestHandler {
         signatureData.publicKey = accounts[0].publicKey;
       }
 
-      const signatureEvent = await dappProvider.createPopupAndWaitForEvent(
+      const signatureEvent = await dappProvider.createPopupAndWaitForMessage(
         port,
-        'signTypedMessageResult',
+        ExternalMessageID.signTypedMessageResult,
         undefined,
         'signTypedMessage',
         signatureData,
@@ -549,7 +545,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
       console.log('trxData', trxData);
 
       let decodedContractCall: ContractInputData | null = null;
-      let eventType = 'transactionSent';
+      let eventType = ExternalMessageID.transactionSent;
       let route = 'sendTransaction';
 
       // chainId should match the current active network if chainId property is provided.
@@ -589,11 +585,11 @@ export class EVMProvider implements IRpcChainRequestHandler {
       )?.label;
 
       if (decodedContractCall?.method === 'approve') {
-        eventType = 'spendApproved';
+        eventType = ExternalMessageID.spendApproved;
         route = 'approveSpend';
       }
 
-      const event = await dappProvider.createPopupAndWaitForEvent(
+      const event = await dappProvider.createPopupAndWaitForMessage(
         port,
         eventType,
         undefined,

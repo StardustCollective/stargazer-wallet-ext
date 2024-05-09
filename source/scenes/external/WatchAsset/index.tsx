@@ -4,7 +4,7 @@ import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import ConstellationIcon from 'assets/images/svg/constellation-blue.svg';
-import { useController, useCopyClipboard } from 'hooks/index';
+import { useCopyClipboard } from 'hooks/index';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { WatchAssetOptions } from 'scripts/Provider/StargazerProvider';
 import styles from './index.module.scss';
@@ -24,6 +24,10 @@ import {
   TOKEN,
   YOU_CAN_DELETE,
 } from './constants';
+import { useSelector } from 'react-redux';
+import dappSelectors from 'selectors/dappSelectors';
+import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 const WatchAsset = () => {
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
@@ -40,33 +44,28 @@ const WatchAsset = () => {
   );
   const { address, chainId, l0, l1, logo, symbol } = options;
 
-  const controller = useController();
-  const current = controller.dapp.getCurrent();
+  const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
   const onNegativeButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
+    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
 
-    const { windowId } = queryString.parse(window.location.search);
-
-    const denied = new CustomEvent('watchAssetResult', {
-      detail: { windowId, result: false },
+    await sendExternalMessage(ExternalMessageID.watchAssetResult, {
+      windowId,
+      result: false,
     });
 
-    background.dispatchEvent(denied);
     window.close();
   };
 
   const onPositiveButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
+    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
 
-    const { windowId } = queryString.parse(window.location.search);
-
-    const approved = new CustomEvent('watchAssetResult', {
-      detail: { windowId, result: true },
+    await sendExternalMessage(ExternalMessageID.watchAssetResult, {
+      windowId,
+      result: true,
     });
 
-    background.dispatchEvent(approved);
     window.close();
   };
 

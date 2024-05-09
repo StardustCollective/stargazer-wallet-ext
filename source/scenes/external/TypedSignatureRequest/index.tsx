@@ -4,6 +4,7 @@
 
 import React from 'react';
 import queryString from 'query-string';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 //////////////////////
@@ -24,7 +25,7 @@ import CardLayoutV2 from 'scenes/external/Layouts/CardLayoutV2';
 // Hooks
 /////////////////////
 
-import { useController, useCopyClipboard } from 'hooks/index';
+import { useCopyClipboard } from 'hooks/index';
 
 ///////////////////////////
 // Styles
@@ -35,6 +36,9 @@ import styles from './index.module.scss';
 import { EIP712Domain, TypedSignatureRequest } from './types';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { ALL_EVM_CHAINS } from 'constants/index';
+import dappSelectors from 'selectors/dappSelectors';
+import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 const DOMAIN_TITLE = 'Domain';
 const URL_TITLE = 'URL';
@@ -65,8 +69,7 @@ const TypedSignatureRequestScreen = () => {
   const metadataObject = signatureRequest.data;
   const domainObject = JSON.parse(domain) as EIP712Domain;
 
-  const controller = useController();
-  const current = controller.dapp.getCurrent();
+  const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
   //////////////////////
@@ -74,26 +77,22 @@ const TypedSignatureRequestScreen = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
-    const { windowId } = queryString.parse(window.location.search);
-    const denied = new CustomEvent('signTypedMessageResult', {
-      detail: { windowId, result: false },
+    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
+    await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
+      windowId,
+      result: false,
     });
-
-    background.dispatchEvent(denied);
     window.close();
   };
 
   const onPositiveButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
+    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
 
-    const { windowId } = queryString.parse(window.location.search);
-
-    const approved = new CustomEvent('signTypedMessageResult', {
-      detail: { windowId, result: true },
+    await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
+      windowId,
+      result: true,
     });
 
-    background.dispatchEvent(approved);
     window.close();
   };
 

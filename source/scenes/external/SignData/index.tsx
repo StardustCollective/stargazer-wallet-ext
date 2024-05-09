@@ -6,14 +6,19 @@ import styles from './index.module.scss';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import { useSelector } from 'react-redux';
+import dappSelectors from 'selectors/dappSelectors';
+import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 const SignData = () => {
   const controller = useController();
 
-  const current = controller.dapp.getCurrent();
+  const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
-  const { data: stringData, windowId } = queryString.parse(window.location.search);
+  const { data: stringData, windowId }: { windowId?: string; data?: string } =
+    queryString.parse(window.location.search);
 
   const {
     dataEncoded,
@@ -43,31 +48,26 @@ const SignData = () => {
   }
 
   const onNegativeButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
-    const cancelEvent = new CustomEvent('dataSigned', {
-      detail: { windowId, result: false },
+    await sendExternalMessage(ExternalMessageID.dataSigned, {
+      windowId,
+      result: false,
     });
 
-    background.dispatchEvent(cancelEvent);
     window.close();
   };
 
   const onPositiveButtonClick = async () => {
     const signature = await controller.stargazerProvider.signData(dataEncoded);
-    const background = await chrome.runtime.getBackgroundPage();
 
-    const signatureEvent = new CustomEvent('dataSigned', {
-      detail: {
-        windowId,
-        result: true,
-        signature: {
-          hex: signature,
-          dataEncoded,
-        },
+    await sendExternalMessage(ExternalMessageID.dataSigned, {
+      windowId,
+      result: true,
+      signature: {
+        hex: signature,
+        dataEncoded,
       },
     });
 
-    background.dispatchEvent(signatureEvent);
     window.close();
   };
 

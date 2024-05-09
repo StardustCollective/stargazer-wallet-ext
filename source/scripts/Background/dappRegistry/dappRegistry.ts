@@ -1,9 +1,5 @@
-import debugFn from 'debug';
 import { AvailableEvents, ProtocolProvider } from 'scripts/common';
-
 import { DappProvider } from './dappProvider';
-
-const debug = debugFn('DappRegistry');
 
 class DappRegistry {
   #registeredDapps: Map<string, DappProvider>;
@@ -38,23 +34,19 @@ class DappRegistry {
     if (!registeredDapp) {
       registeredDapp = new DappProvider(url.origin);
       this.#registeredDapps.set(url.origin, registeredDapp);
-      debug('Dapp Provider Registered', 'origin:', url.origin);
     }
 
     registeredDapp.registerProviderPort(port);
-    debug('Port Provider Registered', 'portName:', port.name);
 
     port.onDisconnect.addListener(() => this.onPortDisconnected(port, registeredDapp));
   }
 
   onPortDisconnected(port: chrome.runtime.Port, dapp: DappProvider) {
     dapp.deregisterProviderPort(port);
-    debug('Port Provider Unregistered', 'portName:', port.name);
 
     if (dapp.portsSize === 0) {
       // Remove the dapp from registry since there is no other provider connected
       this.#registeredDapps.delete(dapp.origin);
-      debug('Dapp Provider Unregistered', 'origin:', dapp.origin);
     }
   }
 
@@ -81,16 +73,6 @@ class DappRegistry {
       data,
       (providerChain) => chain === '*' || chain === providerChain
     );
-  }
-
-  sendListenerEvent(listenerId: string, event: AvailableEvents, data: any[] = []) {
-    for (const dappProvider of this.#registeredDapps.values()) {
-      dappProvider.sendEventByFilter(
-        event,
-        data,
-        (_, providerListenerId) => listenerId === providerListenerId
-      );
-    }
   }
 }
 

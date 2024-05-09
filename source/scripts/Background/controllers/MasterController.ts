@@ -3,7 +3,7 @@ import WalletController from './WalletController';
 import ControllerUtils, { IControllerUtils } from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
 import MigrationController from './MigrationController';
-import { DAppController } from './DAppController';
+import DAppController from './DAppController';
 import { DappRegistry } from '../dappRegistry';
 import { EVMProvider } from 'scripts/Provider/EVMProvider';
 
@@ -20,7 +20,7 @@ class MasterController {
     this.#stargazerProvider = new StargazerProvider();
     this.#ethereumProvider = new EVMProvider();
     this.#wallet = WalletController;
-    this.#dapp = new DAppController();
+    this.#dapp = new DAppController(null);
     this.#dappRegistry = new DappRegistry();
     this.#contacts = ContactsController();
 
@@ -59,50 +59,6 @@ class MasterController {
 
   get appRoute() {
     return this.#utils.appRoute;
-  }
-
-  stateUpdater() {
-    this.#utils.updateFiat();
-  }
-
-  async createPopup(
-    windowId: string,
-    network?: string,
-    route?: string,
-    data?: Record<any, any>,
-    type: chrome.windows.createTypeEnum = 'popup',
-    url: string = '/external.html',
-    windowSize = { width: 372, height: 600 }
-  ) {
-    const { width = 372, height = 600 } = windowSize;
-    // TODO: test Manifest V3
-    const currentWindow = await chrome.windows.getCurrent();
-
-    if (!currentWindow || !currentWindow.width) return null;
-
-    const params = new URLSearchParams();
-    if (route) {
-      params.set('route', route);
-    }
-    if (network) {
-      params.set('network', network);
-    }
-    if (data) {
-      params.set('data', JSON.stringify(data));
-    }
-
-    // This was being passed only in hash value but it gets dropped somethings in routing
-    params.set('windowId', windowId);
-    url += `?${params.toString()}#${windowId}`;
-
-    return await chrome.windows.create({
-      url,
-      width,
-      height,
-      type,
-      top: 0,
-      left: currentWindow.width - 600,
-    });
   }
 }
 

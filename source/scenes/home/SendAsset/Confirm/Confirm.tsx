@@ -10,6 +10,8 @@ import { ITransactionInfo } from 'scripts/types';
 import { IAssetInfoState } from 'state/assets/types';
 import { ellipsis } from '../../helpers';
 import styles from './Confirm.scss';
+import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 interface ISendConfirm {
   isExternalRequest: boolean;
@@ -23,7 +25,7 @@ interface ISendConfirm {
   getFeeAmount: () => any;
   getTotalAmount: () => any;
   handleCancel: () => void;
-  handleConfirm: (browserObject: any) => void;
+  handleConfirm: (callbackSuccess: any, callbackError: any) => void;
   disabled: boolean;
   isL0token: boolean;
 }
@@ -43,6 +45,21 @@ const SendConfirm = ({
   disabled,
   isL0token,
 }: ISendConfirm) => {
+  const callbackSuccess = async (windowId: string, trxHash: string) => {
+    await sendExternalMessage(ExternalMessageID.transactionSent, {
+      windowId,
+      approved: true,
+      trxHash,
+    });
+  };
+  const callbackError = async (windowId: string, error: string) => {
+    await sendExternalMessage(ExternalMessageID.transactionSent, {
+      windowId,
+      approved: false,
+      error,
+    });
+  };
+
   return confirmed ? (
     <Layout title="Your transaction is underway">
       <CheckIcon className={styles.checked} />
@@ -108,7 +125,7 @@ const SendConfirm = ({
           <Button
             type="submit"
             variant={styles.button}
-            onClick={() => handleConfirm(chrome)}
+            onClick={() => handleConfirm(callbackSuccess, callbackError)}
             disabled={disabled}
           >
             {activeWallet.type === KeyringWalletType.LedgerAccountWallet ||

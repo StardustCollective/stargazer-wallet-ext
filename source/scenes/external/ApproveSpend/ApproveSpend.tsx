@@ -5,7 +5,6 @@
 import React, { ChangeEvent, useEffect } from 'react';
 import queryString from 'query-string';
 import TextV3 from 'components/TextV3';
-import { useController } from 'hooks/index';
 import find from 'lodash/find';
 import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
@@ -16,7 +15,11 @@ import { ITransactionInfo } from '../../../scripts/types';
 import { isError, StargazerChain } from '../../../scripts/common';
 import { usePlatformAlert } from 'utils/alertUtil';
 import walletsSelectors from 'selectors/walletsSelectors';
+import dappSelectors from 'selectors/dappSelectors';
 import { CHAIN_FULL_ASSET, CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
+import { getWalletController } from 'utils/controllersUtils';
+import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 ///////////////////////
 // Components
@@ -62,9 +65,10 @@ const ApproveSpend = () => {
   // Hooks
   /////////////////////
 
-  const controller = useController();
-  const current = controller.dapp.getCurrent();
+  const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
+
+  const walletController = getWalletController();
   const showAlert = usePlatformAlert();
   const vaultActiveAsset = useSelector(walletsSelectors.getActiveAsset);
 
@@ -97,7 +101,8 @@ const ApproveSpend = () => {
 
       if (activeAsset.id !== vaultActiveAsset.id) {
         // Update active asset in order to get expected gas prices
-        controller.wallet.account.updateAccountActiveAsset(activeAsset);
+        // TODO: test with Manifest V3
+        walletController.account.updateAccountActiveAsset(activeAsset);
       }
     }
   }
@@ -136,19 +141,19 @@ const ApproveSpend = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
-    const { windowId } = queryString.parse(window.location.search);
-    const cancelEvent = new CustomEvent('spendApproved', {
-      detail: { windowId, approved: true, result: false },
+    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
+
+    await sendExternalMessage(ExternalMessageID.spendApproved, {
+      windowId,
+      approved: true,
+      result: false,
     });
 
-    background.dispatchEvent(cancelEvent);
     window.close();
   };
 
   const onPositiveButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
-    const { windowId } = queryString.parse(window.location.search);
+    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
 
     try {
       const txConfig: ITransactionInfo = {
@@ -167,21 +172,22 @@ const ApproveSpend = () => {
         },
       };
 
-      controller.wallet.account.updateTempTx(txConfig);
-      const trxHash = await controller.wallet.account.confirmContractTempTx(asset);
+      // TODO: test with Manifest V3
+      walletController.account.updateTempTx(txConfig);
+      const trxHash = await walletController.account.confirmContractTempTx(asset);
 
-      background.dispatchEvent(
-        new CustomEvent('spendApproved', {
-          detail: { windowId, approved: true, result: trxHash },
-        })
-      );
+      await sendExternalMessage(ExternalMessageID.spendApproved, {
+        windowId,
+        approved: true,
+        result: trxHash,
+      });
     } catch (e) {
       if (isError(e)) {
-        background.dispatchEvent(
-          new CustomEvent('spendApproved', {
-            detail: { windowId, approved: false, error: e.message },
-          })
-        );
+        await sendExternalMessage(ExternalMessageID.spendApproved, {
+          windowId,
+          approved: false,
+          error: e.message,
+        });
 
         showAlert(e.message, 'danger');
       }
