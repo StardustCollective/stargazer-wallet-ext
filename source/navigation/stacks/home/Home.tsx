@@ -17,6 +17,7 @@ import { setLoading } from 'state/auth';
 import Start from 'scenes/home/Start';
 import Tabs from '../tabs';
 import Import from 'scenes/common/Import';
+import Loading from 'scenes/unauth/Loading';
 
 ///////////////////////////
 // Navigation
@@ -133,7 +134,7 @@ const Auth = () => {
         <Stack.Screen
           options={{ headerShown: false, animationEnabled: false }}
           name={screens.authorized.homeLoading}
-          component={() => <div>Loading...</div>}
+          component={Loading}
         />
       )}
       {!unlocked && !loading && (

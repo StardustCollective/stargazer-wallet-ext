@@ -23,26 +23,11 @@
     width: 192px;
   }
 
-  .createWalletButton {
-    width: 264px;
-  }
-
-  .createWalletButtonText {
-    font-weight: $semibold;
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  .restoreButton {
-    width: 264px;
-    border-width: 2px;
-    margin-top: 16px;
-  }
-
-  .restoreButtonText {
-    font-weight: $semibold;
-    font-size: 16px;
-    line-height: 24px;
-    color: $white;
+  .loader {
+    width: 60px;
+    height: 60px;
+    transition: all 300ms;
+    opacity: 1;
+    margin-top: 40px;
   }
 }
