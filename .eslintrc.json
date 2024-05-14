@@ -20,6 +20,8 @@
   },
   "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint"],
   "rules": {
+    "no-use-before-define": "off",
+    "no-continue": "off",
     "no-return-await": "off",
     "no-underscore-dangle": "off",
     "no-await-in-loop": "off",
