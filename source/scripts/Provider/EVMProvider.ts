@@ -25,18 +25,20 @@ import {
   getChainInfo,
 } from 'scripts/Background/controllers/EVMChainController/utils';
 import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
-import type { DappProvider } from '../Background/dappRegistry';
+import { ExternalMessageID } from 'scripts/Background/messaging/types';
+import { StargazerExternalPopups } from 'scripts/Background/messaging';
+
+import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
 import {
   AvailableMethods,
   IRpcChainRequestHandler,
-  StargazerProxyRequest,
+  StargazerRequest,
   EIPRpcError,
   StargazerChain,
   ProtocolProvider,
   EIPErrorCodes,
 } from '../common';
 import { StargazerSignatureRequest } from './StargazerProvider';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 // Constants
 const LEDGER_URL = '/ledger.html';
@@ -138,7 +140,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     const { dapp, vault } = store.getState();
     const { whitelist }: IDAppState = dapp;
 
-    const current = dapp.current;
+    const { current } = dapp;
     const origin = current && current.origin;
 
     if (!origin) {
@@ -237,9 +239,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
   }
 
   async handleProxiedRequest(
-    request: StargazerProxyRequest & { type: 'rpc' },
-    _dappProvider: DappProvider,
-    _port: chrome.runtime.Port
+    request: StargazerRequest & { type: 'rpc' },
+    _sender: chrome.runtime.MessageSender
   ) {
     const { activeNetwork }: IVaultState = store.getState().vault;
     const networkLabel = this.getNetworkLabel();
@@ -251,9 +252,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
   }
 
   async handleNonProxiedRequest(
-    request: StargazerProxyRequest & { type: 'rpc' },
-    dappProvider: DappProvider,
-    port: chrome.runtime.Port
+    request: StargazerRequest & { type: 'rpc' },
+    sender: chrome.runtime.MessageSender
   ) {
     const { vault } = store.getState();
 
@@ -282,17 +282,17 @@ export class EVMProvider implements IRpcChainRequestHandler {
     // eth_requestAccounts is used to activate the provider
     if (request.method === AvailableMethods.eth_requestAccounts) {
       // Provider already activated -> return ETH accounts array
-      if (dappProvider.activated) {
+      if (isDappConnected(sender.origin)) {
         return this.getAccounts();
       }
 
       // Provider not activated -> display popup and wait for user's approval
-      const connectWalletEvent = await dappProvider.createPopupAndWaitForMessage(
-        port,
-        ExternalMessageID.connectWallet,
-        undefined,
-        'selectAccounts'
-      );
+      const connectWalletEvent =
+        await StargazerExternalPopups.createPopupAndWaitForMessage(
+          ExternalMessageID.connectWallet,
+          undefined,
+          'selectAccounts'
+        );
 
       // User rejected activation
       if (connectWalletEvent === null) {
@@ -308,7 +308,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     }
 
     // Provider needs to be activated before calling any other RPC method
-    if (!dappProvider.activated) {
+    if (!isDappConnected(sender.origin)) {
       throw new EIPRpcError(
         'Provider is not activated. Call eth_requestAccounts to activate it.',
         EIPErrorCodes.Unauthorized
@@ -367,7 +367,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
       )?.label;
 
       const signatureData = {
-        origin: dappProvider.origin,
+        origin: sender.origin,
         asset: this.getNetworkToken(),
         signatureRequestEncoded,
         walletId: activeWallet.id,
@@ -388,8 +388,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         signatureData.publicKey = accounts[0].publicKey;
       }
 
-      const signatureEvent = await dappProvider.createPopupAndWaitForMessage(
-        port,
+      const signatureEvent = await StargazerExternalPopups.createPopupAndWaitForMessage(
         ExternalMessageID.messageSigned,
         undefined,
         'signMessage',
@@ -432,6 +431,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
       }
 
       // Extension 3.6.0+
+      // eslint-disable-next-line prefer-const
       let [address, data] = request.params as [string, Record<string, any>];
 
       if (typeof address !== 'string') {
@@ -473,7 +473,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
       if (
         !!data?.domain?.chainId &&
         activeChainId &&
-        parseInt(data.domain.chainId) !== activeChainId
+        parseInt(data.domain.chainId, 10) !== activeChainId
       ) {
         throw new EIPRpcError(
           'chainId does not match the active network chainId',
@@ -497,7 +497,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
       };
 
       const signatureData = {
-        origin: dappProvider.origin,
+        origin: sender.origin,
         domain: JSON.stringify(data.domain),
         signatureConsent,
         walletId: activeWallet.id,
@@ -516,8 +516,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         signatureData.publicKey = accounts[0].publicKey;
       }
 
-      const signatureEvent = await dappProvider.createPopupAndWaitForMessage(
-        port,
+      const signatureEvent = await StargazerExternalPopups.createPopupAndWaitForMessage(
         ExternalMessageID.signTypedMessageResult,
         undefined,
         'signTypedMessage',
@@ -562,7 +561,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         }
 
         if (typeof trxData.chainId === 'string') {
-          if (parseInt(trxData.chainId) !== chainId) {
+          if (parseInt(trxData.chainId, 10) !== chainId) {
             throw new EIPRpcError(
               'chainId does not match the active network chainId',
               EIPErrorCodes.ChainDisconnected
@@ -589,8 +588,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         route = 'approveSpend';
       }
 
-      const event = await dappProvider.createPopupAndWaitForMessage(
-        port,
+      const event = await StargazerExternalPopups.createPopupAndWaitForMessage(
         eventType,
         undefined,
         route,

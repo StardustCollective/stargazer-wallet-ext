@@ -1,18 +1,17 @@
 import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
+import { EVMProvider } from 'scripts/Provider/EVMProvider';
 import WalletController from './WalletController';
 import ControllerUtils, { IControllerUtils } from './ControllerUtils';
 import ContactsController, { IContactsController } from './ContactsController';
 import MigrationController from './MigrationController';
 import DAppController from './DAppController';
-import { DappRegistry } from '../dappRegistry';
-import { EVMProvider } from 'scripts/Provider/EVMProvider';
 
 class MasterController {
   #stargazerProvider: StargazerProvider;
   #ethereumProvider: EVMProvider;
   #wallet: typeof WalletController;
   #dapp: DAppController;
-  #dappRegistry: DappRegistry;
+
   #contacts: IContactsController;
   #utils: IControllerUtils;
 
@@ -21,7 +20,7 @@ class MasterController {
     this.#ethereumProvider = new EVMProvider();
     this.#wallet = WalletController;
     this.#dapp = new DAppController(null);
-    this.#dappRegistry = new DappRegistry();
+
     this.#contacts = ContactsController();
 
     this.#utils = ControllerUtils();
@@ -43,10 +42,6 @@ class MasterController {
 
   get dapp() {
     return this.#dapp;
-  }
-
-  get dappRegistry() {
-    return this.#dappRegistry;
   }
 
   get contacts() {

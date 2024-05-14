@@ -1,8 +1,6 @@
 import store from 'state/store';
 import rehydrateStore from 'state/rehydrate';
 
-import { DappRegistry } from './dappRegistry';
-
 import { handleInstall } from './handlers/handleInstall';
 import { handleDag4Setup } from './handlers/handleDag4Setup';
 import { handleDappMessages } from './handlers/handleDappMessages';
@@ -17,4 +15,3 @@ rehydrateStore(store).then(() => {
 handleInstall();
 handleRehydrateStore();
 handleDappMessages();
-new DappRegistry();
