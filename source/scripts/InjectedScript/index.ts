@@ -1,15 +1,17 @@
 import { readOnlyProxy } from '../common';
-import { StargazerWalletProvider } from './stargazerWalletProvider';
-import { retreiveInjectedProxyId } from './utils';
+import { StargazerAnnounceProvider } from './announce_provider';
+import { StargazerISMessageBroker } from './is_message_broker';
+import { StargazerWalletProvider } from './wallet_provider';
 
 declare global {
   interface Window {
     stargazer: StargazerWalletProvider;
   }
 }
+const broker = new StargazerISMessageBroker();
+broker.init();
 
-retreiveInjectedProxyId();
-window.stargazer = readOnlyProxy(new StargazerWalletProvider());
+const announceProvider = new StargazerAnnounceProvider(broker);
+announceProvider.announceProvider();
 
-// EIP-6963
-require('./stargazerAnnounceProvider');
+window.stargazer = readOnlyProxy(new StargazerWalletProvider(broker));
