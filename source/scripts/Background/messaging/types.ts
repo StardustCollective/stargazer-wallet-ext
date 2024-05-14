@@ -35,11 +35,6 @@ export type ExternalMessage = {
   detail: MessageDetail;
 };
 
-export type DappMessage = {
-  type: MessageType;
-  id: DappMessageID;
-  payload: any;
-};
 export type GlobalMessage = {
   type: MessageType;
   id: GlobalMessageID;
