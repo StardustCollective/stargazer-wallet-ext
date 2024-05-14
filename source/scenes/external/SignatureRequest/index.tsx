@@ -1,76 +1,35 @@
-//////////////////////
-// Modules Imports
-/////////////////////
-
 import React from 'react';
 import queryString from 'query-string';
-// import { useController } from 'hooks/index';
-// import { useSelector } from 'react-redux';
-// import { AssetType } from 'state/vault/types';
-
-//////////////////////
-// Common Layouts
-/////////////////////
-
+import { dag4 } from '@stardust-collective/dag4';
+import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import CardLayout from 'scenes/external/Layouts/CardLayout';
-
-///////////////////////////
-// Styles
-///////////////////////////
-
-import styles from './index.module.scss';
-
-// import walletsSelectors from 'selectors/walletsSelectors';
-import {
-  // StargazerProvider,
-  StargazerSignatureRequest,
-} from 'scripts/Provider/StargazerProvider';
-// import { ProtocolProvider } from 'scripts/common';
-// import { EVMProvider } from 'scripts/Provider/EVMProvider';
 import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
 import { ExternalMessageID } from 'scripts/Background/messaging/types';
-
-//////////////////////
-// Component
-/////////////////////
+import { decodeFromBase64 } from 'utils/encoding';
+import styles from './index.module.scss';
+import { StargazerSignatureRequest } from 'scripts/Provider/constellation';
+import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 
 const SignatureRequest = () => {
-  //////////////////////
-  // Hooks
-  /////////////////////
-
-  // const controller = useController();
-  // const wallets = useSelector(walletsSelectors.selectAllAccounts);
-
   const { data: stringData } = queryString.parse(location.search);
 
   const {
     signatureRequestEncoded,
-    // asset,
-    // provider,
+    asset,
     chainLabel,
+    walletLabel,
   }: {
     signatureRequestEncoded: string;
     asset: string;
-    provider: string;
     chainLabel: string;
+    walletLabel: string;
   } = JSON.parse(stringData as string);
-  // TODO-349: Check how signature should work here
-  // const PROVIDERS: { [provider: string]: StargazerProvider | EVMProvider } = {
-  //   [ProtocolProvider.CONSTELLATION]: controller.stargazerProvider,
-  //   [ProtocolProvider.ETHEREUM]: controller.ethereumProvider,
-  // };
-  // const providerInstance = PROVIDERS[provider];
-  // const account = providerInstance.getAssetByType(
-  //   asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum
-  // );
-  const signatureRequest = JSON.parse(
-    window.atob(signatureRequestEncoded)
-  ) as StargazerSignatureRequest;
 
-  //////////////////////
-  // Callbacks
-  /////////////////////
+  const isDAGsignature = asset === 'DAG';
+
+  const signatureRequest = JSON.parse(
+    decodeFromBase64(signatureRequestEncoded)
+  ) as StargazerSignatureRequest;
 
   const onNegativeButtonClick = async () => {
     const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
@@ -83,20 +42,52 @@ const SignatureRequest = () => {
     window.close();
   };
 
+  const signDagMessage = async (message: string): Promise<string> => {
+    const privateKeyHex = dag4.account.keyTrio.privateKey;
+    const signature = await dag4.keyStore.personalSign(privateKeyHex, message);
+    return signature;
+  };
+
+  const signEthMessage = async (message: string): Promise<string> => {
+    const wallet = getWallet();
+    const privateKeyHex = remove0x(wallet.privateKey);
+    const privateKey = Buffer.from(privateKeyHex, 'hex');
+    const msgHash = hashPersonalMessage(Buffer.from(message));
+
+    const { v, r, s } = ecsign(msgHash, privateKey);
+    const sig = preserve0x(toRpcSig(v, r, s));
+
+    return sig;
+  };
+
   const onPositiveButtonClick = async () => {
-    // const message = asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content;
-    // const signature = providerInstance.signMessage(message);
+    const message = isDAGsignature ? signatureRequestEncoded : signatureRequest.content;
+    const signMessage = isDAGsignature ? signDagMessage : signEthMessage;
 
     const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
+    let signature;
 
-    await sendExternalMessage(ExternalMessageID.messageSigned, {
-      windowId,
-      result: true,
-      signature: {
-        hex: 'test',
-        requestEncoded: signatureRequestEncoded,
-      },
-    });
+    try {
+      signature = await signMessage(message);
+    } catch (err) {
+      await sendExternalMessage(ExternalMessageID.messageSigned, {
+        windowId,
+        result: false,
+      });
+
+      window.close();
+    }
+
+    if (signature) {
+      await sendExternalMessage(ExternalMessageID.messageSigned, {
+        windowId,
+        result: true,
+        signature: {
+          hex: signature,
+          requestEncoded: signatureRequestEncoded,
+        },
+      });
+    }
 
     window.close();
   };
@@ -122,10 +113,7 @@ const SignatureRequest = () => {
       <div className={styles.content}>
         <section>
           <label>Account</label>
-          <div>
-            {/* {wallets.find((w) => w.address === account.address)?.label ?? account.address} */}
-            Account label
-          </div>
+          <div>{walletLabel}</div>
         </section>
         <section className={styles.message}>
           <label>Message</label>

@@ -49,6 +49,7 @@ const Login: FC<ILogin> = ({
   errors,
   register,
   isInvalid,
+  isLoading,
 }) => {
   const errorClass = clsx(styles.error, {
     [styles.confirm]: location.pathname.includes('confirm.html'),
@@ -96,6 +97,7 @@ const Login: FC<ILogin> = ({
           type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
           label={UNLOCK_STRING}
+          loading={isLoading}
           extraStyle={styles.started}
           submit
         />

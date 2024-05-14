@@ -5,6 +5,7 @@ import {
   StargazerEncodedProxyResponse,
   StargazerEncodedProxyEvent,
 } from '../common';
+import { encodeToBase64 } from 'utils/encoding';
 
 const debug = debugFn('Stargazer:StargazerChainProvider');
 
@@ -43,7 +44,7 @@ class RequestsProxy {
     let port = this.#ports.get(providerId);
     if (!port) {
       port = chrome.runtime.connect({
-        name: `stargazer-provider-proxy:${window.btoa(this.#proxyId)}:${providerId}`,
+        name: `stargazer-provider-proxy:${encodeToBase64(this.#proxyId)}:${providerId}`,
       });
       port.onMessage.addListener(this.onPortMessage.bind(this));
       port.onDisconnect.addListener(() => this.onPortDisconnect(providerId));

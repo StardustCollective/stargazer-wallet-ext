@@ -231,12 +231,10 @@ const ConfirmContainer = () => {
           trxHash = await accountController.confirmContractTempTx(activeAsset);
         }
 
-        if (callbackSuccess) {
+        if (callbackSuccess && !!trxHash) {
           callbackSuccess(windowId, trxHash);
-        }
-
-        if (window) {
-          window.close();
+        } else {
+          callbackError(windowId, 'Unable to confirm transaction');
         }
       } else {
         if (
@@ -279,6 +277,7 @@ const ConfirmContainer = () => {
         ) {
           message = 'Insufficient funds to cover gas fee.';
         }
+        console.log('ERROR', e);
 
         if (callbackError) {
           callbackError(windowId, e.message);

@@ -8,9 +8,7 @@ import React from 'react';
 // Navigation
 /////////////////////
 
-import { useLinkTo, useNavigation } from '@react-navigation/native';
-import navigationUtil from 'navigation/util';
-import screens from 'navigation/screens';
+import { useLinkTo } from '@react-navigation/native';
 
 //////////////////////
 // Common Scenes
@@ -28,7 +26,6 @@ const Starter = () => {
   /////////////////////
 
   const linkTo = useLinkTo();
-  const navigation = useNavigation();
 
   //////////////////////
   // Callbacks
@@ -36,7 +33,8 @@ const Starter = () => {
 
   const onLoginSuccess = (res: boolean) => {
     if (res) {
-      navigationUtil.replace(navigation, screens.authorized.root);
+      // TODO: test on Mobile
+      console.log('onLoginSuccess - NOOP');
     }
   };
 

@@ -1,3 +1,5 @@
+import { encodeToBase64 } from 'utils/encoding';
+
 const readOnlyProxy = <T extends object>(object: T): T => {
   return new Proxy(object, {
     set: () => false,
@@ -14,7 +16,7 @@ const readOnlyProxy = <T extends object>(object: T): T => {
 };
 
 const generateNamespaceId = (namespace: string) =>
-  `stargazer:${namespace}:${window.btoa([Date.now(), Math.random()].join('.'))}`;
+  `stargazer:${namespace}:${encodeToBase64([Date.now(), Math.random()].join('.'))}`;
 
 /**
  * Native object references passed between different execution contexts are not

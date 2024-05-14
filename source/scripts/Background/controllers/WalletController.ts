@@ -53,9 +53,9 @@ import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
-import { setUnlocked } from 'state/auth';
 import { sendDappMessage } from 'scripts/Background/messaging/messenger';
 import { DappMessageID } from 'scripts/Background/messaging/types';
+import { setUnlocked } from 'state/auth';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -84,7 +84,6 @@ class WalletController {
     });
     this.keyringManager.on('update', async (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
-      store.dispatch(setUnlocked(state.isUnlocked));
       const { vault } = store.getState();
 
       try {
@@ -98,6 +97,7 @@ class WalletController {
         console.log(e);
       }
       store.dispatch(updateLoginState({ processState: ProcessStates.IDLE }));
+      store.dispatch(setUnlocked(state.isUnlocked));
     });
 
     this.account = new AccountController(this.keyringManager);
@@ -507,7 +507,9 @@ class WalletController {
   logOut(): void {
     this.keyringManager.logout();
     this.account.networkController = undefined;
-    store.dispatch(changeActiveWallet(undefined));
+    store.dispatch(setUnlocked(false));
+    store.dispatch(changeActiveWallet(null));
+    store.dispatch(setVaultInfo({ wallets: [], isUnlocked: false }));
     store.dispatch(setAutoLogin(false));
   }
 }

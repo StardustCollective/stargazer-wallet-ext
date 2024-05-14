@@ -5,6 +5,7 @@
 import React from 'react';
 import queryString from 'query-string';
 import { useSelector } from 'react-redux';
+import * as ethers from 'ethers';
 import clsx from 'clsx';
 
 //////////////////////
@@ -39,6 +40,8 @@ import { ALL_EVM_CHAINS } from 'constants/index';
 import dappSelectors from 'selectors/dappSelectors';
 import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
 import { ExternalMessageID } from 'scripts/Background/messaging/types';
+import { ecsign, toRpcSig } from 'ethereumjs-util';
+import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 
 const DOMAIN_TITLE = 'Domain';
 const URL_TITLE = 'URL';
@@ -61,13 +64,19 @@ const TypedSignatureRequestScreen = () => {
   const {
     signatureConsent: signatureRequest,
     domain,
-  }: { signatureConsent: TypedSignatureRequest; domain: string } = JSON.parse(
-    stringData as string
-  );
+    types,
+  }: {
+    signatureConsent: TypedSignatureRequest;
+    domain: string;
+    types: string;
+  } = JSON.parse(stringData as string);
 
   const contentObject = JSON.parse(signatureRequest.content);
   const metadataObject = signatureRequest.data;
   const domainObject = JSON.parse(domain) as EIP712Domain;
+  const typesObject = JSON.parse(types) as Parameters<
+    typeof ethers.utils._TypedDataEncoder.hash
+  >[1];
 
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
@@ -85,12 +94,38 @@ const TypedSignatureRequestScreen = () => {
     window.close();
   };
 
+  const signTypedData = (
+    domain: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[0],
+    types: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[1],
+    value: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[2]
+  ) => {
+    const wallet = getWallet();
+    const privateKeyHex = remove0x(wallet.privateKey);
+    const privateKey = Buffer.from(privateKeyHex, 'hex');
+    const msgHash = ethers.utils._TypedDataEncoder.hash(domain, types, value);
+
+    const { v, r, s } = ecsign(Buffer.from(remove0x(msgHash), 'hex'), privateKey);
+    const sig = preserve0x(toRpcSig(v, r, s));
+
+    return sig;
+  };
+
   const onPositiveButtonClick = async () => {
     const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
+
+    const signature = signTypedData(domainObject, typesObject, contentObject);
+
+    if (!signature) {
+      await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
+        windowId,
+        result: false,
+      });
+    }
 
     await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
       windowId,
       result: true,
+      signature,
     });
 
     window.close();

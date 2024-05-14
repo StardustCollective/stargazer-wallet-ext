@@ -1,3 +1,4 @@
+import { ConstellationProvider } from 'scripts/Provider/constellation';
 import {
   AvailableChainMethods,
   AvailableChainMethod,
@@ -5,8 +6,7 @@ import {
 } from '../../../common';
 
 import type { DappProviderExternalImplementation } from '../dappProvider';
-import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
-import { EVMProvider } from 'scripts/Provider/EVMProvider';
+import { EVMProvider } from 'scripts/Provider/evm';
 
 /**
  * Extended implementation of DappProvider.onRpcRequest
@@ -18,7 +18,7 @@ const handleRpcRequest: DappProviderExternalImplementation<'onRpcRequest', []> =
   _encodedRequest
 ) => {
   const CHAIN_PROVIDERS = {
-    [ProtocolProvider.CONSTELLATION]: new StargazerProvider(),
+    [ProtocolProvider.CONSTELLATION]: new ConstellationProvider(),
     [ProtocolProvider.ETHEREUM]: new EVMProvider(),
   };
 

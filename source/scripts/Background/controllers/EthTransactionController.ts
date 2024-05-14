@@ -5,6 +5,7 @@ import IVaultState from 'state/vault/types';
 import { IAssetInfoState } from '../../../state/assets/types';
 import { AccountController } from './AccountController';
 import localStorage from 'utils/localStorage';
+import differenceInMinutes from 'date-fns/differenceInMinutes';
 
 export interface IEthTransactionController {
   addPendingTx: (tx: IETHPendingTx) => Promise<boolean>;
@@ -23,6 +24,7 @@ type ITransactionListeners = {
 };
 
 const TX_STORE = 'ETH_PENDING';
+const EXPIRATION_TIME = 10; // In minutes
 
 export class EthTransactionController implements IEthTransactionController {
   accountController: AccountController;
@@ -94,7 +96,31 @@ export class EthTransactionController implements IEthTransactionController {
     return [...filteredData, ...activeAsset.transactions];
   }
 
+  async filterPendingData() {
+    let pendingData: IPendingData;
+
+    try {
+      pendingData = await this._getPendingData();
+    } catch (err: any) {
+      console.log('filterPendingData err: ', err);
+    }
+
+    if (!pendingData) return false;
+
+    for (const item of Object.values(pendingData)) {
+      const txDate = new Date(item.timestamp);
+      const currentDate = new Date();
+      const difference = differenceInMinutes(currentDate, txDate);
+      if (difference >= EXPIRATION_TIME) {
+        delete pendingData[item.txHash];
+      }
+    }
+
+    await localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
+  }
+
   async startMonitor() {
+    await this.filterPendingData();
     const pendingData = await this._getPendingData();
 
     Object.values(pendingData).forEach((pendingTx: IETHPendingTx) => {

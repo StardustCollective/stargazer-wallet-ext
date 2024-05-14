@@ -6,7 +6,6 @@ import CopyIcon from 'assets/images/svg/copy.svg';
 import ConstellationIcon from 'assets/images/svg/constellation-blue.svg';
 import { useCopyClipboard } from 'hooks/index';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { WatchAssetOptions } from 'scripts/Provider/StargazerProvider';
 import styles from './index.module.scss';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { ellipsis, formatNumber } from 'scenes/home/helpers';
@@ -28,6 +27,7 @@ import { useSelector } from 'react-redux';
 import dappSelectors from 'selectors/dappSelectors';
 import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
 import { ExternalMessageID } from 'scripts/Background/messaging/types';
+import { WatchAssetOptions } from 'scripts/Provider/constellation';
 
 const WatchAsset = () => {
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);

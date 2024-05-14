@@ -49,8 +49,9 @@ const SendConfirm = ({
     await sendExternalMessage(ExternalMessageID.transactionSent, {
       windowId,
       approved: true,
-      trxHash,
+      result: trxHash,
     });
+    window.close();
   };
   const callbackError = async (windowId: string, error: string) => {
     await sendExternalMessage(ExternalMessageID.transactionSent, {

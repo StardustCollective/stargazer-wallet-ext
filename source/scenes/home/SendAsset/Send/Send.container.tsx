@@ -174,16 +174,18 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         if (chain === StargazerChain.CONSTELLATION) {
           if (!!metagraphAddress) {
             activeAsset = useSelector((state: RootState) =>
-              find(state.vault.activeWallet.assets, { contractAddress: metagraphAddress })
+              find(state.vault?.activeWallet?.assets, {
+                contractAddress: metagraphAddress,
+              })
             );
           } else {
             activeAsset = useSelector((state: RootState) =>
-              find(state.vault.activeWallet.assets, { id: AssetType.Constellation })
+              find(state.vault?.activeWallet?.assets, { id: AssetType.Constellation })
             );
           }
         } else {
           activeAsset = useSelector((state: RootState) =>
-            find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
+            find(state.vault?.activeWallet?.assets, { id: AssetType.Ethereum })
           );
 
           activeAsset = {
@@ -194,13 +196,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       } else {
         // Set ETH as the default activeAsset
         activeAsset = useSelector((state: RootState) =>
-          find(state.vault.activeWallet.assets, { id: AssetType.Ethereum })
+          find(state.vault?.activeWallet?.assets, { id: AssetType.Ethereum })
         );
       }
     } else {
       // Get activeAsset from wallet assets
       activeAsset = useSelector((state: RootState) =>
-        find(state.vault.activeWallet.assets, { id: activeAsset?.id })
+        find(state.vault?.activeWallet?.assets, { id: activeAsset?.id })
       );
     }
 

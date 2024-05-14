@@ -35,6 +35,7 @@ const initialState: IVaultState = {
     ledger: [],
     bitfi: [],
   },
+  publicKey: null,
   hasEncryptedVault: false,
   balances: {
     // 349: New network should be added here.
@@ -44,10 +45,8 @@ const initialState: IVaultState = {
     [AssetType.BSC]: '0',
     [AssetType.Polygon]: '0',
   },
-  // activeWalletId: undefined,
   activeWallet: undefined,
   activeAsset: undefined,
-  // activeAccountId: '',
   activeNetwork: {
     // 349: New network should be added here.
     [KeyringNetwork.Constellation]: DAG_NETWORK.main2.id,
@@ -86,79 +85,16 @@ const VaultState = createSlice({
     },
     setVaultInfo(state: IVaultState, action: PayloadAction<KeyringVaultState>) {
       state.wallets.local = action.payload.wallets;
-      // if (!state.activeWallet) {
-      //   state.activeWallet = { assets:[], ...state.wallets[0] };
-      // }
     },
-    // setKeystoreInfo(
-    //   state: IVaultState,
-    //   action: PayloadAction<{ keystore: Keystore; networkType: NetworkType }>
-    // ) {
-    //   const id = `${
-    //     action.payload.networkType === NetworkType.Ethereum ? ETH_PREFIX : ''
-    //   }${action.payload.keystore.id}`;
-    //
-    //   state.keystores = {
-    //     ...state.keystores,
-    //     [id]: action.payload.keystore,
-    //   };
-    // },
-    // removeKeystoreInfo(state: IVaultState, action: PayloadAction<string>) {
-    //   if (state.keystores[action.payload])
-    //     delete state.keystores[action.payload];
-    // },
+    setPublicKey(state: IVaultState, action: PayloadAction<string>) {
+      state.publicKey = action.payload;
+    },
+    removePublicKey(state: IVaultState) {
+      state.publicKey = null;
+    },
     updateStatus(state: IVaultState) {
       state.status = Date.now();
     },
-    // createAccount(state: IWalletState, action: PayloadAction<IAccountState>) {
-    //   return {
-    //     ...state,
-    //     accounts: {
-    //       ...state.accounts,
-    //       [action.payload.id]: action.payload,
-    //     },
-    //     activeAccountId: action.payload.id,
-    //   };
-    // },
-    // createAccount(state: IVaultState, action: PayloadAction<IWalletState>) {
-    //   return {
-    //     ...state,
-    //     accounts: {
-    //       ...state.accounts,
-    //       [action.payload.id]: action.payload,
-    //     },
-    //     activeAccountId: action.payload.id,
-    //   };
-    // },
-    // removeAccount(state: IVaultState, action: PayloadAction<string>) {
-    //   if (Object.keys(state.accounts).length <= 1) return;
-    //   if (state.activeAccountId === action.payload) {
-    //     state.activeAccountId = Object.keys(state.accounts)[0];
-    //   }
-    //   delete state.accounts[action.payload];
-    // },
-    // removeAllAccounts(state: IVaultState) {
-    //   state.accounts = {};
-    //   state.activeAccountId = '';
-    // },
-    // updateAccount(
-    //   state: IVaultState,
-    //   action: PayloadAction<IAccountUpdateState>
-    // ) {
-    //   state.accounts[action.payload.id] = {
-    //     ...state.accounts[action.payload.id],
-    //     ...action.payload,
-    //   };
-    // },
-    // deleteWallet(state: IVaultState) {
-    //   state.keystores = {};
-    //   state.accounts = {};
-    //   state.activeAccountId = '0';
-    //   state.activeNetwork = {
-    //     [AssetType.Constellation]: DAG_NETWORK.main.id,
-    //     [AssetType.Ethereum]: ETH_NETWORK.main.id,
-    //   };
-    // },
     addLedgerWallet(state: IVaultState, action) {
       state.wallets.ledger = [...state.wallets.ledger, action.payload];
     },
@@ -232,12 +168,6 @@ const VaultState = createSlice({
     updateBalances(state: IVaultState, action: PayloadAction<AssetBalances>) {
       state.balances = action.payload;
     },
-    // updateLabel(
-    //   state: IVaultState,
-    //   action: PayloadAction<{ wallet: IWalletState; label: string }>
-    // ) {
-    //   state.activeWallet.label = action.payload.label;
-    // },
     addAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
       state.activeWallet.assets = state.activeWallet.assets.concat([action.payload]);
     },
@@ -284,18 +214,11 @@ export const {
   updateWallets,
   rehydrate,
   setVaultInfo,
-  // setKeystoreInfo,
-  // removeKeystoreInfo,
   updateStatus,
-  // createAccount,
-  // removeAccount,
-  // removeAllAccounts,
-  // deleteWallet,
   changeActiveWallet,
   changeActiveNetwork,
   changeActiveAsset,
   changeCurrentEVMNetwork,
-  // updateAccount,
   updateWalletAssets,
   updateWalletLabel,
   updateActiveWalletLabel,
@@ -303,13 +226,14 @@ export const {
   setLoadingTransactions,
   updateRewards,
   updateBalances,
-  // updateLabel,
   addAsset,
   removeAsset,
   migrateWalletComplete,
   addCustomNetwork,
   addCustomAsset,
   removeCustomAsset,
+  setPublicKey,
+  removePublicKey,
 } = VaultState.actions;
 
 export default VaultState.reducer;

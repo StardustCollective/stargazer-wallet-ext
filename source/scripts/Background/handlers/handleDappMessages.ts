@@ -8,34 +8,6 @@ import {
   DappMessageID,
   MessageType,
 } from 'scripts/Background/messaging/types';
-// import { AvailableEvents, ProtocolProvider } from 'scripts/common';
-
-// export const sendOriginChainEvent = async (
-//   origin: '*' | string,
-//   chain: '*' | ProtocolProvider,
-//   event: AvailableEvents,
-//   data: any[] = []
-// ) => {
-//   if (origin === '*') {
-//     console.log({ chain, event, data });
-//     const tabs = await chrome.tabs.query({ active: true });
-//     console.log('tabs', tabs);
-//     const filteredTabs = tabs.filter((tab) =>
-//       tab?.url?.startsWith('https://demos-react')
-//     );
-//     console.log('filteredTabs', filteredTabs);
-//     for (const tab of filteredTabs) {
-//       const tabId = tab.id;
-//       if (tabId) {
-//         console.log('tabId', tabId);
-//         const message = await chrome.tabs.sendMessage(tabId, { data });
-//         console.log('message', message);
-//       }
-//     }
-
-//     return;
-//   }
-// };
 
 export const notifyAccountsChanged = (accounts: string[]) => {
   const { whitelist } = store.getState().dapp;

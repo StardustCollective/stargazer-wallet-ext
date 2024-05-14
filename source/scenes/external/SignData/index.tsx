@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import queryString from 'query-string';
-import { useController } from 'hooks/index';
+import { dag4 } from '@stardust-collective/dag4';
 import styles from './index.module.scss';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -10,10 +10,9 @@ import { useSelector } from 'react-redux';
 import dappSelectors from 'selectors/dappSelectors';
 import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
 import { ExternalMessageID } from 'scripts/Background/messaging/types';
+import { decodeFromBase64 } from 'utils/encoding';
 
 const SignData = () => {
-  const controller = useController();
-
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
@@ -31,7 +30,7 @@ const SignData = () => {
   } = JSON.parse(stringData as string);
 
   // Decode base64 data
-  let dataDecoded = window.atob(dataEncoded);
+  let dataDecoded = decodeFromBase64(dataEncoded);
   let message = dataDecoded;
 
   try {
@@ -56,8 +55,15 @@ const SignData = () => {
     window.close();
   };
 
+  const signData = async (data: string): Promise<string> => {
+    const privateKeyHex = dag4.account.keyTrio.privateKey;
+    const signature = await dag4.keyStore.dataSign(privateKeyHex, data);
+
+    return signature;
+  };
+
   const onPositiveButtonClick = async () => {
-    const signature = await controller.stargazerProvider.signData(dataEncoded);
+    const signature = await signData(dataEncoded);
 
     await sendExternalMessage(ExternalMessageID.dataSigned, {
       windowId,

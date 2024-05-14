@@ -1,20 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import LogoImage from 'assets/images/logo.svg';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import styles from './Loading.scss';
 
-const Loading = ({ navigation }: { navigation: any }) => {
-  useEffect(() => {
-    navigation.setOptions({ gestureEnabled: false });
-    navigation.getParent()?.setOptions({ gestureEnabled: false });
-
-    return () => {
-      navigation.setOptions({ gestureEnabled: true });
-      navigation.getParent()?.setOptions({ gestureEnabled: true });
-    };
-  }, [navigation]);
-
+const Loading = () => {
   return (
     <div className={styles.home}>
       <TextV3.HeaderLargeRegular

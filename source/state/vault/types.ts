@@ -159,4 +159,5 @@ export default interface IVaultState {
   customNetworks: ICustomNetworks;
   customAssets: IAssetInfoState[];
   currentEVMNetwork: string;
+  publicKey: string;
 }
