@@ -2,13 +2,15 @@ import * as ethers from 'ethers';
 import store from 'state/store';
 import IVaultState from 'state/vault/types';
 import { getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
-import type { DappProvider } from '../../Background/dappRegistry';
+import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
+
 import {
   AvailableMethods,
   IRpcChainRequestHandler,
-  StargazerProxyRequest,
   EIPRpcError,
   EIPErrorCodes,
+  StargazerRequest,
+  StargazerRequestMessage,
 } from '../../common';
 import { getNetworkLabel } from './utils';
 import {
@@ -24,9 +26,9 @@ import {
 
 export class EVMProvider implements IRpcChainRequestHandler {
   async handleProxiedRequest(
-    request: StargazerProxyRequest & { type: 'rpc' },
-    _dappProvider: DappProvider,
-    _port: chrome.runtime.Port
+    request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
+    sender: chrome.runtime.MessageSender
   ) {
     const { activeNetwork }: IVaultState = store.getState().vault;
     const networkLabel = getNetworkLabel();
@@ -38,9 +40,9 @@ export class EVMProvider implements IRpcChainRequestHandler {
   }
 
   async handleNonProxiedRequest(
-    request: StargazerProxyRequest & { type: 'rpc' },
-    dappProvider: DappProvider,
-    port: chrome.runtime.Port
+    request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
+    sender: chrome.runtime.MessageSender
   ) {
     const UNAUTH_METHODS = [
       AvailableMethods.eth_requestAccounts,
@@ -48,7 +50,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     ];
 
     // Provider needs to be activated before calling any other RPC method
-    if (!dappProvider.activated && !UNAUTH_METHODS.includes(request.method)) {
+    if (!isDappConnected(sender.origin) && !UNAUTH_METHODS.includes(request.method)) {
       throw new EIPRpcError(
         'Provider is not activated. Call eth_requestAccounts to activate it.',
         EIPErrorCodes.Unauthorized
@@ -57,22 +59,22 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
     switch (request.method) {
       case AvailableMethods.eth_requestAccounts:
-        return eth_requestAccounts(dappProvider, port);
+        return eth_requestAccounts(request, message, sender);
       case AvailableMethods.eth_accounts:
-        return eth_accounts();
+        return eth_accounts(request, message, sender);
       case AvailableMethods.personal_sign:
-        return personal_sign(request, dappProvider, port);
+        return personal_sign(request, message, sender);
       case AvailableMethods.eth_signTypedData:
       case AvailableMethods.eth_signTypedData_v4:
-        return eth_signTypedData(request, dappProvider, port);
+        return eth_signTypedData(request, message, sender);
       case AvailableMethods.eth_sendTransaction:
-        return eth_sendTransaction(request, dappProvider, port);
+        return eth_sendTransaction(request, message, sender);
       case AvailableMethods.web3_sha3:
-        return web3_sha3(request);
+        return web3_sha3(request, message, sender);
       case AvailableMethods.web3_clientVersion:
-        return web3_clientVersion();
+        return web3_clientVersion(request, message, sender);
       case AvailableMethods.wallet_switchEthereumChain:
-        return wallet_switchEthereumChain(request);
+        return wallet_switchEthereumChain(request, message, sender);
       default:
         throw new EIPRpcError(
           'Unsupported non-proxied method',

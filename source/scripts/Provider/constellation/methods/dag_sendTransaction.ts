@@ -1,8 +1,14 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { DappProvider } from 'scripts/Background/dappRegistry';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
-import { EIPRpcError, ProtocolProvider, StargazerProxyRequest } from 'scripts/common';
+import {
+  ProtocolProvider,
+  StargazerRequest,
+  StargazerRequestMessage,
+} from 'scripts/common';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 import { getWalletInfo } from '../utils';
 
 export type StargazerTransactionRequest = {
@@ -13,11 +19,11 @@ export type StargazerTransactionRequest = {
 };
 
 export const dag_sendTransaction = async (
-  request: StargazerProxyRequest & { type: 'rpc' },
-  dappProvider: DappProvider,
-  port: chrome.runtime.Port
-): Promise<string> => {
-  const { activeWallet, windowUrl, windowType, windowSize } = getWalletInfo();
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
+  const { activeWallet } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
@@ -77,28 +83,12 @@ export const dag_sendTransaction = async (
     chain: ProtocolProvider.CONSTELLATION,
   };
 
-  const sentTransactionEvent = await dappProvider.createPopupAndWaitForMessage(
-    port,
-    ExternalMessageID.transactionSent,
-    undefined,
-    'sendTransaction',
+  await StargazerExternalPopups.executePopupWithRequestMessage(
     txObject,
-    windowType,
-    windowUrl,
-    windowSize
+    message,
+    sender.origin,
+    'sendTransaction'
   );
 
-  if (sentTransactionEvent === null) {
-    throw new EIPRpcError('User Rejected Request', 4001);
-  }
-
-  if (sentTransactionEvent.detail.error) {
-    throw new EIPRpcError(sentTransactionEvent.detail.error, 4001);
-  }
-
-  if (!sentTransactionEvent.detail.result) {
-    throw new EIPRpcError('User Rejected Request', 4001);
-  }
-
-  return sentTransactionEvent.detail.result;
+  return StargazerWSMessageBroker.NoResponseEmitted;
 };

@@ -2,12 +2,17 @@ import store from 'state/store';
 import find from 'lodash/find';
 import { IDAppState } from 'state/dapp/types';
 import IVaultState from 'state/vault/types';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
-export const dag_accounts = (): string[] => {
+export const dag_accounts = (
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
   const { dapp, vault } = store.getState();
   const { whitelist }: IDAppState = dapp;
 
-  const current = dapp.current;
+  const { current } = dapp;
   const origin = current && current.origin;
 
   if (!origin) {

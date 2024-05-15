@@ -1,11 +1,13 @@
-import { StargazerProxyRequest } from 'scripts/common';
-import { getAssetByContractAddress, validateMetagraphAddress } from '../utils';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import IVaultState, { IAssetState } from 'state/vault/types';
 import store from 'state/store';
+import { getAssetByContractAddress, validateMetagraphAddress } from '../utils';
 
 export const dag_getMetagraphBalance = (
-  request: StargazerProxyRequest & { type: 'rpc' }
-): string => {
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
   const [address] = request.params as [unknown];
 
   validateMetagraphAddress(address);

@@ -1,13 +1,15 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { getWalletInfo } from '../utils';
-import { StargazerProxyRequest } from 'scripts/common';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import store from 'state/store';
 import { IDAppState } from 'state/dapp/types';
+import { getWalletInfo } from '../utils';
 
 export const dag_getPublicKey = (
-  request: StargazerProxyRequest & { type: 'rpc' }
-): string => {
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
   const { activeWallet } = getWalletInfo();
 
   if (!activeWallet) {
@@ -35,7 +37,7 @@ export const dag_getPublicKey = (
   const { dapp } = store.getState();
   const { whitelist }: IDAppState = dapp;
 
-  const current = dapp.current;
+  const { current } = dapp;
   const origin = current && current.origin;
 
   if (!origin) {
