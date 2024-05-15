@@ -1,14 +1,14 @@
-export enum GlobalMessageID {
+export enum GlobalMessageEvent {
   rehydrate = 'rehydrate',
 }
 
-export enum DappMessageID {
+export enum DappMessageEvent {
   disconnect = 'disconnect',
   connect = 'connect',
   notifyAccounts = 'notifyAccounts',
 }
 
-export enum ExternalMessageID {
+export enum ExternalMessageEvent {
   connectWallet = 'connectWallet',
   dataSigned = 'dataSigned',
   messageSigned = 'messageSigned',
@@ -31,11 +31,11 @@ export type MessageDetail = {
 
 export type ExternalMessage = {
   type: MessageType;
-  id: ExternalMessageID;
+  event: ExternalMessageEvent;
   detail: MessageDetail;
 };
 
 export type GlobalMessage = {
   type: MessageType;
-  id: GlobalMessageID;
+  event: GlobalMessageEvent;
 };
