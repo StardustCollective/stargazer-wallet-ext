@@ -20,51 +20,16 @@ import {
 } from '../handlers/handleDappMessages';
 
 export class StargazerWSMessageBroker {
+  static NoResponseEmitted = Symbol('NoResponseEmitted');
+
   init() {
     chrome.runtime.onMessage.addListener(this.onCSWSMessage.bind(this));
-  }
-
-  async sendResponse(
-    response: StargazerResponse,
-    requestMessage: StargazerRequestMessage
-  ) {
-    const message: StargazerResponseMessage = {
-      chnId: requestMessage.chnId,
-      tabId: requestMessage.tabId,
-      data: { chainProtocol: requestMessage.data.chainProtocol, response },
-    };
-
-    chrome.tabs.sendMessage(requestMessage.tabId, message);
-  }
-
-  async executePredicateAndSendRpcResponse(
-    predicate: () => any,
-    requestMessage: StargazerRequestMessage
-  ) {
-    try {
-      const result = await predicate();
-      return await this.sendResponse({ type: 'rpc', result }, requestMessage);
-    } catch (e) {
-      console.error('RpcRequestError', String(e), e);
-      if (e instanceof Error) {
-        return await this.sendResponse(
-          {
-            type: 'rpc',
-            error: { message: e.message, code: (e as any).code, data: (e as any).data },
-          },
-          requestMessage
-        );
-      }
-      return await this.sendResponse(
-        { type: 'rpc', error: { message: String(e) } },
-        requestMessage
-      );
-    }
   }
 
   async onStargazerRpcRequest(
     chainProtocol: ProtocolProvider,
     request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
     sender: chrome.runtime.MessageSender
   ) {
     const ChainProviders = {
@@ -95,10 +60,10 @@ export class StargazerWSMessageBroker {
     }
 
     if (foundMethodDefinition.proxied) {
-      return await chainProvider.handleProxiedRequest(request, sender);
+      return await chainProvider.handleProxiedRequest(request, message, sender);
     }
 
-    return await chainProvider.handleNonProxiedRequest(request, sender);
+    return await chainProvider.handleNonProxiedRequest(request, message, sender);
   }
 
   async onStargazerRequest(
@@ -110,9 +75,7 @@ export class StargazerWSMessageBroker {
     const { chainProtocol, request } = message.data;
 
     if (request.type === 'rpc') {
-      await this.executePredicateAndSendRpcResponse(() => {
-        return this.onStargazerRpcRequest(chainProtocol, request, sender);
-      }, message);
+      this.onStargazerRpcRequest(chainProtocol, request, message, sender);
       return true;
     }
 
@@ -151,5 +114,43 @@ export class StargazerWSMessageBroker {
 
       chrome.tabs.sendMessage(tab.id, message);
     }
+  }
+
+  static async sendResponse(
+    response: StargazerResponse,
+    requestMessage: StargazerRequestMessage
+  ) {
+    const message: StargazerResponseMessage = {
+      chnId: requestMessage.chnId,
+      tabId: requestMessage.tabId,
+      data: { chainProtocol: requestMessage.data.chainProtocol, response },
+    };
+
+    chrome.tabs.sendMessage(requestMessage.tabId, message);
+  }
+
+  static async sendResponseResult(result: any, requestMessage: StargazerRequestMessage) {
+    await StargazerWSMessageBroker.sendResponse({ type: 'rpc', result }, requestMessage);
+  }
+
+  static async sendResponseError(error: any, requestMessage: StargazerRequestMessage) {
+    console.error('RpcRequestError', String(error), error);
+    if (error instanceof Error) {
+      return await StargazerWSMessageBroker.sendResponse(
+        {
+          type: 'rpc',
+          error: {
+            message: error.message,
+            code: (error as any).code,
+            data: (error as any).data,
+          },
+        },
+        requestMessage
+      );
+    }
+    return await StargazerWSMessageBroker.sendResponse(
+      { type: 'rpc', error: { message: String(error) } },
+      requestMessage
+    );
   }
 }
