@@ -7,18 +7,7 @@ import {
 } from '../common';
 
 export class StargazerCSMessageBroker {
-  private _tabId: number | null = null;
-
-  get tabId() {
-    if (!this._tabId) {
-      throw new Error('Tab id is not available');
-    }
-    return this._tabId;
-  }
-
   async init() {
-    this._tabId = (await chrome.tabs.getCurrent()).id;
-
     window.addEventListener(
       StargazerMessageEventName.IS_CS_MESSAGE,
       this.onISCSMessage.bind(this)
@@ -40,15 +29,10 @@ export class StargazerCSMessageBroker {
 
     const message = event.detail;
 
-    message.tabId = this.tabId;
-
     chrome.runtime.sendMessage(message);
-    console.log('Message Sent:', message);
   }
 
   onWSCSMessage(message: any, sender: chrome.runtime.MessageSender) {
-    console.log({ sender });
-
     if (isStargazerEventMessage(message)) {
       window.dispatchEvent(
         new CustomEvent(StargazerMessageEventName.CS_IS_MESSAGE, {

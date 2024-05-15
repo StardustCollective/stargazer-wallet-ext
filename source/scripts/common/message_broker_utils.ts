@@ -56,8 +56,8 @@ export const isStargazerBaseMessage = (
   return (
     typeof value === 'object' &&
     value !== null &&
-    'reqId' in value &&
-    typeof value.reqId === 'string' &&
+    'chnId' in value &&
+    typeof value.chnId === 'string' &&
     'tabId' in value &&
     typeof value.tabId === 'number' &&
     'data' in value &&

@@ -86,6 +86,7 @@ export class StargazerWSMessageBroker {
 
   async onCSWSMessage(message: any, sender: chrome.runtime.MessageSender) {
     if (isStargazerRequestMessage(message)) {
+      message.tabId = sender.tab.id;
       await this.onStargazerRequest(message, sender);
       return true;
     }
