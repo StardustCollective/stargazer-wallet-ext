@@ -25,8 +25,11 @@ import {
   getChainInfo,
 } from 'scripts/Background/controllers/EVMChainController/utils';
 import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
-import { StargazerExternalPopups } from 'scripts/Background/messaging';
+
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 
 import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
 import {
@@ -37,16 +40,9 @@ import {
   StargazerChain,
   ProtocolProvider,
   EIPErrorCodes,
+  StargazerRequestMessage,
 } from '../common';
 import { StargazerSignatureRequest } from './StargazerProvider';
-
-// Constants
-const LEDGER_URL = '/ledger.html';
-const EXTERNAL_URL = '/external.html';
-const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
-  popup: 'popup',
-  normal: 'normal',
-};
 
 interface SwitchEthereumChainParameter {
   chainId: string;
@@ -240,6 +236,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
   async handleProxiedRequest(
     request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
     _sender: chrome.runtime.MessageSender
   ) {
     const { activeNetwork }: IVaultState = store.getState().vault;
@@ -253,6 +250,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
 
   async handleNonProxiedRequest(
     request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
     sender: chrome.runtime.MessageSender
   ) {
     const { vault } = store.getState();
@@ -266,19 +264,6 @@ export class EVMProvider implements IRpcChainRequestHandler {
       ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
       : null;
 
-    const windowUrl =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
-        ? LEDGER_URL
-        : EXTERNAL_URL;
-    const windowType =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
-        ? WINDOW_TYPES.normal
-        : WINDOW_TYPES.popup;
-    const windowSize =
-      activeWallet.type === KeyringWalletType.LedgerAccountWallet
-        ? { width: 1000, height: 1000 }
-        : { width: 386, height: 624 };
-
     // eth_requestAccounts is used to activate the provider
     if (request.method === AvailableMethods.eth_requestAccounts) {
       // Provider already activated -> return ETH accounts array
@@ -287,20 +272,15 @@ export class EVMProvider implements IRpcChainRequestHandler {
       }
 
       // Provider not activated -> display popup and wait for user's approval
-      const connectWalletEvent =
-        await StargazerExternalPopups.createPopupAndWaitForMessage(
-          ExternalMessageID.connectWallet,
-          undefined,
-          'selectAccounts'
-        );
 
-      // User rejected activation
-      if (connectWalletEvent === null) {
-        throw new EIPRpcError('User denied provider activation', EIPErrorCodes.Rejected);
-      }
+      await StargazerExternalPopups.executePopupWithRequestMessage(
+        null,
+        message,
+        sender.origin,
+        'selectAccounts'
+      );
 
-      // Return ETH accounts array
-      return connectWalletEvent.detail.accounts;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (request.method === AvailableMethods.eth_accounts) {
@@ -388,25 +368,14 @@ export class EVMProvider implements IRpcChainRequestHandler {
         signatureData.publicKey = accounts[0].publicKey;
       }
 
-      const signatureEvent = await StargazerExternalPopups.createPopupAndWaitForMessage(
-        ExternalMessageID.messageSigned,
-        undefined,
-        'signMessage',
+      await StargazerExternalPopups.executePopupWithRequestMessage(
         signatureData,
-        windowType,
-        windowUrl,
-        windowSize
+        message,
+        sender.origin,
+        'signMessage'
       );
 
-      if (signatureEvent === null) {
-        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-      }
-
-      if (!signatureEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-      }
-
-      return signatureEvent.detail.signature.hex;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (
@@ -503,6 +472,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
         walletId: activeWallet.id,
         walletLabel: activeWallet.label,
         publicKey: '',
+        originalData: data,
       };
 
       // If the type of account is Ledger send back the public key so the
@@ -516,27 +486,14 @@ export class EVMProvider implements IRpcChainRequestHandler {
         signatureData.publicKey = accounts[0].publicKey;
       }
 
-      const signatureEvent = await StargazerExternalPopups.createPopupAndWaitForMessage(
-        ExternalMessageID.signTypedMessageResult,
-        undefined,
-        'signTypedMessage',
+      await StargazerExternalPopups.executePopupWithRequestMessage(
         signatureData,
-        windowType,
-        windowUrl,
-        windowSize
+        message,
+        sender.origin,
+        'signTypedMessage'
       );
 
-      if (signatureEvent === null) {
-        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-      }
-
-      if (!signatureEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-      }
-
-      const signature = this.signTypedData(data.domain, data.types, data.message);
-
-      return signature;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (request.method === AvailableMethods.eth_sendTransaction) {
@@ -544,7 +501,6 @@ export class EVMProvider implements IRpcChainRequestHandler {
       console.log('trxData', trxData);
 
       let decodedContractCall: ContractInputData | null = null;
-      let eventType = ExternalMessageID.transactionSent;
       let route = 'sendTransaction';
 
       // chainId should match the current active network if chainId property is provided.
@@ -584,34 +540,19 @@ export class EVMProvider implements IRpcChainRequestHandler {
       )?.label;
 
       if (decodedContractCall?.method === 'approve') {
-        eventType = ExternalMessageID.spendApproved;
         route = 'approveSpend';
       }
 
-      const event = await StargazerExternalPopups.createPopupAndWaitForMessage(
-        eventType,
-        undefined,
-        route,
-        {
-          ...trxData,
-          chain: this.getNetworkId(),
-          chainLabel,
-        }
+      const data = { ...trxData, chain: this.getNetworkId(), chainLabel };
+
+      await StargazerExternalPopups.executePopupWithRequestMessage(
+        data,
+        message,
+        sender.origin,
+        route
       );
 
-      if (event === null) {
-        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-      }
-
-      if (event.detail.error) {
-        throw new EIPRpcError(event.detail.error, EIPErrorCodes.Rejected);
-      }
-
-      if (!event.detail.result) {
-        throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-      }
-
-      return event.detail.result;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (request.method === AvailableMethods.web3_sha3) {

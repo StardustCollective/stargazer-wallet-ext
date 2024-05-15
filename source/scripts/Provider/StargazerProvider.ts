@@ -12,8 +12,11 @@ import { useController } from 'hooks';
 
 import { BigNumber } from 'bignumber.js';
 import { DAG_NETWORK } from 'constants/index';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
-import { StargazerExternalPopups } from 'scripts/Background/messaging';
+
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
 import IVaultState, { AssetType, IAssetState } from '../../state/vault/types';
 import { IDAppState } from '../../state/dapp/types';
@@ -22,8 +25,8 @@ import {
   IRpcChainRequestHandler,
   StargazerRequest,
   AvailableMethods,
-  EIPRpcError,
   ProtocolProvider,
+  StargazerRequestMessage,
 } from '../common';
 
 export type StargazerSignatureRequest = {
@@ -370,6 +373,7 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
   async handleProxiedRequest(
     _request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
     _sender: chrome.runtime.MessageSender
   ) {
     throw new Error('handleProxiedRequest is not available on StargazerProvider');
@@ -377,10 +381,11 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
   async handleNonProxiedRequest(
     request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
     sender: chrome.runtime.MessageSender
   ) {
     const { vault, assets } = store.getState();
-    let windowUrl = EXTERNAL_URL;
+
     let deviceId = '';
     let bipIndex;
     const allWallets = [
@@ -393,22 +398,10 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       : null;
 
     if (activeWallet?.type === KeyringWalletType.LedgerAccountWallet) {
-      windowUrl = LEDGER_URL;
       bipIndex = activeWallet?.bipIndex;
     } else if (activeWallet?.type === KeyringWalletType.BitfiAccountWallet) {
-      windowUrl = BITFI_URL;
       deviceId = activeWallet?.accounts[0].deviceId;
     }
-    const windowType =
-      activeWallet?.type === KeyringWalletType.LedgerAccountWallet ||
-      activeWallet?.type === KeyringWalletType.BitfiAccountWallet
-        ? WINDOW_TYPES.normal
-        : WINDOW_TYPES.popup;
-    const windowSize =
-      activeWallet?.type === KeyringWalletType.LedgerAccountWallet ||
-      activeWallet?.type === KeyringWalletType.BitfiAccountWallet
-        ? { width: 600, height: 1000 }
-        : { width: 372, height: 600 };
 
     // dag_requestAccounts is used to activate the provider
     if (request.method === AvailableMethods.dag_requestAccounts) {
@@ -418,20 +411,14 @@ export class StargazerProvider implements IRpcChainRequestHandler {
       }
 
       // Provider not activated -> display popup and wait for user's approval
-      const connectWalletEvent =
-        await StargazerExternalPopups.createPopupAndWaitForMessage(
-          ExternalMessageID.connectWallet,
-          undefined,
-          'selectAccounts'
-        );
+      await StargazerExternalPopups.executePopupWithRequestMessage(
+        null,
+        message,
+        sender.origin,
+        'selectAccounts'
+      );
 
-      // User rejected activation
-      if (connectWalletEvent === null) {
-        throw new Error('User denied provider activation');
-      }
-
-      // Return DAG accounts array
-      return connectWalletEvent.detail.accounts;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (request.method === AvailableMethods.dag_accounts) {
@@ -497,25 +484,14 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         chainLabel,
       };
 
-      const signatureEvent = await StargazerExternalPopups.createPopupAndWaitForMessage(
-        ExternalMessageID.dataSigned,
-        undefined,
-        'signData',
+      await StargazerExternalPopups.executePopupWithRequestMessage(
         signatureData,
-        windowType,
-        windowUrl,
-        { width: 372, height: 812 }
+        message,
+        sender.origin,
+        'signData'
       );
 
-      if (signatureEvent === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      if (!signatureEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      return signatureEvent.detail.signature.hex;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (request.method === AvailableMethods.dag_signMessage) {
@@ -574,25 +550,14 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         chainLabel,
       };
 
-      const signatureEvent = await StargazerExternalPopups.createPopupAndWaitForMessage(
-        ExternalMessageID.messageSigned,
-        undefined,
-        'signMessage',
+      await StargazerExternalPopups.executePopupWithRequestMessage(
         signatureData,
-        windowType,
-        windowUrl,
-        windowSize
+        message,
+        sender.origin,
+        'signMessage'
       );
 
-      if (signatureEvent === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      if (!signatureEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      return signatureEvent.detail.signature.hex;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (request.method === AvailableMethods.dag_getPublicKey) {
@@ -680,30 +645,14 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         chain: ProtocolProvider.CONSTELLATION,
       };
 
-      const sentTransactionEvent =
-        await StargazerExternalPopups.createPopupAndWaitForMessage(
-          ExternalMessageID.transactionSent,
-          undefined,
-          'sendTransaction',
-          txObject,
-          windowType,
-          windowUrl,
-          windowSize
-        );
+      await StargazerExternalPopups.executePopupWithRequestMessage(
+        txObject,
+        message,
+        sender.origin,
+        'sendTransaction'
+      );
 
-      if (sentTransactionEvent === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      if (sentTransactionEvent.detail.error) {
-        throw new EIPRpcError(sentTransactionEvent.detail.error, 4001);
-      }
-
-      if (!sentTransactionEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      return sentTransactionEvent.detail.result;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (request.method === AvailableMethods.dag_getPendingTransaction) {
@@ -815,30 +764,14 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         chain: ProtocolProvider.CONSTELLATION,
       };
 
-      const sentTransactionEvent =
-        await StargazerExternalPopups.createPopupAndWaitForMessage(
-          ExternalMessageID.transactionSent,
-          undefined,
-          'sendTransaction',
-          txObject,
-          windowType,
-          windowUrl,
-          windowSize
-        );
+      await StargazerExternalPopups.executePopupWithRequestMessage(
+        txObject,
+        message,
+        sender.origin,
+        'sendTransaction'
+      );
 
-      if (sentTransactionEvent === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      if (sentTransactionEvent.detail.error) {
-        throw new EIPRpcError(sentTransactionEvent.detail.error, 4001);
-      }
-
-      if (!sentTransactionEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      return sentTransactionEvent.detail.result;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     if (request.method === AvailableMethods.dag_getMetagraphTransaction) {
@@ -941,7 +874,6 @@ export class StargazerProvider implements IRpcChainRequestHandler {
 
       await this.checkWatchAssetParams(params);
 
-      const controller = useController();
       const metagraphAddress = params.options.address;
       const dagAddress = activeWallet?.assets?.find(
         (asset) => asset?.id === AssetType.Constellation
@@ -961,40 +893,14 @@ export class StargazerProvider implements IRpcChainRequestHandler {
         dagAddress
       );
 
-      const watchAssetEvent = await StargazerExternalPopups.createPopupAndWaitForMessage(
-        ExternalMessageID.watchAssetResult,
-        undefined,
-        'watchAsset',
+      await StargazerExternalPopups.executePopupWithRequestMessage(
         { ...params, balance },
-        windowType,
-        windowUrl,
-        windowSize
+        message,
+        sender.origin,
+        'watchAsset'
       );
 
-      if (watchAssetEvent === null) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      if (watchAssetEvent.detail.error) {
-        throw new EIPRpcError(watchAssetEvent.detail.error, 4001);
-      }
-
-      if (!watchAssetEvent.detail.result) {
-        throw new EIPRpcError('User Rejected Request', 4001);
-      }
-
-      const { l0, l1, address, name, symbol, logo } = params.options;
-      await controller.wallet.account.assetsController.addCustomL0Token(
-        l0,
-        l1,
-        address,
-        name,
-        symbol,
-        selectedNetwork.id,
-        logo
-      );
-
-      return true;
+      return StargazerWSMessageBroker.NoResponseEmitted;
     }
 
     throw new Error('Unsupported non-proxied method');
