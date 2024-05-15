@@ -331,6 +331,9 @@ class NFTController implements INFTController {
 
   async fetchAllNfts(): Promise<void> {
     const { activeNetwork, activeWallet } = store.getState().vault;
+
+    if (!activeWallet || !activeNetwork) return;
+
     const { supportedAssets, assets } = activeWallet;
 
     const supportsEth = supportedAssets?.includes(KeyringAssetType.ETH);

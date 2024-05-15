@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import queryString from 'query-string';
 import Container from 'components/Container';
-import Login from 'scenes/external/Login';
+import Login from 'scenes/common/Login';
 import SelectAccounts from 'scenes/external/SelectAccounts';
 import ApproveSpend from 'scenes/external/ApproveSpend';
 import SendTransaction from 'scenes/home/SendAsset/Send';
@@ -17,6 +17,7 @@ import store, { RootState } from 'state/store';
 import { setLoading } from 'state/auth';
 import { clearSession, getSgw, sessionExpired } from 'utils/keyring';
 import 'assets/styles/global.scss';
+import Loading from 'scenes/unauth/Loading';
 
 const PrivateRoute = ({ component: Component, ...rest }: RouteProps) => {
   const { unlocked } = useSelector((state: RootState) => state.auth);
@@ -34,13 +35,20 @@ const App = () => {
   const history = useHistory();
 
   const { route } = queryString.parse(window.location.search);
-  const { unlocked } = useSelector((state: RootState) => state.auth);
+  const { unlocked, loading } = useSelector((state: RootState) => state.auth);
 
   const hideLoadingScreen = () => {
     setTimeout(() => {
       store.dispatch(setLoading(false));
     }, 500);
   };
+
+  useEffect(() => {
+    if (unlocked) {
+      hideLoadingScreen();
+      history.push(`/${route}${window.location.search}`);
+    }
+  }, [unlocked]);
 
   useEffect(() => {
     const checkWalletStatus = async () => {
@@ -69,9 +77,6 @@ const App = () => {
         hideLoadingScreen();
         return;
       }
-
-      history.push(`/${route}${window.location.search}`);
-      hideLoadingScreen();
     };
 
     checkWalletStatus();
@@ -81,7 +86,7 @@ const App = () => {
     <section id="App" style={{ minHeight: '300px', height: '100%' }}>
       <Container showHeight={false}>
         <Switch>
-          <Route path="/loading" component={() => <div>Loading...</div>} />
+          {loading && <Route path="/" component={Loading} />}
           <Route path="/login" component={Login} />
 
           <PrivateRoute path="/selectAccounts" component={SelectAccounts} />

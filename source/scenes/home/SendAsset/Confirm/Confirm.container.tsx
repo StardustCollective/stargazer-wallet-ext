@@ -242,12 +242,10 @@ const ConfirmContainer = () => {
           trxHash = await accountController.confirmContractTempTx(activeAsset);
         }
 
-        if (callbackSuccess) {
+        if (callbackSuccess && !!trxHash) {
           callbackSuccess(message, origin, trxHash);
-        }
-
-        if (window) {
-          window.close();
+        } else {
+          callbackError(message, origin, 'Unable to confirm transaction');
         }
       } else if (
         activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
@@ -286,6 +284,7 @@ const ConfirmContainer = () => {
         ) {
           e.message = 'Insufficient funds to cover gas fee.';
         }
+        console.log('ERROR', e);
 
         const { message, origin } =
           StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);

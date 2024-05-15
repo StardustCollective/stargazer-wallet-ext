@@ -5,6 +5,7 @@
 import React from 'react';
 import queryString from 'query-string';
 import { useSelector } from 'react-redux';
+import * as ethers from 'ethers';
 import clsx from 'clsx';
 
 //////////////////////
@@ -39,7 +40,9 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
-import { EVMProvider } from 'scripts/Provider/EVMProvider';
+
+import { ecsign, toRpcSig } from 'ethereumjs-util';
+import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 import { EIP712Domain, TypedSignatureRequest } from './types';
 import styles from './index.module.scss';
 
@@ -62,14 +65,17 @@ const TypedSignatureRequestScreen = () => {
   const { data, message } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
     signatureConsent: TypedSignatureRequest;
     domain: string;
-    originalData: Record<string, any>;
+    types: string;
   }>(location.href);
 
-  const { signatureConsent: signatureRequest, domain } = data;
+  const { signatureConsent: signatureRequest, domain, types } = data;
 
   const contentObject = JSON.parse(signatureRequest.content);
   const metadataObject = signatureRequest.data;
   const domainObject = JSON.parse(domain) as EIP712Domain;
+  const typesObject = JSON.parse(types) as Parameters<
+    typeof ethers.utils._TypedDataEncoder.hash
+  >[1];
 
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
@@ -86,14 +92,29 @@ const TypedSignatureRequestScreen = () => {
     window.close();
   };
 
-  const onPositiveButtonClick = async () => {
-    const signature = new EVMProvider().signTypedData(
-      data.originalData.domain,
-      data.originalData.types,
-      data.originalData.message
-    );
+  const signTypedData = (
+    domain: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[0],
+    types: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[1],
+    value: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[2]
+  ) => {
+    const wallet = getWallet();
+    const privateKeyHex = remove0x(wallet.privateKey);
+    const privateKey = Buffer.from(privateKeyHex, 'hex');
+    const msgHash = ethers.utils._TypedDataEncoder.hash(domain, types, value);
 
-    StargazerWSMessageBroker.sendResponseResult(signature, message);
+    const { v, r, s } = ecsign(Buffer.from(remove0x(msgHash), 'hex'), privateKey);
+    const sig = preserve0x(toRpcSig(v, r, s));
+
+    return sig;
+  };
+
+  const onPositiveButtonClick = async () => {
+    try {
+      const signature = signTypedData(domainObject, typesObject, contentObject);
+      StargazerWSMessageBroker.sendResponseResult(signature, message);
+    } catch (e) {
+      StargazerWSMessageBroker.sendResponseError(e, message);
+    }
 
     window.close();
   };

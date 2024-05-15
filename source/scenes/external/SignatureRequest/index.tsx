@@ -1,7 +1,3 @@
-//////////////////////
-// Modules Imports
-/////////////////////
-
 import React from 'react';
 
 //////////////////////
@@ -20,6 +16,10 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+import { decodeFromBase64 } from 'utils/encoding';
+import { dag4 } from '@stardust-collective/dag4';
+import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
+import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import styles from './index.module.scss';
 
 //////////////////////
@@ -31,7 +31,7 @@ const SignatureRequest = () => {
   // Hooks
   /////////////////////
 
-  const { data, message, origin } =
+  const { data, message: requestMessage } =
     StargazerExternalPopups.decodeRequestMessageLocationParams<{
       signatureRequestEncoded: string;
       asset: string;
@@ -39,47 +39,51 @@ const SignatureRequest = () => {
       chainLabel: string;
     }>(location.href);
 
-  const {
-    signatureRequestEncoded,
-    // asset,
-    // provider,
-    chainLabel,
-  } = data;
-  // TODO-349: Check how signature should work here
-  // const PROVIDERS: { [provider: string]: StargazerProvider | EVMProvider } = {
-  //   [ProtocolProvider.CONSTELLATION]: controller.stargazerProvider,
-  //   [ProtocolProvider.ETHEREUM]: controller.ethereumProvider,
-  // };
-  // const providerInstance = PROVIDERS[provider];
-  // const account = providerInstance.getAssetByType(
-  //   asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum
-  // );
-  const signatureRequest = JSON.parse(
-    window.atob(signatureRequestEncoded)
-  ) as StargazerSignatureRequest;
+  const { signatureRequestEncoded, asset, chainLabel } = data;
 
-  //////////////////////
-  // Callbacks
-  /////////////////////
+  const isDAGsignature = asset === 'DAG';
+
+  const signatureRequest = JSON.parse(
+    decodeFromBase64(signatureRequestEncoded)
+  ) as StargazerSignatureRequest;
 
   const onNegativeButtonClick = async () => {
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
-      message
+      requestMessage
     );
     window.close();
   };
 
+  const signDagMessage = async (message: string): Promise<string> => {
+    const privateKeyHex = dag4.account.keyTrio.privateKey;
+    const signature = await dag4.keyStore.personalSign(privateKeyHex, message);
+    return signature;
+  };
+
+  const signEthMessage = async (message: string): Promise<string> => {
+    const wallet = getWallet();
+    const privateKeyHex = remove0x(wallet.privateKey);
+    const privateKey = Buffer.from(privateKeyHex, 'hex');
+    const msgHash = hashPersonalMessage(Buffer.from(message));
+
+    const { v, r, s } = ecsign(msgHash, privateKey);
+    const sig = preserve0x(toRpcSig(v, r, s));
+
+    return sig;
+  };
+
   const onPositiveButtonClick = async () => {
-    // const message = asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content;
-    // const signature = providerInstance.signMessage(message);
+    const message = isDAGsignature ? signatureRequestEncoded : signatureRequest.content;
+    const signMessage = isDAGsignature ? signDagMessage : signEthMessage;
 
-    const signature = {
-      hex: 'test',
-      requestEncoded: signatureRequestEncoded,
-    };
-
-    StargazerWSMessageBroker.sendResponseResult(signature.hex, message);
+    try {
+      const signature = await signMessage(message);
+      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
+    } catch (err) {
+      console.log(err);
+      StargazerWSMessageBroker.sendResponseError(err, requestMessage);
+    }
 
     window.close();
   };
@@ -105,10 +109,7 @@ const SignatureRequest = () => {
       <div className={styles.content}>
         <section>
           <label>Account</label>
-          <div>
-            {/* {wallets.find((w) => w.address === account.address)?.label ?? account.address} */}
-            Account label
-          </div>
+          <div>{walletLabel}</div>
         </section>
         <section className={styles.message}>
           <label>Message</label>

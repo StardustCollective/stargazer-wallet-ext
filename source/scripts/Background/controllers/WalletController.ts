@@ -84,7 +84,6 @@ class WalletController {
     });
     this.keyringManager.on('update', async (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
-      store.dispatch(setUnlocked(state.isUnlocked));
       const { vault } = store.getState();
 
       try {
@@ -98,6 +97,7 @@ class WalletController {
         console.log(e);
       }
       store.dispatch(updateLoginState({ processState: ProcessStates.IDLE }));
+      store.dispatch(setUnlocked(state.isUnlocked));
     });
 
     this.account = new AccountController(this.keyringManager);
@@ -513,7 +513,9 @@ class WalletController {
   logOut(): void {
     this.keyringManager.logout();
     this.account.networkController = undefined;
-    store.dispatch(changeActiveWallet(undefined));
+    store.dispatch(setUnlocked(false));
+    store.dispatch(changeActiveWallet(null));
+    store.dispatch(setVaultInfo({ wallets: [], isUnlocked: false }));
     store.dispatch(setAutoLogin(false));
   }
 }

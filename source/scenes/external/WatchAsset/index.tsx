@@ -1,5 +1,4 @@
 import React from 'react';
-import queryString from 'query-string';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
@@ -10,16 +9,16 @@ import { WatchAssetOptions } from 'scripts/Provider/StargazerProvider';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { ellipsis, formatNumber } from 'scenes/home/helpers';
 import { DAG_NETWORK } from 'constants/index';
-import { useSelector } from 'react-redux';
 import dappSelectors from 'selectors/dappSelectors';
 
-import { ExternalMessageEvent } from 'scripts/Background/messaging/types';
 import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { EIPRpcError } from 'scripts/common';
 import { getWalletController } from 'utils/controllersUtils';
+import { useSelector } from 'react-redux';
+import styles from './index.module.scss';
 import {
   ADD_TOKEN,
   ADD_TO_STARGAZER,
@@ -33,7 +32,6 @@ import {
   TOKEN,
   YOU_CAN_DELETE,
 } from './constants';
-import styles from './index.module.scss';
 
 const WatchAsset = () => {
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);

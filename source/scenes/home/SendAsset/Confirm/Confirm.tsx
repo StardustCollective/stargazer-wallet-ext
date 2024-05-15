@@ -62,7 +62,9 @@ const SendConfirm = ({
     trxHash: string
   ) => {
     StargazerWSMessageBroker.sendResponseResult(trxHash, message);
+    window.close();
   };
+
   const callbackError = async (
     message: StargazerRequestMessage,
     origin: string,

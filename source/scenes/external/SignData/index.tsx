@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import { useController } from 'hooks/index';
+import { dag4 } from '@stardust-collective/dag4';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
@@ -13,11 +13,10 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { EIPRpcError } from 'scripts/common';
+import { decodeFromBase64 } from 'utils/encoding';
 import styles from './index.module.scss';
 
 const SignData = () => {
-  const controller = useController();
-
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
@@ -35,7 +34,7 @@ const SignData = () => {
   const { dataEncoded, chainLabel, walletLabel } = data;
 
   // Decode base64 data
-  const dataDecoded = window.atob(dataEncoded);
+  const dataDecoded = decodeFromBase64(dataEncoded);
   let message = dataDecoded;
 
   try {
@@ -60,8 +59,15 @@ const SignData = () => {
     window.close();
   };
 
+  const signData = async (data: string): Promise<string> => {
+    const privateKeyHex = dag4.account.keyTrio.privateKey;
+    const signature = await dag4.keyStore.dataSign(privateKeyHex, data);
+
+    return signature;
+  };
+
   const onPositiveButtonClick = async () => {
-    const signature = await controller.stargazerProvider.signData(dataEncoded);
+    const signature = await signData(dataEncoded);
 
     StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
 
