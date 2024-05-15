@@ -1,13 +1,8 @@
-import { v4 as uuidv4 } from 'uuid';
-import { ExternalMessage, ExternalMessageID, MessageType } from './types';
+import { StargazerRequestMessage, isStargazerRequestMessage } from 'scripts/common';
 
 export class StargazerExternalPopups {
   static async createPopup(
-    windowId: string,
-    network?: string,
-    route?: string,
-    data?: Record<any, any>,
-    type: chrome.windows.createTypeEnum = 'popup',
+    params: Record<string, any>,
     url = '/external.html',
     windowSize = { width: 372, height: 600 }
   ) {
@@ -15,87 +10,74 @@ export class StargazerExternalPopups {
 
     const currentWindow = await chrome.windows.getCurrent();
 
-    if (!currentWindow || !currentWindow.width) return null;
-
-    const params = new URLSearchParams();
-    if (route) {
-      params.set('route', route);
-    }
-    if (network) {
-      params.set('network', network);
-    }
-    if (data) {
-      params.set('data', JSON.stringify(data));
+    if (!currentWindow || !currentWindow.width) {
+      return null;
     }
 
-    // This was being passed only in hash value but it gets dropped somethings in routing
-    params.set('windowId', windowId);
-    url += `?${params.toString()}#${windowId}`;
+    const urlParams = this.encodeLocationParams(params);
+    url += `?${urlParams.toString()}`;
 
     return await chrome.windows.create({
       url,
       width,
       height,
-      type,
+      type: 'popup',
       top: 0,
       left: currentWindow.width - 600,
     });
   }
 
-  static async createPopupAndWaitForMessage(
-    message: ExternalMessageID,
-    network?: string,
-    route?: string,
-    data?: Record<any, any>,
-    type: chrome.windows.createTypeEnum = 'popup',
-    url = '/external.html',
-    windowSize = { width: 372, height: 600 }
-  ): Promise<ExternalMessage | null> {
-    const windowId = uuidv4();
+  static async executePopupWithRequestMessage(
+    data: Record<string, any> | null,
+    message: StargazerRequestMessage,
+    origin: string,
+    route: string,
+    url = '/external.html'
+  ) {
+    return await this.createPopup({ data, message, origin, route }, url);
+  }
 
-    const popup = await this.createPopup(
-      windowId,
-      network,
-      route,
-      data,
-      type,
-      url,
-      windowSize
-    );
+  static encodeLocationParams(params: Record<string, any>) {
+    const urlParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      urlParams.set(
+        key,
+        typeof value === 'object' ? JSON.stringify(value) : String(value)
+      );
+    }
+    return urlParams;
+  }
 
-    return new Promise<ExternalMessage | null>((resolve, reject) => {
+  static decodeLocationParams(url: string) {
+    const urlObject = new URL(url);
+    const params: Record<string, any> = {};
+
+    for (const [param, value] of urlObject.searchParams.entries()) {
       try {
-        const handleExternalMessage = async (msg: ExternalMessage) => {
-          // Check message type
-          if (msg?.type !== MessageType.external) return;
-
-          // Check message id
-          if (msg?.id !== message) return;
-
-          // Check windowId
-          if (msg?.detail?.windowId !== windowId) return;
-
-          await resolvePopup(msg);
-        };
-
-        const onRemovedWindow = (id: number) => {
-          if (popup.id === id) {
-            // Popup removed, resolve to null
-            resolvePopup(null);
-          }
-        };
-
-        const resolvePopup = async (value: ExternalMessage | null) => {
-          chrome.runtime.onMessage.removeListener(handleExternalMessage);
-          chrome.windows.onRemoved.removeListener(onRemovedWindow);
-          resolve(value);
-        };
-
-        chrome.runtime.onMessage.addListener(handleExternalMessage);
-        chrome.windows.onRemoved.addListener(onRemovedWindow);
+        params[param] = JSON.parse(value);
       } catch (e) {
-        reject(e);
+        params[param] = value;
       }
-    });
+    }
+
+    return params;
+  }
+
+  static decodeRequestMessageLocationParams<Data>(url: string) {
+    const params = this.decodeLocationParams(url);
+
+    if (!isStargazerRequestMessage(params.message)) {
+      throw new Error('Invalid message param');
+    }
+
+    if (typeof params.origin !== 'string') {
+      throw new Error('Invalid origin param');
+    }
+
+    if (typeof params.data !== 'object') {
+      throw new Error('Invalid data param');
+    }
+
+    return { message: params.message, origin: params.origin, data: params.data as Data };
   }
 }
