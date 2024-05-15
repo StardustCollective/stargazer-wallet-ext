@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 // import { useAlert } from 'react-alert';
 import * as yup from 'yup';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, Transaction, ethers } from 'ethers';
 import { useLinkTo } from '@react-navigation/native';
 import find from 'lodash/find';
 import { useHistory } from 'react-router-dom';
@@ -60,7 +60,6 @@ import useGasEstimate from 'hooks/useGasEstimate';
 // Header
 ///////////////////////////
 
-import Send from './Send';
 import {
   getChainInfo,
   getMainnetFromTestnet,
@@ -81,8 +80,13 @@ import {
   BSC_LOGO,
   DAG_NETWORK,
 } from 'constants/index';
-import { StargazerChain } from 'scripts/common';
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
 import { initialState as initialStateAssets } from 'state/assets';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import Send from './Send';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -96,7 +100,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const accountController = getAccountController();
   let isExternalRequest = false;
 
-  if (!!location) {
+  if (location) {
     isExternalRequest = location.pathname.includes('sendTransaction');
   }
 
@@ -111,27 +115,30 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   let memo: string;
   let metagraphAddress: string;
   let history;
-  let windowId: string;
   let assetInfo: IAssetInfoState;
 
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
   if (isExternalRequest) {
-    const { data: dataJsonString, windowId: _windowId } = queryString.parse(
-      location.search
-    );
+    const { data } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      to: any;
+      value: any;
+      gas: any;
+      data: any;
+      fee: any;
+      metagraphAddress: any;
+      chain: string;
+      chainLabel: string;
+    } | null>(location.href);
 
-    windowId = _windowId as string;
-
-    if (dataJsonString) {
-      const params = JSON.parse(dataJsonString as string);
-      to = params.to;
-      value = params.value || 0;
-      gas = params.gas || 0;
-      memo = params.data;
-      chain = params.chain;
-      feeAmount = params.fee;
-      metagraphAddress = params.metagraphAddress;
+    if (data) {
+      to = data.to;
+      value = data.value || 0;
+      gas = data.gas || 0;
+      memo = data.data;
+      chain = data.chain;
+      feeAmount = data.fee;
+      metagraphAddress = data.metagraphAddress;
     }
 
     useEffect(() => {
@@ -139,7 +146,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       let amount;
       if (typeof value === 'string' && value.startsWith('0x')) {
         amount = parseInt(value, 16); // Convert hexadecimal value to integer value
-        amount = amount / 1e18; // WEI to ETH
+        amount /= 1e18; // WEI to ETH
       } else {
         amount = value;
       }
@@ -170,9 +177,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     const vaultActiveAsset = vault.activeAsset;
 
     if (!activeAsset) {
-      if (!!chain) {
+      if (chain) {
         if (chain === StargazerChain.CONSTELLATION) {
-          if (!!metagraphAddress) {
+          if (metagraphAddress) {
             activeAsset = useSelector((state: RootState) =>
               find(state.vault.activeWallet.assets, { contractAddress: metagraphAddress })
             );
@@ -323,9 +330,15 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     accountController.updateTempTx(txConfig);
 
     if (isExternalRequest) {
-      const params = new URLSearchParams();
-      params.set('to', txConfig.toAddress);
-      params.set('windowId', windowId);
+      const { message, origin } =
+        StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+
+      const params: Record<string, any> = {
+        message,
+        origin,
+        to: txConfig.toAddress,
+      };
+
       const CHAINS: { [assetId: string]: string } = {
         [AssetType.Constellation]: StargazerChain.CONSTELLATION,
         [AssetType.Ethereum]: StargazerChain.ETHEREUM,
@@ -333,17 +346,24 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         [AssetType.BSC]: StargazerChain.BSC,
         [AssetType.Avalanche]: StargazerChain.AVALANCHE,
       };
-      if (!!activeAsset?.id) {
+
+      if (activeAsset?.id) {
         if (activeAsset?.type === AssetType.Constellation) {
-          params.set('chain', StargazerChain.CONSTELLATION);
+          params.chain = StargazerChain.CONSTELLATION;
         } else {
-          params.set('chain', CHAINS[activeAsset?.id]);
+          params.chain = CHAINS[activeAsset?.id];
         }
       }
-      if (!!metagraphAddress) {
-        params.set('metagraphAddress', metagraphAddress);
+
+      if (metagraphAddress) {
+        params.metagraphAddress = metagraphAddress;
       }
-      history.push(`/confirmTransaction?${params.toString()}`);
+
+      history.push(
+        `/confirmTransaction?${StargazerExternalPopups.encodeLocationParams(
+          params
+        ).toString()}`
+      );
     } else {
       linkTo('/send/confirm');
     }
@@ -351,7 +371,15 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleClose = async () => {
     if (isExternalRequest) {
-      await cancelEvent(windowId);
+      const { message } = StargazerExternalPopups.decodeRequestMessageLocationParams(
+        location.href
+      );
+
+      StargazerWSMessageBroker.sendResponseError(
+        new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+        message
+      );
+
       if (window) {
         window.close();
       }
@@ -388,7 +416,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     const { balance, txFee } = getBalanceAndFees();
 
     let computedAmount: BigNumber;
-    let checkGasPrices: boolean = false;
+    let checkGasPrices = false;
 
     if (assetInfo.type === AssetType.ERC20) {
       computedAmount = amountBN;

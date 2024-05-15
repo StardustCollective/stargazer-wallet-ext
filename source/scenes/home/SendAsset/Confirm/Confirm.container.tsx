@@ -3,7 +3,6 @@
 ///////////////////////////
 
 import React, { useState } from 'react';
-import queryString from 'query-string';
 import find from 'lodash/find';
 import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
@@ -51,7 +50,7 @@ import {
 } from 'scripts/Background/controllers/EVMChainController/utils';
 import { getAccountController } from 'utils/controllersUtils';
 import { usePlatformAlert } from 'utils/alertUtil';
-import { StargazerChain, isError } from 'scripts/common';
+import { StargazerChain, StargazerRequestMessage, isError } from 'scripts/common';
 import { CHAIN_FULL_ASSET } from 'utils/assetsUtil';
 
 ///////////////////////////
@@ -64,13 +63,14 @@ import walletSelectors from 'selectors/walletsSelectors';
 // Scene
 ///////////////////////////
 
-import Confirm from './Confirm';
-
 ///////////////////////////
 // Constants
 ///////////////////////////
 
 import { initialState as initialStateAssets } from 'state/assets';
+import { StargazerExternalPopups } from 'scripts/Background/messaging';
+import Confirm from './Confirm';
+
 const BITFI_PAGE = 'bitfi';
 const LEDGER_PAGE = 'ledger';
 
@@ -83,14 +83,16 @@ const ConfirmContainer = () => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
-  let activeWalletPublicKey: any = useSelector(
+  const activeWalletPublicKey: any = useSelector(
     walletSelectors.selectActiveAssetPublicKey
   );
-  let activeWalletDeviceId: any = useSelector(walletSelectors.selectActiveAssetDeviceId);
+  const activeWalletDeviceId: any = useSelector(
+    walletSelectors.selectActiveAssetDeviceId
+  );
   let history: any;
   let isExternalRequest: boolean;
 
-  if (!!location) {
+  if (location) {
     isExternalRequest = location.pathname.includes('confirmTransaction');
   }
 
@@ -103,7 +105,9 @@ const ConfirmContainer = () => {
   const vaultActiveAsset = vault.activeAsset;
 
   if (isExternalRequest) {
-    const { to, chain, metagraphAddress } = queryString.parse(location.search);
+    const { to, chain, metagraphAddress } = StargazerExternalPopups.decodeLocationParams(
+      location.href
+    );
 
     activeAsset = useSelector((state: RootState) =>
       find(state.assets, { address: Array.isArray(to) ? to[0] : to })
@@ -167,7 +171,7 @@ const ConfirmContainer = () => {
   };
 
   const getFeeAmount = () => {
-    let priceId = assetInfo.priceId;
+    let { priceId } = assetInfo;
 
     if (activeAsset.type === AssetType.ERC20) {
       priceId = getPriceId(assetNetwork);
@@ -200,17 +204,24 @@ const ConfirmContainer = () => {
   };
 
   const handleConfirm = async (
-    callbackSuccess: any = null,
-    callbackError: any = null
+    callbackSuccess: (
+      message: StargazerRequestMessage,
+      origin: string,
+      ...args: any[]
+    ) => void | null = null,
+    callbackError: (
+      message: StargazerRequestMessage,
+      origin: string,
+      ...args: any[]
+    ) => void | null = null
   ) => {
     setDisabled(true);
 
-    const { windowId }: { windowId?: string } = queryString?.parse(
-      window?.location?.search
-    );
-
     try {
       if (isExternalRequest) {
+        const { message, origin } =
+          StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+
         let trxHash: string;
         if (activeAsset.type === AssetType.Constellation) {
           trxHash = await accountController.confirmTempTx();
@@ -232,59 +243,58 @@ const ConfirmContainer = () => {
         }
 
         if (callbackSuccess) {
-          callbackSuccess(windowId, trxHash);
+          callbackSuccess(message, origin, trxHash);
         }
 
         if (window) {
           window.close();
         }
-      } else {
-        if (
-          activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-          activeWallet.type === KeyringWalletType.BitfiAccountWallet
-        ) {
-          const page =
-            activeWallet.type === KeyringWalletType.LedgerAccountWallet
-              ? LEDGER_PAGE
-              : BITFI_PAGE;
+      } else if (
+        activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
+        activeWallet.type === KeyringWalletType.BitfiAccountWallet
+      ) {
+        const page =
+          activeWallet.type === KeyringWalletType.LedgerAccountWallet
+            ? LEDGER_PAGE
+            : BITFI_PAGE;
 
-          const params = new URLSearchParams();
-          params.set('route', 'signTransaction');
-          params.set('windowId', Array.isArray(windowId) ? windowId[0] : windowId);
-          params.set('id', activeWallet.id);
-          params.set('publicKey', activeWalletPublicKey);
-          params.set('deviceId', activeWalletDeviceId);
-          params.set('amount', tempTx!.amount);
-          params.set('fee', String(tempTx!.fee));
-          params.set('from', tempTx!.fromAddress);
-          params.set('to', tempTx!.toAddress);
+        const params = new URLSearchParams();
+        params.set('route', 'signTransaction');
+        params.set('id', activeWallet.id);
+        params.set('publicKey', activeWalletPublicKey);
+        params.set('deviceId', activeWalletDeviceId);
+        params.set('amount', tempTx!.amount);
+        params.set('fee', String(tempTx!.fee));
+        params.set('from', tempTx!.fromAddress);
+        params.set('to', tempTx!.toAddress);
 
-          // Will only be required for Ledger
-          if (activeWallet?.bipIndex) {
-            params.set('bipIndex', activeWallet.bipIndex.toString());
-          }
-
-          window.open(`/${page}.html?${params.toString()}`, '_newtab');
-        } else {
-          await accountController.confirmTempTx();
-          setConfirmed(true);
+        // Will only be required for Ledger
+        if (activeWallet?.bipIndex) {
+          params.set('bipIndex', activeWallet.bipIndex.toString());
         }
+
+        window.open(`/${page}.html?${params.toString()}`, '_newtab');
+      } else {
+        await accountController.confirmTempTx();
+        setConfirmed(true);
       }
     } catch (e) {
       if (isError(e)) {
-        let message = e.message;
         if (
           e.message.includes('insufficient funds') &&
           [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)
         ) {
-          message = 'Insufficient funds to cover gas fee.';
+          e.message = 'Insufficient funds to cover gas fee.';
         }
+
+        const { message, origin } =
+          StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
         if (callbackError) {
-          callbackError(windowId, e.message);
+          callbackError(message, origin, e.message);
         }
 
-        showAlert(message, 'danger');
+        showAlert(e.message, 'danger');
       }
       console.error(e);
     }

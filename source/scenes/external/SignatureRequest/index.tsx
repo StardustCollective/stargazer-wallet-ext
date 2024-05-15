@@ -3,10 +3,6 @@
 /////////////////////
 
 import React from 'react';
-import queryString from 'query-string';
-// import { useController } from 'hooks/index';
-// import { useSelector } from 'react-redux';
-// import { AssetType } from 'state/vault/types';
 
 //////////////////////
 // Common Layouts
@@ -18,17 +14,13 @@ import CardLayout from 'scenes/external/Layouts/CardLayout';
 // Styles
 ///////////////////////////
 
-import styles from './index.module.scss';
-
-// import walletsSelectors from 'selectors/walletsSelectors';
+import { StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
 import {
-  // StargazerProvider,
-  StargazerSignatureRequest,
-} from 'scripts/Provider/StargazerProvider';
-// import { ProtocolProvider } from 'scripts/common';
-// import { EVMProvider } from 'scripts/Provider/EVMProvider';
-import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+import styles from './index.module.scss';
 
 //////////////////////
 // Component
@@ -39,22 +31,20 @@ const SignatureRequest = () => {
   // Hooks
   /////////////////////
 
-  // const controller = useController();
-  // const wallets = useSelector(walletsSelectors.selectAllAccounts);
-
-  const { data: stringData } = queryString.parse(location.search);
+  const { data, message, origin } =
+    StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      signatureRequestEncoded: string;
+      asset: string;
+      provider: string;
+      chainLabel: string;
+    }>(location.href);
 
   const {
     signatureRequestEncoded,
     // asset,
     // provider,
     chainLabel,
-  }: {
-    signatureRequestEncoded: string;
-    asset: string;
-    provider: string;
-    chainLabel: string;
-  } = JSON.parse(stringData as string);
+  } = data;
   // TODO-349: Check how signature should work here
   // const PROVIDERS: { [provider: string]: StargazerProvider | EVMProvider } = {
   //   [ProtocolProvider.CONSTELLATION]: controller.stargazerProvider,
@@ -73,13 +63,10 @@ const SignatureRequest = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-
-    await sendExternalMessage(ExternalMessageID.messageSigned, {
-      windowId,
-      result: false,
-    });
-
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      message
+    );
     window.close();
   };
 
@@ -87,16 +74,12 @@ const SignatureRequest = () => {
     // const message = asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content;
     // const signature = providerInstance.signMessage(message);
 
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
+    const signature = {
+      hex: 'test',
+      requestEncoded: signatureRequestEncoded,
+    };
 
-    await sendExternalMessage(ExternalMessageID.messageSigned, {
-      windowId,
-      result: true,
-      signature: {
-        hex: 'test',
-        requestEncoded: signatureRequestEncoded,
-      },
-    });
+    StargazerWSMessageBroker.sendResponseResult(signature.hex, message);
 
     window.close();
   };
@@ -107,16 +90,16 @@ const SignatureRequest = () => {
 
   return (
     <CardLayout
-      stepLabel={``}
-      originDescriptionLabel={'Requested by:'}
-      headerLabel={'Signature Request'}
+      stepLabel=""
+      originDescriptionLabel="Requested by:"
+      headerLabel="Signature Request"
       footerLabel={
         'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'
       }
-      captionLabel={''}
-      negativeButtonLabel={'Reject'}
+      captionLabel=""
+      negativeButtonLabel="Reject"
       onNegativeButtonClick={onNegativeButtonClick}
-      positiveButtonLabel={'Sign'}
+      positiveButtonLabel="Sign"
       onPositiveButtonClick={onPositiveButtonClick}
     >
       <div className={styles.content}>

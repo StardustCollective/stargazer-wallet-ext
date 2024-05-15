@@ -10,29 +10,36 @@ import { useSelector } from 'react-redux';
 ///////////////////////////
 
 import Container from 'components/Container';
-import ConnectedSites from './ConnectedSites';
-
-///////////////////////////
-// Utils
-///////////////////////////
-
-import { sendDappMessage } from 'scripts/Background/messaging/messenger';
-import { DappMessageID } from 'scripts/Background/messaging/types';
 
 ///////////////////////////
 // Types
 ///////////////////////////
 
 import store, { RootState } from 'state/store';
-import { IConnectedSitesContainerProps } from './types';
 import { removeDapp } from 'state/dapp';
+import { StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
+import { IConnectedSitesContainerProps } from './types';
+import ConnectedSites from './ConnectedSites';
 
 const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = () => {
   const connectedSites = useSelector((state: RootState) => state.dapp.whitelist);
 
   const onDeleteSiteClicked = async (id: string) => {
     store.dispatch(removeDapp({ id }));
-    await sendDappMessage(DappMessageID.disconnect, { origin: id });
+
+    StargazerWSMessageBroker.sendEvent(
+      ProtocolProvider.CONSTELLATION,
+      AvailableWalletEvent.disconnect,
+      [],
+      [id]
+    );
+    StargazerWSMessageBroker.sendEvent(
+      ProtocolProvider.ETHEREUM,
+      AvailableWalletEvent.disconnect,
+      [],
+      [id]
+    );
   };
 
   ///////////////////////////

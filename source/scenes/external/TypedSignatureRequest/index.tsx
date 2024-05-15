@@ -31,14 +31,17 @@ import { useCopyClipboard } from 'hooks/index';
 // Styles
 ///////////////////////////
 
-import styles from './index.module.scss';
-
-import { EIP712Domain, TypedSignatureRequest } from './types';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { ALL_EVM_CHAINS } from 'constants/index';
 import dappSelectors from 'selectors/dappSelectors';
-import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+import { EVMProvider } from 'scripts/Provider/EVMProvider';
+import { EIP712Domain, TypedSignatureRequest } from './types';
+import styles from './index.module.scss';
 
 const DOMAIN_TITLE = 'Domain';
 const URL_TITLE = 'URL';
@@ -56,14 +59,13 @@ const TypedSignatureRequestScreen = () => {
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
 
-  const { data: stringData } = queryString.parse(location.search);
+  const { data, message } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+    signatureConsent: TypedSignatureRequest;
+    domain: string;
+    originalData: Record<string, any>;
+  }>(location.href);
 
-  const {
-    signatureConsent: signatureRequest,
-    domain,
-  }: { signatureConsent: TypedSignatureRequest; domain: string } = JSON.parse(
-    stringData as string
-  );
+  const { signatureConsent: signatureRequest, domain } = data;
 
   const contentObject = JSON.parse(signatureRequest.content);
   const metadataObject = signatureRequest.data;
@@ -77,21 +79,21 @@ const TypedSignatureRequestScreen = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-    await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
-      windowId,
-      result: false,
-    });
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      message
+    );
     window.close();
   };
 
   const onPositiveButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
+    const signature = new EVMProvider().signTypedData(
+      data.originalData.domain,
+      data.originalData.types,
+      data.originalData.message
+    );
 
-    await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
-      windowId,
-      result: true,
-    });
+    StargazerWSMessageBroker.sendResponseResult(signature, message);
 
     window.close();
   };
@@ -233,16 +235,16 @@ const TypedSignatureRequestScreen = () => {
 
   return (
     <CardLayoutV2
-      stepLabel={``}
-      headerLabel={'Signature Request'}
+      stepLabel=""
+      headerLabel="Signature Request"
       headerInfo={renderHeaderInfo()}
       footerLabel={
         'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'
       }
-      captionLabel={``}
-      negativeButtonLabel={'Reject'}
+      captionLabel=""
+      negativeButtonLabel="Reject"
       onNegativeButtonClick={onNegativeButtonClick}
-      positiveButtonLabel={'Sign'}
+      positiveButtonLabel="Sign"
       onPositiveButtonClick={onPositiveButtonClick}
     >
       <div className={styles.content}>
