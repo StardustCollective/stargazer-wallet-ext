@@ -11,8 +11,8 @@ import {
   generateUUIDv4NamespaceId,
   isStargazerRequestMessage,
 } from 'scripts/common';
-import { StargazerProvider } from 'scripts/Provider/StargazerProvider';
-import { EVMProvider } from 'scripts/Provider/EVMProvider';
+import { ConstellationProvider } from 'scripts/Provider/constellation';
+import { EVMProvider } from 'scripts/Provider/evm';
 import {
   getTabOrigin,
   isDappConnected,
@@ -33,7 +33,7 @@ export class StargazerWSMessageBroker {
     sender: chrome.runtime.MessageSender
   ) {
     const ChainProviders = {
-      [ProtocolProvider.CONSTELLATION]: new StargazerProvider(),
+      [ProtocolProvider.CONSTELLATION]: new ConstellationProvider(),
       [ProtocolProvider.ETHEREUM]: new EVMProvider(),
     };
 
@@ -75,7 +75,9 @@ export class StargazerWSMessageBroker {
     const { chainProtocol, request } = message.data;
 
     if (request.type === 'rpc') {
-      this.onStargazerRpcRequest(chainProtocol, request, message, sender);
+      StargazerWSMessageBroker.executePredicateAndSendRpcResponse(() => {
+        return this.onStargazerRpcRequest(chainProtocol, request, message, sender);
+      }, message);
       return true;
     }
 
@@ -152,5 +154,23 @@ export class StargazerWSMessageBroker {
       { type: 'rpc', error: { message: String(error) } },
       requestMessage
     );
+  }
+
+  static async executePredicateAndSendRpcResponse(
+    predicate: () => any,
+    requestMessage: StargazerRequestMessage
+  ) {
+    try {
+      const result = await predicate();
+
+      // Response will be sent by context in user interaction
+      if (Object.is(result, StargazerWSMessageBroker.NoResponseEmitted)) {
+        return;
+      }
+
+      await StargazerWSMessageBroker.sendResponseResult(result, requestMessage);
+    } catch (e) {
+      await StargazerWSMessageBroker.sendResponseError(e, requestMessage);
+    }
   }
 }
