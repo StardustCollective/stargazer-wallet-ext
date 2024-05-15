@@ -20,6 +20,7 @@
   },
   "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint"],
   "rules": {
+    "camelcase": "off",
     "no-use-before-define": "off",
     "no-continue": "off",
     "no-return-await": "off",
