@@ -4,9 +4,9 @@ import { updateState } from 'state/store';
 
 import { GlobalMessageEvent } from '../messaging/types';
 
-export const handleStoreSubscribe = (store: Store, notifyUpdate = false) => {
+export const handleStoreSubscribe = (store: Store) => {
   const listener = throttle(async () => {
-    await updateState();
+    const notifyUpdate = await updateState();
     if (notifyUpdate) {
       // Service Worker
       await chrome.runtime.sendMessage(GlobalMessageEvent.rehydrate);

@@ -8,6 +8,7 @@ import BitfiPage from './Bitfi';
 import rehydrateStore from 'state/rehydrate';
 import { handleDag4Setup } from 'scripts/Background/handlers/handleDag4Setup';
 import { handleStoreSubscribe } from 'scripts/Background/handlers/handleStoreSubscribe';
+import { handleRehydrateStore } from 'scripts/Background/handlers/handleRehydrateStore';
 
 const app = document.getElementById('bitfi-root');
 
@@ -19,6 +20,8 @@ const options = {
   // you can also just use 'scale'
   transition: transitions.FADE,
 };
+
+handleRehydrateStore();
 
 rehydrateStore(store).then(() => {
   // Initialize dag4
@@ -37,5 +40,5 @@ rehydrateStore(store).then(() => {
   );
 
   // Subscribe store to updates and notify
-  handleStoreSubscribe(store, true);
+  handleStoreSubscribe(store);
 });
