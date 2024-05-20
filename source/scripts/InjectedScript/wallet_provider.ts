@@ -22,7 +22,6 @@ export class StargazerWalletProvider {
 
   constructor(broker: StargazerISMessageBroker) {
     this.#broker = broker;
-    this.#broker.init();
   }
 
   get version() {

@@ -50,6 +50,12 @@ import {
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError, ProtocolProvider } from 'scripts/common';
 import styles from './index.module.scss';
+import dappSelectors from 'selectors/dappSelectors';
+import {
+  DappMessage,
+  DappMessageEvent,
+  MessageType,
+} from 'scripts/Background/messaging/types';
 
 const PurpleCheckbox = withStyles({
   root: {
@@ -87,11 +93,12 @@ const SelectAccounts = () => {
   ///////////////////////////
 
   const allWallets = useSelector(walletsSelectors.selectAllWallets);
+  const current = useSelector(dappSelectors.getCurrent);
 
   const [selectedWallets, setSelectedWallets] = useState<KeyringWalletState[]>([]);
   const [sceneState, setSceneState] = useState<SCENE_STATE>(SCENE_STATE.SELECT_ACCOUNTS);
 
-  const { message } = StargazerExternalPopups.decodeRequestMessageLocationParams(
+  const { message, origin } = StargazerExternalPopups.decodeRequestMessageLocationParams(
     location.href
   );
 
@@ -116,12 +123,38 @@ const SelectAccounts = () => {
         .filter(({ network }) => network === KeyringNetwork.Ethereum)
         .map(({ address }) => address);
 
-      StargazerWSMessageBroker.sendResponseResult(
-        message.data.chainProtocol === ProtocolProvider.CONSTELLATION
-          ? dagAccounts
-          : ethAccounts,
-        message
-      );
+      const network = message.data.chainProtocol;
+      const networkAccounts =
+        network === ProtocolProvider.CONSTELLATION ? dagAccounts : ethAccounts;
+
+      const dappMessageDAG: DappMessage = {
+        type: MessageType.dapp,
+        event: DappMessageEvent.connect,
+        payload: {
+          origin,
+          dapp: current,
+          network: ProtocolProvider.CONSTELLATION,
+          accounts: dagAccounts,
+        },
+      };
+
+      const dappMessageETH: DappMessage = {
+        type: MessageType.dapp,
+        event: DappMessageEvent.connect,
+        payload: {
+          origin,
+          dapp: current,
+          network: ProtocolProvider.ETHEREUM,
+          accounts: ethAccounts,
+        },
+      };
+
+      // Connect both accounts in the SW store
+      chrome.runtime.sendMessage(dappMessageDAG);
+      chrome.runtime.sendMessage(dappMessageETH);
+
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(networkAccounts, message);
 
       window.close();
     }
@@ -129,6 +162,7 @@ const SelectAccounts = () => {
 
   const onNegativeButtonPressed = () => {
     if (sceneState === SCENE_STATE.SELECT_ACCOUNTS) {
+      StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(
         new EIPRpcError('User denied provider activation', EIPErrorCodes.Rejected),
         message

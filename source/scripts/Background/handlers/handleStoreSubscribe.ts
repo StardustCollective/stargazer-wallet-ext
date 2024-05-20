@@ -8,7 +8,6 @@ export const handleStoreSubscribe = (store: Store) => {
   const listener = throttle(async () => {
     const notifyUpdate = await updateState();
     if (notifyUpdate) {
-      // Service Worker
       await chrome.runtime.sendMessage(GlobalMessageEvent.rehydrate);
     }
   }, 1000);

@@ -106,7 +106,7 @@ const ApproveSpend = () => {
         };
       }
 
-      if (activeAsset.id !== vaultActiveAsset.id) {
+      if (activeAsset?.id !== vaultActiveAsset?.id) {
         // Update active asset in order to get expected gas prices
         // TODO: test with Manifest V3
         walletController.account.updateAccountActiveAsset(activeAsset);
@@ -148,6 +148,7 @@ const ApproveSpend = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
       message
@@ -178,9 +179,11 @@ const ApproveSpend = () => {
       walletController.account.updateTempTx(txConfig);
       const trxHash = await walletController.account.confirmContractTempTx(asset);
 
+      StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(trxHash, message);
     } catch (e) {
       if (isError(e)) {
+        StargazerExternalPopups.addResolvedParam(location.href);
         StargazerWSMessageBroker.sendResponseError(
           new EIPRpcError(e.message, EIPErrorCodes.Rejected),
           message

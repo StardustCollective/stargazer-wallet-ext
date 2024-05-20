@@ -10,7 +10,6 @@ import CardLayout from 'scenes/external/Layouts/CardLayout';
 // Styles
 ///////////////////////////
 
-import { StargazerSignatureRequest } from 'scripts/Provider/StargazerProvider';
 import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
@@ -21,6 +20,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import styles from './index.module.scss';
+import { StargazerSignatureRequest } from 'scripts/Provider/constellation';
 
 //////////////////////
 // Component
@@ -37,9 +37,10 @@ const SignatureRequest = () => {
       asset: string;
       provider: string;
       chainLabel: string;
+      walletLabel: string;
     }>(location.href);
 
-  const { signatureRequestEncoded, asset, chainLabel } = data;
+  const { signatureRequestEncoded, asset, chainLabel, walletLabel } = data;
 
   const isDAGsignature = asset === 'DAG';
 
@@ -48,6 +49,7 @@ const SignatureRequest = () => {
   ) as StargazerSignatureRequest;
 
   const onNegativeButtonClick = async () => {
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
       requestMessage
@@ -79,9 +81,11 @@ const SignatureRequest = () => {
 
     try {
       const signature = await signMessage(message);
+      StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
     } catch (err) {
       console.log(err);
+      StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(err, requestMessage);
     }
 

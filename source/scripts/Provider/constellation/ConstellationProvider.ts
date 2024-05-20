@@ -26,9 +26,9 @@ import {
 
 export class ConstellationProvider implements IRpcChainRequestHandler {
   async handleProxiedRequest(
-    request: StargazerRequest & { type: 'rpc' },
-    message: StargazerRequestMessage,
-    sender: chrome.runtime.MessageSender
+    _request: StargazerRequest & { type: 'rpc' },
+    _message: StargazerRequestMessage,
+    _sender: chrome.runtime.MessageSender
   ) {
     throw new Error('handleProxiedRequest is not available on ConstellationProvider');
   }

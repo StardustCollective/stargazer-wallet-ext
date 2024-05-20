@@ -13,8 +13,8 @@ interface SwitchEthereumChainParameter {
 
 export const wallet_switchEthereumChain = async (
   request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
 ): Promise<null> => {
   const [chainData] = (request?.params as [SwitchEthereumChainParameter]) || [];
 

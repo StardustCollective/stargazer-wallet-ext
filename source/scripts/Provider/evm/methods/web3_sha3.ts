@@ -3,8 +3,8 @@ import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 export const web3_sha3 = (
   request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
 ) => {
   return ethers.utils.keccak256(request.params[0]);
 };

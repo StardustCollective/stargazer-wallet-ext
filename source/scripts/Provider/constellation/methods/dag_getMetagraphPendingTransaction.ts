@@ -9,8 +9,8 @@ import { StargazerMetagraphGetTransactionRequest } from './dag_getMetagraphTrans
 
 export const dag_getMetagraphPendingTransaction = (
   request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
 ) => {
   const { vault, assets } = store.getState();
 

@@ -7,8 +7,8 @@ import { getWalletInfo } from '../utils';
 
 export const dag_getPublicKey = (
   request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
 ) => {
   const { activeWallet } = getWalletInfo();
 
@@ -46,7 +46,7 @@ export const dag_getPublicKey = (
 
   const dappData = whitelist[origin];
 
-  if (!dappData?.accounts?.Constellation) {
+  if (!dappData?.accounts?.constellation) {
     throw new Error('ConstellationProvider.getPublicKey: Not whitelisted');
   }
 

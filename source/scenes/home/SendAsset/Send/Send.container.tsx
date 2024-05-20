@@ -4,13 +4,11 @@
 import React, { ChangeEvent, useState, useCallback, useMemo, useEffect, FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-// import { useAlert } from 'react-alert';
 import * as yup from 'yup';
-import { BigNumber, Transaction, ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { useLinkTo } from '@react-navigation/native';
 import find from 'lodash/find';
 import { useHistory } from 'react-router-dom';
-import queryString from 'query-string';
 
 ///////////////////////////
 // Components
@@ -24,7 +22,6 @@ import Container, { CONTAINER_COLOR } from 'components/Container';
 
 import { checkOneDecimalPoint, getChangeAmount } from 'utils/sendUtil';
 import { getAccountController } from 'utils/controllersUtils';
-import { cancelEvent } from 'utils/backgroundUtils';
 import { removeEthereumPrefix } from 'utils/addressUtil';
 import { CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
 
@@ -332,12 +329,16 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     accountController.updateTempTx(txConfig);
 
     if (isExternalRequest) {
-      const { message, origin } =
-        StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+      const {
+        message,
+        origin,
+        data: locationData,
+      } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
       const params: Record<string, any> = {
         message,
         origin,
+        data: locationData,
         to: txConfig.toAddress,
       };
 
@@ -377,6 +378,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         location.href
       );
 
+      StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(
         new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
         message

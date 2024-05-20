@@ -11,8 +11,8 @@ export type StargazerMetagraphGetTransactionRequest = {
 
 export const dag_getMetagraphTransaction = async (
   request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
 ) => {
   const [txData] = request.params as [StargazerMetagraphGetTransactionRequest];
 

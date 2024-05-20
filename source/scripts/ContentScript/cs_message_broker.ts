@@ -32,14 +32,13 @@ export class StargazerCSMessageBroker {
     chrome.runtime.sendMessage(message);
   }
 
-  onWSCSMessage(message: any, sender: chrome.runtime.MessageSender) {
+  onWSCSMessage(message: any, _sender: chrome.runtime.MessageSender) {
     if (isStargazerEventMessage(message)) {
       window.dispatchEvent(
         new CustomEvent(StargazerMessageEventName.CS_IS_MESSAGE, {
           detail: message,
         })
       );
-      return true;
     }
 
     if (isStargazerResponseMessage(message)) {
@@ -48,9 +47,6 @@ export class StargazerCSMessageBroker {
           detail: message,
         })
       );
-      return true;
     }
-
-    return false;
   }
 }

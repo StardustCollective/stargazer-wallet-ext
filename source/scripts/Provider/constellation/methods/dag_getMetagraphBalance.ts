@@ -5,8 +5,8 @@ import { getAssetByContractAddress, validateMetagraphAddress } from '../utils';
 
 export const dag_getMetagraphBalance = (
   request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
 ) => {
   const [address] = request.params as [unknown];
 

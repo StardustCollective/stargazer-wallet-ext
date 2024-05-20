@@ -32,9 +32,29 @@ export class StargazerExternalPopups {
     message: StargazerRequestMessage,
     origin: string,
     route: string,
+    windowSize = { width: 372, height: 600 },
     url = '/external.html'
   ) {
-    return await this.createPopup({ data, message, origin, route }, url);
+    await this.createPopup({ data, message, origin, route }, url, windowSize);
+  }
+
+  static addResolvedParam(href: string): void {
+    const { message, origin, data } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams(href);
+
+    let url = new URL(href);
+    let updatedURL = url.origin + url.pathname;
+
+    const urlParams = StargazerExternalPopups.encodeLocationParams({
+      message,
+      origin,
+      data,
+      resolved: true,
+    });
+
+    updatedURL += `?${urlParams.toString()}`;
+
+    window.history.replaceState({}, '', updatedURL);
   }
 
   static encodeLocationParams(params: Record<string, any>) {
@@ -78,6 +98,11 @@ export class StargazerExternalPopups {
       throw new Error('Invalid data param');
     }
 
-    return { message: params.message, origin: params.origin, data: params.data as Data };
+    return {
+      message: params.message,
+      origin: params.origin,
+      data: params.data as Data,
+      resolved: !!params?.resolved,
+    };
   }
 }

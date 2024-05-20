@@ -8,31 +8,15 @@ export enum DappMessageEvent {
   notifyAccounts = 'notifyAccounts',
 }
 
-export enum ExternalMessageEvent {
-  connectWallet = 'connectWallet',
-  dataSigned = 'dataSigned',
-  messageSigned = 'messageSigned',
-  transactionSent = 'transactionSent',
-  watchAssetResult = 'watchAssetResult',
-  signTypedMessageResult = 'signTypedMessageResult',
-  spendApproved = 'spendApproved',
-}
-
 export enum MessageType {
   global = 'global',
-  external = 'external',
   dapp = 'dapp',
 }
 
-export type MessageDetail = {
-  windowId: string;
-  [key: string]: any;
-};
-
-export type ExternalMessage = {
+export type DappMessage = {
   type: MessageType;
-  event: ExternalMessageEvent;
-  detail: MessageDetail;
+  event: DappMessageEvent;
+  payload: any;
 };
 
 export type GlobalMessage = {

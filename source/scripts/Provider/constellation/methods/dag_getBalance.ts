@@ -4,9 +4,9 @@ import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { getAssetByType } from '../utils';
 
 export const dag_getBalance = (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _request: StargazerRequest & { type: 'rpc' },
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
 ) => {
   const { balances }: IVaultState = store.getState().vault;
 

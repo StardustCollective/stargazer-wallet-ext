@@ -70,7 +70,7 @@ export class StargazerWSMessageBroker {
     message: StargazerRequestMessage,
     sender: chrome.runtime.MessageSender
   ) {
-    setCurrentDapp(sender.origin, sender.tab.title);
+    setCurrentDapp(sender.origin, sender.tab.title, sender.tab.favIconUrl);
 
     const { chainProtocol, request } = message.data;
 
@@ -115,7 +115,7 @@ export class StargazerWSMessageBroker {
         continue;
       }
 
-      chrome.tabs.sendMessage(tab.id, message);
+      await chrome.tabs.sendMessage(tab.id, message);
     }
   }
 

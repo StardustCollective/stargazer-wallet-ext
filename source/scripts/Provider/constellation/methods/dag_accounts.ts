@@ -1,19 +1,16 @@
 import store from 'state/store';
-import find from 'lodash/find';
 import { IDAppState } from 'state/dapp/types';
-import IVaultState from 'state/vault/types';
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 export const dag_accounts = (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
+  _request: StargazerRequest & { type: 'rpc' },
+  _message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { dapp, vault } = store.getState();
+  const { dapp } = store.getState();
   const { whitelist }: IDAppState = dapp;
 
-  const { current } = dapp;
-  const origin = current && current.origin;
+  const origin = sender?.origin ?? null;
 
   if (!origin) {
     return [];
@@ -21,21 +18,9 @@ export const dag_accounts = (
 
   const dappData = whitelist[origin];
 
-  if (!dappData?.accounts?.Constellation) {
+  if (!dappData?.accounts?.constellation) {
     return [];
   }
 
-  const { activeWallet }: IVaultState = vault;
-
-  if (!activeWallet) {
-    return dappData.accounts.Constellation;
-  }
-
-  const dagAddresses = dappData.accounts.Constellation;
-  const activeAddress = find(activeWallet.assets, { id: 'constellation' });
-
-  return [
-    activeAddress?.address,
-    ...dagAddresses.filter((address) => address !== activeAddress?.address),
-  ].filter(Boolean); // if no active address, remove
+  return dappData.accounts.constellation;
 };

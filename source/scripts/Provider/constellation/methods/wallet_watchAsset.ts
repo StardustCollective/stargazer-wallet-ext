@@ -1,7 +1,6 @@
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { DAG_NETWORK } from 'constants/index';
 import { AssetType } from 'state/vault/types';
-import { useController } from 'hooks/index';
 import store from 'state/store';
 import {
   StargazerExternalPopups,
@@ -35,8 +34,6 @@ export const wallet_watchAsset = async (
 
   await checkWatchAssetParams(params);
 
-  // TODO: remove controller dependency
-  const controller = useController();
   const metagraphAddress = params.options.address;
   const dagAddress = activeWallet?.assets?.find(
     (asset) => asset?.id === AssetType.Constellation

@@ -17,10 +17,13 @@ import Container from 'components/Container';
 
 import store, { RootState } from 'state/store';
 import { removeDapp } from 'state/dapp';
-import { StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
 import { IConnectedSitesContainerProps } from './types';
 import ConnectedSites from './ConnectedSites';
+import {
+  DappMessage,
+  DappMessageEvent,
+  MessageType,
+} from 'scripts/Background/messaging/types';
 
 const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = () => {
   const connectedSites = useSelector((state: RootState) => state.dapp.whitelist);
@@ -28,18 +31,13 @@ const ConnectedSitesContainer: FC<IConnectedSitesContainerProps> = () => {
   const onDeleteSiteClicked = async (id: string) => {
     store.dispatch(removeDapp({ id }));
 
-    StargazerWSMessageBroker.sendEvent(
-      ProtocolProvider.CONSTELLATION,
-      AvailableWalletEvent.disconnect,
-      [],
-      [id]
-    );
-    StargazerWSMessageBroker.sendEvent(
-      ProtocolProvider.ETHEREUM,
-      AvailableWalletEvent.disconnect,
-      [],
-      [id]
-    );
+    const message: DappMessage = {
+      type: MessageType.dapp,
+      event: DappMessageEvent.disconnect,
+      payload: { origin: id },
+    };
+
+    chrome.runtime.sendMessage(message);
   };
 
   ///////////////////////////

@@ -5,7 +5,7 @@ import CopyIcon from 'assets/images/svg/copy.svg';
 import ConstellationIcon from 'assets/images/svg/constellation-blue.svg';
 import { useCopyClipboard } from 'hooks/index';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { WatchAssetOptions } from 'scripts/Provider/StargazerProvider';
+import { WatchAssetOptions } from 'scripts/Provider/constellation';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { ellipsis, formatNumber } from 'scenes/home/helpers';
 import { DAG_NETWORK } from 'constants/index';
@@ -52,6 +52,7 @@ const WatchAsset = () => {
   const origin = current && current.origin;
 
   const onNegativeButtonClick = async () => {
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', 4001),
       message
@@ -75,6 +76,7 @@ const WatchAsset = () => {
       logo
     );
 
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseResult(true, message);
 
     window.close();

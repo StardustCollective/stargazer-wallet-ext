@@ -9,7 +9,10 @@ import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { ITransactionInfo } from 'scripts/types';
 import { IAssetInfoState } from 'state/assets/types';
 import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
-import { StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 import styles from './Confirm.scss';
 import { ellipsis } from '../../helpers';
 
@@ -58,18 +61,20 @@ const SendConfirm = ({
 }: ISendConfirm) => {
   const callbackSuccess = async (
     message: StargazerRequestMessage,
-    origin: string,
+    _origin: string,
     trxHash: string
   ) => {
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseResult(trxHash, message);
     window.close();
   };
 
   const callbackError = async (
     message: StargazerRequestMessage,
-    origin: string,
+    _origin: string,
     error: string
   ) => {
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError(error, EIPErrorCodes.Rejected),
       message

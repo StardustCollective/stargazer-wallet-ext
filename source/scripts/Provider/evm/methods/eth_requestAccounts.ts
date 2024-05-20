@@ -17,7 +17,6 @@ export const eth_requestAccounts = async (
   }
 
   // Provider not activated -> display popup and wait for user's approval
-
   await StargazerExternalPopups.executePopupWithRequestMessage(
     null,
     message,

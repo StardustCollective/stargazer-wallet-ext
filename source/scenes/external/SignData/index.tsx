@@ -51,6 +51,7 @@ const SignData = () => {
   }
 
   const onNegativeButtonClick = async () => {
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', 4001),
       requestMessage
@@ -69,6 +70,7 @@ const SignData = () => {
   const onPositiveButtonClick = async () => {
     const signature = await signData(dataEncoded);
 
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
 
     window.close();

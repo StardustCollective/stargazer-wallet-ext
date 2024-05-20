@@ -53,12 +53,14 @@ export const dag_signData = async (
     bipIndex,
     chainLabel: getChainLabel(),
   };
+  const windowSize = { width: 372, height: 812 };
 
   await StargazerExternalPopups.executePopupWithRequestMessage(
     signatureData,
     message,
     sender.origin,
-    'signData'
+    'signData',
+    windowSize
   );
 
   return StargazerWSMessageBroker.NoResponseEmitted;

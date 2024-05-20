@@ -27,8 +27,8 @@ import {
 export class EVMProvider implements IRpcChainRequestHandler {
   async handleProxiedRequest(
     request: StargazerRequest & { type: 'rpc' },
-    message: StargazerRequestMessage,
-    sender: chrome.runtime.MessageSender
+    _message: StargazerRequestMessage,
+    _sender: chrome.runtime.MessageSender
   ) {
     const { activeNetwork }: IVaultState = store.getState().vault;
     const networkLabel = getNetworkLabel();

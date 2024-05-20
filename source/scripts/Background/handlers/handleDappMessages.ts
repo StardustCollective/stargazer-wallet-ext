@@ -1,64 +1,50 @@
 import { addDapp, removeDapp, setCurrent } from 'state/dapp';
 import { IDAppInfo } from 'state/dapp/types';
 import store from 'state/store';
-import includes from 'lodash/includes';
-import filter from 'lodash/filter';
 
 import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
 import { StargazerWSMessageBroker } from '../messaging';
+import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 
-export const notifyAccountsChanged = (accounts: string[]) => {
+export const notifyAccountsChanged = async (
+  origin: string,
+  network: ProtocolProvider,
+  accounts: string[]
+) => {
   const { whitelist } = store.getState().dapp;
 
-  // Will only notify whitelisted dapps that are listening for a wallet change.
-  for (const origin of Object.keys(whitelist)) {
-    const site = whitelist[origin];
+  if (!whitelist[origin]) return;
 
-    if (!site) {
-      continue;
-    }
-
-    const siteAccounts = site.accounts;
-    const allAccountsWithDuplicates = accounts.concat(
-      siteAccounts.Constellation,
-      siteAccounts.Ethereum
-    );
-
-    const matchingAccounts = filter(allAccountsWithDuplicates, (value, index, iteratee) =>
-      includes(iteratee, value, index + 1)
-    );
-
-    if (matchingAccounts.length === 0) {
-      continue;
-    }
-
-    const ethAccounts = matchingAccounts.filter((account) =>
-      account.toLowerCase().startsWith('0x')
-    );
-    const dagAccounts = matchingAccounts.filter((account) =>
-      account.toLowerCase().startsWith('dag')
-    );
-
-    console.log({ ethAccounts, dagAccounts });
-
-    StargazerWSMessageBroker.sendEvent(
-      ProtocolProvider.CONSTELLATION,
-      AvailableWalletEvent.accountsChanged,
-      [dagAccounts]
-    );
-
-    StargazerWSMessageBroker.sendEvent(
-      ProtocolProvider.ETHEREUM,
-      AvailableWalletEvent.accountsChanged,
-      [ethAccounts]
-    );
-  }
+  await StargazerWSMessageBroker.sendEvent(
+    network,
+    AvailableWalletEvent.accountsChanged,
+    [accounts],
+    [origin]
+  );
 };
 
-export const setCurrentDapp = (origin: string, title: string) => {
+export const notifyDisconnect = async (origin: string) => {
+  if (!origin) return;
+
+  await StargazerWSMessageBroker.sendEvent(
+    ProtocolProvider.CONSTELLATION,
+    AvailableWalletEvent.disconnect,
+    [],
+    [origin]
+  );
+
+  await StargazerWSMessageBroker.sendEvent(
+    ProtocolProvider.ETHEREUM,
+    AvailableWalletEvent.disconnect,
+    [],
+    [origin]
+  );
+};
+
+export const setCurrentDapp = (origin: string, title: string, logo: string) => {
   const current: IDAppInfo = {
     origin,
-    logo: `chrome://favicon/size/64@1x/${origin}`,
+    logo,
     title,
   };
 
@@ -84,8 +70,12 @@ export const isDappConnected = (origin: string) => {
   return !!dapp.whitelist[origin];
 };
 
-export const handleDappConnect = (payload: any) => {
-  const { origin, dapp, network, accounts } = payload;
+export const handleDappConnect = async (
+  message: DappMessage,
+  _sender: chrome.runtime.MessageSender,
+  _sendResponse: (response?: any) => void
+) => {
+  const { origin, dapp, network, accounts } = message?.payload ?? {};
 
   if (!origin || !dapp || !network || !accounts) {
     throw new Error('Unable to connect dapp');
@@ -93,34 +83,43 @@ export const handleDappConnect = (payload: any) => {
 
   store.dispatch(addDapp({ id: origin, dapp, network, accounts }));
 
-  notifyAccountsChanged(accounts);
+  await notifyAccountsChanged(origin, network, accounts);
 };
 
-export const handleDappDisconnect = (payload: { origin: string }) => {
-  const { origin } = payload;
+export const handleDappDisconnect = async (
+  message: DappMessage,
+  _sender: chrome.runtime.MessageSender,
+  _sendResponse: (response?: any) => void
+) => {
+  const { origin } = message?.payload ?? {};
 
   if (!origin) {
     throw new Error('Unable to disconnect dapp');
   }
 
+  await notifyDisconnect(origin);
+
   store.dispatch(removeDapp({ id: origin }));
+};
 
-  StargazerWSMessageBroker.sendEvent(
-    ProtocolProvider.CONSTELLATION,
-    AvailableWalletEvent.disconnect,
-    [],
-    [origin]
-  );
+const onDappMessage = (
+  message: DappMessage,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response?: any) => void
+) => {
+  if (message?.type !== MessageType.dapp) return;
+  if (!message?.event) return;
 
-  StargazerWSMessageBroker.sendEvent(
-    ProtocolProvider.ETHEREUM,
-    AvailableWalletEvent.disconnect,
-    [],
-    [origin]
-  );
+  switch (message.event) {
+    case DappMessageEvent.connect:
+      return handleDappConnect(message, sender, sendResponse);
+    case DappMessageEvent.disconnect:
+      return handleDappDisconnect(message, sender, sendResponse);
+    default:
+      return;
+  }
 };
 
 export const handleDappMessages = () => {
-  const broker = new StargazerWSMessageBroker();
-  broker.init();
+  chrome.runtime.onMessage.addListener(onDappMessage);
 };

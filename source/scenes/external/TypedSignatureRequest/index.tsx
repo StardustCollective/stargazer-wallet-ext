@@ -3,7 +3,6 @@
 /////////////////////
 
 import React from 'react';
-import queryString from 'query-string';
 import { useSelector } from 'react-redux';
 import * as ethers from 'ethers';
 import clsx from 'clsx';
@@ -85,6 +84,7 @@ const TypedSignatureRequestScreen = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
+    StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
       message
@@ -111,8 +111,10 @@ const TypedSignatureRequestScreen = () => {
   const onPositiveButtonClick = async () => {
     try {
       const signature = signTypedData(domainObject, typesObject, contentObject);
+      StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(signature, message);
     } catch (e) {
+      StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(e, message);
     }
 

@@ -23,7 +23,7 @@ export const eth_signTypedData = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { activeWallet, windowUrl, windowType, windowSize } = getWalletInfo();
+  const { activeWallet } = getWalletInfo();
 
   if (!activeWallet) {
     throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
