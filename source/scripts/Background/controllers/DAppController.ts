@@ -1,17 +1,23 @@
 import { removeDapp } from 'state/dapp';
 import store from 'state/store';
-import { AvailableEvents } from 'scripts/common';
-import { DappRegistry } from '../dappRegistry';
+import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
+import { StargazerWSMessageBroker } from '../messaging';
 
 class DAppController {
-  #dappRegistry: DappRegistry;
-
-  constructor(dappRegistry: DappRegistry) {
-    this.#dappRegistry = dappRegistry;
-  }
-
   async #notifySiteDisconnected(origin: string) {
-    this.#dappRegistry.sendOriginChainEvent(origin, '*', AvailableEvents.disconnect);
+    StargazerWSMessageBroker.sendEvent(
+      ProtocolProvider.CONSTELLATION,
+      AvailableWalletEvent.disconnect,
+      [],
+      [origin]
+    );
+
+    StargazerWSMessageBroker.sendEvent(
+      ProtocolProvider.ETHEREUM,
+      AvailableWalletEvent.disconnect,
+      [],
+      [origin]
+    );
   }
 
   fromUserDisconnectDApp(origin: string) {

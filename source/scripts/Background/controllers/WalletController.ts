@@ -41,6 +41,8 @@ import filter from 'lodash/filter';
 // import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
+import { setUnlocked } from 'state/auth';
+import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
 import { generateId } from './EVMChainController/utils';
 import {
   AvalancheChainId,
@@ -53,9 +55,7 @@ import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
-import { sendDappMessage } from 'scripts/Background/messaging/messenger';
-import { DappMessageID } from 'scripts/Background/messaging/types';
-import { setUnlocked } from 'state/auth';
+import { StargazerWSMessageBroker } from '../messaging';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -215,7 +215,7 @@ class WalletController {
     for (let i = 0; i < wallets.length; i++) {
       const wallet = wallets[i];
       const num = wallet.id.replace(prefix, '');
-      walletIds.push(parseInt(num));
+      walletIds.push(parseInt(num, 10));
     }
 
     //Determine the next ID.
@@ -353,7 +353,13 @@ class WalletController {
   async notifyWalletChange(accounts: string[]): Promise<void> {
     // This method is only used from the Chrome extension.
     // Send event to service worker
-    await sendDappMessage(DappMessageID.notifyAccounts, { accounts });
+    // @todo - which accounts? ethereum|constellation
+
+    StargazerWSMessageBroker.sendEvent(
+      ProtocolProvider.CONSTELLATION,
+      AvailableWalletEvent.accountsChanged,
+      [{ accounts }]
+    );
   }
 
   async switchNetwork(network: string, chainId: string): Promise<void> {
@@ -472,7 +478,7 @@ class WalletController {
       // Here I'm connected to the RPC Provider.
 
       const customNetworkId = generateId(data.chainName);
-      const chainId = parseInt(data.chainId);
+      const chainId = parseInt(data.chainId, 10);
       // TODO-349: Check all fields
       const customNetwork: ICustomNetworkObject = {
         id: customNetworkId,

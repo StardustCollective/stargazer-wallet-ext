@@ -8,10 +8,13 @@ import { IActiveAssetState, IWalletState } from 'state/vault/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { ITransactionInfo } from 'scripts/types';
 import { IAssetInfoState } from 'state/assets/types';
-import { ellipsis } from '../../helpers';
+import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 import styles from './Confirm.scss';
-import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
+import { ellipsis } from '../../helpers';
 
 interface ISendConfirm {
   isExternalRequest: boolean;
@@ -25,7 +28,18 @@ interface ISendConfirm {
   getFeeAmount: () => any;
   getTotalAmount: () => any;
   handleCancel: () => void;
-  handleConfirm: (callbackSuccess: any, callbackError: any) => void;
+  handleConfirm: (
+    callbackSuccess: (
+      message: StargazerRequestMessage,
+      origin: string,
+      ...args: any[]
+    ) => void | null,
+    callbackError: (
+      message: StargazerRequestMessage,
+      origin: string,
+      ...args: any[]
+    ) => void | null
+  ) => void;
   disabled: boolean;
   isL0token: boolean;
 }
@@ -45,20 +59,26 @@ const SendConfirm = ({
   disabled,
   isL0token,
 }: ISendConfirm) => {
-  const callbackSuccess = async (windowId: string, trxHash: string) => {
-    await sendExternalMessage(ExternalMessageID.transactionSent, {
-      windowId,
-      approved: true,
-      result: trxHash,
-    });
+  const callbackSuccess = async (
+    message: StargazerRequestMessage,
+    _origin: string,
+    trxHash: string
+  ) => {
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseResult(trxHash, message);
     window.close();
   };
-  const callbackError = async (windowId: string, error: string) => {
-    await sendExternalMessage(ExternalMessageID.transactionSent, {
-      windowId,
-      approved: false,
-      error,
-    });
+
+  const callbackError = async (
+    message: StargazerRequestMessage,
+    _origin: string,
+    error: string
+  ) => {
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError(error, EIPErrorCodes.Rejected),
+      message
+    );
   };
 
   return confirmed ? (

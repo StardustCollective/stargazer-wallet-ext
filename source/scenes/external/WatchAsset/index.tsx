@@ -1,15 +1,24 @@
 import React from 'react';
-import queryString from 'query-string';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import ConstellationIcon from 'assets/images/svg/constellation-blue.svg';
 import { useCopyClipboard } from 'hooks/index';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import styles from './index.module.scss';
+import { WatchAssetOptions } from 'scripts/Provider/constellation';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { ellipsis, formatNumber } from 'scenes/home/helpers';
 import { DAG_NETWORK } from 'constants/index';
+import dappSelectors from 'selectors/dappSelectors';
+
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPRpcError } from 'scripts/common';
+import { getWalletController } from 'utils/controllersUtils';
+import { useSelector } from 'react-redux';
+import styles from './index.module.scss';
 import {
   ADD_TOKEN,
   ADD_TO_STARGAZER,
@@ -23,48 +32,52 @@ import {
   TOKEN,
   YOU_CAN_DELETE,
 } from './constants';
-import { useSelector } from 'react-redux';
-import dappSelectors from 'selectors/dappSelectors';
-import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
-import { WatchAssetOptions } from 'scripts/Provider/constellation';
 
 const WatchAsset = () => {
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
 
-  const { data: stringData } = queryString.parse(location.search);
+  const { data, message } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+    type: string;
+    options: WatchAssetOptions;
+    balance: number;
+  }>(location.href);
 
-  const {
-    type,
-    options,
-    balance,
-  }: { type: string; options: WatchAssetOptions; balance: number } = JSON.parse(
-    stringData as string
-  );
-  const { address, chainId, l0, l1, logo, symbol } = options;
+  const { type, options, balance } = data;
 
+  const { address, chainId, l0, l1, logo, symbol, name } = options;
+
+  const wallet = getWalletController();
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
   const onNegativeButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-
-    await sendExternalMessage(ExternalMessageID.watchAssetResult, {
-      windowId,
-      result: false,
-    });
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', 4001),
+      message
+    );
 
     window.close();
   };
 
   const onPositiveButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
+    const selectedNetwork = Object.values(DAG_NETWORK).find(
+      (network) => network.chainId === chainId
+    );
 
-    await sendExternalMessage(ExternalMessageID.watchAssetResult, {
-      windowId,
-      result: true,
-    });
+    await wallet.account.assetsController.addCustomL0Token(
+      l0,
+      l1,
+      address,
+      name,
+      symbol,
+      selectedNetwork.id,
+      logo
+    );
+
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseResult(true, message);
 
     window.close();
   };

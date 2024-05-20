@@ -1,7 +1,7 @@
 import { dag4 } from '@stardust-collective/dag4';
-import { TransactionV2 } from '@stardust-collective/dag4-network';
+
 import * as ethers from 'ethers';
-import { StargazerProxyRequest } from 'scripts/common';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { validateMetagraphAddress } from '../utils';
 
 export type StargazerMetagraphGetTransactionRequest = {
@@ -10,8 +10,10 @@ export type StargazerMetagraphGetTransactionRequest = {
 };
 
 export const dag_getMetagraphTransaction = async (
-  request: StargazerProxyRequest & { type: 'rpc' }
-): Promise<null | TransactionV2> => {
+  request: StargazerRequest & { type: 'rpc' },
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
+) => {
   const [txData] = request.params as [StargazerMetagraphGetTransactionRequest];
 
   const txMetagraphAddress = txData.metagraphAddress;

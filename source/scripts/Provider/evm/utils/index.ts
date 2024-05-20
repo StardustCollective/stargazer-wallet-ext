@@ -6,8 +6,8 @@ import IVaultState from 'state/vault/types';
 import { getWalletController } from 'utils/controllersUtils';
 import { getChainId as getChainIdFn } from 'scripts/Background/controllers/EVMChainController/utils';
 import { encodeToBase64 } from 'utils/encoding';
-import { StargazerSignatureRequest } from '../../constellation/utils';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { StargazerSignatureRequest } from '../../constellation/utils';
 
 const LEDGER_URL = '/ledger.html';
 const EXTERNAL_URL = '/external.html';

@@ -1,36 +1,40 @@
 import React from 'react';
 import clsx from 'clsx';
-import queryString from 'query-string';
+
 import { dag4 } from '@stardust-collective/dag4';
-import styles from './index.module.scss';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { useSelector } from 'react-redux';
 import dappSelectors from 'selectors/dappSelectors';
-import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
+
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPRpcError } from 'scripts/common';
 import { decodeFromBase64 } from 'utils/encoding';
+import styles from './index.module.scss';
 
 const SignData = () => {
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
-  const { data: stringData, windowId }: { windowId?: string; data?: string } =
-    queryString.parse(window.location.search);
+  const { data, message: requestMessage } =
+    StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      origin: string;
+      dataEncoded: string;
+      walletId: string;
+      walletLabel: string;
+      deviceId: string;
+      bipIndex: number;
+      chainLabel: string;
+    }>(location.href);
 
-  const {
-    dataEncoded,
-    chainLabel,
-    walletLabel,
-  }: {
-    dataEncoded: string;
-    chainLabel: string;
-    walletLabel: string;
-  } = JSON.parse(stringData as string);
+  const { dataEncoded, chainLabel, walletLabel } = data;
 
   // Decode base64 data
-  let dataDecoded = decodeFromBase64(dataEncoded);
+  const dataDecoded = decodeFromBase64(dataEncoded);
   let message = dataDecoded;
 
   try {
@@ -47,10 +51,11 @@ const SignData = () => {
   }
 
   const onNegativeButtonClick = async () => {
-    await sendExternalMessage(ExternalMessageID.dataSigned, {
-      windowId,
-      result: false,
-    });
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', 4001),
+      requestMessage
+    );
 
     window.close();
   };
@@ -65,14 +70,8 @@ const SignData = () => {
   const onPositiveButtonClick = async () => {
     const signature = await signData(dataEncoded);
 
-    await sendExternalMessage(ExternalMessageID.dataSigned, {
-      windowId,
-      result: true,
-      signature: {
-        hex: signature,
-        dataEncoded,
-      },
-    });
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
 
     window.close();
   };

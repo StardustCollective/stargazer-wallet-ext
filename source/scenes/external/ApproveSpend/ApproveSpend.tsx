@@ -3,7 +3,6 @@
 /////////////////////
 
 import React, { ChangeEvent, useEffect } from 'react';
-import queryString from 'query-string';
 import TextV3 from 'components/TextV3';
 import find from 'lodash/find';
 import { useSelector } from 'react-redux';
@@ -11,15 +10,11 @@ import { ethers } from 'ethers';
 import { RootState } from 'state/store';
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetType, IAssetState } from 'state/vault/types';
-import { ITransactionInfo } from '../../../scripts/types';
-import { isError, StargazerChain } from '../../../scripts/common';
 import { usePlatformAlert } from 'utils/alertUtil';
 import walletsSelectors from 'selectors/walletsSelectors';
 import dappSelectors from 'selectors/dappSelectors';
 import { CHAIN_FULL_ASSET, CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
 import { getWalletController } from 'utils/controllersUtils';
-import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
 
 ///////////////////////
 // Components
@@ -45,7 +40,18 @@ import { useFiat } from 'hooks/usePrice';
 ///////////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 import styles from './index.module.scss';
+import {
+  EIPErrorCodes,
+  EIPRpcError,
+  isError,
+  StargazerChain,
+} from '../../../scripts/common';
+import { ITransactionInfo } from '../../../scripts/types';
 
 //////////////////////
 // Constants
@@ -72,16 +78,17 @@ const ApproveSpend = () => {
   const showAlert = usePlatformAlert();
   const vaultActiveAsset = useSelector(walletsSelectors.getActiveAsset);
 
-  const { data: stringData } = queryString.parse(location.search);
+  const { data: requestData, message } =
+    StargazerExternalPopups.decodeRequestMessageLocationParams<any>(location.href);
 
-  const { to, from, gas, data, chain, chainLabel } = JSON.parse(stringData as string);
+  const { to, from, gas, data, chain, chainLabel } = requestData;
 
   let asset = useSelector((state: RootState) =>
     find(state.assets, { address: to })
   ) as IAssetInfoState;
 
   if (!asset) {
-    if (!!chain) {
+    if (chain) {
       asset = CHAIN_FULL_ASSET[chain as StargazerChain];
       let activeAsset: IAssetState;
 
@@ -99,7 +106,7 @@ const ApproveSpend = () => {
         };
       }
 
-      if (activeAsset.id !== vaultActiveAsset.id) {
+      if (activeAsset?.id !== vaultActiveAsset?.id) {
         // Update active asset in order to get expected gas prices
         // TODO: test with Manifest V3
         walletController.account.updateAccountActiveAsset(activeAsset);
@@ -107,7 +114,7 @@ const ApproveSpend = () => {
     }
   }
 
-  let {
+  const {
     estimateGasFee,
     gasSpeedLabel,
     gasFee,
@@ -127,7 +134,7 @@ const ApproveSpend = () => {
   useEffect(() => {
     if (gas) {
       // Gas sent in wei, convert to gwei
-      let initialGas = parseInt(
+      const initialGas = parseInt(
         (parseFloat(ethers.utils.formatEther(gas)) * 10e8) as any
       );
 
@@ -141,20 +148,16 @@ const ApproveSpend = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-
-    await sendExternalMessage(ExternalMessageID.spendApproved, {
-      windowId,
-      approved: true,
-      result: false,
-    });
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      message
+    );
 
     window.close();
   };
 
   const onPositiveButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-
     try {
       const txConfig: ITransactionInfo = {
         fromAddress: from,
@@ -176,19 +179,15 @@ const ApproveSpend = () => {
       walletController.account.updateTempTx(txConfig);
       const trxHash = await walletController.account.confirmContractTempTx(asset);
 
-      await sendExternalMessage(ExternalMessageID.spendApproved, {
-        windowId,
-        approved: true,
-        result: trxHash,
-      });
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(trxHash, message);
     } catch (e) {
       if (isError(e)) {
-        await sendExternalMessage(ExternalMessageID.spendApproved, {
-          windowId,
-          approved: false,
-          error: e.message,
-        });
-
+        StargazerExternalPopups.addResolvedParam(location.href);
+        StargazerWSMessageBroker.sendResponseError(
+          new EIPRpcError(e.message, EIPErrorCodes.Rejected),
+          message
+        );
         showAlert(e.message, 'danger');
       }
     }
@@ -245,13 +244,13 @@ const ApproveSpend = () => {
 
   return (
     <CardLayoutV2
-      stepLabel={``}
-      headerLabel={'Grant Permissions'}
+      stepLabel=""
+      headerLabel="Grant Permissions"
       headerInfo={renderHeaderInfo()}
-      captionLabel={''}
-      negativeButtonLabel={'Reject'}
+      captionLabel=""
+      negativeButtonLabel="Reject"
       onNegativeButtonClick={onNegativeButtonClick}
-      positiveButtonLabel={'Confirm'}
+      positiveButtonLabel="Confirm"
       onPositiveButtonClick={onPositiveButtonClick}
     >
       <div className={styles.content}>

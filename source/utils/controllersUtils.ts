@@ -22,10 +22,6 @@ export const getDappController = () => {
   return getController().dapp;
 };
 
-export const getDappRegistry = () => {
-  return getController().dappRegistry;
-};
-
 export const getContactsController = () => {
   return ContactsController();
 };

@@ -1,12 +1,9 @@
-import { DappProvider } from 'scripts/Background/dappRegistry';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
-import { EIPErrorCodes, EIPRpcError, StargazerProxyRequest } from 'scripts/common';
 import {
-  getChainId,
-  getNetworkToken,
-  getWalletInfo,
-  normalizeSignatureRequest,
-} from '../utils';
+  EIPErrorCodes,
+  EIPRpcError,
+  StargazerRequest,
+  StargazerRequestMessage,
+} from 'scripts/common';
 import {
   KeyringNetwork,
   KeyringWalletAccountState,
@@ -14,13 +11,23 @@ import {
 } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
 import { ALL_EVM_CHAINS } from 'constants/index';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import {
+  getChainId,
+  getNetworkToken,
+  getWalletInfo,
+  normalizeSignatureRequest,
+} from '../utils';
 
 export const personal_sign = async (
-  request: StargazerProxyRequest & { type: 'rpc' },
-  dappProvider: DappProvider,
-  port: chrome.runtime.Port
-): Promise<string[]> => {
-  const { activeWallet, windowUrl, windowType, windowSize } = getWalletInfo();
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
+  const { activeWallet } = getWalletInfo();
 
   if (!activeWallet) {
     throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
@@ -73,7 +80,7 @@ export const personal_sign = async (
   )?.label;
 
   const signatureData = {
-    origin: dappProvider.origin,
+    origin,
     asset: getNetworkToken(),
     signatureRequestEncoded,
     walletId: activeWallet.id,
@@ -93,24 +100,12 @@ export const personal_sign = async (
     signatureData.publicKey = accounts[0].publicKey;
   }
 
-  const signatureEvent = await dappProvider.createPopupAndWaitForMessage(
-    port,
-    ExternalMessageID.messageSigned,
-    undefined,
-    'signMessage',
+  await StargazerExternalPopups.executePopupWithRequestMessage(
     signatureData,
-    windowType,
-    windowUrl,
-    windowSize
+    message,
+    sender.origin,
+    'signMessage'
   );
 
-  if (signatureEvent === null) {
-    throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-  }
-
-  if (!signatureEvent.detail.result) {
-    throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-  }
-
-  return signatureEvent.detail.signature.hex;
+  return StargazerWSMessageBroker.NoResponseEmitted;
 };

@@ -1,20 +1,27 @@
-import { DappProvider } from 'scripts/Background/dappRegistry';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
 import { InputData as ContractInputData } from 'ethereum-input-data-decoder';
-import { EIPErrorCodes, EIPRpcError, StargazerProxyRequest } from 'scripts/common';
-import { getChainId, getNetworkId } from '../utils';
+import {
+  EIPErrorCodes,
+  EIPRpcError,
+  StargazerRequest,
+  StargazerRequestMessage,
+} from 'scripts/common';
 import { ALL_EVM_CHAINS } from 'constants/index';
 import { getERC20DataDecoder } from 'utils/ethUtil';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { getChainId, getNetworkId } from '../utils';
 
 export const eth_sendTransaction = async (
-  request: StargazerProxyRequest & { type: 'rpc' },
-  dappProvider: DappProvider,
-  port: chrome.runtime.Port
-): Promise<string[]> => {
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
   const [trxData] = request.params;
 
   let decodedContractCall: ContractInputData | null = null;
-  let eventType = ExternalMessageID.transactionSent;
+
   let route = 'sendTransaction';
 
   // chainId should match the current active network if chainId property is provided.
@@ -31,7 +38,7 @@ export const eth_sendTransaction = async (
     }
 
     if (typeof trxData.chainId === 'string') {
-      if (parseInt(trxData.chainId) !== chainId) {
+      if (parseInt(trxData.chainId, 10) !== chainId) {
         throw new EIPRpcError(
           'chainId does not match the active network chainId',
           EIPErrorCodes.ChainDisconnected
@@ -54,33 +61,17 @@ export const eth_sendTransaction = async (
   )?.label;
 
   if (decodedContractCall?.method === 'approve') {
-    eventType = ExternalMessageID.spendApproved;
     route = 'approveSpend';
   }
 
-  const event = await dappProvider.createPopupAndWaitForMessage(
-    port,
-    eventType,
-    undefined,
-    route,
-    {
-      ...trxData,
-      chain: getNetworkId(),
-      chainLabel,
-    }
+  const data = { ...trxData, chain: getNetworkId(), chainLabel };
+
+  await StargazerExternalPopups.executePopupWithRequestMessage(
+    data,
+    message,
+    sender.origin,
+    route
   );
 
-  if (event === null) {
-    throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-  }
-
-  if (event.detail.error) {
-    throw new EIPRpcError(event.detail.error, EIPErrorCodes.Rejected);
-  }
-
-  if (!event.detail.result) {
-    throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-  }
-
-  return event.detail.result;
+  return StargazerWSMessageBroker.NoResponseEmitted;
 };

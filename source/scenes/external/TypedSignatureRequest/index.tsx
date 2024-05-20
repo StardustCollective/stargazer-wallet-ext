@@ -3,7 +3,6 @@
 /////////////////////
 
 import React from 'react';
-import queryString from 'query-string';
 import { useSelector } from 'react-redux';
 import * as ethers from 'ethers';
 import clsx from 'clsx';
@@ -32,16 +31,19 @@ import { useCopyClipboard } from 'hooks/index';
 // Styles
 ///////////////////////////
 
-import styles from './index.module.scss';
-
-import { EIP712Domain, TypedSignatureRequest } from './types';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { ALL_EVM_CHAINS } from 'constants/index';
 import dappSelectors from 'selectors/dappSelectors';
-import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+
 import { ecsign, toRpcSig } from 'ethereumjs-util';
 import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
+import { EIP712Domain, TypedSignatureRequest } from './types';
+import styles from './index.module.scss';
 
 const DOMAIN_TITLE = 'Domain';
 const URL_TITLE = 'URL';
@@ -59,17 +61,13 @@ const TypedSignatureRequestScreen = () => {
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
 
-  const { data: stringData } = queryString.parse(location.search);
-
-  const {
-    signatureConsent: signatureRequest,
-    domain,
-    types,
-  }: {
+  const { data, message } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
     signatureConsent: TypedSignatureRequest;
     domain: string;
     types: string;
-  } = JSON.parse(stringData as string);
+  }>(location.href);
+
+  const { signatureConsent: signatureRequest, domain, types } = data;
 
   const contentObject = JSON.parse(signatureRequest.content);
   const metadataObject = signatureRequest.data;
@@ -86,11 +84,11 @@ const TypedSignatureRequestScreen = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-    await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
-      windowId,
-      result: false,
-    });
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      message
+    );
     window.close();
   };
 
@@ -111,22 +109,14 @@ const TypedSignatureRequestScreen = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-
-    const signature = signTypedData(domainObject, typesObject, contentObject);
-
-    if (!signature) {
-      await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
-        windowId,
-        result: false,
-      });
+    try {
+      const signature = signTypedData(domainObject, typesObject, contentObject);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(signature, message);
+    } catch (e) {
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseError(e, message);
     }
-
-    await sendExternalMessage(ExternalMessageID.signTypedMessageResult, {
-      windowId,
-      result: true,
-      signature,
-    });
 
     window.close();
   };
@@ -268,16 +258,16 @@ const TypedSignatureRequestScreen = () => {
 
   return (
     <CardLayoutV2
-      stepLabel={``}
-      headerLabel={'Signature Request'}
+      stepLabel=""
+      headerLabel="Signature Request"
       headerInfo={renderHeaderInfo()}
       footerLabel={
         'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'
       }
-      captionLabel={``}
-      negativeButtonLabel={'Reject'}
+      captionLabel=""
+      negativeButtonLabel="Reject"
       onNegativeButtonClick={onNegativeButtonClick}
-      positiveButtonLabel={'Sign'}
+      positiveButtonLabel="Sign"
       onPositiveButtonClick={onPositiveButtonClick}
     >
       <div className={styles.content}>

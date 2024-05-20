@@ -1,4 +1,9 @@
-import { EIPErrorCodes, EIPRpcError, StargazerProxyRequest } from 'scripts/common';
+import {
+  EIPErrorCodes,
+  EIPRpcError,
+  StargazerRequest,
+  StargazerRequestMessage,
+} from 'scripts/common';
 import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
 import { useController } from 'hooks/index';
 
@@ -7,7 +12,9 @@ interface SwitchEthereumChainParameter {
 }
 
 export const wallet_switchEthereumChain = async (
-  request: StargazerProxyRequest & { type: 'rpc' }
+  request: StargazerRequest & { type: 'rpc' },
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
 ): Promise<null> => {
   const [chainData] = (request?.params as [SwitchEthereumChainParameter]) || [];
 

@@ -1,4 +1,4 @@
-import { encodeToBase64 } from 'utils/encoding';
+import { v4 as uuidv4 } from 'uuid';
 
 const readOnlyProxy = <T extends object>(object: T): T => {
   return new Proxy(object, {
@@ -15,12 +15,14 @@ const readOnlyProxy = <T extends object>(object: T): T => {
   });
 };
 
-const generateNamespaceId = (namespace: string) =>
-  `stargazer:${namespace}:${encodeToBase64([Date.now(), Math.random()].join('.'))}`;
+const generateUUIDv4NamespaceId = (namespace: string) =>
+  `stargazer:${namespace}:${uuidv4()}`;
 
 /**
  * Native object references passed between different execution contexts are not
  * the same always.
+ *
+ * CustomEvent constructors between contexts/frames may not be the same, thus instanceof may not work.
  *
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof#instanceof_and_multiple_context_e.g._frames_or_windows
  */
@@ -36,4 +38,4 @@ const isError = (value: any): value is Error => {
   );
 };
 
-export { readOnlyProxy, generateNamespaceId, isCustomEvent, isError };
+export { readOnlyProxy, generateUUIDv4NamespaceId, isCustomEvent, isError };

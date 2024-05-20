@@ -1,12 +1,10 @@
-import { DappProvider } from 'scripts/Background/dappRegistry';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
 import {
   EIPErrorCodes,
   EIPRpcError,
   StargazerChain,
-  StargazerProxyRequest,
+  StargazerRequest,
+  StargazerRequestMessage,
 } from 'scripts/common';
-import { getChainId, getNetworkId, getWalletInfo } from '../utils';
 import {
   KeyringNetwork,
   KeyringWalletAccountState,
@@ -14,13 +12,18 @@ import {
 } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
 import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { getChainId, getNetworkId, getWalletInfo } from '../utils';
 
 export const eth_signTypedData = async (
-  request: StargazerProxyRequest & { type: 'rpc' },
-  dappProvider: DappProvider,
-  port: chrome.runtime.Port
-): Promise<string[]> => {
-  const { activeWallet, windowUrl, windowType, windowSize } = getWalletInfo();
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
+  const { activeWallet } = getWalletInfo();
 
   if (!activeWallet) {
     throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
@@ -38,6 +41,7 @@ export const eth_signTypedData = async (
   }
 
   // Extension 3.6.0+
+  // eslint-disable-next-line prefer-const
   let [address, data] = request.params as [string, Record<string, any>];
 
   if (typeof address !== 'string') {
@@ -79,7 +83,7 @@ export const eth_signTypedData = async (
   if (
     !!data?.domain?.chainId &&
     activeChainId &&
-    parseInt(data.domain.chainId) !== activeChainId
+    parseInt(data.domain.chainId, 10) !== activeChainId
   ) {
     throw new EIPRpcError(
       'chainId does not match the active network chainId',
@@ -103,7 +107,7 @@ export const eth_signTypedData = async (
   };
 
   const signatureData = {
-    origin: dappProvider.origin,
+    origin,
     domain: JSON.stringify(data.domain),
     types: JSON.stringify(data.types),
     signatureConsent,
@@ -123,24 +127,12 @@ export const eth_signTypedData = async (
     signatureData.publicKey = accounts[0].publicKey;
   }
 
-  const signatureEvent = await dappProvider.createPopupAndWaitForMessage(
-    port,
-    ExternalMessageID.signTypedMessageResult,
-    undefined,
-    'signTypedMessage',
+  await StargazerExternalPopups.executePopupWithRequestMessage(
     signatureData,
-    windowType,
-    windowUrl,
-    windowSize
+    message,
+    sender.origin,
+    'signTypedMessage'
   );
 
-  if (signatureEvent === null) {
-    throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-  }
-
-  if (!signatureEvent.detail.result) {
-    throw new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected);
-  }
-
-  return signatureEvent.detail.signature;
+  return StargazerWSMessageBroker.NoResponseEmitted;
 };

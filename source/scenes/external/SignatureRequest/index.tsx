@@ -1,29 +1,46 @@
 import React from 'react';
-import queryString from 'query-string';
-import { dag4 } from '@stardust-collective/dag4';
-import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
+
+//////////////////////
+// Common Layouts
+/////////////////////
+
 import CardLayout from 'scenes/external/Layouts/CardLayout';
-import { sendExternalMessage } from 'scripts/Background/messaging/messenger';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
+
+///////////////////////////
+// Styles
+///////////////////////////
+
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { decodeFromBase64 } from 'utils/encoding';
+import { dag4 } from '@stardust-collective/dag4';
+import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
+import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import styles from './index.module.scss';
 import { StargazerSignatureRequest } from 'scripts/Provider/constellation';
-import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
+
+//////////////////////
+// Component
+/////////////////////
 
 const SignatureRequest = () => {
-  const { data: stringData } = queryString.parse(location.search);
+  //////////////////////
+  // Hooks
+  /////////////////////
 
-  const {
-    signatureRequestEncoded,
-    asset,
-    chainLabel,
-    walletLabel,
-  }: {
-    signatureRequestEncoded: string;
-    asset: string;
-    chainLabel: string;
-    walletLabel: string;
-  } = JSON.parse(stringData as string);
+  const { data, message: requestMessage } =
+    StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      signatureRequestEncoded: string;
+      asset: string;
+      provider: string;
+      chainLabel: string;
+      walletLabel: string;
+    }>(location.href);
+
+  const { signatureRequestEncoded, asset, chainLabel, walletLabel } = data;
 
   const isDAGsignature = asset === 'DAG';
 
@@ -32,13 +49,11 @@ const SignatureRequest = () => {
   ) as StargazerSignatureRequest;
 
   const onNegativeButtonClick = async () => {
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-
-    await sendExternalMessage(ExternalMessageID.messageSigned, {
-      windowId,
-      result: false,
-    });
-
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      requestMessage
+    );
     window.close();
   };
 
@@ -64,29 +79,14 @@ const SignatureRequest = () => {
     const message = isDAGsignature ? signatureRequestEncoded : signatureRequest.content;
     const signMessage = isDAGsignature ? signDagMessage : signEthMessage;
 
-    const { windowId }: { windowId?: string } = queryString.parse(window.location.search);
-    let signature;
-
     try {
-      signature = await signMessage(message);
+      const signature = await signMessage(message);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
     } catch (err) {
-      await sendExternalMessage(ExternalMessageID.messageSigned, {
-        windowId,
-        result: false,
-      });
-
-      window.close();
-    }
-
-    if (signature) {
-      await sendExternalMessage(ExternalMessageID.messageSigned, {
-        windowId,
-        result: true,
-        signature: {
-          hex: signature,
-          requestEncoded: signatureRequestEncoded,
-        },
-      });
+      console.log(err);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseError(err, requestMessage);
     }
 
     window.close();
@@ -98,16 +98,16 @@ const SignatureRequest = () => {
 
   return (
     <CardLayout
-      stepLabel={``}
-      originDescriptionLabel={'Requested by:'}
-      headerLabel={'Signature Request'}
+      stepLabel=""
+      originDescriptionLabel="Requested by:"
+      headerLabel="Signature Request"
       footerLabel={
         'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'
       }
-      captionLabel={''}
-      negativeButtonLabel={'Reject'}
+      captionLabel=""
+      negativeButtonLabel="Reject"
       onNegativeButtonClick={onNegativeButtonClick}
-      positiveButtonLabel={'Sign'}
+      positiveButtonLabel="Sign"
       onPositiveButtonClick={onPositiveButtonClick}
     >
       <div className={styles.content}>

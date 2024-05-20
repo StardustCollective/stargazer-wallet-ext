@@ -1,11 +1,13 @@
 import * as ethers from 'ethers';
 import { dag4 } from '@stardust-collective/dag4';
-import { Transaction, TransactionV2 } from '@stardust-collective/dag4-network';
-import { StargazerProxyRequest } from 'scripts/common';
+
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 export const dag_getTransaction = async (
-  request: StargazerProxyRequest & { type: 'rpc' }
-): Promise<null | Transaction | TransactionV2> => {
+  request: StargazerRequest & { type: 'rpc' },
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
+) => {
   const [hash] = request.params as [unknown];
 
   if (typeof hash !== 'string') {

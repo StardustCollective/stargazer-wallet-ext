@@ -1,30 +1,28 @@
-import { DappProvider } from 'scripts/Background/dappRegistry';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
-import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 import { eth_accounts } from './eth_accounts';
 
 export const eth_requestAccounts = async (
-  dappProvider: DappProvider,
-  port: chrome.runtime.Port
-): Promise<string[]> => {
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
   // Provider already activated -> return ETH accounts array
-  if (dappProvider.activated) {
-    return eth_accounts();
+  if (isDappConnected(sender.origin)) {
+    return eth_accounts(request, message, sender);
   }
 
   // Provider not activated -> display popup and wait for user's approval
-  const connectWalletEvent = await dappProvider.createPopupAndWaitForMessage(
-    port,
-    ExternalMessageID.connectWallet,
-    undefined,
+  await StargazerExternalPopups.executePopupWithRequestMessage(
+    null,
+    message,
+    sender.origin,
     'selectAccounts'
   );
 
-  // User rejected activation
-  if (connectWalletEvent === null) {
-    throw new EIPRpcError('User denied provider activation', EIPErrorCodes.Rejected);
-  }
-
-  // Return ETH accounts array
-  return connectWalletEvent.detail.accounts;
+  return StargazerWSMessageBroker.NoResponseEmitted;
 };

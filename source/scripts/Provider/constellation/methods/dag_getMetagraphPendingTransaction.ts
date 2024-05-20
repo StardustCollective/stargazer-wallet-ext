@@ -1,15 +1,17 @@
 import { dag4 } from '@stardust-collective/dag4';
 import * as ethers from 'ethers';
-import { PendingTransaction } from '@stardust-collective/dag4-network';
-import { StargazerProxyRequest } from 'scripts/common';
-import { validateMetagraphAddress } from '../utils';
-import { DAG_NETWORK } from 'constants/index';
-import { StargazerMetagraphGetTransactionRequest } from './dag_getMetagraphTransaction';
-import store from 'state/store';
 
-export const dag_getMetagraphPendingTransaction = async (
-  request: StargazerProxyRequest & { type: 'rpc' }
-): Promise<null | PendingTransaction> => {
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { DAG_NETWORK } from 'constants/index';
+import store from 'state/store';
+import { validateMetagraphAddress } from '../utils';
+import { StargazerMetagraphGetTransactionRequest } from './dag_getMetagraphTransaction';
+
+export const dag_getMetagraphPendingTransaction = (
+  request: StargazerRequest & { type: 'rpc' },
+  _message: StargazerRequestMessage,
+  _sender: chrome.runtime.MessageSender
+) => {
   const { vault, assets } = store.getState();
 
   const [txData] = request.params as [StargazerMetagraphGetTransactionRequest];

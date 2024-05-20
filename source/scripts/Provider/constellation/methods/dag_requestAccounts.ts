@@ -1,29 +1,28 @@
-import { DappProvider } from 'scripts/Background/dappRegistry';
-import { ExternalMessageID } from 'scripts/Background/messaging/types';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 import { dag_accounts } from './dag_accounts';
 
 export const dag_requestAccounts = async (
-  dappProvider: DappProvider,
-  port: chrome.runtime.Port
-): Promise<string[]> => {
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
   // Provider already activated -> return DAG accounts array
-  if (dappProvider.activated) {
-    return dag_accounts();
+  if (isDappConnected(sender.origin)) {
+    return dag_accounts(request, message, sender);
   }
 
   // Provider not activated -> display popup and wait for user's approval
-  const connectWalletEvent = await dappProvider.createPopupAndWaitForMessage(
-    port,
-    ExternalMessageID.connectWallet,
-    undefined,
+  await StargazerExternalPopups.executePopupWithRequestMessage(
+    null,
+    message,
+    sender.origin,
     'selectAccounts'
   );
 
-  // User rejected activation
-  if (connectWalletEvent === null) {
-    throw new Error('User denied provider activation');
-  }
-
-  // Return DAG accounts array
-  return connectWalletEvent.detail.accounts;
+  return StargazerWSMessageBroker.NoResponseEmitted;
 };
