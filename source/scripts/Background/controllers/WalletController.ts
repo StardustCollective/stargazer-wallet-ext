@@ -358,7 +358,11 @@ class WalletController {
         const message: DappMessage = {
           type: MessageType.dapp,
           event: DappMessageEvent.chainChanged,
-          payload: { network: ProtocolProvider.CONSTELLATION, chainId },
+          payload: {
+            provider: ProtocolProvider.CONSTELLATION,
+            network,
+            chainId,
+          },
         };
         await chrome.runtime.sendMessage(message);
       }
@@ -378,7 +382,7 @@ class WalletController {
         const message: DappMessage = {
           type: MessageType.dapp,
           event: DappMessageEvent.chainChanged,
-          payload: { network: ProtocolProvider.ETHEREUM, chainId },
+          payload: { provider: ProtocolProvider.ETHEREUM, network, chainId },
         };
         // TODO: test chrome.runtime on Mobile
         await chrome.runtime.sendMessage(message);

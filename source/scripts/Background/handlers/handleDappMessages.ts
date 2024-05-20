@@ -7,6 +7,7 @@ import { StargazerWSMessageBroker } from '../messaging';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { DAG_NETWORK } from 'constants/index';
+import { changeActiveNetwork, changeCurrentEVMNetwork } from 'state/vault';
 
 export const notifyAccountsChanged = async (
   origin: string,
@@ -92,14 +93,24 @@ export const handleChainChanged = async (
   _sender: chrome.runtime.MessageSender,
   _sendResponse: (response?: any) => void
 ) => {
-  const { network, chainId }: { network: ProtocolProvider; chainId: string } =
+  const {
+    provider,
+    network,
+    chainId,
+  }: { provider: ProtocolProvider; network: string; chainId: string } =
     message?.payload ?? {};
 
   if (!chainId || !network) {
     throw new Error('Unable to notify chainChanged');
   }
 
-  await notifyChainChanged(network, chainId);
+  store.dispatch(changeActiveNetwork({ network, chainId }));
+
+  if (provider === ProtocolProvider.ETHEREUM) {
+    store.dispatch(changeCurrentEVMNetwork(chainId));
+  }
+
+  await notifyChainChanged(provider, chainId);
 };
 
 export const handleDappConnect = async (
