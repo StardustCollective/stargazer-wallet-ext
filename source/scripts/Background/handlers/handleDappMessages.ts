@@ -5,6 +5,8 @@ import store from 'state/store';
 import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
 import { StargazerWSMessageBroker } from '../messaging';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
+import { getAllEVMChains } from '../controllers/EVMChainController/utils';
+import { DAG_NETWORK } from 'constants/index';
 
 export const notifyAccountsChanged = async (
   origin: string,
@@ -21,6 +23,21 @@ export const notifyAccountsChanged = async (
     [accounts],
     [origin]
   );
+};
+
+export const notifyChainChanged = async (network: ProtocolProvider, chainId: string) => {
+  if (!network || !chainId) return;
+
+  const networkInfo =
+    network === ProtocolProvider.ETHEREUM ? getAllEVMChains() : DAG_NETWORK;
+
+  if (!networkInfo[chainId]) return;
+
+  const { hexChainId } = networkInfo[chainId];
+
+  await StargazerWSMessageBroker.sendEvent(network, AvailableWalletEvent.chainChanged, [
+    hexChainId,
+  ]);
 };
 
 export const notifyDisconnect = async (origin: string) => {
@@ -70,6 +87,21 @@ export const isDappConnected = (origin: string) => {
   return !!dapp.whitelist[origin];
 };
 
+export const handleChainChanged = async (
+  message: DappMessage,
+  _sender: chrome.runtime.MessageSender,
+  _sendResponse: (response?: any) => void
+) => {
+  const { network, chainId }: { network: ProtocolProvider; chainId: string } =
+    message?.payload ?? {};
+
+  if (!chainId || !network) {
+    throw new Error('Unable to notify chainChanged');
+  }
+
+  await notifyChainChanged(network, chainId);
+};
+
 export const handleDappConnect = async (
   message: DappMessage,
   _sender: chrome.runtime.MessageSender,
@@ -115,6 +147,8 @@ const onDappMessage = (
       return handleDappConnect(message, sender, sendResponse);
     case DappMessageEvent.disconnect:
       return handleDappDisconnect(message, sender, sendResponse);
+    case DappMessageEvent.chainChanged:
+      return handleChainChanged(message, sender, sendResponse);
     default:
       return;
   }

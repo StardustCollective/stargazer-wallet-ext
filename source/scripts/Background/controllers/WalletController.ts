@@ -16,14 +16,9 @@ import {
 import IVaultState, {
   ICustomNetworkObject,
   IVaultWalletsStoreState,
+  Network,
 } from 'state/vault/types';
-import {
-  // AVALANCHE_NETWORK,
-  // BSC_NETWORK,
-  DAG_NETWORK,
-  // ETH_NETWORK,
-  // POLYGON_NETWORK,
-} from 'constants/index';
+import { DAG_NETWORK } from 'constants/index';
 import { ProcessStates } from 'state/process/enums';
 import { updateLoginState } from 'state/process';
 import {
@@ -35,27 +30,19 @@ import {
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { getEncryptor } from 'utils/keyringManagerUtils';
-// import { getDappRegistry } from 'utils/controllersUtils';
 import { AccountItem } from 'scripts/types';
 import filter from 'lodash/filter';
-// import { AvailableEvents, ProtocolProvider } from 'scripts/common';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
 import { setUnlocked } from 'state/auth';
-import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
+import { ProtocolProvider } from 'scripts/common';
 import { generateId } from './EVMChainController/utils';
-import {
-  AvalancheChainId,
-  BSCChainId,
-  EthChainId,
-  PolygonChainId,
-} from './EVMChainController/types';
 import { AccountController } from './AccountController';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
-import { StargazerWSMessageBroker } from '../messaging';
+import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -350,18 +337,6 @@ class WalletController {
     await this.nfts.fetchAllNfts();
   }
 
-  async notifyWalletChange(accounts: string[]): Promise<void> {
-    // This method is only used from the Chrome extension.
-    // Send event to service worker
-    // @todo - which accounts? ethereum|constellation
-
-    StargazerWSMessageBroker.sendEvent(
-      ProtocolProvider.CONSTELLATION,
-      AvailableWalletEvent.accountsChanged,
-      [{ accounts }]
-    );
-  }
-
   async switchNetwork(network: string, chainId: string): Promise<void> {
     store.dispatch(updateBalances({ pending: 'true' }));
 
@@ -380,69 +355,33 @@ class WalletController {
       );
 
       if (!isNative) {
-        // const { hexChainId } = DAG_NETWORK[chainId];
-        // getDappRegistry().sendOriginChainEvent(
-        //   '*',
-        //   ProtocolProvider.CONSTELLATION,
-        //   AvailableEvents.chainChanged,
-        //   [hexChainId]
-        // );
+        const message: DappMessage = {
+          type: MessageType.dapp,
+          event: DappMessageEvent.chainChanged,
+          payload: { network: ProtocolProvider.CONSTELLATION, chainId },
+        };
+        await chrome.runtime.sendMessage(message);
       }
     }
 
-    if (network === KeyringNetwork.Ethereum) {
-      this.account.networkController.switchEthereumChain(chainId as EthChainId);
-      store.dispatch(changeCurrentEVMNetwork(chainId));
-      if (!isNative) {
-        // const { hexChainId } = ETH_NETWORK[chainId];
-        // getDappRegistry().sendOriginChainEvent(
-        //   '*',
-        //   ProtocolProvider.ETHEREUM,
-        //   AvailableEvents.chainChanged,
-        //   [hexChainId]
-        // );
-      }
-    }
-    // 349: New network should be added here.
-    if (network === 'Avalanche') {
-      this.account.networkController.switchAvalancheChain(chainId as AvalancheChainId);
-      store.dispatch(changeCurrentEVMNetwork(chainId));
-      if (!isNative) {
-        // const { hexChainId } = AVALANCHE_NETWORK[chainId];
-        // getDappRegistry().sendOriginChainEvent(
-        //   '*',
-        //   ProtocolProvider.ETHEREUM,
-        //   AvailableEvents.chainChanged,
-        //   [hexChainId]
-        // );
-      }
-    }
+    const EVM_CHAINS = [
+      KeyringNetwork.Ethereum,
+      Network.Avalanche,
+      Network.BSC,
+      Network.Polygon,
+    ];
 
-    if (network === 'BSC') {
-      this.account.networkController.switchBSCChain(chainId as BSCChainId);
+    if (EVM_CHAINS.includes(network as KeyringNetwork | Network)) {
+      this.account.networkController.switchChain(network, chainId);
       store.dispatch(changeCurrentEVMNetwork(chainId));
       if (!isNative) {
-        // const { hexChainId } = BSC_NETWORK[chainId];
-        // getDappRegistry().sendOriginChainEvent(
-        //   '*',
-        //   ProtocolProvider.ETHEREUM,
-        //   AvailableEvents.chainChanged,
-        //   [hexChainId]
-        // );
-      }
-    }
-
-    if (network === 'Polygon') {
-      this.account.networkController.switchPolygonChain(chainId as PolygonChainId);
-      store.dispatch(changeCurrentEVMNetwork(chainId));
-      if (!isNative) {
-        // const { hexChainId } = POLYGON_NETWORK[chainId];
-        // getDappRegistry().sendOriginChainEvent(
-        //   '*',
-        //   ProtocolProvider.ETHEREUM,
-        //   AvailableEvents.chainChanged,
-        //   [hexChainId]
-        // );
+        const message: DappMessage = {
+          type: MessageType.dapp,
+          event: DappMessageEvent.chainChanged,
+          payload: { network: ProtocolProvider.ETHEREUM, chainId },
+        };
+        // TODO: test chrome.runtime on Mobile
+        await chrome.runtime.sendMessage(message);
       }
     }
 

@@ -1,11 +1,14 @@
 import {
   EIPErrorCodes,
   EIPRpcError,
+  ProtocolProvider,
   StargazerRequest,
   StargazerRequestMessage,
 } from 'scripts/common';
 import { ALL_EVM_CHAINS, SUPPORTED_HEX_CHAINS } from 'constants/index';
-import { useController } from 'hooks/index';
+import { changeActiveNetwork, changeCurrentEVMNetwork } from 'state/vault';
+import store from 'state/store';
+import { notifyChainChanged } from 'scripts/Background/handlers/handleDappMessages';
 
 interface SwitchEthereumChainParameter {
   chainId: string;
@@ -40,14 +43,15 @@ export const wallet_switchEthereumChain = async (
     throw new EIPRpcError('chainId not supported', EIPErrorCodes.Unauthorized);
   }
 
-  // TODO: remove controller dependency
-  const controller = useController();
   const chainInfo = Object.values(ALL_EVM_CHAINS).find(
     (chain) => chain.hexChainId === chainId
   );
 
   try {
-    await controller.wallet.switchNetwork(chainInfo.network, chainInfo.id);
+    const { network, id } = chainInfo;
+    store.dispatch(changeCurrentEVMNetwork(id));
+    store.dispatch(changeActiveNetwork({ network, chainId: id }));
+    await notifyChainChanged(ProtocolProvider.ETHEREUM, id);
   } catch (e) {
     throw new EIPRpcError(
       'There was an error switching the Ethereum chain',
