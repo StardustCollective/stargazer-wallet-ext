@@ -5,14 +5,18 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { dag_accounts } from './dag_accounts';
+import { sessionExpired } from 'utils/keyring';
 
 export const dag_requestAccounts = async (
   request: StargazerRequest & { type: 'rpc' },
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
+  // Check if wallet is unlocked
+  const expired = await sessionExpired();
+
   // Provider already activated -> return DAG accounts array
-  if (isDappConnected(sender.origin)) {
+  if (isDappConnected(sender.origin) && !expired) {
     return dag_accounts(request, message, sender);
   }
 

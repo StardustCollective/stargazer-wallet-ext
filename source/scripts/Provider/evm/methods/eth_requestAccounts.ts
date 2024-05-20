@@ -5,14 +5,18 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { eth_accounts } from './eth_accounts';
+import { sessionExpired } from 'utils/keyring';
 
 export const eth_requestAccounts = async (
   request: StargazerRequest & { type: 'rpc' },
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
+  // Check if wallet is unlocked
+  const expired = await sessionExpired();
+
   // Provider already activated -> return ETH accounts array
-  if (isDappConnected(sender.origin)) {
+  if (isDappConnected(sender.origin) && !expired) {
     return eth_accounts(request, message, sender);
   }
 
