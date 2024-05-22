@@ -10,6 +10,7 @@ import rehydrateStore from 'state/rehydrate';
 import { handleDag4Setup } from 'scripts/Background/handlers/handleDag4Setup';
 import { handleStoreSubscribe } from 'scripts/Background/handlers/handleStoreSubscribe';
 import { handleRehydrateStore } from 'scripts/Background/handlers/handleRehydrateStore';
+import MigrationController from 'scripts/Background/controllers/MigrationController';
 
 global.scrypt = scryptJS.scrypt;
 
@@ -36,22 +37,24 @@ const options = {
 
 handleRehydrateStore();
 
-rehydrateStore(store).then(() => {
-  // Initialize dag4
-  handleDag4Setup(store);
+MigrationController().then(() => {
+  rehydrateStore(store).then(() => {
+    // Initialize dag4
+    handleDag4Setup(store);
 
-  // Render App
-  ReactDOM.render(
-    (
-      <Provider store={store}>
-        <AlertProvider template={ToastAlert} {...options}>
-          <App />
-        </AlertProvider>
-      </Provider>
-    ) as any,
-    app
-  );
+    // Render App
+    ReactDOM.render(
+      (
+        <Provider store={store}>
+          <AlertProvider template={ToastAlert} {...options}>
+            <App />
+          </AlertProvider>
+        </Provider>
+      ) as any,
+      app
+    );
 
-  // Subscribe store to updates and notify
-  handleStoreSubscribe(store);
+    // Subscribe store to updates and notify
+    handleStoreSubscribe(store);
+  });
 });

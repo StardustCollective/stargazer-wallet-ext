@@ -28,6 +28,8 @@ import {
 
 export const STORE_PORT = 'STARGAZER';
 
+export const STARGAZER_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/stargazer.png';
 export const CONSTELLATION_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag.png';
 export const CONSTELLATION_DEFAULT_LOGO =

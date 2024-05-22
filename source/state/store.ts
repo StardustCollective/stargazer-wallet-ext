@@ -26,8 +26,6 @@ import auth from './auth';
 
 import { loadState, saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
-
-import localStorage from 'utils/localStorage';
 import { compareObjects } from 'utils/objects';
 
 const middleware: Middleware[] = [

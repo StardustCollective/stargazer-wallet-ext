@@ -1,11 +1,17 @@
 import { loadState } from 'state/localStorage';
 import { compareVersions } from 'utils/version';
+import { checkStorageMigration } from '../migration/v5_0_0';
 
 const MigrationController = async () => {
   // check current version of wallet
   const state = await loadState();
 
   if (!state) {
+    /**
+     * version < 5_0_0
+     * Description: Migrates localStorage to Storage API
+     */
+    await checkStorageMigration();
     return;
   }
 
