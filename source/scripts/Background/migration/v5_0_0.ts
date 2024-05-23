@@ -8,6 +8,7 @@ import storageApi from 'utils/localStorage';
 import { compareVersions } from 'utils/version';
 import { isNative } from 'utils/envUtil';
 import { STARGAZER_LOGO } from 'constants/index';
+import { EthChainId, PolygonChainId } from '../controllers/EVMChainController/types';
 
 type V5_0_0_State = {
   vault: IVaultState;
@@ -33,44 +34,104 @@ export const checkStorageMigration = async () => {
   }
 };
 
-const migrateDappLogos = (oldDappState: IDAppState) => {
+const migrateDapp = (oldState: V5_0_0_State) => {
   const updatedWhitelist: {
     [dappId: string]: IDAppInfo;
   } = {};
-  const oldWhitelist = oldDappState?.whitelist ?? {};
+  const oldWhitelist = oldState?.dapp?.whitelist ?? {};
 
   for (const origin in oldWhitelist) {
+    const { Ethereum: ethereum, Constellation: constellation } = oldWhitelist[origin]
+      .accounts as { Ethereum: string[]; Constellation: string[] };
+    // accounts keys migrated from Ethereum to ethereum and Constellation to constellation
+    const updatedAccounts = Object.assign({}, { ethereum, constellation });
     updatedWhitelist[origin] = {
       ...oldWhitelist[origin],
       logo: STARGAZER_LOGO,
+      accounts: updatedAccounts,
     };
   }
 
   return {
-    ...oldDappState,
+    ...oldState.dapp,
     whitelist: updatedWhitelist,
   };
+};
+
+const migrateActiveNetwork = (oldState: V5_0_0_State) => {
+  const ethNetworkUpdated =
+    oldState?.vault?.activeNetwork?.Ethereum === ('goerli' as EthChainId)
+      ? 'sepolia'
+      : oldState?.vault?.activeNetwork?.Ethereum;
+  const polygonNetworkUpdated =
+    oldState?.vault?.activeNetwork?.Polygon === ('maticmum' as PolygonChainId)
+      ? 'amoy'
+      : oldState?.vault?.activeNetwork?.Polygon;
+
+  return {
+    ...oldState.vault.activeNetwork,
+    Ethereum: ethNetworkUpdated,
+    Polygon: polygonNetworkUpdated,
+  };
+};
+
+const migrateCurrentEVMNetwork = (oldState: V5_0_0_State) => {
+  const currentValue = oldState?.vault?.currentEVMNetwork;
+  return currentValue === 'goerli'
+    ? 'sepolia'
+    : currentValue === 'maticmum'
+    ? 'amoy'
+    : currentValue;
+};
+
+const migrateCustomAssets = (oldState: V5_0_0_State) => {
+  const oldCustomAssets = oldState?.vault?.customAssets ?? [];
+  const oldNetorks = ['maticmum', 'goerli'];
+
+  return oldCustomAssets?.filter(
+    (item) => item?.custom && !oldNetorks.includes(item.network)
+  );
+};
+const migrateAssets = (oldState: V5_0_0_State) => {
+  const assetsUpdated: IAssetListState = {};
+  const oldAssets = oldState?.assets ?? {};
+  const oldNetorks = ['maticmum', 'goerli'];
+
+  for (const key in oldAssets) {
+    const custom = oldAssets[key].custom;
+    const network = oldAssets[key].network;
+
+    if (custom && oldNetorks.includes(network)) continue;
+
+    assetsUpdated[key] = oldAssets[key];
+  }
+
+  return assetsUpdated;
 };
 
 const migrateState = async () => {
   try {
     const oldState = await _global.localStorage.getItem(STATE_KEY);
     if (!oldState) return;
-    const state = JSON.parse(oldState);
-    const newDappState = migrateDappLogos(state.dapp);
+    const state: V5_0_0_State = JSON.parse(oldState);
+
     const newState: V5_0_0_State = {
       vault: {
         ...state.vault,
+        activeNetwork: migrateActiveNetwork(state),
+        currentEVMNetwork: migrateCurrentEVMNetwork(state),
+        customAssets: migrateCustomAssets(state),
         version: '5.0.0',
       },
       contacts: state.contacts,
-      assets: state.assets,
-      dapp: newDappState,
+      assets: migrateAssets(state),
+      dapp: migrateDapp(state),
       swap: {
         txIds: state.swap.txIds,
       },
       biometrics: state.biometrics,
     };
+
     const serializedState = JSON.stringify(newState);
     await storageApi.setItem(STATE_KEY, serializedState);
     await _global.localStorage.removeItem(STATE_KEY);
