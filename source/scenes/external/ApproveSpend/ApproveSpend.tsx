@@ -108,7 +108,6 @@ const ApproveSpend = () => {
 
       if (activeAsset?.id !== vaultActiveAsset?.id) {
         // Update active asset in order to get expected gas prices
-        // TODO: test with Manifest V3
         walletController.account.updateAccountActiveAsset(activeAsset);
       }
     }
@@ -175,7 +174,6 @@ const ApproveSpend = () => {
         },
       };
 
-      // TODO: test with Manifest V3
       walletController.account.updateTempTx(txConfig);
       const trxHash = await walletController.account.confirmContractTempTx(asset);
 

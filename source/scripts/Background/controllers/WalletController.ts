@@ -384,7 +384,7 @@ class WalletController {
           event: DappMessageEvent.chainChanged,
           payload: { provider: ProtocolProvider.ETHEREUM, network, chainId },
         };
-        // TODO: test chrome.runtime on Mobile
+
         await chrome.runtime.sendMessage(message);
       }
     }
