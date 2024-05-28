@@ -8,13 +8,16 @@ import React from 'react';
 // Navigation
 /////////////////////
 
-import { useLinkTo } from '@react-navigation/native';
+import { useLinkTo, useNavigation } from '@react-navigation/native';
+import navigationUtil from 'navigation/util';
+import screens from 'navigation/screens';
 
 //////////////////////
 // Common Scenes
 /////////////////////
 
 import Login from 'scenes/common/Login';
+import { isNative } from 'utils/envUtil';
 
 //////////////////////
 // Component
@@ -26,15 +29,16 @@ const Starter = () => {
   /////////////////////
 
   const linkTo = useLinkTo();
+  const navigation = useNavigation();
 
   //////////////////////
   // Callbacks
   /////////////////////
 
   const onLoginSuccess = (res: boolean) => {
-    if (res) {
-      // TODO: test on Mobile
-      console.log('onLoginSuccess - NOOP');
+    if (res && isNative) {
+      // We only need to navigate on Mobile
+      navigationUtil.replace(navigation, screens.authorized.root);
     }
   };
 
