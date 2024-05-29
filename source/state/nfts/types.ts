@@ -22,6 +22,7 @@ export enum OpenSeaSupportedChains {
   SEPOLIA = 'sepolia',
   AVALANCHE_FUJI = 'avalanche_fuji',
   BSC_TESTNET = 'bsctestnet',
+  POLYGON_TESTNET = 'amoy',
 }
 
 export interface IOpenSeaCollection {
