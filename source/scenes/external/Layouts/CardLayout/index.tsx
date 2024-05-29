@@ -3,6 +3,7 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 ///////////////////////////
@@ -23,7 +24,7 @@ import styles from './index.module.scss';
 // Hooks Imports
 ///////////////////////////
 
-import { useController } from 'hooks/index';
+import dappSelectors from 'selectors/dappSelectors';
 
 ///////////////////////////
 // Types
@@ -63,9 +64,7 @@ const CardLayout: FC<ICardLayoutProps> = ({
   ///////////////////////////
   // Hooks
   ///////////////////////////
-
-  const controller = useController();
-  const current = controller.dapp.getCurrent();
+  const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
   ///////////////////////////

@@ -1,12 +1,4 @@
-//////////////////////
-// Modules Imports
-/////////////////////
-
 import React from 'react';
-import queryString from 'query-string';
-import { useController } from 'hooks/index';
-import { useSelector } from 'react-redux';
-import { AssetType } from 'state/vault/types';
 
 //////////////////////
 // Common Layouts
@@ -18,15 +10,17 @@ import CardLayout from 'scenes/external/Layouts/CardLayout';
 // Styles
 ///////////////////////////
 
-import styles from './index.module.scss';
-
-import walletsSelectors from 'selectors/walletsSelectors';
 import {
-  StargazerProvider,
-  StargazerSignatureRequest,
-} from 'scripts/Provider/StargazerProvider';
-import { ProtocolProvider } from 'scripts/common';
-import { EVMProvider } from 'scripts/Provider/EVMProvider';
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+import { decodeFromBase64 } from 'utils/encoding';
+import { dag4 } from '@stardust-collective/dag4';
+import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
+import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
+import styles from './index.module.scss';
+import { StargazerSignatureRequest } from 'scripts/Provider/constellation';
 
 //////////////////////
 // Component
@@ -37,70 +31,64 @@ const SignatureRequest = () => {
   // Hooks
   /////////////////////
 
-  const controller = useController();
-  const wallets = useSelector(walletsSelectors.selectAllAccounts);
+  const { data, message: requestMessage } =
+    StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      signatureRequestEncoded: string;
+      asset: string;
+      provider: string;
+      chainLabel: string;
+      walletLabel: string;
+    }>(location.href);
 
-  const { data: stringData } = queryString.parse(location.search);
+  const { signatureRequestEncoded, asset, chainLabel, walletLabel } = data;
 
-  const {
-    signatureRequestEncoded,
-    asset,
-    provider,
-    chainLabel,
-  }: {
-    signatureRequestEncoded: string;
-    asset: string;
-    provider: string;
-    chainLabel: string;
-  } = JSON.parse(stringData as string);
-  // TODO-349: Check how signature should work here
-  const PROVIDERS: { [provider: string]: StargazerProvider | EVMProvider } = {
-    [ProtocolProvider.CONSTELLATION]: controller.stargazerProvider,
-    [ProtocolProvider.ETHEREUM]: controller.ethereumProvider,
-  };
-  const providerInstance = PROVIDERS[provider];
-  const account = providerInstance.getAssetByType(
-    asset === 'DAG' ? AssetType.Constellation : AssetType.Ethereum
-  );
+  const isDAGsignature = asset === 'DAG';
+
   const signatureRequest = JSON.parse(
-    window.atob(signatureRequestEncoded)
+    decodeFromBase64(signatureRequestEncoded)
   ) as StargazerSignatureRequest;
 
-  //////////////////////
-  // Callbacks
-  /////////////////////
-
   const onNegativeButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
-    const { windowId } = queryString.parse(window.location.search);
-    const cancelEvent = new CustomEvent('messageSigned', {
-      detail: { windowId, result: false },
-    });
-
-    background.dispatchEvent(cancelEvent);
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      requestMessage
+    );
     window.close();
   };
 
+  const signDagMessage = async (message: string): Promise<string> => {
+    const privateKeyHex = dag4.account.keyTrio.privateKey;
+    const signature = await dag4.keyStore.personalSign(privateKeyHex, message);
+    return signature;
+  };
+
+  const signEthMessage = async (message: string): Promise<string> => {
+    const wallet = getWallet();
+    const privateKeyHex = remove0x(wallet.privateKey);
+    const privateKey = Buffer.from(privateKeyHex, 'hex');
+    const msgHash = hashPersonalMessage(Buffer.from(message));
+
+    const { v, r, s } = ecsign(msgHash, privateKey);
+    const sig = preserve0x(toRpcSig(v, r, s));
+
+    return sig;
+  };
+
   const onPositiveButtonClick = async () => {
-    const message = asset === 'DAG' ? signatureRequestEncoded : signatureRequest.content;
-    const signature = providerInstance.signMessage(message);
+    const message = isDAGsignature ? signatureRequestEncoded : signatureRequest.content;
+    const signMessage = isDAGsignature ? signDagMessage : signEthMessage;
 
-    const background = await chrome.runtime.getBackgroundPage();
+    try {
+      const signature = await signMessage(message);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
+    } catch (err) {
+      console.log(err);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseError(err, requestMessage);
+    }
 
-    const { windowId } = queryString.parse(window.location.search);
-
-    const signatureEvent = new CustomEvent('messageSigned', {
-      detail: {
-        windowId,
-        result: true,
-        signature: {
-          hex: signature,
-          requestEncoded: signatureRequestEncoded,
-        },
-      },
-    });
-
-    background.dispatchEvent(signatureEvent);
     window.close();
   };
 
@@ -110,24 +98,22 @@ const SignatureRequest = () => {
 
   return (
     <CardLayout
-      stepLabel={``}
-      originDescriptionLabel={'Requested by:'}
-      headerLabel={'Signature Request'}
+      stepLabel=""
+      originDescriptionLabel="Requested by:"
+      headerLabel="Signature Request"
       footerLabel={
         'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'
       }
-      captionLabel={''}
-      negativeButtonLabel={'Reject'}
+      captionLabel=""
+      negativeButtonLabel="Reject"
       onNegativeButtonClick={onNegativeButtonClick}
-      positiveButtonLabel={'Sign'}
+      positiveButtonLabel="Sign"
       onPositiveButtonClick={onPositiveButtonClick}
     >
       <div className={styles.content}>
         <section>
           <label>Account</label>
-          <div>
-            {wallets.find((w) => w.address === account.address)?.label ?? account.address}
-          </div>
+          <div>{walletLabel}</div>
         </section>
         <section className={styles.message}>
           <label>Message</label>

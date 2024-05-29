@@ -2,6 +2,7 @@ import addMinutes from 'date-fns/addMinutes';
 import compare from 'date-fns/compareAsc';
 
 import sessionStorage from './sessionStorage';
+import { decodeFromBase64, encodeToBase64 } from './encoding';
 
 export const KEY_USAGES: KeyUsage[] = ['encrypt', 'decrypt'];
 export const KEY_FORMAT = 'jwk';
@@ -193,7 +194,7 @@ export const decrypt = async (key: CryptoKey, iv: Uint8Array): Promise<string | 
 
     if (!sgwString) return null;
 
-    const sgw = Uint8Array.from(window.atob(sgwString), (c) => c.charCodeAt(0));
+    const sgw = Uint8Array.from(decodeFromBase64(sgwString), (c) => c.charCodeAt(0));
 
     const decrypted = await window.crypto.subtle.decrypt(
       {
@@ -212,11 +213,9 @@ export const decrypt = async (key: CryptoKey, iv: Uint8Array): Promise<string | 
 
 export const storeEncryptedData = async (data: any): Promise<boolean> => {
   try {
-    const encryptedString = window.btoa(String.fromCharCode.apply(null, data));
-    // const ivString = window.btoa(String.fromCharCode.apply(null, iv));
+    const encryptedString = encodeToBase64(String.fromCharCode.apply(null, data));
 
     await sessionStorage.setItem(SGW_KEY, encryptedString);
-    // await sessionStorage.setItem(IV_KEY, ivString);
     return true;
   } catch (err) {
     return false;
@@ -225,7 +224,7 @@ export const storeEncryptedData = async (data: any): Promise<boolean> => {
 
 export const storeEncryptedKey = async (key: CryptoKey, iv: any): Promise<boolean> => {
   try {
-    const ivString = window.btoa(String.fromCharCode.apply(null, iv));
+    const ivString = encodeToBase64(String.fromCharCode.apply(null, iv));
     const keyData: JsonWebKey = await window.crypto.subtle.exportKey(KEY_FORMAT, key);
     const keyString = JSON.stringify(keyData);
     const keyObject = {
@@ -233,7 +232,7 @@ export const storeEncryptedKey = async (key: CryptoKey, iv: any): Promise<boolea
       iv: ivString,
     };
     const objectString = JSON.stringify(keyObject);
-    const encodedKey = window.btoa(objectString);
+    const encodedKey = encodeToBase64(objectString);
 
     await sessionStorage.setItem(SGW_K_KEY, encodedKey);
     return true;
@@ -251,11 +250,11 @@ export const getEncryptedKey = async (): Promise<{
 
     if (!encodedKey) return null;
 
-    const decodedKeyObject = window.atob(encodedKey);
+    const decodedKeyObject = decodeFromBase64(encodedKey);
     const { key, iv } = JSON.parse(decodedKeyObject);
 
     const keyData: JsonWebKey = JSON.parse(key);
-    const ivData = Uint8Array.from(window.atob(iv), (c) => c.charCodeAt(0));
+    const ivData = Uint8Array.from(decodeFromBase64(iv), (c) => c.charCodeAt(0));
 
     const keyImported = await window.crypto.subtle.importKey(
       KEY_FORMAT,

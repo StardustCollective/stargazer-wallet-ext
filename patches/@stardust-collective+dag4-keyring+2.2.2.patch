@@ -1,0 +1,23 @@
+diff --git a/node_modules/@stardust-collective/dag4-keyring/dist/esm/encryptor.js b/node_modules/@stardust-collective/dag4-keyring/dist/esm/encryptor.js
+index 983d544..2f77931 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/dist/esm/encryptor.js
++++ b/node_modules/@stardust-collective/dag4-keyring/dist/esm/encryptor.js
+@@ -1,5 +1,5 @@
+ import { Buffer } from 'buffer';
+-if (typeof window === 'undefined') {
++if (typeof window === 'undefined' && !global.crypto) {
+     global['crypto'] = require('crypto').webcrypto;
+ }
+ export class Encryptor {
+diff --git a/node_modules/@stardust-collective/dag4-keyring/src/encryptor.ts b/node_modules/@stardust-collective/dag4-keyring/src/encryptor.ts
+index 41df1fe..b2f85fd 100644
+--- a/node_modules/@stardust-collective/dag4-keyring/src/encryptor.ts
++++ b/node_modules/@stardust-collective/dag4-keyring/src/encryptor.ts
+@@ -1,6 +1,6 @@
+ import {Buffer} from 'buffer';
+ 
+-if (typeof window === 'undefined') {
++if (typeof window === 'undefined' && !global.crypto) {
+   global['crypto'] = require('crypto').webcrypto;
+ }
+ 

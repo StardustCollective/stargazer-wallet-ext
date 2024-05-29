@@ -24,9 +24,9 @@ import swap from './swap';
 import biometrics from './biometrics';
 import auth from './auth';
 
-import { saveState } from './localStorage';
+import { loadState, saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
-import localStorage from 'utils/localStorage';
+import { compareObjects } from 'utils/objects';
 
 const middleware: Middleware[] = [
   ...getDefaultMiddleware({ thunk: false, serializableCheck: false }),
@@ -53,22 +53,29 @@ const store = configureStore({
   devTools: !isProd,
 });
 
-export function updateState() {
+export async function updateState() {
   const state = store.getState();
 
-  saveState({
+  const updatedState = {
     vault: state.vault,
-    price: state.price,
     contacts: state.contacts,
     assets: state.assets,
-    nfts: state.nfts,
     dapp: state.dapp,
-    providers: state.providers,
     swap: {
       txIds: state.swap.txIds,
     },
     biometrics: state.biometrics,
-  });
+  };
+
+  const currentState = await loadState();
+
+  if (currentState) {
+    const equalStates = compareObjects(updatedState, currentState);
+    if (equalStates) return false;
+  }
+
+  await saveState(updatedState);
+  return true;
 }
 
 // initialize store from state
@@ -76,9 +83,9 @@ if (isNative) {
   MigrationController().then(async () => {
     await rehydrateStore(store);
     store.subscribe(
-      throttle(() => {
+      throttle(async () => {
         // every second we update store state
-        updateState();
+        await updateState();
       }, 1000)
     );
 

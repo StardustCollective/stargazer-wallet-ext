@@ -1,16 +1,5 @@
 import { useHistory } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { MasterController } from 'scripts/Background/controllers';
-
-let controller: MasterController;
-
-// TODO: refactor this since it's not actually a hook
-export function useController() {
-  // TODO: test Manifest V3
-  if (controller) return controller;
-  controller = new MasterController();
-  return controller;
-}
 
 export function useSettingsView() {
   const history = useHistory();

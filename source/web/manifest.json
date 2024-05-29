@@ -11,11 +11,11 @@
   "description": "Cross-chain compatible wallet for Constellation and Ethereum",
   "homepage_url": "https://constellationnetwork.io/",
   "short_name": "stargazer-wallet-ext",
-  "permissions": ["tabs", "storage"],
+  "permissions": ["tabs", "activeTab", "storage"],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "__chrome|firefox__author": "Stardust Collective",
   "__firefox__applications": {
     "gecko": {

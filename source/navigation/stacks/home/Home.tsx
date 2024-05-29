@@ -89,6 +89,12 @@ const Auth = () => {
   };
 
   useEffect(() => {
+    if (loading && unlocked) {
+      hideLoadingScreen();
+    }
+  }, [unlocked, loading]);
+
+  useEffect(() => {
     const checkWalletStatus = async () => {
       if (unlocked) return;
 
@@ -117,8 +123,6 @@ const Auth = () => {
         hideLoadingScreen();
         return;
       }
-
-      hideLoadingScreen();
     };
 
     checkWalletStatus();

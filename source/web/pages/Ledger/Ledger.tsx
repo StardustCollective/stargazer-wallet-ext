@@ -35,6 +35,7 @@ import MessageSigning from './views/messageSigning';
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
 import { dag4 } from '@stardust-collective/dag4';
+import { decodeFromBase64 } from 'utils/encoding';
 
 /////////////////////////
 // Constants
@@ -409,7 +410,7 @@ const LedgerPage = () => {
       const { data } = queryString.parse(location.search) as any;
 
       const parsedData = JSON.parse(data);
-      const message = JSON.parse(window.atob(parsedData.signatureRequestEncoded));
+      const message = JSON.parse(decodeFromBase64(parsedData.signatureRequestEncoded));
 
       return (
         <>

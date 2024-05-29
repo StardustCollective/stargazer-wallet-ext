@@ -3,7 +3,8 @@
 /////////////////////
 
 import React from 'react';
-import queryString from 'query-string';
+import { useSelector } from 'react-redux';
+import * as ethers from 'ethers';
 import clsx from 'clsx';
 
 //////////////////////
@@ -24,17 +25,25 @@ import CardLayoutV2 from 'scenes/external/Layouts/CardLayoutV2';
 // Hooks
 /////////////////////
 
-import { useController, useCopyClipboard } from 'hooks/index';
+import { useCopyClipboard } from 'hooks/index';
 
 ///////////////////////////
 // Styles
 ///////////////////////////
 
-import styles from './index.module.scss';
-
-import { EIP712Domain, TypedSignatureRequest } from './types';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { ALL_EVM_CHAINS } from 'constants/index';
+import dappSelectors from 'selectors/dappSelectors';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+
+import { ecsign, toRpcSig } from 'ethereumjs-util';
+import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
+import { EIP712Domain, TypedSignatureRequest } from './types';
+import styles from './index.module.scss';
 
 const DOMAIN_TITLE = 'Domain';
 const URL_TITLE = 'URL';
@@ -52,21 +61,22 @@ const TypedSignatureRequestScreen = () => {
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
 
-  const { data: stringData } = queryString.parse(location.search);
+  const { data, message } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+    signatureConsent: TypedSignatureRequest;
+    domain: string;
+    types: string;
+  }>(location.href);
 
-  const {
-    signatureConsent: signatureRequest,
-    domain,
-  }: { signatureConsent: TypedSignatureRequest; domain: string } = JSON.parse(
-    stringData as string
-  );
+  const { signatureConsent: signatureRequest, domain, types } = data;
 
   const contentObject = JSON.parse(signatureRequest.content);
   const metadataObject = signatureRequest.data;
   const domainObject = JSON.parse(domain) as EIP712Domain;
+  const typesObject = JSON.parse(types) as Parameters<
+    typeof ethers.utils._TypedDataEncoder.hash
+  >[1];
 
-  const controller = useController();
-  const current = controller.dapp.getCurrent();
+  const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
   //////////////////////
@@ -74,26 +84,40 @@ const TypedSignatureRequestScreen = () => {
   /////////////////////
 
   const onNegativeButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
-    const { windowId } = queryString.parse(window.location.search);
-    const denied = new CustomEvent('signTypedMessageResult', {
-      detail: { windowId, result: false },
-    });
-
-    background.dispatchEvent(denied);
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      message
+    );
     window.close();
   };
 
+  const signTypedData = (
+    domain: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[0],
+    types: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[1],
+    value: Parameters<typeof ethers.utils._TypedDataEncoder.hash>[2]
+  ) => {
+    const wallet = getWallet();
+    const privateKeyHex = remove0x(wallet.privateKey);
+    const privateKey = Buffer.from(privateKeyHex, 'hex');
+    const msgHash = ethers.utils._TypedDataEncoder.hash(domain, types, value);
+
+    const { v, r, s } = ecsign(Buffer.from(remove0x(msgHash), 'hex'), privateKey);
+    const sig = preserve0x(toRpcSig(v, r, s));
+
+    return sig;
+  };
+
   const onPositiveButtonClick = async () => {
-    const background = await chrome.runtime.getBackgroundPage();
+    try {
+      const signature = signTypedData(domainObject, typesObject, contentObject);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(signature, message);
+    } catch (e) {
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseError(e, message);
+    }
 
-    const { windowId } = queryString.parse(window.location.search);
-
-    const approved = new CustomEvent('signTypedMessageResult', {
-      detail: { windowId, result: true },
-    });
-
-    background.dispatchEvent(approved);
     window.close();
   };
 
@@ -234,16 +258,16 @@ const TypedSignatureRequestScreen = () => {
 
   return (
     <CardLayoutV2
-      stepLabel={``}
-      headerLabel={'Signature Request'}
+      stepLabel=""
+      headerLabel="Signature Request"
       headerInfo={renderHeaderInfo()}
       footerLabel={
         'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'
       }
-      captionLabel={``}
-      negativeButtonLabel={'Reject'}
+      captionLabel=""
+      negativeButtonLabel="Reject"
       onNegativeButtonClick={onNegativeButtonClick}
-      positiveButtonLabel={'Sign'}
+      positiveButtonLabel="Sign"
       onPositiveButtonClick={onPositiveButtonClick}
     >
       <div className={styles.content}>

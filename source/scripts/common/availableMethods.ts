@@ -1,9 +1,11 @@
 enum AvailableMethods {
   /* Ethereum */
   eth_accounts = 'eth_accounts',
+  eth_requestAccounts = 'eth_requestAccounts',
   personal_sign = 'personal_sign',
   eth_sendTransaction = 'eth_sendTransaction',
   web3_sha3 = 'web3_sha3',
+  web3_clientVersion = 'web3_clientVersion',
   net_version = 'net_version',
   eth_blockNumber = 'eth_blockNumber',
   eth_call = 'eth_call',
@@ -38,6 +40,7 @@ enum AvailableMethods {
 
   /* Constellation */
   dag_chainId = 'dag_chainId',
+  dag_requestAccounts = 'dag_requestAccounts',
   dag_accounts = 'dag_accounts',
   dag_getBalance = 'dag_getBalance',
   dag_signMessage = 'dag_signMessage',
