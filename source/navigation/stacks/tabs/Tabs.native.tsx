@@ -76,7 +76,7 @@ import TransactionDetails from 'scenes/swap/TransactionDetails';
 ///////////////////////////
 
 import { NEW_COLORS } from 'assets/styles/_variables';
-import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../Home';
+import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../home/Home.native';
 import { iosPlatform } from 'utils/platform';
 import screens from '../../screens';
 import styles from './styles';

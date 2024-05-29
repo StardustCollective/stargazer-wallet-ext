@@ -10,14 +10,17 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 32px;
+  padding: 24px;
   box-sizing: border-box;
 
+  .title {
+    margin-top: 24px;
+  }
+
   .logo {
-    margin-top: 48px;
-    margin-bottom: 56px;
+    margin-top: 36px;
+    margin-bottom: 48px;
     width: 192px;
-    height: 166px;
   }
 
   .createWalletButton {

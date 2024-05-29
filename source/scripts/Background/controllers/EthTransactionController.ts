@@ -2,7 +2,6 @@ import store from 'state/store';
 import { IETHPendingTx } from 'scripts/types';
 import { ethers } from 'ethers';
 import IVaultState from 'state/vault/types';
-import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from '../../../state/assets/types';
 import { AccountController } from './AccountController';
 import localStorage from 'utils/localStorage';
@@ -78,7 +77,7 @@ export class EthTransactionController implements IEthTransactionController {
       await localStorage.setItem(TX_STORE, JSON.stringify(pendingData));
       // Wait for 20 seconds before fetching transactions
       await new Promise((resolve) => setTimeout(resolve, 20000));
-      await getAccountController().getLatestTxUpdate(false);
+      await this.accountController.getLatestTxUpdate(false);
     }
   }
 

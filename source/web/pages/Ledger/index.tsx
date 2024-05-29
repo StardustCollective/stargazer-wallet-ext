@@ -1,16 +1,15 @@
-import { DAG_NETWORK } from 'constants/index';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { dag4 } from '@stardust-collective/dag4';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import ToastAlert from 'components/ToastAlert';
-import store, { updateState } from 'state/store';
+import store from 'state/store';
 import scryptJS from 'scrypt-js';
 import LedgerPage from './Ledger';
 import rehydrateStore from 'state/rehydrate';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import throttle from 'lodash/throttle';
+import { handleDag4Setup } from 'scripts/Background/handlers/handleDag4Setup';
+import { handleStoreSubscribe } from 'scripts/Background/handlers/handleStoreSubscribe';
+import { handleRehydrateStore } from 'scripts/Background/handlers/handleRehydrateStore';
 
 global.scrypt = scryptJS.scrypt;
 
@@ -25,25 +24,11 @@ const options = {
   transition: transitions.FADE,
 };
 
-rehydrateStore(store).then(() => {
-  // Get network info from store
-  const state = store.getState();
-  const vault = state.vault;
-  const networkId =
-    vault && vault.activeNetwork && vault.activeNetwork[KeyringNetwork.Constellation];
-  const networkInfo = (networkId && DAG_NETWORK[networkId]) || DAG_NETWORK.main2;
+handleRehydrateStore();
 
-  // Setup dag4.js
-  dag4.di.getStateStorageDb().setPrefix('stargazer-');
-  dag4.di.useLocalStorageClient(localStorage);
-  dag4.account.connect(
-    {
-      id: networkInfo.id,
-      networkVersion: networkInfo.version,
-      ...networkInfo.config,
-    },
-    false
-  );
+rehydrateStore(store).then(() => {
+  // Initialize dag4
+  handleDag4Setup(store);
 
   // Render Ledger App
   ReactDOM.render(
@@ -57,11 +42,6 @@ rehydrateStore(store).then(() => {
     app
   );
 
-  // Subscribe store to updates
-  store.subscribe(
-    throttle(() => {
-      // every second we update store state
-      updateState();
-    }, 1000)
-  );
+  // Subscribe store to updates and notify
+  handleStoreSubscribe(store);
 });

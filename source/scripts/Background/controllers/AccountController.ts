@@ -16,6 +16,7 @@ import {
   updateWalletLabel,
   updateRewards,
   setLoadingTransactions,
+  setPublicKey,
 } from 'state/vault';
 
 import IVaultState, {
@@ -95,6 +96,12 @@ export class AccountController {
         dag4.account.loginPrivateKey(privateKey);
       } else {
         dag4.account.loginPublicKey(publicKey);
+      }
+
+      publicKey = dag4.account?.keyTrio?.publicKey ?? null;
+
+      if (publicKey) {
+        store.dispatch(setPublicKey(publicKey));
       }
 
       const dagAsset = {
