@@ -34,24 +34,21 @@ export const getWalletInfo = () => {
   const activeWallet = vault?.activeWallet
     ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
     : null;
+  const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
+  const isBitfi = activeWallet?.type === KeyringWalletType.BitfiAccountWallet;
+  const isHardware = isLedger || isBitfi;
 
-  if (activeWallet?.type === KeyringWalletType.LedgerAccountWallet) {
+  if (isLedger) {
     windowUrl = LEDGER_URL;
     bipIndex = activeWallet?.bipIndex;
-  } else if (activeWallet?.type === KeyringWalletType.BitfiAccountWallet) {
+  } else if (isBitfi) {
     windowUrl = BITFI_URL;
     deviceId = activeWallet?.accounts[0].deviceId;
   }
-  const windowType =
-    activeWallet?.type === KeyringWalletType.LedgerAccountWallet ||
-    activeWallet?.type === KeyringWalletType.BitfiAccountWallet
-      ? WINDOW_TYPES.normal
-      : WINDOW_TYPES.popup;
-  const windowSize =
-    activeWallet?.type === KeyringWalletType.LedgerAccountWallet ||
-    activeWallet?.type === KeyringWalletType.BitfiAccountWallet
-      ? { width: 600, height: 1000 }
-      : { width: 372, height: 600 };
+  const windowType = isHardware ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
+  const windowSize = isHardware
+    ? { width: 600, height: 1000 }
+    : { width: 372, height: 600 };
 
   return { activeWallet, windowUrl, windowType, windowSize, deviceId, bipIndex };
 };

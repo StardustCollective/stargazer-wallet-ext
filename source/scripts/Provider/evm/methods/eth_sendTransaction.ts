@@ -11,7 +11,7 @@ import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
-import { getChainId, getNetworkId } from '../utils';
+import { getChainId, getNetworkId, getWalletInfo } from '../utils';
 
 export const eth_sendTransaction = async (
   request: StargazerRequest & { type: 'rpc' },
@@ -66,11 +66,16 @@ export const eth_sendTransaction = async (
 
   const data = { ...trxData, chain: getNetworkId(), chainLabel };
 
+  const { windowUrl, windowSize, windowType } = getWalletInfo();
+
   await StargazerExternalPopups.executePopupWithRequestMessage(
     data,
     message,
     sender.origin,
-    route
+    route,
+    windowUrl,
+    windowSize,
+    windowType
   );
 
   return StargazerWSMessageBroker.NoResponseEmitted;

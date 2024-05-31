@@ -27,7 +27,7 @@ export const personal_sign = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { activeWallet } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
   if (!activeWallet) {
     throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
@@ -104,7 +104,10 @@ export const personal_sign = async (
     signatureData,
     message,
     sender.origin,
-    'signMessage'
+    'signMessage',
+    windowUrl,
+    windowSize,
+    windowType
   );
 
   return StargazerWSMessageBroker.NoResponseEmitted;

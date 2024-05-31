@@ -12,7 +12,7 @@ export const dag_signData = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { activeWallet, deviceId, bipIndex } = getWalletInfo();
+  const { activeWallet, windowUrl, windowType, deviceId, bipIndex } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
@@ -60,7 +60,9 @@ export const dag_signData = async (
     message,
     sender.origin,
     'signData',
-    windowSize
+    windowUrl,
+    windowSize,
+    windowType
   );
 
   return StargazerWSMessageBroker.NoResponseEmitted;

@@ -6,6 +6,7 @@ import {
 } from 'scripts/Background/messaging';
 import { dag_accounts } from './dag_accounts';
 import { sessionExpired } from 'utils/keyring';
+import { getWalletInfo } from '../utils';
 
 export const dag_requestAccounts = async (
   request: StargazerRequest & { type: 'rpc' },
@@ -20,12 +21,17 @@ export const dag_requestAccounts = async (
     return dag_accounts(request, message, sender);
   }
 
+  const { windowUrl, windowSize, windowType } = getWalletInfo();
+
   // Provider not activated -> display popup and wait for user's approval
   await StargazerExternalPopups.executePopupWithRequestMessage(
     null,
     message,
     sender.origin,
-    'selectAccounts'
+    'selectAccounts',
+    windowUrl,
+    windowSize,
+    windowType
   );
 
   return StargazerWSMessageBroker.NoResponseEmitted;

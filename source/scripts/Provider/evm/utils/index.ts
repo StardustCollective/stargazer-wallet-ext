@@ -27,19 +27,13 @@ export const getWalletInfo = () => {
   const activeWallet = vault?.activeWallet
     ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
     : null;
+  const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
 
-  const windowUrl =
-    activeWallet?.type === KeyringWalletType.LedgerAccountWallet
-      ? LEDGER_URL
-      : EXTERNAL_URL;
-  const windowType =
-    activeWallet?.type === KeyringWalletType.LedgerAccountWallet
-      ? WINDOW_TYPES.normal
-      : WINDOW_TYPES.popup;
-  const windowSize =
-    activeWallet?.type === KeyringWalletType.LedgerAccountWallet
-      ? { width: 1000, height: 1000 }
-      : { width: 386, height: 624 };
+  const windowUrl = isLedger ? LEDGER_URL : EXTERNAL_URL;
+  const windowType = isLedger ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
+  const windowSize = isLedger
+    ? { width: 1000, height: 1000 }
+    : { width: 386, height: 624 };
 
   return { activeWallet, windowUrl, windowType, windowSize };
 };

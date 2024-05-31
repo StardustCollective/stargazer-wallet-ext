@@ -4,9 +4,10 @@ export class StargazerExternalPopups {
   static async createPopup(
     params: Record<string, any>,
     url = '/external.html',
-    windowSize = { width: 372, height: 600 }
+    size = { width: 372, height: 600 },
+    type: chrome.windows.createTypeEnum = 'popup'
   ) {
-    const { width = 372, height = 600 } = windowSize;
+    const { width = 372, height = 600 } = size;
 
     const currentWindow = await chrome.windows.getCurrent();
 
@@ -21,7 +22,7 @@ export class StargazerExternalPopups {
       url,
       width,
       height,
-      type: 'popup',
+      type,
       top: 0,
       left: currentWindow.width - 600,
     });
@@ -32,10 +33,11 @@ export class StargazerExternalPopups {
     message: StargazerRequestMessage,
     origin: string,
     route: string,
-    windowSize = { width: 372, height: 600 },
-    url = '/external.html'
+    url = '/external.html',
+    size = { width: 372, height: 600 },
+    type: chrome.windows.createTypeEnum
   ) {
-    await this.createPopup({ data, message, origin, route }, url, windowSize);
+    await this.createPopup({ data, message, origin, route }, url, size, type);
   }
 
   static addResolvedParam(href: string): void {

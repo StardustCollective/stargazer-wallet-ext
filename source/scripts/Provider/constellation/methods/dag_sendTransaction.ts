@@ -23,7 +23,7 @@ export const dag_sendTransaction = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { activeWallet } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
@@ -87,7 +87,10 @@ export const dag_sendTransaction = async (
     txObject,
     message,
     sender.origin,
-    'sendTransaction'
+    'sendTransaction',
+    windowUrl,
+    windowSize,
+    windowType
   );
 
   return StargazerWSMessageBroker.NoResponseEmitted;

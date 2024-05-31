@@ -6,7 +6,7 @@ import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
-import { checkWatchAssetParams, fetchMetagraphBalance } from '../utils';
+import { checkWatchAssetParams, fetchMetagraphBalance, getWalletInfo } from '../utils';
 
 export type WatchAssetOptions = {
   chainId: number; // The chain ID of the asset. 1 (mainnet), 3 (testnet), 4 (integrationnet)
@@ -53,11 +53,16 @@ export const wallet_watchAsset = async (
     dagAddress
   );
 
+  const { windowUrl, windowSize, windowType } = getWalletInfo();
+
   await StargazerExternalPopups.executePopupWithRequestMessage(
     { ...params, balance },
     message,
     sender.origin,
-    'watchAsset'
+    'watchAsset',
+    windowUrl,
+    windowSize,
+    windowType
   );
 
   return StargazerWSMessageBroker.NoResponseEmitted;
