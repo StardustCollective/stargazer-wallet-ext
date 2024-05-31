@@ -43,6 +43,11 @@ import { dag4 } from '@stardust-collective/dag4';
 
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
+import { getWalletController } from 'utils/controllersUtils';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 
 /////////////////////////
 // Constants
@@ -122,7 +127,7 @@ const useStyles = makeStyles({
 // Page
 /////////////////////////
 
-const LedgerPage = () => {
+const BitfiPage = () => {
   /////////////////////////
   // Hooks
   /////////////////////////
@@ -141,15 +146,14 @@ const LedgerPage = () => {
   const [checkBoxesState, setCheckBoxesState] = useState<boolean[]>([]);
   const [fetchingPage, setFetchingPage] = useState<boolean>(false);
   const [startIndex, setStartIndex] = useState<number>(0);
-  const [waitingForLedger, setWaitingForLedger] = useState<boolean>(false);
+  const [waitingForBitfi, setWaitingForBitfi] = useState<boolean>(false);
   const [transactionSigned, setTransactionSigned] = useState<boolean>(false);
   const [deviceId, setDeviceId] = useState<string | string[]>('');
   const [waitingMessage, setWaitingMessage] = useState<string>('Waiting For Bitfi');
   const [message, setMessage] = useState<string>('');
   const [code, setCode] = useState<string>('');
   const [error] = useState<string>('');
-
-  useEffect(() => {}, [selectedAccounts]);
+  const walletController = getWalletController();
 
   useEffect(() => {
     if (['main2'].includes(activeNetwork.Constellation)) {
@@ -326,30 +330,31 @@ const LedgerPage = () => {
 
   const onImportClick = async () => {
     setFetchingPage(true);
-    // TODO: test Manifest V3 (window object not available)
-    // const background = await chrome.runtime.getBackgroundPage();
 
-    console.log('Selected Accounts: ');
-    console.log(selectedAccounts);
+    await walletController.importHardwareWalletAccounts(
+      selectedAccounts as any,
+      deviceId as string
+    );
 
-    // background.controller.wallet.importHardwareWalletAccounts(
-    //   selectedAccounts as any,
-    //   deviceId as string
-    // );
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     BitfiBridgeUtil.closeConnection();
   };
 
   const onSignMessagePress = async () => {
-    const { data, windowId } = queryString.parse(location.search) as any;
+    const { data, message: requestMessage } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams<{
+        signatureRequestEncoded: string;
+        asset: string;
+        provider: string;
+        chainLabel: string;
+        walletLabel: string;
+      }>(location.href);
 
-    const jsonData = JSON.parse(data);
-    const message = jsonData.signatureRequestEncoded;
-    const background = await chrome.runtime.getBackgroundPage();
+    const message = data.signatureRequestEncoded;
 
     try {
-      setWaitingForLedger(true);
+      setWaitingForBitfi(true);
       setCode('');
       await BitfiBridgeUtil.requestPermissions(
         deviceId as string,
@@ -360,38 +365,14 @@ const LedgerPage = () => {
       );
       const signature = await BitfiBridgeUtil.signMessage(message);
       BitfiBridgeUtil.closeConnection();
-      const signatureEvent = new CustomEvent('messageSigned', {
-        detail: {
-          windowId,
-          result: true,
-          signature: {
-            hex: signature,
-            requestEncoded: message,
-          },
-        },
-      });
 
-      background.dispatchEvent(signatureEvent);
+      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
       window.close();
     } catch (error: any) {
       showAlert(error.message || error.toString());
-      setWaitingForLedger(false);
+      setWaitingForBitfi(false);
       BitfiBridgeUtil.closeConnection();
     }
-  };
-
-  const postTransactionResult = (hash: string) => {
-    let port = chrome.runtime.connect(undefined, { name: 'stargazer' });
-    port.postMessage({
-      type: 'CAL_REQUEST',
-      data: {
-        method: 'wallet.postTransactionResult',
-        args: [hash],
-      },
-    });
-    port.onMessage.addListener((res: any) => {
-      console.log('postTransactionResult.result', res.data.result === 'success');
-    });
   };
 
   const onCancelClick = () => {
@@ -404,10 +385,17 @@ const LedgerPage = () => {
   };
 
   const onSignPress = async () => {
-    const { amount, from, to } = queryString.parse(location.search) as any;
+    const { data, message: requestMessage } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams<{
+        amount: string;
+        from: string;
+        to: string;
+      }>(location.href);
+
+    const { amount, from, to } = data;
 
     try {
-      setWaitingForLedger(true);
+      setWaitingForBitfi(true);
       setCode('');
       await BitfiBridgeUtil.requestPermissions(
         deviceId as string,
@@ -417,17 +405,17 @@ const LedgerPage = () => {
         setCode
       );
       // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2 (remove as any)
-      const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to);
+      const signedTX = await BitfiBridgeUtil.buildTransaction(Number(amount), from, to);
       const hash = await dag4.account.networkInstance.postTransaction(signedTX);
       if (hash) {
-        postTransactionResult(hash);
+        StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
       }
-      setWaitingForLedger(false);
+      setWaitingForBitfi(false);
       setTransactionSigned(true);
       BitfiBridgeUtil.closeConnection();
     } catch (error: any) {
       showAlert(error.message || error.toString());
-      setWaitingForLedger(false);
+      setWaitingForBitfi(false);
       BitfiBridgeUtil.closeConnection();
     }
   };
@@ -494,7 +482,7 @@ const LedgerPage = () => {
             deviceId={deviceId as string}
             fromAddress={from}
             toAddress={to}
-            waiting={waitingForLedger}
+            waiting={waitingForBitfi}
             onSignPress={onSignPress}
             transactionSigned={transactionSigned}
             waitingMessage={waitingMessage}
@@ -517,7 +505,7 @@ const LedgerPage = () => {
             walletLabel={parsedData.walletLabel}
             deviceId={deviceId}
             message={message}
-            waiting={waitingForLedger}
+            waiting={waitingForBitfi}
             onSignMessagePress={onSignMessagePress}
             messageSigned={transactionSigned}
           />
@@ -544,4 +532,4 @@ const LedgerPage = () => {
   );
 };
 
-export default LedgerPage;
+export default BitfiPage;
