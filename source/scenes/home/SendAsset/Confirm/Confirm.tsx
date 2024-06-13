@@ -81,6 +81,14 @@ const SendConfirm = ({
     );
   };
 
+  const transactionWrapper = clsx(styles.transaction, {
+    [styles.externalRequestExtra]: isExternalRequest,
+  });
+
+  const fromRowStyles = clsx(styles.row, {
+    [styles.fromRow]: isExternalRequest,
+  });
+
   return confirmed ? (
     <Layout title="Your transaction is underway">
       <CheckIcon className={styles.checked} />
@@ -107,8 +115,8 @@ const SendConfirm = ({
           )}
         </section>
       )}
-      <section className={styles.transaction}>
-        <div className={styles.row}>
+      <section className={transactionWrapper}>
+        <div className={fromRowStyles}>
           From
           <span>
             {activeWallet?.label || ''} ({ellipsis(tempTx?.fromAddress)})

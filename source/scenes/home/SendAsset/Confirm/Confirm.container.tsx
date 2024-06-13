@@ -300,7 +300,7 @@ const ConfirmContainer = () => {
   };
 
   return (
-    <Container color={CONTAINER_COLOR.EXTRA_LIGHT}>
+    <Container color={CONTAINER_COLOR.EXTRA_LIGHT} showHeight={!isExternalRequest}>
       <Confirm
         isExternalRequest={isExternalRequest}
         confirmed={confirmed}

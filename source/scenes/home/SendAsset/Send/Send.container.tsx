@@ -586,7 +586,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const basePriceId = getPriceId(assetNetwork);
 
   return (
-    <Container color={CONTAINER_COLOR.LIGHT}>
+    <Container color={CONTAINER_COLOR.LIGHT} showHeight={!isExternalRequest}>
       <Send
         control={control}
         modalOpened={modalOpened}
