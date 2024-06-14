@@ -5,6 +5,7 @@ import {
   BSC_LOGO,
   CONSTELLATION_LOGO,
   DOR_LOGO,
+  ELPACA_LOGO,
   ETHEREUM_LOGO,
   GEOJAM_LOGO,
   JENNYCO_LOGO,
@@ -52,6 +53,19 @@ export const initialState: IAssetListState = {
     l0endpoint: 'http://l0-lb-mainnet.getdor.com:7000',
     l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
     priceId: 'dor',
+  },
+  // Update ELPACA token info
+  'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuA-main2': {
+    id: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuA-main2',
+    address: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuA',
+    label: 'Elpaca',
+    symbol: 'ELPACA',
+    decimals: 8,
+    type: AssetType.Constellation,
+    logo: ELPACA_LOGO,
+    network: 'main2',
+    l0endpoint: 'http://l0-lb-mainnet.getdor.com:7000',
+    l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
   },
   // 349: New network should be added here.
   [AssetType.Avalanche]: {

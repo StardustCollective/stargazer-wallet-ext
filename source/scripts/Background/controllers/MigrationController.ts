@@ -140,6 +140,15 @@ const MigrationController = async () => {
     const v4_1_0 = require('../migration/v4_1_0');
     await v4_1_0.default(state);
   }
+
+  /**
+   * version < 4_1_2
+   * Description: Adds Elpaca token
+   */
+  if (compareVersions(state.vault.version, '4.1.2') < 0) {
+    const v4_1_2 = require('../migration/v4_1_2');
+    await v4_1_2.default(state);
+  }
 };
 
 export default MigrationController;
