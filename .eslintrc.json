@@ -20,6 +20,9 @@
   },
   "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint"],
   "rules": {
+    "camelcase": "off",
+    "no-use-before-define": "off",
+    "no-continue": "off",
     "no-return-await": "off",
     "no-underscore-dangle": "off",
     "no-await-in-loop": "off",
@@ -44,7 +47,11 @@
     "react/jsx-filename-extension": ["warn", { "extensions": [".jsx", ".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "no-nested-ternary": "off",
-    "no-restricted-exports": "off"
+    "no-restricted-exports": "off",
+    "max-classes-per-file": "off",
+    "lines-between-class-members": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"]
   },
   "globals": {
     "it": "readonly",

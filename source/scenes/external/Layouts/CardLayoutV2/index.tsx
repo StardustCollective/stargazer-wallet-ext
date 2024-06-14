@@ -22,7 +22,8 @@ import styles from './index.module.scss';
 // Hooks Imports
 ///////////////////////////
 
-import { useController } from 'hooks/index';
+import { useSelector } from 'react-redux';
+import dappSelectors from 'selectors/dappSelectors';
 
 ///////////////////////////
 // Types
@@ -63,8 +64,7 @@ const CardLayoutV2: FC<ICardLayoutV2Props> = ({
   // Hooks
   ///////////////////////////
 
-  const controller = useController();
-  const current = controller.dapp.getCurrent();
+  const current = useSelector(dappSelectors.getCurrent);
 
   ///////////////////////////
   // Callbacks
@@ -76,7 +76,7 @@ const CardLayoutV2: FC<ICardLayoutV2Props> = ({
         <div className={styles.stepContainer}>
           <TextV3.Caption color={COLORS_ENUMS.WHITE}>{stepLabel}</TextV3.Caption>
         </div>
-        <img className={styles.headerLogo} src={current.logo} />
+        <img className={styles.headerLogo} src={current?.logo} />
         <div className={styles.headerTitle}>
           <TextV3.Header color={COLORS_ENUMS.WHITE}>{headerLabel}</TextV3.Header>
           <TextV3.Caption color={COLORS_ENUMS.WHITE}>{captionLabel}</TextV3.Caption>

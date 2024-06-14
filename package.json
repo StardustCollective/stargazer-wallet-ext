@@ -42,7 +42,6 @@
     "@stardust-collective/dag4-keyring": "^2.2.2",
     "@stardust-collective/dag4-ledger": "^2.2.2",
     "@types/react-redux": "^7.1.9",
-    "@types/redux-logger": "^3.0.8",
     "@types/redux-watch": "^1.1.0",
     "@xchainjs/xchain-client": "^0.11.3",
     "@xchainjs/xchain-crypto": "^0.2.6",
@@ -70,7 +69,6 @@
     "react-router-dom": "^5.2.0",
     "react-spring-bottom-sheet": "^3.4.1",
     "redux": "^4.0.5",
-    "redux-logger": "^3.0.6",
     "redux-watch": "^1.2.0",
     "single-call-balance-checker-abi": "^1.0.0"
   },

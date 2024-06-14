@@ -22,6 +22,7 @@ import { useForm } from 'react-hook-form';
 /////////////////////
 
 import { getWalletController } from 'utils/controllersUtils';
+import { isNative } from 'utils/envUtil';
 
 ////////////////////////
 // Scene
@@ -82,9 +83,14 @@ const LoginContainer: FC<ILoginProps> = ({
         if (onLoginSuccess) {
           onLoginSuccess(res);
         }
-        // Store user's password in Keychain if doesn't exist
-        if (available && res && callback) {
-          await callback(data.password);
+
+        if (res && callback) {
+          if (!isNative) {
+            await callback(data.password);
+          }
+          if (isNative && available) {
+            await callback(data.password);
+          }
         }
         setInvalid(false);
       })

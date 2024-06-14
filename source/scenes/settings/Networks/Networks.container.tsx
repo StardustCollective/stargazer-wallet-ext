@@ -64,7 +64,6 @@ const NetworksContainer: FC = () => {
     const ethChains = customNetworks['ethereum'];
     const items = [
       { value: ETH_NETWORK.mainnet.id as string, label: ETH_NETWORK.mainnet.label },
-      { value: ETH_NETWORK.goerli.id as string, label: ETH_NETWORK.goerli.label },
       { value: ETH_NETWORK.sepolia.id as string, label: ETH_NETWORK.sepolia.label },
     ];
     const ethObjects = Object.keys(ethChains);
@@ -156,7 +155,7 @@ const NetworksContainer: FC = () => {
       },
       items: [
         { value: POLYGON_NETWORK.matic.id, label: POLYGON_NETWORK.matic.label },
-        { value: POLYGON_NETWORK.maticmum.id, label: POLYGON_NETWORK.maticmum.label },
+        { value: POLYGON_NETWORK.amoy.id, label: POLYGON_NETWORK.amoy.label },
       ],
     },
   ];

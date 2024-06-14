@@ -5,6 +5,7 @@ import CheckIcon from '@material-ui/icons/CheckCircle';
 import Layout from '../../common/Layout';
 import styles from './CreatePass.scss';
 import ICreatePass from './types';
+import { setSgw } from 'utils/keyring';
 
 const CreatePass: FC<ICreatePass> = ({
   onSubmit,
@@ -16,9 +17,14 @@ const CreatePass: FC<ICreatePass> = ({
   comment,
   title,
 }) => {
+  const onHandleSubmit = async (data: any) => {
+    await setSgw(data.password);
+    onSubmit(data);
+  };
+
   return (
     <Layout title={title}>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <form onSubmit={handleSubmit(onHandleSubmit)} className={styles.form}>
         {passed ? (
           <CheckIcon className={styles.checked} />
         ) : (

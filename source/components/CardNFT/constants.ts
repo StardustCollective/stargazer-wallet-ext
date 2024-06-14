@@ -11,6 +11,7 @@ export const OPENSEA_LOGOS_MAP: { [chain: string]: string } = {
   [OpenSeaSupportedChains.ETHEREUM]: EthLogo,
   [OpenSeaSupportedChains.SEPOLIA]: EthLogo,
   [OpenSeaSupportedChains.POLYGON]: PolygonLogo,
+  [OpenSeaSupportedChains.POLYGON_TESTNET]: PolygonLogo,
   [OpenSeaSupportedChains.AVALANCHE]: AvaxLogo,
   [OpenSeaSupportedChains.AVALANCHE_FUJI]: AvaxLogo,
   [OpenSeaSupportedChains.BSC]: BscLogo,

@@ -11,6 +11,12 @@ const AvailableEthereumChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.ETHEREUM,
+    method: AvailableMethods.eth_requestAccounts,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.ETHEREUM,
     method: AvailableMethods.personal_sign,
     proxied: false,
     permissions: [],
@@ -24,6 +30,12 @@ const AvailableEthereumChainMethods: AvailableChainMethod[] = [
   {
     chain: ProtocolProvider.ETHEREUM,
     method: AvailableMethods.web3_sha3,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.ETHEREUM,
+    method: AvailableMethods.web3_clientVersion,
     proxied: false,
     permissions: [],
   },

@@ -33,6 +33,7 @@ export default {
     root: 'auth-root',
     start: 'auth-start',
     home: 'auth-home',
+    homeLoading: 'auth-loading',
     addAsset: 'auth-addAsset',
     addCustomAsset: 'auth-addCustomAsset',
     asset: 'auth-asset',

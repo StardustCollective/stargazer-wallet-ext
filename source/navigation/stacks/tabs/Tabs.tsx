@@ -77,7 +77,7 @@ import TransactionDetails from 'scenes/swap/TransactionDetails';
 // Constants
 ///////////////////////////
 
-import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../Home';
+import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../home/Home';
 import screens from '../../screens';
 import styles from './Tabs.scss';
 

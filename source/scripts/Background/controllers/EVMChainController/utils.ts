@@ -36,7 +36,6 @@ export const getNetworkLogo = (network: string) => {
   switch (network) {
     case 'both':
     case 'mainnet':
-    case 'goerli':
     case 'sepolia':
       return ETHEREUM_LOGO;
     case 'avalanche-mainnet':
@@ -46,7 +45,7 @@ export const getNetworkLogo = (network: string) => {
     case 'bsc-testnet':
       return BSC_LOGO;
     case 'matic':
-    case 'maticmum':
+    case 'amoy':
       return POLYGON_LOGO;
 
     default:
@@ -96,8 +95,6 @@ export const getNetworkLabel = (network: string): string => {
       return 'IntegrationNet';
     case 'mainnet':
       return 'Ethereum';
-    case 'goerli':
-      return 'Goerli';
     case 'sepolia':
       return 'Sepolia';
     case 'avalanche-mainnet':
@@ -110,8 +107,8 @@ export const getNetworkLabel = (network: string): string => {
       return 'BSC Testnet';
     case 'matic':
       return 'Polygon';
-    case 'maticmum':
-      return 'Polygon Testnet';
+    case 'amoy':
+      return 'Polygon Amoy Testnet';
 
     default:
       return 'ERC-20';
@@ -150,11 +147,10 @@ export const getPriceId = (network: string): string => {
   // 349: New network should be added here.
   switch (network) {
     case 'mainnet':
-    case 'goerli':
     case 'sepolia':
       return 'ethereum';
     case 'matic':
-    case 'maticmum':
+    case 'amoy':
       return 'matic-network';
     case 'avalanche-mainnet':
     case 'avalanche-testnet':

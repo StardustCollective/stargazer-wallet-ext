@@ -9,7 +9,6 @@ import {
   STARGAZER_PROVIDERS_BASE_URL_PROD as stargazerProvidersBaseUrlProd,
   STARGAZER_API_KEY as stargazerApiKey,
   QUICKNODE_ETHEREUM_MAINNET as quickNodeEthereumMainnet,
-  QUICKNODE_ETHEREUM_GOERLI as quickNodeEthereumGoerli,
   QUICKNODE_ETHEREUM_SEPOLIA as quickNodeEthereumSepolia,
   QUICKNODE_POLYGON_MAINNET as quickNodePolygonMainnet,
   QUICKNODE_POLYGON_TESTNET as quickNodePolygonTestnet,
@@ -31,7 +30,6 @@ export const STARGAZER_PROVIDERS_BASE_URL_PROD = stargazerProvidersBaseUrlProd;
 export const STARGAZER_API_KEY = stargazerApiKey;
 export const COINGECKO_API_KEY = coinGeckoApiKey;
 export const QUICKNODE_ETHEREUM_MAINNET = quickNodeEthereumMainnet;
-export const QUICKNODE_ETHEREUM_GOERLI = quickNodeEthereumGoerli;
 export const QUICKNODE_ETHEREUM_SEPOLIA = quickNodeEthereumSepolia;
 export const QUICKNODE_POLYGON_MAINNET = quickNodePolygonMainnet;
 export const QUICKNODE_POLYGON_TESTNET = quickNodePolygonTestnet;

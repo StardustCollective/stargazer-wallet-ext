@@ -1,25 +1,14 @@
-import { browser } from 'webextension-polyfill-ts';
-
-export function getController() {
-  return browser.extension.getBackgroundPage().controller;
-}
+import WalletController from 'scripts/Background/controllers/WalletController';
+import ContactsController from 'scripts/Background/controllers/ContactsController';
 
 export const getWalletController = () => {
-  return getController().wallet;
+  return WalletController;
 };
 
 export const getAccountController = () => {
-  return getController().wallet.account;
-};
-
-export const getDappController = () => {
-  return getController().dapp;
-};
-
-export const getDappRegistry = () => {
-  return getController().dappRegistry;
+  return getWalletController().account;
 };
 
 export const getContactsController = () => {
-  return getController().contacts;
+  return ContactsController();
 };

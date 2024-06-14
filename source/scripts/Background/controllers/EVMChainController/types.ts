@@ -11,14 +11,14 @@ import {
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 // Chain IDs
-export type EthChainId = 'mainnet' | 'goerli' | 'sepolia';
-export type PolygonChainId = 'matic' | 'maticmum';
+export type EthChainId = 'mainnet' | 'sepolia';
+export type PolygonChainId = 'matic' | 'amoy';
 export type BSCChainId = 'bsc' | 'bsc-testnet';
 export type AvalancheChainId = 'avalanche-mainnet' | 'avalanche-testnet';
 
 // Chain values
-export type EthChainValue = 'homestead' | 'goerli' | 'sepolia';
-export type PolygonChainValue = 'matic' | 'maticmum';
+export type EthChainValue = 'homestead' | 'sepolia';
+export type PolygonChainValue = 'matic' | 'amoy';
 export type BSCChainValue = 'bsc' | 'bsc-testnet';
 export type AvalancheChainValue = 'avalanche-mainnet' | 'avalanche-testnet';
 
@@ -30,13 +30,7 @@ export type AllChainsValues =
   | BSCChainValue
   | AvalancheChainValue;
 
-export const testnets = [
-  'goerli',
-  'sepolia',
-  'maticmum',
-  'bsc-testnet',
-  'avalanche-testnet',
-];
+export const testnets = ['sepolia', 'amoy', 'bsc-testnet', 'avalanche-testnet'];
 
 export type IChain = {
   id: AllChainsIds | string;

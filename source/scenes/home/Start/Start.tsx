@@ -17,6 +17,7 @@ import screens from 'navigation/screens';
 /////////////////////
 
 import Login from 'scenes/common/Login';
+import { isNative } from 'utils/envUtil';
 
 //////////////////////
 // Component
@@ -35,7 +36,8 @@ const Starter = () => {
   /////////////////////
 
   const onLoginSuccess = (res: boolean) => {
-    if (res) {
+    if (res && isNative) {
+      // We only need to navigate on Mobile
       navigationUtil.replace(navigation, screens.authorized.root);
     }
   };

@@ -22,8 +22,6 @@ import { ITempNFTInfo } from 'state/nfts/types';
 import { AssetType } from 'state/vault/types';
 
 class NetworkController {
-  private privateKey: string;
-
   // 349: New network should be added here.
   #ethereumNetwork: EVMChainController;
   #polygonNetwork: EVMChainController;
@@ -32,26 +30,32 @@ class NetworkController {
 
   constructor(privateKey: string) {
     const { activeNetwork } = store.getState().vault;
-    this.privateKey = privateKey;
     this.#ethereumNetwork = this.createEVMController(
       activeNetwork.Ethereum,
+      privateKey,
       ETHERSCAN_API_KEY
     );
     this.#polygonNetwork = this.createEVMController(
       activeNetwork.Polygon,
+      privateKey,
       POLYGONSCAN_API_KEY
     );
-    this.#bscNetwork = this.createEVMController(activeNetwork.BSC, BSCSCAN_API_KEY);
+    this.#bscNetwork = this.createEVMController(
+      activeNetwork.BSC,
+      privateKey,
+      BSCSCAN_API_KEY
+    );
     this.#avalancheNetwork = this.createEVMController(
       activeNetwork.Avalanche,
+      privateKey,
       SNOWTRACE_API_KEY
     );
   }
 
-  private createEVMController(chain: AllChainsIds, apiKey: string) {
+  private createEVMController(chain: AllChainsIds, privateKey: string, apiKey: string) {
     return new EVMChainController({
       chain,
-      privateKey: this.privateKey,
+      privateKey,
       etherscanApiKey: apiKey,
     });
   }
@@ -86,6 +90,26 @@ class NetworkController {
 
   switchAvalancheChain(chain: AvalancheChainId) {
     this.#avalancheNetwork.setChain(chain);
+  }
+
+  switchChain(network: string, chain: string) {
+    switch (network) {
+      case 'Ethereum':
+        this.switchEthereumChain(chain as EthChainId);
+        break;
+      case 'Polygon':
+        this.switchPolygonChain(chain as PolygonChainId);
+        break;
+      case 'BSC':
+        this.switchBSCChain(chain as BSCChainId);
+        break;
+      case 'Avalanche':
+        this.switchAvalancheChain(chain as AvalancheChainId);
+        break;
+
+      default:
+        throw new Error('Unable to switch chain. Chain not found');
+    }
   }
 
   public getProviderByNetwork(network: string): EVMChainController {

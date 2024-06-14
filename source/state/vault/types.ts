@@ -136,6 +136,7 @@ export interface ICustomNetworkObject {
   nativeToken: string;
   mainnet: string;
   network: string;
+  hexChainId?: string;
 }
 export interface ICustomNetworkState {
   [networkId: string]: ICustomNetworkObject;
@@ -159,4 +160,5 @@ export default interface IVaultState {
   customNetworks: ICustomNetworks;
   customAssets: IAssetInfoState[];
   currentEVMNetwork: string;
+  publicKey: string;
 }

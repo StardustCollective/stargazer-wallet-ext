@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IDAppState, IDAppInfo } from './types';
 
 const initialState: IDAppState = {
+  current: null,
   whitelist: {},
 };
 
@@ -19,7 +20,13 @@ const DAppState = createSlice({
         ...action.payload,
       };
     },
-    listNewDapp(
+    setCurrent(state: IDAppState, action: PayloadAction<IDAppInfo>) {
+      state.current = action.payload;
+    },
+    removeCurrent(state: IDAppState) {
+      state.current = null;
+    },
+    addDapp(
       state: IDAppState,
       action: PayloadAction<{
         id: string;
@@ -28,9 +35,7 @@ const DAppState = createSlice({
         accounts: string[];
       }>
     ) {
-      const { dapp, network, accounts } = action.payload;
-
-      const id = action.payload.id;
+      const { id, dapp, network, accounts } = action.payload;
 
       // Append to accounts if a network already exists
       let accountsByNetwork = {};
@@ -55,12 +60,13 @@ const DAppState = createSlice({
         },
       };
     },
-    unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
+    removeDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
       delete state.whitelist[action.payload.id];
     },
   },
 });
 
-export const { listNewDapp, unlistDapp, rehydrate } = DAppState.actions;
+export const { addDapp, removeDapp, setCurrent, removeCurrent, rehydrate } =
+  DAppState.actions;
 
 export default DAppState.reducer;

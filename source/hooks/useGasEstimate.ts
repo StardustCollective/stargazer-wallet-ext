@@ -4,6 +4,7 @@ import { BigNumber, ethers } from 'ethers';
 import { IAssetInfoState } from 'state/assets/types';
 import { estimateGasLimit, estimateGasLimitForTransfer } from 'utils/ethUtil';
 import { getAccountController } from 'utils/controllersUtils';
+import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
 type IUseGasEstimate = {
   toAddress?: string;
@@ -42,7 +43,8 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
   };
 
   const handleGetTxFee = async () => {
-    const gas = await accountController.getLatestGasPrices();
+    const network = asset?.network ? getNetworkFromChainId(asset?.network) : null;
+    const gas = await accountController.getLatestGasPrices(network);
     let gasPrices: number[] = [...gas];
     let uniquePrices = [...new Set(gas)].length;
     if (uniquePrices === 1) {
