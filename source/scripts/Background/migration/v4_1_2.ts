@@ -10,8 +10,7 @@ import { saveState } from 'state/localStorage';
 import { ELPACA_LOGO } from 'constants/index';
 import { filterObjectByKey, splitObjectByKey } from 'utils/objects';
 
-// Update ELPACA address
-const ELPACA_ASSET_ADDRESS = 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuA';
+const ELPACA_ASSET_ADDRESS = 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43';
 const ELPACA_ASSET_KEY = `${ELPACA_ASSET_ADDRESS}-main2`;
 
 type V4_1_1State = {
@@ -25,18 +24,17 @@ type V4_1_1State = {
   swap: ISwapState;
 };
 
-// Update ELPACA token info
 const ELPACA_ASSET_INFO = {
   id: ELPACA_ASSET_KEY,
   address: ELPACA_ASSET_ADDRESS,
   label: 'Elpaca',
-  symbol: 'ELPACA',
+  symbol: 'PACA',
   decimals: 8,
   type: AssetType.Constellation,
   logo: ELPACA_LOGO,
   network: 'main2',
-  l0endpoint: 'http://l0-lb-mainnet.getdor.com:7000',
-  l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
+  l0endpoint: 'http://elpaca-l0-2006678808.us-west-1.elb.amazonaws.com:9100',
+  l1endpoint: 'http://elpaca-cl1-1512652691.us-west-1.elb.amazonaws.com:9200',
 };
 
 const ElpacaAsset = {

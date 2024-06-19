@@ -58,18 +58,17 @@ export const constellationInitialValues: IAssetInfoState[] = [
     l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
     priceId: 'dor',
   },
-  // Update ELPACA token info
   {
-    id: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuA-main2',
-    address: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuA',
+    id: 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2',
+    address: 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43',
     label: 'Elpaca',
-    symbol: 'ELPACA',
+    symbol: 'PACA',
     decimals: 8,
     type: AssetType.Constellation,
     logo: ELPACA_LOGO,
     network: 'main2',
-    l0endpoint: 'http://l0-lb-mainnet.getdor.com:7000',
-    l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
+    l0endpoint: 'http://elpaca-l0-2006678808.us-west-1.elb.amazonaws.com:9100',
+    l1endpoint: 'http://elpaca-cl1-1512652691.us-west-1.elb.amazonaws.com:9200',
   },
   {
     id: '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet',
