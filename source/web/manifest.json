@@ -25,7 +25,7 @@
     "https://ipfs.io/*",
     "https://openseauserdata.com/*"
   ],
-  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon https://assets.coingecko.com https://*.amazonaws.com https://*.googleusercontent.com https://*.opensea.io https://exolix.com https://*.seadn.io https://ipfs.io https://openseauserdata.com",
+  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon https://*.coingecko.com https://*.amazonaws.com https://*.googleusercontent.com https://*.opensea.io https://exolix.com https://*.seadn.io https://ipfs.io https://openseauserdata.com",
   "__chrome|firefox__author": "Stardust Collective",
   "__firefox__applications": {
     "gecko": {
