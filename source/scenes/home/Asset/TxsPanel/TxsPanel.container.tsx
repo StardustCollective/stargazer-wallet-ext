@@ -12,6 +12,7 @@ import TxsPanel from './TxsPanel';
 import TxItem from '../TxItem';
 import { ITxsPanel } from './types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { toDag } from 'utils/number';
 
 const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
   const getFiatAmount = useFiat();
@@ -130,11 +131,11 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
       : `${isETHPending ? tx.toAddress : isETH ? tx.to && tx.to[0].to : dagTxReceiver}`;
     const amount = isETH
       ? Number(isETHPending ? tx.amount : tx.balance)
-      : tx.amount / 1e8;
+      : toDag(tx.amount);
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = isETH
       ? getFiatAmount(Number(isETHPending ? tx.amount : tx.balance), 2)
-      : getFiatAmount(tx.amount / 1e8, 2);
+      : getFiatAmount(toDag(tx.amount), 2);
 
     return (
       <TxItem
@@ -164,7 +165,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
   };
 
   const renderRewardItem = (tx: Reward, idx: number) => {
-    const amount = tx.amount / 1e8;
+    const amount = toDag(tx.amount);
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = getFiatAmount(amount, 2);
     const rewardsCount = tx?.rewardsCount ? tx.rewardsCount : null;

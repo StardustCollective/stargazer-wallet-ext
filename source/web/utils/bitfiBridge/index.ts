@@ -4,6 +4,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import { DAG_NETWORK } from 'constants/index';
 import localStorage from 'utils/localStorage';
 import store from 'state/store';
+import { toDatum } from 'utils/number';
 
 const SESSION_KEY = 'bitfi_session';
 const APPROVE_TIMEOUT_MSEC = 2 * 60 * 1000;
@@ -93,8 +94,8 @@ class BitfiBridgeUtil {
       fromAddress
     )) as DagLastTxRef;
 
-    const feeSat = (fee && Math.round(fee * Math.pow(10, 8)).toString()) || '0';
-    const amountSat = Math.round(amount * Math.pow(10, 8)).toString();
+    const feeSat = (fee && toDatum(fee).toString()) || '0';
+    const amountSat = toDatum(amount).toString();
 
     let tx: any = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>(
       {

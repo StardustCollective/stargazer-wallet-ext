@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { updatefetchDagBalanceState } from 'state/process';
 import { ProcessStates } from 'state/process/enums';
 import { getAccountController } from 'utils/controllersUtils';
-import { BigNumber } from 'bignumber.js';
 import { IAssetInfoState } from 'state/assets/types';
 import store from '../../../state/store';
 import { updateBalances } from '../../../state/vault';
@@ -17,9 +16,9 @@ import IVaultState, {
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
+import { toDag } from 'utils/number';
 
 const THIRTY_SECONDS = 30 * 1000;
-const DAG_DECIMAL_FACTOR = 1e-8;
 
 export type AccountTrackerList = {
   [network: string]: AccountTracker;
@@ -135,9 +134,8 @@ export class AssetsBalanceMonitor {
             dagAddress
           )) as any
         )?.data?.balance ?? 0;
-      const balanceNumber = new BigNumber(balance)
-        .multipliedBy(DAG_DECIMAL_FACTOR)
-        .toNumber();
+      const balanceNumber = toDag(balance);
+
       return String(balanceNumber);
     } catch (err) {
       return '-';
@@ -149,9 +147,7 @@ export class AssetsBalanceMonitor {
       const balance: number =
         ((await dag4.network.blockExplorerV2Api.getAddressBalance(address)) as any)?.data
           ?.balance ?? 0;
-      const balanceNumber = new BigNumber(balance)
-        .multipliedBy(DAG_DECIMAL_FACTOR)
-        .toNumber();
+      const balanceNumber = toDag(balance);
 
       return String(balanceNumber);
     } catch (err) {

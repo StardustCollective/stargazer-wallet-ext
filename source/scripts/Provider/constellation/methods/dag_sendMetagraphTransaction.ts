@@ -11,6 +11,7 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { getWalletInfo, validateMetagraphAddress } from '../utils';
+import { toDag } from 'utils/number';
 
 export type StargazerMetagraphTransactionRequest = {
   metagraphAddress: string;
@@ -84,8 +85,8 @@ export const dag_sendMetagraphTransaction = async (
   const txObject = {
     metagraphAddress: txMetagraphAddress,
     to: txDestination,
-    value: txAmount / 1e8, // DATUM to DAG
-    fee: txFee / 1e8, // DATUM to DAG
+    value: toDag(txAmount),
+    fee: toDag(txFee),
     chain: ProtocolProvider.CONSTELLATION,
   };
 

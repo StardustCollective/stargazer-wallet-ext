@@ -10,6 +10,7 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { getWalletInfo } from '../utils';
+import { toDag } from 'utils/number';
 
 export type StargazerTransactionRequest = {
   source: string;
@@ -78,8 +79,8 @@ export const dag_sendTransaction = async (
 
   const txObject = {
     to: txDestination,
-    value: txAmount / 1e8, // DATUM to DAG
-    fee: txFee / 1e8, // DATUM to DAG
+    value: toDag(txAmount),
+    fee: toDag(txFee),
     chain: ProtocolProvider.CONSTELLATION,
   };
 

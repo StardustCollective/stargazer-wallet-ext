@@ -43,6 +43,7 @@ import AssetsController, { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { utils } from './EVMChainController';
 import NetworkController from './NetworkController';
+import { toDatum } from 'utils/number';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -580,7 +581,7 @@ export class AccountController {
       }
 
       // Convert the amount from DAG to DATUM
-      pendingTx.amount = Number(this.tempTx.amount) * 1e8;
+      pendingTx.amount = toDatum(Number(this.tempTx.amount));
       const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
       store.dispatch(
         updateTransactions({

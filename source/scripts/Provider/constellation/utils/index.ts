@@ -4,10 +4,9 @@ import store from 'state/store';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import { dag4 } from '@stardust-collective/dag4';
 import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
-import { BigNumber } from 'bignumber.js';
 import { WatchAssetParameters } from '../methods/wallet_watchAsset';
+import { toDag } from 'utils/number';
 
-const DAG_DECIMAL_FACTOR = 1e-8;
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
 const EXTERNAL_URL = '/external.html';
@@ -176,9 +175,7 @@ export const fetchMetagraphBalance = async (
     await fetch(`${url}/currency/${metagraphAddress}/addresses/${dagAddress}/balance`)
   ).json();
   const balance = responseJson?.data?.balance ?? 0;
-  const balanceNumber = new BigNumber(balance)
-    .multipliedBy(DAG_DECIMAL_FACTOR)
-    .toNumber();
+  const balanceNumber = toDag(balance);
 
   return balanceNumber;
 };
