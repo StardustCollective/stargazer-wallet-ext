@@ -93,8 +93,8 @@ class BitfiBridgeUtil {
       fromAddress
     )) as DagLastTxRef;
 
-    const feeSat = (fee && Math.floor(fee * Math.pow(10, 8)).toString()) || '0';
-    const amountSat = Math.floor(amount * Math.pow(10, 8)).toString();
+    const feeSat = (fee && Math.round(fee * Math.pow(10, 8)).toString()) || '0';
+    const amountSat = Math.round(amount * Math.pow(10, 8)).toString();
 
     let tx: any = await this.bitfiBridge.transfer<TransferType.OUT_SELF, 'dag'>(
       {
