@@ -44,10 +44,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
 import { getWalletController } from 'utils/controllersUtils';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
 
 /////////////////////////
 // Constants
@@ -342,16 +338,10 @@ const BitfiPage = () => {
   };
 
   const onSignMessagePress = async () => {
-    const { data, message: requestMessage } =
-      StargazerExternalPopups.decodeRequestMessageLocationParams<{
-        signatureRequestEncoded: string;
-        asset: string;
-        provider: string;
-        chainLabel: string;
-        walletLabel: string;
-      }>(location.href);
+    const { data } = queryString.parse(location.search) as any;
 
-    const message = data.signatureRequestEncoded;
+    const jsonData = JSON.parse(data);
+    const message = jsonData.signatureRequestEncoded;
 
     try {
       setWaitingForBitfi(true);
@@ -364,9 +354,8 @@ const BitfiPage = () => {
         setCode
       );
       const signature = await BitfiBridgeUtil.signMessage(message);
+      console.log('signature', signature);
       BitfiBridgeUtil.closeConnection();
-
-      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
       window.close();
     } catch (error: any) {
       showAlert(error.message || error.toString());
@@ -385,14 +374,7 @@ const BitfiPage = () => {
   };
 
   const onSignPress = async () => {
-    const { data, message: requestMessage } =
-      StargazerExternalPopups.decodeRequestMessageLocationParams<{
-        amount: string;
-        from: string;
-        to: string;
-      }>(location.href);
-
-    const { amount, from, to } = data;
+    const { amount, from, to } = queryString.parse(location.search) as any;
 
     try {
       setWaitingForBitfi(true);
@@ -407,9 +389,7 @@ const BitfiPage = () => {
       // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2 (remove as any)
       const signedTX = await BitfiBridgeUtil.buildTransaction(Number(amount), from, to);
       const hash = await dag4.account.networkInstance.postTransaction(signedTX);
-      if (hash) {
-        StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
-      }
+      console.log('tx hash', hash);
       setWaitingForBitfi(false);
       setTransactionSigned(true);
       BitfiBridgeUtil.closeConnection();
