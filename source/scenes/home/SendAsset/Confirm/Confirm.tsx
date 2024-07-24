@@ -15,6 +15,7 @@ import {
 } from 'scripts/Background/messaging';
 import styles from './Confirm.scss';
 import { ellipsis } from '../../helpers';
+import { convertBigNumber } from 'utils/number';
 
 interface ISendConfirm {
   isExternalRequest: boolean;
@@ -89,6 +90,12 @@ const SendConfirm = ({
     [styles.fromRow]: isExternalRequest,
   });
 
+  const amountBN = convertBigNumber(tempTx?.amount);
+  const amountPrice = convertBigNumber(getSendAmount());
+  const feeBN = convertBigNumber(tempTx?.fee);
+  const feePrice = convertBigNumber(getFeeAmount());
+  const totalAmount = convertBigNumber(getTotalAmount());
+
   return confirmed ? (
     <Layout title="Your transaction is underway">
       <CheckIcon className={styles.checked} />
@@ -106,13 +113,8 @@ const SendConfirm = ({
           <div className={styles.iconWrapper}>
             <UpArrowIcon />
           </div>
-          {tempTx?.amount} {assetInfo.symbol}
-          {!isL0token && (
-            <small>
-              (≈
-              {getSendAmount()})
-            </small>
-          )}
+          {amountBN} {assetInfo.symbol}
+          {!isL0token && <small>(≈ ${amountPrice} USD)</small>}
         </section>
       )}
       <section className={transactionWrapper}>
@@ -129,7 +131,7 @@ const SendConfirm = ({
         <div className={styles.row}>
           Transaction Fee
           <span className={styles.fee}>
-            {`${tempTx?.fee} ${feeUnit} ${isL0token ? '' : `(≈ ${getFeeAmount()})`}`}
+            {`${feeBN} ${feeUnit} ${isL0token ? '' : `(≈ $${feePrice} USD)`}`}
           </span>
         </div>
       </section>
@@ -137,9 +139,7 @@ const SendConfirm = ({
         <div className={styles.row}>
           Max Total
           <span>
-            {isL0token
-              ? `${getTotalAmount()} ${assetInfo.symbol}`
-              : `$${getTotalAmount()}`}
+            {isL0token ? `${totalAmount} ${assetInfo.symbol}` : `$${totalAmount} USD`}
           </span>
         </div>
         <div className={styles.actions}>

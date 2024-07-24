@@ -85,8 +85,8 @@
       color: $gray-100;
 
       &.fee {
-        white-space: nowrap;
         width: 168px;
+        text-align: right;
         text-overflow: ellipsis;
         overflow: hidden;
       }

@@ -58,6 +58,7 @@ export async function updateState() {
 
   const updatedState = {
     vault: state.vault,
+    price: state.price,
     contacts: state.contacts,
     assets: state.assets,
     dapp: state.dapp,

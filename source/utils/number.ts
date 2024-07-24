@@ -21,3 +21,14 @@ export const toDatum = (value: number | string): number => {
 export const toDag = (value: number | string): number => {
   return new BigNumber(value).dividedBy(FACTOR).toNumber();
 };
+
+/**
+ * Converts a value to a BigNumber
+ *
+ * @param   value  Value to convert
+ * @returns Value as string
+ */
+
+export const convertBigNumber = (value: number | string): string => {
+  return new BigNumber(value).toFixed();
+};
