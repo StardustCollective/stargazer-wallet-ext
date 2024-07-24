@@ -8,7 +8,7 @@ const FACTOR = 1e8;
  * @param   value  Value in DAG
  * @returns Value in DATUM
  */
-export const toDatum = (value: number): number => {
+export const toDatum = (value: number | string): number => {
   return new BigNumber(value).multipliedBy(FACTOR).toNumber();
 };
 
@@ -18,6 +18,6 @@ export const toDatum = (value: number): number => {
  * @param   value  Value in DATUM
  * @returns Value in DAG
  */
-export const toDag = (value: number): number => {
+export const toDag = (value: number | string): number => {
   return new BigNumber(value).dividedBy(FACTOR).toNumber();
 };

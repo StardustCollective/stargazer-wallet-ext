@@ -81,10 +81,10 @@ class BitfiBridgeUtil {
   };
 
   public buildTransaction = async (
-    amount: number,
+    amount: string,
     fromAddress: string,
     toAddress: string,
-    fee?: number
+    fee?: string
   ) => {
     const { activeNetwork } = store.getState().vault;
     const dagNetworkValue = activeNetwork.Constellation;

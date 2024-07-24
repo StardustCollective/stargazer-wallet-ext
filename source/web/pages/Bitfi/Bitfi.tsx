@@ -374,7 +374,7 @@ const BitfiPage = () => {
   };
 
   const onSignPress = async () => {
-    const { amount, from, to } = queryString.parse(location.search) as any;
+    const { amount, from, to, fee } = queryString.parse(location.search) as any;
 
     try {
       setWaitingForBitfi(true);
@@ -387,7 +387,7 @@ const BitfiPage = () => {
         setCode
       );
       // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2 (remove as any)
-      const signedTX = await BitfiBridgeUtil.buildTransaction(Number(amount), from, to);
+      const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to, fee);
       const hash = await dag4.account.networkInstance.postTransaction(signedTX);
       console.log('tx hash', hash);
       setWaitingForBitfi(false);
