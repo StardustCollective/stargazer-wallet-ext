@@ -35,6 +35,8 @@ export const CONSTELLATION_DEFAULT_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag-default.png';
 export const DOR_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor.png';
+export const ELPACA_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/elpaca.png';
 export const ETHEREUM_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/eth.png';
 export const ETHEREUM_DEFAULT_LOGO =
