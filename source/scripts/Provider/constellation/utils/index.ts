@@ -9,10 +9,14 @@ import { toDag } from 'utils/number';
 
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
-const EXTERNAL_URL = '/external.html';
-const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
+export const EXTERNAL_URL = '/external.html';
+export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
   popup: 'popup',
   normal: 'normal',
+};
+export const WINDOW_SIZE = {
+  small: { width: 372, height: 600 },
+  large: { width: 600, height: 1000 },
 };
 
 export type StargazerSignatureRequest = {
@@ -31,7 +35,10 @@ export const getWalletInfo = () => {
     ...vault.wallets.bitfi,
   ];
   const activeWallet = vault?.activeWallet
-    ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
+    ? allWallets.find(
+        (wallet: any) =>
+          wallet.id === vault.activeWallet.id || vault.activeWallet.label === wallet.label
+      )
     : null;
   const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
   const isBitfi = activeWallet?.type === KeyringWalletType.BitfiAccountWallet;
@@ -45,9 +52,7 @@ export const getWalletInfo = () => {
     deviceId = activeWallet?.accounts[0].deviceId;
   }
   const windowType = isHardware ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
-  const windowSize = isHardware
-    ? { width: 600, height: 1000 }
-    : { width: 372, height: 600 };
+  const windowSize = isHardware ? WINDOW_SIZE.large : WINDOW_SIZE.small;
 
   return { activeWallet, windowUrl, windowType, windowSize, deviceId, bipIndex };
 };

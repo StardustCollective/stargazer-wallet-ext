@@ -2,13 +2,17 @@ import { Store } from '@reduxjs/toolkit';
 import { throttle } from 'lodash';
 import { updateState } from 'state/store';
 
-import { GlobalMessageEvent } from '../messaging/types';
+import { GlobalMessage, GlobalMessageEvent, MessageType } from '../messaging/types';
 
 export const handleStoreSubscribe = (store: Store) => {
   const listener = throttle(async () => {
     const notifyUpdate = await updateState();
     if (notifyUpdate) {
-      await chrome.runtime.sendMessage(GlobalMessageEvent.rehydrate);
+      const message: GlobalMessage = {
+        type: MessageType.global,
+        event: GlobalMessageEvent.rehydrate,
+      };
+      await chrome.runtime.sendMessage(message);
     }
   }, 1000);
 

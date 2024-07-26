@@ -10,10 +10,14 @@ import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { StargazerSignatureRequest } from '../../constellation/utils';
 
 const LEDGER_URL = '/ledger.html';
-const EXTERNAL_URL = '/external.html';
-const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
+export const EXTERNAL_URL = '/external.html';
+export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
   popup: 'popup',
   normal: 'normal',
+};
+export const WINDOW_SIZE = {
+  small: { width: 386, height: 624 },
+  large: { width: 1000, height: 1000 },
 };
 
 export const getWalletInfo = () => {
@@ -31,9 +35,7 @@ export const getWalletInfo = () => {
 
   const windowUrl = isLedger ? LEDGER_URL : EXTERNAL_URL;
   const windowType = isLedger ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
-  const windowSize = isLedger
-    ? { width: 1000, height: 1000 }
-    : { width: 386, height: 624 };
+  const windowSize = isLedger ? WINDOW_SIZE.large : WINDOW_SIZE.small;
 
   return { activeWallet, windowUrl, windowType, windowSize };
 };
