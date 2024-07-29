@@ -1,12 +1,13 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import TextV3 from 'components/TextV3';
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import CheckIcon from 'components/CheckIcon';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import Button from 'components/Button';
 import { ellipsis } from '../../helpers';
 import { useLinkTo } from '@react-navigation/native';
+import { convertBigNumber } from 'utils/number';
 
 import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -31,6 +32,12 @@ const Confirm = ({
   const onNextPressed = () => {
     linkTo('/asset');
   };
+
+  const amountBN = convertBigNumber(tempTx?.amount);
+  const amountPrice = convertBigNumber(getSendAmount());
+  const feeBN = convertBigNumber(tempTx?.fee);
+  const feePrice = convertBigNumber(getFeeAmount());
+  const totalAmount = convertBigNumber(getTotalAmount());
 
   return (
     <>
@@ -67,12 +74,11 @@ const Confirm = ({
                 <View style={styles.confirm}>
                   <View style={styles.header}>
                     <TextV3.BodyStrong color={COLORS_ENUMS.DARK_GRAY}>
-                      {tempTx?.amount} {assetInfo.symbol}
+                      {amountBN} {assetInfo.symbol}
                       {!isL0token && (
                         <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
                           {' '}
-                          (≈
-                          {getSendAmount()})
+                          (≈ ${amountPrice} USD)
                         </TextV3.Caption>
                       )}
                     </TextV3.BodyStrong>
@@ -90,15 +96,19 @@ const Confirm = ({
                     </TextV3.Caption>
                   </View>
                   <View style={[styles.section, styles.transcationFee]}>
-                    <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
+                    <TextV3.BodyStrong
+                      extraStyles={styles.transcationFeeText}
+                      color={COLORS_ENUMS.BLACK}
+                    >
                       Transaction Fee
-                      <TextV3.Caption color={COLORS_ENUMS.DARK_GRAY}>
-                        {'    '}
-                        {`${tempTx?.fee} ${feeUnit} ${
-                          isL0token ? '' : `(≈ ${getFeeAmount()})`
-                        }`}
-                      </TextV3.Caption>
                     </TextV3.BodyStrong>
+                    <TextV3.Caption
+                      extraStyles={styles.transcationFeePrice}
+                      align={TEXT_ALIGN_ENUM.RIGHT}
+                      color={COLORS_ENUMS.DARK_GRAY}
+                    >
+                      {`${feeBN} ${feeUnit} ${isL0token ? '' : `\n(≈ $${feePrice} USD)`}`}
+                    </TextV3.Caption>
                   </View>
                   <View style={[styles.section, styles.maxTotalSection]}>
                     <View style={styles.maxTotalLabel}>
@@ -106,11 +116,11 @@ const Confirm = ({
                         Max Total
                       </TextV3.BodyStrong>
                     </View>
-                    <View style={styles.total}>
+                    <View>
                       <TextV3.BodyStrong color={COLORS_ENUMS.DARK_GRAY}>
                         {isL0token
-                          ? `${getTotalAmount()} ${assetInfo.symbol}`
-                          : `$${getTotalAmount()}`}
+                          ? `${totalAmount} ${assetInfo.symbol}`
+                          : `$${totalAmount} USD`}
                       </TextV3.BodyStrong>
                     </View>
                   </View>
