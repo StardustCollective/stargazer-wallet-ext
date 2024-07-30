@@ -10,19 +10,13 @@ import { DAG_NETWORK } from 'constants/index';
 import { changeActiveNetwork, changeCurrentEVMNetwork } from 'state/vault';
 
 export const notifyAccountsChanged = async (
-  origin: string,
   network: ProtocolProvider,
   accounts: string[]
 ) => {
-  const { whitelist } = store.getState().dapp;
-
-  if (!whitelist[origin]) return;
-
   await StargazerWSMessageBroker.sendEvent(
     network,
     AvailableWalletEvent.accountsChanged,
-    [accounts],
-    [origin]
+    [accounts]
   );
 };
 
@@ -126,7 +120,7 @@ export const handleDappConnect = async (
 
   store.dispatch(addDapp({ id: origin, dapp, network, accounts }));
 
-  await notifyAccountsChanged(origin, network, accounts);
+  await notifyAccountsChanged(network, accounts);
 };
 
 export const handleDappDisconnect = async (
@@ -145,6 +139,20 @@ export const handleDappDisconnect = async (
   store.dispatch(removeDapp({ id: origin }));
 };
 
+export const handleAccountsChanged = async (
+  message: DappMessage,
+  _sender: chrome.runtime.MessageSender,
+  _sendResponse: (response?: any) => void
+) => {
+  const { provider, accounts } = message?.payload ?? {};
+
+  if (!provider || !accounts) {
+    throw new Error('Unable to change accounts');
+  }
+
+  await notifyAccountsChanged(provider, accounts);
+};
+
 const onDappMessage = (
   message: DappMessage,
   sender: chrome.runtime.MessageSender,
@@ -160,6 +168,8 @@ const onDappMessage = (
       return handleDappDisconnect(message, sender, sendResponse);
     case DappMessageEvent.chainChanged:
       return handleChainChanged(message, sender, sendResponse);
+    case DappMessageEvent.accountsChanged:
+      return handleAccountsChanged(message, sender, sendResponse);
     default:
       return;
   }

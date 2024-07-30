@@ -71,7 +71,11 @@ export async function updateState() {
   const currentState = await loadState();
 
   if (currentState) {
-    const equalStates = compareObjects(updatedState, currentState);
+    const updatedNoPrice = { ...updatedState };
+    const currentNoPrice = { ...currentState };
+    delete updatedNoPrice.price;
+    delete currentNoPrice.price;
+    const equalStates = compareObjects(updatedNoPrice, currentNoPrice);
     if (equalStates) return false;
   }
 

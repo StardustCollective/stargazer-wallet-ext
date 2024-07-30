@@ -29,7 +29,8 @@ export const handleDag4Setup = (store: Store) => {
     false
   );
 
-  if (pubKey) {
+  // Do NOT login with public key if already logged with private key
+  if (pubKey && !dag4.account.isActive() && !dag4?.account?.keyTrio?.privateKey) {
     dag4.account.loginPublicKey(pubKey);
   }
 };

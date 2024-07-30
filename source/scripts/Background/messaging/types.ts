@@ -7,6 +7,7 @@ export enum DappMessageEvent {
   connect = 'connect',
   notifyAccounts = 'notifyAccounts',
   chainChanged = 'chainChanged',
+  accountsChanged = 'accountsChanged',
 }
 
 export enum MessageType {

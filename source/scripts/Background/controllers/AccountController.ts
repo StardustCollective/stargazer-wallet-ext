@@ -44,6 +44,9 @@ import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { utils } from './EVMChainController';
 import NetworkController from './NetworkController';
 import { toDatum } from 'utils/number';
+import { isNative } from 'utils/envUtil';
+import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
+import { ProtocolProvider } from 'scripts/common';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -222,6 +225,24 @@ export class AccountController {
     return networkAssets;
   }
 
+  async notifyAccountChange(account: KeyringWalletAccountState) {
+    const accounts = account.address;
+    const provider =
+      account.network === KeyringNetwork.Constellation
+        ? ProtocolProvider.CONSTELLATION
+        : ProtocolProvider.ETHEREUM;
+
+    const message: DappMessage = {
+      type: MessageType.dapp,
+      event: DappMessageEvent.accountsChanged,
+      payload: {
+        provider,
+        accounts,
+      },
+    };
+    await chrome.runtime.sendMessage(message);
+  }
+
   async buildAccountAssetInfo(walletId: string, walletLabel: string): Promise<void> {
     const state = store.getState();
     const { vault } = state;
@@ -238,6 +259,10 @@ export class AccountController {
     let assetList: IAssetState[] = [];
     for (const account of walletInfo.accounts) {
       const accountAssetList = await this.buildAccountAssetList(walletInfo, account);
+
+      if (!isNative) {
+        await this.notifyAccountChange(account);
+      }
 
       assetList = assetList.concat(accountAssetList);
     }

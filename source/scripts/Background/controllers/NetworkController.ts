@@ -300,7 +300,7 @@ class NetworkController {
     } catch (err) {
       console.log('Error: waitForTransaction - provider not found.');
     }
-    return provider.waitForTransaction(hash);
+    return provider?.waitForTransaction(hash);
   }
 
   async estimateTokenTransferGasLimit(
