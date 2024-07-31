@@ -226,7 +226,7 @@ export class AccountController {
   }
 
   async notifyAccountChange(account: KeyringWalletAccountState) {
-    const accounts = account.address;
+    const accounts = [account.address];
     const provider =
       account.network === KeyringNetwork.Constellation
         ? ProtocolProvider.CONSTELLATION

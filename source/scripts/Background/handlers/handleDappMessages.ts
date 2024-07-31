@@ -1,4 +1,4 @@
-import { addDapp, removeDapp, setCurrent } from 'state/dapp';
+import { addDapp, setCurrent } from 'state/dapp';
 import { IDAppInfo } from 'state/dapp/types';
 import store from 'state/store';
 
@@ -135,8 +135,6 @@ export const handleDappDisconnect = async (
   }
 
   await notifyDisconnect(origin);
-
-  store.dispatch(removeDapp({ id: origin }));
 };
 
 export const handleAccountsChanged = async (
