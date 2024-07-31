@@ -16,7 +16,12 @@ export const handleStoreSubscribe = (store: Store) => {
         event: GlobalMessageEvent.rehydrate,
       };
 
-      await chrome.runtime.sendMessage(message);
+      try {
+        await chrome.runtime.sendMessage(message);
+      } catch (err) {
+        console.error(err);
+        // NOOP
+      }
     }
   }, 1000);
 

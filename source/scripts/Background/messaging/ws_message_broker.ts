@@ -115,7 +115,12 @@ export class StargazerWSMessageBroker {
         continue;
       }
 
-      await chrome.tabs.sendMessage(tab.id, message);
+      try {
+        await chrome.tabs.sendMessage(tab.id, message);
+      } catch (err) {
+        console.error(err);
+        // NOOP
+      }
     }
   }
 
