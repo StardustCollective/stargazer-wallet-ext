@@ -344,6 +344,7 @@ class WalletController {
     const { assets } = store.getState();
     console.log(`${network} - ${chainId}`);
 
+    let provider = ProtocolProvider.CONSTELLATION;
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
       dag4.account.connect(
         {
@@ -353,19 +354,6 @@ class WalletController {
         },
         false
       );
-
-      if (!isNative) {
-        const message: DappMessage = {
-          type: MessageType.dapp,
-          event: DappMessageEvent.chainChanged,
-          payload: {
-            provider: ProtocolProvider.CONSTELLATION,
-            network,
-            chainId,
-          },
-        };
-        await chrome.runtime.sendMessage(message);
-      }
     }
 
     const EVM_CHAINS = [
@@ -378,20 +366,22 @@ class WalletController {
     if (EVM_CHAINS.includes(network as KeyringNetwork | Network)) {
       this.account.networkController.switchChain(network, chainId);
       store.dispatch(changeCurrentEVMNetwork(chainId));
-      if (!isNative) {
-        const message: DappMessage = {
-          type: MessageType.dapp,
-          event: DappMessageEvent.chainChanged,
-          payload: { provider: ProtocolProvider.ETHEREUM, network, chainId },
-        };
-
-        await chrome.runtime.sendMessage(message);
-      }
+      provider = ProtocolProvider.ETHEREUM;
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
     // Update NFTs list if any EVM chain has changed.
     await this.nfts.fetchAllNfts();
+
+    if (!isNative) {
+      const message: DappMessage = {
+        type: MessageType.dapp,
+        event: DappMessageEvent.chainChanged,
+        payload: { provider, network, chainId },
+      };
+
+      await chrome.runtime.sendMessage(message);
+    }
 
     if (activeAsset) {
       if (assets[activeAsset.id].network !== chainId) {
