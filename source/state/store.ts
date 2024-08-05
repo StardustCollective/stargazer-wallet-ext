@@ -17,7 +17,6 @@ import contacts from './contacts';
 import assets from './assets';
 import nfts from './nfts';
 import dapp from './dapp';
-import process from './process';
 import providers from './providers';
 import erc20assets from './erc20assets';
 import swap from './swap';
@@ -42,7 +41,6 @@ const store = configureStore({
     assets,
     nfts,
     dapp,
-    process,
     providers,
     erc20assets,
     swap,

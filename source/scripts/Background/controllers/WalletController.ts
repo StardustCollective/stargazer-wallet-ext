@@ -5,7 +5,6 @@ import {
   changeActiveNetwork,
   changeActiveWallet,
   setVaultInfo,
-  updateBalances,
   addLedgerWallet,
   updateWallets,
   addBitfiWallet,
@@ -19,8 +18,6 @@ import IVaultState, {
   Network,
 } from 'state/vault/types';
 import { DAG_NETWORK } from 'constants/index';
-import { ProcessStates } from 'state/process/enums';
-import { updateLoginState } from 'state/process';
 import {
   KeyringAssetType,
   KeyringManager,
@@ -83,7 +80,6 @@ class WalletController {
         console.log('Error while switching wallet at login');
         console.log(e);
       }
-      store.dispatch(updateLoginState({ processState: ProcessStates.IDLE }));
       store.dispatch(setUnlocked(state.isUnlocked));
     });
 
@@ -111,7 +107,6 @@ class WalletController {
   }
 
   async unLock(password: string): Promise<boolean> {
-    store.dispatch(updateLoginState({ processState: ProcessStates.IN_PROGRESS }));
     await this.keyringManager.login(password);
 
     const state = store.getState();
@@ -328,18 +323,16 @@ class WalletController {
   }
 
   async switchWallet(id: string, label?: string): Promise<void> {
-    store.dispatch(updateBalances({ pending: 'true' }));
-
     await this.account.buildAccountAssetInfo(id, label);
-    await this.account.getLatestTxUpdate();
-    await this.account.assetsBalanceMonitor.start();
-    await this.account.txController.startMonitor();
-    await this.nfts.fetchAllNfts();
+    await Promise.all([
+      this.account.getLatestTxUpdate(),
+      this.account.assetsBalanceMonitor.start(),
+      this.account.txController.startMonitor(),
+      this.nfts.fetchAllNfts(),
+    ]);
   }
 
   async switchNetwork(network: string, chainId: string): Promise<void> {
-    store.dispatch(updateBalances({ pending: 'true' }));
-
     const { activeAsset }: IVaultState = store.getState().vault;
     const { assets } = store.getState();
     console.log(`${network} - ${chainId}`);

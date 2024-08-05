@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -21,6 +21,7 @@ import { RootState } from 'state/store';
 import IProvidersState from 'state/providers/types';
 import IVaultState from 'state/vault/types';
 import IAssetListState from 'state/assets/types';
+import { getAccountController } from 'utils/controllersUtils';
 
 const BuyListContainer: FC = () => {
   const linkTo = useLinkTo();
@@ -29,6 +30,7 @@ const BuyListContainer: FC = () => {
   );
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
+  const accountController = getAccountController();
   const supportedAssetsArray = supportedAssets?.data;
   const assetsFiltered =
     assets && supportedAssetsArray && Array.isArray(supportedAssetsArray)
@@ -44,6 +46,15 @@ const BuyListContainer: FC = () => {
             )
         )
       : [];
+
+  useEffect(() => {
+    const getAssets = async () => {
+      await accountController.assetsController.fetchSupportedAssets();
+    };
+    if (!supportedAssets.data) {
+      getAssets();
+    }
+  }, []);
 
   const handleSelectAsset = async (assetId: string) => {
     linkTo(`/buyAsset?selected=${assetId}`);

@@ -374,29 +374,31 @@ export class AccountController {
         });
 
         try {
-          txsV2 = (await metagraphClient.getTransactions(TXS_LIMIT)) || [];
-        } catch (err) {
-          console.log('Error: getTransactions', err);
-          txsV2 = [];
-        }
-
-        rewards = await this.getMetagraphRewards(
-          assetInfo.network,
-          activeAsset.address,
-          assetInfo.address
-        );
-      } else {
-        try {
-          txsV2 = await dag4.monitor.getLatestTransactions(
-            activeAsset.address,
-            TXS_LIMIT
-          );
-
-          const { id } = dag4.network.getNetwork();
-          rewards = await this.getDagRewards(id, activeAsset.address);
+          [txsV2, rewards] = await Promise.all([
+            metagraphClient.getTransactions(TXS_LIMIT),
+            this.getMetagraphRewards(
+              assetInfo.network,
+              activeAsset.address,
+              assetInfo.address
+            ),
+          ]);
         } catch (err) {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
+          rewards = [];
+        }
+      } else {
+        const { id } = dag4.network.getNetwork();
+
+        try {
+          [txsV2, rewards] = await Promise.all([
+            dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT),
+            this.getDagRewards(id, activeAsset.address),
+          ]);
+        } catch (err) {
+          console.log('Error: getLatestTransactions', err);
+          txsV2 = [];
+          rewards = [];
         }
       }
 

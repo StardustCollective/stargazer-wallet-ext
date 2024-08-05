@@ -81,6 +81,15 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    const getERC20Assets = async () => {
+      await accountController.assetsController.fetchERC20Assets();
+    };
+    if (!erc20assets) {
+      getERC20Assets();
+    }
+  }, []);
+
+  useEffect(() => {
     if (!loading) {
       setCustomLoading(false);
     }
