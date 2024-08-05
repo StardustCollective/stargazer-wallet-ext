@@ -35,6 +35,9 @@ const options = {
   transition: transitions.FADE,
 };
 
+// Note: the following event listener fixes an error when initializing the app.
+window.addEventListener('unload', () => {});
+
 handleRehydrateStore();
 
 MigrationController().then(() => {
