@@ -47,6 +47,7 @@ import { toDatum } from 'utils/number';
 import { isNative } from 'utils/envUtil';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import { ProtocolProvider } from 'scripts/common';
+import { updateDappActiveAccount } from 'state/dapp';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -226,21 +227,42 @@ export class AccountController {
   }
 
   async notifyAccountChange(account: KeyringWalletAccountState) {
-    const accounts = [account.address];
-    const provider =
+    const { whitelist } = store.getState().dapp;
+
+    const network =
       account.network === KeyringNetwork.Constellation
         ? ProtocolProvider.CONSTELLATION
         : ProtocolProvider.ETHEREUM;
 
-    const message: DappMessage = {
-      type: MessageType.dapp,
-      event: DappMessageEvent.accountsChanged,
-      payload: {
-        provider,
-        accounts,
-      },
-    };
-    await chrome.runtime.sendMessage(message);
+    for (const site of Object.keys(whitelist)) {
+      const origin = whitelist[site].origin;
+      const DAGAccounts = whitelist[site]?.accounts?.constellation ?? [];
+      const ETHAccounts = whitelist[site]?.accounts?.ethereum ?? [];
+      const accounts =
+        network === ProtocolProvider.CONSTELLATION ? DAGAccounts : ETHAccounts;
+      const message: DappMessage = {
+        type: MessageType.dapp,
+        event: DappMessageEvent.accountsChanged,
+        payload: {
+          network,
+          accounts,
+          origin,
+        },
+      };
+      await chrome.runtime.sendMessage(message);
+    }
+  }
+
+  async updateAllDappsActiveAccount(network: ProtocolProvider, address: string) {
+    const { whitelist } = store.getState().dapp;
+
+    if (!whitelist || !Object.keys(whitelist)?.length) return;
+
+    for (const site of Object.keys(whitelist)) {
+      store.dispatch(
+        updateDappActiveAccount({ origin: site, account: address, network })
+      );
+    }
   }
 
   async buildAccountAssetInfo(walletId: string, walletLabel: string): Promise<void> {
@@ -261,7 +283,12 @@ export class AccountController {
       const accountAssetList = await this.buildAccountAssetList(walletInfo, account);
 
       if (!isNative) {
-        await this.notifyAccountChange(account);
+        const network =
+          account.network === KeyringNetwork.Constellation
+            ? ProtocolProvider.CONSTELLATION
+            : ProtocolProvider.ETHEREUM;
+        const address = account.address;
+        this.updateAllDappsActiveAccount(network, address);
       }
 
       assetList = assetList.concat(accountAssetList);
@@ -281,6 +308,12 @@ export class AccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
+
+    if (!isNative) {
+      for (const account of walletInfo.accounts) {
+        await this.notifyAccountChange(account);
+      }
+    }
   }
 
   private async buildAccountERC20Tokens(address: string, accountTokens: string[]) {

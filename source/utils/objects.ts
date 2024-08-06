@@ -83,3 +83,11 @@ export const compareObjects = (obj1: object, obj2: object): boolean => {
 
   return hash1 === hash2;
 };
+
+export const toFirstPosition = (array: string[], target: string): string[] => {
+  const targetIndex = array.indexOf(target);
+
+  if (targetIndex === -1) return array;
+
+  return [target, ...array.slice(0, targetIndex), ...array.slice(targetIndex + 1)];
+};

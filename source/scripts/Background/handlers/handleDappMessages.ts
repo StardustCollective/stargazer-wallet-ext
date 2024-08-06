@@ -11,12 +11,14 @@ import { changeActiveNetwork, changeCurrentEVMNetwork } from 'state/vault';
 
 export const notifyAccountsChanged = async (
   network: ProtocolProvider,
-  accounts: string[]
+  accounts: string[],
+  origin: string
 ) => {
   await StargazerWSMessageBroker.sendEvent(
     network,
     AvailableWalletEvent.accountsChanged,
-    [accounts]
+    [accounts],
+    [origin]
   );
 };
 
@@ -120,7 +122,7 @@ export const handleDappConnect = async (
 
   store.dispatch(addDapp({ id: origin, dapp, network, accounts }));
 
-  await notifyAccountsChanged(network, accounts);
+  await notifyAccountsChanged(network, accounts, origin);
 };
 
 export const handleDappDisconnect = async (
@@ -142,13 +144,13 @@ export const handleAccountsChanged = async (
   _sender: chrome.runtime.MessageSender,
   _sendResponse: (response?: any) => void
 ) => {
-  const { provider, accounts } = message?.payload ?? {};
+  const { network, accounts, origin } = message?.payload ?? {};
 
-  if (!provider || !accounts) {
+  if (!network || !origin || !accounts) {
     throw new Error('Unable to change accounts');
   }
 
-  await notifyAccountsChanged(provider, accounts);
+  await notifyAccountsChanged(network, accounts, origin);
 };
 
 const onDappMessage = (
