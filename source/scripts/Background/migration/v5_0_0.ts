@@ -9,9 +9,11 @@ import { compareVersions } from 'utils/version';
 import { isNative } from 'utils/envUtil';
 import { STARGAZER_LOGO } from 'constants/index';
 import { EthChainId, PolygonChainId } from '../controllers/EVMChainController/types';
+import IPriceState from 'state/price/types';
 
 type V5_0_0_State = {
   vault: IVaultState;
+  price: IPriceState;
   contacts: IContactBookState;
   assets: IAssetListState;
   dapp: IDAppState;
@@ -123,6 +125,7 @@ const migrateState = async () => {
         customAssets: migrateCustomAssets(state),
         version: '5.0.0',
       },
+      price: state.price,
       contacts: state.contacts,
       assets: migrateAssets(state),
       dapp: migrateDapp(state),
@@ -133,6 +136,14 @@ const migrateState = async () => {
     };
 
     const serializedState = JSON.stringify(newState);
+
+    if (isNative) {
+      // Update localStorage in Mobile
+      await _global.localStorage.setItem(STATE_KEY, serializedState);
+      return;
+    }
+
+    // Migrate local storage to Storage API only in Chrome
     await storageApi.setItem(STATE_KEY, serializedState);
     await _global.localStorage.removeItem(STATE_KEY);
     console.log(`<v5.0.0> Migration Success: ${STATE_KEY}`);
@@ -172,9 +183,11 @@ const migratePendingTransactions = async () => {
 
 const MigrateRunner = async () => {
   await migrateState();
-  await migrateEncryptedVault();
-  await migratePendingTransactions();
-  reload();
+  if (!isNative) {
+    await migrateEncryptedVault();
+    await migratePendingTransactions();
+    reload();
+  }
 };
 
 export default MigrateRunner;
