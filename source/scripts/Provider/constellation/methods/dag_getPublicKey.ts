@@ -46,7 +46,7 @@ export const dag_getPublicKey = (
 
   const dappData = whitelist[origin];
 
-  if (!dappData?.accounts?.constellation) {
+  if (!dappData) {
     throw new Error('ConstellationProvider.getPublicKey: Not whitelisted');
   }
 

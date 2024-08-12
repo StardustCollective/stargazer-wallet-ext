@@ -14,7 +14,7 @@ import {
 // Components
 ///////////////////////////
 import TextV3 from 'components/TextV3';
-import Checkbox from '@material-ui/core/Checkbox';
+import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
 import Icon from 'components/Icon';
 
 ///////////////////////////
@@ -64,16 +64,16 @@ const PurpleCheckbox = withStyles({
       color: '#2B1D52',
     },
   },
-})(({ onChange, checked }: { onChange: (e: any) => void; checked: boolean }) => (
-  <Checkbox color="default" onChange={onChange} checked={checked} />
-));
+  checked: {
+    color: '#2B1D52',
+  },
+})((props: CheckboxProps) => <Checkbox color="default" disabled {...props} />);
 
 ///////////////////////////
 // Types
 ///////////////////////////
 type IWalletItem = {
   wallet: KeyringWalletState;
-  onCheckboxChange: (checked: boolean, wallet: KeyringWalletState) => void;
 };
 
 ///////////////////////////
@@ -94,8 +94,8 @@ const SelectAccounts = () => {
 
   const allWallets = useSelector(walletsSelectors.selectAllWallets);
   const current = useSelector(dappSelectors.getCurrent);
+  const activeWallet = useSelector(walletsSelectors.getActiveWallet);
 
-  const [selectedWallets, setSelectedWallets] = useState<KeyringWalletState[]>([]);
   const [sceneState, setSceneState] = useState<SCENE_STATE>(SCENE_STATE.SELECT_ACCOUNTS);
 
   const { message, origin } = StargazerExternalPopups.decodeRequestMessageLocationParams(
@@ -110,10 +110,9 @@ const SelectAccounts = () => {
     if (sceneState === SCENE_STATE.SELECT_ACCOUNTS) {
       setSceneState(SCENE_STATE.CONNECT);
     } else if (sceneState === SCENE_STATE.CONNECT) {
-      const accounts = selectedWallets.reduce((carry, wallet) => {
-        carry = carry.concat(wallet.accounts);
-        return carry;
-      }, []);
+      const currentWallet = allWallets.find((wallet) => wallet.id === activeWallet.id);
+
+      const { accounts } = currentWallet;
 
       const dagAccounts = accounts
         .filter(({ network }) => network === KeyringNetwork.Constellation)
@@ -173,23 +172,11 @@ const SelectAccounts = () => {
     }
   };
 
-  const onCheckboxChange = (checked: boolean, wallet: KeyringWalletState) => {
-    // Add the account address to the white list.
-    if (checked) {
-      setSelectedWallets([...selectedWallets, wallet]);
-    } else {
-      const wallets = selectedWallets.filter(
-        (selectedWallet: any) => wallet.id !== selectedWallet.id
-      );
-      setSelectedWallets(wallets);
-    }
-  };
-
   ///////////////////////////
   // Renders
   ///////////////////////////
 
-  const RenderWalletItem = ({ wallet, onCheckboxChange }: IWalletItem) => {
+  const RenderWalletItem = ({ wallet }: IWalletItem) => {
     let icon = '';
     let symbolText = '';
     let iconStyle = styles.icon;
@@ -214,13 +201,7 @@ const SelectAccounts = () => {
     return (
       <div key={wallet.id} className={styles.walletItem}>
         <div className={styles.walletItemCheckBox}>
-          <PurpleCheckbox
-            onChange={(e: any) => onCheckboxChange(e.target.checked, wallet)}
-            checked={
-              selectedWallets.filter((selectedWallet) => wallet.id === selectedWallet.id)
-                .length > 0
-            }
-          />
+          <PurpleCheckbox onChange={(_: any) => {}} checked={true} />
         </div>
         <div className={styles.walletItemIcon}>
           <Icon width={25} Component={icon} iconStyles={iconStyle} />
@@ -241,11 +222,7 @@ const SelectAccounts = () => {
         <>
           {allWallets.length > 0 &&
             allWallets.map((wallet: KeyringWalletState) => (
-              <RenderWalletItem
-                key={wallet.id}
-                wallet={wallet}
-                onCheckboxChange={onCheckboxChange}
-              />
+              <RenderWalletItem key={wallet.id} wallet={wallet} />
             ))}
         </>
       );
@@ -255,7 +232,7 @@ const SelectAccounts = () => {
         <div className={styles.connectPermissionsPrompt}>
           <TextV3.Header color={COLORS_ENUMS.BLACK}>Connect To</TextV3.Header>
           <TextV3.Body color={COLORS_ENUMS.BLACK}>
-            {selectedWallets.length} Wallet(s)
+            {allWallets.length} Wallet(s)
           </TextV3.Body>
           <TextV3.CaptionStrong
             color={COLORS_ENUMS.BLACK}
@@ -289,7 +266,7 @@ const SelectAccounts = () => {
         sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Next' : 'Connect'
       }
       onPositiveButtonClick={onPositiveButtonPressed}
-      isPositiveButtonDisabled={selectedWallets.length === 0}
+      isPositiveButtonDisabled={allWallets.length === 0}
     >
       <RenderContentByState state={sceneState} />
     </CardLayout>

@@ -47,7 +47,6 @@ import { toDatum } from 'utils/number';
 import { isNative } from 'utils/envUtil';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import { ProtocolProvider } from 'scripts/common';
-import { updateDappActiveAccount } from 'state/dapp';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -226,7 +225,10 @@ export class AccountController {
     return networkAssets;
   }
 
-  async notifyAccountChange(account: KeyringWalletAccountState) {
+  async notifyAccountChange(
+    account: KeyringWalletAccountState,
+    walletInfo: KeyringWalletState
+  ) {
     const { whitelist } = store.getState().dapp;
 
     const network =
@@ -236,32 +238,44 @@ export class AccountController {
 
     for (const site of Object.keys(whitelist)) {
       const origin = whitelist[site].origin;
-      const DAGAccounts = whitelist[site]?.accounts?.constellation ?? [];
-      const ETHAccounts = whitelist[site]?.accounts?.ethereum ?? [];
-      const accounts =
-        network === ProtocolProvider.CONSTELLATION ? DAGAccounts : ETHAccounts;
+
+      // This scenario is for only DAG/ETH wallets.
+      // We should notify all connected dApps that the accounts array is now empty on the provider not used for this wallet.
+      // Ex 1. Active wallet -> Only DAG -> Notify accountsChanged = [] on Ethereum's provider.
+      // Ex 2. Active wallet -> Only ETH -> Notify accountsChanged = [] on Constellation's provider.
+      if (
+        [
+          KeyringWalletType.SingleAccountWallet,
+          KeyringWalletType.BitfiAccountWallet,
+        ].includes(walletInfo.type)
+      ) {
+        const otherNetwork =
+          account.network === KeyringNetwork.Constellation
+            ? ProtocolProvider.ETHEREUM
+            : ProtocolProvider.CONSTELLATION;
+
+        const emptyAccountsMessage: DappMessage = {
+          type: MessageType.dapp,
+          event: DappMessageEvent.accountsChanged,
+          payload: {
+            network: otherNetwork,
+            accounts: [],
+            origin,
+          },
+        };
+        await chrome.runtime.sendMessage(emptyAccountsMessage);
+      }
+
       const message: DappMessage = {
         type: MessageType.dapp,
         event: DappMessageEvent.accountsChanged,
         payload: {
           network,
-          accounts,
+          accounts: [account.address],
           origin,
         },
       };
       await chrome.runtime.sendMessage(message);
-    }
-  }
-
-  async updateAllDappsActiveAccount(network: ProtocolProvider, address: string) {
-    const { whitelist } = store.getState().dapp;
-
-    if (!whitelist || !Object.keys(whitelist)?.length) return;
-
-    for (const site of Object.keys(whitelist)) {
-      store.dispatch(
-        updateDappActiveAccount({ origin: site, account: address, network })
-      );
     }
   }
 
@@ -283,12 +297,7 @@ export class AccountController {
       const accountAssetList = await this.buildAccountAssetList(walletInfo, account);
 
       if (!isNative) {
-        const network =
-          account.network === KeyringNetwork.Constellation
-            ? ProtocolProvider.CONSTELLATION
-            : ProtocolProvider.ETHEREUM;
-        const address = account.address;
-        this.updateAllDappsActiveAccount(network, address);
+        await this.notifyAccountChange(account, walletInfo);
       }
 
       assetList = assetList.concat(accountAssetList);
@@ -308,12 +317,6 @@ export class AccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
-
-    if (!isNative) {
-      for (const account of walletInfo.accounts) {
-        await this.notifyAccountChange(account);
-      }
-    }
   }
 
   private async buildAccountERC20Tokens(address: string, accountTokens: string[]) {

@@ -1,26 +1,21 @@
-import store from 'state/store';
-import { IDAppState } from 'state/dapp/types';
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { getWalletInfo } from '../utils';
 
 export const dag_accounts = (
   _request: StargazerRequest & { type: 'rpc' },
   _message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _sender: chrome.runtime.MessageSender
 ) => {
-  const { dapp } = store.getState();
-  const { whitelist }: IDAppState = dapp;
+  const { activeWallet } = getWalletInfo();
 
-  const origin = sender?.origin ?? null;
+  if (!activeWallet || !activeWallet?.accounts) return [];
 
-  if (!origin) {
-    return [];
-  }
+  const dagAccount = activeWallet?.accounts?.find(
+    (account) => account?.network === KeyringNetwork.Constellation
+  );
 
-  const dappData = whitelist[origin];
+  if (!dagAccount || !dagAccount?.address) return [];
 
-  if (!dappData?.accounts?.constellation) {
-    return [];
-  }
-
-  return dappData.accounts.constellation;
+  return [dagAccount.address];
 };

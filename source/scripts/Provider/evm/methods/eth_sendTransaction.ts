@@ -38,7 +38,7 @@ export const eth_sendTransaction = async (
     }
 
     if (typeof trxData.chainId === 'string') {
-      if (parseInt(trxData.chainId, 10) !== chainId) {
+      if (parseInt(trxData.chainId) !== chainId) {
         throw new EIPRpcError(
           'chainId does not match the active network chainId',
           EIPErrorCodes.ChainDisconnected

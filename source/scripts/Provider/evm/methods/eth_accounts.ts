@@ -1,25 +1,21 @@
-import store from 'state/store';
-import { IDAppState } from 'state/dapp/types';
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { getWalletInfo } from '../utils';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 export const eth_accounts = async (
   _request: StargazerRequest & { type: 'rpc' },
   _message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
+  _sender: chrome.runtime.MessageSender
 ) => {
-  const { dapp } = store.getState();
-  const { whitelist }: IDAppState = dapp;
-  const origin = sender?.origin ?? null;
+  const { activeWallet } = getWalletInfo();
 
-  if (!origin) {
-    return [];
-  }
+  if (!activeWallet || !activeWallet?.accounts) return [];
 
-  const dappData = whitelist[origin];
+  const ethAccount = activeWallet?.accounts?.find(
+    (account) => account?.network === KeyringNetwork.Ethereum
+  );
 
-  if (!dappData?.accounts?.ethereum) {
-    return [];
-  }
+  if (!ethAccount || !ethAccount?.address) return [];
 
-  return dappData.accounts.ethereum;
+  return [ethAccount.address];
 };

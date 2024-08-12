@@ -44,10 +44,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     message: StargazerRequestMessage,
     sender: chrome.runtime.MessageSender
   ) {
-    const UNAUTH_METHODS = [
-      AvailableMethods.eth_requestAccounts,
-      AvailableMethods.eth_accounts,
-    ];
+    const UNAUTH_METHODS = [AvailableMethods.eth_requestAccounts];
 
     // Provider needs to be activated before calling any other RPC method
     if (!isDappConnected(sender.origin) && !UNAUTH_METHODS.includes(request.method)) {

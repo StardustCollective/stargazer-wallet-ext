@@ -1,12 +1,7 @@
-export interface IDappAccounts {
-  ethereum?: string[];
-  constellation?: string[];
-}
 export interface IDAppInfo {
   origin: string;
   logo: string;
   title: string;
-  accounts?: IDappAccounts;
 }
 
 export interface IDAppState {

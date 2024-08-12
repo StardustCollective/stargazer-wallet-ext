@@ -120,7 +120,7 @@ export const handleDappConnect = async (
     throw new Error('Unable to connect dapp');
   }
 
-  store.dispatch(addDapp({ id: origin, dapp, network, accounts }));
+  store.dispatch(addDapp({ id: origin, dapp }));
 
   await notifyAccountsChanged(network, accounts, origin);
 };

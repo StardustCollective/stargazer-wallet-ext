@@ -3,7 +3,7 @@ import IAssetListState from 'state/assets/types';
 import IContactBookState from 'state/contacts/types';
 import IVaultState from 'state/vault/types';
 import { IBiometricsState } from 'state/biometrics/types';
-import { IDAppInfo, IDAppState } from 'state/dapp/types';
+import { IDAppState } from 'state/dapp/types';
 import storageApi from 'utils/localStorage';
 import { compareVersions } from 'utils/version';
 import { isNative } from 'utils/envUtil';
@@ -22,6 +22,17 @@ type V5_0_0_State = {
   };
   biometrics: IBiometricsState;
 };
+export interface OldIDAppInfo {
+  origin: string;
+  logo: string;
+  title: string;
+  accounts?: IDappAccounts;
+}
+export interface IDappAccounts {
+  ethereum?: string[];
+  constellation?: string[];
+}
+
 const STATE_KEY = 'state';
 
 const _global = !!globalThis ? globalThis : global;
@@ -38,20 +49,17 @@ export const checkStorageMigration = async () => {
 
 const migrateDapp = (oldState: V5_0_0_State) => {
   const updatedWhitelist: {
-    [dappId: string]: IDAppInfo;
+    [dappId: string]: OldIDAppInfo;
   } = {};
   const oldWhitelist = oldState?.dapp?.whitelist ?? {};
 
   for (const origin in oldWhitelist) {
-    const { Ethereum: ethereum, Constellation: constellation } = oldWhitelist[origin]
-      .accounts as { Ethereum: string[]; Constellation: string[] };
-    // accounts keys migrated from Ethereum to ethereum and Constellation to constellation
-    const updatedAccounts = Object.assign({}, { ethereum, constellation });
     updatedWhitelist[origin] = {
       ...oldWhitelist[origin],
       logo: STARGAZER_LOGO,
-      accounts: updatedAccounts,
     };
+
+    delete updatedWhitelist[origin]?.accounts;
   }
 
   return {
