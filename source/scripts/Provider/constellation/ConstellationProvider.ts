@@ -38,7 +38,10 @@ export class ConstellationProvider implements IRpcChainRequestHandler {
     message: StargazerRequestMessage,
     sender: chrome.runtime.MessageSender
   ) {
-    const UNAUTH_METHODS = [AvailableMethods.dag_requestAccounts];
+    const UNAUTH_METHODS = [
+      AvailableMethods.dag_requestAccounts,
+      AvailableMethods.dag_accounts,
+    ];
 
     if (!isDappConnected(sender.origin) && !UNAUTH_METHODS.includes(request.method)) {
       throw new Error(
