@@ -397,6 +397,8 @@ export const DEFAULT_CURRENCY = {
   name: 'USD',
 };
 
+export const DEFAULT_LANGUAGE = 'en-US';
+
 export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 
 export const DAG_EXPLORER_API_URL = 'https://d13uswnxs0x35s.cloudfront.net';

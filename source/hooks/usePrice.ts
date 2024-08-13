@@ -5,6 +5,7 @@ import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
 import { formatNumber } from 'scenes/home/helpers';
 import walletSelectors from 'selectors/walletsSelectors';
+import { DEFAULT_LANGUAGE } from 'constants/index';
 
 // eslint-disable-next-line default-param-last
 export function useFiat(currencyName = true, asset?: IAssetInfoState) {
@@ -28,7 +29,7 @@ export function useFiat(currencyName = true, asset?: IAssetInfoState) {
 
     return `${currencyName ? currency.symbol : ''}${
       currencyName
-        ? value.toLocaleString(navigator.language, {
+        ? value.toLocaleString(DEFAULT_LANGUAGE, {
             minimumFractionDigits: fraction,
             maximumFractionDigits: fraction,
           })

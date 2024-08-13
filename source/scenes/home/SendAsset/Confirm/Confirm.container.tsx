@@ -70,6 +70,7 @@ import walletSelectors from 'selectors/walletsSelectors';
 import { initialState as initialStateAssets } from 'state/assets';
 import { StargazerExternalPopups } from 'scripts/Background/messaging';
 import Confirm from './Confirm';
+import { DEFAULT_LANGUAGE } from 'constants/index';
 
 const BITFI_PAGE = 'bitfi';
 const LEDGER_PAGE = 'ledger';
@@ -164,13 +165,22 @@ const ConfirmContainer = () => {
       getFiatAmount(Number(tempTx?.amount || 0), 8, assetInfo.priceId)
     );
 
-    return fiatAmount.toLocaleString(navigator.language, {
+    return fiatAmount.toLocaleString(DEFAULT_LANGUAGE, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
     });
   };
 
   const getFeeAmount = () => {
+    const amount = getFeeAmountNumber();
+
+    return amount.toLocaleString(DEFAULT_LANGUAGE, {
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
+    });
+  };
+
+  const getFeeAmountNumber = () => {
     let { priceId } = assetInfo;
 
     if (activeAsset.type === AssetType.ERC20) {
@@ -187,9 +197,9 @@ const ConfirmContainer = () => {
     }
 
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
-    amount += getFeeAmount();
+    amount += getFeeAmountNumber();
 
-    return amount.toLocaleString(navigator.language, {
+    return amount.toLocaleString(DEFAULT_LANGUAGE, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
     });

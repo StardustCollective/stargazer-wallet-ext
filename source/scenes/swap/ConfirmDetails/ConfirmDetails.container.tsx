@@ -53,6 +53,8 @@ import Container from 'components/Container';
 // Constants
 ///////////////////////////
 
+import { DEFAULT_LANGUAGE } from 'constants/index';
+
 const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const accountController = getAccountController();
   const walletController = getWalletController();
@@ -74,7 +76,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       getFiatAmount(Number(tempTx?.amount || 0), 8, assetInfo.priceId)
     );
 
-    return fiatAmount.toLocaleString(navigator.language, {
+    return fiatAmount.toLocaleString(DEFAULT_LANGUAGE, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
     });
@@ -94,7 +96,7 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
     let amount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8));
     amount += getFeeAmount();
 
-    return amount.toLocaleString(navigator.language, {
+    return amount.toLocaleString(DEFAULT_LANGUAGE, {
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
     });
