@@ -23,7 +23,7 @@
     }
   },
   "__firefox__minimum_firefox_version": "68",
-  "__chrome__minimum_chrome_version": "63",
+  "__chrome__minimum_chrome_version": "88",
   "action": {
     "default_popup": "app.html",
     "default_icon": {
