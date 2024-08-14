@@ -241,7 +241,7 @@ const SelectAccounts = () => {
             Allow this site to:
           </TextV3.CaptionStrong>
           <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.permissionText}>
-            View the addresses of your permitted wallets.
+            View the addresses of your wallets.
           </TextV3.Caption>
         </div>
       );
@@ -256,9 +256,7 @@ const SelectAccounts = () => {
       originDescriptionLabel="Connect to:"
       headerLabel="Connect with Stargazer"
       captionLabel={
-        sceneState === SCENE_STATE.SELECT_ACCOUNTS
-          ? 'Select Account(s)'
-          : 'Grant Permissions'
+        sceneState === SCENE_STATE.SELECT_ACCOUNTS ? ' ' : 'Grant Permissions'
       }
       negativeButtonLabel={sceneState === SCENE_STATE.SELECT_ACCOUNTS ? 'Cancel' : 'Back'}
       onNegativeButtonClick={onNegativeButtonPressed}
