@@ -46,6 +46,7 @@ const NetworksContainer: FC = () => {
       { value: DAG_NETWORK.main2.id, label: DAG_NETWORK.main2.label },
       { value: DAG_NETWORK.test2.id, label: DAG_NETWORK.test2.label },
       { value: DAG_NETWORK.integration2.id, label: DAG_NETWORK.integration2.label },
+      { value: DAG_NETWORK.local2.id, label: DAG_NETWORK.local2.label },
     ];
     const constellationObject = Object.keys(constellationChains);
     if (constellationObject.length) {

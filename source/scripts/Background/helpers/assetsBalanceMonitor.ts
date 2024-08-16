@@ -15,6 +15,7 @@ import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { toDag } from 'utils/number';
+import { DAG_NETWORK } from 'constants/index';
 
 const THIRTY_SECONDS = 30 * 1000;
 
@@ -135,6 +136,25 @@ export class AssetsBalanceMonitor {
     }
   }
 
+  private async getCurrencyAddressL0Balance(l0asset: IAssetInfoState): Promise<string> {
+    try {
+      const metagraphClient = dag4.account.createMetagraphTokenClient({
+        metagraphId: l0asset.address,
+        id: l0asset.address,
+        l0Url: l0asset.l0endpoint,
+        l1Url: l0asset.l1endpoint,
+        // Block explorer not available for local development
+        beUrl: '',
+      });
+
+      const balanceNumber = await metagraphClient.getBalance();
+
+      return String(balanceNumber);
+    } catch (err) {
+      return '-';
+    }
+  }
+
   private async getAddressBlockExplorerBalance(address: string): Promise<string> {
     try {
       const balance: number =
@@ -152,10 +172,16 @@ export class AssetsBalanceMonitor {
     let l0balances: Record<string, string> = {};
     await Promise.all(
       l0assets.map(async (l0asset) => {
-        const balanceString = await this.getCurrencyAddressBlockExplorerBalance(
-          l0asset.address,
-          dagAddress
-        );
+        let balanceString;
+        if (l0asset.network === DAG_NETWORK.local2.id) {
+          // Get balance from L0 API for local development
+          balanceString = await this.getCurrencyAddressL0Balance(l0asset);
+        } else {
+          balanceString = await this.getCurrencyAddressBlockExplorerBalance(
+            l0asset.address,
+            dagAddress
+          );
+        }
 
         l0balances[l0asset.id] = balanceString;
       })

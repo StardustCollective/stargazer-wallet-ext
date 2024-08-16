@@ -66,6 +66,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     DAG_NETWORK.main2.id,
     DAG_NETWORK.test2.id,
     DAG_NETWORK.integration2.id,
+    DAG_NETWORK.local2.id,
   ].includes(networkType);
 
   let { control, handleSubmit, register, setValue, setError, triggerValidation, errors } =

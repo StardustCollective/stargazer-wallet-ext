@@ -91,6 +91,7 @@ export const getAddressURL = (
 
   if (type === AssetType.Constellation || type === AssetType.LedgerConstellation) {
     if (!DAG_NETWORK[networkId]) return '';
+    if (!DAG_NETWORK[networkId]?.explorer) return '';
 
     return `${DAG_NETWORK[networkId]?.explorer}/address/${address}`;
   }

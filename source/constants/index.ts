@@ -91,7 +91,7 @@ export const DAG_NETWORK: {
 } = {
   main2: {
     id: 'main2',
-    label: 'Mainnet 2.0',
+    label: 'Mainnet',
     version: '2.0',
     testnet: false,
     explorer: 'https://mainnet.dagexplorer.io',
@@ -107,7 +107,7 @@ export const DAG_NETWORK: {
   },
   test2: {
     id: 'test2',
-    label: 'Testnet 2.0',
+    label: 'Testnet',
     version: '2.0',
     testnet: true,
     explorer: 'https://testnet.dagexplorer.io',
@@ -123,7 +123,7 @@ export const DAG_NETWORK: {
   },
   integration2: {
     id: 'integration2',
-    label: 'IntegrationNet 2.0',
+    label: 'IntegrationNet',
     version: '2.0',
     testnet: true,
     explorer: 'https://integrationnet.dagexplorer.io',
@@ -135,6 +135,22 @@ export const DAG_NETWORK: {
       beUrl: 'https://be-integrationnet.constellationnetwork.io',
       l0Url: 'https://l0-lb-integrationnet.constellationnetwork.io',
       l1Url: 'https://l1-lb-integrationnet.constellationnetwork.io',
+    },
+  },
+  local2: {
+    id: 'local2',
+    label: 'Local',
+    version: '2.0',
+    testnet: true,
+    explorer: '',
+    chainId: 5,
+    hexChainId: '0x5',
+    logo: CONSTELLATION_LOGO,
+    network: 'Constellation',
+    config: {
+      beUrl: '',
+      l0Url: '',
+      l1Url: '',
     },
   },
 };
@@ -346,6 +362,7 @@ export const ALL_MAINNET_CHAINS = [
 export const ALL_TESTNETS_CHAINS = [
   DAG_NETWORK.test2,
   DAG_NETWORK.integration2,
+  DAG_NETWORK.local2,
   ETH_NETWORK.sepolia,
   AVALANCHE_NETWORK['avalanche-testnet'],
   BSC_NETWORK['bsc-testnet'],
@@ -401,7 +418,7 @@ export const DEFAULT_LANGUAGE = 'en-US';
 
 export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 
-export const DAG_EXPLORER_API_URL = 'https://d13uswnxs0x35s.cloudfront.net';
+export const DAG_EXPLORER_API_URL = 'https://dyzt5u1o3ld0z.cloudfront.net';
 
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
 const PROVIDERS_BASE_URL = isProd

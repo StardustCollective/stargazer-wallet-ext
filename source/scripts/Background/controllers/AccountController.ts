@@ -438,6 +438,9 @@ export class AccountController {
         }
       }
 
+      rewards = rewards ?? [];
+      txsV2 = txsV2 ?? [];
+
       store.dispatch(updateRewards({ txs: rewards }));
       store.dispatch(updateTransactions({ txs: [...txsV2] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
@@ -781,6 +784,10 @@ export class AccountController {
 
     const { activeNetwork }: IVaultState = store.getState().vault;
     const activeChain = chainId || activeNetwork[KeyringNetwork.Constellation];
+    // We should validate the metagraph address only on Mainnet
+    if (activeChain !== DAG_NETWORK.main2.id) {
+      return true;
+    }
     const BE_URL = DAG_NETWORK[activeChain].config.beUrl;
     const response: any = await (
       await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)

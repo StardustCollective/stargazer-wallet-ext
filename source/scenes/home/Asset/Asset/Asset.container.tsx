@@ -82,8 +82,8 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   };
 
   const BALANCE_TEXT = formatStringDecimal(formatNumber(balance, 16, 20), 4);
-  const FIAT_AMOUNT = getFiatAmount(balance, balance >= 0.01 ? 2 : 4);
-  const showFiatAmount = !!assets[activeAsset?.id]?.priceId;
+  const FIAT_AMOUNT = !isNaN(balance) && getFiatAmount(balance, balance >= 0.01 ? 2 : 4);
+  const showFiatAmount = !!assets[activeAsset?.id]?.priceId && !isNaN(balance);
 
   return (
     <Container safeArea={false}>

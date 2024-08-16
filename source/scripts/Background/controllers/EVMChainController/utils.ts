@@ -93,6 +93,8 @@ export const getNetworkLabel = (network: string): string => {
       return 'Constellation Testnet';
     case 'integration2':
       return 'IntegrationNet';
+    case 'local2':
+      return 'Constellation Local';
     case 'mainnet':
       return 'Ethereum';
     case 'sepolia':
