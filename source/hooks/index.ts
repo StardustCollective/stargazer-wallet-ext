@@ -1,11 +1,5 @@
 import { useHistory } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import { browser } from 'webextension-polyfill-ts';
-
-// TODO: refactor this since it's not actually a hook
-export function useController() {
-  return browser.extension.getBackgroundPage().controller;
-}
 
 export function useSettingsView() {
   const history = useHistory();

@@ -2,7 +2,7 @@
 // Imports
 ///////////////////////////
 
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -30,8 +30,6 @@ import Home from './Home';
 
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
-import IProvidersState from 'state/providers/types';
-import { getAccountController } from 'utils/controllersUtils';
 import { AssetType } from 'state/vault/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
@@ -51,14 +49,10 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
 
   const [balanceObject] = useTotalBalance();
 
-  const { supportedAssets }: IProvidersState = useSelector(
-    (state: RootState) => state.providers
-  );
   const { activeWallet, wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const linkTo = useLinkTo();
-  const accountController = getAccountController();
   const isDagOnlyWallet =
     activeWallet?.assets?.length === 1 &&
     activeWallet?.assets[0]?.type === AssetType.Constellation;
@@ -71,16 +65,6 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   const privateKeyWallets = wallets.local.filter(
     (w) => w.type === KeyringWalletType.SingleAccountWallet
   );
-
-  useEffect(() => {
-    const getAssets = async () => {
-      await accountController.assetsController.fetchSupportedAssets();
-      await accountController.assetsController.fetchERC20Assets();
-    };
-    if (!supportedAssets.data) {
-      getAssets();
-    }
-  }, []);
 
   const onBuyPressed = () => {
     linkTo('/buyList');

@@ -56,6 +56,12 @@ const WalletSend: FC<IWalletSend> = ({
   const errorIconClass = clsx(styles.statusIcon, {
     [styles.hide]: isValidAddress,
   });
+  const bodyWrapper = clsx(styles.bodywrapper, {
+    [styles.contentAligned]: isExternalRequest,
+  });
+  const networkWrapper = clsx(styles.networkContainer, {
+    [styles.extraPadding]: isExternalRequest,
+  });
 
   return (
     <div className={styles.wrapper}>
@@ -64,7 +70,7 @@ const WalletSend: FC<IWalletSend> = ({
         onClose={() => setModalOpen(false)}
         onChange={handleSelectContact}
       />
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.bodywrapper}>
+      <form onSubmit={handleSubmit(onSubmit)} className={bodyWrapper}>
         {!isExternalRequest && (
           <section className={styles.balance}>
             <div>
@@ -79,7 +85,7 @@ const WalletSend: FC<IWalletSend> = ({
             </div>
           </section>
         )}
-        <div className={styles.networkContainer}>
+        <div className={networkWrapper}>
           <InputClickable
             options={networkTypeOptions}
             titleStyles={styles.networkTitle}

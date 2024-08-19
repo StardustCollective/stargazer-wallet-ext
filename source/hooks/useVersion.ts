@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { browser } from 'webextension-polyfill-ts';
 
 function useVersion(parts: 1 | 2 | 3) {
   const [version, setVersion] = useState(null);
 
   useEffect(() => {
-    const version = browser.runtime.getManifest().version;
+    const version = chrome.runtime.getManifest().version;
     const v = version.split('.');
 
     if (parts === 3) {

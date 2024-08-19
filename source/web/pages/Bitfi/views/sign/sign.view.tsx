@@ -20,6 +20,7 @@ import CheckIcon from '@material-ui/icons/CheckCircle';
 
 import styles from './styles.module.scss';
 import 'assets/styles/global.scss';
+import { convertBigNumber } from 'utils/number';
 
 /////////////////////////
 // Interface
@@ -56,6 +57,9 @@ const SignView = ({
 }: ISignViewProps) => {
   const getFiatAmount = useFiat();
 
+  const amountBN = convertBigNumber(amount);
+  const feeBN = convertBigNumber(fee);
+
   return transactionSigned ? (
     <div className={styles.layout}>
       <section className={styles.heading}>
@@ -79,10 +83,10 @@ const SignView = ({
           <div className={styles.iconWrapper}>
             <UpArrowIcon />
           </div>
-          {Number(amount || 0) + Number(fee || 0)} DAG
+          {amountBN} DAG
           <small>
             (≈
-            {getFiatAmount(Number(amount || 0) + Number(fee || 0), 8)})
+            {getFiatAmount(Number(amount || 0), 8, 'constellation-labs')})
           </small>
         </section>
         <section className={styles.transaction}>
@@ -97,14 +101,20 @@ const SignView = ({
           <div className={styles.row}>
             Transaction Fee
             <span>
-              {fee} DAG (≈ {getFiatAmount(Number(fee) || 0, 8)})
+              {feeBN} DAG (≈ {getFiatAmount(Number(fee) || 0, 8, 'constellation-labs')})
             </span>
           </div>
         </section>
         <section className={styles.confirm}>
           <div className={styles.row}>
             Max Total
-            <span>{getFiatAmount(Number(amount || 0) + Number(fee || 0), 8)}</span>
+            <span>
+              {getFiatAmount(
+                Number(amount || 0) + Number(fee || 0),
+                8,
+                'constellation-labs'
+              )}
+            </span>
           </div>
         </section>
         <section className={styles.instruction}>

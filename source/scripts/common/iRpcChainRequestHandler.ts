@@ -1,20 +1,16 @@
-import { Runtime } from 'webextension-polyfill-ts';
-
-import type { DappProvider } from '../Background/dappRegistry';
-
-import { StargazerProxyRequest } from './proxyUtils';
+import { StargazerRequest, StargazerRequestMessage } from './message_broker_utils';
 
 type IRpcChainRequestHandler = {
   handleProxiedRequest: (
-    request: StargazerProxyRequest & { type: 'rpc' },
-    dappProvider: DappProvider,
-    port: Runtime.Port
+    request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
+    sender: chrome.runtime.MessageSender
   ) => Promise<any>;
 
   handleNonProxiedRequest: (
-    request: StargazerProxyRequest & { type: 'rpc' },
-    dappProvider: DappProvider,
-    port: Runtime.Port
+    request: StargazerRequest & { type: 'rpc' },
+    message: StargazerRequestMessage,
+    sender: chrome.runtime.MessageSender
   ) => Promise<any>;
 };
 

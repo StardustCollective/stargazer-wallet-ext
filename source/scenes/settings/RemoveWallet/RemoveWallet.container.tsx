@@ -7,6 +7,7 @@ import { RootState } from 'state/store';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import RemoveWallet from './RemoveWallet';
 import { IRemoveWalletView } from './types';
+import localStorage from 'utils/localStorage';
 
 const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => {
   const walletController = getWalletController();

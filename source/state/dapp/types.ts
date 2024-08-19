@@ -1,12 +1,7 @@
-export interface IDappAccounts {
-  Ethereum?: string[];
-  Constellation?: string[];
-}
 export interface IDAppInfo {
   origin: string;
   logo: string;
   title: string;
-  accounts?: IDappAccounts;
 }
 
 export interface IDAppState {
@@ -17,4 +12,5 @@ export interface IDAppState {
   whitelist: {
     [dappId: string]: IDAppInfo;
   };
+  current: IDAppInfo | null;
 }

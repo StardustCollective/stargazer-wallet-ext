@@ -1,4 +1,4 @@
-import { DAG_NETWORK } from 'constants/index';
+import { DAG_NETWORK, DEFAULT_LANGUAGE } from 'constants/index';
 import format from 'date-fns/format';
 import { getAllEVMChains } from 'scripts/Background/controllers/EVMChainController/utils';
 import { AssetType } from 'state/vault/types';
@@ -58,13 +58,13 @@ export const formatNumber = (num: number, min: number, max: number, maxSig?: num
 
   if (isNaN(num)) return '-';
 
-  return (num || 0).toLocaleString(navigator.language, options);
+  return (num || 0).toLocaleString(DEFAULT_LANGUAGE, options);
 };
 
 export const formatStringDecimal = (numberString: string, decimalPlaces: number) => {
   if (numberString === '-') return '-';
 
-  const decimalSeparator = getDecimalSeparatorByLocale(navigator.language);
+  const decimalSeparator = getDecimalSeparatorByLocale(DEFAULT_LANGUAGE);
   const [whole, fractional] = numberString.split(decimalSeparator);
 
   return `${whole}${decimalSeparator}${fractional.substring(0, decimalPlaces)}`;

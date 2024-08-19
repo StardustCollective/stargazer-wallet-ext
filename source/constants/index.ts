@@ -16,7 +16,6 @@ import {
   STARGAZER_PROVIDERS_BASE_URL,
   STARGAZER_PROVIDERS_BASE_URL_PROD,
   QUICKNODE_ETHEREUM_MAINNET,
-  QUICKNODE_ETHEREUM_GOERLI,
   QUICKNODE_ETHEREUM_SEPOLIA,
   QUICKNODE_AVALANCHE_MAINNET,
   QUICKNODE_AVALANCHE_TESTNET,
@@ -28,6 +27,8 @@ import {
 
 export const STORE_PORT = 'STARGAZER';
 
+export const STARGAZER_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/stargazer.png';
 export const CONSTELLATION_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag.png';
 export const CONSTELLATION_DEFAULT_LOGO =
@@ -164,21 +165,6 @@ export const ETH_NETWORK: {
     explorerAPI: 'https://api.etherscan.io',
     chainId: 1,
     hexChainId: '0x1',
-    nativeToken: 'ETH',
-    mainnet: 'mainnet',
-    network: 'Ethereum',
-    networkId: StargazerChain.ETHEREUM,
-    logo: ETHEREUM_LOGO,
-  },
-  goerli: {
-    id: 'goerli',
-    value: 'goerli',
-    label: 'Goerli',
-    rpcEndpoint: QUICKNODE_ETHEREUM_GOERLI,
-    explorer: 'https://goerli.etherscan.io/',
-    explorerAPI: 'https://api-goerli.etherscan.io',
-    chainId: 5,
-    hexChainId: '0x5',
     nativeToken: 'ETH',
     mainnet: 'mainnet',
     network: 'Ethereum',
@@ -332,15 +318,15 @@ export const POLYGON_NETWORK: {
     networkId: StargazerChain.POLYGON,
     logo: POLYGON_LOGO,
   },
-  maticmum: {
-    id: 'maticmum',
-    value: 'maticmum',
-    label: 'Polygon Testnet',
+  amoy: {
+    id: 'amoy',
+    value: 'amoy',
+    label: 'Polygon Amoy Testnet',
     rpcEndpoint: QUICKNODE_POLYGON_TESTNET,
-    explorer: 'https://mumbai.polygonscan.com/',
-    explorerAPI: 'https://api-testnet.polygonscan.com',
-    chainId: 80001,
-    hexChainId: '0x13881',
+    explorer: 'https://amoy.polygonscan.com/',
+    explorerAPI: 'https://api-amoy.polygonscan.com',
+    chainId: 80002,
+    hexChainId: '0x13882',
     nativeToken: 'MATIC',
     mainnet: 'matic',
     network: 'Polygon',
@@ -360,11 +346,10 @@ export const ALL_MAINNET_CHAINS = [
 export const ALL_TESTNETS_CHAINS = [
   DAG_NETWORK.test2,
   DAG_NETWORK.integration2,
-  ETH_NETWORK.goerli,
   ETH_NETWORK.sepolia,
   AVALANCHE_NETWORK['avalanche-testnet'],
   BSC_NETWORK['bsc-testnet'],
-  POLYGON_NETWORK.maticmum,
+  POLYGON_NETWORK.amoy,
 ];
 
 export const ALL_CHAINS = [...ALL_MAINNET_CHAINS, ...ALL_TESTNETS_CHAINS];
@@ -378,12 +363,11 @@ export const ALL_EVM_CHAINS = {
 
 export const SUPPORTED_HEX_CHAINS = [
   '0x1',
-  '0x5',
   '0xaa36a7',
   '0xa86a',
   '0xa869',
   '0x89',
-  '0x13881',
+  '0x13882',
   '0x38',
   '0x61',
 ];
@@ -412,6 +396,8 @@ export const DEFAULT_CURRENCY = {
   symbol: '$',
   name: 'USD',
 };
+
+export const DEFAULT_LANGUAGE = 'en-US';
 
 export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 

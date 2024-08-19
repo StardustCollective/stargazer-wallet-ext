@@ -16,6 +16,7 @@ import {
   updateWalletLabel,
   updateRewards,
   setLoadingTransactions,
+  setPublicKey,
 } from 'state/vault';
 
 import IVaultState, {
@@ -42,6 +43,10 @@ import AssetsController, { IAssetsController } from './AssetsController';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { utils } from './EVMChainController';
 import NetworkController from './NetworkController';
+import { toDatum } from 'utils/number';
+import { isNative } from 'utils/envUtil';
+import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
+import { ProtocolProvider } from 'scripts/common';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -95,6 +100,12 @@ export class AccountController {
         dag4.account.loginPrivateKey(privateKey);
       } else {
         dag4.account.loginPublicKey(publicKey);
+      }
+
+      publicKey = dag4.account?.keyTrio?.publicKey ?? null;
+
+      if (publicKey) {
+        store.dispatch(setPublicKey(publicKey));
       }
 
       const dagAsset = {
@@ -214,6 +225,60 @@ export class AccountController {
     return networkAssets;
   }
 
+  async notifyAccountChange(
+    account: KeyringWalletAccountState,
+    walletInfo: KeyringWalletState
+  ) {
+    const { whitelist } = store.getState().dapp;
+
+    const network =
+      account.network === KeyringNetwork.Constellation
+        ? ProtocolProvider.CONSTELLATION
+        : ProtocolProvider.ETHEREUM;
+
+    for (const site of Object.keys(whitelist)) {
+      const origin = whitelist[site].origin;
+
+      // This scenario is for only DAG/ETH wallets.
+      // We should notify all connected dApps that the accounts array is now empty on the provider not used for this wallet.
+      // Ex 1. Active wallet -> Only DAG -> Notify accountsChanged = [] on Ethereum's provider.
+      // Ex 2. Active wallet -> Only ETH -> Notify accountsChanged = [] on Constellation's provider.
+      if (
+        [
+          KeyringWalletType.SingleAccountWallet,
+          KeyringWalletType.BitfiAccountWallet,
+        ].includes(walletInfo.type)
+      ) {
+        const otherNetwork =
+          account.network === KeyringNetwork.Constellation
+            ? ProtocolProvider.ETHEREUM
+            : ProtocolProvider.CONSTELLATION;
+
+        const emptyAccountsMessage: DappMessage = {
+          type: MessageType.dapp,
+          event: DappMessageEvent.accountsChanged,
+          payload: {
+            network: otherNetwork,
+            accounts: [],
+            origin,
+          },
+        };
+        await chrome.runtime.sendMessage(emptyAccountsMessage);
+      }
+
+      const message: DappMessage = {
+        type: MessageType.dapp,
+        event: DappMessageEvent.accountsChanged,
+        payload: {
+          network,
+          accounts: [account.address],
+          origin,
+        },
+      };
+      await chrome.runtime.sendMessage(message);
+    }
+  }
+
   async buildAccountAssetInfo(walletId: string, walletLabel: string): Promise<void> {
     const state = store.getState();
     const { vault } = state;
@@ -230,6 +295,10 @@ export class AccountController {
     let assetList: IAssetState[] = [];
     for (const account of walletInfo.accounts) {
       const accountAssetList = await this.buildAccountAssetList(walletInfo, account);
+
+      if (!isNative) {
+        await this.notifyAccountChange(account, walletInfo);
+      }
 
       assetList = assetList.concat(accountAssetList);
     }
@@ -341,29 +410,31 @@ export class AccountController {
         });
 
         try {
-          txsV2 = (await metagraphClient.getTransactions(TXS_LIMIT)) || [];
-        } catch (err) {
-          console.log('Error: getTransactions', err);
-          txsV2 = [];
-        }
-
-        rewards = await this.getMetagraphRewards(
-          assetInfo.network,
-          activeAsset.address,
-          assetInfo.address
-        );
-      } else {
-        try {
-          txsV2 = await dag4.monitor.getLatestTransactions(
-            activeAsset.address,
-            TXS_LIMIT
-          );
-
-          const { id } = dag4.network.getNetwork();
-          rewards = await this.getDagRewards(id, activeAsset.address);
+          [txsV2, rewards] = await Promise.all([
+            metagraphClient.getTransactions(TXS_LIMIT),
+            this.getMetagraphRewards(
+              assetInfo.network,
+              activeAsset.address,
+              assetInfo.address
+            ),
+          ]);
         } catch (err) {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
+          rewards = [];
+        }
+      } else {
+        const { id } = dag4.network.getNetwork();
+
+        try {
+          [txsV2, rewards] = await Promise.all([
+            dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT),
+            this.getDagRewards(id, activeAsset.address),
+          ]);
+        } catch (err) {
+          console.log('Error: getLatestTransactions', err);
+          txsV2 = [];
+          rewards = [];
         }
       }
 
@@ -573,7 +644,7 @@ export class AccountController {
       }
 
       // Convert the amount from DAG to DATUM
-      pendingTx.amount = Number(this.tempTx.amount) * 1e8;
+      pendingTx.amount = toDatum(Number(this.tempTx.amount));
       const tx = await dag4.monitor.addToMemPoolMonitor(pendingTx);
       store.dispatch(
         updateTransactions({

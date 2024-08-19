@@ -10,7 +10,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ExtensionReloader = require('webpack-extension-reloader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -25,21 +24,9 @@ const sharedPath = path.join(__dirname, '../');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
 
-const extensionReloaderPlugin =
-  nodeEnv === 'development'
-    ? new ExtensionReloader({
-        port: 9090,
-        reloadPage: true,
-        entries: {
-          // TODO: reload manifest on update
-          background: 'background',
-          contentScript: 'contentScript',
-          extensionPage: ['popup', 'options'],
-        },
-      })
-    : () => {
-        this.apply = () => {};
-      };
+const extensionReloaderPlugin = () => {
+  this.apply = () => {};
+};
 
 const getExtensionFileType = (browser) => {
   if (browser === 'opera') {
@@ -90,9 +77,6 @@ module.exports = {
     plugins: [PnpWebpackPlugin],
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
-      'webextension-polyfill-ts': path.resolve(
-        path.join(__dirname, '../../node_modules', 'webextension-polyfill-ts')
-      ),
       assets: path.resolve(sharedPath, 'assets'),
       components: path.resolve(sharedPath, 'components'),
       scripts: path.resolve(sharedPath, 'scripts'),
@@ -190,6 +174,7 @@ module.exports = {
       STARGAZER_WALLET_VERSION: JSON.stringify(
         JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'))).version
       ),
+      global: 'globalThis',
     }),
     // delete previous build files
     new CleanWebpackPlugin({

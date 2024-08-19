@@ -14,9 +14,9 @@ const rehydrateStore = async (store: Store) => {
 
   if (storageState) {
     store.dispatch(vaultRehydrate(storageState.vault));
+    store.dispatch(priceRehydrate(storageState.price));
     store.dispatch(assetsRehydrate(storageState.assets));
     store.dispatch(contactsRehydrate(storageState.contacts));
-    store.dispatch(priceRehydrate(storageState.price));
     store.dispatch(dappRehydrate(storageState.dapp));
     store.dispatch(swapRehydrate(storageState.swap));
     store.dispatch(biometricsRehydrate(storageState.biometrics));

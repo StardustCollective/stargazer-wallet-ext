@@ -39,6 +39,7 @@ import styles from './Main.scss';
 ///////////////////////
 
 import IMainSettings, { IRenderSettingsItemProps } from './types';
+import { clearSession } from 'utils/keyring';
 
 ///////////////////////
 // Scene
@@ -111,6 +112,11 @@ const Main: FC<IMainSettings> = ({
     },
   ];
 
+  const logout = async () => {
+    await clearSession();
+    handleLogout();
+  };
+
   return (
     <div className={styles.main}>
       <div className={styles.box}>
@@ -127,11 +133,7 @@ const Main: FC<IMainSettings> = ({
             Stargazer Wallet {version}
           </TextV3.Caption>
         </div>
-        <div
-          id={'wallet-logoutButton'}
-          onClick={handleLogout}
-          className={styles.footer__right}
-        >
+        <div id={'wallet-logoutButton'} onClick={logout} className={styles.footer__right}>
           <TextV3.Caption color={COLORS_ENUMS.PRIMARY}>Logout</TextV3.Caption>
           <img src={'/' + exitIcon} />
         </div>

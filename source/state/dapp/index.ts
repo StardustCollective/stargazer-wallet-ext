@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IDAppState, IDAppInfo } from './types';
 
 const initialState: IDAppState = {
+  current: null,
   whitelist: {},
 };
 
@@ -19,26 +20,20 @@ const DAppState = createSlice({
         ...action.payload,
       };
     },
-    listNewDapp(
+    setCurrent(state: IDAppState, action: PayloadAction<IDAppInfo>) {
+      state.current = action.payload;
+    },
+    removeCurrent(state: IDAppState) {
+      state.current = null;
+    },
+    addDapp(
       state: IDAppState,
       action: PayloadAction<{
         id: string;
         dapp: IDAppInfo;
-        network: string;
-        accounts: string[];
       }>
     ) {
-      const { dapp, network, accounts } = action.payload;
-
-      const id = action.payload.id;
-
-      // Append to accounts if a network already exists
-      let accountsByNetwork = {};
-      if (state.whitelist[id]) {
-        accountsByNetwork = {
-          ...state.whitelist[id].accounts,
-        };
-      }
+      const { id, dapp } = action.payload;
 
       return {
         ...state,
@@ -47,20 +42,17 @@ const DAppState = createSlice({
           [id]: {
             id,
             ...dapp,
-            accounts: {
-              ...accountsByNetwork,
-              [network]: [...accounts],
-            },
           },
         },
       };
     },
-    unlistDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
+    removeDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
       delete state.whitelist[action.payload.id];
     },
   },
 });
 
-export const { listNewDapp, unlistDapp, rehydrate } = DAppState.actions;
+export const { addDapp, removeDapp, setCurrent, removeCurrent, rehydrate } =
+  DAppState.actions;
 
 export default DAppState.reducer;

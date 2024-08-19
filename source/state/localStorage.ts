@@ -1,3 +1,5 @@
+import localStorage from 'utils/localStorage';
+
 export const saveState = async (appState: any) => {
   try {
     const serializedState = JSON.stringify(appState);

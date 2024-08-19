@@ -24,6 +24,7 @@ import styles from './CreatePass.scss';
 ///////////////////////////
 
 import ICreatePass from './types';
+import { setSgw } from 'utils/keyring';
 
 ///////////////////////////
 // Scene
@@ -62,13 +63,18 @@ const CreatePass: FC<ICreatePass> = ({
     };
   }, [passed]);
 
+  const onHandleSubmit = async (data: any) => {
+    await setSgw(data.password);
+    onSubmit(data);
+  };
+
   ///////////////////////////
   // Render
   ///////////////////////////
 
   return (
     <Layout title={title}>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <form onSubmit={handleSubmit(onHandleSubmit)} className={styles.form}>
         {passed ? (
           <CheckIcon className={styles.checked} />
         ) : (

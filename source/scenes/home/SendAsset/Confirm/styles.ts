@@ -24,7 +24,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   transcationFee: {
+    flexDirection: 'row',
     paddingVertical: 20,
+  },
+  transcationFeeText: {
+    flex: 1,
+  },
+  transcationFeePrice: {
+    flex: 1,
   },
   maxTotalSection: {
     flexDirection: 'row',

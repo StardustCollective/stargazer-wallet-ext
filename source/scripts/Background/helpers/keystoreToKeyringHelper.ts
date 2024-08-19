@@ -8,6 +8,7 @@ import {
 } from '@stardust-collective/dag4-keystore';
 import store from '../../../state/store';
 import { migrateWalletComplete } from '../../../state/vault';
+import { getWalletController } from 'utils/controllersUtils';
 
 export class KeystoreToKeyringHelper {
   static async migrate(migrateWallet: KeyringWalletState, password: string) {
@@ -20,7 +21,8 @@ export class KeystoreToKeyringHelper {
     const rootKey = dag4.keyStore.getMasterKeyFromMnemonic(seedPhrase);
     const seedAccount = accounts['0'];
 
-    await window.controller.wallet.createWallet(seedAccount.label, seedPhrase, true);
+    const walletController = getWalletController();
+    await walletController.createWallet(seedAccount.label, seedPhrase, true);
 
     const accountList = Object.values(accounts);
 
@@ -38,12 +40,13 @@ export class KeystoreToKeyringHelper {
           try {
             const pKey = dag4.keyStore.deriveAccountFromMaster(rootKey, index);
 
-            await window.controller.wallet.importSingleAccount(
+            await walletController.importSingleAccount(
               label,
               KeyringNetwork.Constellation,
               pKey,
               true
             );
+            console.log(pKey);
           } catch (e) {
             console.log(
               'ERROR - Unable to migrate seed account - ',
@@ -66,12 +69,13 @@ export class KeystoreToKeyringHelper {
               password
             );
 
-            await window.controller.wallet.importSingleAccount(
+            await walletController.importSingleAccount(
               label,
               KeyringNetwork.Constellation,
               pKey,
               true
             );
+            console.log(pKey);
           } catch (e) {
             console.log(
               'ERROR - Unable to migrate import account - ',

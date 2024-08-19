@@ -1,26 +1,16 @@
-import { STORE_PORT } from 'constants/index';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Store } from 'webext-redux';
-import watch from 'redux-watch';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
-
 import ToastAlert from 'components/ToastAlert';
-import appStore from 'state/store';
-
+import store from 'state/store';
 import BitfiPage from './Bitfi';
+import rehydrateStore from 'state/rehydrate';
+import { handleDag4Setup } from 'scripts/Background/handlers/handleDag4Setup';
+import { handleStoreSubscribe } from 'scripts/Background/handlers/handleStoreSubscribe';
+import { handleRehydrateStore } from 'scripts/Background/handlers/handleRehydrateStore';
 
 const app = document.getElementById('bitfi-root');
-const store = new Store({ portName: STORE_PORT });
-
-const w = watch(appStore.getState, 'wallet.status');
-store.subscribe(
-  w(() => {
-    location.reload();
-  })
-);
 
 const options = {
   // you can also just use 'bottom center'
@@ -31,7 +21,13 @@ const options = {
   transition: transitions.FADE,
 };
 
-store.ready().then(() => {
+handleRehydrateStore();
+
+rehydrateStore(store).then(() => {
+  // Initialize dag4
+  handleDag4Setup(store);
+
+  // Render Bitfi App
   ReactDOM.render(
     (
       <Provider store={store}>
@@ -42,4 +38,7 @@ store.ready().then(() => {
     ) as any,
     app
   );
+
+  // Subscribe store to updates and notify
+  handleStoreSubscribe(store);
 });

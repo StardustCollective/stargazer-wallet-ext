@@ -1,29 +1,21 @@
-import { STORE_PORT } from 'constants/index';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Store } from 'webext-redux';
-import watch from 'redux-watch';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
-
 import ToastAlert from 'components/ToastAlert';
-import appStore from 'state/store';
+import store from 'state/store';
 import scryptJS from 'scrypt-js';
-
 import App from './App';
+import rehydrateStore from 'state/rehydrate';
+import { BrowserRouter } from 'react-router-dom';
+import { handleDag4Setup } from 'scripts/Background/handlers/handleDag4Setup';
+import { handleStoreSubscribe } from 'scripts/Background/handlers/handleStoreSubscribe';
+import { handleRehydrateStore } from 'scripts/Background/handlers/handleRehydrateStore';
+import { addBeforeUnloadListener } from '../../utils/windowListeners';
 
 global.scrypt = scryptJS.scrypt;
 
 const app = document.getElementById('external-root');
-const store = new Store({ portName: STORE_PORT });
-
-const w = watch(appStore.getState, 'vault.status');
-store.subscribe(
-  w(() => {
-    location.reload();
-  })
-);
 
 const options = {
   // you can also just use 'bottom center'
@@ -34,15 +26,27 @@ const options = {
   transition: transitions.FADE,
 };
 
-store.ready().then(() => {
+addBeforeUnloadListener();
+handleRehydrateStore();
+
+rehydrateStore(store).then(() => {
+  // Initialize dag4
+  handleDag4Setup(store);
+
+  // Render External App
   ReactDOM.render(
     (
       <Provider store={store}>
         <AlertProvider template={ToastAlert} {...options}>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </AlertProvider>
       </Provider>
     ) as any,
     app
   );
+
+  // Subscribe store to updates and notify
+  handleStoreSubscribe(store);
 });

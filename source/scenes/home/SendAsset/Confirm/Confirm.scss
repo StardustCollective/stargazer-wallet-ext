@@ -85,8 +85,8 @@
       color: $gray-100;
 
       &.fee {
-        white-space: nowrap;
         width: 168px;
+        text-align: right;
         text-overflow: ellipsis;
         overflow: hidden;
       }
@@ -99,23 +99,30 @@
     }
   }
 
-  section.transaction {
+  .transaction {
     width: 100%;
     height: 192px;
     box-sizing: border-box;
     padding: 0;
   }
 
+  .externalRequestExtra {
+    margin-top: 20px;
+  }
+
+  .fromRow {
+    border-top: none;
+  }
+
   .confirm {
     display: flex;
     flex: 1;
     width: 100%;
-    background: $gray-light;
     box-sizing: border-box;
     flex-direction: column;
     padding: 0;
     & > .row {
-      border-bottom: 1px solid $white;
+      border-bottom: 1px solid $gray-light;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;

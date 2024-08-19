@@ -1,11 +1,18 @@
 import { loadState } from 'state/localStorage';
 import { compareVersions } from 'utils/version';
+import { checkStorageMigration } from '../migration/v5_0_0';
+import { isNative } from 'utils/envUtil';
 
 const MigrationController = async () => {
   // check current version of wallet
   const state = await loadState();
 
   if (!state) {
+    /**
+     * version < 5_0_0
+     * Description: Migrates localStorage to Storage API
+     */
+    await checkStorageMigration();
     return;
   }
 
@@ -148,6 +155,15 @@ const MigrationController = async () => {
   if (compareVersions(state.vault.version, '4.1.2') < 0) {
     const v4_1_2 = require('../migration/v4_1_2');
     await v4_1_2.default(state);
+  }
+
+  /**
+   * version < 5_0_0
+   * Description: Migrates state only on Mobile
+   */
+  if (isNative && compareVersions(state.vault.version, '5.0.0') < 0) {
+    const v5_0_0 = require('../migration/v5_0_0');
+    await v5_0_0.default(state);
   }
 };
 

@@ -34,8 +34,13 @@ import MessageSigning from './views/messageSigning';
 
 import 'assets/styles/global.scss';
 import { Color } from '@material-ui/lab/Alert';
-import { browser } from 'webextension-polyfill-ts';
 import { dag4 } from '@stardust-collective/dag4';
+import { decodeFromBase64 } from 'utils/encoding';
+import { getWalletController } from 'utils/controllersUtils';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
 
 /////////////////////////
 // Constants
@@ -129,6 +134,7 @@ const LedgerPage = () => {
   const [startIndex, setStartIndex] = useState<number>(0);
   const [waitingForLedger, setWaitingForLedger] = useState<boolean>(false);
   const [transactionSigned, setTransactionSigned] = useState<boolean>(false);
+  const walletController = getWalletController();
 
   useEffect(() => {
     LedgerBridgeUtil.setOnProgressUpdate(onProgressUpdate);
@@ -261,23 +267,11 @@ const LedgerPage = () => {
 
   const onImportClick = async () => {
     setFetchingPage(true);
-    const background = await browser.runtime.getBackgroundPage();
-    background.controller.wallet.importHardwareWalletAccounts(selectedAccounts as any);
+    await walletController.importHardwareWalletAccounts(selectedAccounts as any);
+    console.log(selectedAccounts);
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);
     LedgerBridgeUtil.closeConnection();
-  };
-
-  const postTransactionResult = async (hash: string) => {
-    const { windowId } = queryString.parse(location.search);
-
-    const background = await browser.runtime.getBackgroundPage();
-
-    background.dispatchEvent(
-      new CustomEvent('transactionSent', {
-        detail: { windowId, approved: true, result: hash },
-      })
-    );
   };
 
   const onCancelClick = () => {
@@ -290,16 +284,23 @@ const LedgerPage = () => {
   };
 
   const onSignPress = async () => {
-    const { amount, publicKey, from, to, bipIndex } = queryString.parse(
-      location.search
-    ) as any;
+    const { data, message: requestMessage } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams<{
+        amount: string;
+        publicKey: string;
+        from: string;
+        to: string;
+        bipIndex: string;
+      }>(location.href);
+
+    const { amount, publicKey, from, to, bipIndex } = data;
 
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
       // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2
       const signedTX = await LedgerBridgeUtil.buildTransaction(
-        amount,
+        Number(amount),
         publicKey,
         Number(bipIndex),
         from,
@@ -307,7 +308,7 @@ const LedgerPage = () => {
       );
       const hash = await dag4.network.postTransaction(signedTX);
       if (hash) {
-        postTransactionResult(hash);
+        StargazerWSMessageBroker.sendResponseResult(hash, requestMessage);
       }
       setWaitingForLedger(false);
       setTransactionSigned(true);
@@ -320,29 +321,26 @@ const LedgerPage = () => {
   };
 
   const onSignMessagePress = async () => {
-    const { data, windowId } = queryString.parse(location.search) as any;
+    const { data, message: requestMessage } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams<{
+        signatureRequestEncoded: string;
+        asset: string;
+        provider: string;
+        chainLabel: string;
+        walletLabel: string;
+        bipIndex: string;
+      }>(location.href);
 
-    const jsonData = JSON.parse(data);
-    const message = jsonData.signatureRequestEncoded;
-    const bipIndex = jsonData.bipIndex;
-    const background = await browser.runtime.getBackgroundPage();
+    const message = data.signatureRequestEncoded;
+    const bipIndex = Number(data.bipIndex);
+
     try {
       setWaitingForLedger(true);
       await LedgerBridgeUtil.requestPermissions();
       const signature = await LedgerBridgeUtil.signMessage(message, bipIndex);
       LedgerBridgeUtil.closeConnection();
-      const signatureEvent = new CustomEvent('messageSigned', {
-        detail: {
-          windowId,
-          result: true,
-          signature: {
-            hex: signature,
-            requestEncoded: message,
-          },
-        },
-      });
 
-      background.dispatchEvent(signatureEvent);
+      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
       window.close();
     } catch (e) {
       setWaitingForLedger(false);
@@ -409,7 +407,7 @@ const LedgerPage = () => {
       const { data } = queryString.parse(location.search) as any;
 
       const parsedData = JSON.parse(data);
-      const message = JSON.parse(window.atob(parsedData.signatureRequestEncoded));
+      const message = JSON.parse(decodeFromBase64(parsedData.signatureRequestEncoded));
 
       return (
         <>

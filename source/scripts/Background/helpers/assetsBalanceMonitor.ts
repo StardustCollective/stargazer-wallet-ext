@@ -2,10 +2,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
-import { updatefetchDagBalanceState } from 'state/process';
-import { ProcessStates } from 'state/process/enums';
 import { getAccountController } from 'utils/controllersUtils';
-import { BigNumber } from 'bignumber.js';
 import { IAssetInfoState } from 'state/assets/types';
 import store from '../../../state/store';
 import { updateBalances } from '../../../state/vault';
@@ -17,9 +14,9 @@ import IVaultState, {
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
+import { toDag } from 'utils/number';
 
 const THIRTY_SECONDS = 30 * 1000;
-const DAG_DECIMAL_FACTOR = 1e-8;
 
 export type AccountTrackerList = {
   [network: string]: AccountTracker;
@@ -33,10 +30,6 @@ export class AssetsBalanceMonitor {
   private accountTrackerList: AccountTrackerList;
 
   private subscription: Subscription;
-
-  private hasDAGPending = false;
-
-  private hasETHPending = false;
 
   private utils = ControllerUtils();
 
@@ -71,23 +64,22 @@ export class AssetsBalanceMonitor {
         this.subscription = dag4.monitor
           .observeMemPoolChange()
           .subscribe((up) => this.pollPendingTxs(up));
-        await dag4.monitor.startMonitor();
+        dag4.monitor.startMonitor();
 
         if (this.dagBalIntervalId) {
           clearInterval(this.dagBalIntervalId);
         }
 
-        this.hasDAGPending = true;
-
         this.dagBalIntervalId = setInterval(
           () => this.refreshDagBalance(),
           THIRTY_SECONDS
         );
-        await this.refreshDagBalance();
+        setTimeout(() => {
+          this.refreshDagBalance();
+        }, 100);
       }
 
       if (hasETH) {
-        this.hasETHPending = true;
         this.startMonitor(activeWallet, activeNetwork);
       }
 
@@ -135,9 +127,8 @@ export class AssetsBalanceMonitor {
             dagAddress
           )) as any
         )?.data?.balance ?? 0;
-      const balanceNumber = new BigNumber(balance)
-        .multipliedBy(DAG_DECIMAL_FACTOR)
-        .toNumber();
+      const balanceNumber = toDag(balance);
+
       return String(balanceNumber);
     } catch (err) {
       return '-';
@@ -149,9 +140,7 @@ export class AssetsBalanceMonitor {
       const balance: number =
         ((await dag4.network.blockExplorerV2Api.getAddressBalance(address)) as any)?.data
           ?.balance ?? 0;
-      const balanceNumber = new BigNumber(balance)
-        .multipliedBy(DAG_DECIMAL_FACTOR)
-        .toNumber();
+      const balanceNumber = toDag(balance);
 
       return String(balanceNumber);
     } catch (err) {
@@ -160,52 +149,47 @@ export class AssetsBalanceMonitor {
   }
 
   async refreshL0balances(l0assets: IAssetInfoState[], dagAddress: string) {
-    let l0balances = {};
-    for (const l0asset of l0assets) {
-      const balanceString = await this.getCurrencyAddressBlockExplorerBalance(
-        l0asset.address,
-        dagAddress
-      );
+    let l0balances: Record<string, string> = {};
+    await Promise.all(
+      l0assets.map(async (l0asset) => {
+        const balanceString = await this.getCurrencyAddressBlockExplorerBalance(
+          l0asset.address,
+          dagAddress
+        );
 
-      l0balances = {
-        ...l0balances,
-        [l0asset.id]: balanceString,
-      };
-    }
+        l0balances[l0asset.id] = balanceString;
+      })
+    );
 
     return l0balances;
   }
 
   async refreshDagBalance() {
-    store.dispatch(
-      updatefetchDagBalanceState({ processState: ProcessStates.IN_PROGRESS })
-    );
     const { balances, activeNetwork } = store.getState().vault;
     const { assets } = store.getState();
 
     try {
       // Hotfix: Use block explorer API directly.
       const { address } = dag4.account;
-      const balanceString = await this.getAddressBlockExplorerBalance(address);
 
-      this.hasDAGPending = false;
-      const pending = this.hasETHPending ? 'true' : undefined;
       const l0assets = Object.values(assets).filter(
         (asset) =>
           !!asset?.l0endpoint &&
           !!asset?.l1endpoint &&
           asset?.network === activeNetwork.Constellation
       );
-      const l0balances = await this.refreshL0balances(l0assets, address);
+      const [l0balances, balanceString] = await Promise.all([
+        this.refreshL0balances(l0assets, address),
+        this.getAddressBlockExplorerBalance(address),
+      ]);
+
       store.dispatch(
         updateBalances({
           ...balances,
           ...l0balances,
           [AssetType.Constellation]: balanceString,
-          pending,
         })
       );
-      store.dispatch(updatefetchDagBalanceState({ processState: ProcessStates.IDLE }));
     } catch (e) {
       if (e instanceof Error) {
         console.log(e.message);
@@ -273,14 +257,11 @@ export class AssetsBalanceMonitor {
           chainInfo.chainId,
           (mainAssetBalance, tokenBals) => {
             const { balances } = store.getState().vault;
-            const pending = this.hasDAGPending ? 'true' : undefined;
-            this.hasETHPending = false;
             store.dispatch(
               updateBalances({
                 ...balances,
                 [MainAssetType]: mainAssetBalance || '-',
                 ...tokenBals,
-                pending,
               })
             );
           },

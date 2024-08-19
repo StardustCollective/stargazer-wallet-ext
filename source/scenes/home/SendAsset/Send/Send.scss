@@ -8,9 +8,13 @@
   width: 100%;
   height: 100%;
 
-  form.bodywrapper {
+  .bodywrapper {
     width: 100%;
     height: 100%;
+  }
+  .contentAligned {
+    display: flex;
+    flex-direction: column;
   }
   section.subheading {
     height: 60px;
@@ -77,6 +81,10 @@
     }
   }
 
+  .extraPadding {
+    margin-top: 20px;
+  }
+
   .networkContainer {
     padding: 0px 36px 10px 36px;
   }
@@ -102,7 +110,6 @@
       margin: -12px;
       padding: 12px;
       border-radius: 10px;
-      background: $gray-light;
 
       li {
         height: 56px;
@@ -328,9 +335,11 @@
 
   section.actionGroup {
     width: 100%;
-    box-sizing: border-box;
-    padding: 36px;
-    padding-bottom: 24px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: flex-end;
 
     .actions {
       display: flex;
