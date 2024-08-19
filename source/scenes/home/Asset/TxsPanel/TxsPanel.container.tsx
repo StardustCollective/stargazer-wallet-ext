@@ -26,6 +26,9 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
   const address = activeAsset?.address;
   const isRewardsTab = route === 'rewards';
   const loading = activeAsset.loading;
+  const isConstellationAsset = activeAsset?.type === AssetType.Constellation;
+  const isLocalNetwork =
+    isConstellationAsset && activeNetwork.Constellation === DAG_NETWORK.local2.id;
 
   useFocusEffect(
     useCallback(() => {
@@ -79,6 +82,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
 
     if (!DAG_OBJECT) return '';
     let DAG_EXPLORER = DAG_OBJECT?.explorer;
+    if (!DAG_EXPLORER) return '';
     // tx.sender is only available on txs in Mainnet 1.0
     if (tx.sender) {
       DAG_EXPLORER = 'https://mainnet1.dagexplorer.io';
@@ -189,8 +193,12 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
     );
   };
 
-  const TRANSACTION_DESCRIPTION = 'You don’t have any transactions for this token yet!';
-  const REWARDS_DESCRIPTION = 'No rewards earned';
+  const TRANSACTION_DESCRIPTION = isLocalNetwork
+    ? 'Transaction history not available for Local Networks'
+    : 'You don’t have any transactions for this token yet!';
+  const REWARDS_DESCRIPTION = isLocalNetwork
+    ? 'Reward history not available for Local Networks'
+    : 'No rewards earned';
   const renderItem = isRewardsTab ? renderRewardItem : renderTxItem;
   const description = isRewardsTab ? REWARDS_DESCRIPTION : TRANSACTION_DESCRIPTION;
 
