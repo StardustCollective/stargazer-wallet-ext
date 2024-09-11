@@ -48,7 +48,7 @@ import { IMenuItem } from 'components/Menu/types';
 // Constants
 ///////////////////////////
 
-const INITIAL_AMOUNT = '100.00';
+const INITIAL_AMOUNT = '100';
 const MINIMUM_AMOUNT = 50;
 const MAXIMUM_AMOUNT = 20000;
 const MINIMUM_AMOUNT_MESSAGE = 'Minimum amount is $50';
