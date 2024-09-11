@@ -1,3 +1,4 @@
+import { IMenuItem } from 'components/Menu/types';
 import { IProviderDataState, IProviderInfoState } from 'state/providers/types';
 
 export interface IBuyAssetContainer {
@@ -8,6 +9,7 @@ export interface IBuyAssetContainer {
 export interface IBuyAsset {
   amount: string;
   message: string;
+  isErrorMessage: boolean;
   error: string;
   setError: React.Dispatch<React.SetStateAction<string>>;
   handleItemClick: (value: string) => void;
@@ -16,4 +18,7 @@ export interface IBuyAsset {
   buttonLoading: boolean;
   provider: IProviderInfoState;
   response: IProviderDataState;
+  providersItems: IMenuItem[];
+  isProviderSelectorOpen: boolean;
+  setIsProviderSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }

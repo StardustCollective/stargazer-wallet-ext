@@ -45,10 +45,12 @@ const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({
             !!activeWallet?.assets?.find(
               (asset) =>
                 asset?.id === assetValues?.id &&
-                ['both', 'mainnet'].includes(assetValues?.network)
+                ['both', 'mainnet', 'bsc', 'avalanche-mainnet', 'matic'].includes(
+                  assetValues?.network
+                )
             ) &&
             !!supportedAssetsArray?.find(
-              (simplexItem) => simplexItem?.ticker_symbol === assetValues?.symbol
+              (simplexItem) => simplexItem?.symbol === assetValues?.symbol
             )
         )
       : [];

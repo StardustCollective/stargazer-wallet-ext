@@ -13,11 +13,12 @@ export interface IProviderDataState {
   loading: boolean;
   data: any;
   error: any;
+  bestDealCompleted: boolean;
 }
 
 export interface ISupportedAssetsState {
   loading: boolean;
-  data: SupportedAssetSimplex[];
+  data: StargazerProviderAsset[];
   error: any;
 }
 
@@ -52,6 +53,13 @@ export type GetQuoteRequest = {
   requested_amount: number;
 };
 
+export type GetBestDealRequest = {
+  [providerId: string]: {
+    digital_currency: string;
+    amount: number;
+  };
+};
+
 export type PaymentRequestBody = {
   quote_id: string;
   user_id: string;
@@ -66,36 +74,38 @@ export type PaymentRequestResponse = {
 };
 
 export type GetQuoteResponse = {
-  data: {
-    user_id: string;
-    quote_id: string;
-    wallet_id: string;
-    digital_money: {
-      currency: string;
-      amount: number;
-    };
-    fiat_money: {
-      currency: string;
-      base_amount: number;
-      total_amount: number;
-    };
-    valid_until: string;
-    supported_digital_currencies: string[];
-  };
+  id: string;
+  quote_id: string;
+  user_id?: string;
+  token_id: string;
+  token_amount: string;
+  requested_amount: string;
+  valid_until: string;
+  provider: string;
 };
 
-export type SupportedAssetSimplex = {
+export type StargazerProviderAsset = {
+  id: string;
   name: string;
-  ticker_symbol: string;
-  'memo/tag_field': string;
-  fixed_min_amount?: any;
-  networks: string[];
+  symbol: string;
+  network: ProviderNetwork;
+  locked?: boolean;
+  providers: Providers[];
 };
 
 export type GetSupportedAssetsResponse = {
-  data: SupportedAssetSimplex[];
+  data: StargazerProviderAsset[];
 };
+
+export enum ProviderNetwork {
+  Constellation = 'constellation',
+  Ethereum = 'ethereum',
+  Polygon = 'polygon',
+  Avalanche = 'avalanche',
+  BSC = 'bsc',
+}
 
 export enum Providers {
   Simplex = 'simplex',
+  C14 = 'c14',
 }

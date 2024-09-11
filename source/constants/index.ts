@@ -67,6 +67,8 @@ export const JENNYCO_LOGO =
 export const GEOJAM_LOGO = 'https://lattice-exchange-assets.s3.amazonaws.com/geojam.png';
 export const SIMPLEX_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/simplex-logo.png';
+export const C14_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/c14.png';
 export const PLACEHOLDER_IMAGE =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/placeholder.png';
 
@@ -419,15 +421,17 @@ export const DEFAULT_LANGUAGE = 'en-US';
 export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 
 export const DAG_EXPLORER_API_URL = 'https://dyzt5u1o3ld0z.cloudfront.net';
+export const C14_CLIENT_ID = 'b69a98b8-c5c1-4c7b-b5a9-46bca9a74480';
+export const C14_BASE_URL = 'https://pay.c14.money';
 
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
 const PROVIDERS_BASE_URL = isProd
   ? STARGAZER_PROVIDERS_BASE_URL_PROD
   : STARGAZER_PROVIDERS_BASE_URL;
 
-export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/quote`;
+export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/v3/quote`;
 export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;
-export const GET_SUPPORTED_ASSETS_API = `${PROVIDERS_BASE_URL}/v2/supported-assets`;
+export const GET_SUPPORTED_ASSETS_API = `${PROVIDERS_BASE_URL}/v3/supported-assets`;
 const SIMPLEX_FORM_BASE_URL = 'https://stargazer-assets.s3.us-east-2.amazonaws.com';
 const SIMPLEX_FORM_SUBMISSION_URL_WEB = isProd
   ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.html?payment_id=`

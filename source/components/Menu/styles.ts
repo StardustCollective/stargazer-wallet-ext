@@ -16,6 +16,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.white,
   },
+  disabled: {
+    opacity: 0.5,
+  },
   firstChild: {
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,

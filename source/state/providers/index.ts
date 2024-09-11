@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SIMPLEX_LOGO } from 'constants/index';
-import { getQuote, getSupportedAssets, paymentRequest } from './api';
-import IProvidersState, { Providers } from './types';
+import { C14_LOGO, SIMPLEX_LOGO } from 'constants/index';
+import { getBestDeal, getQuote, getSupportedAssets, paymentRequest } from './api';
+import IProvidersState, {
+  GetQuoteResponse,
+  IProviderInfoState,
+  Providers,
+} from './types';
 
 export const initialState: IProvidersState = {
   response: {
@@ -9,6 +13,7 @@ export const initialState: IProvidersState = {
     loading: false,
     data: null,
     error: null,
+    bestDealCompleted: false,
   },
   supportedAssets: {
     loading: false,
@@ -21,11 +26,16 @@ export const initialState: IProvidersState = {
     error: null,
   },
   selected: {
-    id: Providers.Simplex,
-    label: 'Simplex',
-    logo: SIMPLEX_LOGO,
+    id: Providers.C14,
+    label: 'C14',
+    logo: C14_LOGO,
   },
   list: {
+    [Providers.C14]: {
+      id: Providers.C14,
+      label: 'C14',
+      logo: C14_LOGO,
+    },
     [Providers.Simplex]: {
       id: Providers.Simplex,
       label: 'Simplex',
@@ -50,6 +60,9 @@ const ProviderListState = createSlice({
       state.paymentRequest.error = null;
       state.supportedAssets.error = null;
     },
+    clearBestDeal(state: IProvidersState) {
+      state.response.bestDealCompleted = false;
+    },
     clearPaymentRequest(state: IProvidersState) {
       return {
         ...state,
@@ -64,11 +77,21 @@ const ProviderListState = createSlice({
       return {
         ...state,
         response: {
+          ...state.response,
           requestId: action.payload,
           loading: false,
           data: null,
           error: null,
         },
+      };
+    },
+    setSelectedProvider(
+      state: IProvidersState,
+      action: PayloadAction<IProviderInfoState>
+    ) {
+      return {
+        ...state,
+        selected: action.payload,
       };
     },
   },
@@ -80,8 +103,9 @@ const ProviderListState = createSlice({
     });
     builder.addCase(getQuote.fulfilled, (state, action) => {
       const error = action.payload?.message ? action.payload : null;
-      const data = action.payload?.data ? action.payload.data : null;
-      const requestId = action.payload?.data?.id;
+      const data = action.payload?.id ? action.payload : null;
+      const requestId = action.payload?.id;
+
       if (error && !state.response.error) {
         state.response.loading = false;
         state.response.error = error;
@@ -130,10 +154,42 @@ const ProviderListState = createSlice({
       state.supportedAssets.data = null;
       state.supportedAssets.error = action.payload;
     });
+    builder.addCase(getBestDeal.pending, (state) => {
+      state.response.loading = true;
+      state.response.data = null;
+      state.response.error = null;
+    });
+    builder.addCase(getBestDeal.fulfilled, (state, action) => {
+      const error = action.payload?.message ? action.payload : null;
+      const data: GetQuoteResponse = action.payload?.id ? action.payload : null;
+
+      state.response.loading = false;
+
+      if (data) {
+        state.selected = state.list[data.provider];
+        state.response.data = data;
+        state.response.bestDealCompleted = true;
+      }
+
+      if (error) {
+        state.response.error = error;
+      }
+    });
+    builder.addCase(getBestDeal.rejected, (state, action) => {
+      state.response.loading = false;
+      state.response.data = null;
+      state.response.error = action.payload;
+    });
   },
 });
 
-export const { rehydrate, clearErrors, setRequestId, clearPaymentRequest } =
-  ProviderListState.actions;
+export const {
+  rehydrate,
+  clearErrors,
+  setRequestId,
+  clearPaymentRequest,
+  clearBestDeal,
+  setSelectedProvider,
+} = ProviderListState.actions;
 
 export default ProviderListState.reducer;

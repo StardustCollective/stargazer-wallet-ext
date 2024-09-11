@@ -27,19 +27,28 @@ import { open } from 'utils/browser';
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
 import IProvidersState, {
+  GetBestDealRequest,
   GetQuoteRequest,
+  IProviderInfoState,
   PaymentRequestBody,
+  Providers,
+  StargazerProviderAsset,
 } from 'state/providers/types';
 import { IBuyAssetContainer } from './types';
-import { SIMPLEX_FORM_SUBMISSION_URL } from 'constants/index';
+import {
+  C14_BASE_URL,
+  C14_CLIENT_ID,
+  SIMPLEX_FORM_SUBMISSION_URL,
+} from 'constants/index';
 import IVaultState from 'state/vault/types';
 import { getAccountController } from 'utils/controllersUtils';
+import { IMenuItem } from 'components/Menu/types';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
-const INITIAL_AMOUNT = '0.00';
+const INITIAL_AMOUNT = '100.00';
 const MINIMUM_AMOUNT = 50;
 const MAXIMUM_AMOUNT = 20000;
 const MINIMUM_AMOUNT_MESSAGE = 'Minimum amount is $50';
@@ -50,16 +59,32 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const assetId = route.params.selected;
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
-  const { response, selected, paymentRequest }: IProvidersState = useSelector(
-    (state: RootState) => state.providers
-  );
+  const { supportedAssets, response, list, selected, paymentRequest }: IProvidersState =
+    useSelector((state: RootState) => state.providers);
   const selectedAsset = assets[assetId];
   const [amount, setAmount] = useState<string>(INITIAL_AMOUNT);
   const [message, setMessage] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const [onlyDelete, setOnlyDelete] = useState<boolean>(false);
+  const [isProviderSelectorOpen, setIsProviderSelectorOpen] = useState<boolean>(false);
   const accountController = getAccountController();
+  const { bestDealCompleted } = response;
+
+  const isProviderSupported = (providerId: string) => {
+    return !!supportedAssets?.data?.find(
+      (item) =>
+        item.symbol === selectedAsset.symbol &&
+        item?.providers?.includes(providerId as Providers)
+    );
+  };
+
+  const getStargazerProviderAsset = (): StargazerProviderAsset => {
+    return supportedAssets?.data?.find((item) => item.symbol === selectedAsset.symbol);
+  };
+
+  const selectedProviderSupported = isProviderSupported(selected.id);
+  const isErrorMessage = !!message && !message.includes('≈');
 
   const getActiveAddress = (): string | undefined => {
     const currentAsset = activeWallet.assets.find((asset) => asset.id === assetId);
@@ -68,21 +93,90 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
 
   useEffect(() => {
     navigation.setOptions({ title: `Buy ${selectedAsset.symbol}` });
+
+    return () => {
+      accountController.assetsController.clearBestDeal();
+    };
   }, []);
 
   useEffect(() => {
-    const floatAmount = parseFloat(amount);
-    const dispatchActions = async () => {
-      const randomId = uuid();
-      const quoteData: GetQuoteRequest = {
-        id: randomId,
-        provider: selected.id,
-        requested_amount: floatAmount,
-        digital_currency: selectedAsset.symbol,
-      };
-      accountController.assetsController.setRequestId(randomId);
-      await accountController.assetsController.fetchQuote(quoteData);
+    if (!selectedProviderSupported) {
+      const c14Provider = list[Providers.C14];
+      const simplexProvider = list[Providers.Simplex];
+      const updatedProvider =
+        selected.id === Providers.Simplex ? c14Provider : simplexProvider;
+      handleProviderSwitch(updatedProvider);
+    }
+  }, [selectedProviderSupported]);
+
+  const getTokenId = (provider: Providers): string => {
+    if (!supportedAssets?.data?.length || !selectedAsset?.symbol) return '';
+
+    if (provider === Providers.Simplex) {
+      return selectedAsset.symbol;
+    }
+
+    const token = supportedAssets.data.find(
+      (asset) =>
+        asset.symbol === selectedAsset.symbol && asset.providers.includes(Providers.C14)
+    );
+    if (!token) return '';
+
+    return token.id;
+  };
+
+  const getQuote = async (provider: Providers, amount: number) => {
+    // Skip quote request if the last quote response has the same provider & amount
+    if (
+      provider === response?.data?.provider &&
+      amount?.toString() === response?.data?.requested_amount
+    )
+      return;
+
+    const digitalCurrency = getTokenId(provider);
+
+    if (!digitalCurrency) return;
+
+    const randomId = uuid();
+    const quoteData: GetQuoteRequest = {
+      id: randomId,
+      provider,
+      requested_amount: amount,
+      digital_currency: digitalCurrency,
     };
+    accountController.assetsController.setRequestId(randomId);
+    await accountController.assetsController.fetchQuote(quoteData);
+  };
+
+  useEffect(() => {
+    const fetchDeal = async () => {
+      const stargazerAsset = getStargazerProviderAsset();
+      if (!stargazerAsset) return;
+
+      const { providers } = stargazerAsset;
+      if (!providers.length) return;
+
+      const request: GetBestDealRequest = providers.reduce(
+        (acc: GetBestDealRequest, provider: Providers) => {
+          acc[provider] = {
+            digital_currency: getTokenId(provider as Providers),
+            amount: Number(INITIAL_AMOUNT),
+          };
+          return acc;
+        },
+        {}
+      );
+
+      await accountController.assetsController.fetchBestDeal(request);
+    };
+
+    if (!bestDealCompleted) {
+      fetchDeal();
+    }
+  }, [bestDealCompleted]);
+
+  useEffect(() => {
+    const floatAmount = parseFloat(amount);
     if (floatAmount < MINIMUM_AMOUNT) {
       setMessage(MINIMUM_AMOUNT_MESSAGE);
       setButtonDisabled(true);
@@ -92,9 +186,11 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
       setButtonDisabled(true);
       setOnlyDelete(true);
     } else {
-      dispatchActions();
+      if (selectedProviderSupported && bestDealCompleted) {
+        getQuote(selected.id as Providers, floatAmount);
+      }
     }
-  }, [amount]);
+  }, [amount, selected, selectedProviderSupported, bestDealCompleted]);
 
   useEffect(() => {
     const floatAmount = parseFloat(amount);
@@ -103,8 +199,8 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
         setButtonDisabled(true);
         setOnlyDelete(false);
       } else {
-        if (response?.data?.digital_money) {
-          const tokenAmount = response?.data?.digital_money?.amount;
+        if (response?.data?.token_amount) {
+          const tokenAmount = Number(response?.data?.token_amount);
           const formattedAmount = formatNumber(tokenAmount, 2, 4);
           setMessage(`≈ ${formattedAmount} ${selectedAsset.symbol}`);
           setButtonDisabled(false);
@@ -112,7 +208,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
         }
       }
     }
-  }, [response.loading, response.data?.digital_money]);
+  }, [response.loading, response.data?.token_amount]);
 
   useEffect(() => {
     const payment_id = paymentRequest?.data?.payment_id;
@@ -130,6 +226,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
     if (response.error || paymentRequest.error) {
       accountController.assetsController.clearErrors();
       setError(DEFAULT_ERROR_MESSAGE);
+      setMessage('');
     }
   }, [response.error, paymentRequest.error]);
 
@@ -171,7 +268,35 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
     }
   };
 
-  const handleConfirm = async () => {
+  const generateC14Link = (
+    clientId: string,
+    sourceAmount: string,
+    targetAddress: string,
+    targetAssetId: string
+  ): string => {
+    const params = new URLSearchParams({
+      clientId,
+      sourceAmount,
+      sourceCurrencyCode: 'USD',
+      targetAddress,
+      targetAssetId,
+      targetAssetIdLock: 'true',
+    });
+
+    return `${C14_BASE_URL}?${params.toString()}`;
+  };
+
+  const confirmC14 = async () => {
+    const url = generateC14Link(
+      C14_CLIENT_ID,
+      amount,
+      getActiveAddress(),
+      getTokenId(Providers.C14)
+    );
+    await open(url);
+  };
+
+  const confirmSimplex = async () => {
     const requestData: PaymentRequestBody = {
       provider: selected.id,
       address: getActiveAddress() || '',
@@ -181,6 +306,37 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
     };
     await accountController.assetsController.fetchPaymentRequest(requestData);
   };
+
+  const handleConfirm = async () => {
+    switch (selected.id) {
+      case Providers.C14:
+        await confirmC14();
+        return;
+      case Providers.Simplex:
+        await confirmSimplex();
+        return;
+      default:
+        return;
+    }
+  };
+
+  const handleProviderSwitch = (provider: IProviderInfoState) => {
+    accountController.assetsController.setSelectedProvider(provider);
+    setIsProviderSelectorOpen(false);
+  };
+
+  const providersItems: IMenuItem[] = Object.values(list).map((provider) => ({
+    title: provider.label,
+    icon: provider.logo,
+    onClick: () => handleProviderSwitch(provider),
+    showArrow: false,
+    selected: selected.id === provider.id,
+    disabled: !supportedAssets?.data?.find(
+      (item) =>
+        item.symbol === selectedAsset.symbol &&
+        item?.providers?.includes(provider.id as Providers)
+    ),
+  }));
 
   ///////////////////////////
   // Render
@@ -193,12 +349,16 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
         setError={setError}
         amount={amount}
         message={message}
+        isErrorMessage={isErrorMessage}
         buttonDisabled={buttonDisabled}
         buttonLoading={paymentRequest.loading}
         handleItemClick={handleItemClick}
         handleConfirm={handleConfirm}
         provider={selected}
         response={response}
+        providersItems={providersItems}
+        isProviderSelectorOpen={isProviderSelectorOpen}
+        setIsProviderSelectorOpen={setIsProviderSelectorOpen}
       />
     </Container>
   );

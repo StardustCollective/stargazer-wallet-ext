@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import TextV3 from 'components/TextV3';
 import Icon from 'components/Icon';
 import ChevronRight from 'assets/images/svg/arrow-rounded-right.svg';
+import CheckIcon from 'assets/images/svg/check-transparent.svg';
 
 ///////////////////////
 // Types
@@ -60,6 +61,7 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
             data,
             showArrow = true,
             rightIcon,
+            selected = false,
           } = item;
 
           const titleTextStyle = subtitle ? styles.smallTitle : styles.largeTitle;
@@ -70,7 +72,8 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
               className={clsx(
                 styles.itemContainer,
                 i === 0 && styles.firstChild,
-                i === items.length - 1 && styles.lastChild
+                i === items.length - 1 && styles.lastChild,
+                disabled && styles.disabled
               )}
               onClick={disabled ? null : () => onClick(data)}
             >
@@ -115,6 +118,11 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
                 </div>
               )}
               {!!rightIcon && <div className={styles.iconContainer}>{rightIcon}</div>}
+              {!!selected && (
+                <div className={styles.iconContainer}>
+                  <img src={`/${CheckIcon}`} className={styles.checkIcon} />
+                </div>
+              )}
             </div>
           );
         })}
