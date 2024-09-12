@@ -32,6 +32,7 @@ import { getWalletController } from 'utils/controllersUtils';
 import homeHeader from 'navigation/headers/home';
 import { truncateString } from 'scenes/home/helpers';
 import EventEmitter from 'utils/EventEmitter';
+import { iosPlatform } from 'utils/platform';
 
 ///////////////////////////
 // Styles
@@ -181,7 +182,7 @@ const Home: FC<IHome> = ({
                   onPress={onBuyPressed}
                   extraStyles={styles.buttonNormal}
                 />
-                {!isDagOnlyWallet && (
+                {!isDagOnlyWallet && !iosPlatform() && (
                   <ButtonV3
                     title={SWAP_STRING}
                     size={BUTTON_SIZES_ENUM.LARGE}

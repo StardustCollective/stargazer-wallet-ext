@@ -22,7 +22,7 @@ const ToastAlert: FC<IAlertTemplate> = ({ message, options, style, close }) => {
         ...style,
         marginBottom: '80px',
         width: '300px',
-        textAlign: 'center',
+        textAlign: 'left',
       }}
       onClick={close}
     >
