@@ -12,12 +12,24 @@ import {
 } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import {
+  clearBestDeal as clearBestDealDispatch,
   clearErrors as clearErrorsDispatch,
   clearPaymentRequest as clearPaymentRequestDispatch,
   setRequestId as setRequestIdDispatch,
+  setSelectedProvider as setSelectedProviderDispatch,
 } from 'state/providers';
-import { getQuote, getSupportedAssets, paymentRequest } from 'state/providers/api';
-import { GetQuoteRequest, PaymentRequestBody } from 'state/providers/types';
+import {
+  getBestDeal,
+  getQuote,
+  getSupportedAssets,
+  paymentRequest,
+} from 'state/providers/api';
+import {
+  GetBestDealRequest,
+  GetQuoteRequest,
+  IProviderInfoState,
+  PaymentRequestBody,
+} from 'state/providers/types';
 import {
   getNetworkFromChainId,
   getPlatformFromMainnet,
@@ -66,9 +78,12 @@ export interface IAssetsController {
   removeERC20AssetFn: (asset: IAssetInfoState) => void;
   clearSearchAssets: () => void;
   fetchQuote: (data: GetQuoteRequest) => Promise<void>;
+  fetchBestDeal: (data: GetBestDealRequest) => Promise<void>;
   fetchPaymentRequest: (data: PaymentRequestBody) => Promise<void>;
   setRequestId: (value: string) => void;
   clearErrors: () => void;
+  clearBestDeal: () => void;
+  setSelectedProvider: (provider: IProviderInfoState) => void;
   clearPaymentRequest: () => void;
 }
 
@@ -242,8 +257,20 @@ const AssetsController = (): IAssetsController => {
     await store.dispatch<any>(getQuote(data));
   };
 
+  const fetchBestDeal = async (data: GetBestDealRequest): Promise<void> => {
+    await store.dispatch<any>(getBestDeal(data));
+  };
+
+  const clearBestDeal = (): void => {
+    store.dispatch<any>(clearBestDealDispatch());
+  };
+
   const fetchPaymentRequest = async (data: PaymentRequestBody): Promise<void> => {
     await store.dispatch<any>(paymentRequest(data));
+  };
+
+  const setSelectedProvider = (provider: IProviderInfoState): void => {
+    store.dispatch(setSelectedProviderDispatch(provider));
   };
 
   const setRequestId = (value: string): void => {
@@ -270,10 +297,13 @@ const AssetsController = (): IAssetsController => {
     addERC20AssetFn,
     removeERC20AssetFn,
     fetchQuote,
+    fetchBestDeal,
     fetchPaymentRequest,
     setRequestId,
+    setSelectedProvider,
     clearErrors,
     clearPaymentRequest,
+    clearBestDeal,
   };
 };
 

@@ -53,6 +53,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1,
     shadowOffset: { width: 0, height: 2 },
+    flex: 1,
+  },
+  providerCardInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   providerIcon: {
     alignItems: 'center',

@@ -11,6 +11,7 @@ import { TouchableOpacity, View, Image, StyleSheet } from 'react-native';
 
 import TextV3 from 'components/TextV3';
 import ArrowRightIcon from 'assets/images/svg/arrow-rounded-right.svg';
+import CheckIcon from 'assets/images/svg/check-transparent.svg';
 
 ///////////////////////
 // Types
@@ -60,11 +61,13 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
             showArrow = true,
             data,
             rightIcon,
+            selected = false,
           } = item;
           const itemStyles = StyleSheet.flatten([
             styles.itemContainer,
             i === 0 ? styles.firstChild : {},
             i === items.length - 1 ? styles.lastChild : {},
+            disabled && styles.disabled,
           ]);
 
           const titleTextStyle = !!subtitle ? styles.smallTitle : styles.largeTitle;
@@ -111,6 +114,7 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
                 </TextV3.LabelSemiStrong>
               )}
               {!!showArrow && <ArrowRightIcon width={ICON_SIZE} />}
+              {!!selected && <CheckIcon width={ICON_SIZE} />}
               {!!rightIcon && rightIcon}
             </TouchableOpacity>
           );

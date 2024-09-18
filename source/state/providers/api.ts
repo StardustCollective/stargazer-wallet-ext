@@ -5,13 +5,13 @@ import {
   PAYMENT_REQUEST_API,
 } from 'constants/index';
 import { STARGAZER_API_KEY } from 'utils/envUtil';
+import { v4 as uuid } from 'uuid';
 import {
   GetQuoteRequest,
   GetQuoteResponse,
   GetSupportedAssetsResponse,
   PaymentRequestBody,
   PaymentRequestResponse,
-  Providers,
 } from './types';
 
 export const getQuote = createAsyncThunk(
@@ -25,7 +25,65 @@ export const getQuote = createAsyncThunk(
       },
       body: JSON.stringify(requestData),
     });
-    return response.json();
+    const responseJson = await response.json();
+    return responseJson.data ? responseJson.data : responseJson;
+  }
+);
+
+export const getBestDeal = createAsyncThunk(
+  'providers/getBestDeal',
+  async (providersData: {
+    [providerId: string]: {
+      digital_currency: string;
+      amount: number;
+    };
+  }): Promise<any> => {
+    const providers = Object.keys(providersData);
+    let bestDealResponse: GetQuoteResponse;
+    let bestDealAmount = 0;
+
+    // Build requests array
+    const requests: Promise<Response>[] = providers.map((provider) => {
+      const requestData: GetQuoteRequest = {
+        id: uuid(),
+        provider,
+        requested_amount: providersData[provider].amount,
+        digital_currency: providersData[provider].digital_currency,
+      };
+
+      return fetch(GET_QUOTE_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-lattice-api-key': STARGAZER_API_KEY,
+        },
+        body: JSON.stringify(requestData),
+      });
+    });
+
+    // Wait for all responses. Promises are executed in parallel
+    const responses = await Promise.all(requests);
+
+    // Compare responses and select the best deal
+    for (let response of responses) {
+      const responseJson = await response.json();
+
+      // Handle error messages
+      if (!bestDealResponse && !!responseJson?.message) {
+        bestDealResponse = responseJson;
+      }
+
+      if (!responseJson.data) continue;
+
+      const { token_amount } = responseJson.data as GetQuoteResponse;
+
+      if (Number(token_amount) > bestDealAmount) {
+        bestDealAmount = Number(token_amount);
+        bestDealResponse = { ...responseJson.data };
+      }
+    }
+
+    return bestDealResponse;
   }
 );
 
@@ -47,7 +105,7 @@ export const paymentRequest = createAsyncThunk(
 export const getSupportedAssets = createAsyncThunk(
   'providers/getSupportedAssets',
   async (): Promise<GetSupportedAssetsResponse | any> => {
-    const response = await fetch(`${GET_SUPPORTED_ASSETS_API}/${Providers.Simplex}`);
+    const response = await fetch(`${GET_SUPPORTED_ASSETS_API}/all`);
     return response.json();
   }
 );

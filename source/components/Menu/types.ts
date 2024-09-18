@@ -11,6 +11,7 @@ export type IMenuItem = {
   subtitleStyles?: any;
   showArrow?: boolean;
   rightIcon?: any;
+  selected?: boolean;
 };
 
 export default interface IMenu {

@@ -1,5 +1,5 @@
 export const MODAL_TITLE =
-  'This seed phrase entered contains a non-standard word which could indicate a misspelled or incorrectly entered seed phrase.';
+  'We detected a non-standard seed phrase. This could indicate a misspelled or incorrectly entered seed phrase.';
 export const MODAL_DESCRIPTION_RESTORE =
   'Please verify each word in your recovery phrase before restoring.';
 export const MODAL_DESCRIPTION_IMPORT =

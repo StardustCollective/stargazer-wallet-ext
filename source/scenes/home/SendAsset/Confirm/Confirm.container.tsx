@@ -294,7 +294,12 @@ const ConfirmContainer = () => {
         ) {
           e.message = 'Insufficient funds to cover gas fee.';
         }
+
+        if (e.message.includes('cannot send a transaction to itself')) {
+          e.message = 'An address cannot send a transaction to itself';
+        }
         console.log('ERROR', e);
+        showAlert(e.message, 'danger');
 
         const { message, origin } =
           StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
@@ -302,8 +307,6 @@ const ConfirmContainer = () => {
         if (callbackError) {
           callbackError(message, origin, e.message);
         }
-
-        showAlert(e.message, 'danger');
       }
       console.error(e);
     }

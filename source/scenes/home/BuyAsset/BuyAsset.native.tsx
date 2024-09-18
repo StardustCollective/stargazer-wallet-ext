@@ -11,7 +11,11 @@ import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
+import Sheet from 'components/Sheet';
+import Menu from 'components/Menu';
 import ArrowIcon from 'assets/images/svg/arrow-left.svg';
+import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up.svg';
+import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down.svg';
 import { usePlatformAlert } from 'utils/alertUtil';
 
 ///////////////////////////
@@ -43,6 +47,10 @@ const BuyAsset: FC<IBuyAsset> = ({
   buttonLoading,
   provider,
   response,
+  isProviderSelectorOpen,
+  isErrorMessage,
+  providersItems,
+  setIsProviderSelectorOpen,
   handleItemClick,
   handleConfirm,
 }) => {
@@ -60,6 +68,14 @@ const BuyAsset: FC<IBuyAsset> = ({
     return <Image source={{ uri: provider.logo }} style={styles.providerIcon} />;
   });
 
+  const ProviderArrow = React.memo(() => {
+    const ArrowIcon = isProviderSelectorOpen ? ArrowUpIcon : ArrowDownIcon;
+    return <ArrowIcon color="black" />;
+  });
+
+  const messageColor = isErrorMessage ? COLORS_ENUMS.RED : COLORS_ENUMS.GRAY_100;
+  const amountColor = isErrorMessage ? COLORS_ENUMS.RED : COLORS_ENUMS.BLACK;
+
   ///////////////////////////
   // Render
   ///////////////////////////
@@ -73,7 +89,7 @@ const BuyAsset: FC<IBuyAsset> = ({
           </TextV3.Body>
           <TextV3.HeaderDisplay
             dynamic
-            color={COLORS_ENUMS.BLACK}
+            color={amountColor}
             extraStyles={styles.amountText}
           >
             {amount}
@@ -86,7 +102,7 @@ const BuyAsset: FC<IBuyAsset> = ({
           {response.loading ? (
             <ActivityIndicator size={ACTIVITY_INDICATOR_SIZE} />
           ) : (
-            <TextV3.Body color={COLORS_ENUMS.GRAY_100}>{message}</TextV3.Body>
+            <TextV3.Body color={messageColor}>{message}</TextV3.Body>
           )}
         </View>
       </View>
@@ -97,11 +113,20 @@ const BuyAsset: FC<IBuyAsset> = ({
         >
           Third Party Provider
         </TextV3.CaptionStrong>
-        <TouchableOpacity style={styles.providerCard} disabled>
-          <ProviderIcon />
-          <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.providerText}>
-            {provider.label}
-          </TextV3.BodyStrong>
+        <TouchableOpacity
+          style={styles.providerCard}
+          onPress={() => setIsProviderSelectorOpen(true)}
+        >
+          <View style={styles.providerCardInfo}>
+            <ProviderIcon />
+            <TextV3.BodyStrong
+              color={COLORS_ENUMS.BLACK}
+              extraStyles={styles.providerText}
+            >
+              {provider.label}
+            </TextV3.BodyStrong>
+          </View>
+          <ProviderArrow />
         </TouchableOpacity>
       </View>
       <View style={styles.numpadContainer}>
@@ -133,6 +158,16 @@ const BuyAsset: FC<IBuyAsset> = ({
           />
         </View>
       </View>
+      <Sheet
+        title={{
+          label: 'Choose a provider',
+          align: 'left',
+        }}
+        isVisible={isProviderSelectorOpen}
+        onClosePress={() => setIsProviderSelectorOpen(false)}
+      >
+        <Menu items={providersItems} />
+      </Sheet>
     </View>
   );
 };

@@ -35,6 +35,10 @@
     }
   }
 
+  .disabled {
+    opacity: 0.5;
+  }
+
   .firstChild {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -91,6 +95,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-right: 4px;
+  }
+
+  .checkIcon {
     margin-right: 4px;
   }
 }
