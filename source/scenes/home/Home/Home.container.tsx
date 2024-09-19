@@ -2,7 +2,7 @@
 // Imports
 ///////////////////////////
 
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -17,7 +17,6 @@ import Container from 'components/Container';
 ///////////////////////////
 
 import { useTotalBalance } from 'hooks/usePrice';
-import { getAccountController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Scene
@@ -33,7 +32,6 @@ import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import { AssetType } from 'state/vault/types';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import IProvidersState from 'state/providers/types';
 
 interface IHome {
   navigation: any;
@@ -49,14 +47,10 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   // Hooks
   ///////////////////////////
 
-  const accountController = getAccountController();
   const [balanceObject] = useTotalBalance();
 
   const { activeWallet, wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
-  );
-  const { supportedAssets }: IProvidersState = useSelector(
-    (state: RootState) => state.providers
   );
   const linkTo = useLinkTo();
   const isDagOnlyWallet =
@@ -71,15 +65,6 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   const privateKeyWallets = wallets.local.filter(
     (w) => w.type === KeyringWalletType.SingleAccountWallet
   );
-
-  useEffect(() => {
-    const getAssets = async () => {
-      await accountController.assetsController.fetchSupportedAssets();
-    };
-    if (!supportedAssets.data) {
-      getAssets();
-    }
-  }, []);
 
   const onBuyPressed = () => {
     linkTo('/buyList');

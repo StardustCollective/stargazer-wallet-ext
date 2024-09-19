@@ -141,7 +141,7 @@ const AssetListContainer: FC<IAssetListContainer> = ({ navigation }) => {
     if (value) {
       // Add asset
       if (!assetExists) {
-        accountController.assetsController.addERC20AssetFn(assetInfo);
+        accountController.assetsController.addAssetFn(assetInfo);
       }
     } else {
       // Remove asset

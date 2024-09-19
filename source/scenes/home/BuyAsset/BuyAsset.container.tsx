@@ -24,7 +24,7 @@ import { open } from 'utils/browser';
 // Types
 ///////////////////////////
 
-import IAssetListState from 'state/assets/types';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { RootState } from 'state/store';
 import IProvidersState, {
   GetBestDealRequest,
@@ -40,9 +40,10 @@ import {
   C14_CLIENT_ID,
   SIMPLEX_FORM_SUBMISSION_URL,
 } from 'constants/index';
-import IVaultState from 'state/vault/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import { getAccountController } from 'utils/controllersUtils';
 import { IMenuItem } from 'components/Menu/types';
+import { getDagAddress, getEthAddress } from 'utils/wallet';
 
 ///////////////////////////
 // Constants
@@ -59,17 +60,23 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const assetId = route.params.selected;
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
+  const { defaultTokens }: IProvidersState = useSelector(
+    (state: RootState) => state.providers
+  );
   const { supportedAssets, response, list, selected, paymentRequest }: IProvidersState =
     useSelector((state: RootState) => state.providers);
-  const selectedAsset = assets[assetId];
+  const selectedAsset: IAssetInfoState =
+    assets[assetId] ?? defaultTokens?.data[assetId] ?? ({} as IAssetInfoState);
   const [amount, setAmount] = useState<string>(INITIAL_AMOUNT);
   const [message, setMessage] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const [onlyDelete, setOnlyDelete] = useState<boolean>(false);
   const [isProviderSelectorOpen, setIsProviderSelectorOpen] = useState<boolean>(false);
   const accountController = getAccountController();
   const { bestDealCompleted } = response;
+  const buttonLoading = paymentRequest.loading || loading;
 
   const isProviderSupported = (providerId: string) => {
     return !!supportedAssets?.data?.find(
@@ -86,9 +93,16 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   const selectedProviderSupported = isProviderSupported(selected.id);
   const isErrorMessage = !!message && !message.includes('≈');
 
-  const getActiveAddress = (): string | undefined => {
-    const currentAsset = activeWallet.assets.find((asset) => asset.id === assetId);
-    return currentAsset?.address;
+  const getActiveAddress = (): string | null => {
+    if (selectedAsset.type === AssetType.Constellation) {
+      return getDagAddress(activeWallet);
+    }
+
+    if ([AssetType.Ethereum, AssetType.ERC20].includes(selectedAsset.type)) {
+      return getEthAddress(activeWallet);
+    }
+
+    return null;
   };
 
   useEffect(() => {
@@ -96,6 +110,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
 
     return () => {
       accountController.assetsController.clearBestDeal();
+      accountController.assetsController.clearResponse();
     };
   }, []);
 
@@ -188,6 +203,9 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
     } else {
       if (selectedProviderSupported && bestDealCompleted) {
         getQuote(selected.id as Providers, floatAmount);
+      }
+      if (!selectedProviderSupported) {
+        setButtonDisabled(true);
       }
     }
   }, [amount, selected, selectedProviderSupported, bestDealCompleted]);
@@ -287,37 +305,49 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
   };
 
   const confirmC14 = async () => {
-    const url = generateC14Link(
-      C14_CLIENT_ID,
-      amount,
-      getActiveAddress(),
-      getTokenId(Providers.C14)
-    );
+    const address = getActiveAddress();
+    const tokenId = getTokenId(Providers.C14);
+    if (!address || !tokenId) return;
+
+    const url = generateC14Link(C14_CLIENT_ID, amount, address, tokenId);
     await open(url);
   };
 
   const confirmSimplex = async () => {
+    const address = getActiveAddress();
+    const tokenId = getTokenId(Providers.Simplex);
+    const quote_id = response?.data?.quote_id;
+    const user_id = response?.data?.user_id;
+    if (!address || !tokenId || !quote_id || !user_id) return;
+
     const requestData: PaymentRequestBody = {
-      provider: selected.id,
-      address: getActiveAddress() || '',
-      digital_currency: selectedAsset.symbol,
-      quote_id: response?.data?.quote_id,
-      user_id: response?.data?.user_id,
+      provider: Providers.Simplex,
+      address,
+      digital_currency: tokenId,
+      quote_id,
+      user_id,
     };
     await accountController.assetsController.fetchPaymentRequest(requestData);
   };
 
   const handleConfirm = async () => {
-    switch (selected.id) {
-      case Providers.C14:
-        await confirmC14();
-        return;
-      case Providers.Simplex:
-        await confirmSimplex();
-        return;
-      default:
-        return;
-    }
+    setLoading(true);
+    // Asset will be added only if it doesn't exist as an active asset.
+    await accountController.assetsController.addAssetFn(selectedAsset);
+    setTimeout(async () => {
+      switch (selected.id) {
+        case Providers.C14:
+          await confirmC14();
+          setLoading(false);
+          return;
+        case Providers.Simplex:
+          await confirmSimplex();
+          setLoading(false);
+          return;
+        default:
+          return;
+      }
+    }, 2000);
   };
 
   const handleProviderSwitch = (provider: IProviderInfoState) => {
@@ -351,7 +381,7 @@ const BuyAssetContainer: FC<IBuyAssetContainer> = ({ navigation, route }) => {
         message={message}
         isErrorMessage={isErrorMessage}
         buttonDisabled={buttonDisabled}
-        buttonLoading={paymentRequest.loading}
+        buttonLoading={buttonLoading}
         handleItemClick={handleItemClick}
         handleConfirm={handleConfirm}
         provider={selected}

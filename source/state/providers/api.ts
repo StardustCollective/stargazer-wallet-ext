@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
+  GET_DEFAULT_TOKENS,
   GET_QUOTE_API,
   GET_SUPPORTED_ASSETS_API,
   PAYMENT_REQUEST_API,
@@ -7,6 +8,7 @@ import {
 import { STARGAZER_API_KEY } from 'utils/envUtil';
 import { v4 as uuid } from 'uuid';
 import {
+  GetDefaultTokensResponse,
   GetQuoteRequest,
   GetQuoteResponse,
   GetSupportedAssetsResponse,
@@ -106,6 +108,14 @@ export const getSupportedAssets = createAsyncThunk(
   'providers/getSupportedAssets',
   async (): Promise<GetSupportedAssetsResponse | any> => {
     const response = await fetch(`${GET_SUPPORTED_ASSETS_API}/all`);
+    return response.json();
+  }
+);
+
+export const getDefaultTokens = createAsyncThunk(
+  'providers/getDefaultTokens',
+  async (): Promise<GetDefaultTokensResponse | any> => {
+    const response = await fetch(GET_DEFAULT_TOKENS);
     return response.json();
   }
 );

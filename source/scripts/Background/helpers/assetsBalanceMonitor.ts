@@ -191,14 +191,19 @@ export class AssetsBalanceMonitor {
   }
 
   async refreshDagBalance() {
+    const { defaultTokens } = store.getState().providers;
     const { balances, activeNetwork } = store.getState().vault;
     const { assets } = store.getState();
+
+    const allAssets = !!defaultTokens?.data
+      ? { ...defaultTokens.data, ...assets }
+      : assets;
 
     try {
       // Hotfix: Use block explorer API directly.
       const { address } = dag4.account;
 
-      const l0assets = Object.values(assets).filter(
+      const l0assets = Object.values(allAssets).filter(
         (asset) =>
           !!asset?.l0endpoint &&
           !!asset?.l1endpoint &&
@@ -245,10 +250,21 @@ export class AssetsBalanceMonitor {
   }
 
   private startMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
-    const { assets } = store.getState();
+    const { assets, providers } = store.getState();
     const networksList = Object.keys(activeNetwork);
     const chainsList = Object.values(activeNetwork);
     const EVM_CHAINS = getAllEVMChains();
+    const defaultTokens = !!providers?.defaultTokens?.data
+      ? Object.values(providers.defaultTokens.data)
+      : [];
+    const defaultTokensIds = !!defaultTokens?.length
+      ? defaultTokens.map((token) => token.id)
+      : [];
+
+    const activeTokens = activeWallet.assets
+      .map((a) => assets[a.id])
+      .filter((a) => !defaultTokensIds.includes(a.id));
+    const allTokens = [...defaultTokens, ...activeTokens];
 
     // Remove Constellation chain
     networksList.shift();
@@ -260,12 +276,12 @@ export class AssetsBalanceMonitor {
       const chainInfo = EVM_CHAINS[chainId];
 
       // TODO-349: Check if tokens are filtered correctly
-      const chainTokens = activeWallet.assets
-        .filter((a) => {
-          return a.type === AssetType.ERC20 && assets[a.id]?.network === chainId;
+      const chainTokens = allTokens
+        .filter((token) => {
+          return token.type === AssetType.ERC20 && token.network === chainId;
         })
-        .map((a) => {
-          const { address, decimals, network } = assets[a.id];
+        .map((token) => {
+          const { address, decimals, network } = token;
           return { contractAddress: address, decimals, chain: network };
         });
 

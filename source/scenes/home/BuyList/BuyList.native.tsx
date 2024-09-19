@@ -32,10 +32,8 @@ import styles from './styles';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 const ACTIVITY_INDICATOR_SIZE = 'small';
 
-const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
+const BuyList: FC<IBuyList> = ({ assets, loading, handleSelectAsset }) => {
   const renderAssetList = () => {
-    const assets = supportedAssets?.data;
-
     return (
       <>
         {assets ? (
@@ -46,7 +44,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
                 key={asset.id}
                 asset={asset}
                 assetInfo={asset}
-                itemClicked={() => handleSelectAsset(asset.id)}
+                itemClicked={() => handleSelectAsset(asset)}
               />
             );
           })
@@ -69,7 +67,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
       style={styles.scrollView}
       contentContainerStyle={styles.scrollViewContentContainer}
     >
-      {supportedAssets?.loading ? (
+      {loading ? (
         <ActivityIndicator
           style={styles.loadingContainer}
           size={ACTIVITY_INDICATOR_SIZE}

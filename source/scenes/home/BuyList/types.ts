@@ -1,6 +1,7 @@
-import { ISupportedAssetsFiltered } from 'state/providers/types';
+import { IAssetInfoState } from 'state/assets/types';
 
 export interface IBuyList {
-  supportedAssets: ISupportedAssetsFiltered;
-  handleSelectAsset: (assetId: string) => void;
+  assets: IAssetInfoState[];
+  loading: boolean;
+  handleSelectAsset: (asset: IAssetInfoState) => void;
 }

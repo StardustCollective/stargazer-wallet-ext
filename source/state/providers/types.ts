@@ -22,15 +22,17 @@ export interface ISupportedAssetsState {
   error: any;
 }
 
-export interface ISupportedAssetsFiltered {
-  loading: boolean;
-  data: IAssetInfoState[];
-  error: any;
-}
-
 export interface IPaymentRequestState {
   loading: boolean;
   data: any;
+  error: any;
+}
+
+export interface IDefaultTokensState {
+  loading: boolean;
+  data: {
+    [assetId: string]: IAssetInfoState;
+  } | null;
   error: any;
 }
 
@@ -44,6 +46,7 @@ export default interface IProvidersState {
   selected: IProviderInfoState;
   supportedAssets: ISupportedAssetsState;
   list: IProvidersListState;
+  defaultTokens: IDefaultTokensState;
 }
 
 export type GetQuoteRequest = {
@@ -97,6 +100,12 @@ export type GetSupportedAssetsResponse = {
   data: StargazerProviderAsset[];
 };
 
+export type GetDefaultTokensResponse = {
+  data: {
+    [assetId: string]: IAssetInfoState;
+  };
+};
+
 export enum ProviderNetwork {
   Constellation = 'constellation',
   Ethereum = 'ethereum',
@@ -109,3 +118,11 @@ export enum Providers {
   Simplex = 'simplex',
   C14 = 'c14',
 }
+
+export const MapProviderNetwork = {
+  [ProviderNetwork.Constellation]: 'main2',
+  [ProviderNetwork.Ethereum]: 'mainnet',
+  [ProviderNetwork.Polygon]: 'matic',
+  [ProviderNetwork.Avalanche]: 'avalanche-mainnet',
+  [ProviderNetwork.BSC]: 'bsc',
+};
