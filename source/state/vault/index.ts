@@ -17,7 +17,6 @@ import {
 import findIndex from 'lodash/findIndex';
 import { IAssetInfoState } from 'state/assets/types';
 import IVaultState, {
-  AssetBalances,
   AssetType,
   IAssetState,
   IWalletState,
@@ -165,8 +164,14 @@ const VaultState = createSlice({
     updateRewards(state: IVaultState, action: PayloadAction<{ txs: Reward[] }>) {
       state.activeAsset.rewards = action.payload.txs;
     },
-    updateBalances(state: IVaultState, action: PayloadAction<AssetBalances>) {
-      state.balances = action.payload;
+    updateBalances(
+      state: IVaultState,
+      action: PayloadAction<{ [assetKey: string]: string }>
+    ) {
+      state.balances = {
+        ...state.balances,
+        ...action.payload,
+      };
     },
     addActiveWalletAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
       state.activeWallet.assets = state.activeWallet.assets.concat([action.payload]);

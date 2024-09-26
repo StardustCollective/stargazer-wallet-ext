@@ -37,7 +37,6 @@ export class AssetsBalanceMonitor {
   constructor() {
     // 349: New network should be added here.
     this.accountTrackerList = {
-      [KeyringNetwork.Constellation]: new AccountTracker(),
       [KeyringNetwork.Ethereum]: new AccountTracker(),
       Polygon: new AccountTracker(),
       Avalanche: new AccountTracker(),
@@ -48,49 +47,45 @@ export class AssetsBalanceMonitor {
   async start() {
     const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
 
-    if (activeWallet) {
-      let hasDAG = false;
-      let hasETH = false;
+    if (!activeWallet) return;
 
-      activeWallet.assets.forEach((a) => {
-        hasDAG =
-          hasDAG ||
-          a.type === AssetType.Constellation ||
-          a.type === AssetType.LedgerConstellation;
-        hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
-      });
+    let hasDAG = false;
+    let hasETH = false;
 
-      if (hasDAG) {
-        // TODO-421: Check observeMemPoolChange and startMonitor
-        this.subscription = dag4.monitor
-          .observeMemPoolChange()
-          .subscribe((up) => this.pollPendingTxs(up));
-        dag4.monitor.startMonitor();
+    activeWallet.assets.forEach((a) => {
+      hasDAG =
+        hasDAG ||
+        a.type === AssetType.Constellation ||
+        a.type === AssetType.LedgerConstellation;
+      hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
+    });
 
-        if (this.dagBalIntervalId) {
-          clearInterval(this.dagBalIntervalId);
-        }
+    await this.utils.updateFiat();
 
-        this.dagBalIntervalId = setInterval(
-          () => this.refreshDagBalance(),
-          THIRTY_SECONDS
-        );
-        setTimeout(() => {
-          this.refreshDagBalance();
-        }, 100);
+    if (hasDAG) {
+      // TODO-421: Check observeMemPoolChange and startMonitor
+      this.subscription = dag4.monitor
+        .observeMemPoolChange()
+        .subscribe((up) => this.pollPendingTxs(up));
+      dag4.monitor.startMonitor();
+
+      if (this.dagBalIntervalId) {
+        clearInterval(this.dagBalIntervalId);
       }
 
-      if (hasETH) {
-        this.startMonitor(activeWallet, activeNetwork);
-      }
-
-      if (this.priceIntervalId) {
-        clearInterval(this.priceIntervalId);
-      }
-
-      this.utils.updateFiat();
-      this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
+      this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), THIRTY_SECONDS);
+      await this.refreshDagBalance();
     }
+
+    if (hasETH) {
+      this.refreshETHBalance(activeWallet, activeNetwork);
+    }
+
+    if (this.priceIntervalId) {
+      clearInterval(this.priceIntervalId);
+    }
+
+    this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
   }
 
   stop() {
@@ -192,7 +187,7 @@ export class AssetsBalanceMonitor {
 
   async refreshDagBalance() {
     const { defaultTokens } = store.getState().providers;
-    const { balances, activeNetwork } = store.getState().vault;
+    const { activeNetwork } = store.getState().vault;
     const { assets } = store.getState();
 
     const allAssets = !!defaultTokens?.data
@@ -216,7 +211,6 @@ export class AssetsBalanceMonitor {
 
       store.dispatch(
         updateBalances({
-          ...balances,
           ...l0balances,
           [AssetType.Constellation]: balanceString,
         })
@@ -249,7 +243,7 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  private startMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
+  refreshETHBalance(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
     const { assets, providers } = store.getState();
     const networksList = Object.keys(activeNetwork);
     const chainsList = Object.values(activeNetwork);
@@ -298,10 +292,8 @@ export class AssetsBalanceMonitor {
           chainTokens,
           chainInfo.chainId,
           (mainAssetBalance, tokenBals) => {
-            const { balances } = store.getState().vault;
             store.dispatch(
               updateBalances({
-                ...balances,
                 [MainAssetType]: mainAssetBalance || '-',
                 ...tokenBals,
               })
