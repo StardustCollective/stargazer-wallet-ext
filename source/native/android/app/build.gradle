@@ -135,8 +135,8 @@ android {
         applicationId "com.stargazer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 79
-        versionName "3.0.1"
+        versionCode 82
+        versionName "3.0.2"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     lintOptions {
@@ -199,6 +199,8 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    implementation 'com.facebook.soloader:soloader:0.10.5'
 
     implementation ("androidx.appcompat:appcompat:1.3.1") {
         version {
