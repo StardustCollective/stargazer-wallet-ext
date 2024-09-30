@@ -37,7 +37,6 @@ export class AssetsBalanceMonitor {
   constructor() {
     // 349: New network should be added here.
     this.accountTrackerList = {
-      [KeyringNetwork.Constellation]: new AccountTracker(),
       [KeyringNetwork.Ethereum]: new AccountTracker(),
       Polygon: new AccountTracker(),
       Avalanche: new AccountTracker(),
@@ -48,49 +47,45 @@ export class AssetsBalanceMonitor {
   async start() {
     const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
 
-    if (activeWallet) {
-      let hasDAG = false;
-      let hasETH = false;
+    if (!activeWallet) return;
 
-      activeWallet.assets.forEach((a) => {
-        hasDAG =
-          hasDAG ||
-          a.type === AssetType.Constellation ||
-          a.type === AssetType.LedgerConstellation;
-        hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
-      });
+    let hasDAG = false;
+    let hasETH = false;
 
-      if (hasDAG) {
-        // TODO-421: Check observeMemPoolChange and startMonitor
-        this.subscription = dag4.monitor
-          .observeMemPoolChange()
-          .subscribe((up) => this.pollPendingTxs(up));
-        dag4.monitor.startMonitor();
+    activeWallet.assets.forEach((a) => {
+      hasDAG =
+        hasDAG ||
+        a.type === AssetType.Constellation ||
+        a.type === AssetType.LedgerConstellation;
+      hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
+    });
 
-        if (this.dagBalIntervalId) {
-          clearInterval(this.dagBalIntervalId);
-        }
+    await this.utils.updateFiat();
 
-        this.dagBalIntervalId = setInterval(
-          () => this.refreshDagBalance(),
-          THIRTY_SECONDS
-        );
-        setTimeout(() => {
-          this.refreshDagBalance();
-        }, 100);
+    if (hasDAG) {
+      // TODO-421: Check observeMemPoolChange and startMonitor
+      this.subscription = dag4.monitor
+        .observeMemPoolChange()
+        .subscribe((up) => this.pollPendingTxs(up));
+      dag4.monitor.startMonitor();
+
+      if (this.dagBalIntervalId) {
+        clearInterval(this.dagBalIntervalId);
       }
 
-      if (hasETH) {
-        this.startMonitor(activeWallet, activeNetwork);
-      }
-
-      if (this.priceIntervalId) {
-        clearInterval(this.priceIntervalId);
-      }
-
-      this.utils.updateFiat();
-      this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
+      this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), THIRTY_SECONDS);
+      await this.refreshDagBalance();
     }
+
+    if (hasETH) {
+      this.refreshETHBalance(activeWallet, activeNetwork);
+    }
+
+    if (this.priceIntervalId) {
+      clearInterval(this.priceIntervalId);
+    }
+
+    this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
   }
 
   stop() {
@@ -191,14 +186,19 @@ export class AssetsBalanceMonitor {
   }
 
   async refreshDagBalance() {
-    const { balances, activeNetwork } = store.getState().vault;
+    const { defaultTokens } = store.getState().providers;
+    const { activeNetwork } = store.getState().vault;
     const { assets } = store.getState();
+
+    const allAssets = !!defaultTokens?.data
+      ? { ...defaultTokens.data, ...assets }
+      : assets;
 
     try {
       // Hotfix: Use block explorer API directly.
       const { address } = dag4.account;
 
-      const l0assets = Object.values(assets).filter(
+      const l0assets = Object.values(allAssets).filter(
         (asset) =>
           !!asset?.l0endpoint &&
           !!asset?.l1endpoint &&
@@ -211,7 +211,6 @@ export class AssetsBalanceMonitor {
 
       store.dispatch(
         updateBalances({
-          ...balances,
           ...l0balances,
           [AssetType.Constellation]: balanceString,
         })
@@ -244,11 +243,22 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  private startMonitor(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
-    const { assets } = store.getState();
+  refreshETHBalance(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
+    const { assets, providers } = store.getState();
     const networksList = Object.keys(activeNetwork);
     const chainsList = Object.values(activeNetwork);
     const EVM_CHAINS = getAllEVMChains();
+    const defaultTokens = !!providers?.defaultTokens?.data
+      ? Object.values(providers.defaultTokens.data)
+      : [];
+    const defaultTokensIds = !!defaultTokens?.length
+      ? defaultTokens.map((token) => token.id)
+      : [];
+
+    const activeTokens = activeWallet.assets
+      .map((a) => assets[a.id])
+      .filter((a) => !defaultTokensIds.includes(a.id));
+    const allTokens = [...defaultTokens, ...activeTokens];
 
     // Remove Constellation chain
     networksList.shift();
@@ -260,12 +270,12 @@ export class AssetsBalanceMonitor {
       const chainInfo = EVM_CHAINS[chainId];
 
       // TODO-349: Check if tokens are filtered correctly
-      const chainTokens = activeWallet.assets
-        .filter((a) => {
-          return a.type === AssetType.ERC20 && assets[a.id]?.network === chainId;
+      const chainTokens = allTokens
+        .filter((token) => {
+          return token.type === AssetType.ERC20 && token.network === chainId;
         })
-        .map((a) => {
-          const { address, decimals, network } = assets[a.id];
+        .map((token) => {
+          const { address, decimals, network } = token;
           return { contractAddress: address, decimals, chain: network };
         });
 
@@ -282,10 +292,8 @@ export class AssetsBalanceMonitor {
           chainTokens,
           chainInfo.chainId,
           (mainAssetBalance, tokenBals) => {
-            const { balances } = store.getState().vault;
             store.dispatch(
               updateBalances({
-                ...balances,
                 [MainAssetType]: mainAssetBalance || '-',
                 ...tokenBals,
               })

@@ -1,6 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { C14_LOGO, SIMPLEX_LOGO } from 'constants/index';
-import { getBestDeal, getQuote, getSupportedAssets, paymentRequest } from './api';
+import {
+  getBestDeal,
+  getDefaultTokens,
+  getQuote,
+  getSupportedAssets,
+  paymentRequest,
+} from './api';
 import IProvidersState, {
   GetQuoteResponse,
   IProviderInfoState,
@@ -21,6 +27,11 @@ export const initialState: IProvidersState = {
     error: null,
   },
   paymentRequest: {
+    loading: false,
+    data: null,
+    error: null,
+  },
+  defaultTokens: {
     loading: false,
     data: null,
     error: null,
@@ -59,6 +70,9 @@ const ProviderListState = createSlice({
       state.response.error = null;
       state.paymentRequest.error = null;
       state.supportedAssets.error = null;
+    },
+    clearResponse(state: IProvidersState) {
+      state.response = initialState.response;
     },
     clearBestDeal(state: IProvidersState) {
       state.response.bestDealCompleted = false;
@@ -180,6 +194,23 @@ const ProviderListState = createSlice({
       state.response.data = null;
       state.response.error = action.payload;
     });
+    builder.addCase(getDefaultTokens.pending, (state) => {
+      state.defaultTokens.loading = true;
+      state.defaultTokens.data = null;
+      state.defaultTokens.error = null;
+    });
+    builder.addCase(getDefaultTokens.fulfilled, (state, action) => {
+      const error = action.payload?.message ? action.payload : null;
+      const data = action.payload?.data ? action.payload.data : null;
+      state.defaultTokens.loading = false;
+      state.defaultTokens.data = data;
+      state.defaultTokens.error = error;
+    });
+    builder.addCase(getDefaultTokens.rejected, (state, action) => {
+      state.defaultTokens.loading = false;
+      state.defaultTokens.data = null;
+      state.defaultTokens.error = action.payload;
+    });
   },
 });
 
@@ -189,6 +220,7 @@ export const {
   setRequestId,
   clearPaymentRequest,
   clearBestDeal,
+  clearResponse,
   setSelectedProvider,
 } = ProviderListState.actions;
 

@@ -2,7 +2,7 @@
 // Modules
 ///////////////////////////
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 
@@ -31,6 +31,8 @@ import screens from '../screens';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import defaultHeader from 'navigation/headers/default';
+import IProvidersState from 'state/providers/types';
+import { getAccountController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Constants
@@ -42,6 +44,19 @@ const Root = () => {
   const { wallets, hasEncryptedVault, migrateWallet }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+  const { supportedAssets }: IProvidersState = useSelector(
+    (state: RootState) => state.providers
+  );
+  const accountController = getAccountController();
+
+  useEffect(() => {
+    const getAssets = async () => {
+      await accountController.assetsController.fetchSupportedAssets();
+    };
+    if (!supportedAssets.data) {
+      getAssets();
+    }
+  }, []);
 
   const isAuthorized =
     migrateWallet ||

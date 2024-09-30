@@ -7,6 +7,7 @@ import {
 } from 'constants/index';
 import IAssetListState from 'state/assets/types';
 import IVaultState from '../../../state/vault/types';
+import IProvidersState from 'state/providers/types';
 
 export interface IControllerUtils {
   appRoute: (newRoute?: string) => string;
@@ -23,30 +24,37 @@ const ControllerUtils = (): IControllerUtils => {
     return route;
   };
 
+  const buildAssetIdsParam = (assetIds: string, defaultIds: string[]): string => {
+    let updatedIds = assetIds;
+
+    for (const id of defaultIds) {
+      if (!updatedIds.includes(id)) {
+        updatedIds = updatedIds.concat(`,${id}`);
+      }
+    }
+
+    return updatedIds;
+  };
+
   const updateFiat = async (currency = DEFAULT_CURRENCY.id) => {
     try {
+      const { defaultTokens }: IProvidersState = store.getState().providers;
       const { activeWallet }: IVaultState = store.getState().vault;
       const assets: IAssetListState = store.getState().assets;
-      if (activeWallet && assets) {
+      if (activeWallet && assets && !!defaultTokens?.data) {
         let assetIds = activeWallet.assets
           .filter((a) => !!assets[a.id]?.priceId)
           .map((a) => assets[a.id]?.priceId)
           .join(',');
 
-        // Always fetch price of BNB, MATIC and AVAX
-        if (!assetIds.includes('binancecoin')) {
-          assetIds = assetIds.concat(',binancecoin');
-        }
-        if (!assetIds.includes('avalanche-2')) {
-          assetIds = assetIds.concat(',avalanche-2');
-        }
-        if (!assetIds.includes('matic-network')) {
-          assetIds = assetIds.concat(',matic-network');
-        }
+        const defaultIds = Object.values(defaultTokens.data)
+          .filter((a) => a.priceId)
+          .map((a) => a.priceId);
 
+        assetIds = buildAssetIdsParam(assetIds, defaultIds);
         const data = await (
           await fetch(
-            `${ASSET_PRICE_API}?ids=${assetIds},bitcoin&vs_currencies=${currency}&include_24hr_change=true&${COINGECKO_API_KEY_PARAM}`
+            `${ASSET_PRICE_API}?ids=${assetIds}&vs_currencies=${currency}&include_24hr_change=true&${COINGECKO_API_KEY_PARAM}`
           )
         ).json();
         store.dispatch(

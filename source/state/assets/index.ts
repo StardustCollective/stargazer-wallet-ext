@@ -165,12 +165,12 @@ const AssetListState = createSlice({
     rehydrate(_: IAssetListState, action: PayloadAction<IAssetListState>) {
       return action.payload;
     },
-    addERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
+    addAsset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
       if (action.payload.id) {
         state[action.payload.id] = action.payload;
       }
     },
-    removeERC20Asset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
+    removeAsset(state: IAssetListState, action: PayloadAction<IAssetInfoState>) {
       if (action.payload.id) {
         delete state[action.payload.id];
       }
@@ -186,7 +186,7 @@ const AssetListState = createSlice({
   },
 });
 
-export const { addERC20Asset, removeERC20Asset, updateAssetDecimals, rehydrate } =
+export const { addAsset, removeAsset, updateAssetDecimals, rehydrate } =
   AssetListState.actions;
 
 export default AssetListState.reducer;

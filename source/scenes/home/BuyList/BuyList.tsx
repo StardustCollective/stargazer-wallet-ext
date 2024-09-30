@@ -26,10 +26,8 @@ import styles from './BuyList.scss';
 import { IBuyList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
 
-const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
+const BuyList: FC<IBuyList> = ({ assets, loading, handleSelectAsset }) => {
   const renderAssetList = () => {
-    const assets = supportedAssets?.data;
-
     return (
       <>
         {assets ? (
@@ -40,7 +38,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
                 key={asset.id}
                 asset={asset}
                 assetInfo={asset}
-                itemClicked={() => handleSelectAsset(asset.id)}
+                itemClicked={() => handleSelectAsset(asset)}
               />
             );
           })
@@ -59,7 +57,7 @@ const BuyList: FC<IBuyList> = ({ supportedAssets, handleSelectAsset }) => {
 
   return (
     <div className={styles.container}>
-      {supportedAssets?.loading ? (
+      {loading ? (
         <div className={styles.loaderContainer}>
           <CircularProgress size={18} />
         </div>

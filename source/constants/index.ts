@@ -432,6 +432,7 @@ const PROVIDERS_BASE_URL = isProd
 export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/v3/quote`;
 export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;
 export const GET_SUPPORTED_ASSETS_API = `${PROVIDERS_BASE_URL}/v3/supported-assets`;
+export const GET_DEFAULT_TOKENS = `${PROVIDERS_BASE_URL}/default-tokens`;
 const SIMPLEX_FORM_BASE_URL = 'https://stargazer-assets.s3.us-east-2.amazonaws.com';
 const SIMPLEX_FORM_SUBMISSION_URL_WEB = isProd
   ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.html?payment_id=`

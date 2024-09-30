@@ -18,42 +18,69 @@ import BuyList from './BuyList';
 ///////////////////////////
 
 import { RootState } from 'state/store';
-import IProvidersState from 'state/providers/types';
-import IVaultState from 'state/vault/types';
-import IAssetListState from 'state/assets/types';
+import IProvidersState, { MapProviderNetwork } from 'state/providers/types';
+import IVaultState, { AssetType } from 'state/vault/types';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
+import { getDagAddress, getEthAddress } from 'utils/wallet';
+import { usePlatformAlert } from 'utils/alertUtil';
+
+const NO_QUOTES = 'There are no quotes available for this token, please try again later!';
 
 const BuyListContainer: FC = () => {
   const linkTo = useLinkTo();
-  const { supportedAssets }: IProvidersState = useSelector(
+  const showAlert = usePlatformAlert();
+  const { supportedAssets, defaultTokens }: IProvidersState = useSelector(
     (state: RootState) => state.providers
   );
   const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-  const supportedAssetsArray = supportedAssets?.data;
-  const assetsFiltered =
-    assets && supportedAssetsArray && Array.isArray(supportedAssetsArray)
-      ? Object.values(assets).filter(
-          (assetValues) =>
-            !!activeWallet?.assets?.find(
-              (asset) =>
-                asset?.id === assetValues?.id &&
-                ['both', 'mainnet', 'bsc', 'avalanche-mainnet', 'matic'].includes(
-                  assetValues?.network
-                )
-            ) &&
-            !!supportedAssetsArray?.find(
-              (simplexItem) => simplexItem?.symbol === assetValues?.symbol
-            )
-        )
-      : [];
+  const loading = supportedAssets.loading || defaultTokens.loading;
+  const supportedAssetsArray = supportedAssets?.data ?? [];
+  const defaultAssets = !!defaultTokens?.data ? Object.values(defaultTokens.data) : [];
+  const defaultAssetsIds = !!defaultAssets?.length
+    ? defaultAssets.map((asset) => asset.id)
+    : [];
 
-  const handleSelectAsset = async (assetId: string) => {
-    linkTo(`/buyAsset?selected=${assetId}`);
+  const buildAssetsList = () => {
+    let activeAssets: IAssetInfoState[] = [];
+    if (!activeWallet?.assets) {
+      activeAssets = [];
+    }
+
+    activeAssets = activeWallet.assets
+      .map((asset) => assets[asset.id])
+      .filter((asset) => {
+        const notDefault = !defaultAssetsIds.includes(asset?.id);
+        const supportedAsset = supportedAssetsArray?.find(
+          (item) =>
+            item?.symbol === asset?.symbol &&
+            MapProviderNetwork[item?.network] === asset?.network
+        );
+
+        return notDefault && !!supportedAsset;
+      });
+
+    return defaultAssets
+      .concat(activeAssets)
+      .filter((asset) =>
+        asset.type === AssetType.Constellation
+          ? !!getDagAddress(activeWallet)
+          : !!getEthAddress(activeWallet)
+      );
   };
 
-  const filteredAssets = {
-    ...supportedAssets,
-    data: assetsFiltered,
+  const allAssets = buildAssetsList();
+
+  const handleSelectAsset = async (asset: IAssetInfoState) => {
+    const supportedAsset = !!supportedAssetsArray?.find(
+      (item) => item?.symbol === asset?.symbol
+    );
+
+    if (supportedAsset) {
+      linkTo(`/buyAsset?selected=${asset.id}`);
+    } else {
+      showAlert(NO_QUOTES, 'danger');
+    }
   };
 
   ///////////////////////////
@@ -62,7 +89,11 @@ const BuyListContainer: FC = () => {
 
   return (
     <Container color={CONTAINER_COLOR.LIGHT} safeArea={false}>
-      <BuyList supportedAssets={filteredAssets} handleSelectAsset={handleSelectAsset} />
+      <BuyList
+        loading={loading}
+        assets={allAssets}
+        handleSelectAsset={handleSelectAsset}
+      />
     </Container>
   );
 };

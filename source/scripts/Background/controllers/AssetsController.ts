@@ -1,4 +1,4 @@
-import { addERC20Asset, removeERC20Asset, updateAssetDecimals } from 'state/assets';
+import { addAsset, removeAsset, updateAssetDecimals } from 'state/assets';
 import store from 'state/store';
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import {
@@ -13,6 +13,7 @@ import {
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import {
   clearBestDeal as clearBestDealDispatch,
+  clearResponse as clearResponseDispatch,
   clearErrors as clearErrorsDispatch,
   clearPaymentRequest as clearPaymentRequestDispatch,
   setRequestId as setRequestIdDispatch,
@@ -20,6 +21,7 @@ import {
 } from 'state/providers';
 import {
   getBestDeal,
+  getDefaultTokens,
   getQuote,
   getSupportedAssets,
   paymentRequest,
@@ -36,10 +38,15 @@ import {
   validateAddress,
 } from './EVMChainController/utils';
 import { getERC20Assets, search } from 'state/erc20assets/api';
-import { addAsset, removeAsset, addCustomAsset } from 'state/vault';
+import {
+  addActiveWalletAsset,
+  removeActiveWalletAsset,
+  addCustomAsset,
+} from 'state/vault';
 import { IAssetInfoState } from 'state/assets/types';
 import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
 import { getAccountController } from 'utils/controllersUtils';
+import { getDagAddress, getEthAddress } from 'utils/wallet';
 
 // Default logos
 const DEFAULT_LOGOS = {
@@ -74,7 +81,7 @@ export interface IAssetsController {
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
   searchERC20Assets: (value: string) => Promise<void>;
-  addERC20AssetFn: (asset: IAssetInfoState) => Promise<void>;
+  addAssetFn: (asset: IAssetInfoState) => Promise<void>;
   removeERC20AssetFn: (asset: IAssetInfoState) => void;
   clearSearchAssets: () => void;
   fetchQuote: (data: GetQuoteRequest) => Promise<void>;
@@ -83,6 +90,7 @@ export interface IAssetsController {
   setRequestId: (value: string) => void;
   clearErrors: () => void;
   clearBestDeal: () => void;
+  clearResponse: () => void;
   setSelectedProvider: (provider: IProviderInfoState) => void;
   clearPaymentRequest: () => void;
 }
@@ -145,9 +153,9 @@ const AssetsController = (): IAssetsController => {
     )?.address;
     if (!asset && !assetCustom) {
       store.dispatch(addCustomAsset(newL0Asset));
-      store.dispatch(addERC20Asset(newL0Asset));
+      store.dispatch(addAsset(newL0Asset));
       store.dispatch(
-        addAsset({
+        addActiveWalletAsset({
           id: newL0Asset.id,
           type: newL0Asset.type,
           label: newL0Asset.label,
@@ -208,7 +216,7 @@ const AssetsController = (): IAssetsController => {
     const asset = Object.keys(assets).find((assetId) => assetId === newAsset.id);
     if (!asset) {
       store.dispatch(addCustomAsset(newAsset));
-      addERC20AssetFn(newAsset);
+      addAssetFn(newAsset);
     }
   };
 
@@ -216,40 +224,51 @@ const AssetsController = (): IAssetsController => {
     removeERC20AssetFn(asset);
   };
 
-  const addERC20AssetFn = async (asset: IAssetInfoState): Promise<void> => {
+  const addAssetFn = async (asset: IAssetInfoState): Promise<void> => {
     const accountController = getAccountController();
+    const assets = store.getState().assets;
+    const assetExist = assets[asset.id];
+    if (!!assetExist) {
+      return;
+    }
+
     const { activeWallet } = store.getState().vault;
-    const ethAddress = activeWallet?.assets?.find(
-      (asset) => asset.type === AssetType.Ethereum
-    )?.address;
-    store.dispatch(addERC20Asset(asset));
+    const isDagAsset = AssetType.Constellation === asset.type;
+    const address = isDagAsset
+      ? getDagAddress(activeWallet)
+      : getEthAddress(activeWallet);
+
+    store.dispatch(addAsset(asset));
     store.dispatch(
-      addAsset({
+      addActiveWalletAsset({
         id: asset.id,
         type: asset.type,
         label: asset.label,
-        address: ethAddress,
+        address,
         contractAddress: asset.address,
       })
     );
-    const assetInfo = await accountController.networkController.getTokenInfo(
-      asset.address,
-      asset.network
-    );
-    if (assetInfo && assetInfo.decimals !== asset.decimals) {
-      store.dispatch(
-        updateAssetDecimals({ assetId: asset.id, decimals: assetInfo.decimals })
+    if (!isDagAsset) {
+      const assetInfo = await accountController.networkController.getTokenInfo(
+        asset.address,
+        asset.network
       );
+      if (assetInfo && assetInfo.decimals !== asset.decimals) {
+        store.dispatch(
+          updateAssetDecimals({ assetId: asset.id, decimals: assetInfo.decimals })
+        );
+      }
     }
     await accountController.assetsBalanceMonitor.start();
   };
 
   const removeERC20AssetFn = (asset: IAssetInfoState): void => {
+    store.dispatch(removeActiveWalletAsset(asset));
     store.dispatch(removeAsset(asset));
-    store.dispatch(removeERC20Asset(asset));
   };
 
   const fetchSupportedAssets = async (): Promise<void> => {
+    await store.dispatch<any>(getDefaultTokens());
     await store.dispatch<any>(getSupportedAssets());
   };
 
@@ -263,6 +282,9 @@ const AssetsController = (): IAssetsController => {
 
   const clearBestDeal = (): void => {
     store.dispatch<any>(clearBestDealDispatch());
+  };
+  const clearResponse = (): void => {
+    store.dispatch<any>(clearResponseDispatch());
   };
 
   const fetchPaymentRequest = async (data: PaymentRequestBody): Promise<void> => {
@@ -294,7 +316,7 @@ const AssetsController = (): IAssetsController => {
     searchERC20Assets,
     clearSearchAssets,
     fetchERC20Assets,
-    addERC20AssetFn,
+    addAssetFn,
     removeERC20AssetFn,
     fetchQuote,
     fetchBestDeal,
@@ -304,6 +326,7 @@ const AssetsController = (): IAssetsController => {
     clearErrors,
     clearPaymentRequest,
     clearBestDeal,
+    clearResponse,
   };
 };
 

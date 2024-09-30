@@ -16,11 +16,10 @@ import AssetButtons from './AssetButtons';
 // Types
 ///////////////////////////
 
-import IProvidersState from 'state/providers/types';
+import IProvidersState, { MapProviderNetwork } from 'state/providers/types';
 import { RootState } from 'state/store';
 import { IAssetButtonsContainer } from './types';
 import IAssetListState from 'state/assets/types';
-import IVaultState from 'state/vault/types';
 
 const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({
   setShowQrCode,
@@ -32,29 +31,19 @@ const AssetButtonsContainer: FC<IAssetButtonsContainer> = ({
   ///////////////////////////
 
   const linkTo = useLinkTo();
-  const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const { supportedAssets }: IProvidersState = useSelector(
     (state: RootState) => state.providers
   );
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-  const supportedAssetsArray = supportedAssets?.data;
-  const assetsFiltered =
-    assets && supportedAssetsArray && Array.isArray(supportedAssetsArray)
-      ? Object.values(assets).filter(
-          (assetValues) =>
-            !!activeWallet?.assets?.find(
-              (asset) =>
-                asset?.id === assetValues?.id &&
-                ['both', 'mainnet', 'bsc', 'avalanche-mainnet', 'matic'].includes(
-                  assetValues?.network
-                )
-            ) &&
-            !!supportedAssetsArray?.find(
-              (simplexItem) => simplexItem?.symbol === assetValues?.symbol
-            )
-        )
-      : [];
-  const assetSupported = !!assetsFiltered?.find((asset) => asset?.id === assetId);
+  const supportedAssetsArray = supportedAssets?.data ?? [];
+  const assetInfo = assets[assetId];
+
+  const assetSupported = !!supportedAssetsArray.find(
+    (asset) =>
+      asset?.symbol === assetInfo?.symbol &&
+      (assetInfo.network === 'both' ||
+        MapProviderNetwork[asset?.network] === assetInfo?.network)
+  );
 
   ///////////////////////////
   // Render
