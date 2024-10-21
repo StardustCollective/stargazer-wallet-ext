@@ -321,7 +321,7 @@ const AssetsController = (): IAssetsController => {
   const fetchElpacaStreak = async (): Promise<void> => {
     const { elpaca } = store.getState().user;
     const { activeWallet } = store.getState().vault;
-    console.log('elpaca', elpaca.claim);
+
     const dagAddress = elpaca?.claim?.data?.address ?? getDagAddress(activeWallet);
     if (!dagAddress) return;
 
