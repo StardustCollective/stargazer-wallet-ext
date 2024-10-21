@@ -16,8 +16,11 @@ import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { toDag } from 'utils/number';
 import { DAG_NETWORK } from 'constants/index';
+import { getDagAddress } from 'utils/wallet';
+import { getElPacaInfo } from 'state/user/api';
 
 const THIRTY_SECONDS = 30 * 1000;
+const SIXTY_SECONDS = 60 * 1000;
 
 export type AccountTrackerList = {
   [network: string]: AccountTracker;
@@ -27,6 +30,8 @@ export class AssetsBalanceMonitor {
   private priceIntervalId: any;
 
   private dagBalIntervalId: any;
+
+  private pacaIntervalId: any;
 
   private accountTrackerList: AccountTrackerList;
 
@@ -73,7 +78,14 @@ export class AssetsBalanceMonitor {
         clearInterval(this.dagBalIntervalId);
       }
 
+      if (this.pacaIntervalId) {
+        clearInterval(this.pacaIntervalId);
+      }
+
       this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), THIRTY_SECONDS);
+      this.pacaIntervalId = setInterval(() => this.refreshPacaStreak(), SIXTY_SECONDS);
+
+      this.refreshPacaStreak();
       await this.refreshDagBalance();
     }
 
@@ -183,6 +195,16 @@ export class AssetsBalanceMonitor {
     );
 
     return l0balances;
+  }
+
+  refreshPacaStreak() {
+    const { elpaca } = store.getState().user;
+    const { activeWallet } = store.getState().vault;
+    const dagAddress = elpaca?.claim?.data?.address ?? getDagAddress(activeWallet);
+
+    if (!dagAddress) return;
+
+    store.dispatch<any>(getElPacaInfo(dagAddress));
   }
 
   async refreshDagBalance() {

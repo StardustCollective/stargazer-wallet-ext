@@ -16,6 +16,8 @@ import {
   QUICKNODE_BSC_TESTNET as quickNodeBSCTestnet,
   QUICKNODE_AVALANCHE_MAINNET as quickNodeAvalancheMainnet,
   QUICKNODE_AVALANCHE_TESTNET as quickNodeAvalancheTestnet,
+  ELPACA_KEY as elpacaKey,
+  ELPACA_VALUE as elpacaValue,
   COINGECKO_API_KEY as coinGeckoApiKey,
 } from '@env';
 
@@ -37,5 +39,7 @@ export const QUICKNODE_BSC_MAINNET = quickNodeBSCMainnet;
 export const QUICKNODE_BSC_TESTNET = quickNodeBSCTestnet;
 export const QUICKNODE_AVALANCHE_MAINNET = quickNodeAvalancheMainnet;
 export const QUICKNODE_AVALANCHE_TESTNET = quickNodeAvalancheTestnet;
+export const ELPACA_KEY = elpacaKey;
+export const ELPACA_VALUE = elpacaValue;
 export const isProd = __DEV__ !== true;
 export const isNative = true;

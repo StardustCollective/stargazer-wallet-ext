@@ -54,6 +54,7 @@ interface IButtonV3Props {
   size?: BUTTON_SIZES_ENUM;
   loading?: boolean;
   loadingColor?: 'inherit' | 'primary' | 'secondary';
+  loadingSize?: number;
   label: string;
   extraStyle?: string;
   extraTitleStyles?: string;
@@ -74,6 +75,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   size = BUTTON_SIZES_ENUM.SMALL,
   loading = false,
   loadingColor = 'inherit',
+  loadingSize = 24,
   label = '',
   extraStyle = '',
   extraTitleStyles = '',
@@ -165,7 +167,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
         </div>
       ) : (
         <div className={styles.loader}>
-          <CircularProgress size={24} color={loadingColor} />
+          <CircularProgress size={loadingSize} color={loadingColor} />
         </div>
       )}
     </button>
