@@ -58,6 +58,7 @@ interface IButtonV3Props {
   label: string;
   extraStyle?: string;
   extraTitleStyles?: string;
+  extraLoaderStyle?: string;
   onClick?: (ev: any) => void;
   submit?: boolean;
   disabled?: boolean;
@@ -79,6 +80,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   label = '',
   extraStyle = '',
   extraTitleStyles = '',
+  extraLoaderStyle = '',
   onClick = () => {},
   submit = false,
   disabled = false,
@@ -166,7 +168,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
           {!!rightIcon && <div className={styles.iconRight}>{rightIcon}</div>}
         </div>
       ) : (
-        <div className={styles.loader}>
+        <div className={clsx([styles.loader, extraLoaderStyle])}>
           <CircularProgress size={loadingSize} color={loadingColor} />
         </div>
       )}

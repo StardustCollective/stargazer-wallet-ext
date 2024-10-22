@@ -25,9 +25,12 @@ const mapElpacaInfo = (
   const secondsSinceLastClaim = (currentEpochProgress - lastClaimEpochProgress) * 43;
   const lastClaimDate = subSeconds(Date.now(), secondsSinceLastClaim);
   // const nextClaimDate = addDays(lastClaimDate, 1);
-  const nextClaimDate = addMinutes(lastClaimDate, 4);
+  const nextClaimDate = addMinutes(lastClaimDate, 5);
+  const refreshStreakDate = addMinutes(lastClaimDate, 10);
+  const diffInMinutesRefresh = differenceInMinutes(refreshStreakDate, Date.now());
   const diffInMinutes = differenceInMinutes(nextClaimDate, Date.now());
   let currentClaimWindow = '0h 0m';
+  let currentRefreshWindow = '0h 0m';
 
   if (diffInMinutes > 0) {
     const hours = Math.floor(diffInMinutes / 60);
@@ -35,11 +38,21 @@ const mapElpacaInfo = (
     currentClaimWindow = `${hours}h ${minutes}m`;
   }
 
+  if (diffInMinutesRefresh > 0) {
+    const hours = Math.floor(diffInMinutesRefresh / 60);
+    const minutes = (diffInMinutesRefresh % 60).toString().padStart(2, '0');
+    currentRefreshWindow = `${hours}h ${minutes}m`;
+  }
+
   const claimEnabled = currentClaimWindow === '0h 0m';
   const { activeWallet } = store.getState().vault;
   const walletAddress = getDagAddress(activeWallet);
   const showError = walletAddress !== address && !claimEnabled;
   const refreshPacaInfo = walletAddress !== address && claimEnabled;
+  const shouldReset = diffInMinutesRefresh <= 0;
+  const streak = shouldReset ? 0 : currentStreak;
+  const amount = shouldReset ? 1 : claimAmount / 1e8;
+  const claimWindow = claimEnabled ? currentRefreshWindow : currentClaimWindow;
 
   if (refreshPacaInfo) {
     thunkAPI.dispatch(getElPacaInfo(walletAddress));
@@ -47,12 +60,12 @@ const mapElpacaInfo = (
 
   return {
     totalEarned: totalEarned / 1e8,
-    claimAmount: claimAmount / 1e8,
+    claimAmount: amount,
     currentEpochProgress,
     lastClaimEpochProgress,
-    currentStreak,
+    currentStreak: streak,
     nextToken,
-    currentClaimWindow,
+    currentClaimWindow: claimWindow,
     claimEnabled,
     showError,
   };

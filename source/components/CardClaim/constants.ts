@@ -3,6 +3,7 @@ export const TITLE = 'El Paca’s Daily Claim';
 export const CURRENT_STREAK = 'Current day streak:';
 export const TOTAL_EARNED = 'Total PACA earned:';
 export const CURRENT_WINDOW = 'Current claim window:';
+export const NEXT_WINDOW = 'Next claim window:';
 export const LEARN_MORE = 'Learn More';
 export const CLAIM = 'Claim';
 export const CLAIMED = 'Claimed';

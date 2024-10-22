@@ -13,6 +13,7 @@ import {
   CURRENT_WINDOW,
   FIRE_EMOJI,
   LEARN_MORE,
+  NEXT_WINDOW,
   PACA_EMOJI,
   TIME_EMOJI,
   TITLE,
@@ -34,11 +35,12 @@ const CardClaim: FC<ICardClaim> = ({
   handleClose,
 }) => {
   const STREAK_EMOJI = currentStreak === 0 ? COLD_EMOJI : FIRE_EMOJI;
+  const windowText = claimEnabled ? CURRENT_WINDOW : NEXT_WINDOW;
   const claimText = showError
     ? currentClaimWindow
     : claimEnabled
     ? `Claim ${amount} PACA`
-    : `Claimed ${amount} PACA`;
+    : `PACA claimed`;
 
   return (
     <div className={styles.container}>
@@ -93,7 +95,7 @@ const CardClaim: FC<ICardClaim> = ({
                   color={COLORS_ENUMS.SECONDARY_TEXT}
                   extraStyles={styles.itemKey}
                 >
-                  {CURRENT_WINDOW}
+                  {windowText}
                 </TextV3.Caption>
                 <TextV3.Caption
                   color={COLORS_ENUMS.PRIMARY_LIGHTER_1}
@@ -111,6 +113,7 @@ const CardClaim: FC<ICardClaim> = ({
             <ButtonV3
               extraStyle={clsx(styles.button, styles.claimButton)}
               extraTitleStyles={styles.buttonTitle}
+              extraLoaderStyle={styles.loader}
               type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
               size={BUTTON_SIZES_ENUM.SMALL}
               disabled={!claimEnabled}
