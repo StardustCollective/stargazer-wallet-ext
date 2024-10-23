@@ -9,7 +9,8 @@ import IAssetListState from 'state/assets/types';
 import AssetsPanel from './AssetsPanel';
 import { IUserState } from 'state/user/types';
 import { getDagAddress } from 'utils/wallet';
-import { DAG_NETWORK } from 'constants/index';
+import { DAG_NETWORK, ELPACA_LEARN_MORE } from 'constants/index';
+import { open } from 'utils/browser';
 
 const SECONDS = 15 * 1000; // 15 seconds
 
@@ -26,7 +27,7 @@ const AssetsPanelContainer: FC = () => {
   const [showClaimCard, setShowClaimCard] = useState(true);
   const [claimLoading, setClaimLoading] = useState(false);
   const hasDagAddress = !!getDagAddress(activeWallet);
-  const isMainnet = activeNetwork.Constellation === DAG_NETWORK.integration2.id;
+  const isMainnet = activeNetwork.Constellation === DAG_NETWORK.main2.id;
   const hasClaimWindow = !!elpaca?.streak?.data?.currentClaimWindow;
   const showCard = showClaimCard && hasDagAddress && isMainnet && hasClaimWindow;
 
@@ -60,8 +61,8 @@ const AssetsPanelContainer: FC = () => {
     await accountController.assetsController.claimElpaca();
   };
 
-  const handleLearnMore = () => {
-    console.log('Learn More');
+  const handleLearnMore = async () => {
+    await open(ELPACA_LEARN_MORE);
   };
 
   const handleClose = () => {

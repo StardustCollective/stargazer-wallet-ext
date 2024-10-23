@@ -2,8 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { GET_ELPACA_API, POST_ELPACA_API } from 'constants/index';
 import { ClaimElpacaBody, ClaimElpacaData, ElPacaStreakData } from './types';
 import subSeconds from 'date-fns/subSeconds';
-// import addDays from 'date-fns/addDays';
-import addMinutes from 'date-fns/addMinutes';
+import addDays from 'date-fns/addDays';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
 import store from 'state/store';
 import { getDagAddress } from 'utils/wallet';
@@ -24,9 +23,8 @@ const mapElpacaInfo = (
 ) => {
   const secondsSinceLastClaim = (currentEpochProgress - lastClaimEpochProgress) * 43;
   const lastClaimDate = subSeconds(Date.now(), secondsSinceLastClaim);
-  // const nextClaimDate = addDays(lastClaimDate, 1);
-  const nextClaimDate = addMinutes(lastClaimDate, 5);
-  const refreshStreakDate = addMinutes(lastClaimDate, 10);
+  const nextClaimDate = addDays(lastClaimDate, 1);
+  const refreshStreakDate = addDays(lastClaimDate, 2);
   const diffInMinutesRefresh = differenceInMinutes(refreshStreakDate, Date.now());
   const diffInMinutes = differenceInMinutes(nextClaimDate, Date.now());
   let currentClaimWindow = '0h 0m';
