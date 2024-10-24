@@ -1,0 +1,102 @@
+@import '~assets/styles/variables';
+
+.container {
+  position: relative;
+  background-color: $white;
+  display: flex;
+  flex-direction: row;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #9584eb;
+  margin-bottom: 8px;
+
+  .close {
+    cursor: pointer;
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    right: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-right-radius: 7px;
+  }
+
+  .imageContainer {
+    display: flex;
+    border: 1px solid #9584eb;
+    border-radius: 4px;
+
+    .image {
+      height: 140px;
+      width: 98px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+  }
+
+  .infoContainer {
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .titleContainer {
+      margin-bottom: 4px;
+    }
+
+    .info {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+
+      .infoItem {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border-bottom: 0.3px solid lightgray;
+        padding: 2px 0px;
+
+        .itemKey {
+          font-weight: 500;
+        }
+
+        .itemValue {
+          font-weight: 500;
+        }
+      }
+
+      .noBorder {
+        border-bottom: 0px;
+      }
+    }
+
+    .buttonsContainer {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .buttonItem {
+        .button {
+          padding: 0px 12px;
+          height: 32px;
+          min-width: 90px;
+
+          .buttonTitle {
+            font-size: 12px;
+            font-weight: 600;
+          }
+        }
+
+        .loader {
+          color: white;
+        }
+
+        .claimButton {
+          min-width: 115px;
+        }
+      }
+    }
+  }
+}

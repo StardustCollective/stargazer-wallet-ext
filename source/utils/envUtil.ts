@@ -19,5 +19,7 @@ export const QUICKNODE_BSC_MAINNET = process.env.QUICKNODE_BSC_MAINNET;
 export const QUICKNODE_BSC_TESTNET = process.env.QUICKNODE_BSC_TESTNET;
 export const QUICKNODE_AVALANCHE_MAINNET = process.env.QUICKNODE_AVALANCHE_MAINNET;
 export const QUICKNODE_AVALANCHE_TESTNET = process.env.QUICKNODE_AVALANCHE_TESTNET;
+export const ELPACA_KEY = process.env.ELPACA_KEY;
+export const ELPACA_VALUE = process.env.ELPACA_VALUE;
 export const isProd = NODE_ENV === 'production';
 export const isNative = false;

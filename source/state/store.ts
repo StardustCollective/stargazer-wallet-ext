@@ -22,6 +22,7 @@ import erc20assets from './erc20assets';
 import swap from './swap';
 import biometrics from './biometrics';
 import auth from './auth';
+import user from './user';
 
 import { loadState, saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -46,6 +47,7 @@ const store = configureStore({
     swap,
     biometrics,
     auth,
+    user,
   }),
   middleware,
   devTools: !isProd,
@@ -60,6 +62,13 @@ export async function updateState() {
     contacts: state.contacts,
     assets: state.assets,
     dapp: state.dapp,
+    user: {
+      elpaca: {
+        claim: {
+          data: state.user.elpaca.claim.data,
+        },
+      },
+    },
     swap: {
       txIds: state.swap.txIds,
     },
