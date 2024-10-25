@@ -37,6 +37,8 @@ export const DOR_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor.png';
 export const ELPACA_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/elpaca.png';
+export const ELPACA_LARGE_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/elpaca-portrait.png';
 export const ETHEREUM_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/eth.png';
 export const ETHEREUM_DEFAULT_LOGO =
@@ -428,6 +430,13 @@ export const BUY_DAG_URL = 'https://howtobuydag.com/';
 const PROVIDERS_BASE_URL = isProd
   ? STARGAZER_PROVIDERS_BASE_URL_PROD
   : STARGAZER_PROVIDERS_BASE_URL;
+
+export const GET_ELPACA_API =
+  'http://elpaca-l0-2006678808.us-west-1.elb.amazonaws.com:9100/data-application/streak';
+export const POST_ELPACA_API =
+  'http://elpaca-dl1-550039959.us-west-1.elb.amazonaws.com:9300/data';
+export const ELPACA_LEARN_MORE =
+  'https://constellationnetwork.medium.com/introducing-the-el-paca-metagraph-ff2b34586918';
 
 export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/v3/quote`;
 export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;
