@@ -43,10 +43,8 @@ class EVMChainController implements IEVMChainController {
   private address: Address | null = null;
   private wallet: ethers.Wallet | null = null;
   private provider: ethers.providers.JsonRpcProvider;
-  private etherscanApiKey?: string;
 
-  constructor({ chain, privateKey, etherscanApiKey }: EVMChainControllerParams) {
-    this.etherscanApiKey = etherscanApiKey;
+  constructor({ chain, privateKey }: EVMChainControllerParams) {
     this.chain = getChainInfo(chain);
     this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
     this.changeWallet(new ethers.Wallet(privateKey, this.provider));
@@ -285,20 +283,18 @@ class EVMChainController implements IEVMChainController {
       let transations;
       if (assetAddress) {
         transations = await getTokenTransactionHistory({
-          baseUrl: this.chain.explorerAPI,
+          explorerID: this.chain.explorerID,
           address,
           assetAddress,
           page,
           offset,
-          apiKey: this.etherscanApiKey,
         });
       } else {
         transations = await getETHTransactionHistory({
-          baseUrl: this.chain.explorerAPI,
+          explorerID: this.chain.explorerID,
           address,
           page,
           offset,
-          apiKey: this.etherscanApiKey,
         });
       }
 
@@ -333,10 +329,7 @@ class EVMChainController implements IEVMChainController {
     }
 
     try {
-      const response: GasOracleResponse = await getGasOracle(
-        this.chain.explorerAPI,
-        this.etherscanApiKey
-      );
+      const response: GasOracleResponse = await getGasOracle(this.chain.explorerID);
 
       // Convert result of gas prices: `Gwei` -> `Wei`
       const averageWei = parseUnits(response.SafeGasPrice, 'gwei');

@@ -1,11 +1,5 @@
 import EVMChainController from './EVMChainController';
 import {
-  BSCSCAN_API_KEY,
-  ETHERSCAN_API_KEY,
-  POLYGONSCAN_API_KEY,
-  SNOWTRACE_API_KEY,
-} from 'utils/envUtil';
-import {
   AllChainsIds,
   AvalancheChainId,
   BSCChainId,
@@ -30,33 +24,19 @@ class NetworkController {
 
   constructor(privateKey: string) {
     const { activeNetwork } = store.getState().vault;
-    this.#ethereumNetwork = this.createEVMController(
-      activeNetwork.Ethereum,
-      privateKey,
-      ETHERSCAN_API_KEY
-    );
-    this.#polygonNetwork = this.createEVMController(
-      activeNetwork.Polygon,
-      privateKey,
-      POLYGONSCAN_API_KEY
-    );
-    this.#bscNetwork = this.createEVMController(
-      activeNetwork.BSC,
-      privateKey,
-      BSCSCAN_API_KEY
-    );
+    this.#ethereumNetwork = this.createEVMController(activeNetwork.Ethereum, privateKey);
+    this.#polygonNetwork = this.createEVMController(activeNetwork.Polygon, privateKey);
+    this.#bscNetwork = this.createEVMController(activeNetwork.BSC, privateKey);
     this.#avalancheNetwork = this.createEVMController(
       activeNetwork.Avalanche,
-      privateKey,
-      SNOWTRACE_API_KEY
+      privateKey
     );
   }
 
-  private createEVMController(chain: AllChainsIds, privateKey: string, apiKey: string) {
+  private createEVMController(chain: AllChainsIds, privateKey: string) {
     return new EVMChainController({
       chain,
       privateKey,
-      etherscanApiKey: apiKey,
     });
   }
 

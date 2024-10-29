@@ -168,7 +168,7 @@ export const ETH_NETWORK: {
     chainId: number;
     hexChainId: string;
     rpcEndpoint: string;
-    explorerAPI: string;
+    explorerID: string;
     nativeToken: string;
     mainnet: string;
     network: string;
@@ -182,7 +182,7 @@ export const ETH_NETWORK: {
     label: 'Mainnet',
     rpcEndpoint: QUICKNODE_ETHEREUM_MAINNET,
     explorer: 'https://etherscan.io/',
-    explorerAPI: 'https://api.etherscan.io',
+    explorerID: 'explorer-ethereum-mainnet',
     chainId: 1,
     hexChainId: '0x1',
     nativeToken: 'ETH',
@@ -197,7 +197,7 @@ export const ETH_NETWORK: {
     label: 'Sepolia',
     rpcEndpoint: QUICKNODE_ETHEREUM_SEPOLIA,
     explorer: 'https://sepolia.etherscan.io/',
-    explorerAPI: 'https://api-sepolia.etherscan.io',
+    explorerID: 'explorer-ethereum-sepolia',
     chainId: 11155111,
     hexChainId: '0xaa36a7',
     nativeToken: 'ETH',
@@ -217,7 +217,7 @@ export const AVALANCHE_NETWORK: {
     chainId: number;
     hexChainId: string;
     rpcEndpoint: string;
-    explorerAPI: string;
+    explorerID: string;
     nativeToken: string;
     mainnet: string;
     network: string;
@@ -231,7 +231,7 @@ export const AVALANCHE_NETWORK: {
     label: 'Avalanche C-Chain',
     rpcEndpoint: QUICKNODE_AVALANCHE_MAINNET,
     explorer: 'https://snowtrace.io/',
-    explorerAPI: 'https://api.snowtrace.io',
+    explorerID: 'explorer-avalanche-mainnet',
     chainId: 43114,
     hexChainId: '0xa86a',
     nativeToken: 'AVAX',
@@ -246,7 +246,7 @@ export const AVALANCHE_NETWORK: {
     label: 'Fuji Testnet',
     rpcEndpoint: QUICKNODE_AVALANCHE_TESTNET,
     explorer: 'https://testnet.snowtrace.io/',
-    explorerAPI: 'https://api-testnet.snowtrace.io',
+    explorerID: 'explorer-avalanche-testnet',
     chainId: 43113,
     hexChainId: '0xa869',
     nativeToken: 'AVAX',
@@ -266,7 +266,7 @@ export const BSC_NETWORK: {
     chainId: number;
     hexChainId: string;
     rpcEndpoint: string;
-    explorerAPI: string;
+    explorerID: string;
     nativeToken: string;
     mainnet: string;
     network: string;
@@ -280,7 +280,7 @@ export const BSC_NETWORK: {
     label: 'BSC Mainnet',
     rpcEndpoint: QUICKNODE_BSC_MAINNET,
     explorer: 'https://bscscan.com/',
-    explorerAPI: 'https://api.bscscan.com',
+    explorerID: 'explorer-bsc-mainnet',
     chainId: 56,
     hexChainId: '0x38',
     nativeToken: 'BNB',
@@ -295,7 +295,7 @@ export const BSC_NETWORK: {
     label: 'BSC Testnet',
     rpcEndpoint: QUICKNODE_BSC_TESTNET,
     explorer: 'https://testnet.bscscan.com/',
-    explorerAPI: 'https://api-testnet.bscscan.com',
+    explorerID: 'explorer-bsc-testnet',
     chainId: 97,
     hexChainId: '0x61',
     nativeToken: 'BNB',
@@ -315,7 +315,7 @@ export const POLYGON_NETWORK: {
     chainId: number;
     hexChainId: string;
     rpcEndpoint: string;
-    explorerAPI: string;
+    explorerID: string;
     nativeToken: string;
     mainnet: string;
     network: string;
@@ -329,7 +329,7 @@ export const POLYGON_NETWORK: {
     label: 'Polygon Mainnet',
     rpcEndpoint: QUICKNODE_POLYGON_MAINNET,
     explorer: 'https://polygonscan.com/',
-    explorerAPI: 'https://api.polygonscan.com',
+    explorerID: 'explorer-polygon-mainnet',
     chainId: 137,
     hexChainId: '0x89',
     nativeToken: 'MATIC',
@@ -344,7 +344,7 @@ export const POLYGON_NETWORK: {
     label: 'Polygon Amoy Testnet',
     rpcEndpoint: QUICKNODE_POLYGON_TESTNET,
     explorer: 'https://amoy.polygonscan.com/',
-    explorerAPI: 'https://api-amoy.polygonscan.com',
+    explorerID: 'explorer-polygon-amoy',
     chainId: 80002,
     hexChainId: '0x13882',
     nativeToken: 'MATIC',
@@ -437,6 +437,9 @@ export const POST_ELPACA_API =
   'http://elpaca-dl1-550039959.us-west-1.elb.amazonaws.com:9300/data';
 export const ELPACA_LEARN_MORE =
   'https://constellationnetwork.medium.com/introducing-the-el-paca-metagraph-ff2b34586918';
+
+export const EXTERNAL_REQUESTS_BASE_URL =
+  'https://d2qv688dkixr6z.cloudfront.net/external-requests';
 
 export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/v3/quote`;
 export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;
