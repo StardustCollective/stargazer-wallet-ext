@@ -81,6 +81,9 @@ const Home: FC<IHome> = ({
   const walletController = getWalletController();
   const linkTo = useLinkTo();
 
+  const showBuyButton = !iosPlatform();
+  const showSwapButton = !isDagOnlyWallet && !iosPlatform();
+
   const handleSwitchWallet = async (
     walletId: string,
     walletAccounts: KeyringWalletAccountState[]
@@ -175,14 +178,16 @@ const Home: FC<IHome> = ({
                 </TextV3.Body>
               </View>
               <View style={styles.buttons}>
-                <ButtonV3
-                  title={BUY_STRING}
-                  size={BUTTON_SIZES_ENUM.LARGE}
-                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                  onPress={onBuyPressed}
-                  extraStyles={styles.buttonNormal}
-                />
-                {!isDagOnlyWallet && !iosPlatform() && (
+                {showBuyButton && (
+                  <ButtonV3
+                    title={BUY_STRING}
+                    size={BUTTON_SIZES_ENUM.LARGE}
+                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                    onPress={onBuyPressed}
+                    extraStyles={styles.buttonNormal}
+                  />
+                )}
+                {showSwapButton && (
                   <ButtonV3
                     title={SWAP_STRING}
                     size={BUTTON_SIZES_ENUM.LARGE}

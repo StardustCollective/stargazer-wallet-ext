@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
     // height: 193, // do not use percentages messes up scrollview
     alignItems: 'center',
-    marginTop: 24,
   },
   fiatBalance: {
     maxWidth: '80%',
@@ -43,9 +42,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    marginTop: 32,
   },
   buttonNormal: {
-    marginVertical: 32,
+    marginBottom: 32,
   },
   headerTitleContainer: {
     flexDirection: 'row',
