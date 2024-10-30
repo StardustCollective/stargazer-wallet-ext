@@ -117,9 +117,9 @@ const CardClaim: FC<ICardClaim> = ({
           )}
         </View>
         <View style={styles.buttonsContainer}>
-          <View style={styles.buttonItem}>
+          <View style={styles.claimButton}>
             <ButtonV3
-              extraStyles={[styles.button, styles.claimButton]}
+              extraStyles={styles.button}
               extraTitleStyles={styles.buttonTitle}
               type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
               size={BUTTON_SIZES_ENUM.SMALL}
@@ -129,7 +129,7 @@ const CardClaim: FC<ICardClaim> = ({
               onPress={handleClaim}
             />
           </View>
-          <View style={styles.buttonItem}>
+          <View style={styles.learnMoreButton}>
             <ButtonV3
               extraStyles={styles.button}
               extraTitleStyles={styles.buttonTitle}

@@ -62,19 +62,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  buttonItem: {},
   button: {
-    paddingVertical: 6,
-    paddingHorizontal: 14,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     height: 32,
-    minWidth: 90,
+    minWidth: 80,
   },
   buttonTitle: {
     fontSize: 12,
     fontWeight: '600',
   },
   claimButton: {
-    minWidth: 115,
+    flex: 1,
+    marginRight: 4,
+  },
+  learnMoreButton: {
+    flex: 1,
+    marginLeft: 4,
   },
 });
 
