@@ -36,7 +36,6 @@ const requestToken = async () => {
     }
   );
 
-  if (tokenResponse.status !== HttpStatusCode.Ok) return;
   if (!tokenResponse?.data?.data?.token) return;
 
   const { token, exp } = tokenResponse.data.data;
@@ -67,6 +66,7 @@ const interceptorRequest = async (
 
   if (!token) {
     token = await requestToken();
+    if (!token) throw new Error('Failed to request token');
   }
 
   const signature = await generateSignature(config, token);
