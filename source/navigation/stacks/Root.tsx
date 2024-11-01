@@ -33,6 +33,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import defaultHeader from 'navigation/headers/default';
 import IProvidersState from 'state/providers/types';
 import { getAccountController } from 'utils/controllersUtils';
+import { requestToken } from 'utils/httpRequests/interceptors';
+import { IAuthState } from 'state/auth/types';
 
 ///////////////////////////
 // Constants
@@ -47,6 +49,7 @@ const Root = () => {
   const { supportedAssets }: IProvidersState = useSelector(
     (state: RootState) => state.providers
   );
+  const { external }: IAuthState = useSelector((state: RootState) => state.auth);
   const accountController = getAccountController();
 
   useEffect(() => {
@@ -55,6 +58,15 @@ const Root = () => {
     };
     if (!supportedAssets.data) {
       getAssets();
+    }
+  }, []);
+
+  useEffect(() => {
+    const getAuthToken = async () => {
+      await requestToken();
+    };
+    if (!external?.token) {
+      getAuthToken();
     }
   }, []);
 

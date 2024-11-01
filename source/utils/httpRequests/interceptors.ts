@@ -21,12 +21,12 @@ const subscribeTokenRefresh = (callback: any) => {
 };
 
 // Function to trigger all subscribers with the new token
-const onRefreshed = (newToken: string, signature: string) => {
-  subscribers.forEach((callback) => callback(newToken, signature));
+const onRefreshed = (newToken: string) => {
+  subscribers.forEach((callback) => callback(newToken));
   subscribers = [];
 };
 
-const requestToken = async () => {
+export const requestToken = async () => {
   const tokenResponse = await axios.get<GetLatticeTokenResponse>(
     `${EXTERNAL_REQUESTS_BASE_URL}/${TOKEN}`,
     {
@@ -89,13 +89,13 @@ const interceptorResponseRejected = async (error: AxiosError): Promise<any> => {
         const newToken = await requestToken();
         if (!newToken) throw new Error('Failed to refresh token');
 
+        // Notify all subscribers that the token is refreshed
+        onRefreshed(newToken);
+        isRefreshing = false;
+
         // Generate the new signature
         const signature = await generateSignature(config, newToken);
         if (!signature) throw new Error('Failed to generate signature');
-
-        // Notify all subscribers that the token is refreshed
-        onRefreshed(newToken, signature);
-        isRefreshing = false;
 
         // Retry the original request with the new token
         config.headers[X_LATTICE_REQ_TOKEN] = newToken;
@@ -109,7 +109,8 @@ const interceptorResponseRejected = async (error: AxiosError): Promise<any> => {
 
     // If a token refresh is already in progress, queue the request
     return new Promise((resolve) => {
-      subscribeTokenRefresh(async (newToken: string, signature: string) => {
+      subscribeTokenRefresh(async (newToken: string) => {
+        const signature = await generateSignature(config, newToken);
         config.headers[X_LATTICE_REQ_TOKEN] = newToken;
         config.headers[X_LATTICE_SIG] = signature;
         resolve(axios(config));
