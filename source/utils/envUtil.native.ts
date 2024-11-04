@@ -1,9 +1,4 @@
 import {
-  TEST_PRIVATE_KEY as testPrivateKey,
-  ETHERSCAN_API_KEY as etherscanApiKey,
-  POLYGONSCAN_API_KEY as polygonscanApiKey,
-  BSCSCAN_API_KEY as bscscanApiKey,
-  SNOWTRACE_API_KEY as snowtraceApiKey,
   STARGAZER_SWAPPING_BASE_URL_PROD as stargazerSwappingBaseUrlProd,
   STARGAZER_PROVIDERS_BASE_URL as stargazerProvidersBaseUrl,
   STARGAZER_PROVIDERS_BASE_URL_PROD as stargazerProvidersBaseUrlProd,
@@ -18,14 +13,10 @@ import {
   QUICKNODE_AVALANCHE_TESTNET as quickNodeAvalancheTestnet,
   ELPACA_KEY as elpacaKey,
   ELPACA_VALUE as elpacaValue,
+  LATTICE_API_KEY as latticeKey,
   COINGECKO_API_KEY as coinGeckoApiKey,
 } from '@env';
 
-export const TEST_PRIVATE_KEY = testPrivateKey;
-export const ETHERSCAN_API_KEY = etherscanApiKey;
-export const POLYGONSCAN_API_KEY = polygonscanApiKey;
-export const BSCSCAN_API_KEY = bscscanApiKey;
-export const SNOWTRACE_API_KEY = snowtraceApiKey;
 export const STARGAZER_SWAPPING_BASE_URL_PROD = stargazerSwappingBaseUrlProd;
 export const STARGAZER_PROVIDERS_BASE_URL = stargazerProvidersBaseUrl;
 export const STARGAZER_PROVIDERS_BASE_URL_PROD = stargazerProvidersBaseUrlProd;
@@ -41,5 +32,6 @@ export const QUICKNODE_AVALANCHE_MAINNET = quickNodeAvalancheMainnet;
 export const QUICKNODE_AVALANCHE_TESTNET = quickNodeAvalancheTestnet;
 export const ELPACA_KEY = elpacaKey;
 export const ELPACA_VALUE = elpacaValue;
+export const LATTICE_API_KEY = latticeKey;
 export const isProd = __DEV__ !== true;
 export const isNative = true;

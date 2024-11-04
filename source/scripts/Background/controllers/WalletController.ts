@@ -413,7 +413,7 @@ class WalletController {
         explorer: data.blockExplorerUrl,
         chainId,
         rpcEndpoint: data.rpcUrl,
-        explorerAPI: '',
+        explorerID: '',
         nativeToken: 'ETH',
         mainnet: 'mainnet',
         network: 'Ethereum',

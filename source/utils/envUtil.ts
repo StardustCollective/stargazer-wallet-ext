@@ -1,8 +1,3 @@
-export const TEST_PRIVATE_KEY = process.env.TEST_PRIVATE_KEY;
-export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
-export const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
-export const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY;
-export const SNOWTRACE_API_KEY = process.env.SNOWTRACE_API_KEY;
 export const COINGECKO_API_KEY = process.env.COINGECKO_API_KEY;
 export const NODE_ENV = process.env.NODE_ENV;
 export const STARGAZER_SWAPPING_BASE_URL_PROD =
@@ -21,5 +16,6 @@ export const QUICKNODE_AVALANCHE_MAINNET = process.env.QUICKNODE_AVALANCHE_MAINN
 export const QUICKNODE_AVALANCHE_TESTNET = process.env.QUICKNODE_AVALANCHE_TESTNET;
 export const ELPACA_KEY = process.env.ELPACA_KEY;
 export const ELPACA_VALUE = process.env.ELPACA_VALUE;
+export const LATTICE_API_KEY = process.env.LATTICE_API_KEY;
 export const isProd = NODE_ENV === 'production';
 export const isNative = false;

@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAuthState } from './types';
+import { IAuthState, ExternalData } from './types';
 
 const initialState: IAuthState = {
   unlocked: false,
   loading: false,
+  external: null,
 };
 
 const AuthState = createSlice({
@@ -16,9 +17,12 @@ const AuthState = createSlice({
     setLoading(state: IAuthState, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
+    setExternalToken(state: IAuthState, action: PayloadAction<ExternalData>) {
+      state.external = action.payload;
+    },
   },
 });
 
-export const { setUnlocked, setLoading } = AuthState.actions;
+export const { setUnlocked, setLoading, setExternalToken } = AuthState.actions;
 
 export default AuthState.reducer;

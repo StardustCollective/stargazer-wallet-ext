@@ -39,7 +39,7 @@ export type IChain = {
   chainId: number;
   explorer: string;
   rpcEndpoint: string;
-  explorerAPI: string;
+  explorerID: string;
   nativeToken: string;
   mainnet: string;
   network: string;
@@ -71,7 +71,6 @@ type GetTokenInfoResponse = {
 
 export type EVMChainControllerParams = {
   chain?: AllChainsIds | string;
-  etherscanApiKey?: string;
   privateKey?: string;
 };
 

@@ -132,7 +132,7 @@ export interface ICustomNetworkObject {
   explorer: string;
   chainId: number;
   rpcEndpoint: string;
-  explorerAPI: string;
+  explorerID: string;
   nativeToken: string;
   mainnet: string;
   network: string;
