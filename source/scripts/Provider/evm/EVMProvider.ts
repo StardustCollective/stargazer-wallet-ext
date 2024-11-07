@@ -1,4 +1,3 @@
-import * as ethers from 'ethers';
 import store from 'state/store';
 import IVaultState from 'state/vault/types';
 import { getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
@@ -23,6 +22,7 @@ import {
   web3_clientVersion,
   wallet_switchEthereumChain,
 } from './methods';
+import StargazerRpcProvider from './StargazerRpcProvider';
 
 export class EVMProvider implements IRpcChainRequestHandler {
   async handleProxiedRequest(
@@ -34,7 +34,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
     const networkLabel = getNetworkLabel();
     const chainId = activeNetwork[`${networkLabel as keyof typeof activeNetwork}`];
     const networkInfo = getChainInfo(chainId);
-    const provider = new ethers.providers.JsonRpcProvider(networkInfo.rpcEndpoint);
+    const provider = new StargazerRpcProvider(networkInfo.rpcEndpoint);
 
     return provider.send(request.method, request.params);
   }

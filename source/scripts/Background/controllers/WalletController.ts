@@ -1,6 +1,5 @@
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
-import * as ethers from 'ethers';
 import {
   changeActiveNetwork,
   changeActiveWallet,
@@ -40,6 +39,7 @@ import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
 import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
+import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -398,7 +398,7 @@ class WalletController {
     if (network === 'ethereum') {
       // Add chain in Ethereum dropdown.
       console.log('Ethereum', data);
-      const provider = data?.rpcUrl && new ethers.providers.JsonRpcProvider(data?.rpcUrl);
+      const provider = data?.rpcUrl && new StargazerRpcProvider(data?.rpcUrl);
       // We're catching this Promise in AddNetwork.container.tsx
       await provider._networkPromise;
       // Here I'm connected to the RPC Provider.

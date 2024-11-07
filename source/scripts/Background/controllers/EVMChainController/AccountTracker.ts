@@ -1,5 +1,6 @@
 import * as ethers from 'ethers';
 import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
+import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
 
 type TokenBalances = {
   [address: string]: string;
@@ -21,7 +22,6 @@ export class AccountTracker {
   private ethAddress: string;
   private debounceTimeSec: number;
   private timeoutId: any;
-  private lastBlock: number;
 
   config(
     ethAddress: string,
@@ -37,9 +37,7 @@ export class AccountTracker {
     this.ethAddress = ethAddress;
     this.accounts = accounts;
     this.chainId = chainId;
-    this.provider = rpcProviderURL
-      ? new ethers.providers.JsonRpcProvider(rpcProviderURL)
-      : null;
+    this.provider = rpcProviderURL ? new StargazerRpcProvider(rpcProviderURL) : null;
     this.callback = callback;
     this.debounceTimeSec = debounceTimeSec > 0.1 ? debounceTimeSec : 1;
 
@@ -80,12 +78,7 @@ export class AccountTracker {
   private async runInterval() {
     if (!this.provider) return;
     try {
-      const block = await this.provider.getBlockNumber();
-
-      if (this.lastBlock !== block) {
-        await this.getTokenBalances();
-        this.lastBlock = block;
-      }
+      await this.getTokenBalances();
 
       this.timeoutId = setTimeout(() => this.runInterval(), this.debounceTimeSec * 1000);
     } catch (e) {
@@ -98,6 +91,5 @@ export class AccountTracker {
     clearTimeout(this.timeoutId);
     this.isRunning = false;
     this.provider = null;
-    this.lastBlock = null;
   }
 }

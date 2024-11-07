@@ -2,7 +2,8 @@ const generateHmac = async (
   token: string,
   service: string,
   path: string,
-  searchParams: string
+  searchParams: string,
+  body?: any
 ): Promise<string> => {
   const encoder = new TextEncoder();
   const algorithm = { name: 'HMAC', hash: 'SHA-256' };
@@ -12,6 +13,7 @@ const generateHmac = async (
   const serviceBuffer = encoder.encode(service);
   const pathBuffer = encoder.encode(path);
   const searchParamsBuffer = encoder.encode(searchParams);
+  const bodyBuffer = !!body && encoder.encode(JSON.stringify(body));
 
   // Concatenate buffers
   const payloadBuffer = new Uint8Array([
@@ -19,6 +21,7 @@ const generateHmac = async (
     ...serviceBuffer,
     ...pathBuffer,
     ...searchParamsBuffer,
+    ...(!!bodyBuffer ? bodyBuffer : []),
   ]);
 
   // Import the token as a CryptoKey
