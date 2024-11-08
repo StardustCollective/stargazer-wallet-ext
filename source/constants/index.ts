@@ -9,13 +9,11 @@ import {
   PolygonChainValue,
 } from 'scripts/Background/controllers/EVMChainController/types';
 import { StargazerChain } from 'scripts/common';
+import { isProd, isNative } from 'utils/envUtil';
 import {
-  isProd,
-  isNative,
-  COINGECKO_API_KEY,
-  STARGAZER_PROVIDERS_BASE_URL,
-  STARGAZER_PROVIDERS_BASE_URL_PROD,
-} from 'utils/envUtil';
+  ExplorerExternalService,
+  NodeExternalService,
+} from 'utils/httpRequests/constants';
 
 export const STORE_PORT = 'STARGAZER';
 
@@ -172,9 +170,9 @@ export const ETH_NETWORK: {
     id: 'mainnet',
     value: 'homestead',
     label: 'Mainnet',
-    rpcEndpoint: 'node-ethereum-mainnet',
+    rpcEndpoint: NodeExternalService.EthMainnet,
     explorer: 'https://etherscan.io/',
-    explorerID: 'explorer-ethereum-mainnet',
+    explorerID: ExplorerExternalService.EthMainnet,
     chainId: 1,
     hexChainId: '0x1',
     nativeToken: 'ETH',
@@ -187,9 +185,9 @@ export const ETH_NETWORK: {
     id: 'sepolia',
     value: 'sepolia',
     label: 'Sepolia',
-    rpcEndpoint: 'node-ethereum-sepolia',
+    rpcEndpoint: NodeExternalService.EthTestnet,
     explorer: 'https://sepolia.etherscan.io/',
-    explorerID: 'explorer-ethereum-sepolia',
+    explorerID: ExplorerExternalService.EthTestnet,
     chainId: 11155111,
     hexChainId: '0xaa36a7',
     nativeToken: 'ETH',
@@ -221,9 +219,9 @@ export const AVALANCHE_NETWORK: {
     id: 'avalanche-mainnet',
     value: 'avalanche-mainnet',
     label: 'Avalanche C-Chain',
-    rpcEndpoint: 'node-avalanche-mainnet',
+    rpcEndpoint: NodeExternalService.AvaxMainnet,
     explorer: 'https://snowtrace.io/',
-    explorerID: 'explorer-avalanche-mainnet',
+    explorerID: ExplorerExternalService.AvaxMainnet,
     chainId: 43114,
     hexChainId: '0xa86a',
     nativeToken: 'AVAX',
@@ -236,9 +234,9 @@ export const AVALANCHE_NETWORK: {
     id: 'avalanche-testnet',
     value: 'avalanche-testnet',
     label: 'Fuji Testnet',
-    rpcEndpoint: 'node-avalanche-testnet',
+    rpcEndpoint: NodeExternalService.AvaxTestnet,
     explorer: 'https://testnet.snowtrace.io/',
-    explorerID: 'explorer-avalanche-testnet',
+    explorerID: ExplorerExternalService.AvaxTestnet,
     chainId: 43113,
     hexChainId: '0xa869',
     nativeToken: 'AVAX',
@@ -270,9 +268,9 @@ export const BSC_NETWORK: {
     id: 'bsc',
     value: 'bsc',
     label: 'BSC Mainnet',
-    rpcEndpoint: 'node-bsc-mainnet',
+    rpcEndpoint: NodeExternalService.BscMainnet,
     explorer: 'https://bscscan.com/',
-    explorerID: 'explorer-bsc-mainnet',
+    explorerID: ExplorerExternalService.BscMainnet,
     chainId: 56,
     hexChainId: '0x38',
     nativeToken: 'BNB',
@@ -285,9 +283,9 @@ export const BSC_NETWORK: {
     id: 'bsc-testnet',
     value: 'bsc-testnet',
     label: 'BSC Testnet',
-    rpcEndpoint: 'node-bsc-testnet',
+    rpcEndpoint: NodeExternalService.BscTestnet,
     explorer: 'https://testnet.bscscan.com/',
-    explorerID: 'explorer-bsc-testnet',
+    explorerID: ExplorerExternalService.BscTestnet,
     chainId: 97,
     hexChainId: '0x61',
     nativeToken: 'BNB',
@@ -319,9 +317,9 @@ export const POLYGON_NETWORK: {
     id: 'matic',
     value: 'matic',
     label: 'Polygon Mainnet',
-    rpcEndpoint: 'node-polygon-mainnet',
+    rpcEndpoint: NodeExternalService.PolygonMainnet,
     explorer: 'https://polygonscan.com/',
-    explorerID: 'explorer-polygon-mainnet',
+    explorerID: ExplorerExternalService.PolygonMainnet,
     chainId: 137,
     hexChainId: '0x89',
     nativeToken: 'MATIC',
@@ -334,9 +332,9 @@ export const POLYGON_NETWORK: {
     id: 'amoy',
     value: 'amoy',
     label: 'Polygon Amoy Testnet',
-    rpcEndpoint: 'node-polygon-amoy',
+    rpcEndpoint: NodeExternalService.PolygonTestnet,
     explorer: 'https://amoy.polygonscan.com/',
-    explorerID: 'explorer-polygon-amoy',
+    explorerID: ExplorerExternalService.PolygonTestnet,
     chainId: 80002,
     hexChainId: '0x13882',
     nativeToken: 'MATIC',
@@ -385,17 +383,6 @@ export const SUPPORTED_HEX_CHAINS = [
   '0x61',
 ];
 
-export const ASSET_PRICE_API = 'https://pro-api.coingecko.com/api/v3/simple/price';
-export const TOKEN_INFO_API = 'https://pro-api.coingecko.com/api/v3/coins';
-export const ERC20_TOKENS_API =
-  'https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=ethereum-ecosystem';
-export const ERC20_TOKENS_WITH_ADDRESS_API =
-  'https://pro-api.coingecko.com/api/v3/coins/list?include_platform=true';
-export const SEARCH_API = 'https://pro-api.coingecko.com/api/v3/search?query=';
-export const COINGECKO_API_KEY_PARAM = `x_cg_pro_api_key=${COINGECKO_API_KEY}`;
-export const OPENSEA_API_V2 = 'https://api.opensea.io/api/v2';
-export const OPENSEA_API_TESTNETS_V2 = 'https://testnets-api.opensea.io/api/v2';
-
 export const PRICE_DAG_ID = 'constellation-labs';
 export const PRICE_BTC_ID = 'bitcoin';
 export const PRICE_ETH_ID = 'ethereum';
@@ -419,6 +406,13 @@ export const C14_CLIENT_ID = 'b69a98b8-c5c1-4c7b-b5a9-46bca9a74480';
 export const C14_BASE_URL = 'https://pay.c14.money';
 
 export const BUY_DAG_URL = 'https://howtobuydag.com/';
+
+export const STARGAZER_SWAPPING_BASE_URL_PROD = 'https://api.lattice.exchange/swapping';
+
+const STARGAZER_PROVIDERS_BASE_URL =
+  'https://api-staging.lattice.exchange/stargazer-providers';
+const STARGAZER_PROVIDERS_BASE_URL_PROD =
+  'https://api.lattice.exchange/stargazer-providers';
 const PROVIDERS_BASE_URL = isProd
   ? STARGAZER_PROVIDERS_BASE_URL_PROD
   : STARGAZER_PROVIDERS_BASE_URL;
@@ -437,6 +431,7 @@ export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/v3/quote`;
 export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;
 export const GET_SUPPORTED_ASSETS_API = `${PROVIDERS_BASE_URL}/v3/supported-assets`;
 export const GET_DEFAULT_TOKENS = `${PROVIDERS_BASE_URL}/default-tokens`;
+
 const SIMPLEX_FORM_BASE_URL = 'https://stargazer-assets.s3.us-east-2.amazonaws.com';
 const SIMPLEX_FORM_SUBMISSION_URL_WEB = isProd
   ? `${SIMPLEX_FORM_BASE_URL}/stargazer-simplex.web.html?payment_id=`

@@ -45,16 +45,30 @@ export const requestToken = async () => {
   return token;
 };
 
+const parseUrlString = (url: string) => {
+  // Split the URL string into service and the rest of the URL
+  const [service, ...rest] = url
+    .split('/', 1)
+    .concat(url.slice(url.indexOf('/') + 1).split('?'));
+
+  // Find the path and searchParams
+  const path = !!rest[0] ? `/${rest[0]}` : '/';
+  const searchParams = !!rest[1] ? `?${rest[1]}` : '?';
+
+  return {
+    service,
+    path,
+    searchParams,
+  };
+};
+
 const generateSignature = async (
   config: InternalAxiosRequestConfig,
   token: string
 ): Promise<string> => {
-  const service = config.url.split('/')[0];
-  const path = '/api';
-  const searchParams = `?${config.url.split('?')[1]}`;
+  const { service, path, searchParams } = parseUrlString(config.url);
 
-  const signature = await generateHmac(token, service, path, searchParams);
-  return signature;
+  return generateHmac(token, service, path, searchParams);
 };
 
 const interceptorRequest = async (

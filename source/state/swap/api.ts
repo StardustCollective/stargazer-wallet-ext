@@ -8,7 +8,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 // Utils
 /////////////////////////
 
-import { STARGAZER_API_KEY, STARGAZER_SWAPPING_BASE_URL_PROD } from 'utils/envUtil';
+import { STARGAZER_API_KEY } from 'utils/envUtil';
 
 /////////////////////////
 // Types
@@ -24,6 +24,7 @@ import {
 } from './types';
 import { RootState } from 'state/store';
 import { AssetType } from 'state/vault/types';
+import { STARGAZER_SWAPPING_BASE_URL_PROD } from 'constants/index';
 
 /////////////////////////
 // Constants

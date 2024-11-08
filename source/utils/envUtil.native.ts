@@ -1,19 +1,11 @@
 import {
-  STARGAZER_SWAPPING_BASE_URL_PROD as stargazerSwappingBaseUrlProd,
-  STARGAZER_PROVIDERS_BASE_URL as stargazerProvidersBaseUrl,
-  STARGAZER_PROVIDERS_BASE_URL_PROD as stargazerProvidersBaseUrlProd,
   STARGAZER_API_KEY as stargazerApiKey,
   ELPACA_KEY as elpacaKey,
   ELPACA_VALUE as elpacaValue,
   LATTICE_API_KEY as latticeKey,
-  COINGECKO_API_KEY as coinGeckoApiKey,
 } from '@env';
 
-export const STARGAZER_SWAPPING_BASE_URL_PROD = stargazerSwappingBaseUrlProd;
-export const STARGAZER_PROVIDERS_BASE_URL = stargazerProvidersBaseUrl;
-export const STARGAZER_PROVIDERS_BASE_URL_PROD = stargazerProvidersBaseUrlProd;
 export const STARGAZER_API_KEY = stargazerApiKey;
-export const COINGECKO_API_KEY = coinGeckoApiKey;
 export const ELPACA_KEY = elpacaKey;
 export const ELPACA_VALUE = elpacaValue;
 export const LATTICE_API_KEY = latticeKey;
