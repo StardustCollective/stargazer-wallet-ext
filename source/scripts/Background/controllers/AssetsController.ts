@@ -2,12 +2,10 @@ import { addAsset, removeAsset, updateAssetDecimals } from 'state/assets';
 import store from 'state/store';
 import IVaultState, { ActiveNetwork, AssetType } from 'state/vault/types';
 import {
-  TOKEN_INFO_API,
   ETHEREUM_DEFAULT_LOGO,
   AVALANCHE_DEFAULT_LOGO,
   BSC_DEFAULT_LOGO,
   POLYGON_DEFAULT_LOGO,
-  COINGECKO_API_KEY_PARAM,
   CONSTELLATION_DEFAULT_LOGO,
 } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
@@ -56,6 +54,8 @@ import {
   clearClaimHash as clearClaimHashFn,
 } from 'state/user';
 import { ELPACA_VALUE } from 'utils/envUtil';
+import { ExternalApi } from 'utils/httpRequests/apis';
+import { ExternalService } from 'utils/httpRequests/constants';
 
 // Default logos
 const DEFAULT_LOGOS = {
@@ -201,11 +201,10 @@ const AssetsController = (): IAssetsController => {
     const platform = getPlatformFromMainnet(networkType);
 
     try {
-      tokenData = await (
-        await fetch(
-          `${TOKEN_INFO_API}/${platform}/contract/${address}?${COINGECKO_API_KEY_PARAM}`
-        )
-      ).json();
+      const tokenDataResponse = await ExternalApi.get(
+        `${ExternalService.CoinGecko}/coins/${platform}/contract/${address}`
+      );
+      tokenData = tokenDataResponse?.data || {};
     } catch (err) {
       console.log('Token Error:', err);
     }

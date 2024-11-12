@@ -26,12 +26,13 @@ import {
   ITempNFTInfo,
   OpenSeaSupportedChains,
 } from 'state/nfts/types';
-import { OPENSEA_API_TESTNETS_V2, OPENSEA_API_V2 } from 'constants/index';
 import { KeyringAssetType, KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { AssetType, Network } from 'state/vault/types';
 import { OPENSEA_CHAINS_MAP, OPENSEA_NETWORK_MAP, isOpenSeaTestnet } from 'utils/opensea';
 import { AccountController } from './AccountController';
 import { getNetworkNativeToken } from './EVMChainController/utils';
+import { ExternalService } from 'utils/httpRequests/constants';
+import { ExternalApi } from 'utils/httpRequests/apis';
 
 export interface INFTController {
   setCollectionsLoading: (loading: boolean) => void;
@@ -57,7 +58,6 @@ export interface INFTController {
   ) => Promise<void>;
 }
 
-const API_KEY_HEADER = 'X-API-KEY';
 const INSUFICIENT_FUNDS = 'insufficient funds';
 const DEFAULT_ERROR_MESSAGE =
   'There was an error with your token transfer. Please try again later.';
@@ -225,18 +225,17 @@ class NFTController implements INFTController {
       let accumulatedData: IOpenSeaNFT[] = [];
       const isTestnet = isOpenSeaTestnet(chain);
 
-      const BASE_URL = isTestnet ? OPENSEA_API_TESTNETS_V2 : OPENSEA_API_V2;
-      let endpointBase = `${BASE_URL}/chain/${chain}/account/${walletAddress}/nfts?limit=${NFT_FETCH_LIMIT}`;
+      const SERVICE = isTestnet
+        ? ExternalService.OpenseaTestnet
+        : ExternalService.OpenseaMainnet;
+      let endpointBase = `${SERVICE}/chain/${chain}/account/${walletAddress}/nfts?limit=${NFT_FETCH_LIMIT}`;
       if (collectionId) {
         endpointBase += `&collection=${collectionId}`;
       }
 
       const recursiveFetch = async (url: string): Promise<void> => {
-        const headers = isTestnet
-          ? {}
-          : { headers: { [API_KEY_HEADER]: process.env.OPENSEA_API_KEY } };
-        const response = await fetch(url, headers);
-        const responseJson = await response.json();
+        const responseData = await ExternalApi.get(url);
+        const responseJson = responseData?.data ?? {};
         const nfts = !!responseJson?.nfts ? responseJson.nfts : [];
         accumulatedData = accumulatedData.concat(nfts);
 
@@ -263,14 +262,12 @@ class NFTController implements INFTController {
   ): Promise<IOpenSeaCollection> {
     try {
       const isTestnet = isOpenSeaTestnet(chain);
-      const BASE_URL = isTestnet ? OPENSEA_API_TESTNETS_V2 : OPENSEA_API_V2;
-      const endpointBase = `${BASE_URL}/collections/${collectionId}`;
-      const headers = isTestnet
-        ? {}
-        : { headers: { [API_KEY_HEADER]: process.env.OPENSEA_API_KEY } };
-      const response = await fetch(endpointBase, headers);
-      const responseJson = await response.json();
-      return responseJson;
+      const SERVICE = isTestnet
+        ? ExternalService.OpenseaTestnet
+        : ExternalService.OpenseaMainnet;
+      const endpointBase = `${SERVICE}/collections/${collectionId}`;
+      const response = await ExternalApi.get(endpointBase);
+      return response?.data ?? {};
     } catch (error) {
       console.log('ERROR: fetchCollection', error);
       return null;
@@ -384,13 +381,15 @@ class NFTController implements INFTController {
 
     try {
       const isTestnet = isOpenSeaTestnet(chain);
-      const BASE_URL = isTestnet ? OPENSEA_API_TESTNETS_V2 : OPENSEA_API_V2;
-      const endpointBase = `${BASE_URL}/chain/${chain}/contract/${address}/nfts/${id}`;
-      const headers = isTestnet
-        ? {}
-        : { headers: { [API_KEY_HEADER]: process.env.OPENSEA_API_KEY } };
-      const response = await fetch(endpointBase, headers);
-      const responseJson = await response.json();
+      const SERVICE = isTestnet
+        ? ExternalService.OpenseaTestnet
+        : ExternalService.OpenseaMainnet;
+
+      const endpointBase = `${SERVICE}/chain/${chain}/contract/${address}/nfts/${id}`;
+
+      const response = await ExternalApi.get(endpointBase);
+      const responseJson = response?.data ?? {};
+
       const nftData = !!responseJson?.nft ? responseJson.nft : null;
 
       if (!!nftData) {

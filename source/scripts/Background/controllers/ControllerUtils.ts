@@ -1,13 +1,11 @@
 import store from 'state/store';
 import { updateFiatPrices } from 'state/price';
-import {
-  ASSET_PRICE_API,
-  COINGECKO_API_KEY_PARAM,
-  DEFAULT_CURRENCY,
-} from 'constants/index';
+import { DEFAULT_CURRENCY } from 'constants/index';
 import IAssetListState from 'state/assets/types';
 import IVaultState from '../../../state/vault/types';
 import IProvidersState from 'state/providers/types';
+import { ExternalApi } from 'utils/httpRequests/apis';
+import { ExternalService } from 'utils/httpRequests/constants';
 
 export interface IControllerUtils {
   appRoute: (newRoute?: string) => string;
@@ -52,11 +50,10 @@ const ControllerUtils = (): IControllerUtils => {
           .map((a) => a.priceId);
 
         assetIds = buildAssetIdsParam(assetIds, defaultIds);
-        const data = await (
-          await fetch(
-            `${ASSET_PRICE_API}?ids=${assetIds}&vs_currencies=${currency}&include_24hr_change=true&${COINGECKO_API_KEY_PARAM}`
-          )
-        ).json();
+        const GET_PRICE_URL = `${ExternalService.CoinGecko}/simple/price?ids=${assetIds}&vs_currencies=${currency}&include_24hr_change=true`;
+        const priceResponse = await ExternalApi.get(GET_PRICE_URL);
+        if (!priceResponse.data) return;
+        const data = priceResponse.data;
         store.dispatch(
           updateFiatPrices(
             Object.keys(data).map((assetId) => {

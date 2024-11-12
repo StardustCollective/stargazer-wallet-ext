@@ -12,7 +12,7 @@ import {
   getTxFromTokenTransaction,
 } from './utils';
 import { getParamsFromObject } from 'utils/objects';
-import { ExplorerApi } from 'utils/httpRequests/apis';
+import { ExternalApi } from 'utils/httpRequests/apis';
 
 export const getGasOracle = async (explorerID: string): Promise<GasOracleResponse> => {
   const params = {
@@ -21,7 +21,7 @@ export const getGasOracle = async (explorerID: string): Promise<GasOracleRespons
   };
   const url = explorerID + '/api?' + getParamsFromObject(params);
 
-  const response = await ExplorerApi.get(url);
+  const response = await ExternalApi.get(url);
   return response?.data?.result ?? {};
 };
 
@@ -52,7 +52,7 @@ export const getTokenTransactionHistory = async ({
       endblock,
     });
 
-  const response = await ExplorerApi.get(url);
+  const response = await ExternalApi.get(url);
   const tokenTransactions: TokenTransactionInfo[] = response?.data?.result ?? [];
 
   return filterSelfTxs(tokenTransactions)
@@ -90,8 +90,8 @@ export const getETHTransactionHistory = async ({
 
   const internalUrl = url.replace('txlist', 'txlistinternal');
   const [txsResponse, internalTxsResponse] = await Promise.all([
-    ExplorerApi.get(url),
-    ExplorerApi.get(internalUrl),
+    ExternalApi.get(url),
+    ExternalApi.get(internalUrl),
   ]);
 
   let ethTransactions: ETHTransactionInfo[] = txsResponse?.data?.result ?? [];

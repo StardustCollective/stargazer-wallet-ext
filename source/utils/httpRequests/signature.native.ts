@@ -2,14 +2,19 @@ const generateHmac = async (
   token: string,
   service: string,
   path: string,
-  searchParams: string
+  searchParams: string,
+  body?: any
 ): Promise<string> => {
-  const payload = Buffer.concat([
+  let payload = Buffer.concat([
     Buffer.from(token),
     Buffer.from(service),
     Buffer.from(path),
     Buffer.from(searchParams),
   ]);
+
+  if (!!body) {
+    payload = Buffer.concat([payload, Buffer.from(JSON.stringify(body))]);
+  }
 
   const hmac = crypto.createHmac('sha256', token);
   hmac.update(payload);

@@ -37,16 +37,17 @@ import erc721abi from 'utils/erc721.json';
 import erc1155abi from 'utils/erc1155.json';
 import { ITempNFTInfo } from 'state/nfts/types';
 import { AssetType } from 'state/vault/types';
+import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
 
 class EVMChainController implements IEVMChainController {
   private chain: IChain;
   private address: Address | null = null;
   private wallet: ethers.Wallet | null = null;
-  private provider: ethers.providers.JsonRpcProvider;
+  private provider: StargazerRpcProvider;
 
   constructor({ chain, privateKey }: EVMChainControllerParams) {
     this.chain = getChainInfo(chain);
-    this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
+    this.provider = new StargazerRpcProvider(this.chain.rpcEndpoint);
     this.changeWallet(new ethers.Wallet(privateKey, this.provider));
   }
 
@@ -87,7 +88,7 @@ class EVMChainController implements IEVMChainController {
       throw new Error('Chain must be provided');
     } else {
       this.chain = getChainInfo(chain);
-      this.provider = new ethers.providers.JsonRpcProvider(this.chain.rpcEndpoint);
+      this.provider = new StargazerRpcProvider(this.chain.rpcEndpoint);
       this.wallet = this.wallet.connect(this.provider);
     }
   }
