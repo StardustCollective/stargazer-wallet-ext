@@ -19,6 +19,7 @@ import {
   dag_getPendingTransaction,
   dag_getMetagraphBalance,
   dag_sendMetagraphTransaction,
+  dag_sendMetagraphDataTransaction,
   dag_getMetagraphTransaction,
   wallet_watchAsset,
   dag_getMetagraphPendingTransaction,
@@ -74,6 +75,8 @@ export class ConstellationProvider implements IRpcChainRequestHandler {
         return dag_getMetagraphBalance(request, message, sender);
       case AvailableMethods.dag_sendMetagraphTransaction:
         return dag_sendMetagraphTransaction(request, message, sender);
+      case AvailableMethods.dag_sendMetagraphDataTransaction:
+        return dag_sendMetagraphDataTransaction(request, message, sender);
       case AvailableMethods.dag_getMetagraphTransaction:
         return dag_getMetagraphTransaction(request, message, sender);
       case AvailableMethods.dag_getMetagraphPendingTransaction:

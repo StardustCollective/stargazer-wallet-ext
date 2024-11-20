@@ -77,6 +77,12 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_sendMetagraphDataTransaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_getMetagraphPendingTransaction,
     proxied: false,
     permissions: [],

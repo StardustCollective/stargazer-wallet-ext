@@ -16,6 +16,7 @@ export interface IAssetInfoState {
   custom?: boolean;
   l0endpoint?: string;
   l1endpoint?: string;
+  dl1endpoint?: string;
   // contractAddress?: string;
 }
 
