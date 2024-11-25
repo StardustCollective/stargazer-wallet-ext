@@ -18,6 +18,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFCF5',
     flexDirection: 'row',
   },
+  endpoints: {
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  endpointsContainer: {
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    marginBottom: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.16)',
+    borderRadius: 8,
+  },
   warningIcon: {
     marginTop: 4,
   },

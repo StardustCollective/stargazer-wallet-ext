@@ -53,7 +53,8 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   const [networkType, setNetworkType] = useState<string>('main2');
   const [tokenAddress, setTokenAddress] = useState<string>('');
   const [l0endpoint, setL0endpoint] = useState<string>('');
-  const [l1endpoint, setL1endpoint] = useState<string>('');
+  const [cl1endpoint, setcL1endpoint] = useState<string>('');
+  const [dl1endpoint, setdL1endpoint] = useState<string>('');
   const [tokenName, setTokenName] = useState<string>('');
   const [tokenSymbol, setTokenSymbol] = useState<string>('');
   const [tokenDecimals, setTokenDecimals] = useState<string>('');
@@ -128,20 +129,34 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
           return true;
         })
         .required('L0 endpoint is required'),
-      l1endpoint: yup
+      cl1endpoint: yup
         .string()
         .test('validURL', 'Please enter a valid URL', (val) => {
           const regex = new RegExp(URL_REGEX_PATTERN);
           return regex.test(val);
         })
-        .test('validNode', 'L1 endpoint not found', (val) => {
+        .test('validNode', 'L1 currency endpoint not found', (val) => {
           if (!!val) {
             return accountController.isValidNode(val);
           }
 
           return true;
         })
-        .required('L1 endpoint is required'),
+        .required('L1 currency endpoint is required'),
+      dl1endpoint: yup
+        .string()
+        .test('validURL', 'Please enter a valid URL', (val) => {
+          const regex = new RegExp(URL_REGEX_PATTERN);
+          return regex.test(val);
+        })
+        .test('validNode', 'L1 data endpoint not found', (val) => {
+          if (!!val) {
+            return accountController.isValidNode(val);
+          }
+
+          return true;
+        })
+        .required('L1 data endpoint is required'),
       tokenName: yup.string().required('Token name is required'),
       tokenSymbol: yup
         .string()
@@ -186,7 +201,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   useEffect(() => {
     const hasErrors = !!Object.keys(errors)?.length;
     const otherChecks = isL0Token
-      ? l0endpoint === '' || l1endpoint === ''
+      ? l0endpoint === '' || cl1endpoint === '' || dl1endpoint === ''
       : tokenDecimals === '';
     const disabled =
       hasErrors ||
@@ -199,7 +214,8 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     Object.keys(errors),
     tokenAddress,
     l0endpoint,
-    l1endpoint,
+    cl1endpoint,
+    dl1endpoint,
     tokenName,
     tokenSymbol,
     tokenDecimals,
@@ -220,10 +236,16 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     triggerValidation('l0endpoint');
   };
 
-  const handleL1endpointChange = (value: string) => {
-    setValue('l1endpoint', value);
-    setL1endpoint(value);
-    triggerValidation('l1endpoint');
+  const handlecL1endpointChange = (value: string) => {
+    setValue('cl1endpoint', value);
+    setcL1endpoint(value);
+    triggerValidation('cl1endpoint');
+  };
+
+  const handledL1endpointChange = (value: string) => {
+    setValue('dl1endpoint', value);
+    setdL1endpoint(value);
+    triggerValidation('dl1endpoint');
   };
 
   const handleNameChange = (value: string) => {
@@ -256,7 +278,8 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       tokenSymbol,
       tokenDecimals,
       l0endpoint,
-      l1endpoint,
+      cl1endpoint,
+      dl1endpoint,
     } = asset;
 
     setButtonLoading(true);
@@ -292,7 +315,8 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
       await accountController.assetsController.addCustomL0Token(
         l0endpoint,
-        l1endpoint,
+        cl1endpoint,
+        dl1endpoint,
         tokenAddress,
         tokenName,
         tokenSymbol
@@ -308,14 +332,16 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       setNetworkType(value);
       setValue('tokenAddress', '');
       setValue('l0endpoint', '');
-      setValue('l1endpoint', '');
+      setValue('cl1endpoint', '');
+      setValue('dl1endpoint', '');
       setValue('tokenName', '');
       setValue('tokenSymbol', '');
       setValue('tokenDecimals', '');
       setTokenAddress('');
       setTokenName('');
       setL0endpoint('');
-      setL1endpoint('');
+      setcL1endpoint('');
+      setdL1endpoint('');
       setTokenSymbol('');
       setTokenDecimals('');
     }
@@ -331,7 +357,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   };
 
   const networkTypeOptions = {
-    title: 'Network type',
+    title: 'Network Type',
     value: networkType,
     items: [
       // 349: New network should be added here.
@@ -355,7 +381,8 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
         register={register}
         tokenAddress={tokenAddress}
         l0endpoint={l0endpoint}
-        l1endpoint={l1endpoint}
+        cl1endpoint={cl1endpoint}
+        dl1endpoint={dl1endpoint}
         tokenName={tokenName}
         tokenSymbol={tokenSymbol}
         tokenDecimals={tokenDecimals}
@@ -364,7 +391,8 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
         handleAddressScan={handleAddressScan}
         handleAddressChange={handleAddressChange}
         handleL0endpointChange={handleL0endpointChange}
-        handleL1endpointChange={handleL1endpointChange}
+        handlecL1endpointChange={handlecL1endpointChange}
+        handledL1endpointChange={handledL1endpointChange}
         handleNameChange={handleNameChange}
         handleSymbolChange={handleSymbolChange}
         handleDecimalsChange={handleDecimalsChange}
