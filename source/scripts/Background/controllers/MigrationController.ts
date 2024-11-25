@@ -165,6 +165,15 @@ const MigrationController = async () => {
     const v5_0_0 = require('../migration/v5_0_0');
     await v5_0_0.default(state);
   }
+
+  /**
+   * version < 5_1_3
+   * Description: Adds dL1 endpoints on DOR and PACA
+   */
+  if (compareVersions(state.vault.version, '5.1.3') < 0) {
+    const v5_1_3 = require('../migration/v5_1_3');
+    await v5_1_3.default(state);
+  }
 };
 
 export default MigrationController;
