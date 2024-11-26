@@ -2,7 +2,12 @@ import axios from 'axios';
 import { dag4 } from '@stardust-collective/dag4';
 import { toDag, toDatum } from 'utils/number';
 import { decodeFromBase64 } from 'utils/encoding';
-import { DataFeeResponse, DataFeeTransaction, EstimateFeeResponse } from './types';
+import {
+  SendDataFeeResponse,
+  DataFeeTransaction,
+  DataTransactionBody,
+  EstimateFeeResponse,
+} from './types';
 
 export const generateProof = async (
   message: string,
@@ -49,8 +54,8 @@ export const buildFeeTransaction = (
 export const sendMetagraphDataTransaction = async (
   dL1endpoint: string,
   body: any
-): Promise<DataFeeResponse> => {
-  const response = await axios.post<DataFeeResponse>(
+): Promise<SendDataFeeResponse> => {
+  const response = await axios.post<SendDataFeeResponse>(
     `${dL1endpoint}/data`,
     JSON.stringify(body)
   );
@@ -62,7 +67,7 @@ export const buildTransactionBody = async (
   fee: string,
   destination: string,
   updateHash: string
-): Promise<any> => {
+): Promise<DataTransactionBody> => {
   const { privateKey, publicKey } = dag4.account.keyTrio;
 
   const uncompressedPublicKey = publicKey.length === 128 ? '04' + publicKey : publicKey;
@@ -70,7 +75,7 @@ export const buildTransactionBody = async (
 
   const proof = await generateProof(dataEncoded, privateKey, pubKey);
   const dataDecoded = JSON.parse(decodeFromBase64(dataEncoded));
-  const body: any = {
+  const body: DataTransactionBody = {
     data: {
       value: {
         ...dataDecoded,
@@ -101,7 +106,7 @@ export const buildTransactionBody = async (
 
 export const getFeeEstimation = async (
   dL1endpoint: string,
-  data: any
+  data: string
 ): Promise<{ fee: string; address: string; updateHash: string }> => {
   const zeroFee = {
     fee: '0',
@@ -112,7 +117,7 @@ export const getFeeEstimation = async (
   try {
     const response = await axios.post<EstimateFeeResponse>(
       `${dL1endpoint}/data/estimate-fee`,
-      JSON.stringify(data)
+      data
     );
 
     if (!!response?.data?.address && !!response?.data?.updateHash) {

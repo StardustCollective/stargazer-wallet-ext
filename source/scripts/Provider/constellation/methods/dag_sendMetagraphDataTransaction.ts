@@ -7,8 +7,10 @@ import {
 } from 'scripts/Background/messaging';
 import { getChainLabel, getWalletInfo } from '../utils';
 import store from 'state/store';
-import { decodeFromBase64 } from 'utils/encoding';
+import { encodeToBase64 } from 'utils/encoding';
 import { getFeeEstimation } from 'scenes/external/SendMetagraphData/utils';
+import stringify from 'safe-stable-stringify';
+import { getAccountController } from 'utils/controllersUtils';
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
@@ -25,10 +27,10 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('No active account for the request asset type');
   }
 
-  const [metagraphId, dataEncoded] = request.params as [string, string];
+  const [metagraphId, data] = request.params as [string, object];
 
-  if (typeof dataEncoded !== 'string') {
-    throw new Error("Bad argument 'dataEncoded' -> must be a string");
+  if (typeof data !== 'object') {
+    throw new Error("Bad argument 'data' -> must be an object");
   }
 
   if (typeof metagraphId !== 'string') {
@@ -47,7 +49,9 @@ export const dag_sendMetagraphDataTransaction = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const [metagraphId, dataEncoded] = validateParams(request);
+  const [metagraphId, data, sign] = validateParams(request);
+
+  const accountController = getAccountController();
 
   const assets = store.getState().assets;
   const metagraphAsset = Object.values(assets).find(
@@ -58,18 +62,24 @@ export const dag_sendMetagraphDataTransaction = async (
     throw new Error('Invalid metagraph id for data transaction');
   }
 
+  if (!accountController.isValidNode(metagraphAsset.dl1endpoint)) {
+    throw new Error(`Invalid L1 data endpoint: ${metagraphAsset.dl1endpoint}`);
+  }
+
   const { activeWallet, windowUrl, windowType, deviceId, bipIndex } = getWalletInfo();
 
-  const data = JSON.parse(decodeFromBase64(dataEncoded));
+  const dataString = stringify(data);
+  const dataEncoded = encodeToBase64(dataString);
 
   const { fee, address, updateHash } = await getFeeEstimation(
     metagraphAsset.dl1endpoint,
-    data
+    dataString
   );
 
   const signatureData = {
     origin,
     dataEncoded,
+    sign,
     walletId: activeWallet.id,
     walletLabel: activeWallet.label,
     metagraphId,

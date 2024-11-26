@@ -77,6 +77,9 @@ export class ConstellationProvider implements IRpcChainRequestHandler {
         return dag_sendMetagraphTransaction(request, message, sender);
       case AvailableMethods.dag_sendMetagraphDataTransaction:
         return dag_sendMetagraphDataTransaction(request, message, sender);
+      case AvailableMethods.dag_signMetagraphDataTransaction:
+        const requestWithSignParam = { ...request, params: [...request.params, true] };
+        return dag_sendMetagraphDataTransaction(requestWithSignParam, message, sender);
       case AvailableMethods.dag_getMetagraphTransaction:
         return dag_getMetagraphTransaction(request, message, sender);
       case AvailableMethods.dag_getMetagraphPendingTransaction:

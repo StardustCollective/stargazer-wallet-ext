@@ -1,6 +1,7 @@
 @import '~assets/styles/variables';
 
 .toast {
+  cursor: pointer;
   background-color: $purple;
   width: 365px;
   box-sizing: border-box;

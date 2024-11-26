@@ -11,7 +11,30 @@ export type DataFeeTransaction = {
   dataUpdateRef: string;
 };
 
-export type DataFeeResponse = {
+export type SendDataFeeResponse = {
   hash: string;
-  feeHash: string;
+  feeHash?: string;
+};
+
+export type SignDataFeeResponse = {
+  hash: string;
+  signature: string;
+  feeHash?: string;
+  feeSignature?: string;
+};
+
+export type Proof = {
+  id: string;
+  signature: string;
+};
+
+export type DataTransactionBody = {
+  data: {
+    value: any;
+    proofs: Proof[];
+  };
+  fee?: {
+    value: DataFeeTransaction;
+    proofs: Proof[];
+  };
 };

@@ -7,7 +7,6 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { useSelector } from 'react-redux';
 import dappSelectors from 'selectors/dappSelectors';
-
 import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
@@ -19,6 +18,10 @@ import walletsSelectors from 'selectors/walletsSelectors';
 import TextInput from 'components/TextInput';
 import { useForm } from 'react-hook-form';
 import { buildTransactionBody, sendMetagraphDataTransaction } from './utils';
+import { isAxiosError } from 'axios';
+import { usePlatformAlert } from 'utils/alertUtil';
+import { toDatum } from 'utils/number';
+import { SendDataFeeResponse, SignDataFeeResponse } from './types';
 
 const FEE_MUST_NUMBER = 'Fee must be a valid number';
 const FEE_REQUIRED = 'Fee is required';
@@ -27,6 +30,7 @@ const SendMetagraphData = () => {
   const assets = useSelector(walletsSelectors.getAssets);
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
+  const showAlert = usePlatformAlert();
 
   const { data, message: requestMessage } =
     StargazerExternalPopups.decodeRequestMessageLocationParams<{
@@ -39,6 +43,7 @@ const SendMetagraphData = () => {
       chainLabel: string;
       metagraphId: string;
       feeAmount: string;
+      sign: boolean;
       destinationFeeAddress: string;
       updateHash: string;
     }>(location.href);
@@ -51,9 +56,12 @@ const SendMetagraphData = () => {
     feeAmount,
     destinationFeeAddress,
     updateHash,
+    sign,
   } = data;
 
   const feeDisabled = feeAmount === '0';
+  const title = sign ? 'Sign Data Transaction' : 'Send Data Transaction';
+  const button = sign ? 'Sign' : 'Send';
 
   const { register, errors, setValue, triggerValidation } = useForm({
     defaultValues: {
@@ -65,7 +73,6 @@ const SendMetagraphData = () => {
         .test('number', FEE_MUST_NUMBER, (val) => {
           if (!!val) {
             const regex = new RegExp(/^\d+(\.\d+)?$/);
-            console.log('isNumber', regex.test(val));
             return regex.test(val);
           }
           return true;
@@ -123,7 +130,35 @@ const SendMetagraphData = () => {
       updateHash
     );
 
-    const response = await sendMetagraphDataTransaction(metagraphInfo.dl1endpoint, body);
+    const feeTooLow = !!body?.fee && body?.fee?.value?.amount < toDatum(feeAmount);
+    if (feeTooLow) {
+      showAlert(
+        `Not enough fee for the transaction. Recommended fee amount is ${feeAmount} ${metagraphInfo?.symbol}`,
+        'danger'
+      );
+      return;
+    }
+
+    let response: SendDataFeeResponse | SignDataFeeResponse;
+
+    try {
+      response = await sendMetagraphDataTransaction(metagraphInfo.dl1endpoint, body);
+    } catch (err: any) {
+      if (isAxiosError(err)) {
+        showAlert(
+          `There was an error with the transaction. Please try again later.`,
+          'danger'
+        );
+      }
+      return;
+    }
+
+    if (sign) {
+      (response as SignDataFeeResponse).signature = body.data.proofs[0].signature;
+      if (!!response?.feeHash) {
+        (response as SignDataFeeResponse).feeSignature = body.fee.proofs[0].signature;
+      }
+    }
 
     StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseResult(response, requestMessage);
@@ -141,9 +176,7 @@ const SendMetagraphData = () => {
           <TextV3.CaptionStrong extraStyles={styles.site}>{origin}</TextV3.CaptionStrong>
         </div>
         <div className={styles.titleContainer}>
-          <TextV3.BodyStrong extraStyles={styles.title}>
-            Send Data Transaction
-          </TextV3.BodyStrong>
+          <TextV3.BodyStrong extraStyles={styles.title}>{title}</TextV3.BodyStrong>
         </div>
       </div>
       <div className={styles.content}>
@@ -228,7 +261,7 @@ const SendMetagraphData = () => {
           <ButtonV3
             type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.MEDIUM}
-            label="Sign"
+            label={button}
             onClick={onPositiveButtonClick}
           />
         </div>
