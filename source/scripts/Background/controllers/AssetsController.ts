@@ -79,7 +79,8 @@ export interface IAssetsController {
   ) => Promise<void>;
   addCustomL0Token: (
     l0endpoint: string,
-    l1endpoint: string,
+    cl1endpoint: string,
+    dl1endpoint: string,
     address: string,
     name: string,
     symbol: string,
@@ -133,6 +134,7 @@ const AssetsController = (): IAssetsController => {
   const addCustomL0Token = async (
     l0endpoint: string,
     l1endpoint: string,
+    dl1endpoint: string,
     address: string,
     name: string,
     symbol: string,
@@ -157,6 +159,7 @@ const AssetsController = (): IAssetsController => {
       network,
       l0endpoint,
       l1endpoint,
+      dl1endpoint,
       custom: true,
     };
 

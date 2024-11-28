@@ -26,7 +26,8 @@ import {
   BALANCE,
   CANCEL,
   L0_ENDPOINT,
-  L1_ENDPOINT,
+  cL1_ENDPOINT,
+  dL1_ENDPOINT,
   METAGRAPH_ADDRESS,
   NETWORK,
   TOKEN,
@@ -45,7 +46,7 @@ const WatchAsset = () => {
 
   const { type, options, balance } = data;
 
-  const { address, chainId, l0, l1, logo, symbol, name } = options;
+  const { address, chainId, l0, cl1, dl1, logo, symbol, name } = options;
 
   const wallet = getWalletController();
   const current = useSelector(dappSelectors.getCurrent);
@@ -66,15 +67,22 @@ const WatchAsset = () => {
       (network) => network.chainId === chainId
     );
 
-    await wallet.account.assetsController.addCustomL0Token(
-      l0,
-      l1,
-      address,
-      name,
-      symbol,
-      selectedNetwork.id,
-      logo
-    );
+    try {
+      await wallet.account.assetsController.addCustomL0Token(
+        l0,
+        cl1,
+        dl1,
+        address,
+        name,
+        symbol,
+        selectedNetwork.id,
+        logo
+      );
+    } catch (err) {
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(false, message);
+      window.close();
+    }
 
     StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseResult(true, message);
@@ -159,10 +167,21 @@ const WatchAsset = () => {
             color={COLORS_ENUMS.SECONDARY_TEXT}
             extraStyles={styles.itemTitle}
           >
-            {L1_ENDPOINT}
+            {cL1_ENDPOINT}
           </TextV3.Caption>
           <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.itemValue}>
-            {l1}
+            {cl1}
+          </TextV3.Body>
+        </div>
+        <div className={styles.rowItem}>
+          <TextV3.Caption
+            color={COLORS_ENUMS.SECONDARY_TEXT}
+            extraStyles={styles.itemTitle}
+          >
+            {dL1_ENDPOINT}
+          </TextV3.Caption>
+          <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.itemValue}>
+            {dl1}
           </TextV3.Body>
         </div>
       </div>
