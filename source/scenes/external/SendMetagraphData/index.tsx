@@ -83,6 +83,8 @@ const SendMetagraphData = () => {
 
   const [fee, setFee] = useState(feeAmount);
 
+  const buttonDisabled = !feeDisabled && !!errors?.fee;
+
   const handleFeeChange = (value: string) => {
     setValue('fee', value);
     setFee(value);
@@ -133,7 +135,7 @@ const SendMetagraphData = () => {
     const feeTooLow = !!body?.fee && body?.fee?.value?.amount < toDatum(feeAmount);
     if (feeTooLow) {
       showAlert(
-        `Not enough fee for the transaction. Recommended fee amount is ${feeAmount} ${metagraphInfo?.symbol}`,
+        `Not enough fee for this transaction.\nThe recommended fee amount is ${feeAmount} ${metagraphInfo?.symbol}`,
         'danger'
       );
       return;
@@ -146,7 +148,7 @@ const SendMetagraphData = () => {
     } catch (err: any) {
       if (isAxiosError(err)) {
         showAlert(
-          `There was an error with the transaction. Please try again later.`,
+          `There was an error with the transaction.\nPlease try again later.`,
           'danger'
         );
       }
@@ -262,6 +264,7 @@ const SendMetagraphData = () => {
             type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.MEDIUM}
             label={button}
+            disabled={buttonDisabled}
             onClick={onPositiveButtonClick}
           />
         </div>
