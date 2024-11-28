@@ -6,6 +6,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
 import { WatchAssetParameters } from '../methods/wallet_watchAsset';
 import { toDag } from 'utils/number';
+import { getAccountController } from 'utils/controllersUtils';
 
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
@@ -216,11 +217,35 @@ export const isValidMetagraphAddress = async (
   return !!response?.data?.hash;
 };
 
+export const validateNodes = async (
+  l0: string,
+  cl1: string,
+  dl1: string
+): Promise<void> => {
+  const accountController = getAccountController();
+
+  const isValidL0 = await accountController.isValidNode(l0);
+  const isValidcL1 = await accountController.isValidNode(cl1);
+  const isValiddL1 = await accountController.isValidNode(dl1);
+
+  if (!isValidL0) {
+    throw new Error('Argument "l0" is invalid -> node not found');
+  }
+
+  if (!isValidcL1) {
+    throw new Error('Argument "cl1" is invalid -> node not found');
+  }
+
+  if (!isValiddL1) {
+    throw new Error('Argument "dl1" is invalid -> node not found');
+  }
+};
+
 export const checkWatchAssetParams = async ({
   type,
   options,
 }: WatchAssetParameters): Promise<void> => {
-  const { chainId, address, l0, l1, name, symbol, logo } = options;
+  const { chainId, address, l0, cl1, dl1, name, symbol, logo } = options;
   const SUPPORTED_TYPES = ['L0'];
   const SUPPORTED_CHAINS = Object.values(DAG_NETWORK).map((network) => network.chainId);
   const args = [
@@ -228,7 +253,8 @@ export const checkWatchAssetParams = async ({
     { type: 'number', value: chainId, name: 'chainId' },
     { type: 'string', value: address, name: 'address' },
     { type: 'string', value: l0, name: 'l0' },
-    { type: 'string', value: l1, name: 'l1' },
+    { type: 'string', value: cl1, name: 'cl1' },
+    { type: 'string', value: dl1, name: 'dl1' },
     { type: 'string', value: name, name: 'name' },
     { type: 'string', value: symbol, name: 'symbol' },
     { type: 'string', value: logo, name: 'logo' },
@@ -260,4 +286,6 @@ export const checkWatchAssetParams = async ({
   if (!isValidMetagraph) {
     throw new Error('Argument "address" or "chainId" are invalid -> metagraph not found');
   }
+
+  await validateNodes(l0, cl1, dl1);
 };
