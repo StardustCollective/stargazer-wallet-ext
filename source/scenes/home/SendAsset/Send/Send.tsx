@@ -131,7 +131,12 @@ const WalletSend: FC<IWalletSend> = ({
                 variant={clsx(styles.input, styles.amount)}
               />
               {!isExternalRequest && (
-                <Button type="button" variant={styles.textBtn} onClick={handleSetMax}>
+                <Button
+                  type="button"
+                  disabled={!!Object.values(errors).length}
+                  variant={styles.textBtn}
+                  onClick={handleSetMax}
+                >
                   Max
                 </Button>
               )}
