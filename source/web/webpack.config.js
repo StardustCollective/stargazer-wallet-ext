@@ -125,7 +125,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(jpg|png|svg)x?$/,
+        test: /\.(jpg|png)x?$/,
         loader: 'file-loader',
       },
       {
@@ -155,6 +155,10 @@ module.exports = {
           'resolve-url-loader', // Rewrites relative paths in url() statements
           'sass-loader', // Takes the Sass/SCSS file and compiles to the CSS
         ],
+      },
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
       },
     ],
   },
