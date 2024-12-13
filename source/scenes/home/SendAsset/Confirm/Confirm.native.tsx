@@ -34,10 +34,10 @@ const Confirm = ({
   };
 
   const amountBN = convertBigNumber(tempTx?.amount);
-  const amountPrice = convertBigNumber(getSendAmount());
+  const amountPrice = getSendAmount();
   const feeBN = convertBigNumber(tempTx?.fee);
-  const feePrice = convertBigNumber(getFeeAmount());
-  const totalAmount = convertBigNumber(getTotalAmount());
+  const feePrice = getFeeAmount();
+  const totalAmount = getTotalAmount();
 
   return (
     <>
