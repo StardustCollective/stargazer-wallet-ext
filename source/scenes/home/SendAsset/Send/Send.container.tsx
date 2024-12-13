@@ -403,8 +403,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       }
 
       txFee =
-        activeAsset?.id === AssetType.Constellation ||
-        activeAsset?.id === AssetType.LedgerConstellation
+        activeAsset?.type === AssetType.Constellation ||
+        activeAsset?.type === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee, assetInfo.decimals)
           : ethers.utils.parseEther(gasFee.toString());
 
@@ -540,6 +540,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleSetMax = () => {
     const { balance, txFee } = getBalanceAndFees();
+
+    if (!balance || !txFee) return;
 
     let computedAmount;
 
