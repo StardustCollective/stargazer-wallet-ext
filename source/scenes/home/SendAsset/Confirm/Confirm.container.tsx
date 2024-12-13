@@ -301,6 +301,8 @@ const ConfirmContainer = () => {
         console.log('ERROR', e);
         showAlert(e.message, 'danger');
 
+        if (!location?.href) return;
+
         const { message, origin } =
           StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
