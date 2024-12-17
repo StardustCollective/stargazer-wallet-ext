@@ -4,6 +4,7 @@ import { claimElpaca, getElPacaInfo } from './api';
 
 const initialState: IUserState = {
   elpaca: {
+    hidden: false,
     streak: {
       loading: false,
       data: null,
@@ -22,18 +23,23 @@ const UserState = createSlice({
   initialState,
   reducers: {
     rehydrate(state: IUserState, action: PayloadAction<IUserState>) {
-      // claim is the only object that is presisted for the elpaca state.
+      // claim and hidden are the only values presisted for the elpaca state.
       if (!action?.payload?.elpaca?.claim) return;
+      if (action?.payload?.elpaca?.hidden === undefined) return;
 
       return {
         elpaca: {
           ...state.elpaca,
+          hidden: action.payload.elpaca.hidden,
           claim: {
             ...state.elpaca.claim,
             data: action.payload.elpaca.claim.data,
           },
         },
       };
+    },
+    setElpacaHidden(state: IUserState, action: PayloadAction<boolean>) {
+      state.elpaca.hidden = action.payload;
     },
     clearClaim(state: IUserState) {
       state.elpaca.claim = initialState.elpaca.claim;
@@ -73,6 +79,7 @@ const UserState = createSlice({
         totalEarned: 0,
         lastClaimEpochProgress: 0,
         currentEpochProgress: 0,
+        epochsLeft: 0,
         nextToken: '',
         currentClaimWindow: '0h 0m',
         claimEnabled: true,
@@ -99,7 +106,13 @@ const UserState = createSlice({
   },
 });
 
-export const { rehydrate, clearClaim, clearClaimHash, clearClaimAddress, clearStreak } =
-  UserState.actions;
+export const {
+  rehydrate,
+  setElpacaHidden,
+  clearClaim,
+  clearClaimHash,
+  clearClaimAddress,
+  clearStreak,
+} = UserState.actions;
 
 export default UserState.reducer;

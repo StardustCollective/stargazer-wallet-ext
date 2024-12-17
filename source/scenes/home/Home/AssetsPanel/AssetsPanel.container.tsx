@@ -24,12 +24,11 @@ const AssetsPanelContainer: FC = () => {
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const { elpaca }: IUserState = useSelector((state: RootState) => state.user);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
-  const [showClaimCard, setShowClaimCard] = useState(true);
   const [claimLoading, setClaimLoading] = useState(false);
   const hasDagAddress = !!getDagAddress(activeWallet);
   const isMainnet = activeNetwork.Constellation === DAG_NETWORK.main2.id;
   const hasClaimWindow = !!elpaca?.streak?.data?.currentClaimWindow;
-  const showCard = showClaimCard && hasDagAddress && isMainnet && hasClaimWindow;
+  const showCard = !elpaca?.hidden && hasDagAddress && isMainnet && hasClaimWindow;
 
   useEffect(() => {
     if (elpaca?.claim?.data?.hash) {
@@ -65,8 +64,8 @@ const AssetsPanelContainer: FC = () => {
     await open(ELPACA_LEARN_MORE);
   };
 
-  const handleClose = () => {
-    setShowClaimCard(false);
+  const handleHideCard = () => {
+    accountController.assetsController.setElpacaHidden(true);
   };
 
   return (
@@ -80,7 +79,7 @@ const AssetsPanelContainer: FC = () => {
       handleSelectAsset={handleSelectAsset}
       handleAddTokens={handleAddTokens}
       handleClaim={handleClaim}
-      handleClose={handleClose}
+      handleHideCard={handleHideCard}
       handleLearnMore={handleLearnMore}
     />
   );

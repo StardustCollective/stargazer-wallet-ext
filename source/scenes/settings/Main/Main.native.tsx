@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import Card from 'components/Card';
@@ -11,6 +11,7 @@ import WalletIcon from 'assets/images/svg/wallet.svg';
 import ContactsIcon from 'assets/images/svg/contacts.svg';
 import NetworksIcon from 'assets/images/svg/networks.svg';
 import SecurityIcon from 'assets/images/svg/security.svg';
+import SettingsIcon from 'assets/images/svg/settings-adjust.svg';
 import InfoIcon from 'assets/images/svg/info.svg';
 import ExitIcon from 'assets/images/svg/exit.svg';
 import ArrowRightIcon from 'assets/images/svg/arrow-rounded-right.svg';
@@ -28,6 +29,7 @@ const Main: FC<IMainSettings> = ({
   onAboutLinkClicked,
   onContactsLinkClicked,
   onSecurityLinkClicked,
+  onPersonalizeLinkClicked,
   version,
 }) => {
   const { available } = useSelector((state: RootState) => state.biometrics);
@@ -89,10 +91,16 @@ const Main: FC<IMainSettings> = ({
       onClick: onSecurityLinkClicked,
       disabled: !available,
     },
+    {
+      label: 'Personalize',
+      key: 'Personalize',
+      IconImageOrComponent: SettingsIcon,
+      onClick: onPersonalizeLinkClicked,
+    },
   ];
 
   return (
-    <View style={styles.main}>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
       <View style={styles.box}>
         <View style={styles.content}>
           {SETTINGS_MAP.map((sectionProps) => {
@@ -118,7 +126,7 @@ const Main: FC<IMainSettings> = ({
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

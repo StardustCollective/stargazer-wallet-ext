@@ -52,6 +52,7 @@ import {
   clearClaimAddress as clearClaimAddressFn,
   clearClaim as clearClaimFn,
   clearClaimHash as clearClaimHashFn,
+  setElpacaHidden as setElpacaHiddenFn,
 } from 'state/user';
 import { ELPACA_VALUE } from 'utils/envUtil';
 import { ExternalApi } from 'utils/httpRequests/apis';
@@ -99,6 +100,7 @@ export interface IAssetsController {
   fetchElpacaStreak: () => Promise<void>;
   claimElpaca: () => Promise<void>;
   setRequestId: (value: string) => void;
+  setElpacaHidden: (value: boolean) => void;
   clearErrors: () => void;
   clearBestDeal: () => void;
   clearResponse: () => void;
@@ -327,6 +329,10 @@ const AssetsController = (): IAssetsController => {
     store.dispatch<any>(getElPacaInfo(dagAddress));
   };
 
+  const setElpacaHidden = (value: boolean) => {
+    store.dispatch<any>(setElpacaHiddenFn(value));
+  };
+
   const clearClaim = () => {
     store.dispatch<any>(clearClaimFn());
   };
@@ -385,6 +391,7 @@ const AssetsController = (): IAssetsController => {
     fetchPaymentRequest,
     setRequestId,
     setSelectedProvider,
+    setElpacaHidden,
     clearErrors,
     clearPaymentRequest,
     clearBestDeal,

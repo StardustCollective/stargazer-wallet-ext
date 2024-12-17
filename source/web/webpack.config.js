@@ -85,6 +85,7 @@ module.exports = {
       navigation: path.resolve(sharedPath, 'navigation'),
       state: path.resolve(sharedPath, 'state'),
       constants: path.resolve(sharedPath, 'constants'),
+      context: path.resolve(sharedPath, 'context'),
       hooks: path.resolve(sharedPath, 'hooks'),
       utils: path.resolve(sharedPath, 'utils'),
       selectors: path.resolve(sharedPath, 'selectors'),

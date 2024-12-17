@@ -64,6 +64,7 @@ export async function updateState() {
     dapp: state.dapp,
     user: {
       elpaca: {
+        hidden: state.user.elpaca.hidden,
         claim: {
           data: state.user.elpaca.claim.data,
         },

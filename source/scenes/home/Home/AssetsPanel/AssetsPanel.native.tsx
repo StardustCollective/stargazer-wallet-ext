@@ -13,6 +13,7 @@ import AssetItem from 'components/AssetItem';
 import CardClaim from 'components/CardClaim';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import SlidersIcon from 'assets/images/svg/sliders.svg';
+import { ToastPosition, ToastType, useToast } from 'context/ToastContext';
 
 ///////////////////////
 // Types
@@ -37,12 +38,13 @@ const AssetsPanel: FC<IAssetState> = ({
   handleSelectAsset,
   handleAddTokens,
   handleClaim,
-  handleClose,
+  handleHideCard,
   handleLearnMore,
   assets,
   activeWallet,
   elpaca,
 }) => {
+  const { showToast } = useToast();
   const { streak, claim } = elpaca;
   const {
     claimAmount,
@@ -51,13 +53,27 @@ const AssetsPanel: FC<IAssetState> = ({
     currentClaimWindow,
     showError,
     claimEnabled,
+    epochsLeft,
   } = streak?.data ?? {};
   const { loading } = claim ?? {};
-  const renderAssetList = () => {
-    ///////////////////////
-    // Render
-    ///////////////////////
 
+  const handleShowToast = () => {
+    showToast({
+      type: ToastType.info,
+      position: ToastPosition.bottom,
+      title: 'El Paca rewards card hidden',
+      message1: 'To unhide your rewards card go to',
+      message2: 'Settings > Personalize > El Paca Rewards',
+      message2Style: styles.toastMessage2,
+    });
+  };
+
+  const onPressHideCard = () => {
+    handleShowToast();
+    handleHideCard();
+  };
+
+  const renderAssetList = () => {
     return (
       <>
         {activeNetworkAssets.map((asset: any) => {
@@ -88,10 +104,11 @@ const AssetsPanel: FC<IAssetState> = ({
             amount={claimAmount}
             currentClaimWindow={currentClaimWindow}
             claimEnabled={claimEnabled}
+            epochsLeft={epochsLeft}
             showError={showError}
             handleClaim={handleClaim}
             handleLearnMore={handleLearnMore}
-            handleClose={handleClose}
+            handleHideCard={onPressHideCard}
           />
         )}
         {Object.keys(activeWallet.assets).length && <>{renderAssetList()}</>}

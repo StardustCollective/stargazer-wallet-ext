@@ -1,0 +1,43 @@
+@import '~assets/styles/variables';
+
+.container {
+  cursor: pointer;
+  position: relative;
+
+  .containerSelected {
+    background-color: #4c2fb11f;
+  }
+
+  .iconContainer {
+    height: 24px;
+    width: 24px;
+    border-radius: 12px;
+  }
+
+  .listContainer {
+    position: absolute;
+    min-width: 200px;
+    top: 28px;
+    right: 0px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: $white;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    .itemContainer {
+      padding: 12px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+
+      .itemIconContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 8px;
+      }
+    }
+  }
+}
