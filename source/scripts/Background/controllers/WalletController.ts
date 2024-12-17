@@ -2,7 +2,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
 import {
   changeActiveNetwork,
-  changeActiveWallet,
   setVaultInfo,
   addLedgerWallet,
   updateWallets,
@@ -440,8 +439,6 @@ class WalletController {
     this.keyringManager.logout();
     this.account.networkController = undefined;
     store.dispatch(setUnlocked(false));
-    store.dispatch(changeActiveWallet(null));
-    store.dispatch(setVaultInfo({ wallets: [], isUnlocked: false }));
     store.dispatch(setAutoLogin(false));
   }
 }

@@ -113,8 +113,8 @@ const Main: FC<IMainSettings> = ({
   ];
 
   const logout = async () => {
-    await clearSession();
     handleLogout();
+    await clearSession();
   };
 
   return (
