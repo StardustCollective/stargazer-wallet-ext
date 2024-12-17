@@ -71,6 +71,7 @@
     "react-spring-bottom-sheet": "^3.4.1",
     "redux": "^4.0.5",
     "redux-watch": "^1.2.0",
+    "safe-stable-stringify": "^2.5.0",
     "single-call-balance-checker-abi": "^1.0.0"
   },
   "devDependencies": {

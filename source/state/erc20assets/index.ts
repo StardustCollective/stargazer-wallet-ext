@@ -56,6 +56,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     network: 'main2',
     l0endpoint: 'http://l0-lb-mainnet.getdor.com:7000',
     l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
+    dl1endpoint: 'http://dl1-lb-mainnet.getdor.com:9000',
     priceId: 'dor',
   },
   {
@@ -69,6 +70,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     network: 'main2',
     l0endpoint: 'http://elpaca-l0-2006678808.us-west-1.elb.amazonaws.com:9100',
     l1endpoint: 'http://elpaca-cl1-1512652691.us-west-1.elb.amazonaws.com:9200',
+    dl1endpoint: 'http://elpaca-dl1-550039959.us-west-1.elb.amazonaws.com:9300',
   },
   {
     id: '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet',

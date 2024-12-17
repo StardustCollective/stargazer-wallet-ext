@@ -57,6 +57,8 @@ enum AvailableMethods {
   /* Metagraph */
   dag_getMetagraphBalance = 'dag_getMetagraphBalance',
   dag_sendMetagraphTransaction = 'dag_sendMetagraphTransaction',
+  dag_sendMetagraphDataTransaction = 'dag_sendMetagraphDataTransaction',
+  dag_signMetagraphDataTransaction = 'dag_signMetagraphDataTransaction',
   dag_getMetagraphPendingTransaction = 'dag_getMetagraphPendingTransaction',
   dag_getMetagraphTransaction = 'dag_getMetagraphTransaction',
 }

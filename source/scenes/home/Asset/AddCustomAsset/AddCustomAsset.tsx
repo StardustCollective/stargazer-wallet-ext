@@ -32,7 +32,8 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   register,
   tokenAddress,
   l0endpoint,
-  l1endpoint,
+  cl1endpoint,
+  dl1endpoint,
   tokenName,
   tokenSymbol,
   tokenDecimals,
@@ -40,7 +41,8 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   isL0Token,
   handleAddressChange,
   handleL0endpointChange,
-  handleL1endpointChange,
+  handlecL1endpointChange,
+  handledL1endpointChange,
   handleNameChange,
   handleSymbolChange,
   handleDecimalsChange,
@@ -52,7 +54,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
 }) => {
   const inputClass = clsx(styles.input, styles.address);
 
-  const tokenAddressLabel = isL0Token ? 'Metagraph address' : 'Token address';
+  const tokenAddressLabel = isL0Token ? 'Metagraph Address' : 'Token Address';
   const tokenAddressPlaceholder = isL0Token ? 'DAG...' : '0x...';
   const tokenNamePlaceholder = isL0Token ? 'Enter token name' : 'Ethereum';
   const tokenSymbolPlaceholder = isL0Token ? 'Enter token symbol' : 'ETH';
@@ -88,52 +90,76 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
           </li>
           {isL0Token && (
             <>
-              <li>
-                <label>L0 endpoint</label>
-                <TextInput
-                  placeholder="Enter endpoint URL"
-                  fullWidth
-                  inputRef={register}
-                  id="l0endpoint"
-                  name="l0endpoint"
-                  value={l0endpoint}
-                  onChange={(ev) => handleL0endpointChange(ev.target.value)}
-                  disabled={false}
-                  error={!!errors?.l0endpoint}
-                  variant={inputClass}
-                />
-                <TextV3.Caption
-                  color={COLORS_ENUMS.RED}
-                  extraStyles={styles.errorMessage}
-                >
-                  {!!errors?.l0endpoint ? errors?.l0endpoint?.message : ' '}
-                </TextV3.Caption>
-              </li>
-              <li>
-                <label>L1 endpoint</label>
-                <TextInput
-                  placeholder="Enter endpoint URL"
-                  fullWidth
-                  inputRef={register}
-                  id="l1endpoint"
-                  name="l1endpoint"
-                  value={l1endpoint}
-                  onChange={(ev) => handleL1endpointChange(ev.target.value)}
-                  disabled={false}
-                  error={!!errors?.l1endpoint}
-                  variant={inputClass}
-                />
-                <TextV3.Caption
-                  color={COLORS_ENUMS.RED}
-                  extraStyles={styles.errorMessage}
-                >
-                  {!!errors?.l1endpoint ? errors?.l1endpoint?.message : ' '}
-                </TextV3.Caption>
-              </li>
+              <label className={styles.endpoints}>Endpoints</label>
+              <div className={styles.endpointsContainer}>
+                <li>
+                  <label className={styles.labelSmall}>L0 Endpoint</label>
+                  <TextInput
+                    placeholder="Enter endpoint URL"
+                    fullWidth
+                    inputRef={register}
+                    id="l0endpoint"
+                    name="l0endpoint"
+                    value={l0endpoint}
+                    onChange={(ev) => handleL0endpointChange(ev.target.value)}
+                    disabled={false}
+                    error={!!errors?.l0endpoint}
+                    variant={inputClass}
+                  />
+                  <TextV3.Caption
+                    color={COLORS_ENUMS.RED}
+                    extraStyles={styles.errorMessage}
+                  >
+                    {!!errors?.l0endpoint ? errors?.l0endpoint?.message : ' '}
+                  </TextV3.Caption>
+                </li>
+                <li>
+                  <label className={styles.labelSmall}>L1 Currency Endpoint</label>
+                  <TextInput
+                    placeholder="Enter endpoint URL"
+                    fullWidth
+                    inputRef={register}
+                    id="cl1endpoint"
+                    name="cl1endpoint"
+                    value={cl1endpoint}
+                    onChange={(ev) => handlecL1endpointChange(ev.target.value)}
+                    disabled={false}
+                    error={!!errors?.cl1endpoint}
+                    variant={inputClass}
+                  />
+                  <TextV3.Caption
+                    color={COLORS_ENUMS.RED}
+                    extraStyles={styles.errorMessage}
+                  >
+                    {!!errors?.cl1endpoint ? errors?.cl1endpoint?.message : ' '}
+                  </TextV3.Caption>
+                </li>
+                <li>
+                  <label className={styles.labelSmall}>L1 Data Endpoint</label>
+                  <TextInput
+                    placeholder="Enter endpoint URL"
+                    fullWidth
+                    inputRef={register}
+                    id="dl1endpoint"
+                    name="dl1endpoint"
+                    value={dl1endpoint}
+                    onChange={(ev) => handledL1endpointChange(ev.target.value)}
+                    disabled={false}
+                    error={!!errors?.dl1endpoint}
+                    variant={inputClass}
+                  />
+                  <TextV3.Caption
+                    color={COLORS_ENUMS.RED}
+                    extraStyles={styles.errorMessage}
+                  >
+                    {!!errors?.dl1endpoint ? errors?.dl1endpoint?.message : ' '}
+                  </TextV3.Caption>
+                </li>
+              </div>
             </>
           )}
           <li>
-            <label>Token name</label>
+            <label>Token Name</label>
             <TextInput
               placeholder={tokenNamePlaceholder}
               fullWidth
@@ -151,7 +177,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
             </TextV3.Caption>
           </li>
           <li>
-            <label>Token symbol</label>
+            <label>Token Symbol</label>
             <TextInput
               placeholder={tokenSymbolPlaceholder}
               fullWidth

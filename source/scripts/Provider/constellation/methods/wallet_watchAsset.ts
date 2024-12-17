@@ -12,7 +12,8 @@ export type WatchAssetOptions = {
   chainId: number; // The chain ID of the asset. 1 (mainnet), 3 (testnet), 4 (integrationnet)
   address: string; // Metagraph address
   l0: string; // L0 endpoint
-  l1: string; // L1 endpoint
+  cl1: string; // L1 currency endpoint
+  dl1: string; // L1 data endpoint
   name: string; // Name of the asset
   symbol: string; // Symbol of the asset
   logo: string; // Logo of the token

@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
-// import InfoIcon from '@material-ui/icons/InfoOutlined';
-import CancelIcon from '@material-ui/icons/Cancel';
-
+import TextV3 from 'components/TextV3';
+import { COLORS_ENUMS } from 'assets/styles/colors';
+import WarningIcon from 'assets/images/svg/warning-circle.svg';
 import styles from './ToastAlert.scss';
 
 interface IAlertTemplate {
@@ -21,15 +21,18 @@ const ToastAlert: FC<IAlertTemplate> = ({ message, options, style, close }) => {
       style={{
         ...style,
         marginBottom: '80px',
-        width: '300px',
         textAlign: 'left',
       }}
       onClick={close}
     >
       {/* {options.type === 'info' && <InfoIcon style={{ fontSize: '15px' }} />} */}
       {/* {options.type === 'success' && <SuccessIcon />} */}
-      {options.type === 'error' && <CancelIcon className={styles.icon} />}
-      {message}
+      {options.type === 'error' && (
+        <img src={`/${WarningIcon}`} className={styles.icon} />
+      )}
+      <TextV3.CaptionRegular color={COLORS_ENUMS.WHITE} extraStyles={styles.message}>
+        {message}
+      </TextV3.CaptionRegular>
     </div>
   );
 };

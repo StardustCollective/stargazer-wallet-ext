@@ -9,6 +9,7 @@ import SendTransaction from 'scenes/home/SendAsset/Send';
 import ConfirmTransaction from 'scenes/home/SendAsset/Confirm';
 import SignatureRequest from 'scenes/external/SignatureRequest';
 import SignData from 'scenes/external/SignData';
+import SendMetagraphData from 'scenes/external/SendMetagraphData';
 import TypedSignatureRequest from 'scenes/external/TypedSignatureRequest';
 import WatchAsset from 'scenes/external/WatchAsset';
 import { Route, Switch, Redirect, useHistory, RouteProps } from 'react-router-dom';
@@ -95,6 +96,7 @@ const App = () => {
           <PrivateRoute path="/confirmTransaction" component={ConfirmTransaction} />
           <PrivateRoute path="/signMessage" component={SignatureRequest} />
           <PrivateRoute path="/signData" component={SignData} />
+          <PrivateRoute path="/sendMetagraphData" component={SendMetagraphData} />
           <PrivateRoute path="/signTypedMessage" component={TypedSignatureRequest} />
           <PrivateRoute path="/watchAsset" component={WatchAsset} />
         </Switch>

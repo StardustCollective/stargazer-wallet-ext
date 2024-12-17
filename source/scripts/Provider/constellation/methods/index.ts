@@ -10,6 +10,7 @@ export * from './dag_getPendingTransaction';
 export * from './dag_getTransaction';
 export * from './dag_getMetagraphBalance';
 export * from './dag_sendMetagraphTransaction';
+export * from './dag_sendMetagraphDataTransaction';
 export * from './dag_getMetagraphTransaction';
 export * from './dag_getMetagraphPendingTransaction';
 export * from './wallet_watchAsset';

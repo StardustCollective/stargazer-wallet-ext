@@ -59,6 +59,23 @@ ul.form {
   border-radius: 10px;
   background-color: $gray-light;
 
+  .endpoints {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    font-family: $inter;
+    color: $black;
+  }
+
+  .endpointsContainer {
+    background-color: $white;
+    padding: 12px 12px 0px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 8px;
+  }
+
   li {
     position: relative;
     box-sizing: border-box;
@@ -75,9 +92,14 @@ ul.form {
       font-weight: 500;
       font-size: 14px;
       line-height: 20px;
-      margin-bottom: 2px;
+      margin-bottom: 8px;
       font-family: $inter;
       color: $black;
+    }
+
+    .labelSmall {
+      font-size: 12px;
+      line-height: 18px;
     }
   }
 }

@@ -60,7 +60,7 @@ const initialState: IVaultState = {
     ethereum: {},
   },
   customAssets: [],
-  version: '5.0.0',
+  version: '5.1.3',
 };
 
 export const getHasEncryptedVault = createAsyncThunk(
