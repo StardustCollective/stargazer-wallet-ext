@@ -9,7 +9,7 @@ export default interface IAssetPanel {
   handleSelectAsset: (asset: IAssetState) => void;
   handleAddTokens: () => void;
   handleClaim: () => void;
-  handleClose: () => void;
+  handleHideCard: () => void;
   handleLearnMore: () => void;
   assets: IAssetListState;
   activeWallet: IWalletState;

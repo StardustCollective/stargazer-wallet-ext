@@ -54,7 +54,11 @@ const styles = StyleSheet.create({
   },
   children: {
     flexGrow: 1,
-    marginTop: 16,
+    marginTop: 12,
+  },
+  closeButton: {
+    marginTop: 24,
+    marginBottom: 36,
   },
 });
 

@@ -3,6 +3,7 @@ export interface IUserState {
 }
 
 export interface IElpacaState {
+  hidden: boolean;
   streak: IStreakState;
   claim: IClaimState;
 }
@@ -34,6 +35,7 @@ export interface ElPacaStreakData {
   currentClaimWindow?: string;
   claimEnabled?: boolean;
   showError?: boolean;
+  epochsLeft: number;
 }
 
 export interface ClaimElpacaData {

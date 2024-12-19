@@ -23,6 +23,7 @@
       "components/*": ["components/*"],
       "assets/*": ["assets/*"],
       "constants/*": ["constants/*"],
+      "context/*": ["context/*"],
       "hooks/*": ["hooks/*"],
       "navigation/*": ["navigation/*"],
       "scenes/*": ["scenes/*"],

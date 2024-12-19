@@ -5,6 +5,7 @@ import SlidersIcon from 'assets/images/svg/sliders.svg';
 import IAssetPanel from './types';
 import styles from './AssetsPanel.scss';
 import CardClaim from 'components/CardClaim';
+import { ToastPosition, ToastType, useToast } from 'context/ToastContext';
 
 const AssetsPanel: FC<IAssetPanel> = ({
   activeNetworkAssets,
@@ -13,22 +14,41 @@ const AssetsPanel: FC<IAssetPanel> = ({
   handleSelectAsset,
   handleAddTokens,
   handleClaim,
-  handleClose,
+  handleHideCard,
   handleLearnMore,
   assets,
   activeWallet,
   elpaca,
 }) => {
+  const { showToast } = useToast();
+
   const { streak, claim } = elpaca;
   const {
     claimAmount,
     currentStreak,
     totalEarned,
+    epochsLeft,
     currentClaimWindow,
     showError,
     claimEnabled,
   } = streak?.data ?? {};
   const { loading } = claim ?? {};
+
+  const handleShowToast = () => {
+    showToast({
+      type: ToastType.info,
+      position: ToastPosition.bottom,
+      title: 'El Paca rewards card hidden',
+      message1: 'To unhide your rewards card go to',
+      message2: 'Settings > Personalize > El Paca Rewards',
+      message2Style: styles.toastMessage2,
+    });
+  };
+
+  const onPressHideCard = () => {
+    handleShowToast();
+    handleHideCard();
+  };
 
   const renderAssetList = () => {
     return (
@@ -62,9 +82,10 @@ const AssetsPanel: FC<IAssetPanel> = ({
             currentClaimWindow={currentClaimWindow}
             claimEnabled={claimEnabled}
             showError={showError}
+            epochsLeft={epochsLeft}
             handleClaim={handleClaim}
             handleLearnMore={handleLearnMore}
-            handleClose={handleClose}
+            handleHideCard={onPressHideCard}
           />
         )}
         {Object.keys(activeWallet.assets).length && <>{renderAssetList()}</>}

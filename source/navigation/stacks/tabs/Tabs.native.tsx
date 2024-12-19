@@ -61,6 +61,7 @@ import ImportAccount from 'scenes/settings/ImportAccount';
 import ImportPhrase from 'scenes/settings/ImportPhrase';
 import ConnectedSites from 'scenes/settings/ConnectedSites';
 import Security from 'scenes/settings/Security';
+import Personalize from 'scenes/settings/Personalize';
 
 // Swap
 import SwapTokens from 'scenes/swap/SwapTokens';
@@ -320,6 +321,11 @@ const SettingsTab = () => {
         options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.security }}
         name={screens.settings.security}
         component={Security}
+      />
+      <Stack.Screen
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.personalize }}
+        name={screens.settings.personalize}
+        component={Personalize}
       />
     </Stack.Navigator>
   );

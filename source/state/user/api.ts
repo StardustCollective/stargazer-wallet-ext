@@ -9,6 +9,9 @@ import { getDagAddress } from 'utils/wallet';
 import { decodeFromBase64 } from 'utils/encoding';
 import { ELPACA_KEY } from 'utils/envUtil';
 
+const SECONDS_PER_EPOCH = 43;
+const EPOCHS_PER_DAY = 2010;
+
 const mapElpacaInfo = (
   {
     claimAmount,
@@ -21,7 +24,13 @@ const mapElpacaInfo = (
   address: string,
   thunkAPI: any
 ) => {
-  const secondsSinceLastClaim = (currentEpochProgress - lastClaimEpochProgress) * 43;
+  let epochsLeft = lastClaimEpochProgress + EPOCHS_PER_DAY - currentEpochProgress;
+  let epochsLeftRefresh =
+    lastClaimEpochProgress + EPOCHS_PER_DAY * 2 - currentEpochProgress;
+  epochsLeft = epochsLeft < 0 ? 0 : epochsLeft;
+  epochsLeftRefresh = epochsLeftRefresh < 0 ? 0 : epochsLeftRefresh;
+  const secondsSinceLastClaim =
+    (currentEpochProgress - lastClaimEpochProgress) * SECONDS_PER_EPOCH;
   const lastClaimDate = subSeconds(Date.now(), secondsSinceLastClaim);
   const nextClaimDate = addDays(lastClaimDate, 1);
   const refreshStreakDate = addDays(lastClaimDate, 2);
@@ -42,15 +51,16 @@ const mapElpacaInfo = (
     currentRefreshWindow = `${hours}h ${minutes}m`;
   }
 
-  const claimEnabled = currentClaimWindow === '0h 0m';
+  const claimEnabled = epochsLeft === 0;
   const { activeWallet } = store.getState().vault;
   const walletAddress = getDagAddress(activeWallet);
   const showError = walletAddress !== address && !claimEnabled;
   const refreshPacaInfo = walletAddress !== address && claimEnabled;
-  const shouldReset = diffInMinutesRefresh <= 0;
+  const shouldReset = epochsLeftRefresh <= 0;
   const streak = shouldReset ? 0 : currentStreak;
   const amount = shouldReset ? 1 : claimAmount / 1e8;
   const claimWindow = claimEnabled ? currentRefreshWindow : currentClaimWindow;
+  epochsLeft = claimEnabled ? epochsLeftRefresh : epochsLeft;
 
   if (refreshPacaInfo) {
     thunkAPI.dispatch(getElPacaInfo(walletAddress));
@@ -66,6 +76,7 @@ const mapElpacaInfo = (
     currentClaimWindow: claimWindow,
     claimEnabled,
     showError,
+    epochsLeft,
   };
 };
 

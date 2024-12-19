@@ -29,8 +29,13 @@
     flex-direction: column;
     margin-top: 18px;
   }
+
+  .closeButton {
+    margin-top: 24px;
+  }
 }
 
 :root {
   --rsbs-bg: #f9f9fb;
+  --rsbs-backdrop-bg: rgba(0, 0, 0, 0.2);
 }
