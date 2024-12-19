@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   },
   image: {
     height: '100%',
+    minHeight: 120,
     width: 73,
     borderRadius: 4,
   },
