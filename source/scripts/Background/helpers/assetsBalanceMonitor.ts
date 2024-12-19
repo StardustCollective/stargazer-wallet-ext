@@ -90,7 +90,7 @@ export class AssetsBalanceMonitor {
     }
 
     if (hasETH) {
-      this.refreshETHBalance(activeWallet, activeNetwork);
+      await this.refreshETHBalance(activeWallet, activeNetwork);
     }
 
     if (this.priceIntervalId) {
@@ -139,7 +139,7 @@ export class AssetsBalanceMonitor {
 
       return String(balanceNumber);
     } catch (err) {
-      return '-';
+      return null;
     }
   }
 
@@ -158,7 +158,7 @@ export class AssetsBalanceMonitor {
 
       return String(balanceNumber);
     } catch (err) {
-      return '-';
+      return null;
     }
   }
 
@@ -171,28 +171,28 @@ export class AssetsBalanceMonitor {
 
       return String(balanceNumber);
     } catch (err) {
-      return '-';
+      return null;
     }
   }
 
   async refreshL0balances(l0assets: IAssetInfoState[], dagAddress: string) {
     let l0balances: Record<string, string> = {};
-    await Promise.all(
-      l0assets.map(async (l0asset) => {
-        let balanceString;
-        if (l0asset.network === DAG_NETWORK.local2.id) {
-          // Get balance from L0 API for local development
-          balanceString = await this.getCurrencyAddressL0Balance(l0asset);
-        } else {
-          balanceString = await this.getCurrencyAddressBlockExplorerBalance(
-            l0asset.address,
-            dagAddress
-          );
-        }
 
+    for (const l0asset of l0assets) {
+      let balanceString;
+      if (l0asset.network === DAG_NETWORK.local2.id) {
+        // Get balance from L0 API for local development
+        balanceString = await this.getCurrencyAddressL0Balance(l0asset);
+      } else {
+        balanceString = await this.getCurrencyAddressBlockExplorerBalance(
+          l0asset.address,
+          dagAddress
+        );
+      }
+      if (!!balanceString) {
         l0balances[l0asset.id] = balanceString;
-      })
-    );
+      }
+    }
 
     return l0balances;
   }
@@ -226,15 +226,14 @@ export class AssetsBalanceMonitor {
           !!asset?.l1endpoint &&
           asset?.network === activeNetwork.Constellation
       );
-      const [l0balances, balanceString] = await Promise.all([
-        this.refreshL0balances(l0assets, address),
-        this.getAddressBlockExplorerBalance(address),
-      ]);
+
+      const l0balances = await this.refreshL0balances(l0assets, address);
+      const balanceString = await this.getAddressBlockExplorerBalance(address);
 
       store.dispatch(
         updateBalances({
           ...l0balances,
-          [AssetType.Constellation]: balanceString,
+          ...(!!balanceString && { [AssetType.Constellation]: balanceString }),
         })
       );
     } catch (e) {
@@ -265,7 +264,7 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  refreshETHBalance(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
+  async refreshETHBalance(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
     const { assets, providers } = store.getState();
     const networksList = Object.keys(activeNetwork);
     const chainsList = Object.values(activeNetwork);
@@ -308,18 +307,21 @@ export class AssetsBalanceMonitor {
       const ethAsset = activeWallet.assets.find((a) => a.type === AssetType.Ethereum);
 
       if (!!ethAsset && !!chainInfo) {
-        this.accountTrackerList[networkId].config(
+        await this.accountTrackerList[networkId].config(
           ethAsset?.address,
           chainInfo.rpcEndpoint,
           chainTokens,
           chainInfo.chainId,
-          (mainAssetBalance, tokenBals) => {
-            store.dispatch(
-              updateBalances({
-                [MainAssetType]: mainAssetBalance || '-',
-                ...tokenBals,
-              })
-            );
+          async (mainAssetBalance, tokenBals) => {
+            return new Promise((resolve) => {
+              store.dispatch(
+                updateBalances({
+                  ...(!!mainAssetBalance && { [MainAssetType]: mainAssetBalance }),
+                  ...tokenBals,
+                })
+              );
+              resolve();
+            });
           },
           30
         );

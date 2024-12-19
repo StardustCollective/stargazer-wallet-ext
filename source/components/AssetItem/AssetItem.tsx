@@ -41,6 +41,7 @@ import IAssetItem from './types';
 ///////////////////////
 
 import styles from './AssetItem.scss';
+import LoadingDots from 'components/LoadingDots';
 
 ///////////////////////
 // Component
@@ -56,6 +57,7 @@ const AssetItem: FC<IAssetItem> = ({
   showNetwork,
   activeNetwork,
   showPrice,
+  loading,
 }: IAssetItem) => {
   ///////////////////////
   // Render
@@ -118,6 +120,10 @@ const AssetItem: FC<IAssetItem> = ({
       !!balanceValue && balanceValue !== '-'
         ? ` ${(assetInfo as IAssetInfoState).symbol}`
         : '';
+
+    if (loading) {
+      return <LoadingDots color="#5030cc" width={30} height={6} />;
+    }
 
     return (
       <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>

@@ -23,4 +23,5 @@ export default interface IAssetItem {
   showNetwork?: boolean;
   showPrice?: boolean;
   activeNetwork?: ActiveNetwork;
+  loading?: boolean;
 }

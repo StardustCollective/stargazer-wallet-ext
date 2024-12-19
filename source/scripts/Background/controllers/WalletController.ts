@@ -10,6 +10,7 @@ import {
   addCustomNetwork,
   changeCurrentEVMNetwork,
   getHasEncryptedVault,
+  loadingBalances,
 } from 'state/vault';
 import IVaultState, {
   ICustomNetworkObject,
@@ -323,13 +324,19 @@ class WalletController {
   }
 
   async switchWallet(id: string, label?: string): Promise<void> {
-    await this.account.buildAccountAssetInfo(id, label);
-    await Promise.all([
-      this.account.getLatestTxUpdate(),
-      this.account.assetsBalanceMonitor.start(),
-      this.account.txController.startMonitor(),
-      this.nfts.fetchAllNfts(),
-    ]);
+    store.dispatch(loadingBalances(true));
+    try {
+      await this.account.buildAccountAssetInfo(id, label);
+      await Promise.all([
+        this.account.getLatestTxUpdate(),
+        this.account.assetsBalanceMonitor.start(),
+        this.account.txController.startMonitor(),
+        this.nfts.fetchAllNfts(),
+      ]);
+      store.dispatch(loadingBalances(false));
+    } catch (err) {
+      store.dispatch(loadingBalances(false));
+    }
   }
 
   async switchNetwork(network: string, chainId: string): Promise<void> {

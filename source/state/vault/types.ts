@@ -149,6 +149,7 @@ export interface ICustomNetworks {
 
 export default interface IVaultState {
   hasEncryptedVault: boolean;
+  loadingBalances: boolean;
   balances: AssetBalances;
   status: number;
   version: string;

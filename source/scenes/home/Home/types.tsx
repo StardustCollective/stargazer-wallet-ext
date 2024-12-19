@@ -16,6 +16,7 @@ export interface IHome {
   route: any;
   activeWallet: IWalletState;
   balanceObject: IBalanceObject;
+  loadingBalances: boolean;
   isDagOnlyWallet: boolean;
   multiChainWallets: KeyringWalletState[];
   privateKeyWallets: KeyringWalletState[];
