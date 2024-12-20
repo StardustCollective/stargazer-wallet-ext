@@ -12,6 +12,7 @@ import { useNetInfo } from '@react-native-community/netinfo';
 
 import Card from 'components/Card';
 import TextV3 from 'components/TextV3';
+import LoadingDots from 'components/LoadingDots';
 
 ///////////////////////
 // Images
@@ -57,6 +58,7 @@ const AssetItem: FC<IAssetItem> = ({
   assetInfo,
   balances,
   fiat,
+  loading,
   itemClicked,
   showNetwork,
   showPrice,
@@ -118,6 +120,10 @@ const AssetItem: FC<IAssetItem> = ({
     );
     const balanceSymbol =
       !!balanceValue && balanceValue !== '-' ? ` ${assetInfo.symbol}` : '';
+
+    if (loading) {
+      return <LoadingDots containerHeight={20} color="#5030cc" height={6} />;
+    }
     return (
       <TextV3.CaptionStrong extraStyles={styles.balanceText} color={COLORS_ENUMS.BLACK}>
         {`${balanceValue}${balanceSymbol}`}

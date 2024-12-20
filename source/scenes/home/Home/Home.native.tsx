@@ -21,6 +21,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import Sheet from 'components/Sheet';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
+import LoadingDots from 'components/LoadingDots';
 import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up-white.svg';
 import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down-white.svg';
 
@@ -70,6 +71,7 @@ const Home: FC<IHome> = ({
   navigation,
   activeWallet,
   balanceObject,
+  loadingBalances,
   isDagOnlyWallet,
   multiChainWallets,
   privateKeyWallets,
@@ -167,15 +169,21 @@ const Home: FC<IHome> = ({
           <>
             <View style={styles.fiatBalanceContainer}>
               <View style={styles.fiatBalance}>
-                <TextV3.Body extraStyles={styles.fiatType}>
-                  {balanceObject.symbol}
-                </TextV3.Body>
-                <TextV3.HeaderDisplay dynamic extraStyles={styles.fiatBalanceLabel}>
-                  {balanceObject.balance}
-                </TextV3.HeaderDisplay>
-                <TextV3.Body extraStyles={styles.fiatType}>
-                  {balanceObject.name}
-                </TextV3.Body>
+                {loadingBalances ? (
+                  <LoadingDots containerHeight={48} height={10} width={50} />
+                ) : (
+                  <>
+                    <TextV3.Body extraStyles={styles.fiatType}>
+                      {balanceObject.symbol}
+                    </TextV3.Body>
+                    <TextV3.HeaderDisplay dynamic extraStyles={styles.fiatBalanceLabel}>
+                      {balanceObject.balance}
+                    </TextV3.HeaderDisplay>
+                    <TextV3.Body extraStyles={styles.fiatType}>
+                      {balanceObject.name}
+                    </TextV3.Body>
+                  </>
+                )}
               </View>
               <View style={styles.buttons}>
                 {showBuyButton && (

@@ -49,7 +49,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
 
   const [balanceObject] = useTotalBalance();
 
-  const { activeWallet, wallets }: IVaultState = useSelector(
+  const { activeWallet, wallets, loadingBalances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const linkTo = useLinkTo();
@@ -85,6 +85,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
         route={route}
         activeWallet={activeWallet}
         balanceObject={balanceObject}
+        loadingBalances={loadingBalances}
         onBuyPressed={onBuyPressed}
         onSwapPressed={onSwapPressed}
         isDagOnlyWallet={isDagOnlyWallet}

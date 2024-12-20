@@ -115,6 +115,12 @@ export class EthTransactionController implements IEthTransactionController {
   }
 
   async getTransactionHistory(ethAddress: string, limit: number) {
+    if (!this.accountController.networkController) {
+      return {
+        transactions: [],
+      };
+    }
+
     const ethTxs = await this.accountController.networkController.getTransactions({
       address: ethAddress,
       limit,
@@ -134,6 +140,12 @@ export class EthTransactionController implements IEthTransactionController {
     asset: IAssetInfoState,
     limit: number
   ) {
+    if (!this.accountController.networkController) {
+      return {
+        transactions: [],
+      };
+    }
+
     const transactions = await this.accountController.networkController.getTransactions({
       address: ethAddress,
       limit,

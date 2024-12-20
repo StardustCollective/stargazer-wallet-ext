@@ -40,7 +40,7 @@ const AssetItemContainer: FC<IAssetItem> = ({
   // Hooks
   ///////////////////////
 
-  const { balances, activeNetwork }: IVaultState = useSelector(
+  const { balances, loadingBalances, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
@@ -60,6 +60,7 @@ const AssetItemContainer: FC<IAssetItem> = ({
       showNetwork={showNetwork}
       showPrice={showPrice}
       activeNetwork={activeNetwork}
+      loading={loadingBalances}
     />
   );
 };

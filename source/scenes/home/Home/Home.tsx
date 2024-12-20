@@ -26,6 +26,7 @@ import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down-white.svg';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import AssetsPanel from './AssetsPanel';
+import LoadingDots from 'components/LoadingDots';
 
 ///////////////////////////
 // Styles
@@ -55,6 +56,7 @@ const Home: FC<IHome> = ({
   navigation,
   activeWallet,
   balanceObject,
+  loadingBalances,
   multiChainWallets,
   privateKeyWallets,
   hardwareWallets,
@@ -110,21 +112,27 @@ const Home: FC<IHome> = ({
             <>
               <section className={styles.center}>
                 <div className={styles.price}>
-                  <div className={styles.symbol}>
-                    <TextV3.Body extraStyles={styles.fiatType}>
-                      {balanceObject.symbol}
-                    </TextV3.Body>
-                  </div>
-                  <div className={styles.balance}>
-                    <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
-                      {balanceObject.balance}
-                    </TextV3.HeaderDisplay>
-                  </div>
-                  <div className={styles.name}>
-                    <TextV3.Body extraStyles={styles.fiatType}>
-                      {balanceObject.name}
-                    </TextV3.Body>
-                  </div>
+                  {loadingBalances ? (
+                    <LoadingDots containerHeight={48} height={10} width={50} />
+                  ) : (
+                    <>
+                      <div className={styles.symbol}>
+                        <TextV3.Body extraStyles={styles.fiatType}>
+                          {balanceObject.symbol}
+                        </TextV3.Body>
+                      </div>
+                      <div className={styles.balance}>
+                        <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
+                          {balanceObject.balance}
+                        </TextV3.HeaderDisplay>
+                      </div>
+                      <div className={styles.name}>
+                        <TextV3.Body extraStyles={styles.fiatType}>
+                          {balanceObject.name}
+                        </TextV3.Body>
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div className={styles.buttons}>
                   <ButtonV3
