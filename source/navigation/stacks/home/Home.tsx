@@ -105,7 +105,7 @@ const Auth = () => {
 
       if (expired) {
         // Session expired. User needs to login again
-        await walletController.logOut();
+        walletController.logOut();
         await clearSession();
         hideLoadingScreen();
         return;
