@@ -11,18 +11,15 @@ import { useSelector } from 'react-redux';
 
 import { RootState } from 'state/store';
 import IPriceState from 'state/price/types';
-import IVaultState from 'state/vault/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetItem from './types';
+import FlagsSelectors from 'selectors/flagsSelectors';
 
 ///////////////////////
 // Scene
 ///////////////////////
 
 import AssetItem from './AssetItem';
-
-///////////////////////
-// Constants
-///////////////////////
 
 ///////////////////////
 // Container
@@ -40,15 +37,19 @@ const AssetItemContainer: FC<IAssetItem> = ({
   // Hooks
   ///////////////////////
 
-  const { balances, loadingBalances, activeNetwork }: IVaultState = useSelector(
+  const { balances, activeNetwork }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+  const loadingDAGBalances = useSelector(FlagsSelectors.getLoadingDAGBalances);
+  const loadingETHBalances = useSelector(FlagsSelectors.getLoadingETHBalances);
   const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
 
   // Sometimes the assetInfo is undefined after the Migration process.
   // This issue could be related to a race condition.
   if (!assetInfo) return null;
 
+  const loading =
+    assetInfo.type === AssetType.Constellation ? loadingDAGBalances : loadingETHBalances;
   return (
     <AssetItem
       id={id}
@@ -60,7 +61,7 @@ const AssetItemContainer: FC<IAssetItem> = ({
       showNetwork={showNetwork}
       showPrice={showPrice}
       activeNetwork={activeNetwork}
-      loading={loadingBalances}
+      loading={loading}
     />
   );
 };

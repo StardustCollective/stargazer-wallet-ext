@@ -4,13 +4,10 @@ import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
 import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from 'state/assets/types';
-import store from '../../../state/store';
-import { updateBalances } from '../../../state/vault';
-import IVaultState, {
-  ActiveNetwork,
-  AssetType,
-  IWalletState,
-} from '../../../state/vault/types';
+import store from 'state/store';
+import { updateBalances } from 'state/vault';
+import { setLoadingDAGBalances, setLoadingETHBalances } from 'state/flags';
+import IVaultState, { ActiveNetwork, AssetType, IWalletState } from 'state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
@@ -50,54 +47,63 @@ export class AssetsBalanceMonitor {
   }
 
   async start() {
-    const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
+    store.dispatch(setLoadingDAGBalances(true));
+    store.dispatch(setLoadingETHBalances(true));
+    try {
+      const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
 
-    if (!activeWallet) return;
+      if (!activeWallet) return;
 
-    let hasDAG = false;
-    let hasETH = false;
+      let hasDAG = false;
+      let hasETH = false;
 
-    activeWallet.assets.forEach((a) => {
-      hasDAG =
-        hasDAG ||
-        a.type === AssetType.Constellation ||
-        a.type === AssetType.LedgerConstellation;
-      hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
-    });
+      activeWallet.assets.forEach((a) => {
+        hasDAG =
+          hasDAG ||
+          a.type === AssetType.Constellation ||
+          a.type === AssetType.LedgerConstellation;
+        hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
+      });
 
-    await this.utils.updateFiat();
+      await this.utils.updateFiat();
 
-    if (hasDAG) {
-      // TODO-421: Check observeMemPoolChange and startMonitor
-      this.subscription = dag4.monitor
-        .observeMemPoolChange()
-        .subscribe((up) => this.pollPendingTxs(up));
-      dag4.monitor.startMonitor();
+      if (hasDAG) {
+        // TODO-421: Check observeMemPoolChange and startMonitor
+        this.subscription = dag4.monitor
+          .observeMemPoolChange()
+          .subscribe((up) => this.pollPendingTxs(up));
+        dag4.monitor.startMonitor();
 
-      if (this.dagBalIntervalId) {
-        clearInterval(this.dagBalIntervalId);
+        if (this.dagBalIntervalId) {
+          clearInterval(this.dagBalIntervalId);
+        }
+
+        if (this.pacaIntervalId) {
+          clearInterval(this.pacaIntervalId);
+        }
+
+        this.dagBalIntervalId = setInterval(
+          () => this.refreshDagBalance(),
+          THIRTY_SECONDS
+        );
+        this.pacaIntervalId = setInterval(() => this.refreshPacaStreak(), SIXTY_SECONDS);
+
+        this.refreshPacaStreak();
+        await this.refreshDagBalance();
       }
 
-      if (this.pacaIntervalId) {
-        clearInterval(this.pacaIntervalId);
+      if (hasETH) {
+        await this.refreshETHBalance(activeWallet, activeNetwork);
       }
 
-      this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), THIRTY_SECONDS);
-      this.pacaIntervalId = setInterval(() => this.refreshPacaStreak(), SIXTY_SECONDS);
+      if (this.priceIntervalId) {
+        clearInterval(this.priceIntervalId);
+      }
 
-      this.refreshPacaStreak();
-      await this.refreshDagBalance();
+      this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
+    } catch (e) {
+      console.log('start error:', e);
     }
-
-    if (hasETH) {
-      await this.refreshETHBalance(activeWallet, activeNetwork);
-    }
-
-    if (this.priceIntervalId) {
-      clearInterval(this.priceIntervalId);
-    }
-
-    this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
   }
 
   stop() {
@@ -236,6 +242,7 @@ export class AssetsBalanceMonitor {
           ...(!!balanceString && { [AssetType.Constellation]: balanceString }),
         })
       );
+      store.dispatch(setLoadingDAGBalances(false));
     } catch (e) {
       if (e instanceof Error) {
         console.log(e.message);
@@ -285,29 +292,22 @@ export class AssetsBalanceMonitor {
     networksList.shift();
     chainsList.shift();
 
-    for (let i = 0; i < chainsList.length; i++) {
-      const chainId = chainsList[i];
+    const promises = chainsList.map(async (chainId, i) => {
       const networkId = networksList[i];
       const chainInfo = EVM_CHAINS[chainId];
 
-      // TODO-349: Check if tokens are filtered correctly
       const chainTokens = allTokens
-        .filter((token) => {
-          return token.type === AssetType.ERC20 && token.network === chainId;
-        })
+        .filter((token) => token.type === AssetType.ERC20 && token.network === chainId)
         .map((token) => {
           const { address, decimals, network } = token;
           return { contractAddress: address, decimals, chain: network };
         });
 
-      // Main token type
       const MainAssetType = this.getNetworkMainTokenType(networkId);
-
-      // ETH asset
       const ethAsset = activeWallet.assets.find((a) => a.type === AssetType.Ethereum);
 
       if (!!ethAsset && !!chainInfo) {
-        await this.accountTrackerList[networkId].config(
+        return this.accountTrackerList[networkId].config(
           ethAsset?.address,
           chainInfo.rpcEndpoint,
           chainTokens,
@@ -328,6 +328,9 @@ export class AssetsBalanceMonitor {
       } else {
         console.log(`Error: Unable to configure ${networkId}`);
       }
-    }
+    });
+
+    await Promise.all(promises);
+    store.dispatch(setLoadingETHBalances(false));
   }
 }

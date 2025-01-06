@@ -36,7 +36,6 @@ const initialState: IVaultState = {
   },
   publicKey: null,
   hasEncryptedVault: false,
-  loadingBalances: false,
   balances: {
     // 349: New network should be added here.
     [AssetType.Constellation]: '0',
@@ -165,9 +164,6 @@ const VaultState = createSlice({
     updateRewards(state: IVaultState, action: PayloadAction<{ txs: Reward[] }>) {
       state.activeAsset.rewards = action.payload.txs;
     },
-    loadingBalances(state: IVaultState, action: PayloadAction<boolean>) {
-      state.loadingBalances = action.payload;
-    },
     updateBalances(
       state: IVaultState,
       action: PayloadAction<{ [assetKey: string]: string }>
@@ -232,7 +228,6 @@ export const {
   updateWalletLabel,
   updateActiveWalletLabel,
   updateTransactions,
-  loadingBalances,
   setLoadingTransactions,
   updateRewards,
   updateBalances,
