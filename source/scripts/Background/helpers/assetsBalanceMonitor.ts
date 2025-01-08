@@ -5,15 +5,15 @@ import { Subscription } from 'rxjs';
 import { getAccountController } from 'utils/controllersUtils';
 import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
-import { updateBalances } from 'state/vault';
+import { resetBalances, updateBalances } from 'state/vault';
 import { setLoadingDAGBalances, setLoadingETHBalances } from 'state/flags';
-import IVaultState, { ActiveNetwork, AssetType, IWalletState } from 'state/vault/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { toDag } from 'utils/number';
 import { DAG_NETWORK } from 'constants/index';
-import { getDagAddress } from 'utils/wallet';
+import { getDagAddress, walletHasDag, walletHasEth } from 'utils/wallet';
 import { getElPacaInfo } from 'state/user/api';
 
 const THIRTY_SECONDS = 30 * 1000;
@@ -46,81 +46,101 @@ export class AssetsBalanceMonitor {
     };
   }
 
+  startPacaInterval() {
+    if (this.pacaIntervalId) {
+      clearInterval(this.pacaIntervalId);
+    }
+
+    this.pacaIntervalId = setInterval(() => this.refreshPacaStreak(), SIXTY_SECONDS);
+    this.refreshPacaStreak();
+  }
+
+  startDagInterval() {
+    this.subscription = dag4.monitor
+      .observeMemPoolChange()
+      .subscribe((up) => this.pollPendingTxs(up));
+
+    dag4.monitor.startMonitor();
+
+    if (this.dagBalIntervalId) {
+      clearInterval(this.dagBalIntervalId);
+    }
+
+    this.dagBalIntervalId = setInterval(() => this.refreshDagBalance(), THIRTY_SECONDS);
+    this.refreshDagBalance();
+  }
+
+  startPriceInterval() {
+    this.utils.updateFiat();
+
+    this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
+  }
+
   async start() {
+    store.dispatch(resetBalances());
     store.dispatch(setLoadingDAGBalances(true));
     store.dispatch(setLoadingETHBalances(true));
     try {
-      const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
+      const { activeWallet }: IVaultState = store.getState().vault;
 
       if (!activeWallet) return;
 
-      let hasDAG = false;
-      let hasETH = false;
+      const hasDAG = walletHasDag(activeWallet);
+      const hasETH = walletHasEth(activeWallet);
 
-      activeWallet.assets.forEach((a) => {
-        hasDAG =
-          hasDAG ||
-          a.type === AssetType.Constellation ||
-          a.type === AssetType.LedgerConstellation;
-        hasETH = hasETH || a.type === AssetType.Ethereum || a.type === AssetType.ERC20;
-      });
+      if (!hasETH) this.stopEthInterval();
+      if (!hasDAG) {
+        this.stopDagInterval();
+        this.stopPacaInterval();
+      }
 
-      await this.utils.updateFiat();
+      if (!this.priceIntervalId) {
+        this.startPriceInterval();
+      }
 
       if (hasDAG) {
-        // TODO-421: Check observeMemPoolChange and startMonitor
-        this.subscription = dag4.monitor
-          .observeMemPoolChange()
-          .subscribe((up) => this.pollPendingTxs(up));
-        dag4.monitor.startMonitor();
-
-        if (this.dagBalIntervalId) {
-          clearInterval(this.dagBalIntervalId);
-        }
-
-        if (this.pacaIntervalId) {
-          clearInterval(this.pacaIntervalId);
-        }
-
-        this.dagBalIntervalId = setInterval(
-          () => this.refreshDagBalance(),
-          THIRTY_SECONDS
-        );
-        this.pacaIntervalId = setInterval(() => this.refreshPacaStreak(), SIXTY_SECONDS);
-
-        this.refreshPacaStreak();
-        await this.refreshDagBalance();
+        this.startDagInterval();
+        this.startPacaInterval();
       }
 
       if (hasETH) {
-        await this.refreshETHBalance(activeWallet, activeNetwork);
+        await this.refreshETHBalance();
       }
-
-      if (this.priceIntervalId) {
-        clearInterval(this.priceIntervalId);
-      }
-
-      this.priceIntervalId = setInterval(this.utils.updateFiat, THIRTY_SECONDS);
     } catch (e) {
       console.log('start error:', e);
     }
   }
 
-  stop() {
-    const { activeNetwork } = store.getState().vault;
-    const networksList = Object.keys(activeNetwork);
+  stopPriceInterval() {
     clearInterval(this.priceIntervalId);
+    this.priceIntervalId = null;
+  }
+
+  stopPacaInterval() {
+    clearInterval(this.pacaIntervalId);
+    this.pacaIntervalId = null;
+  }
+
+  stopDagInterval() {
     clearInterval(this.dagBalIntervalId);
+    this.dagBalIntervalId = null;
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
     }
-    this.priceIntervalId = null;
-    this.dagBalIntervalId = null;
-    for (let i = 0; i < networksList.length; i++) {
-      const networkId = networksList[i];
-      this.accountTrackerList[networkId].config(null, null, null, null, null);
-    }
+  }
+
+  stopEthInterval() {
+    Object.values(this.accountTrackerList).forEach((tracker) => {
+      tracker.stop();
+    });
+  }
+
+  stop() {
+    this.stopPriceInterval();
+    this.stopDagInterval();
+    this.stopPacaInterval();
+    this.stopEthInterval();
   }
 
   private async pollPendingTxs(update: DagWalletMonitorUpdate) {
@@ -271,7 +291,8 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  async refreshETHBalance(activeWallet: IWalletState, activeNetwork: ActiveNetwork) {
+  async refreshETHBalance() {
+    const { activeWallet, activeNetwork }: IVaultState = store.getState().vault;
     const { assets, providers } = store.getState();
     const networksList = Object.keys(activeNetwork);
     const chainsList = Object.values(activeNetwork);

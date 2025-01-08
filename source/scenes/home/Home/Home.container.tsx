@@ -78,9 +78,9 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
     linkTo('/swapTokens');
   };
   const loading =
-    activeWallet.type === KeyringWalletType.MultiChainWallet
+    activeWallet?.type === KeyringWalletType.MultiChainWallet
       ? loadingBalances
-      : activeWallet.supportedAssets.includes(KeyringAssetType.ETH)
+      : activeWallet?.supportedAssets?.includes(KeyringAssetType.ETH)
       ? loadingETHBalances
       : loadingDAGBalances;
 

@@ -324,7 +324,7 @@ class WalletController {
   }
 
   async switchWallet(id: string, label?: string): Promise<void> {
-    await this.account.buildAccountAssetInfo(id, label);
+    this.account.buildAccountAssetInfo(id, label);
     Promise.all([
       this.account.assetsBalanceMonitor.start(),
       this.account.getLatestTxUpdate(),
