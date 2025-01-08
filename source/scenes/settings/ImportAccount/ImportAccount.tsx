@@ -5,20 +5,15 @@ import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Checkbox } from '@material-ui/core';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-// import { KeyboardReturnOutlined } from '@material-ui/icons';
-
 import Button from 'components/Button';
 import Select from 'components/Select';
 import { IOption } from 'components/Select/types';
 import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
-
-// import LedgerIcon from 'assets/images/svg/ledger.svg';
 import BitfiIcon from 'assets/images/svg/bitfi.svg';
 import styles from './ImportAccount.scss';
-import { useAlert } from 'react-alert';
-
 import IImportAccountSettings, { HardwareWallet } from './types';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 enum HARDWARE_WALLET {
   none = 0,
@@ -43,7 +38,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   jsonFile,
   setJsonFile,
 }) => {
-  const alert = useAlert();
+  const showAlert = usePlatformAlert();
   let [hardwareWallet, setHardwareWallet] = useState(HARDWARE_WALLET.none);
   let [dropDownMenuOptions, setDropDownMenuOptions] = useState<Array<IOption>>([
     { priv: 'Private key' },
@@ -71,7 +66,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           try {
             const json = JSON.parse(ev.target.result as string);
             if (!dag4.keyStore.isValidJsonPrivateKey(json)) {
-              alert.error('Error: Invalid private key json file');
+              showAlert('Error: Invalid private key json file', 'danger');
               return;
             }
 
@@ -82,11 +77,14 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 handleImportPrivKey(privKey, data.label);
               })
               .catch(() => {
-                alert.error('Error: Invalid password to decrypt private key json file');
+                showAlert(
+                  'Error: Invalid password to decrypt private key json file',
+                  'danger'
+                );
                 setLoading(false);
               });
           } catch (error) {
-            alert.error('Error: Invalid private key json file');
+            showAlert('Error: Invalid private key json file', 'danger');
             setLoading(false);
           }
         }
@@ -98,7 +96,8 @@ const ImportAccount: FC<IImportAccountSettings> = ({
         return window.open('/bitfi.html', '_newtab');
       }
     } else {
-      return alert.error('Error: A private key json file is not chosen');
+      showAlert('Error: A private key or json file is not chosen', 'danger');
+      return;
     }
   };
 
