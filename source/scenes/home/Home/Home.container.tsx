@@ -31,7 +31,8 @@ import Home from './Home';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import { AssetType } from 'state/vault/types';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import FlagsSelectors from 'selectors/flagsSelectors';
 
 interface IHome {
   navigation: any;
@@ -49,9 +50,12 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
 
   const [balanceObject] = useTotalBalance();
 
-  const { activeWallet, wallets, loadingBalances }: IVaultState = useSelector(
+  const { activeWallet, wallets }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+  const loadingBalances = useSelector(FlagsSelectors.getLoadingBalances);
+  const loadingDAGBalances = useSelector(FlagsSelectors.getLoadingDAGBalances);
+  const loadingETHBalances = useSelector(FlagsSelectors.getLoadingETHBalances);
   const linkTo = useLinkTo();
   const isDagOnlyWallet =
     activeWallet?.assets?.length === 1 &&
@@ -73,6 +77,12 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   const onSwapPressed = () => {
     linkTo('/swapTokens');
   };
+  const loading =
+    activeWallet?.type === KeyringWalletType.MultiChainWallet
+      ? loadingBalances
+      : activeWallet?.supportedAssets?.includes(KeyringAssetType.ETH)
+      ? loadingETHBalances
+      : loadingDAGBalances;
 
   ///////////////////////////
   // Render
@@ -85,7 +95,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
         route={route}
         activeWallet={activeWallet}
         balanceObject={balanceObject}
-        loadingBalances={loadingBalances}
+        loadingBalances={loading}
         onBuyPressed={onBuyPressed}
         onSwapPressed={onSwapPressed}
         isDagOnlyWallet={isDagOnlyWallet}

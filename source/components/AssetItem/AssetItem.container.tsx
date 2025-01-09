@@ -10,19 +10,19 @@ import { useSelector } from 'react-redux';
 ///////////////////////
 
 import { RootState } from 'state/store';
-import IPriceState from 'state/price/types';
-import IVaultState from 'state/vault/types';
+import { IFiatAssetState } from 'state/price/types';
+import IVaultState, { AssetType } from 'state/vault/types';
 import IAssetItem from './types';
+import FlagsSelectors from 'selectors/flagsSelectors';
+import VaultSelectors from 'selectors/vaultSelectors';
+import PriceSelectors from 'selectors/priceSelectors';
 
 ///////////////////////
 // Scene
 ///////////////////////
 
 import AssetItem from './AssetItem';
-
-///////////////////////
-// Constants
-///////////////////////
+import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 
 ///////////////////////
 // Container
@@ -40,27 +40,34 @@ const AssetItemContainer: FC<IAssetItem> = ({
   // Hooks
   ///////////////////////
 
-  const { balances, loadingBalances, activeNetwork }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-  const { fiat }: IPriceState = useSelector((state: RootState) => state.price);
+  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
+  const loadingDAGBalances = useSelector(FlagsSelectors.getLoadingDAGBalances);
+  const loadingETHBalances = useSelector(FlagsSelectors.getLoadingETHBalances);
 
   // Sometimes the assetInfo is undefined after the Migration process.
   // This issue could be related to a race condition.
   if (!assetInfo) return null;
 
+  const assetPrice: IFiatAssetState = useSelector(
+    PriceSelectors.getAssetPrice(assetInfo.priceId)
+  );
+  const balance = useSelector(VaultSelectors.getAssetBalance(assetInfo.id));
+  const balanceValue = formatStringDecimal(formatNumber(Number(balance), 16, 20), 4);
+
+  const loading =
+    assetInfo.type === AssetType.Constellation ? loadingDAGBalances : loadingETHBalances;
   return (
     <AssetItem
       id={id}
       asset={asset}
       assetInfo={assetInfo}
       itemClicked={itemClicked}
-      balances={balances}
-      fiat={fiat}
+      balance={balanceValue}
+      assetPrice={assetPrice}
       showNetwork={showNetwork}
       showPrice={showPrice}
       activeNetwork={activeNetwork}
-      loading={loadingBalances}
+      loading={loading}
     />
   );
 };

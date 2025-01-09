@@ -24,7 +24,7 @@ import NoConnectionIcon from 'assets/images/svg/no-connection.svg';
 // Helpers
 ///////////////////////
 
-import { formatNumber, formatPrice, formatStringDecimal } from 'scenes/home/helpers';
+import { formatNumber, formatPrice } from 'scenes/home/helpers';
 import {
   getNetworkLabel,
   getNetworkFromChainId,
@@ -56,8 +56,8 @@ import styles from './styles';
 const AssetItem: FC<IAssetItem> = ({
   asset,
   assetInfo,
-  balances,
-  fiat,
+  balance,
+  assetPrice,
   loading,
   itemClicked,
   showNetwork,
@@ -67,21 +67,19 @@ const AssetItem: FC<IAssetItem> = ({
   const netInfo = useNetInfo();
 
   const renderAssetPrice = () => {
-    if (assetInfo.priceId && fiat[assetInfo.priceId]?.price) {
+    if (assetInfo?.priceId && assetPrice?.price) {
       return (
         <View style={styles.assetPrice}>
           <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-            {formatPrice(fiat[assetInfo.priceId].price)}
+            {formatPrice(assetPrice.price)}
           </TextV3.Caption>
-          {fiat[assetInfo.priceId]?.priceChange && (
+          {assetPrice.priceChange && (
             <TextV3.Caption
               color={COLORS_ENUMS.BLACK}
-              extraStyles={
-                fiat[assetInfo.priceId].priceChange > 0 ? styles.green : styles.red
-              }
+              extraStyles={assetPrice.priceChange > 0 ? styles.green : styles.red}
             >
-              {fiat[assetInfo.priceId].priceChange > 0 ? '+' : ''}
-              {formatNumber(fiat[assetInfo.priceId].priceChange, 2, 2, 3)}%
+              {assetPrice.priceChange > 0 ? '+' : ''}
+              {formatNumber(assetPrice.priceChange, 2, 2, 3)}%
             </TextV3.Caption>
           )}
         </View>
@@ -114,19 +112,14 @@ const AssetItem: FC<IAssetItem> = ({
   };
 
   const renderBalanceValue = () => {
-    const balanceValue = formatStringDecimal(
-      formatNumber(Number(balances[asset.id]), 16, 20),
-      4
-    );
-    const balanceSymbol =
-      !!balanceValue && balanceValue !== '-' ? ` ${assetInfo.symbol}` : '';
+    const balanceSymbol = !!balance && balance !== '-' ? ` ${assetInfo.symbol}` : '';
 
     if (loading) {
       return <LoadingDots containerHeight={20} color="#5030cc" height={6} />;
     }
     return (
       <TextV3.CaptionStrong extraStyles={styles.balanceText} color={COLORS_ENUMS.BLACK}>
-        {`${balanceValue}${balanceSymbol}`}
+        {`${balance}${balanceSymbol}`}
       </TextV3.CaptionStrong>
     );
   };
@@ -134,14 +127,14 @@ const AssetItem: FC<IAssetItem> = ({
   const renderBalance = () => {
     if (asset.type === AssetType.Constellation) {
       // If the balance has failed to fetch display a no connection icon.
-      if (balances.constellation === undefined && !netInfo.isConnected) {
+      if (!netInfo.isConnected) {
         return <NoConnectionIcon />;
       }
       return renderBalanceValue();
     }
     if ([AssetType.Ethereum, AssetType.ERC20].includes(asset.type)) {
       // If the balance has failed to fetch display a no connection icon.
-      if (balances.ethereum === undefined && !netInfo.isConnected) {
+      if (!netInfo.isConnected) {
         return <NoConnectionIcon />;
       }
       return renderBalanceValue();
