@@ -16,7 +16,7 @@ import Sheet from 'components/Sheet';
 import Menu from 'components/Menu';
 import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up.svg';
 import ArrowDownIcon from 'assets/images/svg/arrow-rounded-down.svg';
-import { useAlert } from 'react-alert';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 ///////////////////////////
 // Constants
@@ -52,12 +52,12 @@ const BuyAsset: FC<IBuyAsset> = ({
   handleItemClick,
   handleConfirm,
 }) => {
+  const showAlert = usePlatformAlert();
   const padList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'];
-  const alert = useAlert();
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      showAlert(error, 'danger');
       setError('');
     }
   }, [error]);

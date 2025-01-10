@@ -1,20 +1,15 @@
 import React, { FC, useState } from 'react';
-import { showMessage } from 'react-native-flash-message';
-
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-
 import navigationUtil from 'navigation/util';
-
 import { getWalletController } from 'utils/controllersUtils';
-
 import Container, { CONTAINER_COLOR } from 'components/Container';
-
 import ImportAccount from './ImportAccount';
-
 import { IImportAccountView, HardwareWallet } from './types';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) => {
+  const showAlert = usePlatformAlert();
   const walletController = getWalletController();
   const { network } = route.params;
 
@@ -46,10 +41,7 @@ const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) =
         }
       })
       .catch(() => {
-        showMessage({
-          message: 'Error: Invalid private key',
-          type: 'danger',
-        });
+        showAlert('Error: Invalid private key', 'danger');
         setLoading(false);
         setAccountName(undefined);
       });
@@ -60,10 +52,7 @@ const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) =
   };
 
   const showErrorAlert = (message: string) => {
-    return showMessage({
-      message,
-      type: 'danger',
-    });
+    return showAlert(message, 'danger');
   };
 
   return (
