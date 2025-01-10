@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: 24,
     paddingBottom: Platform.OS === 'ios' ? 24 : 64,
     paddingRight: 0,
     paddingLeft: 0,

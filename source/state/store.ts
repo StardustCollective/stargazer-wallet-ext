@@ -23,6 +23,7 @@ import swap from './swap';
 import biometrics from './biometrics';
 import auth from './auth';
 import user from './user';
+import flags from './flags';
 
 import { loadState, saveState } from './localStorage';
 import rehydrateStore from './rehydrate';
@@ -48,6 +49,7 @@ const store = configureStore({
     biometrics,
     auth,
     user,
+    flags,
   }),
   middleware,
   devTools: !isProd,

@@ -15,10 +15,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: 24,
-    paddingBottom: 24,
-    paddingRight: 0,
-    paddingLeft: 0,
   },
   addContactLabel: {
     width: '100%',
@@ -45,7 +41,6 @@ const styles = StyleSheet.create({
   },
   list: {
     margin: 0,
-    marginTop: 12,
     padding: 0,
     width: '100%',
   },

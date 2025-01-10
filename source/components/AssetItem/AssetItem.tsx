@@ -16,7 +16,7 @@ import TextV3 from 'components/TextV3';
 // Helpers
 ///////////////////////
 
-import { formatNumber, formatPrice, formatStringDecimal } from 'scenes/home/helpers';
+import { formatNumber, formatPrice } from 'scenes/home/helpers';
 import {
   getNetworkFromChainId,
   getNetworkLabel,
@@ -51,8 +51,8 @@ const AssetItem: FC<IAssetItem> = ({
   id,
   asset,
   assetInfo,
-  balances,
-  fiat,
+  balance,
+  assetPrice,
   itemClicked,
   showNetwork,
   activeNetwork,
@@ -87,21 +87,19 @@ const AssetItem: FC<IAssetItem> = ({
   };
 
   const renderAssetPrice = () => {
-    if (assetInfo.priceId && fiat[assetInfo.priceId]?.price) {
+    if (assetInfo?.priceId && assetPrice?.price) {
       return (
         <div>
           <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-            {formatPrice(fiat[assetInfo.priceId].price)}
+            {formatPrice(assetPrice.price)}
           </TextV3.Caption>
-          {fiat[assetInfo.priceId]?.priceChange && (
+          {assetPrice.priceChange && (
             <TextV3.Caption
               color={COLORS_ENUMS.BLACK}
-              extraStyles={
-                fiat[assetInfo.priceId].priceChange > 0 ? styles.green : styles.red
-              }
+              extraStyles={assetPrice.priceChange > 0 ? styles.green : styles.red}
             >
-              {fiat[assetInfo.priceId].priceChange > 0 ? '+' : ''}
-              {formatNumber(fiat[assetInfo.priceId].priceChange, 2, 2, 3)}%
+              {assetPrice.priceChange > 0 ? '+' : ''}
+              {formatNumber(assetPrice.priceChange, 2, 2, 3)}%
             </TextV3.Caption>
           )}
         </div>
@@ -112,14 +110,8 @@ const AssetItem: FC<IAssetItem> = ({
   };
 
   const renderBalance = () => {
-    const balanceValue = formatStringDecimal(
-      formatNumber(Number(balances[assetInfo.id]), 16, 20),
-      4
-    );
     const balanceSymbol =
-      !!balanceValue && balanceValue !== '-'
-        ? ` ${(assetInfo as IAssetInfoState).symbol}`
-        : '';
+      !!balance && balance !== '-' ? ` ${(assetInfo as IAssetInfoState).symbol}` : '';
 
     if (loading) {
       return <LoadingDots color="#5030cc" width={30} height={6} />;
@@ -127,7 +119,7 @@ const AssetItem: FC<IAssetItem> = ({
 
     return (
       <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.balanceText}>
-        {`${balanceValue}${balanceSymbol}`}
+        {`${balance}${balanceSymbol}`}
       </TextV3.CaptionStrong>
     );
   };

@@ -75,10 +75,10 @@ export class AccountController {
     return true;
   }
 
-  private async buildAccountAssetList(
+  private buildAccountAssetList(
     walletInfo: KeyringWalletState,
     account: KeyringWalletAccountState
-  ): Promise<IAssetState[]> {
+  ): IAssetState[] {
     const { assets } = store.getState();
 
     let privateKey;
@@ -152,10 +152,7 @@ export class AccountController {
 
       const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);
 
-      const erc20Assets = await this.buildAccountERC20Tokens(
-        account.address,
-        ERC_20_TOKENS
-      );
+      const erc20Assets = this.buildAccountERC20Tokens(account.address, ERC_20_TOKENS);
 
       return [ethAsset, ...networkAssets, ...erc20Assets];
     }
@@ -225,7 +222,7 @@ export class AccountController {
     return networkAssets;
   }
 
-  async notifyAccountChange(
+  notifyAccountChange(
     account: KeyringWalletAccountState,
     walletInfo: KeyringWalletState
   ) {
@@ -263,7 +260,7 @@ export class AccountController {
             origin,
           },
         };
-        await chrome.runtime.sendMessage(emptyAccountsMessage);
+        chrome.runtime.sendMessage(emptyAccountsMessage);
       }
 
       const message: DappMessage = {
@@ -275,11 +272,11 @@ export class AccountController {
           origin,
         },
       };
-      await chrome.runtime.sendMessage(message);
+      chrome.runtime.sendMessage(message);
     }
   }
 
-  async buildAccountAssetInfo(walletId: string, walletLabel: string): Promise<void> {
+  buildAccountAssetInfo(walletId: string, walletLabel: string): void {
     const state = store.getState();
     const { vault } = state;
     const { local, ledger, bitfi } = vault.wallets;
@@ -294,10 +291,10 @@ export class AccountController {
 
     let assetList: IAssetState[] = [];
     for (const account of walletInfo.accounts) {
-      const accountAssetList = await this.buildAccountAssetList(walletInfo, account);
+      const accountAssetList = this.buildAccountAssetList(walletInfo, account);
 
       if (!isNative) {
-        await this.notifyAccountChange(account, walletInfo);
+        this.notifyAccountChange(account, walletInfo);
       }
 
       assetList = assetList.concat(accountAssetList);
@@ -319,22 +316,14 @@ export class AccountController {
     store.dispatch(changeActiveWallet(activeWallet));
   }
 
-  private async buildAccountERC20Tokens(address: string, accountTokens: string[]) {
+  private buildAccountERC20Tokens(address: string, accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
-    const resolveTokens = accountTokens.map(async (address) => {
-      if (!assetInfoMap[address]) {
-        try {
-          // TODO-349: Check if this line is used
-          // await this.assetsController.fetchTokenInfo(address);
-        } catch (err: any) {
-          // NOOP
-        }
-      }
+    const resolveTokens = accountTokens.map((address) => {
       return assetInfoMap[address];
     });
 
-    const tokens = (await Promise.all(resolveTokens)).filter((token) => !!token);
+    const tokens = resolveTokens.filter((token) => !!token);
 
     const assetList: IAssetState[] = tokens.map((t) => ({
       id: t.id,

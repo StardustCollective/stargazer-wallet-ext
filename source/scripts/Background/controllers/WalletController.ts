@@ -9,7 +9,6 @@ import {
   addCustomNetwork,
   changeCurrentEVMNetwork,
   getHasEncryptedVault,
-  loadingBalances,
 } from 'state/vault';
 import IVaultState, {
   ICustomNetworkObject,
@@ -71,10 +70,12 @@ class WalletController {
       const { vault } = store.getState();
 
       try {
-        if (vault && vault.activeWallet) {
-          await this.switchWallet(vault.activeWallet.id, vault.activeWallet.label);
-        } else if (state.wallets.length) {
-          await this.switchWallet(state.wallets[0].id, state.wallets[0].label);
+        if (state.isUnlocked) {
+          if (vault && vault.activeWallet) {
+            await this.switchWallet(vault.activeWallet.id, vault.activeWallet.label);
+          } else if (state.wallets.length) {
+            await this.switchWallet(state.wallets[0].id, state.wallets[0].label);
+          }
         }
       } catch (e) {
         console.log('Error while switching wallet at login');
@@ -323,19 +324,13 @@ class WalletController {
   }
 
   async switchWallet(id: string, label?: string): Promise<void> {
-    store.dispatch(loadingBalances(true));
-    try {
-      await this.account.buildAccountAssetInfo(id, label);
-      await Promise.all([
-        this.account.getLatestTxUpdate(),
-        this.account.assetsBalanceMonitor.start(),
-        this.account.txController.startMonitor(),
-        this.nfts.fetchAllNfts(),
-      ]);
-      store.dispatch(loadingBalances(false));
-    } catch (err) {
-      store.dispatch(loadingBalances(false));
-    }
+    this.account.buildAccountAssetInfo(id, label);
+    Promise.all([
+      this.account.assetsBalanceMonitor.start(),
+      this.account.getLatestTxUpdate(),
+      this.account.txController.startMonitor(),
+      this.nfts.fetchAllNfts(),
+    ]);
   }
 
   async switchNetwork(network: string, chainId: string): Promise<void> {
