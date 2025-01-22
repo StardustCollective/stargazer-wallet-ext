@@ -13,18 +13,18 @@ const integrations = getDefaultIntegrations({}).filter((defaultIntegration) => {
   );
 });
 
-export const initializeSentry = (): Scope => {
-  const client = new BrowserClient({
-    dsn: process.env.SENTRY_DNS_WEB,
-    transport: makeFetchTransport,
-    stackParser: defaultStackParser,
-    integrations: integrations,
-  });
+const client = new BrowserClient({
+  dsn: process.env.SENTRY_DNS_WEB,
+  transport: makeFetchTransport,
+  stackParser: defaultStackParser,
+  integrations: integrations,
+});
 
-  const scope = new Scope();
-  scope.setClient(client);
+const scope = new Scope();
+scope.setClient(client);
 
-  client.init();
+client.init();
 
-  return scope;
+window.onerror = function (_, _1, _2, _3, error) {
+  scope.captureException(error);
 };

@@ -1,3 +1,4 @@
+import '../../sentry/initialize';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -12,9 +13,6 @@ import { handleStoreSubscribe } from 'scripts/Background/handlers/handleStoreSub
 import { handleRehydrateStore } from 'scripts/Background/handlers/handleRehydrateStore';
 import MigrationController from 'scripts/Background/controllers/MigrationController';
 import { ToastProvider } from 'context/ToastContext';
-import { initializeSentry } from 'utils/sentry/initialize';
-
-const scope = initializeSentry();
 
 global.scrypt = scryptJS.scrypt;
 
@@ -41,32 +39,28 @@ const options = {
 // Note: the following event listener fixes an error when initializing the app.
 window.addEventListener('unload', () => {});
 
-try {
-  handleRehydrateStore();
+handleRehydrateStore();
 
-  MigrationController().then(() => {
-    rehydrateStore(store).then(() => {
-      // Initialize dag4
-      handleDag4Setup(store);
+MigrationController().then(() => {
+  rehydrateStore(store).then(() => {
+    // Initialize dag4
+    handleDag4Setup(store);
 
-      // Render App
-      ReactDOM.render(
-        (
-          <Provider store={store}>
-            <ToastProvider>
-              <AlertProvider template={ToastAlert} {...options}>
-                <App />
-              </AlertProvider>
-            </ToastProvider>
-          </Provider>
-        ) as any,
-        app
-      );
+    // Render App
+    ReactDOM.render(
+      (
+        <Provider store={store}>
+          <ToastProvider>
+            <AlertProvider template={ToastAlert} {...options}>
+              <App />
+            </AlertProvider>
+          </ToastProvider>
+        </Provider>
+      ) as any,
+      app
+    );
 
-      // Subscribe store to updates and notify
-      handleStoreSubscribe(store);
-    });
+    // Subscribe store to updates and notify
+    handleStoreSubscribe(store);
   });
-} catch (error) {
-  scope.captureException(error);
-}
+});
