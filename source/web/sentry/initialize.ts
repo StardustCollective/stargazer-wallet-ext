@@ -13,11 +13,14 @@ const integrations = getDefaultIntegrations({}).filter((defaultIntegration) => {
   );
 });
 
+const RELEASE_NAME = `stargazer-wallet@${process.env.npm_package_version}`;
+
 const client = new BrowserClient({
   dsn: process.env.SENTRY_DNS_WEB,
   transport: makeFetchTransport,
   stackParser: defaultStackParser,
   integrations: integrations,
+  release: RELEASE_NAME,
 });
 
 const scope = new Scope();
