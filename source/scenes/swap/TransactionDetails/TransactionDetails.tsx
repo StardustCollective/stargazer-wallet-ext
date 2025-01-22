@@ -47,7 +47,7 @@ const TransactionDetails: FC<ITransferInfo> = ({ transaction, onSupportLinkPress
     <div className={styles.container}>
       <div className={styles.amount}>
         <TextV3.BodyStrong color={COLORS_ENUMS.BLACK}>
-          {transaction?.amountTo} {transaction?.coinTo.coinCode}
+          {transaction?.amountTo} {transaction?.coinTo?.coinCode}
         </TextV3.BodyStrong>
       </div>
       <div className={styles.detailRow}>
