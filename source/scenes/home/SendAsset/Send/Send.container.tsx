@@ -111,6 +111,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   let gas: string;
   let memo: string;
   let metagraphAddress: string;
+  let isTransfer = false;
   let history;
   let assetInfo: IAssetInfoState;
 
@@ -126,6 +127,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       metagraphAddress: any;
       chain: string;
       chainLabel: string;
+      isTransfer: boolean;
     } | null>(location.href);
 
     if (data) {
@@ -136,6 +138,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       chain = data.chain;
       feeAmount = data.fee;
       metagraphAddress = data.metagraphAddress;
+      isTransfer = data.isTransfer;
     }
 
     useEffect(() => {
@@ -625,6 +628,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         decimalPointOnFee={decimalPointOnFee}
         networkTypeOptions={networkTypeOptions}
         basePriceId={basePriceId}
+        isTransfer={isTransfer}
       />
     </Container>
   );

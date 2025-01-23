@@ -48,4 +48,5 @@ export interface IWalletSend {
   decimalPointOnFee?: boolean;
   networkTypeOptions: IInputClickableOptions;
   basePriceId: string;
+  isTransfer: boolean;
 }
