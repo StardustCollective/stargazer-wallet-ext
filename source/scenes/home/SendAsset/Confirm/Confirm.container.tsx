@@ -92,6 +92,7 @@ const ConfirmContainer = () => {
   );
   let history: any;
   let isExternalRequest: boolean;
+  let isTransfer: boolean = false;
 
   if (location) {
     isExternalRequest = location.pathname.includes('confirmTransaction');
@@ -106,9 +107,14 @@ const ConfirmContainer = () => {
   const vaultActiveAsset = vault.activeAsset;
 
   if (isExternalRequest) {
+    const { data } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      isTransfer: boolean;
+    }>(location.href);
     const { to, chain, metagraphAddress } = StargazerExternalPopups.decodeLocationParams(
       location.href
     );
+
+    isTransfer = data.isTransfer;
 
     activeAsset = useSelector((state: RootState) =>
       find(state.assets, { address: Array.isArray(to) ? to[0] : to })
@@ -331,6 +337,7 @@ const ConfirmContainer = () => {
         handleConfirm={handleConfirm}
         disabled={disabled}
         isL0token={isL0token}
+        isTransfer={isTransfer}
       />
     </Container>
   );

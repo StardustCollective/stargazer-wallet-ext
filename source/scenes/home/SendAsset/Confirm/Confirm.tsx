@@ -43,6 +43,7 @@ interface ISendConfirm {
   ) => void;
   disabled: boolean;
   isL0token: boolean;
+  isTransfer: boolean;
 }
 
 const SendConfirm = ({
@@ -59,6 +60,7 @@ const SendConfirm = ({
   handleConfirm,
   disabled,
   isL0token,
+  isTransfer,
 }: ISendConfirm) => {
   const callbackSuccess = async (
     message: StargazerRequestMessage,
@@ -136,12 +138,14 @@ const SendConfirm = ({
         </div>
       </section>
       <section className={styles.confirm}>
-        <div className={styles.row}>
-          Max Total
-          <span>
-            {isL0token ? `${totalAmount} ${assetInfo.symbol}` : `$${totalAmount} USD`}
-          </span>
-        </div>
+        {!isTransfer && (
+          <div className={styles.row}>
+            Max Total
+            <span>
+              {isL0token ? `${totalAmount} ${assetInfo.symbol}` : `$${totalAmount} USD`}
+            </span>
+          </div>
+        )}
         <div className={styles.actions}>
           <Button
             type="button"
