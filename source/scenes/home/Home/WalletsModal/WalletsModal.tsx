@@ -79,7 +79,7 @@ const WalletsModal: FC<IWalletsModal> = ({
   };
 
   const renderCheckIcon = (walletId: string, activeWalletId: string) => {
-    if (walletId !== activeWalletId) {
+    if (!walletId || !activeWalletId || walletId !== activeWalletId) {
       return null;
     }
 
@@ -154,7 +154,7 @@ const WalletsModal: FC<IWalletsModal> = ({
                       {truncateString(wallet?.label)}
                     </TextV3.CaptionStrong>
                     <TextV3.Caption dynamic color={COLORS_ENUMS.GRAY_100}>
-                      {ellipsis(wallet?.accounts[0].address)}
+                      {ellipsis(wallet?.accounts[0]?.address)}
                     </TextV3.Caption>
                   </div>
                   {renderCheckIcon(wallet?.id, activeWallet?.id)}
@@ -189,7 +189,7 @@ const WalletsModal: FC<IWalletsModal> = ({
                       {truncateString(wallet?.label)}
                     </TextV3.CaptionStrong>
                     <TextV3.Caption dynamic color={COLORS_ENUMS.GRAY_100}>
-                      {ellipsis(wallet?.accounts[0].address)}
+                      {ellipsis(wallet?.accounts[0]?.address)}
                     </TextV3.Caption>
                   </div>
                   {renderCheckIcon(wallet?.id, activeWallet?.id)}
