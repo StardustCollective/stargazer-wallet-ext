@@ -6,6 +6,8 @@ import { AssetType } from 'state/vault/types';
 const MAX_LENGTH = 20;
 
 export const ellipsis = (str: string, start?: number, end?: number) => {
+  if (!str) return '';
+
   if (str.substring(0, 3) === 'DAG') {
     start = start || 5;
     end = end || 5;
@@ -17,6 +19,8 @@ export const ellipsis = (str: string, start?: number, end?: number) => {
 };
 
 export const truncateString = (str: string, maxLength = MAX_LENGTH) => {
+  if (!str) return '';
+
   return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
 };
 

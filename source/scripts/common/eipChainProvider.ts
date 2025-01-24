@@ -4,6 +4,7 @@ type RequestArguments = {
 };
 
 enum EIPErrorCodes {
+  Unknown = 32603, // Unknown error.
   Rejected = 4001, // The user rejected the request.
   Unauthorized = 4100, // The requested method and/or account has not been authorized by the user.
   Unsupported = 4200, // The Provider does not support the requested method.

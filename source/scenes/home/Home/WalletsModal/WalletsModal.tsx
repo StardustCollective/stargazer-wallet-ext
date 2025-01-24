@@ -79,7 +79,7 @@ const WalletsModal: FC<IWalletsModal> = ({
   };
 
   const renderCheckIcon = (walletId: string, activeWalletId: string) => {
-    if (walletId !== activeWalletId) {
+    if (!walletId || !activeWalletId || walletId !== activeWalletId) {
       return null;
     }
 
@@ -106,21 +106,21 @@ const WalletsModal: FC<IWalletsModal> = ({
 
             return (
               <div
-                key={wallet.id}
+                key={wallet?.id}
                 className={walletStyles}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                onClick={() => handleSwitchWallet(wallet?.id, wallet?.accounts)}
               >
                 {renderStargazerIcon()}
                 <div className={styles.walletInfoContainer}>
                   <div className={styles.walletLabelContainer}>
                     <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-                      {truncateString(wallet.label)}
+                      {truncateString(wallet?.label)}
                     </TextV3.CaptionStrong>
                     <TextV3.Caption dynamic color={COLORS_ENUMS.GRAY_100}>
                       Multi-Chain Wallet
                     </TextV3.Caption>
                   </div>
-                  {renderCheckIcon(wallet.id, activeWallet.id)}
+                  {renderCheckIcon(wallet?.id, activeWallet?.id)}
                 </div>
               </div>
             );
@@ -141,23 +141,23 @@ const WalletsModal: FC<IWalletsModal> = ({
 
             return (
               <div
-                key={wallet.id}
+                key={wallet?.id}
                 className={walletStyles}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                onClick={() => handleSwitchWallet(wallet?.id, wallet?.accounts)}
               >
-                {wallet.supportedAssets.includes(KeyringAssetType.ETH)
+                {wallet?.supportedAssets.includes(KeyringAssetType.ETH)
                   ? renderEthereumIcon()
                   : renderConstellationIcon()}
                 <div className={styles.walletInfoContainer}>
                   <div className={styles.walletLabelContainer}>
                     <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-                      {truncateString(wallet.label)}
+                      {truncateString(wallet?.label)}
                     </TextV3.CaptionStrong>
                     <TextV3.Caption dynamic color={COLORS_ENUMS.GRAY_100}>
-                      {ellipsis(wallet.accounts[0].address)}
+                      {ellipsis(wallet?.accounts[0]?.address)}
                     </TextV3.Caption>
                   </div>
-                  {renderCheckIcon(wallet.id, activeWallet.id)}
+                  {renderCheckIcon(wallet?.id, activeWallet?.id)}
                 </div>
               </div>
             );
@@ -178,21 +178,21 @@ const WalletsModal: FC<IWalletsModal> = ({
 
             return (
               <div
-                key={wallet.id}
+                key={wallet?.id}
                 className={walletStyles}
-                onClick={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                onClick={() => handleSwitchWallet(wallet?.id, wallet?.accounts)}
               >
                 {renderHardwareIcon()}
                 <div className={styles.walletInfoContainer}>
                   <div className={styles.walletLabelContainer}>
                     <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-                      {truncateString(wallet.label)}
+                      {truncateString(wallet?.label)}
                     </TextV3.CaptionStrong>
                     <TextV3.Caption dynamic color={COLORS_ENUMS.GRAY_100}>
-                      {ellipsis(wallet.accounts[0].address)}
+                      {ellipsis(wallet?.accounts[0]?.address)}
                     </TextV3.Caption>
                   </div>
-                  {renderCheckIcon(wallet.id, activeWallet.id)}
+                  {renderCheckIcon(wallet?.id, activeWallet?.id)}
                 </div>
               </div>
             );
