@@ -77,7 +77,7 @@ const WalletsModal: FC<IWalletsModal> = ({
   };
 
   const renderCheckIcon = (walletId: string, activeWalletId: string) => {
-    if (walletId !== activeWalletId) {
+    if (!walletId || !activeWalletId || walletId !== activeWalletId) {
       return null;
     }
 
@@ -109,20 +109,20 @@ const WalletsModal: FC<IWalletsModal> = ({
             return (
               <TouchableOpacity
                 key={i}
-                onPress={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                onPress={() => handleSwitchWallet(wallet?.id, wallet?.accounts)}
               >
                 <View style={walletStyles}>
                   {renderStargazerIcon()}
-                  <View testID={wallet.label} style={styles.walletInfoContainer}>
+                  <View testID={wallet?.label} style={styles.walletInfoContainer}>
                     <View style={styles.walletLabelContainer}>
                       <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-                        {truncateString(wallet.label)}
+                        {truncateString(wallet?.label)}
                       </TextV3.CaptionStrong>
                       <TextV3.Caption dynamic color={COLORS_ENUMS.GRAY_100}>
                         Multi-Chain Wallet
                       </TextV3.Caption>
                     </View>
-                    {renderCheckIcon(wallet.id, activeWallet?.id)}
+                    {renderCheckIcon(wallet?.id, activeWallet?.id)}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -145,22 +145,22 @@ const WalletsModal: FC<IWalletsModal> = ({
             return (
               <TouchableOpacity
                 key={i}
-                onPress={() => handleSwitchWallet(wallet.id, wallet.accounts)}
+                onPress={() => handleSwitchWallet(wallet?.id, wallet?.accounts)}
               >
                 <View style={walletStyles}>
-                  {wallet.supportedAssets.includes(KeyringAssetType.ETH)
+                  {wallet?.supportedAssets.includes(KeyringAssetType.ETH)
                     ? renderEthereumIcon()
                     : renderConstellationIcon()}
-                  <View testID={wallet.label} style={styles.walletInfoContainer}>
+                  <View testID={wallet?.label} style={styles.walletInfoContainer}>
                     <View style={styles.walletLabelContainer}>
                       <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-                        {truncateString(wallet.label)}
+                        {truncateString(wallet?.label)}
                       </TextV3.CaptionStrong>
                       <TextV3.Caption dynamic color={COLORS_ENUMS.GRAY_100}>
-                        {ellipsis(wallet.accounts[0].address)}
+                        {ellipsis(wallet?.accounts[0]?.address)}
                       </TextV3.Caption>
                     </View>
-                    {renderCheckIcon(wallet.id, activeWallet?.id)}
+                    {renderCheckIcon(wallet?.id, activeWallet?.id)}
                   </View>
                 </View>
               </TouchableOpacity>
