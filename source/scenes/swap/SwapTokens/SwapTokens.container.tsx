@@ -138,13 +138,24 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       !isBalanceError &&
       !isRateError &&
       fromAmount > FROM_AMOUNT_ZERO &&
-      currencyRate?.toAmount > TO_AMOUNT_ZERO
+      currencyRate?.toAmount > TO_AMOUNT_ZERO &&
+      !!depositAsset &&
+      !!refundAsset
     ) {
       setIsNextButtonDisabled(false);
     } else {
       setIsNextButtonDisabled(true);
     }
-  }, [swapFrom, swapTo, fromAmount, isBalanceError, isRateError, currencyRate]);
+  }, [
+    swapFrom,
+    swapTo,
+    fromAmount,
+    isBalanceError,
+    isRateError,
+    currencyRate,
+    depositAsset,
+    refundAsset,
+  ]);
 
   // Updates the exchange rate when the from amount is changes.
   useEffect(() => {
