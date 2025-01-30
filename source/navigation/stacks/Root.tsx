@@ -4,7 +4,6 @@
 
 import React, { useEffect } from 'react';
 import { RootState } from 'state/store';
-import IVaultState from 'state/vault/types';
 
 ///////////////////////////
 // Hooks
@@ -35,6 +34,7 @@ import IProvidersState from 'state/providers/types';
 import { getAccountController } from 'utils/controllersUtils';
 import { requestToken } from 'utils/httpRequests/interceptors';
 import { IAuthState } from 'state/auth/types';
+import vaultSelectors from 'selectors/vaultSelectors';
 
 ///////////////////////////
 // Constants
@@ -43,9 +43,7 @@ import { IAuthState } from 'state/auth/types';
 const Stack = createStackNavigator();
 
 const Root = () => {
-  const { wallets, hasEncryptedVault, migrateWallet }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
+  const isAuthorized = useSelector(vaultSelectors.isAuthorized);
   const { supportedAssets }: IProvidersState = useSelector(
     (state: RootState) => state.providers
   );
@@ -69,11 +67,6 @@ const Root = () => {
       getAuthToken();
     }
   }, []);
-
-  const isAuthorized =
-    migrateWallet ||
-    (wallets.local && Object.values(wallets.local).length > 0) ||
-    hasEncryptedVault;
 
   return (
     <Stack.Navigator

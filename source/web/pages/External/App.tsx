@@ -18,6 +18,7 @@ import { setLoading } from 'state/auth';
 import { clearSession, getSgw, sessionExpired } from 'utils/keyring';
 import 'assets/styles/global.scss';
 import Loading from 'scenes/unauth/Loading';
+import vaultSelectors from 'selectors/vaultSelectors';
 
 const PrivateRoute = ({ component: Component, ...rest }: RouteProps) => {
   const { unlocked } = useSelector((state: RootState) => state.auth);
@@ -35,6 +36,7 @@ const App = () => {
   const history = useHistory();
 
   const { route } = queryString.parse(window.location.search);
+  const isAuthorized = useSelector(vaultSelectors.isAuthorized);
   const { unlocked, loading } = useSelector((state: RootState) => state.auth);
 
   const hideLoadingScreen = () => {
@@ -61,7 +63,11 @@ const App = () => {
         // Session expired. User needs to login again
         await walletController.logOut();
         await clearSession();
-        history.push(`/login${window.location.search}`);
+        if (isAuthorized) {
+          history.push(`/login${window.location.search}`);
+        } else {
+          window.close();
+        }
         hideLoadingScreen();
         return;
       }
