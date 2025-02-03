@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import TextV3 from 'components/TextV3';
 import { ToastProps, ToastType, ToastPosition } from 'context/ToastContext';
 import InfoIcon from 'assets/images/svg/info-outlined-purple.svg';
+import ErrorIcon from 'assets/images/svg/error-outlined.svg';
 import CloseIcon from 'assets/images/svg/close.svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './Toast.scss';
@@ -38,15 +39,23 @@ const Toast: FC<ToastProps & { visible: boolean }> = ({
   }, [visible, onClose]);
 
   const ICON_TYPES: { [type: string]: JSX.Element } = {
-    [ToastType.error]: <img src={`/${InfoIcon}`} height={ICON_SIZE} width={ICON_SIZE} />,
+    [ToastType.error]: (
+      <img src={`/${ErrorIcon}`} alt="Error" height={ICON_SIZE} width={ICON_SIZE} />
+    ),
     [ToastType.warning]: (
-      <img src={`/${InfoIcon}`} height={ICON_SIZE} width={ICON_SIZE} />
+      <img src={`/${InfoIcon}`} alt="Warning" height={ICON_SIZE} width={ICON_SIZE} />
     ),
     [ToastType.success]: (
-      <img src={`/${InfoIcon}`} height={ICON_SIZE} width={ICON_SIZE} />
+      <img src={`/${InfoIcon}`} alt="Success" height={ICON_SIZE} width={ICON_SIZE} />
     ),
     [ToastType.info]: (
-      <img src={`/${InfoIcon}`} height={ICON_SIZE} width={ICON_SIZE} color="#363BD3" />
+      <img
+        src={`/${InfoIcon}`}
+        alt="Info"
+        height={ICON_SIZE}
+        width={ICON_SIZE}
+        color="#363BD3"
+      />
     ),
   };
 
@@ -125,8 +134,14 @@ const Toast: FC<ToastProps & { visible: boolean }> = ({
           {!!message1 && renderMessage1()}
           {!!message2 && renderMessage2()}
         </div>
-        <div onClick={onClose} className={styles.closeContainer}>
-          <img src={`/${CloseIcon}`} height={CLOSE_SIZE} width={CLOSE_SIZE} />
+        <div
+          onClick={onClose}
+          role="button"
+          tabIndex={0}
+          onKeyDown={onClose}
+          className={styles.closeContainer}
+        >
+          <img src={`/${CloseIcon}`} alt="Close" height={CLOSE_SIZE} width={CLOSE_SIZE} />
         </div>
       </div>
     </div>

@@ -34,28 +34,13 @@ import styles from './styles';
 const AssetsPanel: FC<IAssetState> = ({
   activeNetworkAssets,
   showClaimCard,
-  claimLoading,
-  handleSelectAsset,
-  handleAddTokens,
-  handleClaim,
-  handleHideCard,
-  handleLearnMore,
   assets,
   activeWallet,
-  elpaca,
+  handleSelectAsset,
+  handleAddTokens,
+  handleHideCard,
 }) => {
   const { showToast } = useToast();
-  const { streak, claim } = elpaca;
-  const {
-    claimAmount,
-    currentStreak,
-    totalEarned,
-    currentClaimWindow,
-    showError,
-    claimEnabled,
-    epochsLeft,
-  } = streak?.data ?? {};
-  const { loading } = claim ?? {};
 
   const handleShowToast = () => {
     showToast({
@@ -96,21 +81,7 @@ const AssetsPanel: FC<IAssetState> = ({
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {showClaimCard && (
-          <CardClaim
-            loading={loading || claimLoading}
-            currentStreak={currentStreak}
-            totalEarned={totalEarned}
-            amount={claimAmount}
-            currentClaimWindow={currentClaimWindow}
-            claimEnabled={claimEnabled}
-            epochsLeft={epochsLeft}
-            showError={showError}
-            handleClaim={handleClaim}
-            handleLearnMore={handleLearnMore}
-            handleHideCard={onPressHideCard}
-          />
-        )}
+        {showClaimCard && <CardClaim onPressHideCard={onPressHideCard} />}
         {Object.keys(activeWallet.assets).length && <>{renderAssetList()}</>}
         <ButtonV3
           title="Manage Tokens"

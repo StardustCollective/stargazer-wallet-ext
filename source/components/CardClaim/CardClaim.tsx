@@ -9,6 +9,9 @@ import InfoIconPurple from 'assets/images/svg/info-outlined-purple.svg';
 import InfoIconBlack from 'assets/images/svg/info-outlined-black.svg';
 import DotsIcon from 'assets/images/svg/dots-horizontal.svg';
 import ViewOffIcon from 'assets/images/svg/view-off.svg';
+import { ELPACA_LARGE_LOGO } from 'constants/index';
+import { COLORS_ENUMS } from 'assets/styles/colors';
+import { IIconDropdownOptions } from 'components/IconDropdown/types';
 import ICardClaim from './types';
 import styles from './CardClaim.scss';
 import {
@@ -32,9 +35,6 @@ import {
   TOTAL_CLAIMED,
   WAITING,
 } from './constants';
-import { ELPACA_LARGE_LOGO } from 'constants/index';
-import { COLORS_ENUMS } from 'assets/styles/colors';
-import { IIconDropdownOptions } from 'components/IconDropdown/types';
 
 const CardClaim: FC<ICardClaim> = ({
   currentStreak,
@@ -140,7 +140,8 @@ const CardClaim: FC<ICardClaim> = ({
                   color={COLORS_ENUMS.PRIMARY_LIGHTER_1}
                   extraStyles={clsx(styles.itemValue, claimWindowStyle)}
                 >
-                  {claimWindowValue} {``}
+                  {claimWindowValue}
+                  {` `}
                   {claimWindowEmoji}
                 </TextV3.Caption>
               </div>
@@ -157,7 +158,8 @@ const CardClaim: FC<ICardClaim> = ({
                   color={COLORS_ENUMS.PRIMARY_LIGHTER_1}
                   extraStyles={styles.itemValue}
                 >
-                  {epochsLeft} {``}
+                  {epochsLeft}
+                  {` `}
                   {CAMERA_EMOJI}
                 </TextV3.Caption>
               </div>
@@ -174,7 +176,8 @@ const CardClaim: FC<ICardClaim> = ({
                   color={COLORS_ENUMS.PRIMARY_LIGHTER_1}
                   extraStyles={styles.itemValue}
                 >
-                  ~{currentClaimWindow} {``}
+                  ~{currentClaimWindow}
+                  {` `}
                   {TIME_EMOJI}
                 </TextV3.Caption>
               </div>
@@ -191,7 +194,8 @@ const CardClaim: FC<ICardClaim> = ({
                   color={COLORS_ENUMS.PRIMARY_LIGHTER_1}
                   extraStyles={styles.itemValue}
                 >
-                  {currentStreak} {``}
+                  {currentStreak}
+                  {` `}
                   {STREAK_EMOJI}
                 </TextV3.Caption>
               </div>
@@ -208,7 +212,8 @@ const CardClaim: FC<ICardClaim> = ({
                   color={COLORS_ENUMS.PRIMARY_LIGHTER_1}
                   extraStyles={styles.itemValue}
                 >
-                  {totalEarned} {``}
+                  {totalEarned}
+                  {` `}
                   {PACA_EMOJI}
                 </TextV3.Caption>
               </div>
@@ -225,7 +230,7 @@ const CardClaim: FC<ICardClaim> = ({
             extraLoaderStyle={styles.loader}
             type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.SMALL}
-            disabled={!claimEnabled}
+            disabled={!claimEnabled || loading}
             label={claimText}
             loading={loading}
             loadingSize={14}

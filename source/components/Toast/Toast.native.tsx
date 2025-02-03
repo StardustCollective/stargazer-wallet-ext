@@ -2,6 +2,7 @@ import React, { FC, useEffect, useRef } from 'react';
 import { Animated, TouchableOpacity, View, Easing } from 'react-native';
 import TextV3 from 'components/TextV3';
 import InfoIcon from 'assets/images/svg/info-outlined.svg';
+import ErrorIcon from 'assets/images/svg/error-outlined.svg';
 import CloseIcon from 'assets/images/svg/close.svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { ToastProps, ToastType, ToastPosition } from '../../context/ToastContext';
@@ -43,7 +44,7 @@ const Toast: FC<ToastProps & { visible: boolean }> = ({
   };
 
   const ICON_TYPES: { [type: string]: JSX.Element } = {
-    [ToastType.error]: <InfoIcon height={ICON_SIZE} width={ICON_SIZE} />,
+    [ToastType.error]: <ErrorIcon height={ICON_SIZE} width={ICON_SIZE} color="#DC2626" />,
     [ToastType.warning]: <InfoIcon height={ICON_SIZE} width={ICON_SIZE} />,
     [ToastType.success]: <InfoIcon height={ICON_SIZE} width={ICON_SIZE} />,
     [ToastType.info]: <InfoIcon height={ICON_SIZE} width={ICON_SIZE} color="#363BD3" />,
@@ -69,14 +70,13 @@ const Toast: FC<ToastProps & { visible: boolean }> = ({
       }, DURATION);
 
       return () => clearTimeout(timer);
-    } else {
-      Animated.timing(positionAnim, {
-        toValue: INITIAL_POSITION,
-        duration: 320,
-        useNativeDriver: true,
-        easing: Easing.inOut(Easing.ease),
-      }).start();
     }
+    Animated.timing(positionAnim, {
+      toValue: INITIAL_POSITION,
+      duration: 320,
+      useNativeDriver: true,
+      easing: Easing.inOut(Easing.ease),
+    }).start();
   }, [visible]);
 
   const renderIcon = () => {
