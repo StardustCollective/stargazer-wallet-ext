@@ -7,9 +7,8 @@ import { ELPACA_LEARN_MORE } from 'constants/index';
 import { ToastPosition, ToastType, useToast } from 'context/ToastContext';
 import CardClaim from './CardClaim';
 
-const CLAIM_DELAY = 2 * 1000; // 2 seconds
-const STATUS_CHECK_DELAY = 10 * 1000; // 10 seconds
-const MAX_STATUS_RETRIES = 2; // Maximum number of status check retries
+const CLAIM_DELAY = 1 * 1000; // 1 second
+const STATUS_CHECK_DELAY = 15 * 1000; // 15 seconds
 const MAX_CLAIM_RETRIES = 2; // Maximum number of claim retries
 
 const CardClaimContainer: FC<{ onPressHideCard: () => void }> = ({ onPressHideCard }) => {
@@ -78,15 +77,8 @@ const CardClaimContainer: FC<{ onPressHideCard: () => void }> = ({ onPressHideCa
 
       await getElpacaInfo();
 
-      // If we still have status retries left, schedule another check
-      if (statusRetries.current < MAX_STATUS_RETRIES) {
-        statusRetries.current += 1;
-        statusCheckTimer.current = setTimeout(() => {
-          checkClaimStatus();
-        }, STATUS_CHECK_DELAY);
-      }
       // If we've exhausted status checks but have claim retries left, try claiming again
-      else if (claimRetries.current < MAX_CLAIM_RETRIES) {
+      if (claimRetries.current < MAX_CLAIM_RETRIES) {
         claimRetries.current += 1;
         statusRetries.current = 0;
 
@@ -118,6 +110,8 @@ const CardClaimContainer: FC<{ onPressHideCard: () => void }> = ({ onPressHideCa
   }, [streak?.claimEnabled]);
 
   const handleClaim = async () => {
+    if (claimSuccess.current) return;
+
     try {
       setIsClaimLoading(true);
       await accountController.assetsController.claimElpaca();
