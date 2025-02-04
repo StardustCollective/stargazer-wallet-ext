@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 ///////////////////////////
 
 import { getWalletController } from 'utils/controllersUtils';
-import { clearSession, getSgw, sessionExpired } from 'utils/keyring';
+import { clearSession, getSgw, sessionExpired, setExpiration } from 'utils/keyring';
 import store, { RootState } from 'state/store';
 import { setLoading } from 'state/auth';
 
@@ -15,7 +15,6 @@ import { setLoading } from 'state/auth';
 ///////////////////////////
 
 import Start from 'scenes/home/Start';
-import Tabs from '../tabs';
 import Import from 'scenes/common/Import';
 import Loading from 'scenes/unauth/Loading';
 
@@ -25,12 +24,14 @@ import Loading from 'scenes/unauth/Loading';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import defaultHeader from 'navigation/headers/default';
+import Tabs from '../tabs';
 
 ///////////////////////////
 // Constants
 ///////////////////////////
 
 import screens from '../../screens';
+
 export const Stack = createStackNavigator();
 export const SCREEN_DEFAULT_TITLE_STRINGS = {
   blank: '',
@@ -110,6 +111,8 @@ const Auth = () => {
       }
 
       const sgw = await getSgw();
+      // Update expiration time
+      await setExpiration();
 
       if (!sgw) {
         hideLoadingScreen();
@@ -120,7 +123,6 @@ const Auth = () => {
 
       if (!success) {
         hideLoadingScreen();
-        return;
       }
     };
 
