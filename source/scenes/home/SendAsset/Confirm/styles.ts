@@ -44,12 +44,13 @@ const styles = StyleSheet.create({
   },
   footer: {
     backgroundColor: COLORS.grey_light_100,
+    flexGrow: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   footerButtons: {
     flexDirection: 'row',
-    margin: 10,
+    marginVertical: 24,
     justifyContent: 'space-evenly',
   },
   sendSuccessContent: {
@@ -79,6 +80,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: 24,
+  },
+  modalContent: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  modalTitle: {
+    marginBottom: 12,
+  },
+  modalDescription: {
+    marginBottom: 12,
+  },
+  textBold: {
+    fontWeight: '600',
+  },
+  modalButton: {
+    marginTop: 24,
+    width: '100%',
   },
 });
 
