@@ -732,9 +732,11 @@ export class AccountController {
     const bigNumberGasPrice = BigNumber.from(baseAmountGasPrice.amount().toFixed());
     const { chainId, id: networkId } = this.networkController.getNetwork();
 
+    const amount = this.tempTx.isTransfer ? '0' : this.tempTx.amount;
+
     const txOptions: any = {
       to: this.tempTx.toAddress,
-      value: ethers.utils.parseEther(this.tempTx.amount),
+      value: ethers.utils.parseEther(amount),
       gasPrice: bigNumberGasPrice,
       gasLimit: ethers.utils.hexlify(gasLimit),
       data: memo,
