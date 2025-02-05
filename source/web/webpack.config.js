@@ -228,11 +228,15 @@ module.exports = {
     new CopyWebpackPlugin([{ from: `${sharedPath}assets`, to: 'assets' }]),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
-    sentryWebpackPlugin({
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      org: 'dor-technologies',
-      project: 'stargazer-wallet-web',
-    }),
+    ...(nodeEnv !== 'production'
+      ? []
+      : [
+          sentryWebpackPlugin({
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            org: 'dor-technologies',
+            project: 'stargazer-wallet-web',
+          }),
+        ]),
   ],
 
   optimization: {
