@@ -1,1 +1,1 @@
-export { default } from './CardClaim';
+export { default } from './CardClaim.container';

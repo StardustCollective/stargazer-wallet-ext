@@ -2,37 +2,21 @@ import React, { FC } from 'react';
 import AssetItem from 'components/AssetItem';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import SlidersIcon from 'assets/images/svg/sliders.svg';
-import IAssetPanel from './types';
-import styles from './AssetsPanel.scss';
 import CardClaim from 'components/CardClaim';
 import { ToastPosition, ToastType, useToast } from 'context/ToastContext';
+import IAssetPanel from './types';
+import styles from './AssetsPanel.scss';
 
 const AssetsPanel: FC<IAssetPanel> = ({
   activeNetworkAssets,
   showClaimCard,
-  claimLoading,
-  handleSelectAsset,
-  handleAddTokens,
-  handleClaim,
-  handleHideCard,
-  handleLearnMore,
   assets,
   activeWallet,
-  elpaca,
+  handleSelectAsset,
+  handleAddTokens,
+  handleHideCard,
 }) => {
   const { showToast } = useToast();
-
-  const { streak, claim } = elpaca;
-  const {
-    claimAmount,
-    currentStreak,
-    totalEarned,
-    epochsLeft,
-    currentClaimWindow,
-    showError,
-    claimEnabled,
-  } = streak?.data ?? {};
-  const { loading } = claim ?? {};
 
   const handleShowToast = () => {
     showToast({
@@ -73,21 +57,7 @@ const AssetsPanel: FC<IAssetPanel> = ({
   return (
     <section className={styles.activity}>
       <div className={styles.content}>
-        {showClaimCard && (
-          <CardClaim
-            loading={loading || claimLoading}
-            currentStreak={currentStreak}
-            totalEarned={totalEarned}
-            amount={claimAmount}
-            currentClaimWindow={currentClaimWindow}
-            claimEnabled={claimEnabled}
-            showError={showError}
-            epochsLeft={epochsLeft}
-            handleClaim={handleClaim}
-            handleLearnMore={handleLearnMore}
-            handleHideCard={onPressHideCard}
-          />
-        )}
+        {showClaimCard && <CardClaim onPressHideCard={onPressHideCard} />}
         {Object.keys(activeWallet.assets).length && <>{renderAssetList()}</>}
         <div className={styles.buttonContainer}>
           <ButtonV3
