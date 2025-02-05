@@ -317,6 +317,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       timestamp: Date.now(),
       amount: String(amount) || '0',
       fee: data.fee || gasFee,
+      isTransfer,
     };
     if (
       activeAsset?.type === AssetType.Ethereum ||

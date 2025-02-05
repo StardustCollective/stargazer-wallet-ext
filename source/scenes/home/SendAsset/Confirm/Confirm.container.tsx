@@ -256,6 +256,7 @@ const ConfirmContainer = () => {
             timestamp: Date.now(),
             amount: tempTx.amount,
             ethConfig: tempTx.ethConfig,
+            isTransfer: tempTx.isTransfer,
             onConfirmed: () => {
               // NOOP
             },
