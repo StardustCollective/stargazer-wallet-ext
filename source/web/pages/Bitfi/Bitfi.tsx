@@ -156,9 +156,6 @@ const BitfiPage = () => {
   const [error] = useState<string>('');
   const walletController = getWalletController();
 
-  const { message: messageRequest } =
-    StargazerExternalPopups.decodeRequestMessageLocationParams<any>(location.href);
-
   useEffect(() => {
     if (['main2'].includes(activeNetwork.Constellation)) {
       BitfiBridgeUtil.switchDagNetwork(activeNetwork.Constellation);
@@ -348,6 +345,9 @@ const BitfiPage = () => {
   const onSignMessagePress = async () => {
     const { data } = queryString.parse(location.search) as any;
 
+    const { message: messageRequest } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams<any>(location.href);
+
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
 
@@ -390,6 +390,9 @@ const BitfiPage = () => {
 
   const onSignPress = async () => {
     const { amount, from, to, fee } = queryString.parse(location.search) as any;
+
+    const { message: messageRequest } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams<any>(location.href);
 
     try {
       setWaitingForBitfi(true);
