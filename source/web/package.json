@@ -1,6 +1,6 @@
 {
   "name": "extension",
-  "version": "5.1.9",
+  "version": "5.1.10",
   "description": "Cross-chain compatible wallet for Constellation and Ethereum",
   "private": true,
   "repository": "https://github.com/StardustCollective/stargazer-wallet-ext.git",
@@ -18,6 +18,7 @@
     "dev:chrome": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=chrome webpack --watch",
     "dev:firefox": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=firefox webpack --watch",
     "build:chrome": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=chrome webpack",
+    "build:chrome:prod": "cross-env NODE_ENV=production cross-env UPLOAD_SENTRY=true cross-env TARGET_BROWSER=chrome webpack",
     "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack",
     "build": "yarn run build:chrome && yarn run build:firefox",
     "test": "jest",
