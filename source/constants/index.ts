@@ -1,6 +1,8 @@
 import {
   AvalancheChainId,
   AvalancheChainValue,
+  BaseChainId,
+  BaseChainValue,
   BSCChainId,
   BSCChainValue,
   EthChainId,
@@ -33,6 +35,10 @@ export const ETHEREUM_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/eth.png';
 export const ETHEREUM_DEFAULT_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/eth-default.png';
+export const BASE_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/base.png';
+export const BASE_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/base-default.png';
 export const AVALANCHE_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avax.png';
 export const AVALANCHE_DEFAULT_LOGO =
@@ -345,12 +351,62 @@ export const POLYGON_NETWORK: {
   },
 };
 
+export const BASE_NETWORK: {
+  [networkId: string]: {
+    id: BaseChainId;
+    value: BaseChainValue;
+    label: string;
+    explorer: string;
+    chainId: number;
+    hexChainId: string;
+    rpcEndpoint: string;
+    explorerID: string;
+    nativeToken: string;
+    mainnet: string;
+    network: string;
+    networkId: string;
+    logo: string;
+  };
+} = {
+  [`base-mainnet`]: {
+    id: 'base-mainnet',
+    value: 'base-mainnet',
+    label: 'Base Mainnet',
+    rpcEndpoint: NodeExternalService.BaseMainnet,
+    explorer: 'https://basescan.org/',
+    explorerID: ExplorerExternalService.BaseMainnet,
+    chainId: 8453,
+    hexChainId: '0x2105',
+    nativeToken: 'ETH',
+    mainnet: 'base-mainnet',
+    network: 'Base',
+    networkId: StargazerChain.BASE,
+    logo: BASE_LOGO,
+  },
+  [`base-sepolia`]: {
+    id: 'base-sepolia',
+    value: 'base-sepolia',
+    label: 'Base Sepolia',
+    rpcEndpoint: NodeExternalService.BaseTestnet,
+    explorer: 'https://sepolia.basescan.org/',
+    explorerID: ExplorerExternalService.BaseTestnet,
+    chainId: 84532,
+    hexChainId: '0x14a34',
+    nativeToken: 'ETH',
+    mainnet: 'base-mainnet',
+    network: 'Base',
+    networkId: StargazerChain.BASE,
+    logo: BASE_LOGO,
+  },
+};
+
 export const ALL_MAINNET_CHAINS = [
   DAG_NETWORK.main2,
   ETH_NETWORK.mainnet,
   AVALANCHE_NETWORK['avalanche-mainnet'],
   BSC_NETWORK.bsc,
   POLYGON_NETWORK.matic,
+  BASE_NETWORK[`base-mainnet`],
 ];
 
 export const ALL_TESTNETS_CHAINS = [
@@ -361,6 +417,7 @@ export const ALL_TESTNETS_CHAINS = [
   AVALANCHE_NETWORK['avalanche-testnet'],
   BSC_NETWORK['bsc-testnet'],
   POLYGON_NETWORK.amoy,
+  BASE_NETWORK['base-sepolia'],
 ];
 
 export const ALL_CHAINS = [...ALL_MAINNET_CHAINS, ...ALL_TESTNETS_CHAINS];
@@ -370,6 +427,7 @@ export const ALL_EVM_CHAINS = {
   ...AVALANCHE_NETWORK,
   ...BSC_NETWORK,
   ...POLYGON_NETWORK,
+  ...BASE_NETWORK,
 };
 
 export const SUPPORTED_HEX_CHAINS = [
@@ -381,6 +439,8 @@ export const SUPPORTED_HEX_CHAINS = [
   '0x13882',
   '0x38',
   '0x61',
+  '0x2105',
+  '0x14a34',
 ];
 
 export const PRICE_DAG_ID = 'constellation-labs';

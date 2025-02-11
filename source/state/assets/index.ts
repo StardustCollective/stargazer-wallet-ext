@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   ALKIMI_LOGO,
   AVALANCHE_LOGO,
+  BASE_LOGO,
   BSC_LOGO,
   CONSTELLATION_LOGO,
   DOR_LOGO,
@@ -13,7 +14,7 @@ import {
   POLYGON_LOGO,
   VE_LTX_LOGO,
 } from 'constants/index';
-import { AssetType } from 'state/vault/types';
+import { AssetSymbol, AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from './types';
 
 export const initialState: IAssetListState = {
@@ -21,7 +22,7 @@ export const initialState: IAssetListState = {
     id: AssetType.Ethereum,
     label: 'Ethereum',
     type: AssetType.Ethereum,
-    symbol: 'ETH',
+    symbol: AssetSymbol.ETH,
     address: '',
     native: true,
     network: 'both',
@@ -33,7 +34,7 @@ export const initialState: IAssetListState = {
     id: AssetType.Constellation,
     label: 'Constellation',
     type: AssetType.Constellation,
-    symbol: 'DAG',
+    symbol: AssetSymbol.DAG,
     address: '',
     native: true,
     network: 'both',
@@ -71,7 +72,7 @@ export const initialState: IAssetListState = {
     id: AssetType.Avalanche,
     address: '',
     label: 'Avalanche',
-    symbol: 'AVAX',
+    symbol: AssetSymbol.AVAX,
     type: AssetType.Ethereum,
     priceId: 'avalanche-2',
     network: 'avalanche-mainnet',
@@ -82,7 +83,7 @@ export const initialState: IAssetListState = {
     id: AssetType.BSC,
     address: '',
     label: 'BNB',
-    symbol: 'BNB',
+    symbol: AssetSymbol.BNB,
     type: AssetType.Ethereum,
     priceId: 'binancecoin',
     network: 'bsc',
@@ -93,11 +94,22 @@ export const initialState: IAssetListState = {
     id: AssetType.Polygon,
     address: '',
     label: 'Polygon',
-    symbol: 'MATIC',
+    symbol: AssetSymbol.MATIC,
     type: AssetType.Ethereum,
     priceId: 'matic-network',
     network: 'matic',
     logo: POLYGON_LOGO,
+    decimals: 18,
+  },
+  [AssetType.Base]: {
+    id: AssetType.Base,
+    address: '',
+    label: 'Base',
+    symbol: AssetSymbol.BASE,
+    type: AssetType.Ethereum,
+    priceId: 'ethereum',
+    network: 'base-mainnet',
+    logo: BASE_LOGO,
     decimals: 18,
   },
   '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet': {

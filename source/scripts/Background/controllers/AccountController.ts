@@ -24,7 +24,6 @@ import IVaultState, {
   IAssetState,
   IWalletState,
   IActiveAssetState,
-  AssetSymbol,
   Reward,
 } from 'state/vault/types';
 
@@ -144,9 +143,12 @@ export class AccountController {
       // 349: New network should be added here.
       const NETWORK_TOKENS = Object.values(assets)
         .filter((token) =>
-          [AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
-            token.symbol as AssetSymbol
-          )
+          [
+            AssetType.Polygon,
+            AssetType.Avalanche,
+            AssetType.BSC,
+            AssetType.Base,
+          ].includes(token?.id as AssetType)
         )
         .map((token) => token.id);
 
@@ -207,6 +209,13 @@ export class AccountController {
       address,
     };
 
+    const baseAsset = {
+      id: AssetType.Base,
+      type: AssetType.Ethereum,
+      label: 'Base',
+      address,
+    };
+
     if (tokens.includes(avaxAsset.id)) {
       networkAssets.push(avaxAsset);
     }
@@ -217,6 +226,10 @@ export class AccountController {
 
     if (tokens.includes(polygonAsset.id)) {
       networkAssets.push(polygonAsset);
+    }
+
+    if (tokens.includes(baseAsset.id)) {
+      networkAssets.push(baseAsset);
     }
 
     return networkAssets;

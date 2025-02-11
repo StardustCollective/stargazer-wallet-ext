@@ -12,6 +12,7 @@ export enum SupportedExolixSwapNetworks {
   ETHEREUM = 'ETH',
   POLYGON = 'MATIC',
   CONSTELLATION = 'DAG',
+  BASE = 'BASE',
 }
 
 export enum ExolixTransactionStatuses {

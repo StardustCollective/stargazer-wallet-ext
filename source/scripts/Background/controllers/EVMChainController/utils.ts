@@ -22,6 +22,7 @@ import {
 import {
   ALL_EVM_CHAINS,
   AVALANCHE_LOGO,
+  BASE_LOGO,
   BSC_LOGO,
   ETHEREUM_LOGO,
   POLYGON_LOGO,
@@ -47,6 +48,9 @@ export const getNetworkLogo = (network: string) => {
     case 'matic':
     case 'amoy':
       return POLYGON_LOGO;
+    case 'base-mainnet':
+    case 'base-sepolia':
+      return BASE_LOGO;
 
     default:
       return ETHEREUM_LOGO;
@@ -63,6 +67,8 @@ export const getMainnetFromPlatform = (platform: string): string => {
       return 'bsc';
     case 'polygon-pos':
       return 'matic';
+    case 'base':
+      return 'base-mainnet';
 
     default:
       return 'mainnet';
@@ -79,6 +85,8 @@ export const getPlatformFromMainnet = (network: string): string => {
       return 'binance-smart-chain';
     case 'matic':
       return 'polygon-pos';
+    case 'base-mainnet':
+      return 'base';
 
     default:
       return 'mainnet';
@@ -111,6 +119,10 @@ export const getNetworkLabel = (network: string): string => {
       return 'Polygon';
     case 'amoy':
       return 'Polygon Amoy Testnet';
+    case 'base-mainnet':
+      return 'Base';
+    case 'base-sepolia':
+      return 'Base Sepolia';
 
     default:
       return 'ERC-20';
@@ -127,6 +139,8 @@ export const getNetworkNativeToken = (network: string): string => {
       return 'AVAX';
     case 'BSC':
       return 'BNB';
+    case 'Base':
+      return 'ETH';
 
     default:
       return 'ETH';
@@ -160,6 +174,9 @@ export const getPriceId = (network: string): string => {
     case 'bsc':
     case 'bsc-testnet':
       return 'binancecoin';
+    case 'base-mainnet':
+    case 'base-sepolia':
+      return 'ethereum';
 
     default:
       return 'ethereum';

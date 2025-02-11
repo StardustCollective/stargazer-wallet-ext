@@ -15,6 +15,7 @@ import {
 } from '@stardust-collective/dag4-keyring';
 import {
   AvalancheChainId,
+  BaseChainId,
   BSCChainId,
   EthChainId,
   PolygonChainId,
@@ -30,6 +31,7 @@ export enum Network {
   Polygon = 'Polygon',
   Avalanche = 'Avalanche',
   BSC = 'BSC',
+  Base = 'Base',
 }
 
 export enum AssetSymbol {
@@ -39,6 +41,7 @@ export enum AssetSymbol {
   MATIC = 'MATIC',
   AVAX = 'AVAX',
   BNB = 'BNB',
+  BASE = 'ETH',
 }
 
 export enum AssetType {
@@ -46,6 +49,7 @@ export enum AssetType {
   Avalanche = 'avalanche',
   BSC = 'bsc',
   Polygon = 'polygon',
+  Base = 'base',
   Ledger = 'ledger',
   LedgerConstellation = 'ledger-constellation',
   Ethereum = 'ethereum',
@@ -71,6 +75,7 @@ export type ActiveNetwork = {
   [Network.Avalanche]: AvalancheChainId;
   [Network.BSC]: BSCChainId;
   [Network.Polygon]: PolygonChainId;
+  [Network.Base]: BaseChainId;
 };
 
 export interface IAssetState {
@@ -94,6 +99,7 @@ export type AssetBalances = {
   avalanche?: string;
   bsc?: string;
   polygon?: string;
+  base?: string;
   [contractAddress: string]: string;
 };
 

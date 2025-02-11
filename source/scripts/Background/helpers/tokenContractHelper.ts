@@ -22,6 +22,8 @@ const NETWORK_TO_CONTRACT_MAP = {
   97: '0x2352c63A83f9Fd126af8676146721Fa00924d7e4', // BSC testnet
   43114: '0xD023D153a0DFa485130ECFdE2FAA7e612EF94818', // AVAX mainnet
   43113: '0xaaEe9Ece50e5a5A1b125cf9300b6a8AdC72cDE40', // AVAX testnet (this contract was deployed by us)
+  8453: '0xaaEe9Ece50e5a5A1b125cf9300b6a8AdC72cDE40', // Base mainnet (this contract was deployed by us)
+  84532: '0xaaEe9Ece50e5a5A1b125cf9300b6a8AdC72cDE40', // Base sepolia (this contract was deployed by us)
 };
 
 export class TokenContractHelper {

@@ -18,6 +18,7 @@ export enum OpenSeaSupportedChains {
   POLYGON = 'matic',
   AVALANCHE = 'avalanche',
   BSC = 'bsc',
+  BASE = 'base',
   // Testnets
   SEPOLIA = 'sepolia',
   AVALANCHE_FUJI = 'avalanche_fuji',

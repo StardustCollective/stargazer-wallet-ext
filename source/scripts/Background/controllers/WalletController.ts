@@ -355,6 +355,7 @@ class WalletController {
       Network.Avalanche,
       Network.BSC,
       Network.Polygon,
+      Network.Base,
     ];
 
     if (EVM_CHAINS.includes(network as KeyringNetwork | Network)) {

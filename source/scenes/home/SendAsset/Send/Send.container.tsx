@@ -76,6 +76,7 @@ import {
   AVALANCHE_LOGO,
   BSC_LOGO,
   DAG_NETWORK,
+  BASE_LOGO,
 } from 'constants/index';
 import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
 import { initialState as initialStateAssets } from 'state/assets';
@@ -352,6 +353,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         [AssetType.Polygon]: StargazerChain.POLYGON,
         [AssetType.BSC]: StargazerChain.BSC,
         [AssetType.Avalanche]: StargazerChain.AVALANCHE,
+        [AssetType.Base]: StargazerChain.BASE,
       };
 
       if (activeAsset?.id) {
@@ -581,6 +583,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO },
       { value: 'bsc', label: 'BSC', icon: BSC_LOGO },
+      { value: 'base-mainnet', label: 'Base', icon: BASE_LOGO },
     ],
     disabled: true,
     labelRight: tokenChainLabel,

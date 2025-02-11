@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   ALKIMI_LOGO,
   AVALANCHE_LOGO,
+  BASE_LOGO,
   BSC_LOGO,
   CONSTELLATION_LOGO,
   DODI_LOGO,
@@ -179,6 +180,17 @@ export const constellationInitialValues: IAssetInfoState[] = [
     priceId: 'matic-network',
     network: 'matic',
     logo: POLYGON_LOGO,
+    decimals: 18,
+  },
+  {
+    id: AssetType.Base,
+    address: '',
+    label: 'Base',
+    symbol: 'ETH',
+    type: AssetType.Ethereum,
+    priceId: 'ethereum',
+    network: 'base-mainnet',
+    logo: BASE_LOGO,
     decimals: 18,
   },
 ];

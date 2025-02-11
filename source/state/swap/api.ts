@@ -52,6 +52,7 @@ const LOCAL_TO_EXOLIX_NETWORK_MAP: {
   matic: 'MATIC',
   'avalanche-mainnet': 'AVAXC',
   mainnet: 'ETH',
+  'base-mainnet': 'BASE',
 };
 
 /////////////////////////

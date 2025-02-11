@@ -42,6 +42,22 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
     setGasFee(fee);
   };
 
+  const estimateDiffAmount = (value: number): number => {
+    if (value < 10) return 1;
+    return Math.floor(value / 10);
+  };
+
+  const removeNegativeGasPrice = (gasPrices: number[]): number[] => {
+    const positiveGasPrices = [...gasPrices];
+    for (let i = 0; i < positiveGasPrices.length; i++) {
+      if (positiveGasPrices[i] < 0) {
+        positiveGasPrices[i] = 0;
+      }
+    }
+
+    return positiveGasPrices;
+  };
+
   const handleGetTxFee = async () => {
     const network = asset?.network ? getNetworkFromChainId(asset?.network) : null;
     const gas = await accountController.getLatestGasPrices(network);
@@ -49,8 +65,10 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
     let uniquePrices = [...new Set(gas)].length;
     if (uniquePrices === 1) {
       let gp = gas[0];
-      gasPrices = [gp - 5, gp, gp + 5];
+      const amount = estimateDiffAmount(gp);
+      gasPrices = [gp - amount, gp, gp + amount];
     }
+    gasPrices = removeNegativeGasPrice(gasPrices);
     setGasPrices(gasPrices);
     setGasPrice(gasPrices[2]);
     estimateGasFee(gasPrices[2]);
