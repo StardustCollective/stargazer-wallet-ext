@@ -24,6 +24,7 @@ const rootPath = path.join(__dirname, '../../');
 const sharedPath = path.join(__dirname, '../');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
+const uploadSentry = process.env.UPLOAD_SENTRY === 'true';
 
 const extensionReloaderPlugin = () => {
   this.apply = () => {};
@@ -228,7 +229,7 @@ module.exports = {
     new CopyWebpackPlugin([{ from: `${sharedPath}assets`, to: 'assets' }]),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
-    ...(nodeEnv !== 'production'
+    ...(!uploadSentry
       ? []
       : [
           sentryWebpackPlugin({

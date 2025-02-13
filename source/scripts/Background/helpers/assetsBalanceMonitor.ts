@@ -12,7 +12,6 @@ import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { toDag } from 'utils/number';
-import { DAG_NETWORK } from 'constants/index';
 import { getDagAddress, walletHasDag, walletHasEth } from 'utils/wallet';
 import { getElPacaInfo } from 'state/user/api';
 
@@ -150,25 +149,27 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  private async getCurrencyAddressBlockExplorerBalance(
-    metagraphAddress: string,
-    dagAddress: string
-  ): Promise<string> {
-    try {
-      const balance =
-        (
-          (await dag4.network.blockExplorerV2Api.getCurrencyAddressBalance(
-            metagraphAddress,
-            dagAddress
-          )) as any
-        )?.data?.balance ?? 0;
-      const balanceNumber = toDag(balance);
+  // This function will be used in the future when the block explorer is fixed
 
-      return String(balanceNumber);
-    } catch (err) {
-      return null;
-    }
-  }
+  // private async getCurrencyAddressBlockExplorerBalance(
+  //   metagraphAddress: string,
+  //   dagAddress: string
+  // ): Promise<string> {
+  //   try {
+  //     const balance =
+  //       (
+  //         (await dag4.network.blockExplorerV2Api.getCurrencyAddressBalance(
+  //           metagraphAddress,
+  //           dagAddress
+  //         )) as any
+  //       )?.data?.balance ?? 0;
+  //     const balanceNumber = toDag(balance);
+
+  //     return String(balanceNumber);
+  //   } catch (err) {
+  //     return null;
+  //   }
+  // }
 
   private async getCurrencyAddressL0Balance(l0asset: IAssetInfoState): Promise<string> {
     try {
@@ -202,20 +203,22 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  async refreshL0balances(l0assets: IAssetInfoState[], dagAddress: string) {
+  async refreshL0balances(l0assets: IAssetInfoState[]) {
     let l0balances: Record<string, string> = {};
 
     for (const l0asset of l0assets) {
-      let balanceString;
-      if (l0asset.network === DAG_NETWORK.local2.id) {
-        // Get balance from L0 API for local development
-        balanceString = await this.getCurrencyAddressL0Balance(l0asset);
-      } else {
-        balanceString = await this.getCurrencyAddressBlockExplorerBalance(
-          l0asset.address,
-          dagAddress
-        );
-      }
+      const balanceString = await this.getCurrencyAddressL0Balance(l0asset);
+
+      // // This code will be used in the future when the block explorer is fixed
+      // if (l0asset.network === DAG_NETWORK.local2.id) {
+      //   // Get balance from L0 API for local development
+      //   balanceString = await this.getCurrencyAddressL0Balance(l0asset);
+      // } else {
+      //   balanceString = await this.getCurrencyAddressBlockExplorerBalance(
+      //     l0asset.address,
+      //     dagAddress
+      //   );
+      // }
       if (!!balanceString) {
         l0balances[l0asset.id] = balanceString;
       }
@@ -254,7 +257,7 @@ export class AssetsBalanceMonitor {
           asset?.network === activeNetwork.Constellation
       );
 
-      const l0balances = await this.refreshL0balances(l0assets, address);
+      const l0balances = await this.refreshL0balances(l0assets);
       const balanceString = await this.getAddressBlockExplorerBalance(address);
 
       store.dispatch(
