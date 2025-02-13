@@ -41,7 +41,7 @@ export enum AssetSymbol {
   MATIC = 'MATIC',
   AVAX = 'AVAX',
   BNB = 'BNB',
-  BASE = 'ETH',
+  BASE = 'BASE_ETH',
 }
 
 export enum AssetType {

@@ -140,7 +140,7 @@ export const getNetworkNativeToken = (network: string): string => {
     case 'BSC':
       return 'BNB';
     case 'Base':
-      return 'ETH';
+      return 'BASE_ETH';
 
     default:
       return 'ETH';
