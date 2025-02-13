@@ -23,8 +23,9 @@ import {
   IExolixTransaction,
 } from './types';
 import { RootState } from 'state/store';
-import { AssetType } from 'state/vault/types';
+import { AssetSymbol, AssetType } from 'state/vault/types';
 import { STARGAZER_SWAPPING_BASE_URL_PROD } from 'constants/index';
+import { walletHasDag, walletHasEth } from 'utils/wallet';
 
 /////////////////////////
 // Constants
@@ -33,8 +34,6 @@ import { STARGAZER_SWAPPING_BASE_URL_PROD } from 'constants/index';
 const SEARCH_END_POINT = '/currencies';
 const RATE_END_POINT = '/rate';
 const TRANSACTION_END_POINT = '/transactions';
-const BALANCE_ZERO_DECIMAL = '0.0';
-const BALANCE_ZERO = '0';
 const WITH_NETWORKS_BOOLEAN = true;
 const POST_METHOD = 'POST';
 const GET_METHOD = 'GET';
@@ -82,68 +81,95 @@ export const getCurrencyData = createAsyncThunk(
 export const getSupportedAssets = createAsyncThunk(
   'swap/getSupportedAssets',
   async (_, thunkAPI): Promise<ISearchCurrency[]> => {
-    let supportedAssets: ISearchCurrency[] = [];
-
     const { assets, vault } = thunkAPI.getState() as RootState;
-    const { balances } = vault;
+    const { balances, activeWallet } = vault;
     const assetsArray = Object.values(assets);
-    const assetsKeysArray = Object.keys(assets);
 
-    for (let i = 0; i < assetsArray.length; i++) {
-      const key = assetsKeysArray[i];
-      const asset = assetsArray[i];
-      const assetBalance = balances[key];
-      // Only check assets whos balance are greater than zero and assetBalance is not undefined
-      if (
-        assetBalance !== BALANCE_ZERO_DECIMAL &&
-        assetBalance !== BALANCE_ZERO &&
-        assetBalance !== undefined
-      ) {
-        const response = await fetch(
-          `${STARGAZER_SWAPPING_BASE_URL_PROD}${SEARCH_END_POINT}`,
-          {
-            method: POST_METHOD,
-            headers: HEADERS,
-            body: JSON.stringify({
-              search: asset.symbol,
-              withNetworks: WITH_NETWORKS_BOOLEAN,
-            }),
-          }
-        );
-        const json = await response.json();
-        const { count, data } = json;
-        // Continue if exolix supports the asset.
-        if (count) {
-          // Check if the asset network is supported by exolix.
-          for (let j = 0; j < data.length; j++) {
-            const currency = data[j];
-            if (currency.code === asset.symbol) {
-              const mappedLocalToExolixNetwork =
-                LOCAL_TO_EXOLIX_NETWORK_MAP[asset.network];
-              for (let k = 0; k < currency.networks.length; k++) {
-                const network = currency.networks[k];
-                // Push the asset to the supportedAssets array if the network is supported.
-                if (
-                  mappedLocalToExolixNetwork === network.network ||
-                  AssetType.Constellation === network.name.toLocaleLowerCase() ||
-                  (network.name.toLocaleLowerCase().includes(AssetType.Ethereum) &&
-                    AssetType.Ethereum === currency.name.toLocaleLowerCase())
-                ) {
-                  supportedAssets.push({
-                    id: asset.id,
-                    code: asset.symbol,
-                    name: asset.label,
-                    icon: asset.logo,
-                    networks: [network],
-                  });
-                }
-              }
-              break;
+    const hasEth = walletHasEth(activeWallet);
+    const hasDag = walletHasDag(activeWallet);
+
+    // Filter assets with non-zero balances
+    const assetsToCheck = assetsArray.filter((asset) => {
+      const isSupported =
+        ([AssetType.Ethereum, AssetType.ERC20].includes(asset.type) && hasEth) ||
+        (asset.type === AssetType.Constellation && hasDag);
+
+      const assetBalance = balances[asset?.id];
+      const positiveBalance =
+        !!assetBalance && !!Number(assetBalance) && Number(assetBalance) > 0;
+
+      return isSupported && positiveBalance;
+    });
+
+    // Create parallel requests for all assets
+    const assetRequests = assetsToCheck.map(async (asset) => {
+      let symbol = asset.symbol;
+
+      // Special handling for Base network's ETH
+      if (asset.id === AssetType.Base) {
+        symbol = AssetSymbol.ETH; // Search for ETH since BASE_ETH won't return results
+      }
+
+      const response = await fetch(
+        `${STARGAZER_SWAPPING_BASE_URL_PROD}${SEARCH_END_POINT}`,
+        {
+          method: POST_METHOD,
+          headers: HEADERS,
+          body: JSON.stringify({
+            search: symbol,
+            withNetworks: WITH_NETWORKS_BOOLEAN,
+          }),
+        }
+      );
+
+      const json: ISearchResponse = await response.json();
+      return { asset, json };
+    });
+
+    // Execute all requests in parallel
+    const results = await Promise.all(assetRequests);
+    const supportedAssets: ISearchCurrency[] = [];
+
+    // Process results
+    for (const { asset, json } of results) {
+      const { count, data } = json;
+      if (!count) continue;
+
+      for (const currency of data) {
+        if (
+          currency.code === (asset.id === AssetType.Base ? AssetSymbol.ETH : asset.symbol)
+        ) {
+          const mappedLocalToExolixNetwork = LOCAL_TO_EXOLIX_NETWORK_MAP[asset.network];
+
+          for (const network of currency.networks) {
+            // For Base network's ETH, only include the BASE network
+            if (asset.id === AssetType.Base) {
+              if (network.network !== 'BASE') continue;
+            } else {
+              // For regular ETH, skip the BASE network
+              if (asset.id === AssetType.Ethereum && network.network === 'BASE') continue;
+            }
+
+            if (
+              mappedLocalToExolixNetwork === network.network ||
+              AssetType.Constellation === network.name.toLocaleLowerCase() ||
+              (network.name.toLocaleLowerCase().includes(AssetType.Ethereum) &&
+                AssetType.Ethereum === currency.name.toLocaleLowerCase())
+            ) {
+              supportedAssets.push({
+                id: asset.id,
+                code: asset.id === AssetType.Base ? AssetSymbol.ETH : asset.symbol,
+                name: asset.label,
+                icon: asset.logo,
+                networks: [network],
+              });
             }
           }
+          break;
         }
       }
     }
+
     return supportedAssets;
   }
 );
