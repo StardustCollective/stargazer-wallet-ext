@@ -348,22 +348,22 @@ class EVMChainController implements IEVMChainController {
   }
 
   async fallbackFeeData(provider: ethers.providers.Provider) {
-    const oneGwei = ethers.BigNumber.from(1e9);
+    const fastMultiplier = ethers.BigNumber.from(110); // 110 in BigNumber
+    const fastestMultiplier = ethers.BigNumber.from(120); // 120 in BigNumber
+    const hundred = ethers.BigNumber.from(100); // 100 in BigNumber
+
     const feeData = await provider.getFeeData();
 
     // If feeData.gasPrice is null (it can be on EIP-1559 networks),
     // you might want to handle maxFeePerGas / maxPriorityFeePerGas logic here.
     const baseGasPrice = feeData.gasPrice ?? ethers.BigNumber.from(0);
-    const baseGasPriceGwei = Number(
-      ethers.utils.formatUnits(baseGasPrice.toString(), 'gwei')
-    );
-    const diffAmount = this.estimateDiffAmount(baseGasPriceGwei);
-    const bigNumberDiffAmount = oneGwei.mul(diffAmount);
+    const fastGasPrice = baseGasPrice.mul(fastMultiplier).div(hundred); // 110% of the baseGasPrice
+    const fastestGasPrice = baseGasPrice.mul(fastestMultiplier).div(hundred); // 120% of the baseGasPrice
 
     return {
-      average: baseAmount(baseGasPrice.sub(bigNumberDiffAmount).toString(), ETH_DECIMAL),
-      fast: baseAmount(baseGasPrice.toString(), ETH_DECIMAL),
-      fastest: baseAmount(baseGasPrice.add(bigNumberDiffAmount).toString(), ETH_DECIMAL),
+      average: baseAmount(baseGasPrice.toString(), ETH_DECIMAL),
+      fast: baseAmount(fastGasPrice.toString(), ETH_DECIMAL),
+      fastest: baseAmount(fastestGasPrice.toString(), ETH_DECIMAL),
     };
   }
 
