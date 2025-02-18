@@ -29,7 +29,7 @@ import {
 
 import { IAssetList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
-import { ActiveNetwork, AssetSymbol, AssetType } from 'state/vault/types';
+import { ActiveNetwork, AssetType } from 'state/vault/types';
 
 ///////////////////////////
 // Styles
@@ -59,8 +59,8 @@ const AssetList: FC<IAssetList> = ({
         {allAssets.map((item: IAssetInfoState) => {
           const selected = !!assets[item?.id];
           const itemType = getKeyringAssetType(item?.type);
-          const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(
-            item?.symbol as AssetSymbol
+          const disabled = [AssetType.Constellation, AssetType.Ethereum].includes(
+            item?.id as AssetType
           );
           const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
           const itemChainId = item?.network;
@@ -71,15 +71,17 @@ const AssetList: FC<IAssetList> = ({
           const currentActiveNetwork = activeNetwork[itemNetwork as keyof ActiveNetwork];
           const network = getNetworkLabel(currentActiveNetwork);
           // 349: New network should be added here.
-          const isMATIC = item?.symbol === AssetSymbol.MATIC && itemChainId === 'matic';
+          const isMATIC = item?.id === AssetType.Polygon && itemChainId === 'matic';
           const isAVAX =
-            item?.symbol === AssetSymbol.AVAX && itemChainId === 'avalanche-mainnet';
-          const isBNB = item?.symbol === AssetSymbol.BNB && itemChainId === 'bsc';
+            item?.id === AssetType.Avalanche && itemChainId === 'avalanche-mainnet';
+          const isBNB = item?.id === AssetType.BSC && itemChainId === 'bsc';
+          const isBase = item?.id === AssetType.Base && itemChainId === 'base-mainnet';
           const hideToken =
             itemChainId !== 'both' &&
             !isMATIC &&
             !isAVAX &&
             !isBNB &&
+            !isBase &&
             currentActiveNetwork !== itemChainId;
           if (!isAssetSupported || hideToken) {
             return null;

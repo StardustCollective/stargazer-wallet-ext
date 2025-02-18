@@ -342,8 +342,15 @@ class NFTController implements INFTController {
       const polygonNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.Polygon]];
       const avalancheNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.Avalanche]];
       const bscNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.BSC]];
+      const baseNetwork = OPENSEA_CHAINS_MAP[activeNetwork[Network.Base]];
 
-      const openSeaChains = [ethNetwork, polygonNetwork, avalancheNetwork, bscNetwork];
+      const openSeaChains = [
+        ethNetwork,
+        polygonNetwork,
+        avalancheNetwork,
+        bscNetwork,
+        baseNetwork,
+      ];
 
       let allNfts: { chain: OpenSeaSupportedChains; items: IOpenSeaNFT[] }[] = [];
 

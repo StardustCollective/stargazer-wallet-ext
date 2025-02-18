@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   gasSettingInputContainer: {
     backgroundColor: COLORS.white,
-    width: 110,
+    width: 114,
     height: 30,
     borderRadius: 10,
     padding: 6,

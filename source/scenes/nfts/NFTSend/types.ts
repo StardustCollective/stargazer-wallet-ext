@@ -33,6 +33,7 @@ export type NFTSendProps = {
     fee: number;
     speedLabel: string;
     basePriceId: string;
+    steps: number;
   };
   onGasPriceChange: (_: any, val: number | number[]) => void;
 };

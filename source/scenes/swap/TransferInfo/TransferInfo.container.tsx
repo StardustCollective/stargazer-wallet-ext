@@ -63,6 +63,7 @@ import Container from 'components/Container';
 
 import { getWalletController } from 'utils/controllersUtils';
 import { getAccountController } from 'utils/controllersUtils';
+import { fixedNumber, smallestPowerOfTen } from 'utils/number';
 
 ///////////////////////////
 // Container
@@ -96,6 +97,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
     gasPrices,
     gasPrice,
     gasLimit,
+    digits,
   } = useGasEstimate({
     toAddress: pendingSwap?.depositAddress,
     fromAddress: asset?.address,
@@ -112,6 +114,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
 
   const onGasPriceChange = (_: any, val: number | number[]) => {
     val = Number(val) || 1;
+    val = fixedNumber(val, digits);
     setGasPrice(val as number);
     estimateGasFee(val as number);
   };
@@ -126,11 +129,13 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
         balanceBN = ethers.utils.parseUnits(balance.toString(), asset.decimals);
       }
 
+      const gasFeeFixed = gasFee.toFixed(digits);
+
       txFee =
         activeAsset.id === AssetType.Constellation ||
         activeAsset.id === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee.toString(), asset.decimals)
-          : ethers.utils.parseEther(gasFee.toString());
+          : ethers.utils.parseEther(gasFeeFixed);
     } catch (err) {}
 
     return { balance: balanceBN, txFee };
@@ -204,6 +209,7 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = () => {
           fee: gasFee,
           speedLabel: gasSpeedLabel,
           basePriceId: basePriceId,
+          steps: smallestPowerOfTen(gasPrices[2]),
         }}
         onGasPriceChange={onGasPriceChange}
         onNextPressed={onNextPressed}

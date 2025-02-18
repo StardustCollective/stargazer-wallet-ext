@@ -112,6 +112,7 @@ export enum ProviderNetwork {
   Polygon = 'polygon',
   Avalanche = 'avalanche',
   BSC = 'bsc',
+  Base = 'base',
 }
 
 export enum Providers {
@@ -125,4 +126,5 @@ export const MapProviderNetwork = {
   [ProviderNetwork.Polygon]: 'matic',
   [ProviderNetwork.Avalanche]: 'avalanche-mainnet',
   [ProviderNetwork.BSC]: 'bsc',
+  [ProviderNetwork.Base]: 'base-mainnet',
 };

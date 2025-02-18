@@ -9,9 +9,8 @@ import { useSelector } from 'react-redux';
 // Types
 ///////////////////////
 
-import { RootState } from 'state/store';
 import { IFiatAssetState } from 'state/price/types';
-import IVaultState, { AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 import IAssetItem from './types';
 import FlagsSelectors from 'selectors/flagsSelectors';
 import VaultSelectors from 'selectors/vaultSelectors';
@@ -23,6 +22,7 @@ import PriceSelectors from 'selectors/priceSelectors';
 
 import AssetItem from './AssetItem';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
+import useNetworkLabel from 'hooks/useNetworkLabel';
 
 ///////////////////////
 // Container
@@ -40,13 +40,14 @@ const AssetItemContainer: FC<IAssetItem> = ({
   // Hooks
   ///////////////////////
 
-  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const loadingDAGBalances = useSelector(FlagsSelectors.getLoadingDAGBalances);
   const loadingETHBalances = useSelector(FlagsSelectors.getLoadingETHBalances);
 
   // Sometimes the assetInfo is undefined after the Migration process.
   // This issue could be related to a race condition.
   if (!assetInfo) return null;
+
+  const networkLabel = useNetworkLabel(assetInfo);
 
   const assetPrice: IFiatAssetState = useSelector(
     PriceSelectors.getAssetPrice(assetInfo.priceId)
@@ -66,8 +67,8 @@ const AssetItemContainer: FC<IAssetItem> = ({
       assetPrice={assetPrice}
       showNetwork={showNetwork}
       showPrice={showPrice}
-      activeNetwork={activeNetwork}
       loading={loading}
+      networkLabel={networkLabel}
     />
   );
 };

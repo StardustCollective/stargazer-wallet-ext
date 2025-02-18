@@ -11,6 +11,7 @@ import styles from './GasSettings.scss';
 import constants from './constants';
 import IGasSettings from './types';
 import { COLORS_ENUMS } from 'assets/styles/colors';
+import { smallestPowerOfTen } from 'utils/number';
 
 const GasSettings: FC<IGasSettings> = ({
   values,
@@ -18,6 +19,7 @@ const GasSettings: FC<IGasSettings> = ({
   gasFeeLabel,
   gasPrice,
   gasPrices,
+  priceId,
   onSliderChange,
   onSpeedUpButtonClick,
   onCancelButtonClick,
@@ -75,17 +77,19 @@ const GasSettings: FC<IGasSettings> = ({
                     max={200}
                     value={values.current}
                     defaultValue={values.current}
-                    step={constants.SLIDER_STEP_PROP}
+                    step={smallestPowerOfTen(gasPrices[2])}
                   />
                 </div>
                 <div className={styles.body__sliderLabels}>
-                  <div>
-                    <span>
-                      <>
-                        {constants.FEE_STRING} {getFiatAmount(gasFeeLabel, 2, 'ethereum')}
-                      </>
-                    </span>
-                  </div>
+                  {priceId && (
+                    <div>
+                      <span>
+                        <>
+                          {constants.FEE_STRING} {getFiatAmount(gasFeeLabel, 2, priceId)}
+                        </>
+                      </span>
+                    </div>
+                  )}
                   <div>
                     <span>
                       {constants.SPEED_STRING} {speedLabel}

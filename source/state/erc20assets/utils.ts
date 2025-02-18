@@ -55,6 +55,7 @@ export const mapSearchAssetsToArray = (
     'polygon-pos',
     'avalanche',
     'binance-smart-chain',
+    'base',
   ];
   const tokensWithAddress = tokens.map((token: SearchAsset) => ({
     ...token,

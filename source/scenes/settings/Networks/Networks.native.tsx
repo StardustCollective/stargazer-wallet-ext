@@ -33,11 +33,12 @@ const NetworksComponent: FC<INetworkSettings> = ({ networkOptions }) => {
     false,
     false,
     false,
+    false,
   ]);
 
   const toggleItem = (i) => {
     const value = itemsOpenArray[i];
-    let newItemsOpenArray = [false, false, false, false, false];
+    let newItemsOpenArray = [false, false, false, false, false, false];
     newItemsOpenArray[i] = !value;
     setItemsOpenArray(newItemsOpenArray);
   };

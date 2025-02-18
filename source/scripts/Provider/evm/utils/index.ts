@@ -97,6 +97,10 @@ export const getWallet = () => {
     return walletController.account.networkController.avalancheNetwork.getWallet();
   }
 
+  if (networkId === StargazerChain.BASE) {
+    return walletController.account.networkController.baseNetwork.getWallet();
+  }
+
   throw new EIPRpcError('Wallet not found', EIPErrorCodes.Unauthorized);
 };
 

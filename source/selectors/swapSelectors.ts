@@ -66,6 +66,7 @@ const selectSupportedCurrencyData = (excludeDag: boolean = false) => {
             network.network === SupportedExolixSwapNetworks.BINANCE_SMART_CHAIN ||
             network.network === SupportedExolixSwapNetworks.ETHEREUM ||
             network.network === SupportedExolixSwapNetworks.POLYGON ||
+            network.network === SupportedExolixSwapNetworks.BASE ||
             (!excludeDag && network.network === SupportedExolixSwapNetworks.CONSTELLATION)
           );
         });

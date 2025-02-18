@@ -14,6 +14,7 @@ const ChainProviderProtocol: Record<StargazerChain, ProtocolProvider> = {
   [StargazerChain.AVALANCHE]: ProtocolProvider.ETHEREUM,
   [StargazerChain.BSC]: ProtocolProvider.ETHEREUM,
   [StargazerChain.POLYGON]: ProtocolProvider.ETHEREUM,
+  [StargazerChain.BASE]: ProtocolProvider.ETHEREUM,
 };
 
 export class StargazerWalletProvider {

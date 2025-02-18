@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import localStorage from 'utils/localStorage';
 import {
   AVALANCHE_NETWORK,
+  BASE_NETWORK,
   BSC_NETWORK,
   DAG_NETWORK,
   ETH_NETWORK,
@@ -43,6 +44,7 @@ const initialState: IVaultState = {
     [AssetType.Avalanche]: '0',
     [AssetType.BSC]: '0',
     [AssetType.Polygon]: '0',
+    [AssetType.Base]: '0',
   },
   activeWallet: null,
   activeAsset: null,
@@ -53,6 +55,7 @@ const initialState: IVaultState = {
     Avalanche: AVALANCHE_NETWORK['avalanche-mainnet'].id,
     BSC: BSC_NETWORK.bsc.id,
     Polygon: POLYGON_NETWORK.matic.id,
+    Base: BASE_NETWORK['base-mainnet'].id,
   },
   currentEVMNetwork: ETH_NETWORK.mainnet.id,
   customNetworks: {
@@ -60,7 +63,7 @@ const initialState: IVaultState = {
     ethereum: {},
   },
   customAssets: [],
-  version: '5.1.3',
+  version: '5.2.0',
 };
 
 export const getHasEncryptedVault = createAsyncThunk(

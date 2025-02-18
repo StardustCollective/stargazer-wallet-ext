@@ -46,7 +46,7 @@ const GasSlider: FC<GasSliderProps> = ({ gas, asset, onGasPriceChange }) => {
               max={gas.prices[2]}
               value={gas.price}
               defaultValue={gas.price}
-              step={1}
+              step={gas.steps}
             />
           </div>
         </div>

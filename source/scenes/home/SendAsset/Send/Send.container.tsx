@@ -76,6 +76,7 @@ import {
   AVALANCHE_LOGO,
   BSC_LOGO,
   DAG_NETWORK,
+  BASE_LOGO,
 } from 'constants/index';
 import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
 import { initialState as initialStateAssets } from 'state/assets';
@@ -84,6 +85,7 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import Send from './Send';
+import { fixedNumber } from 'utils/number';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -299,6 +301,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     gasLimit,
     gasPrice,
     gasPrices,
+    digits,
   } = useGasEstimate({
     toAddress: tempTx?.toAddress || to,
     fromAddress: activeAsset?.address,
@@ -352,6 +355,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         [AssetType.Polygon]: StargazerChain.POLYGON,
         [AssetType.BSC]: StargazerChain.BSC,
         [AssetType.Avalanche]: StargazerChain.AVALANCHE,
+        [AssetType.Base]: StargazerChain.BASE,
       };
 
       if (activeAsset?.id) {
@@ -406,11 +410,13 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         balanceBN = ethers.utils.parseUnits(balance.toString(), assetInfo.decimals);
       }
 
+      const gasFeeFixed = gasFee.toFixed(digits);
+
       txFee =
         activeAsset?.type === AssetType.Constellation ||
         activeAsset?.type === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee, assetInfo.decimals)
-          : ethers.utils.parseEther(gasFee.toString());
+          : ethers.utils.parseEther(gasFeeFixed);
 
       clearError('fee');
     } catch (err) {
@@ -523,6 +529,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
   const handleGasPriceChange = (_: any, val: number | number[]) => {
     val = Number(val) || 1;
+    val = fixedNumber(val, digits);
     setGasPrice(val as number);
     estimateGasFee(val as number);
   };
@@ -581,6 +588,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO },
       { value: 'bsc', label: 'BSC', icon: BSC_LOGO },
+      { value: 'base-mainnet', label: 'Base', icon: BASE_LOGO },
     ],
     disabled: true,
     labelRight: tokenChainLabel,
@@ -630,6 +638,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         networkTypeOptions={networkTypeOptions}
         basePriceId={basePriceId}
         isTransfer={isTransfer}
+        digits={digits}
       />
     </Container>
   );

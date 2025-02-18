@@ -1,5 +1,6 @@
 import {
   AVALANCHE_NETWORK,
+  BASE_NETWORK,
   BSC_NETWORK,
   ETH_NETWORK,
   POLYGON_NETWORK,
@@ -15,6 +16,7 @@ export const OPENSEA_CHAINS_MAP: { [network: string]: OpenSeaSupportedChains } =
   [AVALANCHE_NETWORK['avalanche-testnet'].id]: OpenSeaSupportedChains.AVALANCHE_FUJI,
   [BSC_NETWORK.bsc.id]: OpenSeaSupportedChains.BSC,
   [BSC_NETWORK['bsc-testnet'].id]: OpenSeaSupportedChains.BSC_TESTNET,
+  [BASE_NETWORK['base-mainnet'].id]: OpenSeaSupportedChains.BASE,
 };
 
 export const OPENSEA_NETWORK_MAP: { [chain: string]: any } = {
@@ -26,6 +28,7 @@ export const OPENSEA_NETWORK_MAP: { [chain: string]: any } = {
   [OpenSeaSupportedChains.AVALANCHE_FUJI]: AVALANCHE_NETWORK['avalanche-testnet'],
   [OpenSeaSupportedChains.BSC]: BSC_NETWORK.bsc,
   [OpenSeaSupportedChains.BSC_TESTNET]: BSC_NETWORK['bsc-testnet'],
+  [OpenSeaSupportedChains.BASE]: BASE_NETWORK['base-mainnet'],
 };
 
 export const isOpenSeaTestnet = (chain: OpenSeaSupportedChains): boolean => {

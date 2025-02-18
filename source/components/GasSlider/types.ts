@@ -9,5 +9,6 @@ export interface GasSliderProps {
     fee: number;
     speedLabel: string;
     basePriceId: string;
+    steps: number;
   };
 }

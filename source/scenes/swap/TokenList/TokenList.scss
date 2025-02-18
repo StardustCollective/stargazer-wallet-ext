@@ -54,6 +54,7 @@
     padding-bottom: 8px;
 
     .tokenCell {
+      cursor: pointer;
       display: flex;
       background-color: $white;
       border-radius: 8px;

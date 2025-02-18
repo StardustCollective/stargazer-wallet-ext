@@ -128,3 +128,6 @@ source/native/ios/Pods
 
 # Sentry
 .env.sentry-build-plugin
+
+# Cursor
+.cursorrules

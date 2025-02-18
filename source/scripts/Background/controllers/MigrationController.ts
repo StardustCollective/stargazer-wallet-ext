@@ -174,6 +174,15 @@ const MigrationController = async () => {
     const v5_1_3 = require('../migration/v5_1_3');
     await v5_1_3.default(state);
   }
+
+  /**
+   * version < 5_2_0
+   * Description: adds Base network
+   */
+  if (!state.vault.activeNetwork.Base) {
+    const v5_2_0 = require('../migration/v5_2_0');
+    await v5_2_0.default(state);
+  }
 };
 
 export default MigrationController;

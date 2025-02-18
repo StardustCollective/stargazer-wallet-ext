@@ -9,6 +9,7 @@ enum StargazerChain {
   POLYGON = 'polygon',
   BSC = 'bsc',
   AVALANCHE = 'avalanche',
+  BASE = 'base',
 }
 
 export { StargazerChain, ProtocolProvider };

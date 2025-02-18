@@ -25,10 +25,6 @@ import NoConnectionIcon from 'assets/images/svg/no-connection.svg';
 ///////////////////////
 
 import { formatNumber, formatPrice } from 'scenes/home/helpers';
-import {
-  getNetworkLabel,
-  getNetworkFromChainId,
-} from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////
 // Enums
@@ -40,7 +36,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 // Types
 ///////////////////////
 
-import { AssetType, AssetSymbol } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 import IAssetItem, { IAssetLogo } from './types';
 
 ///////////////////////
@@ -62,7 +58,7 @@ const AssetItem: FC<IAssetItem> = ({
   itemClicked,
   showNetwork,
   showPrice,
-  activeNetwork,
+  networkLabel,
 }: IAssetItem) => {
   const netInfo = useNetInfo();
 
@@ -89,24 +85,9 @@ const AssetItem: FC<IAssetItem> = ({
   };
 
   const renderAssetNetwork = () => {
-    let { network } = assetInfo;
-    // 349: New network should be added here.
-    if (
-      [AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
-        assetInfo?.symbol
-      )
-    ) {
-      const currentNetwork = getNetworkFromChainId(network);
-      network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
-    } else if (AssetSymbol.DAG === assetInfo?.symbol) {
-      network = activeNetwork.Constellation;
-    }
-
-    const label = getNetworkLabel(network);
-
     return (
       <View>
-        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
+        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{networkLabel}</TextV3.Caption>
       </View>
     );
   };

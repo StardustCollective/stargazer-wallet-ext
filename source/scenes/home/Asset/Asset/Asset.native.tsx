@@ -19,13 +19,10 @@ import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
 import ArrowsIcon from 'assets/images/svg/arrows.svg';
 import GiftIcon from 'assets/images/svg/gift.svg';
-import {
-  getNetworkLabel,
-  getNetworkLogo,
-  getNetworkFromChainId,
-} from 'scripts/Background/controllers/EVMChainController/utils';
+import { getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
 import { CONSTELLATION_LOGO } from 'constants/index';
-import { AssetSymbol, AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
+import useNetworkLabel from 'hooks/useNetworkLabel';
 import TxsPanel from '../TxsPanel';
 import IAssetSettings from './types';
 import AssetButtons from '../AssetButtons';
@@ -40,7 +37,6 @@ const renderScene = ({ route }) => {
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
   activeAsset,
-  activeNetwork,
   balanceText,
   fiatAmount,
   onSendClick,
@@ -62,18 +58,7 @@ const AssetDetail: FC<IAssetSettings> = ({
   ]);
   const asset = assets[activeAsset?.id];
   const showRewardsTab = activeAsset?.type === AssetType.Constellation;
-  let network = asset?.network;
-  // 349: New network should be added here.
-  if (
-    [AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
-      asset?.symbol
-    )
-  ) {
-    const currentNetwork = getNetworkFromChainId(network);
-    network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
-  } else if (AssetSymbol.DAG === asset?.symbol) {
-    network = activeNetwork.Constellation;
-  }
+  const networkLabel = useNetworkLabel(asset);
 
   const renderTabLabel = ({ route, focused }) => {
     const focusedStyle = focused && styles.labelFocused;
@@ -103,7 +88,6 @@ const AssetDetail: FC<IAssetSettings> = ({
     />
   );
 
-  const networkLabel = getNetworkLabel(network);
   const networkLogo =
     asset?.type === AssetType.Constellation
       ? CONSTELLATION_LOGO

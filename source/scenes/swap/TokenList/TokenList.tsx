@@ -58,7 +58,7 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
     return currencyData?.map((item: ISearchCurrency) => {
       return (
         <div
-          key={item.code}
+          key={`${item.code}-${item.name}`}
           className={styles.tokenCell}
           onClick={() => onTokenCellPressed(item, item.networks[0])}
         >

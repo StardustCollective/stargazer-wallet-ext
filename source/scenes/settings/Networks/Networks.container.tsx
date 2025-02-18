@@ -10,6 +10,8 @@ import IVaultState, { ActiveNetwork } from 'state/vault/types';
 import {
   AVALANCHE_LOGO,
   AVALANCHE_NETWORK,
+  BASE_LOGO,
+  BASE_NETWORK,
   BSC_LOGO,
   BSC_NETWORK,
   CONSTELLATION_LOGO,
@@ -157,6 +159,28 @@ const NetworksContainer: FC = () => {
       items: [
         { value: POLYGON_NETWORK.matic.id, label: POLYGON_NETWORK.matic.label },
         { value: POLYGON_NETWORK.amoy.id, label: POLYGON_NETWORK.amoy.label },
+      ],
+    },
+    {
+      icon: BASE_LOGO,
+      key: 'Base',
+      title: 'Base',
+      value: activeNetwork['Base'],
+      onChange: (value: string) => {
+        handleChangeNetwork('Base', value);
+      },
+      containerStyle: {
+        zIndex: 5000,
+      },
+      items: [
+        {
+          value: BASE_NETWORK[`base-mainnet`].id,
+          label: BASE_NETWORK[`base-mainnet`].label,
+        },
+        {
+          value: BASE_NETWORK[`base-sepolia`].id,
+          label: BASE_NETWORK[`base-sepolia`].label,
+        },
       ],
     },
   ];
