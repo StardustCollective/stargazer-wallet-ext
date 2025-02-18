@@ -12,6 +12,7 @@ export type IGasSettingsProps = {
   gasPrice: number;
   gasPrices: number[];
   cancelError: string;
+  priceId: string;
   onSliderChange: (_event: ChangeEvent<{}>, value: number | number[]) => void;
   onSpeedUpClick: (gas: number) => void;
   onCancelClick: () => void;

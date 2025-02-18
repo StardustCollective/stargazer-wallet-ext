@@ -111,9 +111,10 @@ const SendConfirm = ({
             </div>
             <div className={styles.row}>
               Transaction Fee
-              <span className={styles.fee}>
-                {`${feeBN} ${feeUnit} ${isL0token ? '' : `(≈ $${feePrice} USD)`}`}
-              </span>
+              <div className={styles.feeValue}>
+                <span className={styles.fee}>{`${feeBN} ${feeUnit}`}</span>
+                <span>{`${isL0token ? '' : `(≈ $${feePrice} USD)`}`}</span>
+              </div>
             </div>
           </section>
           <section className={styles.confirm}>

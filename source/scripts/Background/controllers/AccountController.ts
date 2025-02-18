@@ -844,7 +844,7 @@ export class AccountController {
   async getLatestGasPrices(network?: string): Promise<number[]> {
     const gasPrices = await this.networkController.estimateGasPrices(network);
     const results = Object.values(gasPrices).map((gas) =>
-      Math.round(Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei')))
+      Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei'))
     );
     return results;
   }

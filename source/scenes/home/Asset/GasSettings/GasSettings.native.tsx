@@ -4,6 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import PurpleSlider from 'components/PurpleSlider';
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
+import { smallestPowerOfTen } from 'utils/number';
 
 import DarkGreenCheck from 'assets/images/svg/dark-green-check.svg';
 import ErrorIcon from 'assets/images/svg/error.svg';
@@ -21,6 +22,7 @@ const GasSettings: FC<IGasSettings> = ({
   gasPrice,
   gasPrices,
   cancelError,
+  priceId,
   onSliderChange,
   onSpeedUpButtonClick,
   onCancelButtonClick,
@@ -31,8 +33,6 @@ const GasSettings: FC<IGasSettings> = ({
   viewState,
   getFiatAmount,
 }) => {
-  const FEE_STRING_VALUE = getFiatAmount(gasFeeLabel, 2, 'ethereum');
-
   return (
     <View style={styles.gasSettings}>
       {viewState === GAS_SETTINGS_STATE_ENUM.OPTIONS && (
@@ -76,16 +76,18 @@ const GasSettings: FC<IGasSettings> = ({
                 max={200}
                 value={values.current}
                 defaultValue={values.current}
-                step={constants.SLIDER_STEP_PROP}
+                step={smallestPowerOfTen(gasPrices[2])}
               />
               <View style={styles.bodySlideLabel}>
-                <TextV3.Description
-                  color={COLORS_ENUMS.BLACK}
-                  extraStyles={styles.bodySlideText}
-                >
-                  {constants.FEE_STRING}
-                  {FEE_STRING_VALUE}
-                </TextV3.Description>
+                {priceId && (
+                  <TextV3.Description
+                    color={COLORS_ENUMS.BLACK}
+                    extraStyles={styles.bodySlideText}
+                  >
+                    {constants.FEE_STRING}
+                    {getFiatAmount(gasFeeLabel, 2, priceId)}
+                  </TextV3.Description>
+                )}
                 <TextV3.Description
                   color={COLORS_ENUMS.BLACK}
                   extraStyles={StyleSheet.flatten([

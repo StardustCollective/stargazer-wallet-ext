@@ -5,6 +5,7 @@ import { IAssetInfoState } from 'state/assets/types';
 import { estimateGasLimit, estimateGasLimitForTransfer } from 'utils/ethUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { countSignificantDigits, fixedNumber } from 'utils/number';
 
 type IUseGasEstimate = {
   toAddress?: string;
@@ -19,23 +20,22 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
   const [gasPrices, setGasPrices] = useState<number[]>([]);
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
+  const [digits, setDigits] = useState<number>(0);
   const [toEthAddress, setToEthAddress] = useState<string>(toAddress);
   const [sendAmount, setSendAmount] = useState<string>('0');
   const accountController = getAccountController();
 
   const gasSpeedLabel = useMemo(() => {
     if (gasPrice >= gasPrices[2]) return 'Fastest';
-    if (gasPrice >= Math.floor((gasPrices[1] + gasPrices[2]) / 2)) return 'Fast';
-    if (gasPrice > Math.floor((gasPrices[0] + gasPrices[1]) / 2)) return 'Average';
-    if (gasPrice > gasPrices[0]) return 'Slow';
-    return 'Turtle';
+    if (gasPrice >= gasPrices[1]) return 'Fast';
+    if (gasPrice >= gasPrices[0]) return 'Average';
+    return 'Slow';
   }, [gasPrice, gasPrices]);
 
   const estimateGasFee = (gas: number) => {
     if (!gasPrices) return;
-    const feeBN = ethers.utils
-      .parseUnits(gas.toString(), 'gwei')
-      .mul(BigNumber.from(gasLimit));
+    const gasFixed = gas.toFixed(10);
+    const feeBN = ethers.utils.parseUnits(gasFixed, 'gwei').mul(BigNumber.from(gasLimit));
 
     const fee = Number(ethers.utils.formatEther(feeBN).toString());
 
@@ -50,8 +50,8 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
   const removeNegativeGasPrice = (gasPrices: number[]): number[] => {
     const positiveGasPrices = [...gasPrices];
     for (let i = 0; i < positiveGasPrices.length; i++) {
-      if (positiveGasPrices[i] < 0) {
-        positiveGasPrices[i] = 0;
+      if (positiveGasPrices[i] <= 0) {
+        positiveGasPrices[i] = 0.01;
       }
     }
 
@@ -61,7 +61,8 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
   const handleGetTxFee = async () => {
     const network = asset?.network ? getNetworkFromChainId(asset?.network) : null;
     const gas = await accountController.getLatestGasPrices(network);
-    let gasPrices: number[] = [...gas];
+    const digits = countSignificantDigits(gas[1]);
+    let gasPrices: number[] = gas.map((g) => fixedNumber(g, digits));
     let uniquePrices = [...new Set(gas)].length;
     if (uniquePrices === 1) {
       let gp = gas[0];
@@ -69,6 +70,7 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
       gasPrices = [gp - amount, gp, gp + amount];
     }
     gasPrices = removeNegativeGasPrice(gasPrices);
+    setDigits(digits);
     setGasPrices(gasPrices);
     setGasPrice(gasPrices[2]);
     estimateGasFee(gasPrices[2]);
@@ -116,6 +118,7 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
     setToEthAddress,
     setSendAmount,
     estimateGasFee,
+    digits,
     gasSpeedLabel,
     gasFee,
     gasPrice,

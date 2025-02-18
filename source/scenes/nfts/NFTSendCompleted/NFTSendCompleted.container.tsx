@@ -22,7 +22,7 @@ const NFTSendCompletedContainer: FC<INFTSendCompleted> = ({ navigation, route })
 
   const onViewTransactionPress = () => {
     const BASE_URL = OPENSEA_NETWORK_MAP[selectedCollection.chain].explorer;
-    open(`${BASE_URL}/tx/${hash}`);
+    open(`${BASE_URL}tx/${hash}`);
   };
 
   const onButtonPress = () => {
