@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 ///////////////////////
 
 import TextV3 from 'components/TextV3';
-import CurrencyImport from 'components/CurrencyInput';
+import CurrencyInput from 'components/CurrencyInput';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 
 ///////////////////////
@@ -54,6 +54,7 @@ import {
   CURRENCY_INPUT_ZERO_PLACEHOLDER,
   TO_CURRENCY_INPUT_EDITABLE,
 } from './constants';
+import { EXOLIX_TO_STARGAZER_LOGO_MAP } from '../TokenList/constants';
 
 const CIRCULAR_PROGRESS_SIZE = 20;
 const EXOLIX_LOGO_WIDTH = 80;
@@ -63,6 +64,8 @@ const SwapTokens: FC<ISwapTokens> = ({
   onNextPressed,
   selectedCurrencySwapFrom,
   selectedCurrencySwapTo,
+  selectedNetworkSwapFrom,
+  selectedNetworkSwapTo,
   onSwapFromTokenListPressed,
   onSwapToTokenListPressed,
   fromBalance,
@@ -118,8 +121,9 @@ const SwapTokens: FC<ISwapTokens> = ({
           </TextV3.Caption>
         </div>
       </div>
-      <CurrencyImport
+      <CurrencyInput
         source={selectedCurrencySwapFrom.icon}
+        networkIcon={EXOLIX_TO_STARGAZER_LOGO_MAP[selectedNetworkSwapFrom.network]}
         tickerValue={selectedCurrencySwapFrom.code}
         onPress={onSwapFromTokenListPressed}
         onChangeText={fromOnChangeText}
@@ -139,9 +143,10 @@ const SwapTokens: FC<ISwapTokens> = ({
         </div>
         <div className={styles.toBlank} />
       </div>
-      <CurrencyImport
+      <CurrencyInput
         editable={TO_CURRENCY_INPUT_EDITABLE}
         source={selectedCurrencySwapTo.icon}
+        networkIcon={EXOLIX_TO_STARGAZER_LOGO_MAP[selectedNetworkSwapTo.network]}
         tickerValue={selectedCurrencySwapTo.code}
         onPress={onSwapToTokenListPressed}
         containerStyle={styles.toCurrencyInputContainer}

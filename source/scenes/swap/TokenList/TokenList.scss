@@ -71,20 +71,37 @@
         margin-bottom: 12px;
         align-items: center;
 
-        .tokenIcon {
-          display: flex;
-          width: 30px;
-          height: 30px;
-          border-radius: 30px;
-          overflow: hidden;
-          justify-items: center;
+        .tokenIconContainer {
+          position: relative;
+
+          .tokenIcon {
+            display: flex;
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            overflow: hidden;
+            justify-items: center;
+            border: 1px solid rgba(0, 0, 0, 0.16);
+          }
+
+          .networkIcon {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            right: -4px;
+            bottom: 0;
+            background-color: $white;
+            border: 1px solid rgba(0, 0, 0, 0.16);
+          }
         }
 
         .tokenCellLeftText {
           display: flex;
           flex-direction: column;
           justify-items: center;
-          margin-left: 12px;
+          margin-left: 16px;
         }
       }
 

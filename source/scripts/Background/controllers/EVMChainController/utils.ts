@@ -134,7 +134,7 @@ export const getNetworkNativeToken = (network: string): string => {
     case 'Ethereum':
       return 'ETH';
     case 'Polygon':
-      return 'MATIC';
+      return 'POL';
     case 'Avalanche':
       return 'AVAX';
     case 'BSC':

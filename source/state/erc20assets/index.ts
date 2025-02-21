@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   ALKIMI_LOGO,
   AVALANCHE_LOGO,
-  BASE_LOGO,
   BSC_LOGO,
   CONSTELLATION_LOGO,
   DODI_LOGO,
@@ -24,7 +23,7 @@ import IERC20AssetsListState, { ICustomAssetForm } from './types';
 export const constellationInitialValues: IAssetInfoState[] = [
   {
     id: AssetType.Constellation,
-    label: 'Constellation',
+    label: 'DAG',
     type: AssetType.Constellation,
     symbol: AssetSymbol.DAG,
     address: '',
@@ -36,7 +35,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
   },
   {
     id: AssetType.Ethereum,
-    label: 'Ethereum',
+    label: 'ETH',
     type: AssetType.Ethereum,
     symbol: AssetSymbol.ETH,
     address: '',
@@ -94,17 +93,6 @@ export const constellationInitialValues: IAssetInfoState[] = [
     decimals: 18,
   },
   {
-    id: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic',
-    address: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6',
-    label: 'JennyCo',
-    symbol: 'JCO',
-    type: AssetType.ERC20,
-    priceId: 'jennyco',
-    network: 'matic',
-    logo: JENNYCO_LOGO,
-    decimals: 18,
-  },
-  {
     id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet',
     address: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
     label: 'Alkimi Exchange',
@@ -148,11 +136,22 @@ export const constellationInitialValues: IAssetInfoState[] = [
     logo: LEET_LOGO,
     decimals: 18,
   },
+  {
+    id: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic',
+    address: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6',
+    label: 'JennyCo',
+    symbol: 'JCO',
+    type: AssetType.ERC20,
+    priceId: 'jennyco',
+    network: 'matic',
+    logo: JENNYCO_LOGO,
+    decimals: 18,
+  },
   // 349: New network should be added here.
   {
     id: AssetType.Avalanche,
     address: '',
-    label: 'Avalanche',
+    label: 'AVAX',
     symbol: AssetSymbol.AVAX,
     type: AssetType.Ethereum,
     priceId: 'avalanche-2',
@@ -174,8 +173,8 @@ export const constellationInitialValues: IAssetInfoState[] = [
   {
     id: AssetType.Polygon,
     address: '',
-    label: 'Polygon',
-    symbol: AssetSymbol.MATIC,
+    label: 'POL',
+    symbol: AssetSymbol.POL,
     type: AssetType.Ethereum,
     priceId: 'matic-network',
     network: 'matic',
@@ -185,12 +184,12 @@ export const constellationInitialValues: IAssetInfoState[] = [
   {
     id: AssetType.Base,
     address: '',
-    label: 'Base',
+    label: 'Base ETH',
     symbol: AssetSymbol.BASE,
     type: AssetType.Ethereum,
     priceId: 'ethereum',
     network: 'base-mainnet',
-    logo: BASE_LOGO,
+    logo: ETHEREUM_LOGO,
     decimals: 18,
   },
 ];

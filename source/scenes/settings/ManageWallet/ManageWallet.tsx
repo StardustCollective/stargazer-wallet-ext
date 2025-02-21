@@ -15,6 +15,7 @@ import {
   AVALANCHE_NETWORK,
   BSC_NETWORK,
   POLYGON_NETWORK,
+  BASE_NETWORK,
 } from 'constants/index';
 import styles from './ManageWallet.scss';
 import IManageWalletSettings from './types';
@@ -69,27 +70,6 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           {
             title: 'Show Private Key',
             onClick: onShowPrivateKeyClicked,
-          },
-        ];
-
-  const walletAddressesItems =
-    wallet.type === KeyringWalletType.MultiChainWallet
-      ? [
-          {
-            title: 'Wallet Addresses',
-            onClick: () => setIsWalletAddressesOpen(true),
-            labelRight: '5',
-          },
-        ]
-      : [
-          {
-            title: ellipsis(wallet.accounts[0].address, 17, 6),
-            titleStyles: styles.titleAddress,
-            onClick: () => copyText(wallet.accounts[0].address),
-            showArrow: false,
-            rightIcon: !isCopied && <img src={`/${CopyIcon}`} alt="copy" />,
-            labelRight: isCopied ? 'Copied!' : '',
-            labelRightStyles: styles.copiedLabel,
           },
         ];
 
@@ -160,7 +140,41 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       showArrow: false,
       labelRightStyles: styles.copiedLabel,
     },
+    {
+      title: BASE_NETWORK['base-mainnet'].network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(BASE_NETWORK['base-mainnet'].network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== BASE_NETWORK['base-mainnet'].network) && (
+        <img src={`/${CopyIcon}`} alt="copy" />
+      ),
+      labelRight:
+        isCopied && itemCopied === BASE_NETWORK['base-mainnet'].network ? 'Copied!' : '',
+      icon: BASE_NETWORK['base-mainnet'].logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
   ];
+
+  const walletAddressesItems =
+    wallet.type === KeyringWalletType.MultiChainWallet
+      ? [
+          {
+            title: 'Wallet Addresses',
+            onClick: () => setIsWalletAddressesOpen(true),
+            labelRight: walletAddresesContent.length.toString(),
+          },
+        ]
+      : [
+          {
+            title: ellipsis(wallet.accounts[0].address, 17, 6),
+            titleStyles: styles.titleAddress,
+            onClick: () => copyText(wallet.accounts[0].address),
+            showArrow: false,
+            rightIcon: !isCopied && <img src={`/${CopyIcon}`} alt="copy" />,
+            labelRight: isCopied ? 'Copied!' : '',
+            labelRightStyles: styles.copiedLabel,
+          },
+        ];
 
   return (
     <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>

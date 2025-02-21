@@ -21,6 +21,7 @@ import { getKeyringAssetType } from 'utils/keyringUtil';
 import {
   getNetworkFromChainId,
   getNetworkLabel,
+  getNetworkLogo,
 } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
@@ -37,6 +38,7 @@ import { AssetType } from 'state/vault/types';
 
 import styles from './styles';
 import { NEW_COLORS } from '../../../../assets/styles/_variables.native';
+import { CONSTELLATION_LOGO } from 'constants/index';
 
 ///////////////////////////
 // Constants
@@ -65,7 +67,11 @@ const AssetList: FC<IAssetList> = ({
         ? KeyringNetwork.Constellation
         : getNetworkFromChainId(itemChainId);
     const currentActiveNetwork = activeNetwork[itemNetwork];
-    const network = getNetworkLabel(currentActiveNetwork);
+    const networkLabel = getNetworkLabel(currentActiveNetwork);
+    const networkLogo =
+      item?.type === AssetType.Constellation
+        ? CONSTELLATION_LOGO
+        : getNetworkLogo(itemChainId);
     // 349: New network should be added here.
     const isMATIC = item?.id === AssetType.Polygon && itemChainId === 'matic';
     const isAVAX =
@@ -84,7 +90,8 @@ const AssetList: FC<IAssetList> = ({
       <AssetWithToggle
         id={item?.id}
         symbol={item?.symbol}
-        network={network}
+        networkLogo={networkLogo}
+        networkLabel={networkLabel}
         logo={item?.logo}
         label={item?.label}
         selected={selected}

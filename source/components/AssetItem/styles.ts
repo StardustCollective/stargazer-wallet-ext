@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   assetIcon: {
+    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -14,6 +15,8 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.16)',
   },
   balanceText: {
     textAlign: 'right',
@@ -23,10 +26,21 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
+  networkLogo: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    right: -4,
+    bottom: 0,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.16)',
+  },
   assetName: {
     flex: 1,
     justifyContent: 'center',
-    marginLeft: 8,
+    marginLeft: 16,
   },
   assetPrice: {
     flexDirection: 'row',
@@ -39,11 +53,11 @@ const styles = StyleSheet.create({
   },
   green: {
     color: NEW_COLORS.green_100,
-    paddingLeft: 8,
+    paddingLeft: 6,
   },
   red: {
     color: NEW_COLORS.red_100,
-    paddingLeft: 8,
+    paddingLeft: 6,
   },
 });
 

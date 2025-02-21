@@ -40,12 +40,29 @@
     justify-content: flex-end;
     align-items: center;
 
+    .currencyIconContainer {
+      position: relative;
+    }
+
     .currencyIcon {
       display: flex;
-      border-radius: 100px;
-      width: 30px;
-      height: 30px;
+      border-radius: 16px;
+      width: 32px;
+      height: 32px;
       overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.16);
+    }
+
+    .networkIcon {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      right: -4px;
+      bottom: 0;
+      background-color: $white;
+      border: 1px solid rgba(0, 0, 0, 0.16);
     }
 
     .swapInputChevron {
