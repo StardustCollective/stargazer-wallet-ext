@@ -11,16 +11,16 @@ const renderItem = () => {
           animation="wave"
           height={32}
           width={32}
-          style={{ marginRight: 18 }}
+          style={{ marginRight: 16 }}
         />
       </div>
       <div className={styles.txInfo}>
         <Skeleton
           variant="rect"
           animation="wave"
-          height={18}
+          height={20}
           width={100}
-          style={{ marginBottom: 4, borderRadius: 2 }}
+          style={{ marginBottom: 6, borderRadius: 2 }}
         />
         <Skeleton
           variant="rect"
@@ -34,9 +34,9 @@ const renderItem = () => {
         <Skeleton
           variant="rect"
           animation="wave"
-          height={18}
+          height={20}
           width={100}
-          style={{ marginBottom: 4, borderRadius: 2 }}
+          style={{ marginBottom: 6, borderRadius: 2 }}
         />
         <Skeleton
           variant="rect"
@@ -57,9 +57,9 @@ const LoadingTxItem: FC = () => {
         <Skeleton
           variant="rect"
           animation="wave"
-          height={18}
+          height={20}
           width={100}
-          style={{ marginLeft: 16, borderRadius: 2 }}
+          style={{ borderRadius: 2 }}
         />
       </div>
       {renderItem()}

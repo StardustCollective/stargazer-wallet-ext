@@ -109,19 +109,13 @@ const TxItem: FC<ITxItemSettings> = ({
               isRewardsTab={isRewardsTab}
               tx={tx}
             />
-            {showSmallLogo && (
-              <div className={styles.logoContainer}>
-                <img src={logo} alt="asset logo" className={styles.logo} />
-              </div>
-            )}
+            {showSmallLogo && <img src={logo} alt="asset logo" className={styles.logo} />}
           </div>
         </div>
         <div className={styles.txInfo}>
-          <div>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-              {receivedOrSentText}
-            </TextV3.CaptionStrong>
-          </div>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
+            {receivedOrSentText}
+          </TextV3.CaptionStrong>
           {renderSubtitleContent()}
         </div>
         <div className={styles.txAmount}>
