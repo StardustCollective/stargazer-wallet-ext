@@ -24,7 +24,6 @@ import IVaultState, {
   IAssetState,
   IWalletState,
   IActiveAssetState,
-  AssetSymbol,
   Reward,
 } from 'state/vault/types';
 
@@ -114,7 +113,7 @@ export class AccountController {
           walletInfo.type === KeyringWalletType.LedgerAccountWallet
             ? AssetType.LedgerConstellation
             : AssetType.Constellation,
-        label: 'Constellation',
+        label: 'DAG',
         address: account.address,
       };
 
@@ -133,7 +132,7 @@ export class AccountController {
       const ethAsset = {
         id: AssetType.Ethereum,
         type: AssetType.Ethereum,
-        label: 'Ethereum',
+        label: 'ETH',
         address: account.address,
       };
 
@@ -144,9 +143,12 @@ export class AccountController {
       // 349: New network should be added here.
       const NETWORK_TOKENS = Object.values(assets)
         .filter((token) =>
-          [AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
-            token.symbol as AssetSymbol
-          )
+          [
+            AssetType.Polygon,
+            AssetType.Avalanche,
+            AssetType.BSC,
+            AssetType.Base,
+          ].includes(token?.id as AssetType)
         )
         .map((token) => token.id);
 
@@ -189,7 +191,7 @@ export class AccountController {
     const avaxAsset = {
       id: AssetType.Avalanche,
       type: AssetType.Ethereum,
-      label: 'Avalanche',
+      label: 'AVAX',
       address,
     };
 
@@ -203,9 +205,20 @@ export class AccountController {
     const polygonAsset = {
       id: AssetType.Polygon,
       type: AssetType.Ethereum,
-      label: 'Polygon',
+      label: 'POL',
       address,
     };
+
+    const baseAsset = {
+      id: AssetType.Base,
+      type: AssetType.Ethereum,
+      label: 'Base ETH',
+      address,
+    };
+
+    if (tokens.includes(baseAsset.id)) {
+      networkAssets.push(baseAsset);
+    }
 
     if (tokens.includes(avaxAsset.id)) {
       networkAssets.push(avaxAsset);
@@ -831,7 +844,7 @@ export class AccountController {
   async getLatestGasPrices(network?: string): Promise<number[]> {
     const gasPrices = await this.networkController.estimateGasPrices(network);
     const results = Object.values(gasPrices).map((gas) =>
-      Math.round(Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei')))
+      Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei'))
     );
     return results;
   }

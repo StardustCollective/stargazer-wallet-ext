@@ -245,10 +245,18 @@
         margin-right: 30px;
       }
 
+      .gasPriceText {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+
       .gasInput {
-        width: 100px;
+        width: 121px;
         height: 24px;
-        margin-left: 12px;
+        padding-right: 50px;
+        padding-left: 8px;
         border: 1px solid $purple !important;
       }
 
@@ -282,7 +290,6 @@
       }
     }
     .status {
-      margin-top: 8px;
       margin-left: 12px;
       .equalAmount {
         font-weight: 500;
@@ -299,9 +306,13 @@
     }
 
     .sliderCustom {
+      display: flex;
+      flex-grow: 1;
       transition: all 0.3s;
       position: relative;
-      width: 70px;
+      width: 110px;
+      margin-left: 14px;
+      margin-right: 14px;
     }
     .sliderRail {
       background: $purple-light;
@@ -335,6 +346,7 @@
 
   section.actionGroup {
     width: 100%;
+    margin-top: 8px;
     padding-bottom: 20px;
     display: flex;
     flex-grow: 1;

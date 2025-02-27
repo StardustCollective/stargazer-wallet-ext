@@ -55,6 +55,8 @@ import {
   NO_COINS_FOUND,
   NO_COINS_AVAILABLE,
   PLEASE_ADD_FUNDS,
+  EXOLIX_TO_STARGAZER_NETWORK_MAP,
+  EXOLIX_TO_STARGAZER_LOGO_MAP,
 } from './constants';
 
 const SEARCH_ICON_SIZE = 16;
@@ -84,8 +86,14 @@ const ConfirmDetails: FC<ITokenList> = ({
           onPress={() => onTokenCellPressed(item, item.networks[0])}
         >
           <View style={styles.tokenCellLeft}>
-            <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
-            <View>
+            <View style={styles.tokenIconContainer}>
+              <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
+              <Image
+                source={{ uri: EXOLIX_TO_STARGAZER_LOGO_MAP[item?.networks[0].network] }}
+                style={styles.networkIcon}
+              />
+            </View>
+            <View style={styles.tokenCellLeftContent}>
               <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                 {item?.code}
               </TextV3.CaptionStrong>
@@ -98,7 +106,7 @@ const ConfirmDetails: FC<ITokenList> = ({
               4
             )}`}</TextV3.CaptionStrong>
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-              {item.networks[0].name}
+              {EXOLIX_TO_STARGAZER_NETWORK_MAP[item.networks[0].network]}
             </TextV3.Caption>
           </View>
         </TouchableOpacity>
@@ -115,8 +123,16 @@ const ConfirmDetails: FC<ITokenList> = ({
             onPress={() => onTokenCellPressed(item, network)}
           >
             <View style={styles.tokenCellLeft}>
-              <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
-              <View>
+              <View style={styles.tokenIconContainer}>
+                <Image source={{ uri: item?.icon }} style={styles.tokenIcon} />
+                <Image
+                  source={{
+                    uri: EXOLIX_TO_STARGAZER_LOGO_MAP[network?.network],
+                  }}
+                  style={styles.networkIcon}
+                />
+              </View>
+              <View style={styles.tokenCellLeftContent}>
                 <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                   {item?.code}
                 </TextV3.CaptionStrong>
@@ -127,7 +143,9 @@ const ConfirmDetails: FC<ITokenList> = ({
               <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                 {network?.network}
               </TextV3.CaptionStrong>
-              <TextV3.Caption color={COLORS_ENUMS.BLACK}>{network?.name}</TextV3.Caption>
+              <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+                {EXOLIX_TO_STARGAZER_NETWORK_MAP[network.network]}
+              </TextV3.Caption>
             </View>
           </TouchableOpacity>
         </View>

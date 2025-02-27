@@ -2,6 +2,7 @@ import EthLogo from 'assets/images/svg/eth-icon.svg';
 import AvaxLogo from 'assets/images/svg/avax-icon.svg';
 import BscLogo from 'assets/images/svg/bsc-icon.svg';
 import PolygonLogo from 'assets/images/svg/matic-icon.svg';
+import BaseLogo from 'assets/images/svg/base-icon.svg';
 import { OpenSeaSupportedChains } from 'state/nfts/types';
 
 export const MAX_LENGTH = 14;
@@ -16,4 +17,5 @@ export const OPENSEA_LOGOS_MAP: { [chain: string]: string } = {
   [OpenSeaSupportedChains.AVALANCHE_FUJI]: AvaxLogo,
   [OpenSeaSupportedChains.BSC]: BscLogo,
   [OpenSeaSupportedChains.BSC_TESTNET]: BscLogo,
+  [OpenSeaSupportedChains.BASE]: BaseLogo,
 };

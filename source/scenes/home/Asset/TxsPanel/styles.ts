@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   activity: {
     flex: 1,
     width: '100%',
-    backgroundColor: COLORS.gray_light,
+    backgroundColor: COLORS.white,
   },
   scrollContentContainer: {
     flexGrow: 1,

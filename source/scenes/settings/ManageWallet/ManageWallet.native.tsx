@@ -15,6 +15,7 @@ import {
   AVALANCHE_NETWORK,
   BSC_NETWORK,
   POLYGON_NETWORK,
+  BASE_NETWORK,
 } from 'constants/index';
 import IManageWalletSettings from './types';
 import styles from './styles';
@@ -65,27 +66,6 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           {
             title: 'Show Private Key',
             onClick: onShowPrivateKeyClicked,
-          },
-        ];
-
-  const walletAddressesItems =
-    wallet.type === KeyringWalletType.MultiChainWallet
-      ? [
-          {
-            title: 'Wallet Addresses',
-            onClick: () => setIsWalletAddressesOpen(true),
-            labelRight: '5',
-          },
-        ]
-      : [
-          {
-            title: ellipsis(wallet.accounts[0].address, 17, 6),
-            titleStyles: styles.titleAddress,
-            onClick: () => copyText(wallet.accounts[0].address),
-            showArrow: false,
-            rightIcon: !isCopied && <CopyIcon height={20} width={30} />,
-            labelRight: isCopied ? 'Copied!' : '',
-            labelRightStyles: styles.copiedLabel,
           },
         ];
 
@@ -156,7 +136,41 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       showArrow: false,
       labelRightStyles: styles.copiedLabel,
     },
+    {
+      title: BASE_NETWORK['base-mainnet'].network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(BASE_NETWORK['base-mainnet'].network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== BASE_NETWORK['base-mainnet'].network) && (
+        <CopyIcon height={20} width={30} />
+      ),
+      labelRight:
+        isCopied && itemCopied === BASE_NETWORK['base-mainnet'].network ? 'Copied!' : '',
+      icon: BASE_NETWORK['base-mainnet'].logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
   ];
+
+  const walletAddressesItems =
+    wallet.type === KeyringWalletType.MultiChainWallet
+      ? [
+          {
+            title: 'Wallet Addresses',
+            onClick: () => setIsWalletAddressesOpen(true),
+            labelRight: walletAddresesContent.length.toString(),
+          },
+        ]
+      : [
+          {
+            title: ellipsis(wallet.accounts[0].address, 17, 6),
+            titleStyles: styles.titleAddress,
+            onClick: () => copyText(wallet.accounts[0].address),
+            showArrow: false,
+            rightIcon: !isCopied && <CopyIcon height={20} width={30} />,
+            labelRight: isCopied ? 'Copied!' : '',
+            labelRightStyles: styles.copiedLabel,
+          },
+        ];
 
   return (
     <ScrollView
@@ -222,7 +236,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       <Sheet
         isVisible={isWalletAddressesOpen}
         onClosePress={() => setIsWalletAddressesOpen(false)}
-        height={520}
+        height={580}
         title={{
           label: wallet.label,
           align: 'left',

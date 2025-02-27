@@ -18,6 +18,7 @@ div.assetItem {
   }
 
   .assetIcon {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,15 +27,27 @@ div.assetItem {
     border-radius: 16px;
     margin-left: $icon-margin-left;
 
+    .networkLogo {
+      position: absolute;
+      right: -5px;
+      bottom: -1px;
+      width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      background-color: $white;
+      border: 1px solid rgba($color: #000000, $alpha: 0.16);
+    }
+
     img {
       width: 32px;
       height: 32px;
       border-radius: 16px;
+      border: 1px solid rgba($color: #000000, $alpha: 0.16);
     }
   }
 
   .assetName {
-    margin-left: 8px;
+    margin-left: 16px;
     width: 100%;
   }
 

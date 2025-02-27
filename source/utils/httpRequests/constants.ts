@@ -13,6 +13,8 @@ export enum ExplorerExternalService {
   BscTestnet = 'explorer-bsc-testnet',
   PolygonMainnet = 'explorer-polygon-mainnet',
   PolygonTestnet = 'explorer-polygon-amoy',
+  BaseMainnet = 'explorer-base-mainnet',
+  BaseTestnet = 'explorer-base-sepolia',
 }
 
 export enum NodeExternalService {
@@ -24,6 +26,8 @@ export enum NodeExternalService {
   BscTestnet = 'node-bsc-testnet',
   PolygonMainnet = 'node-polygon-mainnet',
   PolygonTestnet = 'node-polygon-amoy',
+  BaseMainnet = 'node-base-mainnet',
+  BaseTestnet = 'node-base-sepolia',
 }
 
 export enum ExternalService {

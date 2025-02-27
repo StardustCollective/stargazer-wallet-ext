@@ -29,14 +29,31 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   swapInputTickerText: {
-    marginRight: 17,
-    marginLeft: 17,
+    marginRight: 16,
+    marginLeft: 16,
+  },
+  currencyIconContainer: {
+    position: 'relative',
   },
   currencyIcon: {
-    borderRadius: 100,
-    width: 30,
-    height: 30,
+    borderRadius: 16,
+    width: 32,
+    height: 32,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.16)',
+  },
+  networkIcon: {
+    position: 'absolute',
+    borderRadius: 8,
+    width: 16,
+    height: 16,
+    overflow: 'hidden',
+    right: -4,
+    bottom: 0,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.16)',
   },
 });
 

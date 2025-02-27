@@ -102,11 +102,7 @@ const TxItem: FC<ITxItemSettings> = ({
                 isReceived={isReceived}
                 isRewardsTab={isRewardsTab}
               />
-              {showSmallLogo && (
-                <View style={styles.logoContainer}>
-                  <Image source={{ uri: logo }} style={styles.logo} />
-                </View>
-              )}
+              {showSmallLogo && <Image source={{ uri: logo }} style={styles.logo} />}
             </View>
             <View style={styles.txInfoWrapper}>
               <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>

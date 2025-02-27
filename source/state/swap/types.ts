@@ -12,6 +12,7 @@ export enum SupportedExolixSwapNetworks {
   ETHEREUM = 'ETH',
   POLYGON = 'MATIC',
   CONSTELLATION = 'DAG',
+  BASE = 'BASE',
 }
 
 export enum ExolixTransactionStatuses {
@@ -96,6 +97,10 @@ export interface ICurrencyRate {
 }
 
 export interface ICurrencyNetwork {
+  coinNetworkId?: number;
+  contract?: string | null;
+  decimal?: number | null;
+  icon?: string | null;
   network: string;
   name: string;
   shortName: string;

@@ -2,7 +2,7 @@
 // Modules Imports
 /////////////////////
 
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import TextV3 from 'components/TextV3';
 import find from 'lodash/find';
 import { useSelector } from 'react-redux';
@@ -52,6 +52,7 @@ import {
   StargazerChain,
 } from '../../../scripts/common';
 import { ITransactionInfo } from '../../../scripts/types';
+import { fixedNumber, smallestPowerOfTen } from 'utils/number';
 
 //////////////////////
 // Constants
@@ -60,7 +61,6 @@ import { ITransactionInfo } from '../../../scripts/types';
 const FEE_STRING = 'Fee ~= ';
 const SPEED_STRING = 'Speed:';
 const GWEI_STRING = 'GWEI';
-const SLIDER_STEP_PROP = 1;
 
 //////////////////////
 // Component
@@ -77,6 +77,8 @@ const ApproveSpend = () => {
   const walletController = getWalletController();
   const showAlert = usePlatformAlert();
   const vaultActiveAsset = useSelector(walletsSelectors.getActiveAsset);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: requestData, message } =
     StargazerExternalPopups.decodeRequestMessageLocationParams<any>(location.href);
@@ -121,6 +123,7 @@ const ApproveSpend = () => {
     setGasPrice,
     gasPrice,
     gasPrices,
+    digits,
   } = useGasEstimate({
     toAddress: to as string,
     asset,
@@ -157,6 +160,7 @@ const ApproveSpend = () => {
   };
 
   const onPositiveButtonClick = async () => {
+    setIsLoading(true);
     try {
       const txConfig: ITransactionInfo = {
         fromAddress: from,
@@ -188,14 +192,16 @@ const ApproveSpend = () => {
         );
         showAlert(e.message, 'danger');
       }
+      setIsLoading(false);
     }
 
     window.close();
   };
 
   const onGasPriceChanged = (_event: ChangeEvent<{}>, value: number | number[]) => {
-    setGasPrice(value as number);
-    estimateGasFee(value as number);
+    const val = fixedNumber(value as number, digits);
+    setGasPrice(val as number);
+    estimateGasFee(val as number);
   };
 
   const renderHeaderInfo = () => {
@@ -250,6 +256,7 @@ const ApproveSpend = () => {
       onNegativeButtonClick={onNegativeButtonClick}
       positiveButtonLabel="Confirm"
       onPositiveButtonClick={onPositiveButtonClick}
+      isPositiveButtonDisabled={isLoading || !gasPrice}
     >
       <div className={styles.content}>
         <TextV3.Caption color={COLORS_ENUMS.BLACK}>
@@ -274,10 +281,10 @@ const ApproveSpend = () => {
                 <PurpleSlider
                   onChange={onGasPriceChanged}
                   min={gasPrices[0]}
-                  max={gasPrices[gasPrices.length - 1]}
+                  max={gasPrices[2]}
                   defaultValue={gasPrice}
                   value={gasPrice}
-                  step={SLIDER_STEP_PROP}
+                  step={smallestPowerOfTen(gasPrices[2])}
                 />
               </div>
               <div className={styles.sliderLabel}>

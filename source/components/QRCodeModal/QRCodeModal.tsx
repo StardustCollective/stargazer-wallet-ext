@@ -20,18 +20,14 @@ import copyIcon from 'assets/images/svg/copy.svg';
 // Utils
 ///////////////////////////
 
-import {
-  getNetworkFromChainId,
-  getNetworkLabel,
-  getNetworkLogo,
-} from 'scripts/Background/controllers/EVMChainController/utils';
+import { getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
 // Types
 ///////////////////////////
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { AssetSymbol, AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 import { CONSTELLATION_LOGO } from 'constants/index';
 import { IQRCodeModal } from './types';
 
@@ -40,6 +36,7 @@ import { IQRCodeModal } from './types';
 ///////////////////////////
 
 import styles from './QRCodeModal.scss';
+import useNetworkLabel from 'hooks/useNetworkLabel';
 
 ///////////////////////////
 // Constants
@@ -52,7 +49,6 @@ const QRCodeModal: FC<IQRCodeModal> = ({
   onClose,
   copyAddress,
   textTooltip,
-  activeNetwork,
 }) => {
   ///////////////////////////
   // Render
@@ -61,19 +57,8 @@ const QRCodeModal: FC<IQRCodeModal> = ({
     address.length - 10,
     address.length
   )}`;
-  let network = asset?.network;
-  // 349: New network should be added here.
-  if (
-    [AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
-      asset?.symbol as AssetSymbol
-    )
-  ) {
-    const currentNetwork = getNetworkFromChainId(network);
-    network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
-  } else if (AssetSymbol.DAG === asset?.symbol) {
-    network = activeNetwork.Constellation;
-  }
-  const networkLabel = getNetworkLabel(network);
+
+  const networkLabel = useNetworkLabel(asset);
   const networkLogo =
     asset?.type === AssetType.Constellation
       ? CONSTELLATION_LOGO

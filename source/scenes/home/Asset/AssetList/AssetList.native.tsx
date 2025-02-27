@@ -21,6 +21,7 @@ import { getKeyringAssetType } from 'utils/keyringUtil';
 import {
   getNetworkFromChainId,
   getNetworkLabel,
+  getNetworkLogo,
 } from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////////
@@ -29,7 +30,7 @@ import {
 
 import { IAssetList } from './types';
 import { IAssetInfoState } from 'state/assets/types';
-import { AssetSymbol, AssetType } from 'state/vault/types';
+import { AssetType } from 'state/vault/types';
 
 ///////////////////////////
 // Styles
@@ -37,6 +38,7 @@ import { AssetSymbol, AssetType } from 'state/vault/types';
 
 import styles from './styles';
 import { NEW_COLORS } from '../../../../assets/styles/_variables.native';
+import { CONSTELLATION_LOGO } from 'constants/index';
 
 ///////////////////////////
 // Constants
@@ -57,7 +59,7 @@ const AssetList: FC<IAssetList> = ({
   const renderAssetItem = ({ item }: { item: IAssetInfoState }) => {
     const selected = !!activeNetworkAssets?.find((asset) => asset?.id === item?.id);
     const itemType = getKeyringAssetType(item?.type);
-    const disabled = [AssetSymbol.DAG, AssetSymbol.ETH].includes(item?.symbol);
+    const disabled = [AssetType.Constellation, AssetType.Ethereum].includes(item?.id);
     const isAssetSupported = activeWallet?.supportedAssets?.includes(itemType);
     const itemChainId = item?.network;
     const itemNetwork =
@@ -65,24 +67,31 @@ const AssetList: FC<IAssetList> = ({
         ? KeyringNetwork.Constellation
         : getNetworkFromChainId(itemChainId);
     const currentActiveNetwork = activeNetwork[itemNetwork];
-    const network = getNetworkLabel(currentActiveNetwork);
+    const networkLabel = getNetworkLabel(currentActiveNetwork);
+    const networkLogo =
+      item?.type === AssetType.Constellation
+        ? CONSTELLATION_LOGO
+        : getNetworkLogo(itemChainId);
     // 349: New network should be added here.
-    const isMATIC = item?.symbol === AssetSymbol.MATIC && itemChainId === 'matic';
+    const isMATIC = item?.id === AssetType.Polygon && itemChainId === 'matic';
     const isAVAX =
-      item?.symbol === AssetSymbol.AVAX && itemChainId === 'avalanche-mainnet';
-    const isBNB = item?.symbol === AssetSymbol.BNB && itemChainId === 'bsc';
+      item?.id === AssetType.Avalanche && itemChainId === 'avalanche-mainnet';
+    const isBNB = item?.id === AssetType.BSC && itemChainId === 'bsc';
+    const isBase = item?.id === AssetType.Base && itemChainId === 'base-mainnet';
     const hideToken =
       itemChainId !== 'both' &&
       !isMATIC &&
       !isAVAX &&
       !isBNB &&
+      !isBase &&
       currentActiveNetwork !== itemChainId;
     if (!isAssetSupported || hideToken) return null;
     return (
       <AssetWithToggle
         id={item?.id}
         symbol={item?.symbol}
-        network={network}
+        networkLogo={networkLogo}
+        networkLabel={networkLabel}
         logo={item?.logo}
         label={item?.label}
         selected={selected}

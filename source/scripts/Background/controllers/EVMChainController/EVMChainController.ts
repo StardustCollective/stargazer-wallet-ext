@@ -315,18 +315,13 @@ class EVMChainController implements IEVMChainController {
   async estimateGasPrices() {
     // Snowtrace API doesn't support the gas tracker module yet (https://snowtrace.io/apis)
     // That's why we need to include Avalanche Mainnet here.
-    if (isTestnet(this.chain.id) || this.chain.id === 'avalanche-mainnet') {
+    if (
+      isTestnet(this.chain.id) ||
+      this.chain.id === 'avalanche-mainnet' ||
+      this.chain.id === 'base-mainnet'
+    ) {
       // Etherscan gas oracle is not working in testnets
-      const oneGwei = ethers.BigNumber.from(1e9);
-      const feeData = await this.provider.getFeeData();
-      return {
-        average: baseAmount(feeData.gasPrice.toString(), ETH_DECIMAL),
-        fast: baseAmount(feeData.gasPrice.add(oneGwei.mul(5)).toString(), ETH_DECIMAL),
-        fastest: baseAmount(
-          feeData.gasPrice.add(oneGwei.mul(10)).toString(),
-          ETH_DECIMAL
-        ),
-      };
+      return this.fallbackFeeData(this.provider);
     }
 
     try {
@@ -343,8 +338,33 @@ class EVMChainController implements IEVMChainController {
         fastest: baseAmount(fastestWei.toString(), ETH_DECIMAL),
       };
     } catch (error) {
-      throw new Error(`Failed to estimate gas price: ${error}`);
+      return this.fallbackFeeData(this.provider);
     }
+  }
+
+  estimateDiffAmount(value: number): number {
+    if (value < 10) return 1;
+    return Math.floor(value / 10);
+  }
+
+  async fallbackFeeData(provider: ethers.providers.Provider) {
+    const fastMultiplier = ethers.BigNumber.from(110); // 110 in BigNumber
+    const fastestMultiplier = ethers.BigNumber.from(120); // 120 in BigNumber
+    const hundred = ethers.BigNumber.from(100); // 100 in BigNumber
+
+    const feeData = await provider.getFeeData();
+
+    // If feeData.gasPrice is null (it can be on EIP-1559 networks),
+    // you might want to handle maxFeePerGas / maxPriorityFeePerGas logic here.
+    const baseGasPrice = feeData.gasPrice ?? ethers.BigNumber.from(0);
+    const fastGasPrice = baseGasPrice.mul(fastMultiplier).div(hundred); // 110% of the baseGasPrice
+    const fastestGasPrice = baseGasPrice.mul(fastestMultiplier).div(hundred); // 120% of the baseGasPrice
+
+    return {
+      average: baseAmount(baseGasPrice.toString(), ETH_DECIMAL),
+      fast: baseAmount(fastGasPrice.toString(), ETH_DECIMAL),
+      fastest: baseAmount(fastestGasPrice.toString(), ETH_DECIMAL),
+    };
   }
 
   async waitForTransaction(hash: string) {

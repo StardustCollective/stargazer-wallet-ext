@@ -16,16 +16,16 @@ import {
   VE_LTX_LOGO,
 } from 'constants/index';
 import { IAssetInfoState } from 'state/assets/types';
-import { AssetType } from 'state/vault/types';
+import { AssetSymbol, AssetType } from 'state/vault/types';
 import { getERC20Assets, search } from './api';
 import IERC20AssetsListState, { ICustomAssetForm } from './types';
 
 export const constellationInitialValues: IAssetInfoState[] = [
   {
     id: AssetType.Constellation,
-    label: 'Constellation',
+    label: 'DAG',
     type: AssetType.Constellation,
-    symbol: 'DAG',
+    symbol: AssetSymbol.DAG,
     address: '',
     native: true,
     network: 'both',
@@ -35,9 +35,9 @@ export const constellationInitialValues: IAssetInfoState[] = [
   },
   {
     id: AssetType.Ethereum,
-    label: 'Ethereum',
+    label: 'ETH',
     type: AssetType.Ethereum,
-    symbol: 'ETH',
+    symbol: AssetSymbol.ETH,
     address: '',
     native: true,
     network: 'both',
@@ -95,17 +95,6 @@ export const constellationInitialValues: IAssetInfoState[] = [
     decimals: 18,
   },
   {
-    id: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic',
-    address: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6',
-    label: 'JennyCo',
-    symbol: 'JCO',
-    type: AssetType.ERC20,
-    priceId: 'jennyco',
-    network: 'matic',
-    logo: JENNYCO_LOGO,
-    decimals: 18,
-  },
-  {
     id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet',
     address: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
     label: 'Alkimi Exchange',
@@ -149,12 +138,23 @@ export const constellationInitialValues: IAssetInfoState[] = [
     logo: LEET_LOGO,
     decimals: 18,
   },
+  {
+    id: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic',
+    address: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6',
+    label: 'JennyCo',
+    symbol: 'JCO',
+    type: AssetType.ERC20,
+    priceId: 'jennyco',
+    network: 'matic',
+    logo: JENNYCO_LOGO,
+    decimals: 18,
+  },
   // 349: New network should be added here.
   {
     id: AssetType.Avalanche,
     address: '',
-    label: 'Avalanche',
-    symbol: 'AVAX',
+    label: 'AVAX',
+    symbol: AssetSymbol.AVAX,
     type: AssetType.Ethereum,
     priceId: 'avalanche-2',
     network: 'avalanche-mainnet',
@@ -165,7 +165,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     id: AssetType.BSC,
     address: '',
     label: 'BNB',
-    symbol: 'BNB',
+    symbol: AssetSymbol.BNB,
     type: AssetType.Ethereum,
     priceId: 'binancecoin',
     network: 'bsc',
@@ -175,12 +175,23 @@ export const constellationInitialValues: IAssetInfoState[] = [
   {
     id: AssetType.Polygon,
     address: '',
-    label: 'Polygon',
-    symbol: 'MATIC',
+    label: 'POL',
+    symbol: AssetSymbol.POL,
     type: AssetType.Ethereum,
     priceId: 'matic-network',
     network: 'matic',
     logo: POLYGON_LOGO,
+    decimals: 18,
+  },
+  {
+    id: AssetType.Base,
+    address: '',
+    label: 'Base ETH',
+    symbol: AssetSymbol.BASE,
+    type: AssetType.Ethereum,
+    priceId: 'ethereum',
+    network: 'base-mainnet',
+    logo: ETHEREUM_LOGO,
     decimals: 18,
   },
 ];

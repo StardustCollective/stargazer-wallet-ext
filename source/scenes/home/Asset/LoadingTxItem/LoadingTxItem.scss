@@ -10,21 +10,14 @@
   .groupBar {
     display: flex;
     align-items: center;
-    height: 36px;
-    background: $grey-50;
-    color: $black;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-top-style: solid;
-    border-bottom-style: solid;
-    border-top-color: $grey-100;
-    border-bottom-color: $grey-100;
+    padding: 8px 16px 0px 16px;
+    border-top: 0.5px solid rgba(0, 0, 0, 0.24);
   }
 
   .content {
     display: flex;
     flex-direction: row;
-    margin: 16px;
+    padding: 12px 16px;
 
     .txIcon {
       display: flex;

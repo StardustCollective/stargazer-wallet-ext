@@ -23,7 +23,8 @@ import AssetWithToggle from './AssetWithToggle';
 const AssetWithToggleContainer: FC<IAssetWithToggle> = ({
   id,
   symbol,
-  network,
+  networkLogo,
+  networkLabel,
   logo,
   label,
   selected,
@@ -38,7 +39,8 @@ const AssetWithToggleContainer: FC<IAssetWithToggle> = ({
     <AssetWithToggle
       id={id}
       symbol={symbol}
-      network={network}
+      networkLogo={networkLogo}
+      networkLabel={networkLabel}
       logo={logo}
       label={label}
       selected={selected}

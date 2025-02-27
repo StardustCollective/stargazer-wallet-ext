@@ -13,13 +13,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'column',
     justifyContent: 'center',
-    height: 36,
-    backgroundColor: COLORS.grey_50,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.grey_100,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.grey_100,
-    paddingLeft: 12,
+    paddingTop: 8,
+    paddingHorizontal: 16,
+    borderTopWidth: 0.5,
+    borderTopColor: 'rgba(0, 0, 0, 0.24)',
   },
   boxMedium: {
     height: 18,
@@ -43,7 +40,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: COLORS.white,
   },
   leftContent: {
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 16,
   },
   txInfoWrapper: {
     display: 'flex',

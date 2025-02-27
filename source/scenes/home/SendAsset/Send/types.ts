@@ -49,4 +49,5 @@ export interface IWalletSend {
   networkTypeOptions: IInputClickableOptions;
   basePriceId: string;
   isTransfer: boolean;
+  digits: number;
 }
