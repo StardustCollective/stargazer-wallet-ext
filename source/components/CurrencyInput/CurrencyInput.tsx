@@ -43,6 +43,7 @@ const CurrencyInput: FC<ICurrencyInput> = ({
   placeholder = '0',
   value,
   source = ImagePlaceholder,
+  networkIcon,
   onPress,
   tickerValue,
   isError = false,
@@ -64,7 +65,10 @@ const CurrencyInput: FC<ICurrencyInput> = ({
         />
       </div>
       <div onClick={() => onPress()} className={styles.swapInputRightBlock}>
-        <img src={source} className={styles.currencyIcon} />
+        <div className={styles.currencyIconContainer}>
+          <img src={source} className={styles.currencyIcon} />
+          <img src={networkIcon} className={styles.networkIcon} />
+        </div>
         <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>
           {tickerValue}
         </TextV3.Body>

@@ -2,7 +2,7 @@
 // Imports
 ///////////////////////
 
-import { IAssetState, ActiveNetwork } from 'state/vault/types';
+import { IAssetState } from 'state/vault/types';
 import { IAssetInfoState } from 'state/assets/types';
 import { IFiatAssetState } from 'state/price/types';
 
@@ -22,6 +22,6 @@ export default interface IAssetItem {
   assetPrice?: IFiatAssetState;
   showNetwork?: boolean;
   showPrice?: boolean;
-  activeNetwork?: ActiveNetwork;
+  networkLabel?: string;
   loading?: boolean;
 }

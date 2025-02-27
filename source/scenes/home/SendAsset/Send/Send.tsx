@@ -11,6 +11,7 @@ import { AssetType } from 'state/vault/types';
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import { IWalletSend } from './types';
 import styles from './Send.scss';
+import { fixedStringNumber, trimTrailingZeros, smallestPowerOfTen } from 'utils/number';
 
 const WalletSend: FC<IWalletSend> = ({
   modalOpened,
@@ -46,7 +47,11 @@ const WalletSend: FC<IWalletSend> = ({
   gasSpeedLabel,
   networkTypeOptions,
   basePriceId,
+  digits,
 }) => {
+  const gasFeeFixed = trimTrailingZeros(gasFee.toFixed(18));
+  const steps = smallestPowerOfTen(gasPrices[2]);
+
   const addressInputClass = clsx(styles.input, styles.address, {
     [styles.verified]: isValidAddress,
     [styles.addressPadding]: !isExternalRequest,
@@ -197,7 +202,10 @@ const WalletSend: FC<IWalletSend> = ({
               })}
             >
               <div className={styles.gasRow}>
-                <span>Gas Price (In Gwei)</span>
+                <div className={styles.gasPriceText}>
+                  <span>Gas Price</span>
+                  <span>(In Gwei)</span>
+                </div>
                 <Slider
                   classes={{
                     root: clsx(styles.sliderCustom, {
@@ -212,14 +220,11 @@ const WalletSend: FC<IWalletSend> = ({
                   value={gasPrice}
                   min={gasPrices[0]}
                   max={gasPrices[2]}
-                  scale={(x) => x * 2}
                   aria-labelledby="discrete-slider-restrict"
-                  step={1}
+                  step={steps}
                   marks={[
                     { value: gasPrices[0] },
-                    {
-                      value: Math.round((gasPrices[0] + gasPrices[2]) / 2),
-                    },
+                    { value: gasPrices[1] },
                     { value: gasPrices[2] },
                   ]}
                   onChange={handleGasPriceChange}
@@ -233,13 +238,16 @@ const WalletSend: FC<IWalletSend> = ({
                 <div className={styles.gasLevel}>{gasSpeedLabel}</div>
               </div>
               <div className={styles.status}>
-                <span
-                  className={styles.equalAmount}
-                >{`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(
-                  gasFee,
-                  2,
-                  basePriceId
-                )})`}</span>
+                <span className={styles.equalAmount}>
+                  {`${fixedStringNumber(
+                    gasPrice,
+                    digits
+                  )} GWei, ${gasFeeFixed} ${nativeToken} (≈ ${getFiatAmount(
+                    gasFee,
+                    2,
+                    basePriceId
+                  )})`}
+                </span>
               </div>
             </section>
           )}

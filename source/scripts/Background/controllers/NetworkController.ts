@@ -2,6 +2,7 @@ import EVMChainController from './EVMChainController';
 import {
   AllChainsIds,
   AvalancheChainId,
+  BaseChainId,
   BSCChainId,
   EthChainId,
   PolygonChainId,
@@ -21,6 +22,7 @@ class NetworkController {
   #polygonNetwork: EVMChainController;
   #bscNetwork: EVMChainController;
   #avalancheNetwork: EVMChainController;
+  #baseNetwork: EVMChainController;
 
   constructor(privateKey: string) {
     const { activeNetwork } = store.getState().vault;
@@ -31,6 +33,7 @@ class NetworkController {
       activeNetwork.Avalanche,
       privateKey
     );
+    this.#baseNetwork = this.createEVMController(activeNetwork.Base, privateKey);
   }
 
   private createEVMController(chain: AllChainsIds, privateKey: string) {
@@ -56,6 +59,10 @@ class NetworkController {
     return this.#avalancheNetwork;
   }
 
+  get baseNetwork() {
+    return this.#baseNetwork;
+  }
+
   switchEthereumChain(chain: EthChainId) {
     this.#ethereumNetwork.setChain(chain);
   }
@@ -72,6 +79,10 @@ class NetworkController {
     this.#avalancheNetwork.setChain(chain);
   }
 
+  switchBaseChain(chain: BaseChainId) {
+    this.#baseNetwork.setChain(chain);
+  }
+
   switchChain(network: string, chain: string) {
     switch (network) {
       case 'Ethereum':
@@ -86,6 +97,9 @@ class NetworkController {
       case 'Avalanche':
         this.switchAvalancheChain(chain as AvalancheChainId);
         break;
+      case 'Base':
+        this.switchBaseChain(chain as BaseChainId);
+        break;
 
       default:
         throw new Error('Unable to switch chain. Chain not found');
@@ -98,6 +112,7 @@ class NetworkController {
       Polygon: this.#polygonNetwork,
       BSC: this.#bscNetwork,
       Avalanche: this.#avalancheNetwork,
+      Base: this.#baseNetwork,
     };
     return networkToProvider[network];
   }
@@ -115,6 +130,7 @@ class NetworkController {
       Polygon: this.#polygonNetwork,
       BSC: this.#bscNetwork,
       Avalanche: this.#avalancheNetwork,
+      Base: this.#baseNetwork,
     };
     return networkToProvider[network];
   }
@@ -233,11 +249,6 @@ class NetworkController {
 
   public async getTokenInfo(address: string, chainId?: string) {
     let provider;
-    try {
-      provider = this.getProviderByActiveAsset();
-    } catch (err) {
-      console.log('Error: getTokenInfo - provider not found.');
-    }
     if (!!chainId) {
       const network = getNetworkFromChainId(chainId);
       const networkToProvider = {
@@ -245,8 +256,15 @@ class NetworkController {
         Polygon: this.#polygonNetwork,
         BSC: this.#bscNetwork,
         Avalanche: this.#avalancheNetwork,
+        Base: this.#baseNetwork,
       };
       provider = networkToProvider[network as keyof typeof networkToProvider];
+    } else {
+      try {
+        provider = this.getProviderByActiveAsset();
+      } catch (err) {
+        console.log('Error: getTokenInfo - provider not found.');
+      }
     }
     return provider.getTokenInfo(address);
   }

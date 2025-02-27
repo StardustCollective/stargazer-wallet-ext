@@ -43,6 +43,8 @@ import {
   NO_COINS_FOUND,
   NO_COINS_AVAILABLE,
   PLEASE_ADD_FUNDS,
+  EXOLIX_TO_STARGAZER_NETWORK_MAP,
+  EXOLIX_TO_STARGAZER_LOGO_MAP,
 } from './constants';
 
 const ConfirmDetails: FC<IConfirmationInfo> = ({
@@ -58,12 +60,18 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
     return currencyData?.map((item: ISearchCurrency) => {
       return (
         <div
-          key={item.code}
+          key={`${item.code}-${item.name}`}
           className={styles.tokenCell}
           onClick={() => onTokenCellPressed(item, item.networks[0])}
         >
           <div className={styles.tokenCellLeft}>
-            <img src={item.icon} className={styles.tokenIcon} />
+            <div className={styles.tokenIconContainer}>
+              <img src={item.icon} className={styles.tokenIcon} />
+              <img
+                src={EXOLIX_TO_STARGAZER_LOGO_MAP[item.networks[0].network]}
+                className={styles.networkIcon}
+              />
+            </div>
             <div className={styles.tokenCellLeftText}>
               <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                 {item.code}
@@ -77,7 +85,7 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
               4
             )}`}</TextV3.CaptionStrong>
             <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-              {item.networks[0].name}
+              {EXOLIX_TO_STARGAZER_NETWORK_MAP[item.networks[0].network]}
             </TextV3.Caption>
           </div>
         </div>
@@ -95,7 +103,13 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
               onClick={() => onTokenCellPressed(item, network)}
             >
               <div className={styles.tokenCellLeft}>
-                <img src={item.icon} className={styles.tokenIcon} />
+                <div className={styles.tokenIconContainer}>
+                  <img src={item.icon} className={styles.tokenIcon} />
+                  <img
+                    src={EXOLIX_TO_STARGAZER_LOGO_MAP[network.network]}
+                    className={styles.networkIcon}
+                  />
+                </div>
                 <div className={styles.tokenCellLeftText}>
                   <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                     {item.code}
@@ -112,7 +126,9 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
                 <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
                   {network.network}
                 </TextV3.CaptionStrong>
-                <TextV3.Caption color={COLORS_ENUMS.BLACK}>{network.name}</TextV3.Caption>
+                <TextV3.Caption color={COLORS_ENUMS.BLACK}>
+                  {EXOLIX_TO_STARGAZER_NETWORK_MAP[network.network]}
+                </TextV3.Caption>
               </div>
             </div>
           </div>

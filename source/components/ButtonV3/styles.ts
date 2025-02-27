@@ -92,6 +92,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.08)',
   },
   newPrimarySolid: {
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.24)',
     backgroundColor: NEW_COLORS.primary,
   },
 });

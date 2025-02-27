@@ -42,6 +42,7 @@ export class AssetsBalanceMonitor {
       Polygon: new AccountTracker(),
       Avalanche: new AccountTracker(),
       BSC: new AccountTracker(),
+      Base: new AccountTracker(),
     };
   }
 
@@ -288,6 +289,8 @@ export class AssetsBalanceMonitor {
         return AssetType.BSC;
       case 'Polygon':
         return AssetType.Polygon;
+      case 'Base':
+        return AssetType.Base;
 
       default:
         return AssetType.Constellation;

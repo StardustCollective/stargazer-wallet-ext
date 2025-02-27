@@ -13,15 +13,15 @@ import {
   POLYGON_LOGO,
   VE_LTX_LOGO,
 } from 'constants/index';
-import { AssetType } from 'state/vault/types';
+import { AssetSymbol, AssetType } from 'state/vault/types';
 import IAssetListState, { IAssetInfoState } from './types';
 
 export const initialState: IAssetListState = {
   [AssetType.Ethereum]: {
     id: AssetType.Ethereum,
-    label: 'Ethereum',
+    label: 'ETH',
     type: AssetType.Ethereum,
-    symbol: 'ETH',
+    symbol: AssetSymbol.ETH,
     address: '',
     native: true,
     network: 'both',
@@ -31,9 +31,9 @@ export const initialState: IAssetListState = {
   },
   [AssetType.Constellation]: {
     id: AssetType.Constellation,
-    label: 'Constellation',
+    label: 'DAG',
     type: AssetType.Constellation,
-    symbol: 'DAG',
+    symbol: AssetSymbol.DAG,
     address: '',
     native: true,
     network: 'both',
@@ -70,8 +70,8 @@ export const initialState: IAssetListState = {
   [AssetType.Avalanche]: {
     id: AssetType.Avalanche,
     address: '',
-    label: 'Avalanche',
-    symbol: 'AVAX',
+    label: 'AVAX',
+    symbol: AssetSymbol.AVAX,
     type: AssetType.Ethereum,
     priceId: 'avalanche-2',
     network: 'avalanche-mainnet',
@@ -82,7 +82,7 @@ export const initialState: IAssetListState = {
     id: AssetType.BSC,
     address: '',
     label: 'BNB',
-    symbol: 'BNB',
+    symbol: AssetSymbol.BNB,
     type: AssetType.Ethereum,
     priceId: 'binancecoin',
     network: 'bsc',
@@ -92,12 +92,23 @@ export const initialState: IAssetListState = {
   [AssetType.Polygon]: {
     id: AssetType.Polygon,
     address: '',
-    label: 'Polygon',
-    symbol: 'MATIC',
+    label: 'POL',
+    symbol: AssetSymbol.POL,
     type: AssetType.Ethereum,
     priceId: 'matic-network',
     network: 'matic',
     logo: POLYGON_LOGO,
+    decimals: 18,
+  },
+  [AssetType.Base]: {
+    id: AssetType.Base,
+    address: '',
+    label: 'Base ETH',
+    symbol: AssetSymbol.BASE,
+    type: AssetType.Ethereum,
+    priceId: 'ethereum',
+    network: 'base-mainnet',
+    logo: ETHEREUM_LOGO,
     decimals: 18,
   },
   '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet': {
@@ -122,17 +133,6 @@ export const initialState: IAssetListState = {
     logo: VE_LTX_LOGO,
     decimals: 18,
   },
-  '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic': {
-    id: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic',
-    address: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6',
-    label: 'JennyCo',
-    symbol: 'JCO',
-    type: AssetType.ERC20,
-    priceId: 'jennyco',
-    network: 'matic',
-    logo: JENNYCO_LOGO,
-    decimals: 18,
-  },
   '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet': {
     id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet',
     address: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
@@ -153,6 +153,17 @@ export const initialState: IAssetListState = {
     priceId: 'geojam',
     network: 'mainnet',
     logo: GEOJAM_LOGO,
+    decimals: 18,
+  },
+  '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic': {
+    id: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic',
+    address: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6',
+    label: 'JennyCo',
+    symbol: 'JCO',
+    type: AssetType.ERC20,
+    priceId: 'jennyco',
+    network: 'matic',
+    logo: JENNYCO_LOGO,
     decimals: 18,
   },
 };
@@ -179,7 +190,11 @@ const AssetListState = createSlice({
       state: IAssetListState,
       action: PayloadAction<{ assetId: string; decimals: number }>
     ) {
-      if (action.payload.assetId && action.payload.decimals) {
+      if (
+        action.payload.assetId &&
+        action.payload.decimals &&
+        !!state[action.payload.assetId]
+      ) {
         state[action.payload.assetId].decimals = action.payload.decimals;
       }
     },
