@@ -12,6 +12,8 @@ import SignData from 'scenes/external/SignData';
 import SendMetagraphData from 'scenes/external/SendMetagraphData';
 import TypedSignatureRequest from 'scenes/external/TypedSignatureRequest';
 import WatchAsset from 'scenes/external/WatchAsset';
+import AllowSpend from 'scenes/external/AllowSpend';
+import TokenLock from 'scenes/external/TokenLock';
 import { Route, Switch, Redirect, useHistory, RouteProps } from 'react-router-dom';
 import { getWalletController } from 'utils/controllersUtils';
 import store, { RootState } from 'state/store';
@@ -99,6 +101,8 @@ const App = () => {
           <PrivateRoute path="/sendMetagraphData" component={SendMetagraphData} />
           <PrivateRoute path="/signTypedMessage" component={TypedSignatureRequest} />
           <PrivateRoute path="/watchAsset" component={WatchAsset} />
+          <PrivateRoute path="/allowSpend" component={AllowSpend} />
+          <PrivateRoute path="/tokenLock" component={TokenLock} />
         </Switch>
       </Container>
     </section>

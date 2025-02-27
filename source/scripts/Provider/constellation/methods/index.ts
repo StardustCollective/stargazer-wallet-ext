@@ -8,6 +8,8 @@ export * from './dag_getPublicKey';
 export * from './dag_sendTransaction';
 export * from './dag_getPendingTransaction';
 export * from './dag_getTransaction';
+export * from './dag_allowSpend';
+export * from './dag_tokenLock';
 export * from './dag_getMetagraphBalance';
 export * from './dag_sendMetagraphTransaction';
 export * from './dag_sendMetagraphDataTransaction';
