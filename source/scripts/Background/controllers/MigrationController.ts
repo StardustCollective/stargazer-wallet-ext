@@ -168,7 +168,7 @@ const MigrationController = async () => {
 
   /**
    * version < 5_1_3
-   * Description: Adds dL1 endpoints on DOR and PACA
+   * Description: Adds elpaca hidden property
    */
   if (compareVersions(state.vault.version, '5.1.3') < 0) {
     const v5_1_3 = require('../migration/v5_1_3');

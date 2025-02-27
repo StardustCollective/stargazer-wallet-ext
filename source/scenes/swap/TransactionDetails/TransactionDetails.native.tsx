@@ -51,7 +51,7 @@ const TransactionDetails: FC<ITransferInfo> = ({ transaction, onSupportLinkPress
       >
         <View style={styles.amount}>
           <TextV3.BodyStrong numberOfLines={1} color={COLORS_ENUMS.BLACK}>
-            {transaction?.amountTo} {transaction?.coinTo.coinCode}
+            {transaction?.amountTo} {transaction?.coinTo?.coinCode}
           </TextV3.BodyStrong>
         </View>
         <View style={styles.detailRow}>
@@ -154,7 +154,7 @@ const TransactionDetails: FC<ITransferInfo> = ({ transaction, onSupportLinkPress
             color={COLORS_ENUMS.DARK_GRAY_200}
             extraStyles={styles.detailValue}
           >
-            {transaction.id}
+            {transaction?.id}
           </TextV3.CaptionRegular>
         </View>
         <TouchableOpacity style={styles.supportEmail} onPress={onSupportLinkPress}>

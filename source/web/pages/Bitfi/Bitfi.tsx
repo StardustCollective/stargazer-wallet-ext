@@ -44,6 +44,11 @@ import { dag4 } from '@stardust-collective/dag4';
 import IVaultState from 'state/vault/types';
 import { RootState } from 'state/store';
 import { getWalletController } from 'utils/controllersUtils';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 
 /////////////////////////
 // Constants
@@ -340,6 +345,9 @@ const BitfiPage = () => {
   const onSignMessagePress = async () => {
     const { data } = queryString.parse(location.search) as any;
 
+    const { message: messageRequest } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams<any>(location.href);
+
     const jsonData = JSON.parse(data);
     const message = jsonData.signatureRequestEncoded;
 
@@ -354,12 +362,19 @@ const BitfiPage = () => {
         setCode
       );
       const signature = await BitfiBridgeUtil.signMessage(message);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(signature, messageRequest);
       console.log('signature', signature);
       BitfiBridgeUtil.closeConnection();
       window.close();
     } catch (error: any) {
       showAlert(error.message || error.toString());
       setWaitingForBitfi(false);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(
+        new EIPRpcError(error.message, EIPErrorCodes.Unknown),
+        messageRequest
+      );
       BitfiBridgeUtil.closeConnection();
     }
   };
@@ -376,6 +391,9 @@ const BitfiPage = () => {
   const onSignPress = async () => {
     const { amount, from, to, fee } = queryString.parse(location.search) as any;
 
+    const { message: messageRequest } =
+      StargazerExternalPopups.decodeRequestMessageLocationParams<any>(location.href);
+
     try {
       setWaitingForBitfi(true);
       setCode('');
@@ -390,11 +408,19 @@ const BitfiPage = () => {
       const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to, fee);
       const hash = await dag4.account.networkInstance.postTransaction(signedTX);
       console.log('tx hash', hash);
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(hash, messageRequest);
       setWaitingForBitfi(false);
       setTransactionSigned(true);
       BitfiBridgeUtil.closeConnection();
+      window.close();
     } catch (error: any) {
       showAlert(error.message || error.toString());
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(
+        new EIPRpcError(error.message, EIPErrorCodes.Unknown),
+        messageRequest
+      );
       setWaitingForBitfi(false);
       BitfiBridgeUtil.closeConnection();
     }

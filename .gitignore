@@ -125,3 +125,6 @@ source/web/test-artifacts
 
 # iOS Pods
 source/native/ios/Pods
+
+# Sentry
+.env.sentry-build-plugin

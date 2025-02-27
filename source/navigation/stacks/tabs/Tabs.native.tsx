@@ -51,16 +51,15 @@ import AddWallet from 'scenes/settings/AddWallet';
 import CreateWallet from 'scenes/settings/NewAccount';
 import CreatePhrase from 'scenes/unauth/Phrase/CreatePhrase';
 import ConfirmPhrase from 'scenes/unauth/Phrase/ConfirmPhrase';
-import walletPhrase from 'scenes/settings/Phrase';
 import CheckPassword from 'scenes/settings/CheckPassword';
 import ManageWallet from 'scenes/settings/ManageWallet';
 import RemoveWallet from 'scenes/settings/RemoveWallet';
-import PrivateKey from 'scenes/settings/PrivateKey';
 import ImportWallet from 'scenes/settings/ImportWallet';
 import ImportAccount from 'scenes/settings/ImportAccount';
 import ImportPhrase from 'scenes/settings/ImportPhrase';
 import ConnectedSites from 'scenes/settings/ConnectedSites';
 import Security from 'scenes/settings/Security';
+import Personalize from 'scenes/settings/Personalize';
 
 // Swap
 import SwapTokens from 'scenes/swap/SwapTokens';
@@ -276,11 +275,6 @@ const SettingsTab = () => {
         component={ConfirmPhrase}
       />
       <Stack.Screen
-        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.walletPhrase }}
-        name={screens.settings.walletPhrase}
-        component={walletPhrase}
-      />
-      <Stack.Screen
         options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.manageWallet }}
         name={screens.settings.manageWallet}
         component={ManageWallet}
@@ -290,11 +284,6 @@ const SettingsTab = () => {
         options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.removeWallet }}
         name={screens.settings.removeWallet}
         component={RemoveWallet}
-      />
-      <Stack.Screen
-        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.privateKey }}
-        name={screens.settings.privateKey}
-        component={PrivateKey}
       />
       <Stack.Screen
         options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importWallet }}
@@ -320,6 +309,11 @@ const SettingsTab = () => {
         options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.security }}
         name={screens.settings.security}
         component={Security}
+      />
+      <Stack.Screen
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.personalize }}
+        name={screens.settings.personalize}
+        component={Personalize}
       />
     </Stack.Navigator>
   );

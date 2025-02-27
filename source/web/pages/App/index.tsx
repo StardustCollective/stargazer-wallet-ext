@@ -1,3 +1,4 @@
+import '../../sentry/initialize';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -11,6 +12,7 @@ import { handleDag4Setup } from 'scripts/Background/handlers/handleDag4Setup';
 import { handleStoreSubscribe } from 'scripts/Background/handlers/handleStoreSubscribe';
 import { handleRehydrateStore } from 'scripts/Background/handlers/handleRehydrateStore';
 import MigrationController from 'scripts/Background/controllers/MigrationController';
+import { ToastProvider } from 'context/ToastContext';
 
 global.scrypt = scryptJS.scrypt;
 
@@ -48,9 +50,11 @@ MigrationController().then(() => {
     ReactDOM.render(
       (
         <Provider store={store}>
-          <AlertProvider template={ToastAlert} {...options}>
-            <App />
-          </AlertProvider>
+          <ToastProvider>
+            <AlertProvider template={ToastAlert} {...options}>
+              <App />
+            </AlertProvider>
+          </ToastProvider>
         </Provider>
       ) as any,
       app

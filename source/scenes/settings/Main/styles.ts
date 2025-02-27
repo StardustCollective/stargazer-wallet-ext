@@ -2,10 +2,11 @@ import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
-  main: {
-    overflow: 'scroll',
+  scrollView: {
     flex: 1,
-    flexDirection: 'column',
+  },
+  contentContainer: {
+    flexGrow: 1,
   },
   box: {
     width: '100%',

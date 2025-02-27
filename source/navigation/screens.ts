@@ -83,16 +83,15 @@ export default {
     wallets: 'settings-wallets',
     addWallet: 'settings-add-wallet',
     createWallet: 'settings-create-wallet',
-    walletPhrase: 'settings-wallet-phrase',
     checkPassword: 'settings-wallet-check-password',
     manageWallet: 'settings-wallet-manage',
     removeWallet: 'settings-wallet-remove',
-    privateKey: 'settings-wallet-private-key',
     importWallet: 'settings-wallet-import',
     importAccount: 'settings-wallet-import-account',
     importPhrase: 'settings-wallet-import-phrase',
     connectedSites: 'settings-connected-sites',
     security: 'settings-security',
+    personalize: 'settings-personalize',
   },
 
   ////////////////////////////

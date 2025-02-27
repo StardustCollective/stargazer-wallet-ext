@@ -2,9 +2,9 @@
 // Imports
 ///////////////////////
 
-import { IAssetState, AssetBalances, ActiveNetwork } from 'state/vault/types';
+import { IAssetState, ActiveNetwork } from 'state/vault/types';
 import { IAssetInfoState } from 'state/assets/types';
-import { IFiatState } from 'state/price/types';
+import { IFiatAssetState } from 'state/price/types';
 
 export type IAssetLogo = {
   logo: string | React.Component;
@@ -18,9 +18,10 @@ export default interface IAssetItem {
   asset: IAssetState;
   assetInfo: IAssetInfoState;
   itemClicked: () => void;
-  balances?: AssetBalances;
-  fiat?: IFiatState;
+  balance?: string;
+  assetPrice?: IFiatAssetState;
   showNetwork?: boolean;
   showPrice?: boolean;
   activeNetwork?: ActiveNetwork;
+  loading?: boolean;
 }

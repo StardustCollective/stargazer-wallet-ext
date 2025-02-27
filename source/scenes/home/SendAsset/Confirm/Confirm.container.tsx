@@ -69,11 +69,12 @@ import walletSelectors from 'selectors/walletsSelectors';
 
 import { initialState as initialStateAssets } from 'state/assets';
 import { StargazerExternalPopups } from 'scripts/Background/messaging';
-import Confirm from './Confirm';
 import { DEFAULT_LANGUAGE } from 'constants/index';
+import Confirm from './Confirm';
 
 const BITFI_PAGE = 'bitfi';
 const LEDGER_PAGE = 'ledger';
+export const DAG_SMALL_FEE = 0.002;
 
 ///////////////////////////
 // Container
@@ -81,6 +82,8 @@ const LEDGER_PAGE = 'ledger';
 
 const ConfirmContainer = () => {
   const showAlert = usePlatformAlert();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
@@ -92,6 +95,7 @@ const ConfirmContainer = () => {
   );
   let history: any;
   let isExternalRequest: boolean;
+  let isTransfer = false;
 
   if (location) {
     isExternalRequest = location.pathname.includes('confirmTransaction');
@@ -106,9 +110,14 @@ const ConfirmContainer = () => {
   const vaultActiveAsset = vault.activeAsset;
 
   if (isExternalRequest) {
+    const { data } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      isTransfer: boolean;
+    }>(location.href);
     const { to, chain, metagraphAddress } = StargazerExternalPopups.decodeLocationParams(
       location.href
     );
+
+    isTransfer = data.isTransfer;
 
     activeAsset = useSelector((state: RootState) =>
       find(state.assets, { address: Array.isArray(to) ? to[0] : to })
@@ -205,6 +214,10 @@ const ConfirmContainer = () => {
     });
   };
 
+  const getDagSmallFeeAmount = () => {
+    return Number(getFiatAmount(DAG_SMALL_FEE, 8, 'constellation-labs')).toFixed(4);
+  };
+
   const handleCancel = () => {
     if (isExternalRequest) {
       history.goBack();
@@ -243,6 +256,7 @@ const ConfirmContainer = () => {
             timestamp: Date.now(),
             amount: tempTx.amount,
             ethConfig: tempTx.ethConfig,
+            isTransfer: tempTx.isTransfer,
             onConfirmed: () => {
               // NOOP
             },
@@ -298,14 +312,26 @@ const ConfirmContainer = () => {
         if (e.message.includes('cannot send a transaction to itself')) {
           e.message = 'An address cannot send a transaction to itself';
         }
+
+        if (
+          e.message.includes('TransactionLimited') &&
+          assetInfo?.type === AssetType.Constellation
+        ) {
+          setIsModalVisible(true);
+        } else {
+          showAlert(e.message, 'danger');
+        }
         console.log('ERROR', e);
-        showAlert(e.message, 'danger');
 
-        const { message, origin } =
-          StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+        if (!location?.href) return;
 
-        if (callbackError) {
-          callbackError(message, origin, e.message);
+        if (isExternalRequest) {
+          const { message, origin } =
+            StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+
+          if (callbackError) {
+            callbackError(message, origin, e.message);
+          }
         }
       }
       console.error(e);
@@ -329,6 +355,10 @@ const ConfirmContainer = () => {
         handleConfirm={handleConfirm}
         disabled={disabled}
         isL0token={isL0token}
+        isTransfer={isTransfer}
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        getDagSmallFeeAmount={getDagSmallFeeAmount}
       />
     </Container>
   );

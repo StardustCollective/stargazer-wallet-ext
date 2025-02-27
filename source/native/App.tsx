@@ -11,6 +11,7 @@ import {Provider} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
 import {COLORS} from 'assets/styles/_variables';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
+import {ToastProvider} from '../context/ToastContext';
 
 const App = () => {
   useEffect(() => {
@@ -25,19 +26,21 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      <NativeBaseProvider>
-        <Provider store={Store}>
-          <NavigationContainer linking={linking}>
-            <StatusBar
-              translucent
-              barStyle="light-content"
-              backgroundColor={COLORS.primary}
-            />
-            <RootStack />
-          </NavigationContainer>
-        </Provider>
-      </NativeBaseProvider>
-      <FlashMessage position="top" />
+      <ToastProvider>
+        <NativeBaseProvider>
+          <Provider store={Store}>
+            <NavigationContainer linking={linking}>
+              <StatusBar
+                translucent
+                barStyle="light-content"
+                backgroundColor={COLORS.primary}
+              />
+              <RootStack />
+            </NavigationContainer>
+          </Provider>
+        </NativeBaseProvider>
+        <FlashMessage position="top" />
+      </ToastProvider>
     </SafeAreaProvider>
   );
 };

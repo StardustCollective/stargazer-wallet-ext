@@ -1,5 +1,13 @@
 import { AssetType, IWalletState } from 'state/vault/types';
 
+export const walletHasDag = (activeWallet: IWalletState): boolean => {
+  return !!getDagAddress(activeWallet);
+};
+
+export const walletHasEth = (activeWallet: IWalletState): boolean => {
+  return !!getEthAddress(activeWallet);
+};
+
 export const getEthAddress = (activeWallet: IWalletState): string | null => {
   const ethAsset =
     activeWallet?.assets?.find((asset) => asset?.id === AssetType.Ethereum) ?? null;

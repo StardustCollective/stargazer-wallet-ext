@@ -18,17 +18,17 @@ export class AccountTracker {
   private isRunning = false;
   private accounts: TokenInfo[];
   private provider: ethers.providers.JsonRpcProvider;
-  private callback: (e: string, t: TokenBalances) => void;
+  private callback: (e: string, t: TokenBalances) => Promise<void>;
   private ethAddress: string;
   private debounceTimeSec: number;
   private timeoutId: any;
 
-  config(
+  async config(
     ethAddress: string,
     rpcProviderURL: string,
     accounts: TokenInfo[],
     chainId = 1,
-    callback: (e: string, t: TokenBalances) => void,
+    callback: (e: string, t: TokenBalances) => Promise<void>,
     debounceTimeSec = 1
   ) {
     if (this.isRunning) {
@@ -42,7 +42,7 @@ export class AccountTracker {
     this.debounceTimeSec = debounceTimeSec > 0.1 ? debounceTimeSec : 1;
 
     if (!!this.ethAddress) {
-      this.start();
+      await this.start();
     } else if (this.isRunning) {
       this.stop();
     }
@@ -51,28 +51,40 @@ export class AccountTracker {
   async getTokenBalances() {
     if (!this.provider) return;
     const tokenAddresses = this.accounts.map((t) => t.contractAddress);
-    const mainTokenBalance = await this.provider.getBalance(this.ethAddress);
-    const mainTokenBalanceNum = ethers.utils.formatEther(mainTokenBalance) || '-';
     const tokenBalances: TokenBalances = {};
+    let mainTokenBalance = null;
     if (tokenAddresses?.length) {
-      const rawTokenBalances = await tokenContractHelper.getAddressBalances(
-        this.provider,
-        this.ethAddress,
-        tokenAddresses,
-        this.chainId
-      );
+      const [mainBalance, rawTokenBalances] = await Promise.all([
+        this.provider.getBalance(this.ethAddress),
+        tokenContractHelper.getAddressBalances(
+          this.provider,
+          this.ethAddress,
+          tokenAddresses,
+          this.chainId
+        ),
+      ]);
+      mainTokenBalance = mainBalance;
       this.accounts.forEach((t) => {
-        tokenBalances[`${t.contractAddress}-${t.chain}`] =
-          ethers.utils.formatUnits(rawTokenBalances[t.contractAddress], t.decimals) ||
-          '-';
+        const tokenBalance = ethers.utils.formatUnits(
+          rawTokenBalances[t.contractAddress],
+          t.decimals
+        );
+        if (!!tokenBalance) {
+          tokenBalances[`${t.contractAddress}-${t.chain}`] = tokenBalance;
+        }
       });
+    } else {
+      mainTokenBalance = await this.provider.getBalance(this.ethAddress);
     }
-    this.callback(mainTokenBalanceNum, tokenBalances);
+    const mainTokenBalanceNum = mainTokenBalance
+      ? ethers.utils.formatEther(mainTokenBalance)
+      : null;
+    await this.callback(mainTokenBalanceNum, tokenBalances);
   }
 
-  private start() {
+  private async start() {
     this.isRunning = true;
-    this.runInterval();
+    await this.runInterval();
   }
 
   private async runInterval() {
@@ -87,7 +99,7 @@ export class AccountTracker {
     }
   }
 
-  private stop() {
+  stop() {
     clearTimeout(this.timeoutId);
     this.isRunning = false;
     this.provider = null;

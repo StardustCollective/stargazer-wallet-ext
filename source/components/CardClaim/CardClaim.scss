@@ -4,11 +4,24 @@
   position: relative;
   background-color: $white;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid #9584eb;
+  border: 1px solid #4c2fb1;
   margin-bottom: 8px;
+
+  .headerContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .titleContainer {
+      .title {
+        color: #4c2fb1;
+      }
+    }
+  }
 
   .close {
     cursor: pointer;
@@ -25,37 +38,35 @@
 
   .imageContainer {
     display: flex;
-    border: 1px solid #9584eb;
+    border: 1px solid #4c2fb1;
     border-radius: 4px;
 
     .image {
-      height: 140px;
-      width: 98px;
+      height: 120px;
+      width: 70px;
       border-radius: 4px;
       object-fit: cover;
     }
   }
 
   .infoContainer {
-    margin-left: 12px;
+    margin-top: 8px;
+    margin-bottom: 16px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-grow: 1;
-
-    .titleContainer {
-      margin-bottom: 4px;
-    }
 
     .info {
       display: flex;
       flex-grow: 1;
       flex-direction: column;
+      margin-left: 16px;
 
       .infoItem {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        border-bottom: 0.3px solid lightgray;
+        align-items: center;
         padding: 2px 0px;
 
         .itemKey {
@@ -63,40 +74,82 @@
         }
 
         .itemValue {
+          color: #4c2fb1;
           font-weight: 500;
         }
-      }
 
-      .noBorder {
-        border-bottom: 0px;
-      }
-    }
+        .greenText {
+          color: #059669;
+        }
 
-    .buttonsContainer {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
+        .claimWindowItem {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
 
-      .buttonItem {
-        .button {
-          padding: 0px 12px;
-          height: 32px;
-          min-width: 90px;
+          .infoIconContainer {
+            cursor: pointer;
+            margin-left: 2px;
+            height: 20px;
+            width: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-          .buttonTitle {
-            font-size: 12px;
-            font-weight: 600;
+            .infoIcon {
+              height: 14px;
+              width: 14px;
+            }
           }
         }
+      }
 
-        .loader {
-          color: white;
-        }
-
-        .claimButton {
-          min-width: 115px;
-        }
+      .border {
+        border-bottom: 0.3px solid lightgray;
       }
     }
+  }
+
+  .buttonsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .buttonItem {
+      display: flex;
+      flex-grow: 1;
+
+      .button {
+        width: 100%;
+        height: 32px;
+
+        .buttonTitle {
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+
+      .loader {
+        color: white;
+      }
+
+      .claimButton {
+        margin-right: 6px;
+      }
+
+      .learnMoreButton {
+        margin-left: 6px;
+      }
+    }
+  }
+}
+
+.sheetHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .iconHeader {
+    margin-right: 6px;
   }
 }

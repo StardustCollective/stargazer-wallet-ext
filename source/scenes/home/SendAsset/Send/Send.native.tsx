@@ -87,8 +87,8 @@ const Send: FC<IWalletSend> = ({
 }) => {
   const [cameraOpen, setCameraOpen] = useState(false);
 
-  const InputRightButton = ({ label, onPress }) => (
-    <TouchableOpacity onPress={onPress}>
+  const InputRightButton = ({ label, onPress, disabled = false }) => (
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
       <TextV3.Caption color={COLORS_ENUMS.PRIMARY}>{label}</TextV3.Caption>
     </TouchableOpacity>
   );
@@ -157,7 +157,13 @@ const Send: FC<IWalletSend> = ({
           rightIconContainerStyle={styles.inputRightIcon}
           keyboardType={decimalPointOnAmount ? 'number-pad' : 'decimal-pad'}
           returnKeyType="done"
-          rightIcon={<InputRightButton label="MAX" onPress={handleSetMax} />}
+          rightIcon={
+            <InputRightButton
+              label="MAX"
+              disabled={!!Object.values(errors).length}
+              onPress={handleSetMax}
+            />
+          }
         />
         {activeAsset.type === AssetType.Constellation && (
           <TextInput

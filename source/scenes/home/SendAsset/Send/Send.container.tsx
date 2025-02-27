@@ -111,6 +111,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   let gas: string;
   let memo: string;
   let metagraphAddress: string;
+  let isTransfer = false;
   let history;
   let assetInfo: IAssetInfoState;
 
@@ -126,6 +127,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       metagraphAddress: any;
       chain: string;
       chainLabel: string;
+      isTransfer: boolean;
     } | null>(location.href);
 
     if (data) {
@@ -136,6 +138,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       chain = data.chain;
       feeAmount = data.fee;
       metagraphAddress = data.metagraphAddress;
+      isTransfer = data.isTransfer;
     }
 
     useEffect(() => {
@@ -314,6 +317,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       timestamp: Date.now(),
       amount: String(amount) || '0',
       fee: data.fee || gasFee,
+      isTransfer,
     };
     if (
       activeAsset?.type === AssetType.Ethereum ||
@@ -403,8 +407,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       }
 
       txFee =
-        activeAsset?.id === AssetType.Constellation ||
-        activeAsset?.id === AssetType.LedgerConstellation
+        activeAsset?.type === AssetType.Constellation ||
+        activeAsset?.type === AssetType.LedgerConstellation
           ? ethers.utils.parseUnits(fee, assetInfo.decimals)
           : ethers.utils.parseEther(gasFee.toString());
 
@@ -541,6 +545,8 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const handleSetMax = () => {
     const { balance, txFee } = getBalanceAndFees();
 
+    if (!balance || !txFee) return;
+
     let computedAmount;
 
     if (assetInfo.type === AssetType.ERC20) {
@@ -623,6 +629,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         decimalPointOnFee={decimalPointOnFee}
         networkTypeOptions={networkTypeOptions}
         basePriceId={basePriceId}
+        isTransfer={isTransfer}
       />
     </Container>
   );

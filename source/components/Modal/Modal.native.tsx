@@ -10,17 +10,17 @@ const Modal: FC<IModal> = ({
   containerStyle = {},
   onBackdropPress = undefined,
 }) => {
+  if (!visible) return null;
+
   return (
-    <View style={styles.container}>
-      <RNModal
-        isVisible={visible}
-        statusBarTranslucent
-        backdropOpacity={0.5}
-        onBackdropPress={onBackdropPress}
-      >
-        <View style={[styles.content, containerStyle]}>{children}</View>
-      </RNModal>
-    </View>
+    <RNModal
+      isVisible={visible}
+      statusBarTranslucent
+      backdropOpacity={0.5}
+      onBackdropPress={onBackdropPress}
+    >
+      <View style={[styles.content, containerStyle]}>{children}</View>
+    </RNModal>
   );
 };
 

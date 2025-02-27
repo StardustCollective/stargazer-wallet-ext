@@ -1,26 +1,20 @@
 import React, { useEffect, FC, useCallback, useMemo, useState } from 'react';
-
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-
 import { useSelector } from 'react-redux';
-import { showMessage } from 'react-native-flash-message';
 import { RootState } from 'state/store';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
-
 import { getAccountController, getContactsController } from 'utils/controllersUtils';
-
 import Container from 'components/Container';
-
 import IContactBookState from 'state/contacts/types';
 import IVaultState, { AssetType } from 'state/vault/types';
-
 import { removeEthereumPrefix } from 'utils/addressUtil';
 import ModifyContact from './ModifyContact';
-
 import { IModifyContactView } from './types';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) => {
+  const showAlert = usePlatformAlert();
   const accountController = getAccountController();
   const { type } = route.params;
   const { selected } = route.params;
@@ -81,10 +75,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
 
   const onSubmit = (data: any) => {
     if (!isValidAddress) {
-      showMessage({
-        message: 'Error: Invalid recipient address',
-        type: 'danger',
-      });
+      showAlert('Error: Invalid recipient address', 'danger');
       return;
     }
     contactsController.modifyContact(

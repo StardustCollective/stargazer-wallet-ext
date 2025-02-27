@@ -6,7 +6,8 @@ export default interface ICardClaim {
   loading: boolean;
   showError: boolean;
   claimEnabled: boolean;
+  epochsLeft: number;
   handleClaim: () => void;
   handleLearnMore: () => void;
-  handleClose: () => void;
+  handleHideCard: () => void;
 }

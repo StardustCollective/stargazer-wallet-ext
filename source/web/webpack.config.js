@@ -16,6 +16,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
 const viewsPath = path.join(__dirname, '../../views');
 const destPath = path.join(__dirname, 'extension');
@@ -23,6 +24,7 @@ const rootPath = path.join(__dirname, '../../');
 const sharedPath = path.join(__dirname, '../');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
+const uploadSentry = process.env.UPLOAD_SENTRY === 'true';
 
 const extensionReloaderPlugin = () => {
   this.apply = () => {};
@@ -41,7 +43,7 @@ const getExtensionFileType = (browser) => {
 };
 
 module.exports = {
-  devtool: false, // https://github.com/webpack/webpack/issues/1194#issuecomment-560382342
+  devtool: 'source-map', // https://github.com/webpack/webpack/issues/1194#issuecomment-560382342
 
   stats: {
     all: false,
@@ -85,6 +87,7 @@ module.exports = {
       navigation: path.resolve(sharedPath, 'navigation'),
       state: path.resolve(sharedPath, 'state'),
       constants: path.resolve(sharedPath, 'constants'),
+      context: path.resolve(sharedPath, 'context'),
       hooks: path.resolve(sharedPath, 'hooks'),
       utils: path.resolve(sharedPath, 'utils'),
       selectors: path.resolve(sharedPath, 'selectors'),
@@ -162,8 +165,6 @@ module.exports = {
   plugins: [
     // Plugin to not generate js bundle for manifest entry
     new WextManifestWebpackPlugin(),
-    // Generate sourcemaps
-    new webpack.SourceMapDevToolPlugin({ filename: false }),
     new ForkTsCheckerWebpackPlugin({
       tsconfig: path.resolve(`${rootPath}tsconfig.json`),
     }),
@@ -228,6 +229,15 @@ module.exports = {
     new CopyWebpackPlugin([{ from: `${sharedPath}assets`, to: 'assets' }]),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
+    ...(!uploadSentry
+      ? []
+      : [
+          sentryWebpackPlugin({
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            org: 'dor-technologies',
+            project: 'stargazer-wallet-web',
+          }),
+        ]),
   ],
 
   optimization: {

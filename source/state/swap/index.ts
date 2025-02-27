@@ -97,9 +97,11 @@ const SwappingState = createSlice({
   reducers: {
     rehydrate(state: ISwapState, action: PayloadAction<ISwapState>) {
       // txIds is the only key/values that are presisted for the swap state.
+      if (!action?.payload?.txIds?.length) return;
+
       return {
         ...state,
-        txIds: [...state.txIds, ...action.payload.txIds],
+        txIds: action.payload.txIds,
       };
     },
     setSwapFrom(state: ISwapState, action: PayloadAction<ISelectedCurrency>) {

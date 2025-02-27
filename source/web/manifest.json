@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Stargazer Wallet",
-  "version": "5.1.2",
+  "version": "5.1.11",
   "icons": {
     "16": "assets/icons/favicon-16.png",
     "32": "assets/icons/favicon-32.png",
@@ -11,7 +11,7 @@
   "description": "Cross-chain compatible wallet for Constellation and Ethereum",
   "homepage_url": "https://constellationnetwork.io/",
   "short_name": "stargazer-wallet-ext",
-  "permissions": ["tabs", "activeTab", "storage"],
+  "permissions": ["tabs", "activeTab", "storage", "unlimitedStorage"],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },

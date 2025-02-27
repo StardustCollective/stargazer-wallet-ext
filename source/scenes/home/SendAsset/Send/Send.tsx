@@ -25,6 +25,7 @@ const WalletSend: FC<IWalletSend> = ({
   handleGasPriceChange,
   handleClose,
   onSubmit,
+  isTransfer,
   isExternalRequest,
   isDisabled,
   isValidAddress,
@@ -118,7 +119,7 @@ const WalletSend: FC<IWalletSend> = ({
               )}
             </li>
             <li>
-              <label>{`${assetInfo.symbol} Amount`} </label>
+              <label>{isTransfer ? 'Amount' : `${assetInfo.symbol} Amount`} </label>
               <TextInput
                 type="number"
                 placeholder="Enter amount to send"
@@ -131,7 +132,12 @@ const WalletSend: FC<IWalletSend> = ({
                 variant={clsx(styles.input, styles.amount)}
               />
               {!isExternalRequest && (
-                <Button type="button" variant={styles.textBtn} onClick={handleSetMax}>
+                <Button
+                  type="button"
+                  disabled={!!Object.values(errors).length}
+                  variant={styles.textBtn}
+                  onClick={handleSetMax}
+                >
                   Max
                 </Button>
               )}
@@ -164,7 +170,7 @@ const WalletSend: FC<IWalletSend> = ({
             )}
           </ul>
           <div className={styles.status}>
-            {!!assetInfo?.priceId && (
+            {!!assetInfo?.priceId && !isTransfer && (
               <span className={styles.equalAmount}>
                 ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
               </span>

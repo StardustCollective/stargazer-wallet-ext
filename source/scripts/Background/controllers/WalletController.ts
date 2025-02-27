@@ -2,7 +2,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
 import {
   changeActiveNetwork,
-  changeActiveWallet,
   setVaultInfo,
   addLedgerWallet,
   updateWallets,
@@ -71,10 +70,12 @@ class WalletController {
       const { vault } = store.getState();
 
       try {
-        if (vault && vault.activeWallet) {
-          await this.switchWallet(vault.activeWallet.id, vault.activeWallet.label);
-        } else if (state.wallets.length) {
-          await this.switchWallet(state.wallets[0].id, state.wallets[0].label);
+        if (state.isUnlocked) {
+          if (vault && vault.activeWallet) {
+            await this.switchWallet(vault.activeWallet.id, vault.activeWallet.label);
+          } else if (state.wallets.length) {
+            await this.switchWallet(state.wallets[0].id, state.wallets[0].label);
+          }
         }
       } catch (e) {
         console.log('Error while switching wallet at login');
@@ -323,10 +324,10 @@ class WalletController {
   }
 
   async switchWallet(id: string, label?: string): Promise<void> {
-    await this.account.buildAccountAssetInfo(id, label);
-    await Promise.all([
-      this.account.getLatestTxUpdate(),
+    this.account.buildAccountAssetInfo(id, label);
+    Promise.all([
       this.account.assetsBalanceMonitor.start(),
+      this.account.getLatestTxUpdate(),
       this.account.txController.startMonitor(),
       this.nfts.fetchAllNfts(),
     ]);
@@ -440,8 +441,6 @@ class WalletController {
     this.keyringManager.logout();
     this.account.networkController = undefined;
     store.dispatch(setUnlocked(false));
-    store.dispatch(changeActiveWallet(null));
-    store.dispatch(setVaultInfo({ wallets: [], isUnlocked: false }));
     store.dispatch(setAutoLogin(false));
   }
 }

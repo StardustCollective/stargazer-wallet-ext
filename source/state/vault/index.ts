@@ -44,8 +44,8 @@ const initialState: IVaultState = {
     [AssetType.BSC]: '0',
     [AssetType.Polygon]: '0',
   },
-  activeWallet: undefined,
-  activeAsset: undefined,
+  activeWallet: null,
+  activeAsset: null,
   activeNetwork: {
     // 349: New network should be added here.
     [KeyringNetwork.Constellation]: DAG_NETWORK.main2.id,
@@ -164,14 +164,16 @@ const VaultState = createSlice({
     updateRewards(state: IVaultState, action: PayloadAction<{ txs: Reward[] }>) {
       state.activeAsset.rewards = action.payload.txs;
     },
+    resetBalances(state: IVaultState) {
+      state.balances = {};
+    },
     updateBalances(
       state: IVaultState,
       action: PayloadAction<{ [assetKey: string]: string }>
     ) {
-      state.balances = {
-        ...state.balances,
-        ...action.payload,
-      };
+      for (const key in action.payload) {
+        state.balances[key] = action.payload[key];
+      }
     },
     addActiveWalletAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
       state.activeWallet.assets = state.activeWallet.assets.concat([action.payload]);
@@ -230,6 +232,7 @@ export const {
   updateTransactions,
   setLoadingTransactions,
   updateRewards,
+  resetBalances,
   updateBalances,
   addActiveWalletAsset,
   removeActiveWalletAsset,

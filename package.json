@@ -13,6 +13,7 @@
     "dev:chrome": "yarn workspace extension dev:chrome",
     "dev:firefox": "yarn workspace extension dev:firefox",
     "build:chrome": "yarn workspace extension build:chrome",
+    "build:chrome:prod": "yarn workspace extension build:chrome:prod",
     "build:firefox": "yarn workspace extension build:firefox",
     "build": "yarn workspace extension build",
     "test:e2e:chrome": "yarn workspace extension test:e2e:chrome",

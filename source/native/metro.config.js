@@ -15,6 +15,7 @@ const extraNodeModules = {
   hooks: path.resolve(__dirname + '/../hooks'),
   components: path.resolve(__dirname + '/../components'),
   constants: path.resolve(__dirname + '/../constants'),
+  context: path.resolve(__dirname + '/../context'),
   selectors: path.resolve(__dirname + '/../selectors'),
   state: path.resolve(__dirname + '/../state'),
   types: path.resolve(__dirname + '/../types'),

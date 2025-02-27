@@ -47,4 +47,5 @@ export interface ITransactionInfo {
   ethConfig?: IETHTxConfig;
   nonce?: number;
   onConfirmed?: () => void;
+  isTransfer?: boolean;
 }

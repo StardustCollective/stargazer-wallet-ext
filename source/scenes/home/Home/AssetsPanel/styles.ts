@@ -24,6 +24,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#5B36D3',
   },
+  toastMessage2: {
+    fontWeight: '500',
+  },
 });
 
 export default styles;
