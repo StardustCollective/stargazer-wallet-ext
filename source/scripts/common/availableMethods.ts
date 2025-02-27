@@ -49,6 +49,8 @@ enum AvailableMethods {
   dag_sendTransaction = 'dag_sendTransaction',
   dag_getPendingTransaction = 'dag_getPendingTransaction',
   dag_getTransaction = 'dag_getTransaction',
+  dag_allowSpend = 'dag_allowSpend',
+  dag_tokenLock = 'dag_tokenLock',
 
   /* Wallet */
   wallet_switchEthereumChain = 'wallet_switchEthereumChain',

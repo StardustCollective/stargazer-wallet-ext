@@ -23,6 +23,8 @@ import {
   dag_getMetagraphTransaction,
   wallet_watchAsset,
   dag_getMetagraphPendingTransaction,
+  dag_allowSpend,
+  dag_tokenLock,
 } from './methods';
 
 export class ConstellationProvider implements IRpcChainRequestHandler {
@@ -86,6 +88,10 @@ export class ConstellationProvider implements IRpcChainRequestHandler {
         return dag_getMetagraphPendingTransaction(request, message, sender);
       case AvailableMethods.wallet_watchAsset:
         return wallet_watchAsset(request, message, sender);
+      case AvailableMethods.dag_allowSpend:
+        return dag_allowSpend(request, message, sender);
+      case AvailableMethods.dag_tokenLock:
+        return dag_tokenLock(request, message, sender);
 
       default:
         throw new Error('Unsupported non-proxied method');
