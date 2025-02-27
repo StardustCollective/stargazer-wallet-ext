@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   ALKIMI_LOGO,
   AVALANCHE_LOGO,
-  BASE_LOGO,
   BSC_LOGO,
   CONSTELLATION_LOGO,
   DOR_LOGO,
@@ -20,7 +19,7 @@ import IAssetListState, { IAssetInfoState } from './types';
 export const initialState: IAssetListState = {
   [AssetType.Ethereum]: {
     id: AssetType.Ethereum,
-    label: 'Ethereum',
+    label: 'ETH',
     type: AssetType.Ethereum,
     symbol: AssetSymbol.ETH,
     address: '',
@@ -32,7 +31,7 @@ export const initialState: IAssetListState = {
   },
   [AssetType.Constellation]: {
     id: AssetType.Constellation,
-    label: 'Constellation',
+    label: 'DAG',
     type: AssetType.Constellation,
     symbol: AssetSymbol.DAG,
     address: '',
@@ -71,7 +70,7 @@ export const initialState: IAssetListState = {
   [AssetType.Avalanche]: {
     id: AssetType.Avalanche,
     address: '',
-    label: 'Avalanche',
+    label: 'AVAX',
     symbol: AssetSymbol.AVAX,
     type: AssetType.Ethereum,
     priceId: 'avalanche-2',
@@ -93,8 +92,8 @@ export const initialState: IAssetListState = {
   [AssetType.Polygon]: {
     id: AssetType.Polygon,
     address: '',
-    label: 'Polygon',
-    symbol: AssetSymbol.MATIC,
+    label: 'POL',
+    symbol: AssetSymbol.POL,
     type: AssetType.Ethereum,
     priceId: 'matic-network',
     network: 'matic',
@@ -104,12 +103,12 @@ export const initialState: IAssetListState = {
   [AssetType.Base]: {
     id: AssetType.Base,
     address: '',
-    label: 'Base',
+    label: 'Base ETH',
     symbol: AssetSymbol.BASE,
     type: AssetType.Ethereum,
     priceId: 'ethereum',
     network: 'base-mainnet',
-    logo: BASE_LOGO,
+    logo: ETHEREUM_LOGO,
     decimals: 18,
   },
   '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet': {
@@ -134,17 +133,6 @@ export const initialState: IAssetListState = {
     logo: VE_LTX_LOGO,
     decimals: 18,
   },
-  '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic': {
-    id: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic',
-    address: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6',
-    label: 'JennyCo',
-    symbol: 'JCO',
-    type: AssetType.ERC20,
-    priceId: 'jennyco',
-    network: 'matic',
-    logo: JENNYCO_LOGO,
-    decimals: 18,
-  },
   '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet': {
     id: '0x3106a0a076BeDAE847652F42ef07FD58589E001f-mainnet',
     address: '0x3106a0a076BeDAE847652F42ef07FD58589E001f',
@@ -165,6 +153,17 @@ export const initialState: IAssetListState = {
     priceId: 'geojam',
     network: 'mainnet',
     logo: GEOJAM_LOGO,
+    decimals: 18,
+  },
+  '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic': {
+    id: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6-matic',
+    address: '0x8105f88e77a5d102099bf73db4469d3f1e3b0cd6',
+    label: 'JennyCo',
+    symbol: 'JCO',
+    type: AssetType.ERC20,
+    priceId: 'jennyco',
+    network: 'matic',
+    logo: JENNYCO_LOGO,
     decimals: 18,
   },
 };
@@ -191,7 +190,11 @@ const AssetListState = createSlice({
       state: IAssetListState,
       action: PayloadAction<{ assetId: string; decimals: number }>
     ) {
-      if (action.payload.assetId && action.payload.decimals) {
+      if (
+        action.payload.assetId &&
+        action.payload.decimals &&
+        !!state[action.payload.assetId]
+      ) {
         state[action.payload.assetId].decimals = action.payload.decimals;
       }
     },

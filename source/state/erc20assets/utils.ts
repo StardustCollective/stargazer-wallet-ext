@@ -92,7 +92,7 @@ export const mapSearchAssetsToArray = (
           };
           // 349: New network should be added here.
           if (
-            (newItem.symbol === AssetSymbol.MATIC && newItem.network === 'matic') ||
+            (newItem.symbol === AssetSymbol.POL && newItem.network === 'matic') ||
             (newItem.symbol === AssetSymbol.AVAX &&
               newItem.network === 'avalanche-mainnet') ||
             (newItem.symbol === AssetSymbol.BNB && newItem.network === 'bsc')

@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   assetIcon: {
+    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
@@ -18,6 +19,19 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.16)',
+  },
+  networkIcon: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    position: 'absolute',
+    right: -4,
+    bottom: 0,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.16)',
+    backgroundColor: 'white',
   },
   toggleContainer: {
     alignItems: 'flex-end',
@@ -26,7 +40,7 @@ const styles = StyleSheet.create({
   assetInfo: {
     flexGrow: 1,
     justifyContent: 'center',
-    marginLeft: 12,
+    marginLeft: 16,
   },
 });
 

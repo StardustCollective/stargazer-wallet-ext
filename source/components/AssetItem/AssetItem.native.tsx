@@ -45,6 +45,9 @@ import IAssetItem, { IAssetLogo } from './types';
 
 import styles from './styles';
 
+import { getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { CONSTELLATION_LOGO } from 'constants/index';
+
 ///////////////////////
 // Component
 ///////////////////////
@@ -82,6 +85,15 @@ const AssetItem: FC<IAssetItem> = ({
       );
     }
     return null;
+  };
+
+  const renderNetworkLogo = () => {
+    const logoURL =
+      assetInfo.type === AssetType.Constellation
+        ? CONSTELLATION_LOGO
+        : getNetworkLogo(assetInfo.network);
+
+    return <Image source={{ uri: logoURL }} style={styles.networkLogo} />;
   };
 
   const renderAssetNetwork = () => {
@@ -141,6 +153,7 @@ const AssetItem: FC<IAssetItem> = ({
     <Card style={styles.cardContainer} onClick={itemClicked}>
       <View style={styles.assetIcon}>
         <AssetIcon logo={assetInfo?.logo} />
+        {renderNetworkLogo()}
       </View>
       <View style={styles.assetName}>
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>

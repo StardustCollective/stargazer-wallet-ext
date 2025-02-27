@@ -249,11 +249,6 @@ class NetworkController {
 
   public async getTokenInfo(address: string, chainId?: string) {
     let provider;
-    try {
-      provider = this.getProviderByActiveAsset();
-    } catch (err) {
-      console.log('Error: getTokenInfo - provider not found.');
-    }
     if (!!chainId) {
       const network = getNetworkFromChainId(chainId);
       const networkToProvider = {
@@ -264,6 +259,12 @@ class NetworkController {
         Base: this.#baseNetwork,
       };
       provider = networkToProvider[network as keyof typeof networkToProvider];
+    } else {
+      try {
+        provider = this.getProviderByActiveAsset();
+      } catch (err) {
+        console.log('Error: getTokenInfo - provider not found.');
+      }
     }
     return provider.getTokenInfo(address);
   }

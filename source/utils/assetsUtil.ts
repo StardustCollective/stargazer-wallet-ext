@@ -14,13 +14,13 @@ export const BASE_FULL_ASSET = initialStateAssets[AssetType.Base];
 export const ETH_WALLET_ASSET = {
   id: AssetType.Ethereum,
   type: AssetType.Ethereum,
-  label: 'Ethereum',
+  label: 'ETH',
 };
 
 export const MATIC_WALLET_ASSET = {
   id: AssetType.Polygon,
   type: AssetType.Ethereum,
-  label: 'Polygon',
+  label: 'POL',
 };
 
 export const BNB_WALLET_ASSET = {
@@ -32,13 +32,13 @@ export const BNB_WALLET_ASSET = {
 export const AVAX_WALLET_ASSET = {
   id: AssetType.Avalanche,
   type: AssetType.Ethereum,
-  label: 'Avalanche',
+  label: 'AVAX',
 };
 
 export const BASE_WALLET_ASSET = {
   id: AssetType.Base,
   type: AssetType.Ethereum,
-  label: 'Base',
+  label: 'Base ETH',
 };
 
 export const CHAIN_FULL_ASSET = {

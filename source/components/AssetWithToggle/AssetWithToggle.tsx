@@ -37,7 +37,8 @@ import styles from './AssetWithToggle.scss';
 const AssetWithToggle: FC<IAssetWithToggle> = ({
   id,
   symbol,
-  network,
+  networkLogo,
+  networkLabel,
   logo,
   selected,
   disabled = false,
@@ -45,19 +46,20 @@ const AssetWithToggle: FC<IAssetWithToggle> = ({
 }: IAssetWithToggle) => {
   return (
     <Card
-      key={`AssetWithToggle-${id}-${network}`}
-      id={`AssetWithToggle-${id}-${network}`}
+      key={`AssetWithToggle-${id}-${networkLabel}`}
+      id={`AssetWithToggle-${id}-${networkLabel}`}
       disabled
       style={styles.cardContainer}
     >
       <div className={styles.container}>
         <div className={styles.assetIcon}>
           <img className={styles.imageIcon} src={logo} alt="token icon" />
+          <img className={styles.networkIcon} src={networkLogo} alt="network logo" />
         </div>
         <div className={styles.assetInfo}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.CaptionStrong>
           <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-            {!!network && `${network}`}
+            {!!networkLabel && `${networkLabel}`}
           </TextV3.Caption>
         </div>
         <div className={styles.toggleContainer}>

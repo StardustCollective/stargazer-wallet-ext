@@ -38,7 +38,7 @@ export enum AssetSymbol {
   // 349: New network should be added here.
   DAG = 'DAG',
   ETH = 'ETH',
-  MATIC = 'MATIC',
+  POL = 'POL',
   AVAX = 'AVAX',
   BNB = 'BNB',
   BASE = 'BASE_ETH',

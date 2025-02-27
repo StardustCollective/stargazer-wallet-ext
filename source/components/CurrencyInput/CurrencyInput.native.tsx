@@ -44,6 +44,7 @@ const CurrencyInput: FC<ICurrencyInput> = ({
   value,
   onChangeText,
   source,
+  networkIcon,
   onPress,
   tickerValue,
   editable = true,
@@ -61,11 +62,18 @@ const CurrencyInput: FC<ICurrencyInput> = ({
         />
       </View>
       <TouchableOpacity onPress={onPress} style={styles.swapInputRightBlock}>
-        <Image
-          source={source}
-          defaultSource={imagePlaceholder}
-          style={styles.currencyIcon}
-        />
+        <View style={styles.currencyIconContainer}>
+          <Image
+            source={{ uri: source }}
+            defaultSource={imagePlaceholder}
+            style={styles.currencyIcon}
+          />
+          <Image
+            source={{ uri: networkIcon }}
+            defaultSource={imagePlaceholder}
+            style={styles.networkIcon}
+          />
+        </View>
         <TextV3.Body extraStyles={styles.swapInputTickerText} color={COLORS_ENUMS.BLACK}>
           {tickerValue}
         </TextV3.Body>

@@ -37,6 +37,9 @@ import IAssetItem from './types';
 
 import styles from './AssetItem.scss';
 import LoadingDots from 'components/LoadingDots';
+import { getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { AssetType } from 'state/vault/types';
+import { CONSTELLATION_LOGO } from 'constants/index';
 
 ///////////////////////
 // Component
@@ -64,6 +67,15 @@ const AssetItem: FC<IAssetItem> = ({
         <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{networkLabel}</TextV3.Caption>
       </div>
     );
+  };
+
+  const renderNetworkLogo = () => {
+    const logoURL =
+      assetInfo.type === AssetType.Constellation
+        ? CONSTELLATION_LOGO
+        : getNetworkLogo(assetInfo.network);
+
+    return <img className={styles.networkLogo} src={logoURL} alt="network logo" />;
   };
 
   const renderAssetPrice = () => {
@@ -116,6 +128,7 @@ const AssetItem: FC<IAssetItem> = ({
             ) : (
               <img src={`/${assetInfo.logo}`} alt="asset logo" />
             )}
+            {renderNetworkLogo()}
           </div>
           <div className={styles.assetName}>
             <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>

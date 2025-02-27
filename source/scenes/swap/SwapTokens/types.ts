@@ -1,4 +1,4 @@
-import { ISearchCurrency, ICurrencyRate } from 'state/swap/types';
+import { ISearchCurrency, ICurrencyRate, ICurrencyNetwork } from 'state/swap/types';
 
 export interface ISwapTokensContainer {
   navigation: any;
@@ -8,6 +8,8 @@ export interface ISwapTokensContainer {
 export default interface ISwapTokens {
   selectedCurrencySwapFrom: ISearchCurrency;
   selectedCurrencySwapTo: ISearchCurrency;
+  selectedNetworkSwapFrom: ICurrencyNetwork;
+  selectedNetworkSwapTo: ICurrencyNetwork;
   onNextPressed: () => void;
   onSwapFromTokenListPressed: () => void;
   onSwapToTokenListPressed: () => void;

@@ -1,7 +1,8 @@
 export default interface IAssetWithToggle {
   id?: string;
   logo: string;
-  network: string;
+  networkLogo: string;
+  networkLabel: string;
   symbol: string;
   label: string;
   selected: boolean;

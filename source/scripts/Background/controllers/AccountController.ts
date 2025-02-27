@@ -113,7 +113,7 @@ export class AccountController {
           walletInfo.type === KeyringWalletType.LedgerAccountWallet
             ? AssetType.LedgerConstellation
             : AssetType.Constellation,
-        label: 'Constellation',
+        label: 'DAG',
         address: account.address,
       };
 
@@ -132,7 +132,7 @@ export class AccountController {
       const ethAsset = {
         id: AssetType.Ethereum,
         type: AssetType.Ethereum,
-        label: 'Ethereum',
+        label: 'ETH',
         address: account.address,
       };
 
@@ -191,7 +191,7 @@ export class AccountController {
     const avaxAsset = {
       id: AssetType.Avalanche,
       type: AssetType.Ethereum,
-      label: 'Avalanche',
+      label: 'AVAX',
       address,
     };
 
@@ -205,16 +205,20 @@ export class AccountController {
     const polygonAsset = {
       id: AssetType.Polygon,
       type: AssetType.Ethereum,
-      label: 'Polygon',
+      label: 'POL',
       address,
     };
 
     const baseAsset = {
       id: AssetType.Base,
       type: AssetType.Ethereum,
-      label: 'Base',
+      label: 'Base ETH',
       address,
     };
+
+    if (tokens.includes(baseAsset.id)) {
+      networkAssets.push(baseAsset);
+    }
 
     if (tokens.includes(avaxAsset.id)) {
       networkAssets.push(avaxAsset);
@@ -226,10 +230,6 @@ export class AccountController {
 
     if (tokens.includes(polygonAsset.id)) {
       networkAssets.push(polygonAsset);
-    }
-
-    if (tokens.includes(baseAsset.id)) {
-      networkAssets.push(baseAsset);
     }
 
     return networkAssets;
