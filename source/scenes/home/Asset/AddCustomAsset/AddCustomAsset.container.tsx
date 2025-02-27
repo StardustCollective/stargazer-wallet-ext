@@ -37,6 +37,7 @@ import { removeEthereumPrefix } from 'utils/addressUtil';
 import screens from 'navigation/screens';
 import {
   AVALANCHE_LOGO,
+  BASE_LOGO,
   BSC_LOGO,
   CONSTELLATION_LOGO,
   DAG_NETWORK,
@@ -366,6 +367,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO },
       { value: 'bsc', label: 'Binance Smart Chain', icon: BSC_LOGO },
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
+      { value: 'base-mainnet', label: 'Base', icon: BASE_LOGO },
     ],
     onClick: navigateToSingleSelect,
   };

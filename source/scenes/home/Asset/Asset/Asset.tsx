@@ -75,7 +75,6 @@ const StyledTab = withStyles(() =>
 const AssetDetail: FC<IAssetSettings> = ({
   activeWallet,
   activeAsset,
-  activeNetwork,
   balanceText,
   fiatAmount,
   showQrCode,
@@ -127,7 +126,6 @@ const AssetDetail: FC<IAssetSettings> = ({
             asset={assets[activeAsset?.id]}
             textTooltip={textTooltip}
             copyAddress={copyAddress}
-            activeNetwork={activeNetwork}
           />
           {showRewardsTab ? (
             <>

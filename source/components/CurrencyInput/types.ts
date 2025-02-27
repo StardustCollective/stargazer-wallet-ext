@@ -5,6 +5,7 @@ export default interface ICurrencyInput {
   placeholder: string;
   value: string;
   source?: any;
+  networkIcon?: string;
   onPress: () => void;
   tickerValue: string;
   containerStyle?: string;

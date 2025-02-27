@@ -40,6 +40,7 @@ import styles from './styles';
 
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import Contact from 'scenes/home/Contacts';
+import { trimTrailingZeros, fixedStringNumber, smallestPowerOfTen } from 'utils/number';
 
 ///////////////////////////
 // Constants
@@ -84,8 +85,12 @@ const Send: FC<IWalletSend> = ({
   decimalPointOnFee,
   networkTypeOptions,
   basePriceId,
+  digits,
 }) => {
   const [cameraOpen, setCameraOpen] = useState(false);
+
+  const gasFeeFixed = trimTrailingZeros(gasFee.toFixed(18));
+  const steps = smallestPowerOfTen(gasPrices[2]);
 
   const InputRightButton = ({ label, onPress, disabled = false }) => (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
@@ -215,8 +220,8 @@ const Send: FC<IWalletSend> = ({
                 </View>
                 <View style={styles.gasSettingLabelRight}>
                   <Input
-                    defaultValue={gasPrice.toString()}
-                    keyboardType="number-pad"
+                    defaultValue={fixedStringNumber(gasPrice, digits)}
+                    keyboardType="decimal-pad"
                     onChange={(event) =>
                       handleGasPriceChange(null, Number(event.nativeEvent.text))
                     }
@@ -237,13 +242,16 @@ const Send: FC<IWalletSend> = ({
                   min={gasPrices[0]}
                   max={gasPrices[2]}
                   value={gasPrice}
-                  step={1}
+                  step={steps}
                 />
               </View>
             </View>
             <View style={styles.gasSettingsEstimate}>
               <TextV3.Caption color={COLORS_ENUMS.BLACK}>
-                {`${gasPrice} GWei, ${gasFee} ${nativeToken} (≈ ${getFiatAmount(
+                {`${fixedStringNumber(
+                  gasPrice,
+                  digits
+                )} GWEI, ${gasFeeFixed} ${nativeToken} (≈ ${getFiatAmount(
                   gasFee,
                   2,
                   basePriceId

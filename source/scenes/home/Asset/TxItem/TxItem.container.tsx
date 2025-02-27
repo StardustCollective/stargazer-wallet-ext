@@ -10,6 +10,7 @@ import TxItem from './TxItem';
 import GasSettings from '../GasSettings';
 import { formatDistanceDate } from '../../helpers';
 import { ITxItem } from './types';
+import { fixedNumber } from 'utils/number';
 
 const MAX_GAS_NUMBER = 200;
 
@@ -35,17 +36,25 @@ const TxItemContainer: FC<ITxItem> = ({
 
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
-  const { estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice } =
-    useGasEstimate({
-      toAddress: tx.toAddress,
-      asset: assets[activeAsset.id],
-      data: tx.data,
-      gas: tx.gas,
-    });
+  const {
+    estimateGasFee,
+    gasSpeedLabel,
+    gasFee,
+    setGasPrice,
+    gasPrices,
+    gasPrice,
+    digits,
+  } = useGasEstimate({
+    toAddress: tx.toAddress,
+    asset: assets[activeAsset?.id],
+    data: tx.data,
+    gas: tx.gas,
+  });
 
   const onGasPriceChanged = (_event: ChangeEvent<any>, value: number | number[]) => {
-    setGasPrice(value as number);
-    estimateGasFee(value as number);
+    const val = fixedNumber(value as number, digits);
+    setGasPrice(val as number);
+    estimateGasFee(val as number);
   };
 
   const onSpeedUpClick = async (gas: number) => {
@@ -114,6 +123,7 @@ const TxItemContainer: FC<ITxItem> = ({
         onCancelClick={onCancelClick}
         gasPrice={gasPrice}
         cancelError={cancelError}
+        priceId={assets[activeAsset?.id]?.priceId}
       />
     );
   };

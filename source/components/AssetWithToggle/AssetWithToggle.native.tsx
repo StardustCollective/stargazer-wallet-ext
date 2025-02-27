@@ -38,21 +38,23 @@ import styles from './styles';
 const AssetWithToggle: FC<IAssetWithToggle> = ({
   id,
   symbol,
-  network,
+  networkLogo,
+  networkLabel,
   logo,
   selected,
   disabled = false,
   toggleItem,
 }: IAssetWithToggle) => {
   return (
-    <Card style={styles.cardContainer} id={`${id}-${network}`} disabled>
+    <Card style={styles.cardContainer} id={`${id}-${networkLabel}`} disabled>
       <View style={styles.assetIcon}>
         <Image style={styles.imageIcon} source={{ uri: logo }} />
+        <Image style={styles.networkIcon} source={{ uri: networkLogo }} />
       </View>
       <View style={styles.assetInfo}>
         <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>{symbol}</TextV3.CaptionStrong>
         <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
-          {!!network && `${network}`}
+          {!!networkLabel && `${networkLabel}`}
         </TextV3.Caption>
       </View>
       <View style={styles.toggleContainer}>

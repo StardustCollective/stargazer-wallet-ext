@@ -17,10 +17,6 @@ import TextV3 from 'components/TextV3';
 ///////////////////////
 
 import { formatNumber, formatPrice } from 'scenes/home/helpers';
-import {
-  getNetworkFromChainId,
-  getNetworkLabel,
-} from 'scripts/Background/controllers/EVMChainController/utils';
 
 ///////////////////////
 // Enums
@@ -33,7 +29,6 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 ///////////////////////
 
 import { IAssetInfoState } from 'state/assets/types';
-import { AssetSymbol } from 'state/vault/types';
 import IAssetItem from './types';
 
 ///////////////////////
@@ -42,6 +37,9 @@ import IAssetItem from './types';
 
 import styles from './AssetItem.scss';
 import LoadingDots from 'components/LoadingDots';
+import { getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
+import { AssetType } from 'state/vault/types';
+import { CONSTELLATION_LOGO } from 'constants/index';
 
 ///////////////////////
 // Component
@@ -55,7 +53,7 @@ const AssetItem: FC<IAssetItem> = ({
   assetPrice,
   itemClicked,
   showNetwork,
-  activeNetwork,
+  networkLabel,
   showPrice,
   loading,
 }: IAssetItem) => {
@@ -64,26 +62,20 @@ const AssetItem: FC<IAssetItem> = ({
   ///////////////////////
 
   const renderAssetNetwork = () => {
-    let { network } = assetInfo;
-    // 349: New network should be added here.
-    if (
-      [AssetSymbol.ETH, AssetSymbol.MATIC, AssetSymbol.AVAX, AssetSymbol.BNB].includes(
-        assetInfo?.symbol as AssetSymbol
-      )
-    ) {
-      const currentNetwork = getNetworkFromChainId(network);
-      network = activeNetwork[currentNetwork as keyof typeof activeNetwork];
-    } else if (AssetSymbol.DAG === assetInfo?.symbol) {
-      network = activeNetwork.Constellation;
-    }
-
-    const label = getNetworkLabel(network);
-
     return (
       <div>
-        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{label}</TextV3.Caption>
+        <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>{networkLabel}</TextV3.Caption>
       </div>
     );
+  };
+
+  const renderNetworkLogo = () => {
+    const logoURL =
+      assetInfo.type === AssetType.Constellation
+        ? CONSTELLATION_LOGO
+        : getNetworkLogo(assetInfo.network);
+
+    return <img className={styles.networkLogo} src={logoURL} alt="network logo" />;
   };
 
   const renderAssetPrice = () => {
@@ -136,6 +128,7 @@ const AssetItem: FC<IAssetItem> = ({
             ) : (
               <img src={`/${assetInfo.logo}`} alt="asset logo" />
             )}
+            {renderNetworkLogo()}
           </div>
           <div className={styles.assetName}>
             <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>

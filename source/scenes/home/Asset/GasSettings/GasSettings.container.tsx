@@ -14,6 +14,7 @@ const GasSettingsContainer: FC<IGasSettingsProps> = ({
   gasPrice,
   gasPrices,
   cancelError,
+  priceId,
   onSliderChange,
   onSpeedUpClick,
   onCancelClick,
@@ -73,6 +74,7 @@ const GasSettingsContainer: FC<IGasSettingsProps> = ({
       gasPrice={gasPrice}
       gasPrices={gasPrices}
       cancelError={cancelError}
+      priceId={priceId}
       onSliderChange={onSliderChange}
       onSpeedUpClick={onSpeedUpClick}
       onCancelClick={onCancelClick}

@@ -29,6 +29,7 @@ import {
   QUANTITY_MUST_NUMBER,
   QUANTITY_REQUIRED,
 } from './constants';
+import { fixedNumber, smallestPowerOfTen } from 'utils/number';
 
 const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
   const { amount, logo } = route.params || {};
@@ -119,6 +120,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
     gasPrices,
     gasPrice,
     gasLimit,
+    digits,
   } = useGasNftEstimate({
     chain: selectedCollection.chain,
     contractAddress: selectedNFTData?.contract,
@@ -130,6 +132,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
 
   const onGasPriceChange = (_: any, val: number | number[]) => {
     val = Number(val) || 1;
+    val = fixedNumber(val, digits);
     setGasPrice(val as number);
     estimateGasFee(val as number);
   };
@@ -210,6 +213,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
           fee: gasFee,
           speedLabel: gasSpeedLabel,
           basePriceId: mainAsset.priceId,
+          steps: smallestPowerOfTen(gasPrices[2]),
         }}
       />
     </Container>

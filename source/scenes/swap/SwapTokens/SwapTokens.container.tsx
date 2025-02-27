@@ -255,6 +255,8 @@ const SwapTokenContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
       <SwapTokens
         selectedCurrencySwapFrom={swapFrom.currency}
         selectedCurrencySwapTo={swapTo.currency}
+        selectedNetworkSwapFrom={swapFrom.network}
+        selectedNetworkSwapTo={swapTo.network}
         onSwapFromTokenListPressed={onSwapFromTokenListPressed}
         onSwapToTokenListPressed={onSwapToTokenListPressed}
         onNextPressed={onNextPressed}

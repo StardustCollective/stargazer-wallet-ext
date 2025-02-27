@@ -17,7 +17,6 @@ import {
   AssetType,
   IAssetState,
   IVaultWalletsStoreState,
-  AssetSymbol,
 } from 'state/vault/types';
 import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
@@ -180,24 +179,26 @@ const selectActiveNetworkAssets = createSelector(
     return activeWallet.assets.filter((asset: IAssetState) => {
       const assetInfo = assets[asset.id];
       const assetNetwork = assetInfo?.network;
-      const assetSymbol = assetInfo?.symbol;
+      const assetId = assetInfo?.id;
       let assetNetworkType: string =
         asset.type === AssetType.Constellation
           ? KeyringNetwork.Constellation
           : getNetworkFromChainId(assetNetwork);
       // 349: New network should be added here.
-      const isDAG = assetSymbol === AssetSymbol.DAG && assetNetwork === 'both';
-      const isETH = assetSymbol === AssetSymbol.ETH && assetNetwork === 'both';
-      const isMATIC = assetSymbol === AssetSymbol.MATIC && assetNetwork === 'matic';
+      const isDAG = assetId === AssetType.Constellation && assetNetwork === 'both';
+      const isETH = assetId === AssetType.Ethereum && assetNetwork === 'both';
+      const isMATIC = assetId === AssetType.Polygon && assetNetwork === 'matic';
       const isAVAX =
-        assetSymbol === AssetSymbol.AVAX && assetNetwork === 'avalanche-mainnet';
-      const isBNB = assetSymbol === AssetSymbol.BNB && assetNetwork === 'bsc';
+        assetId === AssetType.Avalanche && assetNetwork === 'avalanche-mainnet';
+      const isBNB = assetId === AssetType.BSC && assetNetwork === 'bsc';
+      const isBase = assetId === AssetType.Base && assetNetwork === 'base-mainnet';
       return (
         isDAG ||
         isETH ||
         isMATIC ||
         isAVAX ||
         isBNB ||
+        isBase ||
         assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork]
       );
     });
