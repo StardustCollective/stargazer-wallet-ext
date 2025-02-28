@@ -91,7 +91,7 @@ export const dag_sendMetagraphDataTransaction = async (
     chainLabel: getChainLabel(),
   };
 
-  const windowSize = { width: 400, height: 828 };
+  const windowSize = { width: 390, height: 700 };
 
   await StargazerExternalPopups.executePopupWithRequestMessage(
     signatureData,

@@ -45,34 +45,70 @@
   }
 
   .content {
+    overflow: auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     flex-grow: 1;
     padding: 0px 24px;
+    padding-bottom: 16px;
   }
 
   .actions {
     display: flex;
+    flex-direction: column;
     background-color: #f9f9fb;
     justify-content: center;
     align-items: center;
-    padding: 24px;
+    padding: 16px 24px 24px 24px;
     border-top: 1px solid rgba(0, 0, 0, 0.24);
-    margin-top: 16px;
 
-    button:first-child {
-      min-width: 161px;
-      margin-right: 8px;
-      div > span {
+    .feeSection {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      gap: 8px;
+
+      .feeTitle {
+        color: #374151;
+      }
+
+      .feeRecommended {
+        font-weight: $medium;
+        color: #374151;
+      }
+
+      .feeValue {
+        color: #6b7280;
+      }
+
+      .recommendedLabel {
+        width: 130px;
+        color: #5d41d8;
         font-weight: $semibold;
       }
     }
-    button:last-child {
-      min-width: 161px;
-      margin-left: 8px;
-      div > span {
-        font-weight: $semibold;
+
+    .buttonsContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      button:first-child {
+        min-width: 161px;
+        margin-right: 8px;
+        div > span {
+          font-weight: $semibold;
+        }
+      }
+      button:last-child {
+        min-width: 161px;
+        margin-left: 8px;
+        div > span {
+          font-weight: $semibold;
+        }
       }
     }
   }

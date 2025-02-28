@@ -50,7 +50,7 @@ export const dag_tokenLock = async (
 ) => {
   validateParams(request);
 
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { activeWallet, windowUrl, windowType } = getWalletInfo();
 
   const [data] = request.params as [TokenLockData];
 
@@ -65,6 +65,8 @@ export const dag_tokenLock = async (
     spenderAddress: data.spenderAddress,
     unlockEpoch: data.unlockEpoch,
   };
+
+  const windowSize = { width: 390, height: 700 };
 
   await StargazerExternalPopups.executePopupWithRequestMessage(
     tokenLockData,

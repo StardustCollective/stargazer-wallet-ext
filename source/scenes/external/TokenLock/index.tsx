@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 import Tooltip from 'components/Tooltip';
@@ -19,6 +19,8 @@ import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { TokenLockData } from './types';
 
 const TokenLock = () => {
+  const [fee, setFee] = useState('0');
+
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
 
@@ -32,7 +34,6 @@ const TokenLock = () => {
     chainLabel,
     token,
     amount,
-    fee,
     spenderAddress,
     metagraphAddress,
     unlockEpoch,
@@ -46,7 +47,6 @@ const TokenLock = () => {
   if (!metagraphAsset || !tokenAsset) return null;
 
   const amountString = `${amount.toLocaleString()} ${token}`;
-  const feeString = fee === 0 ? 'FREE' : fee.toString();
 
   const onNegativeButtonClick = async () => {
     console.log('Reject');
@@ -116,6 +116,14 @@ const TokenLock = () => {
       logo={current?.logo}
       title="TokenLock"
       subtitle={origin}
+      fee={{
+        show: true,
+        defaultValue: '0',
+        value: fee,
+        symbol: tokenAsset.symbol,
+        disabled: false,
+        setFee,
+      }}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
     >
@@ -128,7 +136,6 @@ const TokenLock = () => {
         <Card>
           <CardRow label="Token:" value={renderTokenValue()} />
           <CardRow label="Amount:" value={amountString} />
-          <CardRow label="Fee:" value={feeString} />
           <CardRow label="Unlock Epoch:" value={unlockEpoch.toLocaleString()} />
         </Card>
         <Card>

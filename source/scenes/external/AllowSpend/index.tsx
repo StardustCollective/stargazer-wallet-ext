@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 import Tooltip from 'components/Tooltip';
@@ -19,6 +19,8 @@ import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { AllowSpendData } from './types';
 
 const AllowSpend = () => {
+  const [fee, setFee] = useState('0');
+
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
 
@@ -27,15 +29,8 @@ const AllowSpend = () => {
       location.href
     );
 
-  const {
-    walletLabel,
-    chainLabel,
-    token,
-    amount,
-    fee,
-    spenderAddress,
-    metagraphAddress,
-  } = data;
+  const { walletLabel, chainLabel, token, amount, spenderAddress, metagraphAddress } =
+    data;
 
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
@@ -45,7 +40,6 @@ const AllowSpend = () => {
   if (!metagraphAsset || !tokenAsset) return null;
 
   const amountString = `${amount.toLocaleString()} ${token}`;
-  const feeString = fee === 0 ? 'FREE' : fee.toString();
 
   const onNegativeButtonClick = async () => {
     console.log('Reject');
@@ -115,6 +109,14 @@ const AllowSpend = () => {
       logo={current?.logo}
       title="AllowSpend"
       subtitle={origin}
+      fee={{
+        show: true,
+        defaultValue: '0',
+        value: fee,
+        symbol: tokenAsset.symbol,
+        disabled: false,
+        setFee,
+      }}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
     >
@@ -127,7 +129,6 @@ const AllowSpend = () => {
         <Card>
           <CardRow label="Token:" value={renderTokenValue()} />
           <CardRow label="Amount:" value={amountString} />
-          <CardRow label="Fee:" value={feeString} />
         </Card>
         <Card>
           <CardRow label="Allowed Spender:" value={renderCopyAddress()} />

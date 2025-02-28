@@ -43,7 +43,7 @@ export const dag_allowSpend = async (
 ) => {
   validateParams(request);
 
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { activeWallet, windowUrl, windowType } = getWalletInfo();
 
   const [data] = request.params as [AllowSpendData];
 
@@ -57,6 +57,8 @@ export const dag_allowSpend = async (
     fee: data.fee,
     spenderAddress: data.spenderAddress,
   };
+
+  const windowSize = { width: 390, height: 700 };
 
   await StargazerExternalPopups.executePopupWithRequestMessage(
     allowSpendData,
