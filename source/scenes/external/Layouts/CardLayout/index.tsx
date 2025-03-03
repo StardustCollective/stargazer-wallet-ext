@@ -79,7 +79,7 @@ const CardLayout: FC<ICardLayoutProps> = ({
           <TextV3.Caption>{stepLabel}</TextV3.Caption>
         </div>
         <div className={styles.heading}>
-          <img className={styles.logo} src={current.logo} />
+          <img className={styles.logo} src={current?.logo} />
           <div className={styles.originLabel}>
             <TextV3.BodyStrong color={COLORS_ENUMS.WHITE}>
               {originDescriptionLabel}

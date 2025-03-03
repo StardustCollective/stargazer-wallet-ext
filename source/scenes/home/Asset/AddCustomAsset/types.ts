@@ -12,7 +12,8 @@ export default interface IAddCustomAsset {
   register: any;
   tokenAddress: string;
   l0endpoint: string;
-  l1endpoint: string;
+  cl1endpoint: string;
+  dl1endpoint: string;
   tokenName: string;
   tokenSymbol: string;
   tokenDecimals: string;
@@ -21,7 +22,8 @@ export default interface IAddCustomAsset {
   handleAddressScan?: (value: string) => Promise<void>;
   handleAddressChange: (value: string) => Promise<void>;
   handleL0endpointChange: (value: string) => void;
-  handleL1endpointChange: (value: string) => void;
+  handlecL1endpointChange: (value: string) => void;
+  handledL1endpointChange: (value: string) => void;
   handleNameChange: (value: string) => void;
   handleSymbolChange: (value: string) => void;
   handleDecimalsChange: (value: string) => void;

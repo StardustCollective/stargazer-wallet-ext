@@ -42,7 +42,8 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   control,
   tokenAddress,
   l0endpoint,
-  l1endpoint,
+  cl1endpoint,
+  dl1endpoint,
   tokenName,
   tokenSymbol,
   tokenDecimals,
@@ -51,7 +52,8 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
   handleAddressScan,
   handleAddressChange,
   handleL0endpointChange,
-  handleL1endpointChange,
+  handlecL1endpointChange,
+  handledL1endpointChange,
   handleNameChange,
   handleSymbolChange,
   handleDecimalsChange,
@@ -76,7 +78,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
     );
   };
 
-  const tokenAddressLabel = isL0Token ? 'Metagraph address' : 'Token address';
+  const tokenAddressLabel = isL0Token ? 'Metagraph Address' : 'Token Address';
   const tokenAddressPlaceholder = isL0Token ? 'DAG...' : '0x...';
   const tokenNamePlaceholder = isL0Token ? 'Enter token name' : 'Ethereum';
   const tokenSymbolPlaceholder = isL0Token ? 'Enter token symbol' : 'ETH';
@@ -109,45 +111,66 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
       </TextV3.Caption>
       {isL0Token && (
         <>
-          <TextInput
-            name="l0endpoint"
-            defaultValue={l0endpoint}
-            placeholder="Enter endpoint URL"
-            label="L0 endpoint"
-            control={control}
-            labelStyle={styles.label}
-            returnKeyType="done"
-            error={!!errors?.l0endpoint}
-            onChange={(text) => {
-              handleL0endpointChange(text);
-            }}
-          />
-          <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
-            {!!errors?.l0endpoint ? errors?.l0endpoint?.message : ' '}
-          </TextV3.Caption>
-          <TextInput
-            name="l1endpoint"
-            defaultValue={l1endpoint}
-            placeholder="Enter endpoint URL"
-            label="L1 endpoint"
-            control={control}
-            labelStyle={styles.label}
-            returnKeyType="done"
-            error={!!errors?.l1endpoint}
-            onChange={(text) => {
-              handleL1endpointChange(text);
-            }}
-          />
-          <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
-            {!!errors?.l1endpoint ? errors?.l1endpoint?.message : ' '}
-          </TextV3.Caption>
+          <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.endpoints}>
+            Endpoints
+          </TextV3.CaptionStrong>
+          <View style={styles.endpointsContainer}>
+            <TextInput
+              name="l0endpoint"
+              defaultValue={l0endpoint}
+              placeholder="Enter endpoint URL"
+              label="L0 Endpoint"
+              control={control}
+              labelStyle={styles.label}
+              returnKeyType="done"
+              error={!!errors?.l0endpoint}
+              onChange={(text) => {
+                handleL0endpointChange(text);
+              }}
+            />
+            <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+              {!!errors?.l0endpoint ? errors?.l0endpoint?.message : ' '}
+            </TextV3.Caption>
+            <TextInput
+              name="cl1endpoint"
+              defaultValue={cl1endpoint}
+              placeholder="Enter endpoint URL"
+              label="L1 Currency Endpoint"
+              control={control}
+              labelStyle={styles.label}
+              returnKeyType="done"
+              error={!!errors?.cl1endpoint}
+              onChange={(text) => {
+                handlecL1endpointChange(text);
+              }}
+            />
+            <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+              {!!errors?.cl1endpoint ? errors?.cl1endpoint?.message : ' '}
+            </TextV3.Caption>
+            <TextInput
+              name="dl1endpoint"
+              defaultValue={dl1endpoint}
+              placeholder="Enter endpoint URL"
+              label="L1 Data Endpoint"
+              control={control}
+              labelStyle={styles.label}
+              returnKeyType="done"
+              error={!!errors?.dl1endpoint}
+              onChange={(text) => {
+                handledL1endpointChange(text);
+              }}
+            />
+            <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
+              {!!errors?.dl1endpoint ? errors?.dl1endpoint?.message : ' '}
+            </TextV3.Caption>
+          </View>
         </>
       )}
       <TextInput
         name="tokenName"
         defaultValue={tokenName}
         placeholder={tokenNamePlaceholder}
-        label="Token name"
+        label="Token Name"
         control={control}
         labelStyle={styles.label}
         returnKeyType="done"
@@ -163,7 +186,7 @@ const AddCustomAsset: FC<IAddCustomAsset> = ({
         name="tokenSymbol"
         defaultValue={tokenSymbol}
         placeholder={tokenSymbolPlaceholder}
-        label="Token symbol"
+        label="Token Symbol"
         control={control}
         labelStyle={styles.label}
         returnKeyType="done"

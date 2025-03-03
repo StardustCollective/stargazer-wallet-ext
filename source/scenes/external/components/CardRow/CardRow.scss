@@ -1,0 +1,16 @@
+@import '~assets/styles/variables';
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  .label {
+    color: #332556;
+  }
+
+  .value {
+    color: rgba(30, 21, 50, 0.66);
+  }
+}

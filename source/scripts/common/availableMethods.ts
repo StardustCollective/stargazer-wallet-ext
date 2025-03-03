@@ -49,6 +49,8 @@ enum AvailableMethods {
   dag_sendTransaction = 'dag_sendTransaction',
   dag_getPendingTransaction = 'dag_getPendingTransaction',
   dag_getTransaction = 'dag_getTransaction',
+  dag_allowSpend = 'dag_allowSpend',
+  dag_tokenLock = 'dag_tokenLock',
 
   /* Wallet */
   wallet_switchEthereumChain = 'wallet_switchEthereumChain',
@@ -57,6 +59,8 @@ enum AvailableMethods {
   /* Metagraph */
   dag_getMetagraphBalance = 'dag_getMetagraphBalance',
   dag_sendMetagraphTransaction = 'dag_sendMetagraphTransaction',
+  dag_sendMetagraphDataTransaction = 'dag_sendMetagraphDataTransaction',
+  dag_signMetagraphDataTransaction = 'dag_signMetagraphDataTransaction',
   dag_getMetagraphPendingTransaction = 'dag_getMetagraphPendingTransaction',
   dag_getMetagraphTransaction = 'dag_getMetagraphTransaction',
 }
