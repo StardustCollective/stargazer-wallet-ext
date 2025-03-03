@@ -72,7 +72,7 @@ const AssetItem: FC<IAssetItem> = ({
           <TextV3.Caption color={COLORS_ENUMS.GRAY_100}>
             {formatPrice(assetPrice.price)}
           </TextV3.Caption>
-          {assetPrice.priceChange && (
+          {!!assetPrice?.priceChange && (
             <TextV3.Caption
               color={COLORS_ENUMS.BLACK}
               extraStyles={assetPrice.priceChange > 0 ? styles.green : styles.red}
