@@ -8,9 +8,7 @@ import store from 'state/store';
 import { getDagAddress } from 'utils/wallet';
 import { decodeFromBase64 } from 'utils/encoding';
 import { ELPACA_KEY } from 'utils/envUtil';
-
-const SECONDS_PER_EPOCH = 43;
-const EPOCHS_PER_DAY = 2010;
+import { EPOCHS_PER_DAY, SECONDS_PER_EPOCH } from 'utils/epochs';
 
 const mapElpacaInfo = (
   {

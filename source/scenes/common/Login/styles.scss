@@ -17,10 +17,15 @@
     margin-top: 24px;
   }
 
-  .logo {
+  .logoContainer {
+    display: flex;
+    flex-grow: 1;
     margin-top: 36px;
     margin-bottom: 48px;
-    width: 192px;
+
+    .logo {
+      width: 192px;
+    }
   }
 
   .restoreFromSeedLink {
@@ -33,6 +38,8 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+    margin-bottom: 48px;
+
     .inputWrapper {
       display: flex;
       width: 100%;

@@ -72,7 +72,9 @@ const Login: FC<ILogin> = ({
       >
         Welcome to <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge>
       </TextV3.HeaderLargeRegular>
-      <img src={'/' + LogoImage} className={styles.logo} alt="Stargazer" />
+      <div className={styles.logoContainer}>
+        <img src={'/' + LogoImage} className={styles.logo} alt="Stargazer" />
+      </div>
       <form onSubmit={handleSubmit((data: any) => onSubmit(data, false, storeSgw))}>
         <div className={styles.inputWrapper}>
           <TextInput

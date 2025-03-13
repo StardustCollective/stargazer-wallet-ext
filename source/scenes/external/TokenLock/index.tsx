@@ -1,28 +1,63 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
-import Tooltip from 'components/Tooltip';
 import Card from '../components/Card/Card';
 import CardRow from '../components/CardRow/CardRow';
 import TextV3 from 'components/TextV3';
-import CopyIcon from 'assets/images/svg/copy.svg';
-import { useCopyClipboard } from 'hooks/index';
 import dappSelectors from 'selectors/dappSelectors';
 import assetsSelectors from 'selectors/assetsSelectors';
 import styles from './index.scss';
-import { ellipsis } from 'scenes/home/helpers';
 import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { TokenLockData } from './types';
+import { differenceBetweenEpochs } from 'utils/epochs';
+import { toDag } from 'utils/number';
+import { IAssetInfoState } from 'state/assets/types';
+import store from 'state/store';
+import { DAG_NETWORK } from 'constants/index';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import VaultSelectors from 'selectors/vaultSelectors';
+import { dag4 } from '@stardust-collective/dag4';
+
+const renderTokenValue = (tokenAsset: IAssetInfoState) => {
+  return (
+    <div className={styles.valueContainer}>
+      <img src={tokenAsset?.logo} alt="Token logo" className={styles.logo} />
+      <TextV3.CaptionRegular extraStyles={styles.label}>
+        {tokenAsset?.symbol}
+      </TextV3.CaptionRegular>
+    </div>
+  );
+};
+
+const renderEpochValue = (epochValue: number, latestEpoch: number) => {
+  return (
+    <div className={styles.epochContainer}>
+      <TextV3.CaptionRegular extraStyles={styles.label}>
+        {epochValue.toLocaleString()}
+      </TextV3.CaptionRegular>
+      <TextV3.CaptionRegular extraStyles={styles.label}>
+        {`~ ${differenceBetweenEpochs(latestEpoch, epochValue)}`}
+      </TextV3.CaptionRegular>
+    </div>
+  );
+};
 
 const TokenLock = () => {
-  const [fee, setFee] = useState('0');
+  const assets = store.getState().assets;
 
-  const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
-  const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
+  const dagActiveNetwork = useSelector(
+    VaultSelectors.getActiveNetworkByChain(KeyringNetwork.Constellation)
+  );
+
+  const current = useSelector(dappSelectors.getCurrent);
+  const origin = current && current.origin;
+
+  // Get DAG asset information
+  const dagAsset = useSelector(assetsSelectors.getAssetBySymbol('DAG'));
 
   const { data, message } =
     StargazerExternalPopups.decodeRequestMessageLocationParams<TokenLockData>(
@@ -32,25 +67,35 @@ const TokenLock = () => {
   const {
     walletLabel,
     chainLabel,
-    token,
-    amount,
-    spenderAddress,
-    metagraphAddress,
+    currencyId,
+    amount: amountValue,
     unlockEpoch,
+    latestEpoch,
   } = data;
 
-  const current = useSelector(dappSelectors.getCurrent);
-  const origin = current && current.origin;
+  // Convert amount to DAG
+  const amount = toDag(amountValue);
 
-  const metagraphAsset = useSelector(assetsSelectors.getAssetByAddress(metagraphAddress));
-  const tokenAsset = useSelector(assetsSelectors.getAssetBySymbol(token));
-  if (!metagraphAsset || !tokenAsset) return null;
+  // Get token asset information
+  const tokenAssetByCurrency =
+    currencyId && Object.values(assets).find((asset) => asset?.address === currencyId);
 
-  const amountString = `${amount.toLocaleString()} ${token}`;
+  let tokenAsset: IAssetInfoState | null = null;
+  let tokenL1Url: string | null = null;
+
+  if (!currencyId && dagAsset) {
+    tokenAsset = dagAsset;
+    tokenL1Url = DAG_NETWORK[dagActiveNetwork]?.config?.l1Url || null;
+  } else if (tokenAssetByCurrency) {
+    tokenAsset = tokenAssetByCurrency;
+    tokenL1Url = tokenAssetByCurrency?.l1endpoint || null;
+  }
+
+  if (!tokenAsset || !tokenL1Url) return null;
+
+  const amountString = `${amount.toLocaleString()} ${tokenAsset.symbol}`;
 
   const onNegativeButtonClick = async () => {
-    console.log('Reject');
-
     StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
@@ -60,11 +105,25 @@ const TokenLock = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    console.log('Approve');
 
     try {
+
+      const tokenLockBody = {
+        source: data.source,
+        amount: data.amount,
+        unlockEpoch: data.unlockEpoch,
+        currencyId: data.currencyId,
+        tokenL1Url,
+      };
+
+      const tokenLockResponse = await dag4.account.postTokenLock(tokenLockBody);
+
+      if (!tokenLockResponse || !tokenLockResponse?.hash) {
+        throw new Error('Failed to generate signed token lock transaction');
+      }
+
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult('Approve', message);
+      StargazerWSMessageBroker.sendResponseResult(tokenLockResponse.hash, message);
     } catch (e) {
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(e, message);
@@ -73,56 +132,18 @@ const TokenLock = () => {
     window.close();
   };
 
-  const renderCopyAddress = () => {
-    return (
-      <Tooltip title={textTooltip} placement="bottom" arrow>
-        <div
-          className={styles.copyAddressContainer}
-          onClick={() => copyAddress(spenderAddress)}
-        >
-          <TextV3.CaptionStrong extraStyles={styles.copyAddress}>
-            {ellipsis(spenderAddress)}
-          </TextV3.CaptionStrong>
-          <img src={`/${CopyIcon}`} alt="Copy" />
-        </div>
-      </Tooltip>
-    );
-  };
-
-  const renderMetagraphValue = () => {
-    return (
-      <div className={styles.valueContainer}>
-        <img src={metagraphAsset.logo} alt="Metagraph logo" className={styles.logo} />
-        <TextV3.CaptionRegular extraStyles={styles.label}>
-          {metagraphAsset.label}
-        </TextV3.CaptionRegular>
-      </div>
-    );
-  };
-
-  const renderTokenValue = () => {
-    return (
-      <div className={styles.valueContainer}>
-        <img src={tokenAsset.logo} alt="Token logo" className={styles.logo} />
-        <TextV3.CaptionRegular extraStyles={styles.label}>
-          {tokenAsset.symbol}
-        </TextV3.CaptionRegular>
-      </div>
-    );
-  };
-
   return (
     <CardLayoutV3
       logo={current?.logo}
       title="TokenLock"
       subtitle={origin}
       fee={{
-        show: true,
+        show: false,
         defaultValue: '0',
-        value: fee,
+        value: '0',
         symbol: tokenAsset.symbol,
         disabled: false,
-        setFee,
+        setFee: () => {},
       }}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
@@ -131,23 +152,15 @@ const TokenLock = () => {
         <Card>
           <CardRow label="Wallet name:" value={walletLabel} />
           <CardRow label="Network:" value={chainLabel} />
-          <CardRow label="Metagraph:" value={renderMetagraphValue()} />
         </Card>
         <Card>
-          <CardRow label="Token:" value={renderTokenValue()} />
+          <CardRow label="Token:" value={renderTokenValue(tokenAsset)} />
           <CardRow label="Amount:" value={amountString} />
-          <CardRow label="Unlock Epoch:" value={unlockEpoch.toLocaleString()} />
-        </Card>
-        <Card>
-          <CardRow label="Source:" value={renderCopyAddress()} />
+          <CardRow label="Unlock Epoch:" value={renderEpochValue(unlockEpoch, latestEpoch)} />
         </Card>
         <Card>
           <TextV3.CaptionRegular extraStyles={styles.description}>
-            Allow{' '}
-            <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
-              {current?.title}
-            </TextV3.CaptionStrong>{' '}
-            to lock{' '}
+            Lock{' '}
             <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
               {amountString}
             </TextV3.CaptionStrong>{' '}

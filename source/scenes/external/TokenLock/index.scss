@@ -22,15 +22,14 @@
     }
   }
 
-  .copyAddressContainer {
-    cursor: pointer;
+  .epochContainer {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
 
-    .copyAddress {
-      color: #3e4fea;
-      margin-right: 6px;
+    .label {
+      color: rgba(30, 21, 50, 0.66);
     }
   }
 

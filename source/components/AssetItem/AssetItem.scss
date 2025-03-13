@@ -60,6 +60,9 @@ div.assetItem {
     margin-right: 12px;
 
     .assetBalance {
+      display: flex;
+      align-items: flex-end;
+      
       .balanceText {
         overflow: hidden;
         text-align: right;

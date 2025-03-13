@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 import Tooltip from 'components/Tooltip';
@@ -17,33 +17,147 @@ import {
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { AllowSpendData } from './types';
+import { toDag, toDatum } from 'utils/number';
+import { IAssetInfoState } from 'state/assets/types';
+import VaultSelectors from 'selectors/vaultSelectors';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { DAG_NETWORK } from 'constants/index';
+import { dag4 } from '@stardust-collective/dag4';
+import store from 'state/store';
+import { differenceBetweenEpochs } from 'utils/epochs';
+
+const renderMetagraphValue = (destinationInfo: {
+  isMetagraph: boolean;
+  logo: string;
+  label: string;
+}) => {
+  if (!destinationInfo?.isMetagraph) return null;
+
+  return (
+    <div className={styles.valueContainer}>
+      <img src={destinationInfo?.logo} alt="Metagraph logo" className={styles.logo} />
+      <TextV3.CaptionRegular extraStyles={styles.label}>
+        {destinationInfo?.label}
+      </TextV3.CaptionRegular>
+    </div>
+  );
+};
+
+const renderTokenValue = (tokenAsset: IAssetInfoState) => {
+  return (
+    <div className={styles.valueContainer}>
+      <img src={tokenAsset?.logo} alt="Token logo" className={styles.logo} />
+      <TextV3.CaptionRegular extraStyles={styles.label}>
+        {tokenAsset?.symbol}
+      </TextV3.CaptionRegular>
+    </div>
+  );
+};
+
+const renderEpochValue = (epochValue: number, latestEpoch: number) => {
+  return (
+    <div className={styles.epochContainer}>
+      <TextV3.CaptionRegular extraStyles={styles.label}>
+        {epochValue.toLocaleString()}
+      </TextV3.CaptionRegular>
+      <TextV3.CaptionRegular extraStyles={styles.label}>
+        {`~ ${differenceBetweenEpochs(latestEpoch, epochValue)}`}
+      </TextV3.CaptionRegular>
+    </div>
+  );
+};
+
+const renderCopyAddress = (
+  address: string,
+  textTooltip: string,
+  copyAddress: (address: string) => void
+) => {
+  return (
+    <Tooltip title={textTooltip} placement="bottom" arrow>
+      <div className={styles.copyAddressContainer} onClick={() => copyAddress(address)}>
+        <TextV3.CaptionStrong extraStyles={styles.copyAddress}>
+          {ellipsis(address)}
+        </TextV3.CaptionStrong>
+        <img src={`/${CopyIcon}`} alt="Copy" />
+      </div>
+    </Tooltip>
+  );
+};
 
 const AllowSpend = () => {
-  const [fee, setFee] = useState('0');
-
+  const assets = store.getState().assets;
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
 
+  const [feeValue, setFeeValue] = useState('0');
+
+  const current = useSelector(dappSelectors.getCurrent);
+  const dagActiveNetwork = useSelector(
+    VaultSelectors.getActiveNetworkByChain(KeyringNetwork.Constellation)
+  );
+
+  // Get token asset information
+  const dagAsset = useSelector(assetsSelectors.getAssetBySymbol('DAG'));
+
+  // Only after all hooks are called, access data
   const { data, message } =
     StargazerExternalPopups.decodeRequestMessageLocationParams<AllowSpendData>(
       location.href
     );
 
-  const { walletLabel, chainLabel, token, amount, spenderAddress, metagraphAddress } =
-    data;
+  const {
+    walletLabel,
+    chainLabel,
+    destination,
+    destinationInfo,
+    spenderInfo,
+    amount: amountValue,
+    approvers,
+    currencyId,
+    fee,
+    validUntilEpoch,
+    latestEpoch,
+  } = data;
 
-  const current = useSelector(dappSelectors.getCurrent);
+  // Convert amount and fee to DAG
+  const feeAmount = toDag(fee);
+  const amount = toDag(amountValue);
+
+  // This hook depends on currencyId, so it must come after data processing
+  // but before any conditional returns
+  const tokenAssetByCurrency =
+    currencyId && Object.values(assets).find((asset) => asset?.address === currencyId);
+
+  // After all hooks have been called, we can use derived state and conditionals
   const origin = current && current.origin;
+  const spenderAddress = approvers[0];
 
-  const metagraphAsset = useSelector(assetsSelectors.getAssetByAddress(metagraphAddress));
-  const tokenAsset = useSelector(assetsSelectors.getAssetBySymbol(token));
-  if (!metagraphAsset || !tokenAsset) return null;
+  // Determine token asset and L1 URL after all hooks have been called
+  let tokenAsset: IAssetInfoState | null = null;
+  let tokenL1Url: string | null = null;
 
-  const amountString = `${amount.toLocaleString()} ${token}`;
+  useEffect(() => {
+    if (feeAmount !== null && feeAmount !== undefined) {
+      setFeeValue(feeAmount.toString());
+    }
+  }, [feeAmount]);
+
+  if (!currencyId && dagAsset) {
+    // If no currencyId is provided, use DAG as the default currency
+    tokenAsset = dagAsset;
+    tokenL1Url = DAG_NETWORK[dagActiveNetwork]?.config?.l1Url || null;
+  } else if (tokenAssetByCurrency) {
+    tokenAsset = tokenAssetByCurrency;
+    tokenL1Url = tokenAssetByCurrency?.l1endpoint || null;
+  }
+
+  if (!tokenAsset || !tokenL1Url) {
+    return null;
+  }
+
+  const amountString = `${amount.toLocaleString()} ${tokenAsset.symbol}`;
 
   const onNegativeButtonClick = async () => {
-    console.log('Reject');
-
     StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
@@ -53,55 +167,33 @@ const AllowSpend = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    console.log('Approve');
 
     try {
+      const approveSpendBody = {
+        source: data.source,
+        destination: data.destination,
+        approvers: data.approvers,
+        amount: data.amount,
+        fee: toDatum(feeValue),
+        ...(currencyId ? { currencyId } : {}),
+        validUntilEpoch: data.validUntilEpoch,
+        tokenL1Url,
+      };
+
+      const allowSpendResponse = await dag4.account.postAllowSpend(approveSpendBody);
+
+      if (!allowSpendResponse ||  !allowSpendResponse?.hash) {
+        throw new Error('Failed to generate signed allow spend transaction');
+      }
+
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult('Approved', message);
+      StargazerWSMessageBroker.sendResponseResult(allowSpendResponse.hash, message);
     } catch (e) {
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(e, message);
     }
 
     window.close();
-  };
-
-  const renderCopyAddress = () => {
-    return (
-      <Tooltip title={textTooltip} placement="bottom" arrow>
-        <div
-          className={styles.copyAddressContainer}
-          onClick={() => copyAddress(spenderAddress)}
-        >
-          <TextV3.CaptionStrong extraStyles={styles.copyAddress}>
-            {ellipsis(spenderAddress)}
-          </TextV3.CaptionStrong>
-          <img src={`/${CopyIcon}`} alt="Copy" />
-        </div>
-      </Tooltip>
-    );
-  };
-
-  const renderMetagraphValue = () => {
-    return (
-      <div className={styles.valueContainer}>
-        <img src={metagraphAsset.logo} alt="Metagraph logo" className={styles.logo} />
-        <TextV3.CaptionRegular extraStyles={styles.label}>
-          {metagraphAsset.label}
-        </TextV3.CaptionRegular>
-      </div>
-    );
-  };
-
-  const renderTokenValue = () => {
-    return (
-      <div className={styles.valueContainer}>
-        <img src={tokenAsset.logo} alt="Token logo" className={styles.logo} />
-        <TextV3.CaptionRegular extraStyles={styles.label}>
-          {tokenAsset.symbol}
-        </TextV3.CaptionRegular>
-      </div>
-    );
   };
 
   return (
@@ -112,10 +204,10 @@ const AllowSpend = () => {
       fee={{
         show: true,
         defaultValue: '0',
-        value: fee,
+        value: feeValue,
         symbol: tokenAsset.symbol,
         disabled: false,
-        setFee,
+        setFee: setFeeValue,
       }}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
@@ -124,27 +216,39 @@ const AllowSpend = () => {
         <Card>
           <CardRow label="Wallet name:" value={walletLabel} />
           <CardRow label="Network:" value={chainLabel} />
-          <CardRow label="Metagraph:" value={renderMetagraphValue()} />
+          {destinationInfo?.isMetagraph && (
+            <CardRow label={'Metagraph:'} value={renderMetagraphValue(destinationInfo)} />
+          )}
         </Card>
         <Card>
-          <CardRow label="Token:" value={renderTokenValue()} />
+          <CardRow label="Token:" value={renderTokenValue(tokenAsset)} />
           <CardRow label="Amount:" value={amountString} />
+          <CardRow label="Valid Until Epoch:" value={renderEpochValue(validUntilEpoch, latestEpoch)} />
         </Card>
         <Card>
-          <CardRow label="Allowed Spender:" value={renderCopyAddress()} />
+          {!destinationInfo?.isMetagraph && (
+            <CardRow
+              label="Destination:"
+              value={renderCopyAddress(destination, textTooltip, copyAddress)}
+            />
+          )}
+          <CardRow
+            label="Allowed Spender:"
+            value={renderCopyAddress(spenderAddress, textTooltip, copyAddress)}
+          />
         </Card>
         <Card>
           <TextV3.CaptionRegular extraStyles={styles.description}>
             Allow{' '}
             <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
-              {current?.title}
+              {spenderInfo?.isMetagraph ? spenderInfo?.label : ellipsis(spenderAddress)}
             </TextV3.CaptionStrong>{' '}
             to spend{' '}
             <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
               {amountString}
             </TextV3.CaptionStrong>{' '}
             from your wallet. These tokens will be temporarily locked in your wallet until
-            the Metagraph spends them.
+            {spenderInfo?.isMetagraph ? ' the Metagraph spends them.' : ` it's spend.`}
           </TextV3.CaptionRegular>
         </Card>
       </div>

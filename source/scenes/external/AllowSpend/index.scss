@@ -22,6 +22,17 @@
     }
   }
 
+  .epochContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+
+    .label {
+      color: rgba(30, 21, 50, 0.66);
+    }
+  }
+
   .copyAddressContainer {
     cursor: pointer;
     display: flex;

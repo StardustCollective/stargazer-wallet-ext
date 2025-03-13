@@ -2,10 +2,9 @@ export type TokenLockData = {
   walletLabel: string;
   walletId: string;
   chainLabel: string;
-  metagraphAddress: string;
-  token: string;
+  source: string;
   amount: number;
-  fee: number;
-  spenderAddress: string;
   unlockEpoch: number;
+  latestEpoch: number;
+  currencyId?: string;
 };

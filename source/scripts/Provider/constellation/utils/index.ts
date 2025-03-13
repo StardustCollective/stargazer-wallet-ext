@@ -7,6 +7,7 @@ import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
 import { WatchAssetParameters } from '../methods/wallet_watchAsset';
 import { toDag } from 'utils/number';
 import { getAccountController } from 'utils/controllersUtils';
+import * as ethers from 'ethers';
 
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
@@ -187,16 +188,73 @@ export const fetchMetagraphBalance = async (
 };
 
 export const checkArguments = (
-  args: { type: string; value: any; name: string }[]
+  args: {
+    type: string;
+    value: any;
+    name: string;
+    optional?: boolean;
+    validations?: string[];
+  }[]
 ): void => {
-  if (args.length) {
-    for (const arg of args) {
-      if (!arg.value) {
-        throw new Error(`Argument "${arg.name}" is required`);
-      }
+  if (!args.length) return;
 
-      if (typeof arg.value !== arg.type) {
-        throw new Error(`Bad argument "${arg.name}" -> not a "${arg.type}"`);
+  const accountController = getAccountController();
+
+  const emptyValues: (undefined | null)[] = [undefined, null];
+
+  for (const arg of args) {
+    // Check if required argument is missing
+    if (emptyValues.includes(arg.value) && !arg.optional) {
+      throw new Error(`Argument "${arg.name}" is required`);
+    }
+
+    // Skip further validations if value is empty and optional
+    if (emptyValues.includes(arg.value) && arg.optional) {
+      continue;
+    }
+
+    // Type validation
+    if (!emptyValues.includes(arg.value) && typeof arg.value !== arg.type) {
+      throw new Error(`Bad argument "${arg.name}" -> not a "${arg.type}"`);
+    }
+
+    // Skip additional validations if no validations array is provided
+    if (!arg.validations || !arg.validations.length) {
+      continue;
+    }
+
+    // Apply custom validations
+    for (const validation of arg.validations) {
+      switch (validation) {
+        case 'no-zero':
+          if (arg.type === 'number' && arg.value === 0) {
+            throw new Error(`Argument "${arg.name}" cannot be zero`);
+          }
+          break;
+
+        case 'positive':
+          if (arg.type === 'number' && arg.value < 0) {
+            throw new Error(`Argument "${arg.name}" must be positive`);
+          }
+          break;
+
+        case 'negative':
+          if (arg.type === 'number' && arg.value > 0) {
+            throw new Error(`Argument "${arg.name}" must be negative`);
+          }
+          break;
+
+        case 'isDagAddress':
+          if (arg.type === 'string' && !accountController.isValidDAGAddress(arg.value)) {
+            throw new Error(`Argument "${arg.name}" must be a valid DAG address`);
+          }
+          break;
+
+        case 'isEthAddress':
+          if (arg.type === 'string' && !ethers.utils.isAddress(arg.value)) {
+            throw new Error(`Argument "${arg.name}" must be a valid ETH address`);
+          }
+          break;
       }
     }
   }
