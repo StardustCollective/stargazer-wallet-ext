@@ -42,8 +42,9 @@ const getExtensionFileType = (browser) => {
   return 'zip';
 };
 
-module.exports = {
-  devtool: 'source-map', // https://github.com/webpack/webpack/issues/1194#issuecomment-560382342
+// Common configuration for all entry points
+const commonConfig = {
+  devtool: 'source-map',
 
   stats: {
     all: false,
@@ -57,23 +58,6 @@ module.exports = {
   },
 
   mode: nodeEnv,
-
-  entry: {
-    manifest: path.join(__dirname, 'manifest.json'),
-    background: path.join(sharedPath, 'scripts/Background', 'index.ts'),
-    contentScript: path.join(sharedPath, 'scripts/ContentScript', 'index.ts'),
-    injectedScript: path.join(sharedPath, 'scripts/InjectedScript', 'index.ts'),
-    app: path.join(__dirname, 'pages/App', 'index.tsx'),
-    external: path.join(__dirname, 'pages/External', 'index.tsx'),
-    ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
-    bitfi: path.join(__dirname, 'pages/Bitfi', 'index.tsx'),
-    options: path.join(__dirname, 'pages/Options', 'index.tsx'),
-  },
-
-  output: {
-    path: path.join(destPath, targetBrowser),
-    filename: 'js/[name].bundle.js',
-  },
 
   resolve: {
     plugins: [PnpWebpackPlugin],
@@ -161,7 +145,25 @@ module.exports = {
       },
     ],
   },
+};
 
+// Configuration for UI components (popup, options, etc.)
+const uiConfig = {
+  ...commonConfig,
+  entry: {
+    manifest: path.join(__dirname, 'manifest.json'),
+    contentScript: path.join(sharedPath, 'scripts/ContentScript', 'index.ts'),
+    injectedScript: path.join(sharedPath, 'scripts/InjectedScript', 'index.ts'),
+    app: path.join(__dirname, 'pages/App', 'index.tsx'),
+    external: path.join(__dirname, 'pages/External', 'index.tsx'),
+    ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
+    bitfi: path.join(__dirname, 'pages/Bitfi', 'index.tsx'),
+    options: path.join(__dirname, 'pages/Options', 'index.tsx'),
+  },
+  output: {
+    path: path.join(destPath, targetBrowser),
+    filename: 'js/[name].bundle.js',
+  },
   plugins: [
     // Plugin to not generate js bundle for manifest entry
     new WextManifestWebpackPlugin(),
@@ -239,7 +241,6 @@ module.exports = {
           }),
         ]),
   ],
-
   optimization: {
     minimizer: [
       new TerserPlugin({
@@ -265,3 +266,59 @@ module.exports = {
     ],
   },
 };
+
+// Configuration specifically for the background script (service worker)
+const backgroundConfig = {
+  ...commonConfig,
+  target: 'webworker', // This is crucial for service workers
+  entry: {
+    background: path.join(sharedPath, 'scripts/Background', 'index.ts'),
+  },
+  output: {
+    path: path.join(destPath, targetBrowser, 'js'),
+    filename: '[name].bundle.js',
+    globalObject: 'self',
+  },
+  module: {
+    ...commonConfig.module,
+    rules: [
+      ...commonConfig.module.rules,
+      {
+        test: /\.wasm$/,
+        type: 'javascript/auto',
+        loader: 'file-loader',
+        options: {
+          name: '[name].[hash].[ext]',
+        },
+      },
+    ],
+  },
+  plugins: [
+    new ForkTsCheckerWebpackPlugin({
+      tsconfig: path.resolve(`${rootPath}tsconfig.json`),
+    }),
+    new webpack.EnvironmentPlugin(['NODE_ENV', 'TARGET_BROWSER']),
+    new webpack.DefinePlugin({
+      STARGAZER_WALLET_VERSION: JSON.stringify(
+        JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'))).version
+      ),
+      global: 'self',
+      'process.env.IS_SERVICE_WORKER': JSON.stringify(true),
+    }),
+    new DotEnv({
+      path: '../../.env',
+    }),
+    ...(!uploadSentry
+      ? []
+      : [
+          sentryWebpackPlugin({
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            org: 'dor-technologies',
+            project: 'stargazer-wallet-web',
+          }),
+        ]),
+  ],
+};
+
+// Export an array of configurations
+module.exports = [uiConfig, backgroundConfig];
