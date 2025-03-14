@@ -1,25 +1,18 @@
 // Service worker initialization
 // @ts-ignore - importScripts is available in service worker context
 if (typeof importScripts === 'function') {
-
   // Handle WebAssembly loading errors
-  self.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection in service worker:', event.reason);
-  });
+  self.addEventListener('unhandledrejection', () => {});
 
   // Initialize WebAssembly support
-  self.addEventListener('install', (event) => {
+  self.addEventListener('install', () => {
     // Skip waiting to activate the service worker immediately
     // @ts-ignore
     self.skipWaiting();
-    console.log('Service worker installed', event);
   });
 
-  self.addEventListener('activate', (event) => {
-    console.log('Service worker activated', event);
-  });
+  self.addEventListener('activate', () => {});
 }
-
 
 import store from 'state/store';
 import rehydrateStore from 'state/rehydrate';

@@ -7,12 +7,13 @@ import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import store from 'state/store';
 import { toDag } from 'utils/number';
-import { DAG_NETWORK } from 'constants/index';
+import { dag4 } from '@stardust-collective/dag4';
 
 type TokenLockData = {
   source: string;
   amount: number;
   unlockEpoch: number;
+  fee?: number;
   currencyId?: string;
 };
 
@@ -63,6 +64,13 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
       optional: true,
       validations: ['isDagAddress'],
     },
+    {
+      type: 'number',
+      value: data.fee,
+      name: 'fee',
+      optional: true,
+      validations: ['positive'],
+    },
   ];
 
   checkArguments(args);
@@ -73,6 +81,8 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
 
   const { assets, vault } = store.getState();
   const { balances } = vault;
+  const feeValue = data.fee ?? 0;
+  const totalAmount = toDag(data.amount) + toDag(feeValue);
 
   if (!!data.currencyId) {
     const currencyAsset = Object.values(assets).find(
@@ -89,13 +99,13 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
 
     const balance = balances[currencyAsset.id];
 
-    if (!balance || Number(balance) < toDag(data.amount)) {
-      throw new Error(`not enough balance for the selected currency: ${currencyAsset.symbol}`);
+    if (!balance || Number(balance) < totalAmount) {
+      throw new Error(
+        `not enough balance for the selected currency: ${currencyAsset.symbol}`
+      );
     }
   } else {
-    const dagAsset = Object.values(assets).find(
-      (asset) => asset.symbol === 'DAG'
-    );
+    const dagAsset = Object.values(assets).find((asset) => asset.symbol === 'DAG');
 
     if (!dagAsset) {
       throw new Error('DAG asset not found in the wallet');
@@ -103,19 +113,15 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
 
     const balance = balances[dagAsset.id];
 
-    if (!balance || Number(balance) < toDag(data.amount)) {
+    if (!balance || Number(balance) < totalAmount) {
       throw new Error(`not enough DAG balance`);
     }
   }
 };
 
 const getLatestEpoch = async (): Promise<number | null> => {
-  const { activeNetwork } = store.getState().vault;
-  const dagActiveNetwork = activeNetwork[KeyringNetwork.Constellation];
-  const BASE_URL = DAG_NETWORK[dagActiveNetwork].config.l0Url;
-  const response = await fetch(`${BASE_URL}/global-snapshots/latest`);
-  const responseJson = await response.json();
-  return responseJson?.value?.epochProgress ?? null;
+  const latestSnapshot = await dag4.network.l0Api.getLatestSnapshot();
+  return latestSnapshot?.value?.epochProgress ?? null;
 };
 
 export const dag_tokenLock = async (
@@ -139,6 +145,8 @@ export const dag_tokenLock = async (
     throw new Error(`Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`);
   }
 
+  const DEFAULT_FEE = 0;
+
   const tokenLockData = {
     walletLabel: activeWallet.label,
     walletId: activeWallet.id,
@@ -147,6 +155,7 @@ export const dag_tokenLock = async (
     amount: data.amount,
     currencyId: data.currencyId,
     unlockEpoch: data.unlockEpoch,
+    fee: data.fee ? data.fee : DEFAULT_FEE,
     latestEpoch,
   };
 

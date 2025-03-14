@@ -6,11 +6,12 @@ import {
 import { checkArguments, getChainId, getChainLabel, getWalletInfo } from '../utils';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { getAccountController } from 'utils/controllersUtils';
-import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
+import { DAG_EXPLORER_API_URL } from 'constants/index';
 import { MetagraphProject } from 'scenes/external/AllowSpend';
 import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
 import { toDag } from 'utils/number';
+import { dag4 } from '@stardust-collective/dag4';
 
 type AllowSpendData = {
   source: string; // Wallet address signing the transaction.
@@ -107,7 +108,9 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
 
   const { assets, vault } = store.getState();
   const { balances } = vault;
-  
+  const feeValue = data.fee ?? 0;
+  const totalAmount = toDag(data.amount) + toDag(feeValue);
+
   if (!!data.currencyId) {
     const currencyAsset = Object.values(assets).find(
       (asset) => asset.address === data.currencyId
@@ -121,14 +124,14 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     }
 
     const balance = balances[currencyAsset.id];
-    
-    if (!balance || Number(balance) < toDag(data.amount)) {
-      throw new Error(`not enough balance for the selected currency: ${currencyAsset.symbol}`);
+
+    if (!balance || Number(balance) < totalAmount) {
+      throw new Error(
+        `not enough balance for the selected currency: ${currencyAsset.symbol}`
+      );
     }
   } else {
-    const dagAsset = Object.values(assets).find(
-      (asset) => asset.symbol === 'DAG'
-    );
+    const dagAsset = Object.values(assets).find((asset) => asset.symbol === 'DAG');
 
     if (!dagAsset) {
       throw new Error('DAG asset not found in the wallet');
@@ -136,7 +139,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
 
     const balance = balances[dagAsset.id];
 
-    if (!balance || Number(balance) < toDag(data.amount)) {
+    if (!balance || Number(balance) < totalAmount) {
       throw new Error(`not enough DAG balance`);
     }
   }
@@ -174,12 +177,8 @@ const fetchMetagraphProjects = async (): Promise<MetagraphProject[]> => {
 };
 
 const getLatestEpoch = async (): Promise<number | null> => {
-  const { activeNetwork } = store.getState().vault;
-  const dagActiveNetwork = activeNetwork[KeyringNetwork.Constellation];
-  const BASE_URL = DAG_NETWORK[dagActiveNetwork].config.l0Url;
-  const response = await fetch(`${BASE_URL}/global-snapshots/latest`);
-  const responseJson = await response.json();
-  return responseJson?.value?.epochProgress ?? null;
+  const latestSnapshot = await dag4.network.l0Api.getLatestSnapshot();
+  return latestSnapshot?.value?.epochProgress ?? null;
 };
 
 const generateMetagraphInfo = (
@@ -193,9 +192,12 @@ const generateMetagraphInfo = (
     logo: '',
   };
 
-  const metagraphProject = metagraphProjects && metagraphProjects.length && metagraphProjects.find(
-    (project: MetagraphProject) => project.metagraphId === metagraphAddress
-  );
+  const metagraphProject =
+    metagraphProjects &&
+    metagraphProjects.length &&
+    metagraphProjects.find(
+      (project: MetagraphProject) => project.metagraphId === metagraphAddress
+    );
 
   if (!metagraphProject) {
     if (

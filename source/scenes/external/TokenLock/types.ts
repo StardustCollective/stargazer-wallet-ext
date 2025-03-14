@@ -6,5 +6,6 @@ export type TokenLockData = {
   amount: number;
   unlockEpoch: number;
   latestEpoch: number;
+  fee?: number;
   currencyId?: string;
 };

@@ -25,6 +25,7 @@ import { DAG_NETWORK } from 'constants/index';
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
 import { differenceBetweenEpochs } from 'utils/epochs';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 const renderMetagraphValue = (destinationInfo: {
   isMetagraph: boolean;
@@ -88,6 +89,7 @@ const AllowSpend = () => {
   const assets = store.getState().assets;
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
+  const showAlert = usePlatformAlert();
 
   const [feeValue, setFeeValue] = useState('0');
 
@@ -136,12 +138,6 @@ const AllowSpend = () => {
   let tokenAsset: IAssetInfoState | null = null;
   let tokenL1Url: string | null = null;
 
-  useEffect(() => {
-    if (feeAmount !== null && feeAmount !== undefined) {
-      setFeeValue(feeAmount.toString());
-    }
-  }, [feeAmount]);
-
   if (!currencyId && dagAsset) {
     // If no currencyId is provided, use DAG as the default currency
     tokenAsset = dagAsset;
@@ -155,6 +151,12 @@ const AllowSpend = () => {
     return null;
   }
 
+  useEffect(() => {
+    if (feeAmount !== null && feeAmount !== undefined) {
+      setFeeValue(feeAmount.toString());
+    }
+  }, [feeAmount]);
+
   const amountString = `${amount.toLocaleString()} ${tokenAsset.symbol}`;
 
   const onNegativeButtonClick = async () => {
@@ -167,7 +169,6 @@ const AllowSpend = () => {
   };
 
   const onPositiveButtonClick = async () => {
-
     try {
       const approveSpendBody = {
         source: data.source,
@@ -175,22 +176,27 @@ const AllowSpend = () => {
         approvers: data.approvers,
         amount: data.amount,
         fee: toDatum(feeValue),
-        ...(currencyId ? { currencyId } : {}),
+        currencyId: data.currencyId,
         validUntilEpoch: data.validUntilEpoch,
         tokenL1Url,
       };
 
       const allowSpendResponse = await dag4.account.postAllowSpend(approveSpendBody);
 
-      if (!allowSpendResponse ||  !allowSpendResponse?.hash) {
+      if (!allowSpendResponse || !allowSpendResponse?.hash) {
         throw new Error('Failed to generate signed allow spend transaction');
       }
 
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(allowSpendResponse.hash, message);
     } catch (e) {
-      StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(e, message);
+        showAlert(
+          `There was an error with the transaction.\nPlease try again later.`,
+          'danger'
+        );
+        StargazerExternalPopups.addResolvedParam(location.href);
+        StargazerWSMessageBroker.sendResponseError(e, message);
+        return;
     }
 
     window.close();
@@ -223,7 +229,10 @@ const AllowSpend = () => {
         <Card>
           <CardRow label="Token:" value={renderTokenValue(tokenAsset)} />
           <CardRow label="Amount:" value={amountString} />
-          <CardRow label="Valid Until Epoch:" value={renderEpochValue(validUntilEpoch, latestEpoch)} />
+          <CardRow
+            label="Valid Until Epoch:"
+            value={renderEpochValue(validUntilEpoch, latestEpoch)}
+          />
         </Card>
         <Card>
           {!destinationInfo?.isMetagraph && (

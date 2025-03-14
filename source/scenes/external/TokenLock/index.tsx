@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 import Card from '../components/Card/Card';
@@ -14,13 +14,14 @@ import {
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { TokenLockData } from './types';
 import { differenceBetweenEpochs } from 'utils/epochs';
-import { toDag } from 'utils/number';
+import { toDag, toDatum } from 'utils/number';
 import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
 import { DAG_NETWORK } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import VaultSelectors from 'selectors/vaultSelectors';
 import { dag4 } from '@stardust-collective/dag4';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 const renderTokenValue = (tokenAsset: IAssetInfoState) => {
   return (
@@ -49,6 +50,9 @@ const renderEpochValue = (epochValue: number, latestEpoch: number) => {
 const TokenLock = () => {
   const assets = store.getState().assets;
 
+  const [feeValue, setFeeValue] = useState('0');
+  const showAlert = usePlatformAlert();
+
   const dagActiveNetwork = useSelector(
     VaultSelectors.getActiveNetworkByChain(KeyringNetwork.Constellation)
   );
@@ -70,10 +74,12 @@ const TokenLock = () => {
     currencyId,
     amount: amountValue,
     unlockEpoch,
+    fee,
     latestEpoch,
   } = data;
 
-  // Convert amount to DAG
+  // Convert amount and fee to DAG
+  const feeAmount = toDag(fee);
   const amount = toDag(amountValue);
 
   // Get token asset information
@@ -93,6 +99,12 @@ const TokenLock = () => {
 
   if (!tokenAsset || !tokenL1Url) return null;
 
+  useEffect(() => {
+    if (feeAmount !== null && feeAmount !== undefined) {
+      setFeeValue(feeAmount.toString());
+    }
+  }, [feeAmount]);
+
   const amountString = `${amount.toLocaleString()} ${tokenAsset.symbol}`;
 
   const onNegativeButtonClick = async () => {
@@ -105,14 +117,13 @@ const TokenLock = () => {
   };
 
   const onPositiveButtonClick = async () => {
-
     try {
-
       const tokenLockBody = {
         source: data.source,
         amount: data.amount,
-        unlockEpoch: data.unlockEpoch,
+        fee: toDatum(feeValue),
         currencyId: data.currencyId,
+        unlockEpoch: data.unlockEpoch,
         tokenL1Url,
       };
 
@@ -125,8 +136,13 @@ const TokenLock = () => {
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(tokenLockResponse.hash, message);
     } catch (e) {
+      showAlert(
+        `There was an error with the transaction.\nPlease try again later.`,
+        'danger'
+      );
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(e, message);
+      return;
     }
 
     window.close();
@@ -138,12 +154,12 @@ const TokenLock = () => {
       title="TokenLock"
       subtitle={origin}
       fee={{
-        show: false,
+        show: true,
         defaultValue: '0',
-        value: '0',
+        value: feeValue,
         symbol: tokenAsset.symbol,
         disabled: false,
-        setFee: () => {},
+        setFee: setFeeValue,
       }}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
@@ -156,7 +172,10 @@ const TokenLock = () => {
         <Card>
           <CardRow label="Token:" value={renderTokenValue(tokenAsset)} />
           <CardRow label="Amount:" value={amountString} />
-          <CardRow label="Unlock Epoch:" value={renderEpochValue(unlockEpoch, latestEpoch)} />
+          <CardRow
+            label="Unlock Epoch:"
+            value={renderEpochValue(unlockEpoch, latestEpoch)}
+          />
         </Card>
         <Card>
           <TextV3.CaptionRegular extraStyles={styles.description}>
