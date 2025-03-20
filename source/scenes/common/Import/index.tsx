@@ -3,11 +3,12 @@ import CreatePass from './CreatePass';
 import ImportPhrase from './ImportPhrase';
 import { IMPORT_TYPE } from './ImportPhrase/ImportPhrase.container';
 
-const Import = () => {
+const Import = ({ route }: { route: any }) => {
+  const shouldNavigate = route.params.navigate;
   const [registered, setRegistered] = useState(false);
 
   return registered ? (
-    <CreatePass />
+    <CreatePass shouldNavigate={shouldNavigate} />
   ) : (
     <ImportPhrase
       type={IMPORT_TYPE.RESTORE}

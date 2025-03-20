@@ -36,12 +36,13 @@ import screens from 'navigation/screens';
 //////////////////////////
 
 import * as consts from './../consts';
+import { isNative } from 'utils/envUtil';
 
 ///////////////////////////
 // Container
 //////////////////////////
 
-const CreatePassContainer = () => {
+const CreatePassContainer = ({ shouldNavigate }: { shouldNavigate: string }) => {
   ///////////////////////////
   // Hooks
   //////////////////////////
@@ -65,7 +66,9 @@ const CreatePassContainer = () => {
       const phrase = getWalletController().onboardHelper.getSeedPhrase();
       await getWalletController().createWallet('Main Wallet', phrase, true);
       getWalletController().onboardHelper.reset();
-      navigationUtil.replace(navigation, screens.authorized.root);
+      if (shouldNavigate === 'true' || isNative) {
+        navigationUtil.replace(navigation, screens.authorized.root);
+      }
     }
   };
 
