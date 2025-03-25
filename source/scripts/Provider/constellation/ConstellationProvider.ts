@@ -25,6 +25,8 @@ import {
   dag_getMetagraphPendingTransaction,
   dag_allowSpend,
   dag_tokenLock,
+  dag_delegatedStake,
+  dag_withdrawDelegatedStake,
 } from './methods';
 
 export class ConstellationProvider implements IRpcChainRequestHandler {
@@ -92,6 +94,10 @@ export class ConstellationProvider implements IRpcChainRequestHandler {
         return dag_allowSpend(request, message, sender);
       case AvailableMethods.dag_tokenLock:
         return dag_tokenLock(request, message, sender);
+      case AvailableMethods.dag_delegatedStake:
+        return dag_delegatedStake(request, message, sender);
+      case AvailableMethods.dag_withdrawDelegatedStake:
+        return dag_withdrawDelegatedStake(request, message, sender);
 
       default:
         throw new Error('Unsupported non-proxied method');

@@ -51,6 +51,8 @@ enum AvailableMethods {
   dag_getTransaction = 'dag_getTransaction',
   dag_allowSpend = 'dag_allowSpend',
   dag_tokenLock = 'dag_tokenLock',
+  dag_delegatedStake = 'dag_delegatedStake',
+  dag_withdrawDelegatedStake = 'dag_withdrawDelegatedStake',
 
   /* Wallet */
   wallet_switchEthereumChain = 'wallet_switchEthereumChain',

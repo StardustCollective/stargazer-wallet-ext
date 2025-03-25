@@ -10,6 +10,8 @@ export * from './dag_getPendingTransaction';
 export * from './dag_getTransaction';
 export * from './dag_allowSpend';
 export * from './dag_tokenLock';
+export * from './dag_delegatedStake';
+export * from './dag_withdrawDelegatedStake';
 export * from './dag_getMetagraphBalance';
 export * from './dag_sendMetagraphTransaction';
 export * from './dag_sendMetagraphDataTransaction';

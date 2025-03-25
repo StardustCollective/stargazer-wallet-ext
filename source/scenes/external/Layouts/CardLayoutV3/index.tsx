@@ -29,6 +29,10 @@ type ICardLayoutV3Props = {
 
 const FEE_MUST_NUMBER = 'Fee must be a valid number';
 const FEE_REQUIRED = 'Fee is required';
+const FEE_TOO_BIG = 'Fee value exceeds the maximum';
+const FEE_GREATER_THAN_ZERO = 'Fee value must be greater or equal than 0';
+const MIN_FEE = 0;
+const MAX_FEE = 999999;
 
 const CardLayoutV3: FC<ICardLayoutV3Props> = ({
   logo,
@@ -53,6 +57,18 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
           if (!!val) {
             const regex = new RegExp(/^\d+(\.\d+)?$/);
             return regex.test(val);
+          }
+          return true;
+        })
+        .test('min', FEE_GREATER_THAN_ZERO, (val) => {
+          if (!!val) {
+            return Number(val) >= MIN_FEE;
+          }
+          return true;
+        })
+        .test('max', FEE_TOO_BIG, (val) => {
+          if (!!val) {
+            return Number(val) <= MAX_FEE;
           }
           return true;
         })

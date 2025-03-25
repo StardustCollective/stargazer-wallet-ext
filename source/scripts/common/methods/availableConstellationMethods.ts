@@ -77,6 +77,18 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_delegatedStake,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_withdrawDelegatedStake,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_getMetagraphBalance,
     proxied: false,
     permissions: [],
