@@ -45,6 +45,7 @@ import {
   POLYGON_LOGO,
   URL_REGEX_PATTERN,
 } from 'constants/index';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   const { customAssetForm }: IERC20AssetsListState = useSelector(
@@ -62,6 +63,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const accountController = getAccountController();
+  const showAlert = usePlatformAlert();
   const linkTo = useLinkTo();
 
   const isL0Token = [
@@ -119,8 +121,12 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       l0endpoint: yup
         .string()
         .test('validURL', 'Please enter a valid URL', (val) => {
-          const regex = new RegExp(URL_REGEX_PATTERN);
-          return regex.test(val);
+          if (!!val) {
+            const regex = new RegExp(URL_REGEX_PATTERN);
+            return regex.test(val);
+          }
+
+          return true;
         })
         .test('validNode', 'L0 endpoint not found', (val) => {
           if (!!val) {
@@ -133,8 +139,12 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       cl1endpoint: yup
         .string()
         .test('validURL', 'Please enter a valid URL', (val) => {
-          const regex = new RegExp(URL_REGEX_PATTERN);
-          return regex.test(val);
+          if (!!val) {
+            const regex = new RegExp(URL_REGEX_PATTERN);
+            return regex.test(val);
+          }
+
+          return true;
         })
         .test('validNode', 'L1 currency endpoint not found', (val) => {
           if (!!val) {
@@ -142,13 +152,16 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
           }
 
           return true;
-        })
-        .required('L1 currency endpoint is required'),
+        }),
       dl1endpoint: yup
         .string()
         .test('validURL', 'Please enter a valid URL', (val) => {
-          const regex = new RegExp(URL_REGEX_PATTERN);
-          return regex.test(val);
+          if (!!val) {
+            const regex = new RegExp(URL_REGEX_PATTERN);
+            return regex.test(val);
+          }
+
+          return true;
         })
         .test('validNode', 'L1 data endpoint not found', (val) => {
           if (!!val) {
@@ -156,8 +169,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
           }
 
           return true;
-        })
-        .required('L1 data endpoint is required'),
+        }),
       tokenName: yup.string().required('Token name is required'),
       tokenSymbol: yup
         .string()
@@ -201,9 +213,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
 
   useEffect(() => {
     const hasErrors = !!Object.keys(errors)?.length;
-    const otherChecks = isL0Token
-      ? l0endpoint === '' || cl1endpoint === '' || dl1endpoint === ''
-      : tokenDecimals === '';
+    const otherChecks = isL0Token ? l0endpoint === '' : tokenDecimals === '';
     const disabled =
       hasErrors ||
       tokenAddress === '' ||
@@ -215,8 +225,6 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     Object.keys(errors),
     tokenAddress,
     l0endpoint,
-    cl1endpoint,
-    dl1endpoint,
     tokenName,
     tokenSymbol,
     tokenDecimals,
@@ -286,43 +294,54 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
     setButtonLoading(true);
     setButtonDisabled(true);
 
-    if (!isL0Token) {
-      if (!validateAddress(tokenAddress)) {
-        setError('tokenAddress', 'invalidAddress', 'Invalid token address');
-        return;
-      }
+    try {
+      if (!isL0Token) {
+        if (!validateAddress(tokenAddress)) {
+          setError('tokenAddress', 'invalidAddress', 'Invalid token address');
+          return;
+        }
 
-      await accountController.assetsController.addCustomERC20Asset(
-        networkType,
-        tokenAddress,
-        tokenName,
-        tokenSymbol,
-        tokenDecimals
-      );
-    } else {
-      const isValidDagAddress = await accountController.isValidDAGAddress(tokenAddress);
-      const isValidMetagraphAddress = await accountController.isValidMetagraphAddress(
-        tokenAddress
-      );
-      if (!isValidDagAddress) {
-        setError('tokenAddress', 'invalidAddress', 'Invalid L0 token address');
-        return;
-      }
+        await accountController.assetsController.addCustomERC20Asset(
+          networkType,
+          tokenAddress,
+          tokenName,
+          tokenSymbol,
+          tokenDecimals
+        );
+      } else {
+        const isValidDagAddress = await accountController.isValidDAGAddress(tokenAddress);
+        const isValidMetagraphAddress = await accountController.isValidMetagraphAddress(
+          tokenAddress
+        );
+        if (!isValidDagAddress) {
+          setError('tokenAddress', 'invalidAddress', 'Invalid L0 token address');
+          return;
+        }
 
-      if (!isValidMetagraphAddress) {
-        setError('tokenAddress', 'invalidAddress', 'Metagraph address not found');
-        return;
-      }
+        if (!isValidMetagraphAddress) {
+          setError('tokenAddress', 'invalidAddress', 'Metagraph address not found');
+          return;
+        }
 
-      await accountController.assetsController.addCustomL0Token(
-        l0endpoint,
-        cl1endpoint,
-        dl1endpoint,
-        tokenAddress,
-        tokenName,
-        tokenSymbol
-      );
+        await accountController.assetsController.addCustomL0Token(
+          l0endpoint,
+          cl1endpoint,
+          dl1endpoint,
+          tokenAddress,
+          tokenName,
+          tokenSymbol
+        );
+      }
+    } catch (err) {
+      const errorMessage =
+        (err instanceof Error && err.message) ||
+        'An error occurred while adding the token';
+      showAlert(errorMessage, 'danger');
+      setButtonLoading(false);
+      setButtonDisabled(false);
+      return;
     }
+
     linkTo('/home');
     accountController.assetsController.clearCustomToken();
   };

@@ -12,7 +12,7 @@ import { dag4 } from '@stardust-collective/dag4';
 type TokenLockData = {
   source: string;
   amount: number;
-  unlockEpoch: number;
+  unlockEpoch?: number;
   fee?: number;
   currencyId?: string;
 };
@@ -55,6 +55,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
       type: 'number',
       value: data.unlockEpoch,
       name: 'unlockEpoch',
+      optional: true,
       validations: ['positive', 'no-zero'],
     },
     {
@@ -135,15 +136,20 @@ export const dag_tokenLock = async (
 
   const [data] = request.params as [TokenLockData];
 
-  const latestEpoch = await getLatestEpoch();
+  let latestEpoch = null;
 
-  if (!latestEpoch) {
-    throw new Error('Failed to fetch latest epoch. Try again later.');
+  if (data.unlockEpoch) {
+    latestEpoch = await getLatestEpoch();
+  
+    if (!latestEpoch) {
+      throw new Error('Failed to fetch latest epoch. Try again later.');
+    }
+  
+    if (data.unlockEpoch <= latestEpoch) {
+      throw new Error(`Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`);
+    }
   }
 
-  if (data.unlockEpoch && data.unlockEpoch <= latestEpoch) {
-    throw new Error(`Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`);
-  }
 
   const DEFAULT_FEE = 0;
 
@@ -158,6 +164,8 @@ export const dag_tokenLock = async (
     fee: data.fee ? data.fee : DEFAULT_FEE,
     latestEpoch,
   };
+
+  windowSize.height = 628;
 
   await StargazerExternalPopups.executePopupWithRequestMessage(
     tokenLockData,

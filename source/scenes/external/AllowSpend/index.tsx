@@ -17,7 +17,7 @@ import {
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { AllowSpendData } from './types';
-import { toDag, toDatum } from 'utils/number';
+import { formatBigNumberForDisplay, toDag, toDatum } from 'utils/number';
 import { IAssetInfoState } from 'state/assets/types';
 import VaultSelectors from 'selectors/vaultSelectors';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
@@ -92,6 +92,7 @@ const AllowSpend = () => {
   const showAlert = usePlatformAlert();
 
   const [feeValue, setFeeValue] = useState('0');
+  const [loading, setLoading] = useState(false);
 
   const current = useSelector(dappSelectors.getCurrent);
   const dagActiveNetwork = useSelector(
@@ -123,7 +124,7 @@ const AllowSpend = () => {
 
   // Convert amount and fee to DAG
   const feeAmount = toDag(fee);
-  const amount = toDag(amountValue);
+  const amount = formatBigNumberForDisplay(toDag(amountValue));
 
   // This hook depends on currencyId, so it must come after data processing
   // but before any conditional returns
@@ -169,6 +170,7 @@ const AllowSpend = () => {
   };
 
   const onPositiveButtonClick = async () => {
+    setLoading(true);
     try {
       const approveSpendBody = {
         source: data.source,
@@ -190,13 +192,14 @@ const AllowSpend = () => {
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(allowSpendResponse.hash, message);
     } catch (e) {
-        showAlert(
-          `There was an error with the transaction.\nPlease try again later.`,
-          'danger'
-        );
-        StargazerExternalPopups.addResolvedParam(location.href);
-        StargazerWSMessageBroker.sendResponseError(e, message);
-        return;
+      const errorMessage =
+        (e instanceof Error && e?.message) ||
+        'There was an error with the transaction.\nPlease try again later.';
+      showAlert(errorMessage, 'danger');
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseError(e, message);
+      setLoading(false);
+      return;
     }
 
     window.close();
@@ -215,6 +218,7 @@ const AllowSpend = () => {
         disabled: false,
         setFee: setFeeValue,
       }}
+      isPositiveButtonLoading={loading}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
     >

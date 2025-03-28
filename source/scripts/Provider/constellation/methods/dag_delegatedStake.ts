@@ -83,7 +83,7 @@ export const dag_delegatedStake = async (
     fee: 0,
   };
 
-  windowSize.height = 700;
+  windowSize.height = 728;
 
   await StargazerExternalPopups.executePopupWithRequestMessage(
     delegatedStakeData,

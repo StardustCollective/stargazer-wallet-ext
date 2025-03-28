@@ -23,6 +23,30 @@ export const toDag = (value: number | string): number => {
 };
 
 /**
+ * Formats a BigNumber value for UI display with locale formatting
+ *
+ * @param value Value to format
+ * @param minimumFractionDigits Minimum number of decimal places (default 8)
+ * @returns Formatted string with locale-specific formatting
+ */
+export const formatBigNumberForDisplay = (
+  value: number | string,
+  minimumFractionDigits: number = 0,
+  maximumFractionDigits: number = 8
+): string => {
+  // First get the fixed representation
+  const fixedValue = new BigNumber(value).toFixed();
+
+  // Convert back to number for locale formatting
+  const numberValue = Number(fixedValue);
+
+  return numberValue.toLocaleString(undefined, {
+    minimumFractionDigits,
+    maximumFractionDigits,
+  });
+};
+
+/**
  * Converts a value to a BigNumber
  *
  * @param   value  Value to convert

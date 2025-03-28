@@ -186,7 +186,7 @@ const AssetsController = (): IAssetsController => {
       );
       await accountController.assetsBalanceMonitor.start();
     } else {
-      throw new Error(`Asset with address ${address} already exists`);
+      throw new Error(`Token already exists`);
     }
   };
 
@@ -237,6 +237,8 @@ const AssetsController = (): IAssetsController => {
     if (!asset) {
       store.dispatch(addCustomAsset(newAsset));
       addAssetFn(newAsset);
+    } else {
+      throw new Error(`Token already exists`);
     }
   };
 

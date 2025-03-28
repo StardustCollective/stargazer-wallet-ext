@@ -15,7 +15,7 @@ import {
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { DelegatedStakeBody, DelegatedStakeData } from './types';
-import { toDag, toDatum } from 'utils/number';
+import { formatBigNumberForDisplay, toDag, toDatum } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
 import { usePlatformAlert } from 'utils/alertUtil';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -24,7 +24,7 @@ import { useCopyClipboard } from 'hooks/index';
 const DelegatedStakeView = () => {
   const [feeValue, setFeeValue] = useState('0');
   const [stakeData, setStakeData] = useState(null);
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
   const [isObjectCopied, copyObject] = useCopyClipboard(1000);
   const textTooltip = isObjectCopied ? 'Copied' : 'Copy object';
@@ -51,8 +51,8 @@ const DelegatedStakeView = () => {
   useEffect(() => {
     if (!stakeData) {
       const stakeData = {
-        amount: toDag(amount),
-        fee: toDag(fee) ?? 0,
+        amount: formatBigNumberForDisplay(toDag(amount)),
+        fee: formatBigNumberForDisplay(toDag(fee) ?? 0),
         nodeId,
         tokenLockRef,
       };
@@ -63,8 +63,8 @@ const DelegatedStakeView = () => {
   useEffect(() => {
     if (!!feeValue) {
       const stakeData = {
-        amount: toDag(amount),
-        fee: toDag(feeValue),
+        amount: formatBigNumberForDisplay(toDag(amount)),
+        fee: formatBigNumberForDisplay(toDag(feeValue)),
         nodeId,
         tokenLockRef,
       };
@@ -91,6 +91,7 @@ const DelegatedStakeView = () => {
   };
 
   const onPositiveButtonClick = async () => {
+    setLoading(true);
     try {
       const delegatedStakeBody: DelegatedStakeBody = {
         source,
@@ -103,7 +104,7 @@ const DelegatedStakeView = () => {
         delegatedStakeBody
       );
 
-      if (!delegatedStakeResponse || !delegatedStakeResponse?.hash) {
+      if (!delegatedStakeResponse || !delegatedStakeResponse.hash) {
         throw new Error('Failed to generate signed delegated stake transaction');
       }
 
@@ -113,11 +114,11 @@ const DelegatedStakeView = () => {
         requestMessage
       );
     } catch (e) {
-      showAlert(
-        `There was an error with the transaction.\nPlease try again later.`,
-        'danger'
-      );
-      setError(true);
+      const errorMessage =
+        (e instanceof Error && e?.message) ||
+        'There was an error with the transaction.\nPlease try again later.';
+      showAlert(errorMessage, 'danger');
+      setLoading(false);
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(e, requestMessage);
       return;
@@ -141,7 +142,7 @@ const DelegatedStakeView = () => {
         disabled: true,
         setFee: setFeeValue,
       }}
-      isPositiveButtonDisabled={error}
+      isPositiveButtonLoading={loading}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
     >

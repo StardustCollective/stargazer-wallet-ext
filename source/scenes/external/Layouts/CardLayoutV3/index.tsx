@@ -14,6 +14,7 @@ type ICardLayoutV3Props = {
   negativeButtonLabel?: string;
   positiveButtonLabel?: string;
   isPositiveButtonDisabled?: boolean;
+  isPositiveButtonLoading?: boolean;
   fee?: {
     show: boolean;
     defaultValue: string;
@@ -41,6 +42,7 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
   negativeButtonLabel = 'Reject',
   positiveButtonLabel = 'Approve',
   isPositiveButtonDisabled = false,
+  isPositiveButtonLoading = false,
   fee,
   children,
   onNegativeButtonClick,
@@ -155,7 +157,8 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
             size={BUTTON_SIZES_ENUM.MEDIUM}
             label={positiveButtonLabel}
             onClick={onPositiveButtonClick}
-            disabled={isPositiveButtonDisabled}
+            loading={isPositiveButtonLoading}
+            disabled={isPositiveButtonDisabled || isPositiveButtonLoading}
           />
         </div>
       </div>

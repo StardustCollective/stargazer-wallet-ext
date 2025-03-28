@@ -22,7 +22,7 @@ import styles from './index.scss';
 
 const WithdrawDelegatedStakeView = () => {
   const [feeValue, setFeeValue] = useState('0');
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
   const [isObjectCopied, copyObject] = useCopyClipboard(1000);
   const textTooltip = isObjectCopied ? 'Copied' : 'Copy object';
@@ -56,6 +56,7 @@ const WithdrawDelegatedStakeView = () => {
   };
 
   const onPositiveButtonClick = async () => {
+    setLoading(true);
     try {
       const withdrawDelegatedStakeBody: WithdrawDelegatedStakeBody = {
         source,
@@ -66,8 +67,8 @@ const WithdrawDelegatedStakeView = () => {
         withdrawDelegatedStakeBody
       );
 
-      if (!withdrawDelegatedStakeResponse || !withdrawDelegatedStakeResponse?.hash) {
-        throw new Error('Failed to generate signed withdraw delegated stake transaction');
+      if (!withdrawDelegatedStakeResponse || !withdrawDelegatedStakeResponse.hash) {
+        throw new Error('Withdraw delegated stake transaction failed');
       }
 
       StargazerExternalPopups.addResolvedParam(location.href);
@@ -76,11 +77,11 @@ const WithdrawDelegatedStakeView = () => {
         requestMessage
       );
     } catch (e) {
-      showAlert(
-        `There was an error with the transaction.\nPlease try again later.`,
-        'danger'
-      );
-      setError(true);
+      const errorMessage =
+        (e instanceof Error && e?.message) ||
+        'There was an error with the transaction.\nPlease try again later.';
+      showAlert(errorMessage, 'danger');
+      setLoading(false);
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(e, requestMessage);
       return;
@@ -104,7 +105,7 @@ const WithdrawDelegatedStakeView = () => {
         disabled: true,
         setFee: setFeeValue,
       }}
-      isPositiveButtonDisabled={error}
+      isPositiveButtonLoading={loading}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
     >

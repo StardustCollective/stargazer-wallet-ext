@@ -14,7 +14,7 @@ import {
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { TokenLockData } from './types';
 import { differenceBetweenEpochs } from 'utils/epochs';
-import { toDag, toDatum } from 'utils/number';
+import { formatBigNumberForDisplay, toDag } from 'utils/number';
 import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
 import { DAG_NETWORK } from 'constants/index';
@@ -47,10 +47,39 @@ const renderEpochValue = (epochValue: number, latestEpoch: number) => {
   );
 };
 
+const renderLockMessage = (amount: string, unlockEpoch: number) => {
+  if (!unlockEpoch) {
+    return (
+      <TextV3.CaptionRegular extraStyles={styles.description}>
+        Lock{' '}
+        <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
+          {amount}
+        </TextV3.CaptionStrong>{' '}
+        from your wallet.
+      </TextV3.CaptionRegular>
+    );
+  }
+
+  return (
+    <TextV3.CaptionRegular extraStyles={styles.description}>
+      Lock{' '}
+      <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
+        {amount}
+      </TextV3.CaptionStrong>{' '}
+      from your wallet until{' '}
+      <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
+        Epoch {unlockEpoch?.toLocaleString()}
+      </TextV3.CaptionStrong>
+      .
+    </TextV3.CaptionRegular>
+  );
+};
+
 const TokenLock = () => {
   const assets = store.getState().assets;
 
   const [feeValue, setFeeValue] = useState('0');
+  const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
 
   const dagActiveNetwork = useSelector(
@@ -80,7 +109,7 @@ const TokenLock = () => {
 
   // Convert amount and fee to DAG
   const feeAmount = toDag(fee);
-  const amount = toDag(amountValue);
+  const amount = formatBigNumberForDisplay(toDag(amountValue));
 
   // Get token asset information
   const tokenAssetByCurrency =
@@ -105,7 +134,7 @@ const TokenLock = () => {
     }
   }, [feeAmount]);
 
-  const amountString = `${amount.toLocaleString()} ${tokenAsset.symbol}`;
+  const amountString = `${amount} ${tokenAsset.symbol}`;
 
   const onNegativeButtonClick = async () => {
     StargazerExternalPopups.addResolvedParam(location.href);
@@ -117,11 +146,12 @@ const TokenLock = () => {
   };
 
   const onPositiveButtonClick = async () => {
+    setLoading(true);
     try {
       const tokenLockBody = {
         source: data.source,
         amount: data.amount,
-        fee: toDatum(feeValue),
+        fee: 0,
         currencyId: data.currencyId,
         unlockEpoch: data.unlockEpoch,
         tokenL1Url,
@@ -136,12 +166,13 @@ const TokenLock = () => {
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(tokenLockResponse.hash, message);
     } catch (e) {
-      showAlert(
-        `There was an error with the transaction.\nPlease try again later.`,
-        'danger'
-      );
+      const errorMessage =
+        (e instanceof Error && e?.message) ||
+        'There was an error with the transaction.\nPlease try again later.';
+      showAlert(errorMessage, 'danger');
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(e, message);
+      setLoading(false);
       return;
     }
 
@@ -158,9 +189,10 @@ const TokenLock = () => {
         defaultValue: '0',
         value: feeValue,
         symbol: tokenAsset.symbol,
-        disabled: false,
+        disabled: true,
         setFee: setFeeValue,
       }}
+      isPositiveButtonLoading={loading}
       onNegativeButtonClick={onNegativeButtonClick}
       onPositiveButtonClick={onPositiveButtonClick}
     >
@@ -172,23 +204,14 @@ const TokenLock = () => {
         <Card>
           <CardRow label="Token:" value={renderTokenValue(tokenAsset)} />
           <CardRow label="Amount:" value={amountString} />
-          <CardRow
-            label="Unlock Epoch:"
-            value={renderEpochValue(unlockEpoch, latestEpoch)}
-          />
+          {!!latestEpoch && !!unlockEpoch && (
+            <CardRow
+              label="Unlock Epoch:"
+              value={renderEpochValue(unlockEpoch, latestEpoch)}
+            />
+          )}
         </Card>
-        <Card>
-          <TextV3.CaptionRegular extraStyles={styles.description}>
-            Lock{' '}
-            <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
-              {amountString}
-            </TextV3.CaptionStrong>{' '}
-            from your wallet until{' '}
-            <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
-              Epoch {unlockEpoch.toLocaleString()}.
-            </TextV3.CaptionStrong>
-          </TextV3.CaptionRegular>
-        </Card>
+        <Card>{renderLockMessage(amountString, unlockEpoch)}</Card>
       </div>
     </CardLayoutV3>
   );
