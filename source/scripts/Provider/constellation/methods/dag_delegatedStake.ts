@@ -41,7 +41,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
 
   const args = [
     { type: 'string', value: data.source, name: 'source', validations: ['isDagAddress'] },
-    { type: 'string', value: data.nodeId, name: 'nodeId' },
+    { type: 'string', value: data.nodeId, name: 'nodeId', validations: ['no-empty'] },
     {
       type: 'number',
       value: data.amount,
@@ -55,7 +55,12 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
       optional: true,
       validations: ['positive'],
     },
-    { type: 'string', value: data.tokenLockRef, name: 'tokenLockRef' },
+    {
+      type: 'string',
+      value: data.tokenLockRef,
+      name: 'tokenLockRef',
+      validations: ['no-empty'],
+    },
   ];
 
   checkArguments(args);

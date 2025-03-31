@@ -226,6 +226,11 @@ export const checkArguments = (
     // Apply custom validations
     for (const validation of arg.validations) {
       switch (validation) {
+        case 'no-empty':
+          if (arg.type === 'string' && !arg.value) {
+            throw new Error(`Argument "${arg.name}" must be provided`);
+          }
+          break;
         case 'no-zero':
           if (arg.type === 'number' && arg.value === 0) {
             throw new Error(`Argument "${arg.name}" cannot be zero`);

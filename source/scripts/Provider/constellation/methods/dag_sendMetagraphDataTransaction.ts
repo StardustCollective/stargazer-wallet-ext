@@ -9,7 +9,7 @@ import { getChainLabel, getWalletInfo } from '../utils';
 import store from 'state/store';
 import { encodeToBase64 } from 'utils/encoding';
 import { getFeeEstimation } from 'scenes/external/SendMetagraphData/utils';
-import stringify from 'safe-stable-stringify';
+import { normalizeObject } from '@stardust-collective/dag4-keystore';
 import { getAccountController } from 'utils/controllersUtils';
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
@@ -38,7 +38,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   }
 
   if (!dag4.account.validateDagAddress(metagraphId)) {
-    throw new Error("Bad argument 'metagraphId'");
+    throw new Error("Bad argument 'metagraphId' -> must be a valid DAG address");
   }
 
   return request.params;
@@ -68,7 +68,7 @@ export const dag_sendMetagraphDataTransaction = async (
 
   const { activeWallet, windowUrl, windowType, deviceId, bipIndex } = getWalletInfo();
 
-  const dataString = stringify(data);
+  const dataString = JSON.stringify(normalizeObject(data));
   const dataEncoded = encodeToBase64(dataString);
 
   const { fee, address, updateHash } = await getFeeEstimation(

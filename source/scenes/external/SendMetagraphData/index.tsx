@@ -60,7 +60,6 @@ const SendMetagraphData = () => {
   } = data;
 
   const title = sign ? 'SignDataTransaction' : 'SendDataTransaction';
-  const button = sign ? 'Sign' : 'Send';
 
   const [fee, setFee] = useState(feeAmount);
 
@@ -155,7 +154,6 @@ const SendMetagraphData = () => {
       logo={current?.logo}
       title={title}
       subtitle={origin}
-      positiveButtonLabel={button}
       fee={{
         show: true,
         defaultValue: feeAmount,

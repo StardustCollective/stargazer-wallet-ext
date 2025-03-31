@@ -38,7 +38,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
 
   const args = [
     { type: 'string', value: data.source, name: 'source', validations: ['isDagAddress'] },
-    { type: 'string', value: data.stakeRef, name: 'stakeRef' },
+    { type: 'string', value: data.stakeRef, name: 'stakeRef', validations: ['no-empty'] },
   ];
 
   checkArguments(args);
