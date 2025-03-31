@@ -183,6 +183,15 @@ const MigrationController = async () => {
     const v5_2_0 = require('../migration/v5_2_0');
     await v5_2_0.default(state);
   }
+
+  /**
+   * version < 5_2_1
+   * Description: Adds Data L1 endpoints for DOR and Elpaca
+   */
+  if (compareVersions(state.vault.version, '5.2.1') < 0) {
+    const v5_2_1 = require('../migration/v5_2_1');
+    await v5_2_1.default(state);
+  }
 };
 
 export default MigrationController;
