@@ -187,79 +187,120 @@ export const fetchMetagraphBalance = async (
   return balanceNumber;
 };
 
-export const checkArguments = (
-  args: {
-    type: string;
-    value: any;
-    name: string;
-    optional?: boolean;
-    validations?: string[];
-  }[]
-): void => {
+type ArgumentType = string | string[];
+
+type ArgumentCheck = {
+  type: ArgumentType;
+  value: any;
+  name: string;
+  optional?: boolean;
+  validations?: string[];
+};
+
+// Helper function to normalize type to array
+const normalizeType = (type: ArgumentType): string[] => {
+  return Array.isArray(type) ? type : [type];
+};
+
+export const checkArguments = (args: ArgumentCheck[]): void => {
   if (!args.length) return;
 
   const accountController = getAccountController();
 
-  const emptyValues: (undefined | null)[] = [undefined, null];
-
   for (const arg of args) {
-    // Check if required argument is missing
-    if (emptyValues.includes(arg.value) && !arg.optional) {
+    const isUndefined = arg.value === undefined;
+    const isNull = arg.value === null;
+    const types = normalizeType(arg.type);
+    const allowNull = types.includes('null');
+
+    // Handle undefined checks
+    if (isUndefined && !arg.optional) {
       throw new Error(`Argument "${arg.name}" is required`);
     }
 
-    // Skip further validations if value is empty and optional
-    if (emptyValues.includes(arg.value) && arg.optional) {
+    // Skip further validations if value is undefined and optional
+    if (isUndefined && arg.optional) {
       continue;
     }
 
-    // Type validation
-    if (!emptyValues.includes(arg.value) && typeof arg.value !== arg.type) {
-      throw new Error(`Bad argument "${arg.name}" -> not a "${arg.type}"`);
+    // Handle null checks
+    if (isNull) {
+      if (!allowNull) {
+        throw new Error(`Argument "${arg.name}" cannot be null`);
+      }
+      continue;
+    }
+
+    // Type validation - check if value matches any of the allowed types
+    if (!isNull && !isUndefined) {
+      const valueType = typeof arg.value;
+      const isValidType = types.some((type) => {
+        if (type === 'null') return isNull;
+        return valueType === type;
+      });
+
+      if (!isValidType) {
+        if (types.length === 1) {
+          throw new Error(
+            `Bad argument "${arg.name}" -> expected "${types[0]}", got "${valueType}"`
+          );
+        }
+
+        throw new Error(
+          `Bad argument "${arg.name}" -> expected one of [${types.join(
+            ', '
+          )}], got "${valueType}"`
+        );
+      }
     }
 
     // Skip additional validations if no validations array is provided
-    if (!arg.validations || !arg.validations.length) {
+    if (!arg.validations?.length) {
       continue;
     }
 
-    // Apply custom validations
-    for (const validation of arg.validations) {
-      switch (validation) {
-        case 'no-empty':
-          if (arg.type === 'string' && !arg.value) {
-            throw new Error(`Argument "${arg.name}" must be provided`);
-          }
-          break;
-        case 'no-zero':
-          if (arg.type === 'number' && arg.value === 0) {
-            throw new Error(`Argument "${arg.name}" cannot be zero`);
-          }
-          break;
+    // Apply custom validations only if value is not null or undefined
+    if (!isNull && !isUndefined) {
+      for (const validation of arg.validations) {
+        switch (validation) {
+          case 'no-empty':
+            if (types.includes('string') && !arg.value) {
+              throw new Error(`Argument "${arg.name}" must be provided`);
+            }
+            break;
+          case 'no-zero':
+            if (types.includes('number') && arg.value === 0) {
+              throw new Error(`Argument "${arg.name}" cannot be zero`);
+            }
+            break;
 
-        case 'positive':
-          if (arg.type === 'number' && arg.value < 0) {
-            throw new Error(`Argument "${arg.name}" must be positive`);
-          }
-          break;
+          case 'positive':
+            if (types.includes('number') && arg.value < 0) {
+              throw new Error(`Argument "${arg.name}" must be positive`);
+            }
+            break;
 
-        case 'negative':
-          if (arg.type === 'number' && arg.value > 0) {
-            throw new Error(`Argument "${arg.name}" must be negative`);
-          }
-          break;
+          case 'negative':
+            if (types.includes('number') && arg.value > 0) {
+              throw new Error(`Argument "${arg.name}" must be negative`);
+            }
+            break;
 
-        case 'isDagAddress':
-          if (arg.type === 'string' && !accountController.isValidDAGAddress(arg.value)) {
-            throw new Error(`Argument "${arg.name}" must be a valid DAG address`);
-          }
-          break;
+          case 'isDagAddress':
+            if (
+              types.includes('string') &&
+              !accountController.isValidDAGAddress(arg.value)
+            ) {
+              throw new Error(`Argument "${arg.name}" must be a valid DAG address`);
+            }
+            break;
 
-        case 'isEthAddress':
-          if (arg.type === 'string' && !ethers.utils.isAddress(arg.value)) {
-            throw new Error(`Argument "${arg.name}" must be a valid ETH address`);
-          }
-          break;
+          case 'isEthAddress':
+            if (types.includes('string') && !ethers.utils.isAddress(arg.value)) {
+              throw new Error(`Argument "${arg.name}" must be a valid ETH address`);
+            }
+            break;
+        }
       }
     }
   }

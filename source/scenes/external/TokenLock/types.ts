@@ -4,8 +4,8 @@ export type TokenLockData = {
   chainLabel: string;
   source: string;
   amount: number;
-  unlockEpoch: number;
+  unlockEpoch: number | null;
   latestEpoch: number;
   fee?: number;
-  currencyId?: string;
+  currencyId: string | null;
 };

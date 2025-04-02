@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../components/Card/Card';
 import CardRow from '../components/CardRow/CardRow';
 import CardLayoutV3 from '../Layouts/CardLayoutV3';
@@ -24,13 +24,15 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import { useCopyClipboard } from 'hooks/index';
 
 const SendMetagraphData = () => {
+  const [isObjectCopied, copyObject] = useCopyClipboard(1000);
+  const textTooltip = isObjectCopied ? 'Copied' : 'Copy object';
+  const showAlert = usePlatformAlert();
+
+  const [fee, setFee] = useState('0');
+
   const assets = useSelector(walletsSelectors.getAssets);
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
-  const showAlert = usePlatformAlert();
-
-  const [isObjectCopied, copyObject] = useCopyClipboard(1000);
-  const textTooltip = isObjectCopied ? 'Copied' : 'Copy object';
 
   const { data, message: requestMessage } =
     StargazerExternalPopups.decodeRequestMessageLocationParams<{
@@ -61,7 +63,11 @@ const SendMetagraphData = () => {
 
   const title = sign ? 'SignDataTransaction' : 'SendDataTransaction';
 
-  const [fee, setFee] = useState(feeAmount);
+  useEffect(() => {
+    if (!!feeAmount && feeAmount !== '0') {
+      setFee(feeAmount);
+    }
+  }, [feeAmount]);
 
   const metagraphInfo = Object.values(assets).find(
     (asset) => asset?.address === metagraphId

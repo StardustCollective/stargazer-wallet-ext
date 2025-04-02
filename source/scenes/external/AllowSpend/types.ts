@@ -12,13 +12,13 @@ export type AllowSpendData = {
     label: string;
     logo: string;
   };
-  source: string; // Wallet address signing the transaction.
-  destination: string; // The AMM metagraph address
-  amount: number; // In DATUM. The maximum transaction amount for which to generate a ‘lock’ around
-  approvers: string[]; // A list of metagraphIds which can atomically approve this operation.
-  currencyId?: string; // The currency metagraph identifier. If not provided, the default currency will be DAG.
-  fee?: number; // In DATUM.The fee in the currency of the currency metragraph. If not provided, the default fee will be 0.
-  validUntilEpoch?: number; // The global snapshot epoch progress for which this is valid until. If not provided, the default value will be {to be confirmed}.
+  source: string;
+  destination: string;
+  amount: number;
+  approvers: string[];
+  currencyId: string | null;
+  fee?: number;
+  validUntilEpoch: number;
   latestEpoch: number;
 };
 

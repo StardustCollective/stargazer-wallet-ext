@@ -12,9 +12,9 @@ import { dag4 } from '@stardust-collective/dag4';
 type TokenLockData = {
   source: string;
   amount: number;
-  unlockEpoch?: number;
+  unlockEpoch: number | null;
   fee?: number;
-  currencyId?: string;
+  currencyId: string | null;
 };
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
@@ -52,17 +52,15 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
       validations: ['positive', 'no-zero'],
     },
     {
-      type: 'number',
+      type: ['number', 'null'],
       value: data.unlockEpoch,
       name: 'unlockEpoch',
-      optional: true,
       validations: ['positive', 'no-zero'],
     },
     {
-      type: 'string',
+      type: ['string', 'null'],
       value: data.currencyId,
       name: 'currencyId',
-      optional: true,
       validations: ['isDagAddress'],
     },
     {
@@ -140,16 +138,17 @@ export const dag_tokenLock = async (
 
   if (data.unlockEpoch) {
     latestEpoch = await getLatestEpoch();
-  
+
     if (!latestEpoch) {
       throw new Error('Failed to fetch latest epoch. Try again later.');
     }
-  
+
     if (data.unlockEpoch <= latestEpoch) {
-      throw new Error(`Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`);
+      throw new Error(
+        `Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`
+      );
     }
   }
-
 
   const DEFAULT_FEE = 0;
 

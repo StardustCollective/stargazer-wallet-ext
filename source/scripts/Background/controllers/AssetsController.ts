@@ -82,7 +82,7 @@ export interface IAssetsController {
   ) => Promise<void>;
   addCustomL0Token: (
     l0endpoint: string,
-    cl1endpoint: string,
+    l1endpoint: string,
     dl1endpoint: string,
     address: string,
     name: string,
