@@ -323,14 +323,14 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
           return;
         }
 
-        await accountController.assetsController.addCustomL0Token(
+        await accountController.assetsController.addCustomL0Token({
           l0endpoint,
-          cl1endpoint,
+          l1endpoint: cl1endpoint,
           dl1endpoint,
-          tokenAddress,
-          tokenName,
-          tokenSymbol
-        );
+          address: tokenAddress,
+          name: tokenName,
+          symbol: tokenSymbol,
+        });
       }
     } catch (err) {
       const errorMessage =

@@ -80,16 +80,16 @@ export interface IAssetsController {
     symbol: string,
     decimals: string
   ) => Promise<void>;
-  addCustomL0Token: (
-    l0endpoint: string,
-    l1endpoint: string,
-    dl1endpoint: string,
-    address: string,
-    name: string,
-    symbol: string,
-    chainId?: string,
-    logo?: string
-  ) => Promise<void>;
+  addCustomL0Token: (params: {
+    l0endpoint: string;
+    l1endpoint?: string;
+    dl1endpoint?: string;
+    address: string;
+    name: string;
+    symbol: string;
+    chainId?: string;
+    logo?: string;
+  }) => Promise<void>;
   removeCustomERC20Asset: (asset: IAssetInfoState) => void;
   fetchSupportedAssets: () => Promise<void>;
   fetchERC20Assets: () => Promise<void>;
@@ -135,16 +135,25 @@ const AssetsController = (): IAssetsController => {
     store.dispatch(clearSearch());
   };
 
-  const addCustomL0Token = async (
-    l0endpoint: string,
-    l1endpoint: string,
-    dl1endpoint: string,
-    address: string,
-    name: string,
-    symbol: string,
-    chainId?: string,
-    logo?: string
-  ): Promise<void> => {
+  const addCustomL0Token = async ({
+    l0endpoint,
+    l1endpoint,
+    dl1endpoint,
+    address,
+    name,
+    symbol,
+    chainId,
+    logo,
+  }: {
+    l0endpoint: string;
+    l1endpoint?: string;
+    dl1endpoint?: string;
+    address: string;
+    name: string;
+    symbol: string;
+    chainId?: string;
+    logo?: string;
+  }): Promise<void> => {
     const accountController = getAccountController();
     const { activeNetwork, activeWallet, customAssets } = store.getState().vault;
     const assets = store.getState().assets;
@@ -162,8 +171,8 @@ const AssetsController = (): IAssetsController => {
       logo: deafultLogo,
       network,
       l0endpoint,
-      l1endpoint,
-      dl1endpoint,
+      l1endpoint: l1endpoint ?? null,
+      dl1endpoint: dl1endpoint ?? null,
       custom: true,
     };
 

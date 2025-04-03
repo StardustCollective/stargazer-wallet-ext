@@ -329,19 +329,24 @@ export const validateNodes = async (
   const accountController = getAccountController();
 
   const isValidL0 = await accountController.isValidNode(l0);
-  const isValidcL1 = await accountController.isValidNode(cl1);
-  const isValiddL1 = await accountController.isValidNode(dl1);
 
   if (!isValidL0) {
     throw new Error('Argument "l0" is invalid -> node not found');
   }
+  if (!!cl1) {
+    const isValidcL1 = await accountController.isValidNode(cl1);
 
-  if (!isValidcL1) {
-    throw new Error('Argument "cl1" is invalid -> node not found');
+    if (!isValidcL1) {
+      throw new Error('Argument "cl1" is invalid -> node not found');
+    }
   }
 
-  if (!isValiddL1) {
-    throw new Error('Argument "dl1" is invalid -> node not found');
+  if (!!dl1) {
+    const isValiddL1 = await accountController.isValidNode(dl1);
+
+    if (!isValiddL1) {
+      throw new Error('Argument "dl1" is invalid -> node not found');
+    }
   }
 };
 
@@ -352,16 +357,26 @@ export const checkWatchAssetParams = async ({
   const { chainId, address, l0, cl1, dl1, name, symbol, logo } = options;
   const SUPPORTED_TYPES = ['L0'];
   const SUPPORTED_CHAINS = Object.values(DAG_NETWORK).map((network) => network.chainId);
-  const args = [
+  const args: ArgumentCheck[] = [
     { type: 'string', value: type, name: 'type' },
     { type: 'number', value: chainId, name: 'chainId' },
     { type: 'string', value: address, name: 'address' },
-    { type: 'string', value: l0, name: 'l0' },
-    { type: 'string', value: cl1, name: 'cl1' },
-    { type: 'string', value: dl1, name: 'dl1' },
+    { type: 'string', value: l0, name: 'l0', validations: ['no-empty'] },
+    {
+      type: 'string',
+      value: cl1,
+      optional: true,
+      name: 'cl1',
+    },
+    {
+      type: 'string',
+      value: dl1,
+      optional: true,
+      name: 'dl1',
+    },
     { type: 'string', value: name, name: 'name' },
     { type: 'string', value: symbol, name: 'symbol' },
-    { type: 'string', value: logo, name: 'logo' },
+    { type: 'string', value: logo, optional: true, name: 'logo' },
   ];
 
   checkArguments(args);
