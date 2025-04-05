@@ -17,14 +17,15 @@
   "scripts": {
     "dev:chrome": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=chrome webpack --watch",
     "dev:firefox": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=firefox webpack --watch",
-    "build:chrome": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=chrome webpack",
+    "build:chrome": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=chrome webpack && yarn zip:chrome",
     "build:chrome:prod": "cross-env NODE_ENV=production cross-env UPLOAD_SENTRY=true cross-env TARGET_BROWSER=chrome webpack",
     "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack",
     "build": "yarn run build:chrome && yarn run build:firefox",
     "test": "jest",
     "test:e2e:chrome": "cross-env SELENIUM_BROWSER=chrome node e2e/run-all.js",
     "test:e2e:chrome:silent": "cross-env SELENIUM_BROWSER=chrome ENABLE_CHROME_LOGGING=false node e2e/run-all.js",
-    "postinstall": "cd ../../ && npx patch-package"
+    "postinstall": "cd ../../ && npx patch-package",
+    "zip:chrome": "node scripts/zipExtension.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.2",
@@ -80,6 +81,7 @@
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/webpack": "^4.41.17",
+    "archiver": "^7.0.1",
     "autoprefixer": "^9.8.0",
     "babel-jest": "^27.2.1",
     "babel-loader": "^8.1.0",

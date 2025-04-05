@@ -101,10 +101,12 @@ const commonConfig = {
         loader: 'babel-loader',
         // Exclude node_modules and react-native project folders.
         // Exclude react-native-flash-message (needs to be processed)
+        // Exclude zipExtension.js
         exclude: (modulePath) => {
           return (
-            !/node_modules\/react-native-flash-message/.test(modulePath) &&
-            (/node_modules/.test(modulePath) || /native/.test(modulePath))
+            /zipExtension\.js$/.test(modulePath) ||
+            (!/node_modules\/react-native-flash-message/.test(modulePath) &&
+              (/node_modules/.test(modulePath) || /native/.test(modulePath)))
           );
         },
         options: {
@@ -257,11 +259,6 @@ const uiConfig = {
         cssProcessorPluginOptions: {
           preset: ['default', { discardComments: { removeAll: true } }],
         },
-      }),
-      new ZipPlugin({
-        path: destPath,
-        extension: `${getExtensionFileType(targetBrowser)}`,
-        filename: `${targetBrowser}`,
       }),
     ],
   },
