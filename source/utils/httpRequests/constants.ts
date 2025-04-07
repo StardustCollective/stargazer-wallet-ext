@@ -34,4 +34,5 @@ export enum ExternalService {
   CoinGecko = 'coingecko',
   OpenseaMainnet = 'opensea-mainnet',
   OpenseaTestnet = 'opensea-testnet',
+  Elpaca = 'elpaca',
 }

@@ -229,6 +229,8 @@ PODS:
     - React-Core
   - react-native-fast-crypto (2.2.0):
     - React
+  - react-native-ios-appattest (1.0.1):
+    - React
   - react-native-netinfo (8.3.1):
     - React-Core
   - react-native-pager-view (6.2.3):
@@ -391,6 +393,7 @@ DEPENDENCIES:
   - react-native-camera (from `../../../node_modules/react-native-camera`)
   - react-native-document-picker (from `../../../node_modules/react-native-document-picker`)
   - react-native-fast-crypto (from `../../../node_modules/react-native-fast-crypto`)
+  - react-native-ios-appattest (from `../../../node_modules/react-native-ios-appattest`)
   - "react-native-netinfo (from `../../../node_modules/@react-native-community/netinfo`)"
   - react-native-pager-view (from `../../../node_modules/react-native-pager-view`)
   - react-native-randombytes (from `../../../node_modules/react-native-randombytes`)
@@ -479,6 +482,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-document-picker"
   react-native-fast-crypto:
     :path: "../../../node_modules/react-native-fast-crypto"
+  react-native-ios-appattest:
+    :path: "../../../node_modules/react-native-ios-appattest"
   react-native-netinfo:
     :path: "../../../node_modules/@react-native-community/netinfo"
   react-native-pager-view:
@@ -572,6 +577,7 @@ SPEC CHECKSUMS:
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-document-picker: ec07866a30707f23660c0f3ae591d669d3e89096
   react-native-fast-crypto: 5943c42466b86ad70be60d3a5f64bd22251e5d9e
+  react-native-ios-appattest: 8ed4f9e209f11e3d09b76ebe090870b997cdb508
   react-native-netinfo: 1a6035d3b9780221d407c277ebfb5722ace00658
   react-native-pager-view: c29d484f19c49ff19525a94105e4ab2c4d4ae273
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
