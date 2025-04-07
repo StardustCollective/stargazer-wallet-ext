@@ -149,6 +149,28 @@ export const constellationInitialValues: IAssetInfoState[] = [
     logo: JENNYCO_LOGO,
     decimals: 18,
   },
+  {
+    id: '0x74299A718b2c44483a27325d7725F0B2646DE3B1-base-mainnet',
+    address: '0x74299A718b2c44483a27325d7725F0B2646DE3B1',
+    label: 'Base DAG',
+    symbol: 'BASE_DAG',
+    type: AssetType.ERC20,
+    priceId: '',
+    network: 'base-mainnet',
+    logo: CONSTELLATION_LOGO,
+    decimals: 8,
+  },
+  {
+    id: '0xfe9885baff18074846aaa2d5541581adf068731d-base-mainnet',
+    address: '0xfe9885baff18074846aaa2d5541581adf068731d',
+    label: 'Base DOR',
+    symbol: 'BASE_DOR',
+    type: AssetType.ERC20,
+    priceId: '',
+    network: 'base-mainnet',
+    logo: DOR_LOGO,
+    decimals: 8,
+  },
   // 349: New network should be added here.
   {
     id: AssetType.Avalanche,
