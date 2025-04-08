@@ -7,16 +7,16 @@ import {
   addSeconds,
 } from 'date-fns';
 
-export const SECONDS_PER_EPOCH = 43;
-export const EPOCHS_PER_DAY = 2010;
+export const SECONDS_PER_EPOCH = 65;
+export const EPOCHS_PER_DAY = 1330;
 
 /**
  * Calculates and formats the time difference between two epoch progress values.
- * 
+ *
  * @param firstEpoch - The starting epoch progress value
  * @param secondEpoch - The ending epoch progress value
  * @returns A formatted string representing the time difference
- * 
+ *
  * Format rules:
  * - Less than 1 minute: show seconds
  * - Less than 1 hour: show minutes
@@ -58,4 +58,3 @@ export const differenceBetweenEpochs = (
     return `${format(targetDate, 'MMM. d yyyy, HH:mm')} hs`;
   }
 };
-

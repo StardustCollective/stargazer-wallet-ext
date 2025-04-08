@@ -22,7 +22,7 @@ type V5_2_1State = {
   swap: ISwapState;
 };
 
-const VERSION = '5.2.1';
+const VERSION = '5.3.0';
 
 const DOR_ID = 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2';
 const DOR_dL1_ENDPOINT = 'http://dl1-lb-mainnet.getdor.com:9000';
