@@ -39,9 +39,9 @@
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
     "@reduxjs/toolkit": "^1.4.0",
-    "@stardust-collective/dag4": "^2.2.2",
-    "@stardust-collective/dag4-keyring": "^2.2.2",
-    "@stardust-collective/dag4-ledger": "^2.2.2",
+    "@stardust-collective/dag4": "2.3.0",
+    "@stardust-collective/dag4-keyring": "2.3.0",
+    "@stardust-collective/dag4-ledger": "2.3.0",
     "@types/react-redux": "^7.1.9",
     "@types/redux-watch": "^1.1.0",
     "@xchainjs/xchain-client": "^0.11.3",
@@ -72,7 +72,6 @@
     "react-spring-bottom-sheet": "^3.4.1",
     "redux": "^4.0.5",
     "redux-watch": "^1.2.0",
-    "safe-stable-stringify": "^2.5.0",
     "single-call-balance-checker-abi": "^1.0.0"
   },
   "devDependencies": {
