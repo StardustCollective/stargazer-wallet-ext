@@ -16,7 +16,6 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
-const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 
 const viewsPath = path.join(__dirname, '../../views');
 const destPath = path.join(__dirname, 'extension');
@@ -24,7 +23,6 @@ const rootPath = path.join(__dirname, '../../');
 const sharedPath = path.join(__dirname, '../');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
-const uploadSentry = process.env.UPLOAD_SENTRY === 'true';
 
 const extensionReloaderPlugin = () => {
   this.apply = () => {};
@@ -105,6 +103,7 @@ const commonConfig = {
         exclude: (modulePath) => {
           return (
             /zipExtension\.js$/.test(modulePath) ||
+            /uploadSourceMaps\.js$/.test(modulePath) ||
             (!/node_modules\/react-native-flash-message/.test(modulePath) &&
               (/node_modules/.test(modulePath) || /native/.test(modulePath)))
           );
@@ -233,15 +232,6 @@ const uiConfig = {
     new CopyWebpackPlugin([{ from: `${sharedPath}assets`, to: 'assets' }]),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
-    ...(!uploadSentry
-      ? []
-      : [
-          sentryWebpackPlugin({
-            authToken: process.env.SENTRY_AUTH_TOKEN,
-            org: 'dor-technologies',
-            project: 'stargazer-wallet-web',
-          }),
-        ]),
   ],
   optimization: {
     minimizer: [
@@ -272,8 +262,8 @@ const backgroundConfig = {
     background: path.join(sharedPath, 'scripts/Background', 'index.ts'),
   },
   output: {
-    path: path.join(destPath, targetBrowser, 'js'),
-    filename: '[name].bundle.js',
+    path: path.join(destPath, targetBrowser),
+    filename: 'js/[name].bundle.js',
     globalObject: 'self',
   },
   module: {
@@ -305,15 +295,6 @@ const backgroundConfig = {
     new DotEnv({
       path: '../../.env',
     }),
-    ...(!uploadSentry
-      ? []
-      : [
-          sentryWebpackPlugin({
-            authToken: process.env.SENTRY_AUTH_TOKEN,
-            org: 'dor-technologies',
-            project: 'stargazer-wallet-web',
-          }),
-        ]),
   ],
 };
 
