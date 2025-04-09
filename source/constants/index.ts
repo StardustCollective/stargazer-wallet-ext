@@ -27,6 +27,8 @@ export const CONSTELLATION_DEFAULT_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag-default.png';
 export const DOR_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor.png';
+export const NDT_LOGO =
+  'https://icons-metagraph.s3.amazonaws.com/NDF/NDT_Token_image.png';
 export const ELPACA_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/elpaca.png';
 export const ELPACA_LARGE_LOGO =
