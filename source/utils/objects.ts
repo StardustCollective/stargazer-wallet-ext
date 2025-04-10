@@ -27,7 +27,7 @@ export const splitObjectByKey = (object: any, splitKey: string) => {
 };
 
 export const filterArrayByValue = (array: any, key: string, value: any) => {
-  return array.filter((item: any) => item[key] !== value);
+  return array?.length ? array.filter((item: any) => item[key] !== value) : [];
 };
 
 export const filterObjectByKey = (object: any, filterKey: string) => {

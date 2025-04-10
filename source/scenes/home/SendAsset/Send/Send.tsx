@@ -158,7 +158,6 @@ const WalletSend: FC<IWalletSend> = ({
                   inputRef={register}
                   name="fee"
                   onChange={handleFeeChange}
-                  disabled={isExternalRequest}
                   value={fee}
                   variant={clsx(styles.input, styles.fee)}
                 />

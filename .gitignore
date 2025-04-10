@@ -132,3 +132,7 @@ source/native/ios/Pods
 # Cursor
 .cursorrules
 .cursor
+
+# Yalc
+.yalc
+yalc.lock

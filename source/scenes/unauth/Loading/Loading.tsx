@@ -13,8 +13,12 @@ const Loading = () => {
       >
         Welcome to <TextV3.HeaderLarge>Stargazer Wallet</TextV3.HeaderLarge>
       </TextV3.HeaderLargeRegular>
-      <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
-      <CircularProgress className={styles.loader} />
+      <div className={styles.logoContainer}>
+        <img src={`/${LogoImage}`} className={styles.logo} alt="Stargazer" />
+      </div>
+      <div className={styles.loaderContainer}>
+        <CircularProgress className={styles.loader} />
+      </div>
     </div>
   );
 };

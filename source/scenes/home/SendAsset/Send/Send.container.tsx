@@ -443,7 +443,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     }
 
     if (isExternalRequest) {
-      return !isValidAddress || !fee || !address;
+      return !isValidAddress || !fee || !address || checkGasPrices;
     }
 
     let formattedAmount: number;

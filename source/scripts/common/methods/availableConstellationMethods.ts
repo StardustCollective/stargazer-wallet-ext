@@ -65,6 +65,30 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_allowSpend,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_tokenLock,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_delegatedStake,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_withdrawDelegatedStake,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_getMetagraphBalance,
     proxied: false,
     permissions: [],
@@ -72,6 +96,18 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   {
     chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_sendMetagraphTransaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_sendMetagraphDataTransaction,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.dag_signMetagraphDataTransaction,
     proxied: false,
     permissions: [],
   },

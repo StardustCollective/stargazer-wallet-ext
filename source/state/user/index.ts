@@ -45,7 +45,9 @@ const UserState = createSlice({
       state.elpaca.claim = initialState.elpaca.claim;
     },
     clearClaimHash(state: IUserState) {
-      delete state.elpaca.claim.data.hash;
+      if (state?.elpaca?.claim?.data?.hash) {
+        delete state.elpaca.claim.data.hash;
+      }
     },
     clearClaimAddress(state: IUserState) {
       delete state.elpaca.claim.data.address;

@@ -6,6 +6,8 @@ import { dag4 } from '@stardust-collective/dag4';
 import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
 import { WatchAssetParameters } from '../methods/wallet_watchAsset';
 import { toDag } from 'utils/number';
+import { getAccountController } from 'utils/controllersUtils';
+import * as ethers from 'ethers';
 
 const LEDGER_URL = '/ledger.html';
 const BITFI_URL = '/bitfi.html';
@@ -185,17 +187,120 @@ export const fetchMetagraphBalance = async (
   return balanceNumber;
 };
 
-export const checkArguments = (
-  args: { type: string; value: any; name: string }[]
-): void => {
-  if (args.length) {
-    for (const arg of args) {
-      if (!arg.value) {
-        throw new Error(`Argument "${arg.name}" is required`);
-      }
+type ArgumentType = string | string[];
 
-      if (typeof arg.value !== arg.type) {
-        throw new Error(`Bad argument "${arg.name}" -> not a "${arg.type}"`);
+type ArgumentCheck = {
+  type: ArgumentType;
+  value: any;
+  name: string;
+  optional?: boolean;
+  validations?: string[];
+};
+
+// Helper function to normalize type to array
+const normalizeType = (type: ArgumentType): string[] => {
+  return Array.isArray(type) ? type : [type];
+};
+
+export const checkArguments = (args: ArgumentCheck[]): void => {
+  if (!args.length) return;
+
+  const accountController = getAccountController();
+
+  for (const arg of args) {
+    const isUndefined = arg.value === undefined;
+    const isNull = arg.value === null;
+    const types = normalizeType(arg.type);
+    const allowNull = types.includes('null');
+
+    // Handle undefined checks
+    if (isUndefined && !arg.optional) {
+      throw new Error(`Argument "${arg.name}" is required`);
+    }
+
+    // Skip further validations if value is undefined and optional
+    if (isUndefined && arg.optional) {
+      continue;
+    }
+
+    // Handle null checks
+    if (isNull) {
+      if (!allowNull) {
+        throw new Error(`Argument "${arg.name}" cannot be null`);
+      }
+      continue;
+    }
+
+    // Type validation - check if value matches any of the allowed types
+    if (!isNull && !isUndefined) {
+      const valueType = typeof arg.value;
+      const isValidType = types.some((type) => {
+        if (type === 'null') return isNull;
+        return valueType === type;
+      });
+
+      if (!isValidType) {
+        if (types.length === 1) {
+          throw new Error(
+            `Bad argument "${arg.name}" -> expected "${types[0]}", got "${valueType}"`
+          );
+        }
+
+        throw new Error(
+          `Bad argument "${arg.name}" -> expected one of [${types.join(
+            ', '
+          )}], got "${valueType}"`
+        );
+      }
+    }
+
+    // Skip additional validations if no validations array is provided
+    if (!arg.validations?.length) {
+      continue;
+    }
+
+    // Apply custom validations only if value is not null or undefined
+    if (!isNull && !isUndefined) {
+      for (const validation of arg.validations) {
+        switch (validation) {
+          case 'no-empty':
+            if (types.includes('string') && !arg.value) {
+              throw new Error(`Argument "${arg.name}" must be provided`);
+            }
+            break;
+          case 'no-zero':
+            if (types.includes('number') && arg.value === 0) {
+              throw new Error(`Argument "${arg.name}" cannot be zero`);
+            }
+            break;
+
+          case 'positive':
+            if (types.includes('number') && arg.value < 0) {
+              throw new Error(`Argument "${arg.name}" must be positive`);
+            }
+            break;
+
+          case 'negative':
+            if (types.includes('number') && arg.value > 0) {
+              throw new Error(`Argument "${arg.name}" must be negative`);
+            }
+            break;
+
+          case 'isDagAddress':
+            if (
+              types.includes('string') &&
+              !accountController.isValidDAGAddress(arg.value)
+            ) {
+              throw new Error(`Argument "${arg.name}" must be a valid DAG address`);
+            }
+            break;
+
+          case 'isEthAddress':
+            if (types.includes('string') && !ethers.utils.isAddress(arg.value)) {
+              throw new Error(`Argument "${arg.name}" must be a valid ETH address`);
+            }
+            break;
+        }
       }
     }
   }
@@ -216,22 +321,62 @@ export const isValidMetagraphAddress = async (
   return !!response?.data?.hash;
 };
 
+export const validateNodes = async (
+  l0: string,
+  cl1: string,
+  dl1: string
+): Promise<void> => {
+  const accountController = getAccountController();
+
+  const isValidL0 = await accountController.isValidNode(l0);
+
+  if (!isValidL0) {
+    throw new Error('Argument "l0" is invalid -> node not found');
+  }
+  if (!!cl1) {
+    const isValidcL1 = await accountController.isValidNode(cl1);
+
+    if (!isValidcL1) {
+      throw new Error('Argument "cl1" is invalid -> node not found');
+    }
+  }
+
+  if (!!dl1) {
+    const isValiddL1 = await accountController.isValidNode(dl1);
+
+    if (!isValiddL1) {
+      throw new Error('Argument "dl1" is invalid -> node not found');
+    }
+  }
+};
+
 export const checkWatchAssetParams = async ({
   type,
   options,
 }: WatchAssetParameters): Promise<void> => {
-  const { chainId, address, l0, l1, name, symbol, logo } = options;
+  const { chainId, address, l0, cl1, dl1, name, symbol, logo } = options;
   const SUPPORTED_TYPES = ['L0'];
   const SUPPORTED_CHAINS = Object.values(DAG_NETWORK).map((network) => network.chainId);
-  const args = [
+  const args: ArgumentCheck[] = [
     { type: 'string', value: type, name: 'type' },
     { type: 'number', value: chainId, name: 'chainId' },
     { type: 'string', value: address, name: 'address' },
-    { type: 'string', value: l0, name: 'l0' },
-    { type: 'string', value: l1, name: 'l1' },
+    { type: 'string', value: l0, name: 'l0', validations: ['no-empty'] },
+    {
+      type: 'string',
+      value: cl1,
+      optional: true,
+      name: 'cl1',
+    },
+    {
+      type: 'string',
+      value: dl1,
+      optional: true,
+      name: 'dl1',
+    },
     { type: 'string', value: name, name: 'name' },
     { type: 'string', value: symbol, name: 'symbol' },
-    { type: 'string', value: logo, name: 'logo' },
+    { type: 'string', value: logo, optional: true, name: 'logo' },
   ];
 
   checkArguments(args);
@@ -260,4 +405,6 @@ export const checkWatchAssetParams = async ({
   if (!isValidMetagraph) {
     throw new Error('Argument "address" or "chainId" are invalid -> metagraph not found');
   }
+
+  await validateNodes(l0, cl1, dl1);
 };

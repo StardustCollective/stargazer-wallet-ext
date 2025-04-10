@@ -31,13 +31,14 @@ import screens from 'navigation/screens';
 ///////////////////////////
 
 import ConfirmPhrase from './ConfirmPhrase';
+import { isNative } from 'utils/envUtil';
 
 ///////////////////////////
 // Container
 ///////////////////////////
 
 const ConfirmPhraseContainer = ({ route }: { route: any }) => {
-  const { walletName = 'Main Wallet', resetAll = true } = route.params || {};
+  const { walletName = 'Main Wallet', resetAll = true, navigate } = route.params || {};
 
   ///////////////////////////
   // Hooks
@@ -97,7 +98,9 @@ const ConfirmPhraseContainer = ({ route }: { route: any }) => {
         walletName === 'undefined' || !walletName ? 'Main Wallet' : walletName;
       await walletController.createWallet(walletNameValue, phrases, resetAllValue);
       walletController.onboardHelper.reset();
-      navigationUtil.replace(navigation, screens.authorized.root);
+      if (navigate === 'true' || isNative) {
+        navigationUtil.replace(navigation, screens.authorized.root);
+      }
     }
   };
 

@@ -8,9 +8,8 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 import { WatchAssetOptions } from 'scripts/Provider/constellation';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { ellipsis, formatNumber } from 'scenes/home/helpers';
-import { DAG_NETWORK } from 'constants/index';
+import { CONSTELLATION_DEFAULT_LOGO, DAG_NETWORK } from 'constants/index';
 import dappSelectors from 'selectors/dappSelectors';
-
 import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
@@ -26,7 +25,8 @@ import {
   BALANCE,
   CANCEL,
   L0_ENDPOINT,
-  L1_ENDPOINT,
+  cL1_ENDPOINT,
+  dL1_ENDPOINT,
   METAGRAPH_ADDRESS,
   NETWORK,
   TOKEN,
@@ -34,6 +34,10 @@ import {
 } from './constants';
 
 const WatchAsset = () => {
+  const wallet = getWalletController();
+  const current = useSelector(dappSelectors.getCurrent);
+  const origin = current && current.origin;
+
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
 
@@ -45,11 +49,7 @@ const WatchAsset = () => {
 
   const { type, options, balance } = data;
 
-  const { address, chainId, l0, l1, logo, symbol, name } = options;
-
-  const wallet = getWalletController();
-  const current = useSelector(dappSelectors.getCurrent);
-  const origin = current && current.origin;
+  const { address, chainId, l0, cl1, dl1, logo, symbol, name } = options;
 
   const onNegativeButtonClick = async () => {
     StargazerExternalPopups.addResolvedParam(location.href);
@@ -66,21 +66,30 @@ const WatchAsset = () => {
       (network) => network.chainId === chainId
     );
 
-    await wallet.account.assetsController.addCustomL0Token(
-      l0,
-      l1,
-      address,
-      name,
-      symbol,
-      selectedNetwork.id,
-      logo
-    );
+    try {
+      await wallet.account.assetsController.addCustomL0Token({
+        l0endpoint: l0,
+        l1endpoint: cl1,
+        dl1endpoint: dl1,
+        address,
+        name,
+        symbol,
+        chainId: selectedNetwork.id,
+        logo,
+      });
+    } catch (err) {
+      StargazerExternalPopups.addResolvedParam(location.href);
+      StargazerWSMessageBroker.sendResponseResult(false, message);
+      window.close();
+    }
 
     StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseResult(true, message);
 
     window.close();
   };
+
+  const defaultLogo = !!logo ? logo : CONSTELLATION_DEFAULT_LOGO;
 
   const renderL0tokenInfo = () => {
     const networkValue = Object.values(DAG_NETWORK).find(
@@ -110,7 +119,7 @@ const WatchAsset = () => {
             {TOKEN}
           </TextV3.Caption>
           <div className={styles.logoContainer}>
-            <img src={logo} className={styles.logo} alt="token logo" />
+            <img src={defaultLogo} className={styles.logo} alt="token logo" />
             <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.itemValue}>
               {symbol}
             </TextV3.Body>
@@ -154,17 +163,32 @@ const WatchAsset = () => {
             {l0}
           </TextV3.Body>
         </div>
-        <div className={styles.rowItem}>
-          <TextV3.Caption
-            color={COLORS_ENUMS.SECONDARY_TEXT}
-            extraStyles={styles.itemTitle}
-          >
-            {L1_ENDPOINT}
-          </TextV3.Caption>
-          <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.itemValue}>
-            {l1}
-          </TextV3.Body>
-        </div>
+        {!!cl1 && (
+          <div className={styles.rowItem}>
+            <TextV3.Caption
+              color={COLORS_ENUMS.SECONDARY_TEXT}
+              extraStyles={styles.itemTitle}
+            >
+              {cL1_ENDPOINT}
+            </TextV3.Caption>
+            <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.itemValue}>
+              {cl1}
+            </TextV3.Body>
+          </div>
+        )}
+        {!!dl1 && (
+          <div className={styles.rowItem}>
+            <TextV3.Caption
+              color={COLORS_ENUMS.SECONDARY_TEXT}
+              extraStyles={styles.itemTitle}
+            >
+              {dL1_ENDPOINT}
+            </TextV3.Caption>
+            <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyles={styles.itemValue}>
+              {dl1}
+            </TextV3.Body>
+          </div>
+        )}
       </div>
     );
   };

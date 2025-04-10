@@ -36,7 +36,9 @@ const NewAccountContainer: FC<INewAccountView> = ({ navigation }) => {
   });
 
   const onSubmit = async (data: any) => {
-    linkTo(`/create/phrase/generated?walletName=${data.name}&resetAll=${false}`);
+    linkTo(
+      `/create/phrase/generated?walletName=${data.name}&resetAll=${false}&navigate=true`
+    );
   };
 
   const onClickResetStack = () => {

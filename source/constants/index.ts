@@ -461,7 +461,8 @@ export const DEFAULT_LANGUAGE = 'en-US';
 
 export const URL_REGEX_PATTERN = '^(https?|ftp)://';
 
-export const DAG_EXPLORER_API_URL = 'https://dyzt5u1o3ld0z.cloudfront.net';
+export const DAG_EXPLORER_API_URL =
+  'https://production.dagexplorer-api.constellationnetwork.net';
 export const C14_CLIENT_ID = 'b69a98b8-c5c1-4c7b-b5a9-46bca9a74480';
 export const C14_BASE_URL = 'https://pay.c14.money';
 
@@ -483,7 +484,7 @@ export const ELPACA_LEARN_MORE =
   'https://constellationnetwork.medium.com/introducing-the-el-paca-metagraph-ff2b34586918';
 
 export const EXTERNAL_REQUESTS_BASE_URL =
-  'https://d2qv688dkixr6z.cloudfront.net/external-requests';
+  'https://production.stargazer-api.constellationnetwork.net/external-requests';
 
 export const GET_QUOTE_API = `${PROVIDERS_BASE_URL}/v3/quote`;
 export const PAYMENT_REQUEST_API = `${PROVIDERS_BASE_URL}/payment-request`;

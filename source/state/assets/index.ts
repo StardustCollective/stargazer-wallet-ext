@@ -52,6 +52,7 @@ export const initialState: IAssetListState = {
     network: 'main2',
     l0endpoint: 'http://l0-lb-mainnet.getdor.com:7000',
     l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
+    dl1endpoint: 'http://dl1-lb-mainnet.getdor.com:9000',
     priceId: 'dor',
   },
   'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2': {
@@ -65,6 +66,7 @@ export const initialState: IAssetListState = {
     network: 'main2',
     l0endpoint: 'http://elpaca-l0-2006678808.us-west-1.elb.amazonaws.com:9100',
     l1endpoint: 'http://elpaca-cl1-1512652691.us-west-1.elb.amazonaws.com:9200',
+    dl1endpoint: 'http://elpaca-dl1-550039959.us-west-1.elb.amazonaws.com:9300',
   },
   // 349: New network should be added here.
   [AssetType.Avalanche]: {
@@ -165,6 +167,28 @@ export const initialState: IAssetListState = {
     network: 'matic',
     logo: JENNYCO_LOGO,
     decimals: 18,
+  },
+  '0x74299A718b2c44483a27325d7725F0B2646DE3B1-base-mainnet': {
+    id: '0x74299A718b2c44483a27325d7725F0B2646DE3B1-base-mainnet',
+    address: '0x74299A718b2c44483a27325d7725F0B2646DE3B1',
+    label: 'Base DAG',
+    symbol: 'BASE_DAG',
+    type: AssetType.ERC20,
+    priceId: '',
+    network: 'base-mainnet',
+    logo: CONSTELLATION_LOGO,
+    decimals: 8,
+  },
+  '0xfe9885baff18074846aaa2d5541581adf068731d-base-mainnet': {
+    id: '0xfe9885baff18074846aaa2d5541581adf068731d-base-mainnet',
+    address: '0xfe9885baff18074846aaa2d5541581adf068731d',
+    label: 'Base DOR',
+    symbol: 'BASE_DOR',
+    type: AssetType.ERC20,
+    priceId: '',
+    network: 'base-mainnet',
+    logo: DOR_LOGO,
+    decimals: 8,
   },
 };
 

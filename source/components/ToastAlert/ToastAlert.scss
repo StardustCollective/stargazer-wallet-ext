@@ -1,31 +1,30 @@
 @import '~assets/styles/variables';
 
 .toast {
+  cursor: pointer;
   background-color: $purple;
-  width: 365px;
+  width: 340px;
   box-sizing: border-box;
-  padding: 20px;
-  border-radius: 6px;
-  color: $white;
-  font-family: $inter;
-  font-weight: 500;
+  padding: 16px;
+  border-radius: 8px;
   display: flex;
-  align-items: center;
-  min-height: 40px;
   flex-direction: row;
+  align-items: center;
   justify-content: flex-start;
-  font-size: 13px;
-  line-height: 18px;
-  letter-spacing: 0.35px;
+  min-height: 40px;
+
+  .message {
+    white-space: pre-line;
+  }
 
   &.error {
-    background-color: $red-100;
+    background-color: $red-500;
   }
 
   .icon {
-    margin-right: 12px;
-    width: 18px;
-    height: 18px;
+    margin-right: 8px;
+    width: 24px;
+    height: 24px;
   }
 }
 

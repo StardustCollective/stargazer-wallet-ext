@@ -34,7 +34,7 @@ import * as consts from '../consts';
 ///////////////////////////
 
 const CreatePhraseContainer = ({ route }: { route: any }) => {
-  const { walletName, resetAll } = route.params || {};
+  const { walletName, resetAll, navigate } = route.params || {};
 
   ///////////////////////////
   // Hooks
@@ -67,7 +67,9 @@ const CreatePhraseContainer = ({ route }: { route: any }) => {
 
   const nextHandler = () => {
     if (passed && phrases) {
-      linkTo(`/create/phrase/check?walletName=${walletName}&resetAll=${resetAll}`);
+      linkTo(
+        `/create/phrase/check?walletName=${walletName}&resetAll=${resetAll}&navigate=${navigate}`
+      );
     } else {
       setPassed(true);
     }

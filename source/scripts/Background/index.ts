@@ -1,3 +1,19 @@
+// Service worker initialization
+// @ts-ignore - importScripts is available in service worker context
+if (typeof importScripts === 'function') {
+  // Handle WebAssembly loading errors
+  self.addEventListener('unhandledrejection', () => {});
+
+  // Initialize WebAssembly support
+  self.addEventListener('install', () => {
+    // Skip waiting to activate the service worker immediately
+    // @ts-ignore
+    self.skipWaiting();
+  });
+
+  self.addEventListener('activate', () => {});
+}
+
 import store from 'state/store';
 import rehydrateStore from 'state/rehydrate';
 

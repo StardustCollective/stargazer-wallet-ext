@@ -43,7 +43,7 @@ const Starter = () => {
   };
 
   const onImportClicked = () => {
-    linkTo('/import');
+    linkTo('/import?navigate=true');
   };
 
   //////////////////////
