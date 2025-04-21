@@ -12,6 +12,7 @@ import {
   JENNYCO_LOGO,
   LATTICE_LOGO,
   LEET_LOGO,
+  NDT_LOGO,
   POLYGON_LOGO,
   VE_LTX_LOGO,
 } from 'constants/index';
@@ -58,6 +59,18 @@ export const constellationInitialValues: IAssetInfoState[] = [
     l1endpoint: 'http://cl1-lb-mainnet.getdor.com:8000',
     dl1endpoint: 'http://dl1-lb-mainnet.getdor.com:9000',
     priceId: 'dor',
+  },
+  {
+    id: 'DAG06z64ifT2HzXoHfMexRfrcnpYFEwMqjFiPKze-main2',
+    address: 'DAG06z64ifT2HzXoHfMexRfrcnpYFEwMqjFiPKze',
+    label: 'National Digifoundry',
+    symbol: 'NDT',
+    decimals: 8,
+    type: AssetType.Constellation,
+    logo: NDT_LOGO,
+    network: 'main2',
+    l0endpoint: 'http://129.80.120.10:9100',
+    l1endpoint: 'http://129.80.120.10:9200',
   },
   {
     id: 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2',
