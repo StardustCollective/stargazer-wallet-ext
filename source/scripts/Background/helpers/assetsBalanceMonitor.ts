@@ -11,9 +11,10 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
-import { toDag } from 'utils/number';
 import { getDagAddress, walletHasDag, walletHasEth } from 'utils/wallet';
 import { getElPacaInfo } from 'state/user/api';
+import { getDagBalance } from 'dag4/block-explorer';
+import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
 
 const THIRTY_SECONDS = 30 * 1000;
 const SIXTY_SECONDS = 60 * 1000;
@@ -171,43 +172,11 @@ export class AssetsBalanceMonitor {
   //   }
   // }
 
-  private async getCurrencyAddressL0Balance(l0asset: IAssetInfoState): Promise<string> {
-    try {
-      const metagraphClient = dag4.account.createMetagraphTokenClient({
-        metagraphId: l0asset.address,
-        id: l0asset.address,
-        l0Url: l0asset.l0endpoint,
-        l1Url: l0asset.l1endpoint,
-        // Block explorer not available for local development
-        beUrl: '',
-      });
-
-      const balanceNumber = await metagraphClient.getBalance();
-
-      return String(balanceNumber);
-    } catch (err) {
-      return null;
-    }
-  }
-
-  private async getAddressBlockExplorerBalance(address: string): Promise<string> {
-    try {
-      const balance: number =
-        ((await dag4.network.blockExplorerV2Api.getAddressBalance(address)) as any)?.data
-          ?.balance ?? 0;
-      const balanceNumber = toDag(balance);
-
-      return String(balanceNumber);
-    } catch (err) {
-      return null;
-    }
-  }
-
   async refreshL0balances(l0assets: IAssetInfoState[]) {
     let l0balances: Record<string, string> = {};
 
     for (const l0asset of l0assets) {
-      const balanceString = await this.getCurrencyAddressL0Balance(l0asset);
+      const balance = await getMetagraphCurrencyBalance(l0asset);
 
       // // This code will be used in the future when the block explorer is fixed
       // if (l0asset.network === DAG_NETWORK.local2.id) {
@@ -219,8 +188,8 @@ export class AssetsBalanceMonitor {
       //     dagAddress
       //   );
       // }
-      if (!!balanceString) {
-        l0balances[l0asset.id] = balanceString;
+      if (!!balance) {
+        l0balances[l0asset.id] = String(balance);
       }
     }
 
@@ -258,7 +227,8 @@ export class AssetsBalanceMonitor {
       );
 
       const l0balances = await this.refreshL0balances(l0assets);
-      const balanceString = await this.getAddressBlockExplorerBalance(address);
+      const balance = await getDagBalance(address);
+      const balanceString = String(balance);
 
       store.dispatch(
         updateBalances({
