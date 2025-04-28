@@ -1,0 +1,21 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content {
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
