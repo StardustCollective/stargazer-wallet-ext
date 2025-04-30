@@ -4,26 +4,12 @@
  */
 
 import { ConnectionStatus, CypherockError, IHardwareWalletAdapter } from './types';
-import { DeviceConnection } from '@cypherock/sdk-hw-webusb';
-import {
+import type { IGetPublicKeysResult } from '@cypherock/sdk-app-evm';
+import type {
+  IWalletItem,
   IGetWalletsResultResponse,
   ISelectWalletResultResponse,
-  IWalletItem,
-  ManagerApp,
 } from '@cypherock/sdk-app-manager';
-import {
-  EvmApp,
-  IGetPublicKeysResult,
-  setEthersLib,
-  setEip712Lib,
-} from '@cypherock/sdk-app-evm';
-
-import { ethers } from 'ethers';
-import * as eip712 from 'eip-712';
-
-// Inject dependencies
-setEthersLib(ethers);
-setEip712Lib(eip712);
 
 /**
  * Cypherock device USB identifiers
@@ -39,11 +25,12 @@ export const CYPHEROCK_USB_IDS = {
  * @implements {IHardwareWalletAdapter}
  */
 export class CypherockService implements IHardwareWalletAdapter {
-  private deviceConnection: DeviceConnection | null = null;
-  private evmApp: EvmApp | null = null;
-  private managerApp: ManagerApp | null = null;
+  private deviceConnection: any = null; // Type will be set after dynamic import
+  private evmApp: any = null; // Type will be set after dynamic import
+  private managerApp: any = null; // Type will be set after dynamic import
   private status: ConnectionStatus = ConnectionStatus.DISCONNECTED;
   private device: USBDevice | null = null;
+  private sdkInitialized = false;
 
   /**
    * Checks if WebUSB is supported in the current browser
@@ -51,6 +38,44 @@ export class CypherockService implements IHardwareWalletAdapter {
    */
   public static isWebUSBSupported(): boolean {
     return typeof navigator !== 'undefined' && navigator.usb !== undefined;
+  }
+
+  /**
+   * Initializes the SDK and its dependencies
+   * @private
+   */
+  private async initializeSDK(): Promise<void> {
+    if (this.sdkInitialized) return;
+
+    try {
+      // Dynamically import all dependencies
+      const [
+        { DeviceConnection },
+        { ManagerApp },
+        { EvmApp, setEthersLib, setEip712Lib },
+        { ethers },
+        eip712,
+      ] = await Promise.all([
+        import('@cypherock/sdk-hw-webusb'),
+        import('@cypherock/sdk-app-manager'),
+        import('@cypherock/sdk-app-evm'),
+        import('ethers-v6'),
+        import('eip-712'),
+      ]);
+
+      // Inject ethers and EIP-712 libs
+      setEthersLib(ethers as any);
+      setEip712Lib(eip712);
+
+      // Store types for type safety
+      this.deviceConnection = DeviceConnection;
+      this.managerApp = ManagerApp;
+      this.evmApp = EvmApp;
+
+      this.sdkInitialized = true;
+    } catch (error) {
+      throw this.handleError(error, 'Failed to initialize Cypherock SDK');
+    }
   }
 
   /**
@@ -114,19 +139,19 @@ export class CypherockService implements IHardwareWalletAdapter {
     try {
       this.status = ConnectionStatus.CONNECTING;
 
+      // Initialize SDK if not already done
+      await this.initializeSDK();
+
       this.device = await this.requestDevice();
 
       // Create connection
-      this.deviceConnection = await DeviceConnection.connect(this.device);
+      this.deviceConnection = await this.deviceConnection.connect(this.device);
 
       // Create manager app to interact with device
-      this.managerApp = await ManagerApp.create(this.deviceConnection);
+      this.managerApp = await this.managerApp.create(this.deviceConnection);
 
       // Create EVM app for Ethereum chain operations
-      this.evmApp = await EvmApp.create(this.deviceConnection);
-
-      // Create DAG app for Constellation chain operations
-      // this.dagApp = await DagApp.create(this.deviceConnection);
+      this.evmApp = await this.evmApp.create(this.deviceConnection);
 
       this.status = ConnectionStatus.CONNECTED;
     } catch (error: unknown) {
@@ -182,6 +207,7 @@ export class CypherockService implements IHardwareWalletAdapter {
 
       const publicKeys: IGetPublicKeysResult = await this.evmApp.getPublicKeys({
         walletId,
+        // derivationPaths: [{ path: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, 0] }],
         derivationPaths: [{ path: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, 0] }],
         chainId,
       });

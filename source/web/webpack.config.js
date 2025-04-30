@@ -5,7 +5,6 @@ const fs = require('fs');
 
 const webpack = require('webpack');
 const DotEnv = require('dotenv-webpack');
-const ZipPlugin = require('zip-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -106,6 +105,7 @@ const commonConfig = {
             /uploadSourceMaps\.js$/.test(modulePath) ||
             (!/node_modules\/react-native-flash-message/.test(modulePath) &&
               !/node_modules\/eip-712/.test(modulePath) &&
+              !/node_modules\/ethers-v6/.test(modulePath) &&
               (/node_modules/.test(modulePath) || /native/.test(modulePath)))
           );
         },

@@ -7,56 +7,6 @@ import ConnectView from './views/connect';
 import { CypherockService } from '../../utils/cypherockBridge';
 import 'assets/styles/global.scss';
 
-// Strings
-// const ROUTES = {
-//   SIGN_TRANSACTION: 'signTransaction',
-//   SIGN_MESSAGE: 'signMessage',
-// };
-
-// const BITFI_ERROR_STRINGS = {
-//   INVLAID_DEVICE_ID: 'Invalid device ID',
-//   CANNOT_READ_PROPERTIES: 'Cannot read properties of undefined',
-//   INVALID_HEX_STRING: 'Invalid hex string',
-//   TIMEOUT: 'Timeout Error',
-//   BLOCKED: 'USER IS BLOCKING',
-//   BUSY: 'USER IS BUSY',
-//   REJECTED: 'REJECTED',
-//   ERROR_CODE_ZERO: '0',
-// };
-// const ALERT_MESSAGES_STRINGS = {
-//   DEFAULT: 'Error: Please contact support.',
-//   TIMEOUT: 'Error: Timeout, please, try again',
-//   INVLAID_DEVICE_ID: 'Error: Please input a valid device ID.',
-//   REJECTED: 'Error: Request has been rejected by user.',
-//   BUSY: 'Error: There is a pending request on device, please, cancel it',
-//   BLOCKED: 'Error: "Allow connect" toggle on the device is switched OFF',
-// };
-
-// enum ALERT_SEVERITY_STATE {
-//   SUCCESS = 'success',
-//   ERROR = 'error',
-//   WARNING = 'warning',
-//   INFO = 'info',
-// }
-
-// enum WALLET_STATE_ENUM {
-//   LOCKED = 1,
-//   FETCHING,
-//   FETCHING_PAGE,
-//   VIEW_ACCOUNTS,
-//   SENDING,
-//   SUCCESS,
-//   SIGN,
-//   BITFI_SIGNIN,
-//   MESSAGE_SIGNING,
-// }
-
-// enum PAGING_ACTIONS_ENUM {
-//   INITIAL = 0,
-//   NEXT,
-//   PREVIOUS,
-// }
-
 const useStyles = makeStyles({
   root: {
     display: 'flex',
@@ -69,18 +19,23 @@ const useStyles = makeStyles({
 });
 
 const CypherockPage = () => {
-  // Create a singleton instance of CypherockService
   const [service] = useState<CypherockService>(() => new CypherockService());
+  const [wallets, setWallets] = useState([]);
+  const [selectedWallet, setSelectedWallet] = useState(null);
+  const [address, setAddress] = useState(null);
+
+  console.log(setSelectedWallet);
 
   const classes = useStyles();
 
   const onConnectClick = async () => {
     try {
-      console.log('antes connect');
       await service.connect();
-      console.log('despues connect');
       const wallets = await service.getWallets();
-      console.log('wallets', wallets);
+      setWallets(wallets);
+
+      const publicKeys = await service.getWalletAddresses(wallets[1].id, 1);
+      setAddress(publicKeys.addresses[0]);
     } catch (exc: any) {
       console.log('error', exc);
     }
@@ -88,11 +43,8 @@ const CypherockPage = () => {
 
   const onSelectWalletClick = async () => {
     try {
-      console.log('antes selectWallet');
       const selectedWallet = await service.selectWallet();
-      console.log('despues selectWallet', selectedWallet);
-      const publicKeys = await service.getWalletAddresses(selectedWallet.id, 137);
-      console.log(`${selectedWallet.name} - public keys:`, publicKeys);
+      setSelectedWallet(selectedWallet);
     } catch (exc: any) {
       console.log('error', exc);
     }
@@ -102,6 +54,9 @@ const CypherockPage = () => {
     return (
       <>
         <ConnectView
+          wallets={wallets}
+          selectedWallet={selectedWallet}
+          address={address}
           onConnectClick={onConnectClick}
           onSelectWalletClick={onSelectWalletClick}
         />
