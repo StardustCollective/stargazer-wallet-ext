@@ -14,12 +14,15 @@ import {
 import { getParamsFromObject } from 'utils/objects';
 import { ExternalApi } from 'utils/httpRequests/apis';
 
-export const getGasOracle = async (explorerID: string): Promise<GasOracleResponse> => {
+export const getGasOracle = async (
+  explorerID: string,
+  chainId: number
+): Promise<GasOracleResponse> => {
   const params = {
     module: 'gastracker',
     action: 'gasoracle',
   };
-  const url = explorerID + '/api?' + getParamsFromObject(params);
+  const url = explorerID + `/api?chainid=${chainId}&` + getParamsFromObject(params);
 
   const response = await ExternalApi.get(url);
   return response?.data?.result ?? {};
@@ -27,13 +30,14 @@ export const getGasOracle = async (explorerID: string): Promise<GasOracleRespons
 
 export const getTokenTransactionHistory = async ({
   explorerID,
+  chainId,
   address,
   assetAddress,
   page,
   offset,
   startblock,
   endblock,
-}: TransactionHistoryParam & { explorerID: string }): Promise<Txs> => {
+}: TransactionHistoryParam & { explorerID: string; chainId: number }): Promise<Txs> => {
   const initialParams = {
     module: 'account',
     action: 'tokentx',
@@ -41,7 +45,7 @@ export const getTokenTransactionHistory = async ({
   };
   let url =
     explorerID +
-    `/api?` +
+    `/api?chainid=${chainId}&` +
     getParamsFromObject({
       ...initialParams,
       address,
@@ -65,12 +69,13 @@ export const getTokenTransactionHistory = async ({
 
 export const getETHTransactionHistory = async ({
   explorerID,
+  chainId,
   address,
   page,
   offset,
   startblock,
   endblock,
-}: TransactionHistoryParam & { explorerID: string }): Promise<Txs> => {
+}: TransactionHistoryParam & { explorerID: string; chainId: number }): Promise<Txs> => {
   const initialParams = {
     module: 'account',
     action: 'txlist',
@@ -78,7 +83,7 @@ export const getETHTransactionHistory = async ({
   };
   const url =
     explorerID +
-    '/api?' +
+    `/api?chainid=${chainId}&` +
     getParamsFromObject({
       ...initialParams,
       address,

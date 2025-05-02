@@ -285,6 +285,7 @@ class EVMChainController implements IEVMChainController {
       if (assetAddress) {
         transations = await getTokenTransactionHistory({
           explorerID: this.chain.explorerID,
+          chainId: this.chain.chainId,
           address,
           assetAddress,
           page,
@@ -293,6 +294,7 @@ class EVMChainController implements IEVMChainController {
       } else {
         transations = await getETHTransactionHistory({
           explorerID: this.chain.explorerID,
+          chainId: this.chain.chainId,
           address,
           page,
           offset,
@@ -315,17 +317,16 @@ class EVMChainController implements IEVMChainController {
   async estimateGasPrices() {
     // Snowtrace API doesn't support the gas tracker module yet (https://snowtrace.io/apis)
     // That's why we need to include Avalanche Mainnet here.
-    if (
-      isTestnet(this.chain.id) ||
-      this.chain.id === 'avalanche-mainnet' ||
-      this.chain.id === 'base-mainnet'
-    ) {
+    if (isTestnet(this.chain.id) || this.chain.id === 'base-mainnet') {
       // Etherscan gas oracle is not working in testnets
       return this.fallbackFeeData(this.provider);
     }
 
     try {
-      const response: GasOracleResponse = await getGasOracle(this.chain.explorerID);
+      const response: GasOracleResponse = await getGasOracle(
+        this.chain.explorerID,
+        this.chain.chainId
+      );
 
       // Convert result of gas prices: `Gwei` -> `Wei`
       const averageWei = parseUnits(response.SafeGasPrice, 'gwei');

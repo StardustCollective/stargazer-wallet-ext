@@ -4,18 +4,7 @@ export const X_LATTICE_API_KEY = 'x-lattice-api-key';
 export const X_LATTICE_REQ_TOKEN = 'x-lattice-req-token';
 export const X_LATTICE_SIG = 'x-lattice-sig';
 
-export enum ExplorerExternalService {
-  EthMainnet = 'explorer-ethereum-mainnet',
-  EthTestnet = 'explorer-ethereum-sepolia',
-  AvaxMainnet = 'explorer-avalanche-mainnet',
-  AvaxTestnet = 'explorer-avalanche-testnet',
-  BscMainnet = 'explorer-bsc-mainnet',
-  BscTestnet = 'explorer-bsc-testnet',
-  PolygonMainnet = 'explorer-polygon-mainnet',
-  PolygonTestnet = 'explorer-polygon-amoy',
-  BaseMainnet = 'explorer-base-mainnet',
-  BaseTestnet = 'explorer-base-sepolia',
-}
+export const ExplorerExternalService = 'explorer-etherscan';
 
 export enum NodeExternalService {
   EthMainnet = 'node-ethereum-mainnet',
