@@ -25,7 +25,7 @@ export const getGasOracle = async (
   const url = explorerID + `/api?chainid=${chainId}&` + getParamsFromObject(params);
 
   const response = await ExternalApi.get(url);
-  return response?.data?.result ?? {};
+  return response?.data?.message === 'OK' ? response?.data?.result ?? {} : {};
 };
 
 export const getTokenTransactionHistory = async ({
@@ -57,7 +57,8 @@ export const getTokenTransactionHistory = async ({
     });
 
   const response = await ExternalApi.get(url);
-  const tokenTransactions: TokenTransactionInfo[] = response?.data?.result ?? [];
+  const tokenTransactions: TokenTransactionInfo[] =
+    response?.data?.message === 'OK' ? response?.data?.result ?? [] : [];
 
   return filterSelfTxs(tokenTransactions)
     .filter((tx) => !bn(tx.value).isZero())
@@ -99,10 +100,13 @@ export const getETHTransactionHistory = async ({
     ExternalApi.get(internalUrl),
   ]);
 
-  let ethTransactions: ETHTransactionInfo[] = txsResponse?.data?.result ?? [];
+  let ethTransactions: ETHTransactionInfo[] =
+    txsResponse?.data?.message === 'OK' ? txsResponse?.data?.result ?? [] : [];
 
   const internalTransactions: ETHTransactionInfo[] =
-    internalTxsResponse?.data?.result ?? [];
+    internalTxsResponse?.data?.message === 'OK'
+      ? internalTxsResponse?.data?.result ?? []
+      : [];
 
   if (!!internalTransactions.length) {
     // Adds internal transactions and sorts by timestamp
