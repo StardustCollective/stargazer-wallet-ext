@@ -19,11 +19,16 @@ const WalletsContainer: FC<IAddWalletView> = () => {
     linkTo('/settings/wallets/import');
   };
 
+  const onConnectHardwareWalletClicked = () => {
+    linkTo('/settings/wallets/hardware');
+  };
+
   return (
     <Container safeArea={false}>
       <Wallets
         onCreateNewWalletClicked={onCreateNewWalletClicked}
         onImportWalletClicked={onImportWalletClicked}
+        onConnectHardwareWalletClicked={onConnectHardwareWalletClicked}
       />
     </Container>
   );

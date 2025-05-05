@@ -1,34 +1,45 @@
 import React, { FC } from 'react';
-import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
-import Icon from 'components/Icon';
-import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
-import styles from './AddWallet.scss';
+import NavigationItem from 'components/NavigationItem';
+import WalletIcon from 'assets/images/svg/wallet.svg';
 import IAddWalletSettings from './types';
+import styles from './AddWallet.scss';
 
 const AddWallet: FC<IAddWalletSettings> = ({
   onCreateNewWalletClicked,
   onImportWalletClicked,
+  onConnectHardwareWalletClicked,
 }) => {
+  const ADD_WALLET_OPTIONS = [
+    {
+      id: 'addWallet-createNewWallet',
+      label: 'Create new wallet',
+      IconImageOrComponent: WalletIcon,
+      onClick: onCreateNewWalletClicked,
+    },
+    {
+      id: 'addWallet-importWallet',
+      label: 'Import wallet',
+      IconImageOrComponent: WalletIcon,
+      onClick: onImportWalletClicked,
+    },
+    {
+      id: 'addWallet-connectHardwareWallet',
+      label: 'Connect hardware wallet',
+      IconImageOrComponent: WalletIcon,
+      onClick: onConnectHardwareWalletClicked,
+    },
+  ];
   return (
-    <div className={styles.wrapper}>
-      <section
-        id="addWallet-createNewWallet"
-        className={styles.menu}
-        onClick={onCreateNewWalletClicked}
-      >
-        <Icon width={36} Component={StargazerIcon} iconStyles={styles.icon} />
-        <span>Create New Wallet</span>
-        <ArrowIcon />
-      </section>
-      <section
-        id="addWallet-importWallet"
-        className={styles.menu}
-        onClick={onImportWalletClicked}
-      >
-        <Icon width={36} Component={StargazerIcon} iconStyles={styles.icon} />
-        <span>Import Wallet</span>
-        <ArrowIcon />
-      </section>
+    <div className={styles.container}>
+      {ADD_WALLET_OPTIONS.map((option) => (
+        <NavigationItem
+          key={option.id}
+          id={option.id}
+          label={option.label}
+          IconImageOrComponent={option.IconImageOrComponent}
+          onClick={option.onClick}
+        />
+      ))}
     </div>
   );
 };

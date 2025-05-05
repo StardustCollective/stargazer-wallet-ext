@@ -9,66 +9,9 @@
 
   .box {
     width: 100%;
-    background: $grey-50;
 
     .content {
       margin: 16px;
-      cursor: pointer;
-      .settingsItemIconWrapper {
-        display: flex;
-        height: 100%;
-        margin-left: 16px;
-        margin-right: 16px;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-
-        .iconCircle {
-          display: flex;
-          width: 48px;
-          height: 48px;
-          justify-content: center;
-          align-items: center;
-          background-color: $primary;
-          border-radius: 24px;
-
-          img {
-            width: 30px;
-            height: 30px;
-          }
-
-          .linkedIconImage {
-            width: 20px;
-            height: 20px;
-          }
-
-          .personalizeIconImage {
-            width: 24px;
-            height: 24px;
-          }
-        }
-      }
-
-      .infoContainer {
-        display: flex;
-        flex-grow: 1;
-      }
-
-      .settingsItemLabelWrapper {
-        display: flex;
-        flex: 1;
-        align-items: center;
-
-        .label {
-          font-size: 16px;
-        }
-      }
-
-      .arrowRightContainer {
-        display: flex;
-        align-items: center;
-        margin-right: 24px;
-      }
     }
   }
 
