@@ -12,6 +12,8 @@ import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
 import { toDag } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
+import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
+import { getDagBalance } from 'dag4/block-explorer';
 
 type AllowSpendData = {
   source: string; // Wallet address signing the transaction.
@@ -23,7 +25,7 @@ type AllowSpendData = {
   validUntilEpoch?: number; // The global snapshot epoch progress for which this is valid until. If not provided, the default value will be the currentEpoch + 30.
 };
 
-const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
+const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
 
   const accountController = getAccountController();
@@ -105,8 +107,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     }
   }
 
-  const { assets, vault } = store.getState();
-  const { balances } = vault;
+  const { assets } = store.getState();
   const feeValue = data.fee ?? 0;
   const totalAmount = toDag(data.amount) + toDag(feeValue);
 
@@ -122,9 +123,9 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('"currencyId" must be a valid metagraph address');
     }
 
-    const balance = balances[currencyAsset.id];
+    const balance = await getMetagraphCurrencyBalance(currencyAsset);
 
-    if (!balance || Number(balance) < totalAmount) {
+    if (!balance || balance < totalAmount) {
       throw new Error(
         `not enough balance for the selected currency: ${currencyAsset.symbol}`
       );
@@ -136,9 +137,9 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('DAG asset not found in the wallet');
     }
 
-    const balance = balances[dagAsset.id];
+    const balance = await getDagBalance(dagAccount.address);
 
-    if (!balance || Number(balance) < totalAmount) {
+    if (!balance || balance < totalAmount) {
       throw new Error(`not enough DAG balance`);
     }
   }
@@ -246,7 +247,7 @@ export const dag_allowSpend = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  validateParams(request);
+  await validateParams(request);
 
   const { activeWallet, windowUrl, windowType } = getWalletInfo();
 
