@@ -17,11 +17,12 @@ import { differenceBetweenEpochs } from 'utils/epochs';
 import { formatBigNumberForDisplay, toDag } from 'utils/number';
 import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
-import { DAG_NETWORK } from 'constants/index';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import VaultSelectors from 'selectors/vaultSelectors';
 import { dag4 } from '@stardust-collective/dag4';
 import { usePlatformAlert } from 'utils/alertUtil';
+import {
+  HashResponse,
+  TokenLock as TokenLockBody,
+} from '@stardust-collective/dag4-network';
 
 const renderTokenValue = (tokenAsset: IAssetInfoState) => {
   return (
@@ -82,10 +83,6 @@ const TokenLock = () => {
   const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
 
-  const dagActiveNetwork = useSelector(
-    VaultSelectors.getActiveNetworkByChain(KeyringNetwork.Constellation)
-  );
-
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
@@ -116,17 +113,14 @@ const TokenLock = () => {
     currencyId && Object.values(assets).find((asset) => asset?.address === currencyId);
 
   let tokenAsset: IAssetInfoState | null = null;
-  let tokenL1Url: string | null = null;
 
   if (!currencyId && dagAsset) {
     tokenAsset = dagAsset;
-    tokenL1Url = DAG_NETWORK[dagActiveNetwork]?.config?.l1Url || null;
   } else if (tokenAssetByCurrency) {
     tokenAsset = tokenAssetByCurrency;
-    tokenL1Url = tokenAssetByCurrency?.l1endpoint || null;
   }
 
-  if (!tokenAsset || !tokenL1Url) return null;
+  if (!tokenAsset) return null;
 
   useEffect(() => {
     if (feeAmount !== null && feeAmount !== undefined) {
@@ -145,26 +139,46 @@ const TokenLock = () => {
     window.close();
   };
 
+  const sendTokenLockTransaction = async (): Promise<string> => {
+    const tokenLockBody: TokenLockBody = {
+      source: data.source,
+      amount: data.amount,
+      fee: 0,
+      unlockEpoch: data.unlockEpoch,
+    };
+
+    let tokenLockResponse: HashResponse | null = null;
+
+    if (!currencyId) {
+      // Send transaction to DAG
+      tokenLockResponse = await dag4.account.createTokenLock(tokenLockBody);
+    } else {
+      // Send transaction to metagraph
+      const metagraphClient = dag4.account.createMetagraphTokenClient({
+        metagraphId: tokenAssetByCurrency.address,
+        id: tokenAssetByCurrency.address,
+        l0Url: tokenAssetByCurrency.l0endpoint,
+        l1Url: tokenAssetByCurrency.l1endpoint,
+        beUrl: '',
+      });
+
+      tokenLockResponse = await metagraphClient.createTokenLock(tokenLockBody);
+    }
+
+    if (!tokenLockResponse || !tokenLockResponse?.hash) {
+      throw new Error('Failed to generate signed token lock transaction');
+    }
+
+    return tokenLockResponse.hash;
+  };
+
   const onPositiveButtonClick = async () => {
     setLoading(true);
     try {
-      const tokenLockBody = {
-        source: data.source,
-        amount: data.amount,
-        fee: 0,
-        currencyId: data.currencyId,
-        unlockEpoch: data.unlockEpoch,
-        tokenL1Url,
-      };
-
-      const tokenLockResponse = await dag4.account.postTokenLock(tokenLockBody);
-
-      if (!tokenLockResponse || !tokenLockResponse?.hash) {
-        throw new Error('Failed to generate signed token lock transaction');
-      }
+      const txHash = await sendTokenLockTransaction();
 
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(tokenLockResponse.hash, message);
+      StargazerWSMessageBroker.sendResponseResult(txHash, message);
     } catch (e) {
       const errorMessage =
         (e instanceof Error && e?.message) ||

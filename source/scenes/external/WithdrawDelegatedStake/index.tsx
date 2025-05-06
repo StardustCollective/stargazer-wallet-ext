@@ -63,7 +63,7 @@ const WithdrawDelegatedStakeView = () => {
         stakeRef,
       };
 
-      const withdrawDelegatedStakeResponse = await dag4.account.putWithdrawDelegatedStake(
+      const withdrawDelegatedStakeResponse = await dag4.account.withdrawDelegatedStake(
         withdrawDelegatedStakeBody
       );
 

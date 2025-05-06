@@ -100,7 +100,7 @@ const DelegatedStakeView = () => {
         fee: toDatum(feeValue),
       };
 
-      const delegatedStakeResponse = await dag4.account.postDelegatedStake(
+      const delegatedStakeResponse = await dag4.account.createDelegatedStake(
         delegatedStakeBody
       );
 

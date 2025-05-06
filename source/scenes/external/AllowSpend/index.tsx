@@ -19,13 +19,14 @@ import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 import { AllowSpendData } from './types';
 import { formatBigNumberForDisplay, toDag, toDatum } from 'utils/number';
 import { IAssetInfoState } from 'state/assets/types';
-import VaultSelectors from 'selectors/vaultSelectors';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { DAG_NETWORK } from 'constants/index';
 import { dag4 } from '@stardust-collective/dag4';
 import store from 'state/store';
 import { differenceBetweenEpochs } from 'utils/epochs';
 import { usePlatformAlert } from 'utils/alertUtil';
+import {
+  AllowSpend as AllowSpendBody,
+  HashResponse,
+} from '@stardust-collective/dag4-network';
 
 const renderMetagraphValue = (destinationInfo: {
   isMetagraph: boolean;
@@ -95,9 +96,6 @@ const AllowSpend = () => {
   const [loading, setLoading] = useState(false);
 
   const current = useSelector(dappSelectors.getCurrent);
-  const dagActiveNetwork = useSelector(
-    VaultSelectors.getActiveNetworkByChain(KeyringNetwork.Constellation)
-  );
 
   // Get token asset information
   const dagAsset = useSelector(assetsSelectors.getAssetBySymbol('DAG'));
@@ -137,18 +135,15 @@ const AllowSpend = () => {
 
   // Determine token asset and L1 URL after all hooks have been called
   let tokenAsset: IAssetInfoState | null = null;
-  let tokenL1Url: string | null = null;
 
   if (!currencyId && dagAsset) {
     // If no currencyId is provided, use DAG as the default currency
     tokenAsset = dagAsset;
-    tokenL1Url = DAG_NETWORK[dagActiveNetwork]?.config?.l1Url || null;
   } else if (tokenAssetByCurrency) {
     tokenAsset = tokenAssetByCurrency;
-    tokenL1Url = tokenAssetByCurrency?.l1endpoint || null;
   }
 
-  if (!tokenAsset || !tokenL1Url) {
+  if (!tokenAsset) {
     return null;
   }
 
@@ -169,28 +164,48 @@ const AllowSpend = () => {
     window.close();
   };
 
+  const sendAllowSpendTransaction = async (): Promise<string> => {
+    const allowSpendBody: AllowSpendBody = {
+      source: data.source,
+      destination: data.destination,
+      approvers: data.approvers,
+      amount: data.amount,
+      fee: toDatum(feeValue),
+      validUntilEpoch: data.validUntilEpoch,
+    };
+
+    let allowSpendResponse: HashResponse | null = null;
+
+    if (!currencyId) {
+      // currencyId not provided -> send transaction to DAG
+      allowSpendResponse = await dag4.account.createAllowSpend(allowSpendBody);
+    } else {
+      // currencyId provided -> send transaction to metagraph
+      const metagraphClient = dag4.account.createMetagraphTokenClient({
+        metagraphId: tokenAssetByCurrency.address,
+        id: tokenAssetByCurrency.address,
+        l0Url: tokenAssetByCurrency.l0endpoint,
+        l1Url: tokenAssetByCurrency.l1endpoint,
+        beUrl: '',
+      });
+
+      allowSpendResponse = await metagraphClient.createAllowSpend(allowSpendBody);
+    }
+
+    if (!allowSpendResponse || !allowSpendResponse?.hash) {
+      throw new Error('Failed to generate signed allow spend transaction');
+    }
+
+    return allowSpendResponse.hash;
+  };
+
   const onPositiveButtonClick = async () => {
     setLoading(true);
     try {
-      const approveSpendBody = {
-        source: data.source,
-        destination: data.destination,
-        approvers: data.approvers,
-        amount: data.amount,
-        fee: toDatum(feeValue),
-        currencyId: data.currencyId,
-        validUntilEpoch: data.validUntilEpoch,
-        tokenL1Url,
-      };
-
-      const allowSpendResponse = await dag4.account.postAllowSpend(approveSpendBody);
-
-      if (!allowSpendResponse || !allowSpendResponse?.hash) {
-        throw new Error('Failed to generate signed allow spend transaction');
-      }
+      const txHash = await sendAllowSpendTransaction();
 
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(allowSpendResponse.hash, message);
+      StargazerWSMessageBroker.sendResponseResult(txHash, message);
     } catch (e) {
       const errorMessage =
         (e instanceof Error && e?.message) ||
