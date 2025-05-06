@@ -103,7 +103,7 @@ const UserState = createSlice({
     builder.addCase(claimElpaca.rejected, (state, action) => {
       state.elpaca.claim.loading = false;
       state.elpaca.claim.data = null;
-      state.elpaca.claim.error = action.payload;
+      state.elpaca.claim.error = action;
     });
   },
 });
