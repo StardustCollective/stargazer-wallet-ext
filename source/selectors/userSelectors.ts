@@ -5,6 +5,8 @@ const getElpaca = (state: RootState): IElpacaState => state.user.elpaca;
 const getElpacaHidden = (state: RootState): boolean => state.user.elpaca.hidden;
 const getElpacaClaim = (state: RootState): ElPacaClaimData | null =>
   state.user?.elpaca?.claim?.data ?? null;
+const getElpacaClaimError = (state: RootState): any | null =>
+  state.user?.elpaca?.claim?.error ?? null;
 const getElpacaClaimLoading = (state: RootState): boolean =>
   state.user.elpaca?.claim?.loading;
 const getElpacaStreak = (state: RootState): ElPacaStreakData | null =>
@@ -18,5 +20,6 @@ export default {
   getElpacaClaim,
   getElpacaStreak,
   getElpacaClaimLoading,
+  getElpacaClaimError,
   getCurrentClaimWindow,
 };

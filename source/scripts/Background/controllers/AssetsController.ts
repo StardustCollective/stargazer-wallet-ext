@@ -58,6 +58,7 @@ import {
 import { ELPACA_VALUE } from 'utils/envUtil';
 import { ExternalApi } from 'utils/httpRequests/apis';
 import { ExternalService } from 'utils/httpRequests/constants';
+import { captureError } from 'utils/sentry';
 
 // Default logos
 const DEFAULT_LOGOS = {
@@ -314,25 +315,37 @@ const AssetsController = (): IAssetsController => {
   const claimElpaca = async () => {
     const { activeWallet } = store.getState().vault;
     const { elpaca } = store.getState().user;
+    let address = '';
+    try {
+      address = getDagAddress(activeWallet);
+      if (!address) throw new Error('No DAG address found');
 
-    const address = getDagAddress(activeWallet);
-    if (!address) return;
+      const token = elpaca?.streak?.data?.nextToken ?? '';
 
-    const token = elpaca?.streak?.data?.nextToken ?? '';
+      const data = {
+        StreakUpdate: {
+          address,
+          token,
+        },
+      };
 
-    const data = {
-      StreakUpdate: {
-        address,
-        token,
-      },
-    };
+      const dataEncoded = encodeToBase64(JSON.stringify(data));
+      const signature = await dag4.keyStore.dataSign(
+        decodeFromBase64(ELPACA_VALUE),
+        dataEncoded
+      );
+      store.dispatch<any>(claimElPacaFn({ address, signature, token }));
+    } catch (err) {
+      captureError({
+        error: new Error('Elpaca: signature failed'),
+        extraInfo: {
+          message: err instanceof Error ? err.message : 'Original message not available',
+        },
+        userAddress: address,
+      });
 
-    const dataEncoded = encodeToBase64(JSON.stringify(data));
-    const signature = await dag4.keyStore.dataSign(
-      decodeFromBase64(ELPACA_VALUE),
-      dataEncoded
-    );
-    store.dispatch<any>(claimElPacaFn({ address, signature, token }));
+      throw err;
+    }
   };
 
   const fetchElpacaStreak = async (): Promise<void> => {

@@ -28,6 +28,10 @@ scope.setClient(client);
 
 client.init();
 
-window.onerror = function (_, _1, _2, _3, error) {
-  scope.captureException(error);
-};
+if (typeof window !== 'undefined') {
+  window.onerror = function (_, _1, _2, _3, error) {
+    scope.captureException(error);
+  };
+}
+
+export { scope };
