@@ -20,7 +20,6 @@ import ArrowDownIcon from 'assets/images/svg/arrow-down.svg';
 ///////////////////////////
 
 import { IAssetButtons } from './types';
-import { iosPlatform } from 'utils/platform';
 
 ///////////////////////////
 // Styles
@@ -47,7 +46,7 @@ const AssetButtons: FC<IAssetButtons> = ({
 
   return (
     <View style={styles.container}>
-      {assetBuyable && !iosPlatform() && (
+      {assetBuyable && (
         <TouchableOpacity onPress={onBuyPressed} style={styles.buttonContainer}>
           <LinearGradient
             useAngle
