@@ -31,7 +31,7 @@ import { CONTAINER_COLOR } from './enum';
 const Container: FC<IContainer> = ({
   children,
   safeArea = true,
-  color = CONTAINER_COLOR.DARK,
+  color = CONTAINER_COLOR.LIGHT,
 }) => {
   const AreaView = safeArea ? SafeAreaView : View;
 

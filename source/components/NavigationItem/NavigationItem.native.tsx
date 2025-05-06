@@ -20,7 +20,7 @@ const NavigationItem = ({
   label,
   IconImageOrComponent,
   onClick,
-  disabled,
+  disabled = false,
 }: INavigationItemProps) => {
   const disabledStyle = disabled ? styles.disabled : {};
   return (

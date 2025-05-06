@@ -10,7 +10,7 @@ import { useLinkTo } from '@react-navigation/native';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Hooks
@@ -89,7 +89,7 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
   ///////////////////////////
 
   return (
-    <Container safeArea={false}>
+    <Container color={CONTAINER_COLOR.DARK} safeArea={false}>
       <Home
         navigation={navigation}
         route={route}
