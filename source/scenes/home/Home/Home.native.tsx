@@ -33,7 +33,6 @@ import { getWalletController } from 'utils/controllersUtils';
 import homeHeader from 'navigation/headers/home';
 import { truncateString } from 'scenes/home/helpers';
 import EventEmitter from 'utils/EventEmitter';
-import { iosPlatform } from 'utils/platform';
 
 ///////////////////////////
 // Styles
@@ -82,9 +81,6 @@ const Home: FC<IHome> = ({
 
   const walletController = getWalletController();
   const linkTo = useLinkTo();
-
-  const showBuyButton = !iosPlatform();
-  const showSwapButton = !isDagOnlyWallet && !iosPlatform();
 
   const handleSwitchWallet = async (
     walletId: string,
@@ -186,16 +182,14 @@ const Home: FC<IHome> = ({
                 )}
               </View>
               <View style={styles.buttons}>
-                {showBuyButton && (
-                  <ButtonV3
-                    title={BUY_STRING}
-                    size={BUTTON_SIZES_ENUM.LARGE}
-                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                    onPress={onBuyPressed}
-                    extraStyles={styles.buttonNormal}
-                  />
-                )}
-                {showSwapButton && (
+                <ButtonV3
+                  title={BUY_STRING}
+                  size={BUTTON_SIZES_ENUM.LARGE}
+                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+                  onPress={onBuyPressed}
+                  extraStyles={styles.buttonNormal}
+                />
+                {!isDagOnlyWallet && (
                   <ButtonV3
                     title={SWAP_STRING}
                     size={BUTTON_SIZES_ENUM.LARGE}
