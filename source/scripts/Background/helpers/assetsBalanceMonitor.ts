@@ -13,8 +13,10 @@ import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { getDagAddress, walletHasDag, walletHasEth } from 'utils/wallet';
 import { getElPacaInfo } from 'state/user/api';
-import { getDagBalance } from 'dag4/block-explorer';
+import { getDagBalance, getMetagraphBalance } from 'dag4/block-explorer';
 import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
+import { DAG_NETWORK } from 'constants/index';
+import { retry } from 'utils/retry';
 
 const THIRTY_SECONDS = 30 * 1000;
 const SIXTY_SECONDS = 60 * 1000;
@@ -150,50 +152,32 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  // This function will be used in the future when the block explorer is fixed
-
-  // private async getCurrencyAddressBlockExplorerBalance(
-  //   metagraphAddress: string,
-  //   dagAddress: string
-  // ): Promise<string> {
-  //   try {
-  //     const balance =
-  //       (
-  //         (await dag4.network.blockExplorerV2Api.getCurrencyAddressBalance(
-  //           metagraphAddress,
-  //           dagAddress
-  //         )) as any
-  //       )?.data?.balance ?? 0;
-  //     const balanceNumber = toDag(balance);
-
-  //     return String(balanceNumber);
-  //   } catch (err) {
-  //     return null;
-  //   }
-  // }
-
-  async refreshL0balances(l0assets: IAssetInfoState[]) {
-    let l0balances: Record<string, string> = {};
-
+  async refreshL0balances(l0assets: IAssetInfoState[], address: string) {
     for (const l0asset of l0assets) {
-      const balance = await getMetagraphCurrencyBalance(l0asset);
-
+      const callbackSuccess = (result: number) => {
+        this.updateBalancesState({ [l0asset.id]: String(result) });
+      };
+      const callbackError = (error: Error) => console.log(error);
       // // This code will be used in the future when the block explorer is fixed
-      // if (l0asset.network === DAG_NETWORK.local2.id) {
-      //   // Get balance from L0 API for local development
-      //   balanceString = await this.getCurrencyAddressL0Balance(l0asset);
-      // } else {
-      //   balanceString = await this.getCurrencyAddressBlockExplorerBalance(
-      //     l0asset.address,
-      //     dagAddress
-      //   );
-      // }
-      if (!!balance) {
-        l0balances[l0asset.id] = String(balance);
+      if (l0asset.network === DAG_NETWORK.local2.id) {
+        // Get balance from L0 API for local development
+        await retry(() => getMetagraphCurrencyBalance(l0asset), callbackSuccess, {
+          onError: callbackError,
+          requestTimeoutMs: 2000,
+          attempts: 3,
+        });
+      } else {
+        await retry(
+          () => getMetagraphBalance(l0asset.address, address),
+          callbackSuccess,
+          {
+            onError: callbackError,
+            requestTimeoutMs: 2000,
+            attempts: 3,
+          }
+        );
       }
     }
-
-    return l0balances;
   }
 
   refreshPacaStreak() {
@@ -204,6 +188,12 @@ export class AssetsBalanceMonitor {
     if (!dagAddress) return;
 
     store.dispatch<any>(getElPacaInfo(dagAddress));
+  }
+
+  updateBalancesState(balances: Record<string, string>) {
+    if (balances && Object.keys(balances).length > 0) {
+      store.dispatch(updateBalances(balances));
+    }
   }
 
   async refreshDagBalance() {
@@ -226,15 +216,17 @@ export class AssetsBalanceMonitor {
           asset?.network === activeNetwork.Constellation
       );
 
-      const l0balances = await this.refreshL0balances(l0assets);
-      const balance = await getDagBalance(address);
-      const balanceString = String(balance);
-
-      store.dispatch(
-        updateBalances({
-          ...l0balances,
-          ...(!!balanceString && { [AssetType.Constellation]: balanceString }),
-        })
+      await this.refreshL0balances(l0assets, address);
+      await retry(
+        () => getDagBalance(address),
+        (balance) => {
+          this.updateBalancesState({ [AssetType.Constellation]: String(balance) });
+        },
+        {
+          onError: (error) => console.log(error),
+          requestTimeoutMs: 2000,
+          attempts: 3,
+        }
       );
       store.dispatch(setLoadingDAGBalances(false));
     } catch (e) {

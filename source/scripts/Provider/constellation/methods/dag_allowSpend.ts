@@ -12,8 +12,7 @@ import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
 import { toDag } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
-import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
-import { getDagBalance } from 'dag4/block-explorer';
+import { getDagBalance, getMetagraphBalance } from 'dag4/block-explorer';
 
 type AllowSpendData = {
   source: string; // Wallet address signing the transaction.
@@ -123,7 +122,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('"currencyId" must be a valid metagraph address');
     }
 
-    const balance = await getMetagraphCurrencyBalance(currencyAsset);
+    const balance = await getMetagraphBalance(currencyAsset.address, dagAccount.address);
 
     if (!balance || balance < totalAmount) {
       throw new Error(

@@ -8,8 +8,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import store from 'state/store';
 import { toDag } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
-import { getDagBalance } from 'dag4/block-explorer';
-import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
+import { getDagBalance, getMetagraphBalance } from 'dag4/block-explorer';
 
 type TokenLockData = {
   source: string;
@@ -97,7 +96,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('"currencyId" must be a valid metagraph address');
     }
 
-    const balance = await getMetagraphCurrencyBalance(currencyAsset);
+    const balance = await getMetagraphBalance(currencyAsset.address, dagAccount.address);
 
     if (!balance || balance < totalAmount) {
       throw new Error(
