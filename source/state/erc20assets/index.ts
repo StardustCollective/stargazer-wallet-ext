@@ -14,6 +14,7 @@ import {
   LEET_LOGO,
   NDT_LOGO,
   POLYGON_LOGO,
+  UPSIDER_AI_LOGO,
   VE_LTX_LOGO,
 } from 'constants/index';
 import { IAssetInfoState } from 'state/assets/types';
@@ -84,6 +85,18 @@ export const constellationInitialValues: IAssetInfoState[] = [
     l0endpoint: 'http://elpaca-l0-2006678808.us-west-1.elb.amazonaws.com:9100',
     l1endpoint: 'http://elpaca-cl1-1512652691.us-west-1.elb.amazonaws.com:9200',
     dl1endpoint: 'http://elpaca-dl1-550039959.us-west-1.elb.amazonaws.com:9300',
+  },
+  {
+    id: 'DAG7Ghth1WhWK83SB3MtXnnHYZbCsmiRTwJrgaW1-main2',
+    address: 'DAG7Ghth1WhWK83SB3MtXnnHYZbCsmiRTwJrgaW1',
+    label: 'The Upsider AI',
+    symbol: 'UP',
+    decimals: 8,
+    type: AssetType.Constellation,
+    logo: UPSIDER_AI_LOGO,
+    network: 'main2',
+    l0endpoint: 'http://178.156.166.127:9100',
+    l1endpoint: 'http://178.156.166.127:9200',
   },
   {
     id: '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet',
