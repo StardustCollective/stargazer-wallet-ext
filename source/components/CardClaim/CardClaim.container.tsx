@@ -15,6 +15,7 @@ const CardClaimContainer: FC<{ onPressHideCard: () => void }> = ({ onPressHideCa
   const { showToast } = useToast();
 
   const claimLoading = useSelector(userSelectors.getElpacaClaimLoading);
+  const claimError = useSelector(userSelectors.getElpacaClaimError);
   const streak = useSelector(userSelectors.getElpacaStreak);
   const claim = useSelector(userSelectors.getElpacaClaim);
 
@@ -42,6 +43,20 @@ const CardClaimContainer: FC<{ onPressHideCard: () => void }> = ({ onPressHideCa
   useEffect(() => {
     return cleanup;
   }, []);
+
+  useEffect(() => {
+    if (claimError) {
+      cleanup();
+      accountController.assetsController.clearClaim();
+      setIsClaimLoading(false);
+      showToast({
+        type: ToastType.error,
+        position: ToastPosition.bottom,
+        title: `Oops! We couldn't claim your PACA`,
+        message1: 'Please try again in a couple of minutes!',
+      });
+    }
+  }, [claimError]);
 
   // Monitor claim hash changes
   useEffect(() => {

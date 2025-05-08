@@ -4,6 +4,7 @@ import * as ethers from 'ethers';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 import erc20ABI from './erc20.json';
 import { getWalletController } from './controllersUtils';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 
 export const getERC20DataDecoder = () => {
   return new InputDataDecoder(erc20ABI as any);
@@ -22,6 +23,7 @@ export const estimateGasLimitForTransfer = async ({
 }): Promise<number> => {
   const walletController = getWalletController();
   const networkController = walletController.account.networkController;
+  const assets: IAssetListState = store.getState().assets;
   const { activeAsset }: IVaultState = store.getState().vault;
   const assetAddress = activeAsset?.contractAddress;
 
@@ -32,8 +34,10 @@ export const estimateGasLimitForTransfer = async ({
   if (value !== '' && to && from && assetAddress) {
     try {
       const contract = networkController.createERC20Contract(assetAddress);
-      const contractInfo = await networkController.getTokenInfo(assetAddress);
-      const decimals = contractInfo?.decimals || 18;
+      const assetInfo = Object.values(assets).find(
+        (asset: IAssetInfoState) => asset.address === assetAddress
+      );
+      const decimals = assetInfo?.decimals || 18;
       const amount = ethers.utils.parseUnits(value, decimals).toString();
       const gasLimitBigNumber = await contract.estimateGas.transfer(to, amount, { from });
       const gasLimit = gasLimitBigNumber.toNumber();

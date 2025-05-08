@@ -26,6 +26,7 @@
       "context/*": ["context/*"],
       "hooks/*": ["hooks/*"],
       "navigation/*": ["navigation/*"],
+      "dag4/*": ["dag4/*"],
       "scenes/*": ["scenes/*"],
       "scripts/*": ["scripts/*"],
       "selectors/*": ["selectors/*"],

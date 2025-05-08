@@ -8,6 +8,8 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import store from 'state/store';
 import { toDag } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
+import { getDagBalance } from 'dag4/block-explorer';
+import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
 
 type TokenLockData = {
   source: string;
@@ -17,7 +19,7 @@ type TokenLockData = {
   currencyId: string | null;
 };
 
-const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
+const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
 
   if (!activeWallet) {
@@ -78,8 +80,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('"source" address must be equal to the current active account.');
   }
 
-  const { assets, vault } = store.getState();
-  const { balances } = vault;
+  const { assets } = store.getState();
   const feeValue = data.fee ?? 0;
   const totalAmount = toDag(data.amount) + toDag(feeValue);
 
@@ -96,9 +97,9 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('"currencyId" must be a valid metagraph address');
     }
 
-    const balance = balances[currencyAsset.id];
+    const balance = await getMetagraphCurrencyBalance(currencyAsset);
 
-    if (!balance || Number(balance) < totalAmount) {
+    if (!balance || balance < totalAmount) {
       throw new Error(
         `not enough balance for the selected currency: ${currencyAsset.symbol}`
       );
@@ -110,9 +111,9 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('DAG asset not found in the wallet');
     }
 
-    const balance = balances[dagAsset.id];
+    const balance = await getDagBalance(dagAccount.address);
 
-    if (!balance || Number(balance) < totalAmount) {
+    if (!balance || balance < totalAmount) {
       throw new Error(`not enough DAG balance`);
     }
   }
@@ -128,7 +129,7 @@ export const dag_tokenLock = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  validateParams(request);
+  await validateParams(request);
 
   const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 

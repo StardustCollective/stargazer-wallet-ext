@@ -9,6 +9,7 @@ import { getDagAddress } from 'utils/wallet';
 import { decodeFromBase64 } from 'utils/encoding';
 import { ELPACA_KEY } from 'utils/envUtil';
 import { EPOCHS_PER_DAY, SECONDS_PER_EPOCH } from 'utils/epochs';
+import { captureError } from 'utils/sentry';
 
 const mapElpacaInfo = (
   {
@@ -99,34 +100,46 @@ export const claimElpaca = createAsyncThunk(
     signature,
     token = '',
   }: ClaimElpacaData): Promise<ClaimElpacaData | any> => {
-    const PUBLIC_ID = decodeFromBase64(ELPACA_KEY);
-    const body: ClaimElpacaBody = {
-      value: {
-        StreakUpdate: {
-          address,
-          token,
+    try {
+      const PUBLIC_ID = decodeFromBase64(ELPACA_KEY);
+      const body: ClaimElpacaBody = {
+        value: {
+          StreakUpdate: {
+            address,
+            token,
+          },
         },
-      },
-      proofs: [
-        {
-          id: PUBLIC_ID,
-          signature,
+        proofs: [
+          {
+            id: PUBLIC_ID,
+            signature,
+          },
+        ],
+      };
+      const response = await fetch(POST_ELPACA_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      ],
-    };
-    const response = await fetch(POST_ELPACA_API, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+        body: JSON.stringify(body),
+      });
 
-    const responseJson = await response.json();
+      const responseJson = await response.json();
 
-    return {
-      ...responseJson,
-      address,
-    };
+      return {
+        ...responseJson,
+        address,
+      };
+    } catch (err) {
+      captureError({
+        error: new Error('Elpaca: claim request failed'),
+        extraInfo: {
+          message: err instanceof Error ? err.message : 'Original message not available',
+        },
+        userAddress: address,
+      });
+
+      throw err;
+    }
   }
 );

@@ -66,6 +66,7 @@ const commonConfig = {
       scenes: path.resolve(sharedPath, 'scenes'),
       pages: path.resolve(__dirname, 'pages'),
       navigation: path.resolve(sharedPath, 'navigation'),
+      dag4: path.resolve(sharedPath, 'dag4'),
       state: path.resolve(sharedPath, 'state'),
       constants: path.resolve(sharedPath, 'constants'),
       context: path.resolve(sharedPath, 'context'),

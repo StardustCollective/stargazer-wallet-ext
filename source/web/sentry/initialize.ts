@@ -13,7 +13,7 @@ const integrations = getDefaultIntegrations({}).filter((defaultIntegration) => {
   );
 });
 
-const RELEASE_NAME = `stargazer-wallet-web@5.3.1`;
+const RELEASE_NAME = `stargazer-wallet-web@5.3.2`;
 
 const client = new BrowserClient({
   dsn: process.env.SENTRY_DNS_WEB,
@@ -28,6 +28,10 @@ scope.setClient(client);
 
 client.init();
 
-window.onerror = function (_, _1, _2, _3, error) {
-  scope.captureException(error);
-};
+if (typeof window !== 'undefined') {
+  window.onerror = function (_, _1, _2, _3, error) {
+    scope.captureException(error);
+  };
+}
+
+export { scope };

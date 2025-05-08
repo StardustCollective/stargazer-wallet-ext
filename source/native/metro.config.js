@@ -11,6 +11,7 @@ const nodeModules = require('node-libs-react-native');
 const extraNodeModules = {
   source: path.resolve(__dirname + '/../'),
   navigation: path.resolve(__dirname + '/../navigation'),
+  dag4: path.resolve(__dirname + '/../dag4'),
   scenes: path.resolve(__dirname + '/../scenes'),
   hooks: path.resolve(__dirname + '/../hooks'),
   components: path.resolve(__dirname + '/../components'),
