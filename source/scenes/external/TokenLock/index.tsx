@@ -180,9 +180,13 @@ const TokenLock = () => {
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(txHash, message);
     } catch (e) {
-      const errorMessage =
-        (e instanceof Error && e?.message) ||
+      let errorMessage =
         'There was an error with the transaction.\nPlease try again later.';
+      if (e instanceof Error && e?.message) {
+        errorMessage = e.message.includes('InsufficientBalance')
+          ? `Not enough ${tokenAsset.symbol} balance for the transaction`
+          : e.message;
+      }
       showAlert(errorMessage, 'danger');
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseError(e, message);
