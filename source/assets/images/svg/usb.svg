@@ -1,5 +1,5 @@
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="usb">
-<path id="vector" d="M8.33333 4.79163V6.04163M11.6667 4.79163V6.04163M3.125 8.54163H16.875V17.7083H3.125V8.54163ZM4.79167 2.29163H15.2083V8.54163H4.79167V2.29163Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="usb, connection, connect, save, data">
+<path id="vector" d="M6.66671 3.66666V4.99999M9.33337 3.66666V4.99999M2.33337 6.99999H13.6667V14.3333H2.33337V6.99999ZM3.66671 1.66666H12.3334V6.99999H3.66671V1.66666Z" stroke="#461A93" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 </svg>

@@ -1,5 +1,5 @@
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="devices">
-<path id="vector" d="M14.375 15.2083H16.25M3.12504 13.9583V3.125H16.875V7.29167M3.12504 13.9583H1.45837V16.875H11.875M3.12504 13.9583H11.875M11.875 7.29167H18.5417V17.7083H11.875V7.29167Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="devices, macbook, iphone, phone, connected">
+<path id="vector" d="M11.6667 13H13M2.33337 11.6667V2.33334H13.6667V5.66668M2.33337 11.6667H1.33337V13.6667H9.66671M2.33337 11.6667H9.66671M9.66671 5.66668H15V14.3333H9.66671V5.66668Z" stroke="#461A93" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 </svg>
