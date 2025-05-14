@@ -3,19 +3,62 @@
 .container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 32px;
+  flex-grow: 1;
 
-  .header {
+  .titleContainer {
     display: flex;
-    flex-direction: column;
-  }
-
-  .content {
-  }
-
-  .actions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 24px;
+    padding: 0 16px;
+
+    .title {
+      font-size: 28px;
+      line-height: 36px;
+      color: #331b5f;
+
+      .bold {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .instructionsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    .instructionItem {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 12px;
+      border-radius: 8px;
+      gap: 12px;
+      border: 1px solid #d1d5db;
+
+      .instructionItemIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 16px;
+        border: 1px solid #c5b6fc;
+        background-color: #f4f0ff;
+      }
+
+      .instructionText {
+        letter-spacing: -0.24px;
+
+        .instructionTextBold {
+          font-weight: $semibold;
+        }
+      }
+    }
   }
 }

@@ -1,91 +1,64 @@
 import React from 'react';
-// import CypherockLogo from 'assets/images/cypherock.png';
-import TextV3 from 'components/TextV3';
-import ButtonV3, { BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import clsx from 'clsx';
+import CypherockLogo from 'assets/images/svg/cypherock-device.svg';
+import UsbIcon from 'assets/images/svg/usb.svg';
+import DevicesIcon from 'assets/images/svg/devices.svg';
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import styles from './styles.scss';
-import type { IWalletItem } from '@cypherock/sdk-app-manager';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
-// Strings
-const CONNECT_TO_CYPHEROCK_DEVICE_STRING = 'Connect to your Cypherock device';
-const CONNECT_CYPHEROCK_STRING = 'Connect Cypherock';
-
 // Numbers
-// const CYPHEROCK_LOGO_WIDTH = 200;
-// const CYPHEROCK_LOGO_HEIGHT = 200;
+const CYPHEROCK_LOGO_WIDTH = 145;
+const CYPHEROCK_LOGO_HEIGHT = 72;
 
-interface IConnectProps {
-  onConnectClick: () => void;
-  onSelectWalletClick: () => void;
-  wallets: IWalletItem[];
-  selectedWallet: IWalletItem;
-  address: string;
-}
-
-const ConnectView = ({
-  onConnectClick,
-  onSelectWalletClick,
-  wallets,
-  selectedWallet,
-  address,
-}: IConnectProps) => {
-  console.log('wallets', wallets);
-  console.log('selectedWallet', selectedWallet);
-  console.log('address', address);
+const ConnectView = () => {
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.logo}>
-          {/* <img
-            src={CypherockLogo}
-            alt="Cypherock Logo"
-            height={CYPHEROCK_LOGO_HEIGHT}
-            width={CYPHEROCK_LOGO_WIDTH}
-          /> */}
-        </div>
-        <div className={styles.title}>
-          <TextV3.Caption>{CONNECT_TO_CYPHEROCK_DEVICE_STRING}</TextV3.Caption>
-        </div>
+      <img
+        src={`/${CypherockLogo}`}
+        alt="Cypherock device"
+        height={CYPHEROCK_LOGO_HEIGHT}
+        width={CYPHEROCK_LOGO_WIDTH}
+      />
+      <div className={styles.titleContainer}>
+        <TextV3.Header extraStyles={styles.title} align={TEXT_ALIGN_ENUM.CENTER}>
+          Connect to your{' '}
+          <TextV3.Header extraStyles={clsx(styles.title, styles.bold)}>
+            Cypherock
+          </TextV3.Header>{' '}
+          device
+        </TextV3.Header>
       </div>
-      <div className={styles.actions}>
-        <ButtonV3
-          type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
-          label={CONNECT_CYPHEROCK_STRING}
-          onClick={onConnectClick}
-        />
-        <ButtonV3
-          type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
-          label={'Select wallet'}
-          onClick={onSelectWalletClick}
-        />
-      </div>
-      <div className={styles.content}>
-        {!!wallets?.length && (
-          <div className={styles.box}>
-            <TextV3.Body color={COLORS_ENUMS.BLACK}>Wallets</TextV3.Body>
-            {wallets.map((wallet) => (
-              <div key={wallet.name}>
-                <TextV3.Body color={COLORS_ENUMS.BLACK}>{wallet.name}</TextV3.Body>
-              </div>
-            ))}
+      <div className={styles.instructionsContainer}>
+        <div className={styles.instructionItem}>
+          <div className={styles.instructionItemIcon}>
+            <img src={`/${UsbIcon}`} alt="USB icon" height={16} width={16} />
           </div>
-        )}
-        {selectedWallet && (
-          <div className={styles.box}>
-            <TextV3.Body color={COLORS_ENUMS.BLACK}>Selected wallet</TextV3.Body>
-            <div key={selectedWallet.name}>
-              <TextV3.Body color={COLORS_ENUMS.BLACK}>{selectedWallet.name}</TextV3.Body>
-            </div>
+          <TextV3.CaptionRegular
+            color={COLORS_ENUMS.BLACK}
+            extraStyles={styles.instructionText}
+          >
+            Plug in your Cypherock X1 device and make sure it’s on the main menu.
+          </TextV3.CaptionRegular>
+        </div>
+        <div className={styles.instructionItem}>
+          <div className={styles.instructionItemIcon}>
+            <img src={`/${DevicesIcon}`} alt="Devices icon" />
           </div>
-        )}
-        {address && (
-          <div className={styles.box}>
-            <TextV3.Body color={COLORS_ENUMS.BLACK}>Wallet address</TextV3.Body>
-            <div key={address}>
-              <TextV3.Body color={COLORS_ENUMS.BLACK}>{address}</TextV3.Body>
-            </div>
-          </div>
-        )}
+          <TextV3.CaptionRegular
+            color={COLORS_ENUMS.BLACK}
+            extraStyles={styles.instructionText}
+          >
+            Click the{' '}
+            <TextV3.CaptionRegular
+              color={COLORS_ENUMS.BLACK}
+              extraStyles={clsx(styles.instructionText, styles.instructionTextBold)}
+            >
+              Connect Cypherock
+            </TextV3.CaptionRegular>{' '}
+            button and approve the connection to start syncing.
+          </TextV3.CaptionRegular>
+        </div>
       </div>
     </div>
   );

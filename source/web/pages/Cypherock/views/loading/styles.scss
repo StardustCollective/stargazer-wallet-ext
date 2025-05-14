@@ -1,0 +1,66 @@
+@import '~assets/styles/variables';
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseColor {
+  0% {
+    fill: #7d43ef;
+  }
+  50% {
+    fill: #331b5f;
+  }
+  100% {
+    fill: #7d43ef;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 48px;
+  flex-grow: 1;
+
+  .spinnerContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .spinnerSvg {
+    width: 124px;
+    height: 124px;
+    transform-origin: 62px 62px;
+    animation: spin 1s linear infinite;
+  }
+
+  .cypherockLogo {
+    position: absolute;
+    width: 45px;
+    height: 56px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    path {
+      animation: pulseColor 2s linear infinite;
+    }
+  }
+
+  .text {
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 500;
+    color: #331b5f;
+  }
+}
