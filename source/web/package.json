@@ -31,6 +31,7 @@
   "dependencies": {
     "@babel/runtime": "^7.10.2",
     "@bitfi/bitfi.js": "^0.1.8",
+    "@cypherock/sdk-app-constellation": "^1.0.1",
     "@cypherock/sdk-app-evm": "^0.0.34",
     "@cypherock/sdk-app-manager": "^0.0.33",
     "@cypherock/sdk-hw-webusb": "^0.0.18",
@@ -80,6 +81,7 @@
     "@babel/preset-react": "^7.10.1",
     "@babel/preset-typescript": "^7.15.0",
     "@sentry/cli": "^2.43.0",
+    "@svgr/webpack": "5.5.0",
     "@types/bs58": "^4.0.1",
     "@types/chrome": "^0.0.266",
     "@types/jest": "^27.0.2",

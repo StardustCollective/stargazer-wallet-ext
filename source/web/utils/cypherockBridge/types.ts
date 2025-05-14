@@ -34,14 +34,21 @@ export enum ConnectionStatus {
   ERROR = 'error',
 }
 
+export enum ErrorCode {
+  UNKNOWN = 'unknown',
+  DEVICE_NOT_CONNECTED = 'device-not-connected',
+  WEBUSB_NOT_SUPPORTED = 'webusb-not-supported',
+  WALLETS_NOT_FOUND = 'wallets-not-found',
+}
+
 /**
  * Custom error type for Cypherock-related errors
  */
 export class CypherockError extends Error {
   /** Error code */
-  code: string;
+  code: ErrorCode;
 
-  constructor(message: string, code: string) {
+  constructor(message: string, code: ErrorCode) {
     super(message);
     this.name = 'CypherockError';
     this.code = code;

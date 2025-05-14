@@ -115,8 +115,35 @@ const commonConfig = {
         },
       },
       {
-        test: /\.(jpg|png|svg)x?$/,
-        loader: 'file-loader',
+        test: /\.(jpe?g|png|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'assets/images/[name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg$/,
+        issuer: /\.[jt]sx?$/,
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: {
+              // svgo: true,
+              // svgoConfig: { plugins: [{ removeViewBox: false }] },
+              // icon: true,
+            },
+          },
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'assets/images/[name].[hash].[ext]',
+            },
+          },
+        ],
       },
       {
         test: /\.(sa|sc|c)ss$/,

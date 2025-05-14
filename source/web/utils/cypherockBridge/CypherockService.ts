@@ -3,13 +3,19 @@
  * @module CypherockService
  */
 
-import { ConnectionStatus, CypherockError, IHardwareWalletAdapter } from './types';
+import {
+  ConnectionStatus,
+  CypherockError,
+  ErrorCode,
+  IHardwareWalletAdapter,
+} from './types';
 import type { IGetPublicKeysResult } from '@cypherock/sdk-app-evm';
 import type {
   IWalletItem,
   IGetWalletsResultResponse,
   ISelectWalletResultResponse,
 } from '@cypherock/sdk-app-manager';
+import * as dag4 from '@stardust-collective/dag4';
 
 /**
  * Cypherock device USB identifiers
@@ -17,6 +23,15 @@ import type {
 export const CYPHEROCK_USB_IDS = {
   vendorId: 0x3503,
   productId: 0x0103,
+};
+
+export const CYPHEROCK_CHAIN_IDS = {
+  ETH_MAINNET: 1,
+};
+
+export const CYPHEROCK_DERIVATION_PATHS = {
+  ETH_MAINNET: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, 0],
+  DAG_MAINNET: [0x80000000 + 44, 0x80000000 + 1137, 0x80000000, 0, 0],
 };
 
 /**
@@ -27,6 +42,7 @@ export const CYPHEROCK_USB_IDS = {
 export class CypherockService implements IHardwareWalletAdapter {
   private deviceConnection: any = null; // Type will be set after dynamic import
   private evmApp: any = null; // Type will be set after dynamic import
+  private constellationApp: any = null; // Type will be set after dynamic import
   private managerApp: any = null; // Type will be set after dynamic import
   private status: ConnectionStatus = ConnectionStatus.DISCONNECTED;
   private device: USBDevice | null = null;
@@ -53,12 +69,14 @@ export class CypherockService implements IHardwareWalletAdapter {
         { DeviceConnection },
         { ManagerApp },
         { EvmApp, setEthersLib, setEip712Lib },
+        { ConstellationApp, setDag4Lib },
         { ethers },
         eip712,
       ] = await Promise.all([
         import('@cypherock/sdk-hw-webusb'),
         import('@cypherock/sdk-app-manager'),
         import('@cypherock/sdk-app-evm'),
+        import('@cypherock/sdk-app-constellation'),
         import('ethers-v6'),
         import('eip-712'),
       ]);
@@ -67,13 +85,16 @@ export class CypherockService implements IHardwareWalletAdapter {
       setEthersLib(ethers as any);
       setEip712Lib(eip712);
 
+      // Inject dag4.js lib
+      setDag4Lib(dag4);
+
       // Store types for type safety
       this.deviceConnection = DeviceConnection;
       this.managerApp = ManagerApp;
       this.evmApp = EvmApp;
-
+      this.constellationApp = ConstellationApp;
       this.sdkInitialized = true;
-    } catch (error) {
+    } catch (error: unknown) {
       throw this.handleError(error, 'Failed to initialize Cypherock SDK');
     }
   }
@@ -86,7 +107,7 @@ export class CypherockService implements IHardwareWalletAdapter {
     if (!CypherockService.isWebUSBSupported()) {
       throw new CypherockError(
         'WebUSB API is not supported in this browser. Please use Chrome or Edge.',
-        'WEBUSB_NOT_SUPPORTED'
+        ErrorCode.WEBUSB_NOT_SUPPORTED
       );
     }
   }
@@ -104,11 +125,12 @@ export class CypherockService implements IHardwareWalletAdapter {
         filters: [{ vendorId: CYPHEROCK_USB_IDS.vendorId }],
       });
 
-      console.log('requestDevice - device', device);
-
       return device;
     } catch (error: unknown) {
-      throw this.handleError(error, 'Failed to request device');
+      throw new CypherockError(
+        'Failed to request device',
+        ErrorCode.DEVICE_NOT_CONNECTED
+      );
     }
   }
 
@@ -153,6 +175,9 @@ export class CypherockService implements IHardwareWalletAdapter {
       // Create EVM app for Ethereum chain operations
       this.evmApp = await this.evmApp.create(this.deviceConnection);
 
+      // Create Constellation app for DAG chain operations
+      this.constellationApp = await this.constellationApp.create(this.deviceConnection);
+
       this.status = ConnectionStatus.CONNECTED;
     } catch (error: unknown) {
       this.status = ConnectionStatus.ERROR;
@@ -174,7 +199,6 @@ export class CypherockService implements IHardwareWalletAdapter {
 
       return walletResponse.wallet;
     } catch (error: unknown) {
-      console.log('selectWallet - error', error);
       throw this.handleError(error, 'Failed to select wallet');
     }
   }
@@ -190,32 +214,70 @@ export class CypherockService implements IHardwareWalletAdapter {
 
       const wallets: IGetWalletsResultResponse = await this.managerApp.getWallets();
 
+      if (!wallets?.walletList?.length) {
+        throw new CypherockError(
+          'No wallets found on the device',
+          ErrorCode.WALLETS_NOT_FOUND
+        );
+      }
+
       return wallets?.walletList ?? [];
     } catch (error: unknown) {
       throw this.handleError(error, 'Failed to get wallets');
     }
   }
 
-  public async getWalletAddresses(
+  /**
+   * Gets the ETH address for a given wallet
+   * @param walletId - The ID of the wallet to get the address for
+   * @param onEvent - Optional callback function to handle events
+   * @returns {Promise<IGetPublicKeysResult>} The ETH address for the given wallet
+   * @throws {CypherockError} If not connected or address retrieval fails
+   */
+
+  public async getEthWalletAddresses(
     walletId: IWalletItem['id'],
-    chainId: number
+    onEvent?: (event: number) => void
   ): Promise<IGetPublicKeysResult> {
     try {
       this.ensureConnected();
 
-      console.log('getWalletAddresses - getPublicKeys', chainId);
-
       const publicKeys: IGetPublicKeysResult = await this.evmApp.getPublicKeys({
         walletId,
-        // derivationPaths: [{ path: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, 0] }],
-        derivationPaths: [{ path: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, 0] }],
-        chainId,
+        derivationPaths: [{ path: CYPHEROCK_DERIVATION_PATHS.ETH_MAINNET }],
+        chainId: CYPHEROCK_CHAIN_IDS.ETH_MAINNET,
+        onEvent,
       });
 
       return publicKeys;
     } catch (error: unknown) {
-      console.log('getWalletAddresses - error', error);
-      throw this.handleError(error, 'Failed to get wallet addresses');
+      throw this.handleError(error, 'Failed to get ETH address');
+    }
+  }
+
+  /**
+   * Gets the DAG address for a given wallet
+   * @param walletId - The ID of the wallet to get the address for
+   * @param onEvent - Optional callback function to handle events
+   * @returns {Promise<IGetPublicKeysResult>} The DAG address for the given wallet
+   * @throws {CypherockError} If not connected or address retrieval fails
+   */
+  public async getDagWalletAddresses(
+    walletId: IWalletItem['id'],
+    onEvent?: (event: number) => void
+  ): Promise<IGetPublicKeysResult> {
+    try {
+      this.ensureConnected();
+
+      const publicKeys: IGetPublicKeysResult = await this.constellationApp.getPublicKeys({
+        walletId,
+        derivationPaths: [{ path: CYPHEROCK_DERIVATION_PATHS.DAG_MAINNET }],
+        onEvent,
+      });
+
+      return publicKeys;
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to get DAG address');
     }
   }
 
@@ -225,22 +287,12 @@ export class CypherockService implements IHardwareWalletAdapter {
    */
   public async disconnect(): Promise<void> {
     try {
-      if (this.evmApp) {
-        await this.evmApp.destroy();
-        this.evmApp = null;
-      }
-
-      if (this.managerApp) {
-        await this.managerApp.destroy();
-        this.managerApp = null;
-      }
-
-      if (this.deviceConnection) {
-        await this.deviceConnection.destroy();
-        this.deviceConnection = null;
-      }
-
       this.device = null;
+      this.evmApp = null;
+      this.constellationApp = null;
+      this.managerApp = null;
+      this.deviceConnection = null;
+      this.sdkInitialized = false;
       this.status = ConnectionStatus.DISCONNECTED;
     } catch (error: unknown) {
       throw this.handleError(error, 'Failed to disconnect from device');
@@ -256,13 +308,48 @@ export class CypherockService implements IHardwareWalletAdapter {
   }
 
   /**
+   * Aborts an operation on the EVM app
+   * @returns {Promise<void>}
+   * @throws {CypherockError} If abort fails
+   */
+  public async evmAbort(): Promise<void> {
+    try {
+      if (this.evmApp) {
+        await this.evmApp.abort();
+      }
+    } catch (err: unknown) {
+      throw this.handleError(err, 'Failed to abort EVM');
+    }
+  }
+
+  /**
+   * Aborts an operation on the DAG app
+   * @returns {Promise<void>}
+   * @throws {CypherockError} If abort fails
+   */
+  public async constellationAbort(): Promise<void> {
+    try {
+      if (this.constellationApp) {
+        await this.constellationApp.abort();
+      }
+    } catch (err: unknown) {
+      throw this.handleError(err, 'Failed to abort EVM');
+    }
+  }
+
+  /**
    * Ensures the device is connected
    * @private
    * @throws {CypherockError} If not connected
    */
   private ensureConnected(): void {
-    if (this.status !== ConnectionStatus.CONNECTED || !this.evmApp || !this.managerApp) {
-      throw new CypherockError('Device not connected', 'NOT_CONNECTED');
+    if (
+      this.status !== ConnectionStatus.CONNECTED ||
+      !this.evmApp ||
+      !this.constellationApp ||
+      !this.managerApp
+    ) {
+      throw new CypherockError('Device not connected', ErrorCode.DEVICE_NOT_CONNECTED);
     }
   }
 
@@ -279,25 +366,12 @@ export class CypherockService implements IHardwareWalletAdapter {
       return error;
     }
 
-    // Extract error message and code
     let message = defaultMessage;
-    let code = 'UNKNOWN_ERROR';
 
     if (error instanceof Error) {
-      message = error.message || message;
-
-      // Try to extract error code from known patterns
-      if (error.name === 'TransportError') {
-        code = 'TRANSPORT_ERROR';
-      } else if (error.name === 'DeviceNotConnectedError') {
-        code = 'DEVICE_NOT_CONNECTED';
-      } else if (error.message.includes('timeout')) {
-        code = 'TIMEOUT_ERROR';
-      } else if (error.message.includes('permission')) {
-        code = 'PERMISSION_DENIED';
-      }
+      message = error.message;
     }
 
-    return new CypherockError(message, code);
+    return new CypherockError(message, ErrorCode.UNKNOWN);
   }
 }
