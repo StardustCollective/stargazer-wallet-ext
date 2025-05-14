@@ -1,0 +1,20 @@
+@import '~assets/styles/variables';
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 540px;
+  width: 384px;
+  background-color: $white;
+  border-radius: 8px;
+
+  .content {
+    overflow-y: auto;
+    display: flex;
+    height: 376px;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 16px 16px 0 16px;
+  }
+}

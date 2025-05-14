@@ -1,0 +1,15 @@
+@import '~assets/styles/variables';
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a153c;
+  height: 72px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+
+  .title {
+    font-weight: $semibold;
+  }
+}
