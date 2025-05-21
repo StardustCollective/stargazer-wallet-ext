@@ -13,6 +13,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import ManageWallet from './ManageWallet';
 
 import { IManageWalletView } from './types';
+import { isHardware } from 'utils/hardware';
 
 const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => {
   const accountController = getAccountController();
@@ -45,8 +46,14 @@ const ManageWalletContainer: FC<IManageWalletView> = ({ route, navigation }) => 
   };
 
   const onDeleteWalletClicked = () => {
-    const type = 'remove';
-    linkTo(`/settings/wallets/checkPassword?type=${type}&id=${id}`);
+    if (isHardware(wallet.type)) {
+      // If the wallet is a hardware wallet, we cannot display the password prompt to show private key/seed phrase.
+      // Navigate to the remove wallet screen directly.
+      linkTo(`/settings/wallets/remove?id=${id}`);
+    } else {
+      const type = 'remove';
+      linkTo(`/settings/wallets/checkPassword?type=${type}&id=${id}`);
+    }
   };
 
   const onShowPrivateKeyClicked = () => {

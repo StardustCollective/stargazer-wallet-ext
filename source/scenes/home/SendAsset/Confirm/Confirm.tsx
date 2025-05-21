@@ -7,7 +7,6 @@ import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import Modal from 'components/Modal';
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
 import {
   StargazerExternalPopups,
@@ -19,6 +18,7 @@ import styles from './Confirm.scss';
 import { ellipsis } from '../../helpers';
 import { DAG_SMALL_FEE } from './Confirm.container';
 import { ISendConfirm } from './types';
+import { isHardware } from 'utils/hardware';
 
 const SendConfirm = ({
   isExternalRequest,
@@ -143,10 +143,7 @@ const SendConfirm = ({
                 onClick={() => handleConfirm(callbackSuccess, callbackError)}
                 disabled={disabled}
               >
-                {activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-                activeWallet.type === KeyringWalletType.BitfiAccountWallet
-                  ? 'Next'
-                  : 'Confirm'}
+                {isHardware(activeWallet.type) ? 'Next' : 'Confirm'}
               </Button>
             </div>
           </section>

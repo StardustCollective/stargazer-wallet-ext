@@ -2,7 +2,7 @@
  * Types for the Cypherock hardware wallet integration
  */
 
-import { IWalletItem } from '@cypherock/sdk-app-manager';
+import type { IWalletItem } from '@cypherock/sdk-app-manager';
 
 /**
  * WebUSB API and USBDevice declaration for TypeScript

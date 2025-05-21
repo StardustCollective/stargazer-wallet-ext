@@ -34,6 +34,7 @@ const initialState: IVaultState = {
     local: [],
     ledger: [],
     bitfi: [],
+    cypherock: [],
   },
   publicKey: null,
   hasEncryptedVault: false,
@@ -63,7 +64,7 @@ const initialState: IVaultState = {
     ethereum: {},
   },
   customAssets: [],
-  version: '5.3.0',
+  version: '5.3.3',
 };
 
 export const getHasEncryptedVault = createAsyncThunk(
@@ -103,6 +104,9 @@ const VaultState = createSlice({
     addBitfiWallet(state: IVaultState, action) {
       state.wallets.bitfi = [...state.wallets.bitfi, action.payload];
     },
+    addCypherockWallet(state: IVaultState, action) {
+      state.wallets.cypherock = [...state.wallets.cypherock, action.payload];
+    },
     updateWallets(
       state: IVaultState,
       action: PayloadAction<{ wallets: IVaultWalletsStoreState }>
@@ -113,11 +117,28 @@ const VaultState = createSlice({
       state: IVaultState,
       action: PayloadAction<{ wallet: KeyringWalletState; label: string }>
     ) {
-      const isLedger =
-        action.payload.wallet.type === KeyringWalletType.LedgerAccountWallet;
-      const wallets = isLedger ? state.wallets.ledger : state.wallets.bitfi;
-      const index = findIndex(wallets, (w) => w.id === action.payload.wallet.id);
-      wallets[index].label = action.payload.label;
+      const { wallet, label } = action.payload;
+      let walletList: KeyringWalletState[];
+
+      switch (wallet.type) {
+        case KeyringWalletType.LedgerAccountWallet:
+          walletList = state.wallets.ledger;
+          break;
+        case KeyringWalletType.CypherockAccountWallet:
+          walletList = state.wallets.cypherock;
+          break;
+        case KeyringWalletType.BitfiAccountWallet:
+          walletList = state.wallets.bitfi;
+          break;
+        default:
+          break;
+      }
+
+      const index = findIndex(walletList, (w) => w.id === wallet.id);
+
+      if (index !== -1 && walletList[index]) {
+        walletList[index].label = label;
+      }
     },
     changeActiveWallet(state: IVaultState, action: PayloadAction<IWalletState>) {
       state.activeWallet = action.payload;
@@ -221,6 +242,7 @@ const VaultState = createSlice({
 export const {
   addLedgerWallet,
   addBitfiWallet,
+  addCypherockWallet,
   updateWallets,
   rehydrate,
   setVaultInfo,

@@ -5,5 +5,100 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
+  width: 100%;
+
+  .inputTitleContainer {
+    display: flex;
+    align-self: flex-start;
+    margin-bottom: 8px;
+
+    .inputTitle {
+      font-size: 14px;
+    }
+  }
+
+  .inputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    align-self: stretch;
+    padding: 0 12px;
+    background-color: $white;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    margin-bottom: 20px;
+
+    .input {
+      display: flex;
+      flex-grow: 1;
+      border: none;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      text-align: left;
+      height: 30px;
+      padding: 12px 12px 12px 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 32px;
+      letter-spacing: -0.4px;
+      color: #331b5f;
+    }
+
+    .pencilIconContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .pencilIcon {
+        height: 20px;
+        width: 20px;
+        color: #798ef6;
+      }
+    }
+  }
+
+  .menuContainer {
+    margin-bottom: 20px;
+  }
+
+  .title {
+    color: $black;
+    letter-spacing: -0.24px;
+  }
+
+  .itemContainer {
+    padding: 12px;
+
+    .iconContainerStyle {
+      margin-right: 10px;
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  .titleAddress {
+    word-break: break-word;
+    font-weight: $regular;
+    color: $black;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.12px;
+  }
+
+  .copiedLabel {
+    color: $new_primary_lighter_1;
+    min-width: 56px;
+    margin-left: 6px;
+  }
+
+  .rightIconContainerStyle {
+    display: flex;
+    justify-content: flex-end;
+    min-width: 56px;
+    margin-left: 6px;
+  }
 }

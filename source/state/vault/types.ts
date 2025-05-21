@@ -121,6 +121,7 @@ export interface IVaultWalletsStoreState {
   local: KeyringWalletState[];
   ledger: KeyringWalletState[];
   bitfi: KeyringWalletState[];
+  cypherock: KeyringWalletState[];
 }
 
 export interface IWalletState {

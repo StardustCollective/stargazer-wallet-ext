@@ -5,7 +5,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import {
+  KeyringAssetType,
+  KeyringNetwork,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
 import { makeStyles } from '@material-ui/core/styles';
 import BitfiBridgeUtil from '../../utils/bitfiBridge';
 import queryString from 'query-string';
@@ -49,6 +53,7 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+import { HardwareWallet } from 'utils/hardware';
 
 /////////////////////////
 // Constants
@@ -140,7 +145,7 @@ const BitfiPage = () => {
   );
   const [accountData, setAccountData] = useState<LedgerAccount[]>([]);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
-  const [selectedAccounts, setSelectedAccounts] = useState<LedgerAccount[]>([]);
+  const [selectedAccounts, setSelectedAccounts] = useState<HardwareWallet[]>([]);
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [alertSeverity, setAlertSeverity] = useState<Color>('success');
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
@@ -183,9 +188,15 @@ const BitfiPage = () => {
           {
             id: 0,
             type: KeyringWalletType.BitfiAccountWallet,
-            publicKey: accountData[0].publicKey,
-            address: accountData[0].address,
-            balance: '',
+            accounts: [
+              {
+                address: accountData[0].address,
+                publicKey: accountData[0].publicKey,
+                network: KeyringNetwork.Constellation,
+                deviceId: deviceId as string,
+              },
+            ],
+            supportedAssets: [KeyringAssetType.DAG],
           },
         ];
       });
@@ -309,9 +320,15 @@ const BitfiPage = () => {
           {
             deviceIndex: key - 1,
             type: KeyringWalletType.BitfiAccountWallet,
-            publicKey: account.publicKey,
-            address: account.address,
-            balance: '',
+            accounts: [
+              {
+                address: account.address,
+                publicKey: account.publicKey,
+                network: KeyringNetwork.Constellation,
+                deviceId: deviceId as string,
+              },
+            ],
+            supportedAssets: [KeyringAssetType.DAG],
           },
         ];
       });
@@ -319,7 +336,7 @@ const BitfiPage = () => {
       console.log(selectedAccounts);
     } else {
       setSelectedAccounts((state) => {
-        _.remove(state, { address: account.address });
+        _.remove(state, (item) => item.accounts[0].address === account.address);
         return [...state];
       });
     }
@@ -332,10 +349,7 @@ const BitfiPage = () => {
   const onImportClick = async () => {
     setFetchingPage(true);
 
-    await walletController.importHardwareWalletAccounts(
-      selectedAccounts as any,
-      deviceId as string
-    );
+    await walletController.importHardwareWalletAccounts(selectedAccounts as any);
 
     setWalletState(WALLET_STATE_ENUM.SUCCESS);
     setFetchingPage(false);

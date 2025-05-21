@@ -7,7 +7,6 @@ import find from 'lodash/find';
 import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 
 ///////////////////////////
 // Navigation
@@ -71,9 +70,8 @@ import { initialState as initialStateAssets } from 'state/assets';
 import { StargazerExternalPopups } from 'scripts/Background/messaging';
 import { DEFAULT_LANGUAGE } from 'constants/index';
 import Confirm from './Confirm';
+import { getHardwareWalletPage, isHardware } from 'utils/hardware';
 
-const BITFI_PAGE = 'bitfi';
-const LEDGER_PAGE = 'ledger';
 export const DAG_SMALL_FEE = 0.002;
 
 ///////////////////////////
@@ -271,14 +269,8 @@ const ConfirmContainer = () => {
         } else {
           callbackError(message, origin, 'Unable to confirm transaction');
         }
-      } else if (
-        activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-        activeWallet.type === KeyringWalletType.BitfiAccountWallet
-      ) {
-        const page =
-          activeWallet.type === KeyringWalletType.LedgerAccountWallet
-            ? LEDGER_PAGE
-            : BITFI_PAGE;
+      } else if (isHardware(activeWallet.type)) {
+        const page = getHardwareWalletPage(activeWallet.type);
 
         const params = new URLSearchParams();
         params.set('route', 'signTransaction');

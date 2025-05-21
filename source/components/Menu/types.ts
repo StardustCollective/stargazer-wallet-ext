@@ -2,6 +2,7 @@ export type IMenuItem = {
   title: string;
   subtitle?: string;
   icon?: string | JSX.Element;
+  iconSize?: number;
   onClick: (data?: any) => void;
   data?: any;
   disabled?: boolean;
@@ -11,7 +12,10 @@ export type IMenuItem = {
   subtitleStyles?: any;
   showArrow?: boolean;
   rightIcon?: any;
+  rightIconContainerStyle?: any;
   selected?: boolean;
+  containerStyle?: any;
+  iconContainerStyle?: any;
 };
 
 export default interface IMenu {

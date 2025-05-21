@@ -6,8 +6,8 @@ import IVaultState from 'state/vault/types';
 import { getWalletController } from 'utils/controllersUtils';
 import { getChainId as getChainIdFn } from 'scripts/Background/controllers/EVMChainController/utils';
 import { encodeToBase64 } from 'utils/encoding';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { StargazerSignatureRequest } from '../../constellation/utils';
+import { isLedger } from 'utils/hardware';
 
 const LEDGER_URL = '/ledger.html';
 export const EXTERNAL_URL = '/external.html';
@@ -27,15 +27,17 @@ export const getWalletInfo = () => {
     ...vault.wallets.local,
     ...vault.wallets.ledger,
     ...vault.wallets.bitfi,
+    ...vault.wallets.cypherock,
   ];
   const activeWallet = vault?.activeWallet
     ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
     : null;
-  const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
 
-  const windowUrl = isLedger ? LEDGER_URL : EXTERNAL_URL;
-  const windowType = isLedger ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
-  const windowSize = isLedger ? WINDOW_SIZE.large : WINDOW_SIZE.small;
+  const isLedgerWallet = isLedger(activeWallet?.type);
+
+  const windowUrl = isLedgerWallet ? LEDGER_URL : EXTERNAL_URL;
+  const windowType = isLedgerWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
+  const windowSize = isLedgerWallet ? WINDOW_SIZE.large : WINDOW_SIZE.small;
 
   return { activeWallet, windowUrl, windowType, windowSize };
 };

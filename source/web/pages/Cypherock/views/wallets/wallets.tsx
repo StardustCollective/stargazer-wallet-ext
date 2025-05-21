@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import TextV3 from 'components/TextV3';
 import { ReactComponent as WalletIcon } from 'assets/images/svg/single-wallet.svg';
-import { ReactComponent as SelectedIcon } from 'assets/images/svg/circle-check.svg';
+import { ReactComponent as CircleCheck } from 'assets/images/svg/circle-check.svg';
 import { IWalletItem } from '@cypherock/sdk-app-manager';
 import styles from './styles.scss';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -34,7 +34,7 @@ const WalletsView = ({ wallets, selectedWallet, onSelectWallet }: WalletsViewPro
               >
                 {wallet.name}
               </TextV3.BodyStrong>
-              {isSelected && <SelectedIcon className={styles.selectedIcon} />}
+              {isSelected && <CircleCheck className={styles.selectedIcon} />}
             </button>
           );
         })}

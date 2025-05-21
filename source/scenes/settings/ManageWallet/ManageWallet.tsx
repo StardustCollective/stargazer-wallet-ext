@@ -19,6 +19,7 @@ import {
 } from 'constants/index';
 import styles from './ManageWallet.scss';
 import IManageWalletSettings from './types';
+import { isHardware } from 'utils/hardware';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
   handleSubmit,
@@ -40,10 +41,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   const [isWalletAddressesOpen, setIsWalletAddressesOpen] = useState(false);
   const [itemCopied, setItemCopied] = useState('');
   const isButtonDisabled = label === wallet.label || label === '' || !label;
-  const isHardwareWallet = [
-    KeyringWalletType.BitfiAccountWallet,
-    KeyringWalletType.LedgerAccountWallet,
-  ].includes(wallet.type);
+  const isHardwareWallet = isHardware(wallet.type);
 
   useEffect(() => {
     setLabel(watch('name'));
@@ -156,7 +154,8 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   ];
 
   const walletAddressesItems =
-    wallet.type === KeyringWalletType.MultiChainWallet
+    wallet.type === KeyringWalletType.MultiChainWallet ||
+    wallet.type === KeyringWalletType.CypherockAccountWallet
       ? [
           {
             title: 'Wallet Addresses',

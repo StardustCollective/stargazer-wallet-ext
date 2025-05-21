@@ -192,6 +192,15 @@ const MigrationController = async () => {
     const v5_3_0 = require('../migration/v5_3_0');
     await v5_3_0.default(state);
   }
+
+  /**
+   * version < 5_3_3
+   * Description: Add cypherock wallet state
+   */
+  if (!state.vault.wallets.cypherock) {
+    const v5_3_3 = require('../migration/v5_3_3');
+    await v5_3_3.default(state);
+  }
 };
 
 export default MigrationController;

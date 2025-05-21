@@ -33,6 +33,7 @@ import IVaultState from 'state/vault/types';
 import { AssetType } from 'state/vault/types';
 import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import FlagsSelectors from 'selectors/flagsSelectors';
+import walletsSelectors from 'selectors/walletsSelectors';
 
 interface IHome {
   navigation: any;
@@ -50,25 +51,18 @@ const HomeContainer: FC<IHome> = ({ navigation, route }) => {
 
   const [balanceObject] = useTotalBalance();
 
-  const { activeWallet, wallets }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
+  const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
   const loadingBalances = useSelector(FlagsSelectors.getLoadingBalances);
   const loadingDAGBalances = useSelector(FlagsSelectors.getLoadingDAGBalances);
   const loadingETHBalances = useSelector(FlagsSelectors.getLoadingETHBalances);
+  const hardwareWallets = useSelector(walletsSelectors.selectAllHardwareWallets);
+  const multiChainWallets = useSelector(walletsSelectors.selectMultiChainWallets);
+  const privateKeyWallets = useSelector(walletsSelectors.selectSingleAccountWallets);
+
   const linkTo = useLinkTo();
   const isDagOnlyWallet =
     activeWallet?.assets?.length === 1 &&
     activeWallet?.assets[0]?.type === AssetType.Constellation;
-  const ledgerWallets = !!wallets?.ledger ? wallets.ledger : [];
-  const bitfiWallets = !!wallets?.bitfi ? wallets.bitfi : [];
-  const hardwareWallets = [...ledgerWallets, ...bitfiWallets];
-  const multiChainWallets = wallets.local.filter(
-    (w) => w.type === KeyringWalletType.MultiChainWallet
-  );
-  const privateKeyWallets = wallets.local.filter(
-    (w) => w.type === KeyringWalletType.SingleAccountWallet
-  );
 
   const onBuyPressed = () => {
     linkTo('/buyList');

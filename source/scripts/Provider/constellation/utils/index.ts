@@ -1,4 +1,4 @@
-import { KeyringNetwork, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DAG_NETWORK } from 'constants/index';
 import store from 'state/store';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
@@ -8,9 +8,8 @@ import { WatchAssetParameters } from '../methods/wallet_watchAsset';
 import { toDag } from 'utils/number';
 import { getAccountController } from 'utils/controllersUtils';
 import * as ethers from 'ethers';
+import { isBitfi, isLedger, isHardware, getHardwareWalletPage } from 'utils/hardware';
 
-const LEDGER_URL = '/ledger.html';
-const BITFI_URL = '/bitfi.html';
 export const EXTERNAL_URL = '/external.html';
 export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
   popup: 'popup',
@@ -35,6 +34,7 @@ export const getWalletInfo = () => {
     ...vault.wallets.local,
     ...vault.wallets.ledger,
     ...vault.wallets.bitfi,
+    ...vault.wallets.cypherock,
   ];
   const activeWallet = vault?.activeWallet
     ? allWallets.find(
@@ -42,19 +42,21 @@ export const getWalletInfo = () => {
           wallet.id === vault.activeWallet.id || vault.activeWallet.label === wallet.label
       )
     : null;
-  const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
-  const isBitfi = activeWallet?.type === KeyringWalletType.BitfiAccountWallet;
-  const isHardware = isLedger || isBitfi;
 
-  if (isLedger) {
-    windowUrl = LEDGER_URL;
+  if (isLedger(activeWallet?.type)) {
     bipIndex = activeWallet?.bipIndex;
-  } else if (isBitfi) {
-    windowUrl = BITFI_URL;
+  } else if (isBitfi(activeWallet?.type)) {
     deviceId = activeWallet?.accounts[0].deviceId;
   }
-  const windowType = isHardware ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
-  const windowSize = isHardware ? WINDOW_SIZE.large : WINDOW_SIZE.small;
+
+  const isHardwareWallet = isHardware(activeWallet?.type);
+
+  if (isHardwareWallet) {
+    windowUrl = getHardwareWalletPage(activeWallet?.type);
+  }
+
+  const windowType = isHardwareWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
+  const windowSize = isHardwareWallet ? WINDOW_SIZE.large : WINDOW_SIZE.small;
 
   return { activeWallet, windowUrl, windowType, windowSize, deviceId, bipIndex };
 };

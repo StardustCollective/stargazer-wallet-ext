@@ -7,22 +7,20 @@ import { KeyringAssetType, KeyringWalletType } from '@stardust-collective/dag4-k
 import { ETHEREUM_LOGO, CONSTELLATION_LOGO } from 'constants/index';
 import IRemoveWalletSettings from './types';
 import styles from './RemoveWalletHeader.scss';
+import { isHardware } from 'utils/hardware';
 
 const ICON_SIZE = 64;
 
 const RemoveWalletHeader: FC<IRemoveWalletSettings> = ({ wallet, title, subtitle }) => {
   const isMCW = wallet?.type === KeyringWalletType.MultiChainWallet;
-  const isHardware = [
-    KeyringWalletType.BitfiAccountWallet,
-    KeyringWalletType.LedgerAccountWallet,
-  ].includes(wallet?.type);
+  const isHardwareWallet = isHardware(wallet?.type);
   const isETH =
     wallet?.type === KeyringWalletType.SingleAccountWallet &&
     wallet?.supportedAssets?.includes(KeyringAssetType.ETH);
 
   const ICON = isMCW
     ? StargazerIcon
-    : isHardware
+    : isHardwareWallet
     ? LockIcon
     : isETH
     ? ETHEREUM_LOGO

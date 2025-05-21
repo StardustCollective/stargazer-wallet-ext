@@ -2,16 +2,13 @@
  * Handles derived data for wallets state.
  */
 
-/// //////////////////////
-// Modules
-/// //////////////////////
 import { RootState } from 'state/store';
 import { createSelector } from '@reduxjs/toolkit';
-import { KeyringNetwork, KeyringWalletState } from '@stardust-collective/dag4-keyring';
-
-/// //////////////////////
-// Types
-/// //////////////////////
+import {
+  KeyringNetwork,
+  KeyringWalletState,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
 import {
   IAccountDerived,
   AssetType,
@@ -20,68 +17,75 @@ import {
 } from 'state/vault/types';
 import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
 
-/// //////////////////////
-// Selectors
-/// //////////////////////
-
-/**
- * Returns the active asset
- */
 const getActiveAsset = (state: RootState) => state.vault.activeAsset;
 
-/**
- * Returns root wallets state
- */
 const getWallets = (state: RootState) => state.vault.wallets;
 
-/**
- * Returns activeWallet state
- */
 const getActiveWallet = (state: RootState) => state.vault.activeWallet;
 
-/**
- * Returns activeNetwork state
- */
 const getActiveNetwork = (state: RootState) => state.vault.activeNetwork;
 
-/**
- * Returns assets
- */
 const getAssets = (state: RootState) => state.assets;
 
 const selectLocalWallets = createSelector(getWallets, (wallets) => wallets.local);
-
-/**
- * Returns ledger wallets.
- */
 
 const selectLedgerWallets = createSelector(
   getWallets,
   (wallets: IVaultWalletsStoreState) => wallets.ledger
 );
 
-/**
- * Returns Bitfi wallets.
- */
-
 const selectBitfiWallets = createSelector(
   getWallets,
   (wallets: IVaultWalletsStoreState) => wallets.bitfi
 );
 
-/**
- * Returns all wallets.
- */
+const selectCypherockWallets = createSelector(
+  getWallets,
+  (wallets: IVaultWalletsStoreState) => wallets.cypherock
+);
+
+const selectMultiChainWallets = createSelector(selectLocalWallets, (localWallets) => {
+  const localWalletsArray = !!localWallets ? localWallets : [];
+  return localWalletsArray.filter(
+    (wallet) => wallet.type === KeyringWalletType.MultiChainWallet
+  );
+});
+
+const selectSingleAccountWallets = createSelector(selectLocalWallets, (localWallets) => {
+  const localWalletsArray = !!localWallets ? localWallets : [];
+  return localWalletsArray.filter(
+    (wallet) => wallet.type === KeyringWalletType.SingleAccountWallet
+  );
+});
+
+const selectAllHardwareWallets = createSelector(
+  selectLedgerWallets,
+  selectBitfiWallets,
+  selectCypherockWallets,
+  (ledgerWallets, bitfiWallets, cypherockWallets) => {
+    const ledgerWalletsArray = !!ledgerWallets ? ledgerWallets : [];
+    const bitfiWalletsArray = !!bitfiWallets ? bitfiWallets : [];
+    const cypherockWalletsArray = !!cypherockWallets ? cypherockWallets : [];
+    return [...ledgerWalletsArray, ...bitfiWalletsArray, ...cypherockWalletsArray];
+  }
+);
 
 const selectAllWallets = createSelector(
   selectLocalWallets,
   selectLedgerWallets,
   selectBitfiWallets,
-  (localWallets, ledgerWallets, bitfiWallets) => {
+  selectCypherockWallets,
+  (localWallets, ledgerWallets, bitfiWallets, cypherockWallets) => {
     const localWalletsArray = !!localWallets ? localWallets : [];
     const ledgerWalletsArray = !!ledgerWallets ? ledgerWallets : [];
     const bitfiWalletsArray = !!bitfiWallets ? bitfiWallets : [];
-    return [...localWalletsArray, ...ledgerWalletsArray, ...bitfiWalletsArray];
+    const cypherockWalletsArray = !!cypherockWallets ? cypherockWallets : [];
+    return [
+      ...localWalletsArray,
+      ...ledgerWalletsArray,
+      ...bitfiWalletsArray,
+      ...cypherockWalletsArray,
+    ];
   }
 );
 
@@ -220,6 +224,9 @@ export default {
   selectAllDagAccounts,
   selectAllEthAccounts,
   selectAllWallets,
+  selectAllHardwareWallets,
+  selectMultiChainWallets,
+  selectSingleAccountWallets,
   selectActiveNetworkAssets,
   selectActiveNetworkAssetIds,
   selectActiveAssetPublicKey,
