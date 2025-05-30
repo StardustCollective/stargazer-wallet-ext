@@ -13,7 +13,7 @@ const integrations = getDefaultIntegrations({}).filter((defaultIntegration) => {
   );
 });
 
-const RELEASE_NAME = `stargazer-wallet-web@5.3.4`;
+const RELEASE_NAME = `stargazer-wallet-web@5.3.5`;
 
 const client = new BrowserClient({
   dsn: process.env.SENTRY_DNS_WEB,
