@@ -114,16 +114,17 @@ const selectAllAccounts = createSelector(
  */
 
 const selectActiveAssetPublicKey = createSelector(
-  selectAllWallets,
+  getActiveWallet,
   getActiveAsset,
-  (wallets, activeAsset) => {
-    for (let i = 0; i < wallets.length; i++) {
-      const { accounts } = wallets[i];
-      for (let j = 0; j < wallets[i].accounts.length; j++) {
-        let account = accounts[j];
-        if (activeAsset?.address === account.address) {
-          return account!.publicKey ?? null;
-        }
+  (activeWallet, activeAsset) => {
+    const isDagAsset = activeAsset?.type === AssetType.Constellation;
+    for (let j = 0; j < activeWallet.accounts.length; j++) {
+      let account = activeWallet.accounts[j];
+      if (account.network === KeyringNetwork.Constellation && isDagAsset) {
+        return account!.publicKey ?? null;
+      }
+      if (account.network === KeyringNetwork.Ethereum && !isDagAsset) {
+        return account!.publicKey ?? null;
       }
     }
     return '';

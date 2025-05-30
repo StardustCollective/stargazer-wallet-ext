@@ -1,11 +1,11 @@
 import React from 'react';
 import clsx from 'clsx';
-
+import { useSelector } from 'react-redux';
 import { dag4 } from '@stardust-collective/dag4';
+
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
-import { useSelector } from 'react-redux';
 import dappSelectors from 'selectors/dappSelectors';
 
 import {
@@ -14,6 +14,7 @@ import {
 } from 'scripts/Background/messaging';
 import { EIPRpcError } from 'scripts/common';
 import { decodeFromBase64 } from 'utils/encoding';
+import { ISignDataParams } from 'scripts/Provider/constellation';
 import styles from './index.module.scss';
 
 const SignData = () => {
@@ -21,25 +22,19 @@ const SignData = () => {
   const origin = current && current.origin;
 
   const { data, message: requestMessage } =
-    StargazerExternalPopups.decodeRequestMessageLocationParams<{
-      origin: string;
-      dataEncoded: string;
-      walletId: string;
-      walletLabel: string;
-      deviceId: string;
-      bipIndex: number;
-      chainLabel: string;
-    }>(location.href);
+    StargazerExternalPopups.decodeRequestMessageLocationParams<ISignDataParams>(
+      location.href
+    );
 
-  const { dataEncoded, chainLabel, walletLabel } = data;
+  const { payload, wallet, chain } = data;
 
   // Decode base64 data
-  const dataDecoded = decodeFromBase64(dataEncoded);
-  let message = dataDecoded;
+  const payloadDecoded = decodeFromBase64(payload);
+  let message = payloadDecoded;
 
   try {
     // Try to parse and check if it's a JSON object
-    const parsedData = JSON.parse(dataDecoded);
+    const parsedData = JSON.parse(payloadDecoded);
     if (parsedData) {
       // Pretty-print JSON object
       message = JSON.stringify(parsedData, null, 4);
@@ -47,7 +42,7 @@ const SignData = () => {
   } catch (err) {
     // Decoded data is not a valid JSON
     console.log('data to parse is not valid JSON');
-    message = dataDecoded;
+    message = payloadDecoded;
   }
 
   const onNegativeButtonClick = async () => {
@@ -68,7 +63,7 @@ const SignData = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    const signature = await signData(dataEncoded);
+    const signature = await signData(payload);
 
     StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
@@ -98,7 +93,7 @@ const SignData = () => {
               Network:
             </TextV3.CaptionStrong>
             <TextV3.CaptionRegular extraStyles={styles.value}>
-              {chainLabel}
+              {chain}
             </TextV3.CaptionRegular>
           </div>
           <div className={clsx(styles.infoItem, styles.wallet)}>
@@ -106,7 +101,7 @@ const SignData = () => {
               Wallet:
             </TextV3.CaptionStrong>
             <TextV3.CaptionRegular extraStyles={styles.value}>
-              {walletLabel}
+              {wallet}
             </TextV3.CaptionRegular>
           </div>
         </div>

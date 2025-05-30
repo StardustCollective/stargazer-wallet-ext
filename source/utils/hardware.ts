@@ -1,8 +1,11 @@
 import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { AvailableMethods } from 'scripts/common';
 
 export const LEDGER_PAGE = '/ledger.html';
 export const BITFI_PAGE = '/bitfi.html';
 export const CYPHEROCK_PAGE = '/cypherock.html';
+
+export const HARDWARE_WALLETS_PAGES = [LEDGER_PAGE, BITFI_PAGE, CYPHEROCK_PAGE];
 
 export const LEDGER_WALLET_PREFIX = 'L';
 export const BITFI_WALLET_PREFIX = 'B';
@@ -10,6 +13,40 @@ export const CYPHEROCK_WALLET_PREFIX = 'C';
 export const LEDGER_WALLET_LABEL = 'Ledger';
 export const BITFI_WALLET_LABEL = 'Bitfi';
 export const CYPHEROCK_WALLET_LABEL = 'Cypherock';
+
+export type HardwareWalletType =
+  | KeyringWalletType.BitfiAccountWallet
+  | KeyringWalletType.CypherockAccountWallet
+  | KeyringWalletType.LedgerAccountWallet;
+
+export const SupportedMethods: Record<HardwareWalletType, AvailableMethods[]> = {
+  [KeyringWalletType.BitfiAccountWallet]: [
+    AvailableMethods.dag_sendTransaction,
+    AvailableMethods.dag_signMessage,
+  ],
+  [KeyringWalletType.CypherockAccountWallet]: [
+    AvailableMethods.dag_signData,
+    AvailableMethods.dag_signMessage,
+    AvailableMethods.dag_sendTransaction,
+  ],
+  [KeyringWalletType.LedgerAccountWallet]: [
+    AvailableMethods.dag_signMessage,
+    AvailableMethods.dag_sendTransaction,
+  ],
+};
+
+export const validateHardwareMethod = (
+  walletType: KeyringWalletType,
+  method: AvailableMethods
+) => {
+  if (!isHardware(walletType)) return;
+
+  const hardwareWalletType = walletType as HardwareWalletType;
+
+  if (!SupportedMethods[hardwareWalletType].includes(method)) {
+    throw new Error('Method not supported by the hardware wallet');
+  }
+};
 
 export type HardwareWallet = Omit<KeyringWalletState, 'id' | 'label'> & {
   label?: string;

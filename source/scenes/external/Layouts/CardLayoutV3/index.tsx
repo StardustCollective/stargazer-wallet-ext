@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import * as yup from 'yup';
+import clsx from 'clsx';
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import TextInput from 'components/TextInput';
@@ -10,11 +11,12 @@ import { useForm } from 'react-hook-form';
 type ICardLayoutV3Props = {
   logo: string;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   negativeButtonLabel?: string;
   positiveButtonLabel?: string;
   isPositiveButtonDisabled?: boolean;
   isPositiveButtonLoading?: boolean;
+  containerStyles?: string;
   fee?: {
     show: boolean;
     defaultValue: string;
@@ -45,12 +47,13 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
   isPositiveButtonLoading = false,
   fee,
   children,
+  containerStyles,
   onNegativeButtonClick,
   onPositiveButtonClick,
 }) => {
   const { register, errors, setValue, triggerValidation } = useForm({
     defaultValues: {
-      fee: fee.defaultValue,
+      fee: fee?.defaultValue,
     },
     validationSchema: yup.object().shape({
       fee: yup
@@ -78,30 +81,33 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
     }),
   });
 
-  isPositiveButtonDisabled = isPositiveButtonDisabled || (!fee.disabled && !!errors?.fee);
+  isPositiveButtonDisabled =
+    isPositiveButtonDisabled || (!fee?.disabled && !!errors?.fee);
 
   const handleFeeChange = (value: string) => {
     setValue('fee', value);
-    fee.setFee(value);
+    fee?.setFee(value);
     triggerValidation('fee');
   };
 
   return (
-    <div className={styles.container}>
+    <div className={clsx(styles.container, containerStyles)}>
       <div className={styles.header}>
-        <img src={logo} className={styles.logo} />
+        {!!logo && <img src={logo} className={styles.logo} />}
         <div className={styles.titleContainer}>
           <TextV3.LabelSemiStrong extraStyles={styles.title}>
             {title}
           </TextV3.LabelSemiStrong>
-          <TextV3.Caption extraStyles={styles.subtitle}>{subtitle}</TextV3.Caption>
+          {!!subtitle && (
+            <TextV3.Caption extraStyles={styles.subtitle}>{subtitle}</TextV3.Caption>
+          )}
         </div>
       </div>
 
       <div className={styles.content}>{children}</div>
 
       <div className={styles.actions}>
-        {fee.show && (
+        {!!fee?.show && (
           <div className={styles.feeSection}>
             <TextV3.CaptionStrong
               color={COLORS_ENUMS.BLACK}
@@ -114,10 +120,10 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
               fullWidth
               inputRef={register}
               name="fee"
-              value={fee.value}
+              value={fee?.value}
               error={!!errors?.fee}
               onChange={(ev) => handleFeeChange(ev.target.value)}
-              disabled={fee.disabled}
+              disabled={fee?.disabled}
               endAdornment={
                 <TextV3.Caption
                   extraStyles={styles.recommendedLabel}
@@ -138,7 +144,7 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
             >
               Recommended fee: {` `}
               <TextV3.Caption color={COLORS_ENUMS.GRAY_100} extraStyles={styles.feeValue}>
-                {fee.defaultValue} {fee.symbol}
+                {fee?.defaultValue} {fee?.symbol}
               </TextV3.Caption>
             </TextV3.Caption>
           </div>

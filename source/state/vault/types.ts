@@ -3,24 +3,25 @@ import {
   KDFParamsPhrase,
   KDFParamsPrivateKey,
 } from '@stardust-collective/dag4-keystore';
-import {
+import type {
   Transaction as DAGTransaction,
   TransactionV2 as DAGTransactionV2,
 } from '@stardust-collective/dag4-network';
-import {
+import type {
   KeyringAssetType,
   KeyringNetwork,
+  KeyringWalletAccountState,
   KeyringWalletState,
   KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
-import {
+import type {
   AvalancheChainId,
   BaseChainId,
   BSCChainId,
   EthChainId,
   PolygonChainId,
 } from 'scripts/Background/controllers/EVMChainController/types';
-import { IAssetInfoState } from 'state/assets/types';
+import type { IAssetInfoState } from 'state/assets/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -127,10 +128,12 @@ export interface IVaultWalletsStoreState {
 export interface IWalletState {
   id: string;
   bipIndex?: number;
-  type: KeyringWalletType;
+  cypherockId?: string;
   label: string;
+  type: KeyringWalletType;
   supportedAssets: KeyringAssetType[]; // eth,dag,erc20,erc721
   assets: IAssetState[];
+  accounts: KeyringWalletAccountState[];
 }
 export interface ICustomNetworkObject {
   id: string;

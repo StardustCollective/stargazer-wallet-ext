@@ -1,36 +1,11 @@
-//////////////////////
-// Modules Imports
-/////////////////////
-
 import React from 'react';
 import { useSelector } from 'react-redux';
 import * as ethers from 'ethers';
-import clsx from 'clsx';
-
-//////////////////////
-// Components
-/////////////////////
-
 import TextV3 from 'components/TextV3';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
-
-//////////////////////
-// Common Layouts
-/////////////////////
-
 import CardLayoutV2 from 'scenes/external/Layouts/CardLayoutV2';
-
-//////////////////////
-// Hooks
-/////////////////////
-
 import { useCopyClipboard } from 'hooks/index';
-
-///////////////////////////
-// Styles
-///////////////////////////
-
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { ALL_EVM_CHAINS } from 'constants/index';
 import dappSelectors from 'selectors/dappSelectors';
@@ -39,10 +14,9 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
-
 import { ecsign, toRpcSig } from 'ethereumjs-util';
 import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
-import { EIP712Domain, TypedSignatureRequest } from './types';
+import { ISignTypedDataParams, MessagePayload } from './types';
 import styles from './index.module.scss';
 
 const DOMAIN_TITLE = 'Domain';
@@ -50,44 +24,31 @@ const URL_TITLE = 'URL';
 const CHAIN_TITLE = 'Chain';
 const CONTRACT_TITLE = 'Contract';
 
-//////////////////////
-// Component
-/////////////////////
-
 const TypedSignatureRequestScreen = () => {
-  //////////////////////
-  // Hooks
-  /////////////////////
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
-
-  const { data, message } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
-    signatureConsent: TypedSignatureRequest;
-    domain: string;
-    types: string;
-  }>(location.href);
-
-  const { signatureConsent: signatureRequest, domain, types } = data;
-
-  const contentObject = JSON.parse(signatureRequest.content);
-  const metadataObject = signatureRequest.data;
-  const domainObject = JSON.parse(domain) as EIP712Domain;
-  const typesObject = JSON.parse(types) as Parameters<
-    typeof ethers.utils._TypedDataEncoder.hash
-  >[1];
 
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
 
-  //////////////////////
-  // Callbacks
-  /////////////////////
+  const { data, message: requestMessage } =
+    StargazerExternalPopups.decodeRequestMessageLocationParams<ISignTypedDataParams>(
+      location.href
+    );
+
+  const { payload } = data;
+
+  const payloadDecoded: MessagePayload = JSON.parse(payload);
+
+  const domainObject = payloadDecoded.domain;
+  const typesObject = payloadDecoded.types;
+  const messageObject = payloadDecoded.message;
 
   const onNegativeButtonClick = async () => {
     StargazerExternalPopups.addResolvedParam(location.href);
     StargazerWSMessageBroker.sendResponseError(
       new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
-      message
+      requestMessage
     );
     window.close();
   };
@@ -110,12 +71,20 @@ const TypedSignatureRequestScreen = () => {
 
   const onPositiveButtonClick = async () => {
     try {
-      const signature = signTypedData(domainObject, typesObject, contentObject);
+      const typesWithoutEIP712Domain = { ...typesObject };
+      if ('EIP712Domain' in typesWithoutEIP712Domain) {
+        delete typesWithoutEIP712Domain.EIP712Domain;
+      }
+      const signature = signTypedData(
+        domainObject,
+        typesWithoutEIP712Domain,
+        messageObject
+      );
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(signature, message);
+      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
     } catch (e) {
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(e, message);
+      StargazerWSMessageBroker.sendResponseError(e, requestMessage);
     }
 
     window.close();
@@ -248,13 +217,8 @@ const TypedSignatureRequestScreen = () => {
     );
   };
 
-  //////////////////////
-  // Renders
-  /////////////////////
   const initialMessageIdentationValue = 1;
   const initialMessageComponentsArray: any = [];
-  const initialMetadataIdentationValue = 1;
-  const initialMetadataComponentsArray: any = [];
 
   return (
     <CardLayoutV2
@@ -275,24 +239,9 @@ const TypedSignatureRequestScreen = () => {
           Message
         </TextV3.LabelSemiStrong>
         {renderObject(
-          contentObject,
+          messageObject,
           initialMessageIdentationValue,
           initialMessageComponentsArray
-        )}
-        {!!metadataObject && (
-          <>
-            <TextV3.LabelSemiStrong
-              color={COLORS_ENUMS.BLACK}
-              extraStyles={clsx(styles.title, styles.metadata)}
-            >
-              Metadata
-            </TextV3.LabelSemiStrong>
-            {renderObject(
-              metadataObject,
-              initialMetadataIdentationValue,
-              initialMetadataComponentsArray
-            )}
-          </>
         )}
       </div>
     </CardLayoutV2>

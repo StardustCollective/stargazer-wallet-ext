@@ -1,15 +1,4 @@
 import React from 'react';
-
-//////////////////////
-// Common Layouts
-/////////////////////
-
-import CardLayout from 'scenes/external/Layouts/CardLayout';
-
-///////////////////////////
-// Styles
-///////////////////////////
-
 import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
@@ -19,33 +8,24 @@ import { decodeFromBase64 } from 'utils/encoding';
 import { dag4 } from '@stardust-collective/dag4';
 import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
-import styles from './index.module.scss';
-import { StargazerSignatureRequest } from 'scripts/Provider/constellation';
-
-//////////////////////
-// Component
-/////////////////////
+import type {
+  ISignMessageParams,
+  StargazerSignatureRequest,
+} from 'scripts/Provider/constellation';
+import SignMessageView, { ISignMessageProps } from '../views/sign-message';
 
 const SignatureRequest = () => {
-  //////////////////////
-  // Hooks
-  /////////////////////
-
   const { data, message: requestMessage } =
-    StargazerExternalPopups.decodeRequestMessageLocationParams<{
-      signatureRequestEncoded: string;
-      asset: string;
-      provider: string;
-      chainLabel: string;
-      walletLabel: string;
-    }>(location.href);
+    StargazerExternalPopups.decodeRequestMessageLocationParams<ISignMessageParams>(
+      location.href
+    );
 
-  const { signatureRequestEncoded, asset, chainLabel, walletLabel } = data;
+  const { payload, asset, chain, wallet } = data;
 
   const isDAGsignature = asset === 'DAG';
 
-  const signatureRequest = JSON.parse(
-    decodeFromBase64(signatureRequestEncoded)
+  const payloadDecoded = JSON.parse(
+    decodeFromBase64(payload)
   ) as StargazerSignatureRequest;
 
   const onNegativeButtonClick = async () => {
@@ -76,7 +56,7 @@ const SignatureRequest = () => {
   };
 
   const onPositiveButtonClick = async () => {
-    const message = isDAGsignature ? signatureRequestEncoded : signatureRequest.content;
+    const message = isDAGsignature ? payload : payloadDecoded.content;
     const signMessage = isDAGsignature ? signDagMessage : signEthMessage;
 
     try {
@@ -92,52 +72,17 @@ const SignatureRequest = () => {
     window.close();
   };
 
-  //////////////////////
-  // Renders
-  /////////////////////
+  const props: ISignMessageProps = {
+    title: 'Signature Request',
+    account: wallet,
+    network: chain,
+    message: payloadDecoded,
+    footer: 'Only sign messages on sites you trust.',
+    onSign: onPositiveButtonClick,
+    onReject: onNegativeButtonClick,
+  };
 
-  return (
-    <CardLayout
-      stepLabel=""
-      originDescriptionLabel="Requested by:"
-      headerLabel="Signature Request"
-      footerLabel={
-        'Signed messages do not incur gas fees.\nOnly sign messages on sites you trust.'
-      }
-      captionLabel=""
-      negativeButtonLabel="Reject"
-      onNegativeButtonClick={onNegativeButtonClick}
-      positiveButtonLabel="Sign"
-      onPositiveButtonClick={onPositiveButtonClick}
-    >
-      <div className={styles.content}>
-        <section>
-          <label>Account</label>
-          <div>{walletLabel}</div>
-        </section>
-        <section className={styles.message}>
-          <label>Message</label>
-          <div>{signatureRequest.content}</div>
-        </section>
-        <section className={styles.message}>
-          <label>Network</label>
-          <div>{chainLabel}</div>
-        </section>
-        {Object.keys(signatureRequest.metadata).length > 0 && (
-          <section className={styles.metadata}>
-            <label>Metadata</label>
-            <div>
-              {Object.entries(signatureRequest.metadata).map(([key, value]) => (
-                <small>
-                  {key} = {value}
-                </small>
-              ))}
-            </div>
-          </section>
-        )}
-      </div>
-    </CardLayout>
-  );
+  return <SignMessageView {...props} />;
 };
 
 export default SignatureRequest;
