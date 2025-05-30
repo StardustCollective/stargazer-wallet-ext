@@ -1,0 +1,12 @@
+@import '~assets/styles/variables';
+
+.layoutContainer {
+  height: 700px;
+  width: 384px;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
