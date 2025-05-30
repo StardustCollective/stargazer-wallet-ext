@@ -6,13 +6,38 @@ import LoadingView from './views/loading';
 import WalletsView from './views/wallets';
 import GenerateAddressView from './views/generate';
 import ConfirmDetailsView from './views/confirm';
+import SuccessView from './views/success';
+import SignMsgView from './views/sign-message';
+// import SignTypedMessageView from './views/sign-typed-message';
+import SignDataView from './views/sign-data';
+import SignTransactionView from './views/sign-transaction';
 import ErrorView from './views/error';
 import { CypherockError, CypherockService, ErrorCode } from '../../utils/cypherockBridge';
+import type { IGetPublicKeysResult } from '@cypherock/sdk-app-evm';
 import 'assets/styles/global.scss';
+import { getWalletController } from 'utils/controllersUtils';
+import { HardwareWallet } from 'utils/hardware';
+import {
+  KeyringAssetType,
+  KeyringNetwork,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
+import { usePlatformAlert } from 'utils/alertUtil';
+import { BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
+import { encodeArrayToBase64 } from './utils';
+import { addBeforeUnloadListener } from 'web/utils/windowListeners';
 
-enum WalletState {
+export enum WalletState {
+  // Connect device
   ConnectDevice = 'connect',
   Connecting = 'connecting',
+
+  // Import wallet
   Searching = 'searching',
   SelectWallet = 'select-wallet',
   GenerateDagAddress = 'generate-dag-address',
@@ -21,9 +46,31 @@ enum WalletState {
   GeneratingEthAddress = 'generating-eth-address',
   ConfirmDetails = 'confirm-details',
   Confirmed = 'confirmed',
+
+  // Transactions
+  SignMessage = 'sign-message',
+  SignTypedMessage = 'sign-typed-message',
+  SignDataMessage = 'sign-data-message',
+  SignDagTransaction = 'sign-dag-transaction',
+
+  // Signed states
+  SignedSuccess = 'signed-success',
+  SignedError = 'signed-error',
+
+  // Verify
+  VerifyTransaction = 'verify-transaction',
+
+  // Errors
   NoWalletsFound = 'no-wallets-found',
   NoDeviceFound = 'no-device-found',
   GeneralError = 'general-error',
+}
+
+enum WalletRoute {
+  SignMessage = 'signMessage',
+  SignDataMessage = 'signData',
+  SignTypedMessage = 'signTypedMessage',
+  SignDagTransaction = 'signTransaction',
 }
 
 enum GetPublicKeysEvent {
@@ -38,25 +85,60 @@ const CypherockPage = () => {
   const [service] = useState<CypherockService>(() => new CypherockService());
 
   const [walletState, setWalletState] = useState<WalletState>(WalletState.ConnectDevice);
+  const [nextRoute, setNextRoute] = useState<WalletState>(null);
   const [wallets, setWallets] = useState<IWalletItem[]>([]);
   const [selectedWallet, setSelectedWallet] = useState<IWalletItem | null>(null);
-  const [dagAddress, setDagAddress] = useState<string | null>(null);
-  const [ethAddress, setEthAddress] = useState<string | null>(null);
+  const [dagPublicKeys, setDagPublicKeys] = useState<IGetPublicKeysResult | null>(null);
+  const [ethPublicKeys, setEthPublicKeys] = useState<IGetPublicKeysResult | null>(null);
+  const [walletName, setWalletName] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [importLoading, setImportLoading] = useState<boolean>(false);
+
+  const walletController = getWalletController();
+  const showAlert = usePlatformAlert();
 
   useEffect(() => {
+    // Add before unload listener to abort any running operation on the Cypherock device
+    addBeforeUnloadListener(service);
+
     return () => {
       cleanUp();
     };
+  }, []);
+
+  useEffect(() => {
+    if (location.href.includes('route')) {
+      const { route } = StargazerExternalPopups.decodeRequestMessageLocationParams(
+        location.href
+      );
+
+      if (route === WalletRoute.SignMessage) {
+        setNextRoute(WalletState.SignMessage);
+      } else if (route === WalletRoute.SignTypedMessage) {
+        setNextRoute(WalletState.SignTypedMessage);
+      } else if (route === WalletRoute.SignDataMessage) {
+        setNextRoute(WalletState.SignDataMessage);
+      } else if (route === WalletRoute.SignDagTransaction) {
+        setNextRoute(WalletState.SignDagTransaction);
+      }
+    }
   }, []);
 
   const cleanUp = () => {
     setWalletState(WalletState.ConnectDevice);
     setWallets([]);
     setSelectedWallet(null);
-    setDagAddress(null);
-    setEthAddress(null);
+    setWalletName('');
+    setDagPublicKeys(null);
+    setEthPublicKeys(null);
+    setImportLoading(false);
     setErrorMessage('');
+  };
+
+  const withDelay = async (promise: Promise<any>, minDuration = 2000) => {
+    const delay = new Promise((resolve) => setTimeout(resolve, minDuration));
+    const [result] = await Promise.all([promise, delay]);
+    return result;
   };
 
   const handleError = (err: unknown) => {
@@ -84,14 +166,52 @@ const CypherockPage = () => {
     setWalletState(WalletState.GeneralError);
   };
 
+  const handleSuccessResponse = async (
+    result: any,
+    messageRequest: StargazerRequestMessage
+  ): Promise<void> => {
+    StargazerExternalPopups.addResolvedParam(location.href);
+    await StargazerWSMessageBroker.sendResponseResult(result, messageRequest);
+  };
+
+  const handleErrorResponse = async (
+    err: unknown,
+    messageRequest: StargazerRequestMessage
+  ): Promise<void> => {
+    let message = 'An unknown error occurred';
+    let code = EIPErrorCodes.Unknown;
+
+    if (err instanceof Error) {
+      if (err.message.includes('rejected')) {
+        message = 'User Rejected Request';
+        code = EIPErrorCodes.Rejected;
+      }
+
+      if (err.message.includes('InsufficientBalance')) {
+        message = 'Insufficient balance';
+        code = EIPErrorCodes.Rejected;
+      }
+    }
+
+    StargazerExternalPopups.addResolvedParam(location.href);
+    await StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError(message, code),
+      messageRequest
+    );
+  };
+
   const onConnect = async () => {
     try {
       setWalletState(WalletState.Connecting);
-      await service.connect();
-      setWalletState(WalletState.Searching);
-      const wallets = await service.getWallets();
-      setWallets(wallets);
-      setWalletState(WalletState.SelectWallet);
+      await withDelay(service.connect());
+      if (nextRoute) {
+        setWalletState(nextRoute);
+      } else {
+        setWalletState(WalletState.Searching);
+        const wallets = await withDelay(service.getWallets());
+        setWallets(wallets);
+        setWalletState(WalletState.SelectWallet);
+      }
     } catch (err: unknown) {
       handleError(err);
     }
@@ -104,6 +224,7 @@ const CypherockPage = () => {
 
   const onSelectWallet = (wallet: IWalletItem) => {
     setSelectedWallet(wallet);
+    setWalletName(wallet.name);
   };
 
   const onEthEventHandler = (event: number) => {
@@ -118,10 +239,36 @@ const CypherockPage = () => {
     }
   };
 
+  const clearWalletState = () => {
+    setDagPublicKeys(null);
+    setEthPublicKeys(null);
+    setWalletName('');
+  };
+
   const onEthAddressCancel = async () => {
     try {
+      clearWalletState();
       changeState(WalletState.SelectWallet);
       await service.evmAbort();
+    } catch (err: unknown) {
+      handleError(err);
+    }
+  };
+
+  const onVerifyTransactionCancel = async () => {
+    try {
+      setWalletState(WalletState.ConnectDevice);
+      await service.abortOperation();
+    } catch (err: unknown) {
+      handleError(err);
+    }
+  };
+
+  const onDagAddressCancel = async () => {
+    try {
+      clearWalletState();
+      changeState(WalletState.SelectWallet);
+      await service.constellationAbort();
     } catch (err: unknown) {
       handleError(err);
     }
@@ -140,7 +287,9 @@ const CypherockPage = () => {
         throw new CypherockError('No DAG address found', ErrorCode.UNKNOWN);
       }
 
-      setDagAddress(dagPublicKeys.addresses[0]);
+      setDagPublicKeys(dagPublicKeys);
+
+      return dagPublicKeys;
     } catch (err: unknown) {
       handleError(err);
     }
@@ -159,7 +308,7 @@ const CypherockPage = () => {
         throw new CypherockError('No EVM address found', ErrorCode.UNKNOWN);
       }
 
-      setEthAddress(ethPublicKeys.addresses[0]);
+      setEthPublicKeys(ethPublicKeys);
       setWalletState(WalletState.ConfirmDetails);
     } catch (err: unknown) {
       handleError(err);
@@ -168,13 +317,11 @@ const CypherockPage = () => {
 
   const onAddWallet = async () => {
     try {
-      // await generateDagAddress();
-      console.log('dagAddress', generateDagAddress);
+      const dagPublicKeys = await generateDagAddress();
 
-      // if (dagAddress) {
-      //   await generateEthAddress();
-      // }
-      await generateEthAddress();
+      if (dagPublicKeys?.addresses?.length) {
+        await generateEthAddress();
+      }
     } catch (err: unknown) {
       handleError(err);
     }
@@ -184,8 +331,48 @@ const CypherockPage = () => {
     setWalletState(state);
   };
 
-  const onImportWallet = () => {
-    console.log('onImportWallet', { ethAddress });
+  const onImportWallet = async () => {
+    setImportLoading(true);
+
+    const newWallet: HardwareWallet[] = [
+      {
+        label: walletName,
+        cypherockId: encodeArrayToBase64(selectedWallet.id),
+        type: KeyringWalletType.CypherockAccountWallet,
+        accounts: [
+          {
+            address: dagPublicKeys?.addresses[0],
+            publicKey: dagPublicKeys?.publicKeys[0],
+            network: KeyringNetwork.Constellation,
+          },
+          {
+            address: ethPublicKeys?.addresses[0],
+            publicKey: ethPublicKeys?.publicKeys[0],
+            network: KeyringNetwork.Ethereum,
+          },
+        ],
+        supportedAssets: [
+          KeyringAssetType.DAG,
+          KeyringAssetType.ETH,
+          KeyringAssetType.ERC20,
+        ],
+      },
+    ];
+
+    try {
+      await walletController.importHardwareWalletAccounts(newWallet);
+    } catch (err) {
+      if (err instanceof Error) {
+        const message = err?.message ?? 'Error importing wallets';
+        showAlert(message, 'danger');
+      } else {
+        handleError(err);
+      }
+      setImportLoading(false);
+      return;
+    }
+
+    setWalletState(WalletState.Confirmed);
   };
 
   function RenderByWalletState() {
@@ -238,7 +425,7 @@ const CypherockPage = () => {
             title="Generate address"
             secondaryButton={{
               label: 'Cancel',
-              handleClick: () => changeState(WalletState.SelectWallet),
+              handleClick: onDagAddressCancel,
             }}
           >
             <GenerateAddressView text="Tap your card to the Cypherock device to generate your DAG address" />
@@ -247,7 +434,7 @@ const CypherockPage = () => {
       case WalletState.GeneratingDagAddress:
         return (
           <Layout title="Generate address">
-            <LoadingView text="Generating your new DAG address..." />
+            <LoadingView text="Generating your DAG address..." />
           </Layout>
         );
       case WalletState.GenerateEthAddress:
@@ -262,31 +449,117 @@ const CypherockPage = () => {
             <GenerateAddressView text="Tap your card to the Cypherock device to generate your EVM address" />
           </Layout>
         );
-
       case WalletState.GeneratingEthAddress:
         return (
           <Layout title="Generate address">
-            <LoadingView text="Generating your new EVM address..." />
+            <LoadingView text="Generating your EVM address..." />
           </Layout>
         );
-
       case WalletState.ConfirmDetails:
         return (
           <Layout
             title="Confirm details"
             secondaryButton={{
               label: 'Cancel',
-              handleClick: cleanUp,
+              handleClick: () => {
+                cleanUp();
+                onCancel();
+              },
             }}
             primaryButton={{
               label: 'Import wallet',
+              loading: importLoading,
               handleClick: onImportWallet,
             }}
           >
-            <ConfirmDetailsView ethAddress={ethAddress} dagAddress={dagAddress} />
+            <ConfirmDetailsView
+              ethPublicKeys={ethPublicKeys}
+              dagPublicKeys={dagPublicKeys}
+              walletName={walletName}
+              setWalletName={setWalletName}
+            />
           </Layout>
         );
-
+      case WalletState.Confirmed:
+        return (
+          <Layout
+            title="Confirmed"
+            primaryButton={{
+              type: BUTTON_TYPES_ENUM.PRIMARY_OUTLINE,
+              label: 'Close window',
+              handleClick: () => window.close(),
+            }}
+          >
+            <SuccessView text="Your Cypherock wallet was successfully imported!" />
+          </Layout>
+        );
+      case WalletState.SignedSuccess:
+        return (
+          <Layout
+            title="Signed Successfully"
+            primaryButton={{
+              type: BUTTON_TYPES_ENUM.PRIMARY_OUTLINE,
+              label: 'Close window',
+              handleClick: () => window.close(),
+            }}
+          >
+            <SuccessView text="Your signing request was completed successfully." />
+          </Layout>
+        );
+      case WalletState.SignedError:
+        return (
+          <Layout
+            title="Signature Failed"
+            secondaryButton={{
+              label: 'Close window',
+              handleClick: () => window.close(),
+            }}
+          >
+            <ErrorView
+              title="Signing was unsuccessful"
+              description="Something went wrong during the signing process. Please try again."
+            />
+          </Layout>
+        );
+      case WalletState.SignMessage:
+        return (
+          <SignMsgView
+            service={service}
+            changeState={changeState}
+            handleSuccessResponse={handleSuccessResponse}
+            handleErrorResponse={handleErrorResponse}
+          />
+        );
+      case WalletState.SignDagTransaction:
+        return (
+          <SignTransactionView
+            service={service}
+            changeState={changeState}
+            handleSuccessResponse={handleSuccessResponse}
+            handleErrorResponse={handleErrorResponse}
+          />
+        );
+      case WalletState.SignDataMessage:
+        return (
+          <SignDataView
+            service={service}
+            changeState={changeState}
+            handleSuccessResponse={handleSuccessResponse}
+            handleErrorResponse={handleErrorResponse}
+          />
+        );
+      case WalletState.VerifyTransaction:
+        return (
+          <Layout
+            title="Verify transaction"
+            secondaryButton={{
+              label: 'Cancel',
+              handleClick: onVerifyTransactionCancel,
+            }}
+          >
+            <GenerateAddressView text="Verify the transaction and tap your card to the Cypherock device to confirm" />
+          </Layout>
+        );
       case WalletState.NoDeviceFound:
         return (
           <Layout
@@ -312,7 +585,7 @@ const CypherockPage = () => {
             title="Connect device"
             secondaryButton={{
               label: 'Cancel',
-              handleClick: () => changeState(WalletState.SelectWallet),
+              handleClick: onCancel,
             }}
             primaryButton={{
               label: 'Try again',
@@ -325,7 +598,6 @@ const CypherockPage = () => {
             />
           </Layout>
         );
-
       case WalletState.GeneralError:
         return (
           <Layout
@@ -344,7 +616,7 @@ const CypherockPage = () => {
     }
   }
 
-  return <RenderByWalletState />;
+  return RenderByWalletState();
 };
 
 export default CypherockPage;
