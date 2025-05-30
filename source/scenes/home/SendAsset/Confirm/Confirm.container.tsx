@@ -71,6 +71,7 @@ import { StargazerExternalPopups } from 'scripts/Background/messaging';
 import { DEFAULT_LANGUAGE } from 'constants/index';
 import Confirm from './Confirm';
 import { getHardwareWalletPage, isHardware } from 'utils/hardware';
+import { ExternalRoute } from 'web/pages/External/types';
 
 export const DAG_SMALL_FEE = 0.002;
 
@@ -96,7 +97,7 @@ const ConfirmContainer = () => {
   let isTransfer = false;
 
   if (location) {
-    isExternalRequest = location.pathname.includes('confirmTransaction');
+    isExternalRequest = location.pathname.includes(ExternalRoute.ConfirmTransaction);
   }
 
   const accountController = getAccountController();
@@ -270,24 +271,33 @@ const ConfirmContainer = () => {
           callbackError(message, origin, 'Unable to confirm transaction');
         }
       } else if (isHardware(activeWallet.type)) {
-        const page = getHardwareWalletPage(activeWallet.type);
+        const windowUrl = getHardwareWalletPage(activeWallet.type);
+        const windowSize = { width: 1000, height: 1000 };
+        const windowType = 'normal';
 
-        const params = new URLSearchParams();
-        params.set('route', 'signTransaction');
-        params.set('id', activeWallet.id);
-        params.set('publicKey', activeWalletPublicKey);
-        params.set('deviceId', activeWalletDeviceId);
-        params.set('amount', tempTx!.amount);
-        params.set('fee', String(tempTx!.fee));
-        params.set('from', tempTx!.fromAddress);
-        params.set('to', tempTx!.toAddress);
+        const data = {
+          from: tempTx.fromAddress,
+          to: tempTx.toAddress,
+          value: tempTx.amount,
+          fee: String(tempTx.fee),
+          cypherockId: activeWallet?.cypherockId,
+          publicKey: activeWalletPublicKey,
+          deviceId: activeWalletDeviceId,
+          bipIndex: activeWallet?.bipIndex,
+          assetId: activeAsset.id,
+        };
 
-        // Will only be required for Ledger
-        if (activeWallet?.bipIndex) {
-          params.set('bipIndex', activeWallet.bipIndex.toString());
-        }
-
-        window.open(`/${page}.html?${params.toString()}`, '_newtab');
+        StargazerExternalPopups.executePopup({
+          params: {
+            data,
+            origin: 'stargazer-wallet',
+            route: ExternalRoute.SignTransaction,
+          },
+          size: windowSize,
+          type: windowType,
+          url: windowUrl,
+        });
+        return;
       } else {
         await accountController.confirmTempTx();
         setConfirmed(true);
