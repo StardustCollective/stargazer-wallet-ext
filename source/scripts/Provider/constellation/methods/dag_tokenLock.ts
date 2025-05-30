@@ -10,6 +10,8 @@ import { toDag } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
 import { getDagBalance } from 'dag4/block-explorer';
 import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
+import { ExternalRoute } from 'web/pages/External/types';
+import { validateHardwareMethod } from 'utils/hardware';
 
 type TokenLockData = {
   source: string;
@@ -37,6 +39,8 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
   if (!request.params) {
     throw new Error('params not provided');
   }
+
+  validateHardwareMethod(activeWallet.type, request.method);
 
   const [data] = request.params as [TokenLockData];
 
@@ -167,15 +171,17 @@ export const dag_tokenLock = async (
 
   windowSize.height = 628;
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    tokenLockData,
-    message,
-    sender.origin,
-    'tokenLock',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: tokenLockData,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.TokenLock,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

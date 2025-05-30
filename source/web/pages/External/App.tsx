@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import queryString from 'query-string';
 import Container from 'components/Container';
 import Login from 'scenes/common/Login';
 import SelectAccounts from 'scenes/external/SelectAccounts';
@@ -23,6 +22,8 @@ import { setLoading } from 'state/auth';
 import { clearSession, getSgw, sessionExpired } from 'utils/keyring';
 import 'assets/styles/global.scss';
 import Loading from 'scenes/unauth/Loading';
+import { ExternalRoute } from './types';
+import { StargazerExternalPopups } from 'scripts/Background/messaging';
 
 const PrivateRoute = ({ component: Component, ...rest }: RouteProps) => {
   const { unlocked } = useSelector((state: RootState) => state.auth);
@@ -39,7 +40,9 @@ const App = () => {
   const walletController = getWalletController();
   const history = useHistory();
 
-  const { route } = queryString.parse(window.location.search);
+  const { route } = StargazerExternalPopups.decodeRequestMessageLocationParams(
+    window.location.href
+  );
   const { unlocked, loading } = useSelector((state: RootState) => state.auth);
 
   const hideLoadingScreen = () => {
@@ -94,20 +97,44 @@ const App = () => {
           {loading && <Route path="/" component={Loading} />}
           <Route path="/login" component={Login} />
 
-          <PrivateRoute path="/selectAccounts" component={SelectAccounts} />
-          <PrivateRoute path="/approveSpend" component={ApproveSpend} />
-          <PrivateRoute path="/sendTransaction" component={SendTransaction} />
-          <PrivateRoute path="/confirmTransaction" component={ConfirmTransaction} />
-          <PrivateRoute path="/signMessage" component={SignatureRequest} />
-          <PrivateRoute path="/signData" component={SignData} />
-          <PrivateRoute path="/sendMetagraphData" component={SendMetagraphData} />
-          <PrivateRoute path="/signTypedMessage" component={TypedSignatureRequest} />
-          <PrivateRoute path="/watchAsset" component={WatchAsset} />
-          <PrivateRoute path="/allowSpend" component={AllowSpend} />
-          <PrivateRoute path="/tokenLock" component={TokenLock} />
-          <PrivateRoute path="/delegatedStake" component={DelegatedStake} />
           <PrivateRoute
-            path="/withdrawDelegatedStake"
+            path={`/${ExternalRoute.SelectAccounts}`}
+            component={SelectAccounts}
+          />
+          <PrivateRoute
+            path={`/${ExternalRoute.ApproveSpend}`}
+            component={ApproveSpend}
+          />
+          <PrivateRoute
+            path={`/${ExternalRoute.SignTransaction}`}
+            component={SendTransaction}
+          />
+          <PrivateRoute
+            path={`/${ExternalRoute.ConfirmTransaction}`}
+            component={ConfirmTransaction}
+          />
+          <PrivateRoute
+            path={`/${ExternalRoute.SignMessage}`}
+            component={SignatureRequest}
+          />
+          <PrivateRoute path={`/${ExternalRoute.SignData}`} component={SignData} />
+          <PrivateRoute
+            path={`/${ExternalRoute.SendMetagraphData}`}
+            component={SendMetagraphData}
+          />
+          <PrivateRoute
+            path={`/${ExternalRoute.SignTypedMessage}`}
+            component={TypedSignatureRequest}
+          />
+          <PrivateRoute path={`/${ExternalRoute.WatchAsset}`} component={WatchAsset} />
+          <PrivateRoute path={`/${ExternalRoute.AllowSpend}`} component={AllowSpend} />
+          <PrivateRoute path={`/${ExternalRoute.TokenLock}`} component={TokenLock} />
+          <PrivateRoute
+            path={`/${ExternalRoute.DelegatedStake}`}
+            component={DelegatedStake}
+          />
+          <PrivateRoute
+            path={`/${ExternalRoute.WithdrawDelegatedStake}`}
             component={WithdrawDelegatedStakeView}
           />
         </Switch>

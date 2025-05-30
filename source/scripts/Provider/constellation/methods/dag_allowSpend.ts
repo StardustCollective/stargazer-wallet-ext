@@ -14,6 +14,8 @@ import { toDag } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
 import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
 import { getDagBalance } from 'dag4/block-explorer';
+import { ExternalRoute } from 'web/pages/External/types';
+import { validateHardwareMethod } from 'utils/hardware';
 
 type AllowSpendData = {
   source: string; // Wallet address signing the transaction.
@@ -45,6 +47,8 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
   if (!request.params) {
     throw new Error('params not provided');
   }
+
+  validateHardwareMethod(activeWallet.type, request.method);
 
   const [data] = request.params as [AllowSpendData];
 
@@ -299,15 +303,17 @@ export const dag_allowSpend = async (
 
   const windowSize = { width: 390, height: 748 };
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    allowSpendData,
-    message,
-    sender.origin,
-    'allowSpend',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: allowSpendData,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.AllowSpend,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

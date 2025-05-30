@@ -50,5 +50,9 @@ export const dag_getPublicKey = (
     throw new Error('ConstellationProvider.getPublicKey: Not whitelisted');
   }
 
+  if (!dag4.account?.keyTrio?.publicKey) {
+    throw new Error('Public key not found');
+  }
+
   return dag4.account.keyTrio.publicKey;
 };

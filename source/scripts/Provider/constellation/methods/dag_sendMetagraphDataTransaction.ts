@@ -11,6 +11,8 @@ import { encodeToBase64 } from 'utils/encoding';
 import { getFeeEstimation } from 'scenes/external/SendMetagraphData/utils';
 import { normalizeObject } from '@stardust-collective/dag4-keystore';
 import { getAccountController } from 'utils/controllersUtils';
+import { ExternalRoute } from 'web/pages/External/types';
+import { validateHardwareMethod } from 'utils/hardware';
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
@@ -68,6 +70,8 @@ export const dag_sendMetagraphDataTransaction = async (
 
   const { activeWallet, windowUrl, windowType, deviceId, bipIndex } = getWalletInfo();
 
+  validateHardwareMethod(activeWallet.type, request.method);
+
   const dataString = JSON.stringify(normalizeObject(data));
   const dataEncoded = encodeToBase64(dataString);
 
@@ -93,15 +97,17 @@ export const dag_sendMetagraphDataTransaction = async (
 
   const windowSize = { width: 390, height: 700 };
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    signatureData,
-    message,
-    sender.origin,
-    'sendMetagraphData',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: signatureData,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SendMetagraphData,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

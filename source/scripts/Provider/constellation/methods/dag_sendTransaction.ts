@@ -11,6 +11,8 @@ import {
 } from 'scripts/Background/messaging';
 import { getWalletInfo } from '../utils';
 import { toDag } from 'utils/number';
+import { ExternalRoute } from 'web/pages/External/types';
+import { validateHardwareMethod } from 'utils/hardware';
 
 export type StargazerTransactionRequest = {
   source: string;
@@ -24,7 +26,8 @@ export const dag_sendTransaction = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType, cypherockId, deviceId } =
+    getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
@@ -37,6 +40,8 @@ export const dag_sendTransaction = async (
   if (!assetAccount) {
     throw new Error('No active account for the request asset type');
   }
+
+  validateHardwareMethod(activeWallet.type, request.method);
 
   const [txData] = request.params as [StargazerTransactionRequest];
 
@@ -78,21 +83,27 @@ export const dag_sendTransaction = async (
   }
 
   const txObject = {
+    from: txSource,
     to: txDestination,
     value: toDag(txAmount),
     fee: toDag(txFee),
     chain: ProtocolProvider.CONSTELLATION,
+    cypherockId,
+    publicKey: assetAccount.publicKey,
+    deviceId,
   };
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    txObject,
-    message,
-    sender.origin,
-    'sendTransaction',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: txObject,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SignTransaction,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

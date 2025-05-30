@@ -5,14 +5,25 @@ import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
-import { getChainLabel, getWalletInfo } from '../utils';
+import { getChainLabel, getWalletInfo, WINDOW_TYPES } from '../utils';
+import { ExternalRoute } from 'web/pages/External/types';
+import { validateHardwareMethod } from 'utils/hardware';
+
+export interface ISignDataParams {
+  payload: string;
+  wallet: string;
+  chain: string;
+  cypherockId: string;
+  publicKey?: string;
+}
 
 export const dag_signData = async (
   request: StargazerRequest & { type: 'rpc' },
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { activeWallet, windowUrl, windowType, deviceId, bipIndex } = getWalletInfo();
+  const { activeWallet, windowUrl, windowType, windowSize, cypherockId } =
+    getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
@@ -26,10 +37,12 @@ export const dag_signData = async (
     throw new Error('No active account for the request asset type');
   }
 
-  const [address, dataEncoded] = request.params as [string, string];
+  validateHardwareMethod(activeWallet.type, request.method);
 
-  if (typeof dataEncoded !== 'string') {
-    throw new Error("Bad argument 'dataEncoded' -> must be a string");
+  const [address, payload] = request.params as [string, string];
+
+  if (typeof payload !== 'string') {
+    throw new Error("Bad argument 'payload' -> must be a string");
   }
 
   if (typeof address !== 'string') {
@@ -44,26 +57,30 @@ export const dag_signData = async (
     throw new Error('The active account is not the requested');
   }
 
-  const signatureData = {
-    origin,
-    dataEncoded,
-    walletId: activeWallet.id,
-    walletLabel: activeWallet.label,
-    deviceId,
-    bipIndex,
-    chainLabel: getChainLabel(),
+  const signDataParams: ISignDataParams = {
+    payload,
+    wallet: activeWallet.label,
+    chain: getChainLabel(),
+    cypherockId,
+    publicKey: assetAccount?.publicKey,
   };
-  const windowSize = { width: 372, height: 812 };
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    signatureData,
-    message,
-    sender.origin,
-    'signData',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  if (windowType === WINDOW_TYPES.popup) {
+    windowSize.height = 812;
+    windowSize.width = 380;
+  }
+
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: signDataParams,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SignData,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

@@ -1,0 +1,15 @@
+export enum ExternalRoute {
+  SelectAccounts = 'selectAccounts',
+  SignData = 'signData',
+  SignMessage = 'signMessage',
+  SignTypedMessage = 'signTypedMessage',
+  SignTransaction = 'signTransaction',
+  ApproveSpend = 'approveSpend',
+  ConfirmTransaction = 'confirmTransaction',
+  SendMetagraphData = 'sendMetagraphData',
+  WatchAsset = 'watchAsset',
+  AllowSpend = 'allowSpend',
+  TokenLock = 'tokenLock',
+  DelegatedStake = 'delegatedStake',
+  WithdrawDelegatedStake = 'withdrawDelegatedStake',
+}

@@ -12,6 +12,8 @@ import {
 } from 'scripts/Background/messaging';
 import { getWalletInfo, validateMetagraphAddress } from '../utils';
 import { toDag } from 'utils/number';
+import { ExternalRoute } from 'web/pages/External/types';
+import { validateHardwareMethod } from 'utils/hardware';
 
 export type StargazerMetagraphTransactionRequest = {
   metagraphAddress: string;
@@ -39,6 +41,8 @@ export const dag_sendMetagraphTransaction = async (
   if (!assetAccount) {
     throw new Error('No active account for the request asset type');
   }
+
+  validateHardwareMethod(activeWallet.type, request.method);
 
   const [txData] = request.params as [StargazerMetagraphTransactionRequest];
 
@@ -90,15 +94,17 @@ export const dag_sendMetagraphTransaction = async (
     chain: ProtocolProvider.CONSTELLATION,
   };
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    txObject,
-    message,
-    sender.origin,
-    'sendTransaction',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: txObject,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SignTransaction,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };
