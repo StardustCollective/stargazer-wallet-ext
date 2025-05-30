@@ -15,10 +15,11 @@
     "os": false
   },
   "scripts": {
-    "dev:chrome": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development TARGET_BROWSER=chrome webpack --watch",
+    "clean:chrome": "npx rimraf ./extension/chrome && npx rimraf ./extension/chrome.zip",
+    "dev:chrome": "yarn run clean:chrome && cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development TARGET_BROWSER=chrome webpack --watch",
     "dev:firefox": "cross-env NODE_ENV=development cross-env TARGET_BROWSER=firefox webpack --watch",
-    "build:chrome": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production TARGET_BROWSER=chrome webpack && yarn zip:chrome",
-    "build:chrome:prod": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production TARGET_BROWSER=chrome webpack && yarn upload-sourcemaps",
+    "build:chrome": "yarn run clean:chrome && cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production TARGET_BROWSER=chrome webpack && yarn zip:chrome",
+    "build:chrome:prod": "yarn run clean:chrome && cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production TARGET_BROWSER=chrome webpack && yarn upload-sourcemaps",
     "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack",
     "build": "yarn run build:chrome && yarn run build:firefox",
     "test": "jest",
@@ -90,6 +91,7 @@
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/webpack": "^4.41.17",
+    "@types/webpack-env": "^1.18.8",
     "archiver": "^7.0.1",
     "autoprefixer": "^9.8.0",
     "babel-jest": "^27.2.1",
