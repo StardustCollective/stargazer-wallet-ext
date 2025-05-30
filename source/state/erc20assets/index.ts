@@ -70,8 +70,8 @@ export const constellationInitialValues: IAssetInfoState[] = [
     type: AssetType.Constellation,
     logo: NDT_LOGO,
     network: 'main2',
-    l0endpoint: 'http://129.80.120.10:9100',
-    l1endpoint: 'http://129.80.120.10:9200',
+    l0endpoint: 'http://150.136.213.232:9100',
+    l1endpoint: 'http://150.136.213.232:9200',
   },
   {
     id: 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2',
@@ -93,6 +93,7 @@ export const constellationInitialValues: IAssetInfoState[] = [
     symbol: 'UP',
     decimals: 8,
     type: AssetType.Constellation,
+    priceId: 'the-upsider-ai',
     logo: UPSIDER_AI_LOGO,
     network: 'main2',
     l0endpoint: 'http://178.156.166.127:9100',

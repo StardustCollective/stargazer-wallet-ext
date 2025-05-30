@@ -192,6 +192,14 @@ const MigrationController = async () => {
     const v5_3_0 = require('../migration/v5_3_0');
     await v5_3_0.default(state);
   }
+  /**
+   * version < 5_3_5
+   * Description: Adds priceId for UP token and updates NDT endpoints
+   */
+  if (compareVersions(state.vault.version, '5.3.5') < 0) {
+    const v5_3_5 = require('../migration/v5_3_5');
+    await v5_3_5.default(state);
+  }
 };
 
 export default MigrationController;
