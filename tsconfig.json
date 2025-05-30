@@ -20,6 +20,7 @@
     "noImplicitReturns": false,
     "baseUrl": "source",
     "paths": {
+      "web/*": ["web/*"],
       "components/*": ["components/*"],
       "assets/*": ["assets/*"],
       "constants/*": ["constants/*"],

@@ -8,31 +8,34 @@ import {
   CypherockError,
   ErrorCode,
   IHardwareWalletAdapter,
+  ISignDagMsgParams,
 } from './types';
-import type { IGetPublicKeysResult } from '@cypherock/sdk-app-evm';
+import type {
+  EvmApp,
+  IGetPublicKeysResult,
+  ISignMsgResult,
+  ISignPersonalMsgParams,
+  ISignTxnParams,
+  ISignTxnResult,
+  ISignTypedParams,
+} from '@cypherock/sdk-app-evm';
 import type {
   IWalletItem,
   IGetWalletsResultResponse,
   ISelectWalletResultResponse,
+  ManagerApp,
 } from '@cypherock/sdk-app-manager';
 import * as dag4 from '@stardust-collective/dag4';
-
-/**
- * Cypherock device USB identifiers
- */
-export const CYPHEROCK_USB_IDS = {
-  vendorId: 0x3503,
-  productId: 0x0103,
-};
-
-export const CYPHEROCK_CHAIN_IDS = {
-  ETH_MAINNET: 1,
-};
-
-export const CYPHEROCK_DERIVATION_PATHS = {
-  ETH_MAINNET: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, 0],
-  DAG_MAINNET: [0x80000000 + 44, 0x80000000 + 1137, 0x80000000, 0, 0],
-};
+import {
+  CYPHEROCK_USB_IDS,
+  CYPHEROCK_CHAIN_IDS,
+  CYPHEROCK_DERIVATION_PATHS,
+} from './constants';
+import { ConstellationApp } from '@cypherock/sdk-app-constellation';
+import type {
+  ISignMsgResult as ISignDagMsgResult,
+  ISignTxnParams as ISignDagTxnParams,
+} from '@cypherock/sdk-app-constellation';
 
 /**
  * Wrapper service for Cypherock SDK with lazy loading
@@ -118,9 +121,9 @@ export class CypherockService implements IHardwareWalletAdapter {
    * @throws {CypherockError} If WebUSB is not supported or permission request fails
    */
   public async requestDevice(): Promise<USBDevice> {
-    try {
-      this.checkWebUSBSupport();
+    this.checkWebUSBSupport();
 
+    try {
       const device = await navigator.usb.requestDevice({
         filters: [{ vendorId: CYPHEROCK_USB_IDS.vendorId }],
       });
@@ -140,9 +143,9 @@ export class CypherockService implements IHardwareWalletAdapter {
    * @throws {CypherockError} If WebUSB is not supported or permission request fails
    */
   public async listDevices(): Promise<USBDevice[]> {
-    try {
-      this.checkWebUSBSupport();
+    this.checkWebUSBSupport();
 
+    try {
       // Get all pairedUSB devices
       const devices = await navigator.usb.getDevices();
 
@@ -166,17 +169,19 @@ export class CypherockService implements IHardwareWalletAdapter {
 
       this.device = await this.requestDevice();
 
-      // Create connection
-      this.deviceConnection = await this.deviceConnection.connect(this.device);
+      if (!!this?.deviceConnection?.connect) {
+        // Create connection
+        this.deviceConnection = await this.deviceConnection.connect(this.device);
 
-      // Create manager app to interact with device
-      this.managerApp = await this.managerApp.create(this.deviceConnection);
+        // Create manager app to interact with device
+        this.managerApp = await this.managerApp.create(this.deviceConnection);
 
-      // Create EVM app for Ethereum chain operations
-      this.evmApp = await this.evmApp.create(this.deviceConnection);
+        // Create EVM app for Ethereum chain operations
+        this.evmApp = await this.evmApp.create(this.deviceConnection);
 
-      // Create Constellation app for DAG chain operations
-      this.constellationApp = await this.constellationApp.create(this.deviceConnection);
+        // Create Constellation app for DAG chain operations
+        this.constellationApp = await this.constellationApp.create(this.deviceConnection);
+      }
 
       this.status = ConnectionStatus.CONNECTED;
     } catch (error: unknown) {
@@ -282,6 +287,120 @@ export class CypherockService implements IHardwareWalletAdapter {
   }
 
   /**
+   * Signs a message with the Constellation App
+   * @param props - The parameters for the sign message operation
+   * @returns The result of the sign message operation
+   * @throws {CypherockError} If not connected or sign message fails
+   */
+  public async signDagMessage(props: ISignDagMsgParams): Promise<ISignDagMsgResult> {
+    try {
+      this.ensureConnected();
+
+      return await (this.constellationApp as ConstellationApp).signMsg(props);
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to sign DAG message');
+    }
+  }
+
+  /**
+   * Signs a data message with the Constellation App
+   * @param props - The parameters for the sign data operation
+   * @returns The result of the sign data operation
+   * @throws {CypherockError} If not connected or sign data message fails
+   */
+  public async signDagData(props: ISignDagMsgParams): Promise<ISignDagMsgResult> {
+    try {
+      this.ensureConnected();
+
+      return await (this.constellationApp as ConstellationApp).signData(props);
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to sign DAG data');
+    }
+  }
+
+  /**
+   * Signs a transaction with the Constellation App
+   * @param props - The parameters for the sign transaction operation
+   * @returns The result of the sign transaction operation
+   * @throws {CypherockError} If not connected or sign transaction fails
+   */
+  public async signDagTransaction(props: ISignDagTxnParams): Promise<ISignDagMsgResult> {
+    try {
+      this.ensureConnected();
+
+      return await (this.constellationApp as ConstellationApp).signTxn(props);
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to sign the DAG transaction');
+    }
+  }
+
+  /**
+   * Signs a transaction with the EVM App
+   * @param props - The parameters for the sign transaction operation
+   * @returns The result of the sign transaction operation
+   * @throws {CypherockError} If not connected or sign transaction fails
+   */
+  public async signEVMTransaction(props: ISignTxnParams): Promise<ISignTxnResult> {
+    try {
+      this.ensureConnected();
+
+      return await (this.evmApp as EvmApp).signTxn(props);
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to sign the EVM transaction');
+    }
+  }
+
+  /**
+   * Signs a personal message with the EVM App
+   * @param props - The parameters for the sign personal message operation
+   * @returns The result of the sign personal message operation
+   * @throws {CypherockError} If not connected or sign personal message fails
+   */
+  public async signPersonalMessage(
+    props: ISignPersonalMsgParams
+  ): Promise<ISignMsgResult> {
+    try {
+      this.ensureConnected();
+
+      return await (this.evmApp as EvmApp).signPersonalMsg(props);
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to sign personal message');
+    }
+  }
+
+  /**
+   * Signs a message with the EVM App
+   * @param props - The parameters for the sign message operation
+   * @returns The result of the sign message operation
+   * @throws {CypherockError} If not connected or sign message fails
+   */
+  public async signEthMessage(props: ISignPersonalMsgParams): Promise<ISignMsgResult> {
+    try {
+      this.ensureConnected();
+
+      return await (this.evmApp as EvmApp).signEthMsg(props);
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to sign ETH message');
+    }
+  }
+
+  /**
+   * Signs a typed message with the EVM App
+   * @param props - The parameters for the sign typed message operation
+   * @returns The result of the sign typed message operation
+   * @throws {CypherockError} If not connected or sign typed message fails
+   */
+  public async signTypedMessage(props: ISignTypedParams): Promise<ISignMsgResult> {
+    try {
+      this.ensureConnected();
+
+      return await (this.evmApp as EvmApp).signTypedMsg(props);
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to sign typed message');
+    }
+  }
+
+  /**
    * Disconnects from the current device
    * @returns {Promise<void>}
    */
@@ -333,7 +452,22 @@ export class CypherockService implements IHardwareWalletAdapter {
         await this.constellationApp.abort();
       }
     } catch (err: unknown) {
-      throw this.handleError(err, 'Failed to abort EVM');
+      throw this.handleError(err, 'Failed to abort Constellation');
+    }
+  }
+
+  /**
+   * Aborts an operation on the Manager app
+   * @returns {Promise<void>}
+   * @throws {CypherockError} If abort fails
+   */
+  public async abortOperation(): Promise<void> {
+    try {
+      if (this.managerApp) {
+        await (this.managerApp as ManagerApp).abort();
+      }
+    } catch (err: unknown) {
+      throw this.handleError(err, 'Failed to abort Manager operation');
     }
   }
 

@@ -2,6 +2,7 @@
  * Types for the Cypherock hardware wallet integration
  */
 
+import type { ISignMsgParams } from '@cypherock/sdk-app-constellation';
 import type { IWalletItem } from '@cypherock/sdk-app-manager';
 
 /**
@@ -23,6 +24,8 @@ declare global {
     };
   }
 }
+
+export type ISignDagMsgParams = Omit<ISignMsgParams, 'messageType'>;
 
 /**
  * Status of the Cypherock device connection

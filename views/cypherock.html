@@ -19,15 +19,14 @@
         background-color: #e5e5e5;
       }
 
-      body {
-        -ms-overflow-style: none;
-        /* IE and Edge */
-        scrollbar-width: none;
-        /* Firefox */
+      /* This will hide the scrollbar for any element with overflow set to scroll or auto */
+      * {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
       }
 
-      body::-webkit-scrollbar {
-        display: none;
+      *::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
       }
     </style>
   </head>

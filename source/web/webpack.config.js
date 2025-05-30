@@ -73,6 +73,7 @@ const commonConfig = {
       hooks: path.resolve(sharedPath, 'hooks'),
       utils: path.resolve(sharedPath, 'utils'),
       selectors: path.resolve(sharedPath, 'selectors'),
+      web: path.resolve(sharedPath, 'web'),
       'react-native$': 'react-native-web',
     },
   },
