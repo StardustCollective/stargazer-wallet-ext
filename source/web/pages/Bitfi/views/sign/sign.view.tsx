@@ -1,64 +1,81 @@
-/////////////////////////
-// Module Imports
-/////////////////////////
-
 import React from 'react';
-import { useFiat } from 'hooks/usePrice';
-
-/////////////////////////
-// Component Import
-/////////////////////////
-
-import Button from 'components/Button';
-import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
-
-/////////////////////////
-// Styles Imports
-/////////////////////////
-
-import styles from './styles.module.scss';
 import 'assets/styles/global.scss';
-import { convertBigNumber } from 'utils/number';
-
-/////////////////////////
-// Interface
-/////////////////////////
+import SignTransactionView, {
+  ISignTransactionProps,
+} from 'scenes/external/views/sign-transaction';
+import { useSelector } from 'react-redux';
+import assetsSelectors from 'selectors/assetsSelectors';
+import { getChainLabel } from 'scripts/Provider/constellation';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+import styles from './styles.module.scss';
 
 interface ISignViewProps {
-  amount: string;
-  fee: string;
   code: string;
-  deviceId: string;
-  fromAddress: string;
-  toAddress: string;
   waiting: boolean;
   waitingMessage: string;
   transactionSigned: boolean;
-  onSignPress: () => {};
+  onSignPress: () => Promise<void>;
 }
 
-/////////////////////////
-// Component
-/////////////////////////
-
 const SignView = ({
-  amount,
-  fee,
-  deviceId,
-  fromAddress,
-  toAddress,
   waiting,
   code,
   waitingMessage,
   transactionSigned,
   onSignPress,
 }: ISignViewProps) => {
-  const getFiatAmount = useFiat();
+  const dagAsset = useSelector(assetsSelectors.getAssetBySymbol('DAG'));
 
-  const amountBN = convertBigNumber(amount);
-  const feeBN = convertBigNumber(fee);
+  const network = getChainLabel();
+
+  const {
+    message: messageRequest,
+    data,
+    origin,
+  } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+    from: string;
+    to: string;
+    value: string;
+    fee: string;
+    deviceId: string;
+    publicKey: string;
+  }>(location.href);
+
+  const { from, to, value, fee, deviceId } = data;
+
+  const fromDapp = origin !== 'stargazer-wallet';
+
+  const onReject = async (): Promise<void> => {
+    StargazerExternalPopups.addResolvedParam(location.href);
+    await StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      messageRequest
+    );
+    window.close();
+  };
+
+  const props: ISignTransactionProps = {
+    title: 'Bitfi - Sign Transaction',
+    network,
+    asset: dagAsset,
+    amount: value,
+    fee,
+    from,
+    to,
+    deviceId,
+    footer:
+      'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
+    fromDapp,
+    containerStyles: styles.container,
+    onSign: onSignPress,
+    onReject,
+  };
 
   return transactionSigned ? (
     <div className={styles.layout}>
@@ -73,73 +90,22 @@ const SignView = ({
       </section>
     </div>
   ) : (
-    <>
-      <div className={styles.wrapper}>
-        <section className={styles.subheading}>
-          Bitfi - Sign Transaction <br />
-          Device ID: {deviceId.toUpperCase()}
-        </section>
-        <section className={styles.txAmount}>
-          <div className={styles.iconWrapper}>
-            <UpArrowIcon />
-          </div>
-          {amountBN} DAG
-          <small>
-            (≈
-            {getFiatAmount(Number(amount || 0), 8, 'constellation-labs')})
-          </small>
-        </section>
-        <section className={styles.transaction}>
-          <div className={styles.row}>
-            From
-            <span>{fromAddress}</span>
-          </div>
-          <div className={styles.row}>
-            To
-            <span>{toAddress}</span>
-          </div>
-          <div className={styles.row}>
-            Transaction Fee
-            <span>
-              {feeBN} DAG (≈ {getFiatAmount(Number(fee) || 0, 8, 'constellation-labs')})
-            </span>
-          </div>
-        </section>
-        <section className={styles.confirm}>
-          <div className={styles.row}>
-            Max Total
-            <span>
-              {getFiatAmount(
-                Number(amount || 0) + Number(fee || 0),
-                8,
-                'constellation-labs'
-              )}
-            </span>
-          </div>
-        </section>
-        <section className={styles.instruction}>
-          <span>Please connect your Bitfi device to WiFi to sign the transaction.</span>
-        </section>
-        <div className={styles.actions}>
-          <Button type="submit" variant={styles.button} onClick={onSignPress}>
-            Sign
-          </Button>
-        </div>
-        {waiting && (
-          <div className={styles.progressWrapper}>
-            <div className={styles.progress}>
-              <div>
-                <CircularProgress />
-              </div>
-              <div className={styles.message}>
-                <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
-                <span>{waitingMessage}</span>
-              </div>
+    <div className={styles.wrapper}>
+      <SignTransactionView {...props} />
+      {waiting && (
+        <div className={styles.progressWrapper}>
+          <div className={styles.progress}>
+            <div>
+              <CircularProgress />
+            </div>
+            <div className={styles.message}>
+              <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
+              <span>{waitingMessage}</span>
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 };
 

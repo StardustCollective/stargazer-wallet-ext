@@ -1,60 +1,67 @@
-/////////////////////////
-// Module Imports
-/////////////////////////
-
 import React from 'react';
-
-/////////////////////////
-// Component Import
-/////////////////////////
-
-import Button from 'components/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
-
-/////////////////////////
-// Styles Imports
-/////////////////////////
-
 import styles from './styles.module.scss';
 import 'assets/styles/global.scss';
-
-/////////////////////////
-// Interface
-/////////////////////////
+import { StargazerSignatureRequest } from 'scripts/Provider/constellation';
+import {
+  StargazerExternalPopups,
+  StargazerWSMessageBroker,
+} from 'scripts/Background/messaging';
+import { decodeFromBase64 } from 'utils/encoding';
+import SignMessageView, { ISignMessageProps } from 'scenes/external/views/sign-message';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 
 interface IMessageSignViewProps {
   waiting: boolean;
   waitingMessage: string;
   messageSigned: boolean;
-  walletLabel: string;
-  deviceId: string;
   code: string;
-  message: {
-    content: string;
-    metadata: {
-      projectId: string;
-      nodes: number;
-      fee: number;
-    };
-  };
-  onSignMessagePress: () => void;
+  onSignMessagePress: () => Promise<void>;
 }
 
-/////////////////////////
-// Component
-/////////////////////////
-
-const SignMessageView = ({
+const MessageSigningView = ({
   waiting,
   waitingMessage,
   messageSigned,
-  walletLabel,
   code,
-  message,
-  deviceId,
   onSignMessagePress,
 }: IMessageSignViewProps) => {
+  const { data, message: messageRequest } =
+    StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      deviceId: string;
+      payload: string;
+      wallet: string;
+      chain: string;
+    }>(location.href);
+
+  const onReject = () => {
+    StargazerExternalPopups.addResolvedParam(location.href);
+    StargazerWSMessageBroker.sendResponseError(
+      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
+      messageRequest
+    );
+    window.close();
+  };
+
+  const { deviceId, payload, wallet, chain } = data;
+
+  const payloadDecoded = JSON.parse(
+    decodeFromBase64(payload)
+  ) as StargazerSignatureRequest;
+
+  const props: ISignMessageProps = {
+    title: 'Bitfi - Signature Request',
+    deviceId,
+    account: wallet,
+    network: chain,
+    message: payloadDecoded,
+    footer:
+      'Please connect your Bitfi device to WiFI to sign the message. Only sign messages on sites you trust.',
+    onSign: onSignMessagePress,
+    onReject: onReject,
+  };
+
   return messageSigned ? (
     <div className={styles.layout}>
       <section className={styles.heading}>
@@ -68,64 +75,19 @@ const SignMessageView = ({
       </section>
     </div>
   ) : (
-    <>
-      <div className={styles.wrapper}>
-        <section className={styles.subheading}>Bitfi - Signature Request</section>
-        <section className={styles.account}>
-          <div className={styles.row}>
-            Account:
-            <span>{walletLabel}</span>
+    <div className={styles.wrapper}>
+      <SignMessageView {...props} />
+      {waiting && (
+        <div className={styles.progressWrapper}>
+          <div className={styles.progress}>
+            <CircularProgress />
+            <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
+            <span>{waitingMessage}</span>
           </div>
-        </section>
-        <section className={styles.account}>
-          <div className={styles.row}>
-            Device ID:
-            <span>{deviceId}</span>
-          </div>
-        </section>
-        <section className={styles.message}>
-          <div className={styles.messageBox}>
-            <div className={styles.messageContent}>
-              <span className={styles.key}>Message:</span>
-              <br />
-              <p>{message.content}</p>
-            </div>
-            <div className={styles.messageContent}>
-              <span className={styles.key}>Meta Data:</span>
-              <br />
-              <p>
-                projectId = {message.metadata.projectId}
-                <br />
-                nodes = {message.metadata.nodes}
-                <br />
-                fee = {message.metadata.fee}
-              </p>
-            </div>
-          </div>
-        </section>
-        <section className={styles.instruction}>
-          <span>
-            Please connect your Bitfi device to WiFI to sign the message. Only sign
-            messages on sites you trust.
-          </span>
-        </section>
-        <div className={styles.actions}>
-          <Button type="submit" variant={styles.button} onClick={onSignMessagePress}>
-            Sign
-          </Button>
         </div>
-        {waiting && (
-          <div className={styles.progressWrapper}>
-            <div className={styles.progress}>
-              <CircularProgress />
-              <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
-              <span>{waitingMessage}</span>
-            </div>
-          </div>
-        )}
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 
-export default SignMessageView;
+export default MessageSigningView;
