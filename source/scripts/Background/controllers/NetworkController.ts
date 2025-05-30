@@ -24,7 +24,7 @@ class NetworkController {
   #avalancheNetwork: EVMChainController;
   #baseNetwork: EVMChainController;
 
-  constructor(privateKey: string) {
+  constructor(privateKey?: string) {
     const { activeNetwork } = store.getState().vault;
     this.#ethereumNetwork = this.createEVMController(activeNetwork.Ethereum, privateKey);
     this.#polygonNetwork = this.createEVMController(activeNetwork.Polygon, privateKey);
@@ -36,7 +36,7 @@ class NetworkController {
     this.#baseNetwork = this.createEVMController(activeNetwork.Base, privateKey);
   }
 
-  private createEVMController(chain: AllChainsIds, privateKey: string) {
+  private createEVMController(chain: AllChainsIds, privateKey?: string) {
     return new EVMChainController({
       chain,
       privateKey,
@@ -168,14 +168,20 @@ class NetworkController {
     return provider.getAddress();
   }
 
-  public getWallet(): Wallet {
+  public getWallet(): Wallet | null {
     let provider;
     try {
       provider = this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: getWallet - provider not found.');
+      return null;
     }
-    return provider.getWallet();
+    try {
+      return provider.getWallet();
+    } catch (error) {
+      console.warn('NetworkController.getWallet: Signer not available.', error);
+      throw error;
+    }
   }
 
   validateAddress(address: string): boolean {
@@ -327,6 +333,7 @@ class NetworkController {
       provider = this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: transfer - provider not found.');
+      throw err;
     }
     return provider.transfer(txOptions);
   }

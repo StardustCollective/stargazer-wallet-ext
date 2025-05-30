@@ -6,6 +6,7 @@ import {
   addLedgerWallet,
   updateWallets,
   addBitfiWallet,
+  addCypherockWallet,
   addCustomNetwork,
   changeCurrentEVMNetwork,
   getHasEncryptedVault,
@@ -17,15 +18,12 @@ import IVaultState, {
 } from 'state/vault/types';
 import { DAG_NETWORK } from 'constants/index';
 import {
-  KeyringAssetType,
   KeyringManager,
   KeyringNetwork,
   KeyringWalletState,
   KeyringVaultState,
-  KeyringWalletType,
 } from '@stardust-collective/dag4-keyring';
 import { getEncryptor } from 'utils/keyringManagerUtils';
-import { AccountItem } from 'scripts/types';
 import filter from 'lodash/filter';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
@@ -39,12 +37,21 @@ import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
+import {
+  BITFI_WALLET_LABEL,
+  BITFI_WALLET_PREFIX,
+  CYPHEROCK_WALLET_PREFIX,
+  CYPHEROCK_WALLET_LABEL,
+  HardwareWallet,
+  isBitfi,
+  isCypherock,
+  isHardware,
+  isLedger,
+  LEDGER_WALLET_LABEL,
+  LEDGER_WALLET_PREFIX,
+} from 'utils/hardware';
 
 // Constants
-const LEDGER_WALLET_PREFIX = 'L';
-const BITFI_WALLET_PREFIX = 'B';
-const LEDGER_WALLET_LABEL = 'Ledger';
-const BITFI_WALLET_LABEL = 'Bitfi';
 const ACCOUNT_ITEMS_FIRST_INDEX = 0;
 
 class WalletController {
@@ -173,7 +180,12 @@ class WalletController {
     const state = store.getState();
     const { vault } = state;
     const { wallets } = vault;
-    const allWallets = [...wallets.local, ...wallets.ledger, ...wallets.bitfi];
+    const allWallets = [
+      ...wallets.local,
+      ...wallets.ledger,
+      ...wallets.bitfi,
+      ...wallets.cypherock,
+    ];
 
     for (let i = 0; i < allWallets.length; i++) {
       const { accounts } = allWallets[i];
@@ -186,7 +198,7 @@ class WalletController {
     return false;
   }
 
-  private getNextHardwareWaletAccountId = (wallets: any, prefix: string): number => {
+  private getNextHardwareWalletId = (wallets: any, prefix: string): number => {
     // If no wallets exist return 1 as the first ID.
     if (wallets.length === 0) {
       return 1;
@@ -209,67 +221,77 @@ class WalletController {
     );
   };
 
-  async importHardwareWalletAccounts(
-    accountItems: AccountItem[],
-    deviceId?: string
-  ): Promise<void> {
-    for (let i = 0; i < accountItems.length; i++) {
+  async importHardwareWalletAccounts(hardwareWallets: HardwareWallet[]): Promise<void> {
+    for (let i = 0; i < hardwareWallets.length; i++) {
       const state = store.getState();
       const { vault } = state;
       const { wallets } = vault;
-      const accountItem = accountItems[i];
-      const isDuplicate = this.checkForDuplicateWallet(accountItem.address);
-      // Skip the account if it already exist in the vault.wallets redux store.
-      if (isDuplicate) {
+      const hardwareWallet = hardwareWallets[i];
+
+      let wallet;
+      let prefix;
+      let label;
+      let defaultLabel;
+      let addWalletAction;
+      let supportedAssets;
+      let accounts;
+      let isDuplicate = false;
+
+      if (isLedger(hardwareWallet.type)) {
+        wallet = wallets.ledger;
+        prefix = LEDGER_WALLET_PREFIX;
+        defaultLabel = LEDGER_WALLET_LABEL;
+        addWalletAction = addLedgerWallet;
+        supportedAssets = hardwareWallet.supportedAssets;
+        accounts = hardwareWallet.accounts;
+        isDuplicate = this.checkForDuplicateWallet(accounts[0].address);
+      } else if (isBitfi(hardwareWallet.type)) {
+        wallet = wallets.bitfi;
+        prefix = BITFI_WALLET_PREFIX;
+        defaultLabel = BITFI_WALLET_LABEL;
+        addWalletAction = addBitfiWallet;
+        supportedAssets = hardwareWallet.supportedAssets;
+        accounts = hardwareWallet.accounts;
+        isDuplicate = this.checkForDuplicateWallet(accounts[0].address);
+      } else if (isCypherock(hardwareWallet.type)) {
+        wallet = wallets.cypherock;
+        prefix = CYPHEROCK_WALLET_PREFIX;
+        label = hardwareWallet.label;
+        defaultLabel = CYPHEROCK_WALLET_LABEL;
+        addWalletAction = addCypherockWallet;
+        supportedAssets = hardwareWallet.supportedAssets;
+        accounts = hardwareWallet.accounts;
+        isDuplicate =
+          this.checkForDuplicateWallet(accounts[0].address) ||
+          this.checkForDuplicateWallet(accounts[1].address);
+      } else {
+        console.warn('Unknown hardware wallet type:', hardwareWallet.type);
         continue;
       }
 
-      const wallet =
-        accountItem.type === KeyringWalletType.LedgerAccountWallet
-          ? wallets.ledger
-          : wallets.bitfi;
-      const prefix =
-        accountItem.type === KeyringWalletType.LedgerAccountWallet
-          ? LEDGER_WALLET_PREFIX
-          : BITFI_WALLET_PREFIX;
-      const label =
-        accountItem.type === KeyringWalletType.LedgerAccountWallet
-          ? LEDGER_WALLET_LABEL
-          : BITFI_WALLET_LABEL;
-      const addWallet =
-        accountItem.type === KeyringWalletType.LedgerAccountWallet
-          ? addLedgerWallet
-          : addBitfiWallet;
-      // Determine the next ID for either a ledger or bitfi wallet.
-      const id: number = this.getNextHardwareWaletAccountId(wallet, prefix);
+      if (isDuplicate) {
+        throw new Error('Wallet address already exists');
+      }
 
-      // Determine the name of the wallet for Ledger we need to create a recursive
-      // function that will name the wallets.
+      // Determine the next ID for the wallet type.
+      const id: number = this.getNextHardwareWalletId(wallet, prefix);
+
       const newWallet = {
         id: `${prefix}${id}`,
-        bipIndex: accountItem.bipIndex,
-        // The account id is offset by one so the UI displays will
-        // the first account as 1 and not 0.
-        label: `${label} ${id}`,
-        type: accountItem.type,
-        accounts: [
-          {
-            address: accountItem.address,
-            network: KeyringNetwork.Constellation,
-            publicKey: accountItem!.publicKey,
-            deviceId, // Used for bitfi devices.
-          },
-        ],
-        supportedAssets: [KeyringAssetType.DAG],
+        bipIndex: hardwareWallet.bipIndex,
+        cypherockId: hardwareWallet.cypherockId,
+        label: label || `${defaultLabel} ${id}`,
+        type: hardwareWallet.type,
+        accounts,
+        supportedAssets,
       };
 
-      await store.dispatch(addWallet(newWallet));
+      if (addWalletAction) {
+        await store.dispatch(addWalletAction(newWallet));
+      }
 
-      // Switches wallets immediately after adding the first account item
-      // to prevent a rendering delay in the wallet extension.
       if (i === ACCOUNT_ITEMS_FIRST_INDEX) {
-        // Switches wallets to the first hardware wallet account item in the accountItem array.
-        this.switchWallet(`${prefix}${accountItems[0].id}`);
+        this.switchWallet(newWallet.id);
       }
     }
   }
@@ -277,34 +299,41 @@ class WalletController {
   async deleteWallet(wallet: KeyringWalletState): Promise<void> {
     const { vault } = store.getState();
     const { wallets } = vault;
-    const { local, bitfi, ledger } = wallets;
+    const { local, bitfi, ledger, cypherock } = wallets;
 
-    let newWalletState: IVaultWalletsStoreState = { local: [], ledger: [], bitfi: [] };
+    let newWalletState: IVaultWalletsStoreState = {
+      local: [],
+      ledger: [],
+      bitfi: [],
+      cypherock: [],
+    };
     let newLocalState = [...local];
     let newLedgerState = [...ledger];
     let newBitfiState = [...bitfi];
+    let newCypherockState = [...cypherock];
 
-    if (
-      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-      wallet.type !== KeyringWalletType.BitfiAccountWallet
-    ) {
-      newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
-    } else if (wallet.type === KeyringWalletType.LedgerAccountWallet) {
+    if (isLedger(wallet.type)) {
       newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
-    } else if (wallet.type === KeyringWalletType.BitfiAccountWallet) {
+    } else if (isBitfi(wallet.type)) {
       newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
+    } else if (isCypherock(wallet.type)) {
+      newCypherockState = filter(newCypherockState, (w) => w.id !== wallet.id);
+    } else {
+      newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
     }
 
     newWalletState = {
       local: [...newLocalState],
       ledger: [...newLedgerState],
       bitfi: [...newBitfiState],
+      cypherock: [...newCypherockState],
     };
 
     const newAllWallets = [
       ...newWalletState.local,
       ...newWalletState.ledger,
       ...newWalletState.bitfi,
+      ...newWalletState.cypherock,
     ];
 
     if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
@@ -315,10 +344,7 @@ class WalletController {
 
     store.dispatch(updateWallets({ wallets: newWalletState }));
 
-    if (
-      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-      wallet.type !== KeyringWalletType.BitfiAccountWallet
-    ) {
+    if (!isHardware(wallet.type)) {
       await this.keyringManager.removeWalletById(wallet.id);
     }
   }

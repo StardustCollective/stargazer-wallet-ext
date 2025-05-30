@@ -102,7 +102,7 @@ export interface IEVMChainController extends ChainsController {
       feeOptionKey?: FeeOptionKey;
       gasPrice?: BaseAmount;
       gasLimit?: BigNumber;
-      nonce: string;
+      nonce?: number;
     }
   ) => Promise<TransactionResponse>;
   getWallet: (walletIndex: number) => Wallet;
