@@ -8,7 +8,13 @@ import { WatchAssetParameters } from '../methods/wallet_watchAsset';
 import { toDag } from 'utils/number';
 import { getAccountController } from 'utils/controllersUtils';
 import * as ethers from 'ethers';
-import { isBitfi, isLedger, isHardware, getHardwareWalletPage } from 'utils/hardware';
+import {
+  isBitfi,
+  isLedger,
+  isHardware,
+  getHardwareWalletPage,
+  isCypherock,
+} from 'utils/hardware';
 
 export const EXTERNAL_URL = '/external.html';
 export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
@@ -17,7 +23,7 @@ export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
 };
 export const WINDOW_SIZE = {
   small: { width: 372, height: 600 },
-  large: { width: 600, height: 1000 },
+  large: { width: 1000, height: 1000 },
 };
 
 export type StargazerSignatureRequest = {
@@ -30,6 +36,7 @@ export const getWalletInfo = () => {
   let windowUrl = EXTERNAL_URL;
   let deviceId = '';
   let bipIndex;
+  let cypherockId;
   const allWallets = [
     ...vault.wallets.local,
     ...vault.wallets.ledger,
@@ -47,6 +54,8 @@ export const getWalletInfo = () => {
     bipIndex = activeWallet?.bipIndex;
   } else if (isBitfi(activeWallet?.type)) {
     deviceId = activeWallet?.accounts[0].deviceId;
+  } else if (isCypherock(activeWallet?.type)) {
+    cypherockId = activeWallet?.cypherockId;
   }
 
   const isHardwareWallet = isHardware(activeWallet?.type);
@@ -58,7 +67,15 @@ export const getWalletInfo = () => {
   const windowType = isHardwareWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
   const windowSize = isHardwareWallet ? WINDOW_SIZE.large : WINDOW_SIZE.small;
 
-  return { activeWallet, windowUrl, windowType, windowSize, deviceId, bipIndex };
+  return {
+    activeWallet,
+    windowUrl,
+    windowType,
+    windowSize,
+    deviceId,
+    bipIndex,
+    cypherockId,
+  };
 };
 
 export const getNetwork = (): string => {

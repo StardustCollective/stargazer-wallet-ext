@@ -15,6 +15,9 @@ import { getChainId, getNetworkId, getNetworkInfo, getWalletInfo } from '../util
 import { BigNumber } from 'ethers';
 import StargazerRpcProvider from '../StargazerRpcProvider';
 import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
+import { ExternalRoute } from 'web/pages/External/types';
+import { EthSendTransaction } from '../utils/types';
+import { validateHardwareMethod } from 'utils/hardware';
 
 const calculateTransferAmount = async (
   amount: BigNumber,
@@ -35,11 +38,11 @@ export const eth_sendTransaction = async (
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const [trxData] = request.params;
+  const [trxData] = request.params as [EthSendTransaction];
 
   let decodedContractCall: ContractInputData | null = null;
 
-  let route = 'sendTransaction';
+  let route = ExternalRoute.SignTransaction;
   let isTransfer = false;
 
   // chainId should match the current active network if chainId property is provided.
@@ -79,7 +82,7 @@ export const eth_sendTransaction = async (
   )?.label;
 
   if (decodedContractCall?.method === 'approve') {
-    route = 'approveSpend';
+    route = ExternalRoute.ApproveSpend;
   } else if (decodedContractCall?.method === 'transfer') {
     isTransfer = true;
 
@@ -97,17 +100,21 @@ export const eth_sendTransaction = async (
 
   const data = { ...trxData, isTransfer, chain: getNetworkId(), chainLabel };
 
-  const { windowUrl, windowSize, windowType } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    data,
-    message,
-    sender.origin,
-    route,
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  validateHardwareMethod(activeWallet.type, request.method);
+
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: data,
+      message,
+      origin: sender.origin,
+      route,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

@@ -4,11 +4,7 @@ import {
   StargazerRequest,
   StargazerRequestMessage,
 } from 'scripts/common';
-import {
-  KeyringNetwork,
-  KeyringWalletAccountState,
-  KeyringWalletType,
-} from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
 import { ALL_EVM_CHAINS } from 'constants/index';
 import {
@@ -21,13 +17,17 @@ import {
   getWalletInfo,
   normalizeSignatureRequest,
 } from '../utils';
+import { ISignMessageParams } from 'scripts/Provider/constellation';
+import { ExternalRoute } from 'web/pages/External/types';
+import { validateHardwareMethod } from 'utils/hardware';
 
 export const personal_sign = async (
   request: StargazerRequest & { type: 'rpc' },
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType, cypherockId } =
+    getWalletInfo();
 
   if (!activeWallet) {
     throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
@@ -44,11 +44,13 @@ export const personal_sign = async (
     );
   }
 
-  // Extension 3.6.0+
-  let [data, address] = request.params as [string, string];
+  validateHardwareMethod(activeWallet.type, request.method);
 
-  if (typeof data !== 'string') {
-    throw new EIPRpcError("Bad argument 'data'", EIPErrorCodes.Unauthorized);
+  // Extension 3.6.0+
+  let [payload, address] = request.params as [string, string];
+
+  if (typeof payload !== 'string') {
+    throw new EIPRpcError("Bad argument 'payload'", EIPErrorCodes.Unauthorized);
   }
 
   if (typeof address !== 'string') {
@@ -57,8 +59,8 @@ export const personal_sign = async (
 
   /* -- Backwards Compatibility */
   // Extension pre 3.6.0
-  if (data.length === 42 && address.length !== 42) {
-    [data, address] = [address, data];
+  if (payload.length === 42 && address.length !== 42) {
+    [payload, address] = [address, payload];
   }
   /* Backwards Compatibility -- */
 
@@ -73,42 +75,31 @@ export const personal_sign = async (
     );
   }
 
-  const signatureRequestEncoded = normalizeSignatureRequest(data);
+  const payloadEncoded = normalizeSignatureRequest(payload);
 
   const chainLabel = Object.values(ALL_EVM_CHAINS).find(
     (chain: any) => chain.chainId === getChainId()
   )?.label;
 
-  const signatureData = {
-    origin,
+  const signatureData: ISignMessageParams = {
     asset: getNetworkToken(),
-    signatureRequestEncoded,
-    walletId: activeWallet.id,
-    walletLabel: activeWallet.label,
-    publicKey: '',
-    chainLabel,
+    payload: payloadEncoded,
+    wallet: activeWallet.label,
+    chain: chainLabel,
+    cypherockId,
   };
 
-  // If the type of account is Ledger send back the public key so the
-  // signature can be verified by the requester.
-  const accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
-  if (
-    activeWallet?.type === KeyringWalletType.LedgerAccountWallet &&
-    accounts &&
-    accounts[0]
-  ) {
-    signatureData.publicKey = accounts[0].publicKey;
-  }
-
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    signatureData,
-    message,
-    sender.origin,
-    'signMessage',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: signatureData,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SignMessage,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

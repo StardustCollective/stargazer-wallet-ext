@@ -1,29 +1,27 @@
 import {
   EIPErrorCodes,
   EIPRpcError,
-  StargazerChain,
   StargazerRequest,
   StargazerRequestMessage,
 } from 'scripts/common';
-import {
-  KeyringNetwork,
-  KeyringWalletAccountState,
-  KeyringWalletType,
-} from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
-import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
+import { ISignTypedDataParams } from 'scenes/external/TypedSignatureRequest';
 import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
-import { getChainId, getNetworkId, getWalletInfo } from '../utils';
+import { getChainId, getWalletInfo } from '../utils';
+import { ExternalRoute } from 'web/pages/External/types';
+import { validateHardwareMethod } from 'utils/hardware';
 
 export const eth_signTypedData = async (
   request: StargazerRequest & { type: 'rpc' },
   message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender
 ) => {
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType, cypherockId } =
+    getWalletInfo();
 
   if (!activeWallet) {
     throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
@@ -39,6 +37,8 @@ export const eth_signTypedData = async (
       EIPErrorCodes.Unauthorized
     );
   }
+
+  validateHardwareMethod(activeWallet.type, request.method);
 
   // Extension 3.6.0+
   // eslint-disable-next-line prefer-const
@@ -74,16 +74,11 @@ export const eth_signTypedData = async (
     );
   }
 
-  if ('EIP712Domain' in data.types) {
-    // Ethers does not need EIP712Domain type
-    delete data.types.EIP712Domain;
-  }
-
   const activeChainId = getChainId();
   if (
     !!data?.domain?.chainId &&
     activeChainId &&
-    parseInt(data.domain.chainId, 10) !== activeChainId
+    parseInt(data.domain.chainId, 10) !== getChainId()
   ) {
     throw new EIPRpcError(
       'chainId does not match the active network chainId',
@@ -92,7 +87,12 @@ export const eth_signTypedData = async (
   }
 
   try {
-    ethers.utils._TypedDataEncoder.hash(data.domain, data.types, data.message);
+    const eip712types = { ...data.types };
+    if ('EIP712Domain' in eip712types) {
+      // Ethers does not need EIP712Domain type
+      delete eip712types.EIP712Domain;
+    }
+    ethers.utils._TypedDataEncoder.hash(data.domain, eip712types, data.message);
   } catch (e) {
     throw new EIPRpcError(
       `Bad argument 'data' => ${String(e)}`,
@@ -100,42 +100,22 @@ export const eth_signTypedData = async (
     );
   }
 
-  const signatureConsent: TypedSignatureRequest = {
-    chain: getNetworkId() as StargazerChain,
-    signer: address,
-    content: JSON.stringify(data.message),
+  const signTypedDataParams: ISignTypedDataParams = {
+    payload: JSON.stringify(data),
+    cypherockId,
   };
 
-  const signatureData = {
-    origin,
-    domain: JSON.stringify(data.domain),
-    types: JSON.stringify(data.types),
-    signatureConsent,
-    walletId: activeWallet.id,
-    walletLabel: activeWallet.label,
-    publicKey: '',
-  };
-
-  // If the type of account is Ledger send back the public key so the
-  // signature can be verified by the requester.
-  const accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
-  if (
-    activeWallet?.type === KeyringWalletType.LedgerAccountWallet &&
-    accounts &&
-    accounts[0]
-  ) {
-    signatureData.publicKey = accounts[0].publicKey;
-  }
-
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    signatureData,
-    message,
-    sender.origin,
-    'signTypedMessage',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: signTypedDataParams,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SignTypedMessage,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

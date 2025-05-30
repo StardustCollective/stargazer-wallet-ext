@@ -7,9 +7,8 @@ import { getWalletController } from 'utils/controllersUtils';
 import { getChainId as getChainIdFn } from 'scripts/Background/controllers/EVMChainController/utils';
 import { encodeToBase64 } from 'utils/encoding';
 import { StargazerSignatureRequest } from '../../constellation/utils';
-import { isLedger } from 'utils/hardware';
+import { getHardwareWalletPage, isCypherock, isHardware, isLedger } from 'utils/hardware';
 
-const LEDGER_URL = '/ledger.html';
 export const EXTERNAL_URL = '/external.html';
 export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
   popup: 'popup',
@@ -23,6 +22,10 @@ export const WINDOW_SIZE = {
 export const getWalletInfo = () => {
   const { vault } = store.getState();
 
+  let windowUrl = EXTERNAL_URL;
+  let bipIndex;
+  let cypherockId;
+
   const allWallets = [
     ...vault.wallets.local,
     ...vault.wallets.ledger,
@@ -33,13 +36,21 @@ export const getWalletInfo = () => {
     ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
     : null;
 
-  const isLedgerWallet = isLedger(activeWallet?.type);
+  const isHardwareWallet = isHardware(activeWallet?.type);
 
-  const windowUrl = isLedgerWallet ? LEDGER_URL : EXTERNAL_URL;
-  const windowType = isLedgerWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
-  const windowSize = isLedgerWallet ? WINDOW_SIZE.large : WINDOW_SIZE.small;
+  if (isHardwareWallet) {
+    if (isLedger(activeWallet?.type)) {
+      bipIndex = activeWallet?.bipIndex;
+    } else if (isCypherock(activeWallet?.type)) {
+      cypherockId = activeWallet?.cypherockId;
+    }
+    windowUrl = getHardwareWalletPage(activeWallet?.type);
+  }
 
-  return { activeWallet, windowUrl, windowType, windowSize };
+  const windowType = isHardwareWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
+  const windowSize = isHardwareWallet ? WINDOW_SIZE.large : WINDOW_SIZE.small;
+
+  return { activeWallet, windowUrl, windowType, windowSize, bipIndex, cypherockId };
 };
 
 export const getNetworkInfo = () => {
