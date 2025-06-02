@@ -10,10 +10,7 @@ import { DAG_EXPLORER_API_URL } from 'constants/index';
 import { MetagraphProject } from 'scenes/external/AllowSpend';
 import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
-import { toDag } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
-import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
-import { getDagBalance } from 'dag4/block-explorer';
 import { ExternalRoute } from 'web/pages/External/types';
 import { validateHardwareMethod } from 'utils/hardware';
 
@@ -112,8 +109,6 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
   }
 
   const { assets } = store.getState();
-  const feeValue = data.fee ?? 0;
-  const totalAmount = toDag(data.amount) + toDag(feeValue);
 
   if (!!data.currencyId) {
     const currencyAsset = Object.values(assets).find(
@@ -126,25 +121,11 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
     if (!!currencyAsset && (!currencyAsset.l0endpoint || !currencyAsset.l1endpoint)) {
       throw new Error('"currencyId" must be a valid metagraph address');
     }
-
-    const balance = await getMetagraphCurrencyBalance(currencyAsset);
-
-    if (!balance || balance < totalAmount) {
-      throw new Error(
-        `not enough balance for the selected currency: ${currencyAsset.symbol}`
-      );
-    }
   } else {
     const dagAsset = Object.values(assets).find((asset) => asset.symbol === 'DAG');
 
     if (!dagAsset) {
       throw new Error('DAG asset not found in the wallet');
-    }
-
-    const balance = await getDagBalance(dagAccount.address);
-
-    if (!balance || balance < totalAmount) {
-      throw new Error(`not enough DAG balance`);
     }
   }
 };

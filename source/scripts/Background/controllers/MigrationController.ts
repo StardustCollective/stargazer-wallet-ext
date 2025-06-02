@@ -194,12 +194,21 @@ const MigrationController = async () => {
   }
 
   /**
-   * version < 5_3_3
+   * version < 5_3_5
+   * Description: Adds priceId for UP token and updates NDT endpoints
+   */
+  if (compareVersions(state.vault.version, '5.3.5') < 0) {
+    const v5_3_5 = require('../migration/v5_3_5');
+    await v5_3_5.default(state);
+  }
+
+  /**
+   * version < 5_4_0
    * Description: Add cypherock wallet state
    */
   if (!state.vault.wallets.cypherock) {
-    const v5_3_3 = require('../migration/v5_3_3');
-    await v5_3_3.default(state);
+    const v5_4_0 = require('../migration/v5_4_0');
+    await v5_4_0.default(state);
   }
 };
 

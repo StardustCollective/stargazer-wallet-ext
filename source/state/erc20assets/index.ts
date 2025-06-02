@@ -14,6 +14,7 @@ import {
   LEET_LOGO,
   NDT_LOGO,
   POLYGON_LOGO,
+  UPSIDER_AI_LOGO,
   VE_LTX_LOGO,
 } from 'constants/index';
 import { IAssetInfoState } from 'state/assets/types';
@@ -69,8 +70,8 @@ export const constellationInitialValues: IAssetInfoState[] = [
     type: AssetType.Constellation,
     logo: NDT_LOGO,
     network: 'main2',
-    l0endpoint: 'http://129.80.120.10:9100',
-    l1endpoint: 'http://129.80.120.10:9200',
+    l0endpoint: 'http://150.136.213.232:9100',
+    l1endpoint: 'http://150.136.213.232:9200',
   },
   {
     id: 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2',
@@ -84,6 +85,19 @@ export const constellationInitialValues: IAssetInfoState[] = [
     l0endpoint: 'http://elpaca-l0-2006678808.us-west-1.elb.amazonaws.com:9100',
     l1endpoint: 'http://elpaca-cl1-1512652691.us-west-1.elb.amazonaws.com:9200',
     dl1endpoint: 'http://elpaca-dl1-550039959.us-west-1.elb.amazonaws.com:9300',
+  },
+  {
+    id: 'DAG7Ghth1WhWK83SB3MtXnnHYZbCsmiRTwJrgaW1-main2',
+    address: 'DAG7Ghth1WhWK83SB3MtXnnHYZbCsmiRTwJrgaW1',
+    label: 'The Upsider AI',
+    symbol: 'UP',
+    decimals: 8,
+    type: AssetType.Constellation,
+    priceId: 'the-upsider-ai',
+    logo: UPSIDER_AI_LOGO,
+    network: 'main2',
+    l0endpoint: 'http://178.156.166.127:9100',
+    l1endpoint: 'http://178.156.166.127:9200',
   },
   {
     id: '0xa393473d64d2F9F026B60b6Df7859A689715d092-mainnet',

@@ -21,7 +21,7 @@ type V5_3_3State = {
   swap: ISwapState;
 };
 
-const VERSION = '5.3.3';
+const VERSION = '5.4.0';
 
 const MigrateRunner = async (oldState: any) => {
   try {

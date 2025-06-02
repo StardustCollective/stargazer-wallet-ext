@@ -188,7 +188,7 @@ export class AssetsBalanceMonitor {
       //     dagAddress
       //   );
       // }
-      if (!!balance) {
+      if (!!balance || balance === 0) {
         l0balances[l0asset.id] = String(balance);
       }
     }
