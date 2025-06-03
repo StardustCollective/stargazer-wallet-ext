@@ -1,5 +1,6 @@
 import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { AvailableMethods } from 'scripts/common';
+
+import { AvailableMethods, EIPErrorCodes, EIPRpcError } from 'scripts/common';
 
 export const LEDGER_PAGE = '/ledger.html';
 export const BITFI_PAGE = '/bitfi.html';
@@ -14,37 +15,28 @@ export const LEDGER_WALLET_LABEL = 'Ledger';
 export const BITFI_WALLET_LABEL = 'Bitfi';
 export const CYPHEROCK_WALLET_LABEL = 'Cypherock';
 
-export type HardwareWalletType =
-  | KeyringWalletType.BitfiAccountWallet
-  | KeyringWalletType.CypherockAccountWallet
-  | KeyringWalletType.LedgerAccountWallet;
+export type HardwareWalletType = KeyringWalletType.BitfiAccountWallet | KeyringWalletType.CypherockAccountWallet | KeyringWalletType.LedgerAccountWallet;
 
 export const SupportedMethods: Record<HardwareWalletType, AvailableMethods[]> = {
-  [KeyringWalletType.BitfiAccountWallet]: [
-    AvailableMethods.dag_sendTransaction,
-    AvailableMethods.dag_signMessage,
-  ],
+  [KeyringWalletType.BitfiAccountWallet]: [AvailableMethods.dag_sendTransaction, AvailableMethods.dag_signMessage],
   [KeyringWalletType.CypherockAccountWallet]: [
     AvailableMethods.dag_signData,
     AvailableMethods.dag_signMessage,
     AvailableMethods.dag_sendTransaction,
+    AvailableMethods.dag_tokenLock,
+    AvailableMethods.dag_delegatedStake,
+    AvailableMethods.personal_sign,
   ],
-  [KeyringWalletType.LedgerAccountWallet]: [
-    AvailableMethods.dag_signMessage,
-    AvailableMethods.dag_sendTransaction,
-  ],
+  [KeyringWalletType.LedgerAccountWallet]: [AvailableMethods.dag_signMessage, AvailableMethods.dag_sendTransaction],
 };
 
-export const validateHardwareMethod = (
-  walletType: KeyringWalletType,
-  method: AvailableMethods
-) => {
+export const validateHardwareMethod = (walletType: KeyringWalletType, method: AvailableMethods) => {
   if (!isHardware(walletType)) return;
 
   const hardwareWalletType = walletType as HardwareWalletType;
 
   if (!SupportedMethods[hardwareWalletType].includes(method)) {
-    throw new Error('Method not supported by the hardware wallet');
+    throw new EIPRpcError('Method not supported by the hardware wallet', EIPErrorCodes.Unsupported);
   }
 };
 
@@ -66,11 +58,7 @@ export const getHardwareWalletPage = (type: KeyringWalletType): string => {
 };
 
 export const isHardware = (type: KeyringWalletType): boolean => {
-  return (
-    type === KeyringWalletType.LedgerAccountWallet ||
-    type === KeyringWalletType.BitfiAccountWallet ||
-    type === KeyringWalletType.CypherockAccountWallet
-  );
+  return type === KeyringWalletType.LedgerAccountWallet || type === KeyringWalletType.BitfiAccountWallet || type === KeyringWalletType.CypherockAccountWallet;
 };
 
 export const isLedger = (type: KeyringWalletType): boolean => {

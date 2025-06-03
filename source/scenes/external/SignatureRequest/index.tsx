@@ -1,46 +1,15 @@
-import React from 'react';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
-import { decodeFromBase64 } from 'utils/encoding';
 import { dag4 } from '@stardust-collective/dag4';
-import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
-import type {
-  ISignMessageParams,
-  StargazerSignatureRequest,
-} from 'scripts/Provider/constellation';
-import SignMessageView, { ISignMessageProps } from '../views/sign-message';
+import React from 'react';
 
-const SignatureRequest = () => {
-  const { data, message: requestMessage } =
-    StargazerExternalPopups.decodeRequestMessageLocationParams<ISignMessageParams>(
-      location.href
-    );
+import SignMessageContainer, { SignMessageProviderConfig } from 'scenes/external/SignMessage/SignMessageContainer';
 
-  const { payload, asset, chain, wallet } = data;
+import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 
-  const isDAGsignature = asset === 'DAG';
-
-  const payloadDecoded = JSON.parse(
-    decodeFromBase64(payload)
-  ) as StargazerSignatureRequest;
-
-  const onNegativeButtonClick = async () => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseError(
-      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
-      requestMessage
-    );
-    window.close();
-  };
-
+const SignatureRequest: React.FC = () => {
   const signDagMessage = async (message: string): Promise<string> => {
     const privateKeyHex = dag4.account.keyTrio.privateKey;
-    const signature = await dag4.keyStore.personalSign(privateKeyHex, message);
-    return signature;
+    return await dag4.keyStore.personalSign(privateKeyHex, message);
   };
 
   const signEthMessage = async (message: string): Promise<string> => {
@@ -50,39 +19,21 @@ const SignatureRequest = () => {
     const msgHash = hashPersonalMessage(Buffer.from(message));
 
     const { v, r, s } = ecsign(msgHash, privateKey);
-    const sig = preserve0x(toRpcSig(v, r, s));
-
-    return sig;
+    return preserve0x(toRpcSig(v, r, s));
   };
 
-  const onPositiveButtonClick = async () => {
-    const message = isDAGsignature ? payload : payloadDecoded.content;
-    const signMessage = isDAGsignature ? signDagMessage : signEthMessage;
-
-    try {
-      const signature = await signMessage(message);
-      StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
-    } catch (err) {
-      console.log(err);
-      StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(err, requestMessage);
-    }
-
-    window.close();
-  };
-
-  const props: ISignMessageProps = {
+  const externalSigningConfig: SignMessageProviderConfig = {
     title: 'Signature Request',
-    account: wallet,
-    network: chain,
-    message: payloadDecoded,
     footer: 'Only sign messages on sites you trust.',
-    onSign: onPositiveButtonClick,
-    onReject: onNegativeButtonClick,
+    onSign: async ({ payload, parsedPayload, isDagSignature }) => {
+      const message = isDagSignature ? payload : parsedPayload.content;
+      const signMessage = isDagSignature ? signDagMessage : signEthMessage;
+
+      return await signMessage(message);
+    },
   };
 
-  return <SignMessageView {...props} />;
+  return <SignMessageContainer {...externalSigningConfig} />;
 };
 
 export default SignatureRequest;

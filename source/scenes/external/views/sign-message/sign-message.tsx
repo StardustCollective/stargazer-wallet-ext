@@ -1,13 +1,19 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
+
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
+
 import Card from 'scenes/external/components/Card/Card';
 import CardRow from 'scenes/external/components/CardRow/CardRow';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
-import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
+
 import type { StargazerSignatureRequest } from 'scripts/Provider/constellation';
-import { COLORS_ENUMS } from 'assets/styles/colors';
-import styles from './styles.scss';
-import { useSelector } from 'react-redux';
+
 import dappSelectors from 'selectors/dappSelectors';
+
+import styles from './styles.scss';
 
 export interface ISignMessageProps {
   title: string;
@@ -20,16 +26,7 @@ export interface ISignMessageProps {
   onReject: () => void;
 }
 
-const SignMessageView = ({
-  title,
-  account,
-  network,
-  deviceId,
-  message,
-  footer,
-  onSign,
-  onReject,
-}: ISignMessageProps) => {
+const SignMessageView = ({ title, account, network, deviceId, message, footer, onSign, onReject }: ISignMessageProps) => {
   const current = useSelector(dappSelectors.getCurrent);
 
   let parsedMetadata: any = null;
@@ -45,15 +42,7 @@ const SignMessageView = ({
   }
 
   return (
-    <CardLayoutV3
-      logo={current.logo}
-      title={title}
-      subtitle={current.origin}
-      onNegativeButtonClick={onReject}
-      negativeButtonLabel="Reject"
-      onPositiveButtonClick={onSign}
-      positiveButtonLabel="Sign"
-    >
+    <CardLayoutV3 logo={current.logo} title={title} subtitle={current.origin} onNegativeButtonClick={onReject} negativeButtonLabel="Reject" onPositiveButtonClick={onSign} positiveButtonLabel="Sign">
       <div className={styles.container}>
         <Card>
           <CardRow label="Account:" value={account} />
@@ -66,21 +55,14 @@ const SignMessageView = ({
               <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
                 Message:
               </TextV3.CaptionStrong>
-              <TextV3.CaptionRegular extraStyles={styles.message}>
-                {message.content}
-              </TextV3.CaptionRegular>
+              <TextV3.CaptionRegular extraStyles={styles.message}>{message.content}</TextV3.CaptionRegular>
             </div>
             {!!parsedMetadata && (
               <div className={styles.block}>
-                <TextV3.CaptionStrong
-                  color={COLORS_ENUMS.BLACK}
-                  extraStyles={styles.title}
-                >
+                <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
                   Metadata:
                 </TextV3.CaptionStrong>
-                <TextV3.CaptionRegular extraStyles={styles.message}>
-                  {parsedMetadata}
-                </TextV3.CaptionRegular>
+                <TextV3.CaptionRegular extraStyles={styles.message}>{parsedMetadata}</TextV3.CaptionRegular>
               </div>
             )}
           </div>
