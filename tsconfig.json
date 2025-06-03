@@ -20,20 +20,20 @@
     "noImplicitReturns": false,
     "baseUrl": "source",
     "paths": {
-      "web/*": ["web/*"],
-      "components/*": ["components/*"],
       "assets/*": ["assets/*"],
+      "components/*": ["components/*"],
       "constants/*": ["constants/*"],
       "context/*": ["context/*"],
+      "dag4/*": ["dag4/*"],
       "hooks/*": ["hooks/*"],
       "navigation/*": ["navigation/*"],
-      "dag4/*": ["dag4/*"],
       "scenes/*": ["scenes/*"],
       "scripts/*": ["scripts/*"],
       "selectors/*": ["selectors/*"],
       "state/*": ["state/*"],
       "types/*": ["types/*"],
-      "utils/*": ["utils/*"]
+      "utils/*": ["utils/*"],
+      "web/*": ["web/*"]
     }
   },
   "include": ["source", "test.ts"],
