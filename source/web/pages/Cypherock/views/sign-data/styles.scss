@@ -1,12 +1,9 @@
 @import '~assets/styles/variables';
 
-.layoutContainer {
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   height: 700px;
   width: 384px;
-
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
 }

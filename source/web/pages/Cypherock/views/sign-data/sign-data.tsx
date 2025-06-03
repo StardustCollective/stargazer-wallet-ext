@@ -1,70 +1,34 @@
 import React from 'react';
-import Card from 'scenes/external/components/Card/Card';
-import CardRow from 'scenes/external/components/CardRow/CardRow';
-import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
-import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { useSelector } from 'react-redux';
-import dappSelectors from 'selectors/dappSelectors';
+
+import { useSignData } from 'hooks/external/useSignData';
+
+import SignDataContainer, { SignDataProviderConfig } from 'scenes/external/SignData/SignDataContainer';
+
+import { StargazerRequestMessage } from 'scripts/common';
+
+import { decodeArrayFromBase64 } from 'web/pages/Cypherock/utils';
 import { CypherockService } from 'web/utils/cypherockBridge';
 import { CYPHEROCK_DERIVATION_PATHS } from 'web/utils/cypherockBridge/constants';
-import type { ISignDataParams } from 'scripts/Provider/constellation';
-import { decodeArrayFromBase64 } from 'web/pages/Cypherock/utils';
-import { decodeFromBase64 } from 'utils/encoding';
-import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
+
 import { WalletState } from '../../Cypherock';
+
 import styles from './styles.scss';
-import { COLORS_ENUMS } from 'assets/styles/colors';
 
 interface ISignDataProps {
   service: CypherockService;
   changeState: (state: WalletState) => void;
-  handleSuccessResponse: (
-    result: any,
-    messageRequest: StargazerRequestMessage
-  ) => Promise<void>;
-  handleErrorResponse: (
-    err: unknown,
-    messageRequest: StargazerRequestMessage
-  ) => Promise<void>;
+  handleSuccessResponse: (result: any, messageRequest: StargazerRequestMessage) => Promise<void>;
+  handleErrorResponse: (err: unknown, messageRequest: StargazerRequestMessage) => Promise<void>;
 }
 
-const SignDataView = ({
-  service,
-  changeState,
-  handleSuccessResponse,
-  handleErrorResponse,
-}: ISignDataProps) => {
-  const current = useSelector(dappSelectors.getCurrent);
+const SignDataView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: ISignDataProps) => {
+  const { requestMessage } = useSignData();
 
-  const { message: messageRequest, data } =
-    StargazerExternalPopups.decodeRequestMessageLocationParams<ISignDataParams>(
-      location.href
-    );
-
-  const { payload, cypherockId, wallet, chain } = data;
-
-  // Decode base64 data
-  const payloadDecoded = decodeFromBase64(payload);
-  let message = payloadDecoded;
-
-  try {
-    // Try to parse and check if it's a JSON object
-    const parsedData = JSON.parse(payloadDecoded);
-    if (parsedData) {
-      // Pretty-print JSON object
-      message = JSON.stringify(parsedData, null, 4);
-    }
-  } catch (err) {
-    // Decoded data is not a valid JSON
-    message = payloadDecoded;
-  }
-
-  const onSignData = async () => {
-    try {
+  const cypherockSigningConfig: SignDataProviderConfig = {
+    title: 'Cypherock - Sign Data',
+    footer: 'Only sign messages on sites you trust.',
+    onSign: async ({ payload, decodedData }) => {
+      const { cypherockId } = decodedData;
       const walletId = decodeArrayFromBase64(cypherockId);
 
       changeState(WalletState.VerifyTransaction);
@@ -75,51 +39,25 @@ const SignDataView = ({
         message: payload,
       });
 
-      await handleSuccessResponse(signature, messageRequest);
+      return signature;
+    },
+    onSuccess: async signature => {
+      await handleSuccessResponse(signature, requestMessage);
       changeState(WalletState.SignedSuccess);
-    } catch (err: unknown) {
-      if (err instanceof Error && err.message.includes('aborted')) {
-        return;
+    },
+    onError: async error => {
+      if (error instanceof Error && error.message.includes('aborted')) {
+        return; // User cancelled hardware signing
       }
-
-      await handleErrorResponse(err, messageRequest);
+      await handleErrorResponse(error, requestMessage);
       changeState(WalletState.SignedError);
-    }
-  };
-
-  const onReject = () => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseError(
-      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
-      messageRequest
-    );
-    window.close();
+    },
   };
 
   return (
-    <CardLayoutV3
-      logo={current.logo}
-      title="Cypherock - Sign Data"
-      subtitle={current.origin}
-      onNegativeButtonClick={onReject}
-      negativeButtonLabel="Reject"
-      onPositiveButtonClick={onSignData}
-      positiveButtonLabel="Sign"
-      containerStyles={styles.layoutContainer}
-    >
-      <div className={styles.container}>
-        <Card>
-          <CardRow label="Account:" value={wallet} />
-          <CardRow label="Network:" value={chain} />
-        </Card>
-        <Card>
-          <CardRow.Object label="Transaction data:" value={message} />
-        </Card>
-        <TextV3.CaptionRegular color={COLORS_ENUMS.RED} align={TEXT_ALIGN_ENUM.CENTER}>
-          Only sign messages on sites you trust
-        </TextV3.CaptionRegular>
-      </div>
-    </CardLayoutV3>
+    <div className={styles.container}>
+      <SignDataContainer {...cypherockSigningConfig} />
+    </div>
   );
 };
 
