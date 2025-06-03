@@ -3,39 +3,13 @@
  * @module CypherockService
  */
 
-import {
-  ConnectionStatus,
-  CypherockError,
-  ErrorCode,
-  IHardwareWalletAdapter,
-  ISignDagMsgParams,
-} from './types';
-import type {
-  EvmApp,
-  IGetPublicKeysResult,
-  ISignMsgResult,
-  ISignPersonalMsgParams,
-  ISignTxnParams,
-  ISignTxnResult,
-  ISignTypedParams,
-} from '@cypherock/sdk-app-evm';
-import type {
-  IWalletItem,
-  IGetWalletsResultResponse,
-  ISelectWalletResultResponse,
-  ManagerApp,
-} from '@cypherock/sdk-app-manager';
+import type { ConstellationApp, ISignMsgResult as ISignDagMsgResult, ISignTxnParams as ISignDagTxnParams } from '@cypherock/sdk-app-constellation';
+import type { EvmApp, IGetPublicKeysResult, ISignMsgResult, ISignPersonalMsgParams, ISignTxnParams, ISignTxnResult, ISignTypedParams } from '@cypherock/sdk-app-evm';
+import type { IGetWalletsResultResponse, ISelectWalletResultResponse, IWalletItem, ManagerApp } from '@cypherock/sdk-app-manager';
 import * as dag4 from '@stardust-collective/dag4';
-import {
-  CYPHEROCK_USB_IDS,
-  CYPHEROCK_CHAIN_IDS,
-  CYPHEROCK_DERIVATION_PATHS,
-} from './constants';
-import { ConstellationApp } from '@cypherock/sdk-app-constellation';
-import type {
-  ISignMsgResult as ISignDagMsgResult,
-  ISignTxnParams as ISignDagTxnParams,
-} from '@cypherock/sdk-app-constellation';
+
+import { CYPHEROCK_CHAIN_IDS, CYPHEROCK_DERIVATION_PATHS, CYPHEROCK_USB_IDS } from './constants';
+import { ConnectionStatus, CypherockError, ErrorCode, IHardwareWalletAdapter, ISignDagMsgParams } from './types';
 
 /**
  * Wrapper service for Cypherock SDK with lazy loading
@@ -68,14 +42,7 @@ export class CypherockService implements IHardwareWalletAdapter {
 
     try {
       // Dynamically import all dependencies
-      const [
-        { DeviceConnection },
-        { ManagerApp },
-        { EvmApp, setEthersLib, setEip712Lib },
-        { ConstellationApp, setDag4Lib },
-        { ethers },
-        eip712,
-      ] = await Promise.all([
+      const [{ DeviceConnection }, { ManagerApp }, { EvmApp, setEthersLib, setEip712Lib }, { ConstellationApp, setDag4Lib }, { ethers }, eip712] = await Promise.all([
         import('@cypherock/sdk-hw-webusb'),
         import('@cypherock/sdk-app-manager'),
         import('@cypherock/sdk-app-evm'),
@@ -108,10 +75,7 @@ export class CypherockService implements IHardwareWalletAdapter {
    */
   private checkWebUSBSupport(): void {
     if (!CypherockService.isWebUSBSupported()) {
-      throw new CypherockError(
-        'WebUSB API is not supported in this browser. Please use Chrome or Edge.',
-        ErrorCode.WEBUSB_NOT_SUPPORTED
-      );
+      throw new CypherockError('WebUSB API is not supported in this browser. Please use Chrome or Edge.', ErrorCode.WEBUSB_NOT_SUPPORTED);
     }
   }
 
@@ -130,10 +94,7 @@ export class CypherockService implements IHardwareWalletAdapter {
 
       return device;
     } catch (error: unknown) {
-      throw new CypherockError(
-        'Failed to request device',
-        ErrorCode.DEVICE_NOT_CONNECTED
-      );
+      throw new CypherockError('Failed to request device', ErrorCode.DEVICE_NOT_CONNECTED);
     }
   }
 
@@ -169,7 +130,7 @@ export class CypherockService implements IHardwareWalletAdapter {
 
       this.device = await this.requestDevice();
 
-      if (!!this?.deviceConnection?.connect) {
+      if (this?.deviceConnection?.connect) {
         // Create connection
         this.deviceConnection = await this.deviceConnection.connect(this.device);
 
@@ -199,8 +160,7 @@ export class CypherockService implements IHardwareWalletAdapter {
     try {
       this.ensureConnected();
 
-      const walletResponse: ISelectWalletResultResponse =
-        await this.managerApp.selectWallet();
+      const walletResponse: ISelectWalletResultResponse = await this.managerApp.selectWallet();
 
       return walletResponse.wallet;
     } catch (error: unknown) {
@@ -220,10 +180,7 @@ export class CypherockService implements IHardwareWalletAdapter {
       const wallets: IGetWalletsResultResponse = await this.managerApp.getWallets();
 
       if (!wallets?.walletList?.length) {
-        throw new CypherockError(
-          'No wallets found on the device',
-          ErrorCode.WALLETS_NOT_FOUND
-        );
+        throw new CypherockError('No wallets found on the device', ErrorCode.WALLETS_NOT_FOUND);
       }
 
       return wallets?.walletList ?? [];
@@ -240,10 +197,7 @@ export class CypherockService implements IHardwareWalletAdapter {
    * @throws {CypherockError} If not connected or address retrieval fails
    */
 
-  public async getEthWalletAddresses(
-    walletId: IWalletItem['id'],
-    onEvent?: (event: number) => void
-  ): Promise<IGetPublicKeysResult> {
+  public async getEthWalletAddresses(walletId: IWalletItem['id'], onEvent?: (event: number) => void): Promise<IGetPublicKeysResult> {
     try {
       this.ensureConnected();
 
@@ -267,10 +221,7 @@ export class CypherockService implements IHardwareWalletAdapter {
    * @returns {Promise<IGetPublicKeysResult>} The DAG address for the given wallet
    * @throws {CypherockError} If not connected or address retrieval fails
    */
-  public async getDagWalletAddresses(
-    walletId: IWalletItem['id'],
-    onEvent?: (event: number) => void
-  ): Promise<IGetPublicKeysResult> {
+  public async getDagWalletAddresses(walletId: IWalletItem['id'], onEvent?: (event: number) => void): Promise<IGetPublicKeysResult> {
     try {
       this.ensureConnected();
 
@@ -335,6 +286,22 @@ export class CypherockService implements IHardwareWalletAdapter {
   }
 
   /**
+   * Blind signs a message with the Constellation App
+   * @param props - The parameters for the sign transaction operation
+   * @returns The result of the sign transaction operation
+   * @throws {CypherockError} If not connected or sign transaction fails
+   */
+  public async blindSign(props: ISignDagMsgParams): Promise<ISignDagMsgResult> {
+    try {
+      this.ensureConnected();
+
+      return await (this.constellationApp as ConstellationApp).blindSign(props);
+    } catch (error: unknown) {
+      throw this.handleError(error, 'Failed to blind sign the DAG message');
+    }
+  }
+
+  /**
    * Signs a transaction with the EVM App
    * @param props - The parameters for the sign transaction operation
    * @returns The result of the sign transaction operation
@@ -356,9 +323,7 @@ export class CypherockService implements IHardwareWalletAdapter {
    * @returns The result of the sign personal message operation
    * @throws {CypherockError} If not connected or sign personal message fails
    */
-  public async signPersonalMessage(
-    props: ISignPersonalMsgParams
-  ): Promise<ISignMsgResult> {
+  public async signPersonalMessage(props: ISignPersonalMsgParams): Promise<ISignMsgResult> {
     try {
       this.ensureConnected();
 
@@ -477,12 +442,7 @@ export class CypherockService implements IHardwareWalletAdapter {
    * @throws {CypherockError} If not connected
    */
   private ensureConnected(): void {
-    if (
-      this.status !== ConnectionStatus.CONNECTED ||
-      !this.evmApp ||
-      !this.constellationApp ||
-      !this.managerApp
-    ) {
+    if (this.status !== ConnectionStatus.CONNECTED || !this.evmApp || !this.constellationApp || !this.managerApp) {
       throw new CypherockError('Device not connected', ErrorCode.DEVICE_NOT_CONNECTED);
     }
   }

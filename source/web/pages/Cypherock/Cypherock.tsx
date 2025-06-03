@@ -1,36 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import type { IWalletItem } from '@cypherock/sdk-app-manager';
-import Layout from './components/Layout';
-import ConnectView from './views/connect';
-import LoadingView from './views/loading';
-import WalletsView from './views/wallets';
-import GenerateAddressView from './views/generate';
-import ConfirmDetailsView from './views/confirm';
-import SuccessView from './views/success';
-import SignMsgView from './views/sign-message';
-// import SignTypedMessageView from './views/sign-typed-message';
-import SignDataView from './views/sign-data';
-import SignTransactionView from './views/sign-transaction';
-import ErrorView from './views/error';
-import { CypherockError, CypherockService, ErrorCode } from '../../utils/cypherockBridge';
-import type { IGetPublicKeysResult } from '@cypherock/sdk-app-evm';
 import 'assets/styles/global.scss';
+
+import type { IGetPublicKeysResult } from '@cypherock/sdk-app-evm';
+import type { IWalletItem } from '@cypherock/sdk-app-manager';
+import { KeyringAssetType, KeyringNetwork, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import React, { useEffect, useState } from 'react';
+
+import { BUTTON_TYPES_ENUM } from 'components/ButtonV3';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
+
+import { usePlatformAlert } from 'utils/alertUtil';
 import { getWalletController } from 'utils/controllersUtils';
 import { HardwareWallet } from 'utils/hardware';
-import {
-  KeyringAssetType,
-  KeyringNetwork,
-  KeyringWalletType,
-} from '@stardust-collective/dag4-keyring';
-import { usePlatformAlert } from 'utils/alertUtil';
-import { BUTTON_TYPES_ENUM } from 'components/ButtonV3';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
-import { encodeArrayToBase64 } from './utils';
+
+import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherockBridge';
 import { addBeforeUnloadListener } from 'web/utils/windowListeners';
+
+import Layout from './components/Layout';
+import ConfirmDetailsView from './views/confirm';
+import ConnectView from './views/connect';
+import DelegatedStakeView from './views/delegated-stake';
+import ErrorView from './views/error';
+import GenerateAddressView from './views/generate';
+import LoadingView from './views/loading';
+// import SignTypedMessageView from './views/sign-typed-message';
+import SignDataView from './views/sign-data';
+import SignMsgView from './views/sign-message';
+import SignTransactionView from './views/sign-transaction';
+import SuccessView from './views/success';
+import TokenLockView from './views/token-lock';
+import WalletsView from './views/wallets';
+import { encodeArrayToBase64 } from './utils';
 
 export enum WalletState {
   // Connect device
@@ -52,6 +53,8 @@ export enum WalletState {
   SignTypedMessage = 'sign-typed-message',
   SignDataMessage = 'sign-data-message',
   SignDagTransaction = 'sign-dag-transaction',
+  TokenLock = 'token-lock',
+  DelegatedStake = 'delegated-stake',
 
   // Signed states
   SignedSuccess = 'signed-success',
@@ -71,6 +74,8 @@ enum WalletRoute {
   SignDataMessage = 'signData',
   SignTypedMessage = 'signTypedMessage',
   SignDagTransaction = 'signTransaction',
+  TokenLock = 'tokenLock',
+  DelegatedStake = 'delegatedStake',
 }
 
 enum GetPublicKeysEvent {
@@ -108,9 +113,7 @@ const CypherockPage = () => {
 
   useEffect(() => {
     if (location.href.includes('route')) {
-      const { route } = StargazerExternalPopups.decodeRequestMessageLocationParams(
-        location.href
-      );
+      const { route } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
       if (route === WalletRoute.SignMessage) {
         setNextRoute(WalletState.SignMessage);
@@ -120,6 +123,10 @@ const CypherockPage = () => {
         setNextRoute(WalletState.SignDataMessage);
       } else if (route === WalletRoute.SignDagTransaction) {
         setNextRoute(WalletState.SignDagTransaction);
+      } else if (route === WalletRoute.TokenLock) {
+        setNextRoute(WalletState.TokenLock);
+      } else if (route === WalletRoute.DelegatedStake) {
+        setNextRoute(WalletState.DelegatedStake);
       }
     }
   }, []);
@@ -136,7 +143,7 @@ const CypherockPage = () => {
   };
 
   const withDelay = async (promise: Promise<any>, minDuration = 2000) => {
-    const delay = new Promise((resolve) => setTimeout(resolve, minDuration));
+    const delay = new Promise(resolve => setTimeout(resolve, minDuration));
     const [result] = await Promise.all([promise, delay]);
     return result;
   };
@@ -166,18 +173,12 @@ const CypherockPage = () => {
     setWalletState(WalletState.GeneralError);
   };
 
-  const handleSuccessResponse = async (
-    result: any,
-    messageRequest: StargazerRequestMessage
-  ): Promise<void> => {
+  const handleSuccessResponse = async (result: any, messageRequest: StargazerRequestMessage): Promise<void> => {
     StargazerExternalPopups.addResolvedParam(location.href);
     await StargazerWSMessageBroker.sendResponseResult(result, messageRequest);
   };
 
-  const handleErrorResponse = async (
-    err: unknown,
-    messageRequest: StargazerRequestMessage
-  ): Promise<void> => {
+  const handleErrorResponse = async (err: unknown, messageRequest: StargazerRequestMessage): Promise<void> => {
     let message = 'An unknown error occurred';
     let code = EIPErrorCodes.Unknown;
 
@@ -194,10 +195,7 @@ const CypherockPage = () => {
     }
 
     StargazerExternalPopups.addResolvedParam(location.href);
-    await StargazerWSMessageBroker.sendResponseError(
-      new EIPRpcError(message, code),
-      messageRequest
-    );
+    await StargazerWSMessageBroker.sendResponseError(new EIPRpcError(message, code), messageRequest);
   };
 
   const onConnect = async () => {
@@ -208,8 +206,8 @@ const CypherockPage = () => {
         setWalletState(nextRoute);
       } else {
         setWalletState(WalletState.Searching);
-        const wallets = await withDelay(service.getWallets());
-        setWallets(wallets);
+        const allWallets = await withDelay(service.getWallets());
+        setWallets(allWallets);
         setWalletState(WalletState.SelectWallet);
       }
     } catch (err: unknown) {
@@ -278,20 +276,18 @@ const CypherockPage = () => {
     try {
       setWalletState(WalletState.GenerateDagAddress);
 
-      const dagPublicKeys = await service.getDagWalletAddresses(
-        selectedWallet.id,
-        onDagEventHandler
-      );
+      const publicKeys = await service.getDagWalletAddresses(selectedWallet.id, onDagEventHandler);
 
-      if (!dagPublicKeys?.addresses?.length) {
+      if (!publicKeys?.addresses?.length) {
         throw new CypherockError('No DAG address found', ErrorCode.UNKNOWN);
       }
 
-      setDagPublicKeys(dagPublicKeys);
+      setDagPublicKeys(publicKeys);
 
-      return dagPublicKeys;
+      return publicKeys;
     } catch (err: unknown) {
       handleError(err);
+      return null;
     }
   };
 
@@ -299,16 +295,13 @@ const CypherockPage = () => {
     try {
       setWalletState(WalletState.GenerateEthAddress);
 
-      const ethPublicKeys = await service.getEthWalletAddresses(
-        selectedWallet.id,
-        onEthEventHandler
-      );
+      const publicKeys = await service.getEthWalletAddresses(selectedWallet.id, onEthEventHandler);
 
-      if (!ethPublicKeys?.addresses?.length) {
+      if (!publicKeys?.addresses?.length) {
         throw new CypherockError('No EVM address found', ErrorCode.UNKNOWN);
       }
 
-      setEthPublicKeys(ethPublicKeys);
+      setEthPublicKeys(publicKeys);
       setWalletState(WalletState.ConfirmDetails);
     } catch (err: unknown) {
       handleError(err);
@@ -317,9 +310,9 @@ const CypherockPage = () => {
 
   const onAddWallet = async () => {
     try {
-      const dagPublicKeys = await generateDagAddress();
+      const publicKeys = await generateDagAddress();
 
-      if (dagPublicKeys?.addresses?.length) {
+      if (publicKeys?.addresses?.length) {
         await generateEthAddress();
       }
     } catch (err: unknown) {
@@ -351,11 +344,7 @@ const CypherockPage = () => {
             network: KeyringNetwork.Ethereum,
           },
         ],
-        supportedAssets: [
-          KeyringAssetType.DAG,
-          KeyringAssetType.ETH,
-          KeyringAssetType.ERC20,
-        ],
+        supportedAssets: [KeyringAssetType.DAG, KeyringAssetType.ETH, KeyringAssetType.ERC20],
       },
     ];
 
@@ -375,14 +364,11 @@ const CypherockPage = () => {
     setWalletState(WalletState.Confirmed);
   };
 
-  function RenderByWalletState() {
+  const RenderByWalletState = () => {
     switch (walletState) {
       case WalletState.ConnectDevice:
         return (
-          <Layout
-            title="Connect device"
-            primaryButton={{ label: 'Connect Cypherock', handleClick: onConnect }}
-          >
+          <Layout title="Connect device" primaryButton={{ label: 'Connect Cypherock', handleClick: onConnect }}>
             <ConnectView />
           </Layout>
         );
@@ -412,11 +398,7 @@ const CypherockPage = () => {
               disabled: !selectedWallet,
             }}
           >
-            <WalletsView
-              wallets={wallets}
-              selectedWallet={selectedWallet}
-              onSelectWallet={onSelectWallet}
-            />
+            <WalletsView wallets={wallets} selectedWallet={selectedWallet} onSelectWallet={onSelectWallet} />
           </Layout>
         );
       case WalletState.GenerateDagAddress:
@@ -472,12 +454,7 @@ const CypherockPage = () => {
               handleClick: onImportWallet,
             }}
           >
-            <ConfirmDetailsView
-              ethPublicKeys={ethPublicKeys}
-              dagPublicKeys={dagPublicKeys}
-              walletName={walletName}
-              setWalletName={setWalletName}
-            />
+            <ConfirmDetailsView ethPublicKeys={ethPublicKeys} dagPublicKeys={dagPublicKeys} walletName={walletName} setWalletName={setWalletName} />
           </Layout>
         );
       case WalletState.Confirmed:
@@ -515,39 +492,19 @@ const CypherockPage = () => {
               handleClick: () => window.close(),
             }}
           >
-            <ErrorView
-              title="Signing was unsuccessful"
-              description="Something went wrong during the signing process. Please try again."
-            />
+            <ErrorView title="Signing was unsuccessful" description="Something went wrong during the signing process. Please try again." />
           </Layout>
         );
       case WalletState.SignMessage:
-        return (
-          <SignMsgView
-            service={service}
-            changeState={changeState}
-            handleSuccessResponse={handleSuccessResponse}
-            handleErrorResponse={handleErrorResponse}
-          />
-        );
+        return <SignMsgView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.SignDagTransaction:
-        return (
-          <SignTransactionView
-            service={service}
-            changeState={changeState}
-            handleSuccessResponse={handleSuccessResponse}
-            handleErrorResponse={handleErrorResponse}
-          />
-        );
+        return <SignTransactionView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.SignDataMessage:
-        return (
-          <SignDataView
-            service={service}
-            changeState={changeState}
-            handleSuccessResponse={handleSuccessResponse}
-            handleErrorResponse={handleErrorResponse}
-          />
-        );
+        return <SignDataView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
+      case WalletState.TokenLock:
+        return <TokenLockView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
+      case WalletState.DelegatedStake:
+        return <DelegatedStakeView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.VerifyTransaction:
         return (
           <Layout
@@ -573,10 +530,7 @@ const CypherockPage = () => {
               handleClick: onConnect,
             }}
           >
-            <ErrorView
-              title="Stargazer couldn’t detect your Cypherock device."
-              description="Make sure your Cypherock device is plugged in, unlocked, and USB permissions are granted."
-            />
+            <ErrorView title="Stargazer couldn’t detect your Cypherock device." description="Make sure your Cypherock device is plugged in, unlocked, and USB permissions are granted." />
           </Layout>
         );
       case WalletState.NoWalletsFound:
@@ -592,10 +546,7 @@ const CypherockPage = () => {
               handleClick: onConnect,
             }}
           >
-            <ErrorView
-              title="No wallets were detected"
-              description="Please add a new wallet to your Cypherock device, and try again."
-            />
+            <ErrorView title="No wallets were detected" description="Please add a new wallet to your Cypherock device, and try again." />
           </Layout>
         );
       case WalletState.GeneralError:
@@ -614,7 +565,7 @@ const CypherockPage = () => {
       default:
         return null;
     }
-  }
+  };
 
   return RenderByWalletState();
 };

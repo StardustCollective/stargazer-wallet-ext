@@ -1,21 +1,32 @@
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
-import { ExternalRoute } from 'web/pages/External/types';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
+import store from 'state/store';
+
 import { validateHardwareMethod } from 'utils/hardware';
 
-type TokenLockData = {
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
+
+type TokenLock = {
   source: string;
   amount: number;
   unlockEpoch: number | null;
   fee?: number;
   currencyId: string | null;
+};
+
+export type TokenLockDataParam = TokenLock & {
+  wallet: string;
+  walletId: string;
+  chain: string;
+  latestEpoch: number | null;
+  cypherockId?: string;
+  publicKey?: string;
 };
 
 const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
@@ -25,9 +36,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('There is no active wallet');
   }
 
-  const dagAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const dagAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!dagAccount) {
     throw new Error('No active account for the request asset type');
@@ -39,7 +48,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
 
   validateHardwareMethod(activeWallet.type, request.method);
 
-  const [data] = request.params as [TokenLockData];
+  const [data] = request.params as [TokenLock];
 
   if (!data) {
     throw new Error('invalid params');
@@ -83,10 +92,8 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
 
   const { assets } = store.getState();
 
-  if (!!data.currencyId) {
-    const currencyAsset = Object.values(assets).find(
-      (asset) => asset.address === data.currencyId
-    );
+  if (data.currencyId) {
+    const currencyAsset = Object.values(assets).find(asset => asset.address === data.currencyId);
 
     if (!currencyAsset) {
       throw new Error('"currencyId" not found in the wallet');
@@ -96,12 +103,14 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('"currencyId" must be a valid metagraph address');
     }
   } else {
-    const dagAsset = Object.values(assets).find((asset) => asset.symbol === 'DAG');
+    const dagAsset = Object.values(assets).find(asset => asset.symbol === 'DAG');
 
     if (!dagAsset) {
       throw new Error('DAG asset not found in the wallet');
     }
   }
+
+  return { dagAccount };
 };
 
 const getLatestEpoch = async (): Promise<number | null> => {
@@ -109,16 +118,12 @@ const getLatestEpoch = async (): Promise<number | null> => {
   return latestSnapshot?.value?.epochProgress ?? null;
 };
 
-export const dag_tokenLock = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
-  await validateParams(request);
+export const dag_tokenLock = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+  const { dagAccount } = await validateParams(request);
 
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType, cypherockId } = getWalletInfo();
 
-  const [data] = request.params as [TokenLockData];
+  const [data] = request.params as [TokenLock];
 
   let latestEpoch = null;
 
@@ -130,24 +135,24 @@ export const dag_tokenLock = async (
     }
 
     if (data.unlockEpoch <= latestEpoch) {
-      throw new Error(
-        `Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`
-      );
+      throw new Error(`Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`);
     }
   }
 
   const DEFAULT_FEE = 0;
 
-  const tokenLockData = {
-    walletLabel: activeWallet.label,
+  const tokenLockData: TokenLockDataParam = {
+    wallet: activeWallet.label,
     walletId: activeWallet.id,
-    chainLabel: getChainLabel(),
+    chain: getChainLabel(),
     source: data.source,
     amount: data.amount,
     currencyId: data.currencyId,
     unlockEpoch: data.unlockEpoch,
     fee: data.fee ? data.fee : DEFAULT_FEE,
     latestEpoch,
+    cypherockId,
+    publicKey: dagAccount?.publicKey,
   };
 
   windowSize.height = 628;
