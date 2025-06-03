@@ -2,11 +2,11 @@ import { dag4 } from '@stardust-collective/dag4';
 import { ecsign, hashPersonalMessage, toRpcSig } from 'ethereumjs-util';
 import React from 'react';
 
-import SignMessageContainer, { SignMessageProviderConfig } from 'scenes/external/SignMessage/SignMessageContainer';
-
 import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 
-const SignatureRequest: React.FC = () => {
+import SignMessageContainer, { SignMessageProviderConfig } from './SignMessageContainer';
+
+const SignMessage: React.FC = () => {
   const signDagMessage = async (message: string): Promise<string> => {
     const privateKeyHex = dag4.account.keyTrio.privateKey;
     return await dag4.keyStore.personalSign(privateKeyHex, message);
@@ -36,4 +36,4 @@ const SignatureRequest: React.FC = () => {
   return <SignMessageContainer {...externalSigningConfig} />;
 };
 
-export default SignatureRequest;
+export default SignMessage;
