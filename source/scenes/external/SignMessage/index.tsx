@@ -6,7 +6,7 @@ import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 
 import SignMessageContainer, { SignMessageProviderConfig } from './SignMessageContainer';
 
-const SignMessage: React.FC = () => {
+const SignMessage = () => {
   const signDagMessage = async (message: string): Promise<string> => {
     const privateKeyHex = dag4.account.keyTrio.privateKey;
     return await dag4.keyStore.personalSign(privateKeyHex, message);

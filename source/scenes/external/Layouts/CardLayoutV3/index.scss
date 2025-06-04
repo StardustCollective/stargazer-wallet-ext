@@ -14,12 +14,21 @@
     justify-content: flex-start;
     padding: 24px 24px 16px 24px;
 
-    .logo {
+    .logoContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       height: 40px;
       width: 40px;
       border-radius: 20px;
-      border: 1px solid #000;
+      border: 1px solid #d9cff4;
       background-color: #fff;
+
+      .logo {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+      }
     }
 
     .titleContainer {
@@ -70,6 +79,7 @@
       align-items: flex-start;
       margin-bottom: 20px;
       gap: 8px;
+      width: 100%;
 
       .feeTitle {
         color: #374151;
@@ -85,7 +95,7 @@
       }
 
       .recommendedLabel {
-        width: 130px;
+        min-width: 100px;
         color: #5d41d8;
         font-weight: $semibold;
       }

@@ -15,7 +15,7 @@ export const LEDGER_WALLET_LABEL = 'Ledger';
 export const BITFI_WALLET_LABEL = 'Bitfi';
 export const CYPHEROCK_WALLET_LABEL = 'Cypherock';
 
-export type HardwareWalletType = KeyringWalletType.BitfiAccountWallet | KeyringWalletType.CypherockAccountWallet | KeyringWalletType.LedgerAccountWallet;
+export type HardwareWalletType = KeyringWalletType.BitfiAccountWallet | KeyringWalletType.CypherockAccountWallet;
 
 export const SupportedMethods: Record<HardwareWalletType, AvailableMethods[]> = {
   [KeyringWalletType.BitfiAccountWallet]: [AvailableMethods.dag_sendTransaction, AvailableMethods.dag_signMessage],
@@ -23,11 +23,11 @@ export const SupportedMethods: Record<HardwareWalletType, AvailableMethods[]> = 
     AvailableMethods.dag_signData,
     AvailableMethods.dag_signMessage,
     AvailableMethods.dag_sendTransaction,
+    AvailableMethods.dag_sendMetagraphTransaction,
     AvailableMethods.dag_tokenLock,
     AvailableMethods.dag_delegatedStake,
     AvailableMethods.personal_sign,
   ],
-  [KeyringWalletType.LedgerAccountWallet]: [AvailableMethods.dag_signMessage, AvailableMethods.dag_sendTransaction],
 };
 
 export const validateHardwareMethod = (walletType: KeyringWalletType, method: AvailableMethods) => {

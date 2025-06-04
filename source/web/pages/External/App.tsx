@@ -14,12 +14,12 @@ import SelectAccounts from 'scenes/external/SelectAccounts';
 import SendMetagraphData from 'scenes/external/SendMetagraphData';
 import SignData from 'scenes/external/SignData';
 import SignMessage from 'scenes/external/SignMessage';
+import SignTransaction from 'scenes/external/SignTransaction';
 import TokenLock from 'scenes/external/TokenLock';
 import TypedSignatureRequest from 'scenes/external/TypedSignatureRequest';
 import WatchAsset from 'scenes/external/WatchAsset';
 import WithdrawDelegatedStakeView from 'scenes/external/WithdrawDelegatedStake';
 import ConfirmTransaction from 'scenes/home/SendAsset/Confirm';
-import SendTransaction from 'scenes/home/SendAsset/Send';
 import Loading from 'scenes/unauth/Loading';
 
 import { StargazerExternalPopups } from 'scripts/Background/messaging';
@@ -98,7 +98,7 @@ const App = () => {
 
           <PrivateRoute path={`/${ExternalRoute.SelectAccounts}`} component={SelectAccounts} />
           <PrivateRoute path={`/${ExternalRoute.ApproveSpend}`} component={ApproveSpend} />
-          <PrivateRoute path={`/${ExternalRoute.SignTransaction}`} component={SendTransaction} />
+          <PrivateRoute path={`/${ExternalRoute.SignTransaction}`} component={SignTransaction} />
           <PrivateRoute path={`/${ExternalRoute.ConfirmTransaction}`} component={ConfirmTransaction} />
           <PrivateRoute path={`/${ExternalRoute.SignMessage}`} component={SignMessage} />
           <PrivateRoute path={`/${ExternalRoute.SignData}`} component={SignData} />

@@ -1,18 +1,16 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import {
-  ProtocolProvider,
-  StargazerRequest,
-  StargazerRequestMessage,
-} from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { getWalletInfo } from '../utils';
-import { toDag } from 'utils/number';
-import { ExternalRoute } from 'web/pages/External/types';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
+import { AssetType } from 'state/vault/types';
+
 import { validateHardwareMethod } from 'utils/hardware';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { getChainLabel, getWalletInfo, WINDOW_TYPES } from '../utils';
 
 export type StargazerTransactionRequest = {
   source: string;
@@ -21,21 +19,30 @@ export type StargazerTransactionRequest = {
   fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
 };
 
-export const dag_sendTransaction = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
-  const { activeWallet, windowUrl, windowSize, windowType, cypherockId, deviceId } =
-    getWalletInfo();
+export type SignTransactionDataDAG = {
+  assetId: string;
+
+  from: string;
+  to: string;
+  value: number;
+  fee?: number;
+
+  chain: StargazerChain;
+  network: string;
+
+  cypherockId?: string;
+  publicKey?: string;
+  deviceId?: string;
+};
+
+export const dag_sendTransaction = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+  const { activeWallet, windowUrl, windowSize, windowType, cypherockId, deviceId } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
   }
 
-  const assetAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!assetAccount) {
     throw new Error('No active account for the request asset type');
@@ -82,20 +89,29 @@ export const dag_sendTransaction = async (
     throw new Error('The active account is invalid');
   }
 
-  const txObject = {
+  const signTxnData: SignTransactionDataDAG = {
+    assetId: AssetType.Constellation,
+
     from: txSource,
     to: txDestination,
-    value: toDag(txAmount),
-    fee: toDag(txFee),
-    chain: ProtocolProvider.CONSTELLATION,
-    cypherockId,
-    publicKey: assetAccount.publicKey,
-    deviceId,
+    value: txAmount,
+    fee: txFee,
+
+    chain: StargazerChain.CONSTELLATION,
+    network: getChainLabel(),
+
+    ...(cypherockId && { cypherockId }),
+    ...(assetAccount?.publicKey && { publicKey: assetAccount.publicKey }),
+    ...(deviceId && { deviceId }),
   };
+
+  if (windowType === WINDOW_TYPES.popup) {
+    windowSize.height = 740;
+  }
 
   await StargazerExternalPopups.executePopup({
     params: {
-      data: txObject,
+      data: signTxnData,
       message,
       origin: sender.origin,
       route: ExternalRoute.SignTransaction,

@@ -1,18 +1,11 @@
-import React from 'react';
+import 'assets/styles/global.scss';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
-import 'assets/styles/global.scss';
-import SignTransactionView, {
-  ISignTransactionProps,
-} from 'scenes/external/views/sign-transaction';
-import { useSelector } from 'react-redux';
-import assetsSelectors from 'selectors/assetsSelectors';
-import { getChainLabel } from 'scripts/Provider/constellation';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+import React from 'react';
+
+import SignTransactionContainer, { SignTransactionProviderConfig } from 'scenes/external/SignTransaction/SignTransactionContainer';
+
 import styles from './styles.module.scss';
 
 interface ISignViewProps {
@@ -20,61 +13,34 @@ interface ISignViewProps {
   waiting: boolean;
   waitingMessage: string;
   transactionSigned: boolean;
-  onSignPress: () => Promise<void>;
+  onSignPress: (fee: string) => Promise<void>;
 }
 
-const SignView = ({
-  waiting,
-  code,
-  waitingMessage,
-  transactionSigned,
-  onSignPress,
-}: ISignViewProps) => {
-  const dagAsset = useSelector(assetsSelectors.getAssetBySymbol('DAG'));
-
-  const network = getChainLabel();
-
-  const {
-    message: messageRequest,
-    data,
-    origin,
-  } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
-    from: string;
-    to: string;
-    value: string;
-    fee: string;
-    deviceId: string;
-    publicKey: string;
-  }>(location.href);
-
-  const { from, to, value, fee, deviceId } = data;
-
-  const fromDapp = origin !== 'stargazer-wallet';
-
-  const onReject = async (): Promise<void> => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    await StargazerWSMessageBroker.sendResponseError(
-      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
-      messageRequest
-    );
-    window.close();
-  };
-
-  const props: ISignTransactionProps = {
+const SignView = ({ waiting, code, waitingMessage, transactionSigned, onSignPress }: ISignViewProps) => {
+  const bitfiSigningConfig: SignTransactionProviderConfig = {
     title: 'Bitfi - Sign Transaction',
-    network,
-    asset: dagAsset,
-    amount: value,
-    fee,
-    from,
-    to,
-    deviceId,
-    footer:
-      'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
-    fromDapp,
-    containerStyles: styles.container,
-    onSign: onSignPress,
-    onReject,
+    footer: 'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
+    onSignTransaction: async ({ isDAGTransaction, isMetagraphTransaction, isEVMTransaction, fee }) => {
+      if (isDAGTransaction) {
+        await onSignPress(fee);
+      }
+
+      if (isMetagraphTransaction) {
+        throw new Error('Metagraph transactions not supported with Bitfi hardware wallet');
+      }
+
+      if (isEVMTransaction) {
+        throw new Error('EVM transactions not supported with Bitfi hardware wallet');
+      }
+
+      throw new Error('Unsupported transaction type');
+    },
+    onSuccess: async txHash => {
+      console.log('hash', txHash);
+    },
+    onError: async error => {
+      console.log('error', error);
+    },
   };
 
   return transactionSigned ? (
@@ -84,14 +50,12 @@ const SignView = ({
       </section>
       <section className={styles.content}>
         <CheckIcon className={styles.checked} />
-        <div className="body-description">
-          You can follow your transaction under activity on your account screen.
-        </div>
+        <div className="body-description">You can follow your transaction under activity on your account screen.</div>
       </section>
     </div>
   ) : (
     <div className={styles.wrapper}>
-      <SignTransactionView {...props} />
+      <SignTransactionContainer {...bitfiSigningConfig} />
       {waiting && (
         <div className={styles.progressWrapper}>
           <div className={styles.progress}>

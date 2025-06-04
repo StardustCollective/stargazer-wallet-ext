@@ -1,18 +1,30 @@
+import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import React from 'react';
+import { useSelector } from 'react-redux';
+
+import { ReactComponent as CypherockLogo } from 'assets/images/svg/cypherock-animated.svg';
+import { COLORS_ENUMS } from 'assets/styles/colors';
+
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
+
+import { useFiat } from 'hooks/usePrice';
+
 import Card from 'scenes/external/components/Card/Card';
 import CardRow from 'scenes/external/components/CardRow/CardRow';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
-import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
-import { COLORS_ENUMS } from 'assets/styles/colors';
-import { useSelector } from 'react-redux';
-import dappSelectors from 'selectors/dappSelectors';
-import { IAssetInfoState } from 'state/assets/types';
-import { useFiat } from 'hooks/usePrice';
-import { formatBigNumberForDisplay } from 'utils/number';
-import { AssetType } from 'state/vault/types';
+
 import { getNativeToken } from 'scripts/Background/controllers/EVMChainController/utils';
-import styles from './styles.scss';
+
+import dappSelectors from 'selectors/dappSelectors';
 import walletsSelectors from 'selectors/walletsSelectors';
+
+import { IAssetInfoState } from 'state/assets/types';
+import { AssetType } from 'state/vault/types';
+
+import { HardwareWalletType } from 'utils/hardware';
+import { formatBigNumberForDisplay, toDag } from 'utils/number';
+
+import styles from './styles.scss';
 
 export interface ISignTransactionProps {
   title: string;
@@ -20,54 +32,72 @@ export interface ISignTransactionProps {
   deviceId?: string;
   asset: IAssetInfoState;
   amount: number | string;
-  fee: number | string;
+  fee: string;
+  setFee: (fee: string) => void;
   from: string;
-  to: string;
+  to?: string;
   footer?: string;
+  origin?: string;
   containerStyles?: string;
-  fromDapp?: boolean;
   onSign: () => Promise<void>;
   onReject: () => Promise<void>;
 }
 
-const SignTransactionView = ({
-  title,
-  network,
-  deviceId,
-  asset,
-  amount,
-  fee,
-  from,
-  to,
-  footer,
-  fromDapp = true,
-  containerStyles,
-  onSign,
-  onReject,
-}: ISignTransactionProps) => {
+const WALLET_LOGO: Record<HardwareWalletType, string | JSX.Element> = {
+  [KeyringWalletType.CypherockAccountWallet]: <CypherockLogo className={styles.logo} />,
+  [KeyringWalletType.BitfiAccountWallet]: '/assets/images/bitfi_logo.png',
+};
+
+const SignTransactionView = ({ title, network, deviceId, asset, amount, fee, origin, from, to, footer, containerStyles, setFee, onSign, onReject }: ISignTransactionProps) => {
   const activeWallet = useSelector(walletsSelectors.getActiveWallet);
   const current = useSelector(dappSelectors.getCurrent);
 
+  const calculateTotal = (amountValue: number | string, feeValue: string): { amountNumber: number; feeNumber: number; totalNumber: number } => {
+    if (asset.type === AssetType.Constellation) {
+      const amountInDag = toDag(amountValue);
+      const feeInDag = Number(feeValue);
+      const totalInDag = amountInDag + feeInDag;
+
+      return { amountNumber: amountInDag, feeNumber: feeInDag, totalNumber: totalInDag };
+    }
+
+    return { amountNumber: Number(amount), feeNumber: Number(feeValue), totalNumber: Number(amount) + Number(feeValue) };
+  };
+
   // Calculate the max total amount in fiat
   const getFiatAmount = useFiat(true, asset);
-  const total = Number(amount) + Number(fee);
-  const maxTotal = getFiatAmount(total, 2);
+  const { amountNumber, feeNumber, totalNumber } = calculateTotal(amount, fee);
 
   // Format the amount and fee values
-  const amountValue = formatBigNumberForDisplay(amount);
-  const feeValue = formatBigNumberForDisplay(fee ?? 0);
+  const amountValue = formatBigNumberForDisplay(amountNumber);
+  const feeValue = formatBigNumberForDisplay(feeNumber);
 
-  const feeSymbol =
-    asset.type === AssetType.Constellation ? asset.symbol : getNativeToken(asset.network);
+  const feeSymbol = asset.type === AssetType.Constellation ? asset.symbol : getNativeToken(asset.network);
 
   const amountString = `${amountValue} ${asset.symbol}`;
   const feeString = `${feeValue} ${feeSymbol}`;
 
+  const fromDapp = origin !== 'stargazer-wallet';
   const subtitle = fromDapp ? current.origin : null;
-  const logo = fromDapp ? current.logo : null;
+  const logo = fromDapp ? current.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
+
+  const assetWithPrice = 'priceId' in asset;
+  const totalLabel = assetWithPrice ? 'Max Total:' : 'Total:';
+  const totalValue = assetWithPrice ? getFiatAmount(totalNumber, 2) : `${formatBigNumberForDisplay(totalNumber)} ${feeSymbol}`;
+
+  const recommendedFee = asset.type === AssetType.Constellation ? '0' : '0';
 
   return (
     <CardLayoutV3
+      fee={{
+        show: true,
+        defaultValue: feeNumber.toString(),
+        value: fee,
+        recommended: recommendedFee,
+        symbol: feeSymbol,
+        disabled: false,
+        setFee,
+      }}
       logo={logo}
       title={title}
       subtitle={subtitle}
@@ -90,10 +120,10 @@ const SignTransactionView = ({
         </Card>
         <Card>
           <CardRow.Address label="From:" value={from} />
-          <CardRow.Address label="To:" value={to} />
+          {!!to && <CardRow.Address label="To:" value={to} />}
         </Card>
         <Card>
-          <CardRow label="Max Total:" value={maxTotal} />
+          <CardRow label={totalLabel} value={totalValue} />
         </Card>
         {!!footer && (
           <TextV3.CaptionRegular color={COLORS_ENUMS.RED} align={TEXT_ALIGN_ENUM.CENTER}>

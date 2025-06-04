@@ -1,4 +1,5 @@
-import { StargazerRequestMessage, isStargazerRequestMessage } from 'scripts/common';
+import { isStargazerRequestMessage, StargazerRequestMessage } from 'scripts/common';
+
 import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
 import { HARDWARE_WALLETS_PAGES } from 'utils/hardware';
 
@@ -18,12 +19,7 @@ type ExecutePopupProps = {
 };
 
 export class StargazerExternalPopups {
-  static async createPopup(
-    params: PopupParams,
-    url = '/external.html',
-    size = { width: 372, height: 600 },
-    type: chrome.windows.createTypeEnum = 'popup'
-  ) {
+  static async createPopup(params: PopupParams, url = '/external.html', size = { width: 372, height: 600 }, type: chrome.windows.createTypeEnum = 'popup') {
     const { width = 372, height = 600 } = size;
 
     const currentWindow = await chrome.windows.getCurrent();
@@ -54,12 +50,7 @@ export class StargazerExternalPopups {
     });
   }
 
-  static async executePopup({
-    params,
-    url = '/external.html',
-    size = { width: 372, height: 600 },
-    type = 'popup',
-  }: ExecutePopupProps) {
+  static async executePopup({ params, url = '/external.html', size = { width: 372, height: 600 }, type = 'popup' }: ExecutePopupProps) {
     const isHardwareWallet = HARDWARE_WALLETS_PAGES.includes(url);
 
     if (isHardwareWallet) {
@@ -73,7 +64,7 @@ export class StargazerExternalPopups {
   static addResolvedParam(href: string): void {
     const params = StargazerExternalPopups.decodeRequestMessageLocationParams(href);
 
-    let url = new URL(href);
+    const url = new URL(href);
     let updatedURL = url.origin + url.pathname;
 
     const urlParams = StargazerExternalPopups.encodeLocationParams({
@@ -89,8 +80,7 @@ export class StargazerExternalPopups {
   static encodeLocationParams(params: Record<string, any>) {
     const urlParams = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
-      const valueString =
-        typeof value === 'object' ? JSON.stringify(value) : String(value);
+      const valueString = typeof value === 'object' ? JSON.stringify(value) : String(value);
       const valueEncoded = encodeToBase64(valueString);
       urlParams.set(key, valueEncoded);
     }

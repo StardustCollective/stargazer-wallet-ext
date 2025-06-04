@@ -1,19 +1,16 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-import {
-  ProtocolProvider,
-  StargazerRequest,
-  StargazerRequestMessage,
-} from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { getWalletInfo, validateMetagraphAddress } from '../utils';
-import { toDag } from 'utils/number';
-import { ExternalRoute } from 'web/pages/External/types';
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
 import { validateHardwareMethod } from 'utils/hardware';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { getChainLabel, getWalletInfo, validateMetagraphAddress, WINDOW_TYPES } from '../utils';
+
+import { SignTransactionDataDAG } from './dag_sendTransaction';
 
 export type StargazerMetagraphTransactionRequest = {
   metagraphAddress: string;
@@ -23,20 +20,14 @@ export type StargazerMetagraphTransactionRequest = {
   fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
 };
 
-export const dag_sendMetagraphTransaction = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+export const dag_sendMetagraphTransaction = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+  const { activeWallet, windowUrl, windowSize, windowType, cypherockId, deviceId } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
   }
 
-  const assetAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!assetAccount) {
     throw new Error('No active account for the request asset type');
@@ -52,7 +43,7 @@ export const dag_sendMetagraphTransaction = async (
   const txAmount = txData?.amount;
   const txFee = txData?.fee || 0;
 
-  validateMetagraphAddress(txMetagraphAddress);
+  const metagraphToken = validateMetagraphAddress(txMetagraphAddress);
 
   if (typeof txSource !== 'string') {
     throw new Error("Bad argument 'source'");
@@ -86,17 +77,29 @@ export const dag_sendMetagraphTransaction = async (
     throw new Error('The active account is invalid');
   }
 
-  const txObject = {
-    metagraphAddress: txMetagraphAddress,
+  const signMetagraphTxnData: SignTransactionDataDAG = {
+    assetId: metagraphToken.id,
+
+    from: txSource,
     to: txDestination,
-    value: toDag(txAmount),
-    fee: toDag(txFee),
-    chain: ProtocolProvider.CONSTELLATION,
+    value: txAmount,
+    fee: txFee,
+
+    chain: StargazerChain.CONSTELLATION,
+    network: getChainLabel(),
+
+    ...(cypherockId && { cypherockId }),
+    ...(assetAccount?.publicKey && { publicKey: assetAccount.publicKey }),
+    ...(deviceId && { deviceId }),
   };
+
+  if (windowType === WINDOW_TYPES.popup) {
+    windowSize.height = 740;
+  }
 
   await StargazerExternalPopups.executePopup({
     params: {
-      data: txObject,
+      data: signMetagraphTxnData,
       message,
       origin: sender.origin,
       route: ExternalRoute.SignTransaction,

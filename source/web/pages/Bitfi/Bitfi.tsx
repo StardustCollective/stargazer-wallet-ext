@@ -1,62 +1,34 @@
-/////////////////////////
-// Module Imports
-/////////////////////////
-
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { LedgerAccount } from '@stardust-collective/dag4-ledger';
-import {
-  KeyringAssetType,
-  KeyringNetwork,
-  KeyringWalletType,
-} from '@stardust-collective/dag4-keyring';
-import { makeStyles } from '@material-ui/core/styles';
-import BitfiBridgeUtil from '../../utils/bitfiBridge';
-import _ from 'lodash';
-
-/////////////////////////
-// Component Imports
-/////////////////////////
+/* eslint-disable react/no-unstable-nested-components */
+import 'assets/styles/global.scss';
 
 import Card from '@material-ui/core/Card';
-import { Header, AlertBar } from './components';
-
-/////////////////////////
-// View Imports
-/////////////////////////
-
-import ConnectView, { ConnectBitfiView } from './views/connect';
-import FetchingProgressView from './views/fetchingProgress';
-import AccountsView from './views/accounts';
-import SignView from './views/sign';
-import ImportSuccess from './views/importSuccess';
-import MessageSigning from './views/messageSigning';
-
-/////////////////////////
-// Styles
-/////////////////////////
-
-import 'assets/styles/global.scss';
+import { makeStyles } from '@material-ui/core/styles';
 import { Color } from '@material-ui/lab/Alert';
 import { dag4 } from '@stardust-collective/dag4';
+import { KeyringAssetType, KeyringNetwork, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { LedgerAccount } from '@stardust-collective/dag4-ledger';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-/////////////////////////
-// Types
-/////////////////////////
-
-import IVaultState from 'state/vault/types';
-import { RootState } from 'state/store';
-import { getWalletController } from 'utils/controllersUtils';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
+
+import { RootState } from 'state/store';
+import IVaultState from 'state/vault/types';
+
+import { getWalletController } from 'utils/controllersUtils';
 import { HardwareWallet } from 'utils/hardware';
 
-/////////////////////////
-// Constants
-/////////////////////////
+import BitfiBridgeUtil from '../../utils/bitfiBridge';
+
+import AccountsView from './views/accounts';
+import ConnectView, { ConnectBitfiView } from './views/connect';
+import FetchingProgressView from './views/fetchingProgress';
+import ImportSuccess from './views/importSuccess';
+import MessageSigning from './views/messageSigning';
+import SignView from './views/sign';
+import { AlertBar, Header } from './components';
 
 // Strings
 const ROUTES = {
@@ -74,6 +46,7 @@ const BITFI_ERROR_STRINGS = {
   REJECTED: 'REJECTED',
   ERROR_CODE_ZERO: '0',
 };
+
 const ALERT_MESSAGES_STRINGS = {
   DEFAULT: 'Error: Please contact support.',
   TIMEOUT: 'Error: Timeout, please, try again',
@@ -90,10 +63,6 @@ enum ALERT_SEVERITY_STATE {
   WARNING = 'warning',
   INFO = 'info',
 }
-
-/////////////////////////
-// ENUMS
-/////////////////////////
 
 enum WALLET_STATE_ENUM {
   LOCKED = 1,
@@ -113,35 +82,21 @@ enum PAGING_ACTIONS_ENUM {
   PREVIOUS,
 }
 
-/////////////////////////
-// Style Hooks
-/////////////////////////
-
 const useStyles = makeStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
     width: 380,
-    height: 570,
+    minHeight: 570,
     backgroundColor: '#ffffff',
     borderRadius: 6,
   },
 });
 
-/////////////////////////
-// Page
-/////////////////////////
-
 const BitfiPage = () => {
-  /////////////////////////
-  // Hooks
-  /////////////////////////
-
   const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
   const classes = useStyles();
-  const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(
-    WALLET_STATE_ENUM.LOCKED
-  );
+  const [walletState, setWalletState] = useState<WALLET_STATE_ENUM>(WALLET_STATE_ENUM.LOCKED);
   const [accountData, setAccountData] = useState<LedgerAccount[]>([]);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [selectedAccounts, setSelectedAccounts] = useState<HardwareWallet[]>([]);
@@ -168,10 +123,9 @@ const BitfiPage = () => {
 
   useEffect(() => {
     if (location.href.includes('data') && location.href.includes('route')) {
-      const { data, message, route } =
-        StargazerExternalPopups.decodeRequestMessageLocationParams<{
-          deviceId: string;
-        }>(location.href);
+      const { data, route } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+        deviceId: string;
+      }>(location.href);
 
       const { deviceId: id } = data;
 
@@ -184,14 +138,6 @@ const BitfiPage = () => {
       } else if (route === ROUTES.SIGN_MESSAGE) {
         setWalletState(WALLET_STATE_ENUM.MESSAGE_SIGNING);
       } else {
-        StargazerExternalPopups.addResolvedParam(location.href);
-        StargazerWSMessageBroker.sendResponseError(
-          new EIPRpcError(
-            'Transaction not supported by Bitfi',
-            EIPErrorCodes.Unsupported
-          ),
-          message
-        );
         window.close();
       }
     }
@@ -224,59 +170,53 @@ const BitfiPage = () => {
   /////////////////////////
 
   const getAccountData = async (pagingAction: PAGING_ACTIONS_ENUM) => {
-    let accountData: LedgerAccount[];
+    let accountDataArray: LedgerAccount[];
     // Get Ledger account data
 
     setFetchingPage(true);
 
     try {
       if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
-        accountData = await BitfiBridgeUtil.getInitialPage();
-        setAccountData(accountData);
+        accountDataArray = await BitfiBridgeUtil.getInitialPage();
+        setAccountData(accountDataArray);
         setWalletState(WALLET_STATE_ENUM.VIEW_ACCOUNTS);
       } else if (pagingAction === PAGING_ACTIONS_ENUM.NEXT) {
-        accountData = await BitfiBridgeUtil.getNextPage();
-        setAccountData(accountData);
+        accountDataArray = await BitfiBridgeUtil.getNextPage();
+        setAccountData(accountDataArray);
       } else if (pagingAction === PAGING_ACTIONS_ENUM.PREVIOUS) {
-        accountData = await BitfiBridgeUtil.getPreviousPage();
-        setAccountData(accountData);
+        accountDataArray = await BitfiBridgeUtil.getPreviousPage();
+        setAccountData(accountDataArray);
       }
       setStartIndex(BitfiBridgeUtil.startIndex);
-    } catch (error: any) {
-      console.log('error', error);
+    } catch (err: any) {
+      console.log('error', err);
       if (pagingAction === PAGING_ACTIONS_ENUM.INITIAL) {
         setWalletState(WALLET_STATE_ENUM.LOCKED);
       } else {
         setFetchingPage(false);
       }
-      showAlert(error);
+      showAlert(err);
     }
     setFetchingPage(false);
     setAccountsLoadProgress(0);
   };
 
-  const showAlert = (error: string): void => {
-    console.log('Error: ' + error);
+  const showAlert = (err: string): void => {
+    console.log(`Error: ${err}`);
     let errorMessage = ALERT_MESSAGES_STRINGS.DEFAULT;
-    let errorSeverity = ALERT_SEVERITY_STATE.ERROR;
+    const errorSeverity = ALERT_SEVERITY_STATE.ERROR;
 
-    if (error.includes(BITFI_ERROR_STRINGS.INVALID_HEX_STRING)) {
+    if (err.includes(BITFI_ERROR_STRINGS.INVALID_HEX_STRING)) {
       errorMessage = ALERT_MESSAGES_STRINGS.INVLAID_DEVICE_ID;
-    } else if (
-      error.includes(BITFI_ERROR_STRINGS.INVLAID_DEVICE_ID) ||
-      error.includes(BITFI_ERROR_STRINGS.CANNOT_READ_PROPERTIES)
-    ) {
+    } else if (err.includes(BITFI_ERROR_STRINGS.INVLAID_DEVICE_ID) || err.includes(BITFI_ERROR_STRINGS.CANNOT_READ_PROPERTIES)) {
       errorMessage = ALERT_MESSAGES_STRINGS.INVLAID_DEVICE_ID;
-    } else if (
-      error.includes(BITFI_ERROR_STRINGS.REJECTED) ||
-      error.includes(BITFI_ERROR_STRINGS.ERROR_CODE_ZERO)
-    ) {
+    } else if (err.includes(BITFI_ERROR_STRINGS.REJECTED) || err.includes(BITFI_ERROR_STRINGS.ERROR_CODE_ZERO)) {
       errorMessage = ALERT_MESSAGES_STRINGS.REJECTED;
-    } else if (error.includes(BITFI_ERROR_STRINGS.TIMEOUT)) {
+    } else if (err.includes(BITFI_ERROR_STRINGS.TIMEOUT)) {
       errorMessage = ALERT_MESSAGES_STRINGS.TIMEOUT;
-    } else if (error.includes(BITFI_ERROR_STRINGS.BUSY)) {
+    } else if (err.includes(BITFI_ERROR_STRINGS.BUSY)) {
       errorMessage = ALERT_MESSAGES_STRINGS.BUSY;
-    } else if (error.includes(BITFI_ERROR_STRINGS.BLOCKED)) {
+    } else if (err.includes(BITFI_ERROR_STRINGS.BLOCKED)) {
       errorMessage = ALERT_MESSAGES_STRINGS.BLOCKED;
     }
 
@@ -289,20 +229,20 @@ const BitfiPage = () => {
   // Callbacks
   /////////////////////////
 
-  const onConnectError = (error: string) => {
-    showAlert(error);
+  const onConnectError = (err: string) => {
+    showAlert(err);
   };
 
   // Handles the click to the Connect with Ledger Button
 
-  const onConnectClick = async (deviceId: string) => {
+  const onConnectClick = async (devId: string) => {
     try {
       // Close any open alerts
       // Request permission to access the ledger device.
       setCode('');
       setWalletState(WALLET_STATE_ENUM.BITFI_SIGNIN);
-      setDeviceId(deviceId);
-      await BitfiBridgeUtil.requestPermissions(deviceId, setMessage, setCode);
+      setDeviceId(devId);
+      await BitfiBridgeUtil.requestPermissions(devId, setMessage, setCode);
       // Get the initial page of the account data
       await getAccountData(PAGING_ACTIONS_ENUM.INITIAL);
     } catch (exc: any) {
@@ -322,7 +262,7 @@ const BitfiPage = () => {
     if (checked) {
       console.log('Key: ');
       console.log(key);
-      setSelectedAccounts((state) => {
+      setSelectedAccounts(state => {
         return [
           ...state,
           {
@@ -343,8 +283,8 @@ const BitfiPage = () => {
       console.log('Selected Accounts: ');
       console.log(selectedAccounts);
     } else {
-      setSelectedAccounts((state) => {
-        _.remove(state, (item) => item.accounts[0].address === account.address);
+      setSelectedAccounts(state => {
+        _.remove(state, item => item.accounts[0].address === account.address);
         return [...state];
       });
     }
@@ -365,22 +305,21 @@ const BitfiPage = () => {
   };
 
   const onSignMessagePress = async () => {
-    const { data, message: messageRequest } =
-      StargazerExternalPopups.decodeRequestMessageLocationParams<{
-        deviceId: string;
-        payload: string;
-      }>(location.href);
+    const { data, message: messageRequest } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      deviceId: string;
+      payload: string;
+    }>(location.href);
 
-    const { deviceId, payload } = data;
+    const { deviceId: devId, payload } = data;
 
     try {
       setWaitingForBitfi(true);
       setCode('');
 
       await BitfiBridgeUtil.requestPermissions(
-        deviceId as string,
-        (message) => {
-          setWaitingMessage(message);
+        devId as string,
+        msg => {
+          setWaitingMessage(msg);
         },
         setCode
       );
@@ -392,14 +331,11 @@ const BitfiPage = () => {
 
       BitfiBridgeUtil.closeConnection();
       window.close();
-    } catch (error: any) {
-      showAlert(error.message || error.toString());
+    } catch (err: any) {
+      showAlert(err.message || err.toString());
       setWaitingForBitfi(false);
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(
-        new EIPRpcError(error.message, EIPErrorCodes.Unknown),
-        messageRequest
-      );
+      StargazerWSMessageBroker.sendResponseError(new EIPRpcError(err.message, EIPErrorCodes.Unknown), messageRequest);
       BitfiBridgeUtil.closeConnection();
     }
   };
@@ -413,24 +349,22 @@ const BitfiPage = () => {
     setWalletState(WALLET_STATE_ENUM.LOCKED);
   };
 
-  const onSignPress = async () => {
-    const { data, message: messageRequest } =
-      StargazerExternalPopups.decodeRequestMessageLocationParams<{
-        amount: string;
-        fee: string;
-        from: string;
-        to: string;
-      }>(location.href);
+  const onSignPress = async (fee: string) => {
+    const { data, message: messageRequest } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+      amount: string;
+      from: string;
+      to: string;
+    }>(location.href);
 
-    const { amount, fee, from, to } = data;
+    const { amount, from, to } = data;
 
     try {
       setWaitingForBitfi(true);
       setCode('');
       await BitfiBridgeUtil.requestPermissions(
         deviceId as string,
-        (message) => {
-          setWaitingMessage(message);
+        msg => {
+          setWaitingMessage(msg);
         },
         setCode
       );
@@ -445,109 +379,50 @@ const BitfiPage = () => {
       setTransactionSigned(true);
       BitfiBridgeUtil.closeConnection();
       window.close();
-    } catch (error: any) {
-      showAlert(error.message || error.toString());
+    } catch (err: any) {
+      showAlert(err.message || err.toString());
       setWaitingForBitfi(false);
 
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(
-        new EIPRpcError(error.message, EIPErrorCodes.Unknown),
-        messageRequest
-      );
+      StargazerWSMessageBroker.sendResponseError(new EIPRpcError(err.message, EIPErrorCodes.Unknown), messageRequest);
 
       BitfiBridgeUtil.closeConnection();
     }
   };
 
-  function RenderByWalletState() {
+  const RenderByWalletState = () => {
     if (walletState === WALLET_STATE_ENUM.BITFI_SIGNIN) {
-      return (
-        <>
-          <ConnectBitfiView
-            message={message}
-            error={error}
-            code={code}
-            onBack={() => setWalletState(WALLET_STATE_ENUM.LOCKED)}
-          />
-        </>
-      );
-    } else if (walletState === WALLET_STATE_ENUM.LOCKED) {
-      return (
-        <>
-          <ConnectView onConnectClick={onConnectClick} onConnectError={onConnectError} />
-        </>
-      );
-    } else if (walletState === WALLET_STATE_ENUM.FETCHING) {
-      return (
-        <>
-          <FetchingProgressView accountsLoadProgress={accountsLoadProgress} />
-        </>
-      );
-    } else if (walletState === WALLET_STATE_ENUM.VIEW_ACCOUNTS) {
-      return (
-        <>
-          <AccountsView
-            onCancelClick={onCancelClick}
-            onImportClick={onImportClick}
-            onCheckboxChange={onCheckboxChange}
-            accountData={accountData}
-            checkBoxesState={checkBoxesState}
-            fetchingPage={fetchingPage}
-            startIndex={startIndex}
-          />
-        </>
-      );
-    } else if (walletState === WALLET_STATE_ENUM.SUCCESS) {
-      return (
-        <>
-          <ImportSuccess />
-        </>
-      );
-    } else if (walletState === WALLET_STATE_ENUM.SIGN_TRANSACTION) {
-      return (
-        <>
-          <SignView
-            code={code}
-            waiting={waitingForBitfi}
-            onSignPress={onSignPress}
-            transactionSigned={transactionSigned}
-            waitingMessage={waitingMessage}
-          />
-        </>
-      );
-    } else if (walletState === WALLET_STATE_ENUM.MESSAGE_SIGNING) {
-      return (
-        <>
-          <MessageSigning
-            code={code}
-            waitingMessage={waitingMessage}
-            waiting={waitingForBitfi}
-            onSignMessagePress={onSignMessagePress}
-            messageSigned={transactionSigned}
-          />
-        </>
-      );
+      return <ConnectBitfiView message={message} error={error} code={code} onBack={() => setWalletState(WALLET_STATE_ENUM.LOCKED)} />;
+    }
+    if (walletState === WALLET_STATE_ENUM.LOCKED) {
+      return <ConnectView onConnectClick={onConnectClick} onConnectError={onConnectError} />;
+    }
+    if (walletState === WALLET_STATE_ENUM.FETCHING) {
+      return <FetchingProgressView accountsLoadProgress={accountsLoadProgress} />;
+    }
+    if (walletState === WALLET_STATE_ENUM.VIEW_ACCOUNTS) {
+      return <AccountsView onCancelClick={onCancelClick} onImportClick={onImportClick} onCheckboxChange={onCheckboxChange} accountData={accountData} checkBoxesState={checkBoxesState} fetchingPage={fetchingPage} startIndex={startIndex} />;
+    }
+    if (walletState === WALLET_STATE_ENUM.SUCCESS) {
+      return <ImportSuccess />;
+    }
+    if (walletState === WALLET_STATE_ENUM.SIGN_TRANSACTION) {
+      return <SignView code={code} waiting={waitingForBitfi} onSignPress={onSignPress} transactionSigned={transactionSigned} waitingMessage={waitingMessage} />;
+    }
+    if (walletState === WALLET_STATE_ENUM.MESSAGE_SIGNING) {
+      return <MessageSigning code={code} waitingMessage={waitingMessage} waiting={waitingForBitfi} onSignMessagePress={onSignMessagePress} messageSigned={transactionSigned} />;
     }
 
     return null;
-  }
+  };
 
-  if (
-    [WALLET_STATE_ENUM.MESSAGE_SIGNING, WALLET_STATE_ENUM.SIGN_TRANSACTION].includes(
-      walletState
-    )
-  ) {
+  if ([WALLET_STATE_ENUM.MESSAGE_SIGNING, WALLET_STATE_ENUM.SIGN_TRANSACTION].includes(walletState)) {
     return (
       <div>
         <Card className={classes.root}>
           <RenderByWalletState />
         </Card>
-        <AlertBar
-          openAlert={openAlert}
-          message={alertMessage}
-          severity={alertSeverity}
-          onClose={onAlertBarClose}
-        />
+        <AlertBar openAlert={openAlert} message={alertMessage} severity={alertSeverity} onClose={onAlertBarClose} />
       </div>
     );
   }
@@ -558,12 +433,7 @@ const BitfiPage = () => {
         <Header />
         <RenderByWalletState />
       </Card>
-      <AlertBar
-        openAlert={openAlert}
-        message={alertMessage}
-        severity={alertSeverity}
-        onClose={onAlertBarClose}
-      />
+      <AlertBar openAlert={openAlert} message={alertMessage} severity={alertSeverity} onClose={onAlertBarClose} />
     </div>
   );
 };

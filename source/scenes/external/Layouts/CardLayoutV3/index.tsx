@@ -1,15 +1,18 @@
-import React, { FC } from 'react';
-import * as yup from 'yup';
 import clsx from 'clsx';
-import TextV3 from 'components/TextV3';
+import React, { FC } from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+
+import { COLORS_ENUMS } from 'assets/styles/colors';
+
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import TextInput from 'components/TextInput';
-import { COLORS_ENUMS } from 'assets/styles/colors';
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
+
 import styles from './index.scss';
-import { useForm } from 'react-hook-form';
 
 type ICardLayoutV3Props = {
-  logo: string;
+  logo: string | JSX.Element;
   title: string;
   subtitle?: string;
   negativeButtonLabel?: string;
@@ -23,6 +26,7 @@ type ICardLayoutV3Props = {
     value: string;
     symbol: string;
     disabled: boolean;
+    recommended: string;
     setFee: (fee: string) => void;
   };
   children: React.ReactChild | React.ReactChild[];
@@ -58,21 +62,20 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
     validationSchema: yup.object().shape({
       fee: yup
         .string()
-        .test('number', FEE_MUST_NUMBER, (val) => {
-          if (!!val) {
-            const regex = new RegExp(/^\d+(\.\d+)?$/);
-            return regex.test(val);
+        .test('number', FEE_MUST_NUMBER, val => {
+          if (val) {
+            return /^\d+(\.\d+)?$/.test(val);
           }
           return true;
         })
-        .test('min', FEE_GREATER_THAN_ZERO, (val) => {
-          if (!!val) {
+        .test('min', FEE_GREATER_THAN_ZERO, val => {
+          if (val) {
             return Number(val) >= MIN_FEE;
           }
           return true;
         })
-        .test('max', FEE_TOO_BIG, (val) => {
-          if (!!val) {
+        .test('max', FEE_TOO_BIG, val => {
+          if (val) {
             return Number(val) <= MAX_FEE;
           }
           return true;
@@ -81,8 +84,7 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
     }),
   });
 
-  isPositiveButtonDisabled =
-    isPositiveButtonDisabled || (!fee?.disabled && !!errors?.fee);
+  isPositiveButtonDisabled = isPositiveButtonDisabled || (!fee?.disabled && !!errors?.fee);
 
   const handleFeeChange = (value: string) => {
     setValue('fee', value);
@@ -93,14 +95,10 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
   return (
     <div className={clsx(styles.container, containerStyles)}>
       <div className={styles.header}>
-        {!!logo && <img src={logo} className={styles.logo} />}
+        {!!logo && <div className={styles.logoContainer}>{typeof logo === 'string' ? <img src={logo} className={styles.logo} alt="logo" /> : logo}</div>}
         <div className={styles.titleContainer}>
-          <TextV3.LabelSemiStrong extraStyles={styles.title}>
-            {title}
-          </TextV3.LabelSemiStrong>
-          {!!subtitle && (
-            <TextV3.Caption extraStyles={styles.subtitle}>{subtitle}</TextV3.Caption>
-          )}
+          <TextV3.LabelSemiStrong extraStyles={styles.title}>{title}</TextV3.LabelSemiStrong>
+          {!!subtitle && <TextV3.Caption extraStyles={styles.subtitle}>{subtitle}</TextV3.Caption>}
         </div>
       </div>
 
@@ -109,11 +107,8 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
       <div className={styles.actions}>
         {!!fee?.show && (
           <div className={styles.feeSection}>
-            <TextV3.CaptionStrong
-              color={COLORS_ENUMS.BLACK}
-              extraStyles={styles.feeTitle}
-            >
-              Transaction Fee
+            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.feeTitle}>
+              Transaction fee
             </TextV3.CaptionStrong>
             <TextInput
               type="number"
@@ -122,42 +117,26 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
               name="fee"
               value={fee?.value}
               error={!!errors?.fee}
-              onChange={(ev) => handleFeeChange(ev.target.value)}
+              onChange={ev => handleFeeChange(ev.target.value)}
               disabled={fee?.disabled}
               endAdornment={
-                <TextV3.Caption
-                  extraStyles={styles.recommendedLabel}
-                  color={COLORS_ENUMS.PRIMARY_LIGHTER_1}
-                >
-                  Recommended
+                <TextV3.Caption extraStyles={styles.recommendedLabel} align={TEXT_ALIGN_ENUM.RIGHT} color={COLORS_ENUMS.PRIMARY_LIGHTER_1}>
+                  {fee?.symbol}
                 </TextV3.Caption>
               }
             />
-            {!!errors?.fee?.message && (
-              <TextV3.Caption color={COLORS_ENUMS.RED}>
-                {errors?.fee?.message}
-              </TextV3.Caption>
-            )}
-            <TextV3.Caption
-              color={COLORS_ENUMS.BLACK}
-              extraStyles={styles.feeRecommended}
-            >
+            {!!errors?.fee?.message && <TextV3.Caption color={COLORS_ENUMS.RED}>{errors?.fee?.message}</TextV3.Caption>}
+            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.feeRecommended}>
               Recommended fee: {` `}
               <TextV3.Caption color={COLORS_ENUMS.GRAY_100} extraStyles={styles.feeValue}>
-                {fee?.defaultValue} {fee?.symbol}
+                {fee?.recommended} {fee?.symbol}
               </TextV3.Caption>
             </TextV3.Caption>
           </div>
         )}
 
         <div className={styles.buttonsContainer}>
-          <ButtonV3
-            type={BUTTON_TYPES_ENUM.TERTIARY_SOLID}
-            size={BUTTON_SIZES_ENUM.MEDIUM}
-            extraStyle={styles.button}
-            label={negativeButtonLabel}
-            onClick={onNegativeButtonClick}
-          />
+          <ButtonV3 type={BUTTON_TYPES_ENUM.TERTIARY_SOLID} size={BUTTON_SIZES_ENUM.MEDIUM} extraStyle={styles.button} label={negativeButtonLabel} onClick={onNegativeButtonClick} />
           <ButtonV3
             type={BUTTON_TYPES_ENUM.NEW_PRIMARY_SOLID}
             size={BUTTON_SIZES_ENUM.MEDIUM}
