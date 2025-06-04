@@ -94,6 +94,7 @@ const TokenLockView = ({ title, wallet, chain, currencyId, amount: amountInDatum
         show: true,
         defaultValue: '0',
         value: feeValue,
+        recommended: '0',
         symbol: asset.symbol,
         disabled: true,
         setFee: setFeeValue,

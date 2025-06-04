@@ -7,7 +7,7 @@ import SignDataContainer, { SignDataProviderConfig } from 'scenes/external/SignD
 import { StargazerRequestMessage } from 'scripts/common';
 
 import { decodeArrayFromBase64 } from 'web/pages/Cypherock/utils';
-import { CypherockService } from 'web/utils/cypherockBridge';
+import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherockBridge';
 import { CYPHEROCK_DERIVATION_PATHS } from 'web/utils/cypherockBridge/constants';
 
 import { WalletState } from '../../Cypherock';
@@ -38,6 +38,10 @@ const SignDataView = ({ service, changeState, handleSuccessResponse, handleError
         derivationPath: CYPHEROCK_DERIVATION_PATHS.DAG_MAINNET,
         message: payload,
       });
+
+      if (!signature) {
+        throw new CypherockError('No signature found', ErrorCode.UNKNOWN);
+      }
 
       return signature;
     },

@@ -1,19 +1,27 @@
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { ExternalRoute } from 'web/pages/External/types';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
 import { validateHardwareMethod } from 'utils/hardware';
 
-type DelegatedStakeData = {
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
+
+type DelegatedStake = {
   source: string;
   nodeId: string;
   amount: number;
   fee?: number;
   tokenLockRef: string;
+};
+
+export type DelegatedStakeData = DelegatedStake & {
+  wallet: string;
+  chain: string;
+  cypherockId?: string;
+  publicKey?: string;
 };
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
@@ -23,9 +31,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('There is no active wallet');
   }
 
-  const dagAccount = activeWallet?.accounts?.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const dagAccount = activeWallet?.accounts?.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!dagAccount) {
     throw new Error('No active account for the request asset type');
@@ -37,7 +43,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
 
   validateHardwareMethod(activeWallet.type, request.method);
 
-  const [data] = request.params as [DelegatedStakeData];
+  const [data] = request.params as [DelegatedStake];
 
   if (!data) {
     throw new Error('"data" not found');
@@ -72,24 +78,24 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   if (dagAccount.address !== data.source) {
     throw new Error('"source" address must be equal to the current active account.');
   }
+
+  return dagAccount;
 };
 
-export const dag_delegatedStake = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
-  validateParams(request);
+export const dag_delegatedStake = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+  const dagAccount = validateParams(request);
 
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType, cypherockId } = getWalletInfo();
 
-  const [data] = request.params as [DelegatedStakeData];
+  const [data] = request.params as [DelegatedStake];
 
-  const delegatedStakeData = {
-    walletLabel: activeWallet.label,
-    chainLabel: getChainLabel(),
+  const delegatedStakeData: DelegatedStakeData = {
+    wallet: activeWallet.label,
+    chain: getChainLabel(),
     ...data,
     fee: 0,
+    ...(cypherockId && { cypherockId }),
+    ...(dagAccount?.publicKey && { publicKey: dagAccount.publicKey }),
   };
 
   windowSize.height = 728;
