@@ -31,6 +31,7 @@ import SignTransactionView from './views/sign-transaction';
 import SuccessView from './views/success';
 import TokenLockView from './views/token-lock';
 import WalletsView from './views/wallets';
+import WithdrawDelegatedStakeView from './views/withdraw-delegated-stake';
 import { encodeArrayToBase64 } from './utils';
 
 export enum WalletState {
@@ -55,6 +56,7 @@ export enum WalletState {
   SignDagTransaction = 'sign-dag-transaction',
   TokenLock = 'token-lock',
   DelegatedStake = 'delegated-stake',
+  WithdrawDelegatedStake = 'withdraw-delegated-stake',
 
   // Signed states
   SignedSuccess = 'signed-success',
@@ -76,6 +78,7 @@ enum WalletRoute {
   SignDagTransaction = 'signTransaction',
   TokenLock = 'tokenLock',
   DelegatedStake = 'delegatedStake',
+  WithdrawDelegatedStake = 'withdrawDelegatedStake',
 }
 
 enum GetPublicKeysEvent {
@@ -127,6 +130,8 @@ const CypherockPage = () => {
         setNextRoute(WalletState.TokenLock);
       } else if (route === WalletRoute.DelegatedStake) {
         setNextRoute(WalletState.DelegatedStake);
+      } else if (route === WalletRoute.WithdrawDelegatedStake) {
+        setNextRoute(WalletState.WithdrawDelegatedStake);
       }
     }
   }, []);
@@ -505,6 +510,8 @@ const CypherockPage = () => {
         return <TokenLockView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.DelegatedStake:
         return <DelegatedStakeView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
+      case WalletState.WithdrawDelegatedStake:
+        return <WithdrawDelegatedStakeView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.VerifyTransaction:
         return (
           <Layout
@@ -530,7 +537,7 @@ const CypherockPage = () => {
               handleClick: onConnect,
             }}
           >
-            <ErrorView title="Stargazer couldn’t detect your Cypherock device." description="Make sure your Cypherock device is plugged in, unlocked, and USB permissions are granted." />
+            <ErrorView title="Stargazer couldn't detect your Cypherock device." description="Make sure your Cypherock device is plugged in, unlocked, and USB permissions are granted." />
           </Layout>
         );
       case WalletState.NoWalletsFound:

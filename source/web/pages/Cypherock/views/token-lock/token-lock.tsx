@@ -89,7 +89,7 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
   };
 
   const cypherockTokenLockConfig: TokenLockProviderConfig = {
-    title: 'Cypherock - TokenLock',
+    title: 'Cypherock - Token Lock',
     onTokenLock: async ({ decodedData, asset }) => {
       const { cypherockId, publicKey } = decodedData;
       const walletId = decodeArrayFromBase64(cypherockId);
