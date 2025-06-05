@@ -60,11 +60,6 @@ const TokenLockContainer: React.FC<TokenLockProviderConfig> = ({ title, onTokenL
     }
   };
 
-  // Wrap handleReject to match expected async signature
-  const handleRejectAsync = async () => {
-    handleReject();
-  };
-
   const props: ITokenLockProps = {
     title,
     wallet: decodedData.wallet,
@@ -76,7 +71,7 @@ const TokenLockContainer: React.FC<TokenLockProviderConfig> = ({ title, onTokenL
     latestEpoch: decodedData.latestEpoch,
     isPositiveButtonLoading: isLoading,
     onSign: handleTokenLock,
-    onReject: handleRejectAsync,
+    onReject: handleReject,
   };
 
   return <TokenLockView {...props} />;

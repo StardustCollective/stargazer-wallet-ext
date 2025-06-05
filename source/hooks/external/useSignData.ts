@@ -14,9 +14,9 @@ export interface SignDataData {
 }
 
 export interface UseSignDataReturn extends SignDataData {
-  handleReject: () => void;
-  handleSuccess: (signature: string) => void;
-  handleError: (error: unknown) => void;
+  handleReject: () => Promise<void>;
+  handleSuccess: (signature: string) => Promise<void>;
+  handleError: (error: unknown) => Promise<void>;
 }
 
 /**
@@ -50,17 +50,17 @@ export const useSignData = (): UseSignDataReturn => {
   }, [decodedPayload]);
 
   // Common rejection handler
-  const handleReject = useCallback(() => {
+  const handleReject = useCallback(async () => {
     StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseError(new EIPRpcError('User rejected request', EIPErrorCodes.Rejected), requestMessage);
+    await StargazerWSMessageBroker.sendResponseError(new EIPRpcError('User rejected request', EIPErrorCodes.Rejected), requestMessage);
     window.close();
   }, [requestMessage]);
 
   // Common success handler
   const handleSuccess = useCallback(
-    (signature: string) => {
+    async (signature: string) => {
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
+      await StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
       window.close();
     },
     [requestMessage]
@@ -68,10 +68,10 @@ export const useSignData = (): UseSignDataReturn => {
 
   // Common error handler
   const handleError = useCallback(
-    (error: unknown) => {
+    async (error: unknown) => {
       console.error('Sign data error:', error);
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(error instanceof Error ? error : new EIPRpcError('Unknown error', EIPErrorCodes.Unknown), requestMessage);
+      await StargazerWSMessageBroker.sendResponseError(error instanceof Error ? error : new EIPRpcError('Unknown error', EIPErrorCodes.Unknown), requestMessage);
       window.close();
     },
     [requestMessage]

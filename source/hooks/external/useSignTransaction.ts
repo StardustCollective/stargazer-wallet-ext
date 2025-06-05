@@ -25,9 +25,9 @@ export interface UseSignTransactionReturn {
   fee: string;
   origin: string;
   setFee: (fee: string) => void;
-  handleReject: () => void;
-  handleSuccess: (txHash: string) => void;
-  handleError: (error: unknown) => void;
+  handleReject: () => Promise<void>;
+  handleSuccess: (txHash: string) => Promise<void>;
+  handleError: (error: unknown) => Promise<void>;
 }
 
 /**
@@ -72,17 +72,17 @@ export const useSignTransaction = (): UseSignTransactionReturn => {
   }, [decodedData?.chain]);
 
   // Common rejection handler
-  const handleReject = useCallback(() => {
+  const handleReject = useCallback(async () => {
     StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseError(new EIPRpcError('User rejected request', EIPErrorCodes.Rejected), requestMessage);
+    await StargazerWSMessageBroker.sendResponseError(new EIPRpcError('User rejected request', EIPErrorCodes.Rejected), requestMessage);
     window.close();
   }, [requestMessage]);
 
   // Common success handler
   const handleSuccess = useCallback(
-    (txHash: string) => {
+    async (txHash: string) => {
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(txHash, requestMessage);
+      await StargazerWSMessageBroker.sendResponseResult(txHash, requestMessage);
       window.close();
     },
     [requestMessage]
@@ -90,10 +90,10 @@ export const useSignTransaction = (): UseSignTransactionReturn => {
 
   // Common error handler
   const handleError = useCallback(
-    (error: unknown) => {
+    async (error: unknown) => {
       console.error('Sign transaction error:', error);
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(error instanceof Error ? error : new EIPRpcError('Unknown error', EIPErrorCodes.Unknown), requestMessage);
+      await StargazerWSMessageBroker.sendResponseError(error instanceof Error ? error : new EIPRpcError('Unknown error', EIPErrorCodes.Unknown), requestMessage);
       window.close();
     },
     [requestMessage]

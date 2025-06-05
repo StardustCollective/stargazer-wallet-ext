@@ -70,11 +70,6 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
     }
   };
 
-  // Async wrapper for reject handler
-  const handleRejectAsync = async () => {
-    handleReject();
-  };
-
   // Extract common props for the view
   const getViewProps = (): ISignTransactionProps => {
     // For DAG/Metagraph transactions
@@ -90,7 +85,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
         origin,
         setFee,
         onSign: handleSign,
-        onReject: handleRejectAsync,
+        onReject: handleReject,
       };
     }
 
@@ -106,7 +101,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       origin,
       setFee,
       onSign: handleSign,
-      onReject: handleRejectAsync,
+      onReject: handleReject,
     };
   };
 
