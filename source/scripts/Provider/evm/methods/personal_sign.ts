@@ -1,47 +1,27 @@
-import {
-  EIPErrorCodes,
-  EIPRpcError,
-  StargazerRequest,
-  StargazerRequestMessage,
-} from 'scripts/common';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
-import { ALL_EVM_CHAINS } from 'constants/index';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import {
-  getChainId,
-  getNetworkToken,
-  getWalletInfo,
-  normalizeSignatureRequest,
-} from '../utils';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { ISignMessageParams } from 'scripts/Provider/constellation';
-import { ExternalRoute } from 'web/pages/External/types';
+
 import { validateHardwareMethod } from 'utils/hardware';
 
-export const personal_sign = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
-  const { activeWallet, windowUrl, windowSize, windowType, cypherockId } =
-    getWalletInfo();
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { getWalletInfo, normalizeSignatureRequest } from '../utils';
+
+export const personal_sign = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
   if (!activeWallet) {
     throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
   }
 
-  const assetAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Ethereum
-  );
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Ethereum);
 
   if (!assetAccount) {
-    throw new EIPRpcError(
-      'No active account for the request asset type',
-      EIPErrorCodes.Unauthorized
-    );
+    throw new EIPRpcError('No active account for the request asset type', EIPErrorCodes.Unauthorized);
   }
 
   validateHardwareMethod(activeWallet.type, request.method);
@@ -69,24 +49,13 @@ export const personal_sign = async (
   }
 
   if (assetAccount.address.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
-    throw new EIPRpcError(
-      'The active account is not the requested',
-      EIPErrorCodes.Unauthorized
-    );
+    throw new EIPRpcError('The active account is not the requested', EIPErrorCodes.Unauthorized);
   }
 
   const payloadEncoded = normalizeSignatureRequest(payload);
 
-  const chainLabel = Object.values(ALL_EVM_CHAINS).find(
-    (chain: any) => chain.chainId === getChainId()
-  )?.label;
-
   const signatureData: ISignMessageParams = {
-    asset: getNetworkToken(),
     payload: payloadEncoded,
-    wallet: activeWallet.label,
-    chain: chainLabel,
-    cypherockId,
   };
 
   await StargazerExternalPopups.executePopup({

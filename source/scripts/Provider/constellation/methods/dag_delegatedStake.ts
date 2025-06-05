@@ -1,4 +1,5 @@
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import type { DelegatedStake } from '@stardust-collective/dag4-network';
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
@@ -7,22 +8,7 @@ import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
-
-type DelegatedStake = {
-  source: string;
-  nodeId: string;
-  amount: number;
-  fee?: number;
-  tokenLockRef: string;
-};
-
-export type DelegatedStakeData = DelegatedStake & {
-  wallet: string;
-  chain: string;
-  cypherockId?: string;
-  publicKey?: string;
-};
+import { checkArguments, getWalletInfo } from '../utils';
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
@@ -78,24 +64,18 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   if (dagAccount.address !== data.source) {
     throw new Error('"source" address must be equal to the current active account.');
   }
-
-  return dagAccount;
 };
 
 export const dag_delegatedStake = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
-  const dagAccount = validateParams(request);
+  validateParams(request);
 
-  const { activeWallet, windowUrl, windowSize, windowType, cypherockId } = getWalletInfo();
+  const { windowUrl, windowSize, windowType } = getWalletInfo();
 
   const [data] = request.params as [DelegatedStake];
 
-  const delegatedStakeData: DelegatedStakeData = {
-    wallet: activeWallet.label,
-    chain: getChainLabel(),
+  const delegatedStakeData: DelegatedStake = {
     ...data,
     fee: 0,
-    ...(cypherockId && { cypherockId }),
-    ...(dagAccount?.publicKey && { publicKey: dagAccount.publicKey }),
   };
 
   windowSize.height = 728;

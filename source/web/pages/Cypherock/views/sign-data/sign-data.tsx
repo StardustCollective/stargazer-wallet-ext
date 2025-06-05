@@ -1,10 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { useSignData } from 'hooks/external/useSignData';
 
 import SignDataContainer, { SignDataProviderConfig } from 'scenes/external/SignData/SignDataContainer';
 
-import { StargazerRequestMessage } from 'scripts/common';
+import type { StargazerRequestMessage } from 'scripts/common';
+
+import walletsSelectors from 'selectors/walletsSelectors';
 
 import { decodeArrayFromBase64 } from 'web/pages/Cypherock/utils';
 import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherockBridge';
@@ -23,12 +26,16 @@ interface ISignDataProps {
 
 const SignDataView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: ISignDataProps) => {
   const { requestMessage } = useSignData();
+  const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
 
   const cypherockSigningConfig: SignDataProviderConfig = {
     title: 'Cypherock - Sign Data',
     footer: 'Only sign messages on sites you trust.',
-    onSign: async ({ payload, decodedData }) => {
-      const { cypherockId } = decodedData;
+    onSign: async ({ payload }) => {
+      if (!cypherockId) {
+        throw new CypherockError('Wallet id not found', ErrorCode.UNKNOWN);
+      }
+
       const walletId = decodeArrayFromBase64(cypherockId);
 
       changeState(WalletState.VerifyTransaction);

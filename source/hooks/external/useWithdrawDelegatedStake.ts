@@ -1,63 +1,18 @@
-import { useCallback, useMemo } from 'react';
+import type { WithdrawDelegatedStake } from '@stardust-collective/dag4-network';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
-import type { WithdrawDelegatedStakeData } from 'scripts/Provider/constellation';
+import type { BaseExternalRequestHook } from 'scenes/external/ExternalRequestContainer';
 
-export interface WithdrawDelegatedStakeHookData {
-  requestMessage: StargazerRequestMessage;
-  decodedData: WithdrawDelegatedStakeData;
-}
+import { useExternalRequest, UseExternalRequestReturn } from './useExternalRequest';
 
-export interface UseWithdrawDelegatedStakeReturn extends WithdrawDelegatedStakeHookData {
-  handleReject: () => Promise<void>;
-  handleSuccess: (txHash: string) => Promise<void>;
-  handleError: (error: unknown) => Promise<void>;
-}
+export interface UseWithdrawDelegatedStakeReturn extends UseExternalRequestReturn<WithdrawDelegatedStake>, BaseExternalRequestHook<WithdrawDelegatedStake> {}
 
 /**
- * Custom hook that extracts and manages common withdraw delegated stake logic
- * Handles data extraction, rejection, success, and error scenarios
+ * Custom hook that extends useExternalRequest for withdraw delegated stake operations
  */
 export const useWithdrawDelegatedStake = (): UseWithdrawDelegatedStakeReturn => {
-  // Extract and decode request data
-  const { message: requestMessage, data: decodedData } = useMemo(() => {
-    return StargazerExternalPopups.decodeRequestMessageLocationParams<WithdrawDelegatedStakeData>(location.href);
-  }, []);
-
-  // Common rejection handler
-  const handleReject = useCallback(async () => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    await StargazerWSMessageBroker.sendResponseError(new EIPRpcError('User rejected request', EIPErrorCodes.Rejected), requestMessage);
-    window.close();
-  }, [requestMessage]);
-
-  // Common success handler
-  const handleSuccess = useCallback(
-    async (txHash: string) => {
-      StargazerExternalPopups.addResolvedParam(location.href);
-      await StargazerWSMessageBroker.sendResponseResult(txHash, requestMessage);
-      window.close();
-    },
-    [requestMessage]
-  );
-
-  // Common error handler
-  const handleError = useCallback(
-    async (error: unknown) => {
-      console.error('Withdraw delegated stake error:', error);
-      StargazerExternalPopups.addResolvedParam(location.href);
-      await StargazerWSMessageBroker.sendResponseError(error instanceof Error ? error : new EIPRpcError('Unknown error', EIPErrorCodes.Unknown), requestMessage);
-      window.close();
-    },
-    [requestMessage]
-  );
+  const baseHook = useExternalRequest<WithdrawDelegatedStake>('Withdraw delegated stake');
 
   return {
-    requestMessage,
-    decodedData,
-    handleReject,
-    handleSuccess,
-    handleError,
+    ...baseHook,
   };
 };

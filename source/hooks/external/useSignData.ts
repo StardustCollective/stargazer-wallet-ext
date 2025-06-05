@@ -1,39 +1,29 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
+import { BaseExternalRequestHook } from 'scenes/external/ExternalRequestContainer';
+
 import type { ISignDataParams } from 'scripts/Provider/constellation';
 
 import { decodeFromBase64 } from 'utils/encoding';
 
-export interface SignDataData {
-  requestMessage: StargazerRequestMessage;
-  decodedData: ISignDataParams;
+import { useExternalRequest, UseExternalRequestReturn } from './useExternalRequest';
+
+export interface UseSignDataReturn extends UseExternalRequestReturn<ISignDataParams>, BaseExternalRequestHook<ISignDataParams> {
   parsedPayload: any | null;
   decodedPayload: string;
 }
 
-export interface UseSignDataReturn extends SignDataData {
-  handleReject: () => Promise<void>;
-  handleSuccess: (signature: string) => Promise<void>;
-  handleError: (error: unknown) => Promise<void>;
-}
-
 /**
- * Custom hook that extracts and manages common sign data logic
- * Handles data extraction, rejection, success, and error scenarios
+ * Custom hook that extends useExternalRequest for sign data operations
  */
 export const useSignData = (): UseSignDataReturn => {
-  // Extract and decode request data
-  const { message: requestMessage, data: decodedData } = useMemo(() => {
-    return StargazerExternalPopups.decodeRequestMessageLocationParams<ISignDataParams>(location.href);
-  }, []);
+  const baseHook = useExternalRequest<ISignDataParams>('Sign data');
 
   // Decode the payload
   const decodedPayload = useMemo(() => {
-    if (!decodedData?.payload) return '';
-    return decodeFromBase64(decodedData.payload);
-  }, [decodedData?.payload]);
+    if (!baseHook?.decodedData?.payload) return '';
+    return decodeFromBase64(baseHook.decodedData.payload);
+  }, [baseHook?.decodedData?.payload]);
 
   // Parse and validate payload
   const parsedPayload = useMemo((): any | null => {
@@ -49,41 +39,9 @@ export const useSignData = (): UseSignDataReturn => {
     }
   }, [decodedPayload]);
 
-  // Common rejection handler
-  const handleReject = useCallback(async () => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    await StargazerWSMessageBroker.sendResponseError(new EIPRpcError('User rejected request', EIPErrorCodes.Rejected), requestMessage);
-    window.close();
-  }, [requestMessage]);
-
-  // Common success handler
-  const handleSuccess = useCallback(
-    async (signature: string) => {
-      StargazerExternalPopups.addResolvedParam(location.href);
-      await StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
-      window.close();
-    },
-    [requestMessage]
-  );
-
-  // Common error handler
-  const handleError = useCallback(
-    async (error: unknown) => {
-      console.error('Sign data error:', error);
-      StargazerExternalPopups.addResolvedParam(location.href);
-      await StargazerWSMessageBroker.sendResponseError(error instanceof Error ? error : new EIPRpcError('Unknown error', EIPErrorCodes.Unknown), requestMessage);
-      window.close();
-    },
-    [requestMessage]
-  );
-
   return {
-    requestMessage,
-    decodedData,
+    ...baseHook,
     parsedPayload,
     decodedPayload,
-    handleReject,
-    handleSuccess,
-    handleError,
   };
 };

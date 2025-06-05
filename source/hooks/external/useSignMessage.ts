@@ -1,87 +1,45 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
+import { BaseExternalRequestHook } from 'scenes/external/ExternalRequestContainer';
+
 import type { ISignMessageParams, StargazerSignatureRequest } from 'scripts/Provider/constellation';
 
 import { decodeFromBase64 } from 'utils/encoding';
 
-export interface SignMessageData {
-  requestMessage: StargazerRequestMessage;
-  decodedData: ISignMessageParams;
+import { useExternalRequest, UseExternalRequestReturn } from './useExternalRequest';
+
+export interface UseSignMessageReturn extends UseExternalRequestReturn<ISignMessageParams>, BaseExternalRequestHook<ISignMessageParams> {
   parsedPayload: StargazerSignatureRequest | null;
   isDagSignature: boolean;
 }
 
-export interface UseSignMessageReturn extends SignMessageData {
-  handleReject: () => Promise<void>;
-  handleSuccess: (signature: string) => Promise<void>;
-  handleError: (error: unknown) => Promise<void>;
-}
-
 /**
- * Custom hook that extracts and manages common sign message logic
- * Handles data extraction, rejection, success, and error scenarios
+ * Custom hook that extends useExternalRequest for sign message operations
  */
 export const useSignMessage = (): UseSignMessageReturn => {
-  // Extract and decode request data
-  const { message: requestMessage, data: decodedData } = useMemo(() => {
-    return StargazerExternalPopups.decodeRequestMessageLocationParams<ISignMessageParams>(location.href);
-  }, []);
+  const baseHook = useExternalRequest<ISignMessageParams>('Sign message');
 
   // Parse and validate payload
   const parsedPayload = useMemo((): StargazerSignatureRequest | null => {
-    if (!decodedData?.payload) return null;
+    if (!baseHook.decodedData?.payload) return null;
 
     try {
-      const decodedPayload = decodeFromBase64(decodedData.payload);
+      const decodedPayload = decodeFromBase64(baseHook.decodedData.payload);
       return JSON.parse(decodedPayload) as StargazerSignatureRequest;
     } catch (error) {
       console.warn('Failed to parse payload:', error);
       return null;
     }
-  }, [decodedData?.payload]);
+  }, [baseHook.decodedData?.payload]);
 
   // Determine signature type
   const isDagSignature = useMemo(() => {
-    return decodedData?.asset === 'DAG';
-  }, [decodedData?.asset]);
-
-  // Common rejection handler
-  const handleReject = useCallback(async () => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    await StargazerWSMessageBroker.sendResponseError(new EIPRpcError('User rejected request', EIPErrorCodes.Rejected), requestMessage);
-    window.close();
-  }, [requestMessage]);
-
-  // Common success handler
-  const handleSuccess = useCallback(
-    async (signature: string) => {
-      StargazerExternalPopups.addResolvedParam(location.href);
-      await StargazerWSMessageBroker.sendResponseResult(signature, requestMessage);
-      window.close();
-    },
-    [requestMessage]
-  );
-
-  // Common error handler
-  const handleError = useCallback(
-    async (error: unknown) => {
-      console.error('Sign message error:', error);
-      StargazerExternalPopups.addResolvedParam(location.href);
-      await StargazerWSMessageBroker.sendResponseError(error instanceof Error ? error : new EIPRpcError('Unknown error', EIPErrorCodes.Unknown), requestMessage);
-      window.close();
-    },
-    [requestMessage]
-  );
+    return baseHook.decodedData?.asset === 'DAG';
+  }, [baseHook.decodedData?.asset]);
 
   return {
-    requestMessage,
-    decodedData,
+    ...baseHook,
     parsedPayload,
     isDagSignature,
-    handleReject,
-    handleSuccess,
-    handleError,
   };
 };

@@ -2,24 +2,20 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import type { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { getChainLabel, getWalletInfo, WINDOW_TYPES } from '../utils';
+import { getWalletInfo, WINDOW_TYPES } from '../utils';
 
 export interface ISignDataParams {
   payload: string;
-  wallet: string;
-  chain: string;
-  cypherockId: string;
-  publicKey?: string;
 }
 
 export const dag_signData = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
-  const { activeWallet, windowUrl, windowType, windowSize, cypherockId } = getWalletInfo();
+  const { activeWallet, windowUrl, windowType, windowSize } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
@@ -53,10 +49,6 @@ export const dag_signData = async (request: StargazerRequest & { type: 'rpc' }, 
 
   const signDataParams: ISignDataParams = {
     payload,
-    wallet: activeWallet.label,
-    chain: getChainLabel(),
-    cypherockId,
-    publicKey: assetAccount?.publicKey,
   };
 
   if (windowType === WINDOW_TYPES.popup) {

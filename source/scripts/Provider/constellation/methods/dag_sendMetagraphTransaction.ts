@@ -8,20 +8,20 @@ import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { getChainLabel, getWalletInfo, validateMetagraphAddress, WINDOW_TYPES } from '../utils';
+import { getWalletInfo, validateMetagraphAddress, WINDOW_TYPES } from '../utils';
 
-import { SignTransactionDataDAG } from './dag_sendTransaction';
+import type { SignTransactionDataDAG } from './dag_sendTransaction';
 
 export type StargazerMetagraphTransactionRequest = {
   metagraphAddress: string;
   source: string;
   destination: string;
-  amount: number; // In DATUM, 1 DATUM = 0.00000001 DAG
-  fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
+  amount: number; // In DATUM
+  fee?: number; // In DATUM
 };
 
 export const dag_sendMetagraphTransaction = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
-  const { activeWallet, windowUrl, windowSize, windowType, cypherockId, deviceId } = getWalletInfo();
+  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
@@ -35,62 +35,57 @@ export const dag_sendMetagraphTransaction = async (request: StargazerRequest & {
 
   validateHardwareMethod(activeWallet.type, request.method);
 
-  const [txData] = request.params as [StargazerMetagraphTransactionRequest];
+  const [data] = request.params as [StargazerMetagraphTransactionRequest];
 
-  const txMetagraphAddress = txData?.metagraphAddress;
-  const txSource = txData?.source;
-  const txDestination = txData?.destination;
-  const txAmount = txData?.amount;
-  const txFee = txData?.fee || 0;
+  const { metagraphAddress, source, destination, amount, fee } = data;
 
-  const metagraphToken = validateMetagraphAddress(txMetagraphAddress);
+  if (!data) {
+    throw new Error('No data provided');
+  }
 
-  if (typeof txSource !== 'string') {
+  const metagraphToken = validateMetagraphAddress(metagraphAddress);
+
+  if (!source || typeof source !== 'string') {
     throw new Error("Bad argument 'source'");
   }
 
-  if (typeof txDestination !== 'string') {
+  if (!destination || typeof destination !== 'string') {
     throw new Error("Bad argument 'destination'");
   }
 
-  if (typeof txAmount !== 'number') {
+  if (!amount || typeof amount !== 'number') {
     throw new Error("Bad argument 'amount'");
   }
 
-  if (!!txFee && typeof txFee !== 'number') {
+  if (!!fee && typeof fee !== 'number') {
     throw new Error("Bad argument 'fee'");
   }
 
-  if (!dag4.account.validateDagAddress(txSource)) {
+  if (!dag4.account.validateDagAddress(source)) {
     throw new Error("Invalid address 'source'");
   }
 
-  if (!dag4.account.validateDagAddress(txDestination)) {
+  if (!dag4.account.validateDagAddress(destination)) {
     throw new Error("Invaid address 'destination'");
   }
 
-  if (txAmount <= 0) {
+  if (amount <= 0) {
     throw new Error("'amount' should be greater than 0");
   }
 
-  if (assetAccount.address !== txSource) {
+  if (assetAccount.address !== source) {
     throw new Error('The active account is invalid');
   }
 
   const signMetagraphTxnData: SignTransactionDataDAG = {
     assetId: metagraphToken.id,
 
-    from: txSource,
-    to: txDestination,
-    value: txAmount,
-    fee: txFee,
+    from: source,
+    to: destination,
+    value: amount,
+    fee: fee ?? 0,
 
     chain: StargazerChain.CONSTELLATION,
-    network: getChainLabel(),
-
-    ...(cypherockId && { cypherockId }),
-    ...(assetAccount?.publicKey && { publicKey: assetAccount.publicKey }),
-    ...(deviceId && { deviceId }),
   };
 
   if (windowType === WINDOW_TYPES.popup) {

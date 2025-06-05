@@ -3,13 +3,16 @@ import { dag4 } from '@stardust-collective/dag4';
 import type { PostTransactionV2 } from '@stardust-collective/dag4-keystore';
 import type { GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { useSignTransaction } from 'hooks/external/useSignTransaction';
 
 import SignTransactionContainer, { SignTransactionProviderConfig } from 'scenes/external/SignTransaction/SignTransactionContainer';
 
-import { StargazerRequestMessage } from 'scripts/common';
-import { SignTransactionDataDAG } from 'scripts/Provider/constellation';
+import type { StargazerRequestMessage } from 'scripts/common';
+import type { SignTransactionDataDAG } from 'scripts/Provider/constellation';
+
+import walletsSelectors from 'selectors/walletsSelectors';
 
 import type { IAssetInfoState } from 'state/assets/types';
 
@@ -30,17 +33,18 @@ interface ISignTransactionProps {
 }
 
 const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: ISignTransactionProps) => {
+  const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
   const { requestMessage } = useSignTransaction();
 
   const signDAGTransaction = async (data: SignTransactionDataDAG, asset: IAssetInfoState, isMetagraphTransaction: boolean, fee: string): Promise<string> => {
-    const { cypherockId, publicKey, from, to, value: amount } = data;
+    const { from, to, value: amount } = data;
 
-    if (!publicKey) {
+    if (!dag4?.account?.publicKey) {
       throw new CypherockError('No public key found', ErrorCode.UNKNOWN);
     }
 
     if (!cypherockId) {
-      throw new CypherockError('No Cypherock ID found', ErrorCode.UNKNOWN);
+      throw new CypherockError('No wallet id found', ErrorCode.UNKNOWN);
     }
 
     const walletId = decodeArrayFromBase64(cypherockId);
@@ -86,6 +90,8 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
     if (!signature) {
       throw new CypherockError('No signature found', ErrorCode.UNKNOWN);
     }
+
+    const { publicKey } = dag4.account;
 
     // Add the signature to the transaction
     tx.proofs = [

@@ -1,11 +1,14 @@
 import type { ISignPersonalMsgParams } from '@cypherock/sdk-app-evm';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { useSignMessage } from 'hooks/external/useSignMessage';
 
 import SignMessageContainer, { SignMessageProviderConfig } from 'scenes/external/SignMessage/SignMessageContainer';
 
 import { StargazerRequestMessage } from 'scripts/common';
+
+import walletsSelectors from 'selectors/walletsSelectors';
 
 import { decodeArrayFromBase64, stringToHex } from 'web/pages/Cypherock/utils';
 import { CypherockError, CypherockService, ErrorCode, ISignDagMsgParams } from 'web/utils/cypherockBridge';
@@ -24,6 +27,7 @@ interface ISignMsgProps {
 
 const SignMsgView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: ISignMsgProps) => {
   const { requestMessage } = useSignMessage();
+  const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
 
   const signDagMessage = async (walletId: Uint8Array, message: string): Promise<string> => {
     const signDagMessagePayload: ISignDagMsgParams = {
@@ -60,9 +64,13 @@ const SignMsgView = ({ service, changeState, handleSuccessResponse, handleErrorR
   const cypherockSigningConfig: SignMessageProviderConfig = {
     title: 'Cypherock - Signature Request',
     footer: 'Only sign messages on sites you trust.',
-    onSign: async ({ payload, parsedPayload, isDagSignature, decodedData }) => {
-      const { cypherockId } = decodedData;
+    onSign: async ({ payload, parsedPayload, isDagSignature }) => {
+      if (!cypherockId) {
+        throw new CypherockError('Wallet id not found', ErrorCode.UNKNOWN);
+      }
+
       const walletId = decodeArrayFromBase64(cypherockId);
+
       const message = isDagSignature ? payload : stringToHex(parsedPayload.content);
       const signMessage = isDagSignature ? signDagMessage : signEthMessage;
 

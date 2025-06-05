@@ -1,47 +1,28 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { getChainLabel, getWalletInfo, normalizeSignatureRequest } from '../utils';
-import { ExternalRoute } from 'web/pages/External/types';
+
 import { validateHardwareMethod } from 'utils/hardware';
 
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { getWalletInfo, normalizeSignatureRequest } from '../utils';
+
 export interface ISignMessageParams {
-  asset: string;
+  asset?: string;
   payload: string;
-  wallet: string;
-  chain: string;
-  cypherockId: string;
-  deviceId?: string;
-  bipIndex?: number;
-  publicKey?: string;
 }
 
-export const dag_signMessage = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
-  const {
-    activeWallet,
-    deviceId,
-    bipIndex,
-    windowUrl,
-    windowSize,
-    windowType,
-    cypherockId,
-  } = getWalletInfo();
+export const dag_signMessage = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
   }
 
-  const assetAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!assetAccount) {
     throw new Error('No active account for the request asset type');
@@ -80,12 +61,6 @@ export const dag_signMessage = async (
   const signMessageParams: ISignMessageParams = {
     asset: 'DAG',
     payload: payloadEncoded,
-    wallet: activeWallet.label,
-    chain: getChainLabel(),
-    deviceId,
-    bipIndex,
-    cypherockId,
-    publicKey: assetAccount?.publicKey,
   };
 
   await StargazerExternalPopups.executePopup({

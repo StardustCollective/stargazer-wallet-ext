@@ -1,72 +1,75 @@
+/* eslint-disable react/prop-types */
+import type { DelegatedStake } from '@stardust-collective/dag4-network';
 import React from 'react';
 
-import { useDelegatedStake } from 'hooks/external/useDelegatedStake';
+import { useDelegatedStake, UseDelegatedStakeReturn } from 'hooks/external/useDelegatedStake';
 
 import DelegatedStakeView, { DelegatedStakeProps } from 'scenes/external/views/delegated-stake';
 
-import type { DelegatedStakeData } from 'scripts/Provider/constellation';
-
-import { usePlatformAlert } from 'utils/alertUtil';
+import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
 
 export interface DelegatedStakeProviderConfig {
   title: string;
-  onDelegatedStake: (data: { decodedData: DelegatedStakeData }) => Promise<string>;
+  onDelegatedStake: (data: { decodedData: DelegatedStake }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (txHash: string) => void;
   isLoading?: boolean;
 }
 
+type DelegatedStakeContainerProps = DelegatedStake & UseDelegatedStakeReturn & BaseContainerProps;
+
 /**
  * Container component that provides common delegated stake functionality
- * Allows each service to inject their own transaction logic while reusing UI and common patterns
  */
 const DelegatedStakeContainer: React.FC<DelegatedStakeProviderConfig> = ({ title, onDelegatedStake, onError, onSuccess, isLoading = false }) => {
-  const showAlert = usePlatformAlert();
-  const { decodedData, handleReject, handleSuccess, handleError } = useDelegatedStake();
+  // Extract onAction function
+  const handleDelegatedStakeAction = async (hookData: UseDelegatedStakeReturn): Promise<string> => {
+    const { decodedData } = hookData;
+    return await onDelegatedStake({ decodedData });
+  };
 
-  // Validate required data
-  if (!decodedData) {
-    handleError(new Error('Invalid delegated stake data'));
+  // Extract validation function - delegated stake has simple validation
+  const validateDelegatedStakeData = (decodedData: DelegatedStake): string | null => {
+    if (!decodedData) return 'Invalid delegated stake data';
+    if (!decodedData.source) return 'Invalid source';
+    if (!decodedData.nodeId) return 'Invalid node ID';
+    if (!decodedData.amount) return 'Invalid amount';
+    if (!decodedData.tokenLockRef) return 'Invalid token lock reference';
     return null;
-  }
-
-  // Handle delegated stake action with service-specific logic
-  const handleDelegatedStake = async () => {
-    try {
-      const txHash = await onDelegatedStake({
-        decodedData,
-      });
-
-      if (onSuccess) {
-        onSuccess(txHash);
-      } else {
-        handleSuccess(txHash);
-      }
-    } catch (error: unknown) {
-      if (onError) {
-        onError(error);
-      } else {
-        handleError(error);
-        showAlert(error instanceof Error ? error.message : 'Unknown error occurred', 'danger');
-      }
-    }
   };
 
-  const props: DelegatedStakeProps = {
-    title,
-    wallet: decodedData.wallet,
-    chain: decodedData.chain,
-    source: decodedData.source,
-    amount: decodedData.amount,
-    nodeId: decodedData.nodeId,
-    tokenLockRef: decodedData.tokenLockRef,
-    fee: decodedData.fee,
-    isPositiveButtonLoading: isLoading,
-    onSign: handleDelegatedStake,
-    onReject: handleReject,
+  // Extract render function with proper typing
+  const renderDelegatedStakeView = (props: DelegatedStakeContainerProps): JSX.Element => {
+    const { title: propsTitle, source, amount, nodeId, tokenLockRef, fee, onAction, onReject } = props;
+
+    const delegatedStakeProps: DelegatedStakeProps = {
+      title: propsTitle,
+      source,
+      amount,
+      nodeId,
+      tokenLockRef,
+      fee,
+      isLoading,
+      onSign: onAction,
+      onReject,
+    };
+
+    return <DelegatedStakeView {...delegatedStakeProps} />;
   };
 
-  return <DelegatedStakeView {...props} />;
+  return (
+    <ExternalRequestContainer<DelegatedStake, string, UseDelegatedStakeReturn>
+      title={title}
+      isLoading={isLoading}
+      useHook={useDelegatedStake}
+      onAction={handleDelegatedStakeAction}
+      onError={onError}
+      onSuccess={onSuccess}
+      validateData={validateDelegatedStakeData}
+    >
+      {renderDelegatedStakeView}
+    </ExternalRequestContainer>
+  );
 };
 
 export default DelegatedStakeContainer;

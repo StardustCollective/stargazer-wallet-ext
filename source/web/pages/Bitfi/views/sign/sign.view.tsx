@@ -3,8 +3,11 @@ import 'assets/styles/global.scss';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import SignTransactionContainer, { SignTransactionProviderConfig } from 'scenes/external/SignTransaction/SignTransactionContainer';
+
+import walletsSelectors from 'selectors/walletsSelectors';
 
 import styles from './styles.module.scss';
 
@@ -13,16 +16,19 @@ interface ISignViewProps {
   waiting: boolean;
   waitingMessage: string;
   transactionSigned: boolean;
-  onSignPress: (fee: string) => Promise<void>;
+  onSignPress: (deviceId: string, amount: number, from: string, to: string, fee: string) => Promise<void>;
 }
 
 const SignView = ({ waiting, code, waitingMessage, transactionSigned, onSignPress }: ISignViewProps) => {
+  const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
+
   const bitfiSigningConfig: SignTransactionProviderConfig = {
     title: 'Bitfi - Sign Transaction',
     footer: 'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
-    onSignTransaction: async ({ isDAGTransaction, isMetagraphTransaction, isEVMTransaction, fee }) => {
+    onSignTransaction: async ({ decodedData, isDAGTransaction, isMetagraphTransaction, isEVMTransaction, fee }) => {
       if (isDAGTransaction) {
-        await onSignPress(fee);
+        const { value, from, to } = decodedData;
+        await onSignPress(deviceId, value, from, to, fee);
       }
 
       if (isMetagraphTransaction) {

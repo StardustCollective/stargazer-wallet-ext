@@ -199,6 +199,10 @@ const CypherockPage = () => {
       }
     }
 
+    if (err instanceof CypherockError) {
+      message = err.message;
+    }
+
     StargazerExternalPopups.addResolvedParam(location.href);
     await StargazerWSMessageBroker.sendResponseError(new EIPRpcError(message, code), messageRequest);
   };

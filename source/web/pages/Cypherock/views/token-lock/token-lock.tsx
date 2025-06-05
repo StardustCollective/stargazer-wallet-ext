@@ -7,18 +7,16 @@ import { useTokenLock } from 'hooks/external/useTokenLock';
 
 import TokenLockContainer, { TokenLockProviderConfig } from 'scenes/external/TokenLock/TokenLockContainer';
 
-import { StargazerRequestMessage } from 'scripts/common';
+import type { StargazerRequestMessage } from 'scripts/common';
 import type { TokenLockDataParam } from 'scripts/Provider/constellation';
 
 import walletsSelectors from 'selectors/walletsSelectors';
 
 import type { IAssetInfoState } from 'state/assets/types';
 
-import { getDagAddress } from 'utils/wallet';
-
 import { WalletState } from 'web/pages/Cypherock/Cypherock';
 import { decodeArrayFromBase64 } from 'web/pages/Cypherock/utils';
-import { CypherockService } from 'web/utils/cypherockBridge';
+import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherockBridge';
 import { CYPHEROCK_DERIVATION_PATHS } from 'web/utils/cypherockBridge/constants';
 
 import styles from './styles.scss';
@@ -31,11 +29,17 @@ interface ITokenLockViewProps {
 }
 
 const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: ITokenLockViewProps) => {
-  const activeWallet = useSelector(walletsSelectors.getActiveWallet);
   const { requestMessage } = useTokenLock();
+  const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
 
-  const sendTokenLockTransaction = async (walletId: Uint8Array, data: TokenLockDataParam, asset: IAssetInfoState, publicKey: string): Promise<string> => {
-    const dagAddress = getDagAddress(activeWallet);
+  const sendTokenLockTransaction = async (data: TokenLockDataParam, asset: IAssetInfoState): Promise<string> => {
+    if (!cypherockId) {
+      throw new CypherockError('Wallet id not found', ErrorCode.UNKNOWN);
+    }
+
+    if (!dag4?.account?.publicKey || !dag4?.account?.address) {
+      throw new CypherockError('Wallet public key not found', ErrorCode.UNKNOWN);
+    }
 
     let currency: string | null = null;
     let networkInstance: GlobalDagNetwork | MetagraphTokenNetwork = dag4.network;
@@ -53,7 +57,9 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
       networkInstance = metagraphClient.networkInstance;
     }
 
-    const lastRef = await networkInstance.l1Api.getTokenLockLastRef(dagAddress);
+    const { publicKey, address } = dag4.account;
+
+    const lastRef = await networkInstance.l1Api.getTokenLockLastRef(address);
 
     const tokenLockBody: TokenLockWithParent = {
       source: data.source,
@@ -65,8 +71,8 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
     };
 
     const { normalized, compressed } = await dag4.keyStore.brotliCompress(tokenLockBody);
-
     const messageHash = dag4.keyStore.sha256(compressed);
+    const walletId = decodeArrayFromBase64(cypherockId);
 
     const { signature } = await service.blindSign({
       walletId,
@@ -91,12 +97,9 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
   const cypherockTokenLockConfig: TokenLockProviderConfig = {
     title: 'Cypherock - Token Lock',
     onTokenLock: async ({ decodedData, asset }) => {
-      const { cypherockId, publicKey } = decodedData;
-      const walletId = decodeArrayFromBase64(cypherockId);
-
       changeState(WalletState.VerifyTransaction);
 
-      return await sendTokenLockTransaction(walletId, decodedData, asset, publicKey);
+      return await sendTokenLockTransaction(decodedData, asset);
     },
     onSuccess: async txHash => {
       await handleSuccessResponse(txHash, requestMessage);

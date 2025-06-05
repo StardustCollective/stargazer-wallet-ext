@@ -1,17 +1,19 @@
 import { dag4 } from '@stardust-collective/dag4';
 import type { SignedWithdrawDelegatedStake, WithdrawDelegatedStake } from '@stardust-collective/dag4-network';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { useWithdrawDelegatedStake } from 'hooks/external/useWithdrawDelegatedStake';
 
 import WithdrawDelegatedStakeContainer, { WithdrawDelegatedStakeProviderConfig } from 'scenes/external/WithdrawDelegatedStake/WithdrawDelegatedStakeContainer';
 
 import type { StargazerRequestMessage } from 'scripts/common';
-import type { WithdrawDelegatedStakeData } from 'scripts/Provider/constellation';
+
+import walletsSelectors from 'selectors/walletsSelectors';
 
 import { WalletState } from 'web/pages/Cypherock/Cypherock';
 import { decodeArrayFromBase64 } from 'web/pages/Cypherock/utils';
-import { CypherockService } from 'web/utils/cypherockBridge';
+import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherockBridge';
 import { CYPHEROCK_DERIVATION_PATHS } from 'web/utils/cypherockBridge/constants';
 
 import styles from './styles.scss';
@@ -25,19 +27,19 @@ interface IWithdrawDelegatedStakeViewProps {
 
 const WithdrawDelegatedStakeView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: IWithdrawDelegatedStakeViewProps) => {
   const { requestMessage } = useWithdrawDelegatedStake();
+  const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
 
-  const sendWithdrawDelegatedStakeTransaction = async (data: WithdrawDelegatedStakeData): Promise<string> => {
-    const { source, stakeRef, publicKey, cypherockId } = data;
+  const sendWithdrawDelegatedStakeTransaction = async (data: WithdrawDelegatedStake): Promise<string> => {
+    if (!cypherockId) {
+      throw new CypherockError('Wallet id not found', ErrorCode.UNKNOWN);
+    }
 
-    const withdrawDelegatedStakeBody: WithdrawDelegatedStake = {
-      source,
-      stakeRef,
-    };
+    if (!dag4.account.publicKey) {
+      throw new CypherockError('Public key not found', ErrorCode.UNKNOWN);
+    }
 
-    const { normalized, compressed } = await dag4.keyStore.brotliCompress(withdrawDelegatedStakeBody);
-
+    const { normalized, compressed } = await dag4.keyStore.brotliCompress(data);
     const messageHash = dag4.keyStore.sha256(compressed);
-
     const walletId = decodeArrayFromBase64(cypherockId);
 
     const { signature } = await service.blindSign({
@@ -45,6 +47,8 @@ const WithdrawDelegatedStakeView = ({ service, changeState, handleSuccessRespons
       derivationPath: CYPHEROCK_DERIVATION_PATHS.DAG_MAINNET,
       message: messageHash,
     });
+
+    const { publicKey } = dag4.account;
 
     const signedWithdrawDelegatedStake: SignedWithdrawDelegatedStake = {
       value: normalized,

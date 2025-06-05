@@ -1,13 +1,18 @@
 import { isHexString, toUtf8 } from 'ethereumjs-util';
+
 import { ALL_EVM_CHAINS } from 'constants/index';
+
+import { getChainId as getChainIdFn } from 'scripts/Background/controllers/EVMChainController/utils';
 import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
+
 import store from 'state/store';
 import IVaultState from 'state/vault/types';
+
 import { getWalletController } from 'utils/controllersUtils';
-import { getChainId as getChainIdFn } from 'scripts/Background/controllers/EVMChainController/utils';
 import { encodeToBase64 } from 'utils/encoding';
+import { getHardwareWalletPage, isHardware } from 'utils/hardware';
+
 import { StargazerSignatureRequest } from '../../constellation/utils';
-import { getHardwareWalletPage, isCypherock, isHardware, isLedger } from 'utils/hardware';
 
 export const EXTERNAL_URL = '/external.html';
 export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
@@ -23,44 +28,27 @@ export const getWalletInfo = () => {
   const { vault } = store.getState();
 
   let windowUrl = EXTERNAL_URL;
-  let bipIndex;
-  let cypherockId;
 
-  const allWallets = [
-    ...vault.wallets.local,
-    ...vault.wallets.ledger,
-    ...vault.wallets.bitfi,
-    ...vault.wallets.cypherock,
-  ];
-  const activeWallet = vault?.activeWallet
-    ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
-    : null;
+  const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi, ...vault.wallets.cypherock];
+  const activeWallet = vault?.activeWallet ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id) : null;
 
   const isHardwareWallet = isHardware(activeWallet?.type);
 
   if (isHardwareWallet) {
-    if (isLedger(activeWallet?.type)) {
-      bipIndex = activeWallet?.bipIndex;
-    } else if (isCypherock(activeWallet?.type)) {
-      cypherockId = activeWallet?.cypherockId;
-    }
     windowUrl = getHardwareWalletPage(activeWallet?.type);
   }
 
   const windowType = isHardwareWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
   const windowSize = isHardwareWallet ? WINDOW_SIZE.large : WINDOW_SIZE.small;
 
-  return { activeWallet, windowUrl, windowType, windowSize, bipIndex, cypherockId };
+  return { activeWallet, windowUrl, windowType, windowSize };
 };
 
 export const getNetworkInfo = () => {
   const { currentEVMNetwork }: IVaultState = store.getState().vault;
-  const networkInfo = Object.values(ALL_EVM_CHAINS).find(
-    (chain) => chain.id === currentEVMNetwork
-  );
+  const networkInfo = Object.values(ALL_EVM_CHAINS).find(chain => chain.id === currentEVMNetwork);
 
-  if (!networkInfo)
-    throw new EIPRpcError('Network not found', EIPErrorCodes.ChainDisconnected);
+  if (!networkInfo) throw new EIPRpcError('Network not found', EIPErrorCodes.ChainDisconnected);
 
   return networkInfo;
 };

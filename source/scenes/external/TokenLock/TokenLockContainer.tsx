@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
-import { useTokenLock } from 'hooks/external/useTokenLock';
+import { useTokenLock, UseTokenLockReturn } from 'hooks/external/useTokenLock';
 
 import TokenLockView, { ITokenLockProps } from 'scenes/external/views/token-lock';
 
@@ -8,73 +9,67 @@ import type { TokenLockDataParam } from 'scripts/Provider/constellation';
 
 import { IAssetInfoState } from 'state/assets/types';
 
-import { usePlatformAlert } from 'utils/alertUtil';
+import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
 
 export interface TokenLockProviderConfig {
   title: string;
+  isLoading?: boolean;
   onTokenLock: (data: { decodedData: TokenLockDataParam; asset: IAssetInfoState }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (txHash: string) => void;
-  isLoading?: boolean;
 }
+
+type TokenLockContainerProps = TokenLockDataParam & UseTokenLockReturn & BaseContainerProps;
 
 /**
  * Container component that provides common token lock functionality
  * Allows each service to inject their own transaction logic while reusing UI and common patterns
  */
 const TokenLockContainer: React.FC<TokenLockProviderConfig> = ({ title, onTokenLock, onError, onSuccess, isLoading = false }) => {
-  const showAlert = usePlatformAlert();
-  const { decodedData, asset, handleReject, handleSuccess, handleError } = useTokenLock();
-
-  // Validate required data
-  if (!asset) {
-    handleError(new Error('Asset not found'));
-    return null;
-  }
-
-  if (!decodedData) {
-    handleError(new Error('Invalid token lock data'));
-    return null;
-  }
-
-  // Handle token lock action with service-specific logic
-  const handleTokenLock = async () => {
-    try {
-      const txHash = await onTokenLock({
-        decodedData,
-        asset,
-      });
-
-      if (onSuccess) {
-        onSuccess(txHash);
-      } else {
-        handleSuccess(txHash);
-      }
-    } catch (error: unknown) {
-      if (onError) {
-        onError(error);
-      } else {
-        handleError(error);
-        showAlert(error instanceof Error ? error.message : 'Unknown error occurred', 'danger');
-      }
-    }
+  // Extract onAction function
+  const handleTokenLockAction = async (hookData: UseTokenLockReturn): Promise<string> => {
+    const { decodedData, asset } = hookData;
+    return await onTokenLock({ decodedData, asset });
   };
 
-  const props: ITokenLockProps = {
-    title,
-    wallet: decodedData.wallet,
-    chain: decodedData.chain,
-    currencyId: decodedData.currencyId,
-    amount: decodedData.amount,
-    unlockEpoch: decodedData.unlockEpoch,
-    fee: decodedData.fee,
-    latestEpoch: decodedData.latestEpoch,
-    isPositiveButtonLoading: isLoading,
-    onSign: handleTokenLock,
-    onReject: handleReject,
+  // Extract validation function
+  const validateTokenLockData = (decodedData: TokenLockDataParam): string | null => {
+    if (!decodedData) return 'Invalid token lock data';
+    if (!decodedData.source) return 'Invalid source';
+    if (!decodedData.amount) return 'Invalid amount';
+    return null;
   };
 
-  return <TokenLockView {...props} />;
+  // Extract render function with proper typing
+  const renderTokenLockView = (props: TokenLockContainerProps): JSX.Element => {
+    const { title: propsTitle, amount, unlockEpoch, latestEpoch, isLoading: propsIsLoading, asset, onAction, onReject } = props;
+
+    const tokenLockProps: ITokenLockProps = {
+      title: propsTitle,
+      asset,
+      amount,
+      unlockEpoch,
+      latestEpoch,
+      isLoading: propsIsLoading,
+      onSign: onAction,
+      onReject,
+    };
+    return <TokenLockView {...tokenLockProps} />;
+  };
+
+  return (
+    <ExternalRequestContainer<TokenLockDataParam, string, UseTokenLockReturn>
+      title={title}
+      isLoading={isLoading}
+      useHook={useTokenLock}
+      onAction={handleTokenLockAction}
+      onError={onError}
+      onSuccess={onSuccess}
+      validateData={validateTokenLockData}
+    >
+      {renderTokenLockView}
+    </ExternalRequestContainer>
+  );
 };
 
 export default TokenLockContainer;

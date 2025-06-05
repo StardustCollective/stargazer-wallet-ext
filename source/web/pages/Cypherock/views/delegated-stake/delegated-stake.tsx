@@ -1,5 +1,5 @@
 import { dag4 } from '@stardust-collective/dag4';
-import type { DelegatedStakeWithParent, SignedDelegatedStake } from '@stardust-collective/dag4-network';
+import type { DelegatedStake, DelegatedStakeWithParent, SignedDelegatedStake } from '@stardust-collective/dag4-network';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -8,14 +8,11 @@ import { useDelegatedStake } from 'hooks/external/useDelegatedStake';
 import DelegatedStakeContainer, { DelegatedStakeProviderConfig } from 'scenes/external/DelegatedStake/DelegatedStakeContainer';
 
 import { StargazerRequestMessage } from 'scripts/common';
-import type { DelegatedStakeData } from 'scripts/Provider/constellation';
 
 import walletsSelectors from 'selectors/walletsSelectors';
 
-import { getDagAddress } from 'utils/wallet';
-
 import { decodeArrayFromBase64 } from 'web/pages/Cypherock/utils';
-import { CypherockService } from 'web/utils/cypherockBridge';
+import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherockBridge';
 import { CYPHEROCK_DERIVATION_PATHS } from 'web/utils/cypherockBridge/constants';
 
 import { WalletState } from '../../Cypherock';
@@ -30,15 +27,24 @@ interface IDelegatedStakeViewProps {
 }
 
 const DelegatedStakeView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: IDelegatedStakeViewProps) => {
-  const activeWallet = useSelector(walletsSelectors.getActiveWallet);
+  const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
+
   const { requestMessage } = useDelegatedStake();
 
-  const sendDelegatedStakeTransaction = async (data: DelegatedStakeData): Promise<string> => {
-    const { amount, nodeId, tokenLockRef, fee, source, publicKey, cypherockId } = data;
+  const sendDelegatedStakeTransaction = async (data: DelegatedStake): Promise<string> => {
+    const { amount, nodeId, tokenLockRef, fee, source } = data;
 
-    const dagAddress = getDagAddress(activeWallet);
+    if (!cypherockId) {
+      throw new CypherockError('Wallet id not found', ErrorCode.UNKNOWN);
+    }
 
-    const lastRef = await dag4.network.l0Api.getDelegatedStakeLastRef(dagAddress);
+    if (!dag4.account.publicKey || !dag4.account.address) {
+      throw new CypherockError('Public key not found', ErrorCode.UNKNOWN);
+    }
+
+    const { publicKey, address } = dag4.account;
+
+    const lastRef = await dag4.network.l0Api.getDelegatedStakeLastRef(address);
 
     const delegatedStakeBody: DelegatedStakeWithParent = {
       source,

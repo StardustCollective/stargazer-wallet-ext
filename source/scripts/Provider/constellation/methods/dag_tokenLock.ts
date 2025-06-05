@@ -1,8 +1,9 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import type { TokenLockWithCurrencyId } from '@stardust-collective/dag4-network';
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import type { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import store from 'state/store';
 
@@ -10,23 +11,10 @@ import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
+import { checkArguments, getWalletInfo } from '../utils';
 
-type TokenLock = {
-  source: string;
-  amount: number;
-  unlockEpoch: number | null;
-  fee?: number;
-  currencyId: string | null;
-};
-
-export type TokenLockDataParam = TokenLock & {
-  wallet: string;
-  walletId: string;
-  chain: string;
+export type TokenLockDataParam = TokenLockWithCurrencyId & {
   latestEpoch: number | null;
-  cypherockId?: string;
-  publicKey?: string;
 };
 
 const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
@@ -48,7 +36,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
 
   validateHardwareMethod(activeWallet.type, request.method);
 
-  const [data] = request.params as [TokenLock];
+  const [data] = request.params as [TokenLockWithCurrencyId];
 
   if (!data) {
     throw new Error('invalid params');
@@ -109,8 +97,6 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('DAG asset not found in the wallet');
     }
   }
-
-  return { dagAccount };
 };
 
 const getLatestEpoch = async (): Promise<number | null> => {
@@ -119,11 +105,11 @@ const getLatestEpoch = async (): Promise<number | null> => {
 };
 
 export const dag_tokenLock = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
-  const { dagAccount } = await validateParams(request);
+  await validateParams(request);
 
-  const { activeWallet, windowUrl, windowSize, windowType, cypherockId } = getWalletInfo();
+  const { windowUrl, windowSize, windowType } = getWalletInfo();
 
-  const [data] = request.params as [TokenLock];
+  const [data] = request.params as [TokenLockWithCurrencyId];
 
   let latestEpoch = null;
 
@@ -139,20 +125,9 @@ export const dag_tokenLock = async (request: StargazerRequest & { type: 'rpc' },
     }
   }
 
-  const DEFAULT_FEE = 0;
-
   const tokenLockData: TokenLockDataParam = {
-    wallet: activeWallet.label,
-    walletId: activeWallet.id,
-    chain: getChainLabel(),
-    source: data.source,
-    amount: data.amount,
-    currencyId: data.currencyId,
-    unlockEpoch: data.unlockEpoch,
-    fee: data.fee ? data.fee : DEFAULT_FEE,
+    ...data,
     latestEpoch,
-    cypherockId,
-    publicKey: dagAccount?.publicKey,
   };
 
   windowSize.height = 628;

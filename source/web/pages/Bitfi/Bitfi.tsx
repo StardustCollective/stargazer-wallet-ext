@@ -19,6 +19,7 @@ import IVaultState from 'state/vault/types';
 
 import { getWalletController } from 'utils/controllersUtils';
 import { HardwareWallet } from 'utils/hardware';
+import { toDag } from 'utils/number';
 
 import BitfiBridgeUtil from '../../utils/bitfiBridge';
 
@@ -122,16 +123,8 @@ const BitfiPage = () => {
   }, [activeNetwork.Constellation]);
 
   useEffect(() => {
-    if (location.href.includes('data') && location.href.includes('route')) {
-      const { data, route } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
-        deviceId: string;
-      }>(location.href);
-
-      const { deviceId: id } = data;
-
-      if (id) {
-        setDeviceId(id);
-      }
+    if (location.href.includes('route')) {
+      const { route } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
       if (route === ROUTES.SIGN_TRANSACTION) {
         setWalletState(WALLET_STATE_ENUM.SIGN_TRANSACTION);
@@ -304,20 +297,15 @@ const BitfiPage = () => {
     BitfiBridgeUtil.closeConnection();
   };
 
-  const onSignMessagePress = async () => {
-    const { data, message: messageRequest } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
-      deviceId: string;
-      payload: string;
-    }>(location.href);
-
-    const { deviceId: devId, payload } = data;
+  const onSignMessagePress = async (devId: string, payload: string) => {
+    const { message: messageRequest } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
     try {
       setWaitingForBitfi(true);
       setCode('');
 
       await BitfiBridgeUtil.requestPermissions(
-        devId as string,
+        devId,
         msg => {
           setWaitingMessage(msg);
         },
@@ -349,27 +337,23 @@ const BitfiPage = () => {
     setWalletState(WALLET_STATE_ENUM.LOCKED);
   };
 
-  const onSignPress = async (fee: string) => {
-    const { data, message: messageRequest } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
-      amount: string;
-      from: string;
-      to: string;
-    }>(location.href);
-
-    const { amount, from, to } = data;
+  const onSignPress = async (devId: string, amount: number, from: string, to: string, fee: string) => {
+    const { message: messageRequest } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
     try {
       setWaitingForBitfi(true);
       setCode('');
       await BitfiBridgeUtil.requestPermissions(
-        deviceId as string,
+        devId,
         msg => {
           setWaitingMessage(msg);
         },
         setCode
       );
+
+      const amountInDag = toDag(amount).toString();
       // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2 (remove as any)
-      const signedTX = await BitfiBridgeUtil.buildTransaction(amount, from, to, fee);
+      const signedTX = await BitfiBridgeUtil.buildTransaction(amountInDag, from, to, fee);
       const hash = await dag4.account.networkInstance.postTransaction(signedTX);
 
       StargazerExternalPopups.addResolvedParam(location.href);

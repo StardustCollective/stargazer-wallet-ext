@@ -5,29 +5,31 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 
+import { useExternalViewData } from 'hooks/external/useExternalViewData';
+
 import Card from 'scenes/external/components/Card/Card';
 import CardRow from 'scenes/external/components/CardRow/CardRow';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 
 import type { StargazerSignatureRequest } from 'scripts/Provider/constellation';
 
-import dappSelectors from 'selectors/dappSelectors';
+import walletsSelectors from 'selectors/walletsSelectors';
 
 import styles from './styles.scss';
 
 export interface ISignMessageProps {
   title: string;
-  account: string;
-  network: string;
-  deviceId?: string;
+  isDagSignature: boolean;
   message: StargazerSignatureRequest;
   footer?: string;
   onSign: () => Promise<void>;
   onReject: () => void;
 }
 
-const SignMessageView = ({ title, account, network, deviceId, message, footer, onSign, onReject }: ISignMessageProps) => {
-  const current = useSelector(dappSelectors.getCurrent);
+const SignMessageView = ({ title, message, isDagSignature, footer, onSign, onReject }: ISignMessageProps) => {
+  const { current, activeWallet, constellationNetwork, evmNetwork } = useExternalViewData();
+  const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
+  const network = isDagSignature ? constellationNetwork : evmNetwork;
 
   let parsedMetadata: any = null;
 
@@ -45,7 +47,7 @@ const SignMessageView = ({ title, account, network, deviceId, message, footer, o
     <CardLayoutV3 logo={current.logo} title={title} subtitle={current.origin} onNegativeButtonClick={onReject} negativeButtonLabel="Reject" onPositiveButtonClick={onSign} positiveButtonLabel="Sign">
       <div className={styles.container}>
         <Card>
-          <CardRow label="Account:" value={account} />
+          <CardRow label="Account:" value={activeWallet?.label} />
           <CardRow label="Network:" value={network} />
           {!!deviceId && <CardRow label="Device ID:" value={deviceId} />}
         </Card>

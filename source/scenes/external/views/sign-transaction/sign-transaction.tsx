@@ -7,6 +7,7 @@ import { COLORS_ENUMS } from 'assets/styles/colors';
 
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 
+import { useExternalViewData } from 'hooks/external/useExternalViewData';
 import { useFiat } from 'hooks/usePrice';
 
 import Card from 'scenes/external/components/Card/Card';
@@ -15,30 +16,27 @@ import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 
 import { getNativeToken } from 'scripts/Background/controllers/EVMChainController/utils';
 
-import dappSelectors from 'selectors/dappSelectors';
 import walletsSelectors from 'selectors/walletsSelectors';
 
-import { IAssetInfoState } from 'state/assets/types';
+import type { IAssetInfoState } from 'state/assets/types';
 import { AssetType } from 'state/vault/types';
 
-import { HardwareWalletType } from 'utils/hardware';
+import type { HardwareWalletType } from 'utils/hardware';
 import { formatBigNumberForDisplay, toDag } from 'utils/number';
 
 import styles from './styles.scss';
 
 export interface ISignTransactionProps {
   title: string;
-  network: string;
-  deviceId?: string;
   asset: IAssetInfoState;
   amount: number | string;
   fee: string;
-  setFee: (fee: string) => void;
   from: string;
   to?: string;
   footer?: string;
   origin?: string;
   containerStyles?: string;
+  setFee: (fee: string) => void;
   onSign: () => Promise<void>;
   onReject: () => Promise<void>;
 }
@@ -48,9 +46,10 @@ const WALLET_LOGO: Record<HardwareWalletType, string | JSX.Element> = {
   [KeyringWalletType.BitfiAccountWallet]: '/assets/images/bitfi_logo.png',
 };
 
-const SignTransactionView = ({ title, network, deviceId, asset, amount, fee, origin, from, to, footer, containerStyles, setFee, onSign, onReject }: ISignTransactionProps) => {
-  const activeWallet = useSelector(walletsSelectors.getActiveWallet);
-  const current = useSelector(dappSelectors.getCurrent);
+const SignTransactionView = ({ title, asset, amount, fee, origin, from, to, footer, containerStyles, setFee, onSign, onReject }: ISignTransactionProps) => {
+  const { current, activeWallet, constellationNetwork, evmNetwork } = useExternalViewData();
+  const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
+  const network = asset.type === AssetType.Constellation ? constellationNetwork : evmNetwork;
 
   const calculateTotal = (amountValue: number | string, feeValue: string): { amountNumber: number; feeNumber: number; totalNumber: number } => {
     if (asset.type === AssetType.Constellation) {

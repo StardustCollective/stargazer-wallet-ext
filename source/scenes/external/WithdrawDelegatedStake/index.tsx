@@ -2,8 +2,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import type { WithdrawDelegatedStake } from '@stardust-collective/dag4-network';
 import React, { useState } from 'react';
 
-import { WithdrawDelegatedStakeData } from 'scripts/Provider/constellation';
-
 import { usePlatformAlert } from 'utils/alertUtil';
 
 import WithdrawDelegatedStakeContainer, { WithdrawDelegatedStakeProviderConfig } from './WithdrawDelegatedStakeContainer';
@@ -12,7 +10,7 @@ const ExternalWithdrawDelegatedStake = () => {
   const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
 
-  const sendWithdrawDelegatedStakeTransaction = async (decodedData: WithdrawDelegatedStakeData): Promise<string> => {
+  const sendWithdrawDelegatedStakeTransaction = async (decodedData: WithdrawDelegatedStake): Promise<string> => {
     const withdrawDelegatedStakeBody: WithdrawDelegatedStake = {
       source: decodedData.source,
       stakeRef: decodedData.stakeRef,

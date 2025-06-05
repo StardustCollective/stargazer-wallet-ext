@@ -1,70 +1,80 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
-import { useSignMessage } from 'hooks/external/useSignMessage';
+import { useSignMessage, UseSignMessageReturn } from 'hooks/external/useSignMessage';
 
 import SignMessageView, { ISignMessageProps } from 'scenes/external/views/sign-message';
 
-import { usePlatformAlert } from 'utils/alertUtil';
+import type { ISignMessageParams } from 'scripts/Provider/constellation';
+
+import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
 
 export interface SignMessageProviderConfig {
   title: string;
   footer?: string;
-  onSign: (data: { payload: string; parsedPayload: any; isDagSignature: boolean; decodedData: any }) => Promise<string>;
+  onSign: (data: { payload: string; parsedPayload: any; isDagSignature: boolean }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (signature: string) => void;
 }
 
+type SignMessageContainerProps = ISignMessageParams & UseSignMessageReturn & BaseContainerProps;
+
 /**
  * Container component that provides common sign message functionality
- * Allows each service to inject their own signing logic while reusing UI and common patterns
  */
 const SignMessageContainer: React.FC<SignMessageProviderConfig> = ({ title, footer = 'Only sign messages on sites you trust.', onSign, onError, onSuccess }) => {
-  const showAlert = usePlatformAlert();
-  const { decodedData, parsedPayload, isDagSignature, handleReject, handleSuccess, handleError } = useSignMessage();
+  // Extract onAction function
+  const handleSignMessageAction = async (hookData: UseSignMessageReturn): Promise<string> => {
+    const { parsedPayload, isDagSignature, decodedData } = hookData;
+    return await onSign({
+      payload: decodedData.payload,
+      parsedPayload,
+      isDagSignature,
+    });
+  };
 
-  // Validate required data
-  if (!parsedPayload?.content && !isDagSignature) {
-    handleError(new Error('Invalid payload'));
-    return null;
-  }
+  // Extract validation function - matches original logic
+  const validateSignMessageData = (decodedData: ISignMessageParams, hookData?: UseSignMessageReturn): string | null => {
+    if (!decodedData?.payload) return 'Invalid payload';
 
-  // Handle sign action with service-specific logic
-  const handleSign = async () => {
-    try {
-      const signature = await onSign({
-        payload: decodedData.payload,
-        parsedPayload,
-        isDagSignature,
-        decodedData,
-      });
-
-      if (onSuccess) {
-        onSuccess(signature);
-      } else {
-        handleSuccess(signature);
-      }
-    } catch (error: unknown) {
-      if (onError) {
-        onError(error);
-      } else {
-        handleError(error);
-        showAlert(error instanceof Error ? error.message : 'Unknown error occurred', 'danger');
+    if (hookData) {
+      const { parsedPayload } = hookData;
+      if (!parsedPayload?.content) {
+        return 'Invalid payload content';
       }
     }
+
+    return null;
   };
 
-  const props: ISignMessageProps = {
-    title,
-    account: decodedData.wallet,
-    network: decodedData.chain,
-    deviceId: decodedData.deviceId,
-    message: parsedPayload,
-    footer,
-    onSign: handleSign,
-    onReject: handleReject,
+  // Extract render function with proper typing
+  const renderSignMessageView = (props: SignMessageContainerProps): JSX.Element => {
+    const { title: propsTitle, footer: propsFooter, parsedPayload, isDagSignature, onAction, onReject } = props;
+
+    const signMessageProps: ISignMessageProps = {
+      title: propsTitle,
+      isDagSignature,
+      message: parsedPayload,
+      footer: propsFooter,
+      onSign: onAction,
+      onReject,
+    };
+    return <SignMessageView {...signMessageProps} />;
   };
 
-  return <SignMessageView {...props} />;
+  return (
+    <ExternalRequestContainer<ISignMessageParams, string, UseSignMessageReturn>
+      title={title}
+      footer={footer}
+      useHook={useSignMessage}
+      onAction={handleSignMessageAction}
+      onError={onError}
+      onSuccess={onSuccess}
+      validateData={validateSignMessageData}
+    >
+      {renderSignMessageView}
+    </ExternalRequestContainer>
+  );
 };
 
 export default SignMessageContainer;

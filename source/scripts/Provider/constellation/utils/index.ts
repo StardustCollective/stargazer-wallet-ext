@@ -1,20 +1,18 @@
+import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import * as ethers from 'ethers';
+
 import { DAG_NETWORK } from 'constants/index';
+
 import store from 'state/store';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
-import { dag4 } from '@stardust-collective/dag4';
-import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
-import { WatchAssetParameters } from '../methods/wallet_watchAsset';
-import { toDag } from 'utils/number';
+
 import { getAccountController } from 'utils/controllersUtils';
-import * as ethers from 'ethers';
-import {
-  isBitfi,
-  isLedger,
-  isHardware,
-  getHardwareWalletPage,
-  isCypherock,
-} from 'utils/hardware';
+import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
+import { getHardwareWalletPage, isHardware } from 'utils/hardware';
+import { toDag } from 'utils/number';
+
+import { WatchAssetParameters } from '../methods/wallet_watchAsset';
 
 export const EXTERNAL_URL = '/external.html';
 export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
@@ -34,29 +32,9 @@ export type StargazerSignatureRequest = {
 export const getWalletInfo = () => {
   const { vault } = store.getState();
   let windowUrl = EXTERNAL_URL;
-  let deviceId = '';
-  let bipIndex;
-  let cypherockId;
-  const allWallets = [
-    ...vault.wallets.local,
-    ...vault.wallets.ledger,
-    ...vault.wallets.bitfi,
-    ...vault.wallets.cypherock,
-  ];
-  const activeWallet = vault?.activeWallet
-    ? allWallets.find(
-        (wallet: any) =>
-          wallet.id === vault.activeWallet.id || vault.activeWallet.label === wallet.label
-      )
-    : null;
 
-  if (isLedger(activeWallet?.type)) {
-    bipIndex = activeWallet?.bipIndex;
-  } else if (isBitfi(activeWallet?.type)) {
-    deviceId = activeWallet?.accounts[0].deviceId;
-  } else if (isCypherock(activeWallet?.type)) {
-    cypherockId = activeWallet?.cypherockId;
-  }
+  const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi, ...vault.wallets.cypherock];
+  const activeWallet = vault?.activeWallet ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id || vault.activeWallet.label === wallet.label) : null;
 
   const isHardwareWallet = isHardware(activeWallet?.type);
 
@@ -72,9 +50,6 @@ export const getWalletInfo = () => {
     windowUrl,
     windowType,
     windowSize,
-    deviceId,
-    bipIndex,
-    cypherockId,
   };
 };
 
@@ -93,8 +68,8 @@ export const getChainId = (): number => {
 export const getChainLabel = () => {
   const networkName = getNetwork();
   const chainId = getChainId();
-  const network = DAG_NETWORK[networkName].network;
-  const label = DAG_NETWORK[networkName].label;
+  const { network } = DAG_NETWORK[networkName];
+  const { label } = DAG_NETWORK[networkName];
   const extraLabel = chainId !== 1 ? ` ${label}` : '';
 
   return `${network}${extraLabel}`;
@@ -116,11 +91,7 @@ export const validateMetagraphAddress = (address: unknown): IAssetState => {
     throw new Error("Invaid address 'metagraphAddress'");
   }
 
-  const metagraphToken = vault?.activeWallet?.assets?.find(
-    (asset) =>
-      asset.contractAddress === address &&
-      activeNetwork.Constellation === assets[asset?.id]?.network
-  );
+  const metagraphToken = vault?.activeWallet?.assets?.find(asset => asset.contractAddress === address && activeNetwork.Constellation === assets[asset?.id]?.network);
 
   if (!metagraphToken) {
     throw new Error("'metagraphAddress' not found in wallet");
@@ -138,12 +109,7 @@ export const normalizeSignatureRequest = (encodedSignatureRequest: string): stri
     throw new Error('Unable to decode signatureRequest');
   }
 
-  const test =
-    typeof signatureRequest === 'object' &&
-    signatureRequest !== null &&
-    typeof signatureRequest.content === 'string' &&
-    typeof signatureRequest.metadata === 'object' &&
-    signatureRequest.metadata !== null;
+  const test = typeof signatureRequest === 'object' && signatureRequest !== null && typeof signatureRequest.content === 'string' && typeof signatureRequest.metadata === 'object' && signatureRequest.metadata !== null;
 
   if (!test) {
     throw new Error('SignatureRequest does not match spec');
@@ -174,7 +140,7 @@ export const getAssetByType = (type: AssetType): IAssetState => {
   let stargazerAsset: IAssetState = activeAsset as IAssetState;
 
   if (!activeAsset || activeAsset.type !== type) {
-    stargazerAsset = activeWallet.assets.find((a) => a.type === type);
+    stargazerAsset = activeWallet.assets.find(a => a.type === type);
   }
 
   return stargazerAsset;
@@ -186,20 +152,14 @@ export const getAssetByContractAddress = (address: string): IAssetState => {
   let metagraphAsset: IAssetState = activeAsset as IAssetState;
 
   if (!activeAsset || activeAsset?.contractAddress !== address) {
-    metagraphAsset = activeWallet.assets.find((a) => a?.contractAddress === address);
+    metagraphAsset = activeWallet.assets.find(a => a?.contractAddress === address);
   }
 
   return metagraphAsset;
 };
 
-export const fetchMetagraphBalance = async (
-  url: string,
-  metagraphAddress: string,
-  dagAddress: string
-): Promise<number> => {
-  const responseJson = await (
-    await fetch(`${url}/currency/${metagraphAddress}/addresses/${dagAddress}/balance`)
-  ).json();
+export const fetchMetagraphBalance = async (url: string, metagraphAddress: string, dagAddress: string): Promise<number> => {
+  const responseJson = await (await fetch(`${url}/currency/${metagraphAddress}/addresses/${dagAddress}/balance`)).json();
   const balance = responseJson?.data?.balance ?? 0;
   const balanceNumber = toDag(balance);
 
@@ -253,23 +213,17 @@ export const checkArguments = (args: ArgumentCheck[]): void => {
     // Type validation - check if value matches any of the allowed types
     if (!isNull && !isUndefined) {
       const valueType = typeof arg.value;
-      const isValidType = types.some((type) => {
+      const isValidType = types.some(type => {
         if (type === 'null') return isNull;
         return valueType === type;
       });
 
       if (!isValidType) {
         if (types.length === 1) {
-          throw new Error(
-            `Bad argument "${arg.name}" -> expected "${types[0]}", got "${valueType}"`
-          );
+          throw new Error(`Bad argument "${arg.name}" -> expected "${types[0]}", got "${valueType}"`);
         }
 
-        throw new Error(
-          `Bad argument "${arg.name}" -> expected one of [${types.join(
-            ', '
-          )}], got "${valueType}"`
-        );
+        throw new Error(`Bad argument "${arg.name}" -> expected one of [${types.join(', ')}], got "${valueType}"`);
       }
     }
 
@@ -306,10 +260,7 @@ export const checkArguments = (args: ArgumentCheck[]): void => {
             break;
 
           case 'isDagAddress':
-            if (
-              types.includes('string') &&
-              !accountController.isValidDAGAddress(arg.value)
-            ) {
+            if (types.includes('string') && !accountController.isValidDAGAddress(arg.value)) {
               throw new Error(`Argument "${arg.name}" must be a valid DAG address`);
             }
             break;
@@ -319,32 +270,25 @@ export const checkArguments = (args: ArgumentCheck[]): void => {
               throw new Error(`Argument "${arg.name}" must be a valid ETH address`);
             }
             break;
+          default:
+            break;
         }
       }
     }
   }
 };
 
-export const isValidMetagraphAddress = async (
-  address: string,
-  chainId?: string
-): Promise<boolean> => {
+export const isValidMetagraphAddress = async (address: string, chainId?: string): Promise<boolean> => {
   if (!dag4.account.validateDagAddress(address)) return false;
 
   const { activeNetwork }: IVaultState = store.getState().vault;
   const activeChain = chainId || activeNetwork[KeyringNetwork.Constellation];
   const BE_URL = DAG_NETWORK[activeChain].config.beUrl;
-  const response: any = await (
-    await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)
-  ).json();
+  const response: any = await (await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)).json();
   return !!response?.data?.hash;
 };
 
-export const validateNodes = async (
-  l0: string,
-  cl1: string,
-  dl1: string
-): Promise<void> => {
+export const validateNodes = async (l0: string, cl1: string, dl1: string): Promise<void> => {
   const accountController = getAccountController();
 
   const isValidL0 = await accountController.isValidNode(l0);
@@ -352,7 +296,7 @@ export const validateNodes = async (
   if (!isValidL0) {
     throw new Error('Argument "l0" is invalid -> node not found');
   }
-  if (!!cl1) {
+  if (cl1) {
     const isValidcL1 = await accountController.isValidNode(cl1);
 
     if (!isValidcL1) {
@@ -360,7 +304,7 @@ export const validateNodes = async (
     }
   }
 
-  if (!!dl1) {
+  if (dl1) {
     const isValiddL1 = await accountController.isValidNode(dl1);
 
     if (!isValiddL1) {
@@ -369,13 +313,10 @@ export const validateNodes = async (
   }
 };
 
-export const checkWatchAssetParams = async ({
-  type,
-  options,
-}: WatchAssetParameters): Promise<void> => {
+export const checkWatchAssetParams = async ({ type, options }: WatchAssetParameters): Promise<void> => {
   const { chainId, address, l0, cl1, dl1, name, symbol, logo } = options;
   const SUPPORTED_TYPES = ['L0'];
-  const SUPPORTED_CHAINS = Object.values(DAG_NETWORK).map((network) => network.chainId);
+  const SUPPORTED_CHAINS = Object.values(DAG_NETWORK).map(network => network.chainId);
   const args: ArgumentCheck[] = [
     { type: 'string', value: type, name: 'type' },
     { type: 'number', value: chainId, name: 'chainId' },
@@ -412,9 +353,7 @@ export const checkWatchAssetParams = async ({
     throw new Error('Argument "chainId" is not supported');
   }
 
-  const selectedNetwork = Object.values(DAG_NETWORK).find(
-    (network) => network.chainId === chainId
-  );
+  const selectedNetwork = Object.values(DAG_NETWORK).find(network => network.chainId === chainId);
   const isValidMetagraph = await isValidMetagraphAddress(address, selectedNetwork.id);
 
   if (!isValidAddress) {

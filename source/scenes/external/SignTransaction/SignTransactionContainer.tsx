@@ -1,15 +1,14 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
-import { SignTransactionData, useSignTransaction } from 'hooks/external/useSignTransaction';
+import { SignTransactionData, useSignTransaction, UseSignTransactionReturn } from 'hooks/external/useSignTransaction';
 
 import SignTransactionView, { ISignTransactionProps } from 'scenes/external/views/sign-transaction';
 
-import { SignTransactionDataDAG } from 'scripts/Provider/constellation';
-import { SignTransactionDataEVM } from 'scripts/Provider/evm';
-
 import { IAssetInfoState } from 'state/assets/types';
 
-import { usePlatformAlert } from 'utils/alertUtil';
+import { AssetType } from '../../../state/vault/types';
+import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
 
 export interface SignTransactionProviderConfig {
   title: string;
@@ -19,95 +18,93 @@ export interface SignTransactionProviderConfig {
   onSuccess?: (txHash: string) => void;
 }
 
+type SignTransactionContainerProps = SignTransactionData & UseSignTransactionReturn & BaseContainerProps;
+
 /**
  * Container component that provides common sign transaction functionality
- * Allows each service to inject their own transaction signing logic while reusing UI and common patterns
  */
 const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ title, footer = 'Only sign transactions on sites you trust.', onSignTransaction, onError, onSuccess }) => {
-  const showAlert = usePlatformAlert();
-  const { asset, decodedData, isDAGTransaction, isMetagraphTransaction, isEVMTransaction, fee, origin, setFee, handleReject, handleSuccess, handleError } = useSignTransaction();
-
-  // Validate required data based on transaction type
-  if (isDAGTransaction && !('assetId' in decodedData)) {
-    handleError(new Error('Invalid DAG transaction data'));
-    return null;
-  }
-
-  if (isMetagraphTransaction && !('assetId' in decodedData)) {
-    handleError(new Error('Invalid metagraph transaction data'));
-    return null;
-  }
-
-  if (isEVMTransaction && !('assetId' in decodedData)) {
-    handleError(new Error('Invalid EVM transaction data'));
-    return null;
-  }
-
-  // Handle sign action with service-specific logic
-  const handleSign = async () => {
-    try {
-      const txHash = await onSignTransaction({
-        asset,
-        decodedData,
-        isDAGTransaction,
-        isMetagraphTransaction,
-        isEVMTransaction,
-        fee,
-      });
-
-      if (onSuccess) {
-        onSuccess(txHash);
-      } else {
-        handleSuccess(txHash);
-      }
-    } catch (error: unknown) {
-      if (onError) {
-        onError(error);
-      } else {
-        handleError(error);
-        showAlert(error instanceof Error ? error.message : 'Unknown error occurred', 'danger');
-      }
-    }
+  // Extract onAction function
+  const handleSignTransactionAction = async (hookData: UseSignTransactionReturn): Promise<string> => {
+    const { decodedData, asset, isDAGTransaction, isMetagraphTransaction, isEVMTransaction, fee } = hookData;
+    return await onSignTransaction({
+      decodedData,
+      asset,
+      isDAGTransaction,
+      isMetagraphTransaction,
+      isEVMTransaction,
+      fee,
+    });
   };
 
-  // Extract common props for the view
-  const getViewProps = (): ISignTransactionProps => {
-    // For DAG/Metagraph transactions
-    if (isDAGTransaction || isMetagraphTransaction) {
-      const dagData = decodedData as SignTransactionDataDAG;
+  // Extract validation function - handles complex transaction type validation
+  const validateSignTransactionData = (decodedData: SignTransactionData, hookData?: UseSignTransactionReturn): string | null => {
+    if (!hookData) return 'Invalid transaction data';
+    if (!decodedData) return 'Invalid transaction data';
+
+    const { value, from, to, chain, assetId } = decodedData;
+
+    if (!value) return 'Invalid amount';
+    if (!from) return 'Invalid from address';
+    if (!to) return 'Invalid to address';
+    if (!chain) return 'Invalid chain';
+    if (!assetId) return 'Invalid asset ID';
+
+    const { isDAGTransaction, isMetagraphTransaction, isEVMTransaction, asset } = hookData;
+
+    // Validate required data based on transaction type
+    if (isDAGTransaction && asset?.type !== AssetType.Constellation) {
+      return 'Invalid DAG transaction data';
+    }
+
+    if (isMetagraphTransaction && asset?.type !== AssetType.Constellation) {
+      return 'Invalid metagraph transaction data';
+    }
+
+    if (isEVMTransaction && ![AssetType.Ethereum, AssetType.ERC20].includes(asset?.type)) {
+      return 'Invalid EVM transaction data';
+    }
+
+    return null;
+  };
+
+  // Extract render function with proper typing
+  const renderSignTransactionView = (props: SignTransactionContainerProps): JSX.Element => {
+    const { title: propsTitle, asset, value, from, to, fee, origin, footer: propsFooter, setFee, onAction, onReject } = props;
+
+    // Extract common props for the view - handles different transaction types
+    const getViewProps = (): ISignTransactionProps => {
       return {
-        ...dagData,
-        title,
+        title: propsTitle,
         asset,
-        amount: dagData.value ?? 0,
-        footer,
+        amount: value ?? 0,
         fee,
+        from,
+        to,
+        footer: propsFooter,
         origin,
         setFee,
-        onSign: handleSign,
-        onReject: handleReject,
+        onSign: onAction,
+        onReject,
       };
-    }
-
-    // For EVM transactions
-    const evmData = decodedData as SignTransactionDataEVM;
-    return {
-      ...evmData,
-      title,
-      asset,
-      amount: evmData.value ?? 0,
-      footer,
-      fee,
-      origin,
-      setFee,
-      onSign: handleSign,
-      onReject: handleReject,
     };
+
+    return <SignTransactionView {...getViewProps()} />;
   };
 
-  const props = getViewProps();
-
-  return <SignTransactionView {...props} />;
+  return (
+    <ExternalRequestContainer<SignTransactionData, string, UseSignTransactionReturn>
+      title={title}
+      footer={footer}
+      useHook={useSignTransaction}
+      onAction={handleSignTransactionAction}
+      onError={onError}
+      onSuccess={onSuccess}
+      validateData={validateSignTransactionData}
+    >
+      {renderSignTransactionView}
+    </ExternalRequestContainer>
+  );
 };
 
 export default SignTransactionContainer;

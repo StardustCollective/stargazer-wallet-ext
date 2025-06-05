@@ -2,10 +2,10 @@ import { dag4 } from '@stardust-collective/dag4';
 import React from 'react';
 
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
-import { SignTransactionDataDAG } from 'scripts/Provider/constellation';
-import { SignTransactionDataEVM } from 'scripts/Provider/evm';
+import type { SignTransactionDataDAG } from 'scripts/Provider/constellation';
+import type { SignTransactionDataEVM } from 'scripts/Provider/evm';
 
-import { IAssetInfoState } from 'state/assets/types';
+import type { IAssetInfoState } from 'state/assets/types';
 
 import { toDag } from 'utils/number';
 

@@ -2,8 +2,6 @@ import { dag4 } from '@stardust-collective/dag4';
 import type { DelegatedStake } from '@stardust-collective/dag4-network';
 import React, { useState } from 'react';
 
-import { DelegatedStakeData } from 'scripts/Provider/constellation';
-
 import { usePlatformAlert } from 'utils/alertUtil';
 
 import DelegatedStakeContainer, { DelegatedStakeProviderConfig } from './DelegatedStakeContainer';
@@ -12,7 +10,7 @@ const ExternalDelegatedStake = () => {
   const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
 
-  const sendDelegatedStakeTransaction = async (decodedData: DelegatedStakeData): Promise<string> => {
+  const sendDelegatedStakeTransaction = async (decodedData: DelegatedStake): Promise<string> => {
     const delegatedStakeBody: DelegatedStake = {
       source: decodedData.source,
       nodeId: decodedData.nodeId,

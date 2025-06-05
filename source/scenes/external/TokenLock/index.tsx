@@ -1,6 +1,10 @@
 import { dag4 } from '@stardust-collective/dag4';
-import { HashResponse, TokenLock as TokenLockBody } from '@stardust-collective/dag4-network';
+import type { HashResponse, TokenLock as TokenLockBody } from '@stardust-collective/dag4-network';
 import React, { useState } from 'react';
+
+import type { TokenLockDataParam } from 'scripts/Provider/constellation';
+
+import type { IAssetInfoState } from 'state/assets/types';
 
 import { usePlatformAlert } from 'utils/alertUtil';
 
@@ -10,7 +14,7 @@ const TokenLock = () => {
   const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
 
-  const sendTokenLockTransaction = async (decodedData: any, asset: any): Promise<string> => {
+  const sendTokenLockTransaction = async (decodedData: TokenLockDataParam, asset: IAssetInfoState): Promise<string> => {
     const tokenLockBody: TokenLockBody = {
       source: decodedData.source,
       amount: decodedData.amount,

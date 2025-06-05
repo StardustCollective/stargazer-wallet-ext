@@ -1,96 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import type { DelegatedStake } from '@stardust-collective/dag4-network';
+import React from 'react';
+
+import { useExternalViewData } from 'hooks/external/useExternalViewData';
 
 import Card from 'scenes/external/components/Card';
 import CardRow from 'scenes/external/components/CardRow';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 
-import { DelegatedStakeData } from 'scripts/Provider/constellation';
-
-import assetsSelectors from 'selectors/assetsSelectors';
-import dappSelectors from 'selectors/dappSelectors';
-
 import { formatBigNumberForDisplay, toDag } from 'utils/number';
 
 import styles from './styles.scss';
 
-export type DelegatedStakeProps = DelegatedStakeData & {
+export type DelegatedStakeProps = DelegatedStake & {
   title: string;
-  isPositiveButtonLoading?: boolean;
+  isLoading?: boolean;
   onSign: () => Promise<void>;
   onReject: () => Promise<void>;
 };
 
-const DelegatedStakeView = ({ title, wallet, chain, amount, nodeId, tokenLockRef, fee, isPositiveButtonLoading, onSign, onReject }: DelegatedStakeProps) => {
-  const [feeValue, setFeeValue] = useState('0');
-  const [stakeData, setStakeData] = useState(null);
+const DelegatedStakeView = ({ title, amount, nodeId, tokenLockRef, fee, isLoading, onSign, onReject }: DelegatedStakeProps) => {
+  const { current, activeWallet, constellationNetwork } = useExternalViewData();
 
-  const current = useSelector(dappSelectors.getCurrent);
-  const dagAsset = useSelector(assetsSelectors.getAssetBySymbol('DAG'));
-
-  const generateJsonMessage = (data: any): string => {
-    if (!data) return '';
-
-    return JSON.stringify(data, null, 4);
+  const stakeData = {
+    amount: formatBigNumberForDisplay(toDag(amount)),
+    fee: formatBigNumberForDisplay(toDag(fee ?? 0)),
+    nodeId,
+    tokenLockRef,
   };
 
-  useEffect(() => {
-    if (!stakeData) {
-      const stakeInfo = {
-        amount: formatBigNumberForDisplay(toDag(amount)),
-        fee: formatBigNumberForDisplay(toDag(fee) ?? 0),
-        nodeId,
-        tokenLockRef,
-      };
-      setStakeData(stakeInfo);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (feeValue) {
-      const stakeInfo = {
-        amount: formatBigNumberForDisplay(toDag(amount)),
-        fee: formatBigNumberForDisplay(toDag(feeValue)),
-        nodeId,
-        tokenLockRef,
-      };
-      setStakeData(stakeInfo);
-    }
-  }, [feeValue]);
-
-  // Convert fee to DAG
-  const feeAmount = toDag(fee ?? 0);
-
-  useEffect(() => {
-    if (!!feeAmount && feeAmount !== null && feeAmount !== undefined) {
-      setFeeValue(feeAmount.toString());
-    }
-  }, [feeAmount]);
-
-  const message = generateJsonMessage(stakeData);
+  const message = JSON.stringify(stakeData, null, 4);
 
   return (
-    <CardLayoutV3
-      logo={current?.logo}
-      title={title}
-      subtitle={current?.origin}
-      fee={{
-        show: true,
-        defaultValue: '0',
-        value: feeValue,
-        recommended: '0',
-        symbol: dagAsset?.symbol,
-        disabled: true,
-        setFee: setFeeValue,
-      }}
-      isPositiveButtonLoading={isPositiveButtonLoading}
-      onNegativeButtonClick={onReject}
-      onPositiveButtonClick={onSign}
-    >
+    <CardLayoutV3 title={title} logo={current?.logo} subtitle={current?.origin} isPositiveButtonLoading={isLoading} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
       <div className={styles.container}>
         <Card>
-          <CardRow label="Wallet name:" value={wallet} />
-          <CardRow label="Network:" value={chain} />
+          <CardRow label="Wallet name:" value={activeWallet?.label} />
+          <CardRow label="Network:" value={constellationNetwork} />
         </Card>
         <Card>
           <CardRow.Object label="Transaction data:" value={message} />
