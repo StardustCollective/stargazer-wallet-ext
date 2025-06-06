@@ -1,27 +1,36 @@
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { checkArguments, getChainId, getChainLabel, getWalletInfo } from '../utils';
+import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { getAccountController } from 'utils/controllersUtils';
+import type { AllowSpendWithCurrencyId } from '@stardust-collective/dag4-network';
+
 import { DAG_EXPLORER_API_URL } from 'constants/index';
-import { MetagraphProject } from 'scenes/external/AllowSpend';
+
+import { MetagraphProject } from 'scenes/external/AllowSpend/types';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
 import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
-import { dag4 } from '@stardust-collective/dag4';
-import { ExternalRoute } from 'web/pages/External/types';
+
+import { getAccountController } from 'utils/controllersUtils';
 import { validateHardwareMethod } from 'utils/hardware';
 
-type AllowSpendData = {
-  source: string; // Wallet address signing the transaction.
-  destination: string; // The AMM metagraph address
-  amount: number; // In DATUM. The maximum transaction amount for which to generate a ‘lock’ around
-  approvers: string[]; // A list of metagraphIds which can atomically approve this operation.
-  currencyId: string | null; // The currency metagraph identifier. For DAG, it must be null.
-  fee?: number; // In DATUM.The fee in the currency of the currency metragraph. If not provided, the default fee will be 0.
-  validUntilEpoch?: number; // The global snapshot epoch progress for which this is valid until. If not provided, the default value will be the currentEpoch + 30.
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { checkArguments, getChainId, getWalletInfo } from '../utils';
+
+export type AllowSpendData = AllowSpendWithCurrencyId & {
+  latestEpoch: number;
+  destinationInfo: {
+    isMetagraph: boolean;
+    label: string;
+    logo: string;
+  };
+  spenderInfo: {
+    isMetagraph: boolean;
+    label: string;
+    logo: string;
+  };
 };
 
 const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
@@ -33,9 +42,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('There is no active wallet');
   }
 
-  const dagAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const dagAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!dagAccount) {
     throw new Error('No active account for the request asset type');
@@ -47,7 +54,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
 
   validateHardwareMethod(activeWallet.type, request.method);
 
-  const [data] = request.params as [AllowSpendData];
+  const [data] = request.params as [AllowSpendWithCurrencyId];
 
   if (!data) {
     throw new Error('invalid params');
@@ -102,18 +109,14 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
 
   for (const approver of data.approvers) {
     if (!accountController.isValidDAGAddress(approver)) {
-      throw new Error(
-        `"approvers" must be an array with valid DAG addresses. Approver "${approver}" is an invalid DAG address.`
-      );
+      throw new Error(`"approvers" must be an array with valid DAG addresses. Approver "${approver}" is an invalid DAG address.`);
     }
   }
 
   const { assets } = store.getState();
 
-  if (!!data.currencyId) {
-    const currencyAsset = Object.values(assets).find(
-      (asset) => asset.address === data.currencyId
-    );
+  if (data.currencyId) {
+    const currencyAsset = Object.values(assets).find(asset => asset.address === data.currencyId);
     if (!currencyAsset) {
       throw new Error('"currencyId" not found in the wallet');
     }
@@ -122,7 +125,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('"currencyId" must be a valid metagraph address');
     }
   } else {
-    const dagAsset = Object.values(assets).find((asset) => asset.symbol === 'DAG');
+    const dagAsset = Object.values(assets).find(asset => asset.symbol === 'DAG');
 
     if (!dagAsset) {
       throw new Error('DAG asset not found in the wallet');
@@ -146,9 +149,7 @@ const fetchMetagraphProjects = async (): Promise<MetagraphProject[]> => {
   let response: Response;
 
   try {
-    response = await fetch(
-      `${DAG_EXPLORER_API_URL}/${network}/metagraph-projects?limit=20&offset=0`
-    );
+    response = await fetch(`${DAG_EXPLORER_API_URL}/${network}/metagraph-projects?limit=20&offset=0`);
   } catch (err) {
     return [];
   }
@@ -162,34 +163,25 @@ const fetchMetagraphProjects = async (): Promise<MetagraphProject[]> => {
 };
 
 const getLatestEpoch = async (): Promise<number | null> => {
-  const latestSnapshot = await dag4.network.l0Api.getLatestSnapshot();
-  return latestSnapshot?.value?.epochProgress ?? null;
+  try {
+    const latestSnapshot = await dag4.network.l0Api.getLatestSnapshot();
+    return latestSnapshot?.value?.epochProgress ?? null;
+  } catch (err: unknown) {
+    return null;
+  }
 };
 
-const generateMetagraphInfo = (
-  metagraphProjects: MetagraphProject[],
-  metagraphAddress: string,
-  metagraphAsset: IAssetInfoState
-) => {
+const generateMetagraphInfo = (metagraphProjects: MetagraphProject[], metagraphAddress: string, metagraphAsset: IAssetInfoState) => {
   let metagraphInfo = {
     isMetagraph: false,
     label: '',
     logo: '',
   };
 
-  const metagraphProject =
-    metagraphProjects &&
-    metagraphProjects.length &&
-    metagraphProjects.find(
-      (project: MetagraphProject) => project.metagraphId === metagraphAddress
-    );
+  const metagraphProject = metagraphProjects && metagraphProjects.length && metagraphProjects.find((project: MetagraphProject) => project.metagraphId === metagraphAddress);
 
   if (!metagraphProject) {
-    if (
-      !!metagraphAsset &&
-      !!metagraphAsset?.l0endpoint &&
-      !!metagraphAsset?.l1endpoint
-    ) {
+    if (!!metagraphAsset && !!metagraphAsset?.l0endpoint && !!metagraphAsset?.l1endpoint) {
       metagraphInfo = {
         isMetagraph: true,
         label: metagraphAsset.label,
@@ -209,39 +201,26 @@ const generateMetagraphInfo = (
 const generateAllMetagraphInfo = async (destination: string, spender: string) => {
   const { assets } = store.getState();
 
-  const destinationAsset = Object.values(assets).find(
-    (asset) => asset.address === destination
-  );
+  const destinationAsset = Object.values(assets).find(asset => asset.address === destination);
 
-  const spenderAsset = Object.values(assets).find((asset) => asset.address === spender);
+  const spenderAsset = Object.values(assets).find(asset => asset.address === spender);
 
   const metagraphProjects = await fetchMetagraphProjects();
 
-  const destinationInfo = generateMetagraphInfo(
-    metagraphProjects,
-    destination,
-    destinationAsset
-  );
+  const destinationInfo = generateMetagraphInfo(metagraphProjects, destination, destinationAsset);
 
   const spenderInfo = generateMetagraphInfo(metagraphProjects, spender, spenderAsset);
   return { destinationInfo, spenderInfo };
 };
 
-export const dag_allowSpend = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
+export const dag_allowSpend = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
   await validateParams(request);
 
-  const { activeWallet, windowUrl, windowType } = getWalletInfo();
+  const { windowUrl, windowType } = getWalletInfo();
 
-  const [data] = request.params as [AllowSpendData];
+  const [data] = request.params as [AllowSpendWithCurrencyId];
 
-  const [{ destinationInfo, spenderInfo }, latestEpoch] = await Promise.all([
-    generateAllMetagraphInfo(data.destination, data.approvers[0]),
-    getLatestEpoch(),
-  ]);
+  const [{ destinationInfo, spenderInfo }, latestEpoch] = await Promise.all([generateAllMetagraphInfo(data.destination, data.approvers[0]), getLatestEpoch()]);
 
   if (!latestEpoch) {
     throw new Error('Failed to fetch latest epoch. Try again later.');
@@ -251,35 +230,28 @@ export const dag_allowSpend = async (
   const maxValidUntilEpoch = latestEpoch + 60;
 
   if (data.validUntilEpoch && data.validUntilEpoch < minValidUntilEpoch) {
-    throw new Error(
-      `Invalid "validUntilEpoch" value. Must be greater or equal than: ${minValidUntilEpoch}.`
-    );
+    throw new Error(`Invalid "validUntilEpoch" value. Must be greater or equal than: ${minValidUntilEpoch}.`);
   }
 
   if (data.validUntilEpoch && data.validUntilEpoch > maxValidUntilEpoch) {
-    throw new Error(
-      `Invalid "validUntilEpoch" value. Must be less or equal than: ${maxValidUntilEpoch}.`
-    );
+    throw new Error(`Invalid "validUntilEpoch" value. Must be less or equal than: ${maxValidUntilEpoch}.`);
   }
 
   const DEFAULT_FEE = 0;
   const DEFAULT_EPOCH_DIFF = 30;
   const DEFAULT_VALID_UNTIL_EPOCH = latestEpoch + DEFAULT_EPOCH_DIFF;
 
-  const updatedData = {
+  const updatedData: AllowSpendWithCurrencyId = {
     ...data,
     fee: data.fee ? data.fee : DEFAULT_FEE,
     validUntilEpoch: data.validUntilEpoch ?? DEFAULT_VALID_UNTIL_EPOCH,
-    latestEpoch,
   };
 
-  const allowSpendData = {
+  const allowSpendData: AllowSpendData = {
     ...updatedData,
     destinationInfo,
     spenderInfo,
-    walletLabel: activeWallet.label,
-    walletId: activeWallet.id,
-    chainLabel: getChainLabel(),
+    latestEpoch,
   };
 
   const windowSize = { width: 390, height: 748 };

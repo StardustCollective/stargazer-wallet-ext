@@ -27,6 +27,7 @@ export const SupportedMethods: Record<HardwareWalletType, AvailableMethods[]> = 
     AvailableMethods.dag_tokenLock,
     AvailableMethods.dag_delegatedStake,
     AvailableMethods.dag_withdrawDelegatedStake,
+    AvailableMethods.dag_allowSpend,
     AvailableMethods.personal_sign,
   ],
 };

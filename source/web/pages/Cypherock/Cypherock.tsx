@@ -18,6 +18,7 @@ import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherock
 import { addBeforeUnloadListener } from 'web/utils/windowListeners';
 
 import Layout from './components/Layout';
+import AllowSpendView from './views/allow-spend';
 import ConfirmDetailsView from './views/confirm';
 import ConnectView from './views/connect';
 import DelegatedStakeView from './views/delegated-stake';
@@ -55,6 +56,7 @@ export enum WalletState {
   SignDataMessage = 'sign-data-message',
   SignDagTransaction = 'sign-dag-transaction',
   TokenLock = 'token-lock',
+  AllowSpend = 'allow-spend',
   DelegatedStake = 'delegated-stake',
   WithdrawDelegatedStake = 'withdraw-delegated-stake',
 
@@ -77,6 +79,7 @@ enum WalletRoute {
   SignTypedMessage = 'signTypedMessage',
   SignDagTransaction = 'signTransaction',
   TokenLock = 'tokenLock',
+  AllowSpend = 'allowSpend',
   DelegatedStake = 'delegatedStake',
   WithdrawDelegatedStake = 'withdrawDelegatedStake',
 }
@@ -132,6 +135,8 @@ const CypherockPage = () => {
         setNextRoute(WalletState.DelegatedStake);
       } else if (route === WalletRoute.WithdrawDelegatedStake) {
         setNextRoute(WalletState.WithdrawDelegatedStake);
+      } else if (route === WalletRoute.AllowSpend) {
+        setNextRoute(WalletState.AllowSpend);
       }
     }
   }, []);
@@ -516,6 +521,8 @@ const CypherockPage = () => {
         return <DelegatedStakeView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.WithdrawDelegatedStake:
         return <WithdrawDelegatedStakeView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
+      case WalletState.AllowSpend:
+        return <AllowSpendView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.VerifyTransaction:
         return (
           <Layout
