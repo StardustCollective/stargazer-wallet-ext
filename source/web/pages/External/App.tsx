@@ -15,8 +15,8 @@ import SendMetagraphData from 'scenes/external/SendMetagraphData';
 import SignData from 'scenes/external/SignData';
 import SignMessage from 'scenes/external/SignMessage';
 import SignTransaction from 'scenes/external/SignTransaction';
+import SignTypedData from 'scenes/external/SignTypedData';
 import TokenLock from 'scenes/external/TokenLock';
-import TypedSignatureRequest from 'scenes/external/TypedSignatureRequest';
 import WatchAsset from 'scenes/external/WatchAsset';
 import WithdrawDelegatedStakeView from 'scenes/external/WithdrawDelegatedStake';
 import ConfirmTransaction from 'scenes/home/SendAsset/Confirm';
@@ -103,7 +103,7 @@ const App = () => {
           <PrivateRoute path={`/${ExternalRoute.SignMessage}`} component={SignMessage} />
           <PrivateRoute path={`/${ExternalRoute.SignData}`} component={SignData} />
           <PrivateRoute path={`/${ExternalRoute.SendMetagraphData}`} component={SendMetagraphData} />
-          <PrivateRoute path={`/${ExternalRoute.SignTypedMessage}`} component={TypedSignatureRequest} />
+          <PrivateRoute path={`/${ExternalRoute.SignTypedData}`} component={SignTypedData} />
           <PrivateRoute path={`/${ExternalRoute.WatchAsset}`} component={WatchAsset} />
           <PrivateRoute path={`/${ExternalRoute.AllowSpend}`} component={AllowSpend} />
           <PrivateRoute path={`/${ExternalRoute.TokenLock}`} component={TokenLock} />

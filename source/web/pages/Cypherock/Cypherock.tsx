@@ -25,10 +25,10 @@ import DelegatedStakeView from './views/delegated-stake';
 import ErrorView from './views/error';
 import GenerateAddressView from './views/generate';
 import LoadingView from './views/loading';
-// import SignTypedMessageView from './views/sign-typed-message';
 import SignDataView from './views/sign-data';
 import SignMsgView from './views/sign-message';
 import SignTransactionView from './views/sign-transaction';
+import SignTypedDataView from './views/sign-typed-data';
 import SuccessView from './views/success';
 import TokenLockView from './views/token-lock';
 import WalletsView from './views/wallets';
@@ -52,7 +52,7 @@ export enum WalletState {
 
   // Transactions
   SignMessage = 'sign-message',
-  SignTypedMessage = 'sign-typed-message',
+  SignTypedData = 'sign-typed-data',
   SignDataMessage = 'sign-data-message',
   SignDagTransaction = 'sign-dag-transaction',
   TokenLock = 'token-lock',
@@ -76,7 +76,7 @@ export enum WalletState {
 enum WalletRoute {
   SignMessage = 'signMessage',
   SignDataMessage = 'signData',
-  SignTypedMessage = 'signTypedMessage',
+  SignTypedData = 'signTypedData',
   SignDagTransaction = 'signTransaction',
   TokenLock = 'tokenLock',
   AllowSpend = 'allowSpend',
@@ -123,8 +123,8 @@ const CypherockPage = () => {
 
       if (route === WalletRoute.SignMessage) {
         setNextRoute(WalletState.SignMessage);
-      } else if (route === WalletRoute.SignTypedMessage) {
-        setNextRoute(WalletState.SignTypedMessage);
+      } else if (route === WalletRoute.SignTypedData) {
+        setNextRoute(WalletState.SignTypedData);
       } else if (route === WalletRoute.SignDataMessage) {
         setNextRoute(WalletState.SignDataMessage);
       } else if (route === WalletRoute.SignDagTransaction) {
@@ -511,6 +511,8 @@ const CypherockPage = () => {
         );
       case WalletState.SignMessage:
         return <SignMsgView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
+      case WalletState.SignTypedData:
+        return <SignTypedDataView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.SignDagTransaction:
         return <SignTransactionView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.SignDataMessage:

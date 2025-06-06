@@ -2,7 +2,7 @@ export enum ExternalRoute {
   SelectAccounts = 'selectAccounts',
   SignData = 'signData',
   SignMessage = 'signMessage',
-  SignTypedMessage = 'signTypedMessage',
+  SignTypedData = 'signTypedData',
   SignTransaction = 'signTransaction',
   ApproveSpend = 'approveSpend',
   ConfirmTransaction = 'confirmTransaction',
