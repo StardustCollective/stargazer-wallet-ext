@@ -23,7 +23,7 @@ const MessageSigningView = ({ waiting, waitingMessage, messageSigned, code, onSi
   const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
 
   const bitfiSigningConfig: SignMessageProviderConfig = {
-    title: 'Bitfi - Signature Request',
+    title: 'Bitfi - Sign Message',
     footer: 'Please connect your Bitfi device to WiFI to sign the message. Only sign messages on sites you trust.',
     onSign: async ({ payload }) => {
       // Delegate to the parent component's signing logic

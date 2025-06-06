@@ -23,7 +23,7 @@ const SignMessage = () => {
   };
 
   const externalSigningConfig: SignMessageProviderConfig = {
-    title: 'Signature Request',
+    title: 'Sign Message',
     footer: 'Only sign messages on sites you trust.',
     onSign: async ({ payload, parsedPayload, isDagSignature }) => {
       const message = isDagSignature ? payload : parsedPayload.content;

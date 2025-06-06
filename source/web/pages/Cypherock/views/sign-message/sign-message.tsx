@@ -62,7 +62,7 @@ const SignMsgView = ({ service, changeState, handleSuccessResponse, handleErrorR
   };
 
   const cypherockSigningConfig: SignMessageProviderConfig = {
-    title: 'Cypherock - Signature Request',
+    title: 'Cypherock - Sign Message',
     footer: 'Only sign messages on sites you trust.',
     onSign: async ({ payload, parsedPayload, isDagSignature }) => {
       if (!cypherockId) {
