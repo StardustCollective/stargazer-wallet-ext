@@ -8,7 +8,6 @@ import Container from 'components/Container';
 
 import Login from 'scenes/common/Login';
 import AllowSpend from 'scenes/external/AllowSpend';
-import ApproveSpend from 'scenes/external/ApproveSpend';
 import ExternalDelegatedStake from 'scenes/external/DelegatedStake';
 import SelectAccounts from 'scenes/external/SelectAccounts';
 import SendMetagraphData from 'scenes/external/SendMetagraphData';
@@ -97,7 +96,6 @@ const App = () => {
           <Route path="/login" component={Login} />
 
           <PrivateRoute path={`/${ExternalRoute.SelectAccounts}`} component={SelectAccounts} />
-          <PrivateRoute path={`/${ExternalRoute.ApproveSpend}`} component={ApproveSpend} />
           <PrivateRoute path={`/${ExternalRoute.SignTransaction}`} component={SignTransaction} />
           <PrivateRoute path={`/${ExternalRoute.ConfirmTransaction}`} component={ConfirmTransaction} />
           <PrivateRoute path={`/${ExternalRoute.SignMessage}`} component={SignMessage} />

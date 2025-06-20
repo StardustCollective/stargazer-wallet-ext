@@ -4,7 +4,6 @@ export enum ExternalRoute {
   SignMessage = 'signMessage',
   SignTypedData = 'signTypedData',
   SignTransaction = 'signTransaction',
-  ApproveSpend = 'approveSpend',
   ConfirmTransaction = 'confirmTransaction',
   SendMetagraphData = 'sendMetagraphData',
   WatchAsset = 'watchAsset',
