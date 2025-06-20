@@ -59,6 +59,7 @@ const TokenLockView = ({ title, amount: amountInDatum, unlockEpoch, latestEpoch,
   if (!asset) return null;
 
   const amountString = `${amount} ${asset.symbol}`;
+  const tokenValue = { logo: asset.logo, symbol: asset.symbol };
 
   return (
     <CardLayoutV3 title={title} logo={current?.logo} subtitle={current?.origin} isPositiveButtonLoading={isLoading} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
@@ -68,7 +69,7 @@ const TokenLockView = ({ title, amount: amountInDatum, unlockEpoch, latestEpoch,
           <CardRow label="Network:" value={constellationNetwork} />
         </Card>
         <Card>
-          <CardRow.Token label="Token:" value={asset} />
+          <CardRow.Token label="Token:" value={tokenValue} />
           <CardRow label="Amount:" value={amountString} />
           {!!latestEpoch && !!unlockEpoch && <CardRow label="Unlock Epoch:" value={renderEpochValue(unlockEpoch, latestEpoch)} />}
         </Card>

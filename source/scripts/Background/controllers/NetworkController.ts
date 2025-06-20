@@ -1,20 +1,16 @@
-import EVMChainController from './EVMChainController';
-import {
-  AllChainsIds,
-  AvalancheChainId,
-  BaseChainId,
-  BSCChainId,
-  EthChainId,
-  PolygonChainId,
-} from './EVMChainController/types';
-import { BigNumber, Wallet } from 'ethers';
-import store from 'state/store';
-import { TxHistoryParams } from './ChainsController';
-import { getNetworkFromChainId } from './EVMChainController/utils';
+import { type TransactionRequest } from '@ethersproject/abstract-provider';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { BigNumber, Wallet } from 'ethers';
+
 import { initialState as initialStateAssets } from 'state/assets';
 import { ITempNFTInfo } from 'state/nfts/types';
+import store from 'state/store';
 import { AssetType } from 'state/vault/types';
+
+import { AllChainsIds, AvalancheChainId, BaseChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
+import { getNetworkFromChainId } from './EVMChainController/utils';
+import { TxHistoryParams } from './ChainsController';
+import EVMChainController from './EVMChainController';
 
 class NetworkController {
   // 349: New network should be added here.
@@ -29,10 +25,7 @@ class NetworkController {
     this.#ethereumNetwork = this.createEVMController(activeNetwork.Ethereum, privateKey);
     this.#polygonNetwork = this.createEVMController(activeNetwork.Polygon, privateKey);
     this.#bscNetwork = this.createEVMController(activeNetwork.BSC, privateKey);
-    this.#avalancheNetwork = this.createEVMController(
-      activeNetwork.Avalanche,
-      privateKey
-    );
+    this.#avalancheNetwork = this.createEVMController(activeNetwork.Avalanche, privateKey);
     this.#baseNetwork = this.createEVMController(activeNetwork.Base, privateKey);
   }
 
@@ -107,22 +100,22 @@ class NetworkController {
   }
 
   public getProviderByNetwork(network: string): EVMChainController {
+    const networkLowercase = network.toLowerCase();
     const networkToProvider: { [net: string]: EVMChainController } = {
-      Ethereum: this.#ethereumNetwork,
-      Polygon: this.#polygonNetwork,
-      BSC: this.#bscNetwork,
-      Avalanche: this.#avalancheNetwork,
-      Base: this.#baseNetwork,
+      ethereum: this.#ethereumNetwork,
+      polygon: this.#polygonNetwork,
+      bsc: this.#bscNetwork,
+      avalanche: this.#avalancheNetwork,
+      base: this.#baseNetwork,
     };
-    return networkToProvider[network];
+    return networkToProvider[networkLowercase];
   }
 
   private getProviderByActiveAsset(): EVMChainController {
-    const assets = store.getState().assets;
+    const { assets } = store.getState();
     const { activeAsset } = store.getState().vault;
     const UNSUPPORTED_TYPES = [AssetType.Constellation];
-    if (!activeAsset || UNSUPPORTED_TYPES.includes(activeAsset.type))
-      throw new Error('No active asset');
+    if (!activeAsset || UNSUPPORTED_TYPES.includes(activeAsset.type)) throw new Error('No active asset');
     const activeAssetInfo = assets[activeAsset.id] || initialStateAssets[activeAsset.id];
     const network = getNetworkFromChainId(activeAssetInfo.network);
     const networkToProvider: { [net: string]: EVMChainController } = {
@@ -168,10 +161,10 @@ class NetworkController {
     return provider.getAddress();
   }
 
-  public getWallet(): Wallet | null {
+  public getWallet(network?: string): Wallet | null {
     let provider;
     try {
-      provider = this.getProviderByActiveAsset();
+      provider = network ? this.getProviderByNetwork(network) : this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: getWallet - provider not found.');
       return null;
@@ -188,10 +181,10 @@ class NetworkController {
     return this.#ethereumNetwork.validateAddress(address);
   }
 
-  createERC20Contract(address: string) {
+  createERC20Contract(address: string, network?: string) {
     let provider;
     try {
-      provider = this.getProviderByActiveAsset();
+      provider = network ? this.getProviderByNetwork(network) : this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: createERC20Contract - provider not found.');
     }
@@ -208,12 +201,7 @@ class NetworkController {
     return provider.transferNFT(nft);
   }
 
-  getERC1155Balance(
-    contractAddress: string,
-    userAddress: string,
-    tokenIds: string[],
-    network: string
-  ) {
+  getERC1155Balance(contractAddress: string, userAddress: string, tokenIds: string[], network: string) {
     let provider;
     try {
       provider = this.getProviderByNetwork(network);
@@ -243,19 +231,19 @@ class NetworkController {
     return provider.createERC1155Contract(address);
   }
 
-  async estimateGas(from: string, to: string, data: string) {
+  async estimateGas(transaction: TransactionRequest, network?: string) {
     let provider;
     try {
-      provider = this.getProviderByActiveAsset();
+      provider = network ? this.getProviderByNetwork(network) : this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: estimateGas - provider not found.');
     }
-    return provider.estimateGas(from, to, data);
+    return provider.estimateGas(transaction);
   }
 
   public async getTokenInfo(address: string, chainId?: string) {
     let provider;
-    if (!!chainId) {
+    if (chainId) {
       const network = getNetworkFromChainId(chainId);
       const networkToProvider = {
         [KeyringNetwork.Ethereum]: this.#ethereumNetwork,
@@ -278,9 +266,7 @@ class NetworkController {
   async estimateGasPrices(network?: string) {
     let provider;
     try {
-      provider = !!network
-        ? this.getProviderByNetwork(network)
-        : this.getProviderByActiveAsset();
+      provider = network ? this.getProviderByNetwork(network) : this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: estimateGasPrices - provider not found.');
     }
@@ -307,24 +293,14 @@ class NetworkController {
     return provider?.waitForTransaction(hash);
   }
 
-  async estimateTokenTransferGasLimit(
-    recipient: string,
-    contractAddress: string,
-    txAmount: BigNumber,
-    defaultValue?: number
-  ) {
+  async estimateTokenTransferGasLimit(recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) {
     let provider;
     try {
       provider = this.getProviderByActiveAsset();
     } catch (err) {
       console.log('Error: estimateTokenTransferGasLimit - provider not found.');
     }
-    return provider.estimateTokenTransferGasLimit(
-      recipient,
-      contractAddress,
-      txAmount,
-      defaultValue
-    );
+    return provider.estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
   }
 
   async transfer(txOptions: any) {

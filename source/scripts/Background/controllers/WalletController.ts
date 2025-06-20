@@ -28,7 +28,7 @@ import filter from 'lodash/filter';
 import { isNative } from 'utils/envUtil';
 import { setAutoLogin } from 'state/biometrics';
 import { setUnlocked } from 'state/auth';
-import { ProtocolProvider } from 'scripts/common';
+import { ProtocolProvider, StargazerChain } from 'scripts/common';
 import { generateId } from './EVMChainController/utils';
 import { AccountController } from './AccountController';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
@@ -445,6 +445,7 @@ class WalletController {
         nativeToken: 'ETH',
         mainnet: 'mainnet',
         network: 'Ethereum',
+        networkId: StargazerChain.ETHEREUM,
       };
       console.log('customNetwork', customNetwork);
 

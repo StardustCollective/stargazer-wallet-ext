@@ -81,6 +81,7 @@ const AllowSpendView = ({ title, amount: amountInDatum, destination, destination
   const amountString = `${amount} ${asset.symbol}`;
   const feeNumber = Number(fee);
   const recommendedFee = '0';
+  const tokenValue = { logo: asset.logo, symbol: asset.symbol };
 
   return (
     <CardLayoutV3
@@ -107,7 +108,7 @@ const AllowSpendView = ({ title, amount: amountInDatum, destination, destination
           {destinationInfo?.isMetagraph && <CardRow label="Metagraph:" value={renderMetagraphValue(destinationInfo)} />}
         </Card>
         <Card>
-          <CardRow.Token label="Token:" value={asset} />
+          <CardRow.Token label="Token:" value={tokenValue} />
           <CardRow label="Amount:" value={amountString} />
           <CardRow label="Valid Until Epoch:" value={renderEpochValue(validUntilEpoch, latestEpoch)} />
         </Card>
