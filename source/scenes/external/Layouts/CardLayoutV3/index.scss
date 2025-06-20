@@ -6,6 +6,8 @@
   width: 100%;
   height: 100%;
   background-color: #f9f9fb;
+  border-radius: 8px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
 
   .header {
     display: flex;
@@ -67,9 +69,6 @@
   .actions {
     display: flex;
     flex-direction: column;
-    background-color: #f9f9fb;
-    justify-content: center;
-    align-items: center;
     padding: 16px 24px 24px 24px;
     border-top: 1px solid rgba(0, 0, 0, 0.24);
 
@@ -79,7 +78,6 @@
       align-items: flex-start;
       margin-bottom: 20px;
       gap: 8px;
-      width: 100%;
 
       .feeTitle {
         color: #374151;
@@ -105,18 +103,16 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: center;
+      gap: 16px;
 
       button:first-child {
-        min-width: 161px;
-        margin-right: 8px;
+        width: 100%;
         div > span {
           font-weight: $semibold;
         }
       }
       button:last-child {
-        min-width: 161px;
-        margin-left: 8px;
+        width: 100%;
         div > span {
           font-weight: $semibold;
         }

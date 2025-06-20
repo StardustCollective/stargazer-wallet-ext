@@ -1,15 +1,23 @@
+import { Skeleton } from '@material-ui/lab';
 import React, { FC } from 'react';
-import TextV3 from 'components/TextV3';
-import Tooltip from 'components/Tooltip';
+
 import CopyIcon from 'assets/images/svg/copy.svg';
-import type { IAssetInfoState } from 'state/assets/types';
+import { COLORS_ENUMS } from 'assets/styles/colors';
+
+import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
+import Tooltip from 'components/Tooltip';
+
 import { useCopyClipboard } from 'hooks/index';
+
 import { ellipsis } from 'scenes/home/helpers';
+
 import styles from './CardRow.scss';
 
 type ICardRowProps = {
   label: string;
   value: string;
+  error?: string;
+  loading?: boolean;
 };
 
 type ICardRow = Omit<ICardRowProps, 'value'> & {
@@ -17,18 +25,34 @@ type ICardRow = Omit<ICardRowProps, 'value'> & {
 };
 
 type ICardRowToken = Omit<ICardRowProps, 'value'> & {
-  value: IAssetInfoState;
+  value: {
+    logo?: string;
+    symbol: string;
+  };
+};
+
+const renderLoading = () => {
+  return <Skeleton variant="rect" animation="wave" height={20} width={50} style={{ borderRadius: 4 }} />;
 };
 
 const CardRow: FC<ICardRow> & {
   Token: FC<ICardRowToken>;
   Address: FC<ICardRowProps>;
   Object: FC<ICardRowProps>;
-} = ({ label, value }) => {
+} = ({ label, value, error, loading = false }) => {
   const renderValue = () => {
     if (typeof value === 'string') {
       return (
-        <TextV3.CaptionRegular extraStyles={styles.value}>{value}</TextV3.CaptionRegular>
+        <div className={styles.valueContainer}>
+          <TextV3.CaptionRegular extraStyles={styles.value} align={TEXT_ALIGN_ENUM.RIGHT}>
+            {value}
+          </TextV3.CaptionRegular>
+          {!!error && (
+            <TextV3.CaptionRegular color={COLORS_ENUMS.RED} align={TEXT_ALIGN_ENUM.RIGHT}>
+              {error}
+            </TextV3.CaptionRegular>
+          )}
+        </div>
       );
     }
 
@@ -38,19 +62,17 @@ const CardRow: FC<ICardRow> & {
   return (
     <div className={styles.row}>
       <TextV3.CaptionStrong extraStyles={styles.label}>{label}</TextV3.CaptionStrong>
-      {renderValue()}
+      {loading ? renderLoading() : renderValue()}
     </div>
   );
 };
 
-const CardRowToken: FC<ICardRowToken> = ({ label, value }) => {
+const CardRowToken: FC<ICardRowToken> = ({ label, value, loading = false }) => {
   const renderTokenValue = () => {
     return (
       <div className={styles.tokenValueContainer}>
-        <img src={value?.logo} alt="Token logo" className={styles.tokenLogo} />
-        <TextV3.CaptionRegular extraStyles={styles.value}>
-          {value?.symbol}
-        </TextV3.CaptionRegular>
+        {!!value?.logo && <img src={value?.logo} alt="Token logo" className={styles.tokenLogo} />}
+        <TextV3.CaptionRegular extraStyles={styles.value}>{value?.symbol}</TextV3.CaptionRegular>
       </div>
     );
   };
@@ -58,12 +80,12 @@ const CardRowToken: FC<ICardRowToken> = ({ label, value }) => {
   return (
     <div className={styles.row}>
       <TextV3.CaptionStrong extraStyles={styles.label}>{label}</TextV3.CaptionStrong>
-      {renderTokenValue()}
+      {loading ? renderLoading() : renderTokenValue()}
     </div>
   );
 };
 
-const CardRowAddress: FC<ICardRowProps> = ({ label, value }) => {
+const CardRowAddress: FC<ICardRowProps> = ({ label, value, loading = false }) => {
   const [isCopied, copyText] = useCopyClipboard(1000);
 
   const renderAddressValue = () => {
@@ -72,9 +94,7 @@ const CardRowAddress: FC<ICardRowProps> = ({ label, value }) => {
     return (
       <Tooltip title={displayTooltip} placement="bottom" arrow>
         <div className={styles.copyAddressContainer} onClick={() => copyText(value)}>
-          <TextV3.CaptionStrong extraStyles={styles.copyAddress}>
-            {ellipsis(value)}
-          </TextV3.CaptionStrong>
+          <TextV3.CaptionStrong extraStyles={styles.copyAddress}>{ellipsis(value)}</TextV3.CaptionStrong>
           <img src={`/${CopyIcon}`} alt="Copy" />
         </div>
       </Tooltip>
@@ -84,7 +104,7 @@ const CardRowAddress: FC<ICardRowProps> = ({ label, value }) => {
   return (
     <div className={styles.row}>
       <TextV3.CaptionStrong extraStyles={styles.label}>{label}</TextV3.CaptionStrong>
-      {renderAddressValue()}
+      {loading ? renderLoading() : renderAddressValue()}
     </div>
   );
 };

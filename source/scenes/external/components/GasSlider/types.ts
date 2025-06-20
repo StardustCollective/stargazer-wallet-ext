@@ -1,5 +1,6 @@
 export interface GasSliderProps {
   onGasPriceChange: (_: any, val: number | number[]) => void;
+  loading?: boolean;
   gas: {
     prices: number[];
     price: number;

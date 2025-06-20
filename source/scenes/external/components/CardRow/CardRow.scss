@@ -21,8 +21,15 @@
     color: #332556;
   }
 
-  .value {
-    color: rgba(30, 21, 50, 0.66);
+  .valueContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+
+    .value {
+      color: rgba(30, 21, 50, 0.66);
+    }
   }
 
   .copyIcon {
@@ -37,6 +44,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  .value {
+    color: rgba(30, 21, 50, 0.66);
+  }
 
   .tokenLogo {
     height: 16px;
