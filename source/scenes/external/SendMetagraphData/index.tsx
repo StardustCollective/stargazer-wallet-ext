@@ -165,6 +165,7 @@ const SendMetagraphData = () => {
         defaultValue: feeAmount,
         value: fee,
         symbol: metagraphInfo?.symbol,
+        recommended: '0',
         disabled: feeAmount === '0',
         setFee,
       }}

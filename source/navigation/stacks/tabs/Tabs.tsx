@@ -56,6 +56,7 @@ import ConfirmPhrase from 'scenes/unauth/Phrase/ConfirmPhrase';
 import CheckPassword from 'scenes/settings/CheckPassword';
 import ManageWallet from 'scenes/settings/ManageWallet';
 import RemoveWallet from 'scenes/settings/RemoveWallet';
+import SelectHardwareWallet from 'scenes/settings/SelectHardwareWallet';
 import ImportWallet from 'scenes/settings/ImportWallet';
 import ImportAccount from 'scenes/settings/ImportAccount';
 import ImportPhrase from 'scenes/settings/ImportPhrase';
@@ -285,6 +286,11 @@ const SettingsTab = () => {
         options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.removeWallet }}
         name={screens.settings.removeWallet}
         component={RemoveWallet}
+      />
+      <Stack.Screen
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.selectHardwareWallet }}
+        name={screens.settings.selectHardwareWallet}
+        component={SelectHardwareWallet}
       />
       <Stack.Screen
         options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.importWallet }}

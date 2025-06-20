@@ -1,35 +1,35 @@
-import React, { FC, useState, useEffect, useLayoutEffect } from 'react';
-import Container, { CONTAINER_COLOR } from 'components/Container';
+import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
+import React, { FC, useEffect, useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import * as yup from 'yup';
+
+import Container, { CONTAINER_COLOR } from 'components/Container';
+
+import useGasNftEstimate from 'hooks/useGasNftEstimate';
+import { useFiat } from 'hooks/usePrice';
+
+import nftsHeader from 'navigation/headers/nfts';
+import screens from 'navigation/screens';
+
+import { formatNumber } from 'scenes/home/helpers';
+
+import { validateAddress } from 'scripts/Background/controllers/EVMChainController/utils';
+
+import nftSelectors from 'selectors/nftSelectors';
+import walletsSelectors from 'selectors/walletsSelectors';
+
+import { ITempNFTInfo } from 'state/nfts/types';
+import { AssetType } from 'state/vault/types';
+
+import { removeEthereumPrefix } from 'utils/addressUtil';
+import { OPENSEA_ASSET_MAP } from 'utils/assetsUtil';
+import { getWalletController } from 'utils/controllersUtils';
+import { fixedNumber, smallestPowerOfTen } from 'utils/number';
+
+import { ADDRESS_REQUIRED, INTEGER_REGEX_PATTERN, INVALID_ADDRESS, OWN_ADDRESS, QUANTITY_GREATER_ZERO, QUANTITY_LESS_MAX, QUANTITY_MUST_NUMBER, QUANTITY_REQUIRED } from './constants';
 import NFTSend from './NFTSend';
 import { INFTSend } from './types';
-import { useSelector } from 'react-redux';
-import nftSelectors from 'selectors/nftSelectors';
-import { useFiat } from 'hooks/usePrice';
-import { AssetType } from 'state/vault/types';
-import useGasNftEstimate from 'hooks/useGasNftEstimate';
-import { OPENSEA_ASSET_MAP } from 'utils/assetsUtil';
-import { validateAddress } from 'scripts/Background/controllers/EVMChainController/utils';
-import { removeEthereumPrefix } from 'utils/addressUtil';
-import screens from 'navigation/screens';
-import { getWalletController } from 'utils/controllersUtils';
-import { ITempNFTInfo } from 'state/nfts/types';
-import walletsSelectors from 'selectors/walletsSelectors';
-import { KeyringAssetType } from '@stardust-collective/dag4-keyring';
-import nftsHeader from 'navigation/headers/nfts';
-import { formatNumber } from 'scenes/home/helpers';
-import {
-  ADDRESS_REQUIRED,
-  INTEGER_REGEX_PATTERN,
-  INVALID_ADDRESS,
-  OWN_ADDRESS,
-  QUANTITY_GREATER_ZERO,
-  QUANTITY_LESS_MAX,
-  QUANTITY_MUST_NUMBER,
-  QUANTITY_REQUIRED,
-} from './constants';
-import { fixedNumber, smallestPowerOfTen } from 'utils/number';
 
 const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
   const { amount, logo } = route.params || {};
@@ -45,64 +45,59 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
   const [quantity, setQuantity] = useState('1');
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const ethAddress = activeWallet?.assets?.find(
-    (asset) => asset?.type === AssetType.Ethereum
-  )?.address;
+  const ethAddress = activeWallet?.assets?.find(asset => asset?.type === AssetType.Ethereum)?.address;
 
   const getFiatAmount = useFiat(true, mainAsset);
 
   useLayoutEffect(() => {
-    navigation.setOptions(
-      nftsHeader({ navigation, showLogo: false, showRefresh: false })
-    );
+    navigation.setOptions(nftsHeader({ navigation, showLogo: false, showRefresh: false }));
   }, []);
 
-  const { handleSubmit, register, control, errors, setValue, triggerValidation } =
-    useForm({
-      defaultValues: {
-        quantity: '1',
-        address: '',
-      },
-      validationSchema: yup.object().shape({
-        quantity: yup
-          .string()
-          .test('number', QUANTITY_MUST_NUMBER, (val) => {
-            if (!!val) {
-              const regex = new RegExp(INTEGER_REGEX_PATTERN);
-              return regex.test(val);
-            }
-            return true;
-          })
-          .test('valid', QUANTITY_GREATER_ZERO, (val) => {
-            if (!!val) {
-              return Number(val) > 0;
-            }
-            return true;
-          })
-          .test('max', `${QUANTITY_LESS_MAX} ${formatNumber(amount, 0, 0)}`, (val) => {
-            if (!!val && !!amount) {
-              return Number(val) <= amount;
-            }
-            return true;
-          })
-          .required(QUANTITY_REQUIRED),
-        address: yup
-          .string()
-          .test('valid', INVALID_ADDRESS, (val) => {
-            if (!!val) {
-              return validateAddress(val);
-            }
-            return true;
-          })
-          .test('own', OWN_ADDRESS, (val) => {
-            if (!!val) {
-              return val !== ethAddress;
-            }
-            return true;
-          })
-          .required(ADDRESS_REQUIRED),
-      }),
-    });
+  const { handleSubmit, register, control, errors, setValue, triggerValidation } = useForm({
+    defaultValues: {
+      quantity: '1',
+      address: '',
+    },
+    validationSchema: yup.object().shape({
+      quantity: yup
+        .string()
+        .test('number', QUANTITY_MUST_NUMBER, val => {
+          if (val) {
+            const regex = new RegExp(INTEGER_REGEX_PATTERN);
+            return regex.test(val);
+          }
+          return true;
+        })
+        .test('valid', QUANTITY_GREATER_ZERO, val => {
+          if (val) {
+            return Number(val) > 0;
+          }
+          return true;
+        })
+        .test('max', `${QUANTITY_LESS_MAX} ${formatNumber(amount, 0, 0)}`, val => {
+          if (!!val && !!amount) {
+            return Number(val) <= amount;
+          }
+          return true;
+        })
+        .required(QUANTITY_REQUIRED),
+      address: yup
+        .string()
+        .test('valid', INVALID_ADDRESS, val => {
+          if (val) {
+            return validateAddress(val);
+          }
+          return true;
+        })
+        .test('own', OWN_ADDRESS, val => {
+          if (val) {
+            return val !== ethAddress;
+          }
+          return true;
+        })
+        .required(ADDRESS_REQUIRED),
+    }),
+  });
 
   useEffect(() => {
     const hasErrors = !!errors?.address || !!errors?.quantity;
@@ -110,22 +105,11 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
     setButtonDisabled(isDisabled);
   }, [errors.address, errors.quantity, toAddress, quantity]);
 
-  const {
-    setSendAmount,
-    setToEthAddress,
-    estimateGasFee,
-    gasSpeedLabel,
-    gasFee,
-    setGasPrice,
-    gasPrices,
-    gasPrice,
-    gasLimit,
-    digits,
-  } = useGasNftEstimate({
+  const { setSendAmount, setToEthAddress, estimateGasFee, gasSpeedLabel, gasFee, setGasPrice, gasPrices, gasPrice, gasLimit, digits } = useGasNftEstimate({
     chain: selectedCollection.chain,
     contractAddress: selectedNFTData?.contract,
     isERC721,
-    toAddress: toAddress,
+    toAddress,
     tokenId: selectedNFTData?.identifier,
     amount: Number(quantity),
   });
@@ -205,7 +189,6 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
         onGasPriceChange={onGasPriceChange}
         handleAddressChange={handleAddressChange}
         handleQuantityChange={handleQuantityChange}
-        mainAsset={mainAsset}
         errors={errors}
         gas={{
           prices: gasPrices,
@@ -213,6 +196,7 @@ const NFTSendContainer: FC<INFTSend> = ({ navigation, route }) => {
           fee: gasFee,
           speedLabel: gasSpeedLabel,
           basePriceId: mainAsset.priceId,
+          symbol: mainAsset.symbol,
           steps: smallestPowerOfTen(gasPrices[2]),
         }}
       />

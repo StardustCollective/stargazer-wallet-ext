@@ -18,7 +18,7 @@
     "ecmaVersion": 13,
     "sourceType": "module"
   },
-  "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint"],
+  "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint", "import", "simple-import-sort"],
   "rules": {
     "camelcase": "off",
     "no-use-before-define": "off",
@@ -29,10 +29,51 @@
     "no-console": "off",
     "func-names": "off",
     "spaced-comment": "off",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          // Side effect imports (import './polyfills')
+          ["^\\u0000"],
+          // External packages
+          ["^@?\\w"],
+          // Sort common used paths alphabetically
+          ["^assets/"],
+          ["^components/"],
+          ["^constants/"],
+          ["^context/"],
+          ["^dag4/"],
+          ["^hooks/"],
+          ["^navigation/"],
+          ["^scenes/"],
+          ["^scripts/"],
+          ["^selectors/"],
+          ["^state/"],
+          ["^types/"],
+          ["^utils/"],
+          ["^web/"],
+          // Other internal packages (absolute imports)
+          ["^[^.]"],
+          // Parent imports (../)
+          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+          // Same-folder imports (./)
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"]
+        ]
+      }
+    ],
+    "simple-import-sort/exports": "error",
+    "import/order": "off",
     "import/no-extraneous-dependencies": "off",
     "import/no-unresolved": "off",
     "import/extensions": "off",
     "import/prefer-default-export": "off",
+    "import/newline-after-import": ["error", { "count": 1 }],
+    "object-curly-newline": [
+      "error",
+      {
+        "ImportDeclaration": "never"
+      }
+    ],
     "no-promise-executor-return": "off",
     "no-restricted-syntax": "off",
     "no-plusplus": "off",
@@ -40,18 +81,17 @@
     "no-param-reassign": "off",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "react/function-component-definition": [
-      "warn",
-      { "namedComponents": "arrow-function" }
-    ],
+    "react/function-component-definition": ["warn", { "namedComponents": "arrow-function" }],
     "react/jsx-filename-extension": ["warn", { "extensions": [".jsx", ".tsx"] }],
     "react/jsx-props-no-spreading": "off",
     "no-nested-ternary": "off",
     "no-restricted-exports": "off",
+    "no-restricted-globals": "off",
     "max-classes-per-file": "off",
     "lines-between-class-members": "off",
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"]
+    "@typescript-eslint/no-shadow": ["error"],
+    "react/require-default-props": "off"
   },
   "globals": {
     "it": "readonly",

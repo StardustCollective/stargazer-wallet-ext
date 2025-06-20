@@ -46,6 +46,7 @@ import { toDatum } from 'utils/number';
 import { isNative } from 'utils/envUtil';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import { ProtocolProvider } from 'scripts/common';
+import { isHardware } from 'utils/hardware';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -80,15 +81,12 @@ export class AccountController {
   ): IAssetState[] {
     const { assets } = store.getState();
 
-    let privateKey;
-    let publicKey;
+    let privateKey: string | undefined = undefined;
+    let publicKey: string | undefined = undefined;
 
     // Excludes bitfi and ledger accounts since we do not have access
     // to the private key.
-    if (
-      walletInfo.type !== KeyringWalletType.LedgerAccountWallet &&
-      walletInfo.type !== KeyringWalletType.BitfiAccountWallet
-    ) {
+    if (!isHardware(walletInfo.type)) {
       privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
     } else {
       publicKey = account.publicKey;
@@ -97,14 +95,14 @@ export class AccountController {
     if (account.network === KeyringNetwork.Constellation) {
       if (privateKey) {
         dag4.account.loginPrivateKey(privateKey);
-      } else {
+      } else if (publicKey) {
         dag4.account.loginPublicKey(publicKey);
       }
 
-      publicKey = dag4.account?.keyTrio?.publicKey ?? null;
+      const currentPublicKey = dag4.account?.keyTrio?.publicKey ?? null;
 
-      if (publicKey) {
-        store.dispatch(setPublicKey(publicKey));
+      if (currentPublicKey) {
+        store.dispatch(setPublicKey(currentPublicKey));
       }
 
       const dagAsset = {
@@ -292,8 +290,8 @@ export class AccountController {
   buildAccountAssetInfo(walletId: string, walletLabel: string): void {
     const state = store.getState();
     const { vault } = state;
-    const { local, ledger, bitfi } = vault.wallets;
-    const allWallets = [...local, ...ledger, ...bitfi];
+    const { local, ledger, bitfi, cypherock } = vault.wallets;
+    const allWallets = [...local, ...ledger, ...bitfi, ...cypherock];
     const walletInfo: KeyringWalletState = allWallets.find(
       (w: KeyringWalletState) => w.id === walletId || w.label === walletLabel
     );
@@ -319,6 +317,8 @@ export class AccountController {
       label: walletInfo.label,
       supportedAssets: walletInfo.supportedAssets,
       assets: assetList,
+      accounts: walletInfo.accounts,
+      cypherockId: walletInfo.cypherockId,
     };
 
     // Ledger wallet will contain a bipIndex.
@@ -465,10 +465,7 @@ export class AccountController {
   }
 
   updateWalletLabel(wallet: KeyringWalletState, label: string): void {
-    if (
-      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-      wallet.type !== KeyringWalletType.BitfiAccountWallet
-    ) {
+    if (!isHardware(wallet.type)) {
       this.keyringManager.setWalletLabel(wallet.id, label);
     } else {
       // Hardware wallet label update:
@@ -720,6 +717,19 @@ export class AccountController {
   async confirmContractTempTx(
     activeAsset: IAssetInfoState | IActiveAssetState
   ): Promise<string> {
+    const activeWalletType = store.getState().vault?.activeWallet?.type;
+    if (activeWalletType && isHardware(activeWalletType)) {
+      throw new Error(
+        'Hardware wallet contract transaction flow not implemented here. Please use device to confirm.'
+      );
+    }
+
+    if (!this.networkController) {
+      throw new Error(
+        'Error: NetworkController not initialized. Cannot confirm EVM contract transaction.'
+      );
+    }
+
     if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
@@ -757,7 +767,11 @@ export class AccountController {
       nonce,
     };
 
-    const txData = await this.networkController.getWallet().sendTransaction(txOptions);
+    const wallet = this.networkController.getWallet();
+    if (!wallet) {
+      throw new Error('Unable to get wallet for sending transaction.');
+    }
+    const txData = await wallet.sendTransaction(txOptions);
 
     this.txController.addPendingTx({
       txHash: txData.hash,

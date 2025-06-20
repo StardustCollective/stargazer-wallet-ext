@@ -1,64 +1,53 @@
-/////////////////////////
-// Module Imports
-/////////////////////////
+import 'assets/styles/global.scss';
 
-import React from 'react';
-import { useFiat } from 'hooks/usePrice';
-
-/////////////////////////
-// Component Import
-/////////////////////////
-
-import Button from 'components/Button';
-import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
-/////////////////////////
-// Styles Imports
-/////////////////////////
+import SignTransactionContainer, { SignTransactionProviderConfig } from 'scenes/external/SignTransaction/SignTransactionContainer';
+
+import walletsSelectors from 'selectors/walletsSelectors';
 
 import styles from './styles.module.scss';
-import 'assets/styles/global.scss';
-import { convertBigNumber } from 'utils/number';
-
-/////////////////////////
-// Interface
-/////////////////////////
 
 interface ISignViewProps {
-  amount: string;
-  fee: string;
   code: string;
-  deviceId: string;
-  fromAddress: string;
-  toAddress: string;
   waiting: boolean;
   waitingMessage: string;
   transactionSigned: boolean;
-  onSignPress: () => {};
+  onSignPress: (deviceId: string, amount: number, from: string, to: string, fee: string) => Promise<void>;
 }
 
-/////////////////////////
-// Component
-/////////////////////////
+const SignView = ({ waiting, code, waitingMessage, transactionSigned, onSignPress }: ISignViewProps) => {
+  const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
 
-const SignView = ({
-  amount,
-  fee,
-  deviceId,
-  fromAddress,
-  toAddress,
-  waiting,
-  code,
-  waitingMessage,
-  transactionSigned,
-  onSignPress,
-}: ISignViewProps) => {
-  const getFiatAmount = useFiat();
+  const bitfiSigningConfig: SignTransactionProviderConfig = {
+    title: 'Bitfi - Sign Transaction',
+    footer: 'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
+    onSignTransaction: async ({ decodedData, isDAG, isMetagraph, isEvmNative, fee }) => {
+      if (isDAG) {
+        const { value, from, to } = decodedData.transaction;
+        await onSignPress(deviceId, value, from, to, fee);
+      }
 
-  const amountBN = convertBigNumber(amount);
-  const feeBN = convertBigNumber(fee);
+      if (isMetagraph) {
+        throw new Error('Metagraph transactions not supported with Bitfi hardware wallet');
+      }
+
+      if (isEvmNative) {
+        throw new Error('EVM transactions not supported with Bitfi hardware wallet');
+      }
+
+      throw new Error('Unsupported transaction type');
+    },
+    onSuccess: async txHash => {
+      console.log('hash', txHash);
+    },
+    onError: async error => {
+      console.log('error', error);
+    },
+  };
 
   return transactionSigned ? (
     <div className={styles.layout}>
@@ -67,79 +56,26 @@ const SignView = ({
       </section>
       <section className={styles.content}>
         <CheckIcon className={styles.checked} />
-        <div className="body-description">
-          You can follow your transaction under activity on your account screen.
-        </div>
+        <div className="body-description">You can follow your transaction under activity on your account screen.</div>
       </section>
     </div>
   ) : (
-    <>
-      <div className={styles.wrapper}>
-        <section className={styles.subheading}>
-          Bitfi - Sign Transaction <br />
-          Device ID: {deviceId.toUpperCase()}
-        </section>
-        <section className={styles.txAmount}>
-          <div className={styles.iconWrapper}>
-            <UpArrowIcon />
-          </div>
-          {amountBN} DAG
-          <small>
-            (≈
-            {getFiatAmount(Number(amount || 0), 8, 'constellation-labs')})
-          </small>
-        </section>
-        <section className={styles.transaction}>
-          <div className={styles.row}>
-            From
-            <span>{fromAddress}</span>
-          </div>
-          <div className={styles.row}>
-            To
-            <span>{toAddress}</span>
-          </div>
-          <div className={styles.row}>
-            Transaction Fee
-            <span>
-              {feeBN} DAG (≈ {getFiatAmount(Number(fee) || 0, 8, 'constellation-labs')})
-            </span>
-          </div>
-        </section>
-        <section className={styles.confirm}>
-          <div className={styles.row}>
-            Max Total
-            <span>
-              {getFiatAmount(
-                Number(amount || 0) + Number(fee || 0),
-                8,
-                'constellation-labs'
-              )}
-            </span>
-          </div>
-        </section>
-        <section className={styles.instruction}>
-          <span>Please connect your Bitfi device to WiFi to sign the transaction.</span>
-        </section>
-        <div className={styles.actions}>
-          <Button type="submit" variant={styles.button} onClick={onSignPress}>
-            Sign
-          </Button>
-        </div>
-        {waiting && (
-          <div className={styles.progressWrapper}>
-            <div className={styles.progress}>
-              <div>
-                <CircularProgress />
-              </div>
-              <div className={styles.message}>
-                <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
-                <span>{waitingMessage}</span>
-              </div>
+    <div className={styles.wrapper}>
+      <SignTransactionContainer {...bitfiSigningConfig} />
+      {waiting && (
+        <div className={styles.progressWrapper}>
+          <div className={styles.progress}>
+            <div>
+              <CircularProgress />
+            </div>
+            <div className={styles.message}>
+              <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
+              <span>{waitingMessage}</span>
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 };
 

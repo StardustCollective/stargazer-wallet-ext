@@ -1,41 +1,34 @@
 import React, { FC } from 'react';
-
 import RNFS from 'react-native-fs';
-import { View, StyleSheet } from 'react-native';
-import { Table, TableWrapper, Cell } from 'react-native-table-component';
-
-import LedgerIcon from 'assets/images/svg/ledger.svg';
+import { View } from 'react-native';
 import { dag4 } from '@stardust-collective/dag4';
-
-import Icon from 'components/Icon';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import Select from 'components/Select';
 import TextInput from 'components/TextInput';
 import FileSelect from 'components/FileSelect';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-
+import { usePlatformAlert } from 'utils/alertUtil';
+import IImportAccountSettings from './types';
 import styles from './styles';
-import IImportAccountSettings, { HardwareWallet } from './types';
 
 const ImportAccount: FC<IImportAccountSettings> = ({
-  handleSubmit,
-  showErrorAlert,
   control,
   register,
-  handleImportPrivKey,
-  onFinishButtonPressed,
-  importType,
-  setImportType,
-  loading,
-  setLoading,
-  jsonFile,
-  setJsonFile,
   accountName,
-  hardwareStep,
-  loadingWalletList,
-  hardwareWalletList,
+  importType,
+  loading,
+  jsonFile,
+  handleSubmit,
+  handleImportPrivKey,
+  handleCancel,
+  handleFinish,
+  setImportType,
+  setLoading,
+  setJsonFile,
 }) => {
+  const showAlert = usePlatformAlert();
+
   const onSubmit = async (data: any) => {
     // setAccountName(undefined);
     if (importType === 'priv') {
@@ -49,7 +42,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           const json = JSON.parse(contents);
           try {
             if (!dag4.keyStore.isValidJsonPrivateKey(json)) {
-              showErrorAlert('Error: Invalid private key json file');
+              showAlert('Error: Invalid private key json file', 'danger');
               return;
             }
 
@@ -61,19 +54,20 @@ const ImportAccount: FC<IImportAccountSettings> = ({
                 handleImportPrivKey(privKey, data.label);
               })
               .catch(() => {
-                showErrorAlert(
-                  'Error: Invalid password to decrypt private key json file'
+                showAlert(
+                  'Error: Invalid password to decrypt private key json file',
+                  'danger'
                 );
                 setLoading(false);
               });
           } catch (err) {
-            showErrorAlert('Error: Invalid private key json file');
+            showAlert('Error: Invalid private key json file', 'danger');
             setLoading(false);
           }
         })
         .catch((err) => {
           console.log('err in private key json file upload', err);
-          showErrorAlert('Error: Invalid private key json file');
+          showAlert('Error: Invalid private key json file', 'danger');
           setLoading(false);
         });
     }
@@ -83,24 +77,8 @@ const ImportAccount: FC<IImportAccountSettings> = ({
       return;
     }
 
-    showErrorAlert('Error: A private key json file is not chosen');
+    showAlert('Error: A private key json file is not chosen', 'danger');
     return;
-  };
-
-  const renderWallet = (hwItem: HardwareWallet, index: number) => {
-    return (
-      <TableWrapper key={`wallet-${index}`}>
-        <Cell>
-          <Icon name="check-circle" fontType="mateiral" color="#1dbf8e" />
-        </Cell>
-        <Cell>{index + 1}</Cell>
-        <Cell>{hwItem.address}</Cell>
-        <Cell>{hwItem.balance.toFixed(5)} ETH</Cell>
-        <Cell style={styles.expand}>
-          <Icon name="call-made" fontType="material" color="#474747" />
-        </Cell>
-      </TableWrapper>
-    );
   };
 
   const renderPrivateKey = () => {
@@ -176,7 +154,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
             type={BUTTON_TYPES_ENUM.PRIMARY}
             size={BUTTON_SIZES_ENUM.LARGE}
             id="importAccount-finishButton"
-            onPress={onFinishButtonPressed}
+            onPress={handleFinish}
           />
         </View>
       </View>
@@ -197,106 +175,34 @@ const ImportAccount: FC<IImportAccountSettings> = ({
             <Select
               id="importAccount-importTypeSelect"
               value={importType}
-              options={[
-                { priv: 'Private key' },
-                { json: 'JSON file' },
-                // { hardware: 'Hardware wallet' },
-              ]}
+              options={[{ priv: 'Private key' }, { json: 'JSON file' }]}
               onChange={setImportType}
               fullWidth
               disabled={loading}
             />
           </View>
         </View>
-        {importType === 'priv' ? (
-          renderPrivateKey()
-        ) : importType === 'json' ? (
-          renderJSONInput()
-        ) : (
-          <>
-            {hardwareStep === 1 && (
-              <>
-                <View style={styles.hardwareList}>
-                  <View style={styles.walletModel}>
-                    <View>
-                      <LedgerIcon width={24} />
-                    </View>
-                  </View>
-                </View>
-              </>
-            )}
-            {hardwareStep === 2 && (
-              <>
-                <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>
-                  Please select an account:
-                </TextV3.Description>
-                <View
-                  style={StyleSheet.flatten([
-                    styles.walletList,
-                    loadingWalletList ? styles.loading : {},
-                  ])}
-                >
-                  {loadingWalletList ? (
-                    <>
-                      <Icon name="cached" color="#474747" />
-                      <TextV3.Label color={COLORS_ENUMS.DARK_GRAY}>
-                        Loading your Hardware Wallet
-                      </TextV3.Label>
-                    </>
-                  ) : (
-                    <>
-                      <View style={styles.wallet}>
-                        <Table>
-                          {hardwareWalletList.map(
-                            (hwItem: HardwareWallet, index: number) =>
-                              renderWallet(hwItem, index)
-                          )}
-                        </Table>
-                      </View>
-                    </>
-                  )}
-                </View>
-                {!loadingWalletList && (
-                  <View style={styles.pagination}>
-                    <TextV3.Description
-                      color={COLORS_ENUMS.DARK_GRAY}
-                      extraStyles={styles.previous}
-                    >
-                      Previous
-                    </TextV3.Description>
-                    <TextV3.Description color={COLORS_ENUMS.DARK_GRAY}>
-                      Next
-                    </TextV3.Description>
-                  </View>
-                )}
-              </>
-            )}
-          </>
-        )}
-        {hardwareStep === 1 && (
-          <>
-            <View>
-              <TextV3.Description
-                color={COLORS_ENUMS.DARK_GRAY}
-                extraStyles={styles.descriptionText}
-              >
-                {importType === 'hardware'
-                  ? 'Connect to your ledger hardware wallet to import accounts'
-                  : 'Please name your new account:'}
-              </TextV3.Description>
-            </View>
-            {importType !== 'hardware' && (
-              <TextInput
-                control={control}
-                id="importAccount-accountNameInput"
-                fullWidth
-                inputRef={register}
-                name="label"
-                disabled={loading}
-              />
-            )}
-          </>
-        )}
+        {importType === 'priv'
+          ? renderPrivateKey()
+          : importType === 'json' && renderJSONInput()}
+        <>
+          <View>
+            <TextV3.Description
+              color={COLORS_ENUMS.DARK_GRAY}
+              extraStyles={styles.descriptionText}
+            >
+              Please name your new account:
+            </TextV3.Description>
+          </View>
+          <TextInput
+            control={control}
+            id="importAccount-accountNameInput"
+            fullWidth
+            inputRef={register}
+            name="label"
+            disabled={loading}
+          />
+        </>
       </View>
       <View style={styles.actions}>
         <ButtonV3
@@ -304,10 +210,10 @@ const ImportAccount: FC<IImportAccountSettings> = ({
           extraStyles={styles.button}
           type={BUTTON_TYPES_ENUM.SECONDARY_OUTLINE}
           size={BUTTON_SIZES_ENUM.LARGE}
-          onPress={onFinishButtonPressed}
+          onPress={handleCancel}
         />
         <ButtonV3
-          title={importType === 'hardware' ? 'Next' : 'Import'}
+          title={'Import'}
           extraStyles={styles.button}
           id="importAccount-confirmNextButton"
           type={BUTTON_TYPES_ENUM.PRIMARY}

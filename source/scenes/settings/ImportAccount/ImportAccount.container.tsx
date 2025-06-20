@@ -1,14 +1,16 @@
 import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import navigationUtil from 'navigation/util';
 import { getWalletController } from 'utils/controllersUtils';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import ImportAccount from './ImportAccount';
-import { IImportAccountView, HardwareWallet } from './types';
+import { IImportAccountView } from './types';
 import { usePlatformAlert } from 'utils/alertUtil';
+import { useLinkTo } from '@react-navigation/native';
 
-const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) => {
+const ImportAccountContainer: FC<IImportAccountView> = ({ route }) => {
+  const linkTo = useLinkTo();
+
   const showAlert = usePlatformAlert();
   const walletController = getWalletController();
   const { network } = route.params;
@@ -17,17 +19,11 @@ const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) =
   const [loading, setLoading] = useState(false);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
   const [accountName, setAccountName] = useState<string>();
-  const [hardwareStep] = useState(1);
-  const [loadingWalletList] = useState(false);
-
-  // @ts-ignore
-  const [hardwareWalletList, setHardwareWalletList] = useState<Array<HardwareWallet>>([]);
 
   const { handleSubmit, register, control } = useForm({
     validationSchema: yup.object().shape({
       privKey: importType === 'priv' ? yup.string().required() : yup.string(),
       password: importType === 'json' ? yup.string().required() : yup.string(),
-      // label: yup.string().required(),
     }),
   });
 
@@ -47,8 +43,12 @@ const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) =
       });
   };
 
-  const onFinishButtonPressed = () => {
-    navigationUtil.popToTop(navigation);
+  const handleCancel = () => {
+    linkTo('/settings/wallets/import');
+  };
+
+  const handleFinish = () => {
+    linkTo('/settings/wallets');
   };
 
   const showErrorAlert = (message: string) => {
@@ -58,22 +58,19 @@ const ImportAccountContainer: FC<IImportAccountView> = ({ route, navigation }) =
   return (
     <Container color={CONTAINER_COLOR.LIGHT}>
       <ImportAccount
-        handleSubmit={handleSubmit}
         control={control}
-        register={register}
-        handleImportPrivKey={handleImportPrivKey}
-        onFinishButtonPressed={onFinishButtonPressed}
-        network={network}
+        accountName={accountName}
         importType={importType}
         jsonFile={jsonFile}
-        setJsonFile={setJsonFile}
         loading={loading}
+        register={register}
+        handleSubmit={handleSubmit}
+        handleImportPrivKey={handleImportPrivKey}
+        handleCancel={handleCancel}
+        handleFinish={handleFinish}
+        setJsonFile={setJsonFile}
         setLoading={setLoading}
         setImportType={setImportType}
-        accountName={accountName}
-        hardwareStep={hardwareStep}
-        hardwareWalletList={hardwareWalletList}
-        loadingWalletList={loadingWalletList}
         showErrorAlert={showErrorAlert}
       />
     </Container>

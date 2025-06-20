@@ -9,7 +9,7 @@ export type IWalletsView = {
 export default interface IWalletSettings {
   multiChainAccounts: KeyringWalletState[];
   activeWallet: IWalletState;
-  privKeyAccounts: Array<any>;
-  hardwareWalletAccounts: Array<any>;
+  privKeyAccounts: KeyringWalletState[];
+  hardwareWalletAccounts: KeyringWalletState[];
   handleManageWallet: (walletId: string) => void;
 }

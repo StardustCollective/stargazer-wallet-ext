@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
   wrapper: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
     width: '100%',
     padding: 16,

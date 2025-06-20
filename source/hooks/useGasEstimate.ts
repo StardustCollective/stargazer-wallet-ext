@@ -1,10 +1,13 @@
-import { useState, useMemo, useEffect } from 'react';
-import { AssetType } from 'state/vault/types';
 import { BigNumber, ethers } from 'ethers';
-import { IAssetInfoState } from 'state/assets/types';
-import { estimateGasLimit, estimateGasLimitForTransfer } from 'utils/ethUtil';
-import { getAccountController } from 'utils/controllersUtils';
+import { useEffect, useMemo, useState } from 'react';
+
 import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainController/utils';
+
+import { IAssetInfoState } from 'state/assets/types';
+import { AssetType } from 'state/vault/types';
+
+import { getAccountController } from 'utils/controllersUtils';
+import { estimateGasLimit, estimateGasLimitForTransfer } from 'utils/ethUtil';
 import { countSignificantDigits, fixedNumber } from 'utils/number';
 
 type IUseGasEstimate = {
@@ -32,14 +35,28 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
     return 'Slow';
   }, [gasPrice, gasPrices]);
 
-  const estimateGasFee = (gas: number) => {
+  const estimateGasFee = (feeInGwei: number) => {
     if (!gasPrices) return;
-    const gasFixed = gas.toFixed(10);
-    const feeBN = ethers.utils.parseUnits(gasFixed, 'gwei').mul(BigNumber.from(gasLimit));
 
-    const fee = Number(ethers.utils.formatEther(feeBN).toString());
+    // 1. Convert fee in gwei from number to fixed string
+    const feeGweiFixed = feeInGwei.toFixed(10);
 
-    setGasFee(fee);
+    // 2. Convert fee in gwei to wei
+    const feeInWei = ethers.utils.parseUnits(feeGweiFixed, 'gwei');
+
+    // 3. Convert gas limit to wei
+    const limitInWei = BigNumber.from(gasLimit);
+
+    // 4. Multiply fee in wei by gas limit in wei to get total fee in wei
+    const totalFeeInWei = feeInWei.mul(limitInWei);
+
+    // 5. Convert total fee in wei to ether
+    const feeInEth = ethers.utils.formatEther(totalFeeInWei);
+
+    // 6. Convert fee in ether to number
+    const feeNumber = Number(feeInEth.toString());
+
+    setGasFee(feeNumber);
   };
 
   const estimateDiffAmount = (value: number): number => {
@@ -47,8 +64,8 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
     return Math.floor(value / 10);
   };
 
-  const removeNegativeGasPrice = (gasPrices: number[]): number[] => {
-    const positiveGasPrices = [...gasPrices];
+  const removeNegativeGasPrice = (prices: number[]): number[] => {
+    const positiveGasPrices = [...prices];
     for (let i = 0; i < positiveGasPrices.length; i++) {
       if (positiveGasPrices[i] <= 0) {
         positiveGasPrices[i] = 0.01;
@@ -60,30 +77,31 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
 
   const handleGetTxFee = async () => {
     const network = asset?.network ? getNetworkFromChainId(asset?.network) : null;
-    const gas = await accountController.getLatestGasPrices(network);
-    const digits = countSignificantDigits(gas[1]);
-    let gasPrices: number[] = gas.map((g) => fixedNumber(g, digits));
-    let uniquePrices = [...new Set(gas)].length;
+    const gasValues = await accountController.getLatestGasPrices(network);
+    const digit = countSignificantDigits(gasValues[1]);
+    let prices: number[] = gasValues.map(g => fixedNumber(g, digit));
+    const uniquePrices = [...new Set(gasValues)].length;
     if (uniquePrices === 1) {
-      let gp = gas[0];
+      const gp = gasValues[0];
       const amount = estimateDiffAmount(gp);
-      gasPrices = [gp - amount, gp, gp + amount];
+      prices = [gp - amount, gp, gp + amount];
     }
-    gasPrices = removeNegativeGasPrice(gasPrices);
-    setDigits(digits);
-    setGasPrices(gasPrices);
-    setGasPrice(gasPrices[2]);
-    estimateGasFee(gasPrices[2]);
+    prices = removeNegativeGasPrice(prices);
+    setDigits(digit);
+    setGasPrices(prices);
+    setGasPrice(prices[2]);
+    estimateGasFee(prices[2]);
   };
 
   const getGasLimit = async () => {
-    let gasLimit;
+    const network = asset?.network ? getNetworkFromChainId(asset?.network) : null;
+    let limit;
     try {
       if (asset.type === AssetType.ERC20) {
         if (data) {
-          gasLimit = await estimateGasLimit({ to: asset.address, data, gas });
+          limit = await estimateGasLimit({ to: asset.address, data, gas, network });
         } else {
-          gasLimit = await estimateGasLimitForTransfer({
+          limit = await estimateGasLimitForTransfer({
             from: fromAddress,
             amount: sendAmount,
             to: toEthAddress,
@@ -91,15 +109,15 @@ function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEst
           });
         }
       } else {
-        gasLimit = await estimateGasLimit({ to: toEthAddress, data, gas });
+        limit = await estimateGasLimit({ to: toEthAddress, data, gas, network });
       }
     } catch (err: any) {
       console.log('estimateGas err: ', err);
-      gasLimit = 0;
+      limit = 0;
     }
 
-    if (!!gasLimit) {
-      setGasLimit(gasLimit);
+    if (limit) {
+      setGasLimit(limit);
     }
   };
 

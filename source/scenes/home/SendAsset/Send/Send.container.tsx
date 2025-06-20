@@ -86,6 +86,7 @@ import {
 } from 'scripts/Background/messaging';
 import Send from './Send';
 import { fixedNumber } from 'utils/number';
+import { ExternalRoute } from 'web/pages/External/types';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -100,7 +101,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   let isExternalRequest = false;
 
   if (location) {
-    isExternalRequest = location.pathname.includes('sendTransaction');
+    isExternalRequest = location.pathname.includes(ExternalRoute.SignTransaction);
   }
 
   let activeAsset: IAssetInfoState | IActiveAssetState | IAssetState;
@@ -371,9 +372,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       }
 
       history.push(
-        `/confirmTransaction?${StargazerExternalPopups.encodeLocationParams(
-          params
-        ).toString()}`
+        `/${
+          ExternalRoute.ConfirmTransaction
+        }?${StargazerExternalPopups.encodeLocationParams(params).toString()}`
       );
     } else {
       linkTo('/send/confirm');
