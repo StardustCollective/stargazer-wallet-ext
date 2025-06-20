@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { BigNumber as BN } from 'ethers';
 
 const FACTOR = 1e8;
 
@@ -24,26 +25,44 @@ export const toDag = (value: number | string): number => {
 
 /**
  * Formats a BigNumber value for UI display with locale formatting
+ * Supports both bignumber.js BigNumber and ethers BigNumber
  *
  * @param value Value to format
- * @param minimumFractionDigits Minimum number of decimal places (default 8)
+ * @param minimumFractionDigits Minimum number of decimal places (default 2)
+ * @param maximumFractionDigits Maximum number of decimal places (default 18)
  * @returns Formatted string with locale-specific formatting
  */
-export const formatBigNumberForDisplay = (
-  value: number | string,
-  minimumFractionDigits: number = 0,
-  maximumFractionDigits: number = 8
-): string => {
-  // First get the fixed representation
-  const fixedValue = new BigNumber(value).toFixed();
+export const formatBigNumberForDisplay = (value: number | string | BigNumber | BN, minimumFractionDigits = 0, maximumFractionDigits = 18): string => {
+  let bn: BigNumber;
 
-  // Convert back to number for locale formatting
-  const numberValue = Number(fixedValue);
+  if (typeof value === 'string' || typeof value === 'number') {
+    // Convert string or number to bignumber.js BigNumber
+    bn = new BigNumber(value);
+  } else if (BN.isBigNumber(value)) {
+    // Convert ethers BigNumber to bignumber.js BigNumber
+    bn = new BigNumber(value.toString());
+  } else {
+    // Assume it's already a bignumber.js BigNumber
+    bn = value as BigNumber;
+  }
 
-  return numberValue.toLocaleString(undefined, {
-    minimumFractionDigits,
-    maximumFractionDigits,
-  });
+  // Step 1: Get fixed representation (string, no exponent, safe rounding)
+  const fixed = bn.toFixed(maximumFractionDigits);
+  let [intPart, decPart = ''] = fixed.split('.');
+
+  // Step 2: Format integer part with commas (e.g. 1234567 → 1,234,567)
+  intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // Step 3: Trim trailing zeros in decimal part
+  decPart = decPart.replace(/0+$/, '');
+
+  // Step 4: Pad decimal part if needed to satisfy minimumFractionDigits
+  while (decPart.length < minimumFractionDigits) {
+    decPart += '0';
+  }
+
+  // Step 5: Return combined result
+  return decPart.length > 0 ? `${intPart}.${decPart}` : intPart;
 };
 
 /**
@@ -110,5 +129,5 @@ export const smallestPowerOfTen = (num: number): number => {
   const magnitude = Math.floor(Math.log10(num)) - 1;
 
   // Return the smallest power of ten less than or equal to the number
-  return Math.pow(10, magnitude);
+  return 10 ** magnitude;
 };

@@ -4,6 +4,7 @@ import * as ethers from 'ethers';
 
 import { DAG_NETWORK } from 'constants/index';
 
+import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
 
@@ -75,7 +76,7 @@ export const getChainLabel = () => {
   return `${network}${extraLabel}`;
 };
 
-export const validateMetagraphAddress = (address: unknown): IAssetState => {
+export const validateMetagraphAddress = (address: unknown): IAssetInfoState => {
   const { vault, assets } = store.getState();
   const { activeNetwork } = vault;
 
@@ -97,7 +98,7 @@ export const validateMetagraphAddress = (address: unknown): IAssetState => {
     throw new Error("'metagraphAddress' not found in wallet");
   }
 
-  return metagraphToken;
+  return assets[metagraphToken?.id];
 };
 
 export const normalizeSignatureRequest = (encodedSignatureRequest: string): string => {

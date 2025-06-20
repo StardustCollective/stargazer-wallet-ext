@@ -30,6 +30,7 @@ export const SupportedMethods: Record<HardwareWalletType, AvailableMethods[]> = 
     AvailableMethods.dag_allowSpend,
     AvailableMethods.personal_sign,
     AvailableMethods.eth_signTypedData,
+    AvailableMethods.eth_sendTransaction,
   ],
 };
 

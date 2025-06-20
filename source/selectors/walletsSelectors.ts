@@ -176,6 +176,7 @@ export default {
   getAssets,
   getActiveAsset,
   getActiveWallet,
+  getActiveNetwork,
   selectAllAccounts,
   selectAllDagAccounts,
   selectAllEthAccounts,

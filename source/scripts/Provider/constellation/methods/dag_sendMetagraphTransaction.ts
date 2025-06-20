@@ -1,6 +1,8 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
+import { type SignTransactionDataDAG, TransactionType } from 'scenes/external/SignTransaction/types';
+
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
@@ -9,8 +11,6 @@ import { validateHardwareMethod } from 'utils/hardware';
 import { ExternalRoute } from 'web/pages/External/types';
 
 import { getWalletInfo, validateMetagraphAddress, WINDOW_TYPES } from '../utils';
-
-import type { SignTransactionDataDAG } from './dag_sendTransaction';
 
 export type StargazerMetagraphTransactionRequest = {
   metagraphAddress: string;
@@ -43,7 +43,7 @@ export const dag_sendMetagraphTransaction = async (request: StargazerRequest & {
     throw new Error('No data provided');
   }
 
-  const metagraphToken = validateMetagraphAddress(metagraphAddress);
+  validateMetagraphAddress(metagraphAddress);
 
   if (!source || typeof source !== 'string') {
     throw new Error("Bad argument 'source'");
@@ -78,14 +78,16 @@ export const dag_sendMetagraphTransaction = async (request: StargazerRequest & {
   }
 
   const signMetagraphTxnData: SignTransactionDataDAG = {
-    assetId: metagraphToken.id,
-
     from: source,
     to: destination,
     value: amount,
     fee: fee ?? 0,
 
-    chain: StargazerChain.CONSTELLATION,
+    extras: {
+      chain: StargazerChain.CONSTELLATION,
+      type: TransactionType.DagMetagraph,
+      metagraphAddress,
+    },
   };
 
   if (windowType === WINDOW_TYPES.popup) {

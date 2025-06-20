@@ -3,6 +3,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import IAssetListState from 'state/assets/types';
 import { RootState } from 'state/store';
 
+import walletsSelectors from './walletsSelectors';
+
 /**
  * Returns all assets
  */
@@ -15,7 +17,8 @@ const getAssets = (state: RootState): IAssetListState => state.assets;
 
 const getAssetByAddress = (address: string) => {
   return createSelector(getAssets, assets => {
-    return Object.values(assets).find(asset => asset.address === address) ?? null;
+    if (!address) return null;
+    return Object.values(assets).find(asset => asset.address.toLowerCase() === address.toLowerCase()) ?? null;
   });
 };
 
@@ -25,7 +28,8 @@ const getAssetByAddress = (address: string) => {
 
 const getAssetBySymbol = (symbol: string) => {
   return createSelector(getAssets, assets => {
-    return Object.values(assets).find(asset => asset.symbol === symbol) ?? null;
+    if (!symbol) return null;
+    return Object.values(assets).find(asset => asset.symbol.toLowerCase() === symbol.toLowerCase()) ?? null;
   });
 };
 
@@ -35,7 +39,19 @@ const getAssetBySymbol = (symbol: string) => {
 
 const getAssetById = (id: string) => {
   return createSelector(getAssets, assets => {
-    return Object.values(assets).find(asset => asset.id === id) ?? null;
+    if (!id) return null;
+    return Object.values(assets).find(asset => asset.id.toLowerCase() === id.toLowerCase()) ?? null;
+  });
+};
+
+/**
+ * Returns an asset by id
+ */
+
+const getMetagraphAsset = (address: string) => {
+  return createSelector(getAssets, walletsSelectors.getActiveNetwork, (assets, activeNetwork) => {
+    if (!address) return null;
+    return Object.values(assets).find(asset => asset.address.toLowerCase() === address.toLowerCase() && activeNetwork.Constellation === asset.network) ?? null;
   });
 };
 
@@ -44,4 +60,5 @@ export default {
   getAssetByAddress,
   getAssetBySymbol,
   getAssetById,
+  getMetagraphAsset,
 };

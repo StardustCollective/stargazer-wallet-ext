@@ -1,10 +1,10 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
+import { type SignTransactionDataDAG, TransactionType } from 'scenes/external/SignTransaction/types';
+
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-
-import { AssetType } from 'state/vault/types';
 
 import { validateHardwareMethod } from 'utils/hardware';
 
@@ -17,17 +17,6 @@ export type StargazerTransactionRequest = {
   destination: string;
   amount: number; // In DATUM
   fee?: number; // In DATUM
-};
-
-export type SignTransactionDataDAG = {
-  assetId: string;
-
-  from: string;
-  to: string;
-  value: number;
-  fee?: number;
-
-  chain: StargazerChain;
 };
 
 export const dag_sendTransaction = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
@@ -86,14 +75,15 @@ export const dag_sendTransaction = async (request: StargazerRequest & { type: 'r
   }
 
   const signTxnData: SignTransactionDataDAG = {
-    assetId: AssetType.Constellation,
-
     from: source,
     to: destination,
     value: amount,
     fee: fee ?? 0,
 
-    chain: StargazerChain.CONSTELLATION,
+    extras: {
+      chain: StargazerChain.CONSTELLATION,
+      type: TransactionType.DagNative,
+    },
   };
 
   if (windowType === WINDOW_TYPES.popup) {
