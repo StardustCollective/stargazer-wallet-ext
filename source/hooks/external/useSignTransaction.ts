@@ -38,7 +38,7 @@ export const useSignTransaction = (): UseSignTransactionReturn => {
   const { chain, type, metagraphAddress } = baseHook.decodedData.extras;
   const metagraphAsset: IAssetInfoState | null = useSelector(assetsSelectors.getMetagraphAsset(metagraphAddress ?? null));
 
-  const feeInDatum = baseHook.decodedData?.fee ?? 0;
+  const feeInDatum = baseHook.decodedData?.transaction?.fee ?? 0;
 
   // Initialize fee state with default value from decoded data
   const [fee, setFee] = useState<string>(() => {

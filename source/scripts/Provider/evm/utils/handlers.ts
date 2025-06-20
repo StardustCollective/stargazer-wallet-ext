@@ -19,7 +19,7 @@ export type EthSendTransaction = {
   gas?: string;
   gasPrice?: string;
   data?: string;
-  chainId?: string | number;
+  chainId?: number;
 };
 
 /**
@@ -120,8 +120,8 @@ export class NativeTransferHandler implements TransactionHandler {
       throw new EIPRpcError('Invalid recipient address format', EIPErrorCodes.Rejected);
     }
 
-    const signTransactionData: Omit<SignTransactionDataEVM, 'chainId'> = {
-      ...transaction,
+    const signTransactionData: SignTransactionDataEVM = {
+      transaction,
       extras: {
         chain,
         type: TransactionType.EvmNative,
@@ -193,8 +193,8 @@ export class Erc20TransferHandler implements TransactionHandler {
       throw new EIPRpcError('Invalid transfer amount', EIPErrorCodes.Rejected);
     }
 
-    const signTransactionData: Omit<SignTransactionDataEVM, 'chainId'> = {
-      ...transaction,
+    const signTransactionData: SignTransactionDataEVM = {
+      transaction,
       extras: {
         chain,
         type: TransactionType.Erc20Transfer,
@@ -262,8 +262,8 @@ export class Erc20ApproveHandler implements TransactionHandler {
       throw new EIPRpcError('Invalid approve amount', EIPErrorCodes.Rejected);
     }
 
-    const signTransactionData: Omit<SignTransactionDataEVM, 'chainId'> = {
-      ...transaction,
+    const signTransactionData: SignTransactionDataEVM = {
+      transaction,
       extras: {
         chain,
         type: TransactionType.Erc20Approve,
@@ -316,8 +316,8 @@ export class FallbackContractHandler implements TransactionHandler {
       throw new EIPRpcError('Transaction data too short for contract interaction', EIPErrorCodes.Rejected);
     }
 
-    const signTransactionData: Omit<SignTransactionDataEVM, 'chainId'> = {
-      ...transaction,
+    const signTransactionData: SignTransactionDataEVM = {
+      transaction,
       extras: {
         chain,
         type: TransactionType.EvmContractInteraction,
@@ -362,7 +362,7 @@ export class TransactionHandlerRegistry {
     const handler = this.handlers.find(h => h.canHandle(transaction));
 
     if (!handler) {
-      throw new EIPRpcError('No suitable handler found for transaction type', EIPErrorCodes.Unsupported);
+      throw new EIPRpcError('Unable to handle this transaction type', EIPErrorCodes.Unsupported);
     }
 
     return await handler.handle(transaction, chain);

@@ -1,4 +1,5 @@
 import { StargazerChain } from 'scripts/common';
+import type { EthSendTransaction } from 'scripts/Provider/evm/utils/handlers';
 
 export enum TransactionType {
   DagNative = 'dag-native',
@@ -19,22 +20,16 @@ export type ExtraDagInfo = ExtraInfo & {
 };
 
 export type SignTransactionDataEVM = {
-  from: string;
-  to?: string;
-  value?: string;
-  gas?: string;
-  gasPrice?: string;
-  data?: string;
-  chainId?: number;
-
+  transaction: EthSendTransaction;
   extras: ExtraInfo;
 };
 
 export type SignTransactionDataDAG = {
-  from: string;
-  to: string;
-  value: number;
-  fee?: number;
-
+  transaction: {
+    from: string;
+    to: string;
+    value: number;
+    fee?: number;
+  };
   extras: ExtraDagInfo;
 };

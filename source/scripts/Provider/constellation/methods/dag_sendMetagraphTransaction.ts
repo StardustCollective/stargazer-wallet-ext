@@ -78,10 +78,12 @@ export const dag_sendMetagraphTransaction = async (request: StargazerRequest & {
   }
 
   const signMetagraphTxnData: SignTransactionDataDAG = {
-    from: source,
-    to: destination,
-    value: amount,
-    fee: fee ?? 0,
+    transaction: {
+      from: source,
+      to: destination,
+      value: amount,
+      fee: fee ?? 0,
+    },
 
     extras: {
       chain: StargazerChain.CONSTELLATION,

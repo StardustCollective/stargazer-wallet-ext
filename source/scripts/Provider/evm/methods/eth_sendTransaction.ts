@@ -82,9 +82,21 @@ export const eth_sendTransaction = async (request: StargazerRequest & { type: 'r
 
   let handlerResult: TransactionHandlerResult;
 
+  const transaction: EthSendTransaction = {
+    chainId,
+
+    from: transactionData.from,
+    to: transactionData.to,
+    value: transactionData.value,
+    data: transactionData.data,
+
+    gas: transactionData.gas,
+    gasPrice: transactionData.gasPrice,
+  };
+
   try {
     // Delegate to the appropriate transaction handler
-    handlerResult = await defaultTransactionHandlerRegistry.handleTransaction(transactionData, chain);
+    handlerResult = await defaultTransactionHandlerRegistry.handleTransaction(transaction, chain);
   } catch (error) {
     console.error('Transaction handler error:', error);
 
@@ -96,14 +108,11 @@ export const eth_sendTransaction = async (request: StargazerRequest & { type: 'r
     throw new EIPRpcError(error instanceof Error ? error.message : 'Failed to process transaction', EIPErrorCodes.Rejected);
   }
 
-  const { data: signTransactionData, route } = handlerResult;
+  const { data, route } = handlerResult;
 
   if (windowType === WINDOW_TYPES.popup) {
     windowSize.height = 780;
   }
-
-  // Always send the chainId in the transaction
-  const data = { ...signTransactionData, chainId };
 
   // Launch the appropriate external popup for user interaction
   await StargazerExternalPopups.executePopup({

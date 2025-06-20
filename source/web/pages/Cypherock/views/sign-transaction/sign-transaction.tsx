@@ -40,7 +40,7 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
   const { requestMessage } = useSignTransaction();
 
   const signDAGTransaction = async (data: SignTransactionDataDAG, asset: IAssetInfoState, isMetagraphTransaction: boolean, fee: string): Promise<string> => {
-    const { from, to, value: amount } = data;
+    const { from, to, value: amount } = data.transaction;
 
     if (!dag4?.account?.publicKey) {
       throw new CypherockError('No public key found', ErrorCode.UNKNOWN);
@@ -122,38 +122,39 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
     if (!data?.extras?.type) {
       throw new EIPRpcError('Unable to get transaction type.', EIPErrorCodes.Rejected);
     }
+    const { transaction, extras } = data;
 
-    const { type } = data.extras;
+    const { type } = extras;
     const walletId = decodeArrayFromBase64(cypherockId);
 
     const defaultGasLimit = ethers.utils.hexlify(Number(gasConfig.gasLimit));
     const defaultGasPrice = ethers.utils.parseUnits(gasConfig.gasPrice, 'gwei');
 
-    const chainController = new EVMChainController({ chain: data.chainId });
-    const nonce = await chainController.getNonce(data.from);
+    const chainController = new EVMChainController({ chain: transaction.chainId });
+    const nonce = await chainController.getNonce(transaction.from);
 
     const isNative = type === TransactionType.EvmNative;
     // data param must be 0x for native transactions
-    const dataParam = isNative ? '0x' : data.data;
+    const dataParam = isNative ? '0x' : transaction.data;
     // value param must be 0 for erc-20 transactions
-    const valueParam = isNative ? data.value : '0';
+    const valueParam = isNative ? transaction.value : '0';
 
-    const transaction: UnsignedTransaction = {
-      chainId: data.chainId,
+    const txn: UnsignedTransaction = {
+      chainId: transaction.chainId,
 
       type: null, // Legacy transaction
 
-      to: data.to,
+      to: transaction.to,
       value: valueParam,
       data: dataParam,
 
-      gasLimit: data.gas || defaultGasLimit,
-      gasPrice: data.gasPrice || defaultGasPrice._hex,
+      gasLimit: transaction.gas || defaultGasLimit,
+      gasPrice: transaction.gasPrice || defaultGasPrice._hex,
 
       nonce,
     };
 
-    const serialized = ethers.utils.serializeTransaction(transaction);
+    const serialized = ethers.utils.serializeTransaction(txn);
 
     changeState(WalletState.VerifyTransaction);
 

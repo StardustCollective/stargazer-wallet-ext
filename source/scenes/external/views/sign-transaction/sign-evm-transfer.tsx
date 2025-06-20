@@ -19,6 +19,8 @@ import GasSlider from 'scenes/external/components/GasSlider';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 import { TransactionType } from 'scenes/external/SignTransaction/types';
 
+import { EthSendTransaction } from 'scripts/Provider/evm/utils/handlers';
+
 import type { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
 
@@ -33,15 +35,11 @@ import { validateBalance } from './utils';
 export interface ISignEvmTransferProps {
   title: string;
   nativeAsset: IAssetInfoState | null;
-  from: string;
-  to: string;
+  transaction: EthSendTransaction;
   footer?: string;
   origin?: string;
   containerStyles?: string;
-  gas?: string;
-  data: string;
   isLoading?: boolean;
-  chainId: number;
   setGasConfig?: ({ gasPrice, gasLimit }: { gasPrice: string; gasLimit: string }) => void;
   onSign: () => Promise<void>;
   onReject: () => Promise<void>;
@@ -93,9 +91,10 @@ const calculateErc20Total = (amountInWei: BigNumber, feeInWei: BigNumber, tokenI
   return totalFiatEth.toString();
 };
 
-export const SignEvmTransferView = ({ title, nativeAsset, from, to, footer, origin, chainId, containerStyles, gas, data, isLoading = false, setGasConfig, onSign, onReject }: ISignEvmTransferProps) => {
+export const SignEvmTransferView = ({ title, nativeAsset, transaction, footer, origin, containerStyles, isLoading = false, setGasConfig, onSign, onReject }: ISignEvmTransferProps) => {
   const { current, activeWallet, evmNetwork } = useExternalViewData();
   const showAlert = usePlatformAlert();
+  const { from, to, data, chainId } = transaction;
 
   const fromDapp = origin !== 'stargazer-wallet';
   const subtitle = fromDapp ? current.origin : null;
@@ -112,11 +111,7 @@ export const SignEvmTransferView = ({ title, nativeAsset, from, to, footer, orig
 
   const { gasPrice, gasPrices, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
     type: TransactionType.Erc20Transfer,
-    from,
-    gas,
-    data,
-    contract: contractAddress,
-    chainId,
+    transaction,
   });
 
   const amountInEth = formatUnits(amountInWei, tokenInfo?.decimals || 18);
@@ -139,7 +134,7 @@ export const SignEvmTransferView = ({ title, nativeAsset, from, to, footer, orig
       return { isValid: false, amountError: '', feeError: '' };
     }
 
-    return validateBalance(nativeBalance, amountInWei, feeInWei, TransactionType.Erc20Transfer, erc20Balance);
+    return validateBalance({ nativeBalance, amount: amountInWei, fee: feeInWei, type: TransactionType.Erc20Transfer, erc20Balance });
   }, [nativeBalance, amountInWei, feeInWei, balanceLoading]);
 
   const { isValid, amountError, feeError } = validationResult;

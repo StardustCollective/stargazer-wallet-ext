@@ -215,10 +215,12 @@ const ConfirmContainer = () => {
                 };
 
           data = {
-            from: tempTx.fromAddress,
-            to: tempTx.toAddress,
-            value: toDatum(tempTx.amount),
-            fee: toDatum(tempTx.fee) ?? 0,
+            transaction: {
+              from: tempTx.fromAddress,
+              to: tempTx.toAddress,
+              value: toDatum(tempTx.amount),
+              fee: toDatum(tempTx.fee) ?? 0,
+            },
 
             extras: {
               chain: StargazerChain.CONSTELLATION,
@@ -234,11 +236,13 @@ const ConfirmContainer = () => {
 
           if (activeAsset.type === AssetType.Ethereum) {
             data = {
-              chainId: activeChainId,
+              transaction: {
+                chainId: activeChainId,
 
-              from: tempTx.fromAddress,
-              to: tempTx.toAddress,
-              value: ethers.utils.parseEther(tempTx.amount).toString(),
+                from: tempTx.fromAddress,
+                to: tempTx.toAddress,
+                value: ethers.utils.parseEther(tempTx.amount).toString(),
+              },
 
               extras: {
                 chain,
@@ -255,11 +259,13 @@ const ConfirmContainer = () => {
             const hexData = iface.encodeFunctionData('transfer', [recipient, amount]);
 
             data = {
-              chainId: activeChainId,
+              transaction: {
+                chainId: activeChainId,
 
-              from: tempTx.fromAddress,
-              to,
-              data: hexData,
+                from: tempTx.fromAddress,
+                to,
+                data: hexData,
+              },
 
               extras: {
                 chain,

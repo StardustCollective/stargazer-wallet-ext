@@ -18,6 +18,8 @@ import GasSlider from 'scenes/external/components/GasSlider';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 import { TransactionType } from 'scenes/external/SignTransaction/types';
 
+import { EthSendTransaction } from 'scripts/Provider/evm/utils/handlers';
+
 import type { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
 
@@ -30,15 +32,11 @@ import { validateBalance } from './utils';
 export interface ISignEvmTransactionProps {
   title: string;
   nativeAsset: IAssetInfoState | null;
-  amount: string;
-  from: string;
-  to?: string;
+  transaction: EthSendTransaction;
   footer?: string;
   origin?: string;
   containerStyles?: string;
-  gas?: string;
   isLoading?: boolean;
-  chainId: number;
   setGasConfig?: ({ gasPrice, gasLimit }: { gasPrice: string; gasLimit: string }) => void;
   onSign: () => Promise<void>;
   onReject: () => Promise<void>;
@@ -64,21 +62,20 @@ const calculateNativeTotal = (amountInWei: BigNumber, feeInWei: BigNumber, nativ
   return fiatInEth.toString();
 };
 
-export const SignEvmTransactionView = ({ title, nativeAsset, amount, origin, from, to, footer, containerStyles, gas, chainId, isLoading = false, setGasConfig, onSign, onReject }: ISignEvmTransactionProps) => {
+export const SignEvmTransactionView = ({ title, nativeAsset, transaction, origin, footer, containerStyles, isLoading = false, setGasConfig, onSign, onReject }: ISignEvmTransactionProps) => {
   const { current, activeWallet, evmNetwork } = useExternalViewData();
+  const { from, to, value: amount, chainId } = transaction;
 
   const fromDapp = origin !== 'stargazer-wallet';
   const subtitle = fromDapp ? current.origin : null;
   const logo = fromDapp ? current.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
 
-  const amountInWei = BigNumber.from(amount);
+  const amountInWei = BigNumber.from(amount ?? 0);
   const amountInEth = formatEther(amountInWei);
 
   const { gasPrice, gasPrices, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
     type: TransactionType.EvmNative,
-    from,
-    gas,
-    chainId,
+    transaction,
   });
 
   const isGasLoading = !gasPrices.length;
@@ -98,7 +95,7 @@ export const SignEvmTransactionView = ({ title, nativeAsset, amount, origin, fro
       return { isValid: false, amountError: '', feeError: '' };
     }
 
-    return validateBalance(nativeBalance, amountInWei, feeInWei, TransactionType.EvmNative);
+    return validateBalance({ nativeBalance, amount: amountInWei, fee: feeInWei, type: TransactionType.EvmNative });
   }, [nativeBalance, amountInWei, feeInWei, balanceLoading]);
 
   const { isValid, amountError, feeError } = validationResult;

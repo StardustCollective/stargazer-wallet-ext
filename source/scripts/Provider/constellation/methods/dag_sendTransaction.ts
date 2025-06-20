@@ -12,7 +12,7 @@ import { ExternalRoute } from 'web/pages/External/types';
 
 import { getWalletInfo, WINDOW_TYPES } from '../utils';
 
-export type StargazerTransactionRequest = {
+export type DagSendTransaction = {
   source: string;
   destination: string;
   amount: number; // In DATUM
@@ -34,7 +34,7 @@ export const dag_sendTransaction = async (request: StargazerRequest & { type: 'r
 
   validateHardwareMethod(activeWallet.type, request.method);
 
-  const [data] = request.params as [StargazerTransactionRequest];
+  const [data] = request.params as [DagSendTransaction];
 
   if (!data) {
     throw new Error('No data provided');
@@ -75,10 +75,12 @@ export const dag_sendTransaction = async (request: StargazerRequest & { type: 'r
   }
 
   const signTxnData: SignTransactionDataDAG = {
-    from: source,
-    to: destination,
-    value: amount,
-    fee: fee ?? 0,
+    transaction: {
+      from: source,
+      to: destination,
+      value: amount,
+      fee: fee ?? 0,
+    },
 
     extras: {
       chain: StargazerChain.CONSTELLATION,

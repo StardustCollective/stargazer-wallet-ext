@@ -26,10 +26,13 @@ import styles from './styles.scss';
 export interface ISignDagTransactionProps {
   title: string;
   asset: IAssetInfoState | null;
-  amount: number | string;
+  transaction: {
+    from: string;
+    to: string;
+    value: number;
+    fee?: number;
+  };
   fee: string;
-  from: string;
-  to?: string;
   footer?: string;
   origin?: string;
   containerStyles?: string;
@@ -44,13 +47,15 @@ const WALLET_LOGO: Record<HardwareWalletType, string | JSX.Element> = {
   [KeyringWalletType.BitfiAccountWallet]: '/assets/images/bitfi_logo.png',
 };
 
-export const SignDagTransactionView = ({ title, asset, amount, fee, origin, from, to, footer, containerStyles, isLoading, setFee, onSign, onReject }: ISignDagTransactionProps) => {
+export const SignDagTransactionView = ({ title, asset, transaction, fee, origin, footer, containerStyles, isLoading, setFee, onSign, onReject }: ISignDagTransactionProps) => {
   const { current, activeWallet, constellationNetwork } = useExternalViewData();
   const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
 
+  const { from, to, value: amount } = transaction;
+
   // DAG-specific calculations (always in DAG/DATUM)
-  const amountInDag = toDag(amount);
-  const feeInDag = Number(fee);
+  const amountInDag = toDag(amount ?? 0);
+  const feeInDag = Number(fee ?? 0);
   const totalInDag = amountInDag + feeInDag;
 
   // Get fiat amounts for display

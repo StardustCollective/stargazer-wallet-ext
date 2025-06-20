@@ -2,7 +2,14 @@ import { ethers } from 'ethers';
 
 import { TransactionType } from '../../SignTransaction/types';
 
-// Balance validation types
+interface BalanceValidationProps {
+  type: TransactionType;
+  nativeBalance: ethers.BigNumber;
+  amount?: ethers.BigNumber;
+  fee?: ethers.BigNumber;
+  erc20Balance?: ethers.BigNumber;
+}
+
 interface BalanceValidationResult {
   isValid: boolean;
   amountError: string;
@@ -10,7 +17,7 @@ interface BalanceValidationResult {
 }
 
 // Pure balance validation function
-export const validateBalance = (nativeBalance: ethers.BigNumber, amount: ethers.BigNumber, fee: ethers.BigNumber, type: TransactionType, erc20Balance?: ethers.BigNumber): BalanceValidationResult => {
+export const validateBalance = ({ nativeBalance, amount, fee, type, erc20Balance }: BalanceValidationProps): BalanceValidationResult => {
   switch (type) {
     case TransactionType.EvmNative: {
       // Check if user has enough balance for the amount
@@ -107,7 +114,7 @@ export const validateBalance = (nativeBalance: ethers.BigNumber, amount: ethers.
         return {
           isValid: false,
           amountError: '',
-          feeError: 'Insufficient balance to cover fee',
+          feeError: 'Not enough to cover fee',
         };
       }
 

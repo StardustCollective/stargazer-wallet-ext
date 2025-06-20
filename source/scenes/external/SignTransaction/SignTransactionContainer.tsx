@@ -6,6 +6,7 @@ import { SignTransactionData, useSignTransaction, UseSignTransactionReturn } fro
 import { ISignDagTransactionProps, ISignEvmApproveProps, ISignEvmTransactionProps, ISignEvmTransferProps, SignDagTransactionView, SignEvmApprove, SignEvmTransactionView, SignEvmTransferView } from 'scenes/external/views/sign-transaction';
 
 import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
+import { ISignContractInteractionProps, SignContractInteraction } from '../views/sign-transaction/sign-contract-interaction';
 
 export interface SignTransactionProviderConfig {
   title: string;
@@ -31,7 +32,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
   const validateSignTransactionData = (decodedData: SignTransactionData, hookData?: UseSignTransactionReturn): string | null => {
     if (!hookData || !decodedData) return 'Invalid transaction data';
 
-    const { from, to } = decodedData;
+    const { from, to } = decodedData.transaction;
 
     if (!from) return 'Invalid from address';
     if (!to) return 'Invalid to address';
@@ -45,14 +46,8 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       title: propsTitle,
       nativeAsset,
       metagraphAsset,
-      value,
-      from,
-      to,
-      fee,
+      transaction,
       origin,
-      gas,
-      data,
-      chainId,
       footer: propsFooter,
       isLoading: propsIsLoading,
       isDAG,
@@ -60,6 +55,8 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       isEvmNative,
       isErc20Approve,
       isErc20Transfer,
+      isContractInteraction,
+      fee,
       setFee,
       setGasConfig,
       onAction,
@@ -71,10 +68,8 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       const dagProps: ISignDagTransactionProps = {
         title: propsTitle,
         asset,
-        amount: value ?? 0,
+        transaction,
         fee,
-        from,
-        to,
         footer: propsFooter,
         origin,
         isLoading: propsIsLoading,
@@ -90,13 +85,9 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       const evmApproveProps: ISignEvmApproveProps = {
         title: 'Approve Spend',
         nativeAsset,
-        from,
-        to,
+        transaction,
         footer: propsFooter,
         isLoading: propsIsLoading,
-        gas,
-        data,
-        chainId,
         setGasConfig,
         onSign: onAction,
         onReject,
@@ -108,13 +99,9 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       const evmTransferProps: ISignEvmTransferProps = {
         title: propsTitle,
         nativeAsset,
-        from,
-        to,
+        transaction,
         footer: propsFooter,
         isLoading: propsIsLoading,
-        gas,
-        data,
-        chainId,
         setGasConfig,
         onSign: onAction,
         onReject,
@@ -126,20 +113,30 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       const evmProps: ISignEvmTransactionProps = {
         title: propsTitle,
         nativeAsset,
-        amount: value ?? 0,
-        from,
-        to,
+        transaction,
         footer: propsFooter,
         isLoading: propsIsLoading,
         origin,
-        gas,
-        chainId,
         setGasConfig,
         onSign: onAction,
         onReject,
       };
 
       return <SignEvmTransactionView {...evmProps} />;
+    }
+    if (isContractInteraction) {
+      const contractInteractionProps: ISignContractInteractionProps = {
+        title: propsTitle,
+        nativeAsset,
+        transaction,
+        footer: propsFooter,
+        isLoading: propsIsLoading,
+        setGasConfig,
+        onSign: onAction,
+        onReject,
+      };
+
+      return <SignContractInteraction {...contractInteractionProps} />;
     }
 
     throw new Error('Invalid transaction type');

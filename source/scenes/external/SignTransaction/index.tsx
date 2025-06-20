@@ -18,7 +18,9 @@ const SignTransaction = () => {
   const showAlert = usePlatformAlert();
   const [loading, setLoading] = useState(false);
 
-  const signDagTransaction = async ({ to, value }: SignTransactionDataDAG, fee: string) => {
+  const signDagTransaction = async ({ transaction }: SignTransactionDataDAG, fee: string) => {
+    const { to, value } = transaction;
+
     // Transform amount and fee to DAG
     const amountInDag = toDag(value);
     const feeInDag = Number(fee);
@@ -32,7 +34,9 @@ const SignTransaction = () => {
     return tx.hash;
   };
 
-  const signMetagraphTransaction = async ({ to, value }: SignTransactionDataDAG, asset: IAssetInfoState, fee: string) => {
+  const signMetagraphTransaction = async ({ transaction }: SignTransactionDataDAG, asset: IAssetInfoState, fee: string) => {
+    const { to, value } = transaction;
+
     // Transform amount and fee to DAG
     const amountInDag = toDag(value);
     const feeInDag = Number(fee);
@@ -69,25 +73,27 @@ const SignTransaction = () => {
 
     const { type } = data.extras;
 
+    const { from, to, value, data: transactionData, gas, chainId, gasPrice } = data.transaction;
+
     const isNative = type === TransactionType.EvmNative;
     // data param must be 0x for native transactions
-    const dataParam = isNative ? '0x' : data.data;
+    const dataParam = isNative ? '0x' : transactionData;
     // value param must be 0 for erc-20 transactions
-    const valueParam = isNative ? data.value : '0';
+    const valueParam = isNative ? value : '0';
 
     const defaultGasLimit = ethers.utils.hexlify(Number(gasConfig.gasLimit));
     const defaultGasPrice = ethers.utils.parseUnits(gasConfig.gasPrice, 'gwei');
 
     const transaction: TransactionRequest = {
-      chainId: data.chainId,
+      chainId,
 
-      from: data.from,
-      to: data.to,
+      from,
+      to,
       value: valueParam,
       data: dataParam,
 
-      gasLimit: data.gas || defaultGasLimit,
-      gasPrice: data.gasPrice || defaultGasPrice,
+      gasLimit: gas || defaultGasLimit,
+      gasPrice: gasPrice || defaultGasPrice,
     };
 
     const validTransaction = wallet.checkTransaction(transaction);

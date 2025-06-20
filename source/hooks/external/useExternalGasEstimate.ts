@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { TransactionType } from 'scenes/external/SignTransaction/types';
 
 import EVMChainController from 'scripts/Background/controllers/EVMChainController';
+import { EthSendTransaction } from 'scripts/Provider/evm/utils/handlers';
 
 import vaultSelectors from 'selectors/vaultSelectors';
 
@@ -12,14 +13,10 @@ import { countSignificantDigits, fixedNumber } from 'utils/number';
 
 type IUseExternalGasEstimate = {
   type: TransactionType;
-  from: string;
-  gas?: string;
-  data?: string;
-  contract?: string;
-  chainId?: string | number;
+  transaction: EthSendTransaction;
 };
 
-function useExternalGasEstimate({ type, from, gas, data, contract, chainId }: IUseExternalGasEstimate) {
+function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) {
   const activeEVMNetwork = useSelector(vaultSelectors.getCurrentEvmNetwork);
 
   const [gasPrice, setGasPrice] = useState<number>(0);
@@ -27,6 +24,7 @@ function useExternalGasEstimate({ type, from, gas, data, contract, chainId }: IU
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
   const [digits, setDigits] = useState<number>(0);
+  const { chainId, gas } = transaction;
   const chain = chainId || activeEVMNetwork;
 
   const chainController = useMemo(() => new EVMChainController({ chain }), [chain]);
@@ -104,9 +102,9 @@ function useExternalGasEstimate({ type, from, gas, data, contract, chainId }: IU
     estimateGasFee(pricesFixed[2]);
   }, [chainController, gasLimit]);
 
-  const getGasLimitErc20 = useCallback(async () => {
+  const estimateTransactionGasLimit = useCallback(async () => {
     try {
-      const limit = await chainController.estimateGas({ from, to: contract, data });
+      const limit = await chainController.estimateGas({ ...transaction, gasLimit: transaction.gas });
       const limitNumber = limit.toNumber();
 
       return Math.floor(limitNumber * 1.5);
@@ -114,7 +112,7 @@ function useExternalGasEstimate({ type, from, gas, data, contract, chainId }: IU
       console.error('Error getting gas limit for ERC20 transfer:', err);
       return 90000;
     }
-  }, [chainController, from, contract, data]);
+  }, [chainController, transaction]);
 
   const getGasLimit = useCallback(async () => {
     let limit = 0;
@@ -124,18 +122,20 @@ function useExternalGasEstimate({ type, from, gas, data, contract, chainId }: IU
       limit = parseInt(gas, radix);
     }
 
-    if (type === TransactionType.EvmNative) {
-      limit = 21000;
-    }
+    if (!limit) {
+      if (type === TransactionType.EvmNative) {
+        limit = 21000;
+      }
 
-    if ([TransactionType.Erc20Transfer, TransactionType.Erc20Approve].includes(type)) {
-      limit = await getGasLimitErc20();
+      if ([TransactionType.Erc20Transfer, TransactionType.Erc20Approve, TransactionType.EvmContractInteraction].includes(type)) {
+        limit = await estimateTransactionGasLimit();
+      }
     }
 
     if (limit) {
       setGasLimit(limit);
     }
-  }, [type, gas, contract, from, data, chainController]);
+  }, [type, gas, transaction, chainController]);
 
   useEffect(() => {
     getGasLimit();

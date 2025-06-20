@@ -27,7 +27,7 @@ const SignView = ({ waiting, code, waitingMessage, transactionSigned, onSignPres
     footer: 'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
     onSignTransaction: async ({ decodedData, isDAG, isMetagraph, isEvmNative, fee }) => {
       if (isDAG) {
-        const { value, from, to } = decodedData;
+        const { value, from, to } = decodedData.transaction;
         await onSignPress(deviceId, value, from, to, fee);
       }
 
