@@ -54,7 +54,7 @@ export enum WalletState {
   SignMessage = 'sign-message',
   SignTypedData = 'sign-typed-data',
   SignDataMessage = 'sign-data-message',
-  SignDagTransaction = 'sign-dag-transaction',
+  SignTransaction = 'sign-transaction',
   TokenLock = 'token-lock',
   AllowSpend = 'allow-spend',
   DelegatedStake = 'delegated-stake',
@@ -77,7 +77,7 @@ enum WalletRoute {
   SignMessage = 'signMessage',
   SignDataMessage = 'signData',
   SignTypedData = 'signTypedData',
-  SignDagTransaction = 'signTransaction',
+  SignTransaction = 'signTransaction',
   TokenLock = 'tokenLock',
   AllowSpend = 'allowSpend',
   DelegatedStake = 'delegatedStake',
@@ -127,8 +127,8 @@ const CypherockPage = () => {
         setNextRoute(WalletState.SignTypedData);
       } else if (route === WalletRoute.SignDataMessage) {
         setNextRoute(WalletState.SignDataMessage);
-      } else if (route === WalletRoute.SignDagTransaction) {
-        setNextRoute(WalletState.SignDagTransaction);
+      } else if (route === WalletRoute.SignTransaction) {
+        setNextRoute(WalletState.SignTransaction);
       } else if (route === WalletRoute.TokenLock) {
         setNextRoute(WalletState.TokenLock);
       } else if (route === WalletRoute.DelegatedStake) {
@@ -513,7 +513,7 @@ const CypherockPage = () => {
         return <SignMsgView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.SignTypedData:
         return <SignTypedDataView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
-      case WalletState.SignDagTransaction:
+      case WalletState.SignTransaction:
         return <SignTransactionView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.SignDataMessage:
         return <SignDataView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;

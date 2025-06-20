@@ -1,16 +1,19 @@
 import type { ISignTxnData } from '@cypherock/sdk-app-constellation';
+import type { UnsignedTransaction } from '@ethersproject/transactions';
 import { dag4 } from '@stardust-collective/dag4';
 import type { PostTransactionV2 } from '@stardust-collective/dag4-keystore';
 import type { GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
+import { ethers } from 'ethers';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { useSignTransaction } from 'hooks/external/useSignTransaction';
 
 import SignTransactionContainer, { SignTransactionProviderConfig } from 'scenes/external/SignTransaction/SignTransactionContainer';
+import { SignTransactionDataDAG, SignTransactionDataEVM, TransactionType } from 'scenes/external/SignTransaction/types';
 
-import type { StargazerRequestMessage } from 'scripts/common';
-import type { SignTransactionDataDAG } from 'scripts/Provider/constellation';
+import EVMChainController from 'scripts/Background/controllers/EVMChainController';
+import { EIPErrorCodes, EIPRpcError, type StargazerRequestMessage } from 'scripts/common';
 
 import walletsSelectors from 'selectors/walletsSelectors';
 
@@ -111,16 +114,71 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
     return txHash;
   };
 
+  const signEvmTransaction = async (data: SignTransactionDataEVM, gasConfig: { gasPrice: string; gasLimit: string }): Promise<string> => {
+    if (!cypherockId) {
+      throw new CypherockError('No wallet id found', ErrorCode.UNKNOWN);
+    }
+
+    if (!data?.extras?.type) {
+      throw new EIPRpcError('Unable to get transaction type.', EIPErrorCodes.Rejected);
+    }
+
+    const { type } = data.extras;
+    const walletId = decodeArrayFromBase64(cypherockId);
+
+    const defaultGasLimit = ethers.utils.hexlify(Number(gasConfig.gasLimit));
+    const defaultGasPrice = ethers.utils.parseUnits(gasConfig.gasPrice, 'gwei');
+
+    const chainController = new EVMChainController({ chain: data.chainId });
+    const nonce = await chainController.getNonce(data.from);
+
+    const isNative = type === TransactionType.EvmNative;
+    // data param must be 0x for native transactions
+    const dataParam = isNative ? '0x' : data.data;
+    // value param must be 0 for erc-20 transactions
+    const valueParam = isNative ? data.value : '0';
+
+    const transaction: UnsignedTransaction = {
+      chainId: data.chainId,
+
+      type: null, // Legacy transaction
+
+      to: data.to,
+      value: valueParam,
+      data: dataParam,
+
+      gasLimit: data.gas || defaultGasLimit,
+      gasPrice: data.gasPrice || defaultGasPrice._hex,
+
+      nonce,
+    };
+
+    const serialized = ethers.utils.serializeTransaction(transaction);
+
+    changeState(WalletState.VerifyTransaction);
+
+    const { serializedTxn } = await service.signEVMTransaction({
+      walletId,
+      derivationPath: CYPHEROCK_DERIVATION_PATHS.ETH_MAINNET,
+      txn: serialized,
+      serializeTxn: true,
+    });
+
+    const { hash } = await chainController.sendTransaction(serializedTxn);
+
+    return hash;
+  };
+
   const cypherockSigningConfig: SignTransactionProviderConfig = {
     title: 'Cypherock - Sign Transaction',
     footer: 'Only sign transactions on sites you trust.',
-    onSignTransaction: async ({ asset, decodedData, isDAGTransaction, isMetagraphTransaction, isEVMTransaction, fee }) => {
-      if (isDAGTransaction || isMetagraphTransaction) {
-        return await signDAGTransaction(decodedData as SignTransactionDataDAG, asset, isMetagraphTransaction, fee);
+    onSignTransaction: async ({ metagraphAsset, decodedData, isDAG, isMetagraph, isEvmNative, isErc20Transfer, isErc20Approve, fee, gasConfig }) => {
+      if (isDAG || isMetagraph) {
+        return await signDAGTransaction(decodedData as SignTransactionDataDAG, metagraphAsset, isMetagraph, fee);
       }
 
-      if (isEVMTransaction) {
-        throw new Error('EVM transactions not supported with Cypherock hardware wallet');
+      if (isEvmNative || isErc20Transfer || isErc20Approve) {
+        return await signEvmTransaction(decodedData as SignTransactionDataEVM, gasConfig);
       }
 
       throw new Error('Unsupported transaction type');

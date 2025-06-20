@@ -4,6 +4,15 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  .description {
+    color: rgba(30, 21, 50, 0.66);
+    word-break: break-word;
+
+    .descriptionStrong {
+      color: #1e1532;
+    }
+  }
 }
 
 .logo {

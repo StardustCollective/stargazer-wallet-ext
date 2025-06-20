@@ -1,83 +1,40 @@
-///////////////////////////
-// Components
-///////////////////////////
-
-import React, { useState } from 'react';
-import find from 'lodash/find';
-import { useHistory } from 'react-router-dom';
 import { useLinkTo } from '@react-navigation/native';
+import { ethers } from 'ethers';
+import find from 'lodash/find';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-
-///////////////////////////
-// Navigation
-///////////////////////////
-
-// import confirmHeader from 'navigation/headers/confirm';
-
-///////////////////////////
-// Components
-///////////////////////////
+import { useHistory } from 'react-router-dom';
 
 import Container, { CONTAINER_COLOR } from 'components/Container';
 
-///////////////////////////
-// Types
-///////////////////////////
+import { DEFAULT_LANGUAGE } from 'constants/index';
 
-import IVaultState, {
-  AssetType,
-  IWalletState,
-  IActiveAssetState,
-} from 'state/vault/types';
-import IAssetListState, { IAssetInfoState } from 'state/assets/types';
-import { ITransactionInfo } from 'scripts/types';
-
-///////////////////////////
-// Hooks
-///////////////////////////
-
-import { RootState } from 'state/store';
 import { useFiat } from 'hooks/usePrice';
 
-///////////////////////////
-// Utils
-///////////////////////////
-
-import {
-  getNativeToken,
-  getPriceId,
-} from 'scripts/Background/controllers/EVMChainController/utils';
-import { getAccountController } from 'utils/controllersUtils';
-import { usePlatformAlert } from 'utils/alertUtil';
-import { StargazerChain, StargazerRequestMessage, isError } from 'scripts/common';
-import { CHAIN_FULL_ASSET } from 'utils/assetsUtil';
-
-///////////////////////////
-// Selectors
-///////////////////////////
-
-import walletSelectors from 'selectors/walletsSelectors';
-
-///////////////////////////
-// Scene
-///////////////////////////
-
-///////////////////////////
-// Constants
-///////////////////////////
+import { getChainId, getNativeToken, getNetworkFromChainId, getNetworkIdFromChainId, getPriceId } from 'scripts/Background/controllers/EVMChainController/utils';
+import { StargazerExternalPopups } from 'scripts/Background/messaging';
+import { isError, StargazerChain, StargazerRequestMessage } from 'scripts/common';
+import { ITransactionInfo } from 'scripts/types';
 
 import { initialState as initialStateAssets } from 'state/assets';
-import { StargazerExternalPopups } from 'scripts/Background/messaging';
-import { DEFAULT_LANGUAGE } from 'constants/index';
-import Confirm from './Confirm';
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
+import { RootState } from 'state/store';
+import IVaultState, { AssetType, IActiveAssetState, IWalletState } from 'state/vault/types';
+
+import { usePlatformAlert } from 'utils/alertUtil';
+import { CHAIN_FULL_ASSET } from 'utils/assetsUtil';
+import { getAccountController } from 'utils/controllersUtils';
+import erc20 from 'utils/erc20.json';
 import { getHardwareWalletPage, isHardware } from 'utils/hardware';
+import { toDatum } from 'utils/number';
+
 import { ExternalRoute } from 'web/pages/External/types';
 
-export const DAG_SMALL_FEE = 0.002;
+import { SignTransactionDataDAG, SignTransactionDataEVM, TransactionType } from '../../../external/SignTransaction/types';
 
-///////////////////////////
-// Container
-///////////////////////////
+import Confirm from './Confirm';
+
+export const DAG_SMALL_FEE = 0.002;
 
 const ConfirmContainer = () => {
   const showAlert = usePlatformAlert();
@@ -86,12 +43,6 @@ const ConfirmContainer = () => {
 
   let activeAsset: IAssetInfoState | IActiveAssetState;
   let activeWallet: IWalletState;
-  const activeWalletPublicKey: any = useSelector(
-    walletSelectors.selectActiveAssetPublicKey
-  );
-  const activeWalletDeviceId: any = useSelector(
-    walletSelectors.selectActiveAssetDeviceId
-  );
   let history: any;
   let isExternalRequest: boolean;
   let isTransfer = false;
@@ -112,28 +63,20 @@ const ConfirmContainer = () => {
     const { data } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
       isTransfer: boolean;
     }>(location.href);
-    const { to, chain, metagraphAddress } = StargazerExternalPopups.decodeLocationParams(
-      location.href
-    );
+    const { to, chain, metagraphAddress } = StargazerExternalPopups.decodeLocationParams(location.href);
 
     isTransfer = data.isTransfer;
 
-    activeAsset = useSelector((state: RootState) =>
-      find(state.assets, { address: Array.isArray(to) ? to[0] : to })
-    ) as IAssetInfoState;
+    activeAsset = useSelector((state: RootState) => find(state.assets, { address: Array.isArray(to) ? to[0] : to })) as IAssetInfoState;
 
     if (!activeAsset) {
       if (!chain) {
         // Set ETH as the default activeAsset if 'chain' is not provided
-        activeAsset = useSelector((state: RootState) =>
-          find(state.assets, { id: AssetType.Ethereum })
-        ) as IAssetInfoState;
+        activeAsset = useSelector((state: RootState) => find(state.assets, { id: AssetType.Ethereum })) as IAssetInfoState;
       }
 
       if (chain === StargazerChain.CONSTELLATION && !!metagraphAddress) {
-        activeAsset = useSelector((state: RootState) =>
-          find(state.assets, { address: metagraphAddress as string })
-        ) as IAssetInfoState;
+        activeAsset = useSelector((state: RootState) => find(state.assets, { address: metagraphAddress as string })) as IAssetInfoState;
       } else {
         activeAsset = CHAIN_FULL_ASSET[chain as keyof typeof CHAIN_FULL_ASSET];
       }
@@ -156,12 +99,8 @@ const ConfirmContainer = () => {
 
   const getFiatAmount = useFiat(false, assetInfo);
 
-  const assetNetwork =
-    assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
-  const feeUnit =
-    assetInfo.type === AssetType.Constellation
-      ? assetInfo.symbol
-      : getNativeToken(assetNetwork);
+  const assetNetwork = assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
+  const feeUnit = assetInfo.type === AssetType.Constellation ? assetInfo.symbol : getNativeToken(assetNetwork);
 
   const tempTx = accountController.getTempTx();
   const [confirmed, setConfirmed] = useState(false);
@@ -169,9 +108,7 @@ const ConfirmContainer = () => {
   const isL0token = !!assetInfo?.l0endpoint;
 
   const getSendAmount = () => {
-    const fiatAmount = Number(
-      getFiatAmount(Number(tempTx?.amount || 0), 8, assetInfo.priceId)
-    );
+    const fiatAmount = Number(getFiatAmount(Number(tempTx?.amount || 0), 8, assetInfo.priceId));
 
     return fiatAmount.toLocaleString(DEFAULT_LANGUAGE, {
       minimumFractionDigits: 4,
@@ -226,23 +163,14 @@ const ConfirmContainer = () => {
   };
 
   const handleConfirm = async (
-    callbackSuccess: (
-      message: StargazerRequestMessage,
-      origin: string,
-      ...args: any[]
-    ) => void | null = null,
-    callbackError: (
-      message: StargazerRequestMessage,
-      origin: string,
-      ...args: any[]
-    ) => void | null = null
+    callbackSuccess: (message: StargazerRequestMessage, origin: string, ...args: any[]) => void | null = null,
+    callbackError: (message: StargazerRequestMessage, origin: string, ...args: any[]) => void | null = null
   ) => {
     setDisabled(true);
 
     try {
       if (isExternalRequest) {
-        const { message, origin } =
-          StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+        const { message, origin } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
         let trxHash: string;
         if (activeAsset.type === AssetType.Constellation) {
@@ -274,18 +202,72 @@ const ConfirmContainer = () => {
         const windowUrl = getHardwareWalletPage(activeWallet.type);
         const windowSize = { width: 1000, height: 1000 };
         const windowType = 'normal';
+        let data: SignTransactionDataDAG | SignTransactionDataEVM;
 
-        const data = {
-          from: tempTx.fromAddress,
-          to: tempTx.toAddress,
-          value: tempTx.amount,
-          fee: String(tempTx.fee),
-          cypherockId: activeWallet?.cypherockId,
-          publicKey: activeWalletPublicKey,
-          deviceId: activeWalletDeviceId,
-          bipIndex: activeWallet?.bipIndex,
-          assetId: activeAsset.id,
-        };
+        if (activeAsset.type === AssetType.Constellation) {
+          const transactionType = activeAsset.id === AssetType.Constellation ? TransactionType.DagNative : TransactionType.DagMetagraph;
+
+          const metagraphObject =
+            activeAsset.id === AssetType.Constellation
+              ? {}
+              : {
+                  metagraphAddress: assetInfo.address,
+                };
+
+          data = {
+            from: tempTx.fromAddress,
+            to: tempTx.toAddress,
+            value: toDatum(tempTx.amount),
+            fee: toDatum(tempTx.fee) ?? 0,
+
+            extras: {
+              chain: StargazerChain.CONSTELLATION,
+              type: transactionType,
+              ...metagraphObject,
+            },
+          } as SignTransactionDataDAG;
+        } else {
+          const chain = getNetworkIdFromChainId(assetInfo.network) as StargazerChain;
+          const network = getNetworkFromChainId(assetNetwork);
+          const activeChain = vault.activeNetwork[network as keyof typeof vault.activeNetwork];
+          const activeChainId = getChainId(activeChain);
+
+          if (activeAsset.type === AssetType.Ethereum) {
+            data = {
+              chainId: activeChainId,
+
+              from: tempTx.fromAddress,
+              to: tempTx.toAddress,
+              value: ethers.utils.parseEther(tempTx.amount).toString(),
+
+              extras: {
+                chain,
+                type: TransactionType.EvmNative,
+              },
+            };
+          }
+
+          if (activeAsset.type === AssetType.ERC20) {
+            const to = assetInfo.address;
+            const recipient = tempTx.toAddress;
+            const iface = new ethers.utils.Interface(erc20);
+            const amount = ethers.utils.parseUnits(tempTx.amount, assetInfo.decimals).toNumber();
+            const hexData = iface.encodeFunctionData('transfer', [recipient, amount]);
+
+            data = {
+              chainId: activeChainId,
+
+              from: tempTx.fromAddress,
+              to,
+              data: hexData,
+
+              extras: {
+                chain,
+                type: TransactionType.Erc20Transfer,
+              },
+            };
+          }
+        }
 
         StargazerExternalPopups.executePopup({
           params: {
@@ -304,10 +286,7 @@ const ConfirmContainer = () => {
       }
     } catch (e) {
       if (isError(e)) {
-        if (
-          e.message.includes('insufficient funds') &&
-          [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)
-        ) {
+        if (e.message.includes('insufficient funds') && [AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
           e.message = 'Insufficient funds to cover gas fee.';
         }
 
@@ -315,10 +294,7 @@ const ConfirmContainer = () => {
           e.message = 'An address cannot send a transaction to itself';
         }
 
-        if (
-          e.message.includes('TransactionLimited') &&
-          assetInfo?.type === AssetType.Constellation
-        ) {
+        if (e.message.includes('TransactionLimited') && assetInfo?.type === AssetType.Constellation) {
           setIsModalVisible(true);
         } else {
           showAlert(e.message, 'danger');
@@ -328,8 +304,7 @@ const ConfirmContainer = () => {
         if (!location?.href) return;
 
         if (isExternalRequest) {
-          const { message, origin } =
-            StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+          const { message, origin } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
 
           if (callbackError) {
             callbackError(message, origin, e.message);

@@ -14,21 +14,18 @@ import Card from 'scenes/external/components/Card/Card';
 import CardRow from 'scenes/external/components/CardRow/CardRow';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 
-import { getNativeToken } from 'scripts/Background/controllers/EVMChainController/utils';
-
 import walletsSelectors from 'selectors/walletsSelectors';
 
 import type { IAssetInfoState } from 'state/assets/types';
-import { AssetType } from 'state/vault/types';
 
 import type { HardwareWalletType } from 'utils/hardware';
 import { formatBigNumberForDisplay, toDag } from 'utils/number';
 
 import styles from './styles.scss';
 
-export interface ISignTransactionProps {
+export interface ISignDagTransactionProps {
   title: string;
-  asset: IAssetInfoState;
+  asset: IAssetInfoState | null;
   amount: number | string;
   fee: string;
   from: string;
@@ -36,6 +33,7 @@ export interface ISignTransactionProps {
   footer?: string;
   origin?: string;
   containerStyles?: string;
+  isLoading?: boolean;
   setFee: (fee: string) => void;
   onSign: () => Promise<void>;
   onReject: () => Promise<void>;
@@ -46,54 +44,46 @@ const WALLET_LOGO: Record<HardwareWalletType, string | JSX.Element> = {
   [KeyringWalletType.BitfiAccountWallet]: '/assets/images/bitfi_logo.png',
 };
 
-const SignTransactionView = ({ title, asset, amount, fee, origin, from, to, footer, containerStyles, setFee, onSign, onReject }: ISignTransactionProps) => {
-  const { current, activeWallet, constellationNetwork, evmNetwork } = useExternalViewData();
+export const SignDagTransactionView = ({ title, asset, amount, fee, origin, from, to, footer, containerStyles, isLoading, setFee, onSign, onReject }: ISignDagTransactionProps) => {
+  const { current, activeWallet, constellationNetwork } = useExternalViewData();
   const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
-  const network = asset.type === AssetType.Constellation ? constellationNetwork : evmNetwork;
 
-  const calculateTotal = (amountValue: number | string, feeValue: string): { amountNumber: number; feeNumber: number; totalNumber: number } => {
-    if (asset.type === AssetType.Constellation) {
-      const amountInDag = toDag(amountValue);
-      const feeInDag = Number(feeValue);
-      const totalInDag = amountInDag + feeInDag;
+  // DAG-specific calculations (always in DAG/DATUM)
+  const amountInDag = toDag(amount);
+  const feeInDag = Number(fee);
+  const totalInDag = amountInDag + feeInDag;
 
-      return { amountNumber: amountInDag, feeNumber: feeInDag, totalNumber: totalInDag };
-    }
-
-    return { amountNumber: Number(amount), feeNumber: Number(feeValue), totalNumber: Number(amount) + Number(feeValue) };
-  };
-
-  // Calculate the max total amount in fiat
+  // Get fiat amounts for display
   const getFiatAmount = useFiat(true, asset);
-  const { amountNumber, feeNumber, totalNumber } = calculateTotal(amount, fee);
 
   // Format the amount and fee values
-  const amountValue = formatBigNumberForDisplay(amountNumber);
-  const feeValue = formatBigNumberForDisplay(feeNumber);
-
-  const feeSymbol = asset.type === AssetType.Constellation ? asset.symbol : getNativeToken(asset.network);
+  const amountValue = formatBigNumberForDisplay(amountInDag);
+  const feeValue = formatBigNumberForDisplay(feeInDag);
 
   const amountString = `${amountValue} ${asset.symbol}`;
-  const feeString = `${feeValue} ${feeSymbol}`;
+  const feeString = `${feeValue} ${asset.symbol}`;
 
   const fromDapp = origin !== 'stargazer-wallet';
   const subtitle = fromDapp ? current.origin : null;
   const logo = fromDapp ? current.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
 
+  // For DAG transactions, show fiat value if available
   const assetWithPrice = 'priceId' in asset;
   const totalLabel = assetWithPrice ? 'Max Total:' : 'Total:';
-  const totalValue = assetWithPrice ? getFiatAmount(totalNumber, 2) : `${formatBigNumberForDisplay(totalNumber)} ${feeSymbol}`;
+  const totalValue = assetWithPrice ? getFiatAmount(totalInDag, 2) : `${formatBigNumberForDisplay(totalInDag)} ${asset.symbol}`;
 
-  const recommendedFee = asset.type === AssetType.Constellation ? '0' : '0';
+  const recommendedFee = '0'; // Default DAG fee
+
+  const tokenValue = { logo: asset.logo, symbol: asset.symbol };
 
   return (
     <CardLayoutV3
       fee={{
         show: true,
-        defaultValue: feeNumber.toString(),
+        defaultValue: feeInDag.toString(),
         value: fee,
         recommended: recommendedFee,
-        symbol: feeSymbol,
+        symbol: asset.symbol,
         disabled: false,
         setFee,
       }}
@@ -104,16 +94,18 @@ const SignTransactionView = ({ title, asset, amount, fee, origin, from, to, foot
       negativeButtonLabel="Reject"
       onPositiveButtonClick={onSign}
       positiveButtonLabel="Sign"
+      isPositiveButtonLoading={isLoading}
+      isPositiveButtonDisabled={isLoading}
       containerStyles={containerStyles}
     >
       <div className={styles.container}>
         <Card>
           <CardRow label="Account:" value={activeWallet?.label} />
-          <CardRow label="Network:" value={network} />
+          <CardRow label="Network:" value={constellationNetwork} />
           {!!deviceId && <CardRow label="Device ID:" value={deviceId} />}
         </Card>
         <Card>
-          <CardRow.Token label="Token:" value={asset} />
+          <CardRow.Token label="Token:" value={tokenValue} />
           <CardRow label="Amount:" value={amountString} />
           <CardRow label="Transaction fee:" value={feeString} />
         </Card>
@@ -133,5 +125,3 @@ const SignTransactionView = ({ title, asset, amount, fee, origin, from, to, foot
     </CardLayoutV3>
   );
 };
-
-export default SignTransactionView;

@@ -25,17 +25,17 @@ const SignView = ({ waiting, code, waitingMessage, transactionSigned, onSignPres
   const bitfiSigningConfig: SignTransactionProviderConfig = {
     title: 'Bitfi - Sign Transaction',
     footer: 'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
-    onSignTransaction: async ({ decodedData, isDAGTransaction, isMetagraphTransaction, isEVMTransaction, fee }) => {
-      if (isDAGTransaction) {
+    onSignTransaction: async ({ decodedData, isDAG, isMetagraph, isEvmNative, fee }) => {
+      if (isDAG) {
         const { value, from, to } = decodedData;
         await onSignPress(deviceId, value, from, to, fee);
       }
 
-      if (isMetagraphTransaction) {
+      if (isMetagraph) {
         throw new Error('Metagraph transactions not supported with Bitfi hardware wallet');
       }
 
-      if (isEVMTransaction) {
+      if (isEvmNative) {
         throw new Error('EVM transactions not supported with Bitfi hardware wallet');
       }
 

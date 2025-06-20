@@ -1,1 +1,1 @@
-export { default } from './sign-dag-transaction';
+export { default } from './sign-transaction';

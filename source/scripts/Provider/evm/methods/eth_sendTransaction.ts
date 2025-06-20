@@ -1,112 +1,114 @@
-import { InputData as ContractInputData } from 'ethereum-input-data-decoder';
-import {
-  EIPErrorCodes,
-  EIPRpcError,
-  StargazerRequest,
-  StargazerRequestMessage,
-} from 'scripts/common';
-import { ALL_EVM_CHAINS } from 'constants/index';
-import { getERC20DataDecoder } from 'utils/ethUtil';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { getChainId, getNetworkId, getNetworkInfo, getWalletInfo } from '../utils';
-import { BigNumber } from 'ethers';
-import StargazerRpcProvider from '../StargazerRpcProvider';
-import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
-import { ExternalRoute } from 'web/pages/External/types';
-import { EthSendTransaction } from '../utils/types';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import { ethers } from 'ethers';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError, StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
 import { validateHardwareMethod } from 'utils/hardware';
 
-const calculateTransferAmount = async (
-  amount: BigNumber,
-  contractAddress: string
-): Promise<number> => {
-  // Fetch contract info to get the decimals
-  const networkInfo = getNetworkInfo();
-  const provider = new StargazerRpcProvider(networkInfo.rpcEndpoint);
-  const contractInfo = await tokenContractHelper.getTokenInfo(provider, contractAddress);
-  const decimals = contractInfo?.decimals || 18;
+import { getChainId, getNetworkId, getWalletInfo, WINDOW_TYPES } from '../utils';
+import { defaultTransactionHandlerRegistry, type EthSendTransaction, type TransactionHandlerResult, validateHexFields } from '../utils/handlers';
 
-  // Calculate the value based on the decimals
-  return Number(amount.toString()) / 10 ** decimals;
+/**
+ * Validates that the provided chainId matches the currently active network
+ */
+const validateChainId = (chain: string | number) => {
+  const chainId = getChainId();
+  if (!chain) return chainId;
+
+  if (typeof chain === 'number') {
+    if (chain !== chainId) {
+      throw new EIPRpcError('chainId does not match the active network chainId', EIPErrorCodes.ChainDisconnected);
+    }
+  }
+
+  if (typeof chain === 'string') {
+    const radix = chain.startsWith('0x') ? 16 : 10;
+    if (parseInt(chain, radix) !== chainId) {
+      throw new EIPRpcError('chainId does not match the active network chainId', EIPErrorCodes.ChainDisconnected);
+    }
+  }
+
+  return chainId;
 };
 
-export const eth_sendTransaction = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
-  const [trxData] = request.params as [EthSendTransaction];
-
-  let decodedContractCall: ContractInputData | null = null;
-
-  let route = ExternalRoute.SignTransaction;
-  let isTransfer = false;
-
-  // chainId should match the current active network if chainId property is provided.
-  if (trxData?.chainId) {
-    const chainId = getChainId();
-
-    if (typeof trxData.chainId === 'number') {
-      if (trxData.chainId !== chainId) {
-        throw new EIPRpcError(
-          'chainId does not match the active network chainId',
-          EIPErrorCodes.ChainDisconnected
-        );
-      }
-    }
-
-    if (typeof trxData.chainId === 'string') {
-      if (parseInt(trxData.chainId) !== chainId) {
-        throw new EIPRpcError(
-          'chainId does not match the active network chainId',
-          EIPErrorCodes.ChainDisconnected
-        );
-      }
-    }
-  }
-
-  try {
-    decodedContractCall =
-      typeof trxData.data === 'string'
-        ? getERC20DataDecoder().decodeData(trxData.data)
-        : null;
-  } catch (e) {
-    console.log('EVMProvider:eth_sendTransaction', e);
-  }
-
-  const chainLabel = Object.values(ALL_EVM_CHAINS).find(
-    (chain: any) => chain.chainId === getChainId()
-  )?.label;
-
-  if (decodedContractCall?.method === 'approve') {
-    route = ExternalRoute.ApproveSpend;
-  } else if (decodedContractCall?.method === 'transfer') {
-    isTransfer = true;
-
-    if (!decodedContractCall?.inputs?.length || decodedContractCall?.inputs?.length < 2) {
-      throw new EIPRpcError('Invalid transfer method call', EIPErrorCodes.Rejected);
-    }
-
-    // Get the amount from the decoded contract call
-    const amount = decodedContractCall.inputs[1] as BigNumber;
-    const contractAddress = trxData.to;
-
-    // Assign the value to the trxData object
-    trxData.value = await calculateTransferAmount(amount, contractAddress);
-  }
-
-  const data = { ...trxData, isTransfer, chain: getNetworkId(), chainLabel };
-
+/**
+ * Main EVM transaction handler that processes eth_sendTransaction requests
+ * Delegates to specific transaction type handlers based on transaction content
+ */
+export const eth_sendTransaction = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+  // Get wallet info and validate wallet state
   const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
+  if (!activeWallet) {
+    throw new Error('There is no active wallet');
+  }
+
+  // Ensure we have an Ethereum account for EVM transactions
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Ethereum);
+
+  if (!assetAccount) {
+    throw new Error('No active account for the request asset type');
+  }
+
+  // Extract transaction data from request
+  const [transactionData] = request.params as [EthSendTransaction];
+
+  if (!transactionData) {
+    throw new EIPRpcError('Transaction data is required', EIPErrorCodes.Rejected);
+  }
+
+  // Validate sender address
+  if (!transactionData.from || !ethers.utils.isAddress(transactionData.from)) {
+    throw new EIPRpcError('Invalid sender address', EIPErrorCodes.Rejected);
+  }
+
+  // Validate sender matches active account
+  if (transactionData.from.toLowerCase() !== assetAccount.address.toLowerCase()) {
+    throw new EIPRpcError('The active account is invalid', EIPErrorCodes.Rejected);
+  }
+
+  // Validate hex string fields before further processing
+  validateHexFields(transactionData);
+
+  // Validate chainId if provided
+  const chainId = validateChainId(transactionData.chainId);
+
+  // Validate hardware wallet compatibility
   validateHardwareMethod(activeWallet.type, request.method);
 
+  // Get current chain information
+  const chain = getNetworkId() as StargazerChain;
+
+  let handlerResult: TransactionHandlerResult;
+
+  try {
+    // Delegate to the appropriate transaction handler
+    handlerResult = await defaultTransactionHandlerRegistry.handleTransaction(transactionData, chain);
+  } catch (error) {
+    console.error('Transaction handler error:', error);
+
+    // Re-throw EIPRpcError as-is, wrap other errors
+    if (error instanceof EIPRpcError) {
+      throw error;
+    }
+
+    throw new EIPRpcError(error instanceof Error ? error.message : 'Failed to process transaction', EIPErrorCodes.Rejected);
+  }
+
+  const { data: signTransactionData, route } = handlerResult;
+
+  if (windowType === WINDOW_TYPES.popup) {
+    windowSize.height = 780;
+  }
+
+  // Always send the chainId in the transaction
+  const data = { ...signTransactionData, chainId };
+
+  // Launch the appropriate external popup for user interaction
   await StargazerExternalPopups.executePopup({
     params: {
-      data: data,
+      data,
       message,
       origin: sender.origin,
       route,
@@ -116,5 +118,6 @@ export const eth_sendTransaction = async (
     url: windowUrl,
   });
 
+  // Return the no-response indicator as this is handled by the popup
   return StargazerWSMessageBroker.NoResponseEmitted;
 };
