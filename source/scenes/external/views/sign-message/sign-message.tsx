@@ -11,6 +11,7 @@ import Card from 'scenes/external/components/Card/Card';
 import CardRow from 'scenes/external/components/CardRow/CardRow';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 
+import { type WalletParam } from 'scripts/Background/messaging';
 import type { StargazerSignatureRequest } from 'scripts/Provider/constellation';
 
 import walletsSelectors from 'selectors/walletsSelectors';
@@ -19,17 +20,16 @@ import styles from './styles.scss';
 
 export interface ISignMessageProps {
   title: string;
-  isDagSignature: boolean;
+  wallet: WalletParam;
   message: StargazerSignatureRequest;
   footer?: string;
   onSign: () => Promise<void>;
   onReject: () => void;
 }
 
-const SignMessageView = ({ title, message, isDagSignature, footer, onSign, onReject }: ISignMessageProps) => {
-  const { current, activeWallet, constellationNetwork, evmNetwork } = useExternalViewData();
+const SignMessageView = ({ title, message, wallet, footer, onSign, onReject }: ISignMessageProps) => {
+  const { current, activeWallet, networkLabel, accountChanged } = useExternalViewData(wallet);
   const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
-  const network = isDagSignature ? constellationNetwork : evmNetwork;
 
   let parsedMetadata: any = null;
 
@@ -44,11 +44,11 @@ const SignMessageView = ({ title, message, isDagSignature, footer, onSign, onRej
   }
 
   return (
-    <CardLayoutV3 logo={current.logo} title={title} subtitle={current.origin} onNegativeButtonClick={onReject} negativeButtonLabel="Reject" onPositiveButtonClick={onSign} positiveButtonLabel="Sign">
+    <CardLayoutV3 logo={current.logo} title={title} subtitle={current.origin} onNegativeButtonClick={onReject} negativeButtonLabel="Reject" onPositiveButtonClick={onSign} positiveButtonLabel="Sign" isPositiveButtonDisabled={accountChanged}>
       <div className={styles.container}>
         <Card>
-          <CardRow label="Account:" value={activeWallet?.label} />
-          <CardRow label="Network:" value={network} />
+          <CardRow label="Account:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />
+          <CardRow label="Network:" value={networkLabel} />
           {!!deviceId && <CardRow label="Device ID:" value={deviceId} />}
         </Card>
         <Card>

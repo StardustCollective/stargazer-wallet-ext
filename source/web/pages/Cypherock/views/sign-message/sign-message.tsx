@@ -6,7 +6,7 @@ import { useSignMessage } from 'hooks/external/useSignMessage';
 
 import SignMessageContainer, { SignMessageProviderConfig } from 'scenes/external/SignMessage/SignMessageContainer';
 
-import { StargazerRequestMessage } from 'scripts/common';
+import { StargazerChain, StargazerRequestMessage } from 'scripts/common';
 
 import walletsSelectors from 'selectors/walletsSelectors';
 
@@ -64,15 +64,16 @@ const SignMsgView = ({ service, changeState, handleSuccessResponse, handleErrorR
   const cypherockSigningConfig: SignMessageProviderConfig = {
     title: 'Cypherock - Sign Message',
     footer: 'Only sign messages on sites you trust.',
-    onSign: async ({ payload, parsedPayload, isDagSignature }) => {
+    onSign: async ({ payload, parsedPayload, wallet }) => {
       if (!cypherockId) {
         throw new CypherockError('Wallet id not found', ErrorCode.UNKNOWN);
       }
 
+      const isDag = wallet.chain === StargazerChain.CONSTELLATION;
       const walletId = decodeArrayFromBase64(cypherockId);
 
-      const message = isDagSignature ? payload : stringToHex(parsedPayload.content);
-      const signMessage = isDagSignature ? signDagMessage : signEthMessage;
+      const message = isDag ? payload : stringToHex(parsedPayload.content);
+      const signMessage = isDag ? signDagMessage : signEthMessage;
 
       changeState(WalletState.VerifyTransaction);
 

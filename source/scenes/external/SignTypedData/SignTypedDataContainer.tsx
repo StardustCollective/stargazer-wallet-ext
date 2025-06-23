@@ -5,6 +5,7 @@ import { useSignTypedData, UseSignTypedDataReturn } from 'hooks/external/useSign
 
 import SignTypedDataView, { ISignTypedDataProps } from 'scenes/external/views/sign-typed-data';
 
+import { WalletParam } from 'scripts/Background/messaging';
 import type { MessagePayload, SignTypedDataParams } from 'scripts/Provider/evm';
 
 import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
@@ -12,7 +13,7 @@ import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequest
 export interface SignTypedDataProviderConfig {
   title: string;
   footer?: string;
-  onSign: (data: { parsedPayload: MessagePayload }) => Promise<string>;
+  onSign: (data: { parsedPayload: MessagePayload; wallet: WalletParam }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (signature: string) => void;
 }
@@ -25,9 +26,10 @@ type SignTypedDataContainerProps = SignTypedDataParams & UseSignTypedDataReturn 
 const SignTypedDataContainer: React.FC<SignTypedDataProviderConfig> = ({ title, footer = 'Only sign messages on sites you trust.', onSign, onError, onSuccess }) => {
   // Extract onAction function
   const handleSignTypedDataAction = async (hookData: UseSignTypedDataReturn): Promise<string> => {
-    const { parsedPayload } = hookData;
+    const { parsedPayload, wallet } = hookData;
     return await onSign({
       parsedPayload,
+      wallet,
     });
   };
 
@@ -47,10 +49,11 @@ const SignTypedDataContainer: React.FC<SignTypedDataProviderConfig> = ({ title, 
 
   // Extract render function with proper typing
   const renderSignTypedDataView = (props: SignTypedDataContainerProps): JSX.Element => {
-    const { title: propsTitle, footer: propsFooter, parsedPayload, onAction, onReject } = props;
+    const { title: propsTitle, footer: propsFooter, parsedPayload, onAction, onReject, wallet } = props;
 
     const signTypedDataProps: ISignTypedDataProps = {
       title: propsTitle,
+      wallet,
       typedData: parsedPayload,
       footer: propsFooter,
       onSign: onAction,

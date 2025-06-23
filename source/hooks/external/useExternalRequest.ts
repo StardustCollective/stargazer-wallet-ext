@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerExternalPopups, StargazerWSMessageBroker, WalletParam } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
 
 export interface ExternalRequestData<T = any> {
@@ -8,6 +8,7 @@ export interface ExternalRequestData<T = any> {
   decodedData: T;
   origin: string;
   route: string;
+  wallet?: WalletParam;
   resolved: boolean;
 }
 
@@ -29,6 +30,7 @@ export const useExternalRequest = <T = any>(operationName?: string): UseExternal
     message: requestMessage,
     data: decodedData,
     origin,
+    wallet,
     route,
     resolved,
   } = useMemo(() => {
@@ -69,6 +71,7 @@ export const useExternalRequest = <T = any>(operationName?: string): UseExternal
     decodedData,
     origin,
     route,
+    wallet,
     resolved,
     handleReject,
     handleSuccess,

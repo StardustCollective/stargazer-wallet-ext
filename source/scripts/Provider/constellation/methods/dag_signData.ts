@@ -2,7 +2,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import type { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
 
@@ -27,7 +27,7 @@ export const dag_signData = async (request: StargazerRequest & { type: 'rpc' }, 
     throw new Error('No active account for the request asset type');
   }
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method });
 
   const [address, payload] = request.params as [string, string];
 
@@ -62,6 +62,10 @@ export const dag_signData = async (request: StargazerRequest & { type: 'rpc' }, 
       message,
       origin: sender.origin,
       route: ExternalRoute.SignData,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        address,
+      },
     },
     size: windowSize,
     type: windowType,

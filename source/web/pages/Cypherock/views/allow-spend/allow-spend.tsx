@@ -3,11 +3,14 @@ import type { GlobalDagNetwork, MetagraphTokenNetwork, SignedAllowSpend } from '
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { DAG_NETWORK } from 'constants/index';
+
 import { useAllowSpend } from 'hooks/external/useAllowSpend';
 
 import AllowSpendContainer, { AllowSpendProviderConfig } from 'scenes/external/AllowSpend/AllowSpendContainer';
 
 import type { StargazerRequestMessage } from 'scripts/common';
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
 import type { AllowSpendData } from 'scripts/Provider/constellation';
 
 import walletsSelectors from 'selectors/walletsSelectors';
@@ -100,7 +103,24 @@ const AllowSpendView = ({ service, changeState, handleSuccessResponse, handleErr
 
   const cypherockAllowSpendConfig: AllowSpendProviderConfig = {
     title: 'Cypherock - Allow Spend',
-    onAllowSpend: async ({ decodedData, asset, fee }) => {
+    onAllowSpend: async ({ decodedData, asset, fee, wallet }) => {
+      const isDag = wallet.chain === StargazerChain.CONSTELLATION;
+      const addressMatch = dag4.account.address.toLowerCase() === wallet.address.toLowerCase();
+      const networkInfo = dag4.network.getNetwork();
+      const chainMatch = DAG_NETWORK[networkInfo.id].chainId === wallet.chainId;
+
+      if (!isDag) {
+        throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+      }
+
+      if (!addressMatch) {
+        throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      if (!chainMatch) {
+        throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+      }
+
       changeState(WalletState.VerifyTransaction);
 
       return await sendAllowSpendTransaction(decodedData, asset, fee);

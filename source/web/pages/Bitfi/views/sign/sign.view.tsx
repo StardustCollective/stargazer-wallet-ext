@@ -2,10 +2,15 @@ import 'assets/styles/global.scss';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
+import { dag4 } from '@stardust-collective/dag4';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { DAG_NETWORK } from 'constants/index';
+
 import SignTransactionContainer, { SignTransactionProviderConfig } from 'scenes/external/SignTransaction/SignTransactionContainer';
+
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
 
 import walletsSelectors from 'selectors/walletsSelectors';
 
@@ -20,32 +25,47 @@ interface ISignViewProps {
 }
 
 const SignView = ({ waiting, code, waitingMessage, transactionSigned, onSignPress }: ISignViewProps) => {
+  const dagAddress = useSelector(walletsSelectors.selectActiveWalletDagAddress);
   const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
 
   const bitfiSigningConfig: SignTransactionProviderConfig = {
     title: 'Bitfi - Sign Transaction',
     footer: 'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
-    onSignTransaction: async ({ decodedData, isDAG, isMetagraph, isEvmNative, fee }) => {
+    onSignTransaction: async ({ decodedData, isDAG, isMetagraph, isEvmNative, fee, wallet }) => {
       if (isDAG) {
+        const { address, chainId, chain } = wallet;
+        const networkInfo = dag4.account.networkInstance.getNetwork();
+
+        if (chain !== StargazerChain.CONSTELLATION) {
+          throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+        }
+
+        if (dagAddress.toLowerCase() !== address.toLowerCase()) {
+          throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+        }
+
+        if (chainId !== DAG_NETWORK[networkInfo.id].chainId) {
+          throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+        }
         const { value, from, to } = decodedData.transaction;
         await onSignPress(deviceId, value, from, to, fee);
       }
 
       if (isMetagraph) {
-        throw new Error('Metagraph transactions not supported with Bitfi hardware wallet');
+        throw new EIPRpcError('Metagraph transactions not supported with Bitfi hardware wallet', EIPErrorCodes.Unsupported);
       }
 
       if (isEvmNative) {
-        throw new Error('EVM transactions not supported with Bitfi hardware wallet');
+        throw new EIPRpcError('EVM transactions not supported with Bitfi hardware wallet', EIPErrorCodes.Unsupported);
       }
 
-      throw new Error('Unsupported transaction type');
+      throw new EIPRpcError('Unsupported transaction type', EIPErrorCodes.Unsupported);
     },
-    onSuccess: async txHash => {
-      console.log('hash', txHash);
+    onSuccess: async () => {
+      // Success is handled by the parent component
     },
-    onError: async error => {
-      console.log('error', error);
+    onError: async () => {
+      // Error is handled by the parent component
     },
   };
 

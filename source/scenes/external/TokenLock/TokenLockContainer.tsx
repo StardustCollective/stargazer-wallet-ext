@@ -5,6 +5,7 @@ import { useTokenLock, UseTokenLockReturn } from 'hooks/external/useTokenLock';
 
 import TokenLockView, { ITokenLockProps } from 'scenes/external/views/token-lock';
 
+import { WalletParam } from 'scripts/Background/messaging';
 import type { TokenLockDataParam } from 'scripts/Provider/constellation';
 
 import { IAssetInfoState } from 'state/assets/types';
@@ -14,7 +15,7 @@ import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequest
 export interface TokenLockProviderConfig {
   title: string;
   isLoading?: boolean;
-  onTokenLock: (data: { decodedData: TokenLockDataParam; asset: IAssetInfoState }) => Promise<string>;
+  onTokenLock: (data: { decodedData: TokenLockDataParam; asset: IAssetInfoState; wallet: WalletParam }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (txHash: string) => void;
 }
@@ -28,8 +29,8 @@ type TokenLockContainerProps = TokenLockDataParam & UseTokenLockReturn & BaseCon
 const TokenLockContainer: React.FC<TokenLockProviderConfig> = ({ title, onTokenLock, onError, onSuccess, isLoading = false }) => {
   // Extract onAction function
   const handleTokenLockAction = async (hookData: UseTokenLockReturn): Promise<string> => {
-    const { decodedData, asset } = hookData;
-    return await onTokenLock({ decodedData, asset });
+    const { decodedData, asset, wallet } = hookData;
+    return await onTokenLock({ decodedData, asset, wallet });
   };
 
   // Extract validation function
@@ -42,10 +43,11 @@ const TokenLockContainer: React.FC<TokenLockProviderConfig> = ({ title, onTokenL
 
   // Extract render function with proper typing
   const renderTokenLockView = (props: TokenLockContainerProps): JSX.Element => {
-    const { title: propsTitle, amount, unlockEpoch, latestEpoch, isLoading: propsIsLoading, asset, onAction, onReject } = props;
+    const { title: propsTitle, amount, unlockEpoch, latestEpoch, isLoading: propsIsLoading, asset, onAction, onReject, wallet } = props;
 
     const tokenLockProps: ITokenLockProps = {
       title: propsTitle,
+      wallet,
       asset,
       amount,
       unlockEpoch,

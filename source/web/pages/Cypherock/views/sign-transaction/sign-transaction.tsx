@@ -4,8 +4,10 @@ import { dag4 } from '@stardust-collective/dag4';
 import type { PostTransactionV2 } from '@stardust-collective/dag4-keystore';
 import type { GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
 import { ethers } from 'ethers';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { DAG_NETWORK } from 'constants/index';
 
 import { useSignTransaction } from 'hooks/external/useSignTransaction';
 
@@ -13,7 +15,7 @@ import SignTransactionContainer, { SignTransactionProviderConfig } from 'scenes/
 import { SignTransactionDataDAG, SignTransactionDataEVM, TransactionType } from 'scenes/external/SignTransaction/types';
 
 import EVMChainController from 'scripts/Background/controllers/EVMChainController';
-import { EIPErrorCodes, EIPRpcError, type StargazerRequestMessage } from 'scripts/common';
+import { EIPErrorCodes, EIPRpcError, StargazerChain, type StargazerRequestMessage } from 'scripts/common';
 
 import walletsSelectors from 'selectors/walletsSelectors';
 
@@ -37,7 +39,10 @@ interface ISignTransactionProps {
 
 const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: ISignTransactionProps) => {
   const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
+  const dagAddress = useSelector(walletsSelectors.selectActiveWalletDagAddress);
+  const ethAddress = useSelector(walletsSelectors.selectActiveWalletEthAddress);
   const { requestMessage } = useSignTransaction();
+  const [loading, setLoading] = useState(false);
 
   const signDAGTransaction = async (data: SignTransactionDataDAG, asset: IAssetInfoState, isMetagraphTransaction: boolean, fee: string): Promise<string> => {
     const { from, to, value: amount } = data.transaction;
@@ -114,30 +119,28 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
     return txHash;
   };
 
-  const signEvmTransaction = async (data: SignTransactionDataEVM, gasConfig: { gasPrice: string; gasLimit: string }): Promise<string> => {
+  const signEvmTransaction = async (chainController: EVMChainController, data: SignTransactionDataEVM, gasConfig: { gasPrice: string; gasLimit: string }): Promise<string> => {
     if (!cypherockId) {
       throw new CypherockError('No wallet id found', ErrorCode.UNKNOWN);
     }
+    const { transaction, type } = data;
 
-    if (!data?.extras?.type) {
+    if (!type) {
       throw new EIPRpcError('Unable to get transaction type.', EIPErrorCodes.Rejected);
     }
-    const { transaction, extras } = data;
 
-    const { type } = extras;
     const walletId = decodeArrayFromBase64(cypherockId);
 
     const defaultGasLimit = ethers.utils.hexlify(Number(gasConfig.gasLimit));
     const defaultGasPrice = ethers.utils.parseUnits(gasConfig.gasPrice, 'gwei');
 
-    const chainController = new EVMChainController({ chain: transaction.chainId });
     const nonce = await chainController.getNonce(transaction.from);
 
     const isNative = type === TransactionType.EvmNative;
     // data param must be 0x for native transactions
     const dataParam = isNative ? '0x' : transaction.data;
     // value param must be 0 for erc-20 transactions
-    const valueParam = isNative ? transaction.value : '0';
+    const valueParam = isNative ? transaction.value : '0x0';
 
     const txn: UnsignedTransaction = {
       chainId: transaction.chainId,
@@ -173,13 +176,52 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
   const cypherockSigningConfig: SignTransactionProviderConfig = {
     title: 'Cypherock - Sign Transaction',
     footer: 'Only sign transactions on sites you trust.',
-    onSignTransaction: async ({ metagraphAsset, decodedData, isDAG, isMetagraph, isEvmNative, isErc20Transfer, isErc20Approve, fee, gasConfig }) => {
+    isLoading: loading,
+    onSignTransaction: async ({ metagraphAsset, decodedData, isDAG, isMetagraph, isEvmNative, isErc20Transfer, isErc20Approve, isContractInteraction, fee, gasConfig, wallet }) => {
+      setLoading(true);
+      // Validation logic based on transaction type
       if (isDAG || isMetagraph) {
+        // DAG transaction validation
+        const isDAGChain = wallet.chain === StargazerChain.CONSTELLATION;
+        const addressMatch = dagAddress.toLowerCase() === wallet.address.toLowerCase();
+        const networkInfo = dag4.network.getNetwork();
+        const networkMatch = wallet.chainId === DAG_NETWORK[networkInfo.id].chainId;
+
+        if (!isDAGChain) {
+          throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+        }
+
+        if (!addressMatch) {
+          throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+        }
+
+        if (!networkMatch) {
+          throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+        }
+
         return await signDAGTransaction(decodedData as SignTransactionDataDAG, metagraphAsset, isMetagraph, fee);
       }
 
-      if (isEvmNative || isErc20Transfer || isErc20Approve) {
-        return await signEvmTransaction(decodedData as SignTransactionDataEVM, gasConfig);
+      if (isEvmNative || isErc20Transfer || isErc20Approve || isContractInteraction) {
+        // EVM transaction validation
+        const isEVM = wallet.chain !== StargazerChain.CONSTELLATION;
+        const addressMatch = ethAddress.toLowerCase() === wallet.address.toLowerCase();
+        const chainController = new EVMChainController({ chain: decodedData.transaction.chainId });
+        const chainIdMatch = wallet.chainId === chainController.getNetwork().chainId;
+
+        if (!isEVM) {
+          throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+        }
+
+        if (!addressMatch) {
+          throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+        }
+
+        if (!chainIdMatch) {
+          throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+        }
+
+        return await signEvmTransaction(chainController, decodedData as SignTransactionDataEVM, gasConfig);
       }
 
       throw new Error('Unsupported transaction type');

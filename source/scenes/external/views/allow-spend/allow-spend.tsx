@@ -8,6 +8,8 @@ import Card from 'scenes/external/components/Card';
 import CardRow from 'scenes/external/components/CardRow';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 
+import { WalletParam } from 'scripts/Background/messaging';
+
 import { IAssetInfoState } from 'state/assets/types';
 
 import { differenceBetweenEpochs } from 'utils/epochs';
@@ -48,6 +50,7 @@ const renderAllowSpendMessage = (amount: string, spenderInfo: any, spenderAddres
 
 export interface IAllowSpendProps {
   title: string;
+  wallet: WalletParam;
   asset: IAssetInfoState;
   amount: number;
   destination: string;
@@ -71,8 +74,8 @@ export interface IAllowSpendProps {
   onReject: () => Promise<void>;
 }
 
-const AllowSpendView = ({ title, amount: amountInDatum, destination, destinationInfo, spenderInfo, approvers, validUntilEpoch, latestEpoch, fee, setFee, isLoading, asset, onSign, onReject }: IAllowSpendProps) => {
-  const { current, activeWallet, constellationNetwork } = useExternalViewData();
+const AllowSpendView = ({ title, wallet, amount: amountInDatum, destination, destinationInfo, spenderInfo, approvers, validUntilEpoch, latestEpoch, fee, setFee, isLoading, asset, onSign, onReject }: IAllowSpendProps) => {
+  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const amount = formatBigNumberForDisplay(toDag(amountInDatum));
   const spenderAddress = approvers[0];
 
@@ -98,13 +101,14 @@ const AllowSpendView = ({ title, amount: amountInDatum, destination, destination
         setFee,
       }}
       isPositiveButtonLoading={isLoading}
+      isPositiveButtonDisabled={accountChanged || networkChanged}
       onNegativeButtonClick={onReject}
       onPositiveButtonClick={onSign}
     >
       <div className={styles.container}>
         <Card>
-          <CardRow label="Wallet name:" value={activeWallet?.label} />
-          <CardRow label="Network:" value={constellationNetwork} />
+          <CardRow label="Wallet name:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />
+          <CardRow label="Network:" value={networkLabel} error={networkChanged && 'Network changed'} />
           {destinationInfo?.isMetagraph && <CardRow label="Metagraph:" value={renderMetagraphValue(destinationInfo)} />}
         </Card>
         <Card>

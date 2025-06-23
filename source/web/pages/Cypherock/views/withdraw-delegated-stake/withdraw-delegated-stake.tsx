@@ -3,11 +3,14 @@ import type { SignedWithdrawDelegatedStake, WithdrawDelegatedStake } from '@star
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { DAG_NETWORK } from 'constants/index';
+
 import { useWithdrawDelegatedStake } from 'hooks/external/useWithdrawDelegatedStake';
 
 import WithdrawDelegatedStakeContainer, { WithdrawDelegatedStakeProviderConfig } from 'scenes/external/WithdrawDelegatedStake/WithdrawDelegatedStakeContainer';
 
 import type { StargazerRequestMessage } from 'scripts/common';
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
 
 import walletsSelectors from 'selectors/walletsSelectors';
 
@@ -66,7 +69,24 @@ const WithdrawDelegatedStakeView = ({ service, changeState, handleSuccessRespons
 
   const cypherockWithdrawDelegatedStakeConfig: WithdrawDelegatedStakeProviderConfig = {
     title: 'Cypherock - Withdraw Delegated Stake',
-    onWithdrawDelegatedStake: async ({ decodedData }) => {
+    onWithdrawDelegatedStake: async ({ decodedData, wallet }) => {
+      const isDag = wallet.chain === StargazerChain.CONSTELLATION;
+      const addressMatch = dag4.account.address.toLowerCase() === wallet.address.toLowerCase();
+      const networkInfo = dag4.network.getNetwork();
+      const chainMatch = DAG_NETWORK[networkInfo.id].chainId === wallet.chainId;
+
+      if (!isDag) {
+        throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+      }
+
+      if (!addressMatch) {
+        throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      if (!chainMatch) {
+        throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+      }
+
       changeState(WalletState.VerifyTransaction);
 
       return await sendWithdrawDelegatedStakeTransaction(decodedData);

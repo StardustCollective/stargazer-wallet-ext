@@ -6,7 +6,7 @@ import { useSignTypedData } from 'hooks/external/useSignTypedData';
 
 import SignTypedDataContainer, { SignTypedDataProviderConfig } from 'scenes/external/SignTypedData/SignTypedDataContainer';
 
-import { StargazerRequestMessage } from 'scripts/common';
+import { EIPErrorCodes, EIPRpcError, StargazerChain, StargazerRequestMessage } from 'scripts/common';
 import { MessagePayload } from 'scripts/Provider/evm';
 
 import walletsSelectors from 'selectors/walletsSelectors';
@@ -28,6 +28,7 @@ interface ISignTypedDataProps {
 
 const SignTypedDataView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: ISignTypedDataProps) => {
   const { requestMessage } = useSignTypedData();
+  const ethAddress = useSelector(walletsSelectors.selectActiveWalletEthAddress);
   const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
 
   const signEthTypedData = async (payload: MessagePayload): Promise<string> => {
@@ -55,7 +56,27 @@ const SignTypedDataView = ({ service, changeState, handleSuccessResponse, handle
   const cypherockSigningConfig: SignTypedDataProviderConfig = {
     title: 'Cypherock - Sign Typed Data',
     footer: 'Only sign typed data on sites you trust.',
-    onSign: async ({ parsedPayload }) => {
+    onSign: async ({ parsedPayload, wallet }) => {
+      const isEvm = wallet.chain !== StargazerChain.CONSTELLATION;
+      const addressMatch = ethAddress.toLowerCase() === wallet.address.toLowerCase();
+
+      // For EVM, chainId validation is done during the initial parsing
+      // The chainId in the typed data domain should match the wallet's chainId
+      const typedDataChainId = Number(parsedPayload.domain?.chainId);
+      const chainMatch = Number(typedDataChainId) === wallet.chainId;
+
+      if (!isEvm) {
+        throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+      }
+
+      if (!addressMatch) {
+        throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      if (typedDataChainId && !chainMatch) {
+        throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+      }
+
       changeState(WalletState.VerifyTransaction);
 
       return await signEthTypedData(parsedPayload);

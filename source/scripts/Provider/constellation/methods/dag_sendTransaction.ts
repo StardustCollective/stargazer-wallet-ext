@@ -10,7 +10,7 @@ import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { getWalletInfo, WINDOW_TYPES } from '../utils';
+import { getChainId, getWalletInfo, WINDOW_TYPES } from '../utils';
 
 export type DagSendTransaction = {
   source: string;
@@ -32,7 +32,8 @@ export const dag_sendTransaction = async (request: StargazerRequest & { type: 'r
     throw new Error('No active account for the request asset type');
   }
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
   const [data] = request.params as [DagSendTransaction];
 
@@ -75,16 +76,12 @@ export const dag_sendTransaction = async (request: StargazerRequest & { type: 'r
   }
 
   const signTxnData: SignTransactionDataDAG = {
+    type: TransactionType.DagNative,
     transaction: {
       from: source,
       to: destination,
       value: amount,
       fee: fee ?? 0,
-    },
-
-    extras: {
-      chain: StargazerChain.CONSTELLATION,
-      type: TransactionType.DagNative,
     },
   };
 
@@ -96,6 +93,11 @@ export const dag_sendTransaction = async (request: StargazerRequest & { type: 'r
     params: {
       data: signTxnData,
       message,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId,
+        address: source,
+      },
       origin: sender.origin,
       route: ExternalRoute.SignTransaction,
     },

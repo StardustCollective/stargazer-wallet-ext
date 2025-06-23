@@ -2,6 +2,10 @@ import { dag4 } from '@stardust-collective/dag4';
 import type { WithdrawDelegatedStake } from '@stardust-collective/dag4-network';
 import React, { useState } from 'react';
 
+import { DAG_NETWORK } from 'constants/index';
+
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
+
 import { usePlatformAlert } from 'utils/alertUtil';
 
 import WithdrawDelegatedStakeContainer, { WithdrawDelegatedStakeProviderConfig } from './WithdrawDelegatedStakeContainer';
@@ -27,7 +31,24 @@ const ExternalWithdrawDelegatedStake = () => {
 
   const defaultWithdrawDelegatedStakeConfig: WithdrawDelegatedStakeProviderConfig = {
     title: 'WithdrawDelegatedStake',
-    onWithdrawDelegatedStake: async ({ decodedData }) => {
+    onWithdrawDelegatedStake: async ({ decodedData, wallet }) => {
+      const isDag = wallet.chain === StargazerChain.CONSTELLATION;
+      const addressMatch = dag4.account.keyTrio.address.toLowerCase() === wallet.address.toLowerCase();
+      const networkInfo = dag4.account.networkInstance.getNetwork();
+      const chainMatch = DAG_NETWORK[networkInfo.id].chainId === wallet.chainId;
+
+      if (!isDag) {
+        throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+      }
+
+      if (!addressMatch) {
+        throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      if (!chainMatch) {
+        throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+      }
+
       setLoading(true);
       try {
         return await sendWithdrawDelegatedStakeTransaction(decodedData);

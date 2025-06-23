@@ -113,6 +113,14 @@ const selectActiveWalletCypherockId = createSelector(getActiveWallet, activeWall
   return activeWallet?.cypherockId ?? null;
 });
 
+const selectActiveWalletDagAddress = createSelector(getActiveWallet, activeWallet => {
+  return activeWallet?.accounts?.find(account => account?.network === KeyringNetwork.Constellation)?.address ?? null;
+});
+
+const selectActiveWalletEthAddress = createSelector(getActiveWallet, activeWallet => {
+  return activeWallet?.accounts?.find(account => account?.network === KeyringNetwork.Ethereum)?.address ?? null;
+});
+
 /**
  * Return the deviceId of the active wallet
  */
@@ -191,4 +199,6 @@ export default {
   selectActiveWalletCypherockId,
   selectActiveWalletDeviceId,
   selectActiveWalletBipIndex,
+  selectActiveWalletDagAddress,
+  selectActiveWalletEthAddress,
 };

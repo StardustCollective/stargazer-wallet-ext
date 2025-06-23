@@ -75,7 +75,7 @@ export const eth_sendTransaction = async (request: StargazerRequest & { type: 'r
   const chainId = validateChainId(transactionData.chainId);
 
   // Validate hardware wallet compatibility
-  validateHardwareMethod(activeWallet.type, request.method);
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, evmChainId: chainId });
 
   // Get current chain information
   const chain = getNetworkId() as StargazerChain;
@@ -96,7 +96,7 @@ export const eth_sendTransaction = async (request: StargazerRequest & { type: 'r
 
   try {
     // Delegate to the appropriate transaction handler
-    handlerResult = await defaultTransactionHandlerRegistry.handleTransaction(transaction, chain);
+    handlerResult = await defaultTransactionHandlerRegistry.handleTransaction(transaction);
   } catch (error) {
     console.error('Transaction handler error:', error);
 
@@ -121,6 +121,11 @@ export const eth_sendTransaction = async (request: StargazerRequest & { type: 'r
       message,
       origin: sender.origin,
       route,
+      wallet: {
+        chain,
+        chainId,
+        address: transaction.from,
+      },
     },
     size: windowSize,
     type: windowType,

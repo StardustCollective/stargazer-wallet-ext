@@ -4,6 +4,7 @@ import type { TokenLockWithCurrencyId } from '@stardust-collective/dag4-network'
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import type { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { StargazerChain } from 'scripts/common';
 
 import store from 'state/store';
 
@@ -11,7 +12,7 @@ import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { checkArguments, getWalletInfo } from '../utils';
+import { checkArguments, getChainId, getWalletInfo } from '../utils';
 
 export type TokenLockDataParam = TokenLockWithCurrencyId & {
   latestEpoch: number | null;
@@ -34,7 +35,8 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('params not provided');
   }
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
   const [data] = request.params as [TokenLockWithCurrencyId];
 
@@ -138,6 +140,11 @@ export const dag_tokenLock = async (request: StargazerRequest & { type: 'rpc' },
       message,
       origin: sender.origin,
       route: ExternalRoute.TokenLock,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId: getChainId(),
+        address: data.source,
+      },
     },
     size: windowSize,
     type: windowType,

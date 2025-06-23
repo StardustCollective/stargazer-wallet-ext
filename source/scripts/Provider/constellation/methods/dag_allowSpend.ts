@@ -7,7 +7,7 @@ import { DAG_EXPLORER_API_URL } from 'constants/index';
 import { MetagraphProject } from 'scenes/external/AllowSpend/types';
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { IAssetInfoState } from 'state/assets/types';
 import store from 'state/store';
@@ -52,7 +52,8 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('params not provided');
   }
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
   const [data] = request.params as [AllowSpendWithCurrencyId];
 
@@ -262,6 +263,11 @@ export const dag_allowSpend = async (request: StargazerRequest & { type: 'rpc' }
       message,
       origin: sender.origin,
       route: ExternalRoute.AllowSpend,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId: getChainId(),
+        address: data.source,
+      },
     },
     size: windowSize,
     type: windowType,

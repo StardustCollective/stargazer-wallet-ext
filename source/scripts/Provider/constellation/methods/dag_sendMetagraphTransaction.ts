@@ -10,7 +10,7 @@ import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { getWalletInfo, validateMetagraphAddress, WINDOW_TYPES } from '../utils';
+import { getChainId, getWalletInfo, validateMetagraphAddress, WINDOW_TYPES } from '../utils';
 
 export type StargazerMetagraphTransactionRequest = {
   metagraphAddress: string;
@@ -33,7 +33,8 @@ export const dag_sendMetagraphTransaction = async (request: StargazerRequest & {
     throw new Error('No active account for the request asset type');
   }
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
   const [data] = request.params as [StargazerMetagraphTransactionRequest];
 
@@ -78,17 +79,13 @@ export const dag_sendMetagraphTransaction = async (request: StargazerRequest & {
   }
 
   const signMetagraphTxnData: SignTransactionDataDAG = {
+    type: TransactionType.DagMetagraph,
+    metagraphAddress,
     transaction: {
       from: source,
       to: destination,
       value: amount,
       fee: fee ?? 0,
-    },
-
-    extras: {
-      chain: StargazerChain.CONSTELLATION,
-      type: TransactionType.DagMetagraph,
-      metagraphAddress,
     },
   };
 
@@ -102,6 +99,11 @@ export const dag_sendMetagraphTransaction = async (request: StargazerRequest & {
       message,
       origin: sender.origin,
       route: ExternalRoute.SignTransaction,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId,
+        address: source,
+      },
     },
     size: windowSize,
     type: windowType,

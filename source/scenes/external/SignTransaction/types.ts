@@ -1,4 +1,3 @@
-import { StargazerChain } from 'scripts/common';
 import type { EthSendTransaction } from 'scripts/Provider/evm/utils/handlers';
 
 export enum TransactionType {
@@ -10,26 +9,18 @@ export enum TransactionType {
   EvmContractInteraction = 'evm-contract-interaction',
 }
 
-export type ExtraInfo = {
-  type: TransactionType;
-  chain: StargazerChain;
-};
-
-export type ExtraDagInfo = ExtraInfo & {
-  metagraphAddress?: string;
-};
-
 export type SignTransactionDataEVM = {
+  type: TransactionType;
   transaction: EthSendTransaction;
-  extras: ExtraInfo;
 };
 
 export type SignTransactionDataDAG = {
+  type: TransactionType;
+  metagraphAddress?: string;
   transaction: {
     from: string;
     to: string;
     value: number;
     fee?: number;
   };
-  extras: ExtraDagInfo;
 };

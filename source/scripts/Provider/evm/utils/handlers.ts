@@ -3,7 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 
 import { SignTransactionDataEVM, TransactionType } from 'scenes/external/SignTransaction/types';
 
-import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
+import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 
 import { getERC20DataDecoder } from 'utils/ethUtil';
 
@@ -42,7 +42,7 @@ export interface TransactionHandler {
   /**
    * Processes the transaction and returns structured data
    */
-  handle(transaction: EthSendTransaction, chain: StargazerChain): Promise<TransactionHandlerResult>;
+  handle(transaction: EthSendTransaction): Promise<TransactionHandlerResult>;
 }
 
 /**
@@ -102,7 +102,7 @@ export class NativeTransferHandler implements TransactionHandler {
     return hasNoData && !!hasValue;
   }
 
-  async handle(transaction: EthSendTransaction, chain: StargazerChain): Promise<TransactionHandlerResult> {
+  async handle(transaction: EthSendTransaction): Promise<TransactionHandlerResult> {
     // Validate hex fields first
     validateHexFields(transaction);
 
@@ -121,11 +121,8 @@ export class NativeTransferHandler implements TransactionHandler {
     }
 
     const signTransactionData: SignTransactionDataEVM = {
+      type: TransactionType.EvmNative,
       transaction,
-      extras: {
-        chain,
-        type: TransactionType.EvmNative,
-      },
     };
 
     return {
@@ -152,7 +149,7 @@ export class Erc20TransferHandler implements TransactionHandler {
     }
   }
 
-  async handle(transaction: EthSendTransaction, chain: StargazerChain): Promise<TransactionHandlerResult> {
+  async handle(transaction: EthSendTransaction): Promise<TransactionHandlerResult> {
     // Validate hex fields first
     validateHexFields(transaction);
 
@@ -194,11 +191,8 @@ export class Erc20TransferHandler implements TransactionHandler {
     }
 
     const signTransactionData: SignTransactionDataEVM = {
+      type: TransactionType.Erc20Transfer,
       transaction,
-      extras: {
-        chain,
-        type: TransactionType.Erc20Transfer,
-      },
     };
 
     return {
@@ -225,7 +219,7 @@ export class Erc20ApproveHandler implements TransactionHandler {
     }
   }
 
-  async handle(transaction: EthSendTransaction, chain: StargazerChain): Promise<TransactionHandlerResult> {
+  async handle(transaction: EthSendTransaction): Promise<TransactionHandlerResult> {
     // Validate hex fields first
     validateHexFields(transaction);
 
@@ -263,11 +257,8 @@ export class Erc20ApproveHandler implements TransactionHandler {
     }
 
     const signTransactionData: SignTransactionDataEVM = {
+      type: TransactionType.Erc20Approve,
       transaction,
-      extras: {
-        chain,
-        type: TransactionType.Erc20Approve,
-      },
     };
 
     return {
@@ -288,7 +279,7 @@ export class FallbackContractHandler implements TransactionHandler {
     return !!(transaction.to && transaction.data && !['0x', '0x0'].includes(transaction.data));
   }
 
-  async handle(transaction: EthSendTransaction, chain: StargazerChain): Promise<TransactionHandlerResult> {
+  async handle(transaction: EthSendTransaction): Promise<TransactionHandlerResult> {
     // Validate hex fields first
     validateHexFields(transaction);
 
@@ -317,11 +308,8 @@ export class FallbackContractHandler implements TransactionHandler {
     }
 
     const signTransactionData: SignTransactionDataEVM = {
+      type: TransactionType.EvmContractInteraction,
       transaction,
-      extras: {
-        chain,
-        type: TransactionType.EvmContractInteraction,
-      },
     };
 
     return {
@@ -357,7 +345,7 @@ export class TransactionHandlerRegistry {
   /**
    * Find and execute the appropriate handler for a transaction
    */
-  async handleTransaction(transaction: EthSendTransaction, chain: StargazerChain): Promise<TransactionHandlerResult> {
+  async handleTransaction(transaction: EthSendTransaction): Promise<TransactionHandlerResult> {
     // Find the first handler that can process this transaction
     const handler = this.handlers.find(h => h.canHandle(transaction));
 
@@ -365,7 +353,7 @@ export class TransactionHandlerRegistry {
       throw new EIPRpcError('Unable to handle this transaction type', EIPErrorCodes.Unsupported);
     }
 
-    return await handler.handle(transaction, chain);
+    return await handler.handle(transaction);
   }
 
   /**

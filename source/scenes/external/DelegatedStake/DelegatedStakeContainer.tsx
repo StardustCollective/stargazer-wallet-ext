@@ -6,11 +6,13 @@ import { useDelegatedStake, UseDelegatedStakeReturn } from 'hooks/external/useDe
 
 import DelegatedStakeView, { DelegatedStakeProps } from 'scenes/external/views/delegated-stake';
 
+import { WalletParam } from 'scripts/Background/messaging';
+
 import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
 
 export interface DelegatedStakeProviderConfig {
   title: string;
-  onDelegatedStake: (data: { decodedData: DelegatedStake }) => Promise<string>;
+  onDelegatedStake: (data: { decodedData: DelegatedStake; wallet: WalletParam }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (txHash: string) => void;
   isLoading?: boolean;
@@ -24,8 +26,8 @@ type DelegatedStakeContainerProps = DelegatedStake & UseDelegatedStakeReturn & B
 const DelegatedStakeContainer: React.FC<DelegatedStakeProviderConfig> = ({ title, onDelegatedStake, onError, onSuccess, isLoading = false }) => {
   // Extract onAction function
   const handleDelegatedStakeAction = async (hookData: UseDelegatedStakeReturn): Promise<string> => {
-    const { decodedData } = hookData;
-    return await onDelegatedStake({ decodedData });
+    const { decodedData, wallet } = hookData;
+    return await onDelegatedStake({ decodedData, wallet });
   };
 
   // Extract validation function - delegated stake has simple validation
@@ -40,10 +42,11 @@ const DelegatedStakeContainer: React.FC<DelegatedStakeProviderConfig> = ({ title
 
   // Extract render function with proper typing
   const renderDelegatedStakeView = (props: DelegatedStakeContainerProps): JSX.Element => {
-    const { title: propsTitle, source, amount, nodeId, tokenLockRef, fee, onAction, onReject } = props;
+    const { title: propsTitle, source, amount, nodeId, tokenLockRef, fee, onAction, onReject, wallet } = props;
 
     const delegatedStakeProps: DelegatedStakeProps = {
       title: propsTitle,
+      wallet,
       source,
       amount,
       nodeId,

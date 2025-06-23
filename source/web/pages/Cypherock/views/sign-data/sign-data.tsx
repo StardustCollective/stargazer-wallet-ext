@@ -1,3 +1,4 @@
+import { dag4 } from '@stardust-collective/dag4';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -5,7 +6,7 @@ import { useSignData } from 'hooks/external/useSignData';
 
 import SignDataContainer, { SignDataProviderConfig } from 'scenes/external/SignData/SignDataContainer';
 
-import type { StargazerRequestMessage } from 'scripts/common';
+import { StargazerChain, type StargazerRequestMessage } from 'scripts/common';
 
 import walletsSelectors from 'selectors/walletsSelectors';
 
@@ -31,9 +32,20 @@ const SignDataView = ({ service, changeState, handleSuccessResponse, handleError
   const cypherockSigningConfig: SignDataProviderConfig = {
     title: 'Cypherock - Sign Data',
     footer: 'Only sign messages on sites you trust.',
-    onSign: async ({ payload }) => {
+    onSign: async ({ payload, wallet }) => {
       if (!cypherockId) {
         throw new CypherockError('Wallet id not found', ErrorCode.UNKNOWN);
+      }
+
+      const isDag = wallet.chain === StargazerChain.CONSTELLATION;
+      const addressMatch = dag4.account.keyTrio.address.toLowerCase() === wallet.address.toLowerCase();
+
+      if (!isDag) {
+        throw new CypherockError('Unsupported chain', ErrorCode.UNKNOWN);
+      }
+
+      if (!addressMatch) {
+        throw new CypherockError('Account address mismatch', ErrorCode.UNKNOWN);
       }
 
       const walletId = decodeArrayFromBase64(cypherockId);

@@ -2,13 +2,13 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { EIPErrorCodes, EIPRpcError, StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { getChainId, getWalletInfo, WINDOW_TYPES } from '../utils';
+import { getChainId, getNetworkId, getWalletInfo, WINDOW_TYPES } from '../utils';
 
 type EIP712Domain = {
   name?: string;
@@ -47,7 +47,10 @@ export const eth_signTypedData = async (request: StargazerRequest & { type: 'rpc
     throw new EIPRpcError('No active account for the request asset type', EIPErrorCodes.Unauthorized);
   }
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  // Get current chain information
+  const chain = getNetworkId() as StargazerChain;
+
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method });
 
   // Extension 3.6.0+
   // eslint-disable-next-line prefer-const
@@ -111,6 +114,11 @@ export const eth_signTypedData = async (request: StargazerRequest & { type: 'rpc
       message,
       origin: sender.origin,
       route: ExternalRoute.SignTypedData,
+      wallet: {
+        chain,
+        chainId: activeChainId,
+        address,
+      },
     },
     size: windowSize,
     type: windowType,

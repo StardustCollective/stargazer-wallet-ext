@@ -61,6 +61,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       setGasConfig,
       onAction,
       onReject,
+      wallet,
     } = props;
 
     if (isDAG || isMetagraph) {
@@ -73,6 +74,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
         footer: propsFooter,
         origin,
         isLoading: propsIsLoading,
+        wallet,
         setFee,
         onSign: onAction,
         onReject,
@@ -88,6 +90,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
         transaction,
         footer: propsFooter,
         isLoading: propsIsLoading,
+        wallet,
         setGasConfig,
         onSign: onAction,
         onReject,
@@ -102,6 +105,8 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
         transaction,
         footer: propsFooter,
         isLoading: propsIsLoading,
+        origin,
+        wallet,
         setGasConfig,
         onSign: onAction,
         onReject,
@@ -117,6 +122,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
         footer: propsFooter,
         isLoading: propsIsLoading,
         origin,
+        wallet,
         setGasConfig,
         onSign: onAction,
         onReject,
@@ -131,6 +137,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
         transaction,
         footer: propsFooter,
         isLoading: propsIsLoading,
+        wallet,
         setGasConfig,
         onSign: onAction,
         onReject,

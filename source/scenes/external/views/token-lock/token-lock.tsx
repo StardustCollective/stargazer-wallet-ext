@@ -8,6 +8,8 @@ import Card from 'scenes/external/components/Card';
 import CardRow from 'scenes/external/components/CardRow';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 
+import { WalletParam } from 'scripts/Background/messaging';
+
 import { IAssetInfoState } from 'state/assets/types';
 
 import { differenceBetweenEpochs } from 'utils/epochs';
@@ -43,6 +45,7 @@ const renderLockMessage = (amount: string, unlockEpoch: number) => {
 
 export interface ITokenLockProps {
   title: string;
+  wallet: WalletParam;
   asset: IAssetInfoState;
   amount: number;
   unlockEpoch: number | null;
@@ -52,21 +55,22 @@ export interface ITokenLockProps {
   onReject: () => Promise<void>;
 }
 
-const TokenLockView = ({ title, amount: amountInDatum, unlockEpoch, latestEpoch, isLoading, asset, onSign, onReject }: ITokenLockProps) => {
-  const { current, activeWallet, constellationNetwork } = useExternalViewData();
+const TokenLockView = ({ title, wallet, amount: amountInDatum, unlockEpoch, latestEpoch, isLoading, asset, onSign, onReject }: ITokenLockProps) => {
+  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const amount = formatBigNumberForDisplay(toDag(amountInDatum));
 
   if (!asset) return null;
 
   const amountString = `${amount} ${asset.symbol}`;
   const tokenValue = { logo: asset.logo, symbol: asset.symbol };
+  const isDisabled = accountChanged || networkChanged;
 
   return (
-    <CardLayoutV3 title={title} logo={current?.logo} subtitle={current?.origin} isPositiveButtonLoading={isLoading} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
+    <CardLayoutV3 title={title} logo={current?.logo} subtitle={current?.origin} isPositiveButtonLoading={isLoading} isPositiveButtonDisabled={isDisabled} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
       <div className={styles.container}>
         <Card>
-          <CardRow label="Wallet name:" value={activeWallet?.label} />
-          <CardRow label="Network:" value={constellationNetwork} />
+          <CardRow label="Wallet name:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />
+          <CardRow label="Network:" value={networkLabel} error={networkChanged && 'Network changed'} />
         </Card>
         <Card>
           <CardRow.Token label="Token:" value={tokenValue} />

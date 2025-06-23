@@ -1,13 +1,20 @@
-import { isStargazerRequestMessage, StargazerRequestMessage } from 'scripts/common';
+import { isStargazerRequestMessage, StargazerChain, StargazerRequestMessage } from 'scripts/common';
 
 import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
 import { HARDWARE_WALLETS_PAGES } from 'utils/hardware';
+
+export type WalletParam = {
+  chain: StargazerChain;
+  chainId?: number;
+  address: string;
+};
 
 type PopupParams = {
   data: Record<string, any> | null;
   message?: StargazerRequestMessage;
   origin: string;
   route: string;
+  wallet?: WalletParam;
   resolved?: boolean;
 };
 
@@ -114,6 +121,10 @@ export class StargazerExternalPopups {
       throw new Error('Invalid data param');
     }
 
+    if (params.wallet && typeof params.wallet !== 'object') {
+      throw new Error('Invalid wallet param');
+    }
+
     if (typeof params.origin !== 'string') {
       throw new Error('Invalid origin param');
     }
@@ -127,6 +138,7 @@ export class StargazerExternalPopups {
       message: params.message as StargazerRequestMessage | undefined,
       origin: params.origin as string,
       route: params.route as string,
+      wallet: params.wallet as WalletParam | undefined,
       resolved: !!params?.resolved as boolean,
     };
   }

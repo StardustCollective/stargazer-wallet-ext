@@ -107,7 +107,7 @@ function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) 
       const limit = await chainController.estimateGas({ ...transaction, gasLimit: transaction.gas });
       const limitNumber = limit.toNumber();
 
-      return Math.floor(limitNumber * 1.5);
+      return Math.floor(limitNumber * 1.2);
     } catch (err: unknown) {
       console.error('Error getting gas limit for ERC20 transfer:', err);
       return 90000;

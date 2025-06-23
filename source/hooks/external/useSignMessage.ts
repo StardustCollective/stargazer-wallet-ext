@@ -10,7 +10,6 @@ import { useExternalRequest, UseExternalRequestReturn } from './useExternalReque
 
 export interface UseSignMessageReturn extends UseExternalRequestReturn<ISignMessageParams>, BaseExternalRequestHook<ISignMessageParams> {
   parsedPayload: StargazerSignatureRequest | null;
-  isDagSignature: boolean;
 }
 
 /**
@@ -32,14 +31,8 @@ export const useSignMessage = (): UseSignMessageReturn => {
     }
   }, [baseHook.decodedData?.payload]);
 
-  // Determine signature type
-  const isDagSignature = useMemo(() => {
-    return baseHook.decodedData?.asset === 'DAG';
-  }, [baseHook.decodedData?.asset]);
-
   return {
     ...baseHook,
     parsedPayload,
-    isDagSignature,
   };
 };

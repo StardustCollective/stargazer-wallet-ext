@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 import Container, { CONTAINER_COLOR } from 'components/Container';
 
-import { DEFAULT_LANGUAGE } from 'constants/index';
+import { DAG_NETWORK, DEFAULT_LANGUAGE } from 'constants/index';
 
 import { useFiat } from 'hooks/usePrice';
 
@@ -25,7 +25,7 @@ import { usePlatformAlert } from 'utils/alertUtil';
 import { CHAIN_FULL_ASSET } from 'utils/assetsUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import erc20 from 'utils/erc20.json';
-import { getHardwareWalletPage, isHardware } from 'utils/hardware';
+import { getHardwareWalletPage, HardwareWalletType, isHardware, SupportedDagChains, SupportedEvmChains } from 'utils/hardware';
 import { toDatum } from 'utils/number';
 
 import { ExternalRoute } from 'web/pages/External/types';
@@ -203,9 +203,21 @@ const ConfirmContainer = () => {
         const windowSize = { width: 1000, height: 1000 };
         const windowType = 'normal';
         let data: SignTransactionDataDAG | SignTransactionDataEVM;
+        let chain: StargazerChain;
+        let activeChainId: number;
 
         if (activeAsset.type === AssetType.Constellation) {
+          const { activeNetwork } = vault;
+          const { chainId } = DAG_NETWORK[activeNetwork.Constellation];
           const transactionType = activeAsset.id === AssetType.Constellation ? TransactionType.DagNative : TransactionType.DagMetagraph;
+
+          activeChainId = chainId;
+          chain = StargazerChain.CONSTELLATION;
+
+          if (!SupportedDagChains[activeWallet.type as HardwareWalletType].includes(chainId)) {
+            showAlert('Chain not supported by the hardware wallet', 'danger');
+            return;
+          }
 
           const metagraphObject =
             activeAsset.id === AssetType.Constellation
@@ -215,38 +227,35 @@ const ConfirmContainer = () => {
                 };
 
           data = {
+            type: transactionType,
+            ...metagraphObject,
             transaction: {
               from: tempTx.fromAddress,
               to: tempTx.toAddress,
               value: toDatum(tempTx.amount),
               fee: toDatum(tempTx.fee) ?? 0,
             },
-
-            extras: {
-              chain: StargazerChain.CONSTELLATION,
-              type: transactionType,
-              ...metagraphObject,
-            },
           } as SignTransactionDataDAG;
         } else {
-          const chain = getNetworkIdFromChainId(assetInfo.network) as StargazerChain;
           const network = getNetworkFromChainId(assetNetwork);
           const activeChain = vault.activeNetwork[network as keyof typeof vault.activeNetwork];
-          const activeChainId = getChainId(activeChain);
+          chain = getNetworkIdFromChainId(assetInfo.network) as StargazerChain;
+          activeChainId = getChainId(activeChain);
+
+          if (!SupportedEvmChains[activeWallet.type as HardwareWalletType].includes(activeChainId)) {
+            showAlert('Chain not supported by the hardware wallet', 'danger');
+            return;
+          }
 
           if (activeAsset.type === AssetType.Ethereum) {
             data = {
+              type: TransactionType.EvmNative,
               transaction: {
                 chainId: activeChainId,
 
                 from: tempTx.fromAddress,
                 to: tempTx.toAddress,
-                value: ethers.utils.parseEther(tempTx.amount).toString(),
-              },
-
-              extras: {
-                chain,
-                type: TransactionType.EvmNative,
+                value: ethers.utils.parseEther(tempTx.amount)._hex,
               },
             };
           }
@@ -259,17 +268,13 @@ const ConfirmContainer = () => {
             const hexData = iface.encodeFunctionData('transfer', [recipient, amount]);
 
             data = {
+              type: TransactionType.Erc20Transfer,
               transaction: {
                 chainId: activeChainId,
 
                 from: tempTx.fromAddress,
                 to,
                 data: hexData,
-              },
-
-              extras: {
-                chain,
-                type: TransactionType.Erc20Transfer,
               },
             };
           }
@@ -280,6 +285,11 @@ const ConfirmContainer = () => {
             data,
             origin: 'stargazer-wallet',
             route: ExternalRoute.SignTransaction,
+            wallet: {
+              chain,
+              chainId: activeChainId,
+              address: tempTx.fromAddress,
+            },
           },
           size: windowSize,
           type: windowType,

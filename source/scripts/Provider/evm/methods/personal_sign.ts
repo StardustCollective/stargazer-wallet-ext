@@ -2,14 +2,14 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { EIPErrorCodes, EIPRpcError, StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { ISignMessageParams } from 'scripts/Provider/constellation';
 
 import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { getWalletInfo, normalizeSignatureRequest } from '../utils';
+import { getNetworkId, getWalletInfo, normalizeSignatureRequest } from '../utils';
 
 export const personal_sign = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
   const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
@@ -24,7 +24,10 @@ export const personal_sign = async (request: StargazerRequest & { type: 'rpc' },
     throw new EIPRpcError('No active account for the request asset type', EIPErrorCodes.Unauthorized);
   }
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  // Get current chain information
+  const chain = getNetworkId() as StargazerChain;
+
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method });
 
   // Extension 3.6.0+
   let [payload, address] = request.params as [string, string];
@@ -64,6 +67,10 @@ export const personal_sign = async (request: StargazerRequest & { type: 'rpc' },
       message,
       origin: sender.origin,
       route: ExternalRoute.SignMessage,
+      wallet: {
+        chain,
+        address,
+      },
     },
     size: windowSize,
     type: windowType,

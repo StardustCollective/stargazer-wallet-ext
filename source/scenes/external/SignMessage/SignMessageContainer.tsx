@@ -5,6 +5,7 @@ import { useSignMessage, UseSignMessageReturn } from 'hooks/external/useSignMess
 
 import SignMessageView, { ISignMessageProps } from 'scenes/external/views/sign-message';
 
+import { WalletParam } from 'scripts/Background/messaging';
 import type { ISignMessageParams } from 'scripts/Provider/constellation';
 
 import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
@@ -12,7 +13,7 @@ import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequest
 export interface SignMessageProviderConfig {
   title: string;
   footer?: string;
-  onSign: (data: { payload: string; parsedPayload: any; isDagSignature: boolean }) => Promise<string>;
+  onSign: (data: { payload: string; parsedPayload: any; wallet: WalletParam }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (signature: string) => void;
 }
@@ -25,11 +26,11 @@ type SignMessageContainerProps = ISignMessageParams & UseSignMessageReturn & Bas
 const SignMessageContainer: React.FC<SignMessageProviderConfig> = ({ title, footer = 'Only sign messages on sites you trust.', onSign, onError, onSuccess }) => {
   // Extract onAction function
   const handleSignMessageAction = async (hookData: UseSignMessageReturn): Promise<string> => {
-    const { parsedPayload, isDagSignature, decodedData } = hookData;
+    const { parsedPayload, decodedData, wallet } = hookData;
     return await onSign({
       payload: decodedData.payload,
       parsedPayload,
-      isDagSignature,
+      wallet,
     });
   };
 
@@ -49,11 +50,11 @@ const SignMessageContainer: React.FC<SignMessageProviderConfig> = ({ title, foot
 
   // Extract render function with proper typing
   const renderSignMessageView = (props: SignMessageContainerProps): JSX.Element => {
-    const { title: propsTitle, footer: propsFooter, parsedPayload, isDagSignature, onAction, onReject } = props;
+    const { title: propsTitle, footer: propsFooter, wallet, parsedPayload, onAction, onReject } = props;
 
     const signMessageProps: ISignMessageProps = {
       title: propsTitle,
-      isDagSignature,
+      wallet,
       message: parsedPayload,
       footer: propsFooter,
       onSign: onAction,

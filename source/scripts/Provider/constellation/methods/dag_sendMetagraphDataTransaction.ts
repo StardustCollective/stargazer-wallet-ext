@@ -15,7 +15,7 @@ import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { getChainLabel, getWalletInfo } from '../utils';
+import { getChainId, getChainLabel, getWalletInfo } from '../utils';
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
@@ -65,7 +65,8 @@ export const dag_sendMetagraphDataTransaction = async (request: StargazerRequest
 
   const { activeWallet, windowUrl, windowType } = getWalletInfo();
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
   const dataString = JSON.stringify(normalizeObject(data));
   const dataEncoded = encodeToBase64(dataString);

@@ -18,6 +18,7 @@ import GasSlider from 'scenes/external/components/GasSlider';
 import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
 import { TransactionType } from 'scenes/external/SignTransaction/types';
 
+import { WalletParam } from 'scripts/Background/messaging';
 import { EthSendTransaction } from 'scripts/Provider/evm/utils/handlers';
 
 import type { IAssetInfoState } from 'state/assets/types';
@@ -37,6 +38,7 @@ export interface ISignEvmTransactionProps {
   origin?: string;
   containerStyles?: string;
   isLoading?: boolean;
+  wallet: WalletParam;
   setGasConfig?: ({ gasPrice, gasLimit }: { gasPrice: string; gasLimit: string }) => void;
   onSign: () => Promise<void>;
   onReject: () => Promise<void>;
@@ -62,11 +64,12 @@ const calculateNativeTotal = (amountInWei: BigNumber, feeInWei: BigNumber, nativ
   return fiatInEth.toString();
 };
 
-export const SignEvmTransactionView = ({ title, nativeAsset, transaction, origin, footer, containerStyles, isLoading = false, setGasConfig, onSign, onReject }: ISignEvmTransactionProps) => {
-  const { current, activeWallet, evmNetwork } = useExternalViewData();
+export const SignEvmTransactionView = ({ title, nativeAsset, transaction, origin, footer, containerStyles, isLoading = false, wallet, setGasConfig, onSign, onReject }: ISignEvmTransactionProps) => {
   const { from, to, value: amount, chainId } = transaction;
-
   const fromDapp = origin !== 'stargazer-wallet';
+
+  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet, fromDapp);
+
   const subtitle = fromDapp ? current.origin : null;
   const logo = fromDapp ? current.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
 
@@ -147,13 +150,13 @@ export const SignEvmTransactionView = ({ title, nativeAsset, transaction, origin
       onPositiveButtonClick={onSign}
       positiveButtonLabel="Sign"
       isPositiveButtonLoading={isLoading}
-      isPositiveButtonDisabled={isLoading || isGasLoading || balanceLoading || !isValid || !!balanceError}
+      isPositiveButtonDisabled={isLoading || isGasLoading || balanceLoading || !isValid || !!balanceError || accountChanged || networkChanged}
       containerStyles={containerStyles}
     >
       <div className={styles.container}>
         <Card>
-          <CardRow label="Account:" value={activeWallet?.label} />
-          <CardRow label="Network:" value={evmNetwork} />
+          <CardRow label="Account:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />
+          <CardRow label="Network:" value={networkLabel} error={networkChanged && 'Network changed'} />
         </Card>
         <Card>
           <CardRow.Token label="Token:" value={tokenValue} />

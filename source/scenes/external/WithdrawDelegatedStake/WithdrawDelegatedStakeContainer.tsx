@@ -6,11 +6,13 @@ import { useWithdrawDelegatedStake, UseWithdrawDelegatedStakeReturn } from 'hook
 
 import WithdrawDelegatedStakeView, { WithdrawDelegatedStakeProps } from 'scenes/external/views/withdraw-delegated-stake';
 
+import { WalletParam } from 'scripts/Background/messaging';
+
 import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
 
 export interface WithdrawDelegatedStakeProviderConfig {
   title: string;
-  onWithdrawDelegatedStake: (data: { decodedData: WithdrawDelegatedStake }) => Promise<string>;
+  onWithdrawDelegatedStake: (data: { decodedData: WithdrawDelegatedStake; wallet: WalletParam }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (txHash: string) => void;
   isLoading?: boolean;
@@ -24,8 +26,8 @@ type WithdrawDelegatedStakeContainerProps = WithdrawDelegatedStake & UseWithdraw
 const WithdrawDelegatedStakeContainer: React.FC<WithdrawDelegatedStakeProviderConfig> = ({ title, onWithdrawDelegatedStake, onError, onSuccess, isLoading = false }) => {
   // Extract onAction function
   const handleWithdrawDelegatedStakeAction = async (hookData: UseWithdrawDelegatedStakeReturn): Promise<string> => {
-    const { decodedData } = hookData;
-    return await onWithdrawDelegatedStake({ decodedData });
+    const { decodedData, wallet } = hookData;
+    return await onWithdrawDelegatedStake({ decodedData, wallet });
   };
 
   // Extract validation function - withdraw delegated stake has simple validation
@@ -38,10 +40,11 @@ const WithdrawDelegatedStakeContainer: React.FC<WithdrawDelegatedStakeProviderCo
 
   // Extract render function with proper typing
   const renderWithdrawDelegatedStakeView = (props: WithdrawDelegatedStakeContainerProps): JSX.Element => {
-    const { title: propsTitle, source, stakeRef, onAction, onReject } = props;
+    const { title: propsTitle, source, stakeRef, onAction, onReject, wallet } = props;
 
     const withdrawDelegatedStakeProps: WithdrawDelegatedStakeProps = {
       title: propsTitle,
+      wallet,
       source,
       stakeRef,
       isLoading,

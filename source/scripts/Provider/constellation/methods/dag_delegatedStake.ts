@@ -2,13 +2,13 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import type { DelegatedStake } from '@stardust-collective/dag4-network';
 
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { checkArguments, getWalletInfo } from '../utils';
+import { checkArguments, getChainId, getWalletInfo } from '../utils';
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
@@ -27,7 +27,8 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('params not provided');
   }
 
-  validateHardwareMethod(activeWallet.type, request.method);
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
   const [data] = request.params as [DelegatedStake];
 
@@ -86,6 +87,11 @@ export const dag_delegatedStake = async (request: StargazerRequest & { type: 'rp
       message,
       origin: sender.origin,
       route: ExternalRoute.DelegatedStake,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId: getChainId(),
+        address: data.source,
+      },
     },
     size: windowSize,
     type: windowType,

@@ -2,6 +2,8 @@ import { KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4
 
 import { AvailableMethods, EIPErrorCodes, EIPRpcError } from 'scripts/common';
 
+import { AVALANCHE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from '../constants';
+
 export const LEDGER_PAGE = '/ledger.html';
 export const BITFI_PAGE = '/bitfi.html';
 export const CYPHEROCK_PAGE = '/cypherock.html';
@@ -34,13 +36,35 @@ export const SupportedMethods: Record<HardwareWalletType, AvailableMethods[]> = 
   ],
 };
 
-export const validateHardwareMethod = (walletType: KeyringWalletType, method: AvailableMethods) => {
+export const SupportedDagChains: Record<HardwareWalletType, number[]> = {
+  [KeyringWalletType.BitfiAccountWallet]: [DAG_NETWORK.main2.chainId, DAG_NETWORK.test2.chainId, DAG_NETWORK.integration2.chainId],
+  [KeyringWalletType.CypherockAccountWallet]: [DAG_NETWORK.main2.chainId, DAG_NETWORK.test2.chainId, DAG_NETWORK.integration2.chainId],
+};
+
+export const SupportedEvmChains: Record<HardwareWalletType, number[]> = {
+  [KeyringWalletType.BitfiAccountWallet]: [],
+  [KeyringWalletType.CypherockAccountWallet]: [ETH_NETWORK.mainnet.chainId, AVALANCHE_NETWORK[`avalanche-mainnet`].chainId, BSC_NETWORK.bsc.chainId, POLYGON_NETWORK.matic.chainId],
+};
+
+export const validateHardwareMethod = ({ walletType, method, dagChainId, evmChainId }: { walletType: KeyringWalletType; method: AvailableMethods; dagChainId?: number; evmChainId?: number }) => {
   if (!isHardware(walletType)) return;
 
   const hardwareWalletType = walletType as HardwareWalletType;
 
   if (!SupportedMethods[hardwareWalletType].includes(method)) {
     throw new EIPRpcError('Method not supported by the hardware wallet', EIPErrorCodes.Unsupported);
+  }
+
+  if (dagChainId) {
+    if (!SupportedDagChains[hardwareWalletType].includes(dagChainId)) {
+      throw new EIPRpcError('Chain not supported by the hardware wallet', EIPErrorCodes.Unsupported);
+    }
+  }
+
+  if (evmChainId) {
+    if (!SupportedEvmChains[hardwareWalletType].includes(evmChainId)) {
+      throw new EIPRpcError('Chain not supported by the hardware wallet', EIPErrorCodes.Unsupported);
+    }
   }
 };
 

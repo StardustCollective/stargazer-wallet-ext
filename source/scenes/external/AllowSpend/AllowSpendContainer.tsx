@@ -5,6 +5,7 @@ import { useAllowSpend, UseAllowSpendReturn } from 'hooks/external/useAllowSpend
 
 import AllowSpendView, { IAllowSpendProps } from 'scenes/external/views/allow-spend';
 
+import { WalletParam } from 'scripts/Background/messaging';
 import type { AllowSpendData } from 'scripts/Provider/constellation';
 
 import { IAssetInfoState } from 'state/assets/types';
@@ -14,7 +15,7 @@ import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequest
 export interface AllowSpendProviderConfig {
   title: string;
   isLoading?: boolean;
-  onAllowSpend: (data: { decodedData: AllowSpendData; asset: IAssetInfoState; fee: string }) => Promise<string>;
+  onAllowSpend: (data: { decodedData: AllowSpendData; asset: IAssetInfoState; fee: string; wallet: WalletParam }) => Promise<string>;
   onError?: (error: unknown) => void;
   onSuccess?: (txHash: string) => void;
 }
@@ -28,8 +29,8 @@ type AllowSpendContainerProps = AllowSpendData & UseAllowSpendReturn & BaseConta
 const AllowSpendContainer: React.FC<AllowSpendProviderConfig> = ({ title, onAllowSpend, onError, onSuccess, isLoading = false }) => {
   // Extract onAction function
   const handleAllowSpendAction = async (hookData: UseAllowSpendReturn): Promise<string> => {
-    const { decodedData, asset, fee } = hookData;
-    return await onAllowSpend({ decodedData, asset, fee });
+    const { decodedData, asset, fee, wallet } = hookData;
+    return await onAllowSpend({ decodedData, asset, fee, wallet });
   };
 
   // Extract validation function
@@ -44,10 +45,11 @@ const AllowSpendContainer: React.FC<AllowSpendProviderConfig> = ({ title, onAllo
 
   // Extract render function with proper typing
   const renderAllowSpendView = (props: AllowSpendContainerProps): JSX.Element => {
-    const { title: propsTitle, asset, amount, destination, destinationInfo, spenderInfo, approvers, validUntilEpoch, latestEpoch, fee, setFee, isLoading: propsIsLoading, onAction, onReject } = props;
+    const { title: propsTitle, asset, amount, destination, destinationInfo, spenderInfo, approvers, validUntilEpoch, latestEpoch, fee, setFee, isLoading: propsIsLoading, onAction, onReject, wallet } = props;
 
     const allowSpendProps: IAllowSpendProps = {
       title: propsTitle,
+      wallet,
       asset,
       amount,
       destination,

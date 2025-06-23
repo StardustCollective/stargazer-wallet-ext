@@ -2,6 +2,7 @@ import { ecsign, toRpcSig } from 'ethereumjs-util';
 import * as ethers from 'ethers';
 import React from 'react';
 
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
 import type { MessagePayload } from 'scripts/Provider/evm';
 import { getWallet, preserve0x, remove0x } from 'scripts/Provider/evm';
 
@@ -40,7 +41,28 @@ const SignTypedData = () => {
   const defaultSignTypedDataConfig: SignTypedDataProviderConfig = {
     title: 'Sign Typed Data',
     footer: 'Only sign typed data on sites you trust.',
-    onSign: async ({ parsedPayload }) => {
+    onSign: async ({ parsedPayload, wallet }) => {
+      const isEvm = wallet.chain !== StargazerChain.CONSTELLATION;
+      const evmWallet = getWallet();
+      const addressMatch = evmWallet.address.toLowerCase() === wallet.address.toLowerCase();
+
+      // For EVM, chainId validation is done during the initial parsing
+      // The chainId in the typed data domain should match the wallet's chainId
+      const typedDataChainId = Number(parsedPayload.domain?.chainId);
+      const chainMatch = Number(typedDataChainId) === wallet.chainId;
+
+      if (!isEvm) {
+        throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+      }
+
+      if (!addressMatch) {
+        throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      if (typedDataChainId && !chainMatch) {
+        throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+      }
+
       try {
         return await signTypedDataTransaction(parsedPayload);
       } catch (error) {

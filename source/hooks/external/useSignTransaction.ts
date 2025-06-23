@@ -35,7 +35,8 @@ export interface UseSignTransactionReturn extends UseExternalRequestReturn<SignT
  */
 export const useSignTransaction = (): UseSignTransactionReturn => {
   const baseHook = useExternalRequest<SignTransactionData>('Sign transaction');
-  const { chain, type, metagraphAddress } = baseHook.decodedData.extras;
+  const { chain } = baseHook.wallet;
+  const { type, metagraphAddress } = baseHook.decodedData;
   const metagraphAsset: IAssetInfoState | null = useSelector(assetsSelectors.getMetagraphAsset(metagraphAddress ?? null));
 
   const feeInDatum = baseHook.decodedData?.transaction?.fee ?? 0;
