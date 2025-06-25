@@ -5,7 +5,7 @@ import {
 } from '@stardust-collective/dag4-network';
 import { BigNumber, ethers } from 'ethers';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import store from 'state/store';
+import store, { updateState } from 'state/store';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import {
   changeActiveAsset,
@@ -327,6 +327,7 @@ export class AccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
+    updateState();
   }
 
   private buildAccountERC20Tokens(address: string, accountTokens: string[]) {
