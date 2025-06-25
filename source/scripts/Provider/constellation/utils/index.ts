@@ -161,18 +161,6 @@ export const getAssetByType = (type: AssetType): IAssetState => {
   return stargazerAsset;
 };
 
-export const getAssetByContractAddress = (address: string): IAssetState => {
-  const { activeAsset, activeWallet }: IVaultState = store.getState().vault;
-
-  let metagraphAsset: IAssetState = activeAsset as IAssetState;
-
-  if (!activeAsset || activeAsset?.contractAddress !== address) {
-    metagraphAsset = activeWallet.assets.find((a) => a?.contractAddress === address);
-  }
-
-  return metagraphAsset;
-};
-
 export const fetchMetagraphBalance = async (
   url: string,
   metagraphAddress: string,

@@ -1,5 +1,5 @@
 import { dag4 } from '@stardust-collective/dag4';
-import store, { updateState } from 'state/store';
+import store from 'state/store';
 import {
   changeActiveNetwork,
   setVaultInfo,
@@ -39,6 +39,7 @@ import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
+import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -330,7 +331,7 @@ class WalletController {
     this.account.buildAccountAssetInfo(id, label);
     try {
       // Start operations sequentially with proper error handling
-      await Promise.all([
+      Promise.all([
         this.account.assetsBalanceMonitor.start(),
         this.account.getLatestTxUpdate(),
         this.account.txController.startMonitor(),
@@ -373,9 +374,8 @@ class WalletController {
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
-    
     // Manually trigger state update
-    await updateState();
+    await updateAndNotify();
 
     if (!isNative) {
       const message: DappMessage = {

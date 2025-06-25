@@ -5,7 +5,7 @@ import {
 } from '@stardust-collective/dag4-network';
 import { BigNumber, ethers } from 'ethers';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import store, { updateState } from 'state/store';
+import store from 'state/store';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import {
   changeActiveAsset,
@@ -46,6 +46,7 @@ import { toDatum } from 'utils/number';
 import { isNative } from 'utils/envUtil';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import { ProtocolProvider } from 'scripts/common';
+import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -327,7 +328,7 @@ export class AccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
-    updateState();
+    updateAndNotify();
   }
 
   private buildAccountERC20Tokens(address: string, accountTokens: string[]) {

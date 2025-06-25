@@ -176,9 +176,9 @@ const AssetsController = (): IAssetsController => {
       custom: true,
     };
 
-  const dagAddress = activeWallet?.assets?.find(
-    (asset) => asset.id === AssetType.Constellation
-  )?.address;
+    const dagAddress = activeWallet?.assets?.find(
+      (asset) => asset.id === AssetType.Constellation
+    )?.address;
     store.dispatch(addCustomAsset(newL0Asset));
     store.dispatch(addAsset(newL0Asset));
     store.dispatch(
@@ -191,7 +191,7 @@ const AssetsController = (): IAssetsController => {
       })
     );
 
-    await accountController.assetsBalanceMonitor.start();
+    accountController.assetsBalanceMonitor.start();
   };
 
   const addCustomERC20Asset = async (

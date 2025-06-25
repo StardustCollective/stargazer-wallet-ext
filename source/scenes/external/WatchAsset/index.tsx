@@ -32,7 +32,7 @@ import {
   TOKEN,
   YOU_CAN_DELETE,
 } from './constants';
-import { updateState } from 'state/store';
+import { updateAndNotify } from 'scripts/Background/handlers/handleStoreSubscribe';
 
 const WatchAsset = () => {
   const wallet = getWalletController();
@@ -80,7 +80,7 @@ const WatchAsset = () => {
         logo,
       });
       // Manually update the state to ensure the token is added in the store
-      await updateState();
+      await updateAndNotify();
     } catch (err) {
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(false, message);
