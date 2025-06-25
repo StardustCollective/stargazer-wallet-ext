@@ -12,9 +12,14 @@ export const dag_getMetagraphBalance = async (
 
   const metagraphAsset = validateMetagraphAddress(address);
 
+  // validateMetagraphAddress checks if the asset is active
   const { assets } = store.getState();
-  const l0asset = assets[metagraphAsset?.id] ?? null;
-  const balance = l0asset ? await getMetagraphCurrencyBalance(l0asset) : null;
+  const l0asset = assets[metagraphAsset.id];
+  const balanceInDag = await getMetagraphCurrencyBalance(l0asset);
 
-  return balance.toString();
+  if (balanceInDag === null) {
+    return null;
+  }
+
+  return balanceInDag.toString();
 };
