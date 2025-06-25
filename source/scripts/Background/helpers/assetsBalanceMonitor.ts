@@ -78,6 +78,8 @@ export class AssetsBalanceMonitor {
   }
 
   async start() {
+    this.stop();
+    
     store.dispatch(resetBalances());
     store.dispatch(setLoadingDAGBalances(true));
     store.dispatch(setLoadingETHBalances(true));
