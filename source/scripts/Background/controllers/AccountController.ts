@@ -12,7 +12,7 @@ import { ProtocolProvider, StargazerChain } from 'scripts/common';
 
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { setCustomAsset } from 'state/erc20assets';
-import store, { updateState } from 'state/store';
+import store from 'state/store';
 import { changeActiveAsset, changeActiveWallet, setLoadingTransactions, setPublicKey, updateActiveWalletLabel, updateRewards, updateStatus, updateTransactions, updateWalletLabel } from 'state/vault';
 import IVaultState, { ActiveNetwork, AssetType, IActiveAssetState, IAssetState, IWalletState, Reward } from 'state/vault/types';
 
@@ -24,6 +24,7 @@ import { toDatum } from 'utils/number';
 import { ExternalRoute } from 'web/pages/External/types';
 
 import { ITransactionInfo } from '../../types';
+import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
 import { StargazerExternalPopups } from '../messaging';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
@@ -284,15 +285,14 @@ export class AccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
-    // Manually trigger state update
-    updateState();
+    updateAndNotify();
   }
 
   private buildAccountERC20Tokens(address: string, accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
-    const resolveTokens = accountTokens.map(address => {
-      return assetInfoMap[address];
+    const resolveTokens = accountTokens.map(add => {
+      return assetInfoMap[add];
     });
 
     const tokens = resolveTokens.filter(token => !!token);
@@ -335,74 +335,69 @@ export class AccountController {
   }
 
   async getLatestTxUpdate(showLoading = true): Promise<void> {
+    const state = store.getState();
+    const { activeAsset, activeNetwork }: IVaultState = state.vault;
+    const { assets } = state;
 
-    try {
-      const state = store.getState();
-      const { activeAsset, activeNetwork }: IVaultState = state.vault;
-      const { assets } = state;
+    if (!activeAsset) return;
 
-      if (!activeAsset) return;
-
-      if (showLoading) {
-        store.dispatch(setLoadingTransactions(true));
-      }
-
-      if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
-        // TODO-421: Check getLatestTransactions
-        let txsV2: any = [];
-        let rewards: Reward[] = [];
-        const assetInfo = assets[activeAsset?.id];
-        const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
-
-        if (isL0token) {
-          const { beUrl } = DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config;
-
-          const metagraphClient = dag4.account.createMetagraphTokenClient({
-            metagraphId: assetInfo.address,
-            id: assetInfo.address,
-            l0Url: assetInfo.l0endpoint,
-            l1Url: assetInfo.l1endpoint,
-            beUrl,
-          });
-
-          try {
-            [txsV2, rewards] = await Promise.all([metagraphClient.getTransactions(TXS_LIMIT), this.getMetagraphRewards(assetInfo.network, activeAsset.address, assetInfo.address)]);
-          } catch (err) {
-            console.log('Error: getLatestTransactions', err);
-            txsV2 = [];
-            rewards = [];
-          }
-        } else {
-          const { id } = dag4.network.getNetwork();
-
-          try {
-            [txsV2, rewards] = await Promise.all([dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT), this.getDagRewards(id, activeAsset.address)]);
-          } catch (err) {
-            console.log('Error: getLatestTransactions', err);
-            txsV2 = [];
-            rewards = [];
-          }
-        }
-
-        rewards = rewards ?? [];
-        txsV2 = txsV2 ?? [];
-
-        store.dispatch(updateRewards({ txs: rewards }));
-        store.dispatch(updateTransactions({ txs: [...txsV2] }));
-      } else if (activeAsset.type === AssetType.Ethereum) {
-        const txs: any = await this.txController.getTransactionHistory(activeAsset.address, TXS_LIMIT);
-
-        store.dispatch(updateTransactions({ txs: txs.transactions }));
-      } else if (activeAsset.type === AssetType.ERC20) {
-        const txs: any = await this.txController.getTokenTransactionHistory(activeAsset.address, assets[activeAsset.id], TXS_LIMIT);
-
-        store.dispatch(updateTransactions({ txs: txs.transactions }));
-      }
-    } catch (err) {
-      throw err;
-    } finally {
-      store.dispatch(setLoadingTransactions(false));
+    if (showLoading) {
+      store.dispatch(setLoadingTransactions(true));
     }
+
+    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
+      // TODO-421: Check getLatestTransactions
+      let txsV2: any = [];
+      let rewards: Reward[] = [];
+      const assetInfo = assets[activeAsset?.id];
+      const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
+
+      if (isL0token) {
+        const { beUrl } = DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config;
+
+        const metagraphClient = dag4.account.createMetagraphTokenClient({
+          metagraphId: assetInfo.address,
+          id: assetInfo.address,
+          l0Url: assetInfo.l0endpoint,
+          l1Url: assetInfo.l1endpoint,
+          beUrl,
+        });
+
+        try {
+          [txsV2, rewards] = await Promise.all([metagraphClient.getTransactions(TXS_LIMIT), this.getMetagraphRewards(assetInfo.network, activeAsset.address, assetInfo.address)]);
+        } catch (err) {
+          console.log('Error: getLatestTransactions', err);
+          txsV2 = [];
+          rewards = [];
+        }
+      } else {
+        const { id } = dag4.network.getNetwork();
+
+        try {
+          [txsV2, rewards] = await Promise.all([dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT), this.getDagRewards(id, activeAsset.address)]);
+        } catch (err) {
+          console.log('Error: getLatestTransactions', err);
+          txsV2 = [];
+          rewards = [];
+        }
+      }
+
+      rewards = rewards ?? [];
+      txsV2 = txsV2 ?? [];
+
+      store.dispatch(updateRewards({ txs: rewards }));
+      store.dispatch(updateTransactions({ txs: [...txsV2] }));
+    } else if (activeAsset.type === AssetType.Ethereum) {
+      const txs: any = await this.txController.getTransactionHistory(activeAsset.address, TXS_LIMIT);
+
+      store.dispatch(updateTransactions({ txs: txs.transactions }));
+    } else if (activeAsset.type === AssetType.ERC20) {
+      const txs: any = await this.txController.getTokenTransactionHistory(activeAsset.address, assets[activeAsset.id], TXS_LIMIT);
+
+      store.dispatch(updateTransactions({ txs: txs.transactions }));
+    }
+
+    store.dispatch(setLoadingTransactions(false));
   }
 
   updateWalletLabel(wallet: KeyringWalletState, label: string): void {
@@ -496,11 +491,11 @@ export class AccountController {
     let data: SignTransactionDataDAG | SignTransactionDataEVM;
     let chain: StargazerChain;
     let activeChainId: number;
-    
+
     const from = this.tempTx.fromAddress;
     const to = this.tempTx.toAddress;
-    const amount = this.tempTx.amount;
-    const fee = this.tempTx.fee;
+    const { amount } = this.tempTx;
+    const { fee } = this.tempTx;
 
     if (activeAsset.type === AssetType.Constellation) {
       const { chainId } = DAG_NETWORK[activeNetwork.Constellation];

@@ -111,14 +111,10 @@ export class StargazerISMessageBroker {
         return true;
       }
 
-      if ('result' in response) {
-        responseHandler.resolve(response.result);
-        return true;
-      }
-
+      responseHandler.resolve(response.result);
       this.#pendingResponses.delete(message.chnId);
 
-      return false;
+      return true;
     }
 
     return false;

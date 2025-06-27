@@ -1,55 +1,31 @@
 import { dag4 } from '@stardust-collective/dag4';
-import store from 'state/store';
-import {
-  changeActiveNetwork,
-  setVaultInfo,
-  addLedgerWallet,
-  updateWallets,
-  addBitfiWallet,
-  addCypherockWallet,
-  addCustomNetwork,
-  changeCurrentEVMNetwork,
-  getHasEncryptedVault,
-} from 'state/vault';
-import IVaultState, {
-  ICustomNetworkObject,
-  IVaultWalletsStoreState,
-  Network,
-} from 'state/vault/types';
-import { DAG_NETWORK } from 'constants/index';
-import {
-  KeyringManager,
-  KeyringNetwork,
-  KeyringWalletState,
-  KeyringVaultState,
-} from '@stardust-collective/dag4-keyring';
-import { getEncryptor } from 'utils/keyringManagerUtils';
+import { KeyringManager, KeyringNetwork, KeyringVaultState, KeyringWalletState } from '@stardust-collective/dag4-keyring';
 import filter from 'lodash/filter';
-import { isNative } from 'utils/envUtil';
-import { setAutoLogin } from 'state/biometrics';
-import { setUnlocked } from 'state/auth';
+
+import { DAG_NETWORK } from 'constants/index';
+
 import { ProtocolProvider, StargazerChain } from 'scripts/common';
-import { generateId } from './EVMChainController/utils';
-import { AccountController } from './AccountController';
+import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
+
+import { setUnlocked } from 'state/auth';
+import { setAutoLogin } from 'state/biometrics';
+import store from 'state/store';
+import { addBitfiWallet, addCustomNetwork, addCypherockWallet, addLedgerWallet, changeActiveNetwork, changeCurrentEVMNetwork, getHasEncryptedVault, setVaultInfo, updateWallets } from 'state/vault';
+import { type ICustomNetworkObject, type IVaultWalletsStoreState, Network } from 'state/vault/types';
+
+import { isNative } from 'utils/envUtil';
+import { BITFI_WALLET_LABEL, BITFI_WALLET_PREFIX, CYPHEROCK_WALLET_LABEL, CYPHEROCK_WALLET_PREFIX, HardwareWallet, isBitfi, isCypherock, isHardware, isLedger, LEDGER_WALLET_LABEL, LEDGER_WALLET_PREFIX } from 'utils/hardware';
+import { getEncryptor } from 'utils/keyringManagerUtils';
+
+import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
 import { OnboardWalletHelper } from '../helpers/onboardWalletHelper';
-import SwapController, { ISwapController } from './SwapController';
-import NFTController, { INFTController } from './NFTController';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
-import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
-import {
-  BITFI_WALLET_LABEL,
-  BITFI_WALLET_PREFIX,
-  CYPHEROCK_WALLET_PREFIX,
-  CYPHEROCK_WALLET_LABEL,
-  HardwareWallet,
-  isBitfi,
-  isCypherock,
-  isHardware,
-  isLedger,
-  LEDGER_WALLET_LABEL,
-  LEDGER_WALLET_PREFIX,
-} from 'utils/hardware';
+
+import { generateId } from './EVMChainController/utils';
+import { AccountController } from './AccountController';
+import NFTController, { INFTController } from './NFTController';
+import SwapController, { ISwapController } from './SwapController';
 
 // Constants
 const ACCOUNT_ITEMS_FIRST_INDEX = 0;
@@ -134,17 +110,8 @@ class WalletController {
     return true;
   }
 
-  async importSingleAccount(
-    label: string,
-    network: KeyringNetwork,
-    privateKey: string,
-    silent?: boolean
-  ): Promise<string> {
-    const wallet = await this.keyringManager.createSingleAccountWallet(
-      label,
-      network,
-      privateKey
-    );
+  async importSingleAccount(label: string, network: KeyringNetwork, privateKey: string, silent?: boolean): Promise<string> {
+    const wallet = await this.keyringManager.createSingleAccountWallet(label, network, privateKey);
 
     if (!silent) {
       // The createSingleAccountWallet sends an "update" event which executes the switchWallet function
@@ -180,12 +147,7 @@ class WalletController {
     const state = store.getState();
     const { vault } = state;
     const { wallets } = vault;
-    const allWallets = [
-      ...wallets.local,
-      ...wallets.ledger,
-      ...wallets.bitfi,
-      ...wallets.cypherock,
-    ];
+    const allWallets = [...wallets.local, ...wallets.ledger, ...wallets.bitfi, ...wallets.cypherock];
 
     for (let i = 0; i < allWallets.length; i++) {
       const { accounts } = allWallets[i];
@@ -261,9 +223,7 @@ class WalletController {
         addWalletAction = addCypherockWallet;
         supportedAssets = hardwareWallet.supportedAssets;
         accounts = hardwareWallet.accounts;
-        isDuplicate =
-          this.checkForDuplicateWallet(accounts[0].address) ||
-          this.checkForDuplicateWallet(accounts[1].address);
+        isDuplicate = this.checkForDuplicateWallet(accounts[0].address) || this.checkForDuplicateWallet(accounts[1].address);
       } else {
         console.warn('Unknown hardware wallet type:', hardwareWallet.type);
         continue;
@@ -313,13 +273,13 @@ class WalletController {
     let newCypherockState = [...cypherock];
 
     if (isLedger(wallet.type)) {
-      newLedgerState = filter(newLedgerState, (w) => w.id !== wallet.id);
+      newLedgerState = filter(newLedgerState, w => w.id !== wallet.id);
     } else if (isBitfi(wallet.type)) {
-      newBitfiState = filter(newBitfiState, (w) => w.id !== wallet.id);
+      newBitfiState = filter(newBitfiState, w => w.id !== wallet.id);
     } else if (isCypherock(wallet.type)) {
-      newCypherockState = filter(newCypherockState, (w) => w.id !== wallet.id);
+      newCypherockState = filter(newCypherockState, w => w.id !== wallet.id);
     } else {
-      newLocalState = filter(newLocalState, (w) => w.id !== wallet.id);
+      newLocalState = filter(newLocalState, w => w.id !== wallet.id);
     }
 
     newWalletState = {
@@ -329,12 +289,7 @@ class WalletController {
       cypherock: [...newCypherockState],
     };
 
-    const newAllWallets = [
-      ...newWalletState.local,
-      ...newWalletState.ledger,
-      ...newWalletState.bitfi,
-      ...newWalletState.cypherock,
-    ];
+    const newAllWallets = [...newWalletState.local, ...newWalletState.ledger, ...newWalletState.bitfi, ...newWalletState.cypherock];
 
     if (vault && vault.activeWallet && vault.activeWallet.id === wallet.id) {
       if (newAllWallets.length) {
@@ -350,19 +305,22 @@ class WalletController {
   }
 
   async switchWallet(id: string, label?: string): Promise<void> {
+    // Stop all existing operations first
+    this.account.assetsBalanceMonitor.stop();
+    // Build account info
     this.account.buildAccountAssetInfo(id, label);
-    Promise.all([
-      this.account.assetsBalanceMonitor.start(),
-      this.account.getLatestTxUpdate(),
-      this.account.txController.startMonitor(),
-      this.nfts.fetchAllNfts(),
-    ]);
+    try {
+      // Start operations sequentially with proper error handling
+      Promise.all([this.account.assetsBalanceMonitor.start(), this.account.getLatestTxUpdate(), this.account.txController.startMonitor(), this.nfts.fetchAllNfts()]);
+    } catch (err) {
+      // Ensure monitor is still started even if other operations fail
+      this.account.assetsBalanceMonitor.start();
+    }
   }
 
   async switchNetwork(network: string, chainId: string): Promise<void> {
-    const { activeAsset }: IVaultState = store.getState().vault;
-    const { assets } = store.getState();
     console.log(`${network} - ${chainId}`);
+    this.account.assetsBalanceMonitor.stop();
 
     let provider = ProtocolProvider.CONSTELLATION;
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
@@ -376,13 +334,7 @@ class WalletController {
       );
     }
 
-    const EVM_CHAINS = [
-      KeyringNetwork.Ethereum,
-      Network.Avalanche,
-      Network.BSC,
-      Network.Polygon,
-      Network.Base,
-    ];
+    const EVM_CHAINS = [KeyringNetwork.Ethereum, Network.Avalanche, Network.BSC, Network.Polygon, Network.Base];
 
     if (EVM_CHAINS.includes(network as KeyringNetwork | Network)) {
       this.account.networkController.switchChain(network, chainId);
@@ -391,8 +343,8 @@ class WalletController {
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
-    // Update NFTs list if any EVM chain has changed.
-    await this.nfts.fetchAllNfts();
+    // Manually trigger state update
+    await updateAndNotify();
 
     if (!isNative) {
       const message: DappMessage = {
@@ -404,16 +356,14 @@ class WalletController {
       await chrome.runtime.sendMessage(message);
     }
 
-    if (activeAsset) {
-      if (assets[activeAsset.id].network !== chainId) {
-        await this.account.updateAccountActiveAsset(activeAsset);
-      }
-
-      await this.account.getLatestTxUpdate();
-    }
-
     // restart monitor with different network
-    await this.account.assetsBalanceMonitor.start();
+    setTimeout(() => {
+      if (EVM_CHAINS.includes(network as KeyringNetwork | Network)) {
+        // Update NFTs list if any EVM chain has changed.
+        this.nfts.fetchAllNfts();
+      }
+      this.account.assetsBalanceMonitor.start();
+    }, 100);
   }
 
   async addNetwork(network: string, data: any): Promise<void> {
@@ -466,6 +416,7 @@ class WalletController {
   }
 
   logOut(): void {
+    this.account.assetsBalanceMonitor.stop();
     this.keyringManager.logout();
     this.account.networkController = undefined;
     store.dispatch(setUnlocked(false));

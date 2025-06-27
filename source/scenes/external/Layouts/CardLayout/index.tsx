@@ -84,7 +84,9 @@ const CardLayout: FC<ICardLayoutProps> = ({
             <TextV3.BodyStrong color={COLORS_ENUMS.WHITE}>
               {originDescriptionLabel}
             </TextV3.BodyStrong>
-            <TextV3.Body color={COLORS_ENUMS.WHITE}>{origin}</TextV3.Body>
+            <TextV3.Body color={COLORS_ENUMS.WHITE} extraStyles={styles.origin}>
+              {origin}
+            </TextV3.Body>
           </div>
         </div>
         <div className={styles.card}>

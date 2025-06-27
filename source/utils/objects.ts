@@ -83,3 +83,16 @@ export const compareObjects = (obj1: object, obj2: object): boolean => {
 
   return hash1 === hash2;
 };
+
+export const upsertById = (array: any[], item: any): any[] => {
+  const updatedArray = [...array];
+  const index = updatedArray.findIndex((i) => i.id === item.id);
+
+  if (index !== -1) {
+    updatedArray[index] = item;
+  } else {
+    updatedArray.push(item);
+  }
+
+  return updatedArray;
+};

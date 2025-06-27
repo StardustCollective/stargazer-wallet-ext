@@ -1,20 +1,25 @@
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import IVaultState, { IAssetState } from 'state/vault/types';
 import store from 'state/store';
-import { getAssetByContractAddress, validateMetagraphAddress } from '../utils';
+import { validateMetagraphAddress } from '../utils';
+import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
 
-export const dag_getMetagraphBalance = (
+export const dag_getMetagraphBalance = async (
   request: StargazerRequest & { type: 'rpc' },
   _message: StargazerRequestMessage,
   _sender: chrome.runtime.MessageSender
 ) => {
   const [address] = request.params as [unknown];
 
-  validateMetagraphAddress(address);
+  const metagraphAsset = validateMetagraphAddress(address);
 
-  const { balances }: IVaultState = store.getState().vault;
+  // validateMetagraphAddress checks if the asset is active
+  const { assets } = store.getState();
+  const l0asset = assets[metagraphAsset.id];
+  const balanceInDag = await getMetagraphCurrencyBalance(l0asset);
 
-  const metagraphAsset: IAssetState = getAssetByContractAddress(address as string);
+  if (balanceInDag === null) {
+    return null;
+  }
 
-  return metagraphAsset && balances[metagraphAsset.id];
+  return balanceInDag.toString();
 };

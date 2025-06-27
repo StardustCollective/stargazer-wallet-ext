@@ -27,6 +27,7 @@ import IVaultState, {
   Transaction,
   Reward,
 } from './types';
+import { upsertById } from 'utils/objects';
 
 const initialState: IVaultState = {
   status: 0,
@@ -202,7 +203,8 @@ const VaultState = createSlice({
       }
     },
     addActiveWalletAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
-      state.activeWallet.assets = state.activeWallet.assets.concat([action.payload]);
+      const updatedAssets = upsertById(state.activeWallet.assets, action.payload);
+      state.activeWallet.assets = updatedAssets;
     },
     removeActiveWalletAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
       state.activeWallet.assets = state.activeWallet.assets.filter(
@@ -226,7 +228,8 @@ const VaultState = createSlice({
       }
     },
     addCustomAsset(state: IVaultState, action: PayloadAction<IAssetInfoState>) {
-      state.customAssets.push(action.payload);
+      const updatedCustomAssets = upsertById(state.customAssets, action.payload);
+      state.customAssets = updatedCustomAssets;
     },
     removeCustomAsset(state: IVaultState, action: PayloadAction<IAssetInfoState>) {
       state.customAssets = state.customAssets.filter(
