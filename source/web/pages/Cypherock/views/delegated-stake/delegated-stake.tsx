@@ -116,7 +116,6 @@ const DelegatedStakeView = ({ service, changeState, handleSuccessResponse, handl
         return; // User cancelled hardware signing
       }
       await handleErrorResponse(error, requestMessage);
-      changeState(WalletState.SignedError);
     },
   };
 

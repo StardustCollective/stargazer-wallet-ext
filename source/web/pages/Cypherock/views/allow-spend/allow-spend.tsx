@@ -134,7 +134,6 @@ const AllowSpendView = ({ service, changeState, handleSuccessResponse, handleErr
         return; // User cancelled hardware signing
       }
       await handleErrorResponse(error, requestMessage);
-      changeState(WalletState.SignedError);
     },
   };
 

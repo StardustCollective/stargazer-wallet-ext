@@ -202,14 +202,22 @@ const CypherockPage = () => {
         message = 'Insufficient balance';
         code = EIPErrorCodes.Rejected;
       }
+      
+      message = err.message;
     }
 
     if (err instanceof CypherockError) {
       message = err.message;
     }
 
+    if (typeof err === 'string') {
+      message = err;
+    }
+
+    setErrorMessage(message);
     StargazerExternalPopups.addResolvedParam(location.href);
     await StargazerWSMessageBroker.sendResponseError(new EIPRpcError(message, code), messageRequest);
+    setWalletState(WalletState.SignedError);
   };
 
   const onConnect = async () => {
@@ -506,7 +514,7 @@ const CypherockPage = () => {
               handleClick: () => window.close(),
             }}
           >
-            <ErrorView title="Signing was unsuccessful" description="Something went wrong during the signing process. Please try again." />
+            <ErrorView title="Signing was unsuccessful" description={`Something went wrong during the signing process: ${errorMessage}`} />
           </Layout>
         );
       case WalletState.SignMessage:

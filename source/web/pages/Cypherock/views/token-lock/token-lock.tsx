@@ -130,7 +130,6 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
         return; // User cancelled hardware signing
       }
       await handleErrorResponse(error, requestMessage);
-      changeState(WalletState.SignedError);
     },
   };
 

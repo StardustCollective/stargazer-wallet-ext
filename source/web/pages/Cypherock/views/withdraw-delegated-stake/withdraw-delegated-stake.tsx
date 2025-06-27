@@ -100,7 +100,6 @@ const WithdrawDelegatedStakeView = ({ service, changeState, handleSuccessRespons
         return; // User cancelled hardware signing
       }
       await handleErrorResponse(error, requestMessage);
-      changeState(WalletState.SignedError);
     },
   };
 

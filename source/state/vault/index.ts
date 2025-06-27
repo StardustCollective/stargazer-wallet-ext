@@ -177,6 +177,8 @@ const VaultState = createSlice({
       state.activeWallet.label = action.payload;
     },
     setLoadingTransactions(state: IVaultState, action: PayloadAction<boolean>) {
+      if (!state.activeAsset) return;
+
       state.activeAsset.loading = action.payload;
     },
     updateTransactions(

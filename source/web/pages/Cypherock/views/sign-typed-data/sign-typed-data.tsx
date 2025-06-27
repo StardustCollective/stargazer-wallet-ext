@@ -90,7 +90,6 @@ const SignTypedDataView = ({ service, changeState, handleSuccessResponse, handle
         return; // User cancelled hardware signing
       }
       await handleErrorResponse(error, requestMessage);
-      changeState(WalletState.SignedError);
     },
   };
 

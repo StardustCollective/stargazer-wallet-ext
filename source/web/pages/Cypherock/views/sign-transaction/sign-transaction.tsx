@@ -235,7 +235,6 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
         return; // User cancelled hardware signing
       }
       await handleErrorResponse(error, requestMessage);
-      changeState(WalletState.SignedError);
     },
   };
 
