@@ -156,8 +156,7 @@ const AssetsController = (): IAssetsController => {
     logo?: string;
   }): Promise<void> => {
     const accountController = getAccountController();
-    const { activeNetwork, activeWallet, customAssets } = store.getState().vault;
-    const assets = store.getState().assets;
+    const { activeNetwork, activeWallet } = store.getState().vault;
 
     const network = !!chainId ? chainId : activeNetwork[KeyringNetwork.Constellation];
     const deafultLogo = !!logo ? logo : DEFAULT_LOGOS[KeyringNetwork.Constellation];
@@ -177,27 +176,22 @@ const AssetsController = (): IAssetsController => {
       custom: true,
     };
 
-    const asset = Object.keys(assets).find((assetId) => assetId === newL0Asset.id);
-    const assetCustom = customAssets.find((asset) => asset.id === newL0Asset.id);
     const dagAddress = activeWallet?.assets?.find(
       (asset) => asset.id === AssetType.Constellation
     )?.address;
-    if (!asset && !assetCustom) {
-      store.dispatch(addCustomAsset(newL0Asset));
-      store.dispatch(addAsset(newL0Asset));
-      store.dispatch(
-        addActiveWalletAsset({
-          id: newL0Asset.id,
-          type: newL0Asset.type,
-          label: newL0Asset.label,
-          address: dagAddress,
-          contractAddress: newL0Asset.address,
-        })
-      );
-      await accountController.assetsBalanceMonitor.start();
-    } else {
-      throw new Error(`Token already exists`);
-    }
+    store.dispatch(addCustomAsset(newL0Asset));
+    store.dispatch(addAsset(newL0Asset));
+    store.dispatch(
+      addActiveWalletAsset({
+        id: newL0Asset.id,
+        type: newL0Asset.type,
+        label: newL0Asset.label,
+        address: dagAddress,
+        contractAddress: newL0Asset.address,
+      })
+    );
+
+    accountController.assetsBalanceMonitor.start();
   };
 
   const addCustomERC20Asset = async (
@@ -210,7 +204,6 @@ const AssetsController = (): IAssetsController => {
     if (!validateAddress(address)) return;
 
     const { activeNetwork } = store.getState().vault;
-    const assets = store.getState().assets;
     const currentNetwork = getNetworkFromChainId(networkType);
     const network = activeNetwork[currentNetwork as keyof ActiveNetwork];
     let logo = DEFAULT_LOGOS[currentNetwork as keyof typeof DEFAULT_LOGOS];
@@ -243,13 +236,8 @@ const AssetsController = (): IAssetsController => {
       custom: true,
     };
 
-    const asset = Object.keys(assets).find((assetId) => assetId === newAsset.id);
-    if (!asset) {
-      store.dispatch(addCustomAsset(newAsset));
-      addAssetFn(newAsset);
-    } else {
-      throw new Error(`Token already exists`);
-    }
+    store.dispatch(addCustomAsset(newAsset));
+    addAssetFn(newAsset);
   };
 
   const removeCustomERC20Asset = (asset: IAssetInfoState): void => {
@@ -258,11 +246,6 @@ const AssetsController = (): IAssetsController => {
 
   const addAssetFn = async (asset: IAssetInfoState): Promise<void> => {
     const accountController = getAccountController();
-    const assets = store.getState().assets;
-    const assetExist = assets[asset.id];
-    if (!!assetExist) {
-      return;
-    }
 
     const { activeWallet } = store.getState().vault;
     const isDagAsset = AssetType.Constellation === asset.type;

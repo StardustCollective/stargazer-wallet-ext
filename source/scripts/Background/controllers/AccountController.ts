@@ -46,6 +46,7 @@ import { toDatum } from 'utils/number';
 import { isNative } from 'utils/envUtil';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import { ProtocolProvider } from 'scripts/common';
+import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -327,6 +328,7 @@ export class AccountController {
     }
 
     store.dispatch(changeActiveWallet(activeWallet));
+    updateAndNotify();
   }
 
   private buildAccountERC20Tokens(address: string, accountTokens: string[]) {

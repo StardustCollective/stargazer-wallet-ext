@@ -10,9 +10,9 @@ import {
   changeCurrentEVMNetwork,
   getHasEncryptedVault,
 } from 'state/vault';
-import IVaultState, {
-  ICustomNetworkObject,
-  IVaultWalletsStoreState,
+import {
+  type ICustomNetworkObject,
+  type IVaultWalletsStoreState,
   Network,
 } from 'state/vault/types';
 import { DAG_NETWORK } from 'constants/index';
@@ -39,6 +39,7 @@ import SwapController, { ISwapController } from './SwapController';
 import NFTController, { INFTController } from './NFTController';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
 import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
+import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 
 // Constants
 const LEDGER_WALLET_PREFIX = 'L';
@@ -324,19 +325,27 @@ class WalletController {
   }
 
   async switchWallet(id: string, label?: string): Promise<void> {
+    // Stop all existing operations first
+    this.account.assetsBalanceMonitor.stop();
+    // Build account info
     this.account.buildAccountAssetInfo(id, label);
-    Promise.all([
-      this.account.assetsBalanceMonitor.start(),
-      this.account.getLatestTxUpdate(),
-      this.account.txController.startMonitor(),
-      this.nfts.fetchAllNfts(),
-    ]);
+    try {
+      // Start operations sequentially with proper error handling
+      Promise.all([
+        this.account.assetsBalanceMonitor.start(),
+        this.account.getLatestTxUpdate(),
+        this.account.txController.startMonitor(),
+        this.nfts.fetchAllNfts(),
+      ]);
+    } catch (err) {
+      // Ensure monitor is still started even if other operations fail
+      this.account.assetsBalanceMonitor.start();
+    }
   }
 
   async switchNetwork(network: string, chainId: string): Promise<void> {
-    const { activeAsset }: IVaultState = store.getState().vault;
-    const { assets } = store.getState();
     console.log(`${network} - ${chainId}`);
+    this.account.assetsBalanceMonitor.stop();
 
     let provider = ProtocolProvider.CONSTELLATION;
     if (network === KeyringNetwork.Constellation && DAG_NETWORK[chainId]!.id) {
@@ -365,8 +374,8 @@ class WalletController {
     }
 
     store.dispatch(changeActiveNetwork({ network, chainId }));
-    // Update NFTs list if any EVM chain has changed.
-    await this.nfts.fetchAllNfts();
+    // Manually trigger state update
+    await updateAndNotify();
 
     if (!isNative) {
       const message: DappMessage = {
@@ -378,16 +387,14 @@ class WalletController {
       await chrome.runtime.sendMessage(message);
     }
 
-    if (activeAsset) {
-      if (assets[activeAsset.id].network !== chainId) {
-        await this.account.updateAccountActiveAsset(activeAsset);
-      }
-
-      await this.account.getLatestTxUpdate();
-    }
-
     // restart monitor with different network
-    await this.account.assetsBalanceMonitor.start();
+    setTimeout(() => {
+      if (EVM_CHAINS.includes(network as KeyringNetwork | Network)) {
+        // Update NFTs list if any EVM chain has changed.
+        this.nfts.fetchAllNfts();
+      }
+      this.account.assetsBalanceMonitor.start();
+    }, 100);
   }
 
   async addNetwork(network: string, data: any): Promise<void> {
@@ -439,6 +446,7 @@ class WalletController {
   }
 
   logOut(): void {
+    this.account.assetsBalanceMonitor.stop();
     this.keyringManager.logout();
     this.account.networkController = undefined;
     store.dispatch(setUnlocked(false));

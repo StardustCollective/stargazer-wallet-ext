@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
@@ -32,11 +32,13 @@ import {
   TOKEN,
   YOU_CAN_DELETE,
 } from './constants';
+import { updateAndNotify } from 'scripts/Background/handlers/handleStoreSubscribe';
 
 const WatchAsset = () => {
   const wallet = getWalletController();
   const current = useSelector(dappSelectors.getCurrent);
   const origin = current && current.origin;
+  const [loading, setLoading] = useState(false);
 
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
@@ -62,10 +64,10 @@ const WatchAsset = () => {
   };
 
   const onPositiveButtonClick = async () => {
+    setLoading(true);
     const selectedNetwork = Object.values(DAG_NETWORK).find(
       (network) => network.chainId === chainId
     );
-
     try {
       await wallet.account.assetsController.addCustomL0Token({
         l0endpoint: l0,
@@ -77,6 +79,8 @@ const WatchAsset = () => {
         chainId: selectedNetwork.id,
         logo,
       });
+      // Manually update the state to ensure the token is added in the store
+      await updateAndNotify();
     } catch (err) {
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(false, message);
@@ -236,6 +240,7 @@ const WatchAsset = () => {
           size={BUTTON_SIZES_ENUM.LARGE}
           label={ADD_TOKEN}
           extraStyle={styles.button}
+          loading={loading}
           onClick={onPositiveButtonClick}
         />
       </div>
