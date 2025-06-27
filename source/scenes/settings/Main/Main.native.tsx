@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import Card from 'components/Card';
 import TextV3 from 'components/TextV3';
+import NavigationItem from 'components/NavigationItem';
 
 import { COLORS_ENUMS } from 'assets/styles/colors';
 
@@ -67,24 +68,28 @@ const Main: FC<IMainSettings> = ({
 
   const SETTINGS_MAP = [
     {
+      id: 'settings-wallets',
       label: 'Wallets',
       key: 'Wallets',
       IconImageOrComponent: WalletIcon,
       onClick: onWalletLinkClick,
     },
     {
+      id: 'settings-networks',
       label: 'Networks',
       key: 'Networks',
       IconImageOrComponent: NetworksIcon,
       onClick: onNetworkLinkClicked,
     },
     {
+      id: 'settings-contacts',
       label: 'Contacts',
       key: 'Contacts',
       IconImageOrComponent: ContactsIcon,
       onClick: onContactsLinkClicked,
     },
     {
+      id: 'settings-security',
       label: 'Security',
       key: 'Security',
       IconImageOrComponent: SecurityIcon,
@@ -92,6 +97,7 @@ const Main: FC<IMainSettings> = ({
       disabled: !available,
     },
     {
+      id: 'settings-personalize',
       label: 'Personalize',
       key: 'Personalize',
       IconImageOrComponent: SettingsIcon,
@@ -104,7 +110,7 @@ const Main: FC<IMainSettings> = ({
       <View style={styles.box}>
         <View style={styles.content}>
           {SETTINGS_MAP.map((sectionProps) => {
-            return <RenderSettingsItem {...sectionProps} />; // eslint-disable-line
+            return <NavigationItem {...sectionProps} />;
           })}
         </View>
       </View>

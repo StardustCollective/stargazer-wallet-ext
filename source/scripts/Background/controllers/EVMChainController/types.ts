@@ -1,14 +1,8 @@
-import { BigNumber, Contract, ethers, Wallet } from 'ethers';
+import { TransactionRequest, TransactionResponse } from '@ethersproject/abstract-provider';
 import { BaseAmount } from '@xchainjs/xchain-util';
-import {
-  Address,
-  ChainsController,
-  FeeOptionKey,
-  Fees,
-  FeesParams,
-  TxParams,
-} from '../ChainsController';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { BigNumber, Contract, ethers, Wallet } from 'ethers';
+
+import { Address, ChainsController, FeeOptionKey, Fees, FeesParams, TxParams } from '../ChainsController';
 
 // Chain IDs
 export type EthChainId = 'mainnet' | 'sepolia';
@@ -25,26 +19,10 @@ export type AvalancheChainValue = 'avalanche-mainnet' | 'avalanche-testnet';
 export type BaseChainValue = 'base-mainnet' | 'base-sepolia';
 
 // All chains
-export type AllChainsIds =
-  | EthChainId
-  | PolygonChainId
-  | BSCChainId
-  | AvalancheChainId
-  | BaseChainId;
-export type AllChainsValues =
-  | EthChainValue
-  | PolygonChainValue
-  | BSCChainValue
-  | AvalancheChainValue
-  | BaseChainValue;
+export type AllChainsIds = EthChainId | PolygonChainId | BSCChainId | AvalancheChainId | BaseChainId;
+export type AllChainsValues = EthChainValue | PolygonChainValue | BSCChainValue | AvalancheChainValue | BaseChainValue;
 
-export const testnets = [
-  'sepolia',
-  'amoy',
-  'bsc-testnet',
-  'avalanche-testnet',
-  'base-sepolia',
-];
+export const testnets = ['sepolia', 'amoy', 'bsc-testnet', 'avalanche-testnet', 'base-sepolia'];
 
 export type IChain = {
   id: AllChainsIds | string;
@@ -84,29 +62,22 @@ type GetTokenInfoResponse = {
 };
 
 export type EVMChainControllerParams = {
-  chain?: AllChainsIds | string;
+  chain?: AllChainsIds | string | number;
   privateKey?: string;
 };
 
 export interface IEVMChainController extends ChainsController {
-  estimateTokenTransferGasLimit: (
-    recipient: string,
-    contractAddress: string,
-    txAmount: BigNumber,
-    defaultValue?: number
-  ) => Promise<number>;
   getTokenInfo: (address: string) => Promise<GetTokenInfoResponse | null>;
   waitForTransaction: (hash: string) => Promise<ethers.providers.TransactionReceipt>;
   transfer: (
     txParams: TxParams & {
-      feeOptionKey?: FeeOptionKey;
       gasPrice?: BaseAmount;
       gasLimit?: BigNumber;
-      nonce: string;
+      nonce?: number;
     }
   ) => Promise<TransactionResponse>;
   getWallet: (walletIndex: number) => Wallet;
   estimateGasPrices: () => Promise<GasPrices>;
-  estimateGas: (from: string, to: string, data: string) => Promise<BigNumber>;
+  estimateGas: (txn: TransactionRequest) => Promise<BigNumber>;
   createERC20Contract: (address: Address) => Contract;
 }

@@ -1,0 +1,31 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 48px;
+  flex-grow: 1;
+
+  .iconContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .icon {
+      height: 96px;
+      width: 96px;
+      color: #16a34a;
+    }
+  }
+
+  .text {
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.4px;
+    color: #331b5f;
+  }
+}

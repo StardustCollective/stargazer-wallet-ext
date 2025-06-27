@@ -1,0 +1,52 @@
+@import '~assets/styles/variables';
+
+.container {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 12px;
+  flex-grow: 1;
+  gap: 8px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+
+  .walletItem {
+    cursor: pointer;
+    display: flex;
+    padding: 12px 16px 12px 12px;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+    background-color: $white;
+    box-shadow: 0px 1px 3px 0px rgba(16, 24, 40, 0.1),
+      0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+
+    .walletIcon {
+      height: 24px;
+      width: 24px;
+      color: #4b5563;
+    }
+
+    .walletName {
+      display: flex;
+      flex-grow: 1;
+      font-size: 16px;
+      letter-spacing: -0.12px;
+    }
+
+    .selectedIcon {
+      height: 24px;
+      width: 24px;
+      color: #5b3fd4;
+    }
+  }
+
+  .walletSelected {
+    border: 1px solid #aa8df8;
+    background-color: #f4f0ff;
+  }
+}

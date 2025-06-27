@@ -1,104 +1,114 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-import {
-  ProtocolProvider,
-  StargazerRequest,
-  StargazerRequestMessage,
-} from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { getWalletInfo, validateMetagraphAddress } from '../utils';
-import { toDag } from 'utils/number';
+import { type SignTransactionDataDAG, TransactionType } from 'scenes/external/SignTransaction/types';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
+import { validateHardwareMethod } from 'utils/hardware';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { getChainId, getWalletInfo, validateMetagraphAddress, WINDOW_TYPES } from '../utils';
 
 export type StargazerMetagraphTransactionRequest = {
   metagraphAddress: string;
   source: string;
   destination: string;
-  amount: number; // In DATUM, 1 DATUM = 0.00000001 DAG
-  fee?: number; // In DATUM, 100000000 DATUM = 1 DAG
+  amount: number; // In DATUM
+  fee?: number; // In DATUM
 };
 
-export const dag_sendMetagraphTransaction = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
+export const dag_sendMetagraphTransaction = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
   const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
   }
 
-  const assetAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!assetAccount) {
     throw new Error('No active account for the request asset type');
   }
 
-  const [txData] = request.params as [StargazerMetagraphTransactionRequest];
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
-  const txMetagraphAddress = txData?.metagraphAddress;
-  const txSource = txData?.source;
-  const txDestination = txData?.destination;
-  const txAmount = txData?.amount;
-  const txFee = txData?.fee || 0;
+  const [data] = request.params as [StargazerMetagraphTransactionRequest];
 
-  validateMetagraphAddress(txMetagraphAddress);
+  const { metagraphAddress, source, destination, amount, fee } = data;
 
-  if (typeof txSource !== 'string') {
+  if (!data) {
+    throw new Error('No data provided');
+  }
+
+  validateMetagraphAddress(metagraphAddress);
+
+  if (!source || typeof source !== 'string') {
     throw new Error("Bad argument 'source'");
   }
 
-  if (typeof txDestination !== 'string') {
+  if (!destination || typeof destination !== 'string') {
     throw new Error("Bad argument 'destination'");
   }
 
-  if (typeof txAmount !== 'number') {
+  if (!amount || typeof amount !== 'number') {
     throw new Error("Bad argument 'amount'");
   }
 
-  if (!!txFee && typeof txFee !== 'number') {
+  if (!!fee && typeof fee !== 'number') {
     throw new Error("Bad argument 'fee'");
   }
 
-  if (!dag4.account.validateDagAddress(txSource)) {
+  if (!dag4.account.validateDagAddress(source)) {
     throw new Error("Invalid address 'source'");
   }
 
-  if (!dag4.account.validateDagAddress(txDestination)) {
+  if (!dag4.account.validateDagAddress(destination)) {
     throw new Error("Invaid address 'destination'");
   }
 
-  if (txAmount <= 0) {
+  if (amount <= 0) {
     throw new Error("'amount' should be greater than 0");
   }
 
-  if (assetAccount.address !== txSource) {
+  if (assetAccount.address !== source) {
     throw new Error('The active account is invalid');
   }
 
-  const txObject = {
-    metagraphAddress: txMetagraphAddress,
-    to: txDestination,
-    value: toDag(txAmount),
-    fee: toDag(txFee),
-    chain: ProtocolProvider.CONSTELLATION,
+  const signMetagraphTxnData: SignTransactionDataDAG = {
+    type: TransactionType.DagMetagraph,
+    metagraphAddress,
+    transaction: {
+      from: source,
+      to: destination,
+      value: amount,
+      fee: fee ?? 0,
+    },
   };
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    txObject,
-    message,
-    sender.origin,
-    'sendTransaction',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  if (windowType === WINDOW_TYPES.popup) {
+    windowSize.height = 740;
+  }
+
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: signMetagraphTxnData,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SignTransaction,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId,
+        address: source,
+      },
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

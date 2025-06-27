@@ -61,7 +61,7 @@ export interface INFTController {
 const INSUFICIENT_FUNDS = 'insufficient funds';
 const DEFAULT_ERROR_MESSAGE =
   'There was an error with your token transfer. Please try again later.';
-const NFT_FETCH_LIMIT = 200;
+const NFT_FETCH_LIMIT = 100;
 
 class NFTController implements INFTController {
   constructor(private accountController: Readonly<AccountController>) {}

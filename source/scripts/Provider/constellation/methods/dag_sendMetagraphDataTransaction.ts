@@ -1,16 +1,21 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { getChainLabel, getWalletInfo } from '../utils';
-import store from 'state/store';
-import { encodeToBase64 } from 'utils/encoding';
-import { getFeeEstimation } from 'scenes/external/SendMetagraphData/utils';
 import { normalizeObject } from '@stardust-collective/dag4-keystore';
+
+import { getFeeEstimation } from 'scenes/external/SendMetagraphData/utils';
+
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
+import store from 'state/store';
+
 import { getAccountController } from 'utils/controllersUtils';
+import { encodeToBase64 } from 'utils/encoding';
+import { validateHardwareMethod } from 'utils/hardware';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { getChainId, getChainLabel, getWalletInfo } from '../utils';
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
@@ -19,9 +24,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('There is no active wallet');
   }
 
-  const assetAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!assetAccount) {
     throw new Error('No active account for the request asset type');
@@ -44,19 +47,13 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   return request.params;
 };
 
-export const dag_sendMetagraphDataTransaction = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
+export const dag_sendMetagraphDataTransaction = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
   const [metagraphId, data, sign] = validateParams(request);
 
   const accountController = getAccountController();
 
-  const assets = store.getState().assets;
-  const metagraphAsset = Object.values(assets).find(
-    (asset) => asset?.address === metagraphId
-  );
+  const { assets } = store.getState();
+  const metagraphAsset = Object.values(assets).find(asset => asset?.address === metagraphId);
 
   if (!metagraphAsset || !metagraphAsset.dl1endpoint) {
     throw new Error('Invalid metagraph id for data transaction');
@@ -66,15 +63,15 @@ export const dag_sendMetagraphDataTransaction = async (
     throw new Error(`Invalid L1 data endpoint: ${metagraphAsset.dl1endpoint}`);
   }
 
-  const { activeWallet, windowUrl, windowType, deviceId, bipIndex } = getWalletInfo();
+  const { activeWallet, windowUrl, windowType } = getWalletInfo();
+
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
   const dataString = JSON.stringify(normalizeObject(data));
   const dataEncoded = encodeToBase64(dataString);
 
-  const { fee, address, updateHash } = await getFeeEstimation(
-    metagraphAsset.dl1endpoint,
-    dataString
-  );
+  const { fee, address, updateHash } = await getFeeEstimation(metagraphAsset.dl1endpoint, dataString);
 
   const signatureData = {
     origin,
@@ -86,22 +83,22 @@ export const dag_sendMetagraphDataTransaction = async (
     feeAmount: fee,
     destinationFeeAddress: address,
     updateHash,
-    deviceId,
-    bipIndex,
     chainLabel: getChainLabel(),
   };
 
   const windowSize = { width: 390, height: 700 };
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    signatureData,
-    message,
-    sender.origin,
-    'sendMetagraphData',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: signatureData,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SendMetagraphData,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

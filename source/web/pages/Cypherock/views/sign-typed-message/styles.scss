@@ -1,0 +1,17 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 48px;
+  flex-grow: 1;
+
+  .text {
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.4px;
+    color: #331b5f;
+  }
+}

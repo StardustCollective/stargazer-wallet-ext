@@ -7,6 +7,7 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { checkWatchAssetParams, fetchMetagraphBalance, getWalletInfo } from '../utils';
+import { ExternalRoute } from 'web/pages/External/types';
 
 export type WatchAssetOptions = {
   chainId: number; // The chain ID of the asset. 1 (mainnet), 3 (testnet), 4 (integrationnet)
@@ -58,15 +59,17 @@ export const wallet_watchAsset = async (
 
   windowSize.height = 678;
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    { ...params, balance },
-    message,
-    sender.origin,
-    'watchAsset',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: { ...params, balance },
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.WatchAsset,
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

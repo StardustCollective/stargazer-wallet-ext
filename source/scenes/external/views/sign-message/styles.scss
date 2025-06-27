@@ -1,0 +1,29 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .title {
+        color: #332556;
+      }
+
+      .message {
+        color: rgba(30, 21, 50, 0.66);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+  }
+}

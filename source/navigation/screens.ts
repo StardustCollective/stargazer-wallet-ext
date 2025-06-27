@@ -86,6 +86,7 @@ export default {
     checkPassword: 'settings-wallet-check-password',
     manageWallet: 'settings-wallet-manage',
     removeWallet: 'settings-wallet-remove',
+    selectHardwareWallet: 'settings-wallet-select-hardware',
     importWallet: 'settings-wallet-import',
     importAccount: 'settings-wallet-import-account',
     importPhrase: 'settings-wallet-import-phrase',

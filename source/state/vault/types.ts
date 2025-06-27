@@ -1,26 +1,10 @@
-import {
-  V3Keystore,
-  KDFParamsPhrase,
-  KDFParamsPrivateKey,
-} from '@stardust-collective/dag4-keystore';
-import {
-  Transaction as DAGTransaction,
-  TransactionV2 as DAGTransactionV2,
-} from '@stardust-collective/dag4-network';
-import {
-  KeyringAssetType,
-  KeyringNetwork,
-  KeyringWalletState,
-  KeyringWalletType,
-} from '@stardust-collective/dag4-keyring';
-import {
-  AvalancheChainId,
-  BaseChainId,
-  BSCChainId,
-  EthChainId,
-  PolygonChainId,
-} from 'scripts/Background/controllers/EVMChainController/types';
-import { IAssetInfoState } from 'state/assets/types';
+import type { KeyringAssetType, KeyringNetwork, KeyringWalletAccountState, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { KDFParamsPhrase, KDFParamsPrivateKey, V3Keystore } from '@stardust-collective/dag4-keystore';
+import type { Transaction as DAGTransaction, TransactionV2 as DAGTransactionV2 } from '@stardust-collective/dag4-network';
+
+import type { AvalancheChainId, BaseChainId, BSCChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
+
+import type { IAssetInfoState } from 'state/assets/types';
 
 export type SeedKeystore = V3Keystore<KDFParamsPhrase>;
 export type PrivKeystore = V3Keystore<KDFParamsPrivateKey>;
@@ -121,15 +105,18 @@ export interface IVaultWalletsStoreState {
   local: KeyringWalletState[];
   ledger: KeyringWalletState[];
   bitfi: KeyringWalletState[];
+  cypherock: KeyringWalletState[];
 }
 
 export interface IWalletState {
   id: string;
   bipIndex?: number;
-  type: KeyringWalletType;
+  cypherockId?: string;
   label: string;
+  type: KeyringWalletType;
   supportedAssets: KeyringAssetType[]; // eth,dag,erc20,erc721
   assets: IAssetState[];
+  accounts: KeyringWalletAccountState[];
 }
 export interface ICustomNetworkObject {
   id: string;
@@ -142,6 +129,7 @@ export interface ICustomNetworkObject {
   nativeToken: string;
   mainnet: string;
   network: string;
+  networkId: string;
   hexChainId?: string;
 }
 export interface ICustomNetworkState {
