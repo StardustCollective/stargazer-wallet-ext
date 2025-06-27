@@ -3,13 +3,7 @@
     "webextensions": true,
     "es2021": true
   },
-  "extends": [
-    "plugin:react/recommended",
-    "airbnb",
-    "plugin:prettier/recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["plugin:react/recommended", "airbnb", "plugin:prettier/recommended", "plugin:@typescript-eslint/eslint-recommended", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -84,6 +78,8 @@
     "react/function-component-definition": ["warn", { "namedComponents": "arrow-function" }],
     "react/jsx-filename-extension": ["warn", { "extensions": [".jsx", ".tsx"] }],
     "react/jsx-props-no-spreading": "off",
+    "react/no-unused-prop-types": "off",
+    "react/prop-types": "off",
     "no-nested-ternary": "off",
     "no-restricted-exports": "off",
     "no-restricted-globals": "off",
@@ -91,7 +87,9 @@
     "lines-between-class-members": "off",
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": ["error"],
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off"
   },
   "globals": {
     "it": "readonly",

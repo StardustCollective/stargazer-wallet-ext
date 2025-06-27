@@ -109,8 +109,8 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   const onSwapPressed = async () => {
     try {
       setIsSwapButtonLoading(true);
-      await accountController.confirmTempTx();
       walletController.swap.addTxId(pendingSwap.id);
+      await accountController.confirmTempTx();
       linkTo('/confirmation');
     } catch (e) {
       console.error(e);
