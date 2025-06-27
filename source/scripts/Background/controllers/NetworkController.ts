@@ -1,6 +1,6 @@
 import { type TransactionRequest } from '@ethersproject/abstract-provider';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { BigNumber, Wallet } from 'ethers';
+import { Wallet } from 'ethers';
 
 import { initialState as initialStateAssets } from 'state/assets';
 import { ITempNFTInfo } from 'state/nfts/types';
@@ -291,16 +291,6 @@ class NetworkController {
       console.log('Error: waitForTransaction - provider not found.');
     }
     return provider?.waitForTransaction(hash);
-  }
-
-  async estimateTokenTransferGasLimit(recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) {
-    let provider;
-    try {
-      provider = this.getProviderByActiveAsset();
-    } catch (err) {
-      console.log('Error: estimateTokenTransferGasLimit - provider not found.');
-    }
-    return provider.estimateTokenTransferGasLimit(recipient, contractAddress, txAmount, defaultValue);
   }
 
   async transfer(txOptions: any) {

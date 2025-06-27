@@ -15,7 +15,7 @@ type IUseGasEstimate = {
   fromAddress?: string;
   asset?: IAssetInfoState;
   data?: string;
-  gas: string;
+  gas?: string;
 };
 
 function useGasEstimate({ toAddress, fromAddress, asset, data, gas }: IUseGasEstimate) {

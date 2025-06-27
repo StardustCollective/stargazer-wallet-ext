@@ -145,7 +145,7 @@ export class StargazerWSMessageBroker {
   }
 
   static async sendResponseError(error: any, requestMessage: StargazerRequestMessage) {
-    console.error('RpcRequestError', String(error), error);
+    console.error('RpcRequestError', error);
     if (error instanceof Error) {
       return await StargazerWSMessageBroker.sendResponse(
         {

@@ -1,12 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState } from 'state/store';
-import { ActiveNetwork, AssetBalances } from 'state/vault/types';
+import { ActiveNetwork, AssetBalances, IActiveAssetState, IWalletState } from 'state/vault/types';
 
 import { ALL_EVM_CHAINS, DAG_NETWORK } from '../constants';
-import { StargazerChain } from '../scripts/common';
 
 const getBalances = (state: RootState): AssetBalances => state.vault.balances;
+const getActiveAsset = (state: RootState): IActiveAssetState => state.vault.activeAsset;
+const getActiveWallet = (state: RootState): IWalletState => state.vault.activeWallet;
 const getActiveNetwork = (state: RootState): ActiveNetwork => state.vault.activeNetwork;
 const getCurrentEvmNetwork = (state: RootState): string => state.vault.currentEVMNetwork;
 
@@ -37,10 +38,8 @@ const selectActiveEvmNetwork = createSelector(getCurrentEvmNetwork, (currentEvmN
 /**
  * Returns the active evm network
  */
-const selectActiveNetworkByChain = (chain: StargazerChain) => {
+const selectActiveNetworkByChain = (network: keyof ActiveNetwork) => {
   return createSelector(getActiveNetwork, (activeNetwork: ActiveNetwork) => {
-    // Capitalize the first letter of the chain -> StargazeChain to ActiveNetwork
-    const network = (chain.charAt(0).toUpperCase() + chain.slice(1)) as keyof ActiveNetwork;
     const activeChain = activeNetwork[network] ?? null;
 
     return Object.values(ALL_EVM_CHAINS).find(net => net.id === activeChain) ?? null;
@@ -48,8 +47,11 @@ const selectActiveNetworkByChain = (chain: StargazerChain) => {
 };
 
 export default {
+  getBalances,
   getCurrentEvmNetwork,
   getAssetBalance,
+  getActiveAsset,
+  getActiveWallet,
   getActiveNetwork,
   selectActiveNetworkByChain,
   selectActiveConstellationNetwork,

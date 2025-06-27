@@ -67,12 +67,10 @@ export type EVMChainControllerParams = {
 };
 
 export interface IEVMChainController extends ChainsController {
-  estimateTokenTransferGasLimit: (recipient: string, contractAddress: string, txAmount: BigNumber, defaultValue?: number) => Promise<number>;
   getTokenInfo: (address: string) => Promise<GetTokenInfoResponse | null>;
   waitForTransaction: (hash: string) => Promise<ethers.providers.TransactionReceipt>;
   transfer: (
     txParams: TxParams & {
-      feeOptionKey?: FeeOptionKey;
       gasPrice?: BaseAmount;
       gasLimit?: BigNumber;
       nonce?: number;

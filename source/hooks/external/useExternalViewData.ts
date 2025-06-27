@@ -1,3 +1,4 @@
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -8,6 +9,8 @@ import dappSelectors from 'selectors/dappSelectors';
 import vaultSelectors from 'selectors/vaultSelectors';
 import walletsSelectors from 'selectors/walletsSelectors';
 
+import { type ActiveNetwork, Network } from 'state/vault/types';
+
 export interface ExternalViewData {
   current: ReturnType<typeof dappSelectors.getCurrent>;
   activeWallet: ReturnType<typeof walletsSelectors.getActiveWallet>;
@@ -15,6 +18,15 @@ export interface ExternalViewData {
   accountChanged: boolean;
   networkChanged: boolean;
 }
+
+const MAP_CHAIN_TO_NETWORK: Record<StargazerChain, keyof ActiveNetwork> = {
+  [StargazerChain.CONSTELLATION]: KeyringNetwork.Constellation,
+  [StargazerChain.ETHEREUM]: KeyringNetwork.Ethereum,
+  [StargazerChain.AVALANCHE]: Network.Avalanche,
+  [StargazerChain.BSC]: Network.BSC,
+  [StargazerChain.POLYGON]: Network.Polygon,
+  [StargazerChain.BASE]: Network.Base,
+};
 
 /**
  * Custom hook that provides common data used across all external view components
@@ -27,7 +39,7 @@ export const useExternalViewData = (wallet?: WalletParam, isDappTransaction = tr
   const activeWallet = useSelector(walletsSelectors.getActiveWallet);
 
   const isDag = chain === StargazerChain.CONSTELLATION;
-  const evmSelector = isDappTransaction ? vaultSelectors.selectActiveEvmNetwork : vaultSelectors.selectActiveNetworkByChain(chain);
+  const evmSelector = isDappTransaction ? vaultSelectors.selectActiveEvmNetwork : vaultSelectors.selectActiveNetworkByChain(MAP_CHAIN_TO_NETWORK[chain]);
   const activeNetwork = isDag ? useSelector(vaultSelectors.selectActiveConstellationNetwork) : useSelector(evmSelector);
 
   const networkLabel = useMemo(() => {
