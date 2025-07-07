@@ -482,11 +482,6 @@ const PROVIDERS_BASE_URL = isProd
   ? STARGAZER_PROVIDERS_BASE_URL_PROD
   : STARGAZER_PROVIDERS_BASE_URL;
 
-export const GET_ELPACA_API = 'http://54.215.44.118:9100/data-application/streak';
-export const POST_ELPACA_API = 'http://54.215.44.118:9300/data';
-export const ELPACA_LEARN_MORE =
-  'https://constellationnetwork.medium.com/introducing-the-el-paca-metagraph-ff2b34586918';
-
 export const EXTERNAL_REQUESTS_BASE_URL =
   'https://production.stargazer-api.constellationnetwork.net/external-requests';
 

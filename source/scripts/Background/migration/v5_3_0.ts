@@ -1,26 +1,8 @@
 import { reload } from 'utils/browser';
 import IAssetListState from 'state/assets/types';
-import IContactBookState from 'state/contacts/types';
-import IPriceState from 'state/price/types';
-import IVaultState, { AssetType } from 'state/vault/types';
-import ISwapState from 'state/swap/types';
-import IProvidersState from 'state/providers/types';
-import { INFTListState } from 'state/nfts/types';
+import { AssetType } from 'state/vault/types';
 import { saveState } from 'state/localStorage';
-import { IUserState } from 'state/user/types';
 import { CONSTELLATION_LOGO, DOR_LOGO } from 'constants/index';
-
-type V5_2_1State = {
-  assets: IAssetListState;
-  nfts: INFTListState;
-  contacts: IContactBookState;
-  user: IUserState;
-  dapp: {};
-  price: IPriceState;
-  providers: IProvidersState;
-  vault: IVaultState;
-  swap: ISwapState;
-};
 
 const VERSION = '5.3.0';
 
@@ -86,7 +68,7 @@ const MigrateRunner = async (oldState: any) => {
     },
   });
   try {
-    const newState: V5_2_1State = {
+    const newState = {
       ...oldState,
       assets: {
         ...assetsUpdated,

@@ -167,15 +167,6 @@ const MigrationController = async () => {
   }
 
   /**
-   * version < 5_1_3
-   * Description: Adds elpaca hidden property
-   */
-  if (compareVersions(state.vault.version, '5.1.3') < 0) {
-    const v5_1_3 = require('../migration/v5_1_3');
-    await v5_1_3.default(state);
-  }
-
-  /**
    * version < 5_2_0
    * Description: adds Base network
    */
@@ -199,6 +190,15 @@ const MigrationController = async () => {
   if (compareVersions(state.vault.version, '5.3.5') < 0) {
     const v5_3_5 = require('../migration/v5_3_5');
     await v5_3_5.default(state);
+  }
+
+  /**
+   * version < 5_3_7
+   * Description: Removes elpaca claim functionality
+   */
+  if (compareVersions(state.vault.version, '5.3.7') < 0) {
+    const v5_3_7 = require('../migration/v5_3_7');
+    await v5_3_7.default(state);
   }
 };
 

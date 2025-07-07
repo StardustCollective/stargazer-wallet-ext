@@ -29,7 +29,6 @@ const Main: FC<IMainSettings> = ({
   onAboutLinkClicked,
   onContactsLinkClicked,
   onSecurityLinkClicked,
-  onPersonalizeLinkClicked,
   version,
 }) => {
   const { available } = useSelector((state: RootState) => state.biometrics);
@@ -90,12 +89,6 @@ const Main: FC<IMainSettings> = ({
       IconImageOrComponent: SecurityIcon,
       onClick: onSecurityLinkClicked,
       disabled: !available,
-    },
-    {
-      label: 'Personalize',
-      key: 'Personalize',
-      IconImageOrComponent: SettingsIcon,
-      onClick: onPersonalizeLinkClicked,
     },
   ];
 

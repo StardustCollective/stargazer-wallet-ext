@@ -91,7 +91,6 @@ export default {
     importPhrase: 'settings-wallet-import-phrase',
     connectedSites: 'settings-connected-sites',
     security: 'settings-security',
-    personalize: 'settings-personalize',
   },
 
   ////////////////////////////

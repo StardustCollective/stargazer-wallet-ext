@@ -46,19 +46,8 @@ import { IAssetInfoState } from 'state/assets/types';
 import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
 import { getAccountController } from 'utils/controllersUtils';
 import { getDagAddress, getEthAddress } from 'utils/wallet';
-import { getElPacaInfo, claimElpaca as claimElPacaFn } from 'state/user/api';
-import { dag4 } from '@stardust-collective/dag4';
-import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
-import {
-  clearClaimAddress as clearClaimAddressFn,
-  clearClaim as clearClaimFn,
-  clearClaimHash as clearClaimHashFn,
-  setElpacaHidden as setElpacaHiddenFn,
-} from 'state/user';
-import { ELPACA_VALUE } from 'utils/envUtil';
 import { ExternalApi } from 'utils/httpRequests/apis';
 import { ExternalService } from 'utils/httpRequests/constants';
-import { captureError } from 'utils/sentry';
 
 // Default logos
 const DEFAULT_LOGOS = {
@@ -101,16 +90,10 @@ export interface IAssetsController {
   fetchQuote: (data: GetQuoteRequest) => Promise<void>;
   fetchBestDeal: (data: GetBestDealRequest) => Promise<void>;
   fetchPaymentRequest: (data: PaymentRequestBody) => Promise<void>;
-  fetchElpacaStreak: () => Promise<void>;
-  claimElpaca: () => Promise<void>;
   setRequestId: (value: string) => void;
-  setElpacaHidden: (value: boolean) => void;
   clearErrors: () => void;
   clearBestDeal: () => void;
   clearResponse: () => void;
-  clearClaim: () => void;
-  clearClaimHash: () => void;
-  clearClaimAddress: () => void;
   setSelectedProvider: (provider: IProviderInfoState) => void;
   clearPaymentRequest: () => void;
 }
@@ -295,68 +278,6 @@ const AssetsController = (): IAssetsController => {
     await store.dispatch<any>(getBestDeal(data));
   };
 
-  const claimElpaca = async () => {
-    const { activeWallet } = store.getState().vault;
-    const { elpaca } = store.getState().user;
-    let address = '';
-    try {
-      address = getDagAddress(activeWallet);
-      if (!address) throw new Error('No DAG address found');
-
-      const token = elpaca?.streak?.data?.nextToken ?? '';
-
-      const data = {
-        StreakUpdate: {
-          address,
-          token,
-        },
-      };
-
-      const dataEncoded = encodeToBase64(JSON.stringify(data));
-      const signature = await dag4.keyStore.dataSign(
-        decodeFromBase64(ELPACA_VALUE),
-        dataEncoded
-      );
-      store.dispatch<any>(claimElPacaFn({ address, signature, token }));
-    } catch (err) {
-      captureError({
-        error: new Error('Elpaca: signature failed'),
-        extraInfo: {
-          message: err instanceof Error ? err.message : 'Original message not available',
-        },
-        userAddress: address,
-      });
-
-      throw err;
-    }
-  };
-
-  const fetchElpacaStreak = async (): Promise<void> => {
-    const { elpaca } = store.getState().user;
-    const { activeWallet } = store.getState().vault;
-
-    const dagAddress = elpaca?.claim?.data?.address ?? getDagAddress(activeWallet);
-    if (!dagAddress) return;
-
-    store.dispatch<any>(getElPacaInfo(dagAddress));
-  };
-
-  const setElpacaHidden = (value: boolean) => {
-    store.dispatch<any>(setElpacaHiddenFn(value));
-  };
-
-  const clearClaim = () => {
-    store.dispatch<any>(clearClaimFn());
-  };
-
-  const clearClaimHash = () => {
-    store.dispatch<any>(clearClaimHashFn());
-  };
-
-  const clearClaimAddress = () => {
-    store.dispatch<any>(clearClaimAddressFn());
-  };
-
   const clearBestDeal = (): void => {
     store.dispatch<any>(clearBestDealDispatch());
   };
@@ -394,8 +315,6 @@ const AssetsController = (): IAssetsController => {
     searchERC20Assets,
     clearSearchAssets,
     fetchERC20Assets,
-    fetchElpacaStreak,
-    claimElpaca,
     addAssetFn,
     removeERC20AssetFn,
     fetchQuote,
@@ -403,14 +322,10 @@ const AssetsController = (): IAssetsController => {
     fetchPaymentRequest,
     setRequestId,
     setSelectedProvider,
-    setElpacaHidden,
     clearErrors,
     clearPaymentRequest,
     clearBestDeal,
     clearResponse,
-    clearClaim,
-    clearClaimHash,
-    clearClaimAddress,
   };
 };
 

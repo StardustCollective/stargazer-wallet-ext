@@ -11,13 +11,11 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
-import { getDagAddress, walletHasDag, walletHasEth } from 'utils/wallet';
-import { getElPacaInfo } from 'state/user/api';
+import { walletHasDag, walletHasEth } from 'utils/wallet';
 import { getDagBalance } from 'dag4/block-explorer';
 import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
 
 const THIRTY_SECONDS = 30 * 1000;
-const SIXTY_SECONDS = 60 * 1000;
 
 export type AccountTrackerList = {
   [network: string]: AccountTracker;
@@ -27,8 +25,6 @@ export class AssetsBalanceMonitor {
   private priceIntervalId: any;
 
   private dagBalIntervalId: any;
-
-  private pacaIntervalId: any;
 
   private accountTrackerList: AccountTrackerList;
 
@@ -45,15 +41,6 @@ export class AssetsBalanceMonitor {
       BSC: new AccountTracker(),
       Base: new AccountTracker(),
     };
-  }
-
-  startPacaInterval() {
-    if (this.pacaIntervalId) {
-      clearInterval(this.pacaIntervalId);
-    }
-
-    this.pacaIntervalId = setInterval(() => this.refreshPacaStreak(), SIXTY_SECONDS);
-    this.refreshPacaStreak();
   }
 
   startDagInterval() {
@@ -79,7 +66,7 @@ export class AssetsBalanceMonitor {
 
   async start() {
     this.stop();
-    
+
     store.dispatch(resetBalances());
     store.dispatch(setLoadingDAGBalances(true));
     store.dispatch(setLoadingETHBalances(true));
@@ -94,7 +81,6 @@ export class AssetsBalanceMonitor {
       if (!hasETH) this.stopEthInterval();
       if (!hasDAG) {
         this.stopDagInterval();
-        this.stopPacaInterval();
       }
 
       if (!this.priceIntervalId) {
@@ -103,7 +89,6 @@ export class AssetsBalanceMonitor {
 
       if (hasDAG) {
         this.startDagInterval();
-        this.startPacaInterval();
       }
 
       if (hasETH) {
@@ -117,11 +102,6 @@ export class AssetsBalanceMonitor {
   stopPriceInterval() {
     clearInterval(this.priceIntervalId);
     this.priceIntervalId = null;
-  }
-
-  stopPacaInterval() {
-    clearInterval(this.pacaIntervalId);
-    this.pacaIntervalId = null;
   }
 
   stopDagInterval() {
@@ -142,7 +122,6 @@ export class AssetsBalanceMonitor {
   stop() {
     this.stopPriceInterval();
     this.stopDagInterval();
-    this.stopPacaInterval();
     this.stopEthInterval();
   }
 
@@ -196,16 +175,6 @@ export class AssetsBalanceMonitor {
     }
 
     return l0balances;
-  }
-
-  refreshPacaStreak() {
-    const { elpaca } = store.getState().user;
-    const { activeWallet } = store.getState().vault;
-    const dagAddress = elpaca?.claim?.data?.address ?? getDagAddress(activeWallet);
-
-    if (!dagAddress) return;
-
-    store.dispatch<any>(getElPacaInfo(dagAddress));
   }
 
   async refreshDagBalance() {

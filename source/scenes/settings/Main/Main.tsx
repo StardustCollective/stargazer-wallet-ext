@@ -26,7 +26,6 @@ import networksIcon from 'assets/images/svg/networks.svg';
 import infoIcon from 'assets/images/svg/info.svg';
 import exitIcon from 'assets/images/svg/exit.svg';
 import linkedApps from 'assets/images/svg/linkedApps.svg';
-import settingsIcon from 'assets/images/svg/settings-adjust.svg';
 import ArrowRightIcon from 'assets/images/svg/arrow-rounded-right.svg';
 
 ///////////////////////
@@ -53,7 +52,6 @@ const Main: FC<IMainSettings> = ({
   onAboutLinkClicked,
   onContactsLinkClicked,
   onConnectedSitesClicked,
-  onPersonalizeLinkClicked,
   version,
 }) => {
   const RenderSettingsItem = ({
@@ -111,13 +109,6 @@ const Main: FC<IMainSettings> = ({
       IconImageOrComponent: linkedApps,
       onClick: onConnectedSitesClicked,
       imageStyles: styles.linkedIconImage,
-    },
-    {
-      label: 'Personalize',
-      key: 'Personalize',
-      IconImageOrComponent: settingsIcon,
-      onClick: onPersonalizeLinkClicked,
-      imageStyles: styles.personalizeIconImage,
     },
   ];
 

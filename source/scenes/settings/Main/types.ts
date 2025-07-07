@@ -8,7 +8,6 @@ export default interface IMainSettings {
   onContactsLinkClicked: () => void;
   onConnectedSitesClicked: () => void;
   onSecurityLinkClicked: () => void;
-  onPersonalizeLinkClicked: () => void;
   version: string | number;
 }
 
