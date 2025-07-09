@@ -26,35 +26,10 @@ export interface ElPacaClaimData {
 }
 
 export interface ElPacaStreakData {
-  currentStreak: number;
   totalEarned: number;
-  claimAmount: number;
-  lastClaimEpochProgress: number;
-  currentEpochProgress: number;
-  nextToken: string;
-  currentClaimWindow?: string;
-  claimEnabled?: boolean;
-  showError?: boolean;
-  epochsLeft: number;
 }
 
-export interface ClaimElpacaData {
-  address: string;
-  token: string;
-  signature: string;
-}
-
-export interface ClaimElpacaBody {
-  value: {
-    StreakUpdate: {
-      address: string;
-      token: string;
-    };
-  };
-  proofs: [
-    {
-      id: string;
-      signature: string;
-    }
-  ];
+export interface ElPacaStreakResponse {
+  success: boolean;
+  response: any;
 }

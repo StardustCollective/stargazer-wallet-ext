@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IUserState } from './types';
-import { claimElpaca, getElPacaInfo } from './api';
+import { getElPacaInfo } from './api';
 
 const initialState: IUserState = {
   elpaca: {
@@ -61,13 +61,8 @@ const UserState = createSlice({
       state.elpaca.streak.loading = true;
     });
     builder.addCase(getElPacaInfo.fulfilled, (state, action) => {
-      const error = action.payload?.message ? action.payload : null;
-      const data = !!action?.payload?.claimAmount ? action.payload : null;
-      const claimEnabled = !!action?.payload?.claimEnabled;
-
-      if (claimEnabled) {
-        state.elpaca.claim.data = null;
-      }
+      const error = !action.payload?.success ? action.payload.response : null;
+      const data = action?.payload?.success ? action.payload.response : null;
 
       state.elpaca.streak.loading = false;
       state.elpaca.streak.data = data;
@@ -75,35 +70,8 @@ const UserState = createSlice({
     });
     builder.addCase(getElPacaInfo.rejected, (state, action) => {
       state.elpaca.streak.loading = false;
-      state.elpaca.streak.data = {
-        currentStreak: 0,
-        claimAmount: 1,
-        totalEarned: 0,
-        lastClaimEpochProgress: 0,
-        currentEpochProgress: 0,
-        epochsLeft: 0,
-        nextToken: '',
-        currentClaimWindow: '0h 0m',
-        claimEnabled: true,
-      };
+      state.elpaca.streak.data = null;
       state.elpaca.streak.error = action.payload;
-    });
-    builder.addCase(claimElpaca.pending, (state) => {
-      state.elpaca.claim.loading = true;
-      state.elpaca.claim.data = null;
-      state.elpaca.claim.error = null;
-    });
-    builder.addCase(claimElpaca.fulfilled, (state, action) => {
-      const error = action.payload?.message ? action.payload : null;
-      const data = !!action?.payload?.hash ? action.payload : null;
-      state.elpaca.claim.loading = false;
-      state.elpaca.claim.data = data;
-      state.elpaca.claim.error = error;
-    });
-    builder.addCase(claimElpaca.rejected, (state, action) => {
-      state.elpaca.claim.loading = false;
-      state.elpaca.claim.data = null;
-      state.elpaca.claim.error = action;
     });
   },
 });
