@@ -6,6 +6,8 @@ export const REWARDS_ENDED = 'El Paca Rewards has ended.';
 export const THANKS = 'Thank you for participating!';
 export const WHATS_NEW = 'Read what’s next for $PACA and $LOYAL';
 
+export const WHATS_NEXT_URL = 'https://x.com/Conste11ation/status/1943037684634546437';
+
 // Emojis
 export const PACA_EMOJI = '🦙';
 
