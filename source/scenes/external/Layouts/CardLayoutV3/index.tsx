@@ -1,3 +1,4 @@
+import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
@@ -27,6 +28,7 @@ type ICardLayoutV3Props = {
     symbol: string;
     disabled: boolean;
     recommended: string;
+    loading?: boolean;
     setFee: (fee: string) => void;
   };
   children: React.ReactChild | React.ReactChild[];
@@ -110,28 +112,36 @@ const CardLayoutV3: FC<ICardLayoutV3Props> = ({
             <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.feeTitle}>
               Transaction fee
             </TextV3.CaptionStrong>
-            <TextInput
-              type="number"
-              fullWidth
-              inputRef={register}
-              name="fee"
-              value={fee?.value}
-              error={!!errors?.fee}
-              onChange={ev => handleFeeChange(ev.target.value)}
-              disabled={fee?.disabled}
-              endAdornment={
-                <TextV3.Caption extraStyles={styles.recommendedLabel} align={TEXT_ALIGN_ENUM.RIGHT} color={COLORS_ENUMS.PRIMARY_LIGHTER_1}>
-                  {fee?.symbol}
-                </TextV3.Caption>
-              }
-            />
+            {fee?.loading ? (
+              <Skeleton variant="rect" width="100%" height={50} style={{ borderRadius: 6 }} />
+            ) : (
+              <TextInput
+                type="number"
+                fullWidth
+                inputRef={register}
+                name="fee"
+                value={fee?.value}
+                error={!!errors?.fee}
+                onChange={ev => handleFeeChange(ev.target.value)}
+                disabled={fee?.disabled}
+                endAdornment={
+                  <TextV3.Caption extraStyles={styles.recommendedLabel} align={TEXT_ALIGN_ENUM.RIGHT} color={COLORS_ENUMS.PRIMARY_LIGHTER_1}>
+                    {fee?.symbol}
+                  </TextV3.Caption>
+                }
+              />
+            )}
             {!!errors?.fee?.message && <TextV3.Caption color={COLORS_ENUMS.RED}>{errors?.fee?.message}</TextV3.Caption>}
-            <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.feeRecommended}>
-              Recommended fee: {` `}
-              <TextV3.Caption color={COLORS_ENUMS.GRAY_100} extraStyles={styles.feeValue}>
-                {fee?.recommended} {fee?.symbol}
+            {fee?.loading ? (
+              <Skeleton variant="rect" width={160} height={20} style={{ borderRadius: 4 }} />
+            ) : (
+              <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.feeRecommended}>
+                Recommended fee: {` `}
+                <TextV3.Caption color={COLORS_ENUMS.GRAY_100} extraStyles={styles.feeValue}>
+                  {fee?.recommended} {fee?.symbol}
+                </TextV3.Caption>
               </TextV3.Caption>
-            </TextV3.Caption>
+            )}
           </div>
         )}
 

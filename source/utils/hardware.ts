@@ -30,6 +30,8 @@ export const SupportedMethods: Record<HardwareWalletType, AvailableMethods[]> = 
     AvailableMethods.dag_delegatedStake,
     AvailableMethods.dag_withdrawDelegatedStake,
     AvailableMethods.dag_allowSpend,
+    AvailableMethods.dag_sendMetagraphDataTransaction,
+    AvailableMethods.dag_signMetagraphDataTransaction,
     AvailableMethods.personal_sign,
     AvailableMethods.eth_signTypedData,
     AvailableMethods.eth_sendTransaction,

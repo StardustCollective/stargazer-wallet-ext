@@ -2,10 +2,8 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { normalizeObject } from '@stardust-collective/dag4-keystore';
 
-import { getFeeEstimation } from 'scenes/external/SendMetagraphData/utils';
-
 import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import store from 'state/store';
 
@@ -15,7 +13,13 @@ import { validateHardwareMethod } from 'utils/hardware';
 
 import { ExternalRoute } from 'web/pages/External/types';
 
-import { getChainId, getChainLabel, getWalletInfo } from '../utils';
+import { getChainId, getWalletInfo } from '../utils';
+
+export interface ISendMetagraphDataParams {
+  sign: boolean;
+  metagraphId: string;
+  payload: string;
+}
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
@@ -55,11 +59,16 @@ export const dag_sendMetagraphDataTransaction = async (request: StargazerRequest
   const { assets } = store.getState();
   const metagraphAsset = Object.values(assets).find(asset => asset?.address === metagraphId);
 
-  if (!metagraphAsset || !metagraphAsset.dl1endpoint) {
-    throw new Error('Invalid metagraph id for data transaction');
+  if (!metagraphAsset) {
+    throw new Error('Metagraph id not found in the wallet');
   }
 
-  if (!accountController.isValidNode(metagraphAsset.dl1endpoint)) {
+  if (!metagraphAsset.dl1endpoint) {
+    throw new Error('Invalid metagraph id for data transaction: data layer endpoint not found');
+  }
+  const isValidMetagraph = await accountController.isValidNode(metagraphAsset.dl1endpoint);
+
+  if (!isValidMetagraph) {
     throw new Error(`Invalid L1 data endpoint: ${metagraphAsset.dl1endpoint}`);
   }
 
@@ -69,31 +78,27 @@ export const dag_sendMetagraphDataTransaction = async (request: StargazerRequest
   validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
 
   const dataString = JSON.stringify(normalizeObject(data));
-  const dataEncoded = encodeToBase64(dataString);
+  const payload = encodeToBase64(dataString);
 
-  const { fee, address, updateHash } = await getFeeEstimation(metagraphAsset.dl1endpoint, dataString);
-
-  const signatureData = {
-    origin,
-    dataEncoded,
+  const requestData: ISendMetagraphDataParams = {
     sign,
-    walletId: activeWallet.id,
-    walletLabel: activeWallet.label,
     metagraphId,
-    feeAmount: fee,
-    destinationFeeAddress: address,
-    updateHash,
-    chainLabel: getChainLabel(),
+    payload,
   };
 
   const windowSize = { width: 390, height: 700 };
 
   await StargazerExternalPopups.executePopup({
     params: {
-      data: signatureData,
+      data: requestData,
       message,
       origin: sender.origin,
       route: ExternalRoute.SendMetagraphData,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId,
+        address: dag4.account.address,
+      },
     },
     size: windowSize,
     type: windowType,

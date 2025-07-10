@@ -19,11 +19,11 @@ export interface BaseContainerProps {
 export interface BaseExternalRequestHook<TData> {
   decodedData: TData;
   handleReject: () => Promise<void>;
-  handleSuccess: (result: string) => Promise<void>;
+  handleSuccess: (result: any) => Promise<void>;
   handleError: (error: unknown) => Promise<void>;
 }
 
-export interface ExternalRequestConfig<TData, TResult extends string, THook extends BaseExternalRequestHook<TData>> {
+export interface ExternalRequestConfig<TData, TResult, THook extends BaseExternalRequestHook<TData>> {
   title: string;
   footer?: string;
   isLoading?: boolean;
@@ -39,7 +39,7 @@ export interface ExternalRequestConfig<TData, TResult extends string, THook exte
  * Generic container component that provides common external request functionality
  * Allows each service to inject their own logic while reusing common patterns
  */
-export const ExternalRequestContainer = <TData, TResult extends string, THook extends BaseExternalRequestHook<TData>>({
+export const ExternalRequestContainer = <TData, TResult, THook extends BaseExternalRequestHook<TData>>({
   title,
   footer,
   isLoading = false,

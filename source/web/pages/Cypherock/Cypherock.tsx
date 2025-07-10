@@ -25,6 +25,7 @@ import DelegatedStakeView from './views/delegated-stake';
 import ErrorView from './views/error';
 import GenerateAddressView from './views/generate';
 import LoadingView from './views/loading';
+import SendMetagraphDataView from './views/send-metagraph-data';
 import SignDataView from './views/sign-data';
 import SignMsgView from './views/sign-message';
 import SignTransactionView from './views/sign-transaction';
@@ -56,6 +57,7 @@ export enum WalletState {
   SignDataMessage = 'sign-data-message',
   SignTransaction = 'sign-transaction',
   TokenLock = 'token-lock',
+  SendMetagraphData = 'send-metagraph-data',
   AllowSpend = 'allow-spend',
   DelegatedStake = 'delegated-stake',
   WithdrawDelegatedStake = 'withdraw-delegated-stake',
@@ -79,6 +81,7 @@ enum WalletRoute {
   SignTypedData = 'signTypedData',
   SignTransaction = 'signTransaction',
   TokenLock = 'tokenLock',
+  SendMetagraphData = 'sendMetagraphData',
   AllowSpend = 'allowSpend',
   DelegatedStake = 'delegatedStake',
   WithdrawDelegatedStake = 'withdrawDelegatedStake',
@@ -131,6 +134,8 @@ const CypherockPage = () => {
         setNextRoute(WalletState.SignTransaction);
       } else if (route === WalletRoute.TokenLock) {
         setNextRoute(WalletState.TokenLock);
+      } else if (route === WalletRoute.SendMetagraphData) {
+        setNextRoute(WalletState.SendMetagraphData);
       } else if (route === WalletRoute.DelegatedStake) {
         setNextRoute(WalletState.DelegatedStake);
       } else if (route === WalletRoute.WithdrawDelegatedStake) {
@@ -202,7 +207,7 @@ const CypherockPage = () => {
         message = 'Insufficient balance';
         code = EIPErrorCodes.Rejected;
       }
-      
+
       message = err.message;
     }
 
@@ -527,6 +532,8 @@ const CypherockPage = () => {
         return <SignDataView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.TokenLock:
         return <TokenLockView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
+      case WalletState.SendMetagraphData:
+        return <SendMetagraphDataView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.DelegatedStake:
         return <DelegatedStakeView service={service} changeState={changeState} handleSuccessResponse={handleSuccessResponse} handleErrorResponse={handleErrorResponse} />;
       case WalletState.WithdrawDelegatedStake:

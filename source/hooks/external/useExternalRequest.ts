@@ -14,7 +14,7 @@ export interface ExternalRequestData<T = any> {
 
 export interface ExternalRequestHandlers {
   handleReject: () => Promise<void>;
-  handleSuccess: (result: string) => Promise<void>;
+  handleSuccess: (result: any) => Promise<void>;
   handleError: (error: unknown) => Promise<void>;
 }
 
@@ -46,7 +46,7 @@ export const useExternalRequest = <T = any>(operationName?: string): UseExternal
 
   // Common success handler
   const handleSuccess = useCallback(
-    async (result: string) => {
+    async (result: any) => {
       StargazerExternalPopups.addResolvedParam(location.href);
       await StargazerWSMessageBroker.sendResponseResult(result, requestMessage);
       window.close();
