@@ -5,7 +5,6 @@ const fs = require('fs');
 
 const webpack = require('webpack');
 const DotEnv = require('dotenv-webpack');
-const ZipPlugin = require('zip-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');

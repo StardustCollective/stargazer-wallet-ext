@@ -117,8 +117,7 @@
     "webpack-cli": "^3.3.11",
     "wext-manifest-loader": "^2.2.0",
     "wext-manifest-webpack-plugin": "^1.2.1",
-    "yargs": "^17.2.1",
-    "zip-webpack-plugin": "^3.0.0"
+    "yargs": "^17.2.1"
   },
   "jest": {
     "verbose": true,
