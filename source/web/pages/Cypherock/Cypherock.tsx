@@ -66,6 +66,9 @@ export enum WalletState {
   SignedSuccess = 'signed-success',
   SignedError = 'signed-error',
 
+  // Transaction states
+  TransactionSent = 'transaction-sent',
+
   // Verify
   VerifyTransaction = 'verify-transaction',
 
@@ -481,7 +484,7 @@ const CypherockPage = () => {
               handleClick: onImportWallet,
             }}
           >
-            <ConfirmDetailsView ethPublicKeys={ethPublicKeys} dagPublicKeys={dagPublicKeys} walletName={walletName} setWalletName={setWalletName} />
+            <ConfirmDetailsView ethPublicKeys={ethPublicKeys} dagPublicKeys={dagPublicKeys} walletName={walletName} />
           </Layout>
         );
       case WalletState.Confirmed:
@@ -494,7 +497,7 @@ const CypherockPage = () => {
               handleClick: () => window.close(),
             }}
           >
-            <SuccessView text="Your Cypherock wallet was successfully imported!" />
+            <SuccessView text={`Your wallet ${walletName} was successfully imported!`} />
           </Layout>
         );
       case WalletState.SignedSuccess:
@@ -508,6 +511,19 @@ const CypherockPage = () => {
             }}
           >
             <SuccessView text="Your signing request was completed successfully." />
+          </Layout>
+        );
+      case WalletState.TransactionSent:
+        return (
+          <Layout
+            title="Transaction Sent"
+            primaryButton={{
+              type: BUTTON_TYPES_ENUM.PRIMARY_OUTLINE,
+              label: 'Close window',
+              handleClick: () => window.close(),
+            }}
+          >
+            <SuccessView text="The transaction was sent successfully to the network. It should be confirmed soon." />
           </Layout>
         );
       case WalletState.SignedError:

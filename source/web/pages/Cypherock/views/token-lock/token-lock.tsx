@@ -123,7 +123,7 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
     },
     onSuccess: async txHash => {
       await handleSuccessResponse(txHash, requestMessage);
-      changeState(WalletState.SignedSuccess);
+      changeState(WalletState.TransactionSent);
     },
     onError: async error => {
       if (error instanceof Error && error.message.includes('aborted')) {

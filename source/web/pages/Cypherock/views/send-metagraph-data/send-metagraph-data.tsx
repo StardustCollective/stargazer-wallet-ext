@@ -152,7 +152,7 @@ const SendMetagraphDataView = ({ service, changeState, handleSuccessResponse, ha
     },
     onSuccess: async result => {
       await handleSuccessResponse(result, requestMessage);
-      changeState(WalletState.SignedSuccess);
+      changeState(WalletState.TransactionSent);
     },
     onError: async error => {
       if (error instanceof Error && error.message.includes('aborted')) {
