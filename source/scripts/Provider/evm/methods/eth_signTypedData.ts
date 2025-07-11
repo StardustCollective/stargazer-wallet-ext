@@ -1,44 +1,56 @@
-import {
-  EIPErrorCodes,
-  EIPRpcError,
-  StargazerChain,
-  StargazerRequest,
-  StargazerRequestMessage,
-} from 'scripts/common';
-import {
-  KeyringNetwork,
-  KeyringWalletAccountState,
-  KeyringWalletType,
-} from '@stardust-collective/dag4-keyring';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
-import { TypedSignatureRequest } from 'scenes/external/TypedSignatureRequest';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { getChainId, getNetworkId, getWalletInfo } from '../utils';
 
-export const eth_signTypedData = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { EIPErrorCodes, EIPRpcError, StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
+import { validateHardwareMethod } from 'utils/hardware';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { getChainId, getNetworkId, getWalletInfo, WINDOW_TYPES } from '../utils';
+
+type EIP712Domain = {
+  name?: string;
+  version?: string;
+  chainId?: number;
+  verifyingContract?: string;
+  salt?: string;
+};
+
+type TypedProperty = {
+  name: string;
+  type: string;
+};
+
+export type MessagePayload = {
+  domain: EIP712Domain;
+  types: { EIP712Domain: EIP712Domain } & Record<string, TypedProperty[]>;
+  primaryType: string;
+  message: any;
+};
+
+export interface SignTypedDataParams {
+  payload: string;
+}
+
+export const eth_signTypedData = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
   const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
   if (!activeWallet) {
     throw new EIPRpcError('There is no active wallet', EIPErrorCodes.Unauthorized);
   }
 
-  const assetAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Ethereum
-  );
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Ethereum);
 
   if (!assetAccount) {
-    throw new EIPRpcError(
-      'No active account for the request asset type',
-      EIPErrorCodes.Unauthorized
-    );
+    throw new EIPRpcError('No active account for the request asset type', EIPErrorCodes.Unauthorized);
   }
+
+  // Get current chain information
+  const chain = getNetworkId() as StargazerChain;
+
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method });
 
   // Extension 3.6.0+
   // eslint-disable-next-line prefer-const
@@ -48,14 +60,15 @@ export const eth_signTypedData = async (
     throw new EIPRpcError("Bad argument 'address'", EIPErrorCodes.Unauthorized);
   }
 
+  if (!data) {
+    throw new EIPRpcError("Bad argument 'data'", EIPErrorCodes.Unauthorized);
+  }
+
   if (typeof data === 'string') {
     try {
       data = JSON.parse(data);
     } catch (e) {
-      throw new EIPRpcError(
-        `Bad argument 'data' => ${String(e)}`,
-        EIPErrorCodes.Unauthorized
-      );
+      throw new EIPRpcError(`Bad argument 'data' => ${String(e)}`, EIPErrorCodes.Unauthorized);
     }
   }
 
@@ -68,74 +81,49 @@ export const eth_signTypedData = async (
   }
 
   if (assetAccount.address.toLocaleLowerCase() !== address.toLocaleLowerCase()) {
-    throw new EIPRpcError(
-      'The active account is not the requested',
-      EIPErrorCodes.Unauthorized
-    );
-  }
-
-  if ('EIP712Domain' in data.types) {
-    // Ethers does not need EIP712Domain type
-    delete data.types.EIP712Domain;
+    throw new EIPRpcError('The active account is not the requested', EIPErrorCodes.Unauthorized);
   }
 
   const activeChainId = getChainId();
-  if (
-    !!data?.domain?.chainId &&
-    activeChainId &&
-    parseInt(data.domain.chainId, 10) !== activeChainId
-  ) {
-    throw new EIPRpcError(
-      'chainId does not match the active network chainId',
-      EIPErrorCodes.ChainDisconnected
-    );
+  if (!!data?.domain?.chainId && activeChainId && parseInt(data.domain.chainId, 10) !== getChainId()) {
+    throw new EIPRpcError('chainId does not match the active network chainId', EIPErrorCodes.ChainDisconnected);
   }
 
   try {
-    ethers.utils._TypedDataEncoder.hash(data.domain, data.types, data.message);
+    const eip712types = { ...data.types };
+    if ('EIP712Domain' in eip712types) {
+      // Ethers does not need EIP712Domain type
+      delete eip712types.EIP712Domain;
+    }
+    ethers.utils._TypedDataEncoder.hash(data.domain, eip712types, data.message);
   } catch (e) {
-    throw new EIPRpcError(
-      `Bad argument 'data' => ${String(e)}`,
-      EIPErrorCodes.Unauthorized
-    );
+    throw new EIPRpcError(`Bad argument 'data' => ${String(e)}`, EIPErrorCodes.Unauthorized);
   }
 
-  const signatureConsent: TypedSignatureRequest = {
-    chain: getNetworkId() as StargazerChain,
-    signer: address,
-    content: JSON.stringify(data.message),
+  const signTypedDataParams: SignTypedDataParams = {
+    payload: JSON.stringify(data),
   };
 
-  const signatureData = {
-    origin,
-    domain: JSON.stringify(data.domain),
-    types: JSON.stringify(data.types),
-    signatureConsent,
-    walletId: activeWallet.id,
-    walletLabel: activeWallet.label,
-    publicKey: '',
-  };
-
-  // If the type of account is Ledger send back the public key so the
-  // signature can be verified by the requester.
-  const accounts: KeyringWalletAccountState[] = activeWallet?.accounts;
-  if (
-    activeWallet?.type === KeyringWalletType.LedgerAccountWallet &&
-    accounts &&
-    accounts[0]
-  ) {
-    signatureData.publicKey = accounts[0].publicKey;
+  if (windowType === WINDOW_TYPES.popup) {
+    windowSize.height = 740;
   }
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    signatureData,
-    message,
-    sender.origin,
-    'signTypedMessage',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: signTypedDataParams,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SignTypedData,
+      wallet: {
+        chain,
+        chainId: activeChainId,
+        address,
+      },
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

@@ -26,8 +26,6 @@ const WalletSend: FC<IWalletSend> = ({
   handleGasPriceChange,
   handleClose,
   onSubmit,
-  isTransfer,
-  isExternalRequest,
   isDisabled,
   isValidAddress,
   balances,
@@ -54,7 +52,6 @@ const WalletSend: FC<IWalletSend> = ({
 
   const addressInputClass = clsx(styles.input, styles.address, {
     [styles.verified]: isValidAddress,
-    [styles.addressPadding]: !isExternalRequest,
   });
   const statusIconClass = clsx(styles.statusIcon, {
     [styles.hide]: !isValidAddress,
@@ -62,12 +59,8 @@ const WalletSend: FC<IWalletSend> = ({
   const errorIconClass = clsx(styles.statusIcon, {
     [styles.hide]: isValidAddress,
   });
-  const bodyWrapper = clsx(styles.bodywrapper, {
-    [styles.contentAligned]: isExternalRequest,
-  });
-  const networkWrapper = clsx(styles.networkContainer, {
-    [styles.extraPadding]: isExternalRequest,
-  });
+  const bodyWrapper = clsx(styles.bodywrapper);
+  const networkWrapper = clsx(styles.networkContainer);
 
   return (
     <div className={styles.wrapper}>
@@ -77,20 +70,18 @@ const WalletSend: FC<IWalletSend> = ({
         onChange={handleSelectContact}
       />
       <form onSubmit={handleSubmit(onSubmit)} className={bodyWrapper}>
-        {!isExternalRequest && (
-          <section className={styles.balance}>
-            <div>
-              Balance:{' '}
-              <span>
-                {formatStringDecimal(
-                  formatNumber(Number(balances[activeAsset.id]), 16, 20),
-                  4
-                )}
-              </span>{' '}
-              {assetInfo.symbol}
-            </div>
-          </section>
-        )}
+        <section className={styles.balance}>
+          <div>
+            Balance:{' '}
+            <span>
+              {formatStringDecimal(
+                formatNumber(Number(balances[activeAsset.id]), 16, 20),
+                4
+              )}
+            </span>{' '}
+            {assetInfo.symbol}
+          </div>
+        </section>
         <div className={networkWrapper}>
           <InputClickable
             options={networkTypeOptions}
@@ -110,10 +101,8 @@ const WalletSend: FC<IWalletSend> = ({
                 name="address"
                 inputRef={register}
                 onChange={handleAddressChange}
-                disabled={isExternalRequest}
                 variant={addressInputClass}
               />
-              {!isExternalRequest && (
                 <Button
                   type="button"
                   variant={styles.textBtn}
@@ -121,10 +110,9 @@ const WalletSend: FC<IWalletSend> = ({
                 >
                   Contacts
                 </Button>
-              )}
             </li>
             <li>
-              <label>{isTransfer ? 'Amount' : `${assetInfo.symbol} Amount`} </label>
+              <label>{`${assetInfo.symbol} Amount`} </label>
               <TextInput
                 type="number"
                 placeholder="Enter amount to send"
@@ -133,10 +121,8 @@ const WalletSend: FC<IWalletSend> = ({
                 name="amount"
                 value={amount === '0' ? '' : amount}
                 onChange={(ev) => handleAmountChange(ev.target.value)}
-                disabled={isExternalRequest}
                 variant={clsx(styles.input, styles.amount)}
-              />
-              {!isExternalRequest && (
+            />
                 <Button
                   type="button"
                   disabled={!!Object.values(errors).length}
@@ -145,7 +131,6 @@ const WalletSend: FC<IWalletSend> = ({
                 >
                   Max
                 </Button>
-              )}
             </li>
             {(activeAsset.type === AssetType.Constellation ||
               activeAsset.type === AssetType.LedgerConstellation) && (
@@ -161,7 +146,6 @@ const WalletSend: FC<IWalletSend> = ({
                   value={fee}
                   variant={clsx(styles.input, styles.fee)}
                 />
-                {!isExternalRequest && (
                   <Button
                     type="button"
                     variant={styles.textBtn}
@@ -169,12 +153,11 @@ const WalletSend: FC<IWalletSend> = ({
                   >
                     Recommend
                   </Button>
-                )}
               </li>
             )}
           </ul>
           <div className={styles.status}>
-            {!!assetInfo?.priceId && !isTransfer && (
+            {!!assetInfo?.priceId && (
               <span className={styles.equalAmount}>
                 ≈ {getFiatAmount(Number(amount) + Number(fee), 6)}
               </span>

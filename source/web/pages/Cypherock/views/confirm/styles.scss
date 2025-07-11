@@ -1,0 +1,82 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  .inputTitleContainer {
+    display: flex;
+    align-self: flex-start;
+    margin-bottom: 8px;
+
+    .inputTitle {
+      font-size: 14px;
+    }
+  }
+
+  .inputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: stretch;
+    padding: 12px;
+    background-color: $white;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    margin-bottom: 20px;
+
+    .walletText {
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 32px;
+      color: #331b5f;
+    }
+  }
+
+  .menuContainer {
+    margin-bottom: 20px;
+  }
+
+  .title {
+    color: $black;
+    letter-spacing: -0.24px;
+  }
+
+  .itemContainer {
+    padding: 12px;
+
+    .iconContainerStyle {
+      margin-right: 10px;
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  .titleAddress {
+    word-break: break-word;
+    font-weight: $regular;
+    color: $black;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.12px;
+  }
+
+  .copiedLabel {
+    color: $new_primary_lighter_1;
+    min-width: 56px;
+    margin-left: 6px;
+  }
+
+  .rightIconContainerStyle {
+    display: flex;
+    justify-content: flex-end;
+    min-width: 56px;
+    margin-left: 6px;
+  }
+}

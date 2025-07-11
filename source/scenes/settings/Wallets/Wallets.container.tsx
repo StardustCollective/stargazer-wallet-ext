@@ -1,6 +1,5 @@
 import React, { FC, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { RootState } from 'state/store';
 import IVaultState from 'state/vault/types';
 import addHeader from 'navigation/headers/add';
@@ -8,15 +7,15 @@ import { useLinkTo } from '@react-navigation/native';
 import Container, { CONTAINER_COLOR } from 'components/Container';
 import Wallets from './Wallets';
 import { IWalletsView } from './types';
+import walletsSelectors from 'selectors/walletsSelectors';
 
 const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
   const linkTo = useLinkTo();
-  const { wallets, activeWallet }: IVaultState = useSelector(
-    (state: RootState) => state.vault
-  );
-  const ledgerWallets = !!wallets?.ledger ? wallets.ledger : [];
-  const bitfiWallets = !!wallets?.bitfi ? wallets.bitfi : [];
-  const hardwareWalletAccounts = [...ledgerWallets, ...bitfiWallets];
+  const hardwareWalletAccounts = useSelector(walletsSelectors.selectAllHardwareWallets);
+  const multiChainAccounts = useSelector(walletsSelectors.selectMultiChainWallets);
+  const privKeyAccounts = useSelector(walletsSelectors.selectSingleAccountWallets);
+
+  const { activeWallet }: IVaultState = useSelector((state: RootState) => state.vault);
 
   useLayoutEffect(() => {
     const onRightIconClick = () => {
@@ -24,14 +23,6 @@ const WalletsContainer: FC<IWalletsView> = ({ navigation }) => {
     };
     navigation.setOptions(addHeader({ navigation, onRightIconClick }));
   }, []);
-
-  const multiChainAccounts = wallets.local.filter(
-    (w) => w.type === KeyringWalletType.MultiChainWallet
-  );
-
-  const privKeyAccounts = wallets.local.filter(
-    (w) => w.type === KeyringWalletType.SingleAccountWallet
-  );
 
   const handleManageWallet = async (walletId: string) => {
     linkTo(`/settings/wallets/manage?id=${walletId}`);

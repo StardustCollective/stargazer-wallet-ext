@@ -9,6 +9,7 @@ import { IContactState } from 'state/contacts/types';
 import styles from './Contacts.scss';
 
 import IWalletContacts from './types';
+import { ExternalRoute } from 'web/pages/External/types';
 
 const WalletContacts: FC<IWalletContacts> = ({
   open,
@@ -20,7 +21,7 @@ const WalletContacts: FC<IWalletContacts> = ({
   let isExternalRequest = false;
 
   if (!!location) {
-    isExternalRequest = location.pathname.includes('sendTransaction');
+    isExternalRequest = location.pathname.includes(ExternalRoute.SignTransaction);
   }
 
   return (

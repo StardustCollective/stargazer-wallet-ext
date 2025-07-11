@@ -1,29 +1,21 @@
 import InputDataDecoder from 'ethereum-input-data-decoder';
-import store from 'state/store';
 import * as ethers from 'ethers';
+
+import { IAssetInfoState } from 'state/assets/types';
+import store from 'state/store';
 import IVaultState, { AssetType, IAssetState } from 'state/vault/types';
-import erc20ABI from './erc20.json';
+
 import { getWalletController } from './controllersUtils';
-import IAssetListState, { IAssetInfoState } from 'state/assets/types';
+import erc20ABI from './erc20.json';
 
 export const getERC20DataDecoder = () => {
   return new InputDataDecoder(erc20ABI as any);
 };
 
-export const estimateGasLimitForTransfer = async ({
-  to,
-  from,
-  amount: value,
-  gas,
-}: {
-  to: string;
-  from: string;
-  amount: string;
-  gas: string;
-}): Promise<number> => {
+export const estimateGasLimitForTransfer = async ({ to, from, amount: value, gas }: { to: string; from: string; amount: string; gas: string }): Promise<number> => {
   const walletController = getWalletController();
-  const networkController = walletController.account.networkController;
-  const assets: IAssetListState = store.getState().assets;
+  const { networkController } = walletController.account;
+  const { assets } = store.getState();
   const { activeAsset }: IVaultState = store.getState().vault;
   const assetAddress = activeAsset?.contractAddress;
 
@@ -34,9 +26,7 @@ export const estimateGasLimitForTransfer = async ({
   if (value !== '' && to && from && assetAddress) {
     try {
       const contract = networkController.createERC20Contract(assetAddress);
-      const assetInfo = Object.values(assets).find(
-        (asset: IAssetInfoState) => asset.address === assetAddress
-      );
+      const assetInfo = Object.values(assets).find((asset: IAssetInfoState) => asset.address === assetAddress);
       const decimals = assetInfo?.decimals || 18;
       const amount = ethers.utils.parseUnits(value, decimals).toString();
       const gasLimitBigNumber = await contract.estimateGas.transfer(to, amount, { from });
@@ -65,11 +55,9 @@ export const estimateNftGasLimit = async ({
   isERC721: boolean;
   amount: number;
 }): Promise<number> => {
-  const networkController = getWalletController().account.networkController;
+  const { networkController } = getWalletController().account;
   const { activeWallet }: IVaultState = store.getState().vault;
-  const ethAsset = activeWallet?.assets.find(
-    (asset: IAssetState) => asset.type === AssetType.Ethereum
-  );
+  const ethAsset = activeWallet?.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
   const fromAddress = ethAsset.address;
 
   if (!contractAddress || !tokenId || !toAddress || !network) {
@@ -77,18 +65,8 @@ export const estimateNftGasLimit = async ({
   }
 
   try {
-    const contract = isERC721
-      ? networkController.createERC721Contract(contractAddress, network)
-      : networkController.createERC1155Contract(contractAddress, network);
-    const gasLimitBigNumber = isERC721
-      ? await contract.estimateGas.transferFrom(fromAddress, toAddress, tokenId)
-      : await contract.estimateGas.safeTransferFrom(
-          fromAddress,
-          toAddress,
-          tokenId,
-          amount,
-          '0x'
-        );
+    const contract = isERC721 ? networkController.createERC721Contract(contractAddress, network) : networkController.createERC1155Contract(contractAddress, network);
+    const gasLimitBigNumber = isERC721 ? await contract.estimateGas.transferFrom(fromAddress, toAddress, tokenId) : await contract.estimateGas.safeTransferFrom(fromAddress, toAddress, tokenId, amount, '0x');
     const gasLimit = gasLimitBigNumber.toNumber();
 
     return gasLimit;
@@ -98,21 +76,11 @@ export const estimateNftGasLimit = async ({
   }
 };
 
-export const estimateGasLimit = async ({
-  to,
-  data,
-  gas,
-}: {
-  to: string;
-  data: string;
-  gas: string;
-}): Promise<number> => {
+export const estimateGasLimit = async ({ to, data, gas, network }: { to: string; data: string; gas: string; network: string }): Promise<number> => {
   const walletController = getWalletController();
-  const networkController = walletController.account.networkController;
+  const { networkController } = walletController.account;
   const { activeWallet }: IVaultState = store.getState().vault;
-  const ethAsset = activeWallet?.assets.find(
-    (asset: IAssetState) => asset.type === AssetType.Ethereum
-  );
+  const ethAsset = activeWallet?.assets.find((asset: IAssetState) => asset.type === AssetType.Ethereum);
   const from = ethAsset.address;
 
   if (!ethAsset || !to || to?.toUpperCase().startsWith('DAG')) {
@@ -128,7 +96,7 @@ export const estimateGasLimit = async ({
   }
 
   try {
-    const gasBigNumber = await networkController.estimateGas(from, to, data);
+    const gasBigNumber = await networkController.estimateGas({ from, to, data }, network);
     return gasBigNumber.toNumber();
   } catch (err) {
     console.error('Error estimating gas limit:', err);

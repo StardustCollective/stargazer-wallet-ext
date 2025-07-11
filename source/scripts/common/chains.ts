@@ -1,9 +1,9 @@
-enum ProtocolProvider {
+export enum ProtocolProvider {
   CONSTELLATION = 'constellation',
   ETHEREUM = 'ethereum',
 }
 
-enum StargazerChain {
+export enum StargazerChain {
   CONSTELLATION = 'constellation',
   ETHEREUM = 'ethereum',
   POLYGON = 'polygon',
@@ -11,5 +11,3 @@ enum StargazerChain {
   AVALANCHE = 'avalanche',
   BASE = 'base',
 }
-
-export { StargazerChain, ProtocolProvider };

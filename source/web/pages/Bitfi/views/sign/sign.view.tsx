@@ -1,64 +1,73 @@
-/////////////////////////
-// Module Imports
-/////////////////////////
+import 'assets/styles/global.scss';
 
-import React from 'react';
-import { useFiat } from 'hooks/usePrice';
-
-/////////////////////////
-// Component Import
-/////////////////////////
-
-import Button from 'components/Button';
-import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CheckIcon from '@material-ui/icons/CheckCircle';
+import { dag4 } from '@stardust-collective/dag4';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
-/////////////////////////
-// Styles Imports
-/////////////////////////
+import { DAG_NETWORK } from 'constants/index';
+
+import SignTransactionContainer, { SignTransactionProviderConfig } from 'scenes/external/SignTransaction/SignTransactionContainer';
+
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
+
+import walletsSelectors from 'selectors/walletsSelectors';
 
 import styles from './styles.module.scss';
-import 'assets/styles/global.scss';
-import { convertBigNumber } from 'utils/number';
-
-/////////////////////////
-// Interface
-/////////////////////////
 
 interface ISignViewProps {
-  amount: string;
-  fee: string;
   code: string;
-  deviceId: string;
-  fromAddress: string;
-  toAddress: string;
   waiting: boolean;
   waitingMessage: string;
   transactionSigned: boolean;
-  onSignPress: () => {};
+  onSignPress: (deviceId: string, amount: number, from: string, to: string, fee: string) => Promise<void>;
 }
 
-/////////////////////////
-// Component
-/////////////////////////
+const SignView = ({ waiting, code, waitingMessage, transactionSigned, onSignPress }: ISignViewProps) => {
+  const dagAddress = useSelector(walletsSelectors.selectActiveWalletDagAddress);
+  const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
 
-const SignView = ({
-  amount,
-  fee,
-  deviceId,
-  fromAddress,
-  toAddress,
-  waiting,
-  code,
-  waitingMessage,
-  transactionSigned,
-  onSignPress,
-}: ISignViewProps) => {
-  const getFiatAmount = useFiat();
+  const bitfiSigningConfig: SignTransactionProviderConfig = {
+    title: 'Bitfi - Sign Transaction',
+    footer: 'Please connect your Bitfi device to WiFI to sign the transaction. Only sign transactions on sites you trust.',
+    onSignTransaction: async ({ decodedData, isDAG, isMetagraph, isEvmNative, fee, wallet }) => {
+      if (isDAG) {
+        const { address, chainId, chain } = wallet;
+        const networkInfo = dag4.account.networkInstance.getNetwork();
 
-  const amountBN = convertBigNumber(amount);
-  const feeBN = convertBigNumber(fee);
+        if (chain !== StargazerChain.CONSTELLATION) {
+          throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+        }
+
+        if (dagAddress.toLowerCase() !== address.toLowerCase()) {
+          throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+        }
+
+        if (chainId !== DAG_NETWORK[networkInfo.id].chainId) {
+          throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+        }
+        const { value, from, to } = decodedData.transaction;
+        await onSignPress(deviceId, value, from, to, fee);
+      }
+
+      if (isMetagraph) {
+        throw new EIPRpcError('Metagraph transactions not supported with Bitfi hardware wallet', EIPErrorCodes.Unsupported);
+      }
+
+      if (isEvmNative) {
+        throw new EIPRpcError('EVM transactions not supported with Bitfi hardware wallet', EIPErrorCodes.Unsupported);
+      }
+
+      throw new EIPRpcError('Unsupported transaction type', EIPErrorCodes.Unsupported);
+    },
+    onSuccess: async () => {
+      // Success is handled by the parent component
+    },
+    onError: async () => {
+      // Error is handled by the parent component
+    },
+  };
 
   return transactionSigned ? (
     <div className={styles.layout}>
@@ -67,79 +76,26 @@ const SignView = ({
       </section>
       <section className={styles.content}>
         <CheckIcon className={styles.checked} />
-        <div className="body-description">
-          You can follow your transaction under activity on your account screen.
-        </div>
+        <div className="body-description">You can follow your transaction under activity on your account screen.</div>
       </section>
     </div>
   ) : (
-    <>
-      <div className={styles.wrapper}>
-        <section className={styles.subheading}>
-          Bitfi - Sign Transaction <br />
-          Device ID: {deviceId.toUpperCase()}
-        </section>
-        <section className={styles.txAmount}>
-          <div className={styles.iconWrapper}>
-            <UpArrowIcon />
-          </div>
-          {amountBN} DAG
-          <small>
-            (≈
-            {getFiatAmount(Number(amount || 0), 8, 'constellation-labs')})
-          </small>
-        </section>
-        <section className={styles.transaction}>
-          <div className={styles.row}>
-            From
-            <span>{fromAddress}</span>
-          </div>
-          <div className={styles.row}>
-            To
-            <span>{toAddress}</span>
-          </div>
-          <div className={styles.row}>
-            Transaction Fee
-            <span>
-              {feeBN} DAG (≈ {getFiatAmount(Number(fee) || 0, 8, 'constellation-labs')})
-            </span>
-          </div>
-        </section>
-        <section className={styles.confirm}>
-          <div className={styles.row}>
-            Max Total
-            <span>
-              {getFiatAmount(
-                Number(amount || 0) + Number(fee || 0),
-                8,
-                'constellation-labs'
-              )}
-            </span>
-          </div>
-        </section>
-        <section className={styles.instruction}>
-          <span>Please connect your Bitfi device to WiFi to sign the transaction.</span>
-        </section>
-        <div className={styles.actions}>
-          <Button type="submit" variant={styles.button} onClick={onSignPress}>
-            Sign
-          </Button>
-        </div>
-        {waiting && (
-          <div className={styles.progressWrapper}>
-            <div className={styles.progress}>
-              <div>
-                <CircularProgress />
-              </div>
-              <div className={styles.message}>
-                <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
-                <span>{waitingMessage}</span>
-              </div>
+    <div className={styles.wrapper}>
+      <SignTransactionContainer {...bitfiSigningConfig} />
+      {waiting && (
+        <div className={styles.progressWrapper}>
+          <div className={styles.progress}>
+            <div>
+              <CircularProgress />
+            </div>
+            <div className={styles.message}>
+              <h1 style={{ color: 'white', margin: '0px' }}>{code}</h1>
+              <span>{waitingMessage}</span>
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 };
 

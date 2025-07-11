@@ -7,21 +7,15 @@ import UpArrowIcon from '@material-ui/icons/ArrowUpward';
 import Modal from 'components/Modal';
 import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { EIPErrorCodes, EIPRpcError, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
 import { convertBigNumber } from 'utils/number';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './Confirm.scss';
 import { ellipsis } from '../../helpers';
 import { DAG_SMALL_FEE } from './Confirm.container';
 import { ISendConfirm } from './types';
+import { isHardware } from 'utils/hardware';
 
 const SendConfirm = ({
-  isExternalRequest,
   confirmed,
   tempTx,
   assetInfo,
@@ -34,40 +28,13 @@ const SendConfirm = ({
   handleConfirm,
   disabled,
   isL0token,
-  isTransfer,
   isModalVisible,
   setIsModalVisible,
   getDagSmallFeeAmount,
 }: ISendConfirm) => {
-  const callbackSuccess = async (
-    message: StargazerRequestMessage,
-    _origin: string,
-    trxHash: string
-  ) => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseResult(trxHash, message);
-    window.close();
-  };
+  const transactionWrapper = clsx(styles.transaction);
 
-  const callbackError = async (
-    message: StargazerRequestMessage,
-    _origin: string,
-    error: string
-  ) => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseError(
-      new EIPRpcError(error, EIPErrorCodes.Rejected),
-      message
-    );
-  };
-
-  const transactionWrapper = clsx(styles.transaction, {
-    [styles.externalRequestExtra]: isExternalRequest,
-  });
-
-  const fromRowStyles = clsx(styles.row, {
-    [styles.fromRow]: isExternalRequest,
-  });
+  const fromRowStyles = clsx(styles.row);
 
   const amountBN = convertBigNumber(tempTx?.amount);
   const amountPrice = getSendAmount();
@@ -89,15 +56,13 @@ const SendConfirm = ({
         </Layout>
       ) : (
         <div className={styles.wrapper}>
-          {!isExternalRequest && (
-            <section className={styles.txAmount}>
-              <div className={styles.iconWrapper}>
-                <UpArrowIcon />
-              </div>
-              {amountBN} {assetInfo.symbol}
-              {!isL0token && <small>(≈ ${amountPrice} USD)</small>}
-            </section>
-          )}
+          <section className={styles.txAmount}>
+            <div className={styles.iconWrapper}>
+              <UpArrowIcon />
+            </div>
+            {amountBN} {assetInfo.symbol}
+            {!isL0token && <small>(≈ ${amountPrice} USD)</small>}
+          </section>
           <section className={transactionWrapper}>
             <div className={fromRowStyles}>
               From
@@ -118,16 +83,14 @@ const SendConfirm = ({
             </div>
           </section>
           <section className={styles.confirm}>
-            {!isTransfer && (
-              <div className={styles.row}>
-                Max Total
-                <span>
-                  {isL0token
-                    ? `${totalAmount} ${assetInfo.symbol}`
-                    : `$${totalAmount} USD`}
-                </span>
-              </div>
-            )}
+            <div className={styles.row}>
+              Max Total
+              <span>
+                {isL0token
+                  ? `${totalAmount} ${assetInfo.symbol}`
+                  : `$${totalAmount} USD`}
+              </span>
+            </div>
             <div className={styles.actions}>
               <Button
                 type="button"
@@ -140,13 +103,10 @@ const SendConfirm = ({
               <Button
                 type="submit"
                 variant={styles.button}
-                onClick={() => handleConfirm(callbackSuccess, callbackError)}
+                onClick={() => handleConfirm()}
                 disabled={disabled}
               >
-                {activeWallet.type === KeyringWalletType.LedgerAccountWallet ||
-                activeWallet.type === KeyringWalletType.BitfiAccountWallet
-                  ? 'Next'
-                  : 'Confirm'}
+                {isHardware(activeWallet.type) ? 'Next' : 'Confirm'}
               </Button>
             </div>
           </section>

@@ -53,6 +53,7 @@ export default {
   [screens.settings.checkPassword]: '/settings/wallets/checkPassword',
   [screens.settings.manageWallet]: '/settings/wallets/manage',
   [screens.settings.removeWallet]: '/settings/wallets/remove',
+  [screens.settings.selectHardwareWallet]: '/settings/wallets/hardware',
   [screens.settings.importWallet]: '/settings/wallets/import',
   [screens.settings.importAccount]: '/settings/wallets/import/account',
   [screens.settings.importPhrase]: '/settings/wallets/import/phrase',

@@ -23,6 +23,7 @@ const NFTDetails: FC<NFTDetailsProps> = ({
   logo,
   quantity,
   selectedNFT,
+  sendDisabled = false, 
   onPressSendNFT,
   onPressViewOpenSea,
 }) => {
@@ -70,6 +71,7 @@ const NFTDetails: FC<NFTDetailsProps> = ({
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             label={SEND_NFT}
+            disabled={sendDisabled}
             onClick={onPressSendNFT}
             extraStyle={styles.sendButton}
           />

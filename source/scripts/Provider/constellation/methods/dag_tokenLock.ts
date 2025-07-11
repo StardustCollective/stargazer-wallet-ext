@@ -1,19 +1,21 @@
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
-import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
+import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import type { TokenLockWithCurrencyId } from '@stardust-collective/dag4-network';
 
-type TokenLockData = {
-  source: string;
-  amount: number;
-  unlockEpoch: number | null;
-  fee?: number;
-  currencyId: string | null;
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import type { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+import { StargazerChain } from 'scripts/common';
+
+import store from 'state/store';
+
+import { validateHardwareMethod } from 'utils/hardware';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { checkArguments, getChainId, getWalletInfo } from '../utils';
+
+export type TokenLockDataParam = TokenLockWithCurrencyId & {
+  latestEpoch: number | null;
 };
 
 const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
@@ -23,9 +25,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('There is no active wallet');
   }
 
-  const dagAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const dagAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!dagAccount) {
     throw new Error('No active account for the request asset type');
@@ -35,7 +35,10 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('params not provided');
   }
 
-  const [data] = request.params as [TokenLockData];
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
+
+  const [data] = request.params as [TokenLockWithCurrencyId];
 
   if (!data) {
     throw new Error('invalid params');
@@ -79,10 +82,8 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
 
   const { assets } = store.getState();
 
-  if (!!data.currencyId) {
-    const currencyAsset = Object.values(assets).find(
-      (asset) => asset.address === data.currencyId
-    );
+  if (data.currencyId) {
+    const currencyAsset = Object.values(assets).find(asset => asset.address === data.currencyId);
 
     if (!currencyAsset) {
       throw new Error('"currencyId" not found in the wallet');
@@ -92,7 +93,7 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
       throw new Error('"currencyId" must be a valid metagraph address');
     }
   } else {
-    const dagAsset = Object.values(assets).find((asset) => asset.symbol === 'DAG');
+    const dagAsset = Object.values(assets).find(asset => asset.symbol === 'DAG');
 
     if (!dagAsset) {
       throw new Error('DAG asset not found in the wallet');
@@ -105,16 +106,12 @@ const getLatestEpoch = async (): Promise<number | null> => {
   return latestSnapshot?.value?.epochProgress ?? null;
 };
 
-export const dag_tokenLock = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
+export const dag_tokenLock = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
   await validateParams(request);
 
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { windowUrl, windowSize, windowType } = getWalletInfo();
 
-  const [data] = request.params as [TokenLockData];
+  const [data] = request.params as [TokenLockWithCurrencyId];
 
   let latestEpoch = null;
 
@@ -126,37 +123,33 @@ export const dag_tokenLock = async (
     }
 
     if (data.unlockEpoch <= latestEpoch) {
-      throw new Error(
-        `Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`
-      );
+      throw new Error(`Invalid "unlockEpoch" value. Must be greater than: ${latestEpoch}.`);
     }
   }
 
-  const DEFAULT_FEE = 0;
-
-  const tokenLockData = {
-    walletLabel: activeWallet.label,
-    walletId: activeWallet.id,
-    chainLabel: getChainLabel(),
-    source: data.source,
-    amount: data.amount,
-    currencyId: data.currencyId,
-    unlockEpoch: data.unlockEpoch,
-    fee: data.fee ? data.fee : DEFAULT_FEE,
+  const tokenLockData: TokenLockDataParam = {
+    ...data,
     latestEpoch,
   };
 
   windowSize.height = 628;
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    tokenLockData,
-    message,
-    sender.origin,
-    'tokenLock',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: tokenLockData,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.TokenLock,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId: getChainId(),
+        address: data.source,
+      },
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

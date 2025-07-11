@@ -1,62 +1,23 @@
-///////////////////////////
-// Modules
-///////////////////////////
-import React, { ChangeEvent, useState, useCallback, useMemo, useEffect, FC } from 'react';
+import React, { ChangeEvent, useState, useCallback, useMemo, FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import * as yup from 'yup';
 import { BigNumber, ethers } from 'ethers';
 import { useLinkTo } from '@react-navigation/native';
-import find from 'lodash/find';
-import { useHistory } from 'react-router-dom';
-
-///////////////////////////
-// Components
-///////////////////////////
-
 import Container, { CONTAINER_COLOR } from 'components/Container';
-
-///////////////////////////
-// Utils
-///////////////////////////
-
 import { checkOneDecimalPoint, getChangeAmount } from 'utils/sendUtil';
 import { getAccountController } from 'utils/controllersUtils';
 import { removeEthereumPrefix } from 'utils/addressUtil';
-import { CHAIN_WALLET_ASSET } from 'utils/assetsUtil';
-
-///////////////////////////
-// Types
-///////////////////////////
-
-import IAssetListState, { IAssetInfoState } from 'state/assets/types';
-import { ITransactionInfo } from 'scripts/types';
-import IVaultState, {
+import { type IAssetInfoState } from 'state/assets/types';
+import { type ITransactionInfo } from 'scripts/types';
+import {
   AssetType,
-  IActiveAssetState,
-  IAssetState,
-  AssetBalances,
-  ActiveNetwork,
+  type IActiveAssetState,
+  type AssetBalances,
+  type ActiveNetwork,
 } from 'state/vault/types';
-import { RootState } from 'state/store';
-
-///////////////////////////
-// Hooks
-///////////////////////////
-
 import { useFiat } from 'hooks/usePrice';
 import useGasEstimate from 'hooks/useGasEstimate';
-
-///////////////////////////
-// Header
-///////////////////////////
-
-// import sendHeader from 'navigation/headers/send';
-
-///////////////////////////
-// Header
-///////////////////////////
-
 import {
   getChainInfo,
   getMainnetFromTestnet,
@@ -64,11 +25,6 @@ import {
   getNetworkFromChainId,
   getPriceId,
 } from 'scripts/Background/controllers/EVMChainController/utils';
-
-///////////////////////////
-// Constants
-///////////////////////////
-
 import {
   ETHEREUM_LOGO,
   POLYGON_LOGO,
@@ -78,14 +34,11 @@ import {
   DAG_NETWORK,
   BASE_LOGO,
 } from 'constants/index';
-import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
 import { initialState as initialStateAssets } from 'state/assets';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
 import Send from './Send';
 import { fixedNumber } from 'utils/number';
+import vaultSelectors from 'selectors/vaultSelectors';
+import assetsSelectors from 'selectors/assetsSelectors';
 
 // One billion is the max amount a user is allowed to send.
 const MAX_AMOUNT_NUMBER = 1000000000;
@@ -97,138 +50,11 @@ interface IWalletSend {
 
 const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const accountController = getAccountController();
-  let isExternalRequest = false;
 
-  if (location) {
-    isExternalRequest = location.pathname.includes('sendTransaction');
-  }
-
-  let activeAsset: IAssetInfoState | IActiveAssetState | IAssetState;
-  let balances: AssetBalances;
-  let chain: string;
-  let to: string;
-  let from: string;
-  let value: string;
-  let feeAmount: string;
-  let gas: string;
-  let memo: string;
-  let metagraphAddress: string;
-  let isTransfer = false;
-  let history;
-  let assetInfo: IAssetInfoState;
-
-  const assets: IAssetListState = useSelector((state: RootState) => state.assets);
-
-  if (isExternalRequest) {
-    const { data } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
-      to: any;
-      value: any;
-      gas: any;
-      data: any;
-      fee: any;
-      metagraphAddress: any;
-      chain: string;
-      chainLabel: string;
-      isTransfer: boolean;
-    } | null>(location.href);
-
-    if (data) {
-      to = data.to;
-      value = data.value || 0;
-      gas = data.gas || 0;
-      memo = data.data;
-      chain = data.chain;
-      feeAmount = data.fee;
-      metagraphAddress = data.metagraphAddress;
-      isTransfer = data.isTransfer;
-    }
-
-    useEffect(() => {
-      // Set initial gas
-      let amount;
-      if (typeof value === 'string' && value.startsWith('0x')) {
-        amount = parseInt(value, 16); // Convert hexadecimal value to integer value
-        amount /= 1e18; // WEI to ETH
-      } else {
-        amount = value;
-      }
-      setAmount(amount);
-
-      const initialGas = parseInt(gas, 16);
-
-      /**
-       * TODO: @todo
-       * The next line sets the gas price based on the gas limit estimation
-       * those two units are completely unrelated, if we're unable to retrive
-       * the gas oracle values, the user could an exagerated gas price set
-       * as the two units do not correlate with each other one could say a normal
-       * ERC20 call is 62850 gas units (gasLimit), if we set this value as a gas price
-       * (gasPrice) in gwei. The total cost of the transaction would be 62850 * 62850 GWEI
-       * which is 3.9501225 ETH. !!!
-       */
-      setGasPrice(initialGas);
-      estimateGasFee(initialGas);
-    }, []);
-
-    history = useHistory();
-
-    activeAsset = useSelector((state: RootState) =>
-      find(state.assets, { address: to })
-    ) as IAssetInfoState;
-    const vault = useSelector((state: RootState) => state.vault);
-    const vaultActiveAsset = vault.activeAsset;
-
-    if (!activeAsset) {
-      if (chain) {
-        if (chain === StargazerChain.CONSTELLATION) {
-          if (metagraphAddress) {
-            activeAsset = useSelector((state: RootState) =>
-              find(state.vault?.activeWallet?.assets, {
-                contractAddress: metagraphAddress,
-              })
-            );
-          } else {
-            activeAsset = useSelector((state: RootState) =>
-              find(state.vault?.activeWallet?.assets, { id: AssetType.Constellation })
-            );
-          }
-        } else {
-          activeAsset = useSelector((state: RootState) =>
-            find(state.vault?.activeWallet?.assets, { id: AssetType.Ethereum })
-          );
-
-          activeAsset = {
-            ...activeAsset,
-            ...CHAIN_WALLET_ASSET[chain as keyof typeof CHAIN_WALLET_ASSET],
-          };
-        }
-      } else {
-        // Set ETH as the default activeAsset
-        activeAsset = useSelector((state: RootState) =>
-          find(state.vault?.activeWallet?.assets, { id: AssetType.Ethereum })
-        );
-      }
-    } else {
-      // Get activeAsset from wallet assets
-      activeAsset = useSelector((state: RootState) =>
-        find(state.vault?.activeWallet?.assets, { id: activeAsset?.id })
-      );
-    }
-
-    if (!vaultActiveAsset || activeAsset?.id !== vaultActiveAsset.id) {
-      // Update activeAsset so NetworkController doesn't fail
-      accountController.updateAccountActiveAsset(activeAsset);
-    }
-
-    assetInfo = assets[activeAsset?.id] || initialStateAssets[activeAsset?.id];
-
-    from = activeAsset?.address;
-  } else {
-    const vault: IVaultState = useSelector((state: RootState) => state.vault);
-    activeAsset = vault.activeAsset;
-    balances = vault.balances;
-    assetInfo = assets[activeAsset?.id];
-  }
+  const activeAsset: IActiveAssetState = useSelector(vaultSelectors.getActiveAsset);
+  const balances: AssetBalances = useSelector(vaultSelectors.getBalances);
+  const activeNetwork: ActiveNetwork = useSelector(vaultSelectors.getActiveNetwork);
+  const assetInfo: IAssetInfoState = useSelector(assetsSelectors.getAssetById(activeAsset?.id));
 
   const getFiatAmount = useFiat(true, assetInfo);
   const linkTo = useLinkTo();
@@ -239,17 +65,15 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     useForm({
       validationSchema: yup.object().shape({
         address: yup.string().required('Error: Invalid address'),
-        amount: !isExternalRequest
-          ? yup
-              .mixed()
-              .transform((value) => {
-                const formattedValue = value.replace(/,/g, '.');
-                if (isNaN(formattedValue)) return undefined;
-                const floatNumber = parseFloat(formattedValue);
-                return isNaN(floatNumber) || floatNumber <= 0 ? undefined : floatNumber;
-              })
-              .required('Error: Invalid amount')
-          : null,
+        amount: yup
+                .mixed()
+                .transform((value) => {
+                  const formattedValue = value.replace(/,/g, '.');
+                  if (isNaN(formattedValue)) return undefined;
+                  const floatNumber = parseFloat(formattedValue);
+                  return isNaN(floatNumber) || floatNumber <= 0 ? undefined : floatNumber;
+                })
+                .required('Error: Invalid amount'),
         fee:
           activeAsset?.type === AssetType.Constellation ||
           activeAsset?.type === AssetType.LedgerConstellation
@@ -266,9 +90,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       }),
     });
 
-  const { activeNetwork }: IVaultState = useSelector((state: RootState) => state.vault);
-
-  const [address, setAddress] = useState(initAddress || tempTx?.toAddress || to || '');
+  const [address, setAddress] = useState(initAddress || tempTx?.toAddress || '');
 
   const [amount, setAmount] = useState<number | string>(
     tempTx?.amount ? Number(tempTx?.amount) : 0
@@ -276,7 +98,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   const [amountBN, setAmountBN] = useState(
     ethers.utils.parseUnits(String(tempTx?.amount || 0), assetInfo.decimals)
   );
-  const [fee, setFee] = useState(feeAmount || '0');
+  const [fee, setFee] = useState('0');
   const [recommend, setRecommend] = useState(0);
   const [modalOpened, setModalOpen] = useState(false);
   const [decimalPointOnAmount, setDecimalPointOnAmount] = useState<boolean>(false);
@@ -303,11 +125,9 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
     gasPrices,
     digits,
   } = useGasEstimate({
-    toAddress: tempTx?.toAddress || to,
+    toAddress: tempTx?.toAddress,
     fromAddress: activeAsset?.address,
     asset: assetInfo,
-    data: memo,
-    gas,
   });
 
   const onSubmit = async (data: any) => {
@@ -315,12 +135,11 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       return;
     }
     const txConfig: ITransactionInfo = {
-      fromAddress: activeAsset?.address || from,
-      toAddress: data.address || to,
+      fromAddress: activeAsset?.address,
+      toAddress: data.address,
       timestamp: Date.now(),
       amount: String(amount) || '0',
       fee: data.fee || gasFee,
-      isTransfer,
     };
     if (
       activeAsset?.type === AssetType.Ethereum ||
@@ -329,75 +148,17 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       txConfig.ethConfig = {
         gasPrice,
         gasLimit,
-        memo,
       };
     }
 
     accountController.updateTempTx(txConfig);
 
-    if (isExternalRequest) {
-      const {
-        message,
-        origin,
-        data: locationData,
-      } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+    linkTo('/send/confirm');
 
-      const params: Record<string, any> = {
-        message,
-        origin,
-        data: locationData,
-        to: txConfig.toAddress,
-      };
-
-      const CHAINS: { [assetId: string]: string } = {
-        [AssetType.Constellation]: StargazerChain.CONSTELLATION,
-        [AssetType.Ethereum]: StargazerChain.ETHEREUM,
-        [AssetType.Polygon]: StargazerChain.POLYGON,
-        [AssetType.BSC]: StargazerChain.BSC,
-        [AssetType.Avalanche]: StargazerChain.AVALANCHE,
-        [AssetType.Base]: StargazerChain.BASE,
-      };
-
-      if (activeAsset?.id) {
-        if (activeAsset?.type === AssetType.Constellation) {
-          params.chain = StargazerChain.CONSTELLATION;
-        } else {
-          params.chain = CHAINS[activeAsset?.id];
-        }
-      }
-
-      if (metagraphAddress) {
-        params.metagraphAddress = metagraphAddress;
-      }
-
-      history.push(
-        `/confirmTransaction?${StargazerExternalPopups.encodeLocationParams(
-          params
-        ).toString()}`
-      );
-    } else {
-      linkTo('/send/confirm');
-    }
   };
 
   const handleClose = async () => {
-    if (isExternalRequest) {
-      const { message } = StargazerExternalPopups.decodeRequestMessageLocationParams(
-        location.href
-      );
-
-      StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(
-        new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
-        message
-      );
-
-      if (window) {
-        window.close();
-      }
-    } else {
-      linkTo('/asset');
-    }
+    linkTo('/asset');
   };
 
   const getBalanceAndFees = () => {
@@ -440,10 +201,6 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
 
     if ([AssetType.ERC20, AssetType.Ethereum].includes(assetInfo.type)) {
       checkGasPrices = !gasPrices?.length;
-    }
-
-    if (isExternalRequest) {
-      return !isValidAddress || !fee || !address || checkGasPrices;
     }
 
     let formattedAmount: number;
@@ -595,12 +352,12 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
   };
 
   const assetNetwork =
-    assets[activeAsset?.id]?.network || initialStateAssets[activeAsset?.id]?.network;
+    assetInfo.network || initialStateAssets[activeAsset?.id]?.network;
   const nativeToken = isDAG ? assetInfo.symbol : getNativeToken(assetNetwork);
   const basePriceId = getPriceId(assetNetwork);
 
   return (
-    <Container color={CONTAINER_COLOR.LIGHT} showHeight={!isExternalRequest}>
+    <Container color={CONTAINER_COLOR.LIGHT} showHeight>
       <Send
         control={control}
         modalOpened={modalOpened}
@@ -615,7 +372,6 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         handleGasPriceChange={handleGasPriceChange}
         handleClose={handleClose}
         onSubmit={onSubmit}
-        isExternalRequest={isExternalRequest}
         isDisabled={isDisabled}
         isValidAddress={isValidAddress}
         balances={balances}
@@ -637,7 +393,6 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
         decimalPointOnFee={decimalPointOnFee}
         networkTypeOptions={networkTypeOptions}
         basePriceId={basePriceId}
-        isTransfer={isTransfer}
         digits={digits}
       />
     </Container>

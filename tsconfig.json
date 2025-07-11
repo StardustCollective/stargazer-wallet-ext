@@ -1,8 +1,8 @@
 {
   "extends": "@abhijithvijayan/tsconfig",
   "compilerOptions": {
-    "target": "ESNEXT", // ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'.
-    "module": "ESNEXT", // Module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'.
+    "target": "esnext", // ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'.
+    "module": "esnext", // Module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'.
     "jsx": "react",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -20,29 +20,22 @@
     "noImplicitReturns": false,
     "baseUrl": "source",
     "paths": {
-      "components/*": ["components/*"],
       "assets/*": ["assets/*"],
+      "components/*": ["components/*"],
       "constants/*": ["constants/*"],
       "context/*": ["context/*"],
+      "dag4/*": ["dag4/*"],
       "hooks/*": ["hooks/*"],
       "navigation/*": ["navigation/*"],
-      "dag4/*": ["dag4/*"],
       "scenes/*": ["scenes/*"],
       "scripts/*": ["scripts/*"],
       "selectors/*": ["selectors/*"],
       "state/*": ["state/*"],
       "types/*": ["types/*"],
-      "utils/*": ["utils/*"]
+      "utils/*": ["utils/*"],
+      "web/*": ["web/*"]
     }
   },
   "include": ["source", "test.ts"],
-  "exclude": [
-    "source/native",
-    "source/web/webpack.config.js",
-    "source/web/e2e",
-    "source/web/extension",
-    "source/web/scripts/*",
-    "**/*.native.*",
-    "**/styles.ts"
-  ]
+  "exclude": ["source/native", "source/web/webpack.config.js", "source/web/e2e", "source/web/extension", "source/web/scripts/*", "**/*.native.*", "**/styles.ts"]
 }

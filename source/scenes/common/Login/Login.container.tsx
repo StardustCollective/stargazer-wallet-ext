@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 //////////////////////
 // Hooks Imports
@@ -41,6 +41,7 @@ import { schema } from './consts';
 ///////////////////////
 
 import { RootState } from 'state/store';
+
 type ILoginProps = {
   onLoginSuccess: (res: boolean) => void;
   onLoginError?: () => void;
@@ -80,6 +81,7 @@ const LoginContainer: FC<ILoginProps> = ({
       .unLock(data.password)
       .then(async (res: boolean) => {
         setBioLoginLoading(false);
+
         if (onLoginSuccess) {
           onLoginSuccess(res);
         }
@@ -111,7 +113,7 @@ const LoginContainer: FC<ILoginProps> = ({
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.DARK}>
       <Login
         control={control}
         importClicked={importClicked}

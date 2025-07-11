@@ -1,164 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
-import Card from '../components/Card/Card';
-import CardRow from '../components/CardRow/CardRow';
-import TextV3 from 'components/TextV3';
-import dappSelectors from 'selectors/dappSelectors';
-import assetsSelectors from 'selectors/assetsSelectors';
-import styles from './index.scss';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
-import { TokenLockData } from './types';
-import { differenceBetweenEpochs } from 'utils/epochs';
-import { formatBigNumberForDisplay, toDag } from 'utils/number';
-import { IAssetInfoState } from 'state/assets/types';
-import store from 'state/store';
 import { dag4 } from '@stardust-collective/dag4';
+import type { HashResponse, TokenLock as TokenLockBody } from '@stardust-collective/dag4-network';
+import React, { useState } from 'react';
+
+import { DAG_NETWORK } from 'constants/index';
+
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
+import type { TokenLockDataParam } from 'scripts/Provider/constellation';
+
+import type { IAssetInfoState } from 'state/assets/types';
+
 import { usePlatformAlert } from 'utils/alertUtil';
-import {
-  HashResponse,
-  TokenLock as TokenLockBody,
-} from '@stardust-collective/dag4-network';
 
-const renderTokenValue = (tokenAsset: IAssetInfoState) => {
-  return (
-    <div className={styles.valueContainer}>
-      <img src={tokenAsset?.logo} alt="Token logo" className={styles.logo} />
-      <TextV3.CaptionRegular extraStyles={styles.label}>
-        {tokenAsset?.symbol}
-      </TextV3.CaptionRegular>
-    </div>
-  );
-};
-
-const renderEpochValue = (epochValue: number, latestEpoch: number) => {
-  return (
-    <div className={styles.epochContainer}>
-      <TextV3.CaptionRegular extraStyles={styles.label}>
-        {epochValue.toLocaleString()}
-      </TextV3.CaptionRegular>
-      <TextV3.CaptionRegular extraStyles={styles.label}>
-        {`~ ${differenceBetweenEpochs(latestEpoch, epochValue)}`}
-      </TextV3.CaptionRegular>
-    </div>
-  );
-};
-
-const renderLockMessage = (amount: string, unlockEpoch: number) => {
-  if (!unlockEpoch) {
-    return (
-      <TextV3.CaptionRegular extraStyles={styles.description}>
-        Lock{' '}
-        <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
-          {amount}
-        </TextV3.CaptionStrong>{' '}
-        from your wallet.
-      </TextV3.CaptionRegular>
-    );
-  }
-
-  return (
-    <TextV3.CaptionRegular extraStyles={styles.description}>
-      Lock{' '}
-      <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
-        {amount}
-      </TextV3.CaptionStrong>{' '}
-      from your wallet until{' '}
-      <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>
-        Epoch {unlockEpoch?.toLocaleString()}
-      </TextV3.CaptionStrong>
-      .
-    </TextV3.CaptionRegular>
-  );
-};
+import TokenLockContainer, { TokenLockProviderConfig } from './TokenLockContainer';
 
 const TokenLock = () => {
-  const assets = store.getState().assets;
-
-  const [feeValue, setFeeValue] = useState('0');
   const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
 
-  const current = useSelector(dappSelectors.getCurrent);
-  const origin = current && current.origin;
-
-  // Get DAG asset information
-  const dagAsset = useSelector(assetsSelectors.getAssetBySymbol('DAG'));
-
-  const { data, message } =
-    StargazerExternalPopups.decodeRequestMessageLocationParams<TokenLockData>(
-      location.href
-    );
-
-  const {
-    walletLabel,
-    chainLabel,
-    currencyId,
-    amount: amountValue,
-    unlockEpoch,
-    fee,
-    latestEpoch,
-  } = data;
-
-  // Convert amount and fee to DAG
-  const feeAmount = toDag(fee);
-  const amount = formatBigNumberForDisplay(toDag(amountValue));
-
-  // Get token asset information
-  const tokenAssetByCurrency =
-    currencyId && Object.values(assets).find((asset) => asset?.address === currencyId);
-
-  let tokenAsset: IAssetInfoState | null = null;
-
-  if (!currencyId && dagAsset) {
-    tokenAsset = dagAsset;
-  } else if (tokenAssetByCurrency) {
-    tokenAsset = tokenAssetByCurrency;
-  }
-
-  if (!tokenAsset) return null;
-
-  useEffect(() => {
-    if (feeAmount !== null && feeAmount !== undefined) {
-      setFeeValue(feeAmount.toString());
-    }
-  }, [feeAmount]);
-
-  const amountString = `${amount} ${tokenAsset.symbol}`;
-
-  const onNegativeButtonClick = async () => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseError(
-      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
-      message
-    );
-    window.close();
-  };
-
-  const sendTokenLockTransaction = async (): Promise<string> => {
+  const sendTokenLockTransaction = async (decodedData: TokenLockDataParam, asset: IAssetInfoState): Promise<string> => {
     const tokenLockBody: TokenLockBody = {
-      source: data.source,
-      amount: data.amount,
+      source: decodedData.source,
+      amount: decodedData.amount,
       fee: 0,
-      unlockEpoch: data.unlockEpoch,
+      unlockEpoch: decodedData.unlockEpoch,
     };
 
     let tokenLockResponse: HashResponse | null = null;
 
-    if (!currencyId) {
+    if (!decodedData.currencyId) {
       // Send transaction to DAG
       tokenLockResponse = await dag4.account.createTokenLock(tokenLockBody);
     } else {
+      if (!asset) {
+        throw new Error('Metagraph asset not found');
+      }
+
       // Send transaction to metagraph
       const metagraphClient = dag4.account.createMetagraphTokenClient({
-        metagraphId: tokenAssetByCurrency.address,
-        id: tokenAssetByCurrency.address,
-        l0Url: tokenAssetByCurrency.l0endpoint,
-        l1Url: tokenAssetByCurrency.l1endpoint,
+        metagraphId: asset.address,
+        id: asset.address,
+        l0Url: asset.l0endpoint,
+        l1Url: asset.l1endpoint,
         beUrl: '',
       });
 
@@ -172,68 +54,47 @@ const TokenLock = () => {
     return tokenLockResponse.hash;
   };
 
-  const onPositiveButtonClick = async () => {
-    setLoading(true);
-    try {
-      const txHash = await sendTokenLockTransaction();
+  const defaultTokenLockConfig: TokenLockProviderConfig = {
+    title: 'TokenLock',
+    onTokenLock: async ({ decodedData, asset, wallet }) => {
+      const isDag = wallet.chain === StargazerChain.CONSTELLATION;
+      const addressMatch = dag4.account.keyTrio.address.toLowerCase() === wallet.address.toLowerCase();
+      const networkInfo = dag4.account.networkInstance.getNetwork();
+      const chainMatch = DAG_NETWORK[networkInfo.id].chainId === wallet.chainId;
 
-      StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(txHash, message);
-    } catch (e) {
-      let errorMessage =
-        'There was an error with the transaction.\nPlease try again later.';
-      if (e instanceof Error && e?.message) {
-        errorMessage = e.message.includes('InsufficientBalance')
-          ? `Not enough ${tokenAsset.symbol} balance for the transaction`
-          : e.message;
+      if (!isDag) {
+        throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
       }
-      showAlert(errorMessage, 'danger');
-      StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(e, message);
-      setLoading(false);
-      return;
-    }
 
-    window.close();
+      if (!addressMatch) {
+        throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      if (!chainMatch) {
+        throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      setLoading(true);
+      try {
+        return await sendTokenLockTransaction(decodedData, asset);
+      } catch (error) {
+        setLoading(false);
+
+        // Handle specific error cases
+        if (error instanceof Error) {
+          const errorMessage = error.message.includes('InsufficientBalance') ? `Not enough ${asset.symbol} balance for the transaction` : error.message;
+          showAlert(errorMessage, 'danger');
+        } else {
+          showAlert('There was an error with the transaction.\nPlease try again later.', 'danger');
+        }
+
+        throw error;
+      }
+    },
+    isLoading: loading,
   };
 
-  return (
-    <CardLayoutV3
-      logo={current?.logo}
-      title="TokenLock"
-      subtitle={origin}
-      fee={{
-        show: true,
-        defaultValue: '0',
-        value: feeValue,
-        symbol: tokenAsset.symbol,
-        disabled: true,
-        setFee: setFeeValue,
-      }}
-      isPositiveButtonLoading={loading}
-      onNegativeButtonClick={onNegativeButtonClick}
-      onPositiveButtonClick={onPositiveButtonClick}
-    >
-      <div className={styles.container}>
-        <Card>
-          <CardRow label="Wallet name:" value={walletLabel} />
-          <CardRow label="Network:" value={chainLabel} />
-        </Card>
-        <Card>
-          <CardRow label="Token:" value={renderTokenValue(tokenAsset)} />
-          <CardRow label="Amount:" value={amountString} />
-          {!!latestEpoch && !!unlockEpoch && (
-            <CardRow
-              label="Unlock Epoch:"
-              value={renderEpochValue(unlockEpoch, latestEpoch)}
-            />
-          )}
-        </Card>
-        <Card>{renderLockMessage(amountString, unlockEpoch)}</Card>
-      </div>
-    </CardLayoutV3>
-  );
+  return <TokenLockContainer {...defaultTokenLockConfig} />;
 };
 
-export * from './types';
 export default TokenLock;

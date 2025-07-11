@@ -12,8 +12,7 @@ div.assetItem {
   cursor: pointer;
 
   &:hover {
-    backdrop-filter: blur(10px);
-    background-color: $gray-light;
+    background-color: $gray-light-300;
     border-radius: 8px;
   }
 
@@ -62,7 +61,7 @@ div.assetItem {
     .assetBalance {
       display: flex;
       align-items: flex-end;
-      
+
       .balanceText {
         overflow: hidden;
         text-align: right;

@@ -4,7 +4,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { LedgerAccount } from '@stardust-collective/dag4-ledger';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import {
+  KeyringAssetType,
+  KeyringNetwork,
+  KeyringWalletType,
+} from '@stardust-collective/dag4-keyring';
 import { makeStyles } from '@material-ui/core/styles';
 import { LedgerBridgeUtil } from '../../utils/ledgerBridge';
 import queryString from 'query-string';
@@ -41,6 +45,7 @@ import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
+import { HardwareWallet } from 'utils/hardware';
 
 /////////////////////////
 // Constants
@@ -125,7 +130,7 @@ const LedgerPage = () => {
   );
   const [accountData, setAccountData] = useState<LedgerAccount[]>([]);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
-  const [selectedAccounts, setSelectedAccounts] = useState<LedgerAccount[]>([]);
+  const [selectedAccounts, setSelectedAccounts] = useState<HardwareWallet[]>([]);
   const [alertMessage, setAlertMessage] = useState<string>('');
   const [alertSeverity, setAlertSeverity] = useState<Color>('success');
   const [accountsLoadProgress, setAccountsLoadProgress] = useState<number>(0);
@@ -247,15 +252,20 @@ const LedgerPage = () => {
           {
             bipIndex: key - 1,
             type: KeyringWalletType.LedgerAccountWallet,
-            publicKey: account.publicKey,
-            address: account.address,
-            balance: '',
+            accounts: [
+              {
+                publicKey: account.publicKey,
+                address: account.address,
+                network: KeyringNetwork.Constellation,
+              },
+            ],
+            supportedAssets: [KeyringAssetType.DAG],
           },
         ];
       });
     } else {
       setSelectedAccounts((state) => {
-        _.remove(state, { address: account.address });
+        _.remove(state, (item) => item.accounts[0].address === account.address);
         return [...state];
       });
     }

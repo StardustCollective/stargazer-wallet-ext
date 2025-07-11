@@ -73,6 +73,7 @@ const commonConfig = {
       hooks: path.resolve(sharedPath, 'hooks'),
       utils: path.resolve(sharedPath, 'utils'),
       selectors: path.resolve(sharedPath, 'selectors'),
+      web: path.resolve(sharedPath, 'web'),
       'react-native$': 'react-native-web',
     },
   },
@@ -105,6 +106,8 @@ const commonConfig = {
             /zipExtension\.js$/.test(modulePath) ||
             /uploadSourceMaps\.js$/.test(modulePath) ||
             (!/node_modules\/react-native-flash-message/.test(modulePath) &&
+              !/node_modules\/eip-712/.test(modulePath) &&
+              !/node_modules\/ethers-v6/.test(modulePath) &&
               (/node_modules/.test(modulePath) || /native/.test(modulePath)))
           );
         },
@@ -113,8 +116,35 @@ const commonConfig = {
         },
       },
       {
-        test: /\.(jpg|png|svg)x?$/,
-        loader: 'file-loader',
+        test: /\.(jpe?g|png|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'assets/images/[name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg$/,
+        issuer: /\.[jt]sx?$/,
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: {
+              // svgo: true,
+              // svgoConfig: { plugins: [{ removeViewBox: false }] },
+              // icon: true,
+            },
+          },
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'assets/images/[name].[hash].[ext]',
+            },
+          },
+        ],
       },
       {
         test: /\.(sa|sc|c)ss$/,
@@ -159,6 +189,7 @@ const uiConfig = {
     external: path.join(__dirname, 'pages/External', 'index.tsx'),
     ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
     bitfi: path.join(__dirname, 'pages/Bitfi', 'index.tsx'),
+    cypherock: path.join(__dirname, 'pages/Cypherock', 'index.tsx'),
     options: path.join(__dirname, 'pages/Options', 'index.tsx'),
   },
   output: {
@@ -216,6 +247,12 @@ const uiConfig = {
       inject: 'body',
       chunks: ['bitfi'],
       filename: 'bitfi.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(viewsPath, 'cypherock.html'),
+      inject: 'body',
+      chunks: ['cypherock'],
+      filename: 'cypherock.html',
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'options.html'),
