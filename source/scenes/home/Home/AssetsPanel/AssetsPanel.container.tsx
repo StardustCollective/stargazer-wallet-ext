@@ -20,11 +20,10 @@ const AssetsPanelContainer: FC = () => {
   );
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
   const isElpacaHidden = useSelector(userSelectors.getElpacaHidden);
-  const currentClaimWindow = useSelector(userSelectors.getCurrentClaimWindow);
   const activeNetworkAssets = useSelector(walletSelectors.selectActiveNetworkAssets);
   const hasDagAddress = !!getDagAddress(activeWallet);
   const isMainnet = activeNetwork.Constellation === DAG_NETWORK.main2.id;
-  const showCard = !isElpacaHidden && hasDagAddress && isMainnet && !!currentClaimWindow;
+  const showCard = !isElpacaHidden && hasDagAddress && isMainnet;
 
   const handleSelectAsset = (asset: IAssetState) => {
     accountController.updateAccountActiveAsset(asset);

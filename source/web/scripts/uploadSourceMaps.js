@@ -1,5 +1,6 @@
 const { spawnSync } = require('child_process');
 const path = require('path');
+const packageJson = require('../package.json');
 require('dotenv').config({
   path: path.join(__dirname, '../.env.sentry-build-plugin'),
 });
@@ -15,8 +16,7 @@ async function uploadSourceMaps() {
     }
 
     // Get package version for release
-    const packageJson = require('../package.json');
-    const version = packageJson.version;
+    const { version } = packageJson;
     const release = `stargazer-wallet-web@${version}`;
 
     console.log('Uploading source maps for release:', release);

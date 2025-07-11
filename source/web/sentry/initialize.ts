@@ -6,6 +6,8 @@ import {
   Scope,
 } from '@sentry/browser';
 
+import packageJson from '../package.json';
+
 // filter integrations that use the global variable
 const integrations = getDefaultIntegrations({}).filter((defaultIntegration) => {
   return !['BrowserApiErrors', 'Breadcrumbs', 'GlobalHandlers'].includes(
@@ -13,7 +15,7 @@ const integrations = getDefaultIntegrations({}).filter((defaultIntegration) => {
   );
 });
 
-const RELEASE_NAME = `stargazer-wallet-web@5.3.6`;
+const RELEASE_NAME = `stargazer-wallet-web@${packageJson.version}`;
 
 const client = new BrowserClient({
   dsn: process.env.SENTRY_DNS_WEB,
