@@ -252,7 +252,7 @@ export class AccountController {
     const { vault } = state;
     const { local, ledger, bitfi, cypherock } = vault.wallets;
     const allWallets = [...local, ...ledger, ...bitfi, ...cypherock];
-    const walletInfo: KeyringWalletState = allWallets.find((w: KeyringWalletState) => w.id === walletId || w.label === walletLabel);
+    const walletInfo: KeyringWalletState & {cypherockId?: string; bipIndex?: number} = allWallets.find((w: KeyringWalletState) => w.id === walletId || w.label === walletLabel);
 
     if (!walletInfo) {
       return;

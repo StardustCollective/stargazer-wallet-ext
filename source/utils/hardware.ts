@@ -72,6 +72,8 @@ export const validateHardwareMethod = ({ walletType, method, dagChainId, evmChai
 
 export type HardwareWallet = Omit<KeyringWalletState, 'id' | 'label'> & {
   label?: string;
+  cypherockId?: string;
+  bipIndex?: number;
 };
 
 export const getHardwareWalletPage = (type: KeyringWalletType): string => {

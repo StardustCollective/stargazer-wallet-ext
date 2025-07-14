@@ -22,6 +22,7 @@
     "build:chrome:prod": "yarn run clean:chrome && cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production TARGET_BROWSER=chrome webpack && yarn upload-sourcemaps",
     "build:firefox": "cross-env NODE_ENV=production cross-env TARGET_BROWSER=firefox webpack",
     "build": "yarn run build:chrome && yarn run build:firefox",
+    "analyze:chrome": "yarn run clean:chrome && cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production TARGET_BROWSER=chrome ANALYZE=true webpack",
     "test": "jest",
     "test:e2e:chrome": "cross-env SELENIUM_BROWSER=chrome node e2e/run-all.js",
     "test:e2e:chrome:silent": "cross-env SELENIUM_BROWSER=chrome ENABLE_CHROME_LOGGING=false node e2e/run-all.js",

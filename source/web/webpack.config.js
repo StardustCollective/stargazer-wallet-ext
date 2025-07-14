@@ -8,11 +8,11 @@ const DotEnv = require('dotenv-webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
@@ -22,6 +22,7 @@ const rootPath = path.join(__dirname, '../../');
 const sharedPath = path.join(__dirname, '../');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
+const isAnalyze = process.env.ANALYZE === 'true';
 
 const extensionReloaderPlugin = () => {
   this.apply = () => {};
@@ -211,19 +212,6 @@ const uiConfig = {
       ),
       global: 'globalThis',
     }),
-    // delete previous build files
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: [
-        path.join(process.cwd(), `extension/${targetBrowser}`),
-        path.join(
-          process.cwd(),
-          `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`
-        ),
-      ],
-      cleanStaleWebpackAssets: false,
-      verbose: true,
-      dangerouslyAllowCleanPatternsOutsideProject: true,
-    }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'app.html'),
       inject: 'body',
@@ -269,6 +257,7 @@ const uiConfig = {
     new CopyWebpackPlugin([{ from: `${sharedPath}assets`, to: 'assets' }]),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
+    ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
   ],
   optimization: {
     minimizer: [
@@ -332,6 +321,7 @@ const backgroundConfig = {
     new DotEnv({
       path: '../../.env',
     }),
+    ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
   ],
 };
 
