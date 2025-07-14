@@ -23,6 +23,7 @@ const extraNodeModules = {
   utils: path.resolve(__dirname + '/../utils'),
   assets: path.resolve(__dirname + '/../assets'),
   scripts: path.resolve(__dirname + '/../scripts'),
+  web: path.resolve(__dirname + '/../web'),
   process: nodeModules.process,
   crypto: nodeModules.crypto,
   stream: nodeModules.stream,
