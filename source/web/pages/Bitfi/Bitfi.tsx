@@ -88,7 +88,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     width: 380,
-    height: 700,
+    height: 716,
     backgroundColor: '#ffffff',
     borderRadius: 6,
   },
@@ -136,28 +136,6 @@ const BitfiPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (accountData.length) {
-      setSelectedAccounts(() => {
-        return [
-          {
-            id: 0,
-            type: KeyringWalletType.BitfiAccountWallet,
-            accounts: [
-              {
-                address: accountData[0].address,
-                publicKey: accountData[0].publicKey,
-                network: KeyringNetwork.Constellation,
-                deviceId: deviceId as string,
-              },
-            ],
-            supportedAssets: [KeyringAssetType.DAG],
-          },
-        ];
-      });
-    }
-  }, [accountData]);
-
   /////////////////////////
   // Helper
   /////////////////////////
@@ -203,7 +181,7 @@ const BitfiPage = () => {
       errorMessage = ALERT_MESSAGES_STRINGS.INVLAID_DEVICE_ID;
     } else if (err.includes(BITFI_ERROR_STRINGS.INVLAID_DEVICE_ID) || err.includes(BITFI_ERROR_STRINGS.CANNOT_READ_PROPERTIES)) {
       errorMessage = ALERT_MESSAGES_STRINGS.INVLAID_DEVICE_ID;
-    } else if (err.includes(BITFI_ERROR_STRINGS.REJECTED) || err.includes(BITFI_ERROR_STRINGS.ERROR_CODE_ZERO)) {
+    } else if (err.includes(BITFI_ERROR_STRINGS.REJECTED)) {
       errorMessage = ALERT_MESSAGES_STRINGS.REJECTED;
     } else if (err.includes(BITFI_ERROR_STRINGS.TIMEOUT)) {
       errorMessage = ALERT_MESSAGES_STRINGS.TIMEOUT;
@@ -253,13 +231,11 @@ const BitfiPage = () => {
 
   const onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (checked) {
-      console.log('Key: ');
-      console.log(key);
       setSelectedAccounts(state => {
         return [
           ...state,
           {
-            deviceIndex: key - 1,
+            id: key - 1,
             type: KeyringWalletType.BitfiAccountWallet,
             accounts: [
               {
@@ -273,8 +249,6 @@ const BitfiPage = () => {
           },
         ];
       });
-      console.log('Selected Accounts: ');
-      console.log(selectedAccounts);
     } else {
       setSelectedAccounts(state => {
         _.remove(state, item => item.accounts[0].address === account.address);
@@ -362,7 +336,6 @@ const BitfiPage = () => {
       setWaitingForBitfi(false);
       setTransactionSigned(true);
       BitfiBridgeUtil.closeConnection();
-      window.close();
     } catch (err: any) {
       showAlert(err.message || err.toString());
       setWaitingForBitfi(false);

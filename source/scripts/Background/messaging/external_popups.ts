@@ -87,9 +87,11 @@ export class StargazerExternalPopups {
   static encodeLocationParams(params: Record<string, any>) {
     const urlParams = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
-      const valueString = typeof value === 'object' ? JSON.stringify(value) : String(value);
-      const valueEncoded = encodeToBase64(valueString);
-      urlParams.set(key, valueEncoded);
+      if (value !== undefined) {
+        const valueString = typeof value === 'object' ? JSON.stringify(value) : String(value);
+        const valueEncoded = encodeToBase64(valueString);
+        urlParams.set(key, valueEncoded);
+      }
     }
     return urlParams;
   }
