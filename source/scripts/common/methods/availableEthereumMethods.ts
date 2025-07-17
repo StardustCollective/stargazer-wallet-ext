@@ -11,6 +11,12 @@ const AvailableEthereumChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.ETHEREUM,
+    method: AvailableMethods.stargazer_accounts,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.ETHEREUM,
     method: AvailableMethods.eth_accounts,
     proxied: false,
     permissions: [],

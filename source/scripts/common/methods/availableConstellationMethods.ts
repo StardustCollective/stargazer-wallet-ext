@@ -11,6 +11,12 @@ const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   },
   {
     chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.stargazer_accounts,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_chainId,
     proxied: false,
     permissions: [],

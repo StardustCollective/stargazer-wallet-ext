@@ -68,6 +68,7 @@ enum AvailableMethods {
 
   /* Shared */
   stargazer_requestAccounts = 'stargazer_requestAccounts',
+  stargazer_accounts = 'stargazer_accounts',
 }
 
 export { AvailableMethods };
