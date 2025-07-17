@@ -28,6 +28,7 @@ import {
   dag_delegatedStake,
   dag_withdrawDelegatedStake,
 } from './methods';
+import { stargazer_requestAccounts } from '../shared/methods';
 
 export class ConstellationProvider implements IRpcChainRequestHandler {
   async handleProxiedRequest(
@@ -55,6 +56,8 @@ export class ConstellationProvider implements IRpcChainRequestHandler {
     }
 
     switch (request.method) {
+      case AvailableMethods.stargazer_requestAccounts:
+        return stargazer_requestAccounts(request, message, sender);
       case AvailableMethods.dag_requestAccounts:
         return dag_requestAccounts(request, message, sender);
       case AvailableMethods.dag_accounts:

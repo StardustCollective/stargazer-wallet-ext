@@ -5,6 +5,12 @@ import { AvailableChainMethod } from '../availableChainMethods';
 const AvailableEthereumChainMethods: AvailableChainMethod[] = [
   {
     chain: ProtocolProvider.ETHEREUM,
+    method: AvailableMethods.stargazer_requestAccounts,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.ETHEREUM,
     method: AvailableMethods.eth_accounts,
     proxied: false,
     permissions: [],

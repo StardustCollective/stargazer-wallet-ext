@@ -4,6 +4,7 @@ import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages'
 import { AvailableMethods, EIPErrorCodes, EIPRpcError, IRpcChainRequestHandler, StargazerRequest, StargazerRequestMessage } from '../../common';
 
 import { eth_accounts, eth_requestAccounts, eth_sendTransaction, eth_signTypedData, personal_sign, wallet_switchEthereumChain, web3_clientVersion, web3_sha3 } from './methods';
+import { stargazer_requestAccounts } from '../shared/methods';
 import StargazerRpcProvider from './StargazerRpcProvider';
 import { getNetworkInfo } from './utils';
 
@@ -25,6 +26,8 @@ export class EVMProvider implements IRpcChainRequestHandler {
     }
 
     switch (request.method) {
+      case AvailableMethods.stargazer_requestAccounts:
+        return stargazer_requestAccounts(request, message, sender);
       case AvailableMethods.eth_requestAccounts:
         return eth_requestAccounts(request, message, sender);
       case AvailableMethods.eth_accounts:

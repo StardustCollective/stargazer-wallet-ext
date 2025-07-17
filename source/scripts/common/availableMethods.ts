@@ -65,6 +65,9 @@ enum AvailableMethods {
   dag_signMetagraphDataTransaction = 'dag_signMetagraphDataTransaction',
   dag_getMetagraphPendingTransaction = 'dag_getMetagraphPendingTransaction',
   dag_getMetagraphTransaction = 'dag_getMetagraphTransaction',
+
+  /* Shared */
+  stargazer_requestAccounts = 'stargazer_requestAccounts',
 }
 
 export { AvailableMethods };

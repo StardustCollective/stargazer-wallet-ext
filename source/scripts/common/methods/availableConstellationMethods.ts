@@ -5,6 +5,12 @@ import { AvailableChainMethod } from '../availableChainMethods';
 const AvailableConstellationChainMethods: AvailableChainMethod[] = [
   {
     chain: ProtocolProvider.CONSTELLATION,
+    method: AvailableMethods.stargazer_requestAccounts,
+    proxied: false,
+    permissions: [],
+  },
+  {
+    chain: ProtocolProvider.CONSTELLATION,
     method: AvailableMethods.dag_chainId,
     proxied: false,
     permissions: [],
