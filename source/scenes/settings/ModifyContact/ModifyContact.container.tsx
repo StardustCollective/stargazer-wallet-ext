@@ -43,7 +43,7 @@ const ModifyContactContainer: FC<IModifyContactView> = ({ route, navigation }) =
 
   const isValidAddress = useMemo(() => {
     if (address) {
-      if (activeWallet.type === KeyringWalletType.MultiChainWallet) {
+      if ([KeyringWalletType.MultiChainWallet, KeyringWalletType.CypherockAccountWallet].includes(activeWallet.type)) {
         return (
           accountController.isValidDAGAddress(address) ||
           accountController.isValidERC20Address(address)

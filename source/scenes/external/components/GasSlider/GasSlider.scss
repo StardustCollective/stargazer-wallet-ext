@@ -1,0 +1,63 @@
+@import '~assets/styles/variables';
+
+.gasPriceHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .gasPriceHeaderLeft {
+    display: flex;
+    align-items: center;
+
+    .label {
+      color: #332556;
+    }
+  }
+
+  .gasPriceHeaderRight {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
+
+    .gasSpeedBox {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #d9cff4;
+      padding: 4px 12px;
+      border-radius: 8px;
+
+      .gasSpeedBoxLeft {
+        display: flex;
+
+        .price {
+          color: rgba(30, 21, 50, 0.66);
+        }
+      }
+
+      .gasSpeedBoxRight {
+        display: flex;
+        .speed {
+          color: #332556;
+        }
+      }
+    }
+  }
+}
+
+.gasPriceFooter {
+  margin: 8px 20px 8px 10px;
+}
+
+.gasEstimateLabel {
+  display: flex;
+  margin-top: 6px;
+  margin-left: 16px;
+
+  .estimateLabel {
+    font-size: 12px;
+    color: rgba(30, 21, 50, 0.66);
+  }
+}

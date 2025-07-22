@@ -1,11 +1,7 @@
 import React, { FC } from 'react';
-
 import { useLinkTo } from '@react-navigation/native';
-
 import Container from 'components/Container';
-
 import Wallets from './AddWallet';
-
 import { IAddWalletView } from './types';
 
 const WalletsContainer: FC<IAddWalletView> = () => {
@@ -19,11 +15,16 @@ const WalletsContainer: FC<IAddWalletView> = () => {
     linkTo('/settings/wallets/import');
   };
 
+  const onConnectHardwareWalletClicked = () => {
+    linkTo('/settings/wallets/hardware');
+  };
+
   return (
-    <Container safeArea={false}>
+    <Container>
       <Wallets
         onCreateNewWalletClicked={onCreateNewWalletClicked}
         onImportWalletClicked={onImportWalletClicked}
+        onConnectHardwareWalletClicked={onConnectHardwareWalletClicked}
       />
     </Container>
   );

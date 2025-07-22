@@ -5,4 +5,5 @@ export type IAddWalletView = {
 export default interface IAddWalletSettings {
   onCreateNewWalletClicked: () => void;
   onImportWalletClicked: () => void;
+  onConnectHardwareWalletClicked?: () => void;
 }

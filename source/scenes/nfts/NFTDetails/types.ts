@@ -8,6 +8,7 @@ export type INFTDetails = {
 export type NFTDetailsProps = {
   quantity: number;
   logo: string;
+  sendDisabled?: boolean;
   selectedNFT: {
     loading: boolean;
     error: any;

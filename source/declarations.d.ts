@@ -10,3 +10,10 @@ declare module 'scrypt-js' {
 }
 
 declare module 'single-call-balance-checker-abi';
+
+declare module '*.svg' {
+  import React = require('react');
+  export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
+  const src: string;
+  export default src;
+}

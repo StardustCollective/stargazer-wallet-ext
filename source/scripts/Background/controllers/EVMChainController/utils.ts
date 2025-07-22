@@ -1,33 +1,17 @@
+import { Asset, AssetETH, assetFromString, assetToString, BaseAmount, baseAmount, ETHChain } from '@xchainjs/xchain-util';
 import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
-import { Address, Tx } from '../ChainsController';
-import { ETHTransactionInfo, TokenTransactionInfo } from './etherscanApi.types';
-import { FeesWithGasPricesAndLimits, GasPrices, testnets, AllChainsIds } from './types';
-import {
-  Asset,
-  BaseAmount,
-  AssetETH,
-  ETHChain,
-  baseAmount,
-  assetFromString,
-  assetToString,
-} from '@xchainjs/xchain-util';
-import {
-  BASE_TOKEN_GAS_COST,
-  DEFAULT_GAS_PRICE,
-  ETH_DECIMAL,
-  SIMPLE_GAS_COST,
-  ETHAddress,
-} from './constants';
-import {
-  ALL_EVM_CHAINS,
-  AVALANCHE_LOGO,
-  BASE_LOGO,
-  BSC_LOGO,
-  ETHEREUM_LOGO,
-  POLYGON_LOGO,
-} from 'constants/index';
+
+import { ALL_EVM_CHAINS, AVALANCHE_LOGO, BASE_LOGO, BSC_LOGO, ETHEREUM_LOGO, POLYGON_LOGO } from 'constants/index';
+
 import store from 'state/store';
+
+import { StargazerChain } from 'scripts/common';
+import { Address, Tx } from '../ChainsController';
+
+import { BASE_TOKEN_GAS_COST, DEFAULT_GAS_PRICE, ETH_DECIMAL, ETHAddress, SIMPLE_GAS_COST } from './constants';
+import { ETHTransactionInfo, TokenTransactionInfo } from './etherscanApi.types';
+import { AllChainsIds, FeesWithGasPricesAndLimits, GasPrices, testnets } from './types';
 
 export const isTestnet = (network: AllChainsIds | string) => {
   return testnets.includes(network);
@@ -151,7 +135,7 @@ export const getAllEVMChains = () => {
   const { customNetworks } = store.getState().vault;
   return {
     ...ALL_EVM_CHAINS,
-    ...customNetworks['ethereum'],
+    ...customNetworks.ethereum,
   };
 };
 
@@ -195,6 +179,12 @@ export const getNetworkFromChainId = (chainId: AllChainsIds | 'both' | string) =
   return EVM_CHAINS[chainId]?.network;
 };
 
+export const getNetworkIdFromChainId = (chainId: AllChainsIds | 'both' | string) => {
+  const EVM_CHAINS = getAllEVMChains();
+  if (chainId === 'both') return StargazerChain.ETHEREUM;
+  return EVM_CHAINS[chainId]?.networkId;
+};
+
 export const getNativeToken = (chainId: AllChainsIds | 'both' | string) => {
   const EVM_CHAINS = getAllEVMChains();
   if (chainId === 'both') return 'ETH';
@@ -206,27 +196,29 @@ export const getChainId = (network: AllChainsIds | string): number => {
   return EVM_CHAINS[network]?.chainId;
 };
 
-export const getChainInfo = (chainId: string) => {
+export const getChainInfo = (chainId: string | number) => {
   const EVM_CHAINS = getAllEVMChains();
+
+  if (typeof chainId === 'number') {
+    return Object.values(EVM_CHAINS).find(chain => chain.chainId === chainId) ?? null;
+  }
+
   return EVM_CHAINS[chainId];
 };
 
-export const filterSelfTxs = <T extends { from: string; to: string; hash: string }>(
-  txs: T[]
-): T[] => {
-  const filterTxs = txs.filter((tx) => tx.from !== tx.to);
-  let selfTxs = txs.filter((tx) => tx.from === tx.to);
+export const filterSelfTxs = <T extends { from: string; to: string; hash: string }>(txs: T[]): T[] => {
+  const filterTxs = txs.filter(tx => tx.from !== tx.to);
+  let selfTxs = txs.filter(tx => tx.from === tx.to);
   while (selfTxs.length) {
     const selfTx = selfTxs[0];
     filterTxs.push(selfTx);
-    selfTxs = selfTxs.filter((tx) => tx.hash !== selfTx.hash);
+    selfTxs = selfTxs.filter(tx => tx.hash !== selfTx.hash);
   }
 
   return filterTxs;
 };
 
-export const validateSymbol = (symbol?: string | null): boolean =>
-  symbol ? symbol.length >= 3 : false;
+export const validateSymbol = (symbol?: string | null): boolean => (symbol ? symbol.length >= 3 : false);
 
 export const validateAddress = (address: Address): boolean => {
   try {
@@ -292,38 +284,19 @@ export const getTxFromEthTransaction = (tx: ETHTransactionInfo): Tx => {
 export const getTokenAddress = (asset: Asset): string | null => {
   try {
     // strip 0X only - 0x is still valid
-    return ethers.utils.getAddress(
-      asset.symbol.slice(asset.ticker.length + 1).replace(/^0X/, '')
-    );
+    return ethers.utils.getAddress(asset.symbol.slice(asset.ticker.length + 1).replace(/^0X/, ''));
   } catch (err) {
     return null;
   }
 };
 
-export const getFee = ({
-  gasPrice,
-  gasLimit,
-}: {
-  gasPrice: BaseAmount;
-  gasLimit: BigNumber;
-}) => baseAmount(gasPrice.amount().multipliedBy(gasLimit.toString()), ETH_DECIMAL);
+export const getFee = ({ gasPrice, gasLimit }: { gasPrice: BaseAmount; gasLimit: BigNumber }) => baseAmount(gasPrice.amount().multipliedBy(gasLimit.toString()), ETH_DECIMAL);
 
-export const estimateDefaultFeesWithGasPricesAndLimits = (
-  asset?: Asset
-): FeesWithGasPricesAndLimits => {
+export const estimateDefaultFeesWithGasPricesAndLimits = (asset?: Asset): FeesWithGasPricesAndLimits => {
   const gasPrices = {
-    average: baseAmount(
-      parseUnits(DEFAULT_GAS_PRICE.toString(), 'gwei').toString(),
-      ETH_DECIMAL
-    ),
-    fast: baseAmount(
-      parseUnits((DEFAULT_GAS_PRICE * 2).toString(), 'gwei').toString(),
-      ETH_DECIMAL
-    ),
-    fastest: baseAmount(
-      parseUnits((DEFAULT_GAS_PRICE * 3).toString(), 'gwei').toString(),
-      ETH_DECIMAL
-    ),
+    average: baseAmount(parseUnits(DEFAULT_GAS_PRICE.toString(), 'gwei').toString(), ETH_DECIMAL),
+    fast: baseAmount(parseUnits((DEFAULT_GAS_PRICE * 2).toString(), 'gwei').toString(), ETH_DECIMAL),
+    fastest: baseAmount(parseUnits((DEFAULT_GAS_PRICE * 3).toString(), 'gwei').toString(), ETH_DECIMAL),
   };
   const { fast: fastGP, fastest: fastestGP, average: averageGP } = gasPrices;
 

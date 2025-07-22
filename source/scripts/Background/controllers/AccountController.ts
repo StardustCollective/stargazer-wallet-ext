@@ -1,52 +1,39 @@
-import { dag4 } from '@stardust-collective/dag4';
-import {
-  MetagraphTokenNetwork,
-  GlobalDagNetwork,
-} from '@stardust-collective/dag4-network';
-import { BigNumber, ethers } from 'ethers';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import store from 'state/store';
-import IAssetListState, { IAssetInfoState } from 'state/assets/types';
-import {
-  changeActiveAsset,
-  changeActiveWallet,
-  updateStatus,
-  updateTransactions,
-  updateActiveWalletLabel,
-  updateWalletLabel,
-  updateRewards,
-  setLoadingTransactions,
-  setPublicKey,
-} from 'state/vault';
+import { dag4 } from '@stardust-collective/dag4';
+import { KeyringManager, KeyringNetwork, KeyringWalletAccountState, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
+import { BigNumber, ethers } from 'ethers';
 
-import IVaultState, {
-  AssetType,
-  IAssetState,
-  IWalletState,
-  IActiveAssetState,
-  Reward,
-} from 'state/vault/types';
-
-import {
-  KeyringManager,
-  KeyringNetwork,
-  KeyringWalletState,
-  KeyringWalletAccountState,
-  KeyringWalletType,
-} from '@stardust-collective/dag4-keyring';
-import { setCustomAsset } from 'state/erc20assets';
 import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
-import { ITransactionInfo, IETHPendingTx } from '../../types';
-import { EthTransactionController } from './EthTransactionController';
-import AssetsController, { IAssetsController } from './AssetsController';
+
+import { SignTransactionDataDAG, SignTransactionDataEVM, TransactionType } from 'scenes/external/SignTransaction/types';
+
+import { ProtocolProvider, StargazerChain } from 'scripts/common';
+
+import IAssetListState, { IAssetInfoState } from 'state/assets/types';
+import { setCustomAsset } from 'state/erc20assets';
+import store from 'state/store';
+import { changeActiveAsset, changeActiveWallet, setLoadingTransactions, setPublicKey, updateActiveWalletLabel, updateRewards, updateStatus, updateTransactions, updateWalletLabel } from 'state/vault';
+import IVaultState, { ActiveNetwork, AssetType, IActiveAssetState, IAssetState, IWalletState, Reward } from 'state/vault/types';
+
+import { isNative } from 'utils/envUtil';
+import erc20 from 'utils/erc20.json';
+import { getHardwareWalletPage, HardwareWalletType, isHardware, SupportedDagChains, SupportedEvmChains } from 'utils/hardware';
+import { toDatum } from 'utils/number';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { ITransactionInfo } from '../../types';
+import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 import { AssetsBalanceMonitor } from '../helpers/assetsBalanceMonitor';
+import { StargazerExternalPopups } from '../messaging';
+import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
+
+import { getChainId, getNetworkFromChainId, getNetworkIdFromChainId } from './EVMChainController/utils';
+import AssetsController, { IAssetsController } from './AssetsController';
+import { EthTransactionController } from './EthTransactionController';
 import { utils } from './EVMChainController';
 import NetworkController from './NetworkController';
-import { toDatum } from 'utils/number';
-import { isNative } from 'utils/envUtil';
-import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
-import { ProtocolProvider } from 'scripts/common';
-import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -75,21 +62,15 @@ export class AccountController {
     return true;
   }
 
-  private buildAccountAssetList(
-    walletInfo: KeyringWalletState,
-    account: KeyringWalletAccountState
-  ): IAssetState[] {
+  private buildAccountAssetList(walletInfo: KeyringWalletState, account: KeyringWalletAccountState): IAssetState[] {
     const { assets } = store.getState();
 
-    let privateKey;
-    let publicKey;
+    let privateKey: string | undefined;
+    let publicKey: string | undefined;
 
     // Excludes bitfi and ledger accounts since we do not have access
     // to the private key.
-    if (
-      walletInfo.type !== KeyringWalletType.LedgerAccountWallet &&
-      walletInfo.type !== KeyringWalletType.BitfiAccountWallet
-    ) {
+    if (!isHardware(walletInfo.type)) {
       privateKey = this.keyringManager.exportAccountPrivateKey(account.address);
     } else {
       publicKey = account.publicKey;
@@ -98,29 +79,26 @@ export class AccountController {
     if (account.network === KeyringNetwork.Constellation) {
       if (privateKey) {
         dag4.account.loginPrivateKey(privateKey);
-      } else {
+      } else if (publicKey) {
         dag4.account.loginPublicKey(publicKey);
       }
 
-      publicKey = dag4.account?.keyTrio?.publicKey ?? null;
+      const currentPublicKey = dag4.account?.keyTrio?.publicKey ?? null;
 
-      if (publicKey) {
-        store.dispatch(setPublicKey(publicKey));
+      if (currentPublicKey) {
+        store.dispatch(setPublicKey(currentPublicKey));
       }
 
       const dagAsset = {
         id: AssetType.Constellation,
-        type:
-          walletInfo.type === KeyringWalletType.LedgerAccountWallet
-            ? AssetType.LedgerConstellation
-            : AssetType.Constellation,
+        type: walletInfo.type === KeyringWalletType.LedgerAccountWallet ? AssetType.LedgerConstellation : AssetType.Constellation,
         label: 'DAG',
         address: account.address,
       };
 
       const L0_TOKENS = Object.values(assets)
-        .filter((token) => token.type === AssetType.Constellation && !!token.l0endpoint)
-        .map((token) => token.id);
+        .filter(token => token.type === AssetType.Constellation && !!token.l0endpoint)
+        .map(token => token.id);
 
       const l0tokens = this.buildAccountL0Tokens(account.address, L0_TOKENS);
 
@@ -138,20 +116,13 @@ export class AccountController {
       };
 
       const ERC_20_TOKENS = Object.values(assets)
-        .filter((token) => token.type === AssetType.ERC20)
-        .map((token) => token.id);
+        .filter(token => token.type === AssetType.ERC20)
+        .map(token => token.id);
 
       // 349: New network should be added here.
       const NETWORK_TOKENS = Object.values(assets)
-        .filter((token) =>
-          [
-            AssetType.Polygon,
-            AssetType.Avalanche,
-            AssetType.BSC,
-            AssetType.Base,
-          ].includes(token?.id as AssetType)
-        )
-        .map((token) => token.id);
+        .filter(token => [AssetType.Polygon, AssetType.Avalanche, AssetType.BSC, AssetType.Base].includes(token?.id as AssetType))
+        .map(token => token.id);
 
       const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);
 
@@ -170,8 +141,8 @@ export class AccountController {
     if (!tokens?.length) return [];
 
     const assetList: IAssetState[] = tokens
-      .filter((token) => !!assets[token])
-      .map((token) => {
+      .filter(token => !!assets[token])
+      .map(token => {
         const tokenInfo = assets[token];
         return {
           id: tokenInfo.id,
@@ -236,34 +207,20 @@ export class AccountController {
     return networkAssets;
   }
 
-  notifyAccountChange(
-    account: KeyringWalletAccountState,
-    walletInfo: KeyringWalletState
-  ) {
+  notifyAccountChange(account: KeyringWalletAccountState, walletInfo: KeyringWalletState) {
     const { whitelist } = store.getState().dapp;
 
-    const network =
-      account.network === KeyringNetwork.Constellation
-        ? ProtocolProvider.CONSTELLATION
-        : ProtocolProvider.ETHEREUM;
+    const network = account.network === KeyringNetwork.Constellation ? ProtocolProvider.CONSTELLATION : ProtocolProvider.ETHEREUM;
 
     for (const site of Object.keys(whitelist)) {
-      const origin = whitelist[site].origin;
+      const { origin } = whitelist[site];
 
       // This scenario is for only DAG/ETH wallets.
       // We should notify all connected dApps that the accounts array is now empty on the provider not used for this wallet.
       // Ex 1. Active wallet -> Only DAG -> Notify accountsChanged = [] on Ethereum's provider.
       // Ex 2. Active wallet -> Only ETH -> Notify accountsChanged = [] on Constellation's provider.
-      if (
-        [
-          KeyringWalletType.SingleAccountWallet,
-          KeyringWalletType.BitfiAccountWallet,
-        ].includes(walletInfo.type)
-      ) {
-        const otherNetwork =
-          account.network === KeyringNetwork.Constellation
-            ? ProtocolProvider.ETHEREUM
-            : ProtocolProvider.CONSTELLATION;
+      if ([KeyringWalletType.SingleAccountWallet, KeyringWalletType.BitfiAccountWallet].includes(walletInfo.type)) {
+        const otherNetwork = account.network === KeyringNetwork.Constellation ? ProtocolProvider.ETHEREUM : ProtocolProvider.CONSTELLATION;
 
         const emptyAccountsMessage: DappMessage = {
           type: MessageType.dapp,
@@ -293,11 +250,9 @@ export class AccountController {
   buildAccountAssetInfo(walletId: string, walletLabel: string): void {
     const state = store.getState();
     const { vault } = state;
-    const { local, ledger, bitfi } = vault.wallets;
-    const allWallets = [...local, ...ledger, ...bitfi];
-    const walletInfo: KeyringWalletState = allWallets.find(
-      (w: KeyringWalletState) => w.id === walletId || w.label === walletLabel
-    );
+    const { local, ledger, bitfi, cypherock } = vault.wallets;
+    const allWallets = [...local, ...ledger, ...bitfi, ...cypherock];
+    const walletInfo: KeyringWalletState & {cypherockId?: string; bipIndex?: number} = allWallets.find((w: KeyringWalletState) => w.id === walletId || w.label === walletLabel);
 
     if (!walletInfo) {
       return;
@@ -320,6 +275,8 @@ export class AccountController {
       label: walletInfo.label,
       supportedAssets: walletInfo.supportedAssets,
       assets: assetList,
+      accounts: walletInfo.accounts,
+      cypherockId: walletInfo.cypherockId,
     };
 
     // Ledger wallet will contain a bipIndex.
@@ -334,13 +291,13 @@ export class AccountController {
   private buildAccountERC20Tokens(address: string, accountTokens: string[]) {
     const assetInfoMap: IAssetListState = store.getState().assets;
 
-    const resolveTokens = accountTokens.map((address) => {
-      return assetInfoMap[address];
+    const resolveTokens = accountTokens.map(add => {
+      return assetInfoMap[add];
     });
 
-    const tokens = resolveTokens.filter((token) => !!token);
+    const tokens = resolveTokens.filter(token => !!token);
 
-    const assetList: IAssetState[] = tokens.map((t) => ({
+    const assetList: IAssetState[] = tokens.map(t => ({
       id: t.id,
       type: AssetType.ERC20,
       label: t.label,
@@ -351,11 +308,7 @@ export class AccountController {
     return assetList;
   }
 
-  async getMetagraphRewards(
-    network: string,
-    walletAddress: string,
-    metagraphId: string
-  ): Promise<Reward[]> {
+  async getMetagraphRewards(network: string, walletAddress: string, metagraphId: string): Promise<Reward[]> {
     const MAP_NETWORK: { [net: string]: string } = {
       main2: 'mainnet',
       test2: 'testnet',
@@ -392,10 +345,7 @@ export class AccountController {
       store.dispatch(setLoadingTransactions(true));
     }
 
-    if (
-      activeAsset.type === AssetType.Constellation ||
-      activeAsset.type === AssetType.LedgerConstellation
-    ) {
+    if (activeAsset.type === AssetType.Constellation || activeAsset.type === AssetType.LedgerConstellation) {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
       let rewards: Reward[] = [];
@@ -414,14 +364,7 @@ export class AccountController {
         });
 
         try {
-          [txsV2, rewards] = await Promise.all([
-            metagraphClient.getTransactions(TXS_LIMIT),
-            this.getMetagraphRewards(
-              assetInfo.network,
-              activeAsset.address,
-              assetInfo.address
-            ),
-          ]);
+          [txsV2, rewards] = await Promise.all([metagraphClient.getTransactions(TXS_LIMIT), this.getMetagraphRewards(assetInfo.network, activeAsset.address, assetInfo.address)]);
         } catch (err) {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
@@ -431,10 +374,7 @@ export class AccountController {
         const { id } = dag4.network.getNetwork();
 
         try {
-          [txsV2, rewards] = await Promise.all([
-            dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT),
-            this.getDagRewards(id, activeAsset.address),
-          ]);
+          [txsV2, rewards] = await Promise.all([dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT), this.getDagRewards(id, activeAsset.address)]);
         } catch (err) {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
@@ -448,29 +388,20 @@ export class AccountController {
       store.dispatch(updateRewards({ txs: rewards }));
       store.dispatch(updateTransactions({ txs: [...txsV2] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
-      const txs: any = await this.txController.getTransactionHistory(
-        activeAsset.address,
-        TXS_LIMIT
-      );
+      const txs: any = await this.txController.getTransactionHistory(activeAsset.address, TXS_LIMIT);
 
       store.dispatch(updateTransactions({ txs: txs.transactions }));
     } else if (activeAsset.type === AssetType.ERC20) {
-      const txs: any = await this.txController.getTokenTransactionHistory(
-        activeAsset.address,
-        assets[activeAsset.id],
-        TXS_LIMIT
-      );
+      const txs: any = await this.txController.getTokenTransactionHistory(activeAsset.address, assets[activeAsset.id], TXS_LIMIT);
 
       store.dispatch(updateTransactions({ txs: txs.transactions }));
     }
+
     store.dispatch(setLoadingTransactions(false));
   }
 
   updateWalletLabel(wallet: KeyringWalletState, label: string): void {
-    if (
-      wallet.type !== KeyringWalletType.LedgerAccountWallet &&
-      wallet.type !== KeyringWalletType.BitfiAccountWallet
-    ) {
+    if (!isHardware(wallet.type)) {
       this.keyringManager.setWalletLabel(wallet.id, label);
     } else {
       // Hardware wallet label update:
@@ -504,59 +435,7 @@ export class AccountController {
     }
   }
 
-  async updatePendingTx(
-    tx: IETHPendingTx,
-    gasPrice: number,
-    gasLimit: number
-  ): Promise<void> {
-    const { activeAsset }: IVaultState = store.getState().vault;
-    const { assets } = store.getState();
-
-    const txOptions: any = {
-      recipient: tx.toAddress,
-      amount: utils.baseAmount(
-        ethers.utils.parseUnits(tx.amount, assets[activeAsset.id].decimals).toString(),
-        assets[activeAsset.id].decimals
-      ),
-      gasPrice: gasPrice
-        ? utils.baseAmount(
-            ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-            9
-          )
-        : undefined,
-      gasLimit: BigNumber.from(gasLimit),
-      nonce: tx.nonce,
-    };
-
-    if (activeAsset.type !== AssetType.Ethereum) {
-      txOptions.asset = utils.assetFromString(
-        `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-          assets[activeAsset.id].address
-        }`
-      );
-    }
-    const newTx: TransactionResponse = await this.networkController.transfer(txOptions);
-    await this.txController.removePendingTxHash(tx.txHash);
-    await this.txController.addPendingTx({
-      txHash: newTx.hash,
-      fromAddress: tx.fromAddress,
-      toAddress: tx.toAddress,
-      amount: tx.amount,
-      network: tx.network,
-      assetId: tx.assetId,
-      timestamp: new Date().getTime(),
-      nonce: newTx.nonce,
-      gasPrice,
-    });
-
-    tx = null;
-  }
-
-  async waitForDagTransaction(
-    txHash: string,
-    oldTransactions: any[],
-    networkInstance: MetagraphTokenNetwork | GlobalDagNetwork
-  ): Promise<void> {
+  async waitForDagTransaction(txHash: string, oldTransactions: any[], networkInstance: MetagraphTokenNetwork | GlobalDagNetwork): Promise<void> {
     const ATTEMPTS = 4;
     const WAITING_TIME = 20000; // 20 seconds
 
@@ -564,7 +443,7 @@ export class AccountController {
 
     while (pendingTx !== null) {
       // Wait for 5 seconds before the next check
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise(resolve => setTimeout(resolve, 5000));
 
       pendingTx = await networkInstance.getPendingTransaction(txHash);
     }
@@ -585,9 +464,10 @@ export class AccountController {
           );
           confirmed = true;
           return; // Exit the function after successful confirmation
-        } else if (attempt < ATTEMPTS) {
+        }
+        if (attempt < ATTEMPTS) {
           // If the transaction isn't confirmed and it's not the last attempt, wait for 20 seconds
-          await new Promise((resolve) => setTimeout(resolve, WAITING_TIME));
+          await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
         }
       }
 
@@ -602,20 +482,131 @@ export class AccountController {
     }
   }
 
-  async confirmTempTx(): Promise<string> {
+  async signHardwareTransaction(): Promise<void> {
+    const { activeAsset, activeNetwork, activeWallet }: IVaultState = store.getState().vault;
+    const { assets } = store.getState();
+    const assetInfo = assets[activeAsset.id];
+
+    const windowUrl = getHardwareWalletPage(activeWallet.type);
+    let data: SignTransactionDataDAG | SignTransactionDataEVM;
+    let chain: StargazerChain;
+    let activeChainId: number;
+
+    const from = this.tempTx.fromAddress;
+    const to = this.tempTx.toAddress;
+    const { amount } = this.tempTx;
+    const { fee } = this.tempTx;
+
+    if (activeAsset.type === AssetType.Constellation) {
+      const { chainId } = DAG_NETWORK[activeNetwork.Constellation];
+
+      const transactionType = activeAsset.id === AssetType.Constellation ? TransactionType.DagNative : TransactionType.DagMetagraph;
+
+      activeChainId = chainId;
+      chain = StargazerChain.CONSTELLATION;
+
+      if (!SupportedDagChains[activeWallet.type as HardwareWalletType].includes(chainId)) {
+        throw new Error('Chain not supported by the hardware wallet');
+      }
+
+      const metagraphObject =
+        activeAsset.id === AssetType.Constellation
+          ? {}
+          : {
+              metagraphAddress: assetInfo.address,
+            };
+
+      data = {
+        type: transactionType,
+        ...metagraphObject,
+        transaction: {
+          from,
+          to,
+          value: toDatum(amount),
+          fee: toDatum(fee) ?? 0,
+        },
+      } as SignTransactionDataDAG;
+    } else {
+      const network = getNetworkFromChainId(assetInfo.network);
+      const activeChain = activeNetwork[network as keyof ActiveNetwork];
+      chain = getNetworkIdFromChainId(assetInfo.network) as StargazerChain;
+      activeChainId = getChainId(activeChain);
+
+      if (!SupportedEvmChains[activeWallet.type as HardwareWalletType].includes(activeChainId)) {
+        throw new Error('Chain not supported by the hardware wallet');
+      }
+
+      if (activeAsset.type === AssetType.Ethereum) {
+        data = {
+          type: TransactionType.EvmNative,
+          transaction: {
+            chainId: activeChainId,
+
+            from,
+            to,
+            value: ethers.utils.parseEther(amount)._hex,
+          },
+        };
+      }
+
+      if (activeAsset.type === AssetType.ERC20) {
+        const contractAddress = assetInfo.address;
+
+        const iface = new ethers.utils.Interface(erc20);
+        const value = ethers.utils.parseUnits(amount, assetInfo.decimals).toNumber();
+        const hexData = iface.encodeFunctionData('transfer', [to, value]);
+
+        data = {
+          type: TransactionType.Erc20Transfer,
+          transaction: {
+            chainId: activeChainId,
+
+            from,
+            to: contractAddress,
+            data: hexData,
+          },
+        };
+      }
+    }
+
+    await StargazerExternalPopups.executePopup({
+      params: {
+        data,
+        origin: 'stargazer-wallet',
+        route: ExternalRoute.SignTransaction,
+        wallet: {
+          chain,
+          chainId: activeChainId,
+          address: from,
+        },
+      },
+      url: windowUrl,
+    });
+  }
+
+  async confirmTempTx(): Promise<void> {
     if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
 
-    const { activeAsset, activeNetwork }: IVaultState = store.getState().vault;
+    const { activeAsset, activeNetwork, activeWallet }: IVaultState = store.getState().vault;
     const { assets } = store.getState();
 
     if (!activeAsset) {
       throw new Error("Error: Can't find active account info");
     }
 
+    if (!activeWallet) {
+      throw new Error("Error: Can't find active wallet info");
+    }
+
     if (!this.tempTx) {
       throw new Error("Error: Can't find transaction info");
+    }
+
+    if (isHardware(activeWallet.type)) {
+      await this.signHardwareTransaction();
+      return;
     }
 
     let trxHash: string;
@@ -637,17 +628,9 @@ export class AccountController {
           beUrl,
         });
 
-        pendingTx = await metagraphClient.transfer(
-          this.tempTx.toAddress,
-          Number(this.tempTx.amount),
-          this.tempTx.fee
-        );
+        pendingTx = await metagraphClient.transfer(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee);
       } else {
-        pendingTx = await dag4.account.transferDag(
-          this.tempTx.toAddress,
-          Number(this.tempTx.amount),
-          this.tempTx.fee
-        );
+        pendingTx = await dag4.account.transferDag(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee);
       }
 
       // Convert the amount from DAG to DATUM
@@ -670,28 +653,14 @@ export class AccountController {
       const { gasPrice, gasLimit, nonce } = this.tempTx.ethConfig;
       const txOptions: any = {
         recipient: this.tempTx.toAddress,
-        amount: utils.baseAmount(
-          ethers.utils
-            .parseUnits(this.tempTx.amount.toString(), assets[activeAsset.id].decimals)
-            .toString(),
-          assets[activeAsset.id].decimals
-        ),
-        gasPrice: gasPrice
-          ? utils.baseAmount(
-              ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-              9
-            )
-          : undefined,
+        amount: utils.baseAmount(ethers.utils.parseUnits(this.tempTx.amount.toString(), assets[activeAsset.id].decimals).toString(), assets[activeAsset.id].decimals),
+        gasPrice: gasPrice ? utils.baseAmount(ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(), 9) : undefined,
         gasLimit: gasLimit && BigNumber.from(gasLimit),
         nonce,
       };
       // TODO-349: Check how this works for ERC-20 tokens in Polygon, Avalanche, etc.
       if (activeAsset.type !== AssetType.Ethereum) {
-        txOptions.asset = utils.assetFromString(
-          `${utils.ETHChain}.${assets[activeAsset.id].symbol}-${
-            assets[activeAsset.id].address
-          }`
-        );
+        txOptions.asset = utils.assetFromString(`${utils.ETHChain}.${assets[activeAsset.id].symbol}-${assets[activeAsset.id].address}`);
       }
 
       const newTx: TransactionResponse = await this.networkController.transfer(txOptions);
@@ -715,13 +684,18 @@ export class AccountController {
     if (!trxHash) {
       throw new Error('Transaction hash was not set');
     }
-
-    return trxHash;
   }
 
-  async confirmContractTempTx(
-    activeAsset: IAssetInfoState | IActiveAssetState
-  ): Promise<string> {
+  async confirmContractTempTx(activeAsset: IAssetInfoState | IActiveAssetState): Promise<string> {
+    const activeWalletType = store.getState().vault?.activeWallet?.type;
+    if (activeWalletType && isHardware(activeWalletType)) {
+      throw new Error('Hardware wallet contract transaction flow not implemented here. Please use device to confirm.');
+    }
+
+    if (!this.networkController) {
+      throw new Error('Error: NetworkController not initialized. Cannot confirm EVM contract transaction.');
+    }
+
     if (!dag4.account.isActive()) {
       throw new Error('Error: No signed account exists');
     }
@@ -740,10 +714,7 @@ export class AccountController {
 
     const { gasPrice, gasLimit, nonce, memo } = this.tempTx.ethConfig;
 
-    const baseAmountGasPrice = utils.baseAmount(
-      ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(),
-      9
-    );
+    const baseAmountGasPrice = utils.baseAmount(ethers.utils.parseUnits(gasPrice.toString(), 'gwei').toString(), 9);
     const bigNumberGasPrice = BigNumber.from(baseAmountGasPrice.amount().toFixed());
     const { chainId, id: networkId } = this.networkController.getNetwork();
 
@@ -759,7 +730,11 @@ export class AccountController {
       nonce,
     };
 
-    const txData = await this.networkController.getWallet().sendTransaction(txOptions);
+    const wallet = this.networkController.getWallet();
+    if (!wallet) {
+      throw new Error('Unable to get wallet for sending transaction.');
+    }
+    const txData = await wallet.sendTransaction(txOptions);
 
     this.txController.addPendingTx({
       txHash: txData.hash,
@@ -795,9 +770,7 @@ export class AccountController {
       return true;
     }
     const BE_URL = DAG_NETWORK[activeChain].config.beUrl;
-    const response: any = await (
-      await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)
-    ).json();
+    const response: any = await (await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)).json();
     return !!response?.data?.hash;
   }
 
@@ -845,9 +818,7 @@ export class AccountController {
 
   async getLatestGasPrices(network?: string): Promise<number[]> {
     const gasPrices = await this.networkController.estimateGasPrices(network);
-    const results = Object.values(gasPrices).map((gas) =>
-      Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei'))
-    );
+    const results = Object.values(gasPrices).map(gas => Number(ethers.utils.formatUnits(gas.amount().toString(), 'gwei')));
     return results;
   }
 

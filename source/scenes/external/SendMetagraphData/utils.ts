@@ -1,19 +1,12 @@
-import axios from 'axios';
 import { dag4 } from '@stardust-collective/dag4';
-import { toDag, toDatum } from 'utils/number';
-import { decodeFromBase64 } from 'utils/encoding';
-import {
-  SendDataFeeResponse,
-  DataFeeTransaction,
-  DataTransactionBody,
-  EstimateFeeResponse,
-} from './types';
+import type { DataFeeTransaction, DataTransactionBody, EstimateFeeResponse } from '@stardust-collective/dag4-network';
 
-export const generateProof = async (
-  message: string,
-  privateKey: string,
-  publicKey: string
-) => {
+import type { IAssetInfoState } from 'state/assets/types';
+
+import { decodeFromBase64 } from 'utils/encoding';
+import { toDag, toDatum } from 'utils/number';
+
+export const generateProof = async (message: string, privateKey: string, publicKey: string) => {
   const signature = await dag4.keyStore.dataSign(privateKey, message);
 
   return {
@@ -22,11 +15,7 @@ export const generateProof = async (
   };
 };
 
-export const generateFeeProof = async (
-  message: string,
-  privateKey: string,
-  publicKey: string
-) => {
+export const generateFeeProof = async (message: string, privateKey: string, publicKey: string) => {
   const serializedMessage = Buffer.from(message, 'utf8').toString('hex');
   const hash = dag4.keyStore.sha256(Buffer.from(serializedMessage, 'hex'));
   const signature = await dag4.keyStore.sign(privateKey, hash);
@@ -37,40 +26,20 @@ export const generateFeeProof = async (
   };
 };
 
-export const buildFeeTransaction = (
-  fee: string,
-  destination: string,
-  updateHash: string
-): DataFeeTransaction => {
+export const buildFeeTransaction = (fee: string, destination: string, updateHash: string): DataFeeTransaction => {
   const { address } = dag4.account.keyTrio;
   return {
     source: address,
-    destination: destination,
+    destination,
     amount: toDatum(fee),
     dataUpdateRef: updateHash,
   };
 };
 
-export const sendMetagraphDataTransaction = async (
-  dL1endpoint: string,
-  body: any
-): Promise<SendDataFeeResponse> => {
-  const response = await axios.post<SendDataFeeResponse>(
-    `${dL1endpoint}/data`,
-    JSON.stringify(body)
-  );
-  return response.data;
-};
-
-export const buildTransactionBody = async (
-  dataEncoded: any,
-  fee: string,
-  destination: string,
-  updateHash: string
-): Promise<DataTransactionBody> => {
+export const buildTransactionBody = async (dataEncoded: string, fee: string, destination: string, updateHash: string): Promise<DataTransactionBody> => {
   const { privateKey, publicKey } = dag4.account.keyTrio;
 
-  const uncompressedPublicKey = publicKey.length === 128 ? '04' + publicKey : publicKey;
+  const uncompressedPublicKey = publicKey.length === 128 ? `04${publicKey}` : publicKey;
   const pubKey = uncompressedPublicKey.substring(2);
 
   const proof = await generateProof(dataEncoded, privateKey, pubKey);
@@ -88,11 +57,7 @@ export const buildTransactionBody = async (
 
   if (shouldBuildFeeTransaction) {
     const feeObject = buildFeeTransaction(fee, destination, updateHash);
-    const feeProof = await generateFeeProof(
-      JSON.stringify(feeObject),
-      privateKey,
-      pubKey
-    );
+    const feeProof = await generateFeeProof(JSON.stringify(feeObject), privateKey, pubKey);
     body.fee = {
       value: {
         ...feeObject,
@@ -104,10 +69,7 @@ export const buildTransactionBody = async (
   return body;
 };
 
-export const getFeeEstimation = async (
-  dL1endpoint: string,
-  data: string
-): Promise<{ fee: string; address: string; updateHash: string }> => {
+export const getFeeEstimation = async (asset: IAssetInfoState, data: string): Promise<{ fee: string; address: string; updateHash: string }> => {
   const zeroFee = {
     fee: '0',
     address: '',
@@ -115,15 +77,21 @@ export const getFeeEstimation = async (
   };
 
   try {
-    const response = await axios.post<EstimateFeeResponse>(
-      `${dL1endpoint}/data/estimate-fee`,
-      data
-    );
+    const metagraphClient = dag4.account.createMetagraphTokenClient({
+      metagraphId: asset.address,
+      id: asset.address,
+      l0Url: asset.l0endpoint,
+      l1Url: asset.l1endpoint,
+      dl1Url: asset.dl1endpoint,
+      beUrl: '',
+    });
 
-    if (!!response?.data?.address && !!response?.data?.updateHash) {
+    const response: EstimateFeeResponse = await metagraphClient.getDataFeeEstimate(data);
+
+    if (!!response.address && !!response.updateHash) {
       return {
-        ...response.data,
-        fee: toDag(response.data.fee).toString(),
+        ...response,
+        fee: toDag(response.fee).toString(),
       };
     }
 

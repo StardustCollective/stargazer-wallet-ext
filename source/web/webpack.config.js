@@ -8,11 +8,11 @@ const DotEnv = require('dotenv-webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
@@ -22,6 +22,7 @@ const rootPath = path.join(__dirname, '../../');
 const sharedPath = path.join(__dirname, '../');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
+const isAnalyze = process.env.ANALYZE === 'true';
 
 const extensionReloaderPlugin = () => {
   this.apply = () => {};
@@ -73,6 +74,7 @@ const commonConfig = {
       hooks: path.resolve(sharedPath, 'hooks'),
       utils: path.resolve(sharedPath, 'utils'),
       selectors: path.resolve(sharedPath, 'selectors'),
+      web: path.resolve(sharedPath, 'web'),
       'react-native$': 'react-native-web',
     },
   },
@@ -105,6 +107,8 @@ const commonConfig = {
             /zipExtension\.js$/.test(modulePath) ||
             /uploadSourceMaps\.js$/.test(modulePath) ||
             (!/node_modules\/react-native-flash-message/.test(modulePath) &&
+              !/node_modules\/eip-712/.test(modulePath) &&
+              !/node_modules\/ethers-v6/.test(modulePath) &&
               (/node_modules/.test(modulePath) || /native/.test(modulePath)))
           );
         },
@@ -113,8 +117,35 @@ const commonConfig = {
         },
       },
       {
-        test: /\.(jpg|png|svg)x?$/,
-        loader: 'file-loader',
+        test: /\.(jpe?g|png|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'assets/images/[name].[hash].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg$/,
+        issuer: /\.[jt]sx?$/,
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: {
+              // svgo: true,
+              // svgoConfig: { plugins: [{ removeViewBox: false }] },
+              // icon: true,
+            },
+          },
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'assets/images/[name].[hash].[ext]',
+            },
+          },
+        ],
       },
       {
         test: /\.(sa|sc|c)ss$/,
@@ -159,6 +190,7 @@ const uiConfig = {
     external: path.join(__dirname, 'pages/External', 'index.tsx'),
     ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
     bitfi: path.join(__dirname, 'pages/Bitfi', 'index.tsx'),
+    cypherock: path.join(__dirname, 'pages/Cypherock', 'index.tsx'),
     options: path.join(__dirname, 'pages/Options', 'index.tsx'),
   },
   output: {
@@ -179,19 +211,6 @@ const uiConfig = {
         JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'))).version
       ),
       global: 'globalThis',
-    }),
-    // delete previous build files
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: [
-        path.join(process.cwd(), `extension/${targetBrowser}`),
-        path.join(
-          process.cwd(),
-          `extension/${targetBrowser}.${getExtensionFileType(targetBrowser)}`
-        ),
-      ],
-      cleanStaleWebpackAssets: false,
-      verbose: true,
-      dangerouslyAllowCleanPatternsOutsideProject: true,
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'app.html'),
@@ -218,6 +237,12 @@ const uiConfig = {
       filename: 'bitfi.html',
     }),
     new HtmlWebpackPlugin({
+      template: path.join(viewsPath, 'cypherock.html'),
+      inject: 'body',
+      chunks: ['cypherock'],
+      filename: 'cypherock.html',
+    }),
+    new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'options.html'),
       inject: 'body',
       chunks: ['options'],
@@ -232,6 +257,7 @@ const uiConfig = {
     new CopyWebpackPlugin([{ from: `${sharedPath}assets`, to: 'assets' }]),
     // plugin to enable browser reloading in development mode
     extensionReloaderPlugin,
+    ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
   ],
   optimization: {
     minimizer: [
@@ -295,6 +321,7 @@ const backgroundConfig = {
     new DotEnv({
       path: '../../.env',
     }),
+    ...(isAnalyze ? [new BundleAnalyzerPlugin()] : []),
   ],
 };
 

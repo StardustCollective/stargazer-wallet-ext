@@ -61,6 +61,7 @@ export const SCREEN_DEFAULT_TITLE_STRINGS = {
   checkPassword: 'Wallet Phrase',
   manageWallet: 'Manage Wallet',
   removeWallet: 'Remove Wallet',
+  selectHardwareWallet: 'Select hardware wallet',
   importWallet: 'Import Wallet',
   importAccount: 'Import Account',
   importPhrase: 'Import Phrase',

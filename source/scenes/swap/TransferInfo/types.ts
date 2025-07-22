@@ -1,5 +1,3 @@
-import { IAssetInfoState } from 'state/assets/types';
-
 export interface ISwapTokensContainer {
   navigation: any;
   route: any;
@@ -7,7 +5,6 @@ export interface ISwapTokensContainer {
 
 export default interface ITransferInfo {
   onNextPressed: () => void;
-  asset: IAssetInfoState;
   from: {
     code: string;
     amount: number;
@@ -23,6 +20,7 @@ export default interface ITransferInfo {
     fee: number;
     speedLabel: string;
     basePriceId: string;
+    symbol: string;
     steps: number;
   };
   onGasPriceChange: (_: any, val: number | number[]) => void;

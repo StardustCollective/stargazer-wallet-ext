@@ -34,6 +34,7 @@ import styles from './WalletsModal.scss';
 ///////////////////////////
 
 import { IWalletsModal } from './types';
+import { isCypherock } from 'utils/hardware';
 
 ///////////////////////////
 // Constants
@@ -175,6 +176,9 @@ const WalletsModal: FC<IWalletsModal> = ({
               i === 0 ? styles.firstChild : {},
               i === hardwareWallets.length - 1 ? styles.lastChild : {}
             );
+            const subtitle = isCypherock(wallet?.type)
+              ? 'Multi-Chain Wallet'
+              : ellipsis(wallet?.accounts[0]?.address);
 
             return (
               <div
@@ -189,7 +193,7 @@ const WalletsModal: FC<IWalletsModal> = ({
                       {truncateString(wallet?.label)}
                     </TextV3.CaptionStrong>
                     <TextV3.Caption dynamic color={COLORS_ENUMS.GRAY_100}>
-                      {ellipsis(wallet?.accounts[0]?.address)}
+                      {subtitle}
                     </TextV3.Caption>
                   </div>
                   {renderCheckIcon(wallet?.id, activeWallet?.id)}

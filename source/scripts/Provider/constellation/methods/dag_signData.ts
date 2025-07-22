@@ -1,35 +1,38 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { getChainLabel, getWalletInfo } from '../utils';
 
-export const dag_signData = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
-  const { activeWallet, windowUrl, windowType, deviceId, bipIndex } = getWalletInfo();
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
+import { validateHardwareMethod } from 'utils/hardware';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { getWalletInfo, WINDOW_TYPES } from '../utils';
+
+export interface ISignDataParams {
+  payload: string;
+}
+
+export const dag_signData = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+  const { activeWallet, windowUrl, windowType, windowSize } = getWalletInfo();
 
   if (!activeWallet) {
     throw new Error('There is no active wallet');
   }
 
-  const assetAccount = activeWallet.accounts.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const assetAccount = activeWallet.accounts.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!assetAccount) {
     throw new Error('No active account for the request asset type');
   }
 
-  const [address, dataEncoded] = request.params as [string, string];
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method });
 
-  if (typeof dataEncoded !== 'string') {
-    throw new Error("Bad argument 'dataEncoded' -> must be a string");
+  const [address, payload] = request.params as [string, string];
+
+  if (typeof payload !== 'string') {
+    throw new Error("Bad argument 'payload' -> must be a string");
   }
 
   if (typeof address !== 'string') {
@@ -44,26 +47,30 @@ export const dag_signData = async (
     throw new Error('The active account is not the requested');
   }
 
-  const signatureData = {
-    origin,
-    dataEncoded,
-    walletId: activeWallet.id,
-    walletLabel: activeWallet.label,
-    deviceId,
-    bipIndex,
-    chainLabel: getChainLabel(),
+  const signDataParams: ISignDataParams = {
+    payload,
   };
-  const windowSize = { width: 372, height: 812 };
 
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    signatureData,
-    message,
-    sender.origin,
-    'signData',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  if (windowType === WINDOW_TYPES.popup) {
+    windowSize.height = 812;
+    windowSize.width = 380;
+  }
+
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: signDataParams,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SignData,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        address,
+      },
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

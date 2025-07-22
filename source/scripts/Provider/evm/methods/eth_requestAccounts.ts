@@ -5,7 +5,7 @@ import {
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { eth_accounts } from './eth_accounts';
-import { EXTERNAL_URL, WINDOW_SIZE, WINDOW_TYPES } from '../utils';
+import { ExternalRoute } from 'web/pages/External/types';
 
 export const eth_requestAccounts = async (
   request: StargazerRequest & { type: 'rpc' },
@@ -18,15 +18,14 @@ export const eth_requestAccounts = async (
   }
 
   // Provider not activated -> display popup and wait for user's approval
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    null,
-    message,
-    sender.origin,
-    'selectAccounts',
-    EXTERNAL_URL,
-    WINDOW_SIZE.small,
-    WINDOW_TYPES.popup
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data: null,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.SelectAccounts,
+    },
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

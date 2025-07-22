@@ -1,5 +1,17 @@
 @import '~assets/styles/variables';
 
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .message {
+    color: #6b7280;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -9,7 +21,50 @@
     color: #332556;
   }
 
+  .valueContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+
+    .value {
+      color: rgba(30, 21, 50, 0.66);
+    }
+  }
+
+  .copyIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+}
+
+.tokenValueContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
   .value {
     color: rgba(30, 21, 50, 0.66);
+  }
+
+  .tokenLogo {
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+    margin-right: 4px;
+  }
+}
+
+.copyAddressContainer {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .copyAddress {
+    color: #3e4fea;
+    margin-right: 6px;
   }
 }

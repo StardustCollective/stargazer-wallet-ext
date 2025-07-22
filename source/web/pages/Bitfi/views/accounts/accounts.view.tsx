@@ -107,6 +107,9 @@ let Accounts = ({
   // Callback
   /////////////////////////
 
+  const isEnabled = checkBoxesState.some(item => !!item);
+  const isDisabled = fetchingPage || !isEnabled;
+
   const _onCheckboxChange = (account: LedgerAccount, checked: boolean, key: number) => {
     if (onCheckboxChange) {
       onCheckboxChange(account, checked, key);
@@ -130,19 +133,19 @@ let Accounts = ({
   );
   return (
     <div className={styles.tableContainer}>
+      {fetchingPage && (
+        <div className={styles.progressWrapper}>
+          <div className={styles.progress}>
+            <CircularProgress />
+          </div>
+        </div>
+      )}
       <span className={styles.selectAccount}>Please select an account:</span>
       <TableContainer
         elevation={TABLE_ELEVATION_PROP}
         className={styles.table}
         component={Paper}
       >
-        {fetchingPage && (
-          <div className={styles.progressWrapper}>
-            <div className={styles.progress}>
-              <CircularProgress />
-            </div>
-          </div>
-        )}
         <Table aria-label={TABLE_ARIA_LABEL_PROP}>
           <TableBody>
             {accountData.map((item, itemKey) => {
@@ -181,30 +184,6 @@ let Accounts = ({
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <div className={styles.pagination}>
-        {!fetchingPage ? (
-          <>
-            {startIndex !== 0 && (
-              <Link onClick={onPreviousClick}>
-                <span className={styles.previous}>
-                  {PREV_BUTTON_LABEL_STRING}
-                </span>
-              </Link>
-            )
-            }
-            <Link onClick={onNextClick}>
-              <span>{NEXT_BUTTON_LABEL_STRING}</span>
-            </Link>
-          </>
-        ) : (
-          <>
-            <span className={styles.previous}>
-              {PREV_BUTTON_LABEL_STRING}
-            </span>
-            <span>{NEXT_BUTTON_LABEL_STRING}</span>
-          </>
-        )}
-      </div> */}
       <section className={styles.actions}>
         <div className={styles.buttonWrapper}>
           <Button
@@ -222,7 +201,7 @@ let Accounts = ({
             type={IMPORT_BUTTON_TYPE_PROP}
             variant={styles.button}
             onClick={onImportClick}
-            disabled={fetchingPage}
+            disabled={isDisabled}
           >
             {IMPORT_BUTTON_LABEL_STRING}
           </Button>

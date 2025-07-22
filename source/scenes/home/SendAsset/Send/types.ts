@@ -26,7 +26,6 @@ export interface IWalletSend {
   handleGasPriceChange: (_: any, val: number | number[]) => void;
   handleClose: () => Promise<void>;
   onSubmit: (data: any) => Promise<void>;
-  isExternalRequest: boolean;
   isDisabled: boolean;
   isValidAddress: boolean;
   balances: AssetBalances;
@@ -48,6 +47,5 @@ export interface IWalletSend {
   decimalPointOnFee?: boolean;
   networkTypeOptions: IInputClickableOptions;
   basePriceId: string;
-  isTransfer: boolean;
   digits: number;
 }

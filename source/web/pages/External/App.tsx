@@ -1,45 +1,47 @@
+import 'assets/styles/global.scss';
+
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import queryString from 'query-string';
+import { Redirect, Route, RouteProps, Switch, useHistory } from 'react-router-dom';
+
 import Container from 'components/Container';
+
 import Login from 'scenes/common/Login';
-import SelectAccounts from 'scenes/external/SelectAccounts';
-import ApproveSpend from 'scenes/external/ApproveSpend';
-import SendTransaction from 'scenes/home/SendAsset/Send';
-import ConfirmTransaction from 'scenes/home/SendAsset/Confirm';
-import SignatureRequest from 'scenes/external/SignatureRequest';
-import SignData from 'scenes/external/SignData';
-import SendMetagraphData from 'scenes/external/SendMetagraphData';
-import TypedSignatureRequest from 'scenes/external/TypedSignatureRequest';
-import WatchAsset from 'scenes/external/WatchAsset';
 import AllowSpend from 'scenes/external/AllowSpend';
+import ExternalDelegatedStake from 'scenes/external/DelegatedStake';
+import SelectAccounts from 'scenes/external/SelectAccounts';
+import SendMetagraphData from 'scenes/external/SendMetagraphData';
+import SignData from 'scenes/external/SignData';
+import SignMessage from 'scenes/external/SignMessage';
+import SignTransaction from 'scenes/external/SignTransaction';
+import SignTypedData from 'scenes/external/SignTypedData';
 import TokenLock from 'scenes/external/TokenLock';
-import DelegatedStake from 'scenes/external/DelegatedStake';
+import WatchAsset from 'scenes/external/WatchAsset';
 import WithdrawDelegatedStakeView from 'scenes/external/WithdrawDelegatedStake';
-import { Route, Switch, Redirect, useHistory, RouteProps } from 'react-router-dom';
-import { getWalletController } from 'utils/controllersUtils';
-import store, { RootState } from 'state/store';
-import { setLoading } from 'state/auth';
-import { clearSession, getSgw, sessionExpired } from 'utils/keyring';
-import 'assets/styles/global.scss';
+import ConfirmTransaction from 'scenes/home/SendAsset/Confirm';
 import Loading from 'scenes/unauth/Loading';
+
+import { StargazerExternalPopups } from 'scripts/Background/messaging';
+
+import { setLoading } from 'state/auth';
+import store, { RootState } from 'state/store';
+
+import { getWalletController } from 'utils/controllersUtils';
+import { clearSession, getSgw, sessionExpired } from 'utils/keyring';
+
+import { ExternalRoute } from './types';
 
 const PrivateRoute = ({ component: Component, ...rest }: RouteProps) => {
   const { unlocked } = useSelector((state: RootState) => state.auth);
 
-  return (
-    <Route
-      {...rest}
-      render={(props) => (unlocked ? <Component {...props} /> : <Redirect to="/login" />)}
-    />
-  );
+  return <Route {...rest} render={props => (unlocked ? <Component {...props} /> : <Redirect to="/login" />)} />;
 };
 
 const App = () => {
   const walletController = getWalletController();
   const history = useHistory();
 
-  const { route } = queryString.parse(window.location.search);
+  const { route } = StargazerExternalPopups.decodeRequestMessageLocationParams(window.location.href);
   const { unlocked, loading } = useSelector((state: RootState) => state.auth);
 
   const hideLoadingScreen = () => {
@@ -80,7 +82,6 @@ const App = () => {
       const success = await walletController.unLock(sgw);
       if (!success) {
         hideLoadingScreen();
-        return;
       }
     };
 
@@ -94,22 +95,18 @@ const App = () => {
           {loading && <Route path="/" component={Loading} />}
           <Route path="/login" component={Login} />
 
-          <PrivateRoute path="/selectAccounts" component={SelectAccounts} />
-          <PrivateRoute path="/approveSpend" component={ApproveSpend} />
-          <PrivateRoute path="/sendTransaction" component={SendTransaction} />
-          <PrivateRoute path="/confirmTransaction" component={ConfirmTransaction} />
-          <PrivateRoute path="/signMessage" component={SignatureRequest} />
-          <PrivateRoute path="/signData" component={SignData} />
-          <PrivateRoute path="/sendMetagraphData" component={SendMetagraphData} />
-          <PrivateRoute path="/signTypedMessage" component={TypedSignatureRequest} />
-          <PrivateRoute path="/watchAsset" component={WatchAsset} />
-          <PrivateRoute path="/allowSpend" component={AllowSpend} />
-          <PrivateRoute path="/tokenLock" component={TokenLock} />
-          <PrivateRoute path="/delegatedStake" component={DelegatedStake} />
-          <PrivateRoute
-            path="/withdrawDelegatedStake"
-            component={WithdrawDelegatedStakeView}
-          />
+          <PrivateRoute path={`/${ExternalRoute.SelectAccounts}`} component={SelectAccounts} />
+          <PrivateRoute path={`/${ExternalRoute.SignTransaction}`} component={SignTransaction} />
+          <PrivateRoute path={`/${ExternalRoute.ConfirmTransaction}`} component={ConfirmTransaction} />
+          <PrivateRoute path={`/${ExternalRoute.SignMessage}`} component={SignMessage} />
+          <PrivateRoute path={`/${ExternalRoute.SignData}`} component={SignData} />
+          <PrivateRoute path={`/${ExternalRoute.SendMetagraphData}`} component={SendMetagraphData} />
+          <PrivateRoute path={`/${ExternalRoute.SignTypedData}`} component={SignTypedData} />
+          <PrivateRoute path={`/${ExternalRoute.WatchAsset}`} component={WatchAsset} />
+          <PrivateRoute path={`/${ExternalRoute.AllowSpend}`} component={AllowSpend} />
+          <PrivateRoute path={`/${ExternalRoute.TokenLock}`} component={TokenLock} />
+          <PrivateRoute path={`/${ExternalRoute.DelegatedStake}`} component={ExternalDelegatedStake} />
+          <PrivateRoute path={`/${ExternalRoute.WithdrawDelegatedStake}`} component={WithdrawDelegatedStakeView} />
         </Switch>
       </Container>
     </section>

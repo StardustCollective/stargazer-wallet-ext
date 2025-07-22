@@ -1,0 +1,14 @@
+@import '~assets/styles/variables';
+
+.footer {
+  display: flex;
+  align-items: center;
+  padding: 24px 16px;
+  gap: 16px;
+
+  .button {
+    flex-grow: 1;
+    flex-basis: 0;
+    height: 44px;
+  }
+}

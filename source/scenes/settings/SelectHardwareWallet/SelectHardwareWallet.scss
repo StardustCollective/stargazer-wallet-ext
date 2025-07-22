@@ -1,0 +1,57 @@
+@import '~assets/styles/variables';
+
+.container {
+  margin: 24px 16px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  .wallets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+
+    .box {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 166px;
+      height: 146px;
+      background-color: $white;
+      border: 1px solid rgba(0, 0, 0, 0.16);
+      border-radius: 16px;
+      box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+    }
+
+    .selected {
+      border: 1px solid #662cc9;
+      background-color: #f4f0ff;
+      box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    .cancelButton {
+      height: 44px;
+      width: 100%;
+      margin-right: 8px;
+    }
+
+    .nextButton {
+      height: 44px;
+      width: 100%;
+      margin-left: 8px;
+    }
+  }
+}

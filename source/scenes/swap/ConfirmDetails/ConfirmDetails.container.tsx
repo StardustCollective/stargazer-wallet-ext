@@ -54,8 +54,12 @@ import Container from 'components/Container';
 ///////////////////////////
 
 import { DEFAULT_LANGUAGE } from 'constants/index';
+import { isError } from 'scripts/common';
+import { usePlatformAlert } from 'utils/alertUtil';
 
 const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
+
+  const showAlert = usePlatformAlert();
   const accountController = getAccountController();
   const walletController = getWalletController();
   const tempTx = accountController.getTempTx();
@@ -103,10 +107,19 @@ const ConfirmDetailsContainer: FC<ISwapTokensContainer> = ({ navigation }) => {
   };
 
   const onSwapPressed = async () => {
-    setIsSwapButtonLoading(true);
-    await accountController.confirmTempTx();
-    walletController.swap.addTxId(pendingSwap.id);
-    linkTo('/confirmation');
+    try {
+      setIsSwapButtonLoading(true);
+      walletController.swap.addTxId(pendingSwap.id);
+      await accountController.confirmTempTx();
+      linkTo('/confirmation');
+    } catch (e) {
+      console.error(e);
+      if (isError(e)) {
+        showAlert(e.message, 'danger');
+      }
+    } finally {
+      setIsSwapButtonLoading(false);
+    }
   };
 
   const onCancelPressed = () => {

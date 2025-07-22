@@ -1,18 +1,18 @@
 import { dag4 } from '@stardust-collective/dag4';
 import * as ethers from 'ethers';
 
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { DAG_NETWORK } from 'constants/index';
+
+import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
 import store from 'state/store';
+
 import { validateMetagraphAddress } from '../utils';
+
 import { StargazerMetagraphGetTransactionRequest } from './dag_getMetagraphTransaction';
 
-export const dag_getMetagraphPendingTransaction = (
-  request: StargazerRequest & { type: 'rpc' },
-  _message: StargazerRequestMessage,
-  _sender: chrome.runtime.MessageSender
-) => {
-  const { vault, assets } = store.getState();
+export const dag_getMetagraphPendingTransaction = (request: StargazerRequest & { type: 'rpc' }, _message: StargazerRequestMessage, _sender: chrome.runtime.MessageSender) => {
+  const { vault } = store.getState();
 
   const [txData] = request.params as [StargazerMetagraphGetTransactionRequest];
 
@@ -41,13 +41,11 @@ export const dag_getMetagraphPendingTransaction = (
 
   const metagraphToken = validateMetagraphAddress(txMetagraphAddress);
 
-  const metagraphTokenInfo = assets[metagraphToken?.id];
-
-  if (!metagraphTokenInfo) {
+  if (!metagraphToken) {
     throw new Error("'metagraphAddress' not found in wallet");
   }
 
-  const { address, l0endpoint, l1endpoint } = metagraphTokenInfo;
+  const { address, l0endpoint, l1endpoint } = metagraphToken;
   const { beUrl } = DAG_NETWORK[vault.activeNetwork.Constellation].config;
   const metagraphClient = dag4.account.createMetagraphTokenClient({
     id: address,

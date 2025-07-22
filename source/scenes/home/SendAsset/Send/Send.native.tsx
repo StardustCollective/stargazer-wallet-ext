@@ -1,17 +1,8 @@
-///////////////////////////
-// Modules
-///////////////////////////
-
 import React, { useState, FC } from 'react';
 import { View, TouchableOpacity, Modal } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { scale } from 'react-native-size-matters';
 import { Input } from 'react-native-elements';
-
-///////////////////////////
-// Components
-///////////////////////////
-
 import TextV3 from 'components/TextV3';
 import InputClickable from 'components/InputClickable';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
@@ -19,35 +10,15 @@ import TextInput from 'components/TextInput';
 import PurpleSlider from 'components/PurpleSlider';
 import QRCodeScanner from 'components/QRCodeScanner';
 import QRCodeButton from 'components/QRCodeButton';
-
-///////////////////////////
-// Types
-///////////////////////////
-
 import { AssetType } from 'state/vault/types';
 import { IWalletSend } from './types';
-
-///////////////////////////
-// Styles
-///////////////////////////
-
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import styles from './styles';
-
-///////////////////////////
-// Scene
-///////////////////////////
-
 import { formatNumber, formatStringDecimal } from 'scenes/home/helpers';
 import Contact from 'scenes/home/Contacts';
 import { trimTrailingZeros, fixedStringNumber, smallestPowerOfTen } from 'utils/number';
 
-///////////////////////////
-// Constants
-///////////////////////////
-
 const EXTRA_SCROLL_HEIGHT = scale(25);
-const QR_CODE_BUTTON_SIZE = 25;
 
 const Send: FC<IWalletSend> = ({
   control,
@@ -63,15 +34,12 @@ const Send: FC<IWalletSend> = ({
   handleGasPriceChange,
   handleClose,
   onSubmit,
-  isExternalRequest,
   isDisabled,
-  isValidAddress,
   balances,
   activeAsset,
   nativeToken,
   assetInfo,
   address,
-  register,
   amount,
   getFiatAmount,
   errors,

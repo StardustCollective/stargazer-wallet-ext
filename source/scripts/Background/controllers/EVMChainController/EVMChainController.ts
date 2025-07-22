@@ -1,43 +1,26 @@
+import { Provider, TransactionRequest, TransactionResponse } from '@ethersproject/abstract-provider';
+import { AssetETH, assetToString, BaseAmount, baseAmount } from '@xchainjs/xchain-util';
 import ERC_20_ABI from 'erc-20-abi';
 import { BigNumber, ethers } from 'ethers';
-import { baseAmount, BaseAmount, assetToString, AssetETH } from '@xchainjs/xchain-util';
-import { Provider, TransactionResponse } from '@ethersproject/abstract-provider';
-import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
 import { parseUnits, toUtf8Bytes } from 'ethers/lib/utils';
-import {
-  BASE_TOKEN_GAS_COST,
-  ETHAddress,
-  ETH_DECIMAL,
-  SIMPLE_GAS_COST,
-} from './constants';
-import {
-  getDefaultGasPrices,
-  getChainInfo,
-  getTokenAddress,
-  validateAddress,
-  isTestnet,
-} from './utils';
-import {
-  EVMChainControllerParams,
-  FeesParamsEth,
-  IEVMChainController,
-  IChain,
-  TxOverrides,
-  AllChainsIds,
-} from './types';
-import { Address, FeeOptionKey, TxHistoryParams, TxParams } from '../ChainsController';
-import {
-  getETHTransactionHistory,
-  getGasOracle,
-  getTokenTransactionHistory,
-} from './etherscanApi';
-import { GasOracleResponse } from './etherscanApi.types';
+
+import { tokenContractHelper } from 'scripts/Background/helpers/tokenContractHelper';
+import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
+
+import { ITempNFTInfo } from 'state/nfts/types';
+import { AssetType } from 'state/vault/types';
+
 import erc20abi from 'utils/erc20.json';
 import erc721abi from 'utils/erc721.json';
 import erc1155abi from 'utils/erc1155.json';
-import { ITempNFTInfo } from 'state/nfts/types';
-import { AssetType } from 'state/vault/types';
-import StargazerRpcProvider from 'scripts/Provider/evm/StargazerRpcProvider';
+
+import { Address, TxHistoryParams, TxParams } from '../ChainsController';
+
+import { BASE_TOKEN_GAS_COST, ETH_DECIMAL, ETHAddress, SIMPLE_GAS_COST } from './constants';
+import { getETHTransactionHistory, getGasOracle, getTokenTransactionHistory } from './etherscanApi';
+import { GasOracleResponse } from './etherscanApi.types';
+import { AllChainsIds, EVMChainControllerParams, IChain, IEVMChainController, TxOverrides } from './types';
+import { getChainInfo, getTokenAddress, isTestnet, validateAddress } from './utils';
 
 class EVMChainController implements IEVMChainController {
   private chain: IChain;
@@ -48,7 +31,15 @@ class EVMChainController implements IEVMChainController {
   constructor({ chain, privateKey }: EVMChainControllerParams) {
     this.chain = getChainInfo(chain);
     this.provider = new StargazerRpcProvider(this.chain.rpcEndpoint);
-    this.changeWallet(new ethers.Wallet(privateKey, this.provider));
+    if (privateKey) {
+      this.changeWallet(new ethers.Wallet(privateKey, this.provider));
+    } else {
+      // For hardware wallets or view-only instances, wallet remains null
+      // Address might need to be set separately if no private key to derive from.
+      // However, NetworkController is usually created when an account (with an address) is active.
+      // If an address is available from the hardware wallet context, it could be passed and set here.
+      // For now, assuming address will be set if wallet is created, or handled by consumer.
+    }
   }
 
   // Public methods
@@ -60,6 +51,10 @@ class EVMChainController implements IEVMChainController {
 
   getAddress() {
     if (!this.address) {
+      // If wallet is null (hardware wallet), address should have been set externally
+      // or this method shouldn't be called without an address context.
+      // For now, keeping original logic, but this might need refinement based on how
+      // address is managed for hardware wallets.
       throw new Error('Address is not defined');
     }
     return this.address;
@@ -74,7 +69,7 @@ class EVMChainController implements IEVMChainController {
 
   getWallet() {
     if (!this.wallet) {
-      throw new Error('Wallet is not defined');
+      throw new Error('Signer not available. This operation likely requires a private key or hardware wallet interaction.');
     }
     return this.wallet;
   }
@@ -89,7 +84,10 @@ class EVMChainController implements IEVMChainController {
     } else {
       this.chain = getChainInfo(chain);
       this.provider = new StargazerRpcProvider(this.chain.rpcEndpoint);
-      this.wallet = this.wallet.connect(this.provider);
+      if (this.wallet) {
+        this.wallet = this.wallet.connect(this.provider);
+      }
+      // If this.wallet is null, there's nothing to connect, provider is updated.
     }
   }
 
@@ -98,30 +96,23 @@ class EVMChainController implements IEVMChainController {
   }
 
   createERC20Contract(address: Address) {
+    // For read-only operations, provider is sufficient.
+    // If write operations are intended, the caller must handle signing.
     return new ethers.Contract(address, erc20abi, this.provider);
   }
 
   createERC721Contract(address: Address) {
-    return new ethers.Contract(address, erc721abi, this.provider).connect(
-      this.getWallet()
-    );
+    // Returns a contract instance. If used for signing, it will call getWallet().
+    return new ethers.Contract(address, erc721abi, this.provider);
   }
 
-  async getERC1155Balance(
-    contractAddress: string,
-    userAddress: string,
-    tokenIds: string[]
-  ): Promise<number[]> {
+  async getERC1155Balance(contractAddress: string, userAddress: string, tokenIds: string[]): Promise<number[]> {
     try {
       const userAddresses: string[] = new Array(tokenIds.length).fill(userAddress);
-      const balances = await this.call<BigNumber[]>(
-        contractAddress,
-        erc1155abi,
-        'balanceOfBatch',
-        [userAddresses, tokenIds]
-      );
+      // Read operation, so isWriteOperation is false (or default)
+      const balances = await this.call<BigNumber[]>(contractAddress, erc1155abi, 'balanceOfBatch', [userAddresses, tokenIds], false);
 
-      return balances.map((balance) => balance.toNumber());
+      return balances.map(balance => balance.toNumber());
     } catch (err) {
       console.log('ERROR: getERC1155Balance', err);
       return [];
@@ -129,47 +120,54 @@ class EVMChainController implements IEVMChainController {
   }
 
   createERC1155Contract(address: Address) {
-    return new ethers.Contract(address, erc1155abi, this.provider).connect(
-      this.getWallet()
-    );
+    // Returns a contract instance. If used for signing, it will call getWallet().
+    return new ethers.Contract(address, erc1155abi, this.provider).connect(this.getWallet());
   }
 
   async transferNFT(tempNFT: ITempNFTInfo): Promise<string> {
     const { nft } = tempNFT;
     const isERC721 = nft.token_standard === AssetType.ERC721;
-    const nftContract = tempNFT.nft.contract;
+    const nftContractAddress = tempNFT.nft.contract;
     const fromAddress = tempNFT.from.address;
     const toAddress = tempNFT.to;
     const tokenId = tempNFT.nft.identifier;
     const amount = tempNFT.quantity;
     const { price, limit } = tempNFT.gas;
     let overrides: TxOverrides = {
-      gasLimit: BASE_TOKEN_GAS_COST,
+      gasLimit: BASE_TOKEN_GAS_COST, // Default, might be overridden
     };
 
     if (!!price && !!limit) {
       // Increase gas limit by 30%
-      const gasLimit = BigNumber.from(Math.floor(limit * 1.3));
-      const gasPrice = ethers.utils.parseUnits(price.toString(), 'gwei');
+      const gasLimitBigNum = BigNumber.from(Math.floor(limit * 1.3)); // Keep as BigNumber
+      const gasPriceParsed = ethers.utils.parseUnits(price.toString(), 'gwei');
 
       overrides = {
-        gasLimit,
-        gasPrice,
+        gasLimit: gasLimitBigNum,
+        gasPrice: gasPriceParsed,
       };
     }
 
+    // This is a write operation
     const tx = isERC721
-      ? await this.call<TransactionResponse>(nftContract, erc721abi, 'transferFrom', [
-          fromAddress,
-          toAddress,
-          tokenId,
-          { ...overrides },
-        ])
+      ? await this.call<TransactionResponse>(
+          nftContractAddress,
+          erc721abi,
+          'transferFrom',
+          [fromAddress, toAddress, tokenId], // Overrides should be the last param if contract func accepts it
+          // Or applied when sending the tx if call prepares it.
+          // For ethers.js, overrides are part of the last argument object.
+          // So, it should be [fromAddress, toAddress, tokenId, { ...overrides }]
+          true, // isWriteOperation
+          { ...overrides } // Pass overrides to call, which will pass to contract function
+        )
       : await this.call<TransactionResponse>(
-          nftContract,
+          nftContractAddress,
           erc1155abi,
           'safeTransferFrom',
-          [fromAddress, toAddress, tokenId, amount, '0x', { ...overrides }]
+          [fromAddress, toAddress, tokenId, amount, '0x'], // Similar override placement
+          true, // isWriteOperation
+          { ...overrides } // Pass overrides
         );
 
     // Wait for 5 confirmations
@@ -184,16 +182,17 @@ class EVMChainController implements IEVMChainController {
     memo,
     amount,
     recipient,
-    feeOptionKey,
     gasPrice,
     gasLimit,
     nonce,
   }: TxParams & {
-    feeOptionKey?: FeeOptionKey;
     gasPrice?: BaseAmount;
     gasLimit?: BigNumber;
-    nonce: string;
+    nonce?: number;
   }): Promise<TransactionResponse> {
+    // This whole method requires a signer. If this.wallet is null, getWallet() will throw.
+    const wallet = this.getWallet(); // Ensures wallet is available or throws
+
     try {
       const txAmount = BigNumber.from(amount.amount().toFixed());
 
@@ -204,56 +203,33 @@ class EVMChainController implements IEVMChainController {
 
       const isETHAddress = assetAddress === ETHAddress;
 
-      // feeOptionKey
-
-      const defaultGasLimit: BigNumber = isETHAddress
-        ? SIMPLE_GAS_COST
-        : BASE_TOKEN_GAS_COST;
+      const defaultGasLimit: BigNumber = isETHAddress ? SIMPLE_GAS_COST : BASE_TOKEN_GAS_COST;
 
       let overrides: TxOverrides = {
         gasLimit: gasLimit || defaultGasLimit,
         gasPrice: gasPrice && BigNumber.from(gasPrice.amount().toFixed()),
+        nonce, // Pass nonce to overrides
       };
 
-      // override `overrides` if `feeOptionKey` is provided
-      if (feeOptionKey) {
-        const gasPrice = await this.estimateGasPrices()
-          .then((prices) => prices[feeOptionKey])
-          .catch(() => getDefaultGasPrices()[feeOptionKey]);
-        const gasLimit = await this.estimateGasLimit({
-          asset,
-          recipient,
-          amount,
-          memo,
-        }).catch(() => defaultGasLimit);
-
-        overrides = {
-          gasLimit,
-          gasPrice: BigNumber.from(gasPrice.amount().toFixed()),
-        };
+      // Ensure nonce is part of overrides if not already
+      if (nonce !== undefined && overrides.nonce === undefined) {
+        overrides.nonce = nonce;
       }
 
       let txResult;
-      // TODO-349: Check ERC-20 token transfer for Polygon, Avalanche, etc.
       if (assetAddress && !isETHAddress) {
-        // Transfer ERC20
-        txResult = await this.call<TransactionResponse>(
-          assetAddress,
-          ERC_20_ABI,
-          'transfer',
-          [recipient, txAmount, Object.assign({}, { ...overrides, nonce })]
-        );
+        const contract = new ethers.Contract(assetAddress, ERC_20_ABI, wallet);
+        txResult = await contract.transfer(recipient, txAmount.toString(), overrides);
       } else {
         // Transfer ETH
-        const transactionRequest = Object.assign(
-          { to: recipient, value: txAmount, nonce },
-          {
-            ...overrides,
-            data: memo ? toUtf8Bytes(memo) : undefined,
-          }
-        );
+        const transactionRequest = {
+          to: recipient,
+          value: txAmount,
+          data: memo ? toUtf8Bytes(memo) : undefined,
+          ...overrides, // nonce should be part of overrides
+        };
 
-        txResult = await this.getWallet().sendTransaction(transactionRequest);
+        txResult = await wallet.sendTransaction(transactionRequest);
       }
 
       return txResult;
@@ -272,6 +248,18 @@ class EVMChainController implements IEVMChainController {
       }
     }
     return null;
+  }
+
+  async getBalance(address: string) {
+    return await this.provider.getBalance(address);
+  }
+
+  async getNonce(address: string): Promise<number> {
+    return await this.provider.getTransactionCount(address, 'pending');
+  }
+
+  async sendTransaction(signedTransaction: string) {
+    return await this.provider.sendTransaction(signedTransaction);
   }
 
   async getTransactions(params?: TxHistoryParams) {
@@ -310,23 +298,18 @@ class EVMChainController implements IEVMChainController {
     }
   }
 
-  async estimateGas(from: string, to: string, data: string) {
-    return this.provider.estimateGas({ from, to, data });
+  async estimateGas(transaction: TransactionRequest) {
+    return this.provider.estimateGas(transaction);
   }
 
   async estimateGasPrices() {
-    // Snowtrace API doesn't support the gas tracker module yet (https://snowtrace.io/apis)
-    // That's why we need to include Avalanche Mainnet here.
     if (isTestnet(this.chain.id) || this.chain.id === 'base-mainnet') {
       // Etherscan gas oracle is not working in testnets
       return this.fallbackFeeData(this.provider);
     }
 
     try {
-      const response: GasOracleResponse = await getGasOracle(
-        this.chain.explorerID,
-        this.chain.chainId
-      );
+      const response: GasOracleResponse = await getGasOracle(this.chain.explorerID, this.chain.chainId);
 
       // Convert result of gas prices: `Gwei` -> `Wei`
       const averageWei = parseUnits(response.SafeGasPrice, 'gwei');
@@ -372,34 +355,12 @@ class EVMChainController implements IEVMChainController {
     return this.provider.waitForTransaction(hash);
   }
 
-  async estimateTokenTransferGasLimit(
-    recipient: string,
-    contractAddress: string,
-    txAmount: BigNumber,
-    defaultValue?: number
-  ) {
-    try {
-      const contract = new ethers.Contract(
-        contractAddress,
-        ERC_20_ABI,
-        this.getProvider()
-      );
-      const gasLimit: BigNumber = await contract.estimateGas.transfer(
-        recipient,
-        txAmount,
-        { from: this.getAddress() }
-      );
-      return gasLimit.toNumber();
-    } catch (e) {
-      return defaultValue;
-    }
-  }
-
   // Private methods
 
-  private changeWallet(wallet: ethers.Wallet): void {
+  private changeWallet(wallet: ethers.Wallet | null): void {
+    // Allow null
     this.wallet = wallet;
-    this.address = wallet.address.toLowerCase();
+    this.address = wallet ? wallet.address.toLowerCase() : null;
   }
 
   private getProvider(): Provider {
@@ -410,60 +371,28 @@ class EVMChainController implements IEVMChainController {
     return ethers.utils.isAddress(address);
   }
 
-  private async estimateGasLimit({
-    asset,
-    recipient,
-    amount,
-    memo,
-  }: FeesParamsEth): Promise<BigNumber> {
-    try {
-      const txAmount = BigNumber.from(amount.amount().toFixed());
-
-      let assetAddress;
-      if (asset && assetToString(asset) !== assetToString(AssetETH)) {
-        assetAddress = getTokenAddress(asset);
-      }
-
-      let estimate;
-
-      if (assetAddress && assetAddress !== ETHAddress) {
-        // ERC20 gas estimate
-        const contract = new ethers.Contract(assetAddress, ERC_20_ABI, this.provider);
-
-        estimate = await contract.estimateGas.transfer(recipient, txAmount, {
-          from: this.getAddress(),
-        });
-      } else {
-        // ETH gas estimate
-        const transactionRequest = {
-          from: this.getAddress(),
-          to: recipient,
-          value: txAmount,
-          data: memo ? toUtf8Bytes(memo) : undefined,
-        };
-
-        estimate = await this.provider.estimateGas(transactionRequest);
-      }
-
-      return estimate;
-    } catch (error) {
-      return Promise.reject(new Error(`Failed to estimate gas limit: ${error}`));
-    }
-  }
-
   private async call<T>(
     address: Address,
     abi: ethers.ContractInterface,
     func: string,
-    params: Array<any>
+    params: Array<any>,
+    isWriteOperation = false, // Default to false (read)
+    overrides?: TxOverrides // Optional overrides for write operations
   ): Promise<T> {
     if (!address) {
       return Promise.reject(new Error('address must be provided'));
     }
-    const contract = new ethers.Contract(address, abi, this.provider).connect(
-      this.getWallet()
-    );
-    return contract[func](...params);
+    let contractInstance = new ethers.Contract(address, abi, this.provider);
+
+    if (isWriteOperation) {
+      // This will throw if this.wallet is null, which is correct for writes.
+      contractInstance = contractInstance.connect(this.getWallet());
+      // Append overrides if provided and it's a write operation
+      if (overrides) {
+        return contractInstance[func](...params, overrides);
+      }
+    }
+    return contractInstance[func](...params);
   }
 }
 

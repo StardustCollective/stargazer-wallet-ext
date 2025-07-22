@@ -1,15 +1,14 @@
-import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { checkArguments, getChainLabel, getWalletInfo } from '../utils';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
+import type { WithdrawDelegatedStake } from '@stardust-collective/dag4-network';
 
-type WithdrawDelegatedStakeData = {
-  source: string;
-  stakeRef: string;
-};
+import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
+
+import { validateHardwareMethod } from 'utils/hardware';
+
+import { ExternalRoute } from 'web/pages/External/types';
+
+import { checkArguments, getChainId, getWalletInfo } from '../utils';
 
 const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   const { activeWallet } = getWalletInfo();
@@ -18,9 +17,7 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('There is no active wallet');
   }
 
-  const dagAccount = activeWallet?.accounts?.find(
-    (account) => account.network === KeyringNetwork.Constellation
-  );
+  const dagAccount = activeWallet?.accounts?.find(account => account.network === KeyringNetwork.Constellation);
 
   if (!dagAccount) {
     throw new Error('No active account for the request asset type');
@@ -30,7 +27,10 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
     throw new Error('params not provided');
   }
 
-  const [data] = request.params as [WithdrawDelegatedStakeData];
+  const chainId = getChainId();
+  validateHardwareMethod({ walletType: activeWallet.type, method: request.method, dagChainId: chainId });
+
+  const [data] = request.params as [WithdrawDelegatedStake];
 
   if (!data) {
     throw new Error('"data" not found');
@@ -48,32 +48,29 @@ const validateParams = (request: StargazerRequest & { type: 'rpc' }) => {
   }
 };
 
-export const dag_withdrawDelegatedStake = async (
-  request: StargazerRequest & { type: 'rpc' },
-  message: StargazerRequestMessage,
-  sender: chrome.runtime.MessageSender
-) => {
+export const dag_withdrawDelegatedStake = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
   validateParams(request);
 
-  const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
+  const { windowUrl, windowSize, windowType } = getWalletInfo();
 
-  const [data] = request.params as [WithdrawDelegatedStakeData];
+  const [data] = request.params as [WithdrawDelegatedStake];
 
-  const withdrawDelegatedStakeData = {
-    walletLabel: activeWallet.label,
-    chainLabel: getChainLabel(),
-    ...data,
-  };
-
-  await StargazerExternalPopups.executePopupWithRequestMessage(
-    withdrawDelegatedStakeData,
-    message,
-    sender.origin,
-    'withdrawDelegatedStake',
-    windowUrl,
-    windowSize,
-    windowType
-  );
+  await StargazerExternalPopups.executePopup({
+    params: {
+      data,
+      message,
+      origin: sender.origin,
+      route: ExternalRoute.WithdrawDelegatedStake,
+      wallet: {
+        chain: StargazerChain.CONSTELLATION,
+        chainId: getChainId(),
+        address: data.source,
+      },
+    },
+    size: windowSize,
+    type: windowType,
+    url: windowUrl,
+  });
 
   return StargazerWSMessageBroker.NoResponseEmitted;
 };

@@ -1,60 +1,27 @@
-import store from 'state/store';
-import IVaultState from 'state/vault/types';
 import { getChainInfo } from 'scripts/Background/controllers/EVMChainController/utils';
 import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
 
-import {
-  AvailableMethods,
-  IRpcChainRequestHandler,
-  EIPRpcError,
-  EIPErrorCodes,
-  StargazerRequest,
-  StargazerRequestMessage,
-} from '../../common';
-import { getNetworkLabel } from './utils';
-import {
-  eth_requestAccounts,
-  eth_accounts,
-  personal_sign,
-  eth_signTypedData,
-  eth_sendTransaction,
-  web3_sha3,
-  web3_clientVersion,
-  wallet_switchEthereumChain,
-} from './methods';
+import { AvailableMethods, EIPErrorCodes, EIPRpcError, IRpcChainRequestHandler, StargazerRequest, StargazerRequestMessage } from '../../common';
+
+import { eth_accounts, eth_requestAccounts, eth_sendTransaction, eth_signTypedData, personal_sign, wallet_switchEthereumChain, web3_clientVersion, web3_sha3 } from './methods';
 import StargazerRpcProvider from './StargazerRpcProvider';
+import { getNetworkInfo } from './utils';
 
 export class EVMProvider implements IRpcChainRequestHandler {
-  async handleProxiedRequest(
-    request: StargazerRequest & { type: 'rpc' },
-    _message: StargazerRequestMessage,
-    _sender: chrome.runtime.MessageSender
-  ) {
-    const { activeNetwork }: IVaultState = store.getState().vault;
-    const networkLabel = getNetworkLabel();
-    const chainId = activeNetwork[`${networkLabel as keyof typeof activeNetwork}`];
-    const networkInfo = getChainInfo(chainId);
-    const provider = new StargazerRpcProvider(networkInfo.rpcEndpoint);
+  async handleProxiedRequest(request: StargazerRequest & { type: 'rpc' }, _message: StargazerRequestMessage, _sender: chrome.runtime.MessageSender) {
+    const networkInfo = getNetworkInfo();
+    const chainInfo = getChainInfo(networkInfo.chainId);
+    const provider = new StargazerRpcProvider(chainInfo.rpcEndpoint);
 
     return provider.send(request.method, request.params);
   }
 
-  async handleNonProxiedRequest(
-    request: StargazerRequest & { type: 'rpc' },
-    message: StargazerRequestMessage,
-    sender: chrome.runtime.MessageSender
-  ) {
-    const UNAUTH_METHODS = [
-      AvailableMethods.eth_requestAccounts,
-      AvailableMethods.eth_accounts,
-    ];
+  async handleNonProxiedRequest(request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) {
+    const UNAUTH_METHODS = [AvailableMethods.eth_requestAccounts, AvailableMethods.eth_accounts];
 
     // Provider needs to be activated before calling any other RPC method
     if (!isDappConnected(sender.origin) && !UNAUTH_METHODS.includes(request.method)) {
-      throw new EIPRpcError(
-        'Provider is not activated. Call eth_requestAccounts to activate it.',
-        EIPErrorCodes.Unauthorized
-      );
+      throw new EIPRpcError('Provider is not activated. Call eth_requestAccounts to activate it.', EIPErrorCodes.Unauthorized);
     }
 
     switch (request.method) {
@@ -76,10 +43,7 @@ export class EVMProvider implements IRpcChainRequestHandler {
       case AvailableMethods.wallet_switchEthereumChain:
         return wallet_switchEthereumChain(request, message, sender);
       default:
-        throw new EIPRpcError(
-          'Unsupported non-proxied method',
-          EIPErrorCodes.Unsupported
-        );
+        throw new EIPRpcError('Unsupported non-proxied method', EIPErrorCodes.Unsupported);
     }
   }
 }

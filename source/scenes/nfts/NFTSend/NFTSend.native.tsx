@@ -1,25 +1,23 @@
 import React, { FC, useState } from 'react';
-import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import TextV3 from 'components/TextV3';
-import ButtonV3 from 'components/ButtonV3';
-import { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
-import { COLORS_ENUMS } from 'assets/styles/colors';
+import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
+
+import AddIcon from 'assets/images/svg/add.svg';
 import CheckGreen from 'assets/images/svg/check-green.svg';
 import SubstractIcon from 'assets/images/svg/subtract.svg';
-import AddIcon from 'assets/images/svg/add.svg';
-import TextInput from 'components/TextInput';
+import { COLORS_ENUMS } from 'assets/styles/colors';
+
+import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import GasSlider from 'components/GasSlider';
 import QRCodeButton from 'components/QRCodeButton';
 import QRCodeScanner from 'components/QRCodeScanner';
+import TextInput from 'components/TextInput';
+import TextV3 from 'components/TextV3';
+
 import { formatNumber } from 'scenes/home/helpers';
-import { NFTSendProps } from './types';
+
+import { CONTINUE, QUANTITY, RECIPIENT_ADDRESS, RECIPIENT_ADDRESS_PLACEHOLDER } from './constants';
 import styles from './styles';
-import {
-  QUANTITY,
-  CONTINUE,
-  RECIPIENT_ADDRESS,
-  RECIPIENT_ADDRESS_PLACEHOLDER,
-} from './constants';
+import { NFTSendProps } from './types';
 
 const NFTSend: FC<NFTSendProps> = ({
   logo,
@@ -30,7 +28,6 @@ const NFTSend: FC<NFTSendProps> = ({
   address,
   quantity,
   gas,
-  mainAsset,
   errors,
   buttonDisabled,
   isValidAddress,
@@ -50,9 +47,7 @@ const NFTSend: FC<NFTSendProps> = ({
         <TextV3.Caption color={COLORS_ENUMS.BLACK} extraStyles={styles.quantityTitle}>
           {QUANTITY}
         </TextV3.Caption>
-        <TextV3.Caption color={COLORS_ENUMS.SECONDARY_TEXT}>
-          x{formatNumber(amount, 0, 0)}
-        </TextV3.Caption>
+        <TextV3.Caption color={COLORS_ENUMS.SECONDARY_TEXT}>x{formatNumber(amount, 0, 0)}</TextV3.Caption>
       </View>
     );
   };
@@ -96,7 +91,7 @@ const NFTSend: FC<NFTSendProps> = ({
             value={quantity}
             label={<RenderQuantityLabel />}
             control={control}
-            onChange={(amount) => {
+            onChange={amount => {
               handleQuantityChange(amount);
             }}
             error={!!errors?.quantity}
@@ -104,7 +99,7 @@ const NFTSend: FC<NFTSendProps> = ({
             rightIcon={<RenderQuantityButtons />}
           />
           <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
-            {!!errors?.quantity ? errors?.quantity?.message : ' '}
+            {errors?.quantity ? errors?.quantity?.message : ' '}
           </TextV3.Caption>
         </View>
       )}
@@ -115,7 +110,7 @@ const NFTSend: FC<NFTSendProps> = ({
           placeholder={RECIPIENT_ADDRESS_PLACEHOLDER}
           label={RECIPIENT_ADDRESS}
           control={control}
-          onChange={(text) => {
+          onChange={text => {
             handleAddressChange(text);
           }}
           error={!!errors?.address}
@@ -133,24 +128,16 @@ const NFTSend: FC<NFTSendProps> = ({
           }
         />
         <TextV3.Caption color={COLORS_ENUMS.RED} extraStyles={styles.errorMessage}>
-          {!!errors?.address ? errors?.address?.message : ' '}
+          {errors?.address ? errors?.address?.message : ' '}
         </TextV3.Caption>
       </View>
-      {showGasSlider && (
-        <GasSlider gas={gas} asset={mainAsset} onGasPriceChange={onGasPriceChange} />
-      )}
+      {showGasSlider && <GasSlider gas={gas} onGasPriceChange={onGasPriceChange} />}
       <View style={styles.buttonContainer}>
-        <ButtonV3
-          title={CONTINUE}
-          disabled={buttonDisabled || !showGasSlider}
-          size={BUTTON_SIZES_ENUM.FULL_WIDTH}
-          type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-          onPress={onButtonPress}
-        />
+        <ButtonV3 title={CONTINUE} disabled={buttonDisabled || !showGasSlider} size={BUTTON_SIZES_ENUM.FULL_WIDTH} type={BUTTON_TYPES_ENUM.SECONDARY_SOLID} onPress={onButtonPress} />
       </View>
       <QRCodeScanner
         visble={cameraOpen}
-        onRead={(event) => {
+        onRead={event => {
           handleQRscan(event.data);
           setCameraOpen(false);
         }}

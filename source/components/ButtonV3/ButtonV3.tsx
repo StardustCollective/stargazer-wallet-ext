@@ -136,7 +136,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
     buttonTextColor = COLORS_ENUMS.WHITE;
   }
 
-  if (disabled) {
+  if (disabled || loading) {
     disabledStyles = styles.disabled;
   }
 

@@ -7,6 +7,7 @@ import { ellipsis } from 'scenes/home/helpers';
 import styles from './Wallets.scss';
 import Menu from 'components/Menu';
 import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
+import { isCypherock } from 'utils/hardware';
 
 const WalletsComponent: FC<IWalletSettings> = ({
   multiChainAccounts,
@@ -40,7 +41,9 @@ const WalletsComponent: FC<IWalletSettings> = ({
     !!hardwareWalletAccounts.length &&
     hardwareWalletAccounts.map((item) => ({
       title: item.label,
-      subtitle: ellipsis(item.accounts[0].address),
+      subtitle: isCypherock(item.type)
+        ? 'Multi-chain'
+        : ellipsis(item.accounts[0].address),
       onClick: handleManageWallet,
       data: item.id,
       icon: LockIcon,

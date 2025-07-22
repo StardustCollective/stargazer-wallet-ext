@@ -1,45 +1,40 @@
 import React, { FC } from 'react';
-import ArrowIcon from '@material-ui/icons/ArrowForwardIosRounded';
-import Icon from 'components/Icon';
+import Menu from 'components/Menu';
 import StargazerIcon from 'assets/images/svg/stargazer-rounded.svg';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { CONSTELLATION_LOGO, ETHEREUM_LOGO } from 'constants/index';
-import styles from './ImportWallet.scss';
 import IImportWalletSettings from './types';
+import styles from './ImportWallet.scss';
 
 const ImportWallet: FC<IImportWalletSettings> = ({
   handleImport,
   onImportPhraseView,
 }) => {
+  const MULTI_CHAIN_OPTION = [
+    {
+      title: 'Multi-chain wallet',
+      icon: StargazerIcon,
+      onClick: onImportPhraseView,
+    },
+  ];
+
+  const SINGLE_CHAIN_OPTIONS = [
+    {
+      title: 'Ethereum',
+      icon: ETHEREUM_LOGO,
+      onClick: handleImport(KeyringNetwork.Ethereum),
+    },
+    {
+      title: 'Constellation',
+      icon: CONSTELLATION_LOGO,
+      onClick: handleImport(KeyringNetwork.Constellation),
+    },
+  ];
+
   return (
-    <div className={styles.wrapper}>
-      <section
-        id="importWallet-multiChainWallet"
-        className={styles.menu}
-        onClick={onImportPhraseView}
-      >
-        <Icon width={36} Component={StargazerIcon} iconStyles={styles.icon} />
-        <span>Multi Chain Wallet</span>
-        <ArrowIcon />
-      </section>
-      <section
-        id="importWallet-ethereum"
-        className={styles.menu}
-        onClick={handleImport(KeyringNetwork.Ethereum)}
-      >
-        <img src={ETHEREUM_LOGO} className={styles.logo} />
-        <span>Ethereum</span>
-        <ArrowIcon />
-      </section>
-      <section
-        id="importWallet-constellation"
-        className={styles.menu}
-        onClick={handleImport(KeyringNetwork.Constellation)}
-      >
-        <img src={CONSTELLATION_LOGO} className={styles.logo} />
-        <span>Constellation</span>
-        <ArrowIcon />
-      </section>
+    <div className={styles.container}>
+      <Menu items={MULTI_CHAIN_OPTION} />
+      <Menu items={SINGLE_CHAIN_OPTIONS} />
     </div>
   );
 };

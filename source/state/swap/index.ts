@@ -189,7 +189,7 @@ const SwappingState = createSlice({
     builder.addCase(getTransactionHistory.pending, (state) => {
       state.loading = true;
       state.error = null;
-      state.pendingSwap = null;
+      state.transactionHistory = null;
     });
     builder.addCase(getTransactionHistory.fulfilled, (state, action) => {
       state.loading = false;
@@ -199,7 +199,7 @@ const SwappingState = createSlice({
     builder.addCase(getTransactionHistory.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
-      state.pendingSwap = null;
+      state.transactionHistory = null;
     });
   },
 });

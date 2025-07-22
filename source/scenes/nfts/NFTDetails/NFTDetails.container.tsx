@@ -11,6 +11,8 @@ import { open } from 'utils/browser';
 import { OPENSEA_ASSET_URL, OPENSEA_TESTNETS_ASSET_URL } from './constants';
 import { isOpenSeaTestnet } from 'utils/opensea';
 import { PLACEHOLDER_IMAGE } from 'constants/index';
+import { isHardware } from 'utils/hardware';
+import vaultSelectors from 'selectors/vaultSelectors';
 
 const NFTDetailsContainer: FC<INFTDetails> = ({ navigation, route }) => {
   const { title, logo, quantity } = route?.params || {};
@@ -18,6 +20,8 @@ const NFTDetailsContainer: FC<INFTDetails> = ({ navigation, route }) => {
   const walletController = getWalletController();
   const selectedCollection = useSelector(nftSelectors.getSelectedCollection);
   const selectedNFT = useSelector(nftSelectors.getSelectedNft);
+  const activeWallet = useSelector(vaultSelectors.getActiveWallet);
+  const isHardwareWallet = isHardware(activeWallet?.type)
 
   const logoURL = !!logo
     ? logo
@@ -57,6 +61,7 @@ const NFTDetailsContainer: FC<INFTDetails> = ({ navigation, route }) => {
       <NFTDetails
         logo={logoURL}
         quantity={quantity}
+        sendDisabled={isHardwareWallet}
         selectedNFT={selectedNFT}
         onPressSendNFT={onPressSendNFT}
         onPressViewOpenSea={onPressViewOpenSea}

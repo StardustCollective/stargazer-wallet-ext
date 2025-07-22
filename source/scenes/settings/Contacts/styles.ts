@@ -3,12 +3,10 @@ import { COLORS } from 'assets/styles/_variables';
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: COLORS.gray_light_100,
     flexGrow: 1,
   },
   contacts: {
     flex: 1,
-    backgroundColor: COLORS.gray_light_100,
   },
   contactsContentContainer: {
     flexGrow: 1,

@@ -56,12 +56,16 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
             title,
             disabled,
             icon,
+            iconSize = 36,
             subtitle,
             labelRight,
             data,
             showArrow = true,
             rightIcon,
+            rightIconContainerStyle,
             selected = false,
+            containerStyle,
+            iconContainerStyle,
           } = item;
 
           const titleTextStyle = subtitle ? styles.smallTitle : styles.largeTitle;
@@ -73,18 +77,19 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
                 styles.itemContainer,
                 i === 0 && styles.firstChild,
                 i === items.length - 1 && styles.lastChild,
-                disabled && styles.disabled
+                disabled && styles.disabled,
+                containerStyle
               )}
               onClick={disabled ? null : () => onClick(data)}
             >
               {!!icon &&
                 typeof icon === 'string' &&
                 (icon.startsWith('http') ? (
-                  <div className={styles.walletIcon}>
-                    <img src={icon} width={36} height={36} />
+                  <div className={clsx(styles.walletIcon, iconContainerStyle)}>
+                    <img src={icon} width={iconSize} height={iconSize} />
                   </div>
                 ) : (
-                  <Icon width={36} Component={icon} />
+                  <Icon width={iconSize} Component={icon} />
                 ))}
               {!!title && (
                 <div className={styles.contentContainer}>
@@ -117,7 +122,11 @@ const Menu: FC<IMenu> = ({ items, title, titleStyles, containerStyle }): JSX.Ele
                   <img src={`/${ChevronRight}`} height={ICON_SIZE} width={ICON_SIZE} />
                 </div>
               )}
-              {!!rightIcon && <div className={styles.iconContainer}>{rightIcon}</div>}
+              {!!rightIcon && (
+                <div className={clsx(styles.iconContainer, rightIconContainerStyle)}>
+                  {rightIcon}
+                </div>
+              )}
               {!!selected && (
                 <div className={styles.iconContainer}>
                   <img src={`/${CheckIcon}`} className={styles.checkIcon} />

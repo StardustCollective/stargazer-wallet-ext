@@ -1,0 +1,30 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 32px;
+  flex-grow: 1;
+
+  .title {
+    align-self: stretch;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: -0.8px;
+    color: #b91c1c;
+    padding: 0 16px;
+  }
+
+  .description {
+    align-self: stretch;
+    line-height: 28px;
+    letter-spacing: -0.4px;
+    color: #331b5f;
+    padding: 0 16px;
+  }
+}

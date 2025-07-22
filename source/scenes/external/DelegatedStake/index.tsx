@@ -1,175 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import CardLayoutV3 from 'scenes/external/Layouts/CardLayoutV3';
-import Card from '../components/Card/Card';
-import CardRow from '../components/CardRow/CardRow';
-import Tooltip from 'components/Tooltip';
-import TextV3 from 'components/TextV3';
-import CopyIcon from 'assets/images/svg/copy.svg';
-import dappSelectors from 'selectors/dappSelectors';
-import assetsSelectors from 'selectors/assetsSelectors';
-import styles from './index.scss';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
-import { DelegatedStakeBody, DelegatedStakeData } from './types';
-import { formatBigNumberForDisplay, toDag, toDatum } from 'utils/number';
 import { dag4 } from '@stardust-collective/dag4';
-import { usePlatformAlert } from 'utils/alertUtil';
-import { COLORS_ENUMS } from 'assets/styles/colors';
-import { useCopyClipboard } from 'hooks/index';
+import type { DelegatedStake } from '@stardust-collective/dag4-network';
+import React, { useState } from 'react';
 
-const DelegatedStakeView = () => {
-  const [feeValue, setFeeValue] = useState('0');
-  const [stakeData, setStakeData] = useState(null);
+import { DAG_NETWORK } from 'constants/index';
+
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
+
+import { usePlatformAlert } from 'utils/alertUtil';
+
+import DelegatedStakeContainer, { DelegatedStakeProviderConfig } from './DelegatedStakeContainer';
+
+const ExternalDelegatedStake = () => {
   const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
-  const [isObjectCopied, copyObject] = useCopyClipboard(1000);
-  const textTooltip = isObjectCopied ? 'Copied' : 'Copy object';
 
-  const current = useSelector(dappSelectors.getCurrent);
-  const origin = current && current.origin;
+  const sendDelegatedStakeTransaction = async (decodedData: DelegatedStake): Promise<string> => {
+    const delegatedStakeBody: DelegatedStake = {
+      source: decodedData.source,
+      nodeId: decodedData.nodeId,
+      amount: decodedData.amount,
+      fee: decodedData.fee,
+      tokenLockRef: decodedData.tokenLockRef,
+    };
 
-  // Get DAG asset information
-  const dagAsset = useSelector(assetsSelectors.getAssetBySymbol('DAG'));
+    const { hash } = await dag4.account.createDelegatedStake(delegatedStakeBody);
 
-  const { data, message: requestMessage } =
-    StargazerExternalPopups.decodeRequestMessageLocationParams<DelegatedStakeData>(
-      location.href
-    );
+    if (!hash) {
+      throw new Error('Failed to generate signed delegated stake transaction');
+    }
 
-  const { walletLabel, chainLabel, amount, nodeId, tokenLockRef, fee, source } = data;
-
-  const generateJsonMessage = (data: any): string => {
-    if (!data) return '';
-
-    return JSON.stringify(data, null, 4);
+    return hash;
   };
 
-  useEffect(() => {
-    if (!stakeData) {
-      const stakeData = {
-        amount: formatBigNumberForDisplay(toDag(amount)),
-        fee: formatBigNumberForDisplay(toDag(fee) ?? 0),
-        nodeId,
-        tokenLockRef,
-      };
-      setStakeData(stakeData);
-    }
-  }, []);
+  const defaultDelegatedStakeConfig: DelegatedStakeProviderConfig = {
+    title: 'DelegatedStake',
+    onDelegatedStake: async ({ decodedData, wallet }) => {
+      const isDag = wallet.chain === StargazerChain.CONSTELLATION;
+      const addressMatch = dag4.account.keyTrio.address.toLowerCase() === wallet.address.toLowerCase();
+      const networkInfo = dag4.account.networkInstance.getNetwork();
+      const chainMatch = DAG_NETWORK[networkInfo.id].chainId === wallet.chainId;
 
-  useEffect(() => {
-    if (!!feeValue) {
-      const stakeData = {
-        amount: formatBigNumberForDisplay(toDag(amount)),
-        fee: formatBigNumberForDisplay(toDag(feeValue)),
-        nodeId,
-        tokenLockRef,
-      };
-      setStakeData(stakeData);
-    }
-  }, [feeValue]);
-
-  // Convert fee to DAG
-  const feeAmount = toDag(fee ?? 0);
-
-  useEffect(() => {
-    if (!!feeAmount && feeAmount !== null && feeAmount !== undefined) {
-      setFeeValue(feeAmount.toString());
-    }
-  }, [feeAmount]);
-
-  const onNegativeButtonClick = async () => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseError(
-      new EIPRpcError('User Rejected Request', EIPErrorCodes.Rejected),
-      requestMessage
-    );
-    window.close();
-  };
-
-  const onPositiveButtonClick = async () => {
-    setLoading(true);
-    try {
-      const delegatedStakeBody: DelegatedStakeBody = {
-        source,
-        ...stakeData,
-        amount,
-        fee: toDatum(feeValue),
-      };
-
-      const delegatedStakeResponse = await dag4.account.createDelegatedStake(
-        delegatedStakeBody
-      );
-
-      if (!delegatedStakeResponse || !delegatedStakeResponse.hash) {
-        throw new Error('Failed to generate signed delegated stake transaction');
+      if (!isDag) {
+        throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
       }
 
-      StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(
-        delegatedStakeResponse.hash,
-        requestMessage
-      );
-    } catch (e) {
-      const errorMessage =
-        (e instanceof Error && e?.message) ||
-        'There was an error with the transaction.\nPlease try again later.';
-      showAlert(errorMessage, 'danger');
-      setLoading(false);
-      StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseError(e, requestMessage);
-      return;
-    }
+      if (!addressMatch) {
+        throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+      }
 
-    window.close();
+      if (!chainMatch) {
+        throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      setLoading(true);
+      try {
+        return await sendDelegatedStakeTransaction(decodedData);
+      } catch (error) {
+        setLoading(false);
+
+        // Handle specific error cases
+        if (error instanceof Error) {
+          const errorMessage = error.message || 'There was an error with the transaction.\nPlease try again later.';
+          showAlert(errorMessage, 'danger');
+        } else {
+          showAlert('There was an error with the transaction.\nPlease try again later.', 'danger');
+        }
+
+        throw error;
+      }
+    },
+    isLoading: loading,
   };
 
-  const message = generateJsonMessage(stakeData);
-
-  return (
-    <CardLayoutV3
-      logo={current?.logo}
-      title="DelegatedStake"
-      subtitle={origin}
-      fee={{
-        show: true,
-        defaultValue: '0',
-        value: feeValue,
-        symbol: dagAsset?.symbol,
-        disabled: true,
-        setFee: setFeeValue,
-      }}
-      isPositiveButtonLoading={loading}
-      onNegativeButtonClick={onNegativeButtonClick}
-      onPositiveButtonClick={onPositiveButtonClick}
-    >
-      <div className={styles.container}>
-        <Card>
-          <CardRow label="Wallet name:" value={walletLabel} />
-          <CardRow label="Network:" value={chainLabel} />
-        </Card>
-        <Card>
-          <div className={styles.titleContainer}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
-              Transaction data:
-            </TextV3.CaptionStrong>
-            <Tooltip title={textTooltip} placement="bottom" arrow>
-              <div onClick={() => copyObject(message)} className={styles.copyIcon}>
-                <img src={`/${CopyIcon}`} alt="Copy" />
-              </div>
-            </Tooltip>
-          </div>
-          <TextV3.CaptionRegular extraStyles={styles.message}>
-            {message}
-          </TextV3.CaptionRegular>
-        </Card>
-      </div>
-    </CardLayoutV3>
-  );
+  return <DelegatedStakeContainer {...defaultDelegatedStakeConfig} />;
 };
 
-export * from './types';
-export default DelegatedStakeView;
+export default ExternalDelegatedStake;

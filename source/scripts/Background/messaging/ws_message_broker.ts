@@ -128,6 +128,9 @@ export class StargazerWSMessageBroker {
     response: StargazerResponse,
     requestMessage: StargazerRequestMessage
   ) {
+    // Skip sending response if tabId is not defined or set to -1
+    if (!requestMessage?.tabId || requestMessage.tabId === -1) return;
+
     const message: StargazerResponseMessage = {
       chnId: requestMessage.chnId,
       tabId: requestMessage.tabId,
@@ -142,7 +145,7 @@ export class StargazerWSMessageBroker {
   }
 
   static async sendResponseError(error: any, requestMessage: StargazerRequestMessage) {
-    console.error('RpcRequestError', String(error), error);
+    console.error('RpcRequestError', error);
     if (error instanceof Error) {
       return await StargazerWSMessageBroker.sendResponse(
         {

@@ -11,7 +11,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { handleDag4Setup } from 'scripts/Background/handlers/handleDag4Setup';
 import { handleStoreSubscribe } from 'scripts/Background/handlers/handleStoreSubscribe';
 import { handleRehydrateStore } from 'scripts/Background/handlers/handleRehydrateStore';
-import { addBeforeUnloadListener } from '../../utils/windowListeners';
+import { addBeforeUnloadListener } from 'web/utils/windowListeners';
 
 global.scrypt = scryptJS.scrypt;
 

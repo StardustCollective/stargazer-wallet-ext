@@ -1,200 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import Card from '../components/Card/Card';
-import CardRow from '../components/CardRow/CardRow';
-import CardLayoutV3 from '../Layouts/CardLayoutV3';
-import Tooltip from 'components/Tooltip';
-import CopyIcon from 'assets/images/svg/copy.svg';
+import { dag4 } from '@stardust-collective/dag4';
+import type { SendDataFeeResponse, SignDataFeeResponse } from '@stardust-collective/dag4-network';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import dappSelectors from 'selectors/dappSelectors';
-import {
-  StargazerExternalPopups,
-  StargazerWSMessageBroker,
-} from 'scripts/Background/messaging';
-import { EIPRpcError } from 'scripts/common';
-import { decodeFromBase64 } from 'utils/encoding';
-import styles from './index.scss';
+
+import { DAG_NETWORK } from 'constants/index';
+
+import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
+import type { ISendMetagraphDataParams } from 'scripts/Provider/constellation';
+
 import walletsSelectors from 'selectors/walletsSelectors';
-import { buildTransactionBody, sendMetagraphDataTransaction } from './utils';
-import { isAxiosError } from 'axios';
+
+import { IAssetInfoState } from 'state/assets/types';
+
 import { usePlatformAlert } from 'utils/alertUtil';
 import { toDatum } from 'utils/number';
-import { SendDataFeeResponse, SignDataFeeResponse } from './types';
-import TextV3 from 'components/TextV3';
-import { COLORS_ENUMS } from 'assets/styles/colors';
-import { useCopyClipboard } from 'hooks/index';
+
+import SendMetagraphDataContainer, { SendMetagraphDataProviderConfig } from './SendMetagraphDataContainer';
+import { buildTransactionBody } from './utils';
 
 const SendMetagraphData = () => {
-  const [isObjectCopied, copyObject] = useCopyClipboard(1000);
-  const textTooltip = isObjectCopied ? 'Copied' : 'Copy object';
+  const [loading, setLoading] = useState(false);
+  const dagAddress = useSelector(walletsSelectors.selectActiveWalletDagAddress);
+
   const showAlert = usePlatformAlert();
 
-  const [fee, setFee] = useState('0');
+  const sendMetagraphDataTx = async (decodedData: ISendMetagraphDataParams, asset: IAssetInfoState, fee: { fee: string; address: string; updateHash: string }): Promise<SendDataFeeResponse | SignDataFeeResponse> => {
+    const body = await buildTransactionBody(decodedData.payload, fee.fee, fee.address, fee.updateHash);
 
-  const assets = useSelector(walletsSelectors.getAssets);
-  const current = useSelector(dappSelectors.getCurrent);
-  const origin = current && current.origin;
-
-  const { data, message: requestMessage } =
-    StargazerExternalPopups.decodeRequestMessageLocationParams<{
-      origin: string;
-      dataEncoded: string;
-      walletId: string;
-      walletLabel: string;
-      deviceId: string;
-      bipIndex: number;
-      chainLabel: string;
-      metagraphId: string;
-      feeAmount: string;
-      sign: boolean;
-      destinationFeeAddress: string;
-      updateHash: string;
-    }>(location.href);
-
-  const {
-    dataEncoded,
-    chainLabel,
-    walletLabel,
-    metagraphId,
-    feeAmount,
-    destinationFeeAddress,
-    updateHash,
-    sign,
-  } = data;
-
-  const title = sign ? 'SignDataTransaction' : 'SendDataTransaction';
-
-  useEffect(() => {
-    if (!!feeAmount && feeAmount !== '0') {
-      setFee(feeAmount);
-    }
-  }, [feeAmount]);
-
-  const metagraphInfo = Object.values(assets).find(
-    (asset) => asset?.address === metagraphId
-  );
-
-  // Decode base64 data
-  const dataDecoded = decodeFromBase64(dataEncoded);
-  let message = dataDecoded;
-
-  try {
-    // Try to parse and check if it's a JSON object
-    const parsedData = JSON.parse(dataDecoded);
-    if (parsedData) {
-      // Pretty-print JSON object
-      message = JSON.stringify(parsedData, null, 4);
-    }
-  } catch (err) {
-    // Decoded data is not a valid JSON
-    console.log('data to parse is not valid JSON');
-    message = dataDecoded;
-  }
-
-  const onNegativeButtonClick = async () => {
-    StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseError(
-      new EIPRpcError('User Rejected Request', 4001),
-      requestMessage
-    );
-
-    window.close();
-  };
-
-  const onPositiveButtonClick = async () => {
-    const body = await buildTransactionBody(
-      dataEncoded,
-      fee,
-      destinationFeeAddress,
-      updateHash
-    );
-
-    const feeTooLow = !!body?.fee && body?.fee?.value?.amount < toDatum(feeAmount);
+    const feeTooLow = !!body?.fee && body?.fee?.value?.amount < toDatum(fee.fee);
     if (feeTooLow) {
-      showAlert(
-        `Not enough fee for this transaction.\nThe recommended fee amount is ${feeAmount} ${metagraphInfo?.symbol}`,
-        'danger'
-      );
-      return;
+      throw new EIPRpcError(`Not enough fee for this transaction.\nThe recommended fee amount is ${fee.fee} ${asset?.symbol}`, EIPErrorCodes.Rejected);
     }
 
-    let response: SendDataFeeResponse | SignDataFeeResponse;
+    const metagraphClient = dag4.account.createMetagraphTokenClient({
+      metagraphId: asset.address,
+      id: asset.address,
+      l0Url: asset.l0endpoint,
+      l1Url: asset.l1endpoint,
+      dl1Url: asset.dl1endpoint,
+      beUrl: '',
+    });
 
-    try {
-      response = await sendMetagraphDataTransaction(metagraphInfo.dl1endpoint, body);
-    } catch (err: any) {
-      if (isAxiosError(err)) {
-        showAlert(
-          `There was an error with the transaction.\nPlease try again later.`,
-          'danger'
-        );
-      }
-      return;
-    }
+    const response: SendDataFeeResponse = await metagraphClient.sendDataTransaction(body);
 
-    if (sign) {
+    if (decodedData.sign) {
       (response as SignDataFeeResponse).signature = body.data.proofs[0].signature;
-      if (!!response?.feeHash) {
+      if (response?.feeHash) {
         (response as SignDataFeeResponse).feeSignature = body.fee.proofs[0].signature;
       }
     }
 
-    StargazerExternalPopups.addResolvedParam(location.href);
-    StargazerWSMessageBroker.sendResponseResult(response, requestMessage);
-
-    window.close();
+    return response;
   };
 
-  const renderMetagraphValue = () => {
-    return (
-      <div className={styles.valueContainer}>
-        <img src={metagraphInfo.logo} alt="Metagraph logo" className={styles.logo} />
-        <TextV3.CaptionRegular extraStyles={styles.label}>
-          {metagraphInfo.label}
-        </TextV3.CaptionRegular>
-      </div>
-    );
+  const defaultSendMetagraphDataConfig: SendMetagraphDataProviderConfig = {
+    isLoading: loading,
+    onSendMetagraphData: async ({ decodedData, asset, wallet, fee }) => {
+      setLoading(true);
+      const isDAGChain = wallet.chain === StargazerChain.CONSTELLATION;
+      const addressMatch = dagAddress.toLowerCase() === wallet.address.toLowerCase();
+      const networkInfo = dag4.account.networkInstance.getNetwork();
+      const networkMatch = wallet.chainId === DAG_NETWORK[networkInfo.id].chainId;
+
+      if (!isDAGChain) {
+        throw new EIPRpcError('Unsupported chain', EIPErrorCodes.Unsupported);
+      }
+
+      if (!addressMatch) {
+        throw new EIPRpcError('Account address mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      if (!networkMatch) {
+        throw new EIPRpcError('Connected network mismatch', EIPErrorCodes.Unauthorized);
+      }
+
+      return await sendMetagraphDataTx(decodedData, asset, fee);
+    },
+    onError: (err: unknown) => {
+      setLoading(false);
+      if (err instanceof Error) {
+        const { message } = err;
+
+        if (message.includes('TransactionLimited')) {
+          showAlert('Feeless transaction limit reached. Try again adding a small fee.', 'danger');
+          return;
+        }
+
+        if (message.includes('InsufficientBalance')) {
+          showAlert('Insufficient balance for the transaction', 'danger');
+          return;
+        }
+
+        showAlert(err instanceof Error ? err.message : 'Unknown error occurred', 'danger');
+      }
+    },
   };
 
-  return (
-    <CardLayoutV3
-      logo={current?.logo}
-      title={title}
-      subtitle={origin}
-      fee={{
-        show: true,
-        defaultValue: feeAmount,
-        value: fee,
-        symbol: metagraphInfo?.symbol,
-        disabled: feeAmount === '0',
-        setFee,
-      }}
-      onNegativeButtonClick={onNegativeButtonClick}
-      onPositiveButtonClick={onPositiveButtonClick}
-    >
-      <div className={styles.container}>
-        <Card>
-          <CardRow label="Wallet name:" value={walletLabel} />
-          <CardRow label="Network:" value={chainLabel} />
-          <CardRow label="Metagraph:" value={renderMetagraphValue()} />
-        </Card>
-        <Card>
-          <div className={styles.titleContainer}>
-            <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.title}>
-              Transaction data:
-            </TextV3.CaptionStrong>
-            <Tooltip title={textTooltip} placement="bottom" arrow>
-              <div onClick={() => copyObject(message)} className={styles.copyIcon}>
-                <img src={`/${CopyIcon}`} alt="Copy" />
-              </div>
-            </Tooltip>
-          </div>
-          <TextV3.CaptionRegular extraStyles={styles.message}>
-            {message}
-          </TextV3.CaptionRegular>
-        </Card>
-      </div>
-    </CardLayoutV3>
-  );
+  return <SendMetagraphDataContainer {...defaultSendMetagraphDataConfig} />;
 };
 
 export default SendMetagraphData;

@@ -19,6 +19,7 @@ import {
 } from 'constants/index';
 import styles from './ManageWallet.scss';
 import IManageWalletSettings from './types';
+import { isCypherock, isHardware } from 'utils/hardware';
 
 const ManageWallet: FC<IManageWalletSettings> = ({
   handleSubmit,
@@ -40,10 +41,8 @@ const ManageWallet: FC<IManageWalletSettings> = ({
   const [isWalletAddressesOpen, setIsWalletAddressesOpen] = useState(false);
   const [itemCopied, setItemCopied] = useState('');
   const isButtonDisabled = label === wallet.label || label === '' || !label;
-  const isHardwareWallet = [
-    KeyringWalletType.BitfiAccountWallet,
-    KeyringWalletType.LedgerAccountWallet,
-  ].includes(wallet.type);
+  const isHardwareWallet = isHardware(wallet.type);
+  const isCypherockWallet = isCypherock(wallet.type);
 
   useEffect(() => {
     setLabel(watch('name'));
@@ -73,7 +72,7 @@ const ManageWallet: FC<IManageWalletSettings> = ({
           },
         ];
 
-  const walletAddresesContent = [
+  let walletAddresesContent = [
     {
       title: DAG_NETWORK.main2.network,
       subtitle: ellipsis(dagAddress),
@@ -140,23 +139,32 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       showArrow: false,
       labelRightStyles: styles.copiedLabel,
     },
-    {
-      title: BASE_NETWORK['base-mainnet'].network,
-      subtitle: ellipsis(ethAddress),
-      onClick: () => handleCopy(BASE_NETWORK['base-mainnet'].network, ethAddress),
-      rightIcon: (!isCopied || itemCopied !== BASE_NETWORK['base-mainnet'].network) && (
-        <img src={`/${CopyIcon}`} alt="copy" />
-      ),
-      labelRight:
-        isCopied && itemCopied === BASE_NETWORK['base-mainnet'].network ? 'Copied!' : '',
-      icon: BASE_NETWORK['base-mainnet'].logo,
-      showArrow: false,
-      labelRightStyles: styles.copiedLabel,
-    },
+    // Only include Base network if it's not a Cypherock wallet
+    ...(!isCypherockWallet
+      ? [
+          {
+            title: BASE_NETWORK['base-mainnet'].network,
+            subtitle: ellipsis(ethAddress),
+            onClick: () => handleCopy(BASE_NETWORK['base-mainnet'].network, ethAddress),
+            rightIcon: (!isCopied ||
+              itemCopied !== BASE_NETWORK['base-mainnet'].network) && (
+              <img src={`/${CopyIcon}`} alt="copy" />
+            ),
+            labelRight:
+              isCopied && itemCopied === BASE_NETWORK['base-mainnet'].network
+                ? 'Copied!'
+                : '',
+            icon: BASE_NETWORK['base-mainnet'].logo,
+            showArrow: false,
+            labelRightStyles: styles.copiedLabel,
+          },
+        ]
+      : []),
   ];
 
   const walletAddressesItems =
-    wallet.type === KeyringWalletType.MultiChainWallet
+    wallet.type === KeyringWalletType.MultiChainWallet ||
+    wallet.type === KeyringWalletType.CypherockAccountWallet
       ? [
           {
             title: 'Wallet Addresses',

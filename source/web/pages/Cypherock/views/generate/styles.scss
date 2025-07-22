@@ -1,0 +1,22 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 32px;
+  flex-grow: 1;
+
+  .cardContainer {
+    margin-bottom: 18px;
+  }
+
+  .text {
+    font-size: 24px;
+    line-height: 32px;
+    color: #331b5f;
+    letter-spacing: -0.8px;
+    padding: 0 30px;
+  }
+}

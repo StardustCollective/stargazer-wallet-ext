@@ -1,0 +1,9 @@
+@import '~assets/styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 700px;
+  width: 384px;
+}

@@ -1,15 +1,19 @@
 import { isHexString, toUtf8 } from 'ethereumjs-util';
+
 import { ALL_EVM_CHAINS } from 'constants/index';
+
+import { getChainId as getChainIdFn } from 'scripts/Background/controllers/EVMChainController/utils';
 import { EIPErrorCodes, EIPRpcError, StargazerChain } from 'scripts/common';
+
 import store from 'state/store';
 import IVaultState from 'state/vault/types';
+
 import { getWalletController } from 'utils/controllersUtils';
-import { getChainId as getChainIdFn } from 'scripts/Background/controllers/EVMChainController/utils';
 import { encodeToBase64 } from 'utils/encoding';
-import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
+import { getHardwareWalletPage, isHardware } from 'utils/hardware';
+
 import { StargazerSignatureRequest } from '../../constellation/utils';
 
-const LEDGER_URL = '/ledger.html';
 export const EXTERNAL_URL = '/external.html';
 export const WINDOW_TYPES: Record<string, chrome.windows.createTypeEnum> = {
   popup: 'popup',
@@ -23,31 +27,28 @@ export const WINDOW_SIZE = {
 export const getWalletInfo = () => {
   const { vault } = store.getState();
 
-  const allWallets = [
-    ...vault.wallets.local,
-    ...vault.wallets.ledger,
-    ...vault.wallets.bitfi,
-  ];
-  const activeWallet = vault?.activeWallet
-    ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id)
-    : null;
-  const isLedger = activeWallet?.type === KeyringWalletType.LedgerAccountWallet;
+  let windowUrl = EXTERNAL_URL;
 
-  const windowUrl = isLedger ? LEDGER_URL : EXTERNAL_URL;
-  const windowType = isLedger ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
-  const windowSize = isLedger ? WINDOW_SIZE.large : WINDOW_SIZE.small;
+  const allWallets = [...vault.wallets.local, ...vault.wallets.ledger, ...vault.wallets.bitfi, ...vault.wallets.cypherock];
+  const activeWallet = vault?.activeWallet ? allWallets.find((wallet: any) => wallet.id === vault.activeWallet.id) : null;
+
+  const isHardwareWallet = isHardware(activeWallet?.type);
+
+  if (isHardwareWallet) {
+    windowUrl = getHardwareWalletPage(activeWallet?.type);
+  }
+
+  const windowType = isHardwareWallet ? WINDOW_TYPES.normal : WINDOW_TYPES.popup;
+  const windowSize = isHardwareWallet ? WINDOW_SIZE.large : WINDOW_SIZE.small;
 
   return { activeWallet, windowUrl, windowType, windowSize };
 };
 
 export const getNetworkInfo = () => {
   const { currentEVMNetwork }: IVaultState = store.getState().vault;
-  const networkInfo = Object.values(ALL_EVM_CHAINS).find(
-    (chain) => chain.id === currentEVMNetwork
-  );
+  const networkInfo = Object.values(ALL_EVM_CHAINS).find(chain => chain.id === currentEVMNetwork);
 
-  if (!networkInfo)
-    throw new EIPRpcError('Network not found', EIPErrorCodes.ChainDisconnected);
+  if (!networkInfo) throw new EIPRpcError('Network not found', EIPErrorCodes.ChainDisconnected);
 
   return networkInfo;
 };
