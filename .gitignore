@@ -133,6 +133,10 @@ source/native/ios/Pods
 .cursorrules
 .cursor
 
+# Claude
+CLAUDE.md
+migration-plan.md
+
 # Yalc
 .yalc
 yalc.lock
