@@ -66,6 +66,7 @@
     "rxjs": "^6.6.7",
     "sass": "^1.35.1",
     "scrypt-js": "^3.0.1",
+    "selenium-webdriver": "~4.0.0",
     "tls": "^0.0.1",
     "url-loader": "^4.1.1",
     "uuid": "^8.3.2",

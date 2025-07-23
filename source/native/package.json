@@ -6,7 +6,6 @@
     "android": "NODE_OPTIONS=--openssl-legacy-provider react-native run-android",
     "ios": "NODE_OPTIONS=--openssl-legacy-provider react-native run-ios",
     "start": "NODE_OPTIONS=--openssl-legacy-provider react-native start",
-    "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
@@ -20,11 +19,9 @@
     "@react-navigation/stack": "^6.0.11",
     "@sentry/react-native": "5.31.0",
     "fast-text-encoding": "^1.0.3",
-    "metro-react-native-babel-transformer": "^0.66.2",
     "native-base": "^3.2.2",
-    "node-libs-react-native": "^1.2.1",
-    "react": "17.0.2",
-    "react-native": "0.66.1",
+    "react": "18.2.0",
+    "react-native": "0.73.9",
     "react-native-background-timer": "^2.4.1",
     "react-native-biometrics": "^3.0.1",
     "react-native-camera": "^4.2.1",
@@ -57,26 +54,24 @@
     "react-native-size-matters": "^0.4.0",
     "react-native-skeleton-placeholder": "^5.2.4",
     "react-native-splash-screen": "^3.3.0",
-    "react-native-svg": "^12.1.1",
-    "react-native-svg-transformer": "^0.14.3",
+    "react-native-svg": "^15.12.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-table-component": "^1.2.2",
     "react-native-vector-icons": "^9.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/runtime": "^7.12.5",
-    "@react-native-community/eslint-config": "^2.0.0",
-    "@types/jest": "^26.0.23",
-    "@types/react-native": "^0.65.0",
-    "@types/react-test-renderer": "^17.0.1",
-    "babel-jest": "^26.6.3",
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.20.0",
+    "@babel/runtime": "^7.20.0",
+    "@react-native/babel-preset": "0.73.21",
+    "@react-native/eslint-config": "0.73.2",
+    "@react-native/metro-babel-transformer": "^0.73.0",
+    "@react-native/metro-config": "0.73.5",
+    "@react-native/typescript-config": "0.73.1",
+    "@types/react": "^18.2.6",
     "babel-plugin-module-resolver": "^4.1.0",
-    "eslint": "^7.14.0",
-    "jest": "^26.6.3",
-    "metro-react-native-babel-preset": "^0.66.2",
-    "react-test-renderer": "17.0.2",
-    "reactotron-react-native": "4.0.2"
+    "eslint": "^8.19.0",
+    "react-native-svg-transformer": "^1.5.1"
   },
   "workspaces": {
     "nohoist": [
@@ -86,18 +81,7 @@
       "react-native-community/**"
     ]
   },
-  "resolutions": {
-    "@types/react": "^17"
-  },
-  "jest": {
-    "preset": "react-native",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
+  "engines": {
+    "node": ">=18"
   }
 }

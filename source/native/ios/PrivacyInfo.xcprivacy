@@ -25,6 +25,7 @@
 			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
+				<string>C617.1</string>
 				<string>DDA9.1</string>
 			</array>
 		</dict>

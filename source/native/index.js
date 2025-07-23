@@ -1,7 +1,3 @@
-/**
- * @format
- */
-
 import './shim';
 import 'fast-text-encoding';
 import '@ethersproject/shims';
@@ -21,9 +17,5 @@ Sentry.init({
   environment: __DEV__ ? 'development' : 'production',
   enableNative: __DEV__ ? false : true,
 });
-
-if (__DEV__) {
-  require('./ReactotronConfig');
-}
 
 AppRegistry.registerComponent(appName, () => Sentry.wrap(App));
