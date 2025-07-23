@@ -1,11 +1,10 @@
-import React, { FC, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import LogoImage from 'assets/images/logo.svg';
 import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import styles from './Start.scss';
-import IStart from './types';
 
-const Start: FC<IStart> = ({ navigation, onImportClicked, onGetStartedClicked }) => {
+const Start = ({ navigation, onImportClicked, onGetStartedClicked }) => {
   useEffect(() => {
     // This is set only for the scenario where an user deletes the last wallet.
     // In that case we're navigating to this screen and we should disable the swipe back functionality.

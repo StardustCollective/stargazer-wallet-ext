@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
-import { View, TouchableOpacity, Modal, Platform } from 'react-native';
-import TextV3 from 'components/TextV3';
+// import { View, TouchableOpacity, Modal, Platform } from 'react-native';
+import { Modal, Platform } from 'react-native';
+// import TextV3 from 'components/TextV3';
 
-import { default as RNQRCodeScanner } from 'react-native-qrcode-scanner';
-import { RNCamera } from 'react-native-camera';
-import Icon from 'components/Icon';
-import EnableCamera from 'components/EnableCamera';
-import styles from './styles';
+// import Icon from 'components/Icon';
+// import EnableCamera from 'components/EnableCamera';
+// import styles from './styles';
 import IQRCodeScanner from './types';
 
+// TODO-migration: implement this component with react-native-vision-camera
 const QRCodeScanner: FC<IQRCodeScanner> = ({ visble, onRead, onClosePress }) => {
   const onGoToSettingsPressed = () => {
     // The modal needs to be refreshed for the camera permission changes
@@ -18,10 +18,11 @@ const QRCodeScanner: FC<IQRCodeScanner> = ({ visble, onRead, onClosePress }) => 
       onClosePress();
     }
   };
+  console.log('QRCodeScanner', { onRead, onClosePress, onGoToSettingsPressed});
 
   return (
     <Modal animationType="slide" transparent={false} visible={visble}>
-      <RNQRCodeScanner
+      {/* <RNQRCodeScanner
         onRead={onRead}
         flashMode={RNCamera.Constants.FlashMode.off}
         cameraProps={{
@@ -46,7 +47,7 @@ const QRCodeScanner: FC<IQRCodeScanner> = ({ visble, onRead, onClosePress }) => 
           </View>
         }
         bottomContent={<View style={styles.qrCameraBottomContent}></View>}
-      />
+      /> */}
     </Modal>
   );
 };

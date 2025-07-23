@@ -1,12 +1,8 @@
-/**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
- *
- * @format
- */
-const {getDefaultConfig} = require('metro-config');
+const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 const path = require('path');
-const nodeModules = require('node-libs-react-native');
+
+const defaultConfig = getDefaultConfig(__dirname);
+const {assetExts, sourceExts} = defaultConfig.resolver;
 
 const extraNodeModules = {
   source: path.resolve(__dirname + '/../'),
@@ -24,12 +20,13 @@ const extraNodeModules = {
   assets: path.resolve(__dirname + '/../assets'),
   scripts: path.resolve(__dirname + '/../scripts'),
   web: path.resolve(__dirname + '/../web'),
-  process: nodeModules.process,
-  crypto: nodeModules.crypto,
-  stream: nodeModules.stream,
-  http: nodeModules.http,
-  https: nodeModules.https,
-  os: nodeModules.os,
+  // TODO-migration: check if we need these
+  // process: nodeModules.process,
+  // crypto: nodeModules.crypto,
+  // stream: nodeModules.stream,
+  // http: nodeModules.http,
+  // https: nodeModules.https,
+  // os: nodeModules.os,
   fs: require.resolve('react-native-fs'),
   'react-native': require.resolve('react-native-web'),
 };
@@ -44,27 +41,27 @@ const watchFolders = [
   path.resolve(__dirname + '/../../node_modules'),
 ];
 
-module.exports = async () => {
-  const {
-    resolver: {sourceExts, assetExts},
-  } = await getDefaultConfig();
-
-  return {
-    transformer: {
-      babelTransformerPath: require.resolve('./transformerHandler.js'),
-      getTransformOptions: async () => ({
-        transform: {
-          experimentalImportSupport: false,
-          inlineRequires: false,
-        },
-      }),
-    },
-    resolver: {
-      extraNodeModules,
-      nodeModulesPaths,
-      assetExts: assetExts.filter(ext => ext !== 'svg'),
-      sourceExts: [...sourceExts, 'svg'],
-    },
-    watchFolders,
-  };
+/**
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
+ *
+ * @type {import('metro-config').MetroConfig}
+ */
+const config = {
+  transformer: {
+    babelTransformerPath: require.resolve(
+      'react-native-svg-transformer/react-native',
+    ),
+  },
+  resolver: {
+    extraNodeModules,
+    nodeModulesPaths,
+    assetExts: assetExts.filter(ext => ext !== 'svg'),
+    sourceExts: [...sourceExts, 'svg'],
+  },
+  // This is required for monorepo setup
+  // https://reactnative.dev/blog/2023/12/06/0.73-debugging-improvements-stable-symlinks#monorepo-workarounds
+  watchFolders,
 };
+
+module.exports = mergeConfig(defaultConfig, config);

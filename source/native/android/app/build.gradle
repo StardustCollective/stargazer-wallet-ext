@@ -85,7 +85,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 108
         versionName "3.3.5"
-        missingDimensionStrategy 'react-native-camera', 'general'
     }
     lintOptions {
         checkReleaseBuilds false

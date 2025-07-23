@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   AppState,
 } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
 import { useLinkTo } from '@react-navigation/native';
 import BackgroundTimer from 'react-native-background-timer';
 
@@ -60,7 +59,6 @@ const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
 const LOGOUT_TIMEOUT = 1000 * 60 * 5; // 5 minutes
 const ICON_SIZE = 14;
-let lastIsConnected = true;
 
 ///////////////////////////
 // Scene
@@ -113,21 +111,6 @@ const Home: FC<IHome> = ({
       headerTitle: renderHeaderTitle,
     });
   }, [activeWallet, isWalletSelectorOpen]);
-
-  // Subscribe to NetInfo
-  useEffect(() => {
-    const unsubscribeNetInfo = NetInfo.addEventListener(async (state) => {
-      if (state.isConnected && !lastIsConnected) {
-        lastIsConnected = true;
-      } else {
-        lastIsConnected = false;
-      }
-    });
-
-    return () => {
-      unsubscribeNetInfo();
-    };
-  }, []);
 
   useEffect(() => {
     // Start timer when app is in background (or inactive for iOS)

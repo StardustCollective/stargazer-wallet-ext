@@ -38,7 +38,6 @@ import styles from './styles';
 // Types
 ///////////////////////////
 
-import IStart from './types';
 
 ///////////////////////////
 // Constants
@@ -51,7 +50,7 @@ const LOGO_IMAGE_HEIGHT = 166;
 // Scene
 ///////////////////////////
 
-const Start: FC<IStart> = ({ navigation, onGetStartedClicked, onImportClicked }) => {
+const Start = ({ navigation, onGetStartedClicked, onImportClicked }) => {
   const { initialCheck } = useSelector((state: RootState) => state.biometrics);
 
   useEffect(() => {

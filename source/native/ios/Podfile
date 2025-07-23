@@ -12,8 +12,6 @@ pod 'RNVectorIcons', :path => '../../../node_modules/react-native-vector-icons'
 pod 'react-native-document-picker', :path => '../../../node_modules/react-native-document-picker'
 pod 'RNFS', :path => '../../../node_modules/react-native-fs'
 
-permissions_path = '../../../node_modules/react-native-permissions/ios'
-pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
 # because `react-native-flipper` depends on (FlipperKit,...) that will be excluded

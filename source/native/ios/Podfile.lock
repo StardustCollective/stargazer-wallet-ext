@@ -17,8 +17,6 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.9)
   - hermes-engine/Pre-built (0.73.9)
   - libevent (2.1.12)
-  - Permission-Camera (3.3.1):
-    - RNPermissions
   - RCT-Folly (2022.05.16.00):
     - boost
     - DoubleConversion
@@ -894,29 +892,21 @@ PODS:
     - React-Core
   - react-native-biometrics (3.0.1):
     - React-Core
-  - react-native-camera (4.2.1):
-    - React-Core
-    - react-native-camera/RCT (= 4.2.1)
-    - react-native-camera/RN (= 4.2.1)
-  - react-native-camera/RCT (4.2.1):
-    - React-Core
-  - react-native-camera/RN (4.2.1):
-    - React-Core
   - react-native-document-picker (7.1.3):
     - React-Core
-  - react-native-fast-crypto (2.2.0):
-    - React
-  - react-native-netinfo (8.3.1):
+  - react-native-fast-crypto (2.2.1):
     - React-Core
-  - react-native-pager-view (6.2.3):
+  - react-native-netinfo (11.4.1):
+    - React-Core
+  - react-native-pager-view (6.8.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-randombytes (3.6.1):
+  - react-native-randombytes (3.6.2):
     - React-Core
   - react-native-rsa-native (2.0.5):
     - React
-  - react-native-safe-area-context (3.4.1):
+  - react-native-safe-area-context (4.14.1):
     - React-Core
   - react-native-splash-screen (3.3.0):
     - React-Core
@@ -1087,52 +1077,27 @@ PODS:
     - React-jsi (= 0.73.9)
     - React-logger (= 0.73.9)
     - React-perflogger (= 0.73.9)
-  - RNCAsyncStorage (1.17.6):
+  - RNCAsyncStorage (2.2.0):
     - React-Core
-  - RNCClipboard (1.5.1):
+  - RNCClipboard (1.16.3):
     - React-Core
-  - RNCMaskedView (0.2.9):
-    - React-Core
-  - RNDeviceInfo (8.7.1):
+  - RNDeviceInfo (14.0.4):
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (1.10.3):
-    - React-Core
-  - RNInAppBrowser (3.6.3):
-    - React-Core
-  - RNKeychain (8.1.1):
-    - React-Core
-  - RNPermissions (3.3.1):
-    - React-Core
-  - RNReanimated (2.8.0):
-    - DoubleConversion
-    - FBLazyVector
-    - FBReactNativeSpec
+  - RNGestureHandler (2.18.1):
     - glog
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
-    - React-callinvoker
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
-    - React-Core/DevSupport
-    - React-Core/RCTWebSocket
-    - React-CoreModules
-    - React-cxxreact
-    - React-jsi
-    - React-jsiexecutor
-    - React-jsinspector
-    - React-RCTActionSheet
-    - React-RCTAnimation
-    - React-RCTBlob
-    - React-RCTImage
-    - React-RCTLinking
-    - React-RCTNetwork
-    - React-RCTSettings
-    - React-RCTText
-    - ReactCommon/turbomodule/core
-    - Yoga
-  - RNScreens (3.22.0):
+  - RNInAppBrowser (3.7.0):
+    - React-Core
+  - RNKeychain (9.2.3):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
+  - RNScreens (4.4.0):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
     - React-RCTImage
   - RNSentry (5.31.0):
@@ -1144,7 +1109,7 @@ PODS:
     - Sentry/HybridSDK (= 8.36.0)
   - RNSVG (15.12.0):
     - React-Core
-  - RNVectorIcons (9.1.0):
+  - RNVectorIcons (9.2.0):
     - React-Core
   - Sentry/HybridSDK (8.36.0)
   - SocketRocket (0.6.1)
@@ -1159,7 +1124,6 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
-  - Permission-Camera (from `../../../node_modules/react-native-permissions/ios/Camera`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -1185,7 +1149,6 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-background-timer (from `../../../node_modules/react-native-background-timer`)
   - react-native-biometrics (from `../../../node_modules/react-native-biometrics`)
-  - react-native-camera (from `../../../node_modules/react-native-camera`)
   - react-native-document-picker (from `../../../node_modules/react-native-document-picker`)
   - react-native-fast-crypto (from `../../../node_modules/react-native-fast-crypto`)
   - "react-native-netinfo (from `../../../node_modules/@react-native-community/netinfo`)"
@@ -1215,15 +1178,12 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../../../node_modules/@react-native-async-storage/async-storage`)"
-  - "RNCClipboard (from `../../../node_modules/@react-native-community/clipboard`)"
-  - "RNCMaskedView (from `../../../node_modules/@react-native-masked-view/masked-view`)"
+  - "RNCClipboard (from `../../../node_modules/@react-native-clipboard/clipboard`)"
   - RNDeviceInfo (from `../../../node_modules/react-native-device-info`)
   - RNFS (from `../../../node_modules/react-native-fs`)
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
   - RNInAppBrowser (from `../../../node_modules/react-native-inappbrowser-reborn`)
   - RNKeychain (from `../../../node_modules/react-native-keychain`)
-  - RNPermissions (from `../../../node_modules/react-native-permissions`)
-  - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
   - "RNSentry (from `../../../node_modules/@sentry/react-native`)"
   - RNSVG (from `../../../node_modules/react-native-svg`)
@@ -1253,8 +1213,6 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-04-29-RNv0.73.8-644c8be78af1eae7c138fa4093fb87f0f4f8db85
-  Permission-Camera:
-    :path: "../../../node_modules/react-native-permissions/ios/Camera"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -1301,8 +1259,6 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-background-timer"
   react-native-biometrics:
     :path: "../../../node_modules/react-native-biometrics"
-  react-native-camera:
-    :path: "../../../node_modules/react-native-camera"
   react-native-document-picker:
     :path: "../../../node_modules/react-native-document-picker"
   react-native-fast-crypto:
@@ -1362,9 +1318,7 @@ EXTERNAL SOURCES:
   RNCAsyncStorage:
     :path: "../../../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
-    :path: "../../../node_modules/@react-native-community/clipboard"
-  RNCMaskedView:
-    :path: "../../../node_modules/@react-native-masked-view/masked-view"
+    :path: "../../../node_modules/@react-native-clipboard/clipboard"
   RNDeviceInfo:
     :path: "../../../node_modules/react-native-device-info"
   RNFS:
@@ -1375,10 +1329,6 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-inappbrowser-reborn"
   RNKeychain:
     :path: "../../../node_modules/react-native-keychain"
-  RNPermissions:
-    :path: "../../../node_modules/react-native-permissions"
-  RNReanimated:
-    :path: "../../../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../../../node_modules/react-native-screens"
   RNSentry:
@@ -1400,7 +1350,6 @@ SPEC CHECKSUMS:
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   hermes-engine: ed62e0dcd013bf4a3b487f164feec1c4e705b5b5
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  Permission-Camera: bae27a8503530770c35aadfecbb97ec71823382a
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
   RCTRequired: d362a61864a64315aee00faea8dee6cf5b3f4aad
   RCTTypeSafety: 09baf60faeab02492dc8bf04ce5af1dda645b86d
@@ -1424,14 +1373,13 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 6c229dc8f1640457d1f665f0b7d79ab8f604dc8b
   react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
   react-native-biometrics: 352e5a794bfffc46a0c86725ea7dc62deb085bdc
-  react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-document-picker: ec07866a30707f23660c0f3ae591d669d3e89096
-  react-native-fast-crypto: 5943c42466b86ad70be60d3a5f64bd22251e5d9e
-  react-native-netinfo: 1a6035d3b9780221d407c277ebfb5722ace00658
-  react-native-pager-view: d5f3adb58a4e6e0d200055e9a4afdcda9b9022ce
-  react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
+  react-native-fast-crypto: 8973e5c7d029b7362afb86b25485f3bd4a6aade9
+  react-native-netinfo: f0a9899081c185db1de5bb2fdc1c88c202a059ac
+  react-native-pager-view: ea7002461ffc87d4bbe572a442a6f9893ab9bbe4
+  react-native-randombytes: ddf6edfd3fb9091af8c6ed1b35e57c308b5f5f2c
   react-native-rsa-native: 12132eb627797529fdb1f0d22fd0f8f9678df64a
-  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
+  react-native-safe-area-context: 141eca0fd4e4191288dfc8b96a7c7e1c2983447a
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   React-nativeconfig: c1729ab95240ec80d47a2bb8354d8f31138e35a7
   React-NativeModulesApple: 115c934a87f3b45fecb0fada08fa70bab3dff65c
@@ -1453,24 +1401,21 @@ SPEC CHECKSUMS:
   React-runtimescheduler: efb26ad81d94a9b047504bd716b48869bd311649
   React-utils: dab84549e65d6d711937b9c34d9f6d8fb8bd711c
   ReactCommon: 3dc453f427d2f3d7f2c71499d191b456f83c59bd
-  RNCAsyncStorage: 466b9df1a14bccda91da86e0b7d9a345d78e1673
-  RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
-  RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
-  RNDeviceInfo: aad3c663b25752a52bf8fce93f2354001dd185aa
+  RNCAsyncStorage: 23e56519cc41d3bade3c8d4479f7760cb1c11996
+  RNCClipboard: dfeb43751adff21e588657b5b6c888c72f3aa68e
+  RNDeviceInfo: feea80a690d2bde1fe51461cf548039258bd03f2
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNInAppBrowser: 3ff3a3b8f458aaf25aaee879d057352862edf357
-  RNKeychain: ff836453cba46938e0e9e4c22e43d43fa2c90333
-  RNPermissions: 34d678157c800b25b22a488e4d8babb57456e796
-  RNReanimated: 3306a39fb772a6c1b071f2f39845e526b8b88f02
-  RNScreens: 68fd1060f57dd1023880bf4c05d74784b5392789
+  RNGestureHandler: 1155b1898ceddefeebf77792927360d44fe11e77
+  RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
+  RNKeychain: e6d6acd5ed6ac202d8b8c53e3787f6898be62346
+  RNScreens: dc2e2add1c0ae719fd469cf106a0aa16c02ec9b5
   RNSentry: 5874c18298af223e010c19fc53a5126eb942e67e
   RNSVG: 9325fbf920447630ab816ace9a4dfd9e4fe8c1b9
-  RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
+  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 57d2ffe418d024d56f8b0047f335c677e4c4d9ac
 
-PODFILE CHECKSUM: c231089a1d93c9929ca65f2dd144cf7b3fa67aa3
+PODFILE CHECKSUM: f05afca17424f1354fe6a739071b87962738e6c9
 
 COCOAPODS: 1.14.3

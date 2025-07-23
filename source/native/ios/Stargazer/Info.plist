@@ -55,9 +55,9 @@
 			<dict/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>QR Code Scanner</string>
+	<string>$(PRODUCT_NAME) needs access to your camera to scan QR codes.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>This will let you unlock the app using Face ID / Touch ID.</string>
+	<string>$(PRODUCT_NAME) needs access to Face ID to unlock the app.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
