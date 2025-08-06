@@ -18,11 +18,8 @@ const TxsPanel: FC<ITxPanelSettings> = ({
   const showEmptyList = !showLoadingList && !transactions?.length;
 
   return (
-    <ScrollView
-      style={styles.activity}
-      contentContainerStyle={styles.scrollContentContainer}
-    >
-      <View style={styles.activityScrollView}>
+    <View style={styles.activity}>
+      <ScrollView style={styles.activityScrollView} showsVerticalScrollIndicator={false}>
         {showTransactions &&
           transactions.map((tx: Transaction, idx: number) => {
             return renderTxItem(tx, idx);
@@ -42,8 +39,8 @@ const TxsPanel: FC<ITxPanelSettings> = ({
             <LoadingTxItem />
           </>
         )}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 

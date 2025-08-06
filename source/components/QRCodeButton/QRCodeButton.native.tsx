@@ -13,7 +13,7 @@ const QRCodeButton: FC<IQRCodeButton> = ({
 }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
-      <QRCodeIcon height={size} width={size} fill={color} />
+      <QRCodeIcon height={size} width={size} color={color} />
     </TouchableOpacity>
   );
 };

@@ -3,7 +3,7 @@ import TextV3 from 'components/TextV3';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import IconDropdown from 'components/IconDropdown';
 import DotsIcon from 'assets/images/svg/dots-horizontal.svg';
-import DiamondIcon from 'assets/images/svg/diamond.svg';
+import { ReactComponent as DiamondIcon } from 'assets/images/svg/diamond.svg';
 import ViewOffIcon from 'assets/images/svg/view-off.svg';
 import { ELPACA_LARGE_LOGO } from 'constants/index';
 import { COLORS_ENUMS } from 'assets/styles/colors';
@@ -79,7 +79,7 @@ const CardClaim: FC<ICardClaim> = ({ totalEarned, handleWhatsNext, handleHideCar
                 <TextV3.CaptionStrong extraStyles={styles.cardTitle}>
                   {CLAIM_NOT_AVAILABLE}
                 </TextV3.CaptionStrong>
-                <img src={`/${DiamondIcon}`} height={16} width={16} />
+                <DiamondIcon width={16} height={16} color="#331B5F" />
               </div>
               <div className={styles.cardTextContainer}>
                 <TextV3.CaptionRegular extraStyles={styles.cardText}>

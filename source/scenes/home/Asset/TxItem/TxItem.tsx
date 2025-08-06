@@ -1,21 +1,46 @@
 import React, { FC } from 'react';
 import Spinner from '@material-ui/core/CircularProgress';
 import TextV3 from 'components/TextV3';
-import TxReceivedIcon from 'assets/images/svg/tx-received.svg';
-import TxSentIcon from 'assets/images/svg/tx-sent.svg';
+import { ReactComponent as TxReceivedIcon } from 'assets/images/svg/tx-received.svg';
+import { ReactComponent as TxSentIcon } from 'assets/images/svg/tx-sent.svg';
+import { ReactComponent as TokenLockIcon } from 'assets/images/svg/token-lock.svg';
+import { ReactComponent as TokenUnlockIcon } from 'assets/images/svg/token-unlock.svg';
+import { ReactComponent as AllowSpendIcon } from 'assets/images/svg/allow-spend.svg';
+import { ReactComponent as ExpiredTransactionIcon } from 'assets/images/svg/expired-transaction.svg';
+import { ReactComponent as DelegateStakeWithdrawIcon } from 'assets/images/svg/delegated-stake-withdraw.svg';
+import { ReactComponent as DelegateStakeIcon } from 'assets/images/svg/delegated-stake.svg';
+import { ReactComponent as SpendTransactionIcon } from 'assets/images/svg/spend-transaction.svg';
+import { ReactComponent as FeeTransactionIcon } from 'assets/images/svg/fee-transaction.svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { ellipsis } from 'scenes/home/helpers';
 import styles from './TxItem.scss';
 import ITxItemSettings, { RenderIconProps } from './types';
 import { DAILY_TX } from './constants';
+import { ActionType, Actions } from '@stardust-collective/dag4-network';
 
-const RenderIcon: FC<RenderIconProps> = ({ isETH, tx, isReceived, isRewardsTab }) => {
+const StakingIconMap: Record<ActionType, React.ReactElement> = {
+  TokenLock: <TokenLockIcon />,
+  TokenUnlock: <TokenUnlockIcon />,
+  AllowSpend: <AllowSpendIcon />,
+  ExpiredAllowSpend: <ExpiredTransactionIcon />,
+  DelegateStakeCreate: <DelegateStakeIcon />,
+  DelegateStakeWithdraw: <DelegateStakeWithdrawIcon />,
+  SpendTransaction: <SpendTransactionIcon />,
+  ExpiredSpendTransaction: <ExpiredTransactionIcon />,
+  FeeTransaction: <FeeTransactionIcon />,
+}
+
+const RenderIcon: FC<RenderIconProps> = ({ isETH, tx, isReceived, isRewardsTab, isStakingTransaction }) => {
   if (!isETH) {
+    if (isStakingTransaction) {
+      return StakingIconMap[tx.type as ActionType];
+    }
+
     return tx.checkpointBlock || tx.blockHash || isRewardsTab ? (
       isReceived ? (
-        <img src={`/${TxReceivedIcon}`} alt="Received icon" />
+        <TxReceivedIcon />
       ) : (
-        <img src={`/${TxSentIcon}`} alt="Sent icon" />
+        <TxSentIcon />
       )
     ) : (
       <Spinner size={20} />
@@ -24,9 +49,9 @@ const RenderIcon: FC<RenderIconProps> = ({ isETH, tx, isReceived, isRewardsTab }
 
   return !tx.assetId ? (
     isReceived ? (
-      <img src={`/${TxReceivedIcon}`} alt="Received icon" />
+      <TxReceivedIcon />
     ) : (
-      <img src={`/${TxSentIcon}`} alt="Sent icon" />
+      <TxSentIcon />
     )
   ) : (
     <Spinner size={20} />
@@ -46,13 +71,14 @@ const TxItem: FC<ITxItemSettings> = ({
   fiatAmount,
   rewardsCount,
   getLinkUrl,
-  receivedOrSentText,
+  title,
   formattedDistanceDate,
   renderGasSettings,
 }) => {
-  const sign = isReceived ? '+' : '-';
+  const isStakingTransaction = Actions.includes(tx.type);
+  const sign = isReceived || ['TokenUnlock', 'ExpiredAllowSpend', "DelegateStakeWithdraw", "ExpiredSpendTransaction"].includes(tx.type) ? '+' : '-';
   const showSmallLogo = !isETH
-    ? !!tx?.checkpointBlock || !!tx?.blockHash || isRewardsTab
+    ? !!tx?.checkpointBlock || !!tx?.blockHash || isRewardsTab || isStakingTransaction
     : !tx?.assetId;
 
   const handleOnClick = () => {
@@ -107,6 +133,7 @@ const TxItem: FC<ITxItemSettings> = ({
               isETH={isETH}
               isReceived={isReceived}
               isRewardsTab={isRewardsTab}
+              isStakingTransaction={isStakingTransaction}
               tx={tx}
             />
             {showSmallLogo && <img src={logo} alt="asset logo" className={styles.logo} />}
@@ -114,7 +141,7 @@ const TxItem: FC<ITxItemSettings> = ({
         </div>
         <div className={styles.txInfo}>
           <TextV3.CaptionStrong color={COLORS_ENUMS.BLACK}>
-            {receivedOrSentText}
+            {title}
           </TextV3.CaptionStrong>
           {renderSubtitleContent()}
         </div>

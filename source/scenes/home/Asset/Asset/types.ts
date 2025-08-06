@@ -10,11 +10,17 @@ export default interface IAssetSettings {
   activeAsset: IActiveAssetState;
   balanceText: string;
   fiatAmount: string;
+  lockedBalanceText: string;
+  fiatLocked: string;
   assets: IAssetListState;
   showQrCode?: boolean;
   isAddressCopied: boolean;
   showFiatAmount: boolean;
-  onSendClick: () => void;
+  showLocked: boolean;
+  showBuy: boolean;
+  onBuy: () => void;
+  onSend: () => void;
+  onReceive: () => void;
   setShowQrCode?: (isVisible: boolean) => void;
   copyAddress: (address: string) => void;
 }

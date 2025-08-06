@@ -5,13 +5,12 @@ const styles = StyleSheet.create({
   activity: {
     flex: 1,
     width: '100%',
-    backgroundColor: COLORS.white,
   },
   scrollContentContainer: {
     flexGrow: 1,
   },
   activityScrollView: {
-    flexGrow: 1,
+    flex: 1,
   },
   spinner: {
     color: COLORS.primary,

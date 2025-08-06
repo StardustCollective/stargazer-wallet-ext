@@ -1,6 +1,6 @@
 import type { KeyringAssetType, KeyringNetwork, KeyringWalletAccountState, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import { KDFParamsPhrase, KDFParamsPrivateKey, V3Keystore } from '@stardust-collective/dag4-keystore';
-import type { Transaction as DAGTransaction, TransactionV2 as DAGTransactionV2 } from '@stardust-collective/dag4-network';
+import type { ActionV2, Transaction as DAGTransaction, TransactionV2 as DAGTransactionV2 } from '@stardust-collective/dag4-network';
 
 import type { AvalancheChainId, BaseChainId, BSCChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
 
@@ -73,6 +73,7 @@ export interface IAssetState {
 export interface IActiveAssetState extends IAssetState {
   transactions: Transaction[];
   rewards: Reward[];
+  actions: ActionV2[];
   loading?: boolean;
 }
 

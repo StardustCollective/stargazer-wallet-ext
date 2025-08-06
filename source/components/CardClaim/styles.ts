@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   },
   diamondIcon: {
     marginLeft: 6,
+    color: '#331B5F',
   },
   cardTitleContainer: {
     display: 'flex',

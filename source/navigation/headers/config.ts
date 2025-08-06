@@ -4,7 +4,7 @@ import { scale } from 'react-native-size-matters';
 
 const config: StackNavigationOptions = {
   headerStyle: {
-    height: Platform.OS === 'web' ? '80px' : scale(90),
+    height: Platform.OS === 'web' ? '64px' : scale(90),
     backgroundColor: '#2B1D52',
     borderBottomColor: 'transparent',
     elevation: 0,

@@ -15,6 +15,9 @@ import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainCo
 import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers';
 import AssetDetail from './Asset';
 import { IAssetDetail } from './types';
+import IProvidersState, { MapProviderNetwork } from 'state/providers/types';
+import { dag4 } from '@stardust-collective/dag4';
+import { toDag } from 'utils/number';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const accountController = getAccountController();
@@ -25,13 +28,39 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const { activeWallet, activeAsset, activeNetwork, balances }: IVaultState = useSelector(
     (state: RootState) => state.vault
   );
+  const { supportedAssets }: IProvidersState = useSelector(
+    (state: RootState) => state.providers
+  );
   const assets: IAssetListState = useSelector((state: RootState) => state.assets);
 
   const balance = useMemo(() => {
     return Number((activeAsset && balances[activeAsset?.id]) || 0);
   }, [activeAsset, balances]);
 
+  const [lockedBalance, setLockedBalance] = useState(0);
   const [showQrCode, setShowQrCode] = useState(false);
+
+  const supportedAssetsArray = supportedAssets?.data ?? [];
+  const assetInfo = assets[activeAsset?.id];
+  const showBuy = useMemo(() => !!supportedAssetsArray.find(
+    (asset) =>
+      asset?.symbol === assetInfo?.symbol &&
+    (assetInfo?.network === 'both' ||
+      MapProviderNetwork[asset?.network] === assetInfo?.network)
+    ), [supportedAssetsArray, assetInfo]);
+
+  const showLocked = assetInfo?.id === AssetType.Constellation;
+
+  useEffect(() => {
+    const fetchLockedBalance = async () => {
+      const lockedInDatum = await dag4.account.getLockedBalance();
+      setLockedBalance(toDag(lockedInDatum));
+    }
+
+    if (showLocked) {
+      fetchLockedBalance();
+    }
+  }, [showLocked]);
 
   // Sets the header for the asset screen.
   useLayoutEffect(() => {
@@ -77,12 +106,24 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     });
   }, []);
 
-  const onSendClick = () => {
+  const onBuy = () => {
+    if (!showBuy) return;
+    linkTo(`/buyAsset?selected=${activeAsset?.id}`);
+  };
+
+  const onSend = () => {
     linkTo('/send');
   };
 
-  const BALANCE_TEXT = formatStringDecimal(formatNumber(balance, 16, 20), 4);
-  const FIAT_AMOUNT = !isNaN(balance) && getFiatAmount(balance, balance >= 0.01 ? 2 : 4);
+  const onReceive = () => {
+    setShowQrCode(true);
+  };
+
+  const balanceText = formatStringDecimal(formatNumber(balance, 16, 20), 4);
+  const fiatAmount = !isNaN(balance) && getFiatAmount(balance, balance >= 0.01 ? 2 : 4);
+  const lockedBalanceText = formatStringDecimal(formatNumber(lockedBalance, 16, 20), 4);
+  const fiatLocked = !isNaN(lockedBalance) && getFiatAmount(lockedBalance, 2);
+
   const showFiatAmount = !!assets[activeAsset?.id]?.priceId && !isNaN(balance);
 
   return (
@@ -90,9 +131,15 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
       <AssetDetail
         activeWallet={activeWallet}
         activeAsset={activeAsset}
-        balanceText={BALANCE_TEXT}
-        fiatAmount={FIAT_AMOUNT}
-        onSendClick={onSendClick}
+        balanceText={`${balanceText} ${assetInfo?.symbol}`}
+        fiatAmount={fiatAmount}
+        lockedBalanceText={`${lockedBalanceText} ${assetInfo?.symbol}`}
+        fiatLocked={fiatLocked}
+        showBuy={showBuy}
+        showLocked={showLocked}
+        onBuy={onBuy}
+        onSend={onSend}
+        onReceive={onReceive}
         assets={assets}
         showQrCode={showQrCode}
         setShowQrCode={setShowQrCode}

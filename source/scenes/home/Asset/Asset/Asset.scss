@@ -5,7 +5,6 @@
   flex-direction: column;
   width: 100%;
   overflow: auto;
-  max-height: 460px;
   background-color: $primary;
 
   .maskQrCode {
@@ -79,6 +78,12 @@
     }
   }
 
+  .diamondIcon {
+    margin: 6px 8px 6px 0;
+    height: 16px;
+    width: 16px;
+  }
+
   section.account {
     height: 60px;
     width: 100%;
@@ -123,46 +128,10 @@
   }
 
   section.center {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    position: relative;
-    padding-top: 16px;
+    margin: 12px 16px 24px 16px;
 
-    .balance {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-
-      .balanceText {
-        max-width: 280px;
-        overflow: hidden;
-        margin-right: 8px;
-      }
-
-      .symbolText {
-        font-size: 20px;
-        line-height: 28px;
-      }
-    }
-
-    .fiatBalance {
-      opacity: 0.66;
-      margin-top: 8px;
-
-      .fiatText {
-        opacity: 0.66;
-        font-size: 16px;
-      }
-    }
-
-    .actions {
-      display: flex;
-      width: 100%;
-      margin-top: 32px;
-      margin-bottom: 24px;
+    .lockedBalance {
+      margin-top: 12px;
     }
   }
 
@@ -372,6 +341,11 @@
       }
     }
   }
+}
+
+.lockedInfoText {
+  font-size: 16px;
+  color: #000000A8,
 }
 
 .addAsset {

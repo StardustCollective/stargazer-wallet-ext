@@ -40,12 +40,37 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 32,
+    marginTop: 40,
+    marginBottom: 24,
+    marginHorizontal: 32,
   },
-  buttonNormal: {
-    marginBottom: 32,
+  buttonContainer: {
+    justifyContent: 'center', 
+    alignItems: 'center',
+    marginHorizontal: 12,
+  },
+  button: {
+    justifyContent: 'center', 
+    alignItems: 'center',
+    paddingHorizontal: 32,
+    paddingVertical: 10,
+    borderRadius: 48,
+    minWidth: 150,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+
+    shadowColor: 'rgba(16, 24, 40, 0.12)',
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  buttonLabel: {
+    lineHeight: 24,
   },
   headerTitleContainer: {
     flexDirection: 'row',

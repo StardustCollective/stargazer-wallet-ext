@@ -331,7 +331,7 @@ const Tabs = () => {
     <Tab.Navigator
       tabBarOptions={{
         showLabel: false,
-        style: { height: 60, position: 'absolute', bottom: 0 },
+        style: { height: 64, position: 'absolute', bottom: 0, borderTopWidth: 1, borderTopColor: '#B5B4E4', paddingHorizontal: 16 },
       }}
     >
       <Tab.Screen

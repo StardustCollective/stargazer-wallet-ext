@@ -1,7 +1,7 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringManager, KeyringNetwork, KeyringWalletAccountState, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
+import { ActionV2, GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
 import { BigNumber, ethers } from 'ethers';
 
 import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
@@ -13,7 +13,7 @@ import { ProtocolProvider, StargazerChain } from 'scripts/common';
 import IAssetListState, { IAssetInfoState } from 'state/assets/types';
 import { setCustomAsset } from 'state/erc20assets';
 import store from 'state/store';
-import { changeActiveAsset, changeActiveWallet, setLoadingTransactions, setPublicKey, updateActiveWalletLabel, updateRewards, updateStatus, updateTransactions, updateWalletLabel } from 'state/vault';
+import { changeActiveAsset, changeActiveWallet, setLoadingTransactions, setPublicKey, updateActions, updateActiveWalletLabel, updateRewards, updateStatus, updateTransactions, updateWalletLabel } from 'state/vault';
 import IVaultState, { ActiveNetwork, AssetType, IActiveAssetState, IAssetState, IWalletState, Reward } from 'state/vault/types';
 
 import { isNative } from 'utils/envUtil';
@@ -349,6 +349,7 @@ export class AccountController {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
       let rewards: Reward[] = [];
+      let actions: ActionV2[] = [];
       const assetInfo = assets[activeAsset?.id];
       const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
 
@@ -364,28 +365,40 @@ export class AccountController {
         });
 
         try {
-          [txsV2, rewards] = await Promise.all([metagraphClient.getTransactions(TXS_LIMIT), this.getMetagraphRewards(assetInfo.network, activeAsset.address, assetInfo.address)]);
+          [txsV2, actions, rewards] = await Promise.all([
+            metagraphClient.getTransactions(TXS_LIMIT), 
+            metagraphClient.getActions(null, TXS_LIMIT), 
+            this.getMetagraphRewards(assetInfo.network, activeAsset.address, assetInfo.address)
+          ]);
         } catch (err) {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
           rewards = [];
+          actions = [];
         }
       } else {
         const { id } = dag4.network.getNetwork();
 
         try {
-          [txsV2, rewards] = await Promise.all([dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT), this.getDagRewards(id, activeAsset.address)]);
+          [txsV2, actions, rewards] = await Promise.all([
+            dag4.monitor.getLatestTransactions(activeAsset.address, TXS_LIMIT), 
+            dag4.account.getActions(null, TXS_LIMIT), 
+            this.getDagRewards(id, activeAsset.address)
+          ]);
         } catch (err) {
           console.log('Error: getLatestTransactions', err);
           txsV2 = [];
           rewards = [];
+          actions = [];
         }
       }
 
       rewards = rewards ?? [];
       txsV2 = txsV2 ?? [];
+      actions = actions ?? [];
 
       store.dispatch(updateRewards({ txs: rewards }));
+      store.dispatch(updateActions({ txs: actions }));
       store.dispatch(updateTransactions({ txs: [...txsV2] }));
     } else if (activeAsset.type === AssetType.Ethereum) {
       const txs: any = await this.txController.getTransactionHistory(activeAsset.address, TXS_LIMIT);

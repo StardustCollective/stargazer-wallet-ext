@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 import Contacts from './Contacts';
 import { useSelector } from 'react-redux';
 import { RootState } from 'state/store';
@@ -28,7 +28,7 @@ const ContactContainer: FC<IWalletContacts> = ({ open, onClose, onChange }) => {
   };
 
   return (
-    <Container>
+    <Container color={CONTAINER_COLOR.DARK}>
       <Contacts
         open={open}
         onClose={onClose}
