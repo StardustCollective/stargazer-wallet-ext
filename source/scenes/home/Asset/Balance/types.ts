@@ -37,6 +37,9 @@ export interface IBalanceButtonBase {
 }
 
 export interface IBalanceBuy extends IBalanceButtonBase {}
+export interface IBalanceGetAsset extends IBalanceButtonBase {
+  symbol: string;
+}
 export interface IBalanceSend extends IBalanceButtonBase {}
 export interface IBalanceReceive extends IBalanceButtonBase {}
 export interface IBalanceSwap extends IBalanceButtonBase {}
@@ -51,6 +54,7 @@ export interface IBalance {
   FiatAmount: React.FC<IBalanceFiatAmount>;
   Footer: React.FC<IBalanceFooter>;
   Buy: React.FC<IBalanceBuy>;
+  GetAsset?: React.FC<IBalanceGetAsset>;
   Send: React.FC<IBalanceSend>;
   Receive: React.FC<IBalanceReceive>;
   Swap: React.FC<IBalanceSwap>;

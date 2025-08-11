@@ -13,13 +13,13 @@ import {
 import NetInfo from '@react-native-community/netinfo';
 import { useLinkTo } from '@react-navigation/native';
 import BackgroundTimer from 'react-native-background-timer';
+import { iosPlatform } from 'utils/platform';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
 import Sheet from 'components/Sheet';
-import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import LoadingDots from 'components/LoadingDots';
 import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up-white.svg';
@@ -181,20 +181,22 @@ const Home: FC<IHome> = ({
                 )}
               </View>
               <View style={styles.buttons}>
-                <TouchableOpacity style={styles.buttonContainer} onPress={onBuyPressed} activeOpacity={0.7}>
-                  <LinearGradient
-                    useAngle
-                    angle={180}
-                    style={styles.button}
-                    locations={[0, 1]}
-                    colors={['#7150E2', '#4B22D3']}
-                  >
-                    <TextV3.LabelSemiStrong extraStyles={styles.buttonLabel}>
-                      {BUY_STRING}
-                    </TextV3.LabelSemiStrong>
-                  </LinearGradient>
-                </TouchableOpacity>
-                {!isDagOnlyWallet && (
+                {!iosPlatform() && 
+                  <TouchableOpacity style={styles.buttonContainer} onPress={onBuyPressed} activeOpacity={0.7}>
+                    <LinearGradient
+                      useAngle
+                      angle={180}
+                      style={styles.button}
+                      locations={[0, 1]}
+                      colors={['#7150E2', '#4B22D3']}
+                    >
+                      <TextV3.LabelSemiStrong extraStyles={styles.buttonLabel}>
+                        {BUY_STRING}
+                      </TextV3.LabelSemiStrong>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                }
+                {!isDagOnlyWallet || !iosPlatform() &&  (
                   <TouchableOpacity style={styles.buttonContainer} onPress={onSwapPressed} activeOpacity={0.7}>
                     <LinearGradient
                       useAngle

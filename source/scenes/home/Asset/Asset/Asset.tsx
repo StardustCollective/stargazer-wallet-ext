@@ -160,7 +160,7 @@ const AssetDetail: FC<IAssetSettings> = ({
           <Sheet
             isVisible={isLockedInfoOpen}
             onClosePress={() => setIsLockedInfoOpen(false)}
-            height={300}
+            snaps={[280]}
             title={{
               label: 'Locked Balance',
               align: 'left',

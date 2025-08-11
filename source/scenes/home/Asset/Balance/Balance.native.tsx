@@ -11,6 +11,7 @@ import SendIcon from 'assets/images/svg/arrow-up-right.svg';
 import ReceiveIcon from 'assets/images/svg/qr-code.svg';
 import SwapIcon from 'assets/images/svg/arrow-top-bottom.svg';
 import InfoIcon from 'assets/images/svg/info-outlined.svg';
+import PlusIcon from 'assets/images/svg/plus.svg';
 
 import {
   IBalance,
@@ -25,7 +26,8 @@ import {
   IBalanceBuy,
   IBalanceSend,
   IBalanceReceive,
-  IBalanceSwap
+  IBalanceSwap,
+  IBalanceGetAsset
 } from './types';
 
 import styles from './styles';
@@ -148,6 +150,16 @@ const Buy: FC<IBalanceBuy> = ({ show = true, onPress, disabled = false }) => (
   />
 );
 
+const GetAsset: FC<IBalanceGetAsset> = ({ show = true, onPress, disabled = false, symbol }) => (
+  <BalanceButton
+    onPress={onPress}
+    IconComponent={PlusIcon}
+    label={`Get ${symbol}`}
+    show={show}
+    disabled={disabled}
+  />
+);
+
 const Send: FC<IBalanceSend> = ({ show = true, onPress, disabled = false }) => (
   <BalanceButton
     onPress={onPress}
@@ -188,6 +200,7 @@ const Balance: IBalance = {
   FiatAmount,
   Footer,
   Buy,
+  GetAsset,
   Send,
   Receive,
   Swap,

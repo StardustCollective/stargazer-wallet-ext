@@ -28,7 +28,7 @@ import IVaultState, {
   Reward,
 } from './types';
 import { upsertById } from 'utils/objects';
-import type { ActionV2 } from '@stardust-collective/dag4-network';
+import type { ActionResponse } from '@stardust-collective/dag4-network';
 
 const initialState: IVaultState = {
   status: 0,
@@ -193,7 +193,7 @@ const VaultState = createSlice({
     updateRewards(state: IVaultState, action: PayloadAction<{ txs: Reward[] }>) {
       state.activeAsset.rewards = action.payload.txs;
     },
-    updateActions(state: IVaultState, action: PayloadAction<{ txs: ActionV2[] }>) {
+    updateActions(state: IVaultState, action: PayloadAction<{ txs: ActionResponse[] }>) {
       state.activeAsset.actions = action.payload.txs;
     },
     resetBalances(state: IVaultState) {

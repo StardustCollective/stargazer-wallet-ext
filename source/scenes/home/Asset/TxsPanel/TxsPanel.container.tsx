@@ -13,7 +13,7 @@ import TxItem from '../TxItem';
 import { ITxsPanel } from './types';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { toDag } from 'utils/number';
-import { ActionV2 } from '@stardust-collective/dag4-network';
+import type { ActionResponse } from '@stardust-collective/dag4-network';
 
 
 const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
@@ -200,7 +200,7 @@ const TxsPanelContainer: FC<ITxsPanel> = ({ route }) => {
     );
   };
 
-  const renderActionItem = (tx: ActionV2, idx: number) => {
+  const renderActionItem = (tx: ActionResponse, idx: number) => {
     const amount = toDag(tx.amount);
     const amountString = formatStringDecimal(formatNumber(amount, 16, 20), 4);
     const fiatAmount = getFiatAmount(toDag(tx.amount), 2);

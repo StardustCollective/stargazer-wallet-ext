@@ -28,6 +28,7 @@ import IAssetSettings from './types';
 import styles from './styles';
 import Balance from '../Balance';
 import { CONTAINER_COLOR } from 'components/Container';
+import { iosPlatform } from 'utils/platform';
 
 const QR_CODE_SIZE = 240;
 
@@ -99,6 +100,8 @@ const AssetDetail: FC<IAssetSettings> = ({
       ? CONSTELLATION_LOGO
       : getNetworkLogo(asset?.network);
 
+  const BalanceBuy = iosPlatform() ? <Balance.GetAsset onPress={onBuy} symbol={asset?.symbol} /> : <Balance.Buy onPress={onBuy} />;
+
   if (!!activeWallet && !!activeAsset) {
     return (
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -113,7 +116,7 @@ const AssetDetail: FC<IAssetSettings> = ({
                 {showFiatAmount && <Balance.FiatAmount amount={fiatAmount} />}
               </Balance.Content>
               <Balance.Footer>
-                {showBuy && <Balance.Buy  onPress={onBuy} />}
+                {showBuy && BalanceBuy}
                 <Balance.Send  onPress={onSend} />
                 <Balance.Receive  onPress={onReceive} />
               </Balance.Footer>

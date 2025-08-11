@@ -28,18 +28,6 @@ const extensionReloaderPlugin = () => {
   this.apply = () => {};
 };
 
-const getExtensionFileType = (browser) => {
-  if (browser === 'opera') {
-    return 'crx';
-  }
-
-  if (browser === 'firefox') {
-    return 'xpi';
-  }
-
-  return 'zip';
-};
-
 // Common configuration for all entry points
 const commonConfig = {
   devtool: 'source-map',
@@ -188,7 +176,6 @@ const uiConfig = {
     injectedScript: path.join(sharedPath, 'scripts/InjectedScript', 'index.ts'),
     app: path.join(__dirname, 'pages/App', 'index.tsx'),
     external: path.join(__dirname, 'pages/External', 'index.tsx'),
-    ledger: path.join(__dirname, 'pages/Ledger', 'index.tsx'),
     bitfi: path.join(__dirname, 'pages/Bitfi', 'index.tsx'),
     cypherock: path.join(__dirname, 'pages/Cypherock', 'index.tsx'),
     options: path.join(__dirname, 'pages/Options', 'index.tsx'),
@@ -223,12 +210,6 @@ const uiConfig = {
       inject: 'body',
       chunks: ['external'],
       filename: 'external.html',
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(viewsPath, 'ledger.html'),
-      inject: 'body',
-      chunks: ['ledger'],
-      filename: 'ledger.html',
     }),
     new HtmlWebpackPlugin({
       template: path.join(viewsPath, 'bitfi.html'),

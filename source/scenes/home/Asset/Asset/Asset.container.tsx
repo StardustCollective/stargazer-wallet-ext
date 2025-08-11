@@ -15,9 +15,15 @@ import { getNetworkFromChainId } from 'scripts/Background/controllers/EVMChainCo
 import { formatNumber, getAddressURL, formatStringDecimal } from '../../helpers';
 import AssetDetail from './Asset';
 import { IAssetDetail } from './types';
-import IProvidersState, { MapProviderNetwork } from 'state/providers/types';
+import IProvidersState, { MapProviderNetwork, Providers } from 'state/providers/types';
 import { dag4 } from '@stardust-collective/dag4';
-import { toDag } from 'utils/number';
+import { iosPlatform } from 'utils/platform';
+import { open } from 'utils/browser';
+import { C14_BASE_URL, C14_CLIENT_ID, DAG_NETWORK } from 'constants/index';
+import { getDagAddress, getEthAddress } from 'utils/wallet';
+import { DagAccount, MetagraphTokenClient } from '@stardust-collective/dag4-wallet';
+
+const DAG_BUY_URL = 'https://constellationnetwork.io/buy/#iWantTo';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const accountController = getAccountController();
@@ -49,12 +55,34 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
       MapProviderNetwork[asset?.network] === assetInfo?.network)
     ), [supportedAssetsArray, assetInfo]);
 
-  const showLocked = assetInfo?.id === AssetType.Constellation;
+  const isC14Supported = useMemo(() => !!supportedAssetsArray.find(
+    (asset) =>
+      asset?.symbol === assetInfo?.symbol &&
+    (assetInfo?.network === 'both' ||
+      MapProviderNetwork[asset?.network] === assetInfo?.network) &&
+      asset.providers.includes(Providers.C14)
+    ), [supportedAssetsArray, assetInfo]);
+  
+  const showGetDag = assetInfo?.id === AssetType.Constellation;
+  // iOS platform logic: show buy button for DAG or c14 supported tokens
+  const isIosWithC14Support = iosPlatform() && !showGetDag && isC14Supported;
+  const showBuyButton = (iosPlatform() && showGetDag) || isIosWithC14Support || (!iosPlatform() && showBuy);
+  const showLocked = assetInfo?.type === AssetType.Constellation;
 
   useEffect(() => {
     const fetchLockedBalance = async () => {
-      const lockedInDatum = await dag4.account.getLockedBalance();
-      setLockedBalance(toDag(lockedInDatum));
+      const beUrl = DAG_NETWORK[activeNetwork.Constellation].config.beUrl;
+      const isMetagraph = !!assetInfo?.l0endpoint;
+      const client: MetagraphTokenClient | DagAccount = isMetagraph ? 
+          dag4.account.createMetagraphTokenClient({
+            metagraphId: assetInfo?.address,
+            id: assetInfo?.address,
+            l0Url: assetInfo?.l0endpoint,
+            l1Url: assetInfo?.l1endpoint,
+            beUrl,
+          }) : dag4.account;
+      const lockedInDatum = await client.getLockedBalance();
+      setLockedBalance(lockedInDatum);
     }
 
     if (showLocked) {
@@ -106,8 +134,72 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
     });
   }, []);
 
+  const getActiveAddress = (): string | null => {
+    if (activeAsset?.type === AssetType.Constellation) {
+      return getDagAddress(activeWallet);
+    }
+
+    if ([AssetType.Ethereum, AssetType.ERC20].includes(activeAsset?.type)) {
+      return getEthAddress(activeWallet);
+    }
+
+    return null;
+  };
+
+  const getTokenId = (): string => {
+    if (!supportedAssetsArray.length || !assetInfo?.symbol) return '';
+    
+    const token = supportedAssetsArray.find(
+      (asset) =>
+        asset.symbol === assetInfo.symbol && asset.providers.includes(Providers.C14)
+    );
+    if (!token) return '';
+
+    return token.id;
+  };
+
+  const generateC14Link = (
+    clientId: string,
+    sourceAmount: string,
+    targetAddress: string,
+    targetAssetId: string
+  ): string => {
+    const params = new URLSearchParams({
+      clientId,
+      sourceAmount,
+      sourceCurrencyCode: 'USD',
+      targetAddress,
+      targetAssetId,
+      targetAssetIdLock: 'true',
+    });
+
+    return `${C14_BASE_URL}?${params.toString()}`;
+  };
+
   const onBuy = () => {
-    if (!showBuy) return;
+    if (!showBuyButton) return;
+
+    if (iosPlatform()) {
+      // For DAG, open the localhost link
+      if (showGetDag) {
+        open(DAG_BUY_URL);
+        return;
+      }
+      
+      // For other tokens supported by c14, generate c14 link
+      if (isC14Supported) {
+        const address = getActiveAddress();
+        const tokenId = getTokenId();
+        if (address && tokenId) {
+          const url = generateC14Link(C14_CLIENT_ID, '100', address, tokenId);
+          open(url);
+          return;
+        }
+      }
+      
+      return;
+    } 
+
     linkTo(`/buyAsset?selected=${activeAsset?.id}`);
   };
 
@@ -135,7 +227,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
         fiatAmount={fiatAmount}
         lockedBalanceText={`${lockedBalanceText} ${assetInfo?.symbol}`}
         fiatLocked={fiatLocked}
-        showBuy={showBuy}
+        showBuy={showBuyButton}
         showLocked={showLocked}
         onBuy={onBuy}
         onSend={onSend}

@@ -1,7 +1,7 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringManager, KeyringNetwork, KeyringWalletAccountState, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { ActionV2, GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
+import { type ActionResponse, GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
 import { BigNumber, ethers } from 'ethers';
 
 import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
@@ -349,7 +349,7 @@ export class AccountController {
       // TODO-421: Check getLatestTransactions
       let txsV2: any = [];
       let rewards: Reward[] = [];
-      let actions: ActionV2[] = [];
+      let actions: ActionResponse[] = [];
       const assetInfo = assets[activeAsset?.id];
       const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
 
