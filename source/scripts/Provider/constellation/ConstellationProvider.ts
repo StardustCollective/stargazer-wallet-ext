@@ -5,6 +5,8 @@ import {
   AvailableMethods,
   StargazerRequest,
   StargazerRequestMessage,
+  EIPRpcError,
+  EIPErrorCodes,
 } from '../../common';
 import {
   dag_requestAccounts,
@@ -28,6 +30,7 @@ import {
   dag_delegatedStake,
   dag_withdrawDelegatedStake,
 } from './methods';
+import { stargazer_requestAccounts, stargazer_accounts} from '../shared/methods';
 
 export class ConstellationProvider implements IRpcChainRequestHandler {
   async handleProxiedRequest(
@@ -46,15 +49,22 @@ export class ConstellationProvider implements IRpcChainRequestHandler {
     const UNAUTH_METHODS = [
       AvailableMethods.dag_requestAccounts,
       AvailableMethods.dag_accounts,
+      AvailableMethods.stargazer_requestAccounts,
+      AvailableMethods.stargazer_accounts,
     ];
 
     if (!isDappConnected(sender.origin) && !UNAUTH_METHODS.includes(request.method)) {
-      throw new Error(
-        'Provider is not activated. Call dag_requestAccounts to activate it.'
+      throw new EIPRpcError(
+        'Provider is not activated. Call dag_requestAccounts or stargazer_requestAccounts to activate it.',
+        EIPErrorCodes.Unauthorized
       );
     }
 
     switch (request.method) {
+        case AvailableMethods.stargazer_requestAccounts:
+          return stargazer_requestAccounts(request, message, sender);
+        case AvailableMethods.stargazer_accounts:
+          return stargazer_accounts(request, message, sender);
       case AvailableMethods.dag_requestAccounts:
         return dag_requestAccounts(request, message, sender);
       case AvailableMethods.dag_accounts:

@@ -3,7 +3,7 @@ import { getWalletInfo } from '../utils';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
 
-export const eth_accounts = async (
+export const eth_accounts = (
   _request: StargazerRequest & { type: 'rpc' },
   _message: StargazerRequestMessage,
   sender: chrome.runtime.MessageSender

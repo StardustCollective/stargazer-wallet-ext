@@ -56,6 +56,7 @@ import {
   DappMessageEvent,
   MessageType,
 } from 'scripts/Background/messaging/types';
+import { getWalletAccounts, type WalletAccount } from 'scripts/Provider/shared/methods';
 
 const PurpleCheckbox = withStyles({
   root: {
@@ -98,7 +99,9 @@ const SelectAccounts = () => {
 
   const [sceneState, setSceneState] = useState<SCENE_STATE>(SCENE_STATE.SELECT_ACCOUNTS);
 
-  const { message, origin } = StargazerExternalPopups.decodeRequestMessageLocationParams(
+  const { message, origin, data } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+    origin?: string;
+  }>(
     location.href
   );
 
@@ -123,7 +126,7 @@ const SelectAccounts = () => {
         .map(({ address }) => address);
 
       const network = message.data.chainProtocol;
-      const networkAccounts =
+      let walletAccounts: WalletAccount[] | string[] =
         network === ProtocolProvider.CONSTELLATION ? dagAccounts : ethAccounts;
 
       const dappMessageDAG: DappMessage = {
@@ -148,12 +151,17 @@ const SelectAccounts = () => {
         },
       };
 
+      // If the request is from stargazer_requestAccounts, return all accounts
+      if (data?.origin === 'stargazer_requestAccounts') {
+        walletAccounts = getWalletAccounts();
+      }
+
       // Connect both accounts in the SW store
       chrome.runtime.sendMessage(dappMessageDAG);
       chrome.runtime.sendMessage(dappMessageETH);
 
       StargazerExternalPopups.addResolvedParam(location.href);
-      StargazerWSMessageBroker.sendResponseResult(networkAccounts, message);
+      StargazerWSMessageBroker.sendResponseResult(walletAccounts, message);
 
       window.close();
     }
