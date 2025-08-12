@@ -196,7 +196,7 @@ const Home: FC<IHome> = ({
                     </LinearGradient>
                   </TouchableOpacity>
                 }
-                {!isDagOnlyWallet || !iosPlatform() &&  (
+                {!isDagOnlyWallet && !iosPlatform() &&  (
                   <TouchableOpacity style={styles.buttonContainer} onPress={onSwapPressed} activeOpacity={0.7}>
                     <LinearGradient
                       useAngle

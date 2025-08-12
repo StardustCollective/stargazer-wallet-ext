@@ -28,7 +28,7 @@ import IAssetSettings from './types';
 import styles from './styles';
 import Balance from '../Balance';
 import { CONTAINER_COLOR } from 'components/Container';
-import { iosPlatform } from 'utils/platform';
+import { iosPlatform, androidPlatform } from 'utils/platform';
 
 const QR_CODE_SIZE = 240;
 
@@ -101,10 +101,11 @@ const AssetDetail: FC<IAssetSettings> = ({
       : getNetworkLogo(asset?.network);
 
   const BalanceBuy = iosPlatform() ? <Balance.GetAsset onPress={onBuy} symbol={asset?.symbol} /> : <Balance.Buy onPress={onBuy} />;
+  const scrollViewProps = androidPlatform() ? { nestedScrollEnabled: true, scrollEventThrottle: 16 } : {};
 
   if (!!activeWallet && !!activeAsset) {
     return (
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.container} {...scrollViewProps} contentContainerStyle={styles.scrollContentContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.balanceScrollView}>
           <View style={styles.balanceContainer}>
             <Balance.Root>

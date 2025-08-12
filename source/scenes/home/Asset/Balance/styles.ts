@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { FONT_WEIGHTS } from 'assets/styles/_variables.native';
+import { iosPlatform } from 'utils/platform';
 
 const styles = StyleSheet.create({
   root: {
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     marginBottom: 8,
-    borderWidth: 2,
+    borderWidth: iosPlatform() ? 2 : 0,
     borderColor: '#FFFFFF14',
 
     shadowColor: '#000',

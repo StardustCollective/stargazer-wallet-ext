@@ -6,6 +6,7 @@ import StargazerCard from 'assets/images/svg/stargazer-card.svg';
 import TextV3 from 'components/TextV3';
 import styles from './styles';
 import ITxPanelSettings from './types';
+import { androidPlatform } from 'utils/platform';
 
 const TxsPanel: FC<ITxPanelSettings> = ({
   transactions,
@@ -16,10 +17,11 @@ const TxsPanel: FC<ITxPanelSettings> = ({
   const showLoadingList = loading;
   const showTransactions = !showLoadingList && !!transactions?.length;
   const showEmptyList = !showLoadingList && !transactions?.length;
-
+  const scrollViewProps = androidPlatform() ? { nestedScrollEnabled: true, scrollEventThrottle: 16 } : {};
+  
   return (
     <View style={styles.activity}>
-      <ScrollView style={styles.activityScrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView {...scrollViewProps} style={styles.activityScrollView} showsVerticalScrollIndicator={false}>
         {showTransactions &&
           transactions.map((tx: Transaction, idx: number) => {
             return renderTxItem(tx, idx);

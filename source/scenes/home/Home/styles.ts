@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
+import { iosPlatform } from 'utils/platform';
 
 const styles = StyleSheet.create({
   container: {
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 48,
     minWidth: 150,
-    borderWidth: 2,
+    borderWidth: iosPlatform() ? 2 : 0,
     borderColor: 'rgba(255, 255, 255, 0.08)',
 
     shadowColor: 'rgba(16, 24, 40, 0.12)',
