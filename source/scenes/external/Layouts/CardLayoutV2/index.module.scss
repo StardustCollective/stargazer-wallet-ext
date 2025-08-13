@@ -1,4 +1,5 @@
 @import '~assets/styles/variables';
+@import '~assets/styles/tokens';
 
 .wrapper {
   display: flex;
@@ -15,7 +16,7 @@
     padding-left: 16px;
     padding-right: 16px;
     padding-bottom: 60px;
-    background: $primary;
+    background: $color-brand-900;
 
     .stepContainer {
       position: absolute;

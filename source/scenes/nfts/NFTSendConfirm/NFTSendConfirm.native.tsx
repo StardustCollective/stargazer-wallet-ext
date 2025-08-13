@@ -96,6 +96,7 @@ const NFTSendConfirm: FC<NFTSendConfirmProps> = ({
           loading={loading}
           size={BUTTON_SIZES_ENUM.FULL_WIDTH}
           type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
+          withGradient
           onPress={onButtonPress}
         />
       </View>

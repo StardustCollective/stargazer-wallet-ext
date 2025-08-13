@@ -1,11 +1,11 @@
 @import '~assets/styles/variables';
+@import '~assets/styles/tokens';
 
 .wrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
   overflow: auto;
-  background-color: $primary;
 
   .maskQrCode {
     display: flex;

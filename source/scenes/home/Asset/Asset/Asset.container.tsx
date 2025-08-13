@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 import { getAccountController } from 'utils/controllersUtils';
 import { useFiat } from 'hooks/usePrice';
 import { RootState } from 'state/store';
@@ -219,7 +219,7 @@ const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const showFiatAmount = !!assets[activeAsset?.id]?.priceId && !isNaN(balance);
 
   return (
-    <Container safeArea={false}>
+    <Container color={CONTAINER_COLOR.DARK} safeArea={false}>
       <AssetDetail
         activeWallet={activeWallet}
         activeAsset={activeAsset}

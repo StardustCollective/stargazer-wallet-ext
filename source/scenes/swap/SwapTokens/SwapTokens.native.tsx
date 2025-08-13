@@ -218,6 +218,7 @@ const SwapTokens: FC<ISwapTokens> = ({
           <ButtonV3
             title={NEXT_BUTTON_STRING}
             size={BUTTON_SIZES_ENUM.FULL_WIDTH}
+            withGradient
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             disabled={isNextButtonDisabled}
             loading={isNextButtonLoading}

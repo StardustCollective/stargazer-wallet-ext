@@ -81,7 +81,7 @@ const SwapTokens: FC<ITransferInfo> = ({ onNextPressed, to, from, depositAddress
           <>{gas.prices.length > 0 && <GasSlider gas={gas} onGasPriceChange={onGasPriceChange} />}</>
         )}
         <View style={styles.nextButton}>
-          <ButtonV3 title={NEXT_BUTTON_STRING} size={BUTTON_SIZES_ENUM.FULL_WIDTH} type={BUTTON_TYPES_ENUM.SECONDARY_SOLID} onPress={onNextPressed} />
+          <ButtonV3 title={NEXT_BUTTON_STRING} size={BUTTON_SIZES_ENUM.FULL_WIDTH} withGradient type={BUTTON_TYPES_ENUM.SECONDARY_SOLID} onPress={onNextPressed} />
         </View>
       </ScrollView>
     </View>

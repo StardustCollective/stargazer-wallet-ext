@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
-  viewHistoryButton: {
-    marginBottom: 20,
+  doneButton: {
+    marginTop: 20,
   },
 });
 

@@ -56,7 +56,6 @@ const StyledTab = withStyles(() =>
       marginBottom: 6,
     },
     selected: {
-      background: 'linear-gradient(180deg, rgba(119, 90, 237, 0.00) 0%, rgba(119, 90, 237, 0.16) 88.39%)',
       color: '#fff',
       fontWeight: 600,
     },

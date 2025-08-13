@@ -73,7 +73,7 @@ const NFTDetails: FC<NFTDetailsProps> = ({
           size={BUTTON_SIZES_ENUM.LARGE}
           title={SEND_NFT}
           onPress={onPressSendNFT}
-          extraStyles={styles.sendButton}
+          withGradient
         />
         <View style={styles.descriptionContainer}>
           <TextV3.BodyStrong color={COLORS_ENUMS.BLACK} extraStyles={styles.subtitle}>

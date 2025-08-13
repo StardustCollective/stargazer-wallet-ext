@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
+import { color } from 'assets/styles/tokens';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    backgroundColor: COLORS.primary,
+    backgroundColor: color.brand_900,
   },
   search: {
     height: 40,

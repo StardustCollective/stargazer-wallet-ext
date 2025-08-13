@@ -5,7 +5,6 @@ import { getDeviceId } from 'react-native-device-info';
 const styles = StyleSheet.create({
   layout: {
     flexGrow: 1,
-    backgroundColor: COLORS.primary,
   },
   contentContainer: {
     justifyContent: 'center',

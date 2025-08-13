@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { color } from 'assets/styles/tokens';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
     paddingTop: 4,
-    backgroundColor: COLORS.primary,
+    backgroundColor: color.brand_900
   },
   errorContainer: {
     flex: 1,

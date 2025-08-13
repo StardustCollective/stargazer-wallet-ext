@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
 import { COLORS, FONT_WEIGHTS } from 'assets/styles/_variables';
-import { getDeviceId } from 'react-native-device-info';
+import { color } from 'assets/styles/tokens';
 
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: color.brand_900,
     justifyContent: 'center',
     alignItems: 'center',
   },

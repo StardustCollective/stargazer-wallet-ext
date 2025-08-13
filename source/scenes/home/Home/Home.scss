@@ -4,7 +4,6 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: start;
-  background-color: $primary;
   overflow: auto;
   width: 100%;
 
@@ -15,7 +14,6 @@
     height: 100vh;
     align-items: center;
     justify-content: center;
-    background-color: $primary;
     opacity: 1;
     backdrop-filter: blur(0px);
 

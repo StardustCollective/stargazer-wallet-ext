@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
+import { color } from 'assets/styles/tokens';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
   },
   scrollContentContainer: {
     flexGrow: 1,
@@ -13,11 +13,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     width: '100%',
-    backgroundColor: COLORS.primary,
   },
   balanceScrollView: {
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 20,
     paddingBottom: 24,
   },
   lockedBalance: {
@@ -28,7 +27,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.primary,
     opacity: 1,
   },
   loaderHide: {
@@ -351,7 +349,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabBar: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: color.brand_900,
     height: 50,
   },
   tabBarLabel: {

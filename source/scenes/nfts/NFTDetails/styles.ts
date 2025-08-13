@@ -30,14 +30,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontWeight: '600',
   },
-  sendButton: {
-    marginBottom: 24,
-  },
   sendTitleButton: {
     marginRight: 8,
   },
   descriptionContainer: {
-    marginBottom: 24,
+    marginVertical: 24,
   },
   attributesContainer: {
     marginBottom: 8,
