@@ -36,5 +36,22 @@ allprojects {
 
         google()
         maven { url 'https://www.jitpack.io' }
+
+        // Add these repositories for better compatibility
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://repo1.maven.org/maven2' }
+
+        // Force all subprojects to use the correct React Native version
+        configurations.all {
+            resolutionStrategy {
+                force 'com.facebook.react:react-native:0.66.1'
+                eachDependency { details ->
+                    if (details.requested.group == 'com.facebook.react' && details.requested.name == 'react-native') {
+                        details.useVersion '0.66.1'
+                        details.because 'Force React Native version consistency across all modules'
+                    }
+                }
+            }
+        }
     }
 }
