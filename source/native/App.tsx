@@ -9,9 +9,9 @@ import linking from 'navigation/linking';
 import Store from 'state/store';
 import {Provider} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
-import {COLORS} from 'assets/styles/_variables';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {ToastProvider} from '../context/ToastContext';
+import { color } from 'assets/styles/tokens';
 
 const App = () => {
   useEffect(() => {
@@ -30,12 +30,12 @@ const App = () => {
         <NativeBaseProvider>
           <Provider store={Store}>
             <NavigationContainer linking={linking}>
-              <StatusBar
-                translucent
-                barStyle="light-content"
-                backgroundColor={COLORS.primary}
-              />
-              <RootStack />
+                <StatusBar
+                  translucent
+                  barStyle="light-content"
+                  backgroundColor={color.brand_900}
+                />
+                <RootStack />
             </NavigationContainer>
           </Provider>
         </NativeBaseProvider>

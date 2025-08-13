@@ -1,9 +1,13 @@
 import { StyleSheet } from 'react-native';
-import { NEW_COLORS } from 'assets/styles/_variables';
+import { color } from 'assets/styles/tokens';
 
 const styles = StyleSheet.create({
   bottomTab: {
-    height: 56,
+    borderTopWidth: 1,
+    borderTopColor: color.gray_100,
+  },
+  bottomTabHeight: {
+    height: 64,
   },
   tabItemContainer: {
     height: '100%',
@@ -14,10 +18,9 @@ const styles = StyleSheet.create({
   tabActiveItemLine: {
     position: 'absolute',
     top: 0,
-    height: 3,
+    height: 4,
     width: '100%',
-    backgroundColor: NEW_COLORS.primary_lighter_2,
-    borderRadius: 24,
+    backgroundColor: color.brand_400,
   },
 });
 

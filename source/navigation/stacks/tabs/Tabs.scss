@@ -1,4 +1,5 @@
 @import '~assets/styles/variables';
+@import '~assets/styles/tokens';
 
 .tabItemContainer {
   display: flex;
@@ -11,6 +12,6 @@
     width: 120px;
     position: absolute;
     top: 0;
-    background-color: #775AED;
+    background-color: $color-brand-400;
   }
 }

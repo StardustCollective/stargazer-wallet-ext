@@ -10,12 +10,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 ///////////////////////////
 
 import defaultHeader from 'navigation/headers/default';
-import WalletActiveIcon from 'assets/images/svg/wallet-tab-active.svg';
-import WalletInactiveIcon from 'assets/images/svg/wallet-tab-inactive.svg';
-import GridActiveIcon from 'assets/images/svg/grid-active.svg';
-import GridInactiveIcon from 'assets/images/svg/grid-inactive.svg';
-import SettingsActiveIcon from 'assets/images/svg/settings-active.svg';
-import SettingsInactiveIcon from 'assets/images/svg/settings-inactive.svg';
+import { ReactComponent as WalletIcon } from 'assets/images/svg/wallet-tab.svg';
+import { ReactComponent as WalletFilledIcon } from 'assets/images/svg/wallet-tab-filled.svg';
+import { ReactComponent as GridIcon } from 'assets/images/svg/grid.svg';
+import { ReactComponent as GridFilledIcon } from 'assets/images/svg/grid-filled.svg';
+import { ReactComponent as SettingsIcon } from 'assets/images/svg/settings.svg';
+import { ReactComponent as SettingsFilledIcon } from 'assets/images/svg/settings-filled.svg';
 
 ///////////////////////////
 // Screens
@@ -44,7 +44,6 @@ import NFTSendCompleted from 'scenes/nfts/NFTSendCompleted';
 import Main from 'scenes/settings/Main';
 import About from 'scenes/settings/About';
 import Networks from 'scenes/settings/Networks';
-// import AddNetwork from 'scenes/settings/AddNetwork';
 import Contacts from 'scenes/settings/Contacts';
 import ContactInfo from 'scenes/settings/ContactInfo';
 import ModifyContact from 'scenes/settings/ModifyContact';
@@ -80,6 +79,7 @@ import TransactionDetails from 'scenes/swap/TransactionDetails';
 import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../home/Home';
 import screens from '../../screens';
 import styles from './Tabs.scss';
+import { color } from 'assets/styles/tokens';
 
 const Tab = createBottomTabNavigator();
 
@@ -331,7 +331,14 @@ const Tabs = () => {
     <Tab.Navigator
       tabBarOptions={{
         showLabel: false,
-        style: { height: 64, position: 'absolute', bottom: 0, borderTopWidth: 1, borderTopColor: '#B5B4E4', paddingHorizontal: 16 },
+        style: { 
+          height: 64, 
+          position: 'absolute', 
+          bottom: 0, 
+          borderTopWidth: 1, 
+          borderTopColor: color.gray_100, 
+          paddingHorizontal: 16 
+        },
       }}
     >
       <Tab.Screen
@@ -339,10 +346,10 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <div className={styles.tabItemContainer}>
               {focused && <div className={styles.tabActiveItemLine} />}
-              <img
-                src={`/${focused ? WalletActiveIcon : WalletInactiveIcon}`}
-                alt="wallet"
-              />
+              {focused ?
+                <WalletFilledIcon color={color.brand_500} /> :
+                <WalletIcon color={color.gray_500} />
+              }
             </div>
           ),
         }}
@@ -354,7 +361,10 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <div className={styles.tabItemContainer}>
               {focused && <div className={styles.tabActiveItemLine} />}
-              <img src={`/${focused ? GridActiveIcon : GridInactiveIcon}`} alt="grid" />
+              {focused ?
+                <GridFilledIcon color={color.brand_500} /> :
+                <GridIcon color={color.gray_500} />
+              }
             </div>
           ),
         }}
@@ -366,10 +376,10 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <div className={styles.tabItemContainer}>
               {focused && <div className={styles.tabActiveItemLine} />}
-              <img
-                src={`/${focused ? SettingsActiveIcon : SettingsInactiveIcon}`}
-                alt="settings"
-              />
+              {focused ?
+                <SettingsFilledIcon color={color.brand_500} /> :
+                <SettingsIcon color={color.gray_500} />
+              }
             </div>
           ),
         }}

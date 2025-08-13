@@ -12,8 +12,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import defaultHeader from 'navigation/headers/default';
 import WalletIcon from 'assets/images/svg/wallet-tab.svg';
+import WalletFilledIcon from 'assets/images/svg/wallet-tab-filled.svg';
 import GridIcon from 'assets/images/svg/grid.svg';
+import GridFilledIcon from 'assets/images/svg/grid-filled.svg';
 import SettingsIcon from 'assets/images/svg/settings.svg';
+import SettingsFilledIcon from 'assets/images/svg/settings-filled.svg';
 
 ///////////////////////////
 // Screens
@@ -74,7 +77,7 @@ import TransactionDetails from 'scenes/swap/TransactionDetails';
 // Constants
 ///////////////////////////
 
-import { NEW_COLORS } from 'assets/styles/_variables';
+import { color } from 'assets/styles/tokens';
 import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../home/Home.native';
 import { iosPlatform } from 'utils/platform';
 import screens from '../../screens';
@@ -324,7 +327,7 @@ const Tabs = () => {
     <Tab.Navigator
       tabBarOptions={{
         showLabel: false,
-        style: !iosPlatform() ? styles.bottomTab : {},
+        style: [styles.bottomTab, !iosPlatform() && styles.bottomTabHeight],
       }}
     >
       <Tab.Screen
@@ -332,11 +335,10 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabItemContainer}>
               {focused && <View style={styles.tabActiveItemLine} />}
-              <WalletIcon
-                height={24}
-                width={24}
-                color={focused ? NEW_COLORS.primary_lighter_2 : NEW_COLORS.gray_400}
-              />
+              {focused ? 
+                <WalletFilledIcon width={32} height={32} color={color.brand_500} /> :
+                <WalletIcon width={32} height={32} color={color.gray_500} />
+              }
             </View>
           ),
         }}
@@ -348,11 +350,10 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabItemContainer}>
               {focused && <View style={styles.tabActiveItemLine} />}
-              <GridIcon
-                height={24}
-                width={24}
-                color={focused ? NEW_COLORS.primary_lighter_2 : NEW_COLORS.gray_400}
-              />
+              {focused ? 
+                <GridFilledIcon color={color.brand_500} /> :
+                <GridIcon color={color.gray_500} />
+              }
             </View>
           ),
         }}
@@ -364,11 +365,10 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabItemContainer}>
               {focused && <View style={styles.tabActiveItemLine} />}
-              <SettingsIcon
-                height={24}
-                width={24}
-                color={focused ? NEW_COLORS.primary_lighter_2 : NEW_COLORS.gray_400}
-              />
+              {focused ? 
+                <SettingsFilledIcon color={color.brand_500} /> :
+                <SettingsIcon color={color.gray_500} />
+              }
             </View>
           ),
         }}
