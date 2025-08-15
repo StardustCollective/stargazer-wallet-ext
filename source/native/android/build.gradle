@@ -2,11 +2,11 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "30.0.2"
+        buildToolsVersion = "34.0.0"
         minSdkVersion = 24
         compileSdkVersion = 34
-        targetSdkVersion = 34
-        ndkVersion = "21.4.7075529"
+        targetSdkVersion = 35
+        ndkVersion = "25.1.8937393"
         androidXAnnotation = "1.2.0"
         androidXBrowser = "1.3.0"
     }
@@ -15,7 +15,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.4.0")
+        classpath('com.android.tools.build:gradle:8.0.1')
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -51,6 +51,84 @@ allprojects {
                         details.because 'Force React Native version consistency across all modules'
                     }
                 }
+            }
+        }
+    }
+}
+
+// Apply namespace configuration to all subprojects
+subprojects { subproject ->
+    afterEvaluate {
+        if (subproject.plugins.hasPlugin('com.android.library')) {
+            android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_11
+                    targetCompatibility JavaVersion.VERSION_11
+                }
+                
+                buildFeatures {
+                    buildConfig true
+                }
+                
+                if (namespace == null) {
+                    // Handle pager-view special case first - it handles its own namespace but we need to restore package attribute
+                    if (subproject.name.contains('pager-view')) {
+                        def pagerViewNamespace = "com.reactnativepagerview"
+                        namespace pagerViewNamespace
+                        println "Set namespace '${pagerViewNamespace}' for ${subproject.name}"
+                        return // Exit early for pager-view
+                    }
+                    
+                    // Look for AndroidManifest.xml to get original package name for other libraries
+                    def manifestFile = file("${subproject.projectDir}/src/main/AndroidManifest.xml")
+                    def extractedPackage = null
+                    
+                    if (manifestFile.exists()) {
+                        try {
+                            def manifestText = manifestFile.text
+                            def packagePattern = /package\s*=\s*["']([^"']+)["']/
+                            def matcher = manifestText =~ packagePattern
+                            
+                            if (matcher.find()) {
+                                extractedPackage = matcher.group(1)
+                                println "Found package '${extractedPackage}' in ${subproject.name}"
+                            }
+                        } catch (Exception e) {
+                            println "Warning: Could not read AndroidManifest.xml for ${subproject.name}: ${e.message}"
+                        }
+                    }
+                    
+                    // Set namespace based on extracted package or use a proper fallback
+                    if (extractedPackage) {
+                        namespace extractedPackage
+                        println "Set namespace '${extractedPackage}' for ${subproject.name}"
+                    } else {
+                        def fallbackNamespace = "com.stargazer.${subproject.name.replaceAll('-', '_')}"
+                        namespace fallbackNamespace
+                        println "Set fallback namespace '${fallbackNamespace}' for ${subproject.name}"
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Special task to restore pager-view package attribute after it gets removed by the library's build script
+gradle.projectsEvaluated {
+    def pagerViewProject = project(':react-native-pager-view')
+    if (pagerViewProject != null) {
+        def pagerManifestFile = file("${pagerViewProject.projectDir}/src/main/AndroidManifest.xml")
+        if (pagerManifestFile.exists()) {
+            def manifestContent = pagerManifestFile.text
+            if (!manifestContent.contains('package=')) {
+                manifestContent = manifestContent.replace(
+                    '<manifest xmlns:android="http://schemas.android.com/apk/res/android"',
+                    '<manifest xmlns:android="http://schemas.android.com/apk/res/android"\n          package="com.reactnativepagerview"'
+                )
+                pagerManifestFile.write(manifestContent)
+                println "gradle.projectsEvaluated: Restored package attribute for react-native-pager-view"
+            } else {
+                println "gradle.projectsEvaluated: Package attribute already exists for react-native-pager-view"
             }
         }
     }

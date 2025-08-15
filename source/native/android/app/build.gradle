@@ -85,6 +85,35 @@ project.ext.react = [
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../../../node_modules/@sentry/react-native/sentry.gradle"
 
+// Fix task dependency issues for AGP 8.0
+afterEvaluate {
+    def rnTasks = ['bundleReleaseJsAndAssets', 'copyReleaseBundledJs']
+    def appTasks = [
+        'mergeReleaseNativeLibs',
+        'extractReleaseNativeSymbolTables', 
+        'stripReleaseDebugSymbols',
+        'mergeReleaseNativeDebugMetadata',
+        'processReleaseMainManifest',
+        'compressReleaseAssets',
+        'mergeExtDexRelease',
+        'sdkReleaseDependencyData',
+        'mergeReleaseJavaResource',
+        'configureReleaseDependencies'  // Add bundle release dependency task
+    ]
+    
+    rnTasks.each { rnTaskName ->
+        def rnTask = tasks.findByName(rnTaskName)
+        if (rnTask) {
+            appTasks.each { appTaskName ->
+                def appTask = tasks.findByName(appTaskName)
+                if (appTask) {
+                    appTask.dependsOn rnTask
+                }
+            }
+        }
+    }
+}
+
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -131,17 +160,35 @@ android {
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
 
     defaultConfig {
         applicationId "com.stargazer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 108
-        versionName "3.3.5"
+        versionCode 113
+        versionName "3.4.1"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     lintOptions {
         checkReleaseBuilds false
+    }
+    
+    packagingOptions {
+        pickFirst '**/libc++_shared.so'
+        pickFirst '**/libjsc.so'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
     }
     configurations.all {
         resolutionStrategy {
@@ -171,6 +218,7 @@ android {
             keyPassword 'android'
         }
     }
+    namespace 'com.stargazer'
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
