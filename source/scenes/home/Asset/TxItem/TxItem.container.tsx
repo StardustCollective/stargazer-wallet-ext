@@ -11,8 +11,21 @@ import GasSettings from '../GasSettings';
 import { formatDistanceDate } from '../../helpers';
 import { ITxItem } from './types';
 import { fixedNumber } from 'utils/number';
+import { Actions, ActionType } from '@stardust-collective/dag4-network';
 
 const MAX_GAS_NUMBER = 200;
+
+const MapTxAction: Record<ActionType, string> = {
+  DelegateStakeCreate: "StakeCreate",
+  DelegateStakeWithdraw: "StakeWithdraw",
+  ExpiredSpendTransaction: "ExpiredSpendTXN",
+  SpendTransaction: "SpendTXN",
+  FeeTransaction: "FeeTXN",
+  ExpiredAllowSpend: "ExpiredAllowSpend",
+  AllowSpend: "AllowSpend",
+  TokenLock: "TokenLock",
+  TokenUnlock: "TokenUnlock",
+}
 
 const TxItemContainer: FC<ITxItem> = ({
   tx,
@@ -101,11 +114,6 @@ const TxItemContainer: FC<ITxItem> = ({
     }
   };
 
-  const receivedOrSentText = `${
-    isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'
-  } ${currencySymbol}`;
-  const timestamp = isRewardsTab ? tx.accruedAt : tx.timestamp;
-  const formattedDistanceDate = formatDistanceDate(timestamp);
 
   const renderGasSettings = () => {
     return (
@@ -128,6 +136,11 @@ const TxItemContainer: FC<ITxItem> = ({
     );
   };
 
+  const isAction = Actions.includes(tx.type);
+  const title = isAction ? MapTxAction[tx.type as ActionType] : `${isSelf ? 'Self' : isReceived ? 'Received' : 'Sent'} ${currencySymbol}`;
+  const timestamp = isRewardsTab ? tx.accruedAt : tx.timestamp;
+  const formattedDistanceDate = formatDistanceDate(timestamp);
+
   return (
     <TxItem
       tx={tx}
@@ -142,7 +155,7 @@ const TxItemContainer: FC<ITxItem> = ({
       amount={amount}
       fiatAmount={fiatAmount}
       getLinkUrl={getLinkUrl}
-      receivedOrSentText={receivedOrSentText}
+      title={title}
       formattedDistanceDate={formattedDistanceDate}
       renderGasSettings={renderGasSettings}
       logo={assets[activeAsset.id]?.logo}

@@ -6,27 +6,29 @@ import {
   Modal,
   TouchableOpacity,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import * as Progress from 'react-native-progress';
 import TextV3 from 'components/TextV3';
 import QRCode from 'react-native-qrcode-svg';
 import { COLORS_ENUMS } from 'assets/styles/colors';
-import { COLORS, NEW_COLORS } from 'assets/styles/_variables';
+import { COLORS } from 'assets/styles/_variables';
 import Container from 'components/Container';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import CopyIcon from 'assets/images/svg/copy.svg';
-import ArrowsIcon from 'assets/images/svg/arrows.svg';
-import GiftIcon from 'assets/images/svg/gift.svg';
 import { getNetworkLogo } from 'scripts/Background/controllers/EVMChainController/utils';
 import { CONSTELLATION_LOGO } from 'constants/index';
 import { AssetType } from 'state/vault/types';
 import useNetworkLabel from 'hooks/useNetworkLabel';
+import Sheet from 'components/Sheet';
 import TxsPanel from '../TxsPanel';
 import IAssetSettings from './types';
-import AssetButtons from '../AssetButtons';
 import styles from './styles';
+import Balance from '../Balance';
+import { CONTAINER_COLOR } from 'components/Container';
+import { iosPlatform, androidPlatform } from 'utils/platform';
 
 const QR_CODE_SIZE = 240;
 
@@ -39,7 +41,13 @@ const AssetDetail: FC<IAssetSettings> = ({
   activeAsset,
   balanceText,
   fiatAmount,
-  onSendClick,
+  showLocked,
+  lockedBalanceText,
+  fiatLocked,
+  showBuy,
+  onBuy,
+  onSend,
+  onReceive,
   assets,
   showQrCode,
   setShowQrCode,
@@ -47,9 +55,11 @@ const AssetDetail: FC<IAssetSettings> = ({
   copyAddress,
   showFiatAmount,
 }) => {
+  const [isLockedInfoOpen, setIsLockedInfoOpen] = useState(false);
   const [routeIndex, setRouteIndex] = useState(0);
   const [routes] = useState([
     { key: 'transactions', title: 'Transactions' },
+    { key: 'actions', title: 'Actions' },
     { key: 'rewards', title: 'Rewards' },
   ]);
   const activeAssetStyle = StyleSheet.flatten([
@@ -62,11 +72,8 @@ const AssetDetail: FC<IAssetSettings> = ({
 
   const renderTabLabel = ({ route, focused }) => {
     const focusedStyle = focused && styles.labelFocused;
-    const isRewards = route.key === 'rewards';
-    const iconColor = focused ? COLORS.white : NEW_COLORS.secondary_text;
     return (
       <View style={styles.labelContainer}>
-        {isRewards ? <GiftIcon color={iconColor} /> : <ArrowsIcon color={iconColor} />}
         <TextV3.LabelSemiStrong
           color={focused ? COLORS_ENUMS.WHITE : COLORS_ENUMS.SECONDARY_TEXT}
           extraStyles={[styles.tabLabel, focusedStyle]}
@@ -93,37 +100,45 @@ const AssetDetail: FC<IAssetSettings> = ({
       ? CONSTELLATION_LOGO
       : getNetworkLogo(asset?.network);
 
+  const BalanceBuy = iosPlatform() ? <Balance.GetAsset onPress={onBuy} symbol={asset?.symbol} /> : <Balance.Buy onPress={onBuy} />;
+  const scrollViewProps = androidPlatform() ? { nestedScrollEnabled: true, scrollEventThrottle: 16 } : {};
+
   if (!!activeWallet && !!activeAsset) {
     return (
-      <>
-        <View style={styles.wrapper}>
-          <View style={styles.center}>
-            <View style={styles.balance}>
-              <TextV3.HeaderDisplay
-                color={COLORS_ENUMS.WHITE}
-                dynamic
-                extraStyles={styles.balanceText}
-              >
-                {balanceText}
-              </TextV3.HeaderDisplay>
-              <TextV3.Body color={COLORS_ENUMS.WHITE} extraStyles={styles.symbolText}>
-                {assets[activeAsset.id].symbol}
-              </TextV3.Body>
-            </View>
-            {showFiatAmount && (
-              <View style={styles.fiatBalance}>
-                <TextV3.Body extraStyles={styles.fiatText}>{fiatAmount}</TextV3.Body>
+      <ScrollView style={styles.container} {...scrollViewProps} contentContainerStyle={styles.scrollContentContainer} showsVerticalScrollIndicator={false}>
+        <View style={styles.balanceScrollView}>
+          <View style={styles.balanceContainer}>
+            <Balance.Root>
+              <Balance.Header>
+                <Balance.Available />
+              </Balance.Header>
+              <Balance.Content>
+                <Balance.TokenAmount amount={balanceText} />
+                {showFiatAmount && <Balance.FiatAmount amount={fiatAmount} />}
+              </Balance.Content>
+              <Balance.Footer>
+                {showBuy && BalanceBuy}
+                <Balance.Send  onPress={onSend} />
+                <Balance.Receive  onPress={onReceive} />
+              </Balance.Footer>
+            </Balance.Root>
+            {showLocked && 
+              <View style={styles.lockedBalance}>
+                <Balance.Root>
+                  <Balance.Header>
+                    <Balance.Locked onInfoPress={() => setIsLockedInfoOpen(true)} />
+                  </Balance.Header>
+                  <Balance.Content>
+                    <Balance.TokenAmount amount={lockedBalanceText} />
+                    {showFiatAmount && <Balance.FiatAmount amount={fiatLocked} />}
+                  </Balance.Content>
+                </Balance.Root>
               </View>
-            )}
-            <View style={styles.actions}>
-              <AssetButtons
-                setShowQrCode={setShowQrCode}
-                onSendClick={onSendClick}
-                assetId={activeAsset?.id}
-              />
-            </View>
+            }
           </View>
-          {showRewardsTab ? (
+        </View>
+        {showRewardsTab ? (
+          <View style={styles.tabViewContainer}>
             <TabView
               navigationState={{ index: routeIndex, routes }}
               renderScene={renderScene}
@@ -131,12 +146,12 @@ const AssetDetail: FC<IAssetSettings> = ({
               onIndexChange={setRouteIndex}
               initialLayout={{ width: Dimensions.get('window').width }}
             />
-          ) : (
-            <TxsPanel route="transactions" />
-          )}
-        </View>
+          </View>
+        ) : (
+          <TxsPanel route="transactions" />
+        )}
         <Modal animationType="slide" transparent={false} visible={showQrCode}>
-          <Container>
+          <Container color={CONTAINER_COLOR.DARK}>
             <View style={styles.qrCodeCloseButton}>
               <TouchableOpacity onPress={() => setShowQrCode(false)}>
                 <Icon name="close" />
@@ -148,7 +163,7 @@ const AssetDetail: FC<IAssetSettings> = ({
                 width={80}
                 body="Copied"
                 arrow
-                onOpen={() => copyAddress(activeAsset?.address)}
+                onOpen={() => copyAddress && copyAddress(activeAsset?.address)}
                 skipAndroidStatusBar
               >
                 <View style={styles.qrCodeCard}>
@@ -184,7 +199,19 @@ const AssetDetail: FC<IAssetSettings> = ({
             </View>
           </Container>
         </Modal>
-      </>
+        <Sheet
+          isVisible={isLockedInfoOpen}
+          onClosePress={() => setIsLockedInfoOpen(false)}
+          height={300}
+          title={{
+            label: 'Locked Balance',
+            align: 'left',
+          }}
+        >
+          <TextV3.Body extraStyles={styles.lockedInfoText}>Tokens you can’t move right now due to actions like ‘AllowSpend’ or ‘TokenLock’. AllowSpend pre-approves another wallet to spend tokens for you.</TextV3.Body>
+          <TextV3.Body extraStyles={styles.lockedInfoText}>TokenLock freezes them temporarily, often for staking or governance. The tokens stay in your wallet but can’t be used until unlocked.</TextV3.Body>
+        </Sheet>
+      </ScrollView>
     );
   }
 

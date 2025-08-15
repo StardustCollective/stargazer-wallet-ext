@@ -73,13 +73,14 @@ const ConfirmDetails: FC<IConfirmationInfo> = ({
             size={BUTTON_SIZES_ENUM.FULL_WIDTH}
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             onPress={onViewSwapHistoryPressed}
-            extraStyles={styles.viewHistoryButton}
+            withGradient
           />
           <ButtonV3
             title={DONE_STRING}
             size={BUTTON_SIZES_ENUM.FULL_WIDTH}
             type={BUTTON_TYPES_ENUM.PRIMARY_OUTLINE}
             onPress={onDonePressed}
+            extraStyles={styles.doneButton}
           />
         </View>
       </ScrollView>

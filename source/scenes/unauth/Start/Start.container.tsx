@@ -9,7 +9,7 @@ import { useLinkTo } from '@react-navigation/native';
 // Components
 ///////////////////////////
 
-import Container from 'components/Container';
+import Container, { CONTAINER_COLOR } from 'components/Container';
 
 ///////////////////////////
 // Scene
@@ -45,7 +45,7 @@ const StartContainer = ({ navigation }: { navigation: any }) => {
   ///////////////////////////
 
   return (
-    <Container maxHeight={false}>
+    <Container color={CONTAINER_COLOR.DARK} maxHeight={false}>
       <Start
         navigation={navigation}
         onImportClicked={onImportClicked}

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { color } from 'assets/styles/tokens';
 import { androidPlatform } from 'utils/platform';
 
 const styles = StyleSheet.create({
@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     width: '100%',
     ...(androidPlatform() ? { height: '100%' } : {}),
     paddingHorizontal: '20%',
-    backgroundColor: COLORS.primary,
+    backgroundColor: color.brand_900,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',

@@ -1,4 +1,5 @@
 @import '~assets/styles/_variables';
+@import '~assets/styles/tokens';
 
 .container {
   display: flex;
@@ -8,7 +9,7 @@
 
   .header {
     width: 100%;
-    background-color: $primary;
+    background-color: $color-brand-900;
 
     .search {
       display: flex;

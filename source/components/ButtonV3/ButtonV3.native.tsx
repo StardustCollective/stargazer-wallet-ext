@@ -5,6 +5,7 @@
 import React, { FC } from 'react';
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
+import LinearGradient from 'react-native-linear-gradient';
 
 //////////////////////
 // Styles
@@ -53,6 +54,7 @@ interface IButtonV3Props {
   extraContainerStyles?: {};
   onPress?: () => void;
   otherProps: any;
+  withGradient?: boolean;
 }
 
 //////////////////////
@@ -70,6 +72,7 @@ const ButtonV3: FC<IButtonV3Props> = ({
   extraTitleStyles = {},
   extraContainerStyles = {},
   onPress = () => {},
+  withGradient = false,
   ...otherProps
 }) => {
   let buttonSizeStyle = {};
@@ -127,6 +130,34 @@ const ButtonV3: FC<IButtonV3Props> = ({
   );
   const composedDisabledStyles = StyleSheet.compose(buttonColorStyle, styles.disabled);
 
+  // Render button with LinearGradient wrapper for SECONDARY_SOLID type
+  if (withGradient) {
+    return (
+      <LinearGradient
+        useAngle
+        angle={180}
+        locations={[0, 1]}
+        colors={['#7150E2', '#4B22D3']}
+        style={[buttonSizeStyle, extraStyles]}
+      >
+        <Button
+          testID={id}
+          title={title}
+          disabled={disabled || loading}
+          disabledTitleStyle={styles.disabledTitle}
+          disabledStyle={[composedDisabledStyles, { backgroundColor: 'transparent' }]}
+          loading={loading}
+          buttonStyle={[composedButtonStyles, { backgroundColor: 'transparent'}]}
+          titleStyle={composedTitleStyles}
+          containerStyle={[composedContainerStyles, { backgroundColor: 'transparent' }]}
+          onPress={onPress}
+          {...otherProps}
+        />
+      </LinearGradient>
+    );
+  }
+
+  // Default button rendering for all other types
   return (
     <Button
       testID={id}

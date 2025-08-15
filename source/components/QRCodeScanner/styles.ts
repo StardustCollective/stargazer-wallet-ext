@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'assets/styles/_variables';
+import { color } from 'assets/styles/tokens';
 import { iosPlatform } from 'utils/platform';
 
 const styles = StyleSheet.create({
@@ -12,12 +12,12 @@ const styles = StyleSheet.create({
   qrCameraTopContent: {
     width: '100%',
     height: '100%',
-    backgroundColor: COLORS.primary,
+    backgroundColor: color.brand_900,
   },
   qrCameraBottomContent: {
     width: '100%',
     height: '100%',
-    backgroundColor: COLORS.primary,
+    backgroundColor: color.brand_900,
   },
   qrSectionLeft: {
     flex: 1,

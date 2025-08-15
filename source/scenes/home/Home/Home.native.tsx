@@ -13,13 +13,13 @@ import {
 import NetInfo from '@react-native-community/netinfo';
 import { useLinkTo } from '@react-navigation/native';
 import BackgroundTimer from 'react-native-background-timer';
+import { iosPlatform } from 'utils/platform';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
 import Sheet from 'components/Sheet';
-import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import LoadingDots from 'components/LoadingDots';
 import ArrowUpIcon from 'assets/images/svg/arrow-rounded-up-white.svg';
@@ -55,6 +55,7 @@ import { IHome } from './types';
 import { BUY_STRING, SWAP_STRING } from './constants';
 import AssetsPanel from './AssetsPanel';
 import WalletsModal from './WalletsModal';
+import LinearGradient from 'react-native-linear-gradient';
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
@@ -160,6 +161,7 @@ const Home: FC<IHome> = ({
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContentContainer}
+        showsVerticalScrollIndicator={false}
       >
         {activeWallet ? (
           <>
@@ -175,28 +177,39 @@ const Home: FC<IHome> = ({
                     <TextV3.HeaderDisplay dynamic extraStyles={styles.fiatBalanceLabel}>
                       {balanceObject.balance}
                     </TextV3.HeaderDisplay>
-                    <TextV3.Body extraStyles={styles.fiatType}>
-                      {balanceObject.name}
-                    </TextV3.Body>
                   </>
                 )}
               </View>
               <View style={styles.buttons}>
-                <ButtonV3
-                  title={BUY_STRING}
-                  size={BUTTON_SIZES_ENUM.LARGE}
-                  type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                  onPress={onBuyPressed}
-                  extraStyles={styles.buttonNormal}
-                />
-                {!isDagOnlyWallet && (
-                  <ButtonV3
-                    title={SWAP_STRING}
-                    size={BUTTON_SIZES_ENUM.LARGE}
-                    type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
-                    onPress={onSwapPressed}
-                    extraStyles={styles.buttonNormal}
-                  />
+                {!iosPlatform() && 
+                  <TouchableOpacity style={styles.buttonContainer} onPress={onBuyPressed} activeOpacity={0.7}>
+                    <LinearGradient
+                      useAngle
+                      angle={180}
+                      style={styles.button}
+                      locations={[0, 1]}
+                      colors={['#7150E2', '#4B22D3']}
+                    >
+                      <TextV3.LabelSemiStrong extraStyles={styles.buttonLabel}>
+                        {BUY_STRING}
+                      </TextV3.LabelSemiStrong>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                }
+                {!isDagOnlyWallet && !iosPlatform() &&  (
+                  <TouchableOpacity style={styles.buttonContainer} onPress={onSwapPressed} activeOpacity={0.7}>
+                    <LinearGradient
+                      useAngle
+                      angle={180}
+                      style={styles.button}
+                      locations={[0, 1]}
+                      colors={['#7150E2', '#4B22D3']}
+                    >
+                    <TextV3.LabelSemiStrong extraStyles={styles.buttonLabel}>
+                      {SWAP_STRING}
+                    </TextV3.LabelSemiStrong>
+                  </LinearGradient>
+                </TouchableOpacity>
                 )}
               </View>
             </View>

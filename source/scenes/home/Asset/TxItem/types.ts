@@ -5,13 +5,14 @@ export type RenderIconProps = {
   isETH: boolean;
   isReceived: boolean;
   isRewardsTab?: boolean;
+  isStakingTransaction?: boolean;
 };
 
 export type ITxItem = {
   tx: Transaction;
-  isSelf: boolean;
   isReceived: boolean;
   isETH: boolean;
+  isSelf: boolean;
   isRewardsTab?: boolean;
   isGasSettingsVisible: boolean;
   getLinkUrl: (hash: string) => string;
@@ -25,7 +26,7 @@ export type ITxItem = {
 };
 
 export default interface ITxItemSettings extends ITxItem {
-  receivedOrSentText: string;
+  title: string;
   formattedDistanceDate: string;
   renderGasSettings: () => JSX.Element;
 }

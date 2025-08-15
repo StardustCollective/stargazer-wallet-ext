@@ -79,6 +79,7 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     enableHermes: true,  // clean and rebuild if changing
+    nodeExecutableAndArgs: ["node", "--openssl-legacy-provider"]
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -142,6 +143,18 @@ android {
     lintOptions {
         checkReleaseBuilds false
     }
+    configurations.all {
+        resolutionStrategy {
+            force 'com.facebook.react:react-native:0.66.1'
+            // Force all React Native related dependencies to use the correct version
+            eachDependency { details ->
+                if (details.requested.group == 'com.facebook.react' && details.requested.name == 'react-native') {
+                    details.useVersion '0.66.1'
+                    details.because 'Force React Native version to match project'
+                }
+            }
+        }
+    }
     splits {
         abi {
             reset()
@@ -196,7 +209,7 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:0.66.1"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 

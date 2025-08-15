@@ -1,7 +1,7 @@
 @import '~assets/styles/variables';
+@import '~assets/styles/tokens';
 
 .container {
-  height: 460px;
   width: 100%;
 
   .assetList {
@@ -25,7 +25,7 @@
   }
 
   .searchContainer {
-    background-color: $primary;
+    background-color: $color-brand-900;
     padding: 0px 16px 16px 16px;
 
     .searchInput {

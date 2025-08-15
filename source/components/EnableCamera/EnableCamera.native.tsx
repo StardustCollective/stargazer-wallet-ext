@@ -24,6 +24,7 @@ const EnableCamera: FC<IEnableCamera> = ({ onPress }): JSX.Element => {
       <ButtonV3
         type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
         size={BUTTON_SIZES_ENUM.LARGE}
+        withGradient
         title="Go to Settings"
         onPress={onGoToSettingPressed}
       />

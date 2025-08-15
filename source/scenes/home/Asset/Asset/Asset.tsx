@@ -3,18 +3,15 @@ import clsx from 'clsx';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import QRCodeModal from 'components/QRCodeModal';
-import TextV3 from 'components/TextV3';
+import Sheet from 'components/Sheet';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import ArrowsActiveIcon from 'assets/images/svg/arrows-active.svg';
-import ArrowsInactiveIcon from 'assets/images/svg/arrows-inactive.svg';
-import GiftActiveIcon from 'assets/images/svg/gift-active.svg';
-import GiftInactiveIcon from 'assets/images/svg/gift-inactive.svg';
 import { AssetType } from 'state/vault/types';
 import TxsPanel from '../TxsPanel';
+import TextV3 from 'components/TextV3';
 import styles from './Asset.scss';
 import IAssetSettings from './types';
-import AssetButtons from '../AssetButtons';
+import Balance from '../Balance';
 
 const TabPanel: FC<any> = (props) => {
   const { children, value, index } = props;
@@ -39,7 +36,7 @@ const StyledTabs = withStyles({
     backgroundColor: 'transparent',
     '& > span': {
       width: '100%',
-      backgroundColor: '#7070FF',
+      backgroundColor: '#775AED',
     },
   },
 })((props: any) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
@@ -48,22 +45,15 @@ const StyledTab = withStyles(() =>
   createStyles({
     root: {
       textTransform: 'none',
-      color: '#A3A3A3',
+      color: '#FFFFFFA8',
       fontFamily: 'Inter',
       fontSize: 14,
-      fontWeight: 500,
+      fontWeight: 600,
       height: 48,
     },
     wrapper: {
       flexDirection: 'row',
-      '& > img': {
-        marginTop: 6,
-        marginRight: 8,
-      },
-    },
-    labelIcon: {
-      paddingTop: 0,
-      minHeight: 0,
+      marginBottom: 6,
     },
     selected: {
       color: '#fff',
@@ -77,14 +67,21 @@ const AssetDetail: FC<IAssetSettings> = ({
   activeAsset,
   balanceText,
   fiatAmount,
+  lockedBalanceText,
+  fiatLocked,
   showQrCode,
-  onSendClick,
+  showLocked,
+  showBuy,
+  onSend,
+  onBuy,
+  onReceive,
   setShowQrCode,
   assets,
   isAddressCopied,
   copyAddress,
   showFiatAmount,
 }) => {
+  const [isLockedInfoOpen, setIsLockedInfoOpen] = useState(false);
   const [routeIndex, setRouteIndex] = useState(0);
   const textTooltip = isAddressCopied ? 'Copied' : 'Copy Address';
   const showRewardsTab = activeAsset?.type === AssetType.Constellation;
@@ -98,26 +95,33 @@ const AssetDetail: FC<IAssetSettings> = ({
       {!!activeWallet && !!activeAsset ? (
         <>
           <section className={styles.center}>
-            <div className={styles.balance}>
-              <TextV3.HeaderDisplay dynamic extraStyles={styles.balanceText}>
-                {balanceText}{' '}
-              </TextV3.HeaderDisplay>
-              <TextV3.Body extraStyles={styles.symbolText}>
-                {assets[activeAsset?.id]?.symbol}
-              </TextV3.Body>
-            </div>
-            {showFiatAmount && (
-              <div className={styles.fiatBalance}>
-                <TextV3.Body extraStyles={styles.fiatText}>{fiatAmount}</TextV3.Body>
+           <Balance.Root>
+              <Balance.Header>
+                <Balance.Available />
+              </Balance.Header>
+              <Balance.Content>
+                <Balance.TokenAmount amount={balanceText} />
+                {showFiatAmount && <Balance.FiatAmount amount={fiatAmount} />}
+              </Balance.Content>
+              <Balance.Footer>
+                {showBuy && <Balance.Buy  onPress={onBuy} />}
+                <Balance.Send  onPress={onSend} />
+                <Balance.Receive  onPress={onReceive} />
+              </Balance.Footer>
+            </Balance.Root>
+            {showLocked && 
+              <div className={styles.lockedBalance}>
+                <Balance.Root>
+                  <Balance.Header>
+                    <Balance.Locked  onInfoPress={() => setIsLockedInfoOpen(true)}/>
+                  </Balance.Header>
+                  <Balance.Content>
+                    <Balance.TokenAmount amount={lockedBalanceText} />
+                    {showFiatAmount && <Balance.FiatAmount amount={fiatLocked} />}
+                  </Balance.Content>
+                </Balance.Root>
               </div>
-            )}
-            <div className={styles.actions}>
-              <AssetButtons
-                setShowQrCode={setShowQrCode}
-                onSendClick={onSendClick}
-                assetId={activeAsset?.id}
-              />
-            </div>
+            }
           </section>
           <QRCodeModal
             open={showQrCode}
@@ -135,35 +139,35 @@ const AssetDetail: FC<IAssetSettings> = ({
                 variant="fullWidth"
                 aria-label="full width tabs"
               >
-                <StyledTab
-                  label="Transactions"
-                  icon={
-                    <img
-                      src={`/${routeIndex === 0 ? ArrowsActiveIcon : ArrowsInactiveIcon}`}
-                      alt="arrows"
-                    />
-                  }
-                />
-                <StyledTab
-                  label="Rewards"
-                  icon={
-                    <img
-                      src={`/${routeIndex === 1 ? GiftActiveIcon : GiftInactiveIcon}`}
-                      alt="gift"
-                    />
-                  }
-                />
+                <StyledTab label="Transactions" />
+                <StyledTab label="Actions" />
+                <StyledTab label="Rewards" />
               </StyledTabs>
               <TabPanel value={routeIndex} index={0}>
                 <TxsPanel route="transactions" />
               </TabPanel>
               <TabPanel value={routeIndex} index={1}>
+                <TxsPanel route="actions" />
+              </TabPanel>
+              <TabPanel value={routeIndex} index={2}>
                 <TxsPanel route="rewards" />
               </TabPanel>
             </>
           ) : (
             <TxsPanel route="transactions" />
           )}
+          <Sheet
+            isVisible={isLockedInfoOpen}
+            onClosePress={() => setIsLockedInfoOpen(false)}
+            snaps={[280]}
+            title={{
+              label: 'Locked Balance',
+              align: 'left',
+            }}
+          >
+            <TextV3.Body extraStyles={styles.lockedInfoText}>Tokens you can’t move right now due to actions like ‘AllowSpend’ or ‘TokenLock’. AllowSpend pre-approves another wallet to spend tokens for you.</TextV3.Body>
+            <TextV3.Body extraStyles={styles.lockedInfoText}>TokenLock freezes them temporarily, often for staking or governance. The tokens stay in your wallet but can’t be used until unlocked.</TextV3.Body>
+          </Sheet>
         </>
       ) : (
         <section

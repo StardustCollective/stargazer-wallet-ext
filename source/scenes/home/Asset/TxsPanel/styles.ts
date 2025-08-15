@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   activityScrollView: {
-    flexGrow: 1,
+    flex: 1,
   },
   spinner: {
     color: COLORS.primary,

@@ -1,19 +1,32 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from 'assets/styles/_variables';
+import { color } from 'assets/styles/tokens';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+  },
   wrapper: {
     flex: 1,
     flexDirection: 'column',
     width: '100%',
-    backgroundColor: COLORS.primary,
+  },
+  balanceScrollView: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 24,
+  },
+  lockedBalance: {
+    marginTop: 12,
   },
   mask: {
     flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.primary,
     opacity: 1,
   },
   loaderHide: {
@@ -115,7 +128,7 @@ const styles = StyleSheet.create({
   activity: {
     backgroundColor: COLORS.gray_light,
     width: '100%',
-    height: 2000,
+    flex: 1,
     display: 'flex',
     flexDirection: 'column',
   },
@@ -324,11 +337,11 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontWeight: '500',
     lineHeight: 24,
-    marginLeft: 8,
+    color: '#FFFFFFA8'
   },
   labelFocused: {
-    fontWeight: '600',
     lineHeight: 24,
+    color: '#fff'
   },
   labelContainer: {
     flexDirection: 'row',
@@ -336,16 +349,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabBar: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: color.brand_900,
     height: 50,
   },
   tabBarLabel: {
     color: COLORS.gray_300,
   },
   tabBarIndicator: {
-    backgroundColor: '#7070FF',
+    backgroundColor: '#775AED',
     height: 6,
   },
+  tabViewContainer: {
+    flex: 1,
+    flexGrow: 1,
+    minHeight: 600,
+    backgroundColor: COLORS.white,
+  },
+  lockedInfoText: {
+    fontSize: 16,
+    color: '#000000A8',
+  }
 });
 
 export default styles;

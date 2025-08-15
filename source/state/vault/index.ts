@@ -28,6 +28,7 @@ import IVaultState, {
   Reward,
 } from './types';
 import { upsertById } from 'utils/objects';
+import type { ActionResponse } from '@stardust-collective/dag4-network';
 
 const initialState: IVaultState = {
   status: 0,
@@ -148,6 +149,7 @@ const VaultState = createSlice({
           state.activeAsset = {
             transactions: [],
             rewards: [],
+            actions: [],
             ...state.activeWallet.assets[0],
           };
         }
@@ -169,7 +171,7 @@ const VaultState = createSlice({
       state.currentEVMNetwork = action.payload;
     },
     changeActiveAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
-      state.activeAsset = { transactions: [], rewards: [], ...action.payload };
+      state.activeAsset = { transactions: [], rewards: [], actions: [], ...action.payload };
     },
     updateWalletAssets(state: IVaultState, action: PayloadAction<IAssetState[]>) {
       state.activeWallet.assets = action.payload;
@@ -190,6 +192,9 @@ const VaultState = createSlice({
     },
     updateRewards(state: IVaultState, action: PayloadAction<{ txs: Reward[] }>) {
       state.activeAsset.rewards = action.payload.txs;
+    },
+    updateActions(state: IVaultState, action: PayloadAction<{ txs: ActionResponse[] }>) {
+      state.activeAsset.actions = action.payload.txs;
     },
     resetBalances(state: IVaultState) {
       state.balances = {};
@@ -262,6 +267,7 @@ export const {
   updateTransactions,
   setLoadingTransactions,
   updateRewards,
+  updateActions,
   resetBalances,
   updateBalances,
   addActiveWalletAsset,

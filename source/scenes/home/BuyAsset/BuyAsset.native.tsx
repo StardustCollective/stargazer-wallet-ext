@@ -150,6 +150,7 @@ const BuyAsset: FC<IBuyAsset> = ({
             title="Confirm"
             disabled={buttonDisabled}
             loading={buttonLoading}
+            withGradient
             size={BUTTON_SIZES_ENUM.LARGE}
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             extraStyles={styles.confirmButton}

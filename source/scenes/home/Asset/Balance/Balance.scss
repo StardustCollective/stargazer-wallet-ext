@@ -1,0 +1,117 @@
+.balanceRoot {
+  background: linear-gradient(180deg, #2B205B 0%, #211844 100%);
+  border: 1px solid rgba(181, 180, 228, 0.12);;
+  border-radius: 12px;
+  padding: 20px 16px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  align-self: stretch;
+}
+
+.balanceHeaderSection {
+  margin-bottom: 12px;
+}
+
+.balanceHeaderContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.balanceHeaderLockedContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.balanceHeaderIcon {
+  height: 20px;
+  width: 20px;
+  margin-right: 6px;
+}
+
+.balanceHeaderIconSvg {
+  width: 20px;
+  height: 20px;
+  color: #FFFFFFA8;
+}
+
+.balanceHeaderTitle {
+  color: #FFFFFFA8;
+}
+
+.balanceHeaderInfoIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.balanceContentSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.balanceTokenAmount {
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.2px;
+}
+
+.balanceFiatAmount {
+  color: #FFFFFFA8;
+  margin-top: 4px;
+}
+
+.balanceFooterSection {
+  margin-top: 28px;
+}
+
+.balanceFooterButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 32px;
+}
+
+.balanceButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.balanceButtonIcon {
+  background: linear-gradient(180deg, #7150E2 0%, #4B22D3 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.balanceButtonIconSvg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.balanceButtonLabel {
+  letter-spacing: 0.08px;
+}

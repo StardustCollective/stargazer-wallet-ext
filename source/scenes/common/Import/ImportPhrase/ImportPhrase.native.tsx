@@ -69,6 +69,7 @@ const ImportPhrase: FC<IImportPhrase> = ({
         <ButtonV3
           type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
           size={BUTTON_SIZES_ENUM.LARGE}
+          withGradient
           title={buttonTitle}
           extraStyles={styles.button}
           disabled={isDisabled}

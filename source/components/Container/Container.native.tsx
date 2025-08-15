@@ -17,6 +17,7 @@ import IContainer from './types';
 
 import styles from './styles';
 import { COLORS, NEW_COLORS } from 'assets/styles/_variables';
+import { color as globalColors } from 'assets/styles/tokens';
 
 ///////////////////////////
 // Enums
@@ -43,7 +44,7 @@ const Container: FC<IContainer> = ({
     };
   } else if (color === CONTAINER_COLOR.DARK) {
     extraSafeAreaStyles = {
-      backgroundColor: COLORS.primary,
+      backgroundColor: globalColors.brand_900,
     };
   } else if (color === CONTAINER_COLOR.EXTRA_LIGHT) {
     extraSafeAreaStyles = {

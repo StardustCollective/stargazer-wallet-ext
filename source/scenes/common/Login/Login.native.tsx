@@ -245,6 +245,7 @@ const Login: FC<ILogin> = ({
             type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
             size={BUTTON_SIZES_ENUM.LARGE}
             title={UNLOCK_STRING}
+            withGradient
             extraStyles={styles.unlockButton}
             extraTitleStyles={styles.unlockTitle}
             loading={isLoading}

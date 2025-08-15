@@ -1,4 +1,5 @@
 @import '~assets/styles/variables';
+@import '~assets/styles/tokens';
 
 .container {
   display: flex;
@@ -8,11 +9,11 @@
 }
 
 .maxHeightBottomBar {
-  max-height: 460px;
+  max-height: 472px;
 }
 
 .maxHeight {
-  max-height: 520px;
+  max-height: 536px;
 }
 
 .extraLight {
@@ -28,5 +29,5 @@
 }
 
 .dark {
-  background-color: $primary;
+  background-color: $color-brand-900;
 }

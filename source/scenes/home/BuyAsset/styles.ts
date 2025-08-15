@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop: 16,
   },
   numPadItem: {
     width: '33.33%',
@@ -91,8 +92,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   confirmButton: {
-    backgroundColor: COLORS.primary_lighter_1,
-    marginTop: 16,
     width: 300,
   },
   confirmButtonText: {

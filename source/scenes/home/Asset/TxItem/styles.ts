@@ -16,10 +16,10 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingHorizontal: 16,
     borderTopWidth: 0.5,
-    borderTopColor: 'rgba(0, 0, 0, 0.24)',
+    borderTopColor: '#B5B4E4',
   },
   groupBarText: {
-    color: 'rgba(0, 0, 0, 0.66)',
+    color: '#000000A8',
     fontWeight: FONT_WEIGHTS.semibold,
     marginTop: 0,
     marginBottom: 0,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   txAddress: {
-    color: '#575757',
+    color: '#000000A8',
   },
   txAmountWrapper: {
     display: 'flex',
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   txAmountFiatText: {
-    color: '#575757',
+    color: '#000000A8',
   },
   txExplorerIcon: {
     width: 60,

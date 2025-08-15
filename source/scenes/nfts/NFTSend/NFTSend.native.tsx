@@ -133,7 +133,7 @@ const NFTSend: FC<NFTSendProps> = ({
       </View>
       {showGasSlider && <GasSlider gas={gas} onGasPriceChange={onGasPriceChange} />}
       <View style={styles.buttonContainer}>
-        <ButtonV3 title={CONTINUE} disabled={buttonDisabled || !showGasSlider} size={BUTTON_SIZES_ENUM.FULL_WIDTH} type={BUTTON_TYPES_ENUM.SECONDARY_SOLID} onPress={onButtonPress} />
+        <ButtonV3 title={CONTINUE} disabled={buttonDisabled || !showGasSlider} size={BUTTON_SIZES_ENUM.FULL_WIDTH} type={BUTTON_TYPES_ENUM.SECONDARY_SOLID} withGradient onPress={onButtonPress} />
       </View>
       <QRCodeScanner
         visble={cameraOpen}

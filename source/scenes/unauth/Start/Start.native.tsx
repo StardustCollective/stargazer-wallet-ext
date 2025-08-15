@@ -125,6 +125,7 @@ const Start: FC<IStart> = ({ navigation, onGetStartedClicked, onImportClicked })
         size={BUTTON_SIZES_ENUM.LARGE}
         extraStyles={styles.createWalletButton}
         extraTitleStyles={styles.createWalletButtonText}
+        withGradient
         title="Create new wallet"
         onPress={onGetStartedClicked}
       />

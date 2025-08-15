@@ -1,4 +1,5 @@
 @import '~assets/styles/variables';
+@import '~assets/styles/tokens';
 
 .tabItemContainer {
   display: flex;
@@ -7,11 +8,10 @@
   height: 100%;
 
   .tabActiveItemLine {
-    height: 3px;
-    width: 80px;
+    height: 4px;
+    width: 120px;
     position: absolute;
     top: 0;
-    background-color: $primary_lighter_2;
-    border-radius: 24px;
+    background-color: $color-brand-400;
   }
 }

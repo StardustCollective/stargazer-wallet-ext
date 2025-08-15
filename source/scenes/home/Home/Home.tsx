@@ -126,11 +126,6 @@ const Home: FC<IHome> = ({
                           {balanceObject.balance}
                         </TextV3.HeaderDisplay>
                       </div>
-                      <div className={styles.name}>
-                        <TextV3.Body extraStyles={styles.fiatType}>
-                          {balanceObject.name}
-                        </TextV3.Body>
-                      </div>
                     </>
                   )}
                 </div>
@@ -140,6 +135,7 @@ const Home: FC<IHome> = ({
                     size={BUTTON_SIZES_ENUM.MEDIUM}
                     type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                     onClick={onBuyPressed}
+                    extraStyle={styles.mainButton}
                   />
                   {!isDagOnlyWallet && (
                     <>
@@ -148,6 +144,7 @@ const Home: FC<IHome> = ({
                         size={BUTTON_SIZES_ENUM.MEDIUM}
                         type={BUTTON_TYPES_ENUM.SECONDARY_SOLID}
                         onClick={onSwapPressed}
+                        extraStyle={styles.mainButton}
                       />
                     </>
                   )}

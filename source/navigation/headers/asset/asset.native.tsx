@@ -7,6 +7,7 @@ import AddressLinkImage from 'assets/images/svg/addressLink.svg';
 import defaultHeader from '../default';
 import styles from './styles';
 import IAssetHeader from './types';
+import { open } from 'utils/browser';
 
 const assetHeader = ({ navigation, asset, addressUrl }: IAssetHeader) => {
   return {
@@ -20,7 +21,8 @@ const assetHeader = ({ navigation, asset, addressUrl }: IAssetHeader) => {
 
             if (!addressUrl) return;
 
-            Linking.openURL(addressUrl);
+            open(addressUrl);
+
           }}
           style={styles.linkIcon}
         >

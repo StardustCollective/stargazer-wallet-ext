@@ -15,7 +15,6 @@
   }
   &:hover {
     cursor: pointer;
-    box-shadow: 0 0 10px #dedede;
   }
   &:active {
     box-shadow: 0 0 0;
@@ -90,7 +89,8 @@
 }
 
 .secondaryButton {
-  background-color: $primary_lighter_1;
+  background: linear-gradient(180deg, #7150E2 0%, #4B22D3 100%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .secondaryOutlineButton {
