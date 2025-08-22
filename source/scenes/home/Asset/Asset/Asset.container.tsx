@@ -23,7 +23,7 @@ import { C14_BASE_URL, C14_CLIENT_ID, DAG_NETWORK } from 'constants/index';
 import { getDagAddress, getEthAddress } from 'utils/wallet';
 import { DagAccount, MetagraphTokenClient } from '@stardust-collective/dag4-wallet';
 
-const DAG_BUY_URL = 'https://constellationnetwork.io/buy/#iWantTo';
+const DAG_BUY_URL = 'https://constellationnetwork.io/buy/';
 
 const AssetDetailContainer = ({ navigation }: IAssetDetail) => {
   const accountController = getAccountController();
