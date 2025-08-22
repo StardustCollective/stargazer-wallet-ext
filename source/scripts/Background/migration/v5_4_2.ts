@@ -18,7 +18,7 @@ const USDC_ASSET_INFO = {
   network: 'main2',
   l0endpoint: 'http://usdc-ml0-463769650.us-west-1.elb.amazonaws.com',
   l1endpoint: 'http://usdc-cl1-1109728921.us-west-1.elb.amazonaws.com',
-  priceId: 'bridged-usd-coin-base',
+  priceId: 'usd-coin',
 };
 
 const UsdcAsset = {
