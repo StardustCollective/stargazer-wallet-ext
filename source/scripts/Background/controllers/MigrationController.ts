@@ -210,6 +210,15 @@ const MigrationController = async () => {
     const v5_4_0 = require('../migration/v5_4_0');
     await v5_4_0.default(state);
   }
+
+  /**
+   * version < 5_4_2
+   * Description: Add USDC.dag asset
+   */
+  if (compareVersions(state.vault.version, '5.4.2') < 0) {
+    const v5_4_2 = require('../migration/v5_4_2');
+    await v5_4_2.default(state);
+  }
 };
 
 export default MigrationController;

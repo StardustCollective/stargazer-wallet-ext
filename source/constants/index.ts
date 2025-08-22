@@ -25,6 +25,8 @@ export const CONSTELLATION_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag.png';
 export const CONSTELLATION_DEFAULT_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag-default.png';
+export const USDC_DAG_LOGO =
+  'https://coin-images.coingecko.com/coins/images/6319/large/usdc.png';
 export const DOR_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor.png';
 export const NDT_LOGO =

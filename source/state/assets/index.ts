@@ -11,6 +11,7 @@ import {
   JENNYCO_LOGO,
   LATTICE_LOGO,
   POLYGON_LOGO,
+  USDC_DAG_LOGO,
   VE_LTX_LOGO,
 } from 'constants/index';
 import { AssetSymbol, AssetType } from 'state/vault/types';
@@ -40,6 +41,19 @@ export const initialState: IAssetListState = {
     logo: CONSTELLATION_LOGO,
     priceId: 'constellation-labs',
     decimals: 8,
+  },
+  'DAG0S16WDgdAvh8VvroR6MWLdjmHYdzAF5S181xh-main2': {
+    id: 'DAG0S16WDgdAvh8VvroR6MWLdjmHYdzAF5S181xh-main2',
+    address: 'DAG0S16WDgdAvh8VvroR6MWLdjmHYdzAF5S181xh',
+    label: 'USDC.dag',
+    symbol: 'USDC.dag',
+    decimals: 8,
+    type: AssetType.Constellation,
+    logo: USDC_DAG_LOGO,
+    network: 'main2',
+    l0endpoint: 'http://usdc-ml0-463769650.us-west-1.elb.amazonaws.com',
+    l1endpoint: 'http://usdc-cl1-1109728921.us-west-1.elb.amazonaws.com',
+    priceId: 'bridged-usd-coin-base',
   },
   'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2': {
     id: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2',
