@@ -22,7 +22,6 @@ import erc20assets from './erc20assets';
 import swap from './swap';
 import biometrics from './biometrics';
 import auth from './auth';
-import user from './user';
 import flags from './flags';
 
 import { loadState, saveState } from './localStorage';
@@ -48,7 +47,6 @@ const store = configureStore({
     swap,
     biometrics,
     auth,
-    user,
     flags,
   }),
   middleware,
@@ -64,14 +62,6 @@ export async function updateState() {
     contacts: state.contacts,
     assets: state.assets,
     dapp: state.dapp,
-    user: {
-      elpaca: {
-        hidden: state.user.elpaca.hidden,
-        claim: {
-          data: state.user.elpaca.claim.data,
-        },
-      },
-    },
     swap: {
       txIds: state.swap.txIds,
     },

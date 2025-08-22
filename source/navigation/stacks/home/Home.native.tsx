@@ -60,7 +60,6 @@ export const SCREEN_DEFAULT_TITLE_STRINGS = {
   importPhrase: 'Import Phrase',
   connectedSites: 'Connected Sites',
   security: 'Security',
-  personalize: 'Personalize',
   // Swap
   swapTokens: 'Swap Tokens',
   transferInfo: 'Transfer Info',

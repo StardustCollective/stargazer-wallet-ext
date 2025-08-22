@@ -7,13 +7,12 @@ import ISwapState from 'state/swap/types';
 import IProvidersState from 'state/providers/types';
 import { INFTListState } from 'state/nfts/types';
 import { saveState } from 'state/localStorage';
-import { IUserState } from 'state/user/types';
 
 type V5_3_3State = {
   assets: IAssetListState;
   nfts: INFTListState;
   contacts: IContactBookState;
-  user: IUserState;
+  user: any;
   dapp: {};
   price: IPriceState;
   providers: IProvidersState;

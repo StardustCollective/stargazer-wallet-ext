@@ -10,10 +10,8 @@ import { View } from 'react-native';
 ///////////////////////
 
 import AssetItem from 'components/AssetItem';
-import CardClaim from 'components/CardClaim';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import SlidersIcon from 'assets/images/svg/sliders.svg';
-import { ToastPosition, ToastType, useToast } from 'context/ToastContext';
 
 ///////////////////////
 // Types
@@ -33,30 +31,11 @@ import styles from './styles';
 
 const AssetsPanel: FC<IAssetState> = ({
   activeNetworkAssets,
-  showClaimCard,
   assets,
   activeWallet,
   handleSelectAsset,
   handleAddTokens,
-  handleHideCard,
 }) => {
-  const { showToast } = useToast();
-
-  const handleShowToast = () => {
-    showToast({
-      type: ToastType.info,
-      position: ToastPosition.bottom,
-      title: 'El Paca rewards card hidden',
-      message1: 'To unhide your rewards card go to',
-      message2: 'Settings > Personalize > El Paca Rewards',
-      message2Style: styles.toastMessage2,
-    });
-  };
-
-  const onPressHideCard = () => {
-    handleShowToast();
-    handleHideCard();
-  };
 
   const renderAssetList = () => {
     return (
@@ -81,7 +60,6 @@ const AssetsPanel: FC<IAssetState> = ({
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {showClaimCard && <CardClaim onPressHideCard={onPressHideCard} />}
         {Object.keys(activeWallet.assets).length && <>{renderAssetList()}</>}
         <ButtonV3
           title="Manage Tokens"

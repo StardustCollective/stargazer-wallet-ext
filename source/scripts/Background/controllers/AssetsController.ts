@@ -46,12 +46,6 @@ import { IAssetInfoState } from 'state/assets/types';
 import { clearCustomAsset, clearSearchAssets as clearSearch } from 'state/erc20assets';
 import { getAccountController } from 'utils/controllersUtils';
 import { getDagAddress, getEthAddress } from 'utils/wallet';
-import {
-  clearClaimAddress as clearClaimAddressFn,
-  clearClaim as clearClaimFn,
-  clearClaimHash as clearClaimHashFn,
-  setElpacaHidden as setElpacaHiddenFn,
-} from 'state/user';
 import { ExternalApi } from 'utils/httpRequests/apis';
 import { ExternalService } from 'utils/httpRequests/constants';
 
@@ -97,13 +91,9 @@ export interface IAssetsController {
   fetchBestDeal: (data: GetBestDealRequest) => Promise<void>;
   fetchPaymentRequest: (data: PaymentRequestBody) => Promise<void>;
   setRequestId: (value: string) => void;
-  setElpacaHidden: (value: boolean) => void;
   clearErrors: () => void;
   clearBestDeal: () => void;
   clearResponse: () => void;
-  clearClaim: () => void;
-  clearClaimHash: () => void;
-  clearClaimAddress: () => void;
   setSelectedProvider: (provider: IProviderInfoState) => void;
   clearPaymentRequest: () => void;
 }
@@ -288,22 +278,6 @@ const AssetsController = (): IAssetsController => {
     await store.dispatch<any>(getBestDeal(data));
   };
 
-  const setElpacaHidden = (value: boolean) => {
-    store.dispatch<any>(setElpacaHiddenFn(value));
-  };
-
-  const clearClaim = () => {
-    store.dispatch<any>(clearClaimFn());
-  };
-
-  const clearClaimHash = () => {
-    store.dispatch<any>(clearClaimHashFn());
-  };
-
-  const clearClaimAddress = () => {
-    store.dispatch<any>(clearClaimAddressFn());
-  };
-
   const clearBestDeal = (): void => {
     store.dispatch<any>(clearBestDealDispatch());
   };
@@ -348,14 +322,10 @@ const AssetsController = (): IAssetsController => {
     fetchPaymentRequest,
     setRequestId,
     setSelectedProvider,
-    setElpacaHidden,
     clearErrors,
     clearPaymentRequest,
     clearBestDeal,
     clearResponse,
-    clearClaim,
-    clearClaimHash,
-    clearClaimAddress,
   };
 };
 

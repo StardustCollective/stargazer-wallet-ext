@@ -11,8 +11,7 @@ import IVaultState, { AssetType } from 'state/vault/types';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
-import { getDagAddress, walletHasDag, walletHasEth } from 'utils/wallet';
-import { getElPacaInfo } from 'state/user/api';
+import { walletHasDag, walletHasEth } from 'utils/wallet';
 import { getDagBalance } from 'dag4/block-explorer';
 import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
 
@@ -90,7 +89,6 @@ export class AssetsBalanceMonitor {
 
       if (hasDAG) {
         this.startDagInterval();
-        this.refreshPacaStreak();
       }
 
       if (hasETH) {
@@ -177,15 +175,6 @@ export class AssetsBalanceMonitor {
     }
 
     return l0balances;
-  }
-
-  refreshPacaStreak() {
-    const { activeWallet } = store.getState().vault;
-    const dagAddress = getDagAddress(activeWallet);
-
-    if (!dagAddress) return;
-
-    store.dispatch<any>(getElPacaInfo(dagAddress));
   }
 
   async refreshDagBalance() {
