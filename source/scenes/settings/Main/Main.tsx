@@ -7,7 +7,6 @@ import networksIcon from 'assets/images/svg/networks.svg';
 import infoIcon from 'assets/images/svg/info.svg';
 import exitIcon from 'assets/images/svg/exit.svg';
 import linkedApps from 'assets/images/svg/linkedApps.svg';
-import settingsIcon from 'assets/images/svg/settings-adjust.svg';
 import { clearSession } from 'utils/keyring';
 import NavigationItem from 'components/NavigationItem';
 import IMainSettings from './types';
@@ -20,7 +19,6 @@ const Main: FC<IMainSettings> = ({
   onAboutLinkClicked,
   onContactsLinkClicked,
   onConnectedSitesClicked,
-  onPersonalizeLinkClicked,
   version,
 }) => {
   const SETTINGS_MAP = [
@@ -52,15 +50,7 @@ const Main: FC<IMainSettings> = ({
       IconImageOrComponent: linkedApps,
       onClick: onConnectedSitesClicked,
       imageStyles: styles.linkedIconImage,
-    },
-    {
-      id: 'settings-personalize',
-      label: 'Personalize',
-      key: 'Personalize',
-      IconImageOrComponent: settingsIcon,
-      onClick: onPersonalizeLinkClicked,
-      imageStyles: styles.personalizeIconImage,
-    },
+    }
   ];
 
   const logout = async () => {

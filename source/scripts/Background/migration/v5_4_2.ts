@@ -4,6 +4,8 @@ import { saveState } from 'state/localStorage';
 import { USDC_DAG_LOGO } from 'constants/index';
 import { filterObjectByKey, splitObjectByKey } from 'utils/objects';
 
+
+const PACA_ASSET_KEY = 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2'
 const USDC_ASSET_ADDRESS = 'DAG0S16WDgdAvh8VvroR6MWLdjmHYdzAF5S181xh';
 const USDC_ASSET_KEY = `${USDC_ASSET_ADDRESS}-main2`;
 
@@ -18,7 +20,7 @@ const USDC_ASSET_INFO = {
   network: 'main2',
   l0endpoint: 'http://usdc-ml0-463769650.us-west-1.elb.amazonaws.com',
   l1endpoint: 'http://usdc-cl1-1109728921.us-west-1.elb.amazonaws.com',
-  priceId: 'bridged-usd-coin-base',
+  priceId: 'usd-coin',
 };
 
 const UsdcAsset = {
@@ -29,9 +31,9 @@ const VERSION = '5.4.2';
 
 const MigrateRunner = async (oldState: any) => {
   const DAG_ASSET_KEY = 'constellation';
-  const assetsFiltered = filterObjectByKey(oldState.assets, USDC_ASSET_KEY);
+  const assetsFiltered = filterObjectByKey(oldState.assets, [USDC_ASSET_KEY, PACA_ASSET_KEY]);
   const [assetsPart1, assetsPart2] = splitObjectByKey(assetsFiltered, DAG_ASSET_KEY);
-  const customAssetsFiltered = oldState.vault.customAssets.filter((asset: any) => asset.id !== USDC_ASSET_KEY);
+  const customAssetsFiltered = oldState.vault.customAssets.filter((asset: any) => ![USDC_ASSET_KEY, PACA_ASSET_KEY].includes(asset.id));
   try {
     const newState = {
       ...oldState,
@@ -46,6 +48,7 @@ const MigrateRunner = async (oldState: any) => {
         version: VERSION,
       },
     };
+    delete newState.user;
     await saveState(newState);
     console.log(`Migrate to <${VERSION}> successfully!`);
     reload();

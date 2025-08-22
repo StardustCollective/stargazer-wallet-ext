@@ -1,5 +1,3 @@
-import { FC } from 'react';
-
 export default interface IMainSettings {
   handleLogout: () => void;
   onWalletLinkClick: () => void;
@@ -8,14 +6,5 @@ export default interface IMainSettings {
   onContactsLinkClicked: () => void;
   onConnectedSitesClicked: () => void;
   onSecurityLinkClicked: () => void;
-  onPersonalizeLinkClicked: () => void;
   version: string | number;
 }
-
-export type IRenderSettingsItemProps = {
-  label: string;
-  IconImageOrComponent: FC | string;
-  onClick: () => void;
-  imageStyles?: string;
-  disabled?: boolean;
-};
