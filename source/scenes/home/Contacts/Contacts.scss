@@ -3,7 +3,7 @@
 .mask {
   display: flex;
   position: fixed;
-  top: 80px;
+  top: 64px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -68,6 +68,7 @@
         padding: 0;
         width: 100%;
         overflow: auto;
+        height: 476px;
 
         li {
           display: flex;
