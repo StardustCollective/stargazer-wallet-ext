@@ -13,6 +13,7 @@ import {
   LEET_LOGO,
   NDT_LOGO,
   POLYGON_LOGO,
+  SWAP_LOGO,
   UPSIDER_AI_LOGO,
   USDC_DAG_LOGO,
   VE_LTX_LOGO,
@@ -60,6 +61,19 @@ export const constellationInitialValues: IAssetInfoState[] = [
     l1endpoint: 'http://usdc-cl1-1109728921.us-west-1.elb.amazonaws.com',
     priceId: 'usd-coin',
   },
+{
+  id: 'DAG7X5idd4aLfp4XC6WQdG1eDfR3LGPVEwtUUB2W-main2',
+  address: 'DAG7X5idd4aLfp4XC6WQdG1eDfR3LGPVEwtUUB2W',
+  label: 'PacaSwap',
+  symbol: 'SWAP',
+  decimals: 8,
+  type: AssetType.Constellation,
+  logo: SWAP_LOGO,
+  network: 'main2',
+  l0endpoint: 'http://pacaswap-mainnet-ml0-286306868.us-west-1.elb.amazonaws.com',
+  l1endpoint: 'http://pacaswap-mainnet-cl1-647928315.us-west-1.elb.amazonaws.com',
+  dl1endpoint: 'http://pacaswap-mainnet-dl1-1672636488.us-west-1.elb.amazonaws.com'
+},
   {
     id: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2',
     address: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM',
