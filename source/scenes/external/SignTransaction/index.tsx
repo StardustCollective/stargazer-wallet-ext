@@ -19,6 +19,8 @@ import { toDag } from 'utils/number';
 
 import SignTransactionContainer, { SignTransactionProviderConfig } from './SignTransactionContainer';
 import { type SignTransactionDataDAG, type SignTransactionDataEVM, TransactionType } from './types';
+import { retry } from 'utils/httpRequests/utils';
+import type { PendingTx } from '@stardust-collective/dag4-network';
 
 const SignTransaction = () => {
   const showAlert = usePlatformAlert();
@@ -36,7 +38,18 @@ const SignTransaction = () => {
     const feeInDag = Number(fee);
 
     // Send transaction
-    const pendingTx = await dag4.account.transferDag(to, amountInDag, feeInDag);
+    let pendingTx: PendingTx | null = null;
+    
+    try {
+      pendingTx = await dag4.account.transferDag(to, amountInDag, feeInDag);
+    } catch (err) {
+      pendingTx = await retry(() => dag4.account.transferDag(to, amountInDag, feeInDag, false, { sticky: false }));
+    }
+
+    if (!pendingTx) {
+      throw new EIPRpcError('Transaction failed', EIPErrorCodes.Rejected);
+    }
+
     pendingTx.amount = value;
 
     // Add transaction to mempool monitor
@@ -61,7 +74,18 @@ const SignTransaction = () => {
     });
 
     // Send transaction
-    const pendingTx = await metagraphClient.transfer(to, amountInDag, feeInDag);
+    let pendingTx: PendingTx | null = null;
+    
+    try {
+      pendingTx = await metagraphClient.transfer(to, amountInDag, feeInDag);
+    } catch (err) {
+      pendingTx = await retry(() => metagraphClient.transfer(to, amountInDag, feeInDag, false, { sticky: false }));
+    }
+
+    if (!pendingTx) {
+      throw new EIPRpcError('Transaction failed', EIPErrorCodes.Rejected);
+    }
+
     pendingTx.amount = value;
 
     // Add transaction to mempool monitor
