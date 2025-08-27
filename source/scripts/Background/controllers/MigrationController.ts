@@ -149,30 +149,12 @@ const MigrationController = async () => {
   }
 
   /**
-   * version < 4_1_2
-   * Description: Adds Elpaca token
-   */
-  if (compareVersions(state.vault.version, '4.1.2') < 0) {
-    const v4_1_2 = require('../migration/v4_1_2');
-    await v4_1_2.default(state);
-  }
-
-  /**
    * version < 5_0_0
    * Description: Migrates state only on Mobile
    */
   if (isNative && compareVersions(state.vault.version, '5.0.0') < 0) {
     const v5_0_0 = require('../migration/v5_0_0');
     await v5_0_0.default(state);
-  }
-
-  /**
-   * version < 5_1_3
-   * Description: Adds elpaca hidden property
-   */
-  if (compareVersions(state.vault.version, '5.1.3') < 0) {
-    const v5_1_3 = require('../migration/v5_1_3');
-    await v5_1_3.default(state);
   }
 
   /**
@@ -186,7 +168,7 @@ const MigrationController = async () => {
 
   /**
    * version < 5_3_0
-   * Description: Adds Data L1 endpoints for DOR and Elpaca
+   * Description: Adds Data L1 endpoints on DOR token
    */
   if (compareVersions(state.vault.version, '5.3.0') < 0) {
     const v5_3_0 = require('../migration/v5_3_0');
@@ -209,6 +191,15 @@ const MigrationController = async () => {
   if (!state.vault.wallets.cypherock) {
     const v5_4_0 = require('../migration/v5_4_0');
     await v5_4_0.default(state);
+  }
+
+  /**
+   * version < 5_4_2
+   * Description: Add USDC.dag and SWAP assets
+   */
+  if (compareVersions(state.vault.version, '5.4.2') < 0) {
+    const v5_4_2 = require('../migration/v5_4_2');
+    await v5_4_2.default(state);
   }
 };
 

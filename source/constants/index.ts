@@ -25,16 +25,18 @@ export const CONSTELLATION_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag.png';
 export const CONSTELLATION_DEFAULT_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dag-default.png';
+export const USDC_DAG_LOGO =
+  'https://coin-images.coingecko.com/coins/images/6319/large/usdc.png';
+export const SWAP_LOGO =
+  'https://icons-metagraph.s3.us-east-1.amazonaws.com/SWAP/swap_logo.svg';
 export const DOR_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/dor.png';
 export const NDT_LOGO =
   'https://icons-metagraph.s3.amazonaws.com/NDF/NDT_Token_image.png';
 export const UPSIDER_AI_LOGO =
   'https://icons-metagraph.s3.us-east-1.amazonaws.com/UP/upsider_logo.jpg';
-export const ELPACA_LOGO =
+  export const ELPACA_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/elpaca.png';
-export const ELPACA_LARGE_LOGO =
-  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/elpaca-portrait.png';
 export const ETHEREUM_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/eth.png';
 export const ETHEREUM_DEFAULT_LOGO =
@@ -481,8 +483,6 @@ const STARGAZER_PROVIDERS_BASE_URL_PROD =
 const PROVIDERS_BASE_URL = isProd
   ? STARGAZER_PROVIDERS_BASE_URL_PROD
   : STARGAZER_PROVIDERS_BASE_URL;
-
-export const GET_ELPACA_API = 'http://54.215.44.118:9100/data-application/streak';
 
 export const EXTERNAL_REQUESTS_BASE_URL =
   'https://production.stargazer-api.constellationnetwork.net/external-requests';
