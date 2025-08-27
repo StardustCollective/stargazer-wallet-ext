@@ -13,6 +13,7 @@ import { usePlatformAlert } from 'utils/alertUtil';
 import { toDatum } from 'utils/number';
 
 import AllowSpendContainer, { AllowSpendProviderConfig } from './AllowSpendContainer';
+import { retry } from 'utils/httpRequests/utils';
 
 const AllowSpend = () => {
   const [loading, setLoading] = useState(false);
@@ -31,8 +32,12 @@ const AllowSpend = () => {
     let allowSpendResponse: HashResponse | null = null;
 
     if (!decodedData.currencyId) {
-      // Send transaction to DAG
-      allowSpendResponse = await dag4.account.createAllowSpend(allowSpendBody);
+      try {
+        // Send transaction to DAG
+        allowSpendResponse = await dag4.account.createAllowSpend(allowSpendBody);
+      } catch (err) {
+        allowSpendResponse = await retry(() => dag4.account.createAllowSpend(allowSpendBody, { sticky: false }));
+      }
     } else {
       if (!asset) {
         throw new Error('Metagraph asset not found');
@@ -47,7 +52,11 @@ const AllowSpend = () => {
         beUrl: '',
       });
 
-      allowSpendResponse = await metagraphClient.createAllowSpend(allowSpendBody);
+      try {
+        allowSpendResponse = await metagraphClient.createAllowSpend(allowSpendBody);
+      } catch (err) {
+        allowSpendResponse = await retry(() => metagraphClient.createAllowSpend(allowSpendBody, { sticky: false }));
+      }
     }
 
     if (!allowSpendResponse || !allowSpendResponse?.hash) {

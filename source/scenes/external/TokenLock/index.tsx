@@ -12,6 +12,7 @@ import type { IAssetInfoState } from 'state/assets/types';
 import { usePlatformAlert } from 'utils/alertUtil';
 
 import TokenLockContainer, { TokenLockProviderConfig } from './TokenLockContainer';
+import { retry } from 'utils/httpRequests/utils';
 
 const TokenLock = () => {
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,11 @@ const TokenLock = () => {
 
     if (!decodedData.currencyId) {
       // Send transaction to DAG
-      tokenLockResponse = await dag4.account.createTokenLock(tokenLockBody);
+      try {
+        tokenLockResponse = await dag4.account.createTokenLock(tokenLockBody);
+      } catch (err) {
+        tokenLockResponse = await retry(() => dag4.account.createTokenLock(tokenLockBody, { sticky: false }));
+      }
     } else {
       if (!asset) {
         throw new Error('Metagraph asset not found');
@@ -44,7 +49,11 @@ const TokenLock = () => {
         beUrl: '',
       });
 
-      tokenLockResponse = await metagraphClient.createTokenLock(tokenLockBody);
+      try {
+        tokenLockResponse = await metagraphClient.createTokenLock(tokenLockBody);
+      } catch (err) {
+        tokenLockResponse = await retry(() => metagraphClient.createTokenLock(tokenLockBody, { sticky: false }));
+      }
     }
 
     if (!tokenLockResponse || !tokenLockResponse?.hash) {
