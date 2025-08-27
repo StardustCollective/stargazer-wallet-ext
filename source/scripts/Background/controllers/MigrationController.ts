@@ -195,7 +195,7 @@ const MigrationController = async () => {
 
   /**
    * version < 5_4_2
-   * Description: Add USDC.dag asset
+   * Description: Add USDC.dag and SWAP assets
    */
   if (compareVersions(state.vault.version, '5.4.2') < 0) {
     const v5_4_2 = require('../migration/v5_4_2');

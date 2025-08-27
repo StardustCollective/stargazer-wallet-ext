@@ -1,13 +1,15 @@
 import { reload } from 'utils/browser';
 import { AssetType } from 'state/vault/types';
 import { saveState } from 'state/localStorage';
-import { USDC_DAG_LOGO } from 'constants/index';
+import { SWAP_LOGO, USDC_DAG_LOGO } from 'constants/index';
 import { filterObjectByKey, splitObjectByKey } from 'utils/objects';
 
 
-const PACA_ASSET_KEY = 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2'
+const PACA_ASSET_KEY = 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2';
 const USDC_ASSET_ADDRESS = 'DAG0S16WDgdAvh8VvroR6MWLdjmHYdzAF5S181xh';
 const USDC_ASSET_KEY = `${USDC_ASSET_ADDRESS}-main2`;
+const SWAP_ASSET_ADDRESS = 'DAG7X5idd4aLfp4XC6WQdG1eDfR3LGPVEwtUUB2W';
+const SWAP_ASSET_KEY = `${SWAP_ASSET_ADDRESS}-main2`;
 
 const USDC_ASSET_INFO = {
   id: USDC_ASSET_KEY,
@@ -23,23 +25,42 @@ const USDC_ASSET_INFO = {
   priceId: 'usd-coin',
 };
 
+const SWAP_ASSET_INFO = {
+  id: SWAP_ASSET_KEY,
+  address: SWAP_ASSET_ADDRESS,
+  label: 'PacaSwap',
+  symbol: 'SWAP',
+  decimals: 8,
+  type: AssetType.Constellation,
+  logo: SWAP_LOGO,
+  network: 'main2',
+  l0endpoint: 'http://pacaswap-mainnet-ml0-286306868.us-west-1.elb.amazonaws.com',
+  l1endpoint: 'http://pacaswap-mainnet-cl1-647928315.us-west-1.elb.amazonaws.com',
+  dl1endpoint: 'http://pacaswap-mainnet-dl1-1672636488.us-west-1.elb.amazonaws.com'
+}
+
 const UsdcAsset = {
   [USDC_ASSET_KEY]: USDC_ASSET_INFO,
+};
+
+const SwapAsset = {
+  [SWAP_ASSET_KEY]: SWAP_ASSET_INFO,
 };
 
 const VERSION = '5.4.2';
 
 const MigrateRunner = async (oldState: any) => {
   const DAG_ASSET_KEY = 'constellation';
-  const assetsFiltered = filterObjectByKey(oldState.assets, [USDC_ASSET_KEY, PACA_ASSET_KEY]);
+  const assetsFiltered = filterObjectByKey(oldState.assets, [USDC_ASSET_KEY, SWAP_ASSET_KEY, PACA_ASSET_KEY]);
   const [assetsPart1, assetsPart2] = splitObjectByKey(assetsFiltered, DAG_ASSET_KEY);
-  const customAssetsFiltered = oldState.vault.customAssets.filter((asset: any) => ![USDC_ASSET_KEY, PACA_ASSET_KEY].includes(asset.id));
+  const customAssetsFiltered = oldState.vault.customAssets.filter((asset: any) => ![USDC_ASSET_KEY, SWAP_ASSET_KEY, PACA_ASSET_KEY].includes(asset.id));
   try {
     const newState = {
       ...oldState,
       assets: {
         ...assetsPart1,
         ...UsdcAsset,
+        ...SwapAsset,
         ...assetsPart2,
       },
       vault: {
