@@ -25,7 +25,7 @@ const USDC_ASSET_INFO = {
   priceId: 'usd-coin',
 };
 
-const PACA_ASSET_INFO = {
+const SWAP_ASSET_INFO = {
   id: SWAP_ASSET_KEY,
   address: SWAP_ASSET_ADDRESS,
   label: 'PacaSwap',
@@ -44,7 +44,7 @@ const UsdcAsset = {
 };
 
 const SwapAsset = {
-  [SWAP_ASSET_KEY]: PACA_ASSET_INFO,
+  [SWAP_ASSET_KEY]: SWAP_ASSET_INFO,
 };
 
 const VERSION = '5.4.2';
