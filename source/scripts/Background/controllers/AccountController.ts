@@ -1,7 +1,7 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringManager, KeyringNetwork, KeyringWalletAccountState, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
-import { type ActionResponse, GlobalDagNetwork, MetagraphTokenNetwork } from '@stardust-collective/dag4-network';
+import { type ActionResponse, GlobalDagNetwork, MetagraphTokenNetwork, type PendingTx } from '@stardust-collective/dag4-network';
 import { BigNumber, ethers } from 'ethers';
 
 import { DAG_EXPLORER_API_URL, DAG_NETWORK } from 'constants/index';
@@ -34,6 +34,8 @@ import AssetsController, { IAssetsController } from './AssetsController';
 import { EthTransactionController } from './EthTransactionController';
 import { utils } from './EVMChainController';
 import NetworkController from './NetworkController';
+import { retry } from 'utils/httpRequests/utils';
+import { MetagraphTokenClient } from '@stardust-collective/dag4-wallet';
 
 // limit number of txs
 const TXS_LIMIT = 10;
@@ -627,8 +629,8 @@ export class AccountController {
     if (activeAsset.type === AssetType.Constellation) {
       const assetInfo = assets[activeAsset?.id];
       const isL0token = !!assetInfo?.l0endpoint && !!assetInfo?.l1endpoint;
-      let pendingTx = null;
-      let metagraphClient;
+      let pendingTx: PendingTx | null = null;
+      let metagraphClient: MetagraphTokenClient;
 
       if (isL0token) {
         const { beUrl } = DAG_NETWORK[activeNetwork[KeyringNetwork.Constellation]].config;
@@ -641,9 +643,21 @@ export class AccountController {
           beUrl,
         });
 
-        pendingTx = await metagraphClient.transfer(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee);
+        try {
+          pendingTx = await metagraphClient.transfer(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee);
+        } catch (err) {
+          pendingTx = await retry(() => metagraphClient.transfer(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee, false, { sticky: false }));
+        }
       } else {
-        pendingTx = await dag4.account.transferDag(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee);
+        try {
+          pendingTx = await dag4.account.transferDag(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee);
+        } catch (err) {
+          pendingTx = await retry(() => dag4.account.transferDag(this.tempTx.toAddress, Number(this.tempTx.amount), this.tempTx.fee, false, { sticky: false }));
+        }
+      }
+
+      if (!pendingTx) {
+        throw new Error('Transaction failed');
       }
 
       // Convert the amount from DAG to DATUM

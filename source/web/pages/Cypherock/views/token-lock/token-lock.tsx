@@ -23,6 +23,7 @@ import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherock
 import { CYPHEROCK_DERIVATION_PATHS } from 'web/utils/cypherockBridge/constants';
 
 import styles from './styles.scss';
+import { retry } from 'utils/httpRequests/utils';
 
 interface ITokenLockViewProps {
   service: CypherockService;
@@ -88,7 +89,15 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
       proofs: [{ id: publicKey.substring(2), signature }],
     };
 
-    const { hash } = await networkInstance.l1Api.postTokenLock(signedTokenLock);
+    let hash: string | null = null;
+
+    try {
+      const { hash: hashResponse } = await networkInstance.l1Api.postTokenLock(signedTokenLock);
+      hash = hashResponse;
+    } catch (err) {
+      const { hash: hashResponse } = await retry(() => networkInstance.l1Api.postTokenLock(signedTokenLock, { sticky: false }));
+      hash = hashResponse;
+    }
 
     if (!hash) {
       throw new Error('Failed to generate signed token lock transaction');

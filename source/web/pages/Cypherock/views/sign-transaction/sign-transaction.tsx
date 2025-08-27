@@ -29,6 +29,7 @@ import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherock
 import { CYPHEROCK_DERIVATION_PATHS } from 'web/utils/cypherockBridge/constants';
 
 import styles from './styles.scss';
+import { retry } from 'utils/httpRequests/utils';
 
 interface ISignTransactionProps {
   service: CypherockService;
@@ -110,7 +111,13 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
     ];
 
     // Post transaction to the network
-    const txHash = await networkInstance.postTransaction(tx);
+    let txHash: string | null = null;
+
+    try {
+      txHash = await networkInstance.postTransaction(tx);
+    } catch (err) {
+      txHash = await retry(() => networkInstance.postTransaction(tx, { sticky: false }));
+    }
 
     if (!txHash) {
       throw new CypherockError('No transaction hash found', ErrorCode.UNKNOWN);

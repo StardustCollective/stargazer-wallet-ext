@@ -30,6 +30,7 @@ import ImportSuccess from './views/importSuccess';
 import MessageSigning from './views/messageSigning';
 import SignView from './views/sign';
 import { AlertBar, Header } from './components';
+import { retry } from 'utils/httpRequests/utils';
 
 // Strings
 const ROUTES = {
@@ -328,7 +329,17 @@ const BitfiPage = () => {
       const amountInDag = toDag(amount).toString();
       // TODO-421: Update buildTransaction to support PostTransaction and PostTransactionV2 (remove as any)
       const signedTX = await BitfiBridgeUtil.buildTransaction(amountInDag, from, to, fee);
-      const hash = await dag4.account.networkInstance.postTransaction(signedTX);
+      let hash: string | null = null;
+
+      try {
+        hash = await dag4.account.networkInstance.postTransaction(signedTX);
+      } catch (err) {
+        hash = await retry(() => dag4.account.networkInstance.postTransaction(signedTX, { sticky: false }));
+      }
+
+      if (!hash) {
+        throw new EIPRpcError('Transaction failed', EIPErrorCodes.Rejected);
+      }
 
       StargazerExternalPopups.addResolvedParam(location.href);
       StargazerWSMessageBroker.sendResponseResult(hash, messageRequest);
