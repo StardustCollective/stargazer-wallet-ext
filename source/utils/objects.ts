@@ -30,10 +30,10 @@ export const filterArrayByValue = (array: any, key: string, value: any) => {
   return array?.length ? array.filter((item: any) => item[key] !== value) : [];
 };
 
-export const filterObjectByKey = (object: any, filterKey: string) => {
+export const filterObjectByKey = (object: any, filterKey: string | string[]) => {
   const newObject: any = {};
   for (const key in object) {
-    if (key !== filterKey) {
+    if (!Array.isArray(filterKey) ? key !== filterKey : !filterKey.includes(key)) {
       newObject[key] = object[key];
     }
   }

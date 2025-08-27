@@ -41,10 +41,6 @@ const MainContainer: FC = () => {
     linkTo('/settings/security');
   };
 
-  const onPersonalizeLinkClicked = () => {
-    linkTo('/settings/personalize');
-  };
-
   return (
     <Container color={CONTAINER_COLOR.LIGHT}>
       <Main
@@ -55,7 +51,6 @@ const MainContainer: FC = () => {
         onContactsLinkClicked={onContactsLinkClicked}
         onConnectedSitesClicked={onConnectedSitesClicked}
         onSecurityLinkClicked={onSecurityLinkClicked}
-        onPersonalizeLinkClicked={onPersonalizeLinkClicked}
         version={version}
       />
     </Container>

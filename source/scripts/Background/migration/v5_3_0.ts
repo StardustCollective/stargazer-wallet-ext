@@ -7,14 +7,13 @@ import ISwapState from 'state/swap/types';
 import IProvidersState from 'state/providers/types';
 import { INFTListState } from 'state/nfts/types';
 import { saveState } from 'state/localStorage';
-import { IUserState } from 'state/user/types';
 import { CONSTELLATION_LOGO, DOR_LOGO } from 'constants/index';
 
 type V5_2_1State = {
   assets: IAssetListState;
   nfts: INFTListState;
   contacts: IContactBookState;
-  user: IUserState;
+  user: any;
   dapp: {};
   price: IPriceState;
   providers: IProvidersState;
@@ -26,9 +25,6 @@ const VERSION = '5.3.0';
 
 const DOR_ID = 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2';
 const DOR_dL1_ENDPOINT = 'http://dl1-lb-mainnet.getdor.com:9000';
-const ELPACA_ID = 'DAG7ChnhUF7uKgn8tXy45aj4zn9AFuhaZr8VXY43-main2';
-const ELPACA_dL1_ENDPOINT =
-  'http://elpaca-dl1-550039959.us-west-1.elb.amazonaws.com:9300';
 
 const DAG_BASE_ASSET = {
   '0x74299A718b2c44483a27325d7725F0B2646DE3B1-base-mainnet': {
@@ -80,10 +76,7 @@ const MigrateRunner = async (oldState: any) => {
   const assetsUpdated = updateAssets(oldState.assets, {
     [DOR_ID]: {
       dl1endpoint: DOR_dL1_ENDPOINT,
-    },
-    [ELPACA_ID]: {
-      dl1endpoint: ELPACA_dL1_ENDPOINT,
-    },
+    }
   });
   try {
     const newState: V5_2_1State = {
