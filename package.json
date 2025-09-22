@@ -28,7 +28,7 @@
     "clean:pods": "cd source/native/ios && rm -rf Pods",
     "clean:all": "yarn clean && yarn clean:pods",
     "install:pods": "cd source/native/ios && pod install",
-    "postinstall": "npx patch-package && npx rimraf ./source/web/node_modules/react && cd source/native && npx patch-package"
+    "postinstall": "npx patch-package && npx rimraf ./source/web/node_modules/react"
   },
   "dependencies": {
     "@devneser/gradient-avatar": "^1.1.1",

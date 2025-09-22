@@ -1,10 +1,12 @@
+const {getDefaultConfig} = require('@react-native/metro-config');
+
 /**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
+ * Metro configuration
+ * https://reactnative.dev/docs/metro
  *
- * @format
+ * @type {import('metro-config').MetroConfig}
  */
-const {getDefaultConfig} = require('metro-config');
+
 const path = require('path');
 const nodeModules = require('node-libs-react-native');
 

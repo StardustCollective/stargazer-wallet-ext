@@ -23,8 +23,8 @@
     "metro-react-native-babel-transformer": "^0.66.2",
     "native-base": "^3.2.2",
     "node-libs-react-native": "^1.2.1",
-    "react": "17.0.2",
-    "react-native": "0.66.1",
+    "react": "18.2.0",
+    "react-native": "0.74.7",
     "react-native-background-timer": "^2.4.1",
     "react-native-biometrics": "^3.0.1",
     "react-native-camera": "^4.2.1",
@@ -64,19 +64,18 @@
     "react-native-vector-icons": "^9.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/runtime": "^7.12.5",
-    "@react-native-community/eslint-config": "^2.0.0",
-    "@types/jest": "^26.0.23",
-    "@types/react-native": "^0.65.0",
-    "@types/react-test-renderer": "^17.0.1",
-    "babel-jest": "^26.6.3",
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.20.0",
+    "@babel/runtime": "^7.20.0",
+    "@react-native/babel-preset": "0.74.89",
+    "@react-native/eslint-config": "0.74.89",
+    "@react-native/metro-config": "0.74.89",
+    "@react-native/typescript-config": "0.74.89",
+    "@types/react": "^18.2.6",
     "babel-plugin-module-resolver": "^4.1.0",
-    "eslint": "^7.14.0",
-    "jest": "^26.6.3",
-    "metro-react-native-babel-preset": "^0.66.2",
-    "react-test-renderer": "17.0.2",
-    "reactotron-react-native": "4.0.2"
+    "eslint": "^8.19.0",
+    "prettier": "2.8.8",
+    "typescript": "5.0.4"
   },
   "workspaces": {
     "nohoist": [
@@ -87,17 +86,9 @@
     ]
   },
   "resolutions": {
-    "@types/react": "^17"
+    "@types/react": "^18.2.6"
   },
-  "jest": {
-    "preset": "react-native",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
+  "engines": {
+    "node": ">=18"
   }
 }
