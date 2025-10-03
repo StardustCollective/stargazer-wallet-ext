@@ -1,9 +1,8 @@
 import { dag4 } from '@stardust-collective/dag4';
+
 import { IAssetInfoState } from 'state/assets/types';
 
-export const getMetagraphCurrencyBalance = async (
-  l0asset: IAssetInfoState
-): Promise<number> => {
+export const getMetagraphCurrencyBalance = async (l0asset: IAssetInfoState): Promise<number> => {
   try {
     const metagraphClient = dag4.account.createMetagraphTokenClient({
       metagraphId: l0asset.address,

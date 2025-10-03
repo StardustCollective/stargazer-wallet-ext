@@ -2,18 +2,23 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { DagWalletMonitorUpdate } from '@stardust-collective/dag4-wallet';
 import { Subscription } from 'rxjs';
-import { getAccountController } from 'utils/controllersUtils';
+
+import { getCurrencyAddressBalance, getDagBalance } from 'dag4/block-explorer';
+import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
+
 import { IAssetInfoState } from 'state/assets/types';
+import { setLoadingDAGBalances, setLoadingETHBalances } from 'state/flags';
 import store from 'state/store';
 import { resetBalances, updateBalances } from 'state/vault';
-import { setLoadingDAGBalances, setLoadingETHBalances } from 'state/flags';
 import IVaultState, { AssetType } from 'state/vault/types';
+
+import { getAccountController } from 'utils/controllersUtils';
+import { walletHasDag, walletHasEth } from 'utils/wallet';
+
+import { DAG_NETWORK } from '../../../constants';
 import ControllerUtils from '../controllers/ControllerUtils';
 import { AccountTracker } from '../controllers/EVMChainController';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
-import { walletHasDag, walletHasEth } from 'utils/wallet';
-import { getDagBalance } from 'dag4/block-explorer';
-import { getMetagraphCurrencyBalance } from 'dag4/metagraph';
 
 const THIRTY_SECONDS = 30 * 1000;
 
@@ -44,9 +49,7 @@ export class AssetsBalanceMonitor {
   }
 
   startDagInterval() {
-    this.subscription = dag4.monitor
-      .observeMemPoolChange()
-      .subscribe((up) => this.pollPendingTxs(up));
+    this.subscription = dag4.monitor.observeMemPoolChange().subscribe(up => this.pollPendingTxs(up));
 
     dag4.monitor.startMonitor();
 
@@ -114,7 +117,7 @@ export class AssetsBalanceMonitor {
   }
 
   stopEthInterval() {
-    Object.values(this.accountTrackerList).forEach((tracker) => {
+    Object.values(this.accountTrackerList).forEach(tracker => {
       tracker.stop();
     });
   }
@@ -131,48 +134,36 @@ export class AssetsBalanceMonitor {
     }
   }
 
-  // This function will be used in the future when the block explorer is fixed
+  async refreshL0balances(l0assets: IAssetInfoState[], dagAddress: string) {
+    const l0balances: Record<string, string> = {};
 
-  // private async getCurrencyAddressBlockExplorerBalance(
-  //   metagraphAddress: string,
-  //   dagAddress: string
-  // ): Promise<string> {
-  //   try {
-  //     const balance =
-  //       (
-  //         (await dag4.network.blockExplorerV2Api.getCurrencyAddressBalance(
-  //           metagraphAddress,
-  //           dagAddress
-  //         )) as any
-  //       )?.data?.balance ?? 0;
-  //     const balanceNumber = toDag(balance);
+    // Create an array of promises for parallel execution
+    const balancePromises = l0assets.map(async l0asset => {
+      let balance;
 
-  //     return String(balanceNumber);
-  //   } catch (err) {
-  //     return null;
-  //   }
-  // }
-
-  async refreshL0balances(l0assets: IAssetInfoState[]) {
-    let l0balances: Record<string, string> = {};
-
-    for (const l0asset of l0assets) {
-      const balance = await getMetagraphCurrencyBalance(l0asset);
-
-      // // This code will be used in the future when the block explorer is fixed
-      // if (l0asset.network === DAG_NETWORK.local2.id) {
-      //   // Get balance from L0 API for local development
-      //   balanceString = await this.getCurrencyAddressL0Balance(l0asset);
-      // } else {
-      //   balanceString = await this.getCurrencyAddressBlockExplorerBalance(
-      //     l0asset.address,
-      //     dagAddress
-      //   );
-      // }
-      if (!!balance || balance === 0) {
-        l0balances[l0asset.id] = String(balance);
+      if (l0asset.network === DAG_NETWORK.local2.id) {
+        // Get balance from L0 API for local development
+        balance = await getMetagraphCurrencyBalance(l0asset);
+      } else {
+        try {
+          balance = await getCurrencyAddressBalance(l0asset.address, dagAddress);
+        } catch (err) {
+          balance = await getMetagraphCurrencyBalance(l0asset);
+        }
       }
-    }
+
+      return { assetId: l0asset.id, balance };
+    });
+
+    // Fetch all balances in parallel
+    const results = await Promise.all(balancePromises);
+
+    // Build the l0balances object from results
+    results.forEach(({ assetId, balance }) => {
+      if (balance !== undefined && balance !== null) {
+        l0balances[assetId] = String(balance);
+      }
+    });
 
     return l0balances;
   }
@@ -182,22 +173,17 @@ export class AssetsBalanceMonitor {
     const { activeNetwork } = store.getState().vault;
     const { assets } = store.getState();
 
-    const allAssets = !!defaultTokens?.data
-      ? { ...defaultTokens.data, ...assets }
-      : assets;
+    const allAssets = defaultTokens?.data ? { ...defaultTokens.data, ...assets } : assets;
 
     try {
       // Hotfix: Use block explorer API directly.
       const { address } = dag4.account;
 
       const l0assets = Object.values(allAssets).filter(
-        (asset) =>
-          !!asset?.l0endpoint &&
-          !!asset?.l1endpoint &&
-          asset?.network === activeNetwork.Constellation
+        asset => !!asset?.l0endpoint && !!asset?.l1endpoint && asset?.network === activeNetwork.Constellation
       );
 
-      const l0balances = await this.refreshL0balances(l0assets);
+      const l0balances = await this.refreshL0balances(l0assets, address);
       const balance = await getDagBalance(address);
       const balanceString = String(balance);
 
@@ -244,16 +230,10 @@ export class AssetsBalanceMonitor {
     const networksList = Object.keys(activeNetwork);
     const chainsList = Object.values(activeNetwork);
     const EVM_CHAINS = getAllEVMChains();
-    const defaultTokens = !!providers?.defaultTokens?.data
-      ? Object.values(providers.defaultTokens.data)
-      : [];
-    const defaultTokensIds = !!defaultTokens?.length
-      ? defaultTokens.map((token) => token.id)
-      : [];
+    const defaultTokens = providers?.defaultTokens?.data ? Object.values(providers.defaultTokens.data) : [];
+    const defaultTokensIds = defaultTokens?.length ? defaultTokens.map(token => token.id) : [];
 
-    const activeTokens = activeWallet.assets
-      .map((a) => assets[a.id])
-      .filter((a) => !defaultTokensIds.includes(a.id));
+    const activeTokens = activeWallet.assets.map(a => assets[a.id]).filter(a => !defaultTokensIds.includes(a.id));
     const allTokens = [...defaultTokens, ...activeTokens];
 
     // Remove Constellation chain
@@ -265,14 +245,14 @@ export class AssetsBalanceMonitor {
       const chainInfo = EVM_CHAINS[chainId];
 
       const chainTokens = allTokens
-        .filter((token) => token.type === AssetType.ERC20 && token.network === chainId)
-        .map((token) => {
+        .filter(token => token.type === AssetType.ERC20 && token.network === chainId)
+        .map(token => {
           const { address, decimals, network } = token;
           return { contractAddress: address, decimals, chain: network };
         });
 
       const MainAssetType = this.getNetworkMainTokenType(networkId);
-      const ethAsset = activeWallet.assets.find((a) => a.type === AssetType.Ethereum);
+      const ethAsset = activeWallet.assets.find(a => a.type === AssetType.Ethereum);
 
       if (!!ethAsset && !!chainInfo) {
         return this.accountTrackerList[networkId].config(
@@ -281,7 +261,7 @@ export class AssetsBalanceMonitor {
           chainTokens,
           chainInfo.chainId,
           async (mainAssetBalance, tokenBals) => {
-            return new Promise((resolve) => {
+            return new Promise(resolve => {
               store.dispatch(
                 updateBalances({
                   ...(!!mainAssetBalance && { [MainAssetType]: mainAssetBalance }),
@@ -293,9 +273,8 @@ export class AssetsBalanceMonitor {
           },
           30
         );
-      } else {
-        console.log(`Error: Unable to configure ${networkId}`);
       }
+      console.log(`Error: Unable to configure ${networkId}`);
     });
 
     await Promise.all(promises);
