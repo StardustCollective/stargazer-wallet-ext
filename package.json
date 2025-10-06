@@ -9,6 +9,7 @@
     "node": ">=10.0.0",
     "yarn": ">= 1.0.0"
   },
+  "packageManager": "yarn@1.19.0",
   "scripts": {
     "dev:chrome": "yarn workspace extension dev:chrome",
     "dev:firefox": "yarn workspace extension dev:firefox",
