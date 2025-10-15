@@ -155,8 +155,8 @@ export const DAG_NETWORK: {
     network: 'Constellation',
     config: {
       beUrl: '',
-      l0Url: '',
-      l1Url: '',
+      l0Url: 'http://localhost:9000',
+      l1Url: 'http://localhost:9100',
     },
   },
 };
