@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+# Lock CocoaPods to version 1.14.3 to match Podfile.lock
+gem 'cocoapods', '1.14.3'
+
