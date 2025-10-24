@@ -1,20 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  ALKIMI_LOGO,
-  AVALANCHE_LOGO,
-  BSC_LOGO,
-  CONSTELLATION_LOGO,
-  DOR_LOGO,
-  ETHEREUM_LOGO,
-  GEOJAM_LOGO,
-  JENNYCO_LOGO,
-  LATTICE_LOGO,
-  POLYGON_LOGO,
-  SWAP_LOGO,
-  USDC_DAG_LOGO,
-  VE_LTX_LOGO,
-} from 'constants/index';
+
+import { ALKIMI_LOGO, AVALANCHE_LOGO, BSC_LOGO, CONSTELLATION_LOGO, DOR_LOGO, ETHEREUM_LOGO, GEOJAM_LOGO, JENNYCO_LOGO, LATTICE_LOGO, POLYGON_LOGO, SWAP_LOGO, USDC_DAG_LOGO, VE_LTX_LOGO } from 'constants/index';
+
 import { AssetSymbol, AssetType } from 'state/vault/types';
+
 import IAssetListState, { IAssetInfoState } from './types';
 
 export const initialState: IAssetListState = {
@@ -66,7 +55,7 @@ export const initialState: IAssetListState = {
     network: 'main2',
     l0endpoint: 'http://pacaswap-mainnet-ml0-286306868.us-west-1.elb.amazonaws.com',
     l1endpoint: 'http://pacaswap-mainnet-cl1-647928315.us-west-1.elb.amazonaws.com',
-    dl1endpoint: 'http://pacaswap-mainnet-dl1-1672636488.us-west-1.elb.amazonaws.com'
+    dl1endpoint: 'http://pacaswap-mainnet-dl1-1672636488.us-west-1.elb.amazonaws.com',
   },
   'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2': {
     id: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2',
@@ -182,24 +171,24 @@ export const initialState: IAssetListState = {
     logo: JENNYCO_LOGO,
     decimals: 18,
   },
-  '0x74299A718b2c44483a27325d7725F0B2646DE3B1-base-mainnet': {
-    id: '0x74299A718b2c44483a27325d7725F0B2646DE3B1-base-mainnet',
-    address: '0x74299A718b2c44483a27325d7725F0B2646DE3B1',
+  '0xEcFf4D80f54CF55c626E52F304a8891645961e72-base-mainnet': {
+    id: '0xEcFf4D80f54CF55c626E52F304a8891645961e72-base-mainnet',
+    address: '0xEcFf4D80f54CF55c626E52F304a8891645961e72',
     label: 'Base DAG',
     symbol: 'BASE_DAG',
     type: AssetType.ERC20,
-    priceId: '',
+    priceId: 'constellation-labs',
     network: 'base-mainnet',
     logo: CONSTELLATION_LOGO,
     decimals: 8,
   },
-  '0xfe9885baff18074846aaa2d5541581adf068731d-base-mainnet': {
-    id: '0xfe9885baff18074846aaa2d5541581adf068731d-base-mainnet',
-    address: '0xfe9885baff18074846aaa2d5541581adf068731d',
+  '0x38a7C0416164faa29d207c9cF2273a5b80210aeD-base-mainnet': {
+    id: '0x38a7C0416164faa29d207c9cF2273a5b80210aeD-base-mainnet',
+    address: '0x38a7C0416164faa29d207c9cF2273a5b80210aeD',
     label: 'Base DOR',
     symbol: 'BASE_DOR',
     type: AssetType.ERC20,
-    priceId: '',
+    priceId: 'dor',
     network: 'base-mainnet',
     logo: DOR_LOGO,
     decimals: 8,
@@ -224,22 +213,14 @@ const AssetListState = createSlice({
         delete state[action.payload.id];
       }
     },
-    updateAssetDecimals(
-      state: IAssetListState,
-      action: PayloadAction<{ assetId: string; decimals: number }>
-    ) {
-      if (
-        action.payload.assetId &&
-        action.payload.decimals &&
-        !!state[action.payload.assetId]
-      ) {
+    updateAssetDecimals(state: IAssetListState, action: PayloadAction<{ assetId: string; decimals: number }>) {
+      if (action.payload.assetId && action.payload.decimals && !!state[action.payload.assetId]) {
         state[action.payload.assetId].decimals = action.payload.decimals;
       }
     },
   },
 });
 
-export const { addAsset, removeAsset, updateAssetDecimals, rehydrate } =
-  AssetListState.actions;
+export const { addAsset, removeAsset, updateAssetDecimals, rehydrate } = AssetListState.actions;
 
 export default AssetListState.reducer;

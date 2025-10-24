@@ -1,34 +1,16 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import localStorage from 'utils/localStorage';
-import {
-  AVALANCHE_NETWORK,
-  BASE_NETWORK,
-  BSC_NETWORK,
-  DAG_NETWORK,
-  ETH_NETWORK,
-  POLYGON_NETWORK,
-} from 'constants/index';
-
-import {
-  KeyringNetwork,
-  KeyringVaultState,
-  KeyringWalletState,
-  KeyringWalletType,
-} from '@stardust-collective/dag4-keyring';
-import findIndex from 'lodash/findIndex';
-import { IAssetInfoState } from 'state/assets/types';
-import IVaultState, {
-  AssetType,
-  IAssetState,
-  IWalletState,
-  IVaultWalletsStoreState,
-  ICustomNetworkObject,
-  ICustomNetworks,
-  Transaction,
-  Reward,
-} from './types';
-import { upsertById } from 'utils/objects';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { KeyringNetwork, KeyringVaultState, KeyringWalletState, KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import type { ActionResponse } from '@stardust-collective/dag4-network';
+import findIndex from 'lodash/findIndex';
+
+import { AVALANCHE_NETWORK, BASE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+
+import { IAssetInfoState } from 'state/assets/types';
+
+import localStorage from 'utils/localStorage';
+import { upsertById } from 'utils/objects';
+
+import IVaultState, { AssetType, IAssetState, ICustomNetworkObject, ICustomNetworks, IVaultWalletsStoreState, IWalletState, Reward, Transaction } from './types';
 
 const initialState: IVaultState = {
   status: 0,
@@ -66,16 +48,13 @@ const initialState: IVaultState = {
     ethereum: {},
   },
   customAssets: [],
-  version: '5.4.2',
+  version: '5.4.4',
 };
 
-export const getHasEncryptedVault = createAsyncThunk(
-  'vault/getHasEncryptedVault',
-  async () => {
-    const hasEncryptedVault = await localStorage.getItem('stargazer-vault');
-    return !!hasEncryptedVault;
-  }
-);
+export const getHasEncryptedVault = createAsyncThunk('vault/getHasEncryptedVault', async () => {
+  const hasEncryptedVault = await localStorage.getItem('stargazer-vault');
+  return !!hasEncryptedVault;
+});
 
 // createSlice comes with immer produce so we don't need to take care of immutational update
 const VaultState = createSlice({
@@ -109,16 +88,10 @@ const VaultState = createSlice({
     addCypherockWallet(state: IVaultState, action) {
       state.wallets.cypherock = [...state.wallets.cypherock, action.payload];
     },
-    updateWallets(
-      state: IVaultState,
-      action: PayloadAction<{ wallets: IVaultWalletsStoreState }>
-    ) {
+    updateWallets(state: IVaultState, action: PayloadAction<{ wallets: IVaultWalletsStoreState }>) {
       state.wallets = action.payload.wallets;
     },
-    updateWalletLabel(
-      state: IVaultState,
-      action: PayloadAction<{ wallet: KeyringWalletState; label: string }>
-    ) {
+    updateWalletLabel(state: IVaultState, action: PayloadAction<{ wallet: KeyringWalletState; label: string }>) {
       const { wallet, label } = action.payload;
       let walletList: KeyringWalletState[];
 
@@ -136,7 +109,7 @@ const VaultState = createSlice({
           break;
       }
 
-      const index = findIndex(walletList, (w) => w.id === wallet.id);
+      const index = findIndex(walletList, w => w.id === wallet.id);
 
       if (index !== -1 && walletList[index]) {
         walletList[index].label = label;
@@ -158,10 +131,7 @@ const VaultState = createSlice({
         delete state.activeAsset;
       }
     },
-    changeActiveNetwork(
-      state: IVaultState,
-      action: PayloadAction<{ network: string; chainId: string }>
-    ) {
+    changeActiveNetwork(state: IVaultState, action: PayloadAction<{ network: string; chainId: string }>) {
       state.activeNetwork = {
         ...state.activeNetwork,
         [action.payload.network]: action.payload.chainId,
@@ -184,10 +154,7 @@ const VaultState = createSlice({
 
       state.activeAsset.loading = action.payload;
     },
-    updateTransactions(
-      state: IVaultState,
-      action: PayloadAction<{ txs: Transaction[] }>
-    ) {
+    updateTransactions(state: IVaultState, action: PayloadAction<{ txs: Transaction[] }>) {
       state.activeAsset.transactions = action.payload.txs;
     },
     updateRewards(state: IVaultState, action: PayloadAction<{ txs: Reward[] }>) {
@@ -199,10 +166,7 @@ const VaultState = createSlice({
     resetBalances(state: IVaultState) {
       state.balances = {};
     },
-    updateBalances(
-      state: IVaultState,
-      action: PayloadAction<{ [assetKey: string]: string }>
-    ) {
+    updateBalances(state: IVaultState, action: PayloadAction<{ [assetKey: string]: string }>) {
       for (const key in action.payload) {
         state.balances[key] = action.payload[key];
       }
@@ -212,17 +176,12 @@ const VaultState = createSlice({
       state.activeWallet.assets = updatedAssets;
     },
     removeActiveWalletAsset(state: IVaultState, action: PayloadAction<IAssetState>) {
-      state.activeWallet.assets = state.activeWallet.assets.filter(
-        (asset) => asset.id !== action.payload.id
-      );
+      state.activeWallet.assets = state.activeWallet.assets.filter(asset => asset.id !== action.payload.id);
     },
     migrateWalletComplete(state: IVaultState) {
       delete state.migrateWallet;
     },
-    addCustomNetwork(
-      state: IVaultState,
-      action: PayloadAction<{ network: string; data: ICustomNetworkObject }>
-    ) {
+    addCustomNetwork(state: IVaultState, action: PayloadAction<{ network: string; data: ICustomNetworkObject }>) {
       const { network, data } = action.payload;
 
       if (network && data) {
@@ -237,12 +196,10 @@ const VaultState = createSlice({
       state.customAssets = updatedCustomAssets;
     },
     removeCustomAsset(state: IVaultState, action: PayloadAction<IAssetInfoState>) {
-      state.customAssets = state.customAssets.filter(
-        (asset) => asset.id !== action.payload.id
-      );
+      state.customAssets = state.customAssets.filter(asset => asset.id !== action.payload.id);
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(getHasEncryptedVault.fulfilled, (state, action) => {
       state.hasEncryptedVault = action.payload;
     });
