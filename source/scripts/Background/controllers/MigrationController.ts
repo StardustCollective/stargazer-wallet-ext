@@ -1,7 +1,9 @@
 import { loadState } from 'state/localStorage';
-import { compareVersions } from 'utils/version';
-import { checkStorageMigration } from '../migration/v5_0_0';
+
 import { isNative } from 'utils/envUtil';
+import { compareVersions } from 'utils/version';
+
+import { checkStorageMigration } from '../migration/v5_0_0';
 
 const MigrationController = async () => {
   // check current version of wallet
@@ -200,6 +202,15 @@ const MigrationController = async () => {
   if (compareVersions(state.vault.version, '5.4.2') < 0) {
     const v5_4_2 = require('../migration/v5_4_2');
     await v5_4_2.default(state);
+  }
+
+  /**
+   * version < 5_4_4
+   * Description: Update Base DAG and Base DOR contract addresses
+   */
+  if (compareVersions(state.vault.version, '5.4.4') < 0) {
+    const v5_4_4 = require('../migration/v5_4_4');
+    await v5_4_4.default(state);
   }
 };
 

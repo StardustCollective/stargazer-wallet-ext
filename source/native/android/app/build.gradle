@@ -80,8 +80,8 @@ android {
         applicationId "com.stargazer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 115
-        versionName "3.4.2"
+        versionCode 116
+        versionName "3.4.3"
     }
 
     signingConfigs {
