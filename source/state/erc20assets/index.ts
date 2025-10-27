@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import {
   ALKIMI_LOGO,
   AVALANCHE_LOGO,
@@ -18,8 +19,10 @@ import {
   USDC_DAG_LOGO,
   VE_LTX_LOGO,
 } from 'constants/index';
+
 import { IAssetInfoState } from 'state/assets/types';
 import { AssetSymbol, AssetType } from 'state/vault/types';
+
 import { getERC20Assets, search } from './api';
 import IERC20AssetsListState, { ICustomAssetForm } from './types';
 
@@ -61,19 +64,19 @@ export const constellationInitialValues: IAssetInfoState[] = [
     l1endpoint: 'http://usdc-cl1-1109728921.us-west-1.elb.amazonaws.com',
     priceId: 'usd-coin',
   },
-{
-  id: 'DAG7X5idd4aLfp4XC6WQdG1eDfR3LGPVEwtUUB2W-main2',
-  address: 'DAG7X5idd4aLfp4XC6WQdG1eDfR3LGPVEwtUUB2W',
-  label: 'PacaSwap',
-  symbol: 'SWAP',
-  decimals: 8,
-  type: AssetType.Constellation,
-  logo: SWAP_LOGO,
-  network: 'main2',
-  l0endpoint: 'http://pacaswap-mainnet-ml0-286306868.us-west-1.elb.amazonaws.com',
-  l1endpoint: 'http://pacaswap-mainnet-cl1-647928315.us-west-1.elb.amazonaws.com',
-  dl1endpoint: 'http://pacaswap-mainnet-dl1-1672636488.us-west-1.elb.amazonaws.com'
-},
+  {
+    id: 'DAG7X5idd4aLfp4XC6WQdG1eDfR3LGPVEwtUUB2W-main2',
+    address: 'DAG7X5idd4aLfp4XC6WQdG1eDfR3LGPVEwtUUB2W',
+    label: 'PacaSwap',
+    symbol: 'SWAP',
+    decimals: 8,
+    type: AssetType.Constellation,
+    logo: SWAP_LOGO,
+    network: 'main2',
+    l0endpoint: 'http://pacaswap-mainnet-ml0-286306868.us-west-1.elb.amazonaws.com',
+    l1endpoint: 'http://pacaswap-mainnet-cl1-647928315.us-west-1.elb.amazonaws.com',
+    dl1endpoint: 'http://pacaswap-mainnet-dl1-1672636488.us-west-1.elb.amazonaws.com',
+  },
   {
     id: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2',
     address: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM',
@@ -191,23 +194,23 @@ export const constellationInitialValues: IAssetInfoState[] = [
     decimals: 18,
   },
   {
-    id: '0x74299A718b2c44483a27325d7725F0B2646DE3B1-base-mainnet',
-    address: '0x74299A718b2c44483a27325d7725F0B2646DE3B1',
+    id: '0xEcFf4D80f54CF55c626E52F304a8891645961e72-base-mainnet',
+    address: '0xEcFf4D80f54CF55c626E52F304a8891645961e72',
     label: 'Base DAG',
     symbol: 'BASE_DAG',
     type: AssetType.ERC20,
-    priceId: '',
+    priceId: 'constellation-labs',
     network: 'base-mainnet',
     logo: CONSTELLATION_LOGO,
     decimals: 8,
   },
   {
-    id: '0xfe9885baff18074846aaa2d5541581adf068731d-base-mainnet',
-    address: '0xfe9885baff18074846aaa2d5541581adf068731d',
+    id: '0x38a7C0416164faa29d207c9cF2273a5b80210aeD-base-mainnet',
+    address: '0x38a7C0416164faa29d207c9cF2273a5b80210aeD',
     label: 'Base DOR',
     symbol: 'BASE_DOR',
     type: AssetType.ERC20,
-    priceId: '',
+    priceId: 'dor',
     network: 'base-mainnet',
     logo: DOR_LOGO,
     decimals: 8,
@@ -282,10 +285,7 @@ const ERC20AssetsListState = createSlice({
       state.loading = false;
       state.searchAssets = [];
     },
-    setCustomAsset(
-      state: IERC20AssetsListState,
-      action: PayloadAction<ICustomAssetForm>
-    ) {
+    setCustomAsset(state: IERC20AssetsListState, action: PayloadAction<ICustomAssetForm>) {
       state.customAssetForm.tokenAddress = action.payload.tokenAddress;
       state.customAssetForm.tokenName = action.payload.tokenName;
       state.customAssetForm.tokenSymbol = action.payload.tokenSymbol;
@@ -298,8 +298,8 @@ const ERC20AssetsListState = createSlice({
       state.customAssetForm.tokenDecimals = '';
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(getERC20Assets.pending, (state) => {
+  extraReducers: builder => {
+    builder.addCase(getERC20Assets.pending, state => {
       state.loading = true;
       state.error = null;
       state.erc20assets = null;
@@ -314,7 +314,7 @@ const ERC20AssetsListState = createSlice({
       state.error = action.payload;
       state.erc20assets = null;
     });
-    builder.addCase(search.pending, (state) => {
+    builder.addCase(search.pending, state => {
       state.loading = true;
       state.error = null;
       state.searchAssets = null;
@@ -332,7 +332,6 @@ const ERC20AssetsListState = createSlice({
   },
 });
 
-export const { clearSearchAssets, setCustomAsset, clearCustomAsset } =
-  ERC20AssetsListState.actions;
+export const { clearSearchAssets, setCustomAsset, clearCustomAsset } = ERC20AssetsListState.actions;
 
 export default ERC20AssetsListState.reducer;
