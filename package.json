@@ -29,7 +29,7 @@
     "clean:pods": "cd source/native/ios && rm -rf Pods",
     "clean:all": "yarn clean && yarn clean:pods",
     "install:pods": "cd source/native/ios && pod install",
-    "postinstall": "npx patch-package && npx rimraf ./source/web/node_modules/react"
+    "postinstall": "npx patch-package"
   },
   "dependencies": {
     "@devneser/gradient-avatar": "^1.1.1",
@@ -37,9 +37,9 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@reach/portal": "^0.12.1",
-    "@react-navigation/bottom-tabs": "^5.x",
-    "@react-navigation/native": "^5.9.4",
-    "@react-navigation/stack": "^5.14.5",
+    "@react-navigation/bottom-tabs": "~6.6.1",
+    "@react-navigation/native": "~6.1.18",
+    "@react-navigation/stack": "~6.4.1",
     "@reduxjs/toolkit": "^1.4.0",
     "@stardust-collective/dag4": "^2.7.0",
     "@stardust-collective/dag4-keyring": "^2.7.0",
@@ -99,5 +99,11 @@
   "workspaces": [
     "source/web",
     "source/native"
-  ]
+  ],
+  "resolutions": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.0"
+  }
 }
