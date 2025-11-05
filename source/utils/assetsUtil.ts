@@ -10,6 +10,7 @@ export const MATIC_FULL_ASSET = initialStateAssets[AssetType.Polygon];
 export const AVAX_FULL_ASSET = initialStateAssets[AssetType.Avalanche];
 export const BNB_FULL_ASSET = initialStateAssets[AssetType.BSC];
 export const BASE_FULL_ASSET = initialStateAssets[AssetType.Base];
+export const INK_FULL_ASSET = initialStateAssets[AssetType.Ink];
 
 export const ETH_WALLET_ASSET = {
   id: AssetType.Ethereum,
@@ -41,6 +42,12 @@ export const BASE_WALLET_ASSET = {
   label: 'Base ETH',
 };
 
+export const INK_WALLET_ASSET = {
+  id: AssetType.Ink,
+  type: AssetType.Ethereum,
+  label: 'Ink ETH',
+};
+
 export const CHAIN_FULL_ASSET = {
   [StargazerChain.CONSTELLATION]: DAG_FULL_ASSET,
   [StargazerChain.ETHEREUM]: ETH_FULL_ASSET,
@@ -48,6 +55,7 @@ export const CHAIN_FULL_ASSET = {
   [StargazerChain.AVALANCHE]: AVAX_FULL_ASSET,
   [StargazerChain.BSC]: BNB_FULL_ASSET,
   [StargazerChain.BASE]: BASE_FULL_ASSET,
+  [StargazerChain.INK]: INK_FULL_ASSET,
 };
 
 export const CHAIN_WALLET_ASSET = {
@@ -56,6 +64,7 @@ export const CHAIN_WALLET_ASSET = {
   [StargazerChain.BSC]: BNB_WALLET_ASSET,
   [StargazerChain.AVALANCHE]: AVAX_WALLET_ASSET,
   [StargazerChain.BASE]: BASE_WALLET_ASSET,
+  [StargazerChain.INK]: INK_WALLET_ASSET,
 };
 
 export const OPENSEA_ASSET_MAP: { [chain: string]: IAssetInfoState } = {

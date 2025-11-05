@@ -18,6 +18,8 @@ import {
   DAG_NETWORK,
   ETHEREUM_LOGO,
   ETH_NETWORK,
+  INK_LOGO,
+  INK_NETWORK,
   POLYGON_LOGO,
   POLYGON_NETWORK,
 } from 'constants/index';
@@ -180,6 +182,28 @@ const NetworksContainer: FC = () => {
         {
           value: BASE_NETWORK[`base-sepolia`].id,
           label: BASE_NETWORK[`base-sepolia`].label,
+        },
+      ],
+    },
+    {
+      icon: INK_LOGO,
+      key: 'Ink',
+      title: 'Ink',
+      value: activeNetwork['Ink'],
+      onChange: (value: string) => {
+        handleChangeNetwork('Ink', value);
+      },
+      containerStyle: {
+        zIndex: 4000,
+      },
+      items: [
+        {
+          value: INK_NETWORK[`ink-mainnet`].id,
+          label: INK_NETWORK[`ink-mainnet`].label,
+        },
+        {
+          value: INK_NETWORK[`ink-sepolia`].id,
+          label: INK_NETWORK[`ink-sepolia`].label,
         },
       ],
     },

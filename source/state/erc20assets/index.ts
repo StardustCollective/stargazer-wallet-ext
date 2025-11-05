@@ -260,6 +260,28 @@ export const constellationInitialValues: IAssetInfoState[] = [
     logo: ETHEREUM_LOGO,
     decimals: 18,
   },
+  {
+    id: AssetType.Ink,
+    address: '',
+    label: 'Ink ETH',
+    symbol: AssetSymbol.INK,
+    type: AssetType.Ethereum,
+    priceId: 'ethereum',
+    network: 'ink-mainnet',
+    logo: ETHEREUM_LOGO,
+    decimals: 18,
+  },
+  {
+    id: '0x1467d31ab00F986d0e0e764365d999972289CD03-ink-mainnet',
+    address: '0x1467d31ab00F986d0e0e764365d999972289CD03',
+    label: 'Ink DAG',
+    symbol: 'INK_DAG',
+    type: AssetType.ERC20,
+    priceId: 'constellation-labs',
+    network: 'ink-mainnet',
+    logo: CONSTELLATION_LOGO,
+    decimals: 8,
+  }
 ];
 
 export const initialState: IERC20AssetsListState = {

@@ -303,7 +303,7 @@ class EVMChainController implements IEVMChainController {
   }
 
   async estimateGasPrices() {
-    if (isTestnet(this.chain.id) || this.chain.id === 'base-mainnet') {
+    if (isTestnet(this.chain.id) || ['base-mainnet', 'ink-mainnet'].includes(this.chain.id)) {
       // Etherscan gas oracle is not working in testnets
       return this.fallbackFeeData(this.provider);
     }

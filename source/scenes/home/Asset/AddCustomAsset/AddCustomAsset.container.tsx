@@ -42,6 +42,7 @@ import {
   CONSTELLATION_LOGO,
   DAG_NETWORK,
   ETHEREUM_LOGO,
+  INK_LOGO,
   POLYGON_LOGO,
   URL_REGEX_PATTERN,
 } from 'constants/index';
@@ -387,6 +388,7 @@ const AddCustomAssetContainer: FC<{ navigation: any }> = ({ navigation }) => {
       { value: 'bsc', label: 'Binance Smart Chain', icon: BSC_LOGO },
       { value: 'matic', label: 'Polygon', icon: POLYGON_LOGO },
       { value: 'base-mainnet', label: 'Base', icon: BASE_LOGO },
+      { value: 'ink-mainnet', label: 'Ink', icon: INK_LOGO },
     ],
     onClick: navigateToSingleSelect,
   };

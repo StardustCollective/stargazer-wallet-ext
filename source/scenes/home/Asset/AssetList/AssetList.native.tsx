@@ -78,12 +78,14 @@ const AssetList: FC<IAssetList> = ({
       item?.id === AssetType.Avalanche && itemChainId === 'avalanche-mainnet';
     const isBNB = item?.id === AssetType.BSC && itemChainId === 'bsc';
     const isBase = item?.id === AssetType.Base && itemChainId === 'base-mainnet';
+    const isInk = item?.id === AssetType.Ink && itemChainId === 'ink-mainnet';
     const hideToken =
       itemChainId !== 'both' &&
       !isMATIC &&
       !isAVAX &&
       !isBNB &&
       !isBase &&
+      !isInk &&
       currentActiveNetwork !== itemChainId;
     if (!isAssetSupported || hideToken) return null;
     return (

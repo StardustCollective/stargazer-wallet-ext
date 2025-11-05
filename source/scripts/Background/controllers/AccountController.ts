@@ -123,7 +123,7 @@ export class AccountController {
 
       // 349: New network should be added here.
       const NETWORK_TOKENS = Object.values(assets)
-        .filter(token => [AssetType.Polygon, AssetType.Avalanche, AssetType.BSC, AssetType.Base].includes(token?.id as AssetType))
+        .filter(token => [AssetType.Polygon, AssetType.Avalanche, AssetType.BSC, AssetType.Base, AssetType.Ink].includes(token?.id as AssetType))
         .map(token => token.id);
 
       const networkAssets = this.buildNetworkAssets(account.address, NETWORK_TOKENS);
@@ -189,6 +189,13 @@ export class AccountController {
       label: 'Base ETH',
       address,
     };
+    
+    const inkAsset = {
+      id: AssetType.Ink,
+      type: AssetType.Ethereum,
+      label: 'Ink ETH',
+      address,
+    };
 
     if (tokens.includes(baseAsset.id)) {
       networkAssets.push(baseAsset);
@@ -204,6 +211,10 @@ export class AccountController {
 
     if (tokens.includes(polygonAsset.id)) {
       networkAssets.push(polygonAsset);
+    }
+    
+    if (tokens.includes(inkAsset.id)) {
+      networkAssets.push(inkAsset);
     }
 
     return networkAssets;

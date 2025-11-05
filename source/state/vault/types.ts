@@ -2,7 +2,7 @@ import type { KeyringAssetType, KeyringNetwork, KeyringWalletAccountState, Keyri
 import { KDFParamsPhrase, KDFParamsPrivateKey, V3Keystore } from '@stardust-collective/dag4-keystore';
 import type { ActionResponse, Transaction as DAGTransaction, TransactionV2 as DAGTransactionV2 } from '@stardust-collective/dag4-network';
 
-import type { AvalancheChainId, BaseChainId, BSCChainId, EthChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
+import type { AvalancheChainId, BaseChainId, BSCChainId, EthChainId, InkChainId, PolygonChainId } from 'scripts/Background/controllers/EVMChainController/types';
 
 import type { IAssetInfoState } from 'state/assets/types';
 
@@ -16,6 +16,7 @@ export enum Network {
   Avalanche = 'Avalanche',
   BSC = 'BSC',
   Base = 'Base',
+  Ink = 'Ink',
 }
 
 export enum AssetSymbol {
@@ -26,6 +27,7 @@ export enum AssetSymbol {
   AVAX = 'AVAX',
   BNB = 'BNB',
   BASE = 'BASE_ETH',
+  INK = 'INK_ETH',
 }
 
 export enum AssetType {
@@ -34,6 +36,7 @@ export enum AssetType {
   BSC = 'bsc',
   Polygon = 'polygon',
   Base = 'base',
+  Ink = 'ink',
   Ledger = 'ledger',
   LedgerConstellation = 'ledger-constellation',
   Ethereum = 'ethereum',
@@ -60,6 +63,7 @@ export type ActiveNetwork = {
   [Network.BSC]: BSCChainId;
   [Network.Polygon]: PolygonChainId;
   [Network.Base]: BaseChainId;
+  [Network.Ink]: InkChainId;
 };
 
 export interface IAssetState {
@@ -85,6 +89,7 @@ export type AssetBalances = {
   bsc?: string;
   polygon?: string;
   base?: string;
+  ink?: string;
   [contractAddress: string]: string;
 };
 

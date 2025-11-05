@@ -8,6 +8,7 @@ import {
   POLYGON_DEFAULT_LOGO,
   CONSTELLATION_DEFAULT_LOGO,
   BASE_DEFAULT_LOGO,
+  INK_DEFAULT_LOGO,
 } from 'constants/index';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import {
@@ -57,6 +58,7 @@ const DEFAULT_LOGOS = {
   BSC: BSC_DEFAULT_LOGO,
   Polygon: POLYGON_DEFAULT_LOGO,
   Base: BASE_DEFAULT_LOGO,
+  Ink: INK_DEFAULT_LOGO
 };
 
 const DEFAULT_DAG_DECIMALS = 8;

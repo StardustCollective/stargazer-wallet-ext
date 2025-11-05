@@ -7,7 +7,7 @@ import { ITempNFTInfo } from 'state/nfts/types';
 import store from 'state/store';
 import { AssetType } from 'state/vault/types';
 
-import { AllChainsIds, AvalancheChainId, BaseChainId, BSCChainId, EthChainId, PolygonChainId } from './EVMChainController/types';
+import { AllChainsIds, AvalancheChainId, BaseChainId, BSCChainId, EthChainId, InkChainId, PolygonChainId } from './EVMChainController/types';
 import { getNetworkFromChainId } from './EVMChainController/utils';
 import { TxHistoryParams } from './ChainsController';
 import EVMChainController from './EVMChainController';
@@ -19,6 +19,7 @@ class NetworkController {
   #bscNetwork: EVMChainController;
   #avalancheNetwork: EVMChainController;
   #baseNetwork: EVMChainController;
+  #inkNetwork: EVMChainController;
 
   constructor(privateKey?: string) {
     const { activeNetwork } = store.getState().vault;
@@ -27,6 +28,7 @@ class NetworkController {
     this.#bscNetwork = this.createEVMController(activeNetwork.BSC, privateKey);
     this.#avalancheNetwork = this.createEVMController(activeNetwork.Avalanche, privateKey);
     this.#baseNetwork = this.createEVMController(activeNetwork.Base, privateKey);
+    this.#inkNetwork = this.createEVMController(activeNetwork.Ink, privateKey);
   }
 
   private createEVMController(chain: AllChainsIds, privateKey?: string) {
@@ -56,6 +58,10 @@ class NetworkController {
     return this.#baseNetwork;
   }
 
+  get inkNetwork() {
+    return this.#inkNetwork;
+  }
+
   switchEthereumChain(chain: EthChainId) {
     this.#ethereumNetwork.setChain(chain);
   }
@@ -76,6 +82,10 @@ class NetworkController {
     this.#baseNetwork.setChain(chain);
   }
 
+  switchInkChain(chain: InkChainId) {
+    this.#inkNetwork.setChain(chain);
+  }
+
   switchChain(network: string, chain: string) {
     switch (network) {
       case 'Ethereum':
@@ -93,6 +103,9 @@ class NetworkController {
       case 'Base':
         this.switchBaseChain(chain as BaseChainId);
         break;
+      case 'Ink':
+        this.switchInkChain(chain as InkChainId);
+        break;
 
       default:
         throw new Error('Unable to switch chain. Chain not found');
@@ -107,6 +120,7 @@ class NetworkController {
       bsc: this.#bscNetwork,
       avalanche: this.#avalancheNetwork,
       base: this.#baseNetwork,
+      ink: this.#inkNetwork,
     };
     return networkToProvider[networkLowercase];
   }
@@ -124,6 +138,7 @@ class NetworkController {
       BSC: this.#bscNetwork,
       Avalanche: this.#avalancheNetwork,
       Base: this.#baseNetwork,
+      Ink: this.#inkNetwork,
     };
     return networkToProvider[network];
   }
@@ -251,6 +266,7 @@ class NetworkController {
         BSC: this.#bscNetwork,
         Avalanche: this.#avalancheNetwork,
         Base: this.#baseNetwork,
+        Ink: this.#inkNetwork,
       };
       provider = networkToProvider[network as keyof typeof networkToProvider];
     } else {

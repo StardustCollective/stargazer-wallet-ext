@@ -5,6 +5,8 @@ export const X_LATTICE_REQ_TOKEN = 'x-lattice-req-token';
 export const X_LATTICE_SIG = 'x-lattice-sig';
 
 export const ExplorerExternalService = 'explorer-etherscan';
+export const ExplorerInkMainnet = 'explorer-ink-mainnet';
+export const ExplorerInkSepolia = 'explorer-ink-sepolia';
 
 export enum NodeExternalService {
   EthMainnet = 'node-ethereum-mainnet',
@@ -17,6 +19,8 @@ export enum NodeExternalService {
   PolygonTestnet = 'node-polygon-amoy',
   BaseMainnet = 'node-base-mainnet',
   BaseTestnet = 'node-base-sepolia',
+  InkMainnet = 'node-ink-mainnet',
+  InkTestnet = 'node-ink-sepolia',
 }
 
 export enum ExternalService {
