@@ -101,6 +101,9 @@ export const getWallet = () => {
   if (networkId === StargazerChain.BASE) {
     return walletController.account.networkController.baseNetwork.getWallet();
   }
+  if (networkId === StargazerChain.INK) {
+    return walletController.account.networkController.inkNetwork.getWallet();
+  }
 
   throw new EIPRpcError('Wallet not found', EIPErrorCodes.Unauthorized);
 };

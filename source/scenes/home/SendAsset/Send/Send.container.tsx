@@ -33,6 +33,7 @@ import {
   BSC_LOGO,
   DAG_NETWORK,
   BASE_LOGO,
+  INK_LOGO,
 } from 'constants/index';
 import { initialState as initialStateAssets } from 'state/assets';
 import Send from './Send';
@@ -346,6 +347,7 @@ const SendContainer: FC<IWalletSend> = ({ initAddress = '' }) => {
       { value: 'avalanche-mainnet', label: 'Avalanche', icon: AVALANCHE_LOGO },
       { value: 'bsc', label: 'BSC', icon: BSC_LOGO },
       { value: 'base-mainnet', label: 'Base', icon: BASE_LOGO },
+      { value: 'ink-mainnet', label: 'Ink', icon: INK_LOGO },
     ],
     disabled: true,
     labelRight: tokenChainLabel,

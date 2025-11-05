@@ -2,7 +2,7 @@ import { Asset, AssetETH, assetFromString, assetToString, BaseAmount, baseAmount
 import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 
-import { ALL_EVM_CHAINS, AVALANCHE_LOGO, BASE_LOGO, BSC_LOGO, ETHEREUM_LOGO, POLYGON_LOGO } from 'constants/index';
+import { ALL_EVM_CHAINS, AVALANCHE_LOGO, BASE_LOGO, BSC_LOGO, ETHEREUM_LOGO, INK_LOGO, POLYGON_LOGO } from 'constants/index';
 
 import store from 'state/store';
 
@@ -35,6 +35,9 @@ export const getNetworkLogo = (network: string) => {
     case 'base-mainnet':
     case 'base-sepolia':
       return BASE_LOGO;
+    case 'ink-mainnet':
+    case 'ink-sepolia':
+      return INK_LOGO;
 
     default:
       return ETHEREUM_LOGO;
@@ -53,6 +56,8 @@ export const getMainnetFromPlatform = (platform: string): string => {
       return 'matic';
     case 'base':
       return 'base-mainnet';
+    case 'ink':
+      return 'ink-mainnet';
 
     default:
       return 'mainnet';
@@ -71,6 +76,8 @@ export const getPlatformFromMainnet = (network: string): string => {
       return 'polygon-pos';
     case 'base-mainnet':
       return 'base';
+    case 'ink-mainnet':
+      return 'ink';
 
     default:
       return 'mainnet';
@@ -107,6 +114,10 @@ export const getNetworkLabel = (network: string): string => {
       return 'Base';
     case 'base-sepolia':
       return 'Base Sepolia';
+    case 'ink-mainnet':
+      return 'Ink';
+    case 'ink-sepolia':
+      return 'Ink Sepolia';
 
     default:
       return 'ERC-20';
@@ -148,6 +159,10 @@ export const getPriceId = (network: string): string => {
   switch (network) {
     case 'mainnet':
     case 'sepolia':
+    case 'base-mainnet':
+    case 'base-sepolia':
+    case 'ink-mainnet':
+    case 'ink-sepolia':
       return 'ethereum';
     case 'matic':
     case 'amoy':
@@ -157,10 +172,6 @@ export const getPriceId = (network: string): string => {
       return 'avalanche-2';
     case 'bsc':
     case 'bsc-testnet':
-      return 'binancecoin';
-    case 'base-mainnet':
-    case 'base-sepolia':
-      return 'ethereum';
 
     default:
       return 'ethereum';

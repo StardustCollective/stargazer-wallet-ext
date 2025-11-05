@@ -16,6 +16,7 @@ import {
   BSC_NETWORK,
   POLYGON_NETWORK,
   BASE_NETWORK,
+  INK_NETWORK,
 } from 'constants/index';
 import IManageWalletSettings from './types';
 import styles from './styles';
@@ -146,6 +147,19 @@ const ManageWallet: FC<IManageWalletSettings> = ({
       labelRight:
         isCopied && itemCopied === BASE_NETWORK['base-mainnet'].network ? 'Copied!' : '',
       icon: BASE_NETWORK['base-mainnet'].logo,
+      showArrow: false,
+      labelRightStyles: styles.copiedLabel,
+    },
+    {
+      title: INK_NETWORK['ink-mainnet'].network,
+      subtitle: ellipsis(ethAddress),
+      onClick: () => handleCopy(INK_NETWORK['ink-mainnet'].network, ethAddress),
+      rightIcon: (!isCopied || itemCopied !== INK_NETWORK['ink-mainnet'].network) && (
+        <CopyIcon height={20} width={30} />
+      ),
+      labelRight:
+        isCopied && itemCopied === INK_NETWORK['ink-mainnet'].network ? 'Copied!' : '',
+      icon: INK_NETWORK['ink-mainnet'].logo,
       showArrow: false,
       labelRightStyles: styles.copiedLabel,
     },

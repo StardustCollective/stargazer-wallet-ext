@@ -3,7 +3,7 @@ import { KeyringNetwork, KeyringVaultState, KeyringWalletState, KeyringWalletTyp
 import type { ActionResponse } from '@stardust-collective/dag4-network';
 import findIndex from 'lodash/findIndex';
 
-import { AVALANCHE_NETWORK, BASE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, POLYGON_NETWORK } from 'constants/index';
+import { AVALANCHE_NETWORK, BASE_NETWORK, BSC_NETWORK, DAG_NETWORK, ETH_NETWORK, INK_NETWORK, POLYGON_NETWORK } from 'constants/index';
 
 import { IAssetInfoState } from 'state/assets/types';
 
@@ -30,6 +30,7 @@ const initialState: IVaultState = {
     [AssetType.BSC]: '0',
     [AssetType.Polygon]: '0',
     [AssetType.Base]: '0',
+    [AssetType.Ink]: '0',
   },
   activeWallet: null,
   activeAsset: null,
@@ -41,6 +42,7 @@ const initialState: IVaultState = {
     BSC: BSC_NETWORK.bsc.id,
     Polygon: POLYGON_NETWORK.matic.id,
     Base: BASE_NETWORK['base-mainnet'].id,
+    Ink: INK_NETWORK['ink-mainnet'].id,
   },
   currentEVMNetwork: ETH_NETWORK.mainnet.id,
   customNetworks: {
@@ -48,7 +50,7 @@ const initialState: IVaultState = {
     ethereum: {},
   },
   customAssets: [],
-  version: '5.4.4',
+  version: '5.4.5',
 };
 
 export const getHasEncryptedVault = createAsyncThunk('vault/getHasEncryptedVault', async () => {

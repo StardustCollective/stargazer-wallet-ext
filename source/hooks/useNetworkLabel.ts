@@ -19,6 +19,7 @@ function useNetworkLabel(asset: IAssetInfoState) {
       AssetType.Avalanche,
       AssetType.BSC,
       AssetType.Base,
+      AssetType.Ink
     ].includes(asset?.id as AssetType)
   ) {
     const currentNetwork = getNetworkFromChainId(network);

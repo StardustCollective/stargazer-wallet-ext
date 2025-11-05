@@ -26,6 +26,7 @@ const MAP_CHAIN_TO_NETWORK: Record<StargazerChain, keyof ActiveNetwork> = {
   [StargazerChain.BSC]: Network.BSC,
   [StargazerChain.POLYGON]: Network.Polygon,
   [StargazerChain.BASE]: Network.Base,
+  [StargazerChain.INK]: Network.Ink,
 };
 
 /**

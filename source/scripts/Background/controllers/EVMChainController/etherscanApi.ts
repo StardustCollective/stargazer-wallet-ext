@@ -13,6 +13,7 @@ import {
 } from './utils';
 import { getParamsFromObject } from 'utils/objects';
 import { ExternalApi } from 'utils/httpRequests/apis';
+import { ExplorerExternalService } from 'utils/httpRequests/constants';
 
 export const getGasOracle = async (
   explorerID: string,
@@ -43,9 +44,13 @@ export const getTokenTransactionHistory = async ({
     action: 'tokentx',
     sort: 'desc',
   };
+
+  // chainid is only used for etherscan api, blockscout api does not need it
+  const prefix = explorerID === ExplorerExternalService ? `/api?chainid=${chainId}&` : '/?';
+
   let url =
     explorerID +
-    `/api?chainid=${chainId}&` +
+    prefix +
     getParamsFromObject({
       ...initialParams,
       address,
@@ -82,9 +87,13 @@ export const getETHTransactionHistory = async ({
     action: 'txlist',
     sort: 'desc',
   };
+
+  // chainid is only used for etherscan api, blockscout api does not need it
+  const prefix = explorerID === ExplorerExternalService ? `/api?chainid=${chainId}&` : '/?';
+  
   const url =
     explorerID +
-    `/api?chainid=${chainId}&` +
+    prefix +
     getParamsFromObject({
       ...initialParams,
       address,

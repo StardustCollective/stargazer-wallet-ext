@@ -172,7 +172,8 @@ const selectActiveNetworkAssets = createSelector(getActiveWallet, getActiveNetwo
     const isAVAX = assetId === AssetType.Avalanche && assetNetwork === 'avalanche-mainnet';
     const isBNB = assetId === AssetType.BSC && assetNetwork === 'bsc';
     const isBase = assetId === AssetType.Base && assetNetwork === 'base-mainnet';
-    return isDAG || isETH || isMATIC || isAVAX || isBNB || isBase || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
+    const isInk = assetId === AssetType.Ink && assetNetwork === 'ink-mainnet';
+    return isDAG || isETH || isMATIC || isAVAX || isBNB || isBase || isInk || assetNetwork === activeNetwork[assetNetworkType as keyof typeof activeNetwork];
   });
 });
 

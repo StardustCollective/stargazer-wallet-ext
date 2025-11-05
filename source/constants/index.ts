@@ -7,6 +7,8 @@ import {
   BSCChainValue,
   EthChainId,
   EthChainValue,
+  InkChainId,
+  InkChainValue,
   PolygonChainId,
   PolygonChainValue,
 } from 'scripts/Background/controllers/EVMChainController/types';
@@ -14,6 +16,8 @@ import { StargazerChain } from 'scripts/common';
 import { isProd, isNative } from 'utils/envUtil';
 import {
   ExplorerExternalService,
+  ExplorerInkMainnet,
+  ExplorerInkSepolia,
   NodeExternalService,
 } from 'utils/httpRequests/constants';
 
@@ -45,6 +49,10 @@ export const BASE_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/base.png';
 export const BASE_DEFAULT_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/base-default.png';
+export const INK_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ink.png';
+export const INK_DEFAULT_LOGO =
+  'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/ink-default.png';
 export const AVALANCHE_LOGO =
   'https://stargazer-assets.s3.us-east-2.amazonaws.com/logos/avax.png';
 export const AVALANCHE_DEFAULT_LOGO =
@@ -406,6 +414,55 @@ export const BASE_NETWORK: {
   },
 };
 
+export const INK_NETWORK: {
+  [networkId: string]: {
+    id: InkChainId;
+    value: InkChainValue;
+    label: string;
+    explorer: string;
+    chainId: number;
+    hexChainId: string;
+    rpcEndpoint: string;
+    explorerID: string;
+    nativeToken: string;
+    mainnet: string;
+    network: string;
+    networkId: string;
+    logo: string;
+  };
+} = {
+  [`ink-mainnet`]: {
+    id: 'ink-mainnet',
+    value: 'ink-mainnet',
+    label: 'Ink Mainnet',
+    rpcEndpoint: NodeExternalService.InkMainnet,
+    explorer: 'https://explorer.inkonchain.com/',
+    explorerID: ExplorerInkMainnet,
+    chainId: 57073,
+    hexChainId: '0xdef1',
+    nativeToken: 'INK_ETH',
+    mainnet: 'ink-mainnet',
+    network: 'Ink',
+    networkId: StargazerChain.INK,
+    logo: INK_LOGO,
+  },
+  [`ink-sepolia`]: {
+    id: 'ink-sepolia',
+    value: 'ink-sepolia',
+    label: 'Ink Sepolia',
+    rpcEndpoint: NodeExternalService.InkTestnet,
+    explorer: 'https://explorer-sepolia.inkonchain.com/',
+    explorerID: ExplorerInkSepolia,
+    chainId: 763373,
+    hexChainId: '0xba5ed',
+    nativeToken: 'INK_ETH',
+    mainnet: 'ink-mainnet',
+    network: 'Ink',
+    networkId: StargazerChain.INK,
+    logo: INK_LOGO,
+  },
+};
+
 export const ALL_MAINNET_CHAINS = [
   DAG_NETWORK.main2,
   ETH_NETWORK.mainnet,
@@ -413,6 +470,7 @@ export const ALL_MAINNET_CHAINS = [
   BSC_NETWORK.bsc,
   POLYGON_NETWORK.matic,
   BASE_NETWORK[`base-mainnet`],
+  INK_NETWORK[`ink-mainnet`],
 ];
 
 export const ALL_TESTNETS_CHAINS = [
@@ -424,6 +482,7 @@ export const ALL_TESTNETS_CHAINS = [
   BSC_NETWORK['bsc-testnet'],
   POLYGON_NETWORK.amoy,
   BASE_NETWORK['base-sepolia'],
+  INK_NETWORK['ink-sepolia'],
 ];
 
 export const ALL_CHAINS = [...ALL_MAINNET_CHAINS, ...ALL_TESTNETS_CHAINS];
@@ -434,6 +493,7 @@ export const ALL_EVM_CHAINS = {
   ...BSC_NETWORK,
   ...POLYGON_NETWORK,
   ...BASE_NETWORK,
+  ...INK_NETWORK,
 };
 
 export const SUPPORTED_HEX_CHAINS = [
@@ -447,6 +507,8 @@ export const SUPPORTED_HEX_CHAINS = [
   '0x61',
   '0x2105',
   '0x14a34',
+  '0xdef1',
+  '0xba5ed',
 ];
 
 export const PRICE_DAG_ID = 'constellation-labs';
