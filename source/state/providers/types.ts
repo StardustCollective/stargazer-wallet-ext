@@ -113,6 +113,7 @@ export enum ProviderNetwork {
   Avalanche = 'avalanche',
   BSC = 'bsc',
   Base = 'base',
+  Ink = 'ink',
 }
 
 export enum Providers {
@@ -127,4 +128,5 @@ export const MapProviderNetwork = {
   [ProviderNetwork.Avalanche]: 'avalanche-mainnet',
   [ProviderNetwork.BSC]: 'bsc',
   [ProviderNetwork.Base]: 'base-mainnet',
+  [ProviderNetwork.Ink]: 'ink-mainnet',
 };

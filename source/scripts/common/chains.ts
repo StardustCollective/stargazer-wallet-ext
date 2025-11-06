@@ -10,4 +10,5 @@ export enum StargazerChain {
   BSC = 'bsc',
   AVALANCHE = 'avalanche',
   BASE = 'base',
+  INK = 'ink',
 }

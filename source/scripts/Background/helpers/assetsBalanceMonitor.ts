@@ -40,6 +40,7 @@ export class AssetsBalanceMonitor {
       Avalanche: new AccountTracker(),
       BSC: new AccountTracker(),
       Base: new AccountTracker(),
+      Ink: new AccountTracker(),
     };
   }
 
@@ -232,6 +233,8 @@ export class AssetsBalanceMonitor {
         return AssetType.Polygon;
       case 'Base':
         return AssetType.Base;
+      case 'Ink':
+        return AssetType.Ink;
 
       default:
         return AssetType.Constellation;

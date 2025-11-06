@@ -334,7 +334,7 @@ class WalletController {
       );
     }
 
-    const EVM_CHAINS = [KeyringNetwork.Ethereum, Network.Avalanche, Network.BSC, Network.Polygon, Network.Base];
+    const EVM_CHAINS = [KeyringNetwork.Ethereum, Network.Avalanche, Network.BSC, Network.Polygon, Network.Base, Network.Ink];
 
     if (EVM_CHAINS.includes(network as KeyringNetwork | Network)) {
       this.account.networkController.switchChain(network, chainId);

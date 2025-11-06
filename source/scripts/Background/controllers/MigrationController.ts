@@ -212,6 +212,15 @@ const MigrationController = async () => {
     const v5_4_4 = require('../migration/v5_4_4');
     await v5_4_4.default(state);
   }
+
+  /**
+   * version < 5_4_5
+   * Description: Add Ink network
+   */
+  if (compareVersions(state.vault.version, '5.4.5') < 0) {
+    const v5_4_5 = require('../migration/v5_4_5');
+    await v5_4_5.default(state);
+  }
 };
 
 export default MigrationController;

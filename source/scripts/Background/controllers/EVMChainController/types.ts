@@ -10,6 +10,7 @@ export type PolygonChainId = 'matic' | 'amoy';
 export type BSCChainId = 'bsc' | 'bsc-testnet';
 export type AvalancheChainId = 'avalanche-mainnet' | 'avalanche-testnet';
 export type BaseChainId = 'base-mainnet' | 'base-sepolia';
+export type InkChainId = 'ink-mainnet' | 'ink-sepolia';
 
 // Chain values
 export type EthChainValue = 'homestead' | 'sepolia';
@@ -17,12 +18,13 @@ export type PolygonChainValue = 'matic' | 'amoy';
 export type BSCChainValue = 'bsc' | 'bsc-testnet';
 export type AvalancheChainValue = 'avalanche-mainnet' | 'avalanche-testnet';
 export type BaseChainValue = 'base-mainnet' | 'base-sepolia';
+export type InkChainValue = 'ink-mainnet' | 'ink-sepolia';
 
 // All chains
-export type AllChainsIds = EthChainId | PolygonChainId | BSCChainId | AvalancheChainId | BaseChainId;
-export type AllChainsValues = EthChainValue | PolygonChainValue | BSCChainValue | AvalancheChainValue | BaseChainValue;
+export type AllChainsIds = EthChainId | PolygonChainId | BSCChainId | AvalancheChainId | BaseChainId | InkChainId;
+export type AllChainsValues = EthChainValue | PolygonChainValue | BSCChainValue | AvalancheChainValue | BaseChainValue | InkChainValue;
 
-export const testnets = ['sepolia', 'amoy', 'bsc-testnet', 'avalanche-testnet', 'base-sepolia'];
+export const testnets = ['sepolia', 'amoy', 'bsc-testnet', 'avalanche-testnet', 'base-sepolia', 'ink-sepolia'];
 
 export type IChain = {
   id: AllChainsIds | string;
