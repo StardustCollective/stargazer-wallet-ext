@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 10,
+    marginBottom: 32,
   },
   fiatBalanceLabel: {
     marginHorizontal: 8,
@@ -42,7 +43,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
     marginBottom: 24,
     marginHorizontal: 32,
   },
