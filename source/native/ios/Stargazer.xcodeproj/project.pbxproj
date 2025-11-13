@@ -13,10 +13,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1E2FE09827F62384002BAE26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2FE09727F62384002BAE26 /* LaunchScreen.storyboard */; };
 		1E9EA9A32BCEC77B001AAD29 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1E9EA9A22BCEC77B001AAD29 /* PrivacyInfo.xcprivacy */; };
-		26343C94D6BF485C88B9FFA3 /* Rubik.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CB947F12DA1438EA7989B2A /* Rubik.ttf */; };
 		2875DC1CFEF6DD6E27FE4D08 /* libPods-Stargazer-StargazerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE90B2691D82F2DC365D7C3 /* libPods-Stargazer-StargazerTests.a */; };
 		54AE93AC5461AC7B39BCDB18 /* libPods-Stargazer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 757B938C01E30E21B0F8D71F /* libPods-Stargazer.a */; };
-		94AA58ADD20B4844B07EF299 /* Inter-SansSerif.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71AE7215BA994DFD9ADA3726 /* Inter-SansSerif.ttf */; };
+		A4BAD2A3DF814BD8AA05635B /* Inter.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8DABB968304843A49DAD404C /* Inter.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,11 +41,10 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Stargazer/main.m; sourceTree = "<group>"; };
 		1E2FE09727F62384002BAE26 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E9EA9A22BCEC77B001AAD29 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		4CB947F12DA1438EA7989B2A /* Rubik.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Rubik.ttf; path = ../fonts/Rubik.ttf; sourceTree = "<group>"; };
 		61BCE677A3702F254ABD60E1 /* Pods-Stargazer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer.release.xcconfig"; path = "Target Support Files/Pods-Stargazer/Pods-Stargazer.release.xcconfig"; sourceTree = "<group>"; };
-		71AE7215BA994DFD9ADA3726 /* Inter-SansSerif.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-SansSerif.ttf"; path = "../fonts/Inter-SansSerif.ttf"; sourceTree = "<group>"; };
 		757B938C01E30E21B0F8D71F /* libPods-Stargazer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Stargazer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CC61F083557F7462A6BE08F /* Pods-Stargazer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer.debug.xcconfig"; path = "Target Support Files/Pods-Stargazer/Pods-Stargazer.debug.xcconfig"; sourceTree = "<group>"; };
+		8DABB968304843A49DAD404C /* Inter.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Inter.ttf; path = ../assets/fonts/Inter.ttf; sourceTree = "<group>"; };
 		B20D6628B85A66AB6A80428F /* Pods-Stargazer-StargazerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stargazer-StargazerTests.release.xcconfig"; path = "Target Support Files/Pods-Stargazer-StargazerTests/Pods-Stargazer-StargazerTests.release.xcconfig"; sourceTree = "<group>"; };
 		DBA7691127975C4C0038EE92 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -150,8 +148,7 @@
 		8CE21701AD114EB9A83F919E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				4CB947F12DA1438EA7989B2A /* Rubik.ttf */,
-				71AE7215BA994DFD9ADA3726 /* Inter-SansSerif.ttf */,
+				8DABB968304843A49DAD404C /* Inter.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -272,9 +269,8 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				1E2FE09827F62384002BAE26 /* LaunchScreen.storyboard in Resources */,
-				26343C94D6BF485C88B9FFA3 /* Rubik.ttf in Resources */,
 				1E9EA9A32BCEC77B001AAD29 /* PrivacyInfo.xcprivacy in Resources */,
-				94AA58ADD20B4844B07EF299 /* Inter-SansSerif.ttf in Resources */,
+				A4BAD2A3DF814BD8AA05635B /* Inter.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
