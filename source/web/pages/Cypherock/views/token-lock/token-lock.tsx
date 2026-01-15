@@ -33,7 +33,7 @@ interface ITokenLockViewProps {
 }
 
 const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErrorResponse }: ITokenLockViewProps) => {
-  const { requestMessage } = useTokenLock();
+  const { requestMessage, isUpdate } = useTokenLock();
   const cypherockId = useSelector(walletsSelectors.selectActiveWalletCypherockId);
 
   const sendTokenLockTransaction = async (data: TokenLockDataParam, asset: IAssetInfoState): Promise<string> => {
@@ -72,6 +72,7 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
       currencyId: currency,
       fee: 0,
       unlockEpoch: data.unlockEpoch ?? null,
+      replaceTokenLockRef: data.replaceTokenLockRef ?? null,
     };
 
     const { normalized, compressed } = await dag4.keyStore.brotliCompress(tokenLockBody);
@@ -107,7 +108,7 @@ const TokenLockView = ({ service, changeState, handleSuccessResponse, handleErro
   };
 
   const cypherockTokenLockConfig: TokenLockProviderConfig = {
-    title: 'Cypherock - Token Lock',
+    title: isUpdate ? 'Cypherock - Update Token Lock' : 'Cypherock - Token Lock',
     onTokenLock: async ({ decodedData, asset, wallet }) => {
       const isDag = wallet.chain === StargazerChain.CONSTELLATION;
       const addressMatch = dag4.account.address.toLowerCase() === wallet.address.toLowerCase();

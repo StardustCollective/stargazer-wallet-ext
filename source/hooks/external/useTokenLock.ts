@@ -13,6 +13,7 @@ import { useExternalRequest, UseExternalRequestReturn } from './useExternalReque
 
 export interface UseTokenLockReturn extends UseExternalRequestReturn<TokenLockDataParam>, BaseExternalRequestHook<TokenLockDataParam> {
   asset: IAssetInfoState;
+  isUpdate: boolean;
 }
 
 /**
@@ -23,11 +24,13 @@ export const useTokenLock = (): UseTokenLockReturn => {
 
   const currencyId = baseHook?.decodedData?.currencyId ?? null;
   const isDag = currencyId === null;
+  const isUpdate = baseHook?.decodedData?.replaceTokenLockRef !== null;
   const assetSelector = isDag ? assetsSelectors.getAssetById(AssetType.Constellation) : assetsSelectors.getAssetByAddress(currencyId);
   const asset = useSelector(assetSelector);
 
   return {
     ...baseHook,
     asset,
+    isUpdate
   };
 };

@@ -13,8 +13,10 @@ import { usePlatformAlert } from 'utils/alertUtil';
 
 import TokenLockContainer, { TokenLockProviderConfig } from './TokenLockContainer';
 import { retry } from 'utils/httpRequests/utils';
+import { useTokenLock } from 'hooks/external/useTokenLock';
 
 const TokenLock = () => {
+  const { isUpdate } = useTokenLock();
   const [loading, setLoading] = useState(false);
   const showAlert = usePlatformAlert();
 
@@ -24,6 +26,7 @@ const TokenLock = () => {
       amount: decodedData.amount,
       fee: 0,
       unlockEpoch: decodedData.unlockEpoch,
+      replaceTokenLockRef: decodedData.replaceTokenLockRef,
     };
 
     let tokenLockResponse: HashResponse | null = null;
@@ -64,7 +67,7 @@ const TokenLock = () => {
   };
 
   const defaultTokenLockConfig: TokenLockProviderConfig = {
-    title: 'TokenLock',
+    title: isUpdate ? 'Update Token Lock' : 'Token Lock',
     onTokenLock: async ({ decodedData, asset, wallet }) => {
       const isDag = wallet.chain === StargazerChain.CONSTELLATION;
       const addressMatch = dag4.account.keyTrio.address.toLowerCase() === wallet.address.toLowerCase();

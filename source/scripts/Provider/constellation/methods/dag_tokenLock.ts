@@ -72,6 +72,13 @@ const validateParams = async (request: StargazerRequest & { type: 'rpc' }) => {
       optional: true,
       validations: ['positive'],
     },
+    {
+      type: ['string', 'null'],
+      value: data.replaceTokenLockRef,
+      optional: true,
+      name: 'replaceTokenLockRef',
+      validations: ['no-empty'],
+    },
   ];
 
   checkArguments(args);
