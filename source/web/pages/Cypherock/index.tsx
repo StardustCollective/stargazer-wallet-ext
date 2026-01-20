@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import ToastAlert from 'components/ToastAlert';
@@ -27,16 +27,14 @@ rehydrateStore(store).then(() => {
   // Initialize dag4
   handleDag4Setup(store);
 
-  // Render Cypherock App
-  ReactDOM.render(
-    (
-      <Provider store={store}>
-        <AlertProvider template={ToastAlert} {...options}>
-          <CypherockPage />
-        </AlertProvider>
-      </Provider>
-    ) as any,
-    app
+  // Render Cypherock App with React 18 createRoot API
+  const root = createRoot(app!);
+  root.render(
+    <Provider store={store}>
+      <AlertProvider template={ToastAlert} {...options}>
+        <CypherockPage />
+      </AlertProvider>
+    </Provider>
   );
 
   // Subscribe store to updates and notify

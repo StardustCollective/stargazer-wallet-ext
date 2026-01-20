@@ -1,6 +1,4 @@
 export const FONTS = {
-  rubik: 'Rubik',
-  quicksand: 'Quicksand',
   inter: 'Inter',
 };
 

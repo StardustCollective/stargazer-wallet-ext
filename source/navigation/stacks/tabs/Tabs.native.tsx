@@ -2,84 +2,81 @@
 // Modules
 ///////////////////////////
 
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { View } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-///////////////////////////
-// Components
-///////////////////////////
-
-import defaultHeader from 'navigation/headers/default';
-import WalletIcon from 'assets/images/svg/wallet-tab.svg';
-import WalletFilledIcon from 'assets/images/svg/wallet-tab-filled.svg';
 import GridIcon from 'assets/images/svg/grid.svg';
 import GridFilledIcon from 'assets/images/svg/grid-filled.svg';
 import SettingsIcon from 'assets/images/svg/settings.svg';
 import SettingsFilledIcon from 'assets/images/svg/settings-filled.svg';
-
-///////////////////////////
-// Screens
-///////////////////////////
-
-// Home
-import Home from 'scenes/home/Home';
-import Asset from 'scenes/home/Asset';
-import Send from 'scenes/home/SendAsset/Send';
-import Confirm from 'scenes/home/SendAsset/Confirm';
-import AssetList from 'scenes/home/Asset/AssetList';
-import AddCustomAsset from 'scenes/home/Asset/AddCustomAsset';
-import BuyList from 'scenes/home/BuyList';
-import BuyAsset from 'scenes/home/BuyAsset';
-import SingleSelect from 'scenes/home/SingleSelect';
-
-// NFTs
-import Collections from 'scenes/nfts/Collections';
-import NFTList from 'scenes/nfts/NFTList';
-import NFTDetails from 'scenes/nfts/NFTDetails';
-import NFTSend from 'scenes/nfts/NFTSend';
-import NFTSendConfirm from 'scenes/nfts/NFTSendConfirm';
-import NFTSendCompleted from 'scenes/nfts/NFTSendCompleted';
-
-// Settings
-import Main from 'scenes/settings/Main';
-import About from 'scenes/settings/About';
-import Networks from 'scenes/settings/Networks';
-// import AddNetwork from 'scenes/settings/AddNetwork';
-import Contacts from 'scenes/settings/Contacts';
-import ContactInfo from 'scenes/settings/ContactInfo';
-import ModifyContact from 'scenes/settings/ModifyContact';
-import Wallets from 'scenes/settings/Wallets';
-import AddWallet from 'scenes/settings/AddWallet';
-import CreateWallet from 'scenes/settings/NewAccount';
-import CreatePhrase from 'scenes/unauth/Phrase/CreatePhrase';
-import ConfirmPhrase from 'scenes/unauth/Phrase/ConfirmPhrase';
-import CheckPassword from 'scenes/settings/CheckPassword';
-import ManageWallet from 'scenes/settings/ManageWallet';
-import RemoveWallet from 'scenes/settings/RemoveWallet';
-import ImportWallet from 'scenes/settings/ImportWallet';
-import ImportAccount from 'scenes/settings/ImportAccount';
-import ImportPhrase from 'scenes/settings/ImportPhrase';
-import ConnectedSites from 'scenes/settings/ConnectedSites';
-import Security from 'scenes/settings/Security';
-
-// Swap
-import SwapTokens from 'scenes/swap/SwapTokens';
-import TransferInfo from 'scenes/swap/TransferInfo';
-import ConfirmDetails from 'scenes/swap/ConfirmDetails';
-import Confirmation from 'scenes/swap/Confirmation';
-import SwapHistory from 'scenes/swap/SwapHistory';
-import TokenList from 'scenes/swap/TokenList';
-import TransactionDetails from 'scenes/swap/TransactionDetails';
-
+import WalletIcon from 'assets/images/svg/wallet-tab.svg';
+import WalletFilledIcon from 'assets/images/svg/wallet-tab-filled.svg';
 ///////////////////////////
 // Constants
 ///////////////////////////
-
 import { color } from 'assets/styles/tokens';
-import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../home/Home.native';
+
+///////////////////////////
+// Components
+///////////////////////////
+import defaultHeader from 'navigation/headers/default';
+
+import Asset from 'scenes/home/Asset';
+import AddCustomAsset from 'scenes/home/Asset/AddCustomAsset';
+import AssetList from 'scenes/home/Asset/AssetList';
+import BuyAsset from 'scenes/home/BuyAsset';
+import BuyList from 'scenes/home/BuyList';
+///////////////////////////
+// Screens
+///////////////////////////
+// Home
+import Home from 'scenes/home/Home';
+import Confirm from 'scenes/home/SendAsset/Confirm';
+import Send from 'scenes/home/SendAsset/Send';
+import SingleSelect from 'scenes/home/SingleSelect';
+// NFTs
+import Collections from 'scenes/nfts/Collections';
+import NFTDetails from 'scenes/nfts/NFTDetails';
+import NFTList from 'scenes/nfts/NFTList';
+import NFTSend from 'scenes/nfts/NFTSend';
+import NFTSendCompleted from 'scenes/nfts/NFTSendCompleted';
+import NFTSendConfirm from 'scenes/nfts/NFTSendConfirm';
+import About from 'scenes/settings/About';
+import AddWallet from 'scenes/settings/AddWallet';
+import CheckPassword from 'scenes/settings/CheckPassword';
+import ConnectedSites from 'scenes/settings/ConnectedSites';
+import ContactInfo from 'scenes/settings/ContactInfo';
+// import AddNetwork from 'scenes/settings/AddNetwork';
+import Contacts from 'scenes/settings/Contacts';
+import ImportAccount from 'scenes/settings/ImportAccount';
+import ImportPhrase from 'scenes/settings/ImportPhrase';
+import ImportWallet from 'scenes/settings/ImportWallet';
+// Settings
+import Main from 'scenes/settings/Main';
+import ManageWallet from 'scenes/settings/ManageWallet';
+import ModifyContact from 'scenes/settings/ModifyContact';
+import Networks from 'scenes/settings/Networks';
+import CreateWallet from 'scenes/settings/NewAccount';
+import RemoveWallet from 'scenes/settings/RemoveWallet';
+import Security from 'scenes/settings/Security';
+import Wallets from 'scenes/settings/Wallets';
+import Confirmation from 'scenes/swap/Confirmation';
+import ConfirmDetails from 'scenes/swap/ConfirmDetails';
+import SwapHistory from 'scenes/swap/SwapHistory';
+// Swap
+import SwapTokens from 'scenes/swap/SwapTokens';
+import TokenList from 'scenes/swap/TokenList';
+import TransactionDetails from 'scenes/swap/TransactionDetails';
+import TransferInfo from 'scenes/swap/TransferInfo';
+import ConfirmPhrase from 'scenes/unauth/Phrase/ConfirmPhrase';
+import CreatePhrase from 'scenes/unauth/Phrase/CreatePhrase';
+
 import { iosPlatform } from 'utils/platform';
+
 import screens from '../../screens';
+import { SCREEN_DEFAULT_TITLE_STRINGS, Stack } from '../home/Home.native';
+
 import styles from './styles';
 
 const Tab = createBottomTabNavigator();
@@ -87,7 +84,7 @@ const Tab = createBottomTabNavigator();
 const HomeTab = () => {
   return (
     <Stack.Navigator
-      screenOptions={(navigation) => ({
+      screenOptions={navigation => ({
         ...defaultHeader(navigation),
       })}
     >
@@ -152,7 +149,7 @@ const HomeTab = () => {
       <Stack.Screen
         options={{
           title: SCREEN_DEFAULT_TITLE_STRINGS.confirmation,
-          headerLeft: null,
+          headerLeft: undefined,
           gestureEnabled: false,
         }}
         name={screens.swap.confirmation}
@@ -180,13 +177,13 @@ const HomeTab = () => {
 const NftsTab = () => {
   return (
     <Stack.Navigator
-      screenOptions={(navigation) => ({
+      screenOptions={navigation => ({
         ...defaultHeader(navigation),
       })}
     >
       {/* NFTs Stack */}
       <Stack.Screen
-        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.nfts, headerLeft: null }}
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.nfts, headerLeft: undefined }}
         name={screens.nfts.collections}
         component={Collections}
       />
@@ -203,7 +200,7 @@ const NftsTab = () => {
         component={NFTSendConfirm}
       />
       <Stack.Screen
-        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.blank, headerLeft: null }}
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.blank, headerLeft: undefined }}
         name={screens.nfts.nftsSendCompleted}
         component={NFTSendCompleted}
       />
@@ -214,13 +211,13 @@ const NftsTab = () => {
 const SettingsTab = () => {
   return (
     <Stack.Navigator
-      screenOptions={(navigation) => ({
+      screenOptions={navigation => ({
         ...defaultHeader(navigation),
       })}
     >
       {/* Settings Stack */}
       <Stack.Screen
-        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerLeft: null }}
+        options={{ title: SCREEN_DEFAULT_TITLE_STRINGS.settings, headerLeft: undefined }}
         name={screens.settings.main}
         component={Main}
       />
@@ -319,9 +316,10 @@ const SettingsTab = () => {
 const Tabs = () => {
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        showLabel: false,
-        style: [styles.bottomTab, !iosPlatform() && styles.bottomTabHeight],
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: [styles.bottomTab, !iosPlatform() && styles.bottomTabHeight],
       }}
     >
       <Tab.Screen
@@ -329,10 +327,11 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabItemContainer}>
               {focused && <View style={styles.tabActiveItemLine} />}
-              {focused ? 
-                <WalletFilledIcon width={32} height={32} color={color.brand_500} /> :
+              {focused ? (
+                <WalletFilledIcon width={32} height={32} color={color.brand_500} />
+              ) : (
                 <WalletIcon width={32} height={32} color={color.gray_500} />
-              }
+              )}
             </View>
           ),
         }}
@@ -344,10 +343,7 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabItemContainer}>
               {focused && <View style={styles.tabActiveItemLine} />}
-              {focused ? 
-                <GridFilledIcon color={color.brand_500} /> :
-                <GridIcon color={color.gray_500} />
-              }
+              {focused ? <GridFilledIcon color={color.brand_500} /> : <GridIcon color={color.gray_500} />}
             </View>
           ),
         }}
@@ -359,10 +355,7 @@ const Tabs = () => {
           tabBarIcon: ({ focused }) => (
             <View style={styles.tabItemContainer}>
               {focused && <View style={styles.tabActiveItemLine} />}
-              {focused ? 
-                <SettingsFilledIcon color={color.brand_500} /> :
-                <SettingsIcon color={color.gray_500} />
-              }
+              {focused ? <SettingsFilledIcon color={color.brand_500} /> : <SettingsIcon color={color.gray_500} />}
             </View>
           ),
         }}

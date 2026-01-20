@@ -10,15 +10,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WextManifestWebpackPlugin = require('wext-manifest-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
 const viewsPath = path.join(__dirname, '../../views');
 const destPath = path.join(__dirname, 'extension');
-const rootPath = path.join(__dirname, '../../');
 const sharedPath = path.join(__dirname, '../');
 const nodeEnv = process.env.NODE_ENV || 'development';
 const targetBrowser = process.env.TARGET_BROWSER;
@@ -47,7 +45,7 @@ const commonConfig = {
 
   resolve: {
     plugins: [PnpWebpackPlugin],
-    extensions: ['.ts', '.tsx', '.js', '.json'],
+    extensions: ['.web.tsx', '.web.ts', '.web.js', '.ts', '.tsx', '.js', '.json'],
     alias: {
       assets: path.resolve(sharedPath, 'assets'),
       components: path.resolve(sharedPath, 'components'),
@@ -88,17 +86,39 @@ const commonConfig = {
         test: /\.(js|ts)x?$/,
         loader: 'babel-loader',
         // Exclude node_modules and react-native project folders.
-        // Exclude react-native-flash-message (needs to be processed)
-        // Exclude zipExtension.js
-        exclude: (modulePath) => {
-          return (
-            /zipExtension\.js$/.test(modulePath) ||
-            /uploadSourceMaps\.js$/.test(modulePath) ||
-            (!/node_modules\/react-native-flash-message/.test(modulePath) &&
-              !/node_modules\/eip-712/.test(modulePath) &&
-              !/node_modules\/ethers-v6/.test(modulePath) &&
-              (/node_modules/.test(modulePath) || /native/.test(modulePath)))
-          );
+        // Process specific packages that need transpilation
+        exclude: modulePath => {
+          // Always exclude these utility scripts
+          if (/zipExtension\.js$/.test(modulePath) || /uploadSourceMaps\.js$/.test(modulePath)) {
+            return true;
+          }
+          
+          // CRITICAL: Exclude core react-native package (has Flow types, should use react-native-web instead)
+          // This must come BEFORE the react-native-* check
+          if (/node_modules\/react-native\//.test(modulePath) && !/node_modules\/react-native-/.test(modulePath)) {
+            return true; // Exclude core react-native
+          }
+          
+          // Process specific node_modules that need transpilation
+          // Include react-native-* packages (react-native-web, react-native-safe-area-context, etc.)
+          if (
+            /node_modules\/react-native-/.test(modulePath) ||
+            /node_modules\/@react-navigation/.test(modulePath) ||
+            /node_modules\/eip-712/.test(modulePath) ||
+            /node_modules\/ethers-v6/.test(modulePath) ||
+            /node_modules\/zod/.test(modulePath)
+          ) {
+            return false; // Don't exclude, let Babel process these
+          }
+          
+          // Exclude the native folder (but not node_modules/@react-navigation/native)
+          // Check for /source/native/ to be more specific
+          if (/\/source\/native\//.test(modulePath)) {
+            return true;
+          }
+          
+          // Exclude all other node_modules
+          return /node_modules/.test(modulePath);
         },
         options: {
           ...JSON.parse(fs.readFileSync(path.resolve(__dirname, '.babelrc'))),
@@ -187,9 +207,6 @@ const uiConfig = {
   plugins: [
     // Plugin to not generate js bundle for manifest entry
     new WextManifestWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin({
-      tsconfig: path.resolve(`${rootPath}tsconfig.json`),
-    }),
     // environmental variables
     new webpack.EnvironmentPlugin(['NODE_ENV', 'TARGET_BROWSER']),
     // global variables
@@ -288,9 +305,6 @@ const backgroundConfig = {
     ],
   },
   plugins: [
-    new ForkTsCheckerWebpackPlugin({
-      tsconfig: path.resolve(`${rootPath}tsconfig.json`),
-    }),
     new webpack.EnvironmentPlugin(['NODE_ENV', 'TARGET_BROWSER']),
     new webpack.DefinePlugin({
       STARGAZER_WALLET_VERSION: JSON.stringify(

@@ -22,8 +22,4 @@ Sentry.init({
   enableNative: __DEV__ ? false : true,
 });
 
-if (__DEV__) {
-  require('./ReactotronConfig');
-}
-
 AppRegistry.registerComponent(appName, () => Sentry.wrap(App));
