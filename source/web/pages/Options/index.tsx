@@ -1,6 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import Options from './Options';
 
-ReactDOM.render((<Options />) as any, document.getElementById('options-root'));
+const app = document.getElementById('options-root');
+const root = createRoot(app!);
+root.render(<Options />);

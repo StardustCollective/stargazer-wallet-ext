@@ -10,13 +10,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   qrCameraTopContent: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     backgroundColor: color.brand_900,
   },
   qrCameraBottomContent: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     backgroundColor: color.brand_900,
   },
   qrSectionLeft: {
@@ -32,6 +30,14 @@ const styles = StyleSheet.create({
   qrCodeIcon: {
     marginRight: 20,
   },
+  cameraContainer: {
+    flex: 2,
+  },
+  camera: {
+    position: 'relative',
+    height: '100%',
+    width: '100%',
+  }
 });
 
 export default styles;

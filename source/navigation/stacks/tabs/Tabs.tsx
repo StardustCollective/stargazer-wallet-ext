@@ -323,16 +323,17 @@ const SettingsTab = () => {
 const Tabs = () => {
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        showLabel: false,
-        style: { 
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: {
           height: 64, 
           position: 'absolute', 
           bottom: 0, 
           borderTopWidth: 1, 
           borderTopColor: color.gray_100, 
           paddingHorizontal: 16 
-        },
+        }
       }}
     >
       <Tab.Screen
