@@ -1,6 +1,6 @@
 import '../../sentry/initialize';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import ToastAlert from 'components/ToastAlert';
@@ -41,18 +41,16 @@ MigrationController().then(() => {
     // Initialize dag4
     handleDag4Setup(store);
 
-    // Render App
-    ReactDOM.render(
-      (
-        <Provider store={store}>
-          <ToastProvider>
-            <AlertProvider template={ToastAlert} {...options}>
-              <App />
-            </AlertProvider>
-          </ToastProvider>
-        </Provider>
-      ) as any,
-      app
+    // Render App with React 18 createRoot API
+    const root = createRoot(app!);
+    root.render(
+      <Provider store={store}>
+        <ToastProvider>
+          <AlertProvider template={ToastAlert} {...options}>
+            <App />
+          </AlertProvider>
+        </ToastProvider>
+      </Provider>
     );
 
     // Subscribe store to updates and notify

@@ -5,11 +5,17 @@
       {
         "targets": {
           "browsers": ["chrome >= 63", "firefox >= 68"]
-        }
+        },
+        "modules": false
       }
     ],
     "@babel/typescript",
-    "@babel/preset-react"
+    [
+      "@babel/preset-react",
+      {
+        "runtime": "automatic"
+      }
+    ]
   ],
   "plugins": [
     "@babel/plugin-transform-runtime",

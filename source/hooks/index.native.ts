@@ -1,11 +1,11 @@
 import { useHistory } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
-import Clipboard from '@react-native-community/clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export function useSettingsView() {
   const history = useHistory();
 
-  return useCallback((view) => {
+  return useCallback(view => {
     history.push(view);
   }, []);
 }
@@ -13,7 +13,7 @@ export function useSettingsView() {
 export function useCopyClipboard(timeout = 1000): [boolean, (toCopy: string) => void] {
   const [isCopied, setIsCopied] = useState(false);
 
-  const staticCopy = useCallback((text) => {
+  const staticCopy = useCallback(text => {
     Clipboard.setString(text);
     setIsCopied(true);
   }, []);

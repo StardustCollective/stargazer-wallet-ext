@@ -180,8 +180,8 @@ const Home: FC<IHome> = ({
                   </>
                 )}
               </View>
-              <View style={styles.buttons}>
-                {!iosPlatform() && 
+              {!iosPlatform() && 
+                <View style={styles.buttons}>
                   <TouchableOpacity style={styles.buttonContainer} onPress={onBuyPressed} activeOpacity={0.7}>
                     <LinearGradient
                       useAngle
@@ -195,23 +195,23 @@ const Home: FC<IHome> = ({
                       </TextV3.LabelSemiStrong>
                     </LinearGradient>
                   </TouchableOpacity>
-                }
-                {!isDagOnlyWallet && !iosPlatform() &&  (
-                  <TouchableOpacity style={styles.buttonContainer} onPress={onSwapPressed} activeOpacity={0.7}>
-                    <LinearGradient
-                      useAngle
-                      angle={180}
-                      style={styles.button}
-                      locations={[0, 1]}
-                      colors={['#7150E2', '#4B22D3']}
-                    >
-                    <TextV3.LabelSemiStrong extraStyles={styles.buttonLabel}>
-                      {SWAP_STRING}
-                    </TextV3.LabelSemiStrong>
-                  </LinearGradient>
-                </TouchableOpacity>
-                )}
-              </View>
+                  {!isDagOnlyWallet &&  (
+                    <TouchableOpacity style={styles.buttonContainer} onPress={onSwapPressed} activeOpacity={0.7}>
+                      <LinearGradient
+                        useAngle
+                        angle={180}
+                        style={styles.button}
+                        locations={[0, 1]}
+                        colors={['#7150E2', '#4B22D3']}
+                      >
+                      <TextV3.LabelSemiStrong extraStyles={styles.buttonLabel}>
+                        {SWAP_STRING}
+                      </TextV3.LabelSemiStrong>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                  )}
+                </View>
+              }
             </View>
             <AssetsPanel />
           </>
