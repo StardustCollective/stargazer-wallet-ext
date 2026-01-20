@@ -24,7 +24,7 @@ export const useTokenLock = (): UseTokenLockReturn => {
 
   const currencyId = baseHook?.decodedData?.currencyId ?? null;
   const isDag = currencyId === null;
-  const isUpdate = baseHook?.decodedData?.replaceTokenLockRef !== null;
+  const isUpdate = !!baseHook?.decodedData?.replaceTokenLockRef;
   const assetSelector = isDag ? assetsSelectors.getAssetById(AssetType.Constellation) : assetsSelectors.getAssetByAddress(currencyId);
   const asset = useSelector(assetSelector);
 
