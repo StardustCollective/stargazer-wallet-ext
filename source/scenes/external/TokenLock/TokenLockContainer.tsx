@@ -43,7 +43,7 @@ const TokenLockContainer: React.FC<TokenLockProviderConfig> = ({ title, onTokenL
 
   // Extract render function with proper typing
   const renderTokenLockView = (props: TokenLockContainerProps): JSX.Element => {
-    const { title: propsTitle, amount, unlockEpoch, latestEpoch, isLoading: propsIsLoading, asset, onAction, onReject, wallet } = props;
+    const { title: propsTitle, amount, unlockEpoch, latestEpoch, isLoading: propsIsLoading, asset, isUpdate, onAction, onReject, wallet } = props;
 
     const tokenLockProps: ITokenLockProps = {
       title: propsTitle,
@@ -52,6 +52,7 @@ const TokenLockContainer: React.FC<TokenLockProviderConfig> = ({ title, onTokenL
       amount,
       unlockEpoch,
       latestEpoch,
+      isUpdate,
       isLoading: propsIsLoading,
       onSign: onAction,
       onReject,
