@@ -221,6 +221,15 @@ const MigrationController = async () => {
     const v5_4_5 = require('../migration/v5_4_5');
     await v5_4_5.default(state);
   }
+
+  /**
+   * version < 5_4_6
+   * Description: Add PacaSwap priceId
+   */
+  if (compareVersions(state.vault.version, '5.4.6') < 0) {
+    const v5_4_6 = require('../migration/v5_4_6');
+    await v5_4_6.default(state);
+  }
 };
 
 export default MigrationController;
