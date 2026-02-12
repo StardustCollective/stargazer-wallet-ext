@@ -56,6 +56,7 @@ export const initialState: IAssetListState = {
     l0endpoint: 'http://pacaswap-mainnet-ml0-286306868.us-west-1.elb.amazonaws.com',
     l1endpoint: 'http://pacaswap-mainnet-cl1-647928315.us-west-1.elb.amazonaws.com',
     dl1endpoint: 'http://pacaswap-mainnet-dl1-1672636488.us-west-1.elb.amazonaws.com',
+    priceId: 'pacaswap',
   },
   'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2': {
     id: 'DAG0CyySf35ftDQDQBnd1bdQ9aPyUdacMghpnCuM-main2',
