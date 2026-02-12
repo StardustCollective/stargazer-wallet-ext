@@ -26,7 +26,15 @@ const renderEpochValue = (epochValue: number, latestEpoch: number) => {
   );
 };
 
-const renderLockMessage = (amount: string, unlockEpoch: number) => {
+const renderLockMessage = (amount: string, unlockEpoch: number, isUpdate: boolean) => {
+  if (isUpdate) {
+    return (
+      <TextV3.CaptionRegular extraStyles={styles.description}>
+        You are increasing this lock postion to a new total of <TextV3.CaptionStrong extraStyles={styles.descriptionStrong}>{amount}</TextV3.CaptionStrong> locked.
+      </TextV3.CaptionRegular>
+    );
+  }
+
   if (!unlockEpoch) {
     return (
       <TextV3.CaptionRegular extraStyles={styles.description}>
@@ -48,6 +56,7 @@ export interface ITokenLockProps {
   wallet: WalletParam;
   asset: IAssetInfoState;
   amount: number;
+  isUpdate: boolean;
   unlockEpoch: number | null;
   latestEpoch: number | null;
   isLoading?: boolean;
@@ -55,7 +64,7 @@ export interface ITokenLockProps {
   onReject: () => Promise<void>;
 }
 
-const TokenLockView = ({ title, wallet, amount: amountInDatum, unlockEpoch, latestEpoch, isLoading, asset, onSign, onReject }: ITokenLockProps) => {
+const TokenLockView = ({ title, wallet, amount: amountInDatum, isUpdate, unlockEpoch, latestEpoch, isLoading, asset, onSign, onReject }: ITokenLockProps) => {
   const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const amount = formatBigNumberForDisplay(toDag(amountInDatum));
 
@@ -77,7 +86,7 @@ const TokenLockView = ({ title, wallet, amount: amountInDatum, unlockEpoch, late
           <CardRow label="Amount:" value={amountString} />
           {!!latestEpoch && !!unlockEpoch && <CardRow label="Unlock Epoch:" value={renderEpochValue(unlockEpoch, latestEpoch)} />}
         </Card>
-        <Card>{renderLockMessage(amountString, unlockEpoch)}</Card>
+        <Card>{renderLockMessage(amountString, unlockEpoch, isUpdate)}</Card>
       </div>
     </CardLayoutV3>
   );
