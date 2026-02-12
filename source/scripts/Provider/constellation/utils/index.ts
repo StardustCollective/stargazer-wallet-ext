@@ -272,6 +272,12 @@ export const isValidMetagraphAddress = async (address: string, chainId?: string)
 
   const { activeNetwork }: IVaultState = store.getState().vault;
   const activeChain = chainId || activeNetwork[KeyringNetwork.Constellation];
+
+  // Skip Block Explorer validation for local development (no BE available)
+  if (activeChain === DAG_NETWORK.local2.id) {
+    return true;
+  }
+
   const BE_URL = DAG_NETWORK[activeChain].config.beUrl;
   const response: any = await (await fetch(`${BE_URL}/currency/${address}/snapshots/latest`)).json();
   return !!response?.data?.hash;
@@ -343,14 +349,16 @@ export const checkWatchAssetParams = async ({ type, options }: WatchAssetParamet
   }
 
   const selectedNetwork = Object.values(DAG_NETWORK).find(network => network.chainId === chainId);
-  const isValidMetagraph = await isValidMetagraphAddress(address, selectedNetwork.id);
+
+  if (selectedNetwork.id !== DAG_NETWORK.local2.id) {
+    const isValidMetagraph = await isValidMetagraphAddress(address, selectedNetwork.id);
+    if (!isValidMetagraph) {
+      throw new Error('Argument "address" or "chainId" are invalid -> metagraph not found');
+    }
+  }
 
   if (!isValidAddress) {
     throw new Error('Argument "address" is invalid -> not a DAG address');
-  }
-
-  if (!isValidMetagraph) {
-    throw new Error('Argument "address" or "chainId" are invalid -> metagraph not found');
   }
 
   await validateNodes(l0, cl1, dl1);
