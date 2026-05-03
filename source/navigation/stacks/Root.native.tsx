@@ -1,0 +1,116 @@
+///////////////////////////
+// Modules
+///////////////////////////
+
+import React, { useEffect } from 'react';
+import { RootState } from 'state/store';
+import IVaultState from 'state/vault/types';
+
+///////////////////////////
+// Hooks
+///////////////////////////
+
+import { useSelector } from 'react-redux';
+
+///////////////////////////
+// Stacks
+///////////////////////////
+
+import HomeStack from './home/Home';
+import UnAuthStack from './UnAuth';
+
+///////////////////////////
+// Screens Names
+///////////////////////////
+
+import screens from '../screens';
+
+///////////////////////////
+// Navigation
+///////////////////////////
+
+import { createStackNavigator } from '@react-navigation/stack';
+import defaultHeader from 'navigation/headers/default';
+import IProvidersState from 'state/providers/types';
+import { getAccountController } from 'utils/controllersUtils';
+import { requestToken } from 'utils/httpRequests/interceptors';
+import { IAuthState } from 'state/auth/types';
+
+///////////////////////////
+// Deep Link Screens
+///////////////////////////
+
+import DeepLinkConnect from 'scenes/external/Connect/Connect.native';
+
+///////////////////////////
+// Constants
+///////////////////////////
+
+const Stack = createStackNavigator();
+
+const Root = () => {
+  const { wallets, hasEncryptedVault, migrateWallet }: IVaultState = useSelector(
+    (state: RootState) => state.vault
+  );
+  const { supportedAssets }: IProvidersState = useSelector(
+    (state: RootState) => state.providers
+  );
+  const { external }: IAuthState = useSelector((state: RootState) => state.auth);
+  const accountController = getAccountController();
+
+  useEffect(() => {
+    const getAssets = async () => {
+      await accountController.assetsController.fetchSupportedAssets();
+    };
+    if (!supportedAssets.data) {
+      getAssets();
+    }
+  }, []);
+
+  useEffect(() => {
+    const getAuthToken = async () => {
+      await requestToken();
+    };
+    if (!external?.token) {
+      getAuthToken();
+    }
+  }, []);
+
+  const isAuthorized =
+    migrateWallet ||
+    (wallets.local && Object.values(wallets.local).length > 0) ||
+    hasEncryptedVault;
+
+  return (
+    <Stack.Navigator
+      screenOptions={(navigation) => ({
+        ...defaultHeader(navigation),
+      })}
+    >
+      {!isAuthorized && (
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name={screens.unAuthorized.root}
+          component={UnAuthStack}
+        />
+      )}
+      {isAuthorized && (
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name={screens.authorized.root}
+          component={HomeStack}
+        />
+      )}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+          presentation: 'modal',
+        }}
+        name={screens.deeplink.connect}
+        component={DeepLinkConnect}
+      />
+    </Stack.Navigator>
+  );
+};
+
+export default Root;
