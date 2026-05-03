@@ -102,4 +102,12 @@ export default {
   common: {
     import: 'common-import',
   },
+
+  ////////////////////////////
+  // Deep Link
+  ////////////////////////////
+
+  deeplink: {
+    connect: 'deeplink-connect',
+  },
 };

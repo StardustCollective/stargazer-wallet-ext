@@ -13,7 +13,7 @@ const config = {
 };
 
 const linking = {
-  prefixes: ['https://', 'http://', 'stargazer://'],
+  prefixes: ['https://', 'http://'],
   config,
 };
 

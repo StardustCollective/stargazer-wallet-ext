@@ -60,4 +60,6 @@ export default {
   [screens.settings.connectedSites]: '/settings/connectedSites',
   [screens.settings.security]: '/settings/security',
   [screens.settings.personalize]: '/settings/personalize',
+  // Deep Link
+  [screens.deeplink.connect]: '/connect',
 };
