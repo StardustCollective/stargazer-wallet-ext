@@ -25,7 +25,7 @@ export interface ISignTypedDataProps {
 }
 
 const SignTypedDataView = ({ title, wallet, typedData, footer, onSign, onReject }: ISignTypedDataProps) => {
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
 
   const domainString = typedData?.domain?.name || 'Unknown';
   const contractAddress = typedData?.domain?.verifyingContract || '';
@@ -45,7 +45,7 @@ const SignTypedDataView = ({ title, wallet, typedData, footer, onSign, onReject 
   const isDisabled = accountChanged || networkChanged;
 
   return (
-    <CardLayoutV3 logo={current?.logo} title={title} subtitle={current?.origin} onNegativeButtonClick={onReject} negativeButtonLabel="Reject" onPositiveButtonClick={onSign} positiveButtonLabel="Sign" isPositiveButtonDisabled={isDisabled}>
+    <CardLayoutV3 logo={dapp.logo} title={title} subtitle={dapp.origin} onNegativeButtonClick={onReject} negativeButtonLabel="Reject" onPositiveButtonClick={onSign} positiveButtonLabel="Sign" isPositiveButtonDisabled={isDisabled}>
       <div className={styles.container}>
         <Card>
           <CardRow label="Wallet name:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />

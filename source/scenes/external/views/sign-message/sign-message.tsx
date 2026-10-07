@@ -28,7 +28,7 @@ export interface ISignMessageProps {
 }
 
 const SignMessageView = ({ title, message, wallet, footer, onSign, onReject }: ISignMessageProps) => {
-  const { current, activeWallet, networkLabel, accountChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged } = useExternalViewData(wallet);
   const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
 
   let parsedMetadata: any = null;
@@ -44,7 +44,7 @@ const SignMessageView = ({ title, message, wallet, footer, onSign, onReject }: I
   }
 
   return (
-    <CardLayoutV3 logo={current.logo} title={title} subtitle={current.origin} onNegativeButtonClick={onReject} negativeButtonLabel="Reject" onPositiveButtonClick={onSign} positiveButtonLabel="Sign" isPositiveButtonDisabled={accountChanged}>
+    <CardLayoutV3 logo={dapp.logo} title={title} subtitle={dapp.origin} onNegativeButtonClick={onReject} negativeButtonLabel="Reject" onPositiveButtonClick={onSign} positiveButtonLabel="Sign" isPositiveButtonDisabled={accountChanged}>
       <div className={styles.container}>
         <Card>
           <CardRow label="Account:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />

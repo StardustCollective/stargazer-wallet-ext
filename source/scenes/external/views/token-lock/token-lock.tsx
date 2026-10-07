@@ -65,7 +65,7 @@ export interface ITokenLockProps {
 }
 
 const TokenLockView = ({ title, wallet, amount: amountInDatum, isUpdate, unlockEpoch, latestEpoch, isLoading, asset, onSign, onReject }: ITokenLockProps) => {
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const amount = formatBigNumberForDisplay(toDag(amountInDatum));
 
   if (!asset) return null;
@@ -75,7 +75,7 @@ const TokenLockView = ({ title, wallet, amount: amountInDatum, isUpdate, unlockE
   const isDisabled = accountChanged || networkChanged;
 
   return (
-    <CardLayoutV3 title={title} logo={current?.logo} subtitle={current?.origin} isPositiveButtonLoading={isLoading} isPositiveButtonDisabled={isDisabled} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
+    <CardLayoutV3 title={title} logo={dapp.logo} subtitle={dapp.origin} isPositiveButtonLoading={isLoading} isPositiveButtonDisabled={isDisabled} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
       <div className={styles.container}>
         <Card>
           <CardRow label="Wallet name:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />

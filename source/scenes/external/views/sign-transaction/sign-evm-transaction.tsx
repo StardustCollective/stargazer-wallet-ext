@@ -68,10 +68,10 @@ export const SignEvmTransactionView = ({ title, nativeAsset, transaction, origin
   const { from, to, value: amount, chainId } = transaction;
   const fromDapp = origin !== 'stargazer-wallet';
 
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet, fromDapp);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet, fromDapp);
 
-  const subtitle = fromDapp ? current.origin : null;
-  const logo = fromDapp ? current.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
+  const subtitle = fromDapp ? dapp.origin : null;
+  const logo = fromDapp ? dapp.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
 
   const amountInWei = BigNumber.from(amount ?? 0);
   const amountInEth = formatEther(amountInWei);

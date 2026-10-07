@@ -96,11 +96,11 @@ const calculateErc20Total = (amountInWei: BigNumber, feeInWei: BigNumber, tokenI
 export const SignEvmTransferView = ({ title, nativeAsset, transaction, footer, origin, containerStyles, isLoading = false, wallet, setGasConfig, onSign, onReject }: ISignEvmTransferProps) => {
   const { from, to, data, chainId } = transaction;
   const fromDapp = origin !== 'stargazer-wallet';
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet, fromDapp);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet, fromDapp);
   const showAlert = usePlatformAlert();
 
-  const subtitle = fromDapp ? current.origin : null;
-  const logo = fromDapp ? current.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
+  const subtitle = fromDapp ? dapp.origin : null;
+  const logo = fromDapp ? dapp.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
 
   // Decode ERC20 transaction data
   const dataDecoded = getERC20DataDecoder().decodeData(data);

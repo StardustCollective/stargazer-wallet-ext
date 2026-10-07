@@ -50,7 +50,6 @@ import {
 } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError, ProtocolProvider } from 'scripts/common';
 import styles from './index.module.scss';
-import dappSelectors from 'selectors/dappSelectors';
 import {
   DappMessage,
   DappMessageEvent,
@@ -94,12 +93,11 @@ const SelectAccounts = () => {
   ///////////////////////////
 
   const allWallets = useSelector(walletsSelectors.selectAllWallets);
-  const current = useSelector(dappSelectors.getCurrent);
   const activeWallet = useSelector(walletsSelectors.getActiveWallet);
 
   const [sceneState, setSceneState] = useState<SCENE_STATE>(SCENE_STATE.SELECT_ACCOUNTS);
 
-  const { message, origin, data } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
+  const { message, origin, logo, data } = StargazerExternalPopups.decodeRequestMessageLocationParams<{
     origin?: string;
   }>(
     location.href
@@ -134,7 +132,7 @@ const SelectAccounts = () => {
         event: DappMessageEvent.connect,
         payload: {
           origin,
-          dapp: current,
+          dapp: { origin, logo },
           network: ProtocolProvider.CONSTELLATION,
           accounts: dagAccounts,
         },
@@ -145,7 +143,7 @@ const SelectAccounts = () => {
         event: DappMessageEvent.connect,
         payload: {
           origin,
-          dapp: current,
+          dapp: { origin, logo },
           network: ProtocolProvider.ETHEREUM,
           accounts: ethAccounts,
         },

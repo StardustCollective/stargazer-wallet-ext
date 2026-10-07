@@ -13,7 +13,7 @@ import TextV3, { TEXT_ALIGN_ENUM } from 'components/TextV3';
 import styles from './index.scss';
 
 type ICardLayoutV3Props = {
-  logo: string | JSX.Element;
+  logo?: string | JSX.Element;
   title: string;
   subtitle?: string;
   negativeButtonLabel?: string;
