@@ -230,6 +230,15 @@ const MigrationController = async () => {
     const v5_4_6 = require('../migration/v5_4_6');
     await v5_4_6.default(state);
   }
+
+  /**
+   * version < 5_4_7
+   * Description: Remove dapp.current and repair whitelist origins (SGW-919)
+   */
+  if (compareVersions(state.vault.version, '5.4.7') < 0) {
+    const v5_4_7 = require('../migration/v5_4_7');
+    await v5_4_7.default(state);
+  }
 };
 
 export default MigrationController;
