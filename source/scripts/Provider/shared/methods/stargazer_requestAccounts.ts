@@ -1,6 +1,7 @@
 import type { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
 import {
+  getDappParams,
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
@@ -24,7 +25,7 @@ await StargazerExternalPopups.executePopup({
       origin: 'stargazer_requestAccounts',
     },
     message,
-    origin: sender.origin,
+    ...getDappParams(sender),
     route: ExternalRoute.SelectAccounts,
   },
 });

@@ -1,7 +1,7 @@
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import type { WithdrawDelegatedStake } from '@stardust-collective/dag4-network';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
@@ -59,7 +59,7 @@ export const dag_withdrawDelegatedStake = async (request: StargazerRequest & { t
     params: {
       data,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.WithdrawDelegatedStake,
       wallet: {
         chain: StargazerChain.CONSTELLATION,

@@ -1,7 +1,7 @@
 import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
@@ -66,7 +66,7 @@ export const dag_signMessage = async (request: StargazerRequest & { type: 'rpc' 
     params: {
       data: signMessageParams,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.SignMessage,
       wallet: {
         chain: StargazerChain.CONSTELLATION,

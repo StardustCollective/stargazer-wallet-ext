@@ -1,7 +1,7 @@
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import * as ethers from 'ethers';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError, StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { ISignMessageParams } from 'scripts/Provider/constellation';
 
@@ -65,7 +65,7 @@ export const personal_sign = async (request: StargazerRequest & { type: 'rpc' },
     params: {
       data: signatureData,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.SignMessage,
       wallet: {
         chain,

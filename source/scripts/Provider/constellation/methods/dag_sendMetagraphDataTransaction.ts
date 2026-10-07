@@ -2,7 +2,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { normalizeObject } from '@stardust-collective/dag4-keystore';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import store from 'state/store';
@@ -92,7 +92,7 @@ export const dag_sendMetagraphDataTransaction = async (request: StargazerRequest
     params: {
       data: requestData,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.SendMetagraphData,
       wallet: {
         chain: StargazerChain.CONSTELLATION,

@@ -1,5 +1,6 @@
 import { isStargazerRequestMessage, StargazerChain, StargazerRequestMessage } from 'scripts/common';
 
+import { sanitizeLogo } from 'utils/dappLogo';
 import { decodeFromBase64, encodeToBase64 } from 'utils/encoding';
 import { HARDWARE_WALLETS_PAGES } from 'utils/hardware';
 
@@ -13,6 +14,7 @@ type PopupParams = {
   data: Record<string, any> | null;
   message?: StargazerRequestMessage;
   origin: string;
+  logo?: string;
   route: string;
   wallet?: WalletParam;
   resolved?: boolean;
@@ -24,6 +26,11 @@ type ExecutePopupProps = {
   size?: { width: number; height: number };
   type?: chrome.windows.createTypeEnum;
 };
+
+export const getDappParams = (sender: chrome.runtime.MessageSender) => ({
+  origin: sender.origin,
+  logo: sanitizeLogo(sender.tab?.favIconUrl),
+});
 
 export class StargazerExternalPopups {
   static async createPopup(params: PopupParams, url = '/external.html', size = { width: 372, height: 600 }, type: chrome.windows.createTypeEnum = 'popup') {
@@ -131,6 +138,10 @@ export class StargazerExternalPopups {
       throw new Error('Invalid origin param');
     }
 
+    if (params.logo !== undefined && typeof params.logo !== 'string') {
+      throw new Error('Invalid logo param');
+    }
+
     if (typeof params.route !== 'string') {
       throw new Error('Invalid route param');
     }
@@ -139,6 +150,7 @@ export class StargazerExternalPopups {
       data: params.data as Data,
       message: params.message as StargazerRequestMessage | undefined,
       origin: params.origin as string,
+      logo: params.logo as string | undefined,
       route: params.route as string,
       wallet: params.wallet as WalletParam | undefined,
       resolved: !!params?.resolved as boolean,

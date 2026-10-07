@@ -6,7 +6,7 @@ import { DAG_EXPLORER_API_URL } from 'constants/index';
 
 import { MetagraphProject } from 'scenes/external/AllowSpend/types';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { IAssetInfoState } from 'state/assets/types';
@@ -261,7 +261,7 @@ export const dag_allowSpend = async (request: StargazerRequest & { type: 'rpc' }
     params: {
       data: allowSpendData,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.AllowSpend,
       wallet: {
         chain: StargazerChain.CONSTELLATION,

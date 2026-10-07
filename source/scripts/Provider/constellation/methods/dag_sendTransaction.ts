@@ -3,7 +3,7 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 
 import { type SignTransactionDataDAG, TransactionType } from 'scenes/external/SignTransaction/types';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
@@ -98,7 +98,7 @@ export const dag_sendTransaction = async (request: StargazerRequest & { type: 'r
         chainId,
         address: source,
       },
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.SignTransaction,
     },
     size: windowSize,
