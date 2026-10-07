@@ -1,5 +1,4 @@
-import { addDapp, setCurrent } from 'state/dapp';
-import { IDAppInfo } from 'state/dapp/types';
+import { addDapp } from 'state/dapp';
 import store from 'state/store';
 
 import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
@@ -53,18 +52,6 @@ export const notifyDisconnect = async (origin: string) => {
     [],
     [origin]
   );
-};
-
-export const setCurrentDapp = (origin: string, title: string, logo: string) => {
-  const current: IDAppInfo = {
-    origin,
-    logo,
-    title,
-  };
-
-  store.dispatch(setCurrent(current));
-
-  return isDappConnected(origin);
 };
 
 export const getUrlOrigin = (url: string) => {

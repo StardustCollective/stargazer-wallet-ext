@@ -19,9 +19,9 @@ const ConnectedSites: FC<IConnectedSitesSettings> = ({
       )}
       <div className={styles.group}>
         {Object.values(connectedSites).map((site: any) => (
-          <section className={styles.wallet} key={site.origin}>
+          <section className={styles.wallet} key={site.id}>
             <img width={25} src={site.logo} className={styles.icon} />
-            <TextV3.Body color={COLORS_ENUMS.BLACK}>{site.origin}</TextV3.Body>
+            <TextV3.Body color={COLORS_ENUMS.BLACK}>{site.id}</TextV3.Body>
             <div className={styles.iconContainer}>
               <IconButton
                 className={styles.details}
