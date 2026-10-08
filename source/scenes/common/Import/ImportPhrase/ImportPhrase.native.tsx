@@ -8,6 +8,7 @@ import Modal from 'components/Modal';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import Checkbox from 'components/Checkbox';
+import useSecureScreen from 'hooks/useSecureScreen';
 import PhraseInput from './PhraseInput';
 import IImportPhrase from './types';
 import { MODAL_TITLE, MODAL_CHECKBOX_TEXT, CANCEL } from './constants';
@@ -34,6 +35,8 @@ const ImportPhrase: FC<IImportPhrase> = ({
   togglePassword,
   onSubmit,
 }) => {
+  useSecureScreen();
+
   return (
     <>
       <KeyboardAwareScrollView

@@ -9,6 +9,7 @@ import FileSelect from 'components/FileSelect';
 import TextV3 from 'components/TextV3';
 import { COLORS_ENUMS } from 'assets/styles/colors';
 import { usePlatformAlert } from 'utils/alertUtil';
+import useSecureScreen from 'hooks/useSecureScreen';
 import IImportAccountSettings from './types';
 import styles from './styles';
 
@@ -28,6 +29,7 @@ const ImportAccount: FC<IImportAccountSettings> = ({
   setJsonFile,
 }) => {
   const showAlert = usePlatformAlert();
+  useSecureScreen();
 
   const onSubmit = async (data: any) => {
     // setAccountName(undefined);
@@ -50,7 +52,6 @@ const ImportAccount: FC<IImportAccountSettings> = ({
             dag4.keyStore
               .decryptPrivateKey(json, data.password)
               .then((privKey: string) => {
-                console.log('handleImportPrivKey....', privKey);
                 handleImportPrivKey(privKey, data.label);
               })
               .catch(() => {
