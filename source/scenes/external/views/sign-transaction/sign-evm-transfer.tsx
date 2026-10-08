@@ -111,7 +111,7 @@ export const SignEvmTransferView = ({ title, nativeAsset, transaction, footer, o
   // Get token information
   const { tokenInfo, loading: tokenLoading, error, clearError } = useTokenInfo({ contractAddress, withPrice: true });
 
-  const { gasPrice, gasPrices, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
+  const { gasPrice, gasPrices, maxGasPrice, gasPriceWarning, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
     type: TransactionType.Erc20Transfer,
     transaction,
   });
@@ -177,6 +177,7 @@ export const SignEvmTransferView = ({ title, nativeAsset, transaction, footer, o
 
   const gasSliderData = {
     prices: gasPrices,
+    max: maxGasPrice,
     price: gasPrice,
     fee: gasFee,
     speedLabel: gasSpeedLabel,
@@ -207,6 +208,7 @@ export const SignEvmTransferView = ({ title, nativeAsset, transaction, footer, o
           <CardRow.Token label="Token:" loading={tokenLoading} value={tokenInfo} />
           <CardRow label="Amount:" loading={tokenLoading} value={amountString} error={amountError} />
           <CardRow label="Transaction fee:" loading={isGasLoading} value={feeString} error={feeError} />
+          {!!gasPriceWarning && <CardRow label="Warning:" value="" error={gasPriceWarning} />}
         </Card>
         <Card>
           <CardRow.Address label="From:" value={from} />

@@ -1,6 +1,7 @@
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { ethers } from 'ethers';
 
+import EVMChainController from 'scripts/Background/controllers/EVMChainController';
 import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError, StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
@@ -30,6 +31,31 @@ const validateChainId = (chain: string | number) => {
   }
 
   return chainId;
+};
+
+// A dApp-supplied gas limit above this multiple of the network estimate is rejected.
+const MAX_GAS_LIMIT_MULTIPLIER = 10;
+
+/**
+ * Rejects a dApp-supplied gas limit far above what the network estimates for the transaction.
+ * Skipped when the estimate fails (e.g. the call would revert), since there is nothing to compare against.
+ */
+const validateGasLimit = async (transaction: EthSendTransaction, chainId: number) => {
+  if (!transaction.gas) return;
+
+  let estimate: ethers.BigNumber;
+  try {
+    const { from, to, value, data } = transaction;
+    // The background has no signer, so estimate with a read-only provider for the request's chain.
+    estimate = await new EVMChainController({ chain: chainId }).estimateGas({ from, to, value, data });
+  } catch (error) {
+    console.warn('Unable to estimate gas to validate the dApp gas limit:', error);
+    return;
+  }
+
+  if (ethers.BigNumber.from(transaction.gas).gt(estimate.mul(MAX_GAS_LIMIT_MULTIPLIER))) {
+    throw new EIPRpcError(`Transaction gas exceeds ${MAX_GAS_LIMIT_MULTIPLIER}x the network estimate`, EIPErrorCodes.Rejected);
+  }
 };
 
 /**
@@ -76,6 +102,8 @@ export const eth_sendTransaction = async (request: StargazerRequest & { type: 'r
 
   // Validate hardware wallet compatibility
   validateHardwareMethod({ walletType: activeWallet.type, method: request.method, evmChainId: chainId });
+
+  await validateGasLimit(transactionData, chainId);
 
   // Get current chain information
   const chain = getNetworkId() as StargazerChain;

@@ -76,7 +76,7 @@ export const SignEvmTransactionView = ({ title, nativeAsset, transaction, origin
   const amountInWei = BigNumber.from(amount ?? 0);
   const amountInEth = formatEther(amountInWei);
 
-  const { gasPrice, gasPrices, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
+  const { gasPrice, gasPrices, maxGasPrice, gasPriceWarning, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
     type: TransactionType.EvmNative,
     transaction,
   });
@@ -130,6 +130,7 @@ export const SignEvmTransactionView = ({ title, nativeAsset, transaction, origin
 
   const gasSliderData = {
     prices: gasPrices,
+    max: maxGasPrice,
     price: gasPrice,
     fee: gasFee,
     speedLabel: gasSpeedLabel,
@@ -162,6 +163,7 @@ export const SignEvmTransactionView = ({ title, nativeAsset, transaction, origin
           <CardRow.Token label="Token:" value={tokenValue} />
           <CardRow label="Amount:" value={amountString} error={amountError} />
           <CardRow label="Transaction fee:" loading={isGasLoading} value={feeString} error={feeError} />
+          {!!gasPriceWarning && <CardRow label="Warning:" value="" error={gasPriceWarning} />}
         </Card>
         <Card>
           <CardRow.Address label="From:" value={from} />

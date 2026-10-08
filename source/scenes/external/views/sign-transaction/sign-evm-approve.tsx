@@ -75,7 +75,7 @@ export const SignEvmApprove = ({ title, nativeAsset, transaction, footer, contai
   const amount = formatUnits(amountInWei, tokenInfo?.decimals || 18);
   const amountDisplay = formatBigNumberForDisplay(amount);
 
-  const { gasPrice, gasPrices, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
+  const { gasPrice, gasPrices, maxGasPrice, gasPriceWarning, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
     type: TransactionType.Erc20Approve,
     transaction,
   });
@@ -134,6 +134,7 @@ export const SignEvmApprove = ({ title, nativeAsset, transaction, footer, contai
 
   const gasSliderData = {
     prices: gasPrices,
+    max: maxGasPrice,
     price: gasPrice,
     fee: gasFee,
     speedLabel: gasSpeedLabel,
@@ -169,6 +170,7 @@ export const SignEvmApprove = ({ title, nativeAsset, transaction, footer, contai
           <CardRow.Token label="Token:" loading={loading} value={tokenInfo} />
           <CardRow label="Amount:" loading={loading} value={amountString} />
           <CardRow label="Transaction fee:" loading={isGasLoading} value={feeString} error={feeError} />
+          {!!gasPriceWarning && <CardRow label="Warning:" value="" error={gasPriceWarning} />}
         </Card>
         <Card>
           <CardRow.Address label="From:" value={from} />

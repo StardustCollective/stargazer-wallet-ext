@@ -46,7 +46,7 @@ const GasSlider: FC<GasSliderProps> = ({ gas, loading = false, onGasPriceChange 
             <Skeleton variant="rect" animation="wave" height={14} width={280} style={{ borderRadius: 4, marginTop: 8, marginBottom: 11 }} />
           ) : (
             <div>
-              <PurpleSlider onChange={onGasPriceChange} min={gas.prices[0]} max={gas.prices[2]} value={gas.price} defaultValue={gas.price} step={gas.steps} />
+              <PurpleSlider onChange={onGasPriceChange} min={gas.prices[0]} max={gas.max ?? gas.prices[2]} value={gas.price} defaultValue={gas.price} step={gas.steps} />
             </div>
           )}
         </div>

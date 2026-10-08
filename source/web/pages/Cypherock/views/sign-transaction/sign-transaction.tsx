@@ -159,7 +159,8 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
       data: dataParam,
 
       gasLimit: transaction.gas || defaultGasLimit,
-      gasPrice: transaction.gasPrice || defaultGasPrice._hex,
+      // Always sign the gas price shown in the popup; a dApp-supplied gasPrice only seeds the slider.
+      gasPrice: defaultGasPrice._hex,
 
       nonce,
     };

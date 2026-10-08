@@ -60,7 +60,7 @@ export const SignContractInteraction = ({ title, nativeAsset, transaction, foote
 
   const { from, chainId } = transaction;
 
-  const { gasPrice, gasPrices, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
+  const { gasPrice, gasPrices, maxGasPrice, gasPriceWarning, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
     type: TransactionType.EvmContractInteraction,
     transaction,
   });
@@ -112,6 +112,7 @@ export const SignContractInteraction = ({ title, nativeAsset, transaction, foote
 
   const gasSliderData = {
     prices: gasPrices,
+    max: maxGasPrice,
     price: gasPrice,
     fee: gasFee,
     speedLabel: gasSpeedLabel,
@@ -145,6 +146,7 @@ export const SignContractInteraction = ({ title, nativeAsset, transaction, foote
         </Card>
         <Card>
           <CardRow label="Transaction fee:" loading={isGasLoading} value={feeString} error={feeError} />
+          {!!gasPriceWarning && <CardRow label="Warning:" value="" error={gasPriceWarning} />}
         </Card>
 
         <Card>
