@@ -1,6 +1,7 @@
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { isDappConnected } from 'scripts/Background/handlers/handleDappMessages';
 import {
+  getDappParams,
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
@@ -22,7 +23,7 @@ export const eth_requestAccounts = async (
     params: {
       data: null,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.SelectAccounts,
     },
   });

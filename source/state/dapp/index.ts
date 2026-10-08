@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IDAppState, IDAppInfo } from './types';
 
-const MAX_TITLE_LENGTH = 100;
-const MAX_LOGO_LENGTH = 2048;
+import { sanitizeLogo } from 'utils/dappLogo';
+
+import { IDAppInfo, IDAppState } from './types';
 
 const initialState: IDAppState = {
-  current: null,
   whitelist: {},
 };
 
@@ -23,12 +22,6 @@ const DAppState = createSlice({
         ...action.payload,
       };
     },
-    setCurrent(state: IDAppState, action: PayloadAction<IDAppInfo>) {
-      state.current = action.payload;
-    },
-    removeCurrent(state: IDAppState) {
-      state.current = null;
-    },
     addDapp(
       state: IDAppState,
       action: PayloadAction<{
@@ -37,16 +30,8 @@ const DAppState = createSlice({
       }>
     ) {
       const { id, dapp } = action.payload;
-      const title = typeof dapp?.title === 'string' ? dapp.title.slice(0, MAX_TITLE_LENGTH) : '';
-      const logo = typeof dapp?.logo === 'string' && dapp.logo.length <= MAX_LOGO_LENGTH ? dapp.logo : '';
-
-      return {
-        ...state,
-        whitelist: {
-          ...state.whitelist,
-          [id]: { id, origin: id, title, logo },
-        },
-      };
+      // The key is the request-bound origin; never let the payload override it.
+      state.whitelist[id] = { id, origin: id, logo: sanitizeLogo(dapp?.logo) };
     },
     removeDapp(state: IDAppState, action: PayloadAction<{ id: string }>) {
       delete state.whitelist[action.payload.id];
@@ -54,7 +39,6 @@ const DAppState = createSlice({
   },
 });
 
-export const { addDapp, removeDapp, setCurrent, removeCurrent, rehydrate } =
-  DAppState.actions;
+export const { addDapp, removeDapp, rehydrate } = DAppState.actions;
 
 export default DAppState.reducer;

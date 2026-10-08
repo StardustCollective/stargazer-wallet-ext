@@ -55,7 +55,7 @@ const calculateFiat = (feeInWei: BigNumber, nativeAsset: IAssetInfoState) => {
 };
 
 export const SignContractInteraction = ({ title, nativeAsset, transaction, footer, containerStyles, isLoading = false, wallet, setGasConfig, onSign, onReject }: ISignContractInteractionProps) => {
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const [txn, setTxn] = useState(transaction);
 
   const { from, chainId } = transaction;
@@ -127,9 +127,9 @@ export const SignContractInteraction = ({ title, nativeAsset, transaction, foote
 
   return (
     <CardLayoutV3
-      logo={current?.logo}
+      logo={dapp.logo}
       title={title}
-      subtitle={current?.origin}
+      subtitle={dapp.origin}
       onNegativeButtonClick={onReject}
       negativeButtonLabel="Reject"
       onPositiveButtonClick={onSign}

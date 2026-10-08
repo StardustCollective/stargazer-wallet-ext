@@ -3,7 +3,6 @@
 ///////////////////////////
 
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 
 ///////////////////////////
@@ -24,7 +23,7 @@ import styles from './index.module.scss';
 // Hooks Imports
 ///////////////////////////
 
-import dappSelectors from 'selectors/dappSelectors';
+import { useExternalRequest } from 'hooks/external/useExternalRequest';
 
 ///////////////////////////
 // Types
@@ -64,8 +63,7 @@ const CardLayout: FC<ICardLayoutProps> = ({
   ///////////////////////////
   // Hooks
   ///////////////////////////
-  const current = useSelector(dappSelectors.getCurrent);
-  const origin = current && current.origin;
+  const { origin, logo } = useExternalRequest();
 
   ///////////////////////////
   // Callbacks
@@ -79,7 +77,7 @@ const CardLayout: FC<ICardLayoutProps> = ({
           <TextV3.Caption>{stepLabel}</TextV3.Caption>
         </div>
         <div className={styles.heading}>
-          <img className={styles.logo} src={current?.logo} />
+          <img className={styles.logo} src={logo} />
           <div className={styles.originLabel}>
             <TextV3.BodyStrong color={COLORS_ENUMS.WHITE}>
               {originDescriptionLabel}

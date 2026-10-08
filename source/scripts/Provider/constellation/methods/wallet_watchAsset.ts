@@ -3,6 +3,7 @@ import { DAG_NETWORK } from 'constants/index';
 import { AssetType } from 'state/vault/types';
 import store from 'state/store';
 import {
+  getDappParams,
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
@@ -87,7 +88,7 @@ export const wallet_watchAsset = async (
     params: {
       data: { ...params, balance },
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.WatchAsset,
     },
     size: windowSize,

@@ -1,7 +1,7 @@
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { ethers } from 'ethers';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { EIPErrorCodes, EIPRpcError, StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
@@ -119,7 +119,7 @@ export const eth_sendTransaction = async (request: StargazerRequest & { type: 'r
     params: {
       data,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route,
       wallet: {
         chain,

@@ -1,16 +1,14 @@
 export interface IDAppInfo {
   origin: string;
-  logo: string;
-  title: string;
+  logo?: string;
 }
 
 export interface IDAppState {
   /**
    * A list of sites that have been granted permissions to access a user's
-   * account information.
+   * account information, keyed by origin.
    */
   whitelist: {
-    [dappId: string]: IDAppInfo;
+    [dappId: string]: IDAppInfo & { id: string };
   };
-  current: IDAppInfo | null;
 }

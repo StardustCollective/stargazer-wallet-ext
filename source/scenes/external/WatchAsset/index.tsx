@@ -9,14 +9,13 @@ import { WatchAssetOptions } from 'scripts/Provider/constellation';
 import ButtonV3, { BUTTON_SIZES_ENUM, BUTTON_TYPES_ENUM } from 'components/ButtonV3';
 import { ellipsis, formatNumber } from 'scenes/home/helpers';
 import { CONSTELLATION_DEFAULT_LOGO, DAG_NETWORK } from 'constants/index';
-import dappSelectors from 'selectors/dappSelectors';
+import { useExternalRequest } from 'hooks/external/useExternalRequest';
 import {
   StargazerExternalPopups,
   StargazerWSMessageBroker,
 } from 'scripts/Background/messaging';
 import { EIPRpcError } from 'scripts/common';
 import { getWalletController } from 'utils/controllersUtils';
-import { useSelector } from 'react-redux';
 import styles from './index.module.scss';
 import {
   ADD_TOKEN,
@@ -36,8 +35,7 @@ import { updateAndNotify } from 'scripts/Background/handlers/handleStoreSubscrib
 
 const WatchAsset = () => {
   const wallet = getWalletController();
-  const current = useSelector(dappSelectors.getCurrent);
-  const origin = current && current.origin;
+  const { origin } = useExternalRequest();
   const [loading, setLoading] = useState(false);
 
   const [isAddressCopied, copyAddress] = useCopyClipboard(1000);

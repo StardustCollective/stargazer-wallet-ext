@@ -22,7 +22,7 @@ export type DelegatedStakeProps = DelegatedStake & {
 };
 
 const DelegatedStakeView = ({ title, wallet, amount, nodeId, tokenLockRef, fee, isLoading, onSign, onReject }: DelegatedStakeProps) => {
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
 
   const stakeData = {
     amount: formatBigNumberForDisplay(toDag(amount)),
@@ -35,7 +35,7 @@ const DelegatedStakeView = ({ title, wallet, amount, nodeId, tokenLockRef, fee, 
   const isDisabled = accountChanged || networkChanged;
 
   return (
-    <CardLayoutV3 title={title} logo={current?.logo} subtitle={current?.origin} isPositiveButtonLoading={isLoading} isPositiveButtonDisabled={isDisabled} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
+    <CardLayoutV3 title={title} logo={dapp.logo} subtitle={dapp.origin} isPositiveButtonLoading={isLoading} isPositiveButtonDisabled={isDisabled} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
       <div className={styles.container}>
         <Card>
           <CardRow label="Wallet name:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />

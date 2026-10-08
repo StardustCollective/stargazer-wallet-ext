@@ -7,6 +7,7 @@ export interface ExternalRequestData<T = any> {
   requestMessage: StargazerRequestMessage;
   decodedData: T;
   origin: string;
+  logo?: string;
   route: string;
   wallet?: WalletParam;
   resolved: boolean;
@@ -30,6 +31,7 @@ export const useExternalRequest = <T = any>(operationName?: string): UseExternal
     message: requestMessage,
     data: decodedData,
     origin,
+    logo,
     wallet,
     route,
     resolved,
@@ -70,6 +72,7 @@ export const useExternalRequest = <T = any>(operationName?: string): UseExternal
     requestMessage,
     decodedData,
     origin,
+    logo,
     route,
     wallet,
     resolved,

@@ -1,7 +1,7 @@
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import type { DelegatedStake } from '@stardust-collective/dag4-network';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import { StargazerChain, StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 
 import { validateHardwareMethod } from 'utils/hardware';
@@ -85,7 +85,7 @@ export const dag_delegatedStake = async (request: StargazerRequest & { type: 'rp
     params: {
       data: delegatedStakeData,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.DelegatedStake,
       wallet: {
         chain: StargazerChain.CONSTELLATION,

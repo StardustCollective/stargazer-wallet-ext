@@ -20,12 +20,12 @@ export type WithdrawDelegatedStakeProps = WithdrawDelegatedStake & {
 };
 
 const WithdrawDelegatedStakeView = ({ title, wallet, source, stakeRef, isLoading, onSign, onReject }: WithdrawDelegatedStakeProps) => {
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const message = JSON.stringify({ source, stakeRef }, null, 4);
   const isDisabled = accountChanged || networkChanged;
 
   return (
-    <CardLayoutV3 logo={current?.logo} title={title} subtitle={current?.origin} isPositiveButtonLoading={isLoading} isPositiveButtonDisabled={isDisabled} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
+    <CardLayoutV3 logo={dapp.logo} title={title} subtitle={dapp.origin} isPositiveButtonLoading={isLoading} isPositiveButtonDisabled={isDisabled} onNegativeButtonClick={onReject} onPositiveButtonClick={onSign}>
       <div className={styles.container}>
         <Card>
           <CardRow label="Wallet name:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />

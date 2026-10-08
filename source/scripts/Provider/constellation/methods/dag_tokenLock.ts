@@ -2,7 +2,7 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import type { TokenLockWithCurrencyId } from '@stardust-collective/dag4-network';
 
-import { StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
+import { getDappParams, StargazerExternalPopups, StargazerWSMessageBroker } from 'scripts/Background/messaging';
 import type { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import { StargazerChain } from 'scripts/common';
 
@@ -144,7 +144,7 @@ export const dag_tokenLock = async (request: StargazerRequest & { type: 'rpc' },
     params: {
       data: tokenLockData,
       message,
-      origin: sender.origin,
+      ...getDappParams(sender),
       route: ExternalRoute.TokenLock,
       wallet: {
         chain: StargazerChain.CONSTELLATION,

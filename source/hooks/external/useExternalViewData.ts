@@ -2,17 +2,16 @@ import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WalletParam } from 'scripts/Background/messaging';
+import { StargazerExternalPopups, WalletParam } from 'scripts/Background/messaging';
 import { StargazerChain } from 'scripts/common';
 
-import dappSelectors from 'selectors/dappSelectors';
 import vaultSelectors from 'selectors/vaultSelectors';
 import walletsSelectors from 'selectors/walletsSelectors';
 
 import { type ActiveNetwork, Network } from 'state/vault/types';
 
 export interface ExternalViewData {
-  current: ReturnType<typeof dappSelectors.getCurrent>;
+  dapp: { origin: string; logo?: string };
   activeWallet: ReturnType<typeof walletsSelectors.getActiveWallet>;
   networkLabel: string;
   accountChanged: boolean;
@@ -36,7 +35,12 @@ const MAP_CHAIN_TO_NETWORK: Record<StargazerChain, keyof ActiveNetwork> = {
 export const useExternalViewData = (wallet?: WalletParam, isDappTransaction = true): ExternalViewData => {
   const { address, chainId, chain } = wallet ?? {};
 
-  const current = useSelector(dappSelectors.getCurrent);
+  // Identity comes from this popup's own URL, which no other tab can change.
+  const dapp = useMemo(() => {
+    const { origin, logo } = StargazerExternalPopups.decodeRequestMessageLocationParams(location.href);
+    return { origin, logo };
+  }, []);
+
   const activeWallet = useSelector(walletsSelectors.getActiveWallet);
 
   const isDag = chain === StargazerChain.CONSTELLATION;
@@ -62,7 +66,7 @@ export const useExternalViewData = (wallet?: WalletParam, isDappTransaction = tr
   }, [activeNetwork, chainId]);
 
   return {
-    current,
+    dapp,
     activeWallet,
     networkLabel,
     accountChanged,

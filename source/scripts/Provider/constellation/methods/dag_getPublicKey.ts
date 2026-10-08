@@ -2,13 +2,12 @@ import { dag4 } from '@stardust-collective/dag4';
 import { KeyringNetwork } from '@stardust-collective/dag4-keyring';
 import { StargazerRequest, StargazerRequestMessage } from 'scripts/common';
 import store from 'state/store';
-import { IDAppState } from 'state/dapp/types';
 import { getWalletInfo } from '../utils';
 
 export const dag_getPublicKey = (
   request: StargazerRequest & { type: 'rpc' },
   _message: StargazerRequestMessage,
-  _sender: chrome.runtime.MessageSender
+  sender: chrome.runtime.MessageSender
 ) => {
   const { activeWallet } = getWalletInfo();
 
@@ -34,19 +33,9 @@ export const dag_getPublicKey = (
     throw new Error('The active account is not the requested');
   }
 
-  const { dapp } = store.getState();
-  const { whitelist }: IDAppState = dapp;
+  const { whitelist } = store.getState().dapp;
 
-  const { current } = dapp;
-  const origin = current && current.origin;
-
-  if (!origin) {
-    throw new Error('ConstellationProvider.getPublicKey: No origin');
-  }
-
-  const dappData = whitelist[origin];
-
-  if (!dappData) {
+  if (!whitelist[sender.origin]) {
     throw new Error('ConstellationProvider.getPublicKey: Not whitelisted');
   }
 

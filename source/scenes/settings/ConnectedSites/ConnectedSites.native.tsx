@@ -24,10 +24,10 @@ const ConnectedSites: FC<IConnectedSitesSettings> = ({
       )}
       <View>
         {Object.values(connectedSites).map((site: any) => (
-          <View style={styles.groupWallet} key={site.origin}>
+          <View style={styles.groupWallet} key={site.id}>
             <Image width={25} source={{ uri: site.logo }} containerStyle={styles.icon} />
             <TextV3.Body color={COLORS_ENUMS.BLACK} extraStyle={styles.groupText}>
-              {site.origin}
+              {site.id}
             </TextV3.Body>
             <View style={styles.iconContainer}>
               <Icon

@@ -29,7 +29,7 @@ export interface ISendMetagraphDataProps {
 }
 
 const SendMetagraphDataView = ({ payload, sign, wallet, asset, isLoading, fee, setFee, onSign, onReject }: ISendMetagraphDataProps) => {
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
 
   const decoded = decodeFromBase64(payload);
 
@@ -66,8 +66,8 @@ const SendMetagraphDataView = ({ payload, sign, wallet, asset, isLoading, fee, s
   return (
     <CardLayoutV3
       title={title}
-      logo={current?.logo}
-      subtitle={current?.origin}
+      logo={dapp.logo}
+      subtitle={dapp.origin}
       fee={{
         show: true,
         defaultValue: '0',

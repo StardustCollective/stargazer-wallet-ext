@@ -75,7 +75,7 @@ export interface IAllowSpendProps {
 }
 
 const AllowSpendView = ({ title, wallet, amount: amountInDatum, destination, destinationInfo, spenderInfo, approvers, validUntilEpoch, latestEpoch, fee, setFee, isLoading, asset, onSign, onReject }: IAllowSpendProps) => {
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const amount = formatBigNumberForDisplay(toDag(amountInDatum));
   const spenderAddress = approvers[0];
 
@@ -89,8 +89,8 @@ const AllowSpendView = ({ title, wallet, amount: amountInDatum, destination, des
   return (
     <CardLayoutV3
       title={title}
-      logo={current?.logo}
-      subtitle={current?.origin}
+      logo={dapp.logo}
+      subtitle={dapp.origin}
       fee={{
         show: true,
         defaultValue: feeNumber.toString(),

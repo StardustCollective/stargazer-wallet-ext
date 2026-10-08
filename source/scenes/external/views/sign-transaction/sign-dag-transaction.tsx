@@ -52,7 +52,7 @@ const WALLET_LOGO: Record<HardwareWalletType, string | JSX.Element> = {
 
 export const SignDagTransactionView = ({ title, asset, transaction, fee, origin, footer, containerStyles, isLoading, wallet, setFee, onSign, onReject }: ISignDagTransactionProps) => {
   const { from, to, value: amount } = transaction;
-  const { current, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
+  const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const deviceId = useSelector(walletsSelectors.selectActiveWalletDeviceId);
 
   // DAG-specific calculations (always in DAG/DATUM)
@@ -71,8 +71,8 @@ export const SignDagTransactionView = ({ title, asset, transaction, fee, origin,
   const feeString = asset ? `${feeValue} ${asset?.symbol}` : '-';
 
   const fromDapp = origin !== 'stargazer-wallet';
-  const subtitle = fromDapp ? current.origin : null;
-  const logo = fromDapp ? current.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
+  const subtitle = fromDapp ? dapp.origin : null;
+  const logo = fromDapp ? dapp.logo : WALLET_LOGO[activeWallet.type as HardwareWalletType];
 
   // For DAG transactions, show fiat value if available
   const assetWithPrice = !!asset?.priceId;
