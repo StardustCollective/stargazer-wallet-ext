@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
 import store, { RootState } from 'state/store';
 import { setBiometryEnabled } from 'state/biometrics';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////
 // Components
@@ -41,6 +42,7 @@ const Security = () => {
       // Disable and remove keys
       store.dispatch(setBiometryEnabled(false));
       await Biometrics.deleteKeys();
+      await Biometrics.removeUserPasswordFromKeychain();
     } else {
       // Enable and create keys
       store.dispatch(setBiometryEnabled(true));
@@ -52,7 +54,9 @@ const Security = () => {
         const publicKey = await Biometrics.getPublicKeyFromKeychain();
         if (success && signature && secret && publicKey) {
           const verified = await Biometrics.verifySignature(signature, secret, publicKey);
-          if (!verified) {
+          const password = verified && getWalletController().getSessionPassword();
+          const stored = !!password && (await Biometrics.setUserPasswordInKeychain(password));
+          if (!stored) {
             store.dispatch(setBiometryEnabled(false));
           }
         } else {

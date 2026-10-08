@@ -3,7 +3,6 @@
 ///////////////////////////
 
 import React, { FC, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 ///////////////////////////
 // Components
@@ -22,7 +21,6 @@ import { useForm } from 'react-hook-form';
 /////////////////////
 
 import { getWalletController } from 'utils/controllersUtils';
-import { isNative } from 'utils/envUtil';
 
 ////////////////////////
 // Scene
@@ -39,8 +37,6 @@ import { schema } from './consts';
 ////////////////////////
 // Types
 ///////////////////////
-
-import { RootState } from 'state/store';
 
 type ILoginProps = {
   onLoginSuccess: (res: boolean) => void;
@@ -63,7 +59,6 @@ const LoginContainer: FC<ILoginProps> = ({
   const [isInvalid, setInvalid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [bioLoginLoading, setBioLoginLoading] = useState(false);
-  const { available } = useSelector((state: RootState) => state.biometrics);
 
   const onSubmit = (
     data: any,
@@ -87,12 +82,7 @@ const LoginContainer: FC<ILoginProps> = ({
         }
 
         if (res && callback) {
-          if (!isNative) {
-            await callback(data.password);
-          }
-          if (isNative && available) {
-            await callback(data.password);
-          }
+          await callback(data.password);
         }
         setInvalid(false);
       })

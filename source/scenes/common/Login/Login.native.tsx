@@ -137,30 +137,15 @@ const Login: FC<ILogin> = ({
     const biometryType = await Biometrics.getBiometryType();
     if (biometryType) {
       if (isBiometricEnabled) {
-        const keyExist = await Biometrics.keyExists();
-        if (keyExist) {
-          try {
-            const { success, signature, secret } = await Biometrics.createSignature(
-              PROMPT_TITLES.signIn
-            );
-            const publicKey = await Biometrics.getPublicKeyFromKeychain();
-            if (success && signature && secret && publicKey) {
-              const verified = await Biometrics.verifySignature(
-                signature,
-                secret,
-                publicKey
-              );
-              if (verified) {
-                let password = await Biometrics.getUserPasswordFromKeychain();
-                if (password) {
-                  onSubmit({ password }, true);
-                }
-                password = null;
-              }
-            }
-          } catch (err) {
-            console.log('Biometric login failed', err);
+        try {
+          // The keychain entry is biometry-bound, so reading it is the authentication step.
+          let password = await Biometrics.getUserPasswordFromKeychain(PROMPT_TITLES.signIn);
+          if (password) {
+            onSubmit({ password }, true);
           }
+          password = null;
+        } catch (err) {
+          console.log('Biometric login failed');
         }
       } else {
         Alert.alert('', `Sign in to turn on ${biometryType}`);
@@ -172,12 +157,7 @@ const Login: FC<ILogin> = ({
   };
 
   const storePasswordInKeychain = async (password: string): Promise<void> => {
-    const storedPassword = await Biometrics.getUserPasswordFromKeychain();
-
-    // Password already stored
-    if (storedPassword) return;
-
-    await Biometrics.setUserPasswordInKeychain(password);
+    await Biometrics.syncUserPasswordInKeychain(password, isBiometricEnabled);
   };
 
   const getRightIconProps = () => {

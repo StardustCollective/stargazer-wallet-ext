@@ -14,7 +14,13 @@ export const PROMPT_TITLES = {
 const BEGIN_PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----';
 const END_PUBLIC_KEY = '-----END PUBLIC KEY-----';
 const STARGAZER = 'stargazer';
-const STARGAZER_USER = 'stargazer-user';
+// v2 entries are bound to the current biometric set and never leave the device.
+// Older entries were stored without access control and are rewritten on next use.
+const STARGAZER_USER_V2 = 'stargazer-user-v2';
+const PASSWORD_KEYCHAIN_OPTIONS = {
+  accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
+  accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+};
 const BIOMETRY_MAP = {
   FaceID: 'Face ID',
   TouchID: 'Touch ID',
@@ -29,30 +35,6 @@ const getPublicKeyFromKeychain = async () => {
   }
 
   return undefined;
-};
-
-const getUserPasswordFromKeychain = async () => {
-  const credentials = await Keychain.getInternetCredentials(STARGAZER);
-
-  if (credentials) {
-    return credentials.password;
-  }
-
-  return undefined;
-};
-
-const setUserPasswordInKeychain = async (password: string) => {
-  const result = await Keychain.setInternetCredentials(
-    STARGAZER,
-    STARGAZER_USER,
-    password
-  );
-
-  if (result) {
-    return true;
-  }
-
-  return false;
 };
 
 const getBiometryType = async () => {
@@ -103,12 +85,71 @@ const verifySignature = async (signature: string, secret: string, key: string) =
   return RSA.verifyWithAlgorithm(signature, secret, publicKey, ALGORITHM);
 };
 
+const setUserPasswordInKeychain = async (password: string) => {
+  try {
+    const result = await Keychain.setInternetCredentials(
+      STARGAZER,
+      STARGAZER_USER_V2,
+      password,
+      PASSWORD_KEYCHAIN_OPTIONS
+    );
+    return !!result;
+  } catch (err) {
+    // Fails when the device has no passcode or no enrolled biometrics.
+    return false;
+  }
+};
+
+const getUserPasswordFromKeychain = async (title: string = PROMPT_TITLES.auth) => {
+  // Reading a v2 entry shows the OS biometric prompt and fails if it is cancelled.
+  const credentials = await Keychain.getInternetCredentials(STARGAZER, {
+    ...PASSWORD_KEYCHAIN_OPTIONS,
+    authenticationPrompt: { title },
+  });
+
+  if (!credentials) {
+    return undefined;
+  }
+
+  if (credentials.username !== STARGAZER_USER_V2) {
+    // Legacy entries have no access control, so gate them with a biometric signature once
+    // and rewrite them as v2.
+    const { success, signature, secret } = await createSignature(title);
+    const publicKey = await getPublicKeyFromKeychain();
+    if (!success || !signature || !secret || !publicKey) {
+      return undefined;
+    }
+    if (!(await verifySignature(signature, secret, publicKey))) {
+      return undefined;
+    }
+    await setUserPasswordInKeychain(credentials.password);
+  }
+
+  return credentials.password;
+};
+
+const removeUserPasswordFromKeychain = async () => {
+  await Keychain.resetInternetCredentials(STARGAZER);
+};
+
+// Called whenever a password is set or verified: the password is only kept
+// in the keychain while biometric unlock is turned on.
+const syncUserPasswordInKeychain = async (password: string, biometryEnabled: boolean) => {
+  if (biometryEnabled) {
+    await setUserPasswordInKeychain(password);
+  } else {
+    await removeUserPasswordFromKeychain();
+  }
+};
+
 export default {
   keyExists,
   getBiometryType,
   getPublicKeyFromKeychain,
   getUserPasswordFromKeychain,
   setUserPasswordInKeychain,
+  removeUserPasswordFromKeychain,
+  syncUserPasswordInKeychain,
   createKeys,
   deleteKeys,
   createSignature,

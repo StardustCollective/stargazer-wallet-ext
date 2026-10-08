@@ -8,6 +8,7 @@ import { IRemoveWalletView } from './types';
 import localStorage from 'utils/localStorage';
 import walletsSelectors from 'selectors/walletsSelectors';
 import { isHardware } from 'utils/hardware';
+import { clearBiometrics } from 'utils/biometricsUtils';
 
 const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => {
   const allWallets = useSelector(walletsSelectors.selectAllWallets);
@@ -27,6 +28,7 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
       await localStorage.removeItem('stargazer-vault');
       walletController.getEncryptedVault();
       walletController.onboardHelper.reset();
+      await clearBiometrics();
       linkTo('/unAuthRoot');
     } else {
       navigation.goBack();
