@@ -4,6 +4,7 @@ import store from 'state/store';
 import { AvailableWalletEvent, ProtocolProvider } from 'scripts/common';
 import { StargazerWSMessageBroker } from '../messaging';
 import { DappMessage, DappMessageEvent, MessageType } from '../messaging/types';
+import { isExtensionPageSender } from '../messaging/sender';
 import { getAllEVMChains } from '../controllers/EVMChainController/utils';
 import { DAG_NETWORK } from 'constants/index';
 import { changeActiveNetwork, changeCurrentEVMNetwork } from 'state/vault';
@@ -147,6 +148,7 @@ const onDappMessage = (
 ) => {
   if (message?.type !== MessageType.dapp) return;
   if (!message?.event) return;
+  if (!isExtensionPageSender(sender)) return;
 
   switch (message.event) {
     case DappMessageEvent.connect:
