@@ -10,13 +10,25 @@ export function useSettingsView() {
   }, []);
 }
 
-export function useCopyClipboard(timeout = 1000): [boolean, (toCopy: string) => void] {
+// clearAfter (ms) wipes the clipboard later, for secrets such as seed phrases and private keys.
+// Reading the clipboard back would trigger the iOS paste prompt, so it is cleared unconditionally.
+export function useCopyClipboard(
+  timeout = 1000,
+  clearAfter?: number
+): [boolean, (toCopy: string) => void] {
   const [isCopied, setIsCopied] = useState(false);
 
-  const staticCopy = useCallback(text => {
-    Clipboard.setString(text);
-    setIsCopied(true);
-  }, []);
+  const staticCopy = useCallback(
+    text => {
+      Clipboard.setString(text);
+      setIsCopied(true);
+
+      if (clearAfter) {
+        setTimeout(() => Clipboard.setString(''), clearAfter);
+      }
+    },
+    [clearAfter]
+  );
 
   useEffect(() => {
     if (isCopied) {
