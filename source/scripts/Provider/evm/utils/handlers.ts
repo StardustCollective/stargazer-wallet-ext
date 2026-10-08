@@ -77,8 +77,8 @@ export const validateHexFields = (transaction: EthSendTransaction): void => {
     throw new EIPRpcError('Transaction value must be a valid hex string', EIPErrorCodes.Rejected);
   }
 
-  if (!!transaction.gas && !isValidHexString(transaction.gas)) {
-    throw new EIPRpcError('Transaction gas must be a valid hex string', EIPErrorCodes.Rejected);
+  if (transaction.gas != null && !isPositiveHexValue(transaction.gas)) {
+    throw new EIPRpcError('Transaction gas must be a positive hex value', EIPErrorCodes.Rejected);
   }
 
   if (!!transaction.gasPrice && !isValidHexString(transaction.gasPrice)) {

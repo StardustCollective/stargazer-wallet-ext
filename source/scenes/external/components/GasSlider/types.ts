@@ -3,6 +3,8 @@ export interface GasSliderProps {
   loading?: boolean;
   gas: {
     prices: number[];
+    // Upper bound of the slider; defaults to the fastest estimate (prices[2]).
+    max?: number;
     price: number;
     fee: number;
     speedLabel: string;

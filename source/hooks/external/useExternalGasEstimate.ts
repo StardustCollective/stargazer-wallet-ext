@@ -11,6 +11,17 @@ import vaultSelectors from 'selectors/vaultSelectors';
 
 import { countSignificantDigits, fixedNumber } from 'utils/number';
 
+// A dApp-requested gas price seeds the slider, clamped to [slowest, fastest x this multiplier] of the network estimate.
+const MAX_DAPP_GAS_PRICE_MULTIPLIER = 1.5;
+
+const toGwei = (wei?: string): number => {
+  try {
+    return wei ? Number(ethers.utils.formatUnits(BigNumber.from(wei), 'gwei')) : 0;
+  } catch {
+    return 0;
+  }
+};
+
 type IUseExternalGasEstimate = {
   type: TransactionType;
   transaction: EthSendTransaction;
@@ -21,10 +32,12 @@ function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) 
 
   const [gasPrice, setGasPrice] = useState<number>(0);
   const [gasPrices, setGasPrices] = useState<number[]>([]);
+  const [maxGasPrice, setMaxGasPrice] = useState<number>(0);
+  const [gasPriceWarning, setGasPriceWarning] = useState<string>('');
   const [gasFee, setGasFee] = useState<number>(0);
   const [gasLimit, setGasLimit] = useState<number>(0);
   const [digits, setDigits] = useState<number>(0);
-  const { chainId, gas } = transaction;
+  const { chainId, gas, gasPrice: requestedGasPrice } = transaction;
   const chain = chainId || activeEVMNetwork;
 
   const chainController = useMemo(() => new EVMChainController({ chain }), [chain]);
@@ -96,11 +109,22 @@ function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) 
 
     pricesFixed = removeNegativeGasPrice(pricesFixed);
 
+    const [slowest, , fastest] = pricesFixed;
+    const requestedGwei = toGwei(requestedGasPrice);
+    const ceiling = fastest * MAX_DAPP_GAS_PRICE_MULTIPLIER;
+    const initialGasPrice = requestedGwei ? fixedNumber(Math.min(Math.max(requestedGwei, slowest), ceiling), significantDigits) : fastest;
+
+    if (requestedGwei > ceiling) {
+      const ratio = Number((requestedGwei / fastest).toFixed(1)).toLocaleString('en-US');
+      setGasPriceWarning(`The site requested a fee ${ratio}× higher than the network estimate`);
+    }
+
     setDigits(significantDigits);
     setGasPrices(pricesFixed);
-    setGasPrice(pricesFixed[2]);
-    estimateGasFee(pricesFixed[2]);
-  }, [chainController, gasLimit]);
+    setMaxGasPrice(Math.max(fastest, initialGasPrice));
+    setGasPrice(initialGasPrice);
+    estimateGasFee(initialGasPrice);
+  }, [chainController, gasLimit, requestedGasPrice]);
 
   const estimateTransactionGasLimit = useCallback(async () => {
     try {
@@ -155,6 +179,8 @@ function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) 
     gasFee,
     gasPrice,
     gasPrices,
+    maxGasPrice,
+    gasPriceWarning,
     gasLimit,
   };
 }

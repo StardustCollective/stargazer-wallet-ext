@@ -106,7 +106,7 @@ const SignTransaction = () => {
       throw new EIPRpcError('Unable to get transaction type.', EIPErrorCodes.Rejected);
     }
 
-    const { from, to, value, data: transactionData, gas, chainId, gasPrice } = data.transaction;
+    const { from, to, value, data: transactionData, gas, chainId } = data.transaction;
 
     const isNative = type === TransactionType.EvmNative;
     // data param must be 0x for native transactions
@@ -126,7 +126,8 @@ const SignTransaction = () => {
       data: dataParam,
 
       gasLimit: gas || defaultGasLimit,
-      gasPrice: gasPrice || defaultGasPrice,
+      // Always sign the gas price shown in the popup; a dApp-supplied gasPrice only seeds the slider.
+      gasPrice: defaultGasPrice,
     };
 
     const validTransaction = wallet.checkTransaction(transaction);
