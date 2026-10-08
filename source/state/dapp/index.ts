@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IDAppState, IDAppInfo } from './types';
 
+const MAX_TITLE_LENGTH = 100;
+const MAX_LOGO_LENGTH = 2048;
+
 const initialState: IDAppState = {
   current: null,
   whitelist: {},
@@ -34,15 +37,14 @@ const DAppState = createSlice({
       }>
     ) {
       const { id, dapp } = action.payload;
+      const title = typeof dapp?.title === 'string' ? dapp.title.slice(0, MAX_TITLE_LENGTH) : '';
+      const logo = typeof dapp?.logo === 'string' && dapp.logo.length <= MAX_LOGO_LENGTH ? dapp.logo : '';
 
       return {
         ...state,
         whitelist: {
           ...state.whitelist,
-          [id]: {
-            id,
-            ...dapp,
-          },
+          [id]: { id, origin: id, title, logo },
         },
       };
     },
