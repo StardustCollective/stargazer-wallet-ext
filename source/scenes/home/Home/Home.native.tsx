@@ -130,31 +130,38 @@ const Home: FC<IHome> = ({
     };
   }, []);
 
+  // Lock the wallet after LOGOUT_TIMEOUT in background. The background timer covers Android;
+  // iOS suspends JS, so the elapsed time is also checked when the app becomes active again.
   useEffect(() => {
-    // Start timer when app is in background (or inactive for iOS)
-    if (['background', 'inactive'].includes(AppState.currentState)) {
-      BackgroundTimer.runBackgroundTimer(async () => {
-        // Check if the app is still in background
-        if (AppState.currentState === 'background') {
-          // Check if the user is logged in
-          const isLoggedIn = await walletController.isUnlocked();
-          if (isLoggedIn) {
-            // Logout the user and navigate to the log in screen
-            await walletController.logOut();
-            linkTo('/authRoot');
-          }
-        }
+    let backgroundedAt: number | null = null;
 
-        // Reset the timer
-        BackgroundTimer.stopBackgroundTimer();
-      }, LOGOUT_TIMEOUT); // 5 minutes
-    }
-
-    // Timer should be resetted when app is in foreground
-    if (AppState.currentState === 'active') {
+    const lock = async () => {
       BackgroundTimer.stopBackgroundTimer();
-    }
-  }, [AppState.currentState]);
+      if (walletController.isUnlocked()) {
+        // Logout the user and navigate to the log in screen
+        await walletController.logOut();
+        linkTo('/authRoot');
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'background') {
+        backgroundedAt = Date.now();
+        BackgroundTimer.runBackgroundTimer(lock, LOGOUT_TIMEOUT);
+      } else if (nextState === 'active') {
+        BackgroundTimer.stopBackgroundTimer();
+        if (backgroundedAt && Date.now() - backgroundedAt >= LOGOUT_TIMEOUT) {
+          lock();
+        }
+        backgroundedAt = null;
+      }
+    });
+
+    return () => {
+      subscription.remove();
+      BackgroundTimer.stopBackgroundTimer();
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
