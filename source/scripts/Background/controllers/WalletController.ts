@@ -43,10 +43,14 @@ class WalletController {
 
   static instance: WalletController;
 
+  // Native encryptor; undefined on web, where dag4-keyring uses its default
+  private encryptor: any;
+
   constructor() {
     this.onboardHelper = new OnboardWalletHelper();
+    this.encryptor = getEncryptor();
     this.keyringManager = new KeyringManager({
-      encryptor: getEncryptor(),
+      encryptor: this.encryptor,
     });
     this.keyringManager.on('update', async (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
@@ -439,6 +443,7 @@ class WalletController {
   logOut(): void {
     this.account.assetsBalanceMonitor.stop();
     this.keyringManager.logout();
+    this.encryptor?.clearKeyCache?.();
     this.onboardHelper.reset();
     this.account.networkController = undefined;
     store.dispatch(setUnlocked(false));

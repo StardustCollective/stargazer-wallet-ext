@@ -48,18 +48,10 @@ const Security = () => {
       store.dispatch(setBiometryEnabled(true));
       try {
         await Biometrics.createKeys();
-        const { success, signature, secret } = await Biometrics.createSignature(
-          PROMPT_TITLES.auth
-        );
-        const publicKey = await Biometrics.getPublicKeyFromKeychain();
-        if (success && signature && secret && publicKey) {
-          const verified = await Biometrics.verifySignature(signature, secret, publicKey);
-          const password = verified && getWalletController().getSessionPassword();
-          const stored = !!password && (await Biometrics.setUserPasswordInKeychain(password));
-          if (!stored) {
-            store.dispatch(setBiometryEnabled(false));
-          }
-        } else {
+        const verified = await Biometrics.verifyBiometricSignature(PROMPT_TITLES.auth);
+        const password = verified && getWalletController().getSessionPassword();
+        const stored = !!password && (await Biometrics.setUserPasswordInKeychain(password));
+        if (!stored) {
           store.dispatch(setBiometryEnabled(false));
         }
       } catch (err) {

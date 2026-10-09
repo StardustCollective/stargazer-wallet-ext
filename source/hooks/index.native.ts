@@ -10,6 +10,11 @@ export function useSettingsView() {
   }, []);
 }
 
+// A single pending clear shared across the app: any later copy supersedes it, so a secret's
+// timer never wipes something copied after it. The timer outlives the screen on purpose,
+// since the secret stays on the clipboard after the screen unmounts.
+let pendingClipboardClear: ReturnType<typeof setTimeout> | null = null;
+
 // clearAfter (ms) wipes the clipboard later, for secrets such as seed phrases and private keys.
 // Reading the clipboard back would trigger the iOS paste prompt, so it is cleared unconditionally.
 export function useCopyClipboard(
@@ -23,8 +28,16 @@ export function useCopyClipboard(
       Clipboard.setString(text);
       setIsCopied(true);
 
+      if (pendingClipboardClear) {
+        clearTimeout(pendingClipboardClear);
+        pendingClipboardClear = null;
+      }
+
       if (clearAfter) {
-        setTimeout(() => Clipboard.setString(''), clearAfter);
+        pendingClipboardClear = setTimeout(() => {
+          pendingClipboardClear = null;
+          Clipboard.setString('');
+        }, clearAfter);
       }
     },
     [clearAfter]

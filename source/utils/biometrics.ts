@@ -2,6 +2,9 @@ import ReactNativeBiometrics from 'react-native-biometrics';
 import * as Keychain from 'react-native-keychain';
 import { RSA } from 'react-native-rsa-native';
 
+import { setBiometryEnabled } from 'state/biometrics';
+import store from 'state/store';
+
 const biometrics = new ReactNativeBiometrics();
 
 const GENERIC_PASSWORD_USERNAME = 'publicKey';
@@ -85,6 +88,16 @@ const verifySignature = async (signature: string, secret: string, key: string) =
   return RSA.verifyWithAlgorithm(signature, secret, publicKey, ALGORITHM);
 };
 
+// Prompts for biometrics and checks the signature against the stored public key.
+const verifyBiometricSignature = async (title: string) => {
+  const { success, signature, secret } = await createSignature(title);
+  const publicKey = await getPublicKeyFromKeychain();
+  if (!success || !signature || !secret || !publicKey) {
+    return false;
+  }
+  return verifySignature(signature, secret, publicKey);
+};
+
 const setUserPasswordInKeychain = async (password: string) => {
   try {
     const result = await Keychain.setInternetCredentials(
@@ -114,12 +127,7 @@ const getUserPasswordFromKeychain = async (title: string = PROMPT_TITLES.auth) =
   if (credentials.username !== STARGAZER_USER_V2) {
     // Legacy entries have no access control, so gate them with a biometric signature once
     // and rewrite them as v2.
-    const { success, signature, secret } = await createSignature(title);
-    const publicKey = await getPublicKeyFromKeychain();
-    if (!success || !signature || !secret || !publicKey) {
-      return undefined;
-    }
-    if (!(await verifySignature(signature, secret, publicKey))) {
+    if (!(await verifyBiometricSignature(title))) {
       return undefined;
     }
     await setUserPasswordInKeychain(credentials.password);
@@ -136,7 +144,12 @@ const removeUserPasswordFromKeychain = async () => {
 // in the keychain while biometric unlock is turned on.
 const syncUserPasswordInKeychain = async (password: string, biometryEnabled: boolean) => {
   if (biometryEnabled) {
-    await setUserPasswordInKeychain(password);
+    // On iOS a failed write has already deleted the previous entry, so biometric unlock
+    // can no longer work: turn it off instead of leaving the toggle on with nothing stored.
+    if (!(await setUserPasswordInKeychain(password))) {
+      store.dispatch(setBiometryEnabled(false));
+      await removeUserPasswordFromKeychain();
+    }
   } else {
     await removeUserPasswordFromKeychain();
   }
@@ -154,4 +167,5 @@ export default {
   deleteKeys,
   createSignature,
   verifySignature,
+  verifyBiometricSignature,
 };

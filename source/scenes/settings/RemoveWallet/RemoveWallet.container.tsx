@@ -27,7 +27,6 @@ const RemoveWalletContainer: FC<IRemoveWalletView> = ({ route, navigation }) => 
       await walletController.logOut();
       await localStorage.removeItem('stargazer-vault');
       walletController.getEncryptedVault();
-      walletController.onboardHelper.reset();
       await clearBiometrics();
       linkTo('/unAuthRoot');
     } else {

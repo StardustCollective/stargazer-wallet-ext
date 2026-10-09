@@ -97,15 +97,8 @@ const Login: FC<ILogin> = ({
     const createSignatureAndVerify = async () => {
       try {
         await Biometrics.createKeys();
-        const { success, signature, secret } = await Biometrics.createSignature(
-          PROMPT_TITLES.auth
-        );
-        const publicKey = await Biometrics.getPublicKeyFromKeychain();
-        if (success && signature && secret && publicKey) {
-          const verified = await Biometrics.verifySignature(signature, secret, publicKey);
-          if (verified) {
-            store.dispatch(setBiometryEnabled(false));
-          }
+        if (await Biometrics.verifyBiometricSignature(PROMPT_TITLES.auth)) {
+          store.dispatch(setBiometryEnabled(false));
         }
       } catch (err) {
         console.log('Biometric signature verification failed', err);

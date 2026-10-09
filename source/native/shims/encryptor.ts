@@ -23,11 +23,21 @@ const KEY_LENGTH = 32;
 const IV_LENGTH = 12;
 const CIPHER = 'aes-256-gcm';
 
+type DerivedKey = {password: string; salt: string; key: Uint8Array};
+
 class RNEncryptor<T> {
+  // The keyring re-encrypts the vault on every wallet change. Reusing the key derived at
+  // unlock (with a fresh IV each time) keeps PBKDF2 to once per session instead of once
+  // per save. Cleared on logout.
+  private cachedKey: DerivedKey | null = null;
+
+  clearKeyCache(): void {
+    this.cachedKey = null;
+  }
+
   async encrypt(password: string, data: T): Promise<string> {
-    const salt = this.generateSalt();
+    const {salt, key} = await this.getEncryptionKey(password);
     const iv = QuickCrypto.randomBytes(IV_LENGTH);
-    const key = await this.deriveKey(password, salt, PBKDF2_ITERATIONS);
 
     const cipher = QuickCrypto.createCipheriv(CIPHER, key, iv);
     const encryptedData =
@@ -68,12 +78,22 @@ class RNEncryptor<T> {
     return !parsed?.version || parsed.version < VAULT_VERSION;
   }
 
+  private async getEncryptionKey(
+    password: string,
+  ): Promise<{salt: string; key: Uint8Array}> {
+    if (this.cachedKey?.password === password) {
+      return this.cachedKey;
+    }
+
+    const salt = this.generateSalt();
+    const key = await this.deriveKey(password, salt, PBKDF2_ITERATIONS);
+    this.cachedKey = {password, salt, key};
+    return this.cachedKey;
+  }
+
   private async decryptV2(password: string, payload: PayloadV2): Promise<T> {
-    const key = await this.deriveKey(
-      password,
-      payload.salt,
-      payload.iterations || PBKDF2_ITERATIONS,
-    );
+    const iterations = payload.iterations || PBKDF2_ITERATIONS;
+    const key = await this.deriveKey(password, payload.salt, iterations);
 
     try {
       const decipher = QuickCrypto.createDecipheriv(
@@ -84,6 +104,11 @@ class RNEncryptor<T> {
       decipher.setAuthTag(Buffer.from(payload.tag, 'hex'));
       const text =
         decipher.update(payload.data, 'hex', 'utf8') + decipher.final('utf8');
+
+      // The auth tag checked out, so the password is correct: keep the key for later saves.
+      if (iterations === PBKDF2_ITERATIONS) {
+        this.cachedKey = {password, salt: payload.salt, key};
+      }
 
       return JSON.parse(text);
     } catch (err) {
