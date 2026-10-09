@@ -1,13 +1,16 @@
 import { InputData as ContractInputData } from 'ethereum-input-data-decoder';
 import { BigNumber, ethers } from 'ethers';
 
-import { SignTransactionDataEVM, TransactionType } from 'scenes/external/SignTransaction/types';
+import { SignTransactionDataEVM, type TokenStandard, TransactionType } from 'scenes/external/SignTransaction/types';
 
 import { EIPErrorCodes, EIPRpcError } from 'scripts/common';
 
 import { getERC20DataDecoder } from 'utils/ethUtil';
 
 import { ExternalRoute } from 'web/pages/External/types';
+
+import { decodeCall, type DecodedCall } from './decodeCall';
+import { detectTokenStandard } from './detectTokenStandard';
 
 /**
  * Base transaction data structure for EVM transactions
@@ -203,66 +206,67 @@ export class Erc20TransferHandler implements TransactionHandler {
 }
 
 /**
- * Handler for ERC-20 approve function calls
+ * Decodes `transaction.data` after the checks every decoded-call handler shares.
  */
-export class Erc20ApproveHandler implements TransactionHandler {
-  canHandle(transaction: EthSendTransaction): boolean {
-    if (!transaction.data || !transaction.to) {
-      return false;
-    }
+const decodeContractCall = (transaction: EthSendTransaction, label: string): DecodedCall => {
+  validateHexFields(transaction);
 
-    try {
-      const decodedData = getERC20DataDecoder().decodeData(transaction.data);
-      return decodedData?.method === 'approve';
-    } catch {
-      return false;
-    }
+  if (!transaction.to || !ethers.utils.isAddress(transaction.to)) {
+    throw new EIPRpcError(`Invalid contract address in ${label} call`, EIPErrorCodes.Rejected);
+  }
+
+  const call = transaction.data ? decodeCall(transaction.data) : null;
+  if (!call) {
+    throw new EIPRpcError(`Failed to decode ${label} data`, EIPErrorCodes.Rejected);
+  }
+
+  return call;
+};
+
+const validateCallAddresses = (label: string, addresses: string[]) => {
+  if (!addresses.every(address => ethers.utils.isAddress(address))) {
+    throw new EIPRpcError(`Invalid address in ${label} call`, EIPErrorCodes.Rejected);
+  }
+};
+
+const decodedMethod = (transaction: EthSendTransaction): DecodedCall['method'] | undefined =>
+  transaction.to && transaction.data ? decodeCall(transaction.data)?.method : undefined;
+
+const ALLOWANCE_METHODS: DecodedCall['method'][] = ['approve', 'increaseAllowance', 'decreaseAllowance', 'permit'];
+
+/**
+ * Handler for calls that grant or change a token allowance: approve, increase/decreaseAllowance, permit
+ */
+export class TokenAllowanceHandler implements TransactionHandler {
+  canHandle(transaction: EthSendTransaction): boolean {
+    return ALLOWANCE_METHODS.includes(decodedMethod(transaction));
   }
 
   async handle(transaction: EthSendTransaction): Promise<TransactionHandlerResult> {
-    // Validate hex fields first
-    validateHexFields(transaction);
+    const call = decodeContractCall(transaction, 'token allowance');
+    let tokenStandard: TokenStandard;
 
-    if (!transaction.data || !transaction.to) {
-      throw new EIPRpcError('Invalid ERC-20 approve data', EIPErrorCodes.Rejected);
+    switch (call.method) {
+      case 'approve':
+        validateCallAddresses('approve', [call.spender]);
+        // ERC-20 and ERC-721 share the approve selector; only the contract can tell them apart.
+        tokenStandard = await detectTokenStandard(transaction.to, transaction.chainId);
+        break;
+      case 'increaseAllowance':
+      case 'decreaseAllowance':
+        validateCallAddresses(call.method, [call.spender]);
+        tokenStandard = 'erc20';
+        break;
+      case 'permit':
+        validateCallAddresses('permit', [call.owner, call.spender]);
+        tokenStandard = 'erc20';
+        break;
+      default:
+        throw new EIPRpcError('Not a token allowance call', EIPErrorCodes.Rejected);
     }
-
-    let decodedContractCall: ContractInputData;
-
-    try {
-      decodedContractCall = getERC20DataDecoder().decodeData(transaction.data);
-    } catch (error) {
-      throw new EIPRpcError('Failed to decode ERC-20 approve data', EIPErrorCodes.Rejected);
-    }
-
-    if (decodedContractCall.method !== 'approve') {
-      throw new EIPRpcError('Not a valid ERC-20 approve call', EIPErrorCodes.Rejected);
-    }
-
-    // Validate inputs
-    if (!decodedContractCall.inputs?.length || decodedContractCall.inputs.length < 2) {
-      throw new EIPRpcError('Invalid approve method call - missing parameters', EIPErrorCodes.Rejected);
-    }
-
-    // Validate spender address from the decoded contract call
-    const spender = decodedContractCall.inputs[0] as string;
-    if (!ethers.utils.isAddress(spender)) {
-      throw new EIPRpcError('Invalid spender address in approve call', EIPErrorCodes.Rejected);
-    }
-
-    // Validate amount from the decoded contract call
-    const amount = decodedContractCall.inputs[1] as BigNumber;
-    if (!amount) {
-      throw new EIPRpcError('Invalid approve amount', EIPErrorCodes.Rejected);
-    }
-
-    const signTransactionData: SignTransactionDataEVM = {
-      type: TransactionType.Erc20Approve,
-      transaction,
-    };
 
     return {
-      data: signTransactionData,
+      data: { type: TransactionType.TokenAllowance, transaction, tokenStandard },
       route: ExternalRoute.SignTransaction,
     };
   }
@@ -329,7 +333,7 @@ export class TransactionHandlerRegistry {
     // Register handlers in priority order
     // More specific handlers should be registered first
     this.registerHandler(new Erc20TransferHandler());
-    this.registerHandler(new Erc20ApproveHandler());
+    this.registerHandler(new TokenAllowanceHandler());
     this.registerHandler(new NativeTransferHandler());
     // Fallback handler should be registered last as it's the most generic
     this.registerHandler(new FallbackContractHandler());

@@ -22,14 +22,24 @@ type SignTransactionContainerProps = SignTransactionData & UseSignTransactionRet
 /**
  * Container component that provides common sign transaction functionality
  */
-const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ title, footer = 'Only sign transactions on sites you trust.', isLoading = false, onSignTransaction, onError, onSuccess }) => {
+const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({
+  title,
+  footer = 'Only sign transactions on sites you trust.',
+  isLoading = false,
+  onSignTransaction,
+  onError,
+  onSuccess,
+}) => {
   // Extract onAction function
   const handleSignTransactionAction = async (hookData: UseSignTransactionReturn): Promise<string> => {
     return await onSignTransaction(hookData);
   };
 
   // Extract validation function - handles complex transaction type validation
-  const validateSignTransactionData = (decodedData: SignTransactionData, hookData?: UseSignTransactionReturn): string | null => {
+  const validateSignTransactionData = (
+    decodedData: SignTransactionData,
+    hookData?: UseSignTransactionReturn
+  ): string | null => {
     if (!hookData || !decodedData) return 'Invalid transaction data';
 
     const { from, to } = decodedData.transaction;
@@ -53,7 +63,8 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       isDAG,
       isMetagraph,
       isEvmNative,
-      isErc20Approve,
+      isTokenAllowance,
+      tokenStandard,
       isErc20Transfer,
       isContractInteraction,
       fee,
@@ -83,11 +94,12 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({ tit
       return <SignDagTransactionView {...dagProps} />;
     }
 
-    if (isErc20Approve) {
+    if (isTokenAllowance) {
       const evmApproveProps: ISignEvmApproveProps = {
         title: 'Approve Spend',
         nativeAsset,
         transaction,
+        tokenStandard,
         footer: propsFooter,
         isLoading: propsIsLoading,
         wallet,
