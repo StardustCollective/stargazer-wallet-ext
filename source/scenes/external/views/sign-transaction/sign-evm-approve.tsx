@@ -147,15 +147,17 @@ export const SignEvmApprove = ({
   const isPlainErc20Approve = isErc20 && call.method === 'approve';
   const grant = grantedAmount(call);
 
-  const { tokenInfo, loading, error, clearError } = useTokenInfo({ contractAddress: isErc20 ? contract : '' });
+  const { tokenInfo, loading, error } = useTokenInfo({ contractAddress: isErc20 ? contract : '' });
   // useTokenInfo leaves `loading` set when every lookup fails, so an error ends loading here.
+  // The error is never cleared here: clearing it would put the view back into loading for good.
   const tokenLoading = loading && !error;
   const symbol = tokenInfo?.symbol ?? contract;
 
-  const legacyAmountString = `${formatBigNumberForDisplay(formatUnits(grant, tokenInfo?.decimals || 18))} ${
-    tokenInfo?.symbol
-  }`;
   const amount = formatApprovalAmount(grant, tokenInfo?.decimals, tokenInfo?.symbol);
+  // Today's format needs the token's decimals and symbol; without them the amount stays in raw units.
+  const legacyAmountString = tokenInfo
+    ? `${formatBigNumberForDisplay(formatUnits(grant, tokenInfo.decimals))} ${tokenInfo.symbol}`
+    : amount.display;
   const warning = allowanceWarning(call, tokenStandard, symbol, formatApprovalAmount(grant, tokenInfo?.decimals));
 
   let valueDisplay = amount.display;
@@ -239,7 +241,6 @@ export const SignEvmApprove = ({
   useEffect(() => {
     if (error) {
       showAlert(error, 'danger');
-      clearError();
     }
   }, [error]);
 
