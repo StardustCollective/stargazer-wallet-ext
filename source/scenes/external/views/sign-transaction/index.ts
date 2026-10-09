@@ -1,3 +1,4 @@
+export * from './sign-collection-approval';
 export * from './sign-dag-transaction';
 export * from './sign-evm-approve';
 export * from './sign-evm-transaction';

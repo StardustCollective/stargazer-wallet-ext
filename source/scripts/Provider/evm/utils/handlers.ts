@@ -273,6 +273,30 @@ export class TokenAllowanceHandler implements TransactionHandler {
 }
 
 /**
+ * Handler for setApprovalForAll (ERC-721 and ERC-1155 operator approval)
+ */
+export class CollectionApprovalHandler implements TransactionHandler {
+  canHandle(transaction: EthSendTransaction): boolean {
+    return decodedMethod(transaction) === 'setApprovalForAll';
+  }
+
+  async handle(transaction: EthSendTransaction): Promise<TransactionHandlerResult> {
+    const call = decodeContractCall(transaction, 'setApprovalForAll');
+
+    if (call.method !== 'setApprovalForAll') {
+      throw new EIPRpcError('Not a setApprovalForAll call', EIPErrorCodes.Rejected);
+    }
+
+    validateCallAddresses('setApprovalForAll', [call.operator]);
+
+    return {
+      data: { type: TransactionType.CollectionApproval, transaction },
+      route: ExternalRoute.SignTransaction,
+    };
+  }
+}
+
+/**
  * Fallback handler for generic smart contract interactions
  * Handles any transaction with 'to' and 'data' fields that other handlers cannot process
  */
@@ -334,6 +358,7 @@ export class TransactionHandlerRegistry {
     // More specific handlers should be registered first
     this.registerHandler(new Erc20TransferHandler());
     this.registerHandler(new TokenAllowanceHandler());
+    this.registerHandler(new CollectionApprovalHandler());
     this.registerHandler(new NativeTransferHandler());
     // Fallback handler should be registered last as it's the most generic
     this.registerHandler(new FallbackContractHandler());

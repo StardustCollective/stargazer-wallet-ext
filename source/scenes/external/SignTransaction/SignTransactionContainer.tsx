@@ -3,7 +3,7 @@ import React from 'react';
 
 import { SignTransactionData, useSignTransaction, UseSignTransactionReturn } from 'hooks/external/useSignTransaction';
 
-import { ISignDagTransactionProps, ISignEvmApproveProps, ISignEvmTransactionProps, ISignEvmTransferProps, SignDagTransactionView, SignEvmApprove, SignEvmTransactionView, SignEvmTransferView } from 'scenes/external/views/sign-transaction';
+import { ISignCollectionApprovalProps, ISignDagTransactionProps, ISignEvmApproveProps, ISignEvmTransactionProps, ISignEvmTransferProps, SignCollectionApproval, SignDagTransactionView, SignEvmApprove, SignEvmTransactionView, SignEvmTransferView } from 'scenes/external/views/sign-transaction';
 
 import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
 import { ISignContractInteractionProps, SignContractInteraction } from '../views/sign-transaction/sign-contract-interaction';
@@ -64,6 +64,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({
       isMetagraph,
       isEvmNative,
       isTokenAllowance,
+      isCollectionApproval,
       tokenStandard,
       isErc20Transfer,
       isContractInteraction,
@@ -108,6 +109,21 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({
         onReject,
       };
       return <SignEvmApprove {...evmApproveProps} />;
+    }
+
+    if (isCollectionApproval) {
+      const collectionApprovalProps: ISignCollectionApprovalProps = {
+        title: propsTitle,
+        nativeAsset,
+        transaction,
+        footer: propsFooter,
+        isLoading: propsIsLoading,
+        wallet,
+        setGasConfig,
+        onSign: onAction,
+        onReject,
+      };
+      return <SignCollectionApproval {...collectionApprovalProps} />;
     }
 
     if (isErc20Transfer) {
