@@ -4,6 +4,7 @@ import { scale } from 'react-native-size-matters';
 import WarningMessage from 'components/WarningMessage';
 import RemoveWalletHeader from 'scenes/settings/RemoveWallet/RemoveWalletHeader';
 import Biometrics, { PROMPT_TITLES } from 'utils/biometrics';
+import useSecureScreen from 'hooks/useSecureScreen';
 import { KeyringWalletType } from '@stardust-collective/dag4-keyring';
 import EnterPassword from './EnterPassword';
 import PrivateKey from './PrivateKey';
@@ -42,37 +43,23 @@ const CheckPassword: FC<ICheckPassword> = ({
   const headerSubtitle = hasRecoveryPhrase ? SUBTITLE_PHRASE : SUBTITLE_KEY;
   const onPressDone = isRemoveWallet ? handleOnContinue : handleOnCancel;
 
+  useSecureScreen(showRecoveryPhrase || showPrivateKey);
+
   const authWithBiometrics = async () => {
     const biometryType = await Biometrics.getBiometryType();
 
     if (!biometryType) return;
     if (!isBiometricEnabled) return;
 
-    const keyExist = await Biometrics.keyExists();
-
-    if (!keyExist) return;
-
     try {
-      const { success, signature, secret } = await Biometrics.createSignature(
-        PROMPT_TITLES.auth
-      );
-      const publicKey = await Biometrics.getPublicKeyFromKeychain();
-
-      if (!success || !signature || !secret || !publicKey) {
-        return;
-      }
-
-      const verified = await Biometrics.verifySignature(signature, secret, publicKey);
-
-      if (!verified) return;
-
-      let password = await Biometrics.getUserPasswordFromKeychain();
+      // The keychain entry is biometry-bound, so reading it is the authentication step.
+      let password = await Biometrics.getUserPasswordFromKeychain(PROMPT_TITLES.auth);
       if (password) {
         handleOnSubmit({ password });
       }
       password = null;
     } catch (err) {
-      console.log('Biometric login failed', err);
+      console.log('Biometric login failed');
     }
   };
 

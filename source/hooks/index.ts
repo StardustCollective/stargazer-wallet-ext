@@ -9,7 +9,11 @@ export function useSettingsView() {
   }, []);
 }
 
-export function useCopyClipboard(timeout = 1000): [boolean, (toCopy: string) => void] {
+// clearAfter is only honoured on mobile: extension popups close long before it would fire.
+export function useCopyClipboard(
+  timeout = 1000,
+  _clearAfter?: number
+): [boolean, (toCopy: string) => void] {
   const [isCopied, setIsCopied] = useState(false);
 
   const staticCopy = useCallback(async (text: any) => {
