@@ -34,7 +34,11 @@ export interface SignTypedDataParams {
   payload: string;
 }
 
-export const eth_signTypedData = async (request: StargazerRequest & { type: 'rpc' }, message: StargazerRequestMessage, sender: chrome.runtime.MessageSender) => {
+export const eth_signTypedData = async (
+  request: StargazerRequest & { type: 'rpc' },
+  message: StargazerRequestMessage,
+  sender: chrome.runtime.MessageSender
+) => {
   const { activeWallet, windowUrl, windowSize, windowType } = getWalletInfo();
 
   if (!activeWallet) {
@@ -89,6 +93,7 @@ export const eth_signTypedData = async (request: StargazerRequest & { type: 'rpc
     throw new EIPRpcError('chainId does not match the active network chainId', EIPErrorCodes.ChainDisconnected);
   }
 
+  let signedPrimaryType: string;
   try {
     const eip712types = { ...data.types };
     if ('EIP712Domain' in eip712types) {
@@ -96,8 +101,15 @@ export const eth_signTypedData = async (request: StargazerRequest & { type: 'rpc
       delete eip712types.EIP712Domain;
     }
     ethers.utils._TypedDataEncoder.hash(data.domain, eip712types, data.message);
+    signedPrimaryType = ethers.utils._TypedDataEncoder.from(eip712types).primaryType;
   } catch (e) {
     throw new EIPRpcError(`Bad argument 'data' => ${String(e)}`, EIPErrorCodes.Unauthorized);
+  }
+
+  // The software signer hashes the primary type ethers infers from `types`, while Cypherock hashes the declared one.
+  // A mismatch would let the popup label one message while the wallet signs another, so reject it here.
+  if (data.primaryType != null && data.primaryType !== signedPrimaryType) {
+    throw new EIPRpcError("Bad argument 'data' => primaryType does not match types", EIPErrorCodes.Unauthorized);
   }
 
   const signTypedDataParams: SignTypedDataParams = {
