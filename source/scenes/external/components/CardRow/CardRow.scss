@@ -67,4 +67,16 @@
     color: #3e4fea;
     margin-right: 6px;
   }
+
+  &.full {
+    flex: 1;
+    min-width: 0;
+    margin-left: 12px;
+    justify-content: flex-end;
+
+    .copyAddress {
+      word-break: break-all;
+      text-align: right;
+    }
+  }
 }
