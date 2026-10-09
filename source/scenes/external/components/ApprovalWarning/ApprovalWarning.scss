@@ -1,0 +1,29 @@
+@import '~assets/styles/variables';
+
+.container {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid;
+
+  .text {
+    overflow-wrap: anywhere;
+  }
+}
+
+.danger {
+  border-color: $red;
+  background-color: #fef2f2;
+
+  .text {
+    color: $red_700;
+  }
+}
+
+.caution {
+  border-color: $warning_border;
+  background-color: $warning_background;
+
+  .text {
+    color: $warning_text;
+  }
+}
