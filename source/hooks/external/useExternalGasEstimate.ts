@@ -94,7 +94,9 @@ function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) 
 
   const getGasPrices = useCallback(async () => {
     const gasPricesArray = await chainController.estimateGasPrices();
-    const gasPricesInGwei = Object.values(gasPricesArray).map(gasValue => Number(ethers.utils.formatUnits(gasValue.amount().toString(), 'gwei')));
+    const gasPricesInGwei = Object.values(gasPricesArray).map(gasValue =>
+      Number(ethers.utils.formatUnits(gasValue.amount().toString(), 'gwei'))
+    );
 
     const significantDigits = countSignificantDigits(gasPricesInGwei[1]);
 
@@ -112,7 +114,9 @@ function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) 
     const [slowest, , fastest] = pricesFixed;
     const requestedGwei = toGwei(requestedGasPrice);
     const ceiling = fastest * MAX_DAPP_GAS_PRICE_MULTIPLIER;
-    const initialGasPrice = requestedGwei ? fixedNumber(Math.min(Math.max(requestedGwei, slowest), ceiling), significantDigits) : fastest;
+    const initialGasPrice = requestedGwei
+      ? fixedNumber(Math.min(Math.max(requestedGwei, slowest), ceiling), significantDigits)
+      : fastest;
 
     if (requestedGwei > ceiling) {
       const ratio = Number((requestedGwei / fastest).toFixed(1)).toLocaleString('en-US');
@@ -151,7 +155,15 @@ function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) 
         limit = 21000;
       }
 
-      if ([TransactionType.Erc20Transfer, TransactionType.Erc20Approve, TransactionType.EvmContractInteraction].includes(type)) {
+      if (
+        [
+          TransactionType.Erc20Transfer,
+          TransactionType.TokenAllowance,
+          TransactionType.CollectionApproval,
+          TransactionType.TokenTransferFrom,
+          TransactionType.EvmContractInteraction,
+        ].includes(type)
+      ) {
         limit = await estimateTransactionGasLimit();
       }
     }
