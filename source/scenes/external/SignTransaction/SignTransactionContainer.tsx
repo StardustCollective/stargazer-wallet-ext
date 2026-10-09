@@ -3,7 +3,7 @@ import React from 'react';
 
 import { SignTransactionData, useSignTransaction, UseSignTransactionReturn } from 'hooks/external/useSignTransaction';
 
-import { ISignCollectionApprovalProps, ISignDagTransactionProps, ISignEvmApproveProps, ISignEvmTransactionProps, ISignEvmTransferProps, SignCollectionApproval, SignDagTransactionView, SignEvmApprove, SignEvmTransactionView, SignEvmTransferView } from 'scenes/external/views/sign-transaction';
+import { ISignCollectionApprovalProps, ISignDagTransactionProps, ISignEvmApproveProps, ISignEvmTransactionProps, ISignEvmTransferProps, ISignTokenTransferFromProps, SignCollectionApproval, SignDagTransactionView, SignEvmApprove, SignEvmTransactionView, SignEvmTransferView, SignTokenTransferFrom } from 'scenes/external/views/sign-transaction';
 
 import { BaseContainerProps, ExternalRequestContainer } from '../ExternalRequestContainer';
 import { ISignContractInteractionProps, SignContractInteraction } from '../views/sign-transaction/sign-contract-interaction';
@@ -65,6 +65,7 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({
       isEvmNative,
       isTokenAllowance,
       isCollectionApproval,
+      isTokenTransferFrom,
       tokenStandard,
       isErc20Transfer,
       isContractInteraction,
@@ -124,6 +125,22 @@ const SignTransactionContainer: React.FC<SignTransactionProviderConfig> = ({
         onReject,
       };
       return <SignCollectionApproval {...collectionApprovalProps} />;
+    }
+
+    if (isTokenTransferFrom) {
+      const tokenTransferFromProps: ISignTokenTransferFromProps = {
+        title: propsTitle,
+        nativeAsset,
+        transaction,
+        tokenStandard,
+        footer: propsFooter,
+        isLoading: propsIsLoading,
+        wallet,
+        setGasConfig,
+        onSign: onAction,
+        onReject,
+      };
+      return <SignTokenTransferFrom {...tokenTransferFromProps} />;
     }
 
     if (isErc20Transfer) {

@@ -160,6 +160,7 @@ function useExternalGasEstimate({ type, transaction }: IUseExternalGasEstimate) 
           TransactionType.Erc20Transfer,
           TransactionType.TokenAllowance,
           TransactionType.CollectionApproval,
+          TransactionType.TokenTransferFrom,
           TransactionType.EvmContractInteraction,
         ].includes(type)
       ) {

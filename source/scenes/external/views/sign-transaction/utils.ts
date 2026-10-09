@@ -133,6 +133,7 @@ export const validateBalance = ({
       };
     }
 
+    case TransactionType.TokenTransferFrom:
     case TransactionType.CollectionApproval:
     case TransactionType.EvmContractInteraction:
       // For contract interactions, we only need to check if user has enough for the fee

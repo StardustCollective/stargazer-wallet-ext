@@ -296,6 +296,45 @@ export class CollectionApprovalHandler implements TransactionHandler {
   }
 }
 
+const TRANSFER_FROM_METHODS: DecodedCall['method'][] = ['transferFrom', 'safeTransferFrom721', 'safeTransferFrom1155'];
+
+/**
+ * Handler for calls that move tokens from an address: transferFrom, safeTransferFrom, safeBatchTransferFrom
+ */
+export class TokenTransferFromHandler implements TransactionHandler {
+  canHandle(transaction: EthSendTransaction): boolean {
+    return TRANSFER_FROM_METHODS.includes(decodedMethod(transaction));
+  }
+
+  async handle(transaction: EthSendTransaction): Promise<TransactionHandlerResult> {
+    const call = decodeContractCall(transaction, 'transfer-from');
+    let tokenStandard: TokenStandard;
+
+    switch (call.method) {
+      case 'transferFrom':
+        validateCallAddresses('transferFrom', [call.from, call.to]);
+        // ERC-20 and ERC-721 share the transferFrom selector; the last argument is an amount or a token ID.
+        tokenStandard = await detectTokenStandard(transaction.to, transaction.chainId);
+        break;
+      case 'safeTransferFrom721':
+        validateCallAddresses('safeTransferFrom', [call.from, call.to]);
+        tokenStandard = 'erc721';
+        break;
+      case 'safeTransferFrom1155':
+        validateCallAddresses('safeTransferFrom', [call.from, call.to]);
+        tokenStandard = 'erc1155';
+        break;
+      default:
+        throw new EIPRpcError('Not a transfer-from call', EIPErrorCodes.Rejected);
+    }
+
+    return {
+      data: { type: TransactionType.TokenTransferFrom, transaction, tokenStandard },
+      route: ExternalRoute.SignTransaction,
+    };
+  }
+}
+
 /**
  * Fallback handler for generic smart contract interactions
  * Handles any transaction with 'to' and 'data' fields that other handlers cannot process
@@ -359,6 +398,7 @@ export class TransactionHandlerRegistry {
     this.registerHandler(new Erc20TransferHandler());
     this.registerHandler(new TokenAllowanceHandler());
     this.registerHandler(new CollectionApprovalHandler());
+    this.registerHandler(new TokenTransferFromHandler());
     this.registerHandler(new NativeTransferHandler());
     // Fallback handler should be registered last as it's the most generic
     this.registerHandler(new FallbackContractHandler());

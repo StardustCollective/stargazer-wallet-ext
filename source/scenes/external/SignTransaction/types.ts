@@ -7,6 +7,7 @@ export enum TransactionType {
   Erc20Transfer = 'erc20-transfer',
   TokenAllowance = 'token-allowance',
   CollectionApproval = 'collection-approval',
+  TokenTransferFrom = 'token-transfer-from',
   EvmContractInteraction = 'evm-contract-interaction',
 }
 

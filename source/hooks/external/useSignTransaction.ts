@@ -26,6 +26,7 @@ export interface UseSignTransactionReturn
   isErc20Transfer: boolean;
   isTokenAllowance: boolean;
   isCollectionApproval: boolean;
+  isTokenTransferFrom: boolean;
   isContractInteraction: boolean;
   isEvm: boolean;
   fee: string;
@@ -78,12 +79,22 @@ export const useSignTransaction = (): UseSignTransactionReturn => {
     return type === TransactionType.CollectionApproval;
   }, [type]);
 
+  const isTokenTransferFrom = useMemo(() => {
+    return type === TransactionType.TokenTransferFrom;
+  }, [type]);
+
   const isContractInteraction = useMemo(() => {
     return type === TransactionType.EvmContractInteraction;
   }, [type]);
 
   // Every EVM type. Signers branch on this so a new type is added here only.
-  const isEvm = isEvmNative || isErc20Transfer || isTokenAllowance || isCollectionApproval || isContractInteraction;
+  const isEvm =
+    isEvmNative ||
+    isErc20Transfer ||
+    isTokenAllowance ||
+    isCollectionApproval ||
+    isTokenTransferFrom ||
+    isContractInteraction;
 
   const nativeAsset = useMemo(() => {
     return CHAIN_FULL_ASSET[chain] ?? null;
@@ -99,6 +110,7 @@ export const useSignTransaction = (): UseSignTransactionReturn => {
     isErc20Transfer,
     isTokenAllowance,
     isCollectionApproval,
+    isTokenTransferFrom,
     isContractInteraction,
     isEvm,
     fee,
