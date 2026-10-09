@@ -8,12 +8,8 @@ import {
   ActivityIndicator,
   ScrollView,
   TouchableOpacity,
-  AppState,
-  NativeModules,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import { useLinkTo } from '@react-navigation/native';
-import BackgroundTimer from 'react-native-background-timer';
 import { iosPlatform } from 'utils/platform';
 
 ///////////////////////////
@@ -60,10 +56,6 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
-const LOGOUT_TIMEOUT = 1000 * 60 * 5; // 5 minutes
-
-// iOS only (AppDelegate): keeps the app switcher cover up until the wallet has been locked
-const { PrivacyCover } = NativeModules;
 const ICON_SIZE = 14;
 let lastIsConnected = true;
 
@@ -85,7 +77,6 @@ const Home: FC<IHome> = ({
   const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
 
   const walletController = getWalletController();
-  const linkTo = useLinkTo();
 
   const handleSwitchWallet = async (
     walletId: string,
@@ -131,41 +122,6 @@ const Home: FC<IHome> = ({
 
     return () => {
       unsubscribeNetInfo();
-    };
-  }, []);
-
-  // Lock the wallet after LOGOUT_TIMEOUT in background. The background timer covers Android;
-  // iOS suspends JS, so the elapsed time is also checked when the app becomes active again.
-  useEffect(() => {
-    let backgroundedAt: number | null = null;
-    PrivacyCover?.setLockTimeout(LOGOUT_TIMEOUT);
-
-    const lock = async () => {
-      BackgroundTimer.stopBackgroundTimer();
-      if (walletController.isUnlocked()) {
-        // Logout the user and navigate to the log in screen
-        await walletController.logOut();
-        linkTo('/authRoot');
-      }
-    };
-
-    const subscription = AppState.addEventListener('change', (nextState) => {
-      if (nextState === 'background') {
-        backgroundedAt = Date.now();
-        BackgroundTimer.runBackgroundTimer(lock, LOGOUT_TIMEOUT);
-      } else if (nextState === 'active') {
-        BackgroundTimer.stopBackgroundTimer();
-        const lockDue = !!backgroundedAt && Date.now() - backgroundedAt >= LOGOUT_TIMEOUT;
-        backgroundedAt = null;
-        // Remove the cover only after the login screen has rendered
-        (lockDue ? lock() : Promise.resolve()).finally(() => requestAnimationFrame(() => PrivacyCover?.hide()));
-      }
-    });
-
-    return () => {
-      subscription.remove();
-      BackgroundTimer.stopBackgroundTimer();
-      PrivacyCover?.setLockTimeout(0);
     };
   }, []);
 

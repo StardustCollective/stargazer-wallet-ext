@@ -16773,6 +16773,11 @@ react-native-biometrics@^3.0.1:
   resolved "https://registry.yarnpkg.com/react-native-biometrics/-/react-native-biometrics-3.0.1.tgz#23c5a0bdbae1fcb1e08b22936223fe0fc4af846e"
   integrity sha512-Ru80gXRa9KG04sl5AB9HyjLjVbduhqZVjA+AiOSGqr+fNqCDmCu9y5WEksnjbnniNLmq1yGcw+qcLXmR1ddLDQ==
 
+react-native-capture-protection@2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-capture-protection/-/react-native-capture-protection-2.4.1.tgz#5868982830cf3ba3b58ce526a9d2bee1dee70255"
+  integrity sha512-X2AN+YrgExPRSdjmPpUCanHIUdMnax73z6CfEfcSeZyBkB8AYo3AjNjYOTuTbk1U7HU2UJoz7X5WviShqYQrLQ==
+
 react-native-crypto@^2.0.1:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-native-crypto/-/react-native-crypto-2.2.0.tgz#c999ed7c96064f830e1f958687f53d0c44025770"

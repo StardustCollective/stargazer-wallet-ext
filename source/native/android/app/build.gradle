@@ -82,6 +82,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 116
         versionName "3.4.3"
+        // react-native-capture-protection: plain FLAG_SECURE, without the READ_MEDIA_IMAGES flavor
+        missingDimensionStrategy "react-native-capture-protection", "base"
     }
 
     signingConfigs {
