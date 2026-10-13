@@ -1,5 +1,6 @@
 import { type TransactionRequest } from '@ethersproject/abstract-provider';
 import { dag4 } from '@stardust-collective/dag4';
+import type { PendingTx } from '@stardust-collective/dag4-network';
 import { ethers } from 'ethers';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -15,12 +16,11 @@ import type { IAssetInfoState } from 'state/assets/types';
 
 import { usePlatformAlert } from 'utils/alertUtil';
 import { getAccountController } from 'utils/controllersUtils';
+import { retry } from 'utils/httpRequests/utils';
 import { toDag } from 'utils/number';
 
 import SignTransactionContainer, { SignTransactionProviderConfig } from './SignTransactionContainer';
 import { type SignTransactionDataDAG, type SignTransactionDataEVM, TransactionType } from './types';
-import { retry } from 'utils/httpRequests/utils';
-import type { PendingTx } from '@stardust-collective/dag4-network';
 
 const SignTransaction = () => {
   const showAlert = usePlatformAlert();
@@ -39,7 +39,7 @@ const SignTransaction = () => {
 
     // Send transaction
     let pendingTx: PendingTx | null = null;
-    
+
     try {
       pendingTx = await dag4.account.transferDag(to, amountInDag, feeInDag);
     } catch (err) {
@@ -57,7 +57,11 @@ const SignTransaction = () => {
     return tx.hash;
   };
 
-  const signMetagraphTransaction = async ({ transaction }: SignTransactionDataDAG, asset: IAssetInfoState, fee: string) => {
+  const signMetagraphTransaction = async (
+    { transaction }: SignTransactionDataDAG,
+    asset: IAssetInfoState,
+    fee: string
+  ) => {
     const { to, value } = transaction;
 
     // Transform amount and fee to DAG
@@ -75,7 +79,7 @@ const SignTransaction = () => {
 
     // Send transaction
     let pendingTx: PendingTx | null = null;
-    
+
     try {
       pendingTx = await metagraphClient.transfer(to, amountInDag, feeInDag);
     } catch (err) {
@@ -93,7 +97,11 @@ const SignTransaction = () => {
     return tx.hash;
   };
 
-  const signEvmTransaction = async (chainController: EVMChainController, data: SignTransactionDataEVM, gasConfig: { gasPrice: string; gasLimit: string }) => {
+  const signEvmTransaction = async (
+    chainController: EVMChainController,
+    data: SignTransactionDataEVM,
+    gasConfig: { gasPrice: string; gasLimit: string }
+  ) => {
     const wallet = chainController.getWallet();
 
     if (!wallet) {
@@ -140,7 +148,7 @@ const SignTransaction = () => {
     title: 'Sign Transaction',
     footer: 'Only sign transactions on sites you trust.',
     isLoading: loading,
-    onSignTransaction: async ({ decodedData, metagraphAsset, isDAG, isMetagraph, isEvmNative, isErc20Transfer, isErc20Approve, isContractInteraction, fee, gasConfig, wallet }) => {
+    onSignTransaction: async ({ decodedData, metagraphAsset, isDAG, isMetagraph, isEvm, fee, gasConfig, wallet }) => {
       setLoading(true);
 
       // Validation logic based on transaction type
@@ -172,7 +180,7 @@ const SignTransaction = () => {
         }
       }
 
-      if (isEvmNative || isErc20Transfer || isErc20Approve || isContractInteraction) {
+      if (isEvm) {
         // EVM transaction validation
         const isEVM = wallet.chain !== StargazerChain.CONSTELLATION;
         const addressMatch = ethAddress.toLowerCase() === wallet.address.toLowerCase();

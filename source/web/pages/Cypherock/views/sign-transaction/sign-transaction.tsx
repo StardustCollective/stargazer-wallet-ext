@@ -21,6 +21,7 @@ import walletsSelectors from 'selectors/walletsSelectors';
 
 import type { IAssetInfoState } from 'state/assets/types';
 
+import { retry } from 'utils/httpRequests/utils';
 import { toDag } from 'utils/number';
 
 import { WalletState } from 'web/pages/Cypherock/Cypherock';
@@ -29,7 +30,6 @@ import { CypherockError, CypherockService, ErrorCode } from 'web/utils/cypherock
 import { CYPHEROCK_DERIVATION_PATHS } from 'web/utils/cypherockBridge/constants';
 
 import styles from './styles.scss';
-import { retry } from 'utils/httpRequests/utils';
 
 interface ISignTransactionProps {
   service: CypherockService;
@@ -45,7 +45,12 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
   const { requestMessage } = useSignTransaction();
   const [loading, setLoading] = useState(false);
 
-  const signDAGTransaction = async (data: SignTransactionDataDAG, asset: IAssetInfoState, isMetagraphTransaction: boolean, fee: string): Promise<string> => {
+  const signDAGTransaction = async (
+    data: SignTransactionDataDAG,
+    asset: IAssetInfoState,
+    isMetagraphTransaction: boolean,
+    fee: string
+  ): Promise<string> => {
     const { from, to, value: amount } = data.transaction;
 
     if (!dag4?.account?.publicKey) {
@@ -126,7 +131,11 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
     return txHash;
   };
 
-  const signEvmTransaction = async (chainController: EVMChainController, data: SignTransactionDataEVM, gasConfig: { gasPrice: string; gasLimit: string }): Promise<string> => {
+  const signEvmTransaction = async (
+    chainController: EVMChainController,
+    data: SignTransactionDataEVM,
+    gasConfig: { gasPrice: string; gasLimit: string }
+  ): Promise<string> => {
     if (!cypherockId) {
       throw new CypherockError('No wallet id found', ErrorCode.UNKNOWN);
     }
@@ -185,7 +194,7 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
     title: 'Cypherock - Sign Transaction',
     footer: 'Only sign transactions on sites you trust.',
     isLoading: loading,
-    onSignTransaction: async ({ metagraphAsset, decodedData, isDAG, isMetagraph, isEvmNative, isErc20Transfer, isErc20Approve, isContractInteraction, fee, gasConfig, wallet }) => {
+    onSignTransaction: async ({ metagraphAsset, decodedData, isDAG, isMetagraph, isEvm, fee, gasConfig, wallet }) => {
       setLoading(true);
       // Validation logic based on transaction type
       if (isDAG || isMetagraph) {
@@ -210,7 +219,7 @@ const SignTxnView = ({ service, changeState, handleSuccessResponse, handleErrorR
         return await signDAGTransaction(decodedData as SignTransactionDataDAG, metagraphAsset, isMetagraph, fee);
       }
 
-      if (isEvmNative || isErc20Transfer || isErc20Approve || isContractInteraction) {
+      if (isEvm) {
         // EVM transaction validation
         const isEVM = wallet.chain !== StargazerChain.CONSTELLATION;
         const addressMatch = ethAddress.toLowerCase() === wallet.address.toLowerCase();

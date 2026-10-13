@@ -15,15 +15,20 @@ import { useExternalRequest, UseExternalRequestReturn } from './useExternalReque
 
 export type SignTransactionData = SignTransactionDataDAG & SignTransactionDataEVM;
 
-export interface UseSignTransactionReturn extends UseExternalRequestReturn<SignTransactionData>, BaseExternalRequestHook<SignTransactionData> {
+export interface UseSignTransactionReturn
+  extends UseExternalRequestReturn<SignTransactionData>,
+    BaseExternalRequestHook<SignTransactionData> {
   nativeAsset: IAssetInfoState | null;
   metagraphAsset: IAssetInfoState | null;
   isDAG: boolean;
   isMetagraph: boolean;
   isEvmNative: boolean;
   isErc20Transfer: boolean;
-  isErc20Approve: boolean;
+  isTokenAllowance: boolean;
+  isCollectionApproval: boolean;
+  isTokenTransferFrom: boolean;
   isContractInteraction: boolean;
+  isEvm: boolean;
   fee: string;
   gasConfig: { gasPrice: string; gasLimit: string };
   setFee: (fee: string) => void;
@@ -37,7 +42,9 @@ export const useSignTransaction = (): UseSignTransactionReturn => {
   const baseHook = useExternalRequest<SignTransactionData>('Sign transaction');
   const { chain } = baseHook.wallet;
   const { type, metagraphAddress } = baseHook.decodedData;
-  const metagraphAsset: IAssetInfoState | null = useSelector(assetsSelectors.getMetagraphAsset(metagraphAddress ?? null));
+  const metagraphAsset: IAssetInfoState | null = useSelector(
+    assetsSelectors.getMetagraphAsset(metagraphAddress ?? null)
+  );
 
   const feeInDatum = baseHook.decodedData?.transaction?.fee ?? 0;
 
@@ -64,13 +71,30 @@ export const useSignTransaction = (): UseSignTransactionReturn => {
     return type === TransactionType.Erc20Transfer;
   }, [type]);
 
-  const isErc20Approve = useMemo(() => {
-    return type === TransactionType.Erc20Approve;
+  const isTokenAllowance = useMemo(() => {
+    return type === TransactionType.TokenAllowance;
+  }, [type]);
+
+  const isCollectionApproval = useMemo(() => {
+    return type === TransactionType.CollectionApproval;
+  }, [type]);
+
+  const isTokenTransferFrom = useMemo(() => {
+    return type === TransactionType.TokenTransferFrom;
   }, [type]);
 
   const isContractInteraction = useMemo(() => {
     return type === TransactionType.EvmContractInteraction;
   }, [type]);
+
+  // Every EVM type. Signers branch on this so a new type is added here only.
+  const isEvm =
+    isEvmNative ||
+    isErc20Transfer ||
+    isTokenAllowance ||
+    isCollectionApproval ||
+    isTokenTransferFrom ||
+    isContractInteraction;
 
   const nativeAsset = useMemo(() => {
     return CHAIN_FULL_ASSET[chain] ?? null;
@@ -84,8 +108,11 @@ export const useSignTransaction = (): UseSignTransactionReturn => {
     isMetagraph,
     isEvmNative,
     isErc20Transfer,
-    isErc20Approve,
+    isTokenAllowance,
+    isCollectionApproval,
+    isTokenTransferFrom,
     isContractInteraction,
+    isEvm,
     fee,
     gasConfig,
     setFee,
