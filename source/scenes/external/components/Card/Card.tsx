@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
 import clsx from 'clsx';
+import React, { FC } from 'react';
+
 import styles from './Card.scss';
 
 type ICard = {
   extraStyle?: string;
-  children: React.ReactChild | React.ReactChild[];
+  children: React.ReactNode;
 };
 
 const Card: FC<ICard> = ({ extraStyle, children }) => {

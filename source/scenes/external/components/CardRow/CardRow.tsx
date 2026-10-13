@@ -1,4 +1,5 @@
 import { Skeleton } from '@material-ui/lab';
+import clsx from 'clsx';
 import React, { FC } from 'react';
 
 import CopyIcon from 'assets/images/svg/copy.svg';
@@ -20,6 +21,11 @@ type ICardRowProps = {
   loading?: boolean;
 };
 
+type ICardRowAddress = ICardRowProps & {
+  // Render the whole address. A shortened address can be spoofed by one that matches at both ends.
+  full?: boolean;
+};
+
 type ICardRow = Omit<ICardRowProps, 'value'> & {
   value: string | JSX.Element;
 };
@@ -37,7 +43,7 @@ const renderLoading = () => {
 
 const CardRow: FC<ICardRow> & {
   Token: FC<ICardRowToken>;
-  Address: FC<ICardRowProps>;
+  Address: FC<ICardRowAddress>;
   Object: FC<ICardRowProps>;
 } = ({ label, value, error, loading = false }) => {
   const renderValue = () => {
@@ -85,7 +91,7 @@ const CardRowToken: FC<ICardRowToken> = ({ label, value, loading = false }) => {
   );
 };
 
-const CardRowAddress: FC<ICardRowProps> = ({ label, value, loading = false }) => {
+const CardRowAddress: FC<ICardRowAddress> = ({ label, value, loading = false, full = false }) => {
   const [isCopied, copyText] = useCopyClipboard(1000);
 
   const renderAddressValue = () => {
@@ -93,8 +99,8 @@ const CardRowAddress: FC<ICardRowProps> = ({ label, value, loading = false }) =>
 
     return (
       <Tooltip title={displayTooltip} placement="bottom" arrow>
-        <div className={styles.copyAddressContainer} onClick={() => copyText(value)}>
-          <TextV3.CaptionStrong extraStyles={styles.copyAddress}>{ellipsis(value)}</TextV3.CaptionStrong>
+        <div className={clsx(styles.copyAddressContainer, full && styles.full)} onClick={() => copyText(value)}>
+          <TextV3.CaptionStrong extraStyles={styles.copyAddress}>{full ? value : ellipsis(value)}</TextV3.CaptionStrong>
           <img src={`/${CopyIcon}`} alt="Copy" />
         </div>
       </Tooltip>

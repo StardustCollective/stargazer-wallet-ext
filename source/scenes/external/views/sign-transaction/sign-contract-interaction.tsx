@@ -11,6 +11,7 @@ import { useBalance } from 'hooks/external/useBalance';
 import useExternalGasEstimate from 'hooks/external/useExternalGasEstimate';
 import { useExternalViewData } from 'hooks/external/useExternalViewData';
 
+import ApprovalWarning from 'scenes/external/components/ApprovalWarning';
 import Card from 'scenes/external/components/Card/Card';
 import CardRow from 'scenes/external/components/CardRow/CardRow';
 import GasSlider from 'scenes/external/components/GasSlider';
@@ -54,13 +55,35 @@ const calculateFiat = (feeInWei: BigNumber, nativeAsset: IAssetInfoState) => {
   return fiatInEth.toString();
 };
 
-export const SignContractInteraction = ({ title, nativeAsset, transaction, footer, containerStyles, isLoading = false, wallet, setGasConfig, onSign, onReject }: ISignContractInteractionProps) => {
+export const SignContractInteraction = ({
+  title,
+  nativeAsset,
+  transaction,
+  footer,
+  containerStyles,
+  isLoading = false,
+  wallet,
+  setGasConfig,
+  onSign,
+  onReject,
+}: ISignContractInteractionProps) => {
   const { dapp, activeWallet, networkLabel, accountChanged, networkChanged } = useExternalViewData(wallet);
   const [txn, setTxn] = useState(transaction);
 
   const { from, chainId } = transaction;
 
-  const { gasPrice, gasPrices, maxGasPrice, gasPriceWarning, gasFee, gasSpeedLabel, gasLimit, digits, setGasPrice, estimateGasFee } = useExternalGasEstimate({
+  const {
+    gasPrice,
+    gasPrices,
+    maxGasPrice,
+    gasPriceWarning,
+    gasFee,
+    gasSpeedLabel,
+    gasLimit,
+    digits,
+    setGasPrice,
+    estimateGasFee,
+  } = useExternalGasEstimate({
     type: TransactionType.EvmContractInteraction,
     transaction,
   });
@@ -144,6 +167,12 @@ export const SignContractInteraction = ({ title, nativeAsset, transaction, foote
           <CardRow label="Account:" value={activeWallet?.label} error={accountChanged && 'Account changed'} />
           <CardRow label="Network:" value={networkLabel} error={networkChanged && 'Network changed'} />
         </Card>
+        <Card>
+          <CardRow.Address full label="Contract:" value={transaction.to} />
+        </Card>
+        <ApprovalWarning severity="caution">
+          Unverified contract: this wallet cannot decode what this call does.
+        </ApprovalWarning>
         <Card>
           <CardRow label="Transaction fee:" loading={isGasLoading} value={feeString} error={feeError} />
           {!!gasPriceWarning && <CardRow label="Warning:" value="" error={gasPriceWarning} />}
